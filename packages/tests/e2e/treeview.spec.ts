@@ -62,7 +62,7 @@ const VARIANT = {
  * ayant laissé l'iframe en cours de transition.
  */
 async function gotoVariant(page: import('@playwright/test').Page, idx: number) {
-    await page.goto(variantUrl(idx))
+    await page.goto(variantUrl(idx), { waitUntil: 'domcontentloaded' })
     await page.waitForLoadState('domcontentloaded')
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
     await expect(sandbox.locator('.origam-treeview')).toBeVisible({ timeout: 20000 })
@@ -258,13 +258,10 @@ test.describe('OrigamTreeview', () => {
     // Slots - Node variant (idx 6)
     // ─────────────────────────────────────────────────────────────────────
 
-    // DS BUG — slot #node défini sur <origam-treeview> n'est pas propagé aux OrigamTreeviewNode.
-    // OrigamTreeview.vue itère les items avec <origam-treeview-node v-for> sans passer le slot #node.
-    // Le slot est consommé par le composant racine (qui ne l'utilise pas lui-même) et n'est jamais
-    // forwardé aux nœuds fils. Dans le DOM tous les emplacements slot sont <!--v-if-->.
-    // Fix requis : ajouter <template #node="slotProps"><slot name="node" v-bind="slotProps"/></template>
-    // sur chaque <origam-treeview-node> dans OrigamTreeview.vue.
-    test.fixme('Slots/Node — slot personnalise rend le texte [slot]', async ({ page }) => {
+    // Le slot #node défini sur <origam-treeview> est forwardé à OrigamTreeviewNode
+    // via <template #node="slotProps"><slot name="node" v-bind="slotProps"/></template>
+    // (corrigé dans 4fcfd023 — OrigamTreeview.vue). Non-régression.
+    test('Slots/Node — slot personnalise rend le texte [slot]', async ({ page }) => {
         const sandbox = await gotoVariant(page, VARIANT.SLOTS_NODE)
         // Le slot #node de la story produit un <span style="fontStyle:italic"> avec "[slot] {label}"
         const slotSpans = sandbox.locator('.origam-treeview-node > span[style*="italic"]')

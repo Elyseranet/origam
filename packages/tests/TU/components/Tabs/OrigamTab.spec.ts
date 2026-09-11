@@ -137,3 +137,95 @@ describe('OrigamTab — useDefaults (theme components wiring)', () => {
         wrapper.unmount()
     })
 })
+
+// Regression guard for the bug that triggered this ticket: `tab.interface.ts`
+// used to declare `icon` / `appendIcon` by hand, WITHOUT a `prependIcon`
+// counterpart — a consumer could place an icon on the trailing edge but
+// never on the leading one. `ITabProps` now `extends IAdjacentProps` and
+// the template is driven by `useAdjacent()`. These specs mount the REAL
+// `OrigamIcon` / `OrigamAvatar` (only reflecting the `icon` / `image` prop
+// through a thin stub) so a silently-ignored prop would show up as a
+// missing `data-icon` / `data-image` attribute, not just a passing type.
+function buildTabWithIcons (tabProps: Record<string, unknown> = {}) {
+    return mount(OrigamTabs, {
+        props: { modelValue: 'a' },
+        slots: {
+            default: () => [h(OrigamTab, { value: 'a', text: 'Tab A', ...tabProps })]
+        },
+        attachTo: document.body,
+        global: {
+            plugins: [createOrigam()],
+            stubs: {
+                OrigamDefaultsProvider: { template: '<slot/>' },
+                OrigamIcon: { template: '<span class="stub-icon" :data-icon="icon"/>', props: ['icon'] },
+                OrigamAvatar: { template: '<span class="stub-avatar" :data-image="image"/>', props: ['image'] }
+            }
+        }
+    })
+}
+
+describe('OrigamTab — prepend/append (IAdjacentProps)', () => {
+    it('renders ONLY the append icon when only appendIcon is passed', () => {
+        const wrapper = buildTabWithIcons({ appendIcon: 'mdi-chevron-right' })
+
+        expect(wrapper.find('.origam-tab__prepend').exists()).toBe(false)
+        expect(wrapper.find('.origam-tab__append').exists()).toBe(true)
+        expect(wrapper.find('.origam-tab__append .stub-icon').attributes('data-icon')).toBe('mdi-chevron-right')
+
+        wrapper.unmount()
+    })
+
+    it('renders ONLY the prepend icon when only prependIcon is passed', () => {
+        const wrapper = buildTabWithIcons({ prependIcon: 'mdi-chevron-left' })
+
+        expect(wrapper.find('.origam-tab__prepend').exists()).toBe(true)
+        expect(wrapper.find('.origam-tab__prepend .stub-icon').attributes('data-icon')).toBe('mdi-chevron-left')
+        expect(wrapper.find('.origam-tab__append').exists()).toBe(false)
+
+        wrapper.unmount()
+    })
+
+    it('renders BOTH prepend and append icons at once (the bug this ticket fixes)', () => {
+        const wrapper = buildTabWithIcons({ prependIcon: 'mdi-chevron-left', appendIcon: 'mdi-chevron-right' })
+
+        expect(wrapper.find('.origam-tab__prepend .stub-icon').attributes('data-icon')).toBe('mdi-chevron-left')
+        expect(wrapper.find('.origam-tab__append .stub-icon').attributes('data-icon')).toBe('mdi-chevron-right')
+
+        wrapper.unmount()
+    })
+
+    it('the deprecated `icon` prop still renders at the leading (prepend) position', () => {
+        const wrapper = buildTabWithIcons({ icon: 'mdi-star' })
+
+        expect(wrapper.find('.origam-tab__prepend .stub-icon').attributes('data-icon')).toBe('mdi-star')
+        expect(wrapper.find('.origam-tab__append').exists()).toBe(false)
+
+        wrapper.unmount()
+    })
+
+    it('`prependIcon` wins over the deprecated `icon` alias when both are set', () => {
+        const wrapper = buildTabWithIcons({ icon: 'mdi-star', prependIcon: 'mdi-heart' })
+
+        expect(wrapper.find('.origam-tab__prepend .stub-icon').attributes('data-icon')).toBe('mdi-heart')
+
+        wrapper.unmount()
+    })
+
+    it('renders prependAvatar and appendAvatar together', () => {
+        const wrapper = buildTabWithIcons({ prependAvatar: '/left.png', appendAvatar: '/right.png' })
+
+        expect(wrapper.find('.origam-tab__prepend .stub-avatar').attributes('data-image')).toBe('/left.png')
+        expect(wrapper.find('.origam-tab__append .stub-avatar').attributes('data-image')).toBe('/right.png')
+
+        wrapper.unmount()
+    })
+
+    it('renders neither prepend nor append when no adjacent prop is set', () => {
+        const wrapper = buildTabWithIcons()
+
+        expect(wrapper.find('.origam-tab__prepend').exists()).toBe(false)
+        expect(wrapper.find('.origam-tab__append').exists()).toBe(false)
+
+        wrapper.unmount()
+    })
+})

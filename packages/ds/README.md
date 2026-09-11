@@ -5,7 +5,7 @@ and TypeScript types.
 
 > 📖 **Full documentation & interactive theme builder:**
 > [https://origam.dev](https://origam.dev) *(coming soon)* ·
-> [GitHub repository](https://github.com/arnaudprioul/origam)
+> [GitHub repository](https://github.com/Elyseranet/origam)
 
 ## Installation
 
@@ -75,9 +75,9 @@ Token stylesheets are exposed as dedicated entries: `origam/styles`
 ## Links
 
 - [Documentation & theme builder](https://origam.dev) *(coming soon)*
-- [Changelog](https://github.com/arnaudprioul/origam/blob/main/CHANGELOG.md)
-- [Issues](https://github.com/arnaudprioul/origam/issues)
+- [Changelog](https://github.com/Elyseranet/origam/blob/main/CHANGELOG.md)
+- [Issues](https://github.com/Elyseranet/origam/issues)
 
 ## License
 
-[MIT](https://github.com/arnaudprioul/origam/blob/main/LICENSE) © Prioul Arnaud
+[MIT](https://github.com/Elyseranet/origam/blob/main/LICENSE) © Prioul Arnaud

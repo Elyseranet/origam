@@ -1,5 +1,6 @@
 <template>
 	<kbd
+			:id="id"
 			v-contrast
 			:class="kbdClasses"
 			:style="kbdStyles"
@@ -28,19 +29,17 @@
 		lang="ts"
 		setup
 >
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import {
-		useBorder,
-		useBothColor,
-		useProps,
-		useRounded,
-		useSize,
-		useStyle,
-		useTypography
-} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import type { IKbdProps } from '../../interfaces'
+	import type { IKbdEmits, IKbdProps, IKbdSlots } from '../../interfaces/Kbd/kbd.interface'
 
 	import { computed, StyleValue, toRef } from 'vue'
 
@@ -50,14 +49,16 @@
 	 * @description
 	 * Props and composable setup.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IKbdProps>(), {
+	const props = withDefaults(defineProps<IKbdProps>(), {
 		separator: '+',
 		variant: 'outlined',
 	})
 
-	const props = _props
-
 	const { filterProps } = useProps<IKbdProps>(props)
+
+	defineEmits<IKbdEmits>()
+
+	defineSlots<IKbdSlots>()
 
 	/*********************************************************
 	 * Composables
@@ -106,7 +107,7 @@
 			props.style,
 		] as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(kbdStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(kbdStyles, () => props.id)
 
 
 	/*********************************************************
@@ -173,7 +174,7 @@
 
 			padding-block: 0;
 			padding-inline: 0;
-			border-width: 0;
+			--origam-kbd---border-width: 0;
 			background-color: transparent;
 			box-shadow: none;
 			min-width: 0;
@@ -185,25 +186,27 @@
 
 		&--variant-outlined,
 		&--variant-outlined &__key {
-			--origam-kbd---background-color: var(--origam-color__surface---raised, #fff);
+			--origam-kbd---background-color: var(--origam-kbd--outlined---background-color, var(--origam-color__surface---raised, #fff));
 			--origam-kbd---border-color: var(--origam-color__border---subtle, #d4d4d4);
+			--origam-kbd---border-width: var(--origam-kbd--outlined---border-width, 1px);
 			--origam-kbd---box-shadow: 0 1px 0 0 color-mix(in srgb, currentColor 12%, transparent),
 			                            inset 0 1px 0 0 color-mix(in srgb, white 50%, transparent);
 		}
 
 		&--variant-filled,
 		&--variant-filled &__key {
-			--origam-kbd---background-color: var(--origam-color__surface---overlay, #f5f5f5);
+			--origam-kbd---background-color: var(--origam-kbd__filled---background-color, var(--origam-color__surface---overlay, #f5f5f5));
 			--origam-kbd---border-color: var(--origam-color__border---subtle, #d4d4d4);
+			--origam-kbd---border-width: var(--origam-kbd__filled---border-width, 1px);
 			--origam-kbd---box-shadow: 0 1px 2px 0 color-mix(in srgb, currentColor 18%, transparent),
 			                            inset 0 1px 0 0 color-mix(in srgb, white 60%, transparent);
 		}
 
 		&--variant-tonal,
 		&--variant-tonal &__key {
-			--origam-kbd---background-color: color-mix(in srgb, currentColor 8%, transparent);
+			--origam-kbd---background-color: var(--origam-kbd__tonal---background-color, color-mix(in srgb, currentColor 8%, transparent));
 			--origam-kbd---border-color: transparent;
-			--origam-kbd---border-width: 0px;
+			--origam-kbd---border-width: var(--origam-kbd__tonal---border-width, 0px);
 			--origam-kbd---box-shadow: none;
 		}
 
@@ -212,7 +215,7 @@
 		&--combination#{&}--variant-tonal {
 			background-color: transparent;
 			border-color: transparent;
-			border-width: 0;
+			--origam-kbd---border-width: 0;
 			box-shadow: none;
 		}
 

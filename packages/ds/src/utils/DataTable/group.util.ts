@@ -1,6 +1,6 @@
-import type { IDataTableGroup, IDataTableGroupableItem } from '../../interfaces'
+import type { IDataTableGroup, IDataTableGroupableItem } from '../../interfaces/DataTable/group.interface'
 
-import { getObjectValueByPath } from '../../utils'
+import { getObjectValueByPath } from '../Commons/commons.util'
 
 /**
  * Group items by property.

@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="cardHeaderClasses"
 			:style="cardHeaderStyles"
 			v-bind="$attrs"
@@ -15,7 +16,10 @@
 					v-if="hasPrepend"
 					key="prepend"
 					class="origam-card-header__prepend"
+					:role="isPrependClickable ? 'button' : undefined"
+					:tabindex="isPrependClickable ? 0 : undefined"
 					@click="handleClickPrepend"
+					@keydown="handleKeydownPrepend"
 			>
 				<slot name="prepend">
 					<origam-avatar
@@ -39,6 +43,7 @@
 			>
 				<div
 						v-if="hasTitle"
+						:id="titleId"
 						key="title"
 						class="origam-card-header__title"
 						:style="titleTypographyStyles"
@@ -70,7 +75,10 @@
 					v-if="hasAppend"
 					key="append"
 					class="origam-card-header__append"
+					:role="isAppendClickable ? 'button' : undefined"
+					:tabindex="isAppendClickable ? 0 : undefined"
 					@click="handleClickAppend"
+					@keydown="handleKeydownAppend"
 			>
 				<slot name="append">
 					<origam-avatar
@@ -95,19 +103,22 @@
 		lang="ts"
 		setup
 >
-	import { OrigamAvatar, OrigamIcon } from '../../components'
+	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
-	import {
-	useAdjacent,
-	useDensity,
-	useProps,
-	useStyle,
-	useTypography
-} from '../../composables'
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import type { ICardHeaderProps} from '../../interfaces'
+	import type { ICardHeaderProps } from '../../interfaces/Card/card-header.interface'
 
-	import type { ICardHeaderEmits } from '../../interfaces/Card/card-header.interface'
+	import type { ICardHeaderEmits, ICardHeaderSlots } from '../../interfaces/Card/card-header.interface'
 
 	import { computed, StyleValue, toRef, useSlots } from 'vue'
 
@@ -122,6 +133,8 @@
 
 	defineEmits<ICardHeaderEmits>()
 
+	defineSlots<ICardHeaderSlots>()
+
 	const {filterProps} = useProps<ICardHeaderProps>(props)
 
 	const slots = useSlots()
@@ -131,6 +144,20 @@
 	 ********************************************************/
 
 	const {densityClasses} = useDensity(props)
+
+	/*********************************************************
+	 * Spacing / border / shape
+	 *
+	 * @description
+	 * `ICardHeaderProps` extends IPaddingProps / IMarginProps / IBorderProps /
+	 * IRoundedProps but consumed none of them: the header declared 32 props
+	 * that resolved to nothing. Same wiring as OrigamCardText — the scoped
+	 * SCSS already exposes the matching custom properties.
+	 ********************************************************/
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {roundedClasses, roundedStyles} = useRounded(props)
 
 	/*********************************************************
 	 * Typography
@@ -161,6 +188,10 @@
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend,
+		onKeydownPrepend: handleKeydownPrepend,
+		onKeydownAppend: handleKeydownAppend,
+		isPrependClickable,
+		isAppendClickable,
 		hasPrepend,
 		hasAppend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
@@ -188,6 +219,10 @@
 
 	const cardHeaderStyles = computed(() => {
 		return [
+			borderStyles.value,
+			roundedStyles.value,
+			marginStyles.value,
+			paddingStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -195,10 +230,14 @@
 		return [
 			'origam-card-header',
 			densityClasses.value,
+			borderClasses.value,
+			roundedClasses.value,
+			paddingClasses.value,
+			marginClasses.value,
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(cardHeaderStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(cardHeaderStyles, () => props.id)
 
 
 	/*********************************************************
@@ -277,15 +316,24 @@
 		outline: var(--origam-card-header---outline);
 		position: var(--origam-card-header---position);
 
-		padding-block-start: calc(var(--origam-card-header---padding-block-start) + var(--origam-card-header---density));
-		padding-block-end: calc(var(--origam-card-header---padding-block-end) + var(--origam-card-header---density));
-		padding-inline-start: calc(var(--origam-card-header---padding-inline-start) + var(--origam-card-header---density));
-		padding-inline-end: calc(var(--origam-card-header---padding-inline-end) + var(--origam-card-header---density));
+		// ⛔ #C2 — zero-specificity defaults so a scale-driven utility
+		// class (`.origam--p-4` / `.origam--m-4` from `padding="4"` /
+		// `margin="4"`) wins the cascade. Without `:where()`, this scoped
+		// rule's [data-v-hash] pushes each declaration to (0,2,0), beating
+		// the utility's (0,1,0), and the scale form of both props goes
+		// silently inert. See CLAUDE.md "CSS-first" table — `:where(…)`
+		// is the documented zero-specificity default.
+		:where(&) {
+			padding-block-start: calc(var(--origam-card-header---padding-block-start) + var(--origam-card-header---density));
+			padding-block-end: calc(var(--origam-card-header---padding-block-end) + var(--origam-card-header---density));
+			padding-inline-start: calc(var(--origam-card-header---padding-inline-start) + var(--origam-card-header---density));
+			padding-inline-end: calc(var(--origam-card-header---padding-inline-end) + var(--origam-card-header---density));
 
-		margin-block-start: var(--origam-card-header---margin-block-start);
-		margin-block-end: var(--origam-card-header---margin-block-end);
-		margin-inline-start: var(--origam-card-header---margin-inline-start);
-		margin-inline-end: var(--origam-card-header---margin-inline-end);
+			margin-block-start: var(--origam-card-header---margin-block-start);
+			margin-block-end: var(--origam-card-header---margin-block-end);
+			margin-inline-start: var(--origam-card-header---margin-inline-start);
+			margin-inline-end: var(--origam-card-header---margin-inline-end);
+		}
 
 		border-color: var(--origam-card-header---border-color);
 		border-style: var(--origam-card-header---border-style);
@@ -372,8 +420,8 @@
 
 		&__subtitle {
 			-webkit-box-orient: vertical;
+			color: var(--origam-card-header__subtitle---color);
 			display: var(--origam-card-header__subtitle---display);
-			opacity: var(--origam-card-header__subtitle---opacity);
 			overflow: var(--origam-card-header__subtitle---overflow);
 			padding-block-start: var(--origam-card-header__subtitle---padding-block-start);
 			padding-block-end: var(--origam-card-header__subtitle---padding-block-end);
@@ -471,8 +519,8 @@
 		--origam-card-header__title---line-height: 1.5rem;
 		--origam-card-header__title---text-transform: none;
 
+		--origam-card-header__subtitle---color: var(--origam-color__text---secondary);
 		--origam-card-header__subtitle---display: -webkit-box;
-		--origam-card-header__subtitle---opacity: 0.6;
 		--origam-card-header__subtitle---overflow: hidden;
 
 		--origam-card-header__subtitle---padding-block-start: 0;

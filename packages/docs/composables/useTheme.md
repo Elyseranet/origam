@@ -245,7 +245,7 @@ The composable ships with [`theme.composable.spec.ts`][1] covering:
 - The two axes not interfering (brand + mode applied together).
 - Custom theme strings (`'brand-a'`).
 
-[1]: https://github.com/your-org/origam/blob/main/src/composables/Theme/theme.composable.spec.ts
+[1]: https://github.com/your-org/origam/blob/main/src/composables/Commons/theme.composable.spec.ts
 
 ## Related
 

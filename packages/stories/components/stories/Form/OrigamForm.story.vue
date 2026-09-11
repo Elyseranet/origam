@@ -101,7 +101,11 @@
 		</Variant>
 
 		<Variant title="Slots - Actions">
-			<origam-form data-cy="form-slot-actions">
+			<origam-form
+					data-cy="form-slot-actions"
+					@submit.prevent="logEvent('submit', $event)"
+					@reset="logEvent('reset', $event)"
+			>
 				<origam-text-field v-model="actionsName" label="Name" data-cy="form-slot-actions-field"/>
 				<template #actions="{ submit, reset }">
 					<origam-btn
@@ -195,6 +199,13 @@
 			</origam-form>
 		</Variant>
 
+		<Variant title="Prop — hint">
+			<origam-form hint="All fields are optional unless marked otherwise" data-cy="form-hint" @submit.prevent>
+				<origam-text-field v-model="hintName" label="Name" data-cy="form-hint-name"/>
+				<origam-btn type="submit" text="Submit" color="primary" data-cy="form-hint-submit"/>
+			</origam-form>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IFormProps>({
@@ -285,6 +296,8 @@
 	const fastFailF1 = ref('')
 	const fastFailF2 = ref('')
 
-	</script>
+	const hintName = ref('')
+
+</script>
 
 <docs lang="md" src="@docs/components/Form/OrigamForm.md"/>

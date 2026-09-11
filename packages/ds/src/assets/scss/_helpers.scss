@@ -97,3 +97,39 @@
     white-space: nowrap;
     border: 0;
 }
+
+// ─── Reduced motion (a11y — issue #494) ────────────────────────────────────
+// Single point of mutualisation for WCAG 2.3.3 (Animation from Interactions)
+// across the whole Transition family (OrigamFade, OrigamSlideX/Y,
+// OrigamExpandX/Y, OrigamScaleRotate, OrigamSnack, OrigamTranslate*,
+// OrigamWindow*Translate*, OrigamTransition) — 16 components that would
+// otherwise each repeat the same `@media (prefers-reduced-motion: reduce)`
+// query. Editing the condition (or, one day, an additional
+// `forced-colors`-style axis) happens ONCE here, not 16 times.
+//
+// `!important` is intentional, not a shortcut: the accessibility
+// preference MUST win over any other channel that could set a duration —
+// a per-instance inline style, a future themable duration var (mirroring
+// `--origam-chart---animation-duration`, itself already documented as
+// shadowed by per-instance overrides, see tokens/component/chart.json).
+// Zeroing a CSS variable instead of the property itself would inherit that
+// exact same shadowing risk; overriding the property directly does not.
+// `0.01ms` rather than a literal `0` — some components' `onAfterLeave` /
+// `onEnterCancelled` hooks (see `useWindowTransition`) depend on a
+// `transitionend` event actually firing, which a `0ms` duration can skip
+// in some engines.
+//
+// Usage — inside a transition component's OWN class selector:
+//   .origam-transition--fade {
+//     &-enter-active, &-leave-active { transition-duration: 0.3s; }
+//     @include ds-reduced-motion {
+//       &-enter-active, &-leave-active, &-move {
+//         transition-duration: 0.01ms !important;
+//       }
+//     }
+//   }
+@mixin ds-reduced-motion {
+    @media (prefers-reduced-motion: reduce) {
+        @content;
+    }
+}

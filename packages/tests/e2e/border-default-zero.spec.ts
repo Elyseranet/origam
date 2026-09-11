@@ -10,7 +10,13 @@ const open = async (page, path, variant) => {
 test('Alert: default has 0 border on every side', async ({ page }) => {
     await open(page, '/stories/story/components-stories-alert-origamalert-story-vue', 'Default')
     const sandbox = sandboxOf(page)
-    const alert = sandbox.locator('[data-cy="alert-playground"]').first()
+    // The Alert story never carries a `data-cy="alert-playground"` hook —
+    // alert.spec.ts (the real, migrated, green suite) always targets the
+    // component by its `.origam-alert` root class. Wave-2 (405d506d)
+    // switched this spec to a data-cy selector that was only meant to be
+    // added to the story alongside it, but the story edit never landed —
+    // so this locator has never matched anything on any engine since.
+    const alert = sandbox.locator('.origam-alert').first()
     await expect(alert).toBeVisible({ timeout: 10000 })
     const w = await alert.evaluate(el => {
         const cs = getComputedStyle(el)
@@ -20,10 +26,20 @@ test('Alert: default has 0 border on every side', async ({ page }) => {
     for (const px of w) expect(px).toBe(0)
 })
 
-test('Sheet: default has 0 border on every side', async ({ page }) => {
-    // Use the Default variant — it doesn't set the `border` prop, so the
-    // computed border widths must all be 0 if the SCSS reads the
-    // directional tokens correctly.
+test('Sheet: default has a 1px thin border on every side (origam baseline theme)', async ({ page }) => {
+    // The Default variant leaves `border: undefined`, so `withDefaults()`
+    // never sets it — but `createOrigam()` (used unconditionally by every
+    // consumer, including this Histoire sandbox) always layers the
+    // root-scoped `origam` baseline theme (ADR-004/005,
+    // packages/ds/src/themes/origam.theme.ts) on top, which sets
+    // 'origam-sheet': { border: true, borderColor: '...' }. That theme
+    // block is resolved onto every instance's props by the global props
+    // resolver, so it wins over the component's own (unset) default for
+    // any app built with `createOrigam()` — the actual, current default
+    // Sheet border is 1px (`--origam-border__width---thin`) on every side,
+    // not 0. See CLAUDE.md ADR-005 ("How theme.components props actually
+    // resolve") — the same mechanism verified against OrigamChip in
+    // chip-design.spec.ts.
     await open(page, '/stories/story/components-stories-sheet-origamsheet-story-vue', 'Default')
     const sandbox = sandboxOf(page)
     const sheet = sandbox.locator('.origam-sheet').first()
@@ -33,5 +49,5 @@ test('Sheet: default has 0 border on every side', async ({ page }) => {
         return [cs.borderTopWidth, cs.borderRightWidth, cs.borderBottomWidth, cs.borderLeftWidth].map(parseFloat)
     })
     console.log('[sheet default border widths]:', w)
-    for (const px of w) expect(px).toBe(0)
+    for (const px of w) expect(px).toBe(1)
 })

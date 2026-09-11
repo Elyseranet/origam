@@ -19,7 +19,7 @@ test.describe('OrigamCol', () => {
     test('cols=6 sets flex-basis to 50%', async ({ page }) => {
         await page.goto(COL_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — cols', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -38,7 +38,7 @@ test.describe('OrigamCol', () => {
     test('cols=4 sets flex-basis to ~33%', async ({ page }) => {
         await page.goto(COL_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — cols', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -225,6 +225,28 @@ test.describe('OrigamContainer', () => {
         // so we assert it's a valid px value greater than 0
         expect(parseFloat(mw)).toBeGreaterThan(0)
     })
+
+    // ⛔ Lot tokens (2026-09-10) — `--origam-container---max-width-sm` LOOKS
+    // like a dormant token (declared, never read), and a first pass here
+    // wired it into a new `@media (min-width: 600px)` tier. WRONG: the doc
+    // (`packages/docs/components/Grids/OrigamContainer.md`, "Breaking
+    // change" note) explicitly records this as INTENTIONALLY unwired — the
+    // documented behaviour below 960px has always been `100%`, and the
+    // token exists only for Bootstrap-style naming-scale completeness.
+    // Reverted before it shipped. This test pins the DOCUMENTED contract so
+    // the same mistake doesn't slip through silently a second time.
+    test('below 960px stays at max-width: 100% — the sm token is documented-dormant, not a missing tier', async ({ page }) => {
+        const sandboxUrl = `/stories/__sandbox.html?storyId=components-stories-grids-origamcontainer-story-vue&variantId=components-stories-grids-origamcontainer-story-vue-3`
+        await page.goto(sandboxUrl, { waitUntil: 'domcontentloaded' })
+        const container = page.locator('.origam-container').first()
+        await expect(container).toBeVisible({ timeout: 15000 })
+
+        await page.setViewportSize({ width: 700, height: 800 })
+        const between600And960 = await container.evaluate((el) => getComputedStyle(el).maxWidth)
+
+        console.log('[container-sm-dormant] 700px viewport max-width:', between600And960)
+        expect(between600And960).toBe('100%')
+    })
 })
 
 // ─── OrigamSpacer ────────────────────────────────────────────────────────────
@@ -243,6 +265,20 @@ test.describe('OrigamSpacer', () => {
         // Spacer has no intrinsic content — it is in the DOM but may have zero
         // dimensions. Use toBeAttached instead of toBeVisible.
         await expect(spacer).toBeAttached({ timeout: 15000 })
+
+        // ⛔ Lot tokens (2026-09-10) — `--origam-spacer---min-size` was declared
+        // (0 by default) but never read: min-width/min-height wiring added so
+        // a non-zero override actually has somewhere to land. Reading the
+        // CUSTOM PROPERTY itself resolves fine even in a var()-driven chain
+        // once a real value is set inline (no cascade indirection to defeat).
+        const minSizeApplied = await spacer.evaluate((el) => {
+            (el as HTMLElement).style.setProperty('--origam-spacer---min-size', '24px')
+            const cs = getComputedStyle(el)
+            return { minWidth: cs.minWidth, minHeight: cs.minHeight }
+        })
+        console.log('[spacer-min-size] with override:', minSizeApplied)
+        expect(minSizeApplied.minWidth).toBe('24px')
+        expect(minSizeApplied.minHeight).toBe('24px')
 
         const fg = await spacer.evaluate((el) => getComputedStyle(el).flexGrow)
         console.log('[spacer] flex-grow:', fg)

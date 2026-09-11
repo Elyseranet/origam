@@ -7,7 +7,7 @@ import {
 
 import { CLIPBOARD_DEFAULT_FEEDBACK_DURATION_MS as DEFAULT_FEEDBACK_DURATION_MS } from '../../consts/Clipboard/clipboard.const'
 
-import type { IUseClipboardOptions } from '../../interfaces'
+import type { IUseClipboardOptions } from '../../interfaces/Clipboard/clipboard.interface'
 
 // `DEFAULT_FEEDBACK_DURATION_MS` lives in
 // `src/consts/Clipboard/clipboard.const.ts` (exported as

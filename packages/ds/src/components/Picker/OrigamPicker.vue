@@ -1,5 +1,6 @@
 <template>
 	<origam-sheet
+			:id="id"
 			ref="origamSheetRef"
 			:class="pickerClasses"
 			:style="pickerStyles"
@@ -48,13 +49,16 @@
 		setup
 >
 	import { computed, ref, StyleValue, toRef, useSlots } from "vue"
-	import { OrigamPickerTitle, OrigamSheet } from "../../components"
+	import OrigamPickerTitle from './OrigamPickerTitle.vue'
+	import OrigamSheet from '../Sheet/OrigamSheet.vue'
 
-	import { useBackgroundColor, useProps , useStyle} from "../../composables"
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IPickerProps } from "../../interfaces"
+	import type { IPickerEmits, IPickerProps, IPickerSlots } from '../../interfaces/Picker/picker.interface'
 
-	import type { TOrigamSheet } from "../../types"
+	import type { TOrigamSheet } from '../../types/Sheet/sheet.type'
 
 	/*********************************************************
 	 * Global
@@ -66,6 +70,10 @@
 
 	const slots = useSlots()
 	const {filterProps} = useProps<IPickerProps>(props)
+
+	defineEmits<IPickerEmits>()
+
+	defineSlots<IPickerSlots>()
 
 	/*********************************************************
 	 * Background color & title guard
@@ -124,7 +132,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(pickerStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(pickerStyles, () => props.id)
 
 
 	/*********************************************************

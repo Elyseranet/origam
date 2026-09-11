@@ -55,13 +55,13 @@ test.describe('OrigamRadioGroup', () => {
 
     test.describe('Design', () => {
         test('renders the radio-group root with BEM class', async ({ page }) => {
-            await page.goto(rgUrl(0))
+            await page.goto(rgUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio-group').first()).toBeVisible({ timeout: 12000 })
         })
 
         test('items render three origam-radio children', async ({ page }) => {
-            await page.goto(rgUrl(0))
+            await page.goto(rgUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio-group').first()).toBeVisible({ timeout: 12000 })
             const radios = sandbox.locator('.origam-radio')
@@ -69,7 +69,7 @@ test.describe('OrigamRadioGroup', () => {
         })
 
         test('default density class is applied (density-default)', async ({ page }) => {
-            await page.goto(rgUrl(0))
+            await page.goto(rgUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const group = sandbox.locator('.origam-radio-group').first()
             await expect(group).toBeVisible({ timeout: 12000 })
@@ -79,7 +79,7 @@ test.describe('OrigamRadioGroup', () => {
         })
 
         test('each item renders a native radio input', async ({ page }) => {
-            await page.goto(rgUrl(0))
+            await page.goto(rgUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio-group').first()).toBeVisible({ timeout: 12000 })
             const inputs = sandbox.locator('input[type="radio"]')
@@ -94,13 +94,13 @@ test.describe('OrigamRadioGroup', () => {
 
     test.describe('State', () => {
         test('renders with color=primary in resting state', async ({ page }) => {
-            await page.goto(rgUrl(1))
+            await page.goto(rgUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio-group').first()).toBeVisible({ timeout: 12000 })
         })
 
         test('radio inputs are not checked in initial state', async ({ page }) => {
-            await page.goto(rgUrl(1))
+            await page.goto(rgUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio-group').first()).toBeVisible({ timeout: 12000 })
             const checked = sandbox.locator('input[type="radio"]:checked')
@@ -115,7 +115,7 @@ test.describe('OrigamRadioGroup', () => {
 
     test.describe('Functional', () => {
         test('renders without disabled state by default', async ({ page }) => {
-            await page.goto(rgUrl(2))
+            await page.goto(rgUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio-group').first()).toBeVisible({ timeout: 12000 })
             const disabledInputs = sandbox.locator('input[type="radio"][disabled]')
@@ -126,7 +126,7 @@ test.describe('OrigamRadioGroup', () => {
             // NOTE: RadioGroup --disabled does NOT emit a pointer-events:none rule on
             // the group root — the disabled state is propagated to each child
             // input[type=radio] attribute instead. We assert the prop forwarding.
-            await page.goto(rgUrl(2))
+            await page.goto(rgUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio-group').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('input[type="radio"][disabled]')).toHaveCount(0)
@@ -139,14 +139,14 @@ test.describe('OrigamRadioGroup', () => {
 
     test.describe('Events - update:modelValue', () => {
         test('renders three items and group root', async ({ page }) => {
-            await page.goto(rgUrl(3))
+            await page.goto(rgUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio-group').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('input[type="radio"]')).toHaveCount(3)
         })
 
         test('clicking a radio checks it (native input toggled)', async ({ page }) => {
-            await page.goto(rgUrl(3))
+            await page.goto(rgUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio-group').first()).toBeVisible({ timeout: 12000 })
             const firstInput = sandbox.locator('input[type="radio"]').first()
@@ -155,7 +155,7 @@ test.describe('OrigamRadioGroup', () => {
         })
 
         test('clicking second radio unchecks first (single-selection enforcement)', async ({ page }) => {
-            await page.goto(rgUrl(3))
+            await page.goto(rgUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio-group').first()).toBeVisible({ timeout: 12000 })
             const inputs = sandbox.locator('input[type="radio"]')
@@ -172,7 +172,7 @@ test.describe('OrigamRadioGroup', () => {
 
     test.describe('Slots - Default', () => {
         test('default slot renders custom content inside the group', async ({ page }) => {
-            await page.goto(rgUrl(4))
+            await page.goto(rgUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio-group').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('span')).toContainText('Custom slot content')
@@ -185,7 +185,7 @@ test.describe('OrigamRadioGroup', () => {
 
     test.describe('Slots - Label', () => {
         test('label slot renders custom label markup (strong tag)', async ({ page }) => {
-            await page.goto(rgUrl(5))
+            await page.goto(rgUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio-group').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('strong')).toContainText('Custom label')
@@ -198,7 +198,7 @@ test.describe('OrigamRadioGroup', () => {
 
     test.describe('Slots - Item', () => {
         test('item slot renders custom labels (Alpha, Bravo, Charlie)', async ({ page }) => {
-            await page.goto(rgUrl(6))
+            await page.goto(rgUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio-group').first()).toBeVisible({ timeout: 12000 })
             // The slot renders three custom OrigamRadio with text "Alpha (slot)" etc.
@@ -217,7 +217,7 @@ test.describe('OrigamRadioGroup', () => {
 
     test.describe('Default (playground)', () => {
         test('renders the playground with label "Pick one"', async ({ page }) => {
-            await page.goto(rgUrl(7))
+            await page.goto(rgUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio-group').first()).toBeVisible({ timeout: 12000 })
             // The label text is rendered via origam-label inside the group
@@ -225,7 +225,7 @@ test.describe('OrigamRadioGroup', () => {
         })
 
         test('renders three default items (alpha, bravo, charlie)', async ({ page }) => {
-            await page.goto(rgUrl(7))
+            await page.goto(rgUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio-group').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('input[type="radio"]')).toHaveCount(3)
@@ -251,20 +251,20 @@ test.describe('OrigamRadio', () => {
 
     test.describe('Design', () => {
         test('renders the radio root with BEM class origam-radio', async ({ page }) => {
-            await page.goto(rUrl(0))
+            await page.goto(rUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
         })
 
         test('renders an origam-radio-btn inside the radio', async ({ page }) => {
-            await page.goto(rUrl(0))
+            await page.goto(rUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-radio-btn').first()).toBeAttached()
         })
 
         test('native radio input is present and not checked by default', async ({ page }) => {
-            await page.goto(rUrl(0))
+            await page.goto(rUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('input[type="radio"]').first()
@@ -273,7 +273,7 @@ test.describe('OrigamRadio', () => {
         })
 
         test('label text is rendered ("Radio option")', async ({ page }) => {
-            await page.goto(rUrl(0))
+            await page.goto(rUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-radio').first()).toContainText('Radio option')
@@ -287,13 +287,13 @@ test.describe('OrigamRadio', () => {
 
     test.describe('State', () => {
         test('renders with color=primary in resting state', async ({ page }) => {
-            await page.goto(rUrl(1))
+            await page.goto(rUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
         })
 
         test('input is not checked in initial (resting) state', async ({ page }) => {
-            await page.goto(rUrl(1))
+            await page.goto(rUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('input[type="radio"]').first()).not.toBeChecked()
@@ -307,14 +307,14 @@ test.describe('OrigamRadio', () => {
 
     test.describe('Functional', () => {
         test('renders with no disabled attribute by default', async ({ page }) => {
-            await page.goto(rUrl(2))
+            await page.goto(rUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('input[type="radio"]').first()).not.toBeDisabled()
         })
 
         test('clicking the radio input checks it', async ({ page }) => {
-            await page.goto(rUrl(2))
+            await page.goto(rUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('input[type="radio"]').first()
@@ -323,7 +323,7 @@ test.describe('OrigamRadio', () => {
         })
 
         test('story shows current value after click ("opt" appears in the value display)', async ({ page }) => {
-            await page.goto(rUrl(2))
+            await page.goto(rUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('input[type="radio"]').first()
@@ -342,14 +342,14 @@ test.describe('OrigamRadio', () => {
 
     test.describe('Events - click:label', () => {
         test('renders a radio with label "Click the label"', async ({ page }) => {
-            await page.goto(rUrl(3))
+            await page.goto(rUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-radio').first()).toContainText('Click the label')
         })
 
         test('clicking the label does not throw', async ({ page }) => {
-            await page.goto(rUrl(3))
+            await page.goto(rUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             // logEvent is an Histoire internal — not assertable headlessly
@@ -364,7 +364,7 @@ test.describe('OrigamRadio', () => {
 
     test.describe('Events - update:focused', () => {
         test('renders a radio with label "Focus me"', async ({ page }) => {
-            await page.goto(rUrl(4))
+            await page.goto(rUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-radio').first()).toContainText('Focus me')
@@ -376,7 +376,7 @@ test.describe('OrigamRadio', () => {
          * from the outer Playwright page. We verify focus is transferable to the input.
          */
         test('radio input is focusable (focus does not throw)', async ({ page }) => {
-            await page.goto(rUrl(4))
+            await page.goto(rUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('input[type="radio"]').first()
@@ -391,14 +391,14 @@ test.describe('OrigamRadio', () => {
 
     test.describe('Events - update:modelValue', () => {
         test('renders a radio with label "Select me" and a value display', async ({ page }) => {
-            await page.goto(rUrl(5))
+            await page.goto(rUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-radio').first()).toContainText('Select me')
         })
 
         test('clicking the input updates the displayed value to "yes"', async ({ page }) => {
-            await page.goto(rUrl(5))
+            await page.goto(rUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('input[type="radio"]').first()
@@ -417,7 +417,7 @@ test.describe('OrigamRadio', () => {
 
     test.describe('Events - focus & blur', () => {
         test('renders a radio with label "Focus and blur me"', async ({ page }) => {
-            await page.goto(rUrl(6))
+            await page.goto(rUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-radio').first()).toContainText('Focus and blur me')
@@ -428,7 +428,7 @@ test.describe('OrigamRadio', () => {
          * headlessly from the outer page. We verify focus + blur cycle does not throw.
          */
         test('focus then blur on the input does not throw', async ({ page }) => {
-            await page.goto(rUrl(6))
+            await page.goto(rUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('input[type="radio"]').first()
@@ -443,7 +443,7 @@ test.describe('OrigamRadio', () => {
 
     test.describe('Slots - Default', () => {
         test('default slot renders custom content ("Custom slot content")', async ({ page }) => {
-            await page.goto(rUrl(7))
+            await page.goto(rUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-radio span')).toContainText('Custom slot content')
@@ -456,7 +456,7 @@ test.describe('OrigamRadio', () => {
 
     test.describe('Slots - Label', () => {
         test('label slot renders custom styled label', async ({ page }) => {
-            await page.goto(rUrl(8))
+            await page.goto(rUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('span[style]')).toContainText('Custom label slot')
@@ -470,7 +470,7 @@ test.describe('OrigamRadio', () => {
 
     test.describe('Slots - Prepend', () => {
         test('prepend slot renders an origam-icon in the prepend area', async ({ page }) => {
-            await page.goto(rUrl(9))
+            await page.goto(rUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 20000 })
             await expect(sandbox.locator('.origam-icon').first()).toBeAttached()
@@ -484,7 +484,7 @@ test.describe('OrigamRadio', () => {
 
     test.describe('Slots - Append', () => {
         test('append slot renders an origam-icon in the append area', async ({ page }) => {
-            await page.goto(rUrl(10))
+            await page.goto(rUrl(10), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 20000 })
             await expect(sandbox.locator('.origam-icon').first()).toBeAttached()
@@ -497,7 +497,7 @@ test.describe('OrigamRadio', () => {
 
     test.describe('Slots - Input', () => {
         test('input slot renders custom input slot content', async ({ page }) => {
-            await page.goto(rUrl(11))
+            await page.goto(rUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-radio')).toContainText('Custom input slot content')
@@ -510,7 +510,7 @@ test.describe('OrigamRadio', () => {
 
     test.describe('Slots - Details', () => {
         test('details slot renders custom hint text', async ({ page }) => {
-            await page.goto(rUrl(12))
+            await page.goto(rUrl(12), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-radio')).toContainText('Custom hint text')
@@ -523,7 +523,7 @@ test.describe('OrigamRadio', () => {
 
     test.describe('Slots - Message', () => {
         test('message slot renders a custom italicised message', async ({ page }) => {
-            await page.goto(rUrl(13))
+            await page.goto(rUrl(13), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('span[style]')).toContainText('Error')
@@ -536,7 +536,7 @@ test.describe('OrigamRadio', () => {
 
     test.describe('Slots - Messages', () => {
         test('messages slot renders custom error display', async ({ page }) => {
-            await page.goto(rUrl(14))
+            await page.goto(rUrl(14), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-radio')).toContainText('Custom error display')
@@ -550,21 +550,21 @@ test.describe('OrigamRadio', () => {
 
     test.describe('Default (playground)', () => {
         test('renders a radio with label "Radio option"', async ({ page }) => {
-            await page.goto(rUrl(15))
+            await page.goto(rUrl(15), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-radio').first()).toContainText('Radio option')
         })
 
         test('playground contains a native radio input', async ({ page }) => {
-            await page.goto(rUrl(15))
+            await page.goto(rUrl(15), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('input[type="radio"]').first()).toBeAttached()
         })
 
         test('playground shows "value = null" until a choice is made', async ({ page }) => {
-            await page.goto(rUrl(15))
+            await page.goto(rUrl(15), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-radio').first()).toBeVisible({ timeout: 12000 })
             // Story renders: <div>value = {{ playgroundModel }}</div>  (ref starts null)

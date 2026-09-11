@@ -1,6 +1,13 @@
 import type { IThemeChip, IThemePreviewTile } from '~/interfaces/themes-showcase.interface'
 
 /**
+ * Route to the live Theme Builder (see src/pages/theming.vue) — lets a
+ * visitor configure props + tokens visually instead of taking the section's
+ * claims on faith (#28).
+ */
+export const HOME_THEMES_BUILDER_HREF = '/theming'
+
+/**
  * Theme chips — Sobre first (current page theme), then alphabetical variants.
  * Rendered as a plain flex-wrap <ul> (no OrigamChipGroup slide behaviour).
  */

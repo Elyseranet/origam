@@ -1,6 +1,8 @@
-import type { ICommonsComponentProps, ITypographyProps } from '../../interfaces'
-import type { TIcon, TIntent } from '../../types'
-import type { ISnackbarGroupItemAction } from '../../interfaces'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
+import type { TIcon } from '../../types/Icon/icon.type'
+import type { TIntent } from '../../types/Commons/intent.type'
+import type { ISnackbarGroupItemAction } from './snackbar-group-item.interface'
 
 /**
  * Props for `<OrigamSnackbarItem>` — the pure visual layer of a single
@@ -18,7 +20,7 @@ import type { ISnackbarGroupItemAction } from '../../interfaces'
  * Both `OrigamSnackbar` and `OrigamSnackbarGroup` consume this component
  * so all visual intent / layout logic lives in one place only.
  */
-export interface ISnackbarItemProps extends ICommonsComponentProps, ITypographyProps {
+export interface ISnackbarItemProps extends ICommonsComponentProps, Pick<ITypographyProps, 'fontSize'> {
     /**
      * Semantic intent — drives icon defaults and surface colouring via
      * `--origam-color__feedback--{intent}---*` tokens.
@@ -86,4 +88,20 @@ export interface ISnackbarItemProps extends ICommonsComponentProps, ITypographyP
      * tests.
      */
     dataCy?: string
+}
+
+/** Emits fired by `<OrigamSnackbarItem>` — dismissal and action-button
+ *  activation. */
+export interface ISnackbarItemEmits {
+    (e: 'dismiss'): void
+    (e: 'action', action: ISnackbarGroupItemAction): void
+}
+
+/** Slot signatures for `<OrigamSnackbarItem>`. */
+export interface ISnackbarItemSlots {
+    prepend?: () => any
+    title?: () => any
+    message?: () => any
+    default?: () => any
+    actions?: () => any
 }

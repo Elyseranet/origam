@@ -1,5 +1,5 @@
-import type { TEventHandler } from '../../types'
-import { isOn } from '../../utils'
+import type { TEventHandler } from '../../types/Commons/event.type'
+import { isOn } from './commons.util'
 
 /**
  * Get prefixed event handlers.

@@ -1,5 +1,6 @@
 <template>
 	<origam-responsive
+			:id="id"
 			class="origam-video"
 			:class="rootClasses"
 			:style="rootStyles"
@@ -235,14 +236,28 @@
 	import { OrigamMediaController } from '../Media'
 	import { OrigamResponsive } from '../Responsive'
 
-	import { shouldSuppressAutoplay, useBorder, useColorEffect, useDimension, useElevation, useLocale, useMargin, usePadding, useRounded, useTypography, useVideoPlayer } from '../../composables'
+	import { shouldSuppressAutoplay } from '../../composables/Media/use-media-player.composable'
+	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useColorEffect } from '../../composables/Commons/colorEffect.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
+	import { useVideoPlayer } from '../../composables/Video/video-player.composable'
 
-	import { MDI_ICONS } from '../../enums'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { VIDEO_TRACK_KIND } from '../../enums/Video/video.enum'
 
-	import type {
-		IVideoProps, IVideoSource} from '../../interfaces'
+	import type { IVideoProps } from '../../interfaces/Video/video.interface'
+	import type { IVideoSource } from '../../interfaces/Video/video-track.interface'
 
-	import type { IVideoEmits } from '../../interfaces/Video/video.interface'
+	import type { IVideoEmits, IVideoSlots } from '../../interfaces/Video/video.interface'
+
+	import type { TQualityOption } from '../../types/Media/quality-option.type'
 
 	/*********************************************************
 	 * Global
@@ -271,18 +286,7 @@
 	 ********************************************************/
 	const { t } = useLocale()
 
-	const props = withDefaults(defineProps<IVideoProps & {
-		// Belt-and-braces inline re-declaration (cf. ISliderField inset
-		// note): forces the Vue SFC compiler to resolve these in the
-		// runtime props descriptor even when HMR caches the interface.
-		skipSeconds?: number
-		showCenterControls?: boolean
-		playbackRates?: ReadonlyArray<number>
-		playbackRate?: number
-		inset?: boolean
-		allowRemotePlayback?: boolean
-		doubleTapToSkip?: boolean
-	}>(), {
+	const props = withDefaults(defineProps<IVideoProps>(), {
 		poster: undefined,
 		tracks: () => [],
 		autoplay: false,
@@ -308,6 +312,8 @@
 	})
 
 	const emit = defineEmits<IVideoEmits>()
+
+	defineSlots<IVideoSlots>()
 
 	/*********************************************************
 	 * Icon refs — single source of truth for the toolbar glyphs.
@@ -577,10 +583,13 @@
 	 * derivation + the `<source>` swap because both depend on the
 	 * `props.src` shape which is video-specific.
 	 ********************************************************/
-	const qualityOptions = computed<Array<{ quality: string, label: string, src: string, type?: string }>>(() => {
+	// `src` is required here (unlike the generic `TQualityOption.src?`):
+	// every entry is derived from `IVideoSource.src`, which IS required —
+	// the `video.src = target.src` swap below relies on that guarantee.
+	const qualityOptions = computed<Array<TQualityOption & { src: string }>>(() => {
 		const sources = Array.isArray(props.src) ? props.src : []
 		const seen = new Set<string>()
-		const out: Array<{ quality: string, label: string, src: string, type?: string }> = []
+		const out: Array<TQualityOption & { src: string }> = []
 		for (const s of sources) {
 			if (!s?.quality || seen.has(s.quality)) continue
 			seen.add(s.quality)
@@ -710,7 +719,7 @@
 	const captionsEnabled = ref<boolean>(false)
 
 	const hasCaptions = computed(() => props.tracks.some((track) => {
-		return track.kind === 'captions' || track.kind === 'subtitles'
+		return track.kind === VIDEO_TRACK_KIND.CAPTIONS || track.kind === VIDEO_TRACK_KIND.SUBTITLES
 	}))
 
 	function toggleCaptions (): void {
@@ -827,6 +836,23 @@
 	 ********************************************************/
 	const { colorClasses, colorStyles } = useColorEffect(props)
 
+	/*********************************************************
+	 * Props declarees sans effet (#550, critere C1)
+	 *
+	 * @description
+	 * ⛔ Exposees dans la story, parfois documentees, et pourtant lues
+	 * nulle part. Elles ne sont ni retirees — ca casserait la story et le
+	 * type d'un consommateur pour une prop qui ne faisait deja rien — ni
+	 * cablees a un comportement invente. Elles avertissent une fois, en
+	 * dev, avec la raison exacte. Meme traitement que la famille Chart.
+	 ********************************************************/
+	useUnsupportedProp(
+		'OrigamVideo',
+		'showCenterControls',
+		'no centre overlay is rendered; the controls live in the bottom bar only.',
+		() => props.showCenterControls === true
+	)
+
 	const hasColorProp = computed(() => !!props.color)
 	const hasBgColorProp = computed(() => !!props.bgColor)
 
@@ -938,31 +964,9 @@
 		overflow: hidden;
 		border-radius: var(--origam-video---border-radius, 0);
 
-		/*
-		 * Force the chrome (MediaController play / volume / cog,
-		 * native `<button>`-based MediaVolumeControl) to white by
-		 * default — the controller's own SCSS reads `color:
-		 * var(--origam-media-controller---color, inherit)` which
-		 * defaults to the `#171717` text-primary token. On the dark
-		 * video overlay that produces near-invisible icons (the
-		 * user-reported "icons all black" symptom).
-		 *
-		 * The variable is overridden to `inherit` further down when
-		 * the consumer passes `color` / `bgColor`, so `useColorEffect`
-		 * gets to drive the tint through.
-		 */
 		--origam-media-controller---color: #ffffff;
 	}
 
-	/*
-	 * Tint propagation when the consumer passes `color` or `bgColor`:
-	 * the MediaController + the white-by-default `.origam-video__btn`
-	 * icons need to inherit the host colour so the scrubber's
-	 * `currentColor` (set by `scrubberColorStyle`) AND the icons
-	 * track the user's intent. Without these overrides the
-	 * MediaController's own scoped `color: var(--origam-media-controller---color, inherit)`
-	 * pins the chrome back to the dark text-primary token.
-	 */
 	.origam-video--has-color,
 	.origam-video--has-bg-color {
 		--origam-media-controller---color: inherit;
@@ -976,30 +980,10 @@
 		}
 	}
 
-	/*
-	 * Native `<button class="origam-media-volume-control__btn">` lives
-	 * inside OrigamMediaVolumeControl with its own scoped CSS that
-	 * doesn't honour `--origam-media-controller---color`. Force it
-	 * to inherit from the controller (which is now white by default)
-	 * so the volume icon matches the rest of the chrome.
-	 */
 	:deep(.origam-media-volume-control__btn) {
 		color: inherit;
 	}
 
-	/*
-	 * Scrubber track / buffer background — overrides the MediaController
-	 * defaults so the dark, semi-translucent track doesn't let the
-	 * video frame underneath bleed through with whatever hue the
-	 * picture has at the playhead position (the user-reported "pink
-	 * scrubber" symptom on a pastel-toned video frame). White-tinted
-	 * translucent backgrounds give a uniform light-grey track on
-	 * every video regardless of content.
-	 *
-	 * The :deep(.) reaches into the OrigamMediaScrubber scope to set
-	 * its internal slots; the consumer can still override per-instance
-	 * via `--origam-media-scrubber---track-background-color`.
-	 */
 	:deep(.origam-media-controller__scrubber) {
 		--origam-media-scrubber---track-background-color: rgba(255, 255, 255, 0.28);
 		--origam-media-scrubber---buffer-background-color: rgba(255, 255, 255, 0.42);
@@ -1095,11 +1079,6 @@
 		font-size: var(--origam-video--error---icon-font-size, 32px);
 	}
 
-	/* State pulse — YouTube-style brief icon flash at the centre of
-	 * the video when play/pause toggles. PURELY cosmetic, never
-	 * absorbs clicks (pointer-events: none) so the underlying video
-	 * surface stays interactive. Fades in + scales up over ~600 ms
-	 * then disappears. */
 	.origam-video__state-pulse {
 		position: absolute;
 		top: 50%;
@@ -1304,7 +1283,7 @@
 	}
 
 	:deep(.origam-video__btn.origam-btn) {
-		--origam-btn---color: #ffffff;
+		--origam-btn---color: var(--origam-video__btn---color, #ffffff);
 		--origam-btn---min-width: 36px;
 		--origam-btn---width: 36px;
 		--origam-btn---height: 36px;

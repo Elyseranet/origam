@@ -1,15 +1,8 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useT } from '~/composables/useT'
-import { useLinkAvailability } from '~/composables/useLinkAvailability'
 import { CTA_START_HREF, CTA_DOCS_HREF } from '~/consts/cta.const'
 
 const { t } = useT()
-
-const { availability } = useLinkAvailability([CTA_START_HREF, CTA_DOCS_HREF])
-
-const showStartCta = computed(() => availability[CTA_START_HREF] === true)
-const showDocsCta = computed(() => availability[CTA_DOCS_HREF] === true)
 </script>
 
 <template>
@@ -35,7 +28,6 @@ const showDocsCta = computed(() => availability[CTA_DOCS_HREF] === true)
                 :aria-label="t('home.cta.actions_label', 'Get started')"
             >
                 <origam-btn
-                    v-if="showStartCta"
                     class="home-cta__btn home-cta__btn--start"
                     variant="text"
                     append-icon="mdi-arrow-right"
@@ -46,7 +38,6 @@ const showDocsCta = computed(() => availability[CTA_DOCS_HREF] === true)
                 </origam-btn>
 
                 <origam-btn
-                    v-if="showDocsCta"
                     class="home-cta__btn home-cta__btn--docs"
                     variant="text"
                     prepend-icon="mdi-code-tags"

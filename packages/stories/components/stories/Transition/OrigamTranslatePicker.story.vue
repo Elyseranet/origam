@@ -37,7 +37,7 @@
 				</StoryGroup>
 				<StoryGroup title="Transition">
 					<HstText   v-model="state.name"   title="Name"/>
-					<HstSelect v-model="state.mode"   title="Mode"   :options="TRANSITION_MODE_OPTIONS"/>
+					<HstSelect v-model="state.mode"   title="Mode (inert — see docs)"   :options="TRANSITION_MODE_OPTIONS"/>
 					<HstText   v-model="state.origin" title="Origin"/>
 				</StoryGroup>
 				<StoryGroup title="Leave Behaviour">
@@ -87,7 +87,7 @@
 					<HstCheckbox v-model="state.hideOnLeave"    title="Hide On Leave"/>
 					<HstCheckbox v-model="state.leaveAbsolute"  title="Leave Absolute"/>
 					<HstText     v-model="state.name"           title="Name"/>
-					<HstSelect   v-model="state.mode"           title="Mode"   :options="TRANSITION_MODE_OPTIONS"/>
+					<HstSelect   v-model="state.mode"           title="Mode (inert — see docs)"   :options="TRANSITION_MODE_OPTIONS"/>
 					<HstText     v-model="state.origin"         title="Origin"/>
 				</StoryGroup>
 			</template>

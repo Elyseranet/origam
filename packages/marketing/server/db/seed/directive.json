@@ -1,7 +1,7 @@
 {
   "kind": "directive",
-  "exportedAt": "2026-07-09T20:01:09.679Z",
-  "sourceCommit": "a15aa8a1",
+  "exportedAt": "2026-08-19T12:24:53.853Z",
+  "sourceCommit": "1ef461dc",
   "entryCount": 6,
   "entries": [
     {
@@ -29,6 +29,10 @@
           "signatureLang": "ts",
           "signatureSummary": "v-click-outside=\"handler | options\""
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -128,6 +132,10 @@
           "signatureLang": "ts",
           "signatureSummary": "v-contrast | v-contrast=\"false\""
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -211,6 +219,10 @@
           "signatureLang": "ts",
           "signatureSummary": "v-hover=\"{ class: '…' }\" | v-hover.callback=\"fn\""
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -301,6 +313,10 @@
           "signatureLang": "ts",
           "signatureSummary": "v-intersect=\"handler | options\""
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -409,6 +425,10 @@
           "signatureLang": "ts",
           "signatureSummary": "v-ripple | v-ripple=\"false\" | v-ripple.center.circle"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -517,6 +537,10 @@
           "signatureLang": "ts",
           "signatureSummary": "v-touch=\"{ left, right, up, down, start, end, move }\""
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],

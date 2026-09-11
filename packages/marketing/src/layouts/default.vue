@@ -5,7 +5,7 @@
   import { useTheme } from 'origam/composables'
   import { MDI_ICONS } from 'origam/enums'
   import type { ICommand } from 'origam/interfaces'
-  import type { INavLink, INavSection } from '~/interfaces/nav.interface'
+  import type { INavSection } from '~/interfaces/nav.interface'
 
   import { SKIP_LINK_HREF, SKIP_LINK_TARGET_ID } from '~/consts/a11y.const'
   import { FOOTER_COLUMNS, FOOTER_GRID_COLUMNS, NAV_SECTIONS, NAV_THEMING_LINK } from '~/consts/nav.const'
@@ -15,7 +15,6 @@
   import { useT } from '~/composables/useT'
   import { useVersion } from '~/composables/useVersion'
   import { useGithubStars } from '~/composables/useGithubStars'
-  import { useLinkAvailability } from '~/composables/useLinkAvailability'
   import { useGlobalSearch } from '~/composables/useGlobalSearch'
 
   const { t } = useT()
@@ -71,18 +70,7 @@
   const sectionAriaLabel = (section: { titleKey: string; titleFallback: string }) =>
     t('nav.a11y.open_section', 'Open {section} menu', { section: t(section.titleKey, section.titleFallback) })
 
-  const allNavHrefs = [
-    ...NAV_SECTIONS.flatMap(s => s.items.map(i => i.href)),
-    NAV_THEMING_LINK.href,
-    ...FOOTER_COLUMNS.flatMap(col => col.links.filter(l => !l.external).map(l => l.href))
-  ]
-
-  const { availability, ready: navReady } = useLinkAvailability(allNavHrefs)
-
-  function isLinkVisible (link: INavLink): boolean {
-    if (link.external) return true
-    return availability[link.href] === true
-  }
+  const sitemapAriaLabel = computed(() => t('nav.a11y.sitemap', 'Site map'))
 
   const route = useRoute()
 
@@ -95,31 +83,10 @@
     return section.items.some(item => isRouteActive(item.href))
   }
 
-  const visibleNavSections = computed(() =>
-    NAV_SECTIONS.map(section => ({
-      ...section,
-      items: section.items.filter(item => isLinkVisible(item))
-    })).filter(section => section.items.length > 0)
-  )
-
-  const showThemingLink = computed(() => availability[NAV_THEMING_LINK.href] === true)
-
-  const visibleFooterColumns = computed(() =>
-    FOOTER_COLUMNS.map(col => ({
-      ...col,
-      links: col.links.filter(link => isLinkVisible(link))
-    }))
-  )
 </script>
 
 <template>
   <origam-app>
-    <span
-      class="nav-ready-signal"
-      aria-hidden="true"
-      :data-nav-ready="navReady ? 'true' : undefined"
-    />
-
     <a
       :href="SKIP_LINK_HREF"
       class="skip-link"
@@ -158,7 +125,7 @@
           :aria-label="primaryNavAriaLabel"
         >
           <origam-menu
-            v-for="section in visibleNavSections"
+            v-for="section in NAV_SECTIONS"
             :key="section.titleKey"
             class="appbar-menu appbar-menu--nav"
             location="bottom"
@@ -194,7 +161,6 @@
           </origam-menu>
 
           <origam-btn
-            v-if="showThemingLink"
             :href="NAV_THEMING_LINK.href"
             variant="text"
             :elevation="0"
@@ -365,7 +331,7 @@
         </div>
 
         <nav
-          v-for="column in visibleFooterColumns"
+          v-for="column in FOOTER_COLUMNS"
           :key="column.titleKey"
           class="site-footer__column"
           :aria-label="t(column.titleKey, column.titleFallback)"
@@ -409,6 +375,34 @@
 
       <origam-divider class="site-footer__rule"/>
 
+      <nav
+        class="site-footer__sitemap"
+        data-cy="footer-sitemap"
+        :aria-label="sitemapAriaLabel"
+      >
+        <template
+          v-for="section in NAV_SECTIONS"
+          :key="section.titleKey"
+        >
+          <h3 class="site-footer__sitemap-title">{{ t(section.titleKey, section.titleFallback) }}</h3>
+          <ul class="site-footer__sitemap-list">
+            <li
+              v-for="item in section.items"
+              :key="item.href"
+            >
+              <a
+                :href="item.href"
+                class="site-footer__link"
+              >
+                {{ t(item.i18nKey, item.i18nFallback) }}
+              </a>
+            </li>
+          </ul>
+        </template>
+      </nav>
+
+      <origam-divider class="site-footer__rule"/>
+
       <div class="site-footer__bottom">
         <p class="site-footer__line">{{ t('footer.copyright', '© 2026 origam · MIT') }}</p>
         <p class="site-footer__line">{{ t('footer.made_with', 'Made with origam, by humans.') }}</p>
@@ -428,10 +422,6 @@
 </template>
 
 <style scoped lang="scss">
-  .nav-ready-signal {
-    display: none;
-  }
-
   .skip-link {
     position: absolute;
     inset-inline-start: var(--origam-space---2, 0.5rem);
@@ -668,6 +658,32 @@
       }
     }
 
+    &__sitemap {
+      display: grid;
+      grid-auto-flow: column;
+      grid-template-rows: auto auto;
+      gap: var(--origam-space---2, 0.5rem) var(--origam-space---8, 2rem);
+      align-content: start;
+    }
+
+    &__sitemap-title {
+      margin: 0;
+      font-size: var(--origam-font-size---xs, 0.75rem);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--origam-color__text---secondary, #525252);
+    }
+
+    &__sitemap-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--origam-space---2, 0.5rem);
+    }
+
     &__rule {
       --origam-divider---opacity: 1;
       --origam-divider---border-top-width: 1px;
@@ -684,6 +700,13 @@
     &__line {
       margin: 0;
       font-size: var(--origam-font-size---sm, 0.875rem);
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .site-footer__sitemap {
+      grid-auto-flow: row;
+      grid-template-rows: none;
     }
   }
 </style>

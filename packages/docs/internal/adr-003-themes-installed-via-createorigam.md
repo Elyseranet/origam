@@ -9,6 +9,14 @@
 
 ---
 
+> **Note (2026-09-04)**: this ADR was written while the Style Dictionary v4
+> + Tokens Studio token pipeline (`ds/tokens/`) was still the declared
+> source of truth for the preset objects (§1) and for contrast fixes (§7).
+> That pipeline was removed on 2026-08-31; the text below is left
+> unmodified as the historical record of the decision. The token sheets it
+> used to generate are now the hand-maintained source of truth — see the
+> "Design tokens" section of the repository `CLAUDE.md`.
+
 ## Context
 
 Stage 1 wired the marketing themes to the **pre-generated CSS matrix**
@@ -93,6 +101,20 @@ and **no runtime list** of configured themes for the switcher.
 6. **`themes-all.css` is demoted to a build/preview artifact.** It may
    stay for Histoire/visual-regression, but the **marketing site no longer
    depends on it**. Marketing's theming flows entirely through the install.
+
+   > **Update (2026-08-27, issue #497)**: the artifact was fully removed,
+   > not just demoted. `$themes.json` had dropped to 2 entries (`light`,
+   > `dark`) with zero `<brand>-<mode>` combos, so the generator's
+   > aggregation step (`build-tokens.mjs`) had silently become a no-op —
+   > the ~2.1 MB CSS/SCSS files on disk were a stale hand-edited snapshot,
+   > not a build output, and nothing loaded them (no `@import`/`href`/
+   > `url()` anywhere). The `origam/tokens/css/themes-all` and
+   > `origam/tokens/scss/themes-all` export subpaths, the two generated
+   > files, and the dead aggregation branch in `build-tokens.mjs` are gone.
+   > Anyone who imported those subpaths should switch to the per-theme
+   > sheets (`origam/tokens/css/light`, `origam/tokens/css/dark`, and
+   > their `scss` counterparts). This is a breaking change (major bump),
+   > see `CHANGELOG.md`.
 
 7. **Contrast / broken-theme fixes are DS findings.** Anything the dogfood
    reveals (low contrast, geek neon unreadable) is corrected in

@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			class="origam-qr-code"
 			:class="rootClasses"
 			:style="rootStyles"
@@ -58,24 +59,24 @@
 	import { OrigamAvatar } from '../Avatar'
 	import { OrigamIcon } from '../Icon'
 
-	import {
-		useBackgroundColor,
-		useBorder,
-		useElevation,
-		useMargin,
-		usePadding,
-		useQrCode,
-		useRounded,
-		useSize,
-		useTextColor
-	} from '../../composables'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useQrCode } from '../../composables/QrCode/qr-code.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useTextColor } from '../../composables/Commons/textColor.composable'
 
 	import type {
+		IQrCodeEmits,
 		IQrCodeProps,
 		IQrCodeSlots
 	} from '../../interfaces/QrCode/qr-code.interface'
 
-	import { resolveQrColor, resolveQrCornerRadius } from '../../utils'
+	import { resolveQrColor, resolveQrCornerRadius } from '../../utils/QrCode/qr-code-adapters.util'
 
 	/*********************************************************
 	 * Global
@@ -118,6 +119,8 @@
 		ariaLabel: undefined
 	})
 
+	defineEmits<IQrCodeEmits>()
+
 	defineSlots<IQrCodeSlots>()
 
 	/*********************************************************
@@ -126,6 +129,8 @@
 	 * the matrix untouched.
 	 ********************************************************/
 	const slots = useSlots()
+
+	const {t} = useLocale()
 
 	const hasCenter = computed(
 		() => !!slots.center || !!props.icon || !!props.image
@@ -201,7 +206,7 @@
 	const resolvedAriaLabel = computed<string>(() => {
 		if (props.ariaLabel) return props.ariaLabel
 		if (props.title) return props.title
-		return `QR code for ${ props.value }`
+		return t('origam.qr_code.aria_label', {value: props.value})
 	})
 
 	/*********************************************************

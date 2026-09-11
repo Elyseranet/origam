@@ -190,6 +190,14 @@ describe('resolveBracketBorderWidth', () => {
     it('returns a px string for a numeric value', () => {
         expect(resolveBracketBorderWidth(3)).toBe('3px')
     })
+
+    // #482 — used to `return null` here (unreachable string fell through
+    // every branch), silently dropping the value. `resolveBracketRadius`
+    // above already accepts the same shape via `convertToUnit`; mirrored.
+    it('returns a free-form CSS-length string verbatim instead of dropping it (#482)', () => {
+        expect(resolveBracketBorderWidth('8px')).toBe('8px')
+        expect(resolveBracketBorderWidth('0.5rem')).toBe('0.5rem')
+    })
 })
 
 describe('resolveBracketBorderColor', () => {

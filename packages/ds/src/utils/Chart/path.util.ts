@@ -11,8 +11,9 @@
  * scaled points in.
  */
 
-/** A pre-scaled `[x, y]` coordinate pair (pixels in the SVG viewBox). */
-export type TPathPoint = [number, number]
+import type { TPathPoint } from '../../types/Chart/chart.type'
+
+export type { TPathPoint } from '../../types/Chart/chart.type'
 
 /**
  * Joins a list of pixel points with straight segments.

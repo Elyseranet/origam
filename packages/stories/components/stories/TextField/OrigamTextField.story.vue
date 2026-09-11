@@ -14,7 +14,6 @@
 					density: undefined,
 					rounded: undefined,
 					elevation: undefined,
-					flat: false,
 					border: undefined,
 					borderColor: undefined,
 					borderStyle: undefined,
@@ -27,7 +26,6 @@
 					height: undefined,
 					inline: false,
 					singleLine: false,
-					reverse: false,
 					centerAffix: false,
 				})"
 		>
@@ -42,7 +40,6 @@
 						:density="state.density"
 						:rounded="state.rounded"
 						:elevation="state.elevation"
-						:flat="state.flat"
 						:border="state.border"
 						:border-color="state.borderColor"
 						:border-style="state.borderStyle"
@@ -55,7 +52,6 @@
 						:height="state.height"
 						:inline="state.inline"
 						:single-line="state.singleLine"
-						:reverse="state.reverse"
 						:center-affix="state.centerAffix"
 				/>
 			</template>
@@ -73,7 +69,6 @@
 				<StoryGroup title="Shape">
 					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
-					<HstCheckbox v-model="state.flat"      title="Flat"/>
 				</StoryGroup>
 				<StoryGroup title="Border">
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
@@ -94,7 +89,6 @@
 				<StoryGroup title="Layout">
 					<HstCheckbox v-model="state.inline"       title="Inline"/>
 					<HstCheckbox v-model="state.singleLine"   title="Single Line"/>
-					<HstCheckbox v-model="state.reverse"      title="Reverse"/>
 					<HstCheckbox v-model="state.centerAffix"  title="Center Affix"/>
 				</StoryGroup>
 				<StoryGroup title="Spacing">
@@ -106,13 +100,12 @@
 
 		<Variant
 				title="State"
-				:init-state="() => useStoryInitState<IHoverProps & IActiveProps & Partial<ITextFieldProps>>({ color: 'primary' })"
+				:init-state="() => useStoryInitState<IActiveProps & Partial<ITextFieldProps>>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
 				<origam-text-field
 						label="Stateful field"
 						:color="state.color"
-						:hover="resolveHoverState(state.hover)"
 						:active="resolveActiveState(state.active)"
 				/>
 			</template>
@@ -121,7 +114,6 @@
 					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Interaction">
-					<HstSelect v-model="state.hover"  title="Hover"  :options="HOVER_OPTIONS"/>
 					<HstSelect v-model="state.active" title="Active" :options="ACTIVE_OPTIONS"/>
 				</StoryGroup>
 			</template>
@@ -543,19 +535,6 @@
 			</div>
 		</Variant>
 
-		<Variant title="Emit — valid / complete">
-			<origam-text-field
-					v-model="maskEmitModel"
-					mask="phone:fr"
-					label="French mobile (mask)"
-					data-cy="textfield-mask-emit"
-					@valid="handleMaskEmitValid"
-			/>
-			<div data-cy="textfield-mask-emit-status" style="margin-top: 8px; font-family: monospace; font-size: 12px;">
-				valid-emits = {{ maskEmitValidCount }}
-			</div>
-		</Variant>
-
 	</Story>
 </template>
 
@@ -568,7 +547,7 @@
 
 	import { OrigamIcon, OrigamTextField } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
-	import type { IActiveProps, IHoverProps, ITextFieldProps } from '@origam/interfaces'
+	import type { IActiveProps, ITextFieldProps } from '@origam/interfaces'
 	import type { TLoadingValue } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
@@ -581,8 +560,6 @@
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
-		HOVER_OPTIONS,
-		resolveHoverState,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,
 		SIZE_OPTIONS,
@@ -652,12 +629,6 @@
 
 	const maskCustomModel       = ref('')
 	const maskCustomComplete    = ref(false)
-
-	const maskEmitModel         = ref('')
-	const maskEmitValidCount    = ref(0)
-	const handleMaskEmitValid = () => {
-		maskEmitValidCount.value++
-	}
 
 	const slotOuterModel         = ref('')
 	const slotInnerModel         = ref('')

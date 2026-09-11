@@ -4,7 +4,7 @@
 			title="ColorGradient/OrigamColorGradient"
 	>
 
-		<Variant title="Design - Raw CSS string">
+		<Variant title="Design">
 			<div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; align-items: flex-start;">
 				<origam-btn
 						bg-color="linear-gradient(135deg, #ff0080, #7928ca)"
@@ -21,11 +21,6 @@
 						text="Radial sky"
 						data-cy="raw-string-btn-3"
 				/>
-			</div>
-		</Variant>
-
-		<Variant title="Design - IGradient object">
-			<div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; align-items: flex-start;">
 				<origam-btn
 						:bg-color="{ from: 'primary', to: 'success', direction: 135 }"
 						text="primary → success"
@@ -52,21 +47,11 @@
 						text="3-stop with positions"
 						data-cy="object-btn-4"
 				/>
-			</div>
-		</Variant>
-
-		<Variant title="Design - Preset names">
-			<div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; align-items: flex-start;">
 				<origam-btn bg-color="gradient-sunset"   text="Sunset"   data-cy="preset-btn-sunset"/>
 				<origam-btn bg-color="gradient-ocean"    text="Ocean"    data-cy="preset-btn-ocean"/>
 				<origam-btn bg-color="gradient-forest"   text="Forest"   data-cy="preset-btn-forest"/>
 				<origam-btn bg-color="gradient-fire"     text="Fire"     data-cy="preset-btn-fire"/>
 				<origam-btn bg-color="gradient-midnight" text="Midnight" data-cy="preset-btn-midnight"/>
-			</div>
-		</Variant>
-
-		<Variant title="Design - Text gradient (background-clip: text)">
-			<div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; align-items: flex-start;">
 				<origam-title
 						:color="{ from: 'primary', to: 'success' }"
 						style="font-size: 48px; font-weight: 700;"
@@ -88,11 +73,6 @@
 				>
 					Raw CSS gradient
 				</origam-title>
-			</div>
-		</Variant>
-
-		<Variant title="Design - Multi-component matrix">
-			<div style="display: flex; flex-direction: column; gap: 16px; padding: 24px; align-items: flex-start;">
 				<origam-btn   bg-color="gradient-sunset" text="Sunset button" data-cy="matrix-btn"/>
 				<origam-card
 						bg-color="gradient-ocean"

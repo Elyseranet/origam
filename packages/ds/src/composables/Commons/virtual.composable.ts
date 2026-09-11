@@ -1,12 +1,46 @@
-import { useDisplay, useGoTo, useResizeObserver } from '../../composables'
-import { BUFFER_PX, DOWN, IN_BROWSER, UP } from '../../consts'
-import type { IGoToOptions, IVirtualProps } from '../../interfaces'
-import { binaryClosest, clamp, debounce, int } from '../../utils'
+import { useDisplay } from './display.composable'
+import { useGoTo } from './goTo.composable'
+import { useResizeObserver } from './resizeObserver.composable'
+import { IN_BROWSER } from '../../consts/Commons/commons.const'
+import {
+    BUFFER_PX,
+    DOWN,
+    UP,
+    VIRTUAL_FALLBACK_ITEM_HEIGHT_PX,
+    VIRTUAL_SCROLL_DURATION_MS,
+    VIRTUAL_SCROLL_EASING,
+    VIRTUAL_SCROLL_SEQUENCE_MS
+} from '../../consts/Commons/virtual.const'
+import type { IGoToOptions } from '../../interfaces/Commons/goTo.interface'
+import type { IVirtualProps } from '../../interfaces/Commons/virtual.interface'
+import { clamp, debounce, int } from '../../utils/Commons/commons.util'
+import { binaryClosest } from '../../utils/Commons/virtual.util'
 
-import { computed, nextTick, onScopeDispose, ref, Ref, shallowRef, watch, watchEffect } from 'vue'
+import { computed, nextTick, onMounted, onScopeDispose, ref, Ref, shallowRef, watch, watchEffect } from 'vue'
 
 /*********************************************************
  * useVirtual
+ *
+ * @description
+ * Virtualisation de liste : ne rend que la tranche `[first, last[` de
+ * `items` réellement visible (`computedItems`), en maintenant des
+ * `offsets` par index (recalcules via `updateOffsets`, debattus) et un
+ * padding haut/bas qui simule la hauteur totale de la liste. La fenetre
+ * visible est recalculee sur scroll (`handleScroll`/`calcVisibleItems`,
+ * via `requestAnimationFrame`) et sur redimensionnement du conteneur
+ * (`useResizeObserver`). `scrollToIndex` delegue l'animation a `useGoTo`,
+ * ou differe le scroll si la liste n'a pas encore mesure sa mise en page
+ * (`targetScrollIndex`).
+ *
+ * @description
+ * Le PREMIER `estimateLast()` (au moment du `shallowRef()`, en plein
+ * `setup()`) peut lire un `props.height` PRE-THEME — voir la banniere
+ * "the anti-flash first-paint guess" et "last's FIRST guess is
+ * re-applied once mounted (#504)" juste en dessous : le meme piege
+ * ADR-005 que `useSelectLink`/`useValidation`, corrige ici en
+ * re-executant la meme estimation dans un `onMounted`. `itemHeight` n'est
+ * jamais fige : `handleItemResize` le retrecit au minimum observe parmi
+ * les items reellement mesures.
  ********************************************************/
 export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
     const display = useDisplay()
@@ -18,10 +52,43 @@ export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
         itemHeight.value = parseFloat(props.itemHeight || 0)
     })
 
+    /*********************************************************
+     * estimateLast — the anti-flash first-paint guess
+     *
+     * @description
+     * How many items to assume visible BEFORE the container/marker have
+     * been measured, so the very first paint doesn't render a single
+     * item then jump. Deliberately kept as a plain function (not a
+     * `computed`) so it can be re-invoked from `onMounted` below,
+     * re-reading `props.height` post-`beforeCreate` (#504) — see there
+     * for why the FIRST synchronous call, at `shallowRef()` creation
+     * time, cannot itself be theme-safe.
+     ********************************************************/
+    const estimateLast = () => Math.ceil((int(props.height!) || display.height.value) / (itemHeight.value || VIRTUAL_FALLBACK_ITEM_HEIGHT_PX)) || 1
+
     const first = shallowRef(0)
-    const last = shallowRef(Math.ceil((int(props.height!) || display.height.value) / (itemHeight.value || 16)) || 1)
+    const last = shallowRef(estimateLast())
     const paddingTop = shallowRef(0)
     const paddingBottom = shallowRef(0)
+
+    /*********************************************************
+     * `last`'s FIRST guess is re-applied once mounted (#504)
+     *
+     * @description
+     * `shallowRef(estimateLast())` above runs during `setup()`, which
+     * Vue executes BEFORE the `beforeCreate` hook where the ADR-005
+     * theme-props resolver patches `instance.props` — so that FIRST
+     * guess can read a pre-theme `props.height`. `onMounted` runs after
+     * `beforeCreate` (and still before the browser's next paint, so
+     * this does not introduce a visible flash): re-running the SAME
+     * estimate there picks up whatever `props.height` a theme set,
+     * without waiting for `viewportHeight` to CHANGE (its own watcher,
+     * below, only reacts to a later change — it does not correct a
+     * wrong INITIAL value on its own).
+     ********************************************************/
+    onMounted(() => {
+        last.value = estimateLast()
+    })
 
     /** The scrollable element */
     const containerRef = ref<HTMLElement>()
@@ -139,7 +206,7 @@ export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
         const scrollTime = performance.now()
         const scrollDeltaT = scrollTime - lastScrollTime
 
-        if (scrollDeltaT > 500) {
+        if (scrollDeltaT > VIRTUAL_SCROLL_SEQUENCE_MS) {
             scrollVelocity = Math.sign(scrollTop - lastScrollTop)
 
             // Not super important, only update at the
@@ -218,8 +285,8 @@ export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
         // defaults; the per-call `options` argument lets a consumer
         // override (e.g. instant scroll for a "jump to top" button while
         // the rest of the app keeps the smooth feel).
-        const duration = options.duration ?? props.scrollDuration ?? 300
-        const easing = options.easing ?? props.scrollEasing ?? 'easeInOutCubic'
+        const duration = options.duration ?? props.scrollDuration ?? VIRTUAL_SCROLL_DURATION_MS
+        const easing = options.easing ?? props.scrollEasing ?? VIRTUAL_SCROLL_EASING
 
         // `duration: 0` skips the rAF loop in `useGoTo` and falls through
         // to a plain assignment — we expose it as the "instant" escape

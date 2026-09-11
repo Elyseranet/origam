@@ -1,7 +1,7 @@
 {
   "kind": "composable",
-  "exportedAt": "2026-07-09T20:01:09.631Z",
-  "sourceCommit": "a15aa8a1",
+  "exportedAt": "2026-08-19T12:24:53.805Z",
+  "sourceCommit": "1ef461dc",
   "entryCount": 104,
   "entries": [
     {
@@ -31,6 +31,10 @@
             "IDelayProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -202,6 +206,10 @@
             "IActiveState"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -335,6 +343,10 @@
             "IAdjacentInnerProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -479,6 +491,10 @@
         "kind_extra": {
           "consumedInterfaces": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -572,6 +588,10 @@
             "IUseAudioProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -702,6 +722,10 @@
             "IAudioPlayerMethods"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -819,6 +843,10 @@
             "IBgColorProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -938,6 +966,10 @@
             "IBorderProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1041,6 +1073,10 @@
             "IEvent"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1208,6 +1244,10 @@
             "IInternalDataTableHeader"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1300,6 +1340,10 @@
             "IChartTick"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1447,6 +1491,10 @@
             "IChartGaugeGeometry"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1526,6 +1574,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1710,6 +1762,10 @@
             "IUseClipboardOptions"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1823,6 +1879,10 @@
             "IUseCodeReturn"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1918,6 +1978,10 @@
             "IColorProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2029,6 +2093,10 @@
             "IBgColorProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2173,6 +2241,10 @@
             "ICommand"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2279,6 +2351,10 @@
         "kind_extra": {
           "consumedInterfaces": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2377,6 +2453,10 @@
             "ILocaleInstance"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2451,6 +2531,10 @@
             "IDay"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2586,6 +2670,10 @@
             "IDefault"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2688,6 +2776,10 @@
             "IDelayProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2804,6 +2896,10 @@
             "IDensityProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2889,6 +2985,10 @@
             "IDimensionProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2974,6 +3074,10 @@
             "IDisplayOptions"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3130,6 +3234,10 @@
         "kind_extra": {
           "consumedInterfaces": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3234,6 +3342,10 @@
             "IElevationProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3342,6 +3454,10 @@
         "kind_extra": {
           "consumedInterfaces": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3464,6 +3580,10 @@
             "IDataTableItem"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3576,6 +3696,10 @@
             "IInternalItem"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3713,6 +3837,10 @@
             "IFocusEmits"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3849,6 +3977,10 @@
             "IValidationFieldResult"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4009,6 +4141,10 @@
             "IGoToInstance"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4155,6 +4291,10 @@
             "IGroupItemProvide"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4331,6 +4471,10 @@
             "IInternalDataTableHeader"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4477,6 +4621,10 @@
         "kind_extra": {
           "consumedInterfaces": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4578,6 +4726,10 @@
             "IHotkeyOptions"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4733,6 +4885,10 @@
             "IHoverState"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4859,6 +5015,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4948,6 +5108,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -5041,6 +5205,10 @@
             "IUseInlineEditOptions"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -5258,6 +5426,10 @@
         "kind_extra": {
           "consumedInterfaces": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -5329,6 +5501,10 @@
         "kind_extra": {
           "consumedInterfaces": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -5439,6 +5615,10 @@
             "IInternalListItem"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -5544,6 +5724,10 @@
         "kind_extra": {
           "consumedInterfaces": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -5646,6 +5830,10 @@
         "kind_extra": {
           "consumedInterfaces": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -5760,6 +5948,10 @@
         "kind_extra": {
           "consumedInterfaces": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -5865,6 +6057,10 @@
             "IResolvedLoader"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -5992,6 +6188,10 @@
             "IRtlInstance"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -6111,6 +6311,10 @@
             "ILocationStrategyProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -6222,6 +6426,10 @@
             "IMarginProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -6315,6 +6523,10 @@
             "IResolvedMaskConfig"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -6454,6 +6666,10 @@
             "IMasonryItemRect"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -6597,6 +6813,10 @@
             "IMediaPlayerMethods"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -6705,6 +6925,10 @@
         "kind_extra": {
           "consumedInterfaces": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -6814,6 +7038,10 @@
             "INestedProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -6949,6 +7177,10 @@
             "IUseNumberFormatOptions"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -7063,6 +7295,10 @@
             "IDataTableSortItem"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -7194,6 +7430,10 @@
             "IPaddingProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -7288,6 +7528,10 @@
             "IDataTableGroup"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -7474,6 +7718,10 @@
             "IParallaxLayerRegistry"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -7691,6 +7939,10 @@
             "IParallaxElementProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -7781,6 +8033,10 @@
             "IPasswordStrength"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -7881,6 +8137,10 @@
             "IPositionProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -7997,6 +8257,10 @@
             "IProgressTypeProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -8149,6 +8413,10 @@
             "IFilterPropsOptions"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -8250,6 +8518,10 @@
             "IQrCodeLogo"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -8361,6 +8633,10 @@
         "kind_extra": {
           "consumedInterfaces": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -8451,6 +8727,10 @@
             "IResizeState"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -8570,6 +8850,10 @@
             "IRoundedProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -8664,6 +8948,10 @@
             "ILink"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -8824,6 +9112,10 @@
         "kind_extra": {
           "consumedInterfaces": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -8910,6 +9202,10 @@
             "IScrollStrategyData"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -9073,6 +9369,10 @@
             "IDataTableSelectProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -9205,6 +9505,10 @@
             "IUseLink"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -9293,6 +9597,10 @@
             "ISheetSwipeReturn"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -9393,6 +9701,10 @@
             "ISizeProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -9502,6 +9814,10 @@
             "ISliderFieldProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -9593,6 +9909,10 @@
         "kind_extra": {
           "consumedInterfaces": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -9692,6 +10012,10 @@
             "ISnackbarGroupItemOptions"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -9799,6 +10123,10 @@
             "IInternalDataTableHeader"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -9894,6 +10222,10 @@
         "kind_extra": {
           "consumedInterfaces": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -9974,6 +10306,10 @@
             "IStackProvide"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -10090,6 +10426,10 @@
             "IActiveState"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -10340,6 +10680,10 @@
             "IAdjacentProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -10470,6 +10814,10 @@
             "ISticky"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -10542,6 +10890,10 @@
             "IStyleTagOptions"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -10651,6 +11003,10 @@
         "kind_extra": {
           "consumedInterfaces": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -10735,6 +11091,10 @@
             "ITextareaRichActiveState"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -10835,6 +11195,10 @@
             "IColorProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -10945,6 +11309,10 @@
         "kind_extra": {
           "consumedInterfaces": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -11054,6 +11422,10 @@
         "kind_extra": {
           "consumedInterfaces": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -11144,6 +11516,10 @@
         "kind_extra": {
           "consumedInterfaces": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -11236,6 +11612,10 @@
         "kind_extra": {
           "consumedInterfaces": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -11362,6 +11742,10 @@
             "ITransitionProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -11466,6 +11850,10 @@
             "IValidationProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -11640,6 +12028,10 @@
             "IVariantProps"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -11740,6 +12132,10 @@
         "kind_extra": {
           "consumedInterfaces": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -11822,6 +12218,10 @@
             "IVideoPlayerMethods"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -11930,6 +12330,10 @@
             "IGoToOptions"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -12079,6 +12483,10 @@
         "kind_extra": {
           "consumedInterfaces": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -12208,6 +12616,10 @@
             "IUseWatermarkOptions"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -12294,6 +12706,10 @@
             "IUseWaveformOptions"
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],

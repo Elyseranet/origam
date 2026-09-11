@@ -1,9 +1,9 @@
 <template>
-	<div
+	<figure
+			:id="id"
 			class="origam-chart-pictorial"
 			:class="rootClasses"
 			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
-			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-pictorial"
 	>
@@ -201,7 +201,7 @@
 				</g>
 
 				<g
-						v-if="mode === 'stack' && showAxis && direction === 'vertical'"
+						v-if="mode === 'stack' && showAxis && direction === DIRECTION.VERTICAL"
 						class="origam-chart-pictorial__axis"
 						data-cy="origam-chart-pictorial-axis"
 				>
@@ -219,7 +219,7 @@
 				</g>
 
 				<g
-						v-if="mode === 'stack' && showAxis && direction === 'horizontal'"
+						v-if="mode === 'stack' && showAxis && direction === DIRECTION.HORIZONTAL"
 						class="origam-chart-pictorial__axis"
 						data-cy="origam-chart-pictorial-axis"
 				>
@@ -263,7 +263,7 @@
 					data-cy="origam-chart-pictorial-empty"
 			>
 				<slot name="empty">
-					<span>No data to display</span>
+					<span>{{ t('origam.chart.no_data_text') }}</span>
 				</slot>
 			</div>
 		</div>
@@ -285,7 +285,7 @@
 				/>
 			</template>
 		</origam-chart-legend>
-	</div>
+	</figure>
 </template>
 
 <script
@@ -301,32 +301,33 @@
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
-	import {
-		useChartHeaderTypography,
-		useBackgroundColor,
-		useDimension,
-		useElevation,
-		useMargin,
-		usePadding,
-		useRounded
-	} from '../../composables'
+	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
+	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
 
-	import type {
-		IChartLegendItem,
-		IChartPoint,
-		IChartSeries
-	} from '../../interfaces'
+	import type { IChartLegendItem } from '../../interfaces/Chart/chart.interface'
+	import type { IChartPoint } from '../../interfaces/Chart/chart-point.interface'
+	import type { IChartSeries } from '../../interfaces/Chart/chart-series.interface'
 
 	import type {
 		IChartPictorialColumn,
 		IChartPictorialEmits,
-		IChartPictorialProps
+		IChartPictorialProps,
+		IChartPictorialSlots
 	} from '../../interfaces/Chart/chart-pictorial.interface'
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
 
-	import type { TIntent } from '../../types'
-	import { CHART_PICTORIAL_MODE } from '../../enums'
+	import type { TIntent } from '../../types/Commons/intent.type'
+	import { CHART_PICTORIAL_MODE } from '../../enums/Chart/chart-pictorial.enum'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
 
 	/*********************************************************
 	 * Global
@@ -373,6 +374,9 @@
 
 	const emit = defineEmits<IChartPictorialEmits>()
 
+	defineSlots<IChartPictorialSlots>()
+
+	const { t } = useLocale()
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
 	const { elevationClasses, elevationStyles } = useElevation(props)
@@ -380,6 +384,7 @@
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { headerTypographyStyles } = useChartHeaderTypography(props)
+	const chartAnimationStyle = useChartAnimationStyle(props)
 
 	/*********************************************************
 	 * Static SVG coordinate space
@@ -476,6 +481,28 @@
 		return maxValue.value / MAX_SLOTS
 	})
 
+	/*********************************************************
+	 * iconsPerUnit — plafond de rendu, desormais annonce (#426)
+	 *
+	 * @description
+	 * ⛔ `iconsPerUnit` n est honoree que tant que la colonne tient en
+	 * `MAX_SLOTS` icones. Au-dela, le composant RECALCULE son propre pas
+	 * (`maxValue / MAX_SLOTS`) pour garder la colonne lisible, et la valeur
+	 * demandee est ignoree — silencieusement jusqu ici.
+	 *
+	 * @description
+	 * Ce n est pas un defaut : dessiner des centaines d icones par colonne
+	 * n aurait aucun sens. Mais un plafond qui ne se declare pas ressemble a
+	 * une prop cassee vue du consommateur. Il s annonce donc, une fois, en
+	 * dev — meme traitement que les props inertes de cette famille.
+	 ********************************************************/
+	useUnsupportedProp(
+		'OrigamChartPictorial',
+		'iconsPerUnit',
+		`the column is capped at ${ MAX_SLOTS } icons: past that the component recomputes its own unit (maxValue / ${ MAX_SLOTS }) to keep the column readable, and the requested value is overridden.`,
+		() => rawSlotsPerColumn.value > MAX_SLOTS
+	)
+
 	const categoryCount = computed<number>(() => {
 		if (!props.series?.length) return 0
 		return Math.max(...props.series.map((s) => s.data?.length ?? 0))
@@ -491,27 +518,27 @@
 	const valueLabelH = computed<number>(() => (props.showLabel ? VALUE_LABEL_HEIGHT : 0))
 
 	const plotHeight = computed<number>(() => {
-		if (props.direction === 'horizontal') {
+		if (props.direction === DIRECTION.HORIZONTAL) {
 			return SVG_HEIGHT - axisH.value
 		}
 		return SVG_HEIGHT - axisH.value - valueLabelH.value
 	})
 
 	const plotWidth = computed<number>(() => {
-		if (props.direction === 'horizontal') {
+		if (props.direction === DIRECTION.HORIZONTAL) {
 			return SVG_WIDTH - axisH.value - valueLabelH.value
 		}
 		return SVG_WIDTH
 	})
 
 	const PLOT_Y = computed<number>(() => (props.showLabel ? VALUE_LABEL_HEIGHT : 0))
-	const PLOT_X = computed<number>(() => (props.direction === 'horizontal' && props.showAxis ? AXIS_LABEL_HEIGHT + AXIS_PADDING : 0))
+	const PLOT_X = computed<number>(() => (props.direction === DIRECTION.HORIZONTAL && props.showAxis ? AXIS_LABEL_HEIGHT + AXIS_PADDING : 0))
 
 	const columnWidth = computed<number>(() => {
 		const totalCols = categoryCount.value * seriesCount.value
 		if (totalCols <= 0) return 0
 		const totalGaps = (totalCols - 1) * SERIES_GAP
-		if (props.direction === 'vertical') {
+		if (props.direction === DIRECTION.VERTICAL) {
 			return Math.max(4, (plotWidth.value - totalGaps) / totalCols)
 		}
 		const totalGapsH = (categoryCount.value - 1) * SERIES_GAP
@@ -521,7 +548,7 @@
 	const iconSize = computed<number>(() => {
 		const s = slotsPerColumn.value
 		if (s <= 0) return 0
-		if (props.direction === 'vertical') {
+		if (props.direction === DIRECTION.VERTICAL) {
 			const slotH = plotHeight.value / s - ICON_GAP
 			const colBound = columnWidth.value - ICON_GAP
 			return Math.max(MIN_ICON_SIZE, Math.min(slotH, colBound))
@@ -558,7 +585,7 @@
 				let x: number
 				let y: number
 
-				if (props.direction === 'vertical') {
+				if (props.direction === DIRECTION.VERTICAL) {
 					x = PLOT_X.value + colIdx * (colW + SERIES_GAP)
 					y = PLOT_Y.value
 				} else {
@@ -709,7 +736,7 @@
 	 * Horizontal: icons stacked left-to-right (slot 0 = left)
 	 ********************************************************/
 	const iconX = (col: IChartPictorialColumn, slotIdx: number): number => {
-		if (props.direction === 'horizontal') {
+		if (props.direction === DIRECTION.HORIZONTAL) {
 			return slotIdx * (col.iconSize + ICON_GAP)
 		}
 		const colW = columnWidth.value
@@ -717,7 +744,7 @@
 	}
 
 	const iconY = (col: IChartPictorialColumn, slotIdx: number): number => {
-		if (props.direction === 'horizontal') {
+		if (props.direction === DIRECTION.HORIZONTAL) {
 			const colW = columnWidth.value
 			return (colW - col.iconSize) / 2
 		}
@@ -730,7 +757,7 @@
 	 * Label position helpers
 	 ********************************************************/
 	const labelX = (col: IChartPictorialColumn): number => {
-		if (props.direction === 'horizontal') {
+		if (props.direction === DIRECTION.HORIZONTAL) {
 			const usedW = slotsPerColumn.value * (col.iconSize + ICON_GAP)
 			return usedW + VALUE_LABEL_HEIGHT / 2
 		}
@@ -738,7 +765,7 @@
 	}
 
 	const labelY = (_col: IChartPictorialColumn): number => {
-		if (props.direction === 'horizontal') {
+		if (props.direction === DIRECTION.HORIZONTAL) {
 			return columnWidth.value / 2
 		}
 		return -VALUE_LABEL_HEIGHT / 2
@@ -827,7 +854,8 @@
 		elevationClasses.value,
 		marginClasses.value,
 		paddingClasses.value,
-		roundedClasses.value
+		roundedClasses.value,
+		props.class
 	])
 
 	const rootStyles = computed<StyleValue>(() => {
@@ -835,8 +863,8 @@
 		if (props.aspectRatio) {
 			out.aspectRatio = props.aspectRatio
 		}
-		out['--origam-chart---animation-duration'] = `${ props.animationDuration }ms`
-		return out
+		Object.assign(out, chartAnimationStyle.value)
+return [ out, props.style as StyleValue ]
 	})
 
 	const bodyClasses = computed(() => ({
@@ -853,12 +881,13 @@
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'pictorial chart')
-	const svgAriaLabel = computed(() => props.title ?? 'pictorial chart')
-	const svgTitle = computed(() => props.title ?? 'pictorial chart')
+	const ariaLabel = computed(() => props.title ?? t('origam.chart.pictorial.aria_label'))
+	const svgAriaLabel = computed(() => props.title ?? t('origam.chart.pictorial.aria_label'))
+	const svgTitle = computed(() => props.title ?? t('origam.chart.pictorial.aria_label'))
 	const svgDesc = computed(() => {
 		const n = visibleColumns.value.length
-		return `Pictorial chart with ${ n } ${ n === 1 ? 'column' : 'columns' }.`
+
+		return t('origam.chart.pictorial.desc', n)
 	})
 
 	const columnAriaLabel = (col: IChartPictorialColumn): string =>
@@ -916,7 +945,17 @@
 
 		display: grid;
 		gap: var(--origam-chart---gap, 12px);
-		padding: var(--origam-chart---padding, 12px);
+
+		// ⛔ #C2 — zero-specificity default so a scale-driven utility
+		// class (`.origam--p-4` from `padding="4"`) wins the cascade.
+		// Without `:where()`, this scoped rule's [data-v-hash] pushes it
+		// to (0,2,0), beating the utility's (0,1,0), and the `padding`
+		// prop's scale form goes silently inert. See CLAUDE.md "CSS-first"
+		// table — `:where(…)` is the documented zero-specificity default.
+		:where(&) {
+			padding: var(--origam-chart---padding, 12px);
+		}
+
 		background-color: var(--origam-chart---background-color, transparent);
 		color: var(--origam-chart---color, inherit);
 		width: 100%;
@@ -975,7 +1014,7 @@
 
 		&__subtitle {
 			font-size: var(--origam-chart__subtitle---font-size, 0.875rem);
-			color: var(--origam-chart__subtitle---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__subtitle---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		&__body {
@@ -1005,7 +1044,7 @@
 			outline: none;
 
 			&:focus-visible {
-				outline: 2px solid var(--origam-color-focus-ring, #3b82f6);
+				outline: 2px solid var(--origam-color__border---focus, #3b82f6);
 				outline-offset: 2px;
 			}
 		}
@@ -1027,14 +1066,14 @@
 			pointer-events: none;
 			font-size: var(--origam-chart-pictorial__label---font-size, 0.6875rem);
 			font-weight: var(--origam-chart-pictorial__label---font-weight, 600);
-			fill: var(--origam-chart-pictorial__label---color, var(--origam-color-text-primary, currentColor));
+			fill: var(--origam-chart-pictorial__label---color, var(--origam-color__text---primary, currentColor));
 			user-select: none;
 		}
 
 		&__axis-label {
 			pointer-events: none;
 			font-size: var(--origam-chart-pictorial__axis---font-size, 0.6875rem);
-			fill: var(--origam-chart-pictorial__axis---color, var(--origam-color-text-secondary, #6b7280));
+			fill: var(--origam-chart-pictorial__axis---color, var(--origam-color__text---secondary, #6b7280));
 			user-select: none;
 		}
 
@@ -1045,7 +1084,7 @@
 		:deep(.origam-chart__tooltip) {
 			position: absolute;
 			pointer-events: none;
-			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color-surface-overlay, #1f2937));
+			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color__surface---overlay, #1f2937));
 			color: var(--origam-chart__tooltip---color, #ffffff);
 			padding: var(--origam-chart__tooltip---padding, 8px 12px);
 			border-radius: var(--origam-chart__tooltip---border-radius, 6px);
@@ -1083,7 +1122,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--origam-chart__empty---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__empty---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		:deep(.origam-chart__legend) {

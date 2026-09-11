@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
+import { fillHstText, selectHstOption, toggleHstCheckbox } from './_support/histoire-controls'
+
 /**
  * <OrigamAudio> — runtime probes for the Stemtracks-style audio shell
  * built directly from the atomic media sub-components (OrigamMediaPlayBtn,
@@ -20,6 +22,17 @@ import { expect, test, type Page } from '@playwright/test'
  * is false, which is the headless default.
  *
  * data-cy mapping (story → component):
+ *   The story restructuring (canonical Design/State/Functional/Events/Slots
+ *   layout, see root CLAUDE.md) removed the old per-fixture root data-cy
+ *   values this spec used to target (`audio-default-player`,
+ *   `audio-single-player`, `audio-native-player`, …) — none of the
+ *   migrated Variants set a story-level `data-cy` on `<origam-audio>` at
+ *   all anymore. Verified empirically against a running Histoire instance:
+ *   `OrigamAudio.vue` itself sets a static `data-cy="origam-audio"` on its
+ *   OWN root element (no story override present), and since each Variant
+ *   mounts exactly one `<origam-audio>`, `[data-cy="origam-audio"]` is an
+ *   unambiguous replacement anchor across every Variant used below.
+ *
  *   Transport buttons live inside <OrigamMediaController>, which emits
  *   its own data-cy values (origam-media-controller-*). OrigamAudio
  *   passes data-cy="origam-audio-controls" onto the MediaController root
@@ -31,6 +44,17 @@ import { expect, test, type Page } from '@playwright/test'
  *   attributes (origam-media-controller-play, -config-btn, -scrubber, …)
  *   and are not affected by the root-level fallthrough — these are used
  *   directly in tests.
+ *
+ * Variant mapping (old dedicated fixture → migrated story):
+ *   The per-prop `Prop — …` Variants were folded into "Design" (visual
+ *   props: variant, coverPosition, color…) and "Functional" (behaviour
+ *   props: src/title/artist/album/cover, controls, downloadable,
+ *   playlist…). Tests that used to navigate straight to a static fixture
+ *   now navigate to "Design" or "Functional" and drive the relevant
+ *   control via `_support/histoire-controls.ts` — see each test for the
+ *   specific control(s) it flips, and why: e.g. "Design"'s default
+ *   `variant: 'expanded'` / `coverPosition: 'left'` already cover two
+ *   fixtures with NO control interaction needed.
  */
 
 const STORY = '/stories/story/components-stories-audio-origamaudio-story-vue'
@@ -50,7 +74,7 @@ test.describe('OrigamAudio — Default playground', () => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
-        const host = sandbox.locator('[data-cy="audio-default-player"]').first()
+        const host = sandbox.locator('[data-cy="origam-audio"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
 
         // <audio> is in the DOM but display:none when controls="custom" — evaluate works on hidden elements.
@@ -75,7 +99,7 @@ test.describe('OrigamAudio — Default playground', () => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
-        const host = sandbox.locator('[data-cy="audio-default-player"]').first()
+        const host = sandbox.locator('[data-cy="origam-audio"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
 
         expect(await host.evaluate((node) => node.tagName)).toBe('ARTICLE')
@@ -91,7 +115,7 @@ test.describe('OrigamAudio — Default playground', () => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
-        const host = sandbox.locator('[data-cy="audio-default-player"]').first()
+        const host = sandbox.locator('[data-cy="origam-audio"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
 
         await expect(host.locator('[data-cy="origam-audio-title"]').first()).toBeVisible()
@@ -100,11 +124,29 @@ test.describe('OrigamAudio — Default playground', () => {
     })
 
     test('hides the metadata strip in the bare single-track Variant', async ({ page }) => {
-        // Story title: "Prop — src (single track, no metadata)"
-        await openVariant(page, 'Prop — src (single track, no metadata)')
+        // The dedicated "Prop — src (single track, no metadata)" fixture no
+        // longer exists. "Functional" was tried first but is the WRONG
+        // Variant: it hardcodes `:playlist="DEMO_PLAYLIST"` UNCONDITIONALLY
+        // (not behind any control, see OrigamAudio.story.vue) — clearing
+        // the top-level Title/Artist/Album fields there has no effect
+        // because OrigamAudio's `hasMetadata` falls back to the active
+        // playlist track's own title/artist when a playlist is active.
+        // Verified empirically: with all 4 fields cleared on "Functional",
+        // the generated source confirms no :title/:artist/:album/:cover
+        // prop is bound at all, yet `[data-cy="origam-audio-metadata"]`
+        // still rendered — proof the playlist fallback, not the props,
+        // was driving it. "Default" has the same Content fields (Title /
+        // Artist / Album / Cover (URL)) AND binds no playlist at all, so
+        // clearing them there reproduces the real "no metadata" state.
+        await openVariant(page, 'Default')
+        await fillHstText(page, 'Title', '')
+        await fillHstText(page, 'Artist', '')
+        await fillHstText(page, 'Album', '')
+        await fillHstText(page, 'Cover (URL)', '')
+        await page.waitForTimeout(400)
         const sandbox = sandboxOf(page)
 
-        const host = sandbox.locator('[data-cy="audio-single-player"]').first()
+        const host = sandbox.locator('[data-cy="origam-audio"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
 
         await expect(host.locator('[data-cy="origam-audio-metadata"]')).toHaveCount(0)
@@ -131,10 +173,33 @@ test.describe('OrigamAudio — play / pause toggle', () => {
 
 test.describe('OrigamAudio — playback rate via cog menu', () => {
     test('picking 2× from the config menu updates the audio element playbackRate', async ({ page }) => {
+        // ⛔ REAL BUG — FIXED (packages/ds/src/components/Menu/OrigamMenu.vue).
+        // Clicking the "Playback speed" row (a `children`-bearing item
+        // rendered by OrigamMenu as a nested `<origam-menu open-on-click>`)
+        // used to close the ENTIRE menu tree instead of opening the nested
+        // rate submenu. Root cause: `OrigamMenu.vue`'s `hasChilds(item)`
+        // hardcoded `item?.items`, ignoring `props.itemChildren` (declared
+        // on `IItemProps`, and never defaulted by `OrigamMenu` either) —
+        // `OrigamMediaController`'s `configMenuItems` nests its rate options
+        // under `children` (the DS-wide default, matching `OrigamList`'s own
+        // `itemChildren: 'children'` default), so `hasChilds()` was always
+        // `undefined`/false for every row. No nested `<origam-menu>` was
+        // ever rendered for "Playback speed" — the click fell through to
+        // the PARENT menu's ordinary `closeOnContentClick` handling and
+        // closed the whole menu instead of opening a submenu.
+        //
+        // Fix: `OrigamMenu` now defaults `itemChildren: 'children'` and
+        // resolves a row's children through `getPropertyFromItem(item,
+        // props.itemChildren)` — the same helper `transformListItem`
+        // already uses for `<origam-list>` — via a new `childItems(item)`
+        // helper, also bound explicitly as `:items="childItems(item)"` on
+        // the recursive `<origam-menu>` so the submenu itself receives the
+        // right collection regardless of what raw keys the source item
+        // object carries.
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
-        const host = sandbox.locator('[data-cy="audio-default-player"]').first()
+        const host = sandbox.locator('[data-cy="origam-audio"]').first()
         const audio = host.locator('[data-cy="origam-audio-el"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
         await expect(audio).toBeAttached({ timeout: 5000 })
@@ -164,11 +229,14 @@ test.describe('OrigamAudio — playback rate via cog menu', () => {
 
 test.describe('OrigamAudio — controls=native', () => {
     test('the <audio> carries the native controls attribute and the transport is NOT mounted', async ({ page }) => {
-        // Story title: "Prop — controls (custom / native)"
-        await openVariant(page, 'Prop — controls (custom / native)')
+        // Dedicated fixture folded into "Functional" — Controls select
+        // defaults to 'Custom', flip it to 'Native'.
+        await openVariant(page, 'Functional')
+        await selectHstOption(page, 'Controls', 'Native')
+        await page.waitForTimeout(400)
         const sandbox = sandboxOf(page)
 
-        const host = sandbox.locator('[data-cy="audio-native-player"]').first()
+        const host = sandbox.locator('[data-cy="origam-audio"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
 
         // In native mode the <audio> element is display:block (not hidden); controls=true is set.
@@ -184,13 +252,57 @@ test.describe('OrigamAudio — controls=native', () => {
     })
 })
 
-test.describe('OrigamAudio — downloadable', () => {
-    test('the Download row appears in the cog menu when downloadable is true', async ({ page }) => {
-        // Story title: "Prop — downloadable + downloadFilename"
-        await openVariant(page, 'Prop — downloadable + downloadFilename')
+test.describe('OrigamAudio — Slots - controls (#378)', () => {
+    // Regression for #378 — `IAudioSlots.controls` was declared and
+    // documented ("Override the entire controls, replaces the default
+    // `<OrigamMediaController>`") but `<slot name="controls">` was
+    // absent from the template: Vue silently drops content passed to
+    // an undeclared slot, so the story's own "Slots - controls" Variant
+    // rendered nothing where the custom transport should be.
+    test('replaces the default <OrigamMediaController> with the custom slot content', async ({ page }) => {
+        await openVariant(page, 'Slots - controls')
         const sandbox = sandboxOf(page)
 
-        const host = sandbox.locator('[data-cy="audio-downloadable-player"]').first()
+        const host = sandbox.locator('[data-cy="origam-audio"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        // The story's #controls template renders a single "Play"/"Pause"
+        // button and nothing else — the default MediaController transport
+        // must be entirely absent.
+        await expect(host.locator('[data-cy="origam-audio-controls"]')).toHaveCount(0)
+
+        const customButton = sandbox.locator('.story-slot-controls button')
+        await expect(customButton).toBeVisible({ timeout: 8000 })
+        await expect(customButton).toHaveText('Play')
+    })
+
+    test('the slot receives live playing state + methods (button toggles Play ⇄ Pause)', async ({ page }) => {
+        await openVariant(page, 'Slots - controls')
+        const sandbox = sandboxOf(page)
+        const host = sandbox.locator('[data-cy="origam-audio"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        const customButton = sandbox.locator('.story-slot-controls button')
+        await expect(customButton).toHaveText('Play')
+
+        await customButton.click()
+        await expect(customButton).toHaveText('Pause', { timeout: 5000 })
+
+        await customButton.click()
+        await expect(customButton).toHaveText('Play', { timeout: 5000 })
+    })
+})
+
+test.describe('OrigamAudio — downloadable', () => {
+    test('the Download row appears in the cog menu when downloadable is true', async ({ page }) => {
+        // Dedicated fixture folded into "Functional" — Downloadable
+        // checkbox defaults to unchecked (false), flip it on.
+        await openVariant(page, 'Functional')
+        await toggleHstCheckbox(page, 'Downloadable')
+        await page.waitForTimeout(400)
+        const sandbox = sandboxOf(page)
+
+        const host = sandbox.locator('[data-cy="origam-audio"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
 
         // Config cog button: data-cy="origam-media-controller-config-btn"
@@ -223,34 +335,55 @@ test.describe('OrigamAudio — Remote Playback availability gate (headless cavea
 
 test.describe('OrigamAudio — variant routing', () => {
     test('expanded variant renders the waveform mini scrubber', async ({ page }) => {
-        // Story title: "Prop — variant (expanded)"
-        await openVariant(page, 'Prop — variant (expanded)')
+        // Dedicated fixture folded into "Design" — its default init-state
+        // already sets variant: 'expanded' (see OrigamAudio.story.vue), so
+        // no control interaction is needed here.
+        await openVariant(page, 'Design')
         const sandbox = sandboxOf(page)
 
-        const host = sandbox.locator('[data-cy="audio-expanded-player"]').first()
+        const host = sandbox.locator('[data-cy="origam-audio"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
         // Waveform SliderField: data-cy="origam-audio-waveform-slider"
         await expect(host.locator('[data-cy="origam-audio-waveform-slider"]')).toBeVisible()
     })
 
-    test.fixme(true, 'DS BUG: compact variant does NOT hide the waveform slider — OrigamAudio injects the OrigamSliderField unconditionally into the #waveform slot of OrigamMediaController regardless of isCompactVariant. In compact mode the slider switches to variant="timer" but stays in the DOM (data-cy="origam-audio-waveform-slider" toHaveCount(1), not 0). Fix: add v-if="!isCompactVariant" on the OrigamSliderField inside the #waveform slot in OrigamAudio.vue.')
     test('compact variant hides the waveform mini scrubber', async ({ page }) => {
-        // Story title: "Prop — variant (compact)"
-        await openVariant(page, 'Prop — variant (compact)')
+        // BUG FOUND while repairing this spec's variant-title drift: the
+        // original file called `test.fixme(true, reason)` as a bare
+        // statement BEFORE this `test(...)`, outside any test body. That
+        // does NOT scope to "just this test" — Playwright attaches it to
+        // the enclosing suite at collection time, so it silently skipped
+        // ALL THREE tests in this describe block ("expanded variant…" and
+        // "cover-position=right…" too), not just this one. Verified
+        // empirically: before this fix, all 3 reported as skipped; moving
+        // the call inside the test body (the officially supported
+        // conditional-fixme pattern) restored the other two to actually
+        // running. This one call's own DS bug is still real and unfixed —
+        // kept in effect below, now correctly scoped to only this test.
+        test.fail(true, 'DS BUG: compact variant does NOT hide the waveform slider — OrigamAudio injects the OrigamSliderField unconditionally into the #waveform slot of OrigamMediaController regardless of isCompactVariant. In compact mode the slider switches to variant="timer" but stays in the DOM (data-cy="origam-audio-waveform-slider" toHaveCount(1), not 0). Fix: add v-if="!isCompactVariant" on the OrigamSliderField inside the #waveform slot in OrigamAudio.vue.')
+
+        // Dedicated fixture folded into "Design" — flip the Variant select
+        // from its 'Expanded' default to 'Compact'.
+        await openVariant(page, 'Design')
+        await selectHstOption(page, 'Variant', 'Compact')
+        await page.waitForTimeout(400)
         const sandbox = sandboxOf(page)
 
-        const host = sandbox.locator('[data-cy="audio-compact-player"]').first()
+        const host = sandbox.locator('[data-cy="origam-audio"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
         // Waveform SliderField: data-cy="origam-audio-waveform-slider"
         await expect(host.locator('[data-cy="origam-audio-waveform-slider"]')).toHaveCount(0)
     })
 
     test('cover-position=right swaps the grid columns', async ({ page }) => {
-        // Story title: "Prop — coverPosition (right edge)"
-        await openVariant(page, 'Prop — coverPosition (right edge)')
+        // Dedicated fixture folded into "Design" — flip the Cover Position
+        // select from its 'Left' default to 'Right'.
+        await openVariant(page, 'Design')
+        await selectHstOption(page, 'Cover Position', 'Right')
+        await page.waitForTimeout(400)
         const sandbox = sandboxOf(page)
 
-        const host = sandbox.locator('[data-cy="audio-cover-right-player"]').first()
+        const host = sandbox.locator('[data-cy="origam-audio"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
         const classes = await host.evaluate((node) => Array.from(node.classList))
         expect(classes).toContain('origam-audio--cover-right')
@@ -261,11 +394,15 @@ test.describe('OrigamAudio — transport navigation', () => {
     test('previous and next buttons are mounted with translated aria-labels', async ({ page }) => {
         // Previous / next buttons are only rendered when a playlist is active
         // (show-previous/show-next are bound to hasPlaylist in OrigamAudio.vue).
-        // The Default variant has no playlist — use the playlist variant instead.
-        await openVariant(page, 'Prop — src (playlist, multi-track)')
+        // The Default variant has no playlist. The dedicated playlist fixture
+        // no longer exists, but "Functional" passes `:playlist="DEMO_PLAYLIST"`
+        // unconditionally (not behind any control) — see OrigamAudio.story.vue
+        // — so simply navigating there already satisfies hasPlaylist, with no
+        // control interaction needed.
+        await openVariant(page, 'Functional')
         const sandbox = sandboxOf(page)
 
-        const host = sandbox.locator('[data-cy="audio-playlist-player"]').first()
+        const host = sandbox.locator('[data-cy="origam-audio"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
 
         // Previous / next buttons: data-cy="origam-media-controller-previous/next"
@@ -293,11 +430,29 @@ test.describe('OrigamAudio — scrubber drag fluidity', () => {
      * keeps the ceiling at 50 ms to absorb headless variance.
      */
     test('the inline timer scrubber sustains ≤ 50 ms/event under sustained drag', async ({ page }) => {
-        await openVariant(page, 'Default')
+        // `data-cy="origam-media-controller-scrubber"` never exists when
+        // using OrigamAudio: OrigamMediaController only falls back to its
+        // own default `<origam-media-scrubber>` (that data-cy) when the
+        // CONSUMER doesn't fill the `#waveform` slot — but OrigamAudio.vue
+        // ALWAYS provides its own `<origam-slider-field data-cy=
+        // "origam-audio-waveform-slider">` there, unconditionally (see
+        // OrigamAudio.vue's `#waveform` template). Verified empirically:
+        // zero elements match `origam-media-controller-scrubber` in either
+        // variant. What the story calls "expanded" vs "compact" is the SAME
+        // element switching its `variant` prop between 'audio' and 'timer'
+        // (`:variant="isCompactVariant ? 'timer' : 'audio'"`) — i.e. the
+        // "inline timer scrubber" IS `origam-audio-waveform-slider` in
+        // compact mode, not a separate element. Navigate to "Design" +
+        // Variant=Compact (same fixture as the "compact variant hides…"
+        // test above, which documents the DS bug that this element stays
+        // mounted in compact mode — that's exactly what this drag-fluidity
+        // probe now measures against).
+        await openVariant(page, 'Design')
+        await selectHstOption(page, 'Variant', 'Compact')
+        await page.waitForTimeout(400)
         const sandbox = sandboxOf(page)
 
-        // Timeline scrubber inside OrigamMediaController: data-cy="origam-media-controller-scrubber"
-        const scrubber = sandbox.locator('[data-cy="origam-media-controller-scrubber"]').first()
+        const scrubber = sandbox.locator('[data-cy="origam-audio-waveform-slider"]').first()
         await expect(scrubber).toBeVisible({ timeout: 8000 })
 
         const perMs = await scrubber.evaluate((node) => {
@@ -366,5 +521,188 @@ test.describe('OrigamAudio — scrubber drag fluidity', () => {
         console.log(`[probe] waveform mini scrubber per-event: ${ perMs.toFixed(2) } ms`)
         expect(Number.isFinite(perMs)).toBe(true)
         expect(perMs).toBeLessThanOrEqual(50)
+    })
+})
+
+/**
+ * #436 (C2) — the vinyl "label" discs were painted with a hardcoded
+ * `background: #0a0a0a`, twice: once on `.origam-audio__cover::after`
+ * (main cover) and once on the playlist avatar's `::after`. Neither was
+ * reachable by a theme, a `data-theme` swap, or a consumer override.
+ *
+ * ⛔ This CANNOT be asserted under Vitest/jsdom: `<style scoped>` is never
+ * injected into jsdom's `document.head`, and `getComputedStyle` there does
+ * not resolve `var()` — it fabricates a UA default that looks like a real
+ * measurement (root CLAUDE.md, #398). A real browser is the only valid
+ * verdict, hence this spec.
+ *
+ * The mutation AND the measurement happen inside a SINGLE `evaluate` —
+ * splitting them lets Vue re-patch the element between the two steps and
+ * `toHaveCSS` then polls Vue's element, not the mutated one (the broken
+ * `alert.spec.ts` pattern; working shape: switch-density.spec.ts).
+ */
+test.describe('OrigamAudio — vinyl label disc is token-driven (#436, C2)', () => {
+    test('the cover label disc reads --origam-audio__cover-label---background-color', async ({ page }) => {
+        await openVariant(page, 'Default')
+        const sandbox = sandboxOf(page)
+
+        const cover = sandbox.locator('[data-cy="origam-audio-cover-figure"]').first()
+        await expect(cover).toBeVisible({ timeout: 8000 })
+
+        const measured = await cover.evaluate((node) => {
+            const el = node as HTMLElement
+            const before = getComputedStyle(el, '::after').backgroundColor
+            el.style.setProperty('--origam-audio__cover-label---background-color', 'rgb(0, 128, 255)')
+            const after = getComputedStyle(el, '::after').backgroundColor
+
+            return { before, after }
+        })
+
+        // The default must keep the historical value (neutral-950 =
+        // #0a0a0a): tokenising is not allowed to repaint anything.
+        expect(measured.before).toBe('rgb(10, 10, 10)')
+        // …and the token must actually drive the paint — this is the half
+        // that fails on a hardcoded hex.
+        expect(measured.after).toBe('rgb(0, 128, 255)')
+    })
+
+    test('the playlist avatar label disc reads the same token', async ({ page }) => {
+        await openVariant(page, 'Events - track-change')
+        const sandbox = sandboxOf(page)
+
+        const item = sandbox.locator('[data-cy="origam-audio-playlist-item-0"]').first()
+        await expect(item).toBeVisible({ timeout: 8000 })
+
+        const measured = await item.evaluate((node) => {
+            const avatar = (node as HTMLElement).querySelector('.origam-avatar') as HTMLElement | null
+            if (!avatar) return { before: 'no-avatar', after: 'no-avatar' }
+
+            const before = getComputedStyle(avatar, '::after').backgroundColor
+            avatar.style.setProperty('--origam-audio__cover-label---background-color', 'rgb(0, 128, 255)')
+            const after = getComputedStyle(avatar, '::after').backgroundColor
+
+            return { before, after }
+        })
+
+        expect(measured.before).toBe('rgb(10, 10, 10)')
+        expect(measured.after).toBe('rgb(0, 128, 255)')
+    })
+})
+
+/**
+ * #436 — `update:loopMode` was the untouched twin of the `update:shuffle`
+ * defect fixed in 40c099b8: `<origam-media-controller v-model:loop-mode>`
+ * swallowed the child's event into OrigamAudio's internal ref, so a
+ * consumer's own `v-model:loopMode` / `@update:loopMode` never fired for a
+ * real click on the loop button. The relay to the CONSUMER is asserted at
+ * the unit layer (`OrigamAudio.spec.ts`, "re-emits update:loopMode …") —
+ * emit wiring is pure JS and belongs there.
+ *
+ * ⛔ LIMIT, stated rather than papered over: the end-to-end proof through
+ * the story's own `logEvent` is NOT available. Measured on this build,
+ * Histoire's event log panel is not rendered in the static preview, so the
+ * parent page's text is unchanged by the click (it SHRANK by 7 chars, from
+ * an unrelated re-render). `alert.spec.ts` and `avatar.spec.ts` already
+ * record the same limit.
+ *
+ * What a browser CAN prove, and what this spec asserts, is the half the
+ * unit test cannot: that the value really travels from the real
+ * `<OrigamMediaController>` into OrigamAudio's own state. The native
+ * `<audio loop>` attribute is driven by `audioLoopAttr`, which reads
+ * OrigamAudio's `internalLoopMode` — NOT the controller's. Two clicks
+ * (off → all → one) must therefore set it.
+ *
+ * ⛔ Do not "simplify" this into asserting the loop button's own
+ * aria-label: `<OrigamMediaController>` keeps its OWN `internalLoopMode`
+ * and cycles it locally, so the label walks off → all → one whether or not
+ * OrigamAudio is listening at all. Verified by deleting the handler: the
+ * label assertions stayed green, the `<audio loop>` assertion went red.
+ * That is the difference between a net and a decoration.
+ */
+test.describe('OrigamAudio — the loop mode reaches the <audio> element (#436)', () => {
+    test('cycling the loop button to "one" sets the native loop attribute', async ({ page }) => {
+        await openVariant(page, 'Events - update:loopMode')
+        const sandbox = sandboxOf(page)
+
+        const loop = sandbox.locator('[data-cy="origam-media-controller-loop"]').first()
+        await expect(loop).toBeVisible({ timeout: 8000 })
+
+        // `<audio>` is display:none under controls="custom" — read the
+        // property, not the visible box.
+        const audio = sandbox.locator('[data-cy="origam-audio-el"]').first()
+        const nativeLoop = () => audio.evaluate(node => (node as HTMLAudioElement).loop)
+
+        expect(await loop.getAttribute('aria-label')).toBe('Loop off')
+        expect(await nativeLoop()).toBe(false)
+
+        // off → all: the playlist wraps, the single element must NOT loop.
+        await loop.click()
+        expect(await loop.getAttribute('aria-label')).toBe('Loop playlist')
+        expect(await nativeLoop()).toBe(false)
+
+        // all → one: this is the value that has to travel up into
+        // OrigamAudio and back down onto the element.
+        await loop.click()
+        expect(await loop.getAttribute('aria-label')).toBe('Loop track')
+        expect(await nativeLoop()).toBe(true)
+
+        // one → off again.
+        await loop.click()
+        expect(await loop.getAttribute('aria-label')).toBe('Loop off')
+        expect(await nativeLoop()).toBe(false)
+    })
+})
+
+/**
+ * `header` and `playlist` were declared on `IAudioSlots` and wired in the
+ * template, but had NO Variant and NO row in the doc's Slots table — the
+ * mirror image of the #378 defect (there, a slot was declared and
+ * documented without existing; here, it existed without being shown).
+ * Variants + doc rows added; these assert each one actually replaces the
+ * default render rather than sitting next to it.
+ */
+test.describe('OrigamAudio — Slots - header / playlist', () => {
+    test('#header replaces the whole cover + metadata strip', async ({ page }) => {
+        await openVariant(page, 'Slots - header')
+        const sandbox = sandboxOf(page)
+
+        const host = sandbox.locator('[data-cy="origam-audio"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        await expect(host.locator('.story-slot-badge')).toBeVisible()
+        // The Variant passes title / artist / cover, so all three defaults
+        // WOULD render — the slot has to swallow them.
+        await expect(host.locator('[data-cy="origam-audio-cover-figure"]')).toHaveCount(0)
+        await expect(host.locator('[data-cy="origam-audio-metadata"]')).toHaveCount(0)
+    })
+
+    test('#playlist replaces the default list and its select() binding switches track', async ({ page }) => {
+        await openVariant(page, 'Slots - playlist')
+        const sandbox = sandboxOf(page)
+
+        const host = sandbox.locator('[data-cy="origam-audio"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        const custom = host.locator('.story-slot-playlist')
+        await expect(custom).toBeVisible()
+        // Default <origam-list> must be gone, not merely hidden.
+        await expect(host.locator('[data-cy="origam-audio-playlist"]')).toHaveCount(0)
+
+        const rows = custom.locator('button')
+        await expect(rows.first()).toHaveAttribute('aria-current', 'true')
+
+        // `select(index)` is one of the slot's three bindings — clicking row
+        // 2 must move the active index AND swap the <audio> source.
+        const srcBefore = await host.locator('[data-cy="origam-audio-el"]')
+            .evaluate(node => (node as HTMLAudioElement).getAttribute('src'))
+
+        await rows.nth(1).click()
+
+        await expect(rows.nth(1)).toHaveAttribute('aria-current', 'true')
+        await expect(rows.first()).toHaveAttribute('aria-current', 'false')
+
+        const srcAfter = await host.locator('[data-cy="origam-audio-el"]')
+            .evaluate(node => (node as HTMLAudioElement).getAttribute('src'))
+        expect(srcAfter).not.toBe(srcBefore)
     })
 })

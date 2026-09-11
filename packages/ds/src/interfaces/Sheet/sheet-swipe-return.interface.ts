@@ -1,6 +1,6 @@
 import type { Ref } from 'vue'
 
-import type { TSheetSnapId } from '../../types'
+import type { TSheetSnapId } from '../../types/Sheet/sheet.type'
 
 /**
  * Public surface returned by `useSheetSwipe()`. Components consuming

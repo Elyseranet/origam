@@ -1,19 +1,19 @@
+import type { IBorderProps } from '../Commons/border.interface'
 import type {
-    IBorderProps,
     IClickEmits,
-    IColorProps,
     ICommonsComponentProps,
-    IDensityProps,
-    IElevationProps,
-    IMarginProps,
-    IPaddingProps,
-    IRippleProps,
-    IRoundedProps,
-    ISizeProps,
     ITagProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
+import type { IColorProps } from '../Commons/color.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRippleProps } from '../Commons/ripple.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ISizeProps } from '../Commons/size.interface'
 
-import type { TIcon } from '../../types'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 export interface IRatingFieldItemProps extends ICommonsComponentProps, ITagProps, IColorProps, IDensityProps, IRippleProps, ISizeProps, IBorderProps, IPaddingProps, IMarginProps, IRoundedProps, IElevationProps {
     name?: string
@@ -39,4 +39,11 @@ export interface IRatingFieldItemProps extends ICommonsComponentProps, ITagProps
 export interface IRatingFieldItemEmits extends IClickEmits {
     (e: 'mouseenter', event: MouseEvent): void
     (e: 'mouseleave', event: MouseEvent): void
+}
+
+/** Slot signatures for `<OrigamRatingFieldItem>`. */
+export interface IRatingFieldItemSlots {
+    /** Overrides the star/icon button — `props` is the resolved
+     *  `<OrigamBtn>` prop bag (icon, color, ripple, click handlers…). */
+    item?: (data: { props: Record<string, unknown>, value: number }) => any
 }

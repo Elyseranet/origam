@@ -6,6 +6,13 @@
 
 ---
 
+> **Note (2026-09-04)**: this ADR was written while the Style Dictionary v4
+> + Tokens Studio token pipeline was still active. That pipeline (and the
+> `tokens/semantic/*.json` sources it read) was removed on 2026-08-31; the
+> text below is left unmodified as the historical record of the decision.
+> The token sheets it used to generate are now the hand-maintained source
+> of truth — see the "Design tokens" section of the repository `CLAUDE.md`.
+
 ## Context
 
 The origam token pipeline (Style Dictionary v4 + Tokens Studio) emits a

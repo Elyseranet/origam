@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="iconClasses"
 			:style="iconStyles"
 	>
@@ -38,14 +39,21 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue } from 'vue'
-	import { useProps , useStyle} from "../../composables"
-	import { SIZES_ARRAY } from '../../consts'
+	import { computed, StyleValue, toRef } from 'vue'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { SIZES_ARRAY } from '../../consts/Commons/size.const'
 
-	import type { IIconComponentProps } from '../../interfaces'
-	import type { TSize } from '../../types'
+	import type { IIconComponentEmits, IIconComponentProps, ISvgIconSlots } from '../../interfaces/Icon/icon.interface'
+	import type { TSize } from '../../types/Commons/size.type'
 
-	import { convertToUnit } from '../../utils'
+	import { convertToUnit } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global
@@ -57,9 +65,35 @@
 
 	const {filterProps} = useProps<IIconComponentProps>(props)
 
+	defineEmits<IIconComponentEmits>()
+
+	defineSlots<ISvgIconSlots>()
+
 	const isArray = (data: any) => {
 		return Array.isArray(data)
 	}
+
+	/*********************************************************
+	 * Composables
+	 *
+	 * @description
+	 * `IIconComponentProps` carries the full color / spacing / border /
+	 * dimension / rounded surface. `OrigamIcon` resolves it and passes the
+	 * result down as `class` / `style`, so these axes work when the glyph
+	 * leaf is reached through the parent. The leaf is also exported on the
+	 * public barrel, and used directly it dropped every one of them. The
+	 * parent forwards only `icon` / `size` / `tag` / `class` / `style`, so
+	 * consuming the props here cannot double-apply.
+	 *
+	 * `dimensionStyles` is pushed AFTER the `size`-derived width/height so an
+	 * explicit `width` / `height` beats the size shorthand.
+	 ********************************************************/
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {dimensionStyles} = useDimension(props)
 
 	/*********************************************************
 	 * Class & Style
@@ -78,6 +112,12 @@
 				'width': numericSize,
 				'height': numericSize
 			},
+			colorStyles.value,
+			borderStyles.value,
+			roundedStyles.value,
+			dimensionStyles.value,
+			marginStyles.value,
+			paddingStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -91,10 +131,15 @@
 			'origam-icon',
 			'origam-icon--svg',
 			namedSize,
+			colorClasses.value,
+			borderClasses.value,
+			roundedClasses.value,
+			paddingClasses.value,
+			marginClasses.value,
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(iconStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(iconStyles, () => props.id)
 
 
 	/*********************************************************

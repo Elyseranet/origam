@@ -92,8 +92,12 @@ origam ships three built-in modes: `light`, `dark`, and `auto`
 <html data-theme="dark">
 ```
 
-Omit the attribute to fall back to `auto`. Brand themes can be registered
-by dropping a `tokens/semantic/brand-{name}.json` file and rebuilding.
+Omit the attribute to fall back to `auto`. Brand themes are registered at
+runtime as an `IOrigamTheme` object passed to `createOrigam()` (props
+first, CSS vars only for what props can't express — see "Multi-theme" in
+`CLAUDE.md`). A brand that needs its own stylesheet instead hand-writes a
+`[data-theme="brand-{name}"]` block — there is no generator that emits
+one from a token file.
 
 ### Runtime switch
 
@@ -127,11 +131,11 @@ sub-tree.
 
 Three tiers, in order of specificity:
 
-| Tier         | Lives in                          | Example CSS variable                       |
-|--------------|-----------------------------------|--------------------------------------------|
-| Primitive    | `tokens/primitive.json`           | `--origam-color-neutral-500`               |
-| Semantic     | `tokens/semantic/{theme}.json`    | `--origam-color-surface-default`           |
-| Component    | `tokens/component/{name}.json`    | `--origam-btn---background-color`          |
+| Tier         | Lives in                                                    | Example CSS variable                       |
+|--------------|---------------------------------------------------------------|--------------------------------------------|
+| Primitive    | `packages/ds/src/assets/css/tokens/primitive.css`             | `--origam-color-neutral-500`               |
+| Semantic     | `packages/ds/src/assets/css/tokens/light.css` / `dark.css`    | `--origam-color-surface-default`           |
+| Component    | `packages/ds/src/assets/css/tokens/light.css` / `dark.css`    | `--origam-btn---background-color`          |
 
 Semantic tokens reference primitives. Components reference semantics. App
 code should consume **semantic** tokens or component variables — never
@@ -141,11 +145,11 @@ The `origam-utilities.css` sheet generates 66 utility classes
 (`.origam--bg-*`, `.origam--color-*`, `.origam--shadow-*`,
 `.origam--rounded-*`, ...) that map 1:1 to semantic tokens.
 
-Tokens are sourced from Tokens Studio (DTCG JSON) and compiled with
-Style Dictionary v4. See [`packages/ds/tokens/`](./packages/ds/tokens)
-for the source and
-[`packages/ds/scripts/build-tokens.mjs`](./packages/ds/scripts/build-tokens.mjs)
-for the build.
+There is **no token build step**. The Tokens Studio / Style Dictionary
+pipeline was removed on 2026-08-31; the stylesheets under
+[`packages/ds/src/assets/css/tokens/`](./packages/ds/src/assets/css/tokens)
+(and their SCSS twins) are now plain hand-maintained source that you edit
+directly. See the "Design tokens" section of [`CLAUDE.md`](./CLAUDE.md).
 
 ---
 
@@ -157,7 +161,7 @@ Around 80 component families, all prefixed `Origam*`:
 |--------------|---------------------------------------------------------------------------|
 | Forms        | `OrigamTextField`, `OrigamSelect`, `OrigamCheckbox`, `OrigamRadio`, `OrigamSwitch`, `OrigamSliderField`, `OrigamRatingField`, `OrigamDatePickerField`, `OrigamColorPickerField`, `OrigamFileField`, `OrigamPasswordField`, `OrigamOtpInputField`, `OrigamNumberField`, `OrigamForm` |
 | Navigation   | `OrigamToolbar`, `OrigamBottomNav`, `OrigamBreadcrumb`, `OrigamDrawer`, `OrigamPagination`, `OrigamStepper`, `OrigamTreeview` |
-| Layout       | `OrigamApp`, `OrigamMain`, `OrigamSection`, `OrigamLayout`, `OrigamGrids`, `OrigamDivider`, `OrigamSystemBar` |
+| Layout       | `OrigamApp`, `OrigamMain`, `OrigamLayout`, `OrigamGrids`, `OrigamDivider`, `OrigamSystemBar` |
 | Feedback     | `OrigamAlert`, `OrigamSnackbar`, `OrigamProgress`, `OrigamLoader`, `OrigamSkeleton`, `OrigamBadge`, `OrigamMessages` |
 | Overlay      | `OrigamDialog`, `OrigamMenu`, `OrigamTooltip`, `OrigamSheet`, `OrigamContextualMenu`, `OrigamOverlay`, `OrigamConfirmWrapper` |
 | Data         | `OrigamDataTable`, `OrigamDataList`, `OrigamTable`, `OrigamCarousel`, `OrigamTimeline`, `OrigamExpansionPanel`, `OrigamVirtualScroll`, `OrigamInfiniteScroll` |
@@ -213,7 +217,7 @@ if (css.value.containerQueries) {
 ```
 
 The full feature matrix lives in
-[`packages/ds/src/composables/CssSupport/cssSupport.composable.ts`](./packages/ds/src/composables/CssSupport/cssSupport.composable.ts).
+[`packages/ds/src/composables/Commons/cssSupport.composable.ts`](./packages/ds/src/composables/Commons/cssSupport.composable.ts).
 Never call `CSS.supports()` directly — always go through `useCssSupport()`
 so the matrix stays auditable.
 
@@ -266,7 +270,6 @@ The repo is a pnpm monorepo with six packages.
 | [`packages/stories`](./packages/stories) | Histoire stories (~208 specs, used as the visual sandbox). | private |
 | [`packages/docs`](./packages/docs) | VitePress documentation site. | private |
 | [`packages/tests`](./packages/tests) | Vitest (unit) + Playwright (e2e + a11y) suites. | private |
-| [`packages/figma-plugin`](./packages/figma-plugin) | Figma plugin syncing Origam tokens ⇄ Figma Variables. | private |
 
 Cross-package dependencies use pnpm's `workspace:*` protocol.
 `packages/ds` is the only package published to npm; tags trigger
@@ -278,9 +281,9 @@ Cross-package dependencies use pnpm's `workspace:*` protocol.
 
 Engineering principles, naming conventions, the classes-first contract,
 and the "test-as-you-build" rule live in [`CLAUDE.md`](./CLAUDE.md).
-Token authoring (Tokens Studio JSON, Style Dictionary pipeline) lives in
-[`packages/ds/tokens/`](./packages/ds/tokens) and is documented in
-[`packages/ds/tokens/CHANGELOG.md`](./packages/ds/tokens/CHANGELOG.md).
+Token authoring is now direct editing of the stylesheets under
+[`packages/ds/src/assets/`](./packages/ds/src/assets) — see the "Design
+tokens" section of [`CLAUDE.md`](./CLAUDE.md).
 
 ### Local setup (~5 min on a fresh clone)
 
@@ -300,7 +303,7 @@ are git-ignored, so the three lockfiles never drift against each other
 in version control.
 
 ```bash
-git clone https://github.com/arnaudprioul/origam.git
+git clone https://github.com/Elyseranet/origam.git
 cd origam
 
 # Recommended:
@@ -327,7 +330,6 @@ also works.
 |---|---|---|---|
 | Build the library | `pnpm -F origam build` | `npm run build --workspace=origam` | `yarn workspace origam build` |
 | Build every package | `pnpm -r build` | `npm run build --workspaces` | `yarn workspaces run build` |
-| Rebuild tokens | `pnpm -F origam tokens:build` | `npm run tokens:build --workspace=origam` | `yarn workspace origam tokens:build` |
 | Run unit tests | `pnpm -F @origam/tests test:unit:run` | `npm run test:unit:run --workspace=@origam/tests` | `yarn workspace @origam/tests test:unit:run` |
 | Run e2e tests | `pnpm -F @origam/tests test:e2e` | (idem) | (idem) |
 | Run a11y tests | `pnpm -F @origam/tests test:a11y` | (idem) | (idem) |

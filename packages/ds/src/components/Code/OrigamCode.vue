@@ -1,6 +1,7 @@
 <template>
 	<component
-			:is="props.tag"
+			:is="tag"
+			:id="id"
 			v-contrast
 			:class="codeClasses"
 			:style="codeStyles"
@@ -43,7 +44,13 @@
 
 		<span v-if="compact && prompt" class="origam-code__prompt" aria-hidden="true" data-cy="origam-code-prompt">{{ prompt }}</span>
 
-		<div class="origam-code__scroller" :style="scrollerStyles">
+		<div
+				class="origam-code__scroller"
+				:aria-label="scrollerLabel"
+				:style="scrollerStyles"
+				role="region"
+				tabindex="0"
+		>
 			<pre class="origam-code__pre" :class="preClasses"><code
 					ref="codeRef"
 					class="origam-code__code"
@@ -77,31 +84,28 @@
 >
 	import { computed, onMounted, ref, toRef, useSlots, watch } from 'vue'
 
-	import { OrigamBtn } from '../../components'
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
 
-	import {
-		useBorder,
-		useBothColor,
-		useClipboard,
-		useCode,
-		useDimension,
-		useElevation,
-		useLocale,
-		useDefaults,
-		useMargin,
-		usePadding,
-		useRounded,
-		useTypography
-	} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useClipboard } from '../../composables/Clipboard/clipboard.composable'
+	import { useCode } from '../../composables/Code/code.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import { CODE_DEFAULTS } from '../../consts'
-	import { CODE_LANG } from '../../enums'
+	import { CODE_DEFAULTS } from '../../consts/Code/code.const'
+	import { CODE_LANG } from '../../enums/Code/code.enum'
 
-	import type { ICodeProps } from '../../interfaces'
+	import type { ICodeEmits, ICodeProps, ICodeSlots } from '../../interfaces/Code/code.interface'
 
-	import { parseHighlightLines } from '../../utils'
+	import { parseHighlightLines } from '../../utils/Code/parse-highlight-lines.util'
 
 	/*********************************************************
 	 * Global
@@ -121,7 +125,7 @@
 	 * follow `<html data-theme="…">` automatically — no JS re-render on
 	 * theme switch.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<ICodeProps>(), {
+	const props = withDefaults(defineProps<ICodeProps>(), {
 		tag: 'figure',
 		lang: CODE_LANG.PLAINTEXT,
 		lineNumbers: false,
@@ -135,21 +139,9 @@
 		filename: undefined
 	})
 
-	// `useDefaults` resolves each prop against theme.components['origam-code']
-	// (OrigamBtn pattern) — without this, the theme's `{ tag: 'figure',
-	// rounded: 'lg', compact: true }` config was a silent no-op.
-	//
-	// NOTE: the root `<component :is="…">` reads `props.tag` explicitly
-	// (not bare `tag`) — `<script setup>` auto-exposes every `defineProps()`
-	// key to the template pointing at the raw, UNRESOLVED `$props`,
-	// independent of this `props` variable. See OrigamTable.vue for the
-	// full writeup. `headerTag` (nested `<component :is>`) is already safe:
-	// it's a `computed(() => props.tag === 'figure' ? …)`.
-	const props = useDefaults(_props)
+	const emit = defineEmits<ICodeEmits>()
 
-	const emit = defineEmits<{
-		(e: 'copy', code: string): void
-	}>()
+	defineSlots<ICodeSlots>()
 
 	const slots = useSlots()
 
@@ -166,6 +158,44 @@
 	const { typographyStyles } = useTypography(props, 'code')
 	const { highlight } = useCode()
 	const { t } = useLocale()
+
+	/*********************************************************
+	 * Zone defilante — accessibilite (#535)
+	 *
+	 * @description
+	 * ⛔ Un conteneur qui defile doit etre atteignable au clavier : sans
+	 * `tabindex`, un utilisateur qui ne se sert pas d'une souris ne peut pas
+	 * lire un bloc de code plus large que sa colonne. C'est la regle axe
+	 * `scrollable-region-focusable`, et c'etait la seconde violation relevee
+	 * par la suite a11y marketing du 2026-08-31.
+	 *
+	 * @description
+	 * `role="region"` accompagne le `tabindex` : une zone focusable sans nom
+	 * accessible est annoncee « groupe, vide » par un lecteur d'ecran. Le
+	 * couple role + `aria-label` la nomme.
+	 ********************************************************/
+	/*********************************************************
+	 * @description
+	 * ⛔ Le nom etait la chaine statique « Code block, scrollable region »
+	 * pour TOUTES les instances. Une page qui en aligne cinq presentait donc
+	 * cinq regions rigoureusement homonymes dans la liste des reperes d'un
+	 * lecteur d'ecran — un nom qui ne distingue rien ne nomme rien. La doc
+	 * annoncait deja « an `aria-label` that includes the filename (or
+	 * language fallback) » ; c'est cette promesse qui est ici tenue.
+	 *
+	 * @description
+	 * Ordre de resolution : `filename` s'il est fourni (c'est ce que
+	 * l'auteur a choisi de montrer dans l'en-tete), sinon `lang` tant qu'il
+	 * n'est pas `plaintext` (qui ne distingue rien non plus), sinon le nom
+	 * generique d'origine.
+	 ********************************************************/
+	const scrollerLabel = computed(() => {
+		if (props.filename) return t('origam.code.scroller_aria_label_filename', {filename: props.filename})
+
+		if (props.lang && props.lang !== CODE_LANG.PLAINTEXT) return t('origam.code.scroller_aria_label_lang', {lang: props.lang})
+
+		return t('origam.code.scroller_aria_label')
+	})
 
 	/*********************************************************
 	 * Source extraction — prop wins over slot, slot used as fallback.
@@ -319,12 +349,12 @@
 	 * Keys live under `origam.code.*` in the shipped locale messages.
 	 ********************************************************/
 	const copyButtonLabel = computed(() => copied.value
-		? t('origam.code.copied', 'Copied!')
-		: t('origam.code.copy', 'Copy')
+		? t('origam.code.copied')
+		: t('origam.code.copy')
 	)
 	const copyAriaLabel = computed(() => copied.value
-		? t('origam.code.copied_aria_label', 'Code copied to clipboard')
-		: t('origam.code.copy_aria_label', 'Copy code to clipboard')
+		? t('origam.code.copied_aria_label')
+		: t('origam.code.copy_aria_label')
 	)
 
 	const copyBtnStyle = {
@@ -367,7 +397,8 @@
 		elevationClasses.value,
 		paddingClasses.value,
 		marginClasses.value,
-		colorClasses.value
+		colorClasses.value,
+		props.class
 	])
 
 	const codeStyles = computed(() => [
@@ -377,7 +408,8 @@
 		marginStyles.value,
 		colorStyles.value,
 		dimensionStyles.value,
-		typographyStyles.value
+		typographyStyles.value,
+		props.style
 	])
 
 	const preClasses = computed(() => ({

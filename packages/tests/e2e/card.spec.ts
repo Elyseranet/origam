@@ -29,7 +29,8 @@ import type { Page } from '@playwright/test'
  *  18  → Slots - Text
  *  19  → Prop — elevation custom (static demo of the free-form box-shadow escape hatch)
  *  20  → Prop — border per-side (static demo of borderTop/Right/Bottom/Left + *Color, issue #215)
- *  21  → Default (playground)
+ *  21  → Prop — loadingText (static demo: default 'origam.loading' key vs a custom one)
+ *  22  → Default (playground)
  *
  * NE PAS utiliser waitForLoadState('networkidle') — Histoire garde un websocket
  * HMR ouvert → networkidle ne résout jamais → timeout garanti.
@@ -83,19 +84,19 @@ test.describe('OrigamCard', () => {
 
     test.describe('Design', () => {
         test('renders the card root with BEM class origam-card', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam-card/)
         })
 
         test('bgColor=primary applies the utility class origam--bg-primary', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam--bg-primary/)
         })
 
         test('bgColor=primary produces a non-transparent background from the token', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             const card = sandbox.locator('.origam-card').first()
             const bg = await card.evaluate(el => getComputedStyle(el).backgroundColor)
@@ -105,34 +106,45 @@ test.describe('OrigamCard', () => {
         })
 
         test('title prop renders text inside origam-card__header', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card__header')).toBeVisible({ timeout: 5000 })
             await expect(sandbox.locator('.origam-card__header')).toContainText('Card title')
         })
 
         test('text prop renders inside origam-card__text', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card__text')).toContainText('Body text.')
         })
 
         test('default density class is applied (density-default)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam-card--density-default/)
         })
 
         test('no rounded modifier class in default init-state', async ({ page }) => {
             // Verifying absence guards against spurious class emission.
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             const classes = await sandbox.locator('.origam-card').first().getAttribute('class') ?? ''
             expect(classes).not.toContain('origam-card--rounded ')
         })
 
-        test('no flat modifier class in default init-state', async ({ page }) => {
-            await page.goto(variantUrl(0))
+        test('flat modifier class is ABSENT in default init-state (#641 — theme no longer forces flat)', async ({ page }) => {
+            // The Design variant leaves `flat` unset in init-state. Until
+            // #641, this resolved through the ADR-005 theme-props resolver
+            // against the origam theme, which pinned `'origam-card': { ...,
+            // flat: true }` (packages/ds/src/themes/origam.theme.ts, since
+            // commit 9a082b90) — making EVERY default card flat, and with it
+            // silently killing `update:hover` / `origam-card--hover` for
+            // every consumer (`isHoverable = !disabled && !flat`, see
+            // OrigamCard.hover-gating.spec.ts). The theme no longer sets
+            // `flat`, so a card with no explicit `flat` prop now falls back
+            // to OrigamCard's own component-level default, which is
+            // `undefined` — i.e. NOT flat, and hoverable.
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             const classes = await sandbox.locator('.origam-card').first().getAttribute('class') ?? ''
             expect(classes).not.toContain('origam-card--flat')
@@ -146,20 +158,20 @@ test.describe('OrigamCard', () => {
 
     test.describe('State', () => {
         test('renders card root with bgColor=primary utility class', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam--bg-primary/)
         })
 
         test('resting state: no active modifier class', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             const classes = await sandbox.locator('.origam-card').first().getAttribute('class') ?? ''
             expect(classes).not.toContain('origam-card--active')
         })
 
         test('card underlay is always rendered as a span', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card__underlay')).toBeAttached()
         })
@@ -173,34 +185,34 @@ test.describe('OrigamCard', () => {
 
     test.describe('Functional', () => {
         test('renders card with title in functional variant', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card__header')).toContainText('Card')
         })
 
         test('enabled=false: no loading class in initial state', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             const classes = await sandbox.locator('.origam-card').first().getAttribute('class') ?? ''
             expect(classes).not.toContain('origam-card--loading')
         })
 
         test('disabled=false: no disabled class in initial state', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             const classes = await sandbox.locator('.origam-card').first().getAttribute('class') ?? ''
             expect(classes).not.toContain('origam-card--disabled')
         })
 
         test('disabled=false: pointer-events are not blocked', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             const pe = await sandbox.locator('.origam-card').first().evaluate(el => getComputedStyle(el).pointerEvents)
             expect(pe).not.toBe('none')
         })
 
         test('default tag renders as div element', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             const tag = await sandbox.locator('.origam-card').first().evaluate(el => el.tagName.toLowerCase())
             expect(tag).toBe('div')
@@ -213,12 +225,12 @@ test.describe('OrigamCard', () => {
 
     test.describe('Events - click:prepend', () => {
         test('card with prepend icon is visible', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             await expectCardVisible(page)
         })
 
         test('prepend area is rendered inside card header', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card__header')).toBeVisible({ timeout: 5000 })
             await expect(sandbox.locator('.origam-card__header .origam-card-header__prepend')).toBeVisible({ timeout: 5000 })
@@ -227,12 +239,12 @@ test.describe('OrigamCard', () => {
 
     test.describe('Events - click:append', () => {
         test('card with append icon is visible', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             await expectCardVisible(page)
         })
 
         test('append area is rendered inside card header', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card__header .origam-card-header__append')).toBeVisible({ timeout: 5000 })
         })
@@ -240,7 +252,7 @@ test.describe('OrigamCard', () => {
 
     test.describe('Events - update:active', () => {
         test('card for active event is visible', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam-card/)
         })
@@ -248,7 +260,7 @@ test.describe('OrigamCard', () => {
 
     test.describe('Events - update:hover', () => {
         test('card for hover event is visible', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam-card/)
         })
@@ -260,7 +272,7 @@ test.describe('OrigamCard', () => {
 
     test.describe('Slots - Default', () => {
         test('custom default slot content renders inside origam-card__content', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card__content')).toBeVisible({ timeout: 5000 })
             await expect(sandbox.locator('.origam-card__content')).toContainText('Custom slot content')
@@ -269,7 +281,7 @@ test.describe('OrigamCard', () => {
 
     test.describe('Slots - Header', () => {
         test('custom header slot content renders inside card', async ({ page }) => {
-            await page.goto(variantUrl(8))
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card')).toContainText('Custom header slot')
         })
@@ -277,13 +289,13 @@ test.describe('OrigamCard', () => {
 
     test.describe('Slots - Footer', () => {
         test('footer slot renders origam-card__footer element', async ({ page }) => {
-            await page.goto(variantUrl(9))
+            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card__footer')).toBeVisible({ timeout: 5000 })
         })
 
         test('footer slot renders action buttons inside card', async ({ page }) => {
-            await page.goto(variantUrl(9))
+            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card__footer .origam-btn').first()).toBeVisible({ timeout: 5000 })
         })
@@ -291,7 +303,7 @@ test.describe('OrigamCard', () => {
 
     test.describe('Slots - Loader', () => {
         test('custom loader slot renders when loading=true', async ({ page }) => {
-            await page.goto(variantUrl(10))
+            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card--loading')).toBeVisible({ timeout: 5000 })
             await expect(sandbox.locator('.origam-card')).toContainText('Loading...')
@@ -300,13 +312,13 @@ test.describe('OrigamCard', () => {
 
     test.describe('Slots - Asset', () => {
         test('asset slot renders origam-card__asset element', async ({ page }) => {
-            await page.goto(variantUrl(11))
+            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card__asset')).toBeVisible({ timeout: 5000 })
         })
 
         test('asset slot renders custom content', async ({ page }) => {
-            await page.goto(variantUrl(11))
+            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card__asset')).toContainText('Custom asset placeholder')
         })
@@ -314,14 +326,14 @@ test.describe('OrigamCard', () => {
 
     test.describe('Slots - Wrapper', () => {
         test('custom wrapper slot replaces default card inner structure', async ({ page }) => {
-            await page.goto(variantUrl(12))
+            await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card')).toContainText('Custom wrapper content')
         })
 
         test('when wrapper slot is used, origam-card__content is absent', async ({ page }) => {
             // The #wrapper slot replaces the entire inner structure including __content.
-            await page.goto(variantUrl(12))
+            await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card__content')).not.toBeAttached()
         })
@@ -329,7 +341,7 @@ test.describe('OrigamCard', () => {
 
     test.describe('Slots - Header.prepend', () => {
         test('header.prepend slot renders a custom icon in the header', async ({ page }) => {
-            await page.goto(variantUrl(13))
+            await page.goto(variantUrl(13), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card__header')).toBeVisible({ timeout: 5000 })
             await expect(sandbox.locator('.origam-card__header .origam-icon')).toBeVisible({ timeout: 5000 })
@@ -338,7 +350,7 @@ test.describe('OrigamCard', () => {
 
     test.describe('Slots - Header.append', () => {
         test('header.append slot renders a custom icon in the header', async ({ page }) => {
-            await page.goto(variantUrl(14))
+            await page.goto(variantUrl(14), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card__header')).toBeVisible({ timeout: 5000 })
             await expect(sandbox.locator('.origam-card__header .origam-icon')).toBeVisible({ timeout: 5000 })
@@ -347,7 +359,7 @@ test.describe('OrigamCard', () => {
 
     test.describe('Slots - Header.title', () => {
         test('header.title slot renders custom title markup', async ({ page }) => {
-            await page.goto(variantUrl(15))
+            await page.goto(variantUrl(15), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card__header')).toContainText('Custom title')
         })
@@ -355,7 +367,7 @@ test.describe('OrigamCard', () => {
 
     test.describe('Slots - Header.subtitle', () => {
         test('header.subtitle slot renders custom subtitle markup', async ({ page }) => {
-            await page.goto(variantUrl(16))
+            await page.goto(variantUrl(16), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card__header')).toContainText('Custom subtitle text')
         })
@@ -371,7 +383,7 @@ test.describe('OrigamCard', () => {
             // section is never mounted and the slot content is silently ignored.
             // The card root itself is still rendered (origam-card class present).
             // Asserting on the card's existence guards against structural regression.
-            await page.goto(variantUrl(17))
+            await page.goto(variantUrl(17), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-card').first()).toBeAttached({ timeout: 12000 })
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam-card/)
@@ -383,7 +395,7 @@ test.describe('OrigamCard', () => {
             // Variant 18: the #text slot replaces the internal <origam-card-text> component.
             // When using the slot, the .origam-card__text class is NOT emitted (it lives on
             // the replaced component). Assert on the card container containing the text.
-            await page.goto(variantUrl(18))
+            await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card')).toContainText('Custom text slot content')
         })
@@ -397,7 +409,7 @@ test.describe('OrigamCard', () => {
 
     test.describe('Prop — elevation custom', () => {
         test('custom box-shadow string is emitted verbatim on the card root', async ({ page }) => {
-            await page.goto(variantUrl(19))
+            await page.goto(variantUrl(19), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             const card = sandbox.locator('.origam-card').first()
             await expect(card).toBeVisible({ timeout: 8000 })
@@ -416,7 +428,7 @@ test.describe('OrigamCard', () => {
         test('custom box-shadow does NOT resolve to a --origam-shadow-* token (regression guard)', async ({ page }) => {
             // Before the fix, `parseInt('0 4px 12px rgba(...)', 10)` read the
             // leading `0` and silently resolved to the `none` rung — no shadow.
-            await page.goto(variantUrl(19))
+            await page.goto(variantUrl(19), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             const card = sandbox.locator('.origam-card').first()
             const styleAttr = await card.getAttribute('style')
@@ -432,7 +444,7 @@ test.describe('OrigamCard', () => {
 
     test.describe('Prop — border per-side', () => {
         test('emits independent border-{side}-width declarations per side', async ({ page }) => {
-            await page.goto(variantUrl(20))
+            await page.goto(variantUrl(20), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             const card = sandbox.locator('.origam-card').first()
             await expect(card).toBeVisible({ timeout: 8000 })
@@ -454,7 +466,7 @@ test.describe('OrigamCard', () => {
         })
 
         test('resolves a distinct border-{side}-color per side from semantic intents', async ({ page }) => {
-            await page.goto(variantUrl(20))
+            await page.goto(variantUrl(20), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             const card = sandbox.locator('.origam-card').first()
 
@@ -481,7 +493,7 @@ test.describe('OrigamCard', () => {
             // The four per-side colors are all distinct, so they cannot collapse
             // into a shorthand: their presence as literal physical longhands proves
             // useBorder emits `border-{side}-color`, never a logical property.
-            await page.goto(variantUrl(20))
+            await page.goto(variantUrl(20), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             const card = sandbox.locator('.origam-card').first()
             const styleAttr = await card.getAttribute('style')
@@ -503,26 +515,26 @@ test.describe('OrigamCard', () => {
 
     test.describe('Default (Playground)', () => {
         test('playground renders card root with origam-card class', async ({ page }) => {
-            await page.goto(variantUrl(21))
+            await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam-card/)
         })
 
         test('playground bgColor=primary applies utility class', async ({ page }) => {
-            await page.goto(variantUrl(21))
+            await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam--bg-primary/)
         })
 
         test('playground renders title and text', async ({ page }) => {
-            await page.goto(variantUrl(21))
+            await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card__header')).toContainText('Card title')
             await expect(sandbox.locator('.origam-card__text')).toContainText('Body text.')
         })
 
         test('playground has density-default modifier class', async ({ page }) => {
-            await page.goto(variantUrl(21))
+            await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam-card--density-default/)
         })
@@ -534,14 +546,14 @@ test.describe('OrigamCard', () => {
 
     test.describe('Non-regression — rounded BEM modifiers (Design variant)', () => {
         test('origam-card--rounded-shaped absent from default init-state', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             const classes = await sandbox.locator('.origam-card').first().getAttribute('class') ?? ''
             expect(classes).not.toContain('origam-card--rounded-shaped')
         })
 
         test('origam-card--rounded-shaped-invert absent from default init-state', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             const classes = await sandbox.locator('.origam-card').first().getAttribute('class') ?? ''
             expect(classes).not.toContain('origam-card--rounded-shaped-invert')
@@ -557,7 +569,7 @@ test.describe('OrigamCard', () => {
             // Pre-fix border rungs were read via a singular shorthand; the fix
             // (per-side reads) is guarded by verifying the default init-state
             // produces no border class spuriously.
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             const classes = await sandbox.locator('.origam-card').first().getAttribute('class') ?? ''
             expect(classes).not.toContain('origam-card--border-top')

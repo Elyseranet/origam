@@ -6,14 +6,13 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<IDataTableProps>>({ color: undefined, bgColor: undefined })"
+				:init-state="() => useStoryInitState<Partial<IDataTableProps>>({ color: undefined })"
 		>
 			<template #default="{ state }">
 				<origam-data-table
 						:headers="sortableHeaders"
 						:items="items"
 						:color="state.color"
-						:bg-color="state.bgColor"
 						:density="state.density"
 						:rounded="state.rounded"
 						:elevation="state.elevation"
@@ -31,7 +30,6 @@
 			<template #controls="{ state }">
 				<StoryGroup title="Color">
 					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
-					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Sizing">
 					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
@@ -174,14 +172,6 @@
 					:items="items"
 					show-expand
 					@update:expanded="logEvent('update:expanded', $event)"
-			/>
-		</Variant>
-
-		<Variant title="Events - update:groupBy">
-			<origam-data-table
-					:headers="headers"
-					:items="items"
-					@update:group-by="logEvent('update:groupBy', $event)"
 			/>
 		</Variant>
 
@@ -329,13 +319,6 @@
 			</origam-data-table>
 		</Variant>
 
-		<Variant title="Prop — headers & items (basic dataset)">
-			<origam-data-table
-					:headers="headers"
-					:items="items"
-			/>
-		</Variant>
-
 		<Variant
 				title="Prop — multiSort & mustSort"
 				:init-state="() => useStoryInitState<Partial<IDataTableProps>>({ multiSort: false, mustSort: false })"
@@ -428,14 +411,6 @@
 			</template>
 		</Variant>
 
-		<Variant title="Slot — top">
-			<origam-data-table :headers="headers" :items="items">
-				<template #top>
-					<div style="padding: 12px; font-weight: bold;">User list</div>
-				</template>
-			</origam-data-table>
-		</Variant>
-
 		<Variant
 				title="Prop — loading (all shapes)"
 				:init-state="() => useStoryInitState<ILoadingState>({ enabled: true, kind: 'line', progress: 42, circularSize: 24 })"
@@ -482,7 +457,6 @@
 			<template #controls="{ state }">
 				<StoryGroup title="Design">
 					<HstSelect v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
-					<HstSelect v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
 					<HstSelect v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
 					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>

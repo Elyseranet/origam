@@ -85,7 +85,7 @@
 									name="toolbar"
 									v-bind="toolbarSlotPayload"
 							>
-								<origam-rich-toolbar
+								<origam-textarea-field-rich-toolbar
 										v-if="hasToolbar"
 										:items="resolvedToolbar"
 										:active="richActive"
@@ -118,7 +118,7 @@
 									name="toolbar"
 									v-bind="toolbarSlotPayload"
 							>
-								<origam-rich-toolbar
+								<origam-textarea-field-rich-toolbar
 										v-if="hasToolbar"
 										:items="resolvedToolbar"
 										:active="richActive"
@@ -261,57 +261,55 @@
 		toRef,
 		useAttrs,
 		useSlots,
-		watch,
-		watchEffect
+		watch
 	} from 'vue'
-	import { OrigamCounter, OrigamField, OrigamInput } from '../../components'
+	import OrigamCounter from '../Counter/OrigamCounter.vue'
+	import OrigamField from '../Field/OrigamField.vue'
+	import OrigamInput from '../Input/OrigamInput.vue'
 
-	import OrigamRichToolbar from './OrigamRichToolbar.vue'
+	import OrigamTextareaFieldRichToolbar from './OrigamTextareaFieldRichToolbar.vue'
 
-	import {
-	useAdjacent,
-	useAdjacentInner,
-	useDefaults,
-	useDragResizer,
-	useFocus,
-	useLocale,
-	useProps,
-	useStyle,
-	useTextareaRich,
-	useTypography,
-	useVModel
-} from '../../composables'
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useAdjacentInner } from '../../composables/Commons/adjacentInner.composable'
+	import { useDragResizer } from '../../composables/Commons/dragResizer.composable'
+	import { useFocus } from '../../composables/Commons/focus.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTextareaRich } from '../../composables/TextareaField/textarea-field-rich.composable'
+	import { useTheme } from '../../composables/Commons/theme.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { DEFAULT_TOOLBAR } from '../../consts'
+	import { DEFAULT_TOOLBAR } from '../../consts/TextareaField/textarea-field.const'
 
-	import { vIntersect } from '../../directives'
+	import vIntersect from '../../directives/Intersect/intersect.directive'
 
-	import {
-		AXIS,
-		DENSITY,
-		MDI_ICONS,
-		TEXTAREA_MODE,
-		TEXTAREA_OUTPUT,
-		TEXTAREA_TOOLBAR_POSITION
-	} from '../../enums'
+	import { AXIS } from '../../enums/Commons/drag.enum'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { TEXTAREA_MODE, TEXTAREA_OUTPUT } from '../../enums/TextareaField/textarea-field.enum'
+	import { TEXTAREA_TOOLBAR_POSITION } from '../../enums/TextareaField/textarea-field-rich-toolbar.enum'
 
-	import type { ITextareaFieldProps, ITextareaFieldSlots} from '../../interfaces'
+	import type { ITextareaFieldProps, ITextareaFieldSlots } from '../../interfaces/TextareaField/textarea-field.interface'
 
 	import type { ITextareaFieldEmits } from '../../interfaces/TextareaField/textarea-field.interface'
 
-	import type {
-		TOrigamField,
-		TOrigamInput,
-		TTextareaToolbarCommand
-	} from '../../types'
+	import type { TOrigamField } from '../../types/Field/field.type'
+	import type { TOrigamInput } from '../../types/Input/input.type'
+	import type { TTextareaToolbarCommand } from '../../types/TextareaField/textarea-field-rich-toolbar.type'
 
-	import { clamp, convertToUnit, filterInputAttrs, forwardRefs, htmlToMarkdown, sanitizeHtml } from '../../utils'
+	import { clamp, convertToUnit } from '../../utils/Commons/commons.util'
+	import { filterInputAttrs } from '../../utils/Input/input.util'
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
+	import { htmlToMarkdown } from '../../utils/TextareaField/html-to-markdown.util'
+	import { sanitizeHtml } from '../../utils/TextareaField/sanitize-html.util'
 
 	/*********************************************************
 	 * Global
 	 ********************************************************/
 
-	const _props = withDefaults(defineProps<ITextareaFieldProps>(), {
+	const props = withDefaults(defineProps<ITextareaFieldProps>(), {
 		density: DENSITY.DEFAULT,
 		clearIcon: MDI_ICONS.CLOSE_CIRCLE_OUTLINE,
 		rounded: true,
@@ -321,8 +319,6 @@
 		toolbar: () => DEFAULT_TOOLBAR as ReadonlyArray<TTextareaToolbarCommand>,
 		toolbarPosition: TEXTAREA_TOOLBAR_POSITION.TOP
 	})
-	const props = useDefaults(_props)
-
 	const emits = defineEmits<ITextareaFieldEmits>()
 
 	defineSlots<ITextareaFieldSlots>()
@@ -550,14 +546,30 @@
 	 * @description
 	 *
 	 ********************************************************/
-	const rows = ref(+(props.rows ?? 3))
+	/*********************************************************
+	 *  `rows` IS A COMPUTED, NOT A REF SEEDED FROM `props.rows`
+	 *
+	 *  @description
+	 *  `ref(+(props.rows ?? 3))` read `props.rows` ONCE, synchronously, at
+	 *  the top level of `setup()` — before Vue's `beforeCreate` hook runs,
+	 *  which is where the ADR-005 theme resolver patches `instance.props`.
+	 *  That snapshot never saw a theme naming `rows`, and the accompanying
+	 *  `watchEffect` only re-synced it while `!props.autoGrow`, so nothing
+	 *  ever re-read the prop on a STATIC mount with no later prop write.
+	 *  Splitting the two concerns removes the eager read entirely: the
+	 *  autoGrow measurement keeps its own plain ref (`autoGrowRows`, never
+	 *  derived from a prop, nothing to snapshot), and `rows` becomes a
+	 *  `computed` that reads `props.rows` LAZILY — its first evaluation
+	 *  happens at render, already past `beforeCreate`.
+	 ********************************************************/
+	const autoGrowRows = ref(3)
+
+	const rows = computed(() => {
+		return props.autoGrow ? autoGrowRows.value : +(props.rows ?? 3)
+	})
 
 	const isUniqueRow = computed(() => {
 		return rows.value === 1
-	})
-
-	watchEffect(() => {
-		if (!props.autoGrow) rows.value = +(props.rows ?? 3)
 	})
 
 	const parseCssFloat = (value: string, fallback = 0): number => {
@@ -628,7 +640,17 @@
 		})
 	}
 
-	watch([model, () => props.maxRows, () => props.density, () => props.rows], () => {
+	// `theme` and `mode` are watched ALONGSIDE the props, and that is required,
+	// not defensive. `density` is named by the theme's `components` block, so
+	// its slot on `instance.props` is an accessor installed by the theme-props
+	// resolver AFTER `setup()` has run — a watcher created here therefore holds
+	// no dependency on the theme, and a brand/mode swap that changes `density`
+	// would never recompute the control height. Watching the theme refs closes
+	// that path with no extra machinery. Measured: the prop alone never fires
+	// on a swap; prop+theme fires with the correct value.
+	const { theme: activeTheme, mode: activeMode } = useTheme()
+
+	watch([model, () => props.maxRows, () => props.density, () => props.rows, activeTheme, activeMode], () => {
 		calculateInputHeight()
 	}, {immediate: true})
 	watch(minHeight, () => {
@@ -650,7 +672,7 @@
 
 			if (lineHeight <= 0) return
 
-			rows.value = Math.floor((newHeight - padding) / lineHeight)
+			autoGrowRows.value = Math.floor((newHeight - padding) / lineHeight)
 		})
 	})
 
@@ -726,8 +748,20 @@
 	 * Forwarded props
 	 ********************************************************/
 
+	/*********************************************************
+	 * inputProps
+	 *
+	 * @description
+	 * #421 — `id` is deliberately NOT filtered out: OrigamInput needs it to
+	 * build `<id>-messages`, the target of its own `aria-describedby`, and
+	 * to feed its default slot's `id` (consumed by OrigamField, then the
+	 * real `<textarea>`). Filtering it forced OrigamInput to invent an id,
+	 * so a consumer passing `id` got a `<textarea>` unreachable by
+	 * `getElementById` and a `<label for>` pointing nowhere — same fix as
+	 * OrigamTextField (ce365b10).
+	 ********************************************************/
 	const inputProps = computed(() => {
-		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused', 'centerAffix'])
+		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'focused', 'centerAffix'])
 	})
 	const fieldProps = computed(() => {
 		return origamFieldRef.value?.filterProps(props, ['class', 'id', 'style', 'active', 'dirty', 'disabled', 'focused', 'error', 'centerAffix'])
@@ -766,10 +800,31 @@
 		}
 	})
 
-	// BEM-child surface: var is read by .origam-textarea-field__rich
-	// (line-height only — rich mode). Bound directly on that element, not the root.
-	// font-size / font-weight / font-family / letter-spacing have no SCSS rule
-	// on this component → they are NOT exposed as effective props.
+	/*********************************************************
+	 * Typography — BEM-child surface (issue #501 correction)
+	 *
+	 * @description
+	 * The var is read by `.origam-textarea-field__rich` (line-height only,
+	 * rich mode). Bound directly on that element, not the root.
+	 *
+	 * @description
+	 * `fontSize` / `fontWeight` / `letterSpacing` have no rule on THIS
+	 * prefix, but they are NOT inert. `inputProps` / `fieldProps` below
+	 * forward the full prop set to the nested `<OrigamInput>` AND
+	 * `<OrigamField>` (which forwards again to `<OrigamLabel>`).
+	 *
+	 * @description
+	 * `fontWeight` additionally cascades from `<OrigamInput>`'s own painted
+	 * root `font-weight` into the rich-mode contenteditable div (CSS
+	 * inheritance, unblocked — verified via `getComputedStyle` in a live
+	 * Histoire render: 400→700 on both the input root AND the rich div).
+	 *
+	 * @description
+	 * `fontSize` / `fontWeight` / `letterSpacing` also reach the visible
+	 * field label via the Field→Label forward (see `OrigamField.vue`'s own
+	 * typography comment). Confirmed dead on every path: `fontFamily` only
+	 * (neither Input nor Label paint it).
+	 ********************************************************/
 	const { typographyStyles } = useTypography(props, 'textarea-field__rich-content')
 
 	/*********************************************************
@@ -818,7 +873,7 @@
 			&.origam-field--no-label,
 			&.origam-field--active {
 				textarea {
-					opacity: 1;
+					opacity: var(--origam-textarea-field__textarea---opacity-active, 1);
 				}
 			}
 
@@ -830,11 +885,11 @@
 		}
 
 		:deep(textarea) {
-			opacity: 0;
+			opacity: var(--origam-textarea-field__textarea---opacity, 0);
 			flex: 1;
 			min-width: 0;
-			transition: 0.15s opacity cubic-bezier(0.4, 0, 0.2, 1);
-			line-height: 1;
+			transition: var(--origam-textarea-field__textarea---transition-duration, 0.15s) opacity var(--origam-textarea-field__textarea---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
+			line-height: var(--origam-textarea-field__textarea---line-height, 1);
 
 			&:focus,
 			&:active {

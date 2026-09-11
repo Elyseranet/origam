@@ -30,7 +30,7 @@ test.describe('OrigamTable density', () => {
 
     test('compact / default / comfortable produce different cell padding', async ({ page }) => {
         // Design variant (0) has a table with density support.
-        await page.goto(variantUrl(0))
+        await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const table = sandbox.locator('.origam-table').first()
@@ -81,7 +81,7 @@ test.describe('OrigamTable fixed-header', () => {
 
     test('fixed-header class makes thead sticky', async ({ page }) => {
         // Functional variant (2) exposes the fixedHeader prop.
-        await page.goto(variantUrl(2))
+        await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const table = sandbox.locator('.origam-table').first()
@@ -97,7 +97,7 @@ test.describe('OrigamTable fixed-header', () => {
     })
 
     test('wrapper overflow-y is auto when fixed-header is active', async ({ page }) => {
-        await page.goto(variantUrl(2))
+        await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const table = sandbox.locator('.origam-table').first()
@@ -117,7 +117,7 @@ test.describe('OrigamTable visual variants', () => {
     test.setTimeout(45000)
 
     test('rounded class applies border-radius', async ({ page }) => {
-        await page.goto(variantUrl(2))
+        await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const table = sandbox.locator('.origam-table').first()

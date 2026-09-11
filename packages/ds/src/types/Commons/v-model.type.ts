@@ -1,4 +1,4 @@
-import type { TEventProp, TInnerVal } from '../../types'
+import type { TEventProp, TInnerVal } from './commons.type'
 
 import { Ref } from 'vue'
 

@@ -17,7 +17,6 @@
 						:density="state.density"
 						:rounded="state.rounded"
 						:elevation="state.elevation"
-						:flat="state.flat"
 						:prefix="state.prefix"
 						:suffix="state.suffix"
 						:label="state.label"
@@ -48,7 +47,6 @@
 				<StoryGroup title="Shape">
 					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
-					<HstCheckbox v-model="state.flat"      title="Flat"/>
 				</StoryGroup>
 				<StoryGroup title="Text Affixes">
 					<HstText v-model="state.prefix" title="Prefix"/>
@@ -90,17 +88,17 @@
 
 		<Variant
 				title="Functional"
-				:init-state="() => useStoryInitState<Partial<IFieldProps>>({ label: 'Field label', disabled: false, error: false, dirty: false, singleLine: false, inline: false, reverse: false, required: false, persistentClear: false, clearable: false })"
+				:init-state="() => useStoryInitState<Partial<IFieldProps>>({ label: 'Field label', disabled: false, error: false, dirty: false, singleLine: false, inline: false, required: false, persistentClear: false, clearable: false })"
 		>
 			<template #default="{ state }">
 				<origam-field
+						data-cy="field-functional"
 						:label="state.label"
 						:disabled="state.disabled"
 						:error="state.error"
 						:dirty="state.dirty"
 						:single-line="state.singleLine"
 						:inline="state.inline"
-						:reverse="state.reverse"
 						:required="state.required"
 						:persistent-clear="state.persistentClear"
 						:clearable="state.clearable"
@@ -108,8 +106,16 @@
 						:loading="state.loading"
 						:center-affix="state.centerAffix"
 				>
-					<template #default="{ id, onFocus, onBlur }">
-						<input :id="id" class="origam-field__input" value="Some value" @focus="onFocus" @blur="onBlur"/>
+					<template #default="{ id, onFocus, onBlur, 'aria-required': ariaRequired }">
+						<input
+								:id="id"
+								class="origam-field__input"
+								value="Some value"
+								:aria-required="ariaRequired"
+								data-cy="field-functional-input"
+								@focus="onFocus"
+								@blur="onBlur"
+						/>
 					</template>
 				</origam-field>
 			</template>
@@ -123,7 +129,6 @@
 				<StoryGroup title="Layout">
 					<HstCheckbox v-model="state.singleLine"   title="Single Line"/>
 					<HstCheckbox v-model="state.inline"       title="Inline"/>
-					<HstCheckbox v-model="state.reverse"      title="Reverse"/>
 					<HstCheckbox v-model="state.centerAffix"  title="Center Affix"/>
 				</StoryGroup>
 				<StoryGroup title="Loading">
@@ -137,11 +142,23 @@
 			</template>
 		</Variant>
 
-		<Variant title="Events - focus">
+		<Variant title="Events - update:focused">
 			<origam-field
-					label="Focus & blur events"
-					@focus="logEvent('focus', $event)"
-					@blur="logEvent('blur', $event)"
+					label="Focus the input — @focus/@blur on the root never fire, @update:focused does"
+					data-cy="field-emit-focus"
+					@update:focused="logEvent('update:focused', $event)"
+			>
+				<template #default="{ id, onFocus, onBlur }">
+					<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+				</template>
+			</origam-field>
+		</Variant>
+
+		<Variant title="Events - update:active">
+			<origam-field
+					label="Active state (focus/dirty toggles it)"
+					data-cy="field-emit-update-active"
+					@update:active="logEvent('update:active', $event)"
 			>
 				<template #default="{ id, onFocus, onBlur }">
 					<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
@@ -381,20 +398,6 @@
 			</origam-field>
 		</Variant>
 
-		<Variant title="Emit — focus & blur">
-			<origam-field
-					label="Focus / blur events"
-					variant="outlined"
-					data-cy="field-emit-focus"
-					@focus="logEvent('focus', $event)"
-					@blur="logEvent('blur', $event)"
-			>
-				<template #default="{ id, onFocus, onBlur }">
-					<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
-				</template>
-			</origam-field>
-		</Variant>
-
 		<Variant title="Prop — rounded">
 			<div style="display: flex; gap: 24px; padding: 16px;">
 				<origam-field label="Theme default" variant="outlined" data-cy="field-rounded-default">
@@ -410,6 +413,22 @@
 			</div>
 		</Variant>
 
+		<Variant title="Prop — prepended corner (regression)">
+			<div style="display: flex; gap: 24px; padding: 16px;">
+				<origam-field
+						label="Prepended, rounded large"
+						variant="outlined"
+						rounded="large"
+						:prepend-inner-icon="prependInnerIcon"
+						data-cy="field-corner-prepended"
+				>
+					<template #default="{ id, onFocus, onBlur }">
+						<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+					</template>
+				</origam-field>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IFieldProps>({ label: 'Field label', color: 'primary' })"
@@ -418,8 +437,7 @@
 				<origam-field
 						v-bind="state"
 						data-cy="field-playground"
-						@focus="logEvent('focus', $event)"
-						@blur="logEvent('blur', $event)"
+						@update:focused="logEvent('update:focused', $event)"
 						@click:clear="logEvent('click:clear', $event)"
 				>
 					<template #default="{ id, onFocus, onBlur }">
@@ -441,7 +459,6 @@
 					<HstSelect   v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
 					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
-					<HstCheckbox v-model="state.flat"      title="Flat"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.disabled"       title="Disabled"/>

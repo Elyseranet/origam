@@ -72,7 +72,7 @@ test.describe('OrigamConfirmWrapper', () => {
 	test('Slot — header — custom header renders inside wrapper', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Slot — header', { exact: true }).first().click()
+		await page.getByText('Slots - Header', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -117,5 +117,27 @@ test.describe('OrigamConfirmWrapper', () => {
 		// the outer fixture <div>. See note in `Default` test above.
 		const wrapper = sandbox.locator('[data-cy="confirm-wrapper-playground-input"]')
 		await expect(wrapper).toHaveClass(/origam-confirm-wrapper/, { timeout: 3000 })
+	})
+
+	/**
+	 * Root `id` was computed (`props.id || 'origam-confirm-wrapper-<uid>'`,
+	 * feeding `messagesId`) but never BOUND on the actual root `<div>` — the
+	 * derived value existed only in JS, the DOM never carried it (classeur
+	 * C6, gravité majeur). Verified with `variantId` navigation (no click +
+	 * networkidle round-trip needed for a static id read).
+	 */
+	test('Root carries its own id, and messagesId derives from it (id-forwarding)', async ({ page }) => {
+		const storyId = 'components-stories-confirmwrapper-origamconfirmwrapper-story-vue'
+		await page.goto(`${STORY_PATH}?variantId=${storyId}-0`, { waitUntil: 'domcontentloaded' })
+		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+		const wrapper = sandbox.locator('.origam-confirm-wrapper').first()
+		await expect(wrapper).toBeVisible({ timeout: 20000 })
+
+		const id = await wrapper.getAttribute('id')
+		expect(id).toBeTruthy()
+		expect(id).toMatch(/^origam-confirm-wrapper-/)
+
+		const messages = wrapper.locator('.origam-confirm-wrapper__details .origam-messages').first()
+		await expect(messages).toHaveAttribute('id', `${id}-messages`)
 	})
 })

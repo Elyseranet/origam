@@ -20,11 +20,7 @@ import { createOrigam } from '@origam/origam'
 // ResizeObserver re-mock
 // ---------------------------------------------------------------------------
 beforeEach(() => {
-    global.ResizeObserver = vi.fn().mockImplementation(() => ({
-        observe: vi.fn(),
-        unobserve: vi.fn(),
-        disconnect: vi.fn()
-    })) as any
+    global.ResizeObserver = vi.fn(class { observe = vi.fn(); unobserve = vi.fn(); disconnect = vi.fn() }) as any
 })
 
 // ---------------------------------------------------------------------------

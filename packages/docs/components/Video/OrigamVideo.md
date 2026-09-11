@@ -124,10 +124,11 @@ the 99% case, `<OrigamVideo>` Just Works as a drop-in.
 | Prop            | Type          | Default     | Surfaces with visual effect                                          |
 |-----------------|---------------|-------------|----------------------------------------------------------------------|
 | `fontSize`      | `TFontSize`   | `undefined` | `video__loading` (font-size), `video--error` (font-size)             |
-| `fontWeight`    | `TFontWeight` | `undefined` | No SCSS rule in current surfaces — prop accepted, var emitted, no visible effect |
-| `lineHeight`    | `TLineHeight` | `undefined` | No SCSS rule in current surfaces — prop accepted, var emitted, no visible effect |
-| `letterSpacing` | `TLetterSpacing` | `undefined` | No SCSS rule in current surfaces — prop accepted, var emitted, no visible effect |
-| `fontFamily`    | `TFontFamily` | `undefined` | No SCSS rule in current surfaces — prop accepted, var emitted, no visible effect |
+
+> `fontWeight`, `lineHeight`, `letterSpacing` and `fontFamily` were removed
+> from `IVideoProps` (issue #501) — no SCSS rule in either surface reads any
+> of them. `fontFamily` is a project-level setting configured once on
+> `OrigamApp`.
 
 > Both surfaces are state-conditional overlays. `video__loading` appears while the player is fetching media; `video--error` appears when playback fails. The CSS var is always emitted via inline `:style`; the rendered effect requires the player to be in the matching state.
 

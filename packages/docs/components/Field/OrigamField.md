@@ -101,15 +101,42 @@ The floor is capped at the control height, so an intentional pill
 </template>
 ```
 
+## Required
+
+`required` renders an asterisk (`<sup>*</sup>`) on the nested `<OrigamLabel>`
+and exposes `aria-required="true"` through the default-slot props consumed by
+every field-family component (TextField, NumberField, PasswordField,
+FileField) on their real `<input>`.
+
+```vue
+<template>
+  <OrigamField label="Email" required />
+</template>
+```
+
 ## Props — Typography (label surface)
 
-The `fontSize` prop targets the floating label only (BEM child `__label--floating`).
-It sets `--origam-field__label---font-size` on the `.origam-field__label` element,
-which the SCSS reads for the floating label text size and the JS animation scale.
+`fontSize` sets `--origam-field__label---font-size` on the `.origam-field__label`
+element directly, which the SCSS reads for the floating label text size and the
+JS animation scale.
 
-| Prop       | Type        | Default | Description                                                                       |
-|------------|-------------|---------|-----------------------------------------------------------------------------------|
-| `fontSize` | `TFontSize` | —       | Font-size token (xs · sm · md · lg · xl · 2xl · …). Sets `--origam-field__label---font-size`. When unset the theme default applies. |
+`fontWeight`, `lineHeight` and `letterSpacing` reach the SAME label element by a
+different path: `<OrigamField>` forwards its own props to the nested
+`<OrigamLabel>` (`origamLabelRef.value.filterProps(props, …)`), and `OrigamLabel`
+paints those three itself via its own `--origam-label---*` variables. Field's OWN
+`--origam-field__label---*` var for these three is written but unread — the
+visible effect comes from `OrigamLabel`'s prefix, not Field's. See issue #501.
+
+| Prop            | Type             | Default | Description                                                                       |
+|-----------------|------------------|---------|-----------------------------------------------------------------------------------|
+| `fontSize`      | `TFontSize`      | —       | Font-size token (xs · sm · md · lg · xl · 2xl · …). Sets `--origam-field__label---font-size`. When unset the theme default applies. |
+| `fontWeight`    | `TFontWeight`    | —       | Font-weight token, forwarded to the nested `<OrigamLabel>`. When unset the theme default applies. |
+| `lineHeight`    | `TLineHeight`    | —       | Line-height token, forwarded to the nested `<OrigamLabel>`. When unset the theme default applies. |
+| `letterSpacing` | `TLetterSpacing` | —       | Letter-spacing token, forwarded to the nested `<OrigamLabel>`. When unset the theme default applies. |
+
+> `fontFamily` was removed from `IFieldProps` (issue #501) — neither Field's
+> own `__label` prefix nor the forwarded `OrigamLabel` reads a `font-family`
+> var. `fontFamily` is a project-level setting configured once on `OrigamApp`.
 
 ## Slots
 
@@ -128,13 +155,38 @@ which the SCSS reads for the floating label text size and the JS animation scale
 
 | Event | Payload | Description |
 |-------|---------|-------------|
-| `update:modelValue` | `any` | Value echo |
 | `update:focused` | `boolean` | Focus state changed |
+| `update:active` | `boolean` | Active (chrome) state changed — driven by `useStateFlag(props, {state: 'active'})`, toggles alongside focus/dirty/prefix/suffix |
 | `click:clear` | `MouseEvent` | Clear icon clicked |
 | `click:prependInner` | `MouseEvent` | Inner prepend clicked |
 | `click:appendInner` | `MouseEvent` | Inner append clicked |
-| `focus` | `FocusEvent` | Field focused |
-| `blur` | `FocusEvent` | Field blurred |
+
+### `focus` / `blur` — use `update:focused`
+
+⛔ **`@focus` and `@blur` bound on `<origam-field>` never fire.** They are not
+component emits (`IFieldEmits` does not declare them), and attribute
+fallthrough does not save them either: the field root is a plain `<div>` with
+no `tabindex`, so it is never focused itself, and `focus` / `blur` **do not
+bubble** (unlike `focusin` / `focusout`). Measured on the real component: a
+root-level `onFocus` / `onBlur` is called **0 times** when the nested control
+takes and loses focus.
+
+The working channel is **`@update:focused`**, wired by the `onFocus` /
+`onBlur` handlers the `default` slot hands to your control:
+
+```vue
+<template>
+    <OrigamField label="Email" @update:focused="isFocused = $event">
+        <template #default="{ id, onFocus, onBlur }">
+            <input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur">
+        </template>
+    </OrigamField>
+</template>
+```
+
+The same state is reflected on the root as `origam-field--focused`. If you
+genuinely need the raw DOM events at field level, listen for `focusin` /
+`focusout`, which do bubble.
 
 ## Design tokens
 
@@ -145,3 +197,7 @@ which the SCSS reads for the floating label text size and the JS animation scale
 | `--origam-field---label-color` | text-secondary | Label color |
 | `--origam-field---bg-color` | surface | Background |
 | `--origam-field---density` | `0px` | Density offset |
+| `--origam-field__input---padding-top` | `--origam-field__input---padding-block-md` | Effective top padding of the input. Redirected onto a rung token by the `size` and `variant` rules below — override a rung, not this, when a rung applies. |
+| `--origam-field__input---padding-block-sm` · `-md` · `-lg` · `-xl` | `2px` · `6px` · `10px` · `14px` | Vertical padding rung selected by the `size` prop. |
+| `--origam-field__input---padding-block-solo` | `20px` | Vertical padding rung used by `variant="solo"`. |
+| `--origam-field__input---padding-block-filled` | `20px` | Vertical padding rung used by `variant="filled"`. |

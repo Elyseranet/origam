@@ -49,37 +49,6 @@
 			</template>
 		</Variant>
 
-		<Variant
-				title="Functional - Transition"
-				:init-state="() => useStoryInitState<{ value: number, transition: string | boolean | undefined, reverseTransition: string | boolean | undefined }>({ value: 1, transition: undefined, reverseTransition: undefined })"
-		>
-			<template #default="{ state }">
-				<div class="story-shell">
-					<origam-window :model-value="state.value" :style="hostStyle">
-						<origam-window-item
-								v-for="n in 3"
-								:key="n"
-								:value="n"
-								:transition="state.transition"
-								:reverse-transition="state.reverseTransition"
-						>
-							<div :style="slideStyle(n - 1)">Slide {{ n }}</div>
-						</origam-window-item>
-					</origam-window>
-					<div class="story-status">Active value: <strong>{{ state.value }}</strong></div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<StoryGroup title="Navigation">
-					<HstNumber v-model="state.value" title="Active value" :min="1" :max="3" :step="1"/>
-				</StoryGroup>
-				<StoryGroup title="Transition">
-					<HstSelect v-model="state.transition"        title="Transition"         :options="TRANSITION_OPTIONS"/>
-					<HstSelect v-model="state.reverseTransition" title="Reverse Transition" :options="TRANSITION_OPTIONS"/>
-				</StoryGroup>
-			</template>
-		</Variant>
-
 		<Variant title="Events - group:selected">
 			<div class="story-shell">
 				<origam-window :model-value="emitStep" show-arrows :style="hostStyle">

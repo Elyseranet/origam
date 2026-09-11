@@ -3,7 +3,7 @@
 			:id="id"
 			v-contrast
 			:class="stepperClasses"
-			:aria-label="t('origam.stepper.progress_steps', 'Progress steps')"
+			:aria-label="t('origam.stepper.progress_steps')"
 	>
 		<slot name="default">
 			<template v-if="hasItems">
@@ -34,24 +34,25 @@
 		lang="ts"
 		setup
 >
-	import { computed, provide, ref, StyleValue, useSlots, watch } from 'vue'
+	import { computed, provide, StyleValue, useSlots } from 'vue'
 
-	import { OrigamStepperItem } from '../../components'
-	import { ORIGAM_STEPPER_KEY } from '../../consts'
-	import { DENSITY, SIZES } from '../../enums'
-	import { vContrast } from '../../directives'
-	import {
-		useDensity,
-		useDimension,
-		useLocale,
-		useProps,
-		useSize,
-		useStateEffect,
-		useStyle
-	} from '../../composables'
+	import OrigamStepperItem from './OrigamStepperItem.vue'
+	import { ORIGAM_STEPPER_KEY } from '../../consts/Stepper/stepper.const'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { SIZES } from '../../enums/Commons/size.enum'
+	import vContrast from '../../directives/Contrast/contrast.directive'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import type { IStepperProps } from '../../interfaces'
-	import type { TStepperItemStatus } from '../../types'
+	import type { IStepperEmits, IStepperProps, IStepperSlots } from '../../interfaces/Stepper/stepper.interface'
+	import type { TStepperItemStatus } from '../../types/Stepper/stepper.type'
 
 	/*********************************************************
 	 * Global
@@ -72,25 +73,35 @@
 	 ********************************************************/
 	const { t } = useLocale()
 
-	const emit = defineEmits<{
-		(e: 'update:modelValue', value: number): void
-	}>()
+	defineEmits<IStepperEmits>()
+
+	defineSlots<IStepperSlots>()
 
 	const { filterProps } = useProps<IStepperProps>(props)
 
 	const slots = useSlots()
 
-	// Internal reactive model (writable ref synced with prop)
-	const internalModel = ref<number>(props.modelValue ?? 0)
-
-	watch(() => props.modelValue, (val) => {
-		if (val !== undefined) internalModel.value = val
-	})
+	/*********************************************************
+	 * internalModel — synced with the `modelValue` prop
+	 *
+	 * @description
+	 * Uses `useVModel` rather than a hand-rolled `ref(props.modelValue ?? 0)`
+	 * + `watch(...)` pair: that pattern seeded the ref with a one-time
+	 * snapshot taken during `setup()`, BEFORE the ADR-005 theme-props
+	 * resolver patches `instance.props` in `beforeCreate` (which runs AFTER
+	 * `setup()`). A theme naming `'origam-stepper': { modelValue: 2 }` then
+	 * had zero effect on the initial step — see #470.
+	 * @description
+	 * `useVModel`'s internal ref starts UNSEEDED and only reads
+	 * `props.modelValue` lazily, at render time, which lands after the
+	 * resolver runs.
+	 ********************************************************/
+	const internalModel = useVModel(props, 'modelValue', 0)
 
 	// Provide stepper context for child items
 	provide(ORIGAM_STEPPER_KEY, {
 		modelValue: internalModel,
-		orientation: computed(() => props.orientation ?? 'horizontal'),
+		orientation: computed(() => props.orientation ?? DIRECTION.HORIZONTAL),
 		clickable: computed(() => props.clickable ?? false),
 		color: computed(() => props.color as string | undefined)
 	})
@@ -102,7 +113,6 @@
 	const handleItemClick = (index: number) => {
 		if (!props.clickable) return
 		internalModel.value = index
-		emit('update:modelValue', index)
 	}
 
 	// Items either from prop or from slot
@@ -155,7 +165,7 @@
 
 	const stepperClasses = computed(() => [
 		'origam-stepper',
-		`origam-stepper--${props.orientation ?? 'horizontal'}`,
+		`origam-stepper--${props.orientation ?? DIRECTION.HORIZONTAL}`,
 		colorClasses.value,
 		densityClasses.value,
 		sizeClasses.value,
@@ -167,7 +177,17 @@
 		props.class
 	])
 
-	const { id, css, load, isLoaded, unload } = useStyle(stepperStyles)
+	/*********************************************************
+	 * useStyle
+	 *
+	 * @description
+	 * #381 — the `id` returned by useStyle is a GENERATED identifier,
+	 * only meant for the scoped stylesheet selector. Without
+	 * `() => props.id` here, it shadowed the `id` PROP of the same
+	 * name: the template's `:id="id"` on the root rendered the
+	 * generated id, never the consumer's.
+	 ********************************************************/
+	const { id, css, load, isLoaded, unload } = useStyle(stepperStyles, () => props.id)
 
 	/*********************************************************
 	 * Expose

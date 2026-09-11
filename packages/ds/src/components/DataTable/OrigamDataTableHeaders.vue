@@ -5,6 +5,7 @@
 				v-bind="slotProps"
 		>
 			<origam-data-table-headers-cell-mobile
+					:id="id"
 					ref="origamDataTableHeadersCellMobileRef"
 					:class="dataTableHeadersClasses"
 					:columns="columns"
@@ -19,12 +20,24 @@
 				v-bind="slotProps"
 		>
 			<origam-data-table-headers-cell
+					:id="id"
 					ref="origamDataTableHeadersCellRef"
 					:class="dataTableHeadersClasses"
 					:headers="headers"
 					:style="dataTableHeadersStyles"
 					v-bind="dataTableHeadersCellProps"
-			/>
+			>
+				<template
+						v-for="name in headerColumnSlotNames"
+						:key="name"
+						#[name]="columnProps"
+				>
+					<slot
+							:name="name"
+							v-bind="columnProps"
+					/>
+				</template>
+			</origam-data-table-headers-cell>
 		</slot>
 	</template>
 
@@ -55,25 +68,29 @@
 		lang="ts"
 		setup
 >
-	import { OrigamDataTableHeadersCell, OrigamDataTableHeadersCellMobile, OrigamProgress } from '../../components'
+	import OrigamDataTableHeadersCell from './OrigamDataTableHeadersCell.vue'
+	import OrigamDataTableHeadersCellMobile from './OrigamDataTableHeadersCellMobile.vue'
+	import OrigamProgress from '../Progress/OrigamProgress.vue'
 
-	import {
-	useDisplay,
-	useHeaders,
-	useHeadersCell,
-	useLoader,
-	useProps,
-	useSelection,
-	useSort,
-	useStyle
-} from '../../composables'
+	import { useDisplay } from '../../composables/Commons/display.composable'
+	import { useHeaders } from '../../composables/DataTable/headers.composable'
+	import { useHeadersCell } from '../../composables/DataTable/headersCell.composable'
+	import { useLoader } from '../../composables/Commons/loader.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSelection } from '../../composables/DataTable/select.composable'
+	import { useSort } from '../../composables/DataTable/sort.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { PROGRESS_TYPE } from '../../enums'
+	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
+	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
 
-	import type { IDataTableHeadersProps, IDataTableHeadersSlotProps } from '../../interfaces'
-	import type { TOrigamDataTableHeadersCell, TOrigamDataTableHeadersCellMobile } from "../../types"
+	import type { IDataTableHeadersEmits, IDataTableHeadersProps, IDataTableHeadersSlotProps, IDataTableHeadersSlots } from '../../interfaces/DataTable/data-table-headers.interface'
+	import type { TOrigamDataTableHeadersCell } from '../../types/DataTable/data-table-headers-cell.type'
+	import type { TOrigamDataTableHeadersCellMobile } from '../../types/DataTable/data-table-headers-cell-mobile.type'
 
-	import { computed, ref, StyleValue } from 'vue'
+	import { pickDataTableHeaderColumnSlotNames } from '../../utils/DataTable/slot-name.util'
+
+	import { computed, ref, StyleValue, useSlots } from 'vue'
 
 	/*********************************************************
 	 * Global
@@ -81,7 +98,13 @@
 
 	const props = withDefaults(defineProps<IDataTableHeadersProps>(), {})
 
+	defineEmits<IDataTableHeadersEmits>()
+
+	defineSlots<IDataTableHeadersSlots>()
+
 	const {filterProps} = useProps<IDataTableHeadersProps>(props)
+
+	const slots = useSlots()
 
 	const origamDataTableHeadersCellRef = ref<TOrigamDataTableHeadersCell>()
 	const origamDataTableHeadersCellMobileRef = ref<TOrigamDataTableHeadersCellMobile>()
@@ -98,7 +121,7 @@
 	 * Loader
 	 ********************************************************/
 
-	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
+	const {loaderClasses, loaderConfig} = useLoader(props, LOADER_KIND.LINE)
 	const {getSortIcon} = useHeadersCell(props)
 
 	const {displayClasses, mobile} = useDisplay(props)
@@ -129,6 +152,20 @@
 	})
 
 	/*********************************************************
+	 * Forwarded slots (#550, critere C7)
+	 *
+	 * @description
+	 * `header.{cle}` est rendu tout au bout de la chaine, par
+	 * `<origam-data-table-header-cell>`. Ce composant et
+	 * `<origam-data-table-headers-cell>` ne font que le convoyer : sans ce
+	 * relais, un `<template #header.commits>` ecrit sur
+	 * `<origam-data-table>` n'atteignait jamais le `<th>`.
+	 ********************************************************/
+	const headerColumnSlotNames = computed(() => {
+		return pickDataTableHeaderColumnSlotNames(Object.keys(slots))
+	})
+
+	/*********************************************************
 	 * Class & Style
 	 ********************************************************/
 	const dataTableHeadersClasses = computed(() => {
@@ -147,7 +184,7 @@
 			props.style
 		] as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeadersStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeadersStyles, () => props.id)
 
 
 	/*********************************************************

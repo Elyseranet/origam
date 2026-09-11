@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="id"
 			:class="switchTrackClasses"
 			:style="switchTrackStyles"
 			@click="handleClick"
@@ -45,16 +46,14 @@
 	 ********************************************************/
 	import { computed, StyleValue, useSlots } from 'vue'
 
-	import {
-	useBackgroundColor,
-	useBorder,
-	useElevation,
-	useProps,
-	useRounded,
-	useStyle
-} from '../../composables'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { ISwitchTrackProps, ISwitchTrackSlots} from "../../interfaces"
+	import type { ISwitchTrackProps, ISwitchTrackSlots } from '../../interfaces/Switch/switch-track.interface'
 
 	import type { ISwitchTrackEmits } from '../../interfaces/Switch/switch-track.interface'
 
@@ -108,7 +107,24 @@
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {elevationClasses, elevationStyles} = useElevation(props)
 
+	/*********************************************************
+	 * slotProps
+	 *
+	 * @description
+	 * ⛔ `color` y est ajoute pour rendre VRAIE la note quinze lignes plus
+	 * haut, qui affirmait deja que « the `color` prop is exposed for slot
+	 * consumers ». Elle ne l'etait pas : `slotProps` ne portait que `model`
+	 * et `isValid`, et la prop n'apparaissait nulle part ailleurs — un
+	 * consommateur de slot n'avait aucun moyen de la lire.
+	 *
+	 * @description
+	 * Le contrat reste celui que la note decrit : `bgColor` peint le rail,
+	 * `color` n'est PAS applique ici — le premier plan est gere par le
+	 * `SelectionControl` englobant via `currentColor`. La prop est
+	 * transmise, pas consommee.
+	 ********************************************************/
 	const slotProps = computed(() => ({
+		color: props.color,
 		model: props.modelValue,
 		isValid: props.isValid
 	}))
@@ -167,7 +183,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(switchTrackStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(switchTrackStyles, () => props.id)
 
 
 	/*********************************************************
@@ -206,7 +222,7 @@
 		backdrop-filter: var(--origam-switch__track---backdrop-filter, none);
 		-webkit-backdrop-filter: var(--origam-switch__track---backdrop-filter, none);
 		cursor: pointer;
-		transition: 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1);
+		transition: var(--origam-switch---transition-duration, 0.2s) background-color var(--origam-switch---transition-timing-function, cubic-bezier(0.4, 0, 0.2, 1));
 		overflow: hidden;
 
 		@media (prefers-reduced-motion: reduce) {
@@ -244,14 +260,19 @@
 			opacity: var(--origam-switch---opacity-disabled, 0.32);
 		}
 
+		&--readonly {
+			cursor: default;
+			pointer-events: none;
+		}
+
 		&--dirty#{$this}--disabled {
 			background-color: var(--origam-switch__track---background-color-disabled, rgb(163, 163, 163));
 		}
 
 		&--error {
 			&:not(#{$this}--disabled) {
-				background-color: rgba(255, 0, 0, 1);
-				color: rgba(255, 255, 255, 1);
+				background-color: var(--origam-switch__track---background-color-error, rgba(255, 0, 0, 1));
+				color: var(--origam-switch__track---color-error, rgba(255, 255, 255, 1));
 			}
 		}
 

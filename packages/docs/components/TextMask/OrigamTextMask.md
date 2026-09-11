@@ -137,10 +137,12 @@ The `tag` prop swaps the wrapping element (default `span`, often `h1`
 
 ## Design tokens consumed
 
-`<OrigamTextMask>` reads from `tokens/component/text-mask.json`. The
-per-instance values (font-size, animation duration, …) are emitted as
-inline custom properties; the file below lets you re-skin every mask
-in the document by overriding the defaults at the document root.
+`<OrigamTextMask>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`). The per-instance values
+(font-size, animation duration, …) are emitted as inline custom
+properties; the variables below let you re-skin every mask in the
+document by overriding the defaults at the document root.
 
 | CSS variable | Token reference |
 |---|---|
@@ -150,7 +152,8 @@ in the document by overriding the defaults at the document root.
 | `--origam-text-mask__animation---duration-default` | `3s` |
 | `--origam-text-mask__animation---easing-default` | `{motion.easing.standard}` |
 
-The full list lives in `tokens/component/text-mask.json`.
+The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
+`dark.css` — grep for `--origam-text-mask`.
 
 ## Browser support
 

@@ -152,9 +152,13 @@
 							v-if="!minimal"
 							#appendInner
 					>
-						<div
+						<button
+								type="button"
 								class="origam-password-field__toggle-icon"
-								@mousedown="handleToggleShow"
+								:aria-label="toggleLabel"
+								:aria-pressed="show"
+								@mousedown.prevent="handleToggleShow"
+								@keydown="handleToggleKeydown"
 						>
 							<slot
 									name="appendInner"
@@ -162,7 +166,7 @@
 							>
 								<origam-icon :icon="currentIcon"/>
 							</slot>
-						</div>
+						</button>
 					</template>
 
 					<template
@@ -299,45 +303,40 @@
 >
 	import { computed, nextTick, ref, StyleValue, useAttrs, useSlots, watch } from 'vue'
 
-	import {
-		OrigamChip,
-		OrigamCol,
-		OrigamCounter,
-		OrigamField,
-		OrigamIcon,
-		OrigamInput,
-		OrigamMenu,
-		OrigamRow,
-		OrigamSheet
-	} from '../../components'
+	import OrigamChip from '../Chip/OrigamChip.vue'
+	import OrigamCol from '../Grids/OrigamCol.vue'
+	import OrigamCounter from '../Counter/OrigamCounter.vue'
+	import OrigamField from '../Field/OrigamField.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import OrigamInput from '../Input/OrigamInput.vue'
+	import OrigamMenu from '../Menu/OrigamMenu.vue'
+	import OrigamRow from '../Grids/OrigamRow.vue'
+	import OrigamSheet from '../Sheet/OrigamSheet.vue'
 
-	import {
-		computeStrength,
-		useAdjacent,
-		useAdjacentInner,
-		useDefaults,
-		useFocus,
-		useLocale,
-		useProps,
-		useStyle,
-		useVModel
-} from '../../composables'
-	import {
-		DEFAULT_PASSWORD_REQUIREMENTS,
-		REQUIREMENT_MIN_LENGTH,
-		REQUIREMENT_NUMBER,
-		REQUIREMENT_SPECIAL,
-		REQUIREMENT_TINY,
-		REQUIREMENT_UPPERCASE
-	} from '../../consts'
-	import { vIntersect } from '../../directives'
-	import { DENSITY, DIRECTION, MDI_ICONS, TEXT_FIELD_TYPE } from '../../enums'
-	import type {
-		IPasswordFieldProps, IPasswordFieldSlots, IPasswordRequirement} from '../../interfaces'
+	import { computeStrength } from '../../composables/PasswordField/passwordStrength.composable'
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useAdjacentInner } from '../../composables/Commons/adjacentInner.composable'
+	import { useFocus } from '../../composables/Commons/focus.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import { DEFAULT_PASSWORD_REQUIREMENTS, REQUIREMENT_MIN_LENGTH, REQUIREMENT_NUMBER, REQUIREMENT_SPECIAL, REQUIREMENT_TINY, REQUIREMENT_UPPERCASE } from '../../consts/PasswordField/password-field.const'
+	import vIntersect from '../../directives/Intersect/intersect.directive'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
+	import type { IPasswordFieldProps, IPasswordFieldSlots } from '../../interfaces/PasswordField/password-field.interface'
+	import type { IPasswordRequirement } from '../../interfaces/PasswordField/password-requirement.interface'
 
 	import type { IPasswordFieldEmits } from '../../interfaces/PasswordField/password-field.interface'
-	import type { TOrigamField, TOrigamInput, TOrigamMenu } from '../../types'
-	import { filterInputAttrs, forwardRefs } from '../../utils'
+	import type { TOrigamField } from '../../types/Field/field.type'
+	import type { TOrigamInput } from '../../types/Input/input.type'
+	import type { TOrigamMenu } from '../../types/Menu/menu.type'
+	import { filterInputAttrs } from '../../utils/Input/input.util'
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
 
 	/*********************************************************
 	 * Global
@@ -351,7 +350,7 @@
 	 *   - Each enabled requirement is auto-injected as a validation rule
 	 *     so consumers don't have to repeat the regex in their `rules`.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IPasswordFieldProps>(), {
+	const props = withDefaults(defineProps<IPasswordFieldProps>(), {
 		minLength: 8,
 		eager: true,
 		offIcon: MDI_ICONS.EYE_OFF,
@@ -370,8 +369,6 @@
 		density: DENSITY.DEFAULT,
 		rounded: true
 	})
-	const props = useDefaults(_props)
-
 	const emits = defineEmits<IPasswordFieldEmits>()
 
 	defineSlots<IPasswordFieldSlots>()
@@ -612,6 +609,17 @@
 
 	/*********************************************************
 	 * Show / hide toggle
+	 *
+	 * @description
+	 * issue #443 — the toggle was a bare <div @mousedown>: mouse-only, no
+	 * accessible name, no tabindex (OrigamIcon never sets one either, so
+	 * nothing inside it was reachable). Now a real <button type="button">;
+	 * the trigger stays `@mousedown` (`.prevent` added to stop the native
+	 * button from shifting focus off the input on click — the div never
+	 * could) so mouse timing is unchanged. `@keydown` is a MANUAL
+	 * Enter/Space handler, not `@click` — the button's native keyboard
+	 * activation synthesizes a `click` DOM event nothing listens for, so
+	 * there is no double-fire risk between the two paths.
 	 ********************************************************/
 	const show = ref(false)
 	const currentIcon = computed(() => {
@@ -620,8 +628,15 @@
 	const currentType = computed(() => {
 		return show.value ? TEXT_FIELD_TYPE.TEXT : TEXT_FIELD_TYPE.PASSWORD
 	})
+	const toggleLabel = computed(() => t(show.value ? 'origam.password_field.hide' : 'origam.password_field.show'))
 	const handleToggleShow = () => {
 		show.value = !show.value
+	}
+	const handleToggleKeydown = (e: KeyboardEvent) => {
+		if (e.key !== KEYBOARD_VALUES.ENTER && e.key !== KEYBOARD_VALUES.EMPTY) return
+
+		e.preventDefault()
+		handleToggleShow()
 	}
 
 	/*********************************************************
@@ -651,8 +666,20 @@
 	 * Props passed down
 	 ********************************************************/
 	const [rootAttrs, inputAttrs] = filterInputAttrs(attrs)
+	/*********************************************************
+	 * inputProps
+	 *
+	 * @description
+	 * #421 — `id` is deliberately NOT filtered out: OrigamInput needs it to
+	 * build `<id>-messages`, the target of its own `aria-describedby`, and
+	 * to feed its default slot's `id` (consumed by OrigamField, then the
+	 * real `<input>`). Filtering it forced OrigamInput to invent an id, so
+	 * a consumer passing `id` got an `<input>` unreachable by
+	 * `getElementById` and a `<label for>` pointing nowhere — same fix as
+	 * OrigamTextField (ce365b10).
+	 ********************************************************/
 	const inputProps = computed(() => {
-		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused'])
+		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'focused'])
 	})
 	const fieldProps = computed(() => {
 		return origamFieldRef.value?.filterProps(props, ['class', 'id', 'active', 'dirty', 'disabled', 'focused', 'error', 'style'])
@@ -723,6 +750,15 @@
 		&__toggle-icon {
 			cursor: var(--origam-password-field__toggle-icon---cursor, pointer);
 			opacity: var(--origam-password-field__toggle-icon---opacity, 1);
+
+			// issue #443 — now a real <button> (was a bare <div>): reset the
+			// UA button chrome. `padding-bottom` alone, never the `padding`
+			// shorthand, to avoid clobbering any padding set elsewhere.
+			border: none;
+			background: none;
+			padding-bottom: 0;
+			font: inherit;
+			color: inherit;
 		}
 
 		&__details {

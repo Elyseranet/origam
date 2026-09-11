@@ -1,6 +1,7 @@
 <template>
 	<component
-			:is="props.tag"
+			:is="tag"
+			:id="id"
 			:class="tableClasses"
 			:style="tableStyles"
 			@mouseenter="onMouseenter"
@@ -33,20 +34,21 @@
 		setup
 >
 	import { computed, StyleValue, useSlots } from 'vue'
-	import {
-		useDefaults,
-		useDensity,
-		useDimension,
-		useHover,
-		useProps,
-		useStateEffect,
-		useStyle,
-		useTypography
-} from '../../composables'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import { DENSITY } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { ITableProps } from '../../interfaces'
+	import type {
+		ITableEmits,
+		ITableProps,
+		ITableSlots
+	} from '../../interfaces/Table/table.interface'
 
 	/*********************************************************
 	 * Global
@@ -55,29 +57,14 @@
 	 * Props with defaults, filterProps utility, and slot ref.
 	 ********************************************************/
 
-	const _props = withDefaults(defineProps<ITableProps>(), {
+	const props = withDefaults(defineProps<ITableProps>(), {
 		tag: 'div',
 		density: DENSITY.DEFAULT
 	})
 
-	// `useDefaults` resolves each prop against theme.components['origam-table']
-	// (OrigamBtn pattern) — without this, theme.components['origam-table']
-	// (tag, border, rounded, …) was a silent no-op.
-	//
-	// IMPORTANT: `<script setup>` auto-exposes every `defineProps()` key to
-	// the template as a BARE binding pointing at the component's raw
-	// `$props` — that binding is generated at compile time from the
-	// `defineProps` macro call itself, NOT from whichever local variable
-	// captures the return value. A bare `:is="tag"` in the template
-	// therefore reads the UNRESOLVED prop, silently bypassing this Proxy,
-	// even though every composable that receives the `props` variable
-	// explicitly (useBorder(props), useRounded(props), …) resolves
-	// correctly. Discovered here because `tag` is the only prop this
-	// component reads directly in the template rather than through a
-	// composable/computed — fixed by writing `props.tag` explicitly.
-	// Audit any OTHER useDefaults-wired component for the same bare
-	// binding before assuming "useDefaults(_props) is enough".
-	const props = useDefaults(_props)
+	defineEmits<ITableEmits>()
+
+	defineSlots<ITableSlots>()
 
 	const {filterProps} = useProps<ITableProps>(props)
 
@@ -96,7 +83,7 @@
 
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
-	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
+	const {isOn: isHover, config: hoverState, classes: hoverClasses, set: onMouseenter, unset: onMouseleave} = useStateFlag(props, {state: 'hover'})
 	const {
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,
@@ -155,7 +142,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(tableStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(tableStyles, () => props.id)
 
 
 	/*********************************************************

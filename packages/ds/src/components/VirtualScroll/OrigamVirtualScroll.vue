@@ -31,11 +31,12 @@
 
 		<div
 				class="origam-virtual-scroll__spacer"
-				style="{ 'padding-bottom': convertToUnit(paddingBottom) }"
+				:style="{ 'padding-bottom': convertToUnit(paddingBottom) }"
 		/>
 	</template>
 	<template v-else>
 		<div
+				:id="id"
 				ref="containerRef"
 				:class="virtualScrollClasses"
 				:style="virtualScrollStyles"
@@ -82,19 +83,19 @@
 		setup
 >
 	import { computed, onMounted, onScopeDispose, Ref, StyleValue, toRef } from 'vue'
-	import { OrigamVirtualScrollItem } from '../../components'
+	import OrigamVirtualScrollItem from './OrigamVirtualScrollItem.vue'
 
-	import {
-	useDimension,
-	useProps,
-	useStyle,
-	useToggleScope,
-	useVirtual
-} from '../../composables'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useToggleScope } from '../../composables/Commons/toggleScope.composable'
+	import { useVirtual } from '../../composables/Commons/virtual.composable'
 
-	import type { IVirtualScrollProps } from '../../interfaces'
+	import type { IVirtualScrollEmits, IVirtualScrollProps, IVirtualScrollSlots } from '../../interfaces/VirtualScroll/virtual-scroll.interface'
 
-	import { convertToUnit, getCurrentInstance, getScrollParent } from '../../utils'
+	import { convertToUnit } from '../../utils/Commons/commons.util'
+	import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
+	import { getScrollParent } from '../../utils/Commons/scroll.util'
 
 	/*********************************************************
 	 * Global
@@ -103,6 +104,10 @@
 	 * Props with defaults and filterProps utility.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IVirtualScrollProps>(), {})
+
+	defineEmits<IVirtualScrollEmits>()
+
+	defineSlots<IVirtualScrollSlots>()
 
 	const {filterProps} = useProps<IVirtualScrollProps>(props)
 
@@ -173,7 +178,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(virtualScrollStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(virtualScrollStyles, () => props.id)
 
 
 	/*********************************************************

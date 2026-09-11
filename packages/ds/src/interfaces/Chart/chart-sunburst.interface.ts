@@ -1,6 +1,15 @@
-import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots, IChartPoint, IChartSeries } from '../../interfaces'
+import type {
+    IChartBaseEmits,
+    IChartBaseProps,
+    IChartBaseSlots
+} from './chart-base.interface'
+import type { IChartPoint } from './chart-point.interface'
+import type { IChartSeries } from './chart-series.interface'
 
-import type { TIntent } from '../../types'
+import type { TChartSunburstLabelMode } from '../../types/Chart/chart-sunburst.type'
+import type { TIntent } from '../../types/Commons/intent.type'
+
+export type { TChartSunburstLabelMode } from '../../types/Chart/chart-sunburst.type'
 
 /**
  * A single datum node in the sunburst tree.
@@ -19,14 +28,6 @@ export interface IChartSunburstDatum {
     /** Child nodes — forms the next ring outward. */
     children?: Array<IChartSunburstDatum>
 }
-
-/**
- * How the label for a node is rendered.
- * - `'inline'`  — centred horizontally inside the arc (wide arcs).
- * - `'rotated'` — rotated tangentially along the arc midpoint (narrow arcs).
- * - `'leader'`  — placed outside the chart with a leader line (very narrow arcs).
- */
-export type TChartSunburstLabelMode = 'inline' | 'rotated' | 'leader'
 
 /**
  * Fully-resolved node produced by the geometry engine. Every field is

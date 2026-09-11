@@ -106,29 +106,47 @@ describe('OrigamCounter — error class', () => {
     })
 })
 
-describe('OrigamCounter — active prop (v-show)', () => {
-    it('is hidden via display:none when active=false', async () => {
-        const wrapper = mountCounter({ props: { active: false, value: 5 } })
+// FIX #407 — `active` used to be an undefined-by-default prop consumed by a
+// binary `v-show="active"`, so the doc's very first "Basic usage" example
+// (no `active` passed) rendered `display: none`. The doc's "Active /
+// inactive" section describes a DIM/LIT gradient ("dims when active is
+// false (default)... lights up when focused") backed by real tokens
+// (`color` / `color-active` / `opacity` / `opacity-active`) that were
+// declared but never read. The component now always renders — `active`
+// only toggles the `--active` class (opacity/color), never visibility.
+describe('OrigamCounter — active prop (dim / lit, no longer v-show)', () => {
+    it('defaults to false and stays VISIBLE (dimmed, not display:none)', async () => {
+        const wrapper = mountCounter({ props: { value: 5 } })
         await nextTick()
         const counter = wrapper.find('.origam-counter')
-        // v-show renders the element but hides it with display:none
         expect(counter.exists()).toBe(true)
-        expect(counter.isVisible()).toBe(false)
+        expect(counter.isVisible()).toBe(true)
+        expect(counter.classes()).not.toContain('origam-counter--active')
     })
 
-    it('is visible when active=true', async () => {
+    it('is visible and carries --active when active=false is not passed vs true', async () => {
         const wrapper = mountCounter({ props: { active: true, value: 5 } })
         await nextTick()
+        const counter = wrapper.find('.origam-counter')
+        expect(counter.isVisible()).toBe(true)
+        expect(counter.classes()).toContain('origam-counter--active')
+    })
+
+    it('stays visible (never display:none) when active=false is explicit', async () => {
+        const wrapper = mountCounter({ props: { active: false, value: 3 } })
+        await nextTick()
         expect(wrapper.find('.origam-counter').isVisible()).toBe(true)
     })
 
-    it('re-shows when active flips from false to true', async () => {
+    it('toggles the --active class at runtime rather than hiding/showing', async () => {
         const wrapper = mountCounter({ props: { active: false, value: 3 } })
         await nextTick()
-        expect(wrapper.find('.origam-counter').isVisible()).toBe(false)
+        expect(wrapper.find('.origam-counter').classes()).not.toContain('origam-counter--active')
         await wrapper.setProps({ active: true })
         await nextTick()
-        expect(wrapper.find('.origam-counter').isVisible()).toBe(true)
+        const counter = wrapper.find('.origam-counter')
+        expect(counter.isVisible()).toBe(true)
+        expect(counter.classes()).toContain('origam-counter--active')
     })
 })
 
@@ -195,5 +213,52 @@ describe('OrigamCounter — reactive updates', () => {
         await wrapper.setProps({ value: 11 })
         await nextTick()
         expect(wrapper.find('.origam-counter--error').exists()).toBe(true)
+    })
+})
+
+/*
+ * DENSITÉ — première moitié de la preuve.
+ *
+ * `ICounterProps` étend `IDensityProps` depuis toujours, mais le composant
+ * n'appelait pas `useDensity` : la prop était déclarée et morte. Elle est
+ * désormais câblée.
+ *
+ * Ce bloc prouve le premier maillon — prop -> classe. Il ne peut PAS prouver
+ * le second : jsdom n'applique pas le SCSS scopé, donc `getComputedStyle` y
+ * renverrait la même valeur quelle que soit la classe. Émettre une classe sans
+ * règle SCSS correspondante est justement l'anti-patron que le CLAUDE.md
+ * interdit — le maillon classe -> style calculé est donc prouvé séparément,
+ * dans `packages/tests/e2e/counter.spec.ts`, contre un navigateur réel.
+ *
+ * Les deux moitiés sont nécessaires. Prise seule, celle-ci passerait au vert
+ * même si le bloc `<style>` était vide.
+ */
+describe('OrigamCounter — density', () => {
+    it.each([
+        ['default', 'origam-counter--density-default'],
+        ['comfortable', 'origam-counter--density-comfortable'],
+        ['compact', 'origam-counter--density-compact']
+    ])('density="%s" emits %s', (density, expected) => {
+        const wrapper = mountCounter({ props: { active: true, value: 1, density } })
+
+        expect(wrapper.find(`.${expected}`).exists()).toBe(true)
+    })
+
+    it('emits no density class when the prop is omitted', () => {
+        const wrapper = mountCounter({ props: { active: true, value: 1 } })
+
+        expect(wrapper.find('.origam-counter').classes().filter((c) => c.includes('--density-')))
+            .toEqual([])
+    })
+
+    it('swaps the class at runtime rather than accumulating', async () => {
+        const wrapper = mountCounter({ props: { active: true, value: 1, density: 'compact' } })
+        expect(wrapper.find('.origam-counter--density-compact').exists()).toBe(true)
+
+        await wrapper.setProps({ density: 'comfortable' })
+        await nextTick()
+
+        expect(wrapper.find('.origam-counter--density-compact').exists()).toBe(false)
+        expect(wrapper.find('.origam-counter--density-comfortable').exists()).toBe(true)
     })
 })

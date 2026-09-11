@@ -8,9 +8,7 @@
 				title="Design"
 				:init-state="() => useStoryInitState<Partial<IRatingFieldItemProps>>({
 					value: 3,
-					index: 1,
 					name: 'rating',
-					label: 'Item',
 					showStar: true,
 					isFilled: true,
 					color: 'warning',
@@ -22,9 +20,7 @@
 							:value="state.value ?? 3"
 							:padding="state.padding"
 							:margin="state.margin"
-							:index="state.index"
 							:name="state.name"
-							:label="state.label"
 							:show-star="state.showStar"
 							:is-filled="state.isFilled"
 							:color="state.color"
@@ -72,9 +68,9 @@
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IRatingFieldItemProps>>({
 					value: 3,
-					index: 1,
 					name: 'rating',
-					label: 'Item',
+					length: 5,
+					itemAriaLabel: 'origam.rating.aria_label.item',
 					showStar: true,
 					isFilled: true,
 					isHovered: false,
@@ -91,9 +87,9 @@
 				<div style="padding: 24px; display: flex; gap: 4px; align-items: center;">
 					<origam-rating-field-item
 							:value="state.value ?? 3"
-							:index="state.index"
+							:length="state.length"
+							:item-aria-label="state.itemAriaLabel"
 							:name="state.name"
-							:label="state.label"
 							:show-star="state.showStar"
 							:is-filled="state.isFilled"
 							:is-hovered="state.isHovered"
@@ -111,9 +107,9 @@
 			<template #controls="{ state }">
 				<StoryGroup title="Data">
 					<HstNumber v-model="state.value"  title="Value" :min="0" :max="10" :step="0.5"/>
-					<HstNumber v-model="state.index"  title="Index" :min="0" :max="20"/>
 					<HstText   v-model="state.name"   title="Name"/>
-					<HstText   v-model="state.label"  title="Label"/>
+					<HstNumber v-model="state.length" title="Length (row size, read by the aria label)" :min="1" :max="20"/>
+					<HstText   v-model="state.itemAriaLabel" title="Item Aria Label (locale key)"/>
 				</StoryGroup>
 				<StoryGroup title="States">
 					<HstCheckbox v-model="state.showStar"      title="Show Star"/>
@@ -136,9 +132,7 @@
 			<div style="padding: 24px; display: flex; gap: 4px; align-items: center;">
 				<origam-rating-field-item
 						:value="3"
-						:index="1"
 						name="rating"
-						label="Item"
 						:show-star="true"
 						:is-filled="true"
 						color="warning"
@@ -151,9 +145,7 @@
 			<div style="padding: 24px; display: flex; gap: 4px; align-items: center;">
 				<origam-rating-field-item
 						:value="3"
-						:index="1"
 						name="rating"
-						label="Item"
 						:show-star="true"
 						:is-filled="true"
 						color="warning"
@@ -166,9 +158,7 @@
 			<div style="padding: 24px; display: flex; gap: 4px; align-items: center;">
 				<origam-rating-field-item
 						:value="3"
-						:index="1"
 						name="rating"
-						label="Item"
 						:show-star="true"
 						:is-filled="true"
 						color="warning"
@@ -177,16 +167,24 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slots - Item (via RatingField)">
-			<div style="padding: 24px;">
-				<origam-rating-field :model-value="slotValue" :length="5">
-					<template #item="{ props: itemProps, isFilled }">
-						<span
+		<Variant title="Slots - Item">
+			<div style="padding: 24px; display: flex; gap: 4px; align-items: center;">
+				<origam-rating-field-item
+						v-for="star in 5"
+						:key="star"
+						:value="star"
+						:name="slotName"
+						:is-filled="star <= slotValue"
+						color="warning"
+				>
+					<template #item="{ props: itemProps, value }">
+						<origam-btn
 								v-bind="itemProps"
-								style="font-size: 24px; cursor: pointer;"
-						>{{ isFilled ? '★' : '☆' }}</span>
+								:aria-label="`${value}`"
+								@click="slotValue = value"
+						/>
 					</template>
-				</origam-rating-field>
+				</origam-rating-field-item>
 			</div>
 		</Variant>
 
@@ -194,9 +192,9 @@
 				title="Default"
 				:init-state="() => useStoryInitState<IRatingFieldItemProps>({
 					value: 3,
-					index: 1,
 					name: 'rating',
-					label: 'Item',
+					length: 5,
+					itemAriaLabel: 'origam.rating.aria_label.item',
 					showStar: true,
 					isFilled: true,
 					isHovered: false,
@@ -217,9 +215,9 @@
 			<template #controls="{ state }">
 				<StoryGroup title="Content">
 					<HstNumber v-model="state.value"  title="Value" :min="0" :max="10" :step="0.5"/>
-					<HstNumber v-model="state.index"  title="Index" :min="0" :max="20"/>
 					<HstText   v-model="state.name"   title="Name"/>
-					<HstText   v-model="state.label"  title="Label"/>
+					<HstNumber v-model="state.length" title="Length (row size, read by the aria label)" :min="1" :max="20"/>
+					<HstText   v-model="state.itemAriaLabel" title="Item Aria Label (locale key)"/>
 				</StoryGroup>
 				<StoryGroup title="Design">
 					<HstSelect v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
@@ -249,7 +247,7 @@
 	import { ref } from 'vue'
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamRatingField, OrigamRatingFieldItem } from '@origam/components'
+	import { OrigamBtn, OrigamRatingFieldItem } from '@origam/components'
 	import type { IRatingFieldItemProps } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
@@ -267,6 +265,7 @@
 	} from '@stories/const'
 
 	const slotValue = ref(3)
+	const slotName = 'rating-slot-demo'
 </script>
 
 <docs lang="md" src="@docs/components/RatingField/OrigamRatingFieldItem.md"/>

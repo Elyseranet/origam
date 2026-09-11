@@ -1,4 +1,4 @@
-import type { IChartTick } from '../../interfaces'
+import type { IChartTick } from './chart.interface'
 
 /**
  * Props for `<OrigamChartAxis>` — the cartesian-only axes + grid +
@@ -37,14 +37,20 @@ export interface IChartAxisProps {
      */
     secondaryYTicks?: Array<IChartTick>
     /**
-     * Render the four-corner axis frame + tick labels. When `false`,
-     * the component renders nothing (mirrors the legacy `showAxis`
-     * prop on `<OrigamChart>`).
+     * Render the axis frame (left + bottom lines) + tick labels, and
+     * the secondary right axis when `secondaryYTicks` is supplied.
+     * Mirrors the legacy `showAxis` prop on `<OrigamChart>`.
+     *
+     * ⛔ It does NOT gate the grid: `<g v-if="showGrid">` is a sibling
+     * root with an independent condition, so `showAxis: false` +
+     * `showGrid: true` renders grid lines alone. Pinned by
+     * `TU/components/Chart/chart-axis-grid-independence.spec.ts`.
      */
     showAxis?: boolean
     /**
      * Render horizontal grid lines under the plot. When `false`,
      * no grid is drawn (mirrors the legacy `showGrid` prop).
+     * Independent of `showAxis` — see above.
      */
     showGrid?: boolean
     /**
@@ -63,6 +69,24 @@ export interface IChartAxisProps {
      */
     secondaryYAxisFormat?: (value: number) => string
 }
+
+/*********************************************************
+ * IChartAxisEmits
+ *
+ * @description
+ * Emits fired by `<OrigamChartAxis>` — none. Pure SVG renderer driven
+ * entirely by its `plot` / `ticks` props.
+ ********************************************************/
+export interface IChartAxisEmits {}
+
+/*********************************************************
+ * IChartAxisSlots
+ *
+ * @description
+ * Slot signatures for `<OrigamChartAxis>` — none. The axis chrome
+ * (grid lines, tick labels) is fully derived from props.
+ ********************************************************/
+export interface IChartAxisSlots {}
 
 /**
  * Configuration object for the secondary (right-hand) Y axis.

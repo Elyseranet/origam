@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+import { fillHstNumber, toggleHstCheckbox } from './_support/histoire-controls'
+
 /**
  * OrigamCounter — suite e2e canonique
  *
@@ -40,13 +42,13 @@ test.describe('OrigamCounter', () => {
 
     test.describe('Design', () => {
         test('renders the counter root with BEM class', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-counter').first()).toBeVisible(VIS)
         })
 
         test('value=50 max=100 — affiche "50 / 100"', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const counter = sandbox.locator('.origam-counter').first()
             await expect(counter).toBeVisible(VIS)
@@ -55,7 +57,7 @@ test.describe('OrigamCounter', () => {
         })
 
         test('color=primary applique une couleur de texte non transparente', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const counter = sandbox.locator('.origam-counter').first()
             await expect(counter).toBeVisible(VIS)
@@ -67,7 +69,7 @@ test.describe('OrigamCounter', () => {
         })
 
         test('active=true — counter visible (v-show ne le cache pas)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const counter = sandbox.locator('.origam-counter').first()
             await expect(counter).toBeVisible(VIS)
@@ -83,13 +85,13 @@ test.describe('OrigamCounter', () => {
 
     test.describe('Functional', () => {
         test('renders visible with default init state', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-counter').first()).toBeVisible(VIS)
         })
 
         test('value=50 max=100 — affiche le format "50 / 100"', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const counter = sandbox.locator('.origam-counter').first()
             await expect(counter).toBeVisible(VIS)
@@ -100,7 +102,7 @@ test.describe('OrigamCounter', () => {
         test('init state (50/100) — pas de classe origam-counter--error', async ({ page }) => {
             // La classe --error n'apparaît que si parseFloat(value) > parseFloat(max).
             // Au init (50 < 100), elle ne doit pas être présente.
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const counter = sandbox.locator('.origam-counter').first()
             await expect(counter).toBeVisible(VIS)
@@ -108,7 +110,7 @@ test.describe('OrigamCounter', () => {
         })
 
         test('max=100 présent — le séparateur "/" est affiché', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const counter = sandbox.locator('.origam-counter').first()
             await expect(counter).toBeVisible(VIS)
@@ -127,7 +129,7 @@ test.describe('OrigamCounter', () => {
 
     test.describe('Slots - Default', () => {
         test('renders the counter root', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-counter').first()).toBeVisible(VIS)
         })
@@ -135,7 +137,7 @@ test.describe('OrigamCounter', () => {
         test('slot default — contient le texte "42 / 100" via le slot counter', async ({ page }) => {
             // Le slot reçoit { counter, max, value }. Le scoped slot passe counter = "42 / 100".
             // La story rend <strong>{{ counter }}</strong> items → "42 / 100 items".
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const counter = sandbox.locator('.origam-counter').first()
             await expect(counter).toBeVisible(VIS)
@@ -143,7 +145,7 @@ test.describe('OrigamCounter', () => {
         })
 
         test('slot default — contient le texte "items" (contenu personnalisé)', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const counter = sandbox.locator('.origam-counter').first()
             await expect(counter).toBeVisible(VIS)
@@ -151,7 +153,7 @@ test.describe('OrigamCounter', () => {
         })
 
         test('slot default — rend un élément <strong>', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-counter').first()).toBeVisible(VIS)
             await expect(sandbox.locator('.origam-counter strong').first()).toBeVisible()
@@ -165,13 +167,13 @@ test.describe('OrigamCounter', () => {
 
     test.describe('Default (Playground)', () => {
         test('renders visible', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-counter').first()).toBeVisible(VIS)
         })
 
         test('affiche "50 / 100" avec les valeurs initiales', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const counter = sandbox.locator('.origam-counter').first()
             await expect(counter).toBeVisible(VIS)
@@ -180,11 +182,200 @@ test.describe('OrigamCounter', () => {
         })
 
         test('possède la classe BEM racine .origam-counter', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const counter = sandbox.locator('.origam-counter').first()
             await expect(counter).toBeVisible(VIS)
             await expect(counter).toHaveClass(/origam-counter/)
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // #407 — active toggle DIMS/LIGHTS UP the counter, never hides it,     //
+    // and value>max PAINTS an actual error colour (SCSS rule was missing) //
+    // Utilise la variante Functional (index 1) : init { active: true,     //
+    // value: 50, max: 100 }, contrôles "Active (lit)" (HstCheckbox) et    //
+    // "Value" / "Max" (HstNumber).                                        //
+    // ------------------------------------------------------------------ //
+
+    test.describe('#407 — active (dim/lit) & error colour', () => {
+        test('active=false DIMS the counter (lower opacity) but keeps it visible — no display:none', async ({ page }) => {
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const counter = sandbox.locator('.origam-counter').first()
+            await expect(counter).toBeVisible(VIS)
+
+            const activeOpacity = parseFloat(await counter.evaluate(el => getComputedStyle(el).opacity))
+            expect(activeOpacity).toBeCloseTo(1, 1)
+
+            await toggleHstCheckbox(page, 'Active (lit)')
+            // Toujours dans le DOM, toujours visible — plus jamais display:none.
+            await expect(counter).toBeVisible(VIS)
+            const display = await counter.evaluate(el => getComputedStyle(el).display)
+            expect(display).not.toBe('none')
+
+            const dimmedOpacity = parseFloat(await counter.evaluate(el => getComputedStyle(el).opacity))
+            expect(dimmedOpacity).toBeGreaterThan(0)
+            expect(dimmedOpacity).toBeLessThan(activeOpacity)
+        })
+
+        test('value > max paints origam-counter--error with a real (non-transparent) colour distinct from the base colour', async ({ page }) => {
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const counter = sandbox.locator('.origam-counter').first()
+            await expect(counter).toBeVisible(VIS)
+
+            const baseColor = await counter.evaluate(el => getComputedStyle(el).color)
+
+            await fillHstNumber(page, 'Value', 150)
+            await expect(counter).toHaveClass(/origam-counter--error/)
+
+            // ⛔ `color` EST ANIME ici : le bloc `.origam-counter` declare
+            // `transition-property: color, opacity` sur 150ms (OrigamCounter.vue
+            // :176-177). Une lecture SYNCHRONE juste apres `fillHstNumber`
+            // renvoie donc une valeur INTERMEDIAIRE de l'interpolation, et le
+            // test echouait en annoncant `rgb(124, 58, 237)` — la couleur de
+            // depart — sur du code parfaitement correct.
+            //
+            // Mesure : seul, le fichier passait 19/19 ; lance en parallele de
+            // 8 autres specs, ce test tombait. Ce n'etait pas un defaut
+            // produit mais la charge machine qui etalait la transition sur
+            // plus de temps que la lecture n'en laissait. Sonde manuelle avec
+            // 600ms d'attente : `color` = `rgb(185, 28, 28)`, soit exactement
+            // `--origam-counter---color-error` = `#b91c1c`.
+            //
+            // `expect.poll` relit jusqu'a stabilisation au lieu de deviner un
+            // `waitForTimeout` — meme esprit que le test « la police n'est pas
+            // animee » plus bas, qui documente le cas symetrique.
+            await expect
+                .poll(async () => counter.evaluate(el => getComputedStyle(el).color), { timeout: 5000 })
+                .not.toBe(baseColor)
+
+            const errorColor = await counter.evaluate(el => getComputedStyle(el).color)
+            expect(errorColor).not.toBe('rgba(0, 0, 0, 0)')
+            expect(errorColor).not.toBe('transparent')
+            expect(errorColor).not.toBe(baseColor)
+
+            // Valeur ABSOLUE, pas un simple ecart : la couleur rendue doit
+            // etre celle du token d'erreur, pas « une autre couleur ».
+            const tokenError = await counter.evaluate(el =>
+                getComputedStyle(el).getPropertyValue('--origam-counter---color-error').trim())
+            expect(tokenError).toBe('#b91c1c')
+            expect(errorColor).toBe('rgb(185, 28, 28)')
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // DENSITÉ — effet visuel réel (issue #356)                            //
+    //                                                                      //
+    // La prop est pilotée par le VRAI contrôle de la story (HstSelect de   //
+    // la variante Design), pas par une classe posée à la main : c'est le   //
+    // maillon prop -> classe -> rendu qui est affirmé ici.                 //
+    //                                                                      //
+    // Contrat vérifié :                                                    //
+    //   - `density` décale la police d'un DELTA de 1px autour du token     //
+    //     `--origam-counter---font-size` ;                                 //
+    //   - `default` est NEUTRE : même taille que sans densité du tout ;    //
+    //   - `font-size` n'est jamais animée, donc une mesure synchrone lit   //
+    //     déjà la valeur finale.                                           //
+    // ------------------------------------------------------------------ //
+
+    test.describe('Density', () => {
+        /** Ouvre le picker « Density » de la variante Design et choisit une option. */
+        const pickDensity = async (page: import('@playwright/test').Page, option: string) => {
+            // Le <label> lui-même est `cursor-text` et n'ouvre rien : le
+            // déclencheur est le `.v-popper` qu'il contient.
+            const trigger = page
+                .locator('label.histoire-select', { hasText: 'Density' })
+                .first()
+                .locator('.v-popper')
+                .first()
+            await trigger.scrollIntoViewIfNeeded()
+            await trigger.click()
+            const popper = page.locator('.v-popper__popper--shown')
+            await popper.waitFor({ state: 'visible', timeout: 10000 })
+            await popper.getByText(option, { exact: true }).first().click()
+            await popper.waitFor({ state: 'hidden', timeout: 10000 })
+        }
+
+        /**
+         * `domcontentloaded` ne garantit pas que la feuille scopée du sandbox
+         * soit appliquée : WebKit rendait encore le compteur à la police
+         * héritée (16px) et `transition-property` à sa valeur initiale. On
+         * attend que le document du sandbox soit complet.
+         */
+        const waitForSandboxStyles = async (page: import('@playwright/test').Page) => {
+            const counter = page.frameLocator('iframe[src*="__sandbox"]').locator('.origam-counter').first()
+            await expect(counter).toBeVisible(VIS)
+            await expect
+                .poll(async () => counter.evaluate(el => el.ownerDocument.readyState), { timeout: 20000 })
+                .toBe('complete')
+            await expect
+                .poll(async () => counter.evaluate(el => getComputedStyle(el).transitionDuration), { timeout: 20000 })
+                .not.toBe('0s')
+        }
+
+        const fontSizeOf = async (page: import('@playwright/test').Page) => {
+            const counter = page.frameLocator('iframe[src*="__sandbox"]').locator('.origam-counter').first()
+
+            return parseFloat(await counter.evaluate(el => getComputedStyle(el).fontSize))
+        }
+
+        test('density décale la police autour du token, et "default" est neutre', async ({ page }) => {
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await waitForSandboxStyles(page)
+
+            // Référence : aucune densité posée -> la police vaut le token seul.
+            const base = await fontSizeOf(page)
+            expect(base).toBeGreaterThan(0)
+
+            await pickDensity(page, 'Comfortable')
+            await expect(sandbox.locator('.origam-counter').first())
+                .toHaveClass(/origam-counter--density-comfortable/)
+            expect(await fontSizeOf(page)).toBeCloseTo(base + 1, 1)
+
+            await pickDensity(page, 'Compact')
+            await expect(sandbox.locator('.origam-counter').first())
+                .toHaveClass(/origam-counter--density-compact/)
+            expect(await fontSizeOf(page)).toBeCloseTo(base - 1, 1)
+
+            // Le point qui pinne le correctif d'issue #356 : avant, `default`
+            // écrasait le token par un 12px en dur et rendait donc une taille
+            // DIFFÉRENTE de l'absence de densité.
+            await pickDensity(page, 'Default')
+            await expect(sandbox.locator('.origam-counter').first())
+                .toHaveClass(/origam-counter--density-default/)
+            expect(await fontSizeOf(page)).toBeCloseTo(base, 1)
+        })
+
+        test('la police n\'est pas animée — une mesure synchrone lit la valeur finale', async ({ page }) => {
+            // Cause racine de #356 : `transition-duration` déclarée seule laisse
+            // `transition-property` à sa valeur initiale `all`, ce qui anime
+            // `font-size`. Pendant toute la transition, `getComputedStyle` rend
+            // l'ANCIENNE taille — la police paraissait alors insensible à tout
+            // canal, y compris à un style inline.
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            const counter = page.frameLocator('iframe[src*="__sandbox"]').locator('.origam-counter').first()
+            await waitForSandboxStyles(page)
+
+            const transitionProperty = await counter.evaluate(el => getComputedStyle(el).transitionProperty)
+            expect(transitionProperty).not.toContain('all')
+            expect(transitionProperty).not.toContain('font-size')
+
+            // Mesure synchrone : on écrit puis on lit sans laisser passer de frame.
+            const { sync, settled } = await counter.evaluate(async (el) => {
+                el.classList.remove('origam-counter--density-compact')
+                await new Promise(r => setTimeout(r, 250))
+                el.classList.add('origam-counter--density-compact')
+                const sync = getComputedStyle(el).fontSize
+                await new Promise(r => setTimeout(r, 250))
+                const settled = getComputedStyle(el).fontSize
+                el.classList.remove('origam-counter--density-compact')
+
+                return { sync, settled }
+            })
+            expect(sync).toBe(settled)
         })
     })
 })

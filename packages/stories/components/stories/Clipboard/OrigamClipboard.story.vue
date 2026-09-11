@@ -61,7 +61,9 @@
 					value: 'arnaud@example.com',
 					feedbackDuration: 2000,
 					feedbackText: 'Copied!',
-					disabled: false
+					disabled: false,
+					icon: 'mdi:mdi-content-copy',
+					copiedIcon: 'mdi:mdi-check'
 				})"
 		>
 			<template #default="{ state }">
@@ -71,6 +73,8 @@
 						:feedback-text="state.feedbackText"
 						:success-text="state.successText"
 						:disabled="state.disabled"
+						:icon="state.icon"
+						:copied-icon="state.copiedIcon"
 				/>
 			</template>
 			<template #controls="{ state }">
@@ -78,6 +82,10 @@
 					<HstText v-model="state.value"       title="Value"/>
 					<HstText v-model="state.feedbackText" title="Feedback Text"/>
 					<HstText v-model="state.successText"  title="Success Text"/>
+				</StoryGroup>
+				<StoryGroup title="Icons">
+					<HstText v-model="state.icon"       title="Icon"/>
+					<HstText v-model="state.copiedIcon" title="Copied Icon"/>
 				</StoryGroup>
 				<StoryGroup title="Timing">
 					<HstNumber v-model="state.feedbackDuration" title="Feedback Duration (ms)" :min="500" :max="10000" :step="100"/>

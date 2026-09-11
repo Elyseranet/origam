@@ -6,7 +6,7 @@ test.describe('OrigamDataTable', () => {
     test('Basic variant — table renders with header and body', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — headers & items (basic dataset)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -18,7 +18,7 @@ test.describe('OrigamDataTable', () => {
     test('Basic variant — column headers are rendered', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — headers & items (basic dataset)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -29,7 +29,7 @@ test.describe('OrigamDataTable', () => {
     test('Basic variant — item data is rendered', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — headers & items (basic dataset)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -74,6 +74,46 @@ test.describe('OrigamDataTable', () => {
         await expect(sandbox.locator('input[type="checkbox"]').first()).toBeAttached({ timeout: 5000 })
     })
 
+    /*
+     * ⛔ Le test ci-dessus n'assertait QUE la présence de la colonne — jamais
+     * qu'un clic la fait basculer. C'est cet angle mort qui a laissé passer
+     * #439 : `withModifiers(fn, ['stop'])` appelé comme instruction nue,
+     * retour jeté, `toggleSelect` jamais invoqué. Le tableau se rendait
+     * parfaitement, la colonne de cases était là, et cocher une ligne ne
+     * faisait rien. Les deux tests qui suivent cliquent et mesurent l'état.
+     */
+    test('Selection variant — cocher une ligne bascule aria-selected', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Prop — showSelect', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const row = sandbox.locator('tbody tr.origam-data-table-row').first()
+        await expect(row).toBeVisible({ timeout: 5000 })
+        await expect(row).toHaveAttribute('aria-selected', 'false', { timeout: 5000 })
+
+        await row.locator('.origam-data-table-row__column--select-row input[type="checkbox"]').click()
+
+        await expect(row).toHaveAttribute('aria-selected', 'true', { timeout: 5000 })
+    })
+
+    test('Expand variant — déployer une ligne bascule aria-expanded', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Events - update:expanded', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const toggle = sandbox.locator('.origam-data-table-row__column--expanded-row button').first()
+        await expect(toggle).toBeVisible({ timeout: 5000 })
+        await expect(toggle).toHaveAttribute('aria-expanded', 'false', { timeout: 5000 })
+
+        await toggle.click()
+
+        await expect(toggle).toHaveAttribute('aria-expanded', 'true', { timeout: 5000 })
+    })
+
     test('Search variant — search field and table are both rendered', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
@@ -98,7 +138,7 @@ test.describe('OrigamDataTable', () => {
     test('Slot — top renders custom header content', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Slot — top', { exact: true }).first().click()
+        await page.getByText('Slots - Top', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

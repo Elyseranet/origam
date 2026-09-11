@@ -1,9 +1,9 @@
 <template>
-	<div
+	<figure
+			:id="id"
 			class="origam-chart-word-cloud"
 			:class="rootClasses"
-			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles]"
-			role="figure"
+			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-word-cloud"
 	>
@@ -105,7 +105,7 @@
 					data-cy="origam-chart-word-cloud-empty"
 			>
 				<slot name="empty">
-					<span>No data to display</span>
+					<span>{{ t('origam.chart.no_data_text') }}</span>
 				</slot>
 			</div>
 		</div>
@@ -127,7 +127,7 @@
 				/>
 			</template>
 		</origam-chart-legend>
-	</div>
+	</figure>
 </template>
 
 <script
@@ -143,30 +143,32 @@
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
-	import type {
-		IChartLegendItem,
-		IChartPoint,
-		IChartSeries
-	} from '../../interfaces'
+	import type { IChartLegendItem } from '../../interfaces/Chart/chart.interface'
+	import type { IChartPoint } from '../../interfaces/Chart/chart-point.interface'
+	import type { IChartSeries } from '../../interfaces/Chart/chart-series.interface'
 
 	import type {
 		IChartWordCloudEmits,
 		IChartWordCloudProps,
+		IChartWordCloudSlots,
 		IChartWordCloudWord
 	} from '../../interfaces/Chart/chart-word-cloud.interface'
 
-	import {
-		useBackgroundColor,
-		useDimension,
-		useElevation,
-		useMargin,
-		usePadding,
-		useRounded
-	} from '../../composables'
+	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
+	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
 
-	import type { TIntent } from '../../types'
+	import type { TChartWordCloudRawDatum } from '../../types/Chart/chart-word-cloud.type'
+	import type { TIntent } from '../../types/Commons/intent.type'
 
 	/*********************************************************
 	 * Global
@@ -206,12 +208,58 @@
 
 	const emit = defineEmits<IChartWordCloudEmits>()
 
+	defineSlots<IChartWordCloudSlots>()
+
+	const { t } = useLocale()
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
 	const { elevationClasses, elevationStyles } = useElevation(props)
 	const { marginClasses, marginStyles } = useMargin(props)
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
+
+	/*********************************************************
+	 * Props heritees sans effet ici (#426)
+	 *
+	 * @description
+	 * ⛔ Ces props sont declarees par `IChartBaseProps` et n'ont aucun
+	 * effet sur ce composant. Elles ne sont ni retirees ni cablees a un
+	 * comportement fictif : elles avertissent une fois, en dev, avec la
+	 * raison exacte. Meme traitement que `OrigamChartGauge`.
+	 ********************************************************/
+	useUnsupportedProp(
+		'OrigamChartWordCloud',
+		'categories',
+		'a word cloud places words by weight — there is no category axis.',
+		() => (props.categories?.length ?? 0) > 0
+	)
+	/*********************************************************
+	 * Header typography — projection, NOT `props` wholesale (#546)
+	 *
+	 * @description
+	 * ⛔ `IChartWordCloudProps` redeclares `fontFamily` and `fontWeight` with a
+	 * DOMAIN meaning: the typeface and weight of the words INSIDE the cloud,
+	 * as free-form strings/numbers. `ITypographyProps` means something else by
+	 * those names — design tokens for the chart HEADER
+	 * (`sans|mono|serif`, `regular|medium|…`).
+	 *
+	 * @description
+	 * Passing `props` wholesale was not merely a type error, it was a rendering
+	 * bug waiting to happen: `useTypography` interpolates the value straight
+	 * into a token reference, so a domain `fontFamily: 'Inter, sans-serif'`
+	 * would have emitted `var(--origam-font__family---Inter, sans-serif)` — a
+	 * name that does not exist, silently falling back to the second argument.
+	 *
+	 * @description
+	 * Only `fontSize` is inherited from `IChartBaseProps` with the token
+	 * meaning intact, so it is the only key forwarded. It is exposed through a
+	 * GETTER, never a snapshot: the ADR-005 theme resolver patches
+	 * `instance.props` AFTER `setup()` runs, so an eager read here would freeze
+	 * the pre-theme value and no warning would ever fire.
+	 ********************************************************/
+	const { headerTypographyStyles } = useChartHeaderTypography({
+		get fontSize () { return props.fontSize }
+	})
 
 	/*********************************************************
 	 * Static SVG box — fixed 800 × 500 coordinate space;
@@ -301,8 +349,7 @@
 		const series = props.series?.[0]
 		if (!series || !series.data?.length) return []
 
-		type RawDatum = { text: string; value: number; color?: string }
-		const raw = series.data as unknown as Array<RawDatum>
+		const raw = series.data as unknown as Array<TChartWordCloudRawDatum>
 
 		const valid = raw.filter((d) => d && typeof d === 'object' && 'text' in d && typeof d.value === 'number')
 		if (!valid.length) return []
@@ -449,6 +496,8 @@
 	/*********************************************************
 	 * Root classes / styles
 	 ********************************************************/
+	const chartAnimationStyle = useChartAnimationStyle(props)
+
 	const rootClasses = computed(() => [
 		{
 			[`origam-chart-word-cloud--legend-${ props.legendPosition }`]: true,
@@ -458,7 +507,8 @@
 		elevationClasses.value,
 		marginClasses.value,
 		paddingClasses.value,
-		roundedClasses.value
+		roundedClasses.value,
+		props.class
 	])
 
 	const rootStyles = computed<StyleValue>(() => {
@@ -466,8 +516,8 @@
 		if (props.aspectRatio) {
 			out.aspectRatio = props.aspectRatio
 		}
-		out['--origam-chart---animation-duration'] = `${ props.animationDuration }ms`
-		return out
+		Object.assign(out, chartAnimationStyle.value)
+return [ out, props.style as StyleValue ]
 	})
 
 	const bodyClasses = computed(() => ({
@@ -484,13 +534,13 @@
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'word cloud chart')
-	const svgAriaLabel = computed(() => props.title ?? 'word cloud chart')
-	const svgTitle = computed(() => props.title ?? 'word cloud chart')
-	const svgDesc = computed(() => {
-		const n = placedWords.value.length
-		return `Word cloud chart with ${ n } ${ n === 1 ? 'word' : 'words' }.`
-	})
+	const defaultAriaLabel = computed(() => t('origam.chart.word_cloud.aria_label'))
+	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgDesc = computed(() =>
+		t('origam.chart.word_cloud.desc', placedWords.value.length, {chart: defaultAriaLabel.value})
+	)
 
 	/*********************************************************
 	 * Interaction
@@ -542,7 +592,17 @@
 
 		display: grid;
 		gap: var(--origam-chart---gap, 12px);
-		padding: var(--origam-chart---padding, 12px);
+
+		// ⛔ #C2 — zero-specificity default so a scale-driven utility
+		// class (`.origam--p-4` from `padding="4"`) wins the cascade.
+		// Without `:where()`, this scoped rule's [data-v-hash] pushes it
+		// to (0,2,0), beating the utility's (0,1,0), and the `padding`
+		// prop's scale form goes silently inert. See CLAUDE.md "CSS-first"
+		// table — `:where(…)` is the documented zero-specificity default.
+		:where(&) {
+			padding: var(--origam-chart---padding, 12px);
+		}
+
 		background-color: var(--origam-chart---background-color, transparent);
 		color: var(--origam-chart---color, inherit);
 		width: 100%;
@@ -601,7 +661,7 @@
 
 		&__subtitle {
 			font-size: var(--origam-chart__subtitle---font-size, 0.875rem);
-			color: var(--origam-chart__subtitle---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__subtitle---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		&__body {
@@ -647,7 +707,7 @@
 		:deep(.origam-chart__tooltip) {
 			position: absolute;
 			pointer-events: none;
-			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color-surface-overlay, #1f2937));
+			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color__surface---overlay, #1f2937));
 			color: var(--origam-chart__tooltip---color, #ffffff);
 			padding: var(--origam-chart__tooltip---padding, 8px 12px);
 			border-radius: var(--origam-chart__tooltip---border-radius, 6px);
@@ -685,7 +745,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--origam-chart__empty---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__empty---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		:deep(.origam-chart__legend) {

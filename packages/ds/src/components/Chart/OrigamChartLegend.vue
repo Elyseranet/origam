@@ -7,7 +7,7 @@
 		<li
 				v-for="entry in safeItems"
 				:key="entry.series?.name ?? entry.index"
-				:aria-label="`${entry.series?.name ?? ''}: ${isHidden(entry) ? 'hidden, click to show' : 'visible, click to hide'}`"
+				:aria-label="itemAriaLabel(entry)"
 				:aria-pressed="!isHidden(entry)"
 				class="origam-chart__legend-item"
 				:class="{ 'origam-chart__legend-item--hidden': isHidden(entry) }"
@@ -39,11 +39,9 @@
 >
 	import { computed } from 'vue'
 
-	import type {
-		IChartLegendEmits,
-		IChartLegendItem,
-		IChartLegendProps
-	} from '../../interfaces'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import type { IChartLegendEmits, IChartLegendProps, IChartLegendSlots } from '../../interfaces/Chart/chart-legend.interface'
+	import type { IChartLegendItem } from '../../interfaces/Chart/chart.interface'
 
 	/*********************************************************
 	 * Global
@@ -71,6 +69,8 @@
 
 	const emit = defineEmits<IChartLegendEmits>()
 
+	defineSlots<IChartLegendSlots>()
+
 	/*********************************************************
 	 * Computed
 	 *
@@ -94,6 +94,8 @@
 	const safeItems = computed(() =>
 		(props.items ?? []).filter((e) => e && e.series)
 	)
+
+	const { t } = useLocale()
 
 	/*********************************************************
 	 * Interaction
@@ -123,6 +125,31 @@
 	 * re-enable a previously hidden series.
 	 */
 	const isHidden = (entry: IChartLegendItem): boolean => entry.visible === false
+
+	/*********************************************************
+	 * itemAriaLabel — #567
+	 *
+	 * @description
+	 * The two states are FULL SENTENCES read out to a screen-reader
+	 * user, not decorative labels: they carry the only cue that the
+	 * entry is actionable and what activating it will do. They were
+	 * written in English directly inside the template's `aria-label`
+	 * binding, behind a ternary inside a template literal — which is
+	 * exactly the shape the C8 detector cannot see, so they never
+	 * appeared in any hardcoded-string count.
+	 *
+	 * @description
+	 * Built here rather than in the template: the repo forbids logic
+	 * in the markup, and the previous one-liner concatenated a name, a
+	 * separator and a branch in a single unreadable binding.
+	 ********************************************************/
+	const itemAriaLabel = (entry: IChartLegendItem): string => {
+		const state = isHidden(entry)
+			? t('origam.chart.legend.item_hidden')
+			: t('origam.chart.legend.item_visible')
+
+		return `${ entry.series?.name ?? '' }: ${ state }`
+	}
 
 	const onItemClick = (entry: IChartLegendItem): void => {
 		emit('legend-click', entry.series, entry.index)

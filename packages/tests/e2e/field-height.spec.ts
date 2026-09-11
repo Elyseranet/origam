@@ -7,7 +7,7 @@ const sandboxOf = (page: Page) => page.frameLocator('iframe[src*="__sandbox"]')
 // `/stories` base → 404), then `waitForLoadState('networkidle')` (never resolves
 // under Histoire's HMR websocket) + a brittle `getByText(...).click()`.
 const open = async (page: Page, slug: string, variantIdx: number) => {
-    await page.goto(`/stories/story/${slug}?variantId=${slug}-${variantIdx}`)
+    await page.goto(`/stories/story/${slug}?variantId=${slug}-${variantIdx}`, { waitUntil: 'domcontentloaded' })
 }
 
 /**

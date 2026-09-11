@@ -3,7 +3,7 @@
 			:is="tag"
 			:id="id"
 			v-contrast
-			:aria-label="t('origam.breadcrumb.aria_label', 'Breadcrumb')"
+			:aria-label="t('origam.breadcrumb.aria_label')"
 			:class="breadcrumbClasses"
 	>
 		<origam-defaults-provider :defaults="slotDefaults">
@@ -55,23 +55,28 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBreadcrumbDivider, OrigamBreadcrumbItem, OrigamDefaultsProvider } from '../../components'
+	import OrigamBreadcrumbDivider from './OrigamBreadcrumbDivider.vue'
+	import OrigamBreadcrumbItem from './OrigamBreadcrumbItem.vue'
+	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
 
-	import {
-		useDensity,
-		useLocale,
-		useProps,
-		useStateEffect,
-		useStyle
-	} from '../../composables'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import { DENSITY } from '../../enums'
+	import { omitUndefined } from '../../utils/Commons/commons.util'
 
-	import type { IBreadcrumbItemProps, IBreadcrumbProps } from '../../interfaces'
+	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { TBreadcrumbItem } from '../../types'
+	import type { IBreadcrumbItemProps } from '../../interfaces/Breadcrumb/breadcrumb-item.interface'
+	import type { IBreadcrumbEmits, IBreadcrumbProps, IBreadcrumbSlots } from '../../interfaces/Breadcrumb/breadcrumb.interface'
+	import type { IStateEffectConfig } from '../../interfaces/Commons/state-effect.interface'
+
+	import type { TBreadcrumbItem } from '../../types/Breadcrumb/breadcrumb.type'
 
 	import { computed, StyleValue, useSlots } from 'vue'
 
@@ -90,6 +95,10 @@
 	})
 
 	const {filterProps} = useProps<IBreadcrumbProps>(props)
+
+	defineEmits<IBreadcrumbEmits>()
+
+	defineSlots<IBreadcrumbSlots>()
 	const {t} = useLocale()
 
 	// Push visual-token props down to every descendant `<origam-breadcrumb-item>`
@@ -101,15 +110,23 @@
 	// items, so a `<OrigamBreadcrumb color="primary" bgColor="primary">`
 	// renders items with `primary-fgSubtle` (violet) ON a `primary-bg`
 	// surface — unreadable. Same goes for hover/active overrides.
+	// Forward ONLY what the consumer actually passed — see #263. `disabled` is
+	// boolean, `hover` / `active` are `boolean | IHoverState / IActiveState`,
+	// and `color` / `bgColor` are `TColor` (which includes `false`), so Vue
+	// coerces every one of them to a concrete `false` when unset —
+	// `omitUndefined` alone cannot see it.
+	const wasPropPassed = usePassedProps(props)
 	const slotDefaults = computed(() => ({
-		'origam-breadcrumb-item': {
-			density: props.density,
-			color: props.color,
-			bgColor: props.bgColor,
-			hover: props.hover,
-			active: props.active,
-			disabled: props.disabled
-		}
+		'origam-breadcrumb-item': omitUndefined({
+			density: wasPropPassed('density') ? props.density : undefined,
+			color: wasPropPassed('color') ? props.color : undefined,
+			bgColor: wasPropPassed('bgColor') ? props.bgColor : undefined,
+			hover: wasPropPassed('hover') ? props.hover : undefined,
+			active: wasPropPassed('active') ? props.active : undefined,
+			hoverClass: wasPropPassed('hoverClass') ? props.hoverClass : undefined,
+			activeClass: wasPropPassed('activeClass') ? props.activeClass : undefined,
+			disabled: wasPropPassed('disabled') ? props.disabled : undefined
+		})
 	}))
 
 	/*********************************************************
@@ -127,16 +144,45 @@
 
 	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, undefined, undefined, undefined, undefined, computed(() => !!props.disabled))
 
-	// `useDefaults` inside each `OrigamBreadcrumbItem` handles the
+	// The ADR-005 resolver handles each `OrigamBreadcrumbItem`'s
 	// density/color fallback — no manual merge needed here.
 	// `disabled` and `isActive` are structural (not visual tokens), so
 	// they remain explicitly set on the item object.
+
+	/*********************************************************
+	 * resolveActive
+	 *
+	 * @description
+	 * #386 — `active` = current page: only the LAST item can ever be
+	 * active, and it always must be. The last item may carry a visual
+	 * `active` CONFIG (its own `item.active`, or the root's `props.active`
+	 * default) instead of a bare `true` — that configuration must survive.
+	 * @description
+	 * Resolution mirrors `slotDefaults` above ("items that pass their own
+	 * props still win"): the item's own config wins over the root's.
+	 * `item.active` on a NON-last item is deliberately ignored — the
+	 * product rule tolerates only one active item, the last one.
+	 * @description
+	 * A config object alone does NOT force `useStateFlag`'s `isOn` (only a
+	 * bare `true`, or `enabled: true` inside the object, does — see
+	 * state-effect.interface.ts). Since the last item must always render
+	 * as active, `enabled: true` is injected into the resolved config so
+	 * the override applies AND the state is forced on.
+	 ********************************************************/
+	const resolveActive = (item: TBreadcrumbItem, index: number): boolean | IStateEffectConfig => {
+		if (!isLastItem(index)) return false
+
+		const ownConfig = typeof item === 'string' ? undefined : item.active
+		const config = ownConfig !== undefined ? ownConfig : (wasPropPassed('active') ? props.active : undefined)
+
+		return config && typeof config === 'object' ? {...config, enabled: true} : true
+	}
 	const normalizedItems = computed<Array<IBreadcrumbItemProps>>(() => {
 		return props.items.map((item, index) => {
-			return typeof item === 'string' ? {title: item, disabled: isLastItem(index), active: isLastItem(index)} : {
+			return typeof item === 'string' ? {title: item, disabled: isLastItem(index), active: resolveActive(item, index)} : {
 				...item,
 				disabled: isLastItem(index) || item.disabled,
-				active: isLastItem(index)
+				active: resolveActive(item, index)
 			}
 		}) as Array<IBreadcrumbItemProps>
 	})
@@ -187,7 +233,17 @@
 		]
 	})
 
-	const {id, css, load, isLoaded, unload} = useStyle(breadcrumbStyles)
+	/*********************************************************
+	 * useStyle
+	 *
+	 * @description
+	 * #381 — the `id` returned by useStyle is a GENERATED identifier,
+	 * only meant for the scoped stylesheet selector. Without
+	 * `() => props.id` here, it shadowed the `id` PROP of the same
+	 * name: the template's `:id="id"` on the root rendered the
+	 * generated id, never the consumer's.
+	 ********************************************************/
+	const {id, css, load, isLoaded, unload} = useStyle(breadcrumbStyles, () => props.id)
 
 	/*********************************************************
 	 * Expose
@@ -215,25 +271,18 @@
 		--origam-breadcrumb---border-bottom-width: 0px;
 		--origam-breadcrumb---border-right-width: 0px;
 		--origam-breadcrumb---border-width: var(--origam-breadcrumb---border-top-width) var(--origam-breadcrumb---border-left-width) var(--origam-breadcrumb---border-bottom-width) var(--origam-breadcrumb---border-right-width);
-		--origam-breadcrumb---border-color: currentColor;
-		--origam-breadcrumb---border-style: solid;
-		--origam-breadcrumb---border-radius: var(--origam-breadcrumb---border-radius-token, 0px);
 		--origam-breadcrumb---density: 0px;
-		--origam-breadcrumb---box-shadow: var(--origam-shadow---none, none);
-		--origam-breadcrumb---color: var(--origam-breadcrumb---color-token, var(--origam-color__text---primary));
-		--origam-breadcrumb---background: var(--origam-breadcrumb---background-token, transparent);
 		--origam-breadcrumb---margin-inline-start: 0px;
 		--origam-breadcrumb---margin-inline-end: 0px;
 		--origam-breadcrumb---margin-block-start: 0px;
 		--origam-breadcrumb---margin-block-end: 0px;
-		--origam-breadcrumb---padding-block-start: 8px;
-		--origam-breadcrumb---padding-block-end: 8px;
-		--origam-breadcrumb---padding-inline-start: 8px;
-		--origam-breadcrumb---padding-inline-end: 8px;
-		--origam-breadcrumb---transition-duration: 0.2s, 0.1s;
-		--origam-breadcrumb---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		--origam-breadcrumb---transition-property: transform, color;
-		--origam-breadcrumb---transition: var(--origam-breadcrumb---transition-property) var(--origam-breadcrumb---transition-duration) var(--origam-breadcrumb---transition-timing-function);
+		--origam-breadcrumb---padding-block-start: var(--origam-breadcrumb---padding-block, 8px);
+		--origam-breadcrumb---padding-block-end: var(--origam-breadcrumb---padding-block, 8px);
+		--origam-breadcrumb---padding-inline-start: var(--origam-breadcrumb---padding-inline, 8px);
+		--origam-breadcrumb---padding-inline-end: var(--origam-breadcrumb---padding-inline, 8px);
+		--origam-breadcrumb---transition:
+			transform var(--origam-breadcrumb---transition-duration-transform) var(--origam-breadcrumb---transition-timing-function),
+			color var(--origam-breadcrumb---transition-duration-color) var(--origam-breadcrumb---transition-timing-function);
 
 		transition: var(--origam-breadcrumb---transition);
 
@@ -259,6 +308,7 @@
 		&__items {
 			display: flex;
 			align-items: center;
+			gap: var(--origam-breadcrumb---gap);
 			line-height: 1.6;
 			list-style: none;
 			margin-block: 0;
@@ -271,7 +321,7 @@
 		}
 
 		&--elevated {
-			--origam-breadcrumb---box-shadow: var(--origam-shadow---md, 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08));
+			--origam-breadcrumb---box-shadow: var(--origam-breadcrumb---box-shadow-elevated, var(--origam-shadow---md, 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08)));
 		}
 
 		&--border {
@@ -279,7 +329,7 @@
 		}
 
 		&--rounded {
-			border-radius: var(--origam-radius---2xl, 24px);
+			border-radius: var(--origam-breadcrumb---border-radius-rounded, var(--origam-radius---2xl, 24px));
 		}
 
 		&--rounded-x-small {

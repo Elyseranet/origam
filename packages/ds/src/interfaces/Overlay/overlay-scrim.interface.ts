@@ -1,6 +1,11 @@
-import type { IClickEmits, ICommonsComponentProps, ITagProps, ITransitionComponentProps } from '../../interfaces'
+import type {
+    IClickEmits,
+    ICommonsComponentProps,
+    ITagProps
+} from '../Commons/commons.interface'
+import type { ITransitionHostProps } from '../Commons/transition-component.interface'
 
-export interface IOverlayScrimProps extends ICommonsComponentProps, ITagProps, ITransitionComponentProps, IScrimProps {
+export interface IOverlayScrimProps extends ICommonsComponentProps, ITagProps, ITransitionHostProps, IScrimProps {
     active?: boolean
 }
 
@@ -15,3 +20,12 @@ export interface IOverlayScrimEmits extends IClickEmits {
     (e: 'mouseenter', event: MouseEvent): void
     (e: 'mouseleave', event: MouseEvent): void
 }
+
+/*********************************************************
+ * IOverlayScrimSlots
+ *
+ * @description
+ * `<OrigamOverlayScrim>` renders a single self-closing backdrop `<div>`
+ * (wrapped in `<OrigamTransition>`) — no `<slot>` in its template.
+ ********************************************************/
+export interface IOverlayScrimSlots {}

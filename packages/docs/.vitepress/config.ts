@@ -61,7 +61,6 @@ const COMPONENT_CATEGORIES: Record<string, string[]> = {
         'Main',
         'Masonry',
         'Responsive',
-        'Section',
         'Spacer',
         'SystemBar',
         'Toolbar',
@@ -305,7 +304,9 @@ export default defineConfig({
                         { text: 'Utilisation', link: '/guide/usage' },
                         { text: 'Composants', link: '/guide/components' },
                         { text: 'Composables', link: '/guide/composables' },
-                        { text: 'Directives', link: '/guide/directives' }
+                        { text: 'Directives', link: '/guide/directives' },
+                        { text: 'Internationalisation', link: '/guide/i18n' },
+                        { text: 'Espacement et coins', link: '/guide/spacing-and-corners' }
                     ]
                 }
             ],

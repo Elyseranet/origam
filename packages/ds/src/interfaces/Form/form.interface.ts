@@ -1,6 +1,11 @@
 import type { ComponentInternalInstance, ComputedRef, Raw, Ref } from 'vue'
-import type { ICommonsComponentProps, ICommonsComponentSlots, ITypographyProps } from '../../interfaces'
-import type { TValidateOn } from '../../types'
+import type {
+    ICommonsComponentEmits,
+    ICommonsComponentProps,
+    ICommonsComponentSlots
+} from '../Commons/commons.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
+import type { TValidateOn } from '../../types/Commons/validation.type'
 
 export interface IFormProvide {
     register: (item: {
@@ -20,7 +25,7 @@ export interface IFormProvide {
     validateOn: Ref<TValidateOn | undefined>
 }
 
-export interface IFormProps extends ICommonsComponentProps, ITypographyProps {
+export interface IFormProps extends ICommonsComponentProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
     disabled?: boolean
     fastFail?: boolean
     readonly?: boolean
@@ -33,13 +38,43 @@ export interface IFormProps extends ICommonsComponentProps, ITypographyProps {
     scrollToError?: boolean | ScrollIntoViewOptions
 }
 
+/*********************************************************
+ * IFormSlots
+ *
+ * @description
+ * ⛔ `actions` exposes the form's REAL handlers, so `@click="submit"`
+ * runs validation and fires the `submit` emit. Until this was fixed the
+ * template bound `{ submit: () => handleSubmit, reset: () => handleReset }`
+ * — arrow functions RETURNING the handler instead of being it. Clicking
+ * the button documented on `OrigamForm.md` evaluated the reference and
+ * threw it away: no validation, no emit, nothing.
+ *
+ * @description
+ * Both take the originating `Event`. It is the native `SubmitEvent` when
+ * the form is submitted by a `type="submit"` button, and whatever event
+ * you forward (typically a `MouseEvent`) when you call the slot helper
+ * yourself — `handleSubmit` only needs an object it can hang
+ * `then`/`catch`/`finally` on before emitting it.
+ ********************************************************/
 export interface IFormSlots extends ICommonsComponentSlots {
     messages?: () => any
     message?: () => any
-    actions?: (data: { submit: () => void, reset: () => void }) => any
+    actions?: (data: { submit: (e: Event) => void, reset: (e: Event) => void }) => any
 }
 
-export interface IFormEmits {
+/*********************************************************
+ * IFormEmits
+ *
+ * @description
+ * useForm ECRIT la validite calculee dans modelValue
+ * (form.composable.ts:77) — c'est un canal sortant, pas seulement une
+ * valeur entrante.
+ *
+ * L'emission correspondante doit donc etre declaree, sans quoi Vue
+ * avertit a chaque montage et le handler onUpdate:modelValue reste dans
+ * $attrs, ou inheritAttrs le pose sur l'element <form> racine.
+ ********************************************************/
+export interface IFormEmits extends ICommonsComponentEmits {
     (e: 'submit', value: any): void
     (e: 'reset', value: any): void
 }

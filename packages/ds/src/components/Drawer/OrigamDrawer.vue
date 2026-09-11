@@ -8,8 +8,9 @@
 			<component
 					:is="tag"
 					v-if="isActive"
+					:id="id"
 					:ref="rootEl"
-					:aria-label="props.name || 'Navigation'"
+					:aria-label="drawerAriaLabel"
 					:class="drawerClasses"
 					:style="drawerStyles"
 					v-bind="{...scopeId, ...$attrs}"
@@ -71,33 +72,32 @@
 		useSlots,
 		watch
 	} from 'vue'
-	import { OrigamOverlayScrim, OrigamTransition } from '../../components'
+	import OrigamOverlayScrim from '../Overlay/OrigamOverlayScrim.vue'
+	import OrigamTransition from '../Transition/OrigamTransition.vue'
 
-	import {
-		useActive,
-		useBackgroundColor,
-		useDensity,
-		useHover,
-		useLayoutItem,
-		useProps,
-		useRouter,
-		useScopeId,
-		useSsrBoot,
-		useStateEffect,
-		useSticky,
-		useStyle,
-		useToggleScope,
-		useTouch,
-		useVModel
-} from '../../composables'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useLayoutItem } from '../../composables/Commons/layoutItem.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRouter } from '../../composables/Commons/router.composable'
+	import { useScopeId } from '../../composables/Commons/scopeId.composable'
+	import { useSsrBoot } from '../../composables/Commons/ssrBoot.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
+	import { useSticky } from '../../composables/Commons/sticky.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useToggleScope } from '../../composables/Commons/toggleScope.composable'
+	import { useTouch } from '../../composables/Commons/touch.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { INLINE } from '../../enums'
+	import { INLINE } from '../../enums/Commons/anchor.enum'
 
-	import type { IDrawerProps} from '../../interfaces'
+	import type { IDrawerProps } from '../../interfaces/Drawer/drawer.interface'
 
-	import type { IDrawerEmits } from '../../interfaces/Drawer/drawer.interface'
+	import type { IDrawerEmits, IDrawerSlots } from '../../interfaces/Drawer/drawer.interface'
 
-	import { int } from "../../utils"
+	import { int } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global
@@ -137,6 +137,8 @@
 
 	const emits = defineEmits<IDrawerEmits>()
 
+	defineSlots<IDrawerSlots>()
+
 	const {filterProps} = useProps<IDrawerProps>(props)
 
 	// Phase 3 (Vague C) — class-first companion alongside inline styles.
@@ -151,8 +153,8 @@
 	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
 	const {densityClasses} = useDensity(props)
 
-	const {isHover, hoverState} = useHover(props)
-	const {activeState} = useActive(props)
+	const {isOn: isHover, config: hoverState} = useStateFlag(props, {state: 'hover'})
+	const {config: activeState} = useStateFlag(props, {state: 'active'})
 
 	/*********************************************************
 	 * Value
@@ -174,13 +176,28 @@
 	const router = useRouter()
 	const {ssrBootStyles} = useSsrBoot()
 	const {scopeId} = useScopeId()
+	const {t} = useLocale()
 	const rootEl = ref<HTMLElement>()
 	const isHovering = shallowRef(false)
 
+	/*********************************************************
+	 * width
+	 *
+	 * @description
+	 * #384 — `Number(props.width)` / `Number(props.railWidth)`
+	 * returned NaN for any CSS length string (`Number('256px')`
+	 * === NaN). Unlike OrigamBottomNav/OrigamSystemBar, this
+	 * component has no `useDimension()` fallback — this value
+	 * is the ONLY source feeding `useLayoutItem`'s `elementSize`,
+	 * so the invalid `width: NaN` declaration was silently
+	 * dropped and the drawer rendered with NO explicit width at
+	 * all instead of a wrong one. `int()` parses both a bare
+	 * number and a CSS-length string (`parseInt(value, 10)`).
+	 ********************************************************/
 	const width = computed(() => {
 		return (props.rail && props.expandOnHover && isHovering.value)
-				? Number(props.width)
-				: Number(props.rail ? props.railWidth : props.width)
+				? int(props.width)
+				: int(props.rail ? props.railWidth : props.width)
 	})
 	const location = computed(() => {
 		return props.location as 'left' | 'right' | 'bottom'
@@ -239,7 +256,7 @@
 		if (!isPushing.value) return 0
 
 		const size = isTemporary.value ? 0
-				: props.rail && props.expandOnHover ? Number(props.railWidth)
+				: props.rail && props.expandOnHover ? int(props.railWidth)
 						: width.value
 
 		return isDragging.value ? size * dragProgress.value : size
@@ -283,6 +300,22 @@
 		return 0 // HTML order decides via registered.value insertion
 	})
 
+	/*********************************************************
+	 * ⛔ `props.name` est lu EAGERLY ici, et c'est VOULU (ADR-005).
+	 *
+	 * @description
+	 * `useLayoutItem` se sert de cet `id` pour `provide(
+	 * ORIGAM_LAYOUT_ITEM_KEY, {id})`, `layout.register(vm, {..., id})` et
+	 * `layout.unregister(id)` au demontage : il exige une valeur STABLE des
+	 * le setup. Le differer laisserait un element fantome dans le layout et
+	 * n'en desenregistrerait aucun.
+	 *
+	 * @description
+	 * `name` est une IDENTITE, pas un reglage visuel — au meme titre qu'un
+	 * `id`. Arbitrage utilisateur du 2026-09-02 : un theme n'a pas vocation
+	 * a nommer un element de layout. L'exception est actee dans
+	 * `scripts/guards/lib/setup-reads.exceptions.mjs`, avec sa raison.
+	 ********************************************************/
 	const {layoutItemStyles, layoutItemScrimStyles, layoutId} = useLayoutItem({
 		id: props.name,
 		order: layoutOrder,
@@ -371,6 +404,24 @@
 	})
 
 	/*********************************************************
+	 * Nom accessible
+	 *
+	 * @description
+	 * Le repli était la chaîne anglaise `'Navigation'` écrite en dur dans
+	 * le gabarit, derrière un `||` — la position exacte où le détecteur C8
+	 * est aveugle. Elle était annoncée telle quelle par tout lecteur
+	 * d'écran, quelle que soit la langue active.
+	 *
+	 * @description
+	 * `name` reste prioritaire : c'est le libellé que le consommateur a
+	 * choisi. On ne retombe sur le catalogue que s'il n'en a fourni aucun.
+	 * Lecture DIFFÉRÉE dans un `computed` (ADR-005) — contrairement à la
+	 * lecture eager de `name` par `useLayoutItem`, qui est une exception
+	 * actée parce qu'un id de layout doit être stable dès le setup.
+	 ********************************************************/
+	const drawerAriaLabel = computed(() => props.name || t('origam.drawer.aria_label'))
+
+	/*********************************************************
 	 * Class & Style
 	 *
 	 * @description
@@ -413,7 +464,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(drawerStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(drawerStyles, () => props.id)
 
 
 	/*********************************************************
@@ -454,7 +505,7 @@
 		transition-timing-function: var(--origam-drawer---transition-timing-function);
 
 		position: var(--origam-layout---position, var(--origam-drawer---position));
-		z-index: var(--origam-layout---zIndex, 1000);
+		z-index: var(--origam-layout---zIndex, var(--origam-drawer---z-index, 1000));
 
 		border-color: var(--origam-drawer---border-color);
 		border-style: var(--origam-drawer---border-style);
@@ -472,34 +523,35 @@
 		color: var(--origam-drawer---color);
 
 		&--border {
-			--origam-drawer---border-top-width: thin;
-			--origam-drawer---border-right-width: thin;
-			--origam-drawer---border-bottom-width: thin;
-			--origam-drawer---border-left-width: thin;
+			--origam-drawer---border-top-width: var(--origam-drawer__border---border-width, thin);
+			--origam-drawer---border-right-width: var(--origam-drawer__border---border-width, thin);
+			--origam-drawer---border-bottom-width: var(--origam-drawer__border---border-width, thin);
+			--origam-drawer---border-left-width: var(--origam-drawer__border---border-width, thin);
+			--origam-drawer---box-shadow: var(--origam-drawer__border---box-shadow, var(--origam-shadow---none));
 		}
 
 		&--top {
 			top: 0;
-			--origam-drawer---border-bottom-width: thin;
+			--origam-drawer---border-bottom-width: var(--origam-drawer__top---border-bottom-width, thin);
 		}
 
 		&--bottom {
 			left: 0;
-			--origam-drawer---border-top-width: thin;
+			--origam-drawer---border-top-width: var(--origam-drawer__bottom---border-top-width, thin);
 		}
 
 		&--left {
 			top: 0;
 			left: 0;
 			right: auto;
-			--origam-drawer---border-right-width: thin;
+			--origam-drawer---border-right-width: var(--origam-drawer__left---border-right-width, thin);
 		}
 
 		&--right {
 			top: 0;
 			left: auto;
 			right: 0;
-			--origam-drawer---border-left-width: thin;
+			--origam-drawer---border-left-width: var(--origam-drawer__right---border-left-width, thin);
 		}
 
 		&--floating {
@@ -507,12 +559,12 @@
 		}
 
 		&--temporary {
-			--origam-drawer---box-shadow: var(--origam-shadow---lg);
+			--origam-drawer---box-shadow: var(--origam-drawer__temporary---box-shadow, var(--origam-shadow---lg));
 		}
 
 		&--sticky {
-			--origam-drawer---height: auto;
-			--origam-drawer---transition-property: box-shadow, transform, visibility, width, height, left, right;
+			--origam-drawer---height: var(--origam-drawer__sticky---height, auto);
+			--origam-drawer---transition-property: var(--origam-drawer__sticky---transition-property, box-shadow, transform, visibility, width, height, left, right);
 		}
 
 		&:deep(.origam-list) {
@@ -520,20 +572,20 @@
 		}
 
 		&__content {
-			flex: 0 1 auto;
-			height: 100%;
-			max-width: 100%;
-			overflow-x: hidden;
-			overflow-y: auto;
+			flex: var(--origam-drawer__content---flex, 0 1 auto);
+			height: var(--origam-drawer__content---height, 100%);
+			max-width: var(--origam-drawer__content---max-width, 100%);
+			overflow-x: var(--origam-drawer__content---overflow-x, hidden);
+			overflow-y: var(--origam-drawer__content---overflow-y, auto);
 		}
 
 		&__img {
-			height: 100%;
+			height: var(--origam-drawer__img---height, 100%);
 			left: 0;
-			position: absolute;
+			position: var(--origam-drawer__img---position, absolute);
 			top: 0;
-			width: 100%;
-			z-index: -1;
+			width: var(--origam-drawer__img---width, 100%);
+			z-index: var(--origam-drawer__img---z-index, -1);
 
 			img {
 				height: inherit;
@@ -553,7 +605,7 @@
 			transition-property: var(--origam-drawer__scrim---transition-property, opacity);
 			transition-duration: var(--origam-drawer__scrim---transition-duration, var(--origam-motion__duration---medium));
 			transition-timing-function: var(--origam-drawer__scrim---transition-timing-function, var(--origam-motion__easing---standard));
-			z-index: var(--origam-drawer__scrim---z-index, var(--origam-z-index-raised));
+			z-index: var(--origam-drawer__scrim---z-index, var(--origam-zIndex---raised));
 		}
 
 		&__prepend,

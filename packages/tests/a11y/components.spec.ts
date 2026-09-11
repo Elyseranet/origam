@@ -86,6 +86,8 @@ const COMPONENT_STORIES: Array<{ name: string; slug: string }> = [
     { name: 'Menu',            slug: 'menu-origammenu' },
     { name: 'Pagination',      slug: 'pagination-origampagination' },
     { name: 'Progress',        slug: 'progress-origamprogress' },
+    { name: 'ProgressCircular', slug: 'progress-origamprogresscircular' },
+    { name: 'ProgressLinear',  slug: 'progress-origamprogresslinear' },
     { name: 'Radio',           slug: 'radio-origamradio' },
     { name: 'Select',          slug: 'select-origamselect' },
     { name: 'Sheet',           slug: 'sheet-origamsheet' },

@@ -1,0 +1,38 @@
+    [chromium] › e2e/alert-status-icon.spec.ts:61:5 › OrigamAlert — title line-height aligns with prepend icon › title vertical centre is within 3px of the prepend-icon vertical centre 
+    [chromium] › e2e/badge.spec.ts:193:9 › OrigamBadge › Functional › SCSS --dot: injecting the class sets pill height to 9px 
+    [chromium] › e2e/badge.spec.ts:447:9 › OrigamBadge › Rounded SCSS rules › --rounded-shaped: TL+BR rounded, TR+BL = 0 (pill) 
+    [chromium] › e2e/badge.spec.ts:471:9 › OrigamBadge › Rounded SCSS rules › --rounded-shaped-invert: TR+BL rounded, TL+BR = 0 (pill) 
+    [chromium] › e2e/chart.spec.ts:42:5 › OrigamChart — Default (root + ARIA) › renders the figure root with the expected aria-label 
+    [chromium] › e2e/dialog.spec.ts:483:8 › OrigamDialog › Slots - Header Subtitle (index 14) › le slot #header-subtitle rend du contenu dans la zone sous-titre [DS BUG - OrigamCard ne route pas #header-subtitle] 
+    [chromium] › e2e/dialog.spec.ts:519:8 › OrigamDialog › Slots - Header Title (index 15) › le slot #header-title rend du markup riche dans le titre [DS BUG - OrigamCard ne route pas #header-title] 
+    [chromium] › e2e/expansion-panel.spec.ts:81:9 › OrigamExpansionPanelHeader › Design › renders the header root with BEM class 
+    [chromium] › e2e/expansion-panel.spec.ts:88:9 › OrigamExpansionPanelHeader › Design › header is a <button> element by default (tag=button) 
+    [chromium] › e2e/expansion-panel.spec.ts:97:9 › OrigamExpansionPanelHeader › Design › title prop renders text inside the title span 
+    [chromium] › e2e/expansion-panel.spec.ts:105:9 › OrigamExpansionPanelHeader › Design › aria-expanded is false in collapsed state 
+    [chromium] › e2e/expansion-panel.spec.ts:113:9 › OrigamExpansionPanelHeader › Design › click toggles aria-expanded to true 
+    [chromium] › e2e/expansion-panel.spec.ts:122:9 › OrigamExpansionPanelHeader › Design › click adds the --active modifier class 
+    [chromium] › e2e/expansion-panel.spec.ts:131:9 › OrigamExpansionPanelHeader › Design › click reveals the panel content 
+    [chromium] › e2e/expansion-panel.spec.ts:141:9 › OrigamExpansionPanelHeader › Design › second click collapses — aria-expanded returns to false 
+    [chromium] › e2e/expansion-panel.spec.ts:152:9 › OrigamExpansionPanelHeader › Design › expand/collapse icon area is present (append slot) 
+    [chromium] › e2e/expansion-panel.spec.ts:165:9 › OrigamExpansionPanelHeader › State › renders with bgColor=primary utility class 
+    [chromium] › e2e/expansion-panel.spec.ts:173:9 › OrigamExpansionPanelHeader › State › overlay opacity is 0 at rest (no hover) 
+    [chromium] › e2e/expansion-panel.spec.ts:189:9 › OrigamExpansionPanelHeader › Functional › renders the header in functional variant 
+    [chromium] › e2e/expansion-panel.spec.ts:196:9 › OrigamExpansionPanelHeader › Functional › focusable=true applies the --focusable modifier class 
+    [chromium] › e2e/expansion-panel.spec.ts:204:9 › OrigamExpansionPanelHeader › Functional › hideActions=false: the append area (chevron) is visible 
+    [chromium] › e2e/expansion-panel.spec.ts:212:9 › OrigamExpansionPanelHeader › Functional › readonly=false: click toggles the panel (not locked) 
+    [chromium] › e2e/expansion-panel.spec.ts:221:9 › OrigamExpansionPanelHeader › Functional › SCSS --static: adding the class applies the modifier 
+    [chromium] › e2e/expansion-panel.spec.ts:237:9 › OrigamExpansionPanelHeader › Events - click:append › renders with an append icon (OPEN_IN_NEW) 
+    [chromium] › e2e/expansion-panel.spec.ts:246:9 › OrigamExpansionPanelHeader › Events - click:append › click on the append area does not throw 
+    [chromium] › e2e/expansion-panel.spec.ts:258:9 › OrigamExpansionPanelHeader › Events - click:prepend › renders with a prepend icon (COG_OUTLINE) 
+    [chromium] › e2e/expansion-panel.spec.ts:266:9 › OrigamExpansionPanelHeader › Events - click:prepend › click on the prepend area does not throw 
+    [chromium] › e2e/expansion-panel.spec.ts:278:9 › OrigamExpansionPanelHeader › Slots - Default › default slot renders custom content in the title area 
+    [chromium] › e2e/expansion-panel.spec.ts:290:9 › OrigamExpansionPanelHeader › Slots - Prepend › prepend slot renders an origam-icon inside the prepend area 
+    [chromium] › e2e/expansion-panel.spec.ts:302:9 › OrigamExpansionPanelHeader › Slots - Append › append slot renders an origam-icon inside the append area 
+    [chromium] › e2e/expansion-panel.spec.ts:316:9 › OrigamExpansionPanelHeader › Slots - Title › title slot renders custom content with no `title` prop set 
+    [chromium] › e2e/expansion-panel.spec.ts:324:9 › OrigamExpansionPanelHeader › Slots - Title › title span mounts even without the `title` prop (hasTitle honours slots.title) 
+    [chromium] › e2e/expansion-panel.spec.ts:337:9 › OrigamExpansionPanelHeader › Default (playground) › renders a header with title "Section heading" 
+    [chromium] › e2e/expansion-panel.spec.ts:345:9 › OrigamExpansionPanelHeader › Default (playground) › is a <button> element (default tag) 
+    [chromium] › e2e/expansion-panel.spec.ts:354:9 › OrigamExpansionPanelHeader › Default (playground) › expand icon (chevron-down) is present in the append area 
+    [chromium] › e2e/prop-audit-phase4.spec.ts:163:5 › DOM audit — OrigamCard › the inline border-radius companion is load-bearing, not redundant with the utility class 
+    [chromium] › e2e/textarea-richtext.spec.ts:32:5 › OrigamTextareaField — richtext mode › Mode rich (HTML) — emits sanitised HTML in v-model 
+    [chromium] › e2e/textarea-richtext.spec.ts:148:5 › OrigamTextareaField — richtext mode › Emit format — counter increments on every toolbar click 

@@ -14,6 +14,8 @@
 
 import { describe, expect, it } from 'vitest'
 
+import { CHART_ZOOM_WHEEL_STEP } from 'origam/consts'
+
 import { useChartZoom } from '@origam/composables/Chart/chart-zoom.composable'
 
 // ---------------------------------------------------------------------------
@@ -47,6 +49,12 @@ describe('useChartZoom — initial state', () => {
     it('WHEEL_ZOOM_STEP is positive', () => {
         const z = makeZoom(5)
         expect(z.WHEEL_ZOOM_STEP).toBeGreaterThan(0)
+    })
+
+    it('WHEEL_ZOOM_STEP re-exports the CHART_ZOOM_WHEEL_STEP const', () => {
+        const z = makeZoom(5)
+        expect(z.WHEEL_ZOOM_STEP).toBe(CHART_ZOOM_WHEEL_STEP)
+        expect(CHART_ZOOM_WHEEL_STEP).toBe(0.15)
     })
 })
 

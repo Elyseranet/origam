@@ -97,13 +97,22 @@
 	import OrigamBracketCompetitor from './OrigamBracketCompetitor.vue'
 	import OrigamDivider from '../Divider/OrigamDivider.vue'
 
-	import { useActive, useDensity, useDimension, useHover, useMargin, usePadding, useProps } from '../../composables'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 
 	import { bracketSurfaceVars, resolveBracketForeground } from '../../utils/Bracket/bracket-surface.util'
 
 	import type { IBracketSurfaceInput } from '../../utils/Bracket/bracket-surface.util'
 
-	import type { IBracketCompetitor, IBracketMatch, IBracketMatchProps } from '../../interfaces'
+	import type { IBracketCompetitor } from '../../interfaces/Bracket/bracket-competitor.interface'
+	import type { IBracketMatchEmits, IBracketMatchProps, IBracketMatchSlots } from '../../interfaces/Bracket/bracket-match-component.interface'
+
+	import { BRACKET_MATCH_STATUS } from '../../enums/Bracket/bracket-match.enum'
 
 	const props = withDefaults(defineProps<IBracketMatchProps>(), {
 		tag: 'div',
@@ -114,35 +123,50 @@
 		color: 'primary'
 	})
 
-	const emit = defineEmits<{
-		(e: 'click', match: IBracketMatch, event: MouseEvent): void
-		(e: 'competitor-click', competitor: IBracketCompetitor, match: IBracketMatch, side: 'A' | 'B', event: MouseEvent | KeyboardEvent): void
-		(e: 'winner-click', competitor: IBracketCompetitor, match: IBracketMatch, event: MouseEvent | KeyboardEvent): void
-	}>()
+	const emit = defineEmits<IBracketMatchEmits>()
+
+	defineSlots<IBracketMatchSlots>()
 
 	const {filterProps} = useProps<IBracketMatchProps>(props)
 
 	const resolvedStatus = computed(() => props.status ?? props.match.status)
 
-	const STATUS_LABELS: Record<string, string> = {
-		pending: 'TBD',
-		live: 'LIVE',
-		completed: 'Completed',
-		forfeited: 'Forfeit'
-	}
+	/*********************************************************
+	 * Libellés — critère C8
+	 *
+	 * @description
+	 * Les libellés de statut, « Watch live » et le repli « TBD » étaient
+	 * écrits en dur en anglais : toute la famille Bracket était donc
+	 * intraduisible, et aucun de ses quatre composants n'appelait
+	 * `useLocale`. La table de correspondance vivait en plus comme une
+	 * `const` déclarée DANS le `.vue`, ce que les conventions du dépôt
+	 * interdisent.
+	 * @description
+	 * La table est désormais reconstruite dans un `computed`, donc réévaluée
+	 * quand la locale change — un objet figé au corps de `setup()` aurait
+	 * gardé la première langue pour toute la vie du composant.
+	 ********************************************************/
+	const {t} = useLocale()
+
+	const statusLabels = computed<Record<string, string>>(() => ({
+		[BRACKET_MATCH_STATUS.PENDING]: t('origam.bracket.status.pending'),
+		[BRACKET_MATCH_STATUS.LIVE]: t('origam.bracket.status.live'),
+		[BRACKET_MATCH_STATUS.COMPLETED]: t('origam.bracket.status.completed'),
+		[BRACKET_MATCH_STATUS.FORFEITED]: t('origam.bracket.status.forfeited')
+	}))
 
 	const statusLabel = computed<string>(() => {
 		if (!resolvedStatus.value) return ''
 
-		return STATUS_LABELS[resolvedStatus.value] ?? resolvedStatus.value
+		return statusLabels.value[resolvedStatus.value] ?? resolvedStatus.value
 	})
 
-	const watchLabel = 'Watch live'
+	const watchLabel = computed(() => t('origam.bracket.watch_live'))
 
 	const statusClasses = computed(() => {
 		return [
 			'origam-bracket-match__status',
-			`origam-bracket-match__status--${resolvedStatus.value ?? 'pending'}`
+			`origam-bracket-match__status--${resolvedStatus.value ?? BRACKET_MATCH_STATUS.PENDING}`
 		]
 	})
 
@@ -176,8 +200,8 @@
 
 	// On a forfeited match the LOSER (the side that didn't advance) is the
 	// one that forfeited — flag it so the row can show it.
-	const isForfeitA = computed<boolean>(() => resolvedStatus.value === 'forfeited' && isLoserA.value)
-	const isForfeitB = computed<boolean>(() => resolvedStatus.value === 'forfeited' && isLoserB.value)
+	const isForfeitA = computed<boolean>(() => resolvedStatus.value === BRACKET_MATCH_STATUS.FORFEITED && isLoserA.value)
+	const isForfeitB = computed<boolean>(() => resolvedStatus.value === BRACKET_MATCH_STATUS.FORFEITED && isLoserB.value)
 
 	const advantageFor = (competitor: IBracketCompetitor | null): number | undefined => {
 		const advantage = props.match.advantage
@@ -191,10 +215,10 @@
 	const advantageB = computed<number | undefined>(() => advantageFor(props.match.competitorB))
 
 	const ariaLabel = computed<string>(() => {
-		const a = props.match.competitorA?.name ?? 'TBD'
-		const b = props.match.competitorB?.name ?? 'TBD'
+		const a = props.match.competitorA?.name ?? t('origam.bracket.tbd')
+		const b = props.match.competitorB?.name ?? t('origam.bracket.tbd')
 
-		return `Match: ${a} versus ${b}`
+		return t('origam.bracket.match_aria_label', a, b)
 	})
 
 	const handleMatchClick = (event: MouseEvent) => {
@@ -232,10 +256,10 @@
 	// Interaction state — `hover` / `active` paint the card surface from the
 	// hover / active state objects (same as everywhere). A `live` match IS
 	// the active state, so it picks up the active surface automatically.
-	const {hoverClasses, isHover, hoverState, onMouseenter, onMouseleave} = useHover(props)
-	const {activeClasses, isActive, activeState, onActive} = useActive(props)
+	const {classes: hoverClasses, isOn: isHover, config: hoverState, set: onMouseenter, unset: onMouseleave} = useStateFlag(props, {state: 'hover'})
+	const {classes: activeClasses, isOn: isActive, config: activeState, toggle: onActive} = useStateFlag(props, {state: 'active'})
 
-	const isLive = computed<boolean>(() => resolvedStatus.value === 'live')
+	const isLive = computed<boolean>(() => resolvedStatus.value === BRACKET_MATCH_STATUS.LIVE)
 	const isActiveOrLive = computed<boolean>(() => isActive.value || isLive.value)
 
 	// Effective surface props: hover / active (incl. live) state objects
@@ -348,6 +372,24 @@
 		border-style: var(--origam-bracket-match---border-style, solid);
 		border-color: var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12)));
 		border-radius: var(--origam-bracket-match---border-radius, 6px);
+
+		border-block-width: var(--origam-bracket-match---border-block-width, var(--origam-bracket-match---border-width, 1px));
+		border-inline-width: var(--origam-bracket-match---border-inline-width, var(--origam-bracket-match---border-width, 1px));
+
+		border-top-width: var(--origam-bracket-match---border-top-width, var(--origam-bracket-match---border-block-width, var(--origam-bracket-match---border-width, 1px)));
+		border-right-width: var(--origam-bracket-match---border-right-width, var(--origam-bracket-match---border-inline-width, var(--origam-bracket-match---border-width, 1px)));
+		border-bottom-width: var(--origam-bracket-match---border-bottom-width, var(--origam-bracket-match---border-block-width, var(--origam-bracket-match---border-width, 1px)));
+		border-left-width: var(--origam-bracket-match---border-left-width, var(--origam-bracket-match---border-inline-width, var(--origam-bracket-match---border-width, 1px)));
+
+		border-top-color: var(--origam-bracket-match---border-top-color, var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))));
+		border-right-color: var(--origam-bracket-match---border-right-color, var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))));
+		border-bottom-color: var(--origam-bracket-match---border-bottom-color, var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))));
+		border-left-color: var(--origam-bracket-match---border-left-color, var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))));
+
+		border-top-left-radius: var(--origam-bracket-match---border-top-left-radius, var(--origam-bracket-match---border-radius, 6px));
+		border-top-right-radius: var(--origam-bracket-match---border-top-right-radius, var(--origam-bracket-match---border-radius, 6px));
+		border-bottom-left-radius: var(--origam-bracket-match---border-bottom-left-radius, var(--origam-bracket-match---border-radius, 6px));
+		border-bottom-right-radius: var(--origam-bracket-match---border-bottom-right-radius, var(--origam-bracket-match---border-radius, 6px));
 		box-shadow: var(--origam-bracket-match---box-shadow, 0 1px 2px rgba(0, 0, 0, 0.06));
 		overflow: hidden;
 		transition: background-color var(--origam-bracket-match---transition-duration, 120ms) ease,
@@ -381,11 +423,11 @@
 			}
 
 			&--pending {
-				color: var(--origam-color__text---tertiary, rgba(0, 0, 0, 0.5));
+				color: var(--origam-color__text---tertiary, var(--origam-color__text---secondary));
 			}
 
 			&--live {
-				color: var(--origam-color__feedback--danger---bg, #d32f2f);
+				color: var(--origam-color__feedback--danger---fgSubtle, #d32f2f);
 
 				&::before {
 					box-shadow: 0 0 0 0 currentColor;
@@ -394,11 +436,11 @@
 			}
 
 			&--completed {
-				color: var(--origam-color__feedback--success---bg, #2e7d32);
+				color: var(--origam-color__feedback--success---fgSubtle, #2e7d32);
 			}
 
 			&--forfeited {
-				color: var(--origam-color__feedback--warning---bg, #ed6c02);
+				color: var(--origam-color__feedback--warning---fgSubtle, #b45309);
 			}
 		}
 
@@ -406,7 +448,7 @@
 			display: inline-flex;
 			align-items: center;
 			gap: 2px;
-			color: var(--origam-color__feedback--danger---bg, #d32f2f);
+			color: var(--origam-color__feedback--danger---fgSubtle, #d32f2f);
 			font-weight: 600;
 			text-decoration: none;
 
@@ -420,7 +462,7 @@
 		}
 
 		&__schedule {
-			color: var(--origam-color__text---tertiary, rgba(0, 0, 0, 0.5));
+			color: var(--origam-color__text---tertiary, var(--origam-color__text---secondary));
 		}
 
 		&__body {
@@ -440,6 +482,20 @@
 
 		&--status-completed {
 			opacity: 0.95;
+		}
+
+		// #511 — `origam-bracket-match--final` was posed on `is-final` matches
+		// (OrigamBracketRound.vue wires it for the last match of the last
+		// round) with NO matching rule: a final rendered pixel-identical to
+		// any other match. Follows the same `--{state}---{prop}` var grammar
+		// as `&--hover` above; the fallback chain matches the token #436
+		// proposed (`color.surface.raised`) plus a primary-accent border/
+		// shadow so a final is visually distinguishable even before that
+		// component-token file exists.
+		&--final {
+			background-color: var(--origam-bracket-match--final---background-color, var(--origam-color__surface---raised, #fff));
+			border-color: var(--origam-bracket-match--final---border-color, var(--origam-color__action--primary---bg, #7c3aed));
+			box-shadow: var(--origam-bracket-match--final---box-shadow, 0 2px 8px rgba(124, 58, 237, 0.24));
 		}
 
 		&--density-compact {

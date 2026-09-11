@@ -1,13 +1,17 @@
 <template>
 	<div
+			:aria-label="label || undefined"
 			:class="otpInputFieldClasses"
 			:style="otpInputFieldStyles"
+			:role="role"
 			v-bind="{ ...rootAttrs }"
 	>
 		<div
 				ref="contentRef"
 				:style="dimensionStyles"
 				class="origam-otp-input-field__content"
+				@click="handleControlClick"
+				@mousedown="handleControlMousedown"
 		>
 			<template
 					v-for="(_, i) in fields"
@@ -23,6 +27,9 @@
 						ref="origamFieldRef"
 						:focused="(isFocused && focusAll) || focusIndex === i"
 						v-bind="{...fieldProps(i)}"
+						@click:clear="handleClear"
+						@click:append-inner="handleClickAppendInner"
+						@click:prepend-inner="handleClickPrependInner"
 				>
 					<template
 							v-if="slots.prependInner"
@@ -111,7 +118,7 @@
 					content-class="origam-otp-input-field__loader"
 					persistent
 			>
-				<template #loader>
+				<template #default>
 					<slot name="loader">
 						<origam-progress
 								:color="typeof loading === 'string' ? loading : undefined"
@@ -146,20 +153,33 @@
 >
 
 	import { computed, nextTick, ref, StyleValue, useAttrs, useSlots, watch } from "vue"
-	import { OrigamField, OrigamOverlay, OrigamProgress } from "../../components"
+	import OrigamField from '../Field/OrigamField.vue'
+	import OrigamOverlay from '../Overlay/OrigamOverlay.vue'
+	import OrigamProgress from '../Progress/OrigamProgress.vue'
 	import { OrigamMessages } from "../../components/Messages"
 
-	import { useDimension, useFocus, useLocale, useProps, useTypography, useValidation, useVModel, useStyle } from "../../composables"
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useFocus } from '../../composables/Commons/focus.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
+	import { useValidation } from '../../composables/Commons/validation.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { OTP_INPUT_FIELD_TYPE, PROGRESS_TYPE } from "../../enums"
+	import { OTP_INPUT_FIELD_TYPE } from '../../enums/OtpInputField/otp-input-field.enum'
+	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
 
-	import type { IOtpInputFieldProps, IOtpInputFieldSlots } from "../../interfaces"
+	import type { IOtpInputFieldProps, IOtpInputFieldSlots } from '../../interfaces/OtpInputField/otp-input-field.interface'
 
 	import type { IOtpInputFieldEmits } from '../../interfaces/OtpInputField/otp-input-field.interface'
 
-	import type { TOrigamField } from "../../types"
+	import type { TOrigamField } from '../../types/Field/field.type'
 
-	import { filterInputAttrs, focusChild, forwardRefs, getUid, wrapInArray } from "../../utils"
+	import { filterInputAttrs } from '../../utils/Input/input.util'
+	import { focusChild, wrapInArray } from '../../utils/Commons/commons.util'
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 	/*********************************************************
 	 * Global
@@ -169,7 +189,8 @@
 	 ********************************************************/
 	const props = withDefaults(defineProps<IOtpInputFieldProps>(), {
 		type: OTP_INPUT_FIELD_TYPE.NUMBER,
-		length: 6
+		length: 6,
+		role: 'group'
 	})
 
 	const emits = defineEmits<IOtpInputFieldEmits>()
@@ -408,6 +429,53 @@
 		focusIndex.value = -1
 	}
 
+	/*********************************************************
+	 * Control / clear handlers
+	 *
+	 * @description
+	 * Mirrors the sibling Field-wrapping components (TextField,
+	 * NumberField, PasswordField, Select, FileField, DatePickerField,
+	 * TextareaField, ColorPickerField): `click:control`/`mousedown:control`
+	 * relay a click/mousedown on the control area, `click:clear` relays
+	 * `<origam-field>`'s own `click:clear` and — same as TextField's
+	 * `handleClear` — actually performs the clear via the existing
+	 * `reset()` rather than only notifying.
+	 ********************************************************/
+	const handleControlClick = (e: MouseEvent) => {
+		emits('click:control', e)
+	}
+
+	const handleControlMousedown = (e: MouseEvent) => {
+		emits('mousedown:control', e)
+	}
+
+	const handleClear = (e: MouseEvent) => {
+		e.stopPropagation()
+
+		reset()
+
+		emits('click:clear', e)
+	}
+
+	/*********************************************************
+	 * click:appendInner / click:prependInner relay
+	 *
+	 * @description
+	 * `<origam-field>` (one per OTP cell) already emits both via its own
+	 * `useAdjacentInner` when a consumer sets `appendInnerIcon` /
+	 * `prependInnerIcon`, but nothing here listened for them — declared,
+	 * never fired (issue: guard `unemitted-declarations`,
+	 * `OtpInputField:click:appendInner,click:prependInner`). Mirrors
+	 * `handleClear` above: relay on THIS component's own instance whichever
+	 * cell the click came from.
+	 ********************************************************/
+	const handleClickAppendInner = (e: MouseEvent) => {
+		emits('click:appendInner', e)
+	}
+	const handleClickPrependInner = (e: MouseEvent) => {
+		emits('click:prependInner', e)
+	}
+
 	const isInvalidValue = (value: string) => {
 		return props.type === OTP_INPUT_FIELD_TYPE.NUMBER && /[^0-9]/g.test(value)
 	}
@@ -526,10 +594,10 @@
 		&__field {
 			color: var(--origam-otp-input-field__cell---color, inherit);
 			font-size: var(--origam-otp-input-field__cell---font-size, 1.25rem);
-			height: 100%;
+			height: var(--origam-otp-input-field__cell---height, 100%);
 			outline: var(--origam-otp-input-field__cell---outline, none);
 			text-align: var(--origam-otp-input-field__cell---text-align, center);
-			width: 100%;
+			width: var(--origam-otp-input-field__cell---width, 100%);
 			border: var(--origam-otp-input-field__cell---border, none);
 			background: var(--origam-otp-input-field__cell---background, transparent);
 
@@ -574,7 +642,7 @@
 		&--error {
 			#{$this}__details {
 				> .origam-messages {
-					color: var(--origam-otp-input-field---error-color, var(--origam-color__feedback--danger---fg-subtle));
+					color: var(--origam-otp-input-field---error-color, var(--origam-color__feedback--danger---fgSubtle));
 					opacity: 1;
 				}
 			}

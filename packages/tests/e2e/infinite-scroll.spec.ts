@@ -1,12 +1,24 @@
 import { expect, test } from '@playwright/test'
 
+import { selectHstOption } from './_support/histoire-controls'
+
 const STORY_PATH = '/stories/story/components-stories-infinitescroll-origaminfinitescroll-story-vue'
 
+/**
+ * Story realignment (canonical Design/Functional/Events/Slots structure):
+ * the old dedicated "Basic — end side" / "Manual mode" / "Both sides"
+ * Variants are gone. "Design" hardcodes side="end" mode="intersect" (no
+ * controls for either) — a faithful re-target for "Basic — end side".
+ * "Manual mode" / "Both sides" are now the "Functional" Variant's Mode /
+ * Side HstSelect controls, driven via `selectHstOption`. Slot/Events
+ * Variants were simply renamed to the canonical "Slots - X" / "Events - X"
+ * form.
+ */
 test.describe('OrigamInfiniteScroll', () => {
     test('Basic — end side variant renders with initial items', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByRole('link', { name: 'Basic — end side', exact: true }).click()
+        await page.getByRole('link', { name: 'Design', exact: true }).click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -20,8 +32,9 @@ test.describe('OrigamInfiniteScroll', () => {
     test('Manual mode variant — renders with load more button', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByRole('link', { name: 'Manual mode', exact: true }).click()
+        await page.getByRole('link', { name: 'Functional', exact: true }).click()
         await page.waitForTimeout(800)
+        await selectHstOption(page, 'Mode', 'Manual')
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('.origam-infinite-scroll').first()).toBeVisible({ timeout: 5000 })
@@ -30,8 +43,9 @@ test.describe('OrigamInfiniteScroll', () => {
     test('Both sides variant — renders scroll container', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByRole('link', { name: 'Both sides', exact: true }).click()
+        await page.getByRole('link', { name: 'Functional', exact: true }).click()
         await page.waitForTimeout(800)
+        await selectHstOption(page, 'Side', 'Both')
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('.origam-infinite-scroll').first()).toBeVisible({ timeout: 5000 })
@@ -40,7 +54,7 @@ test.describe('OrigamInfiniteScroll', () => {
     test('Slot — loading renders custom loading content', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByRole('link', { name: 'Slot — loading', exact: true }).click()
+        await page.getByRole('link', { name: 'Slots - Loading', exact: true }).click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -50,28 +64,25 @@ test.describe('OrigamInfiniteScroll', () => {
     test('Slot — empty renders custom empty message', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByRole('link', { name: 'Slot — empty', exact: true }).click()
+        await page.getByRole('link', { name: 'Slots - Empty', exact: true }).click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const scroll = sandbox.locator('.origam-infinite-scroll').first()
         await expect(scroll).toBeVisible({ timeout: 5000 })
-        // The story renders the #empty slot with "No more items" text.
-        // However, the OrigamInfiniteScroll template wraps the bottom #empty slot
-        // inside v-if="hasStartIntersect" (not hasEndIntersect), so for the default
-        // side="end" the empty message never renders to the DOM — this is a known
-        // component-template limitation (template bug: should use hasEndIntersect).
-        // TODO: when the component template is fixed, un-skip this assertion:
-        // await expect(sandbox.getByText('No more items')).toBeVisible({ timeout: 8000 })
-        //
-        // For now, assert the minimal contract: scroll container renders and has content.
         await expect(sandbox.getByText('Only item')).toBeVisible({ timeout: 5000 })
+        // #423 — the bottom `__side` div (scoped to side="end", the story's
+        // default) was gated by `v-if="hasStartIntersect"` instead of
+        // `hasEndIntersect`, so the #empty slot content below never
+        // rendered. Fixed — this is the real assertion, previously
+        // commented out as a known template limitation.
+        await expect(sandbox.getByText('No more items to load')).toBeVisible({ timeout: 8000 })
     })
 
     test('Emit — load variant renders scroll container', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByRole('link', { name: 'Emit — load', exact: true }).click()
+        await page.getByRole('link', { name: 'Events - load', exact: true }).click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

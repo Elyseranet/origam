@@ -1,9 +1,9 @@
 import type { InjectionKey } from 'vue'
 import { BREAKPOINTS } from '../../enums'
 
-import type { IDisplayInstance, IDisplayOptions } from '../../interfaces'
+import type { IDisplayInstance, IDisplayOptions } from '../../interfaces/Commons/display.interface'
 
-import type { TBreakpoint } from '../../types'
+import type { TBreakpoint } from '../../types/Commons/display.type'
 
 export const ORIGAM_DISPLAY_KEY: InjectionKey<IDisplayInstance> = Symbol.for('origam:display')
 

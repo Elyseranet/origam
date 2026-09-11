@@ -63,7 +63,7 @@ test.describe('OrigamDatePicker', () => {
     test('Slot — actions renders action buttons', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Slot — actions', { exact: true }).first().click()
+        await page.getByText('Slots - Actions', { exact: true }).first().click()
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('[data-cy="date-picker-slot-actions"]').first()).toBeVisible({ timeout: 10000 })
@@ -73,7 +73,7 @@ test.describe('OrigamDatePicker', () => {
     test('Emit — update:modelValue variant renders picker', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Emit — update:modelValue', { exact: true }).first().click()
+        await page.getByText('Events - update:modelValue', { exact: true }).first().click()
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('[data-cy="date-picker-emit-model-value"]').first()).toBeVisible({ timeout: 10000 })

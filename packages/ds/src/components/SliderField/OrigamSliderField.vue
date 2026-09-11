@@ -247,23 +247,11 @@
 				@pointermove="handleHoverPointerMove"
 				@pointerleave="handleHoverPointerLeave"
 		>
-			<svg
-					v-if="hasPeaks"
+			<origam-audio-waveform
 					class="origam-slider-field__waveform"
-					:viewBox="waveformViewBox"
-					preserveAspectRatio="none"
-					aria-hidden="true"
-			>
-				<rect
-						v-for="(peak, index) in normalizedPeaks"
-						:key="index"
-						:x="(index / normalizedPeaks.length) * 100"
-						:y="50 - (peak * 50)"
-						:width="100 / normalizedPeaks.length"
-						:height="peak * 100"
-						:class="waveformBarClass(index)"
-				/>
-			</svg>
+					:peaks="peaks"
+					:progress="modelPercentage"
+			/>
 
 			<origam-slider-field-track
 					:bg-color="bgColor"
@@ -425,30 +413,33 @@
 		setup
 >
 	import { computed, ref, StyleValue, useSlots, WritableComputedRef } from 'vue'
-	import { OrigamInput, OrigamLabel, OrigamSliderFieldTrack } from '../../components'
+	import OrigamInput from '../Input/OrigamInput.vue'
+	import OrigamLabel from '../Label/OrigamLabel.vue'
+	import OrigamSliderFieldTrack from './OrigamSliderFieldTrack.vue'
+	import { OrigamAudioWaveform } from '../Audio'
 
-	import {
-		useBackgroundColor,
-		useDefaults,
-		useFocus,
-		useProps,
-		useRounded,
-		useRtl,
-		useSteps,
-		useStyle,
-		useTextColor,
-		useVModel
-	} from '../../composables'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useFocus } from '../../composables/Commons/focus.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useRtl } from '../../composables/Commons/rtl.composable'
+	import { useSteps } from '../../composables/SliderField/slider-field.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTextColor } from '../../composables/Commons/textColor.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { DENSITY, DIRECTION, SLIDER_FIELD_VARIANT } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { SLIDER_FIELD_VARIANT } from '../../enums/SliderField/slider-field.enum'
 
-	import type { ISliderFieldProps } from "../../interfaces"
+	import type { ISliderFieldProps } from '../../interfaces/SliderField/slider-field.interface'
 
-	import type { ISliderFieldEmits } from '../../interfaces/SliderField/slider-field.interface'
+	import type { ISliderFieldEmits, ISliderFieldSlots } from '../../interfaces/SliderField/slider-field.interface'
 
-	import type { TOrigamInput, TTick } from '../../types'
+	import type { TOrigamInput } from '../../types/Input/input.type'
+	import type { TTick } from '../../types/SliderField/slider-field.type'
 
-	import { clamp, convertToUnit, createRange, omit } from '../../utils'
+	import { clamp, convertToUnit, createRange, omit } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global
@@ -456,7 +447,7 @@
 	 * @description
 	 * Props, emits, slots and the focus + RTL composables.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<ISliderFieldProps & { inset?: boolean }>(), {
+	const props = withDefaults(defineProps<ISliderFieldProps>(), {
 		min: 0,
 		max: 100,
 		modelValue: 0,
@@ -470,14 +461,9 @@
 		formatHoverTooltip: (value: number) => String(value)
 	})
 
-	// `useDefaults` resolves each prop against the closest
-	// `<OrigamDefaultsProvider>` / theme `components['origam-slider-field']`
-	// entry. Without this hook `color`/`bgColor` (and any other theme-level
-	// default for this component) were completely inert — the component
-	// only ever saw its own `withDefaults()` value (see #279).
-	const props = useDefaults(_props)
-
 	const emits = defineEmits<ISliderFieldEmits>()
+
+	defineSlots<ISliderFieldSlots>()
 
 	const {filterProps} = useProps<ISliderFieldProps>(props)
 
@@ -512,10 +498,34 @@
 	const steps = useSteps(props)
 	const {min: resolvedMin, max: resolvedMax, step: resolvedStep, roundValue} = steps
 
+	/*********************************************************
+	 *  `useVModel`'s THIRD ARGUMENT IS A PLAIN VALUE, EVALUATED EAGERLY
+	 *
+	 *  @description
+	 *  `isRange.value ? [resolvedMin.value, resolvedMax.value] :
+	 *  resolvedMin.value` is a normal JS expression: as an argument to
+	 *  `useVModel(...)`, it is evaluated BEFORE the call, at the top level
+	 *  of `setup()` — before Vue's `beforeCreate` hook runs, which is where
+	 *  the ADR-005 theme resolver patches `instance.props`. That FIRST read
+	 *  of `isRange.value` / `resolvedMin.value` (both `computed()`s wrapping
+	 *  `props.range` / `props.min`) caches them at their pre-theme value —
+	 *  and since a `computed` only invalidates on a tracked-dependency
+	 *  change, and a theme naming a prop with no accompanying parent
+	 *  re-render never writes one, they stayed stuck at that snapshot
+	 *  forever, breaking the SAME `resolvedMin` / `isRange` the template
+	 *  reads for `:min="resolvedMin"` and the range/single-thumb branch.
+	 *  The argument is passed as `undefined` because it is DEAD, not merely
+	 *  harmless: `useVModel` reaches its third argument only when
+	 *  `props.modelValue === undefined`, and `withDefaults()` above declares
+	 *  `modelValue: 0`, so it never is. Naming any expression here — even a
+	 *  literal-only one like `props.range ? [0, 100] : 0` — would reintroduce
+	 *  an eager read of `props.range` for a value nothing consumes, and leave
+	 *  `setup-reads.mjs` reporting a defect that no longer exists.
+	 ********************************************************/
 	const model = useVModel(
 			props,
 			'modelValue',
-			isRange.value ? [resolvedMin.value, resolvedMax.value] : resolvedMin.value,
+			undefined,
 			(value: number | string | Array<number> | Array<string> | undefined) => {
 				if (isRange.value) {
 					const array = value as Array<number> | Array<string>
@@ -611,20 +621,6 @@
 		const peaks = props.peaks
 		return Array.isArray(peaks) && peaks.length > 0
 	})
-
-	const normalizedPeaks = computed(() => {
-		const peaks = props.peaks ?? []
-		return peaks.map((p) => clamp(Number.isFinite(p) ? p : 0, 0, 1))
-	})
-
-	const waveformViewBox = computed(() => '0 0 100 100')
-
-	const waveformBarClass = (index: number) => {
-		const barPct = (index / Math.max(1, normalizedPeaks.value.length)) * 100
-		return barPct <= modelPercentage.value
-				? 'origam-slider-field__waveform-bar origam-slider-field__waveform-bar--active'
-				: 'origam-slider-field__waveform-bar origam-slider-field__waveform-bar--inactive'
-	}
 
 	/*********************************************************
 	 * Hover tooltip (RAF-throttled)
@@ -912,12 +908,25 @@
 	/*********************************************************
 	 * Forwarded props
 	 ********************************************************/
+	/*********************************************************
+	 * inputProps
+	 *
+	 * @description
+	 * Strips the entire IColorProps surface so `OrigamInput` (the row
+	 * wrapper) doesn't paint the consumer's intent on its background.
+	 * `color` / `bgColor` stay strictly scoped to the slider track +
+	 * thumb (per the project's color contract).
+	 * @description
+	 * #421 — `id` is deliberately NOT in this exclude list: OrigamInput
+	 * needs it to build `<id>-messages`, the target of its own
+	 * `aria-describedby`, and to feed its default slot's `id` (consumed
+	 * by OrigamField, then the real `<input type="range">`). Excluding it
+	 * forced OrigamInput to invent an id, so a consumer passing `id` got
+	 * a range input unreachable by `getElementById` — same fix as
+	 * OrigamTextField (ce365b10).
+	 ********************************************************/
 	const inputProps = computed(() => {
-		// Strip the entire IColorProps surface so `OrigamInput` (the
-		// row wrapper) doesn't paint the consumer's intent on its
-		// background. `color` / `bgColor` stay strictly scoped to the
-		// slider track + thumb (per the project's color contract).
-		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused', 'centerAffix', 'color', 'bgColor', 'activeColor', 'activeBgColor', 'hoverColor', 'hoverBgColor'])
+		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'focused', 'centerAffix', 'color', 'bgColor'])
 	})
 	const trackProps = computed(() => {
 		return omit(props.trackProps ?? {}, ['class', 'start', 'stop', 'color', 'bgColor', 'disabled', 'error', 'isVertical', 'indexFromEnd', 'showTicks', 'tickSize', 'ticks', 'min', 'max'])
@@ -979,7 +988,6 @@
 	const sliderFieldStyles = computed(() => {
 		return [
 			{
-				'--origam-slider-field---thumb-size': convertToUnit(20),
 				'--origam-slider-field---track-size': convertToUnit(typeof props.trackProps?.size === 'number' ? props.trackProps.size : 4)
 			},
 			props.style
@@ -998,7 +1006,6 @@
 		'origam-slider-field--inset': props.inset,
 		'origam-slider-field--vertical': isVertical.value,
 		'origam-slider-field--horizontal': !isVertical.value,
-		'origam-slider-field--reverse': isReversed.value,
 		'origam-slider-field--thumb-on-hover': props.showThumbOnHoverOnly || isBareVariant.value,
 		'origam-slider-field--has-buffered': hasBuffered.value,
 		'origam-slider-field--has-peaks': hasPeaks.value
@@ -1094,8 +1101,8 @@
 			&::-webkit-slider-thumb {
 				-webkit-appearance: none;
 				appearance: none;
-				width: var(--origam-slider-field---thumb-size, 20px);
-				height: var(--origam-slider-field---thumb-size, 20px);
+				width: var(--origam-slider-field__thumb---size, 20px);
+				height: var(--origam-slider-field__thumb---size, 20px);
 				background: transparent;
 				border: none;
 				cursor: grab;
@@ -1103,8 +1110,8 @@
 			}
 
 			&::-moz-range-thumb {
-				width: var(--origam-slider-field---thumb-size, 20px);
-				height: var(--origam-slider-field---thumb-size, 20px);
+				width: var(--origam-slider-field__thumb---size, 20px);
+				height: var(--origam-slider-field__thumb---size, 20px);
 				background: transparent;
 				border: none;
 				cursor: grab;
@@ -1131,8 +1138,8 @@
 		&__thumb {
 			position: absolute;
 			pointer-events: none;
-			width: var(--origam-slider-field---thumb-size, 20px);
-			height: var(--origam-slider-field---thumb-size, 20px);
+			width: var(--origam-slider-field__thumb---size, 20px);
+			height: var(--origam-slider-field__thumb---size, 20px);
 			transform: translate(-50%, -50%);
 			top: 50%;
 			transition: 0.15s 0.05s transform cubic-bezier(0, 0, 0.2, 1);
@@ -1156,16 +1163,6 @@
 			inset: 0;
 			width: 100%;
 			height: 100%;
-		}
-
-		&__waveform-bar {
-			&--active {
-				fill: currentColor;
-			}
-
-			&--inactive {
-				fill: color-mix(in srgb, currentColor 35%, transparent);
-			}
 		}
 
 		&__hover-tooltip {
@@ -1209,10 +1206,18 @@
 
 			&--error {
 				#{$this}__container {
-					color: rgba(255, 0, 0, 1);
+					color: var(--origam-slider-field---color-error, rgba(255, 0, 0, 1));
 				}
 			}
 		}
+
+    &--is-rtl {
+      direction: rtl;
+    }
+
+    &--is-ltr {
+      direction: ltr;
+    }
 
 		&--horizontal {
 			align-items: center;
@@ -1230,7 +1235,7 @@
 				width: 100%;
 				font-size: 0.5rem;
 				padding: 0 5px;
-				background-color: rgb(148, 148, 148);
+				background-color: var(--origam-slider-field__track---background-color, rgb(148, 148, 148));
 				height: var(--origam-slider-field---track-size, 14px);
 				transition: 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -1265,7 +1270,7 @@
 			#{$this}__input {
 				inset-inline-start: 0;
 				width: 100%;
-				height: var(--origam-slider-field---thumb-size, 20px);
+				height: var(--origam-slider-field__thumb---size, 20px);
 			}
 		}
 
@@ -1297,7 +1302,7 @@
 				}
 
 				.origam-slider-field-track__tick {
-					margin-inline-start: calc(calc(var(--origam-slider-field-track---size) + 2px) / 2);
+					margin-inline-start: calc(calc(var(--origam-slider-field-track---size, 2) + 2px) / 2);
 					transform: translate(calc(var(--origam-slider-field-track---size, 2) / -2), calc(var(--origam-slider-field-track---size, 2) / 2));
 				}
 
@@ -1319,7 +1324,7 @@
 				writing-mode: vertical-lr;
 				-webkit-appearance: slider-vertical;
 				appearance: slider-vertical;
-				width: var(--origam-slider-field---thumb-size, 20px);
+				width: var(--origam-slider-field__thumb---size, 20px);
 				height: 100%;
 				top: 0;
 			}
@@ -1474,7 +1479,7 @@
 		}
 
 		.origam-slider-field__thumb {
-			--origam-slider-field---thumb-size: var(--origam-slider-field--bare---thumb-size, 12px);
+			--origam-slider-field__thumb---size: var(--origam-slider-field--bare---thumb-size, 12px);
 			background: currentColor;
 		}
 
@@ -1520,13 +1525,13 @@
 	.origam-slider-field-thumb {
 		$this: &;
 
-		color: rgba(66, 66, 66, 1);
+		color: var(--origam-slider-field__thumb---background-color, rgba(66, 66, 66, 1));
 		outline: none;
 		transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 
 		&__surface {
-			width: var(--origam-slider-field---thumb-size, 20px);
-			height: var(--origam-slider-field---thumb-size, 20px);
+			width: var(--origam-slider-field__thumb---size, 20px);
+			height: var(--origam-slider-field__thumb---size, 20px);
 			border: 1px solid var(--origam-slider-field-thumb__surface---border-color, rgba(0, 0, 0, 0.18));
 			border-radius: 50%;
 			user-select: none;

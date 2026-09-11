@@ -8,6 +8,14 @@
 
 ---
 
+> **Note (2026-09-04)**: this ADR was written while the Style Dictionary v4
+> + Tokens Studio token pipeline (`tokens/component/*.json`, re-import into
+> Tokens Studio, `tokens:build`) was still active. That pipeline was removed
+> on 2026-08-31; the text below is left unmodified as the historical record
+> of the decision. The generated token sheets it targets are now the
+> hand-maintained source of truth — see the "Design tokens" section of the
+> repository `CLAUDE.md`.
+
 ## Context
 
 `SPECS-v3.md` defines a no-code Theme Builder that lets a user edit global

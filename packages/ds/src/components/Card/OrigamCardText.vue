@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="cardTextClasses"
 			:style="cardTextStyles"
 	>
@@ -14,8 +15,15 @@
 		lang="ts"
 		setup
 >
-	import { useDensity, useProps, useStyle, useTypography } from "../../composables"
-	import type { ICardTextProps } from '../../interfaces'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
+	import type { ICardTextEmits, ICardTextProps, ICardTextSlots } from '../../interfaces/Card/card-text.interface'
 
 	import { computed, StyleValue } from 'vue'
 
@@ -30,7 +38,27 @@
 
 	const {filterProps} = useProps<ICardTextProps>(props)
 
+	defineEmits<ICardTextEmits>()
+
+	defineSlots<ICardTextSlots>()
+
 	const {densityClasses} = useDensity(props)
+
+	/*********************************************************
+	 * Spacing / border / shape
+	 *
+	 * @description
+	 * `ICardTextProps` extends IPaddingProps / IMarginProps / IBorderProps /
+	 * IRoundedProps, and the scoped SCSS below already declares the matching
+	 * `--origam-card-text---padding-*` / `margin-*` / `border-*` custom
+	 * properties — the surface was designed to be settable. Only the wiring
+	 * to the composables was missing, so `<origam-card-text padding="8px">`
+	 * resolved to nothing. Inline declarations beat the scoped defaults.
+	 ********************************************************/
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {roundedClasses, roundedStyles} = useRounded(props)
 
 	/*********************************************************
 	 * Typography
@@ -53,6 +81,10 @@
 	const cardTextStyles = computed(() => {
 		return [
 			typographyStyles.value,
+			borderStyles.value,
+			roundedStyles.value,
+			marginStyles.value,
+			paddingStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -60,10 +92,14 @@
 		return [
 			'origam-card-text',
 			densityClasses.value,
+			borderClasses.value,
+			roundedClasses.value,
+			paddingClasses.value,
+			marginClasses.value,
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(cardTextStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(cardTextStyles, () => props.id)
 
 
 	/*********************************************************

@@ -72,6 +72,31 @@ icon system accepts (an `mdi-*` string, a component, etc.).
 </template>
 ```
 
+## Arrow surface — `bgColor`, `hover`, `active`
+
+`bgColor`, `hover` / `hoverClass` and `active` / `activeClass` are NOT
+painted on the window root: they are forwarded verbatim to the two
+default `<OrigamBtn>` prev / next controls. Use them to tune the
+affordances without replacing them through the `prev` / `next` / `arrows`
+slots.
+
+`hover` and `active` follow the usual grammar of `IHoverProps` /
+`IActiveProps` — `true` forces the state on, an `IStateEffectConfig`
+object overrides the resting `color` / `bgColor` / `border` / `rounded` /
+`elevation` / `padding` / `margin` / `gap` only while the state is
+engaged.
+
+```vue
+<template>
+    <OrigamWindow bg-color="primary" show-arrows>…</OrigamWindow>
+    <OrigamWindow :hover="{ bgColor: 'primary' }" show-arrows>…</OrigamWindow>
+    <OrigamWindow active-class="my-pressed-arrow" show-arrows>…</OrigamWindow>
+</template>
+```
+
+> Because these props reach the buttons only, they have no effect when
+> the `prev` / `next` / `arrows` slots replace the default controls.
+
 ## Touch
 
 `touch` enables (or replaces) the swipe handlers. Pass `false` to
@@ -95,12 +120,33 @@ object overriding individual handlers from `ITouchHandlers`.
 | `arrows` | `prevProps`, `nextProps`, `canMoveBack`, `canMoveForward` | Replace both controls in one slot. |
 | `additional` | `group` | Slot rendered AFTER the container — useful for pagination dots. |
 
+## Props
+
+Own props. The cross-cutting surfaces (`rounded`, `border`, `elevation`,
+`padding`, `margin`, `bgColor`, `hover`, `active`, `tag`, `direction`, `id`,
+`class`, `style`) come from the `extends` chain below and behave as they do
+everywhere else in the DS.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `modelValue` | `any` | — | `v-model` — the `value` of the active `<OrigamWindowItem>`. |
+| `continuous` | `boolean` | `false` | Wraps around: the last slide's next goes back to the first, and the first slide's prev to the last. Both arrows then stay reachable at every index. |
+| `prevIcon` | `TIcon` | `mdi-chevron-left` | Icon of the previous-slide button. |
+| `nextIcon` | `TIcon` | `mdi-chevron-right` | Icon of the next-slide button. |
+| `reverse` | `boolean` | `false` | Inverts the transition direction, so forward navigation animates as if it were backward. |
+| `showArrows` | `boolean \| 'hover'` | `true` | `false` hides the controls block entirely; `'hover'` keeps it mounted but translates the arrows out of view until the window is hovered. |
+| `touch` | `boolean \| ITouchHandlers` | `undefined` | `false` disables swipe navigation. An object merges your handlers over the built-in left/right ones. |
+| `disabled` | `boolean` | `false` | Freezes selection — forwarded to the underlying group. |
+| `selectedClass` | `string` | `'origam-window-item--active'` | Class applied to the active item by the group registry. |
+| `mandatory` | `boolean` | `true` | Keeps exactly one item selected: the group refuses to end up with an empty selection. |
+
 ## Props (interface)
 
 ```ts
 interface IWindowProps extends ICommonsComponentProps, ITagProps,
     IDirectionProps, IBorderProps, IPaddingProps, IMarginProps,
-    IRoundedProps, IElevationProps {
+    IRoundedProps, IElevationProps, IBgColorProps, IHoverProps,
+    IActiveProps {
     continuous?: boolean
     nextIcon?: TIcon
     prevIcon?: TIcon
@@ -130,7 +176,8 @@ interface IWindowProps extends ICommonsComponentProps, ITagProps,
 
 ## Design tokens consumed
 
-Defined in `tokens/component/window.json`.
+Defined in `packages/ds/src/assets/css/tokens/light.css` and `dark.css`
+(SCSS twins under `packages/ds/src/assets/scss/tokens/`).
 
 | CSS variable | Default |
 |---|---|
@@ -147,8 +194,16 @@ Defined in `tokens/component/window.json`.
 
 ## Accessibility
 
+- The root carries `role="region"` and `aria-roledescription="carousel"`,
+  per the WAI-ARIA Authoring Practices carousel pattern. Pass an
+  `aria-label` (it falls through automatically) to give the region an
+  accessible name when a page has more than one carousel.
 - Prev / next buttons receive an `aria-label` from the locale (default
   `origam.carousel.prev` / `origam.carousel.next`).
+- A visually-hidden `role="status"` / `aria-live="polite"` live region
+  announces the active slide (`origam.carousel.aria_label.delimiter`,
+  e.g. "Carousel slide 2 of 3") whenever it changes — via the prev/next
+  buttons, a swipe, or programmatic `v-model` navigation.
 - The active item is the only one rendered in the DOM transition phase;
   screen readers see one slide at a time.
 - Pair `direction="horizontal"` with `prefers-reduced-motion` and bind

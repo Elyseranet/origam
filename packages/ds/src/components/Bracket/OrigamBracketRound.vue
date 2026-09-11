@@ -32,7 +32,7 @@
 			>
 				<origam-bracket-match
 						:key="match.id"
-						:color="color"
+						:color="matchColor"
 						:data-cy="`origam-bracket-match-${match.id}`"
 						:data-match-id="match.id"
 						:interactive="interactive"
@@ -44,7 +44,17 @@
 						@click="onMatchClick"
 						@competitor-click="onCompetitorClick"
 						@winner-click="onWinnerClick"
-				/>
+				>
+					<template
+							v-if="$slots.competitor"
+							#competitor="scope"
+					>
+						<slot
+								name="competitor"
+								v-bind="scope"
+						/>
+					</template>
+				</origam-bracket-match>
 			</slot>
 		</div>
 	</component>
@@ -58,15 +68,15 @@
 
 	import OrigamBracketMatch from './OrigamBracketMatch.vue'
 
-	import { useProps, useTypography } from '../../composables'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import { DIRECTION } from '../../enums'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
 
-	import type {
-		IBracketCompetitor,
-		IBracketMatch,
-		IBracketRoundProps
-	} from '../../interfaces'
+	import type { IBracketCompetitor } from '../../interfaces/Bracket/bracket-competitor.interface'
+	import type { IBracketMatch } from '../../interfaces/Bracket/bracket-match.interface'
+	import type { IBracketRoundEmits, IBracketRoundProps, IBracketRoundSlots } from '../../interfaces/Bracket/bracket-round-component.interface'
 
 	const props = withDefaults(defineProps<IBracketRoundProps>(), {
 		tag: 'div',
@@ -78,11 +88,9 @@
 		color: 'primary'
 	})
 
-	const emit = defineEmits<{
-		(e: 'match-click', match: IBracketMatch, event: MouseEvent): void
-		(e: 'competitor-click', competitor: IBracketCompetitor, match: IBracketMatch, side: 'A' | 'B', event: MouseEvent | KeyboardEvent): void
-		(e: 'winner-click', competitor: IBracketCompetitor, match: IBracketMatch, event: MouseEvent | KeyboardEvent): void
-	}>()
+	const emit = defineEmits<IBracketRoundEmits>()
+
+	defineSlots<IBracketRoundSlots>()
 
 	const {filterProps} = useProps<IBracketRoundProps>(props)
 
@@ -90,6 +98,23 @@
 
 	const resolvedId = computed(() => props.id ?? `origam-bracket-round-${props.round.id}`)
 	const titleId = computed(() => `${resolvedId.value}-title`)
+
+	/*********************************************************
+	 * matchColor (#428)
+	 *
+	 * @description
+	 * Same mechanism as `OrigamBracket.vue`'s `roundColor`, one level
+	 * down: `props.color` here ALSO carries a hard `withDefaults`
+	 * default (`'primary'`), so binding it straight onto every
+	 * `<origam-bracket-match>` below always forwarded a concrete value —
+	 * whether THIS Round's own consumer (which may be `OrigamBracket`
+	 * itself, forwarding only when ITS consumer set `color` explicitly —
+	 * see `roundColor`) actually passed one or not. Only an explicitly
+	 * passed value cascades to Match; otherwise Match's own theme/default
+	 * applies.
+	 ********************************************************/
+	const wasPropPassed = usePassedProps(props)
+	const matchColor = computed(() => (wasPropPassed('color') ? props.color : undefined))
 
 	const isFinalRound = computed<boolean>(() => props.index === props.totalRounds - 1)
 

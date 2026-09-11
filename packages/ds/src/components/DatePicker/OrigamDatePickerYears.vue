@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="id"
 			:class="datePickerYearsClasses"
 			:style="datePickerYearsStyles"
 	>
@@ -20,14 +21,18 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn } from "../../components"
-	import { useDate, useProps, useVModel , useStyle} from "../../composables"
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useDate } from '../../composables/Commons/date.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IDatePickerYearsProps} from "../../interfaces"
+	import type { IDatePickerYearsProps } from '../../interfaces/DatePicker/date-picker-years.interface'
 
-	import type { IDatePickerYearsEmits } from '../../interfaces/DatePicker/date-picker-years.interface'
-	import type { TTemplateRef } from "../../types"
-	import { convertToUnit, createRange, int, templateRef } from "../../utils"
+	import type { IDatePickerYearsEmits, IDatePickerYearsSlots } from '../../interfaces/DatePicker/date-picker-years.interface'
+	import type { TTemplateRef } from '../../types/Commons/commons.type'
+	import { convertToUnit, createRange, int, templateRef } from '../../utils/Commons/commons.util'
 
 	import { computed, nextTick, onMounted, StyleValue, watchEffect } from "vue"
 
@@ -41,6 +46,8 @@
 	const props = withDefaults(defineProps<IDatePickerYearsProps>(), {})
 
 	const emits = defineEmits<IDatePickerYearsEmits>()
+
+	defineSlots<IDatePickerYearsSlots>()
 
 	const {filterProps} = useProps<IDatePickerYearsProps>(props)
 
@@ -140,8 +147,11 @@
 	 * Root element classes and inline styles.
 	 ********************************************************/
 
+	const {dimensionStyles} = useDimension(props)
+
 	const datePickerYearsStyles = computed(() => {
 		return [
+			dimensionStyles.value,
 			{
 				height: convertToUnit(props.height)
 			},
@@ -154,7 +164,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(datePickerYearsStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(datePickerYearsStyles, () => props.id)
 
 
 	/*********************************************************

@@ -63,6 +63,7 @@
 					density: undefined,
 					eager: false,
 					loading: false,
+					loadingText: '',
 					tag: undefined,
 				})"
 		>
@@ -75,6 +76,7 @@
 								:density="state.density"
 								:eager="state.eager"
 								:loading="state.loading"
+								:loading-text="state.loadingText || undefined"
 								:tag="state.tag"
 						/>
 					</origam-expansion-panel>
@@ -90,6 +92,7 @@
 				<StoryGroup title="States">
 					<HstCheckbox v-model="state.eager"   title="Eager (no lazy mount)"/>
 					<HstCheckbox v-model="state.loading" title="Loading"/>
+					<HstText     v-model="state.loadingText" title="Loading Text"/>
 				</StoryGroup>
 				<StoryGroup title="Tag">
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>

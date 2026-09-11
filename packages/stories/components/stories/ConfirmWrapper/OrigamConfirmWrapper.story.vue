@@ -178,22 +178,6 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — header">
-			<div style="padding: 24px; max-width: 400px;">
-				<origam-confirm-wrapper
-						v-model="slotHeaderValue"
-						v-model:confirm="slotHeaderConfirm"
-						field="text-field"
-						:defaults="{ label: 'Email' }"
-						data-cy="confirm-wrapper-slot-header"
-				>
-					<template #header>
-						<div style="padding-bottom: 8px; font-weight: 700;">Custom header slot</div>
-					</template>
-				</origam-confirm-wrapper>
-			</div>
-		</Variant>
-
 		<Variant title="Slot — default & confirm">
 			<div style="padding: 24px; max-width: 400px;">
 				<origam-confirm-wrapper
@@ -242,18 +226,6 @@
 						field="text-field"
 						:defaults="{ label: 'Email' }"
 						@update:confirm="logEvent('update:confirm', $event)"
-				/>
-			</div>
-		</Variant>
-
-		<Variant title="Events - update:focused">
-			<div style="padding: 24px; max-width: 400px;">
-				<origam-confirm-wrapper
-						v-model="emitFocusedValue"
-						v-model:confirm="emitFocusedConfirm"
-						field="text-field"
-						:defaults="{ label: 'Email' }"
-						@update:focused="logEvent('update:focused', $event)"
 				/>
 			</div>
 		</Variant>
@@ -320,6 +292,7 @@
 						v-model:confirm="slotHeaderConfirm"
 						field="text-field"
 						:defaults="{ label: 'Email' }"
+						data-cy="confirm-wrapper-slot-header"
 				>
 					<template #header>
 						<div style="padding-bottom: 8px; font-weight: 700;">Custom header slot</div>
@@ -432,13 +405,14 @@
 				})"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 500px;">
+				<div style="padding: 24px; max-width: 500px;" data-cy="confirm-wrapper-playground">
 					<origam-confirm-wrapper
 							v-model="playgroundValue"
 							v-model:confirm="playgroundConfirm"
 							v-bind="state"
 							field="text-field"
 							:defaults="{ label: state.label }"
+							data-cy="confirm-wrapper-playground-input"
 							@update:model-value="logEvent('update:modelValue', $event)"
 							@update:confirm="logEvent('update:confirm', $event)"
 					/>
@@ -518,9 +492,6 @@
 
 	const emitConfirmValue = ref('')
 	const emitConfirmConfirm = ref('')
-
-	const emitFocusedValue = ref('')
-	const emitFocusedConfirm = ref('')
 
 	const emitPrependValue = ref('')
 	const emitPrependConfirm = ref('')

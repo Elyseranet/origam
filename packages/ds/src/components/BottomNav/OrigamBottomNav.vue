@@ -7,7 +7,7 @@
 				v-contrast
 				:data-origam-color-locked="colorLocked"
 				:class="bottomNavClasses"
-				:aria-label="t('origam.bottom_nav.aria_label', 'Bottom navigation')"
+				:aria-label="t('origam.bottom_nav.aria_label')"
 				@mouseenter="handleMouseenter"
 				@mouseleave="handleMouseleave"
 		>
@@ -45,33 +45,37 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn, OrigamDefaultsProvider, OrigamTransition, OrigamTranslateBottom } from "../../components"
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
+	import OrigamTransition from '../Transition/OrigamTransition.vue'
+	import OrigamTranslateBottom from '../Transition/OrigamTranslateBottom.vue'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import {
-		useActive,
-		useDensity,
-		useDimension,
-		useGroup,
-		useHover,
-		useLayoutItem,
-		useLocale,
-		useProps,
-		useSsrBoot,
-		useStateEffect,
-		useStyle
-	} from '../../composables'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useGroup } from '../../composables/Commons/group.composable'
+	import { useLayoutItem } from '../../composables/Commons/layoutItem.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSsrBoot } from '../../composables/Commons/ssrBoot.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts'
-	import { MODE } from "../../enums"
+	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts/Btn/btn-toggle.const'
+	import { BLOCK } from '../../enums/Commons/anchor.enum'
+	import { MODE } from '../../enums/Commons/mode.enum'
 
-	import type { IBottomNavProps, IBreadcrumbItemProps} from '../../interfaces'
+	import type { IBottomNavProps } from '../../interfaces/BottomNav/bottom-nav.interface'
+	import type { IBreadcrumbItemProps } from '../../interfaces/Breadcrumb/breadcrumb-item.interface'
 
-	import type { IBottomNavEmits } from '../../interfaces/BottomNav/bottom-nav.interface'
-	import type { TOrigamBtn, TTransitionProps } from "../../types"
+	import type { IBottomNavEmits, IBottomNavSlots } from '../../interfaces/BottomNav/bottom-nav.interface'
+	import type { TOrigamBtn } from '../../types/Btn/btn.type'
+	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
-	import { convertToUnit, int } from '../../utils'
+	import { convertToUnit, int, omitUndefined } from '../../utils/Commons/commons.util'
 
 	import { computed, ref, StyleValue, toRef } from 'vue'
 	import type { ComputedRef } from 'vue'
@@ -90,6 +94,7 @@
 		selectedClass: 'origam-bottom-nav__btn--selected',
 		mode: MODE.VERTICAL,
 		position: 'start',
+		location: BLOCK.BOTTOM,
 		items: () => [] as Array<TOrigamBtn>,
 		// Default transition — slide up from the bottom of the viewport.
 		// Passed as a component descriptor (not just a name string) so the
@@ -102,6 +107,8 @@
 
 	defineEmits<IBottomNavEmits>()
 
+	defineSlots<IBottomNavSlots>()
+
 	const {filterProps} = useProps<IBottomNavProps>(props)
 	const {t} = useLocale()
 
@@ -111,20 +118,38 @@
 
 	// Push visual-token props down to every descendant `<origam-btn>` (the
 	// bottom-nav button children) as DEFAULTS — items that pass their own
-	// props still win. `OrigamBtn` already calls `useDefaults` so this is
-	// picked up automatically.
+	// props still win. The ADR-005 resolver picks this up automatically.
+	// Forward ONLY what the consumer actually passed — see #263 and the same
+	// guard on `OrigamBtnGroup` / `OrigamAvatarGroup`. A prop the consumer
+	// never set must NOT be forwarded: `mergeDeep` (used by
+	// `provideDefaults` to combine this map with an
+	// ancestor/theme `'origam-btn'` entry) copies it unconditionally and
+	// silently overwrites the theme default.
+	//
+	// A plain `omitUndefined` is NOT enough here: `color` / `bgColor` are
+	// `TColor` (which includes `false`) and `hover` / `active` are
+	// `boolean | IHoverState / IActiveState`, so Vue's boolean-prop coercion
+	// resolves every one of them to the concrete value `false` when unset —
+	// there is no `undefined` left to filter. `density` was the reverse case:
+	// it leaked a bare `undefined`, which `mergeDeep` copies just the same and
+	// which therefore ERASED any themed button density. Measured before the
+	// fix: under a theme setting `'origam-btn': { color: 'success', density:
+	// 'comfortable' }`, a standalone button rendered
+	// `origam--color-success origam-btn--density-comfortable` while the very
+	// same button inside `<origam-bottom-nav>` rendered neither.
+	const wasPropPassed = usePassedProps(props)
 	const slotDefaults = computed(() => ({
-		'origam-btn': {
-			density: props.density,
-			color: props.color,
-			bgColor: props.bgColor,
+		'origam-btn': omitUndefined({
+			density: wasPropPassed('density') ? props.density : undefined,
+			color: wasPropPassed('color') ? props.color : undefined,
+			bgColor: wasPropPassed('bgColor') ? props.bgColor : undefined,
 			// New API: forward `hover` / `active` (boolean | object)
 			// to each child OrigamBtn; the legacy split `hoverColor` /
 			// `hoverBgColor` / `activeColor` / `activeBgColor` props no
 			// longer exist on the parent or the children.
-			hover: props.hover,
-			active: props.active
-		}
+			hover: wasPropPassed('hover') ? props.hover : undefined,
+			active: wasPropPassed('active') ? props.active : undefined
+		})
 	}))
 
 	/*********************************************************
@@ -137,8 +162,8 @@
 	/*********************************************************
 	 * Composables
 	 ********************************************************/
-	const {isActive, activeClasses} = useActive(props, 'modelValue')
-	const {hoverClasses, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
+	const {isOn: isActive, classes: activeClasses} = useStateFlag(props, {state: 'active', source: 'modelValue'})
+	const {classes: hoverClasses, set: handleMouseenter, unset: handleMouseleave} = useStateFlag(props, {state: 'hover'})
 	// Phase 3 (Vague C) — class-first companion alongside inline styles.
 	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
 	// ONLY for the resting state — `useStateEffect` returns `[]` for
@@ -156,13 +181,14 @@
 	 *   • The resting bg stays on the intent's `bg` rung (same
 	 *     teinte as the child buttons in their resting state).
 	 *   • Hovering the nav doesn't darken the whole bar.
-	 *   • `isActive` from `useActive(props, 'modelValue')` means
+	 *   • `isActive` from `useStateFlag(props, {state: 'active', source: 'modelValue'})` means
 	 *     "the nav is currently displayed" (drives slide-in), NOT
 	 *     a pressed state — feeding it would resolve to `bgActive`
 	 *     (color-mix -30 %) and paint the resting bar darker than
-	 *     its buttons. `hoverColor` / `activeColor` props are still
+	 *     its buttons. The `hover` / `active` object props are still
 	 *     propagated to the child OrigamBtn instances via
-	 *     `slotDefaults` — that's where they take visual effect.
+	 *     `slotDefaults` (see above) — that's where they take visual
+	 *     effect.
 	 ********************************************************/
 
 	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, ref(false), ref(false))
@@ -176,25 +202,123 @@
 	 ********************************************************/
 	const {ssrBootStyles} = useSsrBoot()
 
+	/*********************************************************
+	 * height
+	 *
+	 * @description
+	 * Two DIFFERENT consumers need "the height minus 8px in compact
+	 * density", and they must NOT share the same value:
+	 *
+	 * - `height` (numeric, px) — feeds `useLayoutItem`'s internal
+	 *   offset/geometry math, which needs a plain number (it cannot
+	 *   reactively resolve `vh`/`rem`/`%` to a live pixel value without
+	 *   a `ResizeObserver`). #384 — `Number(props.height)` returned NaN
+	 *   for any CSS length string (`Number('96px')` === NaN); replaced
+	 *   with `int()` (parseInt-based, already used elsewhere in this
+	 *   catalogue for the same "read the leading number off a
+	 *   possibly-unit-suffixed prop" need), which reads the numeric
+	 *   prefix regardless of a trailing unit.
+	 *
+	 * - `heightStyle` (CSS declaration string) — what the browser
+	 *   actually paints. This one MUST preserve the consumer's original
+	 *   unit. #384's first fix pass reused the numeric `height` above
+	 *   for BOTH purposes (`convertToUnit(height.value)`), which
+	 *   silently re-serialised ANY unit as a bare px number: passing
+	 *   `height="50vh"` rendered a fixed `50px`, not `50vh` — a
+	 *   regression proven at runtime (Playwright against a live
+	 *   Histoire `Design` variant): computed height measured `50px`
+	 *   against a 612px-tall sandbox instead of the expected ~306px
+	 *   (50% of viewport), a 256px miss. When `density` isn't
+	 *   `'compact'` no override is needed at all — `dimensionStyles`
+	 *   (via `useDimension`/`convertToUnit`) already emits the correct,
+	 *   unit-preserving `height` declaration, so `heightStyle` stays
+	 *   `undefined` and lets it win. When `density === 'compact'`, the
+	 *   subtraction is expressed as a native CSS `calc()` on the
+	 *   unit-preserving value (`convertToUnit(props.height)`, e.g.
+	 *   `50vh` / `10rem` / `96px`) instead of pre-computing in JS —
+	 *   the browser resolves `calc(50vh - 8px)` correctly for any unit,
+	 *   which a JS numeric subtraction cannot (CSS-first per this
+	 *   repo's engineering principles). For an already-px value this is
+	 *   mathematically identical to the previous plain-number result
+	 *   (`calc(96px - 8px)` computes to `88px`, matching the documented
+	 *   "height - 8px" contract).
+	 ********************************************************/
 	const height = computed(() => {
 		if (props.height) {
-			return Number(props.height) - (props.density === 'compact' ? 8 : 0)
+			return int(props.height) - (props.density === 'compact' ? 8 : 0)
 		}
 
 		return 48
 	})
 
+	const heightStyle = computed(() => {
+		if (!props.height) return undefined
+		if (props.density !== 'compact') return undefined
+
+		return `calc(${convertToUnit(props.height)} - 8px)`
+	})
+
+	/*********************************************************
+	 * ⛔ `props.name` est lu EAGERLY ici, et c'est VOULU (ADR-005).
+	 *
+	 * @description
+	 * `setup-reads.mjs` signale cette lecture, a juste titre : le resolveur
+	 * de props de theme ecrit dans `beforeCreate`, APRES l'execution de
+	 * `setup()`. Une valeur capturee ici ne verra donc jamais celle du
+	 * theme.
+	 *
+	 * @description
+	 * Elle ne peut pas etre differee pour autant. `useLayoutItem` se sert
+	 * de cet `id` pour trois choses qui exigent une valeur STABLE des le
+	 * setup : `provide(ORIGAM_LAYOUT_ITEM_KEY, {id})`, `layout.register(vm,
+	 * {..., id})` et `layout.unregister(id)` au demontage. Un identifiant
+	 * qui changerait apres l'enregistrement laisserait un element fantome
+	 * dans le layout et n'en desenregistrerait aucun.
+	 *
+	 * @description
+	 * La vraie question n'est donc pas « comment differer cette lecture »
+	 * mais « un theme a-t-il vocation a nommer un element de layout ? ».
+	 * `name` est une IDENTITE, pas un reglage visuel — au meme titre qu'un
+	 * `id`. Tant que la reponse est non, cette lecture est correcte et le
+	 * signalement de l'outil est un faux positif a connaitre.
+	 ********************************************************/
+	/*********************************************************
+	 * position — `location`, plus l'echelon du layout
+	 *
+	 * @description
+	 * #550 (critere C1) — `location` etait DECLAREE (via `ILayoutItemProps`)
+	 * et jamais lue : le cote d'accroche etait fige a
+	 * `computed(() => 'bottom')`. `useCreateLayout` s'en sert pour tout :
+	 * l'ancre (`{[position]: 0}`), le sens de la translation d'entree/sortie,
+	 * le `height`/`width` en `calc()` et le decalage des freres. Cablee comme
+	 * sur `OrigamAppBar`, avec `BLOCK.BOTTOM` en defaut — comportement
+	 * actuel a l'identique pour qui ne passe rien.
+	 *
+	 * @description
+	 * ⛔ Ne pas confondre avec la prop `position` du composant
+	 * (`'start' | 'center' | 'end'`), qui regle le placement HORIZONTAL de la
+	 * barre quand elle n'occupe pas toute la largeur. `location` regle le
+	 * COTE d'accroche dans l'`<origam-layout>` (`top`/`bottom`/`left`/
+	 * `right`). Les deux ne se rencontrent que si `location` est horizontal,
+	 * cas ou la classe `origam-bottom-nav--position-*` (left/right) et
+	 * l'ancre du layout se disputent le meme axe : le rendu par defaut de la
+	 * famille reste `location="bottom"`.
+	 *
+	 * @description
+	 * `toRef` (et non `props.location` lu ici) : ADR-005, le resolveur de
+	 * props de theme ecrit dans `beforeCreate`, APRES `setup()`.
+	 ********************************************************/
 	const {layoutItemStyles} = useLayoutItem({
 		id: props.name,
 		order: computed(() => int(props.order ?? 0)),
-		position: computed(() => 'bottom'),
+		position: toRef(props, 'location'),
 		layoutSize: computed(() => isActive.value ? height.value : 0),
 		elementSize: height,
 		active: isActive as ComputedRef<boolean>,
 		absolute: toRef(props, 'absolute')
 	})
 
-	// `useDefaults` inside each `OrigamBtn` handles the visual-token fallback —
+	// The ADR-005 resolver handles each `OrigamBtn`'s visual-token fallback —
 	// no manual merge needed here. Items are spread as-is; `provideDefaults`
 	// above supplies the group-level defaults.
 	const items = computed(() => {
@@ -212,19 +336,34 @@
 	 ********************************************************/
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
+	/*********************************************************
+	 * bottomNavStyles
+	 *
+	 * @description
+	 * #383 — layoutItemStyles MUST come before dimensionStyles here.
+	 * useStyle() flattens every source into ONE #id{...} rule, so source
+	 * order (not specificity) decides which width declaration wins when
+	 * both are present. useLayoutItem unconditionally writes
+	 * width: calc(100% - left - right) while docked in an OrigamLayout —
+	 * placing it FIRST lets a consumer-supplied width (from
+	 * dimensionStyles) override it, instead of the layout's calc()
+	 * silently winning every time (the previous order, which broke the
+	 * documented default usage OrigamLayout > OrigamBottomNav and made
+	 * position decorative alongside it).
+	 ********************************************************/
 	const bottomNavStyles = computed(() => {
 		return [
+			layoutItemStyles.value,
 			// All dimension props (width / minWidth / maxWidth / minHeight /
-			// maxHeight / height). The custom `height` below overrides the
-			// plain height with the density-aware value.
+			// maxHeight / height). `heightStyle` only overrides `height` in
+			// `density="compact"` — otherwise it stays `undefined` and this wins.
 			dimensionStyles.value,
 			{
-				height: props.height ? convertToUnit(height.value) : undefined
+				height: heightStyle.value
 			},
 			roundedStyles.value,
 			colorStyles.value,
 			borderStyles.value,
-			layoutItemStyles.value,
 			ssrBootStyles.value,
 			paddingStyles.value,
 			marginStyles.value,
@@ -252,7 +391,17 @@
 		]
 	})
 
-	const {id, css, load, isLoaded, unload} = useStyle(bottomNavStyles)
+	/*********************************************************
+	 * useStyle
+	 *
+	 * @description
+	 * #381 — the `id` returned by useStyle is a GENERATED identifier,
+	 * only meant for the scoped stylesheet selector. Without
+	 * `() => props.id` here, it shadowed the `id` PROP of the same
+	 * name: the template's `:id="id"` on the root rendered the
+	 * generated id, never the consumer's.
+	 ********************************************************/
+	const {id, css, load, isLoaded, unload} = useStyle(bottomNavStyles, () => props.id)
 
 	/*********************************************************
 	 * Expose
@@ -287,40 +436,40 @@
 		bottom: 0;
 		width: 100%;
 
-		transition: var(--origam-bottom-bar---transition);
+		transition: var(--origam-bottom-bar---transition-property, var(--origam-bottom-nav---transition-property)) var(--origam-bottom-bar---transition-duration, var(--origam-bottom-nav---transition-duration)) var(--origam-bottom-bar---transition-timing-function, var(--origam-bottom-nav---transition-timing-function));
 
-		max-width: var(--origam-bottom-bar---max-width);
-		min-height: calc(var(--origam-bottom-bar---height) - var(--origam-bottom-bar---density));
+		max-width: var(--origam-bottom-bar---max-width, var(--origam-bottom-nav---max-width));
+		min-height: calc(var(--origam-bottom-bar---height, var(--origam-bottom-nav---height)) - var(--origam-bottom-bar---density, var(--origam-bottom-nav---density)));
 
-		background-color: var(--origam-bottom-bar---background);
-		box-shadow: var(--origam-bottom-bar---box-shadow);
-		color: var(--origam-bottom-bar---color);
+		background-color: var(--origam-bottom-bar---background, var(--origam-bottom-nav---background));
+		box-shadow: var(--origam-bottom-bar---box-shadow, var(--origam-bottom-nav---box-shadow));
+		color: var(--origam-bottom-bar---color, var(--origam-bottom-nav---color));
 
-		border-color: var(--origam-bottom-bar---border-color);
-		border-style: var(--origam-bottom-bar---border-style);
-		border-top-width: var(--origam-bottom-bar---border-top-width, var(--origam-bottom-bar---border-width, 0));
-		border-right-width: var(--origam-bottom-bar---border-right-width, var(--origam-bottom-bar---border-width, 0));
-		border-bottom-width: var(--origam-bottom-bar---border-bottom-width, var(--origam-bottom-bar---border-width, 0));
-		border-left-width: var(--origam-bottom-bar---border-left-width, var(--origam-bottom-bar---border-width, 0));
-		border-radius: var(--origam-bottom-bar---border-radius);
+		border-color: var(--origam-bottom-bar---border-color, var(--origam-bottom-nav---border-color));
+		border-style: var(--origam-bottom-bar---border-style, var(--origam-bottom-nav---border-style));
+		border-top-width: var(--origam-bottom-bar---border-top-width, var(--origam-bottom-nav---border-top-width, var(--origam-bottom-bar---border-width, var(--origam-bottom-nav---border-width, 0))));
+		border-right-width: var(--origam-bottom-bar---border-right-width, var(--origam-bottom-nav---border-right-width, var(--origam-bottom-bar---border-width, var(--origam-bottom-nav---border-width, 0))));
+		border-bottom-width: var(--origam-bottom-bar---border-bottom-width, var(--origam-bottom-nav---border-bottom-width, var(--origam-bottom-bar---border-width, var(--origam-bottom-nav---border-width, 0))));
+		border-left-width: var(--origam-bottom-bar---border-left-width, var(--origam-bottom-nav---border-left-width, var(--origam-bottom-bar---border-width, var(--origam-bottom-nav---border-width, 0))));
+		border-radius: var(--origam-bottom-bar---border-radius, var(--origam-bottom-nav---border-radius));
 
-		padding-block-start: calc(var(--origam-bottom-bar---padding-block-start) - var(--origam-bottom-bar---density));
-		padding-block-end: calc(var(--origam-bottom-bar---padding-block-end) - var(--origam-bottom-bar---density));
-		padding-inline-start: calc(var(--origam-bottom-bar---padding-inline-start) - var(--origam-bottom-bar---density));
-		padding-inline-end: calc(var(--origam-bottom-bar---padding-inline-end) - var(--origam-bottom-bar---density));
-		margin-block-start: var(--origam-bottom-bar---margin-block-start);
-		margin-block-end: var(--origam-bottom-bar---margin-block-end);
-		margin-inline-start: var(--origam-bottom-bar---margin-inline-start);
-		margin-inline-end: var(--origam-bottom-bar---margin-inline-end);
+		padding-block-start: calc(var(--origam-bottom-bar---padding-block-start, var(--origam-bottom-nav---padding-block-start)) - var(--origam-bottom-bar---density, var(--origam-bottom-nav---density)));
+		padding-block-end: calc(var(--origam-bottom-bar---padding-block-end, var(--origam-bottom-nav---padding-block-end)) - var(--origam-bottom-bar---density, var(--origam-bottom-nav---density)));
+		padding-inline-start: calc(var(--origam-bottom-bar---padding-inline-start, var(--origam-bottom-nav---padding-inline-start)) - var(--origam-bottom-bar---density, var(--origam-bottom-nav---density)));
+		padding-inline-end: calc(var(--origam-bottom-bar---padding-inline-end, var(--origam-bottom-nav---padding-inline-end)) - var(--origam-bottom-bar---density, var(--origam-bottom-nav---density)));
+		margin-block-start: var(--origam-bottom-bar---margin-block-start, var(--origam-bottom-nav---margin-block-start));
+		margin-block-end: var(--origam-bottom-bar---margin-block-end, var(--origam-bottom-nav---margin-block-end));
+		margin-inline-start: var(--origam-bottom-bar---margin-inline-start, var(--origam-bottom-nav---margin-inline-start));
+		margin-inline-end: var(--origam-bottom-bar---margin-inline-end, var(--origam-bottom-nav---margin-inline-end));
 
 		&__content {
 			flex: none;
 			display: flex;
-			justify-content: var(--origam-bottom-bar__content---justify-content);
-			align-items: var(--origam-bottom-bar__content---align-items);
-			flex-wrap: var(--origam-bottom-bar__content---flex-wrap);
+			justify-content: var(--origam-bottom-bar__content---justify-content, var(--origam-bottom-nav__content---justify-content));
+			align-items: var(--origam-bottom-bar__content---align-items, var(--origam-bottom-nav__content---align-items));
+			flex-wrap: var(--origam-bottom-bar__content---flex-wrap, var(--origam-bottom-nav__content---flex-wrap));
 			width: 100%;
-			transform: var(--origam-bottom-bar__content---transform);
+			transform: var(--origam-bottom-bar__content---transform, var(--origam-bottom-nav__content---transform));
 
 			> :deep(.origam-btn) {
 				--origam-btn---font-size: 0.75rem;
@@ -345,7 +494,7 @@
 		}
 
 		&--elevated {
-			--origam-bottom-bar---box-shadow: var(--origam-bottom-bar--elevated---box-shadow);
+			--origam-bottom-nav---box-shadow: var(--origam-bottom-bar--elevated---box-shadow, var(--origam-bottom-nav--elevated---box-shadow));
 		}
 
 		&--position-start {
@@ -365,55 +514,55 @@
 		}
 
 		&--border {
-			--origam-bottom-bar---border-width: thin;
-			--origam-bottom-bar---border-top-width: thin;
-			--origam-bottom-bar---border-right-width: thin;
-			--origam-bottom-bar---border-bottom-width: thin;
-			--origam-bottom-bar---border-left-width: thin;
+			--origam-bottom-nav---border-width: thin;
+			--origam-bottom-nav---border-top-width: thin;
+			--origam-bottom-nav---border-right-width: thin;
+			--origam-bottom-nav---border-bottom-width: thin;
+			--origam-bottom-nav---border-left-width: thin;
 		}
 
 		&--rounded {
-			--origam-bottom-bar---border-radius: var(--origam-radius---2xl, 24px);
+			--origam-bottom-nav---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--rounded-x-small {
-			--origam-bottom-bar---border-radius: var(--origam-radius---xs, 2px);
+			--origam-bottom-nav---border-radius: var(--origam-radius---xs, 2px);
 		}
 
 		&--rounded-small {
-			--origam-bottom-bar---border-radius: var(--origam-radius---sm, 4px);
+			--origam-bottom-nav---border-radius: var(--origam-radius---sm, 4px);
 		}
 
 		&--rounded-default {
-			--origam-bottom-bar---border-radius: var(--origam-radius---md, 8px);
+			--origam-bottom-nav---border-radius: var(--origam-radius---md, 8px);
 		}
 
 		&--rounded-medium {
-			--origam-bottom-bar---border-radius: var(--origam-radius---lg, 12px);
+			--origam-bottom-nav---border-radius: var(--origam-radius---lg, 12px);
 		}
 
 		&--rounded-large {
-			--origam-bottom-bar---border-radius: var(--origam-radius---xl, 16px);
+			--origam-bottom-nav---border-radius: var(--origam-radius---xl, 16px);
 		}
 
 		&--rounded-x-large {
-			--origam-bottom-bar---border-radius: var(--origam-radius---2xl, 24px);
+			--origam-bottom-nav---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--density-comfortable {
-			--origam-bottom-bar---density: -8px;
+			--origam-bottom-nav---density: -8px;
 		}
 
 		&--density-default {
-			--origam-bottom-bar---density: 0px;
+			--origam-bottom-nav---density: 0px;
 		}
 
 		&--density-compact {
-			--origam-bottom-bar---density: 8px;
+			--origam-bottom-nav---density: 8px;
 		}
 
 		&--active {
-			--origam-bottom-bar---box-shadow: var(--origam-bottom-bar--active---box-shadow);
+			--origam-bottom-nav---box-shadow: var(--origam-bottom-bar--active---box-shadow, var(--origam-bottom-nav--active---box-shadow));
 		}
 
 		&--grow {

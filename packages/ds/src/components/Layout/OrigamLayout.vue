@@ -19,20 +19,19 @@
 		setup
 >
 	import { computed, StyleValue, toRef } from 'vue'
-	import {
-	useBorder,
-	useBothColor,
-	useCreateLayout,
-	useDimension,
-	useElevation,
-	useMargin,
-	usePadding,
-	useProps,
-	useRounded,
-	useStyle
-} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useCreateLayout } from '../../composables/Commons/createLayout.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { ILayoutProps } from '../../interfaces'
+	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
+	import type { ILayoutEmits, ILayoutProps } from '../../interfaces/Layout/layout.interface'
 
 	/*********************************************************
 	 * Global
@@ -44,6 +43,10 @@
 	const props = withDefaults(defineProps<ILayoutProps>(), {})
 
 	const {filterProps} = useProps<ILayoutProps>(props)
+
+	defineEmits<ILayoutEmits>()
+
+	defineSlots<ICommonsComponentSlots>()
 
 	/*********************************************************
 	 * Composables
@@ -145,8 +148,8 @@
 			// overflowed any story / consumer container with a fixed
 			// height ("le drawer dépasse de son layout").
 			height: 100%;
-			max-height: 100%;
-			max-width: 100%;
+			max-height: var(--origam-layout__wrapper---max-height, 100%);
+			max-width: var(--origam-layout__wrapper---max-width, 100%);
 		}
 
 		&--full-height &__wrapper {

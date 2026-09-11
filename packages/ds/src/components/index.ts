@@ -130,8 +130,6 @@ export * from './RatingField'
 
 export * from './Responsive'
 
-export * from './Section'
-
 export * from './Select'
 
 export * from './SelectionControl'

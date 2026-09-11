@@ -12,9 +12,10 @@
 		lang="ts"
 		setup
 >
-	import { useCssTransition, useProps } from '../../composables'
+	import { useCssTransition } from '../../composables/Transition/cssTransition.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
 
-	import type { ITransitionProps } from '../../interfaces'
+	import type { ITransitionEmits, ITransitionProps, ITransitionSlots } from '../../interfaces/Transition/transition.interface'
 
 	/*********************************************************
 	 * Global
@@ -27,6 +28,10 @@
 	})
 
 	const {filterProps} = useProps<ITransitionProps>(props)
+
+	defineEmits<ITransitionEmits>()
+
+	defineSlots<ITransitionSlots>()
 
 	/*********************************************************
 	 * Transition
@@ -54,21 +59,23 @@
 </script>
 
 <style lang="scss">
+	@use '../../assets/scss/helpers' as ds;
+
 	.origam-transition--scale-rotate {
 		&-enter-active {
-			transition-duration: 0.3s;
-			transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+			transition-duration: var(--origam-transition--scale-rotate-enter-active---transition-duration);
+			transition-timing-function: var(--origam-transition--scale-rotate-enter-active---transition-timing-function);
 		}
 
 		&-leave-active {
-			transition-duration: 0.3s;
-			transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+			transition-duration: var(--origam-transition--scale-rotate-leave-active---transition-duration);
+			transition-timing-function: var(--origam-transition--scale-rotate-leave-active---transition-timing-function);
 		}
 
 		&-move {
-			transition-duration: 0.5s;
+			transition-duration: var(--origam-transition--scale-rotate-move---transition-duration);
 			transition-property: transform;
-			transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+			transition-timing-function: var(--origam-transition--scale-rotate-move---transition-timing-function);
 		}
 
 		&-enter-from {
@@ -79,6 +86,14 @@
 		&-enter-active,
 		&-leave-active {
 			transition-property: transform, opacity !important;
+		}
+
+		@include ds.ds-reduced-motion {
+			&-enter-active,
+			&-leave-active,
+			&-move {
+				transition-duration: 0.01ms !important;
+			}
 		}
 	}
 </style>

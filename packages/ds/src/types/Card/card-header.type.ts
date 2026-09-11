@@ -1,3 +1,3 @@
-import { OrigamCardHeader } from '../../components'
+import OrigamCardHeader from '../../components/Card/OrigamCardHeader.vue'
 
 export type TOrigamCardHeader = InstanceType<typeof OrigamCardHeader>

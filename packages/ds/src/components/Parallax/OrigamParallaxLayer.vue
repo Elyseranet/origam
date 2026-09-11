@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			ref="layerRef"
 			:class="layerClasses"
 			:style="layerStyles"
@@ -13,13 +14,13 @@
 		lang="ts"
 		setup
 >
-	import { computed, inject, onBeforeUnmount, onMounted, ref, StyleValue } from 'vue'
+	import { computed, inject, onBeforeUnmount, onMounted, ref, StyleValue, watch } from 'vue'
 
-	import { useProps } from '../../composables'
+	import { useProps } from '../../composables/Commons/props.composable'
 
-	import { ORIGAM_PARALLAX_LAYER_KEY } from '../../consts'
+	import { ORIGAM_PARALLAX_LAYER_KEY } from '../../consts/Parallax/parallax-layer.const'
 
-	import type { IParallaxLayerProps, IParallaxLayerRegistry } from '../../interfaces'
+	import type { IParallaxLayerEmits, IParallaxLayerProps, IParallaxLayerRegistry, IParallaxLayerSlots } from '../../interfaces/Parallax/parallax-layer.interface'
 
 	/*********************************************************
 	 * Global
@@ -39,6 +40,10 @@
 
 	const { filterProps } = useProps<IParallaxLayerProps>(props)
 
+	defineEmits<IParallaxLayerEmits>()
+
+	defineSlots<IParallaxLayerSlots>()
+
 	const parallax = inject(ORIGAM_PARALLAX_LAYER_KEY)
 
 	if (!parallax) {
@@ -46,12 +51,31 @@
 	}
 
 	const layerRef = ref<HTMLElement>()
-	const id = Symbol('origam:parallax-layer')
+
+	/*********************************************************
+	 * registryToken — jeton d'enregistrement auprès du parent
+	 *
+	 * @description
+	 * ⛔ NE PAS RENOMMER EN `id`. Ce Symbol identifie la couche dans le
+	 * registre du host ; ce n'est PAS l'attribut DOM. Il s'est appelé `id`
+	 * jusqu'à la campagne #372, qui a ajouté `:id="id"` sur la racine de 136
+	 * composants en supposant partout que `id` désignait la prop héritée de
+	 * `ICommonsComponentProps`. Ici le local masquait la prop : Vue a tenté
+	 * de poser un Symbol en attribut, `TypeError: Cannot convert a Symbol
+	 * value to a string`, et le rendu de TOUT le sous-arbre `<origam-parallax>`
+	 * a sauté — plus aucune couche affichée.
+	 *
+	 * @description
+	 * Le nom distinct est la protection : un `const id` local dans un
+	 * composant qui binde `:id="id"` est indétectable à la lecture du
+	 * template seul.
+	 ********************************************************/
+	const registryToken = Symbol('origam:parallax-layer')
 
 	onMounted(() => {
 		if (!layerRef.value) return
 		const registry: IParallaxLayerRegistry = {
-			id,
+			id: registryToken,
 			speed: props.speed ?? 1,
 			offsetX: props.offsetX ?? 0,
 			offsetY: props.offsetY ?? 0,
@@ -61,8 +85,35 @@
 	})
 
 	onBeforeUnmount(() => {
-		parallax.unregister(id)
+		parallax.unregister(registryToken)
 	})
+
+	/*********************************************************
+	 * Reactive speed / offset — see #449
+	 *
+	 * @description
+	 * `register()` above only runs once, at mount. The parent's rAF loop
+	 * and CSS scroll-driven path both read `speed`/`offsetX`/`offsetY`
+	 * straight off that ONE registry object on every frame — a later
+	 * change to these props was captured nowhere, so it had zero effect
+	 * on the ongoing animation. Only `layerStyles` (the layer's own
+	 * first-paint style, below) reacted, and got overwritten by the very
+	 * next frame the runtime painted.
+	 * @description
+	 * `parallax.update` patches the SAME registry entry in place —
+	 * `register()` already ran by the time any of these props can change,
+	 * so there's no ADR-005 ordering concern here to defer against.
+	 ********************************************************/
+	watch(
+		() => [props.speed, props.offsetX, props.offsetY] as const,
+		([speed, offsetX, offsetY]) => {
+			parallax.update(registryToken, {
+				speed: speed ?? 1,
+				offsetX: offsetX ?? 0,
+				offsetY: offsetY ?? 0
+			})
+		}
+	)
 
 	const layerStyles = computed(() => {
 		const styles: Record<string, string> = {

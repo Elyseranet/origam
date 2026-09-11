@@ -1,14 +1,16 @@
 <template>
 	<origam-selection-control
+			:id="id"
 			ref="origamSelectionControlRef"
+			v-bind="controlProps"
 			v-model="model"
 			:aria-checked="indeterminate ? 'mixed' : undefined"
 			:class="checkboxBtnClasses"
 			:false-icon="falseIcon"
 			:style="checkboxBtnStyles"
 			:true-icon="trueIcon"
+			:value="value"
 			type="checkbox"
-			v-bind="controlProps"
 			@update:model-value="handleChange"
 			@click:label="handleClickLabel"
 	>
@@ -42,21 +44,21 @@
 		lang="ts"
 		setup
 >
-	import { OrigamSelectionControl } from '../../components'
+	import OrigamSelectionControl from '../SelectionControl/OrigamSelectionControl.vue'
 
-	import {
-	useProps,
-	useStyle,
-	useVModel
-} from '../../composables'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { DENSITY, MDI_ICONS } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { ICheckboxBtnProps, ICheckboxBtnSlots} from '../../interfaces'
+	import type { ICheckboxBtnProps, ICheckboxBtnSlots } from '../../interfaces/Checkbox/checkbox-btn.interface'
 
 	import type { ICheckboxBtnEmits } from '../../interfaces/Checkbox/checkbox-btn.interface'
 
-	import type { TOrigamSelectionControl } from "../../types"
+	import type { TOrigamSelectionControl } from '../../types/SelectionControl/selection-control.type'
 
 	import { computed, ref, StyleValue, useSlots } from 'vue'
 
@@ -79,6 +81,26 @@
 	defineSlots<ICheckboxBtnSlots>()
 
 	const {filterProps} = useProps<ICheckboxBtnProps>(props)
+
+	/*********************************************************
+	 * wasPropPassed — multiple forwarding guard (#396)
+	 *
+	 * @description
+	 * `multiple` is typed `boolean` (via `ISelectionControlProps`) — Vue's
+	 * own boolean-cast rule resolves an ABSENT `multiple` to the concrete
+	 * value `false` (never `undefined`), same defect as #263. Forwarding
+	 * that `false` unconditionally onto `<origam-selection-control>`
+	 * overrode the child's own array-based auto-detect AND the enclosing
+	 * group's cascade, so a `<origam-checkbox-btn>` pair sharing a group's
+	 * array `v-model` could never accumulate: every click landed in
+	 * "single" mode instead of "multiple".
+	 * @description
+	 * Only forward `multiple` when the consumer of THIS component
+	 * actually set it — otherwise let `OrigamSelectionControl` (and its
+	 * group, if any) auto-detect from the shape of the model, as
+	 * documented.
+	 ********************************************************/
+	const wasPropPassed = usePassedProps(props)
 
 	const origamSelectionControlRef = ref<TOrigamSelectionControl>()
 
@@ -120,7 +142,11 @@
 	 ********************************************************/
 
 	const controlProps = computed(() => {
-		return origamSelectionControlRef.value?.filterProps(props, ['modelValue', 'falseIcon', 'trueIcon', 'type', 'class', 'style'])
+		const excludes = ['modelValue', 'falseIcon', 'trueIcon', 'type', 'class', 'style']
+
+		if (!wasPropPassed('multiple')) excludes.push('multiple')
+
+		return origamSelectionControlRef.value?.filterProps(props, excludes)
 	})
 
 	/*********************************************************
@@ -141,7 +167,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(checkboxBtnStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(checkboxBtnStyles, () => props.id)
 
 
 	/*********************************************************

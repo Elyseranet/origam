@@ -23,7 +23,6 @@
 						:density="state.density"
 						:rounded="state.rounded"
 						:elevation="state.elevation"
-						:flat="state.flat"
 						:border="state.border"
 						:border-color="state.borderColor"
 						:border-style="state.borderStyle"
@@ -52,7 +51,6 @@
 				<StoryGroup title="Shape">
 					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
-					<HstCheckbox v-model="state.flat"      title="Flat"/>
 				</StoryGroup>
 				<StoryGroup title="Border">
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
@@ -75,14 +73,13 @@
 
 		<Variant
 				title="State"
-				:init-state="() => useStoryInitState<IHoverProps & IColorProps>({ color: 'primary' })"
+				:init-state="() => useStoryInitState<IColorProps>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
 				<origam-password-field
 						v-model="stateModel"
 						label="Password"
 						:color="state.color"
-						:hover="resolveHoverState(state.hover)"
 				/>
 			</template>
 			<template #controls="{ state }">
@@ -90,7 +87,6 @@
 					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Interaction">
-					<HstSelect v-model="state.hover" title="Hover" :options="HOVER_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -404,7 +400,6 @@
 	import { MDI_ICONS, VARIANT_INPUT } from '@origam/enums'
 	import type {
 		IColorProps,
-		IHoverProps,
 		IPasswordFieldProps
 	} from '@origam/interfaces'
 
@@ -416,8 +411,6 @@
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
-		HOVER_OPTIONS,
-		resolveHoverState,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,
 		SIZE_OPTIONS,

@@ -17,7 +17,19 @@
 				<origam-card
 						:color="state.color"
 						:padding="state.padding"
+						:padding-top="state.paddingTop"
+						:padding-right="state.paddingRight"
+						:padding-bottom="state.paddingBottom"
+						:padding-left="state.paddingLeft"
+						:padding-block="state.paddingBlock"
+						:padding-inline="state.paddingInline"
 						:margin="state.margin"
+						:margin-top="state.marginTop"
+						:margin-right="state.marginRight"
+						:margin-bottom="state.marginBottom"
+						:margin-left="state.marginLeft"
+						:margin-block="state.marginBlock"
+						:margin-inline="state.marginInline"
 						:bg-color="state.bgColor"
 						:elevation="state.elevation"
 						:flat="state.flat"
@@ -33,6 +45,10 @@
 						:border-bottom-color="state.borderBottomColor"
 						:border-left-color="state.borderLeftColor"
 						:rounded="state.rounded"
+						:rounded-top-left="state.roundedTopLeft"
+						:rounded-top-right="state.roundedTopRight"
+						:rounded-bottom-left="state.roundedBottomLeft"
+						:rounded-bottom-right="state.roundedBottomRight"
 						:density="state.density"
 						:image="state.image"
 						:type="state.type"
@@ -56,6 +72,12 @@
 					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
 					<HstCheckbox v-model="state.flat"      title="Flat"/>
+				</StoryGroup>
+				<StoryGroup title="Rounded — per corner">
+					<HstText v-model="state.roundedTopLeft"     title="Rounded Top Left"/>
+					<HstText v-model="state.roundedTopRight"    title="Rounded Top Right"/>
+					<HstText v-model="state.roundedBottomLeft"  title="Rounded Bottom Left"/>
+					<HstText v-model="state.roundedBottomRight" title="Rounded Bottom Right"/>
 				</StoryGroup>
 				<StoryGroup title="Border">
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
@@ -98,6 +120,22 @@
 					<HstText v-model="state.padding" title="Padding"/>
 					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
+				<StoryGroup title="Padding — per side">
+					<HstText v-model="state.paddingTop"    title="Padding Top"/>
+					<HstText v-model="state.paddingRight"  title="Padding Right"/>
+					<HstText v-model="state.paddingBottom" title="Padding Bottom"/>
+					<HstText v-model="state.paddingLeft"   title="Padding Left"/>
+					<HstText v-model="state.paddingBlock"  title="Padding Block"/>
+					<HstText v-model="state.paddingInline" title="Padding Inline"/>
+				</StoryGroup>
+				<StoryGroup title="Margin — per side">
+					<HstText v-model="state.marginTop"    title="Margin Top"/>
+					<HstText v-model="state.marginRight"  title="Margin Right"/>
+					<HstText v-model="state.marginBottom" title="Margin Bottom"/>
+					<HstText v-model="state.marginLeft"   title="Margin Left"/>
+					<HstText v-model="state.marginBlock"  title="Margin Block"/>
+					<HstText v-model="state.marginInline" title="Margin Inline"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
@@ -133,7 +171,8 @@
 					enabled: false,
 					kind: 'bool',
 					progress: 42,
-					circularSize: 24
+					circularSize: 24,
+					loadingText: ''
 				})"
 		>
 			<template #default="{ state }">
@@ -142,6 +181,7 @@
 						:text="state.text"
 						:disabled="state.disabled"
 						:loading="resolveLoading(state)"
+						:loading-text="state.loadingText || undefined"
 						:link="state.link"
 						:href="state.href"
 						:to="state.to"
@@ -150,6 +190,13 @@
 						:tag="state.tag"
 						:ripple="state.ripple"
 				/>
+				<p style="margin: 12px 0 0; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
+					The Histoire sandbox installs no vue-router, so <code>To</code>,
+					<code>Replace</code> and <code>Exact</code> are inert here.
+					They are real props — with a router installed,
+					<code>replace</code> routes through <code>router.replace()</code>.
+					<code>Href</code> works in the sandbox.
+				</p>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="States">
@@ -161,6 +208,7 @@
 					<HstSelect   v-model="state.kind"         title="Loading Kind" :options="LOADING_KIND_OPTIONS"/>
 					<HstNumber   v-model="state.progress"     title="Progress (number)"  :min="0"  :max="100" :step="1"/>
 					<HstNumber   v-model="state.circularSize" title="Size (circular)"    :min="12" :max="64"  :step="2"/>
+					<HstText     v-model="state.loadingText"  title="Loading Text"/>
 				</StoryGroup>
 				<StoryGroup title="Link">
 					<HstCheckbox v-model="state.link"    title="Link"/>
@@ -328,6 +376,24 @@
 					text="Each side reads its own width (borderTop/Right/Bottom/Left) and color (borderTopColor/…) — issue #215. Specific per-side props win over the global border/borderColor shorthand for the physical side they target."
 					style="width: 280px;"
 			/>
+		</Variant>
+
+		<Variant title="Prop — loadingText">
+			<div style="display: flex; gap: 16px;" data-cy="card-loading-text">
+				<origam-card
+						loading
+						title="Default announcement"
+						text="No loadingText — the indicator falls back to the shared 'origam.loading' key. Inspect the progress bar: aria-label reads Loading…"
+						style="width: 280px;"
+				/>
+				<origam-card
+						loading
+						loading-text="origam.data_iterator.loading_text"
+						title="Custom announcement"
+						text="loadingText carries a LOCALE KEY, handed to the renderer's own label prop. Inspect: aria-label reads Loading items…"
+						style="width: 280px;"
+				/>
+			</div>
 		</Variant>
 
 		<Variant

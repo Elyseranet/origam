@@ -9,9 +9,22 @@
 
 import { describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { defineComponent } from 'vue'
 
 import OrigamBadge from '@origam/components/Badge/OrigamBadge.vue'
 import { createOrigam } from '@origam/origam'
+
+// `OrigamAvatar` renders `OrigamImg` > `OrigamResponsive`, which mounts the
+// `v-intersect` directive (IntersectionObserver-backed lazy load). jsdom's
+// mocked IntersectionObserver isn't reliable across every mount lifecycle in
+// this suite, so — same pattern as
+// `TU/components/ExpansionPanel/OrigamExpansionPanelHeader.spec.ts` — avatar
+// presence is asserted through a thin stub that reflects the `image` prop.
+const OrigamAvatarStub = defineComponent({
+    name: 'OrigamAvatar',
+    props: ['image'],
+    template: `<span data-stub="avatar" :data-image="image"/>`
+})
 
 Object.defineProperty(window, 'matchMedia', {
     writable: true,
@@ -225,5 +238,83 @@ describe('OrigamBadge — a11y', () => {
     it('pill has aria-atomic="true"', () => {
         const wrapper = mountBadge()
         expect(wrapper.find('.origam-badge__badge').attributes('aria-atomic')).toBe('true')
+    })
+})
+
+// ---------------------------------------------------------------------------
+// Prepend / append (IAdjacentProps, wired through useAdjacent)
+//
+// Regression guard: before this fix `IBadgeProps` did not extend
+// `IAdjacentProps` — a consumer's `prepend-icon` / `append-icon` /
+// `prepend-avatar` / `append-avatar` attribute fell through to the DOM as
+// an inert attribute instead of reaching the component. The component
+// itself also computed `hasPrepend` / `hasAppend` by hand instead of
+// consuming `useAdjacent` — which meant a `#prepend` / `#append` SLOT
+// with no icon/avatar prop never rendered (useAdjacent also checks slot
+// presence). These specs mount the REAL `OrigamIcon` / `OrigamAvatar` so
+// a silently-ignored prop shows up as a missing element, not just a
+// passing type.
+// ---------------------------------------------------------------------------
+
+describe('OrigamBadge — prepend/append (IAdjacentProps)', () => {
+    it('renders neither prepend nor append by default', () => {
+        const wrapper = mountBadge()
+        expect(wrapper.find('.origam-badge__prepend').exists()).toBe(false)
+        expect(wrapper.find('.origam-badge__append').exists()).toBe(false)
+    })
+
+    it('renders ONLY the prepend icon when only prependIcon is passed', () => {
+        const wrapper = mountBadge({ prependIcon: 'mdi-chevron-left' })
+        expect(wrapper.find('.origam-badge__prepend .origam-icon').exists()).toBe(true)
+        expect(wrapper.find('.origam-badge__append').exists()).toBe(false)
+    })
+
+    it('renders ONLY the append icon when only appendIcon is passed', () => {
+        const wrapper = mountBadge({ appendIcon: 'mdi-chevron-right' })
+        expect(wrapper.find('.origam-badge__prepend').exists()).toBe(false)
+        expect(wrapper.find('.origam-badge__append .origam-icon').exists()).toBe(true)
+    })
+
+    it('renders BOTH prepend and append icons at once', () => {
+        const wrapper = mountBadge({ prependIcon: 'mdi-chevron-left', appendIcon: 'mdi-chevron-right' })
+        expect(wrapper.find('.origam-badge__prepend .origam-icon').exists()).toBe(true)
+        expect(wrapper.find('.origam-badge__append .origam-icon').exists()).toBe(true)
+    })
+
+    it('renders prependAvatar and appendAvatar together', () => {
+        const wrapper = mount(OrigamBadge, {
+            props: { modelValue: true, prependAvatar: '/left.png', appendAvatar: '/right.png' } as never,
+            global: {
+                plugins: [createOrigam()],
+                stubs: {
+                    OrigamTransition: { template: '<slot />' },
+                    OrigamFade: { template: '<slot />' },
+                    OrigamAvatar: OrigamAvatarStub
+                }
+            }
+        })
+        expect(wrapper.find('.origam-badge__prepend [data-stub="avatar"]').attributes('data-image')).toBe('/left.png')
+        expect(wrapper.find('.origam-badge__append [data-stub="avatar"]').attributes('data-image')).toBe('/right.png')
+    })
+
+    it('renders the #prepend / #append slots even without a matching icon/avatar prop', () => {
+        const wrapper = mountBadge({}, {
+            prepend: '<span data-cy="custom-prepend">P</span>',
+            append: '<span data-cy="custom-append">A</span>'
+        })
+        expect(wrapper.find('[data-cy="custom-prepend"]').exists()).toBe(true)
+        expect(wrapper.find('[data-cy="custom-append"]').exists()).toBe(true)
+    })
+
+    it('emits click:prepend when the prepend slot is clicked', async () => {
+        const wrapper = mountBadge({ prependIcon: 'mdi-chevron-left' })
+        await wrapper.find('.origam-badge__prepend').trigger('click')
+        expect(wrapper.emitted('click:prepend')).toHaveLength(1)
+    })
+
+    it('emits click:append when the append slot is clicked', async () => {
+        const wrapper = mountBadge({ appendIcon: 'mdi-chevron-right' })
+        await wrapper.find('.origam-badge__append').trigger('click')
+        expect(wrapper.emitted('click:append')).toHaveLength(1)
     })
 })

@@ -1,5 +1,5 @@
 import type { InjectionKey, Ref } from 'vue'
-import type { IDefault } from '../../interfaces'
+import type { IDefault } from '../../interfaces/DefaultsProvider/defaults-provider.interface'
 
 /**
  * Provide/inject key for the defaults map shared between

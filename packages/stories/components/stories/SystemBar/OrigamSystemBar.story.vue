@@ -84,7 +84,8 @@
 					absolute: false,
 					tag: 'div',
 					name: 'systembar-functional',
-					order: '0'
+					order: '0',
+					location: 'top'
 				})"
 		>
 			<template #default="{ state }">
@@ -96,8 +97,9 @@
 								:tag="state.tag"
 								:name="state.name"
 								:order="state.order"
+								:location="state.location"
 						>
-							<span>window={{ state.window }} — absolute={{ state.absolute }} — tag={{ state.tag }}</span>
+							<span>window={{ state.window }} — absolute={{ state.absolute }} — tag={{ state.tag }} — location={{ state.location }}</span>
 						</origam-system-bar>
 						<origam-main>
 							<p class="system-bar-story-content">Main content (pushed by the bar)</p>
@@ -110,6 +112,7 @@
 					<HstCheckbox v-model="state.window" title="Window (32px height)"/>
 				</StoryGroup>
 				<StoryGroup title="Layout">
+					<HstSelect   v-model="state.location" title="Location"      :options="LOCATION_OPTIONS"/>
 					<HstCheckbox v-model="state.absolute" title="Absolute"/>
 					<HstText     v-model="state.name"     title="Name (layout id)"/>
 					<HstText     v-model="state.order"    title="Order"/>
@@ -162,7 +165,8 @@
 					absolute: false,
 					tag: 'div',
 					name: 'systembar-playground',
-					order: '0'
+					order: '0',
+					location: 'top'
 				})"
 		>
 			<template #default="{ state }">
@@ -196,6 +200,7 @@
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.window"   title="Window (32px)"/>
 					<HstCheckbox v-model="state.absolute" title="Absolute"/>
+					<HstSelect   v-model="state.location" title="Location"     :options="LOCATION_OPTIONS"/>
 					<HstSelect   v-model="state.tag"      title="Tag"          :options="TAG_OPTIONS"/>
 				</StoryGroup>
 			</template>
@@ -224,6 +229,16 @@
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'
+
+	// Les quatre cotes de `TDirectionBoth`, sur lesquels `location` ancre la
+	// barre dans l'`<origam-layout>` (#550). Meme forme que la liste locale de
+	// `OrigamDrawer.story.vue` — pas d'ensemble partage pour cette union.
+	const LOCATION_OPTIONS = [
+		{ label: 'top',    value: 'top' },
+		{ label: 'bottom', value: 'bottom' },
+		{ label: 'left',   value: 'left' },
+		{ label: 'right',  value: 'right' }
+	]
 </script>
 
 <style scoped>

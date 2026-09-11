@@ -1,10 +1,11 @@
-import { HOVER, ORIGAM_HOVER_STOP_KEY } from '../../consts'
+import { HOVER, ORIGAM_HOVER_STOP_KEY } from '../../consts/Commons/hover.const'
 
-import type { IHoverDirectiveBinding, IHoverHtmlElement, IHoverOptions } from '../../interfaces'
+import type { IHoverDirectiveBinding, IHoverHtmlElement, IHoverOptions } from '../../interfaces/Commons/hover.interface'
 
-import type { THoverEvent } from '../../types'
+import type { THoverEvent } from '../../types/Commons/hover.type'
 
-import { isObject, isTouchEvent } from '../../utils'
+import { isObject } from './commons.util'
+import { isTouchEvent } from './ripple.util'
 
 /**
  * Update hover.

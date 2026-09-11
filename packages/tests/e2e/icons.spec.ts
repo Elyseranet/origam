@@ -92,7 +92,7 @@ test.describe('OrigamIcon — dispatcher', () => {
     test('Click button mode — icon gets origam-icon--clickable class', async ({ page }) => {
         await page.goto(ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Emit — click (button mode)', { exact: true }).first().click()
+        await page.getByText('Events - click', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -103,7 +103,7 @@ test.describe('OrigamIcon — dispatcher', () => {
     test('Click button mode — role="button" is present', async ({ page }) => {
         await page.goto(ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Emit — click (button mode)', { exact: true }).first().click()
+        await page.getByText('Events - click', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -152,7 +152,7 @@ test.describe('OrigamClassIcon — font-class leaf', () => {
     test('Icon variant — .origam-icon is visible', async ({ page }) => {
         await page.goto(CLASS_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (class string)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -163,7 +163,7 @@ test.describe('OrigamClassIcon — font-class leaf', () => {
     test('Icon class string — MDI class applied to element', async ({ page }) => {
         await page.goto(CLASS_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (class string)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -277,10 +277,10 @@ test.describe('OrigamComponentIcon — Vue-component wrapper leaf', () => {
         }
     })
 
-    test('Slot default — slot content overrides icon prop', async ({ page }) => {
+    test('Slot default — slotted SVG renders inside the wrapper', async ({ page }) => {
         await page.goto(COMPONENT_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Slot — default (overrides icon prop)', { exact: true }).first().click()
+        await page.getByText('Slots - Default', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -299,7 +299,7 @@ test.describe('OrigamLigatureIcon — Material-style ligature leaf', () => {
     test('Icon variant — .origam-icon--ligature is visible', async ({ page }) => {
         await page.goto(LIGATURE_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (ligature name)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -310,7 +310,7 @@ test.describe('OrigamLigatureIcon — Material-style ligature leaf', () => {
     test('Icon text content — ligature name renders as text fallback', async ({ page }) => {
         await page.goto(LIGATURE_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (ligature name)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -364,7 +364,7 @@ test.describe('OrigamLigatureIcon — Material-style ligature leaf', () => {
     test('Font family — Material Icons or Material Symbols applied', async ({ page }) => {
         await page.goto(LIGATURE_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (ligature name)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -384,7 +384,7 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
     test('Single path — .origam-icon--svg and inner svg are visible', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -397,15 +397,14 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
     test('Single path — inner svg contains exactly one <path> element', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         // Wait for at least one path to appear before counting — guards against
         // the iframe still rendering when tests run in parallel under load.
         await sandbox.locator('.origam-icon__svg path').first().waitFor({ state: 'attached', timeout: 15000 })
-        const pathCount = await sandbox.locator('.origam-icon__svg path').count()
-        expect(pathCount).toBe(1)
+        await expect(sandbox.locator('.origam-icon__svg path')).toHaveCount(1)
     })
 
     test('Multi-path (array) — inner svg contains multiple <path> elements', async ({ page }) => {
@@ -473,7 +472,7 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
     test('SVG element — decorative: aria-hidden="true" and no role', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -486,7 +485,7 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
     test('SVG element — viewBox is "0 0 24 24"', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -498,7 +497,7 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
     test('SVG fill — path inherits currentColor (fill not hardcoded hex)', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -509,12 +508,32 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
         expect(fillValue).not.toMatch(/^#[0-9a-fA-F]{3,6}$/)
     })
 
-    test.fixme('Visual regression — SVG icon — no baseline committed yet', async ({ page }) => {
-        // Run `npx playwright test --update-snapshots` to create the baseline,
-        // commit the .png, then remove this fixme.
+    /**
+     * 2026-08-17 — reason RE-VERIFIED, still valid, but the old one ("run
+     * --update-snapshots, commit the .png, remove this fixme") is the WRONG
+     * instruction and would have made CI unstable.
+     *
+     * Measured: waking this test writes
+     *   e2e/icons.spec.ts-snapshots/svg-icon-single-path-chromium-darwin.png
+     * — a host-specific baseline. This repo runs e2e on Linux in CI, so a
+     * darwin baseline committed from a dev machine mismatches on every CI
+     * run (font rasterisation + DPI differ). That is exactly why no baseline
+     * was ever committed.
+     *
+     * Screenshot assertions belong to the dedicated VRT suite, which exists
+     * precisely to pin the rendering host: packages/tests/playwright.vrt.config.ts
+     * with `pnpm -F @origam/tests test:vrt:docker` (and
+     * `test:vrt:docker:update` to regenerate baselines inside the container).
+     *
+     * TO LIFT: move this assertion into packages/tests/vrt/, generate the
+     * baseline via `test:vrt:docker:update`, commit the container-generated
+     * .png, and delete this test from the e2e suite. Do NOT commit a
+     * `-chromium-darwin.png` baseline here.
+     */
+    test.fixme('Visual regression — SVG icon — belongs in the VRT suite, not here (see note)', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

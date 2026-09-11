@@ -108,6 +108,71 @@ Before claiming a fix:
 When in doubt, **stop and ask** rather than claim correctness. A wrong
 "it's fixed" wastes the user's testing cycle and erodes trust.
 
+## ⛔ `getComputedStyle` under jsdom NEVER resolves `var()` (mandatory) — #398
+
+**Under Vitest/jsdom, `getComputedStyle(el).someProperty` resolves LITERAL
+CSS values but never a `var(--x)` reference — the declaration is silently
+ignored and jsdom falls back to a fabricated UA default.** Measured,
+reproduced:
+
+```
+div NU              border-top-width = 16px
+div .avec-var       border-top-width = 16px    (règle : border-width: var(--tok), --tok = 3px)
+div .en-dur         border-top-width = 7px     (règle : border-width: 7px)
+--tok lue directement                = 3px
+```
+
+The default jsdom returns is **`16px`** — not `0`, not an empty string. It
+*looks* like a real measurement, which is what makes this trap dangerous in
+both directions:
+
+- **False "conforme"**: a test asserting `border-top-width === '16px'`
+  passes on an element that has **no border at all**.
+- **False "défaut"**: a test comparing two `var()`-driven values (e.g. two
+  `rounded` rungs) gets `16px` on both sides and concludes "the prop does
+  nothing" — on a prop that works correctly in a real browser.
+
+The custom property ITSELF stays readable
+(`getComputedStyle(el).getPropertyValue('--tok')` → `'3px'`), which is what
+completes the illusion: you can confirm the token is set correctly and
+wrongly conclude the property consuming it is too.
+
+Since this DS consumes tokens almost exclusively via `var(--origam-…)`,
+`getComputedStyle` under Vitest is **structurally blind** to most of the
+component style surface — not a rare edge case.
+
+**Plain literal declarations DO resolve correctly** (`border-width: 3px`, no
+`var()`) — this trap is specific to the `var()` indirection, not to
+`getComputedStyle` in general. It is also specific to styles that come from
+a **stylesheet rule**: an INLINE style set directly on the element
+(`el.style.x = '3px'` / a Vue `:style` binding with a literal value) resolves
+fine, because there is no cascade/custom-property resolution involved — only
+`var()` references inside a `<style>` block's declarations are affected.
+`<style scoped>` itself is ALSO never injected into jsdom's `document.head`
+at all — `document.head` after mounting a component only carries token
+sheets and `useStyle()`-generated rules, never the SFC's own scoped CSS.
+
+| Question | Reliable tool |
+|---|---|
+| Is a class emitted? | `wrapper.classes()` |
+| Does a `useStyle()`-generated rule contain the declaration? | Read the text of the `<style>` tag(s) `useStyle()` injects into `<head>` |
+| Does the **computed** property actually change? | **Playwright against Histoire — real browser, the only valid verdict** (`E2E_STATIC=1`, see "Running the full e2e suite" above) |
+
+This is the technical reason behind the existing "Don't claim it's fixed"
+rule above (§2, "grep the rendered class output OR ask for a screenshot") —
+it isn't a preference for rigor, it's that `getComputedStyle` under jsdom
+**measures something else** whenever `var()` is involved.
+
+A pre-existing internal harness already documents and works around this at
+length: `packages/tests/TU/probe/props-harness.ts` (search "jsdom does not
+implement CSS Custom Property resolution"). No blanket static-analysis guard
+enforces this repo-wide — most `getComputedStyle` calls in `TU/` assert on
+literal/inline values (legitimate), and distinguishing those from a
+`var()`-driven stylesheet assertion is not reliably inferable by grep alone
+without a high false-positive rate. Treat this section as the check to run
+by eye before trusting any `getComputedStyle` assertion on a CSS property
+this DS themes via a token.
+
 ## ⛔ `withDefaults()` — inline literals only (mandatory)
 
 Vue 3 SFC compiler statically analyses `withDefaults(defineProps<T>(), {…})`
@@ -217,68 +282,86 @@ If you're spawning an agent on a component, **the agent prompt
 MUST include this rule explicitly** so the deliverable lands
 story + doc + implementation together — not as a follow-up.
 
-## ⛔ Stash before ANY branch / checkout / reset operation (mandatory)
+## ⛔ NEVER `git stash` — commit instead (mandatory)
 
-**If you have uncommitted changes (working tree dirty) and you're
-about to do anything that could touch the working tree — switch
-branches, reset, checkout files, `git flow feature start/finish`,
-spawn an agent in a worktree, run a command that might be cancelled
-mid-flight — `git stash push -m "<descriptive label>"` FIRST.**
+**`refs/stash` is a SINGLE ref shared by every worktree of this
+repository. There are 53 of them. A `git stash push` from one worktree
+lands on the same stack a `git stash pop` in another worktree will pull
+from. Two agents have already swapped their work this way.**
 
-This isn't optional. Lost work because of a `git checkout` that
-silently failed, an agent worktree that rolled the parent tree back,
-or a commit that "looked successful but the merge said Already up to
-date" is the most common avoidable disaster in this repo's history.
-It has happened multiple times in this codebase already — stop
-relearning it.
+They caught it themselves, and labelled the entries:
+
+```
+stash@{0}: FOUND-NOT-MINE: OrigamChip.vue keydown guard fix — belongs to
+           another concurrent agent, accidentally picked up via shared
+           stash ref during my own stash pop
+stash@{1}: RECOVERED-NOT-MINE: emits/slots WIP (33 files) — accidental
+           stash collision, belongs to another agent
+```
+
+A third entry — the architect's `INoEmits`/`INoSlots` convention, a
+scanner and 3 reactivity probes, 464 insertions — sat there for weeks.
+Nobody knew: a shared ref belongs to no branch, so no `git log`, no
+`git status`, no review ever surfaces it. Recovered on
+`recover/no-emits-convention`.
+
+⛔ **The previous version of this rule MANDATED stashing.** It caused the
+exact disaster it claimed to prevent. Stash is a single-worktree tool;
+this repository has not been a single-worktree repository for a long
+time.
 
 ### The mandatory flow
 
 ```bash
-# Step 1 — ALWAYS stash if dirty
-git stash push -m "wip: <what you were doing>"
+# Step 1 — commit, even a half-finished state
+git commit -am "wip: <what you were doing>"
 
 # Step 2 — do the risky operation
 git checkout <branch>          # or merge, reset, flow op, …
 
-# Step 3 — pop the stash back
-git stash pop
-
-# Step 4 — if pop conflicted, resolve, don't discard
-#         the original stash entry stays in `git stash list`
-#         until you `git stash drop` explicitly
+# Step 3 — nothing to restore. The WIP stayed on ITS branch,
+#          in YOUR worktree, reachable by name.
 ```
 
-### When to stash (non-exhaustive)
+A commit is attached to a branch, and a branch is checked out by exactly
+one worktree. It cannot migrate to a neighbour. That is the whole
+argument.
 
-- Before `git checkout <branch>` when dirty.
+A WIP commit is not a promise: reword it, squash it, or `git reset
+--soft HEAD~1` later. None of that costs anything. Losing someone
+else's afternoon does.
+
+### When to commit
+
+- Before `git checkout <branch>` on a dirty tree.
 - Before `git flow feature start | finish | rebase`.
-- Before `git reset --hard | --mixed` on a dirty tree.
-- Before `git pull` on a dirty tree.
-- Before spawning a parallel agent that might create a worktree on
-  the same repo.
+- Before `git reset` / `git pull` on a dirty tree.
+- Before handing back control at the end of a turn — sessions are cut
+  without warning, and **an uncommitted worktree has survived nothing.**
 - Before any "let me just check the other branch real quick" move.
 
-### When stash is NOT enough
+### Destructive operations
 
-If you're about to do something destructive (force-push a tag,
-delete a branch with unpushed commits, `git clean -fd`), stash
-AND save a tag pointing at the current commit:
+Before a force-push, a branch deletion carrying unpushed commits, or a
+`git clean -fd`, commit AND tag:
 
 ```bash
-git stash push -m "before <op>"
+git commit -am "wip: before <op>"
 git tag -a backup/<date>-<topic> -m "safety net"
 # … do the risky thing …
-# if you need to recover: git checkout backup/<date>-<topic>
+# to recover: git checkout backup/<date>-<topic>
 ```
 
-### Why this matters
+### If you find entries in `git stash list`
 
-The runtime that hosts this repo has historically rolled back file
-edits between agent turns when worktrees collide or when an agent
-runs in an isolated copy that doesn't sync. The stash entry is the
-only artefact that survives those rollbacks — it lives in the local
-git object DB and is independent of the working tree state.
+They are not yours to pop. Popping is how the collisions above happened.
+Check whether the content already landed (`git stash show -p`, then grep
+the target files on `develop`); if it did, the entry is redundant. If it
+did not, promote it to a real branch — never into your working tree:
+
+```bash
+git stash branch recover/<topic> stash@{N}
+```
 
 ## Tech stack (snapshot)
 
@@ -286,27 +369,29 @@ git object DB and is independent of the working tree state.
 - **Vite + Histoire + VitePress** for dev, stories, and docs.
 - **unbuild** for the published library (consumed by external apps).
 - **Playwright** (e2e + a11y), **Vitest** (unit tests, jsdom).
-- **Style Dictionary v4** + **@tokens-studio/sd-transforms** for design
-  tokens (multi-theme, multi-output: CSS, SCSS, TS types).
-- **pnpm workspaces** — monorepo, 6 packages under `packages/`.
+- **No design-token build step.** The token stylesheets are plain
+  hand-maintained CSS/SCSS committed under `packages/ds/src/assets/` — see
+  "Design tokens" below.
+- **pnpm workspaces** — monorepo, 5 packages under `packages/`.
 
-The project requires **Node >= 22** (see `.nvmrc`). The unit tests do not
+The published package declares `engines.node >= 22` — that is the
+CONSUMER contract and it has not moved. Development and CI run on the
+version `.nvmrc` pins, **Node 24** since 2026-09-03. The unit tests do not
 run on Node 18 because `@vitejs/plugin-vue` calls `crypto.hash()` (Node 21+).
 
 ---
 
 ## Project structure (monorepo)
 
-The repo is a **pnpm workspace** with 6 packages. The only package
+The repo is a **pnpm workspace** with 5 packages. The only package
 published to npm is `packages/ds/` (as `origam`). Everything else stays
-private and supports the lib (docs, stories, tests, marketing, Figma
-sync).
+private and supports the lib (docs, stories, tests, marketing).
 
 ```
 packages/
   ds/                — Published Vue 3 library (npm: origam)
     src/
-      assets/css/    — main.css + generated token sheets
+      assets/css/    — main.css + hand-maintained token sheets
       assets/scss/   — main.scss + tokens (_primitive.scss, _light.scss, …)
       components/    — Origam{PascalCase}.vue (~80 families)
       composables/   — use{CamelCase}.ts (~80 transversal hooks)
@@ -318,8 +403,7 @@ packages/
       types/         — kebab-case.type.ts (T prefix)
       utils/         — kebab-case.util.ts
       nuxt/          — official Nuxt module sub-export
-    tokens/          — Tokens Studio DTCG sources (primitive + semantic + component)
-    scripts/         — build-tokens.mjs, tokens.config.mjs
+    scripts/         — guards/ (architecture guards), token-name.mjs, analysis/
     build.config.ts  — unbuild entry
   marketing/         — Nuxt 4 marketing site (landing + showcase + docs hub)
     pages/, components/, scripts/
@@ -332,8 +416,6 @@ packages/
     TU/              — Vitest unit specs
     e2e/             — Playwright e2e + a11y specs
     vitest.config.ts, playwright.config.ts, playwright.a11y.config.ts
-  figma-plugin/      — Figma DS Sync plugin (variables ⇄ Origam tokens)
-    src/, esbuild.config.mjs
 ```
 
 The root holds only:
@@ -360,19 +442,171 @@ pnpm install             # installs every workspace + hoists shared deps
 Always go through `pnpm -F <name>` (filter) — never `cd packages/x && npm run …`.
 Root scripts already delegate, so the most common entries are:
 
+> ⛔ **Never run `npm install` / `yarn install` here, and never invoke a
+> package's binary from the repo root.** pnpm's isolated layout makes every
+> `node_modules/` entry a symlink into `.pnpm/`; npm writes real directories
+> *beside* those links instead of replacing them, and nothing reports the
+> collision. Issue #382: 676 stray directories from one `npm install`, among
+> them a second physical copy of playwright **1.59.1** — same version,
+> different realpath, therefore a different module to Node and a different
+> `test.describe` registry. The runner then rejected every spec with *"two
+> different versions of @playwright/test"* while the lockfile and `pnpm ls`
+> both showed exactly one. CI was never affected because it always goes
+> through `pnpm -F @origam/tests exec playwright`; only root-level
+> invocations (`npx playwright`) hit the stray copy. The
+> `pnpm-tree-integrity` guard now fails on any physical copy; the fix is
+> `rm -rf <that node_modules> && pnpm install --frozen-lockfile`.
+
 | Goal | Command |
 |---|---|
 | Build the lib | `pnpm -F origam build` *(or root `pnpm run build:lib`)* |
 | Build everything | `pnpm -r build` *(or root `pnpm run build:all`)* |
-| Tokens rebuild | `pnpm -F origam tokens:build` |
 | Run stories locally | `pnpm -F @origam/stories dev` *(`http://localhost:6006`)* |
 | Run docs locally | `pnpm -F @origam/docs dev` |
 | Run marketing locally | `pnpm -F @origam/marketing dev` *(`http://localhost:3000`)* |
 | Unit tests (watch) | `pnpm -F @origam/tests test:unit` |
 | Unit tests (CI) | `pnpm -F @origam/tests test:unit:run` |
-| E2E tests | `pnpm -F @origam/tests test:e2e` |
+| E2E — one spec, while iterating | `pnpm -F @origam/tests exec playwright test <spec>` |
+| E2E — the full suite | see **Running the full e2e suite** below |
 | A11y tests | `pnpm -F @origam/tests test:a11y` |
 | Lint (root) | `pnpm run lint:fix` |
+
+### ⛔ Running the full e2e suite — measured, 2026-08-31
+
+**Build the static Histoire first and run against it, exactly like CI:**
+
+```sh
+pnpm -F @origam/stories build
+cd packages/tests
+E2E_STATIC=1 pnpm exec playwright test --project=chromium
+```
+
+Same commit, same machine, chromium, full suite — the only variable is which
+server the specs hit:
+
+| | live `histoire dev` | prebuilt `histoire preview` |
+|---|---|---|
+| duration | **53.9 min** | **15.7 min** |
+| failures | **7** | **2** |
+
+**3.4× faster, and most "flaky" specs stop being flaky.** Against the dev
+server every spec pays a per-story Vite cold compile, so parallel workers
+starve each other; the failures that follow are uniform `toBeVisible` /
+`page.goto` timeouts that look exactly like product defects and are not.
+`playwright.config.ts` already says this in its `webServer` comment — CI has
+always done it right, and only local runs went the slow way.
+
+⛔ **Two traps that cost a full day of triage:**
+
+- **Timeout whack-a-mole moves the flake, it does not fix it.** Raising
+  `textarea-richtext`'s timeout from 5 s to 12 s made those tests hold their
+  worker twice as long; the run went 37 → 54 min and `carousel.spec.ts` — green
+  in the three previous runs — took its place with 7 failures. Re-run alone,
+  carousel was **33/33**. Under `E2E_STATIC=1` all 7 vanish.
+- **Never measure suite stability while other work loads the machine.** Three
+  agents building packages and running Nuxt/Postgres servers were enough to
+  manufacture failures. That measures your own load, not your code.
+
+⛔ **YOU MAY BE MEASURING ANOTHER WORKTREE'S BUILD. Check the port owner first.**
+Measured 2026-09-05, three false diagnoses in one session, in both directions:
+a correct fix looked broken, and a stale bundle looked green. `histoire preview`
+binds :6006 from *whichever* worktree started it, and there are ~55 of them.
+Playwright's `reuseExistingServer` then happily attaches to the neighbour's
+build. The manifest guard in `e2e-global-setup.ts` catches the case — **but it
+returns `exit 0`**, so a caller checking only the exit code sees success.
+
+```sh
+lsof -ti :6006                              # is anyone there?
+lsof -p <pid> -a -d cwd -Fn | grep '^n'     # WHICH worktree is serving
+E2E_HISTOIRE_PORT=6009 E2E_STATIC=1 pnpm exec playwright test …   # or just isolate
+```
+
+Same session, same cause, two more ways to fool yourself:
+
+- **A stories build whose `$?` you did not capture may have left a stale
+  bundle.** `pnpm -F @origam/stories build >/dev/null 2>&1` without `echo $?`
+  is how a fix "fails" three runs in a row on correct code.
+- **Before concluding a CSS fix does not take, look at what is actually
+  served**: `curl` the `style-*.css` the page links and `grep` the token name
+  in it. If the corrected name is there, the fix is not the problem.
+
+⛔ **The `alert.spec.ts` pattern — set a class in the DOM, then assert with
+`toHaveCSS` — breaks whenever that class is bound to a `computed`.** Vue
+re-patches the class list between the `evaluate` and the assertion, and
+`toHaveCSS` polls for 5 s, so it ends up measuring Vue's element, not yours.
+On `OrigamSwitch`'s density (#553) that returned `40px` on correct code. **Do
+the mutation AND the measurement inside a single `evaluate`.** Verified: the
+same sequence fails in two steps and passes in one, on identical code. See
+`packages/tests/e2e/switch-density.spec.ts` for the working shape.
+
+⛔ **But the single-`evaluate` rule does NOT generalise to a DESCENDANT after an
+inline-style mutation — measured 2026-09-09, and it nearly produced a false
+"dead prop" report on correct code.** Chromium had not re-invalidated the
+`currentColor` a child substitutes through `var()` within the same turn:
+
+```
+same evaluate  : button rgb(255,0,128)  /  icon rgb(10,10,10)   ← false "dead prop"
+two steps      : button rgb(255,0,128)  /  icon rgb(255,0,128)  ← the truth
+```
+
+The two rules answer different questions, and the distinction is what matters:
+
+| what you are measuring | correct shape |
+|---|---|
+| a class bound to a `computed`, on the mutated element | one `evaluate` — Vue re-patches between two steps |
+| a **descendant** inheriting through `var()` / `currentColor` | **two steps** — let style recalculation land |
+
+A third variant of the same family: `.origam-main` carries
+`transition-property: all` over `0.2s`, so a synchronous read after the mutation
+returns the value **mid-animation** — identical on broken and on correct code
+(measured: sync `rgb(255,255,255)`, at +1200 ms `rgb(3,3,3)`). Derive the wait
+from `transitionDuration` rather than guessing.
+
+Common root: **before concluding "the prop does nothing", prove your harness can
+actuate it.** Three separate lots of the blockers campaign lost time to a
+measurement artefact that looked exactly like a product defect.
+
+⛔ **Third qualification, measured 2026-09-09: inside Histoire's `__sandbox`
+iframe the single-`evaluate` rule produces FALSE NEGATIVES.** An element **already
+rendered by Vue** does not recalc after a mutation there — `getComputedStyle`
+returns the stale value even for a `background-color` written **inline** — while a
+`<div>` created in the same document responds correctly. Negative control, same
+`evaluate`:
+
+```
+fresh div, inline background-color   → rgb(9, 9, 9)      ✅ responds
+rendered <nav>, same write           → rgba(0, 0, 0, 0)  ❌ stale
+rendered <nav>, inline outline       → ignored too
+```
+
+This cost four consecutive diagnoses of "my fix does not take" on a fix that took.
+**Inject the theme with `addInitScript` before the document loads** — which is
+also the real-world scenario for a theme — instead of mutating after render.
+
+⛔ **`getPropertyValue()` on a CSS shorthand returns `""` whenever the value
+contains `var()`** (deferred substitution). Querying `background`, `border`,
+`transition`, `font` therefore reads empty on this DS's own tokens, and an audit
+that interrogates shorthands **silently misses nearly everything**. Query the
+longhand (`background-color`, `border-top-width`, …).
+
+⛔ **`sheet.cssRules` does not traverse `@media` / `@layer` groups.** A rule living
+inside one never appears in the enumeration, so a cascade probe that lists
+`cssRules` under-counts grouped rules and can name the wrong winner.
+
+⛔ **A probe element you build yourself is not the element Vue rendered.** A
+hand-made `<span class="origam-breadcrumb-item">` carries no `data-v-<hash>`, so
+the scoped selector never matches it: the probe measures a world where the defect
+does not exist, and **passes against pre-fix code**. Caught only by running the
+spec against `HEAD~1`. **Always A/B a new spec against the parent commit** — a
+green that also passes before the fix proves nothing.
+
+⛔ **Do NOT use `pnpm -F @origam/tests test:e2e`** — the `pretest:e2e` hook
+fails on a guard and **blocks Playwright before a single spec starts, while
+still returning `exit 0`** to the caller. ⛔ Tracked as **#574**. Do NOT cite
+`#46` for this — that is a *merged pull request* about a CSS typo, unrelated,
+and the wrong number circulated in this repo's docs for months. Same family: a
+piped `pnpm build | tail -30` returns `exit 0` while the build fails. **Capture
+the real `$?`.**
 
 ### Adding dependencies
 
@@ -387,7 +621,7 @@ Root scripts already delegate, so the most common entries are:
 - `packages/ds/` follows the historical `origam` semver
   (`2.5.x → 2.6.x → 3.0.0`). It is the single npm publish.
 - `@origam/marketing`, `@origam/stories`, `@origam/docs`,
-  `@origam/tests`, `@origam/figma-plugin` are all `private: true`,
+  and `@origam/tests` are all `private: true`,
   versioned independently (`0.x.y`). They never publish to npm; tags
   reference the lib version only.
 
@@ -411,6 +645,36 @@ Modern CSS is powerful. Use it.
 | Color blending | `color-mix(in srgb, …)` | JS color math |
 | Form controls | `accent-color` | JS-painted custom controls |
 | Smooth transitions | `view-transition-name` | JS animation libs |
+| Cascade priority | `@layer` (a later layer wins at any specificity) | specificity bumps, `!important` |
+| Custom-property semantics | `@property` (`syntax` / `inherits` / `initial-value`) | naming conventions + hope |
+| Zero-specificity defaults | `:where(…)` | `:not(#a)` and other hacks |
+| Light/dark pairs | `light-dark(l, d)` | duplicated `[data-theme]` blocks |
+| Derived colours | relative colour syntax `rgb(from … r g b / .5)` | pre-computed variants |
+| Anchored overlays | `anchor()` / `position-anchor` | JS position calculation |
+| Entry transitions | `@starting-style` (+ `overlay`, `transition-behavior`) | JS mount-then-animate |
+| Animating to `auto` | `interpolate-size` / `calc-size()` | JS measure-then-set-px |
+| Scroll-linked motion | `animation-timeline: scroll()` / `view()` | JS scroll listeners |
+| Style-conditional children | `@container style(--x: y)` | prop drilling + class toggling |
+| Style isolation | `@scope` | BEM discipline alone |
+
+⛔ **This table is a floor, not a ceiling.** The rule (user directive,
+2026-08-31) is: *use every CSS feature the target browsers actually support* —
+do not stop at what is listed here. The single criterion is **does it make the
+code simpler**, never "is it new". Two entries above exist because they answer
+open architecture problems in this repo:
+
+- **`@layer`** dissolves the "classes-first loses to Vue's scoped selector"
+  problem (#391) — a later layer beats an earlier one regardless of
+  specificity, so utilities can win without a single specificity bump.
+- **`@property` with `inherits: false`** restores the difference between *"no
+  ancestor set this"* and *"an ancestor set it to 0"*. That distinction is
+  currently lost: a token declared on `:root, [data-theme="light"]` inherits
+  onto every element, so `var(--token, fallback)` **never** reaches its
+  fallback. Verified on `--origam-btn-group---border-width`
+  (`light.css:122`) — the direct cause of the dead `border` prop on Btn.
+
+⛔ Whatever you use, **declare it in `FEATURE_QUERIES`** (see below) in the
+same delivery. Never call `CSS.supports()` from a component.
 
 Concretely, every component that previously needed JS for one of those tasks
 should:
@@ -456,40 +720,60 @@ keeps bundles smaller, performance better, and theming free.
 
 ## Design tokens
 
-Source of truth: `packages/ds/tokens/` (Tokens Studio JSON, DTCG format).
+⛔ **There is no token build step, and no token source format.** The
+Style Dictionary v4 + Tokens Studio pipeline (`packages/ds/tokens/`,
+`scripts/build-tokens.mjs`, `scripts/tokens.config.mjs`, the `tokens:build`
+/ `tokens:watch` / `tokens:lint` scripts, the `tokens` CI job and the
+`tokens-sync` workflow) was **removed on 2026-08-31**, along with the Figma
+sync plugin. Do not reintroduce any of it without an explicit decision — a
+pipeline may be rebuilt later, once the DS is stable.
 
-Three tiers — agents must respect the boundary:
+**Source of truth is now the committed stylesheets themselves**, which are
+plain hand-editable files:
 
 ```
-primitive    →  raw values (color.neutral.500, space.4, …)        – packages/ds/tokens/primitive.json
-semantic     →  intent (color.surface.default, color.action.primary.bg)  – packages/ds/tokens/semantic/{theme}.json
-component    →  per-component refs (btn.background-color)         – packages/ds/tokens/component/{name}.json
+packages/ds/src/assets/css/tokens/primitive.css          — raw values (:root)
+packages/ds/src/assets/css/tokens/light.css              — light theme
+packages/ds/src/assets/css/tokens/dark.css               — dark theme
+packages/ds/src/assets/css/tokens/origam-utilities.css   — utility classes
+packages/ds/src/assets/scss/tokens/_*.scss               — SCSS twins of the above
+packages/ds/src/types/tokens.type.ts                     — TTokenName union
 ```
 
-Naming convention emitted in CSS (handled by Style Dictionary transform):
+Each carries a header explaining its provenance. They were last generated
+from `packages/ds/tokens/` at commit `d87842c9`; their content is byte-for-byte
+that output. **Edit them directly** — there is no regeneration step and the
+old "do not edit" rule no longer applies. The SCSS twin and the CSS file are
+identical in content, so a change to one must be mirrored in the other; the
+same goes for adding a name to `tokens.type.ts`.
 
-| Layer | Path in JSON | CSS variable |
-|---|---|---|
-| Primitive | `color.neutral.500` | `--origam-color-neutral-500` |
-| Semantic | `color.surface.default` | `--origam-color-surface-default` |
-| Component | `component.btn.background-color` | `--origam-btn---background-color` |
-| Component (state) | `component.btn.primary.background-color` | `--origam-btn--primary---background-color` |
-| Component (BEM child) | `component.card.overlay.bg` | `--origam-card__overlay---bg` |
+The CSS variable naming grammar is unchanged and still lives in
+`packages/ds/scripts/token-name.mjs`, kept as the build-time twin of
+`src/utils/Theme/token-name.util.ts` with a parity unit test
+(`packages/tests/TU/utils/Theme/token-name.util.spec.ts`) pinning the two
+together:
 
-Build:
-- `pnpm -F origam tokens:build` — one-shot rebuild of CSS + SCSS + TS types.
-- `pnpm -F origam tokens:watch` — rebuild on `packages/ds/tokens/**/*.json` change.
-- `pnpm -F origam tokens:lint` — dry-run validation.
-- Auto-prereq of the lib build.
+| Layer | CSS variable |
+|---|---|
+| Primitive | `--origam-color__neutral---500` |
+| Semantic | `--origam-color__surface---default` |
+| Component | `--origam-btn---background-color` |
+| Component (state) | `--origam-btn--primary---background-color` |
+| Component (BEM child) | `--origam-card__overlay---bg` |
+
+The `token-var-channels` guard still checks both directions — every
+`var(--origam-…)` a component reads must be declared in one of the
+stylesheets above, and every declared token should be read by someone.
 
 When migrating a component:
 1. Audit every `--origam-{cmp}---*` var the SCSS uses.
-2. Make sure `packages/ds/tokens/component/{cmp}.json` declares each (with full
-   property names, e.g. `background-color` not `bg`).
+2. Make sure each is declared in `light.css` / `dark.css` / `primitive.css`
+   (and the matching `_*.scss`), with full property names — e.g.
+   `background-color`, not `bg`.
 3. Replace any hardcoded hex/rgb in the SCSS by `var(--origam-color-…)`
    references (or `var(--origam-shadow-{rung})` for elevation).
-4. Remove the global `<style>:root{}` block — defaults now come from the
-   generated `:root, [data-theme="light"] { … }` rules.
+4. Remove the global `<style>:root{}` block — defaults come from the
+   `:root, [data-theme="light"] { … }` rules in `light.css`.
 5. Keep calc-based vars that depend on instance-level state (size variant,
    density modifier, …) inside the scoped `<style>` block.
 
@@ -506,13 +790,87 @@ Runtime helpers:
 - `<OrigamThemeProvider theme="dark">…</OrigamThemeProvider>` — sub-tree
   override (e.g. a brand-X Card inside a neutral page).
 
-To add a brand theme:
-1. Drop a `packages/ds/tokens/semantic/brand-{name}.json` overriding the semantics
-   you need.
-2. Optionally add `packages/ds/tokens/{name}/primitive-override.json` if the brand
-   needs a different primary ramp.
-3. Register the theme in `packages/ds/tokens/$themes.json`.
-4. Rebuild — `[data-theme="brand-{name}"] { … }` is auto-emitted.
+To add a brand theme, prefer the runtime route — an `IOrigamTheme` object
+registered through `createOrigam()`, props first (`components` block), CSS
+vars only for what props cannot express. See `packages/ds/src/themes/`.
+
+If a brand genuinely needs its own stylesheet, hand-write a
+`[data-theme="brand-{name}"] { … }` block: there is no longer a generator
+that emits one from JSON.
+
+---
+
+## ⛔ How `theme.components` props actually resolve — invisible machinery (ADR-005)
+
+A theme's `components` block (`{ global: {...}, 'origam-btn': {...} }`) is
+**not** read because a component calls `useDefaults()`. It is resolved by
+**one single mechanism**, for the whole 217-component catalogue at once:
+`createOrigam()` installs a global Vue `app.mixin({ beforeCreate() {...} })`
+(`installThemePropsResolver` in
+`packages/ds/src/composables/Commons/theme-props-resolver.composable.ts`)
+that patches the exact prop slots any REGISTERED theme names directly onto
+`instance.props` — the same object a compiled `<script setup>` template
+reads (`__props.x`). No component code, anywhere, opts into this.
+
+**Why this exists.** Before ADR-005: only 39 of 217 components called
+`useDefaults()` (178 silently ignored `theme.components` — no warning, no
+error). Worse, even those 39 were broken for any prop their TEMPLATE reads
+by its bare name, because `useDefaults()` returns a NEW object the compiled
+template never sees (verified repro: `OrigamSelectionControl`'s
+`:type="type"` binding rendered `<input>` with NO `type` attribute at all
+under a theme setting `type: 'checkbox'` — no checkbox semantics, no
+`update:modelValue`, ever). Full writeup:
+`packages/docs/internal/adr-005-theme-props-resolution.md`.
+
+**What this means when you read or write a component:**
+
+- **If a prop's resolved value doesn't match what you see in `withDefaults()`
+  or a `useDefaults()` call, check the active theme's `components` block
+  BEFORE assuming a bug.** The value did not necessarily come from either
+  place in the `.vue` file you're reading.
+- **You do NOT need to call `useDefaults()` for a new component to be
+  themeable.** Any prop a component already declares is reachable by
+  `theme.components`. "Opting in" here means *calling `useDefaults()`* — that
+  is what became unnecessary. **Declaring the prop is still required**, and
+  is the subject of the next point.
+- **⛔ This is an INTERSECTION, not a union.** The resolver only patches a
+  key that is BOTH named by a theme (or an ancestor `<OrigamDefaultsProvider>`)
+  AND declared as one of the component's own props — guarded by the
+  `if (!(key in rawProps))` check inside `installThemePropsResolver`'s
+  per-key loop, in `theme-props-resolver.composable.ts`. A theme naming a
+  prop the target component does not declare is skipped: not written to
+  `instance.attrs`, not a crash. Since #515, this mismatch also logs a
+  dev-only, once-per-(component, prop) `console.warn` (via
+  `warnUnsupportedProp`, reused from `utils/Commons/color.util.ts`) — silent
+  in production. This is what let a test theme name `activeBgColor` on
+  `Radio` (a prop `Radio` never declares) go unnoticed in #496.
+- **No component calls `useDefaults()` any more, and none should again.**
+  The 40 remaining calls were removed under issue #363, which is the batched
+  migration ADR-005 sketched. The call bought nothing the resolver does not
+  already do, and cost roughly +0.07 ms per mount on Btn / Card / Chip
+  (paired interleaved measurement, negative control at +0.10 %).
+  `useDefaults` and `provideDefaults` themselves stay: `provideDefaults` is
+  what `<OrigamDefaultsProvider>` is built on.
+- **⛔ A prop read EAGERLY in the `setup()` body never sees the theme.**
+  Vue runs `setup()` BEFORE the `beforeCreate` hook where the resolver
+  writes, so a value captured into a plain local, an object literal, or a
+  composable that reads it eagerly is a snapshot taken too early — the theme
+  value never lands and nothing warns. Reads deferred into a `computed`,
+  `watch`, or event handler are evaluated at render and are safe.
+  `node packages/ds/scripts/guards/lib/setup-reads.mjs` lists the offenders;
+  it is an AST detector pinned by 20 fixtures covering precision and recall.
+  This bites hardest through shared composables — `useLink` froze `tag` into
+  a string and `useVModel` seeded its internal ref at setup, which between
+  them broke themed props on 16 components until both were made lazy.
+- **Do not reintroduce a per-prop `computed()` pass-through "for clarity."**
+  It was measured at +42.6% mount cost when applied across a realistic prop
+  surface and was explicitly rejected on those grounds — see ADR-005.
+- This relies on mutating `instance.props` via `Object.defineProperty`, which
+  is **not** documented public Vue API. It is pinned by tests
+  (`packages/tests/TU/origam/theme-props-resolver.spec.ts`) that must fail
+  loudly, not silently, if a future Vue upgrade changes the relevant
+  internals — see the long comment at the top of
+  `theme-props-resolver.composable.ts` for exactly what to check.
 
 ---
 
@@ -574,14 +932,52 @@ with **double-tiret** as the utility-root separator
    in v2.0 → v2.1 came from breaking exactly this rule when `OrigamSwitchTrack`
    was extracted.
 
-### Strategy A — classes AND styles in parallel (transition)
+### Strategy A — classes AND styles in parallel
 
-For one major cycle (v2.x), every refactored composable returns BOTH
-`*Classes` and `*Styles`. When the value is tokenised, `*Styles` is
-empty and the class does the work; when it's custom, `*Classes` is
-empty and the style does. This is intentional — it lets components
-migrate at their own pace without breaking external consumers. v3.0.0
-will retire the `*Styles` returns.
+Every refactored composable returns BOTH `*Classes` and `*Styles`. On the
+**background** channel, a tokenised value fills `*Classes` and leaves
+`*Styles` empty; a custom value does the reverse.
+
+⛔ **The foreground (`color`) channel does NOT work that way, and cannot.**
+The previous version of this section claimed *"when the value is tokenised,
+`*Styles` is empty and the class does the work"* — universally. That was
+false, and issue #514 measured why it is not merely unimplemented but
+**unreachable with the current architecture**:
+
+1. **The class and the inline declaration do not emit the same token.**
+   `.origam--color-{intent}` resolves `…--{intent}---fg` — the white-on-
+   saturated pair. `tokenForegroundForIntent()` resolves **`fgSubtle`** — the
+   intent's own hue, meant for a neutral surface. Measured in Chromium across
+   the DS's real stylesheet, **7 of 8 intents render a different colour**
+   (`primary`: `rgb(255,255,255)` vs `rgb(109,40,217)`). Only `secondary`
+   matches. They are opposite roles, not two spellings of one colour.
+2. **The utility class loses the cascade, by design.** A Vue scoped rule is
+   `.class[data-v-hash]` = specificity (0,2,0); a utility is (0,1,0). The
+   utility loses even though it is loaded later — that is specificity, not
+   order. The header of `origam-utilities.css` states the intent plainly:
+   utilities are *"intended to be loaded BEFORE component-scoped SCSS so
+   that `.origam-btn--variant-flat` can override `.origam--bg-primary`"*.
+   **73 of the 101 affected components declare a `color:` in their scoped
+   SCSS.** Only the inline declaration outranks them.
+
+So `fgDecl` is pushed into `styles` on the tokenised path **on purpose**:
+remove it and the `color` prop stops painting. Verified by applying the
+change and photographing the result — `OrigamSwitch`'s thumb turns white on
+a light track (invisible), `OrigamAlert` renders `rgb(10,10,10)` for all 8
+intents.
+
+**Blast radius, previously listed as "unknown" in the ticket: 101 of 216
+components.** `fgDecl` exists in **three copies** —
+`colorEffect.composable.ts:235` (2 consumers), `stateEffect.composable.ts:215`
+(30), `color.composable.ts:152` (74, reached via `useTextColor` /
+`useBackgroundColor` / `useBothColor`).
+
+**Consequence: the "v3.0.0 retires `*Styles`" plan does not hold for the
+foreground channel** as long as utilities sit in the weakest cascade
+position. Making the class able to win is a real option — CSS `@layer` beats
+any specificity from a later layer, and would settle #391 at the same time —
+but it changes the cascade of the entire DS and needs its own decision, not
+a drive-by edit.
 
 ---
 
@@ -601,14 +997,31 @@ will retire the `*Styles` returns.
 
 ---
 
+## Work priorities and versioning
+
+Which work is picked up first, and how a release number is chosen, live in
+**`docs/work-priorities.md`**. The short form:
+
+1. **Fixes** — a bug costs a user something now.
+2. **Refactoring** — *a refactor is a bug seen from the developer's side*.
+   Misfiled code does not break at runtime; it breaks whoever has to find
+   something in it next. That cost is invisible, which is why it gets
+   postponed — and why it ranks second rather than last.
+3. **Features**, simplest first.
+
+Version: **major** for a large user-facing feature or a breaking change,
+**minor** for a medium feature with limited impact, **patch** for a bug fix.
+A dependency upgrade is judged by its size and impact, not by the file it
+touches — a test-runner major is a *medium feature*, not a patch.
+
 ## Pre-delivery (project-specific overlay)
 
 The global pre-delivery policy (TU + e2e + security) applies. Specific to
 origam:
-- Run tests on **Node 22** (`.nvmrc`); Node 18 produces unrelated
+- Run tests on **Node 24** (`.nvmrc`); Node 18 produces unrelated
   `crypto.hash` failures.
-- `pnpm -F origam tokens:build` must succeed and not produce a token
-  resolution warning ("token collisions detected" is acceptable — caused
-  by cross-theme name reuse, expected).
+- `pnpm -F origam guards` must stay at 17/17. If a change touches the token
+  stylesheets, `token-var-channels` is the guard that will catch a variable
+  read but never declared (or the reverse).
 - `pnpm audit --prod` should be clean to ship; dev tree contains
   pre-existing histoire-alpha vulns documented as accepted risk.

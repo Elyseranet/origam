@@ -1,6 +1,11 @@
-import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots, IChartPoint } from '../../interfaces'
+import type {
+    IChartBaseEmits,
+    IChartBaseProps,
+    IChartBaseSlots
+} from './chart-base.interface'
+import type { IChartPoint } from './chart-point.interface'
 
-import type { TIntent } from '../../types'
+import type { TIntent } from '../../types/Commons/intent.type'
 
 /**
  * A single datum in the variwide series.

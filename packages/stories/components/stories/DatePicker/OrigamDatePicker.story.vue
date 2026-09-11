@@ -130,26 +130,10 @@
 			<origam-date-picker v-model="showWeekDate" :show-week="true" data-cy="date-picker-show-week"/>
 		</Variant>
 
-		<Variant title="Slot — actions">
-			<origam-date-picker v-model="slotActionsDate" data-cy="date-picker-slot-actions">
-				<template #actions>
-					<origam-btn color="primary" text="OK" size="small"/>
-					<origam-btn text="Cancel" size="small"/>
-				</template>
-			</origam-date-picker>
-		</Variant>
-
-		<Variant title="Emit — update:modelValue">
-			<origam-date-picker
-					v-model="emitDate"
-					data-cy="date-picker-emit-model-value"
-					@update:model-value="logEvent('update:modelValue', $event)"
-			/>
-		</Variant>
-
 		<Variant title="Events - update:modelValue">
 			<origam-date-picker
 					v-model="date"
+					data-cy="date-picker-emit-model-value"
 					@update:model-value="logEvent('update:modelValue', $event)"
 			/>
 		</Variant>
@@ -198,7 +182,7 @@
 		</Variant>
 
 		<Variant title="Slots - Actions">
-			<origam-date-picker v-model="date">
+			<origam-date-picker v-model="date" data-cy="date-picker-slot-actions">
 				<template #actions>
 					<origam-btn color="primary" text="OK" size="small"/>
 					<origam-btn text="Cancel" size="small"/>
@@ -272,8 +256,6 @@
 	const multipleValue   = ref<string[]>([])
 	const constrainedDate = ref<string>(today)
 	const showWeekDate    = ref<string>(today)
-	const slotActionsDate = ref<string>(today)
-	const emitDate        = ref<string>(today)
 
 	const minDate = new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().slice(0, 10)
 	const maxDate = new Date(new Date().setDate(new Date().getDate() + 30)).toISOString().slice(0, 10)

@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="containerClasses"
 			:style="containerStyles"
 	>
@@ -12,16 +13,19 @@
 		lang="ts"
 		setup
 >
-	import {
-	useBorder,
-	useMargin,
-	usePadding,
-	useProps,
-	useRtl,
-	useStyle
-} from '../../composables'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRtl } from '../../composables/Commons/rtl.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IContainerProps } from '../../interfaces'
+	import type {
+		IContainerEmits,
+		IContainerProps,
+		IContainerSlots
+	} from '../../interfaces/Grids/container.interface'
 
 	import { computed, StyleValue } from 'vue'
 
@@ -34,6 +38,10 @@
 	const props = withDefaults(defineProps<IContainerProps>(), {tag: 'div', fluid: false})
 
 	const {filterProps} = useProps<IContainerProps>(props)
+
+	defineEmits<IContainerEmits>()
+
+	defineSlots<IContainerSlots>()
 
 	/*********************************************************
 	 * Composables
@@ -50,8 +58,11 @@
 	 * @description
 	 * Composable-driven class and style composition.
 	 ********************************************************/
+	const {dimensionStyles} = useDimension(props)
+
 	const containerStyles = computed(() => {
 		return [
+			dimensionStyles.value,
 			borderStyles.value,
 			paddingStyles.value,
 			marginStyles.value,
@@ -72,7 +83,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(containerStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(containerStyles, () => props.id)
 
 
 	/*********************************************************
@@ -117,25 +128,33 @@
 		margin-inline-start: var(--origam-container---margin-inline-start);
 		margin-inline-end: var(--origam-container---margin-inline-end);
 
+    &--is-rtl {
+      direction: rtl;
+    }
+
+    &--is-ltr {
+      direction: ltr;
+    }
+
 		&--border {
 			border-width: var(--origam-container--border---border-width);
 			box-shadow: var(--origam-container--border---box-shadow);
 		}
 
 		@media (min-width: 960px) {
-			--origam-container---max-width: 900px;
+			--origam-container---max-width: var(--origam-container---max-width-md, 768px);
 		}
 
 		@media (min-width: 1280px) {
-			--origam-container---max-width: 1200px;
+			--origam-container---max-width: var(--origam-container---max-width-lg, 992px);
 		}
 
 		@media (min-width: 1920px) {
-			--origam-container---max-width: 1800px;
+			--origam-container---max-width: var(--origam-container---max-width-xl, 1280px);
 		}
 
 		@media (min-width: 2560px) {
-			--origam-container---max-width: 2400px;
+			--origam-container---max-width: var(--origam-container---max-width-xxl, 1440px);
 		}
 
 		&--fluid {

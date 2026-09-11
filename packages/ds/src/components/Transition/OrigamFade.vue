@@ -12,9 +12,10 @@
 		lang="ts"
 		setup
 >
-	import { useCssTransition, useProps } from '../../composables'
+	import { useCssTransition } from '../../composables/Transition/cssTransition.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
 
-	import type { ITransitionProps } from '../../interfaces'
+	import type { ITransitionEmits, ITransitionNoOriginProps, ITransitionSlots } from '../../interfaces/Transition/transition.interface'
 
 	/*********************************************************
 	 * Global
@@ -22,11 +23,15 @@
 	 * @description
 	 * Props with defaults and filterProps utility.
 	 ********************************************************/
-	const props = withDefaults(defineProps<ITransitionProps>(), {
+	const props = withDefaults(defineProps<ITransitionNoOriginProps>(), {
 		name: 'origam-transition--fade'
 	})
 
-	const {filterProps} = useProps<ITransitionProps>(props)
+	const {filterProps} = useProps<ITransitionNoOriginProps>(props)
+
+	defineEmits<ITransitionEmits>()
+
+	defineSlots<ITransitionSlots>()
 
 	/*********************************************************
 	 * Transition
@@ -53,21 +58,23 @@
 </script>
 
 <style lang="scss">
+	@use '../../assets/scss/helpers' as ds;
+
 	.origam-transition--fade {
 		&-enter-active {
-			transition-duration: 0.3s;
-			transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+			transition-duration: var(--origam-transition--fade-enter-active---transition-duration);
+			transition-timing-function: var(--origam-transition--fade-enter-active---transition-timing-function);
 		}
 
 		&-leave-active {
-			transition-duration: 0.3s;
-			transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+			transition-duration: var(--origam-transition--fade-leave-active---transition-duration);
+			transition-timing-function: var(--origam-transition--fade-leave-active---transition-timing-function);
 		}
 
 		&-move {
-			transition-duration: 0.5s;
+			transition-duration: var(--origam-transition--fade-move---transition-duration);
 			transition-property: transform;
-			transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+			transition-timing-function: var(--origam-transition--fade-move---transition-timing-function);
 		}
 
 		&-enter-from, &-leave-to {
@@ -77,6 +84,14 @@
 		&-enter-active,
 		&-leave-active {
 			transition-property: opacity;
+		}
+
+		@include ds.ds-reduced-motion {
+			&-enter-active,
+			&-leave-active,
+			&-move {
+				transition-duration: 0.01ms !important;
+			}
 		}
 	}
 </style>

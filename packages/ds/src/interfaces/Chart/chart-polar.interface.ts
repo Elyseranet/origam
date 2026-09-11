@@ -1,13 +1,15 @@
 import type {
     IChartBaseEmits,
     IChartBaseProps,
-    IChartBaseSlots,
+    IChartBaseSlots
+} from './chart-base.interface'
+import type {
     IChartDrilldownLink,
-    IChartDrilldownProps,
-    IChartPoint
-} from '../../interfaces'
+    IChartDrilldownProps
+} from './chart-drilldown.interface'
+import type { IChartPoint } from './chart-point.interface'
 
-import type { TChartPolarKind } from '../../types'
+import type { TChartPolarKind } from '../../types/Chart/chart-polar.type'
 
 /**
  * Props for `<OrigamChartPolar>` — the polar family component.

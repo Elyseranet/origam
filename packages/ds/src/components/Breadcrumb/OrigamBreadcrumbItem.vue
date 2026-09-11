@@ -1,6 +1,7 @@
 <template>
 	<component
-			:is="link.tag"
+			:is="link.tag.value"
+			:id="id"
 			v-contrast
 			:aria-current="isActive ? 'page' : undefined"
 			:class="breadcrumbItemClasses"
@@ -14,7 +15,10 @@
       <span
 		      key="prepend"
 		      class="origam-breadcrumb-item__prepend"
+		      :role="isPrependZoneFocusable ? 'button' : undefined"
+		      :tabindex="isPrependZoneFocusable ? 0 : undefined"
 		      @click="handleClickPrepend"
+		      @keydown="handleKeydownPrepend"
       >
         <slot name="prepend">
           <origam-avatar
@@ -41,7 +45,10 @@
       <span
 		      key="append"
 		      class="origam-breadcrumb-item__append"
+		      :role="isAppendZoneFocusable ? 'button' : undefined"
+		      :tabindex="isAppendZoneFocusable ? 0 : undefined"
 		      @click="handleClickAppend"
+		      @keydown="handleKeydownAppend"
       >
        <slot name="append">
          <origam-avatar
@@ -66,27 +73,24 @@
 		lang="ts"
 		setup
 >
-	import { OrigamAvatar, OrigamIcon } from '../../components'
+	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import {
-		useActive,
-		useAdjacent,
-		useDefaults,
-		useDensity,
-		useHover,
-		useLink,
-		useProps,
-		useStateEffect,
-		useStyle
-	} from '../../composables'
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useLink } from '../../composables/Commons/link.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { DENSITY } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IBreadcrumbItemProps} from '../../interfaces'
+	import type { IBreadcrumbItemProps } from '../../interfaces/Breadcrumb/breadcrumb-item.interface'
 
-	import type { IBreadcrumbItemEmits } from '../../interfaces/Breadcrumb/breadcrumb-item.interface'
+	import type { IBreadcrumbItemEmits, IBreadcrumbItemSlots } from '../../interfaces/Breadcrumb/breadcrumb-item.interface'
 
 	import { computed, ComputedRef, StyleValue, toRef, useAttrs } from 'vue'
 
@@ -97,13 +101,11 @@
 	 * Props resolved against the closest OrigamBreadcrumb
 	 * defaults provider.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IBreadcrumbItemProps>(), {tag: 'span', density: DENSITY.DEFAULT})
-
-	// Resolve props against the closest `provideDefaults({ 'origam-breadcrumb-item': … })`
-	// injected by a parent `OrigamBreadcrumb`.
-	const props = useDefaults(_props)
+	const props = withDefaults(defineProps<IBreadcrumbItemProps>(), {tag: 'span', density: DENSITY.DEFAULT})
 
 	defineEmits<IBreadcrumbItemEmits>()
+
+	defineSlots<IBreadcrumbItemSlots>()
 
 	const {filterProps} = useProps<IBreadcrumbItemProps>(props)
 
@@ -117,8 +119,8 @@
 	 * @description
 	 * Hover, active state and color resolution.
 	 ********************************************************/
-	const {isHover, hoverState, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
-	const {isActive: active, activeState, activeClasses} = useActive(props)
+	const {isOn: isHover, config: hoverState, set: handleMouseenter, unset: handleMouseleave} = useStateFlag(props, {state: 'hover'})
+	const {isOn: active, config: activeState, classes: activeClasses} = useStateFlag(props, {state: 'active'})
 
 	const isActive = computed(() => {
 		return active.value || link.isActive?.value
@@ -151,8 +153,31 @@
 		hasAppend,
 		hasPrepend,
 		onClickPrepend: handleClickPrepend,
-		onClickAppend: handleClickAppend
+		onClickAppend: handleClickAppend,
+		onKeydownPrepend: handleKeydownPrepend,
+		onKeydownAppend: handleKeydownAppend,
+		isPrependClickable,
+		isAppendClickable
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
+
+	/*********************************************************
+	 * isPrependZoneFocusable / isAppendZoneFocusable
+	 *
+	 * @description
+	 * issue #443 — a <button>/<a> content model forbids ANY descendant with
+	 * a `tabindex` attribute specified (WHATWG: "no descendant with the
+	 * tabindex attribute specified"). The root renders as `<a>` whenever
+	 * `link.isLink` is true (useLink: `tag = isLink ? 'a' : props.tag`),
+	 * so the zone can only become its own tab stop when the root is NOT
+	 * a link — otherwise the fix would ship invalid, non-conformant markup
+	 * (and most browsers won't let the nested tabindex receive focus via
+	 * Tab anyway). Same reasoning applies to OrigamChip/OrigamListItem
+	 * (also useLink-based) and is why OrigamBtn/OrigamExpansionPanelHeader
+	 * (root ALWAYS a real <button>) are deliberately left untouched by
+	 * this ticket — see the audit note in the PR description.
+	 ********************************************************/
+	const isPrependZoneFocusable = computed(() => isPrependClickable.value && !link.isLink?.value)
+	const isAppendZoneFocusable = computed(() => isAppendClickable.value && !link.isLink?.value)
 
 	/*********************************************************
 	 * Class & Style
@@ -189,7 +214,7 @@
 		]
 	})
 
-	const {id, css, load, isLoaded, unload} = useStyle(breadcrumbItemStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(breadcrumbItemStyles, () => props.id)
 
 	/*********************************************************
 	 * Expose
@@ -212,20 +237,12 @@
 		scoped
 >
 	.origam-breadcrumb-item {
-		--origam-breadcrumb-item---text-decoration: none;
 		--origam-breadcrumb-item---border-top-width: 0px;
 		--origam-breadcrumb-item---border-left-width: 0px;
 		--origam-breadcrumb-item---border-bottom-width: 0px;
 		--origam-breadcrumb-item---border-right-width: 0px;
 		--origam-breadcrumb-item---border-width: var(--origam-breadcrumb-item---border-top-width) var(--origam-breadcrumb-item---border-left-width) var(--origam-breadcrumb-item---border-bottom-width) var(--origam-breadcrumb-item---border-right-width);
-		--origam-breadcrumb-item---border-color: currentColor;
-		--origam-breadcrumb-item---border-style: solid;
-		--origam-breadcrumb-item---border-radius: 0px;
 		--origam-breadcrumb-item---density: 0px;
-		--origam-breadcrumb-item---box-shadow: var(--origam-shadow---none, none);
-		--origam-breadcrumb-item---color: var(--origam-breadcrumb-item---color-token, inherit);
-		--origam-breadcrumb-item---opacity: 1;
-		--origam-breadcrumb-item---background: transparent;
 		--origam-breadcrumb-item---margin-inline-start: 0px;
 		--origam-breadcrumb-item---margin-inline-end: 0px;
 		--origam-breadcrumb-item---margin-block-start: 0px;
@@ -234,10 +251,9 @@
 		--origam-breadcrumb-item---padding-block-end: 8px;
 		--origam-breadcrumb-item---padding-inline-start: 8px;
 		--origam-breadcrumb-item---padding-inline-end: 8px;
-		--origam-breadcrumb-item---transition-duration: 0.2s, 0.1s;
-		--origam-breadcrumb-item---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		--origam-breadcrumb-item---transition-property: transform, color;
-		--origam-breadcrumb-item---transition: var(--origam-breadcrumb-item---transition-property) var(--origam-breadcrumb-item---transition-duration) var(--origam-breadcrumb-item---transition-timing-function);
+		--origam-breadcrumb-item---transition:
+			transform var(--origam-breadcrumb-item---transition-duration-transform) var(--origam-breadcrumb-item---transition-timing-function),
+			color var(--origam-breadcrumb-item---transition-duration-color) var(--origam-breadcrumb-item---transition-timing-function);
 
 		align-items: center;
 		display: inline-flex;

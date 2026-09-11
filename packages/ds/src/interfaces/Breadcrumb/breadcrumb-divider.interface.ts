@@ -1,16 +1,32 @@
 import type {
     IBgColorProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
     ICommonsComponentProps,
-    IDensityProps,
-    IMarginProps,
-    IPaddingProps,
-    ISizeProps,
     ITagProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { ISizeProps } from '../Commons/size.interface'
 
-import type { TIcon } from '../../types'
+import type { TIcon } from '../../types/Icon/icon.type'
+
+/** Slot signatures for `<OrigamBreadcrumbDivider>`. */
+export interface IBreadcrumbDividerSlots {
+    default?: () => any
+}
 
 export interface IBreadcrumbDividerProps extends ICommonsComponentProps, ITagProps, IPaddingProps, IMarginProps, IDensityProps, IColorProps, IBgColorProps, ISizeProps {
     divider: string | TIcon
 }
+
+/*********************************************************
+ * IBreadcrumbDividerEmits
+ *
+ * @description
+ * Emits fired by `<OrigamBreadcrumbDivider>` — none. Purely
+ * presentational, renders the `divider` prop verbatim.
+ ********************************************************/
+export interface IBreadcrumbDividerEmits {}

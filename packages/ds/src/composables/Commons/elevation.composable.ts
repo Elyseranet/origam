@@ -1,25 +1,33 @@
 import { computed, isRef, ref, Ref } from 'vue'
 
-import { ORIGAM_SHADOW_RUNGS, UTILITY_SHADOW_RUNGS } from '../../consts/Commons/elevation.const'
-import type { IElevationProps } from '../../interfaces'
-import { TColor, TElevation } from "../../types"
-import { getCurrentInstanceName, isCustomBoxShadow } from "../../utils"
+import {
+    ELEVATED_CLASS_SUFFIX,
+    ELEVATION_BG_COLOR_DEPRECATION_WARNING,
+    ELEVATION_LEGACY_BG_COLOR,
+    MATERIAL_ELEVATION_LADDER,
+    MATERIAL_ELEVATION_TOP_RUNG,
+    ORIGAM_SHADOW_RUNGS,
+    SHADOW_TOKEN_PREFIX,
+    SHADOW_UTILITY_CLASS_PREFIX,
+    UTILITY_SHADOW_RUNGS
+} from '../../consts/Commons/elevation.const'
+import type { IElevationProps } from '../../interfaces/Commons/elevation.interface'
+import { TColor } from '../../types/Commons/color.type'
+import { TElevation } from '../../types/Commons/elevation.type'
+import { isCustomBoxShadow } from '../../utils/Commons/elevation.util'
+import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
 
 /**
  * Map a numeric Material-style elevation (0..24) to a token rung in the
  * generated shadow ladder (`--origam-shadow-{none|xs|sm|md|lg|xl}`).
  *
- * Buckets are intentionally chunky — the Material 25-step ladder collapses
- * into a 6-token visual ladder. The mapping was tuned against the existing
- * usage in OrigamCard / OrigamBadge / OrigamChip.
+ * The buckets live in `MATERIAL_ELEVATION_LADDER`
+ * (`src/consts/Commons/elevation.const.ts`). `NaN` matches no bucket and
+ * falls through to `MATERIAL_ELEVATION_TOP_RUNG`, same as before.
  */
 function elevationToToken (level: number): string {
-    if (level <= 0) return 'none'
-    if (level <= 1) return 'xs'
-    if (level <= 3) return 'sm'
-    if (level <= 8) return 'md'
-    if (level <= 16) return 'lg'
-    return 'xl'
+    return MATERIAL_ELEVATION_LADDER.find(({maxLevel}) => level <= maxLevel)?.rung
+        ?? MATERIAL_ELEVATION_TOP_RUNG
 }
 
 // `ORIGAM_SHADOW_RUNGS` + `UTILITY_SHADOW_RUNGS` live in
@@ -46,45 +54,39 @@ function warnBgColorUsage (bgColor: TColor) {
     const sentinel = { _: 'origam-elevation-bg-warn' } as const
     if (_bgWarned.has(sentinel)) return
     _bgWarned.add(sentinel)
-    console.warn(
-        '[origam] useElevation: the `bgColor` parameter is deprecated and ignored. ' +
-        'Shadows now resolve from the design tokens (`--origam-shadow-*`) and switch with the active theme. ' +
-        'The parameter will be removed in v3.0.0.'
-    )
+    console.warn(ELEVATION_BG_COLOR_DEPRECATION_WARNING)
 }
-
-/**
- * `useElevation` — refactored to consume design tokens (Lot 1).
- *
- * Accepts three shapes for `elevation` (see `TElevation`):
- *   - an origam-native rung name (`'none'|'xs'|'sm'|'md'|'lg'|'xl'|'2xl'|'3xl'`),
- *   - a Material-style number `0..24` (as a `number` or numeric `string`),
- *   - a free-form custom `box-shadow` value (`'0 4px 12px rgba(0,0,0,.24)'`,
- *     `'var(--origam-shadow---card)'`, `'inset 0 0 0 2px #fff'`, …) —
- *     emitted verbatim via `elevationStyles`. Detected by `isCustomBoxShadow`
- *     (permissive signal-based check, same approach as `useRounded`'s
- *     `isCustomBorderRadius`), so genuinely invalid input keeps the
- *     pre-existing silent-drop behaviour (no regression).
- *
- * Backward-compat:
- *   - The signature is preserved (`bgColor` accepted but ignored).
- *   - Returns the same shape: `{ elevationClasses, elevationStyles }`.
- *   - `elevationStyles` is still a string array — emits a single `box-shadow:`
- *     declaration that references the appropriate `--origam-shadow-*` token,
- *     or the custom value verbatim.
- */
 
 /*********************************************************
  * useElevation
+ *
+ * @description
+ * Traduit `elevation` (`TElevation` : soit un echelon origam natif
+ * `'none'|'xs'|'sm'|'md'|'lg'|'xl'|'2xl'|'3xl'`, soit un nombre Material
+ * `0..24`, soit un `box-shadow` custom en clair) en `elevationClasses`
+ * (utilitaire quand l'echelon est couvert par la Phase 1 des utilitaires)
+ * ET `elevationStyles` (toujours une declaration `box-shadow: var(--origam-shadow-*)`
+ * ou la valeur custom telle quelle) — les deux canaux emis en parallele,
+ * jamais l'un a la place de l'autre (strategie A, cf. CLAUDE.md racine).
+ *
+ * @description
+ * `bgColor` est accepte pour compatibilite mais IGNORE (n'affecte plus
+ * ni `elevationClasses` ni `elevationStyles`) — passer une valeur autre
+ * que `ELEVATION_LEGACY_BG_COLOR` declenche un `console.warn` de
+ * depreciation une seule fois via `warnBgColorUsage`. La detection du
+ * `box-shadow` custom passe AVANT le `parseInt` de secours : sans cet
+ * ordre, `parseInt('0 4px 12px rgba(0,0,0,.24)', 10)` lirait `0` (chiffre
+ * de tete) et resoudrait silencieusement vers l'echelon `none`, perdant
+ * l'ombre custom.
  ********************************************************/
 export function useElevation (
     props: IElevationProps | Ref<TElevation | undefined>,
     flat: Ref<boolean> = ref(false),
-    bgColor: Ref<TColor> = ref('rgb(0,0,0)'),
+    bgColor: Ref<TColor> = ref(ELEVATION_LEGACY_BG_COLOR),
     name = getCurrentInstanceName()
 ) {
     // Soft-warn the first time a non-default bgColor is provided.
-    if (bgColor && bgColor.value && bgColor.value !== 'rgb(0,0,0)') {
+    if (bgColor && bgColor.value && bgColor.value !== ELEVATION_LEGACY_BG_COLOR) {
         warnBgColorUsage(bgColor.value)
     }
 
@@ -94,7 +96,7 @@ export function useElevation (
 
         if (elevation == null || flat.value) return classes
 
-        classes.push(`${name}--elevated`)
+        classes.push(`${name}${ELEVATED_CLASS_SUFFIX}`)
 
         // Classes-first companion: when `elevation` resolves to a
         // utility-backed rung (Phase 1 manifest), emit the matching
@@ -102,7 +104,7 @@ export function useElevation (
         // shadow layer. `2xl` / `3xl` and Material 0..24 numbers fall
         // through to the inline-style path below.
         if (isUtilityRung(elevation)) {
-            classes.push(`origam--shadow-${elevation}`)
+            classes.push(`${SHADOW_UTILITY_CLASS_PREFIX}${elevation}`)
         } else if (!isOrigamRung(elevation) && !(typeof elevation === 'string' && isCustomBoxShadow(elevation))) {
             // Material 0..24 number (string or number) — bridge to the
             // utility ladder via the same token mapping as the inline
@@ -118,7 +120,7 @@ export function useElevation (
             if (typeof numeric === 'number' && !Number.isNaN(numeric)) {
                 const tokenName = elevationToToken(numeric)
                 if (UTILITY_SHADOW_RUNGS.has(tokenName)) {
-                    classes.push(`origam--shadow-${tokenName}`)
+                    classes.push(`${SHADOW_UTILITY_CLASS_PREFIX}${tokenName}`)
                 }
             }
         }
@@ -137,7 +139,7 @@ export function useElevation (
         // the Material 0..24 → token mapping. Authors get an explicit
         // intent ("medium shadow") rather than an opaque number.
         if (isOrigamRung(elevation)) {
-            styles.push(`box-shadow: var(--origam-shadow---${elevation})`)
+            styles.push(`box-shadow: var(${SHADOW_TOKEN_PREFIX}${elevation})`)
             return styles
         }
 
@@ -158,7 +160,7 @@ export function useElevation (
         if (Number.isNaN(numeric)) return styles
 
         const tokenName = elevationToToken(numeric)
-        styles.push(`box-shadow: var(--origam-shadow---${tokenName})`)
+        styles.push(`box-shadow: var(${SHADOW_TOKEN_PREFIX}${tokenName})`)
 
         return styles
     })

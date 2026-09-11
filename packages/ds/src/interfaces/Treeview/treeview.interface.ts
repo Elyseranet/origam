@@ -1,9 +1,27 @@
 import type { ComputedRef } from 'vue'
-import type { IBgColorProps,
-    IColorProps, ICommonsComponentProps, IDensityProps, ISizeProps } from '../../interfaces'
-import type { TIcon } from '../../types'
-import type { TTreeviewSelectMode, TTreeviewSelectableNodes } from '../../types'
+import type {
+    IBgColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { ISizeProps } from '../Commons/size.interface'
+import type { TIcon } from '../../types/Icon/icon.type'
+import type {
+    TTreeviewSelectMode,
+    TTreeviewSelectableNodes
+} from '../../types/Treeview/treeview.type'
 
+/*********************************************************
+ * ITreeviewNode / ITreeviewProps / ITreeviewProvide
+ *
+ * @description
+ * `ITreeviewNodeProps` / `ITreeviewNodeSlots` (the actual
+ * `<OrigamTreeviewNode>` component surface) moved out to
+ * `interfaces/Treeview/treeview-node.interface.ts` under issue #364 —
+ * this file used to hold both distinct component surfaces
+ * (Treeview / TreeviewNode).
+ ********************************************************/
 export interface ITreeviewNode {
     id: string
     label: string
@@ -22,11 +40,40 @@ export interface ITreeviewProps extends ICommonsComponentProps, IColorProps, IBg
     selectableNodes?: TTreeviewSelectableNodes
     showLines?: boolean
     expandOnClick?: boolean
+    /**
+     * Accessible name for the tree's root `role="tree"` element. Without
+     * it the tree is announced with no label, so pass one whenever the
+     * surrounding context does not already name it.
+     */
+    ariaLabel?: string
 }
 
-export interface ITreeviewNodeProps extends ICommonsComponentProps {
-    node: ITreeviewNode
-    depth?: number
+/** Emits fired by `<OrigamTreeview>` — v-model echoes (selection,
+ *  expansion) and node select/toggle lifecycle. */
+export interface ITreeviewEmits {
+    (e: 'update:modelValue', value: string[] | string): void
+    (e: 'update:expandedValue', value: string[]): void
+    (e: 'select', id: string): void
+    (e: 'toggle', id: string, expanded: boolean): void
+}
+
+/*********************************************************
+ * ITreeviewSlots
+ *
+ * @description
+ * `<OrigamTreeview>` owns no slot content — every node is delegated to
+ * `<OrigamTreeviewNode>`, which renders `node`. It does relay that one
+ * name down, so a consumer can write `<template #node>` on the tree
+ * itself rather than on each node; `<OrigamTreeviewNode>` then carries
+ * it through every recursion level.
+ ********************************************************/
+export interface ITreeviewSlots {
+    node?: (props: {
+        node: ITreeviewNode
+        depth: number
+        isExpanded: boolean
+        isSelected: boolean
+    }) => any
 }
 
 export interface ITreeviewProvide {

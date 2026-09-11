@@ -1,28 +1,18 @@
-import type { TBlockquoteAlign, TBlockquoteLang, TBlockquoteVariant } from '../../types'
+import { BLOCKQUOTE_LANG, BLOCKQUOTE_VARIANT } from '../../enums'
+
+import type { TBlockquoteAlign, TBlockquoteLang, TBlockquoteVariant } from '../../types/Blockquote/blockquote.type'
 
 /**
  * Closed list of valid `variant` values for `<OrigamBlockquote>`.
  * Exposed so stories / consumers can iterate the matrix without
  * re-typing the literals.
  */
-export const BLOCKQUOTE_VARIANTS: ReadonlyArray<TBlockquoteVariant> = [
-    'default',
-    'elegant',
-    'quoted',
-    'minimal',
-    'pull'
-]
+export const BLOCKQUOTE_VARIANTS: ReadonlyArray<TBlockquoteVariant> = Object.values(BLOCKQUOTE_VARIANT)
 
 /**
  * Closed list of valid `lang` values.
  */
-export const BLOCKQUOTE_LANGS: ReadonlyArray<TBlockquoteLang> = [
-    'auto',
-    'fr',
-    'en',
-    'es',
-    'de'
-]
+export const BLOCKQUOTE_LANGS: ReadonlyArray<TBlockquoteLang> = Object.values(BLOCKQUOTE_LANG)
 
 /**
  * Closed list of valid `align` values.

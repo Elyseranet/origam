@@ -93,14 +93,6 @@
 			</origam-theme-provider>
 		</Variant>
 
-		<Variant title="Slot — default">
-			<origam-theme-provider theme="dark">
-				<template #default>
-					<origam-btn text="From slot content" color="primary"/>
-				</template>
-			</origam-theme-provider>
-		</Variant>
-
 		<Variant title="Slots - Default">
 			<origam-theme-provider theme="dark">
 				<template #default>

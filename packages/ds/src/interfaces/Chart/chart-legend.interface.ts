@@ -1,9 +1,7 @@
-import type {
-    IChartLegendItem,
-    IChartSeries
-} from '../../interfaces'
+import type { IChartLegendItem } from './chart.interface'
+import type { IChartSeries } from './chart-series.interface'
 
-import type { TChartLegendPosition } from '../../types'
+import type { TChartLegendPosition } from '../../types/Chart/chart-legend.type'
 
 /**
  * Props for `<OrigamChartLegend>` — the series-name + colour-swatch

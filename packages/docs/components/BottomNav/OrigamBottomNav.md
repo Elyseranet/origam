@@ -140,11 +140,15 @@ group out of the box — clicking one applies `selectedClass`
 ## Layout placement
 
 `<OrigamBottomNav>` is layout-aware, using the standard `name` / `order`
-/ `absolute` triple from `ILayoutItemProps`:
+/ `location` / `absolute` quadruple from `ILayoutItemProps`:
 
 - `name` (default `'bottom-navigation'`) — unique id used by the layout
   machinery.
 - `order` — relative order against sibling layout items.
+- `location` (default `'bottom'`) — which edge of the `<OrigamLayout>`
+  the bar docks against: `'top'` · `'bottom'` · `'left'` · `'right'`.
+  It drives the anchor, the direction the bar slides in from, the
+  `calc()` height/width, and how much room sibling regions give up.
 - `absolute` — opt out of pushing/pulling sibling regions; the bar then
   floats over the main slot instead.
 
@@ -156,6 +160,21 @@ group out of the box — clicking one applies `selectedClass`
     </OrigamLayout>
 </template>
 ```
+
+::: warning `location` and `position` are two different axes
+`location` is the **edge** the bar docks against inside the layout
+(`top` / `bottom` / `left` / `right`). `position` is the **horizontal
+alignment** of the bar within that edge when it does not span the full
+width (`start` / `center` / `end`). They only interact when `location`
+is itself horizontal (`'left'` / `'right'`), where the
+`origam-bottom-nav--position-*` rule and the layout anchor compete for
+the same axis — the family's supported rendering stays
+`location="bottom"`.
+
+The default `transition` (`OrigamTranslateBottom`) always slides in from
+the bottom. Pair a non-default `location` with a matching transition, or
+`:transition="false"`.
+:::
 
 ## Transition
 
@@ -189,8 +208,13 @@ it.
 | Event | Payload | Description |
 |---|---|---|
 | `update:modelValue` | `any` | Visibility / group-selection changes (see the note above). |
-| `update:active` | `any` | Propagated from `IActiveProps` state. |
 | `update:hover` | `boolean` | Propagated from `IHoverProps` state. |
+
+Note: `IBottomNavProps` still accepts `active` / `activeClass` (`IActiveProps`)
+as a default forwarded to child `<OrigamBtn>` items, but the nav itself does
+not emit `update:active` — its own "active" (shown/hidden) state is sourced
+from `modelValue`, not from `active`. See the interface comment on
+`IBottomNavEmits` (`bottom-nav.interface.ts`) for the full reasoning.
 
 ## Props (interface)
 
@@ -220,7 +244,7 @@ interface IBottomNavProps extends ITagProps, ICommonsComponentProps,
 | `padding*`, `margin*` | — | — | Standard spacing surface — see `IPaddingProps` / `IMarginProps`. |
 | `height`, `width`, `min/maxHeight`, `min/maxWidth` | — | — | Standard dimension surface — see `IDimensionProps`. When `height` is set, the actual applied height is `height` minus `8px` in `compact` density. |
 | `name`, `order`, `absolute` | — | `name: 'bottom-navigation'` | Layout placement — see [Layout placement](#layout-placement). |
-| `location` | `TDirectionBoth` | — | Declared on `ILayoutItemProps` (`layout.interface.ts:73`) and inherited onto `IBottomNavProps`, but never read by `OrigamBottomNav.vue` — the `useLayoutItem()` call hardcodes `position: computed(() => 'bottom')` (`OrigamBottomNav.vue:188`). Passing `location` has no effect. |
+| `location` | `TDirectionBoth` | `'bottom'` | Edge of the `<OrigamLayout>` the bar docks against (`top` · `bottom` · `left` · `right`). Distinct from `position` — see [Layout placement](#layout-placement). |
 | `modelValue`, `disabled`, `multiple`, `mandatory`, `max`, `selectedClass` | — | `modelValue: true`, `selectedClass: 'origam-bottom-nav__btn--selected'` | Visibility + group selection — see [Visibility](#visibility) / [Group selection](#group-selection-multiple--mandatory--disabled). |
 | `hover`, `active`, `activeClass` | `boolean \| IHoverState` / `boolean \| IActiveState` | — | State-aware overrides forwarded to child buttons — see [Color](#color). |
 | `transition` | `boolean \| string \| TTransitionProps` | `{ component: OrigamTranslateBottom }` | Enter/leave animation — see [Transition](#transition). |
@@ -237,32 +261,55 @@ interface IBottomNavProps extends ITagProps, ICommonsComponentProps,
 
 ## Design tokens consumed
 
-`<OrigamBottomNav>` reads from `tokens/component/bottom-nav.json`, under
-the `bottom-bar` key — note the CSS variable prefix is
-`--origam-bottom-bar---*`, not `--origam-bottom-nav---*`.
+`<OrigamBottomNav>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`), under the `--origam-bottom-nav---*`
+prefix — matching the component's own name, per the DS naming grammar. The
+legacy `--origam-bottom-bar---*` prefix still works as a deprecated alias;
+see the note below the table.
 
 | CSS variable | Token reference |
 |---|---|
-| `--origam-bottom-bar---background` | `{color.neutral.200}` |
-| `--origam-bottom-bar---color` | `{color.text.primary}` |
-| `--origam-bottom-bar---height` | `{space.12}` (48px) |
-| `--origam-bottom-bar---box-shadow` | `{shadow.none}` |
-| `--origam-bottom-bar--elevated---box-shadow` | shadow projected **upward** (negative offset-Y), so it isn't clipped by the viewport edge |
-| `--origam-bottom-bar--active---box-shadow` | same upward shadow, applied while the bar is active |
-| `--origam-bottom-bar---border-radius` | `{radius.none}` at rest. The token layer also generates `--origam-bottom-bar__rounded---border-radius: {radius.sm}` (4px) for the `rounded` state, but nothing in `OrigamBottomNav.vue`'s SCSS reads that variable — the `&--rounded` rule hardcodes `var(--origam-radius---2xl, 24px)` directly (`OrigamBottomNav.vue:373-375`), so the applied radius is **24px**, not `{radius.sm}`. |
-| `--origam-bottom-bar---density` / `-comfortable-density` / `-compact-density` | density-driven padding/height offset |
-| `--origam-bottom-bar__content---justify-content` / `-align-items` / `-flex-wrap` | layout of the items row |
-| `--origam-bottom-bar__content---transform` | Generated by the token layer (`light.css:566`) but **never read** — the SCSS's `transform` declaration and the `&--shift` override both target `--origam-bottom-bar__content--transform` (double `--`, not the generated triple-`-`-separated name; `OrigamBottomNav.vue:321` and `:468`). The two variables never meet: styling the shift-mode transform means overriding the double-dash name, not the token. |
-| `--origam-bottom-bar---padding-*`, `--origam-bottom-bar---margin-*` | spacing (also driven by the `padding` / `margin` props) |
+| `--origam-bottom-nav---background` | `{color.neutral.200}` |
+| `--origam-bottom-nav---color` | `{color.text.primary}` |
+| `--origam-bottom-nav---height` | `{space.12}` (48px) |
+| `--origam-bottom-nav---box-shadow` | `{shadow.none}` |
+| `--origam-bottom-nav--elevated---box-shadow` | shadow projected **upward** (negative offset-Y), so it isn't clipped by the viewport edge |
+| `--origam-bottom-nav--active---box-shadow` | same upward shadow, applied while the bar is active |
+| `--origam-bottom-nav---border-radius` | `{radius.none}` at rest. The token layer also generates `--origam-bottom-nav__rounded---border-radius: {radius.sm}` (4px) for the `rounded` state, but nothing in `OrigamBottomNav.vue`'s SCSS reads that variable — the `&--rounded` rule hardcodes `var(--origam-radius---2xl, 24px)` directly (`OrigamBottomNav.vue:400`), so the applied radius is **24px**, not `{radius.sm}`. |
+| `--origam-bottom-nav---density` / `-comfortable-density` / `-compact-density` | density-driven padding/height offset |
+| `--origam-bottom-nav__content---justify-content` / `-align-items` / `-flex-wrap` | layout of the items row |
 
-The full list lives in `tokens/component/bottom-nav.json`.
+::: warning `--origam-bottom-bar---*` is deprecated
+Until now every one of this component's variables carried the prefix
+`--origam-bottom-bar---*`, while the component itself is `origam-bottom-nav`
+— so a theme author who followed the DS naming grammar
+(`--origam-{component}---{property}`) and wrote `--origam-bottom-nav---background`
+got nothing at all, with no warning.
+
+The tokens now carry the correct `--origam-bottom-nav---*` prefix. **The old
+names keep working for one version**: each new token is declared as
+`var(--origam-bottom-bar---x, <value>)`, so anything you already set under
+the old prefix still wins. Nothing to change today; migrate at your leisure,
+the alias is removed in the next major.
+
+Rename mechanically — `--origam-bottom-bar` → `--origam-bottom-nav`, the
+property part is unchanged.
+:::
+| `--origam-bottom-nav__content---transform` | Generic content-level transform override hook (`OrigamBottomNav.vue:359`). Naming matches the generated token exactly — no mismatch. **Not** what powers `shift` mode, though: `&--shift`'s label fade/slide (`OrigamBottomNav.vue:501-513`) sets a literal `transform: translateY(0.5rem)` directly on the more specific `.origam-btn__content` selector, so overriding this variable has no visible effect while `shift` is active — see `bottom-nav-shift.spec.ts` for the non-regression coverage of that mode. |
+| `--origam-bottom-nav---padding-*`, `--origam-bottom-nav---margin-*` | spacing (also driven by the `padding` / `margin` props) |
+
+The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
+`dark.css` — grep for `--origam-bottom-nav`.
 
 ## Accessibility
 
 - Renders a `<nav aria-label="Bottom navigation">` by default — the
-  label is currently a hardcoded English string (not run through the
-  DS's `useLocale()` translation layer, unlike `<OrigamBreadcrumb>`'s
-  `aria-label`).
+  label goes through the DS's `useLocale()` translation layer
+  (`t('origam.bottom_nav.aria_label', 'Bottom navigation')`,
+  `OrigamBottomNav.vue:10`/`:112`), same pattern as
+  `<OrigamBreadcrumb>`'s `aria-label`. The `bottom_nav` key is declared
+  in both `en.json` and `fr.json`.
 - Full keyboard support comes from the underlying `<origam-btn>`
   instances (native `<button>`/`<a>` semantics).
 

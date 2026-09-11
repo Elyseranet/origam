@@ -1,27 +1,32 @@
+import type { IActiveProps } from '../Commons/active.interface'
 import type {
-    IActiveProps,
     IAdjacentEmits,
-    IAdjacentProps,
+    IAdjacentProps
+} from '../Commons/adjacent.interface'
+import type {
     IBgColorProps,
-    IBorderProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type {
     IClickEmits,
-    IColorProps,
     ICommonsComponentProps,
-    IDensityProps,
-    IDimensionProps,
-    IElevationProps,
-    IHoverProps,
-    ILinkProps,
-    IMarginProps,
-    IPaddingProps,
-    IRippleProps,
-    IRoundedProps,
-    ISizeProps,
-    ITagProps,
-    ITypographyProps
-} from '../../interfaces'
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IHoverProps } from '../Commons/hover.interface'
+import type { ILinkProps } from '../Commons/router.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRippleProps } from '../Commons/ripple.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ISizeProps } from '../Commons/size.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
-import type { TLines } from '../../types'
+import type { TLines } from '../../types/List/list.type'
+import type { TListItemSlot } from '../../types/List/list-item.type'
 
 /**
  * `size` picks a rung of the shared control-height scale (28 / 36 / 44 / 52 px,
@@ -36,7 +41,7 @@ import type { TLines } from '../../types'
  * same expression `.origam-field__input` uses, floor included, so a `small` row
  * at `compact` density holds 28px instead of collapsing to 20px.
  */
-export interface IListItemProps extends IBorderProps, ICommonsComponentProps, IDensityProps, IDimensionProps, IElevationProps, IRoundedProps, ISizeProps, ITagProps, ILinkProps, IColorProps, IBgColorProps, IRippleProps, IPaddingProps, IMarginProps, IAdjacentProps, IActiveProps, IHoverProps, ITypographyProps {
+export interface IListItemProps extends IBorderProps, ICommonsComponentProps, IDensityProps, IDimensionProps, IElevationProps, IRoundedProps, ISizeProps, ITagProps, ILinkProps, IColorProps, IBgColorProps, IRippleProps, IPaddingProps, IMarginProps, IAdjacentProps, IActiveProps, IHoverProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
     active?: boolean
     activeClass?: string
     disabled?: boolean
@@ -51,3 +56,16 @@ export interface IListItemProps extends IBorderProps, ICommonsComponentProps, ID
 
 /** Emits fired by `<OrigamListItem>` — generic click + prepend/append slot clicks. */
 export interface IListItemEmits extends IClickEmits, IAdjacentEmits {}
+
+/** Slot signatures for `<OrigamListItem>`. `prepend` / `default` /
+ *  `append` share the same selection-state scope (`TListItemSlot`);
+ *  `title` / `subtitle` receive their own resolved text value. */
+export interface IListItemSlots {
+    /** Overrides the whole prepend/content/append layout. */
+    wrapper?: () => any
+    prepend?: (data: TListItemSlot) => any
+    title?: (data: { title?: string | number }) => any
+    subtitle?: (data: { subtitle?: string | number }) => any
+    default?: (data: TListItemSlot) => any
+    append?: (data: TListItemSlot) => any
+}

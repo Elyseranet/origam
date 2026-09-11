@@ -16,12 +16,13 @@
 				<origam-checkbox-btn
 						:id="id"
 						ref="origamCheckboxBtnRef"
+						v-bind="{ ...checkboxBtnProps, ...controlAttrs }"
 						v-model="model"
 						:aria-describedby="messagesId"
 						:disabled="isDisabled"
 						:error="!isValid"
 						:readonly="isReadonly"
-						v-bind="{ ...checkboxBtnProps, ...controlAttrs }"
+						:value="value"
 						@blur="handleBlur"
 						@focus="handleFocus"
 						@click:label="handleClickLabel"
@@ -59,27 +60,28 @@
 		lang="ts"
 		setup
 >
-	import { OrigamCheckboxBtn, OrigamInput } from '../../components'
+	import OrigamCheckboxBtn from './OrigamCheckboxBtn.vue'
+	import OrigamInput from '../Input/OrigamInput.vue'
 
-	import {
-		useDefaults,
-		useFocus,
-		useMargin,
-		usePadding,
-		useProps,
-		useStyle,
-		useVModel
-} from '../../composables'
+	import { useFocus } from '../../composables/Commons/focus.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { DENSITY } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { ICheckboxProps, ICheckboxSlots} from '../../interfaces'
+	import type { ICheckboxProps, ICheckboxSlots } from '../../interfaces/Checkbox/checkbox.interface'
 
 	import type { ICheckboxEmits } from '../../interfaces/Checkbox/checkbox.interface'
 
-	import type { TOrigamCheckboxBtn, TOrigamInput } from "../../types"
+	import type { TOrigamCheckboxBtn } from '../../types/Checkbox/checkbox-btn.type'
+	import type { TOrigamInput } from '../../types/Input/input.type'
 
-	import { filterInputAttrs, getUid } from '../../utils'
+	import { filterInputAttrs } from '../../utils/Input/input.util'
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 	import { computed, ref, StyleValue, useAttrs, useSlots } from 'vue'
 
@@ -90,16 +92,9 @@
 	 * Props, emits, slots, model binding and focus tracking.
 	 ********************************************************/
 
-	const _props = withDefaults(defineProps<ICheckboxProps>(), {
+	const props = withDefaults(defineProps<ICheckboxProps>(), {
 		density: DENSITY.DEFAULT
 	})
-
-	// `useDefaults` resolves each prop against theme.components['origam-checkbox']
-	// (OrigamBtn pattern). Note (issue #241): `rounded` now correctly forwards
-	// to the underlying control box, but the CHECK GLYPH itself is a separate,
-	// pre-existing rendering concern tracked in #241 — this fix only restores
-	// the theme-config wiring, not the glyph surface.
-	const props = useDefaults(_props)
 
 	const emits = defineEmits<ICheckboxEmits>()
 
@@ -114,6 +109,7 @@
 	 * Value
 	 ********************************************************/
 
+	const wasPropPassed = usePassedProps(props)
 	const model = useVModel(props, 'modelValue')
 	const {isFocused, onFocus: handleFocus, onBlur: handleBlur} = useFocus(props)
 	const attrs = useAttrs()
@@ -141,8 +137,31 @@
 	const inputProps = computed(() => {
 		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused'])
 	})
+	/*********************************************************
+	 * checkboxBtnProps
+	 *
+	 * @description
+	 * ⛔ `multiple` est exclue quand le consommateur ne l'a PAS passee, et
+	 * c'est ce qui repare la perte de donnees de #396. La coercition des
+	 * props booleennes de Vue resout une prop non passee a la valeur
+	 * CONCRETE `false`, jamais a `null` ni `undefined`. Or
+	 * `OrigamSelectionControl` auto-detecte le mode multiple par
+	 * `props.multiple == null && Array.isArray(currentModel())` : transmise
+	 * a `false`, la prop coupait l'auto-detection, `isMultiple` devenait
+	 * faux, et chaque clic ECRASAIT le tableau au lieu d'y ajouter — sans
+	 * erreur ni avertissement.
+	 *
+	 * @description
+	 * `OrigamCheckboxBtn` portait deja exactement cette garde (l.147) ;
+	 * elle manquait ici, donc `multiple: false` repartait du niveau
+	 * au-dessus et annulait la garde du niveau en dessous.
+	 ********************************************************/
 	const checkboxBtnProps = computed(() => {
-		return origamCheckboxBtnRef.value?.filterProps(props, ['class', 'style', 'modelValue', 'id', 'disabled', 'readonly', 'error'])
+		const excludes = ['class', 'style', 'modelValue', 'id', 'disabled', 'readonly', 'error']
+
+		if (!wasPropPassed('multiple')) excludes.push('multiple')
+
+		return origamCheckboxBtnRef.value?.filterProps(props, excludes)
 	})
 
 	/*********************************************************

@@ -139,15 +139,24 @@ diagonal. The diagonal cells are inert.
 | `showScores`      | `boolean`                                                     | `true`                |
 | `showSeed`        | `boolean`                                                     | `false`               |
 | `interactive`     | `boolean`                                                     | `true`                |
+| `tag`             | `string`                                                      | `'div'`               |
 | `color`           | `TIntent \| <css-color>`                                     | `'primary'`           |
 | `bgColor`         | `TIntent \| <css-color>`                                     | — (none)              |
 | `rounded`         | `TRounded \| number \| string \| boolean`                    | — (match default 6px) |
+| `roundedTopLeft` / `roundedTopRight` / `roundedBottomLeft` / `roundedBottomRight` | `number \| string \| boolean` | — (overrides one corner only, `rounded` still drives the other three) |
 | `elevation`       | `number` (0–24, bucketised to the shadow ladder)             | — (match default)     |
 | `border`          | `'thin' \| 'thick' \| number \| boolean`                     | — (match default 1px) |
+| `borderTop` / `borderRight` / `borderBottom` / `borderLeft` | `'thin' \| 'thick' \| number \| boolean` | — (overrides one side only) |
+| `borderBlock` / `borderInline`  | `'thin' \| 'thick' \| number \| boolean` | — (logical-axis shorthand: block = top+bottom, inline = left+right in LTR) |
 | `borderColor`     | `TIntent \| <css-color>`                                     | — (subtle)            |
+| `borderTopColor` / `borderRightColor` / `borderBottomColor` / `borderLeftColor` | `TIntent \| <css-color>` | — (overrides one side's colour only) |
 | `borderStyle`     | `'solid' \| 'dashed' \| 'dotted' \| …`                       | `'solid'`             |
-| `winnersLabel`    | `string`                                                      | `'Winners bracket'`   |
-| `losersLabel`     | `string`                                                      | `'Losers bracket'`    |
+| `winnersLabel`    | `string`                                                      | — (falls back to `origam.bracket.winners_label`) |
+| `losersLabel`     | `string`                                                      | — (falls back to `origam.bracket.losers_label`)  |
+| `width` / `height` / `minWidth` / `minHeight` / `maxWidth` / `maxHeight` | `number \| string` | — (applied to the bracket root) |
+| `margin` / `marginTop` / `marginRight` / `marginBottom` / `marginLeft` / `marginBlock` / `marginInline` | `number \| string \| boolean` | — (applied to the bracket root) |
+| `padding` / `paddingTop` / `paddingRight` / `paddingBottom` / `paddingLeft` / `paddingBlock` / `paddingInline` | `number \| string \| boolean` | — (applied to the bracket root) |
+| `fontSize` / `fontWeight` / `letterSpacing` | `TFontSize` / `TFontWeight` / `TLetterSpacing` | — (see typography note below) |
 
 > **`bgColor`** paints the surface of **every match card** (including
 > hover). When a surface is painted, the match text is automatically set
@@ -156,14 +165,49 @@ diagonal. The diagonal cells are inert.
 > included). With no `bgColor`, **`color`** drives the match text on the
 > neutral surface. Both accept a tokenised intent or a raw CSS color.
 >
-> **`rounded`, `elevation` and `border*` apply to each match card**, not
-> the bracket root — every card is shaped / elevated / bordered. The
-> **connector links between matches follow the match border colour**
-> (`borderColor`, or the subtle default), so the tree and its links read
-> as one. `border` here is the match border *width* (`thin` / `thick` /
-> a number); set the colour via `borderColor` and the line style via
-> `borderStyle`.
+> **`rounded` (+ per-corner), `elevation` and `border*` (+ per-side, +
+> colours) apply to each match card**, not the bracket root — every card
+> is shaped / elevated / bordered, confirmed by reading the component:
+> these props resolve into `--origam-bracket-match---*` custom properties
+> set inline on the bracket root, which cascade via normal CSS inheritance
+> to every `.origam-bracket-match` card (`OrigamBracketMatch.vue`'s own
+> scoped SCSS reads the exact same var names). A per-corner/per-side prop
+> overrides only the corner/side it targets — `rounded="lg"` plus
+> `roundedTopLeft="0px"` flattens one corner and leaves the other three at
+> `lg`, same precedence grammar as `margin`/`padding`. The **connector
+> links between matches follow the match border colour** (`borderColor`,
+> or the subtle default), so the tree and its links read as one. `border`
+> and its per-side variants accept the same vocabulary: a bare number, a
+> named rung (`'thin'` / `'thick'`), or `true`/`''` — a raw CSS-length
+> *string* like `'8px'` is silently dropped (verified at runtime), unlike
+> `rounded`, which does accept a CSS-length string.
 >
+> **`tag`, dimension (`width`/`height`/`min*`/`max*`) and `margin*`/
+> `padding*` apply to the bracket's own root element** — a different
+> surface than the match-card props above.
+>
+> **Typography (`fontSize`/`fontWeight`/`letterSpacing`) is narrower than
+> either of those two surfaces**: it only drives the `double-elimination`
+> section labels ("Winner Bracket" / "Loser Bracket" / "Grand Final"
+> headings) via `useTypography(props, 'bracket-double-label')` — it has no
+> effect on `single-elimination` / `round-robin`, and no effect on the
+> match cards or competitor rows either. `fontFamily` and `lineHeight` were
+> removed from `IBracketProps` (issue #501) — the section-label SCSS never
+> read either var. `fontFamily` is a project-level setting configured once
+> on `OrigamApp`, not a per-instance override.
+>
+## Localisation
+
+Every user-facing string the Bracket family renders — bracket-side labels,
+match status chips, the `TBD` placeholder, the `forfeit` marker, and every
+`aria-label` — is resolved through the locale under the `origam.bracket.*`
+keys. Nothing is hardcoded.
+
+`winnersLabel` / `losersLabel` stay plain strings, **not** translation keys:
+when you pass one it is rendered verbatim, and when you omit it the component
+falls back to `origam.bracket.winners_label` / `origam.bracket.losers_label`.
+Passing a raw string therefore still works exactly as before.
+
 > `winnersLabel` / `losersLabel` are only rendered in the
 > `double-elimination` layout, as the heading above each bracket tree.
 > Pre-translate them — the component never calls `useT`.
@@ -252,8 +296,10 @@ For `round-robin`:
 
 ## Tokens
 
-All visual values are exposed via `tokens/component/bracket.json`. The
-generated CSS variables follow the standard `--origam-bracket---*`,
+All visual values are exposed as CSS variables declared in
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`), following the standard
+`--origam-bracket---*`,
 `--origam-bracket-match---*`, `--origam-bracket-competitor---*`,
 `--origam-bracket-connector---*`, `--origam-bracket-round-robin---*`
 naming. Override at the consumer level for theming.

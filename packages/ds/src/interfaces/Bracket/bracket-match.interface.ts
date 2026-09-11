@@ -1,4 +1,4 @@
-import type { TBracketMatchStatus } from '../../types'
+import type { TBracketMatchStatus } from '../../types/Bracket/bracket-match.type'
 import type { IBracketCompetitor } from './bracket-competitor.interface'
 
 /**

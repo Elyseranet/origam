@@ -1,15 +1,16 @@
 <template>
 	<origam-text-field
+			:id="id"
 			ref="origamTextFieldRef"
 			v-model:focused="isFocused"
 			v-model:model-value="search"
-			:aria-label="t(label)"
+			:aria-label="t(accessibleLabel)"
 			:class="selectClasses"
 			:counter-value="counterValue"
 			:dirty="isDirty"
 			:placeholder="placeholder"
 			:style="selectStyles"
-			:title="t(label)"
+			:title="t(accessibleLabel)"
 			:validation-value="validationValue"
 			v-bind="{ ...textFieldProps, ...comboboxAriaAttrs }"
 			@blur="handleBlur"
@@ -17,7 +18,12 @@
 			@keydown="handleKeydown"
 			@update:model-value="handleModelUpdate"
 			@click:clear="handleClear"
+			@click:control="handleClickControl"
 			@mousedown:control="handleMousedownControl"
+			@click:append="handleClickAppend"
+			@click:prepend="handleClickPrepend"
+			@click:append-inner="handleClickAppendInner"
+			@click:prepend-inner="handleClickPrependInner"
 	>
 		<template
 				v-if="slots.prepend"
@@ -270,6 +276,7 @@
 		inject,
 		mergeProps,
 		nextTick,
+		onMounted,
 		ref,
 		shallowRef,
 		StyleValue,
@@ -278,60 +285,57 @@
 		VNodeRef,
 		watch
 	} from 'vue'
-	import {
-		OrigamAvatar,
-		OrigamCheckboxBtn,
-		OrigamChip,
-		OrigamExpandY,
-		OrigamIcon,
-		OrigamList,
-		OrigamListItem,
-		OrigamMenu,
-		OrigamTextField,
-		OrigamTranslateScale,
-		OrigamVirtualScroll
-	} from '../../components'
+	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
+	import OrigamCheckboxBtn from '../Checkbox/OrigamCheckboxBtn.vue'
+	import OrigamChip from '../Chip/OrigamChip.vue'
+	import OrigamExpandY from '../Transition/OrigamExpandY.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import OrigamList from '../List/OrigamList.vue'
+	import OrigamListItem from '../List/OrigamListItem.vue'
+	import OrigamMenu from '../Menu/OrigamMenu.vue'
+	import OrigamTextField from '../TextField/OrigamTextField.vue'
+	import OrigamTranslateScale from '../Transition/OrigamTranslateScale.vue'
+	import OrigamVirtualScroll from '../VirtualScroll/OrigamVirtualScroll.vue'
 
-	import {
-	useDefaults,
-	useFilter,
-	useItems,
-	useLocale,
-	useProps,
-	useScrolling,
-	useStyle,
-	useTextColor,
-	useVModel
-} from '../../composables'
+	import { useFilter } from '../../composables/Commons/filters.composable'
+	import { useItems } from '../../composables/Commons/items.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useScrolling } from '../../composables/Commons/scrolling.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTeleportTypography } from '../../composables/Commons/teleport-typography.composable'
+	import { useTextColor } from '../../composables/Commons/textColor.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { IN_BROWSER, ORIGAM_FORM_KEY } from '../../consts'
+	import { IN_BROWSER } from '../../consts/Commons/commons.const'
+	import { ORIGAM_FORM_KEY } from '../../consts/Form/form.const'
 
-	import {
-		BLOCK,
-		DENSITY,
-		DIRECTION,
-		FILTERS_MODE,
-		KEYBOARD_VALUES,
-		MDI_ICONS,
-		SELECT_STRATEGY,
-		SIZES,
-		TEXT_FIELD_TYPE
-	} from '../../enums'
+	import { BLOCK } from '../../enums/Commons/anchor.enum'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { FILTERS_MODE } from '../../enums/Commons/filters.enum'
+	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { SELECT_STRATEGY } from '../../enums/Commons/nested.enum'
+	import { SIZES } from '../../enums/Commons/size.enum'
+	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
 
-	import type { IInternalListItem, IItemProps, ISelectProps} from '../../interfaces'
+	import type { IInternalListItem } from '../../interfaces/List/list-children.interface'
+	import type { IItemProps } from '../../interfaces/Commons/item.interface'
+	import type { ISelectProps } from '../../interfaces/Select/select.interface'
 
-	import type { ISelectEmits } from '../../interfaces/Select/select.interface'
+	import type { ISelectEmits, ISelectSlots } from '../../interfaces/Select/select.interface'
 
-	import type {
-		TOrigamChip,
-		TOrigamList,
-		TOrigamMenu,
-		TOrigamTextField,
-		TOrigamVirtualScroll,
-		TTransitionProps
-	} from '../../types'
+	import type { TOrigamChip } from '../../types/Chip/chip.type'
+	import type { TOrigamList } from '../../types/List/list.type'
+	import type { TOrigamMenu } from '../../types/Menu/menu.type'
+	import type { TOrigamTextField } from '../../types/TextField/text-field.type'
+	import type { TOrigamVirtualScroll } from '../../types/VirtualScroll/virtual-scroll.type'
+	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
-	import { deepEqual, forwardRefs, getUid, matchesSelector, noop, wrapInArray } from '../../utils'
+	import { deepEqual, matchesSelector, noop, wrapInArray } from '../../utils/Commons/commons.util'
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 	/*********************************************************
 	 * Global
@@ -339,7 +343,7 @@
 	 * @description
 	 * Props, emits and filterProps for the Select component.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<ISelectProps>(), {
+	const props = withDefaults(defineProps<ISelectProps>(), {
 		type: TEXT_FIELD_TYPE.TEXT,
 		centerAffix: true,
 		direction: DIRECTION.HORIZONTAL,
@@ -365,15 +369,9 @@
 		noDataText: 'origam.no_data_text'
 	})
 
-	// `useDefaults` resolves each prop against theme.components['origam-select']
-	// (OrigamBtn pattern). Pre-fix, Select's own `rounded: true` / `border: true`
-	// legacy-boolean defaults always won — a theme's `rounded: 'lg'` never
-	// reached the text-field surface it forwards to (`textFieldProps` below),
-	// so a Select stayed on the boxed rounded-md fallback while a sibling
-	// text-field correctly resolved the theme's radius.
-	const props = useDefaults(_props)
+	const emit = defineEmits<ISelectEmits>()
 
-	defineEmits<ISelectEmits>()
+	defineSlots<ISelectSlots>()
 
 	const {filterProps} = useProps<ISelectProps>(props)
 
@@ -533,9 +531,29 @@
 	const menuDisabled = computed(() => {
 		return (props.hideNoData && !displayItems.value.length) || props.readonly || form?.isReadonly.value
 	})
+	// Typography bridge across the teleport — see `useTeleportTypography` for
+	// the full rationale (the menu is teleported out of the select's DOM
+	// subtree, so a consumer's CSS never reaches it, and `rem`-sized option
+	// text would stay pinned to the document root even if it did).
+	const { typographyStyles: menuTypographyStyles } = useTeleportTypography(origamTextFieldRef, menu, (fontSize) => ({
+		'--origam-list-item__title---font-size': fontSize,
+		// Kept proportional to the title rather than pinned, so the pair
+		// keeps its relationship at any scale.
+		'--origam-list-item__subtitle---font-size': `calc(${ fontSize } * 0.875)`
+	}))
+
 	const menuProps = computed(() => {
+		const consumerProps = (props.menuProps ?? {}) as Record<string, any>
+		const consumerContentProps = (consumerProps.contentProps ?? {}) as Record<string, any>
+
 		return {
-			...props.menuProps
+			...consumerProps,
+			contentProps: {
+				...consumerContentProps,
+				// The consumer's own style is listed last so it still wins —
+				// the bridge is a default, not a lock.
+				style: [menuTypographyStyles.value, consumerContentProps.style]
+			}
 		}
 	})
 
@@ -637,7 +655,7 @@
 			})
 		}
 	}
-	const handleClear = () => {
+	const handleClear = (e: MouseEvent) => {
 		if (props.openOnClear) {
 			menu.value = true
 		}
@@ -645,8 +663,39 @@
 		if (props.autocomplete) {
 			search.value = ''
 		}
+
+		emit('click:clear', e)
 	}
-	const handleMousedownControl = () => {
+	const handleClickControl = (e: MouseEvent) => {
+		emit('click:control', e)
+	}
+	/*********************************************************
+	 * click:append / click:prepend / click:appendInner /
+	 * click:prependInner relay
+	 *
+	 * @description
+	 * `<origam-text-field>` already emits all four via its own
+	 * `useAdjacent` / `useAdjacentInner` calls, but nothing here listened
+	 * for them — declared, never fired (issue: guard
+	 * `unemitted-declarations`, `Select:click:append,click:appendInner,
+	 * click:prepend,click:prependInner`). Mirrors `handleClickControl`
+	 * above: relay on THIS component's own instance.
+	 ********************************************************/
+	const handleClickAppend = (e: MouseEvent) => {
+		emit('click:append', e)
+	}
+	const handleClickPrepend = (e: MouseEvent) => {
+		emit('click:prepend', e)
+	}
+	const handleClickAppendInner = (e: MouseEvent) => {
+		emit('click:appendInner', e)
+	}
+	const handleClickPrependInner = (e: MouseEvent) => {
+		emit('click:prependInner', e)
+	}
+	const handleMousedownControl = (e: MouseEvent) => {
+		emit('mousedown:control', e)
+
 		if (menuDisabled.value) return
 
 		menu.value = !menu.value
@@ -901,15 +950,26 @@
 		return props.chips || slots.chip
 	})
 
-	// Return typed as Record<string, unknown> so vue-tsc does not try to
-	// validate the event-handler keys ('onClick:close', 'onKeydown', …)
-	// against IChipProps when the object is spread via v-bind on <origam-chip>.
+	/*********************************************************
+	 * chipSlotProps
+	 *
+	 * @description
+	 * Return typed as Record<string, unknown> so vue-tsc does not try to
+	 * validate the event-handler keys ('onClick:close', 'onKeydown', …)
+	 * against IChipProps when the object is spread via v-bind on <origam-chip>.
+	 * `bgColor` / `color` are deliberately OMITTED (#456) — they used to be
+	 * hardcoded RGB literals, hiding the chip behind whatever theme was
+	 * active. `OrigamChip`'s own SCSS already reads
+	 * `var(--origam-chip---background-color)` / `var(--origam-chip---color)`
+	 * with no inline fallback, and the token pipeline emits both
+	 * (`packages/ds/tokens/component/chip.json` → `color.surface.overlay` /
+	 * `color.text.primary`) — so leaving them unset lets Chip resolve its
+	 * own themed default instead of this component overriding it.
+	 ********************************************************/
 	const chipSlotProps = (item: IInternalListItem): Record<string, unknown> => {
 		return {
 			closable: props.closableChips,
 			disabled: item.props?.disabled,
-			bgColor: 'rgba(168, 168, 168, 1)',
-			color: 'rgb(255, 255, 255)',
 			border: true,
 			rounded: true,
 			'onClick:close': (e: Event) => handleChipClose(e, item),
@@ -942,6 +1002,17 @@
 
 	watch(isFocused, (val, oldVal) => {
 		if (val === oldVal) return
+
+		/*********************************************************
+		 * unemitted-declarations — update:focused relay
+		 *
+		 * @description
+		 * `update:focused` was declared but never fired:
+		 * `v-model:focused="isFocused"` only CONSUMES the echo from the
+		 * nested `<origam-text-field>` into this local ref, it never
+		 * relays it back out to Select's own consumers.
+		 ********************************************************/
+		emit('update:focused', val)
 
 		if (val) {
 			isSelecting.value = true
@@ -1000,12 +1071,32 @@
 		}
 	})
 
-	watch(search, val => {
-		if (!isFocused.value || isSelecting.value) return
+	/*********************************************************
+	 *  DEFERRED TO onMounted — NOT AN OPTIMISATION
+	 *
+	 *  @description
+	 *  `watch(search, cb)` reads `search.value` synchronously the instant it
+	 *  is created, to seed `oldValue`. `search` is a `useVModel(props,
+	 *  'search', '')` model — its getter reads `props.search`. Creating this
+	 *  watch at the top level of `setup()` forced that seeding read before
+	 *  Vue's `beforeCreate` hook runs, which is where the ADR-005 theme
+	 *  resolver patches `instance.props`. A `computed` (which the `useVModel`
+	 *  model is) caches whatever its first evaluation saw and only
+	 *  invalidates on a tracked dependency change; the resolver's
+	 *  `Object.defineProperty` patch is not one on a static mount with no
+	 *  parent re-render, so `search` stayed cached at `''` forever — a theme
+	 *  naming `search` never landed. Deferring to `onMounted` delays the
+	 *  seeding read to after the component's first render, which is already
+	 *  past `beforeCreate`.
+	 ********************************************************/
+	onMounted(() => {
+		watch(search, val => {
+			if (!isFocused.value || isSelecting.value) return
 
-		if (val) menu.value = true
+			if (val) menu.value = true
 
-		isPristine.value = !val
+			isPristine.value = !val
+		})
 	})
 
 	watch(menu, () => {
@@ -1059,8 +1150,35 @@
 	const placeholder = computed(() => {
 		return isDirty.value || (!isFocused.value && props.label && !props.persistentPlaceholder) ? undefined : props.placeholder
 	})
-	const label = computed(() => {
+	/*********************************************************
+	 * toggleLabel / accessibleLabel (#622)
+	 *
+	 * @description
+	 * This was previously named `label`, a bare `const` that SHADOWED the
+	 * `label` PROP (`IFieldProps.label`) inside this `<script setup>`
+	 * block. The template's `:aria-label="t(label)"` / `:title="t(label)"`
+	 * therefore always resolved to this toggle wording, never to the
+	 * field's own label — every `<origam-select>` announced "Open"/"Close"
+	 * to assistive tech regardless of its `label` prop. Renamed so the
+	 * identifier can no longer mask `props.label`.
+	 *
+	 * @description
+	 * `<origam-field>` already renders a real `<label for>` (OrigamField ->
+	 * OrigamLabel, `for: id.value` / `text: props.label`, see `labelProps`
+	 * in `OrigamField.vue`) linked to this very `<input>` via its `id`, so
+	 * `props.label` is ALREADY the input's accessible name whenever it is
+	 * set. `accessibleLabel` keeps `aria-label` / `title` consistent with
+	 * that native label instead of re-introducing a second,
+	 * independently-maintained source of truth for the same text — it
+	 * falls back to `toggleLabel` only for a labelless/`singleLine`
+	 * select, the one case where `<origam-field>` renders no `<label for>`
+	 * at all and the toggle wording is the only accessible name available.
+	 ********************************************************/
+	const toggleLabel = computed(() => {
 		return menu.value ? props.closeText : props.openText
+	})
+	const accessibleLabel = computed(() => {
+		return props.label || toggleLabel.value
 	})
 
 	/*********************************************************
@@ -1094,7 +1212,21 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(selectStyles)
+	/*********************************************************
+	 * useStyle
+	 *
+	 * @description
+	 * #372 — `id` must be seeded with `() => props.id`: without it, the id
+	 * returned here is a purely GENERATED one for the scoped stylesheet
+	 * selector, and the template's `:id="id"` on `<origam-text-field>`
+	 * would forward that generated id instead of the consumer's.
+	 * @description
+	 * `id` was already excluded from `textFieldProps` below
+	 * (`filterProps(props, [..., 'id', ...])`) because it needed this
+	 * explicit binding instead of the generic spread — the explicit
+	 * binding was simply missing.
+	 ********************************************************/
+	const {id, css, load, isLoaded, unload} = useStyle(selectStyles, () => props.id)
 
 
 	/*********************************************************
@@ -1240,10 +1372,10 @@
 
 			&#{$this}--selected {
 				#{$this}__selection {
-					opacity: 0.7;
+					color: var(--origam-select__selection---color, var(--origam-color__text---secondary));
 
 					&--selected {
-						opacity: 1;
+						color: inherit;
 					}
 				}
 			}

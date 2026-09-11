@@ -6,7 +6,7 @@ import {
 
 import { WAVEFORM_DEFAULT_BINS } from '../../consts/Audio/audio.const'
 
-import type { IUseWaveformOptions } from '../../interfaces'
+import type { IUseWaveformOptions } from '../../interfaces/Audio/audio-player.interface'
 
 /**
  * Headless waveform composable. Decodes the audio referenced by

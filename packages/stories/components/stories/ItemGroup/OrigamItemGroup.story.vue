@@ -19,7 +19,7 @@
 							:selected-class="state.selectedClass || undefined"
 							:tag="state.tag"
 					>
-						<origam-item v-for="opt in plans" :key="opt.value" :value="opt.value">
+						<origam-item-group-item v-for="opt in plans" :key="opt.value" :value="opt.value">
 							<template #default="{ isSelected, toggle, disabled: itemDisabled }">
 								<origam-card
 										border
@@ -32,7 +32,7 @@
 									<div class="ig-card__desc">{{ opt.desc }}</div>
 								</origam-card>
 							</template>
-						</origam-item>
+						</origam-item-group-item>
 					</origam-item-group>
 					<div class="ig-status">selected = <strong>{{ JSON.stringify(functionalModel) }}</strong></div>
 				</div>
@@ -61,7 +61,7 @@
 						v-model="emitModel"
 						@update:model-value="logEvent('update:modelValue', $event)"
 				>
-					<origam-item v-for="opt in plans" :key="opt.value" :value="opt.value">
+					<origam-item-group-item v-for="opt in plans" :key="opt.value" :value="opt.value">
 						<template #default="{ isSelected, toggle }">
 							<origam-card
 									border
@@ -72,7 +72,7 @@
 								<div class="ig-card__title">{{ opt.label }}</div>
 							</origam-card>
 						</template>
-					</origam-item>
+					</origam-item-group-item>
 				</origam-item-group>
 				<div class="ig-status">selected = <strong>{{ JSON.stringify(emitModel) }}</strong></div>
 			</div>
@@ -81,7 +81,7 @@
 		<Variant title="Slots - Default">
 			<div class="ig-row">
 				<origam-item-group v-model="slotModel">
-					<origam-item v-for="opt in formats" :key="opt.value" :value="opt.value">
+					<origam-item-group-item v-for="opt in formats" :key="opt.value" :value="opt.value">
 						<template #default="{ isSelected, toggle }">
 							<origam-card
 									border
@@ -92,7 +92,7 @@
 								<div class="ig-card__title">{{ opt.label }}</div>
 							</origam-card>
 						</template>
-					</origam-item>
+					</origam-item-group-item>
 				</origam-item-group>
 				<div class="ig-status">selected = <strong>{{ slotModel }}</strong></div>
 			</div>
@@ -108,7 +108,7 @@
 							v-model="playgroundModel"
 							v-bind="state"
 					>
-						<origam-item v-for="opt in plans" :key="opt.value" :value="opt.value">
+						<origam-item-group-item v-for="opt in plans" :key="opt.value" :value="opt.value">
 							<template #default="{ isSelected, toggle, disabled: itemDisabled }">
 								<origam-card
 										border
@@ -121,7 +121,7 @@
 									<div class="ig-card__desc">{{ opt.desc }}</div>
 								</origam-card>
 							</template>
-						</origam-item>
+						</origam-item-group-item>
 					</origam-item-group>
 					<div class="ig-status">selected = <strong>{{ JSON.stringify(playgroundModel) }}</strong></div>
 				</div>
@@ -149,7 +149,7 @@
 	import { ref } from 'vue'
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamCard, OrigamItem, OrigamItemGroup } from '@origam/components'
+	import { OrigamCard, OrigamItemGroupItem, OrigamItemGroup } from '@origam/components'
 	import type { IItemGroupProps } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'

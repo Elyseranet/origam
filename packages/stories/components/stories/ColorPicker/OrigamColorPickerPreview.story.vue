@@ -101,3 +101,5 @@
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 </script>
+
+<docs lang="md" src="@docs/components/ColorPicker/OrigamColorPickerPreview.md"/>

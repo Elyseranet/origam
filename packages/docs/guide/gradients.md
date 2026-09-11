@@ -111,10 +111,14 @@ dark variants tuned for each theme. Reference them by the
 Each preset resolves to `var(--origam-gradient---{slug})` and switches
 automatically with `[data-theme="..."]`.
 
-To add a new preset, drop a `tokens/semantic/gradient-{name}.json`
-entry under `gradient.<slug>` (DTCG `$type: "other"`), register the
-file in `tokens/$themes.json` + `tokens/$metadata.json`, then run
-`npm run tokens:build`.
+To add a new preset, declare `--origam-gradient---{name}` directly in
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (with the
+light/dark values tuned for each), mirror the same declaration in the
+SCSS twins under `packages/ds/src/assets/scss/tokens/`, and add the
+variable name to the `TTokenName` union in
+`packages/ds/src/types/tokens.type.ts`. There is no build step — these
+files are hand-maintained source (see the "Design tokens" section of
+the repository `CLAUDE.md`).
 
 ---
 

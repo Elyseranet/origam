@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="itemClasses"
 			:style="itemStyles"
 	>
@@ -14,7 +15,8 @@
 >
 	import { computed, StyleValue } from 'vue'
 
-	import type { IGridItemProps, IGridLineSpec } from '../../interfaces'
+	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
+	import type { IGridItemEmits, IGridItemProps, IGridLineSpec } from '../../interfaces/Grid/grid-item.interface'
 
 	/*********************************************************
 	 * Global
@@ -33,6 +35,10 @@
 		alignSelf: undefined,
 		justifySelf: undefined
 	})
+
+	defineEmits<IGridItemEmits>()
+
+	defineSlots<ICommonsComponentSlots>()
 
 	/*********************************************************
 	 * Line-spec serialisation

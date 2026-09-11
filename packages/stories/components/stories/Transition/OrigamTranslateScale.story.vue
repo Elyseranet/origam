@@ -14,7 +14,11 @@
 			<template #default="{ state }">
 				<div class="story-shell">
 					<button class="story-toggle" data-cy="toggle-design" @click="toggleDesign = !toggleDesign">Toggle</button>
-					<origam-translate-scale :name="state.name" :origin="state.origin">
+					<origam-translate-scale
+							:name="state.name"
+							:origin="state.origin"
+							:target="useTargetDesign ? ([targetXDesign, targetYDesign] as [number, number]) : undefined"
+					>
 						<div v-if="toggleDesign" class="story-target" data-cy="target-design">Animate me</div>
 					</origam-translate-scale>
 				</div>
@@ -24,17 +28,18 @@
 					<HstText v-model="state.name"   title="Name (CSS class)"/>
 					<HstText v-model="state.origin" title="Origin"/>
 				</StoryGroup>
+				<StoryGroup title="Target (WAAPI path)">
+					<HstCheckbox v-model="useTargetDesign" title="Use target (switches CSS path to WAAPI)"/>
+					<HstNumber   v-model="targetXDesign"   title="Target X" data-cy="target-x-design"/>
+					<HstNumber   v-model="targetYDesign"   title="Target Y" data-cy="target-y-design"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<ITranslateScaleProps>>({
-					disabled: false,
-					mode: 'in-out',
-					group: false,
-					hideOnLeave: false,
-					leaveAbsolute: false
+					disabled: false
 				})"
 		>
 			<template #default="{ state }">
@@ -42,10 +47,7 @@
 					<button class="story-toggle" data-cy="toggle-functional" @click="toggleFunctional = !toggleFunctional">Toggle</button>
 					<origam-translate-scale
 							:disabled="state.disabled"
-							:mode="state.mode"
-							:group="state.group"
-							:hide-on-leave="state.hideOnLeave"
-							:leave-absolute="state.leaveAbsolute"
+							:target="useTargetFunctional ? ([targetXFunctional, targetYFunctional] as [number, number]) : undefined"
 					>
 						<div v-if="toggleFunctional" class="story-target" data-cy="target-functional">Functional</div>
 					</origam-translate-scale>
@@ -55,11 +57,10 @@
 				<StoryGroup title="States">
 					<HstCheckbox v-model="state.disabled" title="Disabled"/>
 				</StoryGroup>
-				<StoryGroup title="Behaviour">
-					<HstSelect   v-model="state.mode"          title="Mode"           :options="TRANSITION_MODE_OPTIONS"/>
-					<HstCheckbox v-model="state.group"         title="Group"/>
-					<HstCheckbox v-model="state.hideOnLeave"   title="Hide On Leave"/>
-					<HstCheckbox v-model="state.leaveAbsolute" title="Leave Absolute"/>
+				<StoryGroup title="Target (WAAPI path)">
+					<HstCheckbox v-model="useTargetFunctional" title="Use target (switches CSS path to WAAPI)"/>
+					<HstNumber   v-model="targetXFunctional"   title="Target X" data-cy="target-x-functional"/>
+					<HstNumber   v-model="targetYFunctional"   title="Target Y" data-cy="target-y-functional"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -79,11 +80,8 @@
 				title="Default"
 				:init-state="() => useStoryInitState<ITranslateScaleProps>({
 					name: 'origam-transition--transform-scale',
-					mode: 'in-out',
-					disabled: false,
-					group: false,
-					hideOnLeave: false,
-					leaveAbsolute: false
+					origin: undefined,
+					disabled: false
 				})"
 		>
 			<template #default="{ state }">
@@ -100,11 +98,7 @@
 					<HstText v-model="state.origin" title="Origin"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
-					<HstSelect   v-model="state.mode"          title="Mode"           :options="TRANSITION_MODE_OPTIONS"/>
-					<HstCheckbox v-model="state.disabled"      title="Disabled"/>
-					<HstCheckbox v-model="state.group"         title="Group"/>
-					<HstCheckbox v-model="state.hideOnLeave"   title="Hide On Leave"/>
-					<HstCheckbox v-model="state.leaveAbsolute" title="Leave Absolute"/>
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -118,7 +112,6 @@
 	import { ref } from 'vue'
 
 	import { OrigamTranslateScale } from '@origam/components'
-	import { TRANSITION_MODE } from '@origam/enums'
 	import type { ITranslateScaleProps } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
@@ -129,11 +122,13 @@
 	const toggleSlotDefault = ref(false)
 	const togglePlayground  = ref(false)
 
-	const TRANSITION_MODE_OPTIONS = [
-		{ label: 'in-out',  value: TRANSITION_MODE.IN_OUT },
-		{ label: 'out-in',  value: TRANSITION_MODE.OUT_IN },
-		{ label: 'default', value: TRANSITION_MODE.DEFAULT }
-	]
+	const useTargetDesign = ref(false)
+	const targetXDesign   = ref(0)
+	const targetYDesign   = ref(0)
+
+	const useTargetFunctional = ref(false)
+	const targetXFunctional   = ref(0)
+	const targetYFunctional   = ref(0)
 </script>
 
 <style scoped>

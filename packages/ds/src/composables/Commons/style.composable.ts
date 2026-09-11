@@ -1,89 +1,8 @@
-import { DEFAULT_DOCUMENT } from "../../consts"
-import type { IStyleTagOptions } from "../../interfaces"
-import { escapeCssIdent, getCurrentInstanceName, getUid, tryOnMounted, tryOnScopeDispose } from "../../utils"
-
-import { computed, ComputedRef, MaybeRef, MaybeRefOrGetter, onMounted, readonly, shallowRef, toValue, watch } from 'vue'
-
-let _id = 0
-
-/**
- * Inject <style> element in head.
- *
- * Overload: Omitted id
- *
- * @param css
- * @param options
- */
-
-/*********************************************************
- * useStyleTag
- ********************************************************/
-export function useStyleTag (
-    css: MaybeRef<string>,
-    options: IStyleTagOptions = {}
-) {
-    const isLoaded = shallowRef(false)
-
-    const {
-        document = DEFAULT_DOCUMENT,
-        immediate = true,
-        manual = false,
-        id = `origam_styletag_${++_id}`
-    } = options
-
-    const cssRef = shallowRef(css)
-
-    let stop = () => {
-    }
-    const load = () => {
-        if (!document)
-            return
-
-        const el = (document.getElementById(id) || document.createElement('style')) as HTMLStyleElement
-
-        if (!el.isConnected) {
-            el.id = id
-            if (options.media)
-                el.media = options.media
-            document.head.appendChild(el)
-        }
-
-        if (isLoaded.value)
-            return
-
-        stop = watch(
-            cssRef,
-            (value) => {
-                el.textContent = value
-            },
-            {immediate: true}
-        )
-
-        isLoaded.value = true
-    }
-
-    const unload = () => {
-        if (!document || !isLoaded.value)
-            return
-        stop()
-        document.head.removeChild(document.getElementById(id) as HTMLStyleElement)
-        isLoaded.value = false
-    }
-
-    if (immediate && !manual)
-        tryOnMounted(load)
-
-    if (!manual)
-        tryOnScopeDispose(unload)
-
-    return {
-        id,
-        css: cssRef,
-        unload,
-        load,
-        isLoaded: readonly(isLoaded)
-    }
-}
+import type { ComputedRef, MaybeRefOrGetter } from 'vue'
+import { computed, onMounted, toValue } from 'vue'
+import { escapeCssIdent } from '../../utils/Commons/dom.util'
+import { getCurrentInstanceName, getUid } from '../../utils/Commons/getCurrentInstance.util'
+import { useStyleTag } from './styleTag.composable'
 
 /**
  * Flatten a Vue style bag (`StyleValue`) into a list of `prop: value`
@@ -104,6 +23,28 @@ export function useStyleTag (
  * discards the whole sheet with "Could not parse CSS stylesheet". Same
  * reasoning for numbers — a bare `0` is not a declaration either.
  */
+/*********************************************************
+ * toKebabCase
+ *
+ * @description
+ * Vue's `StyleValue` objects carry JS-side camelCase keys (`zIndex`,
+ * `backgroundColor`) because that's what `element.style[key] = …` and
+ * `:style="…"` bindings accept — the DOM normalises camelCase to the real
+ * CSS property for you.
+ *
+ * @description
+ * `toDeclarations` below serialises the SAME bag into literal CSS text
+ * instead, which the DOM never sees and never normalises: `zIndex: 2000` is
+ * not a CSS declaration, `z-index: 2000` is. A custom property
+ * (`--origam-…`) is left untouched — its name is case-sensitive and is
+ * never camelCase to begin with. Confirmed as a real, shipping bug while
+ * investigating issue #536 (`useStack()`'s `stackStyles` feeds `{ zIndex }`
+ * straight into `useStyle()`).
+ ********************************************************/
+function toKebabCase (key: string): string {
+    return key.startsWith('--') ? key : key.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)
+}
+
 function toDeclarations (value: unknown): string[] {
     if (value == null || typeof value === 'boolean' || typeof value === 'number') return []
 
@@ -116,7 +57,7 @@ function toDeclarations (value: unknown): string[] {
 
         return Object.keys(bag)
             .filter((key) => typeof bag[key] !== 'undefined')
-            .map((key) => `${key}: ${bag[key]}`)
+            .map((key) => `${toKebabCase(key)}: ${bag[key]}`)
     }
 
     return []
@@ -139,6 +80,12 @@ function toDeclarations (value: unknown): string[] {
 
 /*********************************************************
  * useStyle
+ *
+ * @description
+ * Serialises a reactive style bag into a scoped `#id { … }` rule and
+ * delegates the actual `<head>` injection to `useStyleTag` rather than
+ * duplicating it — this hook only owns the id resolution + style-bag
+ * flattening (`toDeclarations`).
  ********************************************************/
 export function useStyle (
     styles: ComputedRef,
@@ -151,9 +98,16 @@ export function useStyle (
     // a render, where `getCurrentInstance()` is null.
     const fallbackId = `${name}-${getUid()}`
 
-    // `||`, not `??`: an empty string is not a usable id, and would produce
-    // the invalid selector `# { … }`.
-    const id = computed(() => toValue(uniq) || fallbackId)
+    // The emptiness test is written out rather than folded into `||`: an empty
+    // string must fall back too — it would otherwise produce the invalid
+    // selector `# { … }` — and `??` alone would let it through. Spelling the
+    // condition out says which values are rejected instead of leaving it to the
+    // reader to recall what `||` treats as falsy.
+    const id = computed(() => {
+        const requested = toValue(uniq)
+
+        return typeof requested === 'string' && requested.length > 0 ? requested : fallbackId
+    })
 
     const customCss = computed(() => {
         const stylesArray = toDeclarations(styles.value)

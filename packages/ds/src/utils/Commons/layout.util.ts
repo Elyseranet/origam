@@ -1,9 +1,9 @@
 import type { Ref } from 'vue'
-import type { ILayer } from '../../interfaces'
+import type { ILayer } from '../../interfaces/Commons/layout.interface'
 
-import type { TDirectionBoth } from '../../types'
+import type { TDirectionBoth } from '../../types/Commons/anchor.type'
 
-import { int } from "../../utils"
+import { int } from './commons.util'
 
 /**
  * Generate layers.

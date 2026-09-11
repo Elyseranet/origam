@@ -1,7 +1,7 @@
 import type {
     ICommonsComponentProps,
     ITagProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
 
 /**
  * Props for `<OrigamWatermark>` — repeating diagonal overlay used
@@ -136,6 +136,16 @@ export interface IWatermarkSlots {
     default?: () => any
 }
 
+/*********************************************************
+ * IWatermarkEmits
+ *
+ * @description
+ * Emit signatures for `<OrigamWatermark>`. Verified empty — the
+ * component never calls `emit(...)`; the anti-tamper `MutationObserver`
+ * re-injects the overlay silently, it does not surface an event.
+ ********************************************************/
+export interface IWatermarkEmits {}
+
 /**
  * Options accepted by `useWatermark`. Mirror the public props of
  * `<OrigamWatermark>` minus the wrapper concerns (`tag`, `class`,
@@ -166,4 +176,24 @@ export interface IUseWatermarkOptions {
     pointerEvents?: 'none' | 'auto'
     /** Same semantics as `IWatermarkProps.zIndex`. */
     zIndex?: number
+}
+
+/**
+ * `useWatermark`'s options AFTER defaulting — every field resolved to a
+ * concrete value so the SVG data-URL builder never re-applies a
+ * fallback. Counterpart of `IUseWatermarkOptions`, which is the loose,
+ * all-optional shape a caller passes in.
+ */
+export interface IWatermarkResolvedOptions {
+    text: string
+    image: string
+    opacity: number
+    angle: number
+    gap: number
+    fontSize: number
+    fontFamily: string
+    color: string
+    fontWeight: number | string
+    pointerEvents: 'none' | 'auto'
+    zIndex: number
 }

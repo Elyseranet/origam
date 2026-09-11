@@ -1,4 +1,4 @@
-import { connectedLocationStrategy, staticLocationStrategy } from '../../utils'
+import { connectedLocationStrategy, staticLocationStrategy } from '../../utils/Commons/location.util'
 
 export const OPPOSITE_MAP = {
     center: 'center',

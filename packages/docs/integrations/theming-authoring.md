@@ -218,10 +218,48 @@ path:
 
 Precedence, lowest → highest: **semantic fields → `tokens` → `vars`**.
 
+## How a prop default is actually resolved
+
+The `components` block (`{ global, 'origam-btn': {...}, ... }`) is not read by
+convention or by each component opting in — it is resolved by ONE mechanism,
+centrally, for the whole catalogue: `createOrigam()` installs a global Vue
+`app.mixin({ beforeCreate() {...} })` (ADR-005) that patches the exact prop
+slots a registered theme names directly onto each component instance's
+`instance.props` — the SAME object its compiled template reads. This closed
+two gaps that used to make `components` a silent no-op:
+
+- Before ADR-005, only 39 of 217 components called an internal
+  `useDefaults()` helper; every other component ignored `components`
+  entirely, with no warning.
+- Even those 39 were broken for any prop their TEMPLATE reads by its bare
+  name (as opposed to a value read back out of a composable in the script),
+  because the old helper returned a value the template never saw.
+
+Practical consequences worth knowing when authoring a theme:
+
+- **You do not need to check whether a component "supports theming."** Any
+  prop the component declares can be named in `components`, and it resolves —
+  no per-component opt-in exists anymore.
+- **An explicit prop on the component instance always wins**, exactly as
+  before — `components` only fills in what the consumer didn't pass, INCLUDING
+  a prop explicitly bound to `undefined` (e.g. `:color="maybeUndefined"`).
+- **The resolution is live.** Swapping the active brand/mode (`setTheme()`,
+  `setMode()`) re-renders every affected prop with no extra wiring.
+- A prop named in `components` for a component that doesn't declare that prop
+  is silently ignored (not an error, not forwarded as a DOM attribute) — check
+  for typos if a themed value doesn't seem to apply.
+
+See the full writeup — including the exact `OrigamSelectionControl` defect
+this fixed and the measured performance envelope — in
+[`docs/internal/adr-005-theme-props-resolution.md`](../internal/adr-005-theme-props-resolution.md).
+
 ## Notes
 
 - The config stays **JSON** — values are strings/numbers only. Do not put
   functions or imports in theme values, or the Theme Builder round-trip breaks.
-- A theme object also carries `component` (per-component default props). That
-  layer is documented in `composables/useTheme.md` and is unchanged by this
-  authoring format.
+- A theme object also carries `components` (per-component default props, keyed
+  by `global` or a component's kebab-case name). See
+  "[How a prop default is actually resolved](#how-a-prop-default-is-actually-resolved)"
+  above for the resolution mechanism, and `composables/useTheme.md` /
+  [`OrigamDefaultsProvider`](../components/DefaultsProvider/OrigamDefaultsProvider.md)
+  for the authoring-side API.

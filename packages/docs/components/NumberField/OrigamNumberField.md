@@ -89,6 +89,32 @@ const qty = ref<number | null>(0)
 </template>
 ```
 
+## Accessibility
+
+The value-bearing `<input>` (both compact and non-compact rendering) carries
+`role="spinbutton"` with `aria-valuenow` / `aria-valuemin` / `aria-valuemax` /
+`aria-valuetext` kept in sync with the current value and the `min` / `max`
+props.
+
+The compact-mode decrement/increment buttons' `aria-label` is driven by two
+i18n-key props rather than a hardcoded string:
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `decrementAriaLabel` | `string` | `'origam.number_field.aria_label.decrement'` | i18n key for the compact decrement button |
+| `incrementAriaLabel` | `string` | `'origam.number_field.aria_label.increment'` | i18n key for the compact increment button |
+
+```vue
+<template>
+  <OrigamNumberField
+    compact
+    label="Quantity"
+    decrement-aria-label="myApp.qty.decrement"
+    increment-aria-label="myApp.qty.increment"
+  />
+</template>
+```
+
 ## Slots
 
 | Slot | Scope | Description |
@@ -107,12 +133,22 @@ const qty = ref<number | null>(0)
 | Event | Payload | Description |
 |-------|---------|-------------|
 | `update:modelValue` | `number \| null` | Value changed |
+| `update:focused` | `boolean` | Focus state changed (own `useFocus(props)` call) |
 | `increment` | `number \| null` | Increment button pressed |
 | `decrement` | `number \| null` | Decrement button pressed |
-| `focus` | `FocusEvent` | Input focused |
-| `blur` | `FocusEvent` | Input blurred |
 | `click:clear` | `MouseEvent` | Clear button clicked |
 | `click:control` | `MouseEvent` | Control area clicked |
+| `mousedown:control` | `MouseEvent` | Mousedown on the control area |
+| `click:prepend` | `MouseEvent` | Outer prepend area clicked |
+| `click:append` | `MouseEvent` | Outer append area clicked |
+| `click:prependInner` | `MouseEvent` | Inner prepend adornment clicked |
+| `click:appendInner` | `MouseEvent` | Inner append adornment clicked |
+
+`focus` and `blur` are not component emits — `INumberFieldEmits` does not
+declare them. They reach the consumer as plain DOM events, relayed by
+Vue's attribute fallthrough: `@focus` / `@blur` bound on
+`<origam-number-field>` work the normal HTML way, they just aren't part of
+the typed `emits` contract.
 
 ## Design tokens
 

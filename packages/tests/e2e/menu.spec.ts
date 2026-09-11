@@ -1,4 +1,4 @@
-import { expect, FrameLocator, test } from '@playwright/test'
+import { expect, FrameLocator, Page, test } from '@playwright/test'
 
 /**
  * OrigamMenu — suite e2e calée sur la story réelle.
@@ -13,9 +13,15 @@ import { expect, FrameLocator, test } from '@playwright/test'
  *     1  → Functional      init: openOnClick=true, openOnHover=false, …
  *     2  → Events - update:modelValue  items=defaultItems, @update:model-value
  *     3  → Events - contextmenu        items=defaultItems, @contextmenu
- *     4  → Slots - Activator           items=defaultItems, #activator custom btn
- *     5  → Slots - Default             #default custom <ul> markup
- *     6  → Default (playground)        openOnClick=true, items=defaultItems
+ *     4  → Events - select             items=defaultItems, @select
+ *     5  → Slots - Activator           items=defaultItems, #activator custom btn
+ *     6  → Slots - Default             #default custom <ul> markup
+ *     7  → Default (playground)        openOnClick=true, items=defaultItems
+ *     8  → Nested submenu              items porteurs d'itemChildren
+ *
+ *   ⚠️ Les index sont POSITIONNELS : insérer un Variant dans la story décale
+ *   tous les suivants. L'ajout de « Events - select » (index 4) a décalé 4→5,
+ *   5→6, 6→7, 7→8 ici. Toute nouvelle Variant impose la même relecture.
  *
  * ## DOM / floating
  *
@@ -67,10 +73,47 @@ const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
  * (display:none) pendant le chargement initial du composant. Le premier
  * test qui touche une story "froide" peut mettre 25-30s avant que le
  * rendu soit révélé.
+ *
+ * Diagnostic renforcé sur ce timeout (post-mortem 2026-08) : un
+ * `.origam-btn` introuvable a DEUX causes très différentes qui produisent
+ * la même erreur Playwright brute :
+ *   1. Le composant est lent à monter (cause visée par le timeout 35s).
+ *   2. AUCUNE iframe sandbox n'a jamais été montée — Histoire est resté
+ *      sur son fallback "Select a variant" (page d'accueil + sidebar).
+ *      Constaté en environnement réel : `reuseExistingServer: !CI` (cf.
+ *      playwright.config.ts) réutilise SILENCIEUSEMENT tout process déjà
+ *      lié au port, y compris un `histoire dev`/`preview` provenant d'un
+ *      AUTRE worktree/session dont le manifeste de stories a été buildé
+ *      AVANT qu'un Variant récent (ex. "Nested submenu") n'existe. Le
+ *      variantId demandé ne matche alors plus rien côté serveur : zéro
+ *      iframe, "Select a variant" affiché, le clic ne peut jamais arriver
+ *      — et ça ressemble à un timeout aléatoire sur `.origam-btn` au lieu
+ *      d'un routing miss. Reproduit et confirmé : naviguer vers un
+ *      variantId inexistant produit exactement ce DOM (0 iframe, texte
+ *      "Select a variant"). Cause racine PROUVÉE ≠ défaut du composant/
+ *      story/spec — vérifié vert en isolation ET dans la suite complète.
+ *      On distingue donc les deux cas ici pour ne plus perdre de cycle de
+ *      debug sur une fausse piste "composant lent".
  */
 const openMenu = async (sandbox: FrameLocator) => {
     const activator = sandbox.locator('.origam-btn').first()
-    await expect(activator).toBeVisible({ timeout: 35000 })
+    try {
+        await expect(activator).toBeVisible({ timeout: 35000 })
+    } catch (cause) {
+        const sandboxIframeMounted = await sandbox.owner().count()
+        if (sandboxIframeMounted === 0) {
+            throw new Error(
+                'No sandbox iframe was ever mounted for this variant — Histoire fell back to its ' +
+                '"Select a variant" placeholder instead of rendering the story. This is the signature ' +
+                'of a STALE server answering this port: `reuseExistingServer` (playwright.config.ts) ' +
+                'silently reused a `histoire dev`/`preview` process left over from another run or ' +
+                'worktree, whose story manifest predates this Variant. Run `lsof -i :<port>` and kill ' +
+                'the foreign process, then re-run.',
+                { cause }
+            )
+        }
+        throw cause
+    }
     await activator.click()
     const content = sandbox.locator('.origam-menu__content')
     await expect(content).toBeVisible({ timeout: 12000 })
@@ -87,13 +130,13 @@ test.describe('OrigamMenu', () => {
 
     test.describe('Design (index 0)', () => {
         test('activateur .origam-btn visible dans la sandbox', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-btn').first()).toBeVisible({ timeout: 35000 })
         })
 
         test('menu root .origam-menu porte la classe BEM (attaché quand le menu est ouvert)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             // Ouvrir le menu — l'overlay monte son wrapper au premier rendu
             await openMenu(sandbox)
@@ -101,7 +144,7 @@ test.describe('OrigamMenu', () => {
         })
 
         test('wrapper .origam-menu est transparent (pas de rectangle plein-iframe)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { activator: _activator } = await openMenu(sandbox)
             const wrapperBg = await sandbox.locator('.origam-menu').first()
@@ -110,7 +153,7 @@ test.describe('OrigamMenu', () => {
         })
 
         test('corps .origam-menu__content apparaît au clic et porte une surface non transparente', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             const bg = await content.evaluate(el => getComputedStyle(el).backgroundColor)
@@ -118,7 +161,7 @@ test.describe('OrigamMenu', () => {
         })
 
         test('corps porte le border-radius par défaut (8px)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             const borderRadius = await content.evaluate(el => getComputedStyle(el).borderRadius)
@@ -126,7 +169,7 @@ test.describe('OrigamMenu', () => {
         })
 
         test('corps porte une box-shadow (elevation token)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             const boxShadow = await content.evaluate(el => getComputedStyle(el).boxShadow)
@@ -134,7 +177,7 @@ test.describe('OrigamMenu', () => {
         })
 
         test('corps est display:inline-block', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             const display = await content.evaluate(el => getComputedStyle(el).display)
@@ -142,7 +185,7 @@ test.describe('OrigamMenu', () => {
         })
 
         test('items par défaut (Edit / Duplicate / Delete) s affichent dans .origam-menu__items', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             const items = content.locator('.origam-menu__items')
@@ -160,14 +203,14 @@ test.describe('OrigamMenu', () => {
 
     test.describe('Functional (index 1)', () => {
         test('menu s ouvre au clic sur l activateur (openOnClick=true)', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             await expect(content).toBeVisible()
         })
 
         test('menu affiche la liste des items (Edit / Duplicate / Delete)', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             await expect(content).toContainText('Edit')
@@ -176,7 +219,7 @@ test.describe('OrigamMenu', () => {
         })
 
         test('closeOnContentClick=true — clic sur un item ferme le menu', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             // Clic sur le premier item de la liste
@@ -194,14 +237,14 @@ test.describe('OrigamMenu', () => {
 
     test.describe('Events - update:modelValue (index 2)', () => {
         test('menu s ouvre au clic (proxy de l emit update:modelValue)', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             await expect(content).toBeVisible()
         })
 
         test('activateur porte aria-expanded="true" quand le menu est ouvert', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { activator } = await openMenu(sandbox)
             const ariaExpanded = await activator.evaluate(el => el.getAttribute('aria-expanded'))
@@ -214,29 +257,106 @@ test.describe('OrigamMenu', () => {
     // items=defaultItems, @contextmenu="logEvent"                         //
     // ------------------------------------------------------------------ //
 
+    // ⛔ Ce bloc regardait la MAUVAISE interaction (#430/#416). Il ne
+    // contenait qu'un test « le menu s'ouvre au CLIC GAUCHE » — c'est-à-dire
+    // une assertion sur `openOnClick`, déjà couverte par les Variants 1 et 7,
+    // et rigoureusement muette sur `contextmenu`. Il est donc resté vert
+    // pendant toute la période où l'emit ne partait jamais : déclaré dans
+    // `IMenuEmits`, jamais émis, et — parce que le déclarer retire
+    // `onContextmenu` de `$attrs` — sans même le repli du fallthrough natif.
+    // Les trois filets (doc, story, e2e) confirmaient un comportement absent.
+    //
+    // On observe désormais l'emit lui-même. `logEvent` (histoire/client) fait
+    // un `console.log('[histoire] Event fired', {name, argument})` DANS la
+    // sandbox avant de postMessage vers le parent — Playwright capte les
+    // messages console de toutes les frames, ce qui donne une observation
+    // directe de l'emit sans dépendre du DOM du panneau Events de Histoire
+    // (qui, lui, vit hors de l'iframe).
     test.describe('Events - contextmenu (index 3)', () => {
+        // Capte les événements Histoire émis depuis la sandbox. Doit être
+        // branché AVANT le goto — sinon on rate ceux du chargement.
+        const collectHistoireEvents = (page: Page) => {
+            const fired: string[] = []
+            page.on('console', (msg) => {
+                const text = msg.text()
+                if (text.includes('[histoire] Event fired')) fired.push(text)
+            })
+            return fired
+        }
+
         test('activateur .origam-btn visible', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-btn').first()).toBeVisible({ timeout: 35000 })
         })
 
-        test('menu s ouvre au clic gauche (openOnClick reste la valeur par défaut)', async ({ page }) => {
-            await page.goto(variantUrl(3))
+        test('un CLIC DROIT sur l activateur fait reellement partir l emit contextmenu', async ({ page }) => {
+            const fired = collectHistoireEvents(page)
+
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const activator = sandbox.locator('.origam-btn').first()
+            await expect(activator).toBeVisible({ timeout: 35000 })
+
+            await activator.click({ button: 'right' })
+
+            await expect
+                .poll(() => fired.filter(t => t.includes('contextmenu')).length, { timeout: 12000 })
+                .toBeGreaterThan(0)
+        })
+
+        test('un clic GAUCHE ne fait PAS partir contextmenu (le filet distingue les deux boutons)', async ({ page }) => {
+            const fired = collectHistoireEvents(page)
+
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
+
+            // Garde : le clic gauche a bien fait quelque chose (le menu s'est
+            // ouvert). Sans ça, ce test passerait aussi sur une page morte.
             await expect(content).toBeVisible()
+
+            expect(fired.filter(t => t.includes('contextmenu'))).toHaveLength(0)
         })
     })
 
     // ------------------------------------------------------------------ //
-    // SLOTS - ACTIVATOR (index 4)                                          //
+    // EVENTS - SELECT (index 4)                                            //
+    // items=defaultItems, @select                                         //
+    // ------------------------------------------------------------------ //
+
+    test.describe('Events - select (index 4)', () => {
+        test('activateur .origam-btn visible', async ({ page }) => {
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-btn').first()).toBeVisible({ timeout: 35000 })
+        })
+
+        // Proxy observable dans la sandbox : le panneau Events de Histoire vit
+        // HORS de l'iframe, on ne peut donc pas y asserter l'emit lui-même. Ce
+        // qu'on vérifie ici, c'est que la ligne reste bien une cible de clic et
+        // que le handler `select` ne casse pas le cycle de fermeture
+        // (closeOnContentClick par défaut) — la régression qu'un emit branché
+        // sur le mauvais élément produirait.
+        test('un clic sur une ligne feuille ferme le menu (handler select branché sans casser closeOnContentClick)', async ({ page }) => {
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const { content } = await openMenu(sandbox)
+
+            await content.locator('.origam-menu__item').first().click()
+
+            await expect(content).toBeHidden({ timeout: 12000 })
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // SLOTS - ACTIVATOR (index 5)                                          //
     // #activator custom : origam-btn bg-color="primary" color="white"     //
     // ------------------------------------------------------------------ //
 
-    test.describe('Slots - Activator (index 4)', () => {
+    test.describe('Slots - Activator (index 5)', () => {
         test('le slot #activator rend un bouton personnalisé', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 35000 })
@@ -244,7 +364,7 @@ test.describe('OrigamMenu', () => {
         })
 
         test('menu s ouvre au clic de l activateur custom', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             await expect(content).toContainText('Edit')
@@ -256,9 +376,9 @@ test.describe('OrigamMenu', () => {
     // #default custom <ul> markup (pas d items prop)                      //
     // ------------------------------------------------------------------ //
 
-    test.describe('Slots - Default (index 5)', () => {
+    test.describe('Slots - Default (index 6)', () => {
         test('le slot #default rend du markup personnalisé dans le corps du menu', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             // La variant Slots - Default contient :
@@ -268,7 +388,7 @@ test.describe('OrigamMenu', () => {
         })
 
         test('le slot #default n utilise pas origam-menu__items (pas de prop items)', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             // Aucun <ul class="origam-list-group origam-menu__items"> quand le
@@ -283,16 +403,16 @@ test.describe('OrigamMenu', () => {
     // init: openOnClick=true, closeOnContentClick=true, offset=8          //
     // ------------------------------------------------------------------ //
 
-    test.describe('Default / Playground (index 6)', () => {
+    test.describe('Default / Playground (index 7)', () => {
         test('menu s ouvre au clic avec l état seedé du playground', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             await expect(content).toBeVisible()
         })
 
         test('offset=8 — l overlay content a des coordonnées pixel calculées', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await openMenu(sandbox)
 
@@ -309,7 +429,7 @@ test.describe('OrigamMenu', () => {
         })
 
         test('activateur porte aria-haspopup="menu"', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const activator = sandbox.locator('.origam-btn').first()
             await expect(activator).toBeVisible({ timeout: 35000 })
@@ -318,12 +438,122 @@ test.describe('OrigamMenu', () => {
         })
 
         test('activateur porte aria-expanded="false" à l état initial fermé', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const activator = sandbox.locator('.origam-btn').first()
             await expect(activator).toBeVisible({ timeout: 35000 })
             const ariaExpanded = await activator.evaluate(el => el.getAttribute('aria-expanded'))
             expect(ariaExpanded).toBe('false')
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // NESTED SUBMENU (index 7)                                             //
+    // items=nestedItems — a "File" row with `children` (New / Open) plus a //
+    // flat "Settings" row. Regression coverage for BUG 4.                 //
+    // ------------------------------------------------------------------ //
+    //
+    // ⛔ REAL BUG — FIXED (packages/ds/src/components/Menu/OrigamMenu.vue).
+    // `hasChilds(item)` hardcoded `item?.items`, ignoring `props.itemChildren`
+    // (declared on `IItemProps`, never defaulted by `OrigamMenu` either) — a
+    // row nesting its children under `children` (the DS-wide default,
+    // matching `OrigamList`'s own `itemChildren: 'children'` default, and
+    // what `OrigamMediaController`'s real config menu uses) was NEVER
+    // detected as having children. No nested `<origam-menu>` ever rendered
+    // for that row, so a click on it fell through to the PARENT menu's
+    // ordinary `closeOnContentClick` handling and closed the WHOLE menu
+    // instead of opening a submenu.
+    //
+    // Fix: `OrigamMenu` now defaults `itemChildren: 'children'` and resolves
+    // a row's children through `getPropertyFromItem(item, props.itemChildren)`
+    // (the same helper `transformListItem` already uses for `<origam-list>`)
+    // via a `childItems(item)` helper, bound explicitly as `:items=
+    // "childItems(item)"` on the recursive `<origam-menu>`. A second,
+    // related defect surfaced while proving this fix empirically: spreading
+    // the raw item object (`v-bind="item"`) leaked the `children` key as a
+    // fallthrough DOM attribute, colliding with the browser's own read-only
+    // `Element.children` (`TypeError: Cannot set property children of
+    // #<Element> which has only a getter`) — fixed via a `menuItemProps`
+    // helper that omits the resolved `itemChildren` key before spreading.
+    //
+    // No test in this file (nor in `packages/tests/e2e/audio.spec.ts`, the
+    // only other place that exercised a real children-bearing OrigamMenu
+    // row before this pass) previously covered a nested-menu open/click
+    // path at all — this describe block, and the "Nested submenu" Variant
+    // it drives, are new.
+
+    test.describe('Nested submenu (index 8)', () => {
+        test('clicking a children-bearing row OPENS the nested submenu — the parent menu stays open', async ({ page }) => {
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const { content: rawContent } = await openMenu(sandbox)
+            // Pinned to `.first()` up front: once the submenu opens below,
+            // `.origam-menu__content` resolves to TWO elements and an
+            // unpinned locator becomes ambiguous ("strict mode violation")
+            // for any assertion made after that point.
+            const parentContent = rawContent.first()
+
+            // Baseline: only the parent menu is open, showing its own two
+            // rows ("File" — the parent row with children — and "Settings").
+            await expect(parentContent).toContainText('File')
+            await expect(parentContent).toContainText('Settings')
+            await expect(sandbox.locator('.origam-menu__content')).toHaveCount(1)
+
+            // Click the "File" row — scoped to the parent content so this
+            // never matches the outer activator button (also visible on
+            // screen, and NOT text-identical here, but scoping is the
+            // robust pattern regardless of copy).
+            const fileRow = parentContent.getByText('File', { exact: true }).first()
+            await expect(fileRow).toBeVisible({ timeout: 5000 })
+            await fileRow.click()
+
+            // The regression: pre-fix, this click closed the ENTIRE tree —
+            // `.origam-menu__content` count dropped to 0. Post-fix, a SECOND
+            // menu (the submenu) opens while the parent stays open.
+            await expect(sandbox.locator('.origam-menu__content')).toHaveCount(2, { timeout: 5000 })
+
+            const submenu = sandbox.locator('.origam-menu__content').last()
+            await expect(submenu).toContainText('New')
+            await expect(submenu).toContainText('Open')
+
+            // The parent is still there too — not just "a menu somewhere".
+            await expect(parentContent).toBeVisible()
+            await expect(parentContent).toContainText('Settings')
+        })
+
+        test('a leaf row inside the opened submenu is reachable and clickable (closeOnContentClick default closes on selection)', async ({ page }) => {
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const { content: parentContent } = await openMenu(sandbox)
+
+            const fileRow = parentContent.getByText('File', { exact: true }).first()
+            await fileRow.click()
+
+            const submenu = sandbox.locator('.origam-menu__content').last()
+            await expect(submenu).toBeVisible({ timeout: 5000 })
+
+            const newRow = submenu.getByText('New', { exact: true }).first()
+            await expect(newRow).toBeVisible({ timeout: 5000 })
+            await newRow.click()
+
+            // Default `closeOnContentClick` behaviour closes the tree once a
+            // real (non-parent) row is actually selected.
+            await expect(sandbox.locator('.origam-menu__content')).toHaveCount(0, { timeout: 5000 })
+        })
+
+        test('no stray "children" attribute reaches the DOM (fallthrough-attr regression)', async ({ page }) => {
+            const pageErrors: Array<string> = []
+            page.on('pageerror', (err) => pageErrors.push(err.message))
+
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const { content: parentContent } = await openMenu(sandbox)
+
+            const fileRow = parentContent.getByText('File', { exact: true }).first()
+            await fileRow.click()
+            await expect(sandbox.locator('.origam-menu__content')).toHaveCount(2, { timeout: 5000 })
+
+            expect(pageErrors.join('\n')).not.toContain('children')
         })
     })
 })

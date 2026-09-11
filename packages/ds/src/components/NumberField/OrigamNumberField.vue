@@ -1,6 +1,7 @@
 <template>
 	<origam-input
 			v-if="compact"
+			:id="id"
 			ref="origamCompactInputRef"
 			v-model="model"
 			:validation-value="model"
@@ -28,15 +29,22 @@
 						:disabled="!canDecrease"
 						size="small"
 						data-cy="numberfield-compact-decrement"
-						aria-label="Decrement"
+						:aria-label="t(decrementAriaLabel)"
 						@click="handleCompactDecrement"
 				/>
 				<input
+						:id="id"
 						v-model="compactInputText"
 						type="text"
 						inputmode="numeric"
+						role="spinbutton"
 						class="origam-number-field__compact-input"
 						:aria-label="label"
+						:aria-valuenow="model ?? undefined"
+						:aria-valuemin="min"
+						:aria-valuemax="max"
+						:aria-valuetext="compactInputText || undefined"
+						:aria-required="required ? 'true' : undefined"
 						data-cy="numberfield-compact-input"
 						@blur="handleBlur"
 						@focus="handleFocus"
@@ -48,7 +56,7 @@
 						:disabled="!canIncrease"
 						size="small"
 						data-cy="numberfield-compact-increment"
-						aria-label="Increment"
+						:aria-label="t(incrementAriaLabel)"
 						@click="handleCompactIncrement"
 				/>
 			</div>
@@ -56,12 +64,17 @@
 	</origam-input>
 	<origam-text-field
 			v-else
+			:id="id"
 			ref="origamTextFieldRef"
 			v-model:model-value="inputText"
 			:class="numberFieldClasses"
 			:style="numberFieldStyles"
 			:validation-value="model"
 			inputmode="decimal"
+			:aria-valuenow="model ?? undefined"
+			:aria-valuemin="min"
+			:aria-valuemax="max"
+			:aria-valuetext="inputText || undefined"
 			v-bind="textFieldProps"
 			@beforeinput="handleBeforeInput"
 			@blur="handleBlur"
@@ -70,6 +83,8 @@
 			@keydown="handleKeydown"
 			@mousedown="handleMousedown"
 			@click:clear="handleClear"
+			@click:prepend="handleClickPrepend"
+			@click:append="handleClickAppend"
 			@click:prepend-inner="handleClickPrependInner"
 			@click:append-inner="handleClickAppendInner"
 	>
@@ -270,20 +285,36 @@
 		lang="ts"
 		setup
 >
-	import { computed, nextTick, onMounted, ref, shallowRef, StyleValue, useSlots, watch } from "vue"
-	import { OrigamBtn, OrigamDivider, OrigamInput, OrigamTextField } from "../../components"
+	import { computed, getCurrentInstance, nextTick, onMounted, ref, shallowRef, StyleValue, useSlots, watch, watchEffect } from "vue"
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamDivider from '../Divider/OrigamDivider.vue'
+	import OrigamInput from '../Input/OrigamInput.vue'
+	import OrigamTextField from '../TextField/OrigamTextField.vue'
 
-	import { useAdjacentInner, useDefaults, useFocus, useHold, useProps, useVModel , useStyle} from "../../composables"
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useAdjacentInner } from '../../composables/Commons/adjacentInner.composable'
+	import { useFocus } from '../../composables/Commons/focus.composable'
+	import { useHold } from '../../composables/NumberField/hold.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { DIRECTION, MDI_ICONS, TEXT_FIELD_TYPE } from "../../enums"
+	import { UNSEEDED } from '../../consts/Commons/vmodel.const'
 
-	import type { INumberFieldProps, INumberFieldSlots} from "../../interfaces"
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
+
+	import type { INumberFieldProps, INumberFieldSlots } from '../../interfaces/NumberField/number-field.interface'
 
 	import type { INumberFieldEmits } from '../../interfaces/NumberField/number-field.interface'
 
-	import type { TOrigamInput, TOrigamTextField } from "../../types"
+	import type { TOrigamInput } from '../../types/Input/input.type'
+	import type { TOrigamTextField } from '../../types/TextField/text-field.type'
 
-	import { clamp, forwardRefs } from "../../utils"
+	import { clamp } from '../../utils/Commons/commons.util'
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
 
 	/*********************************************************
 	 * Global
@@ -291,7 +322,7 @@
 	 * @description
 	 * Props, emits, slots and filterProps for the NumberField component.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<INumberFieldProps>(), {
+	const props = withDefaults(defineProps<INumberFieldProps>(), {
 		modelValue: null,
 		min: Number.MIN_SAFE_INTEGER,
 		max: Number.MAX_SAFE_INTEGER,
@@ -306,19 +337,20 @@
 		centerAffix: true,
 		split: false,
 		compact: false,
-		type: TEXT_FIELD_TYPE.NUMBER
+		type: TEXT_FIELD_TYPE.NUMBER,
+		decrementAriaLabel: 'origam.number_field.aria_label.decrement',
+		incrementAriaLabel: 'origam.number_field.aria_label.increment'
 	})
-
-	// `useDefaults` resolves each prop against theme.components['origam-number-field']
-	// (OrigamBtn pattern). Pre-fix, the legacy `rounded: true` / `border: true`
-	// booleans always won, same forwarding-parity gap already fixed on Select.
-	const props = useDefaults(_props)
 
 	const emits = defineEmits<INumberFieldEmits>()
 
 	defineSlots<INumberFieldSlots>()
 
 	const {filterProps} = useProps<INumberFieldProps>(props)
+
+	const {t} = useLocale()
+
+	const vm = getCurrentInstance()
 
 	const slots = useSlots()
 
@@ -384,6 +416,26 @@
 		onClickAppendInner: handleClickAppendInner
 	} = useAdjacentInner(props)
 
+	/*********************************************************
+	 * click:prepend / click:append relay
+	 *
+	 * @description
+	 * `click:prepend` / `click:append` are declared (inherited via
+	 * `IInputEmits extends IAdjacentEmits`) but were never wired (#459):
+	 * `<origam-text-field>` DOES emit both — via ITS OWN `useAdjacent()`
+	 * call, on its outer prepend/append slot wrapper — but NumberField
+	 * never listened for them, so the events reached NumberField's
+	 * instance and stopped there. `useAdjacent(props)` here re-uses the
+	 * SAME composable to emit on NumberField's OWN instance once the
+	 * child's event is relayed to it (see the `@click:prepend` /
+	 * `@click:append` listeners on `<origam-text-field>` below) —
+	 * mirroring the *Inner relay above exactly.
+	 ********************************************************/
+	const {
+		onClickPrepend: handleClickPrepend,
+		onClickAppend: handleClickAppend
+	} = useAdjacent(props)
+
 	const correctPrecision = (val: number | string, precision = props.precision) => {
 		// `val` arrives as a number from the model in the happy path,
 		// but a parent could legitimately pass a numeric string
@@ -403,9 +455,47 @@
 				: fixed
 	}
 
-	const _inputText = shallowRef<string | null>(null)
+	/*********************************************************
+	 *  `_inputText` IS LAZY-SEEDED, NOT WRITTEN BY AN IMMEDIATE WATCH
+	 *
+	 *  @description
+	 *  `{immediate: true}` used to run the sync callback below synchronously
+	 *  the instant the watch was created, reading `props.modelValue` at that
+	 *  exact moment and writing the result into a plain `shallowRef` — so
+	 *  nothing re-derived it later on its own. Creating that watch at the
+	 *  top level of `setup()` ran the immediate callback before Vue's
+	 *  `beforeCreate` hook runs, which is where the ADR-005 theme resolver
+	 *  patches `instance.props`; the callback therefore saw whatever Vue
+	 *  resolved BEFORE the theme was visible, and a watch created in
+	 *  `setup()` only picks up a LATER change through the reactive proxy's
+	 *  own per-key dep — which requires a subsequent parent write
+	 *  (`props[key] = value`) to fire. A theme naming `modelValue` with no
+	 *  accompanying parent re-render never produces one, so the ref stayed
+	 *  seeded at the pre-theme value forever.
+	 *  `_inputTextRaw` starts UNSEEDED (mirrors `useVModel`'s own fix): as
+	 *  long as nothing has explicitly written to it, `_inputText`'s getter
+	 *  falls back to deriving the display text from `props.modelValue` LIVE,
+	 *  on every read — including the template's first read during render,
+	 *  which is already past `beforeCreate`. The moment any code path writes
+	 *  through `_inputText.value = …` (user input, clamping, stepping, …)
+	 *  the raw ref takes over and the getter returns that instead.
+	 ********************************************************/
+	const _inputTextRaw = shallowRef<string | null | typeof UNSEEDED>(UNSEEDED)
 
-	// Sync from external model changes (parent v-model updates)
+	const seedInputText = (): string | null => {
+		const val = props.modelValue
+		if (val == null) return null
+		if (!isNaN(val)) return correctPrecision(val)
+		return null
+	}
+
+	const _inputText = computed<string | null>({
+		get: () => _inputTextRaw.value === UNSEEDED ? seedInputText() : _inputTextRaw.value,
+		set: (val) => { _inputTextRaw.value = val }
+	})
+
+	// Sync from external model changes (parent v-model updates) — no
+	// `immediate`, the lazy seed above already covers the initial value.
 	watch(() => props.modelValue, (val) => {
 		if (isFocused.value && !controlsDisabled.value) return
 
@@ -414,7 +504,7 @@
 		} else if (!isNaN(val)) {
 			_inputText.value = correctPrecision(val)
 		}
-	}, { immediate: true })
+	})
 	const inputText = computed<string | null>({
 		get: () => _inputText.value,
 		set (val) {
@@ -451,6 +541,38 @@
 	onMounted(() => {
 		clampModel()
 	})
+
+	/*********************************************************
+	 * Spinbutton role (non-compact input)
+	 *
+	 * @description
+	 * The compact-mode `<input>` sets `role="spinbutton"` directly in the
+	 * template (#459) — it is NumberField's own native element. The
+	 * non-compact `<input>` is rendered two components deep
+	 * (`<origam-text-field>` → `<origam-field>` → the real `<input>`), and
+	 * `role` is ALSO a DECLARED prop on `ITextFieldProps` — TextField binds
+	 * it to its own `<origam-field>` wrapper (`:role="role"`, matching the
+	 * `role="combobox"` pattern OrigamSelect uses), not to the input. That
+	 * makes a plain `role="spinbutton"` attribute on `<origam-text-field>`
+	 * land on the WRONG element — the field chrome div, not the value-
+	 * bearing input `aria-valuenow`/`aria-valuemin`/`aria-valuemax` are
+	 * bound to just above (those are NOT declared TextField props, so they
+	 * correctly fall through to the real `<input>` via `filterInputAttrs`).
+	 * Reaching the real input for `role` specifically needs the same
+	 * DOM-querySelector escape hatch already established in
+	 * `OrigamSelect.vue`'s `handleMousedownControl` for the same class of
+	 * problem. `flush: 'post'` re-runs after the compact/non-compact
+	 * branch swaps in the DOM, so toggling `compact` at runtime keeps it
+	 * correct instead of only applying once at mount.
+	 ********************************************************/
+	watchEffect(() => {
+		if (props.compact) return
+
+		const root = vm?.proxy?.$el as HTMLElement | undefined
+		const input = root?.querySelector?.('input') as HTMLInputElement | null
+
+		input?.setAttribute('role', 'spinbutton')
+	}, {flush: 'post'})
 
 	const inferPrecision = (value: number | null) => {
 		if (value == null) return 0
@@ -493,7 +615,7 @@
 	 * useHold fires toggleUpDown repeatedly while the user holds
 	 * a step button, respecting holdDelay and holdRepeat props.
 	 ********************************************************/
-	const {holdStart, holdStop} = useHold({toggleUpDown}, props.holdRepeat, props.holdDelay)
+	const {holdStart, holdStop} = useHold({toggleUpDown}, () => props.holdRepeat, () => props.holdDelay)
 
 	/*********************************************************
 	 * Event handlers
@@ -684,8 +806,7 @@
 				'origam-number-field--hide-input': props.hideInput,
 				'origam-number-field--inset': props.inset,
 				'origam-number-field--split': props.split,
-				'origam-number-field--hide-controls': props.hideControls,
-				'origam-number-field--reverse': props.reverse
+				'origam-number-field--hide-controls': props.hideControls
 			},
 			props.class
 		]
@@ -729,7 +850,7 @@
 	const handleCompactDecrement = () => {
 		toggleUpDown(false)
 	}
-	const {id, css, load, isLoaded, unload} = useStyle(numberFieldStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(numberFieldStyles, () => props.id)
 
 
 	/*********************************************************
@@ -793,6 +914,7 @@
 			.origam-btn {
 				background-color: var(--origam-number-field__control---background-color, transparent);
 				border-radius: var(--origam-number-field__control---border-radius, 0);
+				cursor: var(--origam-number-field__control---cursor, pointer);
 			}
 		}
 

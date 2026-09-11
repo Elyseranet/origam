@@ -1,5 +1,13 @@
-import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots, IChartPoint, IChartSeries } from '../../interfaces'
-import type { TChartPictorialDirection, TChartPictorialMode, TIntent } from '../../types'
+import type {
+    IChartBaseEmits,
+    IChartBaseProps,
+    IChartBaseSlots
+} from './chart-base.interface'
+import type { IChartPoint } from './chart-point.interface'
+import type { IChartSeries } from './chart-series.interface'
+import type { TChartPictorialMode } from '../../types/Chart/chart-pictorial.type'
+import type { TDirection } from '../../types/Commons/direction.type'
+import type { TIntent } from '../../types/Commons/intent.type'
 
 /**
  * Props for `<OrigamChartPictorial>` — the pictorial / isotype family.
@@ -38,8 +46,16 @@ export interface IChartPictorialProps extends IChartBaseProps {
      * - `'vertical'` — icons stacked bottom-to-top (traditional column).
      * - `'horizontal'` — icons stacked left-to-right.
      * Default `'vertical'`.
+     *
+     * Typed via the shared `TDirection` (Commons) rather than a
+     * component-local union — the value set (`horizontal`/`vertical`)
+     * is identical and this is a plain layout axis, not a distinct
+     * concept (contrast `PARALLAX_DIRECTION`, which legitimately keeps
+     * its own enum because it adds a third `'both'` value with no
+     * equivalent in `DIRECTION`). A former `TChartPictorialDirection`
+     * duplicated `TDirection` exactly.
      */
-    direction?: TChartPictorialDirection
+    direction?: TDirection
     /**
      * Rendering mode.
      * - `'stack'` — classic isotype: rows of small repeated icons (default).

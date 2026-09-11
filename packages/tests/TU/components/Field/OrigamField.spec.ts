@@ -1,5 +1,7 @@
 // Unit tests for <OrigamField> — typography prop on the BEM child surface
-// (ITypographyProps wired by useTypography with the 'field__label' varPrefix).
+// (ITypographyProps, narrowed to Pick<'fontSize'|'fontWeight'|'lineHeight'|
+// 'letterSpacing'> — issue #501 removed `fontFamily`, the only one confirmed
+// dead on every path).
 //
 // ⚠️ BEM-CHILD: typographyStyles is NOT spread into the field root styles.
 // It is merged into `labelProps.style` and `floatingLabelProps.style` so
@@ -9,7 +11,18 @@
 // The SCSS reads `--origam-field__label---font-size` on the
 // `&__label--floating` modifier (font-size of the animated floating label)
 // AND the JS animation scale reads it via `getPropertyValue(...)`.
-// Only fontSize has a real visual effect — no other __label vars exist.
+//
+// ⛔ fontWeight / lineHeight / letterSpacing are NOT read via the
+// `field__label` prefix, but they are NOT inert (issue #501 correction —
+// this file previously asserted the opposite, which is why the ticket's
+// static var-read scanner alone is not sufficient ground truth). `<OrigamField>`
+// forwards its full prop set to the nested `<OrigamLabel>` via
+// `origamLabelRef.value.filterProps(props, …)`; `OrigamLabel` has its OWN
+// `useTypography(props, 'label')` call that DOES read those three
+// (`--origam-label---font-weight` / `---line-height` / `---letter-spacing`).
+// The forward only lands on the SECOND render (`useProps`'s own doc:
+// the template ref is `undefined` on the first) — assertions below await
+// `nextTick()` to observe the state a real paint would see.
 //
 // OrigamLabel uses `:style="labelStyles"` inline binding on its root element,
 // so in jsdom the var appears in the `style=""` attribute — assertion via
@@ -17,6 +30,7 @@
 
 import { describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { h, nextTick } from 'vue'
 
 import OrigamField from '@origam/components/Field/OrigamField.vue'
 import { createOrigam } from '@origam/origam'
@@ -68,6 +82,36 @@ describe('OrigamField — fontSize prop (BEM child __label)', () => {
 })
 
 // ---------------------------------------------------------------------------
+// fontWeight / lineHeight / letterSpacing — forwarded to the nested
+// <OrigamLabel>, which paints them via its OWN `--origam-label---*` prefix
+// (issue #501 correction — see the file header comment).
+// ---------------------------------------------------------------------------
+
+async function labelStyleAfterForward (props: Record<string, unknown>): Promise<string> {
+    const wrapper = mountField(props)
+    await nextTick()
+    await nextTick()
+    return wrapper.find('.origam-field__label').attributes('style') || ''
+}
+
+describe('OrigamField — fontWeight / lineHeight / letterSpacing forward to OrigamLabel', () => {
+    it('fontWeight="bold" reaches the label via --origam-label---font-weight', async () => {
+        const style = await labelStyleAfterForward({ fontWeight: 'bold' })
+        expect(style).toContain('--origam-label---font-weight: var(--origam-font__weight---bold)')
+    })
+
+    it('lineHeight="loose" reaches the label via --origam-label---line-height', async () => {
+        const style = await labelStyleAfterForward({ lineHeight: 'loose' })
+        expect(style).toContain('--origam-label---line-height: var(--origam-font__lineHeight---loose)')
+    })
+
+    it('letterSpacing="widest" reaches the label via --origam-label---letter-spacing', async () => {
+        const style = await labelStyleAfterForward({ letterSpacing: 'widest' })
+        expect(style).toContain('--origam-label---letter-spacing: var(--origam-font__letterSpacing---widest)')
+    })
+})
+
+// ---------------------------------------------------------------------------
 // rounded — mirrors the resolved radius into --origam-field---border-radius
 // (the inner outline chrome reads the component var; before this the prop
 // only rounded the outer box and themes had to force the var via !important)
@@ -94,5 +138,75 @@ describe('OrigamField — rounded prop drives --origam-field---border-radius', (
     it('rounded="none" mirrors the zero radius into the component var', () => {
         const css = injectedCssFor({ rounded: 'none' })
         expect(css).toContain('--origam-field---border-radius: var(--origam-radius---none, 0)')
+    })
+})
+
+// ---------------------------------------------------------------------------
+// required (issue #422)
+// ---------------------------------------------------------------------------
+//
+// Two independent findings on the same investigation:
+//
+// 1. The visual asterisk (`<sup>*</sup>` on the nested <OrigamLabel>)
+//    ALREADY works today, via the generic template-ref `filterProps`
+//    forwarding mechanism (documented in `props.composable.ts`: the ref is
+//    `undefined` on the first render, so a synchronous assertion right after
+//    `mount()` — exactly what the ticket's own repro did — sees `false`; a
+//    second render, one microtask later, delivers the real value). Verified
+//    empirically here with `nextTick()`, matching the existing pattern this
+//    file already uses for fontWeight/lineHeight/letterSpacing above. This
+//    is a regression guard, not a fix — nothing changed for the asterisk.
+// 2. `aria-required` was genuinely, permanently absent — not a timing
+//    artifact. `slotProps` (the object every `<origam-field>` consumer
+//    destructures as `#default="{class, ref, ...fieldSlotProps}"` and
+//    spreads onto its real `<input>`) never included it. Fixed by adding
+//    `'aria-required': props.required || undefined` to `slotProps`.
+
+function mountFieldWithScopedInput (props: Record<string, unknown> = {}) {
+    return mount(OrigamField, {
+        props: { label: 'Test label', ...props } as never,
+        slots: {
+            default: (scopedProps: Record<string, unknown>) => h('input', { ...scopedProps })
+        },
+        global: { plugins: [createOrigam()] }
+    })
+}
+
+describe('OrigamField — required prop, asterisk (regression guard)', () => {
+    it('does NOT render the asterisk synchronously right after mount (the known one-tick delta)', () => {
+        const wrapper = mountField({ required: true })
+        expect(wrapper.find('sup').exists()).toBe(false)
+    })
+
+    it('renders the asterisk after the ref-forwarding render tick settles', async () => {
+        const wrapper = mountField({ required: true })
+        await nextTick()
+        await nextTick()
+        expect(wrapper.find('sup').exists()).toBe(true)
+        expect(wrapper.find('sup').text()).toBe('*')
+    })
+
+    it('renders no asterisk when required is unset', async () => {
+        const wrapper = mountField()
+        await nextTick()
+        await nextTick()
+        expect(wrapper.find('sup').exists()).toBe(false)
+    })
+})
+
+describe('OrigamField — required prop, aria-required (issue #422 fix)', () => {
+    it('exposes aria-required="true" on the default-slot props when required is true', () => {
+        const wrapper = mountFieldWithScopedInput({ required: true })
+        expect(wrapper.find('input').attributes('aria-required')).toBe('true')
+    })
+
+    it('exposes no aria-required on the default-slot props when required is false', () => {
+        const wrapper = mountFieldWithScopedInput({ required: false })
+        expect(wrapper.find('input').attributes('aria-required')).toBeUndefined()
+    })
+
+    it('exposes no aria-required on the default-slot props when required is unset', () => {
+        const wrapper = mountFieldWithScopedInput()
+        expect(wrapper.find('input').attributes('aria-required')).toBeUndefined()
     })
 })

@@ -78,10 +78,21 @@ const pwd = ref('')
 | Event | Payload | Description |
 |-------|---------|-------------|
 | `update:modelValue` | `string` | Value changed |
-| `focus` | `FocusEvent` | Input focused |
-| `blur` | `FocusEvent` | Input blurred |
+| `update:focused` | `boolean` | Focus state changed (own `useFocus(props)` call) |
+| `update:strength` | `TPasswordStrengthLevel` (`'weak' \| 'fair' \| 'good' \| 'strong'`) | Fires when the computed strength level changes — v-modelable for analytics or cross-field validation |
 | `click:control` | `MouseEvent` | Control clicked |
 | `mousedown:control` | `MouseEvent` | Mousedown on control |
+| `click:clear` | `MouseEvent` | Clear icon clicked |
+| `click:prependInner` | `MouseEvent` | Inner prepend adornment clicked |
+| `click:appendInner` | `MouseEvent` | Inner append adornment (show/hide toggle) clicked |
+| `click:prepend` | `MouseEvent` | Outer prepend clicked |
+| `click:append` | `MouseEvent` | Outer append clicked |
+
+`focus` and `blur` are not component emits — `IPasswordFieldEmits` does not
+declare them. They reach the consumer as plain DOM events, relayed by
+Vue's attribute fallthrough: `@focus` / `@blur` bound on
+`<origam-password-field>` work the normal HTML way, they just aren't part
+of the typed `emits` contract.
 
 ## Design tokens
 

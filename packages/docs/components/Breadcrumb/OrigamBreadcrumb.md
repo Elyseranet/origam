@@ -36,9 +36,24 @@ with no link:
 ```
 
 The **last** item in `items` is always normalized to `disabled: true` and
-`active: true` (`aria-current="page"`), regardless of what you pass —
-this reflects "you are here" and matches the standard breadcrumb
-pattern.
+forced active (`aria-current="page"`) — this reflects "you are here" and
+matches the standard breadcrumb pattern. `active` on any OTHER item is
+ignored: only one item can be the current page, and it's always the last
+one (#386).
+
+An `active` **config object** (`IActiveState` — `bgColor`, `border`,
+`rounded`, …) is NOT destroyed on the last item: the item's own
+`item.active` config wins if set, otherwise the root `<OrigamBreadcrumb
+active="…">` default is used, otherwise it's a bare `true`. Either way
+`enabled: true` is injected into the resolved config so the visual
+override renders AND the item stays active — an object config alone
+doesn't force `isActive` (see `IActiveProps`).
+
+```vue
+<template>
+    <OrigamBreadcrumb :active="{ bgColor: 'primary' }" :items="items" />
+</template>
+```
 
 ## Divider
 
@@ -219,45 +234,128 @@ The last crumb has no divider inside its `<li>`.
 
 ## Design tokens consumed
 
-`<OrigamBreadcrumb>` reads from `tokens/component/breadcrumb.json`,
-which declares a single `breadcrumb` block with nested `item` and
-`divider` sub-blocks. Style Dictionary emits the nested entries as BEM
-children of the root component:
+`<OrigamBreadcrumb>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`) — root surface only, under
+the `--origam-breadcrumb---*` prefix. `OrigamBreadcrumbItem` and
+`OrigamBreadcrumbDivider` are separate, independently-shipped components
+— each now has its own top-level namespace in the same stylesheets,
+`--origam-breadcrumb-item---*` and `--origam-breadcrumb-divider---*`
+(#386), matching each component's own scoped `<style>` reads. Before #386 these
+were nested BEM children of `breadcrumb` (`--origam-breadcrumb__item---*`),
+a name neither component ever read — the fix moved the DTCG source to
+match the component's own naming, per the project's "one component, one
+namespace" convention (`Origam{PascalCase}.vue` files each get their own
+top-level component-token block; BEM-child naming is reserved for DOM
+parts that are *not* separate components).
 
 | CSS variable | Token reference | Consumed by |
 |---|---|---|
 | `--origam-breadcrumb---background` | `transparent` | `<OrigamBreadcrumb>` root |
 | `--origam-breadcrumb---color` | `{color.text.primary}` | `<OrigamBreadcrumb>` root |
-| `--origam-breadcrumb---border-radius` | `{radius.none}` | `<OrigamBreadcrumb>` root — a `--origam-breadcrumb---border-radius-rounded` var (`{radius.sm}`, 4px) is also generated, but the component's `--rounded` modifier never reads it: `OrigamBreadcrumb.vue` hardcodes `border-radius: var(--origam-radius---2xl, 24px)` directly, so `--rounded` actually renders **24px**, not 4px |
-| `--origam-breadcrumb---box-shadow-elevated` | `{shadow.md}` | Generated in `main.css`, but **not read** by the component — the `--elevated` modifier in `OrigamBreadcrumb.vue` sets its local `--origam-breadcrumb---box-shadow` straight to `var(--origam-shadow---md, …)`, bypassing this variable entirely |
-| `--origam-breadcrumb---padding-block` / `-inline` | `{space.2}` | Generated in `main.css`, but **not read** — the component hardcodes its own local `--origam-breadcrumb---padding-{block,inline}-{start,end}` vars to a literal `8px`, ignoring these token-driven variables |
+| `--origam-breadcrumb---border-radius` | `{radius.none}` | `<OrigamBreadcrumb>` root |
+| `--origam-breadcrumb---border-radius-rounded` | `{radius.2xl}` (24px) | ✅ read by the `--rounded` modifier since the #607 pass. It was previously `{radius.sm}` (4px) and unread — the modifier hardcoded `var(--origam-radius---2xl, 24px)`. The token was repointed to `2xl` so wiring it changes **no pixel**: 24px is what `--rounded` has always rendered. Nobody could have seen the 4px value, because nothing ever read it |
+| `--origam-breadcrumb---box-shadow-elevated` | `{shadow.md}` | ✅ read by the `--elevated` modifier, with `var(--origam-shadow---md, …)` as fallback |
+| `--origam-breadcrumb---padding-block` / `-inline` | `{space.2}` | ✅ read — the component's local `--origam-breadcrumb---padding-{block,inline}-{start,end}` resolve `var(--origam-breadcrumb---padding-{block,inline}, 8px)` |
 | `--origam-breadcrumb---gap` | `{space.0}` | Generated in `main.css`, but **not read anywhere** — `&__items` has no `gap` declaration; crumbs are only spaced by the divider's own inline padding |
-| `--origam-breadcrumb__item---hover-color` | `{color.action.primary.bg}` | crumb hover affordance |
-| `--origam-breadcrumb__item---active-color` | `{color.text.secondary}` | current-page crumb |
-| `--origam-breadcrumb__item---opacity-disabled` | `{opacity.50}` | disabled crumb |
-| `--origam-breadcrumb__divider---character` | `'/'` | default divider glyph |
-| `--origam-breadcrumb__divider---padding-inline` | `{space.2}` | breathing room around the divider |
+| `--origam-breadcrumb-item---hover-color` | `{color.action.primary.bg}` | Generated, but **not read anywhere** in `OrigamBreadcrumbItem.vue` — no naming issue this time, the property is simply never wired |
+| `--origam-breadcrumb-item---active-color` | `{color.text.secondary}` | Same — generated, never read |
+| `--origam-breadcrumb-item---opacity-disabled` | `{opacity.50}` | ✅ reaches `.origam-breadcrumb-item--disabled` via `var(--origam-breadcrumb-item---opacity-disabled, 0.5)` — one of the two channels #386 actually restored |
+| `--origam-breadcrumb-divider---character` | `'/'` | Generated, but **not read** — the divider glyph is rendered as template text (`{{ divider }}`), not driven by this CSS variable at all |
+| `--origam-breadcrumb-divider---padding-inline` | `{space.2}` | ✅ reaches the divider via `var(--origam-breadcrumb-divider---padding-inline, 8px)` — the other channel #386 restored |
 | `--origam-breadcrumb---home-icon-color` | `{color.action.primary.bg}` | optional home icon (via `prependIcon` on the first item) |
 
-> **Known gap:** the generated globals above use the BEM naming
-> `--origam-breadcrumb__item---*` / `--origam-breadcrumb__divider---*`
-> (per the project's `component.card.overlay.bg` → `--origam-card__overlay---bg`
-> convention). `OrigamBreadcrumbItem.vue` and `OrigamBreadcrumbDivider.vue`'s
-> own scoped `<style>` blocks, however, read a **different, hyphenated**
-> variable family — `--origam-breadcrumb-item---*` and
-> `--origam-breadcrumb-divider---*` — which does not exist anywhere in
-> the generated stylesheet (confirmed: zero matches in
-> `packages/ds/src/assets/css/main.css`). In practice this means the
-> `item.hover-color` / `item.active-color` / `divider.character` /
-> `divider.padding-inline` design tokens declared in
-> `tokens/component/breadcrumb.json` never reach the rendered item or
-> divider — both always fall back to the hardcoded local defaults set
-> at the top of their own scoped style block (e.g. item `color: inherit`,
-> divider `padding-inline: 8px`). To actually theme an item or divider
-> today, target the **local** variable directly, e.g.:
-> `.origam-breadcrumb-item { --origam-breadcrumb-item---color: var(--origam-color__text---secondary); }`.
-> This looks like a real naming-drift bug — flagged for a follow-up
-> ticket rather than fixed here.
+> **Le recouvrement scopé est corrigé (#607).** Les trois composants
+> redéclaraient dans leur bloc `<style scoped>` des tokens déjà déclarés par
+> `light.css` / `dark.css`. Un sélecteur scopé — `.origam-breadcrumb-item[data-v-xxx]`,
+> spécificité (0,2,0) — bat `:root` / `[data-theme]` à (0,1,0) : la valeur du
+> thème était calculée puis écrasée, quel que soit le nom du token. #386 avait
+> corrigé le NOM ; il ne pouvait rien contre le recouvrement.
+>
+> **27 des 30 tokens concernés sont maintenant atteignables par un thème**
+> (9 sur la racine, 9 sur l'item, 9 sur le séparateur). Vérifié en A/B contre
+> Chromium : `packages/tests/e2e/breadcrumb-theme-channel.spec.ts` échoue sur
+> le code d'avant et passe après.
+>
+> **Sur la couleur : aucun pixel ne bouge.** `--origam-breadcrumb-item---color`
+> et `--origam-breadcrumb-divider---color` étaient déclarées
+> `var(--…---color-token, inherit)` dans le bloc scopé. On pouvait croire à un
+> héritage depuis un ancêtre arbitraire ; ce n'en est pas un. `inherit` sur une
+> **custom property** reprend la valeur du parent **pour cette même property** —
+> or celle-ci est déclarée sur `:root` et hérite jusqu'en bas. `inherit`
+> résolvait donc déjà le token.
+>
+> Vérifié en A/B dans Chromium, avant et après le dé-shadowage :
+>
+> | | avant | après |
+> |---|---|---|
+> | item | `#0a0a0a` | `#0a0a0a` |
+> | séparateur | `#525252` | `#525252` |
+>
+> Le séparateur n'est **pas** devenu plus clair : il rendait déjà
+> `{color.text.secondary}`. Ce que la correction change n'est pas la couleur
+> rendue, c'est qu'un thème peut désormais l'**écraser** — le bloc scopé, à
+> (0,2,0), gagnait auparavant contre `:root` à (0,1,0).
+>
+> Plus aucun token n'est recouvert sur ces trois composants : les
+> `transition-duration` l'étaient encore, ils ont été repris avec la
+> correction du raccourci (voir « Transitions » ci-dessous).
+
+## Transitions
+
+Les trois composants animent **`transform` et `color`**, chacun avec sa
+propre durée et l'easing du DS :
+
+```css
+--origam-breadcrumb---transition:
+    transform var(--origam-breadcrumb---transition-duration-transform) var(--origam-breadcrumb---transition-timing-function),
+    color     var(--origam-breadcrumb---transition-duration-color)     var(--origam-breadcrumb---transition-timing-function);
+```
+
+| token | valeur | rôle |
+|---|---|---|
+| `--origam-{cmp}---transition-duration-transform` | `{motion.duration.medium}` — 200 ms | durée de `transform` |
+| `--origam-{cmp}---transition-duration-color` | `{motion.duration.fast}` — 100 ms | durée de `color` |
+| `--origam-{cmp}---transition-timing-function` | `{motion.easing.standard}` | courbe, commune aux deux |
+
+Les deux durées sont **thémables séparément**, ce qu'un couple dans une seule
+variable ne permettait pas.
+
+### ⛔ Ce que cette correction a réparé (#607) — changement visible
+
+Le raccourci était **malformé**, et le défaut était invisible parce qu'il ne
+produisait ni erreur ni avertissement. La composition d'origine était :
+
+```css
+--origam-breadcrumb---transition-property: transform, color;
+--origam-breadcrumb---transition-duration: 0.2s, 0.1s;
+--origam-breadcrumb---transition: var(…property) var(…duration) var(…timing);
+```
+
+Une fois substitué : `transform, color 0.2s, 0.1s cubic-bezier(…)`.
+`transition` étant une **liste de transitions séparées par des virgules**, le
+navigateur y lisait **trois** entrées, pas deux propriétés à deux durées.
+Style calculé mesuré dans Chromium, identique sur les trois composants :
+
+```
+transition-property        : transform, color, all
+transition-duration        : 0s, 0.2s, 0.1s
+transition-timing-function : ease, ease, cubic-bezier(0.4, 0, 0.2, 1)
+```
+
+| entrée | avant | après |
+|---|---|---|
+| `transform` | **0 s — jamais animé** | 200 ms, easing du DS |
+| `color` | 200 ms en `ease` (pas l'easing du DS) | 100 ms, easing du DS |
+| `all` | **100 ms sur TOUTES les propriétés** — entrée fantôme | supprimée |
+
+**Trois changements visibles, assumés.** Le fond, le rayon, l'ombre et
+l'opacité n'ont plus d'animation d'entrée : elle provenait de l'entrée `all`,
+née d'une virgule mal placée, que personne n'avait demandée. `transform`
+s'anime enfin, et `color` prend la courbe du DS.
+
+Le rythme « 200 ms / 100 ms » que décrivait l'ancienne configuration n'a
+jamais été rendu tel quel — il est désormais réel.
 
 ## Accessibility
 
@@ -277,8 +375,9 @@ children of the root component:
 - The component is theme-aware out of the box for the **root** surface
   (background, color, radius, elevation). Switching `<html data-theme="…">`
   re-resolves those variables instantly.
-- Item/divider-level tokens have the naming-drift gap described above —
-  see the note under "Design tokens consumed".
+- Item/divider-level tokens: the naming drift is fixed (#386), but most
+  properties remain unreachable due to local shadowing — see the note
+  under "Design tokens consumed".
 - A sub-tree can opt into a different theme via `<OrigamThemeProvider>`.
 
 ## Related

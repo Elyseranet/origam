@@ -18,16 +18,8 @@ import { createOrigam } from '@origam/origam'
 // ---------------------------------------------------------------------------
 
 beforeEach(() => {
-    global.ResizeObserver = vi.fn().mockImplementation(() => ({
-        observe: vi.fn(),
-        unobserve: vi.fn(),
-        disconnect: vi.fn()
-    }))
-    global.IntersectionObserver = vi.fn().mockImplementation(() => ({
-        observe: vi.fn(),
-        unobserve: vi.fn(),
-        disconnect: vi.fn()
-    }))
+    global.ResizeObserver = vi.fn(class { observe = vi.fn(); unobserve = vi.fn(); disconnect = vi.fn() })
+    global.IntersectionObserver = vi.fn(class { observe = vi.fn(); unobserve = vi.fn(); disconnect = vi.fn() })
 })
 
 // ---------------------------------------------------------------------------
@@ -87,8 +79,8 @@ const OrigamCounterStub = {
     template: `<div data-cy="origam-counter">{{ value }}/{{ max }}</div>`
 }
 
-const OrigamRichToolbarStub = {
-    name: 'OrigamRichToolbar',
+const OrigamTextareaFieldRichToolbarStub = {
+    name: 'OrigamTextareaFieldRichToolbar',
     props: ['items', 'active', 'position', 'disabled'],
     emits: ['format'],
     template: `<div data-cy="origam-rich-toolbar" />`
@@ -116,7 +108,7 @@ const mountTextareaField = (opts: IMountOpts = {}): VueWrapper => {
                 OrigamInput: OrigamInputStub,
                 OrigamField: OrigamFieldStub,
                 OrigamCounter: OrigamCounterStub,
-                OrigamRichToolbar: OrigamRichToolbarStub,
+                OrigamTextareaFieldRichToolbar: OrigamTextareaFieldRichToolbarStub,
                 OrigamIcon: { template: '<i />' }
             }
         }

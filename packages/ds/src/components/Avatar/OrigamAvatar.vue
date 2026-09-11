@@ -1,9 +1,9 @@
 <template>
 	<component
-			:is="props.tag"
+			:is="tag"
 			:id="id"
 			:class="avatarClasses"
-			@click="handleClick"
+			@click="handleClick()"
 			@mouseenter="handleMouseenter"
 			@mouseleave="handleMouseleave"
 	>
@@ -49,24 +49,22 @@
 		lang="ts"
 		setup
 >
-	import { OrigamIcon, OrigamImg } from '../../components'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import OrigamImg from '../Img/OrigamImg.vue'
 
-	import {
-		useActive,
-		useDefaults,
-		useDensity,
-		useHover,
-		useProps,
-		useSize,
-		useStateEffect,
-		useStyle,
-		useTypography
-	} from '../../composables'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import type { IAvatarProps, ISrcObject} from '../../interfaces'
+	import type { IAvatarProps } from '../../interfaces/Avatar/avatar.interface'
+	import type { ISrcObject } from '../../interfaces/Img/img.interface'
 
-	import type { IAvatarEmits } from '../../interfaces/Avatar/avatar.interface'
-	import { isEmpty } from "../../utils"
+	import type { IAvatarEmits, IAvatarSlots } from '../../interfaces/Avatar/avatar.interface'
+	import { isEmpty } from '../../utils/Commons/commons.util'
 
 	import type { ComputedRef, StyleValue } from 'vue'
 	import { computed, useSlots } from 'vue'
@@ -78,14 +76,11 @@
 	 * Props resolution with defaults inheritance from parent
 	 * groups (e.g. OrigamAvatarGroup via provideDefaults).
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IAvatarProps>(), {tag: 'div', size: 'default'})
-
-	// Resolve props against the closest `provideDefaults({ 'origam-avatar': … })`
-	// injected by a parent like `OrigamAvatarGroup`. Props explicitly set by the
-	// parent template still win; the group's values are used only as defaults.
-	const props = useDefaults(_props)
+	const props = withDefaults(defineProps<IAvatarProps>(), {tag: 'div', size: 'default'})
 
 	defineEmits<IAvatarEmits>()
+
+	defineSlots<IAvatarSlots>()
 
 	const {filterProps} = useProps<IAvatarProps>(props)
 
@@ -95,8 +90,8 @@
 	 * @description
 	 * Hover, active state and color resolution for the avatar.
 	 ********************************************************/
-	const {hoverClasses, isHover, hoverState, onMouseleave: handleMouseleave, onMouseenter: handleMouseenter} = useHover(props)
-	const {activeClasses, isActive, activeState, onActive: handleClick} = useActive(props)
+	const {classes: hoverClasses, isOn: isHover, config: hoverState, unset: handleMouseleave, set: handleMouseenter} = useStateFlag(props, {state: 'hover'})
+	const {classes: activeClasses, isOn: isActive, config: activeState, toggle: handleClick} = useStateFlag(props, {state: 'active'})
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 
 	/*********************************************************
@@ -186,7 +181,17 @@
 		]
 	})
 
-	const {id, css, load, isLoaded, unload} = useStyle(avatarStyles)
+	/*********************************************************
+	 * useStyle
+	 *
+	 * @description
+	 * #381 — the `id` returned by useStyle is a GENERATED identifier,
+	 * only meant for the scoped stylesheet selector. Without
+	 * `() => props.id` here, it shadowed the `id` PROP of the same
+	 * name: the template's `:id="id"` on the root rendered the
+	 * generated id, never the consumer's.
+	 ********************************************************/
+	const {id, css, load, isLoaded, unload} = useStyle(avatarStyles, () => props.id)
 
 	/*********************************************************
 	 * Expose
@@ -238,7 +243,7 @@
 		overflow: var(--origam-avatar---overflow);
 		position: var(--origam-avatar---position);
 
-		transition: var(--origam-avatar---transition);
+		transition: var(--origam-avatar---transition-property) var(--origam-avatar---transition-duration) var(--origam-avatar---transition-timing-function);
 
 		border-color: var(--origam-avatar---border-color);
 		border-style: var(--origam-avatar---border-style);
@@ -249,14 +254,23 @@
 		box-shadow: var(--origam-avatar---box-shadow);
 		color: var(--origam-avatar---color);
 
-		padding-block-start: var(--origam-avatar---padding-block-start);
-		padding-block-end: var(--origam-avatar---padding-block-end);
-		padding-inline-start: var(--origam-avatar---padding-inline-start);
-		padding-inline-end: var(--origam-avatar---padding-inline-end);
-		margin-block-start: var(--origam-avatar---margin-block-start);
-		margin-block-end: var(--origam-avatar---margin-block-end);
-		margin-inline-start: var(--origam-avatar---margin-inline-start);
-		margin-inline-end: var(--origam-avatar---margin-inline-end);
+		// ⛔ #C2 — zero-specificity defaults so a scale-driven utility
+		// class (`.origam--p-4` from `padding="4"`, `.origam--m-4` from
+		// `margin="4"`) wins the cascade. Without `:where()`, this scoped
+		// rule's [data-v-hash] pushes each longhand to (0,2,0), beating
+		// the utility's (0,1,0) — the utility sets the `padding`/`margin`
+		// SHORTHAND, but specificity is compared per longhand, so these
+		// per-edge declarations always won regardless of load order.
+		:where(&) {
+			padding-block-start: var(--origam-avatar---padding-block-start);
+			padding-block-end: var(--origam-avatar---padding-block-end);
+			padding-inline-start: var(--origam-avatar---padding-inline-start);
+			padding-inline-end: var(--origam-avatar---padding-inline-end);
+			margin-block-start: var(--origam-avatar---margin-block-start);
+			margin-block-end: var(--origam-avatar---margin-block-end);
+			margin-inline-start: var(--origam-avatar---margin-inline-start);
+			margin-inline-end: var(--origam-avatar---margin-inline-end);
+		}
 
 		&__wrapper {
 			flex: var(--origam-avatar__wrapper---flex);
@@ -360,20 +374,20 @@
 		}
 
 		&--size-x-small {
-			--origam-avatar---height: 24px;
-			--origam-avatar---width: 24px;
+			--origam-avatar---height: var(--origam-avatar---size-xs, 24px);
+			--origam-avatar---width: var(--origam-avatar---size-xs, 24px);
 			--origam-avatar---font-size: 1rem;
 		}
 
 		&--size-small {
-			--origam-avatar---height: 32px;
-			--origam-avatar---width: 32px;
+			--origam-avatar---height: var(--origam-avatar---size-sm, 32px);
+			--origam-avatar---width: var(--origam-avatar---size-sm, 32px);
 			--origam-avatar---font-size: 1.25rem;
 		}
 
 		&--size-default {
-			--origam-avatar---height: 40px;
-			--origam-avatar---width: 40px;
+			--origam-avatar---height: var(--origam-avatar---size-md, 40px);
+			--origam-avatar---width: var(--origam-avatar---size-md, 40px);
 			--origam-avatar---font-size: 1.5rem;
 		}
 
@@ -405,8 +419,8 @@
 		}
 
 		&--error {
-			--origam-avatar---background-color: var(--origam-avatar--danger---background-color, var(--origam-color__feedback--danger---bg));
-			--origam-avatar---color: var(--origam-avatar--danger---color, var(--origam-color__feedback--danger---fg));
+			--origam-avatar---background-color: var(--origam-avatar--danger---background-color, var(--origam-avatar--error---background-color, var(--origam-color__feedback--danger---bg)));
+			--origam-avatar---color: var(--origam-avatar--danger---color, var(--origam-avatar--error---color, var(--origam-color__feedback--danger---fg)));
 		}
 	}
 </style>

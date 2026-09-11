@@ -41,14 +41,14 @@ test.describe('OrigamStepper', () => {
 
     test.describe('Design', () => {
         test('renders the stepper root with BEM class origam-stepper', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
         })
 
         test('default orientation class is origam-stepper--horizontal', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -56,7 +56,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('default size class is applied (size-default)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -64,7 +64,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('default density class is applied (density-default)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -72,7 +72,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('renders exactly 4 step items (defaultItems has 4 entries)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -81,7 +81,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('renders 3 connectors between 4 items (n-1)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -90,7 +90,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('modelValue=1: item[0] carries the done status class', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -99,7 +99,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('modelValue=1: item[1] carries the active status class', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -108,7 +108,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('modelValue=1: item[2] carries the pending status class', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -117,7 +117,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('done item[0]: indicator carries the done modifier class', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -126,7 +126,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('done item[0]: indicator contains an origam-icon (checkmark)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -135,7 +135,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('active item[1]: indicator carries the active modifier class', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -144,7 +144,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('active indicator has distinct background-color from pending indicator', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -158,7 +158,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('stepper is a <nav> element (semantic landmark)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -167,7 +167,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('stepper has aria-label (a11y — localised string)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -176,7 +176,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('horizontal stepper has flex-direction row', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -185,7 +185,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('first item label shows title text "Account"', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -203,14 +203,14 @@ test.describe('OrigamStepper', () => {
 
     test.describe('Functional', () => {
         test('renders stepper root', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
         })
 
         test('orientation=horizontal: stepper carries origam-stepper--horizontal class', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -218,7 +218,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('showConnectors=true: 3 connector spans visible', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -226,7 +226,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('clickable=false: items render as <div> (not <button>)', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -239,7 +239,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('connector before active item carries done modifier class', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -249,7 +249,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('connector after active item carries pending modifier class', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -266,7 +266,7 @@ test.describe('OrigamStepper', () => {
 
     test.describe('Events - update:modelValue', () => {
         test('renders stepper with clickable=true: items render as <button>', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -277,7 +277,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('clicking item[2] triggers handleClick without error', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -291,7 +291,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('clicking item[0] (done) triggers handleClick without error', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -308,14 +308,14 @@ test.describe('OrigamStepper', () => {
 
     test.describe('Slots - Default', () => {
         test('renders stepper root when slot is used', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
         })
 
         test('default slot content is rendered inside the stepper', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -323,7 +323,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('when slot is used, no .origam-stepper-item is rendered (slot replaces items)', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -340,14 +340,14 @@ test.describe('OrigamStepper', () => {
 
     test.describe('Default (playground)', () => {
         test('renders stepper root', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
         })
 
         test('playground stepper carries origam--color-primary from color=primary', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -355,7 +355,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('modelValue=1: active item is item[1]', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -365,7 +365,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('active item[1] is rendered as <div> (clickable=false by default)', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -376,7 +376,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('active item[1] carries aria-current="step" (a11y)', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             // This variant (index 4 / Default playground) takes longer to mount
@@ -389,7 +389,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('pending items do not have aria-current', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -400,7 +400,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('done item[0] does not have aria-current', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -411,7 +411,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('each step item has an aria-label (a11y)', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })
@@ -424,7 +424,7 @@ test.describe('OrigamStepper', () => {
         })
 
         test('SCSS vertical: adding origam-stepper--vertical switches flex-direction to column', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const stepper = sandbox.locator('.origam-stepper').first()
             await expect(stepper).toBeVisible({ timeout: 20000 })

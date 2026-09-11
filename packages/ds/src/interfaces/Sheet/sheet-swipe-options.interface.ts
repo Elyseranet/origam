@@ -1,6 +1,9 @@
 import type { Ref } from 'vue'
 
-import type { TSheetSnapId, TSheetSnapPoint } from '../../types'
+import type {
+    TSheetSnapId,
+    TSheetSnapPoint
+} from '../../types/Sheet/sheet.type'
 
 /**
  * Options bag passed to `useSheetSwipe()` — the bottom-sheet drag

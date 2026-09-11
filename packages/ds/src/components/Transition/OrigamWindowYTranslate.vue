@@ -12,9 +12,10 @@
 		lang="ts"
 		setup
 >
-	import { useProps, useWindowTransition } from '../../composables'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useWindowTransition } from '../../composables/Transition/windowTransition.composable'
 
-	import type { ITransitionProps } from '../../interfaces'
+	import type { ITransitionEmits, ITransitionWindowProps, ITransitionSlots } from '../../interfaces/Transition/transition.interface'
 
 	/*********************************************************
 	 * Global
@@ -22,11 +23,15 @@
 	 * @description
 	 * Props with defaults and filterProps utility.
 	 ********************************************************/
-	const props = withDefaults(defineProps<ITransitionProps>(), {
+	const props = withDefaults(defineProps<ITransitionWindowProps>(), {
 		name: 'origam-transition--window-y-translate'
 	})
 
-	const {filterProps} = useProps<ITransitionProps>(props)
+	const {filterProps} = useProps<ITransitionWindowProps>(props)
+
+	defineEmits<ITransitionEmits>()
+
+	defineSlots<ITransitionSlots>()
 
 	/*********************************************************
 	 * Transition
@@ -54,10 +59,17 @@
 </script>
 
 <style lang="scss">
+	@use '../../assets/scss/helpers' as ds;
+
 	.origam-transition--window-y-translate {
-		&-enter-active,
+		&-enter-active {
+			transition-duration: var(--origam-transition--window-y-translate-enter-active---transition-duration);
+			transition-timing-function: var(--origam-transition--window-y-translate-enter-active---transition-timing-function);
+		}
+
 		&-leave-active {
-			transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+			transition-duration: var(--origam-transition--window-y-translate-leave-active---transition-duration);
+			transition-timing-function: var(--origam-transition--window-y-translate-leave-active---transition-timing-function);
 		}
 
 		&-leave-from,
@@ -73,6 +85,13 @@
 
 		&-leave-to {
 			transform: translateY(-100%);
+		}
+
+		@include ds.ds-reduced-motion {
+			&-enter-active,
+			&-leave-active {
+				transition-duration: 0.01ms !important;
+			}
 		}
 	}
 </style>

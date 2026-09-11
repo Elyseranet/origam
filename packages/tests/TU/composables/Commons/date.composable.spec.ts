@@ -17,7 +17,7 @@ import { ref } from 'vue'
 import { describe, expect, it, vi, afterEach } from 'vitest'
 
 import { createDate } from '@origam/composables/Commons/date.composable'
-import { DateAdapter } from '@origam/services/Commons/date-adapter.service'
+import { DateAdapter } from '@origam/classes/Commons/date-adapter.class'
 
 import type { IDateOptions, ILocaleInstance } from '@origam/interfaces'
 

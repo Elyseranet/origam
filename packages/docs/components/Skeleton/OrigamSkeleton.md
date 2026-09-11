@@ -65,6 +65,31 @@ content where motion reduction is preferred.
 | `pulse` | `boolean` | `true` | Enables the opacity pulse animation. |
 | `rounded` | `TRounded \| boolean \| number \| string` | — | Corner radius override (shared mixin). |
 | `bgColor` | `TColor` | — | Background color intent override. |
+| `label` | `string` | `'origam.loading'` | Locale key for the accessible name announced on the placeholder. See [Accessibility](#accessibility). |
+
+## Accessibility
+
+Every placeholder renders as `role="status"` with `aria-busy="true"`, so a
+screen reader announces that content is being loaded rather than reading an
+empty box.
+
+The accessible name comes from `label`, which carries a **locale key**, not
+final text — it is resolved through the DS `t()` mechanism and therefore
+follows the active locale with no work from the consumer. It defaults to
+`origam.loading`, the same key `OrigamProgress`, `OrigamVideo`,
+`OrigamAudio` and `OrigamSwitch` use for this exact announcement.
+
+```vue
+<!-- Default — announced in the active locale -->
+<OrigamSkeleton variant="text" width="200" />
+
+<!-- Your own key, added to your locale files -->
+<OrigamSkeleton variant="card" label="invoices.loading_list" />
+```
+
+A raw string that matches no key is returned unchanged, so
+`label="Loading your invoices"` still works if you'd rather translate on
+your side.
 
 ## Design tokens
 

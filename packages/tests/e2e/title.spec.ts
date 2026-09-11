@@ -12,6 +12,26 @@ import { expect, test } from '@playwright/test'
  * Pattern: navigation directe via variantId — JAMAIS waitForLoadState('networkidle')
  * (Histoire maintient un websocket HMR → networkidle ne résout jamais).
  * Localisation via '.origam-title' dans l'iframe sandbox.
+ *
+ * ## waitUntil: 'domcontentloaded' sur chaque goto — pourquoi
+ *
+ * Par défaut `page.goto` attend l'événement `load`, donc TOUS les
+ * sous-résultats du catalogue Histoire statique : le chunk
+ * `assets/vendor-*.js` fait **15 Mo** et est en `<link rel="preload">` dans
+ * `index.html` (32 Mo au total, 449 fichiers). Cette attente n'a aucun
+ * budget propre — elle consomme le timeout du TEST. Sous contention, c'est
+ * là que la suite casse : `page.goto: Test timeout of 45000ms exceeded`,
+ * mode d'échec observé sur une vingtaine de tests de specs différentes,
+ * jamais sur une assertion.
+ *
+ * Les tests n'ont pas besoin de `load` : ils ont besoin que le composant
+ * soit monté dans la sandbox, ce que le `toBeVisible({ timeout: 12000 })`
+ * qui suit vérifie explicitement. `domcontentloaded` déplace donc l'attente
+ * d'un `goto` sans budget vers le budget d'assertion prévu pour ça.
+ *
+ * Mesuré (--repeat-each=12 --workers=15) : 143/144 puis 144/144 et 144/144,
+ * durée 1,5 min → 1,0 min. Les assertions mordent toujours (vérifié en
+ * pointant un variantId inexistant : le test échoue).
  */
 
 const STORY_ID   = 'components-stories-title-origamtitle-story-vue'
@@ -29,14 +49,14 @@ test.describe('OrigamTitle', () => {
 
     test.describe('Design', () => {
         test('renders root element with BEM class origam-title', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const title = sandbox.locator('.origam-title').first()
             await expect(title).toBeVisible({ timeout: 12000 })
         })
 
         test('default tag is h1', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             // init-state: tag='h1' → root element must be an <h1>
             const h1 = sandbox.locator('h1.origam-title').first()
@@ -44,7 +64,7 @@ test.describe('OrigamTitle', () => {
         })
 
         test('text prop renders the label inside the title element', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const title = sandbox.locator('.origam-title').first()
             await expect(title).toBeVisible({ timeout: 12000 })
@@ -53,7 +73,7 @@ test.describe('OrigamTitle', () => {
         })
 
         test('font-weight comes from the CSS token (semibold = 600)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const title = sandbox.locator('.origam-title').first()
             await expect(title).toBeVisible({ timeout: 12000 })
@@ -63,7 +83,7 @@ test.describe('OrigamTitle', () => {
         })
 
         test('density-compact/default/comfortable produce distinct font-sizes via SCSS', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const title = sandbox.locator('.origam-title').first()
             await expect(title).toBeVisible({ timeout: 12000 })
@@ -100,7 +120,7 @@ test.describe('OrigamTitle', () => {
         test('color prop (tokenised): utility class origam--color-* is applied', async ({ page }) => {
             // The useBothColor composable emits a utility class when the value is a known token.
             // We inject it programmatically to verify the stylesheet wiring.
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const title = sandbox.locator('.origam-title').first()
             await expect(title).toBeVisible({ timeout: 12000 })
@@ -121,14 +141,14 @@ test.describe('OrigamTitle', () => {
 
     test.describe('Slots - Default', () => {
         test('renders the title as h2 (tag prop from static slot story)', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const h2 = sandbox.locator('h2.origam-title').first()
             await expect(h2).toBeVisible({ timeout: 12000 })
         })
 
         test('slot content renders inside the title element', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const title = sandbox.locator('.origam-title').first()
             await expect(title).toBeVisible({ timeout: 12000 })
@@ -138,7 +158,7 @@ test.describe('OrigamTitle', () => {
         })
 
         test('slot content preserves inline markup (<em> element present)', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const em = sandbox.locator('.origam-title em').first()
             await expect(em).toBeVisible({ timeout: 12000 })
@@ -153,7 +173,7 @@ test.describe('OrigamTitle', () => {
 
     test.describe('Default (playground)', () => {
         test('renders the title with BEM class and init text', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const title = sandbox.locator('.origam-title').first()
             await expect(title).toBeVisible({ timeout: 12000 })
@@ -161,7 +181,7 @@ test.describe('OrigamTitle', () => {
         })
 
         test('default tag is h1 in playground variant', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const h1 = sandbox.locator('h1.origam-title').first()
             await expect(h1).toBeVisible({ timeout: 12000 })
@@ -171,7 +191,7 @@ test.describe('OrigamTitle', () => {
             // useDensity only emits a modifier class when the prop is explicitly set.
             // When density is not in the init-state, the root carries no density class.
             // This verifies the component does not add a spurious default class.
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const title = sandbox.locator('.origam-title').first()
             await expect(title).toBeVisible({ timeout: 12000 })

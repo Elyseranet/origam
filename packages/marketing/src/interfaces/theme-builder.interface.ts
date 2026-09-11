@@ -29,7 +29,20 @@ export interface IComponentThemeSurface {
     } | null
     props: Array<{
         name: string
-        type: { label: string | null; slug: string | null; kind: string | null }
+        type: {
+            label: string | null
+            slug: string | null
+            kind: string | null
+            /**
+             * Real literal values of the referenced `type`/`enum` doc entry
+             * (e.g. `['text', 'flat', 'elevated', …]` for `TVariant`), when
+             * `kind` is `'type'`/`'enum'` and the reference resolved. Lets
+             * `useThemeBuilderCatalog` derive a closed-enum prop's control
+             * options from the REAL DS type instead of a bare type-name
+             * reference — see `buildComponentThemeCatalog` server-side.
+             */
+            values?: string[] | null
+        }
         required?: boolean | null
         defaultValue?: string | null
     }>

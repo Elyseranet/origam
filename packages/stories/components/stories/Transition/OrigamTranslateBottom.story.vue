@@ -23,7 +23,7 @@
 			<template #controls="{ state }">
 				<StoryGroup title="Transition">
 					<HstText   v-model="state.name"   title="Name"/>
-					<HstSelect v-model="state.mode"   title="Mode"   :options="TRANSITION_MODE_OPTIONS"/>
+					<HstSelect v-model="state.mode"   title="Mode (inert — see docs)"   :options="TRANSITION_MODE_OPTIONS"/>
 					<HstText   v-model="state.origin" title="Origin (transform-origin)"/>
 				</StoryGroup>
 			</template>
@@ -86,7 +86,7 @@
 			<template #controls="{ state }">
 				<StoryGroup title="Design">
 					<HstText   v-model="state.name"   title="Name"/>
-					<HstSelect v-model="state.mode"   title="Mode"   :options="TRANSITION_MODE_OPTIONS"/>
+					<HstSelect v-model="state.mode"   title="Mode (inert — see docs)"   :options="TRANSITION_MODE_OPTIONS"/>
 					<HstText   v-model="state.origin" title="Origin (transform-origin)"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">

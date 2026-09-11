@@ -1,17 +1,33 @@
+import type { IBorderProps } from '../Commons/border.interface'
 import type {
-    IBorderProps,
     IBgColorProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
     ICommonsComponentProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-    ITagProps,
-    ITypographyProps
-} from '../../interfaces'
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
-export interface IListSubheader extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, ITypographyProps {
+export interface IListSubheader extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight'> {
     inset?: boolean,
     sticky?: boolean,
     title?: string,
+}
+
+/*********************************************************
+ * IListSubheaderEmits
+ *
+ * @description
+ * `<OrigamListSubheader>` emits nothing of its own — it's a purely
+ * presentational row (inset/sticky/title chrome).
+ ********************************************************/
+export interface IListSubheaderEmits {}
+
+/** Slot signatures for `<OrigamListSubheader>`. */
+export interface IListSubheaderSlots {
+    default?: (data: { title?: string }) => any
 }

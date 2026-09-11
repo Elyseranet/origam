@@ -10,6 +10,7 @@ import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
+import { HOTKEY_SEQUENCE_TIMEOUT } from '@origam/consts/Commons/hotkey.const'
 import { useHotkey } from '@origam/composables/Commons/hotkey.composable'
 
 // ─── helpers ────────────────────────────────────────────────────────────────
@@ -116,6 +117,47 @@ describe('useHotkey — modifier + key combos', () => {
         window.dispatchEvent(makeKeyEvent('z', { ctrl: true, shift: true }))
         wrapper.unmount()
         expect(cb).toHaveBeenCalledTimes(1)
+    })
+})
+
+// Pins HOTKEY_SEQUENCE_TIMEOUT (consts/Commons/hotkey.const.ts) — the
+// default inactivity window between two groups of a key sequence. It was
+// an inline `1000` in the composable's options destructure and nothing
+// asserted on it.
+describe('useHotkey — default sequence timeout', () => {
+    afterEach(() => {
+        vi.useRealTimers()
+        vi.restoreAllMocks()
+    })
+
+    it('HOTKEY_SEQUENCE_TIMEOUT is 1000 ms', () => {
+        expect(HOTKEY_SEQUENCE_TIMEOUT).toBe(1000)
+    })
+
+    it('fires when the second group lands before the timeout elapses', () => {
+        vi.useFakeTimers()
+        const cb = vi.fn()
+        const { wrapper } = mountWithHotkey('a-b', cb)
+
+        window.dispatchEvent(makeKeyEvent('a'))
+        vi.advanceTimersByTime(HOTKEY_SEQUENCE_TIMEOUT - 1)
+        window.dispatchEvent(makeKeyEvent('b'))
+
+        wrapper.unmount()
+        expect(cb).toHaveBeenCalledTimes(1)
+    })
+
+    it('resets the sequence once the timeout has elapsed', () => {
+        vi.useFakeTimers()
+        const cb = vi.fn()
+        const { wrapper } = mountWithHotkey('a-b', cb)
+
+        window.dispatchEvent(makeKeyEvent('a'))
+        vi.advanceTimersByTime(HOTKEY_SEQUENCE_TIMEOUT + 1)
+        window.dispatchEvent(makeKeyEvent('b'))
+
+        wrapper.unmount()
+        expect(cb).not.toHaveBeenCalled()
     })
 })
 

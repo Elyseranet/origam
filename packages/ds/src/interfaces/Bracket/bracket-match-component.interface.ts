@@ -1,21 +1,27 @@
 import type {
-    IActiveProps,
+    IActiveEmits,
+    IActiveProps
+} from '../Commons/active.interface'
+import type {
     IBgColorProps,
-    IBorderProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type {
     ICommonsComponentProps,
-    IDensityProps,
-    IDimensionProps,
-    IElevationProps,
-    IHoverProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
     ITagProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IHoverProps } from '../Commons/hover.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
 
-import type { TBracketMatchStatus } from '../../types'
+import type { TBracketMatchStatus } from '../../types/Bracket/bracket-match.type'
 
+import type { IBracketCompetitor } from './bracket-competitor.interface'
 import type { IBracketMatch } from './bracket-match.interface'
 
 /**
@@ -66,4 +72,30 @@ export interface IBracketMatchProps extends ICommonsComponentProps, ITagProps, I
      * @default true
      */
     interactive?: boolean
+}
+
+/** Emits fired by `<OrigamBracketMatch>` — click on the card itself
+ *  (outside a competitor row), and the two per-competitor channels the
+ *  card re-emits on behalf of its `competitor` slot / default rows. */
+/* Même défaut que `IBracketCompetitorEmits` : `useActive(props)` émet
+ * `update:active` via `onActive()`, câblé sur le clic. Prouvé au runtime
+ * dans `packages/tests/TU/origam/relay-emits-declaration.spec.ts`. */
+export interface IBracketMatchEmits extends IActiveEmits {
+    (e: 'click', match: IBracketMatch, event: MouseEvent): void
+    (e: 'competitor-click', competitor: IBracketCompetitor, match: IBracketMatch, side: 'A' | 'B', event: MouseEvent | KeyboardEvent): void
+    (e: 'winner-click', competitor: IBracketCompetitor, match: IBracketMatch, event: MouseEvent | KeyboardEvent): void
+}
+
+/** Scope for the `competitor` slot — one side (`A` or `B`) of the match.
+ *  `competitor` is `null` for a not-yet-determined participant (renders
+ *  "TBD" by default). */
+export interface IBracketMatchCompetitorSlot {
+    competitor: IBracketCompetitor | null
+    match: IBracketMatch
+    isWinner: boolean
+    side: 'A' | 'B'
+}
+
+export interface IBracketMatchSlots {
+    competitor?: (props: IBracketMatchCompetitorSlot) => any
 }

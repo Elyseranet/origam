@@ -82,9 +82,38 @@
 | `item` | `{ props, item, index }` | Custom delimiter button |
 | `item.{n}` | `{ props, item }` | Custom delimiter for index `n` |
 | `progress` | `{ percent }` | Custom progress bar |
+| `play-pause` | `{ isPaused, toggle, label }` | Replaces the autoplay pause/play control (only rendered when `cycle` is on) |
 | `prev` | `{ props, canMove }` | Custom previous arrow |
 | `next` | `{ props, canMove }` | Custom next arrow |
 | `arrows` | `{ canMoveBack, canMoveForward, nextProps, prevProps }` | Full arrows override |
+
+## Accessibility
+
+`<OrigamCarousel>` renders the WAI-ARIA *carousel* pattern across two levels.
+The root — inherited from `<OrigamWindow>` — carries `role="region"` and
+`aria-roledescription="carousel"`, plus a visually-hidden `role="status"`
+live region that announces the current slide. Each `<OrigamCarouselItem>`
+carries `role="group"` and `aria-roledescription="slide"`.
+
+### Autoplay and WCAG 2.2.2
+
+`cycle` starts the slideshow on its own and the default `interval` is 6 s, so
+[WCAG 2.2.2 *Pause, Stop, Hide*](https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html)
+(level A) requires a mechanism to stop it. Whenever `cycle` is on, the
+carousel therefore renders a pause/play `<button>` (`aria-pressed` reflects
+the paused state, and its `aria-label` is translated through
+`origam.carousel.pause` / `origam.carousel.play`).
+
+`prefers-reduced-motion: reduce` is also honoured — the timer never arms —
+but that only covers users who set that system preference, so it does not
+satisfy the criterion on its own.
+
+::: warning
+Overriding the `play-pause` slot **removes** the built-in control. The
+replacement must still offer a way to stop the animation, or the component
+falls out of conformance. The slot hands you `toggle` and `isPaused` for
+exactly that purpose.
+:::
 
 ## Emits
 

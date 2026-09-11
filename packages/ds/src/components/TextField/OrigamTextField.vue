@@ -187,33 +187,39 @@
 		setup
 >
 	import { computed, nextTick, ref, toRef, StyleValue, useAttrs, useSlots, watch } from 'vue'
-	import { OrigamCounter, OrigamField, OrigamInput } from '../../components'
+	import OrigamCounter from '../Counter/OrigamCounter.vue'
+	import OrigamField from '../Field/OrigamField.vue'
+	import OrigamInput from '../Input/OrigamInput.vue'
 
-	import {
-	useAdjacent,
-	useAdjacentInner,
-	useDefaults,
-	useFocus,
-	useLocale,
-	useMask,
-	useProps,
-	useStyle,
-	useVModel
-} from '../../composables'
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useAdjacentInner } from '../../composables/Commons/adjacentInner.composable'
+	import { useFocus } from '../../composables/Commons/focus.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useMask } from '../../composables/Commons/mask.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { ACTIVE_TEXT_FIELD_TYPE, INPUT_TEXT_FIELD_TYPE } from '../../consts'
+	import { ACTIVE_TEXT_FIELD_TYPE, INPUT_TEXT_FIELD_TYPE } from '../../consts/TextField/text-field.const'
 
-	import { vIntersect } from '../../directives'
+	import vIntersect from '../../directives/Intersect/intersect.directive'
 
-	import { DENSITY, DIRECTION, MDI_ICONS, TEXT_FIELD_TYPE } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
 
-	import type { ITextFieldProps, ITextFieldSlots} from '../../interfaces'
+	import type { ITextFieldProps, ITextFieldSlots } from '../../interfaces/TextField/text-field.interface'
 
 	import type { ITextFieldEmits } from '../../interfaces/TextField/text-field.interface'
 
-	import type { TOrigamField, TOrigamInput } from "../../types"
+	import type { TOrigamField } from '../../types/Field/field.type'
+	import type { TOrigamInput } from '../../types/Input/input.type'
 
-	import { applyMask, filterInputAttrs, forwardRefs, resolveMaskConfig } from '../../utils'
+	import { applyMask } from '../../utils/Commons/apply-mask.util'
+	import { filterInputAttrs } from '../../utils/Input/input.util'
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
+	import { resolveMaskConfig } from '../../utils/Commons/resolve-mask-config.util'
 
 	/*********************************************************
 	 * Global
@@ -222,7 +228,7 @@
 	 * Props, emits, slots and composables.
 	 ********************************************************/
 
-	const _props = withDefaults(defineProps<ITextFieldProps>(), {
+	const props = withDefaults(defineProps<ITextFieldProps>(), {
 		type: TEXT_FIELD_TYPE.TEXT,
 		centerAffix: true,
 		direction: DIRECTION.HORIZONTAL,
@@ -230,8 +236,6 @@
 		clearIcon: MDI_ICONS.CLOSE_CIRCLE_OUTLINE,
 		rounded: true
 	})
-	const props = useDefaults(_props)
-
 	const emits = defineEmits<ITextFieldEmits>()
 
 	defineSlots<ITextFieldSlots>()
@@ -530,7 +534,7 @@
 			// `:error` manually.
 			base.push(() => {
 				if (!model.value) return true
-				return maskIsValid.value || t('origam.validation.invalid_format', 'Invalid format')
+				return maskIsValid.value || t('origam.validation.invalid_format')
 			})
 		}
 
@@ -600,9 +604,9 @@
 
 		input {
 			color: inherit;
-			opacity: 0;
+			opacity: var(--origam-text-field__input---opacity, 0);
 			flex: 1;
-			transition: 0.15s opacity cubic-bezier(0.4, 0, 0.2, 1);
+			transition: var(--origam-text-field__input---transition-duration, 0.15s) opacity var(--origam-text-field__input---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
 			min-width: 0;
 
 			&:focus,
@@ -623,7 +627,7 @@
 			&.origam-field--no-label,
 			&.origam-field--active {
 				input {
-					opacity: 1;
+					opacity: var(--origam-text-field__input---opacity-active, 1);
 				}
 			}
 

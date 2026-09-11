@@ -1,4 +1,4 @@
-import type { ISample } from "../../interfaces"
+import type { ISample } from '../../interfaces/Commons/commons.interface'
 
 /**
  * Calculate impulse velocity.

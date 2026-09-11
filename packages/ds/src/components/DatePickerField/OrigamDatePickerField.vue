@@ -1,5 +1,6 @@
 <template>
 	<origam-text-field
+			:id="id"
 			ref="origamTextFieldRef"
 			v-model:focused="isFocused"
 			:aria-label="t(label)"
@@ -174,34 +175,48 @@
 		lang="ts"
 		setup
 >
-	import {
-		OrigamAvatar,
-		OrigamChip,
-		OrigamDatePicker,
-		OrigamIcon,
-		OrigamMenu,
-		OrigamTextField,
-		OrigamTranslateScale
-	} from "../../components"
+	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
+	import OrigamChip from '../Chip/OrigamChip.vue'
+	import OrigamDatePicker from '../DatePicker/OrigamDatePicker.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import OrigamMenu from '../Menu/OrigamMenu.vue'
+	import OrigamTextField from '../TextField/OrigamTextField.vue'
+	import OrigamTranslateScale from '../Transition/OrigamTranslateScale.vue'
 
-	import { useDate, useDefaults, useLocale, useProps, useTextColor, useVModel , useStyle} from "../../composables"
+	import { useDate } from '../../composables/Commons/date.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useTeleportTypography } from '../../composables/Commons/teleport-typography.composable'
+	import { useTextColor } from '../../composables/Commons/textColor.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ORIGAM_FORM_KEY } from "../../consts"
+	import { ORIGAM_FORM_KEY } from '../../consts/Form/form.const'
 
-	import { BLOCK, DENSITY, DIRECTION, KEYBOARD_VALUES, MDI_ICONS, TEXT_FIELD_TYPE } from "../../enums"
+	import { BLOCK } from '../../enums/Commons/anchor.enum'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
 
-	import type { IDatePickerFieldProps, IDatePickerProps } from "../../interfaces"
+	import type { IDatePickerFieldEmits, IDatePickerFieldProps, IDatePickerFieldSlots } from '../../interfaces/DatePickerField/date-picker-field.interface'
+	import type { IDatePickerProps } from '../../interfaces/DatePicker/date-picker.interface'
 
-	import type { TOrigamDatePicker, TOrigamMenu, TOrigamTextField, TTransitionProps } from "../../types"
+	import type { TOrigamDatePicker } from '../../types/DatePicker/date-picker.type'
+	import type { TOrigamMenu } from '../../types/Menu/menu.type'
+	import type { TOrigamTextField } from '../../types/TextField/text-field.type'
+	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
-	import { forwardRefs, isEmpty, matchesSelector, wrapInArray } from "../../utils"
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
+	import { isEmpty, matchesSelector, wrapInArray } from '../../utils/Commons/commons.util'
 
 	import { computed, inject, nextTick, ref, shallowRef, StyleValue, toRef, useSlots, watch } from "vue"
 
 	/*********************************************************
 	 * Global
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IDatePickerFieldProps>(), {
+	const props = withDefaults(defineProps<IDatePickerFieldProps>(), {
 		type: TEXT_FIELD_TYPE.TEXT,
 		centerAffix: true,
 		direction: DIRECTION.HORIZONTAL,
@@ -217,10 +232,9 @@
 		closeOnSelect: true
 	})
 
-	// `useDefaults` resolves each prop against theme.components['origam-date-picker-field']
-	// (OrigamBtn pattern). Pre-fix, the legacy `rounded: true` / `border: true`
-	// booleans always won, same forwarding-parity gap already fixed on Select.
-	const props = useDefaults(_props)
+	defineEmits<IDatePickerFieldEmits>()
+
+	defineSlots<IDatePickerFieldSlots>()
 
 	const {filterProps} = useProps<IDatePickerFieldProps>(props)
 
@@ -315,12 +329,33 @@
 	const menuDisabled = computed(() => {
 		return props.readonly || form?.isReadonly.value
 	})
+
+	// Typography bridge across the teleport — see `useTeleportTypography` for
+	// the full rationale. The calendar's weekday header, week-number column
+	// and day numbers, plus the popup title when one is set, size themselves
+	// with `rem`-based tokens, so they need the field's REAL font-size
+	// republished as those specific tokens, not just inherited.
+	const { typographyStyles: menuTypographyStyles } = useTeleportTypography(origamTextFieldRef, menu, (fontSize) => ({
+		'--origam-picker-title---font-size': fontSize,
+		'--origam-date-picker-month__weekday---font-size': fontSize,
+		'--origam-date-picker-month__weeks---font-size': fontSize,
+		'--origam-date-picker-month__day---font-size': fontSize
+	}))
+
 	const menuProps = computed(() => {
+		const consumerContentProps = (props.menuProps?.contentProps ?? {}) as Record<string, any>
+
 		return {
 			...props.menuProps,
 			activatorProps: {
 				...(props.menuProps?.activatorProps || {}),
 				'aria-haspopup': 'datepickerbox' // Set aria-haspopup to 'listbox'
+			},
+			contentProps: {
+				...consumerContentProps,
+				// The consumer's own style is listed last so it still wins —
+				// the bridge is a default, not a lock.
+				style: [menuTypographyStyles.value, consumerContentProps.style]
 			}
 		}
 	})
@@ -363,12 +398,21 @@
 
 	/*********************************************************
 	 * Chips
+	 *
+	 * @description
+	 * `bgColor` / `color` are deliberately OMITTED (#411, same defect and
+	 * same fix as OrigamSelect's chips under #456 — commit 331d9b62) —
+	 * they used to be hardcoded RGB literals, identical to Select's,
+	 * hiding the chip behind whatever theme was active. `OrigamChip`'s
+	 * own SCSS already reads `var(--origam-chip---background-color)` /
+	 * `var(--origam-chip---color)` with no inline fallback, and the
+	 * token stylesheets declare both (`light.css`/`dark.css`), so
+	 * leaving them unset lets Chip resolve its own themed default
+	 * instead of this component overriding it.
 	 ********************************************************/
 	const chipSlotProps = (item: string): Record<string, unknown> => {
 		return {
 			closable: props.closableChips,
-			bgColor: 'rgba(168, 168, 168, 1)',
-			color: 'rgb(255, 255, 255)',
 			border: true,
 			rounded: true,
 			'onClick:close': (e: Event) => handleChipClose(e, item),
@@ -476,7 +520,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(datePickerFieldStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(datePickerFieldStyles, () => props.id)
 
 
 	/*********************************************************

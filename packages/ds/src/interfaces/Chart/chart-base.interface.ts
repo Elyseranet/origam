@@ -1,20 +1,16 @@
-import type {
-    IBgColorProps,
-    IChartPoint,
-    IChartSeries,
-    ICommonsComponentProps,
-    IDimensionProps,
-    IElevationProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-    ITypographyProps
-} from '../../interfaces'
+import type { IBgColorProps } from '../Commons/color.interface'
+import type { IChartPoint } from './chart-point.interface'
+import type { IChartSeries } from './chart-series.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
-import type {
-    TChartLegendPosition,
-    TIntent
-} from '../../types'
+import type { TChartLegendPosition } from '../../types/Chart/chart-legend.type'
+import type { TIntent } from '../../types/Commons/intent.type'
 
 /**
  * Props shared across every chart type. Per-type components
@@ -48,11 +44,32 @@ export interface IChartBaseProps
     title?: string
     /** Optional subtitle rendered below the title. */
     subtitle?: string
-    /** Toggle the legend block. Default `true`. */
+    /**
+     * Toggle the legend block. Default `true`.
+     *
+     * ⛔ #545 — has **no effect** on `OrigamChartGauge`: a gauge is a
+     * single-value visualisation (only `series[0].data[0]` is read, extra
+     * series are ignored) with no legend markup in its template at all.
+     * Passing it warns once in dev builds (see `useUnsupportedProp`)
+     * instead of silently doing nothing — same treatment as `colorScheme`
+     * on Bullet/Candlestick/Heatmap/Map (#426).
+     */
     showLegend?: boolean
-    /** Anchor of the legend block. Default `'bottom'`. */
+    /**
+     * Anchor of the legend block. Default `'bottom'`.
+     *
+     * ⛔ #545 — has **no effect** on `OrigamChartGauge`, for the same
+     * reason as `showLegend` just above: no legend exists to anchor.
+     */
     legendPosition?: TChartLegendPosition
-    /** Toggle the hover tooltip. Default `true`. */
+    /**
+     * Toggle the hover tooltip. Default `true`.
+     *
+     * ⛔ #545 — has **no effect** on `OrigamChartGauge`: no tooltip markup
+     * exists in its template, and `IChartGaugeSlots` deliberately `Omit`s
+     * the `tooltip` slot the base family would otherwise expose. Passing
+     * it warns once in dev builds — same treatment as `colorScheme` (#426).
+     */
     showTooltip?: boolean
     /**
      * Animate paths / bars / slices on first paint and on data
@@ -65,6 +82,14 @@ export interface IChartBaseProps
      * Palette used when a series does not pin its own `color`.
      * Pass intent strings (cycled in order) or raw CSS colours.
      * Default cycles through the 8 origam intents.
+     *
+     * ⛔ #426 — has **no effect** on `OrigamChartBullet`,
+     * `OrigamChartCandlestick`, `OrigamChartHeatmap`, `OrigamChartMap`:
+     * each has its own colour model (uniform fill + range palette,
+     * binary bullish/bearish, or continuous gradient) with no
+     * per-series identity axis for a rotating palette to drive.
+     * Passing it on those four warns once in dev builds (see
+     * `useUnsupportedProp`) instead of silently doing nothing.
      */
     colorScheme?: Array<TIntent | string>
     /**

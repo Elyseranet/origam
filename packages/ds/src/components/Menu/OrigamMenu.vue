@@ -16,10 +16,10 @@
 			@keydown="handleKeydown"
 			@click:outside="handleClickOutside"
 	>
-		<template #activator="{props}">
+		<template #activator="{props: activatorSlotProps}">
 			<slot
 					name="activator"
-					v-bind="{props}"
+					v-bind="{props: mergeProps(activatorSlotProps, {onContextmenu: handleContextMenu})}"
 			/>
 		</template>
 
@@ -47,20 +47,22 @@
 								<origam-list-item
 										v-if="!hasChilds(item)"
 										class="origam-menu__item"
-										v-bind="item"
+										v-bind="menuItemProps(item)"
+										@click="handleSelect(item)"
 								/>
 								<origam-menu
 										v-else
+										v-bind="{...menuItemProps(item), ...overlayProps}"
+										:items="childItems(item)"
 										:offset="[8,8]"
 										:open-on-context-menu="false"
 										open-on-click
-										v-bind="{...item, ...overlayProps}"
 								>
 									<template #activator="{props}">
 										<origam-list-item
 												:append-icon="MDI_ICONS.CHEVRON_RIGHT"
 												class="origam-menu__item"
-												v-bind="{...props, ...item}"
+												v-bind="{...props, ...menuItemProps(item)}"
 										/>
 									</template>
 								</origam-menu>
@@ -78,36 +80,40 @@
 		setup
 >
 	import { computed, inject, mergeProps, nextTick, provide, ref, shallowRef, StyleValue, toRef, watch } from 'vue'
-	import {
-		OrigamList,
-		OrigamListGroup,
-		OrigamListItem,
-		OrigamListSubheader,
-		OrigamOverlay,
-		OrigamTranslateScale
-	} from '../../components'
+	import OrigamList from '../List/OrigamList.vue'
+	import OrigamListGroup from '../List/OrigamListGroup.vue'
+	import OrigamListItem from '../List/OrigamListItem.vue'
+	import OrigamListSubheader from '../List/OrigamListSubheader.vue'
+	import OrigamOverlay from '../Overlay/OrigamOverlay.vue'
+	import OrigamTranslateScale from '../Transition/OrigamTranslateScale.vue'
 
-	import {
-		useBothColor,
-		useDefaults,
-		useProps,
-		useScopeId,
-		useStateEffect,
-		useStyle,
-		useVModel
-	} from '../../composables'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useScopeId } from '../../composables/Commons/scopeId.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { ORIGAM_MENU_KEY } from '../../consts'
+	import { ORIGAM_MENU_KEY } from '../../consts/Menu/menu.const'
 
-	import { INLINE, KEYBOARD_VALUES, LOCATION_STRATEGIES, MDI_ICONS, SCROLL_STRATEGIES } from '../../enums'
+	import { INLINE } from '../../enums/Commons/anchor.enum'
+	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
+	import { LOCATION_STRATEGIES } from '../../enums/Commons/location.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { SCROLL_STRATEGIES } from '../../enums/Commons/scroll.enum'
 
-	import type { IItemProps, IMenuProps} from '../../interfaces'
+	import type { IItemProps } from '../../interfaces/Commons/item.interface'
+	import type { IListItemProps } from '../../interfaces/List/list-item.interface'
+	import type { IMenuProps } from '../../interfaces/Menu/menu.interface'
 
-	import type { IMenuEmits } from '../../interfaces/Menu/menu.interface'
+	import type { IMenuEmits, IMenuSlots } from '../../interfaces/Menu/menu.interface'
 
-	import type { TOrigamOverlay, TTransitionProps } from '../../types'
+	import type { TOrigamOverlay } from '../../types/Overlay/overlay.type'
+	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
-	import { focusableChildren, focusChild, forwardRefs, getNextElement, getUid } from '../../utils'
+	import { focusableChildren, focusChild, getNextElement, getPropertyFromItem, omit } from '../../utils/Commons/commons.util'
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 	/*********************************************************
 	 * Global
@@ -115,7 +121,7 @@
 	 * @description
 	 * Props, emits, filterProps and core refs for the Menu component.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IMenuProps>(), {
+	const props = withDefaults(defineProps<IMenuProps>(), {
 		closeDelay: 250,
 		closeOnContentClick: true,
 		locationStrategy: LOCATION_STRATEGIES.CONNECTED,
@@ -125,15 +131,16 @@
 		location: INLINE.RIGHT,
 		scrollStrategy: SCROLL_STRATEGIES.REPOSITION,
 		offset: 8,
+		// Matches `OrigamList`'s own default (see OrigamList.vue) so a
+		// consumer's item objects use the same nested-children key
+		// whether they render through `<origam-list>` or `<origam-menu>`.
+		itemChildren: 'children',
 		transition: () => ({component: OrigamTranslateScale}) as unknown as TTransitionProps
 	})
 
-	// `useDefaults` resolves each prop against theme.components['origam-menu']
-	// (OrigamBtn pattern) — without this, a theme's `location` / rounded /
-	// border / elevation config on the menu surface was a silent no-op.
-	const props = useDefaults(_props)
+	const emit = defineEmits<IMenuEmits>()
 
-	defineEmits<IMenuEmits>()
+	defineSlots<IMenuSlots>()
 
 	const {filterProps} = useProps<IMenuProps>(props)
 
@@ -185,7 +192,18 @@
 	const {scopeId} = useScopeId()
 
 	const uid = getUid()
-	const id = computed(() => props.id || `origam-menu--${uid}`)
+
+	/*********************************************************
+	 * id
+	 *
+	 * @description
+	 * Single tiret: this is a generated ELEMENT ID, not a BEM state
+	 * modifier — the repo's double-tiret grammar (`--{state}`) does not
+	 * apply here. See OrigamTooltip / OrigamConfirmWrapper /
+	 * OrigamCommandPalette for the same `${block}-${uid}` pattern.
+	 * Confirmed via #536.
+	 ********************************************************/
+	const id = computed(() => props.id || `origam-menu-${uid}`)
 
 	const origamOverlayRef = ref<TOrigamOverlay>()
 
@@ -266,6 +284,40 @@
 	const handleClickOutside = () => {
 		parent?.closeParents()
 	}
+
+	/*********************************************************
+	 * handleContextMenu
+	 *
+	 * @description
+	 * Relays the native `contextmenu` DOM event as the `contextmenu`
+	 * emit. Merged onto the activator slot's props (see the template)
+	 * rather than routed through `useActivator`/`OrigamOverlay` — those
+	 * are shared by every activator-based component (Tooltip, Dialog,
+	 * Snackbar, Picker, Drawer…), so wiring the emit there would grow the
+	 * blast radius to all of them for a channel `IMenuEmits` alone
+	 * declares. Deliberately unconditional (not gated on
+	 * `openOnContextMenu`): a parent wiring "show my OWN context menu
+	 * instead" is exactly the case where `openOnContextMenu` is `false`.
+	 ********************************************************/
+	const handleContextMenu = (e: MouseEvent) => {
+		emit('contextmenu', e)
+	}
+
+	/**
+	 * Fires the `select` emit for a picked leaf row.
+	 *
+	 * Bound only on the `v-if="!hasChilds(item)"` branch of the items
+	 * loop, so a row that merely opens a submenu stays silent — opening a
+	 * submenu is navigation, not a choice. The row's own `onClick` (spread
+	 * through `menuItemProps`) still runs: Vue merges the two handlers
+	 * rather than letting one replace the other, so consumers already
+	 * relying on per-item callbacks keep working unchanged.
+	 */
+	const handleSelect = (item: IListItemProps) => {
+		if (props.disabled) return
+
+		emit('select', item)
+	}
 	const handleKeydown = (e: KeyboardEvent) => {
 		if (props.disabled) return
 
@@ -328,8 +380,47 @@
 		return origamOverlayRef.value?.filterProps(props, ['activatorProps', 'id', 'class', 'style', 'role', 'modelValue', 'absolute', 'activator', 'target', 'openOnClick', 'openOnContextMenu'])
 	})
 
+	/**
+	 * ⛔ BUG 4 FIX — was `return item?.items`, hardcoding the child-items
+	 * key to the literal `'items'` and ignoring `props.itemChildren`
+	 * entirely (declared on `IItemProps`, defaulted above to `'children'`
+	 * — the SAME default `OrigamList` already uses). A consumer whose
+	 * item objects nest children under `children` (the DS-wide default,
+	 * e.g. `OrigamMediaController`'s `configMenuItems`) got `hasChilds()
+	 * === undefined` for every row: no nested `<origam-menu>` was ever
+	 * rendered, so a click on that row fell through to the PARENT menu's
+	 * ordinary `closeOnContentClick` handling and closed the whole menu
+	 * instead of opening a submenu. `childItems` now resolves the
+	 * children array through the same `getPropertyFromItem` helper
+	 * `transformListItem` (packages/ds/src/utils/List/list-item.util.ts)
+	 * already uses for `<origam-list>`, so both components agree on
+	 * where an item's children live.
+	 */
+	const childItems = (item: IItemProps): Array<any> => {
+		const children = getPropertyFromItem(item, props.itemChildren)
+
+		return Array.isArray(children) ? children : []
+	}
 	const hasChilds = (item: IItemProps) => {
-		return item?.items
+		return childItems(item).length > 0
+	}
+
+	/**
+	 * The raw children array lives under `item[props.itemChildren]` (e.g.
+	 * `item.children`) — it is NOT a real `<origam-menu>` / `<origam-list-
+	 * item>` prop. Spreading `item` as-is (`v-bind="item"`) therefore leaks
+	 * that key as a fallthrough attribute. When it cascades down to a
+	 * native DOM element it collides with the browser's own read-only
+	 * `Element.children` and Vue throws `TypeError: Cannot set property
+	 * children of #<Element> which has only a getter` on every render.
+	 * `menuItemProps` strips it before spreading (`childItems(item)` is
+	 * bound explicitly as `:items="…"` on the recursive `<origam-menu>`
+	 * instead — see the template).
+	 */
+	const menuItemProps = (item: IItemProps) => {
+		return typeof props.itemChildren === 'string'
+			? omit(item as Record<string, any>, [props.itemChildren])
+			: item
 	}
 
 	/*********************************************************

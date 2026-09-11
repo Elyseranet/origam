@@ -1,20 +1,33 @@
 import { computed, onUnmounted, Ref, ref } from 'vue'
-import { useEventListener } from '../../composables'
+import { useEventListener } from './eventListener.composable'
 
 import { AXIS, CLIENT_POSITION } from '../../enums'
 
-import type { TAxis } from '../../types'
+import type { TAxis } from '../../types/Commons/axis.type'
 
-import { addWindowListener, clamp, getPosition } from '../../utils'
+import { addWindowListener, clamp, getPosition } from '../../utils/Commons/commons.util'
 
 /*********************************************************
  * useDragResizer
+ *
+ * @description
+ * Attache un drag mousedown/touchstart sur `el` qui fait varier `value`
+ * (un `Ref<number>`, borne a `[min, max]` via `clamp`) le long de `axis` —
+ * utilise pour les poignees de redimensionnement (panneau, colonne…).
+ * `resizing` reste `true` tant que le geste (souris ou tactile) n'est pas
+ * termine.
+ *
+ * @description
+ * ⛔ Seul l'axe `X` (`AXIS.X`) est reellement gere : `isVertical` est
+ * commente en mort dans le code et un `// TODO - Rework for both axis`
+ * l'annonce explicitement. Passer `AXIS.Y` fait juste tomber dans la
+ * branche verticale de `getPosition` sans etre teste par ce composable.
  ********************************************************/
 export function useDragResizer (el: HTMLElement | undefined, value: Ref<number>, min: number, max: number, axis: TAxis) {
     const resizing = ref(false)
 
-    const removeListeners: Array<any> = []
-    const onUnmountedCleanupFns: Array<any> = []
+    const removeListeners: Array<() => void> = []
+    const onUnmountedCleanupFns: Array<() => void> = []
 
     onUnmounted(() => {
         onUnmountedCleanupFns.forEach((fn) => fn())
@@ -80,8 +93,18 @@ export function useDragResizer (el: HTMLElement | undefined, value: Ref<number>,
         ])
     }
 
+    /*********************************************************
+     * mousedown / touchstart wiring
+     *
+     * @description
+     * Cast to the generic `Event` handler shape `useEventListener` expects
+     * — same pattern already used above for `addWindowListener`. Vue always
+     * delivers a `MouseEvent` / `TouchEvent` for these events, the handler
+     * signatures are just narrower than the generic listener type the
+     * composable declares.
+     ********************************************************/
     if (el) {
-        useEventListener(el, 'mousedown', onMouseDown)
-        useEventListener(el, 'touchstart', onTouchStart)
+        useEventListener(el, 'mousedown', onMouseDown as (e: Event) => void)
+        useEventListener(el, 'touchstart', onTouchStart as (e: Event) => void)
     }
 }

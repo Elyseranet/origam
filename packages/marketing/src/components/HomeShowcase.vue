@@ -19,8 +19,8 @@ const sparklineSeries = computed(() => [
 ])
 
 const switchPairs = computed(() => [
-    { modelValue: false, inset: false, flat: false },
-    { modelValue: true,  inset: false, flat: false }
+    { modelValue: false, inset: false, flat: false, labelKey: 'home.showcase.switch.state_off', labelFallback: 'Off' },
+    { modelValue: true,  inset: false, flat: false, labelKey: 'home.showcase.switch.state_on',  labelFallback: 'On' }
 ])
 
 const STATUS_DOT_COLOR: Record<string, string> = {
@@ -228,6 +228,7 @@ const STATUS_DOT_COLOR: Record<string, string> = {
                             :model-value="variant.modelValue"
                             :inset="variant.inset"
                             :flat="variant.flat"
+                            :label="t(variant.labelKey, variant.labelFallback)"
                             readonly
                             :data-cy="`showcase-switch-${index}`"
                         />

@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:cite="cite"
 			:class="blockquoteClasses"
 			:style="blockquoteStyles"
@@ -19,14 +20,18 @@
 				v-if="hasAttribution"
 				class="origam-blockquote__attribution"
 		>
-			<span class="origam-blockquote__dash" aria-hidden="true">— </span>
+			<span
+					v-if="hasAuthor"
+					class="origam-blockquote__dash"
+					aria-hidden="true"
+			>— </span>
 
 			<span class="origam-blockquote__author">
 				<slot name="author">{{ author }}</slot>
 			</span>
 
 			<span
-					v-if="hasSource"
+					v-if="hasAuthor && hasSource"
 					class="origam-blockquote__separator"
 					aria-hidden="true"
 			>, </span>
@@ -53,22 +58,21 @@
 		useSlots
 } from 'vue'
 
-	import {
-		useBorder,
-		useElevation,
-		useMargin,
-		usePadding,
-		useRounded,
-		useTypography
-	} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
 	import { QUOTE_MARKS_BY_LANG } from '../../consts/Blockquote/blockquote.const'
 
-	import type { IBlockquoteProps } from '../../interfaces'
+	import type { IBlockquoteEmits, IBlockquoteProps, IBlockquoteSlots } from '../../interfaces/Blockquote/blockquote.interface'
 
-	import type { TBlockquoteLang, TColor } from '../../types'
+	import type { TBlockquoteLang } from '../../types/Blockquote/blockquote.type'
+	import type { TColor } from '../../types/Commons/color.type'
 
-	import { isIntent, warnDeprecatedProp } from '../../utils'
+	import { isIntent, warnDeprecatedProp } from '../../utils/Commons/color.util'
 
 	/*********************************************************
 	 * Global
@@ -85,6 +89,10 @@
 		variant: 'default',
 		lang: 'auto'
 	})
+
+	defineEmits<IBlockquoteEmits>()
+
+	defineSlots<IBlockquoteSlots>()
 
 	const slots = useSlots()
 
@@ -185,8 +193,9 @@
 		// `false` in its union, so the compiler-generated default mirrors
 		// plain `boolean` props) — `!== undefined` would therefore always
 		// be true and permanently short-circuit the `bgColor` fallback.
-		// Same idiom as `useColorEffect`'s `hoverColor`/`hoverBgColor`
-		// resolution (`props.hoverBgColor ? props.hoverBgColor : props.bgColor`).
+		// Same truthy-fallback idiom used across the DS color composables
+		// (e.g. `props.bgColor || props.color`) to route around the `false`
+		// default rather than `undefined`.
 		if (props.accentColor) return props.accentColor
 		if (props.bgColor) {
 			warnDeprecatedProp('OrigamBlockquote', 'bgColor', 'accentColor')
@@ -274,6 +283,7 @@
 		--origam-blockquote---resolved-font-style: var(--origam-blockquote---font-style, normal);
 		--origam-blockquote---resolved-font-weight: var(--origam-blockquote---font-weight, 400);
 		--origam-blockquote---resolved-line-height: var(--origam-blockquote---line-height, 1.625);
+		--origam-blockquote---resolved-letter-spacing: var(--origam-blockquote---letter-spacing, normal);
 		--origam-blockquote---resolved-accent-color: var(--origam-blockquote__accent---color, var(--origam-color__action--primary---bg, #7c3aed));
 		--origam-blockquote---resolved-quote-mark-color: var(--origam-blockquote---quote-mark-color, var(--origam-color__action--primary---bg, #7c3aed));
 		--origam-blockquote---resolved-author-color: var(--origam-blockquote__author---color, var(--origam-color__text---secondary, #525252));
@@ -287,6 +297,7 @@
 		font-style: var(--origam-blockquote---resolved-font-style);
 		font-weight: var(--origam-blockquote---resolved-font-weight);
 		line-height: var(--origam-blockquote---resolved-line-height);
+		letter-spacing: var(--origam-blockquote---resolved-letter-spacing);
 		color: var(--origam-blockquote---color, var(--origam-color__text---primary, #171717));
 		box-sizing: border-box;
 	}

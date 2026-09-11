@@ -1,17 +1,17 @@
 import {
     computed,
     type ComputedRef,
+    type MaybeRefOrGetter,
     nextTick,
     ref,
     type Ref,
+    toValue,
     unref
 } from 'vue'
 
-import type {
-    IUseInlineEditOptions,
-    TInlineEditRule,
-    TInlineEditValidator
-} from '../../interfaces'
+import type { IUseInlineEditOptions, TInlineEditValidator } from '../../interfaces/InlineEdit/inline-edit.interface'
+
+import { collectRuleErrors } from '../../utils/Commons/validation.util'
 
 /**
  * Coerce any v-model value into a string for the input draft. Numbers
@@ -47,9 +47,31 @@ const toDraft = (value: unknown): string => {
  */
 export function useInlineEdit (
     modelValue: Ref<string | number> | ComputedRef<string | number>,
-    options: IUseInlineEditOptions = {}
+    options: MaybeRefOrGetter<IUseInlineEditOptions> = {}
 ) {
-    const trim = options.trim ?? true
+    /*********************************************************
+     * options must be re-read on every call, not snapshotted (#490)
+     *
+     * @description
+     * `options` accepts `MaybeRefOrGetter` — a plain object still works
+     * unchanged (existing consumers, this file's own test suite) — but
+     * the SFC now passes a GETTER (`() => ({ rules: props.rules, … })`).
+     * `resolveOptions()` re-runs `toValue()` at every call site below,
+     * so `confirm()` always validates against the CURRENT `rules` /
+     * `validate`, not the object captured when `useInlineEdit()` was
+     * called once in `setup()`.
+     * @description
+     * Wrapping the WHOLE options bag in a getter — rather than wrapping
+     * each of `rules` / `validate` / `trim` individually in its own
+     * `MaybeRefOrGetter` — sidesteps a real footgun: `validate` is
+     * ITSELF a function (`(value: string) => …`). `toValue()` treats
+     * ANY function as a getter and calls it with zero arguments, so a
+     * per-field `toValue(options.validate)` would invoke the consumer's
+     * validator with `value === undefined` instead of returning it.
+     ********************************************************/
+    const resolveOptions = (): IUseInlineEditOptions => toValue(options)
+
+    const trim = computed(() => resolveOptions().trim ?? true)
 
     const isEditing: Ref<boolean> = ref(false)
     const draft: Ref<string> = ref('')
@@ -69,7 +91,7 @@ export function useInlineEdit (
      * emitted value. Always re-derived from `draft.value` — exposing it
      * as a computed costs nothing and keeps the contract testable.
      */
-    const normalisedDraft = computed<string>(() => trim ? draft.value.trim() : draft.value)
+    const normalisedDraft = computed<string>(() => trim.value ? draft.value.trim() : draft.value)
 
     /** True when the live draft would resolve to an empty string. */
     const isDraftEmpty = computed<boolean>(() => normalisedDraft.value.length === 0)
@@ -107,13 +129,20 @@ export function useInlineEdit (
         error.value = null
         isEditing.value = false
         draft.value = ''
-        options.onCancel?.()
+        resolveOptions().onCancel?.()
     }
 
     /**
      * Run the validator (if any). Resolves to the error message
      * (`string`) when the value is rejected, or `null` when the value
      * is accepted (or there is no validator).
+     *
+     * A validator that rejects WITHOUT returning its own message falls
+     * back to `options.invalidMessage` — the localisation seam that keeps
+     * this composable free of `useLocale()`, and therefore usable without
+     * `createOrigam()`. `<OrigamInlineEdit>` fills it with
+     * `t('origam.inline_edit.invalid_value')`; headless consumers that
+     * omit it keep the English literal.
      */
     const runValidator = async (
         value: string,
@@ -122,26 +151,9 @@ export function useInlineEdit (
         if (!validator) return null
         const verdict = await validator(value)
         if (verdict === true) return null
-        return typeof verdict === 'string' ? verdict : 'Invalid value'
-    }
-
-    /**
-     * Run the `rules` array sequentially. Returns the first error
-     * message found, or `null` when all rules pass (or no rules
-     * are provided). Mirrors the evaluation logic of `useValidation`
-     * but without the form-provider lifecycle coupling.
-     */
-    const runRules = async (
-        value: string,
-        rules?: Array<TInlineEditRule>
-    ): Promise<string | null> => {
-        if (!rules || rules.length === 0) return null
-        for (const rule of rules) {
-            const result = await rule(value)
-            if (result === true) continue
-            if (typeof result === 'string') return result
-        }
-        return null
+        return typeof verdict === 'string'
+            ? verdict
+            : (resolveOptions().invalidMessage ?? 'Invalid value')
     }
 
     /**
@@ -153,6 +165,14 @@ export function useInlineEdit (
      * 2. `validate` is only evaluated if all rules pass.
      * This ensures the declarative contract (`rules`) takes precedence
      * and the imperative callback (`validate`) is the last gate.
+     *
+     * The `rules` pass is `collectRuleErrors(…, 1)` — the SAME loop
+     * `useValidation.validate()` runs, capped at one error. This file
+     * used to carry its own `runRules()` copy, which had silently
+     * diverged: a rule returning `false` passed here and failed there.
+     * Only the LOOP is shared — it is a pure util, so `useInlineEdit`
+     * keeps its deliberate independence from `ORIGAM_FORM_KEY` and from
+     * every lifecycle hook `useValidation` installs.
      */
     const confirm = async (): Promise<boolean> => {
         if (!isEditing.value) return false
@@ -161,16 +181,25 @@ export function useInlineEdit (
         const next = normalisedDraft.value
         error.value = null
 
-        const hasRules = options.rules && options.rules.length > 0
-        const hasValidate = !!options.validate
+        /*********************************************************
+         * Re-read NOW
+         *
+         * @description
+         * Not the object captured when useInlineEdit() was called —
+         * this is what makes a `rules`/`validate` swap after mount
+         * take effect on the very next confirm() (#490).
+         ********************************************************/
+        const currentOptions = resolveOptions()
+        const hasRules = currentOptions.rules && currentOptions.rules.length > 0
+        const hasValidate = !!currentOptions.validate
 
         if (hasRules || hasValidate) {
             isPending.value = true
             let verdict: string | null = null
             try {
-                verdict = await runRules(next, options.rules)
+                verdict = (await collectRuleErrors(currentOptions.rules, next, 1))[0] ?? null
                 if (verdict === null) {
-                    verdict = await runValidator(next, options.validate)
+                    verdict = await runValidator(next, currentOptions.validate)
                 }
             } catch (err) {
                 verdict = err instanceof Error ? err.message : String(err)
@@ -180,13 +209,13 @@ export function useInlineEdit (
             isPending.value = false
             if (verdict !== null) {
                 error.value = verdict
-                options.onError?.(verdict)
+                currentOptions.onError?.(verdict)
                 return false
             }
         }
 
         isEditing.value = false
-        options.onConfirm?.(next)
+        currentOptions.onConfirm?.(next)
         draft.value = ''
         // Yield once so consumers can observe the post-commit state.
         await nextTick()

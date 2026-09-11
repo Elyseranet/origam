@@ -4,6 +4,9 @@ import { test, expect } from '@playwright/test'
  * Pattern canonique — navigation directe par variantId (cf. btn.spec.ts).
  * JAMAIS networkidle (Histoire garde un WS HMR ouvert → timeout garanti).
  *
+ * Variants visités (index → titre, 0-based) :
+ *   15 → Color — default vs primary
+ *
  * Variant utilisé : Color — default vs primary (index 15) — expose les
  * deux paginations (default + colored) sur la même page, idéal pour
  * auditer le contraste fg/bg en mode coloré.
@@ -17,7 +20,7 @@ const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 test.setTimeout(180_000)
 
 test('DEBUG pagination — colored mode: white text on primary bg, NOT violet on violet', async ({ page }) => {
-    await page.goto(variantUrl(15))
+    await page.goto(variantUrl(15), { waitUntil: 'domcontentloaded' })
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
     const allRoots = await sandbox.locator('.origam-pagination').all()

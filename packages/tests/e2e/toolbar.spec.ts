@@ -30,7 +30,7 @@ test.describe('OrigamToolbar', () => {
 	test.setTimeout(45000)
 
 	test('Basic — toolbar renders with title', async ({ page }) => {
-		await page.goto(variantUrl(14))
+		await page.goto(variantUrl(14), { waitUntil: 'domcontentloaded' })
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const toolbar = sandbox.locator('[data-cy="toolbar-basic"]')
 		await expect(toolbar).toBeVisible({ timeout: 20000 })
@@ -38,42 +38,42 @@ test.describe('OrigamToolbar', () => {
 	})
 
 	test('Color — toolbar renders with color controls', async ({ page }) => {
-		await page.goto(variantUrl(3))
+		await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const toolbar = sandbox.locator('[data-cy="toolbar-color"]')
 		await expect(toolbar).toBeVisible({ timeout: 20000 })
 	})
 
 	test('Elevation — toolbar renders with elevation control', async ({ page }) => {
-		await page.goto(variantUrl(4))
+		await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const toolbar = sandbox.locator('[data-cy="toolbar-elevation"]')
 		await expect(toolbar).toBeVisible({ timeout: 20000 })
 	})
 
 	test('Rounded — toolbar renders with rounded control', async ({ page }) => {
-		await page.goto(variantUrl(5))
+		await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const toolbar = sandbox.locator('[data-cy="toolbar-rounded"]')
 		await expect(toolbar).toBeVisible({ timeout: 20000 })
 	})
 
 	test('Density — toolbar renders with density control', async ({ page }) => {
-		await page.goto(variantUrl(6))
+		await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const toolbar = sandbox.locator('[data-cy="toolbar-density"]')
 		await expect(toolbar).toBeVisible({ timeout: 20000 })
 	})
 
 	test('Modifiers — collapse modifier adds collapse class', async ({ page }) => {
-		await page.goto(variantUrl(7))
+		await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const toolbar = sandbox.locator('[data-cy="toolbar-modifiers"]')
 		await expect(toolbar).toBeVisible({ timeout: 20000 })
 	})
 
 	test('Slot — prepend — prepend area renders button', async ({ page }) => {
-		await page.goto(variantUrl(10))
+		await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const toolbar = sandbox.locator('[data-cy="toolbar-slot-prepend"]')
 		await expect(toolbar).toBeVisible({ timeout: 20000 })
@@ -82,7 +82,7 @@ test.describe('OrigamToolbar', () => {
 	})
 
 	test('Slot — append — append area renders buttons', async ({ page }) => {
-		await page.goto(variantUrl(11))
+		await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const toolbar = sandbox.locator('[data-cy="toolbar-slot-append"]')
 		await expect(toolbar).toBeVisible({ timeout: 20000 })
@@ -91,21 +91,21 @@ test.describe('OrigamToolbar', () => {
 	})
 
 	test('Slot — content — content area is visible', async ({ page }) => {
-		await page.goto(variantUrl(12))
+		await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const toolbar = sandbox.locator('[data-cy="toolbar-slot-content"]')
 		await expect(toolbar).toBeVisible({ timeout: 20000 })
 	})
 
 	test('Slot — title — custom title renders inside toolbar', async ({ page }) => {
-		await page.goto(variantUrl(13))
+		await page.goto(variantUrl(13), { waitUntil: 'domcontentloaded' })
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const toolbar = sandbox.locator('[data-cy="toolbar-slot-title"]')
 		await expect(toolbar).toBeVisible({ timeout: 20000 })
 	})
 
 	test('Playground — toolbar renders with all controls', async ({ page }) => {
-		await page.goto(variantUrl(14))
+		await page.goto(variantUrl(14), { waitUntil: 'domcontentloaded' })
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const toolbar = sandbox.locator('[data-cy="toolbar-playground"]')
 		await expect(toolbar).toBeVisible({ timeout: 20000 })
@@ -136,7 +136,7 @@ test.describe('OrigamToolbar', () => {
 		})
 
 	test('Border showcase — default toolbar is borderless on all four sides', async ({ page }) => {
-		await page.goto(variantUrl(8))
+		await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		await expect(sandbox.locator('[data-cy="toolbar-border-default"]')).toBeVisible({ timeout: 20000 })
 
@@ -145,7 +145,7 @@ test.describe('OrigamToolbar', () => {
 	})
 
 	test('Border showcase — border={true} produces a thin border on all four sides', async ({ page }) => {
-		await page.goto(variantUrl(8))
+		await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		await expect(sandbox.locator('[data-cy="toolbar-border-true"]')).toBeVisible({ timeout: 20000 })
 
@@ -160,28 +160,28 @@ test.describe('OrigamToolbar', () => {
 	})
 
 	test('Border showcase — border="bottom" emits 1px ONLY on bottom', async ({ page }) => {
-		await page.goto(variantUrl(8))
+		await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const w = await widths(sandbox, '[data-cy="toolbar-border-bottom"]')
 		expect(w).toEqual({ top: '0px', right: '0px', bottom: '1px', left: '0px' })
 	})
 
 	test('Border showcase — border="top" emits 1px ONLY on top', async ({ page }) => {
-		await page.goto(variantUrl(8))
+		await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const w = await widths(sandbox, '[data-cy="toolbar-border-top"]')
 		expect(w).toEqual({ top: '1px', right: '0px', bottom: '0px', left: '0px' })
 	})
 
 	test('Border showcase — border="right" emits 1px ONLY on right', async ({ page }) => {
-		await page.goto(variantUrl(8))
+		await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const w = await widths(sandbox, '[data-cy="toolbar-border-right"]')
 		expect(w).toEqual({ top: '0px', right: '1px', bottom: '0px', left: '0px' })
 	})
 
 	test('Border showcase — border="left" emits 1px ONLY on left', async ({ page }) => {
-		await page.goto(variantUrl(8))
+		await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const w = await widths(sandbox, '[data-cy="toolbar-border-left"]')
 		expect(w).toEqual({ top: '0px', right: '0px', bottom: '0px', left: '1px' })

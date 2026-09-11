@@ -1,4 +1,4 @@
-import type { IOrigamTheme } from '../interfaces'
+import type { IOrigamTheme } from '../interfaces/Commons/theme.interface'
 
 // origam's DEFAULT identity ("sobre") authored as clean IOrigamTheme objects —
 // vars (semantic + scale tokens) + per-component default props, NO CSS dump.
@@ -163,7 +163,19 @@ export const origamLightTheme: IOrigamTheme = {
     components: {
         'origam-alert': { tag: 'div', density: 'default' },
         'origam-audio': { tag: 'article', variant: 'expanded', position: 'relative' },
-        'origam-avatar': { tag: 'div', size: 'default', rounded: 'full', color: 'primary' },
+        /*********************************************************
+         * origam-avatar — no forced `color` (#530)
+         *
+         * @description
+         * A global constant foreground can't stay readable against every
+         * `bgColor` a consumer picks (a text-secondary grey by default is
+         * fine unstyled; violet-on-amber or violet-on-blue once a consumer
+         * sets `bgColor="warning"`/`"info"` is not). Leaving `color` unset
+         * lets `OrigamAvatar`'s own per-instance auto-contrast
+         * (`useStateEffect`, `bgColor` → matching `fg` token) do the job it
+         * was built for instead of being pre-empted by a static default.
+         ********************************************************/
+        'origam-avatar': { tag: 'div', size: 'default', rounded: 'full' },
         'origam-badge': { tag: 'div', location: 'top right' },
         'origam-blockquote': { tag: 'blockquote', variant: 'default' },
         'origam-bottom-nav': { tag: 'nav', position: 'start' },
@@ -172,7 +184,7 @@ export const origamLightTheme: IOrigamTheme = {
         'origam-btn': { variant: 'text', size: 'small' },
         'origam-btn-group': { variant: 'text', size: 'small' },
         'origam-btn-toggle': { variant: 'text', size: 'small' },
-        'origam-card': { tag: 'div', density: 'default', rounded: 'lg', border: true, flat: true },
+        'origam-card': { tag: 'div', density: 'default', rounded: 'lg', border: true },
         'origam-checkbox': { density: 'default' },
         'origam-chip': { size: 'small', variant: 'outlined', color: 'primary', pill: true, border: true, borderColor: 'var(--origam-color__action--primary---bg)' },
         'origam-clipboard': { tag: 'span' },
@@ -202,7 +214,7 @@ export const origamLightTheme: IOrigamTheme = {
         'origam-number-field': { border: true, rounded: true },
         'origam-number-format': { tag: 'span' },
         'origam-overlay': { location: 'bottom' },
-        'origam-pagination': { tag: 'div' },
+        'origam-pagination': { tag: 'nav' },
         'origam-parallax': { tag: 'div' },
         'origam-password-field': { density: 'default', rounded: true },
         'origam-progress': { tag: 'div', size: 'default' },
@@ -317,7 +329,19 @@ export const origamDarkTheme: IOrigamTheme = {
     components: {
         'origam-alert': { tag: 'div', density: 'default' },
         'origam-audio': { tag: 'article', variant: 'expanded', position: 'relative' },
-        'origam-avatar': { tag: 'div', size: 'default', rounded: 'full', color: 'primary' },
+        /*********************************************************
+         * origam-avatar — no forced `color` (#530)
+         *
+         * @description
+         * A global constant foreground can't stay readable against every
+         * `bgColor` a consumer picks (a text-secondary grey by default is
+         * fine unstyled; violet-on-amber or violet-on-blue once a consumer
+         * sets `bgColor="warning"`/`"info"` is not). Leaving `color` unset
+         * lets `OrigamAvatar`'s own per-instance auto-contrast
+         * (`useStateEffect`, `bgColor` → matching `fg` token) do the job it
+         * was built for instead of being pre-empted by a static default.
+         ********************************************************/
+        'origam-avatar': { tag: 'div', size: 'default', rounded: 'full' },
         'origam-badge': { tag: 'div', location: 'top right' },
         'origam-blockquote': { tag: 'blockquote', variant: 'default' },
         'origam-bottom-nav': { tag: 'nav', position: 'start' },
@@ -326,7 +350,7 @@ export const origamDarkTheme: IOrigamTheme = {
         'origam-btn': { variant: 'text', size: 'small' },
         'origam-btn-group': { variant: 'text', size: 'small' },
         'origam-btn-toggle': { variant: 'text', size: 'small' },
-        'origam-card': { tag: 'div', density: 'default', rounded: 'lg', border: true, flat: true },
+        'origam-card': { tag: 'div', density: 'default', rounded: 'lg', border: true },
         'origam-checkbox': { density: 'default' },
         'origam-chip': { size: 'small', variant: 'outlined', color: 'primary', pill: true, border: true, borderColor: 'var(--origam-color__action--primary---bg)' },
         'origam-clipboard': { tag: 'span' },
@@ -356,7 +380,7 @@ export const origamDarkTheme: IOrigamTheme = {
         'origam-number-field': { border: true, rounded: true },
         'origam-number-format': { tag: 'span' },
         'origam-overlay': { location: 'bottom' },
-        'origam-pagination': { tag: 'div' },
+        'origam-pagination': { tag: 'nav' },
         'origam-parallax': { tag: 'div' },
         'origam-password-field': { density: 'default', rounded: true },
         'origam-progress': { tag: 'div', size: 'default' },

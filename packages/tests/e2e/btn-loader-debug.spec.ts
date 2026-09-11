@@ -22,7 +22,7 @@ const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
 test('DEBUG btn loader — inspect line / circular / skeleton DOM + styles', async ({ page }) => {
     // Navigate directly to "Prop — loading (interactive)" (index 4).
-    await page.goto(variantUrl(4))
+    await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 
