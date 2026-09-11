@@ -1162,6 +1162,8 @@
   --origam-input---density-compact-density: -8px;
   --origam-input---density-comfortable-density: var(--origam-space---2);
   --origam-inline-edit---transition-duration: var(--origam-motion__duration---medium);
+  --origam-inline-edit--editing---background-color: var(--origam-color__surface---raised);
+  --origam-inline-edit--has-error---outline-color: var(--origam-color__feedback--danger---border);
   --origam-inline-edit__display---padding-block: var(--origam-space---1);
   --origam-inline-edit__display---padding-inline: var(--origam-space---2);
   --origam-inline-edit__display---border-radius: var(--origam-radius---sm);
