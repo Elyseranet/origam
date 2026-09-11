@@ -258,10 +258,17 @@
 	 * form defers the read to `useVModel`'s internal `seed()`, which only
 	 * runs on first actual access — after the resolver has already run.
 	 ********************************************************/
-	// `modelValue` n'a plus de defaut (#640) pour que le repli vers `start` soit
-	// atteignable. Son type devient donc `number | undefined`, alors qu'au runtime
-	// `start` (defaut 1) garantit toujours une valeur. `transformIn` rend cette
-	// garantie explicite plutot que de la masquer par un cast.
+	/*********************************************************
+	 * Page
+	 *
+	 * @description
+	 * `modelValue` n'a plus de defaut (#640) pour que le repli vers `start`
+	 * soit atteignable. Son type devient donc `number | undefined`, alors
+	 * qu'au runtime `start` (defaut 1) garantit toujours une valeur.
+	 * `transformIn` rend cette garantie EXPLICITE a l'execution plutot que
+	 * de la masquer par un cast, qui aurait eteint le rouge de vue-tsc sans
+	 * repondre a la question.
+	 ********************************************************/
 	const page = useVModel(props, 'modelValue', () => props.start, (v?: number) => v ?? props.start)
 
 	/*********************************************************
