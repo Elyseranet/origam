@@ -174,7 +174,7 @@
 
 			padding-block: 0;
 			padding-inline: 0;
-			border-width: 0;
+			--origam-kbd---border-width: 0;
 			background-color: transparent;
 			box-shadow: none;
 			min-width: 0;
@@ -186,23 +186,25 @@
 
 		&--variant-outlined,
 		&--variant-outlined &__key {
-			--origam-kbd---background-color: var(--origam-color__surface---raised, #fff);
+			--origam-kbd---background-color: var(--origam-kbd--outlined---background-color, var(--origam-color__surface---raised, #fff));
 			--origam-kbd---border-color: var(--origam-color__border---subtle, #d4d4d4);
+			--origam-kbd---border-width: var(--origam-kbd--outlined---border-width, 1px);
 			--origam-kbd---box-shadow: 0 1px 0 0 color-mix(in srgb, currentColor 12%, transparent),
 			                            inset 0 1px 0 0 color-mix(in srgb, white 50%, transparent);
 		}
 
 		&--variant-filled,
 		&--variant-filled &__key {
-			--origam-kbd---background-color: var(--origam-color__surface---overlay, #f5f5f5);
+			--origam-kbd---background-color: var(--origam-kbd__filled---background-color, var(--origam-color__surface---overlay, #f5f5f5));
 			--origam-kbd---border-color: var(--origam-color__border---subtle, #d4d4d4);
+			--origam-kbd---border-width: var(--origam-kbd__filled---border-width, 1px);
 			--origam-kbd---box-shadow: 0 1px 2px 0 color-mix(in srgb, currentColor 18%, transparent),
 			                            inset 0 1px 0 0 color-mix(in srgb, white 60%, transparent);
 		}
 
 		&--variant-tonal,
 		&--variant-tonal &__key {
-			--origam-kbd---background-color: color-mix(in srgb, currentColor 8%, transparent);
+			--origam-kbd---background-color: var(--origam-kbd__tonal---background-color, color-mix(in srgb, currentColor 8%, transparent));
 			--origam-kbd---border-color: transparent;
 			--origam-kbd---border-width: var(--origam-kbd__tonal---border-width, 0px);
 			--origam-kbd---box-shadow: none;
@@ -213,7 +215,7 @@
 		&--combination#{&}--variant-tonal {
 			background-color: transparent;
 			border-color: transparent;
-			border-width: 0;
+			--origam-kbd---border-width: 0;
 			box-shadow: none;
 		}
 
