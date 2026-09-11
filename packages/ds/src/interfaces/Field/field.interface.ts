@@ -39,7 +39,6 @@ export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColo
      *   - `false` / omitted — no error.
      */
     error?: string | boolean
-    flat?: boolean
     inline?: boolean
     label?: string
     prefix?: string

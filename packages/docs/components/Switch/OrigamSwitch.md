@@ -2,7 +2,7 @@
 
 `<OrigamSwitch>` is a toggle switch built on `<OrigamInput>` +
 `<OrigamSelectionControl type="checkbox">`. It adds an inset track, a thumb,
-and optional `flat` / `indeterminate` modes on top of the standard mixin set.
+and an optional `indeterminate` mode on top of the standard mixin set.
 
 ## Basic usage with v-model
 
@@ -72,12 +72,11 @@ canonical statement of this contract.
 </template>
 ```
 
-## Inset & flat
+## Inset
 
 ```vue
 <template>
   <OrigamSwitch inset label="Inset track" />
-  <OrigamSwitch flat  label="No elevation on thumb" />
 </template>
 ```
 
