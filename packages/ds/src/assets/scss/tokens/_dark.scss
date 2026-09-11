@@ -386,6 +386,7 @@
   --origam-badge__wrapper---margin-block-end: var(--origam-space---0);
   --origam-badge__wrapper---margin-inline-start: var(--origam-space---0);
   --origam-badge__wrapper---margin-inline-end: var(--origam-space---0);
+  --origam-badge__badge---gap: 2px;
   --origam-badge__badge---background-color: var(--origam-color__action--primary---bg);
   --origam-badge__badge---color: var(--origam-color__action--primary---fg);
   --origam-badge__badge---border-color: currentColor;
@@ -2680,7 +2681,7 @@
   --origam-chart-pareto__line-dot---stroke: var(--origam-color__surface---default);
   --origam-chart-range-selector---padding-inline: var(--origam-space---1);
   --origam-chart-range-selector__list---gap: 2px;
-  --origam-chart-range-selector__btn---padding: 3 8pxpx;
+  --origam-chart-range-selector__btn---padding: 3px 8px;
   --origam-chart-range-selector__btn---border-color: #d1d5db;
   --origam-chart-range-selector__btn---border-radius: var(--origam-radius---sm);
   --origam-chart-range-selector__btn---background-color: rgba(0, 0, 0, 0);

@@ -276,6 +276,7 @@ export type TTokenName =
   | '--origam-badge__badge---color'
   | '--origam-badge__badge---font-size'
   | '--origam-badge__badge---font-weight'
+  | '--origam-badge__badge---gap'
   | '--origam-badge__badge---height'
   | '--origam-badge__badge---margin-block-end'
   | '--origam-badge__badge---margin-block-start'

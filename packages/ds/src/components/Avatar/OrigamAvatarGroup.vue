@@ -341,14 +341,23 @@
 		display: inline-flex;
 		flex-direction: var(--origam-avatar-group---flex-direction);
 
-		padding-block-start: var(--origam-avatar-group---padding-block-start);
-		padding-block-end: var(--origam-avatar-group---padding-block-end);
-		padding-inline-start: var(--origam-avatar-group---padding-inline-start);
-		padding-inline-end: var(--origam-avatar-group---padding-inline-end);
-		margin-block-start: var(--origam-avatar-group---margin-block-start);
-		margin-block-end: var(--origam-avatar-group---margin-block-end);
-		margin-inline-start: var(--origam-avatar-group---margin-inline-start);
-		margin-inline-end: var(--origam-avatar-group---margin-inline-end);
+		// ⛔ #C2 — zero-specificity defaults so a scale-driven utility
+		// class (`.origam--p-4` from `padding="4"`, `.origam--m-4` from
+		// `margin="4"`) wins the cascade. Without `:where()`, this scoped
+		// rule's [data-v-hash] pushes each longhand to (0,2,0), beating
+		// the utility's (0,1,0) — the utility sets the `padding`/`margin`
+		// SHORTHAND, but specificity is compared per longhand, so these
+		// per-edge declarations always won regardless of load order.
+		:where(&) {
+			padding-block-start: var(--origam-avatar-group---padding-block-start);
+			padding-block-end: var(--origam-avatar-group---padding-block-end);
+			padding-inline-start: var(--origam-avatar-group---padding-inline-start);
+			padding-inline-end: var(--origam-avatar-group---padding-inline-end);
+			margin-block-start: var(--origam-avatar-group---margin-block-start);
+			margin-block-end: var(--origam-avatar-group---margin-block-end);
+			margin-inline-start: var(--origam-avatar-group---margin-inline-start);
+			margin-inline-end: var(--origam-avatar-group---margin-inline-end);
+		}
 
 		&__item {
 			margin-block-start: var(--origam-avatar-group__item---margin-block-start);
