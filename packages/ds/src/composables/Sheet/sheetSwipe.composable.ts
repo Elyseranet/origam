@@ -26,8 +26,14 @@ export { DEFAULT_SHEET_SNAP_POINTS } from '../../consts/Sheet/sheet.const'
  * pixels at the current viewport. SSR-safe: when `window` is missing we
  * fall back to a 0/static interpretation since the DOM cannot be read
  * anyway.
+ *
+ * Exported so `OrigamSheet.vue` can share this exact resolution logic
+ * (capping the live drag height, and ordering snap points for the
+ * keyboard path on the drag handle) instead of re-implementing a second,
+ * slightly different regex — see the "Reuse existing composables/utils"
+ * rule in the project CLAUDE.md.
  */
-function resolveHeightPx (height: number | string): number {
+export function resolveHeightPx (height: number | string): number {
     if (typeof height === 'number') return height
     if (typeof window === 'undefined') return 0
 
