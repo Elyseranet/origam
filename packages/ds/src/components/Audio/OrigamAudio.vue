@@ -49,8 +49,8 @@
 					v-bind="controlsSlotBindings"
 			>
 				<origam-media-controller
-						:loop-mode="internalLoopMode"
-						:shuffle="internalShuffle"
+						:loop-mode="resolvedLoopMode"
+						:shuffle="resolvedShuffle"
 						:state="state"
 						:methods="methods"
 						:playback-rates="playbackRates"
@@ -272,6 +272,8 @@
 	import { useAudioPlayer } from '../../composables/Audio/use-audio-player.composable'
 	import { useWaveform } from '../../composables/Audio/use-waveform.composable'
 	import { shouldSuppressAutoplay } from '../../composables/Media/use-media-player.composable'
+
+	import { UNSEEDED } from '../../consts/Commons/vmodel.const'
 
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
@@ -513,7 +515,7 @@
 		const total = props.playlist!.length
 		if (total === 0) return
 
-		if (internalShuffle.value) {
+		if (resolvedShuffle.value) {
 			setActiveTrack(pickRandomIndex())
 			return
 		}
@@ -535,18 +537,27 @@
 	 *
 	 * Legacy `loop: true` maps to `loopMode='one'` at read-time when
 	 * the consumer hasn't explicitly set `loopMode`.
+	 *
+	 * #648 — `internalLoopMode` used to be seeded via
+	 * `ref(initialLoopMode)`, itself derived from `props.loopMode` /
+	 * `props.loop` read EAGERLY in the body of `setup()`. Vue runs
+	 * `setup()` BEFORE the `beforeCreate` hook where the ADR-005
+	 * theme-props resolver patches `instance.props` (root CLAUDE.md), so
+	 * a theme default for `loopMode` on `origam-audio` was captured too
+	 * late and silently lost — same defect as #429 on
+	 * `OrigamMediaController`. Fixed the same way: the ref starts
+	 * `UNSEEDED` and the legacy-aware seed is computed LAZILY, on first
+	 * read through `resolvedLoopMode` (a `computed`, evaluated at render
+	 * — comfortably after `beforeCreate`), not at `setup()` time.
 	 ********************************************************/
-	// Initialise the internal loop mode honouring the legacy `loop:true`
-	// flag when the consumer hasn't passed an explicit `loopMode`.
+	const internalLoopMode = ref<TAudioLoopMode | typeof UNSEEDED>(UNSEEDED)
 	// `withDefaults` resolves `loopMode` to `'none'` by default, so we
-	// only fall through to `'one'` when `loop:true` AND `loopMode` was
-	// left at its default — never overriding an explicit `'none'`.
-	const initialLoopMode: TAudioLoopMode =
+	// only fall through to the legacy `loop` flag when `loopMode` was
+	// left at its default — never overriding an explicit non-'none' value.
+	const seedLoopMode = (): TAudioLoopMode =>
 		props.loopMode && props.loopMode !== 'none'
 			? props.loopMode
 			: (props.loop ? 'one' : 'none')
-
-	const internalLoopMode = ref<TAudioLoopMode>(initialLoopMode)
 	watch(() => props.loopMode, (next) => {
 		if (next && next !== internalLoopMode.value) internalLoopMode.value = next
 	})
@@ -557,7 +568,7 @@
 	watch(() => props.loop, (next) => {
 		if (props.loopMode && props.loopMode !== 'none') return
 		internalLoopMode.value = next ? 'one' : 'none'
-		emit('update:loopMode', internalLoopMode.value)
+		emit('update:loopMode', internalLoopMode.value as TAudioLoopMode)
 	})
 
 	/*********************************************************
@@ -578,14 +589,24 @@
 		emit('update:loopMode', next)
 	}
 
-	const resolvedLoopMode = computed<TAudioLoopMode>(() => internalLoopMode.value)
+	const resolvedLoopMode = computed<TAudioLoopMode>(() => (
+		internalLoopMode.value === UNSEEDED ? seedLoopMode() : internalLoopMode.value
+	))
 
-	const internalShuffle = ref<boolean>(props.shuffle ?? false)
+	/*********************************************************
+	 * #648 — same eager-read/ADR-005 trap as `loopMode` above, same fix:
+	 * `internalShuffle` starts `UNSEEDED`, the `props.shuffle ?? false`
+	 * seed is read lazily through `resolvedShuffle` at render time.
+	 ********************************************************/
+	const internalShuffle = ref<boolean | typeof UNSEEDED>(UNSEEDED)
 	watch(() => props.shuffle, (next) => {
 		if (typeof next === 'boolean' && next !== internalShuffle.value) {
 			internalShuffle.value = next
 		}
 	})
+	const resolvedShuffle = computed<boolean>(() => (
+		internalShuffle.value === UNSEEDED ? (props.shuffle ?? false) : internalShuffle.value
+	))
 	/*********************************************************
 	 * onShuffleChange
 	 *
@@ -890,7 +911,7 @@
 		const total = props.playlist!.length
 		if (total === 0) return
 
-		if (internalShuffle.value) {
+		if (resolvedShuffle.value) {
 			setActiveTrack(pickRandomIndex())
 			void nextTick(() => { void methods.play() })
 			return
