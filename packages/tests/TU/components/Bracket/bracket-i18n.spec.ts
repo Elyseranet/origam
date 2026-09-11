@@ -18,11 +18,13 @@
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 
+import OrigamBracket from '@origam/components/Bracket/OrigamBracket.vue'
 import OrigamBracketCompetitor from '@origam/components/Bracket/OrigamBracketCompetitor.vue'
 import OrigamBracketMatch from '@origam/components/Bracket/OrigamBracketMatch.vue'
 import { createOrigam } from '@origam/origam'
 
 import { BRACKET_MATCH_STATUS } from '@origam/enums'
+import { BRACKET_VARIANT } from '@origam/enums'
 
 function mountCompetitor (props: Record<string, unknown>, locale = 'en') {
     return mount(OrigamBracketCompetitor, {
@@ -33,6 +35,13 @@ function mountCompetitor (props: Record<string, unknown>, locale = 'en') {
 
 function mountMatch (props: Record<string, unknown>, locale = 'en') {
     return mount(OrigamBracketMatch, {
+        props: props as never,
+        global: { plugins: [createOrigam({ locale: { locale } } as never)] }
+    })
+}
+
+function mountBracket (props: Record<string, unknown>, locale = 'en') {
+    return mount(OrigamBracket, {
         props: props as never,
         global: { plugins: [createOrigam({ locale: { locale } } as never)] }
     })
@@ -101,5 +110,66 @@ describe('OrigamBracketMatch — libellés de statut traduits (C8)', () => {
         const label = fr.find('.origam-bracket-match').attributes('aria-label')
 
         expect(label).toBe('Match : Alice contre Bob')
+    })
+})
+
+// Trouvé en réparant, absent du classeur : `describeRoundRobinCell` (variant
+// round-robin) construit trois libellés d'aria-label directement en anglais
+// en dur — non couverts par le correctif #388 ci-dessus, qui ne portait que
+// sur `OrigamBracket` (aria-label racine + labels winners/losers),
+// `OrigamBracketMatch` et `OrigamBracketCompetitor`.
+describe('OrigamBracket (round-robin) — libellés de cellule traduits (C8, hors classeur)', () => {
+    const ROUND_ROBIN_ROUNDS = [
+        {
+            id: 'r1',
+            title: 'Round robin',
+            matches: [
+                {
+                    id: 'm1',
+                    competitorA: { id: 'a', name: 'Alice' },
+                    competitorB: { id: 'b', name: 'Bob' },
+                    scoreA: 2,
+                    scoreB: 1,
+                    winnerId: 'a'
+                }
+            ]
+        }
+    ]
+
+    it('la cellule diagonale (compétiteur contre lui-même) est traduite', () => {
+        const fr = mountBracket({ variant: BRACKET_VARIANT.ROUND_ROBIN, rounds: ROUND_ROBIN_ROUNDS }, 'fr')
+        const diag = fr.find('.origam-bracket__rr-cell--diag')
+
+        expect(diag.attributes('aria-label')).toBe('Alice contre soi-même, non applicable')
+        expect(diag.attributes('aria-label')).not.toContain('versus itself')
+    })
+
+    it('la cellule sans match est traduite', () => {
+        const fr = mountBracket({
+            variant: BRACKET_VARIANT.ROUND_ROBIN,
+            rounds: [{
+                id: 'r1',
+                title: 'Round robin',
+                matches: [
+                    { id: 'm1', competitorA: { id: 'a', name: 'Alice' }, competitorB: { id: 'b', name: 'Bob' } },
+                    { id: 'm2', competitorA: { id: 'b', name: 'Bob' }, competitorB: { id: 'c', name: 'Carol' } }
+                ]
+            }]
+        }, 'fr')
+        // Alice n'a jamais affronté Carol dans ce jeu de données -> cellule "no match".
+        const cells = fr.findAll('.origam-bracket__rr-cell')
+        const noMatchCell = cells.find(c => c.attributes('aria-label')?.includes('Alice') && c.attributes('aria-label')?.includes('Carol') && !c.classes().includes('origam-bracket__rr-cell--diag'))
+
+        expect(noMatchCell?.attributes('aria-label')).toContain('sans match')
+        expect(noMatchCell?.attributes('aria-label')).not.toContain('no match')
+    })
+
+    it('la cellule avec match rendu (score compris) est traduite', () => {
+        const fr = mountBracket({ variant: BRACKET_VARIANT.ROUND_ROBIN, rounds: ROUND_ROBIN_ROUNDS }, 'fr')
+        const cells = fr.findAll('.origam-bracket__rr-cell')
+        const scored = cells.find(c => c.attributes('aria-label')?.includes('score 2'))
+
+        expect(scored?.attributes('aria-label')).toBe('Alice contre Bob, score 2 – 1')
+        expect(scored?.attributes('aria-label')).not.toMatch(/\bvs\b/)
     })
 })

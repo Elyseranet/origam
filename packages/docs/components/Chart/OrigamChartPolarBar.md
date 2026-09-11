@@ -109,6 +109,8 @@ import { OrigamChartPolarBar } from '@origam/ds'
 
 **Accessibility.** Each wedge is a focusable `<path>` with `role="button"` and an `aria-label` carrying category + formatted value + percentage. Keyboard users can Tab through wedges and activate with Enter or Space.
 
+**Accessibility — the `<desc>` summary is localised AND agrees in number.** The `<desc>` text is not an English literal: it resolves through the DS `t()` mechanism against `origam.chart.polar_bar.desc*`, and the grammatical form is chosen by `Intl.PluralRules` for the ACTIVE locale — never by a `count === 1` test in the component. A translator supplies only the forms their language needs (`_one` / `_other` cover `en` and `fr`; a Russian translation adds `_few` with no component change), and a category a locale does not define falls back to `_other` rather than leaking the raw key.
+
 **Animation.** Wedges fade in via a CSS keyframe. Skipped when `animated=false` or `prefers-reduced-motion: reduce`.
 
 **SSR.** The SVG is rendered server-side — all geometry is pure computed values with no `onMounted` guard.

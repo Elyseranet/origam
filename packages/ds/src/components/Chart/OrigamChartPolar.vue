@@ -510,8 +510,12 @@ return [ out, props.style as StyleValue ]
 	const svgDesc = computed(() => {
 		const seriesCount = activeSeries.value.length
 		if (!seriesCount) return t('origam.chart.no_data_text')
-		const points = slotCount.value
-		return `${ props.type } chart with ${ seriesCount } series and ${ points } ${ points === 1 ? 'point' : 'points' }.`
+
+		return t('origam.chart.polar.desc', {
+			chart: defaultAriaLabel.value,
+			series: t('origam.chart.polar.desc_series', seriesCount),
+			points: t('origam.chart.polar.desc_points', slotCount.value)
+		})
 	})
 
 	const sliceAriaLabel = (path: IChartPath) => {
@@ -536,7 +540,17 @@ return [ out, props.style as StyleValue ]
 
 		display: grid;
 		gap: var(--origam-chart---gap, 12px);
-		padding: var(--origam-chart---padding, 12px);
+
+		// ⛔ #C2 — zero-specificity default so a scale-driven utility
+		// class (`.origam--p-4` from `padding="4"`) wins the cascade.
+		// Without `:where()`, this scoped rule's [data-v-hash] pushes it
+		// to (0,2,0), beating the utility's (0,1,0), and the `padding`
+		// prop's scale form goes silently inert. See CLAUDE.md "CSS-first"
+		// table — `:where(…)` is the documented zero-specificity default.
+		:where(&) {
+			padding: var(--origam-chart---padding, 12px);
+		}
+
 		background-color: var(--origam-chart---background-color, transparent);
 		color: var(--origam-chart---color, inherit);
 		width: 100%;

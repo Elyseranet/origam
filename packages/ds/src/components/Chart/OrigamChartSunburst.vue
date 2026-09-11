@@ -760,10 +760,13 @@ return [ out, props.style as StyleValue ]
 	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
-	const svgDesc = computed(() => {
-		const n = visibleNodes.value.filter((nd) => nd.depth === 0).length
-		return `Sunburst chart with ${ n } root ${ n === 1 ? 'node' : 'nodes' }.`
-	})
+	const svgDesc = computed(() =>
+		t(
+			'origam.chart.sunburst.desc',
+			visibleNodes.value.filter((nd) => nd.depth === 0).length,
+			{chart: defaultAriaLabel.value}
+		)
+	)
 
 	const nodeAriaLabel = (node: IChartSunburstNode): string => {
 		const formatted = props.yAxisFormat ? props.yAxisFormat(node.value) : String(node.value)
@@ -820,7 +823,17 @@ return [ out, props.style as StyleValue ]
 	.origam-chart-sunburst {
 		display: grid;
 		gap: var(--origam-chart---gap, 12px);
-		padding: var(--origam-chart---padding, 12px);
+
+		// ⛔ #C2 — zero-specificity default so a scale-driven utility
+		// class (`.origam--p-4` from `padding="4"`) wins the cascade.
+		// Without `:where()`, this scoped rule's [data-v-hash] pushes it
+		// to (0,2,0), beating the utility's (0,1,0), and the `padding`
+		// prop's scale form goes silently inert. See CLAUDE.md "CSS-first"
+		// table — `:where(…)` is the documented zero-specificity default.
+		:where(&) {
+			padding: var(--origam-chart---padding, 12px);
+		}
+
 		background-color: var(--origam-chart---background-color, transparent);
 		color: var(--origam-chart---color, inherit);
 		width: 100%;

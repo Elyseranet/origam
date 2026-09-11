@@ -482,15 +482,29 @@
 		]
 	}
 
+	/*********************************************************
+	 * describeRoundRobinCell — critere C8
+	 *
+	 * @description
+	 * Trois libelles d'aria-label ecrits en dur en anglais, non couverts
+	 * par le correctif #388 (portait uniquement sur l'aria-label racine,
+	 * `winnersLabel` / `losersLabel`, `OrigamBracketMatch` et
+	 * `OrigamBracketCompetitor`). Trouve en reparant, absent du classeur.
+	 * @description
+	 * Le suffixe de score reutilise `origam.bracket.score_aria_suffix`,
+	 * deja declare pour le meme usage sur `OrigamBracketCompetitor` — pas
+	 * de cle dupliquee pour un concept identique.
+	 ********************************************************/
 	const describeRoundRobinCell = (row: IBracketCompetitor, col: IBracketCompetitor): string => {
-		if (row.id === col.id) return `${row.name} versus itself, not applicable`
+		if (row.id === col.id) return t('origam.bracket.round_robin.cell_self', row.name)
 
 		const match = findRoundRobinMatch(row.id, col.id)
-		if (!match) return `${row.name} vs ${col.name}, no match`
+		if (!match) return t('origam.bracket.round_robin.cell_no_match', row.name, col.name)
 
 		const score = roundRobinScore(row, col)
+		const base = t('origam.bracket.round_robin.cell_match', row.name, col.name)
 
-		return `${row.name} vs ${col.name}${score ? `, score ${score}` : ''}`
+		return score ? `${base}${t('origam.bracket.score_aria_suffix', score)}` : base
 	}
 
 	const onRoundRobinCellClick = (row: IBracketCompetitor, col: IBracketCompetitor, event: MouseEvent) => {

@@ -379,7 +379,6 @@
     return [
       'origam-switch',
       {
-        'origam-switch--flat': props.flat,
         'origam-switch--inset': props.inset,
         'origam-switch--indeterminate': indeterminate.value
       },

@@ -17,8 +17,10 @@ import { expect, test } from '@playwright/test'
  *   5  Slots - Append
  *   6  Slots - Label
  *   7  Slots - Details
- *   8  Slots - ItemLabel
- *   9  Default (playground, init: color:'primary', length:5, label:'Rating', modelValue:3)
+ *   8  Slots - Message
+ *   9  Slots - Messages
+ *   10 Slots - ItemLabel
+ *   11 Default (playground, init: color:'primary', length:5, label:'Rating', modelValue:3)
  *
  * ## OrigamRatingFieldItem — Variants (0-based)
  *   0  Design      (init: value:3, index:1, name:'rating', label:'Item', showStar:true, isFilled:true, color:'warning')
@@ -26,7 +28,7 @@ import { expect, test } from '@playwright/test'
  *   2  Events - click
  *   3  Events - mouseenter
  *   4  Events - mouseleave
- *   5  Slots - Item (via RatingField)
+ *   5  Slots - Item
  *   6  Default (playground)
  */
 
@@ -243,7 +245,41 @@ test.describe('OrigamRatingField', () => {
     })
 
     // ---------------------------------------------------------------- //
-    // SLOTS - ItemLabel (index 8)                                        //
+    // SLOTS - Message (index 8)                                          //
+    // ---------------------------------------------------------------- //
+
+    test.describe('Slots - Message', () => {
+        /**
+         * The story passes :error="true" :error-messages="['Error']" and
+         * overrides the #message slot with an italic <span>. The rendered
+         * text "Error" must be present — this proves `<OrigamRatingField>`
+         * forwards its `#message` scoped slot down to `<OrigamInput>`'s own
+         * `#message` (OrigamRatingField.vue, `<template v-if="slots.message"
+         * #message="{message}">`).
+         */
+        test('custom message slot renders the error message text', async ({ page }) => {
+            await page.goto(rfUrl(8), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
+            await expect(sandbox.locator('.origam-rating-field')).toContainText('Error')
+        })
+    })
+
+    // ---------------------------------------------------------------- //
+    // SLOTS - Messages (index 9)                                         //
+    // ---------------------------------------------------------------- //
+
+    test.describe('Slots - Messages', () => {
+        test('custom messages slot renders the custom error display', async ({ page }) => {
+            await page.goto(rfUrl(9), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
+            await expect(sandbox.locator('.origam-rating-field')).toContainText('Custom error display')
+        })
+    })
+
+    // ---------------------------------------------------------------- //
+    // SLOTS - ItemLabel (index 10)                                       //
     // ---------------------------------------------------------------- //
 
     test.describe('Slots - ItemLabel', () => {
@@ -262,28 +298,48 @@ test.describe('OrigamRatingField', () => {
          * index, not just when a per-index override happens to exist.
          */
         test('itemLabel generic slot renders one <strong> per item (regression for #452)', async ({ page }) => {
-            await page.goto(rfUrl(8), { waitUntil: 'domcontentloaded' })
+            await page.goto(rfUrl(10), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-rating-field strong')).toHaveCount(5)
         })
+
+        /**
+         * Second regression, also tracked under #452: the story's
+         * `#itemLabel="{ label }"` destructures a scope that
+         * `<OrigamRatingField>` never bound (`<slot name="itemLabel">` had
+         * no `v-bind`) — every `<strong>` above rendered EMPTY, which the
+         * count-only assertion above cannot catch. The component now binds
+         * `:label="itemLabels?.[index]"` / `:index="index"` on both the
+         * generic and the per-index `<slot>`, so the story's `<strong>` must
+         * contain the actual label text, not just exist.
+         */
+        test('itemLabel generic slot receives the real label text, not an empty scope', async ({ page }) => {
+            await page.goto(rfUrl(10), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
+            const strongs = sandbox.locator('.origam-rating-field strong')
+            await expect(strongs).toHaveCount(5)
+            await expect(strongs.nth(0)).toHaveText('Terrible')
+            await expect(strongs.nth(4)).toHaveText('Excellent')
+        })
     })
 
     // ---------------------------------------------------------------- //
-    // DEFAULT — playground (index 9)                                     //
+    // DEFAULT — playground (index 11)                                    //
     // init: { color:'primary', length:5, label:'Rating', modelValue:3 } //
     // ---------------------------------------------------------------- //
 
     test.describe('Default (playground)', () => {
         test('renders with label "Rating"', async ({ page }) => {
-            await page.goto(rfUrl(9), { waitUntil: 'domcontentloaded' })
+            await page.goto(rfUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-rating-field')).toContainText('Rating')
         })
 
         test('renders 5 visible star items inside __content (length=5)', async ({ page }) => {
-            await page.goto(rfUrl(9), { waitUntil: 'domcontentloaded' })
+            await page.goto(rfUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             const visibleItems = sandbox.locator('.origam-rating-field__content .origam-rating-field-item')
@@ -291,7 +347,7 @@ test.describe('OrigamRatingField', () => {
         })
 
         test('modelValue=3 → the radio with value=3 is checked', async ({ page }) => {
-            await page.goto(rfUrl(9), { waitUntil: 'domcontentloaded' })
+            await page.goto(rfUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             // The field renders 6 inputs: hidden value=0 + visible values 1..5.
@@ -310,7 +366,7 @@ test.describe('OrigamRatingField', () => {
          * If the DS renders the clear button when clearable is falsy → regression.
          */
         test('clearable not set → no clear button even with modelValue=3', async ({ page }) => {
-            await page.goto(rfUrl(9), { waitUntil: 'domcontentloaded' })
+            await page.goto(rfUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="rating-field-clear"]')).toHaveCount(0)
@@ -525,40 +581,47 @@ test.describe('OrigamRatingFieldItem', () => {
     })
 
     // ---------------------------------------------------------------- //
-    // SLOTS - Item (via RatingField) (index 5)                           //
+    // SLOTS - Item (index 5)                                              //
+    //                                                                    //
+    // Story rewritten in 272924f3 (2026-09-07, wip rescue commit): the   //
+    // Variant used to be titled "Slots - Item (via RatingField)" and     //
+    // mounted a full <origam-rating-field> to test whether the FIELD     //
+    // forwarded a per-item #item slot down to its children. That slot    //
+    // never existed on OrigamRatingField — IRatingFieldSlots declares no //
+    // `item` key (only default/label/itemLabel(.n)/details/messages/     //
+    // message) — the story was demonstrating a phantom capability.       //
+    // 272924f3 corrected this by mounting <origam-rating-field-item>     //
+    // directly and exercising ITS OWN #item slot, which IS declared and  //
+    // used in OrigamRatingFieldItem.vue (`<slot name="item" v-bind=…>`). //
+    //                                                                    //
+    // The e2e spec kept the old title and the old `.origam-rating-field` //
+    // root locator, which no longer matches anything in this variant —   //
+    // measured: count(.origam-rating-field) = 0, the story never mounts  //
+    // the field wrapper. Root class here is `.origam-rating-field-item`. //
+    // Verified by real DOM capture (Playwright, sandbox réel): the 5     //
+    // items each render exactly one .origam-btn, and its aria-label is   //
+    // the STORY's custom "${value}" (1..5) rather than the component's   //
+    // own default aria-label — proof the #item slot content IS honoured. //
     // ---------------------------------------------------------------- //
 
-    test.describe('Slots - Item (via RatingField)', () => {
-        /**
-         * DS BUG (non-blocking): OrigamRatingField does not route the #item slot
-         * down to each OrigamRatingFieldItem. The slot `#item` passed to
-         * OrigamRatingField (as shown in the story) is silently dropped — each item
-         * still renders its default origam-btn. The ★/☆ custom spans are therefore
-         * NOT rendered.
-         *
-         * This test captures the actual runtime behaviour (field renders, default btns
-         * remain) as a regression baseline. If the DS bug is fixed and slot routing is
-         * implemented, the assertion on origam-btn count must be updated to 0.
-         */
-        test('item slot variant: rating field is visible and default btns are still present (DS slot-routing bug noted)', async ({ page }) => {
+    test.describe('Slots - Item', () => {
+        test('item slot variant: 5 rating-field-item roots render, each with exactly one origam-btn', async ({ page }) => {
             await page.goto(rfiUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
-            // DS does not route #item slot → origam-btn still render inside items.
-            // We verify the field is functional (btns are there) rather than asserting
-            // slot replacement (which is broken).
-            const btnsInsideItems = sandbox.locator('.origam-rating-field__content .origam-rating-field-item .origam-btn')
+            await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
+            const btnsInsideItems = sandbox.locator('.origam-rating-field-item .origam-btn')
             await expect(btnsInsideItems).toHaveCount(5)
         })
 
-        test('custom item slot: 5 rating-field-item wrappers still rendered (length=5)', async ({ page }) => {
+        test('custom #item slot content is honoured: each origam-btn carries the story-provided aria-label (1..5)', async ({ page }) => {
             await page.goto(rfiUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
-            // The visible items (in __content wrappers) should still be 5 — the slot
-            // changes what renders INSIDE each item, not the number of items.
-            const visibleItems = sandbox.locator('.origam-rating-field__content .origam-rating-field-item')
+            await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
+            const visibleItems = sandbox.locator('.origam-rating-field-item')
             await expect(visibleItems).toHaveCount(5)
+            for (let i = 0; i < 5; i++) {
+                await expect(visibleItems.nth(i).locator('.origam-btn')).toHaveAttribute('aria-label', String(i + 1))
+            }
         })
     })
 

@@ -258,4 +258,26 @@ test.describe('OrigamDataList — KV mode (PDF design)', () => {
         ).toBeVisible({ timeout: 8000 })
         await expect(sandbox.locator('.origam-data-list--mode-avatar')).toHaveCount(0)
     })
+
+    /**
+     * Classeur claim (C6, gravité majeur, 09-01) : "l'id du consommateur
+     * n'atteint jamais le <dl> racine — même omission que ConfirmWrapper".
+     * Measured stale: `useStyle(dataListStyles, () => props.id)` already
+     * seeds the id correctly and the template already binds `:id="id"` on
+     * the root `<dl>` (fixed by 4022932d, "id atteint le DOM sur 10
+     * composants #372 #375" — an ancestor of this branch). This test locks
+     * the already-correct behaviour in place.
+     */
+    test('Root <dl> carries an id (déjà corrigé — 4022932d)', async ({ page }) => {
+        await openVariant(page, 'Design')
+        const sandbox = sandboxOf(page)
+        const dl = sandbox.locator('dl.origam-data-list').first()
+        await expect(dl).toBeVisible({ timeout: 8000 })
+
+        const tag = await dl.evaluate((el) => el.tagName.toLowerCase())
+        expect(tag).toBe('dl')
+
+        const id = await dl.getAttribute('id')
+        expect(id).toBeTruthy()
+    })
 })

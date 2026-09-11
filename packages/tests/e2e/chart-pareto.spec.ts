@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import { eventLogItems, openEventsTab, toggleHstCheckbox } from './_support/histoire-controls'
+import { eventLogItems, openEventsTab, selectHstOption, toggleHstCheckbox } from './_support/histoire-controls'
 
 /**
  * OrigamChartPareto — Playwright spec.
@@ -230,5 +230,85 @@ test.describe('OrigamChartPareto — ARIA', () => {
 		const sandbox = sandboxOf(page)
 		const firstBar = sandbox.locator(`${ CHART } [data-cy="origam-chart-pareto-bar-0"]`)
 		await expect(firstBar).toHaveAttribute('role', 'button')
+	})
+})
+
+/**
+ * #620 — le canal CLASSE de margin/padding, mesure en NAVIGATEUR.
+ *
+ * `useMargin` scinde sa sortie : la forme d'echelle (`margin="4"`) emet
+ * SEULEMENT une classe utilitaire et laisse `marginStyles` vide. Pareto ne
+ * destructurait que `marginStyles`, donc `margin="4"` etait totalement
+ * inerte. Le spec Vitest voisin prouve que la CLASSE est desormais emise ;
+ * celui-ci prouve qu'elle PEINT, ce que jsdom ne peut pas dire — il ne
+ * resout jamais un `var()` et fabrique un `16px` de toute piece, valeur qui
+ * se trouve etre exactement celle attendue ici. Mesurer cela sous jsdom
+ * aurait donc produit un faux vert parfaitement credible.
+ *
+ * Valeur ABSOLUE et non un simple ecart : `.origam--m-4` resout
+ * `var(--origam-space---4)`, declare a `16px` dans primitive.css:84.
+ */
+test.describe('OrigamChartPareto — margin/padding par classe utilitaire (#620)', () => {
+	test('margin="4" emet .origam--m-4 ET peint 16px', async ({ page }) => {
+		await openVariant(page, 'Design')
+		await selectHstOption(page, 'Margin', '4')
+
+		const host = sandboxOf(page).locator(CHART).first()
+		await expect(host).toHaveClass(/origam--m-4/)
+		await expect(host).toHaveCSS('margin-top', '16px')
+		await expect(host).toHaveCSS('margin-left', '16px')
+	})
+
+	/**
+	 * ⛔ MESURE, PAS SOUHAIT — le cote `padding` revele un SECOND defaut,
+	 * distinct de #620 et hors de son perimetre.
+	 *
+	 * La classe `.origam--p-4` est bien emise depuis le correctif (assertion
+	 * ci-dessous, et le spec Vitest voisin la prouve sur les six composants).
+	 * Mais elle NE PEINT PAS : mesure reelle `12px` la ou l'echelle demande
+	 * `16px`. Cause etablie, pas supposee — la regle scopee du composant
+	 * (`OrigamChartPareto.vue:804`, `padding: var(--origam-chart---padding,
+	 * 12px)`) compile en `.origam-chart-pareto[data-v-hash]`, soit une
+	 * specificite (0,2,0), quand une utilitaire vaut (0,1,0). L'utilitaire
+	 * perd la cascade, et l'ordre de chargement n'y change rien.
+	 *
+	 * Les SIX composants du lot declarent cette meme regle scopee — y compris
+	 * Gauge, Heatmap et Pictorial, qui bindaient deja `paddingClasses`. Le
+	 * `padding` d'echelle y etait donc DEJA inerte avant #620 : le correctif
+	 * du canal classe etait necessaire, il n'est pas suffisant.
+	 *
+	 * Le canal INLINE reste intact — `padding="16px"` et `:padding="16"`
+	 * passent par `paddingStyles`, donc par l'attribut `style`, qui bat
+	 * n'importe quelle regle de feuille. Seule la forme d'ECHELLE est
+	 * touchee. C'est ce que fige l'assertion negative ci-dessous : si un jour
+	 * la cascade est corrigee (famille #391 / #514 / #607), ce test tombera
+	 * et devra etre bascule en `16px`. C'est voulu — un test qui echoue
+	 * quand un defaut est repare vaut mieux qu'un defaut sans temoin.
+	 */
+	test('padding="4" emet .origam--p-4, mais la regle scopee du composant l\'emporte', async ({ page }) => {
+		await openVariant(page, 'Design')
+		await selectHstOption(page, 'Padding', '4')
+
+		const host = sandboxOf(page).locator(CHART).first()
+
+		// Ce que #620 corrige : la classe EST emise.
+		await expect(host).toHaveClass(/origam--p-4/)
+
+		// Ce que #620 ne corrige pas : elle ne gagne pas la cascade.
+		await expect(host).toHaveCSS('padding-top', '12px')
+	})
+
+	test('le canal INLINE du padding, lui, n\'est pas masque', async ({ page }) => {
+		// Contre-epreuve : prouve que le blocage ci-dessus tient bien a la
+		// specificite d'une regle de feuille, et non a un `padding` mort.
+		await openVariant(page, 'Design')
+
+		const painted = await sandboxOf(page).locator(CHART).first().evaluate((el) => {
+			el.setAttribute('style', 'padding: 16px')
+
+			return getComputedStyle(el).paddingTop
+		})
+
+		expect(painted).toBe('16px')
 	})
 })

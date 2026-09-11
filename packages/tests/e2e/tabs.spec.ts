@@ -12,8 +12,9 @@ import { expect, test } from '@playwright/test'
  *   0 → Design        (variant, color, bgColor, density, rounded, direction)
  *   1 → Functional    (disabled, mandatory, multiple, fixed, centered)
  *   2 → Events - update:modelValue
- *   3 → Slots - Default
- *   4 → Default       (playground : tabs + panels + story-status)
+ *   3 → Events - group:selected   (inserted after update:modelValue — #629: this shifted 3/4 to 4/5 below, 12 e2e went red on the wrong Variant until re-pinned)
+ *   4 → Slots - Default
+ *   5 → Default       (playground : tabs + panels + story-status)
  *
  * ## Classes BEM réelles (lues depuis OrigamTabs.vue + OrigamTab.vue)
  *
@@ -354,13 +355,13 @@ test.describe('OrigamTabs', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // SLOTS - Default (index 3)                                           //
+    // SLOTS - Default (index 4)                                           //
     // Tabs: Inbox(slot custom)/Archive/Spam — slotDefaultValue='inbox'   //
     // ------------------------------------------------------------------ //
 
     test.describe('Slots - Default', () => {
         test('first tab renders the custom slot content with .story-badge', async ({ page }) => {
-            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-tabs').first()).toBeVisible({ timeout: 12000 })
 
@@ -372,7 +373,7 @@ test.describe('OrigamTabs', () => {
         })
 
         test('second and third tabs render plain text', async ({ page }) => {
-            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-tabs').first()).toBeVisible({ timeout: 12000 })
 
@@ -381,7 +382,7 @@ test.describe('OrigamTabs', () => {
         })
 
         test('first tab is active (value=inbox)', async ({ page }) => {
-            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-tabs').first()).toBeVisible({ timeout: 12000 })
 
@@ -390,21 +391,21 @@ test.describe('OrigamTabs', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // DEFAULT / PLAYGROUND (index 4)                                      //
+    // DEFAULT / PLAYGROUND (index 5)                                      //
     // init: { variant:'default', direction:'horizontal', mandatory:true } //
     // Tabs + TabPanels + story-status                                     //
     // ------------------------------------------------------------------ //
 
     test.describe('Default (playground) — tabs + panels', () => {
         test('tablist and panels both mount', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-tabs').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-tab-panels').first()).toBeVisible()
         })
 
         test('first panel is visible and contains profile text', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-tabs').first()).toBeVisible({ timeout: 12000 })
 
@@ -415,7 +416,7 @@ test.describe('OrigamTabs', () => {
         })
 
         test('each panel carries role="tabpanel"', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-tabs').first()).toBeVisible({ timeout: 12000 })
 
@@ -428,7 +429,7 @@ test.describe('OrigamTabs', () => {
         })
 
         test('clicking tab 2 (Settings) shows settings panel', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-tabs').first()).toBeVisible({ timeout: 12000 })
 
@@ -444,7 +445,7 @@ test.describe('OrigamTabs', () => {
         })
 
         test('clicking tab 3 (Billing) shows billing panel', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-tabs').first()).toBeVisible({ timeout: 12000 })
 
@@ -456,7 +457,7 @@ test.describe('OrigamTabs', () => {
         })
 
         test('story-status shows selected=0 on mount', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-tabs').first()).toBeVisible({ timeout: 12000 })
 
@@ -467,7 +468,7 @@ test.describe('OrigamTabs', () => {
 
     // ------------------------------------------------------------------ //
     // KEYBOARD NAVIGATION                                                  //
-    // Tests on the playground variant (index 4) where the tablist is      //
+    // Tests on the playground variant (index 5) where the tablist is      //
     // reachable and keyboard events propagate through the iframe.          //
     //                                                                      //
     // Keyboard events must be dispatched INSIDE the iframe frame context. //
@@ -478,7 +479,7 @@ test.describe('OrigamTabs', () => {
 
     test.describe('Keyboard navigation', () => {
         test('ArrowRight moves selection from tab 0 to tab 1', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const tablist = sandbox.locator('.origam-tabs').first()
             await expect(tablist).toBeVisible({ timeout: 12000 })
@@ -494,7 +495,7 @@ test.describe('OrigamTabs', () => {
         })
 
         test('ArrowLeft moves selection from tab 1 back to tab 0', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const tablist = sandbox.locator('.origam-tabs').first()
             await expect(tablist).toBeVisible({ timeout: 12000 })
@@ -512,7 +513,7 @@ test.describe('OrigamTabs', () => {
         })
 
         test('End key jumps to last tab', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const tablist = sandbox.locator('.origam-tabs').first()
             await expect(tablist).toBeVisible({ timeout: 12000 })
@@ -525,7 +526,7 @@ test.describe('OrigamTabs', () => {
         })
 
         test('Home key jumps back to first tab', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const tablist = sandbox.locator('.origam-tabs').first()
             await expect(tablist).toBeVisible({ timeout: 12000 })
@@ -548,7 +549,7 @@ test.describe('OrigamTabs', () => {
     // ------------------------------------------------------------------ //
 
     test('aria-controls points at the matching panel id', async ({ page }) => {
-        await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+        await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const tab1 = sandbox.locator('.origam-tab').nth(1)
         await expect(tab1).toBeVisible({ timeout: 12000 })
@@ -563,7 +564,7 @@ test.describe('OrigamTabs', () => {
     // Symmetric half of #441 — aria-labelledby was diagnosed alongside
     // aria-controls but had NO test coverage at all before this ticket.
     test('aria-labelledby points at the matching tab id', async ({ page }) => {
-        await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+        await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const tab1 = sandbox.locator('.origam-tab').nth(1)
         await expect(tab1).toBeVisible({ timeout: 12000 })

@@ -3,7 +3,7 @@
 			:is="tag"
 			:id="id"
 			ref="resizeRef"
-			:aria-label="ariaLabel"
+			:aria-label="rootAriaLabel"
 			:class="paginationClasses"
 			:style="paginationStyles"
 			@keydown="handleKeydown"
@@ -221,7 +221,6 @@
 		ellipsis: '...',
 		length: 1,
 		start: 1,
-		modelValue: 1, // TODO - Delete default value for modelValue
 		ariaLabel: 'origam.pagination.aria_label.root',
 		pageAriaLabel: 'origam.pagination.aria_label.page',
 		currentPageAriaLabel: 'origam.pagination.aria_label.current_page',
@@ -259,7 +258,18 @@
 	 * form defers the read to `useVModel`'s internal `seed()`, which only
 	 * runs on first actual access — after the resolver has already run.
 	 ********************************************************/
-	const page = useVModel(props, 'modelValue', () => props.start)
+	/*********************************************************
+	 * Page
+	 *
+	 * @description
+	 * `modelValue` n'a plus de defaut (#640) pour que le repli vers `start`
+	 * soit atteignable. Son type devient donc `number | undefined`, alors
+	 * qu'au runtime `start` (defaut 1) garantit toujours une valeur.
+	 * `transformIn` rend cette garantie EXPLICITE a l'execution plutot que
+	 * de la masquer par un cast, qui aurait eteint le rouge de vue-tsc sans
+	 * repondre a la question.
+	 ********************************************************/
+	const page = useVModel(props, 'modelValue', () => props.start, (v?: number) => v ?? props.start)
 
 	/*********************************************************
 	 * Composables
@@ -487,6 +497,26 @@
 			}
 		})
 	})
+	const rootAriaLabel = computed(() => t(props.ariaLabel))
+
+	/*********************************************************
+	 * ⛔ TOUS les `*AriaLabel` sont des CLÉS, jamais du texte prêt.
+	 *
+	 * @description
+	 * Leurs valeurs par défaut sont des clés de catalogue
+	 * (`'origam.pagination.aria_label.first'`, …). Elles DOIVENT passer par
+	 * `t()` avant d'atteindre un `aria-label`. Cinq ne le faisaient pas : la
+	 * `<nav>` racine et les boutons premier / précédent / suivant / dernier
+	 * annonçaient la clé littérale, alors que les boutons de PAGE, eux,
+	 * étaient corrects — l'incohérence tenait dans le même fichier, à trente
+	 * lignes d'écart.
+	 *
+	 * @description
+	 * Un consommateur qui passe sa propre valeur passe donc une CLÉ, pas une
+	 * chaîne : c'est le contrat déjà en vigueur pour `pageAriaLabel`, et il est
+	 * documenté comme tel. Filet : `OrigamPagination.spec.ts`, dont le dernier
+	 * cas refuse tout `aria-label` commençant par `origam.` sur la barre.
+	 ********************************************************/
 	const controls = computed(() => {
 		const prevDisabled = !!props.disabled || page.value <= start.value
 		const nextDisabled = !!props.disabled || page.value >= start.value + length.value - 1
@@ -521,7 +551,7 @@
 				icon: props.firstIcon,
 				onClick: (e: Event) => setValue(e, start.value, 'first'),
 				disabled: prevDisabled,
-				'aria-label': props.firstAriaLabel,
+				'aria-label': t(props.firstAriaLabel),
 				'aria-disabled': prevDisabled
 			},
 			prev: {
@@ -529,7 +559,7 @@
 				...prevTextual,
 				onClick: (e: Event) => setValue(e, page.value - 1, 'prev'),
 				disabled: prevDisabled,
-				'aria-label': props.previousAriaLabel,
+				'aria-label': t(props.previousAriaLabel),
 				'aria-disabled': prevDisabled
 			},
 			next: {
@@ -537,7 +567,7 @@
 				...nextTextual,
 				onClick: (e: Event) => setValue(e, page.value + 1, 'next'),
 				disabled: nextDisabled,
-				'aria-label': props.nextAriaLabel,
+				'aria-label': t(props.nextAriaLabel),
 				'aria-disabled': nextDisabled
 			},
 			last: {
@@ -545,7 +575,7 @@
 				icon: props.lastIcon,
 				onClick: (e: Event) => setValue(e, start.value + length.value - 1, 'last'),
 				disabled: nextDisabled,
-				'aria-label': props.lastAriaLabel,
+				'aria-label': t(props.lastAriaLabel),
 				'aria-disabled': nextDisabled
 			}
 		}

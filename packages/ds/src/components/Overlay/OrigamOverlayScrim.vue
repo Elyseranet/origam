@@ -90,6 +90,24 @@
 	 * @description
 	 * scrimStyles and scrimClasses compose the BEM element.
 	 ********************************************************/
+	/*********************************************************
+	 * isTransparent
+	 *
+	 * @description
+	 * `scrim={false}` was documented ("the backdrop renders transparent
+	 * and consumes no clicks via the pointer-events token") but never
+	 * implemented: `useBackgroundColor` only branches on a STRING value,
+	 * so `false` fell through to the exact same default dark background
+	 * as `true` / unset, and nothing ever touched
+	 * `--origam-overlay-scrim---pointer-events`. A `scrim=false` scrim was
+	 * therefore visually identical to a normal one AND still captured
+	 * clicks — C1 (no distinct render) and, downstream, `click` firing on
+	 * a surface the doc promised was click-through.
+	 ********************************************************/
+	const isTransparent = computed(() => {
+		return props.scrim === false
+	})
+
 	const scrimStyles = computed(() => {
 		return [
 			backgroundColorStyles.value,
@@ -99,6 +117,7 @@
 	const scrimClasses = computed(() => {
 		return [
 			'origam-scrim',
+			{ 'origam-scrim--transparent': isTransparent.value },
 			backgroundColorClasses.value,
 			props.class
 		]
@@ -138,5 +157,10 @@
 		transition-property: var(--origam-overlay-scrim---transition-property, opacity);
 		transition-duration: var(--origam-overlay-scrim---transition-duration, 200ms);
 		transition-timing-function: var(--origam-overlay-scrim---transition-timing-function, cubic-bezier(0.4, 0, 0.2, 1));
+
+		&--transparent {
+			--origam-overlay-scrim---background-color: transparent;
+			--origam-overlay-scrim---pointer-events: none;
+		}
 	}
 </style>

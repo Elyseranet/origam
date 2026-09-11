@@ -44,7 +44,15 @@ const sonde = (components: IOrigamTheme['components']) => {
 }
 
 describe('C4 — la valeur du theme atteint-elle une prop lue eagerly dans setup() ?', () => {
-    it.fails('OrigamCalendar.view — seed `ref(props.view ?? MONTH)` ligne 489', async () => {
+    // ⛔ Lot tokens (2026-09-10) — FIXED. `internalView`/`internalDate` now
+    // seed to a sentinel (`UNSEEDED`, same pattern as `useVModel`) and read
+    // `props.view` / `props.currentDate` lazily inside the `resolvedView` /
+    // `resolvedDate` computed getters — evaluated at render, after the
+    // theme-props-resolver's `beforeCreate` has patched `instance.props`.
+    // Flipped from `it.fails` to `it`: this probe existing at all is what
+    // caught the fix landing (it started passing, and Vitest's `it.fails`
+    // flags an unexpectedly-green "expected to fail" test as a failure).
+    it('OrigamCalendar.view — seed `ref(props.view ?? MONTH)` ligne 489', async () => {
         const wrapper = mount(OrigamCalendar, {
             global: { plugins: [sonde({ 'origam-calendar': { view: 'year' } })] }
         })

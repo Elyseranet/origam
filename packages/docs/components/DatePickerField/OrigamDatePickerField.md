@@ -148,7 +148,7 @@ is already open is picked up at the next opening.
 is available on this component and is documented once, on its owner:
 
 - **Field chrome** (`IFieldProps`) — `label`, `hint`, `prefix`, `suffix`,
-  `variant`, `size`, `density`, `rounded`, `elevation`, `flat`, `inline`,
+  `variant`, `size`, `density`, `rounded`, `elevation`, `inline`,
   `singleLine`, `centerAffix`, `persistentClear`, `required`, `error`,
   `disabled`, `dirty`, `clearable` / `clearIcon` and the other adjacent-inner
   icons, plus the loader, colour, active/focus and typography mixins. See

@@ -49,14 +49,23 @@ export interface IRatingFieldEmits extends ICommonsComponentEmits {}
  * Slot signatures for `<OrigamRatingField>` — the wrapping
  * `<OrigamInput>` chrome (`default` / `details` / `messages` /
  * `message`, plus `prepend` / `append`), `label`, and per-item labels
- * (`itemLabel.{index}` / `itemLabel`), all unscoped except `default`.
+ * (`itemLabel.{index}` / `itemLabel`).
+ *
+ * @description
+ * `itemLabel` and `itemLabel.{n}` are scoped with `{ label, index }` —
+ * `label` is the resolved `itemLabels[index]` entry (`undefined` when the
+ * consumer didn't provide one for that position) and `index` is the
+ * item's position in the row. The fallback content
+ * (`<span>{{ itemLabels?.[index] ?? '&nbsp;' }}</span>`) already depends
+ * on both, so an override that can't see them can only render the same
+ * markup for every item — see #452.
  */
 export interface IRatingFieldSlots extends IAdjacentSlots {
     default?: (data: { id: string, messagesId: string, isDisabled: boolean, isReadonly: boolean, isValid: boolean | undefined }) => any
     label?: () => any
-    itemLabel?: () => any
+    itemLabel?: (data: { label?: string, index: number }) => any
     details?: (props: any) => any
     messages?: (data: { hasMessages: boolean, messages: Array<string> | Record<string, string> }) => any
     message?: (data: { message: any }) => any
-    [key: `itemLabel.${number}`]: (() => any) | undefined
+    [key: `itemLabel.${number}`]: ((data: { label?: string, index: number }) => any) | undefined
 }

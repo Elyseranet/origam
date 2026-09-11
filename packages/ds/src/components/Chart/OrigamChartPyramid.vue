@@ -566,10 +566,9 @@ return [ out, props.style as StyleValue ]
 	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
-	const svgDesc = computed(() => {
-		const n = visibleSlices.value.length
-		return `${ props.type } chart with ${ n } ${ n === 1 ? 'slice' : 'slices' }.`
-	})
+	const svgDesc = computed(() =>
+		t('origam.chart.pyramid.desc', visibleSlices.value.length, {chart: defaultAriaLabel.value})
+	)
 
 	const sliceAriaLabel = (slice: IChartPyramidSlice): string =>
 		`${ slice.category }: ${ slice.formatted }`

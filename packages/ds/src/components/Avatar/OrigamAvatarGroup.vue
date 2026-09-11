@@ -6,7 +6,11 @@
 			:class="avatarGroupClasses"
 			:style="avatarGroupStyles"
 			role="group"
+			:tabindex="isClickExpandable ? 0 : undefined"
+			:aria-expanded="isClickExpandable ? isExpanded : undefined"
 			@click="handleClick"
+			@keydown.enter.prevent="handleKeydownExpand"
+			@keydown.space.prevent="handleKeydownExpand"
 			@mouseenter="handleMouseEnter"
 			@mouseleave="handleMouseLeave"
 	>
@@ -225,6 +229,22 @@
 		}
 
 		onActive()
+	}
+
+	/*********************************************************
+	 * isClickExpandable / handleKeydownExpand
+	 *
+	 * @description
+	 * `expandOnClick` only wired `@click` — a mouse-only interaction
+	 * (WCAG 2.1.1). `tabindex`/`aria-expanded` make the group focusable
+	 * and announce its disclosure state; Enter/Space replay the same
+	 * `handleClick` a pointer click already triggers.
+	 ********************************************************/
+	const isClickExpandable = computed(() => Boolean(props.expandOnClick))
+	const handleKeydownExpand = () => {
+		if (isClickExpandable.value) {
+			handleClick()
+		}
 	}
 
 	// Click-to-expand groups collapse when the pointer lands outside the group.

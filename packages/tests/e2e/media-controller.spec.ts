@@ -103,6 +103,61 @@ test.describe('OrigamMediaController — extras-right slot', () => {
 })
 
 /**
+ * Coverage hole flagged by the classeur (lot "divers", 2026-09-01):
+ * `showPrevious` / `showNext` / `showLoop` / `showShuffle` had NO story
+ * Variant and NO e2e spec — the unit spec now proves the logic, this proves
+ * the real browser render (icons, aria-pressed toggling, clicks).
+ */
+test.describe('OrigamMediaController — playlist controls (previous/next/loop/shuffle)', () => {
+    test('previous/next/shuffle/loop render with an accessible name when show*=true', async ({ page }) => {
+        await openVariant(page, 'Variant — playlist controls (previous/next/shuffle/loop)')
+        const sandbox = sandboxOf(page)
+
+        const previous = sandbox.locator('[data-cy="origam-media-controller-previous"]').first()
+        const next = sandbox.locator('[data-cy="origam-media-controller-next"]').first()
+        const shuffle = sandbox.locator('[data-cy="origam-media-controller-shuffle"]').first()
+        const loop = sandbox.locator('[data-cy="origam-media-controller-loop"]').first()
+
+        await expect(previous).toBeVisible({ timeout: 8000 })
+        await expect(previous).toHaveAttribute('aria-label', 'Previous track')
+        await expect(next).toHaveAttribute('aria-label', 'Next track')
+        await expect(shuffle).toHaveAttribute('aria-label', 'Shuffle')
+        await expect(loop).toHaveAttribute('aria-label', 'Loop off')
+    })
+
+    test('clicking loop cycles none → all → one → none, toggling aria-pressed', async ({ page }) => {
+        await openVariant(page, 'Variant — playlist controls (previous/next/shuffle/loop)')
+        const sandbox = sandboxOf(page)
+
+        const loop = sandbox.locator('[data-cy="origam-media-controller-loop"]').first()
+        await expect(loop).toHaveAttribute('aria-label', 'Loop off', { timeout: 8000 })
+        await expect(loop).toHaveAttribute('aria-pressed', 'false')
+
+        await loop.click()
+        await expect(loop).toHaveAttribute('aria-label', 'Loop playlist')
+        await expect(loop).toHaveAttribute('aria-pressed', 'true')
+
+        await loop.click()
+        await expect(loop).toHaveAttribute('aria-label', 'Loop track')
+        await expect(loop).toHaveAttribute('aria-pressed', 'true')
+
+        await loop.click()
+        await expect(loop).toHaveAttribute('aria-label', 'Loop off')
+        await expect(loop).toHaveAttribute('aria-pressed', 'false')
+    })
+
+    test('clicking shuffle flips aria-pressed', async ({ page }) => {
+        await openVariant(page, 'Variant — playlist controls (previous/next/shuffle/loop)')
+        const sandbox = sandboxOf(page)
+
+        const shuffle = sandbox.locator('[data-cy="origam-media-controller-shuffle"]').first()
+        await expect(shuffle).toHaveAttribute('aria-pressed', 'false', { timeout: 8000 })
+        await shuffle.click()
+        await expect(shuffle).toHaveAttribute('aria-pressed', 'true')
+    })
+})
+
+/**
  * SPEC — les 4 tokens que le contrôleur lisait sans les déclarer (#429)
  *
  * ## Le défaut

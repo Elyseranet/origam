@@ -14,6 +14,8 @@
 					gaugeThickness: 18,
 					gaugeShowEndpoints: true,
 					gaugeShowValue: true,
+					gaugeStartAngle: -2.3561944901923448,
+					gaugeEndAngle: 2.3561944901923448,
 					title: 'Completion',
 					height: 300
 				})"
@@ -27,6 +29,8 @@
 						:gauge-thickness="state.gaugeThickness"
 						:gauge-show-endpoints="state.gaugeShowEndpoints"
 						:gauge-show-value="state.gaugeShowValue"
+						:gauge-start-angle="state.gaugeStartAngle"
+						:gauge-end-angle="state.gaugeEndAngle"
 						:title="state.title"
 						:subtitle="state.subtitle"
 						:bg-color="state.bgColor"
@@ -51,6 +55,10 @@
 					<HstNumber v-model="state.gaugeThickness" title="Gauge Thickness" :min="4" :max="60" :step="2"/>
 					<HstCheckbox v-model="state.gaugeShowEndpoints" title="Show Endpoints"/>
 					<HstCheckbox v-model="state.gaugeShowValue"     title="Show Value"/>
+				</StoryGroup>
+				<StoryGroup title="Sweep">
+					<HstSelect v-model="state.gaugeStartAngle" title="Start Angle" :options="GAUGE_START_ANGLE_OPTIONS"/>
+					<HstSelect v-model="state.gaugeEndAngle"   title="End Angle"   :options="GAUGE_END_ANGLE_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Labels">
 					<HstText v-model="state.title"    title="Title"/>
@@ -223,6 +231,23 @@
 		ELEVATION_OPTIONS,
 		ROUNDED_OPTIONS
 	} from '@stories/const'
+
+	// Les angles sont en RADIANS, mesures depuis midi et croissant dans le
+	// sens horaire — c'est ce que consomme `useChartGauge` via les getters
+	// `startAngle` / `endAngle` (OrigamChartGauge.vue:325-326). Les libelles
+	// donnent l'equivalent en degres, seule facon de rendre un controle
+	// numerique en radians utilisable.
+	const GAUGE_START_ANGLE_OPTIONS = [
+		{ label: '-135° (defaut)', value: -2.3561944901923448 },
+		{ label: '-180° (demi-cercle)', value: -Math.PI },
+		{ label: '-90° (quart)', value: -Math.PI / 2 }
+	]
+
+	const GAUGE_END_ANGLE_OPTIONS = [
+		{ label: '135° (defaut)', value: 2.3561944901923448 },
+		{ label: '180° (demi-cercle)', value: Math.PI },
+		{ label: '90° (quart)', value: Math.PI / 2 }
+	]
 </script>
 
 <docs

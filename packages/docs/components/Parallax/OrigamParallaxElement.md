@@ -247,6 +247,24 @@ would let a theme override an explicitly passed prop, inverting the
 props-first rule the design system is built on.
 :::
 
+### `easing="spring"` resolves through `--origam-parallax---transition-easing-spring`
+
+Unlike duration above, `easing` is a closed **enum** (`'linear' | 'ease-out'
+| 'spring'`), not a literal value the caller fully specifies — `'linear'`
+and `'ease-out'` already ARE valid CSS `transition-timing-function`
+keywords and are forwarded as-is, but `'spring'` is not a CSS keyword at
+all. The browser silently drops an invalid
+`transition-timing-function: spring` declaration (no error, no visible
+effect), so this legacy mouse/scroll path previously ignored
+`easing="spring"` entirely. The concrete curve a theme wants "spring" to
+look like — not a value the `easing` prop itself carries — comes from
+`var(--origam-parallax---transition-easing-spring, cubic-bezier(0.16, 1,
+0.3, 1))`, the same layering `variant="primary"` already uses for its
+colour (the prop picks the category, the token defines the category).
+This does not reintroduce the rejected pattern above: nothing here lets a
+theme override the caller's CHOICE of `easing`, only what `'spring'`
+concretely renders as once chosen.
+
 ## Accessibility
 
 - Layers driven by parallax should never carry essential information —

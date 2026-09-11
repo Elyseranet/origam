@@ -128,6 +128,8 @@ In `expand` mode the raw values are normalised column-by-column. A column where 
 
 Each `<path>` ribbon carries `tabindex="0"` and `role="button"` with an `aria-label` listing the series name and all values. Keyboard users can Tab through ribbons and activate them with Enter or Space.
 
+**Accessibility — the `<desc>` summary is localised AND agrees in number.** The `<desc>` text is not an English literal: it resolves through the DS `t()` mechanism against `origam.chart.streamgraph.desc*`, and the grammatical form is chosen by `Intl.PluralRules` for the ACTIVE locale — never by a `count === 1` test in the component. A translator supplies only the forms their language needs (`_one` / `_other` cover `en` and `fr`; a Russian translation adds `_few` with no component change), and a category a locale does not define falls back to `_other` rather than leaking the raw key. This chart names **two independent counts**, so each is pluralised as its own fragment and the shell key `desc` assembles them — that is what keeps the word order, and both agreements, under the translator's control.
+
 ### Animation
 
 The `origam-chart-streamgraph-fade` keyframe fades ribbons from `opacity: 0` to the resting `opacity: 0.82`. Set `animated="false"` or `animationDuration="0"` to disable. The fade is automatically suppressed when `prefers-reduced-motion: reduce` is active.

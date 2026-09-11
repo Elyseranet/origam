@@ -243,8 +243,8 @@
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
 	const { elevationClasses, elevationStyles } = useElevation(props)
-	const { marginStyles } = useMargin(props)
-	const { paddingStyles } = usePadding(props)
+	const { marginClasses, marginStyles } = useMargin(props)
+	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { headerTypographyStyles } = useChartHeaderTypography(props)
 
@@ -774,6 +774,8 @@
 		},
 		backgroundColorClasses.value,
 		elevationClasses.value,
+		marginClasses.value,
+		paddingClasses.value,
 		roundedClasses.value,
 		props.class
 	])
@@ -805,11 +807,11 @@ return [ out, props.style as StyleValue ]
 	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
-	const svgDesc = computed(() => {
-		const n = layoutNodes.value.length
-		const l = layoutLinks.value.length
-		return `Sankey diagram with ${ n } ${ n === 1 ? 'node' : 'nodes' } and ${ l } ${ l === 1 ? 'link' : 'links' }.`
-	})
+	const svgDesc = computed(() => t('origam.chart.sankey.desc', {
+		chart: defaultAriaLabel.value,
+		nodes: t('origam.chart.sankey.desc_nodes', layoutNodes.value.length),
+		links: t('origam.chart.sankey.desc_links', layoutLinks.value.length)
+	}))
 
 	const linkAriaLabel = (link: IChartSankeyLink): string =>
 		t('origam.chart.sankey.link_aria_label', link.from, link.to, link.formatted)
@@ -890,7 +892,17 @@ return [ out, props.style as StyleValue ]
 
 		display: grid;
 		gap: var(--origam-chart---gap, 12px);
-		padding: var(--origam-chart---padding, 12px);
+
+		// ⛔ #C2 — zero-specificity default so a scale-driven utility
+		// class (`.origam--p-4` from `padding="4"`) wins the cascade.
+		// Without `:where()`, this scoped rule's [data-v-hash] pushes it
+		// to (0,2,0), beating the utility's (0,1,0), and the `padding`
+		// prop's scale form goes silently inert. See CLAUDE.md "CSS-first"
+		// table — `:where(…)` is the documented zero-specificity default.
+		:where(&) {
+			padding: var(--origam-chart---padding, 12px);
+		}
+
 		background-color: var(--origam-chart---background-color, transparent);
 		color: var(--origam-chart---color, inherit);
 		width: 100%;

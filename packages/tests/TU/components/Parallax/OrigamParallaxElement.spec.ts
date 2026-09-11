@@ -142,3 +142,37 @@ describe('OrigamParallaxElement — calculateMouseMovement early-return guards',
         wrapper.unmount()
     })
 })
+
+// ---------------------------------------------------------------------------
+// ⛔ Lot tokens (2026-09-10) — `parallax.easing` is forwarded VERBATIM into
+// the inline `transition-timing-function` style. `'linear'` / `'ease-out'`
+// (PARALLAX_EASING members) happen to already BE valid CSS keywords, but
+// `'spring'` is NOT — the browser silently drops an invalid
+// `transition-timing-function` declaration, so `easing="spring"` produced
+// no spring feel at all on this element (only the separate multi-layer
+// runtime, `useParallaxRuntime`, implements a real spring). This reads the
+// INLINE style directly (a literal string `el.style.x = …`, not a
+// `var()` resolved through a stylesheet) — one of the cases jsdom resolves
+// correctly per CLAUDE.md's `getComputedStyle`-under-jsdom section.
+// ---------------------------------------------------------------------------
+describe('OrigamParallaxElement — transitionTimingFunction maps `easing`', () => {
+    it('easing="linear" passes through unchanged (already valid CSS)', () => {
+        const wrapper = mountElement(makeParallaxProvide({ easing: ref('linear' as any) }))
+        expect((wrapper.element as HTMLElement).style.transitionTimingFunction).toBe('linear')
+        wrapper.unmount()
+    })
+
+    it('easing="ease-out" passes through unchanged (already valid CSS)', () => {
+        const wrapper = mountElement(makeParallaxProvide({ easing: ref('ease-out' as any) }))
+        expect((wrapper.element as HTMLElement).style.transitionTimingFunction).toBe('ease-out')
+        wrapper.unmount()
+    })
+
+    it('easing="spring" no longer leaks the raw enum member as invalid CSS', () => {
+        const wrapper = mountElement(makeParallaxProvide({ easing: ref('spring' as any) }))
+        const value = (wrapper.element as HTMLElement).style.transitionTimingFunction
+        expect(value).not.toBe('spring')
+        expect(value).toContain('--origam-parallax---transition-easing-spring')
+        wrapper.unmount()
+    })
+})
