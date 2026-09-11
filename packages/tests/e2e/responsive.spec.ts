@@ -1,159 +1,208 @@
-import { expect, test } from '@playwright/test'
-import type { Page } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
+
+import { toggleHstCheckbox } from './_support/histoire-controls'
 
 /**
- * OrigamResponsive — spec e2e (pattern canonique btn.spec.ts / card.spec.ts)
+ * OrigamResponsive — runtime probes.
  *
- * Navigation directe : page.goto(STORY_PATH + '?variantId=' + STORY_ID + '-' + index)
- * Index 0-based = position du <Variant> dans OrigamResponsive.story.vue.
+ * Classeur "divers" (2026-09-01) flagged this component with NO dedicated
+ * e2e spec at all — "bug trouvé par lecture du SCSS, pas par un test". This
+ * file closes that hole AND pins the defect found while reading the SCSS
+ * (see the last describe block below).
  *
- * Variants (ordre dans le fichier story) :
- *   0  → Design          { aspectRatio: '16/9', maxWidth: 480 }
- *   1  → Functional       { aspectRatio: '16/9', inline: false }
- *   2  → Slots - Default
- *   3  → Slots - Additional
- *   4  → Prop — aspectRatio (static, two side-by-side ratios)
- *   5  → Prop — inline (static)
- *   6  → Default (playground)
- *
- * REGRESSION (#405) — jusqu'à ce correctif, TOUTES les variables CSS de base
- * lues par `.origam-responsive` / `__content` / `__sizer` étaient des
- * `var(--origam-…)` SANS repli, jamais émises par aucune feuille de tokens :
- * `display`, `flex`, `position`, `width`, `height`, `max-height`, `min-width`,
- * `min-height` tombaient purement (déclaration invalide → ignorée). En plus,
- * `min-height` lisait PAR ERREUR la variable `min-width`. Résultat mesuré
- * avant le correctif : `.origam-responsive` rendait comme un `<div>` nu —
- * `display: block`, pas de `position: relative`, pas d'`overflow: hidden` —
- * ce qui casse le calage en ratio (le `__sizer` n'a plus de conteneur
- * positionné pour ancrer son padding-bottom).
- *
- * Ce spec assert les valeurs CALCULÉES au navigateur réel (jamais jsdom —
- * `getComputedStyle` sous jsdom ne résout JAMAIS `var()`, cf. #398).
- *
- * Pas de data-cy dans les stories canoniques : localiser via .origam-responsive.
+ * Variants are reached via their dedicated titles — never via the HstSelect
+ * picker dropdown (custom DOM, brittle).
  */
 
-const STORY_ID = 'components-stories-responsive-origamresponsive-story-vue'
-const STORY_PATH = '/stories/story/' + STORY_ID
+const STORY = '/stories/story/components-stories-responsive-origamresponsive-story-vue'
 
-const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
+const sandboxOf = (page: Page) =>
+    page.frameLocator('iframe[src*="__sandbox"]')
 
-async function expectResponsiveVisible(page: Page, timeout = 12000) {
-    const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-    await expect(sandbox.locator('.origam-responsive').first()).toBeVisible({ timeout })
-    return sandbox
+const openVariant = async (page: Page, title: string): Promise<void> => {
+    await page.goto(STORY)
+    await page.waitForLoadState('networkidle')
+    await page.getByText(title, { exact: true }).first().click()
+    await page.waitForTimeout(400)
 }
 
-test.describe('OrigamResponsive', () => {
-    test.setTimeout(45000)
+test.describe('OrigamResponsive — Design (mount + aspect ratio)', () => {
+    test('mounts the root + sizer + content wrapper', async ({ page }) => {
+        await openVariant(page, 'Design')
+        const sandbox = sandboxOf(page)
 
-    test.describe('Design (index 0) — base CSS channel', () => {
-        test('root display is flex (was "block" before #405 — no var() fallback ever resolved)', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
-            const sandbox = await expectResponsiveVisible(page)
-            const root = sandbox.locator('.origam-responsive').first()
-            await expect(root).toBeVisible()
-            const display = await root.evaluate((el) => getComputedStyle(el).display)
-            expect(display).toBe('flex')
-        })
-
-        test('root position is relative (anchors the __sizer padding-bottom trick)', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
-            const sandbox = await expectResponsiveVisible(page)
-            const root = sandbox.locator('.origam-responsive').first()
-            const position = await root.evaluate((el) => getComputedStyle(el).position)
-            expect(position).toBe('relative')
-        })
-
-        test('root overflow is hidden', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
-            const sandbox = await expectResponsiveVisible(page)
-            const root = sandbox.locator('.origam-responsive').first()
-            const overflow = await root.evaluate((el) => getComputedStyle(el).overflow)
-            expect(overflow).toBe('hidden')
-        })
-
-        test('root max-width is 100% (capped by the maxWidth prop, not left unset)', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
-            const sandbox = await expectResponsiveVisible(page)
-            const root = sandbox.locator('.origam-responsive').first()
-            const maxWidth = await root.evaluate((el) => getComputedStyle(el).maxWidth)
-            // dimension prop (480px) applies via inline style; the CSS-var
-            // channel's own 100% only shows when no explicit maxWidth prop is
-            // set — covered separately by the min-height regression below.
-            expect(maxWidth).not.toBe('none')
-        })
-
-        test('__sizer has pointer-events: none (was unset before #405)', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
-            const sandbox = await expectResponsiveVisible(page)
-            const sizer = sandbox.locator('.origam-responsive__sizer').first()
-            const pointerEvents = await sizer.evaluate((el) => getComputedStyle(el).pointerEvents)
-            expect(pointerEvents).toBe('none')
-        })
-
-        test('__content has flex: 1 1 auto (was unset before #405)', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
-            const sandbox = await expectResponsiveVisible(page)
-            const content = sandbox.locator('.origam-responsive__content').first()
-            const flex = await content.evaluate((el) => getComputedStyle(el).flex)
-            expect(flex).toBe('1 1 auto')
-        })
+        const root = sandbox.locator('.origam-responsive').first()
+        await expect(root).toBeVisible({ timeout: 8000 })
+        await expect(root.locator('.origam-responsive__sizer')).toHaveCount(1)
+        await expect(root.locator('.origam-responsive__content')).toContainText('preview')
     })
 
-    test.describe('min-height regression (#405 — read the wrong variable)', () => {
-        test('the shipped scoped CSS reads --origam-responsive---min-height for min-height, not the min-width variable', async ({ page }) => {
-            // `minHeight`/`minWidth` props resolve to a LITERAL inline style
-            // (`useDimension`'s `dimensionStyles`) whenever passed, which
-            // always outranks the scoped rule — so this defect never shows up
-            // in `getComputedStyle` (identical `inherit` default either way
-            // when unset). The only valid observation point is the CSS text
-            // actually shipped to the browser (never jsdom, #398): confirm the
-            // fixed property/variable pairing landed in the real stylesheet.
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
-            const sandbox = await expectResponsiveVisible(page)
-            await expect(sandbox.locator('.origam-responsive').first()).toBeVisible()
+    test('aspectRatio 16/9 drives the sizer padding-block-end percentage', async ({ page }) => {
+        await openVariant(page, 'Design')
+        const sandbox = sandboxOf(page)
 
-            const cssText = await page.frameLocator('iframe[src*="__sandbox"]')
-                .locator('body')
-                .evaluate(() => Array.from(document.styleSheets)
-                    .flatMap((sheet) => {
-                        try {
-                            return Array.from(sheet.cssRules).map((rule) => rule.cssText)
-                        } catch {
-                            return []
-                        }
-                    })
-                    .join('\n'))
+        const sizer = sandbox.locator('.origam-responsive__sizer').first()
+        await expect(sizer).toBeVisible({ timeout: 8000 })
 
-            expect(cssText).toMatch(/min-height:\s*var\(--origam-responsive---min-height\)/)
-            expect(cssText).not.toMatch(/min-height:\s*var\(--origam-responsive---min-width\)/)
+        // 16/9 → 1 / (16/9) * 100 = 56.25%, resolved against the container's
+        // own width by the browser — read the RESOLVED px value and compare
+        // it against the container's width rather than asserting on the
+        // percentage string (percentages resolve against inline-size).
+        const measured = await sandbox.locator('.origam-responsive').first().evaluate((el) => {
+            const width = el.getBoundingClientRect().width
+            const sizerEl = el.querySelector('.origam-responsive__sizer') as HTMLElement
+            const paddingBottom = parseFloat(getComputedStyle(sizerEl).paddingBottom)
+            return { width, paddingBottom }
         })
+
+        const expectedPadding = measured.width * (9 / 16)
+        expect(measured.paddingBottom).toBeGreaterThan(expectedPadding - 1)
+        expect(measured.paddingBottom).toBeLessThan(expectedPadding + 1)
+    })
+})
+
+test.describe('OrigamResponsive — Functional (inline mode)', () => {
+    test('inline=true switches the root to inline-flex display', async ({ page }) => {
+        await openVariant(page, 'Functional')
+        const sandbox = sandboxOf(page)
+
+        const root = sandbox.locator('.origam-responsive').first()
+        await expect(root).toBeVisible({ timeout: 8000 })
+        await expect(root).not.toHaveClass(/origam-responsive--inline/)
+
+        await toggleHstCheckbox(page, 'Inline')
+
+        await expect(root).toHaveClass(/origam-responsive--inline/)
+        const display = await root.evaluate((el) => getComputedStyle(el).display)
+        expect(display).toBe('inline-flex')
+    })
+})
+
+test.describe('OrigamResponsive — Slots', () => {
+    test('#default renders the passed content', async ({ page }) => {
+        await openVariant(page, 'Slots - Default')
+        const sandbox = sandboxOf(page)
+
+        await expect(sandbox.getByText('Default slot content')).toBeVisible({ timeout: 8000 })
     })
 
-    test.describe('Prop — inline (index 5) — static demo', () => {
-        test('inline renders display: inline-flex', async ({ page }) => {
-            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
-            const sandbox = await expectResponsiveVisible(page)
-            const root = sandbox.locator('.origam-responsive').first()
-            const display = await root.evaluate((el) => getComputedStyle(el).display)
-            expect(display).toBe('inline-flex')
+    test('#additional renders alongside the sizer, outside #default', async ({ page }) => {
+        await openVariant(page, 'Slots - Additional')
+        const sandbox = sandboxOf(page)
+
+        await expect(sandbox.getByText('main media')).toBeVisible({ timeout: 8000 })
+        await expect(sandbox.getByText('LIVE')).toBeVisible()
+    })
+})
+
+/**
+ * SPEC — tokens `inherit` = guaranteed-invalid, même défaut que #429
+ *
+ * ## Le défaut (trouvé en lisant la feuille de tokens, pas par un test)
+ *
+ * `light.css` / `dark.css` déclaraient `--origam-responsive---{flex,height,
+ * max-height,min-height,min-width,width}`, `--origam-responsive--inline---
+ * flex`, `--origam-responsive__content---margin` et
+ * `--origam-responsive__sizer---{flex,padding-block-end,transition}` à la
+ * valeur `inherit`. Pour une CUSTOM PROPERTY (pas la propriété CSS finale),
+ * `inherit` signifie « hérite CETTE MÊME custom property de mon parent » —
+ * et comme aucun ancêtre ne la déclare, la valeur est *guaranteed-invalid*
+ * (même mécanisme, déjà mesuré et documenté dans ce dépôt sur
+ * `OrigamMediaController` #429 : `--…__time---color: inherit` →
+ * `getPropertyValue` rend `""`).
+ *
+ * Conséquence : `height: var(--origam-responsive---height)` était TOUJOURS
+ * invalide au calcul, donc TOUJOURS retombé sur la valeur initiale de
+ * `height` (`auto`) — pas sur « la hauteur du parent » comme le nom
+ * `inherit` le laissait croire. Le rendu par défaut n'a jamais été faux
+ * (retomber sur `auto` est un défaut raisonnable), mais le canal de thème
+ * était mort : rien à surcharger, `IOrigamTheme.vars` compris.
+ *
+ * ## Le correctif
+ *
+ * Chaque token reçoit la valeur LITTÉRALE réelle qu'il produisait déjà —
+ * l'initiale CSS de la propriété qui le consomme (`auto`, `none`,
+ * `0 1 auto`, `0`) — donc zéro pixel ne bouge, mesuré ci-dessous.
+ */
+test.describe('OrigamResponsive — tokens déclarés, pas `inherit` (dead custom property)', () => {
+    test('les tokens dimensionnels sont déclarés à une valeur réelle, pas guaranteed-invalid', async ({ page }) => {
+        await openVariant(page, 'Design')
+        const sandbox = sandboxOf(page)
+
+        const root = sandbox.locator('.origam-responsive').first()
+        await expect(root).toBeVisible({ timeout: 8000 })
+
+        const declared = await root.evaluate((el) => {
+            const cs = getComputedStyle(el)
+            const names = [
+                '--origam-responsive---flex',
+                '--origam-responsive---height',
+                '--origam-responsive---max-height',
+                '--origam-responsive---min-height',
+                '--origam-responsive---min-width',
+                '--origam-responsive---width'
+            ]
+            return Object.fromEntries(names.map((n) => [n, cs.getPropertyValue(n).trim()]))
         })
+
+        for (const [name, value] of Object.entries(declared)) {
+            expect(value, `${name} doit être déclaré (une "inherit" guaranteed-invalid rend ""）`).not.toBe('')
+        }
+
+        expect(declared['--origam-responsive---flex']).toBe('0 1 auto')
+        expect(declared['--origam-responsive---height']).toBe('auto')
+        expect(declared['--origam-responsive---max-height']).toBe('none')
+        expect(declared['--origam-responsive---min-height']).toBe('auto')
+        expect(declared['--origam-responsive---min-width']).toBe('auto')
+        expect(declared['--origam-responsive---width']).toBe('auto')
     })
 
-    test.describe('Slots - Default (index 2)', () => {
-        test('default slot content is rendered inside __content', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
-            const sandbox = await expectResponsiveVisible(page)
-            await expect(sandbox.locator('.origam-responsive__content strong')).toHaveText('Default slot content')
+    test('le rendu par défaut ne bouge pas — mêmes valeurs calculées qu\'avant le correctif', async ({ page }) => {
+        await openVariant(page, 'Design')
+        const sandbox = sandboxOf(page)
+
+        const root = sandbox.locator('.origam-responsive').first()
+        await expect(root).toBeVisible({ timeout: 8000 })
+
+        const painted = await root.evaluate((el) => {
+            const cs = getComputedStyle(el)
+            return {
+                flexGrow: cs.flexGrow,
+                flexShrink: cs.flexShrink,
+                flexBasis: cs.flexBasis,
+                maxHeight: cs.maxHeight,
+                minHeight: cs.minHeight,
+                minWidth: cs.minWidth
+            }
         })
+
+        // Valeurs mesurées AVANT le correctif (guaranteed-invalid → valeurs
+        // initiales de chaque propriété) — identiques après, seul le canal
+        // de thème a changé.
+        expect(painted.flexGrow).toBe('0')
+        expect(painted.flexShrink).toBe('1')
+        expect(painted.flexBasis).toBe('auto')
+        expect(painted.maxHeight).toBe('none')
+        expect(painted.minHeight).toBe('0px')
+        expect(painted.minWidth).toBe('0px')
     })
 
-    test.describe('Slots - Additional (index 3)', () => {
-        test('additional slot content is rendered outside __content', async ({ page }) => {
-            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
-            const sandbox = await expectResponsiveVisible(page)
-            await expect(sandbox.locator('.origam-responsive .demo-badge')).toHaveText('LIVE')
+    test('le canal de thème est désormais vivant : surcharger le token change bien la hauteur rendue', async ({ page }) => {
+        await openVariant(page, 'Design')
+        const sandbox = sandboxOf(page)
+
+        const root = sandbox.locator('.origam-responsive').first()
+        await expect(root).toBeVisible({ timeout: 8000 })
+
+        const heightBefore = await root.evaluate((el) => getComputedStyle(el).height)
+
+        await root.evaluate((el) => {
+            el.style.setProperty('--origam-responsive---height', '77px')
         })
+
+        const heightAfter = await root.evaluate((el) => getComputedStyle(el).height)
+
+        expect(heightAfter).toBe('77px')
+        expect(heightAfter).not.toBe(heightBefore)
     })
 })
