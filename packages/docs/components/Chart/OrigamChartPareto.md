@@ -52,6 +52,7 @@ interface IChartParetoDatum {
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `series` | `IChartSeries[]` | — | Single series; data is `IChartParetoDatum[]`. |
+| `categories` | `Array<string>` | `[]` | Fallback category label per index, used when a datum's own `category` is absent — `categories[i] ?? String(i)`. |
 | `title` | `string` | `undefined` | Optional title above the chart. |
 | `subtitle` | `string` | `undefined` | Optional subtitle below the title. |
 | `barColor` | `TIntent \| string` | `'primary'` | Colour of all columns. Accepts an intent token or a raw CSS colour. |
@@ -73,7 +74,17 @@ interface IChartParetoDatum {
 | `aspectRatio` | `string` | `undefined` | CSS `aspect-ratio` shortcut, overrides `height`. |
 | `height` | `number \| string` | `360` | Chart height (px when numeric). |
 
-Inherits all `IChartBaseProps` layout props: `bgColor`, `elevation`, `rounded`, `margin`, `padding`, `width`, `height`, `minWidth`, `maxWidth`.
+### Inherited from `IChartBaseProps`
+
+`height`, `aspectRatio`, and `colorScheme` are documented above since they
+carry Pareto-specific defaults. The rest of the surface is consumed as-is:
+
+- `bgColor` — via `useBackgroundColor`.
+- `rounded` — via `useRounded`.
+- `elevation` — via `useElevation`.
+- `width`, `minWidth`, `maxWidth`, `minHeight`, `maxHeight` — via `useDimension`.
+- `margin*`, `padding*` — via `useMargin` / `usePadding`.
+- `fontSize`, `fontWeight` — via `useChartHeaderTypography` (title/subtitle only).
 
 ## Emits
 
