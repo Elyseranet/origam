@@ -162,7 +162,7 @@ interface IBreadcrumbProps extends IColorProps, IBgColorProps, ITagProps,
 | `density` | `TDensity` | `'default'` | Compresses the root's padding. |
 | `disabled` | `boolean` | — | Forwarded as a default `disabled` to every item. |
 | `color` / `bgColor` | `TColor` | — | Forwarded as defaults to every item. |
-| `hover` / `active` / `activeClass` | `boolean \| IHoverState` / `boolean \| IActiveState` / `string` | — | `hover`/`active` forwarded as defaults to every item. `activeClass` is part of `IActiveProps` but is not itself propagated to items. |
+| `hover` / `hoverClass` / `active` / `activeClass` | `boolean \| IHoverState` / `string` / `boolean \| IActiveState` / `string` | — | Forwarded as defaults to every item — **only when explicitly passed** (`usePassedProps`), so an unset prop doesn't coerce to `false` and silently override the item's own value. |
 | `rounded`, `border`(+`borderColor`/`borderStyle`), `elevation` | — | — | Standard shape surface — see `IRoundedProps` / `IBorderProps` / `IElevationProps`. |
 | `padding*`, `margin*` | — | — | Standard spacing surface — see `IPaddingProps` / `IMarginProps`. |
 
@@ -185,7 +185,7 @@ interface IBreadcrumbItemProps extends ICommonsComponentProps, ITagProps,
 | `tag` | `string` | `'span'` | Root element — overridden to an `<a>` internally by `useLink` when `href`/`to` resolves to a link. |
 | `href` / `to` / `replace` / `exact` | — | — | Standard link surface — see `ILinkProps`. When present, `aria-current="page"` is set if the resolved route/`active` state matches. |
 | `prependIcon` / `prependAvatar` / `appendIcon` / `appendAvatar` | — | — | Standard adjacent surface — see `IAdjacentProps`. |
-| `color` / `bgColor` | `TColor` | — | Resolved against the parent's `<OrigamBreadcrumb>`-level defaults when unset (via `useDefaults`). |
+| `color` / `bgColor` | `TColor` | — | Resolved against the parent's `<OrigamBreadcrumb>`-level defaults when unset — via `<OrigamDefaultsProvider>` (ADR-005: no component calls `useDefaults()` any more, this one included). |
 | `density` | `TDensity` | `'default'` | Resolved against the parent's default when unset. |
 | `hover` / `active` | `boolean \| IHoverState` / `boolean \| IActiveState` | — | Resolved against the parent's default when unset. |
 | `activeClass` | `string` | — | Custom class applied while `isActive` (own or route-matched) is true. |
@@ -207,7 +207,7 @@ interface IBreadcrumbDividerProps extends ICommonsComponentProps, ITagProps,
 | `divider` | `string \| TIcon` | `'/'` | Required. Rendered as literal text unless it matches a known `MDI_ICONS` value, in which case an `<origam-icon>` is rendered instead. |
 | `tag` | `string` | `'span'` | Root element/component. |
 | `size` | `TSize \| number` | — | Standard size surface — see `ISizeProps`. |
-| `color` / `bgColor` | `TColor` | — | **Not** resolved against the parent `<OrigamBreadcrumb>` — the divider has no `useDefaults()` wiring, unlike `<OrigamBreadcrumbItem>`. |
+| `color` / `bgColor` | `TColor` | — | **Not** resolved against the parent `<OrigamBreadcrumb>` — `slotDefaults` only targets `origam-breadcrumb-item`, so `<OrigamBreadcrumbDivider>` gets no `<OrigamDefaultsProvider>` entry, unlike `<OrigamBreadcrumbItem>`. |
 | `padding*`, `margin*` | — | — | Standard spacing surface. |
 
 ## Anatomy
