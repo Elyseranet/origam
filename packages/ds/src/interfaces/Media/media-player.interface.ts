@@ -1,4 +1,4 @@
-import type { Ref } from 'vue'
+import type { MaybeRefOrGetter, Ref } from 'vue'
 
 /**
  * Reactive state surface returned by `useMediaPlayer` — the
@@ -106,10 +106,30 @@ export interface IMediaPlayerEmits {
  * — `mediaRef` accepts any `HTMLMediaElement` (audio OR video).
  */
 export interface IUseMediaPlayerOptions {
-    /** Suppress autoplay when the user has requested reduced motion. */
-    autoplay?: boolean
-    /** Initial muted state. */
-    muted?: boolean
+    /**
+     * Suppress autoplay when the user has requested reduced motion.
+     *
+     * @description
+     * Accepts a plain `boolean`, a `Ref<boolean>`, or a getter
+     * (`() => boolean`) in addition to a literal. `useMediaPlayer` only
+     * reads this value LAZILY, inside `bind()` (`onMounted`) — never at
+     * the composable's own setup time. A caller building this option
+     * from a component prop (e.g. `OrigamAudio`/`OrigamVideo`) MUST pass
+     * a getter (`() => props.autoplay`), not `props.autoplay` itself:
+     * the latter snapshots the value once, before the ADR-005 theme
+     * resolver has had a chance to write a theme default onto
+     * `props.autoplay` (see `theme-props-resolver.composable.ts`) — see
+     * issue #661.
+     */
+    autoplay?: MaybeRefOrGetter<boolean>
+    /**
+     * Initial muted state.
+     *
+     * @description
+     * Same lazy-read contract as `autoplay` above — pass a getter when
+     * the value is sourced from a component prop.
+     */
+    muted?: MaybeRefOrGetter<boolean>
     /** Loop on `ended`. */
     loop?: boolean
     /** Buffering hint. */

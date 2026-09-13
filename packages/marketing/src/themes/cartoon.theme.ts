@@ -273,15 +273,20 @@ export const cartoonLightTheme: IOrigamTheme = {
         //   - pagination__item active-background-color / active-color
         //   - table__row hover-background-color (= surface.sunken = #fff3d6)
         //   - table__cell border-color (= border.subtle = #171717)
-        //   - code syntax string / function (déjà alignées sur feedback success/info)
         //   - divider color (= border.subtle = #171717)
+        //
+        // Removed (#661/C2, 2026-09-11): '--origam-code__syntax---keyword' /
+        // '---comment' overrides. The whole --origam-code__syntax---* token
+        // family was deleted from the DS — shiki v4.3.1 no longer exposes a
+        // 'css-variables' theme to hang it on, so these two overrides had
+        // been dead since that migration (nothing in OrigamCode.vue read
+        // them). See packages/docs/components/Code/OrigamCode.md "Why there
+        // is no per-token-type design token" for the full explanation.
 
         '--origam-field--error---border-color': '#ef4444',
         '--origam-list-item---border-radius': '9px',
         '--origam-table---header-cell-background-color': 'var(--origam-color__action--primary---bgSubtle)',
         '--origam-code---line-highlight-background-color': 'var(--origam-color__action--primary---bgSubtle)',
-        '--origam-code__syntax---keyword': '#c0174a',
-        '--origam-code__syntax---comment': '#8a7f72',
         '--origam-overlay-scrim---background-color': 'rgba(23, 23, 23, 0.6)',
         '--origam-overlay-scrim---opacity': '1',
         '--origam-divider---border-top-width': '3px',
