@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { eventLogItems, fillHstNumber, fillHstText, openEventsTab } from './_support/histoire-controls'
+import { eventLogItems, fillHstNumber, fillHstText, openEventsTab, selectHstOption } from './_support/histoire-controls'
 
 /**
  * OrigamImg — e2e spec.
@@ -74,6 +74,23 @@ test.describe('OrigamImg — Design (index 0)', () => {
         const root = sandbox.locator('.origam-img').first()
         await expect(root).toBeVisible({ timeout: 12000 })
         await expect(root).toHaveAttribute('aria-label', 'Design demo')
+    })
+
+    test('Functional — the Aspect Ratio select really drives the render (not a lying control)', async ({ page }) => {
+        await page.goto(variantUrl(1))
+        const sizer = sandboxOf(page).locator('.origam-img .origam-responsive__sizer').first()
+        await expect(sizer).toHaveCount(1)
+        const read = () => sizer.evaluate(el => (el as HTMLElement).style.paddingBlockEnd)
+
+        // The sizer uses the padding-percentage technique, so the rendered value
+        // is the INVERSE of the ratio: 16/9 -> 56.25%, 1/1 -> 100%, 9/16 -> 177.778%.
+        expect(await read()).toBe('56.25%')
+
+        await selectHstOption(page, 'Aspect Ratio', '1 / 1 (square)')
+        await expect.poll(read).toBe('100%')
+
+        await selectHstOption(page, 'Aspect Ratio', '9 / 16 (story / reel)')
+        await expect.poll(read).toBe('177.778%')
     })
 
     test('aspectRatio prop is applied as a real style, not merely accepted', async ({ page }) => {
