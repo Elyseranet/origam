@@ -93,3 +93,51 @@ describe('OrigamSheet — drag handle keyboard support (C6)', () => {
         expect(wrapper.emitted('update:snap')).toBeFalsy()
     })
 })
+
+// Regression coverage for issue #677 — C5 (emits). `update:snap` above is
+// thoroughly proven, but `OrigamSheet.vue:179` also declares and emits
+// `update:open` (`emit('update:open', !isClosed)`, fired from the
+// `watch(currentSnap, …)` handler whenever a snap transition crosses the
+// closed/open boundary) and NO test — TU or e2e — asserted it before this
+// commit (grep of 'update:open' across both suites returned zero
+// occurrences). C5 requires that EVERY declared emit be proven, not just
+// the most visible one from a batch of fixes (the #461 keyboard fix above
+// covered update:snap but happened to leave update:open unproven).
+describe('OrigamSheet — update:open emission on closed/open transitions (C5, #677)', () => {
+    it('emits update:open(false) when a keyboard snap transition CROSSES INTO closed', async () => {
+        const wrapper = mountSwipeableSheet()
+        const handle = wrapper.find('[data-cy="sheet-bottom-handle"]')
+
+        // defaultSnap is 'half' (not closed) — Home jumps straight to
+        // 'closed', crossing the boundary this emit exists to signal.
+        await handle.trigger('keydown', { key: KEYBOARD_VALUES.HOME })
+
+        const emittedOpen = wrapper.emitted('update:open')
+        expect(emittedOpen).toBeTruthy()
+        expect(emittedOpen?.at(-1)?.[0]).toBe(false)
+    })
+
+    it('emits update:open(true) when a keyboard snap transition CROSSES OUT of closed', async () => {
+        const wrapper = mountSwipeableSheet()
+        const handle = wrapper.find('[data-cy="sheet-bottom-handle"]')
+
+        await handle.trigger('keydown', { key: KEYBOARD_VALUES.HOME }) // -> closed
+        await handle.trigger('keydown', { key: KEYBOARD_VALUES.UP })   // -> peek (open again)
+
+        const emittedOpen = wrapper.emitted('update:open')
+        expect(emittedOpen).toBeTruthy()
+        expect(emittedOpen?.at(-1)?.[0]).toBe(true)
+    })
+
+    it('does NOT emit update:open for a transition that stays on the open side (half -> full)', async () => {
+        const wrapper = mountSwipeableSheet()
+        const handle = wrapper.find('[data-cy="sheet-bottom-handle"]')
+
+        // defaultSnap 'half' -> ArrowUp -> 'full': never touches 'closed',
+        // so the boundary this emit exists to signal is never crossed.
+        await handle.trigger('keydown', { key: KEYBOARD_VALUES.UP })
+
+        expect(wrapper.emitted('update:snap')?.at(-1)?.[0]).toBe('full')
+        expect(wrapper.emitted('update:open')).toBeFalsy()
+    })
+})
