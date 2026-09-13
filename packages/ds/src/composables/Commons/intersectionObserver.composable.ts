@@ -18,7 +18,7 @@ import { SUPPORTS_INTERSECTION } from '../../consts/Commons/commons.const'
  * polyfill.
  *
  * @description
- * ⛔ issue #684 / critere C4 — `options` accepte desormais un ref/getter
+ * ⛔ issue #682 / critere C4 — `options` accepte desormais un ref/getter
  * (`MaybeRefOrGetter`), pas seulement un objet fige. `rootMargin`/`root`
  * sont des options NATIVES d'`IntersectionObserver`, figees a la creation :
  * aucune reactivite ne peut les rattraper sans RECREER l'observateur.

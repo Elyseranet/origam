@@ -1,4 +1,4 @@
-// Regression coverage for issue #684 — critere C4 (ADR-005).
+// Regression coverage for issue #682 — critere C4 (ADR-005).
 //
 // `OrigamInfiniteScrollIntersect` used to unwrap its computed
 // `observerOptions.value` ONCE, synchronously in the body of `setup()`,
@@ -56,7 +56,7 @@ const THEME: IOrigamTheme = {
     vars: {}
 }
 
-describe('OrigamInfiniteScrollIntersect — theme.components["origam-infinite-scroll-intersect"].margin (#684, C4)', () => {
+describe('OrigamInfiniteScrollIntersect — theme.components["origam-infinite-scroll-intersect"].margin (#682, C4)', () => {
     beforeEach(installIntersectionObserverStub)
     afterEach(() => {
         vi.unstubAllGlobals()
@@ -95,7 +95,7 @@ describe('OrigamInfiniteScrollIntersect — theme.components["origam-infinite-sc
         wrapper.unmount()
     })
 
-    it('a theme naming margin DOES reach the native IntersectionObserver (the actual gap, #684)', async () => {
+    it('a theme naming margin DOES reach the native IntersectionObserver (the actual gap, #682)', async () => {
         const origam = createOrigam({ themes: [THEME] })
         origam._defaultsRef.value = origam._activeDefaultsFor('infinite-scroll-margin-theme', 'light')
 

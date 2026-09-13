@@ -51,7 +51,7 @@
 	 * annonce. Issue #550, critere C1.
 	 *
 	 * @description
-	 * ⛔ issue #684 / critere C4 — `observerOptions.value` etait deballe
+	 * ⛔ issue #682 / critere C4 — `observerOptions.value` etait deballe
 	 * UNE FOIS ici, au corps de `setup()`, avant d'etre passe a
 	 * `useIntersectionObserver`. Un theme visant `origam-infinite-scroll-
 	 * intersect.margin` (resolu en `beforeCreate`, APRES `setup()`, cf.
