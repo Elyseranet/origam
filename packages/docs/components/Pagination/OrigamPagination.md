@@ -53,6 +53,44 @@ const page = ref(1)
 |---|---|---|
 | `disabled` | `boolean` | Disable all buttons |
 
+## Compact mode
+
+```vue
+<template>
+    <OrigamPagination v-model="page" :length="20" compact />
+</template>
+```
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `compact` | `boolean` | `false` | Collapses the page list to a single editable page number (`{page} / {length}`) instead of one button per page |
+| `pageText` | `string` | `origam.pagination.page` | Locale key (or literal text) for the compact-mode label |
+| `ofText` | `string` | `origam.pagination.of` | Locale key (or literal text) for the compact-mode separator (`"of"`) |
+| `pageNumberAriaLabel` | `string` | `origam.pagination.aria_label.page_number` | `aria-label` for the compact-mode page number `<input>` |
+
+## With info
+
+```vue
+<template>
+    <OrigamPagination v-model="page" :length="10" with-info :total="100" :per-page="10" />
+</template>
+```
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `withInfo` | `boolean` | `false` | Renders a left-side range label (`Showing {start}-{end} of {total}`) next to the page buttons |
+| `total` | `number \| string` | `length * perPage` | Total number of *items* (not pages) the range label is computed from |
+| `perPage` | `number \| string` | `10` | Items per page, used with `total` to compute the range |
+| `infoText` | `string` | `origam.pagination.info` | Locale key for the range label. Receives `{0}=start`, `{1}=end`, `{2}=total` |
+| `previousText` | `string` | `origam.pagination.previous` | Label next to the prev chevron in `withInfo` mode |
+| `nextText` | `string` | `origam.pagination.next` | Label next to the next chevron in `withInfo` mode |
+
+## Polymorphic root
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `tag` | `string` | `'nav'` | Element (or component) the root renders as |
+
 ## ARIA
 
 Every prop below carries a **locale key**, not finished text — its default is a
@@ -74,6 +112,7 @@ also works, since an unknown key is returned unchanged.
 
 | Slot | Bindings | Description |
 |---|---|---|
+| `info` | `{ start, end, total }` | Custom range label in `withInfo` mode |
 | `first` | button props | Custom first-page button |
 | `prev` | button props | Custom previous-page button |
 | `next` | button props | Custom next-page button |
