@@ -112,6 +112,19 @@ Detection: if a datum has a `samples` array property, Format B is assumed; other
 | `xAxisFormat` | `(value: string \| number) => string` | identity | Applied to X-axis category labels. |
 | `yAxisFormat` | `(value: number) => string` | `String(value)` | Applied to Y-axis tick values and the default tooltip. |
 
+### Inherited from `IChartBaseProps`
+
+`height`, `aspectRatio`, and `colorScheme` are documented above (**Visual**)
+since they carry box-plot-specific defaults/behaviour. The rest of the
+surface is consumed as-is, with no local override:
+
+- `width`, `minWidth`, `maxWidth`, `minHeight`, `maxHeight` — via `useDimension`.
+- `margin*`, `padding*` — via `useMargin` / `usePadding`.
+- `rounded` — via `useRounded`.
+- `elevation` — via `useElevation`.
+- `bgColor` — via `useBackgroundColor`.
+- `fontSize`, `fontWeight` — via `useChartHeaderTypography` (title/subtitle only).
+
 ## Emits
 
 | Name | Payload | Description |
