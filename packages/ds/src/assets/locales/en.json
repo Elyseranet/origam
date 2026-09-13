@@ -475,6 +475,7 @@
       }
     },
     "treeview": {
+      "aria_label": "File tree",
       "node_children_aria_label": "{0} contents"
     }
   }

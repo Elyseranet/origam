@@ -4,7 +4,7 @@
 			:class="treeviewClasses"
 			:style="treeviewStyles"
 			role="tree"
-			:aria-label="ariaLabel || 'File tree'"
+			:aria-label="resolvedAriaLabel"
 			:aria-multiselectable="selectMode === TREEVIEW_SELECT_MODE.MULTIPLE || undefined"
 			@keydown="handleKeydown"
 	>
@@ -42,6 +42,7 @@
 	import { SIZES } from '../../enums/Commons/size.enum'
 	import { TREEVIEW_SELECT_MODE, TREEVIEW_SELECTABLE_NODES } from '../../enums/Treeview/treeview.enum'
 	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useSize } from '../../composables/Commons/size.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
@@ -68,6 +69,21 @@
 	defineSlots<ITreeviewSlots>()
 
 	const { filterProps } = useProps<ITreeviewProps>(props)
+
+	/*********************************************************
+	 * resolvedAriaLabel — critere C8
+	 *
+	 * @description
+	 * The root `aria-label` fell back to a hardcoded English literal
+	 * (`'File tree'`) when the consumer did not pass `ariaLabel` —
+	 * never translated regardless of the active locale. Routed
+	 * through `useLocale().t()`, deferred into a `computed` (evaluated
+	 * at render, safe for ADR-005) so a `theme.components` default for
+	 * `ariaLabel` still wins over the locale fallback.
+	 ********************************************************/
+	const { t } = useLocale()
+
+	const resolvedAriaLabel = computed(() => props.ariaLabel || t('origam.treeview.aria_label'))
 
 	/*********************************************************
 	 * expandedSet — source of truth, ADR-005 lazy seed

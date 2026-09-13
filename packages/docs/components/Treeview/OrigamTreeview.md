@@ -85,6 +85,7 @@ A recursive nested file/folder hierarchy component with expand/collapse, keyboar
 | `color` | `TColor` | — | Intent color applied via `useColorEffect` |
 | `density` | `TDensity` | `'default'` | Row density |
 | `size` | `TSize` | `'default'` | Component size scale |
+| `ariaLabel` | `string` | — | Accessible name for the root `role="tree"`. Falls back to the localised default (`'File tree'` in English) when omitted |
 | + all `ICommonsComponentProps` | | | `id`, `class`, `style` |
 
 ## `ITreeviewNode` data shape
