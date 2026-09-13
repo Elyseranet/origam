@@ -1,0 +1,11 @@
+Ligne	Composant	Colonne	Ancien	Nouveau	Gravite	Preuve (commit + verification)
+J1	OrigamExpansionPanels	C7	defaut	conforme	mineur->aucun	doc 246 lignes existe (ad0a1fb7, sur develop) ; 15/15 e2e verts
+J2	OrigamImg	C3	defaut	conforme	majeur->aucun	responsiveProps -> computed() (PR #687) ; 8 props reellement mortes, pas 11 (ticket #684 corrige) ; 2 tests dedies verts, 16/17 fichier (1 echec sans rapport, #690 ouvert)
+J3	OrigamInlineEdit	C2	defaut	conforme	mineur->aucun	FAUX POSITIF : all:unset precede les declarations token dans la meme regle, cascade CSS les laisse gagner ; mesure 28px->61px sous override confirmee (inline-edit.spec.ts:539)
+J4	OrigamItemGroupItem	C7	defaut	conforme	mineur->aucun	doc 136 lignes (a630ec4f) + defineEmits<IItemGroupItemEmits> (7a5be0a3) + Variant Events - group:selected ; 6/6 e2e verts
+J5	OrigamMediaController	C2	defaut	conforme	mineur->aucun	4 tokens declares (accent-color, time/time-sep/time-total---color, b5c2dc99, #429) ; guards 20/20 ; 2 tests dedies + 10/10 fichier verts
+J6	OrigamProgress	C8	defaut	conforme	mineur->aucun	t('origam.loading') remplace 'Loading' en dur (face8ccb, #450 FERME) ; 50/51 verts + 1 test.fail volontaire sans rapport
+J7	OrigamQrCode	C8	defaut	conforme	mineur->aucun	t('origam.qr_code.aria_label', {value}) remplace le template litteral (face8ccb, #451 FERME) ; 25/25 e2e verts
+J8	OrigamSkeleton	C8	defaut	conforme	mineur->aucun	prop label (cle i18n) remplace aria-label='Loading' x3 en dur (face8ccb, #462 FERME) ; 17/21 e2e verts (4 skips volontaires)
+J9	OrigamSliderField	C7	defaut	conforme	mineur->aucun	slider-field-start-end-emits.spec.ts (7 TU) prouve l'emission reelle de start/end (0bbb93bb, #465 FERME) ; 33/34 e2e verts
+J10	OrigamVideo	C7	defaut	conforme	mineur->aucun	2 test.fixme -> vrais tests captions/tracks + Variant avec piste WebVTT reelle (04b3fce3, PR #689) ; 14/14 e2e verts (1 test.fail volontaire sans rapport)
