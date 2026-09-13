@@ -193,7 +193,23 @@
 		return normalisedSrc.value.aspectRatio || naturalWidth.value! / naturalHeight.value! || 0
 	})
 
-	const responsiveProps = pick(props, ['aspectRatio', 'contentClass', 'inline', 'height', 'maxHeight', 'maxWidth', 'minHeight', 'minWidth', 'width', 'class', 'style'])
+	/*********************************************************
+	 * responsiveProps — computed instead of a setup-time pick() (#684)
+	 *
+	 * @description
+	 * Was a plain `pick(props, [...])` call in the body of `setup()`,
+	 * evaluated ONCE and frozen forever: `v-bind="responsiveProps"`
+	 * (template) then diffused that stale snapshot for the component's
+	 * whole lifetime — none of the 11 listed props (aspectRatio,
+	 * contentClass, inline, height, maxHeight, maxWidth, minHeight,
+	 * minWidth, width, class, style) ever reacted to a post-mount change.
+	 * @description
+	 * Wrapped in `computed()` so every read happens at access time, the
+	 * same fix shape as `intersect` below (ADR-005) — the initial render
+	 * was already correct, which is what made this a C3 (works once,
+	 * freezes at usage) rather than a C1.
+	 ********************************************************/
+	const responsiveProps = computed(() => pick(props, ['aspectRatio', 'contentClass', 'inline', 'height', 'maxHeight', 'maxWidth', 'minHeight', 'minWidth', 'width', 'class', 'style']))
 
 	watch(() => props.src, () => {
 		init(state.value !== IMG_STATE.IDLE)
