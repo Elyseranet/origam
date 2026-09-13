@@ -16,8 +16,10 @@ OrigamImg	C3	conforme	defaut	mineur	majeur
 OrigamInfiniteScrollIntersect	C4	defaut	conforme	mineur	aucun
 OrigamPagination	C7	defaut	conforme	majeur	aucun
 OrigamParallaxLayer	C7	defaut	conforme	majeur	aucun
+OrigamPickerTitle	C2	defaut	conforme	mineur	aucun
 OrigamSheet	C5	defaut	conforme	mineur	aucun
 OrigamSliderFieldTrack	C2	defaut	conforme	mineur	aucun
+OrigamSnackbarItem	C2	defaut	conforme	mineur	aucun
 OrigamSystemBar	C4	defaut	conforme	mineur	aucun
 OrigamTreeview	C7	defaut	conforme	mineur	aucun
 OrigamTreeview	C8	defaut	conforme	mineur	aucun
