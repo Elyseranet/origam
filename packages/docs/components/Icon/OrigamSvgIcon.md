@@ -146,8 +146,11 @@ interface IIconComponentProps extends
 - The inner `<svg>` has `aria-hidden="true"` (no `role`) — it never
   carries meaning on its own, so it stays out of the accessibility tree
   unconditionally, whether or not the icon is interactive.
-- For interactive icons, attach `aria-label` to the wrapper and a click
-  handler to `OrigamIcon` (which adds `role="button"` automatically).
+- For an interactive icon, prefer `<origam-btn icon="…" aria-label="…">`
+  (icon-only mode) over attaching `@click` directly to an icon — since #653,
+  no icon leaf adds `role="button"` automatically. See `OrigamIcon.md`'s
+  **Migrating off `@click` on an icon (#653)** section for the full
+  rationale.
 
 ## Related
 
