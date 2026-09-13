@@ -49,6 +49,16 @@
 	 * Les options sont transmises telles quelles a `IntersectionObserver`,
 	 * qui accepte `root`. La sentinelle observe desormais le conteneur
 	 * annonce. Issue #550, critere C1.
+	 *
+	 * @description
+	 * ⛔ issue #684 / critere C4 — `observerOptions.value` etait deballe
+	 * UNE FOIS ici, au corps de `setup()`, avant d'etre passe a
+	 * `useIntersectionObserver`. Un theme visant `origam-infinite-scroll-
+	 * intersect.margin` (resolu en `beforeCreate`, APRES `setup()`, cf.
+	 * ADR-005) ne pouvait donc jamais l'atteindre — la valeur etait deja
+	 * figee. Le computed lui-meme est desormais passe tel quel (pas son
+	 * `.value`) : `useIntersectionObserver` le consomme via un `watch`
+	 * reactif et recree l'observateur des que la valeur resolue change.
 	 ********************************************************/
 	const rootClasses = computed(() => [ 'origam-infinite-scroll-intersect', props.class ])
 	const rootStyles = computed<StyleValue>(() => props.style as StyleValue)
@@ -63,7 +73,7 @@
 	})
 
 	const {intersectionRef, isIntersecting} = useIntersectionObserver(() => {
-	}, observerOptions.value)
+	}, observerOptions)
 
 	watch(isIntersecting, async (val) => {
 		if (!props.side) return
