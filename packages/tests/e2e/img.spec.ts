@@ -208,25 +208,42 @@ test.describe('OrigamImg — Props', () => {
         await expect.poll(() => sizer.evaluate(el => (el as HTMLElement).style.paddingBlockEnd)).toBe('100%')
     })
 
-    // #684 — same defect family, two of the other nine props the frozen
-    // `pick()` also covered (`width`/`height`). Proves the fix isn't
-    // narrowly scoped to `aspectRatio` alone.
-    test('Prop — width/height: react to a post-mount change (#684)', async ({ page }) => {
+    // #684 — same defect family, two more of the eleven props the frozen
+    // `pick()` covered (`height`/`minWidth`). Proves the fix isn't narrowly
+    // scoped to `aspectRatio` alone.
+    //
+    // ⛔ Deliberately NOT `width` here. Measured against `HEAD~1`: `width`
+    // ALSO reacts on the pre-fix code, because `OrigamImg`'s OWN `imgStyles`
+    // computed (line ~400) independently re-derives
+    // `{'width': convertToUnit(...)}` from `props.width` and merges it onto
+    // the SAME `.origam-responsive` root via `:style="imgStyles"` — a
+    // second, already-reactive channel for that one property, parallel to
+    // (and masking) the frozen `responsiveProps.width`. Same story for
+    // `class`/`style`: `imgClasses`/`imgStyles` already fold in
+    // `props.class` / `props.style` reactively. So of the 11 props in the
+    // pick() list, only 8 (aspectRatio, contentClass, inline, height,
+    // maxHeight, maxWidth, minHeight, minWidth) had NO parallel reactive
+    // path and were genuinely, fully dead pre-fix — `class`/`style`/`width`
+    // were partially masked. A `width` assertion here would pass on BOTH
+    // the broken and the fixed code, which root CLAUDE.md calls out
+    // explicitly as a test that "proves nothing" — so it is excluded as a
+    // discriminator and reported separately instead.
+    test('Prop — height/minWidth: react to a post-mount change (#684)', async ({ page }) => {
         await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
         const sandbox = sandboxOf(page)
         const root = sandbox.locator('.origam-responsive').first()
         await expect(root).toBeVisible({ timeout: 12000 })
 
-        const widthBefore = await root.evaluate(el => (el as HTMLElement).style.width)
         const heightBefore = await root.evaluate(el => (el as HTMLElement).style.height)
-        expect(widthBefore).toBe('')
+        const minWidthBefore = await root.evaluate(el => (el as HTMLElement).style.minWidth)
         expect(heightBefore).toBe('')
+        expect(minWidthBefore).toBe('')
 
-        await fillHstText(page, 'Width', '200')
         await fillHstText(page, 'Height', '150')
+        await fillHstText(page, 'Min Width', '300')
 
-        await expect.poll(() => root.evaluate(el => (el as HTMLElement).style.width)).toBe('200px')
         await expect.poll(() => root.evaluate(el => (el as HTMLElement).style.height)).toBe('150px')
+        await expect.poll(() => root.evaluate(el => (el as HTMLElement).style.minWidth)).toBe('300px')
     })
 
     test('Prop — lazySrc: a second <img> pointing at the blur-preview URL is mounted alongside the real one', async ({ page }) => {
