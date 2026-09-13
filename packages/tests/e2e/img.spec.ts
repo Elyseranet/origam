@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { eventLogItems, openEventsTab } from './_support/histoire-controls'
+import { eventLogItems, fillHstNumber, fillHstText, openEventsTab, selectHstOption } from './_support/histoire-controls'
 
 /**
  * OrigamImg — e2e spec.
@@ -10,6 +10,17 @@ import { eventLogItems, openEventsTab } from './_support/histoire-controls'
  * rule requires a matching spec per story. Separately, this component's C4
  * (eager theme default) was already fixed (#673, commit 090b7820) — not
  * touched here.
+ *
+ * #684 (C3) — `responsiveProps` in `OrigamImg.vue` used to be a plain
+ * `pick(props, [...])` call in the body of `setup()`, frozen at whatever
+ * value 11 props (aspectRatio, contentClass, inline, height, maxHeight,
+ * maxWidth, minHeight, minWidth, width, class, style) held at first
+ * render. Fixed by wrapping it in `computed()`. The "Prop — aspectRatio"
+ * test below now MUTATES the control after mount (it used to only read
+ * the value frozen at mount, which passed on both broken and fixed code
+ * and is exactly the kind of green test root CLAUDE.md warns against). A
+ * second test drives Width/Height on the Design Variant to prove the fix
+ * isn't limited to the one prop that was measured in the issue.
  *
  * ⛔ Measured trap, specific to THIS sandbox: `curl` from the shell fetches
  * https://picsum.photos in ~0.2s, but the SAME URL requested from inside
@@ -63,6 +74,23 @@ test.describe('OrigamImg — Design (index 0)', () => {
         const root = sandbox.locator('.origam-img').first()
         await expect(root).toBeVisible({ timeout: 12000 })
         await expect(root).toHaveAttribute('aria-label', 'Design demo')
+    })
+
+    test('Functional — the Aspect Ratio select really drives the render (not a lying control)', async ({ page }) => {
+        await page.goto(variantUrl(1))
+        const sizer = sandboxOf(page).locator('.origam-img .origam-responsive__sizer').first()
+        await expect(sizer).toHaveCount(1)
+        const read = () => sizer.evaluate(el => (el as HTMLElement).style.paddingBlockEnd)
+
+        // The sizer uses the padding-percentage technique, so the rendered value
+        // is the INVERSE of the ratio: 16/9 -> 56.25%, 1/1 -> 100%, 9/16 -> 177.778%.
+        expect(await read()).toBe('56.25%')
+
+        await selectHstOption(page, 'Aspect Ratio', '1 / 1 (square)')
+        await expect.poll(read).toBe('100%')
+
+        await selectHstOption(page, 'Aspect Ratio', '9 / 16 (story / reel)')
+        await expect.poll(read).toBe('177.778%')
     })
 
     test('aspectRatio prop is applied as a real style, not merely accepted', async ({ page }) => {
@@ -180,31 +208,59 @@ test.describe('OrigamImg — Props', () => {
         await expect.poll(() => root.evaluate(el => getComputedStyle(el).borderRadius)).not.toBe(before)
     })
 
-    // ⛔ NOT asserting that changing the control updates the ratio after
-    // mount — measured, and it does NOT (found while writing this spec,
-    // absent from the classeur, a C3 defect out of scope for this C2/C8/C7
-    // lot). `OrigamImg.vue:196` builds `responsiveProps` via a plain
-    // `pick(props, [...])` call in the body of `setup()` — NOT wrapped in
-    // `computed()` — so `aspectRatio` (and `contentClass`/`inline`/
-    // `height`/`maxHeight`/`maxWidth`/`minHeight`/`minWidth`/`width`/
-    // `class`/`style`, all forwarded through the same `pick()`) are frozen
-    // at whatever value they held at first render and never update again.
-    // Verified live: after changing "Aspect Ratio" from 1.777... to 1
-    // (confirmed reactive in Vue — the Source panel shows
-    // `:aspect-ratio="1"`), `.origam-responsive__sizer`'s
-    // `padding-block-end` stayed at "56.25%" (the 16/9 value) instead of
-    // moving to "100%". This is a distinct defect from the classeur's
-    // known C4 (theme eager default, #673) and from `useDimension`'s
-    // separate lack of an `aspectRatio` field (dead by design there — the
-    // real mechanism is `OrigamResponsive`'s own `useAspectRatio`).
-    test('Prop — aspectRatio: applies once at mount (see comment above for the found reactivity gap)', async ({ page }) => {
+    // #684 — TDD red-first proof: the control is mutated AFTER mount, not
+    // merely read at its init-state value. Against the pre-fix `pick()`
+    // snapshot this stays at "56.25%" forever; against the `computed()`
+    // fix it must track the new ratio. `1` -> "100%" (a square sizer).
+    test('Prop — aspectRatio: reacts to a post-mount change (#684)', async ({ page }) => {
         await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
         const sandbox = sandboxOf(page)
         const sizer = sandbox.locator('.origam-responsive__sizer').first()
         await expect(sizer).toHaveCount(1, { timeout: 12000 })
 
-        const paddingBlockEnd = await sizer.evaluate(el => (el as HTMLElement).style.paddingBlockEnd)
-        expect(paddingBlockEnd).toBe('56.25%')
+        const before = await sizer.evaluate(el => (el as HTMLElement).style.paddingBlockEnd)
+        expect(before).toBe('56.25%') // 16/9 -> 9/16 = 56.25%, the init-state value.
+
+        await fillHstNumber(page, 'Aspect Ratio', 1)
+        await expect.poll(() => sizer.evaluate(el => (el as HTMLElement).style.paddingBlockEnd)).toBe('100%')
+    })
+
+    // #684 — same defect family, two more of the eleven props the frozen
+    // `pick()` covered (`height`/`minWidth`). Proves the fix isn't narrowly
+    // scoped to `aspectRatio` alone.
+    //
+    // ⛔ Deliberately NOT `width` here. Measured against `HEAD~1`: `width`
+    // ALSO reacts on the pre-fix code, because `OrigamImg`'s OWN `imgStyles`
+    // computed (line ~400) independently re-derives
+    // `{'width': convertToUnit(...)}` from `props.width` and merges it onto
+    // the SAME `.origam-responsive` root via `:style="imgStyles"` — a
+    // second, already-reactive channel for that one property, parallel to
+    // (and masking) the frozen `responsiveProps.width`. Same story for
+    // `class`/`style`: `imgClasses`/`imgStyles` already fold in
+    // `props.class` / `props.style` reactively. So of the 11 props in the
+    // pick() list, only 8 (aspectRatio, contentClass, inline, height,
+    // maxHeight, maxWidth, minHeight, minWidth) had NO parallel reactive
+    // path and were genuinely, fully dead pre-fix — `class`/`style`/`width`
+    // were partially masked. A `width` assertion here would pass on BOTH
+    // the broken and the fixed code, which root CLAUDE.md calls out
+    // explicitly as a test that "proves nothing" — so it is excluded as a
+    // discriminator and reported separately instead.
+    test('Prop — height/minWidth: react to a post-mount change (#684)', async ({ page }) => {
+        await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+        const sandbox = sandboxOf(page)
+        const root = sandbox.locator('.origam-responsive').first()
+        await expect(root).toBeVisible({ timeout: 12000 })
+
+        const heightBefore = await root.evaluate(el => (el as HTMLElement).style.height)
+        const minWidthBefore = await root.evaluate(el => (el as HTMLElement).style.minWidth)
+        expect(heightBefore).toBe('')
+        expect(minWidthBefore).toBe('')
+
+        await fillHstText(page, 'Height', '150')
+        await fillHstText(page, 'Min Width', '300')
+
+        await expect.poll(() => root.evaluate(el => (el as HTMLElement).style.height)).toBe('150px')
+        await expect.poll(() => root.evaluate(el => (el as HTMLElement).style.minWidth)).toBe('300px')
     })
 
     test('Prop — lazySrc: a second <img> pointing at the blur-preview URL is mounted alongside the real one', async ({ page }) => {

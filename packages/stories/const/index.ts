@@ -1,4 +1,5 @@
 export * from './align.const'
+export * from './aspect-ratio.const'
 export * from './border.const'
 export * from './color.const'
 export * from './cols.const'

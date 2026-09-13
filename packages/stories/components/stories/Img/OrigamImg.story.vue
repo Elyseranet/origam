@@ -113,7 +113,8 @@
 					<HstCheckbox v-model="state.eager" title="Eager (skip IntersectionObserver)"/>
 				</StoryGroup>
 				<StoryGroup title="Layout">
-					<HstCheckbox v-model="state.inline" title="Inline"/>
+					<HstSelect   v-model="state.aspectRatio" title="Aspect Ratio" :options="ASPECT_RATIO_OPTIONS"/>
+					<HstCheckbox v-model="state.inline"      title="Inline"/>
 				</StoryGroup>
 				<StoryGroup title="Attributes">
 					<HstCheckbox v-model="state.draggable"     title="Draggable"/>
@@ -365,6 +366,7 @@
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
+		ASPECT_RATIO_OPTIONS,
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
