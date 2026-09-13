@@ -229,8 +229,8 @@
 
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
 	const { elevationClasses, elevationStyles } = useElevation(props)
-	const { marginStyles } = useMargin(props)
-	const { paddingStyles } = usePadding(props)
+	const { marginClasses, marginStyles } = useMargin(props)
+	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 
 	/*********************************************************
@@ -533,6 +533,8 @@
 		},
 		backgroundColorClasses.value,
 		elevationClasses.value,
+		marginClasses.value,
+		paddingClasses.value,
 		roundedClasses.value,
 		props.class
 	])
@@ -634,8 +636,18 @@
 		display: inline-block;
 		box-sizing: border-box;
 		vertical-align: middle;
-		margin: 0;
-		padding: 0;
+
+		// ⛔ #C2 — zero-specificity default so a scale-driven utility class
+		// (`.origam--m-4` / `.origam--p-4` from `margin="4"` / `padding="4"`)
+		// wins the cascade. Without `:where()`, this scoped rule's
+		// [data-v-hash] pushes it to (0,2,0), beating the utility's (0,1,0),
+		// and the `margin` / `padding` props' scale form go silently inert.
+		// See CLAUDE.md "CSS-first" table — `:where(…)` is the documented
+		// zero-specificity default.
+		:where(&) {
+			margin: 0;
+			padding: 0;
+		}
 
 		&__svg {
 			display: block;
