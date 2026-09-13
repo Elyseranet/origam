@@ -33,6 +33,7 @@ import OrigamChartBullet from '@origam/components/Chart/OrigamChartBullet.vue'
 import OrigamChartPolar from '@origam/components/Chart/OrigamChartPolar.vue'
 import OrigamChartPolarBar from '@origam/components/Chart/OrigamChartPolarBar.vue'
 import OrigamChartSankey from '@origam/components/Chart/OrigamChartSankey.vue'
+import OrigamChartSparkline from '@origam/components/Chart/OrigamChartSparkline.vue'
 import OrigamChartSunburst from '@origam/components/Chart/OrigamChartSunburst.vue'
 import OrigamChartVariwide from '@origam/components/Chart/OrigamChartVariwide.vue'
 
@@ -68,6 +69,32 @@ describe('famille Chart (lot C2) — le canal CLASSE de padding/margin est-il ca
             expect(wrapper.classes()).toContain('origam--m-4')
         })
     }
+})
+
+// ⛔ OrigamChartSparkline (lot "9 derniers majeur", classeur ligne 45,
+// colonne C2 = defaut) — meme defaut de canal CLASSE que le lot ci-dessus,
+// mesure et corrige separement car ce composant n'appartenait pas au lot
+// #620/#626/#658 : `useMargin(props)` / `usePadding(props)` n'etaient
+// destructures QUE pour `marginStyles` / `paddingStyles`, jamais pour
+// `marginClasses` / `paddingClasses`, et `rootClasses` ne les listait pas.
+// La forme d'echelle (`padding="4"`) etait donc totalement inerte, pas
+// seulement ecrasee par la cascade — voir aussi
+// `packages/tests/e2e/chart-family-padding-margin-cascade.spec.ts` pour la
+// preuve en navigateur reel que la regle scopee `.origam-chart-sparkline`
+// (qui posait `margin: 0; padding: 0;` en dur) est desormais neutralisee
+// par `:where(&)`.
+describe('OrigamChartSparkline (lot C2) — le canal CLASSE de padding/margin est-il cable ?', () => {
+    it('padding="4" emet la classe utilitaire origam--p-4', () => {
+        const wrapper = mountWith(OrigamChartSparkline, {series: [], padding: '4'})
+
+        expect(wrapper.classes()).toContain('origam--p-4')
+    })
+
+    it('margin="4" emet la classe utilitaire origam--m-4', () => {
+        const wrapper = mountWith(OrigamChartSparkline, {series: [], margin: '4'})
+
+        expect(wrapper.classes()).toContain('origam--m-4')
+    })
 })
 
 describe('OrigamCardHeader (lot C2) — le canal CLASSE de padding/margin est-il cable ?', () => {

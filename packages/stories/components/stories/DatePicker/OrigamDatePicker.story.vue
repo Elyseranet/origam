@@ -10,6 +10,7 @@
 		>
 			<template #default="{ state }">
 				<origam-date-picker
+						data-cy="date-picker-design"
 						:color="state.color"
 						:padding="state.padding"
 						:margin="state.margin"
@@ -174,7 +175,10 @@
 		</Variant>
 
 		<Variant title="Slots - Header">
-			<origam-date-picker v-model="date">
+			<origam-date-picker
+					v-model="date"
+					data-cy="date-picker-slot-header"
+			>
 				<template #header>
 					<span>Custom header</span>
 				</template>
