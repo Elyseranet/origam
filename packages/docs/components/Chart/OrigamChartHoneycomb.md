@@ -75,6 +75,9 @@ Each data entry shape (inside `series[0].data`):
 | `showLabel` | `boolean` | `true` | Render the tile label (`name` or formatted `value`) centred in each tile. |
 | `height` | `number \| string` | `400` | Chart height. A plain number is `px`. Ignored when `aspectRatio` is set. |
 | `aspectRatio` | `string` | `undefined` | CSS `aspect-ratio` shorthand. Overrides `height`. |
+| `bgColor` | `TColor` | `undefined` | Root background — via `useBackgroundColor`. |
+| `rounded` | `TRounded` | `undefined` | Root corner radius — via `useRounded`. |
+| `elevation` | `TElevation` | `undefined` | Root shadow rung — via `useElevation`. |
 | `title` | `string` | `undefined` | Optional title above the chart. Replaceable via the `#title` slot. |
 | `subtitle` | `string` | `undefined` | Optional subtitle below the title. |
 
@@ -94,6 +97,16 @@ Each data entry shape (inside `series[0].data`):
 |---|---|---|---|
 | `xAxisFormat` | `(value: number \| string) => string` | ⛔ **Sans effet sur ce composant** — `labelFor` only ever applies `yAxisFormat`; a hex grid has no x axis. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
 | `yAxisFormat` | `(value: number) => string` | `String(value)` | Applied to the `value` field in tooltips. |
+
+### Inherited from `IChartBaseProps`
+
+`height`, `aspectRatio`, `bgColor`, `rounded`, and `elevation` are
+documented above (**Visual**) since they're exercised directly by the
+story. The rest of the surface is consumed as-is, with no local override:
+
+- `width`, `minWidth`, `maxWidth`, `minHeight`, `maxHeight` — via `useDimension`.
+- `margin*`, `padding*` — via `useMargin` / `usePadding`.
+- `fontSize`, `fontWeight` — via `useChartHeaderTypography` (title/subtitle only).
 
 ## Emits
 
