@@ -20,19 +20,21 @@
 		>
 			<template #default="{ state }">
 				<origam-expansion-panels>
-					<origam-expansion-panel>
-						<origam-expansion-panel-header title="Design variant"/>
-						<origam-expansion-panel-content
-								:content="state.content"
-								:color="state.color"
-								:bg-color="state.bgColor"
-								:rounded="state.rounded"
-								:border="state.border"
-								:border-color="state.borderColor"
-								:border-style="state.borderStyle"
-								:padding="state.padding"
-								:margin="state.margin"
-						/>
+					<origam-expansion-panel title="Design variant" content="placeholder">
+						<template #wrapper="wrapperProps">
+							<origam-expansion-panel-content
+									v-bind="wrapperProps"
+									:content="state.content"
+									:color="state.color"
+									:bg-color="state.bgColor"
+									:rounded="state.rounded"
+									:border="state.border"
+									:border-color="state.borderColor"
+									:border-style="state.borderStyle"
+									:padding="state.padding"
+									:margin="state.margin"
+							/>
+						</template>
 					</origam-expansion-panel>
 				</origam-expansion-panels>
 			</template>
@@ -69,16 +71,18 @@
 		>
 			<template #default="{ state }">
 				<origam-expansion-panels>
-					<origam-expansion-panel>
-						<origam-expansion-panel-header title="Functional variant"/>
-						<origam-expansion-panel-content
-								:content="state.content"
-								:density="state.density"
-								:eager="state.eager"
-								:loading="state.loading"
-								:loading-text="state.loadingText || undefined"
-								:tag="state.tag"
-						/>
+					<origam-expansion-panel title="Functional variant" content="placeholder">
+						<template #wrapper="wrapperProps">
+							<origam-expansion-panel-content
+									v-bind="wrapperProps"
+									:content="state.content"
+									:density="state.density"
+									:eager="state.eager"
+									:loading="state.loading"
+									:loading-text="state.loadingText || undefined"
+									:tag="state.tag"
+							/>
+						</template>
 					</origam-expansion-panel>
 				</origam-expansion-panels>
 			</template>
@@ -102,29 +106,34 @@
 
 		<Variant title="Slots - Default">
 			<origam-expansion-panels>
-				<origam-expansion-panel>
-					<origam-expansion-panel-header title="Open for details"/>
-					<origam-expansion-panel-content>
-						<p style="margin: 0 0 8px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-						<ul style="margin: 0; padding-left: 16px;">
-							<li>Item one</li>
-							<li>Item two</li>
-							<li>Item three</li>
-						</ul>
-					</origam-expansion-panel-content>
+				<origam-expansion-panel title="Open for details" content="placeholder">
+					<template #wrapper="wrapperProps">
+						<origam-expansion-panel-content v-bind="wrapperProps">
+							<p style="margin: 0 0 8px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+							<ul style="margin: 0; padding-left: 16px;">
+								<li>Item one</li>
+								<li>Item two</li>
+								<li>Item three</li>
+							</ul>
+						</origam-expansion-panel-content>
+					</template>
 				</origam-expansion-panel>
 			</origam-expansion-panels>
 		</Variant>
 
 		<Variant title="Slots - Loader">
 			<origam-expansion-panels>
-				<origam-expansion-panel>
-					<origam-expansion-panel-header title="Loading panel"/>
-					<origam-expansion-panel-content loading>
-						<template #loader>
-							<span>Loading...</span>
-						</template>
-					</origam-expansion-panel-content>
+				<origam-expansion-panel title="Loading panel" content="placeholder">
+					<template #wrapper="wrapperProps">
+						<origam-expansion-panel-content
+								v-bind="wrapperProps"
+								loading
+						>
+							<template #loader>
+								<span>Loading...</span>
+							</template>
+						</origam-expansion-panel-content>
+					</template>
 				</origam-expansion-panel>
 			</origam-expansion-panels>
 		</Variant>
@@ -137,9 +146,10 @@
 		>
 			<template #default="{ state }">
 				<origam-expansion-panels>
-					<origam-expansion-panel>
-						<origam-expansion-panel-header title="Playground"/>
-						<origam-expansion-panel-content v-bind="state"/>
+					<origam-expansion-panel title="Playground" content="placeholder">
+						<template #wrapper="wrapperProps">
+							<origam-expansion-panel-content v-bind="{ ...wrapperProps, ...state }"/>
+						</template>
 					</origam-expansion-panel>
 				</origam-expansion-panels>
 			</template>
@@ -171,7 +181,6 @@
 	import {
 		OrigamExpansionPanel,
 		OrigamExpansionPanelContent,
-		OrigamExpansionPanelHeader,
 		OrigamExpansionPanels,
 	} from '@origam/components'
 	import type { IExpansionPanelContentProps } from '@origam/interfaces'

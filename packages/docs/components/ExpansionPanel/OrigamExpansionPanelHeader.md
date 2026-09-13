@@ -15,13 +15,18 @@ indicator.
 
 ## Basic usage
 
+> ⛔ Do not nest `<origam-expansion-panel-header>` as a plain child of
+> `<origam-expansion-panel>` — its `default` slot forwards straight into
+> the content region, not the header, and a header only auto-renders when
+> `title` (or `#header`/`#title`/`#prepend`/`#append`) is supplied
+> directly on `<origam-expansion-panel>`. The line above ("every prop and
+> slot below is also reachable directly on `<OrigamExpansionPanel>`")
+> means exactly that — pass them there instead of nesting this component:
+
 ```vue
 <template>
     <origam-expansion-panels>
-        <origam-expansion-panel>
-            <origam-expansion-panel-header title="Shipping"/>
-            <origam-expansion-panel-content content="Delivered in 2 days."/>
-        </origam-expansion-panel>
+        <origam-expansion-panel title="Shipping" content="Delivered in 2 days."/>
     </origam-expansion-panels>
 </template>
 ```
