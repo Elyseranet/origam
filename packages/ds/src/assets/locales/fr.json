@@ -60,6 +60,7 @@
       "tbd_long": "À déterminer",
       "match_aria_label": "Match : {0} contre {1}",
       "forfeit_label": "forfait",
+      "avatar_alt": "avatar de {0}",
       "advantage_aria_label": "{0} manche(s) d'avance",
       "score_aria_suffix": ", score {0}",
       "winner_aria_suffix": ", vainqueur",
@@ -474,6 +475,7 @@
       }
     },
     "treeview": {
+      "aria_label": "Arborescence de fichiers",
       "node_children_aria_label": "Contenu de {0}"
     }
   }

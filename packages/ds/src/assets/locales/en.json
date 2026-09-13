@@ -60,6 +60,7 @@
       "tbd_long": "To be determined",
       "match_aria_label": "Match: {0} versus {1}",
       "forfeit_label": "forfeit",
+      "avatar_alt": "{0} avatar",
       "advantage_aria_label": "{0}-round head start",
       "score_aria_suffix": ", score {0}",
       "winner_aria_suffix": ", winner",
@@ -474,6 +475,7 @@
       }
     },
     "treeview": {
+      "aria_label": "File tree",
       "node_children_aria_label": "{0} contents"
     }
   }

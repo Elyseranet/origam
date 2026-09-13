@@ -87,6 +87,22 @@ describe('OrigamBracketCompetitor — libellés traduits (C8)', () => {
 
         expect(label).toBe('Alice, score 2, vainqueur')
     })
+
+    // Trouvé en réparant, absent du classeur (colonne Notes ne le mentionnait
+    // pas) : `:alt="`${competitor.name} avatar`"` concaténait le mot anglais
+    // "avatar" en dur via un template literal — invisible à un détecteur
+    // C8 de premier niveau (n'importe quel opérateur autour le masque).
+    // Routé par `t('origam.bracket.avatar_alt', competitor.name)`.
+    it('l\'attribut alt de l\'avatar est traduit, pas "avatar" en dur', () => {
+        const en = mountCompetitor({ competitor: { id: 'a', name: 'Alice', avatar: '/alice.png' } })
+        expect(en.find('.origam-bracket-competitor__avatar').attributes('alt')).toBe('Alice avatar')
+
+        const fr = mountCompetitor({ competitor: { id: 'a', name: 'Alice', avatar: '/alice.png' } }, 'fr')
+        const alt = fr.find('.origam-bracket-competitor__avatar').attributes('alt')
+
+        expect(alt).toBe('avatar de Alice')
+        expect(alt).not.toContain('Alice avatar')
+    })
 })
 
 describe('OrigamBracketMatch — libellés de statut traduits (C8)', () => {

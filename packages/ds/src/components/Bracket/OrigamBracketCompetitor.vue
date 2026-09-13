@@ -22,7 +22,7 @@
 
 		<img
 				v-if="competitor?.avatar"
-				:alt="`${competitor.name} avatar`"
+				:alt="avatarAltText"
 				:src="competitor.avatar"
 				class="origam-bracket-competitor__avatar"
 		>
@@ -148,6 +148,8 @@
 	})
 
 	const forfeitLabel = computed(() => t('origam.bracket.forfeit_label'))
+
+	const avatarAltText = computed<string>(() => t('origam.bracket.avatar_alt', props.competitor?.name ?? ''))
 
 	const hasAdvantage = computed<boolean>(() => (props.advantageRounds ?? 0) > 0)
 

@@ -238,7 +238,16 @@
 		$this: &;
 
 		position: relative;
-		border-radius: var(--origam-slider-field__track---border-radius, 9999px);
+
+		// #C2 — zero-specificity default so a scale-driven utility class
+		// (`.origam--rounded-lg` from `rounded="lg"`) wins the cascade.
+		// Without `:where()`, this scoped rule's [data-v-hash] pushes it
+		// to (0,2,0), beating the utility's (0,1,0), and the `rounded`
+		// prop's scale form goes silently inert.
+		:where(&) {
+			border-radius: var(--origam-slider-field__track---border-radius, 9999px);
+		}
+
 		pointer-events: none;
 
 		@media (forced-colors: active) {
