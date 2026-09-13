@@ -34,10 +34,9 @@ OrigamRadioBtn	C5	defaut	conforme	mineur	aucun
 OrigamRatingFieldItem	C5	defaut	conforme	mineur	aucun
 OrigamSelectionControl	C5	defaut	conforme	mineur	aucun
 OrigamSelectionControl	C7	defaut	conforme	mineur	aucun
-OrigamSheet	C5	defaut	conforme	mineur	aucun
-OrigamSheet	C6	defaut	conforme	mineur	aucun
-OrigamSheet	C7	defaut	conforme	mineur	aucun
-OrigamSheet	C8	defaut	conforme	mineur	aucun
+OrigamSheet	C6	defaut	conforme	mineur	mineur
+OrigamSheet	C7	defaut	conforme	mineur	mineur
+OrigamSheet	C8	defaut	conforme	mineur	mineur
 OrigamSnackbarGroup	C3	defaut	conforme	mineur	aucun
 OrigamSnackbarGroup	C4	defaut	conforme	mineur	aucun
 OrigamSnackbarGroup	C8	defaut	conforme	mineur	aucun
