@@ -85,21 +85,26 @@
 				})"
 		>
 			<template #default="{ state }">
-				<origam-img
-						:alt="state.alt"
-						:aspect-ratio="state.aspectRatio"
-						:cover="state.cover"
-						:crossorigin="state.crossorigin || undefined"
-						:draggable="state.draggable"
-						:eager="state.eager"
-						:inline="state.inline"
-						:lazy-src="state.lazySrc || undefined"
-						:referrerpolicy="state.referrerpolicy || undefined"
-						:sizes="state.sizes || undefined"
-						:src="state.src"
-						:srcset="state.srcset || undefined"
-						style="max-width: 480px;"
-				/>
+				<p style="max-width: 640px;">
+					Texte avant.
+					<origam-img
+							:alt="state.alt"
+							:aspect-ratio="state.aspectRatio"
+							:cover="state.cover"
+							:crossorigin="state.crossorigin || undefined"
+							:draggable="state.draggable"
+							:eager="state.eager"
+							:inline="state.inline"
+							:lazy-src="state.lazySrc || undefined"
+							:referrerpolicy="state.referrerpolicy || undefined"
+							:sizes="state.sizes || undefined"
+							:src="state.src"
+							:srcset="state.srcset || undefined"
+							style="max-width: 240px;"
+					/>
+					Texte après — coche « Inline » pour que l'image se pose DANS cette phrase
+					au lieu de la couper sur sa propre ligne.
+				</p>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Source">
