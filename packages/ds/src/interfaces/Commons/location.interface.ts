@@ -1,7 +1,11 @@
 import type { Ref } from 'vue'
-import type { IDimensionProps } from '../../interfaces'
+import type { IDimensionProps } from './dimension.interface'
 
-import type { TAnchor, TLocationStrategy, TLocationStrategyFn } from '../../types'
+import type { TAnchor } from '../../types/Commons/anchor.type'
+import type {
+    TLocationStrategy,
+    TLocationStrategyFn
+} from '../../types/Commons/location.type'
 
 export interface ILocationProps {
     location?: TAnchor

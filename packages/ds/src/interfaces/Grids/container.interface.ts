@@ -1,11 +1,12 @@
+import type { IBorderProps } from '../Commons/border.interface'
 import type {
-    IBorderProps,
     ICommonsComponentProps,
-    IDimensionProps,
-    IMarginProps,
-    IPaddingProps,
+    ICommonsComponentSlots,
     ITagProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
 
 /**
  * Container is a structural wrapper. It deliberately does NOT extend
@@ -16,3 +17,7 @@ export interface IContainerProps extends ICommonsComponentProps, ITagProps, IDim
     fluid?: boolean
     fullscreen?: boolean
 }
+
+export interface IContainerEmits {}
+
+export interface IContainerSlots extends ICommonsComponentSlots {}

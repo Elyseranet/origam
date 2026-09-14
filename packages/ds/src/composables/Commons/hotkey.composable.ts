@@ -1,11 +1,35 @@
 import { MaybeRef, onBeforeUnmount, toValue, watch } from "vue"
-import { IN_BROWSER, KEYBOARD_MODIFIERS } from "../../consts"
-import { IHotkeyOptions } from "../../interfaces"
-import { TKeyboardModifiers } from "../../types"
-import { consoleWarn, getCurrentInstance, splitKeyCombination, splitKeySequence } from "../../utils"
+import { IN_BROWSER } from '../../consts/Commons/commons.const'
+import {
+    HOTKEY_NO_AUTO_CLEANUP_WARNING,
+    HOTKEY_SEQUENCE_TIMEOUT,
+    KEYBOARD_MODIFIERS,
+    MACINTOSH_UA_TOKEN
+} from '../../consts/Commons/hotkey.const'
+import { IHotkeyOptions } from '../../interfaces/Commons/hotkey.interface'
+import { TKeyboardModifiers } from '../../types/Commons/hotkey.type'
+import { consoleWarn } from '../../utils/Commons/console.util'
+import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
+import { splitKeyCombination, splitKeySequence } from '../../utils/Commons/hotkey.util'
 
 /*********************************************************
  * useHotkey
+ *
+ * @description
+ * Enregistre un raccourci clavier global (`window.addEventListener`) pour
+ * `keys` (une combinaison `"ctrl+k"` ou une SEQUENCE `"g g"` separee par
+ * espace, avec un `sequenceTimeout` entre chaque groupe). Traduit `cmd`/`meta`
+ * selon la plateforme detectee (`navigator.userAgent`) : `ctrl` attendu sur
+ * non-Mac, `meta` attendu sur Mac. Ignore l'evenement quand un champ de
+ * saisie a le focus, sauf `options.inputs`.
+ *
+ * @description
+ * ⛔ En dehors d'un contexte `setup()` Vue, AUCUN nettoyage automatique
+ * n'est enregistre (pas de `onBeforeUnmount` possible) — un
+ * `console.warn` (`HOTKEY_NO_AUTO_CLEANUP_WARNING`) le signale, et
+ * l'appelant DOIT invoquer lui-meme la fonction `cleanup` retournee.
+ * Hors navigateur (`!IN_BROWSER`), la fonction est un no-op immediat, y
+ * compris pour le retour (fonction vide, pas d'erreur).
  ********************************************************/
 export function useHotkey (
     keys: MaybeRef<string | undefined>,
@@ -19,10 +43,10 @@ export function useHotkey (
         event = 'keydown',
         inputs = false,
         preventDefault = true,
-        sequenceTimeout = 1000
+        sequenceTimeout = HOTKEY_SEQUENCE_TIMEOUT
     } = options
 
-    const isMac = navigator?.userAgent?.includes('Macintosh') ?? false
+    const isMac = navigator?.userAgent?.includes(MACINTOSH_UA_TOKEN) ?? false
     let timeout = 0
     let keyGroups: string[]
     let isSequence = false
@@ -112,7 +136,7 @@ export function useHotkey (
         onBeforeUnmount(cleanup)
     } catch {
         // Not in Vue setup context
-        consoleWarn("Can't cleanup")
+        consoleWarn(HOTKEY_NO_AUTO_CLEANUP_WARNING)
     }
 
     const parseKeyGroup = (group: string) => {

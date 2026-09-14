@@ -1,5 +1,6 @@
 <template>
 	<origam-window
+			:id="id"
 			ref="origamWindowRef"
 			v-model="model"
 			:class="carouselClasses"
@@ -14,6 +15,23 @@
 		</template>
 
 		<template #additional="group">
+			<slot
+					v-if="cycle"
+					name="play-pause"
+					v-bind="{isPaused, toggle: togglePlayPause, label: playPauseLabel}"
+			>
+				<origam-btn
+						:aria-label="playPauseLabel"
+						:aria-pressed="isPaused"
+						:icon="playPauseIcon"
+						class="origam-carousel__play-pause"
+						data-cy="carousel-play-pause"
+						:density="DENSITY.COMPACT"
+						:size="SIZES.SMALL"
+						@click="togglePlayPause"
+				/>
+			</slot>
+
 			<slot
 					name="additional"
 					v-bind="group"
@@ -88,25 +106,28 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn, OrigamProgressLinear, OrigamWindow } from '../../components'
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamProgressLinear from '../Progress/OrigamProgressLinear.vue'
+	import OrigamWindow from '../Window/OrigamWindow.vue'
 
-	import {
-	useDimension,
-	useLocale,
-	useProps,
-	useStyle,
-	useVModel
-} from '../../composables'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { DENSITY, MDI_ICONS, SIZES } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { SIZES } from '../../enums/Commons/size.enum'
 
 	import { intentBgExpr, isCssColor, isIntent } from '../../utils/Commons/color.util'
 
-	import type { ICarouselProps, IGroupProvide} from '../../interfaces'
+	import type { ICarouselProps } from '../../interfaces/Carousel/carousel.interface'
+	import type { IGroupProvide } from '../../interfaces/Commons/group.interface'
 
-	import type { ICarouselEmits } from '../../interfaces/Carousel/carousel.interface'
+	import type { ICarouselEmits, ICarouselSlots } from '../../interfaces/Carousel/carousel.interface'
 
-	import type { TOrigamWindow } from "../../types"
+	import type { TOrigamWindow } from '../../types/Window/window.type'
 
 
 	import { computed, onBeforeUnmount, onMounted, ref, StyleValue, useSlots, watch } from 'vue'
@@ -128,6 +149,8 @@
 	})
 
 	defineEmits<ICarouselEmits>()
+
+	defineSlots<ICarouselSlots>()
 
 	const {filterProps} = useProps<ICarouselProps>(props)
 	const {t} = useLocale()
@@ -183,13 +206,58 @@
 		return window.matchMedia('(prefers-reduced-motion: reduce)').matches
 	}
 
+	/*********************************************************
+	 * Pause / play — WCAG 2.2.2 (Pause, Stop, Hide, niveau A)
+	 *
+	 * @description
+	 * `cycle` arme un timer de 6 s par défaut : le carrousel démarre seul,
+	 * dure plus de cinq secondes et fait partie d'une page contenant
+	 * d'autres contenus. La règle exige alors un mécanisme permettant de
+	 * l'arrêter. `prefers-reduced-motion` était bien respecté (voir
+	 * `prefersReducedMotion` ci-dessus) mais ne couvre que les personnes
+	 * ayant activé ce réglage système — ce n'est pas le mécanisme demandé,
+	 * qui doit être atteignable depuis la page elle-même.
+	 * @description
+	 * La reprise appelle `startTimeout()` DIRECTEMENT, sans passer par
+	 * `restartTimeout()`. Ce dernier diffère l'armement d'une frame
+	 * (`requestAnimationFrame`) pour laisser le changement de `model` se
+	 * propager — un clic utilisateur n'a rien à laisser se propager, et le
+	 * détour rendait la reprise dépendante d'une frame qui n'arrive jamais
+	 * dans un environnement où rAF est neutralisé.
+	 ********************************************************/
+	const isPaused = ref(false)
+
 	const startTimeout = () => {
 		if (!props.cycle || !origamWindowRef.value) return
+		if (isPaused.value) return
 		if (prefersReducedMotion()) return
 
 		slideTimeout = window.setTimeout(origamWindowRef.value.group.next, +props.interval > 0 ? +props.interval : 6000)
 		startProgress()
 	}
+
+	const togglePlayPause = () => {
+		isPaused.value = !isPaused.value
+
+		window.clearTimeout(slideTimeout)
+
+		if (isPaused.value) {
+			stopProgress()
+			progressPercent.value = 0
+		} else {
+			startTimeout()
+		}
+	}
+
+	const playPauseLabel = computed(() => {
+		return isPaused.value
+			? t('origam.carousel.play')
+			: t('origam.carousel.pause')
+	})
+
+	const playPauseIcon = computed(() => {
+		return isPaused.value ? MDI_ICONS.PLAY : MDI_ICONS.PAUSE
+	})
 
 	const restartTimeout = () => {
 		window.clearTimeout(slideTimeout)
@@ -305,7 +373,7 @@
 			props.style
 		] as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(carouselStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(carouselStyles, () => props.id)
 
 
 	/*********************************************************
@@ -376,6 +444,15 @@
 					opacity: var(--origam-carousel__controls-item---opacity-hover, 0.8);
 				}
 			}
+		}
+
+		&__play-pause {
+			position: var(--origam-carousel__play-pause---position, absolute);
+			top: var(--origam-carousel__play-pause---position-top, 8px);
+			right: var(--origam-carousel__play-pause---position-right, 8px);
+			z-index: var(--origam-carousel__play-pause---z-index, 3);
+			color: var(--origam-carousel__play-pause---color, inherit);
+			background-color: var(--origam-carousel__play-pause---background-color, rgba(0, 0, 0, 0.4));
 		}
 
 		&__progress {

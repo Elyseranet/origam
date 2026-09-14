@@ -6,7 +6,7 @@
 			:class="listClasses"
 			:style="listStyles"
 			:tabindex="tabIndex"
-			role="listbox"
+			:role="listRole"
 			@focus="handleFocus"
 			@focusin="handleFocusIn"
 			@focusout="handleFocusOut"
@@ -90,34 +90,40 @@
 		setup
 >
 	import { computed, ref, shallowRef, StyleValue, toRef, useSlots } from 'vue'
-	import { OrigamDefaultsProvider, OrigamListChildren } from '../../components'
+	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
+	import OrigamListChildren from './OrigamListChildren.vue'
 
 
-	import {
-		useBorder,
-		useBothColor,
-		useCreateList,
-		useDensity,
-		useDimension,
-		useElevation,
-		useItems,
-		useMargin,
-		useNested,
-		usePadding,
-		useProps,
-		useRounded,
-		useStyle
-} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useCreateList } from '../../composables/List/createList.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useItems } from '../../composables/Commons/items.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { useNested } from '../../composables/Commons/nested.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { DENSITY, KEYBOARD_VALUES, LINES, OPEN_STRATEGY, SELECT_STRATEGY } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
+	import { LINES, LIST_ROLE } from '../../enums/List/list.enum'
+	import { LIST_ITEM_ROLE } from '../../enums/List/list-item.enum'
+	import { OPEN_STRATEGY, SELECT_STRATEGY } from '../../enums/Commons/nested.enum'
 
-	import type { IListProps} from '../../interfaces'
+	import type { IListProps } from '../../interfaces/List/list.interface'
 
-	import type { IListEmits } from '../../interfaces/List/list.interface'
+	import type { IListEmits, IListSlots } from '../../interfaces/List/list.interface'
 
-	import type { TFocusLocation } from '../../types'
+	import type { TFocusLocation } from '../../types/Commons/commons.type'
 
-	import { deepEqual, focusChild } from '../../utils'
+	import type { TListItemRole } from '../../types/List/list-item.type'
+
+	import { deepEqual, focusChild, omitUndefined } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global
@@ -140,17 +146,25 @@
 
 	defineEmits<IListEmits>()
 
+	defineSlots<IListSlots>()
+
 	const {filterProps} = useProps<IListProps>(props)
 
 	// Push visual-token props down to every descendant `<origam-list-item>` as
 	// DEFAULTS — items that pass their own props still win.
+	// Forward ONLY what the consumer actually passed — see #263. `color` /
+	// `bgColor` are `TColor` (which includes `false`) so Vue coerces them to a
+	// concrete `false` when unset; `size` additionally leaked a bare
+	// `undefined`, which `mergeDeep` copies unconditionally and which
+	// therefore ERASED any ancestor/theme item size.
+	const wasPropPassed = usePassedProps(props)
 	const slotDefaults = computed(() => ({
-		'origam-list-item': {
-			density: props.density,
-			size: props.size,
-			color: props.color,
-			bgColor: props.bgColor
-		}
+		'origam-list-item': omitUndefined({
+			density: wasPropPassed('density') ? props.density : undefined,
+			size: wasPropPassed('size') ? props.size : undefined,
+			color: wasPropPassed('color') ? props.color : undefined,
+			bgColor: wasPropPassed('bgColor') ? props.bgColor : undefined
+		})
 	}))
 
 	/*********************************************************
@@ -175,7 +189,47 @@
 	const {children, open, parents, select} = useNested(props)
 	const slots = useSlots()
 
-	useCreateList()
+	/*********************************************************
+	 * Selection mode — le rôle décrit ce que la liste EST (#424)
+	 *
+	 * @description
+	 * The root used to hard-code `role="listbox"`. A listbox is a
+	 * SELECTION widget: it promises `option` children carrying
+	 * `aria-selected`, and a screen reader announces it as one. A nav
+	 * list, a list of subheaders and dividers, or `<origam-menu>`'s item
+	 * list is none of that — announcing them as a listbox is exactly the
+	 * "bad ARIA" the W3C rule warns about.
+	 * @description
+	 * ⛔ The mode CANNOT be read off `props.selectStrategy`: that prop has
+	 * a `withDefaults` value, so it is always truthy and every list on
+	 * earth would stay a listbox. `usePassedProps` reads `vnode.props`
+	 * instead — the difference between "the consumer asked for selection"
+	 * and "Vue filled in a default".
+	 * @description
+	 * Those signals are exactly what `<origam-select>` passes (`:selected`
+	 * AND an explicit `:select-strategy`) and exactly what `<origam-menu>`
+	 * does not. Select therefore keeps its combobox contract intact —
+	 * `aria-controls` / `aria-activedescendant` still point at a real
+	 * listbox of real options — while Menu stops claiming to be one.
+	 * @description
+	 * Listening to `update:selected` counts too: that emit only ever fires
+	 * when a selection changes, so wiring it IS asking for selection. It
+	 * has to be read off `vnode.props` — Vue strips the listener of a
+	 * DECLARED emit out of `$attrs`, so `useAttrs()` would never see it.
+	 ********************************************************/
+	const isSelectable = computed(() => {
+		return wasPropPassed('selected')
+			|| wasPropPassed('selectStrategy')
+			|| wasPropPassed('onUpdate:selected')
+	})
+	const listRole = computed(() => {
+		return isSelectable.value ? LIST_ROLE.LISTBOX : LIST_ROLE.LIST
+	})
+	const itemRole = computed<TListItemRole>(() => {
+		return isSelectable.value ? LIST_ITEM_ROLE.OPTION : LIST_ITEM_ROLE.LISTITEM
+	})
+
+	useCreateList(itemRole)
 
 	const isFocused = shallowRef(false)
 	const contentRef = ref<HTMLElement>()
@@ -285,7 +339,17 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(listStyles)
+	/*********************************************************
+	 * useStyle
+	 *
+	 * @description
+	 * #381 — the `id` returned by useStyle is a GENERATED identifier,
+	 * only meant for the scoped stylesheet selector. Without
+	 * `() => props.id` here, it shadowed the `id` PROP of the same
+	 * name: the template's `:id="id"` on the root rendered the
+	 * generated id, never the consumer's.
+	 ********************************************************/
+	const {id, css, load, isLoaded, unload} = useStyle(listStyles, () => props.id)
 
 
 	/*********************************************************
@@ -294,6 +358,8 @@
 	defineExpose({
 		open,
 		select,
+		listRole,
+		itemRole,
 		focus,
 		children,
 		parents,

@@ -48,6 +48,27 @@ describe('useElevation — classes-first', () => {
         expect(api().elevationClasses.value).toContain('origam--shadow-md')
     })
 
+    // Pins every bucket boundary of MATERIAL_ELEVATION_LADDER
+    // (consts/Commons/elevation.const.ts). Before that const existed the
+    // ladder was an if-chain inside the composable and only the `8 → md`
+    // rung above was covered.
+    it.each([
+        [-5, 'none'],
+        [0, 'none'],
+        [1, 'xs'],
+        [2, 'sm'],
+        [3, 'sm'],
+        [4, 'md'],
+        [8, 'md'],
+        [9, 'lg'],
+        [16, 'lg'],
+        [17, 'xl'],
+        [24, 'xl']
+    ])('Material elevation %i buckets onto the "%s" rung', (level, rung) => {
+        const { api } = mountWith(level)
+        expect(api().elevationStyles.value).toContain(`box-shadow: var(--origam-shadow---${rung})`)
+    })
+
     it('elevation undefined → no class, no style', () => {
         const { api } = mountWith(undefined)
         expect(api().elevationClasses.value).toEqual([])

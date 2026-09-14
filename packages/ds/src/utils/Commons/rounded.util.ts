@@ -1,4 +1,4 @@
-import { CUSTOM_BORDER_RADIUS_REGEX } from '../../consts'
+import { CUSTOM_BORDER_RADIUS_REGEX } from '../../consts/Commons/rounded.const'
 
 /**
  * Whether a string is a free-form custom `border-radius` value (a

@@ -92,10 +92,30 @@ interface IIconComponentProps {
 ## Anatomy
 
 ```html
-<div class="origam-icon origam-icon--component origam-icon--size-default">
+<div
+    class="origam-icon origam-icon--component origam-icon--size-default"
+    aria-hidden="true"
+>
     <!-- inner Vue component renders its own SVG / element here -->
 </div>
 ```
+
+## Accessibility
+
+- `aria-hidden="true"` by default, whether reached through `OrigamIcon` or
+  used directly — this protects the whole subtree even if the
+  consumer-supplied inner component doesn't manage its own accessibility.
+- A click handler flips `aria-hidden` to `"false"`. ⛔ **Since #653, it no
+  longer also sets `role="button"`** — measured: this element has no
+  `tabindex` and no keyboard handler anywhere, so the role used to
+  announce a control a keyboard user could never reach (`Tab`) or
+  activate (`Enter` / `Space`). A dev-time console warning still fires
+  when clickable with no `aria-label` / `aria-labelledby`, now pointing
+  at the real fix:
+  `<origam-btn :icon="MyIcon" :aria-label="t('btn_action', 'Action')" @click="..."/>`
+  — a real `<button>`, keyboard-accessible for free. See `OrigamIcon.md`'s
+  Accessibility section for the full rationale, including the measured
+  before/after markup.
 
 ## When to use
 

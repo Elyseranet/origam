@@ -98,6 +98,7 @@
 							:multiple="state.multiple"
 							:mandatory="state.mandatory"
 							:tag="state.tag"
+							:transition="state.transition"
 							:items="navItems"
 					/>
 				</div>
@@ -118,6 +119,39 @@
 				<StoryGroup title="Tag">
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
 				</StoryGroup>
+				<StoryGroup title="Transition">
+					<HstSelect v-model="state.transition" title="Transition" :options="TRANSITION_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Functional - Location"
+				:init-state="() => useStoryInitState<Partial<IBottomNavProps>>({ location: BLOCK.BOTTOM, position: BOTTOM_NAV_POSITION.START })"
+		>
+			<template #default="{ state }">
+				<div class="story-bottom-nav-layout-shell">
+					<origam-layout>
+						<origam-bottom-nav
+								:model-value="true"
+								absolute
+								:location="state.location"
+								:position="state.position"
+								:transition="false"
+								:items="navItems"
+								name="bottom-nav-location"
+						/>
+						<origam-main>
+							<p class="story-bottom-nav-layout-hint">location={{ state.location }} — position={{ state.position }}</p>
+						</origam-main>
+					</origam-layout>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Layout">
+					<HstSelect v-model="state.location" title="Location" :options="LOCATION_OPTIONS"/>
+					<HstSelect v-model="state.position" title="Position" :options="POSITION_OPTIONS"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 
@@ -134,16 +168,6 @@
 					/>
 				</div>
 			</template>
-		</Variant>
-
-		<Variant title="Events - update:active">
-			<div class="story-bottom-nav-shell">
-				<origam-bottom-nav
-						:model-value="true"
-						:items="navItems"
-						@update:active="logEvent('update:active', $event)"
-				/>
-			</div>
 		</Variant>
 
 		<Variant title="Events - update:hover">
@@ -191,7 +215,6 @@
 							:model-value="true"
 							:items="navItems"
 							@update:model-value="logEvent('update:modelValue', $event)"
-							@update:active="logEvent('update:active', $event)"
 					/>
 				</div>
 			</template>
@@ -222,10 +245,10 @@
 >
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamBottomNav, OrigamBtn } from '@origam/components'
-	import { BOTTOM_NAV_POSITION, MDI_ICONS, MODE } from '@origam/enums'
+	import { OrigamBottomNav, OrigamBtn, OrigamFade, OrigamLayout, OrigamMain, OrigamScaleRotate } from '@origam/components'
+	import { BLOCK, BOTTOM_NAV_POSITION, INLINE, MDI_ICONS, MODE } from '@origam/enums'
 	import type { IBottomNavProps, IOptions } from '@origam/interfaces'
-	import type { TBottomNavPosition, TNavMode } from '@origam/types'
+	import type { TBottomNavPosition, TDirectionBoth, TNavMode } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
@@ -249,10 +272,35 @@
 		{ label: 'shift',      value: MODE.SHIFT      },
 	]
 
+	// `location` (`ILayoutItemProps`) — le cote d'accroche dans
+	// l'`<origam-layout>`, a ne pas confondre avec `POSITION_OPTIONS`
+	// ci-dessous qui est l'alignement HORIZONTAL de la barre sur ce cote
+	// (#550). Liste locale, meme forme que `OrigamDrawer.story.vue` — il
+	// n'existe pas d'ensemble partage pour cette union.
+	const LOCATION_OPTIONS: Array<IOptions<TDirectionBoth>> = [
+		{ label: 'bottom', value: BLOCK.BOTTOM },
+		{ label: 'top',    value: BLOCK.TOP    },
+		{ label: 'left',   value: INLINE.LEFT  },
+		{ label: 'right',  value: INLINE.RIGHT },
+	]
+
 	const POSITION_OPTIONS: Array<IOptions<TBottomNavPosition>> = [
 		{ label: 'start',  value: BOTTOM_NAV_POSITION.START  },
 		{ label: 'center', value: BOTTOM_NAV_POSITION.CENTER },
 		{ label: 'end',    value: BOTTOM_NAV_POSITION.END    },
+	]
+
+	// `transition` accepts `boolean | string | TTransitionProps`. A bare
+	// string sets Vue's native `<Transition name="…">` — the DS doesn't
+	// ship CSS classes for arbitrary names, so a demo value here would
+	// silently do nothing. The verified-working shape is the component
+	// descriptor (`{ component: OrigamXxx }`), the same one
+	// `OrigamBottomNav`'s own default (`OrigamTranslateBottom`) uses.
+	const TRANSITION_OPTIONS = [
+		{ label: '(default — OrigamTranslateBottom)', value: undefined },
+		{ label: 'false (no transition)',              value: false },
+		{ label: 'OrigamFade',                         value: { component: OrigamFade } },
+		{ label: 'OrigamScaleRotate',                  value: { component: OrigamScaleRotate } },
 	]
 
 	const navItems: Array<IBottomNavProps['items'][number]> = [
@@ -268,5 +316,17 @@
 		width: 100%;
 		height: 80px;
 		overflow: hidden;
+	}
+
+	.story-bottom-nav-layout-shell {
+		position: relative;
+		width: 100%;
+		height: 240px;
+		overflow: hidden;
+		border: 1px dashed var(--origam-color__border---default, #ccc);
+	}
+
+	.story-bottom-nav-layout-hint {
+		padding: 12px;
 	}
 </style>

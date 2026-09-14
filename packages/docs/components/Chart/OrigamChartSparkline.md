@@ -42,8 +42,8 @@ A tiny inline chart for table cells, KPI cards, and dashboards. Renders a single
 |---|---|---|---|
 | `series` | `Array<IChartSeries>` | required | Single data series. Data must be `Array<number>` |
 | `showTooltip` | `boolean` | `false` | Enable a minimal value tooltip on hover |
-| `animated` | `boolean` | `false` | Animate on paint (respects `prefers-reduced-motion`) |
-| `animationDuration` | `number` | `600` | Animation duration in ms |
+| `animated` | `boolean` | `false` | ⛔ **Sans effet sur ce composant** — no animation is ever emitted — neither a CSS class nor an inline `animation` declaration. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
+| `animationDuration` | `number` | `600` | ⛔ **Sans effet sur ce composant** — nothing is animated, so there is no duration to apply. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
 
 ### Layout (inherited from `IChartBaseProps`)
 
@@ -54,14 +54,19 @@ A tiny inline chart for table cells, KPI cards, and dashboards. Renders a single
 | `rounded` | `TRounded` | — | Border radius token |
 | `elevation` | `TElevation` | — | Shadow token |
 | `bgColor` | `TIntent \| string` | — | Background colour |
-| `title` | `string` | — | ARIA label / accessible title for the chart |
-| `aspectRatio` | `string` | — | CSS `aspect-ratio` shortcut |
+| `minWidth` / `maxWidth` / `minHeight` / `maxHeight` | `number \| string` | — | Dimension bounds. The root consumes the full `IDimensionProps` surface through `useDimension(props).dimensionStyles`, so all seven dimension props take effect — not just `width` / `height`. |
+| `title` | `string` | — | Accessible title. Rendered as no visible header at all: it feeds the root `aria-label`, the SVG `aria-label`, and the SVG `<title>`. When absent, falls back to the translated name of the active `type` (`origam.chart.sparkline.aria_label_{type}` — e.g. "Line sparkline"), so the accessible name follows the active locale. |
+| `aspectRatio` | `string` | — | ⛔ **Sans effet sur ce composant** — the root sizes itself from `width` / `height`; no `aspect-ratio` declaration is emitted. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
+| `subtitle` | `string` | — | ⛔ **Sans effet sur ce composant** — a sparkline renders no header, neither title nor subtitle. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
+| `categories` | `Array<string>` | — | ⛔ **Sans effet sur ce composant** — a sparkline is a bare trend line: it draws no axis and no labels. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
+| `fontSize` | `TFontSize` | — | ⛔ **Sans effet sur ce composant** — a sparkline renders no text at all. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
+| `fontWeight` | `TFontWeight` | — | ⛔ **Sans effet sur ce composant** — a sparkline renders no text at all. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
 
 ## Emits
 
 | Event | Payload | Description |
 |---|---|---|
-| `point-click` | `(point: IChartPoint, event: MouseEvent \| KeyboardEvent)` | Fired when a data point is activated (reserved for future interactive variant) |
+| `point-click` | `(point: IChartPoint, event: MouseEvent \| KeyboardEvent)` | Fired when a data point is activated — click anywhere on the SVG (nearest point), or click / <kbd>Enter</kbd> / <kbd>Space</kbd> on a rendered marker, special (min/max/last) marker, or bar |
 
 ## Slots
 
@@ -69,6 +74,17 @@ A tiny inline chart for table cells, KPI cards, and dashboards. Renders a single
 |---|---|---|
 | `tooltip` | `{ point: IChartPoint, series: IChartSeries, index: number }` | Replace the default hover tooltip body |
 | `empty` | — | Render when `series` is empty or contains no numeric data |
+
+## Behaviour notes
+
+- **Point interaction** — every rendered marker (`showMarkers`), special
+  marker (`showMin` / `showMax` / `showLast`), and bar (`type="column"` /
+  `type="bar"`) is individually focusable (`tabindex="0"`, `role="button"`,
+  a value-carrying `aria-label`) and activates on click, <kbd>Enter</kbd>,
+  or <kbd>Space</kbd>. Clicking anywhere else on the SVG — e.g. a plain
+  `line`/`area` sparkline with no markers shown — falls back to the
+  nearest data point by horizontal position, so `point-click` stays
+  reachable by mouse even with no visible marks.
 
 ## Types
 
@@ -99,6 +115,8 @@ Special markers (`showMin`, `showMax`) override the colour locally:
 ## Accessibility
 
 The component uses a `<figure>` root (semantic landmark for a self-contained chart), an SVG with `role="img"`, `aria-label`, `<title>`, and `<desc>` for screen reader support.
+
+**Accessibility — the `<desc>` summary is localised AND agrees in number.** The `<desc>` text is not an English literal: it resolves through the DS `t()` mechanism against `origam.chart.sparkline.desc*`, and the grammatical form is chosen by `Intl.PluralRules` for the ACTIVE locale — never by a `count === 1` test in the component. A translator supplies only the forms their language needs (`_one` / `_other` cover `en` and `fr`; a Russian translation adds `_few` with no component change), and a category a locale does not define falls back to `_other` rather than leaking the raw key.
 
 ## Usage examples
 
@@ -165,5 +183,5 @@ The component uses a `<figure>` root (semantic landmark for a self-contained cha
 
 - Only the **first** entry of the `series` array is rendered. Multi-series is not supported — use `<OrigamChartCartesian>` for that.
 - Data must be `Array<number>`. Object-form entries (`{ x, y }`) are accepted and the `y` value is extracted, but the `x` is ignored (no X axis).
-- `animated` defaults to `false` — animation on such small surfaces is typically distracting. Set `true` if the consumer explicitly wants it.
+- `animated` is inert, not merely defaulted to `false`. There is no animation path in this component at all — no CSS class, no inline `animation` declaration — so setting `animated="true"` does nothing beyond raising a dev-build warning. `animationDuration` is inert for the same reason. See the Props table above and #426.
 - The tooltip (`showTooltip`) tracks the nearest column index by horizontal proximity; it does not snap to the exact SVG circle — this is intentional for the tiny surface area.

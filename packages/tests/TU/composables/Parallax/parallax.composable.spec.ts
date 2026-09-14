@@ -179,10 +179,71 @@ describe('useParallaxRuntime — initial ref values', () => {
 // ---------------------------------------------------------------------------
 
 describe('useParallaxRuntime — cssScrollDriven', () => {
-    it('is false in jsdom (CSS.supports("animation-timeline: scroll()") returns false)', () => {
-        // jsdom does not support animation-timeline — CSS.supports falls back to false
-        const { api } = mountParallax({ easing: PARALLAX_EASING.LINEAR })
-        expect(api().cssScrollDriven.value).toBe(false)
+    /**
+     * The browser's answer is STUBBED, never inherited from jsdom.
+     *
+     * The previous version asserted "false in jsdom, which does not implement
+     * animation-timeline" — making the test a hostage of its environment. jsdom
+     * 30 began answering `true` to `animation-timeline: scroll()` and the
+     * assertion flipped without a single line of origam changing. What we mean
+     * to assert is the RULE — CSS support plus linear easing — so both premises
+     * are stated here.
+     *
+     * `useCssSupport` memoises its answers in a module-level cache, so stubbing
+     * `CSS.supports` is not enough on its own: an earlier test in this file has
+     * already read `cssScrollDriven` and filled that cache. `resetModules()` plus
+     * a dynamic import hands us a fresh module — and therefore an empty cache —
+     * for each premise.
+     *
+     * ⚠️ Import the composable's OWN module, never the `@origam/composables`
+     * barrel. `resetModules()` empties Vitest's module registry, so the next
+     * import re-transforms everything it pulls in — and the barrel pulls in
+     * every composable in the DS. That cost was measured at 2.6–3.2 s for the
+     * first of these cases against a default 5 s `testTimeout`, which is why
+     * the case failed only under parallel load: it was never a logic fault,
+     * just a budget the barrel had already spent. The narrow path re-transforms
+     * the parallax module and its own dependency chain (which still includes a
+     * fresh `cssSupport` module, so the cache is still empty — the point of the
+     * reset is preserved).
+     */
+    async function mountWithCssSupport (supported: boolean) {
+        vi.resetModules()
+
+        const supports = vi.spyOn(CSS, 'supports').mockReturnValue(supported)
+        const { useParallaxRuntime: fresh } = await import('@origam/composables/Parallax/parallax.composable')
+
+        let api!: ReturnType<typeof fresh>
+
+        const Host = defineComponent({
+            name: 'OrigamParallaxCssHost',
+            setup () {
+                api = fresh({
+                    target: ref(undefined),
+                    direction: ref(PARALLAX_DIRECTION.VERTICAL),
+                    easing: ref(PARALLAX_EASING.LINEAR),
+                    threshold: ref(0),
+                    disabled: ref(false),
+                    speed: ref(0.3)
+                })
+                return () => h('div')
+            }
+        })
+
+        const wrapper = mount(Host)
+        const value = api.cssScrollDriven.value
+
+        wrapper.unmount()
+        supports.mockRestore()
+
+        return value
+    }
+
+    it('is false when the browser does not support animation-timeline', async () => {
+        expect(await mountWithCssSupport(false)).toBe(false)
+    })
+
+    it('is true when the browser supports animation-timeline and easing is linear', async () => {
+        expect(await mountWithCssSupport(true)).toBe(true)
     })
 
     it('is false when easing is SPRING even if CSS were to support it', () => {

@@ -47,6 +47,21 @@ export interface IChartDrilldownProps {
      * segment. Default `'← Back'`.
      */
     backLabel?: string
+    /*********************************************************
+     * navAriaLabel
+     *
+     * @description
+     * Accessible name for the breadcrumb `<nav>` landmark (aria-label).
+     * Carries a locale key, not final text — it is resolved through the
+     * DS `t()` mechanism, so it follows the active locale out of the box.
+     * Defaults to `'origam.chart.drilldown.aria_label'`, shared by both
+     * `OrigamChartCartesian` and `OrigamChartPolar` (#477).
+     * @description
+     * A raw string that matches no key is returned unchanged, so
+     * `navAriaLabel="Category drilldown"` still works for consumers who
+     * prefer to translate on their side.
+     ********************************************************/
+    navAriaLabel?: string
 }
 
 /**

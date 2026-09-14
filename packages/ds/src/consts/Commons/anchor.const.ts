@@ -1,6 +1,6 @@
 import { BLOCK, INLINE, START_END } from '../../enums'
 
-import type { TBlock, TBlockStartEnd, TDirectionBoth, TInline, TInlineStartEnd } from '../../types'
+import type { TBlock, TBlockStartEnd, TDirectionBoth, TInline, TInlineStartEnd } from '../../types/Commons/anchor.type'
 
 export const BLOCK_ARRAY: Array<TBlock> = [BLOCK.TOP, BLOCK.BOTTOM]
 export const INLINE_ARRAY: Array<TInline> = [INLINE.LEFT, INLINE.RIGHT]

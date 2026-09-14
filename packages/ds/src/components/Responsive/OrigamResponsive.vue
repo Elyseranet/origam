@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="id"
 			:class="responsiveClasses"
 			:style="responsiveStyles"
 	>
@@ -11,6 +12,7 @@
 		<div
 				v-if="slots.default"
 				:class="responsiveContentClasses"
+				:style="contentStyles"
 		>
 			<slot name="default"/>
 		</div>
@@ -22,18 +24,20 @@
 		setup
 >
 	import { computed, StyleValue, useSlots } from 'vue'
-	import {
-		useAspectRatio,
-		useBorder,
-		useDimension,
-		useMargin,
-		usePadding,
-		useProps,
-		useRounded,
-		useStyle
-} from '../../composables'
+	import { useAspectRatio } from '../../composables/Responsive/aspect.composable'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IResponsiveProps } from '../../interfaces'
+	import type {
+		IResponsiveEmits,
+		IResponsiveProps,
+		IResponsiveSlots
+	} from '../../interfaces/Responsive/responsive.interface'
 
 	/*********************************************************
 	 * Global
@@ -42,6 +46,10 @@
 	 * Props and filterProps for the Responsive component.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IResponsiveProps>(), {})
+
+	defineEmits<IResponsiveEmits>()
+
+	defineSlots<IResponsiveSlots>()
 
 	const {filterProps} = useProps<IResponsiveProps>(props)
 
@@ -57,7 +65,7 @@
 	 * Composables
 	 ********************************************************/
 
-	const {aspectStyles} = useAspectRatio(props)
+	const {aspectStyles, contentStyles} = useAspectRatio(props)
 	const {dimensionStyles} = useDimension(props)
 	const slots = useSlots()
 	const {roundedClasses, roundedStyles} = useRounded(props)
@@ -98,7 +106,7 @@
 			props.contentClass
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(responsiveStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(responsiveStyles, () => props.id)
 
 
 	/*********************************************************
@@ -122,14 +130,13 @@
 		scoped
 >
 	.origam-responsive {
-		$this: &;
-
 		display: var(--origam-responsive---display);
 		flex: var(--origam-responsive---flex);
+		flex-direction: var(--origam-responsive---flex-direction);
 		max-height: var(--origam-responsive---max-height);
 		max-width: var(--origam-responsive---max-width);
 		min-width: var(--origam-responsive---min-width);
-		min-height: var(--origam-responsive---min-width);
+		min-height: var(--origam-responsive---min-height);
 		overflow: var(--origam-responsive---overflow);
 		position: var(--origam-responsive---position);
 		width: var(--origam-responsive---width);
@@ -151,10 +158,6 @@
 			transition: var(--origam-responsive__sizer---transition);
 			pointer-events: var(--origam-responsive__sizer---pointer-events);
 			padding-block-end: var(--origam-responsive__sizer---padding-block-end);
-
-			~ #{$this}__content {
-				--origam-responsive__content---margin-inline-start: -100%
-			}
 		}
 	}
 </style>

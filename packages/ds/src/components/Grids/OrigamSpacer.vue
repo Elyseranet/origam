@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="spacerClasses"
 			:style="spacerStyles"
 	>
@@ -13,9 +14,14 @@
 		setup
 >
 	import { computed, StyleValue } from 'vue'
-	import { useProps , useStyle} from "../../composables"
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { ISpacerProps } from "../../interfaces"
+	import type {
+		ISpacerEmits,
+		ISpacerProps,
+		ISpacerSlots
+	} from '../../interfaces/Grids/spacer.interface'
 
 	/*********************************************************
 	 * Global
@@ -26,6 +32,10 @@
 	const props = withDefaults(defineProps<ISpacerProps>(), {tag: 'div'})
 
 	const {filterProps} = useProps<ISpacerProps>(props)
+
+	defineEmits<ISpacerEmits>()
+
+	defineSlots<ISpacerSlots>()
 
 	/*********************************************************
 	 * Class & Style
@@ -44,7 +54,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(spacerStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(spacerStyles, () => props.id)
 
 
 	/*********************************************************
@@ -69,6 +79,8 @@
 >
 	.origam-spacer {
 		flex-grow: var(--origam-spacer---flex-grow);
+		min-width: var(--origam-spacer---min-size, 0);
+		min-height: var(--origam-spacer---min-size, 0);
 	}
 </style>
 

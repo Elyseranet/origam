@@ -26,7 +26,7 @@
 |---|---|
 | `'auto'` | No `data-theme` attribute rendered — inherits from closest ancestor |
 | `'light'` / `'dark'` | Legacy aliases kept for back-compat |
-| any string | Custom brand theme (must have a matching `tokens/semantic/{name}.json`) |
+| any string | Custom brand theme — must be registered as an `IOrigamTheme` object passed to `createOrigam()` (props first, CSS vars only for what props can't express), which resolves to a `[data-theme="<name>"]` block. There is no token file to add: a theme that needs its own stylesheet hand-writes that selector directly. |
 
 ### `mode` (color mode → `data-mode`)
 

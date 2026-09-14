@@ -9,7 +9,7 @@ non-HTTPS contexts and pre-permissions Safari / WebView builds.
 
 ```vue
 <template>
-    <!-- Built-in trigger: icon + "Copied!" label flip on success -->
+    <!-- Built-in trigger: an <origam-btn> whose icon swaps on success -->
     <origam-clipboard :value="userEmail" />
 
     <!-- Custom trigger via scoped slot -->
@@ -23,13 +23,24 @@ non-HTTPS contexts and pre-permissions Safari / WebView builds.
 </template>
 ```
 
-When no slot is provided the component renders a single button
-(`mdi:mdi-content-copy` icon) whose label appears next to the icon
-and flips to `feedbackText` while `copied` is true. That's the only
-feedback surface the component owns — there is no separate pill, no
-mode prop, no double rendering. If you need a richer feedback (toast,
-inline status, custom animation), pass a `#default` scoped slot and
-render whatever you want from `{ copy, copied, error }`.
+When no slot is provided the component renders a single
+**`<origam-btn>`** (icon `mdi:mdi-content-copy`, configurable via the
+`icon` prop). On success the button swaps to `copiedIcon`
+(`mdi:mdi-check`) and the feedback text appears in a **tooltip**, not
+inside the button.
+
+> **Changed.** The trigger used to be a raw `<button>` carrying the
+> feedback text inline, which widened it mid-interaction and placed a
+> transient `aria-live` region inside a control. The icon was a
+> module-level constant no consumer — and no theme — could reach.
+
+There is no
+separate pill, no mode prop, no double rendering. If you only want a
+different label/marker inside that same built-in button, pass a
+`#feedback` scoped slot (see below). If you need a richer feedback
+(toast, inline status, custom animation) — or a different trigger
+altogether — pass a `#default` scoped slot and render whatever you
+want from `{ copy, copied, error }`.
 
 ## Props
 
@@ -37,7 +48,9 @@ render whatever you want from `{ copy, copied, error }`.
 |--------------------|-----------|-------------|------------------------------------------------------------------------------------------------|
 | `value`            | `string`  | required    | Text written to the clipboard on `copy()`.                                                     |
 | `feedbackDuration` | `number`  | `2000`      | Duration (ms) the `copied` flag stays true after a successful write.                           |
-| `feedbackText`     | `string`  | `'Copied!'` | Label rendered in the built-in trigger while `copied` is true. Wrap with `t()` for full i18n.  |
+| `icon`             | `TIcon`   | `'mdi:mdi-content-copy'` | Icon of the built-in trigger at rest. Reachable by a theme.                        |
+| `copiedIcon`       | `TIcon`   | `'mdi:mdi-check'` | Icon swapped in while `copied` is true.                                                   |
+| `feedbackText`     | `string`  | `origam.clipboard.copied` | Text shown in the **tooltip** while `copied` is true. Falls back to the DS locale key. |
 | `successText`      | `string`  | `undefined` | Alias for `feedbackText`. Takes precedence when both are passed.                               |
 | `disabled`         | `boolean` | `false`     | Disables the trigger; `copy()` short-circuits.                                                 |
 | `tag`              | `string`  | `'span'`    | Root element tag.                                                                              |
@@ -51,15 +64,33 @@ render whatever you want from `{ copy, copied, error }`.
 | `copy`           | `(value: string)`| After a successful write (modern API or execCommand fallback).             |
 | `error`          | `(err: Error)`   | After both paths failed (permissions denied, blocked context, …).          |
 
-## Slot scoped API
+## Slots
 
-The default slot exposes the following bindings:
+| Slot       | Bindings                          | Notes                                                                                                    |
+|------------|------------------------------------|-----------------------------------------------------------------------------------------------------------|
+| `default`  | `{ copy, copied, error }`           | Custom trigger. Replaces the built-in icon button entirely.                                              |
+| `feedback` | `{ copied: boolean }`               | Custom marker rendered inside the **built-in** trigger while `copied` is true, replacing `feedbackText`. Only applies when `#default` is NOT overridden — a custom trigger has no button to render it in. |
+
+### `default` scoped bindings
 
 | Binding  | Type                            | Notes                                                            |
 |----------|---------------------------------|------------------------------------------------------------------|
 | `copy`   | `() => Promise<boolean>`        | Triggers the pipeline. Resolves `true` on success.               |
 | `copied` | `boolean`                       | True for `feedbackDuration` ms after a successful copy.          |
 | `error`  | `Error \| null`                 | Set when the last attempt failed; null after a fresh successful attempt. |
+
+### `feedback` example
+
+```vue
+<template>
+    <!-- Built-in icon + button chrome, custom marker instead of "Copied!" -->
+    <origam-clipboard :value="apiKey">
+        <template #feedback="{ copied }">
+            <span>{{ copied ? '✓ Done' : '' }}</span>
+        </template>
+    </origam-clipboard>
+</template>
+```
 
 ## `useClipboard` composable
 
@@ -106,13 +137,22 @@ embedded scenarios.
 
 - The default trigger is a native `<button>` — keyboard / focus /
   disabled semantics come for free.
-- The label that appears next to the icon while `copied` is true is
-  marked `aria-live="polite"` so screen readers announce the state
-  change without interrupting the user.
-- The default trigger's `aria-label` flips between
-  `"Copy to clipboard"` and `"Value copied to clipboard"` to surface
-  the state transition to assistive tech that does not pick up the
-  visual label.
+- ⛔ **There is no live region.** The confirmation text is rendered
+  inside an `<origam-tooltip>` — not in a label next to the icon — and
+  neither `OrigamClipboard` nor `OrigamTooltip` sets `aria-live`
+  anywhere. The transient live region that used to sit inside the
+  control was removed on purpose along with the raw `<button>` trigger
+  (see *Changed* at the top of this page).
+- The state change is surfaced through the trigger's **`aria-label`**
+  instead, which flips between `origam.clipboard.copy_aria_label` and
+  `origam.clipboard.copied_aria_label` (`"Copy to clipboard"` /
+  `"Value copied to clipboard"` in the shipped English messages). A
+  screen reader on the focused button announces the new label; the swap
+  is what assistive tech picks up, since the visual feedback lives in a
+  tooltip.
+- If your flow needs a guaranteed announcement even when focus has moved
+  away, render your own live region from the `#default` scoped slot,
+  driven by the `copied` binding.
 - Custom triggers passed through `#default` keep their own ARIA
   contract — make sure to add a label (`aria-label` or visible text)
   when the trigger is icon-only.

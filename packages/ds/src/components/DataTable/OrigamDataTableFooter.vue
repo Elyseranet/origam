@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="id"
 			:class="dataTableFooterClasses"
 			:style="dataTableFooterStyles"
 	>
@@ -7,9 +8,10 @@
 			<slot name="prepend"/>
 
 			<div class="origam-data-table-footer__items-per-page">
-				<span>{{ t(itemsPerPageText) }}</span>
+				<span :id="itemsPerPageLabelId">{{ t(itemsPerPageText) }}</span>
 
 				<origam-select
+						:aria-labelledby="itemsPerPageLabelId"
 						:density="DENSITY.COMPACT"
 						:items="itemsPerPageOptions"
 						:model-value="itemsPerPage"
@@ -44,14 +46,19 @@
 		lang="ts"
 		setup
 >
-	import { OrigamPagination, OrigamRow, OrigamSelect } from "../../components"
+	import OrigamPagination from '../Pagination/OrigamPagination.vue'
+	import OrigamRow from '../Grids/OrigamRow.vue'
+	import OrigamSelect from '../Select/OrigamSelect.vue'
 
-	import { useLocale, usePagination, useProps , useStyle} from "../../composables"
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { usePagination } from '../../composables/DataTable/pagination.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { DENSITY } from "../../enums"
+	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IDataTableFooterProps } from "../../interfaces"
-	import type { TOrigamPagination } from "../../types"
+	import type { IDataTableFooterEmits, IDataTableFooterProps, IDataTableFooterSlots } from '../../interfaces/DataTable/footer.interface'
+	import type { TOrigamPagination } from '../../types/Pagination/pagination.type'
 
 	import { computed, ref, StyleValue } from "vue"
 
@@ -75,6 +82,10 @@
 		lastPageLabel: 'origam.data_footer.last_page',
 		showCurrentPage: true
 	})
+
+	defineEmits<IDataTableFooterEmits>()
+
+	defineSlots<IDataTableFooterSlots>()
 
 	const {filterProps} = useProps<IDataTableFooterProps>(props)
 	const {t} = useLocale()
@@ -128,8 +139,31 @@
 	 * Forwarded props
 	 ********************************************************/
 
+	/*********************************************************
+	 * Libelles de navigation (#550, critere C7)
+	 *
+	 * @description
+	 * `firstPageLabel` / `prevPageLabel` / `nextPageLabel` /
+	 * `lastPageLabel` etaient declarees, defaultees sur de vraies cles
+	 * i18n, exposees par la story — et mortes. `filterProps` interroge le
+	 * schema de `<origam-pagination>`, dont les props homologues
+	 * s'appellent `firstAriaLabel` / `previousAriaLabel` /
+	 * `nextAriaLabel` / `lastAriaLabel` : `pick()` ne retenait donc jamais
+	 * ces quatre cles, qui n'atterrissaient meme pas en attribut HTML.
+	 *
+	 * @description
+	 * Le renommage se fait ici plutot que sur l'interface : retirer les
+	 * quatre props casserait le type d'un consommateur pour une prop qui,
+	 * elle, a manifestement un sens.
+	 ********************************************************/
 	const paginationProps = computed(() => {
-		return origamPaginationRef.value?.filterProps(props, ['class', 'style', 'id', 'totalVisible', 'modelValue', 'length', 'rounded', 'showFirstLastPage', 'density'])
+		return {
+			...origamPaginationRef.value?.filterProps(props, ['class', 'style', 'id', 'totalVisible', 'modelValue', 'length', 'rounded', 'showFirstLastPage', 'density']),
+			firstAriaLabel: t(props.firstPageLabel),
+			previousAriaLabel: t(props.prevPageLabel),
+			nextAriaLabel: t(props.nextPageLabel),
+			lastAriaLabel: t(props.lastPageLabel)
+		}
 	})
 
 	/*********************************************************
@@ -146,7 +180,29 @@
 			props.style
 		] as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dataTableFooterStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableFooterStyles, () => props.id)
+
+	/*********************************************************
+	 * itemsPerPageLabelId — nom accessible du selecteur (#371, C6)
+	 *
+	 * @description
+	 * Le <span> « Items per page » est le libelle VISIBLE du selecteur,
+	 * mais rien ne les associait : le champ ressortait annonce « Open ».
+	 * On lui donne un id derive de celui du pied de table, et le select
+	 * le reference par `aria-labelledby` — qui prime sur `aria-label`
+	 * dans le calcul du nom accessible.
+	 *
+	 * @description
+	 * ⛔ `<label for>` n'est pas jouable : l'id du <input> est genere a
+	 * l'interieur d'<OrigamSelect> et n'est pas expose ici. Et passer
+	 * `:label="…"` ne l'est pas davantage — un `const label` de setup
+	 * masque la prop homonyme dans le template d'OrigamSelect, si bien
+	 * que son `aria-label` vaut toujours « Open » / « Close ». Defaut
+	 * amont, famille Select, remonte a part.
+	 ********************************************************/
+	const itemsPerPageLabelId = computed(() => {
+		return `${id.value}-items-per-page-label`
+	})
 
 
 	/*********************************************************
@@ -167,37 +223,37 @@
 		scoped
 >
 	.origam-data-table-footer {
-		align-items: var(--origam-data-table-footer---align-items, center);
-		background-color: var(--origam-data-table-footer---background-color, var(--origam-color__surface---default));
-		color: var(--origam-data-table-footer---color, var(--origam-color__text---primary));
-		display: var(--origam-data-table-footer---display, flex);
-		flex-wrap: var(--origam-data-table-footer---flex-wrap, wrap);
-		justify-content: var(--origam-data-table-footer---justify-content, flex-end);
-		padding-block: var(--origam-data-table-footer---padding-block, var(--origam-space---2, 8px));
-		padding-inline: var(--origam-data-table-footer---padding-inline, var(--origam-space---1, 4px));
+		align-items: var(--origam-data-table-footer---align-items, var(--origam-data-table__footer---align-items, center));
+		background-color: var(--origam-data-table-footer---background-color, var(--origam-data-table__footer---background-color, var(--origam-color__surface---default)));
+		color: var(--origam-data-table-footer---color, var(--origam-data-table__footer---color, var(--origam-color__text---primary)));
+		display: var(--origam-data-table-footer---display, var(--origam-data-table__footer---display, flex));
+		flex-wrap: var(--origam-data-table-footer---flex-wrap, var(--origam-data-table__footer---flex-wrap, wrap));
+		justify-content: var(--origam-data-table-footer---justify-content, var(--origam-data-table__footer---justify-content, flex-end));
+		padding-block: var(--origam-data-table-footer---padding-block, var(--origam-data-table__footer---padding-block, var(--origam-space---2, 8px)));
+		padding-inline: var(--origam-data-table-footer---padding-inline, var(--origam-data-table__footer---padding-inline, var(--origam-space---1, 4px)));
 
 		&__items-per-page {
 			align-items: center;
 			display: flex;
 			justify-content: center;
-			gap: var(--origam-data-table-footer__items-per-page---gap, var(--origam-space---2, 8px));
+			gap: var(--origam-data-table-footer__items-per-page---gap, var(--origam-data-table__footer---items-per-page-gap, var(--origam-space---2, 8px)));
 
 			> span {
-				padding-inline-end: var(--origam-data-table-footer__items-per-page---padding-inline-end, var(--origam-space---2, 8px));
+				padding-inline-end: var(--origam-data-table-footer__items-per-page---padding-inline-end, var(--origam-data-table__footer---items-per-page-padding-inline-end, var(--origam-space---2, 8px)));
 			}
 		}
 
 		&__info {
 			display: flex;
-			justify-content: var(--origam-data-table-footer__info---justify-content, flex-end);
-			min-width: var(--origam-data-table-footer__info---min-width, 116px);
-			padding-inline: var(--origam-data-table-footer__info---padding-inline, var(--origam-space---4, 16px));
+			justify-content: var(--origam-data-table-footer__info---justify-content, var(--origam-data-table__footer--info---justify-content, flex-end));
+			min-width: var(--origam-data-table-footer__info---min-width, var(--origam-data-table__footer--info---min-width, 116px));
+			padding-inline: var(--origam-data-table-footer__info---padding-inline, var(--origam-data-table__footer--info---padding-inline, var(--origam-space---4, 16px)));
 		}
 
 		&__pagination {
 			align-items: center;
 			display: flex;
-			margin-inline-start: var(--origam-data-table-footer__pagination---margin-inline-start, var(--origam-space---4, 16px));
+			margin-inline-start: var(--origam-data-table-footer__pagination---margin-inline-start, var(--origam-data-table__footer---pagination-margin-inline-start, var(--origam-space---4, 16px)));
 		}
 	}
 </style>

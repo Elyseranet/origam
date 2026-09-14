@@ -78,3 +78,28 @@ describe('OrigamDatePickerField — useDefaults (theme components wiring)', () =
         expect(field.classes()).not.toContain('origam--rounded-lg')
     })
 })
+
+// ---------------------------------------------------------------------------
+// #411 — the `multiple` mode default chip carried hardcoded RGB literals
+// (`bgColor: 'rgba(168, 168, 168, 1)'`, `color: 'rgb(255, 255, 255)'`),
+// identical copy-paste to OrigamSelect's pre-#456 defect, bypassing the
+// theme regardless of which theme was active. `chipSlotProps` now omits
+// both so `<OrigamChip>` resolves its own themed default
+// (`--origam-chip---background-color` / `--origam-chip---color`, both
+// declared in the token stylesheets).
+// ---------------------------------------------------------------------------
+describe('OrigamDatePickerField — chip default color is theme-driven, not hardcoded (#411)', () => {
+    it('does not force an inline background-color / color on the default chip', async () => {
+        const wrapper = await mountDatePickerFieldThemed({}, {
+            multiple: true,
+            modelValue: [new Date('2024-01-01'), new Date('2024-01-02')]
+        })
+
+        const chip = wrapper.find('.origam-chip')
+        expect(chip.exists()).toBe(true)
+
+        const style = chip.attributes('style') ?? ''
+        expect(style).not.toContain('168, 168, 168')
+        expect(style).not.toContain('255, 255, 255')
+    })
+})

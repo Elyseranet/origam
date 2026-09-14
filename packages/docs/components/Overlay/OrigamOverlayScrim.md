@@ -51,6 +51,15 @@ Replace the default fade with any registered origam transition.
 </template>
 ```
 
+Set `disabled` to skip the enter/leave animation entirely (an instant
+show/hide instead of a fade):
+
+```vue
+<template>
+    <OrigamOverlayScrim :active="open" disabled/>
+</template>
+```
+
 ## Slots
 
 The scrim has no slot — it is a backdrop, never a container. Layer
@@ -77,18 +86,29 @@ interface IScrimProps {
 }
 ```
 
+### Own props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `active` | `boolean` | `false` | Renders the scrim. `false` removes the element from the DOM entirely (`v-if`), it is not merely hidden — so a transparent, click-through backdrop is impossible by design. `<OrigamOverlay>` drives this with `isActive && !!scrim`. |
+
 ## Anatomy
 
 ```html
 <div class="origam-scrim"></div>
 ```
 
+The root element is a `<div>` by default; pass `tag` to render a
+different element (`IOverlayScrimProps extends ITagProps`).
+
 The element is `position: fixed; inset: 0` by default and consumes
 pointer events so clicks on the surrounding page do not leak through.
 
 ## Design tokens consumed
 
-`<OrigamOverlayScrim>` reads from `tokens/component/overlay-scrim.json`.
+`<OrigamOverlayScrim>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`).
 
 | CSS variable | Token reference |
 |---|---|

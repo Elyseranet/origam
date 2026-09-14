@@ -1,4 +1,8 @@
-import type { TFontFamily, TFontSize, TFontWeight, TLetterSpacing, TLineHeight } from '../../types'
+import type { TFontFamily } from '../../types/Commons/font-family.type'
+import type { TFontSize } from '../../types/Commons/font-size.type'
+import type { TFontWeight } from '../../types/Commons/font-weight.type'
+import type { TLetterSpacing } from '../../types/Commons/letter-spacing.type'
+import type { TLineHeight } from '../../types/Commons/line-height.type'
 
 /**
  * Cross-cutting typography surface — the font equivalent of

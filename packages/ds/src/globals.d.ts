@@ -2,7 +2,7 @@ import 'vue/jsx'
 
 // Types
 import type { Events } from 'vue'
-import type { TouchStoredHandlers } from './directives/touch'
+import type { ITouchStoredEntry } from './interfaces/Commons/touch.interface'
 
 declare global {
     interface HTMLCollection {
@@ -13,6 +13,19 @@ declare global {
         _clickOutside?: Record<number, {
             onClick: EventListener
             onMousedown: EventListener
+            /*********************************************************
+             * Binding COURANT
+             *
+             * @description
+             * Rafraichi par le hook `updated` de la directive.
+             *
+             * @description
+             * Les closures d'ecouteurs le relisent a chaque evenement au lieu
+             * de capturer celui du montage : Vue construit un nouvel objet
+             * binding a chaque mise a jour, donc une closure qui retient le
+             * premier lit un `binding.value` fige.
+             ********************************************************/
+            binding: import('./interfaces/Commons/clickOutside.interface').IClickOutsideDirectiveBinding
         } | undefined> & { lastMousedownWasOutside: boolean }
         _onResize?: Record<number, {
             handler: () => void
@@ -41,7 +54,11 @@ declare global {
             target?: EventTarget
         } | undefined>
         _touchHandlers?: {
-            [_uid: number]: TouchStoredHandlers
+            [_uid: number]: ITouchStoredEntry
+        }
+        _contrastTimers?: {
+            raf?: number
+            timeout?: number
         }
         _transitionInitialStyles?: {
             position: string

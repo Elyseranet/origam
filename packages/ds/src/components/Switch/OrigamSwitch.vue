@@ -4,7 +4,7 @@
     class="origam-switch__skeleton"
     :class="{ 'origam-switch__skeleton--inset': inset }"
     aria-busy="true"
-    aria-label="Loading"
+    :aria-label="loadingLabel"
     role="status"
     data-cy="origam-switch-skeleton"
   >
@@ -34,6 +34,7 @@
         type="checkbox"
         v-bind="{ ...controlProps, ...controlAttrs }"
         @blur="handleBlur"
+        @click:label="handleClickLabel"
         @focus="handleFocus"
         @update:model-value="handleChange"
       >
@@ -139,36 +140,38 @@
   setup
 >
   import { computed, ref, StyleValue, useAttrs, useSlots } from 'vue'
-  import {
-    OrigamIcon,
-    OrigamInput,
-    OrigamProgress,
-    OrigamSelectionControl,
-    OrigamSwitchTrack,
-    OrigamTranslateScale
-  } from '../../components'
+  import OrigamIcon from '../Icon/OrigamIcon.vue'
+  import OrigamInput from '../Input/OrigamInput.vue'
+  import OrigamProgress from '../Progress/OrigamProgress.vue'
+  import OrigamSelectionControl from '../SelectionControl/OrigamSelectionControl.vue'
+  import OrigamSwitchTrack from './OrigamSwitchTrack.vue'
+  import OrigamTranslateScale from '../Transition/OrigamTranslateScale.vue'
 
-  import {
-    useDefaults,
-    useFocus,
-    useHover,
-    useLoader,
-    useProps,
-    useRounded,
-    useStateEffect,
-    useStyle,
-    useVModel
-  } from '../../composables'
+  import { useFocus } from '../../composables/Commons/focus.composable'
+  import { useLoader } from '../../composables/Commons/loader.composable'
+  import { useLocale } from '../../composables/Commons/locale.composable'
+  import { useProps } from '../../composables/Commons/props.composable'
+  import { useRounded } from '../../composables/Commons/rounded.composable'
+  import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+  import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
+  import { useStyle } from '../../composables/Commons/style.composable'
+  import { useVModel } from '../../composables/Commons/vModel.composable'
 
-  import { DENSITY, PROGRESS_TYPE, SIZES } from '../../enums'
+  import { DENSITY } from '../../enums/Commons/density.enum'
+  import { LOADER_KIND } from '../../enums/Commons/loader.enum'
+  import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
+  import { SIZES } from '../../enums/Commons/size.enum'
 
-  import type { ISwitchProps } from "../../interfaces"
+  import type { ISwitchProps } from '../../interfaces/Switch/switch.interface'
 
-  import type { ISwitchEmits } from '../../interfaces/Switch/switch.interface'
+  import type { ISwitchEmits, ISwitchSlots } from '../../interfaces/Switch/switch.interface'
 
-  import type { TOrigamInput, TOrigamSelectionControl, TOrigamSwitchTrack } from "../../types"
+  import type { TOrigamInput } from '../../types/Input/input.type'
+  import type { TOrigamSelectionControl } from '../../types/SelectionControl/selection-control.type'
+  import type { TOrigamSwitchTrack } from '../../types/Switch/switch-track.type'
 
-  import { filterInputAttrs, getUid } from '../../utils'
+  import { filterInputAttrs } from '../../utils/Input/input.util'
+  import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
   /*********************************************************
    * Global
@@ -177,24 +180,17 @@
    * Props, emits and composables.
    ********************************************************/
 
-  const _props = withDefaults(defineProps<ISwitchProps>(), {
+  const props = withDefaults(defineProps<ISwitchProps>(), {
     density: DENSITY.DEFAULT,
     centerAffix: true
   })
 
-  // `useDefaults` resolves each prop against the closest
-  // `provideDefaults({ 'origam-switch': … })` (e.g. a marketing theme's
-  // `components` block). Without this hook a theme's `border`/`rounded`/
-  // `elevation` config for Switch is silently dropped — `OrigamSwitchTrack`
-  // already consumes these props correctly once they arrive (see its own
-  // `useBorder`/`useRounded`/`useElevation` wiring), this was the missing
-  // link one level up. Mirrors `OrigamBtn.vue`'s exact pattern.
-  const props = useDefaults(_props)
+  const emits = defineEmits<ISwitchEmits>()
 
-  defineEmits<ISwitchEmits>()
+  defineSlots<ISwitchSlots>()
 
 
-  const { isHover, hoverState } = useHover(props)
+  const { isOn: isHover, config: hoverState } = useStateFlag(props, {state: 'hover'})
   useStateEffect(props, isHover, undefined, hoverState, undefined)
   const { filterProps } = useProps<ISwitchProps>(props)
 
@@ -220,7 +216,10 @@
   const attrs = useAttrs()
   const slots = useSlots()
 
-  const { loaderClasses, loaderConfig } = useLoader(props, 'circular')
+  const { loaderClasses, loaderConfig } = useLoader(props, LOADER_KIND.CIRCULAR)
+
+  const { t } = useLocale()
+  const loadingLabel = computed(() => t('origam.loading'))
 
   const uid = getUid()
   const id = computed(() => {
@@ -238,6 +237,20 @@
     if (indeterminate.value) {
       indeterminate.value = false
     }
+  }
+  /*********************************************************
+   * Label click forwarded up — mirrors OrigamRadioBtn/OrigamRadio.
+   *
+   * @description
+   * `ISwitchEmits` extends `IClickLabelEmits`, but nothing ever wired
+   * `<origam-selection-control>`'s own `click:label` (fired from the
+   * native `<label>` click, see `OrigamSelectionControl.vue`) up to this
+   * component — the declaration was dead: consumers binding
+   * `@click:label` on `<origam-switch>` never received anything (LOT 3,
+   * unemitted-declarations guard).
+   ********************************************************/
+  const handleClickLabel = (e: MouseEvent) => {
+    emits('click:label', e)
   }
   const handleTrackClick = (_e: MouseEvent) => {
     // `OrigamSwitchTrack` already calls `stopPropagation` /
@@ -267,7 +280,7 @@
    ********************************************************/
 
   const inputProps = computed(() => {
-    return origamInputRef.value?.filterProps(props, [ 'modelValue', 'class', 'focused', 'id', 'style', 'color', 'bgColor', 'activeColor', 'activeBgColor', 'hoverColor', 'hoverBgColor' ])
+    return origamInputRef.value?.filterProps(props, [ 'modelValue', 'class', 'focused', 'id', 'style', 'color', 'bgColor' ])
   })
   const controlProps = computed(() => {
     return origamSelectionControlRef.value?.filterProps(props, [ 'modelValue', 'type', 'disabled', 'readonly', 'class', 'style', 'id' ])
@@ -366,7 +379,6 @@
     return [
       'origam-switch',
       {
-        'origam-switch--flat': props.flat,
         'origam-switch--inset': props.inset,
         'origam-switch--indeterminate': indeterminate.value
       },
@@ -399,14 +411,6 @@
   lang="scss"
   scoped
 >
-  /*
-   * Skeleton placeholder mimicking the switch silhouette — a 52×32
-   * rounded track + a 20px circular thumb pinned to the left so the
-   * shape is unmistakably a switch (vs the previous plain rectangle
-   * which looked like a generic loading bar). Both halves share the
-   * `--origam-switch__skeleton-bg` pulse animation inherited from
-   * the broader skeleton token so the rhythm matches OrigamSkeleton.
-   */
   @keyframes origam-switch-skeleton-pulse {
     0%, 100% {
       opacity: 1;
@@ -448,7 +452,6 @@
 
     &--inset {
       .origam-switch__skeleton-thumb {
-        /* inset switches use a 24px thumb that overflows the track */
         width: 24px;
         height: 24px;
         left: 4px;
@@ -463,29 +466,10 @@
       padding-inline-start: 10px;
     }
 
-    /*
-     * Line loader — thin linear progress positioned ON the track,
-     * spanning the full switch footprint (46×14 standard or 52×32
-     * inset). Sits BEHIND the thumb so the thumb stays visually
-     * dominant and the consumer still sees the on/off position
-     * while the background indicates async work in flight.
-     *
-     * `OrigamProgressLinear` ships an inline `height: thickness`
-     * (4 px default) that wins over standard CSS — we force it
-     * to 100 % via `:deep()` so the bar fills the track height
-     * regardless of the standard / inset variant.
-     */
     &__progress--linear {
       position: absolute !important;
       inset: 0 !important;
       width: 100% !important;
-      /*
-       * `OrigamProgressLinear` inlines `height: 4px` on its root via
-       * `:style="{ height: thickness }"`, which beats any non-important
-       * scoped rule. `!important` here is the only way to expand the
-       * loader to the full track height without subclassing the
-       * progress component.
-       */
       height: 100% !important;
       line-height: 1 !important;
       border-radius: inherit;
@@ -520,29 +504,11 @@
     .origam-selection-control {
       min-height: calc(var(--origam-switch__selection-control---min-height, 56px) + var(--origam-input---density, 0px));
 
-      /*
-       * The base SelectionControl wrapper reserves a fixed
-       * `calc(40px + 1.5 * density)` box sized for a checkbox/radio
-       * input glyph. Switch instead renders a variable-width track
-       * (36–52px depending on `--origam-switch__track---width` /
-       * the `inset` variant, plus its own horizontal padding) as
-       * the wrapper's only in-flow child — `__input` is forced
-       * `position: absolute` below so it no longer participates in
-       * the flex layout. That fixed formula was never track-aware:
-       * under `density="compact"` (-8px) the wrapper shrinks to
-       * 28px while the standard track needs ~46px, so the track
-       * visually overflows into the neighbouring label ("Flat"
-       * rendering as "lat"). Let the wrapper size to its actual
-       * content (`max-content`) instead, keeping the original
-       * density formula only as a floor via `min-width`/`min-height`
-       * so the checkbox-sized footprint is preserved whenever the
-       * track is smaller than it (never smaller than before).
-       */
       :deep(.origam-selection-control__wrapper) {
         width: max-content;
         height: max-content;
-        min-width: calc(40px + 1.5 * var(--origam-selection-control--density, 0px));
-        min-height: calc(40px + 1.5 * var(--origam-selection-control--density, 0px));
+        min-width: calc(40px + 1.5 * var(--origam-selection-control---density, 0px));
+        min-height: calc(40px + 1.5 * var(--origam-selection-control---density, 0px));
       }
 
       :deep(.origam-selection-control__input) {
@@ -565,8 +531,8 @@
       &--error {
         &:not(.origam-selection-control--disabled) {
           #{$this}__thumb {
-            background-color: rgba(255, 0, 0, 1);
-            color: rgba(255, 255, 255, 1);
+            background-color: var(--origam-switch__thumb---background-color-error, rgba(255, 0, 0, 1));
+            color: var(--origam-switch__thumb---color-error, rgba(255, 255, 255, 1));
           }
         }
       }
@@ -586,17 +552,47 @@
       }
     }
 
-    .origam-selection-control__wrapper.origam--color-primary &__thumb,
-    .origam-selection-control__wrapper.origam--color-secondary &__thumb,
-    .origam-selection-control__wrapper.origam--color-success &__thumb,
-    .origam-selection-control__wrapper.origam--color-warning &__thumb,
-    .origam-selection-control__wrapper.origam--color-danger &__thumb,
-    .origam-selection-control__wrapper.origam--color-info &__thumb,
-    .origam-selection-control__wrapper.origam--color-neutral &__thumb {
+    /*
+     * Le canal couleur vit sur `.origam-selection-control__input`, PAS sur le
+     * wrapper. Ces règles ciblaient le wrapper et ne matchaient donc jamais :
+     * le pouce restait blanc quelle que soit la prop `color` (#512).
+     *
+     * C'est la régression décrite dans le CLAUDE.md — le contrat de style
+     * inline cassé lors de l'extraction d'`OrigamSwitchTrack` — revenue par le
+     * même mécanisme : le canal a bougé, le sélecteur est resté.
+     *
+     * `:has()` est la SEULE des trois pistes envisagées qui fonctionne ici, et
+     * c'est la structure du DOM qui l'impose, pas une préférence :
+     *
+     *     .origam-selection-control__wrapper
+     *       ├─ <slot default>  → OrigamSwitchTrack → &__thumb
+     *       └─ .origam-selection-control__input   ← porte la couleur
+     *
+     *   · sélecteur frère (`~` / `+`) : impossible — `&__thumb` PRÉCÈDE
+     *     `__input`, et CSS n'a pas de combinateur « frère précédent » ;
+     *   · custom property sur un ancêtre commun : impossible sans toucher
+     *     `OrigamSelectionControl` — la couleur est posée sur `__input`, un
+     *     ENFANT du wrapper, et les custom properties héritent vers le bas
+     *     seulement. La publier plus haut changerait le composant partagé par
+     *     Checkbox, Radio et Switch, au lieu de rester contenu ici ;
+     *   · `:has()` sur le wrapper, ancêtre commun réel : fonctionne, et le
+     *     motif est déjà employé dans le DS (OrigamCard, OrigamNumberField).
+     *
+     * Les conditions sont conservées à l'identique — sept intentions plus la
+     * porte de secours en style inline pour les couleurs personnalisées. Seule
+     * la cible du test change.
+     */
+    .origam-selection-control__wrapper:has(.origam-selection-control__input.origam--color-primary) &__thumb,
+    .origam-selection-control__wrapper:has(.origam-selection-control__input.origam--color-secondary) &__thumb,
+    .origam-selection-control__wrapper:has(.origam-selection-control__input.origam--color-success) &__thumb,
+    .origam-selection-control__wrapper:has(.origam-selection-control__input.origam--color-warning) &__thumb,
+    .origam-selection-control__wrapper:has(.origam-selection-control__input.origam--color-danger) &__thumb,
+    .origam-selection-control__wrapper:has(.origam-selection-control__input.origam--color-info) &__thumb,
+    .origam-selection-control__wrapper:has(.origam-selection-control__input.origam--color-neutral) &__thumb {
       background-color: currentColor;
     }
 
-    .origam-selection-control__wrapper[style*="color:"] &__thumb {
+    .origam-selection-control__wrapper:has(.origam-selection-control__input[style*="color:"]) &__thumb {
       background-color: currentColor;
     }
 

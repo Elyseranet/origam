@@ -1,10 +1,18 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			ref="root"
+			:aria-busy="indeterminate ? true : undefined"
+			:aria-hidden="!active"
+			:aria-label="progressAriaLabel"
+			:aria-valuemax="max"
+			:aria-valuenow="indeterminate ? undefined : normalizedValue"
 			:class="progressLinearClasses"
 			:style="progressLinearStyles"
-			@click="clickable && handleClick"
+			aria-valuemin="0"
+			role="progressbar"
+			@click="handleClick"
 	>
 		<div
 				v-if="stream"
@@ -53,36 +61,58 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue, toRef } from 'vue'
-	import { OrigamFade, OrigamSlideX, OrigamTransition } from '../../components'
+	import { computed, ref, StyleValue, toRef, watchEffect } from 'vue'
+	import OrigamFade from '../Transition/OrigamFade.vue'
+	import OrigamSlideX from '../Transition/OrigamSlideX.vue'
+	import OrigamTransition from '../Transition/OrigamTransition.vue'
 
-	import {
-		useIntersectionObserver,
-		useLocation,
-		useProgress,
-		useProps,
-		useRounded,
-		useRtl,
-		useStyle,
-		useTextColor
-} from '../../composables'
+	import { useIntersectionObserver } from '../../composables/Commons/intersectionObserver.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useLocation } from '../../composables/Commons/location.composable'
+	import { useProgress } from '../../composables/Progress/progress.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useRtl } from '../../composables/Commons/rtl.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTextColor } from '../../composables/Commons/textColor.composable'
 
-	import type { IProgressLinearProps } from '../../interfaces'
+	import type {
+		IProgressLinearEmits,
+		IProgressLinearProps,
+		IProgressLinearSlots
+	} from '../../interfaces/Progress/progress-linear.interface'
 
-	import { convertToUnit } from '../../utils'
+	import { convertToUnit } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global
 	 *
 	 * @description
 	 * Props and filterProps for the ProgressLinear component.
+	 *
+	 * Why not the native `<progress>` element (#500): it renders
+	 * consistently only in its determinate/indeterminate value, with no
+	 * cross-browser-reliable way to theme thickness, rounded corners,
+	 * a buffer/stream ghost segment, RTL reverse animation, or the DS
+	 * color-token system — all of which this component already ships.
+	 * Reaching for it here would fragment the shared `useProgress()` /
+	 * ARIA contract across the Progress family (Circular has no native
+	 * equivalent at all — see its own file). The `role="progressbar"`
+	 * + `aria-value*` attributes below reproduce the same semantics
+	 * `<progress>` gives for free, without the styling ceiling.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IProgressLinearProps>(), {
 		tag: 'div',
 		modelValue: 0,
 		max: 100,
-		thickness: 4
+		thickness: 4,
+		active: true,
+		label: 'origam.loading'
 	})
+
+	defineEmits<IProgressLinearEmits>()
+
+	defineSlots<IProgressLinearSlots>()
 
 	const {filterProps} = useProps<IProgressLinearProps>(props)
 
@@ -98,6 +128,7 @@
 	 * Composables
 	 ********************************************************/
 
+	const root = ref<HTMLElement>()
 	const {locationStyles} = useLocation(props)
 	const {progressClasses, progressStyles, normalizedValue, thickness, progress, max, hasContent} = useProgress(props)
 	const {roundedClasses} = useRounded(props)
@@ -110,6 +141,19 @@
 	const {textColorStyles: backgroundColorStyles, textColorClasses: backgroundColorClasses} = useTextColor(toRef(props, 'bgColor'))
 	const {textColorStyles: loaderColorStyles, textColorClasses: loaderColorClasses} = useTextColor(toRef(props, 'color'))
 	const {isRtl, rtlClasses} = useRtl()
+
+	const {t} = useLocale()
+
+	/*********************************************************
+	 * Accessibility
+	 *
+	 * @description
+	 * #500 — own ARIA semantics (role, aria-value.., aria-label, aria-hidden)
+	 * moved down from the `<OrigamProgress>` wrapper so a consumer who
+	 * mounts this component standalone (both are exported publicly) still
+	 * gets an accessible progress bar.
+	 ********************************************************/
+	const progressAriaLabel = computed(() => t(props.label))
 
 	/*********************************************************
 	 * Computed state
@@ -128,6 +172,10 @@
 		return isRtl.value !== props.reverse
 	})
 
+	watchEffect(() => {
+		intersectionRef.value = root.value
+	})
+
 	/*********************************************************
 	 * Event handlers
 	 *
@@ -136,7 +184,7 @@
 	 * click position to a normalized value.
 	 ********************************************************/
 	const handleClick = (e: MouseEvent) => {
-		if (!intersectionRef.value) return
+		if (!props.clickable || !intersectionRef.value) return
 
 		const {left, right, width} = intersectionRef.value.getBoundingClientRect()
 		const value = props.reverse ? (width - e.clientX) + (right - width) : e.clientX - left
@@ -216,7 +264,7 @@
 			loaderColorStyles.value
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(progressLinearStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(progressLinearStyles, () => props.id)
 
 
 	/*********************************************************
@@ -242,12 +290,20 @@
 	.origam-progress {
 		$this: &;
 
+    &--is-rtl {
+      direction: rtl;
+    }
+
+    &--is-ltr {
+      direction: ltr;
+    }
+
 		&--linear {
 			background: transparent;
-			overflow: hidden;
-			position: relative;
-			transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-			width: 100%;
+			overflow: var(--origam-progress-linear---overflow, hidden);
+			position: var(--origam-progress-linear---position, relative);
+			transition: var(--origam-progress-linear---transition-duration, 0.2s) var(--origam-progress-linear---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
+			width: var(--origam-progress-linear---width, 100%);
 
 			#{$this}__background {
 				background: currentColor;
@@ -281,16 +337,16 @@
 			}
 
 			#{$this}__bar {
-				height: 100%;
-				left: 0;
-				position: absolute;
+				height: var(--origam-progress-linear__bar---height, 100%);
+				left: var(--origam-progress-linear__bar---left, 0);
+				position: var(--origam-progress-linear__bar---position, absolute);
 				transition: inherit;
 			}
 
 			&#{$this}--indeterminate {
 				#{$this}__bar {
 					animation-play-state: paused;
-					animation-duration: 2.2s;
+					animation-duration: var(--origam-progress-linear---indeterminate-duration, 2.2s);
 					animation-iteration-count: infinite;
 					bottom: 0;
 					right: auto;
@@ -312,9 +368,9 @@
 				animation-play-state: paused;
 				bottom: 0;
 				left: auto;
-				opacity: 0.3;
-				pointer-events: none;
-				position: absolute;
+				opacity: var(--origam-progress-linear__stream---opacity, 0.3);
+				pointer-events: var(--origam-progress-linear__stream---pointer-events, none);
+				position: var(--origam-progress-linear__stream---position, absolute);
 				transition: inherit;
 			}
 
@@ -347,22 +403,20 @@
 				}
 			}
 
-			&#{$this}--absolute,
-			&#{$this}--fixed {
-				left: 0;
-				z-index: 1;
-			}
-
 			&#{$this}--absolute {
-				position: absolute;
+				left: var(--origam-progress-linear__absolute---left, 0);
+				z-index: var(--origam-progress-linear__absolute---z-index, 1);
+				position: var(--origam-progress-linear__absolute---position, absolute);
 			}
 
 			&#{$this}--fixed {
-				position: fixed;
+				left: var(--origam-progress-linear__fixed---left, 0);
+				z-index: var(--origam-progress-linear__fixed---z-index, 1);
+				position: var(--origam-progress-linear__fixed---position, fixed);
 			}
 
 			&#{$this}--rounded {
-				border-radius: 9999px;
+				border-radius: var(--origam-progress-linear---rounded-border-radius, 9999px);
 
 				#{$this}__loader {
 					border-radius: inherit;

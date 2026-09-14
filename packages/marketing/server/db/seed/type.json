@@ -1,7 +1,7 @@
 {
   "kind": "type",
-  "exportedAt": "2026-07-09T20:01:09.840Z",
-  "sourceCommit": "a15aa8a1",
+  "exportedAt": "2026-08-19T12:24:54.013Z",
+  "sourceCommit": "1ef461dc",
   "entryCount": 79,
   "entries": [
     {
@@ -28,6 +28,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -93,7 +97,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Audio/audio-controls.type.ts",
+        "source_file": "packages/ds/src/types/Audio/audio.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -103,6 +107,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -162,7 +170,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Audio/audio-loop-mode.type.ts",
+        "source_file": "packages/ds/src/types/Audio/audio.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -172,6 +180,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -247,7 +259,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Audio/audio-variant.type.ts",
+        "source_file": "packages/ds/src/types/Audio/audio.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -257,6 +269,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -338,6 +354,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -397,7 +417,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Blockquote/blockquote-align.type.ts",
+        "source_file": "packages/ds/src/types/Blockquote/blockquote.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -407,6 +427,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -482,7 +506,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Blockquote/blockquote-lang.type.ts",
+        "source_file": "packages/ds/src/types/Blockquote/blockquote.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -492,6 +516,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -569,7 +597,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Blockquote/blockquote-variant.type.ts",
+        "source_file": "packages/ds/src/types/Blockquote/blockquote.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -579,6 +607,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -656,7 +688,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/enums/BottomNav/bottom-nav-position.enum.ts",
+        "source_file": "packages/ds/src/types/BottomNav/bottom-nav.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -666,6 +698,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -731,7 +767,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/enums/Bracket/bracket-variant.enum.ts",
+        "source_file": "packages/ds/src/types/Bracket/bracket.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -741,6 +777,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -816,6 +856,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -869,7 +913,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Calendar/calendar-time-format.type.ts",
+        "source_file": "packages/ds/src/types/Calendar/calendar.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -879,6 +923,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -944,7 +992,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Calendar/calendar-time-format.type.ts",
+        "source_file": "packages/ds/src/types/Calendar/calendar.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -954,6 +1002,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1013,7 +1065,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Calendar/calendar-view.type.ts",
+        "source_file": "packages/ds/src/types/Calendar/calendar.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -1023,6 +1075,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1104,6 +1160,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1163,7 +1223,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Chart/chart-cartesian-kind.type.ts",
+        "source_file": "packages/ds/src/types/Chart/chart-cartesian.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -1173,6 +1233,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1272,7 +1336,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Chart/chart-legend-position.type.ts",
+        "source_file": "packages/ds/src/types/Chart/chart-legend.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -1282,6 +1346,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1373,7 +1441,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Chart/chart-smoothing.type.ts",
+        "source_file": "packages/ds/src/types/Chart/chart.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -1383,6 +1451,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1468,7 +1540,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Chart/chart-stacking.type.ts",
+        "source_file": "packages/ds/src/types/Chart/chart.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -1478,6 +1550,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1547,7 +1623,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Chart/chart-type.type.ts",
+        "source_file": "packages/ds/src/types/Chart/chart.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -1557,6 +1633,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1778,7 +1858,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Code/code-lang.type.ts",
+        "source_file": "packages/ds/src/types/Code/code.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -1788,6 +1868,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1929,6 +2013,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2032,7 +2120,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Chart/chart-honeycomb-color-mode.type.ts",
+        "source_file": "packages/ds/src/types/Chart/chart-honeycomb.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -2042,6 +2130,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2111,6 +2203,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2292,7 +2388,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Audio/cover-position.type.ts",
+        "source_file": "packages/ds/src/types/Audio/audio.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -2302,6 +2398,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2371,6 +2471,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2466,6 +2570,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2561,6 +2669,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2676,6 +2788,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2765,6 +2881,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2871,7 +2991,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/EmptyState/empty-state-align.type.ts",
+        "source_file": "packages/ds/src/types/EmptyState/empty-state.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -2881,6 +3001,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2947,7 +3071,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/EmptyState/empty-state-preset.type.ts",
+        "source_file": "packages/ds/src/types/EmptyState/empty-state.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -2957,6 +3081,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3041,7 +3169,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/EmptyState/empty-state-size.type.ts",
+        "source_file": "packages/ds/src/types/EmptyState/empty-state.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -3051,6 +3179,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3133,6 +3265,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3215,6 +3351,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3304,6 +3444,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3392,6 +3536,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3470,7 +3618,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Grid/grid-flow.type.ts",
+        "source_file": "packages/ds/src/types/Grid/grid.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -3480,6 +3628,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3551,7 +3703,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Grid/grid-align.type.ts",
+        "source_file": "packages/ds/src/types/Grid/grid.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -3561,6 +3713,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3648,7 +3804,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Grid/grid-align.type.ts",
+        "source_file": "packages/ds/src/types/Grid/grid.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -3658,6 +3814,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3757,7 +3917,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Grid/grid-align.type.ts",
+        "source_file": "packages/ds/src/types/Grid/grid.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -3767,6 +3927,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3848,7 +4012,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Grid/grid-align.type.ts",
+        "source_file": "packages/ds/src/types/Grid/grid-item.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -3858,6 +4022,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3949,6 +4117,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4042,6 +4214,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4162,6 +4338,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4244,6 +4424,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4389,6 +4573,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4464,6 +4652,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4549,6 +4741,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4649,6 +4845,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4718,7 +4918,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Masonry/masonry-align.type.ts",
+        "source_file": "packages/ds/src/types/Masonry/masonry.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -4728,6 +4928,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4797,6 +5001,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4872,6 +5080,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -5016,6 +5228,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -5121,6 +5337,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -5266,6 +5486,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -5359,6 +5583,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -5477,6 +5705,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -5560,6 +5792,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -5687,6 +5923,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -5764,7 +6004,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/SliderField/slider-field-variant.type.ts",
+        "source_file": "packages/ds/src/types/SliderField/slider-field.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -5774,6 +6014,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -5853,7 +6097,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Snackbar/snackbar-group-direction.type.ts",
+        "source_file": "packages/ds/src/types/Snackbar/snackbar-group.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -5863,6 +6107,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -5922,7 +6170,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Snackbar/snackbar-group-location.type.ts",
+        "source_file": "packages/ds/src/types/Snackbar/snackbar-group.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -5932,6 +6180,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -6037,6 +6289,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -6138,6 +6394,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -6209,7 +6469,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/enums/Textarea/textarea-mode.enum.ts",
+        "source_file": "packages/ds/src/types/TextareaField/textarea-field.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -6219,6 +6479,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -6278,7 +6542,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/enums/Textarea/textarea-output.enum.ts",
+        "source_file": "packages/ds/src/types/TextareaField/textarea-field.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -6288,6 +6552,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -6347,7 +6615,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/enums/Textarea/textarea-toolbar-command.enum.ts",
+        "source_file": "packages/ds/src/types/TextareaField/textarea-field-rich-toolbar.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -6357,6 +6625,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -6476,7 +6748,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/enums/Textarea/textarea-toolbar-position.enum.ts",
+        "source_file": "packages/ds/src/types/TextareaField/textarea-field-rich-toolbar.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -6486,6 +6758,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -6551,7 +6827,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/TextMask/text-mask-animation.type.ts",
+        "source_file": "packages/ds/src/types/TextMask/text-mask.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -6561,6 +6837,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -6632,7 +6912,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Theme/theme.type.ts",
+        "source_file": "packages/ds/src/types/Commons/theme.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -6642,6 +6922,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -6723,6 +7007,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -6802,6 +7090,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -6877,6 +7169,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -6962,6 +7258,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -7031,6 +7331,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -7106,6 +7410,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -7263,6 +7571,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -7392,7 +7704,7 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/types/Video/video-controls.type.ts",
+        "source_file": "packages/ds/src/types/Video/video.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -7402,6 +7714,10 @@
         "kind_extra": {
           "typeKind": "type"
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],

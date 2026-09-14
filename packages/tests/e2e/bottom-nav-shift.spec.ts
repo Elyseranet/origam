@@ -3,6 +3,9 @@ import { expect, test } from '@playwright/test'
 /**
  * OrigamBottomNav — `shift` mode non-regression.
  *
+ * Variants visités (index → titre, 0-based, ordre des <Variant> dans la story) :
+ *   0 → Design
+ *
  * Bug fixed: `.origam-bottom-nav--shift` was meant to fade/slide the label of
  * every NON-selected button, but two independent defects in
  * `OrigamBottomNav.vue`'s scoped SCSS made it a no-op:
@@ -14,7 +17,7 @@ import { expect, test } from '@playwright/test'
  *       matched, so `:not(...)` was always true and EVERY button — selected
  *       included — got `opacity: 0` on its label.
  *   (b) The slide distance was written as a custom property
- *       (`--origam-bottom-bar__content--transform`) on `.origam-btn__content`
+ *       (`--origam-bottom-nav__content--transform`) on `.origam-btn__content`
  *       and read via `transform: var(...)` on the ANCESTOR
  *       `.origam-bottom-nav__content`. Custom properties only cascade to
  *       descendants, never back up to an ancestor, so the translateY never
@@ -40,7 +43,7 @@ test.describe('OrigamBottomNav — shift mode', () => {
     test.setTimeout(45000)
 
     test('selected button keeps its label visible; non-selected labels fade + slide', async ({ page }) => {
-        await page.goto(designUrl)
+        await page.goto(designUrl, { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 
         const nav = sandbox.locator('.origam-bottom-nav').first()

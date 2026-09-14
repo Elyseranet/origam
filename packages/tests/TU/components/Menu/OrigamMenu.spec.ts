@@ -83,6 +83,28 @@ async function mountMenuThemed(componentDefaults: Record<string, unknown>, props
     return wrapper
 }
 
+// REGRESSION (#536). The generated element id used a double tiret
+// (`origam-menu--${uid}`), which in this repo's CSS variable/BEM grammar
+// codes a STATE modifier (`--{state}`), not an identity. Every other
+// component generating a fallback id (OrigamTooltip, OrigamConfirmWrapper,
+// OrigamCommandPalette, …) uses a single tiret (`${block}-${uid}`); Menu was
+// the only outlier. Verified against the fix in OrigamMenu.vue.
+describe('OrigamMenu — generated id grammar (#536)', () => {
+    it('the auto-generated id uses a single tiret, matching every other component\'s `${block}-${uid}` pattern', async () => {
+        const origam = createOrigam({})
+        const wrapper = mount(OrigamMenu, {
+            props: { modelValue: true },
+            attachTo: document.body,
+            global: makeGlobal([origam])
+        })
+        await nextTick()
+
+        const id = (wrapper.vm as unknown as { id: string }).id
+        expect(id).toMatch(/^origam-menu-[^-]/)
+        expect(id).not.toMatch(/^origam-menu--/)
+    })
+})
+
 describe('OrigamMenu — useDefaults (theme components wiring)', () => {
     it('resolves rounded="lg" from theme.components[\'origam-menu\'] on the __content BEM-child (not the teleport root)', async () => {
         const wrapper = await mountMenuThemed({ rounded: 'lg' })
@@ -102,5 +124,309 @@ describe('OrigamMenu — useDefaults (theme components wiring)', () => {
         const content = wrapper.find('.origam-menu__content')
         expect(content.classes()).toContain('origam--rounded-sm')
         expect(content.classes()).not.toContain('origam--rounded-lg')
+    })
+})
+
+// ---------------------------------------------------------------------------
+// BUG 4 regression — nested items via `itemChildren`
+// ---------------------------------------------------------------------------
+//
+// `hasChilds(item)` used to hardcode `item?.items`, ignoring
+// `props.itemChildren` (defaulted to `'children'`, matching `OrigamList`).
+// A row nesting its children under `children` — e.g. `OrigamMediaController`
+// 's real `configMenuItems` — was never detected as having children, so no
+// nested `<origam-menu>` ever rendered for it; the row behaved like a plain
+// leaf item instead.
+//
+// A second, related defect: spreading the raw item object onto the nested
+// `<origam-menu>` / its activator `<origam-list-item>` leaked the resolved
+// `itemChildren` key (`children`) as a fallthrough DOM attribute, colliding
+// with the browser's own read-only `Element.children` — jsdom enforces the
+// same read-only getter as real browsers, so this throws a real
+// `TypeError` during mount, not just a console warning.
+async function mountMenuWithItems(items: Array<Record<string, unknown>>) {
+    const origam = createOrigam()
+    const wrapper = mount(OrigamMenu, {
+        props: { modelValue: true, items } as never,
+        attachTo: document.body,
+        global: makeGlobal([origam])
+    })
+    await nextTick()
+    return wrapper
+}
+
+describe('OrigamMenu — nested items via itemChildren (BUG 4 regression)', () => {
+    const items = [
+        {
+            title: 'File',
+            children: [
+                { title: 'New' },
+                { title: 'Open' }
+            ]
+        },
+        { title: 'Settings' }
+    ]
+
+    it('mounts without throwing (no "children" fallthrough-attribute collision with the DOM)', async () => {
+        await expect(mountMenuWithItems(items)).resolves.toBeDefined()
+    })
+
+    it('renders a nested overlay/menu structure for the children-bearing row, not just a flat list item', async () => {
+        const wrapper = await mountMenuWithItems(items)
+        // Outer menu contributes one overlay stub; the "File" row — now
+        // correctly detected as having children — contributes a SECOND,
+        // nested one for its own <origam-menu>. Pre-fix, only the outer
+        // stub existed (count === 1) because `hasChilds()` never matched.
+        const overlayStubs = wrapper.findAll('[data-stub="overlay"]')
+        expect(overlayStubs.length).toBe(2)
+    })
+
+    it('the flat row ("Settings") renders as a plain .origam-menu__item with no nested overlay', async () => {
+        const wrapper = await mountMenuWithItems(items)
+        const settingsItem = wrapper.findAll('.origam-menu__item')
+            .find(item => item.text().includes('Settings'))
+        expect(settingsItem).toBeDefined()
+        // The flat item itself must not contain a nested overlay stub.
+        expect(settingsItem!.findAll('[data-stub="overlay"]')).toHaveLength(0)
+    })
+
+    it('the children-bearing row still renders its own title text ("File") as the submenu activator', async () => {
+        const wrapper = await mountMenuWithItems(items)
+        expect(wrapper.text()).toContain('File')
+    })
+
+    it('a row with an empty children array behaves as a flat leaf item (no nested overlay)', async () => {
+        const wrapper = await mountMenuWithItems([{ title: 'Empty', children: [] }])
+        expect(wrapper.findAll('[data-stub="overlay"]')).toHaveLength(1)
+    })
+
+    it('respects a custom itemChildren key when the DS default ("children") is not used', async () => {
+        const wrapper = await (async () => {
+            const origam = createOrigam()
+            const w = mount(OrigamMenu, {
+                props: {
+                    modelValue: true,
+                    itemChildren: 'kids',
+                    items: [{ title: 'Parent', kids: [{ title: 'Child' }] }]
+                } as never,
+                attachTo: document.body,
+                global: makeGlobal([origam])
+            })
+            await nextTick()
+            return w
+        })()
+
+        expect(wrapper.findAll('[data-stub="overlay"]')).toHaveLength(2)
+    })
+})
+
+// ---------------------------------------------------------------------------
+// `select` emit — the item-picked notification channel
+// ---------------------------------------------------------------------------
+//
+// `<origam-menu :items="…">` renders its rows itself, so the consumer never
+// touches the `<origam-list-item>` that receives the click. Without a `select`
+// emit the ONLY way to learn which row was picked is to hang an `onClick` on
+// every single item object — which `OrigamMediaController` was forced to do
+// (see its `configMenuItems` factory) while ALSO carrying a `@select` listener
+// that could never fire: `select` was absent from `IMenuEmits`, so Vue routed
+// `onSelect` to the overlay root as a plain fallthrough attribute, where it
+// only ever answered the native DOM `select` event (text selection).
+//
+// Each case mounts its own wrapper — no state is shared between them.
+describe('OrigamMenu — select emit', () => {
+    it('emits `select` when a leaf item row is clicked', async () => {
+        const wrapper = await mountMenuWithItems([{ title: 'Leaf', key: 'leaf', value: 1 }])
+
+        await wrapper.find('.origam-menu__item').trigger('click')
+
+        expect(wrapper.emitted('select')).toBeTruthy()
+    })
+
+    it('carries the clicked item object as the `select` payload', async () => {
+        const item = { title: 'Leaf', key: 'leaf', value: 42 }
+        const wrapper = await mountMenuWithItems([item])
+
+        await wrapper.find('.origam-menu__item').trigger('click')
+
+        const payload = wrapper.emitted('select')![0][0] as Record<string, unknown>
+        expect(payload.key).toBe('leaf')
+        expect(payload.value).toBe(42)
+    })
+
+    it('emits `select` for the row that was clicked, not merely the first one', async () => {
+        const wrapper = await mountMenuWithItems([
+            { title: 'First', key: 'first' },
+            { title: 'Second', key: 'second' }
+        ])
+
+        const second = wrapper.findAll('.origam-menu__item')
+            .find(row => row.text().includes('Second'))
+        await second!.trigger('click')
+
+        const payload = wrapper.emitted('select')![0][0] as Record<string, unknown>
+        expect(payload.key).toBe('second')
+    })
+
+    it('still runs the item\'s own onClick handler alongside the emit', async () => {
+        const onClick = vi.fn()
+        const wrapper = await mountMenuWithItems([{ title: 'Leaf', key: 'leaf', onClick }])
+
+        await wrapper.find('.origam-menu__item').trigger('click')
+
+        expect(onClick).toHaveBeenCalledTimes(1)
+    })
+
+    it('does not emit `select` for a row that only opens a submenu', async () => {
+        const wrapper = await mountMenuWithItems([
+            { title: 'Parent', key: 'parent', children: [{ title: 'Child', key: 'child' }] }
+        ])
+
+        const parentRow = wrapper.findAll('.origam-menu__item')
+            .find(row => row.text().includes('Parent'))
+        await parentRow!.trigger('click')
+
+        expect(wrapper.emitted('select')).toBeFalsy()
+    })
+
+    // `select` is ALSO a native DOM event (fired on text selection inside an
+    // input/textarea). While it was missing from `IMenuEmits`, Vue routed a
+    // consumer's `@select` through the fallthrough-attribute path and bound it
+    // as a real DOM listener on the menu root — so highlighting text inside
+    // the menu invoked the consumer's item-picked handler with a plain
+    // `Event`, never an item. Declaring the emit takes the listener off the
+    // DOM entirely, which is what this asserts.
+    it('does not fire a consumer `@select` handler on the native DOM select event', async () => {
+        const onSelect = vi.fn()
+        const origam = createOrigam()
+        const wrapper = mount(OrigamMenu, {
+            props: {
+                modelValue: true,
+                items: [{ title: 'Leaf', key: 'leaf' }],
+                onSelect
+            } as never,
+            attachTo: document.body,
+            global: makeGlobal([origam])
+        })
+        await nextTick()
+
+        wrapper.element.dispatchEvent(new Event('select', { bubbles: true }))
+        await nextTick()
+
+        expect(onSelect).not.toHaveBeenCalled()
+    })
+})
+
+// ---------------------------------------------------------------------------
+// `contextmenu` emit — issue #430 (2nd confirmed occurrence of #416)
+// ---------------------------------------------------------------------------
+//
+// `IMenuEmits` declares `contextmenu` ("the native contextmenu bubble
+// forwarded for parents that want to show their own context menu instead"
+// per the interface's own doc comment) but nothing ever called
+// `emit('contextmenu', …)` — `useActivator`'s `handleContextMenu` absorbs
+// the native event (stopPropagation + preventDefault) to drive `isActive`
+// internally and never re-emits. OrigamMenu now relays the native
+// `contextmenu` DOM event off the activator slot's merged props, via its
+// own handler layered alongside whatever `useActivator` contributes —
+// deliberately unconditional (not gated on `openOnContextMenu`), because a
+// parent wiring "show my OWN context menu instead" is exactly the case
+// where `openOnContextMenu` would be `false`.
+//
+// `OrigamOverlayStub` (reused from the suites above) renders the
+// `activator` slot with an EMPTY props bag (`{ props: {} }`) — it doesn't
+// implement `useActivator` at all — so any `onContextmenu` reaching the
+// real DOM element here can only be the one OrigamMenu itself merges in.
+// That isolates the fix under test from the real Overlay's own behaviour.
+async function mountMenuWithActivator(props: Record<string, unknown> = {}) {
+    const origam = createOrigam()
+    const wrapper = mount(OrigamMenu, {
+        props: { modelValue: false, ...props } as never,
+        attachTo: document.body,
+        global: makeGlobal([origam]),
+        slots: {
+            activator: ({ props: activatorProps }: any) => h('button', { class: 'menu-activator', ...activatorProps }, 'Open')
+        }
+    })
+    await nextTick()
+    return wrapper
+}
+
+describe('OrigamMenu — contextmenu emit (issue #430)', () => {
+    it('emits `contextmenu` with the native MouseEvent when the activator is right-clicked', async () => {
+        const wrapper = await mountMenuWithActivator()
+
+        await wrapper.find('.menu-activator').trigger('contextmenu')
+
+        const emitted = wrapper.emitted('contextmenu')
+        expect(emitted).toBeTruthy()
+        expect(emitted![0][0]).toBeInstanceOf(MouseEvent)
+    })
+
+    it('still emits `contextmenu` when open-on-context-menu is explicitly false (the "parent shows its own menu instead" case)', async () => {
+        const wrapper = await mountMenuWithActivator({ openOnContextMenu: false })
+
+        await wrapper.find('.menu-activator').trigger('contextmenu')
+
+        expect(wrapper.emitted('contextmenu')).toBeTruthy()
+    })
+
+    it('does not fire a consumer `@contextmenu` handler on an unrelated left click (fallthrough is gone, emit is the only channel)', async () => {
+        const wrapper = await mountMenuWithActivator()
+
+        await wrapper.find('.menu-activator').trigger('click')
+
+        expect(wrapper.emitted('contextmenu')).toBeFalsy()
+    })
+})
+
+// ---------------------------------------------------------------------------
+// ⛔ EMIT `contextmenu` — ligne du classeur OrigamMenu, critère C5.
+//
+// Le classeur le décrivait comme la « DEUXIÈME OCCURRENCE CONFIRMÉE du
+// mécanisme de #416, et la plus parlante des deux » : parce que l'emit est
+// DÉCLARÉ dans `IMenuEmits`, Vue retire `onContextmenu` de `$attrs` de façon
+// inconditionnelle. Le listener du consommateur ne peut donc plus être invoqué
+// par fallthrough — et si le composant ne l'émet jamais, le handler ne part
+// NULLE PART. Déclarer un emit sans l'émettre ne laisse pas les choses en
+// l'état : ça les casse.
+//
+// Le relais existe (`handleContextMenu`, mergé sur les props du slot
+// `#activator`). Ce qui manquait, c'est le test qui l'épingle — exactement le
+// trou qui avait laissé revenir la perte de données d'OrigamCheckbox.
+// ---------------------------------------------------------------------------
+describe('OrigamMenu — emit contextmenu (classeur C5)', () => {
+    it('relaie le clic droit sur l\'activateur en emit `contextmenu`', async () => {
+        const wrapper = mount(OrigamMenu, {
+            props: { modelValue: false } as never,
+            attachTo: document.body,
+            global: makeGlobal([createOrigam()]),
+            slots: {
+                activator: (scope: any) => h('button', { ...scope.props, 'data-cy': 'act' }, 'ouvrir')
+            }
+        })
+        await nextTick()
+
+        await wrapper.get('[data-cy="act"]').trigger('contextmenu')
+
+        expect(wrapper.emitted('contextmenu')).toBeTruthy()
+        expect(wrapper.emitted('contextmenu')!.length).toBe(1)
+    })
+
+    it('le payload est bien l\'événement natif, pas un objet reconstruit', async () => {
+        const wrapper = mount(OrigamMenu, {
+            props: { modelValue: false } as never,
+            attachTo: document.body,
+            global: makeGlobal([createOrigam()]),
+            slots: {
+                activator: (scope: any) => h('button', { ...scope.props, 'data-cy': 'act' }, 'ouvrir')
+            }
+        })
+        await nextTick()
+
+        await wrapper.get('[data-cy="act"]').trigger('contextmenu')
+
+        const payload = wrapper.emitted('contextmenu')![0][0]
+        expect(payload).toBeInstanceOf(Event)
     })
 })

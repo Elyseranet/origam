@@ -20,12 +20,16 @@
 					showLine: true,
 					legendPosition: 'bottom',
 					showLegend: true,
+					margin: undefined,
+					padding: undefined
 				})"
 		>
 			<template #default="{ state }">
 				<origam-chart-pareto
 						:series="FIXTURE_DEFECTS"
 						:height="state.height"
+						:margin="state.margin"
+						:padding="state.padding"
 						:bg-color="state.bgColor"
 						:rounded="state.rounded"
 						:elevation="state.elevation"
@@ -55,6 +59,10 @@
 				<StoryGroup title="Dimension">
 					<HstNumber v-model="state.height"  title="Height (px)" :min="100" :max="800" :step="20"/>
 					<HstNumber v-model="state.barGap"  title="Bar Gap (px)" :min="0" :max="20" :step="1"/>
+				</StoryGroup>
+				<StoryGroup title="Spacing">
+					<HstSelect v-model="state.margin"  title="Margin"  :options="SPACING_OPTIONS"/>
+					<HstSelect v-model="state.padding" title="Padding" :options="SPACING_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Chart Display">
 					<HstCheckbox v-model="state.showAxis"   title="Show Axis"/>
@@ -272,6 +280,12 @@
 		ROUNDED_OPTIONS
 	} from '@stories/const'
 	import type { IOptions } from '@origam/interfaces'
+	import { SPACING_SCALE_STEPS } from '@origam/consts'
+
+	const SPACING_OPTIONS: Array<IOptions<string | undefined>> = [
+		{ label: '— none —', value: undefined },
+		...SPACING_SCALE_STEPS.map((step) => ({ label: step, value: step }))
+	]
 
 	const LEGEND_POSITION_OPTIONS: Array<IOptions<TChartLegendPosition>> = [
 		{ label: 'Top', value: 'top' },

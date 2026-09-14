@@ -1,4 +1,7 @@
-import type { TPasswordStrengthLevel, TPasswordStrengthScore } from '../../types'
+import type {
+    TPasswordStrengthLevel,
+    TPasswordStrengthScore
+} from '../../types/PasswordField/password-field.type'
 
 /**
  * Result returned by `computeStrength()` and consumed by

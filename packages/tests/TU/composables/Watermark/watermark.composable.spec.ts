@@ -77,6 +77,23 @@ describe('useWatermark', () => {
         expect(svg).toContain('viewBox="0 0 100 100"')
     })
 
+    it('floors the glyph box at 1px so `fontSize: 0` never collapses the tile', () => {
+        const { patternUrl } = useWatermark({ text: 'TEST', gap: 40, fontSize: 0 })
+        const svg = decode(patternUrl.value)
+        // tile = gap + max(fontSize, 1) = 41
+        expect(svg).toContain('viewBox="0 0 41 41"')
+    })
+
+    it('never draws an image glyph below 16px, whatever the fontSize', () => {
+        const { patternUrl } = useWatermark({
+            image: 'https://cdn.example.com/logo.svg',
+            gap: 40,
+            fontSize: 4
+        })
+        const svg = decode(patternUrl.value)
+        expect(svg).toContain('width="16" height="16"')
+    })
+
     it('falls back to the documented defaults when options are omitted', () => {
         const { patternUrl } = useWatermark({ text: 'TEST' })
         const svg = decode(patternUrl.value)

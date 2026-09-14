@@ -179,17 +179,35 @@ interface ISrcObject {
 
 ## Design tokens consumed
 
-`<OrigamImg>` reads from `tokens/component/img.json`. The defaults are
-unopinionated (positioning, fit, blur for the `lazySrc`) so the
-component blends into any surface.
+⛔ **`<OrigamImg>` is NOT yet migrated to the shared token sheets.** Its 37
+`--origam-img*` variables are declared in an unscoped `<style>:root{…}` block
+at the bottom of `packages/ds/src/components/Img/OrigamImg.vue`. Grep the four
+token stylesheets (`assets/css/tokens/light.css`, `dark.css`, and their SCSS
+twins) for `--origam-img` and you get **zero** hits — an earlier revision of
+this page pointed there, which was wrong in both directions: you would not find
+the defaults, and editing those files would not change the component.
+
+Practical consequences until the migration happens:
+
+- The defaults are theme-independent — there is no `dark.css` counterpart, so
+  a dark theme inherits the same values.
+- They land on `:root` as soon as the component's style is loaded anywhere on
+  the page, not scoped to the component.
+- To override, set the variable on your own selector (or on `:root` after
+  origam's styles); the component reads it through `var()` normally.
+
+The defaults themselves are unopinionated (positioning, fit, blur for the
+`lazySrc`) so the component blends into any surface.
 
 | CSS variable | Purpose |
 |---|---|
 | `--origam-img---z-index` | Sizer stacking order. |
 | `--origam-img--booting---transition` | Transition applied while booting. |
 | `--origam-img--rounded---border-radius` | Override when `rounded` is used. |
+| `--origam-img__content---*` | Layout of the `#default` content overlay. |
 | `--origam-img__picture---*` | Layout of the inner `<img>` (position, fit). |
 | `--origam-img__picture--preload---filter` | Blur applied to `lazySrc`. |
+| `--origam-img__picture--contain---object-fit` / `--cover---object-fit` | `object-fit` for each mode. |
 | `--origam-img__gradient---*` | Gradient overlay positioning. |
 | `--origam-img__placeholder---*` | Placeholder slot positioning. |
 | `--origam-img__error---*` | Error slot positioning. |

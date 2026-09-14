@@ -25,8 +25,6 @@
 						:size="state.size"
 						:rounded="state.rounded"
 						:elevation="state.elevation"
-						:flat="state.flat"
-						:reverse="state.reverse"
 						:single-line="state.singleLine"
 						:divider="state.divider"
 						:prefix="state.prefix"
@@ -51,10 +49,8 @@
 				<StoryGroup title="Shape">
 					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
-					<HstCheckbox v-model="state.flat"      title="Flat"/>
 				</StoryGroup>
 				<StoryGroup title="Layout">
-					<HstCheckbox v-model="state.reverse"    title="Reverse"/>
 					<HstCheckbox v-model="state.singleLine" title="Single Line"/>
 				</StoryGroup>
 				<StoryGroup title="Content">
@@ -73,13 +69,12 @@
 
 		<Variant
 				title="State"
-				:init-state="() => useStoryInitState<IHoverProps & IActiveProps & { color?: string }>({ color: 'primary' })"
+				:init-state="() => useStoryInitState<IActiveProps & { color?: string }>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
 				<origam-otp-input-field
 						v-model="stateModel"
 						:color="state.color"
-						:hover="resolveHoverState(state.hover)"
 						:active="resolveActiveState(state.active)"
 						:length="4"
 						label="State"
@@ -90,7 +85,6 @@
 					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Interaction">
-					<HstSelect v-model="state.hover"  title="Hover"  :options="HOVER_OPTIONS"/>
 					<HstSelect v-model="state.active" title="Active" :options="ACTIVE_OPTIONS"/>
 				</StoryGroup>
 			</template>
@@ -107,7 +101,6 @@
 					loading: false,
 					autofocus: false,
 					focusAll: false,
-					persistentPlaceholder: false,
 					required: false,
 					hideDetails: false,
 				})"
@@ -125,7 +118,6 @@
 						:autofocus="state.autofocus"
 						:focus-all="state.focusAll"
 						:placeholder="state.placeholder"
-						:persistent-placeholder="state.persistentPlaceholder"
 						:required="state.required"
 						:hide-details="state.hideDetails"
 						:hint="state.hint"
@@ -138,7 +130,6 @@
 					<HstNumber v-model="state.length"         title="Length" :min="4" :max="10" :step="1"/>
 					<HstSelect v-model="state.type"           title="Type"   :options="OTP_TYPE_OPTIONS"/>
 					<HstText   v-model="state.placeholder"    title="Placeholder"/>
-					<HstCheckbox v-model="state.persistentPlaceholder" title="Persistent Placeholder"/>
 					<HstCheckbox v-model="state.focusAll"              title="Focus All"/>
 					<HstCheckbox v-model="state.autofocus"             title="Autofocus"/>
 				</StoryGroup>
@@ -184,6 +175,24 @@
 					clearable
 					label="Clearable OTP"
 					@click:clear="logEvent('click:clear', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - click:appendInner">
+			<origam-otp-input-field
+					:length="4"
+					label="Append inner click"
+					append-inner-icon="mdi:mdi-check"
+					@click:append-inner="logEvent('click:appendInner', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - click:prependInner">
+			<origam-otp-input-field
+					:length="4"
+					label="Prepend inner click"
+					prepend-inner-icon="mdi:mdi-lock"
+					@click:prepend-inner="logEvent('click:prependInner', $event)"
 			/>
 		</Variant>
 
@@ -334,7 +343,6 @@
 	import { MDI_ICONS, OTP_INPUT_FIELD_TYPE } from '@origam/enums'
 	import type {
 		IActiveProps,
-		IHoverProps,
 		IOtpInputFieldProps
 	} from '@origam/interfaces'
 
@@ -346,8 +354,6 @@
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
-		HOVER_OPTIONS,
-		resolveHoverState,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,
 		SIZE_OPTIONS,

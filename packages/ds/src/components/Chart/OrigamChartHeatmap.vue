@@ -1,9 +1,9 @@
 <template>
-	<div
+	<figure
+			:id="id"
 			class="origam-chart-heatmap"
 			:class="rootClasses"
 			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
-			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-heatmap"
 	>
@@ -200,7 +200,7 @@
 				>
 					<slot
 							name="tooltip"
-							v-bind="bindings"
+							v-bind="enrichedTooltipBindings(bindings)"
 					/>
 				</template>
 			</origam-chart-tooltip>
@@ -211,11 +211,11 @@
 					data-cy="origam-chart-heatmap-empty"
 			>
 				<slot name="empty">
-					<span>No data to display</span>
+					<span>{{ t('origam.chart.no_data_text') }}</span>
 				</slot>
 			</div>
 		</div>
-	</div>
+	</figure>
 </template>
 
 <script
@@ -230,28 +230,24 @@
 
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
-	import type {
-		IChartHeatmapCell,
-		IChartHeatmapDatum,
-		IChartHeatmapEmits,
-		IChartHeatmapProps,
-		IChartPoint,
-		IChartSeries
-	} from '../../interfaces'
+	import type { IChartHeatmapCell, IChartHeatmapDatum, IChartHeatmapEmits, IChartHeatmapProps, IChartHeatmapSlots } from '../../interfaces/Chart/chart-heatmap.interface'
+	import type { IChartPoint } from '../../interfaces/Chart/chart-point.interface'
+	import type { IChartSeries } from '../../interfaces/Chart/chart-series.interface'
 
-	import {
-		useChartHeaderTypography,
-		useBackgroundColor,
-		useDimension,
-		useElevation,
-		useMargin,
-		usePadding,
-		useRounded
-	} from '../../composables'
+	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
 
-	import type { TIntent } from '../../types'
+	import type { TIntent } from '../../types/Commons/intent.type'
 
 	/*********************************************************
 	 * Global
@@ -301,6 +297,9 @@
 
 	const emit = defineEmits<IChartHeatmapEmits>()
 
+	defineSlots<IChartHeatmapSlots>()
+
+	const { t } = useLocale()
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
 	const { elevationClasses, elevationStyles } = useElevation(props)
@@ -308,6 +307,23 @@
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { headerTypographyStyles } = useChartHeaderTypography(props)
+
+	/*********************************************************
+	 * Props heritees sans effet ici (#426)
+	 *
+	 * @description
+	 * ⛔ Ces props sont declarees par `IChartBaseProps` et n'ont aucun
+	 * effet sur ce composant. Elles ne sont ni retirees ni cablees a un
+	 * comportement fictif : elles avertissent une fois, en dev, avec la
+	 * raison exacte. Meme traitement que `OrigamChartGauge`.
+	 ********************************************************/
+	useUnsupportedProp(
+		'OrigamChartHeatmap',
+		'categories',
+		'a heatmap labels its axes from the cell coordinates carried by `series[].data`, never from a separate category list.',
+		() => (props.categories?.length ?? 0) > 0
+	)
+	const chartAnimationStyle = useChartAnimationStyle(props)
 
 	/*********************************************************
 	 * SVG coordinate constants
@@ -341,6 +357,23 @@
 		const end = resolveColor(props.colorRange[1])
 		return `color-mix(in srgb, ${ end } ${ pct }%, ${ start })`
 	}
+
+	/*********************************************************
+	 * useUnsupportedProp
+	 *
+	 * @description
+	 * ⛔ #426 — `colorScheme` is inherited from `IChartBaseProps` but has no
+	 * effect here: cell colour is a CONTINUOUS two-stop gradient (`colorRange`),
+	 * not a per-series identity a rotating discrete palette could drive. See
+	 * #426 decision: neither wiring a fake behaviour nor removing the prop —
+	 * warn instead.
+	 ********************************************************/
+	useUnsupportedProp(
+		'OrigamChartHeatmap',
+		'colorScheme',
+		'cell colour is a continuous gradient (colorRange) — a rotating discrete palette does not apply to a continuous scale.',
+		() => !!props.colorScheme?.length
+	)
 
 	/*********************************************************
 	 * Data derivation
@@ -541,6 +574,28 @@
 		return `${ c.xCat } × ${ c.yCat }`
 	})
 
+	/*********************************************************
+	 * enrichedTooltipBindings
+	 *
+	 * @description
+	 * Enriches the default `{ point, series, category }` tooltip scope
+	 * with the cell-level fields `IChartHeatmapSlots['tooltip']`
+	 * promises (`color`, `xLabel`, `yLabel`, `value`) — sourced from
+	 * `hoveredCell`, which already carries them. Was previously
+	 * forwarding the raw `bindings` unmodified, silently never
+	 * fulfilling the documented tooltip slot signature.
+	 ********************************************************/
+	const enrichedTooltipBindings = (bindings: { point: IChartPoint, series: IChartSeries, category: string | number }) => {
+		const c = hoveredCell.value
+		return {
+			...bindings,
+			color: c?.color ?? '',
+			xLabel: c ? formatXLabel(c.xCat) : '',
+			yLabel: c ? formatYLabel(c.yCat) : '',
+			value: c?.value ?? 0
+		}
+	}
+
 	const showEmpty = computed(() => {
 		if (!props.series?.length) return true
 		const first = props.series[0]
@@ -560,7 +615,8 @@
 		elevationClasses.value,
 		marginClasses.value,
 		paddingClasses.value,
-		roundedClasses.value
+		roundedClasses.value,
+		props.class
 	])
 
 	const rootStyles = computed<StyleValue>(() => {
@@ -568,8 +624,8 @@
 		if (props.aspectRatio) {
 			out.aspectRatio = props.aspectRatio
 		}
-		out['--origam-chart---animation-duration'] = `${ props.animationDuration }ms`
-		return out
+		Object.assign(out, chartAnimationStyle.value)
+return [ out, props.style as StyleValue ]
 	})
 
 	const bodyClasses = computed(() => ({
@@ -586,13 +642,13 @@
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'heatmap chart')
-	const svgAriaLabel = computed(() => props.title ?? 'heatmap chart')
-	const svgTitle = computed(() => props.title ?? 'heatmap chart')
+	const ariaLabel = computed(() => props.title ?? t('origam.chart.heatmap.aria_label'))
+	const svgAriaLabel = computed(() => props.title ?? t('origam.chart.heatmap.aria_label'))
+	const svgTitle = computed(() => props.title ?? t('origam.chart.heatmap.aria_label'))
 	const svgDesc = computed(() => {
 		const nx2 = xCats.value.length
 		const ny2 = yCats.value.length
-		return `Heatmap chart with ${ nx2 } columns and ${ ny2 } rows.`
+		return t('origam.chart.heatmap.desc', nx2, ny2)
 	})
 
 	const cellAriaLabel = (cell: IChartHeatmapCell): string =>
@@ -640,7 +696,17 @@
 
 		display: grid;
 		gap: var(--origam-chart---gap, 12px);
-		padding: var(--origam-chart---padding, 12px);
+
+		// ⛔ #C2 — zero-specificity default so a scale-driven utility
+		// class (`.origam--p-4` from `padding="4"`) wins the cascade.
+		// Without `:where()`, this scoped rule's [data-v-hash] pushes it
+		// to (0,2,0), beating the utility's (0,1,0), and the `padding`
+		// prop's scale form goes silently inert. See CLAUDE.md "CSS-first"
+		// table — `:where(…)` is the documented zero-specificity default.
+		:where(&) {
+			padding: var(--origam-chart---padding, 12px);
+		}
+
 		background-color: var(--origam-chart---background-color, transparent);
 		color: var(--origam-chart---color, inherit);
 		width: 100%;
@@ -666,7 +732,7 @@
 
 		&__subtitle {
 			font-size: var(--origam-chart__subtitle---font-size, 0.875rem);
-			color: var(--origam-chart__subtitle---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__subtitle---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		&__body {
@@ -692,7 +758,7 @@
 		}
 
 		.origam-chart__heatmap-cell {
-			stroke: var(--origam-chart__heatmap---stroke-color, var(--origam-color-surface-default, #ffffff));
+			stroke: var(--origam-chart__heatmap---stroke-color, var(--origam-color__surface---default, #ffffff));
 			stroke-width: var(--origam-chart__heatmap---stroke-width, 0.5);
 			cursor: pointer;
 			transition: opacity 150ms ease, filter 150ms ease;
@@ -717,14 +783,14 @@
 		.origam-chart__heatmap-axis-label {
 			pointer-events: none;
 			font-size: var(--origam-chart__heatmap-axis-label---font-size, 0.625rem);
-			fill: var(--origam-chart__heatmap-axis-label---color, var(--origam-color-text-secondary, #6b7280));
+			fill: var(--origam-chart__heatmap-axis-label---color, var(--origam-color__text---secondary, #6b7280));
 			user-select: none;
 		}
 
 		.origam-chart__heatmap-legend-label {
 			pointer-events: none;
 			font-size: var(--origam-chart__heatmap-legend-label---font-size, 0.625rem);
-			fill: var(--origam-chart__heatmap-legend-label---color, var(--origam-color-text-secondary, #6b7280));
+			fill: var(--origam-chart__heatmap-legend-label---color, var(--origam-color__text---secondary, #6b7280));
 			user-select: none;
 		}
 
@@ -735,7 +801,7 @@
 		:deep(.origam-chart__tooltip) {
 			position: absolute;
 			pointer-events: none;
-			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color-surface-overlay, #1f2937));
+			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color__surface---overlay, #1f2937));
 			color: var(--origam-chart__tooltip---color, #ffffff);
 			padding: var(--origam-chart__tooltip---padding, 8px 12px);
 			border-radius: var(--origam-chart__tooltip---border-radius, 6px);
@@ -773,7 +839,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--origam-chart__empty---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__empty---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		&--no-animation .origam-chart__heatmap-cell {

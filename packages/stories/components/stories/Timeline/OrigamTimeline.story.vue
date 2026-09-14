@@ -11,7 +11,6 @@
 			<template #default="{ state }">
 				<origam-timeline
 						:color="state.color"
-						:bg-color="state.bgColor"
 						:size="state.size"
 						:density="state.density"
 						:items="releaseEntries"
@@ -20,7 +19,6 @@
 			<template #controls="{ state }">
 				<StoryGroup title="Color">
 					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
-					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Sizing">
 					<HstSelect v-model="state.size"    title="Size"    :options="SIZE_OPTIONS"/>
@@ -112,7 +110,6 @@
 					side: 'start',
 					truncateLine: false,
 					color: undefined,
-					bgColor: undefined,
 					density: 'default',
 					size: 'default'
 				})"
@@ -128,7 +125,6 @@
 			<template #controls="{ state }">
 				<StoryGroup title="Design">
 					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
-					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
 					<HstSelect v-model="state.size"    title="Size"    :options="SIZE_OPTIONS"/>
 					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
 				</StoryGroup>

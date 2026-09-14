@@ -92,6 +92,32 @@
 			<div class="story-status">selected = <strong>{{ emitValue }}</strong></div>
 		</Variant>
 
+		<Variant title="Events - group:selected">
+			<origam-tabs v-model="groupSelectedValue">
+				<origam-tab
+						:value="0"
+						@group:selected="logEvent('group:selected (tab 0)', $event)"
+				>One</origam-tab>
+				<origam-tab
+						:value="1"
+						@group:selected="logEvent('group:selected (tab 1)', $event)"
+				>Two</origam-tab>
+			</origam-tabs>
+
+			<origam-tab-panels v-model="groupSelectedValue">
+				<origam-tab-panel
+						:value="0"
+						@group:selected="logEvent('group:selected (panel 0)', $event)"
+				>First panel.</origam-tab-panel>
+				<origam-tab-panel
+						:value="1"
+						@group:selected="logEvent('group:selected (panel 1)', $event)"
+				>Second panel.</origam-tab-panel>
+			</origam-tab-panels>
+
+			<div class="story-status">Every tab AND every panel emits on each selection change — the losing item emits <strong>false</strong>, the winning one <strong>true</strong>.</div>
+		</Variant>
+
 		<Variant title="Slots - Default">
 			<origam-tabs v-model="slotDefaultValue">
 				<origam-tab :value="'inbox'">
@@ -183,6 +209,7 @@
 	const designValue = ref<number>(0)
 	const functionalValue = ref<number>(0)
 	const emitValue = ref<number>(0)
+	const groupSelectedValue = ref<number>(0)
 	const slotDefaultValue = ref<string>('inbox')
 	const playgroundValue = ref<number>(0)
 </script>

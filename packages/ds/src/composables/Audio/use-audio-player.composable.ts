@@ -2,11 +2,7 @@ import { ref, type Ref } from 'vue'
 
 import { useMediaPlayer } from '../Media/use-media-player.composable'
 
-import type {
-    IAudioPlayerMethods,
-    IAudioPlayerState,
-    IUseOrigamAudioPlayerOptions
-} from '../../interfaces'
+import type { IAudioPlayerMethods, IAudioPlayerState, IUseOrigamAudioPlayerOptions } from '../../interfaces/Audio/audio-player.interface'
 
 /**
  * Headless audio player composable. Today this is a trivial wrapper

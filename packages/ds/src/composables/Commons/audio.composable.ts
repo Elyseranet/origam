@@ -1,8 +1,22 @@
 import { ref, shallowRef, watch } from 'vue'
-import type { IUseAudioProps } from '../../interfaces'
+import { AUDIO_ANALYSER_FFT_SIZE } from '../../consts/Audio/audio.const'
+import type { IUseAudioProps } from '../../interfaces/Commons/audio.interface'
 
 /*********************************************************
  * useAudio
+ *
+ * @description
+ * Pilote un `<audio>` via `props.playAudio` (play/pause) et expose des
+ * donnees de frequence (`audioData`, via un `AnalyserNode` du Web Audio
+ * API) rafraichies a chaque frame (`requestAnimationFrame`) tant que la
+ * lecture est active — utile pour un rendu de visualiseur audio.
+ *
+ * @description
+ * L'`AudioContext` et l'`AnalyserNode` ne sont crees qu'a la PREMIERE
+ * lecture (`wasPlayed`), pas a l'appel du composable. Un changement de
+ * `props.audio` reinitialise `wasPlayed` a `false`, donc une nouvelle
+ * lecture recree un `AudioContext` complet plutot que de reutiliser
+ * l'ancien.
  ********************************************************/
 export function useAudio (props: IUseAudioProps) {
     const analyser = ref<AnalyserNode | null>(null)
@@ -38,7 +52,7 @@ export function useAudio (props: IUseAudioProps) {
 
         src.connect(analyserNode)
         analyserNode.connect(context.destination)
-        analyserNode.fftSize = 256
+        analyserNode.fftSize = AUDIO_ANALYSER_FFT_SIZE
 
         audioArray.value = new Uint8Array(analyserNode.frequencyBinCount)
         analyser.value = analyserNode

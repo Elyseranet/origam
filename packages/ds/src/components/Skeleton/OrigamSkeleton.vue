@@ -5,10 +5,11 @@
 
 	<div
 			v-else-if="variant === 'list-item'"
+			:id="id"
 			:class="skeletonContainerClasses"
 			:style="skeletonContainerStyles"
+			:aria-label="skeletonAriaLabel"
 			aria-busy="true"
-			aria-label="Loading"
 			role="status"
 	>
 		<div
@@ -23,10 +24,11 @@
 
 	<div
 			v-else-if="variant === 'card'"
+			:id="id"
 			:class="skeletonContainerClasses"
 			:style="skeletonContainerStyles"
+			:aria-label="skeletonAriaLabel"
 			aria-busy="true"
-			aria-label="Loading"
 			role="status"
 	>
 		<div :class="skeletonRectangularClasses"/>
@@ -37,25 +39,26 @@
 
 	<div
 			v-else
+			:id="id"
 			:class="skeletonClasses"
 			:style="skeletonStyles"
+			:aria-label="skeletonAriaLabel"
 			aria-busy="true"
-			aria-label="Loading"
 			role="status"
 	/>
 </template><script
 		lang="ts"
 		setup
 >
-	import {
-	useBothColor,
-	useProps,
-	useRounded,
-	useSize,
-	useStyle
-} from '../../composables'
-	import type { ISkeletonProps } from '../../interfaces'
-	import { convertToUnit } from '../../utils'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
+	import type { ISkeletonEmits, ISkeletonProps } from '../../interfaces/Skeleton/skeleton.interface'
+	import { convertToUnit } from '../../utils/Commons/commons.util'
 	import { computed, toRef } from 'vue'
 	import type { StyleValue } from 'vue'
 
@@ -66,16 +69,24 @@
 	const props = withDefaults(defineProps<ISkeletonProps>(), {
 		variant: 'rectangular',
 		loading: true,
-		pulse: true
+		pulse: true,
+		label: 'origam.loading'
 	})
 
 	const {filterProps} = useProps<ISkeletonProps>(props)
+
+	defineEmits<ISkeletonEmits>()
+
+	defineSlots<ICommonsComponentSlots>()
 	/*********************************************************
 	 * Composables
 	 ********************************************************/
 
+	const {t} = useLocale()
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {sizeClasses, sizeStyles} = useSize(props)
+
+	const skeletonAriaLabel = computed(() => t(props.label))
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 
 	/*********************************************************
@@ -155,7 +166,7 @@
 
 		return [styles, colorStyles.value, roundedStyles.value, sizeStyles.value, props.style] as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(skeletonStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(skeletonStyles, () => props.id)
 
 
 	/*********************************************************

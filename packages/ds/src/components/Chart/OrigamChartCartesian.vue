@@ -1,9 +1,9 @@
 <template>
-	<div
+	<figure
+			:id="id"
 			class="origam-chart-cartesian"
 			:class="rootClasses"
 			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
-			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-cartesian"
 	>
@@ -40,7 +40,7 @@
 		<nav
 				v-if="hasDrilldown && isDrilled"
 				class="origam-chart-cartesian__breadcrumb"
-				aria-label="Drilldown navigation"
+				:aria-label="drilldownNavAriaLabel"
 				data-cy="origam-chart-cartesian-breadcrumb"
 		>
 			<origam-btn
@@ -301,7 +301,7 @@
 							:style="{ fill: 'var(--origam-chart__zoom-reset---bg, rgba(59,130,246,0.9))', cursor: 'pointer' }"
 							tabindex="0"
 							role="button"
-							aria-label="Reset zoom"
+							:aria-label="zoomResetAriaLabel"
 							data-cy="origam-chart-zoom-reset-btn"
 							@click="onZoomReset"
 							@keydown.enter.prevent="onZoomReset"
@@ -458,7 +458,7 @@
 					data-cy="origam-chart-cartesian-empty"
 			>
 				<slot name="empty">
-					<span>No data to display</span>
+					<span>{{ t('origam.chart.no_data_text') }}</span>
 				</slot>
 			</div>
 		</div>
@@ -480,7 +480,7 @@
 				/>
 			</template>
 		</origam-chart-legend>
-	</div>
+	</figure>
 </template>
 
 <script
@@ -494,17 +494,17 @@
 		watch
 	} from 'vue'
 
-	import {
-		useChartHeaderTypography,
-		useBackgroundColor,
-		useChart,
-		useChartZoom,
-		useDimension,
-		useElevation,
-		useMargin,
-		usePadding,
-		useRounded
-	} from '../../composables'
+	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useChart } from '../../composables/Chart/chart.composable'
+	import { useChartZoom } from '../../composables/Chart/chart-zoom.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
 
 	import {
 		computeAnnotationGeometry,
@@ -521,20 +521,15 @@
 	import OrigamChartRangeSelector from './OrigamChartRangeSelector.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
-	import type {
-		IChartAnnotationGeo,
-		IChartCartesianEmits,
-		IChartCartesianProps,
-		IChartDrilldownFrame,
-		IChartDrilldownLink,
-		IChartPath,
-		IChartPlotBand,
-		IChartPlotLine,
-		IChartPoint,
-		IChartRangeSelectorButton,
-		IChartSeries,
-		IChartSeriesPoint
-	} from '../../interfaces'
+	import type { IChartAnnotationGeo } from '../../interfaces/Chart/chart-annotation.interface'
+	import type { IChartCartesianEmits, IChartCartesianProps, IChartCartesianSlots } from '../../interfaces/Chart/chart-cartesian.interface'
+	import type { IChartDrilldownFrame, IChartDrilldownLink } from '../../interfaces/Chart/chart-drilldown.interface'
+	import type { IChartPath } from '../../interfaces/Chart/chart.interface'
+	import type { IChartPlotBand } from '../../interfaces/Chart/chart-plot-band.interface'
+	import type { IChartPlotLine } from '../../interfaces/Chart/chart-plot-line.interface'
+	import type { IChartPoint } from '../../interfaces/Chart/chart-point.interface'
+	import type { IChartRangeSelectorButton } from '../../interfaces/Chart/chart-range-selector.interface'
+	import type { IChartSeries, IChartSeriesPoint } from '../../interfaces/Chart/chart-series.interface'
 
 	/*********************************************************
 	 * Global
@@ -584,10 +579,19 @@
 		annotations: () => [],
 		drilldown: undefined,
 		zoomable: false,
+		zoomResetLabel: 'origam.chart.zoom.reset_aria_label',
 		rangeSelector: undefined
 	})
 
 	const emit = defineEmits<IChartCartesianEmits>()
+
+	defineSlots<IChartCartesianSlots>()
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
+	const {t} = useLocale()
 
 	/*********************************************************
 	 * Drilldown state — a navigation stack where index 0 is the
@@ -619,11 +623,13 @@
 	const isDrilled = computed(() => drillStack.value.length > 0)
 
 	const breadcrumbItems = computed<Array<{ name: string, depth: number }>>(() => {
-		const root = { name: props.title ?? 'Root', depth: -1 }
+		const root = { name: props.title ?? t('origam.chart.drilldown.root_label'), depth: -1 }
 		return [root, ...drillStack.value.map((frame, i) => ({ name: frame.name, depth: i }))]
 	})
 
-	const drilldownBackLabel = computed(() => props.drilldown?.backLabel ?? '← Back')
+	const drilldownBackLabel = computed(() => props.drilldown?.backLabel ?? t('origam.chart.drilldown.back_label'))
+	const drilldownNavAriaLabel = computed(() => t(props.drilldown?.navAriaLabel ?? 'origam.chart.drilldown.aria_label'))
+	const zoomResetAriaLabel = computed(() => t(props.zoomResetLabel))
 
 	const resolveDrilldownLink = (link: IChartDrilldownLink): IChartDrilldownFrame | null => {
 		if (!props.drilldown) return null
@@ -671,6 +677,7 @@
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { headerTypographyStyles } = useChartHeaderTypography(props)
+	const chartAnimationStyle = useChartAnimationStyle(props)
 
 	/*********************************************************
 	 * Static — viewBox geometry. SVG renders into a fixed coordinate
@@ -919,7 +926,8 @@
 		elevationClasses.value,
 		marginClasses.value,
 		paddingClasses.value,
-		roundedClasses.value
+		roundedClasses.value,
+		props.class
 	])
 
 	const rootStyles = computed<StyleValue>(() => {
@@ -927,8 +935,8 @@
 		if (props.aspectRatio) {
 			out.aspectRatio = props.aspectRatio
 		}
-		out['--origam-chart---animation-duration'] = `${ props.animationDuration }ms`
-		return out
+		Object.assign(out, chartAnimationStyle.value)
+return [ out, props.style as StyleValue ]
 	})
 
 	const bodyClasses = computed(() => ({
@@ -1200,16 +1208,38 @@
 
 	/*********************************************************
 	 * ARIA
+	 *
+	 * @description
+	 * `svgDesc` compose DEUX comptes INDEPENDANTS — les series et les points.
+	 * Une seule cle pluralisee ne peut pas les accorder tous les deux : la
+	 * forme est choisie sur UN compte, et l'autre suit la mauvaise categorie.
+	 * Mesure en `fr` avec 1 serie et 5 points, la cle unique selectionnait
+	 * `desc_other` et rendait « avec 1 series et 5 points » ; avec 3 series et
+	 * 1 point elle rendait « avec 3 serie et 1 point ».
+	 * @description
+	 * Invisible en `en`, ou « series » est invariable — c'est pourquoi le
+	 * defaut a franchi la revue de #610. Chaque compte est donc resolu par son
+	 * PROPRE appel a `t()`, puis la chaine porteuse recoit les fragments deja
+	 * resolus en simple substitution : la couche i18n n'a rien a composer.
+	 * Meme patron que radar / streamgraph / sankey ; les composants a un seul
+	 * compte (variwide) gardent la forme simple `desc_one` / `desc_other`.
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'Chart')
-	const svgAriaLabel = computed(() => props.title ?? `${ props.type } chart`)
-	const svgTitle = computed(() => props.title ?? `${ props.type } chart`)
+	const ariaLabel = computed(() => props.title ?? t('origam.chart.aria_label'))
+	const svgAriaLabel = computed(() => props.title ?? t('origam.chart.cartesian.aria_label', {type: props.type}))
+	const svgTitle = computed(() => props.title ?? t('origam.chart.cartesian.aria_label', {type: props.type}))
 	const svgDesc = computed(() => {
 		const seriesCount = activeSeries.value.length
-		if (!seriesCount) return 'No data'
+		if (!seriesCount) return t('origam.chart.desc_no_data')
 		const range = yRange.value
 		const points = slotCount.value
-		return `${ props.type } chart with ${ seriesCount } series and ${ points } ${ points === 1 ? 'point' : 'points' }, values ranging from ${ range.min } to ${ range.max }.`
+
+		return t('origam.chart.cartesian.desc', {
+			type: props.type,
+			series: t('origam.chart.cartesian.desc_series', seriesCount, {count: seriesCount}),
+			points: t('origam.chart.cartesian.desc_points', points, {count: points}),
+			min: range.min,
+			max: range.max
+		})
 	})
 
 	const pointAriaLabel = (path: IChartPath) => {
@@ -1236,7 +1266,17 @@
 
 		display: grid;
 		gap: var(--origam-chart---gap, 12px);
-		padding: var(--origam-chart---padding, 12px);
+
+		// ⛔ #C2 — zero-specificity default so a scale-driven utility
+		// class (`.origam--p-4` from `padding="4"`) wins the cascade.
+		// Without `:where()`, this scoped rule's [data-v-hash] pushes it
+		// to (0,2,0), beating the utility's (0,1,0), and the `padding`
+		// prop's scale form goes silently inert. See CLAUDE.md "CSS-first"
+		// table — `:where(…)` is the documented zero-specificity default.
+		:where(&) {
+			padding: var(--origam-chart---padding, 12px);
+		}
+
 		background-color: var(--origam-chart---background-color, transparent);
 		color: var(--origam-chart---color, inherit);
 		width: 100%;
@@ -1307,7 +1347,7 @@
 			align-items: center;
 			gap: var(--origam-chart__breadcrumb---gap, 8px);
 			font-size: var(--origam-chart__breadcrumb---font-size, 0.8125rem);
-			color: var(--origam-chart__breadcrumb---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__breadcrumb---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		&__breadcrumb-back {
@@ -1315,7 +1355,7 @@
 			align-items: center;
 			gap: 4px;
 			padding: 4px 10px;
-			border: 1px solid var(--origam-chart__breadcrumb-back---border-color, var(--origam-color-border-default, #d1d5db));
+			border: 1px solid var(--origam-chart__breadcrumb-back---border-color, var(--origam-color__border---default, #d1d5db));
 			border-radius: var(--origam-chart__breadcrumb-back---border-radius, 4px);
 			background-color: var(--origam-chart__breadcrumb-back---background-color, transparent);
 			color: var(--origam-chart__breadcrumb-back---color, inherit);
@@ -1348,7 +1388,6 @@
 
 			&:not(:last-child)::after {
 				content: "/";
-				opacity: 0.5;
 			}
 		}
 
@@ -1356,7 +1395,7 @@
 			background: none;
 			border: none;
 			padding: 0;
-			color: var(--origam-chart__breadcrumb-link---color, var(--origam-color-action-primary-text, #3b82f6));
+			color: var(--origam-chart__breadcrumb-link---color, var(--origam-color__action--ghost---fg, #3b82f6));
 			font-size: inherit;
 			cursor: pointer;
 			text-decoration: underline;
@@ -1382,7 +1421,7 @@
 
 		&__subtitle {
 			font-size: var(--origam-chart__subtitle---font-size, 0.875rem);
-			color: var(--origam-chart__subtitle---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__subtitle---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		&__body {
@@ -1412,17 +1451,17 @@
 		}
 
 		:deep(.origam-chart__grid-line) {
-			stroke: var(--origam-chart__grid---color, var(--origam-color-border-subtle, #e5e7eb));
+			stroke: var(--origam-chart__grid---color, var(--origam-color__border---subtle, #e5e7eb));
 			stroke-width: var(--origam-chart__grid---stroke-width, 1);
 		}
 
 		:deep(.origam-chart__axis-line) {
-			stroke: var(--origam-chart__axis---color, var(--origam-color-border-default, #d1d5db));
+			stroke: var(--origam-chart__axis---color, var(--origam-color__border---default, #d1d5db));
 			stroke-width: 1;
 		}
 
 		:deep(.origam-chart__axis-label) {
-			fill: var(--origam-chart__axis-label---color, var(--origam-color-text-secondary, #6b7280));
+			fill: var(--origam-chart__axis-label---color, var(--origam-color__text---secondary, #6b7280));
 			font-size: var(--origam-chart__axis-label---font-size, 0.75rem);
 		}
 
@@ -1471,7 +1510,7 @@
 		:deep(.origam-chart__tooltip) {
 			position: absolute;
 			pointer-events: none;
-			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color-surface-overlay, #1f2937));
+			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color__surface---overlay, #1f2937));
 			color: var(--origam-chart__tooltip---color, #ffffff);
 			padding: var(--origam-chart__tooltip---padding, 8px 12px);
 			border-radius: var(--origam-chart__tooltip---border-radius, 6px);
@@ -1509,7 +1548,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--origam-chart__empty---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__empty---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		:deep(.origam-chart__legend) {

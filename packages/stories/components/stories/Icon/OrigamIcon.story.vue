@@ -62,13 +62,9 @@
 				<origam-icon
 						:icon="state.icon"
 						:tag="state.tag"
-						:disabled="state.disabled"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<StoryGroup title="States">
-					<HstCheckbox v-model="state.disabled" title="Disabled"/>
-				</StoryGroup>
 				<StoryGroup title="Tag">
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
 				</StoryGroup>
@@ -130,14 +126,6 @@
 			</template>
 		</Variant>
 
-		<Variant title="Emit — click (button mode)">
-			<origam-icon
-					:icon="MDI_ICONS.CLOSE"
-					aria-label="Close"
-					@click="logEvent('click', $event)"
-			/>
-		</Variant>
-
 		<Variant title="Prop — icon (SVG path dispatch)">
 			<origam-icon :icon="ICON_SVG_PATH_STAR"/>
 		</Variant>
@@ -162,7 +150,6 @@
 					<HstSelect v-model="state.border"  title="Border"   :options="BORDER_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
-					<HstCheckbox v-model="state.disabled" title="Disabled"/>
 					<HstSelect   v-model="state.tag"      title="Tag" :options="TAG_OPTIONS"/>
 				</StoryGroup>
 			</template>

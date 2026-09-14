@@ -4,10 +4,10 @@
 			ref="origamAppRef"
 			:class="appClasses"
 			:style="appStyles"
-			:color="props.color"
-			:bg-color="props.bgColor"
-			:full-height="props.fullHeight"
-			:overlaps="props.overlaps"
+			:color="color"
+			:bg-color="bgColor"
+			:full-height="fullHeight"
+			:overlaps="overlaps"
 	>
 		<template #default>
 			<slot name="default"/>
@@ -19,13 +19,15 @@
 		lang="ts"
 		setup
 >
-	import { OrigamLayout } from '../../components'
+	import OrigamLayout from '../Layout/OrigamLayout.vue'
 
-	import { useDefaults, useProps, useRtl , useStyle} from "../../composables"
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRtl } from '../../composables/Commons/rtl.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IAppProps } from '../../interfaces'
+	import type { IAppEmits, IAppProps, IAppSlots } from '../../interfaces/App/app.interface'
 
-	import type { TOrigamApp } from "../../types"
+	import type { TOrigamApp } from '../../types/App/app.type'
 
 	import { computed, ref, StyleValue } from 'vue'
 
@@ -35,22 +37,13 @@
 	 * @description
 	 * Props and utility hooks for the App root component.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IAppProps>(), {fullHeight: true})
-
-	// `useDefaults` resolves each prop against theme.components['origam-app']
-	// (OrigamBtn / #242 pattern) — without this, a theme's
-	// `components: { 'origam-app': { bgColor: 'transparent', fullHeight: … } }`
-	// block was a silent no-op (#289).
-	//
-	// NOTE: `<script setup>` auto-exposes every `defineProps()` key to the
-	// template as a bare binding pointing at the raw, UNRESOLVED `$props` —
-	// independent of this `props` variable. The root `<origam-layout>` above
-	// therefore reads `props.color` / `props.bgColor` / `props.fullHeight` /
-	// `props.overlaps` explicitly (see OrigamTable.vue / OrigamAlert.vue for
-	// the full writeup of this footgun).
-	const props = useDefaults(_props)
+	const props = withDefaults(defineProps<IAppProps>(), {fullHeight: true})
 
 	const {filterProps} = useProps<IAppProps>(props)
+
+	defineEmits<IAppEmits>()
+
+	defineSlots<IAppSlots>()
 
 	/*********************************************************
 	 * Composables
@@ -76,7 +69,17 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(appStyles)
+	/*********************************************************
+	 * useStyle
+	 *
+	 * @description
+	 * #381 — the `id` returned by useStyle is a GENERATED identifier,
+	 * only meant for the scoped stylesheet selector. Without
+	 * `() => props.id` here, it shadowed the `id` PROP of the same
+	 * name: the template's `:id="id"` on the root rendered the
+	 * generated id, never the consumer's.
+	 ********************************************************/
+	const {id, css, load, isLoaded, unload} = useStyle(appStyles, () => props.id)
 
 
 	/*********************************************************
@@ -102,5 +105,13 @@
 	.origam-app {
 		color: var(--origam-app---color, var(--origam-color__text---primary));
 		background-color: var(--origam-app---background-color, var(--origam-color__surface---default));
+
+    &--is-rtl {
+      direction: rtl;
+    }
+
+    &--is-ltr {
+      direction: ltr;
+    }
 	}
 </style>

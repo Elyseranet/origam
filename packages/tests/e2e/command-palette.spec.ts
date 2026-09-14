@@ -22,6 +22,17 @@ import { expect, test, type Page } from '@playwright/test'
  * spec. The palette teleports to `document.body`, so locators that
  * scope through the sandbox iframe still find it because the iframe
  * IS the document body of the sandbox.
+ *
+ * Story realignment (canonical Design/Functional/Events/Slots structure):
+ * NO `data-cy` attribute exists anywhere in OrigamCommandPalette.story.vue
+ * (verified by reading the file) — every trigger button and the palette
+ * itself are targeted by role/text instead. The old "Prop — groups" and
+ * "Prop — kbd display" Variants have no dedicated replacement, but the
+ * underlying behaviour they exercised is still present: GROUPS_FIXTURE
+ * (3 distinct groups) is the fixture used by "Events - select" (among
+ * others), and PLAYGROUND_COMMANDS (kbd hints on several commands) is the
+ * fixture used by "Default"/"Functional" — re-targeted to those rather than
+ * invented.
  */
 
 const sandboxOf = (page: Page) =>
@@ -41,7 +52,7 @@ test.describe('OrigamCommandPalette — Default (open via trigger / v-model)', (
         await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
-        await sandbox.locator('[data-cy="command-palette-playground-trigger"]').click()
+        await sandbox.getByRole('button', { name: 'Open palette', exact: true }).click()
 
         const dialog = sandbox.locator('[role="dialog"]')
         await expect(dialog).toBeVisible({ timeout: 4000 })
@@ -51,7 +62,7 @@ test.describe('OrigamCommandPalette — Default (open via trigger / v-model)', (
     test('input has role="combobox" and the list has role="listbox"', async ({ page }) => {
         await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
-        await sandbox.locator('[data-cy="command-palette-playground-trigger"]').click()
+        await sandbox.getByRole('button', { name: 'Open palette', exact: true }).click()
 
         const combobox = sandbox.locator('input[role="combobox"]')
         await expect(combobox).toBeVisible({ timeout: 4000 })
@@ -63,7 +74,7 @@ test.describe('OrigamCommandPalette — Default (open via trigger / v-model)', (
     test('every command renders with role="option"', async ({ page }) => {
         await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
-        await sandbox.locator('[data-cy="command-palette-playground-trigger"]').click()
+        await sandbox.getByRole('button', { name: 'Open palette', exact: true }).click()
 
         const options = sandbox.locator('[role="option"]')
         await expect.poll(async () => await options.count(), { timeout: 4000 }).toBeGreaterThan(0)
@@ -71,19 +82,32 @@ test.describe('OrigamCommandPalette — Default (open via trigger / v-model)', (
 })
 
 test.describe('OrigamCommandPalette — global hotkey', () => {
-    test('Meta+K opens the palette globally', async ({ page }) => {
+    // Not a title-drift fix: `useHotkey` (packages/ds/src/composables/Commons/hotkey.composable.ts)
+    // detects macOS via `navigator.userAgent.includes('Macintosh')`. Playwright's
+    // Chromium device profile spoofs a Windows UA regardless of the host OS
+    // (verified empirically: `navigator.userAgent` reports "Windows NT 10.0"
+    // even when run on this macOS machine) — so `isMac` is always `false` in
+    // this test harness, and the composable expects `ctrlKey` (not `metaKey`)
+    // for BOTH registered combos (`['meta','k']` and `['ctrl','k']` normalise
+    // to the same expectation when `isMac` is false). `Control+K` is the
+    // combination that actually reaches the handler here.
+    test('Control+K opens the palette globally', async ({ page }) => {
         await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
         // Click somewhere neutral first to make sure the sandbox iframe
-        // owns the keyboard focus.
-        await sandbox.locator('[data-cy="command-palette-playground"]').click()
+        // owns the keyboard focus. `.story-shell` (the Variant's own root
+        // wrapper) is used instead of `<body>` — a bare `<body>` locator
+        // isn't naturally focusable and a press doesn't reliably land inside
+        // the iframe's execution context from it.
+        const shell = sandbox.locator('.story-shell')
+        await shell.click()
 
         // useHotkey attaches its listener on `window` of the sandbox iframe —
         // page.keyboard.press() dispatches into the top-level frame and never
         // reaches that listener. We must dispatch inside the iframe by pressing
         // on a locator that belongs to the sandbox frame.
-        await sandbox.locator('[data-cy="command-palette-playground"]').press('Meta+K')
+        await shell.press('Control+K')
 
         await expect(sandbox.locator('[role="dialog"]')).toBeVisible({ timeout: 4000 })
     })
@@ -94,7 +118,7 @@ test.describe('OrigamCommandPalette — fuzzy search', () => {
         await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
-        await sandbox.locator('[data-cy="command-palette-playground-trigger"]').click()
+        await sandbox.getByRole('button', { name: 'Open palette', exact: true }).click()
 
         const combobox = sandbox.locator('input[role="combobox"]')
         await combobox.fill('set')
@@ -112,7 +136,7 @@ test.describe('OrigamCommandPalette — fuzzy search', () => {
         await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
-        await sandbox.locator('[data-cy="command-palette-playground-trigger"]').click()
+        await sandbox.getByRole('button', { name: 'Open palette', exact: true }).click()
 
         const combobox = sandbox.locator('input[role="combobox"]')
         await combobox.fill('zzzz')
@@ -130,7 +154,7 @@ test.describe('OrigamCommandPalette — keyboard navigation', () => {
         await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
-        await sandbox.locator('[data-cy="command-palette-playground-trigger"]').click()
+        await sandbox.getByRole('button', { name: 'Open palette', exact: true }).click()
 
         const combobox = sandbox.locator('input[role="combobox"]')
         await expect(combobox).toBeFocused({ timeout: 4000 })
@@ -146,7 +170,7 @@ test.describe('OrigamCommandPalette — keyboard navigation', () => {
         await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
-        await sandbox.locator('[data-cy="command-palette-playground-trigger"]').click()
+        await sandbox.getByRole('button', { name: 'Open palette', exact: true }).click()
 
         const dialog = sandbox.locator('[role="dialog"]')
         await expect(dialog).toBeVisible({ timeout: 4000 })
@@ -157,17 +181,17 @@ test.describe('OrigamCommandPalette — keyboard navigation', () => {
     })
 
     test('Enter fires `select` and closes the palette (closeOnSelect default)', async ({ page }) => {
-        await openVariant(page, STORY, 'Emit — select')
+        await openVariant(page, STORY, 'Events - select')
         const sandbox = sandboxOf(page)
 
-        await sandbox.locator('[data-cy="command-palette-emit-select-trigger"]').click()
+        await sandbox.getByRole('button', { name: 'Open palette', exact: true }).click()
 
         const combobox = sandbox.locator('input[role="combobox"]')
         await expect(combobox).toBeFocused({ timeout: 4000 })
 
         await combobox.press('Enter')
 
-        const counter = sandbox.locator('[data-cy="command-palette-emit-select-counter"]')
+        const counter = sandbox.locator('.story-status')
         await expect(counter).toContainText(/select fired:\s*1/, { timeout: 4000 })
 
         const dialog = sandbox.locator('[role="dialog"]')
@@ -180,7 +204,7 @@ test.describe('OrigamCommandPalette — backdrop', () => {
         await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
-        await sandbox.locator('[data-cy="command-palette-playground-trigger"]').click()
+        await sandbox.getByRole('button', { name: 'Open palette', exact: true }).click()
 
         const dialog = sandbox.locator('[role="dialog"]')
         await expect(dialog).toBeVisible({ timeout: 4000 })
@@ -194,22 +218,28 @@ test.describe('OrigamCommandPalette — backdrop', () => {
     })
 })
 
+// Story realignment: neither "Prop — groups" nor "Prop — kbd display" has a
+// dedicated replacement Variant, but the underlying fixtures they exercised
+// are still used elsewhere in the story — re-targeted rather than invented
+// (see file header note).
 test.describe('OrigamCommandPalette — groups & kbd display', () => {
     test('groups variant renders multiple group titles', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — groups')
+        // "Events - select" uses GROUPS_FIXTURE (Navigation / Settings / Actions — 3 groups).
+        await openVariant(page, STORY, 'Events - select')
         const sandbox = sandboxOf(page)
 
-        await sandbox.locator('[data-cy="command-palette-groups-trigger"]').click()
+        await sandbox.getByRole('button', { name: 'Open palette', exact: true }).click()
 
         const titles = sandbox.locator('.origam-command-palette__group-title')
         await expect.poll(async () => await titles.count(), { timeout: 4000 }).toBeGreaterThanOrEqual(2)
     })
 
     test('kbd hints render through OrigamKbd', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — kbd display')
+        // "Default" uses PLAYGROUND_COMMANDS, several of which declare a `kbd` array.
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
-        await sandbox.locator('[data-cy="command-palette-kbd-trigger"]').click()
+        await sandbox.getByRole('button', { name: 'Open palette', exact: true }).click()
 
         const kbds = sandbox.locator('.origam-command-palette__item-kbd')
         await expect.poll(async () => await kbds.count(), { timeout: 4000 }).toBeGreaterThan(0)

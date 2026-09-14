@@ -37,7 +37,7 @@ the `PARALLAX_ELEMENT_TYPE` enum.
 | `scaleY` | Vertical-only scale. |
 | `depth` | Z-translation in 3D space (requires the host's `perspective`). |
 | `depth_inv` | Inverse Z-translation — pushes layers backward. |
-| `custom` | Reserved hatch for consumer-supplied transforms. |
+| `custom` | The component writes **no** transform and instead publishes the movement as two CSS variables — you write the transform. See [Writing your own transform](#writing-your-own-transform-type-custom). |
 
 ```vue
 <template>
@@ -157,6 +157,53 @@ interface IParallaxElementProps extends ICommonsComponentProps,
 }
 ```
 
+## Writing your own transform (`type="custom"`)
+
+The seven built-in types each compose a fixed `transform`. `custom` composes
+none: it publishes the computed movement and hands the decision to you.
+
+| CSS variable | Value |
+|---|---|
+| `--origam-parallax__element---x` | horizontal movement amount |
+| `--origam-parallax__element---y` | vertical movement amount |
+
+Both are **plain numbers with no unit**, and that is deliberate: the same
+figure means pixels for a translation, degrees for a rotation and a ratio for
+a scale. Pinning `px` here would have closed the hatch to the other two. You
+multiply by whatever unit your transform needs:
+
+```vue
+<origam-parallax>
+    <origam-parallax-element
+            :strength="40"
+            type="custom"
+            :style="{
+                transform: 'rotate3d(0, 0, 1, calc(var(--origam-parallax__element---x) * 1deg))'
+            }"
+    >
+        Tilts with the pointer
+    </origam-parallax-element>
+</origam-parallax>
+```
+
+A stylesheet rule works just as well as the inline `:style` above — the two
+variables live on the element itself, so any selector that reaches it can
+read them.
+
+The values already have `strength` applied (along with `axis`, `min*`,
+`max*` and `cycle`), so every other prop keeps working under `custom`; you
+only choose the transform *function*, never the movement maths.
+
+`transition-property: transform` is still set by the component, so a
+CSS-authored transform animates exactly like the built-in types.
+
+::: warning No CSS, no movement
+`custom` renders **no** `transform` on its own. If you select it and write no
+rule, the element sits still — that is the contract, not a bug. Until v2.16
+this type silently did nothing at all and there was no way to make it do
+anything; the variables are what makes the promise real.
+:::
+
 ## Anatomy
 
 ```html
@@ -167,19 +214,56 @@ interface IParallaxElementProps extends ICommonsComponentProps,
 
 ## Design tokens consumed
 
-`<OrigamParallaxElement>` shares the `tokens/component/parallax.json`
-file with its host.
+`<OrigamParallaxElement>` shares the `--origam-parallax---*` /
+`--origam-parallax__element---*` variables declared in
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` with its
+host.
 
-| CSS variable | Token reference |
-|---|---|
-| `--origam-parallax__element---transition-duration` | `{motion.duration.medium}` |
+The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
+`dark.css` — grep for `--origam-parallax`.
 
-Transition duration / easing are applied inline by the component, sourced
-from the parent `<OrigamParallax>` provide context (so all elements stay
-in sync).
+### Transition duration is a prop, not a token
 
-The full list lives in
-`tokens/component/parallax.json`.
+Transition duration and easing are applied **inline** by the component,
+sourced from the parent `<OrigamParallax>`'s `duration` / `easing` props
+so that every element in a host stays in sync. Set them on the parent:
+
+```vue
+<origam-parallax :duration="450">
+    <origam-parallax-element :strength="30" type="translate">…</origam-parallax-element>
+</origam-parallax>
+```
+
+::: warning A token used to be documented here, and it never worked
+This page previously listed `--origam-parallax__element---transition-duration`
+in a "Design tokens consumed" table. It was declared in the token
+stylesheets but **read by nothing**, and it could not have worked even if
+it had been: the component writes `transition-duration` as an inline style,
+which outranks any stylesheet declaration. The token has been removed from
+`light.css`, `dark.css`, their SCSS twins and `tokens.type.ts`.
+
+Wiring it as `var(--token, <prop value>)` was considered and rejected — it
+would let a theme override an explicitly passed prop, inverting the
+props-first rule the design system is built on.
+:::
+
+### `easing="spring"` resolves through `--origam-parallax---transition-easing-spring`
+
+Unlike duration above, `easing` is a closed **enum** (`'linear' | 'ease-out'
+| 'spring'`), not a literal value the caller fully specifies — `'linear'`
+and `'ease-out'` already ARE valid CSS `transition-timing-function`
+keywords and are forwarded as-is, but `'spring'` is not a CSS keyword at
+all. The browser silently drops an invalid
+`transition-timing-function: spring` declaration (no error, no visible
+effect), so this legacy mouse/scroll path previously ignored
+`easing="spring"` entirely. The concrete curve a theme wants "spring" to
+look like — not a value the `easing` prop itself carries — comes from
+`var(--origam-parallax---transition-easing-spring, cubic-bezier(0.16, 1,
+0.3, 1))`, the same layering `variant="primary"` already uses for its
+colour (the prop picks the category, the token defines the category).
+This does not reintroduce the rejected pattern above: nothing here lets a
+theme override the caller's CHOICE of `easing`, only what `'spring'`
+concretely renders as once chosen.
 
 ## Accessibility
 

@@ -1,6 +1,10 @@
-import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots } from '../../interfaces'
+import type {
+    IChartBaseEmits,
+    IChartBaseProps,
+    IChartBaseSlots
+} from './chart-base.interface'
 
-import type { TChartPyramidKind } from '../../types'
+import type { TChartPyramidKind } from '../../types/Chart/chart-pyramid.type'
 
 /**
  * Props for `<OrigamChartPyramid>` — the pyramid / funnel family.

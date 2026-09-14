@@ -11,7 +11,7 @@
 					categories: FIXTURE_SATISFACTION_CATEGORIES,
 					height: '360',
 					mode: CHART_PICTORIAL_MODE.STACK,
-					direction: CHART_PICTORIAL_DIRECTION.VERTICAL,
+					direction: DIRECTION.VERTICAL,
 					iconsPerUnit: 5,
 					icon: undefined,
 					iconColor: undefined,
@@ -283,7 +283,7 @@
 					showLabel: true,
 					showAxis: true,
 					legendPosition: 'bottom',
-					direction: CHART_PICTORIAL_DIRECTION.VERTICAL,
+					direction: DIRECTION.VERTICAL,
 					iconsPerUnit: 10,
 					mode: CHART_PICTORIAL_MODE.FILL,
 					title: 'Beer consumption per capita (litres)',
@@ -357,7 +357,7 @@
 		PICTORIAL_ICON_PERSON,
 		PICTORIAL_ICON_STAR
 	} from '@origam/consts'
-	import { CHART_PICTORIAL_DIRECTION, CHART_PICTORIAL_MODE } from '@origam/enums'
+	import { CHART_PICTORIAL_MODE, DIRECTION } from '@origam/enums'
 	import type { IChartPictorialProps, IChartSeries } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
@@ -370,8 +370,8 @@
 	]
 
 	const DIRECTION_OPTIONS = [
-		{ value: CHART_PICTORIAL_DIRECTION.VERTICAL,   label: 'vertical' },
-		{ value: CHART_PICTORIAL_DIRECTION.HORIZONTAL, label: 'horizontal' }
+		{ value: DIRECTION.VERTICAL,   label: 'vertical' },
+		{ value: DIRECTION.HORIZONTAL, label: 'horizontal' }
 	]
 
 	const LEGEND_POSITION_OPTIONS = [

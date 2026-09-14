@@ -7,8 +7,17 @@ import { expect, test } from '@playwright/test'
  * Variants (0-based) :
  *   0 → Design        init: { color:'primary', density:'default', size:'default' }
  *   1 → Functional    init: { orientation:'vertical', side:'start', truncateLine:false }
- *   2 → Slots - Default   2 manual items (v1.0.0 + v0.9-rc); isLast=true on second
- *   3 → Default (playground) — v-bind="state", same releaseEntries as Design
+ *   2 → Size / Density
+ *   3 → Prop — orientation (horizontal, scroll-snap slider)
+ *   4 → Slots - Default   2 manual items (v1.0.0 + v0.9-rc); isLast=true on second
+ *   5 → Default (playground) — v-bind="state", same releaseEntries as Design
+ *
+ * Ce tableau s'arrêtait à 3 et donnait "Slots - Default" pour l'index 2 et
+ * "Default" pour le 3. Deux Variants ("Size / Density", "Prop — orientation")
+ * ont depuis été insérés en 2 et 3, décalant les deux derniers de +2. Le code
+ * de navigation avait suivi (il vise bien 4 et 5), l'en-tête non — donc les
+ * tests assertaient juste tout en se documentant faux, et le garde ne pouvait
+ * rien en dire puisque 4 et 5 n'étaient documentés nulle part.
  *
  * Pattern canonique : navigation directe par variantId (cf. btn.spec.ts recipe).
  * JAMAIS networkidle (Histoire garde un WS HMR ouvert → timeout garanti).
@@ -35,7 +44,7 @@ test.describe('OrigamTimeline', () => {
     test.describe('Design (variant 0)', () => {
 
         test('timeline root carries BEM class and orientation-vertical modifier', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -43,7 +52,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('four items are rendered from releaseEntries', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -52,7 +61,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('each item owns a dot element', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -61,7 +70,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('four connectors are present (truncateLine=false, isLast computed per index)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -72,7 +81,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('dot styles carry the intent token reference for each entry', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -93,7 +102,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('timeline has role=list and each item has role=listitem (a11y)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -107,13 +116,33 @@ test.describe('OrigamTimeline', () => {
         // La prop `size` du timeline parent (via tokens CSS) n'affecte pas la
         // taille réelle de l'OrigamIcon injecté dans le dot.
         // Ce test est marqué fixme jusqu'à correction du DS.
-        test.fixme('dot icon size respects the timeline size token (DS bug #20 — hardcoded size=10)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+        /**
+         * ⛔ 2026-08-17 — this test used to be `test.fixme` around a body
+         * that asserted NOTHING but the timeline's visibility. Waking it as
+         * written produced a green test that could never detect bug #20.
+         * It now carries a real assertion and runs under `test.fail`.
+         *
+         * Bug #20 re-verified on develop @ e66dac68: OrigamTimelineItem.vue
+         * line 9 still hardcodes `:size="10"` on the dot's <origam-icon>,
+         * so the icon renders at 10px whatever the timeline's own dot-size
+         * token resolves to. The assertion below compares the icon's
+         * computed font-size against the dot's, which is what the token
+         * drives — they diverge while the literal is there.
+         */
+        test.fail('dot icon size respects the timeline size token (DS bug #20 — hardcoded size=10)', async ({ page }) => {
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
-            // When fixed: icon inside dot should use var(--origam-timeline---dot-size)
-            // instead of the hardcoded literal 10.
+
+            const dotIcon = timeline.locator('.origam-timeline-item__dot .origam-icon').first()
+            await expect(dotIcon).toBeVisible({ timeout: 8000 })
+
+            const iconPx = await dotIcon.evaluate(el => parseFloat(getComputedStyle(el).fontSize))
+            // The hardcoded literal pins the icon at exactly 10px. Any
+            // token-driven size resolves to something else (the dot-size
+            // token is >= 12px on every shipped theme).
+            expect(iconPx).not.toBe(10)
         })
     })
 
@@ -125,7 +154,7 @@ test.describe('OrigamTimeline', () => {
     test.describe('Functional (variant 1)', () => {
 
         test('side=start applies origam-timeline--side-start on root', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -133,7 +162,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('side=start items carry origam-timeline-item--side-start class', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -142,7 +171,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('truncateLine=false keeps connector on the last item (showConnector=true)', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -153,7 +182,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('last item carries origam-timeline-item--last class', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -171,7 +200,7 @@ test.describe('OrigamTimeline', () => {
     test.describe('Slots - Default (variant 4)', () => {
 
         test('timeline renders with two manually-slotted items', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -180,7 +209,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('default slot overrides the item body (renders a <ul> list)', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -191,7 +220,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('item title texts are rendered correctly from slot', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -203,7 +232,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('second item (isLast=true) carries origam-timeline-item--last class', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -212,7 +241,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('first item (isLast=false) does NOT carry origam-timeline-item--last', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -231,7 +260,7 @@ test.describe('OrigamTimeline', () => {
     test.describe('Default playground (variant 5)', () => {
 
         test('timeline root renders with four items in playground state', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -240,7 +269,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('each item renders a title from the releaseEntries data', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -250,7 +279,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('each item renders a subtitle', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -259,7 +288,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('each item renders a description in the body', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
@@ -268,7 +297,7 @@ test.describe('OrigamTimeline', () => {
         })
 
         test('orientation-vertical is applied by default', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })

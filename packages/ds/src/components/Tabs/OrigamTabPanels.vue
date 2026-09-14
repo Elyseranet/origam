@@ -22,23 +22,31 @@
 >
 	import { computed, provide, ref, shallowRef, StyleValue, watch } from 'vue'
 
-	import { OrigamDefaultsProvider } from '../../components'
+	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
+
+	import { useGroup } from '../../composables/Commons/group.composable'
+	import { useGroupSiblingLink } from '../../composables/Commons/groupSiblingLink.composable'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
 	import {
-		useGroup,
-		useProps,
-		useStyle
-	} from '../../composables'
+		ORIGAM_TABS_KEY,
+		ORIGAM_TABS_LINK_KEY,
+		ORIGAM_TAB_PANELS_KEY,
+		ORIGAM_TAB_PANELS_CTX_KEY
+	} from '../../consts/Tabs/tabs.const'
 
-	import { ORIGAM_TAB_PANELS_KEY, ORIGAM_TAB_PANELS_CTX_KEY } from '../../consts'
+	import { omitUndefined } from '../../utils/Commons/commons.util'
 
-	import { vTouch } from '../../directives'
+	import vTouch from '../../directives/Touch/touch.directive'
 
-	import { DIRECTION } from '../../enums'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
 
-	import type { ITabPanelsProps, ITouchHandlers} from '../../interfaces'
+	import type { ITabPanelsProps } from '../../interfaces/Tabs/tab-panels.interface'
+	import type { ITouchHandlers } from '../../interfaces/Commons/touch.interface'
 
-	import type { ITabPanelsEmits } from '../../interfaces/Tabs/tab-panels.interface'
+	import type { ITabPanelsEmits, ITabPanelsSlots } from '../../interfaces/Tabs/tab-panels.interface'
 
 	/*********************************************************
 	 * Global
@@ -54,12 +62,25 @@
 
 	defineEmits<ITabPanelsEmits>()
 
+	defineSlots<ITabPanelsSlots>()
+
 	const {filterProps} = useProps<ITabPanelsProps>(props)
 
 	/*********************************************************
 	 * Group orchestration
 	 ********************************************************/
 	const {isSelected, select, next, prev, selected, items} = useGroup(props, ORIGAM_TAB_PANELS_KEY)
+
+	/*********************************************************
+	 * Sibling tabs link (#441)
+	 *
+	 * @description
+	 * Symmetric counterpart of `<OrigamTabs>`'s own sibling link —
+	 * see `useGroupSiblingLink` for why a plain `inject()` cannot
+	 * reach the `<OrigamTabs>` sibling directly.
+	 ********************************************************/
+	const tabsGroupLink = useGroupSiblingLink(ORIGAM_TAB_PANELS_KEY, ORIGAM_TABS_KEY)
+	provide(ORIGAM_TABS_LINK_KEY, tabsGroupLink)
 
 	const rootRef = ref<HTMLElement>()
 	const isReversed = shallowRef(false)
@@ -117,10 +138,14 @@
 		items: items.value
 	}))
 
+	// Forward ONLY what the consumer actually passed — see #263. `transition`
+	// resolves from the theme baseline today, so nothing junk leaks through in
+	// practice, but the guard keeps every forwarder on one single shape.
+	const wasPropPassed = usePassedProps(props)
 	const slotDefaults = computed(() => ({
-		'origam-tab-panel': {
-			transition: props.transition
-		}
+		'origam-tab-panel': omitUndefined({
+			transition: wasPropPassed('transition') ? props.transition : undefined
+		})
 	}))
 
 	/*********************************************************
@@ -141,7 +166,17 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(panelsStyles)
+	/*********************************************************
+	 * useStyle
+	 *
+	 * @description
+	 * #381 — the `id` returned by useStyle is a GENERATED identifier,
+	 * only meant for the scoped stylesheet selector. Without
+	 * `() => props.id` here, it shadowed the `id` PROP of the same
+	 * name: the template's `:id="id"` on the root rendered the
+	 * generated id, never the consumer's.
+	 ********************************************************/
+	const {id, css, load, isLoaded, unload} = useStyle(panelsStyles, () => props.id)
 
 	/*********************************************************
 	 * Expose

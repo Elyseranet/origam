@@ -219,7 +219,9 @@ interface IAvatarProps extends ICommonsComponentProps, IDensityProps,
 | `--origam-avatar--{intent}---background-color` | Per-status background. |
 | `--origam-avatar--{intent}---color` | Per-status foreground. |
 
-The full list lives in `tokens/component/avatar.json`.
+The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
+`dark.css` (SCSS twins under `packages/ds/src/assets/scss/tokens/`) — grep
+for `--origam-avatar---`.
 
 ## Accessibility
 

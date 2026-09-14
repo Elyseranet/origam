@@ -19,7 +19,7 @@ test.setTimeout(180_000)
 
 test('DEBUG pagination — size cascade + withInfo Prev/Next text', async ({ page }) => {
     // ── Sizes Variant ───────────────────────────────────────────────
-    await page.goto(variantUrl(20))
+    await page.goto(variantUrl(20), { waitUntil: 'domcontentloaded' })
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 
@@ -45,7 +45,7 @@ test('DEBUG pagination — size cascade + withInfo Prev/Next text', async ({ pag
     }
 
     // ── With Info Variant ───────────────────────────────────────────
-    await page.goto(variantUrl(19))
+    await page.goto(variantUrl(19), { waitUntil: 'domcontentloaded' })
 
     const info = await sandbox.locator('[data-cy="pagination-with-info"]').first().evaluate((el) => {
         const infoLabel = el.querySelector('.origam-pagination__info')

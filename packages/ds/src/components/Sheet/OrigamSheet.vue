@@ -1,26 +1,24 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:ref="rootEl"
 			:class="sheetClasses"
 			:style="sheetStyles"
-			@click="onActive"
+			@click="onActive()"
 			@mouseenter="onMouseenter"
 			@mouseleave="onMouseleave"
 	>
-		<div
+		<button
 				v-if="showHandle"
 				ref="handleEl"
+				:aria-label="handleAriaLabel"
 				class="origam-sheet__handle"
-				role="button"
-				tabindex="0"
-				aria-label="Drag handle"
 				data-cy="sheet-bottom-handle"
-				@keydown.enter.prevent="onActive"
-				@keydown.space.prevent="onActive"
+				type="button"
 		>
 			<span class="origam-sheet__handle-pill"/>
-		</div>
+		</button>
 
 		<slot name="default"/>
 	</component>
@@ -31,24 +29,23 @@
 		setup
 >
 	import { computed, type Ref, ref, StyleValue, toRef, watch } from 'vue'
-	import {
-		useActive,
-		useBothColor,
-		useDimension,
-		useHover,
-		useLocation,
-		usePosition,
-		useProps,
-		useSheetSwipe,
-		useStateEffect,
-		useStyle
-} from '../../composables'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useLocation } from '../../composables/Commons/location.composable'
+	import { usePosition } from '../../composables/Commons/position.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSheetSwipe } from '../../composables/Sheet/sheetSwipe.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { ISheetProps} from "../../interfaces"
+	import type { ISheetProps } from '../../interfaces/Sheet/sheet.interface'
 
-	import type { ISheetEmits } from '../../interfaces/Sheet/sheet-emits.interface'
+	import type { ISheetEmits, ISheetSlots } from '../../interfaces/Sheet/sheet-emits.interface'
 
-	import type { TColor, TSheetSnapId, TSheetSnapPoint } from "../../types"
+	import type { TColor } from '../../types/Commons/color.type'
+	import type { TSheetSnapId, TSheetSnapPoint } from '../../types/Sheet/sheet.type'
 
 	/*********************************************************
 	 * Global
@@ -61,10 +58,13 @@
 		defaultSnap: 'half',
 		open: undefined,
 		disabled: false,
-		persistent: false
+		persistent: false,
+		handleLabel: 'origam.sheet.handle.aria_label'
 	})
 
 	const emit = defineEmits<ISheetEmits>()
+
+	defineSlots<ISheetSlots>()
 
 	const {filterProps} = useProps<ISheetProps>(props)
 
@@ -81,8 +81,8 @@
 		toRef(props, 'bgColor') as Ref<TColor | undefined>,
 		toRef(props, 'color') as Ref<TColor | undefined>
 	)
-	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
-	const {isActive, activeState, activeClasses, onActive} = useActive(props)
+	const {isOn: isHover, config: hoverState, classes: hoverClasses, set: onMouseenter, unset: onMouseleave} = useStateFlag(props, {state: 'hover'})
+	const {isOn: isActive, config: activeState, classes: activeClasses, toggle: onActive} = useStateFlag(props, {state: 'active'})
 	const {
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,
@@ -93,6 +93,20 @@
 	const {dimensionStyles} = useDimension(props)
 	const {locationStyles} = useLocation(props)
 	const {positionClasses} = usePosition(props)
+
+	const {t} = useLocale()
+
+	/*********************************************************
+	 * handleAriaLabel
+	 *
+	 * @description
+	 * `handleLabel` carries a locale key, not final text, so the drag
+	 * handle's accessible name follows the active locale.
+	 * @description
+	 * Resolved in a computed and never eagerly in the setup body, so a
+	 * value supplied by `theme.components` is still seen (ADR-005).
+	 ********************************************************/
+	const handleAriaLabel = computed(() => t(props.handleLabel))
 
 	// ───────────────────────── swipe gesture ────────────────────────────
 
@@ -236,7 +250,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(sheetStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(sheetStyles, () => props.id)
 
 
 	/*********************************************************
@@ -298,10 +312,10 @@
 		color: var(--origam-sheet---color);
 
 		&--border {
-			--origam-sheet---border-top-width: var(--origam-border__width---thin, 1px);
-			--origam-sheet---border-right-width: var(--origam-border__width---thin, 1px);
-			--origam-sheet---border-bottom-width: var(--origam-border__width---thin, 1px);
-			--origam-sheet---border-left-width: var(--origam-border__width---thin, 1px);
+			--origam-sheet---border-top-width: var(--origam-sheet--border---border-top-width, var(--origam-border__width---thin, 1px));
+			--origam-sheet---border-right-width: var(--origam-sheet--border---border-right-width, var(--origam-border__width---thin, 1px));
+			--origam-sheet---border-bottom-width: var(--origam-sheet--border---border-bottom-width, var(--origam-border__width---thin, 1px));
+			--origam-sheet---border-left-width: var(--origam-sheet--border---border-left-width, var(--origam-border__width---thin, 1px));
 			box-shadow: var(--origam-sheet--border---box-shadow, var(--origam-sheet---box-shadow));
 		}
 
@@ -386,6 +400,13 @@
 		}
 
 		&__handle {
+			appearance: none;
+			margin: 0;
+			padding-inline: 0;
+			border: 0;
+			background: none;
+			color: inherit;
+			font: inherit;
 			display: flex;
 			align-items: center;
 			justify-content: center;

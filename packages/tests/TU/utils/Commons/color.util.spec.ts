@@ -45,6 +45,7 @@ import {
     tokenForegroundForIntent,
     warnLegacyColor,
     warnDeprecatedProp,
+    warnUnsupportedProp,
 } from '@origam/utils/Commons/color.util'
 
 // ─── isCssColor ──────────────────────────────────────────────────────────────
@@ -772,6 +773,43 @@ describe('warnDeprecatedProp', () => {
     it('warns again for the same oldProp on a DIFFERENT component (key includes component)', () => {
         warnDeprecatedProp('TestCompE1', 'oldPropE', 'newPropE')
         warnDeprecatedProp('TestCompE2', 'oldPropE', 'newPropE')
+        expect(console.warn).toHaveBeenCalledTimes(2)
+    })
+})
+
+// ─── warnUnsupportedProp ────────────────────────────────────────────────────
+// Same once-per-key cache strategy as `warnLegacyColor` / `warnDeprecatedProp`
+// above, keyed by `component::prop` — first consumer is `colorScheme` on
+// OrigamChartBullet / OrigamChartCandlestick / OrigamChartHeatmap /
+// OrigamChartMap (#426). Each test uses a distinct (component, prop) pair
+// so tests stay order-independent without needing to reset the module.
+//
+// Unlike `warnLegacyColor` / `warnDeprecatedProp`, this one is gated on
+// `import.meta.env.DEV` per the #426 decision (must stay silent in
+// production builds) — Vitest runs with `DEV: true`, so the gate does not
+// need to be stubbed for these tests to observe the warning.
+
+describe('warnUnsupportedProp', () => {
+    beforeEach(() => {
+        vi.spyOn(console, 'warn').mockImplementation(() => {})
+    })
+
+    it('emits a console.warn naming the component, the prop, and the reason', () => {
+        warnUnsupportedProp('TestChartA', 'colorScheme', 'binary colour model via fooColor/barColor')
+        expect(console.warn).toHaveBeenCalledWith(
+            expect.stringMatching(/TestChartA.*prop "colorScheme" has no effect.*binary colour model via fooColor\/barColor/)
+        )
+    })
+
+    it('does not warn a second time for the same (component, prop)', () => {
+        warnUnsupportedProp('TestChartB', 'colorScheme', 'reason B')
+        warnUnsupportedProp('TestChartB', 'colorScheme', 'reason B')
+        expect(console.warn).toHaveBeenCalledTimes(1)
+    })
+
+    it('warns again for the same prop on a DIFFERENT component (key includes component)', () => {
+        warnUnsupportedProp('TestChartC1', 'colorScheme', 'reason C')
+        warnUnsupportedProp('TestChartC2', 'colorScheme', 'reason C')
         expect(console.warn).toHaveBeenCalledTimes(2)
     })
 })

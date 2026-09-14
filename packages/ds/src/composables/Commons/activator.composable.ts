@@ -1,14 +1,33 @@
 import { computed, effectScope, EffectScope, inject, nextTick, onScopeDispose, ref, Ref, watch, watchEffect } from 'vue'
-import { useDelay } from '../../composables'
+import { useDelay } from './delay.composable'
 
-import { IN_BROWSER, ORIGAM_MENU_KEY } from '../../consts'
+import { IN_BROWSER } from '../../consts/Commons/commons.const'
+import { ORIGAM_MENU_KEY } from '../../consts/Menu/menu.const'
 
-import type { IActivatorProps } from '../../interfaces'
+import type { IActivatorProps } from '../../interfaces/Commons/activator.interface'
 
-import { activator, getCurrentInstance, getTargetActivator, matchesSelector, refElement } from '../../utils'
+import { activator, getTargetActivator } from '../../utils/Commons/activator.util'
+import { matchesSelector, refElement } from '../../utils/Commons/commons.util'
+import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
 
 /*********************************************************
  * useActivator
+ *
+ * @description
+ * Cablage complet de l'activateur pour les composants flottants (Menu,
+ * Tooltip, Dialog…) : derive depuis les props (`openOnHover`,
+ * `openOnFocus`, `openOnClick`, `openOnContextMenu`) les gestionnaires
+ * click/contextmenu/hover/focus a poser sur l'activateur, le contenu et le
+ * scrim, et resout la cible de positionnement (`target`, y compris le mode
+ * `'cursor'` qui suit les coordonnees du dernier clic).
+ *
+ * @description
+ * Le delai d'ouverture/fermeture est delegue a `useDelay` — ce composable
+ * ne fait que decider QUAND appeler `runOpenDelay`/`runCloseDelay`, jamais
+ * le minutage lui-meme. Quand `props.activator` (selecteur externe) est
+ * fourni, un `EffectScope` dedie est demarre/arrete au fil du temps via un
+ * `watch` sur sa presence — pas de scope permanent quand aucun activateur
+ * externe n'est utilise.
  ********************************************************/
 export function useActivator (props: IActivatorProps, {isActive, isTop}: {
     isActive: Ref<boolean>,

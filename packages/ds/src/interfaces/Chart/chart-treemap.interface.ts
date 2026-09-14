@@ -1,6 +1,11 @@
-import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots } from '../../interfaces'
+import type {
+    IChartBaseEmits,
+    IChartBaseProps,
+    IChartBaseSlots
+} from './chart-base.interface'
 
-import type { TChartTreemapAlgorithm, TIntent } from '../../types'
+import type { TChartTreemapAlgorithm } from '../../types/Chart/chart-treemap.type'
+import type { TIntent } from '../../types/Commons/intent.type'
 
 /**
  * A single data item for the treemap's series.
@@ -109,4 +114,18 @@ export interface IChartTreemapSlots extends IChartBaseSlots {
         index: number
         visible: boolean
     }) => any
+}
+
+/**
+ * Plain SVG-space rectangle (`x`, `y`, `w`, `h`) shared by both layout
+ * algorithms (`squarify` / `sliceDice`). Moved out of
+ * `OrigamChartTreemap.vue` (was a bare `interface Rect` local to the
+ * `<script setup>`) so the `.vue` file only imports it, per the
+ * "no declarations in .vue" rule.
+ */
+export interface IChartTreemapRect {
+    x: number
+    y: number
+    w: number
+    h: number
 }

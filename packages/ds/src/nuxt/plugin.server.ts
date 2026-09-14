@@ -1,18 +1,12 @@
 import { createOrigam } from '../origam'
 
-import { themeToCss } from '../utils/Theme/apply-theme.util'
+import { themeToCss } from '../utils/Commons/apply-theme.util'
 
-import type { IOrigamNuxtRuntimeConfig } from '../interfaces'
+import type { IOrigamNuxtRuntimeConfig } from '../interfaces/Commons/nuxt-module.interface'
 
-import {
-    ORIGAM_MODE_ATTR,
-    ORIGAM_MODE_DARK,
-    ORIGAM_MODE_LIGHT,
-    ORIGAM_THEME_ATTR,
-    ORIGAM_THEME_AUTO
-} from '../consts'
+import { ORIGAM_MODE_ATTR, ORIGAM_MODE_DARK, ORIGAM_MODE_LIGHT, ORIGAM_THEME_ATTR, ORIGAM_THEME_AUTO } from '../consts/Commons/theme.const'
 
-import type { TMode, TTheme } from '../types/Theme/theme.type'
+import type { TMode, TTheme } from '../types/Commons/theme.type'
 
 import { defineNuxtPlugin, useCookie, useHead, useRequestHeaders, useRuntimeConfig } from '#app'
 import type { NuxtApp } from '#app'
@@ -37,10 +31,10 @@ function resolveServerTheme (cookieValue: string | null | undefined, config: IOr
 /**
  * Resolve the color mode SSR-side to a CONCRETE value (`'light'` | `'dark'`).
  *
- * The token matrix (`themes-all.css` and the per-brand sheets) only emits
- * compound `[data-theme="X"][data-mode="Y"]` rules — there is NO bare
- * `[data-theme="X"]` fallback and no `@media (prefers-color-scheme)` block at
- * that tier. So `data-mode` MUST always be a concrete value, otherwise no
+ * The theme token matrix only emits compound `[data-theme="X"][data-mode="Y"]`
+ * rules — there is NO bare `[data-theme="X"]` fallback and no
+ * `@media (prefers-color-scheme)` block at that tier. So `data-mode` MUST
+ * always be a concrete value, otherwise no
  * token rule matches and the page renders unthemed (white). We therefore
  * never return `'auto'` here: when the user expressed no preference we pick a
  * safe default (`'light'`) for the SSR paint; the client plugin upgrades it

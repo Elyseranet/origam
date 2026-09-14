@@ -101,7 +101,41 @@ A menu driven by the `#default` slot owns its own markup — pass `size` /
 | Name | Payload | When |
 |---|---|---|
 | `update:modelValue` | `boolean` | Menu open / close. |
-| `contextmenu` | `MouseEvent` | Right-click when `openOnContextMenu`. |
+| `contextmenu` | `MouseEvent` | Native right-click on the activator, forwarded — fires regardless of `openOnContextMenu`, so a parent can show its own context menu instead of (or alongside) the menu opening. |
+| `select` | `IListItemProps` | A leaf row of `items` was clicked. Rows that open a submenu do **not** emit — opening a submenu is navigation, not a choice. |
+
+When you render rows through the `items` prop, the menu owns the
+`<origam-list-item>` that receives the click, so `select` is how you learn
+which row was picked:
+
+```vue
+<origam-menu :items="items" @select="onSelect"/>
+```
+
+An item object may still carry its own `onClick`; both run on the same click.
+Wire one or the other, not both, or a single click will be handled twice.
+Prefer `onClick` when the handler needs the `MouseEvent` itself (to call
+`preventDefault()`, for instance) — the `select` payload is the item, not the
+event.
+
+## Props (interface)
+
+```ts
+interface IMenuProps extends IOverlayProps, IListProps, IListItemProps {
+    id?: string
+}
+```
+
+### Own props
+
+`<OrigamMenu>` inherits the whole `IOverlayProps` surface (activator,
+location, scroll strategy, scrim, transition…) plus `IListProps` /
+`IListItemProps` for the list it renders from `items`. Those are documented
+on their own pages — the table below covers only what `IMenuProps` adds.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `id` | `string` | `origam-menu-{uid}` | DOM id of the menu surface. Also the value the activator advertises through `aria-owns`, so set it when you need a stable, predictable hook for a test or an external `aria-controls`. Left unset, an auto-generated unique id is used. |
 
 ## Design tokens
 

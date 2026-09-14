@@ -274,6 +274,16 @@
 			</div>
 		</Variant>
 
+		<Variant title="Slots - header">
+			<div class="story-shell">
+				<origam-audio :src="SOUND_HELIX_TRACK" title="Daydream" artist="Origam DS Cast" :cover="PICSUM_COVER" class="story-audio">
+					<template #header>
+						<div class="story-slot-badge">Custom header slot — replaces cover + metadata</div>
+					</template>
+				</origam-audio>
+			</div>
+		</Variant>
+
 		<Variant title="Slots - metadata">
 			<div class="story-shell">
 				<origam-audio :src="SOUND_HELIX_TRACK" class="story-audio">
@@ -325,6 +335,22 @@
 								{{ playing ? 'Pause' : 'Play' }}
 							</button>
 						</div>
+					</template>
+				</origam-audio>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - playlist">
+			<div class="story-shell">
+				<origam-audio :playlist="DEMO_PLAYLIST" class="story-audio">
+					<template #playlist="{ tracks, currentIndex, select }">
+						<ol class="story-slot-playlist">
+							<li v-for="(track, index) in tracks" :key="track.id ?? index">
+								<button type="button" :aria-current="index === currentIndex" @click="select(index)">
+									{{ index + 1 }}. {{ track.title }}
+								</button>
+							</li>
+						</ol>
 					</template>
 				</origam-audio>
 			</div>
@@ -533,6 +559,28 @@
 		background-color: var(--origam-color__surface---raised, #f3f4f6);
 		border-radius: 6px;
 		font: 0.875rem/1.4 system-ui, sans-serif;
+	}
+
+	.story-slot-playlist {
+		margin: 12px 0 0;
+		padding: 0 0 0 4px;
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		list-style: none;
+		font: 0.875rem/1.4 system-ui, sans-serif;
+	}
+
+	.story-slot-playlist button {
+		all: unset;
+		cursor: pointer;
+		padding: 4px 8px;
+		border-radius: 4px;
+	}
+
+	.story-slot-playlist button[aria-current='true'] {
+		background-color: var(--origam-color__surface---raised, #f3f4f6);
+		font-weight: 600;
 	}
 
 	.story-slot-cover {

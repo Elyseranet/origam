@@ -95,11 +95,11 @@ test.describe('OrigamThemeProvider', () => {
     test('Slot — default renders button from slot', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Slot — default', { exact: true }).first().click()
+        await page.getByText('Slots - Default', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.getByRole('button', { name: /From slot/i })).toBeVisible({ timeout: 5000 })
+        await expect(sandbox.getByRole('button', { name: /From default slot/i })).toBeVisible({ timeout: 5000 })
     })
 
     test('Playground — theme switcher applies correct data-theme', async ({ page }) => {

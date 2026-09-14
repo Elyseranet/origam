@@ -68,11 +68,11 @@ The dismiss (✕) button is shown by default. Pass `dismissible=false` to hide i
 `--origam-snackbar-item---font-size`. When unset the SCSS default (`0.875rem`)
 applies.
 
-> Note: `fontWeight` in `ITypographyProps` is typed and emits its CSS var, but
-> the SCSS scopes font-weight per BEM child (`__title` at `600`,
-> `__message` at `400`). A single `useTypography('snackbar-item')` call cannot
-> target those sub-surfaces; per-child control requires dedicated story props.
-> In this release only `fontSize` is exposed in the story controls.
+> `fontWeight`, `lineHeight`, `letterSpacing` and `fontFamily` were removed
+> from `ISnackbarItemProps` (issue #501): the SCSS scopes font-weight per BEM
+> child instead (`__title` hardcoded at `600`, `__message` at `400`) and
+> reads no var for the other three at all. `fontFamily` is a project-level
+> setting configured once on `OrigamApp`.
 
 ```vue
 <template>
@@ -124,9 +124,6 @@ interface ISnackbarItemProps extends ICommonsComponentProps, ITypographyProps {
 | Prop | Type | Default | Effect | Note |
 |---|---|---|---|---|
 | `fontSize` | `TFontSize` | — | `--origam-snackbar-item---font-size` | Real visual effect — root reads this var. |
-| `fontWeight` | `TFontWeight` | — | `--origam-snackbar-item---font-weight` | Emitted but **not read** at root level; `__title`/`__message` use their own namespaced vars. |
-| `lineHeight` | `TLineHeight` | — | `--origam-snackbar-item---line-height` | Emitted but not read — root `line-height` is hardcoded `1.4`. |
-| `letterSpacing` | `TLetterSpacing` | — | `--origam-snackbar-item---letter-spacing` | Emitted but not read — no `letter-spacing` SCSS rule on the item. |
 
 ## Anatomy
 

@@ -29,6 +29,7 @@ The canvas provides two-dimensional saturation/brightness selection. Disable it 
 |---|---|---|---|
 | `canvasHeight` | `string \| number` | `150` | Height of the canvas area |
 | `canvasWidth` | `string \| number` | `'100%'` | Width of the canvas area |
+| `dotSize` | `string \| number` | `10` | Diameter of the canvas position dot |
 | `hideCanvas` | `boolean` | `false` | Hides the saturation/brightness canvas |
 
 ## Sliders and inputs
@@ -58,19 +59,36 @@ Controls which colour model is shown in the edit fields.
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `mode` | `TColorModes` | `'rgba'` | Active colour mode |
-| `modes` | `TColorModes[]` | all modes | Selectable colour modes |
+| `modes` | `TColorModes[]` | `['rgb', 'rgba', 'hsl', 'hsla', 'hex', 'hexa']` | Selectable colour modes, in cycle order. `COLOR_MODES_NAMES` has exactly these six members, so the default is the full set. |
 
 ## Swatches
 
+⛔ `show-swatches` on its own renders an **empty** palette: there is no
+built-in colour set anywhere in the picker. You must supply `swatches`.
+
 ```vue
+<script setup>
+const swatches = [
+    ['#F44336', '#E91E63', '#9C27B0'],
+    ['#2196F3', '#03A9F4', '#00BCD4'],
+    ['#4CAF50', '#8BC34A', '#CDDC39']
+]
+</script>
+
 <template>
-    <OrigamColorPicker v-model="color" show-swatches :swatches-max-height="200" />
+    <OrigamColorPicker
+        v-model="color"
+        show-swatches
+        :swatches="swatches"
+        :swatches-max-height="200"
+    />
 </template>
 ```
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `showSwatches` | `boolean` | `false` | Shows the swatches palette |
+| `swatches` | `Array<Array<TColorType>>` | — | The palette itself: outer array = rows, inner = tiles. **No default** — without it the palette is empty. |
 | `swatchesMaxHeight` | `string \| number` | `150` | Max-height of the swatches area |
 
 ## Slots
@@ -94,3 +112,22 @@ Controls which colour model is shown in the edit fields.
 | Token | Description |
 |---|---|
 | `--origam-color-picker-color-hsv` | Current HSV colour (auto-computed, read-only) |
+
+## Sub-components
+
+`<OrigamColorPicker>` composes four standalone controlled components.
+Each has its own page with the full prop / emit surface — this page only
+covers the props that reach them through the parent
+(`canvasHeight`, `canvasWidth`, `dotSize`, `hideCanvas`, `hideSliders`,
+`hideInputs`, `showSwatches`, `swatchesMaxHeight`, `mode`, `modes`).
+
+| Component | Role |
+|---|---|
+| [`OrigamColorPickerCanvas`](/components/ColorPicker/OrigamColorPickerCanvas) | 2-D saturation / value gradient, mouse + touch + keyboard. |
+| [`OrigamColorPickerPreview`](/components/ColorPicker/OrigamColorPickerPreview) | Colour swatch, hue and alpha sliders, eye-dropper. |
+| [`OrigamColorPickerEdit`](/components/ColorPicker/OrigamColorPickerEdit) | Per-channel numeric / hex inputs and the mode cycle button. |
+| [`OrigamColorPickerSwatches`](/components/ColorPicker/OrigamColorPickerSwatches) | Preset colour grid. |
+
+All four are **controlled**: they store nothing and push every change up
+the shared `update:colorHsv` channel (`IColorHsvEmits`), which the parent
+converts back into `modelValue`.

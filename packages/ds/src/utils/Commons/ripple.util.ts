@@ -1,10 +1,10 @@
-import { DELAY_RIPPLE, ORIGAM_RIPPLE_STOP_KEY, RIPPLES } from '../../consts'
+import { DELAY_RIPPLE, ORIGAM_RIPPLE_STOP_KEY, RIPPLES } from '../../consts/Commons/ripple.const'
 
-import type { IRippleDirectiveBinding, IRippleHtmlElement, IRippleOptions } from '../../interfaces'
+import type { IRippleDirectiveBinding, IRippleHtmlElement, IRippleOptions } from '../../interfaces/Commons/ripple.interface'
 
-import type { TRippleEvent } from '../../types'
+import type { TRippleEvent } from '../../types/Commons/ripple.type'
 
-import { isObject } from '../../utils'
+import { isObject } from './commons.util'
 
 /**
  * Update ripple.

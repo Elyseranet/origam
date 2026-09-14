@@ -1,6 +1,7 @@
-import type { THSVA } from "../../types"
+import type { THSVA } from '../../types/Commons/color.type'
 
-import { has, HSVtoHex, HSVtoHSL, HSVtoRGB } from "../../utils"
+import { HSVtoHex, HSVtoHSL, HSVtoRGB } from '../Commons/color.util'
+import { has } from '../Commons/commons.util'
 
 /**
  * Strip alpha.

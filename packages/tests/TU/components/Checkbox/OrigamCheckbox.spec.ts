@@ -255,18 +255,38 @@ async function mountCheckboxThemed(componentDefaults: Record<string, unknown>, p
 }
 
 describe('OrigamCheckbox — useDefaults (theme components wiring)', () => {
-    it('resolves color="primary" from theme.components[\'origam-checkbox\'] on the selection-control wrapper', async () => {
+    /*
+     * L'élément interrogé est `__input`, PAS `__wrapper`.
+     *
+     * `OrigamSelectionControl` compose ses classes ainsi :
+     *     selectionControlWrapperClasses = ['origam-selection-control__wrapper']
+     *     selectionControlInputClasses   = ['origam-selection-control__input',
+     *                                       border, rounded, elevation, colorClasses]
+     *
+     * Le wrapper ne porte qu'une classe, en dur, sans condition — il n'a donc
+     * JAMAIS pu recevoir `colorClasses`, dans aucun état. Ces deux tests
+     * assertaient sur un élément qui n'a jamais été le bon ; ils ne
+     * mesuraient pas la résolution de thème, ils mesuraient un emplacement
+     * qui n'existe pas. Vérifié au runtime (sonde DOM, chromium) :
+     *     wrapper : "origam-selection-control__wrapper"
+     *     input   : "origam-selection-control__input origam--color-primary"
+     *
+     * Ce que le test prouve reste inchangé : que `theme.components
+     * ['origam-checkbox'].color` atteint bien la classe utilitaire rendue.
+     * Seule la cible de la lecture est corrigée.
+     */
+    it('resolves color="primary" from theme.components[\'origam-checkbox\'] on the selection-control input', async () => {
         const wrapper = await mountCheckboxThemed({ color: 'primary' })
-        const wrapperEl = wrapper.find('.origam-selection-control__wrapper')
-        expect(wrapperEl.classes()).toContain('origam--color-primary')
-        expect(wrapperEl.attributes('style') || '').toContain('color: var(--origam-color__action--primary---fgSubtle)')
+        const inputEl = wrapper.find('.origam-selection-control__input')
+        expect(inputEl.classes()).toContain('origam--color-primary')
+        expect(inputEl.attributes('style') || '').toContain('color: var(--origam-color__action--primary---fgSubtle)')
     })
 
     it('an explicitly passed color prop overrides the theme default', async () => {
         const wrapper = await mountCheckboxThemed({ color: 'primary' }, { color: 'danger' })
-        const wrapperEl = wrapper.find('.origam-selection-control__wrapper')
-        expect(wrapperEl.classes()).toContain('origam--color-danger')
-        expect(wrapperEl.classes()).not.toContain('origam--color-primary')
+        const inputEl = wrapper.find('.origam-selection-control__input')
+        expect(inputEl.classes()).toContain('origam--color-danger')
+        expect(inputEl.classes()).not.toContain('origam--color-primary')
     })
 
     it('resolves rounded="lg" from theme.components[\'origam-checkbox\'] onto the selection-control state-layer box (issue #241)', async () => {

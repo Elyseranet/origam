@@ -6,12 +6,12 @@
 #   docker compose -f docker/docker-compose.yml build stories
 #
 # Production deployments should pull the published images from GHCR
-# (`ghcr.io/arnaudprioul/origam-docs`, `ghcr.io/arnaudprioul/origam-stories`)
+# (`ghcr.io/elyseranet/origam-docs`, `ghcr.io/elyseranet/origam-stories`)
 # rather than rebuild here — keep this file as a dev convenience only.
 
 services:
   docs:
-    image: ghcr.io/arnaudprioul/origam-docs:latest
+    image: ghcr.io/elyseranet/origam-docs:latest
     build:
       context: ..
       dockerfile: docker/Dockerfile.docs
@@ -32,7 +32,7 @@ services:
     #   - ../docs/.vitepress/dist:/usr/share/nginx/html:ro
 
   stories:
-    image: ghcr.io/arnaudprioul/origam-stories:latest
+    image: ghcr.io/elyseranet/origam-stories:latest
     build:
       context: ..
       dockerfile: docker/Dockerfile.stories

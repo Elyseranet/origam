@@ -45,18 +45,24 @@ function mountStack (
 ) {
     const isActive = ref(isActiveInit)
     const zIndex = readonly(ref(zIndexInit))
+    // ⛔ ADR-005 — `useStack`'s 3rd param is now a `Ref<boolean>` (not a
+    // plain boolean) so a value patched onto `instance.props` by the
+    // theme-props-resolver's `beforeCreate` hook — which runs after this
+    // composable's own setup-time top-level code — is still observed. See
+    // `disableGlobalStack` describe block below for the regression test.
+    const disableGlobalStack = ref(disableGlobal)
     let api!: StackApi
 
     const Host = defineComponent({
         name: 'OrigamStackHost',
         setup () {
-            api = useStack(isActive, zIndex, disableGlobal)
+            api = useStack(isActive, zIndex, disableGlobalStack)
             return () => h('div')
         }
     })
 
     const wrapper = mount(Host)
-    return { isActive, api: () => api, wrapper }
+    return { isActive, disableGlobalStack, api: () => api, wrapper }
 }
 
 // ---------------------------------------------------------------------------
@@ -174,6 +180,36 @@ describe('useStack — disableGlobalStack', () => {
     it('disableGlobal=true + active from start → no GLOBAL_STACK entry', () => {
         mountStack(true, 100, true)
         expect(GLOBAL_STACK.length).toBe(0)
+    })
+
+    // ADR-005 regression — `disableGlobalStack` used to be a plain `boolean`
+    // snapshotted once at `useStack()` call time (`const createStackEntry =
+    // !disableGlobalStack`). A value written onto `instance.props` AFTER that
+    // call — exactly what the theme-props-resolver's `beforeCreate` hook does
+    // — could never be observed: the snapshot was already taken. Flipping the
+    // ref here, strictly after `mountStack()` returns (so after `useStack`'s
+    // own setup-time body has already run), proves the read is now deferred
+    // to the reactive scopes that consume it, not the composable's top level.
+    it('reacts to disableGlobalStack flipping to true AFTER useStack() has already run, before activation', async () => {
+        const { isActive, disableGlobalStack } = mountStack(false, 100, false)
+
+        disableGlobalStack.value = true
+        isActive.value = true
+        await nextTick()
+        vi.runAllTimers()
+
+        expect(GLOBAL_STACK.length).toBe(0)
+    })
+
+    it('reacts to disableGlobalStack flipping to false AFTER useStack() has already run, before activation', async () => {
+        const { isActive, disableGlobalStack } = mountStack(false, 100, true)
+
+        disableGlobalStack.value = false
+        isActive.value = true
+        await nextTick()
+        vi.runAllTimers()
+
+        expect(GLOBAL_STACK.length).toBe(1)
     })
 })
 

@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="mainClasses"
 			:style="mainStyles"
 	>
@@ -18,20 +19,20 @@
 		setup
 >
 	import { computed, StyleValue, toRef } from 'vue'
-	import {
-	useBorder,
-	useBothColor,
-	useElevation,
-	useLayout,
-	useMargin,
-	usePadding,
-	useProps,
-	useRounded,
-	useSsrBoot,
-	useStyle
-} from '../../composables'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLayout } from '../../composables/Commons/layout.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useSsrBoot } from '../../composables/Commons/ssrBoot.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IMainProps } from '../../interfaces'
+	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
+	import type { IMainEmits, IMainProps } from '../../interfaces/Main/main.interface'
 
 	/*********************************************************
 	 * Global
@@ -42,6 +43,10 @@
 	const props = withDefaults(defineProps<IMainProps>(), {tag: 'main'})
 
 	const {filterProps} = useProps<IMainProps>(props)
+
+	defineEmits<IMainEmits>()
+
+	defineSlots<ICommonsComponentSlots>()
 
 	/*********************************************************
 	 * Layout & decorators
@@ -71,8 +76,11 @@
 	 * mainStyles aggregates layout, ssr-boot and decorator styles.
 	 * mainClasses emits BEM modifiers.
 	 ********************************************************/
+	const {dimensionStyles} = useDimension(props)
+
 	const mainStyles = computed(() => {
 		return [
+			dimensionStyles.value,
 			mainLayoutStyles.value,
 			ssrBootStyles.value,
 			colorStyles.value,
@@ -98,7 +106,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(mainStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(mainStyles, () => props.id)
 
 
 	/*********************************************************
@@ -126,6 +134,8 @@
 
 		flex: var(--origam-main---flex);
 		max-width: var(--origam-main---max-width);
+		background-color: var(--origam-main---background-color);
+		color: var(--origam-main---color);
 		transition-duration: var(--origam-main---transition-duration);
 		transition-property: var(--origam-main---transition-property);
 		transition-timing-function: var(--origam-main---transition-timing-function);

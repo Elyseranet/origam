@@ -6,7 +6,7 @@
  *   - composables    → /api/reference/composable  → /composables/{slug}
  *   - directives     → /api/reference/directive   → /directives/{slug}
  *   - types/enums    → /api/reference/type        → /types/{slug}
- *   - pages statiques (installation, changelog, roadmap, wireframe, theming, figma-plugin)
+ *   - pages statiques (installation, changelog, roadmap, wireframe, theming)
  *
  * Le tableau est réactif : réinitialisation automatique quand les données API changent.
  *
@@ -66,15 +66,6 @@ const STATIC_PAGES: ICommand[] = [
         perform: () => undefined
     },
     {
-        id: 'page-figma-plugin',
-        label: 'Figma plugin',
-        description: 'Sync design tokens between Figma and origam',
-        icon: 'mdi-vector-bezier',
-        group: 'Pages',
-        keywords: ['figma', 'design', 'plugin', 'sync', 'tokens'],
-        perform: () => undefined
-    },
-    {
         id: 'page-why-origam',
         label: 'Why origam?',
         description: 'Design decisions and philosophy',
@@ -91,7 +82,6 @@ const STATIC_PAGE_HREFS: Record<string, string> = {
     'page-roadmap': '/roadmap',
     'page-wireframe': '/wireframe',
     'page-theming': '/theming',
-    'page-figma-plugin': '/figma-plugin',
     'page-why-origam': '/why-origam'
 }
 

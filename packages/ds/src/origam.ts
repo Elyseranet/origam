@@ -1,6 +1,15 @@
 import * as origamComponents from './components'
 
-import { createDate, createDefaults, createDisplay, createGoTo, createIcons, createLocale } from './composables'
+import {
+    createDate,
+    createDefaults,
+    createDisplay,
+    createGoTo,
+    createIcons,
+    createLocale,
+    installThemePropsResolver,
+    themedPropKeysUnion
+} from './composables'
 
 import {
     IN_BROWSER,
@@ -20,7 +29,7 @@ import { setContrastConfig } from './directives/Contrast/contrast.directive'
 
 import type { IDefault, INuxtAwareApp, IOrigamOptions, IOrigamTheme } from './interfaces'
 import type { TIconOptions, TModeResolved } from './types'
-import { applyThemes, getUid, installedThemesFromList, mergeDeep } from './utils'
+import { applyThemes, installedThemesFromList, mergeDeep } from './utils'
 
 import { origamTheme } from './themes/origam.theme'
 
@@ -65,6 +74,16 @@ export function createOrigam (origam: IOrigamOptions = {}) {
     // computeds won't re-evaluate.
     const defaultsRef = createDefaults({})
     defaultsRef.value = activeDefaultsFor(allThemes, allThemes[0]?.name ?? '', undefined)
+
+    // ADR-005 — the union of every prop key ANY registered theme names (not
+    // only the brand×mode active at mount, see `themedPropKeysUnion`'s own
+    // doc comment for why that scoping matters), used to decide which props
+    // `installThemePropsResolver` intercepts on `instance.props`. Computed
+    // once, eagerly, from the same install list `activeDefaultsFor` reads —
+    // pure, SSR-safe.
+    const themedKeysUnion = themedPropKeysUnion(
+        allThemes.map((theme) => theme.components).filter((components): components is IDefault => !!components)
+    )
 
     const scope = effectScope()
     return scope.run(() => {
@@ -113,6 +132,12 @@ export function createOrigam (origam: IOrigamOptions = {}) {
             app.provide(ORIGAM_GO_TO_KEY, goTo)
             app.provide(ORIGAM_THEMES_KEY, installedThemes)
             app.provide(ORIGAM_DEFAULTS_KEY, defaultsRef)
+            // ADR-005 — resolves `theme.components` into EVERY component's
+            // props, not just the 39 that opt in via `useDefaults()`. See
+            // `theme-props-resolver.composable.ts` for the full mechanism;
+            // this is invisible machinery, read that file before assuming a
+            // resolved prop value came from `withDefaults()`.
+            installThemePropsResolver(app, themedKeysUnion)
             // Resolver over the full install list so `<OrigamThemeProvider>` can
             // re-apply a named brand's default props to its sub-tree, mirroring
             // the document-root defaults collapse. Static (install-time) — no
@@ -138,7 +163,22 @@ export function createOrigam (origam: IOrigamOptions = {}) {
                 }
             }
 
-            getUid.reset()
+            /*********************************************************
+             * ⛔ No `getUid.reset()` here — do not reintroduce it
+             *
+             * @description
+             * It used to sit on this line, and it was the direct cause of the
+             * cross-request id bleed documented in
+             * `utils/Commons/getCurrentInstance.util.ts`.
+             * @description
+             * Nuxt's server plugin calls `createOrigam()` + `app.use()` ONCE
+             * PER REQUEST, so this line rewound module-global state in the
+             * middle of a DIFFERENT request's render.
+             * @description
+             * `getUid()` now derives its value from the component instance
+             * (Vue's `useId()`), which is already scoped per app: there is
+             * nothing left to reset, and nothing one request can do to another.
+             ********************************************************/
 
             if (typeof __VUE_OPTIONS_API__ !== 'boolean' || __VUE_OPTIONS_API__) {
                 app.mixin({

@@ -86,7 +86,11 @@ describe('OrigamBtn — no consumer `id`', () => {
         const wrapper = mountBtn()
         const domId = wrapper.element.getAttribute('id')
 
-        expect(domId).toMatch(/^origam-btn-\d+$/)
+        // The suffix is `getUid()`'s value, opaque since it became Vue's
+        // `useId()` (`v-0`, `v-2-0` past an async boundary) — pinning `\d+`
+        // here pinned the SSR-unsafe counter, not the behaviour under test,
+        // which is "a generated id exists at all".
+        expect(domId).toMatch(/^origam-btn-.+$/)
     })
 
     it('the generated rule still targets the element that carries it', () => {

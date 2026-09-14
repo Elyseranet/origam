@@ -1,5 +1,6 @@
 import type { IGradient, IGradientStop } from '../../interfaces/Commons/gradient.interface'
-import type { TColor, TIntent } from '../../types'
+import type { TColor } from '../../types/Commons/color.type'
+import type { TIntent } from '../../types/Commons/intent.type'
 
 import { intentTokenBase, isIntent } from './color.util'
 

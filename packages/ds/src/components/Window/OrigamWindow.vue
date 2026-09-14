@@ -1,11 +1,23 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			ref="rootRef"
 			v-touch="touchOptions"
 			:class="windowClasses"
 			:style="windowStyles"
+			aria-roledescription="carousel"
+			role="region"
 	>
+		<p
+				class="origam-window__live-region"
+				role="status"
+				aria-atomic="true"
+				aria-live="polite"
+		>
+			{{ slideAnnouncement }}
+		</p>
+
 		<div
 				:style="windowContainerStyles"
 				class="origam-window__container"
@@ -33,6 +45,8 @@
 								:bg-color="bgColor"
 								:hover="hover"
 								:active="active"
+								:hover-class="hoverClass"
+								:active-class="activeClass"
 						/>
 					</slot>
 
@@ -48,6 +62,8 @@
 								:bg-color="bgColor"
 								:hover="hover"
 								:active="active"
+								:hover-class="hoverClass"
+								:active-class="activeClass"
 						/>
 					</slot>
 				</slot>
@@ -66,29 +82,31 @@
 		setup
 >
 	import { computed, provide, ref, shallowRef, StyleValue, watch } from 'vue'
-	import { OrigamBtn, OrigamSpacer } from '../../components'
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamSpacer from '../Grids/OrigamSpacer.vue'
 
-	import {
-	useBorder,
-	useElevation,
-	useGroup,
-	useLocale,
-	useMargin,
-	usePadding,
-	useProps,
-	useRounded,
-	useStyle
-} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useGroup } from '../../composables/Commons/group.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ORIGAM_WINDOW_GROUP_KEY, ORIGAM_WINDOW_KEY } from '../../consts'
+	import { ORIGAM_WINDOW_GROUP_KEY, ORIGAM_WINDOW_KEY } from '../../consts/Window/window.const'
 
-	import { vTouch } from '../../directives'
+	import vTouch from '../../directives/Touch/touch.directive'
 
-	import { AXIS, DIRECTION, MDI_ICONS } from '../../enums'
+	import { AXIS } from '../../enums/Commons/drag.enum'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { ITouchHandlers, IWindowProps} from '../../interfaces'
+	import type { ITouchHandlers } from '../../interfaces/Commons/touch.interface'
+	import type { IWindowProps } from '../../interfaces/Window/window.interface'
 
-	import type { IWindowEmits } from '../../interfaces/Window/window.interface'
+	import type { IWindowEmits, IWindowSlots } from '../../interfaces/Window/window.interface'
 
 	/*********************************************************
 	 * Global
@@ -98,8 +116,13 @@
 	 * locale helper for ARIA labels on navigation buttons.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IWindowProps>(), {
-		// Affix icons were swapped: prev pointed right, next pointed left.
-		// Reversed so the chevrons match the scroll/navigation direction.
+		/*********************************************************
+		 * prevIcon
+		 *
+		 * @description
+		 * Affix icons were swapped: prev pointed right, next pointed left.
+		 * Reversed so the chevrons match the scroll/navigation direction.
+		 ********************************************************/
 		prevIcon: MDI_ICONS.CHEVRON_LEFT,
 		nextIcon: MDI_ICONS.CHEVRON_RIGHT,
 		touch: undefined,
@@ -107,16 +130,23 @@
 		selectedClass: 'origam-window-item--active',
 		mandatory: true,
 		tag: 'div',
-		// Vue 3 coerces unset Boolean-union props to `false` at runtime,
-		// which made `showArrows !== false` evaluate false on every variant
-		// that didn't explicitly opt-in — the entire `__controls` block
-		// was collapsed to a `<!--v-if-->` placeholder and there was no
-		// way to navigate. Default to `true` so navigation works out of
-		// the box; consumers can still pass `:show-arrows="false"` to hide.
+		/*********************************************************
+		 * showArrows
+		 *
+		 * @description
+		 * Vue 3 coerces unset Boolean-union props to `false` at runtime,
+		 * which made `showArrows !== false` evaluate false on every variant
+		 * that didn't explicitly opt-in — the entire `__controls` block
+		 * was collapsed to a `<!--v-if-->` placeholder and there was no
+		 * way to navigate. Default to `true` so navigation works out of
+		 * the box; consumers can still pass `:show-arrows="false"` to hide.
+		 ********************************************************/
 		showArrows: true
 	})
 
 	defineEmits<IWindowEmits>()
+
+	defineSlots<IWindowSlots>()
 
 	const {filterProps} = useProps<IWindowProps>(props)
 
@@ -148,6 +178,24 @@
 
 	const activeIndex = computed(() => {
 		return group.items.value.findIndex(item => group.selected.value.includes(item.id))
+	})
+
+	/*********************************************************
+	 * slideAnnouncement
+	 *
+	 * @description
+	 * #474 — the `origam.carousel.aria_label.delimiter` locale string
+	 * ("Carousel slide {0} of {1}") was translated but never read anywhere
+	 * in this component. A visually-hidden `role="status"` live region now
+	 * renders it with the 1-based current slide / total substituted in, so
+	 * assistive tech is told the slide changed after prev()/next()/swipe —
+	 * not just that the (correctly labelled) nav buttons exist.
+	 ********************************************************/
+	const slideAnnouncement = computed(() => {
+		const total = group.items.value.length
+		if (total === 0 || activeIndex.value < 0) return ''
+
+		return t('origam.carousel.aria_label.delimiter', activeIndex.value + 1, total)
 	})
 
 	watch(activeIndex, (newVal, oldVal) => {
@@ -185,12 +233,12 @@
 	const canMoveBack = computed(() => props.continuous || activeIndex.value !== 0)
 	const canMoveForward = computed(() => props.continuous || activeIndex.value !== group.items.value.length - 1)
 
-	const prevProps = {
+	const prevProps = computed(() => ({
 		icon: props.prevIcon,
-		class: `origam-window__prev`,
+		class: 'origam-window__prev',
 		onClick: group.prev,
 		'aria-label': t('origam.carousel.prev')
-	}
+	}))
 
 	const prev = () => {
 		if (canMoveBack.value) {
@@ -199,12 +247,12 @@
 		}
 	}
 
-	const nextProps = {
+	const nextProps = computed(() => ({
 		icon: props.nextIcon,
-		class: `origam-window__next`,
+		class: 'origam-window__next',
 		onClick: group.next,
 		'aria-label': t('origam.carousel.next')
-	}
+	}))
 
 	const next = () => {
 		if (canMoveForward.value) {
@@ -249,11 +297,16 @@
 	 * Root, container, and show-arrows-on-hover modifier
 	 * classes and styles for the window shell.
 	 ********************************************************/
-	// Cross-cutting SURFACE props (rounded / border / elevation / padding /
-	// margin) are consumed here so they actually paint the window shell —
-	// previously they were declared on the interface but silently ignored.
-	// color / bgColor / hover / active intentionally stay OUT (they're
-	// forwarded to the nav buttons, not the container).
+	/*********************************************************
+	 * const
+	 *
+	 * @description
+	 * Cross-cutting SURFACE props (rounded / border / elevation / padding /
+	 * margin) are consumed here so they actually paint the window shell —
+	 * previously they were declared on the interface but silently ignored.
+	 * color / bgColor / hover / active intentionally stay OUT (they're
+	 * forwarded to the nav buttons, not the container).
+	 ********************************************************/
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {elevationClasses, elevationStyles} = useElevation(props)
@@ -292,7 +345,7 @@
 			props.style
 		] as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(windowStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(windowStyles, () => props.id)
 
 
 	/*********************************************************
@@ -321,10 +374,22 @@
 
 		overflow: var(--origam-window---overflow, hidden);
 
+		&__live-region {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			padding: 0;
+			margin: -1px;
+			overflow: hidden;
+			clip: rect(0, 0, 0, 0);
+			white-space: nowrap;
+			border: 0;
+		}
+
 		&__container {
 			display: var(--origam-window__container---display, flex);
 			flex-direction: var(--origam-window__container---flex-direction, column);
-			height: inherit;
+			height: var(--origam-window__container---height, inherit);
 			position: var(--origam-window__container---position, relative);
 			transition:
 				var(--origam-window---transition-duration, 0.3s)

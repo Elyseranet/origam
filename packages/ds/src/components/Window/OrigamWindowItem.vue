@@ -5,6 +5,8 @@
 	>
 		<div
 				v-show="isShown"
+				v-bind="$attrs"
+				:id="id"
 				v-touch
 				:class="windowItemClasses"
 				:style="windowItemStyles"
@@ -22,25 +24,23 @@
 		setup
 >
 	import { computed, inject, nextTick, shallowRef, StyleValue } from 'vue'
-	import { OrigamTransition } from '../../components'
+	import OrigamTransition from '../Transition/OrigamTransition.vue'
 
-	import {
-	useGroupItem,
-	useLazy,
-	useProps,
-	useSsrBoot,
-	useStyle
-} from '../../composables'
+	import { useGroupItem } from '../../composables/Commons/groupItem.composable'
+	import { useLazy } from '../../composables/Commons/lazy.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSsrBoot } from '../../composables/Commons/ssrBoot.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ORIGAM_WINDOW_GROUP_KEY, ORIGAM_WINDOW_KEY } from '../../consts'
+	import { ORIGAM_WINDOW_GROUP_KEY, ORIGAM_WINDOW_KEY } from '../../consts/Window/window.const'
 
-	import { vTouch } from '../../directives'
+	import vTouch from '../../directives/Touch/touch.directive'
 
-	import type { IWindowItemProps} from '../../interfaces'
+	import type { IWindowItemProps } from '../../interfaces/Window/window-item.interface'
 
-	import type { IWindowItemEmits } from '../../interfaces/Window/window-item.interface'
+	import type { IWindowItemEmits, IWindowItemSlots } from '../../interfaces/Window/window-item.interface'
 
-	import { convertToUnit } from '../../utils'
+	import { convertToUnit } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global
@@ -50,12 +50,37 @@
 	 * injection of the parent window context and group item
 	 * registration.
 	 ********************************************************/
+	/*********************************************************
+	 * inheritAttrs
+	 *
+	 * @description
+	 * The template root is `<origam-transition>`, whose own root is Vue's
+	 * built-in `<Transition>` — a renderless component that forwards nothing
+	 * to the element it animates. Every fallthrough attribute therefore
+	 * landed on `<Transition>` and was dropped: `role`, `aria-*`, `title`,
+	 * `data-*` could not be set on a window item from the outside at all.
+	 * That is what made the ARIA APG carousel pattern (`role="group"` +
+	 * `aria-roledescription="slide"` on each slide) unreachable here and on
+	 * `<OrigamCarouselItem>`, which composes this component.
+	 *
+	 * @description
+	 * Attrs are re-bound on the real `.origam-window-item` element below.
+	 * Nothing regresses by moving them: the transition lifecycle hooks this
+	 * component needs travel through the `transition` PROP object built in
+	 * the `transition` computed, never through attrs.
+	 ********************************************************/
+	defineOptions({inheritAttrs: false})
+
 	const props = withDefaults(defineProps<IWindowItemProps>(), {
 		transition: undefined,
 		reverseTransition: undefined
 	})
 
 	defineEmits<IWindowItemEmits>()
+
+	defineSlots<IWindowItemSlots>()
+
+
 
 	const {filterProps} = useProps<IWindowItemProps>(props)
 
@@ -186,7 +211,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(windowItemStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(windowItemStyles, () => props.id)
 
 
 	/*********************************************************
@@ -215,14 +240,19 @@
 		&--x-transition-enter-active,
 		&--x-transition-leave-active,
 		&--x-reverse-transition-enter-active,
-		&--x-reverse-transition-leave-active,
+		&--x-reverse-transition-leave-active {
+			transition:
+				var(--origam-window-item---x-transition-duration, 0.3s)
+				var(--origam-window-item---x-transition-easing, cubic-bezier(0.25, 0.8, 0.5, 1));
+		}
+
 		&--y-transition-enter-active,
 		&--y-transition-leave-active,
 		&--y-reverse-transition-enter-active,
 		&--y-reverse-transition-leave-active {
 			transition:
-				var(--origam-window-item---x-transition-duration, 0.3s)
-				var(--origam-window-item---x-transition-easing, cubic-bezier(0.25, 0.8, 0.5, 1));
+				var(--origam-window-item---y-transition-duration, 0.3s)
+				var(--origam-window-item---y-transition-easing, cubic-bezier(0.25, 0.8, 0.5, 1));
 		}
 
 		&--x-transition-leave-from,
@@ -270,5 +300,78 @@
 		&--y-reverse-transition-leave-to {
 			transform: translateY(100%);
 		}
+	}
+
+	/*********************************************************
+	 * origam-fade-transition / origam-scale-rotate-transition
+	 *
+	 * @description
+	 * ⛔ issue #475 — `transition="origam-fade-transition"` /
+	 * `"origam-scale-rotate-transition"` were documented (story + doc) as
+	 * valid `<OrigamWindowItem>` transition names with NO backing CSS at
+	 * all — a silent hard cut, no animation, no error. These are BARE
+	 * (non-BEM) top-level selectors, not nested under `.origam-window-item`,
+	 * because a raw string passed to `transition`/`reverseTransition` is
+	 * used AS-IS as Vue's native `<Transition name="…">` — it does NOT go
+	 * through the `origam-window-item--{axis}{direction}-transition`
+	 * default the parent `<OrigamWindow>` computes (see `transition`
+	 * computed above: `name` is used verbatim when it's already a string).
+	 *
+	 * @description
+	 * Deliberately NOT reusing `<OrigamFade>`/`<OrigamScaleRotate>`'s own
+	 * `.origam-transition--fade-*` / `.origam-transition--scale-rotate-*`
+	 * classes even though those already exist and work — they don't set
+	 * `position: absolute` on the leaving item, which THIS component
+	 * needs (see the `--x-transition-leave-from/-leave-to` block above):
+	 * without it, the leaving and entering items both sit in the flex
+	 * column's normal flow and visibly stack instead of crossfading in
+	 * place. `--item-fade-transition-duration/-easing` was already a
+	 * registered, emitted token before this fix (a vestige of a feature
+	 * started and never finished) — reused here; `--item-scale-rotate-transition-…`
+	 * added as its sibling in `tokens/component/window.json`.
+	 ********************************************************/
+	.origam-fade-transition-enter-active,
+	.origam-fade-transition-leave-active {
+		transition:
+			var(--origam-window---item-fade-transition-duration, 0.2s)
+			var(--origam-window---item-fade-transition-easing, cubic-bezier(0, 0, 0.2, 1));
+	}
+
+	.origam-fade-transition-leave-from,
+	.origam-fade-transition-leave-to {
+		position: absolute !important;
+		top: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	.origam-fade-transition-enter-from,
+	.origam-fade-transition-leave-to {
+		opacity: 0;
+	}
+
+	.origam-scale-rotate-transition-enter-active,
+	.origam-scale-rotate-transition-leave-active {
+		transition:
+			var(--origam-window---item-scale-rotate-transition-duration, 0.3s)
+			var(--origam-window---item-scale-rotate-transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
+	}
+
+	.origam-scale-rotate-transition-leave-from,
+	.origam-scale-rotate-transition-leave-to {
+		position: absolute !important;
+		top: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	.origam-scale-rotate-transition-enter-from {
+		opacity: 0;
+		transform: scale(0.9) rotate(-4deg);
+	}
+
+	.origam-scale-rotate-transition-leave-to {
+		opacity: 0;
+		transform: scale(0.9) rotate(4deg);
 	}
 </style>

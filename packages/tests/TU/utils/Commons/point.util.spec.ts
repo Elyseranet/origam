@@ -14,7 +14,7 @@ import {
     inViewport,
     getCenter,
 } from '@origam/utils/Commons/point.util'
-import { Box } from '@origam/services/Commons/box.service'
+import { Box } from '@origam/classes/Commons/box.class'
 
 // ─── elementToViewport ────────────────────────────────────────────────────────
 

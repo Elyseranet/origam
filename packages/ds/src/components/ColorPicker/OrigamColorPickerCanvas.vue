@@ -1,6 +1,8 @@
 <template>
 	<div
+			:id="id"
 			ref="resizeRef"
+			:aria-disabled="disabled"
 			:aria-label="canvasAriaLabel"
 			:aria-valuetext="canvasAriaValueText"
 			:class="colorPickerCanvasClasses"
@@ -31,15 +33,24 @@
 		lang="ts"
 		setup
 >
-	import { useLocale, useProps, useResizeObserver, useStyle } from "../../composables"
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useResizeObserver } from '../../composables/Commons/resizeObserver.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { KEYBOARD_VALUES } from "../../enums"
+	import { COLOR_NULL } from '../../consts/ColorPicker/color-picker.const'
 
-	import type { IColorPickerCanvasProps } from "../../interfaces"
+	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
+
+  import type {
+    IColorPickerCanvasProps,
+    IColorPickerCanvasSlots
+  } from '../../interfaces/ColorPicker/color-picker-canvas.interface'
 
 	import type { IColorPickerCanvasEmits } from '../../interfaces/ColorPicker/color-picker-canvas.interface'
 
-	import { clamp, convertToUnit, getEventCoordinates, int } from "../../utils"
+	import { clamp, convertToUnit, getEventCoordinates, int } from '../../utils/Commons/commons.util'
 
 	import { computed, onMounted, ref, shallowRef, StyleValue, watch } from "vue"
 
@@ -56,6 +67,8 @@
 	})
 
 	const emits = defineEmits<IColorPickerCanvasEmits>()
+
+  defineSlots<IColorPickerCanvasSlots>()
 
 	const {filterProps} = useProps<IColorPickerCanvasProps>(props)
 	const {t} = useLocale()
@@ -187,9 +200,13 @@
 		if (props.disabled) return
 
 		const step = e.shiftKey ? STEP_LARGE : STEP_SMALL
-		const hsv = props.colorHsv
-
-		if (!hsv) return
+		// A picker that has no colour yet (an empty OrigamColorPickerField
+		// opens in exactly that state) must still answer the keyboard: a
+		// mouse click on this same canvas commits a colour from null, and
+		// this element advertises `role="application"`, `tabindex="0"` and a
+		// live `aria-valuetext`. Bailing out on a null colour made it inert
+		// for keyboard users precisely when they had nothing to start from.
+		const hsv = props.colorHsv ?? COLOR_NULL
 
 		const {h, a} = hsv
 		let {s, v} = hsv
@@ -319,8 +336,11 @@
 	 * Composes BEM classes and passes through host styles.
 	 ********************************************************/
 
+	const {dimensionStyles} = useDimension(props)
+
 	const colorPickerCanvasStyles = computed(() => {
 		return [
+			dimensionStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -330,7 +350,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(colorPickerCanvasStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(colorPickerCanvasStyles, () => props.id)
 
 
 	/*********************************************************
@@ -377,8 +397,8 @@
 			width: 15px;
 			height: 15px;
 			background: transparent;
-			border-radius: 50%;
-			box-shadow: 0 0 0 1.5px #fff, inset 0 0 1px 1.5px #0000004d;
+			border-radius: var(--origam-color-picker__canvas__dot---border-radius, 50%);
+			box-shadow: var(--origam-color-picker__canvas__dot---box-shadow, 0 0 0 1.5px #fff, inset 0 0 1px 1.5px #0000004d);
 
 			&--disabled {
 				box-shadow: 0 0 0 1.5px #ffffffb3, inset 0 0 1px 1.5px #0000004d

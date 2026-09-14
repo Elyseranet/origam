@@ -1,22 +1,24 @@
 import type {
     IBgColorProps,
-    IBorderProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type {
     ICommonsComponentProps,
-    IDimensionProps,
-    IElevationProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
     ITagProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
 
 import type {
     TGridAutoFlow,
     TGridGapSize,
     TGridPlaceContent,
     TGridPlaceItems
-} from '../../types'
+} from '../../types/Grid/grid.type'
 
 /**
  * Tracks definition accepted by `columns` / `rows` / `autoColumns` /
@@ -63,7 +65,8 @@ export interface IGridProps extends ICommonsComponentProps, ITagProps, IDimensio
      * Both-axis gap. Accepts:
      *
      * - one of the size tokens `'xs' | 'sm' | 'md' | 'lg' | 'xl'`
-     *   (resolved via `tokens/component/grid.json`).
+     *   (resolved to `var(--origam-grid---gap-{token})`, declared in
+     *   `assets/css/tokens/light.css` / `dark.css`).
      * - any CSS length string (`'24px'`, `'1rem'`, `'1rem 2rem'`).
      * - a plain `number` interpreted as pixels.
      *
@@ -138,3 +141,12 @@ export interface IGridProps extends ICommonsComponentProps, ITagProps, IDimensio
      */
     inline?: boolean
 }
+
+/*********************************************************
+ * IGridEmits
+ *
+ * @description
+ * Emits fired by `<OrigamGrid>` — none. A declarative CSS Grid
+ * container, purely presentational.
+ ********************************************************/
+export interface IGridEmits {}

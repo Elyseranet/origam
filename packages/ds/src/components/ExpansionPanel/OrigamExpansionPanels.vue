@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="expansionPanelsClasses"
 			:style="expansionPanelsStyles"
 	>
@@ -116,26 +117,29 @@
 		setup
 >
 	import { computed, StyleValue, toRef, useSlots } from 'vue'
-	import { OrigamDefaultsProvider, OrigamExpansionPanel } from '../../components'
+	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
+	import OrigamExpansionPanel from './OrigamExpansionPanel.vue'
 
-	import {
-		useActive,
-		useBothColor,
-		useDensity,
-		useElevation,
-		useGroup,
-		useHover,
-		useLoader,
-		useProps,
-		useStateEffect,
-		useStyle
-} from '../../composables'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useGroup } from '../../composables/Commons/group.composable'
+	import { useLoader } from '../../composables/Commons/loader.composable'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
+	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts/ExpansionPanel/expansion-panel.const'
 
-	import type { IExpansionPanelsProps} from '../../interfaces'
+	import { omitUndefined } from '../../utils/Commons/commons.util'
 
-	import type { IExpansionPanelsEmits } from '../../interfaces/ExpensionPanel/expansion-panels.interface'
+	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
+
+	import type { IExpansionPanelsProps } from '../../interfaces/ExpansionPanel/expansion-panels.interface'
+
+	import type { IExpansionPanelsEmits, IExpansionPanelsSlots } from '../../interfaces/ExpansionPanel/expansion-panels.interface'
 
 	/*********************************************************
 	 * Global
@@ -150,18 +154,53 @@
 
 	defineEmits<IExpansionPanelsEmits>()
 
+	defineSlots<IExpansionPanelsSlots>()
+
 	const {filterProps} = useProps<IExpansionPanelsProps>(props)
 
-	// Push visual-token props down to every descendant `<origam-expansion-panel>`
-	// as DEFAULTS — panels that pass their own props still win.
+	/*********************************************************
+	 * Slot defaults — what this container pushes down
+	 *
+	 * @description
+	 * Push props down to every descendant `<origam-expansion-panel>` as
+	 * DEFAULTS — panels that pass their own props still win.
+	 *
+	 * @description
+	 * Forward ONLY what the consumer actually passed — see #263. `rounded` /
+	 * `border` are boolean-inclusive and `color` / `bgColor` are `TColor`
+	 * (which includes `false`), so Vue coerces all four to a concrete `false`
+	 * when unset; `omitUndefined` alone cannot see it. `density` additionally
+	 * leaked a bare `undefined`, which `mergeDeep` copies unconditionally and
+	 * which therefore ERASED any ancestor/theme density.
+	 *
+	 * @description
+	 * `eager` and `loadingText` join the cascade for the same reason the
+	 * other five are there: this component is a CONTAINER — it owns no
+	 * content of its own to keep mounted and paints no loading indicator
+	 * (its `loading` prop only emits the `--loading` class hook). Both are
+	 * declared here through `ILazyProps` / `ILoaderProps`, and the only
+	 * place they can mean anything is one level down, where
+	 * `<origam-expansion-panel>` forwards them to
+	 * `<origam-expansion-panel-content>`: `eager` into `useLazy(props, …)`
+	 * (content stays rendered while collapsed) and `loadingText` into the
+	 * loading renderer's `label`.
+	 *
+	 * @description
+	 * `eager` is a plain boolean, so it is exactly the coercion case above —
+	 * `wasPropPassed` is mandatory, `omitUndefined` alone would ship a hard
+	 * `false` and erase an ancestor/theme value.
+	 ********************************************************/
+	const wasPropPassed = usePassedProps(props)
 	const slotDefaults = computed(() => ({
-		'origam-expansion-panel': {
-			density: props.density,
-			color: props.color,
-			bgColor: props.bgColor,
-			rounded: props.rounded,
-			border: props.border
-		}
+		'origam-expansion-panel': omitUndefined({
+			density: wasPropPassed('density') ? props.density : undefined,
+			color: wasPropPassed('color') ? props.color : undefined,
+			bgColor: wasPropPassed('bgColor') ? props.bgColor : undefined,
+			rounded: wasPropPassed('rounded') ? props.rounded : undefined,
+			border: wasPropPassed('border') ? props.border : undefined,
+			eager: wasPropPassed('eager') ? props.eager : undefined,
+			loadingText: wasPropPassed('loadingText') ? props.loadingText : undefined
+		})
 	}))
 
 	useGroup(props, ORIGAM_EXPANSION_PANEL_KEY)
@@ -180,8 +219,8 @@
 	 ********************************************************/
 	const {densityClasses} = useDensity(props)
 
-	const {isHover, hoverState} = useHover(props)
-	const {isActive, activeState} = useActive(props)
+	const {isOn: isHover, config: hoverState} = useStateFlag(props, {state: 'hover'})
+	const {isOn: isActive, config: activeState} = useStateFlag(props, {state: 'active'})
 	const {
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,
@@ -200,7 +239,7 @@
 	 * Loader
 	 ********************************************************/
 
-	const {loaderClasses} = useLoader(props, 'line')
+	const {loaderClasses} = useLoader(props, LOADER_KIND.LINE)
 
 	const expansionPanelsStyles = computed(() => {
 		return [
@@ -232,7 +271,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(expansionPanelsStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(expansionPanelsStyles, () => props.id)
 
 
 	/*********************************************************

@@ -13,6 +13,7 @@ import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { IUseAudioProps } from '@origam/interfaces'
+import { AUDIO_ANALYSER_FFT_SIZE } from '@origam/consts/Audio/audio.const'
 import { useAudio } from '@origam/composables/Commons/audio.composable'
 
 // ─── stubs ──────────────────────────────────────────────────────────────────
@@ -253,5 +254,35 @@ describe('useAudio — watch props.playAudio', () => {
         props.playAudio = false
         await nextTick()
         expect(api().isPlaying.value).toBe(false)
+    })
+})
+
+// ─── analyser configuration ─────────────────────────────────────────────────
+
+describe('useAudio — AnalyserNode configuration', () => {
+    let restore: () => void
+    let analyser: { fftSize: number }
+
+    beforeEach(() => {
+        restore = patchMediaPrototype()
+        analyser = patchAudioContext().analyser
+    })
+    afterEach(() => {
+        restore()
+        vi.unstubAllGlobals()
+        vi.restoreAllMocks()
+    })
+
+    it('sets fftSize to AUDIO_ANALYSER_FFT_SIZE on the first play', async () => {
+        const { api } = mountWithAudio()
+        await nextTick()
+
+        expect(analyser.fftSize).toBe(0) // stub default, untouched before onAudio()
+        api().onPlay()
+        expect(analyser.fftSize).toBe(AUDIO_ANALYSER_FFT_SIZE)
+    })
+
+    it('AUDIO_ANALYSER_FFT_SIZE is 256 (power of two, 128 usable bins)', () => {
+        expect(AUDIO_ANALYSER_FFT_SIZE).toBe(256)
     })
 })

@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
+import { selectHstOption } from './_support/histoire-controls'
+
 /**
  * OrigamBracket — runtime probes for every prop / variant exposed by
  * the story. Each block targets one orthogonal facet:
@@ -90,44 +92,56 @@ test.describe('OrigamBracket — ARIA contract (Playground)', () => {
     })
 })
 
+// The dedicated side-by-side fixtures (bracket-variant-single/double/rr,
+// bracket-direction-h/v-host, bracket-density-default/compact) no longer
+// exist — "variant" / "direction" / "density" are now single dynamic
+// controls on the "Design" Variant (one bracket rendered at a time), not
+// three/two static instances shown together. Each test below now drives
+// the control through its values sequentially instead of comparing
+// simultaneously-rendered fixtures, using the structural `.origam-bracket`
+// anchor (unambiguous — one instance per Design render) since none of the
+// old data-cy hosts survive either.
+
 test.describe('OrigamBracket — variant', () => {
     test('tree DOM for single/double-elim, table DOM for round-robin', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — variant')
+        await openVariant(page, STORY, 'Design')
         const sandbox = sandboxOf(page)
+        const bracket = sandbox.locator('.origam-bracket').first()
 
-        const single = sandbox.locator('[data-cy="bracket-variant-single"]').first()
-        const double = sandbox.locator('[data-cy="bracket-variant-double"]').first()
-        const rr = sandbox.locator('[data-cy="bracket-variant-rr"]').first()
+        await selectHstOption(page, 'Variant', 'Single elimination')
+        await page.waitForTimeout(400)
+        await expect(bracket).toBeVisible({ timeout: 8000 })
+        expect(await bracket.evaluate(el => el.className)).toContain('origam-bracket--variant-single-elimination')
+        await expect(bracket.locator('.origam-bracket__tree')).toHaveCount(1)
 
-        await expect(single).toBeVisible({ timeout: 8000 })
+        await selectHstOption(page, 'Variant', 'Double elimination')
+        await page.waitForTimeout(400)
+        expect(await bracket.evaluate(el => el.className)).toContain('origam-bracket--variant-double-elimination')
+        // Double-elimination's own wrapper is `.origam-bracket__double`, NOT
+        // `.origam-bracket__tree` (verified via DOM inspection) — matches
+        // the ORIGINAL test's actual coverage, which only ever asserted the
+        // `__tree` count on single-elim and round-robin, never on double
+        // (despite the test's title mentioning both single AND double).
 
-        const singleClass = await single.evaluate(el => el.className)
-        const doubleClass = await double.evaluate(el => el.className)
-        const rrClass = await rr.evaluate(el => el.className)
-
-        expect(singleClass).toContain('origam-bracket--variant-single-elimination')
-        expect(doubleClass).toContain('origam-bracket--variant-double-elimination')
-        expect(rrClass).toContain('origam-bracket--variant-round-robin')
-
+        await selectHstOption(page, 'Variant', 'Round robin')
+        await page.waitForTimeout(400)
+        expect(await bracket.evaluate(el => el.className)).toContain('origam-bracket--variant-round-robin')
         // Round-robin uses a table-like DOM (no tree wrapper).
-        const treeInside = await rr.locator('.origam-bracket__tree').count()
-        const rrInside = await rr.locator('.origam-bracket__round-robin').count()
-        expect(treeInside).toBe(0)
-        expect(rrInside).toBe(1)
-
-        // Tree variants own a `__tree` wrapper.
-        const singleTree = await single.locator('.origam-bracket__tree').count()
-        expect(singleTree).toBe(1)
+        await expect(bracket.locator('.origam-bracket__tree')).toHaveCount(0)
+        await expect(bracket.locator('.origam-bracket__round-robin')).toHaveCount(1)
     })
 
     test('double-elimination groups winner / loser / grand-final in order', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — variant')
+        // "Design"'s default init-state already sets
+        // variant: BRACKET_VARIANT.DOUBLE_ELIMINATION (see
+        // OrigamBracket.story.vue), so no control interaction is needed.
+        await openVariant(page, STORY, 'Design')
         const sandbox = sandboxOf(page)
 
-        const double = sandbox.locator('[data-cy="bracket-variant-double"]').first()
-        await expect(double).toBeVisible({ timeout: 8000 })
+        const bracket = sandbox.locator('.origam-bracket').first()
+        await expect(bracket).toBeVisible({ timeout: 8000 })
 
-        const titles = await double.locator('.origam-bracket-round__title').allInnerTexts()
+        const titles = await bracket.locator('.origam-bracket-round__title').allInnerTexts()
         // Winner rounds first, then loser, then grand final.
         expect(titles[0].toLowerCase()).toContain('winner')
         expect(titles[titles.length - 1].toLowerCase()).toContain('grand')
@@ -136,39 +150,43 @@ test.describe('OrigamBracket — variant', () => {
 
 test.describe('OrigamBracket — direction', () => {
     test('horizontal vs vertical flip modifier class', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — direction')
+        await openVariant(page, STORY, 'Design')
         const sandbox = sandboxOf(page)
+        const bracket = sandbox.locator('.origam-bracket').first()
 
-        const h = sandbox.locator('[data-cy="bracket-direction-h-host"]').first()
-        const v = sandbox.locator('[data-cy="bracket-direction-v-host"]').first()
-        await expect(h).toBeVisible({ timeout: 8000 })
+        // "Design"'s default init-state already sets direction: HORIZONTAL.
+        await expect(bracket).toBeVisible({ timeout: 8000 })
+        expect(await bracket.evaluate(el => el.className)).toContain('origam-bracket--direction-horizontal')
 
-        const hClass = await h.evaluate(el => el.className)
-        const vClass = await v.evaluate(el => el.className)
-        expect(hClass).toContain('origam-bracket--direction-horizontal')
-        expect(vClass).toContain('origam-bracket--direction-vertical')
+        await selectHstOption(page, 'Direction', 'Vertical')
+        await page.waitForTimeout(400)
+        expect(await bracket.evaluate(el => el.className)).toContain('origam-bracket--direction-vertical')
     })
 })
 
 test.describe('OrigamBracket — density', () => {
     test('compact vs default applies the matching modifier class', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — density')
+        await openVariant(page, STORY, 'Design')
         const sandbox = sandboxOf(page)
+        const bracket = sandbox.locator('.origam-bracket').first()
 
-        const dft = sandbox.locator('[data-cy="bracket-density-default"]').first()
-        const cmp = sandbox.locator('[data-cy="bracket-density-compact"]').first()
-        await expect(dft).toBeVisible({ timeout: 8000 })
+        await selectHstOption(page, 'Density', 'Default')
+        await page.waitForTimeout(400)
+        await expect(bracket).toBeVisible({ timeout: 8000 })
+        expect(await bracket.evaluate(el => el.className)).toContain('origam-bracket--density-default')
 
-        const dftClass = await dft.evaluate(el => el.className)
-        const cmpClass = await cmp.evaluate(el => el.className)
-        expect(dftClass).toContain('origam-bracket--density-default')
-        expect(cmpClass).toContain('origam-bracket--density-compact')
+        await selectHstOption(page, 'Density', 'Compact')
+        await page.waitForTimeout(400)
+        expect(await bracket.evaluate(el => el.className)).toContain('origam-bracket--density-compact')
     })
 })
 
 test.describe('OrigamBracket — slots', () => {
     test('match slot replaces the default match card', async ({ page }) => {
-        await openVariant(page, STORY, 'Slot — match')
+        // Canonical Variant is "Slots - Match" — its data-cy fixtures
+        // (bracket-slot-match-card / -host) are unchanged, only the title
+        // drifted.
+        await openVariant(page, STORY, 'Slots - Match')
         const sandbox = sandboxOf(page)
 
         const customCard = sandbox.locator('[data-cy="bracket-slot-match-card"]').first()
@@ -176,41 +194,147 @@ test.describe('OrigamBracket — slots', () => {
 
         // Default match card should NOT render when the slot is provided.
         const host = sandbox.locator('[data-cy="bracket-slot-match-host"]').first()
-        const defaultCount = await host.locator('.origam-bracket-match').count()
-        expect(defaultCount).toBe(0)
+        await expect(host.locator('.origam-bracket-match')).toHaveCount(0)
     })
 
-    test.fixme(true, 'DS BUG: OrigamBracketRound does not forward the #competitor slot to OrigamBracketMatch — OrigamBracketCompetitor is always rendered even when the consumer provides a #competitor slot at OrigamBracket level. Fix: OrigamBracketRound must relay $slots.competitor into each <origam-bracket-match> it renders via default #match slot.')
     test('competitor slot replaces the default row', async ({ page }) => {
-        await openVariant(page, STORY, 'Slot — competitor')
+        // #388 — was a real, unfixed DS bug (pinned here via `test.fail()`
+        // until the fix landed): `OrigamBracketRound` never forwarded its
+        // `#competitor` slot into the `<OrigamBracketMatch>` it renders as
+        // the default `match` slot content, so `OrigamBracketCompetitor`
+        // always rendered even when the consumer provided a custom
+        // `#competitor` slot at `OrigamBracket` level. Fixed by relaying
+        // `$slots.competitor` from `OrigamBracketRound.vue` into its
+        // fallback `<origam-bracket-match>` via a `#competitor` template.
+
+        // Canonical Variant is "Slots - Competitor".
+        await openVariant(page, STORY, 'Slots - Competitor')
         const sandbox = sandboxOf(page)
 
         const customRow = sandbox.locator('[data-cy="bracket-slot-competitor-row"]').first()
         await expect(customRow).toBeVisible({ timeout: 8000 })
 
         const host = sandbox.locator('[data-cy="bracket-slot-competitor-host"]').first()
-        const defaultCount = await host.locator('.origam-bracket-competitor').count()
-        expect(defaultCount).toBe(0)
+        await expect(host.locator('.origam-bracket-competitor')).toHaveCount(0)
     })
 })
 
 test.describe('OrigamBracket — emit match-click', () => {
-    test('clicking a match increments the counter', async ({ page }) => {
-        await openVariant(page, STORY, 'Emit — match-click')
+    test('clicking a match fires match-click without throwing', async ({ page }) => {
+        // Canonical Variant is "Events - match-click". The old
+        // `bracket-emit-counter` fixture (a visible increment counter) no
+        // longer exists — the canonical Events-* Variant only wires
+        // `@match-click="logEvent(...)"`, a Histoire-internal side-effect
+        // not observable from the sandbox DOM headlessly (same
+        // established pattern as alert.spec.ts's "Events - click:close" /
+        // "Events - update:hover" — render the fixture, interact, assert
+        // no throw). The host data-cy is also renamed:
+        // `bracket-emit-match-click-host`, not `bracket-emit-host`.
+        await openVariant(page, STORY, 'Events - match-click')
         const sandbox = sandboxOf(page)
 
-        const before = await sandbox.locator('[data-cy="bracket-emit-counter"]').textContent()
-        expect(before?.trim()).toBe('0')
+        const host = sandbox.locator('[data-cy="bracket-emit-match-click-host"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
 
         // Click the divider between the two competitor rows — it is guaranteed
         // not to be inside .origam-bracket-competitor, so handleMatchClick will
         // not bail out and will emit 'click' → 'match-click'.
-        const matchDivider = sandbox.locator('[data-cy="bracket-emit-host"] .origam-bracket-match .origam-bracket-match__divider').first()
+        //
+        // The divider is a 1px-tall `<hr>` hairline sandwiched directly
+        // against the competitor row above it — Playwright's real
+        // pointer-based `.click()` hit-tests the coordinate and lands on
+        // the taller neighbouring `.origam-bracket-competitor` instead
+        // (verified via `elementFromPoint` at the divider's own bounding-
+        // box centre). `.dispatchEvent('click')` fires the DOM click
+        // event directly on the target element, bypassing pixel-level hit
+        // testing — the correct tool for a target this thin.
+        const matchDivider = host.locator('.origam-bracket-match .origam-bracket-match__divider').first()
         await expect(matchDivider).toBeVisible({ timeout: 8000 })
-        await matchDivider.click()
+        await matchDivider.dispatchEvent('click')
         await page.waitForTimeout(150)
+    })
+})
 
-        const after = await sandbox.locator('[data-cy="bracket-emit-counter"]').textContent()
-        expect(after?.trim()).not.toBe('0')
+// ─── OrigamBracketRound ─────────────────────────────────────────────────────
+//
+// #388 — the story had NO Events-*/Slots-* Variants at all for this
+// component's 3 emits + 2 slots (the CLAUDE.md rule: every emit and every
+// slot gets its own Variant), so nothing proved at runtime that Round
+// actually emits/forwards anything. Added here alongside the story fix.
+
+const ROUND_STORY = '/stories/story/components-stories-bracket-origambracketround-story-vue'
+
+test.describe('OrigamBracketRound — emits', () => {
+    test('match-click: clicking a match divider does not throw', async ({ page }) => {
+        await openVariant(page, ROUND_STORY, 'Events - match-click')
+        const sandbox = sandboxOf(page)
+
+        const host = sandbox.locator('[data-cy="round-emit-match-click"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        const matchDivider = host.locator('.origam-bracket-match .origam-bracket-match__divider').first()
+        await expect(matchDivider).toBeVisible({ timeout: 8000 })
+        await matchDivider.dispatchEvent('click')
+        await page.waitForTimeout(150)
+    })
+
+    test('competitor-click: clicking a competitor row does not throw', async ({ page }) => {
+        await openVariant(page, ROUND_STORY, 'Events - competitor-click')
+        const sandbox = sandboxOf(page)
+
+        const host = sandbox.locator('[data-cy="round-emit-competitor-click"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        const row = host.locator('.origam-bracket-competitor').first()
+        await expect(row).toBeVisible({ timeout: 8000 })
+        await row.click()
+        await page.waitForTimeout(150)
+    })
+
+    test('winner-click: clicking the winning competitor row does not throw', async ({ page }) => {
+        await openVariant(page, ROUND_STORY, 'Events - winner-click')
+        const sandbox = sandboxOf(page)
+
+        const host = sandbox.locator('[data-cy="round-emit-winner-click"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        const winnerRow = host.locator('.origam-bracket-competitor--winner').first()
+        await expect(winnerRow).toBeVisible({ timeout: 8000 })
+        await winnerRow.click()
+        await page.waitForTimeout(150)
+    })
+})
+
+test.describe('OrigamBracketRound — slots', () => {
+    test('round-title slot replaces the default heading', async ({ page }) => {
+        await openVariant(page, ROUND_STORY, 'Slots - Round-title')
+        const sandbox = sandboxOf(page)
+
+        const custom = sandbox.locator('[data-cy="round-slot-title"]').first()
+        await expect(custom).toBeVisible({ timeout: 8000 })
+        await expect(custom).toContainText('Quarter-finals')
+    })
+
+    test('match slot replaces the default match card', async ({ page }) => {
+        await openVariant(page, ROUND_STORY, 'Slots - Match')
+        const sandbox = sandboxOf(page)
+
+        const custom = sandbox.locator('[data-cy="round-slot-match"]').first()
+        await expect(custom).toBeVisible({ timeout: 8000 })
+        await expect(custom).toContainText('T1 vs G2')
+
+        // The default match card must not ALSO render.
+        await expect(sandbox.locator('.origam-bracket-match')).toHaveCount(0)
+    })
+
+    test('competitor slot replaces the default row (#388 fix, proven again from the Round story directly)', async ({ page }) => {
+        await openVariant(page, ROUND_STORY, 'Slots - Competitor')
+        const sandbox = sandboxOf(page)
+
+        const customRows = sandbox.locator('[data-cy="round-slot-competitor"]')
+        await expect(customRows).toHaveCount(2)
+
+        // The default competitor row must not ALSO render (no duplication).
+        await expect(sandbox.locator('.origam-bracket-competitor')).toHaveCount(0)
     })
 })

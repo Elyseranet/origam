@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="colClasses"
 			:style="colStyles"
 	>
@@ -12,18 +13,20 @@
 		lang="ts"
 		setup
 >
-	import {
-	useBorder,
-	useBothColor,
-	useMargin,
-	usePadding,
-	useProps,
-	useStyle
-} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IColProps } from '../../interfaces'
+	import type {
+		IColEmits,
+		IColProps,
+		IColSlots
+	} from '../../interfaces/Grids/col.interface'
 
-	import { toKebabCase } from '../../utils'
+	import { toKebabCase } from '../../utils/Commons/commons.util'
 
 	import { computed, StyleValue, toRef } from 'vue'
 
@@ -36,6 +39,10 @@
 	const props = withDefaults(defineProps<IColProps>(), {tag: 'div'})
 
 	const {filterProps} = useProps<IColProps>(props)
+
+	defineEmits<IColEmits>()
+
+	defineSlots<IColSlots>()
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 
@@ -98,7 +105,7 @@
 
 		return classes
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(colStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(colStyles, () => props.id)
 
 
 	/*********************************************************
@@ -164,6 +171,14 @@
 			--origam-col---max-width: 100%;
 		}
 
+		&--true {
+			@extend %default;
+
+			--origam-col---flex-grow: 1;
+			--origam-col---flex-basis: 0;
+			--origam-col---max-width: 100%;
+		}
+
 		@each $size in $sizes {
 			&--#{$size} {
 				@extend %default;
@@ -203,6 +218,16 @@
 					flex: 0 0 auto;
 					width: auto;
 					max-width: 100%;
+				}
+			}
+
+			&--#{$breakpoint}-true {
+				@extend %default;
+
+				@media (min-width: $breakpointSize) {
+					--origam-col---flex-grow: 1;
+					--origam-col---flex-basis: 0;
+					--origam-col---max-width: 100%;
 				}
 			}
 

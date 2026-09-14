@@ -1,21 +1,22 @@
 import type {
     IBgColorProps,
-    IBorderProps,
-    IColorProps,
-    ICommonsComponentProps,
-    IElevationProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-    ISizeProps,
-    ISrcObject,
-    ITagProps
-} from '../../interfaces'
-
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
 import type {
-    TIcon,
-    TQrCodeErrorCorrectionLevel
-} from '../../types'
+    ICommonsComponentProps,
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ISizeProps } from '../Commons/size.interface'
+import type { ISrcObject } from '../Img/img.interface'
+import type { IQrCodeLogo } from './qr-code-logo.interface'
+
+import type { TIcon } from '../../types/Icon/icon.type'
+import type { TQrCodeErrorCorrectionLevel } from '../../types/QrCode/qr-code.type'
 
 /**
  * Per-matrix overrides — applied INSIDE the SVG (modules + quiet
@@ -176,4 +177,29 @@ export interface IUseQrCodeOptions {
  */
 export interface IQrCodeSlots {
     center?: (bindings: { size: number }) => any
+}
+
+/*********************************************************
+ * IQrCodeEmits
+ *
+ * @description
+ * `<OrigamQrCode>` is a pure SVG renderer — per its own top-of-script
+ * comment it "owns NO state, NO event, NO input". It never calls
+ * `emit(...)` in its script.
+ ********************************************************/
+export interface IQrCodeEmits {}
+
+/**
+ * `useQrCode`'s option bag AFTER defaulting — every field resolved to a
+ * concrete value, so the SVG builders downstream never re-apply a
+ * fallback. Distinct from `IUseQrCodeOptions`, which is the loose,
+ * all-optional shape a caller passes in.
+ */
+export interface IQrCodeResolvedOptions {
+    errorCorrectionLevel: TQrCodeErrorCorrectionLevel
+    foreground: string
+    background: string
+    margin: number
+    cornerRadius: number
+    logo?: IQrCodeLogo
 }

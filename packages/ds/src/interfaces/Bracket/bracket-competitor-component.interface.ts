@@ -1,19 +1,24 @@
 import type {
-    IActiveProps,
+    IActiveEmits,
+    IActiveProps
+} from '../Commons/active.interface'
+import type {
     IBgColorProps,
-    IBorderProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type {
     ICommonsComponentProps,
-    IDensityProps,
-    IDimensionProps,
-    IElevationProps,
-    IHoverProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-    ITagProps,
-    ITypographyProps
-} from '../../interfaces'
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IHoverProps } from '../Commons/hover.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
 import type { IBracketCompetitor } from './bracket-competitor.interface'
 
@@ -25,7 +30,7 @@ import type { IBracketCompetitor } from './bracket-competitor.interface'
  * dimension, padding, margin) so a standalone row behaves like any
  * other origam component.
  */
-export interface IBracketCompetitorProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IHoverProps, IActiveProps, IRoundedProps, IElevationProps, IBorderProps, IDensityProps, IDimensionProps, IPaddingProps, IMarginProps, ITypographyProps {
+export interface IBracketCompetitorProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IHoverProps, IActiveProps, IRoundedProps, IElevationProps, IBorderProps, IDensityProps, IDimensionProps, IPaddingProps, IMarginProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight'> {
     /**
      * The competitor payload. `null` renders a "TBD" placeholder — used
      * when the match's participant is not yet determined (winner of an
@@ -79,3 +84,24 @@ export interface IBracketCompetitorProps extends ICommonsComponentProps, ITagPro
      */
     forfeit?: boolean
 }
+
+/** Emits fired by `<OrigamBracketCompetitor>` — click (mouse) / activation
+ *  (Enter / Space when `interactive`) on the row. */
+/* `useActive(props)` écrit dans le v-model `active` depuis `onActive()`,
+ * câblé sur le clic du composant. L'émission `update:active` partait donc
+ * sans être déclarée — Vue avertissait à chaque clic et le handler
+ * `onUpdate:active` restait dans `$attrs`, posé sur l'élément racine par
+ * `inheritAttrs`. Prouvé au runtime dans
+ * `packages/tests/TU/origam/relay-emits-declaration.spec.ts`. */
+export interface IBracketCompetitorEmits extends IActiveEmits {
+    (e: 'click', event: MouseEvent | KeyboardEvent): void
+}
+
+/*********************************************************
+ * IBracketCompetitorSlots
+ *
+ * @description
+ * `<OrigamBracketCompetitor>` renders a static row (seed / avatar / name /
+ * forfeit / advantage / score) — no `<slot>` in the template.
+ ********************************************************/
+export interface IBracketCompetitorSlots {}

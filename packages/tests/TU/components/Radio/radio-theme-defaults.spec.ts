@@ -1,14 +1,27 @@
 // Regression coverage for #279 — `<OrigamRadio>` never called `useDefaults()`
-// on its own props, so `theme.components['origam-radio']` (e.g.
-// `activeBgColor`) was completely inert: a theme could declare it, but the
-// component's resolved `props.activeBgColor` always stayed `undefined`
-// (falling straight through to `withDefaults()`, which never sets it).
+// on its own props, so `theme.components['origam-radio']` was completely
+// inert: a theme could declare a prop, but the component's resolved value
+// always stayed `undefined` (falling straight through to `withDefaults()`,
+// which never sets it).
 //
 // This spec mounts the REAL component chain (Radio → Input → RadioBtn →
 // SelectionControl → Icon) — no stubs — because the bug lives in the
 // forwarding chain between Radio's own resolved props and its descendants,
 // which a stubbed `filterProps` would mask (see OrigamRadio.spec.ts's own
 // documented skips for the same reason).
+//
+// ⛔ Originally written against `activeBgColor` (fixed as `rgb(255, 0, 128)`
+// on the theme). That prop was removed in the state-color purge (folded
+// into the `hover` / `active` object props elsewhere in the DS) — but Radio
+// never wired `active` to a color axis at all: `OrigamSelectionControl.vue`
+// paints the checked glyph via a STATIC `:color="bgColor"` binding
+// (`OrigamSelectionControl.vue:26`), independent of any hover/active state.
+// There is no `:active="{ bgColor: ... }"` equivalent for this component —
+// migrating the assertion to `bgColor` preserves the test's actual intent
+// ("the theme colors the checked glyph") using the API that really drives
+// it. Radio having no way to paint a distinct ACTIVE-state color is a
+// separate design gap, not something this spec's migration should paper
+// over — flagged to the design/lead, not fixed here.
 
 import { afterEach, describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -26,7 +39,7 @@ const THEME: IOrigamTheme = {
     name: 'radio-defaults-theme',
     mode: 'light',
     components: {
-        'origam-radio': { activeBgColor: 'rgb(255, 0, 128)' }
+        'origam-radio': { bgColor: 'rgb(255, 0, 128)' }
     },
     vars: {}
 }
@@ -43,7 +56,7 @@ const mountThemedRadio = (props: Record<string, unknown> = {}) => {
 }
 
 describe('OrigamRadio — theme.components["origam-radio"] resolution (#279)', () => {
-    it('applies the theme activeBgColor to the checked glyph icon', async () => {
+    it('applies the theme bgColor to the checked glyph icon', async () => {
         const wrapper = mountThemedRadio()
         await nextTick()
         await nextTick()
@@ -54,7 +67,7 @@ describe('OrigamRadio — theme.components["origam-radio"] resolution (#279)', (
     })
 
     it('an explicit prop on the consumer still wins over the theme default', async () => {
-        const wrapper = mountThemedRadio({ activeBgColor: 'rgb(10, 20, 30)' })
+        const wrapper = mountThemedRadio({ bgColor: 'rgb(10, 20, 30)' })
         await nextTick()
         await nextTick()
         const icon = wrapper.find('.origam-icon')

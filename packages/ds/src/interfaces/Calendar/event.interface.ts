@@ -1,4 +1,4 @@
-import type { TIntent } from '../../types'
+import type { TIntent } from '../../types/Commons/intent.type'
 
 /**
  * Public event shape consumed by `<OrigamCalendar>` and the

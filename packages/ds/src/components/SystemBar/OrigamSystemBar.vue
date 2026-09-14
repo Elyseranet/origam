@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			v-contrast
 			:class="systemBarClasses"
 			:style="systemBarStyles"
@@ -13,23 +14,24 @@
 		lang="ts"
 		setup
 >
-	import { computed, shallowRef, StyleValue, toRef } from "vue"
-	import {
-		useBorder,
-		useBothColor,
-		useDimension,
-		useElevation,
-		useLayoutItem,
-		useProps,
-		useRounded,
-		useSsrBoot,
-		useStyle,
-		useTypography
-	} from "../../composables"
+	import { computed, StyleValue, toRef } from "vue"
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLayoutItem } from '../../composables/Commons/layoutItem.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useSsrBoot } from '../../composables/Commons/ssrBoot.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import { vContrast } from "../../directives"
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import type { ISystemBarProps } from "../../interfaces"
+	import { BLOCK, INLINE } from '../../enums/Commons/anchor.enum'
+
+	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
+	import type { ISystemBarEmits, ISystemBarProps } from '../../interfaces/SystemBar/system-bar.interface'
 
 	/*********************************************************
 	 * Global
@@ -38,10 +40,15 @@
 	 * Props with defaults and filterProps utility.
 	 ********************************************************/
 	const props = withDefaults(defineProps<ISystemBarProps>(), {
-		tag: 'div'
+		tag: 'div',
+		location: BLOCK.TOP
 	})
 
 	const {filterProps} = useProps<ISystemBarProps>(props)
+
+	defineEmits<ISystemBarEmits>()
+
+	defineSlots<ICommonsComponentSlots>()
 
 	/*********************************************************
 	 * Layout
@@ -72,12 +79,87 @@
 
 	const {ssrBootStyles} = useSsrBoot()
 	const height = computed(() => props.height ?? (props.window ? 32 : 24))
+	/*********************************************************
+	 * explicitElementSize
+	 *
+	 * @description
+	 * #440-3 — `elementSize` (unlike `layoutSize`) makes useLayoutItem
+	 * write a literal `height: {n}px` inline style, flattened by
+	 * useStyle() into a `#origam-system-bar-{n} { height: … }` rule.
+	 * An ID selector always beats the component's own
+	 * `.origam-system-bar--window { height: var(--origam-system-bar---
+	 * height-window, 32px) }` class rule, so the token was dead in the
+	 * one documented usage of the component (inside an OrigamLayout):
+	 * no theme override of the height token could ever apply.
+	 * Only force the literal when the consumer passed an explicit
+	 * `height` prop — an intentional override that should win over the
+	 * theme, same as everywhere else in the DS. Otherwise `elementSize`
+	 * stays undefined so no inline height is emitted and the CSS var /
+	 * theme resolves the visual height; `layoutSize` still carries the
+	 * JS default (24 / 32) for sibling offset math, unchanged.
+	 *
+	 * @description
+	 * #550 — sur un ancrage HORIZONTAL (`location="left"` / `"right"`),
+	 * `useCreateLayout` inverse les roles : c'est `width` qu'il derive de
+	 * `elementSize`, et `height` qui devient `calc(100% - top - bottom)`.
+	 * Avec `elementSize` a `undefined`, aucune largeur n'etait ecrite et la
+	 * regle scopee `.origam-system-bar { width: var(--origam-system-bar---
+	 * width, 100%) }` reprenait la main : la barre occupait TOUTE la largeur
+	 * tout en n'ayant reserve que son epaisseur aux freres. Mesure Playwright
+	 * (Chromium, Histoire statique) avant correctif : `left` donnait
+	 * height 176 -> OK mais width 594 (inchangee) au lieu de 24.
+	 *
+	 * @description
+	 * Forcer la valeur ici ne contredit pas #440-3, dont l'objet est de
+	 * laisser le TOKEN resoudre la HAUTEUR sur un ancrage vertical : aucune
+	 * variable ne porte l'epaisseur horizontale de la barre
+	 * (`--origam-system-bar---width` vaut `100%`, c'est une largeur de
+	 * remplissage, pas une epaisseur). Le cas vertical est inchange.
+	 ********************************************************/
+	const isHorizontalDock = computed(() => props.location === INLINE.LEFT || props.location === INLINE.RIGHT)
+	const explicitElementSize = computed(() => (props.height !== undefined || isHorizontalDock.value) ? height.value : undefined)
+	/*********************************************************
+	 * ⛔ `props.name` est lu EAGERLY ici, et c'est VOULU (ADR-005).
+	 *
+	 * @description
+	 * `useLayoutItem` se sert de cet `id` pour `provide(
+	 * ORIGAM_LAYOUT_ITEM_KEY, {id})`, `layout.register(vm, {..., id})` et
+	 * `layout.unregister(id)` au demontage : il exige une valeur STABLE des
+	 * le setup. Le differer laisserait un element fantome dans le layout et
+	 * n'en desenregistrerait aucun.
+	 *
+	 * @description
+	 * `name` est une IDENTITE, pas un reglage visuel — au meme titre qu'un
+	 * `id`. Arbitrage utilisateur du 2026-09-02 : un theme n'a pas vocation
+	 * a nommer un element de layout. L'exception est actee dans
+	 * `scripts/guards/lib/setup-reads.exceptions.mjs`, avec sa raison.
+	 ********************************************************/
+	/*********************************************************
+	 * position — `location`, plus l'echelon du layout
+	 *
+	 * @description
+	 * #550 (critere C1) — `location` etait DECLAREE (via `ILayoutItemProps`)
+	 * et jamais lue : le cote d'accroche etait fige a `shallowRef('top')`, si
+	 * bien que `<origam-system-bar location="bottom">` restait en haut sans
+	 * le moindre signal. `useCreateLayout` s'en sert pour tout : l'ancre
+	 * (`{[position]: 0}`), le sens de la translation d'entree/sortie, le
+	 * `height`/`width` en `calc()` et le decalage des freres. Cablee comme
+	 * sur `OrigamAppBar` (`position: toRef(props, 'location')`), avec
+	 * `BLOCK.TOP` en defaut — le comportement actuel a l'identique pour tout
+	 * consommateur qui ne passe rien.
+	 *
+	 * @description
+	 * `toRef` (et non `props.location` lu ici) : ADR-005, le resolveur de
+	 * props de theme ecrit dans `beforeCreate`, APRES `setup()`. Une lecture
+	 * eager figerait la valeur avant le theme ; `toRef` la differe a chaque
+	 * acces.
+	 ********************************************************/
 	const {layoutItemStyles} = useLayoutItem({
 		id: props.name,
 		order: computed(() => parseInt(String(props.order ?? 0), 10)),
-		position: shallowRef('top'),
+		position: toRef(props, 'location'),
 		layoutSize: height,
-		elementSize: height,
+		elementSize: explicitElementSize,
 		active: computed(() => true),
 		absolute: toRef(props, 'absolute')
 	})
@@ -88,15 +170,28 @@
 	 * @description
 	 * Root element classes and styles.
 	 ********************************************************/
+	/*********************************************************
+	 * systemBarStyles
+	 *
+	 * @description
+	 * #383 — layoutItemStyles MUST come before dimensionStyles here.
+	 * useStyle() flattens every source into ONE #id{...} rule, so source
+	 * order (not specificity) decides which width declaration wins when
+	 * both are present. useLayoutItem unconditionally writes
+	 * width: calc(100% - left - right) while docked in an OrigamLayout —
+	 * placing it FIRST lets a consumer-supplied width (from
+	 * dimensionStyles) override it, instead of the layout's calc()
+	 * silently winning every time (same root cause as OrigamBottomNav).
+	 ********************************************************/
 	const systemBarStyles = computed(() => {
 		return [
+			layoutItemStyles.value,
 			borderStyles.value,
 			roundedStyles.value,
 			dimensionStyles.value,
 			colorStyles.value,
 			typographyStyles.value,
 			ssrBootStyles.value,
-			layoutItemStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -113,7 +208,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(systemBarStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(systemBarStyles, () => props.id)
 
 
 	/*********************************************************

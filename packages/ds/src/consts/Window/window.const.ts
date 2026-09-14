@@ -1,4 +1,5 @@
-import type { IGroupItemProvide, IWindowProvide } from '../../interfaces'
+import type { IGroupItemProvide } from '../../interfaces/Commons/group.interface'
+import type { IWindowProvide } from '../../interfaces/Window/window.interface'
 
 import type { InjectionKey } from 'vue'
 

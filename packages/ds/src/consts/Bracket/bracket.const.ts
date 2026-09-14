@@ -1,25 +1,19 @@
-import type { TBracketMatchStatus, TBracketVariant } from '../../types'
+import { BRACKET_MATCH_STATUS, BRACKET_VARIANT } from '../../enums'
+
+import type { TBracketMatchStatus } from '../../types/Bracket/bracket-match.type'
+import type { TBracketVariant } from '../../types/Bracket/bracket.type'
 
 /**
  * Closed list of valid `variant` values for `OrigamBracket`. Exposed so
  * stories / consumers can iterate the matrix (e.g. for a `HstSelect`)
  * without duplicating string literals.
  */
-export const BRACKET_VARIANTS: ReadonlyArray<TBracketVariant> = [
-    'single-elimination',
-    'double-elimination',
-    'round-robin'
-]
+export const BRACKET_VARIANTS: ReadonlyArray<TBracketVariant> = Object.values(BRACKET_VARIANT)
 
 /**
  * Closed list of valid `status` values for `IBracketMatch.status`.
  */
-export const BRACKET_MATCH_STATUSES: ReadonlyArray<TBracketMatchStatus> = [
-    'pending',
-    'live',
-    'completed',
-    'forfeited'
-]
+export const BRACKET_MATCH_STATUSES: ReadonlyArray<TBracketMatchStatus> = Object.values(BRACKET_MATCH_STATUS)
 
 /**
  * Default match card width (in px) used by the layout algorithm when

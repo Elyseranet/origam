@@ -75,6 +75,12 @@ const series: Array<IChartSeries> = [
 | `xAxisFormat` | `(value: string \| number) => string` | `String(value)` | Formatter for the category name shown in the tooltip. |
 | `yAxisFormat` | `(value: number) => string` | `String(value)` | Formatter for the slice value shown in the tooltip. |
 
+### Drilldown — accessible name
+
+| Name | Type | Default | Description |
+|---|---|---|---|
+| `drilldown.navAriaLabel` | `string` | `'origam.chart.drilldown.aria_label'` | Locale key for the breadcrumb `<nav>` landmark shown while drilled in. Resolved through the DS `t()` mechanism (see [Behaviour notes](#behaviour-notes)) and shared with `<OrigamChartCartesian>`. |
+
 ## Emits
 
 | Name | Payload | Description |
@@ -97,6 +103,10 @@ const series: Array<IChartSeries> = [
 **Single-series architecture.** Pie and donut charts are single-series by definition. `series[0]` is the active series; all other entries in the `series` array are silently ignored. Each number in `series[0].data` becomes one slice. Slice colours cycle through `colorScheme` by data index: `data[0]` gets `colorScheme[0]`, `data[1]` gets `colorScheme[1]`, and so on. Setting `series[0].color` to an intent or CSS value overrides the entire palette and tints all slices with that single colour.
 
 **Negative and zero values.** Slices where `data[i] <= 0` are skipped entirely. The percentage label in the default tooltip is computed against the sum of all positive values.
+
+**Accessibility — drilldown.** `drilldown.navAriaLabel` carries a **locale key**, not final text — it resolves through the DS `t()` mechanism, so the breadcrumb `<nav>` follows the active locale out of the box. A raw string that matches no key is returned unchanged, so a literal override still works for consumers who prefer to translate on their side.
+
+**Accessibility — the `<desc>` summary is localised AND agrees in number.** The `<desc>` text is not an English literal: it resolves through the DS `t()` mechanism against `origam.chart.polar.desc*`, and the grammatical form is chosen by `Intl.PluralRules` for the ACTIVE locale — never by a `count === 1` test in the component. A translator supplies only the forms their language needs (`_one` / `_other` cover `en` and `fr`; a Russian translation adds `_few` with no component change), and a category a locale does not define falls back to `_other` rather than leaking the raw key. This chart names **two independent counts**, so each is pluralised as its own fragment and the shell key `desc` assembles them — that is what keeps the word order, and both agreements, under the translator's control.
 
 **`donutHoleSize` range.** Values outside `[0, 1]` are clamped. `0` produces a solid pie; `0.6` (the default) gives the classic donut ring. Values close to `1` produce a very thin ring that may be hard to interact with.
 

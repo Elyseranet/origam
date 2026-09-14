@@ -1,5 +1,6 @@
 <template>
   <div
+    :id="id"
     class="origam-calendar"
     :class="rootClasses"
     :style="rootStyles"
@@ -34,7 +35,7 @@
             :aria-label="ariaPrevLabel"
             :disabled="!canPrev"
             data-cy="origam-calendar-prev"
-            @click="onNavigate('prev')"
+            @click="onNavigate(CALENDAR_NAVIGATE.PREV)"
           />
           <origam-btn
             variant="text"
@@ -42,7 +43,7 @@
             :text="todayLabel"
             :aria-label="ariaTodayLabel"
             data-cy="origam-calendar-today"
-            @click="onNavigate('today')"
+            @click="onNavigate(CALENDAR_NAVIGATE.TODAY)"
           />
           <origam-btn
             variant="text"
@@ -51,7 +52,7 @@
             :aria-label="ariaNextLabel"
             :disabled="!canNext"
             data-cy="origam-calendar-next"
-            @click="onNavigate('next')"
+            @click="onNavigate(CALENDAR_NAVIGATE.NEXT)"
           />
         </origam-btn-group>
 
@@ -85,7 +86,7 @@
     </slot>
 
     <div
-      v-if="resolvedView === VIEW.MONTH"
+      v-if="resolvedView === CALENDAR_VIEW.MONTH"
       class="origam-calendar__body origam-calendar__body--month"
       data-cy="origam-calendar-body-month"
     >
@@ -129,10 +130,11 @@
           <div
             v-for="dayCell in weekRow"
             :key="dayCell.toISOString()"
+            :ref="(el) => setDayCellRef(dayCell, el)"
             class="origam-calendar__day-cell"
             :class="dayCellClasses(dayCell)"
             role="gridcell"
-            tabindex="0"
+            :tabindex="isRovingTabStop(dayCell) ? 0 : -1"
             :aria-label="ariaDayLabel(dayCell)"
             :aria-selected="isInDragSelection(dayCell)"
             :aria-disabled="isDayDisabled(dayCell)"
@@ -188,11 +190,11 @@
     </div>
 
     <div
-      v-else-if="resolvedView === VIEW.WEEK || resolvedView === VIEW.DAY"
+      v-else-if="resolvedView === CALENDAR_VIEW.WEEK || resolvedView === CALENDAR_VIEW.DAY"
       class="origam-calendar__body"
       :class="{
-					'origam-calendar__body--week': resolvedView === VIEW.WEEK,
-					'origam-calendar__body--day': resolvedView === VIEW.DAY
+					'origam-calendar__body--week': resolvedView === CALENDAR_VIEW.WEEK,
+					'origam-calendar__body--day': resolvedView === CALENDAR_VIEW.DAY
 				}"
       :data-cy="`origam-calendar-body-${resolvedView}`"
     >
@@ -221,7 +223,7 @@
             :data-cy="`origam-calendar-timeline-day-${dayCellKey(day)}`"
           >
             <div
-              v-if="resolvedView === VIEW.WEEK"
+              v-if="resolvedView === CALENDAR_VIEW.WEEK"
               class="origam-calendar__day-header"
             >
               <slot
@@ -344,20 +346,27 @@
 >
   import {
     computed,
+    nextTick,
     ref,
     watch,
     type StyleValue
   } from 'vue'
 
-  import { OrigamBtn, OrigamBtnGroup } from '../../components'
+  import OrigamBtn from '../Btn/OrigamBtn.vue'
+  import OrigamBtnGroup from '../Btn/OrigamBtnGroup.vue'
 
-  import {
-    useCalendar,
-    useDensity,
-    useDimension,
-    useLocale,
-    useStateEffect
-  } from '../../composables'
+  import { CALENDAR_NAVIGATE, CALENDAR_VIEW } from '../../enums/Calendar/calendar.enum'
+  import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
+  import { INTENT } from '../../enums/Commons/intent.enum'
+  import { VARIANT } from '../../enums/Commons/variant.enum'
+
+  import { UNSEEDED } from '../../consts/Commons/vmodel.const'
+
+  import { useCalendar } from '../../composables/Calendar/calendar.composable'
+  import { useDensity } from '../../composables/Commons/density.composable'
+  import { useDimension } from '../../composables/Commons/dimension.composable'
+  import { useLocale } from '../../composables/Commons/locale.composable'
+  import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
 
   import {
     getForeground,
@@ -368,18 +377,14 @@
     tokenStylesForIntent
   } from '../../utils/Commons/color.util'
 
-  import type {
-    ICalendarComponentProps,
-    IEvent,
-    ICalendarEmits
-  } from '../../interfaces'
+  import type { ICalendarComponentProps, ICalendarEmits, ICalendarSlots } from '../../interfaces/Calendar/calendar.interface'
+  import type { IEvent } from '../../interfaces/Calendar/event.interface'
 
-  import type {
-    TCalendarNavigate,
-    TCalendarView,
-    TIntent,
-    TVariant
-  } from '../../types'
+  import type { IDragMonthState, IDragSlotState } from '../../interfaces/Calendar/calendar-drag.interface'
+
+  import type { TCalendarNavigate, TCalendarView } from '../../types/Calendar/calendar.type'
+  import type { TIntent } from '../../types/Commons/intent.type'
+  import type { TVariant } from '../../types/Commons/variant.type'
 
   import {
     buildDisabledPredicate,
@@ -427,6 +432,8 @@
 
   const emit = defineEmits<ICalendarEmits>()
 
+  defineSlots<ICalendarSlots>()
+
   /*********************************************************
    * Constants — view enumeration, default event limits, ARIA copy.
    *
@@ -434,14 +441,7 @@
    * the SFC; the public surface that consumers extend is the
    * `ICalendarProps`/`IEvent` interface pair.
    ********************************************************/
-  const VIEW = {
-    MONTH: 'month',
-    WEEK: 'week',
-    DAY: 'day',
-    AGENDA: 'agenda'
-  } as const
-
-  const VIEW_OPTIONS: Array<TCalendarView> = [ VIEW.MONTH, VIEW.WEEK, VIEW.DAY, VIEW.AGENDA ]
+  const VIEW_OPTIONS: Array<TCalendarView> = [ CALENDAR_VIEW.MONTH, CALENDAR_VIEW.WEEK, CALENDAR_VIEW.DAY, CALENDAR_VIEW.AGENDA ]
   const MONTH_EVENT_LIMIT = 3
   const DEFAULT_SLOT_HEIGHT_PX = 32
 
@@ -451,25 +451,25 @@
   const {t} = useLocale()
 
   const VIEW_LABEL_FALLBACK: Record<TCalendarView, string> = {
-    month: 'Month',
-    week: 'Week',
-    day: 'Day',
-    agenda: 'Agenda'
+    [CALENDAR_VIEW.MONTH]: 'Month',
+    [CALENDAR_VIEW.WEEK]: 'Week',
+    [CALENDAR_VIEW.DAY]: 'Day',
+    [CALENDAR_VIEW.AGENDA]: 'Agenda'
   }
 
   function viewLabel(view: TCalendarView): string {
     return t(`origam.calendar.view.${ view }`, VIEW_LABEL_FALLBACK[view])
   }
 
-  const ariaLabel = computed(() => t('origam.calendar.aria_label', 'Calendar'))
-  const ariaToolbarLabel = computed(() => t('origam.calendar.toolbar', 'Calendar toolbar'))
-  const ariaPrevLabel = computed(() => t('origam.calendar.previous', 'Previous'))
-  const ariaNextLabel = computed(() => t('origam.calendar.next', 'Next'))
-  const ariaTodayLabel = computed(() => t('origam.calendar.today', 'Today'))
-  const ariaViewListLabel = computed(() => t('origam.calendar.view_switcher', 'View'))
-  const ariaMonthLabel = computed(() => t('origam.calendar.month_grid', 'Month grid'))
-  const todayLabel = computed(() => t('origam.calendar.today', 'Today'))
-  const emptyLabel = computed(() => t('origam.calendar.empty', 'No events to display'))
+  const ariaLabel = computed(() => t('origam.calendar.aria_label'))
+  const ariaToolbarLabel = computed(() => t('origam.calendar.toolbar'))
+  const ariaPrevLabel = computed(() => t('origam.calendar.previous'))
+  const ariaNextLabel = computed(() => t('origam.calendar.next'))
+  const ariaTodayLabel = computed(() => t('origam.calendar.today'))
+  const ariaViewListLabel = computed(() => t('origam.calendar.view_switcher'))
+  const ariaMonthLabel = computed(() => t('origam.calendar.month_grid'))
+  const todayLabel = computed(() => t('origam.calendar.today'))
+  const emptyLabel = computed(() => t('origam.calendar.empty'))
 
   const slotPx = DEFAULT_SLOT_HEIGHT_PX
   const slotDuration = computed(() => props.slotDuration)
@@ -488,8 +488,17 @@
   // interactive — the toolbar switches views / navigates on click. When
   // the parent binds `v-model:view` / `v-model:current-date`, the watchers
   // sync the controlled value back in.
-  const internalView = ref<TCalendarView>(props.view ?? 'month')
-  const internalDate = ref<Date>(toDate(props.currentDate as Date | string) ?? new Date())
+  //
+  // ⛔ ADR-005 — the seed used to be `props.view ?? CALENDAR_VIEW.MONTH`
+  // read directly inside `ref(...)`, which runs during `setup()` —
+  // BEFORE the theme-props-resolver's `beforeCreate` patches `instance.props`.
+  // A theme naming a default `view` (or `currentDate`) for every calendar
+  // was therefore silently ignored on first render (mirrors the `useVModel`
+  // fix, #448 / #487): the ref starts `UNSEEDED` and the prop is read lazily,
+  // inside the `resolvedView` / `resolvedDate` computed getters, which only
+  // evaluate at render — comfortably after `beforeCreate`.
+  const internalView = ref<TCalendarView | typeof UNSEEDED>(UNSEEDED)
+  const internalDate = ref<Date | typeof UNSEEDED>(UNSEEDED)
 
   watch(() => props.view, (next) => {
     if (next != null) internalView.value = next
@@ -500,9 +509,13 @@
     if (parsed) internalDate.value = parsed
   })
 
-  const resolvedView = computed<TCalendarView>(() => internalView.value)
+  const resolvedView = computed<TCalendarView>(() => internalView.value !== UNSEEDED
+    ? internalView.value
+    : (props.view ?? CALENDAR_VIEW.MONTH))
 
-  const resolvedDate = computed<Date>(() => internalDate.value)
+  const resolvedDate = computed<Date>(() => internalDate.value !== UNSEEDED
+    ? internalDate.value
+    : (toDate(props.currentDate as Date | string) ?? new Date()))
 
   const resolvedLocale = computed<string>(() => {
     if (props.locale) return props.locale
@@ -571,7 +584,7 @@
   }
 
   function viewBtnVariant(view: TCalendarView): TVariant {
-    return isViewActive(view) ? 'flat' : 'text'
+    return isViewActive(view) ? VARIANT.FLAT : VARIANT.TEXT
   }
 
   // The active view segment follows the calendar's OWN intent — the
@@ -585,7 +598,7 @@
     const fg = props.color
     if (fg && isIntent(fg as string)) return fg as TIntent
 
-    return 'primary'
+    return INTENT.PRIMARY
   })
 
   function viewBtnBgColor(view: TCalendarView): TIntent | undefined {
@@ -600,21 +613,21 @@
     const date = resolvedDate.value
     const locale = resolvedLocale.value
     switch (resolvedView.value) {
-      case 'week': {
+      case CALENDAR_VIEW.WEEK: {
         const range = calendar.visibleDateRange.value
         const startLabel = formatDate(range.start, locale, { month: 'short', day: 'numeric' })
         const endLabel = formatDate(range.end, locale, { month: 'short', day: 'numeric', year: 'numeric' })
         return `${ startLabel } — ${ endLabel }`
       }
-      case 'day':
+      case CALENDAR_VIEW.DAY:
         return formatDate(date, locale, {
           weekday: 'long',
           month: 'long',
           day: 'numeric',
           year: 'numeric'
         })
-      case 'month':
-      case 'agenda':
+      case CALENDAR_VIEW.MONTH:
+      case CALENDAR_VIEW.AGENDA:
       default:
         return formatDate(date, locale, { month: 'long', year: 'numeric' })
     }
@@ -639,6 +652,38 @@
 
   function dayCellKey(date: Date): string {
     return `${ date.getFullYear() }-${ String(date.getMonth() + 1).padStart(2, '0') }-${ String(date.getDate()).padStart(2, '0') }`
+  }
+
+  /*********************************************************
+   * Roving tabindex (issue #390) — WAI-ARIA APG grid pattern.
+   *
+   * @description
+   * Every `.origam-calendar__day-cell` used to carry `tabindex="0"`
+   * unconditionally (35-42 tab stops per month). Only the cell matching
+   * `resolvedDate` — the SAME value the existing arrow-key handler
+   * already navigates — is now a tab stop; every other cell is `-1`.
+   * `resolvedDate` is always inside the currently rendered `monthGrid`
+   * by construction (`buildMonthGrid(resolvedDate.value)`), so exactly
+   * one cell is always reachable by Tab.
+   *
+   * `dayCellRefs` is a plain Map (not a ref) populated via the `:ref`
+   * callback on each cell — it never needs to be reactive itself, only
+   * READ imperatively from `focusDayCell` after a keyboard move.
+   ********************************************************/
+  const dayCellRefs = new Map<string, HTMLElement>()
+
+  function setDayCellRef(date: Date, el: Element | { $el?: Element } | null): void {
+    const key = dayCellKey(date)
+    if (el instanceof HTMLElement) dayCellRefs.set(key, el)
+    else dayCellRefs.delete(key)
+  }
+
+  function isRovingTabStop(date: Date): boolean {
+    return isSameDay(date, resolvedDate.value)
+  }
+
+  function focusDayCell(date: Date): void {
+    dayCellRefs.get(dayCellKey(date))?.focus()
   }
 
   function isCellToday(date: Date): boolean {
@@ -704,7 +749,7 @@
    * Week / day view bindings.
    ********************************************************/
   const timelineDays = computed<Array<Date>>(() => {
-    if (resolvedView.value === 'day') return [ startOfDay(resolvedDate.value) ]
+    if (resolvedView.value === CALENDAR_VIEW.DAY) return [ startOfDay(resolvedDate.value) ]
     const range = calendar.visibleDateRange.value
     const out: Array<Date> = []
     let cursor = startOfDay(range.start)
@@ -776,10 +821,7 @@
    * inherits theme-aware colours without re-implementing the
    * intent → color matrix.
    ********************************************************/
-  const INTENT_NAMES: ReadonlyArray<TIntent> = [
-    'neutral', 'primary', 'secondary', 'ghost',
-    'success', 'warning', 'danger', 'info'
-  ]
+  const INTENT_NAMES: ReadonlyArray<TIntent> = Object.values(INTENT)
 
   function colorFor(event: IEvent): string | null {
     if (props.eventColorKey === 'color' && event.color) {
@@ -846,17 +888,6 @@
    * Week / day view: same idea but on individual slots, with a
    * pixel-level overlay that paints the in-progress range.
    ********************************************************/
-  interface IDragMonthState {
-    startDate: Date
-    endDate: Date
-  }
-
-  interface IDragSlotState {
-    day: Date
-    startMin: number
-    endMin: number
-  }
-
   const monthDrag = ref<IDragMonthState | null>(null)
   const dragSelection = ref<IDragSlotState | null>(null)
   const isMouseDown = ref(false)
@@ -998,10 +1029,35 @@
   /*********************************************************
    * Keyboard navigation — arrow keys move the current date by the
    * unit relevant to the view. Page Up / Page Down jump month.
+   *
+   * @description
+   * ⛔ issue #390 — moving `internalDate` alone changed no visible
+   * focus: `document.activeElement` never moved because nothing ever
+   * called `.focus()` on the new cell (measured: `ArrowRight` on a
+   * focused cell left `activeElement` unchanged). `focusDayCell` closes
+   * that gap — `nextTick` because the roving tabindex (`isRovingTabStop`)
+   * must repaint to `0` on the new cell before it becomes a valid
+   * `.focus()` target for AT / Tab semantics, even though a script-driven
+   * `.focus()` call itself would technically still land on a `tabindex="-1"`
+   * element.
+   *
+   * ⛔ issue #443 — Enter/Space on a day cell had NO keyboard equivalent
+   * to a mouse click (`onDayClick`) at all. Gated on the event target
+   * actually being a grid cell so it doesn't fire from Enter/Space
+   * pressed on the toolbar buttons or an event chip that also bubble
+   * through this ONE delegated root listener.
    ********************************************************/
   function onKeydown(event: KeyboardEvent): void {
     const target = event.target as HTMLElement | null
     if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return
+
+    if (event.key === KEYBOARD_VALUES.ENTER || event.key === KEYBOARD_VALUES.EMPTY) {
+      if (target?.getAttribute('role') !== 'gridcell') return
+      event.preventDefault()
+      onDayClick(resolvedDate.value, event as unknown as MouseEvent)
+      return
+    }
+
     let next: Date | null = null
     const current = resolvedDate.value
     switch (event.key) {
@@ -1028,6 +1084,9 @@
       event.preventDefault()
       internalDate.value = next
       emit('update:currentDate', next)
+
+      const focusTarget = next
+      void nextTick(() => focusDayCell(focusTarget))
     }
   }
 
@@ -1163,7 +1222,9 @@
   .origam-calendar {
     display: flex;
     flex-direction: column;
+    gap: var(--origam-calendar---gap, 0);
     width: 100%;
+    padding: var(--origam-calendar---padding, 0);
     background-color: var(--origam-calendar---background-color, #ffffff);
     color: var(--origam-calendar---color, inherit);
     border: var(--origam-calendar---border-width, 1px) solid var(--origam-calendar---border-color, #e5e7eb);
@@ -1270,6 +1331,10 @@
     flex-direction: column;
     gap: 4px;
     user-select: none;
+  }
+
+  .origam-calendar__day-cell:hover:not(.origam-calendar__day-cell--disabled) {
+    background-color: var(--origam-calendar__day-cell---bg-color-hover, var(--origam-color__surface---overlay, #f3f4f6));
   }
 
   .origam-calendar__day-cell:focus-visible {
@@ -1425,6 +1490,7 @@
   }
 
   .origam-calendar__timeline-slot {
+    height: var(--origam-calendar__timeline---slot-height, 32px);
     border-top: 1px solid var(--origam-calendar__timeline---grid-line-color, #f3f4f6);
     pointer-events: auto;
   }

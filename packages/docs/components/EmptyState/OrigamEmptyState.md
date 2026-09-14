@@ -52,9 +52,9 @@ top of the `error` preset).
 | `lineHeight`  | `TLineHeight`                                                  | `undefined`  | Line-height token applied to both surfaces.                            |
 
 > Typography props come from the shared `ITypographyProps` surface and act on
-> **both** text surfaces (title + description) at once. `letterSpacing` is part
-> of the surface but inert here — neither surface declares a `letter-spacing`
-> rule.
+> **both** text surfaces (title + description) at once. `letterSpacing` was
+> removed from `IEmptyStateProps` (issue #501) — neither surface declares a
+> `letter-spacing` rule.
 
 ## Slots
 

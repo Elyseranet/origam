@@ -22,16 +22,8 @@ import { createOrigam } from '@origam/origam'
 // ---------------------------------------------------------------------------
 
 beforeEach(() => {
-    global.ResizeObserver = vi.fn().mockImplementation(() => ({
-        observe: vi.fn(),
-        unobserve: vi.fn(),
-        disconnect: vi.fn()
-    }))
-    global.IntersectionObserver = vi.fn().mockImplementation(() => ({
-        observe: vi.fn(),
-        unobserve: vi.fn(),
-        disconnect: vi.fn()
-    }))
+    global.ResizeObserver = vi.fn(class { observe = vi.fn(); unobserve = vi.fn(); disconnect = vi.fn() })
+    global.IntersectionObserver = vi.fn(class { observe = vi.fn(); unobserve = vi.fn(); disconnect = vi.fn() })
 })
 
 // ---------------------------------------------------------------------------
@@ -208,6 +200,18 @@ describe('OrigamTextField — name / required', () => {
     it('sets the required attribute on the native input', () => {
         const wrapper = mountTextField({ props: { required: true } })
         expect(wrapper.find('input').element.required).toBe(true)
+    })
+
+    // issue #422 — TextField already wired this correctly (unlike its
+    // sibling field-family components); locked in as a regression guard.
+    it('sets aria-required="true" on the native input when required is true', () => {
+        const wrapper = mountTextField({ props: { required: true } })
+        expect(wrapper.find('input').attributes('aria-required')).toBe('true')
+    })
+
+    it('sets no aria-required on the native input when required is unset', () => {
+        const wrapper = mountTextField({ props: {} })
+        expect(wrapper.find('input').attributes('aria-required')).toBeUndefined()
     })
 })
 

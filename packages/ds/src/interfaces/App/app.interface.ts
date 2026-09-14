@@ -1,9 +1,8 @@
 import type {
     IBgColorProps,
-    IColorProps,
-    ICommonsComponentEmits,
-    ICommonsComponentProps
-} from '../../interfaces'
+    IColorProps
+} from '../Commons/color.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
 
 /**
  * Props for the `<OrigamApp>` application shell.
@@ -26,5 +25,16 @@ export interface IAppProps extends ICommonsComponentProps, IColorProps, IBgColor
     overlaps?: Array<string>
 }
 
-/** Emits fired by `<OrigamApp>` — none beyond the shared component contract. */
-export interface IAppEmits extends ICommonsComponentEmits {}
+/**
+ * Emits fired by `<OrigamApp>` — none. The component never calls
+ * `emit(...)`; it only forwards props to `<OrigamLayout>`. Previously
+ * extended `ICommonsComponentEmits` (which declares `update:modelValue`)
+ * even though `<OrigamApp>` has no `modelValue` prop and never fires
+ * it — a phantom emit fixed here.
+ */
+export interface IAppEmits {}
+
+/** Slot signatures for `<OrigamApp>`. */
+export interface IAppSlots {
+    default?: () => any
+}

@@ -1,7 +1,8 @@
 import { SORT_DIRECTION } from '../../enums'
-import type { IDataTableSortItem, IInternalItem } from '../../interfaces'
-import type { TDataTableCompareFunction } from '../../types'
-import { isEmpty } from '../../utils'
+import type { IDataTableSortItem } from '../../interfaces/DataTable/sort.interface'
+import type { IInternalItem } from '../../interfaces/List/list-children.interface'
+import type { TDataTableCompareFunction } from '../../types/DataTable/data-table.type'
+import { isEmpty } from '../Commons/commons.util'
 
 /**
  * Sort items.

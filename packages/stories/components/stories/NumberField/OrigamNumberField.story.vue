@@ -15,7 +15,6 @@
 					density: undefined,
 					rounded: undefined,
 					elevation: undefined,
-					flat: false,
 					border: undefined,
 					borderColor: undefined,
 					borderStyle: undefined,
@@ -41,7 +40,6 @@
 						:density="state.density"
 						:rounded="state.rounded"
 						:elevation="state.elevation"
-						:flat="state.flat"
 						:border="state.border"
 						:border-color="state.borderColor"
 						:border-style="state.borderStyle"
@@ -73,7 +71,6 @@
 				<StoryGroup title="Shape">
 					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
-					<HstCheckbox v-model="state.flat"      title="Flat"/>
 				</StoryGroup>
 				<StoryGroup title="Border">
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
@@ -121,6 +118,8 @@
 					holdRepeat: undefined,
 					incrementIcon: undefined,
 					decrementIcon: undefined,
+					decrementAriaLabel: undefined,
+					incrementAriaLabel: undefined,
 				})"
 		>
 			<template #default="{ state }">
@@ -145,6 +144,8 @@
 						:hold-repeat="state.holdRepeat"
 						:increment-icon="state.incrementIcon || undefined"
 						:decrement-icon="state.decrementIcon || undefined"
+						:decrement-aria-label="state.decrementAriaLabel || undefined"
+						:increment-aria-label="state.incrementAriaLabel || undefined"
 						label="Quantity"
 				/>
 				<div>value = {{ functionalModel }}</div>
@@ -180,6 +181,10 @@
 				<StoryGroup title="Icons">
 					<HstSelect v-model="state.incrementIcon" title="Increment Icon" :options="ICON_OPTIONS"/>
 					<HstSelect v-model="state.decrementIcon" title="Decrement Icon" :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Accessibility">
+					<HstText v-model="state.decrementAriaLabel" title="Decrement Aria Label (i18n key)"/>
+					<HstText v-model="state.incrementAriaLabel" title="Increment Aria Label (i18n key)"/>
 				</StoryGroup>
 			</template>
 		</Variant>

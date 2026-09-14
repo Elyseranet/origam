@@ -91,3 +91,32 @@ describe('OrigamBtn — letterSpacing prop', () => {
         expect(cssOf({ letterSpacing: 'widest' })).toContain('--origam-btn---letter-spacing: var(--origam-font__letterSpacing---widest)')
     })
 })
+
+// ---------------------------------------------------------------------------
+// activeClass — IActiveProps (IBtnProps now `extends IActiveProps` instead of
+// declaring `active` inline; `activeClass` is a NEW prop on this surface).
+// `hoverClass` (its sibling on IHoverProps) was checked NOT to be wired
+// anywhere in this component either — this spec only covers what was asked:
+// `activeClass` gated on the same `isActive` that drives `origam-btn--active`
+// (forced / group-selection / link-active aware), not on useStateFlag's own
+// narrower internal `isOn`.
+// ---------------------------------------------------------------------------
+
+describe('OrigamBtn — activeClass prop', () => {
+    it('does not apply activeClass by default', () => {
+        const wrapper = mountBtn({ activeClass: 'my-active-btn' })
+        expect(wrapper.classes()).not.toContain('my-active-btn')
+    })
+
+    it('applies activeClass alongside origam-btn--active when active=true', () => {
+        const wrapper = mountBtn({ active: true, activeClass: 'my-active-btn' })
+        const classes = wrapper.classes()
+        expect(classes).toContain('origam-btn--active')
+        expect(classes).toContain('my-active-btn')
+    })
+
+    it('applies activeClass when active is a forced IActiveState config ({ enabled: true })', () => {
+        const wrapper = mountBtn({ active: { enabled: true, rounded: 'lg' }, activeClass: 'my-active-btn' })
+        expect(wrapper.classes()).toContain('my-active-btn')
+    })
+})

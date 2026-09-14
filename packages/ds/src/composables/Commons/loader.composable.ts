@@ -1,55 +1,34 @@
 import { computed, type ComputedRef } from 'vue'
-import type { ILoaderProps } from '../../interfaces'
-import type { TLoaderConfig, TLoaderKind } from '../../types'
-import { getCurrentInstanceName } from '../../utils'
+import { LOADER_KIND } from '../../enums'
+import type { ILoaderProps, IResolvedLoader } from '../../interfaces/Commons/loader.interface'
+import type { TLoaderConfig, TLoaderKind } from '../../types/Commons/loader.type'
+import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
 
-/**
- * Resolved loader state — what each consumer component reads to decide
- * which renderer to mount and with which props.
- *
- * @remarks
- * `overrides` is intentionally typed as `Omit<TLoaderConfig, 'type'>`. After
- * the discriminant `type` is destructured at runtime, TypeScript can no
- * longer narrow the union. Consumer components must access optional fields
- * defensively (e.g. `(overrides as { modelValue?: number }).modelValue`).
- */
-export interface IResolvedLoader {
-    /** Whether ANY loading state is active. */
-    isActive: boolean
-    /** Which renderer to use ('line' / 'circular' / 'skeleton'). */
-    kind: TLoaderKind
-    /** Determinate progress value (0..100) when the user passed a number; else undefined. */
-    modelValue: number | undefined
-    /** Indeterminate when `true`, determinate when a number was passed. */
-    indeterminate: boolean
-    /** Per-kind override props the consumer should v-bind on the renderer. */
-    overrides: Omit<TLoaderConfig, 'type'>
-}
-
-/**
- * Resolve the polymorphic `loading` prop into a normalised descriptor.
- *
- * Accepts `boolean | number | TLoaderConfig` and produces:
- * - `loaderClasses` — backward-compatible class map containing
- *   `${name}--loading` when active.
- * - `isLoading` — boolean ref, true when any loading state is active.
- * - `loaderConfig` — full `IResolvedLoader` descriptor used by the
- *   consumer to mount the correct renderer with the correct props.
- *
- * @param props - The component props extending `ILoaderProps`.
- * @param defaultKind - Renderer to use when the user passes `true` or a
- *   number (i.e. when no `type` discriminant was provided). Each consumer
- *   picks its preferred kind: `'circular'` for Btn, `'line'` for Card, etc.
- * @param name - Override the kebab-case component name used to build the
- *   `${name}--loading` class. Defaults to `getCurrentInstanceName()`.
- */
+export type { IResolvedLoader } from '../../interfaces/Commons/loader.interface'
 
 /*********************************************************
  * useLoader
+ *
+ * @description
+ * Resout la prop polymorphe `loading` (`boolean | number | TLoaderConfig`)
+ * en un descripteur normalise : `loaderClasses` (`{name}--loading`),
+ * `isLoading` (booleen), et `loaderConfig` (kind, `modelValue`,
+ * `indeterminate`, `overrides`) que le composant utilise pour monter le
+ * bon renderer. `defaultKind` est choisi par CHAQUE consommateur —
+ * `'circular'` pour Btn, `'line'` pour Card, etc. — utilise quand
+ * `loading` est `true`/un nombre plutot qu'un objet `{ type }`.
+ *
+ * @description
+ * Determinisme derive de la FORME de la valeur, pas d'un flag explicite :
+ * `loading={true}` → indetermine ; `loading={42}` → determine a 42 ;
+ * `loading={{ type: 'line', modelValue: 42 }}` → determine ; `loading=
+ * {{ type: 'line' }}` (sans `modelValue`) → indetermine. Un objet SANS
+ * `type` est traite comme "pas d'objet reconnu" et retombe sur l'etat
+ * inactif.
  ********************************************************/
 export function useLoader (
     props: ILoaderProps,
-    defaultKind: TLoaderKind = 'circular',
+    defaultKind: TLoaderKind = LOADER_KIND.CIRCULAR,
     name = getCurrentInstanceName()
 ): {
     loaderClasses: ComputedRef<Record<string, boolean>>

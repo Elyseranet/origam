@@ -126,8 +126,12 @@ const items = [
 | `update:page` | `number` | Active page changed |
 | `update:itemsPerPage` | `number` | Items-per-page changed |
 | `update:sortBy` | `IDataTableSortItem[]` | Sort state changed |
-| `update:groupBy` | `IDataTableGroupByItem[]` | Group-by state changed |
 | `update:expanded` | `string[]` | Expanded rows changed |
+
+`groupBy` has no matching `update:groupBy` emit: the component never mutates
+it internally (`toggleGroup()` only opens/closes an already-grouped section),
+so it is a one-way, consumer-controlled prop — pass a new array to change
+grouping, there is nothing to listen for in return.
 
 ## Design tokens
 

@@ -1,12 +1,12 @@
 import { watch } from 'vue'
 
-import { useTheme } from '../composables'
+import { useTheme } from '../composables/Commons/theme.composable'
 
-import type { IOrigamNuxtRuntimeConfig } from '../interfaces'
+import type { IOrigamNuxtRuntimeConfig } from '../interfaces/Commons/nuxt-module.interface'
 
 import { createOrigam } from '../origam'
 
-import type { TMode, TTheme } from '../types/Theme/theme.type'
+import type { TMode, TTheme } from '../types/Commons/theme.type'
 
 import { defineNuxtPlugin, useCookie, useRuntimeConfig } from '#app'
 import type { NuxtApp } from '#app'

@@ -17,6 +17,13 @@ import { expect, test, type Page } from '@playwright/test'
  *   4. Symmetry: "prev" walks scrollLeft back to 0.
  *
  * Re-enable RTL coverage if/when a proper RTL story variant is added.
+ *
+ * REALIGNED (2026-08) — "Prop — showArrows" no longer exists as a
+ * dedicated Variant; it is now the "Functional" Variant's "Show
+ * Arrows" HstSelect. Its `:init-state` already defaults to
+ * `showArrows: 'always'` with 20 tags (horizontal overflow) — the
+ * exact fixture these tests need — so no extra control-driving is
+ * required, just navigating to "Functional" directly.
  */
 
 const sandboxOf = (page: Page) =>
@@ -57,7 +64,7 @@ const readContainerMetrics = async (
 
 test.describe('OrigamSlideGroup arrows — single-click step', () => {
     test('one click on "next" advances scrollLeft by ~one container width', async ({ page }) => {
-        await openVariant(page, SLIDE_GROUP_PATH, 'Prop — showArrows')
+        await openVariant(page, SLIDE_GROUP_PATH, 'Functional')
         const sandbox = sandboxOf(page)
 
         const container = sandbox.locator('.origam-slide-group__container').first()
@@ -93,7 +100,7 @@ test.describe('OrigamSlideGroup arrows — single-click step', () => {
 
 test.describe('OrigamSlideGroup arrows — progressive walk', () => {
     test('repeated "next" clicks walk scrollLeft forward without skipping', async ({ page }) => {
-        await openVariant(page, SLIDE_GROUP_PATH, 'Prop — showArrows')
+        await openVariant(page, SLIDE_GROUP_PATH, 'Functional')
         const sandbox = sandboxOf(page)
 
         const container = sandbox.locator('.origam-slide-group__container').first()
@@ -140,7 +147,7 @@ test.describe('OrigamSlideGroup arrows — progressive walk', () => {
 
 test.describe('OrigamSlideGroup arrows — boundary states', () => {
     test('"next" affix disables once the end of the scroll is reached', async ({ page }) => {
-        await openVariant(page, SLIDE_GROUP_PATH, 'Prop — showArrows')
+        await openVariant(page, SLIDE_GROUP_PATH, 'Functional')
         const sandbox = sandboxOf(page)
 
         const container = sandbox.locator('.origam-slide-group__container').first()
@@ -165,7 +172,7 @@ test.describe('OrigamSlideGroup arrows — boundary states', () => {
     })
 
     test('"prev" walks scrollLeft back to 0 after several "next" clicks', async ({ page }) => {
-        await openVariant(page, SLIDE_GROUP_PATH, 'Prop — showArrows')
+        await openVariant(page, SLIDE_GROUP_PATH, 'Functional')
         const sandbox = sandboxOf(page)
 
         const container = sandbox.locator('.origam-slide-group__container').first()

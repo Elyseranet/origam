@@ -1,6 +1,6 @@
 <template>
 	<component
-			:is="props.tag"
+			:is="tag"
 			:id="tabDomId"
 			ref="rootRef"
 			v-contrast
@@ -17,10 +17,19 @@
 			@click="handleClick"
 	>
 		<span
-				v-if="icon"
+				v-if="hasPrependMedia"
 				class="origam-tab__prepend"
 		>
-			<origam-icon :icon="icon"/>
+			<origam-avatar
+					v-if="prependAvatar"
+					key="prepend-avatar"
+					:image="prependAvatar"
+			/>
+			<origam-icon
+					v-if="resolvedPrependIcon"
+					key="prepend-icon"
+					:icon="resolvedPrependIcon"
+			/>
 		</span>
 
 		<span class="origam-tab__label">
@@ -33,10 +42,19 @@
 		</span>
 
 		<span
-				v-if="appendIcon"
+				v-if="hasAppendMedia"
 				class="origam-tab__append"
 		>
-			<origam-icon :icon="appendIcon"/>
+			<origam-avatar
+					v-if="appendAvatar"
+					key="append-avatar"
+					:image="appendAvatar"
+			/>
+			<origam-icon
+					v-if="appendIcon"
+					key="append-icon"
+					:icon="appendIcon"
+			/>
 		</span>
 
 		<span
@@ -51,58 +69,74 @@
 		lang="ts"
 		setup
 >
-	import { computed, inject, ref, StyleValue } from 'vue'
+	import { computed, inject, ref, StyleValue, toRef, watchEffect } from 'vue'
 
-	import { OrigamIcon } from '../../components'
+	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
-	import {
-		useDefaults,
-		useGroupItem,
-		useProps,
-		useStyle,
-		useTypography
-	} from '../../composables'
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useGroupItem } from '../../composables/Commons/groupItem.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import { ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_KEY } from '../../consts'
+	import { ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_LINK_KEY } from '../../consts/Tabs/tabs.const'
 
-	import type { ITabProps } from '../../interfaces'
-
-	import type { TTabVariant } from '../../types'
-
-	interface IProps extends ITabProps {
-		text?: string
-		variant?: TTabVariant
-	}
+	import type {
+		ITabEmits,
+		ITabProps,
+		ITabSlots
+	} from '../../interfaces/Tabs/tab.interface'
 
 	/*********************************************************
 	 * Global
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IProps>(), {
+	const props = withDefaults(defineProps<ITabProps>(), {
 		tag: 'button',
 		value: undefined,
 		text: '',
 		variant: undefined
 	})
 
-	const props = useDefaults(_props)
+	defineEmits<ITabEmits>()
 
-	const {filterProps} = useProps<IProps>(props)
+	defineSlots<ITabSlots>()
+
+	const {filterProps} = useProps<ITabProps>(props)
 
 	const rootRef = ref<HTMLElement>()
+
+	/*********************************************************
+	 * Adjacent
+	 *
+	 * `icon` is a deprecated alias for `prependIcon` (same leading-icon
+	 * position) — the merged computed is handed to `useAdjacent` so a
+	 * legacy consumer's `icon` keeps rendering while a `prependIcon`
+	 * takes priority when both are set.
+	 ********************************************************/
+	const resolvedPrependIcon = computed(() => props.prependIcon ?? props.icon)
+
+	const {
+		hasPrependMedia,
+		hasAppendMedia
+	} = useAdjacent(props, resolvedPrependIcon, toRef(props, 'appendIcon'))
 
 	/*********************************************************
 	 * Group registration
 	 *
 	 * @description
 	 * Self-registers in the parent `<OrigamTabs>` tablist via
-	 * `useGroupItem`. The panels group is `inject`-looked-up
-	 * (not registered against) so we can derive the matching
-	 * panel ID for `aria-controls`.
+	 * `useGroupItem`. The panels group is NOT reachable via a plain
+	 * `inject(ORIGAM_TAB_PANELS_KEY)` — `<OrigamTabPanels>` is a
+	 * SIBLING of `<OrigamTabs>`, not its ancestor (#441). `<OrigamTabs>`
+	 * resolves the sibling once (`useGroupSiblingLink`) and re-provides
+	 * it under `ORIGAM_TAB_PANELS_LINK_KEY`, down its OWN ancestor
+	 * chain — THAT is what we inject here.
 	 ********************************************************/
 	const groupItem = useGroupItem(props, ORIGAM_TABS_KEY)
-	const panelsGroup = inject(ORIGAM_TAB_PANELS_KEY, null)
+	const panelsGroupLink = inject(ORIGAM_TAB_PANELS_LINK_KEY, undefined)
 
 	if (!groupItem) {
 		throw new Error('[Origam] <OrigamTab> must be used inside an <OrigamTabs>')
@@ -120,20 +154,38 @@
 	 * ARIA wiring
 	 *
 	 * @description
-	 * `tabDomId` is the DOM id of THIS tab (referenced by the
-	 * panel via `aria-labelledby`). `panelId` is the DOM id of
-	 * the sibling panel — derived by reading the panels group's
-	 * registry and matching on `value` (the user-supplied
-	 * identifier, not the internal numeric id).
+	 * `tabDomId` is the DOM id of THIS tab — `props.id` when the
+	 * consumer supplies one, a generated fallback otherwise
+	 * (referenced by the panel via `aria-labelledby`). It is
+	 * published onto this tab's OWN entry in the tabs group's
+	 * `items` registry (`domId`, see `IGroupItem`) so the sibling
+	 * `<OrigamTabPanel>` can read the REAL id instead of guessing
+	 * the generated-fallback naming scheme — otherwise a consumer
+	 * `id` on one side without a matching guess on the other would
+	 * silently break the pairing (#519-#522).
+	 *
+	 * `panelId` is the DOM id of the sibling panel — derived by
+	 * reading the panels group's registry and matching on `value`
+	 * (the user-supplied identifier, not the internal numeric id),
+	 * then reading THAT panel's own published `domId`. The
+	 * generated-fallback string is kept as a defensive default for
+	 * the brief window before the panel's own effect has run.
 	 ********************************************************/
-	const tabDomId = computed(() => `origam-tab-${groupItem!.id}`)
+	const tabDomId = computed(() => props.id || `origam-tab-${groupItem!.id}`)
+
+	watchEffect(() => {
+		const self = groupItem!.group.items.value.find(item => item.id === groupItem!.id)
+		if (self) self.domId = tabDomId.value
+	})
 
 	const panelId = computed(() => {
+		const panelsGroup = panelsGroupLink?.value
 		if (!panelsGroup) return undefined
 
 		const panel = panelsGroup.items.value.find(item => item.value === groupItem!.value.value)
+		if (!panel) return undefined
 
-		return panel ? `origam-tab-panel-${panel.id}` : undefined
+		return panel.domId || `origam-tab-panel-${panel.id}`
 	})
 
 	const ariaSelected = computed(() => (groupItem!.isSelected.value ? 'true' : 'false'))
@@ -181,8 +233,8 @@
 			groupItem!.selectedClass.value,
 			{
 				'origam-tab--disabled': isDisabled.value,
-				'origam-tab--with-prepend': !!props.icon,
-				'origam-tab--with-append': !!props.appendIcon
+				'origam-tab--with-prepend': hasPrependMedia.value,
+				'origam-tab--with-append': hasAppendMedia.value
 			},
 			props.class
 		]

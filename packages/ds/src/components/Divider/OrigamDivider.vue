@@ -1,5 +1,6 @@
 <template>
 	<hr
+			:id="id"
 			:aria-orientation="dividerOrientation"
 			:class="dividerClasses"
 			:role="dividerRole"
@@ -12,17 +13,15 @@
 		setup
 >
 	import { computed, StyleValue, toRef, useAttrs } from 'vue'
-	import {
-	useBothColor,
-	useMargin,
-	useProps,
-	useStyle
-} from '../../composables'
-	import { DIRECTION } from '../../enums'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
 
-	import type { IDividerProps } from '../../interfaces'
+	import type { IDividerEmits, IDividerProps, IDividerSlots } from '../../interfaces/Divider/divider.interface'
 
-	import { convertToUnit } from '../../utils'
+	import { convertToUnit } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global
@@ -39,6 +38,10 @@
 	})
 
 	const {filterProps} = useProps<IDividerProps>(props)
+
+	defineEmits<IDividerEmits>()
+
+	defineSlots<IDividerSlots>()
 
 	/*********************************************************
 	 * Accessibility
@@ -105,7 +108,7 @@
 
 		return styles as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dividerStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(dividerStyles, () => props.id)
 
 
 	/*********************************************************
@@ -136,18 +139,23 @@
 		max-width: var(--origam-divider---max-width, 100%);
 		opacity: var(--origam-divider---opacity, 0.12);
 		transition: inherit;
-		border-style: solid;
+		border-style: var(--origam-divider---border-style, solid);
 
-		border-top-width: var(--origam-divider---border-top-width, thin);
+		border-top-width: var(--origam-divider---border-top-width, var(--origam-divider---thickness, thin));
 		border-right-width: 0;
 		border-bottom-width: 0;
 		border-left-width: 0;
 		margin: 0;
+		margin-block: var(--origam-divider---margin-block, 0);
+		padding-block-start: var(--origam-divider---padding-block-start, 0);
+		padding-block-end: var(--origam-divider---padding-block-end, 0);
+		padding-inline-start: var(--origam-divider---padding-inline-start, 0);
+		padding-inline-end: var(--origam-divider---padding-inline-end, 0);
 
 		&--vertical {
 			align-self: stretch;
 			border-top-width: 0;
-			border-right-width: var(--origam-divider---border-right-width, thin);
+			border-right-width: var(--origam-divider---border-right-width, var(--origam-divider---thickness, thin));
 			border-bottom-width: 0;
 			border-left-width: 0;
 			display: inline-flex;

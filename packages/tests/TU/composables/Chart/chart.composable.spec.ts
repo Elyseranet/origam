@@ -955,3 +955,137 @@ describe('computeAnnotationGeometry', () => {
         expect(geo!.dy).toBe(-30)
     })
 })
+
+/*
+ * The blocks below pin the numeric / textual constants the engine reads
+ * from `consts/Chart/chart.const.ts` (C8 — no bare literal in the
+ * composable). They are behaviour assertions, not const echoes: each one
+ * drives `useChart` and measures the geometry that the constant produces,
+ * so moving a value in the const file without intent fails here.
+ */
+
+describe('useChart — nice-step ladder (CHART_NICE_STEP_LADDER)', () => {
+    const stepFor = (yMin: number, yMax: number): number => {
+        const chart = useChart(makeOptions({
+            series: [{ name: 'A', data: [yMin, yMax] }],
+            yMin,
+            yMax
+        }))
+        const yTicks = chart.ticks.value.y
+        return Number(yTicks[1].value) - Number(yTicks[0].value)
+    }
+
+    it('snaps to 1 when the normalised ratio sits below the first rung', () => {
+        expect(stepFor(0, 5)).toBe(1)
+    })
+
+    it('snaps to 2 on the second rung', () => {
+        expect(stepFor(0, 10)).toBe(2)
+    })
+
+    it('snaps to 5 on the third rung', () => {
+        expect(stepFor(0, 20)).toBe(5)
+    })
+
+    it('snaps to 10 on the final, unbounded rung', () => {
+        expect(stepFor(0, 40)).toBe(10)
+    })
+
+    it('scales the rung by the decimal magnitude of the range', () => {
+        // rough = 100 / 5 = 20 → pow10 = 10, norm = 2 → rung step 2 → 20.
+        expect(stepFor(0, 100)).toBe(20)
+    })
+})
+
+describe('useChart — bar / column slot fill ratio (CHART_BAR_SLOT_FILL_RATIO)', () => {
+    it('a column fills 70 % of its categorical slot', () => {
+        const chart = useChart(makeOptions({
+            type: 'column',
+            categories: ['A', 'B', 'C', 'D'],
+            series: [{ name: 'S', data: [1, 2, 3, 4] }]
+        }))
+        // plot width = 400 - 40 (left) - 20 (right) = 340; 4 slots → 85 px.
+        const slotPx = 85
+        const rects = chart.paths.value.filter((p) => p.kind === 'rect')
+        expect(rects).toHaveLength(4)
+        expect(rects[0].rect!.width).toBeCloseTo(slotPx * 0.7, 5)
+    })
+
+    it('grouped series split that 70 % between them', () => {
+        const chart = useChart(makeOptions({
+            type: 'column',
+            categories: ['A', 'B', 'C', 'D'],
+            series: [
+                { name: 'S1', data: [1, 2, 3, 4] },
+                { name: 'S2', data: [4, 3, 2, 1] }
+            ]
+        }))
+        const rects = chart.paths.value.filter((p) => p.kind === 'rect')
+        expect(rects[0].rect!.width).toBeCloseTo((85 * 0.7) / 2, 5)
+    })
+})
+
+describe('useChart — marker radii', () => {
+    it('line markers use the point-marker radius', () => {
+        const chart = useChart(makeOptions({
+            type: 'line',
+            categories: ['A', 'B'],
+            series: [{ name: 'S', data: [1, 2] }]
+        }))
+        const circles = chart.paths.value.filter((p) => p.kind === 'circle')
+        expect(circles).toHaveLength(2)
+        expect(circles.every((c) => c.circle!.r === 4)).toBe(true)
+    })
+
+    it('radar markers use their own, smaller radius', () => {
+        const chart = useChart(makeOptions({
+            type: 'radar',
+            categories: ['A', 'B', 'C'],
+            series: [{ name: 'S', data: [1, 2, 3] }]
+        }))
+        const circles = chart.paths.value.filter((p) => p.kind === 'circle')
+        expect(circles).toHaveLength(3)
+        expect(circles.every((c) => c.circle!.r === 3.5)).toBe(true)
+    })
+
+    it('scatter points without z keep the fixed default radius', () => {
+        const chart = useChart(makeOptions({
+            type: 'scatter',
+            series: [{ name: 'S', data: [{ x: 1, y: 1 }, { x: 2, y: 2 }] }]
+        }))
+        const circles = chart.paths.value.filter((p) => p.kind === 'circle')
+        expect(circles.every((c) => c.circle!.r === 5)).toBe(true)
+    })
+
+    it('scatter points with z scale between the min and max bubble radii', () => {
+        const chart = useChart(makeOptions({
+            type: 'scatter',
+            series: [{
+                name: 'S',
+                data: [
+                    { x: 1, y: 1, z: 10 },
+                    { x: 2, y: 2, z: 50 },
+                    { x: 3, y: 3, z: 90 }
+                ]
+            }]
+        }))
+        const radii = chart.paths.value
+            .filter((p) => p.kind === 'circle')
+            .map((p) => p.circle!.r)
+        expect(radii[0]).toBeCloseTo(5, 5)
+        expect(radii[2]).toBeCloseTo(36, 5)
+        expect(radii[1]).toBeGreaterThan(radii[0])
+        expect(radii[1]).toBeLessThan(radii[2])
+    })
+})
+
+describe('useChart — slice label fallback (CHART_SLICE_LABEL_PREFIX)', () => {
+    it('names unlabelled pie slices "Slice N" (1-based)', () => {
+        const chart = useChart(makeOptions({
+            type: 'pie',
+            series: [{ name: 'S', data: [1, 2, 3] }]
+        }))
+        expect(chart.legend.value.map((e) => e.series.name))
+            .toEqual(['Slice 1', 'Slice 2', 'Slice 3'])
+    })
+})

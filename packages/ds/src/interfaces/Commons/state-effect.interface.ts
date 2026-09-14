@@ -1,12 +1,10 @@
-import type {
-    IBorderProps,
-    IElevationProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps
-} from '../../interfaces'
+import type { IBorderProps } from './border.interface'
+import type { IElevationProps } from './elevation.interface'
+import type { IMarginProps } from './margin.interface'
+import type { IPaddingProps } from './padding.interface'
+import type { IRoundedProps } from './rounded.interface'
 
-import type { TColor } from '../../types'
+import type { TColor } from '../../types/Commons/color.type'
 
 /**
  * Shared shape for state-aware visual overrides (`hover`, `active`).

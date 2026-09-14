@@ -1,30 +1,25 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch, type Ref } from 'vue'
 
-import { useCssSupport } from '../CssSupport/cssSupport.composable'
+import { useCssSupport } from '../Commons/cssSupport.composable'
+
+import {
+    PARALLAX_MOUSE_AMPLITUDE_FACTOR,
+    PARALLAX_SPRING_DAMPING,
+    PARALLAX_TRANSFORM_PRECISION
+} from '../../consts/Parallax/parallax.const'
+import {
+    PARALLAX_LAYER_VAR_OFFSET_X,
+    PARALLAX_LAYER_VAR_OFFSET_Y,
+    PARALLAX_LAYER_VAR_SPEED
+} from '../../consts/Parallax/parallax-layer.const'
 
 import { PARALLAX_DIRECTION, PARALLAX_EASING } from '../../enums'
 
-import type { IParallaxLayerRegistry } from '../../interfaces'
-import type { TParallaxDirection, TParallaxEasing } from '../../types'
+import type { IParallaxLayerRegistry } from '../../interfaces/Parallax/parallax-layer.interface'
+import type { IUseParallaxRuntimeOptions } from '../../interfaces/Parallax/parallax.interface'
+import type { TParallaxDirection } from '../../types/Parallax/parallax.type'
 
-/*********************************************************
- * Internal options consumed by `useParallaxRuntime`.
- ********************************************************/
-export interface IUseParallaxRuntimeOptions {
-    target: Ref<HTMLElement | undefined>
-    direction: Ref<TParallaxDirection>
-    easing: Ref<TParallaxEasing | string>
-    threshold: Ref<number>
-    disabled: Ref<boolean>
-    /**
-     * Fallback speed used when `slot=default` carries raw content (no
-     * `<OrigamParallaxLayer>`). Mirrors `IParallaxProps.speed`.
-     */
-    speed: Ref<number>
-    onEnter?: () => void
-    onLeave?: () => void
-    onProgress?: (progress: number) => void
-}
+export type { IUseParallaxRuntimeOptions } from '../../interfaces/Parallax/parallax.interface'
 
 /**
  * Detect `prefers-reduced-motion: reduce` once at mount time. We watch the
@@ -44,15 +39,15 @@ function usePrefersReducedMotion (): Ref<boolean> {
     // Both API shapes (legacy addListener and modern addEventListener)
     if (typeof mql.addEventListener === 'function') {
         mql.addEventListener('change', onChange)
-    } else if (typeof (mql as any).addListener === 'function') {
-        (mql as any).addListener(onChange)
+    } else if (typeof mql.addListener === 'function') {
+        mql.addListener(onChange)
     }
 
     onBeforeUnmount(() => {
         if (typeof mql.removeEventListener === 'function') {
             mql.removeEventListener('change', onChange)
-        } else if (typeof (mql as any).removeListener === 'function') {
-            (mql as any).removeListener(onChange)
+        } else if (typeof mql.removeListener === 'function') {
+            mql.removeListener(onChange)
         }
     })
 
@@ -92,7 +87,7 @@ function composeLayerTransform (
         case PARALLAX_DIRECTION.BOTH:
             // For "both" we mix scroll-progress on Y and mouse-ratio on X
             // when available. mouseRatio.x defaults to 0 (no mouse data).
-            tx += mouseRatio.x * hostWidth * 0.5 * layer.speed
+            tx += mouseRatio.x * hostWidth * PARALLAX_MOUSE_AMPLITUDE_FACTOR * layer.speed
             ty += centred * hostHeight * layer.speed
             break
         case PARALLAX_DIRECTION.VERTICAL:
@@ -101,7 +96,7 @@ function composeLayerTransform (
             break
     }
 
-    return `translate3d(${tx.toFixed(2)}px, ${ty.toFixed(2)}px, 0)`
+    return `translate3d(${tx.toFixed(PARALLAX_TRANSFORM_PRECISION)}px, ${ty.toFixed(PARALLAX_TRANSFORM_PRECISION)}px, 0)`
 }
 
 /*********************************************************
@@ -132,15 +127,68 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
 
     let isInViewport = false
     let rafId: number | null = null
+    let progressRafId: number | null = null
     let observer: IntersectionObserver | null = null
     // Per-layer current (smoothed) position for the spring easing.
     const layerLerp = new WeakMap<HTMLElement, { tx: number, ty: number }>()
+
+    /**
+     * Publish the three per-layer custom properties the CSS scroll-driven
+     * path animates against. Shared by `startCss` (viewport-enter) and
+     * `update` (live prop change while that path is already running).
+     */
+    const publishLayerVars = (layer: IParallaxLayerRegistry) => {
+        layer.target.style.setProperty(PARALLAX_LAYER_VAR_SPEED, String(layer.speed))
+        layer.target.style.setProperty(PARALLAX_LAYER_VAR_OFFSET_X, `${layer.offsetX}px`)
+        layer.target.style.setProperty(PARALLAX_LAYER_VAR_OFFSET_Y, `${layer.offsetY}px`)
+    }
 
     const register = (layer: IParallaxLayerRegistry) => {
         layers.value.push(layer)
     }
     const unregister = (id: symbol) => {
         layers.value = layers.value.filter(l => l.id !== id)
+    }
+
+    /*********************************************************
+     * update — reactive prop → running registry (#449)
+     *
+     * @description
+     * `register()` stores a PLAIN SNAPSHOT of `speed`/`offsetX`/`offsetY`
+     * read once at the layer's `onMounted`. `applyLayerTransforms` (rAF
+     * loop) and `startCss` (CSS scroll-driven path) both read those three
+     * fields straight off that same object on every frame / re-publish —
+     * neither is a Vue effect, so nothing re-runs them when the layer's
+     * props change later. `<OrigamParallaxLayer>` calls this from a
+     * `watch()` on its own props so a live speed/offset change reaches the
+     * animation that is already running, instead of only affecting the
+     * layer's own first-paint `layerStyles` computed (which the next
+     * frame overwrites anyway).
+     * @description
+     * Mutates the registry entry IN PLACE rather than replacing it — the
+     * rAF loop and `layerLerp` WeakMap key off the same object/`target`
+     * identity, so a fresh object would silently reset the spring-easing
+     * state on every prop change.
+     * @description
+     * The CSS scroll-driven path does not repaint every frame like the JS
+     * path does — it publishes custom properties once (`startCss`, on
+     * viewport-enter) and lets the browser's own scroll-driven animation
+     * timeline read them continuously. If a change lands while that path
+     * is active, the custom properties on `layer.target` must be
+     * re-published here too, or the CSS animation keeps interpolating
+     * against the stale amplitude until the layer re-enters the viewport.
+     ********************************************************/
+    const update = (id: symbol, patch: Pick<IParallaxLayerRegistry, 'speed' | 'offsetX' | 'offsetY'>) => {
+        const layer = layers.value.find(l => l.id === id)
+        if (!layer) return
+
+        layer.speed = patch.speed
+        layer.offsetX = patch.offsetX
+        layer.offsetY = patch.offsetY
+
+        if (cssScrollDriven.value) {
+            publishLayerVars(layer)
+        }
     }
 
     const updateProgress = () => {
@@ -213,12 +261,11 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
             const targetTy = parseFloat(match[2])
 
             const current = layerLerp.get(layer.target) ?? { tx: targetTx, ty: targetTy }
-            const damping = 0.12  // tighter = faster spring; 0.08-0.15 feels natural
-            current.tx += (targetTx - current.tx) * damping
-            current.ty += (targetTy - current.ty) * damping
+            current.tx += (targetTx - current.tx) * PARALLAX_SPRING_DAMPING
+            current.ty += (targetTy - current.ty) * PARALLAX_SPRING_DAMPING
             layerLerp.set(layer.target, current)
 
-            layer.target.style.transform = `translate3d(${current.tx.toFixed(2)}px, ${current.ty.toFixed(2)}px, 0)`
+            layer.target.style.transform = `translate3d(${current.tx.toFixed(PARALLAX_TRANSFORM_PRECISION)}px, ${current.ty.toFixed(PARALLAX_TRANSFORM_PRECISION)}px, 0)`
         }
     }
 
@@ -231,8 +278,54 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
         }
     }
 
+    /*********************************************************
+     * onScroll — #432 : le chemin CSS n'emettait jamais scroll-progress
+     *
+     * @description
+     * `updateProgress()` est le SEUL appelant de `options.onProgress`, et il
+     * n'etait joignable que par `tick()`, la boucle rAF du chemin JS. Les
+     * ecouteurs `scroll` / `resize` n'etaient d'ailleurs installes que dans
+     * la branche `if (!cssScrollDriven.value)`. Consequence : sur Chrome
+     * 115+ avec un easing lineaire — exactement la configuration par defaut
+     * — le runtime basculait sur le chemin CSS et `@scroll-progress` ne
+     * partait JAMAIS. Le defaut etait connu du depot depuis le 2026-08-17
+     * (`e2e/parallax.spec.ts`, `test.fixme`) sans ticket derriere.
+     * @description
+     * Les couches, elles, restent animees par le navigateur via
+     * `animation-timeline: scroll()` : il ne faut donc SURTOUT PAS relancer
+     * `tick()` ici, qui repeindrait les transforms en JS et annulerait tout
+     * l'interet du chemin CSS. Seule la PROGRESSION est rapportee.
+     * @description
+     * Le calcul est differe d'une frame parce qu'`updateProgress()` appelle
+     * `getBoundingClientRect()` : l'executer a chaque evenement de
+     * defilement forcerait un reflow synchrone. C'est la meme raison qui
+     * fait passer le chemin JS par rAF.
+     * @description
+     * `progressRafId` est la frame en attente de ce rapport. Elle est
+     * distincte de `rafId` : celle-la ne repeint aucune couche, et les
+     * confondre ferait annuler la boucle de rendu en annulant le rapport.
+     * @description
+     * `scroll` et `resize` sont pour cette raison installes DANS LES DEUX
+     * CAS dans `onMounted`, et c'est `onScroll` qui choisit quoi faire.
+     * Le suivi de souris et le premier paint JS, eux, restent propres au
+     * chemin de repli : sur le chemin CSS c'est le navigateur qui
+     * positionne les couches.
+     ********************************************************/
     const onScroll = () => {
-        if (rafId == null && isInViewport) {
+        if (!isInViewport) return
+
+        if (cssScrollDriven.value) {
+            if (progressRafId != null) return
+
+            progressRafId = requestAnimationFrame(() => {
+                progressRafId = null
+                updateProgress()
+            })
+
+            return
+        }
+
+        if (rafId == null) {
             rafId = requestAnimationFrame(tick)
         }
     }
@@ -260,9 +353,7 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
         const host = options.target.value
         if (!host) return
         for (const layer of layers.value) {
-            layer.target.style.setProperty('--origam-parallax__layer---speed', String(layer.speed))
-            layer.target.style.setProperty('--origam-parallax__layer---offset-x', `${layer.offsetX}px`)
-            layer.target.style.setProperty('--origam-parallax__layer---offset-y', `${layer.offsetY}px`)
+            publishLayerVars(layer)
         }
     }
 
@@ -289,10 +380,10 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
         }, { threshold: 0 })
         observer.observe(host)
 
-        // JS fallback listeners.
+        window.addEventListener('scroll', onScroll, { passive: true })
+        window.addEventListener('resize', onScroll, { passive: true })
+
         if (!cssScrollDriven.value) {
-            window.addEventListener('scroll', onScroll, { passive: true })
-            window.addEventListener('resize', onScroll, { passive: true })
             host.addEventListener('mousemove', onMouseMove, { passive: true })
             // First paint with progress=0 so layers are positioned at offsets.
             requestAnimationFrame(tick)
@@ -301,6 +392,10 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
 
     onBeforeUnmount(() => {
         if (rafId != null) cancelAnimationFrame(rafId)
+        if (progressRafId != null) {
+            cancelAnimationFrame(progressRafId)
+            progressRafId = null
+        }
         observer?.disconnect()
         observer = null
         if (typeof window !== 'undefined') {
@@ -333,6 +428,7 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
         cssScrollDriven,
         reducedMotion,
         register,
-        unregister
+        unregister,
+        update
     }
 }

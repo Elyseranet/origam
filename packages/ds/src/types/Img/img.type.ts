@@ -1,6 +1,6 @@
-import { OrigamImg } from '../../components'
+import OrigamImg from '../../components/Img/OrigamImg.vue'
 
-import { CROSS_ORIGIN, IMG_STATE, REFERRER_POLICY } from '../../enums'
+import { CROSS_ORIGIN, IMG_STATE, REFERRER_POLICY } from '../../enums/Img/img.enum'
 
 export type TCrossOrigin = `${CROSS_ORIGIN}` | ''
 

@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="id"
 			ref="rootEl"
 			class="origam-media-scrubber"
 			:class="rootClasses"
@@ -13,7 +14,7 @@
 			:aria-valuetext="ariaValueText || undefined"
 			:aria-label="ariaLabel"
 			:aria-disabled="disabled || undefined"
-			data-cy="origam-media-scrubber"
+			:data-cy="resolvedDataCy"
 			@pointerdown="onPointerDown"
 			@pointermove="onPointerMove"
 			@pointerleave="onPointerLeave"
@@ -22,7 +23,7 @@
 		<div
 				class="origam-media-scrubber__track"
 				:class="[colorClasses, roundedClasses]"
-				:style="colorStyles"
+				:style="[colorStyles, roundedStyles]"
 				aria-hidden="true"
 		>
 			<div
@@ -68,13 +69,14 @@
 		toRef
 	} from 'vue'
 
-	import {
-		useBackgroundColor,
-		useRounded
-	} from '../../composables'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
 
-	import type {
-		IMediaScrubberProps, IMediaScrubberSlots} from '../../interfaces'
+	import { MEDIA_SCRUBBER_MIN_RANGE } from '../../consts/Media/media.const'
+
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+
+	import type { IMediaScrubberProps, IMediaScrubberSlots } from '../../interfaces/Media/media-scrubber.interface'
 
 	import type { IMediaScrubberEmits } from '../../interfaces/Media/media-scrubber.interface'
 
@@ -115,21 +117,40 @@
 	 * surface — track + buffer stay neutral by design).
 	 ********************************************************/
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(toRef(props, 'color'))
-	const { roundedClasses } = useRounded(toRef(props, 'rounded'))
+	// The props-OBJECT overload, not `toRef(props, 'rounded')`: the `Ref`
+	// overload of `useRounded` carries a single scalar — the `rounded`
+	// shorthand — so `roundedTopLeft` / `roundedTopRight` /
+	// `roundedBottomLeft` / `roundedBottomRight` were unreachable by
+	// construction, whatever `useRounded` did internally. `roundedStyles`
+	// was also being dropped on the floor, which silently discarded every
+	// non-tokenised radius (a length, a `var()`, a `calc()`).
+	const { roundedClasses, roundedStyles } = useRounded(props)
 
 	const colorClasses = computed(() => backgroundColorClasses.value)
 	const colorStyles = computed(() => backgroundColorStyles.value)
 
 	/*********************************************************
-	 * Range bookkeeping — clamps `modelValue` into `[min, max]` so
-	 * a stale parent value never paints the thumb outside the track.
-	 * `max` is forced to `> min` (we keep a tiny epsilon as a
-	 * defensive sentinel) so `(value - min) / (max - min)` never
-	 * divides by 0.
+	 * Range bookkeeping — two DISTINCT quantities, deliberately not
+	 * folded into one:
+	 *
+	 *   `resolvedMax` is the DECLARED maximum. It feeds `aria-valuemax`
+	 *   and every clamp, so it must stay a value the consumer could
+	 *   recognise. Floored at `min` only, so an inverted range never
+	 *   announces `aria-valuemax < aria-valuemin`.
+	 *
+	 *   `range` is the DENOMINATOR of `(value - min) / (max - min)`.
+	 *   It carries the epsilon floor so an empty range paints `0%`
+	 *   instead of `NaN%`.
+	 *
+	 * Collapsing the two is what leaked `aria-valuemax="1e-7"` to
+	 * assistive tech for the whole pre-`loadedmetadata` window — the
+	 * state every media scrubber mounts in, since
+	 * `OrigamMediaController.scrubberMax` returns 0 until the duration
+	 * is finite.
 	 ********************************************************/
 	const resolvedMin = computed(() => props.min)
-	const resolvedMax = computed(() => Math.max(props.max, props.min + 0.0000001))
-	const range = computed(() => resolvedMax.value - resolvedMin.value)
+	const resolvedMax = computed(() => Math.max(props.max, props.min))
+	const range = computed(() => Math.max(resolvedMax.value - resolvedMin.value, MEDIA_SCRUBBER_MIN_RANGE))
 
 	const resolvedValue = computed(() => clamp(props.modelValue, resolvedMin.value, resolvedMax.value))
 
@@ -148,6 +169,14 @@
 	 * to `-1` when disabled (slider stays addressable for tests, but
 	 * out of the user's tab order).
 	 ********************************************************/
+	// `dataCy` is DECLARED as a prop, which removes it from `$attrs` — so the
+	// interface's "passed through $attrs to the host element" note could never
+	// hold, and the template's hardcoded `data-cy` meant a parent
+	// (OrigamMediaController, OrigamMediaVolumeControl) forwarding its own
+	// selector was silently overridden. The prop now wins, with the historical
+	// literal as the fallback so existing selectors keep matching.
+	const resolvedDataCy = computed(() => props.dataCy ?? 'origam-media-scrubber')
+
 	const resolvedRole = computed(() => (props.disabled ? undefined : 'slider'))
 	const resolvedTabIndex = computed(() => (props.disabled ? -1 : 0))
 
@@ -168,7 +197,7 @@
 	 ********************************************************/
 	const showTooltip = computed(() =>
 		props.showHoverTooltip
-		&& props.orientation === 'horizontal'
+		&& props.orientation === DIRECTION.HORIZONTAL
 		&& hoverPct.value !== null
 		&& !props.disabled
 	)
@@ -188,7 +217,7 @@
 		const el = rootEl.value
 		if (!el) return 0
 		const rect = el.getBoundingClientRect()
-		if (props.orientation === 'vertical') {
+		if (props.orientation === DIRECTION.VERTICAL) {
 			const y = clamp(event.clientY, rect.top, rect.bottom)
 			return ((rect.bottom - y) / Math.max(1, rect.height)) * 100
 		}
@@ -284,7 +313,7 @@
 
 	function onKeyDown (event: KeyboardEvent): void {
 		if (props.disabled) return
-		const isVertical = props.orientation === 'vertical'
+		const isVertical = props.orientation === DIRECTION.VERTICAL
 		const step = keyStep()
 		let next: number | null = null
 
@@ -311,21 +340,21 @@
 	 * the underlying track orientation.
 	 ********************************************************/
 	const progressStyles = computed<StyleValue>(() => {
-		if (props.orientation === 'vertical') {
+		if (props.orientation === DIRECTION.VERTICAL) {
 			return { height: `${valuePct.value}%` }
 		}
 		return { width: `${valuePct.value}%` }
 	})
 
 	const bufferStyles = computed<StyleValue>(() => {
-		if (props.orientation === 'vertical') {
+		if (props.orientation === DIRECTION.VERTICAL) {
 			return { height: `${bufferPct.value}%` }
 		}
 		return { width: `${bufferPct.value}%` }
 	})
 
 	const thumbStyles = computed<StyleValue>(() => {
-		if (props.orientation === 'vertical') {
+		if (props.orientation === DIRECTION.VERTICAL) {
 			return { bottom: `${valuePct.value}%` }
 		}
 		return { left: `${valuePct.value}%` }
@@ -341,8 +370,8 @@
 	 ********************************************************/
 	const rootClasses = computed(() => [
 		{
-			'origam-media-scrubber--horizontal': props.orientation === 'horizontal',
-			'origam-media-scrubber--vertical': props.orientation === 'vertical',
+			'origam-media-scrubber--horizontal': props.orientation === DIRECTION.HORIZONTAL,
+			'origam-media-scrubber--vertical': props.orientation === DIRECTION.VERTICAL,
 			'origam-media-scrubber--disabled': props.disabled,
 			'origam-media-scrubber--scrubbing': isScrubbing.value,
 			'origam-media-scrubber--thumb-on-hover': props.showThumbOnHoverOnly

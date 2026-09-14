@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			ref="root"
 			:class="parallaxClasses"
 			:style="parallaxStyles"
@@ -26,31 +27,32 @@
 >
 	import { computed, onBeforeUnmount, onMounted, provide, ref, StyleValue, toRef, watch } from 'vue'
 	import type { Ref } from 'vue'
-	import {
-		useAudio,
-		useBorder,
-		useBothColor,
-		useDimension,
-		useDisplay,
-		useElevation,
-		useMargin,
-		usePadding,
-		useParallaxRuntime,
-		useProps,
-		useRounded,
-		useStyle,
-		useThrottleFn
-	} from '../../composables'
+	import { useAudio } from '../../composables/Commons/audio.composable'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useDisplay } from '../../composables/Commons/display.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useParallaxRuntime } from '../../composables/Parallax/parallax.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useThrottleFn } from '../../composables/Commons/throttle.composable'
 
-	import { ORIGAM_PARALLAX_KEY, ORIGAM_PARALLAX_LAYER_KEY } from '../../consts'
+	import { ORIGAM_PARALLAX_KEY } from '../../consts/Parallax/parallax.const'
+	import { ORIGAM_PARALLAX_LAYER_KEY } from '../../consts/Parallax/parallax-layer.const'
 
-	import { PARALLAX_DIRECTION, PARALLAX_EASING, PARALLAX_EVENT } from '../../enums'
+	import { PARALLAX_DIRECTION, PARALLAX_EASING, PARALLAX_EVENT } from '../../enums/Parallax/parallax.enum'
 
-	import type { IBox, IParallaxProps } from '../../interfaces'
+	import type { IBox } from '../../interfaces/Commons/box.interface'
+	import type { IParallaxEmits, IParallaxProps, IParallaxSlots } from '../../interfaces/Parallax/parallax.interface'
 
-	import type { TParallaxDirection, TParallaxEasing } from '../../types'
+	import type { TParallaxDirection, TParallaxEasing } from '../../types/Parallax/parallax.type'
 
-	import { getCenter, getTargetBox, inViewport } from '../../utils'
+	import { getCenter, inViewport } from '../../utils/Commons/point.util'
+	import { getTargetBox } from '../../utils/Commons/box.util'
 
 	/*********************************************************
 	 * Global
@@ -75,13 +77,11 @@
 		threshold: 0
 	})
 
-	const emit = defineEmits<{
-		(e: 'enter'): void
-		(e: 'leave'): void
-		(e: 'scroll-progress', progress: number): void
-	}>()
+	const emit = defineEmits<IParallaxEmits>()
 
 	const {filterProps} = useProps<IParallaxProps>(props)
+
+	defineSlots<IParallaxSlots>()
 
 	/*********************************************************
 	 * Composables (chrome)
@@ -125,7 +125,16 @@
 			},
 			orientation: {
 				action: orientationElement,
-				condition: props.event === 'move' && isTouch.value,
+				// `handleMovement` looks up `eventActions.value[props.event]` — when
+				// `props.event === 'orientation'` we are ALREADY in this branch, so
+				// gating on `props.event === 'move'` here can never be true. That
+				// left `<origam-parallax event="orientation">` permanently inert:
+				// the `deviceorientation` listener fired (registered via
+				// `eventMap.value.orientation`) but `condition` always evaluated to
+				// `false`, so `movement.value` never updated regardless of a real
+				// sensor being present. Mirrors the `scroll` branch's guard (a
+				// measured target box must exist before applying movement).
+				condition: props.event === 'orientation' && !!shape.value?.height,
 				type: 'deviceorientation'
 			}
 		}
@@ -170,6 +179,18 @@
 	}
 
 	const handleMovement = useThrottleFn((event: MouseEvent & DeviceOrientationEvent) => {
+		// WORK-AVOIDANCE ONLY — this is NOT the guard that makes `disabled`
+		// visible. Mutation testing (2026-08-18) confirmed it: delete this line
+		// and both `disabled` e2e tests still pass, because the gate on the
+		// PROVIDED `isMoving` (see the `provide` block below) already pins the
+		// rendered transform to offset 0 on its own. What this line buys is that
+		// a disabled host stops doing per-mousemove work it can't display —
+		// `getTargetBox` (a forced `getBoundingClientRect`) every 100 ms, plus
+		// writes to `movement` / `data` that invalidate every child's computeds
+		// and keep pushing `eventData` at consumers of ORIGAM_PARALLAX_KEY.
+		// Keep it, but don't mistake it for the fix.
+		if (props.disabled) return
+
 		if (!props.active && !root.value) return
 
 		if (!isMoving.value && !leftOnce.value) {
@@ -198,6 +219,16 @@
 		}
 	}
 
+	// `active` and `disabled` both stop movement, and the asymmetry between them
+	// is deliberate — see `IParallaxProps`. `disabled` is the HARD switch
+	// ("translate stays at 0 regardless of scroll / events") and is enforced on
+	// the provided `isMoving`, so it kills every legacy mode at once. `active` is
+	// the NARROW legacy kill-switch: it only freezes the MOUSE mode, which is
+	// exactly why it is enforced here — `handleMovementStart` is the mouse
+	// entry point, so an `event="scroll"` host with `active={false}` keeps
+	// scrolling (the provided `isMoving` is forced true for SCROLL). Do not
+	// "harmonise" the two by moving this test next to the `disabled` one: that
+	// would silently widen `active` into a second hard switch.
 	const handleMovementStart = () => {
 		if (!props.active) return
 		isMoving.value = true
@@ -238,7 +269,24 @@
 		audioData,
 		event: toRef(props, 'event'),
 		eventData: data,
-		isMoving: computed(() => isMoving.value || props.event === PARALLAX_EVENT.SCROLL) as unknown as Ref<boolean>,
+		// ⛔ THIS is the `disabled` kill-switch for the legacy
+		// <OrigamParallaxElement> path — the only gate whose removal reddens a
+		// test (`disabled — flipping it mid-hover…`). Before it, `disabled`
+		// reached only `useParallaxRuntime` (the <OrigamParallaxLayer> path) and
+		// the `origam-parallax--disabled` class, whose SCSS neutralises
+		// `.origam-parallax__layer` and nothing else — so a
+		// `<origam-parallax disabled event="move">` kept translating under the
+		// mouse (measured: matrix(1,0,0,1,-1,-1) → matrix(1,0,0,1,-50.58,-50.62)).
+		//
+		// It has to live HERE rather than only in `handleMovement`: stopping
+		// future updates leaves `movement` at whatever value it held when
+		// `disabled` flipped on, freezing the element mid-travel (measured at
+		// -91,-91) instead of returning to offset 0 as `IParallaxProps.disabled`
+		// documents. `OrigamParallaxElement.transformCalculation` short-circuits
+		// to `{x: 0, y: 0}` as soon as this ref reads false, so gating it here is
+		// what makes "translate stays at 0" literally true, and it covers the
+		// `event="scroll"` branch of this same expression too.
+		isMoving: computed(() => !props.disabled && (isMoving.value || props.event === PARALLAX_EVENT.SCROLL)) as unknown as Ref<boolean>,
 		movement,
 		duration: resolvedDuration,
 		easing: toRef(props, 'easing') as unknown as Ref<string>,
@@ -258,7 +306,8 @@
 		cssScrollDriven,
 		reducedMotion,
 		register,
-		unregister
+		unregister,
+		update
 	} = useParallaxRuntime({
 		target: root,
 		direction: toRef(props, 'direction') as Ref<TParallaxDirection>,
@@ -280,7 +329,8 @@
 		cssScrollDriven,
 		reducedMotion,
 		register,
-		unregister
+		unregister,
+		update
 	})
 
 	/*********************************************************
@@ -319,7 +369,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(parallaxStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(parallaxStyles, () => props.id)
 
 	defineExpose({
 		filterProps,

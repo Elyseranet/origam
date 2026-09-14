@@ -49,7 +49,6 @@
 							:model-value="state.modelValue"
 							:options="state.options"
 							:transition="state.transition"
-							:disabled="state.disabled"
 							height="120"
 					>
 						<div style="padding: 16px; background: var(--origam-color__surface---default); border-radius: 4px; font-weight: bold;">
@@ -59,9 +58,6 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<StoryGroup title="States">
-					<HstCheckbox v-model="state.disabled" title="Disabled (transition)"/>
-				</StoryGroup>
 				<StoryGroup title="Data">
 					<HstCheckbox v-model="state.modelValue" title="Model Value (visible)"/>
 				</StoryGroup>
@@ -135,20 +131,6 @@
 			<origam-btn style="margin-top: 8px;" text="Reveal" @click="lazySlotVisible = true"/>
 		</Variant>
 
-		<Variant title="Emit — update:modelValue">
-			<div style="height: 400px; overflow-y: auto; border: 1px solid var(--origam-color__border---default); padding: 16px; border-radius: 4px;">
-				<p style="margin-bottom: 200px; opacity: 0.5;">Scroll down to trigger the emit.</p>
-				<origam-lazy
-						height="100"
-						@update:model-value="logEvent('update:modelValue', $event)"
-				>
-					<div style="padding: 16px; background: var(--origam-color__surface---default); border-radius: 4px; font-weight: bold;">
-						Lazy emit fired!
-					</div>
-				</origam-lazy>
-			</div>
-		</Variant>
-
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<ILazyComponentProps>({ height: 120, tag: 'div', modelValue: false })"
@@ -176,7 +158,6 @@
 				<StoryGroup title="Functional">
 					<HstSelect   v-model="state.tag"        title="Tag"       :options="TAG_OPTIONS"/>
 					<HstCheckbox v-model="state.modelValue" title="Model Value (visible)"/>
-					<HstCheckbox v-model="state.disabled"   title="Disabled (transition)"/>
 				</StoryGroup>
 			</template>
 		</Variant>

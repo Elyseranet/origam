@@ -2,25 +2,34 @@ import type { Ref } from 'vue'
 
 import type {
     IBgColorProps,
-    IBorderProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type {
     ICommonsComponentProps,
-    IDimensionProps,
-    IElevationProps,
-    IMarginProps,
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type {
     IMediaPlayerEmits,
     IMediaPlayerMethods,
-    IMediaPlayerState,
-    IPaddingProps,
-    IPositionProps,
-    IRoundedProps,
-    ISrcObject,
-    ITagProps,
-    ITypographyProps,
-    IVideoTrack
-} from '../../interfaces'
+    IMediaPlayerState
+} from '../Media/media-player.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IPositionProps } from '../Commons/position.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ISrcObject } from '../Img/img.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
+import type { IVideoTrack } from '../Video/video-track.interface'
 
-import type { TAudioControls, TAudioLoopMode, TAudioVariant, TCoverPosition } from '../../types'
+import type {
+    TAudioControls,
+    TAudioLoopMode,
+    TAudioVariant,
+    TCoverPosition
+} from '../../types/Audio/audio.type'
 
 /**
  * Descriptor for a single track in an `<OrigamAudio>` playlist.
@@ -96,6 +105,10 @@ export interface IAudioScopedSlotBindings {
  * Slot signatures for `<OrigamAudio>`.
  */
 export interface IAudioSlots {
+    /** Override the entire title/artist/cover header strip (cover +
+     *  metadata together). Takes priority over the individual
+     *  `cover` / `metadata` / `title` slots. */
+    header?: () => any
     /** Override the entire title/artist/cover strip. */
     metadata?: () => any
     /** Override the cover image / placeholder. */
@@ -110,6 +123,9 @@ export interface IAudioSlots {
     /** Override the entire controls (replaces the default
      *  `<OrigamMediaController>`). */
     controls?: (bindings: IAudioScopedSlotBindings) => any
+    /** Override the playlist list rendered below the transport row.
+     *  Only rendered when `playlist` is set. */
+    playlist?: (bindings: { tracks: Array<IAudioTrack> | undefined; currentIndex: number; select: (index: number) => void }) => any
     /** Overlay rendered while the media is loading. */
     loading?: () => any
     /** Overlay rendered when an error occurred. */
@@ -134,7 +150,7 @@ export interface IAudioProps
         IPositionProps,
         IColorProps,
         IBgColorProps,
-        ITypographyProps {
+        Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight'> {
     /**
      * Visual variant of the audio surface.
      *

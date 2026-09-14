@@ -1,5 +1,16 @@
-import type { IColorProps, ICommonsComponentProps, IDensityProps, ISizeProps, ITagProps } from '../../interfaces'
-import type { TIcon, TIntent, TTimelineOrientation } from '../../types'
+import type { IColorProps } from '../Commons/color.interface'
+import type {
+    ICommonsComponentProps,
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { ISizeProps } from '../Commons/size.interface'
+import type { TIcon } from '../../types/Icon/icon.type'
+import type { TIntent } from '../../types/Commons/intent.type'
+import type {
+    TTimelineOrientation,
+    TTimelineSide
+} from '../../types/Timeline/timeline.type'
 
 /**
  * Shape of the context object provided by OrigamTimeline to its
@@ -9,9 +20,15 @@ import type { TIcon, TIntent, TTimelineOrientation } from '../../types'
  *
  * The matching injection key lives in
  * `src/consts/Timeline/timeline.const.ts` (TIMELINE_CONTEXT_KEY).
+ *
+ * `ITimelineItemProps` / `ITimelineItemSlots` (the actual
+ * `<OrigamTimelineItem>` component surface) moved out to
+ * `interfaces/Timeline/timeline-item.interface.ts` under issue #364 —
+ * this file used to hold both distinct component surfaces
+ * (Timeline / TimelineItem).
  */
 export interface ITimelineContext {
-    side: 'start' | 'end' | 'alternating'
+    side: TTimelineSide
     truncateLine: boolean
     orientation: TTimelineOrientation
     color?: string
@@ -36,24 +53,22 @@ export interface ITimelineProps extends ICommonsComponentProps, ITagProps, IColo
      *    Content (title/subtitle/body) renders BELOW each dot.
      */
     orientation?: TTimelineOrientation
-    side?: 'start' | 'end' | 'alternating'
+    side?: TTimelineSide
     truncateLine?: boolean
     ariaLabel?: string
 }
 
-export interface ITimelineItemProps extends ICommonsComponentProps, IColorProps, IDensityProps, ISizeProps {
-    title?: string
-    subtitle?: string
-    icon?: TIcon
-    intent?: TIntent
-    isLast?: boolean
-    truncateLine?: boolean
-    side?: 'start' | 'end' | 'alternating'
-    /**
-     * Layout direction forwarded by the parent OrigamTimeline. When unset
-     * the item assumes vertical layout. Items rarely set this directly —
-     * they receive it via inject from the parent.
-     */
-    orientation?: TTimelineOrientation
-    index?: number
+/** Slot signatures for `<OrigamTimeline>`. */
+export interface ITimelineSlots {
+    /** Overrides the whole auto-generated `<OrigamTimelineItem>` list. */
+    default?: () => any
 }
+
+/*********************************************************
+ * ITimelineEmits
+ *
+ * @description
+ * `<OrigamTimeline>` renders a static list of `<OrigamTimelineItem>` —
+ * nothing is emitted.
+ ********************************************************/
+export interface ITimelineEmits {}

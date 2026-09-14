@@ -104,29 +104,29 @@
 		setup
 >
 	import { computed, ref, StyleValue, useAttrs, useSlots } from 'vue'
-	import { OrigamInput, OrigamRadioBtn } from '../../components'
+	import OrigamInput from '../Input/OrigamInput.vue'
+	import OrigamRadioBtn from './OrigamRadioBtn.vue'
 
-	import {
-		useDefaults,
-		useFocus,
-		useHover,
-		useMargin,
-		usePadding,
-		useProps,
-		useStateEffect,
-		useStyle,
-		useVModel
-} from '../../composables'
+	import { useFocus } from '../../composables/Commons/focus.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { DENSITY } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IRadioProps} from '../../interfaces'
+	import type { IRadioProps } from '../../interfaces/Radio/radio.interface'
 
-	import type { IRadioEmits } from '../../interfaces/Radio/radio.interface'
+	import type { IRadioEmits, IRadioSlots } from '../../interfaces/Radio/radio.interface'
 
-	import type { TOrigamInput, TOrigamRadioBtn } from "../../types"
+	import type { TOrigamInput } from '../../types/Input/input.type'
+	import type { TOrigamRadioBtn } from '../../types/Radio/radio-btn.type'
 
-	import { filterInputAttrs, getUid } from '../../utils'
+	import { filterInputAttrs } from '../../utils/Input/input.util'
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 	/*********************************************************
 	 * Global
@@ -134,21 +134,16 @@
 	 * @description
 	 * Props, emits and filterProps for the Radio component.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IRadioProps>(), {
+	const props = withDefaults(defineProps<IRadioProps>(), {
 		density: DENSITY.DEFAULT
 	})
 
-	// `useDefaults` resolves each prop against the closest
-	// `<OrigamDefaultsProvider>` / theme `components['origam-radio']`
-	// entry. Without this, `activeBgColor` and any other theme-level
-	// default for this component were completely inert — the component
-	// only ever saw its own `withDefaults()` value (see #279).
-	const props = useDefaults(_props)
-
 	const emits = defineEmits<IRadioEmits>()
 
+	defineSlots<IRadioSlots>()
 
-	const {isHover, hoverState} = useHover(props)
+
+	const {isOn: isHover, config: hoverState} = useStateFlag(props, {state: 'hover'})
 	useStateEffect(props, isHover, undefined, hoverState, undefined)
 	const {filterProps} = useProps<IRadioProps>(props)
 

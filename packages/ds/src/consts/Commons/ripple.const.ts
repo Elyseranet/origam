@@ -1,8 +1,8 @@
-import type { IRippleElement, IRippleHtmlElement, IRippleOptions } from '../../interfaces'
+import type { IRippleElement, IRippleHtmlElement, IRippleOptions } from '../../interfaces/Commons/ripple.interface'
 
-import type { TRippleEvent } from '../../types'
+import type { TRippleEvent } from '../../types/Commons/ripple.type'
 
-import { calculate, rippleTransform } from '../../utils'
+import { calculate, rippleTransform } from '../../utils/Commons/ripple.util'
 
 export const ORIGAM_RIPPLE_STOP_KEY = Symbol('origam:rippleStop')
 

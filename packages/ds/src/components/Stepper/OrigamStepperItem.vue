@@ -1,11 +1,13 @@
 <template>
 	<component
 			:is="isClickable ? 'button' : 'div'"
+			:id="id"
 			:class="itemClasses"
+			:style="rootStyles"
 			:type="isClickable ? 'button' : undefined"
-			:aria-current="resolvedStatus === 'active' ? 'step' : undefined"
+			:aria-current="resolvedStatus === STEPPER_ITEM_STATUS.ACTIVE ? 'step' : undefined"
 			:aria-label="stepAriaLabel"
-			:disabled="isClickable && resolvedStatus === 'active' ? true : undefined"
+			:disabled="isClickable && resolvedStatus === STEPPER_ITEM_STATUS.ACTIVE ? true : undefined"
 			@click="handleClick"
 	>
 		<span
@@ -13,10 +15,10 @@
 				:class="indicatorClasses"
 				aria-hidden="true"
 		>
-			<template v-if="resolvedStatus === 'done'">
+			<template v-if="resolvedStatus === STEPPER_ITEM_STATUS.DONE">
 				<origam-icon :icon="MDI_ICONS.CHECK" />
 			</template>
-			<template v-else-if="resolvedStatus === 'error'">
+			<template v-else-if="resolvedStatus === STEPPER_ITEM_STATUS.ERROR">
 				<origam-icon :icon="MDI_ICONS.EXCLAMATION" />
 			</template>
 			<template v-else-if="icon">
@@ -44,15 +46,18 @@
 		lang="ts"
 		setup
 >
-	import { computed, inject } from 'vue'
+	import { StyleValue, computed, inject } from 'vue'
 
-	import { OrigamIcon } from '../../components'
-	import { ORIGAM_STEPPER_KEY } from '../../consts'
-	import { MDI_ICONS } from '../../enums'
-	import { useLocale, useProps } from '../../composables'
-	import { vContrast } from '../../directives'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import { ORIGAM_STEPPER_KEY } from '../../consts/Stepper/stepper.const'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { STEPPER_ITEM_STATUS } from '../../enums/Stepper/stepper.enum'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import type { IStepperItemProps } from '../../interfaces'
+	import type { IStepperItemEmits, IStepperItemProps, IStepperItemSlots } from '../../interfaces/Stepper/stepper-item.interface'
 
 	/*********************************************************
 	 * Global
@@ -74,9 +79,9 @@
 		return t('origam.stepper.step_aria_label', (props.index ?? 0) + 1, props.title)
 	})
 
-	const emit = defineEmits<{
-		(e: 'click', index: number): void
-	}>()
+	const emit = defineEmits<IStepperItemEmits>()
+
+	defineSlots<IStepperItemSlots>()
 
 	const { filterProps } = useProps<IStepperItemProps>(props)
 
@@ -101,9 +106,9 @@
 		if (props.status !== undefined) return props.status
 		const modelValue = stepper?.modelValue.value ?? 0
 		const idx = props.index ?? 0
-		if (idx < modelValue) return 'done'
-		if (idx === modelValue) return 'active'
-		return 'pending'
+		if (idx < modelValue) return STEPPER_ITEM_STATUS.DONE
+		if (idx === modelValue) return STEPPER_ITEM_STATUS.ACTIVE
+		return STEPPER_ITEM_STATUS.PENDING
 	})
 
 	/*********************************************************
@@ -121,7 +126,10 @@
 	/*********************************************************
 	 * Class & Style
 	 ********************************************************/
-	const orientation = computed(() => stepper?.orientation.value ?? 'horizontal')
+	const orientation = computed(() => stepper?.orientation.value ?? DIRECTION.HORIZONTAL)
+
+	const rootStyles = computed<StyleValue>(() => props.style as StyleValue)
+
 
 	const itemClasses = computed(() => [
 		'origam-stepper-item',

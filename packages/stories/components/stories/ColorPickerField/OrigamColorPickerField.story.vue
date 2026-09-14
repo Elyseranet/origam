@@ -88,14 +88,13 @@
 
 		<Variant
 				title="State"
-				:init-state="() => useStoryInitState<IHoverProps & IColorProps & { active?: boolean | object }>({ color: 'primary' })"
+				:init-state="() => useStoryInitState<IColorProps & { active?: boolean | object }>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
 				<origam-color-picker-field
 						v-model="stateColor"
 						label="State field"
 						:color="state.color"
-						:hover="resolveHoverState(state.hover)"
 						:active="resolveActiveState(state.active)"
 						style="max-width: 320px"
 				/>
@@ -105,7 +104,6 @@
 					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Interaction">
-					<HstSelect v-model="state.hover"  title="Hover"  :options="HOVER_OPTIONS"/>
 					<HstSelect v-model="state.active" title="Active" :options="ACTIVE_OPTIONS"/>
 				</StoryGroup>
 			</template>
@@ -150,15 +148,6 @@
 					<HstSelect v-model="state.validateOn" title="Validate On" :options="VALIDATE_ON_OPTIONS"/>
 				</StoryGroup>
 			</template>
-		</Variant>
-
-		<Variant title="Prop — closeOnSelect">
-			<origam-color-picker-field
-					v-model="functionalColor"
-					label="Colour (closeOnSelect)"
-					close-on-select
-					style="max-width: 320px"
-			/>
 		</Variant>
 
 		<Variant title="Prop — disabled & readonly">
@@ -344,7 +333,7 @@
 
 	import { OrigamColorPickerField, OrigamIcon } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
-	import type { IColorPickerFieldProps, IColorProps, IHoverProps } from '@origam/interfaces'
+	import type { IColorPickerFieldProps, IColorProps } from '@origam/interfaces'
 	import type { TValidateOn } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
@@ -357,8 +346,6 @@
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
-		HOVER_OPTIONS,
-		resolveHoverState,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,
 		VARIANT_INPUT_OPTIONS

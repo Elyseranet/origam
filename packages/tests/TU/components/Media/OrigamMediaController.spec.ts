@@ -15,6 +15,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { ref } from 'vue'
 
 import OrigamMediaController from '@origam/components/Media/OrigamMediaController.vue'
+import OrigamMenu from '@origam/components/Menu/OrigamMenu.vue'
 
 import { ORIGAM_LOCALE_KEY } from '@origam/consts'
 
@@ -35,7 +36,13 @@ const LABELS: Record<string, string> = {
     'origam.media.quality': 'Quality',
     'origam.media.download': 'Download',
     'origam.media.castToDevice': 'Cast to device',
-    'origam.media.stopCasting': 'Stop casting'
+    'origam.media.stopCasting': 'Stop casting',
+    'origam.media.previous_track': 'Previous track',
+    'origam.media.next_track': 'Next track',
+    'origam.media.loop_all': 'Loop playlist',
+    'origam.media.loop_one': 'Loop track',
+    'origam.media.loop_off': 'Loop off',
+    'origam.media.shuffle': 'Shuffle'
 }
 
 const stubLocale = (): any => ({
@@ -114,6 +121,12 @@ interface IMountOptions {
     downloadUrl?: string | null
     qualityOptions?: ReadonlyArray<{ quality: string, label: string }>
     currentQuality?: string | null
+    showPrevious?: boolean
+    showNext?: boolean
+    showLoop?: boolean
+    showShuffle?: boolean
+    loopMode?: 'none' | 'all' | 'one'
+    shuffle?: boolean
 }
 
 // OrigamMenu stub: renders the items tree as flat <button> elements so
@@ -124,9 +137,31 @@ interface IMountOptions {
 //   speed-0.5   → [data-cy="origam-media-controller-config-rate-0.5"]
 //   quality-720p→ [data-cy="origam-media-controller-config-quality-720p"]
 //   download    → [data-cy="origam-media-controller-config-download"]
+//
+// ⚠️ A stub is a claim about the real component. This one drifted ahead of
+// reality twice, and each time it HID a live bug instead of exposing it:
+//
+//   1. It emitted `select` on click. The real `<OrigamMenu>` had no such
+//      emit at all (absent from `IMenuEmits`), so the controller's
+//      `@select="onConfigSelect"` was routed to the overlay root as a
+//      fallthrough DOM listener answering the native text-selection event.
+//      Every config-menu test below was green against an emit that did not
+//      exist.
+//   2. It walked `item.children` by hardcoded key, bypassing the
+//      `itemChildren` prop — the exact resolution that BUG 4 broke in the
+//      real component (`hasChilds` read `item.items`), so no submenu ever
+//      rendered in the browser while this spec stayed green.
+//
+// Both are now pinned: the stub resolves children through the real
+// `itemChildren` prop, it dispatches the item's own `onClick` (the path
+// production actually relies on) as well as emitting, and the fidelity
+// guard at the bottom of this file fails if the stub ever again claims an
+// emit the real component does not declare.
+const MENU_STUB_EMITS = ['update:modelValue', 'select']
+
 const OrigamMenuStub = {
-    props: ['modelValue', 'items'],
-    emits: ['update:modelValue', 'select'],
+    props: ['modelValue', 'items', 'itemChildren'],
+    emits: MENU_STUB_EMITS,
     template: `
         <div class="origam-menu-stub" :data-open="modelValue">
             <slot name="activator" :props="{}" />
@@ -135,7 +170,7 @@ const OrigamMenuStub = {
                     <button
                         type="button"
                         :data-cy="itemDataCy(item.key)"
-                        @click="$emit('select', item)"
+                        @click="pick(item)"
                     >{{ item.title }}</button>
                 </template>
             </template>
@@ -143,11 +178,13 @@ const OrigamMenuStub = {
     `,
     computed: {
         flatItems (): Array<any> {
+            const childKey = (this as any).itemChildren ?? 'children'
             const flat: Array<any> = []
             const walk = (items: Array<any>) => {
                 for (const item of (items ?? [])) {
-                    if (item.children && item.children.length) {
-                        walk(item.children)
+                    const children = item?.[childKey]
+                    if (Array.isArray(children) && children.length) {
+                        walk(children)
                     } else {
                         flat.push(item)
                     }
@@ -158,6 +195,14 @@ const OrigamMenuStub = {
         }
     },
     methods: {
+        // Mirrors the real component: the row's own `onClick` runs AND the
+        // menu emits `select`. Production leans on the former (every leaf of
+        // `configMenuItems` carries one), so a stub that only emitted would
+        // let someone delete every `onClick` with the suite still green.
+        pick (item: any): void {
+            item?.onClick?.(new MouseEvent('click'))
+            ;(this as any).$emit('select', item)
+        },
         itemDataCy (key: string): string {
             if (key.startsWith('speed-')) {
                 const rate = key.replace('speed-', '')
@@ -227,7 +272,13 @@ const mountController = (opts: IMountOptions = {}): {
             downloadable: opts.downloadable,
             downloadUrl: opts.downloadUrl,
             qualityOptions: opts.qualityOptions,
-            currentQuality: opts.currentQuality
+            currentQuality: opts.currentQuality,
+            showPrevious: opts.showPrevious,
+            showNext: opts.showNext,
+            showLoop: opts.showLoop,
+            showShuffle: opts.showShuffle,
+            loopMode: opts.loopMode,
+            shuffle: opts.shuffle
         }
     })
     return { wrapper, methods, state }
@@ -339,6 +390,20 @@ describe('OrigamMediaController — config menu', () => {
         expect(methods.setPlaybackRate).toHaveBeenCalledWith(1.5)
         expect(exposed.configMenuOpen).toBe(false)
     })
+
+    // One click is one choice. The menu now emits `select` AND dispatches the
+    // row's own `onClick`; wiring the controller to both channels ran the
+    // handler twice per click.
+    it('applies the picked playback rate exactly once per click', async () => {
+        const { wrapper, methods } = mountController()
+        const exposed = wrapper.vm as any
+
+        exposed.configMenuOpen = true
+        await wrapper.vm.$nextTick()
+        await wrapper.find('[data-cy="origam-media-controller-config-rate-1.5"]').trigger('click')
+
+        expect(methods.setPlaybackRate).toHaveBeenCalledTimes(1)
+    })
 })
 
 describe('OrigamMediaController — quality emits', () => {
@@ -361,6 +426,23 @@ describe('OrigamMediaController — quality emits', () => {
         const emitted = wrapper.emitted('quality-change') as Array<Array<string>>
         expect(emitted).toBeTruthy()
         expect(emitted[0][0]).toBe('720p')
+    })
+
+    it('emits `quality-change` exactly once per click', async () => {
+        const { wrapper } = mountController({
+            qualityOptions: [
+                { quality: '480p', label: '480p' },
+                { quality: '720p', label: '720p' }
+            ],
+            currentQuality: '480p'
+        })
+        const exposed = wrapper.vm as any
+        exposed.configMenuOpen = true
+        await wrapper.vm.$nextTick()
+
+        await wrapper.find('[data-cy="origam-media-controller-config-quality-720p"]').trigger('click')
+
+        expect(wrapper.emitted('quality-change')).toHaveLength(1)
     })
 })
 
@@ -388,5 +470,152 @@ describe('OrigamMediaController — download emit', () => {
 
         const dl = wrapper.find('[data-cy="origam-media-controller-config-download"]')
         expect(dl.exists()).toBe(false)
+    })
+})
+
+// ---------------------------------------------------------------------------
+// Coverage hole flagged by the classeur (lot "divers", 2026-09-01):
+// `showPrevious` / `showNext` / `showLoop` / `showShuffle` are declared,
+// wired in the template, and documented in OrigamMediaController.md — but
+// had ZERO story Variant, ZERO e2e spec, and ZERO unit test. Measured here
+// rather than assumed: the props DO work, so this closes the coverage gap
+// rather than fixing a functional regression.
+// ---------------------------------------------------------------------------
+describe('OrigamMediaController — previous / next transport buttons', () => {
+    it('does NOT render the previous/next buttons by default', () => {
+        const { wrapper } = mountController()
+        expect(wrapper.find('[data-cy="origam-media-controller-previous"]').exists()).toBe(false)
+        expect(wrapper.find('[data-cy="origam-media-controller-next"]').exists()).toBe(false)
+    })
+
+    it('renders the previous button with its accessible name when showPrevious=true', () => {
+        const { wrapper } = mountController({ showPrevious: true })
+        const btn = wrapper.find('[data-cy="origam-media-controller-previous"]')
+        expect(btn.exists()).toBe(true)
+        expect(btn.attributes('aria-label')).toBe('Previous track')
+    })
+
+    it('clicking the previous button emits `previous`', async () => {
+        const { wrapper } = mountController({ showPrevious: true })
+        await wrapper.find('[data-cy="origam-media-controller-previous"]').trigger('click')
+        expect(wrapper.emitted('previous')).toHaveLength(1)
+    })
+
+    it('renders the next button with its accessible name when showNext=true', () => {
+        const { wrapper } = mountController({ showNext: true })
+        const btn = wrapper.find('[data-cy="origam-media-controller-next"]')
+        expect(btn.exists()).toBe(true)
+        expect(btn.attributes('aria-label')).toBe('Next track')
+    })
+
+    it('clicking the next button emits `next`', async () => {
+        const { wrapper } = mountController({ showNext: true })
+        await wrapper.find('[data-cy="origam-media-controller-next"]').trigger('click')
+        expect(wrapper.emitted('next')).toHaveLength(1)
+    })
+})
+
+describe('OrigamMediaController — loop button', () => {
+    it('does NOT render the loop button by default', () => {
+        const { wrapper } = mountController()
+        expect(wrapper.find('[data-cy="origam-media-controller-loop"]').exists()).toBe(false)
+    })
+
+    it('renders with the "loop off" accessible name and aria-pressed=false at loopMode=none', () => {
+        const { wrapper } = mountController({ showLoop: true, loopMode: 'none' })
+        const btn = wrapper.find('[data-cy="origam-media-controller-loop"]')
+        expect(btn.exists()).toBe(true)
+        expect(btn.attributes('aria-label')).toBe('Loop off')
+        expect(btn.attributes('aria-pressed')).toBe('false')
+    })
+
+    it('cycles none → all → one → none on successive clicks, emitting update:loopMode each time', async () => {
+        const { wrapper } = mountController({ showLoop: true, loopMode: 'none' })
+        const btn = wrapper.find('[data-cy="origam-media-controller-loop"]')
+
+        await btn.trigger('click')
+        expect(btn.attributes('aria-label')).toBe('Loop playlist')
+        expect(btn.attributes('aria-pressed')).toBe('true')
+
+        await btn.trigger('click')
+        expect(btn.attributes('aria-label')).toBe('Loop track')
+        expect(btn.attributes('aria-pressed')).toBe('true')
+
+        await btn.trigger('click')
+        expect(btn.attributes('aria-label')).toBe('Loop off')
+        expect(btn.attributes('aria-pressed')).toBe('false')
+
+        const emitted = wrapper.emitted('update:loopMode') as Array<Array<unknown>>
+        expect(emitted).toEqual([['all'], ['one'], ['none']])
+    })
+
+    it('seeds the internal loop mode from the loopMode prop (v-model:loopMode entry state)', () => {
+        const { wrapper } = mountController({ showLoop: true, loopMode: 'all' })
+        const btn = wrapper.find('[data-cy="origam-media-controller-loop"]')
+        expect(btn.attributes('aria-label')).toBe('Loop playlist')
+        expect(btn.attributes('aria-pressed')).toBe('true')
+    })
+})
+
+describe('OrigamMediaController — shuffle button', () => {
+    it('does NOT render the shuffle button by default', () => {
+        const { wrapper } = mountController()
+        expect(wrapper.find('[data-cy="origam-media-controller-shuffle"]').exists()).toBe(false)
+    })
+
+    it('renders with aria-pressed=false when shuffle=false', () => {
+        const { wrapper } = mountController({ showShuffle: true, shuffle: false })
+        const btn = wrapper.find('[data-cy="origam-media-controller-shuffle"]')
+        expect(btn.exists()).toBe(true)
+        expect(btn.attributes('aria-label')).toBe('Shuffle')
+        expect(btn.attributes('aria-pressed')).toBe('false')
+    })
+
+    it('seeds aria-pressed=true from the shuffle prop', () => {
+        const { wrapper } = mountController({ showShuffle: true, shuffle: true })
+        const btn = wrapper.find('[data-cy="origam-media-controller-shuffle"]')
+        expect(btn.attributes('aria-pressed')).toBe('true')
+    })
+
+    it('clicking the shuffle button flips aria-pressed and emits update:shuffle', async () => {
+        const { wrapper } = mountController({ showShuffle: true, shuffle: false })
+        const btn = wrapper.find('[data-cy="origam-media-controller-shuffle"]')
+
+        await btn.trigger('click')
+        expect(btn.attributes('aria-pressed')).toBe('true')
+
+        const emitted = wrapper.emitted('update:shuffle') as Array<Array<unknown>>
+        expect(emitted).toEqual([[true]])
+    })
+})
+
+// ---------------------------------------------------------------------------
+// Stub fidelity guard
+// ---------------------------------------------------------------------------
+//
+// The config-menu tests above drive a stub, not the real `<OrigamMenu>`. That
+// is a deliberate trade (the real one needs OrigamOverlay + the OrigamDisplay
+// injection), but it only holds while the stub's contract stays a SUBSET of
+// the real component's. When it stopped being one, three green tests were
+// exercising an emit the shipped component never fired.
+//
+// Introspecting the compiled `emits` option is what makes this checkable: the
+// SFC compiler normalises `defineEmits<IMenuEmits>()` into a plain string
+// array on the component object.
+describe('OrigamMediaController — config menu stub fidelity', () => {
+    it('does not claim any emit that the real OrigamMenu fails to declare', () => {
+        const realEmits = (OrigamMenu as unknown as { emits?: Array<string> }).emits ?? []
+
+        expect(realEmits.length).toBeGreaterThan(0)
+        for (const event of MENU_STUB_EMITS) {
+            expect(realEmits).toContain(event)
+        }
+    })
+
+    it('drives the same item-children key the controller passes to the real menu', () => {
+        const { wrapper } = mountController()
+        const menu = wrapper.findComponent(OrigamMenuStub)
+
+        expect(menu.props('itemChildren')).toBe('children')
     })
 })

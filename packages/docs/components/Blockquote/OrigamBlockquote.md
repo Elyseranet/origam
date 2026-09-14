@@ -63,6 +63,7 @@ contrast with each other:
 | `fontSize`    | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl' \| '3xl' \| '4xl' \| '5xl'` | `undefined` | Overrides `--origam-blockquote---font-size` with the matching primitive token.    |
 | `fontWeight`  | `'regular' \| 'medium' \| 'semibold' \| 'bold' \| 'extrabold' \| 'black'` | `undefined` | Overrides `--origam-blockquote---font-weight` with the matching primitive token. |
 | `lineHeight`  | `'none' \| 'tight' \| 'snug' \| 'normal' \| 'relaxed' \| 'loose'` | `undefined`    | Overrides `--origam-blockquote---line-height` with the matching primitive token.      |
+| `letterSpacing` | `'tight' \| 'normal' \| 'wide' \| 'wider' \| 'widest'`            | `undefined`    | Overrides `--origam-blockquote---letter-spacing` with the matching primitive token.   |
 | `tag`     | `string`                                                               | `'blockquote'` | Tag rendered for the root. Use `'div'` if you need to nest a blockquote inside one.    |
 
 ## Slots
@@ -88,7 +89,10 @@ of the rendered element (visible to assistive tech, not painted).
 
 Each variant materialises through a `.origam-blockquote--variant-{name}`
 modifier class that swaps token overrides in the SCSS layer; consumers
-can theme any of them via `tokens/component/blockquote.json`.
+can theme any of them by editing the `--origam-blockquote---*` /
+`--origam-blockquote--{variant}---*` declarations in
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`).
 
 ## I18n quotes
 

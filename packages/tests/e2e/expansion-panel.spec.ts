@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { eventLogItems, openEventsTab } from './_support/histoire-controls'
 
 /**
  * OrigamExpansionPanel / OrigamExpansionPanelHeader — e2e spec
@@ -31,7 +32,8 @@ import { expect, test } from '@playwright/test'
  *   8  Slots - Append
  *   9  Slots - Loader
  *  10  Slots - Wrapper
- *  11  Default (playground)
+ *  11  Prop — loadingText (static demo: default 'origam.loading' key vs a custom one)
+ *  12  Default (playground)
  *
  * DS bug fixed: `OrigamExpansionPanelHeader` had no `<slot name="title">` — the
  * `#title` forwarded by `OrigamExpansionPanel` (and `OrigamExpansionPanels`) landed
@@ -79,14 +81,14 @@ test.describe('OrigamExpansionPanelHeader', () => {
 
     test.describe('Design', () => {
         test('renders the header root with BEM class', async ({ page }) => {
-            await page.goto(headerVariantUrl(0))
+            await page.goto(headerVariantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
         })
 
         test('header is a <button> element by default (tag=button)', async ({ page }) => {
-            await page.goto(headerVariantUrl(0))
+            await page.goto(headerVariantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -95,7 +97,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
         })
 
         test('title prop renders text inside the title span', async ({ page }) => {
-            await page.goto(headerVariantUrl(0))
+            await page.goto(headerVariantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const title = sandbox.locator('.origam-expansion-panel-header__title').first()
             await expect(title).toBeVisible({ timeout: 12000 })
@@ -103,7 +105,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
         })
 
         test('aria-expanded is false in collapsed state', async ({ page }) => {
-            await page.goto(headerVariantUrl(0))
+            await page.goto(headerVariantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -111,7 +113,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
         })
 
         test('click toggles aria-expanded to true', async ({ page }) => {
-            await page.goto(headerVariantUrl(0))
+            await page.goto(headerVariantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -120,7 +122,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
         })
 
         test('click adds the --active modifier class', async ({ page }) => {
-            await page.goto(headerVariantUrl(0))
+            await page.goto(headerVariantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -129,7 +131,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
         })
 
         test('click reveals the panel content', async ({ page }) => {
-            await page.goto(headerVariantUrl(0))
+            await page.goto(headerVariantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -139,7 +141,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
         })
 
         test('second click collapses — aria-expanded returns to false', async ({ page }) => {
-            await page.goto(headerVariantUrl(0))
+            await page.goto(headerVariantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -150,7 +152,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
         })
 
         test('expand/collapse icon area is present (append slot)', async ({ page }) => {
-            await page.goto(headerVariantUrl(0))
+            await page.goto(headerVariantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -163,7 +165,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
 
     test.describe('State', () => {
         test('renders with bgColor=primary utility class', async ({ page }) => {
-            await page.goto(headerVariantUrl(1))
+            await page.goto(headerVariantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -171,7 +173,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
         })
 
         test('overlay opacity is 0 at rest (no hover)', async ({ page }) => {
-            await page.goto(headerVariantUrl(1))
+            await page.goto(headerVariantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -187,14 +189,14 @@ test.describe('OrigamExpansionPanelHeader', () => {
 
     test.describe('Functional', () => {
         test('renders the header in functional variant', async ({ page }) => {
-            await page.goto(headerVariantUrl(2))
+            await page.goto(headerVariantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
         })
 
         test('focusable=true applies the --focusable modifier class', async ({ page }) => {
-            await page.goto(headerVariantUrl(2))
+            await page.goto(headerVariantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -202,7 +204,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
         })
 
         test('hideActions=false: the append area (chevron) is visible', async ({ page }) => {
-            await page.goto(headerVariantUrl(2))
+            await page.goto(headerVariantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -210,7 +212,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
         })
 
         test('readonly=false: click toggles the panel (not locked)', async ({ page }) => {
-            await page.goto(headerVariantUrl(2))
+            await page.goto(headerVariantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -219,7 +221,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
         })
 
         test('SCSS --static: adding the class applies the modifier', async ({ page }) => {
-            await page.goto(headerVariantUrl(2))
+            await page.goto(headerVariantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -235,7 +237,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
 
     test.describe('Events - click:append', () => {
         test('renders with an append icon (OPEN_IN_NEW)', async ({ page }) => {
-            await page.goto(headerVariantUrl(3))
+            await page.goto(headerVariantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -243,12 +245,19 @@ test.describe('OrigamExpansionPanelHeader', () => {
             await expect(header.locator('.origam-expansion-panel-header__append .origam-icon').first()).toBeAttached()
         })
 
-        test('click on the append area does not throw', async ({ page }) => {
-            await page.goto(headerVariantUrl(3))
+        // Was `click on the append area does not throw` — a click with no
+        // assertion after it. Same decorative pattern as the panel's
+        // `group:selected` test below; replaced by a real Events-tab readback.
+        test('clicking the append icon emits click:append', async ({ page }) => {
+            await page.goto(headerVariantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const append = sandbox.locator('.origam-expansion-panel-header__append').first()
             await expect(append).toBeVisible({ timeout: 20000 })
             await append.click()
+            await page.waitForTimeout(300)
+
+            await openEventsTab(page)
+            await expect(eventLogItems(page).filter({ hasText: 'click:append' })).toHaveCount(1)
         })
     })
 
@@ -256,19 +265,25 @@ test.describe('OrigamExpansionPanelHeader', () => {
 
     test.describe('Events - click:prepend', () => {
         test('renders with a prepend icon (COG_OUTLINE)', async ({ page }) => {
-            await page.goto(headerVariantUrl(4))
+            await page.goto(headerVariantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
             await expect(header.locator('.origam-expansion-panel-header__prepend .origam-icon').first()).toBeAttached()
         })
 
-        test('click on the prepend area does not throw', async ({ page }) => {
-            await page.goto(headerVariantUrl(4))
+        // Was `click on the prepend area does not throw` — see the append
+        // test above; same repair.
+        test('clicking the prepend icon emits click:prepend', async ({ page }) => {
+            await page.goto(headerVariantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const prepend = sandbox.locator('.origam-expansion-panel-header__prepend').first()
             await expect(prepend).toBeVisible({ timeout: 20000 })
             await prepend.click()
+            await page.waitForTimeout(300)
+
+            await openEventsTab(page)
+            await expect(eventLogItems(page).filter({ hasText: 'click:prepend' })).toHaveCount(1)
         })
     })
 
@@ -276,7 +291,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
 
     test.describe('Slots - Default', () => {
         test('default slot renders custom content in the title area', async ({ page }) => {
-            await page.goto(headerVariantUrl(5))
+            await page.goto(headerVariantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const title = sandbox.locator('.origam-expansion-panel-header__title').first()
             await expect(title).toBeVisible({ timeout: 12000 })
@@ -288,7 +303,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
 
     test.describe('Slots - Prepend', () => {
         test('prepend slot renders an origam-icon inside the prepend area', async ({ page }) => {
-            await page.goto(headerVariantUrl(6))
+            await page.goto(headerVariantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -300,7 +315,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
 
     test.describe('Slots - Append', () => {
         test('append slot renders an origam-icon inside the append area', async ({ page }) => {
-            await page.goto(headerVariantUrl(7))
+            await page.goto(headerVariantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -314,7 +329,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
 
     test.describe('Slots - Title', () => {
         test('title slot renders custom content with no `title` prop set', async ({ page }) => {
-            await page.goto(headerVariantUrl(8))
+            await page.goto(headerVariantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const title = sandbox.locator('.origam-expansion-panel-header__title').first()
             await expect(title).toBeVisible({ timeout: 12000 })
@@ -322,7 +337,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
         })
 
         test('title span mounts even without the `title` prop (hasTitle honours slots.title)', async ({ page }) => {
-            await page.goto(headerVariantUrl(8))
+            await page.goto(headerVariantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -335,7 +350,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
 
     test.describe('Default (playground)', () => {
         test('renders a header with title "Section heading"', async ({ page }) => {
-            await page.goto(headerVariantUrl(9))
+            await page.goto(headerVariantUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const title = sandbox.locator('.origam-expansion-panel-header__title').first()
             await expect(title).toBeVisible({ timeout: 12000 })
@@ -343,7 +358,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
         })
 
         test('is a <button> element (default tag)', async ({ page }) => {
-            await page.goto(headerVariantUrl(9))
+            await page.goto(headerVariantUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -352,7 +367,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
         })
 
         test('expand icon (chevron-down) is present in the append area', async ({ page }) => {
-            await page.goto(headerVariantUrl(9))
+            await page.goto(headerVariantUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -373,14 +388,14 @@ test.describe('OrigamExpansionPanel', () => {
 
     test.describe('Design', () => {
         test('renders the panel root with BEM class', async ({ page }) => {
-            await page.goto(panelVariantUrl(0))
+            await page.goto(panelVariantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const panel = sandbox.locator('.origam-expansion-panel').first()
             await expect(panel).toBeVisible({ timeout: 12000 })
         })
 
         test('renders the inner header with title "Design panel"', async ({ page }) => {
-            await page.goto(panelVariantUrl(0))
+            await page.goto(panelVariantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const title = sandbox.locator('.origam-expansion-panel-header__title').first()
             await expect(title).toBeVisible({ timeout: 12000 })
@@ -388,7 +403,7 @@ test.describe('OrigamExpansionPanel', () => {
         })
 
         test('expand icon (chevron) is present in collapsed state', async ({ page }) => {
-            await page.goto(panelVariantUrl(0))
+            await page.goto(panelVariantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const panel = sandbox.locator('.origam-expansion-panel').first()
             await expect(panel).toBeVisible({ timeout: 12000 })
@@ -396,7 +411,7 @@ test.describe('OrigamExpansionPanel', () => {
         })
 
         test('panel is not active in initial state', async ({ page }) => {
-            await page.goto(panelVariantUrl(0))
+            await page.goto(panelVariantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const panel = sandbox.locator('.origam-expansion-panel').first()
             await expect(panel).toBeVisible({ timeout: 12000 })
@@ -405,7 +420,7 @@ test.describe('OrigamExpansionPanel', () => {
         })
 
         test('clicking the header expands the panel (--active class)', async ({ page }) => {
-            await page.goto(panelVariantUrl(0))
+            await page.goto(panelVariantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -420,7 +435,7 @@ test.describe('OrigamExpansionPanel', () => {
 
     test.describe('State', () => {
         test('renders panel with bgColor=primary utility class', async ({ page }) => {
-            await page.goto(panelVariantUrl(1))
+            await page.goto(panelVariantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const panel = sandbox.locator('.origam-expansion-panel').first()
             await expect(panel).toBeVisible({ timeout: 12000 })
@@ -433,14 +448,14 @@ test.describe('OrigamExpansionPanel', () => {
 
     test.describe('Functional', () => {
         test('renders the panel in functional variant', async ({ page }) => {
-            await page.goto(panelVariantUrl(2))
+            await page.goto(panelVariantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const panel = sandbox.locator('.origam-expansion-panel').first()
             await expect(panel).toBeVisible({ timeout: 12000 })
         })
 
         test('disabled=false: panel does NOT carry the --disabled class initially', async ({ page }) => {
-            await page.goto(panelVariantUrl(2))
+            await page.goto(panelVariantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const panel = sandbox.locator('.origam-expansion-panel').first()
             await expect(panel).toBeVisible({ timeout: 12000 })
@@ -450,7 +465,7 @@ test.describe('OrigamExpansionPanel', () => {
 
         test('SCSS --disabled: injecting the class makes header pointer-events none', async ({ page }) => {
             // Verifies the SCSS rule is compiled and applied for the disabled state.
-            await page.goto(panelVariantUrl(2))
+            await page.goto(panelVariantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const panel = sandbox.locator('.origam-expansion-panel').first()
             await expect(panel).toBeVisible({ timeout: 12000 })
@@ -467,19 +482,70 @@ test.describe('OrigamExpansionPanel', () => {
 
     test.describe('Events - group:selected', () => {
         test('renders panel titled "Select me"', async ({ page }) => {
-            await page.goto(panelVariantUrl(3))
+            await page.goto(panelVariantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
             await expect(header.locator('.origam-expansion-panel-header__title')).toContainText('Select me')
         })
 
-        test('click does not throw (group:selected fires)', async ({ page }) => {
-            await page.goto(panelVariantUrl(3))
+    // ⛔ The test that used to live here was titled `click does not throw
+    // (group:selected fires)` and its whole body was `await header.click()`
+    // — it asserted NOTHING. It was green from the day it was written and
+    // would have stayed green if the emit had never fired at all. Exactly the
+    // pattern the inspection ledger flagged on `form.spec.ts` ("le test qui
+    // prétend le prouver ne prouve rien"): a test that cannot go red is a
+    // decoration, not a safety net.
+    //
+    // The emit itself is real — `useGroupItem` calls `vm.emit('group:selected',
+    // { value })` (groupItem.composable.ts) — and is pinned at unit level in
+    // `TU/components/ExpansionPanel/OrigamExpansionPanels.spec.ts`. What was
+    // missing here is the browser-level proof, read from Histoire's own Events
+    // tab, the only place a `logEvent()` fired INSIDE the sandboxed iframe is
+    // observable from the outer Playwright page.
+
+        test('clicking the header emits group:selected once, with value true', async ({ page }) => {
+            await page.goto(panelVariantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
             await header.click()
+            await page.waitForTimeout(300)
+
+            await openEventsTab(page)
+            const logged = eventLogItems(page).filter({ hasText: 'group:selected' })
+            await expect(logged).toHaveCount(1)
+            await expect(logged.first()).toContainText('{ value: true }')
+        })
+
+        test('collapsing again emits a second group:selected, with value false', async ({ page }) => {
+            await page.goto(panelVariantUrl(3), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const header = sandbox.locator('.origam-expansion-panel-header').first()
+            await expect(header).toBeVisible({ timeout: 12000 })
+            await header.click()
+            await expect(header).toHaveAttribute('aria-expanded', 'true')
+            await header.click()
+            await expect(header).toHaveAttribute('aria-expanded', 'false')
+            await page.waitForTimeout(300)
+
+            await openEventsTab(page)
+            // Histoire's event log is OLDEST-first: `.first()` is the opening
+            // event, `.last()` the collapse. Verified empirically — asserting
+            // on `.first()` here reads back `group:selected{ value: true }`.
+            const logged = eventLogItems(page).filter({ hasText: 'group:selected' })
+            await expect(logged).toHaveCount(2)
+            await expect(logged.first()).toContainText('{ value: true }')
+            await expect(logged.last()).toContainText('{ value: false }')
+        })
+
+        test('no group:selected is logged before any interaction', async ({ page }) => {
+            await page.goto(panelVariantUrl(3), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-expansion-panel-header').first()).toBeVisible({ timeout: 12000 })
+
+            await openEventsTab(page)
+            await expect(eventLogItems(page).filter({ hasText: 'group:selected' })).toHaveCount(0)
         })
     })
 
@@ -487,7 +553,7 @@ test.describe('OrigamExpansionPanel', () => {
 
     test.describe('Slots - Header', () => {
         test('header slot renders custom content instead of origam-expansion-panel-header', async ({ page }) => {
-            await page.goto(panelVariantUrl(4))
+            await page.goto(panelVariantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const panel = sandbox.locator('.origam-expansion-panel').first()
             await expect(panel).toBeVisible({ timeout: 12000 })
@@ -509,7 +575,7 @@ test.describe('OrigamExpansionPanel', () => {
 
     test.describe('Slots - Default', () => {
         test('panel renders with a header in collapsed state', async ({ page }) => {
-            await page.goto(panelVariantUrl(5))
+            await page.goto(panelVariantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -521,13 +587,96 @@ test.describe('OrigamExpansionPanel', () => {
             // be in the DOM at mount time. We assert the toggle fires correctly via aria-expanded
             // and the --active class on the panel root, which are reliable without eager.
             // DS bug #25: aria-controls is set to a non-existent id without eager — tracked in task #25.
-            await page.goto(panelVariantUrl(5))
+            await page.goto(panelVariantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
             await header.click()
             await expect(header).toHaveAttribute('aria-expanded', 'true')
             await expect(sandbox.locator('.origam-expansion-panel').first()).toHaveClass(/origam-expansion-panel--active/)
+        })
+
+        // ─────────────────────────────────────────────────────────────────────
+        // #420 — AT-REST state. Every test above (and the whole pre-existing
+        // spec) exercises the panel by ACTIONING it: click, then assert what
+        // appeared. None of them ever asked the opposite question — does a
+        // panel that was never opened keep its body hidden? That blind spot is
+        // precisely how the defect survived a first inspection that declared
+        // the component "entirely conforming".
+        //
+        // The defect: `hasContent` read `slots.content`, a slot name no
+        // consumer in the DS ever passes to `<origam-expansion-panel>` (the
+        // `<origam-expansion-panels>` container forwards its own `content` /
+        // `content.{index}` slot to the CHILD's `#default`). So for a panel
+        // driven by the default slot and no `content` PROP — the shape this
+        // very Variant renders, and the shape the doc RECOMMENDS for rich
+        // markup — `hasContent` was false and the template fell through to
+        // `<slot v-else name="default"/>`. That branch bypasses
+        // `<origam-expansion-panel-content>` entirely, losing its `v-show`,
+        // `role="region"`, `aria-labelledby`, lazy mount and expand
+        // transition at once: a closed panel rendered its body in plain view.
+        //
+        // These three run as a set on purpose. The first two go red against
+        // the pre-fix component; the third is the counter-test that stops
+        // them passing for the trivial wrong reason (content that never
+        // exists at all would also satisfy "not visible").
+        // ─────────────────────────────────────────────────────────────────────
+
+        test('#420 at rest — a never-opened panel does not show its default-slot body', async ({ page }) => {
+            await page.goto(panelVariantUrl(5), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-expansion-panel-header').first()).toBeVisible({ timeout: 12000 })
+
+            // `toBeHidden` is satisfied both by "absent from the DOM" (lazy
+            // content never mounted) and by "present but display:none"
+            // (`v-show`). Either is correct; what the pre-fix build produced
+            // was neither — the text was rendered and fully visible.
+            await expect(sandbox.getByText('This content was inserted via the default slot.')).toBeHidden()
+            await expect(sandbox.getByText('It supports rich markup.')).toBeHidden()
+        })
+
+        test('#420 at rest — the body is wrapped by origam-expansion-panel-content[role=region]', async ({ page }) => {
+            await page.goto(panelVariantUrl(5), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const panel = sandbox.locator('.origam-expansion-panel').first()
+            await expect(panel).toBeVisible({ timeout: 12000 })
+
+            const content = panel.locator('.origam-expansion-panel-content')
+            await expect(content).toHaveCount(1)
+            await expect(content).toHaveAttribute('role', 'region')
+            // `v-show` writes a literal inline `display: none` — no `var()`
+            // indirection — so this is a real computed-style verdict.
+            await expect(content).toHaveCSS('display', 'none')
+        })
+
+        test('#420 counter-test — opening the panel does reveal the body', async ({ page }) => {
+            await page.goto(panelVariantUrl(5), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const header = sandbox.locator('.origam-expansion-panel-header').first()
+            await expect(header).toBeVisible({ timeout: 12000 })
+
+            await header.click()
+            await expect(sandbox.getByText('This content was inserted via the default slot.')).toBeVisible({ timeout: 8000 })
+            await expect(sandbox.locator('.origam-expansion-panel-content').first()).not.toHaveCSS('display', 'none')
+        })
+
+        // The doc states the content "unmounts again after the closing
+        // transition ends (`useLazy`)". Returning to rest is a second at-rest
+        // state, and it was untested: the spec only ever checked that
+        // `aria-expanded` flipped back to false, which says nothing about
+        // whether the body actually left the screen.
+        test('#420 back at rest — closing the panel hides the body again', async ({ page }) => {
+            await page.goto(panelVariantUrl(5), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const header = sandbox.locator('.origam-expansion-panel-header').first()
+            await expect(header).toBeVisible({ timeout: 12000 })
+
+            await header.click()
+            await expect(sandbox.getByText('This content was inserted via the default slot.')).toBeVisible({ timeout: 8000 })
+
+            await header.click()
+            await expect(header).toHaveAttribute('aria-expanded', 'false')
+            await expect(sandbox.getByText('This content was inserted via the default slot.')).toBeHidden({ timeout: 8000 })
         })
     })
 
@@ -543,7 +692,7 @@ test.describe('OrigamExpansionPanel', () => {
 
     test.describe('Slots - Title', () => {
         test('title slot content is rendered inside the panel header', async ({ page }) => {
-            await page.goto(panelVariantUrl(6))
+            await page.goto(panelVariantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -557,7 +706,7 @@ test.describe('OrigamExpansionPanel', () => {
 
     test.describe('Slots - Prepend', () => {
         test('prepend slot renders an origam-icon in the prepend area', async ({ page }) => {
-            await page.goto(panelVariantUrl(7))
+            await page.goto(panelVariantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -569,7 +718,7 @@ test.describe('OrigamExpansionPanel', () => {
 
     test.describe('Slots - Append', () => {
         test('append slot renders an origam-icon in the append area', async ({ page }) => {
-            await page.goto(panelVariantUrl(8))
+            await page.goto(panelVariantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -581,7 +730,7 @@ test.describe('OrigamExpansionPanel', () => {
 
     test.describe('Slots - Loader', () => {
         test('loading=true adds the --loading modifier class to the panel', async ({ page }) => {
-            await page.goto(panelVariantUrl(9))
+            await page.goto(panelVariantUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const panel = sandbox.locator('.origam-expansion-panel').first()
             await expect(panel).toBeVisible({ timeout: 12000 })
@@ -594,7 +743,7 @@ test.describe('OrigamExpansionPanel', () => {
 
     test.describe('Slots - Wrapper', () => {
         test('wrapper slot renders custom content (replaces panel-content)', async ({ page }) => {
-            await page.goto(panelVariantUrl(10))
+            await page.goto(panelVariantUrl(10), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -609,7 +758,7 @@ test.describe('OrigamExpansionPanel', () => {
 
     test.describe('Default (playground)', () => {
         test('renders panel with title "Panel title"', async ({ page }) => {
-            await page.goto(panelVariantUrl(11))
+            await page.goto(panelVariantUrl(12), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const title = sandbox.locator('.origam-expansion-panel-header__title').first()
             await expect(title).toBeVisible({ timeout: 12000 })
@@ -617,7 +766,7 @@ test.describe('OrigamExpansionPanel', () => {
         })
 
         test('expand icon (chevron) is visible in the append area', async ({ page }) => {
-            await page.goto(panelVariantUrl(11))
+            await page.goto(panelVariantUrl(12), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const panel = sandbox.locator('.origam-expansion-panel').first()
             await expect(panel).toBeVisible({ timeout: 12000 })
@@ -625,7 +774,7 @@ test.describe('OrigamExpansionPanel', () => {
         })
 
         test('toggle: click expands then collapses', async ({ page }) => {
-            await page.goto(panelVariantUrl(11))
+            await page.goto(panelVariantUrl(12), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })

@@ -1,7 +1,5 @@
-import type {
-    IChartPoint,
-    IChartSeries
-} from '../../interfaces'
+import type { IChartPoint } from './chart-point.interface'
+import type { IChartSeries } from './chart-series.interface'
 
 /**
  * Props for `<OrigamChartTooltip>` — the floating card that follows
@@ -54,3 +52,12 @@ export interface IChartTooltipSlots {
     /** Replace the default tooltip body. */
     default?: (bindings: { point: IChartPoint, series: IChartSeries, category: string | number }) => any
 }
+
+/*********************************************************
+ * IChartTooltipEmits
+ *
+ * @description
+ * Emits fired by `<OrigamChartTooltip>` — none. Pure renderer,
+ * positioned via `x`/`y` props; it never mutates or reports back.
+ ********************************************************/
+export interface IChartTooltipEmits {}

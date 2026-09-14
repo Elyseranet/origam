@@ -42,13 +42,13 @@ test.describe('OrigamBlockquote', () => {
 
     test.describe('Design', () => {
         test('renders root with BEM class origam-blockquote', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-blockquote').first()).toBeVisible(VIS)
         })
 
         test('root element is a native <blockquote>', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const host = sandbox.locator('.origam-blockquote').first()
             await expect(host).toBeVisible(VIS)
@@ -57,7 +57,7 @@ test.describe('OrigamBlockquote', () => {
         })
 
         test('variant=default class is applied', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const host = sandbox.locator('.origam-blockquote').first()
             await expect(host).toBeVisible(VIS)
@@ -65,7 +65,7 @@ test.describe('OrigamBlockquote', () => {
         })
 
         test('variant=default paints a non-zero left accent border (border-inline-start)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const host = sandbox.locator('.origam-blockquote').first()
             await expect(host).toBeVisible(VIS)
@@ -78,7 +78,7 @@ test.describe('OrigamBlockquote', () => {
         })
 
         test('bgColor=primary accent class is applied', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const host = sandbox.locator('.origam-blockquote').first()
             await expect(host).toBeVisible(VIS)
@@ -86,7 +86,7 @@ test.describe('OrigamBlockquote', () => {
         })
 
         test('align=left class is applied', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const host = sandbox.locator('.origam-blockquote').first()
             await expect(host).toBeVisible(VIS)
@@ -94,7 +94,7 @@ test.describe('OrigamBlockquote', () => {
         })
 
         test('body slot renders inside .origam-blockquote__body', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const body = sandbox.locator('.origam-blockquote__body').first()
             await expect(body).toBeVisible(VIS)
@@ -102,7 +102,7 @@ test.describe('OrigamBlockquote', () => {
         })
 
         test('attribution footer renders with author and source', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const footer = sandbox.locator('.origam-blockquote__attribution').first()
             await expect(footer).toBeVisible(VIS)
@@ -112,7 +112,7 @@ test.describe('OrigamBlockquote', () => {
         })
 
         test('attribution footer starts with em-dash —', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const footer = sandbox.locator('.origam-blockquote__attribution').first()
             await expect(footer).toBeVisible(VIS)
@@ -121,7 +121,7 @@ test.describe('OrigamBlockquote', () => {
         })
 
         test('source is rendered in a <cite> element', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const cite = sandbox.locator('.origam-blockquote__source').first()
             await expect(cite).toBeVisible(VIS)
@@ -130,7 +130,7 @@ test.describe('OrigamBlockquote', () => {
         })
 
         test('variant=default does NOT render the decorative quote mark', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const host = sandbox.locator('.origam-blockquote').first()
             await expect(host).toBeVisible(VIS)
@@ -148,7 +148,7 @@ test.describe('OrigamBlockquote', () => {
 
     test.describe('Functional', () => {
         test('cite prop is set as the cite HTML attribute', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const host = sandbox.locator('.origam-blockquote').first()
             await expect(host).toBeVisible(VIS)
@@ -157,7 +157,7 @@ test.describe('OrigamBlockquote', () => {
         })
 
         test('author prop renders inside .origam-blockquote__author', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const author = sandbox.locator('.origam-blockquote__author').first()
             await expect(author).toBeVisible(VIS)
@@ -165,7 +165,7 @@ test.describe('OrigamBlockquote', () => {
         })
 
         test('source prop renders inside .origam-blockquote__source', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const source = sandbox.locator('.origam-blockquote__source').first()
             await expect(source).toBeVisible(VIS)
@@ -173,7 +173,7 @@ test.describe('OrigamBlockquote', () => {
         })
 
         test('color=primary text class is applied', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const host = sandbox.locator('.origam-blockquote').first()
             await expect(host).toBeVisible(VIS)
@@ -181,7 +181,7 @@ test.describe('OrigamBlockquote', () => {
         })
 
         test('attribution footer has has-attribution class', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const host = sandbox.locator('.origam-blockquote').first()
             await expect(host).toBeVisible(VIS)
@@ -196,7 +196,7 @@ test.describe('OrigamBlockquote', () => {
 
     test.describe('Slots - Default', () => {
         test('rich HTML slot content renders in the body', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const body = sandbox.locator('.origam-blockquote__body').first()
             await expect(body).toBeVisible(VIS)
@@ -206,7 +206,7 @@ test.describe('OrigamBlockquote', () => {
         })
 
         test('attribution footer renders with author and source via props', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const footer = sandbox.locator('.origam-blockquote__attribution').first()
             await expect(footer).toBeVisible(VIS)
@@ -223,7 +223,7 @@ test.describe('OrigamBlockquote', () => {
 
     test.describe('Slots - Author', () => {
         test('custom #author slot renders a link in the attribution', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const host = sandbox.locator('.origam-blockquote').first()
             await expect(host).toBeVisible(VIS)
@@ -236,7 +236,7 @@ test.describe('OrigamBlockquote', () => {
         })
 
         test('variant=elegant class is applied', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const host = sandbox.locator('.origam-blockquote').first()
             await expect(host).toBeVisible(VIS)
@@ -244,7 +244,7 @@ test.describe('OrigamBlockquote', () => {
         })
 
         test('cite prop set as attribute on the blockquote element', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const host = sandbox.locator('.origam-blockquote').first()
             await expect(host).toBeVisible(VIS)
@@ -260,7 +260,7 @@ test.describe('OrigamBlockquote', () => {
 
     test.describe('Slots - Source', () => {
         test('custom #source slot renders a link inside <cite>', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const host = sandbox.locator('.origam-blockquote').first()
             await expect(host).toBeVisible(VIS)
@@ -271,7 +271,7 @@ test.describe('OrigamBlockquote', () => {
         })
 
         test('source slot content contains the expected text', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const source = sandbox.locator('.origam-blockquote__source').first()
             await expect(source).toBeVisible(VIS)
@@ -279,7 +279,7 @@ test.describe('OrigamBlockquote', () => {
         })
 
         test('color=success text class is applied', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const host = sandbox.locator('.origam-blockquote').first()
             await expect(host).toBeVisible(VIS)
@@ -296,13 +296,13 @@ test.describe('OrigamBlockquote', () => {
 
     test.describe('Default (playground)', () => {
         test('renders with BEM root class', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-blockquote').first()).toBeVisible(VIS)
         })
 
         test('variant=default + bgColor=primary classes coexist', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const host = sandbox.locator('.origam-blockquote').first()
             await expect(host).toBeVisible(VIS)
@@ -311,7 +311,7 @@ test.describe('OrigamBlockquote', () => {
         })
 
         test('quote mark is absent (variant is not quoted)', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const host = sandbox.locator('.origam-blockquote').first()
             await expect(host).toBeVisible(VIS)
@@ -319,7 +319,7 @@ test.describe('OrigamBlockquote', () => {
         })
 
         test('cite attribute is set on the root element', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const host = sandbox.locator('.origam-blockquote').first()
             await expect(host).toBeVisible(VIS)

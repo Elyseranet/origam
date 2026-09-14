@@ -93,8 +93,8 @@ interface IIconComponentProps {
 <div class="origam-icon origam-icon--svg origam-icon--size-default">
     <svg
         class="origam-icon__svg"
-        role="img"
         aria-hidden="true"
+        focusable="false"
         viewBox="0 0 24 24"
         xmlns="http://www.w3.org/2000/svg"
     >
@@ -122,8 +122,9 @@ interface IIconComponentProps {
 
 ## Accessibility
 
-- The inner `<svg>` has `role="img"` and `aria-hidden="true"` — the
-  wrapper is the announce target.
+- The inner `<svg>` has `aria-hidden="true"` (no `role`) — it never
+  carries meaning on its own, so it stays out of the accessibility tree
+  unconditionally, whether or not the icon is interactive.
 - For interactive icons, attach `aria-label` to the wrapper and a click
   handler to `OrigamIcon` (which adds `role="button"` automatically).
 

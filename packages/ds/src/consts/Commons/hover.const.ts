@@ -1,6 +1,6 @@
-import type { IHoverHtmlElement, IHoverOptions } from '../../interfaces'
+import type { IHoverHtmlElement, IHoverOptions } from '../../interfaces/Commons/hover.interface'
 
-import type { THoverEvent } from '../../types'
+import type { THoverEvent } from '../../types/Commons/hover.type'
 
 export const ORIGAM_HOVER_STOP_KEY = Symbol('origam:hoverStop')
 

@@ -93,6 +93,38 @@ describe('useQrCode', () => {
         expect(before).not.toBe(after)
     })
 
+    it('defaults the foreground to `currentColor` so the matrix follows the theme', () => {
+        const { svg } = useQrCode('hello')
+        expect(svg.value).toContain('fill="currentColor"')
+    })
+
+    it('paints an opaque white backdrop under the logo when the background is transparent', () => {
+        const { svg, size } = useQrCode('hello', {
+            logo: { src: '/logo.svg' }
+        })
+        // Defaults: margin = 4, logo size = 0.2, logo padding = 6 px.
+        // Padding is converted to module units by the documented
+        // 16 px-per-module ratio → 6 / 16 = 0.375.
+        const count = size.value
+        const box = count * 0.2
+        const origin = 4 + (count - box) / 2 - 0.375
+        const backdrop = box + 0.375 * 2
+        expect(svg.value).toContain(
+            `<rect x="${origin}" y="${origin}" width="${backdrop}" height="${backdrop}" fill="#ffffff"/>`
+        )
+    })
+
+    it('reuses a solid `background` as the logo backdrop instead of the white default', () => {
+        const { svg } = useQrCode('hello', {
+            background: '#102030',
+            logo: { src: '/logo.svg' }
+        })
+        expect(svg.value).not.toContain('fill="#ffffff"')
+        // Two rects now carry the background colour: the quiet zone and
+        // the logo backdrop.
+        expect(svg.value.match(/fill="#102030"/g)).toHaveLength(2)
+    })
+
     it('renders an <image> element when a logo is configured', () => {
         const { svg } = useQrCode('hello', {
             logo: { src: '/logo.svg', size: 0.2 }

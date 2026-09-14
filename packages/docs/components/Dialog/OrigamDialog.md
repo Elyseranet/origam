@@ -20,6 +20,37 @@ manages focus trapping, ARIA attributes, scroll blocking, and keyboard dismissal
 </template>
 ```
 
+## Props
+
+⛔ **Added 2026-08-31 (issue #419)** — this component had no Props table at
+all despite exposing ~20 props through `IOverlayProps` / `ICardProps` /
+`IStatusProps`. Grouped to mirror the story's own control groups
+(`packages/stories/components/stories/Dialog/OrigamDialog.story.vue`,
+Design + Functional Variants) rather than re-deriving an ad-hoc grouping.
+
+| Group | Prop | Type | Description |
+|---|---|---|---|
+| Behaviour | `fullscreen` | `boolean` | Dialog fills the viewport, no margin/rounding. |
+| | `retainFocus` | `boolean` | Loops focus inside the dialog with Tab / Shift+Tab. Default `true`. |
+| | `persistent` | `boolean` (from `IOverlayProps`) | Disables closing on `ESC` / outside click. |
+| | `disabled` | `boolean` (from `IOverlayProps`) | Prevents the activator from opening the dialog. |
+| Sizing | `size` | `'x-small' \| 'small' \| 'default' \| 'large' \| 'x-large'` | Preset width rung — see `--origam-dialog---width-*` tokens. |
+| | `density` | (from `ICardProps`) | Forwarded to the inner `<OrigamCard>`. |
+| Color | `color` / `bgColor` | `TIntent \| string` (from `ICardProps`) | Forwarded to the inner `<OrigamCard>`. |
+| Shape | `rounded`, `elevation`, `flat` | (from `ICardProps`) | Forwarded to the inner `<OrigamCard>`. |
+| Border | `border`, `borderColor`, `borderStyle` | (from `ICardProps`) | Forwarded to the inner `<OrigamCard>`. |
+| Status | `status`, `statusIconPosition` | (from `IStatusProps`) | Built-in status icon — see [Status / icon](#status--icon). |
+| Icons | `prependIcon`, `appendIcon`, `icon` | `TIcon` (from `ICardProps`) | Forwarded to the inner `<OrigamCard>` header. |
+| Content | `title`, `subtitle`, `text`, `image` | `string` (from `ICardProps`) | Forwarded to the inner `<OrigamCard>`. |
+| Dimension | `width`, `height` | `number \| string` (from `IOverlayProps` / `IDimensionProps`) | Sizes the content container. |
+| Accessibility | `closeLabel` | `string` | Accessible name (locale key) of the built-in close button — see [Accessibility](#accessibility). |
+
+`IDialogProps` also extends the full `IOverlayProps` surface (activator,
+location strategy, scroll strategy, lazy mount, transition, scrim — see
+the `OrigamOverlay` doc) and the full
+`ICardProps` surface beyond what's listed above — this table covers the
+props exercised by the component's own story, not every inherited prop.
+
 ## Fullscreen
 
 ```vue
@@ -28,15 +59,41 @@ manages focus trapping, ARIA attributes, scroll blocking, and keyboard dismissal
 </template>
 ```
 
-## Scrollable
+## Scrolling
 
-Enables scrolling inside the content area when it overflows.
+The dialog's content area scrolls internally, **unconditionally** — the header
+and footer stay pinned while `.origam-card__content` takes the overflow. There
+is no prop to configure this, and none is needed.
 
-```vue
-<template>
-    <OrigamDialog v-model="open" scrollable title="Scrollable">…</OrigamDialog>
-</template>
+::: warning `scrollable` was removed — issue #419
+`<OrigamDialog>` used to declare a `scrollable` boolean. It emitted an
+`origam-dialog--scrollable` modifier class that **no SCSS rule in the codebase
+ever targeted**, and the layout it claimed to enable was already applied
+unconditionally by the rules above. It was therefore redundant, not merely
+inert: passing it, or not, produced byte-identical computed styles. Measured in
+Chromium, both readings of `[overflow-y|overflow-x|max-height|height|display|flex-direction]`
+across `.origam-overlay__content` / `.origam-card` / `.origam-card__content`:
+
 ```
+visible|visible|calc(100% - 48px)|430px|block|row
+// hidden|hidden|100%|430px|flex|column
+// auto|auto|100%|330px|flex|column
+```
+
+Removing it changes no rendering whatsoever. It is a typed-API removal only:
+code passing `scrollable` now fails to type-check, and should simply drop the
+prop.
+
+**A separate, still-open defect was explicitly carved out of this decision** —
+tracked as **#563**. Content that overflows *outside* `.origam-card__content` —
+chiefly a tall `#asset`, which `OrigamCard` renders as a **sibling** of that
+block — becomes unreachable. Measured: no ancestor of the overflowing content is
+scrollable, the document is not either (`scrollStrategy: 'block'`), and 1219 px
+end up below the viewport with no way to get to them. The card is not truncated
+at its own boundary — it *grows*; `.origam-overlay__content` (`overflow:
+visible`) is what lets it spill off screen. Removing `scrollable` neither caused
+nor fixed this. Do not read #419 as having settled it.
+:::
 
 ## Status / icon
 
@@ -100,7 +157,19 @@ Keep focus inside the dialog. Enabled by default (`retainFocus`).
 ## Accessibility
 
 - `role="dialog"` and `aria-modal="true"` are set automatically.
+- `aria-labelledby` points at the id the inner `<OrigamCard>` puts on its title
+  element, so a plain `title` prop is enough to give the dialog an accessible
+  name — no extra ARIA needed. The reference is asserted to actually resolve in
+  `packages/tests/TU/components/Dialog/dialog-contract.spec.ts`; a dangling
+  `aria-labelledby` would leave the dialog unnamed, which is worse than no
+  attribute at all.
+- The header's built-in close button is rendered unconditionally when the
+  `header-append` slot is not supplied. It reaches `<OrigamCard>` through
+  Card's OWN slot name (`header.append`, point notation) — the same spec pins
+  that seam, because a name mismatch there silently drops the button and leaves
+  the dialog closable only by `ESC` or an outside click.
 - `aria-haspopup="dialog"` and `aria-expanded` are applied to the activator.
 - Focus moves into the dialog on open and returns to the activator on close.
 - `ESC` closes non-persistent dialogs.
 - `retainFocus` (default `true`) loops focus inside the dialog with Tab / Shift+Tab.
+- `closeLabel` (`string`, default `'origam.close'`) is the accessible name of the built-in close button. It carries a **locale key**, not final text — resolved through the DS `t()` mechanism, the same key `OrigamAlert` and `OrigamChip` use for their own close control. A raw string that matches no key is returned unchanged, so `closeLabel="Dismiss this dialog"` still works for consumers who prefer to translate on their side.

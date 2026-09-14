@@ -459,3 +459,45 @@ describe('OrigamInlineEdit — number modelValue', () => {
         expect(emitted![0][0]).toBe(99)
     })
 })
+
+/********************************************************
+ *  FIXED DEFECT — rules/validate/trim captured once at setup()
+ *
+ *  @description ⛔ issue #490 (fixed)
+ *  `useInlineEdit(modelRef, { rules: props.rules, validate: props.validate,
+ *  trim: props.trim, ... })` used to be called once in `setup()`, with the
+ *  composable storing that object in closure and `confirm()` reading
+ *  `options.rules` / `options.validate` off the SAME frozen object later —
+ *  never `props.rules` directly. A consumer that replaced `:rules` after
+ *  mount (async-loaded validation, mode-dependent rule sets) kept
+ *  validating against the rules captured at mount time for the whole
+ *  lifetime of the component.
+ *
+ *  @description
+ *  Fix: the SFC now passes a GETTER (`() => ({ rules: props.rules, … })`)
+ *  and `useInlineEdit` re-resolves it on every `confirm()`/`cancel()` call
+ *  instead of once at call time. This sonde used to be wrapped in
+ *  `it.fails` (the correct behaviour failed); now that the defect is
+ *  fixed it runs as a normal assertion — kept in the suite per the
+ *  ticket's own instruction rather than deleted.
+ ********************************************************/
+describe('OrigamInlineEdit — rules captured once at setup (#490, fixed)', () => {
+    it('a rule added AFTER mount is enforced on the next confirm', async () => {
+        const wrapper = mountInlineEdit({ rules: [] }) // no rule at mount time
+
+        // Consumer adds a min-length rule AFTER mount.
+        await wrapper.setProps({
+            rules: [(v: string) => v.length >= 10 || 'Too short']
+        })
+        await nextTick()
+
+        ;(wrapper.vm as any).edit()
+        await nextTick()
+        await wrapper.find('[data-cy="origam-inline-edit-input-el"]').setValue('hi') // violates the NEW rule
+        await (wrapper.vm as any).confirm()
+        await nextTick()
+
+        expect(wrapper.emitted('validate-error')).toBeTruthy()
+        expect(wrapper.emitted('update:modelValue')).toBeFalsy()
+    })
+})

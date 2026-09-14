@@ -246,8 +246,7 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<IOverlayProps>({
-					modelValue: false,
+				:init-state="() => useStoryInitState<Omit<IOverlayProps, 'modelValue'>>({
 					scrim: true,
 					persistent: false,
 					disabled: false,
@@ -255,7 +254,9 @@
 					closeOnBack: true,
 					noClickAnimation: false,
 					eager: false,
-					zIndex: 2000
+					zIndex: 2000,
+					attach: '',
+					contentClass: ''
 				})"
 		>
 			<template #default="{ state }">
@@ -263,6 +264,7 @@
 					<origam-overlay
 							v-model="playgroundOpen"
 							v-bind="state"
+							:content-props="{ 'data-story-content-tag': playgroundContentTag || undefined }"
 							@update:modelValue="logEvent('update:modelValue', $event)"
 					>
 						<template #activator="{ props: activator }">
@@ -287,6 +289,12 @@
 					<HstCheckbox v-model="state.noClickAnimation" title="No Click Animation"/>
 					<HstCheckbox v-model="state.eager"         title="Eager"/>
 					<HstNumber   v-model="state.zIndex"        title="Z-Index" :min="0" :step="100"/>
+					<HstCheckbox v-model="playgroundOpen"      title="Model Value (open)"/>
+				</StoryGroup>
+				<StoryGroup title="Content">
+					<HstText v-model="state.attach"         title="Attach (CSS selector)"/>
+					<HstText v-model="state.contentClass"   title="Content Class"/>
+					<HstText v-model="playgroundContentTag" title="Content Props (data-story-content-tag)"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -309,6 +317,7 @@
 	const designOpen = ref(false)
 	const functionalOpen = ref(false)
 	const playgroundOpen = ref(false)
+	const playgroundContentTag = ref('')
 	const slotActivatorOpen = ref(false)
 	const slotDefaultOpen = ref(false)
 	const emitUpdateOpen = ref(false)

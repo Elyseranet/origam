@@ -61,6 +61,7 @@ const activityData = days.flatMap((day) =>
 | `aspectRatio` | `string` | `undefined` | CSS `aspect-ratio` shorthand. Overrides `height`. |
 | `title` | `string` | `undefined` | Optional title above the chart. Replaceable via the `#title` slot. |
 | `subtitle` | `string` | `undefined` | Optional subtitle below the title. |
+| `colorScheme` | `Array<TIntent \| string>` | ⛔ **Sans effet sur ce composant** — cell colour is a continuous gradient (colorRange) — a rotating discrete palette does not apply to a continuous scale. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
 
 ### Behaviour
 
@@ -86,16 +87,18 @@ const activityData = days.flatMap((day) =>
 | Name | Payload | Description |
 |---|---|---|
 | `point-click` | `(point: IChartPoint, event: MouseEvent \| KeyboardEvent)` | Click or keyboard activation on a cell. `point.x` is the column key, `point.y` is the raw value. |
-| `legend-click` | `(series: IChartSeries, index: number)` | Click on a legend entry (not applicable to the gradient legend — reserved for future categorical legend). |
-| `series-toggle` | `(series: IChartSeries, visible: boolean)` | Visibility flip after a legend click. |
+
+`IChartHeatmapEmits` does **not** include `legend-click` / `series-toggle` (#545) — the heatmap renders a continuous colour-gradient legend (min/max labels + a gradient swatch), not a discrete per-series list, so there is no legend entry for either event to report.
 
 ## Slots
 
 | Name | Bindings | Description |
 |---|---|---|
-| `tooltip` | `{ point: IChartPoint, series: IChartSeries, category: string \| number }` | Replace the default tooltip body. |
+| `tooltip` | `{ point: IChartPoint, series: IChartSeries, category: string \| number, color: string, xLabel: string, yLabel: string, value: number }` | Replace the default tooltip body. The base `{ point, series, category }` scope is enriched with the hovered cell's resolved colour and its formatted x / y / value strings. |
 | `title` | — | Replace the title + subtitle block. |
 | `empty` | — | Rendered when `series` is empty or has no data. |
+
+`IChartHeatmapSlots` is `Omit<IChartBaseSlots, 'legend-item'>` — **there is no `legend-item` slot**, for the same reason the two legend emits are absent: the legend is a continuous gradient bar, not a list of per-series entries, so there is no `<slot name="legend-item">` in the template to forward a template to. Passing one is silently discarded.
 
 ## Behaviour notes
 
@@ -104,6 +107,8 @@ const activityData = days.flatMap((day) =>
 **Category ordering.** Pass `xCategories` and `yCategories` to lock axis order (e.g. weekday order). Without them, unique values are sorted ascending (alphabetically for strings, numerically for numeric strings).
 
 **Colour interpolation.** Each cell's colour is computed as `color-mix(in srgb, <endColour> <pct>%, <startColour>)` where `pct = ((value - min) / (max - min)) * 100`. When all values are equal, every cell renders as the start colour.
+
+**`colorScheme` has no effect** (#426). It's inherited from `IChartBaseProps` and stays on the public API for consistency across chart types, but cell colour is a *continuous* two-stop gradient (`colorRange`) — a rotating discrete palette doesn't apply to a continuous scale. Passing it logs `[origam] <OrigamChartHeatmap> prop "colorScheme" has no effect on this component: …` once to the console in dev builds (silent in production). Neither wiring a fake behaviour nor removing the prop was on the table — see the #426 decision.
 
 **Cell labels.** A value is rendered inside the cell only when both `showLabel=true` and the cell is at least 18 SVG-px wide and tall. For dense grids (e.g. 24 × 7) cells are typically too small to show labels; set `showLabel=false` for performance and readability.
 

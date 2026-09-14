@@ -174,6 +174,18 @@ export interface IComponentTypeRef {
     slug: string
     /** Controls whether the chip is a link and which colour is applied. */
     kind: 'primitive' | 'type' | 'enum'
+    /**
+     * Real literal values of the referenced `type`/`enum` doc entry (e.g.
+     * `['text', 'flat', 'elevated', …]` for `TVariant`), when `kind` is
+     * `'type'` or `'enum'` and the reference resolved. Absent for primitives
+     * or when the reference has no matching doc entry. Populated server-side
+     * by `/api/reference/component?includePropSurface=1` — see
+     * `buildComponentThemeCatalog` — so the theme builder can derive a
+     * closed-enum prop's real options without a hand-curated playground
+     * control (never fabricated: sourced from the same `doc_value` rows the
+     * `/types/{slug}` page itself renders).
+     */
+    values?: string[]
 }
 
 /** One row in the Props table */

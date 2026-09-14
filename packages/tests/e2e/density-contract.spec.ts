@@ -65,15 +65,15 @@ test('OrigamAlert — comfortable height > compact height', async ({ page }) => 
 })
 
 test('OrigamBtnGroup — comfortable min-height > compact min-height', async ({ page }) => {
-    const compact = await measureHeightAtDensity(page, BTN_GROUP_STORY, 'Prop — density', 'compact', '.origam-btn-group')
-    const comfortable = await measureHeightAtDensity(page, BTN_GROUP_STORY, 'Prop — density', 'comfortable', '.origam-btn-group')
+    const compact = await measureHeightAtDensity(page, BTN_GROUP_STORY, 'Design', 'compact', '.origam-btn-group')
+    const comfortable = await measureHeightAtDensity(page, BTN_GROUP_STORY, 'Design', 'comfortable', '.origam-btn-group')
     console.log('[btn-group] compact=', compact, 'comfortable=', comfortable)
     expect(comfortable).toBeGreaterThan(compact)
 })
 
 test('OrigamBreadcrumb — comfortable height > compact height', async ({ page }) => {
-    const compact = await measureHeightAtDensity(page, BREADCRUMB_STORY, 'Prop — density', 'compact', '.origam-breadcrumb')
-    const comfortable = await measureHeightAtDensity(page, BREADCRUMB_STORY, 'Prop — density', 'comfortable', '.origam-breadcrumb')
+    const compact = await measureHeightAtDensity(page, BREADCRUMB_STORY, 'Design', 'compact', '.origam-breadcrumb')
+    const comfortable = await measureHeightAtDensity(page, BREADCRUMB_STORY, 'Design', 'comfortable', '.origam-breadcrumb')
     console.log('[breadcrumb] compact=', compact, 'comfortable=', comfortable)
     expect(comfortable).toBeGreaterThan(compact)
 })

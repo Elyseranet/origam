@@ -27,18 +27,24 @@
 		lang="ts"
 		setup
 >
-	import { computed, inject, ref, StyleValue } from 'vue'
+	import { computed, inject, ref, StyleValue, watchEffect } from 'vue'
+
+	import { useGroupItem } from '../../composables/Commons/groupItem.composable'
+	import { useLazy } from '../../composables/Commons/lazy.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
 	import {
-		useGroupItem,
-		useLazy,
-		useProps,
-		useStyle
-	} from '../../composables'
+		ORIGAM_TABS_LINK_KEY,
+		ORIGAM_TAB_PANELS_KEY,
+		ORIGAM_TAB_PANELS_CTX_KEY
+	} from '../../consts/Tabs/tabs.const'
 
-	import { ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_KEY, ORIGAM_TAB_PANELS_CTX_KEY } from '../../consts'
-
-	import type { ITabPanelProps } from '../../interfaces'
+	import type {
+		ITabPanelEmits,
+		ITabPanelProps,
+		ITabPanelSlots
+	} from '../../interfaces/Tabs/tab-panel.interface'
 
 	/*********************************************************
 	 * Global
@@ -51,13 +57,25 @@
 
 	const {filterProps} = useProps<ITabPanelProps>(props)
 
+	defineEmits<ITabPanelEmits>()
+
+	defineSlots<ITabPanelSlots>()
+
 	const rootRef = ref<HTMLElement>()
 
 	/*********************************************************
 	 * Group registration
+	 *
+	 * @description
+	 * The tabs group is NOT reachable via a plain
+	 * `inject(ORIGAM_TABS_KEY)` — `<OrigamTabs>` is a SIBLING of
+	 * `<OrigamTabPanels>`, not its ancestor (#441). `<OrigamTabPanels>`
+	 * resolves the sibling once (`useGroupSiblingLink`) and re-provides
+	 * it under `ORIGAM_TABS_LINK_KEY`, down its OWN ancestor chain —
+	 * THAT is what we inject here.
 	 ********************************************************/
 	const groupItem = useGroupItem(props, ORIGAM_TAB_PANELS_KEY)
-	const tabsGroup = inject(ORIGAM_TABS_KEY, null)
+	const tabsGroupLink = inject(ORIGAM_TABS_LINK_KEY, undefined)
 	const panelsCtx = inject(ORIGAM_TAB_PANELS_CTX_KEY, null)
 
 	if (!groupItem) {
@@ -66,15 +84,36 @@
 
 	/*********************************************************
 	 * ARIA wiring
+	 *
+	 * @description
+	 * `panelDomId` is the DOM id of THIS panel — `props.id` when
+	 * the consumer supplies one, a generated fallback otherwise
+	 * (referenced by the tab via `aria-controls`). Published onto
+	 * this panel's OWN entry in the tab-panels group's `items`
+	 * registry (`domId`, see `IGroupItem`) so the sibling
+	 * `<OrigamTab>` can read the REAL id instead of guessing the
+	 * generated-fallback naming scheme (#519-#522) — symmetric to
+	 * `<OrigamTab>`'s own wiring.
+	 *
+	 * `tabLabelledBy` mirrors that lookup in the other direction —
+	 * the generated-fallback string is kept as a defensive default
+	 * for the brief window before the tab's own effect has run.
 	 ********************************************************/
-	const panelDomId = computed(() => `origam-tab-panel-${groupItem!.id}`)
+	const panelDomId = computed(() => props.id || `origam-tab-panel-${groupItem!.id}`)
+
+	watchEffect(() => {
+		const self = groupItem!.group.items.value.find(item => item.id === groupItem!.id)
+		if (self) self.domId = panelDomId.value
+	})
 
 	const tabLabelledBy = computed(() => {
+		const tabsGroup = tabsGroupLink?.value
 		if (!tabsGroup) return undefined
 
 		const tab = tabsGroup.items.value.find(item => item.value === groupItem!.value.value)
+		if (!tab) return undefined
 
-		return tab ? `origam-tab-${tab.id}` : undefined
+		return tab.domId || `origam-tab-${tab.id}`
 	})
 
 	/*********************************************************

@@ -56,9 +56,17 @@
 						:key="index"
 				>
 					<div class="origam-rating-field__wrapper">
-						<template v-if="hasLabels && labelOnTop && slots[`itemLabel.${index}`]">
-							<slot :name="`itemLabel.${index}`">
-								<slot name="itemLabel">
+						<template v-if="hasLabels && labelOnTop && (slots[`itemLabel.${index}`] || slots.itemLabel)">
+							<slot
+									:index="index"
+									:label="itemLabels?.[index]"
+									:name="`itemLabel.${index}`"
+							>
+								<slot
+										:index="index"
+										:label="itemLabels?.[index]"
+										name="itemLabel"
+								>
 									<span>{{ itemLabels?.[index] ?? '&nbsp;' }}</span>
 								</slot>
 							</slot>
@@ -90,9 +98,17 @@
 								/>
 							</template>
 						</div>
-						<template v-if="hasLabels && labelOnBottom && slots[`itemLabel.${index}`]">
-							<slot :name="`itemLabel.${index}`">
-								<slot name="itemLabel">
+						<template v-if="hasLabels && labelOnBottom && (slots[`itemLabel.${index}`] || slots.itemLabel)">
+							<slot
+									:index="index"
+									:label="itemLabels?.[index]"
+									:name="`itemLabel.${index}`"
+							>
+								<slot
+										:index="index"
+										:label="itemLabels?.[index]"
+										name="itemLabel"
+								>
 									<span>{{ itemLabels?.[index] ?? '&nbsp;' }}</span>
 								</slot>
 							</slot>
@@ -146,24 +162,32 @@
 		setup
 >
 	import { computed, ref, shallowRef, StyleValue, useAttrs, useSlots } from 'vue'
-	import { OrigamBtn, OrigamInput, OrigamLabel, OrigamRatingFieldItem } from '../../components'
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamInput from '../Input/OrigamInput.vue'
+	import OrigamLabel from '../Label/OrigamLabel.vue'
+	import OrigamRatingFieldItem from './OrigamRatingFieldItem.vue'
 
-	import {
-	useLocale,
-	useProps,
-	useStyle,
-	useVModel
-} from '../../composables'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { BLOCK, DENSITY, MDI_ICONS, SIZES, VARIANT } from '../../enums'
+	import { BLOCK } from '../../enums/Commons/anchor.enum'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { SIZES } from '../../enums/Commons/size.enum'
+	import { VARIANT } from '../../enums/Commons/variant.enum'
 
-	import type { IRatingFieldProps} from '../../interfaces'
+	import type { IRatingFieldProps } from '../../interfaces/RatingField/rating-field.interface'
 
-	import type { IRatingFieldEmits } from '../../interfaces/RatingField/rating-field.interface'
+	import type { IRatingFieldEmits, IRatingFieldSlots } from '../../interfaces/RatingField/rating-field.interface'
 
-	import type { TOrigamInput, TOrigamRatingFieldItem } from "../../types"
+	import type { TOrigamInput } from '../../types/Input/input.type'
+	import type { TOrigamRatingFieldItem } from '../../types/RatingField/rating-field-item.type'
 
-	import { clamp, createRange, filterInputAttrs, getUid } from '../../utils'
+	import { clamp, createRange } from '../../utils/Commons/commons.util'
+	import { filterInputAttrs } from '../../utils/Input/input.util'
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 	/*********************************************************
 	 * Global
@@ -181,6 +205,8 @@
 	})
 
 	defineEmits<IRatingFieldEmits>()
+
+	defineSlots<IRatingFieldSlots>()
 
 	const {filterProps} = useProps<IRatingFieldProps>(props)
 
@@ -317,7 +343,17 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(ratingFieldStyles)
+	/*********************************************************
+	 * useStyle
+	 *
+	 * @description
+	 * #381 — the `id` returned by useStyle is a GENERATED identifier,
+	 * only meant for the scoped stylesheet selector. Without
+	 * `() => props.id` here, it shadowed the `id` PROP of the same
+	 * name: the template's `:id="id"` on <origam-input> (line 3)
+	 * rendered the generated id, never the consumer's.
+	 ********************************************************/
+	const {id, css, load, isLoaded, unload} = useStyle(ratingFieldStyles, () => props.id)
 
 
 	/*********************************************************

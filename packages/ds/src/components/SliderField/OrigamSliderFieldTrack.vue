@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="id"
 			:class="sliderFieldTrackClasses"
 			:style="sliderFieldTrackStyles"
 	>
@@ -52,18 +53,16 @@
 		setup
 >
 	import { computed, StyleValue, useSlots } from 'vue'
-	import {
-		useBackgroundColor,
-		useProps,
-		useRounded,
-		useStyle
-	} from '../../composables'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { ISliderFieldTrackProps } from "../../interfaces"
+	import type { ISliderFieldTrackEmits, ISliderFieldTrackProps, ISliderFieldTrackSlots } from '../../interfaces/SliderField/slider-field-track.interface'
 
-	import type { TTick } from '../../types'
+	import type { TTick } from '../../types/SliderField/slider-field.type'
 
-	import { convertToUnit, int } from '../../utils'
+	import { convertToUnit, int } from '../../utils/Commons/commons.util'
 
 	const props = withDefaults(defineProps<ISliderFieldTrackProps>(), {
 		start: 0,
@@ -76,6 +75,10 @@
 		showTicks: false,
 		tickSize: 2
 	})
+
+	defineEmits<ISliderFieldTrackEmits>()
+
+	defineSlots<ISliderFieldTrackSlots>()
 
 	const {filterProps} = useProps<ISliderFieldTrackProps>(props)
 
@@ -106,16 +109,15 @@
 		return !!props.showTicks
 	})
 
-	const roundedProps = computed(() => {
-		return props.rounded
-	})
-
 	const parsedTicks = computed<Array<TTick>>(() => {
 		const ticks = props.ticks ?? []
 		return props.isVertical ? ticks.slice().reverse() : ticks
 	})
 
-	const {roundedClasses, roundedStyles} = useRounded(roundedProps)
+	// The props-OBJECT overload. The previous `computed(() => props.rounded)`
+	// hit the `Ref` overload, which carries the shorthand scalar ONLY — the
+	// four per-corner props were unreachable by construction.
+	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {
 		backgroundColorClasses: trackFillColorClasses,
 		backgroundColorStyles: trackFillColorStyles
@@ -215,7 +217,7 @@
 			}
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(sliderFieldTrackStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(sliderFieldTrackStyles, () => props.id)
 
 
 	defineExpose({
@@ -236,7 +238,7 @@
 		$this: &;
 
 		position: relative;
-		border-radius: 9999px;
+		border-radius: var(--origam-slider-field__track---border-radius, 9999px);
 		pointer-events: none;
 
 		@media (forced-colors: active) {
@@ -255,11 +257,26 @@
 		}
 
 		&__background {
-			background-color: rgb(148, 148, 148);
+			background-color: var(--origam-slider-field__track---background-color, rgb(148, 148, 148));
 		}
 
+		/*********************************************************
+		 * __fill
+		 *
+		 * @description
+		 * ⛔ issue #431 — the source token
+		 * (`slider-field.track-fill.background-color`) is affected by the
+		 * pipeline's BEM-child-hyphen bug (#435, confirmed against the
+		 * compiled CSS): the hyphenated key `track-fill` flattens to
+		 * `--origam-slider-field---track-fill-background-color` instead of
+		 * the expected `--origam-slider-field-track__fill---…` shape. The
+		 * variable below IS real and correctly resolves to
+		 * `{color.action.primary.bg}` today — reported to the coordinator /
+		 * `tableau-maj`; rename this var reference once #435's pipeline fix
+		 * lands and re-emits it correctly.
+		 ********************************************************/
 		&__fill {
-			background-color: rgba(84, 84, 84, 1);
+			background-color: var(--origam-slider-field---track-fill-background-color, rgba(84, 84, 84, 1));
 		}
 
 		&__ticks {
@@ -275,7 +292,7 @@
 		}
 
 		&__tick {
-			background-color: rgba(66, 66, 66, 1);
+			background-color: var(--origam-slider-field__tick---background-color, rgba(66, 66, 66, 1));
 			position: absolute;
 			opacity: 0;
 			transition: 0.2s opacity cubic-bezier(0.4, 0, 0.2, 1);
@@ -285,7 +302,7 @@
 			transform: translate(calc(var(--origam-slider-field-track__tick---size, 2) / -2), calc(var(--origam-slider-field-track__tick---size, 2) / -2));
 
 			&--filled {
-				background-color: rgba(238, 238, 238, 1);
+				background-color: var(--origam-slider-field__tick---background-color-active, rgba(238, 238, 238, 1));
 			}
 
 			&--first {

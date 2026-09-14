@@ -2,24 +2,29 @@ import type { Ref } from 'vue'
 
 import type {
     IBgColorProps,
-    IBorderProps,
-    IColorProps,
-    ICommonsComponentProps,
-    IDimensionProps,
-    IElevationProps,
-    IMarginProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type {
     IMediaPlayerEmits,
     IMediaPlayerMethods,
     IMediaPlayerState,
-    IPaddingProps,
-    IRoundedProps,
-    ITypographyProps,
-    IUseMediaPlayerOptions,
+    IUseMediaPlayerOptions
+} from '../Media/media-player.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
+import type {
     IVideoSource,
     IVideoTrack
-} from '../../interfaces'
+} from './video-track.interface'
 
-import type { TVideoControls } from '../../types'
+import type { TCrossOrigin } from '../../types/Img/img.type'
+import type { TVideoControls } from '../../types/Video/video.type'
 
 /**
  * Bindings passed to the `#controls` scoped slot of `<OrigamVideo>`.
@@ -91,7 +96,7 @@ export interface IVideoSlots {
 /**
  * Props for `<OrigamVideo>`.
  */
-export interface IVideoProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IDimensionProps, IRoundedProps, IBorderProps, IMarginProps, IPaddingProps, IElevationProps, ITypographyProps {
+export interface IVideoProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IDimensionProps, IRoundedProps, IBorderProps, IMarginProps, IPaddingProps, IElevationProps, Pick<ITypographyProps, 'fontSize'> {
     /**
      * Media URL — either a single string for `<video src>`, or an array
      * of `<source>` descriptors when multiple formats are provided. The
@@ -180,7 +185,7 @@ export interface IVideoProps extends ICommonsComponentProps, IColorProps, IBgCol
      * the consumer needs canvas / WebAudio access to the decoded
      * frames. Affects how cookies are sent on the request.
      */
-    crossorigin?: 'anonymous' | 'use-credentials'
+    crossorigin?: TCrossOrigin
     /**
      * Disables the picture-in-picture button (and the matching
      * keyboard shortcut). Useful for content where PIP would defeat

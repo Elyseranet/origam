@@ -1,13 +1,27 @@
 import { computed, inject, reactive, shallowRef, toRefs, watchEffect } from 'vue'
-import { IN_BROWSER, ORIGAM_DISPLAY_KEY } from '../../consts'
+import { IN_BROWSER } from '../../consts/Commons/commons.const'
+import { ORIGAM_DISPLAY_KEY } from '../../consts/Commons/display.const'
 
-import type { IDisplayInstance, IDisplayOptions, IDisplayProps } from '../../interfaces'
-import type { TSSROptions } from '../../types'
+import type { IDisplayInstance, IDisplayOptions, IDisplayProps } from '../../interfaces/Commons/display.interface'
+import type { TSSROptions } from '../../types/Commons/display.type'
 
-import { getClientHeight, getClientWidth, getCurrentInstanceName, getPlatform, parseDisplayOptions } from '../../utils'
+import { getClientHeight, getClientWidth, getPlatform, parseDisplayOptions } from '../../utils/Commons/display.util'
+import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
 
 /*********************************************************
  * useDisplay
+ *
+ * @description
+ * Cote composant : lit l'instance de display globale (injectee sous
+ * `ORIGAM_DISPLAY_KEY`, creee par `createDisplay()`) et y superpose un
+ * `mobile`/`displayClasses` propre au composant quand `props.mobileBreakpoint`
+ * derode le seuil global — sinon retombe sur `display.mobile` partage.
+ *
+ * @description
+ * Leve si aucune instance n'est injectee : signe que l'app n'a pas ete
+ * initialisee via `createOrigam()`, meme logique de garde que `useDate()`.
+ * `displayClasses` ne produit une entree que si `name` est fourni (par
+ * defaut le nom kebab-case du composant courant).
  ********************************************************/
 export function useDisplay (
     props: IDisplayProps = {},
@@ -38,6 +52,21 @@ export function useDisplay (
 
 /*********************************************************
  * createDisplay
+ *
+ * @description
+ * Fabrique installee par `createOrigam()` : suit `window.innerWidth/Height`
+ * (via un listener `resize` passif) et derive dans un `reactive` unique
+ * l'ensemble des breakpoints (`xs`..`xxl`, `smAndUp`, `mdAndDown`…), la
+ * plateforme (`getPlatform`) et le flag `mobile` selon
+ * `options.mobileBreakpoint`. Une seule instance est creee au niveau app ;
+ * `useDisplay()` la lit plutot que d'en recreer une par composant.
+ *
+ * @description
+ * Cote SSR, `height`/`width` sont seedes depuis `ssr` (dimensions
+ * supposees du client) plutot que `window`, et le listener `resize` n'est
+ * jamais attache (`IN_BROWSER` garde) — l'instance retournee porte
+ * `ssr: true` pour que l'appelant sache que ces valeurs sont une
+ * approximation tant que l'hydratation n'a pas tourne.
  ********************************************************/
 export function createDisplay (options?: IDisplayOptions, ssr?: TSSROptions): IDisplayInstance {
     const {thresholds, mobileBreakpoint} = parseDisplayOptions(options)

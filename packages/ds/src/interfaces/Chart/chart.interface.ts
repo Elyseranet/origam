@@ -1,27 +1,25 @@
-import type {
-    IBgColorProps,
-    IChartAnnotation,
-    IChartDrilldownProps,
-    IChartPlotBand,
-    IChartPlotLine,
-    IChartPoint,
-    IChartSecondaryYAxis,
-    IChartSeries,
-    ICommonsComponentProps,
-    IDimensionProps,
-    IElevationProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps
-} from '../../interfaces'
+import type { IBgColorProps } from '../Commons/color.interface'
+import type { IChartAnnotation } from './chart-annotation.interface'
+import type { IChartDrilldownProps } from './chart-drilldown.interface'
+import type { IChartPlotBand } from './chart-plot-band.interface'
+import type { IChartPlotLine } from './chart-plot-line.interface'
+import type { IChartPoint } from './chart-point.interface'
+import type { IChartSecondaryYAxis } from './chart-axis.interface'
+import type { IChartSeries } from './chart-series.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
 
+import type { TChartLegendPosition } from '../../types/Chart/chart-legend.type'
 import type {
-    TChartLegendPosition,
     TChartSmoothing,
     TChartStacking,
-    TChartType,
-    TIntent
-} from '../../types'
+    TChartType
+} from '../../types/Chart/chart.type'
+import type { TIntent } from '../../types/Commons/intent.type'
 
 /**
  * Props accepted by `<OrigamChart>`. Single component for eight
@@ -93,6 +91,12 @@ export interface IChartProps
      * Palette used when a series does not pin its own `color`.
      * Pass intent strings (cycled in order) or raw CSS colours.
      * Default cycles through the 8 origam intents.
+     *
+     * ⛔ #426 — has **no effect** when `type` resolves to `'bullet'`,
+     * `'candlestick'`, `'heatmap'`, or `'map'` (delegated to
+     * `OrigamChartBullet` / `OrigamChartCandlestick` /
+     * `OrigamChartHeatmap` / `OrigamChartMap` — see their own
+     * `colorScheme` JSDoc in `chart-base.interface.ts`).
      */
     colorScheme?: Array<TIntent | string>
     /** Formatter applied to X-axis tick labels. */
@@ -179,19 +183,21 @@ export interface IChartEmits {
 }
 
 /**
- * Slot signatures. Replace the default tooltip card, legend
- * entry, title block, or empty state without losing the rest of
- * the chart chrome.
+ * Signature d'index volontaire. `<OrigamChart>` est un passthrough
+ * dynamique : le template forwarde tout slot nomme que le consommateur
+ * fournit (`v-for="(_, name) in $slots"`), pas seulement `tooltip` /
+ * `legend-item` / `title` / `empty`. Une interface **vide** y serait a
+ * la fois **fausse** (elle affirmerait que le composant n'accepte
+ * aucun slot) et **incompilable** — `v-for` sur `$slots` indexe avec
+ * une chaine, et TS leve `TS7053` sans signature d'index. La laxite de
+ * cette signature est inherente au passthrough, ce n'est pas un
+ * raccourci. Pour la surface reellement acceptee en aval, lire
+ * l'interface de slots du composant enfant actif (`IChartBaseSlots`
+ * dans `chart-base.interface.ts`, partagee par chaque famille
+ * cartesian / polar / radar / gauge / …).
  */
 export interface IChartSlots {
-    /** Replace the default tooltip body. */
-    tooltip?: (bindings: { point: IChartPoint, series: IChartSeries, category: string | number }) => any
-    /** Replace one legend entry. */
-    'legend-item'?: (bindings: { series: IChartSeries, index: number, visible: boolean }) => any
-    /** Replace the title block (title + subtitle). */
-    title?: () => any
-    /** Render when `series` is empty / every series is hidden. */
-    empty?: () => any
+    [name: string]: ((props: any) => any) | undefined
 }
 
 /**

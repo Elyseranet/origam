@@ -29,7 +29,7 @@ panel needs (selection state, `multiple`, `mandatory`, `max`).
 header entirely or just the pieces you need. `expandIcon` / `collapseIcon`
 (default: chevron-down / chevron-up) swap the trailing indicator, and
 `hideActions` removes it. Every header prop and slot documented on
-[`OrigamExpansionPanelHeader`](./OrigamExpansionPanelHeader.md) is available
+`OrigamExpansionPanelHeader` is available
 directly on `OrigamExpansionPanel` (its props interface extends the header's).
 
 ```vue
@@ -61,7 +61,7 @@ directly on `OrigamExpansionPanel` (its props interface extends the header's).
 
 `content` accepts a string or a component; for rich/slotted markup use the
 default slot instead — every prop and slot documented on
-[`OrigamExpansionPanelContent`](./OrigamExpansionPanelContent.md) is likewise
+`OrigamExpansionPanelContent` is likewise
 forwarded from `OrigamExpansionPanel` (its props interface extends the
 content's).
 
@@ -98,6 +98,25 @@ design system.
 </template>
 ```
 
+`loadingText` names what that indicator announces to a screen reader. It
+carries a **locale key**, not final text: the panel and its content hand it
+to the active renderer's `label` prop (`<OrigamProgress>` /
+`<OrigamSkeleton>`), which resolves it through the DS `t()` mechanism.
+Defaults to the shared `'origam.loading'` key; a raw string matching no key
+is returned unchanged. Set on the parent `<origam-expansion-panels>` it
+cascades to every panel as a **default**, exactly like `density` / `color`
+below — a panel's own `loading-text` still wins. A per-instance
+`loading="{ type, label }"` wins over both.
+
+```vue
+<template>
+    <origam-expansion-panels loading-text="origam.data_iterator.loading_text">
+        <origam-expansion-panel :loading="true" title="Announces the group's text" content="…" />
+        <origam-expansion-panel :loading="true" loading-text="my.own.key" title="Announces its own" content="…" />
+    </origam-expansion-panels>
+</template>
+```
+
 ## Disabled / readonly
 
 `disabled` (or the parent's `disabled`) blocks interaction entirely and
@@ -127,8 +146,10 @@ reactive to pointer/click, `true` = forced on, or an object overriding
 variants and `borderColor` / `borderStyle`) and `padding` / `margin` (+
 per-side variants) follow the standard cross-cutting composables. When set
 on the parent `OrigamExpansionPanels`, `density`, `color`, `bgColor`,
-`rounded` and `border` cascade to every panel as **defaults** — a panel's
-own prop still wins.
+`rounded`, `border` — plus the behavioural `eager` and `loadingText` — cascade
+to every panel as **defaults**; a panel's own prop still wins. The container
+itself owns no content and paints no loading indicator, so those last two only
+mean anything one level down.
 
 ```vue
 <template>
@@ -156,9 +177,9 @@ own prop still wins.
 | `readonly` | `boolean` | `false` | Disables the open/close click handler without dimming the panel |
 | `disabled` | `boolean` | `false` | Disables the panel entirely (via the group item context) |
 | `value` | `any` | — | Selection value registered with the parent group (`IGroupItemProps`) |
-| `eager` | `boolean` | `false` | Keeps the content mounted even while collapsed |
+| `eager` | `boolean` | `false` | Keeps the content mounted even while collapsed. Cascades from the parent `OrigamExpansionPanels` as a default |
 | `loading` | `boolean \| number \| TLoaderConfig` | — | Loading state — see Loading state |
-| `loadingText` | `string` | — | Declared on `ILoaderProps` but **not currently read** by the panel, header or content (see note below) |
+| `loadingText` | `string` | `'origam.loading'` (renderer default) | Locale **key** announced by the loading indicator — forwarded to `<OrigamProgress>` / `<OrigamSkeleton>`'s `label`. Cascades from the parent `OrigamExpansionPanels` as a default. See Loading state |
 | `selectedClass` | `string` | — | Declared on `IGroupItemProps` but **not currently read** by the panel (see note below) |
 | `hover` | `boolean \| IHoverState` | — | Hover state override — see Hover / active |
 | `active` | `boolean \| IActiveState` | — | Active state override — see Hover / active |
@@ -172,15 +193,18 @@ own prop still wins.
 | `padding` | `boolean \| number \| string` | — | Padding (+ per-side variants) |
 | `margin` | `boolean \| number \| string` | — | Margin (+ per-side variants) |
 | `ripple` | `boolean \| { class: string }` | — | Header click-ripple override (forwarded to the header) |
-| `fontFamily` / `fontSize` / `fontWeight` / `lineHeight` / `letterSpacing` | typography tokens | — | Header typography overrides (forwarded to the header) — see [`OrigamExpansionPanelHeader`](./OrigamExpansionPanelHeader.md) |
+| `fontFamily` / `fontSize` / `fontWeight` / `lineHeight` / `letterSpacing` | typography tokens | — | Header typography overrides (forwarded to the header) — see `OrigamExpansionPanelHeader` |
 
-> **Known gap** — `loadingText` (from `ILoaderProps`) and `selectedClass`
-> (from `IGroupItemProps`, the "class applied while selected" analogue of
-> `Btn`/`ItemGroup`'s selected styling) are both part of
+> **Known gap** — `selectedClass` (from `IGroupItemProps`, the "class applied
+> while selected" analogue of `Btn`/`ItemGroup`'s selected styling) is part of
 > `IExpansionPanelProps` but neither `OrigamExpansionPanel.vue`,
 > `OrigamExpansionPanelHeader.vue` nor `OrigamExpansionPanelContent.vue`
-> reads them. Passing either today has no effect — flagging this rather
-> than guessing at intended behaviour.
+> reads it. Passing it today has no effect — flagging this rather than
+> guessing at intended behaviour.
+>
+> `loadingText` was listed here too until 2026-09-07; it is now wired — the
+> panel and its content forward it to the loading renderer's `label` (see
+> Loading state).
 
 ## Emits
 
@@ -209,10 +233,10 @@ own prop still wins.
   `OrigamExpansionPanel` children. Also carries the `flat` / `accordion` /
   `popout` / `inset` layout variants. **No dedicated doc page exists for it
   yet** — flagging this gap rather than inventing one.
-- [`OrigamExpansionPanelHeader`](./OrigamExpansionPanelHeader.md) — the
+- `OrigamExpansionPanelHeader` — the
   clickable header row; rendered automatically by `OrigamExpansionPanel`
   from its own props, but can be overridden via the `#header` slot.
-- [`OrigamExpansionPanelContent`](./OrigamExpansionPanelContent.md) — the
+- `OrigamExpansionPanelContent` — the
   collapsible content region; rendered automatically by
   `OrigamExpansionPanel` from `content` / the default slot, throws if
   instantiated outside an `OrigamExpansionPanel` ancestor.
@@ -247,9 +271,9 @@ own prop still wins.
 | `--origam-expansion-panel__content---padding-block-start` / `-end` | `space.2` / `space.4` | Content vertical padding |
 | `--origam-expansion-panel__content---padding-inline-start` / `-end` | `space.6` | Content horizontal padding |
 
-> **Known gap** — `packages/ds/tokens/component/expansion-panel.json` also
-> declares a `header.hover-overlay-opacity` token
-> (`--origam-expansion-panel__header---hover-overlay-opacity`), but
+> **Known gap** — `packages/ds/src/assets/css/tokens/light.css` (and
+> `dark.css`) also declares a
+> `--origam-expansion-panel__header---hover-overlay-opacity` variable, but
 > `OrigamExpansionPanelHeader.vue`'s hover rule uses a hardcoded
 > `opacity: calc(0.04 * 1)` with no matching `var(...)` — the token exists
 > but isn't actually wired as a CSS custom property override point.
@@ -258,5 +282,5 @@ own prop still wins.
 Header-specific typography variables
 (`--origam-expansion-panel__header---font-family` etc.) and the full content
 token set are documented on
-[`OrigamExpansionPanelHeader`](./OrigamExpansionPanelHeader.md) and
-[`OrigamExpansionPanelContent`](./OrigamExpansionPanelContent.md).
+`OrigamExpansionPanelHeader` and
+`OrigamExpansionPanelContent`.

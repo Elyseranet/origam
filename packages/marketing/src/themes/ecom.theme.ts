@@ -140,44 +140,42 @@ export const ecomLightTheme: IOrigamTheme = {
         // exact match spec) plutôt qu'un hex littéral pour s'auto-adapter aux
         // 2 modes depuis ce bloc mode-agnostic.
         'origam-avatar': { rounded: 'sm', color: 'var(--origam-color__action--primary---fgSubtle)' },
-        // Checkbox (Refs #36) — `rounded:'sm'` conforme à la spec. `activeBgColor`
-        // (PAS `bgColor`, cf. SelectionControl : `model ? (activeBgColor ||
-        // bgColor) : bgColor`) colore le glyph MDI coché en rose. ⚠️ BLOQUÉ :
-        // le glyph coché est une icône MDI mono-ton (checkbox-marked-outline),
-        // pas une box dessinée — impossible de distinguer un
-        // `--checkbox---border-color` (non coché) d'un
-        // `--checkbox--checked---color` (couleur du check SUR fond rempli) :
-        // ces 2 hooks n'existent pas (#241, confirmé par lecture du code
-        // actuel, toujours vrai). `activeBgColor` est le maximum atteignable
-        // ici (glyph entier — contour + check — passe en rose au check).
-        'origam-checkbox': { rounded: 'sm', activeBgColor: 'var(--origam-color__action--primary---bg)' },
-        // Radio (Refs #36) — ⚠️ BLOQUÉ, confirmé EMPIRIQUEMENT (Playwright,
-        // pas seulement par lecture) : `activeBgColor` est INERTE ici. Cause
-        // racine DIFFÉRENTE du blocage Checkbox — ce n'est PAS (seulement) le
-        // glyph MDI mono-ton : `OrigamRadio.vue` n'appelle JAMAIS `useDefaults()`
-        // (grep confirmé, 0 occurrence — contrairement à `OrigamCheckbox.vue`
-        // qui l'appelle ligne 102) ; ses props utilisent un simple
-        // `withDefaults(defineProps<IRadioProps>(), {...})`. Le thème ne peut
-        // donc PAS injecter de props par défaut sur `origam-radio` du tout —
-        // testé avec `activeBgColor` en rose : le dot coché reste
-        // `text.primary` (encre), pas rose, dans les 2 modes. Prop laissée ici
-        // par intention PROPS-FIRST (deviendra fonctionnelle si `OrigamRadio`
-        // gagne un jour un appel à `useDefaults`, comme Checkbox/Switch) mais
-        // documentée comme un vrai gap DS — à signaler en ticket DS
-        // (`OrigamRadio.vue` : ajouter `useDefaults()`), PAS un bug du thème.
-        'origam-radio': { activeBgColor: 'var(--origam-color__action--primary---bg)' },
+        // Checkbox (Refs #36) — `rounded:'sm'` conforme à la spec.
+        // ⛔ `activeBgColor` retiré (purge DS des props d'état à plat,
+        // dossier state-color) : empiriquement re-vérifié (mount + thème,
+        // pas juste lecture) que le glyph coché n'a AUCUN style inline sous
+        // ce thème — la prop était déjà inerte avant son retrait de l'API.
+        // Cause : le glyph coché est peint par `OrigamSelectionControl.vue`
+        // via `:color="bgColor"` STATIQUE, jamais par un axe actif séparé.
+        // Le gap DS reste le même qu'avant (#241) : pas de hook dédié pour
+        // distinguer le contour (non coché) du glyph rempli (coché) — non
+        // résolu par cette purge, à traiter dans un ticket DS séparé.
+        'origam-checkbox': { rounded: 'sm' },
+        // Radio (Refs #36) — ⛔ `activeBgColor` retiré (purge DS). Gap DS
+        // préexistant et INCHANGÉ par cette purge : `OrigamRadio.vue`
+        // n'appelle jamais `useDefaults()` (contrairement à
+        // `OrigamCheckbox.vue`), donc `theme.components['origam-radio']`
+        // n'injecte aucune prop par défaut, quel que soit son nom — vérifié
+        // à nouveau (mount + thème) que le dot coché reste `text.primary`.
+        // Pas de remplacement à ce thème : ticket DS requis
+        // (`OrigamRadio.vue` : ajouter `useDefaults()`) avant qu'un
+        // quelconque hook de couleur puisse fonctionner ici.
+        'origam-radio': {},
         // Switch harmony (lot 4) — mirrors `origam-text-field`'s rounded/
         // border so the track reads as the same visual family as the
         // theme's fields (see cartoon.theme.ts for the full rationale).
-        // `activeBgColor` (Refs #36) colore le track "on" en rose. Thumb :
-        // ⚠️ VÉRIFIÉ EMPIRIQUEMENT (Playwright) que le défaut DS n'est PAS
+        // ⛔ `activeBgColor` retiré (purge DS) : re-vérifié empiriquement
+        // (mount + thème) que `.origam-switch-track` n'a aucun style inline
+        // sous ce thème — la prop était déjà inerte avant son retrait de
+        // l'API (`ISwitchProps` étend `IActiveProps`/`IHoverProps`, jamais
+        // de prop plate `activeBgColor`). Thumb : le défaut DS n'est PAS
         // blanc pur comme documenté par le composant mais résout à
         // `--origam-color__surface---default` (cream #fff7f0 light, brun
         // #1a0f0a dark, constaté sur le composant réel) — override cssVar
         // dédié posé plus bas (`--origam-switch__thumb---background-color:
         // #ffffff`, constant, même valeur les 2 modes) pour honorer "thumb
         // blanc".
-        'origam-switch': { rounded: 'sm', border: true, activeBgColor: 'var(--origam-color__action--primary---bg)' },
+        'origam-switch': { rounded: 'sm', border: true },
         // SliderField (Refs #36) — ⚠️ BLOQUÉ, confirmé EMPIRIQUEMENT
         // (Playwright) : `OrigamSliderField.vue` utilise un simple
         // `withDefaults(defineProps<...>(), {...})` (grep confirmé, PAS de

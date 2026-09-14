@@ -54,7 +54,7 @@ test.describe('OrigamLazy', () => {
     test('Emit — update:modelValue variant renders lazy wrapper', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Emit — update:modelValue', { exact: true }).first().click()
+        await page.getByText('Events - update:modelValue', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

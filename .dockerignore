@@ -68,4 +68,3 @@ CLAUDE_CODE_BRIEF.md
 # Misc build artefacts tracked by .gitignore as well
 *.tsbuildinfo
 maquettes
-figma-plugin

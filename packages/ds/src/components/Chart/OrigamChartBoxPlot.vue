@@ -1,9 +1,9 @@
 <template>
-	<div
+	<figure
+			:id="id"
 			class="origam-chart-box-plot"
 			:class="rootClasses"
 			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
-			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-box-plot"
 	>
@@ -224,7 +224,7 @@
 					data-cy="origam-chart-box-plot-empty"
 			>
 				<slot name="empty">
-					<span>No data to display</span>
+					<span>{{ t('origam.chart.no_data_text') }}</span>
 				</slot>
 			</div>
 		</div>
@@ -246,7 +246,7 @@
 				/>
 			</template>
 		</origam-chart-legend>
-	</div>
+	</figure>
 </template>
 
 <script
@@ -262,33 +262,32 @@
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
-	import {
-		useChartHeaderTypography,
-		useBackgroundColor,
-		useDimension,
-		useElevation,
-		useMargin,
-		usePadding,
-		useRounded
-	} from '../../composables'
+	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
 
 	import type {
 		IChartBoxPlotBox,
 		IChartBoxPlotDatum,
 		IChartBoxPlotEmits,
-		IChartBoxPlotProps
+		IChartBoxPlotProps,
+		IChartBoxPlotSlots
 	} from '../../interfaces/Chart/chart-box-plot.interface'
 
-	import type {
-		IChartLegendItem,
-		IChartPoint,
-		IChartSeries
-	} from '../../interfaces'
+	import type { IChartLegendItem } from '../../interfaces/Chart/chart.interface'
+	import type { IChartPoint } from '../../interfaces/Chart/chart-point.interface'
+	import type { IChartSeries } from '../../interfaces/Chart/chart-series.interface'
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
 	import { computeQuartiles, isRawDatum } from '../../utils/Chart/box-plot.util'
 
-	import type { TIntent } from '../../types'
+	import type { TIntent } from '../../types/Commons/intent.type'
 
 	/*********************************************************
 	 * Global
@@ -334,6 +333,9 @@
 
 	const emit = defineEmits<IChartBoxPlotEmits>()
 
+	defineSlots<IChartBoxPlotSlots>()
+
+	const { t } = useLocale()
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
 	const { elevationClasses, elevationStyles } = useElevation(props)
@@ -341,6 +343,7 @@
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { headerTypographyStyles } = useChartHeaderTypography(props)
+	const chartAnimationStyle = useChartAnimationStyle(props)
 
 	/*********************************************************
 	 * Static SVG box — fixed coordinate space, CSS scales it.
@@ -629,7 +632,8 @@
 		elevationClasses.value,
 		marginClasses.value,
 		paddingClasses.value,
-		roundedClasses.value
+		roundedClasses.value,
+		props.class
 	])
 
 	const rootStyles = computed<StyleValue>(() => {
@@ -637,8 +641,8 @@
 		if (props.aspectRatio) {
 			out.aspectRatio = props.aspectRatio
 		}
-		out['--origam-chart---animation-duration'] = `${ props.animationDuration }ms`
-		return out
+		Object.assign(out, chartAnimationStyle.value)
+return [ out, props.style as StyleValue ]
 	})
 
 	const bodyClasses = computed(() => ({
@@ -655,12 +659,13 @@
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'box plot chart')
-	const svgAriaLabel = computed(() => props.title ?? 'box plot chart')
-	const svgTitle = computed(() => props.title ?? 'box plot chart')
+	const ariaLabel = computed(() => props.title ?? t('origam.chart.box_plot.aria_label'))
+	const svgAriaLabel = computed(() => props.title ?? t('origam.chart.box_plot.aria_label'))
+	const svgTitle = computed(() => props.title ?? t('origam.chart.box_plot.aria_label'))
 	const svgDesc = computed(() => {
 		const n = visibleBoxes.value.length
-		return `Box plot with ${ n } ${ n === 1 ? 'category' : 'categories' }.`
+
+		return t('origam.chart.box_plot.desc', n)
 	})
 
 	const boxAriaLabel = (box: IChartBoxPlotBox): string => {
@@ -720,7 +725,17 @@
 
 		display: grid;
 		gap: var(--origam-chart---gap, 12px);
-		padding: var(--origam-chart---padding, 12px);
+
+		// ⛔ #C2 — zero-specificity default so a scale-driven utility
+		// class (`.origam--p-4` from `padding="4"`) wins the cascade.
+		// Without `:where()`, this scoped rule's [data-v-hash] pushes it
+		// to (0,2,0), beating the utility's (0,1,0), and the `padding`
+		// prop's scale form goes silently inert. See CLAUDE.md "CSS-first"
+		// table — `:where(…)` is the documented zero-specificity default.
+		:where(&) {
+			padding: var(--origam-chart---padding, 12px);
+		}
+
 		background-color: var(--origam-chart---background-color, transparent);
 		color: var(--origam-chart---color, inherit);
 		width: 100%;
@@ -779,7 +794,7 @@
 
 		&__subtitle {
 			font-size: var(--origam-chart__subtitle---font-size, 0.875rem);
-			color: var(--origam-chart__subtitle---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__subtitle---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		&__body {
@@ -805,19 +820,19 @@
 		}
 
 		.origam-chart__grid-line {
-			stroke: var(--origam-chart__grid---stroke-color, var(--origam-color-border-subtle, #e5e7eb));
+			stroke: var(--origam-chart__grid---stroke-color, var(--origam-color__border---subtle, #e5e7eb));
 			stroke-width: 1;
 			stroke-dasharray: 4 4;
 		}
 
 		.origam-chart__axis-line {
-			stroke: var(--origam-chart__axis---stroke-color, var(--origam-color-border-default, #d1d5db));
+			stroke: var(--origam-chart__axis---stroke-color, var(--origam-color__border---default, #d1d5db));
 			stroke-width: 1;
 		}
 
 		.origam-chart__axis-label {
 			font-size: var(--origam-chart__axis-label---font-size, 0.6875rem);
-			fill: var(--origam-chart__axis-label---fill, var(--origam-color-text-secondary, #6b7280));
+			fill: var(--origam-chart__axis-label---fill, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		.origam-chart__box-rect {
@@ -836,7 +851,7 @@
 		}
 
 		.origam-chart__box-median {
-			stroke: var(--origam-chart__box-median---stroke-color, var(--origam-color-surface-default, #ffffff));
+			stroke: var(--origam-chart__box-median---stroke-color, var(--origam-color__surface---default, #ffffff));
 			stroke-width: var(--origam-chart__box-median---stroke-width, 2);
 		}
 
@@ -861,7 +876,7 @@
 
 			&:focus-visible {
 				.origam-chart__box-rect {
-					outline: 2px solid var(--origam-color-action-primary-border, currentColor);
+					outline: 2px solid var(--origam-color__border---focus, currentColor);
 					outline-offset: 2px;
 				}
 			}
@@ -874,7 +889,7 @@
 		:deep(.origam-chart__tooltip) {
 			position: absolute;
 			pointer-events: none;
-			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color-surface-overlay, #1f2937));
+			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color__surface---overlay, #1f2937));
 			color: var(--origam-chart__tooltip---color, #ffffff);
 			padding: var(--origam-chart__tooltip---padding, 8px 12px);
 			border-radius: var(--origam-chart__tooltip---border-radius, 6px);
@@ -912,7 +927,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--origam-chart__empty---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__empty---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		:deep(.origam-chart__legend) {

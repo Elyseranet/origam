@@ -41,25 +41,23 @@
 		setup
 >
 	import { computed, toRef, useSlots } from 'vue'
-	import { OrigamTitle } from "../../components"
-	import {
-		useActive,
-		useDensity,
-		useDimension,
-		useHover,
-		usePosition,
-		useProps,
-		useRtl,
-		useStateEffect,
-		useStyle,
-		useTypography
-	} from '../../composables'
+	import OrigamTitle from '../Title/OrigamTitle.vue'
+	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { usePosition } from '../../composables/Commons/position.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRtl } from '../../composables/Commons/rtl.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import { DENSITY } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IToolbarProps } from '../../interfaces'
+	import type { IToolbarEmits, IToolbarProps, IToolbarSlots } from '../../interfaces/Toolbar/toolbar.interface'
 
 	/*********************************************************
 	 * Global
@@ -72,6 +70,10 @@
 		density: DENSITY.DEFAULT,
 		modelValue: true
 	})
+
+	defineEmits<IToolbarEmits>()
+
+	defineSlots<IToolbarSlots>()
 
 	const {filterProps} = useProps<IToolbarProps>(props)
 
@@ -109,8 +111,25 @@
 	const {rtlClasses} = useRtl()
 
 
-	const {isHover, hoverState} = useHover(props)
-	const {isActive, activeState} = useActive(props)
+	const {isOn: isHover, config: hoverState} = useStateFlag(props, {state: 'hover'})
+
+	/*********************************************************
+	 * Props declarees sans effet (#550, critere C1)
+	 *
+	 * @description
+	 * ⛔ Exposees dans la story, parfois documentees, et pourtant lues
+	 * nulle part. Elles ne sont ni retirees — ca casserait la story et le
+	 * type d'un consommateur pour une prop qui ne faisait deja rien — ni
+	 * cablees a un comportement invente. Elles avertissent une fois, en
+	 * dev, avec la raison exacte. Meme traitement que la famille Chart.
+	 ********************************************************/
+	useUnsupportedProp(
+		'OrigamToolbar',
+		'modelValue',
+		'the toolbar has no open/closed state to bind — nothing reads this value.',
+		() => props.modelValue !== undefined
+	)
+	const {isOn: isActive, config: activeState} = useStateFlag(props, {state: 'active'})
 	// `colorClasses` / `colorStyles` MUST come from `useStateEffect` so the
 	// surface follows `hover` / `active` — e.g. a transparent sticky AppBar
 	// that paints a background once `active` engages on scroll. A plain
@@ -167,7 +186,17 @@
 		]
 	})
 
-	const {id, css, load, isLoaded, unload} = useStyle(barStyles)
+	/*********************************************************
+	 * useStyle
+	 *
+	 * @description
+	 * #381 — the `id` returned by useStyle is a GENERATED identifier,
+	 * only meant for the scoped stylesheet selector. Without
+	 * `() => props.id` here, it shadowed the `id` PROP of the same
+	 * name: the template's `:id="id"` on the root rendered the
+	 * generated id, never the consumer's.
+	 ********************************************************/
+	const {id, css, load, isLoaded, unload} = useStyle(barStyles, () => props.id)
 
 	/*********************************************************
 	 * Expose
@@ -235,7 +264,7 @@
 		overflow: var(--origam-toolbar---overflow);
 
 		position: var(--origam-toolbar---position);
-		z-index: var(--origam-toolbar---zIndex);
+		z-index: var(--origam-toolbar---z-index);
 
 		transform: var(--origam-toolbar---transform);
 		transition-duration: var(--origam-toolbar---transition-duration);
@@ -258,6 +287,14 @@
 		-webkit-backdrop-filter: var(--origam-appbar---backdrop-filter, none);
 		box-shadow: var(--origam-toolbar---box-shadow);
 		color: var(--origam-toolbar---color);
+
+    &--is-rtl {
+      direction: rtl;
+    }
+
+    &--is-ltr {
+      direction: ltr;
+    }
 
 		&--border {
 			--origam-toolbar---border-top-width: thin;
@@ -295,10 +332,10 @@
 		}
 
 		&--rounded {
-			--origam-toolbar---border-start-start-radius: 4px;
-			--origam-toolbar---border-start-end-radius: 4px;
-			--origam-toolbar---border-end-end-radius: 4px;
-			--origam-toolbar---border-end-start-radius: 4px;
+			--origam-toolbar---border-start-start-radius: var(--origam-toolbar__rounded---border-radius, 4px);
+			--origam-toolbar---border-start-end-radius: var(--origam-toolbar__rounded---border-radius, 4px);
+			--origam-toolbar---border-end-end-radius: var(--origam-toolbar__rounded---border-radius, 4px);
+			--origam-toolbar---border-end-start-radius: var(--origam-toolbar__rounded---border-radius, 4px);
 		}
 
 		&--absolute {
@@ -314,9 +351,9 @@
 		}
 
 		&--collapse {
-			--origam-toolbar---max-width: 112px;
-			--origam-toolbar---overflow: hidden;
-			--origam-toolbar---border-end-end-radius: 24px;
+			--origam-toolbar---max-width: var(--origam-toolbar__collapse---max-width, 112px);
+			--origam-toolbar---overflow: var(--origam-toolbar__collapse---overflow, hidden);
+			--origam-toolbar---border-end-end-radius: var(--origam-toolbar__collapse---border-end-end-radius, 24px);
 
 			#{$this}__title {
 				--origam-toolbar__title---display: none;
@@ -332,11 +369,11 @@
 		}
 
 		&--flat {
-			--origam-toolbar---box-shadow: none;
+			--origam-toolbar---box-shadow: var(--origam-toolbar__flat---box-shadow, none);
 		}
 
 		&--floating {
-			--origam-toolbar---display: inline-flex;
+			--origam-toolbar---display: var(--origam-toolbar__floating---display, inline-flex);
 		}
 
 		&__wrapper {
@@ -380,13 +417,20 @@
 			> #{$this}__title {
 				--origam-toolbar__title---margin-inline-start: 16px;
 			}
+			// NOTE: the shorthand --origam-toolbar__{title,prepend,append}---margin-inline
+			// / ---padding-block / ---padding-inline vars used to be read directly by
+			// __title / __prepend / __append below. The pipeline only ever emits the
+			// split -start / -end variants (never the shorthand), so those reads were
+			// unresolvable custom properties with no fallback — the declaration was
+			// silently dropped, not applied. Removed as dead code (#440-2): spacing
+			// is provided by `gap` on __wrapper (see above) plus the -start/-end
+			// vars consumed elsewhere. Confirmed zero visual change before removal.
 		}
 
 		&__prepend {
 			align-items: var(--origam-toolbar__prepend---align-items);
 			align-self: var(--origam-toolbar__prepend---align-self);
 			display: var(--origam-toolbar__prepend---display);
-			margin-inline: var(--origam-toolbar__prepend---margin-inline);
 			height: var(--origam-toolbar__prepend---height);
 			flex-grow: var(--origam-toolbar__prepend---flex-grow);
 			flex-shrink: var(--origam-toolbar__prepend---flex-shrink);
@@ -397,7 +441,6 @@
 			align-items: var(--origam-toolbar__append---align-items);
 			align-self: var(--origam-toolbar__append---align-self);
 			display: var(--origam-toolbar__append---display);
-			margin-inline: var(--origam-toolbar__append---margin-inline);
 			height: var(--origam-toolbar__append---height);
 			flex-grow: var(--origam-toolbar__append---flex-grow);
 			flex-shrink: var(--origam-toolbar__append---flex-shrink);
@@ -411,10 +454,7 @@
 			flex-shrink: var(--origam-toolbar__title---flex-shrink);
 			flex-basis: var(--origam-toolbar__title---flex-basis);
 			align-self: var(--origam-toolbar__title---align-self);
-			padding-block: var(--origam-toolbar__title---padding-block);
-			padding-inline: var(--origam-toolbar__title---padding-inline);
 			min-width: var(--origam-toolbar__title---min-width);
-			margin-inline: var(--origam-toolbar__title---margin-inline);
 			display: var(--origam-toolbar__title---display);
 
 			.origam-title {

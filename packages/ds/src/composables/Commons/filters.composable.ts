@@ -1,12 +1,27 @@
 import { computed, MaybeRef, ref, Ref, unref, watchEffect } from 'vue'
-import type { IFiltersProps, IInternalItem } from '../../interfaces'
+import type { IFiltersProps } from '../../interfaces/Commons/filters.interface'
+import type { IInternalItem } from '../../interfaces/List/list-children.interface'
 
-import type { TFilterKeyFunctions, TFilterMatch } from '../../types'
+import type { TFilterKeyFunctions, TFilterMatch } from '../../types/Commons/filters.type'
 
-import { filterItems } from '../../utils'
+import { filterItems } from '../../utils/Commons/filters.util'
 
 /*********************************************************
  * useFilter
+ *
+ * @description
+ * Filtre reactivement `items` selon `query` (Ref ou getter) et les props de
+ * filtre (`filterKeys`, `filterMode`, `customFilter`, `noFilter`), en
+ * deleguant le matching a `filterItems` (util). Expose `filteredItems`,
+ * `filteredMatches` (une `Map` cle par `item.value` → matches par champ) et
+ * `getMatches(item)` pour surligner les portions qui matchent (List,
+ * Select, Autocomplete…).
+ *
+ * @description
+ * `options.transform` permet de filtrer sur une projection de l'item
+ * (ex. un champ derive) plutot que l'item brut, et `options.customKeyFilter`
+ * se fusionne PAR-DESSUS `props.customKeyFilter` — la valeur passee en
+ * options gagne sur celle de la prop en cas de cle en commun.
  ********************************************************/
 export function useFilter<T extends IInternalItem> (
     props: IFiltersProps,

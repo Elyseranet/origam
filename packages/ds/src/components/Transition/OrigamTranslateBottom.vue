@@ -12,9 +12,10 @@
 		lang="ts"
 		setup
 >
-	import { useCssTransition, useProps } from '../../composables'
+	import { useCssTransition } from '../../composables/Transition/cssTransition.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
 
-	import type { ITransitionProps } from '../../interfaces'
+	import type { ITransitionEmits, ITransitionProps, ITransitionSlots } from '../../interfaces/Transition/transition.interface'
 
 	/*********************************************************
 	 * Global
@@ -27,6 +28,10 @@
 	})
 
 	const {filterProps} = useProps<ITransitionProps>(props)
+
+	defineEmits<ITransitionEmits>()
+
+	defineSlots<ITransitionSlots>()
 
 	/*********************************************************
 	 * Transition
@@ -54,15 +59,17 @@
 </script>
 
 <style lang="scss">
+	@use '../../assets/scss/helpers' as ds;
+
 	.origam-transition--translate-bottom {
 		&-enter-active {
-			transition-duration: 225ms;
-			transition-timing-function: cubic-bezier(0.0, 0, 0.2, 1);
+			transition-duration: var(--origam-transition--translate-bottom-enter-active---transition-duration);
+			transition-timing-function: var(--origam-transition--translate-bottom-enter-active---transition-timing-function);
 		}
 
 		&-leave-active {
-			transition-duration: 125ms;
-			transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+			transition-duration: var(--origam-transition--translate-bottom-leave-active---transition-duration);
+			transition-timing-function: var(--origam-transition--translate-bottom-leave-active---transition-timing-function);
 		}
 
 		&-enter-active,
@@ -73,6 +80,13 @@
 
 		&-enter-from, &-leave-to {
 			transform: translateY(calc(50vh + 50%));
+		}
+
+		@include ds.ds-reduced-motion {
+			&-enter-active,
+			&-leave-active {
+				transition-duration: 0.01ms !important;
+			}
 		}
 	}
 </style>

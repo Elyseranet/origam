@@ -38,7 +38,6 @@ Voici la liste complète des composants disponibles dans le design system Origam
 | :--- | :--- |
 | **OrigamCard** | [Accéder à la doc](/components/Card/OrigamCard) |
 | **OrigamSheet** | [Accéder à la doc](/components/Sheet/OrigamSheet) |
-| **OrigamSection** | [Accéder à la doc](/components/Section/OrigamSection) |
 | **OrigamWindow** | [Accéder à la doc](/components/Window/OrigamWindow) |
 | **OrigamDrawer** | [Accéder à la doc](/components/Drawer/OrigamDrawer) |
 

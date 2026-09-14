@@ -1,10 +1,5 @@
-import type {
-    TGridAutoFlow,
-    TGridGapSize,
-    TGridPlaceContent,
-    TGridPlaceItems,
-    TGridPlaceSelf
-} from '../../types'
+import type { TGridPlaceSelf } from '../../types/Grid/grid-item.type'
+import type { TGridAutoFlow, TGridGapSize, TGridPlaceContent, TGridPlaceItems } from '../../types/Grid/grid.type'
 
 /**
  * Closed list of valid `gap` token values for `<OrigamGrid>`. Exposed

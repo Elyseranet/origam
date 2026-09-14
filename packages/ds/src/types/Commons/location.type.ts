@@ -1,7 +1,7 @@
 import { Ref } from 'vue'
-import { LOCATION_STRATEGIES } from '../../enums'
+import { LOCATION_STRATEGIES } from '../../enums/Commons/location.enum'
 
-import type { ILocationStrategyData, ILocationStrategyProps } from '../../interfaces'
+import type { ILocationStrategyData, ILocationStrategyProps } from '../../interfaces/Commons/location.interface'
 
 export type TLocationStrategyFn = (
     data: ILocationStrategyData,

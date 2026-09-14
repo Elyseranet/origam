@@ -1,4 +1,5 @@
-import type { IDataListKVItem, IDataListKVItemValueComponent } from '../../interfaces'
+import type { IDataListKVItemValueComponent } from '../../interfaces/DataList/data-list-kv-item-value-component.interface'
+import type { IDataListKVItem } from '../../interfaces/DataList/data-list-kv-item.interface'
 
 /**
  * Type-guard helper — narrows a KV row's `value` to the dynamic-

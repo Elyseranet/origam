@@ -1,5 +1,6 @@
 <template>
 	<origam-table
+			:id="id"
 			ref="origamTableRef"
 			:class="dataTableClasses"
 			:style="dataTableStyles"
@@ -51,11 +52,19 @@
 
 						<template
 								v-if="slots['header.loader']"
-								#loader="headerLoaderProps"
+								#loader
+						>
+							<slot name="header.loader"/>
+						</template>
+
+						<template
+								v-for="name in headerColumnSlotNames"
+								:key="name"
+								#[name]="columnProps"
 						>
 							<slot
-									name="header.loader"
-									v-bind="headerLoaderProps"
+									:name="name"
+									v-bind="columnProps"
 							/>
 						</template>
 					</origam-data-table-headers>
@@ -81,7 +90,19 @@
 								ref="origamDataTableRowsRef"
 								:items="paginatedItems"
 								v-bind="dataTableRowsBindProps"
+								@expand="emit('expand', $event)"
+								@select="emit('select', $event)"
 						>
+							<template
+									v-for="name in rowsSlotNames"
+									:key="name"
+									#[name]="rowsProps"
+							>
+								<slot
+										:name="name"
+										v-bind="rowsProps"
+								/>
+							</template>
 						</origam-data-table-rows>
 					</slot>
 					<slot
@@ -111,44 +132,48 @@
 		lang="ts"
 		setup
 >
-	import {
-		OrigamDataTableFooter,
-		OrigamDataTableHeaders,
-		OrigamDataTableRows,
-		OrigamDivider,
-		OrigamTable
-	} from '../../components'
+	import OrigamDataTableFooter from './OrigamDataTableFooter.vue'
+	import OrigamDataTableHeaders from './OrigamDataTableHeaders.vue'
+	import OrigamDataTableRows from './OrigamDataTableRows.vue'
+	import OrigamDivider from '../Divider/OrigamDivider.vue'
+	import OrigamTable from '../Table/OrigamTable.vue'
+
+	import { createGroupBy, provideGroupBy } from '../../composables/DataTable/group.composable'
+	import { createHeaders } from '../../composables/DataTable/headers.composable'
+	import { createPagination, providePagination } from '../../composables/DataTable/pagination.composable'
+	import { createSort, provideSort } from '../../composables/DataTable/sort.composable'
+	import { provideExpanded } from '../../composables/DataTable/expand.composable'
+	import { provideSelection } from '../../composables/DataTable/select.composable'
+	import { useDataTableItems } from '../../composables/DataTable/items.composable'
+	import { useFilter } from '../../composables/Commons/filters.composable'
+	import { useGroupedItems } from '../../composables/DataTable/groupedItems.composable'
+	import { useOptions } from '../../composables/DataTable/options.composable'
+	import { usePaginatedItems } from '../../composables/DataTable/paginatedItems.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSortedItems } from '../../composables/DataTable/sortedItems.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+
+	import { ORIGAM_DATA_TABLE_SHOW_SELECT_KEY } from '../../consts/DataTable/data-table.const'
 
 	import {
-		createGroupBy,
-		createHeaders,
-		createPagination,
-		createSort,
-		provideExpanded,
-		provideGroupBy,
-		providePagination,
-		provideSelection,
-		provideSort,
-		useDataTableItems,
-		useFilter,
-		useGroupedItems,
-		useOptions,
-		usePaginatedItems,
-		useProps,
-		useSortedItems,
-		useStyle
-} from '../../composables'
+		pickDataTableHeaderColumnSlotNames,
+		pickDataTableRowsSlotNames
+	} from '../../utils/DataTable/slot-name.util'
 
-	import { ORIGAM_DATA_TABLE_SHOW_SELECT_KEY } from '../../consts'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import { DENSITY, MDI_ICONS } from '../../enums'
+	import type { IDataTableGroup, IDataTableGroupableItem } from '../../interfaces/DataTable/group.interface'
+	import type { IDataTableProps } from '../../interfaces/DataTable/data-table.interface'
+	import type { IDataTableSelectableItem } from '../../interfaces/DataTable/select.interface'
+	import type { IDataTableSortItem } from '../../interfaces/DataTable/sort.interface'
 
-	import type {
-		IDataTableGroup, IDataTableGroupableItem, IDataTableProps, IDataTableSelectableItem, IDataTableSortItem} from '../../interfaces'
+	import type { IDataTableEmits, IDataTableSlots } from '../../interfaces/DataTable/data-table.interface'
 
-	import type { IDataTableEmits } from '../../interfaces/DataTable/data-table.interface'
-
-	import type { TOrigamDataTableFooter, TOrigamDataTableHeaders, TOrigamDataTableRows, TOrigamTable } from "../../types"
+	import type { TOrigamDataTableFooter } from '../../types/DataTable/data-table-footer.type'
+	import type { TOrigamDataTableHeaders } from '../../types/DataTable/data-table-headers.type'
+	import type { TOrigamDataTableRows } from '../../types/DataTable/data-table-rows.type'
+	import type { TOrigamTable } from '../../types/Table/table.type'
 
 	import { computed, provide, Ref, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 
@@ -181,7 +206,9 @@
 		sortDescIcon: MDI_ICONS.ARROW_DOWN
 	})
 
-	defineEmits<IDataTableEmits>()
+	const emit = defineEmits<IDataTableEmits>()
+
+	defineSlots<IDataTableSlots>()
 
 	const {filterProps} = useProps<IDataTableProps>(props)
 
@@ -327,6 +354,29 @@
 	})
 
 	/*********************************************************
+	 * Forwarded slots (#550, critere C7)
+	 *
+	 * @description
+	 * `<origam-data-table-rows>` et `<origam-data-table-headers>` etaient
+	 * montes SANS enfant : les slots `loading` / `no-data` / `item` /
+	 * `group-header` / `expanded-row`, ceux du GroupHeaderRow et toute la
+	 * famille colonne (`item.{cle}` / `header.{cle}`) etaient declares plus
+	 * bas dans l'arbre et inatteignables depuis `<origam-data-table>`.
+	 *
+	 * @description
+	 * Le relais est une INTERSECTION : seuls les noms que le consommateur a
+	 * reellement passes sont renvoyes, et uniquement vers l'enfant qui les
+	 * rend. `header.mobile` et `header.loader` sont deja forwardes
+	 * explicitement plus haut, d'ou leur exclusion des noms de colonne.
+	 ********************************************************/
+	const rowsSlotNames = computed(() => {
+		return pickDataTableRowsSlotNames(Object.keys(slots))
+	})
+	const headerColumnSlotNames = computed(() => {
+		return pickDataTableHeaderColumnSlotNames(Object.keys(slots))
+	})
+
+	/*********************************************************
 	 * Class & Style
 	 ********************************************************/
 	const dataTableStyles = computed(() => {
@@ -344,7 +394,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dataTableStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableStyles, () => props.id)
 
 
 	/*********************************************************

@@ -45,13 +45,14 @@ import { OrigamChartPictorial } from '@origam/ds'
 | `icon` | `string` | person silhouette `d` path | SVG `<path d="…">` string. Must fit a `viewBox="0 0 24 24"` coordinate system. Use constants from `@origam/consts`: `PICTORIAL_ICON_PERSON`, `PICTORIAL_ICON_HEART`, `PICTORIAL_ICON_STAR`, `PICTORIAL_ICON_DOLLAR`. |
 | `iconColor` | `TIntent \| string` | per-series cycle | Fill colour for all filled icons. Accepts an intent name or a raw CSS colour. When omitted, each series gets its own colour from `colorScheme`. |
 | `emptyIconColor` | `string` | `'rgba(0,0,0,0.1)'` | Fill colour for background (not-yet-filled) icon slots. |
-| `iconsPerUnit` | `number` | `1` | How many data units one icon represents. `iconsPerUnit=5` → a value of 65 renders 13 filled icons. |
+| `iconsPerUnit` | `number` | `1` | How many data units one icon represents. `iconsPerUnit=5` → a value of 65 renders 13 filled icons. ⛔ **Plafonnee a 8 icones par colonne** — au-dela, le composant recalcule son propre pas (`maxValue / 8`) pour garder la colonne lisible, et la valeur demandee est ignoree. Un avertissement de developpement le signale. Voir #426. |
 
 ### Visual
 
 | Name | Type | Default | Description |
 |---|---|---|---|
-| `direction` | `TChartPictorialDirection` | `'vertical'` | `'vertical'` stacks icons bottom-to-top (traditional column). `'horizontal'` stacks left-to-right. |
+| `direction` | `TDirection` | `'vertical'` | `'vertical'` stacks icons bottom-to-top (traditional column). `'horizontal'` stacks left-to-right. |
+| `mode` | `TChartPictorialMode` | `'stack'` | Rendering mode. `'stack'` is the classic isotype — rows of small repeated icons. `'fill'` draws **one large icon per category**, clip-masked from the bottom up to the fill ratio (thermometer / glass-fill effect); the unfilled portion keeps the icon silhouette as a faint shadow. |
 | `height` | `number \| string` | `400` | Chart height. A plain number is `px`. Ignored when `aspectRatio` is set. |
 | `aspectRatio` | `string` | `undefined` | CSS `aspect-ratio` shorthand. Overrides `height`. |
 | `colorScheme` | `Array<TIntent \| string>` | 8-intent cycle | Per-series fill palette when `iconColor` is not set. |

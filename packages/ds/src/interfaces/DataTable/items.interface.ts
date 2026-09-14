@@ -1,13 +1,15 @@
-import type { ComputedRef, Ref } from 'vue'
-import type {
-    IDataTableGroupableItem,
-    IDataTableSelectableItem,
-    IDataTableSortItem,
-    IInternalDataTableHeader,
-    IInternalItem
-} from '../../interfaces'
+import type { IDataTableGroupableItem } from './group.interface'
+import type { IDataTableSelectableItem } from './select.interface'
+import type { IDataTableSortItem } from './sort.interface'
+import type { IInternalDataTableHeader } from './data-table-header.interface'
+import type { IInternalItem } from '../List/list-children.interface'
 
-import type { TDataTableCell, TDataTableRow, TIcon, TSelectItemKey } from '../../types'
+import type {
+    TDataTableCell,
+    TDataTableRow
+} from '../../types/DataTable/data-table.type'
+import type { TIcon } from '../../types/Icon/icon.type'
+import type { TSelectItemKey } from '../../types/Commons/commons.type'
 
 export interface IDataTableItemsProps {
     items?: Array<IDataTableItem>
@@ -50,13 +52,20 @@ export interface IDataTableItemSlot<T = any> extends IDataTableItemBase<T> {
     props: any
 }
 
+/**
+ * Scope shared by the `header.{key}` slot on `<OrigamDataTableHeaderCell>`
+ * and its forward on `<OrigamDataTableRow>` (mobile column-title cell).
+ * `sortBy` / `someSelected` / `allSelected` are the UNWRAPPED values
+ * (`ref.value`) both call sites pass — not the `Ref` / `ComputedRef`
+ * containers themselves.
+ */
 export interface IDataTableHeaderCellColumnSlot {
     column: IInternalDataTableHeader
     selectAll: (value: boolean) => void
     isSorted: (column: IInternalDataTableHeader) => boolean
     toggleSort: (column: IInternalDataTableHeader) => void
-    sortBy: Ref<Array<IDataTableSortItem>>
-    someSelected: ComputedRef<boolean>
-    allSelected: ComputedRef<boolean>
-    getSortIcon: (column: IInternalDataTableHeader) => TIcon
+    sortBy: Array<IDataTableSortItem>
+    someSelected: boolean
+    allSelected: boolean
+    getSortIcon: (column: IInternalDataTableHeader) => TIcon | undefined
 }

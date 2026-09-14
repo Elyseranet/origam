@@ -1,22 +1,24 @@
+import type { IChartAnnotation } from './chart-annotation.interface'
 import type {
-    IChartAnnotation,
     IChartBaseEmits,
     IChartBaseProps,
-    IChartBaseSlots,
-    IChartDrilldownLink,
-    IChartDrilldownProps,
-    IChartPlotBand,
-    IChartPlotLine,
-    IChartPoint,
-    IChartRangeSelector,
-    IChartSecondaryYAxis
-} from '../../interfaces'
-
+    IChartBaseSlots
+} from './chart-base.interface'
 import type {
-    TChartCartesianKind,
+    IChartDrilldownLink,
+    IChartDrilldownProps
+} from './chart-drilldown.interface'
+import type { IChartPlotBand } from './chart-plot-band.interface'
+import type { IChartPlotLine } from './chart-plot-line.interface'
+import type { IChartPoint } from './chart-point.interface'
+import type { IChartRangeSelector } from './chart-range-selector.interface'
+import type { IChartSecondaryYAxis } from './chart-axis.interface'
+
+import type { TChartCartesianKind } from '../../types/Chart/chart-cartesian.type'
+import type {
     TChartSmoothing,
     TChartStacking
-} from '../../types'
+} from '../../types/Chart/chart.type'
 
 /**
  * Props for `<OrigamChartCartesian>` — the cartesian family
@@ -104,6 +106,21 @@ export interface IChartCartesianProps extends IChartBaseProps {
      * Default `false`.
      */
     zoomable?: boolean
+    /*********************************************************
+     * zoomResetLabel
+     *
+     * @description
+     * Accessible name for the "Reset zoom" control (aria-label) shown
+     * when `zoomable` is active and the plot is currently zoomed.
+     * Carries a locale key, not final text — it is resolved through the
+     * DS `t()` mechanism. Defaults to `'origam.chart.zoom.reset_aria_label'`
+     * (#477).
+     * @description
+     * A raw string that matches no key is returned unchanged, so
+     * `zoomResetLabel="Reset the view"` still works for consumers who
+     * prefer to translate on their side.
+     ********************************************************/
+    zoomResetLabel?: string
     /**
      * Optional band-style range-selector toolbar rendered above the chart.
      * Provides preset zoom buttons (`1w`, `1m`, `3m`, `6m`, `1y`, `all`).

@@ -1,23 +1,23 @@
 import type {
     IBgColorProps,
-    IBorderProps,
-    IColorProps,
-    ICommonsComponentProps,
-    IDensityProps,
-    IDimensionProps,
-    IElevationProps,
-    IEvent,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps
-} from '../../interfaces'
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IEvent } from './event.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
 
 import type {
     TCalendarNavigate,
     TCalendarTimeFormat,
-    TCalendarView,
-    TIntent
-} from '../../types'
+    TCalendarView
+} from '../../types/Calendar/calendar.type'
+import type { TIntent } from '../../types/Commons/intent.type'
 
 /**
  * Props for `<OrigamCalendar>`. Two-way bindings on `view` and
@@ -193,4 +193,31 @@ export interface IUseCalendarOptions {
     minDate?: () => Date | null
     maxDate?: () => Date | null
     locale?: () => string
+}
+
+/**
+ * Time-slot descriptor returned by `buildDayGrid` / `buildWeekGrid`.
+ *
+ * The grid is **not** event-aware — events are positioned absolutely
+ * on top of the timeline using `diffMinutes(dayStart, event.start)`.
+ * Decoupling the grid from the events lets us re-use the grid output
+ * for the drag-select overlay without re-computing.
+ */
+export interface ICalendarTimeSlot {
+    /** Top-of-slot Date (e.g. 09:30). */
+    date: Date
+    /** Slot duration in minutes (mirror of `options.slotDuration`). */
+    durationMin: number
+    /** True when the slot's hour mark falls on the hour. */
+    isHourMark: boolean
+}
+
+/**
+ * Agenda entry — one per day that has at least one event in the
+ * visible window. Agenda view skips empty days; the `#empty` slot
+ * fires when *no* event is in range.
+ */
+export interface ICalendarAgendaEntry {
+    date: Date
+    events: Array<IEvent>
 }

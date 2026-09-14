@@ -1,6 +1,7 @@
 <template>
 	<component
-			:is="props.tag"
+			:is="tag"
+			:id="id"
 			v-contrast
 			:class="expansionPanelClasses"
 			:style="expansionPanelStyles"
@@ -20,6 +21,7 @@
 							:model-value="loaderConfig.modelValue"
 							:type="loaderConfig.kind === 'circular' ? PROGRESS_TYPE.CIRCULAR : PROGRESS_TYPE.LINEAR"
 							:class="expansionPanelProgressClasses"
+							:label="loadingText"
 							thickness="4"
 							v-bind="loaderConfig.overrides"
 					/>
@@ -106,32 +108,32 @@
 		setup
 >
 	import { computed, provide, ref, StyleValue, toRef, useSlots } from 'vue'
-	import { OrigamExpansionPanelContent, OrigamExpansionPanelHeader, OrigamProgress } from '../../components'
+	import OrigamExpansionPanelContent from './OrigamExpansionPanelContent.vue'
+	import OrigamExpansionPanelHeader from './OrigamExpansionPanelHeader.vue'
+	import OrigamProgress from '../Progress/OrigamProgress.vue'
 
-	import {
-		useActive,
-		useBothColor,
-		useDefaults,
-		useDensity,
-		useGroupItem,
-		useHover,
-		useLoader,
-		useProps,
-		useStateEffect,
-		useStyle
-} from '../../composables'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useGroupItem } from '../../composables/Commons/groupItem.composable'
+	import { useLoader } from '../../composables/Commons/loader.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
+	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts/ExpansionPanel/expansion-panel.const'
 
-	import { PROGRESS_TYPE } from '../../enums'
+	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
+	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
 
-	import type { IExpansionPanelProps} from '../../interfaces'
+	import type { IExpansionPanelProps } from '../../interfaces/ExpansionPanel/expansion-panel.interface'
 
-	import type { IExpansionPanelEmits } from '../../interfaces/ExpensionPanel/expansion-panel.interface'
+	import type { IExpansionPanelEmits, IExpansionPanelSlots } from '../../interfaces/ExpansionPanel/expansion-panel.interface'
 
-	import type { TOrigamExpansionPanelContent, TOrigamExpansionPanelHeader } from "../../types"
+	import type { TOrigamExpansionPanelContent } from '../../types/ExpansionPanel/expansion-panel-content.type'
+	import type { TOrigamExpansionPanelHeader } from '../../types/ExpansionPanel/expansion-panel-header.type'
 
 	/*********************************************************
 	 * Global
@@ -140,15 +142,13 @@
 	 * Props resolved through the parent OrigamExpansionPanels defaults
 	 * provider, group registration, and composable setup.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IExpansionPanelProps>(), {
+	const props = withDefaults(defineProps<IExpansionPanelProps>(), {
 		tag: 'div'
 	})
 
-	// Resolve props against the closest `provideDefaults({ 'origam-expansion-panel': … })`
-	// injected by a parent `OrigamExpansionPanels`.
-	const props = useDefaults(_props)
-
 	defineEmits<IExpansionPanelEmits>()
+
+	defineSlots<IExpansionPanelSlots>()
 
 	const {filterProps} = useProps<IExpansionPanelProps>(props)
 
@@ -198,8 +198,22 @@
 		})
 	})
 
+	/*********************************************************
+	 * Header/content ARIA cross-reference
+	 *
+	 * @description
+	 * `<OrigamExpansionPanelHeader>` / `<OrigamExpansionPanelContent>` don't
+	 * self-register into a group — they both `inject` this SAME shared
+	 * object. `headerId` / `contentId` are mutable slots each side writes
+	 * its own resolved DOM id into, so the OTHER side can read the REAL
+	 * id for `aria-controls` / `aria-labelledby` instead of guessing the
+	 * generated-fallback naming scheme (#519, #520).
+	 ********************************************************/
+	const headerId = ref<string>()
+	const contentId = ref<string>()
+
 	if (groupItem !== null) {
-		provide(ORIGAM_EXPANSION_PANEL_KEY, groupItem)
+		provide(ORIGAM_EXPANSION_PANEL_KEY, {...groupItem, headerId, contentId})
 	}
 
 	/*********************************************************
@@ -208,7 +222,7 @@
 	 * @description
 	 * Controls the line/circular/skeleton loader at the panel top.
 	 ********************************************************/
-	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
+	const {loaderClasses, loaderConfig} = useLoader(props, LOADER_KIND.LINE)
 
 	const hasLoading = computed(() => {
 		return slots.loader || loaderConfig.value.isActive
@@ -220,8 +234,26 @@
 	 * @description
 	 * Determines which structural sections to render.
 	 ********************************************************/
+	/*********************************************************
+	 * hasContent (#420)
+	 *
+	 * @description
+	 * `<OrigamExpansionPanels>` forwards its own `content` /
+	 * `content.{index}` slot to this component's `#default` slot (see
+	 * `OrigamExpansionPanels.vue`, the `<template v-if="slots[…] ||
+	 * slots.content" #default>` block) — never to a slot literally named
+	 * `content` on THIS component. No consumer of `<origam-expansion-panel>`
+	 * anywhere in the DS passes a slot named `content`, so `slots.content`
+	 * was always `false` and this computed only ever turned true via the
+	 * `content` PROP. Without a slot or that prop, the template fell to the
+	 * `v-else` branch (`<slot v-else name="default"/>`), which bypasses
+	 * `<origam-expansion-panel-content>` entirely — no `v-show`, no `role=
+	 * "region"`, no `aria-labelledby`, no lazy mount, no transition. A
+	 * closed panel's body rendered anyway because it was never wrapped in
+	 * the component that hides it at rest.
+	 ********************************************************/
 	const hasContent = computed(() => {
-		return slots.content || !!props.content
+		return slots.default || !!props.content
 	})
 	const hasHeader = computed(() => {
 		return slots.header || slots.title || slots.prepend || slots.append || !!props.title
@@ -250,8 +282,8 @@
 	 ********************************************************/
 	const {densityClasses} = useDensity(props)
 
-	const {isHover, hoverState} = useHover(props)
-	const {isActive, activeState} = useActive(props)
+	const {isOn: isHover, config: hoverState} = useStateFlag(props, {state: 'hover'})
+	const {isOn: isActive, config: activeState} = useStateFlag(props, {state: 'active'})
 	const {
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,
@@ -302,7 +334,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(expansionPanelStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(expansionPanelStyles, () => props.id)
 
 
 	/*********************************************************

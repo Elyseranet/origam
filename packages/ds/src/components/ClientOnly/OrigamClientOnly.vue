@@ -17,24 +17,19 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 
+import type {
+    IClientOnlyEmits,
+    IClientOnlyProps,
+    IClientOnlySlots
+} from '../../interfaces/ClientOnly/client-only.interface'
+
 defineOptions({ name: 'OrigamClientOnly' })
 
-defineProps<{
-    /**
-     * Tag used for the SSR placeholder when no `#fallback` slot is given.
-     * Defaults to `undefined` — the SSR output is then completely empty
-     * (a tiny perf win when the consumer doesn't need a layout reserved
-     * slot). Set to `'div'` / `'span'` / etc. when the absence of a
-     * placeholder would cause layout shift on hydration.
-     */
-    placeholderTag?: string
-    /**
-     * Class applied to the placeholder element. Pair with `placeholderTag`
-     * to reserve dimensions matching the eventual client render (avoids
-     * cumulative layout shift).
-     */
-    placeholderClass?: string
-}>()
+defineProps<IClientOnlyProps>()
+
+defineEmits<IClientOnlyEmits>()
+
+defineSlots<IClientOnlySlots>()
 
 const isMounted = ref(false)
 

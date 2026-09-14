@@ -1,5 +1,6 @@
 <template>
 	<origam-text-field
+			:id="id"
 			ref="origamTextFieldRef"
 			v-model:focused="isFocused"
 			:aria-label="t(label)"
@@ -130,19 +131,37 @@
 		lang="ts"
 		setup
 >
-	import { OrigamColorPicker, OrigamMenu, OrigamSheet, OrigamTextField, OrigamTranslateScale } from "../../components"
+	import OrigamColorPicker from '../ColorPicker/OrigamColorPicker.vue'
+	import OrigamMenu from '../Menu/OrigamMenu.vue'
+	import OrigamSheet from '../Sheet/OrigamSheet.vue'
+	import OrigamTextField from '../TextField/OrigamTextField.vue'
+	import OrigamTranslateScale from '../Transition/OrigamTranslateScale.vue'
 
-	import { useDefaults, useLocale, useProps, useVModel , useStyle} from "../../composables"
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useTeleportTypography } from '../../composables/Commons/teleport-typography.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { COLOR_NULL, ORIGAM_FORM_KEY } from "../../consts"
+	import { COLOR_NULL } from '../../consts/ColorPicker/color-picker.const'
+	import { ORIGAM_FORM_KEY } from '../../consts/Form/form.const'
 
-	import { BLOCK, DENSITY, DIRECTION, TEXT_FIELD_TYPE } from "../../enums"
+	import { BLOCK } from '../../enums/Commons/anchor.enum'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
 
-	import type { IColorPickerFieldProps } from "../../interfaces"
+	import type { IColorPickerFieldEmits, IColorPickerFieldProps, IColorPickerFieldSlots } from '../../interfaces/ColorPickerField/color-picker-field.interface'
 
-	import type { TColor, TOrigamColorPicker, TOrigamMenu, TOrigamTextField, TTransitionProps } from "../../types"
+	import type { TColor } from '../../types/Commons/color.type'
+	import type { TOrigamColorPicker } from '../../types/ColorPicker/color-picker.type'
+	import type { TOrigamMenu } from '../../types/Menu/menu.type'
+	import type { TOrigamTextField } from '../../types/TextField/text-field.type'
+	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
-	import { forwardRefs, HSVtoCSS, matchesSelector } from "../../utils"
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
+	import { HSVtoCSS } from '../../utils/Commons/color.util'
+	import { matchesSelector } from '../../utils/Commons/commons.util'
 
 	import { computed, inject, nextTick, ref, shallowRef, StyleValue, useSlots, watch } from "vue"
 
@@ -153,7 +172,7 @@
 	 * Props, emits, composables and top-level refs.
 	 ********************************************************/
 
-	const _props = withDefaults(defineProps<IColorPickerFieldProps>(), {
+	const props = withDefaults(defineProps<IColorPickerFieldProps>(), {
 		type: TEXT_FIELD_TYPE.TEXT,
 		centerAffix: true,
 		direction: DIRECTION.HORIZONTAL,
@@ -167,12 +186,11 @@
 		closeOnSelect: false
 	})
 
-	// `useDefaults` resolves each prop against theme.components['origam-color-picker-field']
-	// (OrigamBtn pattern). Pre-fix, the legacy `rounded: true` / `border: true`
-	// booleans always won, same forwarding-parity gap already fixed on Select.
-	const props = useDefaults(_props)
-
 	const {filterProps} = useProps<IColorPickerFieldProps>(props)
+
+	defineEmits<IColorPickerFieldEmits>()
+
+	defineSlots<IColorPickerFieldSlots>()
 
 	const {t} = useLocale()
 
@@ -242,12 +260,31 @@
 	const menuDisabled = computed(() => {
 		return props.readonly || form?.isReadonly.value
 	})
+
+	// Typography bridge across the teleport — see `useTeleportTypography` for
+	// the full rationale. The popup's channel labels (`origam-color-picker-edit__label`)
+	// and, when a title is set, its `origam-picker-title` header size themselves
+	// with `rem`-based tokens, so they need the field's REAL font-size republished
+	// as those specific tokens, not just inherited.
+	const { typographyStyles: menuTypographyStyles } = useTeleportTypography(origamTextFieldRef, menu, (fontSize) => ({
+		'--origam-picker-title---font-size': fontSize,
+		'--origam-color-picker-edit__label---font-size': fontSize
+	}))
+
 	const menuProps = computed(() => {
+		const consumerContentProps = (props.menuProps?.contentProps ?? {}) as Record<string, any>
+
 		return {
 			...props.menuProps,
 			activatorProps: {
 				...(props.menuProps?.activatorProps || {}),
 				'aria-haspopup': 'colorpickerbox' // Set aria-haspopup to 'listbox'
+			},
+			contentProps: {
+				...consumerContentProps,
+				// The consumer's own style is listed last so it still wins —
+				// the bridge is a default, not a lock.
+				style: [menuTypographyStyles.value, consumerContentProps.style]
 			}
 		}
 	})
@@ -364,7 +401,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(colorPickerFieldStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(colorPickerFieldStyles, () => props.id)
 
 
 	/*********************************************************

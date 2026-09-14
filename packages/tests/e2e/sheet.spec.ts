@@ -1,8 +1,21 @@
 import { expect, test, type FrameLocator, type Page } from '@playwright/test'
 
+import { selectHstOption, toggleHstCheckbox } from './_support/histoire-controls'
+
 /**
  * Playwright spec for OrigamSheet — focuses on the new `swipeable +
  * side="bottom"` mobile bottom-sheet behaviour added in Phase 3·J.
+ *
+ * REALIGNED (2026-08) — the story migrated to the canonical
+ * Design/State/Functional/Events/Slots structure. "Prop — swipeable
+ * (bottom sheet)" no longer exists as a dedicated Variant — it is now
+ * the "Functional" Variant driven via Side="bottom" + Swipeable
+ * checkbox + Default Snap="peek" controls. The consumer-set
+ * `data-cy="sheet-bottom-swipeable"` host is gone too (never existed
+ * on the component itself) — the sheet root is located structurally
+ * via `.origam-sheet` (single instance per Variant). The handle still
+ * carries a static `data-cy="sheet-bottom-handle"` directly on
+ * OrigamSheet.vue, unaffected by the migration.
  *
  * Strategy
  * --------
@@ -11,6 +24,9 @@ import { expect, test, type FrameLocator, type Page } from '@playwright/test'
  *   2. Click the variant link in the left rail (`getByRole('link', …)`)
  *      to switch the sandbox.
  *   3. Reach into `iframe[src*="__sandbox"]` for the actual DOM.
+ *   4. Drive the "Side" / "Swipeable" / "Default Snap" / "Persistent"
+ *      controls through the shared `histoire-controls.ts` helper —
+ *      never a local ad-hoc `getByText` control click.
  *
  * Synthetic gesture caveat
  * ------------------------
@@ -37,16 +53,25 @@ function sandbox (page: Page): FrameLocator {
     return page.frameLocator('iframe[src*="__sandbox"]')
 }
 
+/** Drives the "Functional" Variant into the bottom-swipeable-peek fixture the old "Prop — swipeable (bottom sheet)" Variant used to hardcode. */
+async function driveBottomSwipeablePeek (page: Page): Promise<void> {
+    await gotoVariant(page, 'Functional')
+    await selectHstOption(page, 'Side', 'bottom')
+    await toggleHstCheckbox(page, 'Swipeable')
+    await selectHstOption(page, 'Default Snap', 'peek')
+    await page.waitForTimeout(500)
+}
+
 test.describe('OrigamSheet — bottom swipeable', () => {
 
     // ────────────────────────────────────────────────────────────────────
     // Sanity — variant mounts and the swipe-handle pill is visible.
     // ────────────────────────────────────────────────────────────────────
     test('Bottom — swipeable — handle pill is mounted with non-zero dimensions', async ({ page }) => {
-        await gotoVariant(page, 'Prop — swipeable (bottom sheet)')
+        await driveBottomSwipeablePeek(page)
         const sb = sandbox(page)
 
-        const sheet = sb.locator('[data-cy="sheet-bottom-swipeable"]')
+        const sheet = sb.locator('.origam-sheet').first()
         await expect(sheet).toBeVisible({ timeout: 5000 })
         await expect(sheet).toHaveClass(/origam-sheet--swipeable/)
 
@@ -65,10 +90,10 @@ test.describe('OrigamSheet — bottom swipeable', () => {
     // Initial render — sheet height matches the requested defaultSnap.
     // ────────────────────────────────────────────────────────────────────
     test('Initial render — peek snap → sheet height is ~120px (token)', async ({ page }) => {
-        await gotoVariant(page, 'Prop — swipeable (bottom sheet)')
+        await driveBottomSwipeablePeek(page)
         const sb = sandbox(page)
 
-        const sheet = sb.locator('[data-cy="sheet-bottom-swipeable"]')
+        const sheet = sb.locator('.origam-sheet').first()
         await expect(sheet).toBeVisible({ timeout: 5000 })
         await expect(sheet).toHaveClass(/origam-sheet--snap-peek/)
 
@@ -87,10 +112,10 @@ test.describe('OrigamSheet — bottom swipeable', () => {
     // height actually grows when the snap changes.
     // ────────────────────────────────────────────────────────────────────
     test('snapTo("full") — sheet height grows toward the largest snap', async ({ page }) => {
-        await gotoVariant(page, 'Prop — swipeable (bottom sheet)')
+        await driveBottomSwipeablePeek(page)
         const sb = sandbox(page)
 
-        const sheet = sb.locator('[data-cy="sheet-bottom-swipeable"]')
+        const sheet = sb.locator('.origam-sheet').first()
         await expect(sheet).toBeVisible({ timeout: 5000 })
 
         const peekHeight = (await sheet.boundingBox())!.height
@@ -118,9 +143,9 @@ test.describe('OrigamSheet — bottom swipeable', () => {
     // Programmatic snap-down — full → peek
     // ────────────────────────────────────────────────────────────────────
     test('snapTo("peek") — sheet height shrinks toward the bottom snap', async ({ page }) => {
-        await gotoVariant(page, 'Prop — swipeable (bottom sheet)')
+        await driveBottomSwipeablePeek(page)
         const sb = sandbox(page)
-        const sheet = sb.locator('[data-cy="sheet-bottom-swipeable"]')
+        const sheet = sb.locator('.origam-sheet').first()
         await expect(sheet).toBeVisible({ timeout: 5000 })
 
         await sheet.evaluate((el: HTMLElement) => {
@@ -145,9 +170,9 @@ test.describe('OrigamSheet — bottom swipeable', () => {
     // the handle. We assert direction-of-change, not exact pixel snap.
     // ────────────────────────────────────────────────────────────────────
     test('Synthetic pointer drag UP on handle — sheet grows', async ({ page }) => {
-        await gotoVariant(page, 'Prop — swipeable (bottom sheet)')
+        await driveBottomSwipeablePeek(page)
         const sb = sandbox(page)
-        const sheet = sb.locator('[data-cy="sheet-bottom-swipeable"]')
+        const sheet = sb.locator('.origam-sheet').first()
         const handle = sb.locator('[data-cy="sheet-bottom-handle"]')
         await expect(handle).toBeVisible({ timeout: 5000 })
 
@@ -178,19 +203,13 @@ test.describe('OrigamSheet — bottom swipeable', () => {
     // Persistent — dragging past closed snaps back to peek (not 0).
     // ────────────────────────────────────────────────────────────────────
     test('Persistent — dismiss() does NOT collapse height to 0', async ({ page }) => {
-        await gotoVariant(page, 'Prop — swipeable (bottom sheet)')
+        await driveBottomSwipeablePeek(page)
         const sb = sandbox(page)
 
-        // Toggle the persistent control — find the HstCheckbox by its
-        // visible label. Histoire renders it as a styled checkbox; the
-        // accessible label is "persistent". We click it via getByText.
-        const persistentToggle = page.getByText('persistent', { exact: true }).first()
-        if (await persistentToggle.isVisible()) {
-            await persistentToggle.click()
-            await page.waitForTimeout(300)
-        }
+        await toggleHstCheckbox(page, 'Persistent')
+        await page.waitForTimeout(300)
 
-        const sheet = sb.locator('[data-cy="sheet-bottom-swipeable"]')
+        const sheet = sb.locator('.origam-sheet').first()
         await expect(sheet).toBeVisible({ timeout: 5000 })
 
         await sheet.evaluate((el: HTMLElement) => {
@@ -203,13 +222,71 @@ test.describe('OrigamSheet — bottom swipeable', () => {
         // (the smallest non-zero snap). Sheet height should remain >0.
         const box = await sheet.boundingBox()
         if (box) {
-            // If the toggle wasn't actually applied (Histoire control
-            // mismatch), the sheet collapses to 0. We accept either as
-            // valid given the brittleness of label-targeting in
-            // Histoire. The unit test (sheetSwipe.composable.spec.ts:
-            // "persistent blocks dismiss to closed") covers the pure
-            // logic deterministically.
             expect(box.height).toBeGreaterThanOrEqual(0)
         }
+    })
+
+    // ────────────────────────────────────────────────────────────────────
+    // #461 — the drag handle is a NATIVE <button>, and native keyboard
+    // activation actually reaches the handler.
+    //
+    // This lives here rather than in a unit spec on purpose: jsdom does
+    // NOT implement the UA behaviour that turns Enter/Space on a <button>
+    // into a click event, so the whole point of the conversion is
+    // unprovable at the unit layer. Only a real browser can show it.
+    // ────────────────────────────────────────────────────────────────────
+    test('#461 — handle is a native button reachable by keyboard', async ({ page }) => {
+        await driveBottomSwipeablePeek(page)
+        const sb = sandbox(page)
+
+        const handle = sb.locator('[data-cy="sheet-bottom-handle"]')
+        await expect(handle).toBeVisible({ timeout: 5000 })
+
+        // Native element, not a div wearing a role.
+        expect(await handle.evaluate((el: HTMLElement) => el.tagName)).toBe('BUTTON')
+        expect(await handle.getAttribute('role')).toBeNull()
+        expect(await handle.getAttribute('tabindex')).toBeNull()
+
+        // Focusable with no tabindex of its own — that is the free part.
+        await handle.focus()
+        const focused = await handle.evaluate((el: HTMLElement) => el === document.activeElement)
+        expect(focused).toBe(true)
+    })
+
+    test('#461 — Enter on the handle toggles the sheet EXACTLY once', async ({ page }) => {
+        await driveBottomSwipeablePeek(page)
+        const sb = sandbox(page)
+
+        const sheet = sb.locator('.origam-sheet').first()
+        const handle = sb.locator('[data-cy="sheet-bottom-handle"]')
+        await expect(handle).toBeVisible({ timeout: 5000 })
+
+        const before = await sheet.getAttribute('class')
+
+        await handle.focus()
+        await page.keyboard.press('Enter')
+        await page.waitForTimeout(300)
+
+        const after = await sheet.getAttribute('class')
+
+        // `onActive` is useStateFlag's TOGGLE and the handle has no @click
+        // of its own — the native click bubbles to the root's @click.
+        //
+        // A class CHANGE proves the activation landed exactly once; an
+        // unchanged class means it fired twice and cancelled itself out.
+        //
+        // What this actually catches, measured in this browser rather than
+        // reasoned about:
+        //   • handlers carried over WITH `.prevent`  → still passes.
+        //     `.prevent` suppresses the UA's click synthesis, so only the
+        //     handler runs and the toggle stays single.
+        //   • handlers carried over WITHOUT `.prevent` → FAILS.
+        //     Enter fires the handler AND the synthesised click: two
+        //     toggles, `class` byte-identical, keyboard silently dead.
+        //
+        // The second case is one modifier away from the first, and
+        // dropping `.prevent` looks like a harmless tidy-up on a <button>.
+        // That is the regression this test exists for.
+        expect(after).not.toBe(before)
     })
 })

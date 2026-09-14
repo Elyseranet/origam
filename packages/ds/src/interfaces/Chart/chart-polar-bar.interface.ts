@@ -1,4 +1,9 @@
-import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots, IChartPoint } from '../../interfaces'
+import type {
+    IChartBaseEmits,
+    IChartBaseProps,
+    IChartBaseSlots
+} from './chart-base.interface'
+import type { IChartPoint } from './chart-point.interface'
 
 /**
  * Props for `<OrigamChartPolarBar>` — the polar bar (nightingale-rose) family.

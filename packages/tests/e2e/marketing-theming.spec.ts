@@ -28,11 +28,15 @@ import { expect, test, type Page } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 import * as path from 'node:path'
 import * as fs from 'node:fs'
+import { fileURLToPath } from 'node:url'
 
 // ── helpers ────────────────────────────────────────────────────────────────
 
 const THEME_COOKIE = 'origam-theme'
 const MODE_COOKIE  = 'origam-mode'
+
+const __dirname  = path.dirname(fileURLToPath(import.meta.url))
+const REPO_ROOT  = path.resolve(__dirname, '..', '..', '..')
 
 /**
  * Apply theme + mode via SSR cookies, then reload.
@@ -129,6 +133,18 @@ test.describe('A · Vérif finale install model', () => {
     })
 
     // ── A4. themes-all.css absent ────────────────────────────────────────
+    //
+    // themes-all.css/.scss ont été supprimés (issue #497) : ~4,5 Mo de CSS/SCSS
+    // mort, jamais chargés (zéro @import/href/url() trouvé dans le repo) et
+    // dont le générateur (build-tokens.mjs) était devenu un no-op silencieux
+    // depuis que `$themes.json` n'a plus de combo <brand>-<mode>. Le test DOM
+    // ci-dessous devient trivialement vert dès lors que le fichier n'existe
+    // plus — il ne protège donc plus contre une régression. On garde le check
+    // runtime (défense en profondeur si un jour un <link> pointe à nouveau
+    // vers ce nom) ET on ajoute un check statique sur la source de vérité
+    // (exports package.json + fichiers sources) qui, lui, redeviendrait rouge
+    // si le pipeline de génération ou les sous-chemins d'export étaient
+    // réintroduits.
 
     test('A4 · themes-all.css absent des stylesheets (modèle install-object)', async ({ page }) => {
         await page.goto('/')
@@ -136,6 +152,29 @@ test.describe('A · Vérif finale install model', () => {
             Array.from(document.styleSheets).some(s => s.href?.includes('themes-all'))
         )
         expect(found, 'themes-all.css chargée — le marketing ne doit pas utiliser le CSS matrix').toBe(false)
+
+        const html = await page.content()
+        expect(html, 'référence "themes-all" trouvée dans le HTML rendu (balise morte ?)').not.toContain('themes-all')
+    })
+
+    test('A4b · themes-all — régression statique (package.json exports + fichiers sources)', () => {
+        const pkgPath = path.join(REPO_ROOT, 'packages/ds/package.json')
+        const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8')) as { exports: Record<string, unknown> }
+
+        expect(pkg.exports['./tokens/css/themes-all'], 'sous-chemin CSS themes-all réapparu dans exports').toBeUndefined()
+        expect(pkg.exports['./tokens/scss/themes-all'], 'sous-chemin SCSS themes-all réapparu dans exports').toBeUndefined()
+
+        const cssFile = path.join(REPO_ROOT, 'packages/ds/src/assets/css/tokens/themes-all.css')
+        const scssFile = path.join(REPO_ROOT, 'packages/ds/src/assets/scss/tokens/_themes-all.scss')
+        expect(fs.existsSync(cssFile), `${cssFile} ne doit plus exister`).toBe(false)
+        expect(fs.existsSync(scssFile), `${scssFile} ne doit plus exister`).toBe(false)
+
+        const buildScript = fs.readFileSync(
+            path.join(REPO_ROOT, 'packages/ds/scripts/build-tokens.mjs'),
+            'utf-8'
+        )
+        expect(buildScript, 'le générateur ré-écrit themes-all.css — la branche morte est revenue')
+            .not.toContain('themes-all.css')
     })
 
     // ── A5. ThemeSwitcher — exactement 8 options ─────────────────────────

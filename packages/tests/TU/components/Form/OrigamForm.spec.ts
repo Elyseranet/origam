@@ -170,3 +170,73 @@ describe('OrigamForm — lineHeight prop', () => {
         expect(style).toContain('--origam-form__details---line-height: var(--origam-font__lineHeight---tight)')
     })
 })
+
+// ---------------------------------------------------------------------------
+// reset emit (issue #415)
+// ---------------------------------------------------------------------------
+//
+// `handleReset` called `form.reset()` and `resetFormValidation()` but never
+// `emits('reset', …)`, even though `IFormEmits` declares it and the doc's
+// Events table documents it ("Form reset"). A native `reset` DOM event on
+// the `<form>` element (fired by a `<button type="reset">` or programmatic
+// `.reset()`) triggers the template's `@reset="handleReset"` handler — this
+// test drives that same native event, exactly like a real reset button click
+// would, and asserts the Vue-level `reset` emit actually fires.
+
+describe('OrigamForm — reset emit (issue #415)', () => {
+    it('emits "reset" when the native form reset event fires', async () => {
+        const wrapper = mountForm()
+        await wrapper.find('form').trigger('reset')
+        expect(wrapper.emitted('reset')).toBeTruthy()
+        expect(wrapper.emitted('reset')).toHaveLength(1)
+    })
+
+    it('does NOT emit "submit" when reset fires (no cross-wiring)', async () => {
+        const wrapper = mountForm()
+        await wrapper.find('form').trigger('reset')
+        expect(wrapper.emitted('submit')).toBeFalsy()
+    })
+})
+
+// ---------------------------------------------------------------------------
+// hint prop (issue #415)
+// ---------------------------------------------------------------------------
+//
+// `hint` is declared on `IFormProps` and `useMessage()`'s `messages` computed
+// already read it as a fallback (higher priority than `props.messages`,
+// lower than `errorMessages`) — but `hasMessages`, which gates the
+// `.origam-form__details` `v-if`, never tested `props.hint`. The container
+// therefore never rendered for a form passing `hint` alone, so the text was
+// physically never on screen.
+
+describe('OrigamForm — hint prop (issue #415)', () => {
+    it('renders __details when only hint is set (no errorMessages/messages)', () => {
+        const wrapper = mount(OrigamForm, {
+            props: { hint: 'Fill every required field' } as never,
+            global: {
+                plugins: [createOrigam()],
+                stubs: { OrigamMessages: { template: '<div class="origam-messages-stub"/>', props: ['messages'] } }
+            }
+        })
+        expect(wrapper.find('.origam-form__details').exists()).toBe(true)
+    })
+
+    it('does not render __details when hint is absent and no other message source is set', () => {
+        const wrapper = mount(OrigamForm, {
+            props: {} as never,
+            global: { plugins: [createOrigam()] }
+        })
+        expect(wrapper.find('.origam-form__details').exists()).toBe(false)
+    })
+
+    it('passes the hint text down to OrigamMessages when no error is present', () => {
+        const wrapper = mount(OrigamForm, {
+            props: { hint: 'Fill every required field' } as never,
+            global: {
+                plugins: [createOrigam()],
+                stubs: { OrigamMessages: { template: '<div class="origam-messages-stub">{{ messages }}</div>', props: ['messages'] } }
+            }
+        })
+        expect(wrapper.find('.origam-messages-stub').text()).toContain('Fill every required field')
+    })
+})

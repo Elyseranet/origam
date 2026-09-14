@@ -1,5 +1,6 @@
 <template>
 	<origam-dialog
+			:id="id"
 			ref="origamDialogRef"
 			v-model="isActive"
 			v-bind="dialogProps"
@@ -99,7 +100,7 @@
 						<origam-col cols="auto">
 							<origam-btn
 									v-if="cancellable"
-									text="Cancel"
+									:text="cancelText"
 									@click="handleCancel"
 							/>
 						</origam-col>
@@ -107,7 +108,7 @@
 						<origam-col cols="auto">
 							<origam-btn
 									:disabled="!validatable"
-									text="Validate"
+									:text="validateText"
 									@click="handleValidate"
 							/>
 						</origam-col>
@@ -123,17 +124,24 @@
 		setup
 >
 	import { computed, ref, useSlots } from 'vue'
-	import { OrigamBtn, OrigamCol, OrigamContainer, OrigamDialog, OrigamRow } from '../../components'
 
-	import { useProps, useVModel } from '../../composables'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamCol from '../Grids/OrigamCol.vue'
+	import OrigamContainer from '../Grids/OrigamContainer.vue'
+	import OrigamDialog from './OrigamDialog.vue'
+	import OrigamRow from '../Grids/OrigamRow.vue'
 
-	import { JUSTIFY } from '../../enums'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import type { IDialogConfirmationProps} from '../../interfaces'
+	import { JUSTIFY } from '../../enums/Commons/justify.enum'
 
-	import type { IDialogConfirmationEmits } from '../../interfaces/Dialog/dialog-confirmation.interface'
+	import type { IDialogConfirmationProps } from '../../interfaces/Dialog/dialog-confirmation.interface'
 
-	import type { TOrigamDialog } from "../../types"
+	import type { IDialogConfirmationEmits, IDialogConfirmationSlots } from '../../interfaces/Dialog/dialog-confirmation.interface'
+
+	import type { TOrigamDialog } from '../../types/Dialog/dialog.type'
 
 	/*********************************************************
 	 * Global
@@ -142,10 +150,41 @@
 	 * Props, emits, slots, and ref to the inner OrigamDialog.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IDialogConfirmationProps>(), {
-		cancellable: true
+		cancellable: true,
+		cancelTextKey: 'origam.dialog.confirmation.cancel',
+		validateTextKey: 'origam.dialog.confirmation.validate'
 	})
 
 	const emits = defineEmits<IDialogConfirmationEmits>()
+
+	/*********************************************************
+	 * Libelles des boutons — traduits, et surchargeables.
+	 *
+	 * @description
+	 * ⛔ Les deux etaient ECRITS EN DUR dans le template (`text="Cancel"`,
+	 * `text="Validate"`), et l'interface n'exposait que `cancellable` : un
+	 * consommateur non anglophone ne pouvait ni traduire ni renommer, sinon
+	 * en remplacant le pied ENTIER. Sur un dialogue de confirmation — celui
+	 * qui demande de valider une action — c'est le pire endroit possible.
+	 *
+	 * @description
+	 * Les props transportent une CLE, jamais la chaine finale : c'est le
+	 * composant qui traduit. Lecture dans un computed, jamais eagerly dans
+	 * le corps de setup() (ADR-005).
+	 *
+	 * @description
+	 * ⚠️ ANGLE MORT DU HARNAIS, mesure au classeur : le detecteur C8 ne
+	 * scanne que aria-label, title, placeholder et alt. Une chaine passee en
+	 * PROP d'affichage lui echappe entierement. Trois occurrences de ce type
+	 * existaient dans tout le depot : ces deux-ci et le « Load more »
+	 * d'OrigamInfiniteScroll, corrige sous #423.
+	 ********************************************************/
+	const { t } = useLocale()
+
+	const cancelText = computed(() => t(props.cancelTextKey))
+	const validateText = computed(() => t(props.validateTextKey))
+
+	defineSlots<IDialogConfirmationSlots>()
 
 	const {filterProps} = useProps<IDialogConfirmationProps>(props)
 

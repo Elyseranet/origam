@@ -1,8 +1,8 @@
-import type { IInternalItem } from '../../interfaces'
+import type { IInternalItem } from '../../interfaces/List/list-children.interface'
 
-import type { TFilterFunction, TFilterKeyFunctions, TFilterKeys, TFilterMatch, TFilterMode } from '../../types'
+import type { TFilterFunction, TFilterKeyFunctions, TFilterKeys, TFilterMatch, TFilterMode } from '../../types/Commons/filters.type'
 
-import { getPropertyFromItem, wrapInArray } from '../../utils'
+import { getPropertyFromItem, wrapInArray } from './commons.util'
 
 /**
  * Default filter.

@@ -1,5 +1,5 @@
 import type { DirectiveBinding } from 'vue'
-import type { TObserveHandler } from '../../types'
+import type { TObserveHandler } from '../../types/Commons/intersect.type'
 
 export interface IIntersectDirectiveBinding extends Omit<DirectiveBinding, 'modifiers' | 'value'> {
     value?: TObserveHandler | { handler: TObserveHandler, options?: IntersectionObserverInit }

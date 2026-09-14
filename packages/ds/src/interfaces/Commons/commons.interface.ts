@@ -1,9 +1,18 @@
 import type { ExtractPropTypes, StyleValue } from 'vue'
 import type * as Components from "../../components"
 import type * as Directives from "../../directives"
-import type { IDateOptions, IDisplayOptions, IGoToOptions, ILocaleOptions, IOrigamTheme, IRtlOptions } from '../../interfaces'
+import type { IDateOptions } from './date.interface'
+import type { IDisplayOptions } from './display.interface'
+import type { IGoToOptions } from './goTo.interface'
+import type {
+    ILocaleOptions,
+    IRtlOptions
+} from './locale.interface'
+import type { IOrigamTheme } from './theme.interface'
 
-import { TIconOptions, TOrigamPluginOptionsImport, TSSROptions } from '../../types'
+import { TIconOptions } from '../../types/Icon/icon.type'
+import { TOrigamPluginOptionsImport } from '../../types/Commons/commons.type'
+import { TSSROptions } from '../../types/Commons/display.type'
 
 /**
  * Runtime text-contrast guard config (consumed by the `v-contrast` directive).

@@ -71,14 +71,21 @@ When no key matches (container narrower than every breakpoint), the
 ## Behaviour — `animated`
 
 When `true` (default), each item gets a CSS transition on `transform` /
-`top` / `left` / `width`. The duration and easing are wired to design
-tokens (`--origam-masonry---animation-duration`,
-`--origam-masonry---animation-easing`) so theme overrides apply.
+`top` / `left` / `width` (JS path) or on `grid-template-columns` (CSS
+path). The duration and easing are wired to design tokens
+(`--origam-masonry---animation-duration`,
+`--origam-masonry---animation-easing`) so theme overrides apply — the
+scoped stylesheet aliases them into its local
+`--origam-masonry---transition-{duration,easing}` pair.
 
-Set to `false` for performance-sensitive screens or when consumers
-explicitly prefer no motion. The component does **not** honour
-`prefers-reduced-motion` automatically — wrap with a media query in
-your stylesheet or pass `animated="false"` programmatically.
+Set to `false` for performance-sensitive screens.
+
+`prefers-reduced-motion` is honoured **automatically**, out of the box:
+the component's own stylesheet ships a
+`@media (prefers-reduced-motion: reduce)` block that sets
+`transition: none` on both the JS and CSS animated paths. You do not
+need to wrap it in a media query of your own, and `animated="false"` is
+about performance, not about respecting the user's motion preference.
 
 ## Performance — when to virtualise
 

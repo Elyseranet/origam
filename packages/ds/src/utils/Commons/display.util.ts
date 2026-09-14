@@ -1,10 +1,11 @@
-import { DEFAULT_DISPLAY_OPTIONS, IN_BROWSER, SUPPORTS_TOUCH } from '../../consts'
+import { IN_BROWSER, SUPPORTS_TOUCH } from '../../consts/Commons/commons.const'
+import { DEFAULT_DISPLAY_OPTIONS } from '../../consts/Commons/display.const'
 
-import type { IDisplayOptions, IDisplayPlatform, IInternalDisplayOptions } from '../../interfaces'
+import type { IDisplayOptions, IDisplayPlatform, IInternalDisplayOptions } from '../../interfaces/Commons/display.interface'
 
-import type { TSSROptions } from '../../types'
+import type { TSSROptions } from '../../types/Commons/display.type'
 
-import { mergeDeep } from '../../utils'
+import { mergeDeep } from './commons.util'
 
 /**
  * Parse display options.

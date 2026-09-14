@@ -83,6 +83,21 @@ function parseUnionOptions (label: string): Array<{ label: string; value: string
     return literals.length ? literals : null
 }
 
+/**
+ * Build select options from the REAL literal values of the `type`/`enum` doc
+ * entry a prop's type references (e.g. `variant: TVariant` → `type.values =
+ * ['text', 'flat', …]`, resolved server-side by `buildComponentThemeCatalog`
+ * in `/api/reference/component`). Covers every closed-enum prop whose type is
+ * a bare named reference rather than an inlined string-literal union — the
+ * case `parseUnionOptions` above cannot parse. Returns null when the API
+ * didn't resolve any values (primitive type, or no matching doc entry) so the
+ * caller falls through to the next control kind — nothing is invented here.
+ */
+function realTypeOptions (values?: string[]): Array<{ label: string; value: string }> | null {
+    if (!values || values.length === 0) return null
+    return values.map(v => ({ label: v === '' ? '(none)' : v, value: v }))
+}
+
 /** Normalise a `_DOC` defaultValue string (e.g. "'elevated'", "false", "0") to a value. */
 function parseDefault (raw: string): string | number | boolean {
     const v = raw.trim()
@@ -171,7 +186,7 @@ function buildControl (
         }
     }
 
-    const unionOptions = parseUnionOptions(typeLabel)
+    const unionOptions = parseUnionOptions(typeLabel) ?? realTypeOptions(row.type.values)
     if (unionOptions) {
         return {
             prop: row.name,
@@ -369,6 +384,7 @@ function buildEntry (component: IComponentThemeSurface, t: (key: string, fallbac
                 label: raw.type.label ?? '',
                 slug: raw.type.slug ?? '',
                 kind: (raw.type.kind ?? 'primitive') as 'primitive' | 'type' | 'enum',
+                values: raw.type.values ?? undefined,
             },
             defaultValue: raw.defaultValue ?? '',
             descriptionKey: '',

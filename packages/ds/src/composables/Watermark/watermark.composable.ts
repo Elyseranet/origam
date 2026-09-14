@@ -18,26 +18,12 @@ import {
     WATERMARK_DEFAULT_GAP_PX,
     WATERMARK_DEFAULT_OPACITY,
     WATERMARK_DEFAULT_POINTER_EVENTS,
-    WATERMARK_DEFAULT_Z_INDEX
+    WATERMARK_DEFAULT_Z_INDEX,
+    WATERMARK_MIN_FONT_SIZE_PX,
+    WATERMARK_MIN_IMAGE_SIZE_PX
 } from '../../consts/Watermark/watermark.const'
 
-import type {
-    IUseWatermarkOptions
-} from '../../interfaces'
-
-interface IResolvedOptions {
-    text: string
-    image: string
-    opacity: number
-    angle: number
-    gap: number
-    fontSize: number
-    fontFamily: string
-    color: string
-    fontWeight: number | string
-    pointerEvents: 'none' | 'auto'
-    zIndex: number
-}
+import type { IUseWatermarkOptions, IWatermarkResolvedOptions } from '../../interfaces/Watermark/watermark.interface'
 
 /**
  * Escape the five XML metacharacters before embedding a user-controlled
@@ -67,8 +53,8 @@ function escapeXml (raw: string): string {
  * tiny — a few hundred bytes per pattern, well below any meaningful
  * data-URL limit.
  */
-function buildPatternUrl (options: IResolvedOptions): string {
-    const tile = options.gap + Math.max(options.fontSize, 1)
+function buildPatternUrl (options: IWatermarkResolvedOptions): string {
+    const tile = options.gap + Math.max(options.fontSize, WATERMARK_MIN_FONT_SIZE_PX)
     const cx = tile / 2
     const cy = tile / 2
     const opacityAttr = `opacity="${options.opacity}"`
@@ -76,7 +62,7 @@ function buildPatternUrl (options: IResolvedOptions): string {
     let glyph: string
     if (options.image) {
         const safeHref = escapeXml(options.image)
-        const imgSize = Math.max(options.fontSize, 16)
+        const imgSize = Math.max(options.fontSize, WATERMARK_MIN_IMAGE_SIZE_PX)
         glyph = `<image href="${safeHref}" x="${cx - imgSize / 2}" y="${cy - imgSize / 2}" width="${imgSize}" height="${imgSize}" preserveAspectRatio="xMidYMid meet" ${opacityAttr}/>`
     } else {
         const safeText = escapeXml(options.text)
@@ -110,7 +96,7 @@ function buildPatternUrl (options: IResolvedOptions): string {
  * the component reads from the same getter so consumer omitted props
  * never have to be defaulted twice.
  */
-function resolveOptions (raw: IUseWatermarkOptions | undefined): IResolvedOptions {
+function resolveOptions (raw: IUseWatermarkOptions | undefined): IWatermarkResolvedOptions {
     const opts = raw ?? {}
     return {
         text: opts.text ?? '',
@@ -132,7 +118,7 @@ function resolveOptions (raw: IUseWatermarkOptions | undefined): IResolvedOption
  * Extracted so `install()` and the anti-tamper re-injection path share
  * the same styling code.
  */
-function applyLayerStyles (layer: HTMLElement, options: IResolvedOptions, pattern: string): void {
+function applyLayerStyles (layer: HTMLElement, options: IWatermarkResolvedOptions, pattern: string): void {
     layer.style.position = 'absolute'
     layer.style.top = '0'
     layer.style.right = '0'
@@ -175,7 +161,7 @@ export function useWatermark (
     install: (target?: HTMLElement) => HTMLElement | null
     uninstall: () => void
 } {
-    const resolved: ComputedRef<IResolvedOptions> = computed(() => {
+    const resolved: ComputedRef<IWatermarkResolvedOptions> = computed(() => {
         const raw = isRef(options) || typeof options === 'function' ? toValue(options) : options
         return resolveOptions(raw)
     })

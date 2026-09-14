@@ -1,9 +1,9 @@
 <template>
-	<div
+	<figure
+			:id="id"
 			class="origam-chart-streamgraph"
 			:class="rootClasses"
 			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
-			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-streamgraph"
 	>
@@ -151,7 +151,7 @@
 					data-cy="origam-chart-streamgraph-empty"
 			>
 				<slot name="empty">
-					<span>No data to display</span>
+					<span>{{ t('origam.chart.no_data_text') }}</span>
 				</slot>
 			</div>
 		</div>
@@ -173,7 +173,7 @@
 				/>
 			</template>
 		</origam-chart-legend>
-	</div>
+	</figure>
 </template>
 
 <script
@@ -189,28 +189,24 @@
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
-	import {
-		useChartHeaderTypography,
-		useBackgroundColor,
-		useDimension,
-		useElevation,
-		useMargin,
-		usePadding,
-		useRounded
-	} from '../../composables'
+	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
 
-	import type {
-		IChartLegendItem,
-		IChartPoint,
-		IChartSeries,
-		IChartStreamgraphEmits,
-		IChartStreamgraphProps,
-		IChartStreamgraphRibbon
-	} from '../../interfaces'
+	import type { IChartLegendItem } from '../../interfaces/Chart/chart.interface'
+	import type { IChartPoint } from '../../interfaces/Chart/chart-point.interface'
+	import type { IChartSeries } from '../../interfaces/Chart/chart-series.interface'
+	import type { IChartStreamgraphEmits, IChartStreamgraphProps, IChartStreamgraphRibbon, IChartStreamgraphSlots } from '../../interfaces/Chart/chart-streamgraph.interface'
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
 
-	import type { TIntent } from '../../types'
+	import type { TIntent } from '../../types/Commons/intent.type'
 
 	/*********************************************************
 	 * Global
@@ -255,6 +251,9 @@
 
 	const emit = defineEmits<IChartStreamgraphEmits>()
 
+	defineSlots<IChartStreamgraphSlots>()
+
+	const { t } = useLocale()
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
 	const { elevationClasses, elevationStyles } = useElevation(props)
@@ -262,6 +261,7 @@
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { headerTypographyStyles } = useChartHeaderTypography(props)
+	const chartAnimationStyle = useChartAnimationStyle(props)
 
 	/*********************************************************
 	 * SVG coordinate space — fixed logical box; CSS scales it
@@ -625,8 +625,8 @@
 		if (props.aspectRatio) {
 			out.aspectRatio = props.aspectRatio
 		}
-		out['--origam-chart---animation-duration'] = `${ props.animationDuration }ms`
-		return out
+		Object.assign(out, chartAnimationStyle.value)
+return [ out, props.style as StyleValue ]
 	})
 
 	const bodyClasses = computed(() => ({
@@ -643,13 +643,15 @@
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'streamgraph chart')
-	const svgAriaLabel = computed(() => props.title ?? 'streamgraph chart')
-	const svgTitle = computed(() => props.title ?? 'streamgraph chart')
-	const svgDesc = computed(() => {
-		const n = visibleRibbons.value.length
-		return `Streamgraph with ${ n } series and ${ columnCount.value } time points.`
-	})
+	const defaultAriaLabel = computed(() => t('origam.chart.streamgraph.aria_label'))
+	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgDesc = computed(() => t('origam.chart.streamgraph.desc', {
+		chart: defaultAriaLabel.value,
+		series: t('origam.chart.streamgraph.desc_series', visibleRibbons.value.length),
+		points: t('origam.chart.streamgraph.desc_points', columnCount.value)
+	}))
 
 	const ribbonAriaLabel = (ribbon: IChartStreamgraphRibbon): string =>
 		`${ ribbon.name }: ${ ribbon.values.map((v) => formatValue(v)).join(', ') }`
@@ -753,11 +755,38 @@
 		onRibbonLeave()
 	}
 
+	/*********************************************************
+	 * onRibbonActivate
+	 *
+	 * @description
+	 * ⛔ Cette fonction n emettait RIEN au clavier. Elle passait par
+	 * `hoveredPoint`, qui exige `hoveredXIndex` — un ref que SEUL le
+	 * `mousemove` renseigne. A l activation par Enter ou Espace il valait
+	 * donc `null`, `hoveredPoint` valait `null`, et `point-click` ne partait
+	 * jamais. Le ruban portait pourtant `tabindex="0"` et `role="button"` :
+	 * l activation etait invitee, puis ignoree. Issue #426.
+	 *
+	 * @description
+	 * Le point est desormais resolu depuis le RUBAN lui-meme, sans dependre
+	 * d un etat de survol. On garde l abscisse survolee quand la souris l a
+	 * posee, et on retombe sinon sur l indice 0 — la premiere valeur, celle
+	 * que `ribbonAriaLabel` annonce en tete, puisque ce libelle enumere toute
+	 * la serie. Ce n est donc pas un choix arbitraire : c est la valeur que
+	 * l utilisateur au clavier a entendue en premier.
+	 ********************************************************/
 	const onRibbonActivate = (ribbon: IChartStreamgraphRibbon, event: MouseEvent | KeyboardEvent) => {
 		hoveredSeriesIndex.value = ribbon.seriesIndex
-		if (hoveredPoint.value) {
-			emit('point-click', hoveredPoint.value, event)
-		}
+
+		const dataIndex = hoveredXIndex.value ?? 0
+
+		emit('point-click', {
+			seriesIndex: ribbon.seriesIndex,
+			seriesName: ribbon.name,
+			dataIndex,
+			x: props.categories[dataIndex] ?? dataIndex,
+			y: ribbon.values[dataIndex] ?? 0,
+			color: ribbon.color
+		}, event)
 	}
 
 	const onLegendClick = (series: IChartSeries, index: number): void => {
@@ -780,7 +809,17 @@
 
 		display: grid;
 		gap: var(--origam-chart---gap, 12px);
-		padding: var(--origam-chart---padding, 12px);
+
+		// ⛔ #C2 — zero-specificity default so a scale-driven utility
+		// class (`.origam--p-4` from `padding="4"`) wins the cascade.
+		// Without `:where()`, this scoped rule's [data-v-hash] pushes it
+		// to (0,2,0), beating the utility's (0,1,0), and the `padding`
+		// prop's scale form goes silently inert. See CLAUDE.md "CSS-first"
+		// table — `:where(…)` is the documented zero-specificity default.
+		:where(&) {
+			padding: var(--origam-chart---padding, 12px);
+		}
+
 		background-color: var(--origam-chart---background-color, transparent);
 		color: var(--origam-chart---color, inherit);
 		width: 100%;
@@ -839,7 +878,7 @@
 
 		&__subtitle {
 			font-size: var(--origam-chart__subtitle---font-size, 0.875rem);
-			color: var(--origam-chart__subtitle---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__subtitle---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		&__body {
@@ -865,19 +904,19 @@
 		}
 
 		&__grid-line {
-			stroke: var(--origam-chart-streamgraph__grid---stroke, var(--origam-color-border-subtle, #e5e7eb));
+			stroke: var(--origam-chart-streamgraph__grid---stroke, var(--origam-color__border---subtle, #e5e7eb));
 			stroke-width: 1;
 			stroke-dasharray: 4 4;
 		}
 
 		&__axis-x {
-			stroke: var(--origam-chart-streamgraph__axis---stroke, var(--origam-color-border-default, #d1d5db));
+			stroke: var(--origam-chart-streamgraph__axis---stroke, var(--origam-color__border---default, #d1d5db));
 			stroke-width: 1;
 		}
 
 		&__axis-label {
 			font-size: var(--origam-chart-streamgraph__axis-label---font-size, 0.6875rem);
-			fill: var(--origam-chart-streamgraph__axis-label---fill, var(--origam-color-text-secondary, #6b7280));
+			fill: var(--origam-chart-streamgraph__axis-label---fill, var(--origam-color__text---secondary, #6b7280));
 			user-select: none;
 		}
 
@@ -896,7 +935,7 @@
 		}
 
 		&__crosshair {
-			stroke: var(--origam-chart-streamgraph__crosshair---stroke, var(--origam-color-text-secondary, #6b7280));
+			stroke: var(--origam-chart-streamgraph__crosshair---stroke, var(--origam-color__text---secondary, #6b7280));
 			stroke-width: 1;
 			stroke-dasharray: 3 3;
 			pointer-events: none;
@@ -909,7 +948,7 @@
 		:deep(.origam-chart__tooltip) {
 			position: absolute;
 			pointer-events: none;
-			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color-surface-overlay, #1f2937));
+			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color__surface---overlay, #1f2937));
 			color: var(--origam-chart__tooltip---color, #ffffff);
 			padding: var(--origam-chart__tooltip---padding, 8px 12px);
 			border-radius: var(--origam-chart__tooltip---border-radius, 6px);
@@ -947,7 +986,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--origam-chart__empty---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__empty---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		:deep(.origam-chart__legend) {

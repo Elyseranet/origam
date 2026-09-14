@@ -101,3 +101,162 @@ test.describe('OrigamMediaController — extras-right slot', () => {
         await expect(mark).toBeVisible()
     })
 })
+
+/**
+ * Coverage hole flagged by the classeur (lot "divers", 2026-09-01):
+ * `showPrevious` / `showNext` / `showLoop` / `showShuffle` had NO story
+ * Variant and NO e2e spec — the unit spec now proves the logic, this proves
+ * the real browser render (icons, aria-pressed toggling, clicks).
+ */
+test.describe('OrigamMediaController — playlist controls (previous/next/loop/shuffle)', () => {
+    test('previous/next/shuffle/loop render with an accessible name when show*=true', async ({ page }) => {
+        await openVariant(page, 'Variant — playlist controls (previous/next/shuffle/loop)')
+        const sandbox = sandboxOf(page)
+
+        const previous = sandbox.locator('[data-cy="origam-media-controller-previous"]').first()
+        const next = sandbox.locator('[data-cy="origam-media-controller-next"]').first()
+        const shuffle = sandbox.locator('[data-cy="origam-media-controller-shuffle"]').first()
+        const loop = sandbox.locator('[data-cy="origam-media-controller-loop"]').first()
+
+        await expect(previous).toBeVisible({ timeout: 8000 })
+        await expect(previous).toHaveAttribute('aria-label', 'Previous track')
+        await expect(next).toHaveAttribute('aria-label', 'Next track')
+        await expect(shuffle).toHaveAttribute('aria-label', 'Shuffle')
+        await expect(loop).toHaveAttribute('aria-label', 'Loop off')
+    })
+
+    test('clicking loop cycles none → all → one → none, toggling aria-pressed', async ({ page }) => {
+        await openVariant(page, 'Variant — playlist controls (previous/next/shuffle/loop)')
+        const sandbox = sandboxOf(page)
+
+        const loop = sandbox.locator('[data-cy="origam-media-controller-loop"]').first()
+        await expect(loop).toHaveAttribute('aria-label', 'Loop off', { timeout: 8000 })
+        await expect(loop).toHaveAttribute('aria-pressed', 'false')
+
+        await loop.click()
+        await expect(loop).toHaveAttribute('aria-label', 'Loop playlist')
+        await expect(loop).toHaveAttribute('aria-pressed', 'true')
+
+        await loop.click()
+        await expect(loop).toHaveAttribute('aria-label', 'Loop track')
+        await expect(loop).toHaveAttribute('aria-pressed', 'true')
+
+        await loop.click()
+        await expect(loop).toHaveAttribute('aria-label', 'Loop off')
+        await expect(loop).toHaveAttribute('aria-pressed', 'false')
+    })
+
+    test('clicking shuffle flips aria-pressed', async ({ page }) => {
+        await openVariant(page, 'Variant — playlist controls (previous/next/shuffle/loop)')
+        const sandbox = sandboxOf(page)
+
+        const shuffle = sandbox.locator('[data-cy="origam-media-controller-shuffle"]').first()
+        await expect(shuffle).toHaveAttribute('aria-pressed', 'false', { timeout: 8000 })
+        await shuffle.click()
+        await expect(shuffle).toHaveAttribute('aria-pressed', 'true')
+    })
+})
+
+/**
+ * SPEC — les 4 tokens que le contrôleur lisait sans les déclarer (#429)
+ *
+ * ## Le défaut
+ *
+ * Même famille que celui réparé sur `OrigamMediaVolumeControl`, mais sur le
+ * PARENT. `OrigamMediaController` lisait quatre variables qui n'étaient
+ * déclarées nulle part — elles figuraient dans la baseline « dead » de
+ * `token-var-channels`. Le repli inline s'appliquait donc toujours et
+ * silencieusement : la couleur d'accent des boutons actifs (loop / shuffle /
+ * cast) et les trois couleurs du compteur de temps étaient **inatteignables
+ * par un thème**, `IOrigamTheme.vars` compris — il n'y avait rien à surcharger.
+ *
+ * Les quatre sont maintenant déclarées à leur valeur de repli exacte : le
+ * rendu ne bouge pas d'un pixel, seule la surface de thème apparaît.
+ *
+ * ## ⛔ `inherit` comme valeur de custom property est un NO-OP, pas un défaut
+ *
+ * Le repli de `__time---color` s'écrivait `var(--…__time---color, inherit)`.
+ * Le recopier tel quel dans la feuille produit une déclaration **inerte** :
+ * `inherit` est un mot-clé CSS-wide, consommé par la custom property
+ * elle-même — « hérite la valeur de `--x` du parent », que personne ne
+ * déclare. La propriété devient *guaranteed-invalid* et `getPropertyValue`
+ * rend la chaîne VIDE. Mesuré sur le build réel :
+ *
+ *     --…__time---color: inherit;        getPropertyValue → ""      (inerte)
+ *     --…__time---color: currentColor;   getPropertyValue → "currentColor"
+ *
+ * Les deux peignent `rgb(10, 10, 10)` — le rendu ne distingue pas les deux
+ * cas. Mais par la définition même qu'utilise ce spec (chaîne vide = absence
+ * de déclaration), la première version aurait laissé le token NON déclaré
+ * tout en ayant l'air corrigé. `currentColor` est retenu : mesuré équivalent
+ * pour la propriété `color`, et il rend une vraie valeur.
+ */
+
+test.describe('OrigamMediaController — tokens déclarés (#429)', () => {
+    test.setTimeout(45000)
+
+    test('les 4 variables sont déclarées, à leur valeur de repli exacte', async ({ page }) => {
+        await page.goto(`${STORY}?variantId=components-stories-mediacontroller-origammediacontroller-story-vue-0`, { waitUntil: 'domcontentloaded' })
+        const sandbox = sandboxOf(page)
+
+        const controller = sandbox.locator('.origam-media-controller').first()
+        await expect(controller).toBeVisible({ timeout: 15000 })
+
+        const declared = await controller.evaluate((el) => {
+            const cs = getComputedStyle(el)
+            const names = [
+                '--origam-media-controller---accent-color',
+                '--origam-media-controller__time---color',
+                '--origam-media-controller__time-sep---color',
+                '--origam-media-controller__time-total---color'
+            ]
+
+            return Object.fromEntries(names.map((n) => [ n, cs.getPropertyValue(n).trim() ]))
+        })
+
+        for (const [ name, value ] of Object.entries(declared)) {
+            expect(value, `${name} doit être déclaré dans la feuille de tokens`).not.toBe('')
+        }
+
+        /*
+         * Valeurs ABSOLUES, pas seulement « non vides ». Elles doivent être
+         * exactement les anciens replis inline, sinon la correction n'est plus
+         * gratuite et le rendu bouge.
+         *
+         *   accent      = --origam-color__action--primary---bg = primary.600
+         *   sep / total = --origam-color__text---secondary      = neutral.600
+         */
+        expect(declared['--origam-media-controller---accent-color']).toBe('#7c3aed')
+        expect(declared['--origam-media-controller__time---color']).toBe('currentColor')
+        expect(declared['--origam-media-controller__time-sep---color']).toBe('#525252')
+        expect(declared['--origam-media-controller__time-total---color']).toBe('#525252')
+    })
+
+    test('le compteur de temps peint exactement ce qu\'il peignait avant', async ({ page }) => {
+        await page.goto(`${STORY}?variantId=components-stories-mediacontroller-origammediacontroller-story-vue-0`, { waitUntil: 'domcontentloaded' })
+        const sandbox = sandboxOf(page)
+
+        const time = sandbox.locator('[data-cy="origam-media-controller-time"]')
+        await expect(time).toBeVisible({ timeout: 15000 })
+
+        const painted = await time.evaluate((el) => {
+            const color = (sel: string) => getComputedStyle(el.querySelector(sel) as HTMLElement).color
+
+            return {
+                current: color('.origam-media-controller__time-current'),
+                sep: color('.origam-media-controller__time-sep'),
+                total: color('.origam-media-controller__time-total')
+            }
+        })
+
+        // Les trois nombres mesurés AVANT la déclaration des tokens, sur le
+        // même build. Ce sont eux qui prouvent que zéro pixel n'a bougé.
+        expect(painted.current, 'temps courant — hérite du contrôleur').toBe('rgb(10, 10, 10)')
+        expect(painted.sep, 'séparateur — text.secondary').toBe('rgb(82, 82, 82)')
+        expect(painted.total, 'durée totale — text.secondary').toBe('rgb(82, 82, 82)')
+
+        // Le fait visible que ces tokens portent : la durée totale et le
+        // séparateur sont volontairement plus pâles que le temps courant.
+        expect(painted.sep).not.toBe(painted.current)
+    })
+})

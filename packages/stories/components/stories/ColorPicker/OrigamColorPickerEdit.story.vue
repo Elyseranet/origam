@@ -142,3 +142,5 @@
 		}
 	}
 </script>
+
+<docs lang="md" src="@docs/components/ColorPicker/OrigamColorPickerEdit.md"/>

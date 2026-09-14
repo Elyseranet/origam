@@ -11,7 +11,6 @@
 			<template #default="{ state }">
 				<div style="padding: 24px;">
 					<origam-date-picker-controls
-							:active="['date']"
 							:text="state.text"
 							:next-icon="state.nextIcon || undefined"
 							:prev-icon="state.prevIcon || undefined"
@@ -38,7 +37,6 @@
 			<template #default="{ state }">
 				<div style="padding: 24px;">
 					<origam-date-picker-controls
-							:active="['date']"
 							:disabled="state.disabled"
 							:disabled-month="state.disabledMonth"
 							:disabled-year="state.disabledYear"
@@ -57,8 +55,8 @@
 					<HstCheckbox v-model="state.disabledNext"  title="Disabled Next"/>
 					<HstCheckbox v-model="state.disabledPrev"  title="Disabled Prev"/>
 				</StoryGroup>
-				<StoryGroup title="View">
-					<HstSelect v-model="state.viewMode" title="View Mode" :options="DATE_MODE_OPTIONS"/>
+				<StoryGroup title="View (declared, no effect)">
+					<HstSelect v-model="state.viewMode" title="View Mode (inert)" :options="DATE_MODE_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -66,7 +64,6 @@
 		<Variant title="Events - click:month">
 			<div style="padding: 24px;">
 				<origam-date-picker-controls
-						:active="['date']"
 						text="May 2026"
 						data-cy="dp-controls-emit-month"
 						@click:month="logEvent('click:month', $event)"
@@ -77,7 +74,6 @@
 		<Variant title="Events - click:year">
 			<div style="padding: 24px;">
 				<origam-date-picker-controls
-						:active="['date']"
 						text="May 2026"
 						data-cy="dp-controls-emit-year"
 						@click:year="logEvent('click:year', $event)"
@@ -88,7 +84,6 @@
 		<Variant title="Events - click:prev">
 			<div style="padding: 24px;">
 				<origam-date-picker-controls
-						:active="['date']"
 						text="May 2026"
 						data-cy="dp-controls-emit-prev"
 						@click:prev="logEvent('click:prev', $event)"
@@ -99,21 +94,9 @@
 		<Variant title="Events - click:next">
 			<div style="padding: 24px;">
 				<origam-date-picker-controls
-						:active="['date']"
 						text="May 2026"
 						data-cy="dp-controls-emit-next"
 						@click:next="logEvent('click:next', $event)"
-				/>
-			</div>
-		</Variant>
-
-		<Variant title="Events - click:text">
-			<div style="padding: 24px;">
-				<origam-date-picker-controls
-						:active="['date']"
-						text="May 2026"
-						data-cy="dp-controls-emit-text"
-						@click:text="logEvent('click:text', $event)"
 				/>
 			</div>
 		</Variant>
@@ -125,13 +108,11 @@
 			<template #default="{ state }">
 				<div style="padding: 24px;">
 					<origam-date-picker-controls
-							:active="['date']"
 							v-bind="state"
 							@click:month="logEvent('click:month', $event)"
 							@click:year="logEvent('click:year', $event)"
 							@click:prev="logEvent('click:prev', $event)"
 							@click:next="logEvent('click:next', $event)"
-							@click:text="logEvent('click:text', $event)"
 					/>
 				</div>
 			</template>
@@ -145,7 +126,7 @@
 					<HstSelect v-model="state.modeIcon" title="Mode Icon" :options="ICON_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
-					<HstSelect   v-model="state.viewMode"      title="View Mode"      :options="DATE_MODE_OPTIONS"/>
+					<HstSelect   v-model="state.viewMode"      title="View Mode (inert)" :options="DATE_MODE_OPTIONS"/>
 					<HstCheckbox v-model="state.disabled"      title="Disabled (all)"/>
 					<HstCheckbox v-model="state.disabledMonth" title="Disabled Month"/>
 					<HstCheckbox v-model="state.disabledYear"  title="Disabled Year"/>

@@ -29,8 +29,23 @@ const date = ref(null)
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `modelValue` | `string \| Date \| Array<string \| Date>` | `undefined` | Selected date(s) |
-| `multiple` | `boolean` | `false` | Allow selecting multiple dates |
+| `multiple` | `boolean \| number \| string` | `false` | Allow selecting multiple dates. A `number` caps how many dates may be selected |
 | `range` | `boolean` | `false` | Allow selecting a date range (start + end) |
+
+### Keyboard modifiers are required
+
+`multiple` and `range` do **not** change what a plain click does — a click with
+no modifier always replaces the selection with the single day clicked. The
+modifiers are read in `<OrigamDatePickerMonth>`'s click handler:
+
+| Gesture | Behaviour |
+|---|---|
+| click | Selects that day alone (whatever `multiple` / `range` are set to) |
+| <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + click, with `multiple` | Toggles that day in/out of the selection |
+| <kbd>Shift</kbd> + click, with `multiple` or `range` | Extends to a contiguous range |
+
+When `multiple` is a number, every unselected day is disabled once that many
+dates are selected.
 
 ## Navigation constraints
 
@@ -42,8 +57,8 @@ const date = ref(null)
 
 | Prop | Type | Description |
 |---|---|---|
-| `min` | `string` | Earliest selectable date (ISO 8601) |
-| `max` | `string` | Latest selectable date (ISO 8601) |
+| `min` | `unknown` | Earliest selectable date — anything the active date adapter accepts (ISO 8601 string, `Date`, …) |
+| `max` | `unknown` | Latest selectable date — same accepted shapes as `min` |
 | `month` | `number` | Override the displayed month (0–11) |
 | `year` | `number` | Override the displayed year |
 
@@ -85,7 +100,12 @@ const date = ref(null)
 
 ## Design tokens
 
-| Token | Description |
-|---|---|
-| `--origam-date-picker---width` | Default width (`328px`) |
-| `--origam-date-picker--show-week---width` | Width when week numbers visible (`368px`) |
+| Token | Default | Description |
+|---|---|---|
+| `--origam-date-picker---width` | `328px` | Width of the picker |
+| `--origam-date-picker--show-week---width` | `368px` | Width applied instead when `showWeek` is on |
+
+Both are declared in `packages/ds/src/assets/css/tokens/light.css` and its
+`dark.css` twin, and read by the `.origam-date-picker` /
+`.origam-date-picker--show-week` rules. Override them on any ancestor to
+re-size every picker at once.

@@ -1,6 +1,6 @@
 import type { Ref } from 'vue'
-import type { IDataTableItem } from '../../interfaces'
-import type { TVModel } from '../../types'
+import type { IDataTableItem } from './items.interface'
+import type { TVModel } from '../../types/Commons/v-model.type'
 
 export interface IDataTableExpandProps {
     expandOnClick?: boolean

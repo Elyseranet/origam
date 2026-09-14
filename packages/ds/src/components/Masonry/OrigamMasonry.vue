@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			ref="rootEl"
 			role="list"
 			:class="masonryClasses"
@@ -40,24 +41,26 @@
 		watch
 	} from 'vue'
 
-	import {
-		useBorder,
-		useBothColor,
-		useCssSupport,
-		useDimension,
-		useElevation,
-		useMargin,
-		useMasonry,
-		usePadding,
-		useProps,
-		useRounded
-	} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useCssSupport } from '../../composables/Commons/cssSupport.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { useMasonry } from '../../composables/Masonry/masonry.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useTheme } from '../../composables/Commons/theme.composable'
 
-	import { GRID_GAP_SIZE_VAR } from '../../consts'
+	import { GRID_GAP_SIZE_VAR } from '../../consts/Grid/grid.const'
 
-	import type { IMasonryProps } from '../../interfaces'
+	import { MASONRY_ALIGN } from '../../enums/Masonry/masonry.enum'
 
-	import type { TGridGapSize } from '../../types'
+	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
+	import type { IMasonryEmits, IMasonryProps } from '../../interfaces/Masonry/masonry.interface'
+
+	import type { TGridGapSize } from '../../types/Grid/grid.type'
 
 	/*********************************************************
 	 * Global
@@ -80,6 +83,10 @@
 
 	const {filterProps} = useProps<IMasonryProps>(props)
 
+	defineEmits<IMasonryEmits>()
+
+	defineSlots<ICommonsComponentSlots>()
+
 	const slots = useSlots()
 	const rootEl = ref<HTMLElement | null>(null)
 
@@ -98,7 +105,7 @@
 	 ********************************************************/
 	const { css } = useCssSupport()
 	const supportsCssMasonry = computed(() =>
-		css.value.masonry && props.align === 'top'
+		css.value.masonry && props.align === MASONRY_ALIGN.TOP
 	)
 
 	/*********************************************************
@@ -172,7 +179,18 @@
 	})
 
 	// Re-resolve gap when the prop changes (token rename, raw value).
-	watch(() => props.gap, () => {
+	//
+	// `theme` and `mode` are watched ALONGSIDE the prop, and that is required,
+	// not defensive. `gap` is named by the theme's `components` block, so its
+	// slot on `instance.props` is an accessor installed by the theme-props
+	// resolver AFTER `setup()` has run — a watcher created here therefore holds
+	// no dependency on the theme, and a brand/mode swap that changes `gap`
+	// would never re-run it. Watching the theme refs closes that path with no
+	// extra machinery. Measured: prop alone never fires on a swap; prop+theme
+	// fires with the correct value.
+	const { theme, mode } = useTheme()
+
+	watch([() => props.gap, theme, mode], () => {
 		// Microtask: the CSS var is already updated synchronously, but
 		// `getComputedStyle` reads through layout — one frame is safer.
 		requestAnimationFrame(resolveGapPx)

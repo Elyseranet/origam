@@ -1,10 +1,13 @@
-import { useToggleScope, useVModel } from '../../composables'
+import { useToggleScope } from './toggleScope.composable'
+import { useVModel } from './vModel.composable'
 
-import { ORIGAM_FORM_KEY } from '../../consts'
+import { ORIGAM_FORM_KEY } from '../../consts/Form/form.const'
 
-import type { IValidationProps } from '../../interfaces'
+import type { IValidationProps } from '../../interfaces/Commons/validation.interface'
 
-import { getCurrentInstance, getCurrentInstanceName, getUid, wrapInArray } from '../../utils'
+import { wrapInArray } from '../../utils/Commons/commons.util'
+import { getCurrentInstance, getCurrentInstanceName, getUid } from '../../utils/Commons/getCurrentInstance.util'
+import { collectRuleErrors } from '../../utils/Commons/validation.util'
 
 import {
     computed,
@@ -22,6 +25,26 @@ import {
 
 /*********************************************************
  * useValidation
+ *
+ * @description
+ * Moteur de validation d'un champ : execute `props.rules` contre
+ * `validationValue`/`modelValue`, s'enregistre aupres du `OrigamForm`
+ * ambiant (`ORIGAM_FORM_KEY`) via `register`/`unregister`/`update`, et
+ * expose `isValid`/`isDirty`/`isPristine`/`errorMessages`/`validationClasses`.
+ * `validateOn` (`'input'|'blur'|'submit'|'lazy'`, ou heritee du form
+ * parent) pilote QUAND `validate()` se redeclenche automatiquement — via
+ * `useToggleScope` pour n'ecouter que les axes concernes.
+ *
+ * @description
+ * `isValid` peut valoir `undefined` (ni valide ni invalide) : c'est l'etat
+ * "pas encore juge" d'un champ vierge (`isPristine`) sans erreur interne
+ * ni mode `lazy` — a distinguer explicitement de `true`/`false` cote
+ * consommateur. Le `watch([isValid, errorMessages], …)` qui notifie le
+ * form est deliberement differe a `onMounted` (voir la banniere
+ * "DEFERRED TO onMounted" plus bas dans le corps) pour la meme raison
+ * ADR-005 que `useSelectLink` : une lecture
+ * `immediate` en plein `setup()` figerait `isValid` AVANT que le
+ * resolveur de theme ait patché `props.error`.
  ********************************************************/
 export function useValidation (props: IValidationProps, name = getCurrentInstanceName(), id: MaybeRef<string | number> = getUid()) {
     const model = useVModel(props, 'modelValue')
@@ -126,8 +149,30 @@ export function useValidation (props: IValidationProps, name = getCurrentInstanc
         })
     })
 
-    watch([isValid, errorMessages], () => {
-        form?.update(uid.value, isValid.value, errorMessages.value)
+    /*********************************************************
+     *  DEFERRED TO onMounted — NOT AN OPTIMISATION
+     *
+     *  @description
+     *  `watch([isValid, errorMessages], cb)` reads both sources synchronously
+     *  the instant it is created, to seed `oldValue`. `isValid` is a
+     *  `computed()` that reads `props.error` (among other props). Creating
+     *  this watch at the top level of `setup()` forced that seeding read
+     *  before Vue's `beforeCreate` hook runs, which is where the ADR-005
+     *  theme resolver patches `instance.props`. A `computed` caches whatever
+     *  its first evaluation saw and only invalidates on a tracked dependency
+     *  change; the resolver's `Object.defineProperty` patch is not one on a
+     *  static mount with no parent re-render, so `isValid` stayed cached at
+     *  its pre-theme value forever — a theme naming `error` on Input (or any
+     *  other `useValidation` consumer) never flipped the `--error` class.
+     *  Deferring this watch to `onMounted` — right after the existing
+     *  `onMounted` above, which already performs the FIRST `form?.update`
+     *  call explicitly — delays its seeding read to after the component's
+     *  first render, which is already past `beforeCreate`.
+     ********************************************************/
+    onMounted(() => {
+        watch([isValid, errorMessages], () => {
+            form?.update(uid.value, isValid.value, errorMessages.value)
+        })
     })
 
     const reset = async () => {
@@ -146,33 +191,10 @@ export function useValidation (props: IValidationProps, name = getCurrentInstanc
     }
 
     const validate = async (silent = false) => {
-        const results = []
-
         isValidating.value = true
 
-        if (props.rules) {
-            for (const rule of props.rules) {
-                if (results.length >= +(props.maxErrors ?? 1)) {
-                    break
-                }
+        internalErrorMessages.value = await collectRuleErrors(props.rules, validationModel.value, +(props.maxErrors ?? 1))
 
-                const handler = typeof rule === 'function' ? rule : () => rule
-                const result = await handler(validationModel.value)
-
-                if (result === true) continue
-
-                if (result !== false && typeof result !== 'string') {
-
-                    console.warn(`${result} is not a valid value. Rule functions must return boolean true or a string.`)
-
-                    continue
-                }
-
-                results.push(result || '')
-            }
-        }
-
-        internalErrorMessages.value = results
         isValidating.value = false
         isPristine.value = silent
 
