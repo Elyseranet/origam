@@ -33,22 +33,6 @@ trick otherwise — driven by the `useAspectRatio` composable.
 </template>
 ```
 
-## Inline mode
-
-`inline` switches the wrapper from `block` to `inline-flex`, useful
-when the component is dropped into a paragraph or a chip-like context.
-
-```vue
-<template>
-    <p>
-        Inline embed:
-        <OrigamResponsive inline aspect-ratio="1/1" :width="32" :height="32">
-            <img src="/avatar.png" alt="" />
-        </OrigamResponsive>
-    </p>
-</template>
-```
-
 ## Dimensions
 
 `width` / `height` / `min-*` / `max-*` apply to the outer wrapper —
@@ -97,14 +81,13 @@ interface IResponsiveProps extends IDimensionProps, ICommonsComponentProps,
     IPaddingProps, IMarginProps, IBorderProps, IRoundedProps {
     aspectRatio?:  string | number
     contentClass?: string
-    inline?:       boolean
 }
 ```
 
 ## Anatomy
 
 ```html
-<div class="origam-responsive [origam-responsive--inline]">
+<div class="origam-responsive">
     <div class="origam-responsive__sizer" :style="{ aspectRatio }" />
     <!-- additional slot -->
     <div class="origam-responsive__content">
@@ -131,8 +114,6 @@ under `packages/ds/src/assets/scss/tokens/`).
 | `--origam-responsive---position` | `relative` |
 | `--origam-responsive---width` | inherits |
 | `--origam-responsive---height` | inherits |
-| `--origam-responsive--inline---display` | `inline-flex` |
-| `--origam-responsive--inline---flex` | inherits |
 | `--origam-responsive__content---flex` | `1 1 auto` |
 | `--origam-responsive__content---max-width` | `100%` |
 | `--origam-responsive__content---margin` | inherits |
