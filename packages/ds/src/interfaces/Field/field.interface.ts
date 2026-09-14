@@ -7,6 +7,7 @@ import type {
     IAdjacentInnerProps,
     IAdjacentInnerSlots
 } from '../Commons/adjacent.interface'
+import type { IBorderProps } from '../Commons/border.interface'
 import type {
     IBgColorProps,
     IColorProps
@@ -25,7 +26,26 @@ import type { ISizeProps } from '../Commons/size.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
 import type { IVariantProps } from '../Commons/variant.interface'
 
-export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColorProps, IBgColorProps, IAdjacentInnerProps, IFocusProps, IDensityProps, ILabelProps, IActiveProps, IVariantProps, IRoundedProps, IElevationProps, ISizeProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
+/*********************************************************
+ * IFieldProps
+ *
+ * @description
+ * `IBorderProps` (issue #726) — the field owns the NOTCHED outline
+ * (`__outline--start` / `--notch` / `--end`), so the `border` surface has to
+ * be declared HERE, not only on `IInputProps`.
+ *
+ * @description
+ * Before #726 `border` existed solely on the OUTER `OrigamInput` wrapper,
+ * which has no notch: the line it painted ran straight through the floating
+ * label (measured: label box `[-7, 11]`, input border band `[0, 2]` — a 2 px
+ * strike through an 18 px label).
+ *
+ * @description
+ * `OrigamField` now maps the resolved width / style / colour onto the
+ * `--origam-field---border-*` token channel the three outline legs already
+ * read, so the notch keeps opening under `--active` / `--focused`.
+ ********************************************************/
+export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColorProps, IBgColorProps, IAdjacentInnerProps, IBorderProps, IFocusProps, IDensityProps, ILabelProps, IActiveProps, IVariantProps, IRoundedProps, IElevationProps, ISizeProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
     centerAffix?: boolean
     dirty?: boolean
     disabled?: boolean

@@ -321,6 +321,7 @@
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import { BORDER_PROP_KEYS } from '../../consts/Commons/border.const'
 	import { DEFAULT_PASSWORD_REQUIREMENTS, REQUIREMENT_MIN_LENGTH, REQUIREMENT_NUMBER, REQUIREMENT_SPECIAL, REQUIREMENT_TINY, REQUIREMENT_UPPERCASE } from '../../consts/PasswordField/password-field.const'
 	import vIntersect from '../../directives/Intersect/intersect.directive'
 	import { DENSITY } from '../../enums/Commons/density.enum'
@@ -679,7 +680,14 @@
 	 * OrigamTextField (ce365b10).
 	 ********************************************************/
 	const inputProps = computed(() => {
-		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'focused'])
+		/*********************************************************
+		 * Border withheld — #726
+		 *
+		 * @description
+		 * Withheld from the INPUT (no notch, its top edge crosses the floating
+		 * label) and handed to the FIELD's notched outline instead.
+		 ********************************************************/
+		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'focused', ...BORDER_PROP_KEYS])
 	})
 	const fieldProps = computed(() => {
 		return origamFieldRef.value?.filterProps(props, ['class', 'id', 'active', 'dirty', 'disabled', 'focused', 'error', 'style'])

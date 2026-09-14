@@ -281,6 +281,7 @@
 	import { useTypography } from '../../composables/Commons/typography.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 
+	import { BORDER_PROP_KEYS } from '../../consts/Commons/border.const'
 	import { DEFAULT_TOOLBAR } from '../../consts/TextareaField/textarea-field.const'
 
 	import vIntersect from '../../directives/Intersect/intersect.directive'
@@ -761,7 +762,14 @@
 	 * OrigamTextField (ce365b10).
 	 ********************************************************/
 	const inputProps = computed(() => {
-		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'focused', 'centerAffix'])
+		/*********************************************************
+		 * Border withheld — #726
+		 *
+		 * @description
+		 * Withheld from the INPUT (no notch, its top edge crosses the floating
+		 * label) and handed to the FIELD's notched outline instead.
+		 ********************************************************/
+		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'focused', 'centerAffix', ...BORDER_PROP_KEYS])
 	})
 	const fieldProps = computed(() => {
 		return origamFieldRef.value?.filterProps(props, ['class', 'id', 'style', 'active', 'dirty', 'disabled', 'focused', 'error', 'centerAffix'])
