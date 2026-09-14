@@ -101,11 +101,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const BASELINE_PATH = path.join(__dirname, 'baseline/prop-shadowing.json')
 
 /*********************************************************
- * Les 4 entrees baselinees sont de vrais defauts, pas de la dette
- * anonyme — chacune a son ticket (#693)
+ * Les 3 entrees baselinees restantes sont de vrais defauts, pas de la
+ * dette anonyme — chacune a son ticket (#693)
  *
  * @description
- * ⛔ AUCUNE de ces 4 entrees n'est un faux positif. Elles sont
+ * ⛔ AUCUNE de ces 3 entrees n'est un faux positif. Elles sont
  * baselinees parce que leur correction appartient a un autre lot, PAS
  * parce qu'elles seraient tolerables.
  *
@@ -121,14 +121,18 @@ const BASELINE_PATH = path.join(__dirname, 'baseline/prop-shadowing.json')
  * consommateur qui la passe ne change rien. Suivi en **#693**, confie a
  * un autre dev.
  *
- * `OrigamDatePicker` — `text`. Meme forme, trouvee par ce garde et non
- * par un humain : `const text = computed(() => adapter.format(date,
- * 'monthAndYear'))` masque `text`, declaree via
- * `Omit<IDatePickerControlsProps, 'active'>` (d'ou l'interet de resoudre
- * les chaines `extends` pour de vrai — un resolveur naif qui tronque a
- * `Omit` rate cette prop). `props.text` n'est lu nulle part, et `text`
- * figure lui aussi dans la liste d'exclusion de `filterProps`.
- * A rattacher a #693 ou a ouvrir pour lui-meme.
+ * `OrigamDatePicker` — `text`. ✅ CORRIGE, entree retiree de la baseline
+ * (**#700**). C'est le premier defaut que cet outillage a trouve seul, et
+ * la raison pour laquelle il resout les chaines `extends` pour de vrai :
+ * `text` etait declaree via `Omit<IDatePickerControlsProps, 'active'>`
+ * — l'`Omit` retire `active`, PAS `text` — et un resolveur naif qui
+ * tronque devant un `Omit` aurait classe le cas « prop non declaree »,
+ * donc benin. Le `const text = computed(...)` local a ete renomme
+ * `monthAndYearText` et `controlsText = props.text || monthAndYearText`
+ * fait primer la prop. Le defaut a ete reproduit au runtime AVANT
+ * correction (`packages/tests/TU/components/DatePicker/
+ * OrigamDatePicker.text-prop.spec.ts`, temoin positif compris) : un
+ * `<origam-date-picker text="…">` rendait `June 2024`.
  *
  * @description
  * Retirer une entree de la baseline apres correction n'est pas

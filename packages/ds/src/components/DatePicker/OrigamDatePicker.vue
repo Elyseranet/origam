@@ -31,7 +31,7 @@
 		<slot name="default">
 			<origam-date-picker-controls
 					ref="origamDatePickerControlsRef"
-					:text="text"
+					:text="controlsText"
 					v-bind="{...datePickerControlsProps, ...disabledControlers}"
 					@click:next="handleClickNext"
 					@click:prev="handleClickPrev"
@@ -238,7 +238,48 @@
 				: t(props.header)
 	})
 
-	const text = computed(() => {
+	/*********************************************************
+	 * monthAndYearText / controlsText (#700)
+	 *
+	 * @description
+	 * `monthAndYearText` used to be called `text`, which MASKED the
+	 * `text` prop. `IDatePickerProps` reaches `text?: string` through
+	 * `Omit<IDatePickerControlsProps, 'active'>` — the `Omit` drops
+	 * `active`, NOT `text` — so the prop is genuinely declared and a
+	 * consumer can pass it. But in `<script setup>` the template reads a
+	 * prop by its BARE NAME, so a module-scope binding of the same name
+	 * wins: `:text="text"` forwarded the derived label, never the prop.
+	 * `props.text` was read nowhere else, and `text` sits in the
+	 * `filterProps` exclusion list of `datePickerControlsProps` below —
+	 * which is the opposite of a read — so no second path existed:
+	 * `<origam-date-picker text="…">` was silently ignored.
+	 * Same family as #622 / #665 / #666 / #693 / #696.
+	 *
+	 * @description
+	 * `controlsText` is what `<origam-date-picker-controls>` receives,
+	 * and `text` there is the visible LABEL of the month button — the
+	 * ONLY place the user reads which month is on screen. `text` carries
+	 * no `withDefaults` default, so `props.text` is `undefined` unless
+	 * the consumer (or a theme, cf. ADR-005 — the read sits inside a
+	 * `computed`, therefore lazy, therefore late enough for the
+	 * resolver) sets it: the unset case resolves to `monthAndYearText`,
+	 * byte for byte what the component rendered before this fix.
+	 *
+	 * @description
+	 * The fallback is `||`, not `??` — same operator as the `label` fix
+	 * of #665 / #666 (PR #692), for the same reason: an EMPTY string
+	 * would leave the toolbar with no month indication at all, which is
+	 * a hole rather than a feature. `''` therefore falls back too.
+	 *
+	 * @description
+	 * ⛔ `text` MUST stay in the `filterProps` exclusion list. The
+	 * template binds `:text="controlsText"` BEFORE `v-bind="{...
+	 * datePickerControlsProps}"`; a later `v-bind` wins, so letting
+	 * `text` through the passthrough would bypass this computed entirely
+	 * and reinstate a different variant of the same defect (the derived
+	 * month/year label would never be rendered again).
+	 ********************************************************/
+	const monthAndYearText = computed(() => {
 		let date = adapter.date()
 
 		date = adapter.setDate(date, 1)
@@ -246,6 +287,10 @@
 		date = adapter.setYear(date, year.value)
 
 		return adapter.format(date, 'monthAndYear')
+	})
+
+	const controlsText = computed(() => {
+		return props.text || monthAndYearText.value
 	})
 
 	const headerTransition = computed(() => {
