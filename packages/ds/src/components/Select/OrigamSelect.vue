@@ -11,7 +11,7 @@
 			:placeholder="placeholder"
 			:style="selectStyles"
 			:title="t(accessibleLabel)"
-			:validation-value="validationValue"
+			:validation-value="effectiveValidationValue"
 			v-bind="{ ...textFieldProps, ...comboboxAriaAttrs }"
 			@blur="handleBlur"
 			@change="handleChange"
@@ -462,8 +462,29 @@
 	)
 	const search = useVModel(props, 'search', '')
 
-	const validationValue = computed(() => {
-		return model.externalValue
+	/*********************************************************
+	 * effectiveValidationValue (#693)
+	 *
+	 * @description
+	 * This was previously named `validationValue`, a bare `const` that
+	 * SHADOWED the `validationValue` PROP (`ISelectProps` -> `IInputProps`
+	 * -> `IValidationProps.validationValue`, `validation.interface.ts:47`)
+	 * inside this `<script setup>` block. The template's
+	 * `:validation-value="validationValue"` therefore always resolved to
+	 * this model-derived local, never to the consumer's prop — and since
+	 * `validationValue` is also stripped from the `filterProps` passthrough
+	 * below, there was no second path either: a
+	 * `<origam-select :validation-value="somethingElse" />` silently
+	 * validated against the model. Same defect family as #622 / #665 /
+	 * #666.
+	 *
+	 * @description
+	 * The fallback ladder mirrors `useValidation` exactly
+	 * (`validation.composable.ts:52`): `undefined` means "not supplied" and
+	 * falls back to the model, ANY other value — `null` included — wins.
+	 ********************************************************/
+	const effectiveValidationValue = computed(() => {
+		return props.validationValue === undefined ? model.externalValue : props.validationValue
 	})
 
 	const menuState = useVModel(props, 'menu')
