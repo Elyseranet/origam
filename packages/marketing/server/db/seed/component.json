@@ -83103,7 +83103,7 @@
         "domain": null,
         "icon": "mdi-aspect-ratio",
         "description_key": "components.catalog.responsive.description",
-        "description_fallback": "Aspect-ratio container that constrains its content to a fixed ratio using a sizer trick. Supports inline mode, dimension overrides and standard spacing props.",
+        "description_fallback": "Aspect-ratio container that constrains its content to a fixed ratio using a sizer trick. Supports dimension overrides and standard spacing props.",
         "definition": null,
         "signature": null,
         "tag": "origam-responsive",
@@ -83165,7 +83165,7 @@
                 "cls": ".origam-responsive",
                 "num": 1,
                 "descriptionKey": "components.responsive.anatomy.root",
-                "descriptionFallback": "Root element. Block or inline-flex, overflow hidden. Receives dimension, padding, margin, border and rounded classes."
+                "descriptionFallback": "Root element. Flex container, overflow hidden. Receives dimension, padding, margin, border and rounded classes."
               },
               {
                 "cls": ".origam-responsive__sizer",
@@ -83185,11 +83185,6 @@
                 "cls": "origam-responsive",
                 "descriptionKey": "components.responsive.anatomy.root",
                 "descriptionFallback": "Root block element."
-              },
-              {
-                "cls": "origam-responsive--inline",
-                "descriptionKey": "components.responsive.anatomy.modifier_inline",
-                "descriptionFallback": "Applied when inline=true. Switches to display:inline-flex."
               },
               {
                 "cls": "origam-responsive__sizer",
@@ -83296,13 +83291,6 @@
                 "labelKey": "components.responsive.playground.aspect_ratio",
                 "defaultValue": "16/9",
                 "labelFallback": "Aspect ratio"
-              },
-              {
-                "kind": "switch",
-                "prop": "inline",
-                "labelKey": "components.responsive.playground.inline",
-                "defaultValue": false,
-                "labelFallback": "Inline"
               },
               {
                 "kind": "select",
@@ -83417,18 +83405,6 @@
           "default_value": "undefined",
           "description_key": "components.responsive.props.content_class.description",
           "description_fallback": "Additional CSS class applied to the inner .origam-responsive__content div."
-        },
-        {
-          "name": "inline",
-          "type_label": "boolean",
-          "type_slug": "",
-          "type_kind": "primitive",
-          "optional": false,
-          "required": false,
-          "position": 2,
-          "default_value": "false",
-          "description_key": "components.responsive.props.inline.description",
-          "description_fallback": "Switches the root from display:block to display:inline-flex, making the container flow inline with text."
         },
         {
           "name": "height",
@@ -83584,13 +83560,6 @@
           "title_key": "components.responsive.examples.image.title",
           "title_fallback": "Responsive image",
           "code": "<template>\n  <origam-responsive aspect-ratio=\"4/3\" rounded=\"lg\" :max-width=\"480\">\n    <origam-img src=\"/photo.jpg\" cover />\n  </origam-responsive>\n</template>",
-          "lang": "vue"
-        },
-        {
-          "position": 2,
-          "title_key": "components.responsive.examples.inline.title",
-          "title_fallback": "Inline mode",
-          "code": "<template>\n  <p>\n    Here is an inline ratio box:\n    <origam-responsive aspect-ratio=\"1\" :inline=\"true\" :width=\"80\" rounded=\"sm\">\n      <origam-img src=\"/avatar.jpg\" />\n    </origam-responsive>\n    next to some text.\n  </p>\n</template>",
           "lang": "vue"
         }
       ],

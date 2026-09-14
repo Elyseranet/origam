@@ -60,29 +60,20 @@
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IResponsiveProps>>({
-					aspectRatio: '16/9',
-					inline: false
+					aspectRatio: '16/9'
 				})"
 		>
 			<template #default="{ state }">
-				<p>
-					Embedded
+				<div style="max-width: 480px;">
 					<origam-responsive
-							:inline="state.inline"
 							:aspect-ratio="state.aspectRatio"
 							:content-class="state.contentClass"
-							:width="state.inline ? 40 : undefined"
-							:height="state.inline ? 40 : undefined"
 					>
 						<div class="demo-fill"/>
 					</origam-responsive>
-					inside a sentence — <code>inline</code> toggles between block and inline-flex.
-				</p>
+				</div>
 			</template>
 			<template #controls="{ state }">
-				<StoryGroup title="Layout">
-					<HstCheckbox v-model="state.inline" title="Inline"/>
-				</StoryGroup>
 				<StoryGroup title="Content">
 					<HstSelect v-model="state.aspectRatio"  title="Aspect Ratio"  :options="ASPECT_RATIO_OPTIONS"/>
 					<HstText   v-model="state.contentClass" title="Content Class"/>
@@ -118,17 +109,6 @@
 			</div>
 		</Variant>
 
-		<Variant title="Prop — inline">
-			<p>
-				Inline mode:
-				<origam-responsive aspect-ratio="1/1" :inline="true" :width="40" :height="40">
-					<div style="width:100%;height:100%;background:var(--origam-color__surface---overlay,#ececec);"/>
-				</origam-responsive>
-				renders inside text flow as inline-flex.
-			</p>
-		</Variant>
-
-
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IResponsiveProps>({
@@ -153,9 +133,6 @@
 					<HstText   v-model="state.minWidth"    title="Min Width"/>
 					<HstText   v-model="state.width"       title="Width"/>
 					<HstText   v-model="state.height"      title="Height"/>
-				</StoryGroup>
-				<StoryGroup title="Functional">
-					<HstCheckbox v-model="state.inline" title="Inline"/>
 				</StoryGroup>
 			</template>
 		</Variant>

@@ -15,7 +15,7 @@ import { eventLogItems, fillHstNumber, fillHstText, openEventsTab, selectHstOpti
  * `pick(props, [...])` call in the body of `setup()`, frozen at whatever
  * value 11 props (aspectRatio, contentClass, inline, height, maxHeight,
  * maxWidth, minHeight, minWidth, width, class, style) held at first
- * render. Fixed by wrapping it in `computed()`. The "Prop — aspectRatio"
+ * render. (`inline` was removed from the list in #703 — 10 props today.) Fixed by wrapping it in `computed()`. The "Prop — aspectRatio"
  * test below now MUTATES the control after mount (it used to only read
  * the value frozen at mount, which passed on both broken and fixed code
  * and is exactly the kind of green test root CLAUDE.md warns against). A
@@ -240,7 +240,8 @@ test.describe('OrigamImg — Props', () => {
     // `props.class` / `props.style` reactively. So of the 11 props in the
     // pick() list, only 8 (aspectRatio, contentClass, inline, height,
     // maxHeight, maxWidth, minHeight, minWidth) had NO parallel reactive
-    // path and were genuinely, fully dead pre-fix — `class`/`style`/`width`
+    // path and were genuinely, fully dead pre-fix — `inline` has since been
+    // removed from that list by #703, leaving 7 — `class`/`style`/`width`
     // were partially masked. A `width` assertion here would pass on BOTH
     // the broken and the fixed code, which root CLAUDE.md calls out
     // explicitly as a test that "proves nothing" — so it is excluded as a

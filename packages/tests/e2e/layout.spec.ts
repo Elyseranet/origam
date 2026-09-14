@@ -110,23 +110,16 @@ test.describe('OrigamResponsive', () => {
         expect(parseFloat(pbe)).toBeGreaterThan(0)
     })
 
-    test('inline modifier changes display to inline-flex', async ({ page }) => {
-        await page.goto(RESPONSIVE_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — inline', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const responsive = sandbox.locator('.origam-responsive').first()
-        await expect(responsive).toBeVisible({ timeout: 5000 })
-
-        const display = await responsive.evaluate((el) => {
-            el.classList.add('origam-responsive--inline')
-            return getComputedStyle(el).display
-        })
-        console.log('[responsive-inline] display:', display)
-        expect(display).toContain('inline')
-    })
+    // The `inline` prop and its `.origam-responsive--inline` modifier were
+    // removed in #703: `display: inline-flex` resolves the root width to the
+    // content, while the ratio is held by a `__sizer` whose height is a
+    // PERCENTAGE of that width — so the box collapsed to 0 on all three
+    // consumers (Responsive / Img / CarouselItem). Measured, not deduced:
+    // see `responsive-inline-removed.spec.ts` for the lock.
+    //
+    // The previous spec here asserted `display` merely CONTAINED "inline"
+    // after hand-adding the modifier class — which a plain `inline` also
+    // satisfies, so it could not have caught the collapse anyway.
 
     /**
      * Regression for #454 — the classic aspect-ratio-box pattern requires

@@ -94,7 +94,6 @@
 							:crossorigin="state.crossorigin || undefined"
 							:draggable="state.draggable"
 							:eager="state.eager"
-							:inline="state.inline"
 							:lazy-src="state.lazySrc || undefined"
 							:referrerpolicy="state.referrerpolicy || undefined"
 							:sizes="state.sizes || undefined"
@@ -102,8 +101,7 @@
 							:srcset="state.srcset || undefined"
 							style="max-width: 240px;"
 					/>
-					Texte après — coche « Inline » pour que l'image se pose DANS cette phrase
-					au lieu de la couper sur sa propre ligne.
+					Texte après.
 				</p>
 			</template>
 			<template #controls="{ state }">
@@ -118,8 +116,7 @@
 					<HstCheckbox v-model="state.eager" title="Eager (skip IntersectionObserver)"/>
 				</StoryGroup>
 				<StoryGroup title="Layout">
-					<HstSelect   v-model="state.aspectRatio" title="Aspect Ratio" :options="ASPECT_RATIO_OPTIONS"/>
-					<HstCheckbox v-model="state.inline"      title="Inline"/>
+					<HstSelect v-model="state.aspectRatio" title="Aspect Ratio" :options="ASPECT_RATIO_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Attributes">
 					<HstCheckbox v-model="state.draggable"     title="Draggable"/>
@@ -351,8 +348,7 @@
 					<HstText     v-model="state.height"      title="Height"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
-					<HstCheckbox v-model="state.eager"  title="Eager"/>
-					<HstCheckbox v-model="state.inline" title="Inline"/>
+					<HstCheckbox v-model="state.eager" title="Eager"/>
 				</StoryGroup>
 			</template>
 		</Variant>

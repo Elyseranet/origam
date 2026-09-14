@@ -8,7 +8,6 @@ import type { IRoundedProps } from '../Commons/rounded.interface'
 export interface IResponsiveProps extends IDimensionProps, ICommonsComponentProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps {
     aspectRatio?: string | number
     contentClass?: string
-    inline?: boolean
 }
 
 export interface IResponsiveEmits {}
