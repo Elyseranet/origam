@@ -366,7 +366,15 @@
                 "controls_label": "Contrôles"
             },
             "preview": {
-                "unavailable": "Aperçu en direct indisponible pour ce composant."
+                "loading": "Rendu de l’aperçu en cours…",
+                "render_failed": "Ce composant a levé une erreur au rendu avec ces props :",
+                "reason": {
+                    "needs_parent": "Sous-partie interne : elle est injectée par son composant parent et ne peut pas se rendre seule. Voir la fiche du composant parent pour un exemple vivant.",
+                    "portal": "Ce composant téléporte sa surface à la fin de <body> une fois activé : il ne se rend donc jamais dans cette boîte d’aperçu. Utilisez le panneau de props et le snippet généré, puis essayez-le dans votre page.",
+                    "runtime_data": "Ce composant exige des données d’exécution détenues par son parent (un élément du DOM, un objet contrôleur ou un File), qu’un aperçu statique ne peut pas fournir.",
+                    "media_source": "Ce composant exige une source média (URL audio ou vidéo). Le site marketing n’embarque aucun média d’exemple : l’aperçu reste vide volontairement.",
+                    "layout_only": "Ce composant ne rend aucune surface visible : il ne fait qu’écarter ses voisins dans un conteneur flex."
+                }
             },
             "examples": {
                 "title": "Exemples",

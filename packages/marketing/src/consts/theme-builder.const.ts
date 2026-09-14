@@ -11,6 +11,8 @@
  * Slugs are verified against real const files; preview props/slots use the real
  * component API only (no invented props).
  */
+import { COMPONENT_PREVIEW_ADAPTERS } from '~/consts/component-preview.const'
+
 import type { IThemeBuilderPreviewAdapter } from '~/interfaces/theme-builder.interface'
 
 /**
@@ -107,35 +109,21 @@ export const THEME_BUILDER_PREVIEWABLE_SLUGS = [
 ] as const
 
 /**
- * Per-slug preview adapter. Static `previewProps` are merged UNDER the user's
- * edited props (preview only — never serialised). `slotText` renders inside the
- * default slot. Absent slugs fall back to `playground.defaultSlotContent`.
+ * Per-slug preview adapter — ALIAS de la table partagée.
+ *
+ * La table vivait ici et ne couvrait que les 24 slugs du Theme Builder. Les
+ * fiches composants (`/components/{slug}`) ont le même besoin, donc elle a été
+ * généralisée dans `consts/component-preview.const.ts` (#728). Ce nom reste
+ * exporté pour les consommateurs existants — une seule source de vérité.
+ *
+ * Statique `previewProps` est fusionné SOUS les props éditées par l'utilisateur
+ * (aperçu seulement — jamais sérialisé). `slotText` rend dans le slot par
+ * défaut. Les slugs absents retombent sur `playground.defaultSlotContent`.
+ *
+ * Le Theme Builder ne monte QUE les slugs de `THEME_BUILDER_PREVIEWABLE_SLUGS`,
+ * donc les entrées ajoutées pour les fiches composants ne changent rien ici.
  */
-export const THEME_BUILDER_PREVIEW_ADAPTERS: Record<string, IThemeBuilderPreviewAdapter> = {
-    btn: { slotText: 'Button' },
-    card: { slotText: 'Card content', previewProps: { width: 240 } },
-    chip: { slotText: 'Chip' },
-    avatar: { previewProps: { icon: 'mdi-account', size: 'large' } },
-    alert: { slotText: 'A short alert message.', previewProps: { type: 'info' } },
-    'text-field': { previewProps: { label: 'Label', modelValue: 'Value', width: 240 } },
-    'textarea-field': { previewProps: { label: 'Message', modelValue: 'A few lines of text.', width: 240, rows: 3 } },
-    'number-field': { previewProps: { label: 'Amount', modelValue: 42, width: 240 } },
-    'password-field': { previewProps: { label: 'Password', modelValue: 'secret', width: 240 } },
-    select: { previewProps: { label: 'Pick one', items: ['One', 'Two', 'Three'], width: 240 } },
-    checkbox: { previewProps: { label: 'Checkbox', modelValue: true } },
-    switch: { previewProps: { label: 'Switch', modelValue: true } },
-    radio: { previewProps: { label: 'Radio', modelValue: true } },
-    'rating-field': { previewProps: { modelValue: 3 } },
-    'slider-field': { previewProps: { modelValue: 50, width: 240 } },
-    title: { slotText: 'The quick brown fox' },
-    icon: { previewProps: { icon: 'mdi-star', size: 'x-large' } },
-    badge: { slotText: 'Inbox', previewProps: { content: '4', inline: true } },
-    divider: { previewProps: { width: 240 } },
-    'progress-linear': { previewProps: { modelValue: 64, height: 8 } },
-    blockquote: { slotText: 'Design is not just what it looks like. Design is how it works.' },
-    breadcrumb: { previewProps: { items: [{ title: 'Home', href: '#' }, { title: 'Library', href: '#' }, { title: 'Data' }] } },
-    pagination: { previewProps: { length: 5, modelValue: 2 } }
-}
+export const THEME_BUILDER_PREVIEW_ADAPTERS: Record<string, IThemeBuilderPreviewAdapter> = COMPONENT_PREVIEW_ADAPTERS
 
 /**
  * CSS custom-property name fragments that map to a colour input. Everything

@@ -11,6 +11,7 @@
 import type { TMode } from 'origam/types'
 
 import type { IComponentPlaygroundControl } from '~/interfaces/components-catalog.interface'
+import type { IComponentPreviewAdapter } from '~/interfaces/component-preview.interface'
 import type { TThemeBuilderBoxModelMode, TThemeBuilderColorMode } from '~/types/theme-builder-controls.type'
 
 /** The two concrete edit modes (never 'auto'). */
@@ -69,14 +70,7 @@ export interface IThemeBuilderToken {
  * render a visible surface from props alone (need slot content or child demo
  * markup). When absent, the preview falls back to `playground.defaultSlotContent`.
  */
-export interface IThemeBuilderPreviewAdapter {
-    /** Static props merged under the user-edited props for the preview only. */
-    previewProps?: Record<string, unknown>
-    /** Plain-text slot content rendered inside the component. */
-    slotText?: string
-    /** Whether the component needs the `demo` named recipe (rendered in page). */
-    demo?: 'tabs' | 'select' | 'badge' | 'card' | 'avatar'
-}
+export type IThemeBuilderPreviewAdapter = IComponentPreviewAdapter
 
 /**
  * The serialisable theme-builder state. Only values the user ACTUALLY changed

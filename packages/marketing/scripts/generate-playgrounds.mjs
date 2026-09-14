@@ -248,13 +248,58 @@ async function buildTypeOptionsMap (db) {
     return map
 }
 
+// ─── type_kind / type_slug recovery ──────────────────────────────────────────
+
+/**
+ * `TDensity` → `density`, `TChartLegendPosition` → `chart-legend-position`.
+ * Mirrors how the ingestion slugifies a named type (verified against every
+ * `doc_entry` row of kind `type`): strip the leading `T`, kebab-case the rest.
+ */
+function typeSlugFromLabel (typeLabel) {
+    const m = typeLabel.trim().match(/^T([A-Z][A-Za-z0-9]*)$/)
+    if (!m) return null
+    return m[1].replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
+}
+
+/**
+ * Fill in `type_kind` / `type_slug` when the ingestion left them NULL.
+ *
+ * ⛔ MEASURED (#728): the 35 most recently ingested components carry
+ * `type_kind = NULL` and `type_slug = NULL` on EVERY prop row. `inferControl`
+ * branches exclusively on those two columns, so every prop fell through to
+ * `return null` and the generator emitted ZERO playground for all 35 — it
+ * reported "no playable props" for components that have dozens.
+ *
+ * `type_label` always survives, and it carries the same information, so we
+ * recover the two columns from it rather than skipping the component. Rows that
+ * already have `type_kind` are returned untouched — the behaviour for the 188
+ * pre-existing playgrounds is unchanged.
+ */
+function withRecoveredTypeMeta (prop) {
+    if (prop.type_kind) return prop
+    const label = (prop.type_label ?? '').trim()
+    if (!label) return prop
+
+    const namedSlug = typeSlugFromLabel(label)
+    if (namedSlug) return { ...prop, type_kind: 'type', type_slug: namedSlug }
+
+    if (label === 'boolean' || label === 'string' || label === 'number') {
+        return { ...prop, type_kind: 'primitive' }
+    }
+    if (parseUnionLiterals(label)) {
+        return { ...prop, type_kind: 'primitive' }
+    }
+    return prop
+}
+
 // ─── Single-prop control inference ───────────────────────────────────────────
 
 /**
  * Returns { kind, options?, defaultValue } or null when the prop is not playable.
  * prop, labelKey, labelFallback are added by the caller.
  */
-function inferControl (prop, typeOptionsMap) {
+function inferControl (rawProp, typeOptionsMap) {
+    const prop = withRecoveredTypeMeta(rawProp)
     const { name, type_label, type_slug, type_kind, optional, required } = prop
     // The extractor serialises missing defaults as the string 'undefined' — normalise to null.
     const default_value = (prop.default_value == null || prop.default_value === 'undefined')
