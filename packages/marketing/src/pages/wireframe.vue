@@ -766,7 +766,7 @@ useSeoMeta({
                 </origam-title>
 
                 <p class="wireframe-cta__desc">
-                    {{ t('wireframe.cta.description', 'All 95+ components are available today. Install origam and compose any layout in minutes.') }}
+                    {{ t('wireframe.cta.description', 'All 218 components are available today. Install origam and compose any layout in minutes.') }}
                 </p>
 
                 <nav

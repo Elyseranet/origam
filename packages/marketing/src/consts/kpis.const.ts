@@ -25,13 +25,13 @@ export const KPIS_GRID_COLUMNS = 'repeat(auto-fit, minmax(140px, 1fr))'
 export const KPIS: IKpi[] = [
     {
         valueKey: 'home.kpis.components_value',
-        valueFallback: '95',
+        valueFallback: '218',
         labelKey: 'home.kpis.components_label',
         labelFallback: 'Components',
     },
     {
         valueKey: 'home.kpis.charts_value',
-        valueFallback: '29',
+        valueFallback: '26',
         labelKey: 'home.kpis.charts_label',
         labelFallback: 'Chart primitives',
     },

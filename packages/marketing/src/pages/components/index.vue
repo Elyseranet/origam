@@ -8,9 +8,9 @@ const { t } = useT()
 
 useSeoMeta({
     title: () => t('components.meta.title', 'Components · origam design system'),
-    description: () => t('components.meta.description', 'Browse 95+ accessible, token-driven Vue 3 components grouped by category. Click any component to see its API, props, emits, slots and live examples.'),
+    description: () => t('components.meta.description', 'Browse 218 accessible, token-driven Vue 3 components grouped by category. Click any component to see its API, props, emits, slots and live examples.'),
     ogTitle: () => t('components.meta.title', 'Components · origam design system'),
-    ogDescription: () => t('components.meta.description', 'Browse 95+ accessible, token-driven Vue 3 components grouped by category.')
+    ogDescription: () => t('components.meta.description', 'Browse 218 accessible, token-driven Vue 3 components grouped by category.')
 })
 
 const { data: catalogData } = await useReferenceCatalog<IComponentEntry>('component')
@@ -68,7 +68,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
                     pill
                     data-cy="components-hero-badge"
                 >
-                    {{ t('components.hero.badge', '95+ components — Vue 3') }}
+                    {{ t('components.hero.badge', '218 components — Vue 3') }}
                 </origam-chip>
 
                 <origam-title
