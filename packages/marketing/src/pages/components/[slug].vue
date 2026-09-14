@@ -395,6 +395,7 @@ useSeoMeta({
                                     :slot-content="variant.slotContent"
                                     :instance-aria-label="variant.ariaLabel"
                                     :data-cy-suffix="`variant-${variantSlugOf(variant.label)}`"
+                                    :curated-reason="false"
                                 />
                                 <span class="component-hero__preview-variant-label">{{ variant.label }}</span>
                             </div>

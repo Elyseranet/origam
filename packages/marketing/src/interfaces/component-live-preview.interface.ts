@@ -18,4 +18,14 @@ export interface IComponentLivePreviewProps {
     instanceAriaLabel?: string
     /** Suffixe du `data-cy` de l'instance rendue. */
     dataCySuffix?: string
+    /**
+     * Autoriser le court-circuit « ce composant ne peut pas se rendre seul ».
+     *
+     * ⛔ La bande d'aperçu de l'en-tête passe `false` : ses variantes sont des
+     * données CURATÉES qui, elles, se rendent (mesuré : `audio`, `snackbar-item`
+     * et `switch-track` rendaient 3, 4 et 6 variantes avant qu'une raison
+     * générique ne les remplace toutes). Une raison ne doit jamais écraser une
+     * variante qui marche.
+     */
+    curatedReason?: boolean
 }

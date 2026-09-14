@@ -82,7 +82,8 @@
         userProps: () => ({}),
         slotContent: '',
         instanceAriaLabel: undefined,
-        dataCySuffix: 'live'
+        dataCySuffix: 'live',
+        curatedReason: true
     })
 
     /*********************************************************
@@ -110,7 +111,9 @@
      * les overlays téléportés. `renderErrorText` expose la vraie erreur plutôt
      * qu'un « indisponible » muet, qui n'apprend rien au lecteur.
      ********************************************************/
-    const unavailableReason = computed(() => previewUnavailableReasonFor(props.slug))
+    const unavailableReason = computed(() =>
+        props.curatedReason ? previewUnavailableReasonFor(props.slug) : null
+    )
 
     const unavailableReasonText = computed(() =>
         unavailableReason.value ? t(unavailableReason.value.key, unavailableReason.value.fallback) : ''

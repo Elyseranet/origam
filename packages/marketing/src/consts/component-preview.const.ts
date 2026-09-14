@@ -20,8 +20,11 @@ import type { IComponentPreviewAdapter } from '~/interfaces/component-preview.in
  *                                          → `unavailableReason*`, jamais un
  *                                            repli muet.
  *
- * Les props utilisées ici sont TOUTES vérifiées contre l'API vivante
- * (`doc_prop`), jamais inventées.
+ * ⛔ Les props utilisées ici sont vérifiées contre les INTERFACES du DS
+ * (`packages/ds/src/interfaces/**`), jamais inventées. Ne PAS se fier à
+ * `doc_prop` seul pour cet audit : la table est incomplète (elle ignore par
+ * exemple `value` sur `btn`, pourtant fourni par `IGroupItemProps`), et un
+ * contrôle qui s'y fie produit des faux positifs.
  */
 
 /**
@@ -126,11 +129,13 @@ export const COMPONENT_PREVIEW_ADAPTERS: Record<string, IComponentPreviewAdapter
 
     /* ── Conteneurs : rendaient 0 × 0 faute d'enfants (#728) ────────────── */
     'avatar-group': {
-        slotChildren: [
-            { tag: 'origam-avatar', props: { icon: 'mdi-account' } },
-            { tag: 'origam-avatar', props: { icon: 'mdi-account-tie' } },
-            { tag: 'origam-avatar', props: { icon: 'mdi-account-hard-hat' } }
-        ]
+        previewProps: {
+            items: [
+                { icon: 'mdi-account' },
+                { icon: 'mdi-account-tie' },
+                { icon: 'mdi-account-hard-hat' }
+            ]
+        }
     },
     'btn-group': {
         slotChildren: [
@@ -168,15 +173,15 @@ export const COMPONENT_PREVIEW_ADAPTERS: Record<string, IComponentPreviewAdapter
     'expansion-panels': {
         previewProps: { width: 360, modelValue: 0 },
         slotChildren: [
-            { tag: 'origam-expansion-panel', props: { title: 'First panel', text: 'The content of the first panel.' } },
-            { tag: 'origam-expansion-panel', props: { title: 'Second panel', text: 'The content of the second panel.' } }
+            { tag: 'origam-expansion-panel', props: { title: 'First panel' }, text: 'The content of the first panel.' },
+            { tag: 'origam-expansion-panel', props: { title: 'Second panel' }, text: 'The content of the second panel.' }
         ]
     },
     form: {
         previewProps: { width: 280 },
         slotChildren: [
             { tag: 'origam-text-field', props: { label: 'Email', modelValue: 'ada@example.com' } },
-            { tag: 'origam-btn', props: { type: 'submit', color: 'primary' }, text: 'Submit' }
+            { tag: 'origam-btn', props: { color: 'primary' }, text: 'Submit' }
         ]
     },
     grid: {
@@ -190,20 +195,18 @@ export const COMPONENT_PREVIEW_ADAPTERS: Record<string, IComponentPreviewAdapter
     masonry: {
         previewProps: { columns: 3, gap: '0.5rem', width: 320 },
         slotChildren: [
-            { tag: 'origam-card', text: 'One' },
-            { tag: 'origam-card', text: 'Two' },
-            { tag: 'origam-card', text: 'Three' }
+            { tag: 'origam-card', props: { height: 80 }, text: 'One' },
+            { tag: 'origam-card', props: { height: 56 }, text: 'Two' },
+            { tag: 'origam-card', props: { height: 96 }, text: 'Three' }
         ]
     },
     list: {
-        previewProps: {
-            width: 260,
-            items: [
-                { title: 'Inbox', prependIcon: 'mdi-inbox' },
-                { title: 'Starred', prependIcon: 'mdi-star' },
-                { title: 'Archive', prependIcon: 'mdi-archive' }
-            ]
-        }
+        previewProps: { width: 260 },
+        slotChildren: [
+            { tag: 'origam-list-item', props: { title: 'Inbox', prependIcon: 'mdi-inbox' } },
+            { tag: 'origam-list-item', props: { title: 'Starred', prependIcon: 'mdi-star' } },
+            { tag: 'origam-list-item', props: { title: 'Archive', prependIcon: 'mdi-archive' } }
+        ]
     },
     'list-group': {
         previewProps: { title: 'Reports' },
@@ -255,6 +258,12 @@ export const COMPONENT_PREVIEW_ADAPTERS: Record<string, IComponentPreviewAdapter
             alt: 'Sample image'
         }
     },
+    'audio-waveform': {
+        previewProps: {
+            peaks: [0.2, 0.55, 0.35, 0.8, 0.45, 0.95, 0.3, 0.7, 0.4, 0.85, 0.25, 0.6, 0.5, 0.9, 0.35],
+            progress: 40
+        }
+    },
     'qr-code': { previewProps: { value: 'https://origam.dev', size: 140 } },
     'number-format': { previewProps: { value: 1234567.89 } },
     'data-text': { previewProps: { text: 'A short data value' } },
@@ -296,9 +305,72 @@ export const COMPONENT_PREVIEW_ADAPTERS: Record<string, IComponentPreviewAdapter
     },
     'chart-legend': {
         previewProps: {
+            items: CHART_DEMO_SERIES.map((series, index) => ({
+                series,
+                index,
+                color: index === 0 ? '#7c3aed' : '#dc2626',
+                visible: true
+            }))
+        }
+    },
+    'data-table': {
+        previewProps: {
+            width: 420,
+            headers: [
+                { key: 'name', title: 'Name' },
+                { key: 'role', title: 'Role' },
+                { key: 'seats', title: 'Seats', align: 'end' }
+            ],
             items: [
-                { name: 'Revenue', color: 'primary', visible: true },
-                { name: 'Costs', color: 'danger', visible: true }
+                { name: 'Ada Lovelace', role: 'Owner', seats: 4 },
+                { name: 'Alan Turing', role: 'Admin', seats: 2 },
+                { name: 'Grace Hopper', role: 'Member', seats: 1 }
+            ],
+            itemsPerPage: 5
+        }
+    },
+    bracket: {
+        previewProps: {
+            width: 420,
+            rounds: [
+                {
+                    id: 'semis',
+                    title: 'Semi-finals',
+                    matches: [
+                        {
+                            id: 'm1',
+                            competitorA: { id: 'a', name: 'Alpha', seed: 1 },
+                            competitorB: { id: 'b', name: 'Bravo', seed: 4 },
+                            scoreA: 2,
+                            scoreB: 1,
+                            winnerId: 'a',
+                            nextMatchId: 'm3'
+                        },
+                        {
+                            id: 'm2',
+                            competitorA: { id: 'c', name: 'Charlie', seed: 2 },
+                            competitorB: { id: 'd', name: 'Delta', seed: 3 },
+                            scoreA: 0,
+                            scoreB: 2,
+                            winnerId: 'd',
+                            nextMatchId: 'm3'
+                        }
+                    ]
+                },
+                {
+                    id: 'final',
+                    title: 'Final',
+                    matches: [
+                        {
+                            id: 'm3',
+                            competitorA: { id: 'a', name: 'Alpha', seed: 1 },
+                            competitorB: { id: 'd', name: 'Delta', seed: 3 },
+                            scoreA: 3,
+                            scoreB: 2,
+                            winnerId: 'a'
+                        }
+                    ]
+                }
             ]
         }
     },
@@ -328,7 +400,6 @@ export const COMPONENT_PREVIEW_ADAPTERS: Record<string, IComponentPreviewAdapter
     'chart-pyramid': CHART_DEMO,
     'chart-sankey': CHART_DEMO,
     'chart-heatmap': CHART_DEMO,
-    'chart-honeycomb': CHART_DEMO,
     'chart-pictorial': CHART_DEMO,
     'chart-gauge': CHART_SINGLE_DEMO,
     'chart-bullet': CHART_SINGLE_DEMO,
@@ -336,9 +407,6 @@ export const COMPONENT_PREVIEW_ADAPTERS: Record<string, IComponentPreviewAdapter
     /* ── Sous-parties internes : aperçu impossible, on dit POURQUOI ─────── */
     'chart-axis': REASON_NEEDS_PARENT,
     'chart-tooltip': REASON_NEEDS_PARENT,
-    'chart-box-plot': REASON_RUNTIME_DATA,
-    'chart-candlestick': REASON_RUNTIME_DATA,
-    'chart-map': REASON_RUNTIME_DATA,
     'data-table-column-cell': REASON_NEEDS_PARENT,
     'data-table-footer': REASON_NEEDS_PARENT,
     'data-table-group-header-row': REASON_NEEDS_PARENT,
@@ -355,11 +423,9 @@ export const COMPONENT_PREVIEW_ADAPTERS: Record<string, IComponentPreviewAdapter
     'list-group-activator': REASON_NEEDS_PARENT,
     'item-group-item': REASON_NEEDS_PARENT,
     'slider-field-track': REASON_NEEDS_PARENT,
-    'switch-track': REASON_NEEDS_PARENT,
     'virtual-scroll-item': REASON_NEEDS_PARENT,
     'window-item': REASON_NEEDS_PARENT,
     'carousel-item': REASON_NEEDS_PARENT,
-    'snackbar-item': REASON_NEEDS_PARENT,
     'parallax-element': REASON_NEEDS_PARENT,
     'parallax-layer': REASON_NEEDS_PARENT,
     tab: REASON_NEEDS_PARENT,
@@ -367,22 +433,11 @@ export const COMPONENT_PREVIEW_ADAPTERS: Record<string, IComponentPreviewAdapter
     'bracket-competitor': REASON_NEEDS_PARENT,
     'bracket-match': REASON_NEEDS_PARENT,
     'bracket-round': REASON_NEEDS_PARENT,
-    'file-field-drag-n-drop-item': REASON_RUNTIME_DATA,
-    'file-field-list-item': REASON_RUNTIME_DATA,
     'infinite-scroll-intersect': REASON_RUNTIME_DATA,
     media: REASON_RUNTIME_DATA,
     'media-controller': REASON_RUNTIME_DATA,
-    'media-scrubber': REASON_RUNTIME_DATA,
-    'media-volume-control': REASON_RUNTIME_DATA,
     'rich-toolbar': REASON_RUNTIME_DATA,
     'textarea-field-rich-toolbar': REASON_RUNTIME_DATA,
-    'date-picker-month': REASON_NEEDS_PARENT,
-    'date-picker-months': REASON_NEEDS_PARENT,
-    'date-picker-years': REASON_NEEDS_PARENT,
-    'date-picker-controls': REASON_NEEDS_PARENT,
-    'date-picker-header': REASON_NEEDS_PARENT,
-    audio: REASON_MEDIA_SOURCE,
-    'audio-waveform': REASON_MEDIA_SOURCE,
     video: REASON_MEDIA_SOURCE,
 
     /* ── Overlays : la surface est téléportée hors de l'aperçu ──────────── */
@@ -398,7 +453,6 @@ export const COMPONENT_PREVIEW_ADAPTERS: Record<string, IComponentPreviewAdapter
     snackbar: REASON_PORTAL,
     'snackbar-group': REASON_PORTAL,
     snack: REASON_PORTAL,
-    picker: REASON_PORTAL,
 
     /* ── Transitions : un wrapper ne rend que son enfant ────────────────── */
     transition: { slotChildren: [{ tag: 'origam-card', text: 'Transitioned content' }] },
