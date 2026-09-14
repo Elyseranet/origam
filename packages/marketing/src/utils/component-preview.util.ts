@@ -23,10 +23,12 @@ export const previewAdapterFor = (slug: string): IComponentPreviewAdapter =>
 /**
  * Tag réellement enregistré du composant.
  *
- * ⚠️ `origam-${slug}` est FAUX pour 3 fiches (`media` → `origam-media-controller`,
- * `grids` → `origam-container`, `slide` → `origam-slide-group`) : Vue rend alors
- * un custom element inconnu, donc une boîte 0 × 0 silencieuse. La colonne `tag`
- * de la fiche fait foi.
+ * ⚠️ NE PAS revenir à `origam-${slug}` en dur. Les 3 fiches dont le `tag`
+ * divergeait du slug (`media` → `origam-media-controller`, `grids` →
+ * `origam-container`, `slide` → `origam-slide-group`) ont été retirées du
+ * catalogue depuis (PR #725, plus aucune divergence en base à ce jour) — mais
+ * quand la divergence existe, Vue rend un custom element inconnu, donc une
+ * boîte 0 × 0 parfaitement silencieuse. La colonne `tag` de la fiche fait foi.
  */
 export const previewTagFor = (slug: string, doc?: IComponentDoc | null): string =>
     doc?.tag ?? `origam-${slug}`

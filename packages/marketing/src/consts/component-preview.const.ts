@@ -434,9 +434,7 @@ export const COMPONENT_PREVIEW_ADAPTERS: Record<string, IComponentPreviewAdapter
     'bracket-match': REASON_NEEDS_PARENT,
     'bracket-round': REASON_NEEDS_PARENT,
     'infinite-scroll-intersect': REASON_RUNTIME_DATA,
-    media: REASON_RUNTIME_DATA,
     'media-controller': REASON_RUNTIME_DATA,
-    'rich-toolbar': REASON_RUNTIME_DATA,
     'textarea-field-rich-toolbar': REASON_RUNTIME_DATA,
     video: REASON_MEDIA_SOURCE,
 
