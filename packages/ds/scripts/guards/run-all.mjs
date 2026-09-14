@@ -35,7 +35,8 @@ const GUARDS = [
     't-fallback.mjs',
     'composable-setup-reads.mjs',
     'unemitted-declarations.mjs',
-    'composables-doc-sync.mjs'
+    'composables-doc-sync.mjs',
+    'prop-shadowing.mjs'
 ]
 
 /*********************************************************
