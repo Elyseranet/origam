@@ -583,11 +583,15 @@
 	 * unmount rejects the in-flight fetch, and `signal.aborted` is the
 	 * guard that keeps the rejection handler from touching `window`
 	 * once the component is gone.
+	 *
+	 * @description
+	 * `pendingRevokes` maps a blob URL whose deferred revoke has not
+	 * fired yet to the timer handle that will revoke it, so unmount can
+	 * cancel the timer and revoke immediately instead of leaving a 30s
+	 * `window.setTimeout` pointing at a dead component.
 	 ********************************************************/
 	const downloadAbort = new AbortController()
 
-	// Blob URLs whose deferred revoke has not fired yet, mapped to the
-	// timer handle that will revoke them.
 	const pendingRevokes = new Map<string, number>()
 
 	onBeforeUnmount(() => {
@@ -660,8 +664,6 @@
 				return response.blob()
 			})
 			.then((blob) => {
-				// The component may have been unmounted while the body
-				// was streaming — `document` is no longer ours to touch.
 				if (downloadAbort.signal.aborted) return
 
 				const blobUrl = URL.createObjectURL(blob)
@@ -669,8 +671,6 @@
 				// Defer revoke so the browser has time to start streaming.
 				// 30s is generous; multi-GB files might need more but
 				// holding the blob in memory beyond that is wasteful.
-				// Tracked so unmount can cancel the timer and revoke now
-				// instead of leaving a 30s `window.setTimeout` behind.
 				const handle = window.setTimeout(() => {
 					pendingRevokes.delete(blobUrl)
 					URL.revokeObjectURL(blobUrl)
@@ -679,9 +679,6 @@
 				pendingRevokes.set(blobUrl, handle)
 			})
 			.catch(() => {
-				// Unmounted (or explicitly aborted): the download intent
-				// died with the component. Doing anything here is what
-				// crashed the CI run — see the teardown block above.
 				if (downloadAbort.signal.aborted) return
 
 				// CORS-denied or offline. Last-resort: open the URL in
