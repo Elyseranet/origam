@@ -3,10 +3,14 @@ import type { IOptions } from '@origam/interfaces'
 /**
  * Aspect ratios for `HstSelect` controls.
  *
- * `IImgProps.aspectRatio` is typed `number`, not a string: the component feeds
- * it to `padding-block-end: (1 / ratio) * 100%` on the sizer element. The
- * values below are therefore real divisions, not `'16/9'` literals — a string
- * would reach the sizer as `NaN` and collapse the box.
+ * `IImgProps.aspectRatio` is typed `number`, not a string. The values below are
+ * therefore real divisions, not `'16/9'` literals.
+ *
+ * #709 — the component used to feed the value to
+ * `padding-block-end: (1 / ratio) * 100%` on a `__sizer` child; it now emits
+ * the native `aspect-ratio` on the root. A string form like `'16/9'` is
+ * accepted by the composable too (and preserved as `aspect-ratio: 16 / 9`),
+ * but these options stay numeric to match the `number` prop type.
  *
  * Labels keep the human-readable form so the control stays readable in the
  * story panel, where `1.7777777777777777` would not be.

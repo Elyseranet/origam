@@ -32,10 +32,11 @@ test.describe('OrigamImg', () => {
         const img = sandbox.locator('.origam-img').first()
         await expect(img).toBeVisible({ timeout: 5000 })
 
-        // The component wraps an OrigamResponsive sizer — verify the sizer
-        // element is part of the rendered tree.
-        const sizer = sandbox.locator('.origam-responsive__sizer').first()
-        await expect(sizer).toBeAttached({ timeout: 5000 })
+        // The component wraps an OrigamResponsive root — verify that root is
+        // part of the rendered tree. (#709 removed the `__sizer` child this
+        // used to look for; the wrapper itself is what the assertion meant.)
+        const responsive = sandbox.locator('.origam-responsive').first()
+        await expect(responsive).toBeAttached({ timeout: 5000 })
     })
 
     test('cover variant — applies object-fit: cover to inner picture', async ({ page }) => {
@@ -75,18 +76,27 @@ test.describe('OrigamImg', () => {
         expect(parseFloat(radius)).toBeGreaterThan(0)
     })
 
-    test('aspect-ratio variant — sizer padding-block-end is non-zero', async ({ page }) => {
+    // #709 — was "sizer padding-block-end is non-zero". The sizer is gone and
+    // the ratio sits on the root; a non-zero HEIGHT on the root is the same
+    // assertion made where it counts.
+    test('aspect-ratio variant — the root box has a real height', async ({ page }) => {
         await page.goto(IMG_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Prop — aspectRatio', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const sizer = sandbox.locator('.origam-responsive__sizer').first()
-        await expect(sizer).toBeAttached({ timeout: 5000 })
+        const root = sandbox.locator('.origam-img').first()
+        await expect(root).toBeAttached({ timeout: 5000 })
 
-        const pbe = await sizer.evaluate((el) => getComputedStyle(el).paddingBlockEnd)
-        expect(parseFloat(pbe)).toBeGreaterThan(0)
+        const measured = await root.evaluate((el) => {
+            const r = el.getBoundingClientRect()
+
+            return { height: r.height, ratio: getComputedStyle(el).aspectRatio }
+        })
+
+        expect(measured.ratio).not.toBe('auto')
+        expect(measured.height).toBeGreaterThan(0)
     })
 
     test('lazy-src variant — preload class adds the blur filter', async ({ page }) => {

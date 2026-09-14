@@ -18,6 +18,58 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### ⚠️ BREAKING — aspect ratio now uses CSS `aspect-ratio`; an explicit `height` also constrains the width
+
+`<OrigamResponsive>`, `<OrigamImg>`, `<OrigamCarouselItem>` and `<OrigamVideo>`
+held their ratio through a `__sizer` child (`padding-block-end` as a
+percentage) paired with a pull-back `margin-block-start: -N%` on `__content`.
+That pair is replaced by the native `aspect-ratio` property.
+
+**Why it had to change.** The pull-back margin cancelled the sizer's own
+contribution to the container height — but only when the default slot was
+filled (`__content` is `v-if="slots.default"`). `<OrigamImg>` renders into
+`#additional`, never `#default`, so it never emitted the margin and appeared
+healthy. Measured in Chromium, parent `max-width: 480px`:
+
+| case | before | after |
+|---|---|---|
+| `<OrigamResponsive>` 16/9 | **`480 × 26`** | **`480 × 270`** |
+| `<OrigamResponsive>` prop `aspectRatio` 16/9 | aspect **1.473** | aspect **1.778** |
+| `<OrigamResponsive>` prop `aspectRatio` 4/3 | aspect **1.070** | aspect **1.334** |
+| `<OrigamImg>` (3 cases) | — | **identical to the pixel** |
+| `<OrigamCarouselItem>` | `596 × 500` | `596 × 500` |
+
+Both ratios resolved to the **same height** before: the `aspectRatio` prop of
+`<OrigamResponsive>` did nothing at all.
+
+**What changes for you.** `aspect-ratio` resolves the *missing* axis in both
+directions; the padding hack could only derive height from width. An explicit
+`height` therefore now constrains the width too:
+
+```
+height: 120px on a 16/9 box    before: 480 × 120    after: 213.33 × 120
+```
+
+**Migration** — if you set a height and want the full width (a banner, for
+instance), set the width explicitly as well:
+
+```vue
+<origam-responsive :aspect-ratio="16 / 9" height="120px" width="100%"/>
+```
+
+This was a deliberate decision: the component's job is to hold its ratio, and
+honouring it in both axes is the faithful behaviour. Measured:
+`height` + `width: 400px` renders `400 × 120`.
+
+**Removed:** the `__sizer` child and its SCSS rule, `contentStyles` (the
+pull-back margin), the 4 `__sizer` tokens across the 4 token sheets, and the
+dead `.origam-img--booting :deep(.origam-responsive__sizer)` rule with its
+local token. The `aspect-ratio-{default,square,portrait}` tokens stay —
+already dormant beforehand, separate debt.
+
+`<OrigamVideo>` was a fourth consumer, not listed in the ticket. It carried a
+`test.fail` describing this exact fix word for word; removed, the test passes.
+
 ### ⚠️ BREAKING — `inline` removed from `IResponsiveProps` (so from `<OrigamResponsive>`, `<OrigamImg>`, `<OrigamCarouselItem>`)
 
 **The prop made the component disappear.** It is not a tuning problem, it is

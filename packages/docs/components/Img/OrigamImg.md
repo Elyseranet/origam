@@ -169,8 +169,8 @@ interface ISrcObject {
 ## Anatomy
 
 ```html
+<!-- the root carries `aspect-ratio` from the `aspectRatio` prop (#709) -->
 <div class="origam-responsive origam-img">
-    <div class="origam-responsive__sizer"></div>
     <img class="origam-img__picture origam-img__picture--cover" />
     <div class="origam-img__gradient"></div>
     <!-- placeholder / error overlays as needed -->

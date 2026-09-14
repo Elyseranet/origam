@@ -485,12 +485,6 @@
 
 		z-index: var(--origam-img---z-index);
 
-		&--booting {
-			&:deep(.origam-responsive__sizer) {
-				transition: var(--origam-img--booting---transition);
-			}
-		}
-
 		&--rounded {
 			border-radius: var(--origam-radius---2xl, 24px);
 		}
@@ -573,8 +567,6 @@
 <style>
 	:root {
 		--origam-img---z-index: 0;
-
-		--origam-img--booting---transition: none;
 
 		--origam-img--rounded---border-radius: 4px;
 
