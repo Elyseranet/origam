@@ -19,22 +19,6 @@
 					role="listitem"
 					:style="getItemStyle(idx)"
 			>
-				<!--
-					Render the extracted vnode DIRECTLY. `<component :is>` on a
-					VNode hits `createVNode`'s `isVNode(type)` branch, which
-					clones it and returns the clone — no wrapper component.
-
-					It used to read `:is="{ render: () => child }"`. That object
-					literal is rebuilt on EVERY render pass, so Vue saw a
-					different component type each time and destroyed / recreated
-					the whole child subtree instead of patching it. Measured in
-					Chromium on a single viewport resize: 117 nodes added, 117
-					removed, and 0 of the 9 slot children kept their DOM node.
-					Every child therefore lost focus, scroll position, media
-					playback, CSS transition state and component state, and
-					re-ran its `onMounted` side effects, on every relayout.
-					See #733.
-				-->
 				<component
 						:is="child"
 				/>
@@ -47,6 +31,26 @@
 		lang="ts"
 		setup
 >
+	/*********************************************************
+	 * Rendu des enfants — `<component :is="child" />`
+	 *
+	 * @description
+	 * Le template rend le vnode extrait DIRECTEMENT. `<component :is>`
+	 * sur un VNode emprunte la branche `isVNode(type)` de `createVNode`,
+	 * qui le clone et renvoie le clone — sans composant enveloppe.
+	 *
+	 * @description
+	 * Il lisait auparavant `:is="{ render: () => child }"`. Cet objet
+	 * litteral est reconstruit a CHAQUE passe de rendu, donc Vue voyait
+	 * un type de composant different a chaque fois et detruisait /
+	 * recreait tout le sous-arbre enfant au lieu de le patcher. Mesure
+	 * dans Chromium sur un seul redimensionnement : 117 noeuds ajoutes,
+	 * 117 retires, et 0 des 9 enfants de slot conservant son noeud DOM.
+	 * Chaque enfant perdait donc focus, position de scroll, lecture
+	 * media, etat de transition CSS et etat de composant, et rejouait
+	 * ses effets `onMounted`, a chaque relayout. Voir #733.
+	 ********************************************************/
+
 	import {
 		computed,
 		onMounted,
