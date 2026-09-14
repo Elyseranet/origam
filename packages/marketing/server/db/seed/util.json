@@ -1,7 +1,7 @@
 {
   "kind": "util",
-  "exportedAt": "2026-09-14T14:04:03.537Z",
-  "sourceCommit": "c425a79f",
+  "exportedAt": "2026-09-14T20:22:53.720Z",
+  "sourceCommit": "9fad04ba",
   "entryCount": 371,
   "entries": [
     {
@@ -3084,6 +3084,82 @@
     {
       "entry": {
         "kind": "util",
+        "slug": "classic-select-strategy",
+        "name": "classicSelectStrategy",
+        "category": "Commons",
+        "domain": null,
+        "icon": "mdi-checkbox-multiple-marked-outline",
+        "description_key": "utils.catalog.classic_select_strategy.description",
+        "description_fallback": "Returns a TStrategySelect object that implements classic tree-selection behaviour: selecting a node propagates to all its descendants and recalculates the indeterminate state of its ancestors.",
+        "definition": null,
+        "signature": "function classicSelectStrategy(mandatory?: boolean): TStrategySelect",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/nested.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "mandatory",
+          "type": "boolean",
+          "required": false,
+          "default_value": null,
+          "position": 0,
+          "description_key": "utils.detail.classic_select_strategy.param_mandatory",
+          "description_fallback": "When true, at least one item must remain selected — deselecting the last selected item is a no-op."
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "TStrategySelect",
+          "position": 0,
+          "description_key": "utils.detail.classic_select_strategy.returns",
+          "description_fallback": "A strategy object with select and in methods that drive tree-selection state in OrigamTreeview and similar components."
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "utils.detail.classic_select_strategy.example_basic",
+          "title_fallback": "Pass to OrigamTreeview",
+          "code": "import { classicSelectStrategy } from 'origam'\n\n// Used internally by OrigamTreeview via the selectStrategy prop\n<origam-treeview select-strategy=\"classic\" />",
+          "lang": "html"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "related",
+          "to_kind": "util",
+          "to_slug": "cyclic-movement",
+          "to_name": null,
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "util",
         "slug": "class-to-hex",
         "name": "classToHex",
         "category": "Commons",
@@ -3158,82 +3234,6 @@
           "rel_type": "related",
           "to_kind": "util",
           "to_slug": "darken",
-          "to_name": null,
-          "prop_name": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "util",
-        "slug": "classic-select-strategy",
-        "name": "classicSelectStrategy",
-        "category": "Commons",
-        "domain": null,
-        "icon": "mdi-checkbox-multiple-marked-outline",
-        "description_key": "utils.catalog.classic_select_strategy.description",
-        "description_fallback": "Returns a TStrategySelect object that implements classic tree-selection behaviour: selecting a node propagates to all its descendants and recalculates the indeterminate state of its ancestors.",
-        "definition": null,
-        "signature": "function classicSelectStrategy(mandatory?: boolean): TStrategySelect",
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/utils/Commons/nested.util.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [
-        {
-          "name": "mandatory",
-          "type": "boolean",
-          "required": false,
-          "default_value": null,
-          "position": 0,
-          "description_key": "utils.detail.classic_select_strategy.param_mandatory",
-          "description_fallback": "When true, at least one item must remain selected — deselecting the last selected item is a no-op."
-        }
-      ],
-      "returns": [
-        {
-          "name": null,
-          "type": "TStrategySelect",
-          "position": 0,
-          "description_key": "utils.detail.classic_select_strategy.returns",
-          "description_fallback": "A strategy object with select and in methods that drive tree-selection state in OrigamTreeview and similar components."
-        }
-      ],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "utils.detail.classic_select_strategy.example_basic",
-          "title_fallback": "Pass to OrigamTreeview",
-          "code": "import { classicSelectStrategy } from 'origam'\n\n// Used internally by OrigamTreeview via the selectStrategy prop\n<origam-treeview select-strategy=\"classic\" />",
-          "lang": "html"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "related",
-          "to_kind": "util",
-          "to_slug": "cyclic-movement",
           "to_name": null,
           "prop_name": null,
           "position": 0,
@@ -7218,6 +7218,101 @@
     {
       "entry": {
         "kind": "util",
+        "slug": "focusable-children",
+        "name": "focusableChildren",
+        "category": "Commons",
+        "domain": null,
+        "icon": "mdi-function-variant",
+        "description_key": "utils.catalog.focusable_children.description",
+        "description_fallback": "Return all focusable descendant elements inside a container. By default filters out elements with tabIndex=\"-1\" so only tab-reachable elements are included.",
+        "definition": null,
+        "signature": "function focusableChildren(el: Element, filterByTabIndex?: boolean = true): HTMLElement[]",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/commons.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "el",
+          "type": "Element",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": "utils.detail.focusable_children.param_el",
+          "description_fallback": "The container element to query."
+        },
+        {
+          "name": "filterByTabIndex",
+          "type": "boolean",
+          "required": false,
+          "default_value": "true",
+          "position": 1,
+          "description_key": "utils.detail.focusable_children.param_filter_by_tab_index",
+          "description_fallback": "When true (default) elements with tabindex=\"-1\" are excluded. Pass false to include all focusable elements regardless of tab order."
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "HTMLElement[]",
+          "position": 0,
+          "description_key": "utils.detail.focusable_children.returns",
+          "description_fallback": "Ordered array of focusable HTMLElements inside the container."
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "utils.detail.focusable_children.example_basic",
+          "title_fallback": "List all tab-reachable children",
+          "code": "import { focusableChildren } from 'origam'\n\nconst dialog = document.querySelector('#my-dialog')!\nconst tabbable = focusableChildren(dialog)\nconsole.log(tabbable.length) // number of tab stops inside the dialog",
+          "lang": "typescript"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "related",
+          "to_kind": "util",
+          "to_slug": "focus-child",
+          "to_name": null,
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "util",
+          "to_slug": "focus-ripple-hide",
+          "to_name": null,
+          "prop_name": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "util",
         "slug": "focus-child",
         "name": "focusChild",
         "category": "Commons",
@@ -7388,101 +7483,6 @@
           "rel_type": "related",
           "to_kind": "util",
           "to_slug": "focusable-children",
-          "to_name": null,
-          "prop_name": null,
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "util",
-        "slug": "focusable-children",
-        "name": "focusableChildren",
-        "category": "Commons",
-        "domain": null,
-        "icon": "mdi-function-variant",
-        "description_key": "utils.catalog.focusable_children.description",
-        "description_fallback": "Return all focusable descendant elements inside a container. By default filters out elements with tabIndex=\"-1\" so only tab-reachable elements are included.",
-        "definition": null,
-        "signature": "function focusableChildren(el: Element, filterByTabIndex?: boolean = true): HTMLElement[]",
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/utils/Commons/commons.util.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [
-        {
-          "name": "el",
-          "type": "Element",
-          "required": true,
-          "default_value": null,
-          "position": 0,
-          "description_key": "utils.detail.focusable_children.param_el",
-          "description_fallback": "The container element to query."
-        },
-        {
-          "name": "filterByTabIndex",
-          "type": "boolean",
-          "required": false,
-          "default_value": "true",
-          "position": 1,
-          "description_key": "utils.detail.focusable_children.param_filter_by_tab_index",
-          "description_fallback": "When true (default) elements with tabindex=\"-1\" are excluded. Pass false to include all focusable elements regardless of tab order."
-        }
-      ],
-      "returns": [
-        {
-          "name": null,
-          "type": "HTMLElement[]",
-          "position": 0,
-          "description_key": "utils.detail.focusable_children.returns",
-          "description_fallback": "Ordered array of focusable HTMLElements inside the container."
-        }
-      ],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "utils.detail.focusable_children.example_basic",
-          "title_fallback": "List all tab-reachable children",
-          "code": "import { focusableChildren } from 'origam'\n\nconst dialog = document.querySelector('#my-dialog')!\nconst tabbable = focusableChildren(dialog)\nconsole.log(tabbable.length) // number of tab stops inside the dialog",
-          "lang": "typescript"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "related",
-          "to_kind": "util",
-          "to_slug": "focus-child",
-          "to_name": null,
-          "prop_name": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "related",
-          "to_kind": "util",
-          "to_slug": "focus-ripple-hide",
           "to_name": null,
           "prop_name": null,
           "position": 1,
@@ -16058,92 +16058,6 @@
     {
       "entry": {
         "kind": "util",
-        "slug": "in-viewport",
-        "name": "inViewport",
-        "category": "Commons",
-        "domain": null,
-        "icon": "mdi-eye-outline",
-        "description_key": "utils.catalog.in_viewport.description",
-        "description_fallback": "Returns true if a bounding box (IBox or DOMRect) is at least partially visible in the current viewport.",
-        "definition": null,
-        "signature": "function inViewport(element: IBox | DOMRect): boolean",
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/utils/Commons/point.util.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [
-        {
-          "name": "element",
-          "type": "IBox | DOMRect",
-          "required": true,
-          "default_value": null,
-          "position": 0,
-          "description_key": "utils.detail.in_viewport.param_element",
-          "description_fallback": "A bounding box with top, right, bottom, left properties. Typically obtained via element.getBoundingClientRect()."
-        }
-      ],
-      "returns": [
-        {
-          "name": null,
-          "type": "boolean",
-          "position": 0,
-          "description_key": "utils.detail.in_viewport.returns",
-          "description_fallback": "true when any part of the box is within the viewport boundaries; false otherwise."
-        }
-      ],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "utils.detail.in_viewport.example_basic",
-          "title_fallback": "Check element visibility on scroll",
-          "code": "import { inViewport } from 'origam'\n\nconst rect = myElement.getBoundingClientRect()\nif (inViewport(rect)) {\n  console.log('Element is visible')\n}",
-          "lang": "typescript"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "related",
-          "to_kind": "util",
-          "to_slug": "get-center",
-          "to_name": null,
-          "prop_name": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "related",
-          "to_kind": "util",
-          "to_slug": "element-to-viewport",
-          "to_name": null,
-          "prop_name": null,
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "util",
         "slug": "independent-select-strategy",
         "name": "independentSelectStrategy",
         "category": "Commons",
@@ -16762,6 +16676,92 @@
           "rel_type": "related",
           "to_kind": "util",
           "to_slug": "intent-fg-expr",
+          "to_name": null,
+          "prop_name": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "in-viewport",
+        "name": "inViewport",
+        "category": "Commons",
+        "domain": null,
+        "icon": "mdi-eye-outline",
+        "description_key": "utils.catalog.in_viewport.description",
+        "description_fallback": "Returns true if a bounding box (IBox or DOMRect) is at least partially visible in the current viewport.",
+        "definition": null,
+        "signature": "function inViewport(element: IBox | DOMRect): boolean",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/point.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "element",
+          "type": "IBox | DOMRect",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": "utils.detail.in_viewport.param_element",
+          "description_fallback": "A bounding box with top, right, bottom, left properties. Typically obtained via element.getBoundingClientRect()."
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "boolean",
+          "position": 0,
+          "description_key": "utils.detail.in_viewport.returns",
+          "description_fallback": "true when any part of the box is within the viewport boundaries; false otherwise."
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "utils.detail.in_viewport.example_basic",
+          "title_fallback": "Check element visibility on scroll",
+          "code": "import { inViewport } from 'origam'\n\nconst rect = myElement.getBoundingClientRect()\nif (inViewport(rect)) {\n  console.log('Element is visible')\n}",
+          "lang": "typescript"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "related",
+          "to_kind": "util",
+          "to_slug": "get-center",
+          "to_name": null,
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "util",
+          "to_slug": "element-to-viewport",
           "to_name": null,
           "prop_name": null,
           "position": 1,
@@ -18726,6 +18726,92 @@
     {
       "entry": {
         "kind": "util",
+        "slug": "iso-week-number",
+        "name": "isoWeekNumber",
+        "category": "Calendar",
+        "domain": null,
+        "icon": "mdi-calendar-week-outline",
+        "description_key": "utils.catalog.iso_week_number.description",
+        "description_fallback": "Returns the ISO 8601 week number for a given Date. Week 1 is the week containing the year's first Thursday (Thursday-of-week / first-Thursday-of-year algorithm).",
+        "definition": null,
+        "signature": "function isoWeekNumber(date: Date): number",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Calendar/date.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "date",
+          "type": "Date",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": "utils.detail.iso_week_number.param_date",
+          "description_fallback": "The date whose ISO week number is computed."
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "number",
+          "position": 0,
+          "description_key": "utils.detail.iso_week_number.returns",
+          "description_fallback": "Integer week number in the range [1, 53] per ISO 8601."
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "utils.detail.iso_week_number.example_basic",
+          "title_fallback": "ISO week number for specific dates",
+          "code": "import { isoWeekNumber } from 'origam'\n\nisoWeekNumber(new Date('2024-01-01')) // → 1\nisoWeekNumber(new Date('2024-12-30')) // → 1  (belongs to week 1 of 2025)\nisoWeekNumber(new Date('2024-06-15')) // → 24",
+          "lang": "typescript"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "related",
+          "to_kind": "util",
+          "to_slug": "is-weekend",
+          "to_name": null,
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "util",
+          "to_slug": "is-valid",
+          "to_name": null,
+          "prop_name": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "util",
         "slug": "is-parsable-color",
         "name": "isParsableColor",
         "category": "Commons",
@@ -20009,92 +20095,6 @@
           "rel_type": "related",
           "to_kind": "util",
           "to_slug": "is-weekend",
-          "to_name": null,
-          "prop_name": null,
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "util",
-        "slug": "iso-week-number",
-        "name": "isoWeekNumber",
-        "category": "Calendar",
-        "domain": null,
-        "icon": "mdi-calendar-week-outline",
-        "description_key": "utils.catalog.iso_week_number.description",
-        "description_fallback": "Returns the ISO 8601 week number for a given Date. Week 1 is the week containing the year's first Thursday (Thursday-of-week / first-Thursday-of-year algorithm).",
-        "definition": null,
-        "signature": "function isoWeekNumber(date: Date): number",
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/utils/Calendar/date.util.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [
-        {
-          "name": "date",
-          "type": "Date",
-          "required": true,
-          "default_value": null,
-          "position": 0,
-          "description_key": "utils.detail.iso_week_number.param_date",
-          "description_fallback": "The date whose ISO week number is computed."
-        }
-      ],
-      "returns": [
-        {
-          "name": null,
-          "type": "number",
-          "position": 0,
-          "description_key": "utils.detail.iso_week_number.returns",
-          "description_fallback": "Integer week number in the range [1, 53] per ISO 8601."
-        }
-      ],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "utils.detail.iso_week_number.example_basic",
-          "title_fallback": "ISO week number for specific dates",
-          "code": "import { isoWeekNumber } from 'origam'\n\nisoWeekNumber(new Date('2024-01-01')) // → 1\nisoWeekNumber(new Date('2024-12-30')) // → 1  (belongs to week 1 of 2025)\nisoWeekNumber(new Date('2024-06-15')) // → 24",
-          "lang": "typescript"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "related",
-          "to_kind": "util",
-          "to_slug": "is-weekend",
-          "to_name": null,
-          "prop_name": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "related",
-          "to_kind": "util",
-          "to_slug": "is-valid",
           "to_name": null,
           "prop_name": null,
           "position": 1,
@@ -32734,102 +32734,6 @@
     {
       "entry": {
         "kind": "util",
-        "slug": "xyz-to-rgb",
-        "name": "XyzToRgb",
-        "category": "Color",
-        "domain": null,
-        "icon": "mdi-matrix",
-        "description_key": "utils.catalog.xyz_to_rgb.description",
-        "description_fallback": "Convert a CIE XYZ (D65) tristimulus value to an sRGB object by applying the sRGB forward matrix and gamma curve, then clamping and rounding to [0, 255].",
-        "definition": null,
-        "signature": "function XyzToRgb(xyz: TXYZ): TRGBA",
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/utils/Commons/color.util.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [
-        {
-          "name": "xyz",
-          "type": "TXYZ",
-          "required": true,
-          "default_value": null,
-          "position": 0,
-          "description_key": "utils.detail.xyz_to_rgb.param_xyz",
-          "description_fallback": "CIE XYZ tristimulus tuple [X, Y, Z] normalised to the D65 illuminant."
-        }
-      ],
-      "returns": [
-        {
-          "name": null,
-          "type": "TRGBA",
-          "position": 0,
-          "description_key": "utils.detail.xyz_to_rgb.returns",
-          "description_fallback": "sRGB colour object with r, g, b as integers in [0, 255]. Alpha is not set."
-        }
-      ],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "utils.detail.xyz_to_rgb.example_basic",
-          "title_fallback": "XYZ back to sRGB",
-          "code": "import { XyzToRgb, RgbtoXyz } from 'origam'\n\nconst original = { r: 100, g: 150, b: 200 }\nconst roundTrip = XyzToRgb(RgbtoXyz(original))\n// → { r: 100, g: 150, b: 200 }",
-          "lang": "typescript"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "related",
-          "to_kind": "util",
-          "to_slug": "rgbto-xyz",
-          "to_name": null,
-          "prop_name": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "related",
-          "to_kind": "util",
-          "to_slug": "xyzto-lab",
-          "to_name": null,
-          "prop_name": null,
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "related",
-          "to_kind": "util",
-          "to_slug": "labto-xyz",
-          "to_name": null,
-          "prop_name": null,
-          "position": 2,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "util",
         "slug": "xyzto-lab",
         "name": "XyztoLab",
         "category": "Color",
@@ -32915,6 +32819,102 @@
           "rel_type": "related",
           "to_kind": "util",
           "to_slug": "xyz-to-rgb",
+          "to_name": null,
+          "prop_name": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "xyz-to-rgb",
+        "name": "XyzToRgb",
+        "category": "Color",
+        "domain": null,
+        "icon": "mdi-matrix",
+        "description_key": "utils.catalog.xyz_to_rgb.description",
+        "description_fallback": "Convert a CIE XYZ (D65) tristimulus value to an sRGB object by applying the sRGB forward matrix and gamma curve, then clamping and rounding to [0, 255].",
+        "definition": null,
+        "signature": "function XyzToRgb(xyz: TXYZ): TRGBA",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/color.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "xyz",
+          "type": "TXYZ",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": "utils.detail.xyz_to_rgb.param_xyz",
+          "description_fallback": "CIE XYZ tristimulus tuple [X, Y, Z] normalised to the D65 illuminant."
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "TRGBA",
+          "position": 0,
+          "description_key": "utils.detail.xyz_to_rgb.returns",
+          "description_fallback": "sRGB colour object with r, g, b as integers in [0, 255]. Alpha is not set."
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "utils.detail.xyz_to_rgb.example_basic",
+          "title_fallback": "XYZ back to sRGB",
+          "code": "import { XyzToRgb, RgbtoXyz } from 'origam'\n\nconst original = { r: 100, g: 150, b: 200 }\nconst roundTrip = XyzToRgb(RgbtoXyz(original))\n// → { r: 100, g: 150, b: 200 }",
+          "lang": "typescript"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "related",
+          "to_kind": "util",
+          "to_slug": "rgbto-xyz",
+          "to_name": null,
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "util",
+          "to_slug": "xyzto-lab",
+          "to_name": null,
+          "prop_name": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "util",
+          "to_slug": "labto-xyz",
           "to_name": null,
           "prop_name": null,
           "position": 2,

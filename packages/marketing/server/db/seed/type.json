@@ -1,50 +1,9 @@
 {
   "kind": "type",
-  "exportedAt": "2026-09-14T14:04:03.510Z",
-  "sourceCommit": "c425a79f",
+  "exportedAt": "2026-09-14T20:22:53.685Z",
+  "sourceCommit": "9fad04ba",
   "entryCount": 487,
   "entries": [
-    {
-      "entry": {
-        "kind": "type",
-        "slug": "-t-not-a-union",
-        "name": "_TNotAUnion",
-        "category": "Commons",
-        "domain": null,
-        "icon": null,
-        "description_key": null,
-        "description_fallback": null,
-        "definition": "export type _TNotAUnion<T, U> = U extends any ? [T] extends [U] ? unknown : never : never",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/types/Commons/commons.type.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": {
-          "typeKind": "type"
-        },
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": []
-    },
     {
       "entry": {
         "kind": "type",
@@ -931,72 +890,6 @@
     {
       "entry": {
         "kind": "type",
-        "slug": "block-start-end",
-        "name": "TBlockStartEnd",
-        "category": "Commons",
-        "domain": null,
-        "icon": null,
-        "description_key": null,
-        "description_fallback": null,
-        "definition": "export type TBlockStartEnd = TBlock | TStartEnd",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/types/Commons/anchor.type.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": {
-          "typeKind": "type"
-        },
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [
-        {
-          "value": "top",
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "bottom",
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "end",
-          "position": 2,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "start",
-          "position": 3,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": []
-    },
-    {
-      "entry": {
-        "kind": "type",
         "slug": "blockquote-align",
         "name": "TBlockquoteAlign",
         "category": "Layout",
@@ -1264,6 +1157,72 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "type",
+        "slug": "block-start-end",
+        "name": "TBlockStartEnd",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export type TBlockStartEnd = TBlock | TStartEnd",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/types/Commons/anchor.type.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": {
+          "typeKind": "type"
+        },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "top",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "bottom",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "end",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "start",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -1938,66 +1897,6 @@
     {
       "entry": {
         "kind": "type",
-        "slug": "bracket-round-side",
-        "name": "TBracketRoundSide",
-        "category": "Bracket",
-        "domain": null,
-        "icon": null,
-        "description_key": null,
-        "description_fallback": null,
-        "definition": "export type TBracketRoundSide = `${BRACKET_ROUND_SIDE}`",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/types/Bracket/bracket-round.type.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": {
-          "typeKind": "type"
-        },
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [
-        {
-          "value": "winner",
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "loser",
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "grand-final",
-          "position": 2,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": []
-    },
-    {
-      "entry": {
-        "kind": "type",
         "slug": "bracket-rounded",
         "name": "TBracketRounded",
         "category": "Bracket",
@@ -2048,6 +1947,66 @@
         {
           "value": "true",
           "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "type",
+        "slug": "bracket-round-side",
+        "name": "TBracketRoundSide",
+        "category": "Bracket",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export type TBracketRoundSide = `${BRACKET_ROUND_SIDE}`",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/types/Bracket/bracket-round.type.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": {
+          "typeKind": "type"
+        },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "winner",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "loser",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "grand-final",
+          "position": 2,
           "description_key": null,
           "description_fallback": null
         }
@@ -19525,88 +19484,6 @@
     {
       "entry": {
         "kind": "type",
-        "slug": "origam-slide-x",
-        "name": "TOrigamSlideX",
-        "category": "Transition",
-        "domain": null,
-        "icon": null,
-        "description_key": null,
-        "description_fallback": null,
-        "definition": "export type TOrigamSlideX = InstanceType<typeof OrigamSlideX>",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/types/Transition/slide-x.type.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": {
-          "typeKind": "type"
-        },
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": []
-    },
-    {
-      "entry": {
-        "kind": "type",
-        "slug": "origam-slide-y",
-        "name": "TOrigamSlideY",
-        "category": "Transition",
-        "domain": null,
-        "icon": null,
-        "description_key": null,
-        "description_fallback": null,
-        "definition": "export type TOrigamSlideY = InstanceType<typeof OrigamSlideY>",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/types/Transition/slide-y.type.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": {
-          "typeKind": "type"
-        },
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": []
-    },
-    {
-      "entry": {
-        "kind": "type",
         "slug": "origam-slider-field",
         "name": "TOrigamSliderField",
         "category": "SliderField",
@@ -19660,6 +19537,88 @@
         "tag": null,
         "value": null,
         "source_file": "packages/ds/src/types/SliderField/slider-field-track.type.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": {
+          "typeKind": "type"
+        },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "type",
+        "slug": "origam-slide-x",
+        "name": "TOrigamSlideX",
+        "category": "Transition",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export type TOrigamSlideX = InstanceType<typeof OrigamSlideX>",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/types/Transition/slide-x.type.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": {
+          "typeKind": "type"
+        },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "type",
+        "slug": "origam-slide-y",
+        "name": "TOrigamSlideY",
+        "category": "Transition",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export type TOrigamSlideY = InstanceType<typeof OrigamSlideY>",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/types/Transition/slide-y.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -20181,6 +20140,47 @@
     {
       "entry": {
         "kind": "type",
+        "slug": "origam-table",
+        "name": "TOrigamTable",
+        "category": "Table",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export type TOrigamTable = InstanceType<typeof OrigamTable>",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/types/Table/table.type.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": {
+          "typeKind": "type"
+        },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "type",
         "slug": "origam-tab-panel",
         "name": "TOrigamTabPanel",
         "category": "Tabs",
@@ -20263,47 +20263,6 @@
     {
       "entry": {
         "kind": "type",
-        "slug": "origam-table",
-        "name": "TOrigamTable",
-        "category": "Table",
-        "domain": null,
-        "icon": null,
-        "description_key": null,
-        "description_fallback": null,
-        "definition": "export type TOrigamTable = InstanceType<typeof OrigamTable>",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/types/Table/table.type.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": {
-          "typeKind": "type"
-        },
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": []
-    },
-    {
-      "entry": {
-        "kind": "type",
         "slug": "origam-tabs",
         "name": "TOrigamTabs",
         "category": "Tabs",
@@ -20316,88 +20275,6 @@
         "tag": null,
         "value": null,
         "source_file": "packages/ds/src/types/Tabs/tabs.type.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": {
-          "typeKind": "type"
-        },
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": []
-    },
-    {
-      "entry": {
-        "kind": "type",
-        "slug": "origam-text-field",
-        "name": "TOrigamTextField",
-        "category": "TextField",
-        "domain": null,
-        "icon": null,
-        "description_key": null,
-        "description_fallback": null,
-        "definition": "export type TOrigamTextField = InstanceType<typeof OrigamTextField>",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/types/TextField/text-field.type.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": {
-          "typeKind": "type"
-        },
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": []
-    },
-    {
-      "entry": {
-        "kind": "type",
-        "slug": "origam-text-mask",
-        "name": "TOrigamTextMask",
-        "category": "TextMask",
-        "domain": null,
-        "icon": null,
-        "description_key": null,
-        "description_fallback": null,
-        "definition": "export type TOrigamTextMask = InstanceType<typeof OrigamTextMask>",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/types/TextMask/text-mask.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -20480,6 +20357,88 @@
         "tag": null,
         "value": null,
         "source_file": "packages/ds/src/types/TextareaField/textarea-field-rich-toolbar.type.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": {
+          "typeKind": "type"
+        },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "type",
+        "slug": "origam-text-field",
+        "name": "TOrigamTextField",
+        "category": "TextField",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export type TOrigamTextField = InstanceType<typeof OrigamTextField>",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/types/TextField/text-field.type.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": {
+          "typeKind": "type"
+        },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "type",
+        "slug": "origam-text-mask",
+        "name": "TOrigamTextMask",
+        "category": "TextMask",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export type TOrigamTextMask = InstanceType<typeof OrigamTextMask>",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/types/TextMask/text-mask.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -25277,265 +25236,6 @@
     {
       "entry": {
         "kind": "type",
-        "slug": "text-field-type",
-        "name": "TTextFieldType",
-        "category": "TextField",
-        "domain": null,
-        "icon": null,
-        "description_key": null,
-        "description_fallback": null,
-        "definition": "export type TTextFieldType = `${TEXT_FIELD_TYPE}`",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/types/TextField/text-field.type.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": {
-          "typeKind": "type"
-        },
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [
-        {
-          "value": "number",
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "button",
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "search",
-          "position": 2,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "time",
-          "position": 3,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "image",
-          "position": 4,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "text",
-          "position": 5,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "date",
-          "position": 6,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "month",
-          "position": 7,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "week",
-          "position": 8,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "color",
-          "position": 9,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "checkbox",
-          "position": 10,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "radio",
-          "position": 11,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "hidden",
-          "position": 12,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "reset",
-          "position": 13,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "range",
-          "position": 14,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "submit",
-          "position": 15,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "email",
-          "position": 16,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "password",
-          "position": 17,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "tel",
-          "position": 18,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "url",
-          "position": 19,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "file",
-          "position": 20,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "datetime-local",
-          "position": 21,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": []
-    },
-    {
-      "entry": {
-        "kind": "type",
-        "slug": "text-mask-animation",
-        "name": "TTextMaskAnimation",
-        "category": "Data Display",
-        "domain": null,
-        "icon": null,
-        "description_key": "types.catalog.text_mask_animation.description",
-        "description_fallback": "Animation strategy applied to the background painted under the background-clip: text mask in OrigamTextMask. Every strategy respects prefers-reduced-motion.",
-        "definition": "export type TTextMaskAnimation =\n    | 'pan'\n    | 'rotate'\n    | 'pulse'\n    | 'zoom'",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/types/TextMask/text-mask.type.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": {
-          "typeKind": "type"
-        },
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [
-        {
-          "value": "zoom",
-          "position": 0,
-          "description_key": "types.detail.text_mask_animation.zoom",
-          "description_fallback": "Continuous scale from 1 to 2 — a cinematic moving-forward feel that progressively reveals finer gradient detail."
-        },
-        {
-          "value": "rotate",
-          "position": 1,
-          "description_key": "types.detail.text_mask_animation.rotate",
-          "description_fallback": "Rotates the background-image continuously. Best fit for conic gradients where every angle is meaningful."
-        },
-        {
-          "value": "pulse",
-          "position": 2,
-          "description_key": "types.detail.text_mask_animation.pulse",
-          "description_fallback": "Scales 1 to 1.2 and back to 1 — a subtle breathing effect that keeps the gradient visible throughout."
-        },
-        {
-          "value": "pan",
-          "position": 3,
-          "description_key": "types.detail.text_mask_animation.pan",
-          "description_fallback": "Translates the gradient horizontally in a continuous loop. Default. Best fit for long horizontal linear-gradient ramps."
-        }
-      ],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "types.detail.text_mask_animation.example",
-          "title_fallback": "TextMask with rotating conic gradient",
-          "code": "<origam-text-mask\n  text=\"Origam\"\n  background=\"conic-gradient(from 0deg, #7c3aed, #2563eb, #7c3aed)\"\n  animation\n  animation-type=\"rotate\"\n/>",
-          "lang": "html"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "used_by",
-          "to_kind": "component",
-          "to_slug": "text-mask",
-          "to_name": "TextMask",
-          "prop_name": "animationType",
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "type",
         "slug": "textarea-mode",
         "name": "TTextareaMode",
         "category": "Form & Input",
@@ -25885,6 +25585,265 @@
           "to_slug": "textarea",
           "to_name": "Textarea",
           "prop_name": "toolbarPosition",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "type",
+        "slug": "text-field-type",
+        "name": "TTextFieldType",
+        "category": "TextField",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export type TTextFieldType = `${TEXT_FIELD_TYPE}`",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/types/TextField/text-field.type.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": {
+          "typeKind": "type"
+        },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "number",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "button",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "search",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "time",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "image",
+          "position": 4,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "text",
+          "position": 5,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "date",
+          "position": 6,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "month",
+          "position": 7,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "week",
+          "position": 8,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "color",
+          "position": 9,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "checkbox",
+          "position": 10,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "radio",
+          "position": 11,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "hidden",
+          "position": 12,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "reset",
+          "position": 13,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "range",
+          "position": 14,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "submit",
+          "position": 15,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "email",
+          "position": 16,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "password",
+          "position": 17,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "tel",
+          "position": 18,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "url",
+          "position": 19,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "file",
+          "position": 20,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "datetime-local",
+          "position": 21,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "type",
+        "slug": "text-mask-animation",
+        "name": "TTextMaskAnimation",
+        "category": "Data Display",
+        "domain": null,
+        "icon": null,
+        "description_key": "types.catalog.text_mask_animation.description",
+        "description_fallback": "Animation strategy applied to the background painted under the background-clip: text mask in OrigamTextMask. Every strategy respects prefers-reduced-motion.",
+        "definition": "export type TTextMaskAnimation =\n    | 'pan'\n    | 'rotate'\n    | 'pulse'\n    | 'zoom'",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/types/TextMask/text-mask.type.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": {
+          "typeKind": "type"
+        },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "zoom",
+          "position": 0,
+          "description_key": "types.detail.text_mask_animation.zoom",
+          "description_fallback": "Continuous scale from 1 to 2 — a cinematic moving-forward feel that progressively reveals finer gradient detail."
+        },
+        {
+          "value": "rotate",
+          "position": 1,
+          "description_key": "types.detail.text_mask_animation.rotate",
+          "description_fallback": "Rotates the background-image continuously. Best fit for conic gradients where every angle is meaningful."
+        },
+        {
+          "value": "pulse",
+          "position": 2,
+          "description_key": "types.detail.text_mask_animation.pulse",
+          "description_fallback": "Scales 1 to 1.2 and back to 1 — a subtle breathing effect that keeps the gradient visible throughout."
+        },
+        {
+          "value": "pan",
+          "position": 3,
+          "description_key": "types.detail.text_mask_animation.pan",
+          "description_fallback": "Translates the gradient horizontally in a continuous loop. Default. Best fit for long horizontal linear-gradient ramps."
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "types.detail.text_mask_animation.example",
+          "title_fallback": "TextMask with rotating conic gradient",
+          "code": "<origam-text-mask\n  text=\"Origam\"\n  background=\"conic-gradient(from 0deg, #7c3aed, #2563eb, #7c3aed)\"\n  animation\n  animation-type=\"rotate\"\n/>",
+          "lang": "html"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "used_by",
+          "to_kind": "component",
+          "to_slug": "text-mask",
+          "to_name": "TextMask",
+          "prop_name": "animationType",
           "position": 0,
           "description_key": null,
           "description_fallback": null
@@ -26252,6 +26211,47 @@
           "description_fallback": null
         }
       ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "type",
+        "slug": "-t-not-a-union",
+        "name": "_TNotAUnion",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export type _TNotAUnion<T, U> = U extends any ? [T] extends [U] ? unknown : never : never",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/types/Commons/commons.type.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": {
+          "typeKind": "type"
+        },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
       "params": [],
       "returns": [],
       "emits": [],
@@ -41822,2174 +41822,2180 @@
           "description_fallback": null
         },
         {
-          "value": "--origam-switch__track---border-width",
+          "value": "--origam-switch__track---border-style",
           "position": 2588,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-switch__track---color-error",
+          "value": "--origam-switch__track---border-width",
           "position": 2589,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-switch__track---height",
+          "value": "--origam-switch__track---color-error",
           "position": 2590,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-switch__track---width",
+          "value": "--origam-switch__track---height",
           "position": 2591,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---align-items",
+          "value": "--origam-switch__track---width",
           "position": 2592,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---background",
+          "value": "--origam-system-bar---align-items",
           "position": 2593,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---border-bottom-width",
+          "value": "--origam-system-bar---background",
           "position": 2594,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---border-color",
+          "value": "--origam-system-bar---border-bottom-width",
           "position": 2595,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---border-end-end-radius",
+          "value": "--origam-system-bar---border-color",
           "position": 2596,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---border-end-start-radius",
+          "value": "--origam-system-bar---border-end-end-radius",
           "position": 2597,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---border-left-width",
+          "value": "--origam-system-bar---border-end-start-radius",
           "position": 2598,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---border-right-width",
+          "value": "--origam-system-bar---border-left-width",
           "position": 2599,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---border-start-end-radius",
+          "value": "--origam-system-bar---border-right-width",
           "position": 2600,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---border-start-start-radius",
+          "value": "--origam-system-bar---border-start-end-radius",
           "position": 2601,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---border-style",
+          "value": "--origam-system-bar---border-start-start-radius",
           "position": 2602,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---border-top-width",
+          "value": "--origam-system-bar---border-style",
           "position": 2603,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---color",
+          "value": "--origam-system-bar---border-top-width",
           "position": 2604,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---display",
+          "value": "--origam-system-bar---color",
           "position": 2605,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---flex",
+          "value": "--origam-system-bar---display",
           "position": 2606,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---font-size",
+          "value": "--origam-system-bar---flex",
           "position": 2607,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---font-weight",
+          "value": "--origam-system-bar---font-size",
           "position": 2608,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---height",
+          "value": "--origam-system-bar---font-weight",
           "position": 2609,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---height-window",
+          "value": "--origam-system-bar---height",
           "position": 2610,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---justify-content",
+          "value": "--origam-system-bar---height-window",
           "position": 2611,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---letter-spacing",
+          "value": "--origam-system-bar---justify-content",
           "position": 2612,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---line-height",
+          "value": "--origam-system-bar---letter-spacing",
           "position": 2613,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---max-width",
+          "value": "--origam-system-bar---line-height",
           "position": 2614,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---padding-inline",
+          "value": "--origam-system-bar---max-width",
           "position": 2615,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---position",
+          "value": "--origam-system-bar---padding-inline",
           "position": 2616,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---text-align",
+          "value": "--origam-system-bar---position",
           "position": 2617,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---text-transform",
+          "value": "--origam-system-bar---text-align",
           "position": 2618,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar---width",
+          "value": "--origam-system-bar---text-transform",
           "position": 2619,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-system-bar__icon---opacity",
+          "value": "--origam-system-bar---width",
           "position": 2620,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tab-panels__panel---padding-block",
+          "value": "--origam-system-bar__icon---opacity",
           "position": 2621,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tab-panels__panel---padding-inline",
+          "value": "--origam-tab-panels__panel---padding-block",
           "position": 2622,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tab-panels__panel---transition-duration",
+          "value": "--origam-tab-panels__panel---padding-inline",
           "position": 2623,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tab-panels__panel--focus---outline-color",
+          "value": "--origam-tab-panels__panel---transition-duration",
           "position": 2624,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-table---background-color",
+          "value": "--origam-tab-panels__panel--focus---outline-color",
           "position": 2625,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-table---border-collapse",
+          "value": "--origam-table---background-color",
           "position": 2626,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-table---color",
+          "value": "--origam-table---border-collapse",
           "position": 2627,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-table---font-size",
+          "value": "--origam-table---color",
           "position": 2628,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-table__cell---border-color",
+          "value": "--origam-table---font-size",
           "position": 2629,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-table__cell---border-width",
+          "value": "--origam-table__cell---border-color",
           "position": 2630,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-table__cell---padding-block",
+          "value": "--origam-table__cell---border-width",
           "position": 2631,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-table__cell---padding-inline",
+          "value": "--origam-table__cell---padding-block",
           "position": 2632,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-table__header-cell---background-color",
+          "value": "--origam-table__cell---padding-inline",
           "position": 2633,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-table__header-cell---border-bottom-color",
+          "value": "--origam-table__header-cell---background-color",
           "position": 2634,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-table__header-cell---border-bottom-width",
+          "value": "--origam-table__header-cell---border-bottom-color",
           "position": 2635,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-table__header-cell---color",
+          "value": "--origam-table__header-cell---border-bottom-width",
           "position": 2636,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-table__header-cell---font-weight",
+          "value": "--origam-table__header-cell---color",
           "position": 2637,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-table__header-cell---padding-block",
+          "value": "--origam-table__header-cell---font-weight",
           "position": 2638,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-table__header-cell---padding-inline",
+          "value": "--origam-table__header-cell---padding-block",
           "position": 2639,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-table__row---hover-background-color",
+          "value": "--origam-table__header-cell---padding-inline",
           "position": 2640,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs---background-color",
+          "value": "--origam-table__row---hover-background-color",
           "position": 2641,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs---border-color",
+          "value": "--origam-tabs---background-color",
           "position": 2642,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs---border-radius",
+          "value": "--origam-tabs---border-color",
           "position": 2643,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs---border-style",
+          "value": "--origam-tabs---border-radius",
           "position": 2644,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs---border-width",
+          "value": "--origam-tabs---border-style",
           "position": 2645,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs---color",
+          "value": "--origam-tabs---border-width",
           "position": 2646,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs---gap",
+          "value": "--origam-tabs---color",
           "position": 2647,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs---height",
+          "value": "--origam-tabs---gap",
           "position": 2648,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs---padding-block",
+          "value": "--origam-tabs---height",
           "position": 2649,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs---padding-inline",
+          "value": "--origam-tabs---padding-block",
           "position": 2650,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs__indicator---color",
+          "value": "--origam-tabs---padding-inline",
           "position": 2651,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs__indicator---height",
+          "value": "--origam-tabs__indicator---color",
           "position": 2652,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs__item---background-color",
+          "value": "--origam-tabs__indicator---height",
           "position": 2653,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs__item---border-radius",
+          "value": "--origam-tabs__item---background-color",
           "position": 2654,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs__item---border-width",
+          "value": "--origam-tabs__item---border-radius",
           "position": 2655,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs__item---color",
+          "value": "--origam-tabs__item---border-width",
           "position": 2656,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs__item---font-size",
+          "value": "--origam-tabs__item---color",
           "position": 2657,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs__item---font-weight",
+          "value": "--origam-tabs__item---font-size",
           "position": 2658,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs__item---gap",
+          "value": "--origam-tabs__item---font-weight",
           "position": 2659,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs__item---height",
+          "value": "--origam-tabs__item---gap",
           "position": 2660,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs__item---letter-spacing",
+          "value": "--origam-tabs__item---height",
           "position": 2661,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs__item---padding-block",
+          "value": "--origam-tabs__item---letter-spacing",
           "position": 2662,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs__item---padding-inline",
+          "value": "--origam-tabs__item---padding-block",
           "position": 2663,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs__item---text-transform",
+          "value": "--origam-tabs__item---padding-inline",
           "position": 2664,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs__item---transition-duration",
+          "value": "--origam-tabs__item---text-transform",
           "position": 2665,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs__item---transition-easing",
+          "value": "--origam-tabs__item---transition-duration",
           "position": 2666,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tabs__panel---transition-duration",
+          "value": "--origam-tabs__item---transition-easing",
           "position": 2667,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-text-field__details---padding-inline",
+          "value": "--origam-tabs__panel---transition-duration",
           "position": 2668,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-text-field__input---opacity",
+          "value": "--origam-text-field__details---padding-inline",
           "position": 2669,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-text-field__input---opacity-active",
+          "value": "--origam-text-field__input---opacity",
           "position": 2670,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-text-field__input---transition-duration",
+          "value": "--origam-text-field__input---opacity-active",
           "position": 2671,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-text-field__input---transition-easing",
+          "value": "--origam-text-field__input---transition-duration",
           "position": 2672,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-text-mask---font-size-default",
+          "value": "--origam-text-field__input---transition-easing",
           "position": 2673,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-text-mask---font-weight-default",
+          "value": "--origam-text-mask---font-size-default",
           "position": 2674,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-text-mask---line-height-default",
+          "value": "--origam-text-mask---font-weight-default",
           "position": 2675,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-text-mask__animation---duration-default",
+          "value": "--origam-text-mask---line-height-default",
           "position": 2676,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-text-mask__animation---easing-default",
+          "value": "--origam-text-mask__animation---duration-default",
           "position": 2677,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__grip---border-color",
+          "value": "--origam-text-mask__animation---easing-default",
           "position": 2678,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__grip---height",
+          "value": "--origam-textarea-field__grip---border-color",
           "position": 2679,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__grip---opacity",
+          "value": "--origam-textarea-field__grip---height",
           "position": 2680,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-code-inline---bg-color",
+          "value": "--origam-textarea-field__grip---opacity",
           "position": 2681,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-code-inline---color",
+          "value": "--origam-textarea-field__rich-code-inline---bg-color",
           "position": 2682,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-content---line-height",
+          "value": "--origam-textarea-field__rich-code-inline---color",
           "position": 2683,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-content---min-height",
+          "value": "--origam-textarea-field__rich-content---line-height",
           "position": 2684,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-content---padding",
+          "value": "--origam-textarea-field__rich-content---min-height",
           "position": 2685,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-content---paragraph-gap",
+          "value": "--origam-textarea-field__rich-content---padding",
           "position": 2686,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-content---placeholder-color",
+          "value": "--origam-textarea-field__rich-content---paragraph-gap",
           "position": 2687,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-heading---font-size-h1",
+          "value": "--origam-textarea-field__rich-content---placeholder-color",
           "position": 2688,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-heading---font-size-h2",
+          "value": "--origam-textarea-field__rich-heading---font-size-h1",
           "position": 2689,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-heading---font-size-h3",
+          "value": "--origam-textarea-field__rich-heading---font-size-h2",
           "position": 2690,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-link---color",
+          "value": "--origam-textarea-field__rich-heading---font-size-h3",
           "position": 2691,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-link---text-decoration",
+          "value": "--origam-textarea-field__rich-link---color",
           "position": 2692,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-list---padding-inline-start",
+          "value": "--origam-textarea-field__rich-link---text-decoration",
           "position": 2693,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-toolbar---bg-color",
+          "value": "--origam-textarea-field__rich-list---padding-inline-start",
           "position": 2694,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-toolbar---border-color",
+          "value": "--origam-textarea-field__rich-toolbar---bg-color",
           "position": 2695,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-toolbar---border-radius",
+          "value": "--origam-textarea-field__rich-toolbar---border-color",
           "position": 2696,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-toolbar---gap",
+          "value": "--origam-textarea-field__rich-toolbar---border-radius",
           "position": 2697,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-toolbar---padding",
+          "value": "--origam-textarea-field__rich-toolbar---gap",
           "position": 2698,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-toolbar-btn---bg-color",
+          "value": "--origam-textarea-field__rich-toolbar---padding",
           "position": 2699,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-toolbar-btn---border-radius",
+          "value": "--origam-textarea-field__rich-toolbar-btn---bg-color",
           "position": 2700,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-toolbar-btn---color",
+          "value": "--origam-textarea-field__rich-toolbar-btn---border-radius",
           "position": 2701,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-toolbar-btn---padding",
+          "value": "--origam-textarea-field__rich-toolbar-btn---color",
           "position": 2702,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-toolbar-btn---size",
+          "value": "--origam-textarea-field__rich-toolbar-btn---padding",
           "position": 2703,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-toolbar-btn-active---bg-color",
+          "value": "--origam-textarea-field__rich-toolbar-btn---size",
           "position": 2704,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-toolbar-btn-active---color",
+          "value": "--origam-textarea-field__rich-toolbar-btn-active---bg-color",
           "position": 2705,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-toolbar-btn-focus---outline-color",
+          "value": "--origam-textarea-field__rich-toolbar-btn-active---color",
           "position": 2706,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-toolbar-btn-hover---bg-color",
+          "value": "--origam-textarea-field__rich-toolbar-btn-focus---outline-color",
           "position": 2707,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__rich-toolbar-btn-hover---color",
+          "value": "--origam-textarea-field__rich-toolbar-btn-hover---bg-color",
           "position": 2708,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__textarea---line-height",
+          "value": "--origam-textarea-field__rich-toolbar-btn-hover---color",
           "position": 2709,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__textarea---opacity",
+          "value": "--origam-textarea-field__textarea---line-height",
           "position": 2710,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__textarea---opacity-active",
+          "value": "--origam-textarea-field__textarea---opacity",
           "position": 2711,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__textarea---transition-duration",
+          "value": "--origam-textarea-field__textarea---opacity-active",
           "position": 2712,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-textarea-field__textarea---transition-easing",
+          "value": "--origam-textarea-field__textarea---transition-duration",
           "position": 2713,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-timeline---background-color",
+          "value": "--origam-textarea-field__textarea---transition-easing",
           "position": 2714,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-timeline---color",
+          "value": "--origam-timeline---background-color",
           "position": 2715,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-timeline---connector-color",
+          "value": "--origam-timeline---color",
           "position": 2716,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-timeline---connector-thickness",
+          "value": "--origam-timeline---connector-color",
           "position": 2717,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-timeline---dot-bg",
+          "value": "--origam-timeline---connector-thickness",
           "position": 2718,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-timeline---dot-border-color",
+          "value": "--origam-timeline---dot-bg",
           "position": 2719,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-timeline---dot-border-width",
+          "value": "--origam-timeline---dot-border-color",
           "position": 2720,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-timeline---dot-color",
+          "value": "--origam-timeline---dot-border-width",
           "position": 2721,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-timeline---dot-size",
+          "value": "--origam-timeline---dot-color",
           "position": 2722,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-timeline---gap",
+          "value": "--origam-timeline---dot-size",
           "position": 2723,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-timeline---padding-block",
+          "value": "--origam-timeline---gap",
           "position": 2724,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-timeline---padding-inline",
+          "value": "--origam-timeline---padding-block",
           "position": 2725,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-timeline---subtitle-color",
+          "value": "--origam-timeline---padding-inline",
           "position": 2726,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-timeline---subtitle-font-size",
+          "value": "--origam-timeline---subtitle-color",
           "position": 2727,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-timeline---title-font-size",
+          "value": "--origam-timeline---subtitle-font-size",
           "position": 2728,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-timeline---title-font-weight",
+          "value": "--origam-timeline---title-font-size",
           "position": 2729,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-timeline---track-width",
+          "value": "--origam-timeline---title-font-weight",
           "position": 2730,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-title---color",
+          "value": "--origam-timeline---track-width",
           "position": 2731,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-title---font-family",
+          "value": "--origam-title---color",
           "position": 2732,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-title---font-size-2xl",
+          "value": "--origam-title---font-family",
           "position": 2733,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-title---font-size-3xl",
+          "value": "--origam-title---font-size-2xl",
           "position": 2734,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-title---font-size-lg",
+          "value": "--origam-title---font-size-3xl",
           "position": 2735,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-title---font-size-md",
+          "value": "--origam-title---font-size-lg",
           "position": 2736,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-title---font-size-sm",
+          "value": "--origam-title---font-size-md",
           "position": 2737,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-title---font-size-xl",
+          "value": "--origam-title---font-size-sm",
           "position": 2738,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-title---font-size-xs",
+          "value": "--origam-title---font-size-xl",
           "position": 2739,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-title---font-weight",
+          "value": "--origam-title---font-size-xs",
           "position": 2740,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-title---letter-spacing",
+          "value": "--origam-title---font-weight",
           "position": 2741,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-title---line-height",
+          "value": "--origam-title---letter-spacing",
           "position": 2742,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-title---margin-block-end",
+          "value": "--origam-title---line-height",
           "position": 2743,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-title---margin-block-start",
+          "value": "--origam-title---margin-block-end",
           "position": 2744,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---background",
+          "value": "--origam-title---margin-block-start",
           "position": 2745,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---border-bottom-width",
+          "value": "--origam-toolbar---background",
           "position": 2746,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---border-color",
+          "value": "--origam-toolbar---border-bottom-width",
           "position": 2747,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---border-end-end-radius",
+          "value": "--origam-toolbar---border-color",
           "position": 2748,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---border-end-start-radius",
+          "value": "--origam-toolbar---border-end-end-radius",
           "position": 2749,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---border-left-width",
+          "value": "--origam-toolbar---border-end-start-radius",
           "position": 2750,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---border-right-width",
+          "value": "--origam-toolbar---border-left-width",
           "position": 2751,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---border-start-end-radius",
+          "value": "--origam-toolbar---border-right-width",
           "position": 2752,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---border-start-start-radius",
+          "value": "--origam-toolbar---border-start-end-radius",
           "position": 2753,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---border-style",
+          "value": "--origam-toolbar---border-start-start-radius",
           "position": 2754,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---border-top-width",
+          "value": "--origam-toolbar---border-style",
           "position": 2755,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---border-variant-border-width",
+          "value": "--origam-toolbar---border-top-width",
           "position": 2756,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---border-variant-box-shadow",
+          "value": "--origam-toolbar---border-variant-border-width",
           "position": 2757,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---box-shadow",
+          "value": "--origam-toolbar---border-variant-box-shadow",
           "position": 2758,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---box-sizing",
+          "value": "--origam-toolbar---box-shadow",
           "position": 2759,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---color",
+          "value": "--origam-toolbar---box-sizing",
           "position": 2760,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---height",
+          "value": "--origam-toolbar---color",
           "position": 2761,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---height-compact",
+          "value": "--origam-toolbar---height",
           "position": 2762,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---height-default",
+          "value": "--origam-toolbar---height-compact",
           "position": 2763,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---height-prominent",
+          "value": "--origam-toolbar---height-default",
           "position": 2764,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---max-width",
+          "value": "--origam-toolbar---height-prominent",
           "position": 2765,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---overflow",
+          "value": "--origam-toolbar---max-width",
           "position": 2766,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---position",
+          "value": "--origam-toolbar---overflow",
           "position": 2767,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---transform",
+          "value": "--origam-toolbar---position",
           "position": 2768,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---transition-duration",
+          "value": "--origam-toolbar---transform",
           "position": 2769,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---transition-property",
+          "value": "--origam-toolbar---transition-duration",
           "position": 2770,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---transition-timing-function",
+          "value": "--origam-toolbar---transition-property",
           "position": 2771,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---width",
+          "value": "--origam-toolbar---transition-timing-function",
           "position": 2772,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar---z-index",
+          "value": "--origam-toolbar---width",
           "position": 2773,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__append---align-items",
+          "value": "--origam-toolbar---z-index",
           "position": 2774,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__append---align-self",
+          "value": "--origam-toolbar__append---align-items",
           "position": 2775,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__append---display",
+          "value": "--origam-toolbar__append---align-self",
           "position": 2776,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__append---flex-basis",
+          "value": "--origam-toolbar__append---display",
           "position": 2777,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__append---flex-grow",
+          "value": "--origam-toolbar__append---flex-basis",
           "position": 2778,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__append---flex-shrink",
+          "value": "--origam-toolbar__append---flex-grow",
           "position": 2779,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__append---height",
+          "value": "--origam-toolbar__append---flex-shrink",
           "position": 2780,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__append---margin-inline-end",
+          "value": "--origam-toolbar__append---height",
           "position": 2781,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__append---margin-inline-start",
+          "value": "--origam-toolbar__append---margin-inline-end",
           "position": 2782,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__collapse---border-end-end-radius",
+          "value": "--origam-toolbar__append---margin-inline-start",
           "position": 2783,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__collapse---max-width",
+          "value": "--origam-toolbar__collapse---border-end-end-radius",
           "position": 2784,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__collapse---overflow",
+          "value": "--origam-toolbar__collapse---max-width",
           "position": 2785,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__content---align-items",
+          "value": "--origam-toolbar__collapse---overflow",
           "position": 2786,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__content---display",
+          "value": "--origam-toolbar__content---align-items",
           "position": 2787,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__content---flex-basis",
+          "value": "--origam-toolbar__content---display",
           "position": 2788,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__content---flex-grow",
+          "value": "--origam-toolbar__content---flex-basis",
           "position": 2789,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__content---height",
+          "value": "--origam-toolbar__content---flex-grow",
           "position": 2790,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__content---max-width",
+          "value": "--origam-toolbar__content---height",
           "position": 2791,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__content---position",
+          "value": "--origam-toolbar__content---max-width",
           "position": 2792,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__content---transition",
+          "value": "--origam-toolbar__content---position",
           "position": 2793,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__flat---box-shadow",
+          "value": "--origam-toolbar__content---transition",
           "position": 2794,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__floating---display",
+          "value": "--origam-toolbar__flat---box-shadow",
           "position": 2795,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__prepend---align-items",
+          "value": "--origam-toolbar__floating---display",
           "position": 2796,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__prepend---align-self",
+          "value": "--origam-toolbar__prepend---align-items",
           "position": 2797,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__prepend---display",
+          "value": "--origam-toolbar__prepend---align-self",
           "position": 2798,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__prepend---flex-basis",
+          "value": "--origam-toolbar__prepend---display",
           "position": 2799,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__prepend---flex-grow",
+          "value": "--origam-toolbar__prepend---flex-basis",
           "position": 2800,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__prepend---flex-shrink",
+          "value": "--origam-toolbar__prepend---flex-grow",
           "position": 2801,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__prepend---height",
+          "value": "--origam-toolbar__prepend---flex-shrink",
           "position": 2802,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__prepend---margin-inline-end",
+          "value": "--origam-toolbar__prepend---height",
           "position": 2803,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__prepend---margin-inline-start",
+          "value": "--origam-toolbar__prepend---margin-inline-end",
           "position": 2804,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__rounded---border-radius",
+          "value": "--origam-toolbar__prepend---margin-inline-start",
           "position": 2805,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__title---align-items",
+          "value": "--origam-toolbar__rounded---border-radius",
           "position": 2806,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__title---align-self",
+          "value": "--origam-toolbar__title---align-items",
           "position": 2807,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__title---display",
+          "value": "--origam-toolbar__title---align-self",
           "position": 2808,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__title---flex-basis",
+          "value": "--origam-toolbar__title---display",
           "position": 2809,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__title---flex-grow",
+          "value": "--origam-toolbar__title---flex-basis",
           "position": 2810,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__title---flex-shrink",
+          "value": "--origam-toolbar__title---flex-grow",
           "position": 2811,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__title---font-size",
+          "value": "--origam-toolbar__title---flex-shrink",
           "position": 2812,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__title---font-weight",
+          "value": "--origam-toolbar__title---font-size",
           "position": 2813,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__title---height",
+          "value": "--origam-toolbar__title---font-weight",
           "position": 2814,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__title---letter-spacing",
+          "value": "--origam-toolbar__title---height",
           "position": 2815,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__title---line-height",
+          "value": "--origam-toolbar__title---letter-spacing",
           "position": 2816,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__title---margin-block-end",
+          "value": "--origam-toolbar__title---line-height",
           "position": 2817,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__title---margin-block-start",
+          "value": "--origam-toolbar__title---margin-block-end",
           "position": 2818,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__title---margin-inline-end",
+          "value": "--origam-toolbar__title---margin-block-start",
           "position": 2819,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__title---margin-inline-start",
+          "value": "--origam-toolbar__title---margin-inline-end",
           "position": 2820,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__title---min-width",
+          "value": "--origam-toolbar__title---margin-inline-start",
           "position": 2821,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__title---padding-block-end",
+          "value": "--origam-toolbar__title---min-width",
           "position": 2822,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__title---padding-block-start",
+          "value": "--origam-toolbar__title---padding-block-end",
           "position": 2823,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__title---padding-inline-end",
+          "value": "--origam-toolbar__title---padding-block-start",
           "position": 2824,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__title---padding-inline-start",
+          "value": "--origam-toolbar__title---padding-inline-end",
           "position": 2825,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__title---text-transform",
+          "value": "--origam-toolbar__title---padding-inline-start",
           "position": 2826,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__wrapper---align-items",
+          "value": "--origam-toolbar__title---text-transform",
           "position": 2827,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__wrapper---display",
+          "value": "--origam-toolbar__wrapper---align-items",
           "position": 2828,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__wrapper---flex",
+          "value": "--origam-toolbar__wrapper---display",
           "position": 2829,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__wrapper---flex-direction",
+          "value": "--origam-toolbar__wrapper---flex",
           "position": 2830,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__wrapper---flex-wrap",
+          "value": "--origam-toolbar__wrapper---flex-direction",
           "position": 2831,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__wrapper---height",
+          "value": "--origam-toolbar__wrapper---flex-wrap",
           "position": 2832,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-toolbar__wrapper---justify-content",
+          "value": "--origam-toolbar__wrapper---height",
           "position": 2833,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tooltip---backdrop-filter",
+          "value": "--origam-toolbar__wrapper---justify-content",
           "position": 2834,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tooltip---background-color",
+          "value": "--origam-tooltip---backdrop-filter",
           "position": 2835,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tooltip---border-radius",
+          "value": "--origam-tooltip---background-color",
           "position": 2836,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tooltip---color",
+          "value": "--origam-tooltip---border-radius",
           "position": 2837,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tooltip---font-size",
+          "value": "--origam-tooltip---color",
           "position": 2838,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tooltip---font-weight",
+          "value": "--origam-tooltip---font-size",
           "position": 2839,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tooltip---line-height",
+          "value": "--origam-tooltip---font-weight",
           "position": 2840,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tooltip---max-width",
+          "value": "--origam-tooltip---line-height",
           "position": 2841,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tooltip---opacity",
+          "value": "--origam-tooltip---max-width",
           "position": 2842,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tooltip---padding-block",
+          "value": "--origam-tooltip---opacity",
           "position": 2843,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tooltip---padding-inline",
+          "value": "--origam-tooltip---padding-block",
           "position": 2844,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tooltip---transition-duration",
+          "value": "--origam-tooltip---padding-inline",
           "position": 2845,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tooltip---transition-timing-function",
+          "value": "--origam-tooltip---transition-duration",
           "position": 2846,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tooltip---z-index",
+          "value": "--origam-tooltip---transition-timing-function",
           "position": 2847,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tooltip__arrow---position",
+          "value": "--origam-tooltip---z-index",
           "position": 2848,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tooltip__arrow---size",
+          "value": "--origam-tooltip__arrow---position",
           "position": 2849,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tooltip__bottom---offset",
+          "value": "--origam-tooltip__arrow---size",
           "position": 2850,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tooltip__left---offset",
+          "value": "--origam-tooltip__bottom---offset",
           "position": 2851,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tooltip__right---offset",
+          "value": "--origam-tooltip__left---offset",
           "position": 2852,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-tooltip__top---offset",
+          "value": "--origam-tooltip__right---offset",
           "position": 2853,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-treeview---background-color",
+          "value": "--origam-tooltip__top---offset",
           "position": 2854,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-treeview---chevron-color",
+          "value": "--origam-treeview---background-color",
           "position": 2855,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-treeview---chevron-size",
+          "value": "--origam-treeview---chevron-color",
           "position": 2856,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-treeview---color",
+          "value": "--origam-treeview---chevron-size",
           "position": 2857,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-treeview---guide-color",
+          "value": "--origam-treeview---color",
           "position": 2858,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-treeview---guide-thickness",
+          "value": "--origam-treeview---guide-color",
           "position": 2859,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-treeview---icon-color",
+          "value": "--origam-treeview---guide-thickness",
           "position": 2860,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-treeview---icon-size",
+          "value": "--origam-treeview---icon-color",
           "position": 2861,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-treeview---indent-size",
+          "value": "--origam-treeview---icon-size",
           "position": 2862,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-treeview---label-color",
+          "value": "--origam-treeview---indent-size",
           "position": 2863,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-treeview---label-font-size",
+          "value": "--origam-treeview---label-color",
           "position": 2864,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-treeview---padding-block",
+          "value": "--origam-treeview---label-font-size",
           "position": 2865,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-treeview---padding-inline",
+          "value": "--origam-treeview---padding-block",
           "position": 2866,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-treeview---row-bg-hover",
+          "value": "--origam-treeview---padding-inline",
           "position": 2867,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-treeview---row-bg-selected",
+          "value": "--origam-treeview---row-bg-hover",
           "position": 2868,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-treeview---row-color-disabled",
+          "value": "--origam-treeview---row-bg-selected",
           "position": 2869,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-treeview---row-color-selected",
+          "value": "--origam-treeview---row-color-disabled",
           "position": 2870,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-treeview---row-gap",
+          "value": "--origam-treeview---row-color-selected",
           "position": 2871,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-treeview---row-height",
+          "value": "--origam-treeview---row-gap",
           "position": 2872,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-treeview---row-padding-inline",
+          "value": "--origam-treeview---row-height",
           "position": 2873,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-treeview---size-color",
+          "value": "--origam-treeview---row-padding-inline",
           "position": 2874,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-treeview---size-font-size",
+          "value": "--origam-treeview---size-color",
           "position": 2875,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video---background-color",
+          "value": "--origam-treeview---size-font-size",
           "position": 2876,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video---border-radius",
+          "value": "--origam-video---background-color",
           "position": 2877,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video---poster-btn-background-color",
+          "value": "--origam-video---border-radius",
           "position": 2878,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video---poster-btn-background-color-hover",
+          "value": "--origam-video---poster-btn-background-color",
           "position": 2879,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video---poster-btn-color",
+          "value": "--origam-video---poster-btn-background-color-hover",
           "position": 2880,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video---poster-btn-font-size",
+          "value": "--origam-video---poster-btn-color",
           "position": 2881,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video---poster-btn-size",
+          "value": "--origam-video---poster-btn-font-size",
           "position": 2882,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video--error---background-color",
+          "value": "--origam-video---poster-btn-size",
           "position": 2883,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video--error---color",
+          "value": "--origam-video--error---background-color",
           "position": 2884,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video--error---font-size",
+          "value": "--origam-video--error---color",
           "position": 2885,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video--error---gap",
+          "value": "--origam-video--error---font-size",
           "position": 2886,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video--error---icon-font-size",
+          "value": "--origam-video--error---gap",
           "position": 2887,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video--error---padding",
+          "value": "--origam-video--error---icon-font-size",
           "position": 2888,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video__btn---background-color-active",
+          "value": "--origam-video--error---padding",
           "position": 2889,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video__btn---background-color-hover",
+          "value": "--origam-video__btn---background-color-active",
           "position": 2890,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video__btn---border-radius",
+          "value": "--origam-video__btn---background-color-hover",
           "position": 2891,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video__btn---color",
+          "value": "--origam-video__btn---border-radius",
           "position": 2892,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video__btn---color-hover",
+          "value": "--origam-video__btn---color",
           "position": 2893,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video__btn---font-size",
+          "value": "--origam-video__btn---color-hover",
           "position": 2894,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video__btn---size",
+          "value": "--origam-video__btn---font-size",
           "position": 2895,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video__controls---background-color",
+          "value": "--origam-video__btn---size",
           "position": 2896,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video__controls---color",
+          "value": "--origam-video__controls---background-color",
           "position": 2897,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video__controls---gap",
+          "value": "--origam-video__controls---color",
           "position": 2898,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video__controls---padding",
+          "value": "--origam-video__controls---gap",
           "position": 2899,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video__loading---color",
+          "value": "--origam-video__controls---padding",
           "position": 2900,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video__loading---font-size",
+          "value": "--origam-video__loading---color",
           "position": 2901,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video__poster---background-color",
+          "value": "--origam-video__loading---font-size",
           "position": 2902,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video__scrubber---color",
+          "value": "--origam-video__poster---background-color",
           "position": 2903,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video__scrubber---thumb-size",
+          "value": "--origam-video__scrubber---color",
           "position": 2904,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video__time---color",
+          "value": "--origam-video__scrubber---thumb-size",
           "position": 2905,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video__time---font-family",
+          "value": "--origam-video__time---color",
           "position": 2906,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video__time---font-size",
+          "value": "--origam-video__time---font-family",
           "position": 2907,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video__volume---color",
+          "value": "--origam-video__time---font-size",
           "position": 2908,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-video__volume---width",
+          "value": "--origam-video__volume---color",
           "position": 2909,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-virtual-scroll---item-height",
+          "value": "--origam-video__volume---width",
           "position": 2910,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-virtual-scroll---scroll-padding",
+          "value": "--origam-virtual-scroll---item-height",
           "position": 2911,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-virtual-scroll---transition-duration",
+          "value": "--origam-virtual-scroll---scroll-padding",
           "position": 2912,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-virtual-scroll---transition-easing",
+          "value": "--origam-virtual-scroll---transition-duration",
           "position": 2913,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window---item-fade-transition-duration",
+          "value": "--origam-virtual-scroll---transition-easing",
           "position": 2914,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window---item-fade-transition-easing",
+          "value": "--origam-window---item-fade-transition-duration",
           "position": 2915,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window---item-scale-rotate-transition-duration",
+          "value": "--origam-window---item-fade-transition-easing",
           "position": 2916,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window---item-scale-rotate-transition-easing",
+          "value": "--origam-window---item-scale-rotate-transition-duration",
           "position": 2917,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window---overflow",
+          "value": "--origam-window---item-scale-rotate-transition-easing",
           "position": 2918,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window---position",
+          "value": "--origam-window---overflow",
           "position": 2919,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window---transition-duration",
+          "value": "--origam-window---position",
           "position": 2920,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window---transition-easing",
+          "value": "--origam-window---transition-duration",
           "position": 2921,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window--show-arrows-on-hover---hover-transform",
+          "value": "--origam-window---transition-easing",
           "position": 2922,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window--show-arrows-on-hover---next-transform",
+          "value": "--origam-window--show-arrows-on-hover---hover-transform",
           "position": 2923,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window--show-arrows-on-hover---prev-transform",
+          "value": "--origam-window--show-arrows-on-hover---next-transform",
           "position": 2924,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window-item---x-transition-duration",
+          "value": "--origam-window--show-arrows-on-hover---prev-transform",
           "position": 2925,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window-item---x-transition-easing",
+          "value": "--origam-window-item---x-transition-duration",
           "position": 2926,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window-item---y-transition-duration",
+          "value": "--origam-window-item---x-transition-easing",
           "position": 2927,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window-item---y-transition-easing",
+          "value": "--origam-window-item---y-transition-duration",
           "position": 2928,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window__container---display",
+          "value": "--origam-window-item---y-transition-easing",
           "position": 2929,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window__container---flex-direction",
+          "value": "--origam-window__container---display",
           "position": 2930,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window__container---height",
+          "value": "--origam-window__container---flex-direction",
           "position": 2931,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window__container---position",
+          "value": "--origam-window__container---height",
           "position": 2932,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window__controls---color",
+          "value": "--origam-window__container---position",
           "position": 2933,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window__controls---height",
+          "value": "--origam-window__controls---color",
           "position": 2934,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window__controls---hover-color",
+          "value": "--origam-window__controls---height",
           "position": 2935,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window__controls---padding-inline",
+          "value": "--origam-window__controls---hover-color",
           "position": 2936,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window__controls---position",
+          "value": "--origam-window__controls---padding-inline",
           "position": 2937,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window__controls---position-left",
+          "value": "--origam-window__controls---position",
           "position": 2938,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window__controls---position-top",
+          "value": "--origam-window__controls---position-left",
           "position": 2939,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-window__controls---width",
+          "value": "--origam-window__controls---position-top",
           "position": 2940,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-zIndex---base",
+          "value": "--origam-window__controls---width",
           "position": 2941,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-zIndex---dropdown",
+          "value": "--origam-zIndex---base",
           "position": 2942,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-zIndex---fixed",
+          "value": "--origam-zIndex---dropdown",
           "position": 2943,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-zIndex---modal",
+          "value": "--origam-zIndex---fixed",
           "position": 2944,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-zIndex---overlay",
+          "value": "--origam-zIndex---modal",
           "position": 2945,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-zIndex---raised",
+          "value": "--origam-zIndex---overlay",
           "position": 2946,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-zIndex---sticky",
+          "value": "--origam-zIndex---raised",
           "position": 2947,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-zIndex---toast",
+          "value": "--origam-zIndex---sticky",
           "position": 2948,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "--origam-zIndex---tooltip",
+          "value": "--origam-zIndex---toast",
           "position": 2949,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "--origam-zIndex---tooltip",
+          "position": 2950,
           "description_key": null,
           "description_fallback": null
         }
@@ -44237,6 +44243,79 @@
     {
       "entry": {
         "kind": "type",
+        "slug": "treeview-selectable-nodes",
+        "name": "TTreeviewSelectableNodes",
+        "category": "Data Display",
+        "domain": null,
+        "icon": null,
+        "description_key": "types.catalog.treeview_selectable_nodes.description",
+        "description_fallback": "Which nodes in the OrigamTreeview can receive a selected state — only leaf nodes or every node in the tree.",
+        "definition": "export type TTreeviewSelectableNodes = 'leaf' | 'all'",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/types/Treeview/treeview.type.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": {
+          "typeKind": "type"
+        },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "all",
+          "position": 0,
+          "description_key": "types.detail.treeview_selectable_nodes.all",
+          "description_fallback": "Both parent and leaf nodes can be selected. Selecting a parent in multiple mode propagates the state to its children (cascade)."
+        },
+        {
+          "value": "leaf",
+          "position": 1,
+          "description_key": "types.detail.treeview_selectable_nodes.leaf",
+          "description_fallback": "Only leaf nodes (nodes with no children) can be selected. Parent nodes act solely as expand/collapse toggles."
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "types.detail.treeview_selectable_nodes.example",
+          "title_fallback": "Leaf-only selection",
+          "code": "<origam-treeview\n  select-mode=\"multiple\"\n  selectable-nodes=\"leaf\"\n  :items=\"fileTree\"\n  v-model:selected=\"selectedFiles\"\n/>",
+          "lang": "html"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "used_by",
+          "to_kind": "component",
+          "to_slug": "treeview",
+          "to_name": "Treeview",
+          "prop_name": "selectableNodes",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "type",
         "slug": "treeview-select-mode",
         "name": "TTreeviewSelectMode",
         "category": "Data Display",
@@ -44316,79 +44395,6 @@
     {
       "entry": {
         "kind": "type",
-        "slug": "treeview-selectable-nodes",
-        "name": "TTreeviewSelectableNodes",
-        "category": "Data Display",
-        "domain": null,
-        "icon": null,
-        "description_key": "types.catalog.treeview_selectable_nodes.description",
-        "description_fallback": "Which nodes in the OrigamTreeview can receive a selected state — only leaf nodes or every node in the tree.",
-        "definition": "export type TTreeviewSelectableNodes = 'leaf' | 'all'",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/types/Treeview/treeview.type.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": {
-          "typeKind": "type"
-        },
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [
-        {
-          "value": "all",
-          "position": 0,
-          "description_key": "types.detail.treeview_selectable_nodes.all",
-          "description_fallback": "Both parent and leaf nodes can be selected. Selecting a parent in multiple mode propagates the state to its children (cascade)."
-        },
-        {
-          "value": "leaf",
-          "position": 1,
-          "description_key": "types.detail.treeview_selectable_nodes.leaf",
-          "description_fallback": "Only leaf nodes (nodes with no children) can be selected. Parent nodes act solely as expand/collapse toggles."
-        }
-      ],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "types.detail.treeview_selectable_nodes.example",
-          "title_fallback": "Leaf-only selection",
-          "code": "<origam-treeview\n  select-mode=\"multiple\"\n  selectable-nodes=\"leaf\"\n  :items=\"fileTree\"\n  v-model:selected=\"selectedFiles\"\n/>",
-          "lang": "html"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "used_by",
-          "to_kind": "component",
-          "to_slug": "treeview",
-          "to_name": "Treeview",
-          "prop_name": "selectableNodes",
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "type",
         "slug": "union-to-intersection",
         "name": "TUnionToIntersection",
         "category": "Commons",
@@ -44401,47 +44407,6 @@
         "tag": null,
         "value": null,
         "source_file": "packages/ds/src/types/Commons/forwardRefs.type.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": {
-          "typeKind": "type"
-        },
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": []
-    },
-    {
-      "entry": {
-        "kind": "type",
-        "slug": "v-model",
-        "name": "TVModel",
-        "category": "Commons",
-        "domain": null,
-        "icon": null,
-        "description_key": null,
-        "description_fallback": null,
-        "definition": "export type TVModel<\n    Props extends object & { [key in Prop as `onUpdate:${Prop}`]?: TEventProp | undefined },\n    Prop extends Extract<keyof Props, string>,\n    Inner = Props[Prop]\n> = Ref<TInnerVal<Inner>> & { readonly externalValue: Props[Prop] }",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/types/Commons/v-model.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -45171,6 +45136,47 @@
         "tag": null,
         "value": null,
         "source_file": "packages/ds/src/types/Commons/point.type.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": {
+          "typeKind": "type"
+        },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "type",
+        "slug": "v-model",
+        "name": "TVModel",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export type TVModel<\n    Props extends object & { [key in Prop as `onUpdate:${Prop}`]?: TEventProp | undefined },\n    Prop extends Extract<keyof Props, string>,\n    Inner = Props[Prop]\n> = Ref<TInnerVal<Inner>> & { readonly externalValue: Props[Prop] }",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/types/Commons/v-model.type.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
