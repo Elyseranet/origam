@@ -6,7 +6,7 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<IFieldProps>>({ label: 'Field label', color: 'primary', variant: undefined })"
+				:init-state="() => useStoryInitState<Partial<IFieldProps>>({ label: 'Field label', color: 'primary', variant: undefined, border: undefined, borderColor: undefined, borderStyle: undefined })"
 		>
 			<template #default="{ state }">
 				<origam-field
@@ -17,6 +17,9 @@
 						:density="state.density"
 						:rounded="state.rounded"
 						:elevation="state.elevation"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
 						:prefix="state.prefix"
 						:suffix="state.suffix"
 						:label="state.label"
@@ -47,6 +50,14 @@
 				<StoryGroup title="Shape">
 					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Content">
+					<HstText v-model="state.label" title="Label"/>
 				</StoryGroup>
 				<StoryGroup title="Text Affixes">
 					<HstText v-model="state.prefix" title="Prefix"/>
@@ -490,6 +501,8 @@
 	import {
 		ACTIVE_OPTIONS,
 		resolveActiveState,
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,

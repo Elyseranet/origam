@@ -184,6 +184,7 @@
 	import OrigamSkeleton from '../Skeleton/OrigamSkeleton.vue'
 
 	import { useAdjacentInner } from '../../composables/Commons/adjacentInner.composable'
+	import { useBorder } from '../../composables/Commons/border.composable'
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useFocus } from '../../composables/Commons/focus.composable'
@@ -607,6 +608,21 @@
 	 ********************************************************/
 
 	const {colorClasses, colorStyles} = useBothColor(bgColor, color)
+	/*********************************************************
+	 * Border — #726
+	 *
+	 * @description
+	 * `borderStyles` ONLY. `borderClasses` is deliberately NOT bound on the
+	 * field root: `.origam--border-*` is a real `border-width` utility, so it
+	 * would paint a rectangle around `.origam-field` whose top edge sits
+	 * exactly where the floating label floats — re-creating the very defect
+	 * this fixes, one element further in.
+	 *
+	 * @description
+	 * The resolved declarations are re-routed into the outline's own token
+	 * channel by `fieldBorderVarStyles` below.
+	 ********************************************************/
+	const {borderStyles} = useBorder(props)
 	const {densityClasses} = useDensity(props)
 	// Field re-defines its own `isActive` computed above (line 405) combining
 	// `active` from useActive + `dirty` + `hasPrefix` + `hasSuffix` — pass
@@ -635,11 +651,81 @@
 		return [`--origam-field---border-radius: ${radius.slice('border-radius:'.length).trim()}`]
 	})
 
+	/*********************************************************
+	 * fieldBorderVarStyles — #726
+	 *
+	 * @description
+	 * `border` used to live ONLY on the outer `OrigamInput` wrapper, which has
+	 * no notch: `useBorder` painted a real CSS border on that box and its top
+	 * edge ran straight THROUGH the floating label (measured on the live
+	 * story: label box `[-7, 11]`, input border band `[0, 2]`, 61.41 px² of
+	 * label crossed).
+	 *
+	 * @description
+	 * The field already owns a notched outline — three legs (`--start` /
+	 * `--notch` / `--end`) whose width, style and colour are driven entirely
+	 * by `--origam-field---border-width`,
+	 * `--origam-field__outline---border-style` and
+	 * `--origam-field---border-color`, and whose `--notch` leg drops its top
+	 * border to 0 under `--active` / `--focused`. That IS the notch.
+	 *
+	 * @description
+	 * So the fix is not to draw a second border anywhere: it is to feed the
+	 * channel the mechanism already reads, exactly as `fieldRadiusVarStyles`
+	 * above mirrors `rounded` into `--origam-field---border-radius`.
+	 *
+	 * @description
+	 * Only the three GLOBAL declarations are mapped. A directional value
+	 * (`border="top"`) emits per-side widths, which have no meaning on a
+	 * three-leg outline — those are deliberately left unmapped (the leg keeps
+	 * the variant's own width; style and colour, which `useBorder` still emits
+	 * globally, do land).
+	 *
+	 * @description
+	 * When no border prop is passed `useBorder` returns an empty array, so
+	 * this emits nothing and the field renders exactly as it did before.
+	 ********************************************************/
+	const fieldBorderVarStyles = computed(() => {
+		const declarations = borderStyles.value as string[]
+		if (!Array.isArray(declarations)) return []
+
+		const vars: string[] = []
+		const lastValueOf = (property: string) => {
+			const prefix = `${property}:`
+			const match = declarations.filter(declaration => declaration.startsWith(prefix)).pop()
+			return match ? match.slice(prefix.length).trim() : null
+		}
+
+		const width = lastValueOf('border-width')
+		const style = lastValueOf('border-style')
+		const color = lastValueOf('border-color')
+
+		if (width) vars.push(`--origam-field---border-width: ${width}`)
+		if (style) vars.push(`--origam-field__outline---border-style: ${style}`)
+		/*********************************************************
+		 * Colour — forced opaque
+		 *
+		 * @description
+		 * The outline legs read the colour through
+		 * `--origam-field---border-color` and paint at
+		 * `--origam-field---border-opacity` (.38 by default). An explicit
+		 * border colour is an explicit request, so force it opaque —
+		 * otherwise `border="2px solid red"` renders a washed-out pink.
+		 ********************************************************/
+		if (color) {
+			vars.push(`--origam-field---border-color: ${color}`)
+			vars.push('--origam-field---border-opacity: 1')
+		}
+
+		return vars
+	})
+
 	const fieldStyles = computed(() => {
 		return [
 			colorStyles.value,
 			roundedStyles.value,
 			fieldRadiusVarStyles.value,
+			fieldBorderVarStyles.value,
 			elevationStyles.value,
 			props.style
 		] as StyleValue
