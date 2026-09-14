@@ -119,22 +119,31 @@ describe('component — the living `.vue` API', () => {
         expect(live.flatMap(c => c.unresolved.map(u => `${c.slug}: ${u}`))).toEqual([])
     })
 
-    it('the five entries deleted from the design system are no longer live', () => {
-        // `grids`, `item`, `media`, `rich-toolbar` and `slide` are catalogued
-        // and gone. They are what `orphanEntries` flags on a re-sync.
+    it('the catalogue holds no entry the design system no longer ships', () => {
+        // Was pinned to ['grids', 'item', 'media', 'rich-toolbar', 'slide'] —
+        // the five ghosts the committed fixtures still advertised. The fixtures
+        // were regenerated, so the expected state is now the EMPTY set.
+        //
+        // This is a drift gate, and it is meant to be one: it fails the day a
+        // component is removed from the design system without the fixtures
+        // being regenerated. The fix is not to relax it — it is to run
+        // `docs:sync` then `dump-db-fixture.mjs` in the same change.
         const ghosts = [...catalogue].filter(s => !liveSlugs.has(s)).sort()
-        expect(ghosts).toEqual(['grids', 'item', 'media', 'rich-toolbar', 'slide'])
+        expect(ghosts).toEqual([])
     })
 
-    it('the catalogue is missing components the design system ships', () => {
-        // The gap this extractor exists to close. Asserted as "non-empty" and
-        // spot-checked, not pinned to a count: the design system keeps growing,
-        // and a test that fails on every new component teaches nothing.
+    it('the catalogue ships every component the design system ships', () => {
+        // The gap this extractor existed to close, now closed. It used to
+        // assert `missing.length > 0` and spot-check four names — the defect
+        // as the expected state, which is the right shape for a red-first
+        // probe and the wrong one once the defect is gone.
+        //
+        // Same drift gate as above, in the other direction: it fails the day a
+        // component is ADDED without the fixtures being regenerated. That
+        // friction is the point — a month of silent drift is what produced the
+        // 193-vs-218 gap this suite was written to document.
         const missing = [...liveSlugs].filter(s => !catalogue.has(s))
-        expect(missing.length).toBeGreaterThan(0)
-        expect(missing).toEqual(expect.arrayContaining([
-            'chart-radar', 'chart-sankey', 'chart-treemap', 'list-children',
-        ]))
+        expect(missing).toEqual([])
     })
 
     it('POSITIVE CONTROL — a known prop, emit and slot are actually found', () => {
