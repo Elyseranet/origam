@@ -4,7 +4,7 @@
 			:id="id"
 			ref="origamCompactInputRef"
 			v-model="model"
-			:validation-value="model"
+			:validation-value="effectiveValidationValue"
 			:focused="isFocused"
 			:rules="rules"
 			:error="error"
@@ -69,7 +69,7 @@
 			v-model:model-value="inputText"
 			:class="numberFieldClasses"
 			:style="numberFieldStyles"
-			:validation-value="model"
+			:validation-value="effectiveValidationValue"
 			inputmode="decimal"
 			:aria-valuenow="model ?? undefined"
 			:aria-valuemin="min"
@@ -400,6 +400,35 @@
 			val => val == null
 					? val ?? null
 					: clamp(Number(val), props.min, props.max))
+
+	/*********************************************************
+	 * effectiveValidationValue (#696)
+	 *
+	 * @description
+	 * Both template branches used to bind `:validation-value="model"` — the
+	 * model HARDCODED, in the compact branch (on `<origam-input>`) and in
+	 * the regular one (on `<origam-text-field>`). The `validationValue` PROP
+	 * (`INumberFieldProps` -> `ITextFieldProps` -> `IInputProps` ->
+	 * `IValidationProps.validationValue`, `validation.interface.ts:47`) is
+	 * ALSO stripped from the `filterProps` passthrough below, and the compact
+	 * branch enumerates its props one by one with no passthrough at all — so
+	 * there was no second path either and a consumer's
+	 * `<origam-number-field :validation-value="somethingElse" />` silently
+	 * validated against the model.
+	 *
+	 * @description
+	 * Same CONSEQUENCE as #693 (Select / ColorPickerField / DatePickerField),
+	 * different mechanism: no shadowing `const` here, which is why the
+	 * `const`/prop shadowing sweep did not surface it.
+	 *
+	 * @description
+	 * The fallback ladder mirrors `useValidation` exactly
+	 * (`validation.composable.ts:52`): `undefined` means "not supplied" and
+	 * falls back to the model, ANY other value — `null` included — wins.
+	 ********************************************************/
+	const effectiveValidationValue = computed(() => {
+		return props.validationValue === undefined ? model.value : props.validationValue
+	})
 
 	/*********************************************************
 	 * Effect
