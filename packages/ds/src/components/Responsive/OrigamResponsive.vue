@@ -4,15 +4,10 @@
 			:class="responsiveClasses"
 			:style="responsiveStyles"
 	>
-		<div
-				:style="aspectStyles"
-				class="origam-responsive__sizer"
-		/>
 		<slot name="additional"/>
 		<div
 				v-if="slots.default"
 				:class="responsiveContentClasses"
-				:style="contentStyles"
 		>
 			<slot name="default"/>
 		</div>
@@ -65,7 +60,7 @@
 	 * Composables
 	 ********************************************************/
 
-	const {aspectStyles, contentStyles} = useAspectRatio(props)
+	const {aspectStyles} = useAspectRatio(props)
 	const {dimensionStyles} = useDimension(props)
 	const slots = useSlots()
 	const {roundedClasses, roundedStyles} = useRounded(props)
@@ -78,9 +73,18 @@
 	 *
 	 * @description
 	 * responsiveStyles and responsiveClasses compose the BEM block.
+	 *
+	 * @description
+	 * #709 — `aspectStyles` comes FIRST so an explicit dimension, a rounded
+	 * or border style, and finally `props.style` all still outrank it. The
+	 * native `aspect-ratio` property only ever fills in the dimension the
+	 * consumer did NOT specify, so a consumer height keeps winning. It
+	 * replaces the former `__sizer` child + pull-back margin pair, whose two
+	 * halves cancelled each other in this column flex container.
 	 ********************************************************/
 	const responsiveStyles = computed(() => {
 		return [
+			aspectStyles.value,
 			dimensionStyles.value,
 			roundedStyles.value,
 			borderStyles.value,
@@ -145,13 +149,6 @@
 			flex: var(--origam-responsive__content---flex);
 			max-width: var(--origam-responsive__content---max-width);
 			margin: var(--origam-responsive__content---margin);
-		}
-
-		&__sizer {
-			flex: var(--origam-responsive__sizer---flex);
-			transition: var(--origam-responsive__sizer---transition);
-			pointer-events: var(--origam-responsive__sizer---pointer-events);
-			padding-block-end: var(--origam-responsive__sizer---padding-block-end);
 		}
 	}
 </style>

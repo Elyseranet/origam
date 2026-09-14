@@ -103,19 +103,27 @@ test.describe('#709 — OrigamResponsive holds its own ratio', () => {
         const wideBox = await boxOf(wide)
         const classicBox = await boxOf(classic)
 
-        report('Responsive 16/9 (max-width 200, default slot)', wideBox)
-        report('Responsive 4/3  (max-width 200, default slot)', classicBox)
+        const wideAspect = wideBox.width / wideBox.height
+        const classicAspect = classicBox.width / classicBox.height
 
-        // POSITIVE CONTROL — the two instances differ only by their ratio. If
-        // the heights match, the harness is not actuating the ratio and every
-        // number below would be meaningless.
+        report('Responsive 16/9 (max-width 200, default slot)', wideBox, `aspect=${wideAspect.toFixed(3)}`)
+        report('Responsive 4/3  (max-width 200, default slot)', classicBox, `aspect=${classicAspect.toFixed(3)}`)
+
+        // POSITIVE CONTROL — the two instances differ only by their ratio, so
+        // the two rendered SHAPES must differ. Compared on the aspect rather
+        // than on the raw height: this variant lays the two boxes out in a
+        // `display: flex` row, where `width: auto` makes each box
+        // content-sized, so both end up small and their absolute heights are
+        // within a pixel of each other even when the ratio works perfectly.
+        // Measured after the fix: 35.34x19.88 (1.778) vs 25.67x19.25 (1.333)
+        // — a 0.6px height gap, but two unmistakably different shapes.
         expect(
-            Math.abs(wideBox.height - classicBox.height),
-            'positive control: 16/9 and 4/3 must not render the same height'
-        ).toBeGreaterThan(10)
+            Math.abs(wideAspect - classicAspect),
+            'positive control: 16/9 and 4/3 must not render the same shape'
+        ).toBeGreaterThan(0.3)
 
-        expect(wideBox.height).toBeCloseTo(wideBox.width / (16 / 9), 0)
-        expect(classicBox.height).toBeCloseTo(classicBox.width / (4 / 3), 0)
+        expect(wideAspect).toBeCloseTo(16 / 9, 1)
+        expect(classicAspect).toBeCloseTo(4 / 3, 1)
     })
 
     test('Design: the ratio drives the height, and changing it moves the height', async ({ page }) => {
@@ -130,7 +138,13 @@ test.describe('#709 — OrigamResponsive holds its own ratio', () => {
 
         // POSITIVE CONTROL — swap the ratio through the real control and watch
         // the box follow.
-        await selectHstOption(page, 'Aspect Ratio', '1 / 1 (square)')
+        //
+        // The label is `1/1 (square)`, NOT `1 / 1 (square)`: the Responsive
+        // story ships its own option list, distinct from the shared
+        // `ASPECT_RATIO_OPTIONS` the Img story uses. Dumped from the open
+        // dropdown rather than assumed — the wrong spelling costs a 45s
+        // timeout that looks exactly like a broken component.
+        await selectHstOption(page, 'Aspect Ratio', '1/1 (square)')
         await expect
             .poll(async () => Math.round((await boxOf(root)).height), { timeout: 8000 })
             .toBe(Math.round(initial.width))
@@ -141,9 +155,33 @@ test.describe('#709 — OrigamResponsive holds its own ratio', () => {
         expect(square.height).toBeCloseTo(square.width, 0)
     })
 
-    test('an explicit height still wins over the ratio (non-regression)', async ({ page }) => {
-        // The ratio must size the box when nothing else does — it must NOT
-        // start overriding a consumer's explicit height.
+    /**
+     * ⚠️ BEHAVIOUR CHANGE, measured — escalated in the PR, NOT silently
+     * absorbed.
+     *
+     * An explicit `height` still wins on the HEIGHT axis, before and after.
+     * What changed is the WIDTH that comes with it:
+     *
+     *   | state                          | before      | after        |
+     *   |---|---|---|
+     *   | aspectRatio 16/9, maxWidth 480 | 480 x  23   | 480 x 270    |
+     *   | + height 120px                 | 480 x 120   | 213.33 x 120 |
+     *   | + height 120px + width 400px   | (untested)  | 400 x 120    |
+     *
+     * With `width: auto` and a DEFINITE height, the native property resolves
+     * the width from the ratio (120 x 16/9 = 213.33) instead of stretching to
+     * the containing block. The padding hack could not do that: the ratio
+     * lived on a child, so height and width were independent and the ratio
+     * was simply ignored whenever a height was given.
+     *
+     * Neither is obviously "the" right answer — honouring the ratio is more
+     * faithful to what the component is for, but a consumer who pins a banner
+     * height and expects full width now gets a narrow box. An explicit
+     * `width` restores the old geometry exactly. This test pins the MEASURED
+     * behaviour so it cannot drift again unnoticed while the arbitration is
+     * pending.
+     */
+    test('an explicit height still wins on the height axis', async ({ page }) => {
         await page.goto(variantUrl(RESPONSIVE_ID, 5), { waitUntil: 'domcontentloaded' })
         const sandbox = sandboxOf(page)
         const root = await firstResponsiveRoot(sandbox)
@@ -153,7 +191,19 @@ test.describe('#709 — OrigamResponsive holds its own ratio', () => {
             .poll(async () => Math.round((await boxOf(root)).height), { timeout: 8000 })
             .toBe(120)
 
-        report('Responsive Default + height:120px', await boxOf(root), '(explicit height wins)')
+        const withHeight = await boxOf(root)
+
+        report('Responsive Default + height:120px', withHeight, '(width now follows the ratio)')
+        expect(withHeight.width).toBeCloseTo(120 * (16 / 9), 0)
+
+        // An explicit width takes the inline axis back, restoring the
+        // pre-migration geometry for any consumer that needs it.
+        await fillHstText(page, 'Width', '400px')
+        await expect
+            .poll(async () => Math.round((await boxOf(root)).width), { timeout: 8000 })
+            .toBe(400)
+
+        report('Responsive Default + height:120px + width:400px', await boxOf(root), '(explicit width wins)')
     })
 })
 

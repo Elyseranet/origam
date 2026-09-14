@@ -279,9 +279,13 @@ test.describe('OrigamVideo — tracks', () => {
 })
 
 test.describe('OrigamVideo — aspect ratio', () => {
+    // #709 — this test carried a `test.fail(true, 'DS BUG: useAspectRatio
+    // implements aspect ratio via padding-block-end on an inner __sizer div,
+    // not via the CSS `aspect-ratio` property on the root wrapper […] Fix:
+    // useAspectRatio should emit `aspect-ratio: <n>` on the root element')`.
+    // That is exactly what #709 did, so the expected failure is retired and
+    // the test now runs for real.
     test('aspect-ratio prop maps to the CSS aspect-ratio property on the wrapper', async ({ page }) => {
-        test.fail(true, 'DS BUG: useAspectRatio composable implements aspect ratio via padding-block-end (padding trick) on an inner __sizer div, not via the CSS `aspect-ratio` property on the root wrapper. getComputedStyle(root).aspectRatio returns "auto". The prop is functional but the CSS contract differs from the documented API. Fix: useAspectRatio should emit `aspect-ratio: <n>` on the root element instead of padding-block-end on a sizer child.')
-
         // "Prop — aspectRatio (16/9 / 4/3 / 1/1 / 21/9 / 9/16)" is now the
         // "Design" Variant's "Aspect Ratio" HstSelect (init '16/9') — a
         // single instance switched sequentially instead of five parallel

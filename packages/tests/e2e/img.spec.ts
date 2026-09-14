@@ -78,19 +78,30 @@ test.describe('OrigamImg — Design (index 0)', () => {
 
     test('Functional — the Aspect Ratio select really drives the render (not a lying control)', async ({ page }) => {
         await page.goto(variantUrl(1))
-        const sizer = sandboxOf(page).locator('.origam-img .origam-responsive__sizer').first()
-        await expect(sizer).toHaveCount(1)
-        const read = () => sizer.evaluate(el => (el as HTMLElement).style.paddingBlockEnd)
+        const root = sandboxOf(page).locator('.origam-img').first()
+        await expect(root).toBeVisible({ timeout: 12000 })
+        // #709 — the ratio is now the native `aspect-ratio` property on the
+        // root. The rendered value is the ratio ITSELF, no longer its inverted
+        // percentage on a sizer child (16/9 used to read "56.25%").
+        //
+        // Read it NUMERICALLY: `getComputedStyle().aspectRatio` serialises as
+        // either a bare number or an `a / b` pair depending on the engine, and
+        // pinning one spelling would be pinning a serialisation detail rather
+        // than the ratio.
+        const read = () => root.evaluate((el) => {
+            const raw = getComputedStyle(el).aspectRatio
+            const [a, b] = raw.split('/')
 
-        // The sizer uses the padding-percentage technique, so the rendered value
-        // is the INVERSE of the ratio: 16/9 -> 56.25%, 1/1 -> 100%, 9/16 -> 177.778%.
-        expect(await read()).toBe('56.25%')
+            return Number(Math.round(Number(a) / (b === undefined ? 1 : Number(b)) * 1000) / 1000)
+        })
+
+        await expect.poll(read).toBeCloseTo(16 / 9, 2)
 
         await selectHstOption(page, 'Aspect Ratio', '1 / 1 (square)')
-        await expect.poll(read).toBe('100%')
+        await expect.poll(read).toBeCloseTo(1, 2)
 
         await selectHstOption(page, 'Aspect Ratio', '9 / 16 (story / reel)')
-        await expect.poll(read).toBe('177.778%')
+        await expect.poll(read).toBeCloseTo(9 / 16, 2)
     })
 
     test('aspectRatio prop is applied as a real style, not merely accepted', async ({ page }) => {
@@ -99,15 +110,25 @@ test.describe('OrigamImg — Design (index 0)', () => {
         const root = sandbox.locator('.origam-img').first()
         await expect(root).toBeVisible({ timeout: 12000 })
 
-        // `useAspectRatio` (OrigamResponsive) does NOT set the modern CSS
-        // `aspect-ratio` property on the root — it uses the classic
-        // padding-percentage sizer technique on a child `.origam-responsive
-        // __sizer` div (verified: `getComputedStyle(root).aspectRatio` is
-        // "auto" even when the prop works correctly). 16/9 -> 9/16 = 56.25%.
-        const sizer = root.locator('.origam-responsive__sizer')
-        await expect(sizer).toHaveCount(1)
-        const paddingBlockEnd = await sizer.evaluate(el => (el as HTMLElement).style.paddingBlockEnd)
-        expect(paddingBlockEnd).toBe('56.25%')
+        // #709 — `useAspectRatio` now DOES set the modern CSS `aspect-ratio`
+        // property on the root. The comment that used to sit here recorded the
+        // opposite ("`getComputedStyle(root).aspectRatio` is 'auto' even when
+        // the prop works correctly") and asserted on the sizer's 56.25%
+        // padding; both the sizer and that padding are gone.
+        await expect(root.locator('.origam-responsive__sizer')).toHaveCount(0)
+
+        const applied = await root.evaluate((el) => {
+            const r = el.getBoundingClientRect()
+
+            return {
+                ratio: getComputedStyle(el).aspectRatio,
+                heightOverWidth: r.width ? r.height / r.width : 0
+            }
+        })
+
+        expect(applied.ratio).not.toBe('auto')
+        // A real style, not merely an accepted prop: the box is 16/9.
+        expect(applied.heightOverWidth).toBeCloseTo(9 / 16, 2)
     })
 })
 
@@ -210,19 +231,29 @@ test.describe('OrigamImg — Props', () => {
 
     // #684 — TDD red-first proof: the control is mutated AFTER mount, not
     // merely read at its init-state value. Against the pre-fix `pick()`
-    // snapshot this stays at "56.25%" forever; against the `computed()`
-    // fix it must track the new ratio. `1` -> "100%" (a square sizer).
+    // snapshot the ratio stays at 16/9 forever; against the `computed()` fix
+    // it must track the new one.
+    //
+    // #709 — measured on the ROOT's rendered box instead of the sizer's
+    // padding. Same defect being locked, but through the geometry the user
+    // sees rather than through an intermediate that could be right while the
+    // box stayed wrong.
     test('Prop — aspectRatio: reacts to a post-mount change (#684)', async ({ page }) => {
         await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
         const sandbox = sandboxOf(page)
-        const sizer = sandbox.locator('.origam-responsive__sizer').first()
-        await expect(sizer).toHaveCount(1, { timeout: 12000 })
+        const root = sandbox.locator('.origam-img').first()
+        await expect(root).toBeVisible({ timeout: 12000 })
 
-        const before = await sizer.evaluate(el => (el as HTMLElement).style.paddingBlockEnd)
-        expect(before).toBe('56.25%') // 16/9 -> 9/16 = 56.25%, the init-state value.
+        const shape = () => root.evaluate((el) => {
+            const r = el.getBoundingClientRect()
+
+            return r.width ? Math.round(r.height / r.width * 1000) / 1000 : 0
+        })
+
+        expect(await shape()).toBeCloseTo(9 / 16, 2) // the init-state value
 
         await fillHstNumber(page, 'Aspect Ratio', 1)
-        await expect.poll(() => sizer.evaluate(el => (el as HTMLElement).style.paddingBlockEnd)).toBe('100%')
+        await expect.poll(shape).toBeCloseTo(1, 2)
     })
 
     // #684 — same defect family, two more of the eleven props the frozen
