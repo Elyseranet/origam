@@ -1,6 +1,5 @@
 [
     "src/components/ColorPickerField/OrigamColorPickerField.vue:validationValue:A",
-    "src/components/DatePicker/OrigamDatePicker.vue:text:A",
     "src/components/DatePickerField/OrigamDatePickerField.vue:validationValue:A",
     "src/components/Select/OrigamSelect.vue:validationValue:A"
 ]

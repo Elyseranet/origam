@@ -61,7 +61,8 @@
 					<HstSelect   v-model="state.weeksInMonth"       title="Weeks In Month" :options="WEEKS_IN_MONTH_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Header">
-					<HstText v-model="state.title"  title="Title"/>
+					<HstText v-model="state.title" title="Title"/>
+					<HstText v-model="state.text"  title="Controls Text"/>
 				</StoryGroup>
 				<StoryGroup title="Spacing">
 					<HstText v-model="state.padding" title="Padding"/>
