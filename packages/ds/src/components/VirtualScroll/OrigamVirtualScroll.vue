@@ -103,7 +103,9 @@
 	 * @description
 	 * Props with defaults and filterProps utility.
 	 ********************************************************/
-	const props = withDefaults(defineProps<IVirtualScrollProps>(), {})
+	const props = withDefaults(defineProps<IVirtualScrollProps>(), {
+		items: () => []
+	})
 
 	defineEmits<IVirtualScrollEmits>()
 
