@@ -1,5 +1,31 @@
-import { config } from '@vue/test-utils'
+import { config, enableAutoUnmount } from '@vue/test-utils'
 import { vi, beforeEach, afterEach } from 'vitest'
+
+/*
+ * ⛔ #706 — every mounted wrapper is unmounted after its test.
+ *
+ * Measured on this tree: 405 spec files call `mount()`, only 142 ever
+ * call `.unmount()`. A wrapper nobody unmounts stays mounted for the
+ * whole file, so `onBeforeUnmount` / `onScopeDispose` never run and the
+ * component's timers, rAF loops and promise continuations keep going.
+ * When one of them resolves AFTER vitest tears the jsdom environment
+ * down, `window` no longer exists and the run dies on an unhandled
+ * `ReferenceError: window is not defined` — with zero red tests. Seen
+ * three times in CI (#701 `OrigamImg:316`, #704 and #715
+ * `OrigamMediaController:636`), twice on a PR whose only change was a
+ * CSV file.
+ *
+ * `OrigamImg` illustrates why the component-side guard is not enough on
+ * its own: its poll loop already checks `vm.isUnmounted` and clears its
+ * timer in `onBeforeUnmount`. Both are dead code as long as nothing
+ * unmounts the wrapper.
+ *
+ * Only 1 of the 405 files mounts inside `beforeAll` (the pattern that
+ * needs a wrapper to survive across `it()` blocks), so the blast radius
+ * of unmounting per-test is small — see the PR for the measured before
+ * and after.
+ */
+enableAutoUnmount(afterEach)
 
 /*
  * Polyfill PointerEvent on jsdom (jsdom@25+ ships without it).

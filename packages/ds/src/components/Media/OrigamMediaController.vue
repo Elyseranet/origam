@@ -165,7 +165,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, type CSSProperties, ref, useSlots } from 'vue'
+	import { computed, type CSSProperties, onBeforeUnmount, ref, useSlots } from 'vue'
 
 	import { OrigamBtn } from '../Btn'
 	import { OrigamMenu } from '../Menu'
@@ -564,6 +564,48 @@
 	}
 
 	/*********************************************************
+	 * Download teardown (#706)
+	 *
+	 * The cross-origin download path below leaves TWO pieces of async
+	 * work behind that nothing used to cancel:
+	 *   - the `fetch` promise chain, whose `.catch()` dereferences
+	 *     `window`;
+	 *   - a 30s `setTimeout` that revokes the blob URL.
+	 *
+	 * Both outlive the component. Under Vitest that is not merely a
+	 * leak: the continuation lands AFTER the jsdom environment is torn
+	 * down, `window` no longer exists, and the resulting unhandled
+	 * rejection fails the whole run with zero red tests. Measured three
+	 * times in CI (#701 / #704 / #715), twice on a PR containing only a
+	 * CSV file.
+	 *
+	 * `AbortController` is the platform mechanism for this: aborting on
+	 * unmount rejects the in-flight fetch, and `signal.aborted` is the
+	 * guard that keeps the rejection handler from touching `window`
+	 * once the component is gone.
+	 *
+	 * @description
+	 * `pendingRevokes` maps a blob URL whose deferred revoke has not
+	 * fired yet to the timer handle that will revoke it, so unmount can
+	 * cancel the timer and revoke immediately instead of leaving a 30s
+	 * `window.setTimeout` pointing at a dead component.
+	 ********************************************************/
+	const downloadAbort = new AbortController()
+
+	const pendingRevokes = new Map<string, number>()
+
+	onBeforeUnmount(() => {
+		downloadAbort.abort()
+
+		for (const [blobUrl, handle] of pendingRevokes) {
+			window.clearTimeout(handle)
+			URL.revokeObjectURL(blobUrl)
+		}
+
+		pendingRevokes.clear()
+	})
+
+	/*********************************************************
 	 * handleDownloadClick
 	 *
 	 * Wired on the cog-menu Download row. Detects same-origin vs
@@ -616,20 +658,29 @@
 			document.body.removeChild(a)
 		}
 
-		fetch(url, { mode: 'cors', credentials: 'omit' })
+		fetch(url, { mode: 'cors', credentials: 'omit', signal: downloadAbort.signal })
 			.then((response) => {
 				if (!response.ok) throw new Error(`HTTP ${ response.status }`)
 				return response.blob()
 			})
 			.then((blob) => {
+				if (downloadAbort.signal.aborted) return
+
 				const blobUrl = URL.createObjectURL(blob)
 				triggerAnchor(blobUrl)
 				// Defer revoke so the browser has time to start streaming.
 				// 30s is generous; multi-GB files might need more but
 				// holding the blob in memory beyond that is wasteful.
-				setTimeout(() => URL.revokeObjectURL(blobUrl), 30_000)
+				const handle = window.setTimeout(() => {
+					pendingRevokes.delete(blobUrl)
+					URL.revokeObjectURL(blobUrl)
+				}, 30_000)
+
+				pendingRevokes.set(blobUrl, handle)
 			})
 			.catch(() => {
+				if (downloadAbort.signal.aborted) return
+
 				// CORS-denied or offline. Last-resort: open the URL in
 				// a new tab so the user is NOT stuck on a page replaced
 				// by an inline media viewer.
