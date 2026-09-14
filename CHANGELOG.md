@@ -18,6 +18,28 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.17.0] - 2026-09-14
+
+> ### ⛔ DÉROGATION ASSUMÉE — cette version MINEURE porte 8 ruptures d'API
+>
+> Le versioning sémantique, et la règle de ce dépôt (`CLAUDE.md`, « Work
+> priorities and versioning »), imposent une **majeure** pour une rupture.
+> Les 8 entrées `⚠️ BREAKING` ci-dessous en sont, et elles sortent malgré
+> tout en `2.17.0`.
+>
+> **C'est une décision explicite du mainteneur**, prise le 2026-09-14 après
+> que la recommandation inverse (`3.0.0`, ou `3.0.0-rc.1` validée par le
+> site marketing) lui ait été présentée avec ses conséquences.
+>
+> **Ce que ça implique concrètement** : un consommateur épinglé en
+> `^2.16.0` reçoit ces 8 ruptures **automatiquement**, sans action de sa
+> part, et son build peut casser sans avertissement. Les recettes de
+> migration sont dans chaque entrée ci-dessous — il n'y a pas de
+> `docs/migration/v2-to-v3.md`, la ROADMAP le prévoyait pour une v3.
+>
+> Suivi de remédiation : voir le ticket ouvert le jour de cette release.
+
+
 ### ⚠️ BREAKING — aspect ratio now uses CSS `aspect-ratio`; an explicit `height` also constrains the width
 
 `<OrigamResponsive>`, `<OrigamImg>`, `<OrigamCarouselItem>` and `<OrigamVideo>`
