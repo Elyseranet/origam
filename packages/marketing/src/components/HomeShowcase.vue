@@ -49,7 +49,7 @@ const STATUS_DOT_COLOR: Record<string, string> = {
                     tag="h2"
                     class="home-showcase__title"
                 >
-                    <span class="home-showcase__title-line">{{ t('home.showcase.title_line1', '95 components.') }}</span>
+                    <span class="home-showcase__title-line">{{ t('home.showcase.title_line1', '218 components.') }}</span>
                     <span class="home-showcase__title-line">{{ t('home.showcase.title_line2', 'One vibe.') }}</span>
                 </origam-title>
 

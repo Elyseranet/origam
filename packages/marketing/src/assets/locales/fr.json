@@ -265,10 +265,10 @@
     "components": {
         "meta": {
             "title": "Composants · origam design system",
-            "description": "Parcourez 95+ composants Vue 3 accessibles et pilotés par tokens, groupés par catégorie. Cliquez sur un composant pour voir son API, ses props, emits, slots et exemples."
+            "description": "Parcourez 218 composants Vue 3 accessibles et pilotés par tokens, groupés par catégorie. Cliquez sur un composant pour voir son API, ses props, emits, slots et exemples."
         },
         "hero": {
-            "badge": "95+ composants — Vue 3",
+            "badge": "218 composants — Vue 3",
             "title_line1": "Catalogue de",
             "title_line2": "composants.",
             "subtitle": "Chaque composant d'origam est accessible, piloté par tokens et thémable. Explorez-les par catégorie, lisez l'API et voyez-les en action.",
@@ -753,13 +753,13 @@
     "home": {
         "meta": {
             "title": "origam · design system Vue 3",
-            "description": "95 composants. 29 primitives de graphiques. Accessibilité complète. Design tokens prêts à l'emploi. Conçu pour Vue 3 avec une DX TypeScript-first."
+            "description": "218 composants. 26 primitives de graphiques. Accessibilité complète. Design tokens prêts à l'emploi. Conçu pour Vue 3 avec une DX TypeScript-first."
         },
         "hero": {
-            "badge": "v{version} — 29 graphiques livrés, conforme WCAG 2.1 AA",
+            "badge": "v{version} — 26 graphiques livrés, conforme WCAG 2.1 AA",
             "title_line1": "Le design system Vue 3",
             "title_line2": "qui marche, tout simplement.",
-            "subtitle": "95 composants. 29 primitives de graphiques. Accessibilité complète. Design tokens prêts à l'emploi. Conçu pour Vue 3 avec une DX TypeScript-first.",
+            "subtitle": "218 composants. 26 primitives de graphiques. Accessibilité complète. Design tokens prêts à l'emploi. Conçu pour Vue 3 avec une DX TypeScript-first.",
             "cta_components": "Parcourir les composants",
             "cta_github": "Star sur GitHub",
             "install": "npm install origam",
@@ -769,9 +769,9 @@
         },
         "kpis": {
             "title": "origam en chiffres",
-            "components_value": "95",
+            "components_value": "218",
             "components_label": "Composants",
-            "charts_value": "29",
+            "charts_value": "26",
             "charts_label": "Primitives de graphiques",
             "a11y_value": "100%",
             "a11y_label": "WCAG 2.1 AA",
@@ -787,7 +787,7 @@
             "title_line2": "Rien de superflu.",
             "subtitle": "Une boîte à outils complète pour livrer des apps Vue 3 — des primitives atomiques à la dataviz complexe, chaque pièce testée, thémée et conforme a11y.",
             "charts": {
-                "title": "29 primitives de graphiques",
+                "title": "26 primitives de graphiques",
                 "description": "Ligne, aire, barre, donut, chandelier, heatmap — une couverture digne de Highcharts, sans la licence."
             },
             "a11y": {
@@ -822,8 +822,8 @@
         },
         "showcase": {
             "eyebrow": "VITRINE",
-            "title": "95 composants. Une seule âme.",
-            "title_line1": "95 composants.",
+            "title": "218 composants. Une seule âme.",
+            "title_line1": "218 composants.",
             "title_line2": "Une seule âme.",
             "view_all": "Voir tout",
             "data_table": {
@@ -911,13 +911,13 @@
     "installation": {
         "meta": {
             "title": "Installation · origam design system",
-            "description": "Lancez origam en quelques minutes. Installez le package npm, enregistrez le plugin et commencez à construire avec 95+ composants Vue 3 accessibles."
+            "description": "Lancez origam en quelques minutes. Installez le package npm, enregistrez le plugin et commencez à construire avec 218 composants Vue 3 accessibles."
         },
         "hero": {
             "badge": "npm install origam",
             "title_line1": "Prêt à tourner",
             "title_line2": "en quelques minutes.",
-            "subtitle": "Installez origam, enregistrez le plugin et commencez à construire avec 95+ composants Vue 3 accessibles et pilotés par tokens."
+            "subtitle": "Installez origam, enregistrez le plugin et commencez à construire avec 218 composants Vue 3 accessibles et pilotés par tokens."
         },
         "steps": {
             "eyebrow": "ÉTAPE PAR ÉTAPE",
@@ -1869,7 +1869,7 @@
                 "description": "Compatible Tokens Studio, Style Dictionary v4. 8 thèmes basculent à l'exécution sans remontage ni clignotement."
             },
             "charts": {
-                "title": "95 composants + 29 primitives de graphiques",
+                "title": "218 composants + 26 primitives de graphiques",
                 "description": "Des boutons atomiques aux graphiques ligne, aire, donut, heatmap et chandelier — dans un seul package cohérent."
             },
             "a11y": {
@@ -1957,7 +1957,7 @@
             },
             "dataviz": {
                 "title": "UI riche en données avec graphiques",
-                "description": "29 primitives de graphiques — ligne, aire, barre, donut, heatmap, chandelier — thémés et accessibles, en un seul install."
+                "description": "26 primitives de graphiques — ligne, aire, barre, donut, heatmap, chandelier — thémés et accessibles, en un seul install."
             },
             "migration": {
                 "title": "Migration d'une grande base Vuetify 2",
@@ -2035,7 +2035,7 @@
         },
         "cta": {
             "title": "Commencez à construire.",
-            "description": "Les 95+ composants sont tous disponibles dès aujourd'hui. Installez origam et composez n'importe quelle mise en page en quelques minutes.",
+            "description": "Les 218 composants sont tous disponibles dès aujourd'hui. Installez origam et composez n'importe quelle mise en page en quelques minutes.",
             "actions_label": "Explorer origam",
             "cta_components": "Parcourir les composants",
             "cta_install": "Guide d'installation"
