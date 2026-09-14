@@ -18,6 +18,60 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.17.1] - 2026-09-14
+
+Hotfix. Quatre correctifs, **aucune rupture d'API**. Trois des quatre ont
+invalidé le diagnostic du ticket qui les demandait — les causes réelles sont
+consignées ci-dessous, parce qu'elles sont plus instructives que les correctifs.
+
+### Fixed
+
+- **`border` / `outlined` sur les champs ne coupe plus le label flottant** (#726).
+  La hiérarchie DOM est l'inverse de ce que les noms suggèrent : `origam-input`
+  est l'élément EXTÉRIEUR, `origam-field` est à l'intérieur. `useBorder` peignait
+  donc un rectangle SANS encoche dont le bord haut traversait le label.
+  `IFieldProps` étend désormais `IBorderProps` et route largeur / style / couleur
+  vers le canal de tokens que lisent les trois pattes `__outline` — l'encoche
+  s'ouvre d'elle-même. Mesure de l'aire d'intersection label × bande de bordure,
+  Chromium : TextField `61,41 px² → 0`, Select sans aucune prop `35,59 px² → 0`,
+  Select `border="thick"` `71,19 px² → 0`.
+  ⚠️ `OrigamSelect` déclare `border: true` dans son propre `withDefaults` : il
+  était donc cassé PAR DÉFAUT, sans qu'un consommateur passe quoi que ce soit.
+  Les 12 consommateurs d'`OrigamInput` ont été audités : 4 emboîtent un field
+  (corrigés), 8 n'en ont aucun et gardent `useBorder` sur leur racine.
+  Les valeurs directionnelles (`border="top"`, `borderBlock`…) ne peignent plus
+  rien sur les champs à encoche : un trait horizontal y couperait le label.
+
+- **Le track de `OrigamSwitch` a de nouveau une bordure par défaut** (#727).
+  Les deux tokens étaient déclarés et LUS PAR PERSONNE — ils figuraient dans la
+  baseline `token-var-channels-dormant`. Changer leurs valeurs seules n'aurait
+  rien produit ; il fallait ajouter la déclaration qui les lit. Défaut :
+  `1px solid var(--origam-color__border---default)`, donc le switch suit le thème
+  actif. Mesure : `0px / none → 1px / solid`. La surcharge reste entière
+  (`border="thick"` → 2px, `border="top"` ramène les autres côtés à 0).
+
+- **`OrigamMasonry` patche ses enfants au lieu de les reconstruire** (#735).
+  `:is="{ render: () => child }"` reconstruisait un objet littéral à CHAQUE passe
+  de rendu : Vue voyait un type différent et détruisait / recréait tout le
+  sous-arbre. Mesure Chromium sur UN SEUL redimensionnement, 9 enfants :
+  117 nœuds ajoutés, 117 retirés, 0 enfant conservant son nœud DOM. Les enfants
+  perdaient focus, scroll, lecture média, transitions et état de composant, et
+  rejouaient leurs `onMounted`. Corrigé par `:is="child"` — branche `isVNode` de
+  `createVNode`. Survivants `0/9 → 9/9`. Présent depuis la naissance du
+  composant (2026-05-15), ce n'est pas une régression.
+
+- **`OrigamVirtualScroll` rend de nouveau** (#736).
+  L'erreur `$setup.convertToUnit is not a function` désignait la victime, pas le
+  coupable : `convertToUnit` était bien importé ET exposé. `items?` était
+  optionnelle SANS défaut, `useVirtual` lit `items.value.length` synchroniquement
+  dans le `setup()`, le setup tombait, Vue n'assemblait jamais `__returned__`, et
+  le template échouait sur le premier symbole rencontré. Corrigé par
+  `items: () => []`. La doc annonçait déjà ce défaut — elle dit enfin vrai.
+  Balayage : 0 composant sur 218 appelle un symbole absent de son setup ;
+  sur la famille réelle (prop optionnelle lue sans garde), 35 → 34, les 34
+  restants étant 18 refus délibérés et 16 props `required: true`.
+
+
 ## [2.17.0] - 2026-09-14
 
 > ### ⛔ DÉROGATION ASSUMÉE — cette version MINEURE porte 8 ruptures d'API

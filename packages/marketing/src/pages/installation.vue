@@ -18,9 +18,9 @@ const { t } = useT()
 
 useSeoMeta({
     title: () => t('installation.meta.title', 'Installation · origam design system'),
-    description: () => t('installation.meta.description', 'Get origam up and running in minutes. Install the npm package, register the plugin, and start building with 95+ accessible Vue 3 components.'),
+    description: () => t('installation.meta.description', 'Get origam up and running in minutes. Install the npm package, register the plugin, and start building with 218 accessible Vue 3 components.'),
     ogTitle: () => t('installation.meta.title', 'Installation · origam design system'),
-    ogDescription: () => t('installation.meta.description', 'Get origam up and running in minutes. Install the npm package, register the plugin, and start building with 95+ accessible Vue 3 components.')
+    ogDescription: () => t('installation.meta.description', 'Get origam up and running in minutes. Install the npm package, register the plugin, and start building with 218 accessible Vue 3 components.')
 })
 
 const peerDeps = computed(() => INSTALLATION_PEER_DEPS)
@@ -66,7 +66,7 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
                 </origam-title>
 
                 <p class="installation-hero__subtitle">
-                    {{ t('installation.hero.subtitle', 'Install origam, register the plugin, and start building with 95+ accessible, token-driven Vue 3 components right away.') }}
+                    {{ t('installation.hero.subtitle', 'Install origam, register the plugin, and start building with 218 accessible, token-driven Vue 3 components right away.') }}
                 </p>
             </origam-container>
         </section>

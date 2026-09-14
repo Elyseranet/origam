@@ -99,6 +99,27 @@ child remains in the DOM.
 `requestAnimationFrame`, so a window drag doesn't trigger one layout
 per pixel.
 
+## Behaviour — child identity in the JS path
+
+The JS fallback wraps each slot child in its own positioned
+`.origam-masonry__item`. That wrapping is **transparent to the child**:
+a relayout (resize, `columns` / `gap` / `align` change, `relayout()`)
+patches the existing children rather than rebuilding them, so component
+state, focus, scroll position, media playback and running CSS
+transitions all survive it, and `onMounted` does not re-run.
+
+Up to and including 2.17.0 this was not the case: every relayout
+destroyed and recreated the whole child subtree. Measured in Chromium
+over a single viewport resize, 9 children: 117 DOM nodes added, 117
+removed, 0 children keeping their element. Fixed in 2.17.1 (#733).
+
+::: tip Bare text children
+Only **element and component** children get a wrapper. Whitespace,
+comments and bare text nodes are skipped, so
+`<origam-masonry>plain text</origam-masonry>` renders nothing in the JS
+path. Wrap text in an element.
+:::
+
 ## Accessibility
 
 The root element carries `role="list"`. In the JS fallback path each

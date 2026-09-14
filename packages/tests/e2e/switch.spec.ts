@@ -473,7 +473,20 @@ test.describe('OrigamSwitch', () => {
     // ------------------------------------------------------------------ //
 
     test.describe('Track visual surface — border / rounded / elevation', () => {
-        test('border prop reaches the track and paints a visible border', async ({ page }) => {
+        /*
+         * ⛔ #727 — cette assertion disait `before === '0px'`, et elle avait
+         * RAISON : le track ne peignait aucune bordure hors `forced-colors`.
+         * Les deux tokens `--origam-switch__track---border-{width,color}`
+         * existaient dans `light.css` / `dark.css` mais n'étaient lus par
+         * personne (tous deux dans `baseline/token-var-channels-dormant.json`),
+         * et leurs valeurs se neutralisaient en plus l'une l'autre
+         * (`border__width---0` + `rgba(0,0,0,0)`).
+         *
+         * Depuis #727 le défaut est `1px solid var(--origam-color__border---default)` :
+         * la valeur attendue AVANT override devient donc `1px`. Mesuré en
+         * Chromium sur le Histoire statique — `0px` avant, `1px` après.
+         */
+        test('la bordure par defaut du track est peinte, et un override la remplace', async ({ page }) => {
             await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const sw = sandbox.locator('.origam-switch').first()
@@ -482,7 +495,7 @@ test.describe('OrigamSwitch', () => {
             const before = await sandbox.locator('.origam-switch-track').first().evaluate(
                 el => getComputedStyle(el).borderWidth
             )
-            expect(before).toBe('0px')
+            expect(before).toBe('1px')
 
             // Drive the prop through the real Vue component (not a class
             // injection) by asking the story's own control binding — since
@@ -491,10 +504,15 @@ test.describe('OrigamSwitch', () => {
             // `origam-switch` root and read the track's resolved style,
             // which only changes if the OrigamSwitch → OrigamSwitchTrack
             // forwarding path (filterProps) is actually wired.
+            //
+            // On injecte la forme EXACTE que `useBorder` émet pour
+            // `border="thick"` (canal inline) — et une largeur DIFFÉRENTE du
+            // défaut, sans quoi l'assertion ne discriminerait plus rien
+            // maintenant que le défaut vaut déjà 1px.
             await sw.evaluate((el) => {
                 const track = el.querySelector('.origam-switch-track') as HTMLElement
                 track.classList.add('origam-switch-track--border')
-                track.style.setProperty('border-width', 'var(--origam-border__width---thin, 1px)')
+                track.style.setProperty('border-width', 'var(--origam-border__width---2, 2px)')
                 track.style.setProperty('border-style', 'solid')
                 track.style.setProperty('border-color', 'currentColor')
             })
@@ -502,7 +520,8 @@ test.describe('OrigamSwitch', () => {
             const after = await sandbox.locator('.origam-switch-track').first().evaluate(
                 el => getComputedStyle(el).borderWidth
             )
-            expect(after).not.toBe('0px')
+            expect(after).toBe('2px')
+            expect(after).not.toBe(before)
         })
 
         test('rounded prop reaches the track and overrides the default pill radius', async ({ page }) => {

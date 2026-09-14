@@ -1,6 +1,6 @@
 export const MARKETING_DEFAULTS = {
     siteName: 'origam',
-    siteDescription: 'Build your entire Vue 3 design system in minutes. 95+ accessible, TypeScript-first components driven by design tokens.',
+    siteDescription: 'Build your entire Vue 3 design system in minutes. 218 accessible, TypeScript-first components driven by design tokens.',
     defaultLocale: 'en',
     githubRepo: 'https://github.com/Elyseranet/origam',
     npmPkg: 'origam',

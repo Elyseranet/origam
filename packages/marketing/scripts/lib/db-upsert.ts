@@ -120,8 +120,14 @@ function insertPayload (row, cols, entryId) {
 /**
  * Upsert the doc_entry row. Returns { id, counts }.
  * On 'all' mask, a locked entry only gets its [SRC] columns refreshed.
+ *
+ * `srcCols` narrows the [SRC] set for one re-sync. It applies to the UPDATE
+ * only — an INSERT always writes every column the record carries, so a
+ * never-seen entry still lands complete. This is what lets a family declare
+ * "I can derive the name and the source file, but the signature in this table
+ * is hand-written prose I must not touch".
  */
-async function upsertEntry (manager, entry, mask) {
+async function upsertEntry (manager, entry, mask, srcCols = ENTRY_SRC) {
     const counts = blankCounts()
     const existing = await manager.findOne(DocEntry, { where: { kind: entry.kind, slug: entry.slug } })
 
@@ -134,7 +140,7 @@ async function upsertEntry (manager, entry, mask) {
     }
 
     const locked = mask === 'all' && existing.edited_by_user
-    const cols = (mask === 'src' || locked) ? ENTRY_SRC : [...ENTRY_SRC, ...ENTRY_EDIT]
+    const cols = (mask === 'src' || locked) ? srcCols : [...ENTRY_SRC, ...ENTRY_EDIT]
     const patch = diffPatch(entry, existing, cols)
     if (existing.orphaned_at !== null) patch.orphaned_at = null
 
@@ -224,15 +230,54 @@ export async function ingestFull (manager: EntityManager, record) {
 /**
  * Ingest structural facts only (re-sync): entry [SRC] + the [SRC] collections,
  * plus `extends` relation edges. Editorial collections are left untouched.
+ *
+ * `opts.entryCols` and `opts.collections` narrow what this run claims to own.
+ * ⛔ A collection left OUT of the list is not merely skipped — it is protected:
+ * reconciling a collection with an empty array ORPHANS every row in it. That is
+ * the whole reason the lists are per-family rather than global. A directive's
+ * `args` / `modifiers`, or a component's `values`, are curated rows no
+ * extractor produces; passing them through an empty reconcile would erase them
+ * on the first run.
+ *
+ * `opts.relations` does the same for the `extends` edges, which only the
+ * interface family owns.
  */
-export async function ingestSrc (manager: EntityManager, record) {
+export async function ingestSrc (manager: EntityManager, record, opts: {
+    entryCols?: string[]
+    collections?: string[]
+    relations?: boolean
+} = {}) {
     const total = blankCounts()
-    const { id, counts } = await upsertEntry(manager, record.entry, 'src')
+    const { id, counts } = await upsertEntry(manager, record.entry, 'src', opts.entryCols ?? ENTRY_SRC)
     bump(total, counts)
-    for (const name of SRC_COLLECTIONS) {
+    for (const name of opts.collections ?? SRC_COLLECTIONS) {
         bump(total, await reconcile(manager, name, id, record[name] ?? [], 'src'))
     }
-    const extendsRels = (record.relations ?? []).filter(r => r.rel_type === 'extends')
-    bump(total, await reconcile(manager, 'relations', id, extendsRels, 'src', 'extends'))
+    if (opts.relations ?? true) {
+        const extendsRels = (record.relations ?? []).filter(r => r.rel_type === 'extends')
+        bump(total, await reconcile(manager, 'relations', id, extendsRels, 'src', 'extends'))
+    }
     return total
+}
+
+/**
+ * Flag every entry of `kind` whose slug the re-sync did NOT see — the symbol
+ * was deleted from the design system but the catalogue still announces it.
+ * Soft-delete only, like every other reconciliation here: `orphaned_at` is set,
+ * the row and its curated prose survive, and `upsertEntry` clears the flag by
+ * itself if the symbol ever comes back.
+ *
+ * ⛔ Scoped to one kind per call, and only for the families whose extractor
+ * enumerates the WHOLE family. A partial extractor would orphan everything it
+ * cannot see.
+ */
+export async function orphanMissingEntries (manager: EntityManager, kind: string, seenSlugs: Set<string>) {
+    const rows = await manager.find(DocEntry, { where: { kind } })
+    let orphaned = 0
+    for (const row of rows) {
+        if (seenSlugs.has(row.slug) || row.orphaned_at !== null) continue
+        await manager.update(DocEntry, { id: row.id }, { orphaned_at: new Date() })
+        orphaned++
+    }
+    return orphaned
 }

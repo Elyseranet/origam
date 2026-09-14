@@ -159,10 +159,14 @@ files to UPSERTing into this database. It reuses the same libs
 # families) into the DB without loss. Idempotent; respects the editorial lock.
 pnpm -F @origam/marketing docs:seed
 
-# Re-sync: re-extract STRUCTURAL [SRC] facts from packages/ds/src for the 4
-# auto-derivable families (enums, interfaces, consts, utils) and UPSERT only the
-# [SRC] columns. Editorial fields are never touched. Run this on every DS change.
+# Re-sync: re-extract STRUCTURAL [SRC] facts from packages/ds/src for all 8
+# families and UPSERT only the [SRC] columns each family can honestly derive
+# (see RESYNC_POLICY). Editorial fields are never touched. Run on every DS change.
 pnpm -F @origam/marketing docs:sync
+
+# One family at a time — the eight domain keys are: enums, interfaces, consts,
+# utils, composables, types, directives, components.
+pnpm -F @origam/marketing docs:sync -- --domain=components
 
 # Dry-run drift gates (write nothing, exit 1 if the DB would change):
 pnpm -F @origam/marketing docs:seed:check
@@ -183,6 +187,17 @@ Properties:
   display (e.g. `mdi-icons`, 31 listed vs 7297 in source) are expanded to the
   full source set by re-sync — a display/policy question for the API/UI layer,
   not a data error.
+- **Per-family claims** — "[SRC]" was calibrated on the four original families
+  and does NOT hold column for column on the four added later. Each family
+  declares what it can derive in `RESYNC_POLICY` (`scripts/generate-api-docs.mjs`);
+  anything omitted stays exactly as the catalogue has it. A directive's
+  `signature` is hand-written usage forms, a type's `definition` carries a
+  hand-added enum expansion, a component's `parent_slug` is an editorial
+  grouping — none of the three is overwritten.
+- **Dead entries** — families whose extractor enumerates the whole family
+  (`components`, `types`, `directives`) also flag entries the design system no
+  longer has, with `doc_entry.orphaned_at`. Soft-flag only; the row and its
+  curated prose survive, and the flag clears by itself if the symbol returns.
 
 `--domain=<kind>` restricts a seed (e.g. `--domain=component`);
 `--domain=<dir>` restricts a re-sync (e.g. `--domain=enums`).

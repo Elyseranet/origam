@@ -270,6 +270,230 @@ test.describe('OrigamMasonry', () => {
     })
 
     // ------------------------------------------------------------------ //
+    // #733 — ITEM GEOMETRY (real browser, the only valid verdict)         //
+    //                                                                      //
+    // The ticket reports `.origam-masonry__item` measuring 320 x 0 with a  //
+    // populated column layout — i.e. items positioned but EMPTY. "The      //
+    // items render" has to be a NUMBER, so these specs read                //
+    // getBoundingClientRect() rather than asserting visibility.            //
+    //                                                                      //
+    // jsdom cannot arbitrate this: it resolves no `var()` and lays nothing //
+    // out. Hence Playwright. The DOM-presence half of the same defect is   //
+    // pinned in TU/components/Masonry/OrigamMasonry.slot-render.spec.ts.   //
+    // ------------------------------------------------------------------ //
+
+    test.describe('#733 — item geometry', () => {
+        /**
+         * POSITIVE CONTROL — run FIRST, and deliberately about the CHILD,
+         * not the wrapper.
+         *
+         * Every assertion below concludes something from a height of 0. That
+         * is an argument from absence, and it is only worth anything once the
+         * harness has been shown to produce a NON-zero number on this page,
+         * through this frame, with this measurement call. If the .card
+         * children themselves measured 0, the story fixture would be the
+         * defect and nothing could be said about OrigamMasonry.
+         *
+         * The story seeds explicit heights (180, 240, 110, …), so a healthy
+         * fixture yields a sum well over 1000 px.
+         */
+        test('positive control: the seeded .card children measure non-zero height', async ({ page }) => {
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
+            await page.waitForTimeout(400)
+
+            const heights: number[] = await sandbox.locator('.origam-masonry .card').evaluateAll(
+                (els) => els.map((el) => Math.round((el as HTMLElement).getBoundingClientRect().height))
+            )
+
+            expect(heights.length).toBe(9)
+            // Seeded heights are 110 px at the smallest — nothing legitimate is 0.
+            expect(Math.min(...heights)).toBeGreaterThan(0)
+            expect(heights.reduce((a, b) => a + b, 0)).toBeGreaterThan(1000)
+        })
+
+        test('every .origam-masonry__item has a non-zero bounding box', async ({ page }) => {
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
+            await page.waitForTimeout(400)
+
+            const boxes: Array<{ w: number, h: number }> = await sandbox
+                .locator('.origam-masonry__item')
+                .evaluateAll((els) => els.map((el) => {
+                    const r = (el as HTMLElement).getBoundingClientRect()
+                    return { w: Math.round(r.width), h: Math.round(r.height) }
+                }))
+
+            expect(boxes.length).toBe(9)
+            // Reported defect: width painted from the bucket-fill (320) but
+            // height 0 because the wrapper holds nothing.
+            const empty = boxes.filter((b) => b.h === 0)
+            expect(
+                empty.length,
+                `items with height 0 (defect #733): ${JSON.stringify(boxes)}`
+            ).toBe(0)
+            expect(Math.min(...boxes.map((b) => b.w))).toBeGreaterThan(0)
+        })
+
+        /**
+         * The wrapper must be as tall as the child it wraps. A wrapper that is
+         * non-zero only because of its own padding would pass the spec above
+         * while still clipping the content, so this compares the two boxes.
+         */
+        test('each item wrapper is as tall as the .card it wraps', async ({ page }) => {
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
+            await page.waitForTimeout(400)
+
+            const pairs: Array<{ item: number, card: number }> = await sandbox
+                .locator('.origam-masonry__item')
+                .evaluateAll((els) => els.map((el) => {
+                    const card = (el as HTMLElement).querySelector('.card') as HTMLElement | null
+                    return {
+                        item: Math.round((el as HTMLElement).getBoundingClientRect().height),
+                        card: card ? Math.round(card.getBoundingClientRect().height) : -1
+                    }
+                }))
+
+            expect(pairs.length).toBe(9)
+            for (const p of pairs) {
+                expect(p.card, `an item wrapper has no .card child: ${JSON.stringify(pairs)}`).toBeGreaterThan(0)
+                expect(Math.abs(p.item - p.card)).toBeLessThanOrEqual(1)
+            }
+        })
+
+        /**
+         * The container height is derived from the MEASURED item heights
+         * (`bucketFill` → `--origam-masonry---container-height`). Empty items
+         * measure 0, so the container collapses. This checks the consequence
+         * rather than the cause, and would catch a fix that restored the
+         * markup but not the measurement pass.
+         */
+        test('container height reflects the measured items, not a collapsed 0', async ({ page }) => {
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const root = sandbox.locator('.origam-masonry').first()
+            await expect(root).toBeVisible({ timeout: 30000 })
+            await page.waitForTimeout(400)
+
+            const h = await root.evaluate((el) => Math.round(el.getBoundingClientRect().height))
+            // 9 cards over 3 columns, smallest seeded heights ⇒ several hundred px.
+            expect(h).toBeGreaterThan(300)
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // #733 — CHILD SURVIVAL ACROSS A RELAYOUT                              //
+    //                                                                      //
+    // This is the defect the #733 investigation actually found. The JS path //
+    // used to place each extracted vnode inside                             //
+    //     <component :is="{ render: () => child }" />                       //
+    // and that object literal is rebuilt on every render pass, so Vue saw a //
+    // new component type each time and DESTROYED / RECREATED the whole      //
+    // child subtree rather than patching it.                                //
+    //                                                                      //
+    // A resize is the natural trigger: ResizeObserver → relayout →          //
+    // `layout.value` changes → the root's `:style` recomputes → re-render   //
+    // → (pre-fix) every child rebuilt. Measured pre-fix over ONE resize:    //
+    //     117 nodes added, 117 removed, 0 of 9 children kept their node.    //
+    // ------------------------------------------------------------------ //
+
+    test.describe('#733 — children survive a relayout', () => {
+        /**
+         * The whole spec turns on DOM node identity, which is not directly
+         * observable from Playwright — so we stamp the nodes ourselves and
+         * check the stamps afterwards.
+         *
+         * POSITIVE CONTROL is built in and comes first: `taggedBefore` must be
+         * 9. If the stamping step reached nothing, `survivors === 0` would be
+         * trivially true and would prove nothing at all. The control makes the
+         * difference between "the children were replaced" and "my probe never
+         * found any children".
+         */
+        test('slot children keep their DOM nodes across a viewport resize', async ({ page }) => {
+            await page.setViewportSize({ width: 1280, height: 800 })
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const root = sandbox.locator('.origam-masonry').first()
+            await expect(root).toBeVisible({ timeout: 30000 })
+            await page.waitForTimeout(600)
+
+            const taggedBefore = await root.evaluate((el) => {
+                const cards = el.querySelectorAll('.origam-masonry__item .card')
+                cards.forEach((c, i) => { (c as HTMLElement).dataset.survivalTag = String(i) })
+                return cards.length
+            })
+            // Positive control — the probe must have something to observe.
+            expect(taggedBefore, 'probe stamped no children: the measurement below would be vacuous').toBe(9)
+
+            // Drive a real relayout through the ResizeObserver.
+            await page.setViewportSize({ width: 900, height: 800 })
+            await page.waitForTimeout(800)
+
+            const after = await root.evaluate((el) => {
+                const cards = Array.from(el.querySelectorAll('.origam-masonry__item .card')) as HTMLElement[]
+                return {
+                    total: cards.length,
+                    survivors: cards.filter((c) => c.dataset.survivalTag !== undefined).length
+                }
+            })
+
+            expect(after.total).toBe(9)
+            expect(
+                after.survivors,
+                'children were rebuilt by the relayout instead of patched (#733)'
+            ).toBe(9)
+        })
+
+        /**
+         * Same defect seen from the other side: a rebuild re-runs the child's
+         * mount-time side effects. We can't inject a component into the story,
+         * but a CSS transition is state the browser owns per-element, and a
+         * rebuilt element restarts it. Simpler and more robust: assert the
+         * relayout produced NO childList churn under the items.
+         */
+        test('a relayout patches the items instead of rebuilding them', async ({ page }) => {
+            await page.setViewportSize({ width: 1280, height: 800 })
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const root = sandbox.locator('.origam-masonry').first()
+            await expect(root).toBeVisible({ timeout: 30000 })
+            await page.waitForTimeout(600)
+
+            await root.evaluate((el) => {
+                const w = window as unknown as Record<string, unknown>
+                const churn = { added: 0, removed: 0 }
+                w.__masonryChurn = churn
+                const mo = new MutationObserver((recs) => {
+                    for (const r of recs) {
+                        churn.added += r.addedNodes.length
+                        churn.removed += r.removedNodes.length
+                    }
+                })
+                w.__masonryMo = mo
+                mo.observe(el, { childList: true, subtree: true })
+            })
+
+            await page.setViewportSize({ width: 900, height: 800 })
+            await page.waitForTimeout(800)
+
+            const churn = await root.evaluate(() => {
+                const w = window as unknown as Record<string, any>
+                w.__masonryMo.disconnect()
+                return w.__masonryChurn as { added: number, removed: number }
+            })
+
+            // Pre-fix this read 117 / 117. A patching relayout only rewrites
+            // inline styles, which are attribute mutations, not childList ones.
+            expect(churn.removed, `nodes removed during a pure relayout: ${JSON.stringify(churn)}`).toBe(0)
+            expect(churn.added, `nodes added during a pure relayout: ${JSON.stringify(churn)}`).toBe(0)
+        })
+    })
+
+    // ------------------------------------------------------------------ //
     // DEFAULT / PLAYGROUND (index 3)                                       //
     // init: { columns: 3, gap: 'md', animated: true, align: 'top' }       //
     // ------------------------------------------------------------------ //

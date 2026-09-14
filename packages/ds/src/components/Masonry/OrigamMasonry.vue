@@ -20,7 +20,7 @@
 					:style="getItemStyle(idx)"
 			>
 				<component
-						:is="{ render: () => child }"
+						:is="child"
 				/>
 			</div>
 		</template>
@@ -31,6 +31,26 @@
 		lang="ts"
 		setup
 >
+	/*********************************************************
+	 * Rendu des enfants — `<component :is="child" />`
+	 *
+	 * @description
+	 * Le template rend le vnode extrait DIRECTEMENT. `<component :is>`
+	 * sur un VNode emprunte la branche `isVNode(type)` de `createVNode`,
+	 * qui le clone et renvoie le clone — sans composant enveloppe.
+	 *
+	 * @description
+	 * Il lisait auparavant `:is="{ render: () => child }"`. Cet objet
+	 * litteral est reconstruit a CHAQUE passe de rendu, donc Vue voyait
+	 * un type de composant different a chaque fois et detruisait /
+	 * recreait tout le sous-arbre enfant au lieu de le patcher. Mesure
+	 * dans Chromium sur un seul redimensionnement : 117 noeuds ajoutes,
+	 * 117 retires, et 0 des 9 enfants de slot conservant son noeud DOM.
+	 * Chaque enfant perdait donc focus, position de scroll, lecture
+	 * media, etat de transition CSS et etat de composant, et rejouait
+	 * ses effets `onMounted`, a chaque relayout. Voir #733.
+	 ********************************************************/
+
 	import {
 		computed,
 		onMounted,

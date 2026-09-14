@@ -181,6 +181,9 @@ mirrored in `dark.css` and the `_*.scss` twins.
 | `--origam-switch__track--inset---width` | *(undeclared, falls back to `52px`)* | Track min-width under `inset`. |
 | `--origam-switch__track--inset---height` | *(undeclared, falls back to `32px`)* | Track height under `inset`. |
 | `--origam-switch__track---border-radius` | `radius.full` | Track corner radius — overridden per instance by the `rounded` prop. |
+| `--origam-switch__track---border-width` | `border.width.thin` (`1px`) | Track border width — the visible default (#727), overridden by the `border` prop. |
+| `--origam-switch__track---border-style` | `solid` | Track border style — overridden by the `borderStyle` prop. |
+| `--origam-switch__track---border-color` | `color.border.default` | Track border colour — same semantic token as `origam-field`, so it follows the active theme. Overridden by the `borderColor` prop. |
 | `--origam-switch__track---background-color` | `color.surface.disabled` | Track background. |
 | `--origam-switch__track---background-color-disabled` | `color.surface.disabled` | Track background when ON **and** disabled. |
 | `--origam-switch__track---background-color-error` | `color.feedback.danger.bg` | Track background in the error state. |
@@ -203,8 +206,6 @@ mirrored in `dark.css` and the `_*.scss` twins.
 > `light.css` but **no rule reads them** — overriding them does nothing
 > today:
 > `--origam-switch__track---background-color-checked`,
-> `--origam-switch__track---border-color`,
-> `--origam-switch__track---border-width`,
 > `--origam-switch__thumb---background-color-checked`,
 > `--origam-switch__thumb---background-color-disabled`,
 > `--origam-switch__thumb---box-shadow`,
