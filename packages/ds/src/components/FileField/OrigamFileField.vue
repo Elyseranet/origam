@@ -389,6 +389,7 @@
   import OrigamInput from '../Input/OrigamInput.vue'
   import OrigamFileFieldDragNDropItem from './OrigamFileFieldDragNDropItem.vue'
   import OrigamFileFieldListItem from './OrigamFileFieldListItem.vue'
+  import { BORDER_PROP_KEYS } from '../../consts/Commons/border.const'
   import { useAdjacent } from '../../composables/Commons/adjacent.composable'
   import { useAdjacentInner } from '../../composables/Commons/adjacentInner.composable'
   import { useBothColor } from '../../composables/Commons/bothColor.composable'
@@ -848,7 +849,14 @@
    * OrigamTextField (ce365b10).
    ********************************************************/
   const inputProps = computed(() => {
-    return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'focused'])
+    /*********************************************************
+     * Border withheld — #726
+     *
+     * @description
+     * Withheld from the INPUT (no notch, its top edge crosses the floating
+     * label) and handed to the FIELD's notched outline instead.
+     ********************************************************/
+    return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'focused', ...BORDER_PROP_KEYS])
   })
   const fieldProps = computed(() => {
     return origamFieldRef.value?.filterProps(props, ['class', 'style', 'id', 'active', 'dirty', 'disabled', 'focused', 'error'])

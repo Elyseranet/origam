@@ -1,8 +1,8 @@
 {
   "kind": "util",
-  "exportedAt": "2026-08-19T12:24:54.042Z",
-  "sourceCommit": "1ef461dc",
-  "entryCount": 355,
+  "exportedAt": "2026-09-14T14:04:03.537Z",
+  "sourceCommit": "c425a79f",
+  "entryCount": 371,
   "entries": [
     {
       "entry": {
@@ -2575,6 +2575,63 @@
     {
       "entry": {
         "kind": "util",
+        "slug": "camelize",
+        "name": "camelize",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function camelize(str: string): string",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/commons.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "str",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "string",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
         "slug": "check-event",
         "name": "checkEvent",
         "category": "Commons",
@@ -3027,82 +3084,6 @@
     {
       "entry": {
         "kind": "util",
-        "slug": "classic-select-strategy",
-        "name": "classicSelectStrategy",
-        "category": "Commons",
-        "domain": null,
-        "icon": "mdi-checkbox-multiple-marked-outline",
-        "description_key": "utils.catalog.classic_select_strategy.description",
-        "description_fallback": "Returns a TStrategySelect object that implements classic tree-selection behaviour: selecting a node propagates to all its descendants and recalculates the indeterminate state of its ancestors.",
-        "definition": null,
-        "signature": "function classicSelectStrategy(mandatory?: boolean): TStrategySelect",
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/utils/Commons/nested.util.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [
-        {
-          "name": "mandatory",
-          "type": "boolean",
-          "required": false,
-          "default_value": null,
-          "position": 0,
-          "description_key": "utils.detail.classic_select_strategy.param_mandatory",
-          "description_fallback": "When true, at least one item must remain selected — deselecting the last selected item is a no-op."
-        }
-      ],
-      "returns": [
-        {
-          "name": null,
-          "type": "TStrategySelect",
-          "position": 0,
-          "description_key": "utils.detail.classic_select_strategy.returns",
-          "description_fallback": "A strategy object with select and in methods that drive tree-selection state in OrigamTreeview and similar components."
-        }
-      ],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "utils.detail.classic_select_strategy.example_basic",
-          "title_fallback": "Pass to OrigamTreeview",
-          "code": "import { classicSelectStrategy } from 'origam'\n\n// Used internally by OrigamTreeview via the selectStrategy prop\n<origam-treeview select-strategy=\"classic\" />",
-          "lang": "html"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "related",
-          "to_kind": "util",
-          "to_slug": "cyclic-movement",
-          "to_name": null,
-          "prop_name": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "util",
         "slug": "class-to-hex",
         "name": "classToHex",
         "category": "Commons",
@@ -3188,6 +3169,148 @@
     {
       "entry": {
         "kind": "util",
+        "slug": "classic-select-strategy",
+        "name": "classicSelectStrategy",
+        "category": "Commons",
+        "domain": null,
+        "icon": "mdi-checkbox-multiple-marked-outline",
+        "description_key": "utils.catalog.classic_select_strategy.description",
+        "description_fallback": "Returns a TStrategySelect object that implements classic tree-selection behaviour: selecting a node propagates to all its descendants and recalculates the indeterminate state of its ancestors.",
+        "definition": null,
+        "signature": "function classicSelectStrategy(mandatory?: boolean): TStrategySelect",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/nested.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "mandatory",
+          "type": "boolean",
+          "required": false,
+          "default_value": null,
+          "position": 0,
+          "description_key": "utils.detail.classic_select_strategy.param_mandatory",
+          "description_fallback": "When true, at least one item must remain selected — deselecting the last selected item is a no-op."
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "TStrategySelect",
+          "position": 0,
+          "description_key": "utils.detail.classic_select_strategy.returns",
+          "description_fallback": "A strategy object with select and in methods that drive tree-selection state in OrigamTreeview and similar components."
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "utils.detail.classic_select_strategy.example_basic",
+          "title_fallback": "Pass to OrigamTreeview",
+          "code": "import { classicSelectStrategy } from 'origam'\n\n// Used internally by OrigamTreeview via the selectStrategy prop\n<origam-treeview select-strategy=\"classic\" />",
+          "lang": "html"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "related",
+          "to_kind": "util",
+          "to_slug": "cyclic-movement",
+          "to_name": null,
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "clear-timer",
+        "name": "clearTimer",
+        "category": "Snackbar",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "const clearTimer: (state: ISnackbarGroupState, itemId: string) => void",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Snackbar/snackbar-group.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "state",
+          "type": "ISnackbarGroupState",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "itemId",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "void",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
         "slug": "close-scroll-strategy",
         "name": "closeScrollStrategy",
         "category": "Commons",
@@ -3260,6 +3383,81 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "collect-rule-errors",
+        "name": "collectRuleErrors",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function collectRuleErrors(rules: Array<TValidationRule> | undefined, value: unknown, maxErrors?: number = 1): Promise<Array<string>>",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/validation.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "rules",
+          "type": "Array<TValidationRule> | undefined",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "value",
+          "type": "unknown",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "maxErrors",
+          "type": "number",
+          "required": false,
+          "default_value": "1",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "Promise<Array<string>>",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -7020,101 +7218,6 @@
     {
       "entry": {
         "kind": "util",
-        "slug": "focusable-children",
-        "name": "focusableChildren",
-        "category": "Commons",
-        "domain": null,
-        "icon": "mdi-function-variant",
-        "description_key": "utils.catalog.focusable_children.description",
-        "description_fallback": "Return all focusable descendant elements inside a container. By default filters out elements with tabIndex=\"-1\" so only tab-reachable elements are included.",
-        "definition": null,
-        "signature": "function focusableChildren(el: Element, filterByTabIndex?: boolean = true): HTMLElement[]",
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/utils/Commons/commons.util.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [
-        {
-          "name": "el",
-          "type": "Element",
-          "required": true,
-          "default_value": null,
-          "position": 0,
-          "description_key": "utils.detail.focusable_children.param_el",
-          "description_fallback": "The container element to query."
-        },
-        {
-          "name": "filterByTabIndex",
-          "type": "boolean",
-          "required": false,
-          "default_value": "true",
-          "position": 1,
-          "description_key": "utils.detail.focusable_children.param_filter_by_tab_index",
-          "description_fallback": "When true (default) elements with tabindex=\"-1\" are excluded. Pass false to include all focusable elements regardless of tab order."
-        }
-      ],
-      "returns": [
-        {
-          "name": null,
-          "type": "HTMLElement[]",
-          "position": 0,
-          "description_key": "utils.detail.focusable_children.returns",
-          "description_fallback": "Ordered array of focusable HTMLElements inside the container."
-        }
-      ],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "utils.detail.focusable_children.example_basic",
-          "title_fallback": "List all tab-reachable children",
-          "code": "import { focusableChildren } from 'origam'\n\nconst dialog = document.querySelector('#my-dialog')!\nconst tabbable = focusableChildren(dialog)\nconsole.log(tabbable.length) // number of tab stops inside the dialog",
-          "lang": "typescript"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "related",
-          "to_kind": "util",
-          "to_slug": "focus-child",
-          "to_name": null,
-          "prop_name": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "related",
-          "to_kind": "util",
-          "to_slug": "focus-ripple-hide",
-          "to_name": null,
-          "prop_name": null,
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "util",
         "slug": "focus-child",
         "name": "focusChild",
         "category": "Commons",
@@ -7285,6 +7388,101 @@
           "rel_type": "related",
           "to_kind": "util",
           "to_slug": "focusable-children",
+          "to_name": null,
+          "prop_name": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "focusable-children",
+        "name": "focusableChildren",
+        "category": "Commons",
+        "domain": null,
+        "icon": "mdi-function-variant",
+        "description_key": "utils.catalog.focusable_children.description",
+        "description_fallback": "Return all focusable descendant elements inside a container. By default filters out elements with tabIndex=\"-1\" so only tab-reachable elements are included.",
+        "definition": null,
+        "signature": "function focusableChildren(el: Element, filterByTabIndex?: boolean = true): HTMLElement[]",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/commons.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "el",
+          "type": "Element",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": "utils.detail.focusable_children.param_el",
+          "description_fallback": "The container element to query."
+        },
+        {
+          "name": "filterByTabIndex",
+          "type": "boolean",
+          "required": false,
+          "default_value": "true",
+          "position": 1,
+          "description_key": "utils.detail.focusable_children.param_filter_by_tab_index",
+          "description_fallback": "When true (default) elements with tabindex=\"-1\" are excluded. Pass false to include all focusable elements regardless of tab order."
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "HTMLElement[]",
+          "position": 0,
+          "description_key": "utils.detail.focusable_children.returns",
+          "description_fallback": "Ordered array of focusable HTMLElements inside the container."
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "utils.detail.focusable_children.example_basic",
+          "title_fallback": "List all tab-reachable children",
+          "code": "import { focusableChildren } from 'origam'\n\nconst dialog = document.querySelector('#my-dialog')!\nconst tabbable = focusableChildren(dialog)\nconsole.log(tabbable.length) // number of tab stops inside the dialog",
+          "lang": "typescript"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "related",
+          "to_kind": "util",
+          "to_slug": "focus-child",
+          "to_name": null,
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "util",
+          "to_slug": "focus-ripple-hide",
           "to_name": null,
           "prop_name": null,
           "position": 1,
@@ -8480,6 +8678,63 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "generate-id",
+        "name": "generateId",
+        "category": "Snackbar",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "const generateId: (state: ISnackbarGroupState) => string",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Snackbar/snackbar-group.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "state",
+          "type": "ISnackbarGroupState",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "string",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -12734,6 +12989,63 @@
     {
       "entry": {
         "kind": "util",
+        "slug": "get-store",
+        "name": "getStore",
+        "category": "Snackbar",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "const getStore: (id: string) => ISnackbarGroupState",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Snackbar/snackbar-group.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "ISnackbarGroupState",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
         "slug": "get-target",
         "name": "getTarget",
         "category": "Commons",
@@ -13009,7 +13321,7 @@
         "description_key": "utils.catalog.get_uid.description",
         "description_fallback": "Returns a stable numeric UID for the calling Vue component instance. The same instance always receives the same integer; different instances receive different integers. Useful for generating unique DOM id attributes (aria-controls, aria-labelledby, …).",
         "definition": null,
-        "signature": "function getUid(): number",
+        "signature": "function getUid(): string",
         "tag": null,
         "value": null,
         "source_file": "packages/ds/src/utils/Commons/getCurrentInstance.util.ts",
@@ -13032,7 +13344,7 @@
       "returns": [
         {
           "name": null,
-          "type": "number",
+          "type": "string",
           "position": 0,
           "description_key": "utils.detail.get_uid.returns",
           "description_fallback": "A positive integer unique to the current component instance for the lifetime of the application."
@@ -15746,6 +16058,92 @@
     {
       "entry": {
         "kind": "util",
+        "slug": "in-viewport",
+        "name": "inViewport",
+        "category": "Commons",
+        "domain": null,
+        "icon": "mdi-eye-outline",
+        "description_key": "utils.catalog.in_viewport.description",
+        "description_fallback": "Returns true if a bounding box (IBox or DOMRect) is at least partially visible in the current viewport.",
+        "definition": null,
+        "signature": "function inViewport(element: IBox | DOMRect): boolean",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/point.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "element",
+          "type": "IBox | DOMRect",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": "utils.detail.in_viewport.param_element",
+          "description_fallback": "A bounding box with top, right, bottom, left properties. Typically obtained via element.getBoundingClientRect()."
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "boolean",
+          "position": 0,
+          "description_key": "utils.detail.in_viewport.returns",
+          "description_fallback": "true when any part of the box is within the viewport boundaries; false otherwise."
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "utils.detail.in_viewport.example_basic",
+          "title_fallback": "Check element visibility on scroll",
+          "code": "import { inViewport } from 'origam'\n\nconst rect = myElement.getBoundingClientRect()\nif (inViewport(rect)) {\n  console.log('Element is visible')\n}",
+          "lang": "typescript"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "related",
+          "to_kind": "util",
+          "to_slug": "get-center",
+          "to_name": null,
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "util",
+          "to_slug": "element-to-viewport",
+          "to_name": null,
+          "prop_name": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "util",
         "slug": "independent-select-strategy",
         "name": "independentSelectStrategy",
         "category": "Commons",
@@ -16364,92 +16762,6 @@
           "rel_type": "related",
           "to_kind": "util",
           "to_slug": "intent-fg-expr",
-          "to_name": null,
-          "prop_name": null,
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "util",
-        "slug": "in-viewport",
-        "name": "inViewport",
-        "category": "Commons",
-        "domain": null,
-        "icon": "mdi-eye-outline",
-        "description_key": "utils.catalog.in_viewport.description",
-        "description_fallback": "Returns true if a bounding box (IBox or DOMRect) is at least partially visible in the current viewport.",
-        "definition": null,
-        "signature": "function inViewport(element: IBox | DOMRect): boolean",
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/utils/Commons/point.util.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [
-        {
-          "name": "element",
-          "type": "IBox | DOMRect",
-          "required": true,
-          "default_value": null,
-          "position": 0,
-          "description_key": "utils.detail.in_viewport.param_element",
-          "description_fallback": "A bounding box with top, right, bottom, left properties. Typically obtained via element.getBoundingClientRect()."
-        }
-      ],
-      "returns": [
-        {
-          "name": null,
-          "type": "boolean",
-          "position": 0,
-          "description_key": "utils.detail.in_viewport.returns",
-          "description_fallback": "true when any part of the box is within the viewport boundaries; false otherwise."
-        }
-      ],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "utils.detail.in_viewport.example_basic",
-          "title_fallback": "Check element visibility on scroll",
-          "code": "import { inViewport } from 'origam'\n\nconst rect = myElement.getBoundingClientRect()\nif (inViewport(rect)) {\n  console.log('Element is visible')\n}",
-          "lang": "typescript"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "related",
-          "to_kind": "util",
-          "to_slug": "get-center",
-          "to_name": null,
-          "prop_name": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "related",
-          "to_kind": "util",
-          "to_slug": "element-to-viewport",
           "to_name": null,
           "prop_name": null,
           "position": 1,
@@ -17209,6 +17521,120 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "is-data-table-header-column-slot",
+        "name": "isDataTableHeaderColumnSlot",
+        "category": "DataTable",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function isDataTableHeaderColumnSlot(name: string): name is TDataTableHeaderColumnSlotName",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/DataTable/slot-name.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "name is TDataTableHeaderColumnSlotName",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "is-data-table-item-column-slot",
+        "name": "isDataTableItemColumnSlot",
+        "category": "DataTable",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function isDataTableItemColumnSlot(name: string): name is TDataTableItemColumnSlotName",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/DataTable/slot-name.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "name is TDataTableItemColumnSlotName",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -18292,92 +18718,6 @@
           "to_name": null,
           "prop_name": null,
           "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "util",
-        "slug": "iso-week-number",
-        "name": "isoWeekNumber",
-        "category": "Calendar",
-        "domain": null,
-        "icon": "mdi-calendar-week-outline",
-        "description_key": "utils.catalog.iso_week_number.description",
-        "description_fallback": "Returns the ISO 8601 week number for a given Date. Week 1 is the week containing the year's first Thursday (Thursday-of-week / first-Thursday-of-year algorithm).",
-        "definition": null,
-        "signature": "function isoWeekNumber(date: Date): number",
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/utils/Calendar/date.util.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [
-        {
-          "name": "date",
-          "type": "Date",
-          "required": true,
-          "default_value": null,
-          "position": 0,
-          "description_key": "utils.detail.iso_week_number.param_date",
-          "description_fallback": "The date whose ISO week number is computed."
-        }
-      ],
-      "returns": [
-        {
-          "name": null,
-          "type": "number",
-          "position": 0,
-          "description_key": "utils.detail.iso_week_number.returns",
-          "description_fallback": "Integer week number in the range [1, 53] per ISO 8601."
-        }
-      ],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "utils.detail.iso_week_number.example_basic",
-          "title_fallback": "ISO week number for specific dates",
-          "code": "import { isoWeekNumber } from 'origam'\n\nisoWeekNumber(new Date('2024-01-01')) // → 1\nisoWeekNumber(new Date('2024-12-30')) // → 1  (belongs to week 1 of 2025)\nisoWeekNumber(new Date('2024-06-15')) // → 24",
-          "lang": "typescript"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "related",
-          "to_kind": "util",
-          "to_slug": "is-weekend",
-          "to_name": null,
-          "prop_name": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "related",
-          "to_kind": "util",
-          "to_slug": "is-valid",
-          "to_name": null,
-          "prop_name": null,
-          "position": 1,
           "description_key": null,
           "description_fallback": null
         }
@@ -19669,6 +20009,92 @@
           "rel_type": "related",
           "to_kind": "util",
           "to_slug": "is-weekend",
+          "to_name": null,
+          "prop_name": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "iso-week-number",
+        "name": "isoWeekNumber",
+        "category": "Calendar",
+        "domain": null,
+        "icon": "mdi-calendar-week-outline",
+        "description_key": "utils.catalog.iso_week_number.description",
+        "description_fallback": "Returns the ISO 8601 week number for a given Date. Week 1 is the week containing the year's first Thursday (Thursday-of-week / first-Thursday-of-year algorithm).",
+        "definition": null,
+        "signature": "function isoWeekNumber(date: Date): number",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Calendar/date.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "date",
+          "type": "Date",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": "utils.detail.iso_week_number.param_date",
+          "description_fallback": "The date whose ISO week number is computed."
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "number",
+          "position": 0,
+          "description_key": "utils.detail.iso_week_number.returns",
+          "description_fallback": "Integer week number in the range [1, 53] per ISO 8601."
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "utils.detail.iso_week_number.example_basic",
+          "title_fallback": "ISO week number for specific dates",
+          "code": "import { isoWeekNumber } from 'origam'\n\nisoWeekNumber(new Date('2024-01-01')) // → 1\nisoWeekNumber(new Date('2024-12-30')) // → 1  (belongs to week 1 of 2025)\nisoWeekNumber(new Date('2024-06-15')) // → 24",
+          "lang": "typescript"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "related",
+          "to_kind": "util",
+          "to_slug": "is-weekend",
+          "to_name": null,
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "util",
+          "to_slug": "is-valid",
           "to_name": null,
           "prop_name": null,
           "position": 1,
@@ -23237,6 +23663,177 @@
     {
       "entry": {
         "kind": "util",
+        "slug": "pick-data-table-header-column-slot-names",
+        "name": "pickDataTableHeaderColumnSlotNames",
+        "category": "DataTable",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function pickDataTableHeaderColumnSlotNames(names: Array<string>): Array<TDataTableHeaderColumnSlotName>",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/DataTable/slot-name.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "names",
+          "type": "Array<string>",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "Array<TDataTableHeaderColumnSlotName>",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "pick-data-table-item-column-slot-names",
+        "name": "pickDataTableItemColumnSlotNames",
+        "category": "DataTable",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function pickDataTableItemColumnSlotNames(names: Array<string>): Array<TDataTableItemColumnSlotName>",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/DataTable/slot-name.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "names",
+          "type": "Array<string>",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "Array<TDataTableItemColumnSlotName>",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "pick-data-table-rows-slot-names",
+        "name": "pickDataTableRowsSlotNames",
+        "category": "DataTable",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function pickDataTableRowsSlotNames(names: Array<string>): Array<TDataTableRowsSlotName>",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/DataTable/slot-name.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "names",
+          "type": "Array<string>",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "Array<TDataTableRowsSlotName>",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
         "slug": "pick-with-rest",
         "name": "pickWithRest",
         "category": "Commons",
@@ -23826,6 +24423,53 @@
     {
       "entry": {
         "kind": "util",
+        "slug": "prefers-reduced-motion",
+        "name": "prefersReducedMotion",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function prefersReducedMotion(): boolean",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/animation.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [
+        {
+          "name": null,
+          "type": "boolean",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
         "slug": "priority-queue",
         "name": "priorityQueue",
         "category": "DataTable",
@@ -24013,6 +24657,63 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "raw-supports",
+        "name": "rawSupports",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function rawSupports(query: string): boolean",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/css-support.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "query",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "boolean",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -24329,6 +25030,100 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "reset-snackbar-group-for-testing",
+        "name": "resetSnackbarGroupForTesting",
+        "category": "Snackbar",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function resetSnackbarGroupForTesting(): void",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Snackbar/snackbar-group.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [
+        {
+          "name": null,
+          "type": "void",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "reset-supports-cache",
+        "name": "resetSupportsCache",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function resetSupportsCache(): void",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/css-support.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [
+        {
+          "name": null,
+          "type": "void",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -30331,7 +31126,7 @@
         "description_key": "utils.catalog.transform_list_item.description",
         "description_fallback": "Convert one raw item (string or object) to a normalised IInternalListItem with resolved title, value, optional children array, itemProps, and the original raw reference.",
         "definition": null,
-        "signature": "function transformListItem(props: Omit<IItemProps, 'items'>, item: any): IInternalListItem",
+        "signature": "function transformListItem(props: Omit<IItemProps, 'items'> & { itemType?: string }, item: any): IInternalListItemChildren",
         "tag": null,
         "value": null,
         "source_file": "packages/ds/src/utils/List/list-item.util.ts",
@@ -30353,7 +31148,7 @@
       "params": [
         {
           "name": "props",
-          "type": "Omit<IItemProps, 'items'>",
+          "type": "Omit<IItemProps, 'items'> & { itemType?: string }",
           "required": true,
           "default_value": null,
           "position": 0,
@@ -30373,7 +31168,7 @@
       "returns": [
         {
           "name": null,
-          "type": "IInternalListItem",
+          "type": "IInternalListItemChildren",
           "position": 0,
           "description_key": "utils.detail.transform_list_item.returns",
           "description_fallback": "A normalised object with `title` (string), `value`, `props`, `children` (recursively transformed array or undefined), and `raw` (original item)."
@@ -31525,6 +32320,90 @@
     {
       "entry": {
         "kind": "util",
+        "slug": "warn-deprecated-emit",
+        "name": "warnDeprecatedEmit",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function warnDeprecatedEmit(component: string, emit: string, replacement: string, removalVersion?: string = 'v3.0.0'): void",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/color.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "component",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "emit",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "replacement",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "removalVersion",
+          "type": "string",
+          "required": false,
+          "default_value": "'v3.0.0'",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "void",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
         "slug": "warn-deprecated-prop",
         "name": "warnDeprecatedProp",
         "category": "Commons",
@@ -31617,7 +32496,7 @@
         "description_key": "utils.catalog.warn_legacy_color.description",
         "description_fallback": "Emit a console.warn (once per unique kind+value pair) when a raw CSS color is passed to a color prop that expects a TIntent. Deprecated raw-color support will be removed in v3.0.0.",
         "definition": null,
-        "signature": "function warnLegacyColor(kind: 'color' | 'bgColor' | 'hoverColor' | 'hoverBgColor' | 'activeColor' | 'activeBgColor', value: string): void",
+        "signature": "function warnLegacyColor(kind: 'color' | 'bgColor', value: string): void",
         "tag": null,
         "value": null,
         "source_file": "packages/ds/src/utils/Commons/color.util.ts",
@@ -31639,7 +32518,7 @@
       "params": [
         {
           "name": "kind",
-          "type": "'color' | 'bgColor' | 'hoverColor' | 'hoverBgColor' | 'activeColor' | 'activeBgColor'",
+          "type": "'color' | 'bgColor'",
           "required": true,
           "default_value": null,
           "position": 0,
@@ -31690,6 +32569,81 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "warn-unsupported-prop",
+        "name": "warnUnsupportedProp",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function warnUnsupportedProp(component: string, prop: string, reason: string): void",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/color.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "component",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "prop",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "void",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -31772,102 +32726,6 @@
           "to_name": null,
           "prop_name": null,
           "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "util",
-        "slug": "xyzto-lab",
-        "name": "XyztoLab",
-        "category": "Color",
-        "domain": null,
-        "icon": "mdi-matrix",
-        "description_key": "utils.catalog.xyzto_lab.description",
-        "description_fallback": "Convert a CIE XYZ (D65) colour to CIE L*a*b* by applying the CIELAB forward transform. Used to perform perceptually uniform lightness adjustments (lighten/darken).",
-        "definition": null,
-        "signature": "function XyztoLab(xyz: TXYZ): TLAB",
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/utils/Commons/color.util.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [
-        {
-          "name": "xyz",
-          "type": "TXYZ",
-          "required": true,
-          "default_value": null,
-          "position": 0,
-          "description_key": "utils.detail.xyzto_lab.param_xyz",
-          "description_fallback": "CIE XYZ tristimulus tuple [X, Y, Z] normalised to the D65 illuminant."
-        }
-      ],
-      "returns": [
-        {
-          "name": null,
-          "type": "TLAB",
-          "position": 0,
-          "description_key": "utils.detail.xyzto_lab.returns",
-          "description_fallback": "CIE L*a*b* triplet as a tuple [L, a, b]. L in [0, 100], a and b typically in [-128, 127]."
-        }
-      ],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "utils.detail.xyzto_lab.example_basic",
-          "title_fallback": "XYZ to Lab",
-          "code": "import { XyztoLab, RgbtoXyz } from 'origam'\n\nXyztoLab(RgbtoXyz({ r: 255, g: 255, b: 255 }))\n// → [100, 0, 0]  (white in L*a*b*)",
-          "lang": "typescript"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "related",
-          "to_kind": "util",
-          "to_slug": "labto-xyz",
-          "to_name": null,
-          "prop_name": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "related",
-          "to_kind": "util",
-          "to_slug": "rgbto-xyz",
-          "to_name": null,
-          "prop_name": null,
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "related",
-          "to_kind": "util",
-          "to_slug": "xyz-to-rgb",
-          "to_name": null,
-          "prop_name": null,
-          "position": 2,
           "description_key": null,
           "description_fallback": null
         }
@@ -31961,6 +32819,102 @@
           "rel_type": "related",
           "to_kind": "util",
           "to_slug": "labto-xyz",
+          "to_name": null,
+          "prop_name": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "xyzto-lab",
+        "name": "XyztoLab",
+        "category": "Color",
+        "domain": null,
+        "icon": "mdi-matrix",
+        "description_key": "utils.catalog.xyzto_lab.description",
+        "description_fallback": "Convert a CIE XYZ (D65) colour to CIE L*a*b* by applying the CIELAB forward transform. Used to perform perceptually uniform lightness adjustments (lighten/darken).",
+        "definition": null,
+        "signature": "function XyztoLab(xyz: TXYZ): TLAB",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/color.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "xyz",
+          "type": "TXYZ",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": "utils.detail.xyzto_lab.param_xyz",
+          "description_fallback": "CIE XYZ tristimulus tuple [X, Y, Z] normalised to the D65 illuminant."
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "TLAB",
+          "position": 0,
+          "description_key": "utils.detail.xyzto_lab.returns",
+          "description_fallback": "CIE L*a*b* triplet as a tuple [L, a, b]. L in [0, 100], a and b typically in [-128, 127]."
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "utils.detail.xyzto_lab.example_basic",
+          "title_fallback": "XYZ to Lab",
+          "code": "import { XyztoLab, RgbtoXyz } from 'origam'\n\nXyztoLab(RgbtoXyz({ r: 255, g: 255, b: 255 }))\n// → [100, 0, 0]  (white in L*a*b*)",
+          "lang": "typescript"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "related",
+          "to_kind": "util",
+          "to_slug": "labto-xyz",
+          "to_name": null,
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "util",
+          "to_slug": "rgbto-xyz",
+          "to_name": null,
+          "prop_name": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "util",
+          "to_slug": "xyz-to-rgb",
           "to_name": null,
           "prop_name": null,
           "position": 2,

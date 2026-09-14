@@ -1,8 +1,8 @@
 {
   "kind": "composable",
-  "exportedAt": "2026-08-19T12:24:53.805Z",
-  "sourceCommit": "1ef461dc",
-  "entryCount": 104,
+  "exportedAt": "2026-09-14T14:04:03.342Z",
+  "sourceCommit": "c425a79f",
+  "entryCount": 142,
   "entries": [
     {
       "entry": {
@@ -18,7 +18,7 @@
         "signature": "function useActivator(\n  props: IActivatorProps,\n  { isActive, isTop }: { isActive: Ref<boolean>; isTop: Ref<boolean> }\n): {\n  activatorEl: Ref<HTMLElement | undefined>\n  activatorRef: Ref<HTMLElement | undefined>\n  target: ComputedRef<HTMLElement | [x: number, y: number] | undefined>\n  targetEl: ComputedRef<HTMLElement | undefined>\n  targetRef: Ref<HTMLElement | undefined>\n  activatorEvents: ComputedRef<Partial<Record<string, EventListener>>>\n  contentEvents: ComputedRef<Record<string, EventListener>>\n  scrimEvents: ComputedRef<Record<string, EventListener>>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/activator.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useActivator is a low-level primitive used by all overlay components. For most cases, prefer <OrigamMenu>, <OrigamTooltip>, or <OrigamDialog> which consume it internally.",
@@ -330,7 +330,7 @@
         "signature": "function useAdjacent(\n  props: IAdjacentProps,\n  prependIcon?: Ref | ComputedRef,\n  appendIcon?: Ref | ComputedRef\n): {\n  hasPrependMedia: ComputedRef<boolean>\n  hasPrepend: ComputedRef<boolean>\n  hasAppendMedia: ComputedRef<boolean>\n  hasAppend: ComputedRef<boolean>\n  onClickPrepend: (e: Event) => void\n  onClickAppend: (e: Event) => void\n}\n\nfunction useAdjacentInner(props: IAdjacentInnerProps): {\n  hasPrependInnerMedia: ComputedRef<boolean>\n  hasPrependInner: ComputedRef<boolean>\n  hasAppendInnerMedia: ComputedRef<boolean>\n  hasAppendInner: ComputedRef<boolean>\n  hasClear: ComputedRef<boolean>\n  onClickPrependInner: (e: Event) => void\n  onClickAppendInner: (e: Event) => void\n  clickClear: (e: Event) => void\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/adjacent.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -470,6 +470,55 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-adjacent-inner",
+        "name": "useAdjacentInner",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useAdjacentInner(props: IAdjacentInnerProps): { hasPrependInnerMedia: ComputedRef<boolean>; hasPrependInner: ComputedRef<boolean | Slot<any>>; hasAppendInnerMedia: ComputedRef<boolean>; ... 8 more ...; clickClear: (e: Event) => void; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/adjacentInner.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "props",
+          "type": "IAdjacentInnerProps",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-aspect",
         "name": "useAspectRatio",
         "category": null,
@@ -481,7 +530,7 @@
         "signature": "function useAspectRatio(props: { aspectRatio?: string | number }): {\n  aspectStyles: ComputedRef<string[]>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Responsive/aspect.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "On the server (SSR), IN_BROWSER is false and window is unavailable. aspectStyles returns [] so the layout collapses to its natural box height. The client rehydrates with the correct padding-block-end on the first reactive access.",
@@ -576,7 +625,7 @@
         "signature": "function useAudio(props: IUseAudioProps): {\n  audioData: ShallowRef<Uint8Array | null>\n  analyser: Ref<AnalyserNode | null>\n  audioRef: Ref<HTMLAudioElement | undefined>\n  wasPlayed: Ref<boolean>\n  isPlaying: Ref<boolean>\n  onPlay: () => void\n  onStop: () => void\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/audio.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useAudio is the low-level Web Audio API bridge. <OrigamAudio> wraps it with a full playback UI and waveform visualiser. Use useAudio directly only when building custom audio UIs.",
@@ -820,6 +869,64 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-back-button",
+        "name": "useBackButton",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useBackButton(router: Router | undefined, cb: (next: NavigationGuardNext) => void): void",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/backButton.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "router",
+          "type": "Router | undefined",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "cb",
+          "type": "(next: NavigationGuardNext) => void",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-background-color",
         "name": "useBackgroundColor",
         "category": null,
@@ -831,7 +938,7 @@
         "signature": "function useBackgroundColor<T extends Record<K, TColor>, K extends string>(\n  props: T | Ref<TColor>,\n  name?: K\n): {\n  backgroundColorClasses: ComputedRef<string[]>\n  backgroundColorStyles: ComputedRef<string[]>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/backgroundColor.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -954,7 +1061,7 @@
         "signature": "function useBorder(\n  props: IBorderProps | Ref<boolean | number | string | TDirectionBoth | TDirectionBoth[] | null | undefined>,\n  name?: string\n): {\n  borderClasses: ComputedRef<string[]>\n  borderStyles: ComputedRef<string[]>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/border.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -977,7 +1084,7 @@
       "params": [
         {
           "name": "props",
-          "type": "IBorderProps | Ref<...>",
+          "type": "IBorderProps | Ref<boolean | number | string | TDirectionBoth | Array<TDirectionBoth> | null | undefined>",
           "required": true,
           "default_value": null,
           "position": 0,
@@ -1049,6 +1156,73 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-both-color",
+        "name": "useBothColor",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useBothColor(bgColorProps: T | Ref<TColor> | ComputedRef<TColor>, colorProps: T | Ref<TColor> | ComputedRef<TColor>, name?: K): { colorClasses: ComputedRef<string[]>; colorStyles: ComputedRef<string[]>; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/bothColor.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "bgColorProps",
+          "type": "T | Ref<TColor> | ComputedRef<TColor>",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "colorProps",
+          "type": "T | Ref<TColor> | ComputedRef<TColor>",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "name",
+          "type": "K",
+          "required": false,
+          "default_value": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-calendar",
         "name": "useCalendar",
         "category": null,
@@ -1060,7 +1234,7 @@
         "signature": "function useCalendar(\n  options: IUseCalendarOptions,\n  setView?: (view: TCalendarView) => void,\n  setCurrentDate?: (date: Date) => void\n): {\n  visibleDateRange: ComputedRef<{ start: Date; end: Date }>\n  expandedEvents: ComputedRef<Array<IEvent>>\n  navigate: (direction: TCalendarNavigate) => void\n  setView: (view: TCalendarView) => void\n  buildMonthGrid: (date: Date) => Array<Array<Date>>\n  buildWeekGrid: (date: Date) => Array<Array<ICalendarTimeSlot>>\n  buildDayGrid: (date: Date) => Array<ICalendarTimeSlot>\n  buildAgenda: (range?: { start: Date; end: Date }) => Array<ICalendarAgendaEntry>\n  eventsOnDay: (day: Date) => Array<IEvent>\n  positionEvent: (event: IEvent, dayStart: Date, pxPerMin: number) => { top: number; height: number } | null\n  helpers: { isSameDay, isSameMonth, startOfDay, startOfMonth, endOfMonth, addDays, addMonths, addWeeks, diffMinutes, toDate }\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Calendar/calendar.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -1232,7 +1406,7 @@
         "signature": "function useCell(): {\n  getPadding: (column: IInternalDataTableHeader) => string | undefined\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/DataTable/cell.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -1322,7 +1496,7 @@
         "signature": "function useChart(options: IUseChartOptions): {\n  viewBox: ComputedRef<string>\n  scales: ComputedRef<IChartScales>\n  ticks: ComputedRef<{ x: Array<IChartTick>; y: Array<IChartTick> }>\n  secondaryTicks: ComputedRef<Array<IChartTick>>\n  paths: ComputedRef<Array<IChartPath>>\n  legend: ComputedRef<Array<IChartLegendItem>>\n  hover: Ref<IChartPoint | null>\n  onPointHover: (point: IChartPoint | null) => void\n  plot: ComputedRef<{ x0: number; y0: number; x1: number; y1: number; cx: number; cy: number }>\n  yRange: ComputedRef<{ min: number; max: number }>\n  secondaryYRange: ComputedRef<{ min: number; max: number }>\n  slotCount: ComputedRef<number>\n  colorFor: (series: IChartSeries, index: number) => string\n  effectiveType: (series: IChartSeries) => TChartType\n  effectiveStacking: ComputedRef<TChartStacking>\n  percentValues: ComputedRef<Map<number, Array<number>>>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Chart/chart.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -1467,6 +1641,55 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-chart-animation",
+        "name": "useChartAnimationStyle",
+        "category": "Chart",
+        "domain": "Chart",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useChartAnimationStyle(props: Pick<IChartBaseProps, 'animationDuration'>): ComputedRef<Record<string, string>>",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Chart/chart-animation.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "props",
+          "type": "Pick<IChartBaseProps, 'animationDuration'>",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-chart-gauge",
         "name": "useChartGauge",
         "category": null,
@@ -1478,7 +1701,7 @@
         "signature": "function useChartGauge(options: IUseChartGaugeOptions): {\n  geometry: ComputedRef<IChartGaugeGeometry>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Chart/chart-gauge.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -1555,18 +1778,18 @@
     {
       "entry": {
         "kind": "composable",
-        "slug": "use-chart-zoom",
-        "name": "useChartZoom",
-        "category": null,
+        "slug": "use-chart-header-typography",
+        "name": "useChartHeaderTypography",
+        "category": "Chart",
         "domain": "Chart",
-        "icon": "mdi-magnify-plus-outline",
-        "description_key": "",
-        "description_fallback": "Manages interactive zoom and pan state for OrigamChartCartesian. The zoom window is expressed as a closed [zoomStart, zoomEnd] range of category indices. Provides scroll-wheel zoom, drag-to-select zoom, and programmatic pan, all with clamping invariants.",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
         "definition": null,
-        "signature": "function useChartZoom(options: { dataLength: () => number }): {\n  zoomStart: Ref<number>\n  zoomEnd: ComputedRef<number>\n  zoomEndRaw: Ref<number>\n  isDragging: Ref<boolean>\n  dragStartPx: Ref<number | null>\n  dragEndPx: Ref<number | null>\n  isZoomed: ComputedRef<boolean>\n  zoomTo: (start: number, end: number) => void\n  zoomReset: () => void\n  zoomBy: (deltaFraction: number, anchorFraction: number) => void\n  panBy: (deltaCategories: number) => void\n  pxToCategoryIndex: (svgX: number, plotX0: number, plotX1: number) => number\n  categoryIndexToPx: (categoryIndex: number, plotX0: number, plotX1: number) => number\n  WHEEL_ZOOM_STEP: number\n}",
+        "signature": "function useChartHeaderTypography(props: ITypographyProps): { headerTypographyStyles: ComputedRef<StyleValue>; }",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Chart/chart-header-typography.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -1584,13 +1807,62 @@
       "values": [],
       "params": [
         {
-          "name": "options.dataLength",
-          "type": "() => number",
+          "name": "props",
+          "type": "ITypographyProps",
           "required": true,
           "default_value": null,
           "position": 0,
-          "description_key": "",
-          "description_fallback": "Reactive getter returning the total number of categories or data points. Must always return a value >= 1."
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
+        "slug": "use-chart-zoom",
+        "name": "useChartZoom",
+        "category": null,
+        "domain": "Chart",
+        "icon": "mdi-magnify-plus-outline",
+        "description_key": "",
+        "description_fallback": "Manages interactive zoom and pan state for OrigamChartCartesian. The zoom window is expressed as a closed [zoomStart, zoomEnd] range of category indices. Provides scroll-wheel zoom, drag-to-select zoom, and programmatic pan, all with clamping invariants.",
+        "definition": null,
+        "signature": "function useChartZoom(options: { dataLength: () => number }): {\n  zoomStart: Ref<number>\n  zoomEnd: ComputedRef<number>\n  zoomEndRaw: Ref<number>\n  isDragging: Ref<boolean>\n  dragStartPx: Ref<number | null>\n  dragEndPx: Ref<number | null>\n  isZoomed: ComputedRef<boolean>\n  zoomTo: (start: number, end: number) => void\n  zoomReset: () => void\n  zoomBy: (deltaFraction: number, anchorFraction: number) => void\n  panBy: (deltaCategories: number) => void\n  pxToCategoryIndex: (svgX: number, plotX0: number, plotX1: number) => number\n  categoryIndexToPx: (categoryIndex: number, plotX0: number, plotX1: number) => number\n  WHEEL_ZOOM_STEP: number\n}",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Chart/chart-zoom.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "options",
+          "type": "{ dataLength: () => number }",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
         }
       ],
       "returns": [
@@ -1750,7 +2022,7 @@
         "signature": "function useClipboard(options?: IUseClipboardOptions): {\n  copy: (text: string) => Promise<boolean>\n  copied: Ref<boolean>\n  error: Ref<Error | null>\n  isSupported: Ref<boolean>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Clipboard/clipboard.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "The timeout is cleared on Vue scope dispose (component unmount). No manual cleanup is required.",
@@ -1775,19 +2047,10 @@
           "name": "options",
           "type": "IUseClipboardOptions",
           "required": false,
-          "default_value": null,
+          "default_value": "{}",
           "position": 0,
           "description_key": "",
           "description_fallback": "Optional configuration object. Currently only feedbackDuration is supported."
-        },
-        {
-          "name": "options.feedbackDuration",
-          "type": "number",
-          "required": false,
-          "default_value": "2000",
-          "position": 1,
-          "description_key": "",
-          "description_fallback": "Duration in milliseconds the copied ref stays true after a successful write before auto-resetting."
         }
       ],
       "returns": [
@@ -1867,7 +2130,7 @@
         "signature": "function useCode(): {\n  highlight: (code: string, lang: TCodeLang) => Promise<string>\n  prime: () => Promise<void>\n  isReady: () => boolean\n  resetCacheForTesting: () => void\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Code/code.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "The singleton highlighter is module-scoped — every useCode() consumer in the app shares the same instance. Theme switching is CSS-only: shiki emits --shiki-light / --shiki-dark CSS vars on each token, and the SCSS consumes the matching var based on [data-theme].",
@@ -1965,7 +2228,7 @@
         "signature": "function useColor(\n  colors: ComputedRef<{ background?: TColor; text?: TColor }>\n): {\n  colorClasses: ComputedRef<string[]>\n  colorStyles: ComputedRef<string[]>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/color.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useColor is the low-level building block. Most components should prefer useColorEffect which adds state-aware (hover/active/disabled) resolution.",
@@ -1989,7 +2252,7 @@
       "params": [
         {
           "name": "colors",
-          "type": "ComputedRef<{ background?: TColor; text?: TColor }>",
+          "type": "ComputedRef<{ background?: TColor, text?: TColor }>",
           "required": true,
           "default_value": null,
           "position": 0,
@@ -2080,7 +2343,7 @@
         "signature": "function useColorEffect(\n  props: IColorProps & IBgColorProps,\n  isHover?: Ref<boolean> | ComputedRef<boolean>,\n  isActive?: Ref<boolean> | ComputedRef<boolean>,\n  isDisabled?: Ref<boolean> | ComputedRef<boolean>\n): {\n  colorClasses: ComputedRef<string[]>\n  colorStyles: ComputedRef<string[]>\n  color: ComputedRef<TColor | undefined>\n  bgColor: ComputedRef<TColor | undefined>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/colorEffect.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "The bgColor disabled path is intentionally a no-op token-swap: disabled appearance is always an opacity veil on the resting color. This keeps every btn in a row visually consistent — same color family, just dimmed.",
@@ -2229,7 +2492,7 @@
         "signature": "function useCommand(): {\n  register: (cmd: ICommand) => () => void\n  unregister: (id: string) => void\n  commands: ComputedRef<ReadonlyArray<ICommand>>\n  open: () => void\n  close: () => void\n  isOpen: Ref<boolean>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/CommandPalette/command.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "Entries are deduplicated by id at write time. Calling register() with the same id replaces the previous entry in place so the array length stays stable and watchers on length only see one mutation.",
@@ -2330,6 +2593,104 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-create-layout",
+        "name": "useCreateLayout",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useCreateLayout(props: { id?: string, overlaps?: Array<string>, fullHeight?: boolean }): { layoutClasses: ComputedRef<(string | { \"origam-layout--full-height\": boolean; })[]>; layoutStyles: ComputedRef<StyleValue>; getLayoutItem: (id: string) => { ...; }; items: ComputedRef<...>; layoutRect: Readonly<...>; layoutRef: Ref<...>; layoutId: ComputedRef<...>; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/createLayout.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "props",
+          "type": "{ id?: string, overlaps?: Array<string>, fullHeight?: boolean }",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
+        "slug": "use-create-list",
+        "name": "useCreateList",
+        "category": "List",
+        "domain": "List",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useCreateList(itemRole?: ComputedRef<TListItemRole>): { hasPrepend: Ref<boolean, boolean>; updateHasPrepend: (value: ComputedRef<boolean>) => void; hasAppend: Ref<boolean, boolean>; updateHasAppend: (value: ComputedRef<boolean>) => void; itemRole: ComputedRef<...>; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/List/createList.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "itemRole",
+          "type": "ComputedRef<TListItemRole>",
+          "required": false,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-css-support",
         "name": "useCssSupport",
         "category": null,
@@ -2341,7 +2702,7 @@
         "signature": "function useCssSupport(): {\n  css: Readonly<Ref<TCssSupportMap>>\n  supports: (query: string) => boolean\n  supportsAny: (...queries: string[]) => boolean\n  supportsAll: (...queries: string[]) => boolean\n  has: (feature: TCssFeatureName) => ComputedRef<boolean>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/cssSupport.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "All feature flags are false during SSR. Wrap markup branches on these flags with <ClientOnly> or use useCssSupportClient() which starts at the given defaultValue and only flips inside onMounted — preventing Vue hydration mismatches.",
@@ -2429,6 +2790,113 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-css-support-client",
+        "name": "useCssSupportClient",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useCssSupportClient(feature: TCssFeatureName | string, options?: IUseCssSupportClientOptions = {}): Ref<boolean>",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/cssSupportClient.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "feature",
+          "type": "TCssFeatureName | string",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "options",
+          "type": "IUseCssSupportClientOptions",
+          "required": false,
+          "default_value": "{}",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
+        "slug": "use-css-transition",
+        "name": "useCssTransition",
+        "category": "Transition",
+        "domain": "Transition",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useCssTransition(props: ITransitionProps): { tag: ComputedRef<Component>; name: ComputedRef<string>; isDisabled: ComputedRef<boolean>; transitionProps: ComputedRef<{ [key: string]: unknown; }>; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Transition/cssTransition.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "props",
+          "type": "ITransitionProps",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-date",
         "name": "useDate",
         "category": null,
@@ -2440,7 +2908,7 @@
         "signature": "function useDate(): DateAdapter",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/date.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useDate() must be called inside a component tree where date options have been registered (via createOrigam({ date: { adapter: DateAdapter } }) or a parent OrigamDateProvider). It throws with a clear message if the injection key is missing.",
@@ -2518,7 +2986,7 @@
         "signature": "function useDatePickerCalendar(props: ICalendarProps): {\n  displayValue: ComputedRef<unknown>\n  daysInMonth: ComputedRef<IDay[]>\n  daysInWeek: ComputedRef<IDay[]>\n  genDays: (days: unknown[], today: unknown) => IDay[]\n  model: Ref<unknown[]>\n  weeksInMonth: ComputedRef<unknown[][]>\n  weekDays: ComputedRef<number[] | undefined>\n  weekNumbers: ComputedRef<(number | null)[]>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/date-picker-calendar.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -2658,7 +3126,7 @@
         "signature": "function useDefaults<T extends Record<string, any>>(\n  props: T,\n  name?: string\n): T",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/defaults.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "The wasPropPassed check reads vm.vnode.props on every resolution (not once at setup) to handle dynamic v-bind patterns where the parent's forwarded props may be empty on the first render.",
@@ -2681,7 +3149,7 @@
       "params": [
         {
           "name": "props",
-          "type": "T extends Record<string, any>",
+          "type": "T",
           "required": true,
           "default_value": null,
           "position": 0,
@@ -2692,7 +3160,7 @@
           "name": "name",
           "type": "string",
           "required": false,
-          "default_value": null,
+          "default_value": "getCurrentInstanceName()",
           "position": 1,
           "description_key": "",
           "description_fallback": "Component name used to look up component-specific defaults in the provider. Defaults to the current instance's kebab-cased name via getCurrentInstanceName()."
@@ -2764,7 +3232,7 @@
         "signature": "function useDelay(\n  props: IDelayProps,\n  cb?: (value: boolean) => void\n): {\n  clearDelay: () => void\n  runOpenDelay: () => Promise<unknown>\n  runCloseDelay: () => Promise<unknown>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/delay.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -2884,7 +3352,7 @@
         "signature": "function useDensity(\n  props: IDensityProps | Ref<number | string | undefined>,\n  name?: string\n): {\n  densityClasses: ComputedRef<string[]>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/density.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useDensity only emits a class — there is no densityStyles. All spacing adjustments live in the component SCSS via the `{name}--density-*` selector tree.",
@@ -2973,7 +3441,7 @@
         "signature": "function useDimension(\n  props: IDimensionProps\n): {\n  dimensionStyles: ComputedRef<string[]>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/dimension.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "Always extend IDimensionProps rather than declaring width/height manually. A hand-rolled height-only prop silently ignores maxHeight, minHeight, etc.",
@@ -3060,7 +3528,7 @@
         "signature": "function useDisplay(\n  props?: IDisplayProps,\n  name?: string\n): IDisplayInstance & {\n  displayClasses: ComputedRef<Record<string, boolean>>\n  mobile: ComputedRef<boolean>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/display.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -3087,7 +3555,7 @@
           "name": "props",
           "type": "IDisplayProps",
           "required": false,
-          "default_value": null,
+          "default_value": "{}",
           "position": 0,
           "description_key": "",
           "description_fallback": "Optional props object containing mobileBreakpoint. When provided, overrides the global mobileBreakpoint threshold for this component instance."
@@ -3096,7 +3564,7 @@
           "name": "name",
           "type": "string",
           "required": false,
-          "default_value": null,
+          "default_value": "getCurrentInstanceName()",
           "position": 1,
           "description_key": "",
           "description_fallback": "Component name used to generate the scoped mobile CSS class (e.g. \"my-component--mobile\"). Defaults to the current Vue instance name."
@@ -3224,7 +3692,7 @@
         "signature": "function useDragResizer(\n  el: HTMLElement | undefined,\n  value: Ref<number>,\n  min: number,\n  max: number,\n  axis: TAxis\n): void",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/dragResizer.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useDragResizer registers useEventListener internally and calls onUnmounted to clean up all window listeners. Pass the handle element after mount (e.g. inside onMounted) to guarantee the ref is resolved.",
@@ -3330,7 +3798,7 @@
         "signature": "function useElevation(\n  props: IElevationProps | Ref<number | string | undefined>,\n  flat?: Ref<boolean>,\n  bgColor?: Ref<TColor>,\n  name?: string\n): {\n  elevationClasses: ComputedRef<string[]>\n  elevationStyles: ComputedRef<string[]>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/elevation.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "The bgColor param warned since v2.5 and will be removed in v3.0.0. Remove it from your composable calls to eliminate the console warning.",
@@ -3353,7 +3821,7 @@
       "params": [
         {
           "name": "props",
-          "type": "IElevationProps | Ref<number | string | undefined>",
+          "type": "IElevationProps | Ref<TElevation | undefined>",
           "required": true,
           "default_value": null,
           "position": 0,
@@ -3373,7 +3841,7 @@
           "name": "bgColor",
           "type": "Ref<TColor>",
           "required": false,
-          "default_value": "ref('rgb(0,0,0)')",
+          "default_value": "ref(ELEVATION_LEGACY_BG_COLOR)",
           "position": 2,
           "description_key": "",
           "description_fallback": "Deprecated since v2.5. Shadows now come from design tokens. The parameter is still accepted to avoid breaking callers but is completely ignored."
@@ -3444,7 +3912,7 @@
         "signature": "// Overload 1 — explicit target\nfunction useEventListener(\n  target: MaybeRef<EventTarget | null | undefined>,\n  events: string | string[],\n  listeners: EventListener | EventListener[],\n  options?: AddEventListenerOptions\n): () => void\n\n// Overload 2 — window implicit target\nfunction useEventListener(\n  events: string | string[],\n  listeners: EventListener | EventListener[],\n  options?: AddEventListenerOptions\n): () => void",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/eventListener.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -3465,8 +3933,8 @@
       "params": [
         {
           "name": "target",
-          "type": "MaybeRef<EventTarget | null | undefined>",
-          "required": false,
+          "type": "TEventListenerTarget",
+          "required": true,
           "default_value": null,
           "position": 0,
           "description_key": "",
@@ -3474,7 +3942,7 @@
         },
         {
           "name": "events",
-          "type": "string | string[]",
+          "type": "TEventListenerEvents",
           "required": true,
           "default_value": null,
           "position": 1,
@@ -3483,7 +3951,7 @@
         },
         {
           "name": "listeners",
-          "type": "EventListener | EventListener[]",
+          "type": "TEventListenerListeners",
           "required": true,
           "default_value": null,
           "position": 2,
@@ -3492,7 +3960,7 @@
         },
         {
           "name": "options",
-          "type": "AddEventListenerOptions",
+          "type": "TEventListenerOptions",
           "required": false,
           "default_value": null,
           "position": 3,
@@ -3566,7 +4034,7 @@
         "signature": "function useExpanded(): IDataTableProvideExpanded\n\n// Provider (used internally by OrigamDataTable)\nfunction provideExpanded(props: IDataTableExpandProps): IDataTableProvideExpanded",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/DataTable/expand.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useExpanded() throws if called outside a component tree where provideExpanded() has run. It is safe to call inside any custom cell/row slot of OrigamDataTable.",
@@ -3683,7 +4151,7 @@
         "signature": "function useFilter<T extends IInternalItem>(\n  props: IFiltersProps,\n  items: MaybeRef<T[]>,\n  query: Ref<string | undefined> | (() => string | undefined),\n  options?: {\n    transform?: (item: T) => Record<string, unknown>\n    customKeyFilter?: MaybeRef<TFilterKeyFunctions | undefined>\n  }\n): {\n  filteredItems: Ref<T[]>\n  filteredMatches: Ref<Map<unknown, Record<string, TFilterMatch>>>\n  getMatches: (item: T) => Record<string, TFilterMatch> | undefined\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/filters.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -3733,22 +4201,13 @@
           "description_fallback": "The current search string. Accepts a ref or a getter function. An empty string disables filtering."
         },
         {
-          "name": "options.transform",
-          "type": "(item: T) => Record<string, unknown>",
+          "name": "options",
+          "type": "{\n        transform?: (item: T) => Record<string, unknown>\n        customKeyFilter?: MaybeRef<TFilterKeyFunctions | undefined>\n    }",
           "required": false,
           "default_value": null,
           "position": 3,
-          "description_key": "",
-          "description_fallback": "Optional function to derive the plain-object representation of an item before filtering (e.g. to flatten nested keys)."
-        },
-        {
-          "name": "options.customKeyFilter",
-          "type": "MaybeRef<TFilterKeyFunctions | undefined>",
-          "required": false,
-          "default_value": null,
-          "position": 4,
-          "description_key": "",
-          "description_fallback": "Composable-level per-key filter functions, merged on top of props.customKeyFilter. Useful for programmatic overrides independent of the template props."
+          "description_key": null,
+          "description_fallback": null
         }
       ],
       "returns": [
@@ -3824,7 +4283,7 @@
         "signature": "function useFocus(\n  props: IFocusProps,\n  name?: string\n): {\n  isFocused: WritableComputedRef<boolean>\n  focusClasses: ComputedRef<Record<string, boolean>>\n  onFocus: () => void\n  onBlur: () => void\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/focus.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -3859,7 +4318,7 @@
           "name": "name",
           "type": "string",
           "required": false,
-          "default_value": null,
+          "default_value": "getCurrentInstanceName()",
           "position": 1,
           "description_key": "",
           "description_fallback": "Component name used to generate the scoped focus class (e.g. \"origam-text-field--focused\"). Defaults to the current Vue instance name."
@@ -3962,7 +4421,7 @@
         "signature": "function useForm(props: IFormProps): {\n  errors: Ref<Array<IValidationFieldResult>>\n  isDisabled: ComputedRef<boolean>\n  isReadonly: ComputedRef<boolean>\n  isValidating: ShallowRef<boolean>\n  isValid: Ref<boolean | null | undefined>\n  items: Ref<Array<IFormField>>\n  validate: () => Promise<{ valid: boolean; errors: IValidationFieldResult[] }>\n  reset: () => void\n  resetValidation: () => void\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Form/form.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -4128,7 +4587,7 @@
         "signature": "function useGoTo(options?: Partial<IGoToOptions>): {\n  (\n    target: ComponentPublicInstance | HTMLElement | string | number,\n    options?: Partial<IGoToOptions>\n  ): Promise<void>\n  horizontal(\n    target: ComponentPublicInstance | HTMLElement | string | number,\n    options?: Partial<IGoToOptions>\n  ): Promise<void>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/goTo.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useGoTo reads RTL direction from the global locale and the injected IGoToInstance. Per-call options are deep-merged with the instance defaults, so you can customise the duration globally and override it for specific calls.",
@@ -4151,49 +4610,13 @@
       "values": [],
       "params": [
         {
-          "name": "options",
+          "name": "_options",
           "type": "Partial<IGoToOptions>",
           "required": false,
-          "default_value": null,
+          "default_value": "{}",
           "position": 0,
-          "description_key": "",
-          "description_fallback": "Default options applied to every go() call made through this instance. Can be overridden per-call."
-        },
-        {
-          "name": "options.duration",
-          "type": "number",
-          "required": false,
-          "default_value": "300",
-          "position": 1,
-          "description_key": "",
-          "description_fallback": "Scroll animation duration in milliseconds."
-        },
-        {
-          "name": "options.easing",
-          "type": "TEasingFunction | string",
-          "required": false,
-          "default_value": "'easeInOutCubic'",
-          "position": 2,
-          "description_key": "",
-          "description_fallback": "Easing function name or a custom function (t: number) => number controlling the animation curve."
-        },
-        {
-          "name": "options.offset",
-          "type": "number",
-          "required": false,
-          "default_value": "0",
-          "position": 3,
-          "description_key": "",
-          "description_fallback": "Pixel offset applied to the final scroll position (positive = scroll further, negative = stop earlier)."
-        },
-        {
-          "name": "options.container",
-          "type": "ComponentPublicInstance | HTMLElement | string",
-          "required": false,
-          "default_value": "'html'",
-          "position": 4,
-          "description_key": "",
-          "description_fallback": "Scrollable container element or selector. Defaults to the document root."
+          "description_key": null,
+          "description_fallback": null
         }
       ],
       "returns": [
@@ -4276,7 +4699,7 @@
         "signature": "function useGroup(\n  props: IGroupProps,\n  injectKey: InjectionKey<IGroupProvide>\n): IGroupProvide\n\nfunction useGroupItem(\n  props: IGroupItemProps,\n  injectKey: InjectionKey<IGroupProvide>,\n  required?: boolean\n): IGroupItemProvide | null",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/group.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useGroup provides state via Vue provide/inject. The injectKey symbol must be shared between the parent and all children — export it from a dedicated const file to avoid symbol identity mismatches across module boundaries.",
@@ -4317,15 +4740,6 @@
           "position": 1,
           "description_key": "",
           "description_fallback": "Unique injection key used to link the group provider with its children. Must be the same symbol in both useGroup and useGroupItem calls."
-        },
-        {
-          "name": "required",
-          "type": "boolean",
-          "required": false,
-          "default_value": "true",
-          "position": 2,
-          "description_key": "",
-          "description_fallback": "useGroupItem only — when false, the composable returns null silently instead of throwing if no matching group injection is found."
         }
       ],
       "returns": [
@@ -4446,6 +4860,198 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-group-item",
+        "name": "useGroupItem",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useGroupItem(props: IGroupItemProps, injectKey: InjectionKey<IGroupProvide>, required?: boolean = true): IGroupItemProvide | null",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/groupItem.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "props",
+          "type": "IGroupItemProps",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "injectKey",
+          "type": "InjectionKey<IGroupProvide>",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "required": false,
+          "default_value": "true",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
+        "slug": "use-group-sibling-link",
+        "name": "useGroupSiblingLink",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useGroupSiblingLink(ownKey: InjectionKey<IGroupProvide>, siblingKey: InjectionKey<IGroupProvide>): Ref<IGroupProvide | null>",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/groupSiblingLink.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "ownKey",
+          "type": "InjectionKey<IGroupProvide>",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "siblingKey",
+          "type": "InjectionKey<IGroupProvide>",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
+        "slug": "use-grouped-items",
+        "name": "useGroupedItems",
+        "category": "DataTable",
+        "domain": "DataTable",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useGroupedItems(items: ComputedRef<Array<T>>, groupBy: Ref<Array<IDataTableSortItem>>, opened: Ref<Set<string>>): { flatItems: ComputedRef<(T | IDataTableGroup<T>)[]>; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/DataTable/groupedItems.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "items",
+          "type": "ComputedRef<Array<T>>",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "groupBy",
+          "type": "Ref<Array<IDataTableSortItem>>",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "opened",
+          "type": "Ref<Set<string>>",
+          "required": true,
+          "default_value": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-headers",
         "name": "useHeaders",
         "category": null,
@@ -4457,7 +5063,7 @@
         "signature": "function useHeaders(): {\n  headers: Ref<IInternalDataTableHeader[][]>\n  columns: Ref<IInternalDataTableHeader[]>\n  sortFunctions: Ref<Record<string, TDataTableCompareFunction>>\n  sortRawFunctions: Ref<Record<string, TDataTableCompareFunction>>\n  filterFunctions: Ref<TFilterKeyFunctions>\n}\n\nfunction createHeaders(\n  props: IDataTableHeaderProps,\n  options?: {\n    groupBy?: Ref<IDataTableSortItem[]>\n    showSelect?: Ref<boolean>\n    showExpand?: Ref<boolean>\n  }\n): {\n  headers: Ref<IInternalDataTableHeader[][]>\n  columns: Ref<IInternalDataTableHeader[]>\n  sortFunctions: Ref<Record<string, TDataTableCompareFunction>>\n  sortRawFunctions: Ref<Record<string, TDataTableCompareFunction>>\n  filterFunctions: Ref<TFilterKeyFunctions>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/DataTable/headers.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useHeaders throws if called outside a component that has createHeaders in its ancestor chain. It relies on Vue provide/inject with ORIGAM_DATA_TABLE_HEADERS_KEY.",
@@ -4479,44 +5085,7 @@
       },
       "props": [],
       "values": [],
-      "params": [
-        {
-          "name": "props",
-          "type": "IDataTableHeaderProps",
-          "required": true,
-          "default_value": null,
-          "position": 0,
-          "description_key": "",
-          "description_fallback": "createHeaders only — DataTable props including headers definition and items (used to auto-generate columns when headers is omitted)."
-        },
-        {
-          "name": "options.groupBy",
-          "type": "Ref<IDataTableSortItem[]>",
-          "required": false,
-          "default_value": null,
-          "position": 1,
-          "description_key": "",
-          "description_fallback": "createHeaders only — when set, prepends a data-table-group column to support row grouping."
-        },
-        {
-          "name": "options.showSelect",
-          "type": "Ref<boolean>",
-          "required": false,
-          "default_value": null,
-          "position": 2,
-          "description_key": "",
-          "description_fallback": "createHeaders only — when true, prepends a data-table-select column for row checkboxes."
-        },
-        {
-          "name": "options.showExpand",
-          "type": "Ref<boolean>",
-          "required": false,
-          "default_value": null,
-          "position": 3,
-          "description_key": "",
-          "description_fallback": "createHeaders only — when true, appends a data-table-expand column for row expansion toggles."
-        }
-      ],
+      "params": [],
       "returns": [
         {
           "name": "headers",
@@ -4600,6 +5169,55 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-headers-cell",
+        "name": "useHeadersCell",
+        "category": "DataTable",
+        "domain": "DataTable",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useHeadersCell(props: IHeaderCellProps): { getSortIcon: (column: IInternalDataTableHeader) => TIcon; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/DataTable/headersCell.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "props",
+          "type": "IHeaderCellProps",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-hold",
         "name": "useHold",
         "category": null,
@@ -4611,7 +5229,7 @@
         "signature": "function useHold(\n  { toggleUpDown }: { toggleUpDown: (increment: boolean) => void },\n  holdRepeat?: number,\n  holdDelay?: number\n): {\n  holdStart: (value: 'up' | 'down') => void\n  holdStop: () => void\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/NumberField/hold.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "Timers are cleared automatically via onScopeDispose — no manual cleanup needed in setup(). holdStop is still required on mouseup/touchend to cancel an in-progress hold.",
@@ -4641,18 +5259,18 @@
         },
         {
           "name": "holdRepeat",
-          "type": "number",
+          "type": "MaybeRefOrGetter<number>",
           "required": false,
-          "default_value": "50",
+          "default_value": "NUMBER_FIELD_DEFAULT_HOLD_REPEAT",
           "position": 1,
           "description_key": "",
           "description_fallback": "Repeat interval in milliseconds once the hold is established. Defaults to 50ms."
         },
         {
           "name": "holdDelay",
-          "type": "number",
+          "type": "MaybeRefOrGetter<number>",
           "required": false,
-          "default_value": "500",
+          "default_value": "NUMBER_FIELD_DEFAULT_HOLD_DELAY",
           "position": 2,
           "description_key": "",
           "description_fallback": "Initial delay in milliseconds before the repeat loop starts. Defaults to 500ms."
@@ -4714,7 +5332,7 @@
         "signature": "function useHotkey(\n  keys: MaybeRef<string | undefined>,\n  callback: (e: KeyboardEvent) => void,\n  options?: IHotkeyOptions\n): () => void",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/hotkey.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useHotkey is a no-op in SSR (non-browser environments). On macOS, \"cmd\" and \"meta\" map to the Command key; \"ctrl+cmd\" is treated as Ctrl+Meta to cover cross-platform combinations.",
@@ -4757,46 +5375,10 @@
           "name": "options",
           "type": "IHotkeyOptions",
           "required": false,
-          "default_value": null,
+          "default_value": "{}",
           "position": 2,
           "description_key": "",
           "description_fallback": "Optional configuration: event type (default \"keydown\"), inputs flag, preventDefault flag, and sequenceTimeout (ms)."
-        },
-        {
-          "name": "options.event",
-          "type": "string",
-          "required": false,
-          "default_value": "'keydown'",
-          "position": 3,
-          "description_key": "",
-          "description_fallback": "DOM keyboard event type to listen to."
-        },
-        {
-          "name": "options.inputs",
-          "type": "boolean",
-          "required": false,
-          "default_value": "false",
-          "position": 4,
-          "description_key": "",
-          "description_fallback": "When false (default), the hotkey is suppressed while an input, textarea, or contenteditable element is focused."
-        },
-        {
-          "name": "options.preventDefault",
-          "type": "boolean",
-          "required": false,
-          "default_value": "true",
-          "position": 5,
-          "description_key": "",
-          "description_fallback": "Calls event.preventDefault() when the hotkey matches."
-        },
-        {
-          "name": "options.sequenceTimeout",
-          "type": "number",
-          "required": false,
-          "default_value": "1000",
-          "position": 6,
-          "description_key": "",
-          "description_fallback": "Time in milliseconds between consecutive keys in a sequence before it resets."
         }
       ],
       "returns": [
@@ -5007,7 +5589,7 @@
         "signature": "function useHydration(): ShallowRef<boolean>",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/hydration.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useHydration delegates to useDisplay().ssr to detect the SSR context. Outside the browser it returns shallowRef(false) immediately, skipping the onMounted registration entirely.",
@@ -5100,7 +5682,7 @@
         "signature": "function useIcon(\n  props: Ref<TIcon | undefined>\n): {\n  iconData: ComputedRef<TIconInstance>\n}\n\nfunction createIcons(options?: TIconOptions): TIconOptions",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Icon/icon.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useIcon throws if the Origam icon registry has not been provided (i.e. createOrigam was not called with an icon set). Raw SVG path data is auto-detected via a leading path-command character (M, L, C, …) and routed to OrigamSvgIcon.",
@@ -5182,6 +5764,45 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-icon-accessibility",
+        "name": "useIconAccessibility",
+        "category": "Icon",
+        "domain": "Icon",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useIconAccessibility(): { isClickable: ComputedRef<boolean>; ariaHidden: ComputedRef<boolean>; hasAccessibleName: ComputedRef<boolean>; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Icon/iconAccessibility.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-inline-edit",
         "name": "useInlineEdit",
         "category": null,
@@ -5193,7 +5814,7 @@
         "signature": "function useInlineEdit(\n  modelValue: Ref<string | number> | ComputedRef<string | number>,\n  options?: IUseInlineEditOptions\n): {\n  isEditing: Ref<boolean>\n  draft: Ref<string>\n  error: Ref<string | null>\n  isPending: Ref<boolean>\n  normalisedDraft: ComputedRef<string>\n  isDraftEmpty: ComputedRef<boolean>\n  edit: () => void\n  confirm: () => Promise<boolean>\n  cancel: () => void\n  setValue: (next: string) => void\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/InlineEdit/inline-edit.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "When both rules and validate are provided, rules are evaluated first sequentially; validate is only reached if all rules pass. Stale async validations are cancelled via an internal token counter — calling cancel() mid-flight safely discards the in-flight Promise.",
@@ -5225,66 +5846,12 @@
         },
         {
           "name": "options",
-          "type": "IUseInlineEditOptions",
+          "type": "MaybeRefOrGetter<IUseInlineEditOptions>",
           "required": false,
-          "default_value": null,
+          "default_value": "{}",
           "position": 1,
           "description_key": "",
           "description_fallback": "Optional configuration: trim, validate, rules, onConfirm, onCancel, onError callbacks."
-        },
-        {
-          "name": "options.trim",
-          "type": "boolean",
-          "required": false,
-          "default_value": "true",
-          "position": 2,
-          "description_key": "",
-          "description_fallback": "Trims whitespace from the draft before validation and confirmation."
-        },
-        {
-          "name": "options.validate",
-          "type": "TInlineEditValidator",
-          "required": false,
-          "default_value": null,
-          "position": 3,
-          "description_key": "",
-          "description_fallback": "Async validation callback. Receives the normalised draft value and must return true (valid) or an error string."
-        },
-        {
-          "name": "options.rules",
-          "type": "TInlineEditRule[]",
-          "required": false,
-          "default_value": null,
-          "position": 4,
-          "description_key": "",
-          "description_fallback": "Array of rule functions evaluated sequentially before validate. Each rule returns true or an error string."
-        },
-        {
-          "name": "options.onConfirm",
-          "type": "(value: string) => void",
-          "required": false,
-          "default_value": null,
-          "position": 5,
-          "description_key": "",
-          "description_fallback": "Called with the confirmed value when all validations pass. Wire to emit(\"update:modelValue\", value) in the SFC."
-        },
-        {
-          "name": "options.onCancel",
-          "type": "() => void",
-          "required": false,
-          "default_value": null,
-          "position": 6,
-          "description_key": "",
-          "description_fallback": "Called when the user cancels editing without confirming."
-        },
-        {
-          "name": "options.onError",
-          "type": "(message: string) => void",
-          "required": false,
-          "default_value": null,
-          "position": 7,
-          "description_key": "",
-          "description_fallback": "Called when validation fails, with the error message string."
         }
       ],
       "returns": [
@@ -5416,7 +5983,7 @@
         "signature": "function useInstalledThemes(): TInstalledThemes",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/installed-themes.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "The returned list is a static snapshot taken at createOrigam() call time — it does not change at runtime. Pair with useTheme() to read and switch the currently active brand and mode.",
@@ -5491,7 +6058,7 @@
         "signature": "function useIntersectionObserver(\n  callback?: IntersectionObserverCallback,\n  options?: IntersectionObserverInit\n): {\n  intersectionRef: Ref<HTMLElement | undefined>\n  isIntersecting: ShallowRef<boolean>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/intersectionObserver.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -5521,7 +6088,7 @@
         },
         {
           "name": "options",
-          "type": "IntersectionObserverInit",
+          "type": "MaybeRefOrGetter<IntersectionObserverInit | undefined>",
           "required": false,
           "default_value": null,
           "position": 1,
@@ -5602,7 +6169,7 @@
         "signature": "function useItems(\n  props: IItemProps & { itemType?: string }\n): {\n  items: ComputedRef<IInternalListItem[]>\n  transformIn: (value: any[]) => IInternalListItem[]\n  transformOut: (value: IInternalListItem[]) => any[]\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/items.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -5714,7 +6281,7 @@
         "signature": "function useLayout(): {\n  getLayoutItem: (id: string) => ILayoutItem | undefined\n  mainRect: ComputedRef<{ top: number; left: number; right: number; bottom: number }>\n  mainStyles: ComputedRef<CSSProperties>\n  mainId: ComputedRef<string>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/layout.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useLayout throws \"[Origam] Could not find injected layout\" when called outside an OrigamLayout. Components that may be used standalone (e.g. in stories) should use useLayoutItem instead, which silently returns inert styles when no layout provider is present.",
@@ -5809,6 +6376,55 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-layout-item",
+        "name": "useLayoutItem",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useLayoutItem(options: { id: string | undefined order: Ref<number> position: Ref<TDirectionBoth> layoutSize: Ref<number | string> elementSize: Ref<number | string | undefined> active: Ref<boolean> | ComputedRef<boolean> disableTransitions?: Ref<boolean> absolute: Ref<boolean | undefined> }): { layoutItemStyles: ComputedRef<CSSProperties>; layoutRect: ShallowRef<any, any>; layoutItemScrimStyles: ComputedRef<CSSProperties>; layoutId: string; } | { ...; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/layoutItem.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "options",
+          "type": "{\n    id: string | undefined\n    order: Ref<number>\n    position: Ref<TDirectionBoth>\n    layoutSize: Ref<number | string>\n    elementSize: Ref<number | string | undefined>\n    active: Ref<boolean> | ComputedRef<boolean>\n    disableTransitions?: Ref<boolean>\n    absolute: Ref<boolean | undefined>\n}",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-lazy",
         "name": "useLazy",
         "category": null,
@@ -5820,7 +6436,7 @@
         "signature": "function useLazy(\n  props: { eager: boolean },\n  active: Ref<boolean>\n): {\n  isBooted: ShallowRef<boolean>\n  hasContent: ComputedRef<boolean>\n  onAfterLeave: () => void\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/lazy.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -5927,6 +6543,64 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-link",
+        "name": "useLink",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useLink(props: ILinkProps & ITagProps, attrs: SetupContext['attrs']): ILink",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/link.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "props",
+          "type": "ILinkProps & ITagProps",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "attrs",
+          "type": "SetupContext['attrs']",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-list",
         "name": "useList",
         "category": null,
@@ -5938,7 +6612,7 @@
         "signature": "function useList(): {\n  hasPrepend: ShallowRef<boolean>\n  hasAppend: ShallowRef<boolean>\n  updateHasPrepend: (value: ComputedRef<boolean>) => void\n  updateHasAppend: (value: ComputedRef<boolean>) => void\n} | null",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/List/list.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useList returns null when called outside an OrigamList — always null-check the result before accessing its members. To create a list context use useCreateList() which both provides the new context and returns the parent one.",
@@ -6044,7 +6718,7 @@
         "signature": "function useLoader(\n  props: ILoaderProps,\n  defaultKind?: TLoaderKind,\n  name?: string\n): {\n  loaderClasses: ComputedRef<Record<string, boolean>>\n  isLoading: ComputedRef<boolean>\n  loaderConfig: ComputedRef<IResolvedLoader>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/loader.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -6079,7 +6753,7 @@
           "name": "defaultKind",
           "type": "TLoaderKind",
           "required": false,
-          "default_value": "'circular'",
+          "default_value": "LOADER_KIND.CIRCULAR",
           "position": 1,
           "description_key": "",
           "description_fallback": "Renderer to use when loading is true or a plain number (no explicit type). Common values: 'circular' (Btn default), 'line' (Card default), 'skeleton'."
@@ -6088,7 +6762,7 @@
           "name": "name",
           "type": "string",
           "required": false,
-          "default_value": null,
+          "default_value": "getCurrentInstanceName()",
           "position": 2,
           "description_key": "",
           "description_fallback": "Kebab-case component name used to build the ${name}--loading BEM modifier class. Defaults to the current component name via getCurrentInstanceName()."
@@ -6174,7 +6848,7 @@
         "signature": "function useLocale(): ILocaleInstance & IRtlInstance",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/locale.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useLocale exposes the DS-internal translation keys only. For application-level i18n (your own strings), keep using @nuxtjs/i18n or vue-i18n directly. The DS adapter wires into your existing i18n instance when configured via createOrigam({ locale: { adapter } }).",
@@ -6196,7 +6870,17 @@
       },
       "props": [],
       "values": [],
-      "params": [],
+      "params": [
+        {
+          "name": "strict",
+          "type": "false",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
       "returns": [
         {
           "name": "current",
@@ -6298,7 +6982,7 @@
         "signature": "function useLocation(\n  props: ILocationProps,\n  opposite?: boolean,\n  offset?: (side: string) => number\n): {\n  locationStyles: ComputedRef<Record<string, string | number>>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/location.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -6403,6 +7087,64 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-location-strategies",
+        "name": "useLocationStrategies",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useLocationStrategies(props: ILocationStrategyProps, data: ILocationStrategyData): { contentStyles: Ref<{}, {}>; updateLocation: Ref<(e: Event) => void, (e: Event) => void>; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/locationStrategies.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "props",
+          "type": "ILocationStrategyProps",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "data",
+          "type": "ILocationStrategyData",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-margin",
         "name": "useMargin",
         "category": null,
@@ -6414,7 +7156,7 @@
         "signature": "function useMargin(\n  props: IMarginProps,\n  name?: string\n): {\n  marginClasses: ComputedRef<string[]>\n  marginStyles: ComputedRef<string[]>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/margin.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "String \"4\" opts into the design-system scale (var(--origam-space---4) = 16 px). The numeric 4 is treated as raw pixels (legacy). Axis-specific utilities (mx, mt, …) are not yet in the Phase 1 manifest.",
@@ -6510,7 +7252,7 @@
         "signature": "function useMask(\n  modelValue: MaybeRef<string | null | undefined>,\n  mask: MaybeRef<TMask | undefined>\n): {\n  masked: Ref<string>\n  unmasked: Ref<string>\n  isValid: Ref<boolean>\n  complete: Ref<boolean>\n  setRaw: (raw: string) => string\n  config: Ref<IResolvedMaskConfig | null>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/mask.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -6652,7 +7394,7 @@
         "signature": "function useMasonry(options: IUseMasonryOptions): {\n  containerRef: Ref<HTMLElement | null>\n  setItem: (index: number, el: HTMLElement | null) => void\n  layout: Ref<IMasonryLayoutResult>\n  relayout: () => void\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Masonry/masonry.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useMasonry is the JS fallback path. OrigamMasonry first checks CSS.supports(\"grid-template-rows: masonry\") and only activates this composable when that query returns false. The bucketFill and pickColumnsForWidth utilities are exported separately for unit testing.",
@@ -6676,40 +7418,13 @@
       "values": [],
       "params": [
         {
-          "name": "columnsRef",
-          "type": "Ref<number>",
+          "name": "options",
+          "type": "IUseMasonryOptions",
           "required": true,
           "default_value": null,
           "position": 0,
-          "description_key": "",
-          "description_fallback": "Default column count. Used when no breakpoint in breakpointsRef matches the container width."
-        },
-        {
-          "name": "gapRef",
-          "type": "Ref<number>",
-          "required": true,
-          "default_value": null,
-          "position": 1,
-          "description_key": "",
-          "description_fallback": "Gap between items in pixels (both axes). The component resolves token/string gaps to a number before passing it here."
-        },
-        {
-          "name": "breakpointsRef",
-          "type": "Ref<TMasonryColumnBreakpoints | undefined>",
-          "required": false,
-          "default_value": null,
-          "position": 2,
-          "description_key": "",
-          "description_fallback": "Optional map of container-width breakpoints to column counts (e.g. { 600: 2, 900: 3 }). The largest key that is less than or equal to the container width wins."
-        },
-        {
-          "name": "alignRef",
-          "type": "Ref<TMasonryAlign>",
-          "required": false,
-          "default_value": "'top'",
-          "position": 3,
-          "description_key": "",
-          "description_fallback": "Vertical alignment of items within a column. 'top' packs items to the top; 'center' distributes unused space above and below each column's content."
+          "description_key": null,
+          "description_fallback": null
         }
       ],
       "returns": [
@@ -6915,7 +7630,7 @@
         "signature": "function useMessage(\n  props: { messages?: string | string[]; errorMessages?: string | string[]; hint?: string },\n  otherMessages?: Ref<Array<any>> | ComputedRef<Array<any>>\n): {\n  hasMessages: ComputedRef<boolean>\n  messages: ComputedRef<string | string[]>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/message.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -6936,7 +7651,7 @@
       "params": [
         {
           "name": "props",
-          "type": "{ messages?: string | string[]; errorMessages?: string | string[]; hint?: string }",
+          "type": "IMessageProps",
           "required": true,
           "default_value": null,
           "position": 0,
@@ -6945,7 +7660,7 @@
         },
         {
           "name": "otherMessages",
-          "type": "Ref<Array<any>> | ComputedRef<Array<any>>",
+          "type": "Ref<Array<string>> | ComputedRef<Array<string>>",
           "required": false,
           "default_value": "ref([])",
           "position": 1,
@@ -7026,7 +7741,7 @@
         "signature": "// Root — call once on the container component\nfunction useNested(props: INestedProps): {\n  opened: Ref<Set<unknown>>\n  selected: Ref<Map<unknown, 'on' | 'off' | 'indeterminate'>>\n  selectedValues: ComputedRef<unknown[]>\n  register: (id: unknown, parentId: unknown, isGroup: boolean) => void\n  unregister: (id: unknown) => void\n  open: (id: unknown, value: boolean, event?: Event) => void\n  select: (id: unknown, value: boolean, event?: Event) => void\n  children: Ref<Map<unknown, unknown[]>>\n  parents: Ref<Map<unknown, unknown>>\n}\n\n// Item — call on each tree node\nfunction useNestedItem(\n  id: Ref<unknown>,\n  isGroup: boolean\n): { isOpen: ComputedRef<boolean>; isSelected: ComputedRef<boolean>; isIndeterminate: ComputedRef<boolean>; isLeaf: ComputedRef<boolean>; open: (open: boolean, e: Event) => void; select: (selected: boolean, e?: Event) => void; parent: ComputedRef<unknown> }\n\n// Group activator — call inside a group activator slot\nfunction useNestedGroupActivator(): void",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/nested.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -7154,6 +7869,103 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-nested-group-activator",
+        "name": "useNestedGroupActivator",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useNestedGroupActivator(): void",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/nestedGroupActivator.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
+        "slug": "use-nested-item",
+        "name": "useNestedItem",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useNestedItem(id: Ref<unknown>, isGroup: boolean): { id: ComputedRef<unknown>; open: (open: boolean, e: Event) => void; openOnSelect: (open: boolean, e?: Event) => void; isOpen: ComputedRef<boolean>; ... 6 more ...; root: { ...; }; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/nestedItem.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "id",
+          "type": "Ref<unknown>",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "isGroup",
+          "type": "boolean",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-number-format",
         "name": "useNumberFormat",
         "category": null,
@@ -7165,7 +7977,7 @@
         "signature": "function useNumberFormat(\n  options?: MaybeRefOrGetter<IUseNumberFormatOptions>\n): {\n  intl: ComputedRef<Intl.NumberFormat>\n  format: (value: number | string) => string\n  formatToParts: (value: number | string) => Intl.NumberFormatPart[]\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/NumberFormat/number-format.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -7283,7 +8095,7 @@
         "signature": "function useOptions(options: {\n  page: Ref<number>\n  itemsPerPage: Ref<number>\n  sortBy: Ref<Array<IDataTableSortItem>>\n  groupBy: Ref<Array<IDataTableSortItem>>\n  search: Ref<string | undefined>\n}): void",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/DataTable/options.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -7418,7 +8230,7 @@
         "signature": "function usePadding(\n  props: IPaddingProps,\n  name?: string\n): {\n  paddingClasses: ComputedRef<string[]>\n  paddingStyles: ComputedRef<string[]>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/padding.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -7503,6 +8315,55 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-paginated-items",
+        "name": "usePaginatedItems",
+        "category": "DataTable",
+        "domain": "DataTable",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function usePaginatedItems(options: { items: Ref<readonly (T | IDataTableGroup<T>)[]> startIndex: Ref<number> stopIndex: Ref<number> itemsPerPage: Ref<number> }): { paginatedItems: ComputedRef<readonly (T | IDataTableGroup<T>)[]>; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/DataTable/paginatedItems.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "options",
+          "type": "{\n    items: Ref<readonly (T | IDataTableGroup<T>)[]>\n    startIndex: Ref<number>\n    stopIndex: Ref<number>\n    itemsPerPage: Ref<number>\n}",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-pagination",
         "name": "usePagination",
         "category": null,
@@ -7514,7 +8375,7 @@
         "signature": "// Initialise pagination refs from props\nfunction createPagination(props: IDataTablePaginationProps): {\n  page: Ref<number>\n  itemsPerPage: Ref<number>\n}\n\n// Compute + provide derived pagination state\nfunction providePagination(options: {\n  page: Ref<number>\n  itemsPerPage: Ref<number>\n  itemsLength: Ref<number>\n}): IDataTableProvidePagination\n\n// Inject pagination context (throws if missing)\nfunction usePagination(): IDataTableProvidePagination\n\n// Slice items for the active page\nfunction usePaginatedItems<T>(options: {\n  items: Ref<readonly (T | IDataTableGroup<T>)[]>\n  startIndex: Ref<number>\n  stopIndex: Ref<number>\n  itemsPerPage: Ref<number>\n}): { paginatedItems: ComputedRef<readonly (T | IDataTableGroup<T>)[]> }",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/DataTable/pagination.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -7536,44 +8397,7 @@
       },
       "props": [],
       "values": [],
-      "params": [
-        {
-          "name": "props",
-          "type": "IDataTablePaginationProps",
-          "required": true,
-          "default_value": null,
-          "position": 0,
-          "description_key": "",
-          "description_fallback": "Component props containing page and itemsPerPage (for createPagination)."
-        },
-        {
-          "name": "options.page",
-          "type": "Ref<number>",
-          "required": true,
-          "default_value": null,
-          "position": 1,
-          "description_key": "",
-          "description_fallback": "Active page (1-based). Auto-clamped to [1, pageCount] when itemsLength or itemsPerPage changes."
-        },
-        {
-          "name": "options.itemsPerPage",
-          "type": "Ref<number>",
-          "required": true,
-          "default_value": null,
-          "position": 2,
-          "description_key": "",
-          "description_fallback": "Rows per page. -1 = show all."
-        },
-        {
-          "name": "options.itemsLength",
-          "type": "Ref<number>",
-          "required": true,
-          "default_value": null,
-          "position": 3,
-          "description_key": "",
-          "description_fallback": "Total number of items (server-side count or items.length for client-side)."
-        }
-      ],
+      "params": [],
       "returns": [
         {
           "name": "page",
@@ -7706,7 +8530,7 @@
         "signature": "function useParallaxRuntime(options: IUseParallaxRuntimeOptions): {\n  layers: Ref<IParallaxLayerRegistry[]>\n  progress: Ref<number>\n  mouseRatio: Ref<{ x: number; y: number }>\n  cssScrollDriven: ComputedRef<boolean>\n  reducedMotion: Ref<boolean>\n  register: (layer: IParallaxLayerRegistry) => void\n  unregister: (id: symbol) => void\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Parallax/parallax.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -7728,85 +8552,13 @@
       "values": [],
       "params": [
         {
-          "name": "options.target",
-          "type": "Ref<HTMLElement | undefined>",
+          "name": "options",
+          "type": "IUseParallaxRuntimeOptions",
           "required": true,
           "default_value": null,
           "position": 0,
-          "description_key": "",
-          "description_fallback": "Template ref of the parallax host element. The IntersectionObserver and scroll listener are attached to this element."
-        },
-        {
-          "name": "options.direction",
-          "type": "Ref<TParallaxDirection>",
-          "required": true,
-          "default_value": null,
-          "position": 1,
-          "description_key": "",
-          "description_fallback": "Axis of movement: \"vertical\" (default), \"horizontal\", or \"both\" (scroll on Y + mouse on X)."
-        },
-        {
-          "name": "options.easing",
-          "type": "Ref<TParallaxEasing | string>",
-          "required": true,
-          "default_value": null,
-          "position": 2,
-          "description_key": "",
-          "description_fallback": "Easing mode: \"linear\" (enables CSS scroll-driven path), \"spring\" (JS lerp with damping), or a CSS easing string."
-        },
-        {
-          "name": "options.threshold",
-          "type": "Ref<number>",
-          "required": true,
-          "default_value": null,
-          "position": 3,
-          "description_key": "",
-          "description_fallback": "Minimum viewport intersection ratio [0-1] before progress starts. Delays animation until the host is sufficiently visible."
-        },
-        {
-          "name": "options.disabled",
-          "type": "Ref<boolean>",
-          "required": true,
-          "default_value": null,
-          "position": 4,
-          "description_key": "",
-          "description_fallback": "When true, layers are snapped to their static offsets and the rAF loop is paused."
-        },
-        {
-          "name": "options.speed",
-          "type": "Ref<number>",
-          "required": true,
-          "default_value": null,
-          "position": 5,
-          "description_key": "",
-          "description_fallback": "Default speed factor for raw content (non-layer slot). Layer registrations carry their own speed override."
-        },
-        {
-          "name": "options.onEnter",
-          "type": "() => void",
-          "required": false,
-          "default_value": null,
-          "position": 6,
-          "description_key": "",
-          "description_fallback": "Callback fired when the host enters the viewport."
-        },
-        {
-          "name": "options.onLeave",
-          "type": "() => void",
-          "required": false,
-          "default_value": null,
-          "position": 7,
-          "description_key": "",
-          "description_fallback": "Callback fired when the host exits the viewport."
-        },
-        {
-          "name": "options.onProgress",
-          "type": "(progress: number) => void",
-          "required": false,
-          "default_value": null,
-          "position": 8,
-          "description_key": "",
-          "description_fallback": "Called on every scroll frame with the current normalised progress value in [0, 1]."
+          "description_key": null,
+          "description_fallback": null
         }
       ],
       "returns": [
@@ -8010,6 +8762,64 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-passed-props",
+        "name": "usePassedProps",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function usePassedProps(_props: T, instanceLabel?: string = 'usePassedProps'): (key: Extract<keyof T, string> | string) => boolean",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/passedProps.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "_props",
+          "type": "T",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "instanceLabel",
+          "type": "string",
+          "required": false,
+          "default_value": "'usePassedProps'",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-password-strength",
         "name": "computeStrength",
         "category": null,
@@ -8125,7 +8935,7 @@
         "signature": "function usePosition(\n  props: IPositionProps,\n  name?: string\n): {\n  positionClasses: ComputedRef<string | undefined>\n  positionStyles: ComputedRef<string[]>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/position.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -8245,7 +9055,7 @@
         "signature": "function useProgress(props: IProgressTypeProps): {\n  progress: Ref<string | number>\n  normalizedValue: ComputedRef<number>\n  thickness: ComputedRef<number>\n  max: ComputedRef<number>\n  hasContent: ComputedRef<boolean | Slot | undefined>\n  progressClasses: ComputedRef<(string | Record<string, boolean> | string[])[]>\n  progressStyles: ComputedRef<(string[] | undefined)[]>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Progress/progress.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -8401,7 +9211,7 @@
         "signature": "function useProps<T extends Record<string, any>>(\n  props: T\n): {\n  props: T\n  filterProps: <U extends Partial<ExtractPropTypes<T>>>(\n    properties: U,\n    excludes?: string[]\n  ) => Partial<U>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/props.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -8424,7 +9234,7 @@
       "params": [
         {
           "name": "props",
-          "type": "T extends Record<string, any>",
+          "type": "T",
           "required": true,
           "default_value": null,
           "position": 0,
@@ -8505,7 +9315,7 @@
         "signature": "function useQrCode(\n  value: MaybeRefOrGetter<string>,\n  options?: MaybeRefOrGetter<IUseQrCodeOptions>\n): {\n  svg: ComputedRef<string>\n  modules: ComputedRef<boolean[][]>\n  size: ComputedRef<number>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/QrCode/qr-code.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -8623,7 +9433,7 @@
         "signature": "function useRefs<T extends object>(): {\n  refs: Ref<(T | undefined)[]>\n  updateRef: (el: any, i: number) => void\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/refs.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -8715,7 +9525,7 @@
         "signature": "function useResizeObserver(\n  callback?: ResizeObserverCallback,\n  box?: 'content' | 'border'\n): IResizeState\n\n// IResizeState shape:\n// { resizeRef: Ref<HTMLElement | null | undefined>; contentRect: Readonly<Ref<DOMRectReadOnly | undefined>> }",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/resizeObserver.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -8838,7 +9648,7 @@
         "signature": "function useRounded(\n  props: IRoundedProps | Ref<boolean | number | string | TRounded | null | undefined>,\n  name?: string\n): {\n  roundedClasses: ComputedRef<string[]>\n  roundedStyles: ComputedRef<string[]>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/rounded.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "Inline roundedStyles is always emitted alongside the class because component scoped rules (specificity 0,2,0) routinely win over utility classes (0,1,0). The inline style lands at specificity 1,0,0 and wins everywhere.",
@@ -8923,6 +9733,45 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-route",
+        "name": "useRoute",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useRoute(): Ref<RouteLocationNormalizedLoaded | undefined>",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/route.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-router",
         "name": "useRouter",
         "category": null,
@@ -8934,7 +9783,7 @@
         "signature": "// Returns the active route as a reactive ref\nfunction useRoute(): Ref<RouteLocationNormalizedLoaded | undefined>\n\n// Returns the Router instance (undefined when vue-router is not installed)\nfunction useRouter(): Router | undefined\n\n// Resolves tag, isLink, isClickable, href, route, navigate, isActive\nfunction useLink(\n  props: ILinkProps & ITagProps,\n  attrs: SetupContext['attrs']\n): ILink\n\n// Intercepts the hardware/browser back button with a guard\nfunction useBackButton(\n  router: Router | undefined,\n  cb: (next: NavigationGuardNext) => void\n): void",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/router.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -8956,44 +9805,7 @@
       },
       "props": [],
       "values": [],
-      "params": [
-        {
-          "name": "props (useLink)",
-          "type": "ILinkProps & ITagProps",
-          "required": true,
-          "default_value": null,
-          "position": 0,
-          "description_key": "",
-          "description_fallback": "Props containing `href` (external link), `to` (vue-router location), `tag` (root element override), and `exact` (exact-active matching)."
-        },
-        {
-          "name": "attrs (useLink)",
-          "type": "SetupContext['attrs']",
-          "required": true,
-          "default_value": null,
-          "position": 1,
-          "description_key": "",
-          "description_fallback": "The component attrs used to detect a click listener, which makes a non-link element behave as clickable."
-        },
-        {
-          "name": "router (useBackButton)",
-          "type": "Router | undefined",
-          "required": true,
-          "default_value": null,
-          "position": 2,
-          "description_key": "",
-          "description_fallback": "The Router instance. When undefined (no vue-router), only the popstate listener is registered."
-        },
-        {
-          "name": "cb (useBackButton)",
-          "type": "(next: NavigationGuardNext) => void",
-          "required": true,
-          "default_value": null,
-          "position": 3,
-          "description_key": "",
-          "description_fallback": "Guard callback called when a popstate (back) event is detected. Must call next() to allow navigation or next(false) to cancel."
-        }
-      ],
+      "params": [],
       "returns": [
         {
           "name": "tag (useLink)",
@@ -9091,6 +9903,55 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-rtl",
+        "name": "useRtl",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useRtl(name?: string = getCurrentInstanceName()): { isRtl: Ref<boolean, boolean>; rtlClasses: ComputedRef<string>; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/rtl.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "default_value": "getCurrentInstanceName()",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-scope-id",
         "name": "useScopeId",
         "category": null,
@@ -9102,7 +9963,7 @@
         "signature": "function useScopeId(): {\n  scopeId: { [key: string]: '' } | undefined\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/scopeId.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -9187,7 +10048,7 @@
         "signature": "function useScroll(\n  props: IScrollProps,\n  args?: IScrollArguments\n): {\n  scrollThreshold: ComputedRef<number>\n  currentScroll: ShallowRef<number>\n  currentThreshold: ShallowRef<number>\n  isScrollActive: ShallowRef<boolean>\n  scrollRatio: ComputedRef<number>\n  isScrollingUp: ShallowRef<boolean>\n  savedScroll: ShallowRef<number>\n}\n\nfunction useScrollStrategies(\n  props: IScrollStrategyProps,\n  data: IScrollStrategyData\n): void\n\nfunction useScrolling(\n  listRef: Ref<TOrigamList | undefined>,\n  textFieldRef: Ref<TOrigamTextField | undefined>\n): {\n  onListScroll: () => void\n  onListKeydown: (e: KeyboardEvent) => Promise<void>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/scroll.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -9224,7 +10085,7 @@
           "name": "args",
           "type": "IScrollArguments",
           "required": false,
-          "default_value": null,
+          "default_value": "{}",
           "position": 1,
           "description_key": "",
           "description_fallback": "Optional arguments bag. `canScroll: Ref<boolean>` — when provided, scroll events are ignored while canScroll is false (used by layouts that conditionally enable scrolling)."
@@ -9344,6 +10205,122 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-scroll-strategies",
+        "name": "useScrollStrategies",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useScrollStrategies(props: IScrollStrategyProps, data: IScrollStrategyData): void",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/scrollStrategies.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "props",
+          "type": "IScrollStrategyProps",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "data",
+          "type": "IScrollStrategyData",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
+        "slug": "use-scrolling",
+        "name": "useScrolling",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useScrolling(listRef: Ref<TOrigamList | undefined>, textFieldRef: Ref<TOrigamTextField | undefined>): { onListScroll: () => void; onListKeydown: (e: KeyboardEvent) => Promise<void>; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/scrolling.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "listRef",
+          "type": "Ref<TOrigamList | undefined>",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "textFieldRef",
+          "type": "Ref<TOrigamTextField | undefined>",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-select",
         "name": "useSelection",
         "category": null,
@@ -9355,7 +10332,7 @@
         "signature": "function useSelection(): IDataTableProvideSelection",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/DataTable/select.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useSelection throws when called outside a DataTable context (no inject match for ORIGAM_DATA_TABLE_SELECT_KEY). It must be used inside a component tree where provideSelection() was called by the parent table.",
@@ -9493,7 +10470,7 @@
         "signature": "function useSelectLink(\n  link: IUseLink,\n  select?: (value: boolean, e?: Event) => void\n): void",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/selectLink.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useSelectLink is a side-effect-only composable — it returns nothing. Its entire contract is the watcher that calls select() on next tick when link.isActive flips to true. The next-tick deferral avoids a synchronous group mutation during the router navigation cycle.",
@@ -9584,7 +10561,7 @@
         "signature": "function useSheetSwipe(\n  options: ISheetSwipeOptions\n): {\n  currentSnap: Ref<TSheetSnapId>\n  dragOffset: ShallowRef<number>\n  isDragging: ShallowRef<boolean>\n  snapTo: (id: TSheetSnapId) => void\n  dismiss: () => void\n  currentSnapHeight: ComputedRef<number>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Sheet/sheetSwipe.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "Only the handle element receives pointer events — the sheet body stays fully interactive (lists scroll, buttons click). The persistent prop prevents accidental dismissal; the gesture falls back to the next non-zero snap point instead of closing.",
@@ -9689,7 +10666,7 @@
         "signature": "function useSize(\n  props: ISizeProps,\n  name?: string\n): {\n  sizeClasses: ComputedRef<string[]>\n  sizeStyles: ComputedRef<string[]>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/size.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "sizeClasses is most useful for typographic components (Btn, Chip) where the named size implies a font-size rung. For purely box-sized components (Avatar, Icon), use the numeric form and rely on sizeStyles.",
@@ -9802,7 +10779,7 @@
         "signature": "function useSteps(\n  props: ISliderFieldProps\n): {\n  min: ComputedRef<number>\n  max: ComputedRef<number>\n  step: ComputedRef<number>\n  decimals: ComputedRef<number>\n  roundValue: (value: string | number) => number\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/SliderField/slider-field.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useSteps is intentionally a pure-function layer with no side effects. It does not manage drag state — drag is handled natively by the <input type=\"range\"> element in OrigamSliderField. The older useSlider JS drag pipeline was removed during the native-input migration.",
@@ -9899,7 +10876,7 @@
         "signature": "function useCountdown(\n  milliseconds: number\n): {\n  time: ShallowRef<number>\n  clear: () => void\n  reset: () => void\n  start: (el?: HTMLElement) => void\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Snackbar/snackbar.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useCountdown is an internal primitive used by OrigamSnackbar. For pushing notifications from application code, use useSnackbarGroup instead. The interval is cleared via onScopeDispose so it never leaks after the component unmounts.",
@@ -9998,7 +10975,7 @@
         "signature": "function useSnackbarGroup(\n  options?: IUseSnackbarGroupOptions\n): {\n  items: Readonly<Ref<ReadonlyArray<ISnackbarGroupItem>>>\n  notify: (opts: ISnackbarGroupItemOptions) => string\n  dismiss: (itemId: string) => void\n  dismissAll: () => void\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Snackbar/snackbar-group.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "The store is a module-level Map keyed by id. It persists across component unmounts — dismissAll() or setting a low max are the recommended cleanup strategies. For testing, import resetSnackbarGroupForTesting() to wipe counters and timers between specs.",
@@ -10025,7 +11002,7 @@
           "name": "options",
           "type": "IUseSnackbarGroupOptions",
           "required": false,
-          "default_value": null,
+          "default_value": "{}",
           "position": 0,
           "description_key": "",
           "description_fallback": "Optional configuration. id (string) namespaces the stack so multiple independent stacks can coexist on the same page (default: SNACKBAR_GROUP_DEFAULT_ID). max (number) caps the stack size with FIFO eviction. defaultDuration (ms) is the fallback auto-dismiss delay for items that omit their own (default: 5000 ms)."
@@ -10097,6 +11074,55 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-snackbar-group-internal",
+        "name": "useSnackbarGroupInternal",
+        "category": "Snackbar",
+        "domain": "Snackbar",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useSnackbarGroupInternal(id?: MaybeRefOrGetter<string> = SNACKBAR_GROUP_DEFAULT_ID): { rawItems: ComputedRef<ISnackbarGroupItem[]>; itemCount: ComputedRef<number>; registerDefaultDuration: (duration: number) => void; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Snackbar/snackbarGroupInternal.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "id",
+          "type": "MaybeRefOrGetter<string>",
+          "required": false,
+          "default_value": "SNACKBAR_GROUP_DEFAULT_ID",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-sort",
         "name": "useSort",
         "category": null,
@@ -10108,7 +11134,7 @@
         "signature": "function useSort(): IDataTableProvideSort\n\nfunction useSortedItems<T extends IInternalItem>(\n  props: { customKeySort: TDataTableCompareFunction | undefined },\n  items: Ref<T[]>,\n  sortBy: Ref<Array<IDataTableSortItem>>,\n  options?: {\n    transform?: (item: T) => Record<string, unknown>\n    sortFunctions?: Ref<Record<string, TDataTableCompareFunction> | undefined>\n    sortRawFunctions?: Ref<Record<string, TDataTableCompareFunction> | undefined>\n  }\n): { sortedItems: ComputedRef<T[]> }",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/DataTable/sort.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useSort throws when called outside a DataTable context (no inject match). It must be used inside a component tree that has provideSort() called by the parent table.",
@@ -10201,6 +11227,82 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-sorted-items",
+        "name": "useSortedItems",
+        "category": "DataTable",
+        "domain": "DataTable",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useSortedItems(props: { customKeySort: TDataTableCompareFunction | undefined }, items: Ref<T[]>, sortBy: Ref<Array<IDataTableSortItem>>, options?: { transform?: (item: T) => Record<string, unknown> sortFunctions?: Ref<Record<string, TDataTableCompareFunction> | undefined> sortRawFunctions?: Ref<Record<string, TDataTableCompareFunction> | undefined> }): { sortedItems: ComputedRef<T[]>; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/DataTable/sortedItems.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "props",
+          "type": "{\n        customKeySort: TDataTableCompareFunction | undefined\n    }",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "items",
+          "type": "Ref<T[]>",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "sortBy",
+          "type": "Ref<Array<IDataTableSortItem>>",
+          "required": true,
+          "default_value": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "options",
+          "type": "{\n        transform?: (item: T) => Record<string, unknown>\n        sortFunctions?: Ref<Record<string, TDataTableCompareFunction> | undefined>\n        sortRawFunctions?: Ref<Record<string, TDataTableCompareFunction> | undefined>\n    }",
+          "required": false,
+          "default_value": null,
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-ssr-boot",
         "name": "useSsrBoot",
         "category": null,
@@ -10212,7 +11314,7 @@
         "signature": "function useSsrBoot(): {\n  ssrBootStyles: ComputedRef<CSSProperties | []>\n  isBooted: Readonly<ShallowRef<boolean>>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/ssrBoot.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useSsrBoot uses requestAnimationFrame to defer the booted flag — it fires after the browser has painted the first frame, ensuring transitions are already in their final CSS state before they are re-enabled.",
@@ -10294,7 +11396,7 @@
         "signature": "function useStack(\n  isActive: Readonly<Ref<boolean>>,\n  zIndex: Readonly<Ref<string | number>>,\n  disableGlobalStack: boolean\n): {\n  globalTop: Readonly<ShallowRef<boolean>>\n  localTop: ComputedRef<boolean>\n  stackStyles: ComputedRef<{ zIndex: number }>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/stack.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useStack uses Vue provide/inject to propagate the local stack context to child overlays. globalTop is updated with a microtask delay to avoid synchronous read-during-write cycles during the activation phase.",
@@ -10335,7 +11437,7 @@
         },
         {
           "name": "disableGlobalStack",
-          "type": "boolean",
+          "type": "Readonly<Ref<boolean>>",
           "required": true,
           "default_value": null,
           "position": 2,
@@ -10406,7 +11508,7 @@
         "signature": "function useStateEffect(\n  props: TStateEffectProps,\n  isHover?: Ref<boolean> | ComputedRef<boolean>,\n  isActive?: Ref<boolean> | ComputedRef<boolean>,\n  hoverState?: ComputedRef<IHoverState | undefined>,\n  activeState?: ComputedRef<IActiveState | undefined>,\n  isDisabled?: Ref<boolean> | ComputedRef<boolean>,\n  flat?: Ref<boolean> | ComputedRef<boolean>\n): {\n  color: ComputedRef<TColor | undefined>\n  bgColor: ComputedRef<TColor | undefined>\n  border: ComputedRef<any>\n  rounded: ComputedRef<any>\n  elevation: ComputedRef<any>\n  padding: ComputedRef<any>\n  margin: ComputedRef<any>\n  gap: ComputedRef<any>\n  colorClasses: ComputedRef<string[]>\n  colorStyles: ComputedRef<string[]>\n  borderClasses: ComputedRef<string[]>\n  borderStyles: ComputedRef<string[]>\n  roundedClasses: ComputedRef<string[]>\n  roundedStyles: ComputedRef<string[]>\n  elevationClasses: ComputedRef<string[]>\n  elevationStyles: ComputedRef<string[]>\n  paddingClasses: ComputedRef<string[]>\n  paddingStyles: ComputedRef<string[]>\n  marginClasses: ComputedRef<string[]>\n  marginStyles: ComputedRef<string[]>\n  gapClasses: ComputedRef<string[]>\n  gapStyles: ComputedRef<string[]>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/stateEffect.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useStateEffect is the recommended replacement for the manual chain useColorEffect + useBorder + useRounded + useElevation + usePadding + useMargin. Priority rule: hover overrides active when both are engaged simultaneously.",
@@ -10448,7 +11550,7 @@
           "name": "isHover",
           "type": "Ref<boolean> | ComputedRef<boolean>",
           "required": false,
-          "default_value": "ref(false)",
+          "default_value": "noopRef",
           "position": 1,
           "description_key": "",
           "description_fallback": "Reactive hover state from useHover. When true, the composable applies the override values from hoverState for each axis."
@@ -10457,7 +11559,7 @@
           "name": "isActive",
           "type": "Ref<boolean> | ComputedRef<boolean>",
           "required": false,
-          "default_value": "ref(false)",
+          "default_value": "noopRef",
           "position": 2,
           "description_key": "",
           "description_fallback": "Reactive active/selected state from useActive. When true (and isHover is false), override values from activeState are applied. Hover takes priority when both are engaged simultaneously."
@@ -10484,7 +11586,7 @@
           "name": "isDisabled",
           "type": "Ref<boolean> | ComputedRef<boolean>",
           "required": false,
-          "default_value": "ref(false)",
+          "default_value": "noopRef",
           "position": 5,
           "description_key": "",
           "description_fallback": "When true, colorClasses is emptied (utility classes suppressed) so the disabled opacity veil is not overridden by a tokenised background."
@@ -10493,7 +11595,7 @@
           "name": "flat",
           "type": "Ref<boolean> | ComputedRef<boolean>",
           "required": false,
-          "default_value": "ref(false)",
+          "default_value": "noopRef",
           "position": 6,
           "description_key": "",
           "description_fallback": "When true, elevationClasses and elevationStyles resolve to empty. Bridges the flat prop of Btn / Card without requiring a separate useElevation call."
@@ -10656,6 +11758,64 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-state-flag",
+        "name": "useStateFlag",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useStateFlag(props: object, options: IStateFlagOptions<S>): IStateFlagReturn",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/stateFlag.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "props",
+          "type": "object",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "options",
+          "type": "IStateFlagOptions<S>",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-status",
         "name": "useStatus",
         "category": null,
@@ -10667,7 +11827,7 @@
         "signature": "function useStatus(\n  props: IStatusProps & IAdjacentProps,\n  name?: string\n): {\n  icon: ComputedRef<string | undefined>\n  appendIcon: ComputedRef<string | undefined>\n  prependIcon: ComputedRef<string | undefined>\n  statusClasses: ComputedRef<string[]>\n  statusIntent: ComputedRef<TColor | undefined>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/status.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -10802,7 +11962,7 @@
         "signature": "function useSticky(options: ISticky): {\n  isStuck: ShallowRef<boolean | 'top' | 'bottom'>\n  stickyStyles: ComputedRef<Array<CSSProperties | undefined>>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/sticky.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useSticky mounts a passive scroll listener on window when isSticky is true and removes it when false or on beforeUnmount. The scroll handler reads getBoundingClientRect() and a --v-body-scroll-y CSS custom property (set by the layout manager) to compute the final offset.",
@@ -10824,13 +11984,31 @@
       "values": [],
       "params": [
         {
-          "name": "options",
-          "type": "ISticky",
+          "name": "rootEl",
+          "type": "Ref<HTMLElement | undefined>",
           "required": true,
           "default_value": null,
           "position": 0,
-          "description_key": "",
-          "description_fallback": "Configuration object containing rootEl (template ref to the sticky element), isSticky (Ref<boolean> — feature toggle; when false the scroll listener is removed), and layoutItemStyles (ComputedRef of the layout item styles, providing the top offset imposed by the app-bar)."
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "isSticky",
+          "type": "Ref<boolean>",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "layoutItemStyles",
+          "type": "Ref<CSSProperties>",
+          "required": true,
+          "default_value": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
         }
       ],
       "returns": [
@@ -10878,7 +12056,7 @@
         "signature": "function useStyle(\n  styles: ComputedRef,\n  uniq?: string,\n  name?: string\n): {\n  id: ComputedRef<string>\n  styleTagId: string\n  css: ShallowRef<string>\n  load: () => void\n  unload: () => void\n  isLoaded: Readonly<ShallowRef<boolean>>\n}\n\nfunction useStyleTag(\n  css: MaybeRef<string>,\n  options?: IStyleTagOptions\n): {\n  id: string\n  css: ShallowRef<string>\n  load: () => void\n  unload: () => void\n  isLoaded: Readonly<ShallowRef<boolean>>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/style.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useStyle targets the injected styles with a #id selector, so only the specific DOM element with that id is affected — it is component-scoped without the overhead of a Shadow DOM. The id must be applied to the element via :id=\"id\" in the template.",
@@ -10910,9 +12088,9 @@
         },
         {
           "name": "uniq",
-          "type": "string",
+          "type": "MaybeRefOrGetter<string | undefined>",
           "required": false,
-          "default_value": null,
+          "default_value": "undefined",
           "position": 1,
           "description_key": "",
           "description_fallback": "Optional fixed element id. When omitted, a unique id is generated from the component name and a counter (e.g. origam-card-3). Provide a fixed id when multiple instances must share the same <style> tag (e.g. global animation keyframes)."
@@ -10982,6 +12160,64 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-style-tag",
+        "name": "useStyleTag",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useStyleTag(css: MaybeRef<string>, options?: IStyleTagOptions = {}): { id: string; css: Ref<string, string> | ShallowRef<string, string> | WritableComputedRef<string, string>; unload: () => void; load: () => void; isLoaded: Readonly<...>; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/styleTag.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "css",
+          "type": "MaybeRef<string>",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "options",
+          "type": "IStyleTagOptions",
+          "required": false,
+          "default_value": "{}",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-teleport",
         "name": "useTeleport",
         "category": null,
@@ -10993,7 +12229,7 @@
         "signature": "function useTeleport(\n  target: Ref<boolean | string | Element>\n): {\n  teleportTarget: ComputedRef<Element | undefined>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/teleport.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useTeleport is SSR-safe: it guards all document accesses behind IN_BROWSER. On the server, teleportTarget is always undefined and the caller's <Teleport :disabled=\"!teleportTarget\"> renders inline.",
@@ -11063,6 +12299,256 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "composable",
+        "slug": "use-teleport-typography",
+        "name": "useTeleportTypography",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useTeleportTypography(fieldRef: Ref<{ $el?: HTMLElement } | undefined>, isOpen: Ref<boolean>, extraVars: (fontSize: string) => Record<string, string>, measureSelector?: string = TELEPORT_TYPOGRAPHY_MEASURE_SELECTOR, neutralFontSize?: string = TELEPORT_TYPOGRAPHY_NEUTRAL_FONT_SIZE): { typographyStyles: Ref<Record<string, string>, Record<string, string>>; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/teleport-typography.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "fieldRef",
+          "type": "Ref<{ $el?: HTMLElement } | undefined>",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "isOpen",
+          "type": "Ref<boolean>",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "extraVars",
+          "type": "(fontSize: string) => Record<string, string>",
+          "required": true,
+          "default_value": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "measureSelector",
+          "type": "string",
+          "required": false,
+          "default_value": "TELEPORT_TYPOGRAPHY_MEASURE_SELECTOR",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "neutralFontSize",
+          "type": "string",
+          "required": false,
+          "default_value": "TELEPORT_TYPOGRAPHY_NEUTRAL_FONT_SIZE",
+          "position": 4,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
+        "slug": "use-text-color",
+        "name": "useTextColor",
+        "category": null,
+        "domain": "Commons",
+        "icon": "mdi-format-color-text",
+        "description_key": "",
+        "description_fallback": "Foreground-only color helper. Resolves the `color` prop to a utility class (`origam--color-*`) for tokenised intents, or to an inline `color:` declaration for raw CSS values and gradients.",
+        "definition": null,
+        "signature": "function useTextColor<T extends Record<K, TColor>, K extends string>(\n  props: T | Ref<TColor>,\n  name?: K\n): {\n  textColorClasses: ComputedRef<string[]>\n  textColorStyles: ComputedRef<string[]>\n}",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/textColor.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": {
+          "consumedInterfaces": [
+            "IColorProps"
+          ]
+        },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "props",
+          "type": "T | Ref<TColor>",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": "",
+          "description_fallback": "Either the component props object (paired with `name`) or a plain Ref<TColor>."
+        },
+        {
+          "name": "name",
+          "type": "K",
+          "required": false,
+          "default_value": null,
+          "position": 1,
+          "description_key": "",
+          "description_fallback": "The key to read from the props object. Typically \"color\". Omit when passing a plain Ref."
+        }
+      ],
+      "returns": [
+        {
+          "name": "textColorClasses",
+          "type": "ComputedRef<string[]>",
+          "position": 0,
+          "description_key": "",
+          "description_fallback": "Utility class names (e.g. [\"origam--color-primary\"]) to bind via :class."
+        },
+        {
+          "name": "textColorStyles",
+          "type": "ComputedRef<string[]>",
+          "position": 1,
+          "description_key": "",
+          "description_fallback": "Inline CSS declarations (e.g. [\"color: #6d28d9\"]) to bind via :style. For gradients, includes background-image + background-clip: text."
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "",
+          "title_fallback": "Color an icon with an intent",
+          "code": "<script setup lang=\"ts\">\nimport { useTextColor } from 'origam'\n\nconst props = defineProps<{ color?: string }>()\nconst { textColorClasses, textColorStyles } = useTextColor(props, 'color')\n</script>\n\n<template>\n  <origam-icon\n    icon=\"mdi-star\"\n    :class=\"textColorClasses\"\n    :style=\"textColorStyles\"\n  />\n</template>",
+          "lang": "vue"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "related",
+          "to_kind": "composable",
+          "to_slug": "use-color",
+          "to_name": null,
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "composable",
+          "to_slug": "use-background-color",
+          "to_name": null,
+          "prop_name": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "composable",
+          "to_slug": "use-color-effect",
+          "to_name": null,
+          "prop_name": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "composable",
+        "slug": "use-textarea-field-rich",
+        "name": "useTextareaRich",
+        "category": "TextareaField",
+        "domain": "TextareaField",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useTextareaRich(options: IUseTextareaRichOptions): { hostRef: Ref<HTMLElement, HTMLElement>; active: { bold: boolean; italic: boolean; underline: boolean; code: boolean; link: boolean; listBullet: boolean; listOrdered: boolean; heading: 0 | ... 2 more ... | 3; }; ... 5 more ...; onPaste: (event: ClipboardEvent) => void; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/TextareaField/textarea-field-rich.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "options",
+          "type": "IUseTextareaRichOptions",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -11172,122 +12658,6 @@
     {
       "entry": {
         "kind": "composable",
-        "slug": "use-text-color",
-        "name": "useTextColor",
-        "category": null,
-        "domain": "Commons",
-        "icon": "mdi-format-color-text",
-        "description_key": "",
-        "description_fallback": "Foreground-only color helper. Resolves the `color` prop to a utility class (`origam--color-*`) for tokenised intents, or to an inline `color:` declaration for raw CSS values and gradients.",
-        "definition": null,
-        "signature": "function useTextColor<T extends Record<K, TColor>, K extends string>(\n  props: T | Ref<TColor>,\n  name?: K\n): {\n  textColorClasses: ComputedRef<string[]>\n  textColorStyles: ComputedRef<string[]>\n}",
-        "tag": null,
-        "value": null,
-        "source_file": null,
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": {
-          "consumedInterfaces": [
-            "IColorProps"
-          ]
-        },
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [
-        {
-          "name": "props",
-          "type": "T | Ref<TColor>",
-          "required": true,
-          "default_value": null,
-          "position": 0,
-          "description_key": "",
-          "description_fallback": "Either the component props object (paired with `name`) or a plain Ref<TColor>."
-        },
-        {
-          "name": "name",
-          "type": "K",
-          "required": false,
-          "default_value": null,
-          "position": 1,
-          "description_key": "",
-          "description_fallback": "The key to read from the props object. Typically \"color\". Omit when passing a plain Ref."
-        }
-      ],
-      "returns": [
-        {
-          "name": "textColorClasses",
-          "type": "ComputedRef<string[]>",
-          "position": 0,
-          "description_key": "",
-          "description_fallback": "Utility class names (e.g. [\"origam--color-primary\"]) to bind via :class."
-        },
-        {
-          "name": "textColorStyles",
-          "type": "ComputedRef<string[]>",
-          "position": 1,
-          "description_key": "",
-          "description_fallback": "Inline CSS declarations (e.g. [\"color: #6d28d9\"]) to bind via :style. For gradients, includes background-image + background-clip: text."
-        }
-      ],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "",
-          "title_fallback": "Color an icon with an intent",
-          "code": "<script setup lang=\"ts\">\nimport { useTextColor } from 'origam'\n\nconst props = defineProps<{ color?: string }>()\nconst { textColorClasses, textColorStyles } = useTextColor(props, 'color')\n</script>\n\n<template>\n  <origam-icon\n    icon=\"mdi-star\"\n    :class=\"textColorClasses\"\n    :style=\"textColorStyles\"\n  />\n</template>",
-          "lang": "vue"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "related",
-          "to_kind": "composable",
-          "to_slug": "use-color",
-          "to_name": null,
-          "prop_name": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "related",
-          "to_kind": "composable",
-          "to_slug": "use-background-color",
-          "to_name": null,
-          "prop_name": null,
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "related",
-          "to_kind": "composable",
-          "to_slug": "use-color-effect",
-          "to_name": null,
-          "prop_name": null,
-          "position": 2,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "composable",
         "slug": "use-theme",
         "name": "useTheme",
         "category": null,
@@ -11299,7 +12669,7 @@
         "signature": "function useTheme(): {\n  theme: Readonly<Ref<TTheme>>\n  resolved: Readonly<ComputedRef<TThemeResolved>>\n  setTheme: (next: TTheme) => void\n  toggle: () => void\n  mode: Readonly<Ref<TMode>>\n  resolvedMode: Readonly<ComputedRef<TModeResolved>>\n  setMode: (next: TMode) => void\n  toggleMode: () => void\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/theme.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useTheme() is a module-level singleton — all components share the same refs. The prefers-color-scheme listener is initialised once (not in onMounted), so resolvedMode is correct even when called from a Nuxt plugin before the first component renders.",
@@ -11412,7 +12782,7 @@
         "signature": "function useThrottleFn<T extends any[], R = void>(\n  fn: (...args: T) => R,\n  wait: number\n): (...args: T) => void",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/throttle.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useThrottleFn is a leading-edge throttle: the function fires on the FIRST call, then blocks subsequent calls for wait ms. This keeps UI responses instantaneous for the first interaction while capping the overall call rate.",
@@ -11506,7 +12876,7 @@
         "signature": "function useToggleScope(\n  source: WatchSource<boolean>,\n  fn: (reset: () => void) => void\n): void",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/toggleScope.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useToggleScope is a low-level primitive used internally by useVModel, useValidation, and other composables that need conditional effect trees. Prefer those higher-level composables for typical use cases.",
@@ -11602,7 +12972,7 @@
         "signature": "function useTouch(options: {\n  isActive: Ref<boolean>\n  isTemporary: Ref<boolean>\n  width: Ref<number>\n  touchless: Ref<boolean>\n  position: Ref<'left' | 'right' | 'top' | 'bottom'>\n}): {\n  isDragging: ShallowRef<boolean>\n  dragProgress: ShallowRef<number>\n  dragStyles: ComputedRef<{ transform: string; transition: string } | undefined>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/touch.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useTouch is used internally by OrigamNavigationDrawer. It attaches passive listeners to window for touchstart and touchend, and a non-passive listener for touchmove (to call preventDefault during confirmed drags). Disable gesture support via touchless when the content itself needs to scroll horizontally.",
@@ -11719,6 +13089,55 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-transform",
+        "name": "useParallaxTransform",
+        "category": "Parallax",
+        "domain": "Parallax",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useParallaxTransform(props: IParallaxElementProps): { transformStyles: (x: number, y: number) => any; strength: ComputedRef<number>; customMovement: (x: number, y: number) => { x: number; y: number; }; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Parallax/transform.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "props",
+          "type": "IParallaxElementProps",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-transition",
         "name": "useTransition",
         "category": null,
@@ -11730,7 +13149,7 @@
         "signature": "function useTransition(\n  props: ITransitionProps\n): {\n  name: ComputedRef<string | undefined>\n  isDisabled: ComputedRef<boolean | undefined>\n}\n\nfunction useCssTransition(\n  props: ITransitionProps\n): {\n  tag: ShallowRef<Component>\n  name: ComputedRef<string | undefined>\n  isDisabled: ComputedRef<boolean | undefined>\n  transitionProps: ComputedRef<Record<string, any>>\n}\n\nfunction useWindowTransition(\n  props: ITransitionProps\n): {\n  tag: ShallowRef<Component>\n  name: ComputedRef<string | undefined>\n  isDisabled: ComputedRef<boolean | undefined>\n  transitionProps: ComputedRef<Record<string, any>>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Transition/transition.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useWindowTransition requires an ORIGAM_WINDOW_KEY injection — it is only usable inside OrigamWindow subtrees (e.g. OrigamStepper, OrigamTabs). For standalone transitions use useCssTransition or the OrigamTransition component.",
@@ -11827,6 +13246,427 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-typography",
+        "name": "useTypography",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useTypography(props: ITypographyProps, varPrefix: string): { typographyStyles: ComputedRef<Record<string, string>>; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/typography.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "props",
+          "type": "ITypographyProps",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "varPrefix",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
+        "slug": "use-unsupported-prop",
+        "name": "useUnsupportedProp",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useUnsupportedProp(component: string, prop: string, reason: string, isPassed: () => boolean): void",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/unsupportedProp.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "component",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "prop",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "isPassed",
+          "type": "() => boolean",
+          "required": true,
+          "default_value": null,
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
+        "slug": "use-use-audio-player",
+        "name": "useAudioPlayer",
+        "category": "Audio",
+        "domain": "Audio",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useAudioPlayer(options?: IUseOrigamAudioPlayerOptions = {}): { audioRef: Ref<HTMLAudioElement | null> state: IAudioPlayerState methods: IAudioPlayerMethods }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Audio/use-audio-player.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "options",
+          "type": "IUseOrigamAudioPlayerOptions",
+          "required": false,
+          "default_value": "{}",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
+        "slug": "use-use-media-player",
+        "name": "useMediaPlayer",
+        "category": "Media",
+        "domain": "Media",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useMediaPlayer(options?: IUseMediaPlayerOptions = {}): { mediaRef: Ref<HTMLMediaElement | null> state: IMediaPlayerState methods: IMediaPlayerMethods }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Media/use-media-player.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "options",
+          "type": "IUseMediaPlayerOptions",
+          "required": false,
+          "default_value": "{}",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
+        "slug": "use-use-waveform",
+        "name": "useWaveform",
+        "category": "Audio",
+        "domain": "Audio",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useWaveform(srcRef: Ref<string | undefined | null>, options?: IUseWaveformOptions = {}): { peaks: Ref<Array<number>> isComputing: Ref<boolean> error: Ref<Error | null> compute: () => Promise<void> }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Audio/use-waveform.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "srcRef",
+          "type": "Ref<string | undefined | null>",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "options",
+          "type": "IUseWaveformOptions",
+          "required": false,
+          "default_value": "{}",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
+        "slug": "use-v-model",
+        "name": "useVModel",
+        "category": null,
+        "domain": "Commons",
+        "icon": "mdi-swap-horizontal",
+        "description_key": "",
+        "description_fallback": "Implements a controlled / uncontrolled prop contract for any component prop bound via v-model. When the parent provides both the prop and the matching onUpdate:prop listener the component operates in controlled mode; otherwise it manages its own internal ref. Supports kebab-case / camelCase prop alias pairs and optional in/out value transformers.",
+        "definition": null,
+        "signature": "function useVModel<\n  Props extends object & { [key in Prop as `onUpdate:${Prop}`]?: TEventProp | undefined },\n  Prop extends Extract<keyof Props, string>,\n  Inner = Props[Prop]\n>(\n  props: Props,\n  prop: Prop,\n  defaultValue?: Props[Prop],\n  transformIn?: (value?: Props[Prop]) => Inner,\n  transformOut?: (value: Inner) => Props[Prop]\n): Ref<TInnerVal<Inner>> & { readonly externalValue: Props[Prop] }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/vModel.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": "useVModel is the backbone of every form control in origam. It handles the subtle Vue 3 contract where a component is only \"controlled\" when BOTH the prop and the update listener are present on `vnode.props` — passing the prop alone without a handler keeps the component uncontrolled.",
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": {
+          "consumedInterfaces": []
+        },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "props",
+          "type": "Props",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": "",
+          "description_fallback": "The component props object returned by defineProps. The composable reads `props[prop]` and inspects `vm.vnode.props` to detect whether the listener is wired."
+        },
+        {
+          "name": "prop",
+          "type": "Prop",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": "",
+          "description_fallback": "The prop key to observe, e.g. `\"modelValue\"` for a standard v-model binding."
+        },
+        {
+          "name": "defaultValue",
+          "type": "MaybeRefOrGetter<Props[Prop] | undefined>",
+          "required": false,
+          "default_value": null,
+          "position": 2,
+          "description_key": "",
+          "description_fallback": "Value used to initialise the internal ref when the prop is undefined on first render."
+        },
+        {
+          "name": "transformIn",
+          "type": "(value?: Props[Prop]) => Inner",
+          "required": false,
+          "default_value": "(v?: Props[Prop]) => v as Inner",
+          "position": 3,
+          "description_key": "",
+          "description_fallback": "Optional transform applied to the external prop value before exposing it to the component. Useful for converting a string to a number, or normalising null / undefined."
+        },
+        {
+          "name": "transformOut",
+          "type": "(value: Inner) => Props[Prop]",
+          "required": false,
+          "default_value": "(v: Inner) => v as Props[Prop]",
+          "position": 4,
+          "description_key": "",
+          "description_fallback": "Optional inverse transform applied before emitting `update:prop`. Pairs with transformIn to keep the internal representation separate from the public API value."
+        }
+      ],
+      "returns": [
+        {
+          "name": "(model)",
+          "type": "Ref<TInnerVal<Inner>> & { readonly externalValue: Props[Prop] }",
+          "position": 0,
+          "description_key": "",
+          "description_fallback": "A writable computed ref. Reading it returns the current value (controlled or internal). Writing it updates the internal ref and emits `update:prop`. The `externalValue` accessor returns the raw prop value without transformIn applied."
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "",
+          "title_fallback": "Boolean toggle with v-model",
+          "code": "<script setup lang=\"ts\">\nimport { useVModel } from 'origam'\n\nconst props = defineProps<{\n    modelValue?: boolean\n}>()\n\nconst isOpen = useVModel(props, 'modelValue', false)\n</script>\n\n<template>\n  <button @click=\"isOpen = !isOpen\">\n    {{ isOpen ? 'Close' : 'Open' }}\n  </button>\n</template>",
+          "lang": "vue"
+        },
+        {
+          "position": 1,
+          "title_key": "",
+          "title_fallback": "String prop with value transform",
+          "code": "<script setup lang=\"ts\">\nimport { useVModel } from 'origam'\n\nconst props = defineProps<{\n    modelValue?: string\n}>()\n\n// Store internally as uppercase, emit as-is\nconst model = useVModel(\n    props,\n    'modelValue',\n    '',\n    (v) => v?.toUpperCase() ?? '',\n    (v) => v\n)\n</script>",
+          "lang": "vue"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "related",
+          "to_kind": "composable",
+          "to_slug": "use-toggle-scope",
+          "to_name": null,
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "composable",
+          "to_slug": "use-validation",
+          "to_name": null,
+          "prop_name": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-validation",
         "name": "useValidation",
         "category": null,
@@ -11838,7 +13678,7 @@
         "signature": "function useValidation(\n  props: IValidationProps,\n  name?: string,\n  id?: MaybeRef<string | number>\n): {\n  errorMessages: ComputedRef<string[]>\n  isDirty: ComputedRef<boolean>\n  isDisabled: ComputedRef<boolean>\n  isReadonly: ComputedRef<boolean>\n  isPristine: ShallowRef<boolean>\n  isValid: ComputedRef<boolean | undefined>\n  isValidating: ShallowRef<boolean>\n  reset: () => Promise<void>\n  resetValidation: () => Promise<void>\n  validate: (silent?: boolean) => Promise<string[]>\n  validationClasses: ComputedRef<Record<string, boolean>>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/validation.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useValidation auto-registers the field with a parent OrigamForm on beforeMount and unregisters on beforeUnmount. The form can then call `form.validate()` to trigger all registered fields at once.",
@@ -12016,7 +13856,7 @@
         "signature": "function useVariant(\n  props: IVariantProps | Ref<TVariant | TVariantInput | string | undefined>,\n  name?: string\n): {\n  variantClasses: ComputedRef<string[]>\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/variant.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -12122,7 +13962,7 @@
         "signature": "function useVelocity(): {\n  addMovement: (e: TouchEvent) => void\n  endTouch: (e: TouchEvent) => void\n  getVelocity: (id: number) => {\n    x: number\n    y: number\n    direction: 'left' | 'right' | 'up' | 'down'\n  }\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/velocity.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useVelocity is a low-level primitive consumed internally by useTouch. The HISTORY constant controls the circular buffer size (number of samples kept) and HORIZON controls the time window (ms) over which velocity is computed. Direct use is rarely needed — prefer useTouch for drawer gestures.",
@@ -12204,7 +14044,7 @@
         "signature": "function useVideoPlayer(\n  options?: IUseVideoPlayerOptions\n): {\n  videoRef: Ref<HTMLVideoElement | null>\n  state: IVideoPlayerState\n  methods: IVideoPlayerMethods\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Video/video-player.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useVideoPlayer adds video-only APIs on top of useMediaPlayer. The fullscreen implementation falls back to `webkitEnterFullscreen` on iOS Safari. PIP uses the standard `requestPictureInPicture` API and silently no-ops on browsers that do not support it (Firefox desktop).",
@@ -12317,7 +14157,7 @@
         "signature": "function useVirtual<T>(\n  props: IVirtualProps,\n  items: Ref<readonly T[]>\n): {\n  containerRef: Ref<HTMLElement | undefined>\n  markerRef: Ref<HTMLElement | undefined>\n  computedItems: ComputedRef<Array<{ raw: T; index: number }>>\n  paddingTop: ShallowRef<number>\n  paddingBottom: ShallowRef<number>\n  scrollToIndex: (index: number, options?: Partial<IGoToOptions>) => void\n  handleScroll: () => void\n  handleScrollend: () => void\n  handleItemResize: (index: number, height: number) => void\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Commons/virtual.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useVirtual is used internally by OrigamList, OrigamSelect, OrigamDataTable, and OrigamAutocomplete. For variable-height rows, call handleItemResize from a ResizeObserver on each rendered item — the composable will update its offset cache and adjust the window accordingly.",
@@ -12462,137 +14302,6 @@
     {
       "entry": {
         "kind": "composable",
-        "slug": "use-v-model",
-        "name": "useVModel",
-        "category": null,
-        "domain": "Commons",
-        "icon": "mdi-swap-horizontal",
-        "description_key": "",
-        "description_fallback": "Implements a controlled / uncontrolled prop contract for any component prop bound via v-model. When the parent provides both the prop and the matching onUpdate:prop listener the component operates in controlled mode; otherwise it manages its own internal ref. Supports kebab-case / camelCase prop alias pairs and optional in/out value transformers.",
-        "definition": null,
-        "signature": "function useVModel<\n  Props extends object & { [key in Prop as `onUpdate:${Prop}`]?: TEventProp | undefined },\n  Prop extends Extract<keyof Props, string>,\n  Inner = Props[Prop]\n>(\n  props: Props,\n  prop: Prop,\n  defaultValue?: Props[Prop],\n  transformIn?: (value?: Props[Prop]) => Inner,\n  transformOut?: (value: Inner) => Props[Prop]\n): Ref<TInnerVal<Inner>> & { readonly externalValue: Props[Prop] }",
-        "tag": null,
-        "value": null,
-        "source_file": null,
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": "useVModel is the backbone of every form control in origam. It handles the subtle Vue 3 contract where a component is only \"controlled\" when BOTH the prop and the update listener are present on `vnode.props` — passing the prop alone without a handler keeps the component uncontrolled.",
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": {
-          "consumedInterfaces": []
-        },
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [
-        {
-          "name": "props",
-          "type": "Props",
-          "required": true,
-          "default_value": null,
-          "position": 0,
-          "description_key": "",
-          "description_fallback": "The component props object returned by defineProps. The composable reads `props[prop]` and inspects `vm.vnode.props` to detect whether the listener is wired."
-        },
-        {
-          "name": "prop",
-          "type": "Prop",
-          "required": true,
-          "default_value": null,
-          "position": 1,
-          "description_key": "",
-          "description_fallback": "The prop key to observe, e.g. `\"modelValue\"` for a standard v-model binding."
-        },
-        {
-          "name": "defaultValue",
-          "type": "Props[Prop]",
-          "required": false,
-          "default_value": null,
-          "position": 2,
-          "description_key": "",
-          "description_fallback": "Value used to initialise the internal ref when the prop is undefined on first render."
-        },
-        {
-          "name": "transformIn",
-          "type": "(value?: Props[Prop]) => Inner",
-          "required": false,
-          "default_value": "identity",
-          "position": 3,
-          "description_key": "",
-          "description_fallback": "Optional transform applied to the external prop value before exposing it to the component. Useful for converting a string to a number, or normalising null / undefined."
-        },
-        {
-          "name": "transformOut",
-          "type": "(value: Inner) => Props[Prop]",
-          "required": false,
-          "default_value": "identity",
-          "position": 4,
-          "description_key": "",
-          "description_fallback": "Optional inverse transform applied before emitting `update:prop`. Pairs with transformIn to keep the internal representation separate from the public API value."
-        }
-      ],
-      "returns": [
-        {
-          "name": "(model)",
-          "type": "Ref<TInnerVal<Inner>> & { readonly externalValue: Props[Prop] }",
-          "position": 0,
-          "description_key": "",
-          "description_fallback": "A writable computed ref. Reading it returns the current value (controlled or internal). Writing it updates the internal ref and emits `update:prop`. The `externalValue` accessor returns the raw prop value without transformIn applied."
-        }
-      ],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "",
-          "title_fallback": "Boolean toggle with v-model",
-          "code": "<script setup lang=\"ts\">\nimport { useVModel } from 'origam'\n\nconst props = defineProps<{\n    modelValue?: boolean\n}>()\n\nconst isOpen = useVModel(props, 'modelValue', false)\n</script>\n\n<template>\n  <button @click=\"isOpen = !isOpen\">\n    {{ isOpen ? 'Close' : 'Open' }}\n  </button>\n</template>",
-          "lang": "vue"
-        },
-        {
-          "position": 1,
-          "title_key": "",
-          "title_fallback": "String prop with value transform",
-          "code": "<script setup lang=\"ts\">\nimport { useVModel } from 'origam'\n\nconst props = defineProps<{\n    modelValue?: string\n}>()\n\n// Store internally as uppercase, emit as-is\nconst model = useVModel(\n    props,\n    'modelValue',\n    '',\n    (v) => v?.toUpperCase() ?? '',\n    (v) => v\n)\n</script>",
-          "lang": "vue"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "related",
-          "to_kind": "composable",
-          "to_slug": "use-toggle-scope",
-          "to_name": null,
-          "prop_name": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "related",
-          "to_kind": "composable",
-          "to_slug": "use-validation",
-          "to_name": null,
-          "prop_name": null,
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "composable",
         "slug": "use-watermark",
         "name": "useWatermark",
         "category": null,
@@ -12604,7 +14313,7 @@
         "signature": "function useWatermark(\n  options?: MaybeRefOrGetter<IUseWatermarkOptions>\n): {\n  patternUrl: ComputedRef<string>\n  install: (target?: HTMLElement) => HTMLElement | null\n  uninstall: () => void\n}",
         "tag": null,
         "value": null,
-        "source_file": null,
+        "source_file": "packages/ds/src/composables/Watermark/watermark.composable.ts",
         "package_note": null,
         "note_key": null,
         "note_fallback": "useWatermark escapes all XML metacharacters before embedding text or image URLs in the SVG data URL, preventing attribute injection. Enable `antiTamper: true` to activate MutationObserver re-injection — note that this is a deterrent, not a security boundary, as a motivated user can still disable JS.",
@@ -12816,6 +14525,55 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "composable",
+        "slug": "use-window-transition",
+        "name": "useWindowTransition",
+        "category": "Transition",
+        "domain": "Transition",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useWindowTransition(props: ITransitionProps): { tag: ComputedRef<Component>; name: ComputedRef<string>; isDisabled: ComputedRef<boolean>; transitionProps: ComputedRef<{ [key: string]: unknown; }>; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Transition/windowTransition.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "props",
+          "type": "ITransitionProps",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     }
   ]
 }

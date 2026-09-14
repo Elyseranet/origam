@@ -138,6 +138,36 @@ visible effect comes from `OrigamLabel`'s prefix, not Field's. See issue #501.
 > own `__label` prefix nor the forwarded `OrigamLabel` reads a `font-family`
 > var. `fontFamily` is a project-level setting configured once on `OrigamApp`.
 
+### Border (issue #726)
+
+`IFieldProps` extends `IBorderProps`. The field does **not** paint a CSS border
+on its own box: it re-routes the width / style / colour `useBorder` resolves
+into the token channel its three outline legs already read —
+`--origam-field---border-width`, `--origam-field__outline---border-style`,
+`--origam-field---border-color` (plus `--origam-field---border-opacity: 1`, so
+an explicit colour is not washed out by the default `.38`).
+
+That indirection is the whole point. The notch (`__outline--notch`) drops its
+top border to `0` under `--active` / `--focused`, which is what opens the gap
+the floating label sits in. A plain `border:` declaration on the box would
+paint a continuous line straight through that label — which is exactly what
+happened before #726, when `border` lived only on the outer `<OrigamInput>`
+wrapper (measured: label box `[-7, 11]`, input border band `[0, 2]`,
+**61.41 px² of label crossed**; after the fix, `0 px²`).
+
+| Prop          | Type                                                       | Default | Description                                                                                                     |
+|---------------|------------------------------------------------------------|---------|-----------------------------------------------------------------------------------------------------------------|
+| `border`      | `boolean \| number \| string \| TDirectionBoth \| Array<…>` | —       | Outline width. `true`/`'thin'`/`'thick'`, a number of px, or free-form CSS (`'2px dashed red'`). Feeds the notched outline, never a box border. |
+| `borderColor` | `string`                                                    | —       | Outline colour. Sets `--origam-field---border-color` and forces `--origam-field---border-opacity: 1`.            |
+| `borderStyle` | `string`                                                    | —       | Outline line-style (`solid` · `dashed` · `dotted` · …). Sets `--origam-field__outline---border-style`.           |
+
+> **Directional values are not mapped.** `border="top"` and the per-side props
+> (`borderTop`, `borderBlock`, `borderLeftColor`, …) have no meaning on a
+> three-leg outline, so only the *global* width / style / colour are consumed;
+> the legs keep the variant's own width for a directional value. Use the
+> `variant` prop (`outlined` · `filled` · `underlined` · `plain`) to choose
+> which edges the field draws.
+
 ## Slots
 
 | Slot | Scope | Description |

@@ -395,8 +395,6 @@
     "--origam-switch__thumb---transition-duration",
     "--origam-switch__thumb---translate-distance",
     "--origam-switch__track---background-color-checked",
-    "--origam-switch__track---border-color",
-    "--origam-switch__track---border-width",
     "--origam-system-bar---border-bottom-width",
     "--origam-system-bar---border-color",
     "--origam-system-bar---border-end-end-radius",

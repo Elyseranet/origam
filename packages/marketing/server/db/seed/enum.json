@@ -1,8 +1,8 @@
 {
   "kind": "enum",
-  "exportedAt": "2026-08-19T12:24:53.907Z",
-  "sourceCommit": "1ef461dc",
-  "entryCount": 134,
+  "exportedAt": "2026-09-14T14:04:03.429Z",
+  "sourceCommit": "c425a79f",
+  "entryCount": 137,
   "entries": [
     {
       "entry": {
@@ -4608,62 +4608,6 @@
     {
       "entry": {
         "kind": "enum",
-        "slug": "row-gutter",
-        "name": "ROW_GUTTER",
-        "category": "Layout & Sizing",
-        "domain": null,
-        "icon": null,
-        "description_key": "enums.catalog.row_gutter.description",
-        "description_fallback": "Named grid-gutter rungs for OrigamRow. A rung is the TOTAL space between two neighbouring columns: each OrigamCol pads half of it on each side, and the row pulls back half of it as a negative margin so the outer edge of the grid sits flush with its container.",
-        "definition": "export enum ROW_GUTTER {\n    NONE = 'none',\n    DENSE = 'dense',\n    DEFAULT = 'default',\n    COMFORTABLE = 'comfortable'\n}",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/enums/Grids/row.enum.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [
-        {
-          "value": "ROW_GUTTER.NONE",
-          "position": 0,
-          "description_key": "enums.detail.row_gutter.none",
-          "description_fallback": "No gutter at all - columns touch, and the row adds no negative margin."
-        },
-        {
-          "value": "ROW_GUTTER.DENSE",
-          "position": 1,
-          "description_key": "enums.detail.row_gutter.dense",
-          "description_fallback": "A tight 8px gutter: 4px of padding per column side, -4px on the row."
-        },
-        {
-          "value": "ROW_GUTTER.DEFAULT",
-          "position": 2,
-          "description_key": "enums.detail.row_gutter.default",
-          "description_fallback": "A 16px gutter: 8px of padding per column side, -8px on the row."
-        },
-        {
-          "value": "ROW_GUTTER.COMFORTABLE",
-          "position": 3,
-          "description_key": "enums.detail.row_gutter.comfortable",
-          "description_fallback": "A roomy 24px gutter: 12px of padding per column side, -12px on the row. This is the default."
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "enum",
         "slug": "focus-location",
         "name": "FOCUS_LOCATION",
         "category": "Interaction",
@@ -6364,6 +6308,77 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "list-item-role",
+        "name": "LIST_ITEM_ROLE",
+        "category": "Data Display",
+        "domain": null,
+        "icon": null,
+        "description_key": "enums.catalog.list_item_role.description",
+        "description_fallback": "The ARIA role a row announces, chosen by its list so the container and its rows can never disagree.",
+        "definition": "export enum LIST_ITEM_ROLE {\n    LISTITEM = 'listitem',\n    OPTION = 'option'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/List/list-item.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "LIST_ITEM_ROLE.LISTITEM",
+          "position": 0,
+          "description_key": "enums.detail.list_item_role.listitem",
+          "description_fallback": "A row of a plain list. Carries no aria-selected — there is no selection to report."
+        },
+        {
+          "value": "LIST_ITEM_ROLE.OPTION",
+          "position": 1,
+          "description_key": "enums.detail.list_item_role.option",
+          "description_fallback": "A selectable row of a listbox. Carries aria-selected, and aria-disabled when disabled."
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "enums.detail.list_item_role.example",
+          "title_fallback": "The row reads its role from the list, never sets it",
+          "code": "import { LIST_ITEM_ROLE } from 'origam'\n\nconst role: LIST_ITEM_ROLE = LIST_ITEM_ROLE.OPTION",
+          "lang": "typescript"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "used_by",
+          "to_kind": "component",
+          "to_slug": "list-item",
+          "to_name": "ListItem",
+          "prop_name": "role (internal)",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "list-item-type",
         "name": "LIST_ITEM_TYPE",
         "category": "Data Display",
@@ -6432,6 +6447,77 @@
           "to_slug": "list-children",
           "to_name": "ListChildren",
           "prop_name": "type (internal)",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "enum",
+        "slug": "list-role",
+        "name": "LIST_ROLE",
+        "category": "Data Display",
+        "domain": null,
+        "icon": null,
+        "description_key": "enums.catalog.list_role.description",
+        "description_fallback": "The ARIA role OrigamList announces: a plain list, or a listbox when the consumer asks for selection.",
+        "definition": "export enum LIST_ROLE {\n    LIST = 'list',\n    LISTBOX = 'listbox'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/List/list.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "LIST_ROLE.LIST",
+          "position": 0,
+          "description_key": "enums.detail.list_role.list",
+          "description_fallback": "A plain list of content — navigation rows, subheaders, dividers. Nothing is selectable."
+        },
+        {
+          "value": "LIST_ROLE.LISTBOX",
+          "position": 1,
+          "description_key": "enums.detail.list_role.listbox",
+          "description_fallback": "A selection widget. Set when the consumer passes selected or an explicit selectStrategy; its rows become options carrying aria-selected."
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "enums.detail.list_role.example",
+          "title_fallback": "A list becomes a listbox by asking for selection",
+          "code": "<origam-list :items=\"items\"/>\n\n<origam-list\n        v-model:selected=\"selected\"\n        :items=\"items\"\n/>",
+          "lang": "html"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "used_by",
+          "to_kind": "component",
+          "to_slug": "list",
+          "to_name": "List",
+          "prop_name": "role (internal)",
           "position": 0,
           "description_key": null,
           "description_fallback": null
@@ -52398,6 +52484,70 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "row-gutter",
+        "name": "ROW_GUTTER",
+        "category": "Layout & Sizing",
+        "domain": null,
+        "icon": null,
+        "description_key": "enums.catalog.row_gutter.description",
+        "description_fallback": "Named grid-gutter rungs for OrigamRow. A rung is the TOTAL space between two neighbouring columns: each OrigamCol pads half of it on each side, and the row pulls back half of it as a negative margin so the outer edge of the grid sits flush with its container.",
+        "definition": "export enum ROW_GUTTER {\n    NONE = 'none',\n    DENSE = 'dense',\n    DEFAULT = 'default',\n    COMFORTABLE = 'comfortable'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Grids/row.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "ROW_GUTTER.NONE",
+          "position": 0,
+          "description_key": "enums.detail.row_gutter.none",
+          "description_fallback": "No gutter at all - columns touch, and the row adds no negative margin."
+        },
+        {
+          "value": "ROW_GUTTER.DENSE",
+          "position": 1,
+          "description_key": "enums.detail.row_gutter.dense",
+          "description_fallback": "A tight 8px gutter: 4px of padding per column side, -4px on the row."
+        },
+        {
+          "value": "ROW_GUTTER.DEFAULT",
+          "position": 2,
+          "description_key": "enums.detail.row_gutter.default",
+          "description_fallback": "A 16px gutter: 8px of padding per column side, -8px on the row."
+        },
+        {
+          "value": "ROW_GUTTER.COMFORTABLE",
+          "position": 3,
+          "description_key": "enums.detail.row_gutter.comfortable",
+          "description_fallback": "A roomy 24px gutter: 12px of padding per column side, -12px on the row. This is the default."
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "scroll-behavior",
         "name": "SCROLL_BEHAVIOR",
         "category": "Behavior",
@@ -52600,93 +52750,6 @@
     {
       "entry": {
         "kind": "enum",
-        "slug": "selected",
-        "name": "SELECTED",
-        "category": "Behavior",
-        "domain": null,
-        "icon": null,
-        "description_key": "enums.catalog.selected.description",
-        "description_fallback": "TypeScript enum for tri-state selection — on, off, or indeterminate.",
-        "definition": "export enum SELECTED {\n    ON = 'on',\n    OFF = 'off',\n    INDETERMINATE = 'indeterminate'\n}",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/enums/Commons/nested.enum.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [
-        {
-          "value": "SELECTED.ON",
-          "position": 0,
-          "description_key": "enums.detail.selected.on",
-          "description_fallback": "The item is fully selected."
-        },
-        {
-          "value": "SELECTED.OFF",
-          "position": 1,
-          "description_key": "enums.detail.selected.off",
-          "description_fallback": "The item is not selected."
-        },
-        {
-          "value": "SELECTED.INDETERMINATE",
-          "position": 2,
-          "description_key": "enums.detail.selected.indeterminate",
-          "description_fallback": "The item is in a mixed/partial selection state — typically used for parent nodes in tree views."
-        }
-      ],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "enums.detail.selected.example",
-          "title_fallback": "Using the enum in script setup",
-          "code": "import { SELECTED } from 'origam'\n\nconst state: SELECTED = SELECTED.INDETERMINATE",
-          "lang": "typescript"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "used_by",
-          "to_kind": "component",
-          "to_slug": "treeview",
-          "to_name": "Treeview",
-          "prop_name": "selected",
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "used_by",
-          "to_kind": "component",
-          "to_slug": "checkbox",
-          "to_name": "Checkbox",
-          "prop_name": "indeterminate",
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "enum",
         "slug": "select-strategy",
         "name": "SELECT_STRATEGY",
         "category": "Behavior",
@@ -52777,6 +52840,93 @@
           "to_slug": "list-group",
           "to_name": "ListGroup",
           "prop_name": "selectStrategy",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "enum",
+        "slug": "selected",
+        "name": "SELECTED",
+        "category": "Behavior",
+        "domain": null,
+        "icon": null,
+        "description_key": "enums.catalog.selected.description",
+        "description_fallback": "TypeScript enum for tri-state selection — on, off, or indeterminate.",
+        "definition": "export enum SELECTED {\n    ON = 'on',\n    OFF = 'off',\n    INDETERMINATE = 'indeterminate'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Commons/nested.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "SELECTED.ON",
+          "position": 0,
+          "description_key": "enums.detail.selected.on",
+          "description_fallback": "The item is fully selected."
+        },
+        {
+          "value": "SELECTED.OFF",
+          "position": 1,
+          "description_key": "enums.detail.selected.off",
+          "description_fallback": "The item is not selected."
+        },
+        {
+          "value": "SELECTED.INDETERMINATE",
+          "position": 2,
+          "description_key": "enums.detail.selected.indeterminate",
+          "description_fallback": "The item is in a mixed/partial selection state — typically used for parent nodes in tree views."
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "enums.detail.selected.example",
+          "title_fallback": "Using the enum in script setup",
+          "code": "import { SELECTED } from 'origam'\n\nconst state: SELECTED = SELECTED.INDETERMINATE",
+          "lang": "typescript"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "used_by",
+          "to_kind": "component",
+          "to_slug": "treeview",
+          "to_name": "Treeview",
+          "prop_name": "selected",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "used_by",
+          "to_kind": "component",
+          "to_slug": "checkbox",
+          "to_name": "Checkbox",
+          "prop_name": "indeterminate",
           "position": 1,
           "description_key": null,
           "description_fallback": null
@@ -53842,6 +53992,311 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "text-field-type",
+        "name": "TEXT_FIELD_TYPE",
+        "category": "Form & Input",
+        "domain": null,
+        "icon": null,
+        "description_key": "enums.catalog.text_field_type.description",
+        "description_fallback": "TypeScript enum for the HTML input type attribute values supported by OrigamTextField and related field components.",
+        "definition": "export enum TEXT_FIELD_TYPE {\n    TEXT = 'text',\n    NUMBER = 'number',\n    EMAIL = 'email',\n    PASSWORD = 'password',\n    HIDDEN = 'hidden',\n    SEARCH = 'search',\n    TEL = 'tel',\n    URL = 'url',\n\n    // IMAGE\n    IMAGE = 'image',\n\n    // RANGE\n    RANGE = 'range',\n\n    // FILE\n    FILE = 'file',\n\n    // COLOR\n    COLOR = 'color',\n\n    // BUTTONS\n    SUBMIT = 'submit',\n    BUTTON = 'button',\n    RESET = 'reset',\n\n    // CHECKBOX & RADIO\n    CHECKBOX = 'checkbox',\n    RADIO = 'radio',\n\n    // DATE & TIME\n    TIME = 'time',\n    DATETIME = 'datetime-local',\n    DATE = 'date',\n    MONTH = 'month',\n    WEEK = 'week'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/TextField/text-field.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "TEXT_FIELD_TYPE.TEXT",
+          "position": 0,
+          "description_key": "enums.detail.text_field_type.text",
+          "description_fallback": "Single-line plain text input."
+        },
+        {
+          "value": "TEXT_FIELD_TYPE.NUMBER",
+          "position": 1,
+          "description_key": "enums.detail.text_field_type.number",
+          "description_fallback": "Numeric input with optional stepper controls."
+        },
+        {
+          "value": "TEXT_FIELD_TYPE.EMAIL",
+          "position": 2,
+          "description_key": "enums.detail.text_field_type.email",
+          "description_fallback": "Email address input — browser validates basic format."
+        },
+        {
+          "value": "TEXT_FIELD_TYPE.PASSWORD",
+          "position": 3,
+          "description_key": "enums.detail.text_field_type.password",
+          "description_fallback": "Password input — characters are masked."
+        },
+        {
+          "value": "TEXT_FIELD_TYPE.HIDDEN",
+          "position": 4,
+          "description_key": "enums.detail.text_field_type.hidden",
+          "description_fallback": "Hidden input — not rendered visually, used for form data."
+        },
+        {
+          "value": "TEXT_FIELD_TYPE.SEARCH",
+          "position": 5,
+          "description_key": "enums.detail.text_field_type.search",
+          "description_fallback": "Search input — may display a clear button in some browsers."
+        },
+        {
+          "value": "TEXT_FIELD_TYPE.TEL",
+          "position": 6,
+          "description_key": "enums.detail.text_field_type.tel",
+          "description_fallback": "Telephone number input — shows numeric keyboard on mobile."
+        },
+        {
+          "value": "TEXT_FIELD_TYPE.URL",
+          "position": 7,
+          "description_key": "enums.detail.text_field_type.url",
+          "description_fallback": "URL input — browser may validate format."
+        },
+        {
+          "value": "TEXT_FIELD_TYPE.IMAGE",
+          "position": 8,
+          "description_key": "enums.detail.text_field_type.image",
+          "description_fallback": "Image submit button."
+        },
+        {
+          "value": "TEXT_FIELD_TYPE.RANGE",
+          "position": 9,
+          "description_key": "enums.detail.text_field_type.range",
+          "description_fallback": "Range slider input."
+        },
+        {
+          "value": "TEXT_FIELD_TYPE.FILE",
+          "position": 10,
+          "description_key": "enums.detail.text_field_type.file",
+          "description_fallback": "File picker input."
+        },
+        {
+          "value": "TEXT_FIELD_TYPE.COLOR",
+          "position": 11,
+          "description_key": "enums.detail.text_field_type.color",
+          "description_fallback": "Colour picker input."
+        },
+        {
+          "value": "TEXT_FIELD_TYPE.SUBMIT",
+          "position": 12,
+          "description_key": "enums.detail.text_field_type.submit",
+          "description_fallback": "Form submit button."
+        },
+        {
+          "value": "TEXT_FIELD_TYPE.BUTTON",
+          "position": 13,
+          "description_key": "enums.detail.text_field_type.button",
+          "description_fallback": "Generic button (no default behaviour)."
+        },
+        {
+          "value": "TEXT_FIELD_TYPE.RESET",
+          "position": 14,
+          "description_key": "enums.detail.text_field_type.reset",
+          "description_fallback": "Form reset button — clears all fields to their default values."
+        },
+        {
+          "value": "TEXT_FIELD_TYPE.CHECKBOX",
+          "position": 15,
+          "description_key": "enums.detail.text_field_type.checkbox",
+          "description_fallback": "Checkbox toggle input."
+        },
+        {
+          "value": "TEXT_FIELD_TYPE.RADIO",
+          "position": 16,
+          "description_key": "enums.detail.text_field_type.radio",
+          "description_fallback": "Radio button input."
+        },
+        {
+          "value": "TEXT_FIELD_TYPE.TIME",
+          "position": 17,
+          "description_key": "enums.detail.text_field_type.time",
+          "description_fallback": "Time input (HH:MM)."
+        },
+        {
+          "value": "TEXT_FIELD_TYPE.DATETIME",
+          "position": 18,
+          "description_key": "enums.detail.text_field_type.datetime",
+          "description_fallback": "Date-and-time input (datetime-local)."
+        },
+        {
+          "value": "TEXT_FIELD_TYPE.DATE",
+          "position": 19,
+          "description_key": "enums.detail.text_field_type.date",
+          "description_fallback": "Date input (YYYY-MM-DD)."
+        },
+        {
+          "value": "TEXT_FIELD_TYPE.MONTH",
+          "position": 20,
+          "description_key": "enums.detail.text_field_type.month",
+          "description_fallback": "Month and year input."
+        },
+        {
+          "value": "TEXT_FIELD_TYPE.WEEK",
+          "position": 21,
+          "description_key": "enums.detail.text_field_type.week",
+          "description_fallback": "ISO week number input."
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "enums.detail.text_field_type.example",
+          "title_fallback": "Using the enum in script setup",
+          "code": "import { TEXT_FIELD_TYPE } from 'origam'\n\nconst fieldType: TEXT_FIELD_TYPE = TEXT_FIELD_TYPE.EMAIL",
+          "lang": "typescript"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "used_by",
+          "to_kind": "component",
+          "to_slug": "text-field",
+          "to_name": "TextField",
+          "prop_name": "type",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "used_by",
+          "to_kind": "component",
+          "to_slug": "number-field",
+          "to_name": "NumberField",
+          "prop_name": "type",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "used_by",
+          "to_kind": "component",
+          "to_slug": "password-field",
+          "to_name": "PasswordField",
+          "prop_name": "type",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "used_by",
+          "to_kind": "component",
+          "to_slug": "color-picker-field",
+          "to_name": "ColorPickerField",
+          "prop_name": "type",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "used_by",
+          "to_kind": "component",
+          "to_slug": "date-picker-field",
+          "to_name": "DatePickerField",
+          "prop_name": "type",
+          "position": 4,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "used_by",
+          "to_kind": "component",
+          "to_slug": "select",
+          "to_name": "Select",
+          "prop_name": "type",
+          "position": 5,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "enum",
+        "slug": "text-mask-animation",
+        "name": "TEXT_MASK_ANIMATION",
+        "category": "TextMask",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum TEXT_MASK_ANIMATION {\n    PAN = 'pan',\n    ROTATE = 'rotate',\n    PULSE = 'pulse',\n    ZOOM = 'zoom'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/TextMask/text-mask.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "TEXT_MASK_ANIMATION.PAN",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "TEXT_MASK_ANIMATION.ROTATE",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "TEXT_MASK_ANIMATION.PULSE",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "TEXT_MASK_ANIMATION.ZOOM",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "textarea-mode",
         "name": "TEXTAREA_MODE",
         "category": "Form & Input",
@@ -54192,311 +54647,6 @@
     {
       "entry": {
         "kind": "enum",
-        "slug": "text-field-type",
-        "name": "TEXT_FIELD_TYPE",
-        "category": "Form & Input",
-        "domain": null,
-        "icon": null,
-        "description_key": "enums.catalog.text_field_type.description",
-        "description_fallback": "TypeScript enum for the HTML input type attribute values supported by OrigamTextField and related field components.",
-        "definition": "export enum TEXT_FIELD_TYPE {\n    TEXT = 'text',\n    NUMBER = 'number',\n    EMAIL = 'email',\n    PASSWORD = 'password',\n    HIDDEN = 'hidden',\n    SEARCH = 'search',\n    TEL = 'tel',\n    URL = 'url',\n\n    // IMAGE\n    IMAGE = 'image',\n\n    // RANGE\n    RANGE = 'range',\n\n    // FILE\n    FILE = 'file',\n\n    // COLOR\n    COLOR = 'color',\n\n    // BUTTONS\n    SUBMIT = 'submit',\n    BUTTON = 'button',\n    RESET = 'reset',\n\n    // CHECKBOX & RADIO\n    CHECKBOX = 'checkbox',\n    RADIO = 'radio',\n\n    // DATE & TIME\n    TIME = 'time',\n    DATETIME = 'datetime-local',\n    DATE = 'date',\n    MONTH = 'month',\n    WEEK = 'week'\n}",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/enums/TextField/text-field.enum.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [
-        {
-          "value": "TEXT_FIELD_TYPE.TEXT",
-          "position": 0,
-          "description_key": "enums.detail.text_field_type.text",
-          "description_fallback": "Single-line plain text input."
-        },
-        {
-          "value": "TEXT_FIELD_TYPE.NUMBER",
-          "position": 1,
-          "description_key": "enums.detail.text_field_type.number",
-          "description_fallback": "Numeric input with optional stepper controls."
-        },
-        {
-          "value": "TEXT_FIELD_TYPE.EMAIL",
-          "position": 2,
-          "description_key": "enums.detail.text_field_type.email",
-          "description_fallback": "Email address input — browser validates basic format."
-        },
-        {
-          "value": "TEXT_FIELD_TYPE.PASSWORD",
-          "position": 3,
-          "description_key": "enums.detail.text_field_type.password",
-          "description_fallback": "Password input — characters are masked."
-        },
-        {
-          "value": "TEXT_FIELD_TYPE.HIDDEN",
-          "position": 4,
-          "description_key": "enums.detail.text_field_type.hidden",
-          "description_fallback": "Hidden input — not rendered visually, used for form data."
-        },
-        {
-          "value": "TEXT_FIELD_TYPE.SEARCH",
-          "position": 5,
-          "description_key": "enums.detail.text_field_type.search",
-          "description_fallback": "Search input — may display a clear button in some browsers."
-        },
-        {
-          "value": "TEXT_FIELD_TYPE.TEL",
-          "position": 6,
-          "description_key": "enums.detail.text_field_type.tel",
-          "description_fallback": "Telephone number input — shows numeric keyboard on mobile."
-        },
-        {
-          "value": "TEXT_FIELD_TYPE.URL",
-          "position": 7,
-          "description_key": "enums.detail.text_field_type.url",
-          "description_fallback": "URL input — browser may validate format."
-        },
-        {
-          "value": "TEXT_FIELD_TYPE.IMAGE",
-          "position": 8,
-          "description_key": "enums.detail.text_field_type.image",
-          "description_fallback": "Image submit button."
-        },
-        {
-          "value": "TEXT_FIELD_TYPE.RANGE",
-          "position": 9,
-          "description_key": "enums.detail.text_field_type.range",
-          "description_fallback": "Range slider input."
-        },
-        {
-          "value": "TEXT_FIELD_TYPE.FILE",
-          "position": 10,
-          "description_key": "enums.detail.text_field_type.file",
-          "description_fallback": "File picker input."
-        },
-        {
-          "value": "TEXT_FIELD_TYPE.COLOR",
-          "position": 11,
-          "description_key": "enums.detail.text_field_type.color",
-          "description_fallback": "Colour picker input."
-        },
-        {
-          "value": "TEXT_FIELD_TYPE.SUBMIT",
-          "position": 12,
-          "description_key": "enums.detail.text_field_type.submit",
-          "description_fallback": "Form submit button."
-        },
-        {
-          "value": "TEXT_FIELD_TYPE.BUTTON",
-          "position": 13,
-          "description_key": "enums.detail.text_field_type.button",
-          "description_fallback": "Generic button (no default behaviour)."
-        },
-        {
-          "value": "TEXT_FIELD_TYPE.RESET",
-          "position": 14,
-          "description_key": "enums.detail.text_field_type.reset",
-          "description_fallback": "Form reset button — clears all fields to their default values."
-        },
-        {
-          "value": "TEXT_FIELD_TYPE.CHECKBOX",
-          "position": 15,
-          "description_key": "enums.detail.text_field_type.checkbox",
-          "description_fallback": "Checkbox toggle input."
-        },
-        {
-          "value": "TEXT_FIELD_TYPE.RADIO",
-          "position": 16,
-          "description_key": "enums.detail.text_field_type.radio",
-          "description_fallback": "Radio button input."
-        },
-        {
-          "value": "TEXT_FIELD_TYPE.TIME",
-          "position": 17,
-          "description_key": "enums.detail.text_field_type.time",
-          "description_fallback": "Time input (HH:MM)."
-        },
-        {
-          "value": "TEXT_FIELD_TYPE.DATETIME",
-          "position": 18,
-          "description_key": "enums.detail.text_field_type.datetime",
-          "description_fallback": "Date-and-time input (datetime-local)."
-        },
-        {
-          "value": "TEXT_FIELD_TYPE.DATE",
-          "position": 19,
-          "description_key": "enums.detail.text_field_type.date",
-          "description_fallback": "Date input (YYYY-MM-DD)."
-        },
-        {
-          "value": "TEXT_FIELD_TYPE.MONTH",
-          "position": 20,
-          "description_key": "enums.detail.text_field_type.month",
-          "description_fallback": "Month and year input."
-        },
-        {
-          "value": "TEXT_FIELD_TYPE.WEEK",
-          "position": 21,
-          "description_key": "enums.detail.text_field_type.week",
-          "description_fallback": "ISO week number input."
-        }
-      ],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "enums.detail.text_field_type.example",
-          "title_fallback": "Using the enum in script setup",
-          "code": "import { TEXT_FIELD_TYPE } from 'origam'\n\nconst fieldType: TEXT_FIELD_TYPE = TEXT_FIELD_TYPE.EMAIL",
-          "lang": "typescript"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "used_by",
-          "to_kind": "component",
-          "to_slug": "text-field",
-          "to_name": "TextField",
-          "prop_name": "type",
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "used_by",
-          "to_kind": "component",
-          "to_slug": "number-field",
-          "to_name": "NumberField",
-          "prop_name": "type",
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "used_by",
-          "to_kind": "component",
-          "to_slug": "password-field",
-          "to_name": "PasswordField",
-          "prop_name": "type",
-          "position": 2,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "used_by",
-          "to_kind": "component",
-          "to_slug": "color-picker-field",
-          "to_name": "ColorPickerField",
-          "prop_name": "type",
-          "position": 3,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "used_by",
-          "to_kind": "component",
-          "to_slug": "date-picker-field",
-          "to_name": "DatePickerField",
-          "prop_name": "type",
-          "position": 4,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "used_by",
-          "to_kind": "component",
-          "to_slug": "select",
-          "to_name": "Select",
-          "prop_name": "type",
-          "position": 5,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "enum",
-        "slug": "text-mask-animation",
-        "name": "TEXT_MASK_ANIMATION",
-        "category": "TextMask",
-        "domain": null,
-        "icon": null,
-        "description_key": null,
-        "description_fallback": null,
-        "definition": "export enum TEXT_MASK_ANIMATION {\n    PAN = 'pan',\n    ROTATE = 'rotate',\n    PULSE = 'pulse',\n    ZOOM = 'zoom'\n}",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/enums/TextMask/text-mask.enum.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [
-        {
-          "value": "TEXT_MASK_ANIMATION.PAN",
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "TEXT_MASK_ANIMATION.ROTATE",
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "TEXT_MASK_ANIMATION.PULSE",
-          "position": 2,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "TEXT_MASK_ANIMATION.ZOOM",
-          "position": 3,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": []
-    },
-    {
-      "entry": {
-        "kind": "enum",
         "slug": "timeline-side",
         "name": "TIMELINE_SIDE",
         "category": "Timeline",
@@ -54749,58 +54899,6 @@
     {
       "entry": {
         "kind": "enum",
-        "slug": "treeview-selectable-nodes",
-        "name": "TREEVIEW_SELECTABLE_NODES",
-        "category": "Treeview",
-        "domain": null,
-        "icon": null,
-        "description_key": null,
-        "description_fallback": null,
-        "definition": "export enum TREEVIEW_SELECTABLE_NODES {\n    LEAF = 'leaf',\n    ALL = 'all'\n}",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/enums/Treeview/treeview.enum.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [
-        {
-          "value": "TREEVIEW_SELECTABLE_NODES.LEAF",
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "TREEVIEW_SELECTABLE_NODES.ALL",
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": []
-    },
-    {
-      "entry": {
-        "kind": "enum",
         "slug": "treeview-select-mode",
         "name": "TREEVIEW_SELECT_MODE",
         "category": "Treeview",
@@ -54843,6 +54941,58 @@
         {
           "value": "TREEVIEW_SELECT_MODE.NONE",
           "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
+        "slug": "treeview-selectable-nodes",
+        "name": "TREEVIEW_SELECTABLE_NODES",
+        "category": "Treeview",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum TREEVIEW_SELECTABLE_NODES {\n    LEAF = 'leaf',\n    ALL = 'all'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Treeview/treeview.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "TREEVIEW_SELECTABLE_NODES.LEAF",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "TREEVIEW_SELECTABLE_NODES.ALL",
+          "position": 1,
           "description_key": null,
           "description_fallback": null
         }
@@ -55268,148 +55418,6 @@
       "directiveArgs": [],
       "directiveModifiers": [],
       "relations": []
-    },
-    {
-      "entry": {
-        "kind": "enum",
-        "slug": "list-role",
-        "name": "LIST_ROLE",
-        "category": "Data Display",
-        "domain": null,
-        "icon": null,
-        "description_key": "enums.catalog.list_role.description",
-        "description_fallback": "The ARIA role OrigamList announces: a plain list, or a listbox when the consumer asks for selection.",
-        "definition": "export enum LIST_ROLE {\n    LIST = 'list',\n    LISTBOX = 'listbox'\n}",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/enums/List/list.enum.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [
-        {
-          "value": "LIST_ROLE.LIST",
-          "position": 0,
-          "description_key": "enums.detail.list_role.list",
-          "description_fallback": "A plain list of content — navigation rows, subheaders, dividers. Nothing is selectable."
-        },
-        {
-          "value": "LIST_ROLE.LISTBOX",
-          "position": 1,
-          "description_key": "enums.detail.list_role.listbox",
-          "description_fallback": "A selection widget. Set when the consumer passes selected or an explicit selectStrategy; its rows become options carrying aria-selected."
-        }
-      ],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "enums.detail.list_role.example",
-          "title_fallback": "A list becomes a listbox by asking for selection",
-          "code": "<origam-list :items=\"items\"/>\n\n<origam-list\n        v-model:selected=\"selected\"\n        :items=\"items\"\n/>",
-          "lang": "html"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "used_by",
-          "to_kind": "component",
-          "to_slug": "list",
-          "to_name": "List",
-          "prop_name": "role (internal)",
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "enum",
-        "slug": "list-item-role",
-        "name": "LIST_ITEM_ROLE",
-        "category": "Data Display",
-        "domain": null,
-        "icon": null,
-        "description_key": "enums.catalog.list_item_role.description",
-        "description_fallback": "The ARIA role a row announces, chosen by its list so the container and its rows can never disagree.",
-        "definition": "export enum LIST_ITEM_ROLE {\n    LISTITEM = 'listitem',\n    OPTION = 'option'\n}",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/enums/List/list-item.enum.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [
-        {
-          "value": "LIST_ITEM_ROLE.LISTITEM",
-          "position": 0,
-          "description_key": "enums.detail.list_item_role.listitem",
-          "description_fallback": "A row of a plain list. Carries no aria-selected — there is no selection to report."
-        },
-        {
-          "value": "LIST_ITEM_ROLE.OPTION",
-          "position": 1,
-          "description_key": "enums.detail.list_item_role.option",
-          "description_fallback": "A selectable row of a listbox. Carries aria-selected, and aria-disabled when disabled."
-        }
-      ],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "enums.detail.list_item_role.example",
-          "title_fallback": "The row reads its role from the list, never sets it",
-          "code": "import { LIST_ITEM_ROLE } from 'origam'\n\nconst role: LIST_ITEM_ROLE = LIST_ITEM_ROLE.OPTION",
-          "lang": "typescript"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "used_by",
-          "to_kind": "component",
-          "to_slug": "list-item",
-          "to_name": "ListItem",
-          "prop_name": "role (internal)",
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
     }
   ]
 }
