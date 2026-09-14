@@ -116,6 +116,9 @@ observable effect. That is by design, not an oversight.
 | `--origam-switch__track--inset---width` | *(undeclared, falls back to `52px`)* | Rail min-width under `inset`. |
 | `--origam-switch__track--inset---height` | *(undeclared, falls back to `32px`)* | Rail height under `inset`. |
 | `--origam-switch__track---border-radius` | `radius.full` | Corner radius (the `rounded` prop overrides it inline). |
+| `--origam-switch__track---border-width` | `border.width.thin` (`1px`) | Rail border width — the visible default (#727). |
+| `--origam-switch__track---border-style` | `solid` | Rail border style. |
+| `--origam-switch__track---border-color` | `color.border.default` | Rail border colour — follows the active theme's `colors.border.default`, like `origam-field`. |
 | `--origam-switch__track---background-color` | `color.surface.disabled` | Rail background. |
 | `--origam-switch__track---background-color-disabled` | `color.surface.disabled` | Rail background when ON and disabled. |
 | `--origam-switch__track---background-color-error` | `color.feedback.danger.bg` | Rail background in the error state. |
@@ -125,10 +128,18 @@ observable effect. That is by design, not an oversight.
 | `--origam-switch---transition-timing-function` | `motion.easing.standard` | Background transition easing. |
 | `--origam-switch---opacity-disabled` | `opacity.32` | Rail opacity while disabled. |
 
-> `--origam-switch__track---background-color-checked`,
-> `---border-color` and `---border-width` are declared in `light.css` but
-> no rule reads them; the ON colour arrives through the `bgColor`
-> channel, and the border through the `border` prop.
+> `--origam-switch__track---background-color-checked` is declared in
+> `light.css` but no rule reads it; the ON colour arrives through the
+> `bgColor` channel.
+>
+> `---border-width` / `---border-style` / `---border-color` **were** in
+> that same list until #727: both were declared and read by nobody, and
+> they neutralised each other anyway (`border__width---0` +
+> `rgba(0,0,0,0)`), so the rail had no border at all outside
+> `forced-colors`. They are now read by a `:where(.origam-switch-track)`
+> block — zero specificity, so the `border` / `borderColor` /
+> `borderStyle` props (which `useBorder` emits as INLINE declarations)
+> still override the default in every direction, including down to `0`.
 
 ## Behaviour
 

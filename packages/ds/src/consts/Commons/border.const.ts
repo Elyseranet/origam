@@ -57,6 +57,40 @@ export const BORDER_LOGICAL_AXIS_MAP: ReadonlyArray<{ axis: TBorderLogicalAxis, 
 ] as const
 
 /*********************************************************
+ * BORDER_PROP_KEYS
+ *
+ * @description
+ * Every key `IBorderProps` declares — the complete prop surface `useBorder`
+ * consumes, in one place.
+ *
+ * @description
+ * Issue #726. The four components that wrap an `<origam-field>` inside an
+ * `<origam-input>` (TextField, TextareaField, PasswordField, FileField) must
+ * hand this surface to the FIELD and withhold it from the INPUT. The input is
+ * the outer box and has no notch, so a border painted there crosses the
+ * floating label; the field owns the notched outline that opens around it.
+ * Both children resolve their bindings through `filterProps(props, excludes)`,
+ * so the split is expressed as this exclude list — named once here rather than
+ * retyped in four templates, where one forgotten key (`borderBlock`,
+ * `borderTopColor`, …) would silently restore the defect for that one value.
+ */
+export const BORDER_PROP_KEYS = [
+    'border',
+    'borderTop',
+    'borderRight',
+    'borderBottom',
+    'borderLeft',
+    'borderBlock',
+    'borderInline',
+    'borderColor',
+    'borderStyle',
+    'borderTopColor',
+    'borderRightColor',
+    'borderBottomColor',
+    'borderLeftColor',
+] as const
+
+/*********************************************************
  * BORDER_KEYWORD_WIDTH
  *
  * @description

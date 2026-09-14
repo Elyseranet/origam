@@ -2605,6 +2605,7 @@ export type TTokenName =
   | '--origam-switch__track---background-color-error'
   | '--origam-switch__track---border-color'
   | '--origam-switch__track---border-radius'
+  | '--origam-switch__track---border-style'
   | '--origam-switch__track---border-width'
   | '--origam-switch__track---color-error'
   | '--origam-switch__track---height'

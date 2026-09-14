@@ -1996,8 +1996,9 @@
   --origam-switch__track---background-color-disabled: var(--origam-color__surface---disabled);
   --origam-switch__track---background-color-error: var(--origam-color__feedback--danger---bg);
   --origam-switch__track---color-error: var(--origam-color__feedback--danger---fg);
-  --origam-switch__track---border-color: rgba(0, 0, 0, 0);
-  --origam-switch__track---border-width: var(--origam-border__width---0);
+  --origam-switch__track---border-color: var(--origam-color__border---default);
+  --origam-switch__track---border-style: solid;
+  --origam-switch__track---border-width: var(--origam-border__width---thin);
   --origam-switch__track---backdrop-filter: none;
   --origam-switch__thumb---size: 20px;
   --origam-switch__thumb---background-color: var(--origam-color__surface---default);

@@ -222,8 +222,28 @@
 		// Without `:where()`, this scoped rule's [data-v-hash] pushes it
 		// to (0,2,0), beating the utility's (0,1,0), and the `rounded`
 		// prop's scale form goes silently inert.
+		//
+		// #727 — the border longhands ride in the SAME zero-specificity
+		// block, for the same reason AND for one more. Before this, the
+		// track declared NO border at all outside `forced-colors`: the two
+		// tokens `--origam-switch__track---border-{width,color}` existed in
+		// `light.css` / `dark.css` but were read by nobody (both sat in
+		// `baseline/token-var-channels-dormant.json`). Giving them a
+		// visible value alone changed nothing — the declaration reading
+		// them had to be added here.
+		//
+		// Zero specificity is what keeps the default OVERRIDABLE, which is
+		// the explicit half of the request: `useBorder` emits `border`
+		// through the INLINE style channel (`border-width` / `border-style`
+		// / `border-color`), which outranks any selector, and the
+		// `.origam--border-{none,thin,thick}` utility at (0,1,0) also wins
+		// over `:where()` at (0,0,0). A consumer passing `border="none"`
+		// therefore still gets no border.
 		:where(&) {
 			border-radius: var(--origam-switch__track---border-radius, 9999px);
+			border-width: var(--origam-switch__track---border-width, 1px);
+			border-style: var(--origam-switch__track---border-style, solid);
+			border-color: var(--origam-switch__track---border-color, currentColor);
 		}
 
 		height: var(--origam-switch__track---height, 14px);

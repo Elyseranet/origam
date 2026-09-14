@@ -200,6 +200,7 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 
+	import { BORDER_PROP_KEYS } from '../../consts/Commons/border.const'
 	import { ACTIVE_TEXT_FIELD_TYPE, INPUT_TEXT_FIELD_TYPE } from '../../consts/TextField/text-field.const'
 
 	import vIntersect from '../../directives/Intersect/intersect.directive'
@@ -553,7 +554,16 @@
 		// forced OrigamInput to invent an id, so a consumer passing `id` got an
 		// `<input>` that could not be found by `getElementById` and a `<label for>`
 		// that pointed nowhere.
-		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'focused'])
+		/*********************************************************
+		 * Border withheld — #726
+		 *
+		 * @description
+		 * The border surface is withheld from the INPUT and handed to the
+		 * FIELD below. The input is the OUTER box and carries no notch, so a
+		 * border painted here runs straight through the floating label; the
+		 * field's `__outline--notch` leg opens around it instead.
+		 ********************************************************/
+		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'focused', ...BORDER_PROP_KEYS])
 	})
 	const fieldProps = computed(() => {
 		return origamFieldRef.value?.filterProps(props, ['class', 'id', 'active', 'dirty', 'disabled', 'focused', 'error', 'style'])
