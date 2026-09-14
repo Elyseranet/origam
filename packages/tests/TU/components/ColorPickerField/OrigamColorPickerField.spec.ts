@@ -156,3 +156,109 @@ describe('OrigamColorPickerField — #665 le nom accessible est le label du cham
         expect(input.attributes('aria-label')).toBe('Couleur de marque')
     })
 })
+
+// #693 — `const validationValue` locally declared in <script setup> masked the
+// `validationValue` PROP (`IColorPickerFieldProps` -> `ITextFieldProps` ->
+// `IInputProps` -> `IValidationProps.validationValue`,
+// validation.interface.ts:47). The template's
+// `:validation-value="validationValue"` on the forwarded <origam-text-field>
+// read the bare identifier, which Vue resolves to the LOCAL computed
+// (`model.value`) rather than the prop — and `validationValue` is ALSO
+// stripped from the `filterProps` passthrough, so no second path existed:
+// a consumer's `:validation-value` was silently ignored and rules ran
+// against the model.
+//
+// Same defect family as #622 / #665 / #666.
+//
+// The probe is the RULE ARGUMENT: `useValidation` calls every rule with
+// `validationModel.value` (validation.composable.ts:52, consumed at :152),
+// which is the single observable consequence of the binding. `validateOn`
+// defaults to 'input', so `validate(true)` runs onMounted — no interaction
+// needed.
+//
+// These assertions read a JS value handed to a callback, not a computed
+// style — jsdom is a valid tool here (the `getComputedStyle` / `var()`
+// blindness documented in CLAUDE.md does not apply).
+//
+// A/B against the parent commit: the first three tests below FAIL pre-fix
+// (the rule received '#ff0000', the model) and PASS post-fix.
+// ---------------------------------------------------------------------------
+describe('OrigamColorPickerField — #693 la prop validationValue du consommateur atteint la validation', () => {
+    it('la regle recoit props.validationValue, pas le modele', async () => {
+        const seen: Array<unknown> = []
+        mount(OrigamColorPickerField, {
+            props: {
+                modelValue: '#ff0000',
+                validationValue: 'SENTINEL',
+                rules: [(v: unknown) => { seen.push(v); return true }]
+            } as never,
+            global: { plugins: [createOrigam()] }
+        })
+        await nextTick()
+        await nextTick()
+
+        expect(seen).toEqual(['SENTINEL'])
+    })
+
+    // `null` is a SUPPLIED value under `validation.composable.ts:52` (only
+    // `undefined` means "not supplied"), so it must reach OrigamInput
+    // untouched. It cannot be probed through the rule argument the way the
+    // test above does: `useValidation`'s own post-mount watcher is guarded by
+    // `if (validationModel.value != null)` (validation.composable.ts:134), so
+    // a nullish validation model never re-runs the rules — a pre-existing
+    // property of the composable, unrelated to #693 and unchanged by it.
+    // The forwarded prop is therefore the correct observable here. Pre-fix it
+    // carried '#ff0000' (the model); post-fix it carries null.
+    it('null est une valeur fournie et atteint OrigamInput tel quel (parite avec validation.composable.ts:52)', async () => {
+        const wrapper = mount(OrigamColorPickerField, {
+            props: {
+                modelValue: '#ff0000',
+                validationValue: null
+            } as never,
+            global: { plugins: [createOrigam()] }
+        })
+        await nextTick()
+        await nextTick()
+
+        const input = wrapper.findComponent({ name: 'OrigamInput' })
+        expect(input.exists()).toBe(true)
+        expect(input.props('validationValue')).toBeNull()
+    })
+
+    it('une mise a jour de validationValue re-declenche la validation avec la nouvelle valeur', async () => {
+        const seen: Array<unknown> = []
+        const wrapper = mount(OrigamColorPickerField, {
+            props: {
+                modelValue: '#ff0000',
+                validationValue: 'FIRST',
+                rules: [(v: unknown) => { seen.push(v); return true }]
+            } as never,
+            global: { plugins: [createOrigam()] }
+        })
+        await nextTick()
+        await nextTick()
+        seen.length = 0
+
+        await wrapper.setProps({ validationValue: 'SECOND' } as never)
+        await nextTick()
+        await nextTick()
+
+        expect(seen).toContain('SECOND')
+        expect(seen).not.toContain('#ff0000')
+    })
+
+    it('sans validationValue fournie, le repli reste le modele (non-regression du comportement historique)', async () => {
+        const seen: Array<unknown> = []
+        mount(OrigamColorPickerField, {
+            props: {
+                modelValue: '#ff0000',
+                rules: [(v: unknown) => { seen.push(v); return true }]
+            } as never,
+            global: { plugins: [createOrigam()] }
+        })
+        await nextTick()
+        await nextTick()
+
+        expect(seen).toEqual(['#ff0000'])
+    })
+})
