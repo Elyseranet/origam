@@ -1,7 +1,7 @@
 {
   "kind": "composable",
-  "exportedAt": "2026-09-14T14:04:03.342Z",
-  "sourceCommit": "c425a79f",
+  "exportedAt": "2026-09-14T20:22:53.256Z",
+  "sourceCommit": "9fad04ba",
   "entryCount": 142,
   "entries": [
     {
@@ -4860,6 +4860,73 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-grouped-items",
+        "name": "useGroupedItems",
+        "category": "DataTable",
+        "domain": "DataTable",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useGroupedItems(items: ComputedRef<Array<T>>, groupBy: Ref<Array<IDataTableSortItem>>, opened: Ref<Set<string>>): { flatItems: ComputedRef<(T | IDataTableGroup<T>)[]>; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/DataTable/groupedItems.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "items",
+          "type": "ComputedRef<Array<T>>",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "groupBy",
+          "type": "Ref<Array<IDataTableSortItem>>",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "opened",
+          "type": "Ref<Set<string>>",
+          "required": true,
+          "default_value": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-group-item",
         "name": "useGroupItem",
         "category": "Commons",
@@ -4970,73 +5037,6 @@
           "required": true,
           "default_value": null,
           "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": []
-    },
-    {
-      "entry": {
-        "kind": "composable",
-        "slug": "use-grouped-items",
-        "name": "useGroupedItems",
-        "category": "DataTable",
-        "domain": "DataTable",
-        "icon": null,
-        "description_key": null,
-        "description_fallback": null,
-        "definition": null,
-        "signature": "function useGroupedItems(items: ComputedRef<Array<T>>, groupBy: Ref<Array<IDataTableSortItem>>, opened: Ref<Set<string>>): { flatItems: ComputedRef<(T | IDataTableGroup<T>)[]>; }",
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/composables/DataTable/groupedItems.composable.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [
-        {
-          "name": "items",
-          "type": "ComputedRef<Array<T>>",
-          "required": true,
-          "default_value": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "name": "groupBy",
-          "type": "Ref<Array<IDataTableSortItem>>",
-          "required": true,
-          "default_value": null,
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "name": "opened",
-          "type": "Ref<Set<string>>",
-          "required": true,
-          "default_value": null,
-          "position": 2,
           "description_key": null,
           "description_fallback": null
         }
@@ -10205,64 +10205,6 @@
     {
       "entry": {
         "kind": "composable",
-        "slug": "use-scroll-strategies",
-        "name": "useScrollStrategies",
-        "category": "Commons",
-        "domain": "Commons",
-        "icon": null,
-        "description_key": null,
-        "description_fallback": null,
-        "definition": null,
-        "signature": "function useScrollStrategies(props: IScrollStrategyProps, data: IScrollStrategyData): void",
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/composables/Commons/scrollStrategies.composable.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [
-        {
-          "name": "props",
-          "type": "IScrollStrategyProps",
-          "required": true,
-          "default_value": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "name": "data",
-          "type": "IScrollStrategyData",
-          "required": true,
-          "default_value": null,
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": []
-    },
-    {
-      "entry": {
-        "kind": "composable",
         "slug": "use-scrolling",
         "name": "useScrolling",
         "category": "Commons",
@@ -10303,6 +10245,64 @@
         {
           "name": "textFieldRef",
           "type": "Ref<TOrigamTextField | undefined>",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
+        "slug": "use-scroll-strategies",
+        "name": "useScrollStrategies",
+        "category": "Commons",
+        "domain": "Commons",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useScrollStrategies(props: IScrollStrategyProps, data: IScrollStrategyData): void",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/scrollStrategies.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "props",
+          "type": "IScrollStrategyProps",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "data",
+          "type": "IScrollStrategyData",
           "required": true,
           "default_value": null,
           "position": 1,
@@ -12388,122 +12388,6 @@
     {
       "entry": {
         "kind": "composable",
-        "slug": "use-text-color",
-        "name": "useTextColor",
-        "category": null,
-        "domain": "Commons",
-        "icon": "mdi-format-color-text",
-        "description_key": "",
-        "description_fallback": "Foreground-only color helper. Resolves the `color` prop to a utility class (`origam--color-*`) for tokenised intents, or to an inline `color:` declaration for raw CSS values and gradients.",
-        "definition": null,
-        "signature": "function useTextColor<T extends Record<K, TColor>, K extends string>(\n  props: T | Ref<TColor>,\n  name?: K\n): {\n  textColorClasses: ComputedRef<string[]>\n  textColorStyles: ComputedRef<string[]>\n}",
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/composables/Commons/textColor.composable.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": {
-          "consumedInterfaces": [
-            "IColorProps"
-          ]
-        },
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [
-        {
-          "name": "props",
-          "type": "T | Ref<TColor>",
-          "required": true,
-          "default_value": null,
-          "position": 0,
-          "description_key": "",
-          "description_fallback": "Either the component props object (paired with `name`) or a plain Ref<TColor>."
-        },
-        {
-          "name": "name",
-          "type": "K",
-          "required": false,
-          "default_value": null,
-          "position": 1,
-          "description_key": "",
-          "description_fallback": "The key to read from the props object. Typically \"color\". Omit when passing a plain Ref."
-        }
-      ],
-      "returns": [
-        {
-          "name": "textColorClasses",
-          "type": "ComputedRef<string[]>",
-          "position": 0,
-          "description_key": "",
-          "description_fallback": "Utility class names (e.g. [\"origam--color-primary\"]) to bind via :class."
-        },
-        {
-          "name": "textColorStyles",
-          "type": "ComputedRef<string[]>",
-          "position": 1,
-          "description_key": "",
-          "description_fallback": "Inline CSS declarations (e.g. [\"color: #6d28d9\"]) to bind via :style. For gradients, includes background-image + background-clip: text."
-        }
-      ],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "",
-          "title_fallback": "Color an icon with an intent",
-          "code": "<script setup lang=\"ts\">\nimport { useTextColor } from 'origam'\n\nconst props = defineProps<{ color?: string }>()\nconst { textColorClasses, textColorStyles } = useTextColor(props, 'color')\n</script>\n\n<template>\n  <origam-icon\n    icon=\"mdi-star\"\n    :class=\"textColorClasses\"\n    :style=\"textColorStyles\"\n  />\n</template>",
-          "lang": "vue"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "related",
-          "to_kind": "composable",
-          "to_slug": "use-color",
-          "to_name": null,
-          "prop_name": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "related",
-          "to_kind": "composable",
-          "to_slug": "use-background-color",
-          "to_name": null,
-          "prop_name": null,
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "related",
-          "to_kind": "composable",
-          "to_slug": "use-color-effect",
-          "to_name": null,
-          "prop_name": null,
-          "position": 2,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "composable",
         "slug": "use-textarea-field-rich",
         "name": "useTextareaRich",
         "category": "TextareaField",
@@ -12654,6 +12538,122 @@
       "directiveArgs": [],
       "directiveModifiers": [],
       "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
+        "slug": "use-text-color",
+        "name": "useTextColor",
+        "category": null,
+        "domain": "Commons",
+        "icon": "mdi-format-color-text",
+        "description_key": "",
+        "description_fallback": "Foreground-only color helper. Resolves the `color` prop to a utility class (`origam--color-*`) for tokenised intents, or to an inline `color:` declaration for raw CSS values and gradients.",
+        "definition": null,
+        "signature": "function useTextColor<T extends Record<K, TColor>, K extends string>(\n  props: T | Ref<TColor>,\n  name?: K\n): {\n  textColorClasses: ComputedRef<string[]>\n  textColorStyles: ComputedRef<string[]>\n}",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/textColor.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": {
+          "consumedInterfaces": [
+            "IColorProps"
+          ]
+        },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "props",
+          "type": "T | Ref<TColor>",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": "",
+          "description_fallback": "Either the component props object (paired with `name`) or a plain Ref<TColor>."
+        },
+        {
+          "name": "name",
+          "type": "K",
+          "required": false,
+          "default_value": null,
+          "position": 1,
+          "description_key": "",
+          "description_fallback": "The key to read from the props object. Typically \"color\". Omit when passing a plain Ref."
+        }
+      ],
+      "returns": [
+        {
+          "name": "textColorClasses",
+          "type": "ComputedRef<string[]>",
+          "position": 0,
+          "description_key": "",
+          "description_fallback": "Utility class names (e.g. [\"origam--color-primary\"]) to bind via :class."
+        },
+        {
+          "name": "textColorStyles",
+          "type": "ComputedRef<string[]>",
+          "position": 1,
+          "description_key": "",
+          "description_fallback": "Inline CSS declarations (e.g. [\"color: #6d28d9\"]) to bind via :style. For gradients, includes background-image + background-clip: text."
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "",
+          "title_fallback": "Color an icon with an intent",
+          "code": "<script setup lang=\"ts\">\nimport { useTextColor } from 'origam'\n\nconst props = defineProps<{ color?: string }>()\nconst { textColorClasses, textColorStyles } = useTextColor(props, 'color')\n</script>\n\n<template>\n  <origam-icon\n    icon=\"mdi-star\"\n    :class=\"textColorClasses\"\n    :style=\"textColorStyles\"\n  />\n</template>",
+          "lang": "vue"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "related",
+          "to_kind": "composable",
+          "to_slug": "use-color",
+          "to_name": null,
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "composable",
+          "to_slug": "use-background-color",
+          "to_name": null,
+          "prop_name": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "composable",
+          "to_slug": "use-color-effect",
+          "to_name": null,
+          "prop_name": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
     },
     {
       "entry": {
@@ -13536,137 +13536,6 @@
     {
       "entry": {
         "kind": "composable",
-        "slug": "use-v-model",
-        "name": "useVModel",
-        "category": null,
-        "domain": "Commons",
-        "icon": "mdi-swap-horizontal",
-        "description_key": "",
-        "description_fallback": "Implements a controlled / uncontrolled prop contract for any component prop bound via v-model. When the parent provides both the prop and the matching onUpdate:prop listener the component operates in controlled mode; otherwise it manages its own internal ref. Supports kebab-case / camelCase prop alias pairs and optional in/out value transformers.",
-        "definition": null,
-        "signature": "function useVModel<\n  Props extends object & { [key in Prop as `onUpdate:${Prop}`]?: TEventProp | undefined },\n  Prop extends Extract<keyof Props, string>,\n  Inner = Props[Prop]\n>(\n  props: Props,\n  prop: Prop,\n  defaultValue?: Props[Prop],\n  transformIn?: (value?: Props[Prop]) => Inner,\n  transformOut?: (value: Inner) => Props[Prop]\n): Ref<TInnerVal<Inner>> & { readonly externalValue: Props[Prop] }",
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/composables/Commons/vModel.composable.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": "useVModel is the backbone of every form control in origam. It handles the subtle Vue 3 contract where a component is only \"controlled\" when BOTH the prop and the update listener are present on `vnode.props` — passing the prop alone without a handler keeps the component uncontrolled.",
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": {
-          "consumedInterfaces": []
-        },
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [
-        {
-          "name": "props",
-          "type": "Props",
-          "required": true,
-          "default_value": null,
-          "position": 0,
-          "description_key": "",
-          "description_fallback": "The component props object returned by defineProps. The composable reads `props[prop]` and inspects `vm.vnode.props` to detect whether the listener is wired."
-        },
-        {
-          "name": "prop",
-          "type": "Prop",
-          "required": true,
-          "default_value": null,
-          "position": 1,
-          "description_key": "",
-          "description_fallback": "The prop key to observe, e.g. `\"modelValue\"` for a standard v-model binding."
-        },
-        {
-          "name": "defaultValue",
-          "type": "MaybeRefOrGetter<Props[Prop] | undefined>",
-          "required": false,
-          "default_value": null,
-          "position": 2,
-          "description_key": "",
-          "description_fallback": "Value used to initialise the internal ref when the prop is undefined on first render."
-        },
-        {
-          "name": "transformIn",
-          "type": "(value?: Props[Prop]) => Inner",
-          "required": false,
-          "default_value": "(v?: Props[Prop]) => v as Inner",
-          "position": 3,
-          "description_key": "",
-          "description_fallback": "Optional transform applied to the external prop value before exposing it to the component. Useful for converting a string to a number, or normalising null / undefined."
-        },
-        {
-          "name": "transformOut",
-          "type": "(value: Inner) => Props[Prop]",
-          "required": false,
-          "default_value": "(v: Inner) => v as Props[Prop]",
-          "position": 4,
-          "description_key": "",
-          "description_fallback": "Optional inverse transform applied before emitting `update:prop`. Pairs with transformIn to keep the internal representation separate from the public API value."
-        }
-      ],
-      "returns": [
-        {
-          "name": "(model)",
-          "type": "Ref<TInnerVal<Inner>> & { readonly externalValue: Props[Prop] }",
-          "position": 0,
-          "description_key": "",
-          "description_fallback": "A writable computed ref. Reading it returns the current value (controlled or internal). Writing it updates the internal ref and emits `update:prop`. The `externalValue` accessor returns the raw prop value without transformIn applied."
-        }
-      ],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "",
-          "title_fallback": "Boolean toggle with v-model",
-          "code": "<script setup lang=\"ts\">\nimport { useVModel } from 'origam'\n\nconst props = defineProps<{\n    modelValue?: boolean\n}>()\n\nconst isOpen = useVModel(props, 'modelValue', false)\n</script>\n\n<template>\n  <button @click=\"isOpen = !isOpen\">\n    {{ isOpen ? 'Close' : 'Open' }}\n  </button>\n</template>",
-          "lang": "vue"
-        },
-        {
-          "position": 1,
-          "title_key": "",
-          "title_fallback": "String prop with value transform",
-          "code": "<script setup lang=\"ts\">\nimport { useVModel } from 'origam'\n\nconst props = defineProps<{\n    modelValue?: string\n}>()\n\n// Store internally as uppercase, emit as-is\nconst model = useVModel(\n    props,\n    'modelValue',\n    '',\n    (v) => v?.toUpperCase() ?? '',\n    (v) => v\n)\n</script>",
-          "lang": "vue"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "related",
-          "to_kind": "composable",
-          "to_slug": "use-toggle-scope",
-          "to_name": null,
-          "prop_name": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "related",
-          "to_kind": "composable",
-          "to_slug": "use-validation",
-          "to_name": null,
-          "prop_name": null,
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "composable",
         "slug": "use-validation",
         "name": "useValidation",
         "category": null,
@@ -14291,6 +14160,137 @@
           "rel_type": "related",
           "to_kind": "composable",
           "to_slug": "use-display",
+          "to_name": null,
+          "prop_name": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "composable",
+        "slug": "use-v-model",
+        "name": "useVModel",
+        "category": null,
+        "domain": "Commons",
+        "icon": "mdi-swap-horizontal",
+        "description_key": "",
+        "description_fallback": "Implements a controlled / uncontrolled prop contract for any component prop bound via v-model. When the parent provides both the prop and the matching onUpdate:prop listener the component operates in controlled mode; otherwise it manages its own internal ref. Supports kebab-case / camelCase prop alias pairs and optional in/out value transformers.",
+        "definition": null,
+        "signature": "function useVModel<\n  Props extends object & { [key in Prop as `onUpdate:${Prop}`]?: TEventProp | undefined },\n  Prop extends Extract<keyof Props, string>,\n  Inner = Props[Prop]\n>(\n  props: Props,\n  prop: Prop,\n  defaultValue?: Props[Prop],\n  transformIn?: (value?: Props[Prop]) => Inner,\n  transformOut?: (value: Inner) => Props[Prop]\n): Ref<TInnerVal<Inner>> & { readonly externalValue: Props[Prop] }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Commons/vModel.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": "useVModel is the backbone of every form control in origam. It handles the subtle Vue 3 contract where a component is only \"controlled\" when BOTH the prop and the update listener are present on `vnode.props` — passing the prop alone without a handler keeps the component uncontrolled.",
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": {
+          "consumedInterfaces": []
+        },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "props",
+          "type": "Props",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": "",
+          "description_fallback": "The component props object returned by defineProps. The composable reads `props[prop]` and inspects `vm.vnode.props` to detect whether the listener is wired."
+        },
+        {
+          "name": "prop",
+          "type": "Prop",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": "",
+          "description_fallback": "The prop key to observe, e.g. `\"modelValue\"` for a standard v-model binding."
+        },
+        {
+          "name": "defaultValue",
+          "type": "MaybeRefOrGetter<Props[Prop] | undefined>",
+          "required": false,
+          "default_value": null,
+          "position": 2,
+          "description_key": "",
+          "description_fallback": "Value used to initialise the internal ref when the prop is undefined on first render."
+        },
+        {
+          "name": "transformIn",
+          "type": "(value?: Props[Prop]) => Inner",
+          "required": false,
+          "default_value": "(v?: Props[Prop]) => v as Inner",
+          "position": 3,
+          "description_key": "",
+          "description_fallback": "Optional transform applied to the external prop value before exposing it to the component. Useful for converting a string to a number, or normalising null / undefined."
+        },
+        {
+          "name": "transformOut",
+          "type": "(value: Inner) => Props[Prop]",
+          "required": false,
+          "default_value": "(v: Inner) => v as Props[Prop]",
+          "position": 4,
+          "description_key": "",
+          "description_fallback": "Optional inverse transform applied before emitting `update:prop`. Pairs with transformIn to keep the internal representation separate from the public API value."
+        }
+      ],
+      "returns": [
+        {
+          "name": "(model)",
+          "type": "Ref<TInnerVal<Inner>> & { readonly externalValue: Props[Prop] }",
+          "position": 0,
+          "description_key": "",
+          "description_fallback": "A writable computed ref. Reading it returns the current value (controlled or internal). Writing it updates the internal ref and emits `update:prop`. The `externalValue` accessor returns the raw prop value without transformIn applied."
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "",
+          "title_fallback": "Boolean toggle with v-model",
+          "code": "<script setup lang=\"ts\">\nimport { useVModel } from 'origam'\n\nconst props = defineProps<{\n    modelValue?: boolean\n}>()\n\nconst isOpen = useVModel(props, 'modelValue', false)\n</script>\n\n<template>\n  <button @click=\"isOpen = !isOpen\">\n    {{ isOpen ? 'Close' : 'Open' }}\n  </button>\n</template>",
+          "lang": "vue"
+        },
+        {
+          "position": 1,
+          "title_key": "",
+          "title_fallback": "String prop with value transform",
+          "code": "<script setup lang=\"ts\">\nimport { useVModel } from 'origam'\n\nconst props = defineProps<{\n    modelValue?: string\n}>()\n\n// Store internally as uppercase, emit as-is\nconst model = useVModel(\n    props,\n    'modelValue',\n    '',\n    (v) => v?.toUpperCase() ?? '',\n    (v) => v\n)\n</script>",
+          "lang": "vue"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "related",
+          "to_kind": "composable",
+          "to_slug": "use-toggle-scope",
+          "to_name": null,
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "composable",
+          "to_slug": "use-validation",
           "to_name": null,
           "prop_name": null,
           "position": 1,
