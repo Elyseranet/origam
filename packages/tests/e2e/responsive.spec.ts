@@ -1,7 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import { toggleHstCheckbox } from './_support/histoire-controls'
-
 /**
  * OrigamResponsive — runtime probes.
  *
@@ -61,22 +59,16 @@ test.describe('OrigamResponsive — Design (mount + aspect ratio)', () => {
     })
 })
 
-test.describe('OrigamResponsive — Functional (inline mode)', () => {
-    test('inline=true switches the root to inline-flex display', async ({ page }) => {
-        await openVariant(page, 'Functional')
-        const sandbox = sandboxOf(page)
-
-        const root = sandbox.locator('.origam-responsive').first()
-        await expect(root).toBeVisible({ timeout: 8000 })
-        await expect(root).not.toHaveClass(/origam-responsive--inline/)
-
-        await toggleHstCheckbox(page, 'Inline')
-
-        await expect(root).toHaveClass(/origam-responsive--inline/)
-        const display = await root.evaluate((el) => getComputedStyle(el).display)
-        expect(display).toBe('inline-flex')
-    })
-})
+/**
+ * The `OrigamResponsive — Functional (inline mode)` block lived here until
+ * #703. It asserted that `inline=true` painted `display: inline-flex` — and
+ * it PASSED, because `inline-flex` is exactly what the prop produced. What
+ * it never measured is the consequence: `inline-flex` resolves the root's
+ * width shrink-to-fit, and the ratio is held by a `__sizer` whose height is
+ * a `padding-block-end` in PERCENT of that width. Width 0 -> height 0, on
+ * all three consumers. The prop was removed; the lock now lives in
+ * `packages/tests/TU/components/Responsive/responsive-inline-removed-703.spec.ts`.
+ */
 
 test.describe('OrigamResponsive — Slots', () => {
     test('#default renders the passed content', async ({ page }) => {
@@ -101,8 +93,7 @@ test.describe('OrigamResponsive — Slots', () => {
  * ## Le défaut (trouvé en lisant la feuille de tokens, pas par un test)
  *
  * `light.css` / `dark.css` déclaraient `--origam-responsive---{flex,height,
- * max-height,min-height,min-width,width}`, `--origam-responsive--inline---
- * flex`, `--origam-responsive__content---margin` et
+ * max-height,min-height,min-width,width}`, `--origam-responsive__content---margin` et
  * `--origam-responsive__sizer---{flex,padding-block-end,transition}` à la
  * valeur `inherit`. Pour une CUSTOM PROPERTY (pas la propriété CSS finale),
  * `inherit` signifie « hérite CETTE MÊME custom property de mon parent » —

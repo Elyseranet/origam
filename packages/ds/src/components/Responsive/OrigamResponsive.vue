@@ -92,7 +92,6 @@
 	const responsiveClasses = computed(() => {
 		return [
 			'origam-responsive',
-			{'origam-responsive--inline': props.inline},
 			roundedClasses.value,
 			borderClasses.value,
 			paddingClasses.value,
@@ -141,11 +140,6 @@
 		position: var(--origam-responsive---position);
 		width: var(--origam-responsive---width);
 		height: var(--origam-responsive---height);
-
-		&--inline {
-			display: var(--origam-responsive--inline---display);
-			flex: var(--origam-responsive--inline---flex);
-		}
 
 		&__content {
 			flex: var(--origam-responsive__content---flex);
