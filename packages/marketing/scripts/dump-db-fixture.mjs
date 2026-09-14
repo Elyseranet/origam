@@ -139,11 +139,40 @@ function byEntry (rows) {
 
 // ─── Bulk child query (PostgreSQL ANY array, orphaned rows excluded) ──────────
 
+/**
+ * Départage déterministe des lignes filles à `position` ÉGALE.
+ *
+ * ⛔ MESURÉ (#728) : `ORDER BY entry_id, position` seul ne suffit pas — plusieurs
+ * lignes partagent la même `position` (les 4 relations d'un composant sont
+ * toutes en `position = 0`, et `doc_prop` de `btn` a 3 paires de positions
+ * dupliquées). Postgres est alors libre de les rendre dans n'importe quel ordre,
+ * donc DEUX dumps de la MÊME base produisent des fichiers différents.
+ *
+ * Coût constaté : un re-dump sans le moindre changement de contenu produisait un
+ * diff de 55 927 lignes, dont **zéro** changement réel (193 entrées comparées,
+ * 0 différence après tri des tableaux). Une clé naturelle stable par table rend
+ * le dump idempotent, donc le diff relisible.
+ */
+const CHILD_TIEBREAK = Object.freeze({
+    doc_prop:                'name',
+    doc_value:               'value',
+    doc_param:               'name',
+    doc_return:              'name',
+    doc_emit:                'event',
+    doc_slot:                'slot',
+    doc_example:             'title_fallback, title_key, lang',
+    doc_directive_arg:       'name',
+    doc_directive_modifier:  'name',
+    doc_relation:            'rel_type, to_kind, to_slug',
+})
+
 async function queryChildren (db, table, entryIds, hasOrphanedAt = true) {
     if (!entryIds.length) return []
     const orphanFilter = hasOrphanedAt ? 'AND orphaned_at IS NULL' : ''
+    const tiebreak = CHILD_TIEBREAK[table]
+    const order = `ORDER BY entry_id, position${tiebreak ? `, ${tiebreak}` : ''}, id`
     return db.query(
-        `SELECT * FROM ${table} WHERE entry_id = ANY($1::uuid[]) ${orphanFilter} ORDER BY entry_id, position`,
+        `SELECT * FROM ${table} WHERE entry_id = ANY($1::uuid[]) ${orphanFilter} ${order}`,
         [entryIds],
     )
 }

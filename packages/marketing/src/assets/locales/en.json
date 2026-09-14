@@ -366,7 +366,15 @@
                 "controls_label": "Controls"
             },
             "preview": {
-                "unavailable": "Live preview unavailable for this component."
+                "loading": "Rendering the live preview…",
+                "render_failed": "This component raised an error while rendering with these props:",
+                "reason": {
+                    "needs_parent": "This is an internal sub-part: it is injected by its parent component and cannot render on its own. See the parent component page for a live example.",
+                    "portal": "This component teleports its surface to the end of <body> once activated, so it never renders inside this preview box. Use the props panel and the generated snippet, then try it in your own page.",
+                    "runtime_data": "This component requires runtime data its parent owns (a DOM element, a controller object, or a File), which a static preview cannot provide.",
+                    "media_source": "This component requires a media source (audio or video URL). The marketing site ships no sample media, so the preview stays empty on purpose.",
+                    "layout_only": "This component renders no visible surface of its own: it only pushes its siblings apart inside a flex container."
+                }
             },
             "examples": {
                 "title": "Examples",

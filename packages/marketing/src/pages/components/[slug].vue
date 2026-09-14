@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import { useT } from '~/composables/useT'
 import { useCopy } from '~/composables/useCopy'
 import { useReferenceDoc } from '~/composables/useApiReference'
+import { previewAdapterFor, previewSlotTextFor, previewUnavailableReasonFor } from '~/utils/component-preview.util'
 import type { IComponentDoc } from '~/interfaces/components-catalog.interface'
 
 const { t } = useT()
@@ -45,7 +46,17 @@ const hasExposed    = computed(() => (displayDoc.value?.exposed?.length ?? 0) > 
 const hasComposable = computed(() => !!displayDoc.value?.composable)
 const hasA11y       = computed(() => !!displayDoc.value?.a11y)
 const hasTokens     = computed(() => !!displayDoc.value?.tokens)
-const hasPlayground = computed(() => !!displayDoc.value?.playground)
+const playgroundControls = computed(() => displayDoc.value?.playground?.controls ?? [])
+const hasPlaygroundControls = computed(() => playgroundControls.value.length > 0)
+
+/* Un composant sans contrôle éditable mérite quand même son aperçu : 8 fiches
+   n'exposent aucune prop jouable, et le playground disparaissait entièrement —
+   donc aucun rendu nulle part. L'adaptateur d'aperçu suffit à ouvrir la section. */
+const hasPlayground = computed(() =>
+    hasPlaygroundControls.value || !!previewAdapterFor(slug.value).previewProps
+    || !!previewAdapterFor(slug.value).slotChildren
+    || !!previewUnavailableReasonFor(slug.value)
+)
 const hasPreview    = computed(() => (displayDoc.value?.previewVariants?.length ?? 0) > 0)
 
 const familyMembers = computed(() =>
@@ -113,6 +124,9 @@ const scrollToSection = (sectionId: string) => {
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
+/* ── Aperçu live ──────────────────────────────────────────────────── */
+const variantSlugOf = (label: string): string => label.replace(/\s+/g, '-')
+
 /* ── Playground state ─────────────────────────────────────────────── */
 const playgroundProps = reactive<Record<string, string | number | boolean>>({})
 
@@ -128,7 +142,7 @@ const generatedCode = computed(() => {
     const doc = displayDoc.value
     if (!doc?.playground) return `<${tag} />`
 
-    const slotContent = doc.playground.defaultSlotContent ?? ''
+    const slotContent = previewSlotTextFor(slug.value, doc)
     const attrs = Object.entries(playgroundProps)
         .filter(([, v]) => v !== '' && v !== false && v !== undefined)
         .map(([k, v]) => {
@@ -372,24 +386,16 @@ useSeoMeta({
                                 v-for="variant in displayDoc?.previewVariants"
                                 :key="variant.label"
                                 class="component-hero__preview-variant"
-                                :data-cy="`preview-variant-${variant.label.replace(/\s+/g, '-')}`"
+                                :data-cy="`preview-variant-${variantSlugOf(variant.label)}`"
                             >
-                                <client-only>
-                                    <nuxt-error-boundary>
-                                        <component
-                                            :is="`origam-${slug}`"
-                                            v-bind="variant.props"
-                                            :aria-label="variant.ariaLabel"
-                                        >
-                                            {{ variant.slotContent }}
-                                        </component>
-                                        <template #error>
-                                            <p class="component-preview__fallback">
-                                                {{ t('components.detail.preview.unavailable', 'Live preview unavailable for this component.') }}
-                                            </p>
-                                        </template>
-                                    </nuxt-error-boundary>
-                                </client-only>
+                                <component-live-preview
+                                    :slug="slug"
+                                    :doc="displayDoc"
+                                    :user-props="variant.props"
+                                    :slot-content="variant.slotContent"
+                                    :instance-aria-label="variant.ariaLabel"
+                                    :data-cy-suffix="`variant-${variantSlugOf(variant.label)}`"
+                                />
                                 <span class="component-hero__preview-variant-label">{{ variant.label }}</span>
                             </div>
                         </div>
@@ -1118,6 +1124,7 @@ useSeoMeta({
 
                             <div class="component-playground__layout">
                                 <div
+                                    v-if="hasPlaygroundControls"
                                     class="component-playground__controls"
                                     :aria-label="t('components.detail.playground.controls_label', 'Controls')"
                                 >
@@ -1125,7 +1132,7 @@ useSeoMeta({
                                         {{ t('components.detail.playground.controls_label', 'Controls') }}
                                     </p>
                                     <div
-                                        v-for="ctrl in displayDoc?.playground?.controls"
+                                        v-for="ctrl in playgroundControls"
                                         :key="ctrl.prop"
                                         class="component-playground__control"
                                         :data-cy="`playground-ctrl-${ctrl.prop}`"
@@ -1176,24 +1183,11 @@ useSeoMeta({
                                         aria-live="polite"
                                         data-cy="playground-preview"
                                     >
-                                        <client-only>
-                                            <nuxt-error-boundary>
-                                                <component
-                                                    :is="`origam-${slug}`"
-                                                    v-bind="Object.fromEntries(
-                                                        Object.entries(playgroundProps).filter(([, v]) => v !== '' && v !== false)
-                                                    )"
-                                                    :data-cy="`playground-live-${slug}`"
-                                                >
-                                                    {{ displayDoc?.playground?.defaultSlotContent }}
-                                                </component>
-                                                <template #error>
-                                                    <p class="component-preview__fallback">
-                                                        {{ t('components.detail.preview.unavailable', 'Live preview unavailable for this component.') }}
-                                                    </p>
-                                                </template>
-                                            </nuxt-error-boundary>
-                                        </client-only>
+                                        <component-live-preview
+                                            :slug="slug"
+                                            :doc="displayDoc"
+                                            :user-props="playgroundProps"
+                                        />
                                     </div>
 
                                 </div>
