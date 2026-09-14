@@ -19,8 +19,24 @@
 					role="listitem"
 					:style="getItemStyle(idx)"
 			>
+				<!--
+					Render the extracted vnode DIRECTLY. `<component :is>` on a
+					VNode hits `createVNode`'s `isVNode(type)` branch, which
+					clones it and returns the clone — no wrapper component.
+
+					It used to read `:is="{ render: () => child }"`. That object
+					literal is rebuilt on EVERY render pass, so Vue saw a
+					different component type each time and destroyed / recreated
+					the whole child subtree instead of patching it. Measured in
+					Chromium on a single viewport resize: 117 nodes added, 117
+					removed, and 0 of the 9 slot children kept their DOM node.
+					Every child therefore lost focus, scroll position, media
+					playback, CSS transition state and component state, and
+					re-ran its `onMounted` side effects, on every relayout.
+					See #733.
+				-->
 				<component
-						:is="{ render: () => child }"
+						:is="child"
 				/>
 			</div>
 		</template>
