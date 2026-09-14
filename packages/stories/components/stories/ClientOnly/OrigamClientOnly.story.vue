@@ -12,12 +12,14 @@
 				})"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px;">
+				<div
+						data-cy="client-only-functional"
+						style="padding: 24px;"
+				>
 					<origam-client-only
 							:key="`functional-${remountKey}`"
 							:placeholder-tag="state.placeholderTag || undefined"
 							:placeholder-class="state.placeholderClass || undefined"
-							data-cy="client-only-functional"
 					>
 						<div class="demo-client">
 							Client-only content — rendered after <code>onMounted</code>.
@@ -49,8 +51,11 @@
 		</Variant>
 
 		<Variant title="Slots - Default">
-			<div style="padding: 24px;">
-				<origam-client-only data-cy="client-only-slot-default">
+			<div
+					data-cy="client-only-slot-default"
+					style="padding: 24px;"
+			>
+				<origam-client-only>
 					<article class="demo-client">
 						<strong>Default slot</strong> — only reachable once mounted, so it
 						is the right place for anything reading
@@ -62,8 +67,11 @@
 		</Variant>
 
 		<Variant title="Slots - Fallback">
-			<div style="padding: 24px;">
-				<origam-client-only :key="`fallback-${remountKey}`" data-cy="client-only-slot-fallback">
+			<div
+					data-cy="client-only-slot-fallback"
+					style="padding: 24px;"
+			>
+				<origam-client-only :key="`fallback-${remountKey}`">
 					<div class="demo-client">Mounted content.</div>
 
 					<template #fallback>
@@ -96,12 +104,14 @@
 				})"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px;">
+				<div
+						data-cy="client-only-playground"
+						style="padding: 24px;"
+				>
 					<origam-client-only
 							:key="`playground-${remountKey}`"
 							:placeholder-tag="state.placeholderTag || undefined"
 							:placeholder-class="state.placeholderClass || undefined"
-							data-cy="client-only-playground"
 					>
 						<div class="demo-client">{{ state.content }}</div>
 					</origam-client-only>

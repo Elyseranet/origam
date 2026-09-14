@@ -94,74 +94,82 @@ test.describe('OrigamSheet', () => {
 
 test.describe('OrigamResponsive', () => {
 
-    test('aspect-ratio sizer generates correct padding-block-end', async ({ page }) => {
+    // #709 — this used to read the `__sizer`'s computed `padding-block-end`
+    // and assert it was non-zero. It PASSED on broken code: the sizer's
+    // padding was always correct, it simply never reached the root box, whose
+    // height `__content`'s opposite margin cancelled. The sizer is gone; the
+    // ratio now lives on the root, so measure the root.
+    test('aspect-ratio drives a real height on the root box', async ({ page }) => {
         await page.goto(RESPONSIVE_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Prop — aspectRatio', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const sizer = sandbox.locator('.origam-responsive__sizer').first()
-        await expect(sizer).toBeVisible({ timeout: 5000 })
+        const root = sandbox.locator('.origam-responsive').first()
+        await expect(root).toBeVisible({ timeout: 5000 })
 
-        const pbe = await sizer.evaluate((el) => getComputedStyle(el).paddingBlockEnd)
-        console.log('[responsive-aspect] padding-block-end:', pbe)
-        // 16/9 = 0.5625 → sizer padding should be non-zero
-        expect(parseFloat(pbe)).toBeGreaterThan(0)
-    })
+        const measured = await root.evaluate((el) => {
+            const r = el.getBoundingClientRect()
 
-    test('inline modifier changes display to inline-flex', async ({ page }) => {
-        await page.goto(RESPONSIVE_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — inline', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const responsive = sandbox.locator('.origam-responsive').first()
-        await expect(responsive).toBeVisible({ timeout: 5000 })
-
-        const display = await responsive.evaluate((el) => {
-            el.classList.add('origam-responsive--inline')
-            return getComputedStyle(el).display
+            return { width: r.width, height: r.height, ratio: getComputedStyle(el).aspectRatio }
         })
-        console.log('[responsive-inline] display:', display)
-        expect(display).toContain('inline')
+
+        console.log('[responsive-aspect] root:', measured)
+        expect(measured.ratio).not.toBe('auto')
+        expect(measured.height).toBeGreaterThan(0)
+        // The variant pins 16/9 on this first instance.
+        expect(measured.height).toBeCloseTo(measured.width * (9 / 16), 0)
     })
+
+    // The `inline` prop and its `.origam-responsive--inline` modifier were
+    // removed in #703: `display: inline-flex` resolves the root width to the
+    // content, while the ratio is held by a `__sizer` whose height is a
+    // PERCENTAGE of that width — so the box collapsed to 0 on all three
+    // consumers (Responsive / Img / CarouselItem). Measured, not deduced:
+    // see `responsive-inline-removed.spec.ts` for the lock.
+    //
+    // The previous spec here asserted `display` merely CONTAINED "inline"
+    // after hand-adding the modifier class — which a plain `inline` also
+    // satisfies, so it could not have caught the collapse anyway.
 
     /**
-     * Regression for #454 — the classic aspect-ratio-box pattern requires
-     * `__content` to be pulled back UP over `__sizer` (negative margin),
-     * so the two overlap instead of stacking. The sibling-selector rule sets
-     * `--origam-responsive__content---margin-inline-start`, but `__content`'s
-     * only margin declaration reads `--origam-responsive__content---margin`
-     * — a different custom property name — so the override is silently
-     * unconsumed and the boxes stack (double height) instead of overlaying.
+     * Was: regression for #454 — `__content` had to be pulled back UP over
+     * `__sizer` with a negative margin so the two overlapped instead of
+     * stacking to double height.
      *
-     * getBoundingClientRect is used rather than getComputedStyle('margin')
-     * because jsdom cannot resolve var()/cascade at all, and even a real
-     * browser's computed `margin-block-start` on a `%`-based value resolves
-     * to a used-value length — the layout position is the ground truth for
-     * "does content overlay the sizer", not the specified value.
+     * #709 retired the whole pattern. With `aspect-ratio` on the root there
+     * is no sizer to overlap and no pull-back margin to get wrong, so #454's
+     * failure mode (double height) is structurally unreachable rather than
+     * merely fixed. What still needs a lock is the property that #454 was
+     * protecting: the root must be exactly ONE ratio tall, never two, and the
+     * content must sit inside it.
+     *
+     * getBoundingClientRect rather than getComputedStyle: the layout position
+     * is the ground truth here, not a specified value.
      */
-    test('content overlays the sizer instead of stacking below it', async ({ page }) => {
+    test('the root is exactly one ratio tall and the content sits inside it', async ({ page }) => {
         await page.goto(RESPONSIVE_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Slots - Default', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const sizer = sandbox.locator('.origam-responsive__sizer').first()
+        const root = sandbox.locator('.origam-responsive').first()
         const content = sandbox.locator('.origam-responsive__content').first()
-        await expect(sizer).toBeVisible({ timeout: 5000 })
+        await expect(root).toBeVisible({ timeout: 5000 })
         await expect(content).toBeVisible({ timeout: 5000 })
 
-        const sizerBox = await sizer.evaluate((el) => el.getBoundingClientRect().toJSON())
+        const rootBox = await root.evaluate((el) => el.getBoundingClientRect().toJSON())
         const contentBox = await content.evaluate((el) => el.getBoundingClientRect().toJSON())
-        console.log('[responsive-overlay] sizer:', sizerBox, '| content:', contentBox)
+        console.log('[responsive-overlay] root:', rootBox, '| content:', contentBox)
 
-        // Overlaid: content's top sits within the sizer's own box, not below it.
-        expect(contentBox.top).toBeGreaterThanOrEqual(sizerBox.top - 1)
-        expect(contentBox.top).toBeLessThan(sizerBox.bottom - 1)
+        // ONE ratio tall, not two — the #454 stacking defect would double it.
+        expect(rootBox.height).toBeCloseTo(rootBox.width * (9 / 16), 0)
+
+        // The content starts at the top of the root, not pushed below anything.
+        expect(contentBox.top).toBeGreaterThanOrEqual(rootBox.top - 1)
+        expect(contentBox.top).toBeLessThan(rootBox.bottom)
     })
 })
 

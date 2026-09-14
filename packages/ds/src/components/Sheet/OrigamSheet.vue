@@ -16,6 +16,7 @@
 				class="origam-sheet__handle"
 				data-cy="sheet-bottom-handle"
 				type="button"
+				@keydown="handleHandleKeydown"
 		>
 			<span class="origam-sheet__handle-pill"/>
 		</button>
@@ -35,10 +36,12 @@
 	import { useLocation } from '../../composables/Commons/location.composable'
 	import { usePosition } from '../../composables/Commons/position.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
-	import { useSheetSwipe } from '../../composables/Sheet/sheetSwipe.composable'
+	import { resolveHeightPx, useSheetSwipe } from '../../composables/Sheet/sheetSwipe.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
 	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
+
+	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 
 	import type { ISheetProps } from '../../interfaces/Sheet/sheet.interface'
 
@@ -179,30 +182,26 @@
 
 	// ───────────────────────── classes & styles ─────────────────────────
 
-	/**
+	/*********************************************************
+	 * swipeStyles
+	 *
+	 * @description
 	 * Inline gesture styles applied only when the swipe is active. We
 	 * intentionally keep the rest of the height/transform contract in
 	 * the SCSS block — calc()-based defaults and CSS variables stay
 	 * consumer-overridable, while the live values during a drag are
 	 * driven from JS to track the pointer pixel-perfectly.
-	 */
+	 * @description
+	 * Sheet's effective height = current snap height + live drag offset
+	 * (capped to the largest snap so the user can't pull it off-screen at
+	 * the top). `resolveHeightPx` is the SAME resolver `useSheetSwipe`
+	 * uses internally (exported from `sheetSwipe.composable.ts`) — reused
+	 * here rather than re-implementing a second height parser that could
+	 * drift from it.
+	 ********************************************************/
 	const swipeStyles = computed(() => {
 		if (!swipeEnabled.value) return {}
-		// Sheet's effective height = current snap height + live drag
-		// offset (capped to the largest snap so the user can't pull it
-		// off-screen at the top).
-		const maxHeight = Math.max(...snapPointsRef.value.map((s) => {
-			const h = s.height
-			if (typeof h === 'number') return h
-			const m = String(h).match(/^([\d.]+)(px|vh|vw|%|rem|em)?$/i)
-			if (!m) return 0
-			const num = parseFloat(m[1])
-			const unit = (m[2] ?? 'px').toLowerCase()
-			if (typeof window === 'undefined') return num
-			if (unit === 'vh' || unit === '%') return (window.innerHeight * num) / 100
-			if (unit === 'vw') return (window.innerWidth * num) / 100
-			return num
-		}))
+		const maxHeight = Math.max(...snapPointsRef.value.map((s) => resolveHeightPx(s.height)))
 		const liveHeight = isDragging.value
 			? Math.min(maxHeight, Math.max(0, currentSnapHeight.value + dragOffset.value))
 			: currentSnapHeight.value
@@ -211,6 +210,55 @@
 			'transition': isDragging.value ? 'none' : 'height 200ms ease'
 		}
 	})
+
+	/*********************************************************
+	 * sortedSnapPoints / handleHandleKeydown
+	 *
+	 * @description
+	 * ⛔ issue C6 (a11y audit) — the drag handle rendered a real, focusable
+	 * `<button>` with an accessible name ("Drag handle") but NO way to
+	 * operate it from the keyboard: `useSheetSwipe` only wires
+	 * `pointerdown` / `pointermove` / `pointerup` (see
+	 * `sheetSwipe.composable.ts`), so the ENTIRE swipe-to-resize feature
+	 * was a WCAG 2.1.1 (Keyboard) violation — a screen-reader / switch
+	 * user tabs to a button that announces itself as operable and gets
+	 * nothing from Enter or Space.
+	 * @description
+	 * This restores a keyboard-operable path through the same discrete
+	 * snap points the gesture already commits to, without inventing any
+	 * ARIA the native `<button>` doesn't already carry for free.
+	 ********************************************************/
+	const sortedSnapPoints = computed(() => {
+		return [...snapPointsRef.value].sort((a, b) => resolveHeightPx(a.height) - resolveHeightPx(b.height))
+	})
+
+	const handleHandleKeydown = (event: KeyboardEvent) => {
+		if (disabledRef.value) return
+
+		const points = sortedSnapPoints.value
+		const currentIndex = points.findIndex((p) => p.id === currentSnap.value)
+
+		if (currentIndex === -1) return
+
+		switch (event.key) {
+			case KEYBOARD_VALUES.UP:
+				event.preventDefault()
+				snapTo(points[Math.min(currentIndex + 1, points.length - 1)].id)
+				break
+			case KEYBOARD_VALUES.DOWN:
+				event.preventDefault()
+				snapTo(points[Math.max(currentIndex - 1, 0)].id)
+				break
+			case KEYBOARD_VALUES.HOME:
+				event.preventDefault()
+				snapTo(points[0].id)
+				break
+			case KEYBOARD_VALUES.END:
+				event.preventDefault()
+				snapTo(points[points.length - 1].id)
+				break
+		}
+	}
 
 	const sheetStyles = computed(() => {
 		return [

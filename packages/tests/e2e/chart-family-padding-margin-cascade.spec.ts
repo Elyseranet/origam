@@ -108,6 +108,53 @@ test.describe('famille Chart (lot C2) — padding="4" peint 16px (cascade :where
     }
 })
 
+// ⛔ OrigamChartSparkline (lot "9 derniers majeur", classeur ligne 45,
+// colonne C2 = defaut) — `.origam-chart-sparkline` posait `margin: 0;
+// padding: 0;` en dur sur sa propre regle scopee, sans meme cabler
+// `marginClasses`/`paddingClasses` dans `rootClasses` (voir le TU jumeau
+// `chart-c2-padding-margin-channel.spec.ts` pour la preuve du canal classe).
+// Ce bloc prouve le second defaut, celui que jsdom ne peut jamais mesurer :
+// une fois la classe posee sur l'element REELLEMENT rendu par Vue, gagne-
+// t-elle la cascade contre la regle scopee du composant ?
+test.describe('OrigamChartSparkline (lot C2) — padding="4"/margin="4" peignent 16px (cascade :where)', () => {
+    const SPARKLINE_STORY = '/stories/story/components-stories-chart-origamchartsparkline-story-vue'
+
+    test('.origam--p-4 gagne la cascade sur la regle scopee `margin: 0; padding: 0;`', async ({ page }) => {
+        await openVariant(page, SPARKLINE_STORY, 'Default')
+        const host = sandboxOf(page).locator('[data-cy="origam-chart-sparkline"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        const before = await host.evaluate((el) => getComputedStyle(el).paddingTop)
+
+        const painted = await host.evaluate((el) => {
+            el.classList.add('origam--p-4')
+
+            return getComputedStyle(el).paddingTop
+        })
+
+        // Contre-epreuve : le defaut EXISTE avant l'ajout de la classe.
+        expect(before).not.toBe(SCALE_4_PX)
+        expect(painted).toBe(SCALE_4_PX)
+    })
+
+    test('.origam--m-4 gagne la cascade sur la regle scopee `margin: 0; padding: 0;`', async ({ page }) => {
+        await openVariant(page, SPARKLINE_STORY, 'Default')
+        const host = sandboxOf(page).locator('[data-cy="origam-chart-sparkline"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        const before = await host.evaluate((el) => getComputedStyle(el).marginTop)
+
+        const painted = await host.evaluate((el) => {
+            el.classList.add('origam--m-4')
+
+            return getComputedStyle(el).marginTop
+        })
+
+        expect(before).not.toBe(SCALE_4_PX)
+        expect(painted).toBe(SCALE_4_PX)
+    })
+})
+
 test.describe('OrigamCardHeader (lot C2) — padding="4"/margin="4" peignent 16px (cascade :where)', () => {
     const CARD_HEADER_STORY = '/stories/story/components-stories-card-origamcardheader-story-vue'
 

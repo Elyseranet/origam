@@ -178,6 +178,16 @@ test.describe('OrigamSliderField', () => {
     // ------------------------------------------------------------------ //
     // EVENTS - start (index 3)                                            //
     // ------------------------------------------------------------------ //
+    // #C7 (#465) — this Variant's own `@start="logEvent(...)"` side effect
+    // is Histoire-internal and not assertable from the outer Playwright
+    // page (same limitation documented in btn.spec.ts's "Events - click"
+    // block). The render check below only proves the Variant mounts.
+    // The REAL assertion that `start` actually fires on pointerdown, with
+    // the right payload, lives in
+    // TU/components/SliderField/slider-field-start-end-emits.spec.ts —
+    // `wrapper.emitted(...)` is one of the jsdom-reliable signals (no
+    // `var()` resolution involved), so it doesn't need this Playwright
+    // round-trip.
     test.describe('Events - start', () => {
         test('renders slider for start-emit variant', async ({ page }) => {
             await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
@@ -189,6 +199,8 @@ test.describe('OrigamSliderField', () => {
     // ------------------------------------------------------------------ //
     // EVENTS - end (index 4)                                              //
     // ------------------------------------------------------------------ //
+    // #C7 (#465) — same limitation and same real coverage as "Events -
+    // start" above: see slider-field-start-end-emits.spec.ts.
     test.describe('Events - end', () => {
         test('renders slider for end-emit variant', async ({ page }) => {
             await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })

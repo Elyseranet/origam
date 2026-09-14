@@ -216,7 +216,16 @@
 		font-size: 0.5rem;
 		padding: 0 5px;
 		background-color: var(--origam-switch__track---background-color, rgb(163, 163, 163));
-		border-radius: var(--origam-switch__track---border-radius, 9999px);
+
+		// #C2 — zero-specificity default so a scale-driven utility class
+		// (`.origam--rounded-lg` from `rounded="lg"`) wins the cascade.
+		// Without `:where()`, this scoped rule's [data-v-hash] pushes it
+		// to (0,2,0), beating the utility's (0,1,0), and the `rounded`
+		// prop's scale form goes silently inert.
+		:where(&) {
+			border-radius: var(--origam-switch__track---border-radius, 9999px);
+		}
+
 		height: var(--origam-switch__track---height, 14px);
 		min-width: var(--origam-switch__track---width, 36px);
 		backdrop-filter: var(--origam-switch__track---backdrop-filter, none);
@@ -277,7 +286,11 @@
 		}
 
 		&--inset {
-			border-radius: var(--origam-switch__track---border-radius, 9999px);
+			// #C2 — same zero-specificity requirement as the base rule above.
+			:where(&) {
+				border-radius: var(--origam-switch__track---border-radius, 9999px);
+			}
+
 			font-size: 0.75rem;
 			height: var(--origam-switch__track--inset---height, 32px);
 			min-width: var(--origam-switch__track--inset---width, 52px);

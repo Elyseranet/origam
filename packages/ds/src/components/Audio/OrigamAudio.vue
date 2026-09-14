@@ -435,7 +435,17 @@
 	 ********************************************************/
 	const hasPlaylist = computed<boolean>(() => Array.isArray(props.playlist) && props.playlist.length > 0)
 
-	const internalTrackIndex = ref<number>(props.currentTrackIndex ?? 0)
+	/*********************************************************
+	 * `internalTrackIndex` — #661, same ADR-005 trap as `loopMode` /
+	 * `shuffle` (#648) just above: seeding `ref(props.currentTrackIndex
+	 * ?? 0)` reads `props.currentTrackIndex` eagerly in the body of
+	 * `setup()`, before the theme resolver has a chance to write a
+	 * theme default for `origam-audio`'s `currentTrackIndex` prop (it
+	 * patches `instance.props` in `beforeCreate`, which Vue runs AFTER
+	 * `setup()`). Seed `UNSEEDED` and resolve the legacy-aware default
+	 * LAZILY via `resolvedTrackIndex` instead.
+	 ********************************************************/
+	const internalTrackIndex = ref<number | typeof UNSEEDED>(UNSEEDED)
 
 	watch(() => props.currentTrackIndex, (next) => {
 		if (typeof next === 'number' && next !== internalTrackIndex.value) {
@@ -443,11 +453,15 @@
 		}
 	})
 
+	const resolvedTrackIndex = computed<number>(() =>
+		internalTrackIndex.value === UNSEEDED ? (props.currentTrackIndex ?? 0) : internalTrackIndex.value
+	)
+
 	const safeTrackIndex = computed<number>(() => {
 		if (!hasPlaylist.value) return 0
 		const total = props.playlist!.length
 		if (total === 0) return 0
-		const i = internalTrackIndex.value
+		const i = resolvedTrackIndex.value
 		return ((i % total) + total) % total
 	})
 
@@ -647,12 +661,33 @@
 
 	/*********************************************************
 	 * Composable
+	 *
+	 * @description
+	 * #661 — `autoplay` / `muted` used to be read as plain values
+	 * (`props.autoplay`, `resolvedMuted.value`), snapshotted ONCE when
+	 * this object literal is built during `setup()` — before the
+	 * ADR-005 theme resolver has a chance to write a theme default onto
+	 * `props.autoplay` (it patches `instance.props` in `beforeCreate`,
+	 * which Vue runs AFTER `setup()`). A themed default for either prop
+	 * was therefore silently ignored by `useAudioPlayer`'s internal
+	 * state (the native `<audio autoplay>`/`<audio muted>` attributes
+	 * above were already fine — they're template bindings, evaluated at
+	 * render time). Passing getters defers the read to
+	 * `useMediaPlayer`'s `bind()` (`onMounted`, i.e. after
+	 * `beforeCreate`) — see `IUseMediaPlayerOptions.autoplay` /
+	 * `.muted` for the lazy-read contract.
+	 *
+	 * `loop` / `preload` are deliberately NOT forwarded: `useMediaPlayer`
+	 * never reads `options.loop` or `options.preload` (grepped — zero
+	 * occurrences beyond the destructured parameter), so passing them
+	 * was dead code that happened to also trip the eager-read guard for
+	 * no functional benefit. The real `loop` / `preload` DOM attributes
+	 * are already driven reactively by `audioLoopAttr` / the bare
+	 * `preload` prop binding in the template above.
 	 ********************************************************/
 	const { audioRef, state, methods } = useAudioPlayer({
-		autoplay: props.autoplay,
-		muted: resolvedMuted.value,
-		loop: props.loop,
-		preload: props.preload
+		autoplay: () => props.autoplay,
+		muted: () => resolvedMuted.value
 	})
 
 	/*********************************************************
@@ -809,11 +844,21 @@
 		return props.src?.src
 	})
 
+	/*********************************************************
+	 * #661 — `crossOrigin` used to snapshot `props.crossorigin` once at
+	 * `setup()` time (same ADR-005 trap as `autoplay`/`muted` above). A
+	 * getter defers the read to `useWaveform`'s `compute()`, which
+	 * re-runs on every source change (`watch(srcRef, …)`), so a themed
+	 * default written by the resolver after `setup()` is honoured on
+	 * the next computation.
+	 ********************************************************/
 	const { peaks } = useWaveform(waveformSrc, {
 		bins: 200,
-		crossOrigin: props.crossorigin === 'use-credentials' || props.crossorigin === 'anonymous'
-			? props.crossorigin
-			: undefined
+		crossOrigin: () => (
+			props.crossorigin === 'use-credentials' || props.crossorigin === 'anonymous'
+				? props.crossorigin
+				: undefined
+		)
 	})
 
 	watch(peaks, (next) => {

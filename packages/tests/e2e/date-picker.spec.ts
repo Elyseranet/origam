@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+import { toggleHstCheckbox } from './_support/histoire-controls'
+
 const STORY_PATH = '/stories/story/components-stories-datepicker-origamdatepicker-story-vue'
 
 /**
@@ -58,6 +60,53 @@ test.describe('OrigamDatePicker', () => {
         const picker = sandbox.locator('[data-cy="date-picker-show-week"]').first()
         await expect(picker).toBeVisible({ timeout: 10000 })
         await expect(picker).toHaveClass(/origam-date-picker--show-week/)
+    })
+
+    // ⛔ C7 (classeur, "9 derniers majeur") — `date-picker.spec.ts` contenait
+    // ZERO occurrence du mot "header" alors que la Variant "Design" expose un
+    // controle "Hide Header" (prop `hideHeader`, forwarded to `<origam-picker>`
+    // via `IPickerProps`) et qu'une Variant dediee "Slots - Header" existe.
+    // Les trois tests suivants couvrent : le header par defaut est rendu, le
+    // controle le masque reellement, et le slot le remplace reellement.
+    test('Design variant — header is rendered by default', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Design', { exact: true }).first().click()
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const picker = sandbox.locator('[data-cy="date-picker-design"]').first()
+        await expect(picker).toBeVisible({ timeout: 10000 })
+        await expect(picker.locator('.origam-date-picker-header')).toBeVisible({ timeout: 5000 })
+    })
+
+    test('Design variant — "Hide Header" checkbox actually removes the header', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Design', { exact: true }).first().click()
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const picker = sandbox.locator('[data-cy="date-picker-design"]').first()
+        await expect(picker).toBeVisible({ timeout: 10000 })
+        await expect(picker.locator('.origam-date-picker-header')).toBeVisible({ timeout: 5000 })
+
+        await toggleHstCheckbox(page, 'Hide Header')
+
+        await expect(picker.locator('.origam-date-picker-header')).toHaveCount(0)
+    })
+
+    test('Slots - Header — custom slot content replaces the default header', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Slots - Header', { exact: true }).first().click()
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const picker = sandbox.locator('[data-cy="date-picker-slot-header"]').first()
+        await expect(picker).toBeVisible({ timeout: 10000 })
+
+        // Contre-epreuve : le default header (origam-date-picker-header) ne
+        // doit PLUS etre rendu — sinon le slot ne remplace rien.
+        await expect(picker.locator('.origam-date-picker-header')).toHaveCount(0)
+        await expect(picker.getByText('Custom header')).toBeVisible({ timeout: 5000 })
     })
 
     test('Slot — actions renders action buttons', async ({ page }) => {

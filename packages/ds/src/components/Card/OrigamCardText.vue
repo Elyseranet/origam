@@ -130,20 +130,29 @@
 		letter-spacing: var(--origam-card-text---letter-spacing);
 		text-transform: var(--origam-card-text---text-transform);
 
-		padding-block-start: calc(var(--origam-card-text---padding-block-start) + var(--origam-card-text---density, 0px));
-		padding-block-end: calc(var(--origam-card-text---padding-block-end) + var(--origam-card-text---density, 0px));
-		padding-inline-start: calc(var(--origam-card-text---padding-inline-start) + var(--origam-card-text---density, 0px));
-		padding-inline-end: calc(var(--origam-card-text---padding-inline-end) + var(--origam-card-text---density, 0px));
-
-		margin-block-start: var(--origam-card-text---margin-block-start);
-		margin-block-end: var(--origam-card-text---margin-block-end);
-		margin-inline-start: var(--origam-card-text---margin-inline-start);
-		margin-inline-end: var(--origam-card-text---margin-inline-end);
-
 		border-color: var(--origam-card-text---border-color);
 		border-style: var(--origam-card-text---border-style);
-		border-width: var(--origam-card-text---border-width);
-		border-radius: var(--origam-card-text---border-radius);
+
+		// #C2 — zero-specificity defaults so scale-driven utility classes
+		// (`.origam--p-4`, `.origam--m-4`, `.origam--border-thick`,
+		// `.origam--rounded-lg`) win the cascade. Without `:where()`, this
+		// scoped rule's [data-v-hash] pushes each declaration to (0,2,0),
+		// beating the utility's (0,1,0), and the corresponding prop's scale
+		// form goes silently inert.
+		:where(&) {
+			padding-block-start: calc(var(--origam-card-text---padding-block-start) + var(--origam-card-text---density, 0px));
+			padding-block-end: calc(var(--origam-card-text---padding-block-end) + var(--origam-card-text---density, 0px));
+			padding-inline-start: calc(var(--origam-card-text---padding-inline-start) + var(--origam-card-text---density, 0px));
+			padding-inline-end: calc(var(--origam-card-text---padding-inline-end) + var(--origam-card-text---density, 0px));
+
+			margin-block-start: var(--origam-card-text---margin-block-start);
+			margin-block-end: var(--origam-card-text---margin-block-end);
+			margin-inline-start: var(--origam-card-text---margin-inline-start);
+			margin-inline-end: var(--origam-card-text---margin-inline-end);
+
+			border-width: var(--origam-card-text---border-width);
+			border-radius: var(--origam-card-text---border-radius);
+		}
 
 		&--density-default {
 			--origam-card-text---density: 0px;

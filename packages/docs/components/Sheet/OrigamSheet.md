@@ -213,10 +213,26 @@ The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
 - The component does not trap focus. If you build a dialog on top of
   `<OrigamSheet>`, layer a focus-trap composable on top.
 - **The drag handle is a real `<button type="button">`**, not a `<div>`
-  carrying `role="button"`. It is therefore focusable, activable with
-  both <kbd>Enter</kbd> and <kbd>Space</kbd>, and exposed as a button to
-  assistive technology — all from the element itself, with no `tabindex`
-  and no keyboard handlers to keep in sync with UA behaviour.
+  carrying `role="button"`. It is therefore focusable and exposed as a
+  button to assistive technology from the element itself, with no
+  `tabindex` to keep in sync with UA behaviour.
+- **The handle answers the keyboard, not just the pointer (C6 a11y fix).**
+  `useSheetSwipe` only wires `pointerdown` / `pointermove` / `pointerup`
+  — until this fix a keyboard or switch-device user who tabbed to a
+  button announced as operable got nothing from it, a WCAG 2.1.1
+  violation. Focusing the handle and pressing a key now steps through
+  the same discrete `snapPoints` the drag gesture commits to:
+
+  | Key | Effect |
+  |---|---|
+  | <kbd>↑</kbd> | Next larger snap point |
+  | <kbd>↓</kbd> | Next smaller snap point |
+  | <kbd>Home</kbd> | Smallest snap point |
+  | <kbd>End</kbd> | Largest snap point |
+
+  Disabled via the `disabled` prop (or when the sheet isn't
+  `swipeable` + `side="bottom"`, in which case the handle doesn't
+  render at all).
 - The handle's accessible name comes from the `handleLabel` prop, which
   carries a **locale key**, not final text — it is resolved through the DS
   `t()` mechanism and therefore follows the active locale. It defaults to

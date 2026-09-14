@@ -1,6 +1,6 @@
 {
   "name": "origam",
-  "version": "2.16.0",
+  "version": "2.17.0",
   "type": "module",
   "description": "origam — a Vue 3 design system with multi-theme design tokens, CSS-first components and TypeScript types.",
   "keywords": [
@@ -114,6 +114,8 @@
     "prepublishOnly": "pnpm run build",
     "prepack": "node -e \"require('fs').copyFileSync('../../CHANGELOG.md','CHANGELOG.md')\"",
     "guards:composables-doc": "node scripts/guards/composables-doc-sync.mjs",
+    "guards:prop-shadowing": "node scripts/guards/prop-shadowing.mjs",
+    "guards:prop-shadowing:self": "node scripts/guards/lib/prop-shadowing.selftest.mjs",
     "docs:composables": "node scripts/analysis/gen-composables-doc.mjs --write"
   },
   "dependencies": {

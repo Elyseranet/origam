@@ -54,8 +54,13 @@ None. `IColorPickerCanvasSlots` is empty.
 
 ## Keyboard
 
-The root is `role="application"` with `tabindex="0"` and a live
-`aria-valuetext`, so it is reachable and announced.
+The root is `role="slider"` with `tabindex="0"`, `aria-valuemin="0"` /
+`aria-valuemax="100"` / `aria-valuenow` (saturation axis) and a live
+`aria-valuetext` describing both axes, so it is reachable and announced.
+`role="application"` was used until the C6 a11y pass: that role does not
+carry `aria-valuenow` / `aria-valuetext` in its supported-states table
+(WAI-ARIA 1.2), so a screen reader had no defined way to read the value
+back — `role="slider"` does.
 
 | Key | Effect |
 |---|---|

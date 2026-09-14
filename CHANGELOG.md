@@ -18,6 +18,153 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.17.0] - 2026-09-14
+
+> ### ⛔ DÉROGATION ASSUMÉE — cette version MINEURE porte 8 ruptures d'API
+>
+> Le versioning sémantique, et la règle de ce dépôt (`CLAUDE.md`, « Work
+> priorities and versioning »), imposent une **majeure** pour une rupture.
+> Les 8 entrées `⚠️ BREAKING` ci-dessous en sont, et elles sortent malgré
+> tout en `2.17.0`.
+>
+> **C'est une décision explicite du mainteneur**, prise le 2026-09-14 après
+> que la recommandation inverse (`3.0.0`, ou `3.0.0-rc.1` validée par le
+> site marketing) lui ait été présentée avec ses conséquences.
+>
+> **Ce que ça implique concrètement** : un consommateur épinglé en
+> `^2.16.0` reçoit ces 8 ruptures **automatiquement**, sans action de sa
+> part, et son build peut casser sans avertissement. Les recettes de
+> migration sont dans chaque entrée ci-dessous — il n'y a pas de
+> `docs/migration/v2-to-v3.md`, la ROADMAP le prévoyait pour une v3.
+>
+> Suivi de remédiation : voir le ticket ouvert le jour de cette release.
+
+
+### ⚠️ BREAKING — aspect ratio now uses CSS `aspect-ratio`; an explicit `height` also constrains the width
+
+`<OrigamResponsive>`, `<OrigamImg>`, `<OrigamCarouselItem>` and `<OrigamVideo>`
+held their ratio through a `__sizer` child (`padding-block-end` as a
+percentage) paired with a pull-back `margin-block-start: -N%` on `__content`.
+That pair is replaced by the native `aspect-ratio` property.
+
+**Why it had to change.** The pull-back margin cancelled the sizer's own
+contribution to the container height — but only when the default slot was
+filled (`__content` is `v-if="slots.default"`). `<OrigamImg>` renders into
+`#additional`, never `#default`, so it never emitted the margin and appeared
+healthy. Measured in Chromium, parent `max-width: 480px`:
+
+| case | before | after |
+|---|---|---|
+| `<OrigamResponsive>` 16/9 | **`480 × 26`** | **`480 × 270`** |
+| `<OrigamResponsive>` prop `aspectRatio` 16/9 | aspect **1.473** | aspect **1.778** |
+| `<OrigamResponsive>` prop `aspectRatio` 4/3 | aspect **1.070** | aspect **1.334** |
+| `<OrigamImg>` (3 cases) | — | **identical to the pixel** |
+| `<OrigamCarouselItem>` | `596 × 500` | `596 × 500` |
+
+Both ratios resolved to the **same height** before: the `aspectRatio` prop of
+`<OrigamResponsive>` did nothing at all.
+
+**What changes for you.** `aspect-ratio` resolves the *missing* axis in both
+directions; the padding hack could only derive height from width. An explicit
+`height` therefore now constrains the width too:
+
+```
+height: 120px on a 16/9 box    before: 480 × 120    after: 213.33 × 120
+```
+
+**Migration** — if you set a height and want the full width (a banner, for
+instance), set the width explicitly as well:
+
+```vue
+<origam-responsive :aspect-ratio="16 / 9" height="120px" width="100%"/>
+```
+
+This was a deliberate decision: the component's job is to hold its ratio, and
+honouring it in both axes is the faithful behaviour. Measured:
+`height` + `width: 400px` renders `400 × 120`.
+
+**Removed:** the `__sizer` child and its SCSS rule, `contentStyles` (the
+pull-back margin), the 4 `__sizer` tokens across the 4 token sheets, and the
+dead `.origam-img--booting :deep(.origam-responsive__sizer)` rule with its
+local token. The `aspect-ratio-{default,square,portrait}` tokens stay —
+already dormant beforehand, separate debt.
+
+`<OrigamVideo>` was a fourth consumer, not listed in the ticket. It carried a
+`test.fail` describing this exact fix word for word; removed, the test passes.
+
+### ⚠️ BREAKING — `inline` removed from `IResponsiveProps` (so from `<OrigamResponsive>`, `<OrigamImg>`, `<OrigamCarouselItem>`)
+
+**The prop made the component disappear.** It is not a tuning problem, it is
+a design contradiction: `inline` painted `display: inline-flex`, which makes
+the root resolve its width *shrink-to-fit*. `<OrigamResponsive>` holds its
+aspect ratio through a `__sizer` whose height is a `padding-block-end`
+expressed as a **percentage** — and percentages resolve against the **width**.
+Width `auto` → `0` → padding `0` → height `0`.
+
+Measured in Chromium against Histoire (one story rendering the three
+consumers side by side, `aspect-ratio` 16/9, parent `600px`, **no explicit
+width** — the realistic case), bounding box of the rendered content and the
+sizer's resolved `padding-block-end`:
+
+| Component | `inline` off | `inline` on |
+|---|---|---|
+| `<OrigamResponsive>` | `600 × 0`, sizer `337.5px` | **`0 × 0`**, sizer `0px` |
+| `<OrigamImg>` | `600 × 338`, sizer `337.5px` | **`0 × 0`**, sizer `0px` |
+| `<OrigamCarouselItem>` | `600 × 500`, sizer `1054.69px` | **`0 × 500`**, sizer `0px` |
+
+All three collapse the **width** to `0`. On `<OrigamCarouselItem>` the height
+survives only because the carousel imposes it (`height: inherit` on the
+slide) — the image is still `0` wide, so still invisible.
+
+The two stories that appeared to demonstrate the prop both passed an explicit
+`:width`/`:height` alongside it (`40px`), which is precisely the workaround
+the collapse forces. The e2e test that covered it asserted only that
+`display` *contained* `"inline"` — a bar a plain `inline` clears too — so it
+never measured the consequence.
+
+**Removed:**
+
+- `inline?: boolean` from `IResponsiveProps` (reaches `IImgProps` and
+  `ICarouselItemProps` by extension);
+- the `.origam-responsive--inline` modifier class and its SCSS rule in
+  `OrigamResponsive.vue`;
+- the two now-dead tokens `--origam-responsive--inline---display` and
+  `--origam-responsive--inline---flex`, in `light.css`, `dark.css` (both the
+  `[data-theme="dark"]` block and the `prefers-color-scheme` one),
+  `_light.scss`, `_dark.scss`, and the regenerated `main.css`. They were
+  never listed in `tokens.type.ts`, so nothing to remove there;
+- `'inline'` from the `pick(...)` whitelist `OrigamImg` forwards to
+  `<origam-responsive>`;
+- the story controls (Img `Functional` + `Default`, Responsive `Functional` +
+  `Default`) and the Responsive `Prop — inline` Variant;
+- the doc sections and rows (`OrigamResponsive.md` "Inline mode", props
+  interface, anatomy, token table; `OrigamCarouselItem.md` props row);
+- the marketing API-reference seed entries for `responsive` (prop, anatomy
+  class, playground switch, "Inline mode" example).
+
+**Migration:** nothing to do in the common case. A leftover `inline`
+attribute is no longer a declared prop, so it falls through to `$attrs` and
+lands on the root `<div>` as an inert HTML attribute — measured, mount + one
+tick: `<div id="origam-responsive-v-0" class="origam-responsive"
+inline="true">`. It paints nothing, and no pixel moves, because the prop
+already painted a zero-sized box. The root simply goes back to
+`display: flex`, i.e. block-level in the flow instead of an invisible inline
+box.
+
+⛔ **Not offered here: a "wrap it in an inline-block" recipe.** It was tried
+and **measured wrong**, so it is not documented as a workaround: a bare
+`<OrigamResponsive aspect-ratio="1/1">` inside a
+`<span style="display:inline-block;width:40px">` renders `40 × 0` — the sizer
+resolves correctly (`padding-block-end: 40px`) but the root box does not take
+its height. That is a **separate, pre-existing** behaviour of
+`<OrigamResponsive>` used standalone, unrelated to `inline` and unchanged by
+this removal — measured identically before it, with `inline` off: `Design`
+`480 × 26` for a sizer of `480 × 270`, `Slots - Default` idem. `<OrigamImg>`
+is unaffected (`600 × 338`), because it sets its own height. Opened as
+**#709**, not fixed here.
+
+Tracked as **#703**.
+
 ### ⚠️ BREAKING — `label` removed from `IValidationProps` (so from `<OrigamInput>`)
 
 **No rendered output changes.** The prop painted nothing: measured at mount

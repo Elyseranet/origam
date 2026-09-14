@@ -10,6 +10,7 @@
 		>
 			<template #default="{ state }">
 				<origam-date-picker
+						data-cy="date-picker-design"
 						:color="state.color"
 						:padding="state.padding"
 						:margin="state.margin"
@@ -60,7 +61,8 @@
 					<HstSelect   v-model="state.weeksInMonth"       title="Weeks In Month" :options="WEEKS_IN_MONTH_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Header">
-					<HstText v-model="state.title"  title="Title"/>
+					<HstText v-model="state.title" title="Title"/>
+					<HstText v-model="state.text"  title="Controls Text"/>
 				</StoryGroup>
 				<StoryGroup title="Spacing">
 					<HstText v-model="state.padding" title="Padding"/>
@@ -174,7 +176,10 @@
 		</Variant>
 
 		<Variant title="Slots - Header">
-			<origam-date-picker v-model="date">
+			<origam-date-picker
+					v-model="date"
+					data-cy="date-picker-slot-header"
+			>
 				<template #header>
 					<span>Custom header</span>
 				</template>

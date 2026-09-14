@@ -13,12 +13,38 @@ transition, so opening and closing animate the region's height.
 
 ## Basic usage
 
+> ⛔ **Do not nest `<origam-expansion-panel-header>` / `<origam-expansion-panel-content>`
+> as plain children of `<origam-expansion-panel>`.** Its `default` slot is
+> forwarded straight into an auto-generated content region
+> (`hasContent = slots.default || !!props.content`), and its header only
+> renders when `title` (or `#header`/`#title`/`#prepend`/`#append`) is
+> supplied — so raw children like this render **neither** a header nor a
+> working body. Pass `title` / `content` (and this component's other props)
+> directly on `<origam-expansion-panel>` instead; it forwards them:
+
 ```vue
 <template>
     <origam-expansion-panels>
-        <origam-expansion-panel>
-            <origam-expansion-panel-header title="Details"/>
-            <origam-expansion-panel-content content="Panel body."/>
+        <origam-expansion-panel title="Details" content="Panel body."/>
+    </origam-expansion-panels>
+</template>
+```
+
+Reach for `<origam-expansion-panel-content>` directly only through the
+parent's `#wrapper` scoped slot, when you need full control (a custom
+`#loader`, for instance):
+
+```vue
+<template>
+    <origam-expansion-panels>
+        <origam-expansion-panel title="Details">
+            <template #wrapper="wrapperProps">
+                <origam-expansion-panel-content v-bind="wrapperProps" content="Panel body.">
+                    <template #loader>
+                        <span>Loading…</span>
+                    </template>
+                </origam-expansion-panel-content>
+            </template>
         </origam-expansion-panel>
     </origam-expansion-panels>
 </template>

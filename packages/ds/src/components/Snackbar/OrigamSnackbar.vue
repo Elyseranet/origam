@@ -82,6 +82,7 @@
     computed,
     inject,
     mergeProps,
+    onBeforeUnmount,
     onMounted,
     ref,
     shallowRef,
@@ -204,6 +205,19 @@
   onMounted(() => {
     if (isActive.value) startTimeout()
   })
+
+  /*********************************************************
+   * Teardown (#706)
+   *
+   * @description
+   * `startTimeout` arms a `window.setTimeout` for the whole snackbar
+   * duration (seconds), and nothing used to cancel it on unmount — only
+   * hovering did. The timer therefore outlived the component, and under
+   * Vitest it could fire after the jsdom environment was torn down,
+   * where `window` no longer exists: an unhandled error that fails the
+   * entire run without a single red test.
+   ********************************************************/
+  onBeforeUnmount(clearTimeout)
 
   /*********************************************************
    * Interaction

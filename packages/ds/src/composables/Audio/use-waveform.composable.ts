@@ -1,6 +1,7 @@
 import {
     ref,
     type Ref,
+    toValue,
     watch
 } from 'vue'
 
@@ -88,7 +89,7 @@ export function useWaveform (
         isComputing.value = true
         try {
             const response = await fetch(src, {
-                credentials: options.crossOrigin === 'use-credentials' ? 'include' : 'same-origin',
+                credentials: toValue(options.crossOrigin) === 'use-credentials' ? 'include' : 'same-origin',
                 // Hint the network stack: we want the bytes, not the
                 // decoded media. The browser may still cache the
                 // response in the media cache, which is fine — both

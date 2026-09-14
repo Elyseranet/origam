@@ -85,21 +85,24 @@
 				})"
 		>
 			<template #default="{ state }">
-				<origam-img
-						:alt="state.alt"
-						:aspect-ratio="state.aspectRatio"
-						:cover="state.cover"
-						:crossorigin="state.crossorigin || undefined"
-						:draggable="state.draggable"
-						:eager="state.eager"
-						:inline="state.inline"
-						:lazy-src="state.lazySrc || undefined"
-						:referrerpolicy="state.referrerpolicy || undefined"
-						:sizes="state.sizes || undefined"
-						:src="state.src"
-						:srcset="state.srcset || undefined"
-						style="max-width: 480px;"
-				/>
+				<p style="max-width: 640px;">
+					Texte avant.
+					<origam-img
+							:alt="state.alt"
+							:aspect-ratio="state.aspectRatio"
+							:cover="state.cover"
+							:crossorigin="state.crossorigin || undefined"
+							:draggable="state.draggable"
+							:eager="state.eager"
+							:lazy-src="state.lazySrc || undefined"
+							:referrerpolicy="state.referrerpolicy || undefined"
+							:sizes="state.sizes || undefined"
+							:src="state.src"
+							:srcset="state.srcset || undefined"
+							style="max-width: 240px;"
+					/>
+					Texte après.
+				</p>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Source">
@@ -113,7 +116,7 @@
 					<HstCheckbox v-model="state.eager" title="Eager (skip IntersectionObserver)"/>
 				</StoryGroup>
 				<StoryGroup title="Layout">
-					<HstCheckbox v-model="state.inline" title="Inline"/>
+					<HstSelect v-model="state.aspectRatio" title="Aspect Ratio" :options="ASPECT_RATIO_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Attributes">
 					<HstCheckbox v-model="state.draggable"     title="Draggable"/>
@@ -345,8 +348,7 @@
 					<HstText     v-model="state.height"      title="Height"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
-					<HstCheckbox v-model="state.eager"  title="Eager"/>
-					<HstCheckbox v-model="state.inline" title="Inline"/>
+					<HstCheckbox v-model="state.eager" title="Eager"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -365,6 +367,7 @@
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
+		ASPECT_RATIO_OPTIONS,
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,

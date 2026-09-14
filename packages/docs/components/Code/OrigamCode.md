@@ -128,41 +128,75 @@ screen-reader-readable and W3C-valid.
 
 ## Theme integration
 
-The component follows `<html data-theme="…">` automatically via the origam
-design system CSS variables — no `theme` prop is needed or available.
+The component's own surface (background, border, header, line gutter, prompt,
+line-highlight, scrollbar) follows `<html data-theme="…">` via the regular
+`--origam-code---*` / `--origam-code__*---*` design tokens, same as any other
+origam component.
 
-shiki uses its built-in `css-variables` theme, which emits spans with
-`style="color: var(--shiki-token-keyword)"` rather than hardcoded hex
-colours. The component SCSS maps each `--shiki-*` variable to an origam
-design token:
+**Syntax colouring is a separate, DELIBERATELY NON-tokenised mechanism.**
+There is no `--origam-code__syntax---*` token family (removed in #661/C2 —
+see below for why), and no `theme` prop.
 
-| shiki CSS var | origam token | Scope |
-|---|---|---|
-| `--shiki-foreground` | `--origam-code__syntax---foreground` | Default text |
-| `--shiki-token-keyword` | `--origam-code__syntax---keyword` | Keywords (`if`, `const`, …) |
-| `--shiki-token-string` | `--origam-code__syntax---string` | String literals |
-| `--shiki-token-string-expression` | `--origam-code__syntax---string-expression` | Template literals |
-| `--shiki-token-function` | `--origam-code__syntax---function` | Function names |
-| `--shiki-token-parameter` | `--origam-code__syntax---parameter` | Parameters |
-| `--shiki-token-constant` | `--origam-code__syntax---constant` | Constants |
-| `--shiki-token-comment` | `--origam-code__syntax---comment` | Comments |
-| `--shiki-token-punctuation` | `--origam-code__syntax---punctuation` | Punctuation |
-| `--shiki-token-link` | `--origam-code__syntax---link` | Links (Markdown) |
-| `--shiki-token-inserted` | `--origam-code__syntax---inserted` | Diff insertions |
+`useCode` calls shiki with two real themes and `defaultColor: false`:
 
-Switching `<html data-theme="dark">` automatically updates all syntax
-colours via CSS cascade — no JavaScript re-render is triggered.
+```ts
+codeToHtml(code, {
+    themes: { light: 'github-light', dark: 'github-dark' },
+    defaultColor: false
+})
+```
 
-### Customising syntax colours
+In this mode shiki writes BOTH computed colours directly onto every
+token `<span>` it emits, e.g.
+`style="--shiki-light:#24292e;--shiki-dark:#e1e4e8"`. The component's scoped
+`<style>` block then just picks whichever custom property the current
+`data-theme` / `data-mode` calls for:
 
-Override any `--shiki-*` variable on the component's root element or any
-ancestor to change specific token colours for a subtree:
-
-```css
-.my-scope .origam-code {
-    --shiki-token-keyword: var(--my-brand-red);
+```scss
+.origam-code .shiki { color: var(--shiki-light); }
+html[data-mode="dark"] .origam-code .shiki,
+html:not([data-mode])[data-theme="dark"] .origam-code .shiki {
+    color: var(--shiki-dark);
 }
 ```
+
+Switching `<html data-theme="dark">` re-resolves `var(--shiki-dark)` for
+every span already in the DOM — no JavaScript re-render, no re-tokenising.
+
+### Why there is no per-token-type design token (#661/C2)
+
+Earlier versions of shiki (and of this doc) used a `css-variables` BUILT-IN
+THEME that emitted one **named, stable** CSS variable per token TYPE
+(`--shiki-token-keyword`, `--shiki-token-string`, …), which the origam token
+sheets then mapped to `--origam-code__syntax---keyword` /
+`---string` / etc. — a real, themeable design-token surface.
+
+**shiki v4.3.1 no longer ships that `css-variables` theme.** The dual-theme
+mode above is the maintained replacement, and it writes `--shiki-light` /
+`--shiki-dark` **per span**, carrying each theme's own literal colour for
+that specific token — there is no longer a stable, named variable per token
+TYPE to hang a design token on. The 12 `--origam-code__syntax---*` tokens
+were declared in `light.css` / `dark.css` but read by nothing (0 occurrences
+in `OrigamCode.vue` — confirmed by `grep`, and by the `token-var-channels`
+guard's dormant list), because the mapping they were meant to feed no longer
+exists. They were removed, not renamed: recreating them under a different
+name would still not connect to anything shiki emits today.
+
+Consequences:
+
+- **Syntax colours are not overridable per token type today.** Overriding
+  `--shiki-light` / `--shiki-dark` on an ancestor changes the DEFAULT colour
+  applied before a span's own inline value takes over — since every
+  highlighted span sets its own inline `--shiki-light`/`--shiki-dark`, an
+  ancestor override has no visible effect on highlighted code, only on
+  plain-text fallback (`format`-less content with no spans).
+- **The theme switch stays free of JS re-render** — this property survives
+  the removal intact, since it comes from the dual-theme span markup, not
+  from the removed tokens.
+- **A brand wanting its own syntax palette picks its own shiki theme**,
+  not a token override: pass different theme names to `useCode`/`codeToHtml`
+  (a bundled shiki theme, or a custom Textmate-grammar-compatible theme
+  JSON). That is a build-time/composable-level choice, not a CSS one.
 
 ## Performance
 
@@ -174,8 +208,9 @@ ancestor to change specific token colours for a subtree:
   Theme switches are free — the CSS cascade handles colour changes with
   no JS involved.
 - **Tarball impact**: shiki sits in `dependencies` and adds ~3 MB to the
-  installed `node_modules` (curated to 14 langs + 1 built-in theme — far
-  below the ~30 MB of the full default bundle). The actual JS shipped to
+  installed `node_modules` (curated to 14 langs + 2 built-in themes,
+  `github-light` + `github-dark` — far below the ~30 MB of the full default
+  bundle). The actual JS shipped to
   the browser is split per chunk via dynamic import.
 
 ## Accessibility

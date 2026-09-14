@@ -71,7 +71,7 @@
       v-if="isNodeExpanded && hasChildren"
       class="origam-treeview-node__children"
       role="group"
-      :aria-label="`${node.label} contents`"
+      :aria-label="childrenAriaLabel"
     >
       <origam-treeview-node
         v-for="child in node.children"
@@ -103,6 +103,7 @@
 
   import { ORIGAM_TREEVIEW_KEY } from '../../consts/Treeview/treeview.const'
   import { TREEVIEW_SELECT_MODE, TREEVIEW_SELECTABLE_NODES } from '../../enums/Treeview/treeview.enum'
+  import { useLocale } from '../../composables/Commons/locale.composable'
   import { useProps } from '../../composables/Commons/props.composable'
   import { useStyle } from '../../composables/Commons/style.composable'
 
@@ -125,8 +126,17 @@
 
   const { filterProps } = useProps<ITreeviewNodeProps>(props)
 
+  const { t } = useLocale()
+
   const slots = useSlots()
   const hasNodeSlot = computed(() => !!slots.node)
+
+  /*********************************************************
+   * #C8 — the children group's accessible name concatenated the
+   * English word "contents" directly onto `node.label`. Localised via
+   * `origam.treeview.node_children_aria_label` ("{0} contents").
+   ********************************************************/
+  const childrenAriaLabel = computed(() => t('origam.treeview.node_children_aria_label', props.node.label))
 
   // Inject treeview context — always provided by OrigamTreeview wrapper
   const treeview = inject(ORIGAM_TREEVIEW_KEY)

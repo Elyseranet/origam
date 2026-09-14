@@ -11,7 +11,7 @@
 // OrigamDisplay injection that OrigamOverlay requires.
 
 import { mount, type VueWrapper } from '@vue/test-utils'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ref } from 'vue'
 
 import OrigamMediaController from '@origam/components/Media/OrigamMediaController.vue'
@@ -447,6 +447,23 @@ describe('OrigamMediaController — quality emits', () => {
 })
 
 describe('OrigamMediaController — download emit', () => {
+    /*
+     * #706 — `downloadUrl` is cross-origin, so the component takes its
+     * `fetch` → blob branch. Measured: this spec really did open a socket
+     * to https://example.com/foo.mp4 on every run. The settle time of
+     * that request is DNS/TLS latency, which is what made the resulting
+     * post-teardown crash non-deterministic (Node 22 failed where Node 24
+     * passed on the same commit). A unit test must not depend on the
+     * network — stub it so the promise settles on our own clock.
+     */
+    beforeEach(() => {
+        vi.stubGlobal('fetch', vi.fn(() => Promise.reject(new Error('network disabled in unit tests'))))
+    })
+
+    afterEach(() => {
+        vi.unstubAllGlobals()
+    })
+
     it('clicking the download row emits `download` when downloadable + downloadUrl are set', async () => {
         const { wrapper } = mountController({ downloadable: true, downloadUrl: 'https://example.com/foo.mp4' })
         const exposed = wrapper.vm as any

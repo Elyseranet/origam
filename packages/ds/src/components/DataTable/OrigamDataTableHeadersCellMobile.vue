@@ -235,7 +235,18 @@
 	const {someSelected, allSelected, selectAll} = useSelection()
 	const {getSortIcon} = useHeadersCell(props)
 
-	const headerProps = mergeProps(props.headerProps ?? {})
+	/*********************************************************
+	 * ADR-005 — computed, not a plain const (#371)
+	 *
+	 * @description
+	 * `mergeProps(props.headerProps ?? {})` evaluated directly in the
+	 * `setup()` body is a snapshot taken BEFORE the theme-props-resolver's
+	 * `beforeCreate` hook patches `instance.props` — a theme targeting
+	 * `theme.components['origam-data-table-headers-cell-mobile'].headerProps`
+	 * never lands, and nothing warns. Wrapping it in a `computed` defers
+	 * the read to render time, after the resolver has run.
+	 ********************************************************/
+	const headerProps = computed(() => mergeProps(props.headerProps ?? {}))
 
 	const displayItems = computed<Array<any>>(() => {
 		return props.columns

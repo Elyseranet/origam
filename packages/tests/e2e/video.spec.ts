@@ -242,24 +242,50 @@ test.describe('OrigamVideo — controls modes', () => {
     })
 })
 
-test.describe('OrigamVideo — tracks [STORY COVERAGE MISSING]', () => {
-    test.fixme('captions are declared as <track kind="captions"> children of the <video>', async () => {
-        // No Variant in the current story passes a `:tracks` array —
-        // neither Design, Functional, Default, nor any Events/Slots
-        // Variant declares captions. Needs a story fixture, not a
-        // spec-only change.
+test.describe('OrigamVideo — tracks', () => {
+    test('captions are declared as <track kind="captions"> children of the <video>', async ({ page }) => {
+        await openVariant(page, 'Prop — tracks (captions)')
+        const sandbox = sandboxOf(page)
+
+        const video = sandbox.locator('[data-cy="origam-video-el"]').first()
+        await expect(video).toBeVisible()
+
+        const track = video.locator('track')
+        await expect(track).toHaveCount(1)
+        await expect(track).toHaveAttribute('kind', 'captions')
+        await expect(track).toHaveAttribute('srclang', 'en')
+        await expect(track).toHaveAttribute('label', 'English')
     })
 
-    test.fixme('the toolbar exposes a captions toggle when tracks are passed', async () => {
-        // Same gap — no fixture with tracks means no way to reach
-        // `[data-cy="origam-video-captions"]` anymore.
+    test('the toolbar exposes a captions toggle when tracks are passed', async ({ page }) => {
+        await openVariant(page, 'Prop — tracks (captions)')
+        const sandbox = sandboxOf(page)
+
+        const toggle = sandbox.locator('[data-cy="origam-video-captions"]')
+        await expect(toggle).toBeVisible()
+
+        // The fixture's only track carries `default: true`, so the browser
+        // auto-selects it and `onLoadedMetadata` syncs `captionsEnabled` to
+        // true — label offers to turn captions OFF, active class is on.
+        await expect(toggle).toHaveAttribute('aria-label', 'Disable captions')
+        await expect(toggle).toHaveClass(/origam-btn--active/)
+
+        // Clicking must visibly flip both — a live label AND a live class,
+        // not a control that merely exists without doing anything.
+        await toggle.click()
+        await expect(toggle).toHaveAttribute('aria-label', 'Enable captions')
+        await expect(toggle).not.toHaveClass(/origam-btn--active/)
     })
 })
 
 test.describe('OrigamVideo — aspect ratio', () => {
+    // #709 — this test carried a `test.fail(true, 'DS BUG: useAspectRatio
+    // implements aspect ratio via padding-block-end on an inner __sizer div,
+    // not via the CSS `aspect-ratio` property on the root wrapper […] Fix:
+    // useAspectRatio should emit `aspect-ratio: <n>` on the root element')`.
+    // That is exactly what #709 did, so the expected failure is retired and
+    // the test now runs for real.
     test('aspect-ratio prop maps to the CSS aspect-ratio property on the wrapper', async ({ page }) => {
-        test.fail(true, 'DS BUG: useAspectRatio composable implements aspect ratio via padding-block-end (padding trick) on an inner __sizer div, not via the CSS `aspect-ratio` property on the root wrapper. getComputedStyle(root).aspectRatio returns "auto". The prop is functional but the CSS contract differs from the documented API. Fix: useAspectRatio should emit `aspect-ratio: <n>` on the root element instead of padding-block-end on a sizer child.')
-
         // "Prop — aspectRatio (16/9 / 4/3 / 1/1 / 21/9 / 9/16)" is now the
         // "Design" Variant's "Aspect Ratio" HstSelect (init '16/9') — a
         // single instance switched sequentially instead of five parallel

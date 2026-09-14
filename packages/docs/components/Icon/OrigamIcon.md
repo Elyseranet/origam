@@ -98,10 +98,15 @@ dispatched to, so `OrigamSvgIcon` / `OrigamComponentIcon` /
 dispatcher. Mounting a leaf directly *does* give you a `<div>`. Pinned by
 `packages/tests/TU/components/Icon/icon-root-tag.spec.ts`.
 
-## Click handler (button mode)
+## Click handler
 
-When `OrigamIcon` receives an `@click` listener it switches to button
-semantics: `role="button"`, `cursor: pointer`, no `aria-hidden`.
+When `OrigamIcon` receives an `@click` listener, `aria-hidden` is dropped
+(`useIconAccessibility` — see **Accessibility**) so assistive technology no
+longer ignores the icon. **It does not become a button**: since #653 no
+`role="button"` is added, and the icon still exposes no `tabindex` and no
+keyboard handler. Prefer `<origam-btn icon="…">` (icon-only mode) for an
+actually clickable icon — see **Migrating off `@click` on an icon (#653)**
+below.
 
 ```vue
 <template>
@@ -175,7 +180,8 @@ single control from showing two divergent disabled treatments.
 **None.** `IIconComponentEmits` is empty on purpose: none of the five
 components calls `emit(…)` anywhere. A `@click` listener you attach is a
 plain DOM listener — which is exactly what `useIconAccessibility` detects to
-switch the icon into button mode (see **Accessibility**).
+drop `aria-hidden` (see **Accessibility**; it does **not** add
+`role="button"`, since #653).
 
 ## Props (interface)
 

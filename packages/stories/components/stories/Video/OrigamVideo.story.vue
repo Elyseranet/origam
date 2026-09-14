@@ -285,6 +285,18 @@
 			</div>
 		</Variant>
 
+		<Variant title="Prop — tracks (captions)">
+			<div class="story-shell">
+				<origam-video
+						:src="BIG_BUCK_BUNNY"
+						:poster="BUNNY_POSTER"
+						:tracks="CAPTION_TRACKS"
+						class="story-video"
+				/>
+				<p class="story-hint">Open the settings-adjacent captions button in the toolbar to toggle the English track declared below.</p>
+			</div>
+		</Variant>
+
 		<Variant title="Slots - Controls">
 			<div class="story-shell">
 				<origam-video
@@ -430,7 +442,8 @@
 	import { OrigamVideo } from '@origam/components'
 	import type {
 		IVideoProps,
-		IVideoSource
+		IVideoSource,
+		IVideoTrack
 	} from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
@@ -446,6 +459,12 @@
 
 	const BIG_BUCK_BUNNY = 'https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c0/Big_Buck_Bunny_4K.webm/Big_Buck_Bunny_4K.webm.720p.vp9.webm'
 	const BUNNY_POSTER = 'https://peach.blender.org/wp-content/uploads/title_anouncement.jpg'
+
+	const ENGLISH_VTT = `data:text/vtt,${encodeURIComponent('WEBVTT\n\n00:00:00.000 --> 00:00:05.000\nHello captions.\n')}`
+
+	const CAPTION_TRACKS: Array<IVideoTrack> = [
+		{ kind: 'captions', src: ENGLISH_VTT, srclang: 'en', label: 'English', default: true }
+	]
 
 	const QUALITY_SOURCES: Array<IVideoSource> = [
 		{ src: 'https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_320x180.mp4', type: 'video/mp4', quality: '180p', label: '180p (SD)' },
@@ -578,6 +597,12 @@
 
 	.story-custom-error small {
 		opacity: 0.85;
+	}
+
+	.story-hint {
+		margin: 0;
+		font-size: 0.8125rem;
+		color: var(--origam-color__text---secondary);
 	}
 </style>
 

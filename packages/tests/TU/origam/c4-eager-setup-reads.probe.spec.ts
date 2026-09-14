@@ -67,7 +67,14 @@ describe('C4 — la valeur du theme atteint-elle une prop lue eagerly dans setup
         expect(wrapper.html()).toContain('year')
     })
 
-    it.fails('OrigamImg.eager — seed `shallowRef(props.eager ? LOADING : IDLE)` ligne 159', async () => {
+    // Bascule de `it.fails` a `it` : le defaut est CORRIGE. `state` seede
+    // desormais toujours IDLE (comportement inchange — `init()`, appele
+    // depuis `onBeforeMount` donc APRES le `beforeCreate` du resolveur,
+    // ecrasait deja la valeur seedee quand `eager` resolvait a `true`) et
+    // l'attribut natif `loading` (eager -> 'eager' / lazy -> 'lazy') est
+    // lu paresseusement via un computed, ce qui rend aussi `eager` visible
+    // dans le DOM rendu (CSS/HTML-first, cf. CLAUDE.md).
+    it('OrigamImg.eager — seed `shallowRef(props.eager ? LOADING : IDLE)` ligne 159', async () => {
         const wrapper = mount(OrigamImg, {
             props: { src: 'https://example.invalid/x.png' },
             global: { plugins: [sonde({ 'origam-img': { eager: true } })] }
@@ -79,8 +86,14 @@ describe('C4 — la valeur du theme atteint-elle une prop lue eagerly dans setup
         expect(wrapper.html()).toContain('loading')
     })
 
-    it.fails('OrigamTreeview.expandedValue — seed `ref(new Set(props.expandedValue ?? []))` ligne 72', async () => {
-        const items = [{ value: 'a', title: 'A', children: [{ value: 'a1', title: 'A1' }] }]
+    // Bascule de `it.fails` a `it` : le defaut est CORRIGE (seed UNSEEDED +
+    // lecture paresseuse via un computed inscriptible, meme patron que
+    // MediaController #429 / DatePicker — `selectedSet` avait le meme
+    // defaut sur `modelValue`, corrige au meme commit).
+    it('OrigamTreeview.expandedValue — seed `ref(new Set(props.expandedValue ?? []))` ligne 72', async () => {
+        // `ITreeviewNode` shape is `{ id, label, children }` — not
+        // `{ value, title }` (that's a different family's convention).
+        const items = [{ id: 'a', label: 'A', children: [{ id: 'a1', label: 'A1' }] }]
         const wrapper = mount(OrigamTreeview, {
             props: { items },
             global: { plugins: [sonde({ 'origam-treeview': { expandedValue: ['a'] } })] }

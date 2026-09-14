@@ -4,7 +4,7 @@
 			:class="treeviewClasses"
 			:style="treeviewStyles"
 			role="tree"
-			:aria-label="ariaLabel || 'File tree'"
+			:aria-label="resolvedAriaLabel"
 			:aria-multiselectable="selectMode === TREEVIEW_SELECT_MODE.MULTIPLE || undefined"
 			@keydown="handleKeydown"
 	>
@@ -37,10 +37,12 @@
 
 	import OrigamTreeviewNode from './OrigamTreeviewNode.vue'
 	import { ORIGAM_TREEVIEW_KEY } from '../../consts/Treeview/treeview.const'
+	import { UNSEEDED } from '../../consts/Commons/vmodel.const'
 	import { DENSITY } from '../../enums/Commons/density.enum'
 	import { SIZES } from '../../enums/Commons/size.enum'
 	import { TREEVIEW_SELECT_MODE, TREEVIEW_SELECTABLE_NODES } from '../../enums/Treeview/treeview.enum'
 	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useSize } from '../../composables/Commons/size.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
@@ -68,8 +70,46 @@
 
 	const { filterProps } = useProps<ITreeviewProps>(props)
 
-	// Expanded set — source of truth
-	const expandedSet = ref<Set<string>>(new Set(props.expandedValue ?? []))
+	/*********************************************************
+	 * resolvedAriaLabel — critere C8
+	 *
+	 * @description
+	 * The root `aria-label` fell back to a hardcoded English literal
+	 * (`'File tree'`) when the consumer did not pass `ariaLabel` —
+	 * never translated regardless of the active locale. Routed
+	 * through `useLocale().t()`, deferred into a `computed` (evaluated
+	 * at render, safe for ADR-005) so a `theme.components` default for
+	 * `ariaLabel` still wins over the locale fallback.
+	 ********************************************************/
+	const { t } = useLocale()
+
+	const resolvedAriaLabel = computed(() => props.ariaLabel || t('origam.treeview.aria_label'))
+
+	/*********************************************************
+	 * expandedSet — source of truth, ADR-005 lazy seed
+	 *
+	 * @description
+	 * `expandedValue` carries no `withDefaults` default, so
+	 * `props.expandedValue` is `undefined` unless the consumer passes
+	 * it explicitly OR a theme sets one on `origam-treeview`. Used to
+	 * be seeded via a plain `ref(new Set(props.expandedValue ?? []))`
+	 * — an EAGER read in the body of `setup()`, taken BEFORE the
+	 * ADR-005 theme-props resolver's `beforeCreate` patches
+	 * `instance.props`. Same family as #429/#448: the internal ref
+	 * starts `UNSEEDED`, and the fallback is only evaluated on first
+	 * read, through the writable `expandedSet` computed below
+	 * (evaluated at render, after `beforeCreate`). Every existing call
+	 * site (`expandedSet.value = …`) keeps working unchanged since a
+	 * writable `computed` implements the same `.value` interface as a
+	 * `ref`.
+	 ********************************************************/
+	const internalExpandedSet = ref<Set<string> | typeof UNSEEDED>(UNSEEDED)
+	const expandedSet = computed<Set<string>>({
+		get: () => internalExpandedSet.value === UNSEEDED
+				? new Set(props.expandedValue ?? [])
+				: internalExpandedSet.value,
+		set: (value) => { internalExpandedSet.value = value }
+	})
 
 	watch(
 		() => props.expandedValue,
@@ -87,7 +127,22 @@
 		return new Set([v])
 	}
 
-	const selectedSet = ref<Set<string>>(toSelectedSet(props.modelValue))
+	/*********************************************************
+	 * selectedSet — source of truth, ADR-005 lazy seed
+	 *
+	 * @description
+	 * Same family as `expandedSet` above: `ref(toSelectedSet(props.modelValue))`
+	 * read `props.modelValue` eagerly in `setup()`, before the theme
+	 * resolver's `beforeCreate` patch. Lazy `UNSEEDED` + writable
+	 * computed, same pattern.
+	 ********************************************************/
+	const internalSelectedSet = ref<Set<string> | typeof UNSEEDED>(UNSEEDED)
+	const selectedSet = computed<Set<string>>({
+		get: () => internalSelectedSet.value === UNSEEDED
+				? toSelectedSet(props.modelValue)
+				: internalSelectedSet.value,
+		set: (value) => { internalSelectedSet.value = value }
+	})
 
 	watch(
 		() => props.modelValue,

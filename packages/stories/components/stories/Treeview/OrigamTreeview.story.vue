@@ -36,7 +36,8 @@
 					selectMode: 'none',
 					selectableNodes: 'leaf',
 					showLines: true,
-					expandOnClick: false
+					expandOnClick: false,
+					ariaLabel: ''
 				})"
 		>
 			<template #default="{ state }">
@@ -47,6 +48,7 @@
 						:show-lines="state.showLines"
 						:expand-on-click="state.expandOnClick"
 						:expanded-value="defaultExpanded"
+						:aria-label="state.ariaLabel || undefined"
 				/>
 			</template>
 			<template #controls="{ state }">
@@ -57,6 +59,9 @@
 				<StoryGroup title="Display">
 					<HstCheckbox v-model="state.showLines"     title="Show Lines"/>
 					<HstCheckbox v-model="state.expandOnClick" title="Expand on Click"/>
+				</StoryGroup>
+				<StoryGroup title="Accessibility">
+					<HstText v-model="state.ariaLabel" title="Aria Label (empty = localised default)"/>
 				</StoryGroup>
 			</template>
 		</Variant>

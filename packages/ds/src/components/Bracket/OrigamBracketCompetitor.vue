@@ -22,7 +22,7 @@
 
 		<img
 				v-if="competitor?.avatar"
-				:alt="`${competitor.name} avatar`"
+				:alt="avatarAltText"
 				:src="competitor.avatar"
 				class="origam-bracket-competitor__avatar"
 		>
@@ -149,6 +149,8 @@
 
 	const forfeitLabel = computed(() => t('origam.bracket.forfeit_label'))
 
+	const avatarAltText = computed<string>(() => t('origam.bracket.avatar_alt', props.competitor?.name ?? ''))
+
 	const hasAdvantage = computed<boolean>(() => (props.advantageRounds ?? 0) > 0)
 
 	const advantageLabel = computed<string>(() => `+${props.advantageRounds ?? 0}`)
@@ -270,8 +272,17 @@
 		align-items: center;
 		gap: var(--origam-bracket-competitor---gap, 8px);
 		min-height: var(--origam-bracket-competitor---height, 36px);
-		padding-block: var(--origam-bracket-competitor---padding-block, 4px);
-		padding-inline: var(--origam-bracket-competitor---padding-inline, 12px);
+
+		// #C2 — zero-specificity default so a scale-driven utility class
+		// (`.origam--p-4` from `padding="4"`) wins the cascade. Without
+		// `:where()`, this scoped rule's [data-v-hash] pushes it to (0,2,0),
+		// beating the utility's (0,1,0), and the `padding` prop's scale
+		// form goes silently inert.
+		:where(&) {
+			padding-block: var(--origam-bracket-competitor---padding-block, 4px);
+			padding-inline: var(--origam-bracket-competitor---padding-inline, 12px);
+		}
+
 		font-size: var(--origam-bracket-competitor---font-size, 0.875rem);
 		font-weight: var(--origam-bracket-competitor---font-weight, 400);
 		color: var(--origam-bracket-competitor---color, currentColor);

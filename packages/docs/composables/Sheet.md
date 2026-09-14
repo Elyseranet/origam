@@ -5,7 +5,28 @@
 > rien n'est redige ici. Corriger une description se fait dans la banniere du symbole,
 > puis en regenerant. Issue #545.
 
-1 symbole(s) exporte(s).
+2 symbole(s) exporte(s).
+
+## `resolveHeightPx`
+
+```ts
+export function resolveHeightPx (height: number | string): number
+```
+
+Resolve a height token (number → px, string → CSS length) to absolute
+pixels at the current viewport. SSR-safe: when `window` is missing we
+fall back to a 0/static interpretation since the DOM cannot be read
+anyway.
+
+Exported so `OrigamSheet.vue` can share this exact resolution logic
+(capping the live drag height, and ordering snap points for the
+keyboard path on the drag handle) instead of re-implementing a second,
+slightly different regex — see the "Reuse existing composables/utils"
+rule in the project CLAUDE.md.
+
+**Source** : `packages/ds/src/composables/Sheet/sheetSwipe.composable.ts`
+
+**Consommateurs** (1) : `components/Sheet/OrigamSheet.vue`
 
 ## `useSheetSwipe`
 

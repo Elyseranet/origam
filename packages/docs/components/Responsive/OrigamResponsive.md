@@ -6,9 +6,28 @@ intrinsic-size box that locks its content to a target ratio (16/9,
 `<OrigamImg>`, `<OrigamCard>`'s media slot, and any embed (video,
 iframe, canvas).
 
-The component leans on the CSS `aspect-ratio` property when supported
-(every evergreen browser) and falls back to a padding-block-end sizer
-trick otherwise — driven by the `useAspectRatio` composable.
+The component sets the native CSS `aspect-ratio` property on its own root
+element, driven by the `useAspectRatio` composable. There is no fallback
+path and no sizer child: `aspect-ratio` is Baseline Widely Available
+(Chrome/Edge 88, Firefox 89, Safari 15 — all 2021), comfortably below this
+DS's support floor.
+
+::: warning Changed in #709
+Until #709 the ratio was held by the classic padding-percentage hack — an
+empty `.origam-responsive__sizer` child carrying
+`padding-block-end: <inverse-ratio>%`, with `__content` pulled back over it
+by the exact opposite `margin-block-start`. Because the root is a column
+flex container, those two values **cancelled arithmetically** and the root
+collapsed to the height of its content: `<OrigamResponsive aspect-ratio="16/9"
+max-width="480">` measured **480 × 23** instead of 480 × 270, and 16/9 and
+4/3 rendered the *same* height.
+
+The paragraph that used to sit here claimed the component already used
+`aspect-ratio` "when supported, falling back to the sizer trick otherwise".
+It never did — only the sizer path existed. If you are relying on the
+`__sizer` element or on the four `--origam-responsive__sizer---*` tokens,
+both are gone.
+:::
 
 ## Basic usage
 
@@ -30,22 +49,6 @@ trick otherwise — driven by the `useAspectRatio` composable.
     <OrigamResponsive aspect-ratio="1/1">1:1 (square)</OrigamResponsive>
     <OrigamResponsive aspect-ratio="3/4">3:4 (portrait)</OrigamResponsive>
     <OrigamResponsive :aspect-ratio="2.39">2.39:1 (cinema)</OrigamResponsive>
-</template>
-```
-
-## Inline mode
-
-`inline` switches the wrapper from `block` to `inline-flex`, useful
-when the component is dropped into a paragraph or a chip-like context.
-
-```vue
-<template>
-    <p>
-        Inline embed:
-        <OrigamResponsive inline aspect-ratio="1/1" :width="32" :height="32">
-            <img src="/avatar.png" alt="" />
-        </OrigamResponsive>
-    </p>
 </template>
 ```
 
@@ -97,21 +100,22 @@ interface IResponsiveProps extends IDimensionProps, ICommonsComponentProps,
     IPaddingProps, IMarginProps, IBorderProps, IRoundedProps {
     aspectRatio?:  string | number
     contentClass?: string
-    inline?:       boolean
 }
 ```
 
 ## Anatomy
 
 ```html
-<div class="origam-responsive [origam-responsive--inline]">
-    <div class="origam-responsive__sizer" :style="{ aspectRatio }" />
+<div class="origam-responsive" :style="{ aspectRatio }">
     <!-- additional slot -->
     <div class="origam-responsive__content">
         <!-- default slot -->
     </div>
 </div>
 ```
+
+The ratio lives on the root. `__content` is rendered only when the default
+slot is filled.
 
 ## Design tokens consumed
 
@@ -131,18 +135,22 @@ under `packages/ds/src/assets/scss/tokens/`).
 | `--origam-responsive---position` | `relative` |
 | `--origam-responsive---width` | inherits |
 | `--origam-responsive---height` | inherits |
-| `--origam-responsive--inline---display` | `inline-flex` |
-| `--origam-responsive--inline---flex` | inherits |
 | `--origam-responsive__content---flex` | `1 1 auto` |
 | `--origam-responsive__content---max-width` | `100%` |
 | `--origam-responsive__content---margin` | inherits |
-| `--origam-responsive__sizer---flex` | inherits |
-| `--origam-responsive__sizer---transition` | inherits |
-| `--origam-responsive__sizer---pointer-events` | `none` |
-| `--origam-responsive__sizer---padding-block-end` | computed by useAspectRatio |
+
+The four `--origam-responsive__sizer---*` tokens were **removed in #709**
+along with the element they styled.
+
+The ratio itself is **not** a token: it is an inline `aspect-ratio`
+declaration computed from the `aspectRatio` prop at runtime, never a
+design-time default a theme would override. To pin a ratio from a theme,
+set the `aspectRatio` **prop** through `IOrigamTheme.components`
+(props-first), not a CSS variable.
 
 The token file also exposes named ratio shortcuts (`aspect-ratio-default`,
-`aspect-ratio-square`, `aspect-ratio-portrait`).
+`aspect-ratio-square`, `aspect-ratio-portrait`). ⚠️ No component reads
+them — they are declared-but-dormant, and were already so before #709.
 
 ## Accessibility
 

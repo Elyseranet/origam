@@ -11,7 +11,11 @@ platform.
 The bundled `<OrigamGridItem>` sub-component is optional sugar: it
 serialises the verbose `grid-column` / `grid-row` shorthands from an
 ergonomic object syntax. Anyone can skip it and put
-`style="grid-area: …"` on a plain `<div>` instead.
+`style="grid-area: …"` on a plain `<div>` instead. See
+`packages/docs/components/Grid/OrigamGridItem.md` for its own dedicated
+reference (props, `IGridLineSpec` serialisation table, behaviour notes);
+the props/emits/slots tables below stay for convenience since the two
+components are almost always used together.
 
 ## Props — OrigamGrid
 

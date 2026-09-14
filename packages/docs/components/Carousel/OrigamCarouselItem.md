@@ -94,7 +94,6 @@ surface by where the prop lands.
 | `width` / `height` / `minWidth` / `maxWidth` / `minHeight` / `maxHeight` | `number \| string` | `undefined` | Full `IDimensionProps` surface. |
 | `aspectRatio` | `string \| number` | `undefined` | Locks the slide's ratio. |
 | `margin*` / `padding*` | `IMarginProps` / `IPaddingProps` | `undefined` | Spacing surface. |
-| `inline` | `boolean` | `undefined` | Inline layout mode on the underlying `<OrigamResponsive>`. |
 | `contentClass` | `string` | `undefined` | Class applied to the responsive content wrapper. |
 | `id` / `class` / `style` | `ICommonsComponentProps` | `undefined` | Host identity and style passthrough. |
 

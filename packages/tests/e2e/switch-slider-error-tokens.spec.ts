@@ -138,9 +138,11 @@ test.describe('OrigamSliderFieldTrack — default palette (background/fill/tick)
             const cs = getComputedStyle(el)
             return {
                 color: cs.backgroundColor,
-                // Reads the actually-emitted (currently #435-mangled) var name —
-                // see the long comment in OrigamSliderFieldTrack.vue.
-                varValue: cs.getPropertyValue('--origam-slider-field---track-fill-background-color').trim()
+                // #C2 (2026-09-11) — renamed from the mangled
+                // `--origam-slider-field---track-fill-background-color` (the
+                // now-removed pipeline flattened the hyphenated BEM-child key)
+                // to the correct `--origam-{component}__{child}---{property}` shape.
+                varValue: cs.getPropertyValue('--origam-slider-field-track__fill---background-color').trim()
             }
         })
         expect(fillResult.varValue).not.toBe('')

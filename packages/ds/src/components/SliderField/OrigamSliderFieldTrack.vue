@@ -238,7 +238,16 @@
 		$this: &;
 
 		position: relative;
-		border-radius: var(--origam-slider-field__track---border-radius, 9999px);
+
+		// #C2 — zero-specificity default so a scale-driven utility class
+		// (`.origam--rounded-lg` from `rounded="lg"`) wins the cascade.
+		// Without `:where()`, this scoped rule's [data-v-hash] pushes it
+		// to (0,2,0), beating the utility's (0,1,0), and the `rounded`
+		// prop's scale form goes silently inert.
+		:where(&) {
+			border-radius: var(--origam-slider-field__track---border-radius, 9999px);
+		}
+
 		pointer-events: none;
 
 		@media (forced-colors: active) {
@@ -260,23 +269,8 @@
 			background-color: var(--origam-slider-field__track---background-color, rgb(148, 148, 148));
 		}
 
-		/*********************************************************
-		 * __fill
-		 *
-		 * @description
-		 * ⛔ issue #431 — the source token
-		 * (`slider-field.track-fill.background-color`) is affected by the
-		 * pipeline's BEM-child-hyphen bug (#435, confirmed against the
-		 * compiled CSS): the hyphenated key `track-fill` flattens to
-		 * `--origam-slider-field---track-fill-background-color` instead of
-		 * the expected `--origam-slider-field-track__fill---…` shape. The
-		 * variable below IS real and correctly resolves to
-		 * `{color.action.primary.bg}` today — reported to the coordinator /
-		 * `tableau-maj`; rename this var reference once #435's pipeline fix
-		 * lands and re-emits it correctly.
-		 ********************************************************/
 		&__fill {
-			background-color: var(--origam-slider-field---track-fill-background-color, rgba(84, 84, 84, 1));
+			background-color: var(--origam-slider-field-track__fill---background-color, rgba(84, 84, 84, 1));
 		}
 
 		&__ticks {

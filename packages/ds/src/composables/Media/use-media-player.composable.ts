@@ -2,7 +2,8 @@ import {
     onBeforeUnmount,
     onMounted,
     ref,
-    type Ref
+    type Ref,
+    toValue
 } from 'vue'
 
 import {
@@ -82,7 +83,18 @@ export function useMediaPlayer (options: IUseMediaPlayerOptions = {}): {
     const duration: Ref<number> = ref(NaN)
     const buffered: Ref<number> = ref(0)
     const volume: Ref<number> = ref(MEDIA_DEFAULT_VOLUME)
-    const muted: Ref<boolean> = ref(Boolean(options.muted))
+    /*********************************************************
+     * `muted` seeds `false` rather than `Boolean(options.muted)` on
+     * purpose — #661. `options.muted` may now be a getter/ref (ADR-005
+     * lazy-read contract, see `IUseMediaPlayerOptions`), and this
+     * top-level `ref()` initialiser still runs at the composable's own
+     * setup time (too early for a themed default to have landed). The
+     * placeholder is invisible in practice: `bind()` (below, called
+     * from `onMounted`) immediately overwrites it from the live
+     * `<audio>`/`<video>` element, which by then already reflects any
+     * theme default via the element's own reactive `:muted` binding.
+     ********************************************************/
+    const muted: Ref<boolean> = ref(false)
     const ready: Ref<boolean> = ref(false)
     const loading: Ref<boolean> = ref(false)
     const error: Ref<MediaError | Error | null> = ref(null)
@@ -325,7 +337,7 @@ export function useMediaPlayer (options: IUseMediaPlayerOptions = {}): {
         // and the browser pre-fetched metadata before our composable
         // attached.
         volume.value = el.volume
-        muted.value = el.muted || Boolean(options.muted)
+        muted.value = el.muted || Boolean(toValue(options.muted))
         paused.value = el.paused
         playing.value = !el.paused
         if (Number.isFinite(el.duration)) {
@@ -339,7 +351,7 @@ export function useMediaPlayer (options: IUseMediaPlayerOptions = {}): {
         // so we don't need to call `play()` ourselves; the branch is
         // here to log a one-time warning that the consumer's intent
         // was overridden.
-        if (options.autoplay && prefersReducedMotion()) {
+        if (toValue(options.autoplay) && prefersReducedMotion()) {
             console.warn(MEDIA_AUTOPLAY_SUPPRESSED_WARNING)
         }
     }
