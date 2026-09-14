@@ -70,6 +70,34 @@ dates are selected.
 | `showWeek` | `boolean` | `false` | Show week numbers alongside the grid |
 | `weeksInMonth` | `TCalendarStrategy` | `'static'` | Week-count strategy |
 
+## Controls label
+
+The toolbar's month button normally shows the displayed month and year,
+formatted by the active date adapter (`monthAndYear`). `text` replaces that
+label with your own string.
+
+```vue
+<template>
+    <OrigamDatePicker v-model="date" text="Période de référence" />
+</template>
+```
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `text` | `string` | `undefined` | Label of the toolbar's month button. When unset — or empty — the adapter-formatted month + year is shown |
+
+An empty string falls back to the month + year rather than blanking the label:
+that button is the only place the user reads which month is on screen.
+
+::: warning Fixed until v3.0.0
+`text` was declared but unreachable: a module-scope `const text` masked it, so
+`<OrigamDatePicker text="…">` was silently ignored ([#700]). Consumers written
+against the broken behaviour that pass `text` will now see their own label
+instead of the month + year.
+
+[#700]: https://github.com/Elyseranet/origam/issues/700
+:::
+
 ## Disabled controls
 
 | Prop | Type | Description |

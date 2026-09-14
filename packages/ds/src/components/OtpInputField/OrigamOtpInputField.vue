@@ -257,6 +257,21 @@
 	 * `modelValue` and `validationValue` accesses transparently
 	 * return the reactive OTP string — without duplicating the
 	 * useVModel wiring that already lives above.
+	 *
+	 * `validationValue` is overridden DELIBERATELY, not by accident
+	 * of the `||` condition: an OTP field only ever has one thing
+	 * worth validating — the joined code the user actually typed.
+	 * Validating a cell array, or some unrelated consumer-supplied
+	 * value, has no functional meaning here. The prop stays on the
+	 * declared surface (it is inherited from `IInputProps`, and
+	 * removing it would be a public API break), but whatever a
+	 * consumer passes is IGNORED: the rules always receive
+	 * `otpStringValue`. This exception is documented in
+	 * `packages/docs/components/OtpInputField/OrigamOtpInputField.md`
+	 * and pinned by the `validationValue` tests in
+	 * `packages/tests/TU/components/OtpInputField/OrigamOtpInputField.spec.ts`.
+	 * See issue #697.
+	 *
 	 * `validationMessages` mirrors the `messages` computed from
 	 * OrigamInput: errorMessages take precedence, then hint, then
 	 * props.messages.

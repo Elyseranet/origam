@@ -135,6 +135,7 @@ of the typed `emits` contract.
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `rules` | `Array<(v: string) => true \| string>` | `[]` | Validator functions. Receive the full OTP string and return `true` or an error message. |
+| `validationValue` | `any` | — | ⚠️ **Inherited from `IInputProps` but IGNORED by this component.** `OrigamOtpInputField` always validates the joined OTP string; whatever you pass here never reaches the rules. See [Validation behaviour](#validation-behaviour). |
 | `errorMessages` | `string \| Array<string>` | — | Static error messages bypassing rule evaluation. |
 | `validateOn` | `'input' \| 'blur' \| 'submit' \| 'lazy'` | `'input'` | When validation is triggered. |
 | `hideDetails` | `boolean \| 'auto'` | — | `true` hides the details zone (messages). `'auto'` hides it when no messages are present. |
@@ -144,6 +145,15 @@ of the typed `emits` contract.
 ### Validation behaviour
 
 - Validation evaluates `props.rules` against the **joined OTP string** (`model.join('')`).
+- **`validationValue` is deliberately inoperative on this component.** Every other
+  origam field lets you validate something other than the model (`OrigamInput`,
+  `OrigamTextField`, …); `OrigamOtpInputField` does not. Internally `useValidation`
+  receives a `Proxy` over the props that answers both `modelValue` and
+  `validationValue` with the joined OTP string, so a consumer-supplied
+  `validation-value` is silently discarded. This is intentional — an OTP field has
+  exactly one value worth validating, the code the user typed. The prop remains on
+  the declared surface only because it is inherited from `IInputProps` and removing
+  it would break the public API (issue #697).
 - Error messages are rendered below the cell row via `<OrigamMessages>`.
 - The component also fires `validate()` automatically when the `finish` event fires (all cells filled).
 - The `origam-otp-input-field--error` CSS class is applied to the root when `isValid === false`.
