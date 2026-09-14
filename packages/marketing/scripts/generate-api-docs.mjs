@@ -11,9 +11,18 @@
  *              objects (curated prose, all 8 families) and UPSERTs them into the
  *              DB without loss. Idempotent; respects the editorial lock.
  *
- *   (default)  Re-sync. Re-extracts STRUCTURAL facts from packages/ds/src for the
- *              4 auto-derivable families (enums, interfaces, consts, utils) and
- *              UPSERTs ONLY the [SRC] columns. Editorial fields are never touched.
+ *   (default)  Re-sync. Re-extracts STRUCTURAL facts from packages/ds/src for
+ *              ALL 8 families and UPSERTs ONLY the [SRC] columns each family can
+ *              honestly derive (RESYNC_POLICY below). Editorial fields are never
+ *              touched.
+ *
+ *              Four of the eight — component, composable, directive, type — had
+ *              no extractor at all until then: they were loaded once from the
+ *              `server/db/seed/<kind>.json` fixtures by `--seed`, and NOTHING
+ *              refreshed them afterwards. At the time this was fixed the
+ *              catalogue announced 193 components against 218 in the design
+ *              system, and still listed five deleted ones (`grids`, `item`,
+ *              `media`, `rich-toolbar`, `slide`).
  *
  *   --files    Legacy file writer (the original behaviour, unchanged). Kept until
  *              the pages are rebranched on the API and the const files are removed
@@ -49,13 +58,14 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import {
-    DOMAINS, listSourceFiles, extractFile, createProgram, REPO_ROOT,
+    DOMAINS, TS_DOMAINS, listSourceFiles, extractFile, createProgram, REPO_ROOT,
 } from './lib/extract.mjs'
+import { extractComponents } from './lib/extract-vue.mjs'
 import { MERGERS } from './lib/merge.mjs'
 import { serialize } from './lib/serialize.mjs'
 import { readExistingDoc } from './lib/read-existing.mjs'
 import { mapDoc } from './lib/doc-to-rows.ts'
-import { ingestFull, ingestSrc } from './lib/db-upsert.ts'
+import { ingestFull, ingestSrc, orphanMissingEntries } from './lib/db-upsert.ts'
 import { getDb, closeDb, sourceCommit } from './lib/db.ts'
 import { backfillKeys, backfillSvgKeys } from './lib/key-backfill.ts'
 import { DOC_KIND_DIRS } from '../server/db/db.const.mjs'
@@ -133,7 +143,107 @@ async function runSeed (manager) {
     return total
 }
 
-// ─── DB re-sync: structural [SRC] facts from the DS source (4 families) ──────
+/*
+ * ─── What each family's re-sync is allowed to claim ──────────────────────────
+ *
+ * A re-sync writes [SRC] columns. But "[SRC]" was calibrated on the four
+ * families that were auto-derivable from day one; it does not hold column for
+ * column on the four added here, and applying it blindly DESTROYS curated
+ * content. Three cases, all measured against the catalogue:
+ *
+ *   • `doc_entry.signature` is [SRC], and for a DIRECTIVE it holds hand-written
+ *     usage forms (`v-ripple.center`, `v-hover.callback="fn"`) that no
+ *     declaration contains. A derived signature would overwrite all six.
+ *   • `doc_entry.definition` is [SRC], and for a TYPE it is often the source
+ *     line PLUS a hand-added expansion of the enum it interpolates
+ *     (`TAudioLoopMode` carries the whole `AUDIO_LOOP_MODE` body). Re-deriving
+ *     it strips that.
+ *   • `doc_entry.parent_slug` is [SRC], and for a COMPONENT it is an editorial
+ *     family grouping: it disagrees with the directory on 3 of the 188 live
+ *     curated components (see `parentSlugOf` in extract-vue.mjs).
+ *
+ * So each family declares the columns and collections it can honestly derive.
+ * Anything omitted is left exactly as the catalogue has it.
+ *
+ * `orphanEntries` is only set for families whose extractor enumerates the WHOLE
+ * family from the filesystem, so "not seen" really does mean "deleted".
+ */
+const RESYNC_POLICY = {
+    // ── the four historical families: behaviour unchanged (defaults) ─────────
+    enums: {},
+    interfaces: {},
+    consts: {},
+    utils: {},
+
+    // ── the four added here ──────────────────────────────────────────────────
+    components: {
+        entryCols: ['name', 'tag', 'source_file'],
+        collections: ['props', 'emits', 'slots'],
+        relations: false,
+        orphanEntries: true,
+    },
+    /*
+     * ⛔ `returns` is deliberately NOT claimed here, on measurement.
+     *
+     * A composable's curated `returns[]` lists what a consumer destructures.
+     * The checker's properties-of-the-return-type is a DIFFERENT question, and
+     * on the composables that hand back a foreign object the two diverge hard:
+     * `useRouter` came out at 20 created / 10 orphaned (the members of vue-router's
+     * `Router`, not the composable's own surface), `useDate` at 43 created,
+     * `useInstalledThemes` at 35. Measured on the family: claiming `returns`
+     * gives 804 created / 83 orphaned; leaving it alone gives 221 / 35.
+     *
+     * Claiming a column means being right about it. `params` is read from the
+     * declaration and matches the curated rows; `returns` needs a model of what
+     * the composable EXPOSES, which this extractor does not have. Left curated.
+     *
+     * The 35 parameter rows that still orphan are real disagreements between
+     * the declaration and the hand-written doc, not extraction failures:
+     * `useRouter`, `useHeaders` and `usePagination` take NO parameter at all
+     * yet carry 4 curated rows each; `useGoTo` documents `options.duration`,
+     * `options.easing`, … as separate rows under a single `_options` parameter.
+     * They are soft-flagged, never deleted.
+     */
+    composables: {
+        entryCols: ['name', 'source_file'],
+        collections: ['params'],
+        relations: false,
+        orphanEntries: false,
+    },
+    directives: {
+        entryCols: ['name', 'source_file'],
+        collections: [],
+        relations: false,
+        orphanEntries: true,
+    },
+    types: {
+        entryCols: ['name', 'source_file'],
+        collections: ['values'],
+        relations: false,
+        orphanEntries: true,
+    },
+}
+
+/** Symbols of one domain, in the `_DOC` shape `mapDoc` consumes. */
+function extractDomain (domainKey, program, checker) {
+    const domain = DOMAINS[domainKey]
+
+    if (domain.vue) {
+        const cmps = extractComponents(program, checker)
+        for (const c of cmps) {
+            if (c.unresolved.length) {
+                console.error(`  ! [components] ${c.slug}: unresolved ${c.unresolved.join(', ')}`)
+            }
+        }
+        return cmps
+    }
+
+    const out = []
+    for (const f of listSourceFiles(domainKey)) out.push(...extractFile(domainKey, f, program, checker))
+    return out
+}
+
+// ─── DB re-sync: structural [SRC] facts from the DS source (8 families) ──────
 async function runResync (manager) {
     const total = blank()
     const { program, checker } = createProgram()
@@ -142,23 +252,52 @@ async function runResync (manager) {
     for (const domainKey of domains) {
         if (!DOMAINS[domainKey]) { console.error(`Unknown domain: ${domainKey}`); continue }
         const kind = DOMAINS[domainKey].kind
-        const files = listSourceFiles(domainKey)
-        let symbols = []
-        for (const f of files) symbols.push(...extractFile(domainKey, f, program, checker))
+        const policy = RESYNC_POLICY[domainKey] ?? {}
+        let symbols = extractDomain(domainKey, program, checker)
+
+        /*
+         * Two symbols that slug the same collapse into one catalogue entry, and
+         * the loser is dropped in SILENCE — which is how a dead entry and a
+         * shadowed one look identical from the outside. The de-duplication is
+         * unchanged (first wins, source order); it now says so.
+         *
+         * Known and pre-existing in the composable family, where the slug comes
+         * from the file name: `Commons/group.composable.ts` and
+         * `DataTable/group.composable.ts` both claim `use-group`, likewise
+         * `items`. The catalogue documents the `Commons/` one in both cases, and
+         * `Commons` sorts first, so the winner is the documented one.
+         */
         const seen = new Set()
-        symbols = symbols.filter(s => (seen.has(s.slug) ? false : (seen.add(s.slug), true)))
+        symbols = symbols.filter(s => {
+            if (!seen.has(s.slug)) { seen.add(s.slug); return true }
+            console.error(`  ! [${domainKey}] slug collision on '${s.slug}' — '${s.name}' shadowed`)
+            return false
+        })
         if (LIMIT) symbols = symbols.slice(0, LIMIT)
 
         const c = blank()
         for (const src of symbols) {
             // util: extract exposes `returnType`; normalise to the _DOC `returns` shape.
+            // A composable already carries a NAMED `returns[]` — leave it alone.
             const doc = kind === 'util' ? { ...src, returns: { type: src.returnType } } : src
             const record = mapDoc(kind, doc)
-            const r = await ingestSrc(manager, record)
+            const r = await ingestSrc(manager, record, policy)
             add(c, r); add(total, r)
             if (VERBOSE) console.log(`  ${kind}/${record.entry.slug}: +${r.created} ~${r.updated} =${r.unchanged} ⌀${r.orphaned}`)
         }
-        console.log(`[${domainKey}] symbols=${symbols.length} created=${c.created} updated=${c.updated} unchanged=${c.unchanged} orphaned=${c.orphaned}`)
+
+        // Entries the DS no longer has — soft-flagged, never deleted.
+        let deadEntries = 0
+        if (policy.orphanEntries && !LIMIT) {
+            deadEntries = await orphanMissingEntries(manager, kind, seen)
+            c.orphaned += deadEntries; total.orphaned += deadEntries
+        }
+
+        console.log(
+            `[${domainKey}] symbols=${symbols.length} created=${c.created} updated=${c.updated} ` +
+            `unchanged=${c.unchanged} orphaned=${c.orphaned}` +
+            (policy.orphanEntries ? ` (dead entries: ${deadEntries})` : '')
+        )
     }
     return total
 }
@@ -227,9 +366,20 @@ async function runDb () {
 // ─── Legacy file writer (unchanged original behaviour, kept for transition) ──
 const norm = (s) => s.replace(/\r\n/g, '\n').replace(/[ \t]+\n/g, '\n').trim()
 
+/**
+ * The legacy file writer only ever knew the four original families — it has a
+ * `MERGERS` entry and a `serialize` shape for each of them and for nothing
+ * else. It is frozen on that set: the four families added to `DOMAINS` for the
+ * DB re-sync are deliberately out of its reach, not silently half-supported.
+ */
+const FILE_DOMAINS = ['enums', 'interfaces', 'consts', 'utils']
+
 async function runFiles () {
     const { program, checker } = createProgram()
-    const domains = DOMAIN_ARG ? [DOMAIN_ARG] : Object.keys(DOMAINS)
+    const domains = DOMAIN_ARG ? [DOMAIN_ARG] : FILE_DOMAINS
+    for (const d of domains) {
+        if (!FILE_DOMAINS.includes(d)) { console.error(`--files does not support domain: ${d}`); process.exit(2) }
+    }
     let totalChanged = 0, totalNew = 0, totalSame = 0, totalWritten = 0, totalErrors = 0
 
     for (const domainKey of domains) {

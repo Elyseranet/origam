@@ -28,16 +28,22 @@
  *  case and write the behavioural test in its place.
  ********************************************************/
 
-import { readFileSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { createRequire } from 'node:module'
+import { tmpdir } from 'node:os'
+import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { describe, expect, it } from 'vitest'
 
 import {
-    DOMAINS, SLUG_STYLE, createProgram, extractFile, listSourceFiles, toSlug,
+    DOMAINS, SLUG_STYLE, TS_DOMAINS, createProgram, extractFile, listSourceFiles, toSlug,
 } from '../../../marketing/scripts/lib/extract.mjs'
+import { extractComponents } from '../../../marketing/scripts/lib/extract-vue.mjs'
 import { DOC_KINDS } from '../../../marketing/server/db/db.const.mjs'
+
+/** The same TypeScript the extractor loads — used only by the negative control. */
+const ts = createRequire(import.meta.url)('typescript')
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..')
 const SEED_DIR = resolve(REPO_ROOT, 'packages/marketing/server/db/seed')
@@ -56,7 +62,9 @@ const fixtureSlugs = (kind: string): Set<string> => {
 /** Every `{ from, to }` alias declared in the sources the extractor walks. */
 function aliasedReexports () {
     const found: Array<{ domain: string, kind: string, file: string, from: string, to: string }> = []
-    for (const domain of Object.keys(DOMAINS)) {
+    // TS_DOMAINS, not every domain: `components` holds `.vue` files, which have
+    // no `export { X as Y }` to find and which `extractFile` does not read.
+    for (const domain of TS_DOMAINS) {
         for (const file of listSourceFiles(domain)) {
             if (file.endsWith('/index.ts')) continue
             const source = readFileSync(file, 'utf-8')
@@ -68,27 +76,210 @@ function aliasedReexports () {
     return found
 }
 
-describe('DOMAINS — four families of eight', () => {
-    it('PINNED — the extractor covers exactly enum, interface, const and util', () => {
-        expect(EXTRACTED_KINDS).toEqual(['const', 'enum', 'interface', 'util'])
-        expect(Object.keys(DOMAINS)).toEqual(['enums', 'interfaces', 'consts', 'utils'])
+describe('DOMAINS — the eight families, all extracted', () => {
+    it('every DOC_KINDS family is refreshed from the design-system source', () => {
+        // Was `it.fails` while four of the eight had no extractor at all: a
+        // `source_file` on a component / composable / directive / type row was
+        // frozen at whatever the fixture carried, and no run of `docs:sync`
+        // could correct it. The four were added; this is now the behaviour.
+        expect(EXTRACTED_KINDS).toEqual([...DOC_KINDS].sort())
+        expect(FIXTURE_ONLY_KINDS).toEqual([])
     })
 
-    it('PINNED — component, composable, directive and type have no extractor', () => {
-        expect(FIXTURE_ONLY_KINDS).toEqual(['component', 'composable', 'directive', 'type'])
+    it('PINNED — one domain per family, and only `components` reads .vue', () => {
+        expect(Object.keys(DOMAINS)).toEqual([
+            'enums', 'interfaces', 'consts', 'utils',
+            'composables', 'types', 'directives', 'components',
+        ])
+        expect(Object.keys(DOMAINS).filter(k => DOMAINS[k].vue)).toEqual(['components'])
+        expect(TS_DOMAINS).not.toContain('components')
     })
 
-    it('PINNED — those four are documented anyway, so the fixture is their only channel', () => {
-        for (const kind of FIXTURE_ONLY_KINDS) {
+    it('every family the catalogue documents is also reachable from the source', () => {
+        for (const kind of DOC_KINDS) {
             expect(fixtureSlugs(kind).size, `${kind}.json is populated`).toBeGreaterThan(0)
         }
     })
+})
 
-    it.fails('every DOC_KINDS family is refreshed from the design-system source', () => {
-        // Currently four of eight. A `source_file` on a component / composable /
-        // directive / type row is frozen at whatever the fixture carries: no run
-        // of `docs:sync` can ever correct it.
-        expect(EXTRACTED_KINDS).toEqual([...DOC_KINDS].sort())
+/*
+ * The four families added to the re-sync, each pinned by the trap that its
+ * extraction had to survive. Every number below was measured against the
+ * committed fixtures, which is what CI loads before syncing.
+ */
+describe('component — the living `.vue` API', () => {
+    const { program, checker } = createProgram()
+    const live = extractComponents(program, checker)
+    const liveSlugs = new Set(live.map(c => c.slug))
+    const catalogue = fixtureSlugs('component')
+
+    it('no macro names an interface the resolver cannot find', () => {
+        // A silent resolution failure looks exactly like a component with no
+        // props — the one failure mode a catalogue must never render as clean.
+        expect(live.flatMap(c => c.unresolved.map(u => `${c.slug}: ${u}`))).toEqual([])
+    })
+
+    it('the five entries deleted from the design system are no longer live', () => {
+        // `grids`, `item`, `media`, `rich-toolbar` and `slide` are catalogued
+        // and gone. They are what `orphanEntries` flags on a re-sync.
+        const ghosts = [...catalogue].filter(s => !liveSlugs.has(s)).sort()
+        expect(ghosts).toEqual(['grids', 'item', 'media', 'rich-toolbar', 'slide'])
+    })
+
+    it('the catalogue is missing components the design system ships', () => {
+        // The gap this extractor exists to close. Asserted as "non-empty" and
+        // spot-checked, not pinned to a count: the design system keeps growing,
+        // and a test that fails on every new component teaches nothing.
+        const missing = [...liveSlugs].filter(s => !catalogue.has(s))
+        expect(missing.length).toBeGreaterThan(0)
+        expect(missing).toEqual(expect.arrayContaining([
+            'chart-radar', 'chart-sankey', 'chart-treemap', 'list-children',
+        ]))
+    })
+
+    it('POSITIVE CONTROL — a known prop, emit and slot are actually found', () => {
+        // A silent scan and a clean catalogue are indistinguishable from the
+        // outside. This asserts the extractor CAN see, before any absence it
+        // reports is believed.
+        const img = live.find(c => c.slug === 'img')!
+        expect(img.props.map(p => p.name)).toEqual(expect.arrayContaining(['src', 'alt', 'cover']))
+        // The label is what the AUTHOR wrote, not the checker's expansion —
+        // `string | ISrcObject`, the union named in `IImgProps`.
+        expect(img.props.find(p => p.name === 'src')?.type.label).toBe('string | ISrcObject')
+        expect(img.emits.map(e => e.event).sort()).toEqual(['error', 'load', 'loadstart'])
+        expect(img.slots.map(s => s.slot).sort()).toEqual(['default', 'error', 'placeholder'])
+    })
+
+    it('an inherited prop survives the `Omit<>` / `Pick<>` chain', () => {
+        // Ticket #700: a resolver that does not traverse utility types reports
+        // an inherited prop as undeclared. `ICarouselItemProps` reaches `src`
+        // and `cover` through `IImgProps`, five interfaces away.
+        const item = live.find(c => c.slug === 'carousel-item')!
+        expect(item.props.map(p => p.name)).toEqual(expect.arrayContaining(['src', 'cover', 'rounded']))
+    })
+
+    it('`inline` is gone from Responsive, Img and CarouselItem', () => {
+        // Removed from `IResponsiveProps` in 2.17.0 — it reached `IImgProps`
+        // and `ICarouselItemProps` through it. The three must not declare it.
+        for (const slug of ['responsive', 'img', 'carousel-item']) {
+            const cmp = live.find(c => c.slug === slug)!
+            expect(cmp.props.map(p => p.name), `${slug}.inline`).not.toContain('inline')
+        }
+    })
+
+    it('`inline` is still declared where the design system still declares it', () => {
+        // The other half of the same assertion: the prop was removed from ONE
+        // interface, not from the design system. A re-sync that dropped these
+        // would be destroying live API, not cleaning stale rows.
+        for (const slug of ['badge', 'grid', 'field', 'selection-control']) {
+            const cmp = live.find(c => c.slug === slug)!
+            expect(cmp.props.map(p => p.name), `${slug}.inline`).toContain('inline')
+        }
+    })
+})
+
+describe('directive / composable / type — the three identity conventions', () => {
+    const { program, checker } = createProgram()
+    const extract = (domain: string) => {
+        const out: Array<{ slug: string, name: string, values?: Array<{ value: string }> }> = []
+        for (const f of listSourceFiles(domain)) out.push(...extractFile(domain, f, program, checker))
+        return out
+    }
+
+    it('directive — identity comes from the directory, so `v-contrast` is found', () => {
+        // `Contrast` is the only directive with no named export: it declares
+        // `const vContrast` and leaves through `export default`. A scan keyed on
+        // named exports finds five of six and flags the live `v-contrast` dead.
+        const slugs = extract('directives').map(d => d.slug).sort()
+        expect(slugs).toEqual(['click-outside', 'contrast', 'hover', 'intersect', 'ripple', 'touch'])
+        expect(extract('directives').find(d => d.slug === 'contrast')?.name).toBe('v-contrast')
+        expect(slugs).toEqual([...fixtureSlugs('directive')].sort())
+    })
+
+    it('composable — the slug comes from the FILE, the name from the function', () => {
+        // `aspect.composable.ts` exports `useAspectRatio` and is catalogued
+        // `use-aspect`; `filters.composable.ts` exports `useFilter` and is
+        // catalogued `use-filters`. Indexing by function name declared eleven
+        // live composables dead.
+        const live = extract('composables')
+        const aspect = live.find(c => c.slug === 'use-aspect')
+        expect(aspect?.name).toBe('useAspectRatio')
+        expect(live.find(c => c.slug === 'use-filters')?.name).toBe('useFilter')
+        expect(fixtureSlugs('composable').has('use-aspect')).toBe(true)
+    })
+
+    it('composable — helper and test-only exports stay out of the catalogue', () => {
+        // `composables/` also exports `createDate`, `provideDefaults`,
+        // `_resetCssSupportCache`, `resetCodeHighlighterForTesting`… Announcing
+        // a test hook as public API is the failure mode here.
+        for (const c of extract('composables')) expect(c.name).toMatch(/^use[A-Z]/)
+    })
+
+    it('type — values are the checker expansion, not the terms the author typed', () => {
+        // `TAlways = boolean | 'always'` is catalogued as true / false / always.
+        // Reading the syntax tree gives `boolean` and `'always'`, which matches
+        // 18 of the 327 curated value rows instead of 305.
+        const always = extract('types').find(t => t.slug === 'always')
+        expect(always?.values?.map(v => v.value).sort()).toEqual(['always', 'false', 'true'])
+    })
+
+    it('type — a template literal over an enum expands to the enum values', () => {
+        const loop = extract('types').find(t => t.slug === 'audio-loop-mode')
+        expect(loop?.values?.map(v => v.value).sort()).toEqual(['all', 'none', 'one'])
+    })
+
+    /*
+     * ⛔ Only EXPORTED type aliases are catalogued — and the rule has to be
+     * pinned by a negative control, because today it excludes nothing.
+     *
+     * Measured: all 487 type aliases declared under `packages/ds/src/types` carry
+     * `export`. So an assertion over the real sources cannot tell a working
+     * filter from a deleted one — it passes either way, and would go on passing
+     * until the day a type stops being exported and silently stays catalogued.
+     *
+     * The control below compiles a throw-away module holding one exported and
+     * one unexported alias, and asserts the extractor keeps exactly one. Remove
+     * the `isExported` guard in `extract.mjs` and this is what turns red.
+     *
+     * The value of the rule is the composition: a type that loses its `export`
+     * stops being emitted, so it stops being in the `seen` set, so
+     * `orphanMissingEntries` retires it. Which is how `RouteLocationRaw` — a
+     * vue-router type that was never origam's — and `TDisplayLevel`,
+     * `TLocationStrategy` and `TTransitionMode` come out of the catalogue.
+     */
+    it('type — a NON-exported alias is not catalogued (negative control)', () => {
+        const dir = mkdtempSync(join(tmpdir(), 'origam-doc-sync-'))
+        const file = join(dir, 'probe.type.ts')
+        writeFileSync(file, [
+            "export type TProbeExported = 'a' | 'b'",
+            "type TProbeInternal = 'c' | 'd'",
+            'export type TProbeUsing = TProbeInternal',
+        ].join('\n'))
+
+        const probeProgram = ts.createProgram([file], {
+            target: ts.ScriptTarget.ES2022,
+            module: ts.ModuleKind.ESNext,
+            noEmit: true,
+            skipLibCheck: true,
+            strict: false,
+            types: [],
+        })
+        const emitted = extractFile('types', file, probeProgram, probeProgram.getTypeChecker())
+            .map((t: { name: string }) => t.name)
+            .sort()
+
+        expect(emitted).toEqual(['TProbeExported', 'TProbeUsing'])
+        expect(emitted).not.toContain('TProbeInternal')
+
+        rmSync(dir, { recursive: true, force: true })
+    })
+
+    it('type — RouteLocationRaw is not origam\'s to document', () => {
+        // A vue-router type. It has a catalogue row and no declaration under
+        // `packages/ds/src/types`, so it is never emitted and gets retired.
+        const names = extract('types').map(t => t.name)
+        expect(names).not.toContain('RouteLocationRaw')
+        expect(names).toContain('TAlign')
     })
 })
 

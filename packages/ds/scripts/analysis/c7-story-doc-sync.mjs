@@ -94,6 +94,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { getRealComponents, DS_ROOT } from '../guards/lib/components.mjs'
+import { macroInterfacesOf } from '../lib/component-api.mjs'
 import { buildInterfaceIndex, resolveDeclared } from '../guards/lib/emits.mjs'
 import { declaredPropsFor } from '../audit-unconsumed-props.mjs'
 
@@ -161,18 +162,6 @@ function refuseUnControle (prop) {
     const t = propTypeIndex().get(prop)
 
     return !!t && /\[\]|Array<|ReadonlyArray<|Record<|\{|=>|^I[A-Z]|^T[A-Z]/.test(t)
-}
-
-/*********************************************************
- * stripComments
- *
- * @description
- * Une seule passe, sur une copie en memoire. Meme precaution que
- * `define-macros-scan.mjs` : un `grep` compte les MENTIONS, pas les appels,
- * et un commentaire qui cite `defineSlots` suffit a fausser le verdict.
- ********************************************************/
-function stripComments (src) {
-    return src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:])\/\/[^\n]*/g, '$1')
 }
 
 /** Chemins story / doc d'un composant, indexes par nom de fichier. */
@@ -527,12 +516,7 @@ function analyse () {
     const rows = []
 
     for (const cmp of getRealComponents()) {
-        const src = readFileSync(cmp.file, 'utf8')
-        const clean = stripComments(src)
-
-        const propsIface = /defineProps\s*<\s*([A-Za-z0-9_]+)\s*>/.exec(clean)?.[1] ?? null
-        const emitsIface = /defineEmits\s*<\s*([A-Za-z0-9_]+)\s*>/.exec(clean)?.[1] ?? null
-        const slotsIface = /defineSlots\s*<\s*([A-Za-z0-9_]+)\s*>/.exec(clean)?.[1] ?? null
+        const { props: propsIface, emits: emitsIface, slots: slotsIface } = macroInterfacesOf(cmp.file)
 
         const propsMap = propsIface ? declaredPropsFor(propsIface) : new Map()
         const props = [...propsMap.keys()].filter((p) => !IGNORED_PROPS.has(p))
