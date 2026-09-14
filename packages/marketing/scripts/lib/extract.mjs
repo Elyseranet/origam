@@ -309,7 +309,31 @@ export function extractFile (domainKey, file, program, checker) {
             }
         }
 
-        // TYPE — `export type TFoo = 'a' | 'b'`
+        /*
+         * TYPE — `export type TFoo = 'a' | 'b'`
+         *
+         * ⛔ `isExported` is the whole admission rule for this family, and it
+         * currently excludes NOTHING: all 487 type aliases under
+         * `packages/ds/src/types` carry `export`. That makes it a rule no
+         * assertion over the real sources can defend — it reads identically
+         * whether the guard is here or deleted. It is pinned instead by a
+         * synthetic negative control in
+         * `packages/tests/TU/marketing/doc-sync-extract-coverage.spec.ts`
+         * ("NON-exported alias is not catalogued"), verified to fail when the
+         * guard is removed.
+         *
+         * What it buys is the composition with entry-orphaning: a type that
+         * loses its `export` stops being emitted, so it leaves the `seen` set,
+         * so `orphanMissingEntries` retires it. The catalogue therefore
+         * follows the PUBLIC type surface rather than accumulating whatever it
+         * was once told.
+         *
+         * ⛔ The package barrel is NOT the test of "public". `types/index.ts`
+         * re-exports 261 of the 268 `.type.ts` files, and the seven it skips
+         * are not private: `tokens.type.ts` is published under its own subpath
+         * (`"./tokens/types"` in package.json). Filtering on the barrel would
+         * have dropped `TTokenName` and six more real types.
+         */
         if (kind === 'type' && ts.isTypeAliasDeclaration(node) && isExported(node)) {
             const name = node.name.text
             results.push({

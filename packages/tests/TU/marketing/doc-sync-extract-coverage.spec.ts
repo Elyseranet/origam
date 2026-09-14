@@ -28,8 +28,10 @@
  *  case and write the behavioural test in its place.
  ********************************************************/
 
-import { readFileSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { createRequire } from 'node:module'
+import { tmpdir } from 'node:os'
+import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { describe, expect, it } from 'vitest'
@@ -39,6 +41,9 @@ import {
 } from '../../../marketing/scripts/lib/extract.mjs'
 import { extractComponents } from '../../../marketing/scripts/lib/extract-vue.mjs'
 import { DOC_KINDS } from '../../../marketing/server/db/db.const.mjs'
+
+/** The same TypeScript the extractor loads — used only by the negative control. */
+const ts = createRequire(import.meta.url)('typescript')
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..')
 const SEED_DIR = resolve(REPO_ROOT, 'packages/marketing/server/db/seed')
@@ -221,6 +226,60 @@ describe('directive / composable / type — the three identity conventions', () 
     it('type — a template literal over an enum expands to the enum values', () => {
         const loop = extract('types').find(t => t.slug === 'audio-loop-mode')
         expect(loop?.values?.map(v => v.value).sort()).toEqual(['all', 'none', 'one'])
+    })
+
+    /*
+     * ⛔ Only EXPORTED type aliases are catalogued — and the rule has to be
+     * pinned by a negative control, because today it excludes nothing.
+     *
+     * Measured: all 487 type aliases declared under `packages/ds/src/types` carry
+     * `export`. So an assertion over the real sources cannot tell a working
+     * filter from a deleted one — it passes either way, and would go on passing
+     * until the day a type stops being exported and silently stays catalogued.
+     *
+     * The control below compiles a throw-away module holding one exported and
+     * one unexported alias, and asserts the extractor keeps exactly one. Remove
+     * the `isExported` guard in `extract.mjs` and this is what turns red.
+     *
+     * The value of the rule is the composition: a type that loses its `export`
+     * stops being emitted, so it stops being in the `seen` set, so
+     * `orphanMissingEntries` retires it. Which is how `RouteLocationRaw` — a
+     * vue-router type that was never origam's — and `TDisplayLevel`,
+     * `TLocationStrategy` and `TTransitionMode` come out of the catalogue.
+     */
+    it('type — a NON-exported alias is not catalogued (negative control)', () => {
+        const dir = mkdtempSync(join(tmpdir(), 'origam-doc-sync-'))
+        const file = join(dir, 'probe.type.ts')
+        writeFileSync(file, [
+            "export type TProbeExported = 'a' | 'b'",
+            "type TProbeInternal = 'c' | 'd'",
+            'export type TProbeUsing = TProbeInternal',
+        ].join('\n'))
+
+        const probeProgram = ts.createProgram([file], {
+            target: ts.ScriptTarget.ES2022,
+            module: ts.ModuleKind.ESNext,
+            noEmit: true,
+            skipLibCheck: true,
+            strict: false,
+            types: [],
+        })
+        const emitted = extractFile('types', file, probeProgram, probeProgram.getTypeChecker())
+            .map((t: { name: string }) => t.name)
+            .sort()
+
+        expect(emitted).toEqual(['TProbeExported', 'TProbeUsing'])
+        expect(emitted).not.toContain('TProbeInternal')
+
+        rmSync(dir, { recursive: true, force: true })
+    })
+
+    it('type — RouteLocationRaw is not origam\'s to document', () => {
+        // A vue-router type. It has a catalogue row and no declaration under
+        // `packages/ds/src/types`, so it is never emitted and gets retired.
+        const names = extract('types').map(t => t.name)
+        expect(names).not.toContain('RouteLocationRaw')
+        expect(names).toContain('TAlign')
     })
 })
 
