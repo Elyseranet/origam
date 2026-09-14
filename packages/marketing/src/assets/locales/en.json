@@ -265,10 +265,10 @@
     "components": {
         "meta": {
             "title": "Components · origam design system",
-            "description": "Browse 95+ accessible, token-driven Vue 3 components grouped by category. Click any component to see its API, props, emits, slots and live examples."
+            "description": "Browse 218 accessible, token-driven Vue 3 components grouped by category. Click any component to see its API, props, emits, slots and live examples."
         },
         "hero": {
-            "badge": "95+ components — Vue 3",
+            "badge": "218 components — Vue 3",
             "title_line1": "Component",
             "title_line2": "catalogue.",
             "subtitle": "Every component in origam is accessible, token-driven and themeable. Explore them by category, read the API and see them in action.",
@@ -753,13 +753,13 @@
     "home": {
         "meta": {
             "title": "origam · Vue 3 design system",
-            "description": "95 components. 29 chart primitives. Full a11y. Design tokens out of the box. Built for Vue 3 with TypeScript-first DX."
+            "description": "218 components. 26 chart primitives. Full a11y. Design tokens out of the box. Built for Vue 3 with TypeScript-first DX."
         },
         "hero": {
-            "badge": "v{version} — 29 charts shipped, WCAG 2.1 AA pass",
+            "badge": "v{version} — 26 charts shipped, WCAG 2.1 AA pass",
             "title_line1": "The Vue 3 design system",
             "title_line2": "that just works.",
-            "subtitle": "95 components. 29 chart primitives. Full a11y. Design tokens out of the box. Built for Vue 3 with TypeScript-first DX.",
+            "subtitle": "218 components. 26 chart primitives. Full a11y. Design tokens out of the box. Built for Vue 3 with TypeScript-first DX.",
             "cta_components": "Browse components",
             "cta_github": "Star on GitHub",
             "install": "npm install origam",
@@ -769,9 +769,9 @@
         },
         "kpis": {
             "title": "origam by the numbers",
-            "components_value": "95",
+            "components_value": "218",
             "components_label": "Components",
-            "charts_value": "29",
+            "charts_value": "26",
             "charts_label": "Chart primitives",
             "a11y_value": "100%",
             "a11y_label": "WCAG 2.1 AA",
@@ -787,7 +787,7 @@
             "title_line2": "Nothing you wouldn't.",
             "subtitle": "A complete toolkit for shipping Vue 3 apps — from atomic primitives to complex data viz, every piece tested, themed and a11y-compliant.",
             "charts": {
-                "title": "29 chart primitives",
+                "title": "26 chart primitives",
                 "description": "Line, area, bar, donut, candlestick, heatmap — Highcharts-tier coverage without the license."
             },
             "a11y": {
@@ -822,8 +822,8 @@
         },
         "showcase": {
             "eyebrow": "SHOWCASE",
-            "title": "95 components. One vibe.",
-            "title_line1": "95 components.",
+            "title": "218 components. One vibe.",
+            "title_line1": "218 components.",
             "title_line2": "One vibe.",
             "view_all": "View all",
             "data_table": {
@@ -911,13 +911,13 @@
     "installation": {
         "meta": {
             "title": "Installation · origam design system",
-            "description": "Get origam up and running in minutes. Install the npm package, register the plugin, and start building with 95+ accessible Vue 3 components."
+            "description": "Get origam up and running in minutes. Install the npm package, register the plugin, and start building with 218 accessible Vue 3 components."
         },
         "hero": {
             "badge": "npm install origam",
             "title_line1": "Up and running",
             "title_line2": "in minutes.",
-            "subtitle": "Install origam, register the plugin, and start building with 95+ accessible, token-driven Vue 3 components right away."
+            "subtitle": "Install origam, register the plugin, and start building with 218 accessible, token-driven Vue 3 components right away."
         },
         "steps": {
             "eyebrow": "STEP BY STEP",
@@ -1869,7 +1869,7 @@
                 "description": "Tokens Studio-compatible, Style Dictionary v4. 8 themes switch at runtime with zero remount and zero flicker."
             },
             "charts": {
-                "title": "95 components + 29 chart primitives",
+                "title": "218 components + 26 chart primitives",
                 "description": "From atomic buttons to line, area, donut, heatmap and candlestick charts — all in one coherent package."
             },
             "a11y": {
@@ -1957,7 +1957,7 @@
             },
             "dataviz": {
                 "title": "Data-heavy UI with charts",
-                "description": "29 chart primitives — line, area, bar, donut, heatmap, candlestick — themed and accessible, in one install."
+                "description": "26 chart primitives — line, area, bar, donut, heatmap, candlestick — themed and accessible, in one install."
             },
             "migration": {
                 "title": "Migrating a large Vuetify 2 codebase",
@@ -2035,7 +2035,7 @@
         },
         "cta": {
             "title": "Start building.",
-            "description": "All 95+ components are available today. Install origam and compose any layout in minutes.",
+            "description": "All 218 components are available today. Install origam and compose any layout in minutes.",
             "actions_label": "Explore origam",
             "cta_components": "Browse components",
             "cta_install": "Installation guide"

@@ -10,7 +10,7 @@
 
   const installCommand = computed(() => t('home.hero.install', 'npm install origam'))
   const badge = computed(() =>
-    t('home.hero.badge', `v${version.value} — 29 charts shipped, WCAG 2.1 AA pass`, { version: version.value })
+    t('home.hero.badge', `v${version.value} — 26 charts shipped, WCAG 2.1 AA pass`, { version: version.value })
   )
   const githubRepo = MARKETING_DEFAULTS.githubRepo
 </script>
@@ -53,7 +53,7 @@
         </origam-text-mask>
 
         <p class="home-hero__subtitle">
-          {{ t('home.hero.subtitle', '95 components. 29 chart primitives. Full a11y. Design tokens out of the box. Built for Vue 3 with TypeScript-first DX.') }}
+          {{ t('home.hero.subtitle', '218 components. 26 chart primitives. Full a11y. Design tokens out of the box. Built for Vue 3 with TypeScript-first DX.') }}
         </p>
       </header>
 
