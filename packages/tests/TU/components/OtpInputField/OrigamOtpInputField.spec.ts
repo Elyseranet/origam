@@ -8,6 +8,7 @@ import { mount, type VueWrapper } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
 
+import OrigamInput from '@origam/components/Input/OrigamInput.vue'
 import OrigamOtpInputField from '@origam/components/OtpInputField/OrigamOtpInputField.vue'
 import { createOrigam } from '@origam/origam'
 
@@ -224,6 +225,94 @@ describe('OrigamOtpInputField — expose: reset()', () => {
         await nextTick()
 
         expect(wrapper.find('input[type="hidden"]').element.value).toBe('')
+    })
+})
+
+// ---------------------------------------------------------------------------
+// validationValue — documented exception (#697)
+// ---------------------------------------------------------------------------
+// OrigamOtpInputField inherits `validationValue` from IInputProps but wraps
+// props in a Proxy before handing them to useValidation, so BOTH `modelValue`
+// and `validationValue` answer with the joined OTP string. A consumer-supplied
+// validation-value is therefore discarded ON PURPOSE — an OTP field has exactly
+// one value worth validating. These specs pin that documented behaviour so a
+// future refactor of the Proxy cannot silently change it.
+//
+// The OrigamInput case below is the POSITIVE CONTROL: same harness, same rule
+// spy, on a neighbouring field that calls useValidation on the raw props. It
+// proves the harness can actuate the prop, so the OTP result is a real override
+// and not a test that fails to pass the prop.
+
+describe('OrigamOtpInputField — validationValue is ignored by design (#697)', () => {
+    it('rules receive the joined OTP string, not the supplied validationValue', async () => {
+        const seen: Array<unknown> = []
+        const wrapper = mountOtpField({
+            length: 6,
+            modelValue: '123456',
+            validationValue: 'SENTINEL-NOT-OTP',
+            rules: [(v: unknown) => {
+                seen.push(v)
+
+                return true
+            }]
+        })
+        await nextTick()
+
+        await (wrapper.vm as unknown as { validate: () => Promise<unknown> }).validate()
+
+        expect(seen.length).toBeGreaterThan(0)
+        expect(seen).not.toContain('SENTINEL-NOT-OTP')
+        for (const value of seen) {
+            expect(value).toBe('123456')
+        }
+    })
+
+    it('follows the model, not validationValue, when the model changes', async () => {
+        const seen: Array<unknown> = []
+        const wrapper = mountOtpField({
+            length: 4,
+            modelValue: '1234',
+            validationValue: 'SENTINEL-NOT-OTP',
+            rules: [(v: unknown) => {
+                seen.push(v)
+
+                return true
+            }]
+        })
+        await nextTick()
+
+        await wrapper.setProps({ modelValue: '9876' })
+        await nextTick()
+
+        seen.length = 0
+        await (wrapper.vm as unknown as { validate: () => Promise<unknown> }).validate()
+
+        expect(seen).toEqual(['9876'])
+    })
+
+    it('positive control — OrigamInput DOES honour validationValue', async () => {
+        const seen: Array<unknown> = []
+        const wrapper = mount(OrigamInput, {
+            attachTo: document.body,
+            props: {
+                modelValue: '123456',
+                validationValue: 'SENTINEL-NOT-OTP',
+                rules: [(v: unknown) => {
+                    seen.push(v)
+
+                    return true
+                }]
+            },
+            global: { plugins: [createOrigam()] }
+        })
+        await nextTick()
+
+        await (wrapper.vm as unknown as { validate: () => Promise<unknown> }).validate()
+
+        expect(seen.length).toBeGreaterThan(0)
+        for (const value of seen) {
+            expect(value).toBe('SENTINEL-NOT-OTP')
+        }
     })
 })
 
