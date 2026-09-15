@@ -209,7 +209,7 @@ const currentVersionLabel = computed(() =>
                         </header>
 
                         <p class="changelog-release__summary">
-                            {{ t(currentVersion.summaryKey, currentVersion.summaryKey) }}
+                            {{ t(currentVersion.summaryKey, currentVersion.summaryFallback) }}
                         </p>
 
                         <origam-grid
@@ -236,7 +236,7 @@ const currentVersionLabel = computed(() =>
                                 </origam-chip>
 
                                 <span class="changelog-release__highlight-text">
-                                    {{ t(highlight.textKey, highlight.textKey) }}
+                                    {{ t(highlight.textKey, highlight.textFallback) }}
                                 </span>
                             </origam-grid-item>
                         </origam-grid>
