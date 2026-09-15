@@ -130,12 +130,36 @@ const variantSlugOf = (label: string): string => label.replace(/\s+/g, '-')
 /* ── Playground state ─────────────────────────────────────────────── */
 const playgroundProps = reactive<Record<string, string | number | boolean>>({})
 
+/* ⛔ On distingue « valeur par défaut du contrôle » et « valeur choisie par
+   l'utilisateur ». Les défauts sont extraits du DS : ils décrivent le
+   composant, pas une intention. Les confondre obligeait à filtrer `''` et
+   `false` avant la fusion pour ne pas écraser l'adaptateur curaté — et rendait
+   toute prop booléenne impossible à décocher (#739). */
+const editedControls = ref<Set<string>>(new Set())
+
+const markControlEdited = (prop: string) => {
+    editedControls.value.add(prop)
+}
+
 const initPlayground = () => {
     const controls = displayDoc.value?.playground?.controls ?? []
+    editedControls.value = new Set()
     controls.forEach(ctrl => {
         playgroundProps[ctrl.prop] = ctrl.defaultValue
     })
 }
+
+const playgroundEditedProps = computed(() =>
+    Object.fromEntries(
+        Object.entries(playgroundProps).filter(([prop]) => editedControls.value.has(prop))
+    )
+)
+
+const playgroundUneditedProps = computed(() =>
+    Object.fromEntries(
+        Object.entries(playgroundProps).filter(([prop]) => !editedControls.value.has(prop))
+    )
+)
 
 const generatedCode = computed(() => {
     const tag = componentTag.value
@@ -1147,6 +1171,7 @@ useSeoMeta({
                                             variant="outlined"
                                             hide-details
                                             class="component-playground__select"
+                                            @update:model-value="markControlEdited(ctrl.prop)"
                                         />
 
                                         <div
@@ -1162,6 +1187,7 @@ useSeoMeta({
                                                 density="compact"
                                                 hide-details
                                                 class="component-playground__switch"
+                                                @update:model-value="markControlEdited(ctrl.prop)"
                                             />
                                         </div>
 
@@ -1173,6 +1199,7 @@ useSeoMeta({
                                             variant="outlined"
                                             hide-details
                                             class="component-playground__text"
+                                            @update:model-value="markControlEdited(ctrl.prop)"
                                         />
                                     </div>
                                 </div>
@@ -1187,7 +1214,8 @@ useSeoMeta({
                                         <component-live-preview
                                             :slug="slug"
                                             :doc="displayDoc"
-                                            :user-props="playgroundProps"
+                                            :user-props="playgroundEditedProps"
+                                            :unedited-props="playgroundUneditedProps"
                                         />
                                     </div>
 
