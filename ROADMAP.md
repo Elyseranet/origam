@@ -1,9 +1,12 @@
 # ROADMAP — origam Design System
 
-> Référentiel : `origam@2.6.0` (dernière version publiée, Wave 4 incluse).
+> Référentiel : `origam@2.17.1` — dernière version publiée sur npm le
+> 2026-09-15 (36 versions au registre).
 > Stack : Vue 3.5 + TypeScript, distribution ESM via `unbuild`,
-> tokens DTCG (Tokens Studio + Style Dictionary v4),
-> 78 familles de composants, 13+ composables transversaux.
+> feuilles de tokens CSS/SCSS maintenues à la main — le pipeline DTCG
+> (Tokens Studio + Style Dictionary v4) a été **retiré du dépôt** le
+> 2026-08-31, cf. §2.3 —,
+> 96 familles de composants (218 SFC), 138 composables transversaux.
 >
 > Cette roadmap mélange deux volets :
 > - **Stratégie & adoption** — positionnement, cibles, marketing, KPI, risques.
@@ -13,19 +16,124 @@
 
 ---
 
-## Où on en est (post-2.6.0)
+## Où on en est — état mesuré le 2026-09-15 (`origam@2.17.1`)
 
-- ✅ Sortie publique sur npm, tarball 869 kB, 0 vuln critique.
-- ✅ Pre-delivery automatisé via `prepublishOnly` (tokens + build + 220 TU).
-- ✅ README correct, CHANGELOG à jour.
-- ✅ **Monorepo migration completed (mai 2026)** — 6 packages pnpm workspace
-  (`ds`, `marketing`, `stories`, `docs`, `tests`, `figma-plugin`). La lib publie
-  toujours sous `origam` depuis `packages/ds/`. Voir
+> Chaque ligne porte la mesure qui la justifie. Les chiffres non reproductibles
+> depuis le dépôt portent leur source. Ce qui n'a pas pu être mesuré est rangé
+> dans « Non mesuré » plutôt que deviné.
+
+### Livré
+
+- ✅ **Publié sur npm** — `origam@2.17.1`, tarball **1 733 668 o** (≈ 1,73 Mo),
+  `unpackedSize` 9 092 234 o, 3 498 fichiers.
+  *(`curl https://registry.npmjs.org/origam` + téléchargement du `.tgz`.)*
+  Publication automatisée par `release.yml` :
+  `npm publish --access public --provenance` (attestation sigstore,
+  `id-token: write`), après assertion tag == version.
+  À noter : `prepublishOnly` ne lance que le build — ce sont les jobs de
+  `ci.yml` qui portent lint, types, gardes, TU et e2e.
+- ✅ **Pipeline CI complet** — 5 workflows, **17 jobs**. `ci.yml` en porte 12 :
+  `lint`, `architecture-guards`, `type-check`, `test-unit`, `build`,
+  `build-embeds`, `build-marketing`, `i18n-check`, `test-e2e`,
+  `test-e2e-marketing`, `test-a11y-marketing`, `vrt`. S'y ajoutent
+  `release.yml` (2 jobs), `build.yml` (1, SonarQube), `docker.yml` (1),
+  `docs-fixtures.yml` (1).
+  **Qodana n'existe plus** (`grep -rin qodana .github/` → 0 occurrence) et il
+  n'y a plus de workflow `tokens-sync`.
+- ✅ **Documentation et stories en ligne** — VitePress v1.6.4 servi sur
+  <http://origam.dev.elysera.net/docs> (HTTP 200) et le build Histoire sur
+  <http://origam.dev.elysera.net/stories> (HTTP 200). Une route inexistante
+  répond 404 sur le même hôte, donc ces 200 sont significatifs. Les images
+  `ghcr.io/elyseranet/origam-docs` et `…/origam-stories` sont construites et
+  poussées par `docker.yml` (push `main` + tags, multi-arch amd64/arm64).
+  ⚠️ En revanche `origam.dev`, `docs.origam.dev` et `stories.origam.dev`
+  **ne résolvent pas** (`curl` code 6) : le déploiement public sous le nom de
+  domaine du projet reste à faire.
+- ✅ **Tests unitaires** — 532 fichiers de specs, **6 953 tests**
+  (6 872 passés, 3 *expected fail*, 78 ignorés), suite verte.
+  Couverture v8 : **78 % d'instructions, 79,87 % de lignes, 74,49 % de
+  fonctions, 64,5 % de branches**.
+  *(`pnpm -F @origam/tests run test:coverage`, code de sortie réel 0.)*
+- ✅ **Un garde-fou e2e par famille de composants** — **229 fichiers de specs
+  Playwright pour 218 stories** et 96 familles. Seules `Icon` et `Slide` n'ont
+  pas de spec portant leur nom, et sont couvertes par `icons.spec.ts` et
+  `carousel.spec.ts` / `slidegroup-arrows.spec.ts`.
+- ✅ **Gardes d'architecture : 21/21**
+  (`node packages/ds/scripts/guards/run-all.mjs`, code de sortie réel **0**,
+  4,5 s).
+- ✅ **Inspection des 216 composants close à 0 défaut** — 8 critères
+  (C1 rendu distinct, C2 canal du thème, C3 réactivité, C4 ADR-005,
+  C5 emits assertés, C6 sémantique/a11y, C7 story + doc, C8 zéro chaîne en
+  dur) : 216 « conforme » sur **chacun** des 8, gravité max « aucun », statut
+  « inspecté » partout.
+  *(`docs/mesures/classeur-complet-maj-2026-09-01.csv`, 216 lignes de données.)*
+- ✅ **SonarQube branché, couverture câblée, gate bloquante** —
+  `sonar.javascript.lcov.reportPaths=coverage/lcov.info` dans
+  `sonar-project.properties` ; `build.yml` produit le lcov et **échoue s'il est
+  vide** ; l'analyse est cadrée sur `packages/ds/src`. La gate est armée
+  (`gh variable list` → `ENFORCE_QUALITY_GATE = true`, posée le 2026-06-23) et
+  bloque sur la sécurité et la criticité, les odeurs de code passant en
+  avertissement.
+- ✅ **Automatisation des dépendances** — `.github/dependabot.yml` : écosystèmes
+  npm **et** GitHub Actions, hebdomadaire, ciblant `develop`, PR groupées
+  (vue / vite+test / lint / types / dev-deps). C'est Dependabot et non
+  Renovate, le besoin est couvert.
+- ✅ **Consolidation de la suite TU** — **0** spec résiduelle sous
+  `src/**/__tests__/` : tout vit sous `packages/tests/TU/{Domain}/`. La cible
+  « 70 % de branches sur `src/composables/Commons/` » est **dépassée :
+  77,94 %** (1 572 / 2 017 branches, extraites de `coverage/lcov.info`).
+- ✅ **Monorepo** — **5** packages pnpm workspace (`ds`, `docs`, `marketing`,
+  `stories`, `tests`). `packages/figma-plugin/` a été retiré avec le pipeline
+  de tokens (cf. §2.3), le décompte de 6 est périmé. La lib publie toujours
+  sous `origam` depuis `packages/ds/`. Voir
   [`MONOREPO_PROPOSAL.md`](./MONOREPO_PROPOSAL.md) pour le rationnel.
-- ❌ Pas de doc en ligne. Pas de stories déployées. Pas de communauté.
-- ❌ CI = Qodana scan + tokens-sync seulement. Pas de pipeline lint/test/build/publi.
-- ❌ Coverage Playwright partielle (~100 specs pour 161 stories).
-- ❌ Pas de bundle-size monitoring. Pas d'audit a11y systématique.
+- ✅ **README et CHANGELOG à jour.**
+
+### Partiel
+
+- 🟡 **La CI ne barre que 58 des 229 specs e2e.** `test-e2e` tourne avec
+  `E2E_GREEN_ONLY=1` : seuls les 58 fichiers listés dans `GREEN_SPECS`
+  (`packages/tests/playwright.config.ts`) sont exécutés — sur 4 shards, avec
+  `E2E_STATIC=1`. Les 171 autres specs existent au dépôt mais ne gardent rien
+  en intégration.
+- 🟡 **A11y : le balayage systématique est écrit, pas entièrement branché.**
+  `packages/tests/a11y/components.spec.ts` passe axe-core sur le Variant
+  Default de chaque composant ayant une story, mais `ci.yml` n'invoque que
+  `playwright.a11y.marketing.config.ts` (job `test-a11y-marketing`) : le
+  balayage composant ne tourne dans **aucun** job. Son seuil d'échec est par
+  ailleurs abaissé au seul `critical` (`IMPACT_FAIL_LEVEL`).
+  Côté overlays, les assertions focus-trap / `Escape` / `aria-modal` n'existent
+  que dans `dialog.spec.ts`, `select.spec.ts` et `command-palette.spec.ts` —
+  Menu, ContextualMenu, Tooltip, Drawer, Sheet et Snackbar n'en ont aucune.
+- 🟡 **Régression visuelle amorcée** — le job `vrt` tourne dans le conteneur
+  Playwright épinglé (`mcr.microsoft.com/playwright:v1.59.1-jammy`), ce qui
+  rend son verdict fiable, mais la suite ne compte **qu'une seule spec**
+  (`packages/tests/vrt/btn-variant.spec.ts`).
+- 🟡 **Sécurité des dépendances** — `pnpm audit --prod` remonte
+  **9 vulnérabilités : 2 modérées, 7 hautes, 0 critique**. Les 17 chemins
+  relevés passent **tous** par `packages/marketing` (arbre Nuxt) ; la
+  bibliothèque publiée ne déclare que deux dépendances runtime (`@mdi/font`,
+  `qrcode-generator`). À traiter côté marketing.
+
+### Pas fait
+
+- ❌ **Aucun monitoring de la taille du bundle** — ni `size-limit`, ni
+  `bundlewatch`, ni `bundlesize` dans les `package.json` ou les workflows
+  (`grep` → code de sortie 1). Le repère « 869 kB » hérité de la 2.2.0 est
+  périmé : le tarball 2.17.1 mesure **1,73 Mo**.
+- ❌ **`docs/migration/v2-to-v3.md` n'existe pas** — le dossier
+  `docs/migration/` non plus. Bloque le risque **R3** et l'audit d'API pré-v3.
+- ❌ **Pas de communauté** — ni Discussions ouvertes, ni contributeur externe.
+
+### Non mesuré
+
+- ❓ **Les notes SonarQube (A sur les 4 axes) et la dette à zéro.** L'API de
+  `sonarqube.elysera.net` répond **401** sans jeton, et le jeton est un secret
+  de dépôt. Le *branchement* est vérifié ; le *verdict* ne l'est pas.
+- ❓ **La disponibilité publique des images GHCR.** Un jeton de pull anonyme sur
+  `ghcr.io/elyseranet/origam-docs` est refusé (**403 DENIED**) : les paquets
+  sont vraisemblablement privés, mais ce n'est pas confirmé. La doc en ligne,
+  elle, est vérifiée par HTTP (voir plus haut).
 
 ---
 
@@ -37,22 +145,29 @@
 
 | Critère | **origam** | Vuetify 3 | PrimeVue | Naive UI | shadcn-vue | Radix Vue |
 |---|---|---|---|---|---|---|
-| Composants | ~80 familles | ~90 | ~100 | ~80 | ~50 | ~30 (primitifs) |
-| Tokens Studio natif | ✅ DTCG | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Composants | **96 familles** (218 SFC) | ~90 | ~100 | ~80 | ~50 | ~30 (primitifs) |
 | Multi-thème runtime | ✅ `data-theme` | Partiel (Material You) | ✅ | Partiel | ❌ | ❌ |
+| Thème par **props de composant** | ✅ `IOrigamTheme.components` | ❌ | ❌ | ❌ | ❌ | ❌ |
 | CSS-first + fallback JS | ✅ `useCssSupport` | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Tree-shaking propre | ✅ `sideEffects` | Partiel | ✅ | ✅ | ✅ | ✅ |
 | Communauté | ❌ (v0) | Très large | Large | Moyenne | Croissante | Petite |
-| Doc en ligne | ❌ pas encore | ✅ | ✅ | ✅ | ✅ | Partielle |
+| Doc en ligne | ✅ VitePress déployé *(hôte interne)* | ✅ | ✅ | ✅ | ✅ | Partielle |
 | ARIA / a11y | Partiel | Partiel | Bon | Moyen | Bon | Excellent |
-| Figma sync natif | ✅ Tokens Studio | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Pipeline Tokens Studio / Figma | ⏸️ **retiré le 2026-08-31** | ❌ | ❌ | ❌ | ❌ | ❌ |
+
+> ⚠️ Les deux lignes « Tokens Studio natif ✅ DTCG » et « Figma sync natif ✅ »
+> qui figuraient ici décrivaient un pipeline **supprimé du dépôt le
+> 2026-08-31** (cf. §2.3). Les laisser aurait été un argument de vente sans
+> code derrière.
 
 ### 3 USP concrets
 
-1. **Pipeline Figma → code natif via Tokens Studio.** Seul DS Vue 3 à consommer
-   du DTCG directement (Style Dictionary v4 en build step). Une équipe qui
-   gère son DS dans Figma synchronise couleurs / espacements / radii sans
-   mapping manuel. Aucun concurrent ne propose ça out-of-the-box.
+1. **Un thème se configure par les PROPS des composants, pas par du CSS.**
+   Un objet `IOrigamTheme` porte un bloc `components`
+   (`{ 'origam-btn': { variant, rounded, density, … } }`) résolu pour tout le
+   catalogue d'un coup, sans qu'aucun composant n'ait à s'y abonner
+   (ADR-005). Les variables CSS restent le dernier recours, pour ce que les
+   props ne savent pas exprimer. Aucun concurrent Vue 3 ne propose ce niveau.
 2. **CSS-first avec fallback JS documenté.** `useCssSupport()` centralise la
    feature-detection (container queries, `:has()`, `subgrid`, `color-mix`,
    `view-transition`). Choix d'architecture délibéré, rare dans l'écosystème,
@@ -63,26 +178,35 @@
 
 ### Ce qu'il ne faut pas survendre
 
-- L'a11y n'est pas encore le point fort — Radix Vue est supérieur.
+- L'a11y n'est pas encore le point fort — Radix Vue est supérieur. Le balayage
+  axe par composant existe mais **ne tourne dans aucun job de CI**, et son
+  seuil d'échec est abaissé à `critical`.
 - Pas d'écosystème encore — ne pas prétendre à une communauté.
-- Stories Histoire pas déployées en ligne — ne pas renvoyer vers du vide.
+- **Aucun pipeline Tokens Studio / Figma** : il a été retiré le 2026-08-31.
+  Ne plus l'employer comme argument tant qu'il n'est pas reconstruit.
+- La doc et les stories sont en ligne, mais sur un hôte interne
+  (`origam.dev.elysera.net`) : `origam.dev` ne résout pas. Ne pas communiquer
+  une adresse qui n'existe pas.
 
 ### Elevator pitch (1 ligne)
 
-> **origam** — the Vue 3 design system for teams who design in Figma Tokens
-> Studio and ship in TypeScript: 80+ components, multi-brand theming at
-> runtime, CSS-first with zero config.
+> **origam** — the Vue 3 design system where a brand theme is a set of
+> component props, not a stylesheet: 96 component families, multi-brand
+> theming at runtime, CSS-first with zero config.
 
 ## 1.2 — Cibles & cas d'usage
 
 ### Public early-adopter
 
-- **A — Équipes design-driven avec Tokens Studio.** Agence / studio 3–15 pers,
-  stack Vue 3 + Nuxt. Sentent la valeur dès le premier `tokens:build`.
+- **A — Équipes design-driven multi-marques.** Agence / studio 3–15 pers,
+  stack Vue 3 + Nuxt. Sentent la valeur dès le premier `IOrigamTheme` écrit
+  en props plutôt qu'en CSS.
 - **B — Apps internes multi-tenant.** Backoffice, portails clients, SaaS
   white-label. Le multi-thème runtime est leur killer feature.
-- **C — Solo devs qui fuient Vuetify.** Vuetify impose Material et pèse lourd.
-  origam est plus léger (869 kB tarball), visuellement agnostique.
+- **C — Solo devs qui fuient Vuetify.** Vuetify impose Material. origam est
+  visuellement agnostique. ⚠️ L'argument « plus léger » demande à être
+  remesuré avant d'être employé : le tarball `2.17.1` pèse **1,73 Mo**, pas
+  les 869 kB de la 2.2.0, et aucune comparaison à Vuetify n'a été faite ici.
 
 ### À exclure (savoir dire non)
 
@@ -98,12 +222,13 @@
 
 | Action | Priorité | Effort |
 |---|---|---|
-| Déployer VitePress sur Vercel (`origam.dev`) | P0 | S |
-| Déployer Histoire (sous-domaine `stories.origam.dev`) | P0 | S |
+| ✅ Déployer VitePress — **fait**, servi sur `origam.dev.elysera.net/docs` (HTTP 200) | P0 | S |
+| ✅ Déployer Histoire — **fait**, servi sur `origam.dev.elysera.net/stories` (HTTP 200) | P0 | S |
+| ⬜ Basculer les deux sous le domaine du projet (`origam.dev` ne résout pas) | P0 | S |
 | Badge "downloads/week" npm sur le README | P1 | XS |
-| Post de lancement dev.to ("Building a CSS-first Vue 3 DS with Tokens Studio") | P1 | M |
+| Post de lancement dev.to ("Theming a Vue 3 DS through component props, not CSS") | P1 | M |
 | Soumission à Vue.js Newsletter (15 000+ abonnés) | P1 | XS |
-| Show HN "origam — Vue 3 DS with Tokens Studio DTCG pipeline" | P1 | S |
+| Show HN "origam — a Vue 3 DS you theme with props" | P1 | S |
 | Fil Mastodon / X avec `#VueJS #DesignSystem` | P2 | XS |
 | Template starter "Nuxt 4 + origam" sur GitHub | P1 | M |
 
@@ -124,9 +249,9 @@
 ### H1 2027+ (>6 mois) — Durabilité
 
 - **Open Collective / GitHub Sponsors** si > 500 downloads/sem. Pas avant.
-- **Conférences** — talk "CSS-first design systems with Tokens Studio" pour
-  VueJS Paris ou VueConf US. Angle différenciant indépendant de la taille
-  communauté.
+- **Conférences** — talk "CSS-first design systems, themed by props" pour
+  VueJS Paris ou VueConf US. Angle différenciant indépendant de la taille de
+  la communauté.
 - **Recrutement co-maintainer** via Discussions + réseau Vue. Bus factor = 1
   est le risque existentiel.
 - Page "**who uses origam**" alimentée par formulaire Google Form.
@@ -148,9 +273,9 @@
 
 ### R1 — Concurrence Vuetify 3 / PrimeVue (proba élevée, impact élevé)
 
-Ne pas se battre sur la volumétrie. Niche : **Tokens Studio + multi-brand**.
-Un article ciblé ("Why we moved from Vuetify to origam for our white-label
-platform") vaut 10 tweets génériques.
+Ne pas se battre sur la volumétrie. Niche : **thème multi-marque piloté par
+les props de composant**, en runtime. Un article ciblé ("Why we moved from
+Vuetify to origam for our white-label platform") vaut 10 tweets génériques.
 
 ### R2 — Bus factor 1 (proba certaine, impact critique)
 
@@ -160,14 +285,24 @@ Publier un "maintenance status" honnête dans le README.
 
 ### R3 — Breaking change v3.0 perd les early adopters (proba certaine, impact moyen-élevé)
 
-Annoncer dès maintenant la v3.0 dans la doc avec timeline indicative.
-Publier `docs/migration/v2-to-v3.md` AVANT de tagger v3.0. Fournir un codemod
+**Non levé.** Vérifié le 2026-09-15 : `docs/migration/v2-to-v3.md` **n'existe
+pas**, et le dossier `docs/migration/` non plus.
+
+Annoncer dès maintenant la v3.0 dans la doc avec une échéance indicative.
+Publier `docs/migration/v2-to-v3.md` **AVANT** de tagger v3.0 — c'est une
+condition bloquante, pas une bonne pratique. Fournir un codemod
 `origam-migrate` si la migration est mécanique.
 
 ### R4 — Doc insuffisante bloque l'adoption (proba certaine, impact élevé)
 
-Déploiement VitePress + Histoire = P0 absolu avant tout effort marketing.
-Chaque composant : props listées, exemple minimal, screenshots 3 thèmes.
+**Partiellement levé.** VitePress et Histoire **sont déployés** et répondent en
+HTTP 200 (`origam.dev.elysera.net/docs` et `/stories`), et 210 fichiers de doc
+composant existent sous `packages/docs/components/`.
+
+Ce qui reste du risque : l'adresse est un hôte interne, `origam.dev` ne résout
+pas. Tant que la doc n'est pas publiée sous le nom du projet, l'effort
+marketing n'a nulle part où envoyer les gens. Cible inchangée pour chaque
+composant : props listées, exemple minimal, captures sur 3 thèmes.
 
 ### R5 — Pas de track record prod (proba certaine, impact moyen)
 
@@ -181,95 +316,176 @@ ou pro) où origam est utilisée — un seul suffit à casser le "zéro référe
 
 ## 2.1 — Court terme (Q3 2026)
 
-### 🔴 SonarQube — quality gate « A » partout, zéro dette **(PRIORITÉ, M)**
-Le scan SonarQube est déjà branché (`build.yml` → `SonarSource/sonarqube-scan-action@v4`,
-`sonar-project.properties` avec `projectKey`/`sources`/`tests`) mais incomplet.
-À finir pour atteindre une note **A** sur les 4 axes (Reliability, Security,
-Security Review, Maintainability) et **0 dette technique** :
+### SonarQube — outillage en place, verdict non mesurable d'ici **(M)**
 
-- **Câbler la couverture des TU** : les tests Vitest émettent déjà du `lcov`
-  (`packages/tests/vitest.config.ts` → `reporter: ['text','lcov']`), mais
-  Sonar ne le lit pas. Générer le rapport en CI (`test:unit:run --coverage`)
-  et le déclarer via `sonar.javascript.lcov.reportPaths=…/coverage/lcov.info`
-  pour que la **couverture soit prise en compte** dans la quality gate.
-- **Activer la quality gate bloquante** : décommenter / ajouter
-  `SonarSource/sonarqube-quality-gate-action@v1` dans le workflow pour que le
-  build échoue si la gate n'est pas verte (sinon le scan est purement
-  informatif).
-- **Résorber toute la dette** : traiter les bugs, vulnérabilités, security
-  hotspots et code smells remontés jusqu'à **A** sur chaque axe et **0**
-  issue ouverte ; régler les éventuels doublons (`Duplications`) et la
-  couverture sous le seuil. Exclure proprement le code généré (tokens,
-  `.nuxt`, dist) de l'analyse pour ne pas polluer le ratio.
-- **Lier au CI principal** : faire tourner le scan sur PR (pas seulement sur
-  push `develop`) avec le bon `sonar.pullrequest.*`, et l'ajouter aux
-  pre-delivery checks.
+**Fait et vérifié (2026-09-15) :**
+- ✅ **Couverture câblée.** `sonar-project.properties` déclare
+  `sonar.javascript.lcov.reportPaths=coverage/lcov.info` ; `build.yml` lance
+  `pnpm -F @origam/tests run test:coverage` puis **échoue si le lcov est vide**
+  (`test -s coverage/lcov.info`). L'analyse est cadrée sur `packages/ds/src`
+  avec `sonar.tests=packages/tests/TU`, et exclut `*.spec.ts`, `*.d.ts` et
+  `assets/**` — le code généré ne pollue plus le ratio.
+- ✅ **Gate bloquante armée.** La variable de dépôt `ENFORCE_QUALITY_GATE` vaut
+  `true` (`gh variable list`, posée le 2026-06-23). Le blocage est trié **par
+  gravité** : vulnérabilité ou criticité `BLOCKER`/`CRITICAL` → job rouge ;
+  odeur de code → avertissement. Ce tri est délibéré (cf. l'incident 2.14.0,
+  bloquée par deux odeurs mineures alors que tout le fonctionnel était vert).
+- ⏹️ **Scan sur PR : abandonné, pas en retard.** SonarQube Community Edition
+  n'analyse qu'**une seule branche** et rejette l'analyse de pull request.
+  `build.yml` scanne donc `develop` et le documente. À rouvrir seulement si le
+  projet passe en Developer Edition.
 
-### 🔴 CI E2E — job annulé en boucle (timeout 30 min) **(PRIORITÉ, M)**
-Le job `E2E tests (Playwright / Chromium)` de `ci.yml` est **cancelled à
-chaque run** (les 5 autres jobs passent). Il dépasse systématiquement son
-`timeout-minutes: 30`, même réduit au sous-ensemble vert (`E2E_GREEN_ONLY`).
-- **Cause** : le `webServer` Playwright lance `pnpm -F @origam/stories dev`
-  (Histoire en mode Vite **dev**). Vite **compile chaque story à la demande**
-  au premier accès → cold-start mesuré à **19-30 s par story** en local, encore
-  pire sur un runner GitHub froid. Cumulé sur les specs, le job explose les
-  30 min. Ce n'est pas un bug GitHub mais une incompatibilité dev-server/CI.
-- **Décision à trancher** :
-  - **Corriger (recommandé)** : faire pointer le `webServer` e2e sur le
-    **build statique** de Histoire (déjà produit par `build:embeds` →
-    `packages/marketing/public/stories`, servi via un `http-server`/`serve`).
-    Plus de cold-start Vite → e2e rapide et déterministe en CI. Réutilise
-    l'artefact `marketing-embeds` du job `build-embeds`.
-  - **OU retirer/dé-bloquer** : sortir e2e de la CI bloquante (job
-    `continue-on-error` ou workflow manuel/nightly séparé) tant que le point
-    précédent n'est pas fait, pour ne pas laisser la CI rouge en permanence.
-- Lié à la réparation en cours de la suite e2e (migration vers le format de
-  story unifié, sous-ensemble vert qui grandit vague par vague).
+**Reste ouvert :**
+- ❓ **Note A sur les 4 axes et dette à zéro : non mesuré.** L'API
+  `sonarqube.elysera.net` répond **401** sans jeton, et le jeton est un secret
+  de dépôt. Il faut consulter le tableau de bord pour trancher — ne pas cocher
+  cet item sans cette lecture.
 
-### CI/CD GitHub Actions complète **(L)**
-- Workflow `ci.yml` (lint + `tokens:lint` + `test:unit` + `test:e2e` +
-  `server:build`) sur PR/push, matrice Node 22 / 24.
-- Workflow `release.yml` (déclenché sur tag `v*` → `npm publish --provenance`
-  + GitHub Release auto depuis CHANGELOG).
-- Bloque toute confiance dans les releases suivantes.
+### ✅ CI E2E — le job ne s'annule plus **(corrigé)**
 
-### Déploiement Histoire + VitePress **(M)**
-- `pages.yml` build + déploiement GitHub Pages (`/`=VitePress,
-  `/story/`=Histoire). Ou Vercel pour preview-deploy sur chaque PR.
-- Bloque l'adoption externe.
+Le job `E2E tests (Playwright / Chromium)` dépassait systématiquement son
+`timeout-minutes: 30` parce que le `webServer` Playwright lançait Histoire en
+mode Vite **dev** : chaque story payait une compilation à froid.
 
-### Coverage Playwright complète — test-as-you-build retro **(XL)**
-- ~60 composants sans garde-fou e2e (violation explicite CLAUDE.md).
-  Consolidation des `*-debug.spec.ts` en suite systématique.
-- Cible : 100 % composants publics, un spec par composant avec Variants +
-  props exercées.
-- Bloque la confiance pour v3 (Strategy B impossible à valider sans baseline).
+**Ce qui a été appliqué, lu dans `ci.yml` le 2026-09-15 :**
+- `E2E_STATIC: '1'` — le job construit d'abord le Histoire statique
+  (`pnpm -F @origam/stories build`) et le sert via `histoire preview`. Plus de
+  compilation à froid par story. C'est l'option « corriger » de l'arbitrage
+  ci-dessous, retenue.
+- **Sharding sur 4 runners** (`matrix.shard: [1,2,3,4]`,
+  `--shard=${{ matrix.shard }}/4`, `fail-fast: false`), ce qui divise le temps
+  mural par autant.
+- `NODE_OPTIONS: --max-old-space-size=6144` pour le build Histoire, navigateurs
+  Playwright mis en cache, rapport téléversé en artefact à chaque issue.
 
-### Audit & consolidation de la suite TU **(M)**
-- Convention `tests/unit/{Domain}/{name}.spec.ts` (actuellement éparpillés
-  dans `src/**/__tests__/`). Mock `CSS.supports`, jsdom.
-- Cible : 70 % branches sur `src/composables/Commons/`.
+**Ce qui reste :** le job tourne avec `E2E_GREEN_ONLY: '1'`, donc **58 specs
+sur 229** (liste `GREEN_SPECS` dans `packages/tests/playwright.config.ts`).
+Élargir cette liste est le vrai travail restant — voir l'item suivant.
 
-### Audit a11y des overlays **(M)**
-- Dialog / Menu / ContextualMenu / Tooltip / Drawer / Sheet / Snackbar →
-  focus trap, restitution du focus, `aria-modal`, `Esc`.
-- `@axe-core/playwright` intégré dans `test:e2e`. Doc d'accessibilité par
-  composant.
+### ✅ CI/CD GitHub Actions complète **(livré)**
 
-### Bundle-size monitoring **(S)**
+Mesuré le 2026-09-15 : **5 workflows, 17 jobs**.
+- `ci.yml` — 12 jobs sur PR et push : `lint`, `architecture-guards`,
+  `type-check`, `test-unit`, `build`, `build-embeds`, `build-marketing`,
+  `i18n-check`, `test-e2e`, `test-e2e-marketing`, `test-a11y-marketing`, `vrt`.
+- `release.yml` — sur tag `v*` ou `X.Y.Z` : assertion tag == version, puis
+  `npm publish --access public --provenance` (sigstore) et GitHub Release.
+  Un job `npm-auth-check` manuel vérifie le jeton sans publier.
+- `build.yml` (SonarQube), `docker.yml` (images docs + stories vers GHCR,
+  multi-arch), `docs-fixtures.yml`.
+
+Le `tokens:lint` mentionné à l'origine n'existe plus : le pipeline de tokens a
+été retiré le 2026-08-31 (cf. §2.3).
+
+**Reste ouvert :** la matrice **Node 22 / 24** n'est pas en place — tous les
+jobs lisent `node-version-file: .nvmrc`, donc une seule version. À décider :
+matrice réelle, ou renoncer explicitement et s'en tenir au `engines.node >= 22`
+du contrat consommateur.
+
+### ✅ Déploiement Histoire + VitePress **(livré, hors GitHub Pages)**
+
+Mesuré par HTTP le 2026-09-15 :
+- <http://origam.dev.elysera.net/docs> → **200**, VitePress v1.6.4.
+- <http://origam.dev.elysera.net/stories> → **200**, build Histoire.
+- Une route inexistante sur le même hôte → **404**, donc ces 200 sont
+  significatifs et non un *catch-all* de SPA.
+
+La chaîne n'est ni GitHub Pages ni Vercel : `docker.yml` construit et pousse
+`ghcr.io/elyseranet/origam-docs` et `…/origam-stories` (multi-arch, sur `main`
+et sur tag), et `docker/docker-compose.yml` sert de référence de déploiement.
+
+**Reste ouvert — et c'est ce qui bloque l'adoption externe :** `origam.dev`,
+`docs.origam.dev` et `stories.origam.dev` **ne résolvent pas** (`curl` code 6).
+La doc est en ligne sur un hôte interne, pas encore sous le nom du projet.
+
+### 🟡 Coverage Playwright — écrite, mais pas entièrement barrée en CI **(M)**
+
+**Fait :** le dépôt porte **229 fichiers de specs e2e pour 218 stories** et
+96 familles de composants. En croisant le nom des familles avec celui des
+specs, seules `Icon` et `Slide` n'ont pas de spec homonyme, et toutes deux sont
+couvertes par des specs voisines (`icons.spec.ts`, `carousel.spec.ts`,
+`slidegroup-arrows.spec.ts`). Le « ~60 composants sans garde-fou » n'est plus
+d'actualité.
+
+**Reste :** `ci.yml` lance `test-e2e` avec `E2E_GREEN_ONLY: '1'`, donc
+**58 specs sur 229** — celles listées dans `GREEN_SPECS`
+(`packages/tests/playwright.config.ts`). Les 171 autres existent mais ne
+bloquent aucune PR : une régression qu'elles couvrent peut être mergée sans une
+seule coche rouge.
+- Travail restant : faire entrer les specs restantes dans `GREEN_SPECS`, vague
+  par vague, en traitant les instabilités au lieu de les contourner.
+- Bloque toujours la confiance pour v3 : sans cette barrière, Strategy B
+  n'a pas de référence.
+
+### ✅ Audit & consolidation de la suite TU **(livré)**
+
+- **Convention appliquée** : **0** spec résiduelle sous `src/**/__tests__/`
+  (`find` → 0). Tout vit sous `packages/tests/TU/{Domain}/` (components,
+  composables, directives, marketing, nuxt, origam, probe, stories, utils).
+- **Cible de branches dépassée** : la cible était 70 % sur
+  `src/composables/Commons/`, la mesure donne **77,94 %**
+  (1 572 / 2 017 branches, agrégées depuis `coverage/lcov.info`).
+- **Volume** : 532 fichiers, **6 953 tests** (6 872 passés, 3 *expected fail*,
+  78 ignorés), suite verte en 80 s.
+  *(`pnpm -F @origam/tests run test:coverage`, code de sortie réel 0,
+  2026-09-15.)*
+- Couverture globale du périmètre analysé : 78 % d'instructions, 79,87 % de
+  lignes, 74,49 % de fonctions, 64,5 % de branches.
+
+### 🟡 Audit a11y des overlays **(M — partiellement fait)**
+
+**Fait :** `@axe-core/playwright` est installé et utilisé.
+`packages/tests/a11y/components.spec.ts` balaie le Variant Default de **chaque**
+composant ayant une story, et `test-a11y-marketing` passe axe sur les pages du
+site à chaque PR (landmarks, skip link, navigation sans JS).
+
+**Reste, et c'est précis :**
+- Le balayage composant **ne tourne dans aucun job** : `ci.yml` n'invoque que
+  `playwright.a11y.marketing.config.ts`. Le brancher (ou expliquer pourquoi
+  non) est le premier geste.
+- Son seuil d'échec est abaissé au seul `critical` (`IMPACT_FAIL_LEVEL`) ;
+  `serious` ne fait que s'afficher. À remonter une fois l'arriéré purgé.
+- **Les overlays n'ont pas leurs assertions dédiées.** Focus trap /
+  restitution du focus / `aria-modal` / `Escape` ne sont assertés que dans
+  `dialog.spec.ts`, `select.spec.ts` et `command-palette.spec.ts`. Menu,
+  ContextualMenu, Tooltip, Drawer, Sheet et Snackbar n'en ont aucune.
+- Doc d'accessibilité par composant : non vérifiée ici.
+
+### ❌ Bundle-size monitoring **(S — toujours à faire)**
+
+Aucun outillage : ni `size-limit`, ni `bundlewatch`, ni `bundlesize` dans les
+`package.json` ni dans les workflows (`grep` → code de sortie 1).
+
 - `size-limit` + `@size-limit/preset-big-lib` sur chaque sous-export.
-- `size-limit-action` commente automatiquement les PR.
-- Le bond 5.6 MB → 869 kB en 2.2.0 doit rester un acquis.
+- `size-limit-action` pour commenter automatiquement les PR.
+- **Repère à réviser** : le « 869 kB » de la 2.2.0 est périmé. Mesuré le
+  2026-09-15 sur le registre, le tarball `origam@2.17.1` pèse **1 733 668 o**
+  (≈ 1,73 Mo) pour un `unpackedSize` de 9 092 234 o et 3 498 fichiers. Fixer
+  le seuil sur cette valeur, pas sur l'ancienne.
 
-### API audit pré-v3 **(L)**
-- Tableau exhaustif des deprecations dans `docs/migration/v2-to-v3.md`.
+### ❌ API audit pré-v3 **(L — toujours à faire)**
+
+**Vérifié le 2026-09-15 : `docs/migration/v2-to-v3.md` n'existe pas, et le
+dossier `docs/migration/` non plus.** C'est la condition d'entrée du risque
+**R3** — ne pas cocher cet item tant que le fichier n'est pas écrit.
+
+- Tableau exhaustif des dépréciations dans `docs/migration/v2-to-v3.md`.
 - Compléter les `@deprecated` manquants (notamment `color="#hex"`).
-- Codemod `origam-codemod` (jscodeshift) pour les renames mécaniques.
+- Codemod `origam-codemod` (jscodeshift) pour les renommages mécaniques.
 
-### Renovate / Dependabot **(S)**
-- `renovate.json` avec policies `groupSlug` (vue-*, vitest+vite, eslint).
-- Auto-merge des patch devDeps. PR hebdo groupée pour les minor.
-- Surveille `histoire@1.0.0-beta.1` pour la sortie de la stable.
+### ✅ Automatisation des dépendances **(livré — Dependabot, pas Renovate)**
+
+`.github/dependabot.yml` couvre le besoin :
+- Écosystèmes **npm** et **GitHub Actions**, hebdomadaire (lundi 06:00
+  Europe/Paris), ciblant `develop`.
+- PR **groupées** : `vue` (vue-*, @vue/*, vue-tsc…), `vite-and-test`
+  (vite, vitest, vitepress, playwright, cypress), `lint`, `types`, `dev-deps`
+  (le reste des devDeps).
+- Plafonds : 10 PR npm ouvertes, 5 côté Actions ; préfixe de commit `chore`.
+
+`renovate.json` n'existe pas et n'est pas nécessaire : le besoin décrit est
+servi. **Reste ouvert** : l'auto-merge des patchs de devDeps n'est pas
+configuré.
 
 ## 2.2 — Moyen terme (Q4 2026 / Q1 2027)
 
@@ -311,16 +527,28 @@ propre, CSS scindé par module. Le barrel global `origam` reste exporté (rétro
 Doc de migration + mesure du gain bundle par module (lien : Bundle-size monitoring).
 **Structurant / breaking de packaging → aligné v3.**
 
-### Module Nuxt officiel **(L)**
-- `@origam/nuxt` : auto-import composants + composables, plugin theme
-  SSR-safe (cookie + `prefers-color-scheme` côté Node), injection auto des
-  feuilles `tokens/css/{theme}.css`, option `themes: [...]`.
-- Cible adoption A + B.
+### ✅ Module Nuxt officiel **(livré)**
 
-### Sécurisation SSR de `useCssSupport` **(M)**
-- Pendant SSR tous les flags sont `false` → hydration mismatch potentiel.
-- Wrapper `<ClientOnly>` automatique OU helper `useCssSupportClient()` avec
-  suspense. Test Playwright `--no-js` pour le fallback serveur.
+Lu dans `packages/ds/src/nuxt/module.ts` le 2026-09-15 : le module appelle
+`addComponentsDir` (auto-import des composants), `addImports` (composables,
+liste explicite pour ne pas écraser les auto-imports natifs de Nuxt),
+`addPlugin` **deux fois** (`plugin.client.ts` et `plugin.server.ts`), pousse les
+feuilles `origam/tokens/css/*` dans `nuxt.options.css` et expose bien l'option
+`themes` (avec un `DEFAULT_THEMES`). Couvert par
+`packages/tests/TU/nuxt/module.spec.ts`.
+
+### ✅ Sécurisation SSR de `useCssSupport` **(livré)**
+
+Le helper existe :
+`packages/ds/src/composables/Commons/cssSupportClient.composable.ts`
+(`useCssSupportClient`), aux côtés de `cssSupport.composable.ts` et
+`utils/Commons/css-support.util.ts`.
+
+**Nuance mesurée :** le seul test qui coupe réellement JavaScript
+(`test.use({ javaScriptEnabled: false })`) est
+`packages/tests/a11y/marketing-a11y.spec.ts` — il valide le rendu sans JS des
+pages marketing, pas spécifiquement le repli serveur de `useCssSupport`. Un
+test dédié reste à écrire si l'on veut barrer cette surface.
 
 ### Multi-thème avancé (a11y media queries) **(M)**
 - Tokens semantic `motion.duration.*` (auto `0ms` si `prefers-reduced-motion`),
@@ -865,11 +1093,19 @@ disponible plutôt que de rester centré en cluster compact.
   doc + e2e couvrant bouton block avec/sans icône, sous les deux valeurs
   extrêmes (`center` vs `stretch`) — **test-as-you-build**.
 
-### Visual regression testing **(M)**
-- Playwright `expect(page).toHaveScreenshot()` par Variant. OU Chromatic /
-  Lost-Pixel. Baseline sur main, diff bloquant sur PR.
-- Strategy B touche le rendu de TOUS les composants — sans VRT, c'est des
-  journées de test manuel.
+### 🟡 Visual regression testing **(M — amorcé)**
+
+**Fait :** le job `vrt` tourne à chaque PR, **dans le conteneur Playwright
+épinglé** `mcr.microsoft.com/playwright:v1.59.1-jammy` — c'est ce qui rend le
+verdict exploitable, les empreintes visuelles étant sensibles aux polices et à
+l'anticrénelage (cf. `packages/tests/vrt/VRT.md`). Configuration dédiée
+`playwright.vrt.config.ts`, rapport téléversé en artefact.
+
+**Reste :** la suite ne contient **qu'une seule spec**,
+`packages/tests/vrt/btn-variant.spec.ts` (variants d'`OrigamBtn`). Strategy B
+touche le rendu de **tous** les composants — tant que la baseline se limite à un
+composant, la VRT ne couvre pas le risque qui la justifie. Étendre Variant par
+Variant, en gardant l'exécution en conteneur.
 
 ## 2.3 — Long terme (>6 mois)
 
@@ -1016,23 +1252,34 @@ Industrialiser à chaque sprint, indépendamment des phases.
 
 ## Annexe — État actuel post-publication
 
-Releases livrées :
-- `2.2.1` sur npm — premier publish public (publié)
-- `develop` (HEAD) — +10 features mergées via git flow depuis 2.2.1 :
-  - W1 : Tabs, SnackbarStack, Bracket, CommandPalette
-  - W2 : Parallax enrichi, Code (shiki), Textarea richtext, TextField mask
-  - W3 : Module Nuxt officiel, SSR safety audit
-- 378 TU verts (+158 vs 2.2.1), 0 dette lint.
+Mesuré le 2026-09-15 (voir « Où on en est » en tête de document pour le détail
+des commandes) :
 
-Prochain bump version : `2.3.0` minor (toutes les additions sont rétrocompat).
+- **36 versions publiées** sur npm ; la dernière est **`origam@2.17.1`**
+  (2026-09-15T07:35:10Z), un correctif. La `2.17.0` l'a précédée le même jour.
+- **6 953 tests unitaires verts** sur 532 fichiers de specs (+ 6 575 vs les
+  378 TU de l'annexe précédente).
+- **229 specs e2e** et **21/21 gardes d'architecture** au vert.
+- **216 composants inspectés, 0 défaut** sur les 8 critères du classeur.
+
+Prochain bump : à décider selon le contenu. La **v3.0** reste conditionnée à
+l'écriture de `docs/migration/v2-to-v3.md`, qui **n'existe pas** (risque R3).
 
 ## Annexe — Priorités P0 immédiates
 
-Si tu ne fais qu'une seule chose dans les 7 prochains jours :
+Les deux P0 de la version précédente de cette annexe — **CI GitHub Actions** et
+**déploiement VitePress + Histoire** — sont **faits et vérifiés** (17 jobs sur
+5 workflows ; doc et stories servies en HTTP 200). Ils sortent de la liste.
 
-1. **CI GitHub Actions** (`ci.yml` + `release.yml`) — sans elle, la prochaine
-   release reproduit la galère v2.2.0 / 2.2.1 manuelle.
-2. **Déploiement VitePress + Histoire** — sans doc en ligne, le marketing
-   ultérieur tombe à plat.
+Les trois P0 qui les remplacent, dans cet ordre :
 
-Le reste peut attendre. Ces deux items débloquent tout le reste.
+1. **Élargir `GREEN_SPECS`.** 58 specs e2e sur 229 gardent réellement une PR.
+   Les 171 autres sont écrites et ne bloquent rien : c'est le plus gros écart
+   entre ce que le dépôt teste et ce que l'intégration vérifie.
+2. **Écrire `docs/migration/v2-to-v3.md`.** Le fichier n'existe pas, et c'est
+   la condition d'entrée explicite du risque **R3** comme de l'audit d'API
+   pré-v3. Sans lui, la v3 ne peut pas être taguée.
+3. **Publier la doc sous le domaine du projet.** Elle est en ligne, mais sur
+   un hôte interne : `origam.dev`, `docs.origam.dev` et `stories.origam.dev`
+   ne résolvent pas. Tant que c'est le cas, l'effort marketing n'a pas d'adresse
+   où envoyer les gens.
