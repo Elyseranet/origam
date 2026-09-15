@@ -268,11 +268,16 @@ export const COMPONENT_PREVIEW_ADAPTERS: Record<string, IComponentPreviewAdapter
     'number-format': { previewProps: { value: 1234567.89 } },
     'data-text': { previewProps: { text: 'A short data value' } },
     'data-title': { previewProps: { text: 'A data title' } },
+    /* ⛔ `IDataItem.title` / `.text` sont des OBJETS DE PROPS
+       (`IDataTitleProps` / `IDataTextProps`, tous deux `{ text }`), pas des
+       chaînes. Avec des chaînes, `OrigamDataList` faisait `v-bind="item.title"`
+       sur « Plan » et rendait `<dt 0="P" 1="l" 2="a" 3="n">` : 14 éléments dans
+       le DOM pour une boîte de 240 × 0. Le repli « Content » masquait ce vide. */
     'data-list': {
         previewProps: {
             items: [
-                { title: 'Plan', text: 'Pro' },
-                { title: 'Seats', text: '12' }
+                { title: { text: 'Plan' }, text: [{ text: 'Pro' }] },
+                { title: { text: 'Seats' }, text: [{ text: '12' }] }
             ],
             width: 240
         }
