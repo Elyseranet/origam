@@ -127,7 +127,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                                 <div class="roadmap-status__row">
                                     <origam-icon
                                         :icon="item.done ? 'mdi-check-circle' : 'mdi-close-circle'"
-                                        :color="item.done ? 'success' : 'error'"
+                                        :color="item.done ? 'success' : 'danger'"
                                         class="roadmap-status__icon"
                                         aria-hidden="true"
                                     />

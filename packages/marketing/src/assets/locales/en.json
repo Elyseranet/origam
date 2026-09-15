@@ -1105,18 +1105,28 @@
         },
         "status": {
             "eyebrow": "WHERE WE STAND",
-            "title_line1": "Post-2.6.0",
-            "title_line2": "Status.",
-            "subtitle": "An honest snapshot of what works, what is in progress, and what is still missing.",
-            "npm_published": "First public release on npm — tarball 869 kB, 0 critical vulnerabilities",
-            "pre_delivery": "Pre-delivery automated via prepublishOnly (tokens + build + 220 unit tests)",
+            "title_line1": "Where 2.17.1",
+            "title_line2": "stands.",
+            "subtitle": "Every line below was measured against the repository on 15 September 2026 — what is delivered, and what is still missing.",
+            "npm_published": "Published on npm — origam 2.17.1, 1.73 MB tarball, released automatically with sigstore provenance",
             "readme_changelog": "README correct, CHANGELOG up to date",
-            "monorepo": "Monorepo migration complete (May 2026) — 6 pnpm workspace packages",
-            "doc_online": "No online documentation yet. No deployed stories.",
-            "ci": "CI pipeline incomplete — lint / test / build / publish not yet automated",
-            "playwright_coverage": "Partial Playwright coverage (~100 specs for 161 stories)",
-            "bundle_monitoring": "No bundle-size monitoring yet. No systematic a11y audit.",
-            "wave4_shipped": "Wave 4 shipped — 13 components + gradient support + OrigamTextMask (v2.6.0)"
+            "monorepo": "Monorepo in place — 5 pnpm workspace packages (ds, docs, marketing, stories, tests), the library still publishing from packages/ds",
+            "bundle_monitoring": "No bundle-size monitoring — no size budget is enforced on any sub-export",
+            "wave4_shipped": "Wave 4 shipped — 13 components + gradient support + OrigamTextMask (v2.6.0)",
+            "ci_pipeline": "Full CI pipeline — 17 jobs across 5 workflows: lint, architecture guards, type-check, unit tests, builds, i18n check, e2e, marketing e2e, marketing a11y and visual regression",
+            "docs_deployed": "Documentation and stories deployed — the VitePress reference and the Histoire build both answer HTTP 200",
+            "unit_tests": "6,953 unit tests green across 532 spec files — 78 % statement coverage, 79.9 % line coverage",
+            "e2e_specs": "229 Playwright spec files for 218 stories — every component family has an e2e guard",
+            "guards": "21 of 21 architecture guards passing",
+            "inspection": "216 components inspected against 8 criteria — rendering, theme channel, reactivity, prop resolution, emits, semantics, story and doc sync, hardcoded strings: zero defect left",
+            "sonarqube": "SonarQube wired with unit-test coverage and a quality gate that blocks on security and critical issues",
+            "dependency_automation": "Automated dependency updates — Dependabot opens grouped weekly pull requests for npm and GitHub Actions",
+            "e2e_ci_gate": "Continuous integration only gates 58 of the 229 Playwright specs — the other 171 exist but block nothing yet",
+            "a11y_sweep": "The per-component accessibility sweep is written but runs in no CI job, and overlays still lack focus-trap assertions",
+            "visual_regression": "Visual regression only started — the pinned-container suite covers a single component so far",
+            "migration_guide": "The v2-to-v3 migration guide does not exist yet — it blocks tagging v3",
+            "public_domain": "Docs and stories are served from an internal host — the project domain does not resolve yet",
+            "community": "No community yet — no discussions, no external contributors"
         },
         "delivered": {
             "eyebrow": "ALREADY SHIPPED",
@@ -1181,45 +1191,29 @@
             "short_term": {
                 "eyebrow": "Q3 2026",
                 "title": "Short term",
-                "ci": {
-                    "title": "Complete CI / CD pipeline",
-                    "description": "GitHub Actions: lint, token:lint, unit tests, e2e, build on every PR. Automated publish on tag v*."
-                },
-                "deployment": {
-                    "title": "Deploy VitePress + Histoire",
-                    "description": "Docs on origam.dev, stories on stories.origam.dev. Blocks all external adoption."
-                },
-                "playwright": {
-                    "title": "Full Playwright coverage",
-                    "description": "100 % of public components covered — one spec per component exercising every Variant and prop."
-                },
                 "a11y_audit": {
                     "title": "Overlay a11y audit",
-                    "description": "Focus trap, focus restoration, aria-modal, Esc key for Dialog, Menu, Tooltip, Drawer, Snackbar."
+                    "description": "The axe sweep over every component story exists but runs in no CI job, and its failure threshold is lowered to critical only. Focus trap, focus restoration, aria-modal and Escape are asserted for Dialog, Select and the command palette — Menu, contextual menu, Tooltip, Drawer, Sheet and Snackbar have none."
                 },
                 "bundle_size": {
                     "title": "Bundle-size monitoring",
-                    "description": "size-limit on every sub-export. PR comments auto-generated. The 5.6 MB → 869 kB drop must stay an asset."
-                },
-                "tu_audit": {
-                    "title": "Unit test suite consolidation",
-                    "description": "Standardize on a single tests/unit/{Domain}/{name}.spec.ts convention and lift branch coverage on the transversal composables, mocking CSS.supports in jsdom."
+                    "description": "No size budget is enforced today. Add size-limit on every sub-export with automatic pull-request comments, and set the threshold from the current measurement — the 2.17.1 tarball weighs 1.73 MB."
                 },
                 "api_audit": {
                     "title": "Pre-v3 API audit",
-                    "description": "A full deprecation inventory in the v2-to-v3 migration guide, missing {'@'}deprecated markers completed, and a codemod for the mechanical renames."
-                },
-                "dependency_automation": {
-                    "title": "Automated dependency updates",
-                    "description": "Renovate with grouped update policies, automatic merges for patch-level dev dependencies, and a weekly grouped PR for minor bumps."
+                    "description": "The v2-to-v3 migration guide does not exist yet, and writing it is a blocking condition before v3 can be tagged: a full deprecation inventory, the missing {'@'}deprecated markers completed, and a codemod for the mechanical renames."
                 },
                 "sonarqube": {
-                    "title": "SonarQube — A rating, zero debt",
-                    "description": "The Sonar scan is already wired (build.yml + sonar-project.properties) but incomplete. Feed the Vitest lcov coverage into Sonar (sonar.javascript.lcov.reportPaths), enable a blocking quality gate, and clear every bug / vulnerability / security hotspot / code smell to reach an A rating on all axes with zero technical debt. Run on PRs and add it to the pre-delivery checks."
+                    "title": "SonarQube — clear the remaining debt",
+                    "description": "Unit-test coverage is wired into the scan and the quality gate is armed, blocking on security and critical issues. What remains is the verdict itself: an A rating on all four axes and zero open debt. Pull-request analysis stays out of scope while the server runs Community Edition, which analyses a single branch."
                 },
-                "ci_e2e": {
-                    "title": "CI E2E — job cancelled on every run",
-                    "description": "The Playwright E2E job is cancelled on every CI run (the 5 other jobs pass): it exceeds its 30-min timeout even on the green subset. Cause: the Playwright webServer runs Histoire in Vite DEV mode, which compiles each story on first access (19-30 s cold-start per story) — too slow on a fresh runner. Decide: fix by pointing the e2e webServer at the static Histoire build already produced by build:embeds (public/stories, served via http-server — no Vite cold-start), or make the e2e job non-blocking / move it to a separate nightly workflow until then."
+                "e2e_gate": {
+                    "title": "Widen the e2e gate in CI",
+                    "description": "229 spec files already cover the component families, but the CI job runs only the 58 listed as green. Bring the remaining 171 into the gate, wave by wave, fixing the instability instead of skipping it."
+                },
+                "public_domain": {
+                    "title": "Publish the docs under the project domain",
+                    "description": "The VitePress reference and the Histoire build are online and answer HTTP 200, but on an internal host. Until they live under the project domain, marketing has no address to send people to."
                 }
             },
             "mid_term": {

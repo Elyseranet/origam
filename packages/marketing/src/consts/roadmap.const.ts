@@ -15,30 +15,62 @@ export const ROADMAP_HERO_BADGE_VARS: CSSProperties = {
 } as CSSProperties
 
 /**
- * Current status items — sourced from CHANGELOG.md (post-2.6.0 state).
+ * Current status items — measured against the repository on 2026-09-15, not
+ * transcribed from CHANGELOG.md. Every `done: true` below is backed by a
+ * command recorded in the root ROADMAP.md ("Où on en est"):
+ *   - npm            : registry.npmjs.org/origam → 2.17.1, tarball 1 733 668 B
+ *   - CI             : 17 jobs across 5 workflows in .github/workflows/
+ *   - docs online    : HTTP 200 on the deployed VitePress + Histoire builds
+ *   - unit tests     : 6 953 tests green, 532 spec files (test:coverage, exit 0)
+ *   - e2e specs      : 229 spec files for 218 stories
+ *   - guards         : 21/21 (scripts/guards/run-all.mjs, exit 0)
+ *   - inspection     : docs/mesures/classeur-complet-maj-2026-09-01.csv
+ *   - dependencies   : .github/dependabot.yml
+ *
+ * The `done: false` entries name the REMAINING GAP, not the whole topic — a
+ * red cross next to "the CI gates 58 of 229 specs" is accurate, while one
+ * next to "e2e coverage" would not be.
  */
 export const ROADMAP_STATUS_ITEMS: IRoadmapStatusItem[] = [
     { labelKey: 'roadmap.status.npm_published', done: true },
-    { labelKey: 'roadmap.status.pre_delivery', done: true },
-    { labelKey: 'roadmap.status.readme_changelog', done: true },
+    { labelKey: 'roadmap.status.ci_pipeline', done: true },
+    { labelKey: 'roadmap.status.docs_deployed', done: true },
+    { labelKey: 'roadmap.status.unit_tests', done: true },
+    { labelKey: 'roadmap.status.e2e_specs', done: true },
+    { labelKey: 'roadmap.status.guards', done: true },
+    { labelKey: 'roadmap.status.inspection', done: true },
+    { labelKey: 'roadmap.status.sonarqube', done: true },
+    { labelKey: 'roadmap.status.dependency_automation', done: true },
     { labelKey: 'roadmap.status.monorepo', done: true },
+    { labelKey: 'roadmap.status.readme_changelog', done: true },
     { labelKey: 'roadmap.status.wave4_shipped', done: true },
-    { labelKey: 'roadmap.status.doc_online', done: false },
-    { labelKey: 'roadmap.status.ci', done: false },
-    { labelKey: 'roadmap.status.playwright_coverage', done: false },
-    { labelKey: 'roadmap.status.bundle_monitoring', done: false }
+    { labelKey: 'roadmap.status.e2e_ci_gate', done: false },
+    { labelKey: 'roadmap.status.a11y_sweep', done: false },
+    { labelKey: 'roadmap.status.visual_regression', done: false },
+    { labelKey: 'roadmap.status.bundle_monitoring', done: false },
+    { labelKey: 'roadmap.status.migration_guide', done: false },
+    { labelKey: 'roadmap.status.public_domain', done: false },
+    { labelKey: 'roadmap.status.community', done: false }
 ]
 
 /**
- * Delivered overview stats — conservative, verifiable lower bounds counted
- * from the DS source tree (97 component dirs, 103 composables, 6 directives,
- * 209 stories, light + dark token themes, 3-tier token pipeline).
+ * Delivered overview stats — exact counts taken from the DS source tree on
+ * 2026-09-15, not rounded-down placeholders:
+ *   96  directories under packages/ds/src/components/ (218 Origam*.vue files)
+ *   138 *.composable.ts under packages/ds/src/composables/
+ *   6   directories under packages/ds/src/directives/
+ *   218 *.story.vue under packages/stories/components/
+ *   2   base token themes (light.css + dark.css)
+ *   3   token tiers (primitive / semantic / component)
+ *
+ * `packages/tests/e2e/roadmap.spec.ts` asserts the FIRST value rendered here —
+ * change one without the other and that spec goes red.
  */
 export const ROADMAP_OVERVIEW_STATS: IRoadmapStat[] = [
-    { value: '90+', labelKey: 'roadmap.overview.components', icon: 'mdi-shape-outline' },
-    { value: '100+', labelKey: 'roadmap.overview.composables', icon: 'mdi-function-variant' },
+    { value: '96', labelKey: 'roadmap.overview.components', icon: 'mdi-shape-outline' },
+    { value: '138', labelKey: 'roadmap.overview.composables', icon: 'mdi-function-variant' },
     { value: '6', labelKey: 'roadmap.overview.directives', icon: 'mdi-code-tags' },
-    { value: '200+', labelKey: 'roadmap.overview.stories', icon: 'mdi-book-open-variant' },
+    { value: '218', labelKey: 'roadmap.overview.stories', icon: 'mdi-book-open-variant' },
     { value: '2', labelKey: 'roadmap.overview.themes', icon: 'mdi-theme-light-dark' },
     { value: '3', labelKey: 'roadmap.overview.token_tiers', icon: 'mdi-layers-triple-outline' }
 ]
@@ -96,9 +128,19 @@ export const ROADMAP_WAVES: IRoadmapWave[] = [
 ]
 
 /**
- * Roadmap phases — sourced from CHANGELOG.md.
- * Items already delivered (Nuxt module v2.3.0, SSR useCssSupportClient v2.3.0)
- * have been removed from mid-term — they now live in Wave 3 above.
+ * Roadmap phases — only what is NOT delivered yet.
+ *
+ * Removed from short-term on 2026-09-15, because each was measured as done
+ * and now appears in ROADMAP_STATUS_ITEMS instead:
+ *   - `ci`                    → 17 CI jobs across 5 workflows
+ *   - `deployment`            → VitePress + Histoire answer HTTP 200
+ *   - `ci_e2e`                → the job no longer times out (E2E_STATIC + 4 shards)
+ *   - `tu_audit`              → 0 spec left in src/__tests__, 77.94 % branches
+ *                               on composables/Commons (target was 70 %)
+ *   - `dependency_automation` → .github/dependabot.yml, grouped weekly PRs
+ * Previously removed for the same reason: Nuxt module and SSR
+ * useCssSupportClient (v2.3.0), which live in Wave 3 above.
+ *
  * Only technical-public items remain: no KPI thresholds, no marketing tactics.
  */
 export const ROADMAP_PHASES: IRoadmapPhase[] = [
@@ -110,52 +152,10 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
         icon: 'mdi-rocket-launch-outline',
         items: [
             {
-                titleKey: 'roadmap.phases.short_term.sonarqube.title',
-                descriptionKey: 'roadmap.phases.short_term.sonarqube.description',
-                icon: 'mdi-shield-check-outline',
-                effortKey: 'roadmap.effort.medium'
-            },
-            {
-                titleKey: 'roadmap.phases.short_term.ci_e2e.title',
-                descriptionKey: 'roadmap.phases.short_term.ci_e2e.description',
-                icon: 'mdi-alert-octagon-outline',
-                effortKey: 'roadmap.effort.medium'
-            },
-            {
-                titleKey: 'roadmap.phases.short_term.ci.title',
-                descriptionKey: 'roadmap.phases.short_term.ci.description',
-                icon: 'mdi-github',
-                effortKey: 'roadmap.effort.large'
-            },
-            {
-                titleKey: 'roadmap.phases.short_term.deployment.title',
-                descriptionKey: 'roadmap.phases.short_term.deployment.description',
-                icon: 'mdi-cloud-upload-outline',
-                effortKey: 'roadmap.effort.medium'
-            },
-            {
-                titleKey: 'roadmap.phases.short_term.playwright.title',
-                descriptionKey: 'roadmap.phases.short_term.playwright.description',
+                titleKey: 'roadmap.phases.short_term.e2e_gate.title',
+                descriptionKey: 'roadmap.phases.short_term.e2e_gate.description',
                 icon: 'mdi-test-tube',
-                effortKey: 'roadmap.effort.xlarge'
-            },
-            {
-                titleKey: 'roadmap.phases.short_term.a11y_audit.title',
-                descriptionKey: 'roadmap.phases.short_term.a11y_audit.description',
-                icon: 'mdi-human-wheelchair',
-                effortKey: 'roadmap.effort.medium'
-            },
-            {
-                titleKey: 'roadmap.phases.short_term.bundle_size.title',
-                descriptionKey: 'roadmap.phases.short_term.bundle_size.description',
-                icon: 'mdi-package-variant-closed',
-                effortKey: 'roadmap.effort.small'
-            },
-            {
-                titleKey: 'roadmap.phases.short_term.tu_audit.title',
-                descriptionKey: 'roadmap.phases.short_term.tu_audit.description',
-                icon: 'mdi-flask-outline',
-                effortKey: 'roadmap.effort.medium'
+                effortKey: 'roadmap.effort.large'
             },
             {
                 titleKey: 'roadmap.phases.short_term.api_audit.title',
@@ -164,9 +164,27 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
                 effortKey: 'roadmap.effort.large'
             },
             {
-                titleKey: 'roadmap.phases.short_term.dependency_automation.title',
-                descriptionKey: 'roadmap.phases.short_term.dependency_automation.description',
-                icon: 'mdi-source-pull',
+                titleKey: 'roadmap.phases.short_term.public_domain.title',
+                descriptionKey: 'roadmap.phases.short_term.public_domain.description',
+                icon: 'mdi-web',
+                effortKey: 'roadmap.effort.small'
+            },
+            {
+                titleKey: 'roadmap.phases.short_term.a11y_audit.title',
+                descriptionKey: 'roadmap.phases.short_term.a11y_audit.description',
+                icon: 'mdi-human-wheelchair',
+                effortKey: 'roadmap.effort.medium'
+            },
+            {
+                titleKey: 'roadmap.phases.short_term.sonarqube.title',
+                descriptionKey: 'roadmap.phases.short_term.sonarqube.description',
+                icon: 'mdi-shield-check-outline',
+                effortKey: 'roadmap.effort.medium'
+            },
+            {
+                titleKey: 'roadmap.phases.short_term.bundle_size.title',
+                descriptionKey: 'roadmap.phases.short_term.bundle_size.description',
+                icon: 'mdi-package-variant-closed',
                 effortKey: 'roadmap.effort.small'
             }
         ]
