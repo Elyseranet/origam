@@ -89,6 +89,13 @@ type Row = {
     duplicateIds: string[]
     /** tous les ids rendus, pour lecture humaine. */
     renderedIds: string[]
+    /**
+     * Selecteurs `#id` des regles generees par `useStyle()` et injectees dans
+     * <head> qui ne matchent AUCUN noeud rendu. C'est la SECONDE contrainte de
+     * #790 : « les styles generes continuent de s'appliquer ». Une regle
+     * orpheline est un style mort, silencieux.
+     */
+    orphanStyleRules: string[]
     error?: string
 }
 
@@ -156,6 +163,7 @@ for (const [path, mod] of Object.entries(modules)) {
                 orphanAria: [],
                 duplicateIds: [],
                 renderedIds: [],
+                orphanStyleRules: [],
                 error: String((err as Error).message).slice(0, 160)
             })
             return
@@ -203,6 +211,20 @@ for (const [path, mod] of Object.entries(modules)) {
 
         const orphanAria = [...new Set(ariaRefs.filter((a) => !resolve(a)))]
 
+        /*
+         * SECONDE CONTRAINTE DE #790 — « les styles generes continuent de
+         * s'appliquer ». `useStyle()` injecte une regle `#<id> { … }` dans
+         * <head>. Si aucun noeud ne porte cet id, la regle est MORTE.
+         * On lit le texte des <style> injectes (seule methode fiable sous
+         * jsdom — cf. CLAUDE.md #398 : getComputedStyle n'y resout pas var()).
+         */
+        const injected = Array.from(document.head.querySelectorAll('style'))
+            .map((s) => s.textContent ?? '')
+            .join('\n')
+        const selectors = [...injected.matchAll(/#([A-Za-z0-9_\-\\]+)\s*\{/g)]
+            .map((m) => m[1].replace(/\\/g, ''))
+        const orphanStyleRules = [...new Set(selectors.filter((s) => !resolve(s)))]
+
         rows.push({
             component: name,
             exact: Boolean(carrierEl),
@@ -214,7 +236,8 @@ for (const [path, mod] of Object.entries(modules)) {
             nonLabelableFor,
             orphanAria,
             duplicateIds,
-            renderedIds: [...new Set(renderedIds)]
+            renderedIds: [...new Set(renderedIds)],
+            orphanStyleRules
         })
 
         wrapper.unmount()
