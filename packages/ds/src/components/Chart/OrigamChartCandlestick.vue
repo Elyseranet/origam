@@ -575,8 +575,11 @@ return [ out, props.style as StyleValue ]
 
 	const candleAriaLabel = (candle: IChartCandlestickCandle): string => {
 		const d = candle.datum
-		const direction = candle.isBullish ? 'bullish' : 'bearish'
-		return `${ d.date }: ${ direction }, open ${ d.open }, high ${ d.high }, low ${ d.low }, close ${ d.close }`
+		const direction = candle.isBullish
+			? t('origam.chart.candlestick.direction_bullish')
+			: t('origam.chart.candlestick.direction_bearish')
+
+		return t('origam.chart.candlestick.candle_aria_label', d.date, direction, d.open, d.high, d.low, d.close)
 	}
 
 	/*********************************************************

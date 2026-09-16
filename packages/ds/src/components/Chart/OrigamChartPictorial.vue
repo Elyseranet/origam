@@ -727,7 +727,7 @@
 
 	const fillColumnAriaLabel = (col: IChartPictorialColumn): string => {
 		const pct = Math.round(fillRatio(col) * 100)
-		return `${ col.category }: ${ col.formatted } — ${ pct }% of maximum`
+		return t('origam.chart.pictorial.fill_column_aria_label', col.category, col.formatted, pct)
 	}
 
 	/*********************************************************
@@ -891,7 +891,7 @@ return [ out, props.style as StyleValue ]
 	})
 
 	const columnAriaLabel = (col: IChartPictorialColumn): string =>
-		`${ col.category }: ${ col.formatted } (${ col.filledSlots } of ${ col.totalSlots } icons)`
+		t('origam.chart.pictorial.column_aria_label', col.category, col.formatted, col.filledSlots, col.totalSlots)
 
 	/*********************************************************
 	 * Interaction

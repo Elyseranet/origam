@@ -110,8 +110,12 @@ export interface IChartCartesianProps extends IChartBaseProps {
      * zoomResetLabel
      *
      * @description
-     * Accessible name for the "Reset zoom" control (aria-label) shown
-     * when `zoomable` is active and the plot is currently zoomed.
+     * Name of the "Reset zoom" control shown when `zoomable` is active
+     * and the plot is currently zoomed. Drives BOTH the `aria-label`
+     * and the VISIBLE text of the button — until #764 the visible text
+     * was a hardcoded English literal, so a French consumer read
+     * "Reset zoom" on a control whose accessible name already said
+     * "Réinitialiser le zoom".
      * Carries a locale key, not final text — it is resolved through the
      * DS `t()` mechanism. Defaults to `'origam.chart.zoom.reset_aria_label'`
      * (#477).

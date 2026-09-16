@@ -286,7 +286,9 @@
     "command_palette": {
       "aria_label": "Palette de commandes",
       "placeholder": "Rechercher…",
-      "empty_text": "Aucun résultat"
+      "empty_text": "Aucun résultat",
+      "footer_navigate": "Naviguer",
+      "footer_select": "Sélectionner"
     },
     "chart": {
       "aria_label": "Graphique",
@@ -303,17 +305,22 @@
       "box_plot": {
         "aria_label": "boîte à moustaches",
         "desc_one": "Boîte à moustaches avec {count} catégorie.",
-        "desc_other": "Boîte à moustaches avec {count} catégories."
+        "desc_other": "Boîte à moustaches avec {count} catégories.",
+        "box_aria_label": "{0} : min={1} Q1={2} médiane={3} Q3={4} max={5}"
       },
       "bullet": {
         "aria_label": "graphique à puce",
         "desc_one": "Graphique à puce avec {count} indicateur.",
-        "desc_other": "Graphique à puce avec {count} indicateurs."
+        "desc_other": "Graphique à puce avec {count} indicateurs.",
+        "bullet_aria_label": "{0} : valeur {1}, cible {2}, {3} % d'atteinte"
       },
       "candlestick": {
         "aria_label": "graphique en chandeliers",
         "desc_one": "Graphique en chandeliers avec {count} chandelier.",
-        "desc_other": "Graphique en chandeliers avec {count} chandeliers."
+        "desc_other": "Graphique en chandeliers avec {count} chandeliers.",
+        "direction_bullish": "haussier",
+        "direction_bearish": "baissier",
+        "candle_aria_label": "{0} : {1}, ouverture {2}, plus haut {3}, plus bas {4}, clôture {5}"
       },
       "gauge": {
         "aria_label": "jauge",
@@ -344,12 +351,15 @@
         "aria_label": "diagramme de Pareto",
         "cumulative_label": "% cumulé",
         "desc_one": "Diagramme de Pareto avec {count} catégorie, triée par valeur décroissante.",
-        "desc_other": "Diagramme de Pareto avec {count} catégories, triées par valeur décroissante."
+        "desc_other": "Diagramme de Pareto avec {count} catégories, triées par valeur décroissante.",
+        "bar_aria_label": "{0} : {1} ({2} %, cumul {3} %)"
       },
       "pictorial": {
         "aria_label": "graphique pictural",
         "desc_one": "Graphique pictural avec {count} colonne.",
-        "desc_other": "Graphique pictural avec {count} colonnes."
+        "desc_other": "Graphique pictural avec {count} colonnes.",
+        "fill_column_aria_label": "{0} : {1} — {2} % du maximum",
+        "column_aria_label": "{0} : {1} ({2} icônes sur {3})"
       },
       "range_selector": {
         "aria_label": "Sélecteur de plage du graphique"
@@ -477,6 +487,10 @@
     "treeview": {
       "aria_label": "Arborescence de fichiers",
       "node_children_aria_label": "Contenu de {0}"
+    },
+    "slider_field": {
+      "thumb_start_aria_label": "{0} (début)",
+      "thumb_end_aria_label": "{0} (fin)"
     }
   }
 }

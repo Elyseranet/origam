@@ -113,7 +113,7 @@
 						<input
 								:id="`${id}__start`"
 								:aria-describedby="messagesId"
-								:aria-label="label ? `${label} (start)` : undefined"
+								:aria-label="rangeStartAriaLabel"
 								:class="nativeInputClasses(false)"
 								:disabled="isDisabled"
 								:max="resolvedMax"
@@ -139,7 +139,7 @@
 						<input
 								:id="`${id}__stop`"
 								:aria-describedby="messagesId"
-								:aria-label="label ? `${label} (end)` : undefined"
+								:aria-label="rangeEndAriaLabel"
 								:class="nativeInputClasses(true)"
 								:disabled="isDisabled"
 								:max="resolvedMax"
@@ -327,7 +327,7 @@
 			</template>
 			<template v-else>
 				<input
-						:aria-label="label ? `${label} (start)` : undefined"
+						:aria-label="rangeStartAriaLabel"
 						:class="nativeInputClasses(false)"
 						:disabled="disabled"
 						:max="resolvedMax"
@@ -351,7 +351,7 @@
 				/>
 
 				<input
-						:aria-label="label ? `${label} (end)` : undefined"
+						:aria-label="rangeEndAriaLabel"
 						:class="nativeInputClasses(true)"
 						:disabled="disabled"
 						:max="resolvedMax"
@@ -420,6 +420,7 @@
 
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useFocus } from '../../composables/Commons/focus.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useRounded } from '../../composables/Commons/rounded.composable'
 	import { useRtl } from '../../composables/Commons/rtl.composable'
@@ -471,6 +472,8 @@
 
 	const slots = useSlots()
 
+	const {t} = useLocale()
+
 	/*********************************************************
 	 * Variant routing
 	 *
@@ -494,6 +497,30 @@
 	const isVertical = computed(() => props.direction === DIRECTION.VERTICAL)
 	const isReversed = computed(() => !!props.reverse)
 	const indexFromEnd = computed(() => isVertical.value !== isReversed.value)
+
+
+	/*********************************************************
+	 * Noms accessibles des deux poignees en mode `range`
+	 *
+	 * @description
+	 * Le gabarit `${label} (start)` etait ecrit en dur dans les quatre
+	 * `<input type="range">` du composant (#764, C8) : un lecteur d'ecran
+	 * francophone entendait « Prix (start) ». Le suffixe passe desormais
+	 * par `t()`, qui interpole le `label` du consommateur dans la phrase
+	 * de la locale active.
+	 *
+	 * @description
+	 * `undefined` quand `label` est vide : un `aria-label=""` ne nomme
+	 * rien et prive l'element de son nom implicite, ce que la version
+	 * precedente evitait deja.
+	 ********************************************************/
+	const rangeStartAriaLabel = computed<string | undefined>(() => {
+		return props.label ? t('origam.slider_field.thumb_start_aria_label', props.label) : undefined
+	})
+
+	const rangeEndAriaLabel = computed<string | undefined>(() => {
+		return props.label ? t('origam.slider_field.thumb_end_aria_label', props.label) : undefined
+	})
 
 	const steps = useSteps(props)
 	const {min: resolvedMin, max: resolvedMax, step: resolvedStep, roundValue} = steps

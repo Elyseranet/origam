@@ -314,7 +314,7 @@
 							dominant-baseline="auto"
 							pointer-events="none"
 							:style="{ fill: '#ffffff', fontSize: '0.6875rem', fontWeight: '600' }"
-					>Reset zoom</text>
+					>{{ zoomResetAriaLabel }}</text>
 				</g>
 
 				<g
