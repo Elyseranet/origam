@@ -36,6 +36,34 @@ import { resolveThemeVars, themeSelector } from '@origam/utils/Commons/apply-the
  * comme le fait `story-const-px-labels.spec.ts`.
  *
  * @description
+ * Le SENS de l'alignement n'est pas un goût. Contraste WCAG mesuré en
+ * Chromium, thème clair, pleine opacité, alpha composité sur
+ * `surface.default` — colonne gauche = ce qui rend aujourd'hui (bloc
+ * runtime), colonne droite = ce que rendraient les feuilles seules :
+ *
+ *     text.primary / surface.default   19.80   |   17.93   (avant #615)
+ *     secondary                        16.44   |   12.13
+ *     info                              5.17 AA|    3.12
+ *     success                           3.30   |    2.78
+ *     warning                           3.19   |    2.37
+ *     primary                           5.70 AA|    5.70 AA
+ *     danger                            4.83 AA|    4.83 AA
+ *     ghost                             5.70 AA|    5.70 AA
+ *
+ * Aligner le thème sur les feuilles dégraderait donc 5 paires sur 8, la
+ * porte a11y bloquant désormais sur `serious`. L'inverse est neutre au
+ * rendu pour toute app qui appelle `createOrigam()`.
+ *
+ * @description
+ * ⛔ `ghost` mesure **5.70**, pas 3.69 comme l'annonce #789. Sa couleur de
+ * fond est `rgba(0, 0, 0, 0)` : une sonde qui lit ce fond sans le composer
+ * sur la surface de page le prend pour du NOIR OPAQUE et fabrique un ratio
+ * faux. Ma propre première sonde est tombée dans le piège et rendait 3.69 —
+ * le même chiffre que #789, ce qui suggère la même cause. Composer l'alpha
+ * avant de mesurer est obligatoire sur toute intention dont le fond est
+ * translucide.
+ *
+ * @description
  * ⚠️ La liste `DIVERGENCES_CONNUES` n'est PAS une permission : c'est l'état
  * mesuré au moment de #615, versé dans le dépôt pour qu'aucune NOUVELLE
  * divergence ne passe en silence. Elle doit rétrécir, jamais grossir. Le
