@@ -385,8 +385,21 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
 
         if (!cssScrollDriven.value) {
             host.addEventListener('mousemove', onMouseMove, { passive: true })
-            // First paint with progress=0 so layers are positioned at offsets.
-            requestAnimationFrame(tick)
+            /*********************************************************
+             * Premier rendu a progress=0 — handle desormais capture (#753)
+             *
+             * @description
+             * Hors releve du ticket, trouve par mon propre balayage. Le
+             * handle de CETTE frame n'etait pas capture, alors que les
+             * cinq autres appels de `tick` du fichier le sont. `tick`
+             * remet `rafId` a `null` en premiere instruction, donc au
+             * demontage le `cancelAnimationFrame(rafId)` d'
+             * `onBeforeUnmount` ne voyait rien a annuler : la toute
+             * premiere frame etait la seule du fichier a pouvoir
+             * survivre. Une affectation suffit a la rattacher au meme
+             * mecanisme que les autres.
+             ********************************************************/
+            rafId = requestAnimationFrame(tick)
         }
     })
 

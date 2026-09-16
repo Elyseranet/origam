@@ -113,7 +113,8 @@ export async function scrollTo (
     _target: ComponentPublicInstance | HTMLElement | number | string,
     _options: Partial<IGoToOptions>,
     horizontal?: boolean,
-    goTo?: IGoToInstance
+    goTo?: IGoToInstance,
+    signal?: AbortSignal
 ) {
     const rtl = goTo?.rtl.value
     const property = horizontal ? 'scrollLeft' : 'scrollTop'
@@ -152,26 +153,75 @@ export async function scrollTo (
     const startTime = performance.now()
     const duration = options.duration as number
 
-    return new Promise(resolve => requestAnimationFrame(function step (currentTime: number) {
-        const timeElapsed = currentTime - startTime
-        const progress = timeElapsed / duration
-        const location = Math.floor(
-            startLocation +
-            (targetLocation - startLocation) *
-            ease(clamp(progress, 0, 1))
-        )
+    /*********************************************************
+     * Boucle rAF bornee a la duree de vie de l'appelant (#753)
+     *
+     * @description
+     * `step` se RE-PROGRAMME a chaque frame jusqu'a atteindre la cible.
+     * Rien ne l'annulait : un composant demonte en plein scroll laissait
+     * la boucle tourner sur un environnement potentiellement detruit, et
+     * c'est l'appel `requestAnimationFrame` NU du corps — pas le corps
+     * lui-meme — qui leve alors `ReferenceError`. Exactement la forme de
+     * #706.
+     *
+     * @description
+     * Le signal est OPTIONNEL et retro-compatible : un appelant qui n'en
+     * passe pas retrouve le comportement d'avant a l'octet pres (aucune
+     * branche ne se declenche). `useGoTo` en fournit un, borne par
+     * `tryOnScopeDispose`. Comme pour toute boucle auto-reprogrammee, le
+     * test en tete de `step` est ce qui ARRETE la re-programmation ;
+     * `cancelAnimationFrame` sur `abort` ne s'occupe que du tour deja en
+     * vol.
+     *
+     * @description
+     * A l'abandon la promesse RESOUT avec la position courante plutot
+     * que de rester pendante : un `await go(...)` suspendu pour toujours
+     * retiendrait sa continuation — on remplacerait une fuite par une
+     * autre.
+     ********************************************************/
+    return new Promise(resolve => {
+        let frame = -1
 
-        container[property] = location
+        const onAbort = () => {
+            if (frame !== -1) {
+                cancelAnimationFrame(frame)
+                frame = -1
+            }
 
-        // Allow for some jitter if target time has elapsed
-        if (progress >= 1 && Math.abs(location - container[property]) < 10) {
-            return resolve(targetLocation)
-        } else if (progress > 2) {
-            // The target might not be reachable
-            consoleWarn('Scroll target is not reachable')
-            return resolve(container[property])
+            resolve(container[property] ?? startLocation)
         }
 
-        requestAnimationFrame(step)
-    }))
+        frame = requestAnimationFrame(function step (currentTime: number) {
+            frame = -1
+
+            if (signal?.aborted) return
+
+            const timeElapsed = currentTime - startTime
+            const progress = timeElapsed / duration
+            const location = Math.floor(
+                startLocation +
+                (targetLocation - startLocation) *
+                ease(clamp(progress, 0, 1))
+            )
+
+            container[property] = location
+
+            // Allow for some jitter if target time has elapsed
+            if (progress >= 1 && Math.abs(location - container[property]) < 10) {
+                signal?.removeEventListener('abort', onAbort)
+
+                return resolve(targetLocation)
+            } else if (progress > 2) {
+                // The target might not be reachable
+                consoleWarn('Scroll target is not reachable')
+                signal?.removeEventListener('abort', onAbort)
+
+                return resolve(container[property])
+            }
+
+            frame = requestAnimationFrame(step)
+        })
+
+        signal?.addEventListener('abort', onAbort, {once: true})
+    })
 }

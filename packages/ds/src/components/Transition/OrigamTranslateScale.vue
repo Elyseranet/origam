@@ -11,7 +11,7 @@
 		lang="ts"
 		setup
 >
-	import { computed } from 'vue'
+	import { computed, onBeforeUnmount } from 'vue'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { EASING } from '../../enums/Transition/transition.enum'
 
@@ -48,6 +48,55 @@
 	defineEmits<ITransitionEmits>()
 
 	defineSlots<ITransitionSlots>()
+
+	/*********************************************************
+	 * Frames bornees a la duree de vie du composant (#753)
+	 *
+	 * @description
+	 * Les trois rAF d'ici ne sont pas de la meme forme que les autres
+	 * sites du ticket : ils sont ATTENDUS
+	 * (`await new Promise(resolve => requestAnimationFrame(resolve))`).
+	 * La continuation n'est donc pas la callback du rAF, c'est la suite
+	 * de la fonction `async` — et elle, elle appelle `getDimensions`
+	 * (lecture de `getBoundingClientRect` sur deux elements) puis
+	 * `animate`, sur un noeud que Vue a pu retirer entre-temps.
+	 *
+	 * @description
+	 * ⛔ Une promesse abandonnee ne doit PAS rester pendante : elle
+	 * retiendrait justement la continuation qu'on cherche a liberer. Au
+	 * demontage on RESOUT donc la frame en attente, et c'est le test
+	 * `disposed` place APRES chaque `await` qui interrompt la suite. Le
+	 * `done()` de Vue n'est pas appele dans ce cas, et c'est correct :
+	 * il ne sert qu'a signaler la fin d'une transition a un composant
+	 * qui n'existe plus.
+	 ********************************************************/
+	let disposed = false
+	const frames = new Set<number>()
+	const pending = new Set<() => void>()
+
+	const nextFrame = () => new Promise<void>((resolve) => {
+		if (disposed) return resolve()
+
+		pending.add(resolve)
+
+		const id = requestAnimationFrame(() => {
+			frames.delete(id)
+			pending.delete(resolve)
+			resolve()
+		})
+
+		frames.add(id)
+	})
+
+	onBeforeUnmount(() => {
+		disposed = true
+
+		for (const id of frames) cancelAnimationFrame(id)
+		frames.clear()
+
+		for (const resolve of pending) resolve()
+		pending.clear()
+	})
 
 	/*********************************************************
 	 * TranslateScale transition hooks
@@ -98,8 +147,11 @@
 		;(el as HTMLElement).style.visibility = 'hidden'
 	}
 	const handleEnter = async (el: Element, done: () => void) => {
-		await new Promise(resolve => requestAnimationFrame(resolve))
-		await new Promise(resolve => requestAnimationFrame(resolve))
+		await nextFrame()
+		await nextFrame()
+
+		if (disposed) return
+
 		;(el as HTMLElement).style.visibility = ''
 
 		const {x, y, sx, sy, speed} = getDimensions(props.target!, el as HTMLElement)
@@ -131,7 +183,9 @@
 		;(el as HTMLElement).style.pointerEvents = 'none'
 	}
 	const handleLeave = async (el: Element, done: () => void) => {
-		await new Promise(resolve => requestAnimationFrame(resolve))
+		await nextFrame()
+
+		if (disposed) return
 
 		const {x, y, sx, sy, speed} = getDimensions(props.target!, el as HTMLElement)
 

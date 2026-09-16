@@ -32,6 +32,22 @@ export interface IRippleHtmlElementRipple {
     isTouch?: boolean
     showTimer?: number
     showTimerCommit?: null | (() => void)
+    /*********************************************************
+     * Timers d'animation en vol (#753)
+     *
+     * @description
+     * Les trois `setTimeout` de `RIPPLES.show` / `RIPPLES.hide`
+     * orchestrent les phases de l'animation (`--enter` → `--in` →
+     * `--out`) et retirent le noeud a la fin. Rien ne les annulait au
+     * `unmounted` de la directive, alors que la cadence la plus longue
+     * (250 ms d'attente + 300 ms de sortie) depasse largement la duree de
+     * vie d'un bouton qui disparait sur son propre clic.
+     *
+     * @description
+     * La portee est l'ELEMENT (directive), pas un scope Vue : les handles
+     * vivent donc ici, avec le reste de l'etat du ripple.
+     ********************************************************/
+    timers?: Set<ReturnType<typeof setTimeout>>
 }
 
 export interface IRippleElement extends Element {

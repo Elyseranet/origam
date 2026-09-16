@@ -152,7 +152,7 @@
 		setup
 >
 
-	import { computed, nextTick, ref, StyleValue, useAttrs, useSlots, watch } from "vue"
+	import { computed, nextTick, onBeforeUnmount, ref, StyleValue, useAttrs, useSlots, watch } from "vue"
 	import OrigamField from '../Field/OrigamField.vue'
 	import OrigamOverlay from '../Overlay/OrigamOverlay.vue'
 	import OrigamProgress from '../Progress/OrigamProgress.vue'
@@ -196,6 +196,42 @@
 	const emits = defineEmits<IOtpInputFieldEmits>()
 
 	defineSlots<IOtpInputFieldSlots>()
+
+	/*********************************************************
+	 * Frames bornees a la duree de vie du composant (#753)
+	 *
+	 * @description
+	 * Les deux rAF de gestion du focus etaient nus. Leur corps
+	 * dereference `contentRef.value!` et `inputRef.value[index]` avec un
+	 * `!` — or apres le demontage `contentRef.value` vaut `null`, et
+	 * `focusChild(null, target)` n'a aucune raison de survivre a ca. La
+	 * frame est armee depuis un `keydown`, donc typiquement une touche
+	 * pressee au moment ou le champ disparait (validation d'OTP qui ferme
+	 * la modale) tombe pile dans la fenetre.
+	 ********************************************************/
+	let disposed = false
+	const frames = new Set<number>()
+
+	const scheduleFrame = (cb: () => void) => {
+		if (disposed) return
+
+		const id = requestAnimationFrame(() => {
+			frames.delete(id)
+
+			if (disposed) return
+
+			cb()
+		})
+
+		frames.add(id)
+	}
+
+	onBeforeUnmount(() => {
+		disposed = true
+
+		for (const id of frames) cancelAnimationFrame(id)
+		frames.clear()
+	})
 
 	const { filterProps } = useProps<IOtpInputFieldProps>(props)
 
@@ -402,13 +438,13 @@
 			if (focusIndex.value > 0 && e.key === 'Backspace') {
 				target = 'prev'
 			} else {
-				requestAnimationFrame(() => {
+				scheduleFrame(() => {
 					inputRef.value[index]?.select()
 				})
 			}
 		}
 
-		requestAnimationFrame(() => {
+		scheduleFrame(() => {
 			if (target != null) {
 				focusChild(contentRef.value!, target)
 			}

@@ -62,6 +62,19 @@ export const ClickOutside = {
     unmounted (el: HTMLElement, binding: IClickOutsideDirectiveBinding) {
         if (!el._clickOutside) return
 
+        /*********************************************************
+         * Annuler le handler differe encore en vol (#753)
+         *
+         * @description
+         * Retirer les ecouteurs empeche d'en ARMER un nouveau, pas
+         * d'executer celui qui l'est deja. Or le scenario nominal met le
+         * demontage exactement entre les deux : un clic exterieur arme le
+         * timer, le handler ferme le composant, le timer se declenche
+         * ensuite sur un composant disparu.
+         ********************************************************/
+        for (const id of el._clickOutside.timers ?? []) clearTimeout(id)
+        el._clickOutside.timers?.clear()
+
         handleShadow(el, (app: Document | ShadowRoot) => {
             if (!app || !el._clickOutside?.[binding.instance!.$.uid]) return
 

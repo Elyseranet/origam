@@ -81,6 +81,48 @@ export function connectedLocationStrategy (data: ILocationStrategyData, props: I
         return typeof props.offset === 'number' ? [props.offset, 0] : [0, 0]
     })
 
+    /*********************************************************
+     * Frames bornees a la duree de vie du scope (#753)
+     *
+     * @description
+     * Trois rAF vivaient ici et aucun n'etait annule, alors que le
+     * `onScopeDispose` juste en dessous existait deja (il ne coupait que
+     * le `ResizeObserver`) :
+     *   - le re-armement de `observe` dans `updateLocation` — c'est le
+     *     site que la sonde RUNTIME a trouve en mesurant les frames
+     *     encore armees apres le demontage d'`OrigamSelect`, et que le
+     *     balayage STATIQUE classait « a une teardown » parce qu'il
+     *     raisonne par fichier ;
+     *   - les DEUX rAF imbriques du `nextTick` de fin, non listes par
+     *     le ticket. Leur corps rappelle `updateLocation()`, qui lit
+     *     `document.documentElement`, `window` via `getScrollParents` et
+     *     re-arme le rAF ci-dessus : c'est une continuation qui
+     *     DEREFERENCE des globaux, donc le profil de risque de #706, pas
+     *     celui d'une ecriture de style inoffensive.
+     *
+     * @description
+     * Un seul mecanisme couvre les deux : `disposed` neutralise toute
+     * programmation ULTERIEURE (le `nextTick` peut se resoudre APRES le
+     * demontage, moment ou il n'y a encore aucun handle a annuler), et
+     * l'ensemble `frames` annule ce qui est deja en vol.
+     ********************************************************/
+    let disposed = false
+    const frames = new Set<number>()
+
+    const scheduleFrame = (cb: () => void) => {
+        if (disposed || typeof requestAnimationFrame === 'undefined') return
+
+        const id = requestAnimationFrame(() => {
+            frames.delete(id)
+
+            if (disposed) return
+
+            cb()
+        })
+
+        frames.add(id)
+    }
+
     let observe = false
     const observer = new ResizeObserver(() => {
         if (observe) updateLocation()
@@ -97,12 +139,17 @@ export function connectedLocationStrategy (data: ILocationStrategyData, props: I
     })
 
     onScopeDispose(() => {
+        disposed = true
+
+        for (const id of frames) cancelAnimationFrame(id)
+        frames.clear()
+
         observer.disconnect()
     })
 
     const updateLocation = () => {
         observe = false
-        requestAnimationFrame(() => observe = true)
+        scheduleFrame(() => observe = true)
 
         if (!data.target.value || !data.contentEl.value) return
 
@@ -320,6 +367,8 @@ export function connectedLocationStrategy (data: ILocationStrategyData, props: I
     )
 
     nextTick(() => {
+        if (disposed) return
+
         const result = updateLocation()
 
         // TODO: overflowing content should only require a single updateLocation call
@@ -327,9 +376,9 @@ export function connectedLocationStrategy (data: ILocationStrategyData, props: I
         if (!result) return
         const {available, contentBox} = result
         if (contentBox.height > available.y) {
-            requestAnimationFrame(() => {
+            scheduleFrame(() => {
                 updateLocation()
-                requestAnimationFrame(() => {
+                scheduleFrame(() => {
                     updateLocation()
                 })
             })

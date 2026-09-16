@@ -18,7 +18,7 @@
 		lang="ts"
 		setup
 >
-	import { camelize, computed, Transition, TransitionGroup, type Component } from 'vue'
+	import { camelize, computed, onBeforeUnmount, Transition, TransitionGroup, type Component } from 'vue'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { TRANSITION_MODE } from '../../enums/Transition/transition.enum'
 
@@ -41,6 +41,49 @@
 	defineEmits<ITransitionEmits>()
 
 	defineSlots<ITransitionSlots>()
+
+	/*********************************************************
+	 * Frames bornees a la duree de vie du composant (#753)
+	 *
+	 * @description
+	 * Les deux rAF des hooks JS de transition n'etaient annules par
+	 * rien. C'est le risque le plus FAIBLE du lot — leur corps ne
+	 * touche que `element.style` et ne dereference aucun global, donc
+	 * il ne peut pas lever le `ReferenceError` de #706. Ce qu'il peut
+	 * faire, c'est ecrire un style sur un noeud que Vue vient de
+	 * retirer : une transition annulee en plein vol (un `v-if` qui
+	 * bascule deux fois de suite) laisse la frame reposer une taille
+	 * sur un element deja sorti.
+	 *
+	 * @description
+	 * Garde identique aux autres sites de #753 — annuler ce qui est en
+	 * vol ET neutraliser toute programmation ulterieure — pour que la
+	 * famille se lise pareil partout, pas parce que ce site-la serait
+	 * dangereux.
+	 ********************************************************/
+	let disposed = false
+	const frames = new Set<number>()
+
+	const scheduleFrame = (cb: () => void) => {
+		if (disposed) return
+
+		const id = requestAnimationFrame(() => {
+			frames.delete(id)
+
+			if (disposed) return
+
+			cb()
+		})
+
+		frames.add(id)
+	}
+
+	onBeforeUnmount(() => {
+		disposed = true
+
+		for (const id of frames) cancelAnimationFrame(id)
+		frames.clear()
+	})
 
 	/*********************************************************
 	 * group
@@ -169,7 +212,7 @@
 			element._parent.classList.add(expandedParentClass)
 		}
 
-		requestAnimationFrame(() => {
+		scheduleFrame(() => {
 			element.style[sizeProperty] = offset
 		})
 	}
@@ -234,7 +277,7 @@
 		if (props.hideOnLeave) {
 			element.style.setProperty('display', 'none', 'important')
 		} else {
-			requestAnimationFrame(() => (element.style[sizeProperty] = '0'))
+			scheduleFrame(() => (element.style[sizeProperty] = '0'))
 		}
 	}
 	const handleAfterLeave = (el: Element) => {
