@@ -57,14 +57,24 @@ describe('OrigamAlert — prepend/append keyboard activation (issue #443)', () =
         expect(zone.attributes('tabindex')).toBeUndefined()
     })
 
-    it('@click:prepend attached → role="button" + tabindex="0", Enter fires it', async () => {
+    // ⛔ issue #747 changed this contract: a listener alone is no longer
+    // enough. `prependAriaLabel` is what turns the zone into a control —
+    // without it the DS refuses to emit an ARIA role it cannot name. The
+    // unlabelled case is asserted in `adjacent-command-name.spec.ts`.
+    it('@click:prepend + prependAriaLabel → role="button" + tabindex="0" + aria-label, Enter fires it', async () => {
         const wrapper = mount(OrigamAlert, {
-            props: { prependIcon: 'mdi-information', text: 'hello', 'onClick:prepend': () => {} } as never,
+            props: {
+                prependIcon: 'mdi-information',
+                text: 'hello',
+                prependAriaLabel: 'Open details',
+                'onClick:prepend': () => {}
+            } as never,
             global: { plugins: [createOrigam()] }
         })
         const zone = wrapper.find('.origam-alert__prepend')
         expect(zone.attributes('role')).toBe('button')
         expect(zone.attributes('tabindex')).toBe('0')
+        expect(zone.attributes('aria-label')).toBe('Open details')
         await zone.trigger('keydown', { key: 'Enter' })
         expect(wrapper.emitted('click:prepend')).toBeTruthy()
     })
@@ -85,9 +95,14 @@ describe('OrigamAlert — prepend/append keyboard activation (issue #443)', () =
 // ---------------------------------------------------------------------------
 
 describe('OrigamChip — prepend/append keyboard activation is gated by link mode (issue #443)', () => {
-    it('non-link chip + click:prepend listener → role="button" + tabindex="0"', () => {
+    it('non-link chip + click:prepend listener + prependAriaLabel → role="button" + tabindex="0"', () => {
         const wrapper = mount(OrigamChip, {
-            props: { prependIcon: 'mdi-account', text: 'Chip', 'onClick:prepend': () => {} } as never,
+            props: {
+                prependIcon: 'mdi-account',
+                text: 'Chip',
+                prependAriaLabel: 'Open details',
+                'onClick:prepend': () => {}
+            } as never,
             global: { plugins: [createOrigam()] }
         })
         expect(wrapper.element.tagName).not.toBe('A')

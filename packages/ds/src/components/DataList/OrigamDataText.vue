@@ -9,8 +9,7 @@
 		    v-if="hasPrepend"
 		    key="prepend"
 		    class="origam-data-text__prepend"
-		    :role="isPrependClickable ? 'button' : undefined"
-		    :tabindex="isPrependClickable ? 0 : undefined"
+		    v-bind="prependCommandAttrs"
 		    @click="handleClickPrepend"
 		    @keydown="handleKeydownPrepend"
     >
@@ -43,8 +42,7 @@
 				v-if="hasAppend"
 				key="append"
 				class="origam-data-text__append"
-				:role="isAppendClickable ? 'button' : undefined"
-				:tabindex="isAppendClickable ? 0 : undefined"
+				v-bind="appendCommandAttrs"
 				@click="handleClickAppend"
 				@keydown="handleKeydownAppend"
 		>
@@ -114,8 +112,8 @@
 		onClickAppend: handleClickAppend,
 		onKeydownPrepend: handleKeydownPrepend,
 		onKeydownAppend: handleKeydownAppend,
-		isPrependClickable,
-		isAppendClickable,
+		prependCommandAttrs,
+		appendCommandAttrs,
 		hasAppend,
 		hasPrepend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))

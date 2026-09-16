@@ -104,11 +104,18 @@ describe('OrigamField — prependInner / appendInner keyboard activation (issue 
         expect(zone.attributes('tabindex')).toBeUndefined()
     })
 
-    it('@click:prependInner attached → zone becomes role="button" + tabindex="0"', () => {
-        const wrapper = mountField({ prependInnerIcon: 'mdi-magnify' }, { 'onClick:prependInner': () => {} })
+    // ⛔ #747 — the listener alone no longer promotes the zone;
+    // `prependInnerAriaLabel` is what makes the role legitimate. The
+    // unlabelled case is asserted in `adjacent-command-name.spec.ts`.
+    it('@click:prependInner + prependInnerAriaLabel → zone becomes role="button" + tabindex="0"', () => {
+        const wrapper = mountField(
+            { prependInnerIcon: 'mdi-magnify', prependInnerAriaLabel: 'Search' },
+            { 'onClick:prependInner': () => {} }
+        )
         const zone = wrapper.find('.origam-field__prepend-inner')
         expect(zone.attributes('role')).toBe('button')
         expect(zone.attributes('tabindex')).toBe('0')
+        expect(zone.attributes('aria-label')).toBe('Search')
     })
 
     it('@click:prependInner attached + Enter keydown → emits click:prependInner', async () => {

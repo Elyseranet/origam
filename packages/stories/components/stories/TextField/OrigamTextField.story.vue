@@ -260,6 +260,7 @@
 					v-model="emitPrependModel"
 					label="Click outer prepend"
 					data-cy="textfield-emit-click-prepend"
+					prepend-aria-label="Open details"
 					@click:prepend="logEvent('click:prepend', $event)"
 			>
 				<template #prepend>
@@ -273,6 +274,7 @@
 					v-model="emitAppendModel"
 					label="Click outer append"
 					data-cy="textfield-emit-click-append"
+					append-aria-label="Show options"
 					@click:append="logEvent('click:append', $event)"
 			>
 				<template #append>
@@ -287,6 +289,7 @@
 					label="Click inner prepend"
 					:prepend-inner-icon="magnifyIcon"
 					data-cy="textfield-emit-click-prepend-inner"
+					prepend-inner-aria-label="Open details"
 					@click:prepend-inner="logEvent('click:prependInner', $event)"
 			/>
 		</Variant>
@@ -297,6 +300,7 @@
 					label="Click inner append"
 					:append-inner-icon="closeIcon"
 					data-cy="textfield-emit-click-append-inner"
+					append-inner-aria-label="Show options"
 					@click:append-inner="logEvent('click:appendInner', $event)"
 			/>
 		</Variant>

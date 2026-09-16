@@ -157,6 +157,7 @@
 				<origam-card-header
 						title="Header"
 						:append-icon="appendIcon"
+						append-aria-label="Show options"
 						@click:append="logEvent('click:append', $event)"
 				/>
 			</origam-card>
@@ -167,6 +168,7 @@
 				<origam-card-header
 						title="Header"
 						:prepend-icon="prependIcon"
+						prepend-aria-label="Open details"
 						@click:prepend="logEvent('click:prepend', $event)"
 				/>
 			</origam-card>
@@ -236,7 +238,9 @@
 				title="Default"
 				:init-state="() => useStoryInitState<ICardHeaderProps>({
 					title: 'Card Title',
-					subtitle: 'Card Subtitle'
+					subtitle: 'Card Subtitle',
+					prependAriaLabel: 'Open details',
+					appendAriaLabel: 'Show options'
 				})"
 		>
 			<template #default="{ state }">
@@ -268,6 +272,10 @@
 					<HstSelect v-model="state.tag"        title="Tag"          :options="TAG_OPTIONS"/>
 					<HstSelect v-model="state.prependIcon" title="Prepend Icon" :options="ICON_OPTIONS"/>
 					<HstSelect v-model="state.appendIcon"  title="Append Icon"  :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Accessibility (#747)">
+					<HstText v-model="state.prependAriaLabel" title="Prepend Aria Label"/>
+					<HstText v-model="state.appendAriaLabel"  title="Append Aria Label"/>
 				</StoryGroup>
 			</template>
 		</Variant>

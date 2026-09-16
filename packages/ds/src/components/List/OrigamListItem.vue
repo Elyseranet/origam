@@ -28,8 +28,7 @@
 					v-if="hasPrepend"
 					key="prepend"
 					class="origam-list-item__prepend"
-					:role="isPrependZoneFocusable ? 'button' : undefined"
-					:tabindex="isPrependZoneFocusable ? 0 : undefined"
+					v-bind="prependCommandAttrs"
 					@click="handleClickPrepend"
 					@keydown="handleKeydownPrepend"
 			>
@@ -92,8 +91,7 @@
 					v-if="hasAppend"
 					key="append"
 					class="origam-list-item__append"
-					:role="isAppendZoneFocusable ? 'button' : undefined"
-					:tabindex="isAppendZoneFocusable ? 0 : undefined"
+					v-bind="appendCommandAttrs"
 					@click="handleClickAppend"
 					@keydown="handleKeydownAppend"
 			>
@@ -127,6 +125,7 @@
 	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
+	import { useAccessibleCommand } from '../../composables/Commons/accessibleCommand.composable'
 	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
@@ -257,6 +256,30 @@
 	 ********************************************************/
 	const isPrependZoneFocusable = computed(() => isPrependClickable.value && !link.isLink.value)
 	const isAppendZoneFocusable = computed(() => isAppendClickable.value && !link.isLink.value)
+
+	/*********************************************************
+	 * prependCommandAttrs / appendCommandAttrs — #747
+	 *
+	 * @description
+	 * Built locally rather than taken from `useAdjacent`, because the gate
+	 * is `isXxxZoneFocusable` (link-aware) and not raw clickability. The
+	 * hook's own pair is never read here, so its lazy warning never fires
+	 * twice for the same zone.
+	 ********************************************************/
+	const prependCommandAttrs = useAccessibleCommand({
+		component: 'OrigamListItem',
+		zone: 'prepend',
+		prop: 'prependAriaLabel',
+		active: isPrependZoneFocusable,
+		label: () => props.prependAriaLabel
+	})
+	const appendCommandAttrs = useAccessibleCommand({
+		component: 'OrigamListItem',
+		zone: 'append',
+		prop: 'appendAriaLabel',
+		active: isAppendZoneFocusable,
+		label: () => props.appendAriaLabel
+	})
 
 	const isActive = computed(() => {
 		return isActiveFlag.value || link.isActive?.value || isSelected.value

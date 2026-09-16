@@ -58,6 +58,7 @@
 					:items="items"
 					mobile-breakpoint="xl"
 					data-cy="mobile-cell-emit-click-append"
+					append-aria-label="Show options"
 					@click:append="logEvent('click:append', $event)"
 			/>
 		</Variant>
@@ -68,6 +69,7 @@
 					:items="items"
 					mobile-breakpoint="xl"
 					data-cy="mobile-cell-emit-click-prepend"
+					prepend-aria-label="Open details"
 					@click:prepend="logEvent('click:prepend', $event)"
 			/>
 		</Variant>
@@ -349,8 +351,10 @@
 						:sort-desc-icon="state.sortDescIcon || undefined"
 						:sticky="state.sticky"
 						mobile-breakpoint="xl"
+						append-aria-label="Show options"
 						@click:append="logEvent('click:append', $event)"
 						@click:clear="logEvent('click:clear', $event)"
+						prepend-aria-label="Open details"
 						@click:prepend="logEvent('click:prepend', $event)"
 				/>
 			</template>

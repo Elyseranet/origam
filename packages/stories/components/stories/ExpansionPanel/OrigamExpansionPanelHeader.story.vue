@@ -161,6 +161,7 @@
 						<origam-expansion-panel-header
 								title="Click the append icon"
 								:append-icon="appendIcon"
+								append-aria-label="Show options"
 								@click:append="logEvent('click:append', $event)"
 						/>
 					</template>
@@ -175,6 +176,7 @@
 						<origam-expansion-panel-header
 								title="Click the prepend icon"
 								:prepend-icon="prependIcon"
+								prepend-aria-label="Open details"
 								@click:prepend="logEvent('click:prepend', $event)"
 						/>
 					</template>
@@ -252,7 +254,9 @@
 						<template #header>
 							<origam-expansion-panel-header
 									v-bind="state"
+									append-aria-label="Show options"
 									@click:append="logEvent('click:append', $event)"
+									prepend-aria-label="Open details"
 									@click:prepend="logEvent('click:prepend', $event)"
 							/>
 						</template>

@@ -20,8 +20,7 @@
 		      v-if="hasPrepend"
 		      key="prepend"
 		      class="origam-expansion-panel-header__prepend"
-		      :role="isPrependClickable ? 'button' : undefined"
-		      :tabindex="isPrependClickable ? 0 : undefined"
+		      v-bind="prependCommandAttrs"
 		      @click="handleClickPrepend"
 		      @keydown="handleKeydownPrepend"
       >
@@ -65,8 +64,7 @@
 					v-if="hasAppend || !hideActions"
 					key="append"
 					class="origam-expansion-panel-header__append"
-					:role="isAppendClickable ? 'button' : undefined"
-					:tabindex="isAppendClickable ? 0 : undefined"
+					v-bind="appendCommandAttrs"
 					@click="handleClickAppend"
 					@keydown="handleKeydownAppend"
 			>
@@ -222,8 +220,8 @@
 	const {
 		hasAppend,
 		hasPrepend,
-		isPrependClickable,
-		isAppendClickable,
+		prependCommandAttrs,
+		appendCommandAttrs,
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend,
 		onKeydownPrepend: handleKeydownPrepend,

@@ -69,3 +69,49 @@ configured once on `OrigamApp`, not a per-instance override.
 |---|---|---|
 | `click:prepend` | `MouseEvent` | Fired when the prepend area is clicked. |
 | `click:append` | `MouseEvent` | Fired when the append area is clicked. |
+
+## Accessible name of a clickable prepend / append zone (#747)
+
+Attaching `@click:prepend` / `@click:append` makes the corresponding zone
+actionable. For it to be a **real** control — announced, focusable, operable
+by keyboard — it also needs a name, and only you can supply one: the zone's
+default content is an avatar or an icon, i.e. nothing a screen reader can
+read.
+
+| Prop | Type | Description |
+|---|---|---|
+| `prependAriaLabel` | `string` | Accessible name of the prepend zone. i18n key or literal string. |
+| `appendAriaLabel` | `string` | Accessible name of the append zone. Same contract. |
+
+```vue
+<template>
+    <origam-card>
+        <origam-card-header
+            title="Ada Lovelace"
+            prepend-avatar="/ada.png"
+            prepend-aria-label="Open the author profile"
+            @click:prepend="openProfile"
+        />
+    </origam-card>
+</template>
+```
+
+⛔ **Without the label the zone is NOT promoted.** No `role="button"`, no
+`tabindex`, and a dev-time warning naming the prop to add. The `@click:prepend`
+emit still fires on mouse, exactly as before — what disappears is an ARIA
+claim the DS could not back.
+
+This is deliberate. `role="button"` with no accessible name is a WCAG 2.1
+**4.1.2** (level A) failure; measured with axe-core on untouched `develop`,
+this pattern produced **54 `aria-command-name` nodes (impact `serious`) across
+17 components**. No default label is fabricated — a generic "Prepend action"
+would silence the audit while telling a screen-reader user nothing. The value
+is resolved through the locale adapter, so both an i18n key
+(`prepend-aria-label="origam.close"`) and a literal string work, exactly like
+the existing `closeLabel` on Alert / Chip / Dialog.
+
+The same contract applies to every component that renders an adjacent zone:
+Alert, Badge, BreadcrumbItem, Card, Chip, ConfirmWrapper, DataText, DataTitle,
+DatePickerHeader, ExpansionPanelHeader, Input, ListItem — and, on the INNER
+zone, `OrigamField` and the whole field family via
+`prependInnerAriaLabel` / `appendInnerAriaLabel`.

@@ -2,6 +2,7 @@ import { computed, useSlots } from 'vue'
 import type { IAdjacentInnerProps } from '../../interfaces/Commons/adjacent.interface'
 import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 import { hasEvent } from '../../utils/Commons/commons.util'
+import { useAccessibleCommand } from './accessibleCommand.composable'
 import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
 
 /*********************************************************
@@ -87,7 +88,34 @@ export function useAdjacentInner (props: IAdjacentInnerProps) {
         onClickAppendInner(e)
     }
 
+    /*********************************************************
+     * prependInnerCommandAttrs / appendInnerCommandAttrs
+     *
+     * @description
+     * ⛔ #747 — mirror of `useAdjacent`'s pair for the INNER zone. `OrigamField`
+     * bound `:role="isPrependInnerClickable ? 'button' : undefined"` by hand and
+     * had no channel for a name, so every field family member (TextField,
+     * NumberField, OtpInputField, DatePickerField…) shipped an anonymous ARIA
+     * button the moment `click:prependInner` was wired.
+     ********************************************************/
+    const prependInnerCommandAttrs = useAccessibleCommand({
+        component: vm.type?.__name ?? 'Origam',
+        zone: 'prependInner',
+        prop: 'prependInnerAriaLabel',
+        active: isPrependInnerClickable,
+        label: () => props.prependInnerAriaLabel
+    })
+    const appendInnerCommandAttrs = useAccessibleCommand({
+        component: vm.type?.__name ?? 'Origam',
+        zone: 'appendInner',
+        prop: 'appendInnerAriaLabel',
+        active: isAppendInnerClickable,
+        label: () => props.appendInnerAriaLabel
+    })
+
     return {
+        prependInnerCommandAttrs,
+        appendInnerCommandAttrs,
         hasPrependInnerMedia,
         hasPrependInner,
         hasAppendInnerMedia,

@@ -110,7 +110,7 @@ interface IIconComponentProps extends
 <div class="origam-icon origam-icon--svg origam-icon--size-default">
     <svg
         class="origam-icon__svg"
-        aria-hidden="true"
+        aria-hidden="true"   <!-- "false" once a @click listener is attached (#660) -->
         focusable="false"
         viewBox="0 0 24 24"
         xmlns="http://www.w3.org/2000/svg"
@@ -143,9 +143,17 @@ interface IIconComponentProps extends
 
 ## Accessibility
 
-- The inner `<svg>` has `aria-hidden="true"` (no `role`) — it never
-  carries meaning on its own, so it stays out of the accessibility tree
-  unconditionally, whether or not the icon is interactive.
+- The inner `<svg>` has `aria-hidden="true"` (no `role`) as long as the icon
+  is decorative — it carries no meaning on its own, so it stays out of the
+  accessibility tree.
+- ⛔ **#660** — that attribute used to be HARDCODED, and this was the only
+  leaf of the family that never called `useIconAccessibility()`. A consumer
+  writing `<origam-svg-icon @click="…"/>` got a working click handler on an
+  element permanently invisible to assistive technology, with no dev warning
+  to say so. The glyph now un-hides (`aria-hidden="false"`) as soon as a
+  `@click` listener is attached, exactly like the four sibling leaves.
+- Un-hiding is NOT the same as announcing a control: no `role="button"` is
+  added (see below), so the correct fix remains `origam-btn`.
 - For an interactive icon, prefer `<origam-btn icon="…" aria-label="…">`
   (icon-only mode) over attaching `@click` directly to an icon — since #653,
   no icon leaf adds `role="button"` automatically. See `OrigamIcon.md`'s

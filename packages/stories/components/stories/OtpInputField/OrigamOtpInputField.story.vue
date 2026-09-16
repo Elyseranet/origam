@@ -183,6 +183,7 @@
 					:length="4"
 					label="Append inner click"
 					append-inner-icon="mdi:mdi-check"
+					append-inner-aria-label="Show options"
 					@click:append-inner="logEvent('click:appendInner', $event)"
 			/>
 		</Variant>
@@ -192,6 +193,7 @@
 					:length="4"
 					label="Prepend inner click"
 					prepend-inner-icon="mdi:mdi-lock"
+					prepend-inner-aria-label="Open details"
 					@click:prepend-inner="logEvent('click:prependInner', $event)"
 			/>
 		</Variant>

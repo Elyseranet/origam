@@ -3,6 +3,7 @@ import { computed, useSlots } from 'vue'
 import type { IAdjacentProps } from '../../interfaces/Commons/adjacent.interface'
 import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 import { hasEvent } from '../../utils/Commons/commons.util'
+import { useAccessibleCommand } from './accessibleCommand.composable'
 import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
 
 /*********************************************************
@@ -34,6 +35,16 @@ import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
  * consumer actually attached a `click:prepend`/`click:append`
  * listener — a decorative icon with nobody listening stays exactly
  * as inert as before, no spurious tab stop.
+ *
+ * @description
+ * ⛔ issue #747 — being CLICKABLE was never sufficient. `role="button"`
+ * with no accessible name is a WCAG 2.1 4.1.2 failure, and it was the
+ * shipped behaviour of every consumer of this hook: axe-core measured
+ * **54 `aria-command-name` nodes (`serious`) across 17 components** on
+ * untouched `develop`. `prependCommandAttrs` / `appendCommandAttrs`
+ * replace the raw `:role` / `:tabindex` bindings the templates used to
+ * write by hand — they emit the role AND the name together, or neither.
+ * See `useAccessibleCommand` for why no default label is fabricated.
  ********************************************************/
 export function useAdjacent (props: IAdjacentProps, prependIcon?: Ref | ComputedRef, appendIcon?: Ref | ComputedRef) {
     const vm = getCurrentInstance('OrigamAdjacent')
@@ -105,7 +116,34 @@ export function useAdjacent (props: IAdjacentProps, prependIcon?: Ref | Computed
         onClickAppend(e)
     }
 
+    /*********************************************************
+     * prependCommandAttrs / appendCommandAttrs
+     *
+     * @description
+     * ⛔ #747 — the single binding a template must use on the zone. Lazily
+     * evaluated, so a component gating the zone on something else (Chip /
+     * ListItem / BreadcrumbItem all suppress it when the item renders as a
+     * link) may ignore these and call `useAccessibleCommand` itself with its
+     * own gate, without this one ever warning.
+     ********************************************************/
+    const prependCommandAttrs = useAccessibleCommand({
+        component: vm.type?.__name ?? 'Origam',
+        zone: 'prepend',
+        prop: 'prependAriaLabel',
+        active: isPrependClickable,
+        label: () => props.prependAriaLabel
+    })
+    const appendCommandAttrs = useAccessibleCommand({
+        component: vm.type?.__name ?? 'Origam',
+        zone: 'append',
+        prop: 'appendAriaLabel',
+        active: isAppendClickable,
+        label: () => props.appendAriaLabel
+    })
+
     return {
+        prependCommandAttrs,
+        appendCommandAttrs,
         hasPrependMedia,
         hasPrepend,
         hasAppendMedia,
