@@ -63,12 +63,44 @@
  * measurement. A precision figure is only as good as the population it was
  * measured over — check that population before trusting the percentage.
  *
- * COMPONENTS THIS GUARD DOES NOT JUDGE
- * ------------------------------------
+ * COMPONENTS THIS GUARD DOES NOT JUDGE — 17, and the verdict says so
+ * -------------------------------------------------------------------
  * A component that spreads its whole props object (`...props`,
- * `v-bind="props"`, `mergeProps(props, …)`) can forward anything anywhere;
- * no static pass can decide those, so they are skipped wholesale rather than
- * guessed at. 15 components today. They are listed by `--why`.
+ * `v-bind="props"`, `mergeProps(props, …)`, or hands them to a composable
+ * that enumerates them) can forward anything anywhere; no static pass can
+ * decide those. They are skipped wholesale rather than guessed at, and each
+ * one carries its written reason in `--why`.
+ *
+ * ⛔ THE COVERAGE IS PART OF THE VERDICT (#608). It used to live behind
+ * `--why` only, and `PASS — 0 violation` was cited as a full sweep to close
+ * #548; that closure had to be corrected. The pass line now reads
+ * `PASS — … 201/218 components analysed, 17 excluded`.
+ *
+ * WHY 51 BECAME 17 (#608)
+ * -----------------------
+ * 43 of the 51 exclusions were `filterProps(props, …)`, and that call is NOT
+ * undecidable: `useProps(props).filterProps(parentProps, excludes)` hands the
+ * child exactly `keys(childProps) − excludes`, picked off the parent. The
+ * chain is now followed to the child through the typed template ref
+ * (`ref<TOrigamInput>()` → `TOrigamInput` → `OrigamInput.vue` →
+ * `defineProps<IInputProps>()`), so a parent prop counts as forwarded only
+ * when the CHILD declares it. See `resolveFilterPropsChain` in the audit.
+ *
+ * Measured, same commit: 51 → 17 excluded, 32 components newly judged, and
+ * ZERO component that was analysed before became excluded.
+ *
+ * ⛔ THE 108 BASELINE ENTRIES ARE NOT NEW DEBT — THEY ARE NEWLY VISIBLE DEBT.
+ * The baseline held 0 entries when the guard looked at 167 components; it
+ * holds 108 now that it looks at 201. Two changes produced them, both in the
+ * analysis and none in any component:
+ *   - the `filterProps` chain above (107 pairs, on 32 components);
+ *   - the diamond fix of #723, which added `OrigamRatingField.letterSpacing`
+ *     to the surface the guard can even see. That prop was structurally
+ *     invisible before — not "clean", unlooked-at.
+ * ⚠️ These 108 are CANDIDATES, not runtime-confirmed inert pairs. The 100 %
+ * precision figure quoted above was measured over the population the guard
+ * judged BEFORE this change; it does not transfer to the 108. Confirm with
+ * `pnpm -F @origam/tests audit:inert-props` before calling any of them dead.
  *
  * Run: `node packages/ds/scripts/guards/unconsumed-props.mjs`
  *      `node packages/ds/scripts/guards/unconsumed-props.mjs --why`
@@ -78,10 +110,37 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { report, writeBaseline } from './lib/baseline.mjs'
+import { runInterfaceResolutionSelfTest } from './lib/interface-resolution.selftest.mjs'
 import { analyse } from '../audit-unconsumed-props.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const BASELINE_PATH = path.join(__dirname, 'baseline/unconsumed-props.json')
+
+/*********************************************************
+ * Les fixtures tournent AVANT le garde, pas a cote
+ *
+ * @description
+ * ⛔ Un jeu de fixtures que rien n'execute decore. Celui de la traversee
+ * d'interfaces (#723 — losange vs cycle) est donc sur le chemin du garde
+ * bloquant : si une seule fixture tombe, le garde sort en 1 sans meme
+ * calculer son verdict. Un verdict rendu par une traversee cassee vaut moins
+ * que pas de verdict du tout — c'est toute la lecon de #723.
+ *
+ * @description
+ * Le detail des fixtures et leur intention : `lib/interface-resolution.selftest.mjs`.
+ * Pour les jouer seules : `pnpm -F origam guards:unconsumed-props:self`.
+ ********************************************************/
+const selfTest = runInterfaceResolutionSelfTest()
+if (selfTest.failures.length > 0) {
+    console.log('─'.repeat(70))
+    console.log('Guard: unconsumed-props — ABANDON, la traversee d\'interfaces est cassee')
+    console.log('─'.repeat(70))
+    console.log(`${selfTest.failures.length}/${selfTest.total} fixtures de resolution en echec :\n`)
+    for (const f of selfTest.failures) console.log(`  ✗ ${f}`)
+    console.log('\nDetail : packages/ds/scripts/guards/lib/interface-resolution.selftest.mjs')
+    console.log('─'.repeat(70))
+    process.exit(1)
+}
 
 const results = analyse()
 const skipped = results.filter((r) => r.wildcard)
@@ -182,8 +241,11 @@ for (const r of results) {
     }
 }
 
+const analysed = results.length - skipped.length
+const COVERAGE = `${analysed}/${results.length} components analysed, ${skipped.length} excluded (see --why).`
+
 if (process.argv.includes('--why')) {
-    console.log(`${results.length} components analysed, ${skipped.length} skipped (whole-props forwarding):`)
+    console.log(`${results.length} components analysed, ${skipped.length} skipped (undecidable by a static pass):`)
     for (const r of skipped) console.log(`  - ${r.name}: ${r.wildcardReasons.join('; ')}`)
     console.log(`\n${currentIds.size} candidate (component, prop) pairs.`)
     process.exit(0)
@@ -200,6 +262,7 @@ process.exit(report({
     baselinePath: BASELINE_PATH,
     currentIds,
     detailsById,
+    coverageNote: COVERAGE,
     fixHint:
         'A NEW entry means a prop was added (or inherited via `extends`) and nothing reads it.\n'
         + 'Fix it, do not baseline it. Three shapes cover almost every case:\n'
