@@ -15,7 +15,7 @@ You rarely mount it yourself — `OrigamSliderField` renders it for you.
 <template>
     <origam-slider-field
         v-model="value"
-        :track-props="{ size: 8, rounded: 'pill' }"
+        :track-props="{ size: 8, rounded: 'full' }"
     />
 </template>
 ```
@@ -66,7 +66,7 @@ channel — an explicit `trackProps.rounded` wins over the slider's own
 | `size` | `TSize \| number` | `4` | Rail thickness. A bare number is read as px. |
 | `color` | `TColor` | — | Intent of the fill stripe. |
 | `bgColor` | `TColor` | — | Intent of the background stripe. |
-| `rounded` | `boolean \| number \| string \| TRounded \| null` | — | Radius of the rail. |
+| `rounded` | `boolean \| number \| string \| TRounded \| null` | — | Radius of the rail. Unset, the scoped default paints a pill (measured `9999px`). `TRounded` has two scales — `x-small … x-large`, `shaped`, `shaped-invert` **and** the token rungs `none \| xs \| sm \| md \| lg \| xl \| full`. A name outside those two lists (`'pill'`, say) is **dropped without a warning**: no class, no inline declaration, and the rail keeps its default radius — which is how an unsupported value can look like it worked. |
 | `roundedTopLeft` / `roundedTopRight` / `roundedBottomLeft` / `roundedBottomRight` | `boolean \| number \| string` | — | Per-corner radius. |
 
 ### State
@@ -100,8 +100,8 @@ A tick's label element only renders when the tick carries a `label`, or when an
 
 ## Behaviour notes
 
-- The rail is three stacked elements: `__bg` (full width), `__fill` (spanning
-  `start` → `stop`) and `__ticks`. Colour props target the first two.
+- The rail is three stacked elements: `__background` (full width), `__fill`
+  (spanning `start` → `stop`) and `__ticks`. Colour props target the first two.
 - `error` short-circuits the colour resolution. If a slider looks stuck on
   `danger`, check the parent's `error` flag before suspecting `color`.
 - Tick filtering uses `min` / `max`, not `start` / `stop`: the boundary ticks
@@ -115,10 +115,15 @@ Thicker pill-shaped rail:
 <template>
     <origam-slider-field
         v-model="value"
-        :track-props="{ size: 10, rounded: 'pill' }"
+        :track-props="{ size: 10, rounded: 'full' }"
     />
 </template>
 ```
+
+`full` is the pill rung of `TRounded`. It is also what the rail already looks
+like without any `rounded` at all — the scoped default is
+`var(--origam-slider-field__track---border-radius, 9999px)` — so the value here
+only makes the intent explicit and survives a theme that re-points that token.
 
 Labelled ticks driven by the parent:
 
