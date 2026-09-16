@@ -290,12 +290,12 @@
 						v-if="zoomable && isZoomed"
 						class="origam-chart__zoom-reset"
 						data-cy="origam-chart-zoom-reset"
-						:transform="`translate(${ plot.x1 - 68 }, ${ plot.y0 })`"
+						:transform="`translate(${ plot.x1 - zoomResetWidth - CHART_ZOOM_RESET_GAP }, ${ plot.y0 })`"
 				>
 					<rect
 							x="0"
 							y="0"
-							width="64"
+							:width="zoomResetWidth"
 							height="20"
 							rx="4"
 							:style="{ fill: 'var(--origam-chart__zoom-reset---bg, rgba(59,130,246,0.9))', cursor: 'pointer' }"
@@ -308,13 +308,14 @@
 							@keydown.space.prevent="onZoomReset"
 					/>
 					<text
-							x="32"
+							ref="zoomResetTextRef"
+							:x="zoomResetWidth / 2"
 							y="13"
 							text-anchor="middle"
 							dominant-baseline="auto"
 							pointer-events="none"
 							:style="{ fill: '#ffffff', fontSize: '0.6875rem', fontWeight: '600' }"
-					>Reset zoom</text>
+					>{{ zoomResetAriaLabel }}</text>
 				</g>
 
 				<g
@@ -489,6 +490,7 @@
 >
 	import {
 		computed,
+		nextTick,
 		ref,
 		type StyleValue,
 		watch
@@ -513,6 +515,11 @@
 	} from '../../composables/Chart/chart.composable'
 
 	import { CHART_RANGE_SELECTOR_DEFAULT_BUTTONS } from '../../consts/Chart/chart.const'
+	import {
+		CHART_ZOOM_RESET_GAP,
+		CHART_ZOOM_RESET_MIN_WIDTH,
+		CHART_ZOOM_RESET_PADDING_X
+	} from '../../consts/Chart/chart-cartesian.const'
 
 	import { OrigamBtn } from '../Btn'
 
@@ -631,6 +638,70 @@
 	const drilldownNavAriaLabel = computed(() => t(props.drilldown?.navAriaLabel ?? 'origam.chart.drilldown.aria_label'))
 	const zoomResetAriaLabel = computed(() => t(props.zoomResetLabel))
 
+	/*********************************************************
+	 * Largeur de la pilule « Reset zoom » — mesuree, pas devinee
+	 *
+	 * @description
+	 * La boite etait un `<rect width="64">` ECRIT EN DUR, dimensionne
+	 * pour l'anglais. Depuis que le texte visible suit la locale (#764),
+	 * toute langue plus verbeuse debordait. Mesure Chromium :
+	 *
+	 *     en « Reset zoom »             texte 56.75  → tenait
+	 *     fr « Réinitialiser le zoom »  texte 98.06  → +34.06 de debord
+	 *
+	 * @description
+	 * ⛔ SVG N'A PAS D'AUTO-LAYOUT : aucun mecanisme natif n'elargit un
+	 * `<rect>` au texte d'un `<text>` frere, contrairement au padding
+	 * d'une boite HTML. C'est le cas ou la plateforme ne fait PAS le
+	 * travail, donc on le lui demande explicitement — `getBBox()`, la
+	 * mesure typographique reelle du navigateur.
+	 *
+	 * @description
+	 * L'alternative — estimer depuis `label.length` — a ete ecartee sur
+	 * mesure, pas par principe : les deux chaines ci-dessus donnent
+	 * 5.68 et 4.67 unites par caractere. Un facteur unique se tromperait
+	 * deja de ~20 % sur ces deux-la, et davantage sur des glyphes larges
+	 * (`W` contre `i`), que le compte de caracteres ne distingue pas.
+	 *
+	 * @description
+	 * `getBBox` est absent en SSR et sous jsdom : la garde laisse alors
+	 * la pilule au plancher, qui est exactement le rendu d'avant.
+	 *
+	 * @description
+	 * Le `catch` couvre le second cas de repli : `getBBox()` LEVE sur un
+	 * noeud non rendu — onglet d'arriere-plan, `display: none`, sous-arbre
+	 * detache. Le plancher reste alors une largeur valide, donc l'echec de
+	 * mesure degrade le rendu sans jamais le casser.
+	 ********************************************************/
+	const zoomResetTextRef = ref<SVGTextElement | null>(null)
+	const zoomResetTextWidth = ref(0)
+
+	const zoomResetWidth = computed<number>(() => {
+		if (!zoomResetTextWidth.value) return CHART_ZOOM_RESET_MIN_WIDTH
+
+		return Math.max(
+			CHART_ZOOM_RESET_MIN_WIDTH,
+			zoomResetTextWidth.value + CHART_ZOOM_RESET_PADDING_X * 2
+		)
+	})
+
+	const measureZoomResetText = async (): Promise<void> => {
+		await nextTick()
+
+		const el = zoomResetTextRef.value
+		if (!el || typeof el.getBBox !== 'function') {
+			zoomResetTextWidth.value = 0
+
+			return
+		}
+
+		try {
+			zoomResetTextWidth.value = el.getBBox().width
+		} catch {
+			zoomResetTextWidth.value = 0
+		}
+	}
+
 	const resolveDrilldownLink = (link: IChartDrilldownLink): IChartDrilldownFrame | null => {
 		if (!props.drilldown) return null
 		const dataset = props.drilldown.datasets.find((d) => d.id === link.id)
@@ -723,6 +794,19 @@
 		pxToCategoryIndex,
 		WHEEL_ZOOM_STEP
 	} = zoom
+
+	/*********************************************************
+	 * ⛔ Le `watch` vit ICI, et pas aupres de `measureZoomResetText`
+	 * qu'il appelle : `isZoomed` sort de la destructuration de
+	 * `useChartZoom` juste au-dessus, et il est `immediate`. Declare
+	 * plus haut, il lirait `isZoomed` avant son `const` — zone morte
+	 * temporelle, qui casse le montage du composant entier.
+	 ********************************************************/
+	watch(
+		[zoomResetAriaLabel, isZoomed, () => props.zoomable],
+		() => { void measureZoomResetText() },
+		{ flush: 'post', immediate: true }
+	)
 
 	const visibleCategories = computed<Array<string>>(() => {
 		if (!props.zoomable) return activeCategories.value

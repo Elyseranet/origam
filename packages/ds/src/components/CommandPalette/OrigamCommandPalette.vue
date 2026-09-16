@@ -552,11 +552,19 @@
 
 	/*********************************************************
 	 * Footer fallback strings
+	 *
+	 * @description
+	 * Les trois indices du pied de palette passent par `t()` (#764, C8).
+	 * `closeText` REUTILISE la cle generique `origam.close` deja livree
+	 * dans les deux locales plutot que d'en creer une quatrieme : c'est
+	 * le meme mot, dans le meme sens, en anglais comme en francais.
+	 * `navigate` / `select` n'avaient pas d'equivalent existant et
+	 * vivent dans l'espace de noms du composant.
 	 ********************************************************/
 
-	const navigateText = 'Navigate'
-	const selectText = 'Select'
-	const closeText = 'Close'
+	const navigateText = computed<string>(() => t('origam.command_palette.footer_navigate'))
+	const selectText = computed<string>(() => t('origam.command_palette.footer_select'))
+	const closeText = computed<string>(() => t('origam.close'))
 	const hasDefaultFooter = computed<boolean>(() => true)
 
 	/*********************************************************

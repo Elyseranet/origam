@@ -670,7 +670,7 @@ return [ out, props.style as StyleValue ]
 
 	const boxAriaLabel = (box: IChartBoxPlotBox): string => {
 		const { min, q1, median, q3, max } = box.rawStats
-		return `${ box.category }: min=${ min } Q1=${ q1 } median=${ median } Q3=${ q3 } max=${ max }`
+		return t('origam.chart.box_plot.box_aria_label', box.category, min, q1, median, q3, max)
 	}
 
 	/*********************************************************
