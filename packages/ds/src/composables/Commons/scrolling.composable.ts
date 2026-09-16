@@ -39,6 +39,25 @@ export function useScrolling (listRef: Ref<TOrigamList | undefined>, textFieldRe
             } else resolve()
         })
     }
+    /*********************************************************
+     * focusFirstMatch
+     *
+     * @description
+     * Les deux branches de `onListKeydown` faisaient la meme chose dans
+     * deux sens : parcourir les enfants, focaliser le PREMIER dont le
+     * rectangle franchit le bord du conteneur, puis sortir. Extrait tel
+     * quel (Sonar #771 : complexite cognitive 18 > 15) — meme ordre de
+     * parcours, meme `break` au premier succes, meme cast en HTMLElement.
+     ********************************************************/
+    const focusFirstMatch = (children: Iterable<Element>, matches: (rect: DOMRect) => boolean) => {
+        for (const child of children) {
+            if (matches(child.getBoundingClientRect())) {
+                (child as HTMLElement).focus()
+                break
+            }
+        }
+    }
+
     const onListKeydown = async (e: KeyboardEvent) => {
         if (e.key === 'Tab') {
             textFieldRef.value?.focus()
@@ -61,20 +80,12 @@ export function useScrolling (listRef: Ref<TOrigamList | undefined>, textFieldRe
 
         if (e.key === 'PageDown' || e.key === 'Home') {
             const top = el.getBoundingClientRect().top
-            for (const child of children) {
-                if (child.getBoundingClientRect().top >= top) {
-                    (child as HTMLElement).focus()
-                    break
-                }
-            }
+
+            focusFirstMatch(children, rect => rect.top >= top)
         } else {
             const bottom = el.getBoundingClientRect().bottom
-            for (const child of [...children].reverse()) {
-                if (child.getBoundingClientRect().bottom <= bottom) {
-                    (child as HTMLElement).focus()
-                    break
-                }
-            }
+
+            focusFirstMatch([...children].reverse(), rect => rect.bottom <= bottom)
         }
     }
 
