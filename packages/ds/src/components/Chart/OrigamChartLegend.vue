@@ -7,28 +7,30 @@
 		<li
 				v-for="entry in safeItems"
 				:key="entry.series?.name ?? entry.index"
-				:aria-label="itemAriaLabel(entry)"
-				:aria-pressed="!isHidden(entry)"
 				class="origam-chart__legend-item"
 				:class="{ 'origam-chart__legend-item--hidden': isHidden(entry) }"
 				:data-cy="`origam-chart-legend-${ entry.index }`"
-				role="button"
-				tabindex="0"
-				@click="onItemClick(entry)"
-				@keydown.enter.prevent="onItemClick(entry)"
-				@keydown.space.prevent="onItemClick(entry)"
 		>
-			<slot
-					name="legend-item"
-					v-bind="{ series: entry.series, index: entry.index, visible: entry.visible }"
+			<button
+					type="button"
+					class="origam-chart__legend-button"
+					:aria-label="itemAriaLabel(entry)"
+					:aria-pressed="!isHidden(entry)"
+					:data-cy="`origam-chart-legend-button-${ entry.index }`"
+					@click="handleItemClick(entry)"
 			>
-				<span
-						class="origam-chart__legend-swatch"
-						:style="{ backgroundColor: entry.color }"
-						aria-hidden="true"
-				/>
-				<span class="origam-chart__legend-label">{{ entry.series?.name ?? '' }}</span>
-			</slot>
+				<slot
+						name="legend-item"
+						v-bind="{ series: entry.series, index: entry.index, visible: entry.visible }"
+				>
+					<span
+							class="origam-chart__legend-swatch"
+							:style="{ backgroundColor: entry.color }"
+							aria-hidden="true"
+					/>
+					<span class="origam-chart__legend-label">{{ entry.series?.name ?? '' }}</span>
+				</slot>
+			</button>
 		</li>
 	</ul>
 </template>
@@ -51,10 +53,25 @@
 	 * `<OrigamChart>` so every family (cartesian / polar / radar /
 	 * gauge) can share the same markup + slot API.
 	 *
-	 * Each entry is keyboard-activatable (Enter / Space + click),
-	 * carries the series-resolved colour swatch, and toggles
-	 * visibility via two emits: `legend-click` (raw click) and
-	 * `series-toggle` (after the visibility flip).
+	 * Each entry carries the series-resolved colour swatch and
+	 * toggles visibility via two emits: `legend-click` (raw click)
+	 * and `series-toggle` (after the visibility flip).
+	 *
+	 * @description
+	 * ⛔ #777 — the toggle is a NATIVE `<button>` inside the `<li>`,
+	 * never `role="button"` on the `<li>` itself. Measured with
+	 * axe-core in Chromium, the previous markup produced
+	 * `aria-allowed-role` on both entries: an `<li>` whose parent is
+	 * a `<ul>` may not claim `button`, so the entry was announced
+	 * neither as a list item nor reliably as a command.
+	 *
+	 * @description
+	 * Same principle as #747 / #660 / #653 — the DS does not paint an
+	 * ARIA role where a native element already carries the semantics.
+	 * The `<button>` brings Enter / Space activation, the focus ring
+	 * and the disabled semantics for free, which is why the two
+	 * hand-rolled `@keydown` handlers and the manual `tabindex` are
+	 * gone rather than ported.
 	 ********************************************************/
 	defineOptions({
 		name: 'OrigamChartLegend'
@@ -151,9 +168,31 @@
 		return `${ entry.series?.name ?? '' }: ${ state }`
 	}
 
-	const onItemClick = (entry: IChartLegendItem): void => {
+	const handleItemClick = (entry: IChartLegendItem): void => {
 		emit('legend-click', entry.series, entry.index)
 		const nextVisible = entry.visible === false
 		emit('series-toggle', entry.series, nextVisible)
 	}
 </script>
+
+<style
+		lang="scss"
+		scoped
+>
+	.origam-chart__legend-button {
+		display: flex;
+		align-items: center;
+		gap: inherit;
+
+		margin: 0;
+		padding: 0;
+		border: 0;
+		background: none;
+
+		font: inherit;
+		color: inherit;
+		text-align: inherit;
+		text-decoration: inherit;
+		cursor: inherit;
+	}
+</style>
