@@ -181,14 +181,6 @@
             "actions_label": "Suivre origam"
         },
         "versions": {
-            "unreleased": {
-                "summary": "En cours — pas encore publié. Extraction des thèmes de marque, tokens glassmorphism, corrections de rendu serveur.",
-                "h1": "OrigamCode — modes d'affichage compact et prompt ; support du thème biaxial (data-theme × data-mode)",
-                "h2": "Tokens backdrop-filter glassmorphism sur Card / Sheet / Toolbar / Menu",
-                "h3": "Thèmes de marque extraits du DS (ADR-004) — installés via createOrigam() avec une option themes au lieu d'être intégrés à la lib",
-                "h4": "OrigamImg — garde rAF markBooted derrière IN_BROWSER (crash SSR corrigé)",
-                "h5": "Six problèmes SSR/thème résolus : course cookie, data-mode au premier rendu, mismatch hydratation"
-            },
             "v260": {
                 "summary": "La version bracket + a11y + thématisation. Directive v-contrast, OrigamBracket double-élimination, moteur de thème biaxial, migration monorepo. 170 commits.",
                 "h1": "Directive v-contrast — garde WCAG 2.1 AA sur la lisibilité du texte, appliquée à tous les composants colorés",

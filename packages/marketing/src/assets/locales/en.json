@@ -181,14 +181,6 @@
             "actions_label": "Follow origam"
         },
         "versions": {
-            "unreleased": {
-                "summary": "Work in progress — not yet released. Brand themes extracted from the DS, glassmorphism tokens, and SSR gaps resolved.",
-                "h1": "OrigamCode — compact and prompt display modes; two-axis theming (data-theme × data-mode) support",
-                "h2": "backdrop-filter glassmorphism tokens on Card / Sheet / Toolbar / Menu",
-                "h3": "Brand themes removed from the DS (ADR-004) — now installed via createOrigam() with a themes option instead of bundled in the lib",
-                "h4": "OrigamImg — markBooted rAF guard behind IN_BROWSER (SSR crash fixed)",
-                "h5": "Six SSR/theming gaps resolved: theme cookie race, data-mode on first SSR render, hydration mismatch on theme toggle"
-            },
             "v260": {
                 "summary": "The bracket + a11y + theming release. v-contrast directive, OrigamBracket double-elimination, two-axis theming engine, monorepo migration. 170 commits.",
                 "h1": "v-contrast directive — runtime WCAG 2.1 AA text-legibility guard applied to every colour-bearing component",

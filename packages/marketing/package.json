@@ -25,6 +25,8 @@
     "docs:sync:check": "tsx --tsconfig ./tsconfig.typeorm.json scripts/generate-api-docs.mjs --check",
     "docs:backfill-keys": "tsx --tsconfig ./tsconfig.typeorm.json scripts/generate-api-docs.mjs --backfill-keys",
     "docs:backfill-keys:check": "tsx --tsconfig ./tsconfig.typeorm.json scripts/generate-api-docs.mjs --backfill-keys --check",
+    "changelog:generate": "node scripts/generate-changelog.mjs",
+    "changelog:generate:check": "node scripts/generate-changelog.mjs --check",
     "presets:generate": "node scripts/generate-brand-presets.mjs",
     "presets:generate:check": "node scripts/generate-brand-presets.mjs --check",
     "theme:reset:generate": "node scripts/generate-origam-reset.mjs",
