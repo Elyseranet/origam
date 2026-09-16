@@ -30,6 +30,10 @@ import OrigamAlert from '@origam/components/Alert/OrigamAlert.vue'
 import OrigamField from '@origam/components/Field/OrigamField.vue'
 import OrigamSvgIcon from '@origam/components/Icon/OrigamSvgIcon.vue'
 import OrigamBtn from '@origam/components/Btn/OrigamBtn.vue'
+import OrigamInput from '@origam/components/Input/OrigamInput.vue'
+import OrigamListItem from '@origam/components/List/OrigamListItem.vue'
+import OrigamMenu from '@origam/components/Menu/OrigamMenu.vue'
+import OrigamOtpInputField from '@origam/components/OtpInputField/OrigamOtpInputField.vue'
 import { createOrigam } from '@origam/origam'
 
 Object.defineProperty(window, 'matchMedia', {
@@ -244,5 +248,86 @@ describe('#653 — OrigamBtn warns when icon-only mode has no accessible name', 
         mountWith(OrigamBtn, { icon: 'mdi-content-save', text: 'Save' })
 
         expect(warnings()).toEqual([])
+    })
+})
+
+// ---------------------------------------------------------------------------
+// #756 — a component with no outer zone must not DECLARE the name for one
+// ---------------------------------------------------------------------------
+
+/*
+ * Adding `prependAriaLabel` / `appendAriaLabel` to `IAdjacentProps` gave the
+ * two props to every component extending that surface — including two that
+ * inherit it and render no outer zone at all. The `unconsumed-props` guard
+ * caught it (4 NEW violations on the PR's merge with `develop`).
+ *
+ * The verdict is NOT "an unnamed clickable icon": there is no icon. Measured
+ * in jsdom, sentinel values passed as props and grepped out of
+ * `document.body.innerHTML`:
+ *
+ *   OrigamInput           outer  → SENTINELLE PRESENT   (owner of the zone)
+ *   OrigamListItem        outer  → SENTINELLE PRESENT   (owner of the zone)
+ *   OrigamTextField       outer  → SENTINELLE PRESENT   (forwards to Input)
+ *   OrigamOtpInputField   inner  → SENTINELLE PRESENT   (the zone it has)
+ *   OrigamOtpInputField   outer  → ABSENT — no `.origam-input__*` node
+ *   OrigamMenu            outer  → ABSENT — no `.origam-list-item__*` node
+ *
+ * `IOtpInputFieldEmits` had already reached the same conclusion for the EMITS
+ * half of the surface and excluded `IAdjacentEmits` in so many words. The
+ * props half now matches: both interfaces `Omit` the six outer keys.
+ *
+ * ⚠️ The first assertion below is the discriminating one — it fails against
+ * the parent commit. The render assertions pass on both sides (the zone was
+ * never rendered); they are here to state WHY the surface was removed, not to
+ * detect the regression.
+ */
+const OUTER_ADJACENT_KEYS = [
+    'prependIcon', 'appendIcon',
+    'prependAvatar', 'appendAvatar',
+    'prependAriaLabel', 'appendAriaLabel'
+] as const
+
+const declaredProps = (component: any): Array<string> => {
+    const declared = component?.props
+    return Array.isArray(declared) ? declared : Object.keys(declared ?? {})
+}
+
+describe('#756 — the outer adjacent surface is declared only where it renders', () => {
+    it('CONTROL — OrigamInput declares every outer adjacent prop', () => {
+        const props = declaredProps(OrigamInput)
+
+        for (const key of OUTER_ADJACENT_KEYS) expect(props).toContain(key)
+    })
+
+    it('CONTROL — OrigamListItem declares every outer adjacent prop', () => {
+        const props = declaredProps(OrigamListItem)
+
+        for (const key of OUTER_ADJACENT_KEYS) expect(props).toContain(key)
+    })
+
+    it('OrigamOtpInputField declares NONE of them — it never mounts an <origam-input>', () => {
+        const props = declaredProps(OrigamOtpInputField)
+
+        for (const key of OUTER_ADJACENT_KEYS) expect(props).not.toContain(key)
+    })
+
+    it('OrigamOtpInputField keeps the INNER names — that zone is real', () => {
+        const props = declaredProps(OrigamOtpInputField)
+
+        expect(props).toContain('prependInnerAriaLabel')
+        expect(props).toContain('appendInnerAriaLabel')
+    })
+
+    it('OrigamMenu declares NONE of them — its rows take media from the item object', () => {
+        const props = declaredProps(OrigamMenu)
+
+        for (const key of OUTER_ADJACENT_KEYS) expect(props).not.toContain(key)
+    })
+
+    it('why: OrigamOtpInputField renders no outer zone node at all', () => {
+        const wrapper = mountWith(OrigamOtpInputField, { length: 4, label: 'code' })
+
+        expect(wrapper.find('.origam-input__prepend').exists()).toBe(false)
+        expect(wrapper.find('.origam-input__append').exists()).toBe(false)
     })
 })
