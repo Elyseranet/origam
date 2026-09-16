@@ -545,26 +545,35 @@
 	 * whole Vitest run with zero red tests (the #706 family).
 	 *
 	 * @description
-	 * `onBeforeUnmount` cancels the armed frame and flips `disposed`, so
+	 * `onBeforeUnmount` cancels the armed frames and flips `disposed`, so
 	 * a schedule attempt that somehow arrives later is a no-op too.
+	 *
+	 * @description
+	 * Every armed id is tracked, NOT just the latest. Collapsing them into
+	 * a single handle would make a later call supersede an earlier one —
+	 * a coalescing semantic this component never had, and one no failing
+	 * test asks for. The fix adds cancellation at unmount and nothing else.
 	 ********************************************************/
-	let labelFrame = -1
+	const labelFrames = new Set<number>()
 	let disposed = false
 
 	const scheduleLabelFrame = (cb: () => void) => {
 		if (disposed || !IN_BROWSER) return
 
-		cancelAnimationFrame(labelFrame)
-		labelFrame = requestAnimationFrame(cb)
+		const id = requestAnimationFrame(() => {
+			labelFrames.delete(id)
+			cb()
+		})
+
+		labelFrames.add(id)
 	}
 
 	onBeforeUnmount(() => {
 		disposed = true
 
-		if (labelFrame !== -1) {
-			cancelAnimationFrame(labelFrame)
-			labelFrame = -1
-		}
+		for (const id of labelFrames) cancelAnimationFrame(id)
+
+		labelFrames.clear()
 	})
 
 	onMounted(() => {

@@ -278,23 +278,32 @@
 	 * scheduling attempt a no-op — needed because the scheduling here is
 	 * itself deferred behind two `nextTick`s, so at unmount time there is
 	 * not always a handle to cancel yet.
+	 *
+	 * @description
+	 * Every armed id is tracked, NOT just the latest: `done()` is called
+	 * once per side, so two chains can be in flight at the same time and
+	 * a single handle would lose one of them.
 	 ********************************************************/
-	let frame = -1
+	const frames = new Set<number>()
 	let disposed = false
 
 	const scheduleFrame = (cb: () => void) => {
 		if (disposed || !IN_BROWSER) return
 
-		frame = window.requestAnimationFrame(cb)
+		const id = window.requestAnimationFrame(() => {
+			frames.delete(id)
+			cb()
+		})
+
+		frames.add(id)
 	}
 
 	onBeforeUnmount(() => {
 		disposed = true
 
-		if (frame !== -1) {
-			window.cancelAnimationFrame(frame)
-			frame = -1
-		}
+		for (const id of frames) window.cancelAnimationFrame(id)
+
+		frames.clear()
 	})
 
 	const done = (_status: TInfiniteScrollStatus) => {

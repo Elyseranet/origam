@@ -53,6 +53,7 @@
 
 	import {
 		computed,
+		onBeforeUnmount,
 		onMounted,
 		ref,
 		StyleValue,
@@ -188,14 +189,64 @@
 		alignRef: toRef(props, 'align')
 	})
 
-	// Bridge the composable's containerRef to our own template ref so we
-	// can read `rootEl` in this component (gap resolution) AND the
-	// composable observes the same element.
+	/*********************************************************
+	 * scheduleFrame — rAF bound to the component's lifetime (#719)
+	 *
+	 * @description
+	 * Two frames were armed here and nothing cancelled either: the first
+	 * relayout, and the gap re-resolution on a prop/theme swap. Both end
+	 * in `getComputedStyle` — `resolveGapPx` reads the painted value, and
+	 * `relayout()` measures the container. A frame landing after the
+	 * environment is destroyed throws `ReferenceError` and fails a whole
+	 * Vitest run with zero red tests: the #706 family.
+	 *
+	 * @description
+	 * This is the COMPONENT half of the defect whose composable half is
+	 * fixed in `useMasonry`. Same mechanism, deliberately the same shape:
+	 * `onBeforeUnmount` cancels the armed frame and flips `disposed`, so
+	 * a later scheduling attempt is a no-op too.
+	 *
+	 * @description
+	 * Every armed id is tracked, NOT just the latest. Collapsing them into
+	 * a single handle would make a later call supersede an earlier one —
+	 * a coalescing semantic this component never had, and one no failing
+	 * test asks for. The fix adds cancellation at unmount and nothing else.
+	 ********************************************************/
+	const frames = new Set<number>()
+	let disposed = false
+
+	const scheduleFrame = (cb: () => void) => {
+		if (disposed || typeof window === 'undefined') return
+
+		const id = window.requestAnimationFrame(() => {
+			frames.delete(id)
+			cb()
+		})
+
+		frames.add(id)
+	}
+
+	onBeforeUnmount(() => {
+		disposed = true
+
+		for (const id of frames) window.cancelAnimationFrame(id)
+
+		frames.clear()
+	})
+
+	/*********************************************************
+	 * Container bridge
+	 *
+	 * @description
+	 * Bridge the composable's `containerRef` to our own template ref so
+	 * this component can read `rootEl` (gap resolution) AND the
+	 * composable observes the same element. The first relayout is
+	 * deferred one frame so `resolveGapPx` has applied.
+	 ********************************************************/
 	onMounted(() => {
 		containerRef.value = rootEl.value
 		resolveGapPx()
-		// Defer the first relayout one tick so resolveGapPx applies.
-		requestAnimationFrame(() => relayout())
+		scheduleFrame(() => relayout())
 	})
 
 	// Re-resolve gap when the prop changes (token rename, raw value).
@@ -210,10 +261,15 @@
 	// fires with the correct value.
 	const { theme, mode } = useTheme()
 
+	/*********************************************************
+	 * Gap re-resolution
+	 *
+	 * @description
+	 * The CSS var is already updated synchronously, but `getComputedStyle`
+	 * reads through layout — one frame is safer.
+	 ********************************************************/
 	watch([() => props.gap, theme, mode], () => {
-		// Microtask: the CSS var is already updated synchronously, but
-		// `getComputedStyle` reads through layout — one frame is safer.
-		requestAnimationFrame(resolveGapPx)
+		scheduleFrame(resolveGapPx)
 	})
 
 	/*********************************************************

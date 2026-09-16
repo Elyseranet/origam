@@ -128,11 +128,20 @@ function createResizeObserver (schedule: (cb: () => void) => void, callback: () 
         return null
     }
 
-    // Throttle through rAF so we coalesce multiple synchronous resize
-    // events (browser fires one per affected element). The scheduler is
-    // injected by the caller rather than being `window.requestAnimationFrame`
-    // directly: this module-level factory has no scope of its own, so it
-    // could never cancel the frame it armed (#719).
+    /*********************************************************
+     * Throttled observer
+     *
+     * @description
+     * Coalesce multiple synchronous resize events through one frame —
+     * the browser fires one per affected element.
+     *
+     * @description
+     * The scheduler is INJECTED by the caller rather than being
+     * `window.requestAnimationFrame` directly: this factory sits at
+     * module level and owns no scope, so it could never cancel the
+     * frame it armed (#719). The caller's scheduler is bound to the
+     * component's lifetime and does.
+     ********************************************************/
     return new ResizeObserver(() => schedule(callback))
 }
 
@@ -182,15 +191,25 @@ export function useMasonry (options: IUseMasonryOptions) {
      * cancel: the RO callback is itself a deferred continuation, so a
      * schedule request can arrive AFTER `onBeforeUnmount` has run and
      * there is no handle to cancel at that moment.
+     *
+     * @description
+     * Every armed id is tracked, NOT just the latest. Collapsing them into
+     * a single handle would make a later call supersede an earlier one —
+     * a coalescing semantic this scope never had, and one no failing test
+     * asks for. The fix adds cancellation at dispose and nothing else.
      ********************************************************/
-    let frame = -1
+    const frames = new Set<number>()
     let disposed = false
 
     const scheduleFrame = (cb: () => void) => {
         if (disposed || typeof window === 'undefined') return
 
-        window.cancelAnimationFrame(frame)
-        frame = window.requestAnimationFrame(cb)
+        const id = window.requestAnimationFrame(() => {
+            frames.delete(id)
+            cb()
+        })
+
+        frames.add(id)
     }
 
     const setItem = (index: number, el: HTMLElement | null) => {
@@ -281,10 +300,9 @@ export function useMasonry (options: IUseMasonryOptions) {
     onBeforeUnmount(() => {
         disposed = true
 
-        if (frame !== -1) {
-            window.cancelAnimationFrame(frame)
-            frame = -1
-        }
+        for (const id of frames) window.cancelAnimationFrame(id)
+
+        frames.clear()
 
         containerObserver?.disconnect()
         itemObserver?.disconnect()

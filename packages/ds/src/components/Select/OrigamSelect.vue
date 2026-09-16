@@ -651,29 +651,35 @@
 	 * its own rAF loop and reads `window`.
 	 *
 	 * @description
-	 * `onBeforeUnmount` cancels the frame already armed and flips
+	 * `onBeforeUnmount` cancels the frames already armed and flips
 	 * `disposed`, which also neutralises any later scheduling attempt.
-	 * Only ONE handle is tracked: both sites schedule the same
-	 * "scroll the virtual list to an index" intent, and a newer one
-	 * supersedes the older.
+	 *
+	 * @description
+	 * Every armed id is tracked, NOT just the latest. Collapsing them into
+	 * a single handle would make a later call supersede an earlier one —
+	 * a coalescing semantic this component never had, and one no failing
+	 * test asks for. The fix adds cancellation at unmount and nothing else.
 	 ********************************************************/
-	let scrollFrame = -1
+	const scrollFrames = new Set<number>()
 	let disposed = false
 
 	const scheduleScrollFrame = (cb: () => void) => {
 		if (disposed || !IN_BROWSER) return
 
-		window.cancelAnimationFrame(scrollFrame)
-		scrollFrame = window.requestAnimationFrame(cb)
+		const id = window.requestAnimationFrame(() => {
+			scrollFrames.delete(id)
+			cb()
+		})
+
+		scrollFrames.add(id)
 	}
 
 	onBeforeUnmount(() => {
 		disposed = true
 
-		if (scrollFrame !== -1) {
-			window.cancelAnimationFrame(scrollFrame)
-			scrollFrame = -1
-		}
+		for (const id of scrollFrames) window.cancelAnimationFrame(id)
+
+		scrollFrames.clear()
 	})
 
 	/*********************************************************

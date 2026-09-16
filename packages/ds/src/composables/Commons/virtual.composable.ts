@@ -73,19 +73,31 @@ export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
      * later scheduling attempt into a no-op. The flag is what the
      * `nextTick`-deferred site needs, since at dispose time it has no
      * handle to cancel yet.
+     *
+     * @description
+     * Every armed id is tracked, NOT just the latest. Collapsing them into
+     * a single handle would make a later call supersede an earlier one —
+     * a coalescing semantic this scope never had, and one no failing test
+     * asks for. The fix adds cancellation at dispose and nothing else.
+     *
+     * @description
+     * `raf` is the coalescing handle of `calculateVisibleItems`. It is
+     * declared up here, far from its only writer, so `onScopeDispose`
+     * below can cancel it without a forward reference.
      ********************************************************/
-    let frame = -1
-    // Coalescing handle for `calculateVisibleItems` — declared here so
-    // the `onScopeDispose` below can cancel it without a forward
-    // reference.
+    const frames = new Set<number>()
     let raf = -1
     let disposed = false
 
     const scheduleFrame = (cb: () => void) => {
         if (disposed || !IN_BROWSER) return
 
-        cancelAnimationFrame(frame)
-        frame = requestAnimationFrame(cb)
+        const id = requestAnimationFrame(() => {
+            frames.delete(id)
+            cb()
+        })
+
+        frames.add(id)
     }
 
     const itemHeight = shallowRef(0)
@@ -203,10 +215,9 @@ export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
         updateOffsets.clear()
         disposed = true
 
-        if (frame !== -1) {
-            cancelAnimationFrame(frame)
-            frame = -1
-        }
+        for (const id of frames) cancelAnimationFrame(id)
+
+        frames.clear()
 
         if (raf !== -1) {
             cancelAnimationFrame(raf)

@@ -37,6 +37,7 @@ import { defineComponent, h, nextTick, provide, ref } from 'vue'
 import OrigamField from '@origam/components/Field/OrigamField.vue'
 import OrigamInfiniteScroll from '@origam/components/InfiniteScroll/OrigamInfiniteScroll.vue'
 import OrigamInfiniteScrollIntersect from '@origam/components/InfiniteScroll/OrigamInfiniteScrollIntersect.vue'
+import OrigamMasonry from '@origam/components/Masonry/OrigamMasonry.vue'
 import OrigamSelect from '@origam/components/Select/OrigamSelect.vue'
 
 import { createOrigam } from '@origam/origam'
@@ -350,6 +351,68 @@ describe('useMasonry — layout frames (#719)', () => {
         fireResize()
 
         expect(pendingFramesFrom('masonry.composable.ts')).toBe(0)
+    })
+})
+
+/*********************************************************
+ * OrigamMasonry — the COMPONENT half of the same defect
+ *
+ * Found by the extended sweep, not by the ticket's own list. Shipping
+ * `useMasonry` guarded while the `.vue` kept two uncancelled frames
+ * would have been half a fix.
+ ********************************************************/
+
+describe('OrigamMasonry — layout frames (#719)', () => {
+    it('arms a frame on mount and cancels it on unmount', async () => {
+        const wrapper = mount(OrigamMasonry, {
+            global: { plugins: [createOrigam()] }
+        })
+
+        await nextTick()
+
+        // Positive control: `onMounted` defers the first relayout.
+        expect(pendingFramesFrom('OrigamMasonry.vue')).toBe(1)
+
+        wrapper.unmount()
+
+        expect(pendingFramesFrom('OrigamMasonry.vue')).toBe(0)
+    })
+
+    it('the surviving frame does not throw when the DOM globals are gone', async () => {
+        const wrapper = mount(OrigamMasonry, {
+            global: { plugins: [createOrigam()] }
+        })
+
+        await nextTick()
+        wrapper.unmount()
+
+        // Both deferred bodies end in `getComputedStyle` — `resolveGapPx`
+        // reads the painted gap, `relayout()` measures the container.
+        expect(() => withoutGlobals(
+            ['window', 'getComputedStyle'],
+            () => flushFramesFrom('OrigamMasonry.vue')
+        )).not.toThrow()
+    })
+
+    it('does not arm a frame from a gap change after unmount', async () => {
+        const wrapper = mount(OrigamMasonry, {
+            props: { gap: 'md' } as never,
+            global: { plugins: [createOrigam()] }
+        })
+
+        await nextTick()
+        flushFramesFrom('OrigamMasonry.vue')
+
+        // Positive control: while mounted, a gap swap DOES arm one.
+        await wrapper.setProps({ gap: 'lg' } as never)
+        await nextTick()
+
+        expect(pendingFramesFrom('OrigamMasonry.vue')).toBe(1)
+
+        flushFramesFrom('OrigamMasonry.vue')
+        wrapper.unmount()
+
+        expect(pendingFramesFrom('OrigamMasonry.vue')).toBe(0)
     })
 })
 
