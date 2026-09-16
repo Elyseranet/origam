@@ -100,12 +100,45 @@ afterEach(() => {
 // ---------------------------------------------------------------------------
 
 describe('OrigamCarousel — patron WAI-ARIA hérité de <OrigamWindow>', () => {
-    it('la racine rendue porte role="region" et aria-roledescription="carousel"', () => {
+    /*********************************************************
+     * ⛔ #781 — le repère de Window est maintenant conditionné au nom
+     *
+     * @description
+     * Ce test épinglait `role="region"` + `aria-roledescription="carousel"`
+     * SANS condition. Mesuré : la racine les portait, et n'avait aucun nom
+     * accessible — or `region` est un rôle dont WAI-ARIA 1.2 marque le nom
+     * comme REQUIS. `<OrigamWindow>` ne les déclare donc plus qu'une fois
+     * nommé, et `<OrigamCarousel>` hérite de la règle par composition, ce
+     * que les deux tests ci-dessous vérifient dans les deux sens.
+     * Voir `window-live-region.spec.ts` pour le raisonnement complet.
+     ********************************************************/
+    it('ne déclare aucun repère anonyme quand personne ne nomme le carrousel', () => {
         const wrapper = mountCarousel()
         const root = wrapper.find('.origam-carousel')
 
+        expect(root.attributes('role')).toBeUndefined()
+        expect(root.attributes('aria-roledescription')).toBeUndefined()
+    })
+
+    it('un aria-label posé sur <origam-carousel> traverse jusqu\'au repère de Window', () => {
+        const wrapper = mount(OrigamCarousel, {
+            props: { hideDelimiters: true } as never,
+            attrs: { 'aria-label': 'Product gallery' },
+            slots: {
+                default: () => [h(OrigamCarouselItem, { key: 0 }, {
+                    default: () => h('span', 'Slide 1')
+                })]
+            },
+            global: { plugins: [createOrigam()], components: { OrigamCarouselItem } },
+            attachTo: document.body
+        })
+        const root = wrapper.find('.origam-carousel')
+
+        expect(root.attributes('aria-label')).toBe('Product gallery')
         expect(root.attributes('role')).toBe('region')
         expect(root.attributes('aria-roledescription')).toBe('carousel')
+
+        wrapper.unmount()
     })
 
     it('une région live polite annonce la diapositive courante', async () => {
@@ -215,6 +248,30 @@ describe('OrigamCarousel — WCAG 2.2.2 : contrôle pause/lecture en autoplay', 
 // Sémantique de diapositive — OrigamCarouselItem
 // ---------------------------------------------------------------------------
 
+/*********************************************************
+ * ⛔ #781 — `role="group"` sur l'item : FAUX POSITIF de Sonar, mesuré
+ *
+ * @description
+ * Le ticket #781 liste `Carousel/OrigamCarouselItem.vue:2` sous
+ * « `role="group"` mal employé », la règle Sonar demandant d'utiliser
+ * `<fieldset>` à la place. C'est faux ici, pour deux raisons vérifiables :
+ *
+ * 1. `role="group"` + `aria-roledescription="slide"` EST le patron
+ *    Carousel du WAI-ARIA APG pour une diapositive. `<fieldset>` est un
+ *    conteneur de contrôles de formulaire ; il n'est pas un substitut.
+ * 2. Contrairement à `region` (voir `window-live-region.spec.ts`),
+ *    `group` n'exige PAS de nom accessible dans sa définition WAI-ARIA
+ *    1.2. Le retirer faute de nom PERDRAIT la frontière de diapositive au
+ *    lieu de supprimer une fausse promesse — c'est pourquoi Window et
+ *    CarouselItem sont traités différemment dans le même lot.
+ *
+ * @description
+ * Le code n'est donc PAS modifié. Reste une amélioration APG possible et
+ * non tranchée : un `aria-label` positionnel « 3 sur 5 » par diapositive.
+ * Elle demanderait d'injecter le registre de groupe dans `CarouselItem` et
+ * changerait le rendu de tous les consommateurs — remontée au mainteneur,
+ * pas décidée ici.
+ ********************************************************/
 describe('OrigamCarouselItem — sémantique de diapositive', () => {
     it('chaque item porte role="group" et aria-roledescription="slide"', () => {
         const wrapper = mountCarousel({}, 3)

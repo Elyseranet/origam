@@ -75,3 +75,51 @@ export function warnMissingNativeControlName (
         'and nothing else (WCAG 2.1 4.1.2).'
     )
 }
+
+const _warnedLandmarkKeys = new Set<string>()
+
+/*********************************************************
+ * warnMissingLandmarkName
+ *
+ * @description
+ * ⛔ issue #781 — same rule as `warnMissingAccessibleName`, one rung up: a
+ * LANDMARK the DS would have declared has no accessible name, so the DS
+ * declared nothing.
+ *
+ * @description
+ * `region` is one of the few roles whose ARIA definition marks the
+ * accessible name as REQUIRED (WAI-ARIA 1.2, role `region`: "Name Required:
+ * True"), and HTML-AAM says the same thing from the other side — a
+ * `<section>` maps to `region` only when it is named, and to `generic`
+ * otherwise. An unnamed `role="region"` is therefore not a landmark a user
+ * can usefully navigate to; it is an authoring error that puts a nameless
+ * entry in the landmark list. `aria-roledescription` riding along makes it
+ * worse, not better: it replaces the role name a screen reader would have
+ * announced with a description attached to nothing.
+ *
+ * @description
+ * No name is fabricated. "Carousel" as a default label would name every
+ * carousel on a page identically — exactly the defect `OrigamCode`'s
+ * scroller was corrected for (five homonymous regions in one landmark
+ * list). The consumer holds the only string that distinguishes them.
+ ********************************************************/
+export function warnMissingLandmarkName (
+    component: string,
+    role: string,
+    roleDescription: string
+): void {
+    if (typeof console === 'undefined') return
+    if (!import.meta.env?.DEV) return
+
+    const key = `${component}::${role}`
+    if (_warnedLandmarkKeys.has(key)) return
+    _warnedLandmarkKeys.add(key)
+
+    console.warn(
+        `[origam] <${component}> has no accessible name, so it does NOT declare ` +
+        `role="${role}" / aria-roledescription="${roleDescription}". An unnamed "${role}" is ` +
+        'not a navigable landmark (WAI-ARIA 1.2 — name required), and a roledescription with ' +
+        `no name describes nothing. Pass aria-label (or aria-labelledby) to <${component}> — ` +
+        'it falls through to the root element.'
+    )
+}
