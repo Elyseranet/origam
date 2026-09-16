@@ -23,7 +23,7 @@ suite (cache-hit assertion) and not advertised in the public docs.
 ## `useNumberFormat`
 
 ```ts
-export function useNumberFormat ( options: MaybeRefOrGetter<IUseNumberFormatOptions> =
+export function useNumberFormat ( options: MaybeRefOrGetter<IUseNumberFormatOptions> = {} )
 ```
 
 Headless number-formatting composable. Wraps `Intl.NumberFormat` with
@@ -39,12 +39,14 @@ that formats numbers for a non-Vue consumer).
 **Exemple**
 
 ```ts
+```ts
 const { format, formatToParts } = useNumberFormat({
     locale: 'fr-FR',
     format: 'currency',
     currency: 'EUR'
 })
 format(1234.5) // → "1 234,50 €"
+```
 ```
 
 **Source** : `packages/ds/src/composables/NumberFormat/number-format.composable.ts`

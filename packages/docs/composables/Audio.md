@@ -10,7 +10,7 @@
 ## `useAudioPlayer`
 
 ```ts
-export function useAudioPlayer (options: IUseOrigamAudioPlayerOptions =
+export function useAudioPlayer (options: IUseOrigamAudioPlayerOptions = {}): { audioRef: Ref<HTMLAudioElement | null> state: IAudioPlayerState methods: IAudioPlayerMethods }
 ```
 
 Headless audio player composable. Today this is a trivial wrapper
@@ -28,11 +28,13 @@ fullscreen, no picture-in-picture). The wrapper exists so:
 **Exemple**
 
 ```ts
+```ts
 const audioRef = ref<HTMLAudioElement | null>(null)
 const { state, methods } = useAudioPlayer({ audioRef })
 
 // template:
 // <audio ref="audioRef" src="…" />
+```
 ```
 
 **Source** : `packages/ds/src/composables/Audio/use-audio-player.composable.ts`
@@ -42,7 +44,7 @@ const { state, methods } = useAudioPlayer({ audioRef })
 ## `useWaveform`
 
 ```ts
-export function useWaveform ( srcRef: Ref<string | undefined | null>, options: IUseWaveformOptions =
+export function useWaveform ( srcRef: Ref<string | undefined | null>, options: IUseWaveformOptions = {} ): { peaks: Ref<Array<number>> isComputing: Ref<boolean> error: Ref<Error | null> compute: () => Promise<void> }
 ```
 
 Headless waveform composable. Decodes the audio referenced by
@@ -65,8 +67,10 @@ difference invisible at 200-bin resolution.
 **Exemple**
 
 ```ts
+```ts
 const src = ref('/track.mp3')
 const { peaks, isComputing, error } = useWaveform(src, { bins: 200 })
+```
 ```
 
 **Source** : `packages/ds/src/composables/Audio/use-waveform.composable.ts`

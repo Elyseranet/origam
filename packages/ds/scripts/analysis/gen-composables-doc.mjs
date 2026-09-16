@@ -43,6 +43,82 @@ const walk = (dir, filter, acc = []) => {
     return acc
 }
 
+/**
+ * Pose une fence ```ts autour du corps de chaque `@example`.
+ *
+ * ⛔ VitePress compile le markdown comme un SFC Vue. Un exemple emis EN CLAIR
+ * au milieu de la prose n'est pas du texte : c'est du template. Mesure (#605,
+ * defaut 2) — `useCssSupportClient` documente son usage avec
+ * `<div v-else>…</div>`, que le compilateur a pris pour une VRAIE directive et
+ * a rejete avec « v-else has no adjacent v-if » ; ailleurs, `ref<TOrigamChild>()`
+ * a ete lu comme une balise HTML. Dans les deux cas le build entier tombait.
+ *
+ * ⛔ Ce defaut avait ete corrige A LA MAIN dans `Commons.md` (e7f89f0a) sans
+ * toucher au generateur : toute regeneration le reintroduisait. Mesure faite
+ * avant ce correctif — regenerer sur `develop` retirait la fence posee a la
+ * main. C'est la raison pour laquelle le correctif vit ICI.
+ */
+const fenceExamples = (text) => {
+    const out = []
+    let buf = null
+
+    const flush = () => {
+        if (!buf) return
+        while (buf.length && !buf[0].trim()) buf.shift()
+        while (buf.length && !buf[buf.length - 1].trim()) buf.pop()
+        if (buf.length) {
+            // La banniere indente le corps de l'exemple ; le laisser tel quel
+            // en ferait un bloc indente IMBRIQUE dans la fence.
+            const pad = Math.min(...buf.filter((l) => l.trim()).map((l) => l.match(/^ */)[0].length))
+            out.push('```ts', ...buf.map((l) => l.slice(pad)), '```')
+        }
+        buf = null
+    }
+
+    for (const line of text.split('\n')) {
+        const trimmed = line.trim()
+        if (/^@example\b/.test(trimmed)) {
+            flush()
+            out.push('', '**Exemple**', '')
+            buf = []
+            continue
+        }
+        // Une autre balise `@xxx` clot l'exemple en cours.
+        if (buf && /^@[a-z]/i.test(trimmed)) {
+            flush()
+            out.push(line)
+            continue
+        }
+        if (buf) buf.push(line)
+        else out.push(line)
+    }
+    flush()
+
+    return out.join('\n')
+}
+
+/**
+ * Neutralise les moustaches Vue hors des blocs de code fences.
+ *
+ * ⛔ `{{ … }}` est une INTERPOLATION pour le compilateur VitePress, y compris
+ * dans du code INLINE entre simples backticks — seules les fences sont
+ * protegees par `v-pre`. Mesure (#605, defaut 1) : la description de
+ * `useLoader` contient `loading={{ type: 'line', modelValue: 42 }}`, sur
+ * lequel le parseur tombait avec « Error parsing JavaScript expression: Did
+ * not expect a type annotation here », en pointant une position dans le SFC
+ * GENERE (742:18) et non dans la source — d'ou une bisection sur 2360 lignes.
+ *
+ * ⛔ Corrige a la main dans `Commons.md` (e7f89f0a), pas dans le generateur :
+ * regenerer reintroduisait les moustaches brutes. Mesure faite avant ce
+ * correctif.
+ */
+const escapeMustaches = (md) => md
+    .split(/(```[\s\S]*?```)/g)
+    .map((chunk, i) => (i % 2 === 1
+        ? chunk
+        : chunk.replace(/\{\{/g, '&#123;&#123;').replace(/\}\}/g, '&#125;&#125;')))
+    .join('')
+
 /** Les lignes `@description` de la banniere qui precede immediatement le symbole. */
 const descriptionAbove = (source, index) => {
     const before = source.slice(0, index)
@@ -68,12 +144,15 @@ const descriptionAbove = (source, index) => {
     // `bucketFill`, dont l'algorithme en 4 etapes devenait une phrase de six
     // lignes). Markdown recolle les retours simples de toute facon ; ceux qui
     // portent une structure survivent.
-    const clean = (chunk) => chunk
+    const stripStars = (chunk) => chunk
         .split('\n')
         .map((l) => l.replace(/^\s*\*+\s?/, '').trimEnd())
         .filter((l, i, arr) => !/^\*+$/.test(l) && !(l === '' && arr[i - 1] === ''))
         .join('\n')
-        .replace(/\n@example\s*/g, '\n\n**Exemple**\n\n')
+
+    // Ordre impose : on fence AVANT d'echapper, sinon `escapeMustaches` ne sait
+    // pas encore quelles portions sont du code protege par `v-pre`.
+    const clean = (chunk) => escapeMustaches(fenceExamples(stripStars(chunk)))
         .replace(/\n{3,}/g, '\n\n')
         .trim()
 
@@ -100,13 +179,146 @@ const descriptionAbove = (source, index) => {
     return prose ? [ prose ] : null
 }
 
-/** La signature, telle qu'elle est ecrite — jamais reconstruite. */
-const signatureAt = (source, index) => {
-    const rest = source.slice(index)
-    const arrow = rest.indexOf('=>')
-    const brace = rest.indexOf('{')
-    const end = arrow > -1 && (brace === -1 || arrow < brace) ? arrow : brace
-    return rest.slice(0, end === -1 ? 200 : end).replace(/\s+/g, ' ').trim()
+/**
+ * Une accolade rencontree a la profondeur 0 est-elle un TYPE, ou le CORPS ?
+ *
+ * ⛔ C'est la seule ambiguite reelle de la lecture d'une signature. Les deux
+ * formes existent dans ce depot :
+ *
+ *   export function useLoader (…): { loaderClasses: … } { …corps… }
+ *                                  ^ type            ^ corps
+ *
+ * On tranche sur le dernier caractere significatif : une accolade qui suit
+ * `:` `|` `&` `=` `,` `(` `<` `[` ou `=>` est en position de TYPE ; celle qui
+ * suit un identifiant ou un `>` de generique ferme le prototype et ouvre le
+ * corps. Mesure : sur les 179 symboles exportes du dossier, cette regle
+ * classe correctement les 179 (aucune signature desequilibree en sortie).
+ */
+const isTypePosition = (prev, prev2) => prev === '' || ':|&=,(<['.includes(prev) || (prev2 === '=' && prev === '>')
+
+/**
+ * La signature, telle qu'elle est ecrite — jamais reconstruite.
+ *
+ * ⛔ La version precedente coupait au PREMIER `{` ou `=>` rencontres, sans
+ * tenir compte de l'imbrication. Or les trois motifs ci-dessous placent l'un
+ * ou l'autre EN PLEIN MILIEU du prototype, et produisaient 52 signatures
+ * tronquees sur 179 (#605) :
+ *
+ *   1. parametre destructure   useSticky ({rootEl, isSticky}: ISticky)
+ *                                        ^ coupe ici
+ *   2. type de retour objet    useLoader (…): { loaderClasses: … }
+ *                                             ^ coupe ici
+ *   3. type fonction en param  useBackButton (…, cb: (n: Next) => void)
+ *                                                            ^ coupe ici
+ *
+ * Une signature tronquee n'est pas cosmetique : le lecteur qui copie
+ * `useDisplay ( props: IDisplayProps =` obtient du code qui ne compile pas,
+ * et rien n'indique que la ligne est incomplete — de la doc mensongere.
+ *
+ * On lit donc le prototype avec un vrai suivi de profondeur `()` `[]` `{}`,
+ * en sautant chaines, gabarits et commentaires (le generique de `useVModel`
+ * contient un gabarit `` `onUpdate:${Prop}` `` qui porterait sinon une
+ * accolade fantome). L'arret :
+ *
+ *   - `function` : l'accolade du corps, ou un `;` (surcharge) a la profondeur 0.
+ *     On n'arrete JAMAIS sur `=>`, qui pour cette forme ne peut etre qu'un
+ *     type fonction dans le retour (`(): () => void {`).
+ *   - `const`    : la flêche de la fonction assignee, une fois la liste de
+ *     parametres refermee — apres un eventuel type de retour objet
+ *     (`useChartGauge = (o: O): { geometry: … } => {`).
+ */
+const signatureAt = (source, index, kind) => {
+    const n = source.length
+    let i = index
+    let par = 0
+    let sq = 0
+    let cu = 0
+    // La liste de parametres de tete a-t-elle ete refermee ?
+    let closedParams = false
+    let prev = ''
+    let prev2 = ''
+    // ⛔ Les commentaires INTERNES a la liste de parametres sont retires de la
+    // signature publiee : `useStateEffect` documente son parametre `flat` par
+    // un bloc JSDoc entre deux virgules, qui autrement se retrouvait recopie
+    // tel quel au milieu du bloc ```ts. Ils ne font pas partie du contrat de
+    // type — la description, elle, est publiee juste en dessous.
+    const parts = []
+    let segStart = index
+
+    const bump = (c) => {
+        if (!/\s/.test(c)) {
+            prev2 = prev
+            prev = c
+        }
+    }
+
+    while (i < n) {
+        const c = source[i]
+        const two = source.slice(i, i + 2)
+
+        // ⛔ Fin d'une SURCHARGE. En TypeScript une surcharge n'a pas de corps,
+        // et celles de ce depot ne portent PAS de `;` final : elles s'arretent
+        // sur un retour a la ligne, suivi de la banniere de la surcharge
+        // suivante. Sans cette regle, la lecture traverse le commentaire et va
+        // chercher l'accolade du corps de l'implementation, bien plus bas.
+        // Defaut PRE-EXISTANT, absent du ticket : `useLocale` publiait deja sa
+        // banniere entiere a l'interieur de son bloc ```ts (Commons.md L1194
+        // et L1217 avant correctif).
+        if (closedParams && par + sq + cu === 0 && (two === '//' || two === '/*')) break
+        if (closedParams && par + sq + cu === 0 && source.startsWith('export', i) && source[i - 1] === '\n') break
+
+        // Commentaires — un `{` en commentaire ne ferme pas un prototype.
+        if (two === '//' || two === '/*') {
+            parts.push(source.slice(segStart, i))
+            if (two === '//') {
+                const nl = source.indexOf('\n', i)
+                i = nl === -1 ? n : nl
+            } else {
+                const close = source.indexOf('*/', i + 2)
+                i = close === -1 ? n : close + 2
+            }
+            segStart = i
+            continue
+        }
+
+        // Chaines et gabarits — sautes d'un bloc, `\` echappe le caractere suivant.
+        if (c === '"' || c === "'" || c === '`') {
+            i++
+            while (i < n && source[i] !== c) {
+                if (source[i] === '\\') i++
+                i++
+            }
+            i++
+            bump(c)
+            continue
+        }
+
+        const depth = par + sq + cu
+
+        if (c === '(') par++
+        else if (c === ')') {
+            par--
+            if (par === 0 && sq === 0 && cu === 0) closedParams = true
+        } else if (c === '[') sq++
+        else if (c === ']') sq--
+        else if (c === '{') {
+            if (depth === 0 && !isTypePosition(prev, prev2)) break
+            cu++
+        } else if (c === '}') cu--
+        else if (two === '=>' && depth === 0 && kind === 'const' && closedParams) break
+        else if (c === ';' && depth === 0) break
+
+        bump(c)
+        i++
+    }
+
+    parts.push(source.slice(segStart, i))
+
+    return parts.join(' ')
+        .replace(/\s+/g, ' ')
+        // Une virgule restee orpheline apres le retrait d'un commentaire.
+        .replace(/,\s*\)/g, ' )')
+        .trim()
 }
 
 const files = walk(COMPOSABLES, (f) => f.endsWith('.composable.ts'))
@@ -119,8 +331,11 @@ for (const file of files) {
     const source = readFileSync(file, 'utf8')
     const domain = path.relative(COMPOSABLES, file).split(path.sep)[0]
 
-    for (const m of source.matchAll(/^export (?:function|const) ([A-Za-z0-9_]+)/gm)) {
-        const name = m[1]
+    // ⛔ Le groupe `kind` n'est pas decoratif : `function` et `const` ne se
+    // terminent pas au meme endroit (cf. `signatureAt`).
+    for (const m of source.matchAll(/^export (function|const) ([A-Za-z0-9_]+)/gm)) {
+        const kind = m[1]
+        const name = m[2]
         const consumers = consumerBlobs
             .filter(([ , blob ]) => new RegExp(`\\b${ name }\\b`).test(blob))
             .map(([ rel ]) => rel)
@@ -129,7 +344,7 @@ for (const file of files) {
         byDomain.get(domain).push({
             name,
             file: path.relative(REPO, file),
-            signature: signatureAt(source, m.index),
+            signature: signatureAt(source, m.index, kind),
             descriptions: descriptionAbove(source, m.index),
             consumers
         })

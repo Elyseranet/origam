@@ -10,7 +10,7 @@
 ## `useAspectRatio`
 
 ```ts
-export function useAspectRatio (props:
+export function useAspectRatio (props: { aspectRatio?: string | number })
 ```
 
 Emits the native CSS `aspect-ratio` declaration for the root box.

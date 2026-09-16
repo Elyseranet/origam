@@ -204,7 +204,7 @@ provider names returns after a Map lookup and one property lookup.
 ## `provideDefaults`
 
 ```ts
-export function provideDefaults ( defaults?: Ref<IDefault> | IDefault, options?:
+export function provideDefaults ( defaults?: Ref<IDefault> | IDefault, options?: { scoped?: MaybeRefOrGetter<boolean | undefined> reset?: MaybeRefOrGetter<string | number | undefined> root?: MaybeRefOrGetter<string | number | undefined> disabled?: MaybeRefOrGetter<boolean | undefined> } )
 ```
 
 Cote fournisseur : declare une map de defauts pour le sous-arbre courant,
@@ -314,7 +314,7 @@ Pure — no Vue/DOM access — so it is called once, synchronously, at
 ## `useActivator`
 
 ```ts
-export function useActivator (props: IActivatorProps,
+export function useActivator (props: IActivatorProps, {isActive, isTop}: { isActive: Ref<boolean>, isTop: Ref<boolean> })
 ```
 
 Cablage complet de l'activateur pour les composants flottants (Menu,
@@ -367,7 +367,7 @@ as inert as before, no spurious tab stop.
 
 **Source** : `packages/ds/src/composables/Commons/adjacent.composable.ts`
 
-**Consommateurs** (29) : `components/Alert/OrigamAlert.vue`, `components/Badge/OrigamBadge.vue`, `components/Breadcrumb/OrigamBreadcrumbItem.vue`, `components/Btn/OrigamBtn.vue`, `components/Card/OrigamCard.vue`, `components/Card/OrigamCardHeader.vue`, `components/Chip/OrigamChip.vue`, `components/ConfirmWrapper/OrigamConfirmWrapper.vue`, …
+**Consommateurs** (32) : `components/Alert/OrigamAlert.vue`, `components/Badge/OrigamBadge.vue`, `components/Breadcrumb/OrigamBreadcrumbItem.vue`, `components/Btn/OrigamBtn.vue`, `components/Card/OrigamCard.vue`, `components/Card/OrigamCardHeader.vue`, `components/Chip/OrigamChip.vue`, `components/ConfirmWrapper/OrigamConfirmWrapper.vue`, …
 
 ## `useAdjacentInner`
 
@@ -419,7 +419,7 @@ l'ancien.
 ## `useBackButton`
 
 ```ts
-export function useBackButton (router: Router | undefined, cb: (next: NavigationGuardNext)
+export function useBackButton (router: Router | undefined, cb: (next: NavigationGuardNext) => void)
 ```
 
 Wires a `popstate` listener + router navigation guard so a consumer
@@ -446,7 +446,7 @@ split by hook stays one-file-one-hook, without duplicating
 
 **Source** : `packages/ds/src/composables/Commons/backgroundColor.composable.ts`
 
-**Consommateurs** (32) : `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, `components/Chart/OrigamChartGauge.vue`, `components/Chart/OrigamChartHeatmap.vue`, `components/Chart/OrigamChartHoneycomb.vue`, `components/Chart/OrigamChartMap.vue`, …
+**Consommateurs** (33) : `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, `components/Chart/OrigamChartGauge.vue`, `components/Chart/OrigamChartHeatmap.vue`, `components/Chart/OrigamChartHoneycomb.vue`, `components/Chart/OrigamChartMap.vue`, …
 
 ## `useBorder`
 
@@ -476,9 +476,37 @@ axis-level color, and the global `borderColor` — each rung only
 overrides the side(s)/axis it actually targets, everything else keeps
 cascading from the rung below.
 
+WIDTH KEYWORDS AND DIRECTIONS ARE EMITTED INLINE (#391). 'none' | 'thin'
+| 'thick' and 'top' | 'right' | 'bottom' | 'left' resolve to a WIDTH, so
+they take the same inline path the numeric `:border="4"` form already
+took — which is precisely why the numeric case always worked while the
+keywords did not. The global `.origam--border-{kw}` utility is still
+emitted and still paints wherever nothing competes, but it CANNOT be the
+mechanism on its own: a utility is specificity (0,1,0) while a Vue scoped
+rule is `.class[data-v-hash]` = (0,2,0), so a component painting from
+`border-width: var(--origam-{cmp}---border-width, …)` outranks it
+whatever the sheet order. Measured: 10 of the 43 `useBorder` consumers
+carry such a rule (Btn, List, Kbd, Code, Card*, Audio, Calendar, …) and
+on every one of them `thick` painted `thin` and `none` painted `thin`.
+Widths come from `BORDER_KEYWORD_WIDTH`, the same tokens the utility
+declares, so the two channels cannot drift.
+
+A DIRECTION ISOLATES ITS EDGE. `border="top"` emits all four physical
+widths — `thin` on the named side, `0` on the other three — because the
+components that paint from a single `border-width` shorthand have no
+per-side custom property a class could target. Emitting the four
+declarations is what makes a direction mean the same thing everywhere
+instead of only on the two components that happen to declare per-side
+variables.
+
+WHEN #514 IS SETTLED, THIS INLINE PATH IS THE THING TO REMOVE. If the DS
+adopts `@layer` (measured in `packages/tests/e2e/btn-cascade-layer-probe.spec.ts`),
+the utility wins on its own and these `styles.push` calls become dead.
+Until then the inline copy is the only channel that can actually paint.
+
 **Source** : `packages/ds/src/composables/Commons/border.composable.ts`
 
-**Consommateurs** (50) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Btn/OrigamBtn.vue`, `components/Calendar/OrigamCalendar.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chip/OrigamChipGroup.vue`, …
+**Consommateurs** (52) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Btn/OrigamBtn.vue`, `components/Calendar/OrigamCalendar.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chip/OrigamChipGroup.vue`, …
 
 ## `useBothColor`
 
@@ -493,12 +521,12 @@ one-file-one-hook, without duplicating `useColor`'s resolution logic.
 
 **Source** : `packages/ds/src/composables/Commons/bothColor.composable.ts`
 
-**Consommateurs** (47) : `components/Breadcrumb/OrigamBreadcrumbDivider.vue`, `components/Card/OrigamCard.vue`, `components/Card/OrigamCardHeader.vue`, `components/Chip/OrigamChip.vue`, `components/Clipboard/OrigamClipboard.vue`, `components/Code/OrigamCode.vue`, `components/Counter/OrigamCounter.vue`, `components/DataList/OrigamDataList.vue`, …
+**Consommateurs** (49) : `components/Breadcrumb/OrigamBreadcrumbDivider.vue`, `components/Card/OrigamCard.vue`, `components/Card/OrigamCardHeader.vue`, `components/Chip/OrigamChip.vue`, `components/Clipboard/OrigamClipboard.vue`, `components/Code/OrigamCode.vue`, `components/Counter/OrigamCounter.vue`, `components/DataList/OrigamDataList.vue`, …
 
 ## `useColor`
 
 ```ts
-export function useColor (colors: ComputedRef<
+export function useColor (colors: ComputedRef<{ background?: TColor, text?: TColor }>)
 ```
 
 Legacy bg/text colour resolver (kept for backward compat — used by
@@ -512,7 +540,7 @@ algorithm, not a variant of this one.
 
 **Source** : `packages/ds/src/composables/Commons/color.composable.ts`
 
-**Consommateurs** (6) : `consts/Commons/color.const.ts`, `interfaces/Commons/state-effect.interface.ts`, `types/Commons/state-effect.type.ts`, `utils/Commons/color.util.ts`, `utils/Commons/gradient.util.ts`, `utils/QrCode/qr-code-adapters.util.ts`
+**Consommateurs** (8) : `components/List/OrigamListItem.vue`, `components/Tabs/OrigamTabs.vue`, `consts/Commons/color.const.ts`, `interfaces/Commons/state-effect.interface.ts`, `types/Commons/state-effect.type.ts`, `utils/Commons/color.util.ts`, `utils/Commons/gradient.util.ts`, `utils/QrCode/qr-code-adapters.util.ts`
 
 ## `useColorEffect`
 
@@ -554,7 +582,7 @@ declared them, so the foreground/background scalars are now just
 ## `useCreateLayout`
 
 ```ts
-export function useCreateLayout (props:
+export function useCreateLayout (props: { id?: string, overlaps?: Array<string>, fullHeight?: boolean })
 ```
 
 Root of the layout system — provides `ORIGAM_LAYOUT_KEY` so
@@ -567,7 +595,7 @@ direct function dependency) — the three only share the
 
 **Source** : `packages/ds/src/composables/Commons/createLayout.composable.ts`
 
-**Consommateurs** (3) : `components/Layout/OrigamLayout.vue`, `interfaces/Commons/layout.interface.ts`, `interfaces/Layout/layout.interface.ts`
+**Consommateurs** (5) : `components/BottomNav/OrigamBottomNav.vue`, `components/Layout/OrigamLayout.vue`, `components/SystemBar/OrigamSystemBar.vue`, `interfaces/Commons/layout.interface.ts`, `interfaces/Layout/layout.interface.ts`
 
 ## `useCssSupport`
 
@@ -588,7 +616,7 @@ markup-driving flags — both share the cached `rawSupports` primitive.
 ## `useCssSupportClient`
 
 ```ts
-export function useCssSupportClient ( feature: TCssFeatureName | string, options: IUseCssSupportClientOptions =
+export function useCssSupportClient ( feature: TCssFeatureName | string, options: IUseCssSupportClientOptions = {} ): Ref<boolean>
 ```
 
 Hydration-safe single-feature gate. Returns a `Ref<boolean>` that
@@ -600,9 +628,9 @@ branches prefer `useCssSupport().css.value.X` directly.
 
 ```ts
 const supportsContainer = useCssSupportClient('containerQueries')
-  // template:
-  //   <div v-if="supportsContainer">…CSS path…</div>
-  //   <div v-else>…JS fallback path…</div>
+// template:
+//   <div v-if="supportsContainer">…CSS path…</div>
+//   <div v-else>…JS fallback path…</div>
 ```
 
 **Source** : `packages/ds/src/composables/Commons/cssSupportClient.composable.ts`
@@ -670,7 +698,7 @@ explicitly passed?" check to `usePassedProps`.
 ## `useDelay`
 
 ```ts
-export function useDelay (props: IDelayProps, cb?: (value: boolean)
+export function useDelay (props: IDelayProps, cb?: (value: boolean) => void)
 ```
 
 Temporise l'ouverture/fermeture d'un composant flottant selon
@@ -708,7 +736,7 @@ valeur non tokenisee.
 
 **Source** : `packages/ds/src/composables/Commons/density.composable.ts`
 
-**Consommateurs** (44) : `components/Alert/OrigamAlert.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Avatar/OrigamAvatarGroup.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, `components/Breadcrumb/OrigamBreadcrumbDivider.vue`, …
+**Consommateurs** (46) : `components/Alert/OrigamAlert.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Avatar/OrigamAvatarGroup.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, `components/Breadcrumb/OrigamBreadcrumbDivider.vue`, …
 
 ## `useDimension`
 
@@ -731,12 +759,12 @@ a la main dans un nouveau composant.
 
 **Source** : `packages/ds/src/composables/Commons/dimension.composable.ts`
 
-**Consommateurs** (67) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Btn/OrigamBtn.vue`, `components/Calendar/OrigamCalendar.vue`, …
+**Consommateurs** (68) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Btn/OrigamBtn.vue`, `components/Calendar/OrigamCalendar.vue`, …
 
 ## `useDisplay`
 
 ```ts
-export function useDisplay ( props: IDisplayProps =
+export function useDisplay ( props: IDisplayProps = {}, name = getCurrentInstanceName() )
 ```
 
 Cote composant : lit l'instance de display globale (injectee sous
@@ -799,12 +827,12 @@ l'ombre custom.
 
 **Source** : `packages/ds/src/composables/Commons/elevation.composable.ts`
 
-**Consommateurs** (49) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Card/OrigamCard.vue`, `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, `components/Chart/OrigamChartGauge.vue`, …
+**Consommateurs** (50) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Card/OrigamCard.vue`, `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, `components/Chart/OrigamChartGauge.vue`, …
 
 ## `useEventListener`
 
 ```ts
-export function useEventListener ( events: TEventListenerEvents, listeners: TEventListenerListeners, options?: TEventListenerOptions ): ()
+export function useEventListener ( events: TEventListenerEvents, listeners: TEventListenerListeners, options?: TEventListenerOptions ): () => void
 ```
 
 Forme courte : sans premier argument cible, attache sur `window` (ou
@@ -818,7 +846,7 @@ l'implementation ci-dessous pour le comportement complet.
 ## `useEventListener`
 
 ```ts
-export function useEventListener ( target: TEventListenerTarget, events: TEventListenerEvents, listeners: TEventListenerListeners, options?: TEventListenerOptions ): ()
+export function useEventListener ( target: TEventListenerTarget, events: TEventListenerEvents, listeners: TEventListenerListeners, options?: TEventListenerOptions ): () => void
 ```
 
 Forme longue : `target` peut etre un element, un `Ref`/getter d'element,
@@ -832,7 +860,7 @@ l'implementation ci-dessous pour le comportement complet.
 ## `useEventListener`
 
 ```ts
-export function useEventListener (...args: Array<unknown>): ()
+export function useEventListener (...args: Array<unknown>): () => void
 ```
 
 Attache un ou plusieurs listeners a un ou plusieurs evenements sur une
@@ -855,7 +883,7 @@ les laisser en place.
 ## `useFilter`
 
 ```ts
-export function useFilter<T extends IInternalItem> ( props: IFiltersProps, items: MaybeRef<T[]>, query: Ref<string | undefined> | (()
+export function useFilter<T extends IInternalItem> ( props: IFiltersProps, items: MaybeRef<T[]>, query: Ref<string | undefined> | (() => string | undefined), options?: { transform?: (item: T) => Record<string, unknown> customKeyFilter?: MaybeRef<TFilterKeyFunctions | undefined> } )
 ```
 
 Filtre reactivement `items` selon `query` (Ref ou getter) et les props de
@@ -892,7 +920,7 @@ de template. `name` par defaut le nom kebab-case du composant courant.
 ## `useGoTo`
 
 ```ts
-export function useGoTo (_options: Partial<IGoToOptions> =
+export function useGoTo (_options: Partial<IGoToOptions> = {})
 ```
 
 Retourne une fonction `go(target, options)` qui scrolle vers un
@@ -907,7 +935,7 @@ sans que l'instance globale de `createGoTo()` le sache.
 
 **Source** : `packages/ds/src/composables/Commons/goTo.composable.ts`
 
-**Consommateurs** (3) : `components/Slide/OrigamSlideGroup.vue`, `consts/Commons/virtual.const.ts`, `interfaces/Commons/virtual.interface.ts`
+**Consommateurs** (4) : `components/Select/OrigamSelect.vue`, `components/Slide/OrigamSlideGroup.vue`, `consts/Commons/virtual.const.ts`, `interfaces/Commons/virtual.interface.ts`
 
 ## `useGroup`
 
@@ -941,7 +969,7 @@ contract.
 
 **Source** : `packages/ds/src/composables/Commons/groupItem.composable.ts`
 
-**Consommateurs** (15) : `components/Btn/OrigamBtn.vue`, `components/Chip/OrigamChip.vue`, `components/ExpansionPanel/OrigamExpansionPanel.vue`, `components/ItemGroup/OrigamItemGroupItem.vue`, `components/Tabs/OrigamTab.vue`, `components/Tabs/OrigamTabPanel.vue`, `components/Tabs/OrigamTabs.vue`, `components/Window/OrigamWindowItem.vue`, …
+**Consommateurs** (16) : `components/Btn/OrigamBtn.vue`, `components/Chip/OrigamChip.vue`, `components/ExpansionPanel/OrigamExpansionPanel.vue`, `components/ItemGroup/OrigamItemGroup.vue`, `components/ItemGroup/OrigamItemGroupItem.vue`, `components/Tabs/OrigamTab.vue`, `components/Tabs/OrigamTabPanel.vue`, `components/Tabs/OrigamTabs.vue`, …
 
 ## `useGroupSiblingLink`
 
@@ -982,7 +1010,7 @@ during their own `setup()` body.
 ## `useHotkey`
 
 ```ts
-export function useHotkey ( keys: MaybeRef<string | undefined>, callback: (e: KeyboardEvent)
+export function useHotkey ( keys: MaybeRef<string | undefined>, callback: (e: KeyboardEvent) => void, options: IHotkeyOptions = {} )
 ```
 
 Enregistre un raccourci clavier global (`window.addEventListener`) pour
@@ -1047,7 +1075,7 @@ marque et le mode actifs.
 ## `useIntersectionObserver`
 
 ```ts
-export function useIntersectionObserver (callback?: IntersectionObserverCallback, options?: IntersectionObserverInit)
+export function useIntersectionObserver (callback?: IntersectionObserverCallback, options?: MaybeRefOrGetter<IntersectionObserverInit | undefined>)
 ```
 
 Expose `intersectionRef` (a poser en template ref sur l'element a
@@ -1061,6 +1089,33 @@ AUCUN observer n'est cree — `isIntersecting` reste fige a `false` et
 `callback` n'est jamais appele, silencieusement. Aucun fallback
 polyfill.
 
+⛔ issue #682 / critere C4 — `options` accepte desormais un ref/getter
+(`MaybeRefOrGetter`), pas seulement un objet fige. `rootMargin`/`root`
+sont des options NATIVES d'`IntersectionObserver`, figees a la creation :
+aucune reactivite ne peut les rattraper sans RECREER l'observateur.
+
+⛔ La creation initiale de l'observateur — ET l'abonnement reactif a
+`options` — sont deliberement DEFERES tous les deux a l'INTERIEUR du
+callback `onMounted`, jamais au corps de `useIntersectionObserver` (donc
+au corps de `setup()` du composant appelant). Mesure, pas suppose : un
+appelant qui passait `options` sous forme de valeur deballee UNE FOIS
+pendant `setup()` (l'ancien usage d'`OrigamInfiniteScrollIntersect`, via
+`observerOptions.value`) figeait la valeur AVANT que le resolveur de
+themes (ADR-005, hook global `beforeCreate`, qui s'execute APRES le corps
+de `setup()`) ait pu patcher le prop — un theme visant `margin` n'atteignait
+donc jamais l'observateur. Passer le ref/computed lui-meme (sans le
+deballer) NE SUFFIT PAS a corriger ce point tant que la toute PREMIERE
+lecture de `options` a encore lieu pendant `setup()` — meme via
+`watch(() => toValue(options), …)`, dont l'evaluation initiale (pour
+capturer `oldValue`) est SYNCHRONE au moment de l'appel : verifie
+empiriquement, `Object.defineProperty` remplace le descripteur SANS
+declencher `trigger()` pour les abonnements deja etablis sur l'ancien,
+donc un `computed` (ou un watcher) dont la toute premiere evaluation a eu
+lieu avant `beforeCreate` reste fige sur la valeur pre-theme pour
+toujours, quel que soit le nombre de lectures ulterieures. Seul un report
+de la PREMIERE lecture — creation ET abonnement — apres `beforeCreate`
+referme le trou ; `onMounted` le garantit dans tous les cas.
+
 **Source** : `packages/ds/src/composables/Commons/intersectionObserver.composable.ts`
 
 **Consommateurs** (3) : `components/InfiniteScroll/OrigamInfiniteScrollIntersect.vue`, `components/Progress/OrigamProgressCircular.vue`, `components/Progress/OrigamProgressLinear.vue`
@@ -1068,7 +1123,7 @@ polyfill.
 ## `useItems`
 
 ```ts
-export function useItems (props: IItemProps &
+export function useItems (props: IItemProps & { itemType?: string })
 ```
 
 Normalise `props.items` (formats varies : chaine, objet, `itemTitle`/
@@ -1110,7 +1165,7 @@ level (no direct function dependency) — the three only share the
 ## `useLayoutItem`
 
 ```ts
-export function useLayoutItem (options:
+export function useLayoutItem (options: { id: string | undefined order: Ref<number> position: Ref<TDirectionBoth> layoutSize: Ref<number | string> elementSize: Ref<number | string | undefined> active: Ref<boolean> | ComputedRef<boolean> disableTransitions?: Ref<boolean> absolute: Ref<boolean | undefined> })
 ```
 
 Registers a component (BottomNav, AppBar, Drawer…) as an item of the
@@ -1128,7 +1183,7 @@ Independent from `useLayout` / `useCreateLayout` at the call level
 ## `useLazy`
 
 ```ts
-export function useLazy (props:
+export function useLazy (props: { eager: boolean }, active: Ref<boolean>)
 ```
 
 Rendu paresseux du contenu d'un composant flottant/conditionnel :
@@ -1145,7 +1200,7 @@ reste toujours monte.
 
 **Source** : `packages/ds/src/composables/Commons/lazy.composable.ts`
 
-**Consommateurs** (4) : `components/ExpansionPanel/OrigamExpansionPanelContent.vue`, `components/Overlay/OrigamOverlay.vue`, `components/Tabs/OrigamTabPanel.vue`, `components/Window/OrigamWindowItem.vue`
+**Consommateurs** (5) : `components/ExpansionPanel/OrigamExpansionPanelContent.vue`, `components/ExpansionPanel/OrigamExpansionPanels.vue`, `components/Overlay/OrigamOverlay.vue`, `components/Tabs/OrigamTabPanel.vue`, `components/Window/OrigamWindowItem.vue`
 
 ## `useLink`
 
@@ -1166,7 +1221,7 @@ variant of it.
 ## `useLoader`
 
 ```ts
-export function useLoader ( props: ILoaderProps, defaultKind: TLoaderKind = LOADER_KIND.CIRCULAR, name = getCurrentInstanceName() ):
+export function useLoader ( props: ILoaderProps, defaultKind: TLoaderKind = LOADER_KIND.CIRCULAR, name = getCurrentInstanceName() ): { loaderClasses: ComputedRef<Record<string, boolean>> isLoading: ComputedRef<boolean> loaderConfig: ComputedRef<IResolvedLoader> }
 ```
 
 Resout la prop polymorphe `loading` (`boolean | number | TLoaderConfig`)
@@ -1179,8 +1234,8 @@ bon renderer. `defaultKind` est choisi par CHAQUE consommateur —
 
 Determinisme derive de la FORME de la valeur, pas d'un flag explicite :
 `loading={true}` → indetermine ; `loading={42}` → determine a 42 ;
-`loading=&#123;&#123; type: 'line', modelValue: 42 &#125;&#125;` → determine ;
-`loading=&#123;&#123; type: 'line' &#125;&#125;` (sans `modelValue`) → indetermine. Un objet SANS
+`loading=&#123;&#123; type: 'line', modelValue: 42 &#125;&#125;` → determine ; `loading=
+&#123;&#123; type: 'line' &#125;&#125;` (sans `modelValue`) → indetermine. Un objet SANS
 `type` est traite comme "pas d'objet reconnu" et retombe sur l'etat
 inactif.
 
@@ -1191,7 +1246,7 @@ inactif.
 ## `useLocale`
 
 ```ts
-export function useLocale (strict?: true): ILocaleInstance /********************************************************* * useLocale (surcharge `strict: false`) * * @description * Variante non stricte : retourne `null` plutot que de lever quand aucun * `createOrigam()` n'est installe. Voir la banniere au-dessus de la * premiere surcharge pour le comportement complet et son unique usage * legitime (#444, `OrigamLoader`). ********************************************************/ export function useLocale (strict: false): ILocaleInstance | null /********************************************************* * useLocale (implementation) * * @description * Lit l'instance de locale injectee sous `ORIGAM_LOCALE_KEY` ; leve si * absente et `strict` (defaut `true`), retourne `null` sinon. Voir la * banniere au-dessus de la premiere surcharge pour le detail du contrat. ********************************************************/ export function useLocale (strict: boolean = true): ILocaleInstance | null
+export function useLocale (strict?: true): ILocaleInstance
 ```
 
 Reads the injected locale instance (i18n adapter + RTL state).
@@ -1209,12 +1264,12 @@ is responsible for its own fallback (issue #444, `OrigamLoader`).
 
 **Source** : `packages/ds/src/composables/Commons/locale.composable.ts`
 
-**Consommateurs** (75) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, `components/Calendar/OrigamCalendar.vue`, `components/Carousel/OrigamCarousel.vue`, `components/Chart/OrigamChartBoxPlot.vue`, …
+**Consommateurs** (86) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
 
 ## `useLocale`
 
 ```ts
-export function useLocale (strict: false): ILocaleInstance | null /********************************************************* * useLocale (implementation) * * @description * Lit l'instance de locale injectee sous `ORIGAM_LOCALE_KEY` ; leve si * absente et `strict` (defaut `true`), retourne `null` sinon. Voir la * banniere au-dessus de la premiere surcharge pour le detail du contrat. ********************************************************/ export function useLocale (strict: boolean = true): ILocaleInstance | null
+export function useLocale (strict: false): ILocaleInstance | null
 ```
 
 Variante non stricte : retourne `null` plutot que de lever quand aucun
@@ -1224,7 +1279,7 @@ legitime (#444, `OrigamLoader`).
 
 **Source** : `packages/ds/src/composables/Commons/locale.composable.ts`
 
-**Consommateurs** (75) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, `components/Calendar/OrigamCalendar.vue`, `components/Carousel/OrigamCarousel.vue`, `components/Chart/OrigamChartBoxPlot.vue`, …
+**Consommateurs** (86) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
 
 ## `useLocale`
 
@@ -1238,12 +1293,12 @@ banniere au-dessus de la premiere surcharge pour le detail du contrat.
 
 **Source** : `packages/ds/src/composables/Commons/locale.composable.ts`
 
-**Consommateurs** (75) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, `components/Calendar/OrigamCalendar.vue`, `components/Carousel/OrigamCarousel.vue`, `components/Chart/OrigamChartBoxPlot.vue`, …
+**Consommateurs** (86) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
 
 ## `useLocation`
 
 ```ts
-export function useLocation (props: ILocationProps, opposite = false, offset?: (side: string)
+export function useLocation (props: ILocationProps, opposite = false, offset?: (side: string) => number)
 ```
 
 Resolves a `location` prop (e.g. `'top end'`) into absolute-position
@@ -1447,12 +1502,12 @@ Accepted per-side value forms are documented on `resolveSpacingValue`.
 
 **Source** : `packages/ds/src/composables/Commons/padding.composable.ts`
 
-**Consommateurs** (69) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumbDivider.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chart/OrigamChartBoxPlot.vue`, …
+**Consommateurs** (70) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumbDivider.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chart/OrigamChartBoxPlot.vue`, …
 
 ## `usePassedProps`
 
 ```ts
-export function usePassedProps<T extends object> ( _props: T, instanceLabel = 'usePassedProps' ): (key: Extract<keyof T, string> | string)
+export function usePassedProps<T extends object> ( _props: T, instanceLabel = 'usePassedProps' ): (key: Extract<keyof T, string> | string) => boolean
 ```
 
 Was-prop-passed factory — component-side primitive: for the CURRENT
@@ -1523,10 +1578,8 @@ export function useProps<T extends object> (props: T): IFilterPropsOptions<T>
 ) forward their resolved props to an INTERNAL ROOT component through that
 child's own exposed `filterProps`, reached via a TEMPLATE REF:
 
-```ts
     const childRef = ref<TOrigamChild>()
     const childProps = computed(() => childRef.value?.filterProps(props, […]))
-```
 
 A template ref is `undefined` during the first render — it is assigned while
 that very render is being patched. So render 1 binds NOTHING and the child
@@ -1655,7 +1708,7 @@ Accepted per-corner value forms are documented on
 
 **Source** : `packages/ds/src/composables/Commons/rounded.composable.ts`
 
-**Consommateurs** (71) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, …
+**Consommateurs** (73) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, …
 
 ## `useRoute`
 
@@ -1728,7 +1781,7 @@ plus sans le re-poser explicitement sur la racine teleportee.
 ## `useScroll`
 
 ```ts
-export function useScroll ( props: IScrollProps, args: IScrollArguments =
+export function useScroll ( props: IScrollProps, args: IScrollArguments = {} )
 ```
 
 Tracks scroll position / direction / threshold ratio for a target
@@ -1776,7 +1829,7 @@ call dependency.
 ## `useSelectLink`
 
 ```ts
-export function useSelectLink (link: IUseLink, select?: (value: boolean, e?: Event)
+export function useSelectLink (link: IUseLink, select?: (value: boolean, e?: Event) => void)
 ```
 
 Relie un lien de navigation (`link`, la valeur retournee par `useLink`)
@@ -1819,7 +1872,7 @@ autoritaire pour la geometrie.
 
 **Source** : `packages/ds/src/composables/Commons/size.composable.ts`
 
-**Consommateurs** (21) : `components/Avatar/OrigamAvatar.vue`, `components/Breadcrumb/OrigamBreadcrumbDivider.vue`, `components/Btn/OrigamBtn.vue`, `components/Btn/OrigamBtnGroup.vue`, `components/Chip/OrigamChip.vue`, `components/Dialog/OrigamDialog.vue`, `components/Field/OrigamField.vue`, `components/Icon/OrigamIcon.vue`, …
+**Consommateurs** (23) : `components/Avatar/OrigamAvatar.vue`, `components/Breadcrumb/OrigamBreadcrumbDivider.vue`, `components/Btn/OrigamBtn.vue`, `components/Btn/OrigamBtnGroup.vue`, `components/Chip/OrigamChip.vue`, `components/Dialog/OrigamDialog.vue`, `components/Field/OrigamField.vue`, `components/Icon/OrigamIcon.vue`, …
 
 ## `useSsrBoot`
 
@@ -1869,7 +1922,7 @@ must not snapshot `disableGlobalStack` either.
 ## `useStateEffect`
 
 ```ts
-export function useStateEffect ( props: TStateEffectProps, isHover: Ref<boolean> | ComputedRef<boolean> = noopRef, isActive: Ref<boolean> | ComputedRef<boolean> = noopRef, hoverState: ComputedRef<IHoverState | undefined> = computed(()
+export function useStateEffect ( props: TStateEffectProps, isHover: Ref<boolean> | ComputedRef<boolean> = noopRef, isActive: Ref<boolean> | ComputedRef<boolean> = noopRef, hoverState: ComputedRef<IHoverState | undefined> = computed(() => undefined), activeState: ComputedRef<IActiveState | undefined> = computed(() => undefined), isDisabled: Ref<boolean> | ComputedRef<boolean> = noopRef, flat: Ref<boolean> | ComputedRef<boolean> = noopRef )
 ```
 
 Composable unique remplacant la chaine `useColorEffect` +
@@ -1932,7 +1985,7 @@ free.
 
 **Source** : `packages/ds/src/composables/Commons/stateFlag.composable.ts`
 
-**Consommateurs** (35) : `components/Alert/OrigamAlert.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Avatar/OrigamAvatarGroup.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumbItem.vue`, …
+**Consommateurs** (38) : `components/Alert/OrigamAlert.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Avatar/OrigamAvatarGroup.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
 
 ## `useStatus`
 
@@ -1959,7 +2012,7 @@ deja fournie par le consommateur passe toujours avant l'icone de statut.
 ## `useSticky`
 
 ```ts
-export function useSticky (
+export function useSticky ({rootEl, isSticky, layoutItemStyles}: ISticky)
 ```
 
 Cale `rootEl` en `sticky` manuel (via un listener `scroll` passif,
@@ -2002,7 +2055,7 @@ flattening (`toDeclarations`).
 ## `useStyleTag`
 
 ```ts
-export function useStyleTag ( css: MaybeRef<string>, options: IStyleTagOptions =
+export function useStyleTag ( css: MaybeRef<string>, options: IStyleTagOptions = {} )
 ```
 
 Injects a reactive `<style>` element into `<head>`, keyed by a
@@ -2035,12 +2088,12 @@ alors sur son rendu non-teleporte plutot que de crasher. En SSR
 
 **Source** : `packages/ds/src/composables/Commons/teleport.composable.ts`
 
-**Consommateurs** (1) : `components/Overlay/OrigamOverlay.vue`
+**Consommateurs** (2) : `components/Menu/OrigamMenu.vue`, `components/Overlay/OrigamOverlay.vue`
 
 ## `useTeleportTypography`
 
 ```ts
-export function useTeleportTypography ( fieldRef: Ref<
+export function useTeleportTypography ( fieldRef: Ref<{ $el?: HTMLElement } | undefined>, isOpen: Ref<boolean>, extraVars: (fontSize: string) => Record<string, string>, measureSelector = TELEPORT_TYPOGRAPHY_MEASURE_SELECTOR, neutralFontSize: string = TELEPORT_TYPOGRAPHY_NEUTRAL_FONT_SIZE )
 ```
 
 Fait passer la typographie REELLE d'un champ (mesuree via
@@ -2081,7 +2134,7 @@ logic.
 
 **Source** : `packages/ds/src/composables/Commons/textColor.composable.ts`
 
-**Consommateurs** (8) : `components/DatePickerField/OrigamDatePickerField.vue`, `components/Messages/OrigamMessages.vue`, `components/Progress/OrigamProgressCircular.vue`, `components/Progress/OrigamProgressLinear.vue`, `components/QrCode/OrigamQrCode.vue`, `components/Select/OrigamSelect.vue`, `components/SliderField/OrigamSliderField.vue`, `utils/Commons/gradient.util.ts`
+**Consommateurs** (15) : `components/DataTable/OrigamDataTableGroupHeaderRow.vue`, `components/DataTable/OrigamDataTableRows.vue`, `components/DatePicker/OrigamDatePickerHeader.vue`, `components/DatePicker/OrigamDatePickerMonth.vue`, `components/DatePickerField/OrigamDatePickerField.vue`, `components/Media/OrigamMediaVolumeControl.vue`, `components/Messages/OrigamMessages.vue`, `components/Progress/OrigamProgressCircular.vue`, …
 
 ## `useTheme`
 
@@ -2113,7 +2166,7 @@ d'equivalent "sans mode".
 ## `useThrottleFn`
 
 ```ts
-export function useThrottleFn<T extends unknown[], R = void> (fn: (...args: T)
+export function useThrottleFn<T extends unknown[], R = void> (fn: (...args: T) => R, wait: number): (...args: T) => void
 ```
 
 Limite `fn` a un appel toutes les `wait` ms — pattern LEADING-edge :
@@ -2135,7 +2188,7 @@ timer continue de tourner en memoire jusqu'a son echeance.
 ## `useToggleScope`
 
 ```ts
-export function useToggleScope (source: WatchSource<boolean>, fn: (reset: ()
+export function useToggleScope (source: WatchSource<boolean>, fn: (reset: () => void) => void)
 ```
 
 Execute `fn` dans un `EffectScope` dedie tant que `source` (un booleen
@@ -2156,7 +2209,7 @@ relancer ses propres effets sans attendre un cycle `source` false→true.
 ## `useTouch`
 
 ```ts
-export function useTouch (
+export function useTouch ({isActive, isTemporary, width, touchless, position}: { isActive: Ref<boolean> isTemporary: Ref<boolean> width: Ref<number> touchless: Ref<boolean> position: Ref<'left' | 'right' | 'top' | 'bottom'> })
 ```
 
 Geste tactile swipe-to-open/close pour un panneau ancre a un `position`
@@ -2211,7 +2264,7 @@ en repli.
 ## `useUnsupportedProp`
 
 ```ts
-export function useUnsupportedProp ( component: string, prop: string, reason: string, isPassed: ()
+export function useUnsupportedProp ( component: string, prop: string, reason: string, isPassed: () => boolean ): void
 ```
 
 Avertit, une fois et en developpement seulement, qu'une prop declaree par un
@@ -2237,7 +2290,7 @@ morte, ce qui est exact — elle est desormais surveillee, pas ignoree.
 
 **Source** : `packages/ds/src/composables/Commons/unsupportedProp.composable.ts`
 
-**Consommateurs** (21) : `components/Audio/OrigamAudio.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartGauge.vue`, `components/Chart/OrigamChartHeatmap.vue`, `components/Chart/OrigamChartHoneycomb.vue`, `components/Chart/OrigamChartMap.vue`, `components/Chart/OrigamChartPictorial.vue`, …
+**Consommateurs** (20) : `components/Audio/OrigamAudio.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartGauge.vue`, `components/Chart/OrigamChartHeatmap.vue`, `components/Chart/OrigamChartHoneycomb.vue`, `components/Chart/OrigamChartMap.vue`, `components/Chart/OrigamChartPictorial.vue`, …
 
 ## `useValidation`
 
@@ -2265,7 +2318,7 @@ resolveur de theme ait patché `props.error`.
 
 **Source** : `packages/ds/src/composables/Commons/validation.composable.ts`
 
-**Consommateurs** (5) : `components/Form/OrigamForm.vue`, `components/Input/OrigamInput.vue`, `components/NumberField/OrigamNumberField.vue`, `components/OtpInputField/OrigamOtpInputField.vue`, `interfaces/Input/input.interface.ts`
+**Consommateurs** (11) : `components/ColorPickerField/OrigamColorPickerField.vue`, `components/DatePickerField/OrigamDatePickerField.vue`, `components/Form/OrigamForm.vue`, `components/Input/OrigamInput.vue`, `components/NumberField/OrigamNumberField.vue`, `components/OtpInputField/OrigamOtpInputField.vue`, `components/Select/OrigamSelect.vue`, `interfaces/Commons/validation.interface.ts`, …
 
 ## `useVariant`
 
@@ -2333,12 +2386,12 @@ les items reellement mesures.
 
 **Source** : `packages/ds/src/composables/Commons/virtual.composable.ts`
 
-**Consommateurs** (2) : `components/VirtualScroll/OrigamVirtualScroll.vue`, `interfaces/VirtualScroll/virtual-scroll.interface.ts`
+**Consommateurs** (3) : `components/Select/OrigamSelect.vue`, `components/VirtualScroll/OrigamVirtualScroll.vue`, `interfaces/VirtualScroll/virtual-scroll.interface.ts`
 
 ## `useVModel`
 
 ```ts
-export function useVModel< Props extends object &
+export function useVModel< Props extends object & { [key in Prop as `onUpdate:${Prop}`]?: TEventProp | undefined }, Prop extends Extract<keyof Props, string>, Inner = Props[Prop], > ( props: Props, prop: Prop, defaultValue?: MaybeRefOrGetter<Props[Prop] | undefined>, transformIn: (value?: Props[Prop]) => Inner = (v?: Props[Prop]) => v as Inner, transformOut: (value: Inner) => Props[Prop] = (v: Inner) => v as Props[Prop] ): TVModel<Props, Prop, Inner>
 ```
 
 V-model generique pour n'importe quelle prop (pas seulement
@@ -2360,5 +2413,5 @@ une valeur de modele legitime.
 
 **Source** : `packages/ds/src/composables/Commons/vModel.composable.ts`
 
-**Consommateurs** (59) : `components/App/OrigamAppBar.vue`, `components/Carousel/OrigamCarousel.vue`, `components/Checkbox/OrigamCheckbox.vue`, `components/Checkbox/OrigamCheckboxBtn.vue`, `components/Checkbox/OrigamCheckboxGroup.vue`, `components/ColorPicker/OrigamColorPicker.vue`, `components/ColorPicker/OrigamColorPickerPreview.vue`, `components/ColorPickerField/OrigamColorPickerField.vue`, …
+**Consommateurs** (62) : `components/App/OrigamAppBar.vue`, `components/Calendar/OrigamCalendar.vue`, `components/Carousel/OrigamCarousel.vue`, `components/Checkbox/OrigamCheckbox.vue`, `components/Checkbox/OrigamCheckboxBtn.vue`, `components/Checkbox/OrigamCheckboxGroup.vue`, `components/ColorPicker/OrigamColorPicker.vue`, `components/ColorPicker/OrigamColorPickerPreview.vue`, …
 

@@ -10,7 +10,7 @@
 ## `useInlineEdit`
 
 ```ts
-export function useInlineEdit ( modelValue: Ref<string | number> | ComputedRef<string | number>, options: MaybeRefOrGetter<IUseInlineEditOptions> =
+export function useInlineEdit ( modelValue: Ref<string | number> | ComputedRef<string | number>, options: MaybeRefOrGetter<IUseInlineEditOptions> = {} )
 ```
 
 Headless edit-in-place state machine.
@@ -25,6 +25,7 @@ forward keyboard events to `confirm` / `cancel`.
 **Exemple**
 
 ```ts
+```ts
 const model = ref('hello')
 const {
     isEditing, draft, error, isPending,
@@ -34,8 +35,9 @@ const {
     onConfirm: (v) => (model.value = v),
 })
 ```
+```
 
 **Source** : `packages/ds/src/composables/InlineEdit/inline-edit.composable.ts`
 
-**Consommateurs** (2) : `components/InlineEdit/OrigamInlineEdit.vue`, `interfaces/InlineEdit/inline-edit.interface.ts`
+**Consommateurs** (3) : `components/InlineEdit/OrigamInlineEdit.vue`, `interfaces/InlineEdit/inline-edit.interface.ts`, `utils/Commons/validation.util.ts`
 
