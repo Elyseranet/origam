@@ -804,7 +804,16 @@
 	 ********************************************************/
 	watch(
 		[zoomResetAriaLabel, isZoomed, () => props.zoomable],
-		() => { void measureZoomResetText() },
+		/*********************************************************
+		 * Promesse flottante, deliberement
+		 *
+		 * @description
+		 * La mesure se fait en `flush: 'post'` et rien n'attend la
+		 * promesse. Le `void` qui marquait cette intention est retire
+		 * (Sonar #771) : la valeur de retour reste ignoree a l'identique,
+		 * et le callback rend toujours `undefined`.
+		 ********************************************************/
+		() => { measureZoomResetText() },
 		{ flush: 'post', immediate: true }
 	)
 
