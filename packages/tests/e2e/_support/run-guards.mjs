@@ -50,10 +50,24 @@ const HERE = dirname(fileURLToPath(import.meta.url))
 const argv = process.argv.slice(2)
 const SELF_TEST = argv.includes('--self-test')
 
-const GUARDS = [
-    { name: 'variant-titles', file: join(HERE, 'audit-variant-titles.mjs'), covers: 'specs naviguant par TITRE de Variant' },
-    { name: 'variant-pins', file: join(HERE, 'audit-variant-pins.mjs'), covers: 'specs naviguant par INDEX (?variantId=<slug>-N)' }
-]
+// Test-only override (see TU/e2e-support/run-guards.spec.ts, #534): the
+// aggregation logic below (spawn each guard, OR their exit codes, never
+// short-circuit) is exactly the thing #534 was filed against — "a failing
+// guard blocks Playwright but the caller still sees exit 0". Proving that
+// stays fixed means running THIS file, unmodified, against a guard we
+// control instead of the real (and currently drifting) variant-titles /
+// variant-pins detectors. RUN_GUARDS_FIXTURE_FILES, when set, replaces
+// GUARDS with a synthetic list built from a comma-separated list of
+// absolute script paths. Unset in every real invocation (CLI, pretest:e2e,
+// CI) — the production GUARDS list below is untouched.
+const FIXTURE_FILES = process.env.RUN_GUARDS_FIXTURE_FILES
+
+const GUARDS = FIXTURE_FILES
+    ? FIXTURE_FILES.split(',').map((file, i) => ({ name: `fixture-${i}`, file, covers: '(fixture — test-only, RUN_GUARDS_FIXTURE_FILES)' }))
+    : [
+        { name: 'variant-titles', file: join(HERE, 'audit-variant-titles.mjs'), covers: 'specs naviguant par TITRE de Variant' },
+        { name: 'variant-pins', file: join(HERE, 'audit-variant-pins.mjs'), covers: 'specs naviguant par INDEX (?variantId=<slug>-N)' }
+    ]
 
 const mode = SELF_TEST ? '--self-test' : null
 const label = SELF_TEST ? 'self-tests' : 'audits'

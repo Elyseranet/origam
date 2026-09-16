@@ -38,7 +38,9 @@ const GUARDS = [
     'composables-doc-sync.mjs',
     'prop-shadowing.mjs',
     'class-fallthrough.mjs',
-    'md-table-cells.mjs'
+    'md-table-cells.mjs',
+    'pnpm-script-exists.mjs',
+    'vrt-lockstep.mjs'
 ]
 
 /*********************************************************

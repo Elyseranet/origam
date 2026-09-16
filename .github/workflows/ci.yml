@@ -64,6 +64,15 @@ jobs:
       - name: Run architecture guards
         run: pnpm -F origam guards
 
+      # Pins the DS guards' own detectors, for the same reason the e2e audit
+      # self-tests are pinned below: a guard whose extractor has regressed
+      # goes QUIET, and a silent detector and a clean repo produce the same
+      # green. The 13 self-tests existed and were run by nothing — measured
+      # 2026-09-16, #574. The list is discovered, not written, so a new
+      # self-test is covered without anyone having to remember.
+      - name: Run architecture guard self-tests
+        run: pnpm -F origam guards:self
+
       # The e2e audit guards, added 2026-08-17. They were repaired and wired
       # into `pretest:e2e` that day, and then measured to be in NO workflow at
       # all — so they protected local runs only and blocked no merge. That is
