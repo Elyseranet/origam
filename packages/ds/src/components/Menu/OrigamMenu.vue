@@ -534,7 +534,20 @@
 		max-height: var(--origam-menu---max-height, calc(100vh - 32px));
 		min-height: 0;
 		overflow: var(--origam-menu__content---overflow, auto);
-		display: inline-block;
+		/**
+		 * `block`, plus `inline-block`. Un item flex est BLOCKIFIÉ : depuis
+		 * que le parent est un conteneur flex, `inline-block` ne pouvait
+		 * plus gagner — le déclarer aurait été exactement le genre de
+		 * déclaration morte que ce ticket corrige. Le rétrécissement au
+		 * contenu était déjà assuré par `width: max-content`, pas par
+		 * `inline-block` : mesuré avant/après sur 8 panneaux (menu, select,
+		 * contextual-menu, date-picker-field, color-picker-field,
+		 * media-controller), le rectangle du panneau est IDENTIQUE au pixel.
+		 * Seule la boîte parente perd 5px — le descendeur de la line-box
+		 * qu'un enfant inline-block imposait à son bloc parent, bande
+		 * transparente sous chaque panneau.
+		 */
+		display: block;
 		width: max-content;
 
 		.origam-menu__list {

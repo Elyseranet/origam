@@ -176,12 +176,28 @@ test.describe('OrigamMenu', () => {
             expect(boxShadow).not.toBe('none')
         })
 
-        test('corps est display:inline-block', async ({ page }) => {
+        // #742 — le corps était `display: inline-block`. Depuis que
+        // `.origam-overlay__content` est un conteneur flex (c'est ce qui rend
+        // son plafond opposable au corps, donc ce qui permet à la liste de
+        // défiler), le corps est un item flex et Chromium le BLOCKIFIE.
+        // Le rétrécissement au contenu n'en dépendait pas : il vient de
+        // `width: max-content`. Vérifié par A/B geométrique sur 8 panneaux
+        // (menu, select, contextual-menu, date-picker-field,
+        // color-picker-field, media-controller) — rectangle identique au
+        // pixel avant et après.
+        test('corps est display:block et rétrécit au contenu (width: max-content)', async ({ page }) => {
             await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
-            const display = await content.evaluate(el => getComputedStyle(el).display)
-            expect(display).toBe('inline-block')
+            const box = await content.evaluate(el => ({
+                display: getComputedStyle(el).display,
+                width: getComputedStyle(el).width,
+                // Le corps ne remplit PAS son parent : il s'arrête au contenu.
+                fillsParent: el.getBoundingClientRect().width
+                    >= (el.parentElement?.getBoundingClientRect().width ?? 0)
+            }))
+            expect(box.display).toBe('block')
+            expect(box.fillsParent).toBe(false)
         })
 
         test('items par défaut (Edit / Duplicate / Delete) s affichent dans .origam-menu__items', async ({ page }) => {

@@ -147,8 +147,34 @@ on their own pages — the table below covers only what `IMenuProps` adds.
 | `--origam-menu---box-shadow` | Menu shadow. |
 | `--origam-menu---max-height` | Maximum height before scrolling. |
 | `--origam-menu---z-index` | Z-index stacking. |
+| `--origam-menu__content---overflow` | Overflow of the menu surface. `auto` by default: the surface is the
+scrollport, so a list taller than the ceiling scrolls inside the panel instead of spilling out of it. Set to
+`visible` only if you deliberately want the content to escape the panel — the options below the ceiling then
+become unreachable. |
 | `--origam-menu__content---max-width` | List container max-width. |
 | `--origam-menu__content---padding` | List container padding. |
+
+## Scrolling
+
+The menu surface (`.origam-menu__content`) is the **scrollport**: it carries both
+the height ceiling and the `overflow`. Two ceilings can apply, whichever is lower:
+
+| Source | Applies to | Typical use |
+|---|---|---|
+| `--origam-menu---max-height` (default `calc(100vh - 32px)`) | the menu surface itself | keeps any menu inside the viewport |
+| the `max-height` prop | `.origam-overlay__content`, the surface's parent | a caller capping a specific dropdown (`OrigamSelect` passes `310`) |
+
+The parent is a flex column container, which is what makes a ceiling set on it
+opposable to the surface. Before this was the case (#742) the ceiling and the
+`overflow` sat on two different boxes: the capped box kept `overflow: visible`
+and let its content spill, while the box that could scroll had no ceiling at all
+(`clientHeight === scrollHeight`, nothing to scroll). A 30-option list rendered
+1448px tall inside a 310px cap and the bottom 20 options were unreachable with
+both the mouse and the keyboard.
+
+Nested sub-menus are **not** clipped by that scrollport: every overlay level is
+teleported into `body > .origam-overlay-container`, so a flyout is never a DOM
+descendant of its parent's surface.
 
 ## Accessibility
 
