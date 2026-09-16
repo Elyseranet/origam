@@ -15,8 +15,16 @@
 		>
 			<template #default="{ state }">
 				<div class="story-shell">
+					<!--
+						#781 — `aria-label` n'est PAS décoratif ici : sans nom
+						accessible, `<origam-window>` ne déclare plus
+						`role="region"` / `aria-roledescription="carousel"`
+						(un `region` anonyme n'est pas un repère navigable).
+						La story montre donc l'usage correct.
+					-->
 					<origam-window
 							v-model="designStep"
+							aria-label="Design window demo"
 							:direction="state.direction"
 							:show-arrows="state.showArrows"
 							:next-icon="state.nextIcon || undefined"
