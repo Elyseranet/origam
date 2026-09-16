@@ -296,20 +296,20 @@ describe('OrigamChartLegend — toggle hint follows the active locale (#567)', (
 
     it('announces English hints under en', () => {
         const wrapper = mountChart(OrigamChartLegend, undefined, {items})
-        const li = wrapper.findAll('.origam-chart__legend-item')
+        const buttons = wrapper.findAll('.origam-chart__legend-button')
 
-        expect(li[0].attributes('aria-label')).toBe('Alpha: visible, click to hide')
-        expect(li[1].attributes('aria-label')).toBe('Beta: hidden, click to show')
+        expect(buttons[0].attributes('aria-label')).toBe('Alpha: visible, click to hide')
+        expect(buttons[1].attributes('aria-label')).toBe('Beta: hidden, click to show')
 
         wrapper.unmount()
     })
 
     it('announces French hints under fr', () => {
         const wrapper = mountChart(OrigamChartLegend, 'fr', {items})
-        const li = wrapper.findAll('.origam-chart__legend-item')
+        const buttons = wrapper.findAll('.origam-chart__legend-button')
 
-        expect(li[0].attributes('aria-label')).toBe('Alpha: visible, cliquer pour masquer')
-        expect(li[1].attributes('aria-label')).toBe('Beta: masqué, cliquer pour afficher')
+        expect(buttons[0].attributes('aria-label')).toBe('Alpha: visible, cliquer pour masquer')
+        expect(buttons[1].attributes('aria-label')).toBe('Beta: masqué, cliquer pour afficher')
 
         wrapper.unmount()
     })

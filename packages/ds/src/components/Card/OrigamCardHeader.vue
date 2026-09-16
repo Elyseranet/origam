@@ -517,7 +517,7 @@
 		--origam-card-header__title---line-height: 1.5rem;
 		--origam-card-header__title---text-transform: none;
 
-		--origam-card-header__subtitle---color: var(--origam-color__text---secondary);
+		--origam-card-header__subtitle---color: currentColor;
 		--origam-card-header__subtitle---display: -webkit-box;
 		--origam-card-header__subtitle---overflow: hidden;
 

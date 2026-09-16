@@ -311,6 +311,10 @@
 			pointer-events: none;
 		}
 
+		&[aria-current='page'] {
+			--origam-breadcrumb-item---opacity: var(--origam-opacity---100);
+		}
+
 		&--density-comfortable {
 			--origam-breadcrumb-item---density: -8px;
 		}

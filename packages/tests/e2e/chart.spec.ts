@@ -167,9 +167,13 @@ test.describe('OrigamChart — legend interaction', () => {
         await expect(legend).toBeVisible({ timeout: 8000 })
         const tagName = await legend.evaluate((el) => el.tagName.toLowerCase())
         expect(tagName).toBe('ul')
-        // Each <li> carries role="button" (interactive toggle), not role="listitem".
-        const items = legend.locator('[role="button"]')
-        await expect(items).toHaveCount(2)
+        // #777 — the toggle is a NATIVE <button> nested in each <li>, never
+        // `role="button"` on the <li> (an <li> whose parent is a <ul> may not
+        // claim that role — axe-core `aria-allowed-role`). The <li> keeps its
+        // implicit `listitem` role, so the whole legend stays a real list.
+        await expect(legend.locator('li')).toHaveCount(2)
+        await expect(legend.locator('li > button')).toHaveCount(2)
+        await expect(legend.locator('[role="button"]')).toHaveCount(0)
     })
 
     // Story realignment: the old single "Emit — point-click / legend-click /
@@ -182,7 +186,8 @@ test.describe('OrigamChart — legend interaction', () => {
     test('clicking a legend item logs legend-click + series-toggle', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
-        const firstLegend = sandbox.locator('[data-cy="origam-chart-legend-0"]')
+        // #777 — the click target is the native <button> inside the entry.
+        const firstLegend = sandbox.locator('[data-cy="origam-chart-legend-button-0"]')
         await firstLegend.click()
 
         await openEventsTab(page)
