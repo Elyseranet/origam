@@ -132,13 +132,28 @@
 	 * but `useGroup.step` already handles the wrap-around.
 	 * Focus stays on the freshly-selected tab so screen
 	 * readers announce the change.
+	 *
+	 * @description
+	 * ⛔ `focusTab` RESOLVES THE DOM NODE THROUGH THE ID THE TAB
+	 * PUBLISHED on its own registry entry (`IGroupItem.domId`),
+	 * never through a `data-` attribute carrying `groupItem.id`
+	 * (#741). That counter is module-global and never reset, so on
+	 * a persistent SSR process it differs between the served HTML
+	 * and the client render. Vue does not rectify attribute
+	 * mismatches in production: the attribute kept its SERVER value
+	 * while this lookup ran with the CLIENT value, and matched
+	 * nothing. `domId` is the very id rendered on the element, so
+	 * the two sides cannot drift apart.
 	 ********************************************************/
 	const ariaOrientation = computed(() => props.direction === DIRECTION.VERTICAL ? 'vertical' : 'horizontal')
 
 	const focusTab = (id: number) => {
 		if (!rootRef.value) return
 
-		const target = rootRef.value.querySelector(`[data-origam-tab-id="${id}"]`) as HTMLElement | null
+		const domId = items.value.find(item => item.id === id)?.domId
+		if (!domId) return
+
+		const target = rootRef.value.querySelector(`[id=${JSON.stringify(domId)}]`) as HTMLElement | null
 		target?.focus()
 	}
 

@@ -13,7 +13,6 @@
 			:aria-disabled="isDisabled || undefined"
 			:tabindex="tabIndex"
 			:disabled="isDisabled || undefined"
-			:data-origam-tab-id="groupItem?.id"
 			@click="handleClick"
 	>
 		<span
@@ -81,6 +80,8 @@
 	import { useTypography } from '../../composables/Commons/typography.composable'
 
 	import vContrast from '../../directives/Contrast/contrast.directive'
+
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 	import { ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_LINK_KEY } from '../../consts/Tabs/tabs.const'
 
@@ -167,11 +168,33 @@
 	 * `panelId` is the DOM id of the sibling panel — derived by
 	 * reading the panels group's registry and matching on `value`
 	 * (the user-supplied identifier, not the internal numeric id),
-	 * then reading THAT panel's own published `domId`. The
-	 * generated-fallback string is kept as a defensive default for
-	 * the brief window before the panel's own effect has run.
+	 * then reading THAT panel's own published `domId` — and nothing
+	 * else. No reconstructed guess: since #741 the generated
+	 * fallback is per-instance and cannot be derived from the
+	 * sibling's registration id, so a guess would be wrong every
+	 * time instead of merely wrong when the consumer supplied an
+	 * `id`. `undefined` means « no `aria-controls` yet », which is
+	 * already this computed's answer when the panel is not
+	 * registered; a dangling reference would be worse than none.
+	 *
+	 * @description
+	 * ⛔ THE GENERATED FALLBACK DERIVES FROM `getUid()`, NEVER FROM
+	 * `groupItem.id` (#741). `useGroupItem`'s id is a module-global
+	 * monotonic counter, deliberately never reset — its own header
+	 * says so, and states the condition that makes that safe:
+	 * « This id never reaches the DOM ». It did, through this very
+	 * line. On a persistent SSR process the counter keeps climbing
+	 * from request to request, so the server served
+	 * `id="origam-tab-285"` where the freshly-booted client rendered
+	 * `id="origam-tab-9"` — measured on the marketing site's
+	 * /installation: 3 attribute mismatches and the « Hydration
+	 * completed but contains mismatches. » console error. `getUid()`
+	 * is the DS's SSR-stable id source (position in the tree, no
+	 * module state) — see `getCurrentInstance.util.ts`.
 	 ********************************************************/
-	const tabDomId = computed(() => props.id || `origam-tab-${groupItem!.id}`)
+	const uid = getUid()
+
+	const tabDomId = computed(() => props.id || `origam-tab-${uid}`)
 
 	watchEffect(() => {
 		const self = groupItem!.group.items.value.find(item => item.id === groupItem!.id)
@@ -185,7 +208,7 @@
 		const panel = panelsGroup.items.value.find(item => item.value === groupItem!.value.value)
 		if (!panel) return undefined
 
-		return panel.domId || `origam-tab-panel-${panel.id}`
+		return panel.domId
 	})
 
 	const ariaSelected = computed(() => (groupItem!.isSelected.value ? 'true' : 'false'))
