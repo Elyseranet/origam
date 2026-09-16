@@ -39,6 +39,37 @@ export const RIPPLE_OPTIONS = {
     y: 0
 } as const
 
+
+/*********************************************************
+ * Timer d'animation borne a la duree de vie de l'ELEMENT (#753)
+ *
+ * @description
+ * Les trois `setTimeout` de `show` / `hide` etaient nus. La portee de
+ * cette directive est l'element, pas un scope Vue : il n'y a ni
+ * `onScopeDispose` ni `onBeforeUnmount` a accrocher, donc les handles
+ * sont ranges sur `el._ripple` — la ou vit deja tout l'etat du ripple, et
+ * que le hook `unmounted` de la directive purge.
+ *
+ * @description
+ * Si `_ripple` n'existe plus, l'element a DEJA ete demonte
+ * (`unmounted` fait `delete el._ripple`) : on ne programme rien du tout
+ * plutot que d'armer un timer que plus personne ne pourra annuler. C'est
+ * le pendant du drapeau `disposed` des sites a scope.
+ ********************************************************/
+function scheduleRippleTimer (el: IRippleHtmlElement, cb: () => void, delay?: number) {
+    const store = el._ripple
+
+    if (!store) return
+
+    const id = window.setTimeout(() => {
+        store.timers?.delete(id)
+        cb()
+    }, delay)
+
+    store.timers ??= new Set<number>()
+    store.timers.add(id)
+}
+
 export const RIPPLES = {
 
     show (
@@ -80,7 +111,7 @@ export const RIPPLES = {
         rippleTransform(animation, `translate(${x}, ${y}) scale3d(${scale},${scale},${scale})`)
         animation.dataset.activated = String(performance.now())
 
-        setTimeout(() => {
+        scheduleRippleTimer(el, () => {
             animation.classList.remove('origam-ripple__animation--enter')
             animation.classList.add('origam-ripple__animation--in')
             rippleTransform(animation, `translate(${centerX}, ${centerY}) scale3d(1,1,1)`)
@@ -101,11 +132,11 @@ export const RIPPLES = {
         const diff = performance.now() - Number(animation.dataset!.activated)
         const delay = Math.max(250 - diff, 0)
 
-        setTimeout(() => {
+        scheduleRippleTimer(el, () => {
             animation.classList.remove('origam-ripple__animation--in')
             animation.classList.add('origam-ripple__animation--out')
 
-            setTimeout(() => {
+            scheduleRippleTimer(el, () => {
                 const ripples = el.getElementsByClassName('origam-ripple__animation')
                 if (ripples.length === 1 && el.dataset.previousPosition) {
                     el.style.position = el.dataset.previousPosition

@@ -79,7 +79,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, inject, mergeProps, nextTick, provide, ref, shallowRef, StyleValue, toRef, watch } from 'vue'
+	import { computed, inject, mergeProps, nextTick, onBeforeUnmount, provide, ref, shallowRef, StyleValue, toRef, watch } from 'vue'
 	import OrigamList from '../List/OrigamList.vue'
 	import OrigamListGroup from '../List/OrigamListGroup.vue'
 	import OrigamListItem from '../List/OrigamListItem.vue'
@@ -218,6 +218,52 @@
 	const parent = inject(ORIGAM_MENU_KEY, null)
 	const openChildren = shallowRef(0)
 
+
+	/*********************************************************
+	 * Timers bornes a la duree de vie du composant (#753)
+	 *
+	 * @description
+	 * Deux `setTimeout` nus, dont un imbrique
+	 * (`setTimeout(() => setTimeout(...))`). Ils survivaient au
+	 * demontage :
+	 *   - `closeParents()` (40 ms) ecrit `isActive.value` et remonte la
+	 *     chaine des menus parents — sur un scope detruit, et surtout
+	 *     APRES que la fermeture qui l'a declenche soit terminee ;
+	 *   - le double timer du `keydown` rappelle
+	 *     `handleActivatorKeydown(e)`, qui rejoue un evenement clavier
+	 *     capture avant le demontage.
+	 *
+	 * @description
+	 * Le timer imbrique est la raison pour laquelle un simple
+	 * `clearTimeout` du handle exterieur ne suffit pas : au moment du
+	 * demontage, le timer INTERIEUR n'est pas encore arme, il n'y a donc
+	 * rien a annuler. C'est le drapeau `disposed` qui le couvre, teste a
+	 * l'interieur du premier timer avant qu'il n'arme le second.
+	 ********************************************************/
+	let disposed = false
+	const timers = new Set<number>()
+
+	const scheduleTimeout = (cb: () => void, delay?: number) => {
+		if (disposed) return
+
+		const id = window.setTimeout(() => {
+			timers.delete(id)
+
+			if (disposed) return
+
+			cb()
+		}, delay)
+
+		timers.add(id)
+	}
+
+	onBeforeUnmount(() => {
+		disposed = true
+
+		for (const id of timers) window.clearTimeout(id)
+		timers.clear()
+	})
+
 	provide(ORIGAM_MENU_KEY, {
 		register () {
 			++openChildren.value
@@ -226,7 +272,7 @@
 			--openChildren.value
 		},
 		closeParents () {
-			setTimeout(() => {
+			scheduleTimeout(() => {
 				if (!openChildren.value) {
 					isActive.value = false
 					parent?.closeParents()
@@ -350,7 +396,7 @@
 		} else if (keyDown.includes(e.key as typeof keyDown[number])) {
 			isActive.value = true
 			e.preventDefault()
-			setTimeout(() => setTimeout(() => handleActivatorKeydown(e)))
+			scheduleTimeout(() => scheduleTimeout(() => handleActivatorKeydown(e)))
 		}
 	}
 

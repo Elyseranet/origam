@@ -3,6 +3,7 @@ import { GLOBAL_STACK, ORIGAM_STACK_KEY, STACK_Z_INDEX_STEP } from '../../consts
 import type { IStackProvide } from '../../interfaces/Commons/stack.interface'
 
 import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
+import { tryOnScopeDispose } from '../../utils/Commons/commons.util'
 
 import { computed, inject, onScopeDispose, provide, reactive, readonly, Ref, shallowRef, toRaw, watchEffect } from 'vue'
 
@@ -61,11 +62,34 @@ export function useStack (
 
     const globalTop = shallowRef(true)
 
+    /*********************************************************
+     * Timer borne a la duree de vie du scope (#753 — hors releve)
+     *
+     * @description
+     * Absent de la liste du ticket, trouve par mon propre balayage. Meme
+     * forme que `useActivator` : le `watchEffect` s'arrete au dispose,
+     * mais le timer arme au dernier tick survivait et ecrivait
+     * `globalTop.value` sur un scope detruit.
+     ********************************************************/
+    let topTimer = -1
+
     watchEffect(() => {
         if (!createStackEntry.value) return
 
         const _isTop = GLOBAL_STACK.at(-1)?.[0] === vm.uid
-        setTimeout(() => globalTop.value = _isTop)
+
+        window.clearTimeout(topTimer)
+        topTimer = window.setTimeout(() => {
+            topTimer = -1
+            globalTop.value = _isTop
+        })
+    })
+
+    tryOnScopeDispose(() => {
+        if (topTimer !== -1) {
+            window.clearTimeout(topTimer)
+            topTimer = -1
+        }
     })
 
     const localTop = computed(() => !stack.activeChildren.size)
