@@ -1,0 +1,223 @@
+/*********************************************************
+ * lib — analyse des invocations `pnpm` filtrees (#574)
+ *
+ * @description
+ * Extrait d'une ligne de shell les appels `pnpm` qui portent un filtre
+ * (`-F` / `--filter`), et dit quel PAQUET et quel SCRIPT chacun vise. Le
+ * garde `pnpm-script-exists` s'en sert pour confronter ces couples a la
+ * realite des `package.json` du workspace.
+ *
+ * @description
+ * Separe du garde pour etre testable a l'unite : le self-test injecte des
+ * lignes et verifie le couple extrait, sans avoir a fabriquer un faux
+ * arbre de `package.json`.
+ ********************************************************/
+
+/*********************************************************
+ * Sous-commandes natives de pnpm — un nom de script ne peut pas en etre une
+ *
+ * @description
+ * `pnpm -F origam build` lance le SCRIPT `build`, mais `pnpm -F origam
+ * exec playwright test` lance le BINAIRE `playwright`. Confondre les deux
+ * ferait chercher un script « exec » qui n'existe nulle part, et le garde
+ * hurlerait sur les 8 appels `exec playwright` parfaitement corrects de la
+ * CI.
+ *
+ * @description
+ * `run` est traite a part : c'est la seule sous-commande qui prend un nom
+ * de script en argument suivant.
+ ********************************************************/
+const PNPM_BUILTINS = new Set([
+    'add', 'audit', 'bin', 'config', 'create', 'deploy', 'dlx', 'env', 'exec',
+    'fetch', 'import', 'init', 'install', 'i', 'licenses', 'link', 'list', 'ls',
+    'outdated', 'pack', 'patch', 'patch-commit', 'prune', 'publish', 'rebuild',
+    'remove', 'rm', 'root', 'server', 'setup', 'store', 'unlink', 'update', 'up',
+    'why'
+])
+
+/*********************************************************
+ * Options de pnpm qui consomment la valeur SUIVANTE
+ *
+ * @description
+ * `pnpm -F origam build` : apres `-F`, le token `origam` est la valeur du
+ * filtre, pas la commande. Sans cette table, le garde prendrait le nom du
+ * paquet pour un nom de script.
+ ********************************************************/
+const VALUE_FLAGS = new Set(['-F', '--filter', '--filter-prod', '-C', '--dir', '--workspace-concurrency'])
+
+/**
+ * Vrai si le token est un flag pnpm booleen (sans valeur separee).
+ */
+function isBareFlag (token) {
+    return token.startsWith('-') && !VALUE_FLAGS.has(token)
+}
+
+/*********************************************************
+ * Retire l'emballage d'un token
+ *
+ * @description
+ * Les scripts de `package.json` sont lus tels quels dans le JSON : la
+ * derniere commande d'une valeur porte encore le guillemet fermant et la
+ * virgule de l'objet (`build",`). Sans ce nettoyage le garde cherche un
+ * script litteralement nomme `build",` et signale les 13 scripts racine —
+ * tous corrects — comme morts.
+ ********************************************************/
+function unquote (token) {
+    return token
+        .replace(/^['"`]+/, '')
+        .replace(/['"`,;.]+$/, '')
+}
+
+/*********************************************************
+ * Une ligne de commentaire n'est pas une surface executable
+ *
+ * @description
+ * `ci.yml:246` cite `pnpm -F @origam/marketing build` DANS un commentaire
+ * de post-mortem. La commande y est correcte et n'est de toute facon pas
+ * executee. Le perimetre du garde est ce qu'une machine lance ; une prose
+ * qui mentionne une commande — passee, future ou hypothetique — n'en fait
+ * pas partie.
+ *
+ * @description
+ * Seules les lignes ENTIEREMENT commentaires sont ecartees. Un `#` en
+ * milieu de ligne n'est pas traite : il peut vivre dans une chaine, et le
+ * couper produirait des coupures a tort.
+ ********************************************************/
+export function isCommentLine (line) {
+    return /^\s*#/.test(line)
+}
+
+/*********************************************************
+ * Normalisation d'une cible de filtre
+ *
+ * @description
+ * pnpm accepte des suffixes de selection (`origam...`, `...origam`,
+ * `origam^...`) et des chemins (`./packages/ds`). Le garde ne resout que
+ * les NOMS de paquets : tout ce qui contient un glob ou un separateur de
+ * chemin est rendu tel quel et sera classe « non resolu » plutot que
+ * signale a tort.
+ ********************************************************/
+export function normaliseFilterTarget (raw) {
+    const cleaned = unquote(raw)
+        .replace(/^\.\.\./, '')
+        .replace(/\.\.\.$/, '')
+        .replace(/\^$/, '')
+
+    const isGlob = cleaned.includes('*')
+    const isPath = cleaned.startsWith('.') || cleaned.startsWith('/')
+
+    return { target: cleaned, resolvable: cleaned.length > 0 && !isGlob && !isPath }
+}
+
+/*********************************************************
+ * Decoupage grossier d'une ligne en tokens de shell
+ *
+ * @description
+ * Suffisant pour ce garde : on ne cherche qu'a reconnaitre `pnpm`, ses
+ * flags et le premier mot qui suit. Les separateurs de commande (`|`,
+ * `&&`, `;`, `>`) coupent le flot — un token de redirection ne doit jamais
+ * etre pris pour un nom de script.
+ ********************************************************/
+/*********************************************************
+ * Sentinelle de coupure de commande
+ *
+ * @description
+ * `tokenise` remplace les separateurs de shell par ce caractere, qui ne
+ * peut pas apparaitre dans une ligne de commande reelle — donc aucune
+ * collision avec un vrai token.
+ *
+ * @description
+ * ⛔ Ecrit `\u0000`, JAMAIS l'octet NUL litteral. Un NUL brut dans la
+ * source rend le fichier BINAIRE pour git : plus de diff, plus de revue,
+ * et la moindre normalisation d'editeur le supprime en silence. C'est ce
+ * qui etait arrive ici : 5 octets NUL suffisaient a faire classer le
+ * fichier « Bin 0 -> 7395 bytes » par `git show --stat`, soit 0 ligne
+ * relisible en revue sur les 173 que le commit ajoutait.
+ ********************************************************/
+const SEP = '\u0000'
+
+function tokenise (line) {
+    return line
+        .replace(/[|;&]+/g, ` ${SEP} `)
+        .replace(/\s(\d?[<>]+)/g, ` ${SEP} `)
+        .split(/\s+/)
+        .filter(Boolean)
+}
+
+/*********************************************************
+ * Invocations `pnpm` filtrees d'une ligne
+ *
+ * @description
+ * Rend un tableau de `{ target, script, kind }` ou `kind` vaut `script`
+ * (un nom de script a verifier), `builtin` (sous-commande pnpm, ignoree)
+ * ou `if-present` (le drapeau `--if-present` autorise explicitement
+ * l'absence, donc rien a signaler).
+ ********************************************************/
+export function parseFilteredPnpmCalls (line) {
+    const tokens = tokenise(line)
+    const calls = []
+
+    for (let i = 0; i < tokens.length; i++) {
+        if (unquote(tokens[i]) !== 'pnpm') continue
+
+        let filter = null
+        let ifPresent = false
+        let j = i + 1
+
+        while (j < tokens.length) {
+            const token = tokens[j]
+
+            if (token === SEP) break
+
+            if (token === '--if-present') {
+                ifPresent = true
+                j++
+                continue
+            }
+
+            if (VALUE_FLAGS.has(token)) {
+                if (token === '-F' || token === '--filter' || token === '--filter-prod') filter = tokens[j + 1] ?? null
+                j += 2
+                continue
+            }
+
+            const valued = token.match(/^(--filter|--filter-prod)=(.+)$/)
+
+            if (valued) {
+                filter = valued[2]
+                j++
+                continue
+            }
+
+            if (isBareFlag(token)) {
+                j++
+                continue
+            }
+
+            break
+        }
+
+        if (j >= tokens.length || tokens[j] === SEP) continue
+        if (!filter) continue
+
+        let command = unquote(tokens[j])
+        let script = command
+
+        if (command === 'run') {
+            const next = tokens[j + 1]
+
+            if (!next || next === SEP) continue
+
+            script = unquote(next)
+        } else if (PNPM_BUILTINS.has(command)) {
+            calls.push({ target: unquote(filter), script: command, kind: 'builtin' })
+            continue
+        }
+
+        if (script.startsWith('$') || script.includes('${')) continue
+
+        calls.push({ target: unquote(filter), script, kind: ifPresent ? 'if-present' : 'script' })
+    }
+
+    return calls
+}

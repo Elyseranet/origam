@@ -15,6 +15,28 @@ set -euo pipefail
 #                                  # commit the updated *-linux.png files
 #
 # Mode is also selectable positionally: `bash vrt/vrt-docker.sh test|update`.
+#
+# ─── Why this script still exists (#606) ─────────────────────────────────────
+# The CI `vrt` job does NOT call this script — it replays the same steps
+# inline in the same pinned image. So this file is only ever exercised
+# locally, which is exactly how it drifted. It is kept rather than deleted
+# for one reason CI cannot cover: the committed baselines are
+# `*-chromium-linux.png`, and CI only ever COMPARES them. It has no
+# `--update-snapshots` job and could not commit the result if it had one.
+# Contributors are on macOS, where a native run writes `*-darwin.png` — a
+# different, useless file (see VRT.md). `vrt-docker.sh update` is therefore
+# the ONLY way to regenerate the baselines this repo actually ships.
+#
+# The container steps below MUST stay in lockstep with the `vrt` job in
+# .github/workflows/ci.yml — that is what makes a local verdict and a CI
+# verdict the same verdict.
+#
+# ⛔ It used to run `pnpm -F origam tokens:build` here. That script was
+# removed on 2026-08-31 with the whole Style Dictionary pipeline, and the
+# call did NOT fail: a filtered pnpm invocation of a missing script prints a
+# notice and returns `exit 0`, so `set -e` never fired (measured, #574). The
+# `pnpm-script-exists` guard now fails on any such dead call — that is what
+# keeps this file honest between two local runs.
 
 MODE="${1:-test}"
 case "$MODE" in
@@ -67,7 +89,6 @@ export PNPM_HOME=/pnpm-home
 export PATH="$PNPM_HOME:$PATH"
 pnpm config set store-dir /pnpm-store
 pnpm install --frozen-lockfile
-pnpm -F origam tokens:build
 pnpm -F @origam/stories build
 '
 

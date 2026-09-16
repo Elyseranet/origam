@@ -61,10 +61,15 @@ cd packages/tests
 pnpm exec playwright test > /tmp/e2e-$(git rev-parse --short HEAD).log 2>&1
 ```
 
-⛔ **Ne pas utiliser `pnpm -F @origam/tests test:e2e`** : le hook `pretest:e2e`
-échoue sur le garde `variant-titles` et **bloque Playwright avant qu'une seule spec
-ne démarre**, tout en rendant `exit code 0` à l'appelant. C'est le ticket #46, et
-c'est un piège dans lequel je suis tombé aujourd'hui.
+✅ **`pnpm -F @origam/tests test:e2e` est de nouveau utilisable** — l'interdiction
+qui figurait ici est périmée. Le hook `pretest:e2e` agrège les codes de ses gardes
+et propage l'échec : corrigé par `7034f429` (2026-08-17). Remesuré le 2026-09-16,
+vrai `$?` hors pipe : garde rouge → **exit 1**, 0 spec exécutée ; garde vert →
+**exit 0**, 30 tests exécutés sur `e2e/btn.spec.ts`. Tickets **#534** puis **#574**.
+
+⛔ Le numéro **#46 était faux** : c'est une *pull request mergée* sur une faute de
+frappe CSS, sans rapport. Il a circulé des mois dans la doc du dépôt. Le vrai défaut
+est **#534** (fermé) / **#574**.
 
 ⛔ Avant de lancer : vérifier qu'aucun serveur périmé ne tient le port 6006
 (`lsof -ti :6006`, puis `lsof -p <pid> | grep cwd` pour identifier le worktree
