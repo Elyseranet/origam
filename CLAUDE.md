@@ -512,8 +512,22 @@ Measured 2026-09-05, three false diagnoses in one session, in both directions:
 a correct fix looked broken, and a stale bundle looked green. `histoire preview`
 binds :6006 from *whichever* worktree started it, and there are ~55 of them.
 Playwright's `reuseExistingServer` then happily attaches to the neighbour's
-build. The manifest guard in `e2e-global-setup.ts` catches the case — **but it
-returns `exit 0`**, so a caller checking only the exit code sees success.
+build. The manifest guard in `e2e-global-setup.ts` catches the case **and aborts
+the run with `exit 1`** — the claim that stood here, that it "returns `exit 0`",
+is false. Remeasured 2026-09-16: from this worktree, pointed at a neighbour's
+:6006, real `$?` captured outside any pipe:
+
+```
+✗ Histoire server on this port does NOT serve this worktree's stories — run aborted.
+  • [variant drift] components/stories/Dialog/OrigamDialog.story.vue
+  • [variant drift] components/stories/SliderField/OrigamSliderFieldTrack.story.vue
+REAL_EXIT=1
+```
+
+The guard `throw`s from `globalSetup`, and a throwing `globalSetup` fails the
+Playwright run. Checking the port owner is still worth doing — it tells you
+*which* worktree you hit, which the abort message cannot — but the exit code
+alone will not lie to you here.
 
 ```sh
 lsof -ti :6006                              # is anyone there?
@@ -600,13 +614,41 @@ does not exist, and **passes against pre-fix code**. Caught only by running the
 spec against `HEAD~1`. **Always A/B a new spec against the parent commit** — a
 green that also passes before the fix proves nothing.
 
-⛔ **Do NOT use `pnpm -F @origam/tests test:e2e`** — the `pretest:e2e` hook
-fails on a guard and **blocks Playwright before a single spec starts, while
-still returning `exit 0`** to the caller. ⛔ Tracked as **#574**. Do NOT cite
-`#46` for this — that is a *merged pull request* about a CSS typo, unrelated,
-and the wrong number circulated in this repo's docs for months. Same family: a
-piped `pnpm build | tail -30` returns `exit 0` while the build fails. **Capture
-the real `$?`.**
+✅ **`pnpm -F @origam/tests test:e2e` is usable again** — the prohibition that
+stood here was obsolete. The `pretest:e2e` hook (`run-guards.mjs`) aggregates
+its guards' exit codes and propagates a failure; it never returns `exit 0` on a
+red guard. Fixed by `7034f429` (2026-08-17), tracked as **#534** then **#574**.
+Remeasured 2026-09-16 on `develop` @ `16607e69`, real `$?` captured outside any
+pipe:
+
+| invocation | `$?` | Playwright |
+|---|---|---|
+| hook red (a guard exits 1) | **1** | never starts — 0 spec run |
+| hook green, `… test:e2e e2e/btn.spec.ts --project=chromium` | **0** | starts — **30 tests executed, 30 passed** |
+
+⛔ **But the pattern this warning was about is real and is NOT fixed by that** —
+it is a property of **pnpm itself**, not of any one script. Measured on pnpm
+9.15.0: **a FILTERED invocation of a script that does not exist prints a notice
+and returns `exit 0`**, so `set -euo pipefail` cannot catch it. `pnpm run <x>`
+unfiltered correctly exits 1; only the `pnpm -F` form — the one this file
+mandates everywhere — swallows it. That is how `vrt-docker.sh` went on calling
+`tokens:build` for weeks after the script was deleted (#606). Guard 24,
+`pnpm-script-exists.mjs`, now fails on any such dead call.
+
+⛔ Do NOT cite `#46` for this — that is a *merged pull request* about a CSS
+typo, unrelated, and the wrong number circulated in this repo's docs for
+months. Same family: a piped `pnpm build | tail -30` returns `exit 0` while the
+build fails. **Capture the real `$?`.**
+
+⛔ **A green e2e run still needs the static Histoire and an unowned port.** The
+gate only checks Variant navigation drift — it says nothing about the server
+you are about to hit. Build first, and isolate the port if `lsof -ti :6006`
+answers (it usually does — there are ~150 worktrees):
+
+```sh
+pnpm -F @origam/stories build; echo $?          # capture it, a stale bundle reads green
+E2E_STATIC=1 E2E_HISTOIRE_PORT=6031 pnpm -F @origam/tests test:e2e <spec> --project=chromium
+```
 
 ### Adding dependencies
 
@@ -1020,7 +1062,8 @@ The global pre-delivery policy (TU + e2e + security) applies. Specific to
 origam:
 - Run tests on **Node 24** (`.nvmrc`); Node 18 produces unrelated
   `crypto.hash` failures.
-- `pnpm -F origam guards` must stay at 17/17. If a change touches the token
+- `pnpm -F origam guards` must stay at **24/24** (measured 2026-09-16; the
+  `17/17` written here was stale — recount, never quote). If a change touches the token
   stylesheets, `token-var-channels` is the guard that will catch a variable
   read but never declared (or the reverse).
 - `pnpm audit --prod` should be clean to ship; dev tree contains
