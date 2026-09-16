@@ -11,7 +11,7 @@
     "dev": "nuxt dev",
     "build": "nuxt build",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare || [ \"$CI\" = \"true\" ]",
+    "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "typecheck": "nuxt typecheck",
     "docs:generate": "tsx --tsconfig ./tsconfig.typeorm.json scripts/generate-api-docs.mjs --files",
