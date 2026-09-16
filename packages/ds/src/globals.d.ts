@@ -26,7 +26,27 @@ declare global {
              * premier lit un `binding.value` fige.
              ********************************************************/
             binding: import('./interfaces/Commons/clickOutside.interface').IClickOutsideDirectiveBinding
-        } | undefined> & { lastMousedownWasOutside: boolean }
+        } | undefined> & {
+            lastMousedownWasOutside: boolean
+            /*********************************************************
+             * Timers `click:outside` en vol (#753)
+             *
+             * @description
+             * `directive()` differe l'appel du handler d'un
+             * `setTimeout(..., 0)`. Le hook `unmounted` retirait bien les
+             * ecouteurs mais n'annulait pas un timer DEJA arme : un clic
+             * qui provoque lui-meme le demontage (fermer une modale en
+             * cliquant dehors) tombe exactement dans cette fenetre, et le
+             * handler s'executait ensuite sur un composant disparu.
+             *
+             * @description
+             * La portee est l'ELEMENT, pas un scope Vue — il n'y a donc ni
+             * `onScopeDispose` ni `onBeforeUnmount` a accrocher ici, et les
+             * handles doivent vivre sur l'element comme le reste de l'etat
+             * de cette directive.
+             ********************************************************/
+            timers?: Set<number>
+        }
         _onResize?: Record<number, {
             handler: () => void
             options: AddEventListenerOptions
@@ -40,6 +60,15 @@ declare global {
             isTouch?: boolean
             showTimer?: number
             showTimerCommit?: (() => void) | null
+            /*********************************************************
+             * Timers d'animation en vol (#753)
+             *
+             * @description
+             * Les trois `setTimeout` des phases du ripple. Purges par le
+             * hook `unmounted` de la directive, AVANT le
+             * `delete el._ripple` qui rendrait les handles inatteignables.
+             ********************************************************/
+            timers?: Set<number>
         }
         _observe?: Record<number, {
             init: boolean

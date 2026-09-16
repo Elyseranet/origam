@@ -53,93 +53,22 @@ import { useMasonry } from '@origam/composables/Masonry/masonry.composable'
 import { useSsrBoot } from '@origam/composables/Commons/ssrBoot.composable'
 import { useVirtual } from '@origam/composables/Commons/virtual.composable'
 
+import {
+    flushFramesFrom,
+    installFakeRaf,
+    pendingFramesFrom,
+    withoutGlobals
+} from '../probe/raf-teardown.harness'
+
 /*********************************************************
  * Deterministic rAF harness
+ *
+ * ⛔ MOVED, not rewritten (#753). The harness this spec shipped inline
+ * now lives in `TU/probe/raf-teardown.harness.ts` so #753's spec can use
+ * the same instrument instead of a second copy that would drift. The
+ * bodies are unchanged; only their home moved. Every assertion below is
+ * byte-for-byte what #719 merged.
  ********************************************************/
-
-interface IArmedFrame {
-    cb: FrameRequestCallback
-    /** Capture site, used to attribute a pending frame to ONE source file. */
-    origin: string
-}
-
-let frames: Map<number, IArmedFrame>
-let nextFrameId: number
-
-const installFakeRaf = () => {
-    frames = new Map()
-    nextFrameId = 1
-
-    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback): number => {
-        const id = nextFrameId++
-
-        frames.set(id, { cb, origin: new Error('armed').stack ?? '' })
-
-        return id
-    })
-
-    vi.stubGlobal('cancelAnimationFrame', (id: number): void => {
-        frames.delete(id)
-    })
-}
-
-/**
- * ⛔ Count frames armed BY THE FILE UNDER TEST, never the global queue.
- *
- * Mounting any real component arms frames from several other places
- * (`contrast.directive.ts`, `location.util.ts`, …), so a bare
- * `frames.size === 0` assertion would measure whoever else happens to be
- * on the queue rather than the site under test — and would turn this
- * spec red the day an unrelated component changes. Attribution comes
- * from the capture stack of the `requestAnimationFrame` call itself.
- */
-const pendingFramesFrom = (sourceFile: string): number =>
-    [...frames.values()].filter(({ origin }) => origin.includes(sourceFile)).length
-
-/**
- * Run the frames armed by `sourceFile`, repeatedly, so a callback that
- * schedules the next rung (the `InfiniteScroll` triple-rAF, `useVirtual`'s
- * `calculateVisibleItems`) is drained too. Bounded so a self-rescheduling
- * loop cannot hang the suite. Foreign frames are left untouched.
- */
-const flushFramesFrom = (sourceFile: string, rounds = 6): void => {
-    for (let i = 0; i < rounds; i++) {
-        const batch = [...frames.entries()].filter(([, { origin }]) => origin.includes(sourceFile))
-
-        if (!batch.length) return
-
-        for (const [id] of batch) frames.delete(id)
-        for (const [, { cb }] of batch) cb(0)
-    }
-}
-
-/**
- * Stand-in for vitest's jsdom environment teardown: the globals the
- * environment installed are gone, while the objects the component still
- * holds references to (DOM nodes, closures) are not.
- *
- * `globalThis === window` under jsdom, so deleting `window` does NOT
- * remove the other globals it also exposes (`getComputedStyle` stays
- * callable) — measured. The extra names are therefore deleted
- * explicitly, per site, matching what that site's continuation actually
- * dereferences.
- */
-const withoutGlobals = <T>(names: string[], fn: () => T): T => {
-    const saved = new Map<string, unknown>()
-
-    for (const name of names) {
-        saved.set(name, (globalThis as Record<string, unknown>)[name])
-        delete (globalThis as Record<string, unknown>)[name]
-    }
-
-    try {
-        return fn()
-    } finally {
-        for (const [name, value] of saved) {
-            ;(globalThis as Record<string, unknown>)[name] = value
-        }
-    }
-}
 
 beforeEach(() => {
     installFakeRaf()

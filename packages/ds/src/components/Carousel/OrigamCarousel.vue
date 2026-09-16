@@ -163,6 +163,8 @@
 	const origamWindowRef = ref<TOrigamWindow>()
 
 	let slideTimeout = -1
+	let restartFrame = -1
+	let disposed = false
 
 	// Real-time progress driven by the cycle timer: starts at 0 the moment
 	// the timer is (re)armed, climbs to 100 over `interval` ms via rAF,
@@ -259,9 +261,40 @@
 		return isPaused.value ? MDI_ICONS.PLAY : MDI_ICONS.PAUSE
 	})
 
+	/*********************************************************
+	 * Frame de redemarrage non annulee (#753 — hors releve du ticket)
+	 *
+	 * @description
+	 * `onBeforeUnmount` annulait `slideTimeout`, mais pas CETTE frame.
+	 * Mesure A/B contre le commit parent : apres `unmount()` la frame
+	 * reste armee (1 frame attribuee a ce fichier), ce qui la place dans
+	 * la meme famille que les autres sites du ticket.
+	 *
+	 * @description
+	 * ⛔ CE QUE LA MESURE N'A PAS CONFIRME, et qu'une premiere version de
+	 * ce commentaire affirmait a tort : elle ne reconstruit PAS un timer
+	 * orphelin. Son corps est `startTimeout`, qui ouvre sur
+	 * `if (!props.cycle || !origamWindowRef.value) return` — apres le
+	 * demontage la ref vaut `undefined`, donc le corps sort
+	 * immediatement. Verifie : la sonde « ne reconstruit pas de timer »
+	 * passe AUSSI sur le code non corrige, elle ne discrimine rien.
+	 * Le defaut reel est donc une frame qui survit avec un corps inerte
+	 * — plus benin que ce que j'avais ecrit, et corrige quand meme parce
+	 * qu'il ne tient qu'a une garde incidente dans une autre fonction.
+	 ********************************************************/
 	const restartTimeout = () => {
 		window.clearTimeout(slideTimeout)
-		window.requestAnimationFrame(startTimeout)
+
+		if (disposed) return
+
+		window.cancelAnimationFrame(restartFrame)
+		restartFrame = window.requestAnimationFrame(() => {
+			restartFrame = -1
+
+			if (disposed) return
+
+			startTimeout()
+		})
 	}
 
 	watch(model, restartTimeout)
@@ -281,6 +314,13 @@
 
 	onMounted(startTimeout)
 	onBeforeUnmount(() => {
+		disposed = true
+
+		if (restartFrame !== -1) {
+			window.cancelAnimationFrame(restartFrame)
+			restartFrame = -1
+		}
+
 		window.clearTimeout(slideTimeout)
 		stopProgress()
 	})

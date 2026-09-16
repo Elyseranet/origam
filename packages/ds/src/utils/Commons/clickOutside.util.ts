@@ -69,11 +69,35 @@ export function directive (e: MouseEvent, el: HTMLElement, binding: IClickOutsid
     const handler = typeof binding.value === 'function' ? binding.value : binding.value.handler
 
     if (el._clickOutside?.lastMousedownWasOutside && checkEvent(e, el, binding)) {
-        setTimeout(() => {
+        /*********************************************************
+         * Timer borne a la duree de vie de l'ELEMENT (#753)
+         *
+         * @description
+         * Le handler est differe d'un macrotask. Le hook `unmounted` de
+         * la directive retirait les ecouteurs mais n'annulait pas un
+         * timer deja arme — et le cas nominal tombe pile dedans : un
+         * clic exterieur qui FERME le composant declenche ce timer, puis
+         * le demontage, puis le timer. Le handler s'executait donc sur un
+         * composant disparu.
+         *
+         * @description
+         * La portee ici est l'element, pas un scope Vue : pas de
+         * `tryOnScopeDispose` a accrocher. Le handle est donc range sur
+         * `el._clickOutside`, la ou vit deja tout l'etat de cette
+         * directive, et `unmounted` le purge.
+         ********************************************************/
+        const store = el._clickOutside
+
+        const id = window.setTimeout(() => {
+            store.timers?.delete(id)
+
             if (checkIsActive(e, binding) && handler) {
                 handler(e)
             }
         }, 0)
+
+        store.timers ??= new Set<number>()
+        store.timers.add(id)
     }
 }
 

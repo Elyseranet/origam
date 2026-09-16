@@ -7,7 +7,7 @@ import { ORIGAM_MENU_KEY } from '../../consts/Menu/menu.const'
 import type { IActivatorProps } from '../../interfaces/Commons/activator.interface'
 
 import { activator, getTargetActivator } from '../../utils/Commons/activator.util'
-import { matchesSelector, refElement } from '../../utils/Commons/commons.util'
+import { matchesSelector, refElement, tryOnScopeDispose } from '../../utils/Commons/commons.util'
 import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
 
 /*********************************************************
@@ -210,13 +210,37 @@ export function useActivator (props: IActivatorProps, {isActive, isTop}: {
             isActive.value = false
         }
     })
+    /*********************************************************
+     * Timer borne a la duree de vie du scope (#753 — hors releve)
+     *
+     * @description
+     * Absent de la liste du ticket, trouve par mon propre balayage. Le
+     * `watch` s'arrete bien au dispose, mais un timer arme au DERNIER
+     * tick avant le demontage, lui, survivait et ecrivait ensuite
+     * `cursorTarget.value` sur un scope detruit. Le corps ne dereference
+     * aucun global, donc ce n'est pas le profil #706 — c'est une
+     * ecriture reactive post-mortem, le meme choix que #719 a fait pour
+     * `useSsrBoot` : annuler coute une ligne et supprime la fenetre,
+     * plutot que de debattre de son innocuite.
+     ********************************************************/
+    let cursorResetTimer = -1
+
     watch(isActive, (val) => {
         if (!val) {
-            setTimeout(() => {
+            window.clearTimeout(cursorResetTimer)
+            cursorResetTimer = window.setTimeout(() => {
+                cursorResetTimer = -1
                 cursorTarget.value = undefined
             })
         }
     }, {flush: 'post'})
+
+    tryOnScopeDispose(() => {
+        if (cursorResetTimer !== -1) {
+            window.clearTimeout(cursorResetTimer)
+            cursorResetTimer = -1
+        }
+    })
 
     // ACTIVATOR TARGET
 
