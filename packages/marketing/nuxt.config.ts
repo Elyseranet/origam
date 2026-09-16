@@ -229,6 +229,28 @@ export default defineNuxtConfig({
         },
         resolve: {
             alias: {
+                // ⛔ The four `origam/tokens/css/*` sheets are aliased to SOURCE
+                // for the same reason as `modules[]` above — see #774.
+                //
+                // One of them is declared in this file's own `css[]` array
+                // (`dark`); the other three are injected into `nuxt.options.css`
+                // by the DS Nuxt module (`primitive`, `light`, `utilities` —
+                // `packages/ds/src/nuxt/module.ts:106-116`). Nuxt funnels that
+                // array into the virtual `#build/css.mjs`, whose imports the
+                // bundler resolves through the `origam` package's `exports` map
+                // — and every `./tokens/css/*` entry there points into `dist/`,
+                // which only `pnpm -F origam build` creates.
+                //
+                // Measured on a worktree with no `packages/ds/dist`:
+                // `pnpm -F @origam/marketing build` exited 1 on
+                // `Rolldown failed to resolve import "origam/tokens/css/primitive"`.
+                // The token stylesheets are hand-maintained sources committed
+                // under `ds/src/assets/css/tokens/` and `dist/` only copies
+                // them, so pointing at the source is lossless.
+                'origam/tokens/css/primitive': resolve(__dirname, '../ds/src/assets/css/tokens/primitive.css'),
+                'origam/tokens/css/light': resolve(__dirname, '../ds/src/assets/css/tokens/light.css'),
+                'origam/tokens/css/dark': resolve(__dirname, '../ds/src/assets/css/tokens/dark.css'),
+                'origam/tokens/css/utilities': resolve(__dirname, '../ds/src/assets/css/tokens/origam-utilities.css'),
                 'origam/nuxt': resolve(__dirname, '../ds/src/nuxt/module.ts'),
                 'origam/components': resolve(__dirname, '../ds/src/components'),
                 'origam/composables': resolve(__dirname, '../ds/src/composables'),
