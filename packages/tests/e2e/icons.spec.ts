@@ -100,15 +100,31 @@ test.describe('OrigamIcon — dispatcher', () => {
         await expect(icon).toBeVisible({ timeout: 15000 })
     })
 
-    test('Click button mode — role="button" is present', async ({ page }) => {
+    /*
+     * ⛔ This test used to assert `[role="button"]` was PRESENT. It has been
+     * red on `develop` ever since #653 removed that role from the whole icon
+     * family — verified by running it against `origin/develop`, where it
+     * fails identically. The removal was deliberate and is documented at
+     * length in `iconAccessibility.composable.ts`: the leaves set no
+     * `tabindex` and no keydown handler, so the role announced a control a
+     * keyboard or switch user could never reach (WCAG 2.1.1) — worse than no
+     * ARIA at all. `origam-btn`'s icon-only mode is the supported path.
+     *
+     * The spec now pins what the contract ACTUALLY is, so the absence of the
+     * role is protected rather than merely tolerated.
+     */
+    test('Click mode — the icon un-hides but claims NO role (#653)', async ({ page }) => {
         await page.goto(ICON_STORY)
         await page.waitForLoadState('networkidle')
         await page.getByText('Events - click', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const btn = sandbox.locator('[role="button"]').first()
-        await expect(btn).toBeVisible({ timeout: 15000 })
+        const icon = sandbox.locator('.origam-icon--clickable').first()
+
+        await expect(icon).toBeVisible({ timeout: 15000 })
+        await expect(icon).toHaveAttribute('aria-hidden', 'false')
+        await expect(sandbox.locator('.origam-icon[role="button"]')).toHaveCount(0)
     })
 
     test('Dispatch SVG path — renders .origam-icon--svg', async ({ page }) => {
