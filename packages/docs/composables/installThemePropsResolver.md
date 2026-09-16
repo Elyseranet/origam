@@ -131,8 +131,9 @@ eager read in a widely-used composable has that same blast radius.
 
 Detector: the AST analyser in
 `packages/ds/scripts/guards/lib/setup-reads.mjs`, run as the
-`composable-setup-reads` guard (one of the 23 in
-`packages/ds/scripts/guards/run-all.mjs`) and pinned by synthetic fixtures in
+`composable-setup-reads` guard (one of those listed in
+`packages/ds/scripts/guards/run-all.mjs` — recount there, the number moves)
+and pinned by synthetic fixtures in
 `packages/tests/TU/origam/setup-reads-composables.spec.ts` and
 `setup-level-prop-reads.spec.ts`. It currently reports *"2 known (baselined)
 violation(s), 0 new"*.
