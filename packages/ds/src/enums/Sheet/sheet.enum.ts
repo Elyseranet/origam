@@ -2,7 +2,7 @@
  * Well-known bottom-sheet snap-point ids understood by `<OrigamSheet>`
  * (`swipeable + side="bottom"`) out of the box.
  *
- * `TSheetSnapId` widens this set with `(string & {})` so brand
+ * `TSheetSnapId` widens this set with `TAnyString` so brand
  * integrations can add their own rungs without forking — the enum only
  * names the ones the component ships defaults for.
  */
