@@ -175,7 +175,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, onMounted, ref, StyleValue, useAttrs, useSlots, watch } from 'vue'
+	import { computed, onBeforeUnmount, onMounted, ref, StyleValue, useAttrs, useSlots, watch } from 'vue'
 	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
 	import OrigamExpandX from '../Transition/OrigamExpandX.vue'
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
@@ -198,6 +198,8 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
 	import { useVariant } from '../../composables/Commons/variant.composable'
+
+	import { IN_BROWSER } from '../../consts/Commons/commons.const'
 
 	import vContrast from '../../directives/Contrast/contrast.directive'
 
@@ -530,6 +532,50 @@
 	 *  `beforeCreate` — the template's own `fieldClasses` read gets there
 	 *  first and seeds the correct, themed value.
 	 ********************************************************/
+	/*********************************************************
+	 * scheduleLabelFrame — rAF bound to the component's lifetime (#719)
+	 *
+	 * @description
+	 * The floating-label animation is deferred by one frame so the label
+	 * and its target have been laid out before their rects are read.
+	 * Nothing cancelled that frame at unmount. The body is NOT benign:
+	 * it calls `getComputedStyle` twice — a bare global. Landing after
+	 * the jsdom environment is destroyed throws
+	 * `ReferenceError: getComputedStyle is not defined`, which fails the
+	 * whole Vitest run with zero red tests (the #706 family).
+	 *
+	 * @description
+	 * `onBeforeUnmount` cancels the armed frames and flips `disposed`, so
+	 * a schedule attempt that somehow arrives later is a no-op too.
+	 *
+	 * @description
+	 * Every armed id is tracked, NOT just the latest. Collapsing them into
+	 * a single handle would make a later call supersede an earlier one —
+	 * a coalescing semantic this component never had, and one no failing
+	 * test asks for. The fix adds cancellation at unmount and nothing else.
+	 ********************************************************/
+	const labelFrames = new Set<number>()
+	let disposed = false
+
+	const scheduleLabelFrame = (cb: () => void) => {
+		if (disposed || !IN_BROWSER) return
+
+		const id = requestAnimationFrame(() => {
+			labelFrames.delete(id)
+			cb()
+		})
+
+		labelFrames.add(id)
+	}
+
+	onBeforeUnmount(() => {
+		disposed = true
+
+		for (const id of labelFrames) cancelAnimationFrame(id)
+
+		labelFrames.clear()
+	})
+
 	onMounted(() => {
 		watch(isFocused, (newVal, oldVal) => {
 			if (newVal !== oldVal) {
@@ -541,7 +587,7 @@
 				const el: HTMLElement = origamLabelRef.value!.$el
 				const targetEl: HTMLElement = origamFloatingLabelRef.value!.$el
 
-				requestAnimationFrame(() => {
+				scheduleLabelFrame(() => {
 					const rect = nullifyTransforms(el)
 					const targetRect = targetEl.getBoundingClientRect()
 

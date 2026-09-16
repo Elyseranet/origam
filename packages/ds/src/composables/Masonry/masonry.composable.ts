@@ -123,19 +123,26 @@ export function bucketFill (
  * SSR-safe `ResizeObserver` factory. Returns `null` on the server side
  * — the composable falls back to a one-shot measurement on `onMounted`.
  */
-function createResizeObserver (callback: () => void): ResizeObserver | null {
+function createResizeObserver (schedule: (cb: () => void) => void, callback: () => void): ResizeObserver | null {
     if (typeof window === 'undefined' || typeof ResizeObserver === 'undefined') {
         return null
     }
-    return new ResizeObserver(() => {
-        // Throttle through rAF so we coalesce multiple synchronous
-        // resize events (browser fires one per affected element).
-        if (typeof window !== 'undefined') {
-            window.requestAnimationFrame(callback)
-        } else {
-            callback()
-        }
-    })
+
+    /*********************************************************
+     * Throttled observer
+     *
+     * @description
+     * Coalesce multiple synchronous resize events through one frame —
+     * the browser fires one per affected element.
+     *
+     * @description
+     * The scheduler is INJECTED by the caller rather than being
+     * `window.requestAnimationFrame` directly: this factory sits at
+     * module level and owns no scope, so it could never cancel the
+     * frame it armed (#719). The caller's scheduler is bound to the
+     * component's lifetime and does.
+     ********************************************************/
+    return new ResizeObserver(() => schedule(callback))
 }
 
 /**
@@ -168,6 +175,42 @@ export function useMasonry (options: IUseMasonryOptions) {
 
     let containerObserver: ResizeObserver | null = null
     let itemObserver: ResizeObserver | null = null
+
+    /*********************************************************
+     * scheduleFrame — rAF bound to the component's lifetime (#719)
+     *
+     * @description
+     * Two sites armed a frame nothing cancelled: the first-paint
+     * measurement, and the `ResizeObserver` throttle. `relayout()` reads
+     * the container's `clientWidth` and every item's `offsetHeight`; a
+     * frame landing after the environment is destroyed is the #706
+     * family.
+     *
+     * @description
+     * The ResizeObserver case is why the flag exists alongside the
+     * cancel: the RO callback is itself a deferred continuation, so a
+     * schedule request can arrive AFTER `onBeforeUnmount` has run and
+     * there is no handle to cancel at that moment.
+     *
+     * @description
+     * Every armed id is tracked, NOT just the latest. Collapsing them into
+     * a single handle would make a later call supersede an earlier one —
+     * a coalescing semantic this scope never had, and one no failing test
+     * asks for. The fix adds cancellation at dispose and nothing else.
+     ********************************************************/
+    const frames = new Set<number>()
+    let disposed = false
+
+    const scheduleFrame = (cb: () => void) => {
+        if (disposed || typeof window === 'undefined') return
+
+        const id = window.requestAnimationFrame(() => {
+            frames.delete(id)
+            cb()
+        })
+
+        frames.add(id)
+    }
 
     const setItem = (index: number, el: HTMLElement | null) => {
         const previous = items.get(index)
@@ -232,10 +275,10 @@ export function useMasonry (options: IUseMasonryOptions) {
 
             // Lazily create observers on first non-null container.
             if (!containerObserver) {
-                containerObserver = createResizeObserver(relayout)
+                containerObserver = createResizeObserver(scheduleFrame, relayout)
             }
             if (!itemObserver) {
-                itemObserver = createResizeObserver(relayout)
+                itemObserver = createResizeObserver(scheduleFrame, relayout)
             }
 
             if (containerObserver) containerObserver.observe(container)
@@ -246,7 +289,7 @@ export function useMasonry (options: IUseMasonryOptions) {
             // First-paint measurement. Wait one frame so the children have
             // had time to lay out (especially images / web fonts).
             if (typeof window !== 'undefined') {
-                window.requestAnimationFrame(relayout)
+                scheduleFrame(relayout)
             } else {
                 relayout()
             }
@@ -255,6 +298,12 @@ export function useMasonry (options: IUseMasonryOptions) {
     )
 
     onBeforeUnmount(() => {
+        disposed = true
+
+        for (const id of frames) window.cancelAnimationFrame(id)
+
+        frames.clear()
+
         containerObserver?.disconnect()
         itemObserver?.disconnect()
         containerObserver = null
