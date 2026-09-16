@@ -32,8 +32,28 @@ import type { TOtpInputFieldType } from '../../types/OtpInputField/otp-input-fie
  * Only `fontSize` does (the visible `.origam-otp-input-field__field` cell).
  * `Omit` strips the inherited surface back down before re-adding exactly
  * what this component supports.
+ *
+ * @description
+ * ⛔ OUTER adjacent surface stripped for the SAME structural reason (#756).
+ * `IAdjacentProps` (`prependIcon` / `appendIcon` / `prependAvatar` /
+ * `appendAvatar` / `prependAriaLabel` / `appendAriaLabel`) is inherited from
+ * `IInputProps`, and the element that renders that zone — the
+ * `.origam-input__prepend` / `.origam-input__append` span in
+ * `OrigamInput.vue` — is never mounted here, exactly as the paragraph above
+ * says. Measured, jsdom, sentinel values passed as props and grepped out of
+ * `document.body.innerHTML`: `<origam-input>` and `<origam-text-field>` both
+ * render the zone and carry the name; `<origam-otp-input-field>` renders NO
+ * `origam-input__prepend` / `__append` node at all. The four media props were
+ * already recorded as inert in `guards/baseline/unconsumed-props.json`; the
+ * two name props would have joined them, so the whole surface goes instead.
+ *
+ * @description
+ * The INNER zone is untouched and is the one this component really has:
+ * `prependInnerAriaLabel` / `appendInnerAriaLabel` come through `IFieldProps`
+ * → `IAdjacentInnerProps`, reach `<origam-field>` via `fieldProps()`, and were
+ * measured PRESENT in the same sweep.
  ********************************************************/
-export interface IOtpInputFieldProps extends Omit<IFieldProps, 'fontFamily' | 'fontWeight' | 'lineHeight' | 'letterSpacing'>, Omit<IInputProps, 'fontFamily' | 'fontWeight' | 'lineHeight' | 'letterSpacing'>, IVariantProps, Pick<ITypographyProps, 'fontSize'> {
+export interface IOtpInputFieldProps extends Omit<IFieldProps, 'fontFamily' | 'fontWeight' | 'lineHeight' | 'letterSpacing'>, Omit<IInputProps, 'fontFamily' | 'fontWeight' | 'lineHeight' | 'letterSpacing' | 'prependIcon' | 'appendIcon' | 'prependAvatar' | 'appendAvatar' | 'prependAriaLabel' | 'appendAriaLabel'>, IVariantProps, Pick<ITypographyProps, 'fontSize'> {
     autofocus?: boolean
     divider?: string
     focusAll?: boolean

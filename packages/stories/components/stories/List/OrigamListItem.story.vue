@@ -191,6 +191,7 @@
 				<origam-list-item
 						title="Click the prepend icon"
 						:prepend-icon="MDI_ICONS.HEART"
+						prepend-aria-label="Open details"
 						@click:prepend="logEvent('click:prepend', $event)"
 				/>
 			</origam-list>
@@ -201,6 +202,7 @@
 				<origam-list-item
 						title="Click the append icon"
 						:append-icon="MDI_ICONS.CHEVRON_RIGHT"
+						append-aria-label="Show options"
 						@click:append="logEvent('click:append', $event)"
 				/>
 			</origam-list>

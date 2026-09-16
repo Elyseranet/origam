@@ -40,8 +40,7 @@
 					v-if="hasPrependInner"
 					key="prependInner"
 					class="origam-field__prepend-inner"
-					:role="isPrependInnerClickable ? 'button' : undefined"
-					:tabindex="isPrependInnerClickable ? 0 : undefined"
+					v-bind="prependInnerCommandAttrs"
 					@click="handleClickPrependInner"
 					@keydown="handleKeydownPrependInner"
 			>
@@ -129,8 +128,7 @@
 					v-if="hasAppendInner"
 					key="appendInner"
 					class="origam-field__append-inner"
-					:role="isAppendInnerClickable ? 'button' : undefined"
-					:tabindex="isAppendInnerClickable ? 0 : undefined"
+					v-bind="appendInnerCommandAttrs"
 					@click="handleClickAppendInner"
 					@keydown="handleKeydownAppendInner"
 			>
@@ -252,13 +250,13 @@
 	 ********************************************************/
 
 	const {
+		prependInnerCommandAttrs,
+		appendInnerCommandAttrs,
 		hasAppendInner,
 		onClickAppendInner: handleClickAppendInner,
 		onClickPrependInner: handleClickPrependInner,
 		onKeydownAppendInner: handleKeydownAppendInner,
 		onKeydownPrependInner: handleKeydownPrependInner,
-		isAppendInnerClickable,
-		isPrependInnerClickable,
 		clickClear: handleClickClear,
 		hasPrependInner,
 		hasClear

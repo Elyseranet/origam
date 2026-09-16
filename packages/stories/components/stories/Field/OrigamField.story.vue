@@ -193,6 +193,7 @@
 			<origam-field
 					label="Append inner click"
 					:append-inner-icon="appendInnerIcon"
+					append-inner-aria-label="Show options"
 					@click:append-inner="logEvent('click:appendInner', $event)"
 			>
 				<template #default="{ id, onFocus, onBlur }">
@@ -205,6 +206,7 @@
 			<origam-field
 					label="Prepend inner click"
 					:prepend-inner-icon="prependInnerIcon"
+					prepend-inner-aria-label="Open details"
 					@click:prepend-inner="logEvent('click:prependInner', $event)"
 			>
 				<template #default="{ id, onFocus, onBlur }">

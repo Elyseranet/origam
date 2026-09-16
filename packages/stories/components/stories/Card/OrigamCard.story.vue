@@ -225,6 +225,7 @@
 			<origam-card
 					title="Prepend click"
 					:prepend-icon="prependIcon"
+					prepend-aria-label="Open details"
 					@click:prepend="logEvent('click:prepend', $event)"
 			/>
 		</Variant>
@@ -233,6 +234,7 @@
 			<origam-card
 					title="Append click"
 					:append-icon="appendIcon"
+					append-aria-label="Show options"
 					@click:append="logEvent('click:append', $event)"
 			/>
 		</Variant>
@@ -408,7 +410,9 @@
 			<template #default="{ state }">
 				<origam-card
 						v-bind="state"
+						prepend-aria-label="Open details"
 						@click:prepend="logEvent('click:prepend', $event)"
+						append-aria-label="Show options"
 						@click:append="logEvent('click:append', $event)"
 						@update:active="logEvent('update:active', $event)"
 						@update:hover="logEvent('update:hover', $event)"

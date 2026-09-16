@@ -167,6 +167,24 @@ of the typed `emits` contract.
   the same way a `<fieldset><legend>` groups individually-labelled inputs.
 - `label` is intentionally NOT forwarded onto individual cells: doing so
   would render it as a visible floating label repeated once per digit box.
+- A clickable **inner** adornment gets its accessible name from
+  `prependInnerAriaLabel` / `appendInnerAriaLabel` (i18n key or literal
+  string). Without one, the zone stays mouse-only: no `role="button"`, no tab
+  stop, and a dev-mode warning naming the missing prop — the DS never
+  fabricates a label (#747).
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `prependInnerAriaLabel` | `string` | — | Accessible name of the prepend-inner zone. Required for `click:prependInner` to become keyboard-reachable. |
+| `appendInnerAriaLabel` | `string` | — | Accessible name of the append-inner zone. Required for `click:appendInner` to become keyboard-reachable. |
+
+- ⛔ There is **no OUTER prepend/append zone** on this component, and therefore
+  no `prependIcon` / `appendIcon` / `prependAvatar` / `appendAvatar` /
+  `prependAriaLabel` / `appendAriaLabel` prop. That surface belongs to
+  `<OrigamInput>`, which `<OrigamOtpInputField>` never mounts — it renders one
+  `<origam-field>` per digit instead. The props were inherited from
+  `IInputProps` and did nothing; they were removed in #756, mirroring the
+  `IAdjacentEmits` exclusion already documented on `IOtpInputFieldEmits`.
 
 ## Design tokens
 

@@ -59,8 +59,14 @@ describe('props declared only in an imported interface reach the runtime descrip
     // only (dropped fontFamily/fontWeight/lineHeight/letterSpacing, -4).
     // Both were typed-but-unread on every reachable var — an intentional
     // API removal, not a regression.
+    //
+    // 90 → 92 (SliderField): issue #747 — `IAdjacentProps` (reached via
+    // `IInputProps`) gained `prependAriaLabel` / `appendAriaLabel`, the
+    // channel through which an accessible name reaches a prepend/append zone
+    // the DS would otherwise promote to an anonymous `role="button"`.
+    // Verified to be exactly those two names, not a wholesale shift.
     it.each([
-        [OrigamSliderField, 'OrigamSliderField', 90],
+        [OrigamSliderField, 'OrigamSliderField', 92],
         [OrigamVideo, 'OrigamVideo', 66],
         [OrigamTimelineItem, 'OrigamTimelineItem', 16],
         [OrigamTreeview, 'OrigamTreeview', 15],

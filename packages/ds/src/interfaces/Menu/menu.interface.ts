@@ -11,7 +11,34 @@ export interface IMenuProvide {
     closeParents (): void
 }
 
-export interface IMenuProps extends IOverlayProps, IListProps, IListItemProps {
+/*********************************************************
+ * IMenuProps
+ *
+ * @description
+ * ⛔ OUTER adjacent surface stripped (#756). `IListItemProps` carries
+ * `IAdjacentProps` (`prependIcon` / `appendIcon` / `prependAvatar` /
+ * `appendAvatar` / `prependAriaLabel` / `appendAriaLabel`) because a LIST ROW
+ * renders that zone. `<OrigamMenu>` does not: it renders rows from `items`,
+ * and each row gets its media from the ITEM object (`{ title, prependIcon }`),
+ * never from the menu's own props — `menuItemProps()` spreads the item, and
+ * `overlayProps` is filtered down to what `<origam-overlay>` declares.
+ *
+ * @description
+ * Measured, jsdom, sentinel values passed as props and grepped out of
+ * `document.body.innerHTML`: `<origam-list-item>` renders
+ * `.origam-list-item__prepend` / `__append` and carries the name;
+ * `<origam-menu model-value items=…>` renders NO such node at all. The four
+ * media props were already recorded as inert in
+ * `guards/baseline/unconsumed-props.json`; the two name props would have
+ * joined them, so the whole surface goes instead.
+ *
+ * @description
+ * ⚠️ The REST of `IListItemProps` is still inherited and still largely inert
+ * here (33 further entries in that same baseline: `href`, `to`, `tag`,
+ * `ripple`, `subtitle`, `lines`, `slim`…). Narrowing those is a separate,
+ * wider decision and is deliberately NOT done in this fix.
+ ********************************************************/
+export interface IMenuProps extends IOverlayProps, IListProps, Omit<IListItemProps, 'prependIcon' | 'appendIcon' | 'prependAvatar' | 'appendAvatar' | 'prependAriaLabel' | 'appendAriaLabel'> {
     id?: string
 }
 

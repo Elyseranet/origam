@@ -391,6 +391,24 @@ The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
   <origam-btn icon="mdi-content-save" :aria-label="t('btn_save', 'Save')"/>
   ```
 
+  ⛔ **#653 — this is now enforced by a dev-time warning, not just by this
+  paragraph.** #427 was closed as fixed while its own closing commit stated
+  in writing that this finding was out of scope, so the defect survived a
+  ticket that claimed to have handled it. An icon-only `<origam-btn>` with
+  no `aria-label` / `aria-labelledby` / `title` now logs, once per component
+  in development builds:
+
+  > `[origam] <OrigamBtn> renders a control with no accessible name: icon-only
+  > mode renders a <button> whose only content is an aria-hidden glyph. Add
+  > aria-label (or aria-labelledby) …`
+
+  The `<button>` itself is **not** withdrawn, and no label is invented. Unlike
+  a prepend/append zone — where the DS adds `role="button"` itself and can
+  therefore decline to (see `useAccessibleCommand`, #747) — this element IS a
+  button. axe will keep reporting `button-name` (impact `critical`) until the
+  consumer supplies the name, which is the correct outcome: the missing text
+  is theirs to provide.
+
 ## Theming notes
 
 - The component is **theme-aware out of the box**. Switching

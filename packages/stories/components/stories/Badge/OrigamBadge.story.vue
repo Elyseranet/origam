@@ -366,6 +366,7 @@
 						:content="3"
 						:prepend-icon="heartIcon"
 						bg-color="primary"
+						prepend-aria-label="Open details"
 						@click:prepend="logEvent('click:prepend', $event)"
 				>
 					<origam-avatar text="AP"/>
@@ -380,6 +381,7 @@
 						:content="3"
 						:append-icon="heartIcon"
 						bg-color="primary"
+						append-aria-label="Show options"
 						@click:append="logEvent('click:append', $event)"
 				>
 					<origam-avatar text="AP"/>

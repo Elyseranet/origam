@@ -238,6 +238,7 @@
 					v-model="emitCtrlModel"
 					label="Prepend click"
 					:prepend-icon="heartIcon"
+					prepend-aria-label="Open details"
 					@click:prepend="logEvent('click:prepend', $event)"
 			/>
 		</Variant>
@@ -247,6 +248,7 @@
 					v-model="emitCtrlModel"
 					label="Append click"
 					:append-icon="heartIcon"
+					append-aria-label="Show options"
 					@click:append="logEvent('click:append', $event)"
 			/>
 		</Variant>

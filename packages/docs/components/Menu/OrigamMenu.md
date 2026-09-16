@@ -121,7 +121,10 @@ event.
 ## Props (interface)
 
 ```ts
-interface IMenuProps extends IOverlayProps, IListProps, IListItemProps {
+interface IMenuProps extends IOverlayProps, IListProps, Omit<IListItemProps,
+    'prependIcon' | 'appendIcon' |
+    'prependAvatar' | 'appendAvatar' |
+    'prependAriaLabel' | 'appendAriaLabel'> {
     id?: string
 }
 ```
@@ -132,6 +135,14 @@ interface IMenuProps extends IOverlayProps, IListProps, IListItemProps {
 location, scroll strategy, scrim, transition…) plus `IListProps` /
 `IListItemProps` for the list it renders from `items`. Those are documented
 on their own pages — the table below covers only what `IMenuProps` adds.
+
+⛔ The **outer adjacent surface is excluded** from that inheritance (#756).
+`<OrigamMenu>` renders no prepend/append zone of its own: a row takes its
+media from the ITEM object (`{ title: 'Edit', prependIcon: 'mdi-pencil' }`),
+which is what the `items` examples above do. The six props existed only
+because `IListItemProps` carried them, and none of them reached the DOM —
+including `prependAriaLabel` / `appendAriaLabel`, which would have been
+accessible names for a zone that is never rendered.
 
 | Prop | Type | Default | Description |
 |---|---|---|---|

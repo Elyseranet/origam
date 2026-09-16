@@ -68,16 +68,19 @@ describe('OrigamExpansionPanelHeader — contrat clavier de prepend/append (#547
         expect(prepend.attributes('tabindex')).toBeUndefined()
     })
 
-    it('avec un écouteur click:prepend, la zone devient focusable et annoncée', () => {
-        const wrapper = mountHeader({ 'onClick:prepend': () => {} })
+    // ⛔ #747 — l'écouteur ne suffit plus : c'est `prependAriaLabel` qui
+    // autorise le rôle. Sans nom, le DS refuse d'annoncer un bouton anonyme
+    // (cas couvert par `adjacent-command-name.spec.ts`).
+    it('avec un écouteur click:prepend ET un nom, la zone devient focusable et annoncée', () => {
+        const wrapper = mountHeader({ 'onClick:prepend': () => {}, prependAriaLabel: 'Open details' })
         const prepend = wrapper.find('.origam-expansion-panel-header__prepend')
 
         expect(prepend.attributes('role')).toBe('button')
         expect(prepend.attributes('tabindex')).toBe('0')
     })
 
-    it('avec un écouteur click:append, idem sur l\'autre zone', () => {
-        const wrapper = mountHeader({ 'onClick:append': () => {} })
+    it('avec un écouteur click:append ET un nom, idem sur l\'autre zone', () => {
+        const wrapper = mountHeader({ 'onClick:append': () => {}, appendAriaLabel: 'Show options' })
         const append = wrapper.find('.origam-expansion-panel-header__append')
 
         expect(append.attributes('role')).toBe('button')

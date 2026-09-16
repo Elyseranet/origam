@@ -217,6 +217,7 @@
 					label="Date"
 					:append-icon="MDI_ICONS.HEART"
 					style="max-width: 320px"
+					append-aria-label="Show options"
 					@click:append="logEvent('click:append', $event)"
 			/>
 		</Variant>
@@ -227,6 +228,7 @@
 					label="Date"
 					:prepend-icon="MDI_ICONS.HEART"
 					style="max-width: 320px"
+					prepend-aria-label="Open details"
 					@click:prepend="logEvent('click:prepend', $event)"
 			/>
 		</Variant>
@@ -237,6 +239,7 @@
 					label="Date"
 					:append-inner-icon="MDI_ICONS.MAGNIFY"
 					style="max-width: 320px"
+					append-inner-aria-label="Show options"
 					@click:append-inner="logEvent('click:appendInner', $event)"
 			/>
 		</Variant>
@@ -247,6 +250,7 @@
 					label="Date"
 					:prepend-inner-icon="MDI_ICONS.MAGNIFY"
 					style="max-width: 320px"
+					prepend-inner-aria-label="Open details"
 					@click:prepend-inner="logEvent('click:prependInner', $event)"
 			/>
 		</Variant>

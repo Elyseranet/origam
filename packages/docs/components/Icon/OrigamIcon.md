@@ -305,12 +305,14 @@ with a `vue-tsc`-enforced discriminated union. It was removed before
 release too: no component in the repo ever used it, and constraining an
 API nobody uses just papers over the real defect.
 
-- The inline `<svg>` leaf (`OrigamSvgIcon`) always renders its glyph with
-  `aria-hidden="true"` — no `role` — it never carries meaning on its own;
-  the accessible name lives on the interactive ancestor, not the glyph.
-  It also never calls `useIconAccessibility()` at all, so a clickable
-  `OrigamSvgIcon` doesn't even get the fallback above — tracked
-  separately as #660.
+- The inline `<svg>` leaf (`OrigamSvgIcon`) renders its glyph with
+  `aria-hidden="true"` by default — no `role` — it never carries meaning on
+  its own; the accessible name lives on the interactive ancestor, not the
+  glyph. Since **#660** it calls `useIconAccessibility()` like the other four
+  leaves, so attaching a `@click` un-hides it and raises the same dev-time
+  warning. Before that fix the attribute was hardcoded: a clickable
+  `OrigamSvgIcon` stayed invisible to assistive technology for ever, and —
+  unlike its siblings — warned about nothing.
 
 ## Theming notes
 

@@ -128,7 +128,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, onMounted, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
+	import { computed, onMounted, ref, StyleValue, toRef, useAttrs, useSlots, watchEffect } from 'vue'
 	import type { ComputedRef, ExtractPropTypes } from 'vue'
 	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
@@ -154,6 +154,7 @@
 	import { useTypography } from '../../composables/Commons/typography.composable'
 	import { useVariant } from '../../composables/Commons/variant.composable'
 
+	import { warnMissingNativeControlName } from '../../utils/Commons/a11y.util'
 	import { warnDeprecatedEmit } from '../../utils/Commons/color.util'
 
 	import { ADJACENT_EMIT_REPLACEMENT } from '../../consts/Btn/btn.const'
@@ -368,6 +369,43 @@
 	const hasLoader = computed(() => {
 		return slots.loader || loaderConfig.value.isActive
 	})
+
+	/*********************************************************
+	 * Icon-only accessible name — ⛔ issue #653
+	 *
+	 * @description
+	 * #427 was closed as "corrigé et mergé" while its own closing commit
+	 * (`20123d8a`) said in writing that this exact finding was NOT fixed.
+	 * An icon-only `<origam-btn icon="…"/>` renders a real `<button>` whose
+	 * only child is an `aria-hidden` glyph: axe reports `button-name`,
+	 * impact **critical**, and a screen reader announces "button" and
+	 * nothing else (WCAG 2.1 4.1.2).
+	 *
+	 * @description
+	 * Unlike the adjacent zones (#747), the role here CANNOT be withdrawn —
+	 * the element IS a `<button>`, and that is the correct semantic. And no
+	 * label is fabricated: a guessed string would silence axe while telling
+	 * the user nothing (#622). All the DS can legitimately do is say so, in
+	 * development, once per component. `title` counts as a name source
+	 * because the accname algorithm accepts it as the last fallback.
+	 ********************************************************/
+	const isUnnamedIconOnly = computed(() => {
+		if (!hasIcon.value) return false
+		if (slots.default || props.text) return false
+
+		return !(attrs['aria-label'] || attrs['aria-labelledby'] || attrs.title)
+	})
+
+	if (import.meta.env?.DEV) {
+		watchEffect(() => {
+			if (isUnnamedIconOnly.value) {
+				warnMissingNativeControlName(
+					'OrigamBtn',
+					'icon-only mode renders a <button> whose only content is an aria-hidden glyph'
+				)
+			}
+		})
+	}
 
 	// Skeleton mode REPLACES the btn content entirely — OrigamLoader's
 	// v-if removes the default slot from the DOM, so the btn collapses

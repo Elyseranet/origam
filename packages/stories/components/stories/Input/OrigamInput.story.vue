@@ -219,6 +219,7 @@
 			<origam-input
 					v-model="emitPrependModel"
 					:prepend-icon="prependIcon"
+					prepend-aria-label="Open details"
 					@click:prepend="logEvent('click:prepend', $event)"
 			>
 				<template #default="{ id, isDisabled }">
@@ -236,6 +237,7 @@
 			<origam-input
 					v-model="emitAppendModel"
 					:append-icon="appendIcon"
+					append-aria-label="Show options"
 					@click:append="logEvent('click:append', $event)"
 			>
 				<template #default="{ id, isDisabled }">
@@ -420,7 +422,9 @@
 					:prepend-icon="prependIcon"
 					:append-icon="appendIcon"
 					data-cy="input-emit-click"
+					prepend-aria-label="Open details"
 					@click:prepend="logEvent('click:prepend', $event)"
+					append-aria-label="Show options"
 					@click:append="logEvent('click:append', $event)"
 			>
 				<template #default="{ id, isDisabled }">

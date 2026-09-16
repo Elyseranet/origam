@@ -91,6 +91,34 @@ The floor is capped at the control height, so an intentional pill
 </template>
 ```
 
+### Accessible name when the inner zone is clickable (#747)
+
+`@click:prependInner` / `@click:appendInner` make the zone actionable. It only
+becomes a real control — `role="button"`, tab stop, announced — when you also
+give it a name, because its content is an icon or an avatar and carries no text.
+
+| Prop | Type | Description |
+|---|---|---|
+| `prependInnerAriaLabel` | `string` | Accessible name of the inner prepend zone. i18n key or literal string. |
+| `appendInnerAriaLabel` | `string` | Accessible name of the inner append zone. Same contract. |
+
+```vue
+<template>
+  <OrigamField
+      label="Search"
+      prepend-inner-icon="mdi-magnify"
+      prepend-inner-aria-label="Run the search"
+      @click:prepend-inner="search"
+  />
+</template>
+```
+
+⛔ Without the label, no `role` and no `tabindex` are emitted, and a dev-time
+warning names the prop to add — the DS declines to announce a control it
+cannot name (WCAG 2.1 4.1.2). The click emit is untouched. Inherited by the
+whole field family: TextField, TextareaField, PasswordField, NumberField,
+OtpInputField, DatePickerField, ColorPickerField, FileField.
+
 ## States (dirty / focused / error / disabled)
 
 ```vue
