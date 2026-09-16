@@ -42,16 +42,25 @@ import { useColorEffect, useStateFlag } from 'origam/composables'
 
 const props = defineProps<{ color?: string, bgColor?: string, disabled?: boolean }>()
 
-const { isHover } = useStateFlag(props, 'hover')
+const { isOn: isHover, set: onMouseenter, unset: onMouseleave } = useStateFlag(props, { state: 'hover' })
 const { colorClasses, colorStyles } = useColorEffect(props, isHover)
 </script>
 
 <template>
-    <div :class="colorClasses" :style="colorStyles">
+    <div
+        :class="colorClasses"
+        :style="colorStyles"
+        @mouseenter="onMouseenter"
+        @mouseleave="onMouseleave"
+    >
         <slot />
     </div>
 </template>
 ```
+
+`useStateFlag` takes an **options object**, never a bare string, and returns
+`isOn` / `config` / `classes` / `set` / `unset` / `toggle` — rename at the
+destructure, as the catalogue does.
 
 ## What each state emits — measured
 

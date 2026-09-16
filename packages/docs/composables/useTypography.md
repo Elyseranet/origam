@@ -58,11 +58,22 @@ useTypography({ fontSize: 'xl', fontWeight: 'bold' }, 'btn')
 useTypography({}, 'btn')
 // null
 
-useTypography({ fontFamily: 'mono', lineHeight: 'lg', letterSpacing: 'sm' }, 'card__text')
+useTypography({ fontFamily: 'mono', lineHeight: 'relaxed', letterSpacing: 'wide' }, 'card__text')
 // { "--origam-card__text---font-family": "var(--origam-font__family---mono)",
-//   "--origam-card__text---line-height": "var(--origam-font__lineHeight---lg)",
-//   "--origam-card__text---letter-spacing": "var(--origam-font__letterSpacing---sm)" }
+//   "--origam-card__text---line-height": "var(--origam-font__lineHeight---relaxed)",
+//   "--origam-card__text---letter-spacing": "var(--origam-font__letterSpacing---wide)" }
 ```
+
+⚠️ Each prop is a **closed union**, and the scales do not share vocabulary —
+`lineHeight` and `letterSpacing` in particular have no `sm` / `lg` rung:
+
+| prop | accepted values |
+|---|---|
+| `fontFamily` | `sans` · `mono` · `serif` |
+| `fontSize` | `xs` · `sm` · `md` · `lg` · `xl` · `2xl` · `3xl` · `4xl` · `5xl` |
+| `fontWeight` | `regular` · `medium` · `semibold` · `bold` · `extrabold` · `black` |
+| `lineHeight` | `none` · `tight` · `snug` · `normal` · `relaxed` · `loose` |
+| `letterSpacing` | `tight` · `normal` · `wide` · `wider` · `widest` |
 
 ## Two shapes that are deliberate
 

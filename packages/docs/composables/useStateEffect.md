@@ -56,9 +56,12 @@ composables accept.
 
 ## Usage
 
+Pair it with `useStateFlag`, which reads the `hover` / `active` prop and hands
+back both the boolean and the override object in the exact shapes this
+composable expects:
+
 ```vue
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useStateEffect, useStateFlag } from 'origam/composables'
 import type { IHoverState } from 'origam/interfaces'
 
@@ -68,8 +71,12 @@ const props = defineProps<{
     hover?: boolean | IHoverState
 }>()
 
-const { isHover } = useStateFlag(props, 'hover')
-const hoverState = computed(() => typeof props.hover === 'object' ? props.hover : undefined)
+const {
+    isOn: isHover,
+    config: hoverState,
+    set: onMouseenter,
+    unset: onMouseleave
+} = useStateFlag(props, { state: 'hover' })
 
 const {
     colorClasses, colorStyles,
@@ -81,11 +88,19 @@ const {
     <div
         :class="[colorClasses, roundedClasses]"
         :style="[colorStyles, roundedStyles]"
+        @mouseenter="onMouseenter"
+        @mouseleave="onMouseleave"
     >
         <slot />
     </div>
 </template>
 ```
+
+`useStateFlag(props, { state: 'hover' })` takes an **options object**, not a
+bare string — the closed `TStateName` union is what turns a swapped argument
+into a compile error. Its `config` is already a
+`ComputedRef<IStateEffectConfig | undefined>`, which is exactly the
+`hoverState` / `activeState` parameter type here.
 
 ::: danger Requires an active component instance
 `useStateEffect` delegates the border axis to `useBorder`, which calls

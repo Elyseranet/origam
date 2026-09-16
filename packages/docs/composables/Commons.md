@@ -314,7 +314,7 @@ Pure — no Vue/DOM access — so it is called once, synchronously, at
 ## `useAccessibleCommand`
 
 ```ts
-export function useAccessibleCommand (options:
+export function useAccessibleCommand (options: { component: string zone: string prop: string active: Ref<boolean> | ComputedRef<boolean> label: () => string | undefined }): ComputedRef<Record<string, unknown>>
 ```
 
 ⛔ issues #747 / #653 / #660 — the ONE place the design system decides
@@ -469,13 +469,6 @@ for the inner zone. `isClearClickable` stays permanently true when
 there is something to clear, so it is unconditionally actionable
 whenever visible, unlike prependInner/appendInner whose
 actionability depends on whether the consumer wired a listener.
-
-⛔ issue #747 — mirror of `useAdjacent`'s pair for the INNER zone.
-`OrigamField` bound `:role="isPrependInnerClickable ? 'button' : undefined"`
-by hand and had no channel for a name, so every field family member
-(TextField, NumberField, OtpInputField, DatePickerField…) shipped an
-anonymous ARIA button the moment `click:prependInner` was wired.
-`prependInnerCommandAttrs` / `appendInnerCommandAttrs` replace it.
 
 **Source** : `packages/ds/src/composables/Commons/adjacentInner.composable.ts`
 
@@ -641,9 +634,13 @@ Deliberately independent from `useColor`: the role/state derivation
 legacy static resolver, not a variant of it — kept in its own file
 rather than forced to share a base.
 
-Returns the same shape as before — `{ colorStyles, color, bgColor }` —
-so existing callers (`OrigamAudio`, `OrigamVideo`) keep working
-without changes.
+Returns `{ colorClasses, colorStyles, color, bgColor }`. `color` and
+`bgColor` are pass-through computeds over the raw props, not resolved
+declarations. The two real callers are `OrigamAudio` and `OrigamVideo`.
+
+`colorClasses` is EMPTY as soon as `isHover` / `isActive` / `isDisabled`
+is true: utility classes are static, and the resolved token is no longer
+the resting one `.origam--bg-{intent}` names.
 
 `colorStyles` is an array of CSS declarations like
 `'background-color: …'`, either pointing to a token
@@ -1021,7 +1018,7 @@ sans que l'instance globale de `createGoTo()` le sache.
 
 **Source** : `packages/ds/src/composables/Commons/goTo.composable.ts`
 
-**Consommateurs** (4) : `components/Select/OrigamSelect.vue`, `components/Slide/OrigamSlideGroup.vue`, `consts/Commons/virtual.const.ts`, `interfaces/Commons/virtual.interface.ts`
+**Consommateurs** (5) : `components/Select/OrigamSelect.vue`, `components/Slide/OrigamSlideGroup.vue`, `consts/Commons/virtual.const.ts`, `interfaces/Commons/virtual.interface.ts`, `utils/Commons/goTo.util.ts`
 
 ## `useGroup`
 
@@ -1350,7 +1347,7 @@ is responsible for its own fallback (issue #444, `OrigamLoader`).
 
 **Source** : `packages/ds/src/composables/Commons/locale.composable.ts`
 
-**Consommateurs** (86) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
+**Consommateurs** (87) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
 
 ## `useLocale`
 
@@ -1365,7 +1362,7 @@ legitime (#444, `OrigamLoader`).
 
 **Source** : `packages/ds/src/composables/Commons/locale.composable.ts`
 
-**Consommateurs** (86) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
+**Consommateurs** (87) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
 
 ## `useLocale`
 
@@ -1379,7 +1376,7 @@ banniere au-dessus de la premiere surcharge pour le detail du contrat.
 
 **Source** : `packages/ds/src/composables/Commons/locale.composable.ts`
 
-**Consommateurs** (86) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
+**Consommateurs** (87) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
 
 ## `useLocation`
 
