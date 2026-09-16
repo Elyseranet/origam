@@ -438,6 +438,29 @@
 			border-radius: var(--origam-dialog---border-radius, 12px);
 			box-shadow: var(--origam-dialog---box-shadow);
 
+			// #563 — la boite qui porte le PLAFOND doit porter le DEFILEMENT.
+			//
+			// `.origam-overlay__content` est `position: absolute` et de hauteur
+			// AUTO : le `max-height: 100%` pose plus bas sur `.origam-card` se
+			// resout donc en `none` (pourcentage contre un parent sans hauteur
+			// definie). La carte grandit sans plafond, et cette boite la laissait
+			// deborder en `overflow: visible`. Mesure Chromium sur `develop`,
+			// dialogue Design + 900px injectes dans `#footer` :
+			//
+			//   .origam-card       overflow hidden  clientH 1047  scrollH 1047  -> ne defile pas
+			//   .origam-overlay__content  visible                               -> ne rogne pas
+			//   document                                                        -> bloque (scrollStrategy 'block')
+			//   => pied du dialogue 459px SOUS le viewport, aucun recours.
+			//
+			// Contrairement a ce que decrit le ticket, `.origam-card__content`
+			// ne defilait pas davantage : sans hauteur definie en amont il
+			// grandit lui aussi (clientH 1647 === scrollH 1647). AUCUNE boite du
+			// dialogue ne defilait.
+			//
+			// La branche `&--fullscreen` ci-dessous pose deja exactement cette
+			// declaration : ceci aligne le mode par defaut sur elle.
+			overflow-y: auto;
+
 			&,
 			> form {
 				> .origam-card {

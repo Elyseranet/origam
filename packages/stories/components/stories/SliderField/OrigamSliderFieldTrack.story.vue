@@ -166,6 +166,50 @@
 				</StoryGroup>
 			</template>
 		</Variant>
+
+		<!-- #676 — sonde de cascade `rounded`. Variant APPENDU EN DERNIER pour ne
+		     decaler aucun index de Variant deja documente. Chaque echelon est
+		     code en dur : le spec n'a pas a piloter le HstSelect (DOM custom,
+		     fragile). La piste sans `rounded` sert de reference : elle doit
+		     rester au defaut token `9999px`. -->
+		<Variant title="Rounded scale - cascade probe">
+			<div style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+				<origam-slider-field-track
+						id="probe-rounded-default"
+						:start="0"
+						:stop="100"
+						:style="{ height: '48px' }"
+				/>
+				<origam-slider-field-track
+						id="probe-rounded-none"
+						:start="0"
+						:stop="100"
+						rounded="none"
+						:style="{ height: '48px' }"
+				/>
+				<origam-slider-field-track
+						id="probe-rounded-sm"
+						:start="0"
+						:stop="100"
+						rounded="sm"
+						:style="{ height: '48px' }"
+				/>
+				<origam-slider-field-track
+						id="probe-rounded-lg"
+						:start="0"
+						:stop="100"
+						rounded="lg"
+						:style="{ height: '48px' }"
+				/>
+				<origam-slider-field-track
+						id="probe-rounded-xl"
+						:start="0"
+						:stop="100"
+						rounded="xl"
+						:style="{ height: '48px' }"
+				/>
+			</div>
+		</Variant>
 	</Story>
 </template>
 

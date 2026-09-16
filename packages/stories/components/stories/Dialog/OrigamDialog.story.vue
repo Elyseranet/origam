@@ -424,6 +424,37 @@
 				</StoryGroup>
 			</template>
 		</Variant>
+
+		<!-- #563 — sonde d'atteignabilite. Variant APPENDU EN DERNIER pour ne
+		     decaler aucun index de Variant deja documente.
+
+		     `#probe-body` occupe 1600px DANS `.origam-card__content` ; `#probe-tail`
+		     est le pied, rendu par OrigamCard comme FRERE de `.origam-card__content`.
+		     Avant correctif AUCUNE des deux boites ne defilait (mesure versee dans
+		     le SCSS d'OrigamDialog) et le pied tombait sous le bas du viewport. -->
+		<Variant title="Overflowing content - reachability probe">
+			<div style="padding: 16px;">
+				<origam-dialog
+						v-model="overflowContentOpen"
+						title="Overflowing content"
+				>
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Open overflowing"/>
+					</template>
+					<template #content>
+						<div
+								id="probe-body"
+								style="height: 1600px; background: linear-gradient(#cfd8ff, #ffd8cf); flex: 0 0 auto;"
+						/>
+					</template>
+					<template #footer>
+						<div id="probe-tail" style="padding: 8px 16px; text-align: right;">
+							<origam-btn text="Close" @click="overflowContentOpen = false"/>
+						</div>
+					</template>
+				</origam-dialog>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -460,6 +491,7 @@
 	const emitOutsideOpen    = ref(false)
 	const slotActivatorOpen  = ref(false)
 	const slotAssetOpen      = ref(false)
+	const overflowContentOpen  = ref(false)
 	const slotContentOpen    = ref(false)
 	const slotDefaultOpen    = ref(false)
 	const slotFooterOpen     = ref(false)
