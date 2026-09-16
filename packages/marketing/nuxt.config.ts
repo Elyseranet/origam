@@ -46,8 +46,27 @@ export default defineNuxtConfig({
         shim: false
     },
 
+    // ⛔ The origam module is referenced by SOURCE PATH, not by the bare
+    // `origam/nuxt` specifier — see #565.
+    //
+    // `modules: []` entries are resolved by Nuxt/exsolve at config-load time,
+    // through the `origam` package's `exports` map. `./nuxt` there points at
+    // `dist/src/nuxt/module.js`, which only exists after `pnpm -F origam build`.
+    // Nothing builds `ds` during `pnpm install` (it carries no postinstall —
+    // only `prepublishOnly`, which npm publish runs and pnpm install does not),
+    // so on a virgin worktree the specifier resolved to a file that was not on
+    // disk yet and `nuxt prepare` aborted, making `pnpm install` exit 1.
+    //
+    // The `vite.resolve.alias` block at the bottom of this file could not help:
+    // it governs bundling, not Nuxt's module resolution. Pointing straight at
+    // the source makes this entry consistent with the 11 sibling `origam/*`
+    // aliases already declared there, and with how `stories` and `tests`
+    // resolve the DS (`packages/tests/vitest.config.ts` states outright that
+    // its aliases exist so specs "don't require a full `pnpm -F origam build`").
+    // Measured: identical module output either way — 218 registered Origam
+    // components, byte-for-byte the same list, with and without `ds/dist`.
     modules: [
-        'origam/nuxt',
+        resolve(__dirname, '../ds/src/nuxt/module.ts'),
         '@nuxtjs/seo',
         '@nuxtjs/i18n'
     ],
