@@ -1,6 +1,8 @@
 import OrigamSheet from '../../components/Sheet/OrigamSheet.vue'
 import { SHEET_SNAP_ID } from '../../enums/Sheet/sheet.enum'
 
+import type { TAnyString } from '../Commons/commons.type'
+
 export type TOrigamSheet = InstanceType<typeof OrigamSheet>
 
 
@@ -22,7 +24,7 @@ export type TOrigamSheet = InstanceType<typeof OrigamSheet>
  * and `tests/e2e/sheet.spec.ts`.
  */
 
-export type TSheetSnapId = `${SHEET_SNAP_ID}` | (string & {})
+export type TSheetSnapId = `${SHEET_SNAP_ID}` | TAnyString
 
 export type TSheetSnapPoint = {
     id: TSheetSnapId

@@ -3,6 +3,7 @@ import type {
     TScrollStrategy,
     TScrollStrategyFn
 } from '../../types/Commons/scroll.type'
+import type { TAnyString } from '../../types/Commons/commons.type'
 import type { Ref } from 'vue'
 
 export interface IScrollProps {
@@ -10,10 +11,10 @@ export interface IScrollProps {
      * Space-separated list of scroll behaviours, e.g. `"hide inverted"` or
      * `"elevate active"`. `inverted` is a MODIFIER that flips the trigger of
      * `hide` / `collapse` / `elevate` and does nothing on its own. The
-     * `(string & {})` member keeps single-token autocomplete while allowing
+     * `TAnyString` member keeps single-token autocomplete while allowing
      * multi-token combinations.
      */
-    scrollBehavior?: TScrollBehavior | (string & {})
+    scrollBehavior?: TScrollBehavior | TAnyString
     scrollTarget?: string
     scrollThreshold?: string | number
 }

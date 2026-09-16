@@ -207,40 +207,41 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
             const index = computed(() => items.value.findIndex(i => i.id === id))
             const zIndex = computed(() => rootZIndex.value + (layers.value.length * LAYOUT_ITEM_ZINDEX_STEP) - (index.value * LAYOUT_ITEM_ZINDEX_STEP))
 
-            const layoutItemStyles = computed<CSSProperties>(() => {
-                const isHorizontal = position.value === 'left' || position.value === 'right'
-                const isOppositeHorizontal = position.value === 'right'
-                const isOppositeVertical = position.value === 'bottom'
-                const styles = {
-                    [position.value]: 0,
-                    'z-index': zIndex.value,
-                    'transform': `translate${isHorizontal ? 'X' : 'Y'}(${(active.value ? 0 : LAYOUT_ITEM_HIDDEN_OFFSET) * (isOppositeHorizontal || isOppositeVertical ? -1 : 1)}%)`,
-                    'position': absolute.value || rootZIndex.value !== ROOT_ZINDEX ? 'absolute' : 'fixed',
-                    ...(transitionsEnabled.value ? undefined : {'transition': 'none'})
-                } as const
+            /*********************************************************
+             * baseItemStyles / itemOffsetStyles
+             *
+             * @description
+             * Les deux moities de `layoutItemStyles`, extraites (Sonar #771 :
+             * complexite cognitive 18 > 15). Aucune expression modifiee : le
+             * `isOppositeHorizontal || isOppositeVertical` d'origine est
+             * exactement `position === 'right' || position === 'bottom'`, il
+             * est ici nomme `isOpposite`.
+             *
+             * @description
+             * Elles sont declarees ICI, au niveau de `register`, et non dans
+             * le callback du `computed` : la complexite cognitive d'une
+             * fonction inclut celle des fonctions qu'elle IMBRIQUE, donc une
+             * fonction interne n'aurait rien retire au score.
+             ********************************************************/
+            const isHorizontalPosition = () => position.value === 'left' || position.value === 'right'
 
-                if (!isMounted.value) return styles
-
-                const item = items.value[index.value]
-
-                // The previous code threw when the registered item couldn't
-                // be found in `items.value` — but that crash fires every
-                // time a layout-aware component (e.g. `OrigamBottomNav`)
-                // is rendered outside a layout host, or during HMR before
-                // the parent layout's `items` computed re-runs. Both are
-                // legitimate states. Fall back to the base position styles
-                // and skip the layout-driven offsets in that case so the
-                // component still renders.
-                if (!item) return styles
-
-                const overlap = computedOverlaps.value.get(id)
-
-                if (overlap) {
-                    item[overlap.position] += overlap.amount
-                }
+            const baseItemStyles = (): CSSProperties => {
+                const isOpposite = position.value === 'right' || position.value === 'bottom'
 
                 return {
-                    ...styles,
+                    [position.value]: 0,
+                    'z-index': zIndex.value,
+                    'transform': `translate${isHorizontalPosition() ? 'X' : 'Y'}(${(active.value ? 0 : LAYOUT_ITEM_HIDDEN_OFFSET) * (isOpposite ? -1 : 1)}%)`,
+                    'position': absolute.value || rootZIndex.value !== ROOT_ZINDEX ? 'absolute' : 'fixed',
+                    ...(transitionsEnabled.value ? undefined : {'transition': 'none'})
+                }
+            }
+
+            const itemOffsetStyles = (item: typeof items.value[number]): CSSProperties => {
+                const isHorizontal = isHorizontalPosition()
+                const isOppositeHorizontal = position.value === 'right'
+
+                return {
                     'height':
                         isHorizontal ? `calc(100% - ${convertToUnit(item.top)} - ${convertToUnit(item.bottom)})`
                             : elementSize.value ? `${convertToUnit(elementSize.value)}`
@@ -253,6 +254,40 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
                         !isHorizontal ? `calc(100% - ${convertToUnit(item.left)} - ${convertToUnit(item.right)})`
                             : elementSize.value ? `${convertToUnit(elementSize.value)}`
                                 : undefined
+                }
+            }
+
+            const layoutItemStyles = computed<CSSProperties>(() => {
+                const styles = baseItemStyles()
+
+                if (!isMounted.value) return styles
+
+                const item = items.value[index.value]
+
+                /*********************************************************
+                 * item absent — on rend quand meme
+                 *
+                 * @description
+                 * Le code precedent levait quand l'item enregistre restait
+                 * introuvable dans `items.value`. Ce crash se declenche a
+                 * chaque fois qu'un composant conscient du layout (ex.
+                 * `OrigamBottomNav`) est rendu hors d'un hote de layout, et
+                 * pendant un HMR avant que le `items` du layout parent ne
+                 * recalcule. Les deux etats sont legitimes : on retombe sur
+                 * les styles de position de base et on saute les decalages
+                 * pilotes par le layout, pour que le composant rende.
+                 ********************************************************/
+                if (!item) return styles
+
+                const overlap = computedOverlaps.value.get(id)
+
+                if (overlap) {
+                    item[overlap.position] += overlap.amount
+                }
+
+                return {
+                    ...styles,
+                    ...itemOffsetStyles(item)
                 }
             })
 

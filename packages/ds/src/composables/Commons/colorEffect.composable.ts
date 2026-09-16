@@ -23,6 +23,236 @@ import {
     warnLegacyColor,
 } from '../../utils/Commons/color.util'
 import { isGradient, resolveGradient } from '../../utils/Commons/gradient.util'
+import type { TColor } from '../../types/Commons/color.type'
+
+/*********************************************************
+ * trackReactiveDependency
+ *
+ * @description
+ * Ne fait rien, et c'est le but : c'est la LECTURE de l'argument, au site
+ * d'appel, qui abonne l'effet appelant. Remplace un `void ref.value` nu —
+ * SonarQube remonte l'operateur `void` en CRITICAL (#771) et une
+ * expression-instruction nue en « instruction inutile ».
+ *
+ * @description
+ * ⛔ Ne pas supprimer l'appel en croyant nettoyer du code mort. Retirer la
+ * lecture retire la dependance reactive : le `computed` cesse de s'invalider
+ * quand la source change, et rien ne le signale.
+ ********************************************************/
+function trackReactiveDependency (_value: unknown): void {
+    /* Volontairement vide — seule la lecture de l'argument compte. */
+}
+
+/*********************************************************
+ * resolveBackground
+ *
+ * @description
+ * La chaine de resolution du FOND, extraite telle quelle de `colorStyles`
+ * (Sonar #771 : complexite cognitive 35 > 15). Memes branches, meme ordre,
+ * memes casts, meme `warnLegacyColor`. Les trois valeurs que la chaine
+ * produisait par affectation sont rendues en tuple, dans le meme etat par
+ * defaut qu'avant (`null`, `null`, `false`) quand aucune branche ne mord.
+ ********************************************************/
+function resolveBackground (
+    bgColorValue: TColor,
+    bgRole: TBgFgRole
+): [bgDecl: string | null, bgIntentFg: string | null, bgIsGradient: boolean] {
+    /*********************************************************
+     * Gradient
+     *
+     * @description
+     * Les degrades ignorent la cascade d'assombrissement hover/active :
+     * appliquer un `color-mix` par arret ferait exploser la taille de la
+     * declaration et changerait l'intention artistique. Hover/active
+     * s'expriment visuellement via l'opacite / la transformation du
+     * composant parent, pas par un echange de token. (Meme contrat que
+     * l'etat disabled : un voile sur le remplissage au repos.)
+     ********************************************************/
+    if (bgColorValue && isGradient(bgColorValue)) {
+        const grad = resolveGradient(bgColorValue)
+
+        if (grad) return [`background-image: ${grad}`, null, true]
+
+        return [null, null, false]
+    }
+
+    if (bgColorValue && isIntent(bgColorValue as string)) {
+        const m = tokenStylesForIntent(bgColorValue as TIntent, bgRole)
+
+        /*********************************************************
+         * bgIntentFg
+         *
+         * @description
+         * Le fg de contraste d'une intention est fixe d'un role a l'autre :
+         * on le tire du slot `default` quoi qu'il arrive, pour que le texte
+         * ne s'assombrisse pas avec le fond en hover/active.
+         ********************************************************/
+        return [
+            `background-color: ${m['background-color']}`,
+            tokenStylesForIntent(bgColorValue as TIntent, 'default').color,
+            false
+        ]
+    }
+
+    /*********************************************************
+     * transparent
+     *
+     * @description
+     * Mode par defaut (base transparente) : la derivation mathematique donne
+     * un gris subtil au hover, plus marque a l'active — c'est la
+     * « progression neutre » attendue, style pagination.
+     ********************************************************/
+    if (bgColorValue === 'transparent') {
+        return [`background-color: ${rawBgExprWithState('transparent', bgRole)}`, null, false]
+    }
+
+    /*********************************************************
+     * couleur brute (legacy)
+     *
+     * @description
+     * Meme derivation -20 % / -30 % pour hover / active. Le mode par defaut
+     * laisse la valeur brute intacte (aucune transformation au repos).
+     ********************************************************/
+    if (bgColorValue && typeof bgColorValue === 'string' && isCssColor(bgColorValue)) {
+        warnLegacyColor('bgColor', bgColorValue)
+
+        return [`background-color: ${rawBgExprWithState(bgColorValue, bgRole)}`, null, false]
+    }
+
+    return [null, null, false]
+}
+
+/*********************************************************
+ * isSameIntentOnBothAxes
+ *
+ * @description
+ * Le consommateur a passe la MEME intention sur `color` et sur `bgColor`.
+ * Predicat extrait de la chaine de premier plan, sans changement : memes
+ * quatre conditions, meme ordre, meme court-circuit.
+ ********************************************************/
+function isSameIntentOnBothAxes (
+    colorValue: TColor,
+    bgColorValue: TColor,
+    bgIntentFg: string | null
+): boolean {
+    return Boolean(
+        bgIntentFg &&
+        bgColorValue &&
+        isIntent(bgColorValue as string) &&
+        colorValue === bgColorValue
+    )
+}
+
+/*********************************************************
+ * resolveAutoContrastForeground
+ *
+ * @description
+ * Les deux dernieres branches de la chaine de premier plan, celles qui ne
+ * s'appliquent QUE si aucun `color` n'est passe. L'appelant garantit ce
+ * `!colorValue` ; les deux branches d'origine le portaient chacune.
+ *
+ * @description
+ * Voie token — le fond vient d'une intention : on apparie le token `fg` de
+ * l'intention pour que le texte soit toujours lisible.
+ *
+ * @description
+ * Voie CSS brut (legacy) — premier plan conscient du WCAG via
+ * `getForeground`. Saute les fonds translucides (alpha < 1), pour lesquels
+ * le contraste ne peut pas etre calcule de facon fiable.
+ *
+ * @description
+ * ⚠️ Le `if (bgIsGradient) return null` en tete remplace le `!bgIsGradient`
+ * que LES DEUX branches d'origine portaient. Et la voie brute n'est
+ * atteinte que si `bgIntentFg` est absent — exactement ce que faisait le
+ * `else if` d'origine.
+ ********************************************************/
+function resolveAutoContrastForeground (
+    bgColorValue: TColor,
+    bgIntentFg: string | null,
+    bgIsGradient: boolean
+): string | null {
+    if (bgIsGradient) return null
+
+    if (bgIntentFg) return `color: ${bgIntentFg}`
+
+    if (bgColorValue && typeof bgColorValue === 'string'
+        && bgColorValue !== 'transparent' && isParsableColor(bgColorValue)) {
+        const parsed = parseColor(bgColorValue)
+
+        if (parsed.a == null || parsed.a === 1) return `color: ${getForeground(parsed)}`
+    }
+
+    return null
+}
+
+/*********************************************************
+ * resolveForeground
+ *
+ * @description
+ * La chaine de resolution du PREMIER PLAN, extraite telle quelle de
+ * `colorStyles` (Sonar #771). Memes branches, meme ordre, memes casts.
+ *
+ * @description
+ * Contrat transversal du design-system (identique a `useColor`) :
+ * `color` est FOREGROUND-ONLY, il ne peint jamais la surface ; `bgColor`
+ * possede la surface. La version precedente appariait automatiquement le
+ * fond depuis l'intention quand seul `color` etait passe — ce qui faisait
+ * que `<origam-btn-group color="primary">` inondait chaque bouton enfant
+ * d'un fond primary au lieu d'en colorer seulement le texte.
+ *
+ * @description
+ * Le 2e element du tuple est un ECRASEMENT du `bgDecl` deja resolu, pas un
+ * ajout : un degrade de premier plan detourne le canal `background-image`
+ * (triade `background-clip: text`), et le premier plan l'emporte sur la
+ * surface. `null` = ne rien ecraser.
+ ********************************************************/
+function resolveForeground (
+    colorValue: TColor,
+    bgColorValue: TColor,
+    bgIntentFg: string | null,
+    bgIsGradient: boolean
+): [fgDecl: string | null, bgDeclOverride: string | null, clipText: boolean] {
+    if (colorValue && isGradient(colorValue)) {
+        const grad = resolveGradient(colorValue)
+
+        if (grad) return ['color: transparent', `background-image: ${grad}`, true]
+
+        return [null, null, false]
+    }
+
+    if (colorValue && isIntent(colorValue as string)) {
+        /*********************************************************
+         * Color-clash auto-contrast (regle transverse)
+         *
+         * @description
+         * Quand le consommateur passe la MEME intention sur les deux axes
+         * (`color="primary" bgColor="primary"`), peindre le fg avec
+         * `tokenForegroundForIntent` rend la teinte propre de l'intention
+         * (fgSubtle = primary.700) PAR-DESSUS la surface de cette meme
+         * intention — teinte sur teinte, illisible (« violet sur violet »).
+         * On bascule sur le token de contraste apparie au fond.
+         ********************************************************/
+        if (isSameIntentOnBothAxes(colorValue, bgColorValue, bgIntentFg)) {
+            return [`color: ${bgIntentFg}`, null, false]
+        }
+
+        return [`color: ${tokenForegroundForIntent(colorValue as TIntent)}`, null, false]
+    }
+
+    if (colorValue && typeof colorValue === 'string' && isCssColor(colorValue)) {
+        if (colorValue !== 'transparent') warnLegacyColor('color', colorValue)
+
+        return [`color: ${colorValue}`, null, false]
+    }
+
+    if (!colorValue) {
+        const autoFg = resolveAutoContrastForeground(bgColorValue, bgIntentFg, bgIsGradient)
+
+        if (autoFg) return [autoFg, null, false]
+    }
+
+    return [null, null, false]
+}
 
 /*********************************************************
  * useColorEffect
@@ -121,7 +351,7 @@ export function useColorEffect (
         // visually consistent — same color family, just dimmed.
         // We still read `isDisabled.value` to keep the param wired —
         // in case a future iteration wants per-intent disabled tokens.
-        void isDisabled.value
+        trackReactiveDependency(isDisabled.value)
         // ── State role ────────────────────────────────────────────────────
         // hover and active resolve to DIFFERENT roles so the cross-
         // component spec ("hover -20 %, active -30 %") holds. There is no
@@ -132,127 +362,34 @@ export function useColorEffect (
             isActive.value ? 'active' :
             'default'
 
-        let bgDecl: string | null = null
-        let fgDecl: string | null = null
-        // When bg comes from an intent, we know the matching fg token —
-        // remember it so a missing `color` falls back to that pair (auto-
-        // contrast inside the design-system without `getForeground`).
-        let bgIntentFg: string | null = null
-        let bgIsGradient = false
-        // Set to true when the FOREGROUND resolves to a gradient — we
-        // then need to emit `background-clip: text` / `-webkit-…` at the
-        // end (after `bgDecl` so the gradient lives on background-image).
-        let clipText = false
-
         /*********************************************************
-         * Background resolution
+         * Resolution du fond, puis du premier plan
+         *
+         * @description
+         * Les deux chaines vivent desormais dans `resolveBackground` /
+         * `resolveForeground` en haut de fichier (Sonar #771 : complexite
+         * cognitive 35 > 15). Elles sont pures : memes entrees, memes
+         * branches, memes sorties qu'en ligne.
+         *
+         * @description
+         * `bgIntentFg` — quand le fond vient d'une intention, on connait le
+         * token fg apparie : on le retient pour qu'un `color` absent retombe
+         * sur cette paire (auto-contraste interne au design-system, sans
+         * passer par `getForeground`).
+         *
+         * @description
+         * `bgDeclOverride` ECRASE le fond, il ne s'y ajoute pas : un degrade
+         * de premier plan detourne `background-image` et l'emporte sur la
+         * surface, exactement comme l'affectation en ligne le faisait.
          ********************************************************/
-        if (bgColor.value && isGradient(bgColor.value)) {
-            // Gradients ignore the hover/active darken cascade — applying
-            // `color-mix` per stop would explode the declaration size and
-            // change the artistic intent. Hover/active are visually
-            // expressed via the parent component's opacity / transform
-            // overlay rather than a token swap. (Same contract as the
-            // disabled state: veil/opacity overlay on the resting fill.)
-            const grad = resolveGradient(bgColor.value)
-            if (grad) {
-                bgDecl = `background-image: ${grad}`
-                bgIsGradient = true
-            }
-        } else if (bgColor.value && isIntent(bgColor.value as string)) {
-            const m = tokenStylesForIntent(bgColor.value as TIntent, bgRole)
-            bgDecl = `background-color: ${m['background-color']}`
-            // The intent's contrast fg is fixed across roles — pull from
-            // the default slot regardless of bgRole so hover/active text
-            // never darkens with the bg.
-            bgIntentFg = tokenStylesForIntent(bgColor.value as TIntent, 'default').color
-        } else if (bgColor.value === 'transparent') {
-            // Default mode (transparent base): math derivation gives a
-            // subtle gray on hover, a stronger gray on active — matches
-            // the pagination-style "neutral progression" expectation.
-            bgDecl = `background-color: ${rawBgExprWithState('transparent', bgRole)}`
-        } else if (bgColor.value && typeof bgColor.value === 'string' && isCssColor(bgColor.value)) {
-            warnLegacyColor('bgColor', bgColor.value)
-            // Raw color path: apply the same -20 % / -30 % derivation
-            // for hover / active. Default mode keeps the raw value
-            // untouched (no transformation at rest).
-            bgDecl = `background-color: ${rawBgExprWithState(bgColor.value, bgRole)}`
-        }
-
-        /*********************************************************
-         * Foreground resolution
-         ********************************************************/
-        // Universal design-system contract (matches `useColor`):
-        //   • `color` is FOREGROUND-ONLY — it never paints the surface.
-        //   • `bgColor` owns the surface; if the consumer wants both
-        //     coloured, both props must be set.
-        // The previous version of this block auto-paired the bg from the
-        // intent when only `color` was passed — that meant
-        // `<OrigamBtnGroup color="primary">` flooded every child button
-        // with primary backgrounds instead of just colouring the text,
-        // breaking the rest of the design system's expectations.
-        // For "filled primary button" use `bgColor="primary"` (which
-        // auto-contrasts the text to the intent's fg pair below) or set
-        // both explicitly.
-        if (color.value && isGradient(color.value)) {
-            // Foreground gradient → `background-clip: text` triad. When
-            // the surface (bgColor) is ALSO a gradient, both occupy the
-            // same `background-image` channel — the consumer should pick
-            // one. We honour the FOREGROUND in that case (the text glyphs
-            // win over the empty surface area). The bg/fg gradient
-            // collision is documented in the gradient guide.
-            const grad = resolveGradient(color.value)
-            if (grad) {
-                fgDecl = 'color: transparent'
-                // Hijack background-image for the text gradient: any bg
-                // gradient set on bgColor is replaced (foreground wins).
-                bgDecl = `background-image: ${grad}`
-                clipText = true
-            }
-        } else if (color.value && isIntent(color.value as string)) {
-            // ── Color-clash auto-contrast (cross-component rule) ────────
-            // When the consumer passes the SAME intent on both axes
-            // (e.g. `color="primary" bgColor="primary"`), painting the
-            // fg with `tokenForegroundForIntent` returns the intent's
-            // own hue (fgSubtle = primary.700) ON TOP of the bg's intent
-            // surface — hue-on-hue, unreadable ("violet on violet"). Swap
-            // to the bg's paired contrast token instead (white on a
-            // saturated brand surface, dark on a soft surface) so the
-            // text is always legible without forcing the consumer to
-            // spell out both values explicitly.
-            if (
-                bgIntentFg &&
-                bgColor.value &&
-                isIntent(bgColor.value as string) &&
-                color.value === bgColor.value
-            ) {
-                fgDecl = `color: ${bgIntentFg}`
-            } else {
-                // `tokenForegroundForIntent` returns the intent's *foreground*
-                // token (e.g. `var(--origam-color__action--primary---fgSubtle)`),
-                // designed to be legible on a neutral surface — exactly the
-                // semantics consumers want from `color` alone.
-                fgDecl = `color: ${tokenForegroundForIntent(color.value as TIntent)}`
-            }
-        } else if (color.value && typeof color.value === 'string' && isCssColor(color.value)) {
-            if (color.value !== 'transparent') warnLegacyColor('color', color.value)
-            fgDecl = `color: ${color.value}`
-        } else if (!color.value && bgIntentFg && !bgIsGradient) {
-            // Auto-contrast (token path): bg comes from an intent, no
-            // explicit color → pair the intent's matching `fg` token so
-            // the text is always legible without the consumer specifying
-            // both. Reads the same hover/disabled slot via `bgRole`.
-            fgDecl = `color: ${bgIntentFg}`
-        } else if (!color.value && !bgIsGradient && bgColor.value && typeof bgColor.value === 'string'
-                   && bgColor.value !== 'transparent' && isParsableColor(bgColor.value)) {
-            // Auto-contrast (legacy raw CSS): WCAG-aware foreground from
-            // the existing `getForeground` helper. Skipped for translucent
-            // bgs (alpha < 1) since contrast can't be reliably computed.
-            const parsed = parseColor(bgColor.value)
-            if (parsed.a == null || parsed.a === 1) {
-                fgDecl = `color: ${getForeground(parsed)}`
-            }
-        }
+        const [bgDeclBase, bgIntentFg, bgIsGradient] = resolveBackground(bgColor.value, bgRole)
+        const [fgDecl, bgDeclOverride, clipText] = resolveForeground(
+            color.value,
+            bgColor.value,
+            bgIntentFg,
+            bgIsGradient
+        )
+        const bgDecl = bgDeclOverride ?? bgDeclBase
 
         const styles: string[] = []
         if (bgDecl) styles.push(bgDecl)

@@ -6,10 +6,11 @@ import type { IColorProps } from '../Commons/color.interface'
 import type { ICommonsComponentProps } from '../Commons/commons.interface'
 
 import type { TTransitionProps } from '../../types/Transition/transition.type'
+import type { TAnyString } from '../../types/Commons/commons.type'
 
 export interface IDatePickerMonthProps extends ICommonsComponentProps, IColorProps, ICalendarProps {
     hideWeekdays?: boolean
-    multiple?: boolean | number | (string & {})
+    multiple?: boolean | number | TAnyString
     range?: boolean
     showWeek?: boolean
     transition?: TTransitionProps

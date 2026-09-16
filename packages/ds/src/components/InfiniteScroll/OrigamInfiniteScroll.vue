@@ -306,30 +306,57 @@
 		frames.clear()
 	})
 
+	/*********************************************************
+	 * scheduleFrames — la chaine de rAF, mise a plat
+	 *
+	 * @description
+	 * Remplace mot pour mot l'imbrication
+	 * `scheduleFrame(scheduleFrame(scheduleFrame(cb)))` que `done`
+	 * portait en ligne : meme nombre de frames, meme ordre, meme
+	 * court-circuit sur `disposed` (porte par `scheduleFrame`).
+	 *
+	 * @description
+	 * `count <= 1 ? cb : …` et non `count <= 0` : a 1 il reste UNE
+	 * frame a armer, celle qui execute `cb`. Avec `<= 0` la recursion
+	 * armerait une frame de trop et decalerait la re-mesure d'un tick.
+	 ********************************************************/
+	const scheduleFrames = (count: number, cb: () => void) => {
+		scheduleFrame(count <= 1 ? cb : () => scheduleFrames(count - 1, cb))
+	}
+
+	const rearmIntersect = () => {
+		intersecting(currentSide.value)
+	}
+
+	/*********************************************************
+	 * afterDoneTick — le corps du `nextTick` de `done`, extrait
+	 *
+	 * @description
+	 * Extraction pure (Sonar #771 : plus de 4 niveaux de fonctions
+	 * imbriquees a l'ancienne ligne 324). Aucune instruction deplacee,
+	 * ajoutee ni retiree — seul le niveau d'imbrication change.
+	 ********************************************************/
+	const afterDoneTick = () => {
+		if (disposed) return
+
+		if (status.value === INFINITE_SCROLL_STATUS.EMPTY || status.value === INFINITE_SCROLL_STATUS.ERROR) return
+
+		if (status.value === INFINITE_SCROLL_STATUS.OK && currentSide.value === INFINITE_SCROLL_SIDE.START) {
+			setScrollAmount(getScrollSize() - previousScrollSize + getScrollAmount())
+		}
+
+		if (props.mode !== INFINITE_SCROLL_MODE.MANUAL) {
+			/*********************************************************
+			 * 3 frames — exactement la triple imbrication d'origine.
+			 ********************************************************/
+			nextTick(() => scheduleFrames(3, rearmIntersect))
+		}
+	}
+
 	const done = (_status: TInfiniteScrollStatus) => {
 		status.value = _status
 
-		nextTick(() => {
-			if (disposed) return
-
-			if (status.value === INFINITE_SCROLL_STATUS.EMPTY || status.value === INFINITE_SCROLL_STATUS.ERROR) return
-
-			if (status.value === INFINITE_SCROLL_STATUS.OK && currentSide.value === INFINITE_SCROLL_SIDE.START) {
-				setScrollAmount(getScrollSize() - previousScrollSize + getScrollAmount())
-			}
-
-			if (props.mode !== INFINITE_SCROLL_MODE.MANUAL) {
-				nextTick(() => {
-					scheduleFrame(() => {
-						scheduleFrame(() => {
-							scheduleFrame(() => {
-								intersecting(currentSide.value)
-							})
-						})
-					})
-				})
-			}
-		})
+		nextTick(afterDoneTick)
 	}
 	const intersecting = (side: TInfiniteScrollSide) => {
 		if (props.mode !== 'manual' && !isIntersecting.value) return

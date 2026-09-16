@@ -5,7 +5,7 @@ import type {
     TDataTableHeaderCell
 } from '../../types/DataTable/data-table.type'
 import type { TFilterFunction } from '../../types/Commons/filters.type'
-import type { TSelectItemKey } from '../../types/Commons/commons.type'
+import type { TAnyString, TSelectItemKey } from '../../types/Commons/commons.type'
 
 /*********************************************************
  * IDataTableHeaderProps / IDataTableHeader / IInternalDataTableHeader
@@ -23,7 +23,7 @@ export interface IDataTableHeaderProps {
 }
 
 export interface IDataTableHeader<T = any> {
-    key?: 'data-table-group' | 'data-table-select' | 'data-table-expand' | (string & {})
+    key?: 'data-table-group' | 'data-table-select' | 'data-table-expand' | TAnyString
     value?: TSelectItemKey<T>
     title?: string
 
