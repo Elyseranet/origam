@@ -10,6 +10,12 @@ lerna-debug.log*
 # Node modules
 node_modules
 
+# Cache de compilation Node ecrit par le postinstall de marketing
+# (`nuxt prepare`). Genere par CHAQUE `pnpm install`, jamais versionne, et
+# jusqu'ici non ignore : 1448 fichiers non suivis dans un worktree frais,
+# soit autant de candidats a un `git add -A` distrait. Mesure le 2026-09-16.
+packages/marketing/node-compile-cache/
+
 # Dist
 dist
 dist-ssr

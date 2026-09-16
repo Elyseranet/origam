@@ -120,6 +120,8 @@
     "guards:class-fallthrough:self": "node scripts/guards/lib/class-fallthrough.selftest.mjs",
     "guards:id-reach:self": "node scripts/guards/lib/id-reach.selftest.mjs",
     "guards:unconsumed-props:self": "node scripts/guards/lib/interface-resolution.selftest.mjs",
+    "guards:pnpm-script-exists": "node scripts/guards/pnpm-script-exists.mjs",
+    "guards:pnpm-script-exists:self": "node scripts/guards/lib/pnpm-invocations.selftest.mjs",
     "docs:composables": "node scripts/analysis/gen-composables-doc.mjs --write"
   },
   "dependencies": {
