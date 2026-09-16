@@ -2,6 +2,7 @@ import { defineConfig, devices } from '@playwright/test'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { scratchDirPatterns } from './scratch-dirs.const'
+import { HISTOIRE_BASE_PATH } from './e2e/_support/histoire-manifest.const'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = resolve(__dirname, '..', '..')
@@ -64,9 +65,25 @@ export default defineConfig({
 
     webServer: {
         // Spawn pnpm from the repo root so the workspace filter resolves.
-        command: `pnpm -F @origam/stories dev --port ${HISTOIRE_PORT}`,
+        //
+        // E2E_STATIC=1 (CI): serve the PREBUILT static Histoire via
+        // `histoire preview` (the job runs the stories build first) instead of
+        // paying a per-story Vite cold-compile. Meme knob et meme raison que
+        // `playwright.config.ts` (ou le gain mesure sur la suite e2e est de
+        // 3.4x — root CLAUDE.md, "Running the full e2e suite" ; ce facteur
+        // n'a PAS ete remesure pour la suite a11y). Defaut (local) : le
+        // serveur `histoire dev` vivant, reutilise s'il tourne deja.
+        command: process.env.E2E_STATIC === '1'
+            ? `pnpm -F @origam/stories exec histoire preview -p ${HISTOIRE_PORT}`
+            // No `--` separator: pnpm would forward it literally to the script
+            // and the server would silently bind the default 6006 instead.
+            : `pnpm -F @origam/stories dev --port ${HISTOIRE_PORT}`,
         cwd: REPO_ROOT,
-        url: `http://localhost:${HISTOIRE_PORT}`,
+        // Probe the base path, not `/`. `histoire preview` serves a plain
+        // static tree under `vite.base` and answers 404 on `/`, which is NOT
+        // one of the statuses Playwright accepts as "server is up" — the job
+        // would hang until `timeout` and die before the first spec.
+        url: `http://localhost:${HISTOIRE_PORT}${HISTOIRE_BASE_PATH}`,
         reuseExistingServer: !process.env.CI,
         timeout: 120_000
     }

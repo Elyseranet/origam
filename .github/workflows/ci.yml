@@ -452,6 +452,98 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
 
+  test-a11y-components:
+    name: A11y tests — components (axe-core / Chromium)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # ⛔ POURQUOI CE JOB EXISTE — #765.
+    #
+    # `packages/tests/a11y/components.spec.ts` balaie les Variants du
+    # catalogue avec axe-core, et le script `test:a11y` l'expose depuis mai
+    # 2026. AUCUN workflow ne l'a jamais invoque : le seul job a11y etait
+    # `test-a11y-marketing` ci-dessous, qui lance la config MARKETING. La
+    # porte pre-livraison du CLAUDE.md portait donc sur une suite que la CI
+    # n'executait pas.
+    #
+    # #763 venait de reparer cette meme suite (ses URL chargeaient une page
+    # d'erreur depuis ~16 mois, cf. #573/#575, et `assertStoryRendered()`
+    # refuse desormais de rendre un verdict sur une page vide). Une suite
+    # reparee que rien n'execute ne protege toujours de rien : c'est la
+    # seconde moitie du meme defaut.
+    #
+    # CONTROLE POSITIF, mesure avant d'ajouter ce job (obligatoire — un job
+    # vert sur une suite muette est pire qu'aucun job). Deux temoins injectes
+    # dans la premiere Variant de `OrigamBtn.story.vue`, catalogue rebati
+    # entre chaque etape :
+    #   `<button class="origam-a11y-witness-critical" />`   -> button-name
+    #       (critical)  -> BLOQUANT  -> job ROUGE (exit 1)
+    #   `<div role="button" class="…-serious" />`           -> aria-command-name
+    #       (serious)   -> rapporte mais NON bloquant -> job VERT
+    # Temoins retires + rebuild -> 36 passed / 1 skipped, exit 0.
+    #
+    # Le second temoin dit exactement ce que `IMPACT_FAIL_LEVEL = ['critical']`
+    # laisse passer aujourd'hui. Le seuil reste inchange ici : c'est un
+    # arbitrage mainteneur, pose avec les chiffres dans #765.
+    env:
+      # Sert le catalogue Histoire PREBATI (`histoire preview`) au lieu de
+      # payer une compilation Vite a froid par story — meme levier, meme
+      # raison que `test-e2e` ci-dessus.
+      E2E_STATIC: '1'
+      NODE_OPTIONS: --max-old-space-size=6144
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Resolve Playwright version
+        id: pw
+        run: |
+          version=$(node -p "require('./packages/tests/package.json').devDependencies['@playwright/test'].replace(/[^\d.]/g,'')")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        id: pw-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-${{ runner.os }}-${{ steps.pw.outputs.version }}-chromium
+
+      - name: Install Playwright Chromium
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: pnpm -F @origam/tests exec playwright install --with-deps chromium
+
+      - name: Install Playwright OS deps only
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: pnpm -F @origam/tests exec playwright install-deps chromium
+
+      # Plain `run:`, no pipe: `pnpm build | tail` returns `tail`'s exit code
+      # and a broken build would then run green. Same rationale as the
+      # marketing jobs above.
+      - name: Build static Histoire (served by the a11y webServer)
+        run: pnpm -F @origam/stories build
+
+      - name: Run Playwright (components a11y, chromium)
+        run: pnpm -F @origam/tests exec playwright test --config=playwright.a11y.config.ts --project=chromium
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-a11y-components
+          path: |
+            packages/tests/a11y/.report
+            packages/tests/a11y/.results
+          retention-days: 7
+          if-no-files-found: ignore
+
   test-a11y-marketing:
     name: A11y tests — marketing pages (axe-core / Chromium)
     runs-on: ubuntu-latest
@@ -459,8 +551,13 @@ jobs:
     # Sweeps real marketing pages (landmarks, skip link, no-JS nav) — the
     # existing `a11y/components.spec.ts` only ever scans a component inside
     # a Histoire story iframe and explicitly ignores `region` /
-    # `landmark-one-main` / `page-has-heading-one` as iframe noise. Neither
-    # that suite nor this one ran in CI before this job existed.
+    # `landmark-one-main` / `page-has-heading-one` as iframe noise.
+    #
+    # Ce job a longtemps ete le SEUL job a11y de la CI — la suite composants
+    # n'etait invoquee par aucun workflow. Elle l'est depuis
+    # `test-a11y-components` ci-dessus (#765). Les deux restent distinctes :
+    # l'une mesure des PAGES completes, l'autre des composants montes dans
+    # une iframe de story.
     steps:
       - uses: actions/checkout@v7
 
