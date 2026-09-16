@@ -23,59 +23,51 @@ list is a policy breach in itself.
 
 ---
 
-## GHSA-w3rx-r6r6-pgpr and GHSA-5p2g-fcmc-qvqq — `image-size`
+## Active waivers
 
-- **Severity**: `high` (both) — denial of service
-- **Granted**: 2026-08-11, by the maintainer, explicitly
-- **Review**: 2026-11-11, or sooner if a patched `image-size` is published
-- **Ticket**: track the publication of a fixed `image-size` upstream
+**None.** `pnpm.auditConfig.ignoreGhsas` is absent from the root `package.json`,
+and `pnpm audit --prod` returns `No known vulnerabilities found` with exit code
+`0` without any advisory being suppressed.
 
-### Why it is not remediable
+Keep it that way by preference: a waiver is the fallback for what cannot be
+fixed, not a way to close a ticket.
 
-`image-size@2.0.2` is **the latest published version, and it is itself the
-vulnerable one** — the advisory lists `Patched versions: <0.0.0`, meaning no
-release fixes it. Verified on 2026-08-11: `npm view image-size version` returns
-`2.0.2`, and `nuxt-seo-utils@latest` still depends on `image-size@^2.0.2`.
-Upgrading `@nuxtjs/seo` changes nothing.
+---
 
-There is no version to move to. The choice is between a documented waiver and a
-permanently red gate that everyone learns to ignore — which is strictly worse,
-because it hides the next real advisory.
+## Revoked
 
-### Dependency chain
+### GHSA-w3rx-r6r6-pgpr and GHSA-5p2g-fcmc-qvqq — `image-size`
 
-```
-@origam/marketing (private, never published)
-└─ @nuxtjs/seo 5.3.10
-   └─ nuxt-seo-utils 8.3.3
-      └─ image-size 2.0.2
-```
+- **Granted**: 2026-08-11, by the maintainer, explicitly (commit `bf05bf8ec`)
+- **Revoked**: 2026-09-16, under issue #718
+- **Reason for revocation**: the first listed revocation criterion fired — *"a
+  patched `image-size` is published → drop the waiver, upgrade"*
 
-### Why the exposure is nil
+The waiver rested on a fact that was exact when it was written: `image-size@2.0.2`
+was the latest published version and was itself the vulnerable one, so there was
+nowhere to upgrade to.
 
-**It never reaches a consumer.** The published `origam` package declares exactly
-two runtime dependencies — `@mdi/font` and `qrcode-generator`. `image-size`
-arrives only through `@origam/marketing`, which is `private: true` and is never
-published. Nobody installing `origam` receives it.
+That stopped being true on **2026-09-14**, when `image-size` 2.0.3 and then 2.0.4
+were published. Neither carries GitHub release notes, which is why the change was
+easy to miss — the advisories' own vulnerable range is `<=2.0.2`, so any version
+above it is out of scope.
 
-**The vulnerable code is not reached even in our own build.** The single call is
-`getImageDimensions()`, invoked by `generateTagsFromPageDirImages(nuxt)` — a
-Nuxt module hook that runs at build time and globs the `pages/` directory. Its
-globs accept only `png, jpg, jpeg, gif, ico, svg`. **ICNS, JXL and HEIF — the
-exact formats of both advisories — are not in that list.** And `image-size` is
-absent from `.output/server/node_modules` after a build.
+The upgrade is pinned by `pnpm.overrides` (`"image-size": "^2.0.4"`).
 
-**The residual path, stated rather than hidden.** `image-size` detects format by
-magic bytes, not by extension. A file named `icon.png` that actually contains
-ICNS data would route to the vulnerable parser. That file would have to be
-committed by us, into our own repository — it is trusted input, not an attack
-surface. A build-time denial of service on an asset we commit ourselves, in a
-package that is never published, is not equivalent to an exploitable flaw in a
-consumer's application.
+#### The fix was verified in the code, not only in the semver range
 
-### What would revoke this waiver
+GitHub still reports `first_patched_version: null` for both advisories, so the
+range alone was not sufficient evidence. Both advisories describe an infinite
+loop caused by a box offset that never advances. Comparing the published
+tarballs of 2.0.2 and 2.0.4 shows the corresponding guards being added:
 
-- A patched `image-size` is published → drop the waiver, upgrade.
-- `image-size` starts being reached at **runtime** rather than build time.
-- The dependency enters the published `origam` package.
-- An advisory is upgraded to `critical`, or gains a network-reachable vector.
+| file (2.0.4) | guard absent from 2.0.2 |
+|---|---|
+| `dist/esm/types/heif.js` | `const nextOffset = ispeBox.offset + ispeBox.size;` then `if (nextOffset <= currentOffset) throw new TypeError('Invalid HEIF')` |
+| `dist/esm/types/heif.js` | `if (ispeBox.size < 20) throw new TypeError('Invalid HEIF')` |
+| `dist/esm/types/jxl.js` | `if (jxlpBox.size < 12) throw new TypeError('Invalid JXL')` |
+| `dist/esm/types/utils.js` | in `findBox`: `if (boxSize < BOX_HEADER_SIZE) { currentOffset += BOX_HEADER_SIZE; continue }` |
+
+In 2.0.2 the HEIF loop ended on `currentOffset = ispeBox.offset + ispeBox.size`
+with no lower bound on `size` — a zero-sized box left the offset where it was,
+which is exactly the reported hang.
