@@ -208,19 +208,20 @@
 			!!(typeof labelledBy === 'string' ? labelledBy.trim() : labelledBy)
 	})
 
-	const landmarkAttrs = computed<Record<string, string>>(() => {
+	const landmarkAttrs = computed(() => {
 		const roleDescription = t('origam.carousel.role_description')
+		const attributes: Record<string, string> = {}
 
 		if (!hasAccessibleName.value) {
 			warnMissingLandmarkName('OrigamWindow', 'region', roleDescription)
 
-			return {}
+			return attributes
 		}
 
-		return {
-			role: 'region',
-			'aria-roledescription': roleDescription
-		}
+		attributes.role = 'region'
+		attributes['aria-roledescription'] = roleDescription
+
+		return attributes
 	})
 
 	/*********************************************************
