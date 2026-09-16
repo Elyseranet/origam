@@ -46,6 +46,48 @@ export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
     const display = useDisplay()
     const goTo = useGoTo()
 
+    /*********************************************************
+     * Frames bound to the owner's lifetime (#719)
+     *
+     * @description
+     * Three rAF sites lived here and NONE was cancelled when the scope
+     * was disposed:
+     *   - the deferred `scrollToIndex` retry, armed from a `nextTick`
+     *     inside the first-render watcher;
+     *   - the viewport-shrink recompute;
+     *   - `calculateVisibleItems`, whose handle WAS tracked (`raf`) but
+     *     only ever cancelled by the next call, never by `onScopeDispose`.
+     *
+     * @description
+     * None of these bodies is benign: they all end in
+     * `calculateVisibleItems` → `requestAnimationFrame` (bare global) or
+     * in `useGoTo`, which reads `window`. A frame landing after the
+     * jsdom environment is torn down throws
+     * `ReferenceError: window is not defined` from the SCHEDULER — the
+     * exact shape that made `OrigamImg` fail a whole Vitest run with
+     * zero red tests (#706).
+     *
+     * @description
+     * One mechanism covers both failure modes: `onScopeDispose` cancels
+     * whatever frame is armed AND flips `disposed`, which turns any
+     * later scheduling attempt into a no-op. The flag is what the
+     * `nextTick`-deferred site needs, since at dispose time it has no
+     * handle to cancel yet.
+     ********************************************************/
+    let frame = -1
+    // Coalescing handle for `calculateVisibleItems` — declared here so
+    // the `onScopeDispose` below can cancel it without a forward
+    // reference.
+    let raf = -1
+    let disposed = false
+
+    const scheduleFrame = (cb: () => void) => {
+        if (disposed || !IN_BROWSER) return
+
+        cancelAnimationFrame(frame)
+        frame = requestAnimationFrame(cb)
+    }
+
     const itemHeight = shallowRef(0)
 
     watchEffect(() => {
@@ -150,17 +192,26 @@ export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
         if (!~targetScrollIndex) return
 
         nextTick(() => {
-            if (IN_BROWSER) {
-                window.requestAnimationFrame(() => {
-                    scrollToIndex(targetScrollIndex)
-                    targetScrollIndex = -1
-                })
-            }
+            scheduleFrame(() => {
+                scrollToIndex(targetScrollIndex)
+                targetScrollIndex = -1
+            })
         })
     })
 
     onScopeDispose(() => {
         updateOffsets.clear()
+        disposed = true
+
+        if (frame !== -1) {
+            cancelAnimationFrame(frame)
+            frame = -1
+        }
+
+        if (raf !== -1) {
+            cancelAnimationFrame(raf)
+            raf = -1
+        }
     })
 
     const handleItemResize = (index: number, height: number) => {
@@ -191,7 +242,7 @@ export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
         if (oldVal) {
             calculateVisibleItems()
             if (val < oldVal) {
-                requestAnimationFrame(() => {
+                scheduleFrame(() => {
                     scrollVelocity = 0
                     calculateVisibleItems()
                 })
@@ -230,9 +281,9 @@ export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
         calculateVisibleItems()
     }
 
-    let raf = -1
-
     const calculateVisibleItems = () => {
+        if (disposed || !IN_BROWSER) return
+
         cancelAnimationFrame(raf)
         raf = requestAnimationFrame(calcVisibleItems)
     }

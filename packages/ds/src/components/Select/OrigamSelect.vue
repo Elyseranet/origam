@@ -276,6 +276,7 @@
 		inject,
 		mergeProps,
 		nextTick,
+		onBeforeUnmount,
 		onMounted,
 		ref,
 		shallowRef,
@@ -639,6 +640,43 @@
 	} = useScrolling(origamListRef, origamTextFieldRef)
 
 	/*********************************************************
+	 * scheduleScrollFrame — rAF bound to the component's lifetime (#719)
+	 *
+	 * @description
+	 * Two sites defer `scrollToIndex` by one frame (keyboard lookup, and
+	 * the `menu` watcher that re-centres on the selected item). Nothing
+	 * cancelled that frame at unmount, so the continuation could land on
+	 * a destroyed environment — the #706 family. It is not benign here:
+	 * `scrollToIndex` runs through `useVirtual` → `useGoTo`, which arms
+	 * its own rAF loop and reads `window`.
+	 *
+	 * @description
+	 * `onBeforeUnmount` cancels the frame already armed and flips
+	 * `disposed`, which also neutralises any later scheduling attempt.
+	 * Only ONE handle is tracked: both sites schedule the same
+	 * "scroll the virtual list to an index" intent, and a newer one
+	 * supersedes the older.
+	 ********************************************************/
+	let scrollFrame = -1
+	let disposed = false
+
+	const scheduleScrollFrame = (cb: () => void) => {
+		if (disposed || !IN_BROWSER) return
+
+		window.cancelAnimationFrame(scrollFrame)
+		scrollFrame = window.requestAnimationFrame(cb)
+	}
+
+	onBeforeUnmount(() => {
+		disposed = true
+
+		if (scrollFrame !== -1) {
+			window.cancelAnimationFrame(scrollFrame)
+			scrollFrame = -1
+		}
+	})
+
+	/*********************************************************
 	 * Event handlers
 	 ********************************************************/
 
@@ -906,13 +944,11 @@
 				model.value = [item as IInternalListItem]
 				const index = displayItems.value.indexOf(item)
 
-				if (IN_BROWSER) {
-					window.requestAnimationFrame(() => {
-						if (index >= 0) {
-							origamVirtualScrollRef.value?.scrollToIndex(index)
-						}
-					})
-				}
+				scheduleScrollFrame(() => {
+					if (index >= 0) {
+						origamVirtualScrollRef.value?.scrollToIndex(index)
+					}
+				})
 			}
 		}
 	}
@@ -1125,13 +1161,11 @@
 			const index = displayItems.value.findIndex(
 					item => model.value.some((s) => (props.valueComparator ? props.valueComparator(s.value, item.value) : deepEqual(s.value, item.value)))
 			)
-			if (IN_BROWSER) {
-				window.requestAnimationFrame(() => {
-					if (index >= 0) {
-						origamVirtualScrollRef.value?.scrollToIndex(index)
-					}
-				})
-			}
+			scheduleScrollFrame(() => {
+				if (index >= 0) {
+					origamVirtualScrollRef.value?.scrollToIndex(index)
+				}
+			})
 		}
 	})
 
