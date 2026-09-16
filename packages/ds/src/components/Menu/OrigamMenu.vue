@@ -480,6 +480,50 @@
 		box-shadow: none;
 	}
 
+	/**
+	 * #742 — le plafond de hauteur et le défilement DOIVENT porter sur la
+	 * même boîte.
+	 *
+	 * Deux plafonds coexistent, et aucun des deux n'était le scrollport :
+	 *
+	 *   1. `.origam-overlay__content` — plafond posé en INLINE par
+	 *      `useDimension` quand le consommateur passe `max-height`
+	 *      (c'est le chemin d'`OrigamSelect`, qui passe `:max-height="310"`),
+	 *      ou par la stratégie de placement quand il n'y a pas de prop.
+	 *   2. `.origam-menu__content` — plafond du token
+	 *      `--origam-menu---max-height`.
+	 *
+	 * Le `overflow` était, lui, posé sur `.origam-menu__list` — une boîte
+	 * SANS plafond (`max-height: none`), donc `clientHeight === scrollHeight`
+	 * et rien à faire défiler. Mesuré avant correctif, Chromium, 30 options :
+	 * overlay 240/1453, menu__content 580/1448, list 1448/1448, les trois à
+	 * `scrollTop === 0`. Le nom même du token (`--origam-menu__content---overflow`)
+	 * disait déjà où la règle devait vivre.
+	 *
+	 * Le correctif rend `.origam-menu__content` — la boîte qui porte la
+	 * surface visible, donc celle dont l'ascenseur doit épouser le rayon et
+	 * le fond — scrollport :
+	 *
+	 *   • `overflow` revient sur `.origam-menu__content` (token inchangé) ;
+	 *   • le parent `.origam-overlay__content` devient un conteneur flex
+	 *     colonne, ce qui rend son plafond (inline ou calculé) opposable à
+	 *     son enfant : sans cela un `max-height` posé sur le PARENT ne
+	 *     contraint pas un enfant en flux normal, et le contenu ressort.
+	 *   • `min-height: 0` lève le plancher `min-height: auto` des items
+	 *     flex, sans quoi l'enfant refuserait de descendre sous la hauteur
+	 *     de son contenu et ne défilerait toujours pas.
+	 *
+	 * Les sous-menus ne sont PAS rognés : `useTeleport` résout
+	 * `props.attach || props.contained` à `false` → `document.body`, donc
+	 * chaque niveau est téléporté dans `body > .origam-overlay-container` et
+	 * n'est jamais un descendant DOM du scrollport. Vérifié en runtime
+	 * (`root.contains(flyout) === false`).
+	 */
+	.origam-menu :deep(.origam-overlay__content) {
+		display: flex;
+		flex-direction: column;
+	}
+
 	.origam-menu__content {
 		background: var(--origam-menu---background, var(--origam-color__surface---raised));
 		backdrop-filter: var(--origam-menu---backdrop-filter, none);
@@ -488,11 +532,25 @@
 		border-radius: var(--origam-menu---border-radius, 8px);
 		box-shadow: var(--origam-menu---box-shadow);
 		max-height: var(--origam-menu---max-height, calc(100vh - 32px));
-		display: inline-block;
+		min-height: 0;
+		overflow: var(--origam-menu__content---overflow, auto);
+		/**
+		 * `block`, plus `inline-block`. Un item flex est BLOCKIFIÉ : depuis
+		 * que le parent est un conteneur flex, `inline-block` ne pouvait
+		 * plus gagner — le déclarer aurait été exactement le genre de
+		 * déclaration morte que ce ticket corrige. Le rétrécissement au
+		 * contenu était déjà assuré par `width: max-content`, pas par
+		 * `inline-block` : mesuré avant/après sur 8 panneaux (menu, select,
+		 * contextual-menu, date-picker-field, color-picker-field,
+		 * media-controller), le rectangle du panneau est IDENTIQUE au pixel.
+		 * Seule la boîte parente perd 5px — le descendeur de la line-box
+		 * qu'un enfant inline-block imposait à son bloc parent, bande
+		 * transparente sous chaque panneau.
+		 */
+		display: block;
 		width: max-content;
 
 		.origam-menu__list {
-			overflow: var(--origam-menu__content---overflow, auto);
 			max-width: var(--origam-menu__content---max-width, 320px);
 			padding: var(--origam-menu__content---padding, 4px);
 		}
