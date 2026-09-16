@@ -378,6 +378,19 @@ describe('OrigamMasonry — layout frames (#719)', () => {
         expect(pendingFramesFrom('OrigamMasonry.vue')).toBe(0)
     })
 
+    /*
+     * ⛔ NOT an A/B test — it passes on the parent commit too, measured.
+     *
+     * Both deferred bodies end in `getComputedStyle` (`resolveGapPx`
+     * reads the painted gap, `relayout()` measures the container), so the
+     * crash LOOKS reachable. It is not: `relayout()` returns early on
+     * `!containerRef.value`, and Vue nulls that template ref at unmount,
+     * so the pre-fix frame fires and bails before touching a global.
+     *
+     * Kept because it pins that early return. The day someone moves the
+     * `getComputedStyle` read above the guard, this turns red — and the
+     * contract that actually carries the fix here is the previous test.
+     */
     it('the surviving frame does not throw when the DOM globals are gone', async () => {
         const wrapper = mount(OrigamMasonry, {
             global: { plugins: [createOrigam()] }
@@ -386,14 +399,19 @@ describe('OrigamMasonry — layout frames (#719)', () => {
         await nextTick()
         wrapper.unmount()
 
-        // Both deferred bodies end in `getComputedStyle` — `resolveGapPx`
-        // reads the painted gap, `relayout()` measures the container.
         expect(() => withoutGlobals(
             ['window', 'getComputedStyle'],
             () => flushFramesFrom('OrigamMasonry.vue')
         )).not.toThrow()
     })
 
+    /*
+     * ⛔ NOT an A/B test either — measured green on the parent commit.
+     * Vue stops the watcher at unmount, so nothing re-arms whether the
+     * `disposed` flag exists or not. What it does pin is its own positive
+     * control: a gap swap MUST still arm a frame while mounted. Remove
+     * the `scheduleFrame` call and this goes red.
+     */
     it('does not arm a frame from a gap change after unmount', async () => {
         const wrapper = mount(OrigamMasonry, {
             props: { gap: 'md' } as never,
