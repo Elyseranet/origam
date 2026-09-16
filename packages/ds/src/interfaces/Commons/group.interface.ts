@@ -22,8 +22,12 @@ export interface IGroupProvide {
     select: (id: number, value: boolean) => void
     selected: Ref<Readonly<Array<number>>>
     isSelected: (id: number) => boolean
-    prev: () => void
-    next: () => void
+    // #786 — renvoient l'id RETENU, ou `undefined` si rien n'a bouge
+    // (groupe vide / seul candidat desactive). Un appelant ne peut pas
+    // relire `selected` juste apres : sous `v-model` le getter rend
+    // encore l'ancien id. Voir le bloc `step` dans `group.composable.ts`.
+    prev: () => number | undefined
+    next: () => number | undefined
     selectedClass: Ref<string | undefined>
     items: ComputedRef<Array<{
         id: number
