@@ -1071,5 +1071,27 @@ origam:
   run in the `architecture-guards` CI job. If a change touches the token
   stylesheets, `token-var-channels` is the guard that will catch a variable
   read but never declared (or the reverse).
-- `pnpm audit --prod` should be clean to ship; dev tree contains
-  pre-existing histoire-alpha vulns documented as accepted risk.
+- **`pnpm audit` must be clean to ship — the full tree, not only `--prod`.**
+  Both return `No known vulnerabilities found` with exit code `0` since #718
+  and #796 (2026-09-16), and **no advisory is waived**:
+  `pnpm.auditConfig.ignoreGhsas` is absent from the root `package.json`.
+  ⛔ Capture the real `$?` outside a pipe — `pnpm audit | tail` returns
+  `tail`'s exit code, not the audit's.
+
+  The former note here — *"dev tree contains pre-existing histoire-alpha vulns
+  documented as accepted risk"* — is retired, and it is worth knowing how it
+  was wrong, because the shape of the error is easy to repeat. It was right
+  about the **origin**: 7 of those 10 advisories did arrive through
+  `histoire@1.0.0-beta.1` (`js-yaml@3` via `gray-matter`, plus `markdown-it`
+  and its `linkify-it`). It was wrong about the **conclusion**. Every one of
+  the 10 had a published fix reachable by a minor bump, and the three
+  remaining ones did not come from histoire at all (`js-cookie` via
+  `@vue/test-utils` → `js-beautify`, and `vitest` itself). "Accepted risk"
+  described a state nobody had re-measured — an alert that stops being
+  checked because a document says it is fine.
+
+  If a future advisory genuinely has no published fix, it goes through
+  `docs/security-waivers.md` — maintainer approval, written justification,
+  dependency chain, review date — never a silent entry in `ignoreGhsas`.
+  A waiver also has an **exit**: `image-size` sat under one for a month
+  after its fix shipped, because nothing re-checked the premise.
