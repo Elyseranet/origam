@@ -575,6 +575,36 @@
             "const": "const"
         }
     },
+    "contact": {
+        "meta": {
+            "title": "Contact",
+            "description": "How to reach the origam project: GitHub issues for defects, GitHub discussions for questions. No support address is published."
+        },
+        "hero": {
+            "badge": "One maintainer",
+            "title": "Contact",
+            "lead": "origam is maintained by one developer. Everything goes through GitHub, in the open — a question asked there helps the next person who searches for it, and nothing gets buried in a mailbox."
+        },
+        "issues": {
+            "title": "Report a bug",
+            "body": "Open an issue on the repository. A useful report names the component, the version of origam, what you expected and what happened instead — a minimal reproduction is worth more than a paragraph of description.",
+            "cta": "Open an issue on GitHub"
+        },
+        "discussions": {
+            "title": "Ask a question",
+            "body": "Use the discussions of the repository for anything that is not a defect: how to use a component, an idea for one that does not exist yet, or feedback on the documentation.",
+            "cta": "Open a discussion on GitHub"
+        },
+        "support": {
+            "title": "Support the project",
+            "body": "origam is free and MIT-licensed. If it saves you time, the support page explains how a donation funds the maintenance work.",
+            "cta": "Go to the support page"
+        },
+        "no_email": {
+            "title": "There is no support address",
+            "body": "This project publishes no email address, and none is hidden behind a form on this site. Requests made in the open are answered in the open: there is no private channel, and no commitment on response time."
+        }
+    },
     "directives": {
         "meta": {
             "title": "Directives · origam design system",
@@ -1082,6 +1112,47 @@
             "open_section": "Open {section} menu",
             "nav_primary": "Primary navigation",
             "sitemap": "Site map"
+        }
+    },
+    "privacy": {
+        "meta": {
+            "title": "Privacy",
+            "description": "What this site stores and sends, measured in its own source code: no analytics, no tracker, preference cookies only, and a single third party."
+        },
+        "hero": {
+            "badge": "Measured, not drafted",
+            "title": "Privacy",
+            "lead": "This page lists only what was verified in the source code of this site, and by loading a page with the network log open. It is deliberately short — there is very little to report. Each statement names the thing it describes, so you can check it yourself in your browser."
+        },
+        "collect": {
+            "title": "What is not collected",
+            "body": "There is no analytics, no tracking pixel and no third-party measurement script anywhere on this site. Nothing records which pages you visit, how long you stay, or where you arrived from. No visitor account exists, so nothing is attached to an identity."
+        },
+        "cookies": {
+            "title": "Cookies",
+            "intro": "Browsing this site sets cookies for two things only, both of them preferences you chose yourself:",
+            "locale": "origam_locale — the display language, so the site does not revert to English on your next visit.",
+            "theme": "origam-theme and origam-mode — the theme and the light or dark appearance you selected.",
+            "admin": "A separate session cookie exists for the private administration area. It is created by logging in there and never by browsing the public site."
+        },
+        "storage": {
+            "title": "Local storage",
+            "body": "The theme builder saves your work in progress in your browser, under the key origam_theme_builder_state, alongside origam-theme and origam-mode for your appearance choice. These entries never leave the browser: they are not sent to any server, and clearing the site data removes them."
+        },
+        "forms": {
+            "title": "Forms and search",
+            "body": "This site carries a single form — the property panel of the theme builder — and it submits nothing: it edits a preview inside the page. The search field filters a catalogue your browser has already downloaded, so what you type into it is never sent anywhere."
+        },
+        "third_party": {
+            "title": "The one third party",
+            "body": "Typefaces are loaded from Google Fonts on every page — fonts.googleapis.com for the stylesheet, fonts.gstatic.com for the font files. Your browser therefore makes a request to Google, which reveals your IP address and browser to them, as it does on any site using that service. It is the only external host contacted automatically.",
+            "links": "The other external addresses on this site — the GitHub repository, the donation page, Discord — are ordinary links. Nothing is requested from them unless you click."
+        },
+        "method": {
+            "title": "How this page was established",
+            "body": "Every statement above comes from reading the source code of this site and from loading a page in a browser with the network log open — not from a template. Nothing here was assumed.",
+            "scope": "It describes the behaviour of the application itself. What the server hosting it records at the network level was not measured, and is therefore not described here.",
+            "reviewed": "Last verified against the source code on 16 September 2026."
         }
     },
     "roadmap": {
