@@ -39,7 +39,8 @@ const GUARDS = [
     'prop-shadowing.mjs',
     'class-fallthrough.mjs',
     'md-table-cells.mjs',
-    'pnpm-script-exists.mjs'
+    'pnpm-script-exists.mjs',
+    'vrt-lockstep.mjs'
 ]
 
 /*********************************************************

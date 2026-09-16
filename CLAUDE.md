@@ -1062,8 +1062,13 @@ The global pre-delivery policy (TU + e2e + security) applies. Specific to
 origam:
 - Run tests on **Node 24** (`.nvmrc`); Node 18 produces unrelated
   `crypto.hash` failures.
-- `pnpm -F origam guards` must stay at **24/24** (measured 2026-09-16; the
-  `17/17` written here was stale — recount, never quote). If a change touches the token
+- `pnpm -F origam guards` must stay at **25/25** (measured 2026-09-16; the
+  `17/17` written here was stale — recount, never quote).
+- `pnpm -F origam guards:self` must stay at **13/13**. It runs the guards' own
+  detectors, discovered from `scripts/guards/lib/*.selftest.mjs`. A guard whose
+  extractor has regressed goes QUIET, and a silent detector and a clean repo
+  produce the same green — so a green `guards` means nothing without this. Both
+  run in the `architecture-guards` CI job. If a change touches the token
   stylesheets, `token-var-channels` is the guard that will catch a variable
   read but never declared (or the reverse).
 - `pnpm audit --prod` should be clean to ship; dev tree contains
