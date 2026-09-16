@@ -1,5 +1,6 @@
 import { ref, shallowRef, watch } from 'vue'
 import { AUDIO_ANALYSER_FFT_SIZE } from '../../consts/Audio/audio.const'
+import { tryOnScopeDispose } from '../../utils/Commons/commons.util'
 import type { IUseAudioProps } from '../../interfaces/Commons/audio.interface'
 
 /*********************************************************
@@ -25,13 +26,48 @@ export function useAudio (props: IUseAudioProps) {
     const wasPlayed = ref(false)
     const isPlaying = ref(false)
 
+    /*********************************************************
+     * Boucle rAF bornee a la duree de vie du scope (#753)
+     *
+     * @description
+     * `getSongData` se RE-PROGRAMME lui-meme tant qu'`isPlaying` est
+     * vrai. Rien ne remettait `isPlaying` a `false` au demontage et
+     * aucun `cancelAnimationFrame` n'existait : la boucle survivait donc
+     * a son proprietaire et continuait de tourner indefiniment sur un
+     * environnement detruit — la famille de #706, ou un run Vitest
+     * entier echoue sans un seul test rouge.
+     *
+     * @description
+     * Une boucle auto-reprogrammee ne s'ANNULE pas, elle s'ARRETE :
+     * annuler la frame armee ne sert a rien si le tour suivant en
+     * reprogramme une. Le drapeau `disposed`, teste EN TETE du corps,
+     * est ce qui coupe la re-programmation ; `cancelAnimationFrame`
+     * s'occupe du tour deja en vol au moment du demontage. Il faut les
+     * deux.
+     ********************************************************/
+    let frame = -1
+    let disposed = false
+
     const getSongData = () => {
+        if (disposed) return
+
         if (isPlaying.value && audioArray.value) {
             analyser.value?.getByteFrequencyData(audioArray.value)
 
-            requestAnimationFrame(getSongData)
+            frame = requestAnimationFrame(getSongData)
+        } else {
+            frame = -1
         }
     }
+
+    tryOnScopeDispose(() => {
+        disposed = true
+
+        if (frame !== -1) {
+            cancelAnimationFrame(frame)
+            frame = -1
+        }
+    })
     const onPlay = () => {
         if (!wasPlayed.value) {
             onAudio()
