@@ -80,7 +80,12 @@ const GREEN_SPECS = [
     'field-height.spec.ts',
     // wave 7 — contrôles de story pour les 16 props directionnelles câblées
     // en 249ac7d1. Vérifiée verte sur chromium + firefox + webkit.
-    'directional-story-controls.spec.ts'
+    'directional-story-controls.spec.ts',
+    // wave 8 — #614. Sans cette entree, la spec ne tourne PAS en CI
+    // (`E2E_GREEN_ONLY=1`) et le defaut clavier qu'elle epingle repasserait
+    // sans bruit, exactement comme il avait survecu a 35/35 verts sur
+    // `tabs.spec.ts`. Verifiee 6/6 sur chromium, `E2E_STATIC=1`.
+    'inline-edit-keyboard-actions.spec.ts'
 ]
 
 /**

@@ -64,7 +64,7 @@ exposed — `fontFamily`, `letterSpacing` and `lineHeight` were removed from
 | `validate`         | `(v: string) => true \| string \| Promise<…>` | `undefined`     | Sync or async validator. Returning a string surfaces it as an error and keeps the editor open. Only runs if all `rules` pass. |
 | `autoFocus`        | `boolean`                                   | `true`            | Auto-focus the input on edit entry.                            |
 | `selectOnFocus`    | `boolean`                                   | `true`            | Select all text after auto-focus.                              |
-| `confirmOnBlur`    | `boolean`                                   | `true`            | Commit on blur. Disable to require an explicit Enter / button. |
+| `confirmOnBlur`    | `boolean`                                   | `true`            | Commit when focus **leaves the component**. Moving focus between the field and the built-in Confirm / Cancel buttons is *not* leaving. Disable to require an explicit Enter / button. See "Combining `showActions` and `confirmOnBlur`". |
 | `confirmOnEnter`   | `boolean`                                   | `true`            | Confirm on `Enter`. In multiline mode, this becomes Cmd/Ctrl+Enter. |
 | `cancelOnEscape`   | `boolean`                                   | `true`            | Revert on `Escape`.                                            |
 | `disabled`         | `boolean`                                   | `false`           | Display becomes non-interactive; `edit()` short-circuits.      |
@@ -235,19 +235,56 @@ layout overflow issues when the component is used in constrained containers.
 
 ### Combining `showActions` and `confirmOnBlur`
 
-When rendering explicit action buttons, you typically want to disable
-`confirmOnBlur` so that clicking a button does not first trigger a blur
-commit on the input:
+**Since #614, no workaround is needed: the two props compose.**
+`confirmOnBlur` commits when focus leaves the *component*, not when it
+leaves the *input*, so tabbing from the field onto Confirm or Cancel
+keeps edit mode open and both buttons reachable. Tabbing past them —
+out of the component — still commits, which is what the prop promises.
 
 ```vue
+<!-- both defaults, nothing to disable -->
 <origam-inline-edit
     v-model="label"
     :show-actions="true"
-    :confirm-on-blur="false"
 />
 ```
 
-The built-in buttons use `@mousedown.prevent` internally to avoid
+Set `:confirm-on-blur="false"` only when you genuinely want leaving the
+component to *discard* rather than commit.
+
+#### What this replaced
+
+`confirmOnBlur` used to listen to `@blur` on the field and commit
+without looking at where focus was going. A single `Tab` therefore left
+edit mode and **unmounted Confirm and Cancel before focus could reach
+them** — measured in Chromium:
+
+```
+entering edit mode   document.activeElement = input   Confirm present
+Tab #1               document.activeElement = body    Confirm GONE
+Tab #2               document.activeElement = the display affordance
+```
+
+Mouse users never hit it, because the built-in buttons carry
+`@mousedown.prevent` — which stops the blur before the click. There was
+no keyboard equivalent of that guard, so the old advice was to turn
+`confirmOnBlur` off. That advice is obsolete.
+
+Two side effects of the same shape were fixed with it:
+
+- `Enter` on **Cancel** used to **confirm**: the button's `keydown`
+  bubbled into the field's own `Enter` shortcut (measured — the draft
+  was committed instead of discarded). Field shortcuts now only act on
+  events coming from the input itself.
+- `Space` on either button did nothing: the field's `appendInner` zone
+  called `preventDefault()` on `Enter` / `Space` bubbling up from real
+  controls rendered inside it, killing their native activation. That
+  zone now only claims keys targeted at itself.
+
+After Confirm or Cancel, focus returns to the display affordance
+instead of falling back to `<body>`.
+
+The built-in buttons still use `@mousedown.prevent` internally to avoid
 stealing focus from the input before the click handler runs.
 
 ### Using the `#actions` slot instead
@@ -361,9 +398,16 @@ When the validator returns a string, the component:
   disappears on screen, and a keyboard user no longer tabs twice
   through one command. Their accessible names remain deliberately
   different (`Edit {value}` and `Edit`) as a net for a consumer who
-  strips `aria-hidden`. Confirm and Cancel stay fully keyboard
-  reachable — they are the mouse equivalents of `Enter` / `Escape`,
-  not duplicates of another focusable control.
+  strips `aria-hidden`. Confirm and Cancel are keyboard reachable —
+  `Tab` from the field lands on Confirm, then Cancel — and actionable
+  with both `Enter` and `Space`.
+  > ⚠️ **This paragraph used to claim that, and it was not true.**
+  > Until #614, one `Tab` from the field left edit mode and unmounted
+  > both buttons before focus could reach them; `Enter` on Cancel
+  > *confirmed*; `Space` on either did nothing. See "Combining
+  > `showActions` and `confirmOnBlur`" for the measurements and the
+  > three causes. Behaviour is pinned by
+  > `packages/tests/e2e/inline-edit-keyboard-actions.spec.ts`.
 - **Live region** — the error message is wrapped in a `role="alert"`
   element, which screen readers announce immediately without
   interrupting the current speech.
@@ -372,8 +416,14 @@ When the validator returns a string, the component:
   some readers.
 - **Focus management** — on edit entry, the input is focused
   automatically (`autoFocus=true`) and its content is selected
-  (`selectOnFocus=true`). On confirm / cancel the focus naturally
-  flows back to the display button.
+  (`selectOnFocus=true`). On confirm / cancel the component moves
+  focus back to the display affordance **explicitly**: leaving edit
+  mode unmounts whichever element held the focus, and without that
+  move `document.activeElement` falls back to `<body>` (measured), so
+  the keyboard caret is lost and `Tab` restarts from the top of the
+  document. The focus is *not* recalled when the user left on their
+  own — a `Tab` out of the component commits and lets focus continue
+  to the next control.
 - **Custom slots** — when you supply `#display` or `#edit`, you take
   ownership of the ARIA contract. Pass an `aria-label` on the
   trigger and forward `aria-invalid` / `aria-describedby` to the

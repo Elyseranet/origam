@@ -131,7 +131,27 @@
 	 * / `End` jump to first/last. Disabled items are skipped
 	 * but `useGroup.step` already handles the wrap-around.
 	 * Focus stays on the freshly-selected tab so screen
-	 * readers announce the change.
+	 * readers announce the change — WAI-ARIA APG « Tabs with
+	 * Automatic Activation » : la fleche deplace le focus ET
+	 * la selection.
+	 *
+	 * @description
+	 * ⛔ `next()` / `prev()` RENVOIENT l'id retenu et c'est CET id
+	 * qu'on focalise (#786). La version precedente relisait
+	 * `selected.value[0]` juste apres l'appel — sous `v-model` le
+	 * getter de `useVModel` rend `props.modelValue`, donc encore
+	 * l'ANCIEN id : le focus retournait sur l'onglet qu'on venait
+	 * de quitter pendant que `aria-selected` basculait ailleurs.
+	 * Mesure jsdom d'avant correctif, 3 onglets sous v-model,
+	 * focus de depart sur l'onglet 0 :
+	 *
+	 *   ArrowRight  aria-selected -> 1   activeElement -> 0
+	 *   ArrowRight  aria-selected -> 2   activeElement -> 1
+	 *
+	 * `Home` / `End` y echappaient parce que
+	 * `focusFirstNonDisabled` PORTE l'id au lieu de le relire.
+	 * `packages/tests/TU/components/Tabs/tabs-keyboard-focus.spec.ts`
+	 * assert `document.activeElement` sur les 4 touches.
 	 *
 	 * @description
 	 * ⛔ `focusTab` RESOLVES THE DOM NODE THROUGH THE ID THE TAB
@@ -183,12 +203,12 @@
 
 		if (event.key === prevKey) {
 			event.preventDefault()
-			prev()
-			if (selected.value[0] != null) focusTab(selected.value[0])
+			const movedTo = prev()
+			if (movedTo != null) focusTab(movedTo)
 		} else if (event.key === nextKey) {
 			event.preventDefault()
-			next()
-			if (selected.value[0] != null) focusTab(selected.value[0])
+			const movedTo = next()
+			if (movedTo != null) focusTab(movedTo)
 		} else if (event.key === 'Home') {
 			event.preventDefault()
 			focusFirstNonDisabled(1)

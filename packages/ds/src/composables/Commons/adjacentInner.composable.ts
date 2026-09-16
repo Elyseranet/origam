@@ -73,8 +73,48 @@ export function useAdjacentInner (props: IAdjacentInnerProps) {
         return hasEvent(vm.attrs, 'click:appendInner') || hasEvent(vm.vnode.props ?? {}, 'click:appendInner')
     })
 
+    /*********************************************************
+     * ownsKey — la zone ne confisque QUE ses propres touches
+     *
+     * @description
+     * ⛔ #614. `Entree` / `Espace` REMONTENT depuis tout ce que le
+     * consommateur rend dans le slot. Sans ce garde, la zone appelait
+     * `preventDefault()` sur un evenement qui ne lui appartient pas et
+     * tuait l'activation native d'un vrai `<button>` place dedans.
+     *
+     * @description
+     * Mesure Chromium, `<OrigamInlineEdit show-actions>` — le bouton
+     * Annuler est rendu dans `appendInner` — remontee du `keydown` de
+     * l'Espace, ancetre par ancetre :
+     *
+     *   button.origam-btn                defaultPrevented = false
+     *   div.origam-field__append-inner   defaultPrevented = TRUE   ← ici
+     *   div.origam-field                 defaultPrevented = true
+     *
+     * Aucun `click` n'etait donc synthetise : Annuler etait focalisable
+     * mais inactionnable a l'Espace.
+     *
+     * @description
+     * ⛔ Et ce n'est pas un cas de bord rare : `OrigamTextField` lie
+     * `@click:append-inner` a `<origam-field>` SANS CONDITION, donc
+     * `isAppendInnerClickable` vaut `true` sur CHAQUE champ texte du
+     * catalogue, que le consommateur ait cable quoi que ce soit ou non.
+     * C'est aussi ce qui donnait a la zone `role="button"` + `tabindex`
+     * partout avant #747 — d'ou le `nested-interactive` de #614, que
+     * #747 a fait disparaitre en refusant un role qu'il ne peut nommer.
+     * Le role est parti ; l'interception clavier, elle, etait restee.
+     *
+     * @description
+     * `e.target === e.currentTarget` est le test exact : quand la zone
+     * est elle-meme le controle focalise (role + tabindex emis par
+     * `useAccessibleCommand`), c'est elle la cible. Des qu'un descendant
+     * focalisable a le focus, la touche lui appartient.
+     ********************************************************/
+    const ownsKey = (e: KeyboardEvent) => e.target === e.currentTarget
+
     const onKeydownPrependInner = (e: KeyboardEvent) => {
         if (!isPrependInnerClickable.value) return
+        if (!ownsKey(e)) return
         if (e.key !== KEYBOARD_VALUES.ENTER && e.key !== KEYBOARD_VALUES.EMPTY) return
 
         e.preventDefault()
@@ -82,6 +122,7 @@ export function useAdjacentInner (props: IAdjacentInnerProps) {
     }
     const onKeydownAppendInner = (e: KeyboardEvent) => {
         if (!isAppendInnerClickable.value) return
+        if (!ownsKey(e)) return
         if (e.key !== KEYBOARD_VALUES.ENTER && e.key !== KEYBOARD_VALUES.EMPTY) return
 
         e.preventDefault()
