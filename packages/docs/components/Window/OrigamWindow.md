@@ -194,10 +194,22 @@ Defined in `packages/ds/src/assets/css/tokens/light.css` and `dark.css`
 
 ## Accessibility
 
-- The root carries `role="region"` and `aria-roledescription="carousel"`,
-  per the WAI-ARIA Authoring Practices carousel pattern. Pass an
-  `aria-label` (it falls through automatically) to give the region an
-  accessible name when a page has more than one carousel.
+- **Name it, and you get the landmark.** Pass an `aria-label` (or an
+  `aria-labelledby`) — it falls through to the root automatically — and the
+  root then carries `role="region"` + `aria-roledescription="carousel"`, the
+  WAI-ARIA Authoring Practices carousel pattern.
+- **Don't name it, and there is no landmark at all.** Since #781 the DS no
+  longer declares a role it cannot name: `region` is one of the roles whose
+  WAI-ARIA 1.2 definition marks the accessible name as *required*, so an
+  unnamed one is not a navigable landmark — just a nameless entry in the
+  landmark list, with an `aria-roledescription` describing nothing. A
+  dev-only console warning (silent in production builds) says exactly this
+  and names the attribute to add. No default label is invented: "Carousel"
+  on every instance would make several carousels on one page indistinguishable,
+  the same defect `OrigamCode`'s scroller was corrected for.
+- The roledescription text comes from the locale
+  (`origam.carousel.role_description`) — screen readers read it verbatim, so
+  it is never a hardcoded English string.
 - Prev / next buttons receive an `aria-label` from the locale (default
   `origam.carousel.prev` / `origam.carousel.next`).
 - A visually-hidden `role="status"` / `aria-live="polite"` live region

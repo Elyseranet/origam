@@ -215,9 +215,13 @@ Consequences:
 
 ## Accessibility
 
-- The scroll wrapper (`.origam-code__scroller`) carries `tabindex="0"` so a
-  code block wider than its column stays readable without a mouse, plus
-  `role="region"` and an `aria-label` that names it. The label resolves in
+- The scroll wrapper (`.origam-code__scroller`) is a **`<section>`** carrying
+  `tabindex="0"` so a code block wider than its column stays readable without
+  a mouse, plus an `aria-label` that names it. Since #781 there is no explicit
+  `role="region"`: a named `<section>` already maps to that role (HTML-AAM),
+  and the label is never empty, so the attribute only restated the tag. The
+  `tabindex` stays — a scroll container no keyboard can reach fails WCAG 2.1.1
+  (axe rule `scrollable-region-focusable`). The label resolves in
   this order: `filename` when one is passed, else `lang` when it is anything
   other than `plaintext`, else the generic *"Code block, scrollable
   region"*. Keys: `origam.code.scroller_aria_label_filename`,

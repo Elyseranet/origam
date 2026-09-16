@@ -90,10 +90,24 @@
 ## Accessibility
 
 `<OrigamCarousel>` renders the WAI-ARIA *carousel* pattern across two levels.
-The root — inherited from `<OrigamWindow>` — carries `role="region"` and
-`aria-roledescription="carousel"`, plus a visually-hidden `role="status"`
-live region that announces the current slide. Each `<OrigamCarouselItem>`
-carries `role="group"` and `aria-roledescription="slide"`.
+
+⛔ **Pass an `aria-label`.** Since #781 the root — inherited from
+`<OrigamWindow>` — carries `role="region"` + `aria-roledescription="carousel"`
+**only when the carousel has an accessible name**. `region` is one of the
+roles whose WAI-ARIA 1.2 definition marks the name as *required*, so an
+unnamed one is not a landmark anyone can navigate to; the DS declares nothing
+rather than declare a role it cannot name, and warns in development. The
+`aria-label` falls through automatically:
+
+```vue
+<OrigamCarousel aria-label="Product gallery">…</OrigamCarousel>
+```
+
+The visually-hidden `role="status"` live region announcing the current slide
+is unconditional. Each `<OrigamCarouselItem>` carries `role="group"` and
+`aria-roledescription="slide"` — unconditionally too: unlike `region`, `group`
+does **not** require an accessible name, so the slide boundary is kept
+whether or not the item is named.
 
 ### Autoplay and WCAG 2.2.2
 

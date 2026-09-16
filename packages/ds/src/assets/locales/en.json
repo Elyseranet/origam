@@ -83,6 +83,7 @@
       "pause": "Pause the carousel",
       "play": "Play the carousel",
       "slide": "slide",
+      "role_description": "carousel",
       "aria_label": {
         "delimiter": "Carousel slide {0} of {1}"
       }
