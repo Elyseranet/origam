@@ -50,7 +50,7 @@ text directly. The full suite runs in under two seconds.
 | 12 | `pnpm-tree-integrity.mjs` | No `node_modules/` entry is a physical copy — every package is a pnpm store link or a workspace link | 0 |
 | 13 | `token-var-channels.mjs` | Every `var(--origam-…)` a component reads is emitted by the token pipeline, or synthesised locally — and (secondary, non-fatal-by-default in spirit but still baselined) every emitted var is read by at least one component | 1275 dead / 1588 dormant |
 | 14 | `dead-handlers.mjs` | A `v-on` binding (`@click`, `@keydown`, …) must CALL the handler it names — not just reference it as an unused operand of `&&`/`\|\|`/`?:`, or via a `withModifiers`/`withKeys` call whose return value is discarded | 6 |
-| 15 | `id-forwarding.mjs` | A bare `const {id, ...} = useStyle(xxxStyles)` (no `() => props.id` second argument) must not be the value an unshadowed `:id="id"` template binding resolves to — the generated stylesheet id silently wins over the consumer's prop | 0 |
+| 15 | `id-forwarding.mjs` | **Two halves.** (a) SHADOWING: a bare `const {id, ...} = useStyle(xxxStyles)` (no `() => props.id` second argument) must not be the value an unshadowed `:id="id"` template binding resolves to — the generated stylesheet id silently wins over the consumer's prop. (b) REACH (#633): a component declaring an `id` prop must carry that id to SOME rendered node — root or descendant, directly or through a whole-props channel. A DERIVED value (`` `${id}-messages` ``) does not count, nor does a `<slot v-bind>` payload, nor a `useStyle()` id from a one-argument call. Pinned by 29 fixtures run BEFORE the sweep | 3 |
 | 16 | `t-fallback.mjs` | (undocumented in this table — see the script header) | — |
 | 17 | `composable-setup-reads.mjs` | (undocumented in this table — see the script header) | — |
 | 18 | `unemitted-declarations.mjs` | Every emit DECLARED by `IXxxEmits` — its full `extends` chain resolved — must actually be EMITTED (literally, or by a known relay composable): the inverse of guard 7 | 35 (21 components) |
@@ -251,9 +251,28 @@ real components' PRE-FIX source verbatim (Alert, Badge — id on a nested
 content pill rather than the root, Snackbar — id on a nested
 `<origam-overlay>`, Treeview) and asserts the guard catches each, alongside
 11 synthetic precision/recall cases covering the shadowing shapes above.
-Baseline is 0 — all 16 known occurrences were fixed in the same campaign
-that added this guard, so any future occurrence of this exact shape is an
-immediate new violation, not a pre-existing one to triage.
+All 16 known occurrences of the SHADOWING shape were fixed in the same
+campaign that added this guard, so any future occurrence of that exact shape
+is an immediate new violation, not a pre-existing one to triage.
+
+**Second half — REACH (#633).** The guard's original header declared "a real
+control with NO `:id` binding at all" out of scope for a static pass. That
+was true of the textual shape `:id="id"`, not of the fact: whether ANY
+channel carries the consumer id to a rendered node is decidable.
+`lib/id-reach.mjs` decides it, and `lib/id-reach.selftest.mjs` — 29 fixtures,
+run by the guard BEFORE it sweeps, exactly like `class-fallthrough` — pins
+both directions.
+
+⛔ **The three baseline entries are real defects, measured, not a
+whitewash.** The runtime companion `pnpm -F @origam/tests audit:id-forwarding`
+announces `lost 0`; **that zero is wrong**, because its `descendant` verdict
+is `html.includes(SENTINEL)` — a SUBSTRING test that any derivative
+satisfies. Replayed with an exact `getAttribute('id')` comparison the same
+sweep gives root 154 / descendant 33 / **lost 5**. The static half flags 3 of
+those 5 with 0 false positives; the two it misses are explained in the
+guard's header (one is a downstream consequence of `OrigamInput`, the other a
+documented ternary-condition limitation). The product fixes are deliberately
+NOT in this PR — tooling and product fixes have different blast radii.
 
 Guard 12 was written after issue #382, and its value is entirely in the
 class of failure it covers: one nothing else in this repo can see. A
