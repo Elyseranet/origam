@@ -93,8 +93,10 @@ the public barrel too, `<origam-class-icon padding="8px">` written directly
 got nothing at all.
 
 The leaf now consumes the same composables itself, so both paths work. There
-is no double application — the dispatcher forwards only `icon`, `size`,
-`tag`, `class` and `style`.
+is no double application — the dispatcher never forwards the axis props
+themselves: it resolves them and hands down `icon`, `size`, `tag`, `class`,
+`style` (plus `id` and `aria-hidden`), so a padding the dispatcher resolved
+arrives as a class the leaf simply merges.
 :::
 
 ::: tip There is no `disabled` prop
@@ -114,22 +116,40 @@ treatments. For a one-off greyed icon, drive `color`.
 :::
 
 ::: tip Accessibility — same "direct usage" gap, now closed
-`aria-hidden` / `role="button"` used to reach this leaf only via
-`OrigamIcon`'s fallthrough. Written directly
-(`<origam-class-icon icon="mdi-home">`), a decorative glyph was fully
-exposed to the accessibility tree. The leaf now resolves its own
-`aria-hidden` (`true` unless a click handler is attached, in which case
-`role="button"` too) — see [Accessibility](#accessibility) below.
+`aria-hidden` used to reach this leaf only via `OrigamIcon`'s fallthrough.
+Written directly (`<origam-class-icon icon="mdi-home">`), a decorative glyph
+was fully exposed to the accessibility tree. The leaf now resolves its own
+`aria-hidden` (`true` unless a click handler is attached) — see
+[Accessibility](#accessibility) below.
+
+**No `role` is emitted on either path.** `useIconAccessibility()` returns
+`isClickable` / `ariaHidden` / `hasAccessibleName` and nothing else, and
+`OrigamClassIcon.vue` binds `aria-hidden` only — see the `role="button"`
+rationale in [Accessibility](#accessibility).
 :::
 
 ## Anatomy
 
+Rendered markup for the **Basic usage** example above
+(`<OrigamClassIcon icon="mdi-home" />`), measured with `mount()` — the leaf
+emits its root class, the raw `icon` string, and nothing else:
+
 ```html
 <i
-    class="origam-icon origam-icon--size-default mdi mdi-home"
+    id="origam-class-icon-v-0"
     aria-hidden="true"
+    class="origam-icon mdi-home"
 ></i>
 ```
+
+Two class names people expect here and do **not** get from a bare leaf:
+
+- `origam-icon--size-default` appears only when `size` is passed explicitly
+  (`size="default"`); the component declares no default for `size`.
+- the set prefix (`mdi`, `fa`, …) is added by the icon **set** wrapper — see
+  [Custom icon sets](#custom-icon-sets) — so it shows up when the glyph is
+  reached through `<OrigamIcon>`, not when the leaf is written by hand. The
+  `id` is the one `useStyle()` generates unless you pass your own.
 
 ## Accessibility
 
