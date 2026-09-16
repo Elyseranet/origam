@@ -241,7 +241,7 @@
 	 * l'interieur du premier timer avant qu'il n'arme le second.
 	 ********************************************************/
 	let disposed = false
-	const timers = new Set<number>()
+	const timers = new Set<ReturnType<typeof setTimeout>>()
 
 	const scheduleTimeout = (cb: () => void, delay?: number) => {
 		if (disposed) return

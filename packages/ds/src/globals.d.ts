@@ -45,7 +45,7 @@ declare global {
              * handles doivent vivre sur l'element comme le reste de l'etat
              * de cette directive.
              ********************************************************/
-            timers?: Set<number>
+            timers?: Set<ReturnType<typeof setTimeout>>
         }
         _onResize?: Record<number, {
             handler: () => void
@@ -68,7 +68,7 @@ declare global {
              * hook `unmounted` de la directive, AVANT le
              * `delete el._ripple` qui rendrait les handles inatteignables.
              ********************************************************/
-            timers?: Set<number>
+            timers?: Set<ReturnType<typeof setTimeout>>
         }
         _observe?: Record<number, {
             init: boolean

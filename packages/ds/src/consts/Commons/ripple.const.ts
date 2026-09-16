@@ -66,7 +66,7 @@ function scheduleRippleTimer (el: IRippleHtmlElement, cb: () => void, delay?: nu
         cb()
     }, delay)
 
-    store.timers ??= new Set<number>()
+    store.timers ??= new Set<ReturnType<typeof setTimeout>>()
     store.timers.add(id)
 }
 

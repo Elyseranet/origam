@@ -96,7 +96,7 @@ export function directive (e: MouseEvent, el: HTMLElement, binding: IClickOutsid
             }
         }, 0)
 
-        store.timers ??= new Set<number>()
+        store.timers ??= new Set<ReturnType<typeof setTimeout>>()
         store.timers.add(id)
     }
 }

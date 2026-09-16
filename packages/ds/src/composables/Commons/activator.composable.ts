@@ -223,22 +223,22 @@ export function useActivator (props: IActivatorProps, {isActive, isTop}: {
      * `useSsrBoot` : annuler coute une ligne et supprime la fenetre,
      * plutot que de debattre de son innocuite.
      ********************************************************/
-    let cursorResetTimer = -1
+    let cursorResetTimer: ReturnType<typeof setTimeout> | undefined
 
     watch(isActive, (val) => {
         if (!val) {
             clearTimeout(cursorResetTimer)
             cursorResetTimer = setTimeout(() => {
-                cursorResetTimer = -1
+                cursorResetTimer = undefined
                 cursorTarget.value = undefined
             })
         }
     }, {flush: 'post'})
 
     tryOnScopeDispose(() => {
-        if (cursorResetTimer !== -1) {
+        if (cursorResetTimer !== undefined) {
             clearTimeout(cursorResetTimer)
-            cursorResetTimer = -1
+            cursorResetTimer = undefined
         }
     })
 

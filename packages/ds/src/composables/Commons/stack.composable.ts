@@ -94,7 +94,7 @@ export function useStack (
      * dont le correctif a introduit un plantage en allant chercher un
      * global qui n'existe pas cote serveur.
      ********************************************************/
-    let topTimer = -1
+    let topTimer: ReturnType<typeof setTimeout> | undefined
 
     watchEffect(() => {
         if (!createStackEntry.value) return
@@ -103,15 +103,15 @@ export function useStack (
 
         clearTimeout(topTimer)
         topTimer = setTimeout(() => {
-            topTimer = -1
+            topTimer = undefined
             globalTop.value = _isTop
         })
     })
 
     tryOnScopeDispose(() => {
-        if (topTimer !== -1) {
+        if (topTimer !== undefined) {
             clearTimeout(topTimer)
-            topTimer = -1
+            topTimer = undefined
         }
     })
 

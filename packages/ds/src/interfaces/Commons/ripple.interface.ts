@@ -47,7 +47,7 @@ export interface IRippleHtmlElementRipple {
      * La portee est l'ELEMENT (directive), pas un scope Vue : les handles
      * vivent donc ici, avec le reste de l'etat du ripple.
      ********************************************************/
-    timers?: Set<number>
+    timers?: Set<ReturnType<typeof setTimeout>>
 }
 
 export interface IRippleElement extends Element {
