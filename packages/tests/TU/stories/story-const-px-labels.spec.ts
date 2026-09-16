@@ -5,8 +5,19 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 
 import { BORDER_KEYWORD_WIDTH } from '@origam/consts/Commons/border.const'
+import { MATERIAL_ELEVATION_LADDER, MATERIAL_ELEVATION_TOP_RUNG } from '@origam/consts/Commons/elevation.const'
 import { NAMED_RADIUS_TOKEN } from '@origam/consts/Commons/spacing.const'
-import { borderList, roundedList } from '@stories/const'
+import type { IOptions } from '@origam/interfaces'
+import {
+    aspectRatioList,
+    borderList,
+    elevationList,
+    fontSizeList,
+    fontWeightList,
+    letterSpacingList,
+    lineHeightList,
+    roundedList
+} from '@stories/const'
 
 /*********************************************************
  * #730 — un libellé de story qui annonce une largeur est une MESURE
@@ -127,6 +138,97 @@ describe('#730 — les libellés de story qui annoncent des px disent la vérit�
             const token = NAMED_RADIUS_TOKEN[option.value]
             expect(token, `« ${option.value} » absent de NAMED_RADIUS_TOKEN`).toBeDefined()
             expect(Number(option.px), `libellé « ${option.label} »`).toBe(px(resolveVar(token)))
+        }
+    })
+})
+
+/*********************************************************
+ * BALAYAGE #730 — les autres libellés de `packages/stories/const/` qui
+ * annoncent une valeur
+ *
+ * @description
+ * Le ticket demandait de ne PAS corriger `thick` isolément. Les familles
+ * ci-dessous sont les seules autres, dans ce dossier, dont un libellé
+ * annonce une valeur que le DS résout ailleurs :
+ *
+ *   • `fontSizeList` / `fontWeightList` / `lineHeightList` /
+ *     `letterSpacingList`  →  `--origam-font__{groupe}---{valeur}`
+ *     (`useTypography` émet exactement ce var, cf. `TYPOGRAPHY_TOKEN_MAP`)
+ *   • `elevationList`      →  bucket Material → échelon d'ombre
+ *   • `aspectRatioList`    →  le libellé « a / b » annonce la division
+ *
+ * Mesuré à l'écriture : les quatre familles disent vrai — le balayage n'a
+ * trouvé AUCUN second libellé menteur. Ce garde est là pour qu'elles le
+ * restent, pas pour corriger quoi que ce soit.
+ *
+ * @description
+ * ⚠️ Familles volontairement NON gardées, parce qu'aucune valeur tierce
+ * n'y est annoncée — le libellé y est soit purement nominal, soit une
+ * recopie littérale de `value` : `sizeList`, `densityList`,
+ * `progressTypeList`, `colsList` / `offsetList`, `intentList`,
+ * `variantList`, `tagList`, `alignList`, `justifyList`, `positionList`,
+ * `iconList`, `localeList`, `directionList`, `imgPositionList`,
+ * `colorList`, `stateEffectList`, `fontFamilyList`, et les libellés en
+ * clair de `borderList` / `roundedList` (« Style — 2px dashed » pour
+ * `'2px dashed'`, « Circled (9999px) » pour `'9999px'`).
+ ********************************************************/
+
+/** Groupe de token primitif que `useTypography` consomme pour chaque liste. */
+const TYPOGRAPHY_LISTS: ReadonlyArray<readonly [string, Array<IOptions<string | undefined>>, string, RegExp]> = [
+    ['fontSizeList',      fontSizeList      as Array<IOptions<string | undefined>>, 'font__size',          /\(([^)]+)\)$/],
+    ['fontWeightList',    fontWeightList    as Array<IOptions<string | undefined>>, 'font__weight',        /\s(\d+)$/],
+    ['lineHeightList',    lineHeightList    as Array<IOptions<string | undefined>>, 'font__lineHeight',    /\(([^)]+)\)$/],
+    ['letterSpacingList', letterSpacingList as Array<IOptions<string | undefined>>, 'font__letterSpacing', /\(([^)]+)\)$/]
+]
+
+describe('#730 — balayage des autres libellés de `packages/stories/const/`', () => {
+    for (const [name, list, group, rx] of TYPOGRAPHY_LISTS) {
+        it(`${name} — chaque libellé annonce la valeur de son token primitif`, () => {
+            const typed = list.filter((o) => typeof o.value === 'string')
+            const announced = typed
+                .map((o) => ({ label: o.label, value: o.value as string, claimed: rx.exec(o.label)?.[1] }))
+                .filter((o) => o.claimed !== undefined)
+
+            // Témoin : un libellé reformaté sortirait du filtre et le test
+            // passerait alors en ne vérifiant plus rien.
+            expect(announced.length, `${name} : un libellé n'a pas été reconnu`).toBe(typed.length)
+
+            for (const option of announced) {
+                const declared = resolveVar(`var(--origam-${group}---${option.value})`)
+                expect(option.claimed, `libellé « ${option.label} » (${name})`).toBe(declared)
+            }
+        })
+    }
+
+    it('elevationList — chaque libellé annonce l’échelon d’ombre que son nombre atteint', () => {
+        const announced = elevationList
+            .filter((o): o is { label: string, value: number } => typeof o.value === 'number')
+            .map((o) => ({ ...o, parsed: /^(\S+)\s+\((\d+)\)$/.exec(o.label) }))
+
+        expect(announced.length).toBe(6)
+
+        for (const option of announced) {
+            expect(option.parsed, `libellé « ${option.label} » illisible`).not.toBeNull()
+            const [, rungLabel, level] = option.parsed!
+            // 1. le nombre entre parenthèses est bien la valeur transmise…
+            expect(Number(level), `libellé « ${option.label} »`).toBe(option.value)
+            // 2. …et ce nombre tombe dans le bucket que le nom annonce.
+            const real = MATERIAL_ELEVATION_LADDER.find(({ maxLevel }) => option.value <= maxLevel)?.rung
+                ?? MATERIAL_ELEVATION_TOP_RUNG
+            expect(rungLabel.toLowerCase(), `libellé « ${option.label} »`).toBe(real)
+        }
+    })
+
+    it('aspectRatioList — chaque libellé « a / b » annonce sa propre division', () => {
+        const announced = aspectRatioList
+            .map((o) => ({ ...o, parsed: /^(\d+)\s*\/\s*(\d+)\s/.exec(o.label) }))
+            .filter((o) => o.parsed !== null)
+
+        expect(announced.length).toBe(aspectRatioList.length)
+
+        for (const option of announced) {
+            const [, a, b] = option.parsed!
+            expect(Number(a) / Number(b), `libellé « ${option.label} »`).toBeCloseTo(option.value as number, 10)
         }
     })
 })
