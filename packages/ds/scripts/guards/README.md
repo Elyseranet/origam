@@ -32,7 +32,7 @@ pnpm -F origam guards:unemitted-declarations  # guard 18 only
 No build step required — every guard parses `.vue`/`.ts`/`.scss` source
 text directly. The full suite runs in under two seconds.
 
-## The fifteen guards
+## The guards
 
 | # | Script | Rule | Baseline size |
 |---|---|---|---|
@@ -55,6 +55,7 @@ text directly. The full suite runs in under two seconds.
 | 17 | `composable-setup-reads.mjs` | (undocumented in this table — see the script header) | — |
 | 18 | `unemitted-declarations.mjs` | Every emit DECLARED by `IXxxEmits` — its full `extends` chain resolved — must actually be EMITTED (literally, or by a known relay composable): the inverse of guard 7 | 35 (21 components) |
 | 21 | `prop-shadowing.mjs` | A module-scope `const`/`let`/`function` bearing the name of a DECLARED prop (full `extends` chain resolved) shadows that prop in the template, which reads bare names. Only two provably-harmful shapes are raised: **A** the prop is read nowhere in the script (dead prop), **B** the bare name feeds a user-facing TEXT attribute (`aria-label`, `title`, `placeholder`, …) and the local does not carry the prop's value. 49 of the 66 raw shadowings in the catalogue are deliberate derivations and are deliberately NOT raised | 4 |
+| 22 | `class-fallthrough.mjs` | Declaring `class` as a prop REMOVES it from `$attrs`, so Vue's automatic attribute fallthrough stops and the component owes a MANUAL re-bind. Any component whose props interface declares `class` transitively must read it back — `props.class` (the conventional shape: last entry of `rootClasses`), `$props.class` / `v-bind="$props"` in the template, or a `filterProps(props, [...])` whose explicit exclusion array omits `'class'`. AST-based, so a mention in a comment or a string does not count. Covers `class` only, not `style` — see the lib header for the measured reason | 0 |
 | 19 | `function-as-value.mjs` | A name bound to a function LITERAL in a component's own `<script setup>` must not be used where the code consumes a VALUE — interpolated (`{{ fn }}`), used as a condition (`v-if="fn"`, operand of `&&`/`\|\|`/`!`/`?:`), or compared (`fn === x`, `deepEqual(x, fn)`): the mirror image of guard 14 | 0 |
 
 ### Guard 13 — the token pipeline can break silently, and nothing else watches for it

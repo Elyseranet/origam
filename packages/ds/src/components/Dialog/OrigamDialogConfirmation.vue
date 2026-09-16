@@ -3,6 +3,8 @@
 			:id="id"
 			ref="origamDialogRef"
 			v-model="isActive"
+			:class="rootClasses"
+			:style="rootStyles"
 			v-bind="dialogProps"
 			@is-read="handleIsRead"
 	>
@@ -204,6 +206,10 @@
 	/*********************************************************
 	 * Forwarded props
 	 ********************************************************/
+
+	const rootClasses = computed(() => [ props.class ])
+
+	const rootStyles = computed(() => props.style)
 
 	const dialogProps = computed(() => {
 		return origamDialogRef.value?.filterProps(props, ['class', 'style', 'id', 'modelValue'])

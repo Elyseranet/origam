@@ -102,21 +102,32 @@ import OrigamChartHoneycomb from '@origam/components/Chart/OrigamChartHoneycomb.
 import OrigamChartMap from '@origam/components/Chart/OrigamChartMap.vue'
 import OrigamChartPareto from '@origam/components/Chart/OrigamChartPareto.vue'
 import OrigamChartPictorial from '@origam/components/Chart/OrigamChartPictorial.vue'
+import OrigamChartBullet from '@origam/components/Chart/OrigamChartBullet.vue'
+import OrigamChartStreamgraph from '@origam/components/Chart/OrigamChartStreamgraph.vue'
 
 const SERIES_SIMPLE = [ { name: 'S', data: [ 65, 25, 10 ] } ]
 const SERIES_HONEYCOMB = [ { name: 'S', data: [ { x: 0, y: 0, name: 'T1', value: 10 } ] } ]
+const SERIES_BULLET = [ { name: 'S', data: [ { x: 'a', y: 10 } ] } ]
+const SERIES_STREAM = [ { name: 'S', data: [ { x: 'a', y: 10 }, { x: 'b', y: 20 } ] } ]
 
-// Les six composants du lot « Chart, premiere moitie ». Gauge et Heatmap
-// servent de TEMOINS POSITIFS : ils bindent deja les deux canaux, donc si le
-// harnais etait faux ils tomberaient avec les autres — c'est ce qui distingue
-// un defaut produit d'un defaut de mesure.
+// Les six composants du lot « Chart, premiere moitie », plus Bullet et
+// Streamgraph — les deux « a verifier » que #620 listait sans les mesurer, et
+// que la sonde a trouves VRAIMENT fautifs : `class` absente de la racine,
+// `style` presente. Gauge, Heatmap et Pictorial servent de TEMOINS POSITIFS :
+// ils bindent deja les deux canaux, donc si le harnais etait faux ils
+// tomberaient avec les autres — c'est ce qui distingue un defaut produit d'un
+// defaut de mesure. Le test `style` de chaque ligne est le CONTROLE du
+// harnais : c'est lui qui rend discernables « la classe est absente » et « ma
+// sonde ne touche pas la racine ».
 const CHANNEL_CASES = [
     [ 'OrigamChartGauge', OrigamChartGauge, { series: SERIES_SIMPLE } ],
     [ 'OrigamChartHeatmap', OrigamChartHeatmap, { series: SERIES_HONEYCOMB } ],
     [ 'OrigamChartHoneycomb', OrigamChartHoneycomb, { series: SERIES_HONEYCOMB } ],
     [ 'OrigamChartMap', OrigamChartMap, { series: SERIES_SIMPLE } ],
     [ 'OrigamChartPareto', OrigamChartPareto, { series: SERIES_SIMPLE } ],
-    [ 'OrigamChartPictorial', OrigamChartPictorial, { series: SERIES_SIMPLE } ]
+    [ 'OrigamChartPictorial', OrigamChartPictorial, { series: SERIES_SIMPLE } ],
+    [ 'OrigamChartBullet', OrigamChartBullet, { series: SERIES_BULLET } ],
+    [ 'OrigamChartStreamgraph', OrigamChartStreamgraph, { series: SERIES_STREAM } ]
 ] as const
 
 describe('famille Chart — `class` declaree en prop doit etre re-bindee (#620)', () => {
