@@ -89,7 +89,7 @@
   --origam-btn---border-style: solid;
   --origam-btn---border-color: currentColor;
   --origam-btn---position: relative;
-  --origam-btn---density: 0;
+  --origam-btn---density: 0px;
   --origam-btn---width: auto;
   --origam-btn---min-width: 64px;
   --origam-btn---max-width: 100%;
@@ -920,8 +920,8 @@
   --origam-field__input---padding-block-filled: 20px;
   --origam-field__input---padding-top: var(--origam-field__input---padding-block-md);
   --origam-field__input---padding-bottom: var(--origam-field__input---padding-block-md);
-  --origam-field__input---padding-start: 0;
-  --origam-field__input---padding-end: 0;
+  --origam-field__input---padding-start: 0px;
+  --origam-field__input---padding-end: 0px;
   --origam-field__input---opacity: 0.7;
   --origam-field__label---font-size: 0.75em;
   --origam-field__label---transition-duration: var(--origam-motion__duration---normal);

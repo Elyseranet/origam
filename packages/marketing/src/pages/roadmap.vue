@@ -826,8 +826,8 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
         --origam-card---background: transparent;
         --origam-card---padding-block-start: var(--origam-space---2, 0.5rem);
         --origam-card---padding-block-end: var(--origam-space---6, 1.5rem);
-        --origam-card---padding-inline-start: 0;
-        --origam-card---padding-inline-end: 0;
+        --origam-card---padding-inline-start: 0px;
+        --origam-card---padding-inline-end: 0px;
     }
 
     &__card-header {

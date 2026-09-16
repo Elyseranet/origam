@@ -928,7 +928,7 @@
 			padding-bottom: var(--origam-field__input---padding-bottom);
 			position: relative;
 			width: 100%;
-			row-gap: calc(8px - var(--origam-input---density, 0));
+			row-gap: calc(8px - var(--origam-input---density, 0px));
 			border: none;
 			background: transparent;
 
@@ -1060,9 +1060,9 @@
 		&__label {
 			contain: layout paint;
 			display: block;
-			margin-inline-start: var(--origam-field__input---padding-start, 0);
-			margin-inline-end: var(--origam-field__input---padding-end, 0);
-			max-width: calc(100% - var(--origam-field__input---padding-start, 0) - var(--origam-field__input---padding-end, 0));
+			margin-inline-start: var(--origam-field__input---padding-start, 0px);
+			margin-inline-end: var(--origam-field__input---padding-end, 0px);
+			max-width: calc(100% - var(--origam-field__input---padding-start, 0px) - var(--origam-field__input---padding-end, 0px));
 			pointer-events: none;
 			position: absolute;
 			top: calc(var(--origam-input---padding-top, 16px) + var(--origam-input---density, 0px) - 8px);
@@ -1397,7 +1397,7 @@
 						// label"). Keep the 4px on the inline-end for notch
 						// breathing room.
 						margin-block: 0;
-						margin-inline: var(--origam-field__input---padding-start, 0) 4px;
+						margin-inline: var(--origam-field__input---padding-start, 0px) 4px;
 					}
 				}
 

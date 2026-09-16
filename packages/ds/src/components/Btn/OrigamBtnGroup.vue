@@ -502,7 +502,7 @@
 
 <style>
 	:root {
-		--origam-btn-group---density: 0;
+		--origam-btn-group---density: 0px;
 
 		--origam-btn-group---border-radius: var(--origam-btn---border-radius, 4px);
 		--origam-btn-group---border-width: var(--origam-btn---border-width, 0);
