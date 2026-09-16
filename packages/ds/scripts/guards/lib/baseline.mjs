@@ -75,7 +75,17 @@ export function diffAgainstBaseline (currentIds, baselineSet) {
 // `detailsById` is an optional Map<id, string> used to print a human-readable
 // line for each NEW violation (stale entries only need the id — it's a
 // baseline-file line to delete).
-export function report ({ guardName, baselinePath, currentIds, detailsById = new Map(), fixHint }) {
+/*
+ * `coverageNote` — ce que le garde N'A PAS regarde.
+ *
+ * ⛔ Un garde qui annonce `PASS — 0 violation` sans dire qu'il a saute un
+ * quart du catalogue produit exactement l'effet d'un garde aveugle : il ne
+ * trouve rien, et rien ne distingue ca de « il n'y a rien a trouver ». Le
+ * `PASS` d'`unconsumed-props` a ete cite tel quel pour fermer #548, et la
+ * fermeture a du etre corrigee (#608). La couverture s'imprime donc DANS le
+ * verdict, jamais seulement derriere un `--why`.
+ */
+export function report ({ guardName, baselinePath, currentIds, detailsById = new Map(), fixHint, coverageNote }) {
     const baseline = loadBaseline(baselinePath)
     const { newViolations, staleEntries, knownCount } = diffAgainstBaseline(currentIds, baseline)
 
@@ -85,10 +95,12 @@ export function report ({ guardName, baselinePath, currentIds, detailsById = new
     console.log(line)
 
     if (newViolations.length === 0 && staleEntries.length === 0) {
-        console.log(`PASS — ${knownCount} known (baselined) violation(s), 0 new.`)
+        console.log(`PASS — ${knownCount} known (baselined) violation(s), 0 new.${coverageNote ? ` ${coverageNote}` : ''}`)
         console.log(line)
         return 0
     }
+
+    if (coverageNote) console.log(coverageNote)
 
     if (newViolations.length > 0) {
         console.log(`\nFAIL — ${newViolations.length} NEW violation(s) not in the baseline:\n`)

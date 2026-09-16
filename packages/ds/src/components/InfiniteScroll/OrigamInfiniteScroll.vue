@@ -118,7 +118,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, nextTick, onMounted, ref, shallowRef, StyleValue, toRef } from 'vue'
+	import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, StyleValue, toRef } from 'vue'
 	import OrigamBtn from '../Btn/OrigamBtn.vue'
 	import OrigamInfiniteScrollIntersect from './OrigamInfiniteScrollIntersect.vue'
 	import OrigamProgress from '../Progress/OrigamProgress.vue'
@@ -129,6 +129,8 @@
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
+
+	import { IN_BROWSER } from '../../consts/Commons/commons.const'
 
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
 	import { INFINITE_SCROLL_MODE, INFINITE_SCROLL_SIDE, INFINITE_SCROLL_STATUS } from '../../enums/InfiniteScroll/infinite-scroll.enum'
@@ -257,10 +259,59 @@
 		}
 	}
 
+	/*********************************************************
+	 * scheduleFrame — rAF bound to the component's lifetime (#719)
+	 *
+	 * @description
+	 * `done()` re-arms the intersection three frames later, through two
+	 * `nextTick`s. Nothing used to cancel that chain, so a component
+	 * unmounted in between kept a continuation queued on a torn-down
+	 * environment — the family measured in #706: under Vitest the frame
+	 * lands AFTER jsdom is destroyed, `window` no longer exists, and the
+	 * *scheduler* itself (`window.requestAnimationFrame` on the next
+	 * rung) throws `ReferenceError: window is not defined`. That failure
+	 * kills the whole run with zero red tests.
+	 *
+	 * @description
+	 * One mechanism, both failure modes: `onBeforeUnmount` cancels the
+	 * frame already armed AND flips `disposed`, which makes any LATER
+	 * scheduling attempt a no-op — needed because the scheduling here is
+	 * itself deferred behind two `nextTick`s, so at unmount time there is
+	 * not always a handle to cancel yet.
+	 *
+	 * @description
+	 * Every armed id is tracked, NOT just the latest: `done()` is called
+	 * once per side, so two chains can be in flight at the same time and
+	 * a single handle would lose one of them.
+	 ********************************************************/
+	const frames = new Set<number>()
+	let disposed = false
+
+	const scheduleFrame = (cb: () => void) => {
+		if (disposed || !IN_BROWSER) return
+
+		const id = window.requestAnimationFrame(() => {
+			frames.delete(id)
+			cb()
+		})
+
+		frames.add(id)
+	}
+
+	onBeforeUnmount(() => {
+		disposed = true
+
+		for (const id of frames) window.cancelAnimationFrame(id)
+
+		frames.clear()
+	})
+
 	const done = (_status: TInfiniteScrollStatus) => {
 		status.value = _status
 
 		nextTick(() => {
+			if (disposed) return
+
 			if (status.value === INFINITE_SCROLL_STATUS.EMPTY || status.value === INFINITE_SCROLL_STATUS.ERROR) return
 
 			if (status.value === INFINITE_SCROLL_STATUS.OK && currentSide.value === INFINITE_SCROLL_SIDE.START) {
@@ -269,9 +320,9 @@
 
 			if (props.mode !== INFINITE_SCROLL_MODE.MANUAL) {
 				nextTick(() => {
-					window.requestAnimationFrame(() => {
-						window.requestAnimationFrame(() => {
-							window.requestAnimationFrame(() => {
+					scheduleFrame(() => {
+						scheduleFrame(() => {
+							scheduleFrame(() => {
 								intersecting(currentSide.value)
 							})
 						})

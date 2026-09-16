@@ -276,6 +276,7 @@
 		inject,
 		mergeProps,
 		nextTick,
+		onBeforeUnmount,
 		onMounted,
 		ref,
 		shallowRef,
@@ -639,6 +640,49 @@
 	} = useScrolling(origamListRef, origamTextFieldRef)
 
 	/*********************************************************
+	 * scheduleScrollFrame — rAF bound to the component's lifetime (#719)
+	 *
+	 * @description
+	 * Two sites defer `scrollToIndex` by one frame (keyboard lookup, and
+	 * the `menu` watcher that re-centres on the selected item). Nothing
+	 * cancelled that frame at unmount, so the continuation could land on
+	 * a destroyed environment — the #706 family. It is not benign here:
+	 * `scrollToIndex` runs through `useVirtual` → `useGoTo`, which arms
+	 * its own rAF loop and reads `window`.
+	 *
+	 * @description
+	 * `onBeforeUnmount` cancels the frames already armed and flips
+	 * `disposed`, which also neutralises any later scheduling attempt.
+	 *
+	 * @description
+	 * Every armed id is tracked, NOT just the latest. Collapsing them into
+	 * a single handle would make a later call supersede an earlier one —
+	 * a coalescing semantic this component never had, and one no failing
+	 * test asks for. The fix adds cancellation at unmount and nothing else.
+	 ********************************************************/
+	const scrollFrames = new Set<number>()
+	let disposed = false
+
+	const scheduleScrollFrame = (cb: () => void) => {
+		if (disposed || !IN_BROWSER) return
+
+		const id = window.requestAnimationFrame(() => {
+			scrollFrames.delete(id)
+			cb()
+		})
+
+		scrollFrames.add(id)
+	}
+
+	onBeforeUnmount(() => {
+		disposed = true
+
+		for (const id of scrollFrames) window.cancelAnimationFrame(id)
+
+		scrollFrames.clear()
+	})
+
+	/*********************************************************
 	 * Event handlers
 	 ********************************************************/
 
@@ -906,13 +950,11 @@
 				model.value = [item as IInternalListItem]
 				const index = displayItems.value.indexOf(item)
 
-				if (IN_BROWSER) {
-					window.requestAnimationFrame(() => {
-						if (index >= 0) {
-							origamVirtualScrollRef.value?.scrollToIndex(index)
-						}
-					})
-				}
+				scheduleScrollFrame(() => {
+					if (index >= 0) {
+						origamVirtualScrollRef.value?.scrollToIndex(index)
+					}
+				})
 			}
 		}
 	}
@@ -1125,13 +1167,11 @@
 			const index = displayItems.value.findIndex(
 					item => model.value.some((s) => (props.valueComparator ? props.valueComparator(s.value, item.value) : deepEqual(s.value, item.value)))
 			)
-			if (IN_BROWSER) {
-				window.requestAnimationFrame(() => {
-					if (index >= 0) {
-						origamVirtualScrollRef.value?.scrollToIndex(index)
-					}
-				})
-			}
+			scheduleScrollFrame(() => {
+				if (index >= 0) {
+					origamVirtualScrollRef.value?.scrollToIndex(index)
+				}
+			})
 		}
 	})
 

@@ -249,31 +249,249 @@ function ownMembers (body) {
     return out
 }
 
-const RESOLVED = new Map()
+/*********************************************************
+ * makeInterfaceResolver — LOSANGE ≠ CYCLE (#723)
+ *
+ * @description
+ * ⛔ L'ancienne version partageait UN SEUL ensemble `seen` sur toute la
+ * traversee. Elle ne distinguait donc pas deux situations opposees :
+ *
+ *   - un LOSANGE : deux branches d'`extends` atteignent la meme interface,
+ *     chacune avec son propre `Pick<>`. C'est legitime, et il faut ACCUMULER
+ *     les deux selections ;
+ *   - un CYCLE : l'interface se retrouve sur son PROPRE chemin de visite.
+ *     La, il faut couper.
+ *
+ * @description
+ * Le cout mesure, sur `IRatingFieldProps extends IInputProps, IRippleProps,
+ * ITagProps, ILabelProps` :
+ *
+ *   IInputProps  -> Pick<ITypographyProps, 'fontSize'|'fontWeight'|'lineHeight'>
+ *   ILabelProps  -> Pick<ITypographyProps, … | 'letterSpacing'>
+ *
+ * `ITypographyProps` etait marquee vue lors de la PREMIERE visite (le `Pick`
+ * le plus etroit, via `IInputProps`). La visite via `ILabelProps` recevait
+ * donc une base VIDE, son `Pick` ne selectionnait rien, et `letterSpacing`
+ * n'etait JAMAIS comptee. Mesure avant correctif : `IRatingFieldProps` =
+ * 86 props, `letterSpacing` absente ; `ILabelProps` (son propre parent) =
+ * 46 props, `letterSpacing` presente.
+ *
+ * @description
+ * Une prop que la traversee ne voit pas est une prop que le garde
+ * `guards/unconsumed-props.mjs` ne peut ni exiger ni signaler : invisible a
+ * l'outillage, bien reelle pour un consommateur. Meme famille que le
+ * `Omit<…>` mal traverse de #700.
+ *
+ * @description
+ * La correction : `stack` est le chemin de visite COURANT (une pile, pas un
+ * ensemble global). Une interface deja presente DANS la pile est un vrai
+ * cycle -> on coupe. Une interface deja visitee AILLEURS est un losange ->
+ * on la reresout (ou on lit le memo).
+ *
+ * @description
+ * ⛔ Le memo ne peut pas etre pose quand un cycle a ete coupe dans le
+ * sous-arbre : le resultat depend alors du chemin par lequel on est arrive.
+ * D'ou le drapeau `cyclic` remonte par `entry`. Sur un graphe acyclique — le
+ * cas de 100 % du catalogue mesure ce jour — le memo est pose partout et la
+ * traversee reste lineaire malgre les losanges.
+ *
+ * @description
+ * La fabrique prend le graphe en parametre pour que les fixtures
+ * (`lib/interface-resolution.selftest.mjs`) l'exercent sur un graphe
+ * SYNTHETIQUE — losanges, cycles directs, cycles mutuels — sans dependre de
+ * l'etat du catalogue. Ces fixtures tournent a chaque invocation du garde,
+ * elles ne decorent pas.
+ ********************************************************/
 
-/** full prop set of an interface, following `extends` */
-function resolveInterface (name, seen = new Set()) {
-    if (RESOLVED.has(name)) return RESOLVED.get(name)
-    if (seen.has(name)) return new Map()
-    seen.add(name)
-    const def = INTERFACES.get(name)
-    /** prop -> declaring interface (nearest wins for reporting) */
-    const out = new Map()
-    if (!def) return out
-    for (const parent of def.extends) {
-        for (const [k, v] of resolveInterface(parent, seen)) if (!out.has(k)) out.set(k, v)
+/**
+ * @param {Map<string, {own: Set<string>, extends: string[], narrowed: Array<{kind: 'pick'|'omit', base: string, keys: string[]}>}>} defs
+ * @returns {(name: string) => Map<string, string>} prop -> declaring interface
+ */
+export function makeInterfaceResolver (defs) {
+    const memo = new Map()
+
+    /** @returns {{members: Map<string,string>, cyclic: boolean}} */
+    const entry = (name, stack) => {
+        const cached = memo.get(name)
+        if (cached) return { members: cached, cyclic: false }
+        // Deja sur le CHEMIN courant => vrai cycle, on coupe.
+        if (stack.includes(name)) return { members: new Map(), cyclic: true }
+
+        const def = defs.get(name)
+        /** prop -> declaring interface (nearest wins for reporting) */
+        const out = new Map()
+        if (!def) return { members: out, cyclic: false }
+
+        const nextStack = [...stack, name]
+        let cyclic = false
+
+        for (const parent of def.extends) {
+            const r = entry(parent, nextStack)
+            cyclic = cyclic || r.cyclic
+            for (const [k, v] of r.members) if (!out.has(k)) out.set(k, v)
+        }
+        for (const { kind, base, keys } of def.narrowed) {
+            const r = entry(base, nextStack)
+            cyclic = cyclic || r.cyclic
+            const baseMembers = r.members
+            if (kind === 'pick') {
+                for (const key of keys) if (baseMembers.has(key) && !out.has(key)) out.set(key, baseMembers.get(key))
+            } else {
+                for (const [k, v] of baseMembers) if (!keys.includes(k) && !out.has(k)) out.set(k, v)
+            }
+        }
+        for (const k of def.own) out.set(k, name)
+
+        if (!cyclic) memo.set(name, out)
+        return { members: out, cyclic }
     }
-    for (const { kind, base, keys } of def.narrowed) {
-        const baseMembers = resolveInterface(base, seen)
-        if (kind === 'pick') {
-            for (const key of keys) if (baseMembers.has(key) && !out.has(key)) out.set(key, baseMembers.get(key))
-        } else {
-            for (const [k, v] of baseMembers) if (!keys.includes(k) && !out.has(k)) out.set(k, v)
+
+    return (name) => entry(name, []).members
+}
+
+let RESOLVE = null
+
+/** full prop set of an interface, following `extends`, `Pick<>` and `Omit<>` */
+function resolveInterface (name) {
+    if (!RESOLVE) RESOLVE = makeInterfaceResolver(INTERFACES)
+    return RESOLVE(name)
+}
+
+/*********************************************************
+ * Chaine `filterProps` — de la ref de template vers l'ENFANT (#608)
+ *
+ * @description
+ * `useProps(props).filterProps(properties, excludes)` rend a l'appelant
+ * `Object.keys(propsDeLEnfant) - excludes`, `pick`-e sur l'objet props du
+ * PARENT. Autrement dit : une prop du parent descend si, et seulement si,
+ * l'ENFANT la declare aussi et qu'elle n'est pas exclue.
+ *
+ * @description
+ * L'ancienne lecture s'arretait a « on ne peut pas decider » et excluait le
+ * composant en entier — 43 des 51 exclusions mesurees. Elle etait prudente
+ * mais fausse dans les deux sens : elle creditait comme transmises des props
+ * que l'enfant NE DECLARE PAS (c'est exactement le mecanisme qui rend
+ * `OrigamFileField.persistentPlaceholder` et `downloadable` morts, #608), et
+ * elle privait le garde d'un quart du catalogue.
+ *
+ * @description
+ * La chaine est statiquement resoluble parce que le depot ecrit toujours la
+ * meme forme :
+ *
+ *     const origamInputRef = ref<TOrigamInput>()
+ *     …
+ *     origamInputRef.value?.filterProps(props, ['class', 'style', 'id'])
+ *
+ * `TOrigamInput` est declare `export type TOrigamInput = InstanceType<typeof
+ * OrigamInput>` dans `src/types/`, et `OrigamInput.vue` porte son propre
+ * `defineProps<IInputProps>()`. Deux index suffisent donc : type d'instance
+ * -> composant, et composant -> interface de props.
+ *
+ * @description
+ * ⛔ Ce qui reste indecidable garde son exclusion : un appel dont le
+ * recepteur n'est pas une ref typee, un type d'instance inconnu, un enfant
+ * sans `defineProps<…>`. Chaque cas porte sa raison dans `wildcardReasons`.
+ ********************************************************/
+
+/** TOrigamXxx -> OrigamXxx */
+const INSTANCE_TYPES = new Map()
+
+function indexInstanceTypes () {
+    for (const file of walk(join(SRC, 'types'), (f) => f.endsWith('.ts'))) {
+        const src = stripComments(read(file))
+        for (const m of src.matchAll(/export\s+type\s+([A-Za-z0-9_]+)\s*=\s*InstanceType\s*<\s*typeof\s+([A-Za-z0-9_]+)\s*>/g)) {
+            INSTANCE_TYPES.set(m[1], m[2])
         }
     }
-    for (const k of def.own) out.set(k, name)
-    if (seen.size === 1) RESOLVED.set(name, out)
-    return out
+}
+
+/** OrigamXxx -> interface name behind its `defineProps<…>` */
+const COMPONENT_IFACE = new Map()
+
+function indexComponentIfaces () {
+    for (const file of walk(join(SRC, 'components'), (f) => f.endsWith('.vue'))) {
+        const { script } = splitSfc(read(file))
+        const dp = /defineProps\s*<\s*([A-Za-z0-9_]+)\s*>/.exec(script)
+        if (dp) COMPONENT_IFACE.set(basename(file, '.vue'), dp[1])
+    }
+}
+
+const FILTER_PROPS_DEFAULT_EXCLUDES = ['class', 'style', 'id']
+
+/**
+ * Resolves every `…filterProps(props …)` call in a component script.
+ *
+ * @returns {{forwarded: Map<string,string>, unresolved: string[]}}
+ *   `forwarded` maps a prop name to the child component that receives it;
+ *   `unresolved` lists the raw call sites the chain could not decide.
+ */
+function resolveFilterPropsChain (script, declaredProps) {
+    const forwarded = new Map()
+    const unresolved = []
+
+    /*
+     * varName -> [TOrigamXxx, …], from `const x = ref<TOrigamXxx>()`,
+     * `ref<TOrigamXxx[]>()`, ou une UNION.
+     *
+     * ⛔ L'union doit etre gardee ENTIERE. `OrigamProgress` ecrit
+     * `ref<TOrigamProgressCircular | TOrigamProgressLinear>()` : ne retenir
+     * que le premier membre perd les props propres au second (`bufferValue`,
+     * `stream`, les quatre `rounded*` de `IProgressLinearProps`) et les
+     * rapporte comme MORTES. Mesure : 10 faux positifs sur ce seul composant.
+     * Le biais du garde impose l'union — un faux positif bloque une PR
+     * innocente, un faux negatif ne rate que de la dette.
+     */
+    const refTypes = new Map()
+    /*
+     * Le parametre generique est saisi jusqu'au `>` qui precede la
+     * PARENTHESE d'appel, pas jusqu'au premier `>` venu : les refs de `v-for`
+     * s'ecrivent `ref<Array<TOrigamField>>([])`, et un `[^>]+` s'arrete au
+     * milieu du nom. Mesure : 2 composants (`OrigamOtpInputField`,
+     * `OrigamDataTableHeadersCell`) restaient exclus pour cette seule raison.
+     */
+    for (const m of script.matchAll(/(?:const|let|var)\s+([A-Za-z_$][A-Za-z0-9_$]*)\s*=\s*ref\s*<([\s\S]*?)>\s*\(/g)) {
+        const ts = m[2].split('|')
+            .map((s) => s.trim().replace(/^Array\s*<\s*([\s\S]*?)\s*>$/, '$1').replace(/\[\]$/, '').trim())
+            .filter((s) => INSTANCE_TYPES.has(s))
+        if (ts.length) refTypes.set(m[1], ts)
+    }
+
+    for (const m of script.matchAll(/\bfilterProps\s*\(\s*props\b\s*(?:,\s*\[([^\]]*)\])?/g)) {
+        const lineStart = script.lastIndexOf('\n', m.index) + 1
+        const before = script.slice(lineStart, m.index)
+        /* dernier `X.value` du meme enonce — couvre `X.value?.`, `X.value?.[0]?.`,
+         * et `(X.value as any)?.` */
+        const recv = [...before.matchAll(/([A-Za-z_$][A-Za-z0-9_$]*)\s*\.\s*value/g)].pop()
+
+        if (!recv) { unresolved.push('bare filterProps(props, …) — receiver is not a template ref'); continue }
+
+        const typeNames = refTypes.get(recv[1])
+        if (!typeNames) { unresolved.push(`${recv[1]}.value?.filterProps(props, …) — ref is not typed \`ref<TOrigam…>()\``); continue }
+
+        const excludes = m[1] === undefined
+            ? FILTER_PROPS_DEFAULT_EXCLUDES
+            : [...m[1].matchAll(/['"]([^'"]+)['"]/g)].map((x) => x[1])
+
+        let decided = false
+        for (const typeName of typeNames) {
+            const child = INSTANCE_TYPES.get(typeName)
+            const childIface = COMPONENT_IFACE.get(child)
+            if (!childIface) { unresolved.push(`${recv[1]}.value?.filterProps(props, …) — ${child} has no \`defineProps<…>\``); continue }
+
+            const childProps = resolveInterface(childIface)
+            if (!childProps.size) { unresolved.push(`${recv[1]}.value?.filterProps(props, …) — ${childIface} resolves to no prop`); continue }
+
+            decided = true
+            for (const key of childProps.keys()) {
+                if (excludes.includes(key)) continue
+                if (!declaredProps.has(key)) continue
+                if (!forwarded.has(key)) forwarded.set(key, child)
+            }
+        }
+        if (!decided) continue
+    }
+
+    return { forwarded, unresolved }
 }
 
 /* ------------------------------------------------------------------ */
@@ -835,9 +1053,21 @@ function analyseComponent (file) {
      * candidate list — `OrigamContextualMenu` alone scored 109 of its 117
      * props. Every one of those was noise.
      */
+    /*
+     * La chaine est suivie jusqu'a l'enfant (#608) : seules les props que
+     * l'ENFANT declare et que l'appel n'exclut pas sont creditees. Un site
+     * d'appel indecidable — et lui seul — retablit l'exclusion.
+     */
     if (/\bfilterProps\s*\(\s*props\b/.test(cleanScript)) {
-        wildcard = true
-        wildcardReasons.push('filterProps(props, …) forwards every shared prop to a child')
+        const chain = resolveFilterPropsChain(cleanScript, declared)
+        for (const [k, child] of chain.forwarded) {
+            forwarded.add(k)
+            if (!forwardedBy.has(k)) forwardedBy.set(k, `filterProps -> ${child}`)
+        }
+        for (const reason of chain.unresolved) {
+            wildcard = true
+            wildcardReasons.push(`unresolved filterProps chain: ${reason}`)
+        }
     }
     if (/mergeProps\s*\(\s*props\b/.test(cleanScript)) { wildcard = true; wildcardReasons.push('mergeProps(props, …)') }
 
@@ -918,6 +1148,8 @@ export function analyse () {
         indexEnums()
         indexConstArrays()
         indexComposables()
+        indexInstanceTypes()
+        indexComponentIfaces()
     }
     const componentFiles = walk(join(SRC, 'components'), (f) => f.endsWith('.vue')).sort()
     return componentFiles.map(analyseComponent).filter(Boolean)
@@ -947,6 +1179,8 @@ export function declaredPropsFor (ifaceName) {
         indexEnums()
         indexConstArrays()
         indexComposables()
+        indexInstanceTypes()
+        indexComponentIfaces()
     }
     return resolveInterface(ifaceName)
 }
