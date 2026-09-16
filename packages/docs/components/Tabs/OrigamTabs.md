@@ -216,12 +216,26 @@ item itself rather than on the tablist.
 
 Keyboard navigation (focus inside the tablist):
 
-| Key                        | Action                                |
-|----------------------------|---------------------------------------|
-| `←` / `→` (horizontal)     | Select previous / next tab.           |
-| `↑` / `↓` (vertical)       | Select previous / next tab.           |
-| `Home` / `End`             | Jump to first / last tab.             |
-| `Enter` / `Space`          | Activate the currently focused tab.   |
+| Key                        | Action                                                 |
+|----------------------------|--------------------------------------------------------|
+| `←` / `→` (horizontal)     | Move **focus and selection** to previous / next tab.   |
+| `↑` / `↓` (vertical)       | Move **focus and selection** to previous / next tab.   |
+| `Home` / `End`             | Move focus and selection to first / last tab.          |
+| `Enter` / `Space`          | Activate the currently focused tab.                    |
+
+This is the WAI-ARIA APG "Tabs with Automatic Activation" pattern: the
+arrow keys move the focus, and selection follows it. That matters for
+screen readers — a selection change on a tab the user is not focused on
+is announced to nobody.
+
+> ⚠️ **Until #786 the arrows moved the selection but left the focus one
+> step behind** (measured in Chromium: `aria-selected` → tab 1 while
+> `document.activeElement` stayed on tab 0). `Home` / `End` were always
+> correct. The cause: the handler re-read the selection from the model
+> right after writing it, and under a `v-model` that read still returns
+> the previous id. Pinned by
+> `packages/tests/e2e/tabs.spec.ts` ("#786 — les fleches deplacent le
+> focus") and `packages/tests/TU/components/Tabs/tabs-keyboard-focus.spec.ts`.
 
 Disabled tabs are skipped by arrow navigation and cannot be focused
 via `Home` / `End`.

@@ -1,6 +1,17 @@
 import type { ComponentInternalInstance, ComputedRef, Ref } from 'vue'
 
 /*********************************************************
+ * prev / next (IGroupProvide)
+ *
+ * @description
+ * ⛔ #786 — renvoient l'id RETENU, ou `undefined` si rien n'a bouge
+ * (groupe vide, ou seul candidat desactive). Un appelant ne peut PAS
+ * relire `selected` juste apres l'appel : quand le modele est controle
+ * (le consommateur a pose un `v-model`), le getter de `useVModel` rend
+ * `props[prop]` — donc encore l'ANCIEN id. Voir le bloc `step` dans
+ * `group.composable.ts` pour la mesure.
+ ********************************************************/
+/*********************************************************
  * domId (IGroupItem / IGroupProvide.items[number])
  *
  * @description
@@ -22,10 +33,6 @@ export interface IGroupProvide {
     select: (id: number, value: boolean) => void
     selected: Ref<Readonly<Array<number>>>
     isSelected: (id: number) => boolean
-    // #786 — renvoient l'id RETENU, ou `undefined` si rien n'a bouge
-    // (groupe vide / seul candidat desactive). Un appelant ne peut pas
-    // relire `selected` juste apres : sous `v-model` le getter rend
-    // encore l'ancien id. Voir le bloc `step` dans `group.composable.ts`.
     prev: () => number | undefined
     next: () => number | undefined
     selectedClass: Ref<string | undefined>

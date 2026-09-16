@@ -20,7 +20,13 @@
 //   ArrowRight    focus 0 -> 1  ❌
 //   ArrowLeft     focus 1 -> 2  ❌
 //
-// A/B : ce fichier ROUGIT sur le commit parent (7 echecs) et passe apres.
+// A/B, remesure : ce fichier rend 8 echecs / 3 passes sur le code d'AVANT
+// (source ramenee a `ae47fbdaa~1`, ce fichier inchange) et 11/11 apres. Les
+// 3 qui passent des deux cotes sont exactement celles qui le doivent : Home,
+// End, et le controle negatif « modele non controle ».
+// ⚠️ Une version precedente de cet entete annoncait « 7 echecs » — chiffre
+// faux, contredit par le message du commit lui-meme (« 8 echecs / 3 passes »)
+// et par la remesure.
 
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
