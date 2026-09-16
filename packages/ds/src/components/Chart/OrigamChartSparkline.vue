@@ -517,10 +517,28 @@
 		onPointClick(idx, event)
 	}
 
+	/*********************************************************
+	 * pointAriaLabel
+	 *
+	 * @description
+	 * ⛔ issue #781 — the accessible name of each `role="button"` mark.
+	 * `IChartSeries.name` is typed `string`, but nothing enforces it at
+	 * RUNTIME: a JavaScript consumer omitting it, or passing `''`, produced
+	 * a label starting on a dangling separator — measured on `develop`,
+	 * `aria-label=", 0: 1"`, read aloud as "comma zero colon one, button".
+	 * The mark stayed focusable and operable, so this is a name-quality
+	 * defect, not the unnameable-role defect of #747 / #660 / #653: index
+	 * and value are ALWAYS available here, so the DS can always name these
+	 * marks. It just has to stop emitting the separator of an absent part.
+	 ********************************************************/
 	const pointAriaLabel = (index: number): string => {
 		const point = pointAt(index)
 		if (!point) return ''
-		return `${ point.seriesName ?? '' }, ${ index }: ${ point.y }`.trim()
+
+		const seriesName = point.seriesName?.trim()
+		const value = `${ index }: ${ point.y }`
+
+		return seriesName ? `${ seriesName }, ${ value }` : value
 	}
 
 	/*********************************************************

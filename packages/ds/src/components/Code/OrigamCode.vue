@@ -44,11 +44,28 @@
 
 		<span v-if="compact && prompt" class="origam-code__prompt" aria-hidden="true" data-cy="origam-code-prompt">{{ prompt }}</span>
 
-		<div
+		<!--
+			⛔ #781 — `<section>`, not `<div role="region">`.
+
+			`<section>` maps to the `region` role natively AS SOON AS it
+			carries an accessible name (HTML-AAM), and `scrollerLabel` is
+			never empty (`code-scroller-aria-label.spec.ts` pins its two
+			forms). The explicit role was therefore restating what the tag
+			already says — "ARIA is a complement, never a replacement", the
+			DS's own rule.
+
+			`tabindex="0"` STAYS. It is not decoration on a non-interactive
+			element: this box scrolls (`overflow-x: auto`), and a scroll
+			container that no keyboard can reach fails WCAG 2.1.1 — the
+			`scrollable-region-focusable` rule axe-core enforces, already
+			documented in `a11y/marketing-a11y.spec.ts`. Removing it to
+			satisfy a "no tabindex on non-interactive elements" lint would
+			trade a naming nit for a level-A keyboard failure.
+		-->
+		<section
 				class="origam-code__scroller"
 				:aria-label="scrollerLabel"
 				:style="scrollerStyles"
-				role="region"
 				tabindex="0"
 		>
 			<pre class="origam-code__pre" :class="preClasses"><code
@@ -56,7 +73,7 @@
 					class="origam-code__code"
 					:data-lang="lang"
 			></code></pre>
-		</div>
+		</section>
 
 		<origam-btn
 				v-if="copyable && compact"
