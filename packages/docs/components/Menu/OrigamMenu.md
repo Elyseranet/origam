@@ -158,10 +158,7 @@ accessible names for a zone that is never rendered.
 | `--origam-menu---box-shadow` | Menu shadow. |
 | `--origam-menu---max-height` | Maximum height before scrolling. |
 | `--origam-menu---z-index` | Z-index stacking. |
-| `--origam-menu__content---overflow` | Overflow of the menu surface. `auto` by default: the surface is the
-scrollport, so a list taller than the ceiling scrolls inside the panel instead of spilling out of it. Set to
-`visible` only if you deliberately want the content to escape the panel — the options below the ceiling then
-become unreachable. |
+| `--origam-menu__content---overflow` | Overflow of the menu surface. `auto` by default: the surface is the scrollport, so a list taller than the ceiling scrolls inside the panel instead of spilling out of it. Set to `visible` only if you deliberately want the content to escape the panel — the options below the ceiling then become unreachable. |
 | `--origam-menu__content---max-width` | List container max-width. |
 | `--origam-menu__content---padding` | List container padding. |
 
