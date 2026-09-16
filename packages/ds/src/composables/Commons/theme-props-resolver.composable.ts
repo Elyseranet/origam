@@ -635,7 +635,7 @@ export function installThemePropsResolver (app: App, themedKeysUnion: Map<string
                  * this key — see "Why the passed value is a snapshot" above.
                  * Do not "simplify" this back into the getter.
                  ********************************************************/
-                let passedValue = passedPropValue(instance.vnode.props as Record<string, unknown> | null, key)
+                let wasPassed = passedPropValue(instance.vnode.props as Record<string, unknown> | null, key) !== undefined
 
                 Object.defineProperty(rawProps, key, {
                     configurable: true,
@@ -658,7 +658,36 @@ export function installThemePropsResolver (app: App, themedKeysUnion: Map<string
                          ********************************************************/
                         const fallback = fallbackValue.value
 
-                        if (passedValue !== undefined) return passedValue
+                        /*********************************************************
+                         * passe par le parent -> la valeur de VUE, pas la brute
+                         *
+                         * @description
+                         * ⛔ On rend `fallback`, jamais l'instantane brut. Les
+                         * deux nomment la meme intention du parent, mais
+                         * `fallback` est ce que VUE a RESOLU — casting inclus —
+                         * la ou l'instantane est le contenu litteral de
+                         * `vnode.props`, avant toute normalisation.
+                         *
+                         * @description
+                         * L'ecart n'est pas theorique : un ATTRIBUT BOOLEEN NU
+                         * (`<origam-card flat>`) compile en `flat: ''`. Vue
+                         * transforme cette chaine vide en `true` parce que le
+                         * prop est declare `type: Boolean` ; l'instantane, lui,
+                         * reste `''` — falsy. Rendre la brute revenait donc a
+                         * DEFAIRE le casting de Vue, et seulement pour les props
+                         * qu'un thème nomme : `<origam-card flat>` ne peignait
+                         * pas, alors que `<origam-card hover>` — meme forme,
+                         * prop non nommee par un thème, donc non interceptee —
+                         * peignait. Mesure et non-regression : issue #644,
+                         * `theme-props-boolean-attr-644.spec.ts`.
+                         *
+                         * @description
+                         * L'instantane garde son role — dire SI le parent a
+                         * passe la cle — et il doit rester un instantane, pour
+                         * la raison detaillee plus haut (« Why the passed value
+                         * is a SNAPSHOT »). Seule la VALEUR rendue change.
+                         ********************************************************/
+                        if (wasPassed) return fallback
 
                         const componentDefaults = defaults.value?.[name]
                         if (componentDefaults && componentDefaults[key] !== undefined) {
@@ -686,7 +715,7 @@ export function installThemePropsResolver (app: App, themedKeysUnion: Map<string
                          * `flush: 'sync'` watchers synchronously; they would
                          * otherwise read a stale snapshot.
                          ********************************************************/
-                        passedValue = passedPropValue(instance.vnode.props as Record<string, unknown> | null, key)
+                        wasPassed = passedPropValue(instance.vnode.props as Record<string, unknown> | null, key) !== undefined
                         fallbackValue.value = value
                     }
                 })
