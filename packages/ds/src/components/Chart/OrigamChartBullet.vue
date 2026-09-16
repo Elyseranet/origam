@@ -640,7 +640,8 @@
 		elevationClasses.value,
 		marginClasses.value,
 		paddingClasses.value,
-		roundedClasses.value
+		roundedClasses.value,
+		props.class
 	])
 
 	const rootStyles = computed<StyleValue>(() => {
