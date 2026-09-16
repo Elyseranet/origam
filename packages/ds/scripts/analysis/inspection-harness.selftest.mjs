@@ -104,6 +104,59 @@ const C8_MUST_FLAG = [
         'fragment fixe autour d\'une substitution de gabarit (cas réel OrigamTreeviewNode)',
         wrapVue('<div :alt="`${name} avatar`"/>', 'const props = defineProps<{ name: string }>()\nconst { name } = props'),
         r => r.boundLiteral.length === 1
+    ],
+
+    /* ───────────────────────────────────────────────────────────────
+     * #567 — angle mort n°1 : un gabarit sous un opérateur disparaissait
+     *
+     * Les trois premiers sont le MÊME gabarit sous trois enveloppes. Ils
+     * doivent tomber ENSEMBLE si la descente récursive est retirée, et le
+     * témoin « gabarit nu » plus haut doit rester vert : c'est ce qui
+     * distingue « la descente est cassée » de « le détecteur est mort ».
+     * ─────────────────────────────────────────────────────────────── */
+    [
+        '#567 — gabarit sous `??` (cas réel OrigamAudio `track.title ?? `Track ${i}``)',
+        wrapVue('<div :title="track.title ?? `Track ${ index + 1 }`"/>', 'const props = defineProps<{ track: any, index: number }>()'),
+        r => r.boundLiteral.length === 1
+    ],
+    [
+        '#567 — gabarit sous `||` (l\'opérateur ÉTAIT géré, la branche non)',
+        wrapVue('<div :title="track.title || `Track ${ index + 1 }`"/>', 'const props = defineProps<{ track: any, index: number }>()'),
+        r => r.boundLiteral.length === 1
+    ],
+    [
+        '#567 — gabarit dans une branche de ternaire (cas réel OrigamSliderField `(start)`)',
+        wrapVue('<div :aria-label="label ? `${label} (start)` : undefined"/>', 'const props = defineProps<{ label?: string }>()'),
+        r => r.boundLiteral.length === 1
+    ],
+    [
+        '#567 — littéral PUR sous `??` (défaut distinct : seul `||` était testé)',
+        wrapVue('<div :aria-label="name ?? \'Navigation\'"/>', 'const props = defineProps<{ name?: string }>()'),
+        r => r.boundLiteral.length === 1
+    ],
+
+    /* ───────────────────────────────────────────────────────────────
+     * #567 — angle mort n°2 : littéral du `<script>` rendu par le template
+     * ─────────────────────────────────────────────────────────────── */
+    [
+        '#567 — `computed(() => \'texte\')` rendu en `{{ }}` (cas réel OrigamAudio `Playback error`)',
+        wrapVue('<div>{{ errorMessage }}</div>', 'const errorMessage = computed(() => \'Playback error\')'),
+        r => r.scriptDisplay.length === 1
+    ],
+    [
+        '#567 — `computed` à corps de bloc, texte dans un `return`',
+        wrapVue('<div>{{ msg }}</div>', 'const msg = computed(() => { if (failed) return \'Playback error\'\n return \'\' })'),
+        r => r.scriptDisplay.length === 1
+    ],
+    [
+        '#567 — const nue rendue en `{{ }}`',
+        wrapVue('<div>{{ msg }}</div>', 'const msg = \'Playback error\''),
+        r => r.scriptDisplay.length === 1
+    ],
+    [
+        '#567 — const du script liée à un TARGET_ATTR (pas seulement `{{ }}`)',
+        wrapVue('<div :aria-label="fallbackLabel"/>', 'const fallbackLabel = \'Playback error\''),
+        r => r.scriptDisplay.length === 1
     ]
 ]
 
@@ -155,6 +208,52 @@ const C8_MUST_NOT_FLAG = [
         'attribut statique avec un jeton technique (pas un mot de langue naturelle)',
         wrapVue('<div title="menu"/>', 'defineProps<{}>()'),
         r => r.static.length === 0
+    ],
+
+    /* ───────────────────────────────────────────────────────────────
+     * #567 — précision de la descente récursive
+     *
+     * Descendre dans les opérateurs élargit la surface : ces cas prouvent
+     * que l'élargissement n'a pas emporté les filtres existants.
+     * ─────────────────────────────────────────────────────────────── */
+    [
+        '#567 — clé i18n en fallback de `??` (le classifieur doit tenir malgré la descente)',
+        wrapVue('<div :aria-label="ariaLabel ?? \'origam.close\'"/>', 'const props = defineProps<{ ariaLabel?: string }>()'),
+        r => r.boundLiteral.length === 0
+    ],
+    [
+        '#567 — jeton technique en fallback de ternaire',
+        wrapVue('<div :title="custom ? custom : \'menu\'"/>', 'const props = defineProps<{ custom?: string }>()'),
+        r => r.boundLiteral.length === 0
+    ],
+    [
+        '#567 — on ne descend PAS dans un appel de fonction (précision > rappel)',
+        wrapVue('<div :aria-label="t(\'Some label\')"/>', 'const { t } = useLocale()'),
+        r => r.boundLiteral.length === 0
+    ],
+
+    /* ───────────────────────────────────────────────────────────────
+     * #567 — précision du cas 5 (script)
+     *
+     * Le lien « défini ici, rendu là » est ce qui empêche le cas 5 de
+     * crier sur toutes les constantes techniques d'un `.vue`. Ces trois
+     * cas l'épinglent ; retirer le filtre `renderedIdents` fait tomber le
+     * premier, retirer `looksLikeDisplayText` fait tomber les deux autres.
+     * ─────────────────────────────────────────────────────────────── */
+    [
+        '#567 — littéral de script JAMAIS rendu par le template (constante technique)',
+        wrapVue('<div>{{ other }}</div>', 'const errorMessage = \'Playback error\'\nconst other = someRef'),
+        r => r.scriptDisplay.length === 0
+    ],
+    [
+        '#567 — jeton technique rendu — pas un texte de langue naturelle',
+        wrapVue('<div>{{ mode }}</div>', 'const mode = \'default\''),
+        r => r.scriptDisplay.length === 0
+    ],
+    [
+        '#567 — clé i18n résolue par `t()` puis rendue — le chemin CORRECT ne doit rien déclencher',
+        wrapVue('<div>{{ label }}</div>', 'const label = computed(() => t(\'origam.close\'))'),
+        r => r.scriptDisplay.length === 0
     ]
 ]
 
