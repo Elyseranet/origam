@@ -65,6 +65,23 @@ const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
 const sandboxOf = (page: Page) => page.frameLocator('iframe[src*="__sandbox"]')
 
+/**
+ * #690 — the `Slots - Placeholder` Variant's image URL, as a route glob.
+ *
+ * Matched on the seed rather than the full URL so a change of dimensions in
+ * the story does not silently stop the interception (which would make the
+ * test green again for the wrong reason — the exact failure mode #690 is
+ * about). The spec asserts the route was actually reached, so a genuine
+ * mismatch fails loudly instead.
+ */
+const PLACEHOLDER_IMAGE_GLOB = '**/picsum.photos/seed/origam-img-slot-placeholder/**'
+
+/** Smallest valid PNG body — the point is that it decodes, not what it shows. */
+const PNG_1X1 = Buffer.from(
+    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+    'base64'
+)
+
 test.describe('OrigamImg — Design (index 0)', () => {
     test.setTimeout(30000)
 
@@ -164,10 +181,69 @@ test.describe('OrigamImg — Events', () => {
 test.describe('OrigamImg — Slots', () => {
     test.setTimeout(30000)
 
-    test('Slots - Placeholder: custom placeholder is mounted while the image has not resolved', async ({ page }) => {
+    // #690 — this test used to navigate and assert `toBeVisible('Loading...')`
+    // against the REAL picsum.photos request, i.e. it borrowed its LOADING
+    // window from a CDN. Its verdict was decided by network weather, and all
+    // three possible outcomes have now been observed on unchanged code:
+    //
+    //   - file header (2026-09-08): the request never completed at all inside
+    //     Chromium → placeholder stayed forever → green;
+    //   - ticket #690 (2026-09-13): the image resolved before Playwright's
+    //     first poll → 3/3 RED;
+    //   - 2026-09-16 (this branch, pre-fix): 3/3 GREEN again.
+    //
+    // Measured here on the pre-fix code, 5 runs: the root becomes visible at
+    // ~510-530 ms and the placeholder is withdrawn at ~676-747 ms. The entire
+    // window in which the old assertion could succeed was 160-230 ms wide, and
+    // nothing in the test controlled either end of it.
+    //
+    // This is NOT the same defect as #750 and does not take the same fix. #750
+    // sampled a real state at the wrong instant, so the cure was to wait on the
+    // state instead of on a clock. Here the state itself is manufactured by a
+    // third party: waiting harder cannot help, because on a fast response the
+    // LOADING state may be over before the first poll — and, symmetrically,
+    // when the request hangs the old test passed without the component ever
+    // having to withdraw the placeholder. So the fix is to OWN the latency:
+    // `page.route` suspends the image transfer until this test releases it.
+    //
+    // That also turns a one-directional assertion into a two-directional one.
+    // The old test could only ever observe "placeholder present"; a component
+    // that never removed it would have passed. Both edges are asserted now.
+    test('Slots - Placeholder: the placeholder is mounted while the image is unresolved, and withdrawn once it resolves', async ({ page }) => {
+        let releaseImage: () => void = () => {}
+        const imageHeld = new Promise<void>((resolve) => { releaseImage = resolve })
+        let routeReached = false
+
+        await page.route(PLACEHOLDER_IMAGE_GLOB, async (route) => {
+            routeReached = true
+            await imageHeld
+            await route.fulfill({ status: 200, contentType: 'image/png', body: PNG_1X1 })
+        })
+
         await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
         const sandbox = sandboxOf(page)
-        await expect(sandbox.getByText('Loading...')).toBeVisible({ timeout: 12000 })
+
+        // Harness check FIRST — prove the test really controls the transfer it
+        // claims to control. Without it, a green run below could simply mean
+        // the glob never matched and we are back to timing a CDN.
+        await expect
+            .poll(() => routeReached, { timeout: 12000 })
+            .toBe(true)
+
+        const placeholder = sandbox.getByText('Loading...')
+        const realImg = sandbox.locator('.origam-img img').first()
+
+        // 1. UNRESOLVED — nothing has released the transfer, so the component
+        //    is genuinely in its LOADING state, not merely observed early.
+        await expect(placeholder).toBeVisible({ timeout: 12000 })
+        await expect(realImg).toHaveJSProperty('complete', false)
+
+        // 2. RESOLVED — the placeholder must be withdrawn. This edge was
+        //    completely untested before, and is the one a real regression
+        //    (a placeholder that never goes away) would trip.
+        releaseImage()
+        await expect(placeholder).toBeHidden({ timeout: 12000 })
+        await expect(realImg).toHaveJSProperty('complete', true)
     })
 
     test('Slots - Default: overlay content renders on top of the image', async ({ page }) => {
