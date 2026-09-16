@@ -53,7 +53,31 @@ import { parseFilteredPnpmCalls, normaliseFilterTarget, isCommentLine } from './
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(HERE, '../../../..')
 
-const IGNORED_DIRS = new Set(['node_modules', '.git', 'dist', '.nuxt', '.output', 'cache', '_'])
+/*********************************************************
+ * Repertoires jamais parcourus
+ *
+ * @description
+ * ⛔ `.claude` est dans cette liste pour une raison MESUREE, pas par
+ * principe : `.claude/worktrees/` contient un worktree complet par agent —
+ * 187 dans le depot principal au 2026-09-16. Sans cette entree, le garde
+ * descend dans chacun d'eux et attribue a CET arbre les appels morts des
+ * branches en cours des voisins.
+ *
+ * @description
+ * Reproduit : un faux worktree pose sous `.claude/worktrees/faux-voisin/`
+ * avec un `pnpm -F origam script-qui-nexiste-pas` a fait rougir le garde
+ * sur un arbre par ailleurs sain —
+ *
+ *     ✘ .claude/worktrees/faux-voisin/packages/x/package.json:4 …
+ *     FAIL — 1 invocation morte sur 41 verifiees      exit 1
+ *
+ * @description
+ * Un verdict attribue au mauvais arbre est pire qu'une absence de verdict :
+ * il envoie corriger un fichier que la branche ne contient pas. C'est la
+ * meme famille de faux resultat que celle poursuivie par #574, retournee —
+ * un faux ROUGE plutot qu'un faux vert, et tout aussi couteux.
+ ********************************************************/
+const IGNORED_DIRS = new Set(['node_modules', '.git', '.claude', 'dist', '.nuxt', '.output', 'cache', '_'])
 
 /*********************************************************
  * Carte du workspace — nom de paquet → scripts declares
