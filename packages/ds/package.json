@@ -118,6 +118,7 @@
     "guards:prop-shadowing:self": "node scripts/guards/lib/prop-shadowing.selftest.mjs",
     "guards:class-fallthrough": "node scripts/guards/class-fallthrough.mjs",
     "guards:class-fallthrough:self": "node scripts/guards/lib/class-fallthrough.selftest.mjs",
+    "guards:id-reach:self": "node scripts/guards/lib/id-reach.selftest.mjs",
     "guards:unconsumed-props:self": "node scripts/guards/lib/interface-resolution.selftest.mjs",
     "docs:composables": "node scripts/analysis/gen-composables-doc.mjs --write"
   },

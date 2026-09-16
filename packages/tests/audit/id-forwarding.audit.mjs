@@ -119,7 +119,10 @@ if (outPath) {
 console.log('')
 if (lost.length) {
     console.log(`FAIL — ${lost.length} composant(s) acceptent une prop id et la jettent :`)
-    for (const c of lost) console.log(`  ${c}`)
+    for (const c of lost) {
+        const row = rows.find((r) => r.component === c)
+        console.log(`  ${c}${row?.detail ? `\n      ${row.detail}` : ''}`)
+    }
     console.log('')
     console.log('Correctif type : passer `() => props.id` en 2e argument de useStyle,')
     console.log('et binder `:id="id"` sur la racine.')
