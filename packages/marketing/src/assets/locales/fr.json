@@ -575,6 +575,36 @@
             "const": "const"
         }
     },
+    "contact": {
+        "meta": {
+            "title": "Contact",
+            "description": "Comment joindre le projet origam : les tickets GitHub pour les anomalies, les discussions GitHub pour les questions. Aucune adresse de support n’est publiée."
+        },
+        "hero": {
+            "badge": "Un seul mainteneur",
+            "title": "Contact",
+            "lead": "origam est maintenu par un seul développeur. Tout passe par GitHub, à découvert — une question posée là-bas aide la personne suivante qui la cherchera, et rien ne s’enterre dans une boîte mail."
+        },
+        "issues": {
+            "title": "Signaler un bug",
+            "body": "Ouvrez un ticket sur le dépôt. Un rapport utile nomme le composant, la version d’origam, ce que vous attendiez et ce qui s’est produit à la place — une reproduction minimale vaut mieux qu’un paragraphe de description.",
+            "cta": "Ouvrir un ticket sur GitHub"
+        },
+        "discussions": {
+            "title": "Poser une question",
+            "body": "Utilisez les discussions du dépôt pour tout ce qui n’est pas une anomalie : comment utiliser un composant, une idée de composant qui n’existe pas encore, ou un retour sur la documentation.",
+            "cta": "Ouvrir une discussion sur GitHub"
+        },
+        "support": {
+            "title": "Soutenir le projet",
+            "body": "origam est gratuit et sous licence MIT. S’il vous fait gagner du temps, la page de soutien explique comment un don finance le travail de maintenance.",
+            "cta": "Aller à la page de soutien"
+        },
+        "no_email": {
+            "title": "Il n’y a pas d’adresse de support",
+            "body": "Ce projet ne publie aucune adresse e-mail, et aucune n’est dissimulée derrière un formulaire sur ce site. Les demandes faites à découvert reçoivent une réponse à découvert : il n’y a pas de canal privé, ni d’engagement sur le délai de réponse."
+        }
+    },
     "directives": {
         "meta": {
             "title": "Directives · origam design system",
@@ -1082,6 +1112,47 @@
             "open_section": "Ouvrir le menu {section}",
             "nav_primary": "Navigation principale",
             "sitemap": "Plan du site"
+        }
+    },
+    "privacy": {
+        "meta": {
+            "title": "Confidentialité",
+            "description": "Ce que ce site stocke et envoie, mesuré dans son propre code source : aucun analytics, aucun traceur, des cookies de préférence uniquement, et un seul tiers."
+        },
+        "hero": {
+            "badge": "Mesuré, pas rédigé",
+            "title": "Confidentialité",
+            "lead": "Cette page n’énonce que ce qui a été vérifié dans le code source de ce site, et en chargeant une page avec le journal réseau ouvert. Elle est volontairement courte — il y a très peu à signaler. Chaque affirmation nomme ce qu’elle décrit, pour que vous puissiez la vérifier vous-même dans votre navigateur."
+        },
+        "collect": {
+            "title": "Ce qui n’est pas collecté",
+            "body": "Il n’y a sur ce site aucun analytics, aucun pixel de suivi et aucun script de mesure tiers. Rien n’enregistre les pages que vous consultez, le temps que vous y passez, ni d’où vous venez. Aucun compte visiteur n’existe : rien n’est rattaché à une identité."
+        },
+        "cookies": {
+            "title": "Cookies",
+            "intro": "La navigation sur ce site ne pose de cookies que pour deux choses, toutes deux des préférences que vous avez choisies vous-même :",
+            "locale": "origam_locale — la langue d’affichage, pour que le site ne revienne pas à l’anglais à votre prochaine visite.",
+            "theme": "origam-theme et origam-mode — le thème et l’apparence claire ou sombre que vous avez sélectionnés.",
+            "admin": "Un cookie de session distinct existe pour l’espace d’administration privé. Il est créé en s’y connectant, jamais en naviguant sur le site public."
+        },
+        "storage": {
+            "title": "Stockage local",
+            "body": "Le constructeur de thème enregistre votre travail en cours dans votre navigateur, sous la clé origam_theme_builder_state, aux côtés de origam-theme et origam-mode pour votre choix d’apparence. Ces entrées ne quittent jamais le navigateur : elles ne sont envoyées à aucun serveur, et effacer les données du site les supprime."
+        },
+        "forms": {
+            "title": "Formulaires et recherche",
+            "body": "Ce site ne comporte qu’un seul formulaire — le panneau de propriétés du constructeur de thème — et il ne soumet rien : il modifie un aperçu à l’intérieur de la page. Le champ de recherche filtre un catalogue que votre navigateur a déjà téléchargé ; ce que vous y tapez n’est donc envoyé nulle part."
+        },
+        "third_party": {
+            "title": "Le seul tiers",
+            "body": "Les polices de caractères sont chargées depuis Google Fonts sur chaque page — fonts.googleapis.com pour la feuille de style, fonts.gstatic.com pour les fichiers de police. Votre navigateur effectue donc une requête vers Google, ce qui leur révèle votre adresse IP et votre navigateur, comme sur tout site utilisant ce service. C’est le seul hôte externe contacté automatiquement.",
+            "links": "Les autres adresses externes de ce site — le dépôt GitHub, la page de don, Discord — sont de simples liens. Rien ne leur est demandé tant que vous ne cliquez pas."
+        },
+        "method": {
+            "title": "Comment cette page a été établie",
+            "body": "Chaque affirmation ci-dessus provient de la lecture du code source de ce site et du chargement d’une page dans un navigateur, journal réseau ouvert — pas d’un modèle type. Rien n’y a été supposé.",
+            "scope": "Elle décrit le comportement de l’application elle-même. Ce que le serveur qui l’héberge enregistre au niveau réseau n’a pas été mesuré, et n’est donc pas décrit ici.",
+            "reviewed": "Dernière vérification par rapport au code source le 16 septembre 2026."
         }
     },
     "roadmap": {
