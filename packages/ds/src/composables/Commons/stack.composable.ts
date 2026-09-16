@@ -71,6 +71,29 @@ export function useStack (
      * mais le timer arme au dernier tick survivait et ecrivait
      * `globalTop.value` sur un scope detruit.
      ********************************************************/
+    /*********************************************************
+     * ⛔ `setTimeout` NU, jamais `window.setTimeout` — casse le SSR
+     *
+     * @description
+     * Ce `watchEffect` s'execute IMMEDIATEMENT au setup, donc aussi sur
+     * le serveur, ou `window` n'existe pas. Une premiere version de ce
+     * correctif ecrivait `window.clearTimeout(...)` : mesure CI, les deux
+     * jobs marketing echouaient sur
+     * `Timed out waiting 120000ms from config.webServer` SANS aucune
+     * erreur dans le log, parce que le serveur repondait `500` et que la
+     * sonde `webServer.url` de Playwright attend sur un 5xx. Cause reelle
+     * lue dans le corps de la reponse :
+     * `Cannot read properties of undefined (reading 'clearTimeout')`,
+     * stack `stack.composable.js:39`.
+     *
+     * @description
+     * Les globaux NUS existent dans Node ET dans le navigateur — c'est
+     * pour ca que le code d'origine les utilisait, et le prefixe
+     * `window.` etait un ajout gratuit de ma part. Ironie utile a garder :
+     * un ticket sur du code qui explose parce qu'un global a disparu, et
+     * dont le correctif a introduit un plantage en allant chercher un
+     * global qui n'existe pas cote serveur.
+     ********************************************************/
     let topTimer = -1
 
     watchEffect(() => {
@@ -78,8 +101,8 @@ export function useStack (
 
         const _isTop = GLOBAL_STACK.at(-1)?.[0] === vm.uid
 
-        window.clearTimeout(topTimer)
-        topTimer = window.setTimeout(() => {
+        clearTimeout(topTimer)
+        topTimer = setTimeout(() => {
             topTimer = -1
             globalTop.value = _isTop
         })
@@ -87,7 +110,7 @@ export function useStack (
 
     tryOnScopeDispose(() => {
         if (topTimer !== -1) {
-            window.clearTimeout(topTimer)
+            clearTimeout(topTimer)
             topTimer = -1
         }
     })

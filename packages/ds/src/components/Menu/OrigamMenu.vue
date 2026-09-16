@@ -246,7 +246,7 @@
 	const scheduleTimeout = (cb: () => void, delay?: number) => {
 		if (disposed) return
 
-		const id = window.setTimeout(() => {
+		const id = setTimeout(() => {
 			timers.delete(id)
 
 			if (disposed) return
@@ -260,7 +260,7 @@
 	onBeforeUnmount(() => {
 		disposed = true
 
-		for (const id of timers) window.clearTimeout(id)
+		for (const id of timers) clearTimeout(id)
 		timers.clear()
 	})
 

@@ -72,7 +72,7 @@ export const ClickOutside = {
          * timer, le handler ferme le composant, le timer se declenche
          * ensuite sur un composant disparu.
          ********************************************************/
-        for (const id of el._clickOutside.timers ?? []) window.clearTimeout(id)
+        for (const id of el._clickOutside.timers ?? []) clearTimeout(id)
         el._clickOutside.timers?.clear()
 
         handleShadow(el, (app: Document | ShadowRoot) => {

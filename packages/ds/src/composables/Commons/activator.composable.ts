@@ -227,8 +227,8 @@ export function useActivator (props: IActivatorProps, {isActive, isTop}: {
 
     watch(isActive, (val) => {
         if (!val) {
-            window.clearTimeout(cursorResetTimer)
-            cursorResetTimer = window.setTimeout(() => {
+            clearTimeout(cursorResetTimer)
+            cursorResetTimer = setTimeout(() => {
                 cursorResetTimer = -1
                 cursorTarget.value = undefined
             })
@@ -237,7 +237,7 @@ export function useActivator (props: IActivatorProps, {isActive, isTop}: {
 
     tryOnScopeDispose(() => {
         if (cursorResetTimer !== -1) {
-            window.clearTimeout(cursorResetTimer)
+            clearTimeout(cursorResetTimer)
             cursorResetTimer = -1
         }
     })

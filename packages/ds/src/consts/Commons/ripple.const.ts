@@ -61,7 +61,7 @@ function scheduleRippleTimer (el: IRippleHtmlElement, cb: () => void, delay?: nu
 
     if (!store) return
 
-    const id = window.setTimeout(() => {
+    const id = setTimeout(() => {
         store.timers?.delete(id)
         cb()
     }, delay)

@@ -88,7 +88,7 @@ export function directive (e: MouseEvent, el: HTMLElement, binding: IClickOutsid
          ********************************************************/
         const store = el._clickOutside
 
-        const id = window.setTimeout(() => {
+        const id = setTimeout(() => {
             store.timers?.delete(id)
 
             if (checkIsActive(e, binding) && handler) {

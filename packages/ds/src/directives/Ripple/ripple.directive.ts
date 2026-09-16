@@ -19,7 +19,7 @@ export const Ripple = {
          * la plus longue (250 ms d'attente + 300 ms de sortie) survit
          * largement a un bouton qui disparait sur son propre clic.
          ********************************************************/
-        for (const id of el._ripple?.timers ?? []) window.clearTimeout(id)
+        for (const id of el._ripple?.timers ?? []) clearTimeout(id)
         el._ripple?.timers?.clear()
 
         delete el._ripple
