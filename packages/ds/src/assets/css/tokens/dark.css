@@ -11,6 +11,31 @@
  * This file is now HAND-MAINTAINED SOURCE: edit it directly. There is no
  * regeneration step, and no "do not edit" rule any more. A design-token
  * pipeline may be reintroduced later, once the DS is stable.
+ *
+ * ── TWO BLOCKS, ONE DECLARATION SET ────────────────────────────────────────
+ * 1. `[data-theme="dark"]`            — the theme asked for EXPLICITLY.
+ * 2. `@media (prefers-color-scheme: dark) { :root:not([data-theme]) }`
+ *                                     — AUTO mode: the OS preference, and
+ *                                       only while the page has expressed no
+ *                                       preference of its own.
+ *
+ * The `:not([data-theme])` guard is what makes auto mode safe. It gives the
+ * rule specificity (0,2,0) — enough to outrank light.css's
+ * `:root, [data-theme="light"]` (0,1,0) when nothing is pinned — while making
+ * the selector fail to match at all as soon as a consumer writes
+ * `data-theme="light"`. Drop the guard and the media query becomes a blanket
+ * override that ignores an explicit light theme.
+ *
+ * ⛔ The two blocks carry the SAME declarations, and this file is BYTE-IDENTICAL
+ * to its twin — the whole file, header included. The pair is
+ * `src/assets/css/tokens/dark.css` ⇄ `src/assets/scss/tokens/_dark.scss`, and
+ * the same holds for every other token pair.
+ *
+ * Why it matters here in particular: `main.css` — the `./styles` export, the
+ * entry a consumer gets by default — is compiled from the SCSS side. A block
+ * present in the CSS file and missing from the SCSS one ships a bundle with NO
+ * auto dark mode, while this file and the documentation both say otherwise.
+ * That was #794. `scripts/guards/token-twins.mjs` now fails on any divergence.
  */
 [data-theme="dark"] {
   --origam-color__surface---default: var(--origam-color__neutral---950);
