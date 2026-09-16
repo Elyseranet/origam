@@ -18,7 +18,7 @@ import {
  * component listed in `SWEPT_STORIES`. Each component is a separate test so
  * the report tells you exactly which one introduced a regression.
  *
- * Failures are limited to `critical` impact — see `IMPACT_FAIL_LEVEL`.
+ * Failures block on `serious` AND `critical` impact — see `IMPACT_FAIL_LEVEL`.
  *
  * Prerequisite: Histoire running (the Playwright config spawns it).
  */
@@ -69,16 +69,41 @@ import {
 
 const HISTOIRE_BASE_URL = process.env.HISTOIRE_BASE_URL ?? resolveHistoireBaseUrl()
 
-/*
- * Test-fail policy: only `critical` blocks the suite. `serious`
- * violations surface in the console for the dev to triage, but
- * they don't break CI because some surface from architectural
- * choices that need a larger refactor (e.g. `OrigamInput` wrapper
- * inheriting fall-through `aria-*` attrs alongside the native
- * `<input>`). Raise back to `['serious', 'critical']` once the
- * backlog from CLAUDE.md a11y audit is closed.
- */
-const IMPACT_FAIL_LEVEL: Array<'serious' | 'critical'> = ['critical']
+/*********************************************************
+ * IMPACT_FAIL_LEVEL — `serious` bloque depuis #777
+ *
+ * @description
+ * Le seuil est passe de `['critical']` a `['serious', 'critical']`. La
+ * raison d'etre de l'ancien reglage a disparu : il tolerait un arriere de
+ * violations `serious` heritees de choix d'architecture. Cet arriere valait
+ * DEUX violations, toutes deux `color-contrast`, toutes deux corrigees a la
+ * source dans le meme lot (#777) — `OrigamCard` 1.37:1 -> 5.69:1,
+ * `OrigamBreadcrumb` 3.69:1 -> 19.79:1, mesure axe-core dans Chromium.
+ *
+ * @description
+ * ⛔ CE SEUIL A ETE PROUVE MORDANT, pas seulement elargi. Un seuil dont on
+ * ne demontre pas qu'il echoue est indiscernable d'un seuil decoratif —
+ * c'est exactement la panne que #573 / #575 ont laissee vivre trois mois.
+ * Demonstration vert -> rouge -> vert executee avant merge : en
+ * reintroduisant le premier plan neutre du sous-titre de Card
+ * (`--origam-card-header__subtitle---color: var(--origam-color__text---secondary)`),
+ * la suite passe de `36 passed` a `1 failed` en nommant OrigamCard ; le
+ * correctif remis, elle repasse a `36 passed`. Rejouer exactement cette
+ * sequence a toute modification de cette constante.
+ *
+ * @description
+ * `moderate` et `minor` restent NON bloquants et continuent de s'afficher
+ * en console pour triage. L'`aria-allowed-role` d'`OrigamChart`, corrige
+ * dans le meme lot, etait `minor` : il n'aurait jamais bloque, et ne le
+ * prouve donc pas.
+ *
+ * @description
+ * ⚠️ La portee reste 36 stories sur 218. Ce seuil ne dit RIEN des 182
+ * entrees de `UNSWEPT_STORIES` — elargir la couverture est un autre
+ * chantier, et un `serious` bloquant sur 36 composants n'est pas une
+ * conformite de catalogue.
+ ********************************************************/
+const IMPACT_FAIL_LEVEL: Array<'serious' | 'critical'> = ['serious', 'critical']
 
 /*
  * Rules to ignore — these fire on Histoire's own DOM (sandbox
@@ -526,6 +551,10 @@ for (const storyFile of SWEPT_STORIES) {
                 console.log(`  ${IMPACT_FAIL_LEVEL.includes(v.impact as never) ? '✗' : '·'} ${v.id} (${v.impact}): ${v.help}`)
             }
         }
-        expect(blocking, `${name} has ${blocking.length} critical a11y violation(s)`).toHaveLength(0)
+        expect(
+            blocking,
+            `${name} : ${blocking.length} violation(s) a11y bloquante(s) ` +
+            `(${IMPACT_FAIL_LEVEL.join(' / ')}) — ${blocking.map((v) => `${v.id} (${v.impact})`).join(', ')}`
+        ).toHaveLength(0)
     })
 }
