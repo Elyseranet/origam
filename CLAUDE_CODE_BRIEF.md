@@ -70,7 +70,7 @@ origam/                                            # racine du repo (cwd de Clau
 | Dialog | `packages/ds/src/components/Dialog/OrigamDialog.vue` | `packages/ds/tokens/component/dialog.json` | `screens-data.jsx` | `packages/docs/components/Dialog/OrigamDialog.md` |
 | Toolbar | `packages/ds/src/components/Toolbar/OrigamToolbar.vue` | `packages/ds/tokens/component/toolbar.json` | `screens-nav.jsx` | `packages/docs/components/Toolbar/OrigamToolbar.md` |
 | Badge | `packages/ds/src/components/Badge/OrigamBadge.vue` | `packages/ds/tokens/component/badge.json` | `screens-data.jsx` | `packages/docs/components/Badge/OrigamBadge.md` |
-| ~~Tabs~~ | **MISSING** — pas de `.vue` dédié, composé via Btn+BtnGroup. **Skip pour v1**, à noter dans le README plugin. |
+| ~~Tabs~~ | **MISSING** — pas de `.vue` dédié, composé via Btn+BtnGroup. **Skip pour v1**, à noter dans le README plugin. | — | — | — |
 
 Composants à fort volume (à scoper soigneusement) :
 - **Btn** — 988 lignes

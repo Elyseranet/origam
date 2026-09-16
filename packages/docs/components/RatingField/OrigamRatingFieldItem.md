@@ -66,7 +66,7 @@ building a custom rating widget; otherwise use `<OrigamRatingField>`.
 | `size` | `TSize` | — | Star size. |
 | `density` | `TDensity` | — | Button density. |
 | `ripple` | `IRippleProps['ripple']` | — | Ripple configuration. |
-| `border` / `borderColor` / `borderStyle` / `rounded` / `elevation` / `padding*` / `margin*` | Commons | Forwarded to the inner `<OrigamBtn>` (`class`, `style`, `id` and `bgColor` are filtered out). |
+| `border` / `borderColor` / `borderStyle` / `rounded` / `elevation` / `padding*` / `margin*` | Commons | — | Forwarded to the inner `<OrigamBtn>` (`class`, `style`, `id` and `bgColor` are filtered out). |
 
 > The inner button is forced to `variant: 'text'` before the forwarded
 > props are spread, so a rating reads as a row of stars rather than a row

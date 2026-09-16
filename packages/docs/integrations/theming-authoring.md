@@ -178,10 +178,10 @@ Slots (a numeric step): `0`, `1`, `2`, `3`, `4`, `5`, `6`, `8`, `10`, `12`,
 | Path | Variable |
 |---|---|
 | `typography.size.{xs…5xl}` | `--origam-font__size---{xs…5xl}` |
-| `typography.weight.{regular|medium|semibold|bold}` | `--origam-font__weight---{…}` |
-| `typography.family.{sans|serif|mono}` | `--origam-font__family---{…}` |
-| `typography.lineHeight.{none|tight|snug|normal|relaxed|loose}` | `--origam-font__lineHeight---{…}` |
-| `typography.letterSpacing.{tight|normal|wide|wider|widest}` | `--origam-font__letterSpacing---{…}` |
+| `typography.weight.{regular\|medium\|semibold\|bold}` | `--origam-font__weight---{…}` |
+| `typography.family.{sans\|serif\|mono}` | `--origam-font__family---{…}` |
+| `typography.lineHeight.{none\|tight\|snug\|normal\|relaxed\|loose}` | `--origam-font__lineHeight---{…}` |
+| `typography.letterSpacing.{tight\|normal\|wide\|wider\|widest}` | `--origam-font__letterSpacing---{…}` |
 
 ### `shadow` → `--origam-shadow-*`
 
@@ -195,8 +195,8 @@ Slots: `none`, `xs`, `sm`, `md`, `lg`, `xl`.
 
 | Path | Variable |
 |---|---|
-| `animation.duration.{instant|fast|normal|medium|slow|xslow}` | `--origam-motion__duration---{…}` |
-| `animation.easing.{standard|decelerate|accelerate|sharp|linear}` | `--origam-motion__easing---{…}` |
+| `animation.duration.{instant\|fast\|normal\|medium\|slow\|xslow}` | `--origam-motion__duration---{…}` |
+| `animation.easing.{standard\|decelerate\|accelerate\|sharp\|linear}` | `--origam-motion__easing---{…}` |
 
 ## Escape hatches (advanced)
 

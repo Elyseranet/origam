@@ -68,7 +68,7 @@ The rows below are the ones you reach for in practice.
 | `size` | `TSize` | — | Cascaded to the radios. |
 | `inline` | `boolean` | — | Lays the radios out on one line. |
 | `trueIcon` / `falseIcon` | `TIcon` | Radio glyphs | Forwarded to the control group. |
-| `border` / `rounded` / `elevation` / `padding*` / `margin*` | Commons | Applied to the group's own box. |
+| `border` / `rounded` / `elevation` / `padding*` / `margin*` | Commons | — | Applied to the group's own box. |
 
 > **Cascade rule.** The group forwards `color` / `bgColor` / `density` /
 > `size` to its radios through an `<OrigamDefaultsProvider>`, and it

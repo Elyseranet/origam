@@ -49,7 +49,7 @@ text directly. The full suite runs in under two seconds.
 | 11 | `comment-format.mjs` | No comment block is ADDED outside the repo's block format (per-file counts, total may only fall) | 6925 blocks |
 | 12 | `pnpm-tree-integrity.mjs` | No `node_modules/` entry is a physical copy — every package is a pnpm store link or a workspace link | 0 |
 | 13 | `token-var-channels.mjs` | Every `var(--origam-…)` a component reads is emitted by the token pipeline, or synthesised locally — and (secondary, non-fatal-by-default in spirit but still baselined) every emitted var is read by at least one component | 1275 dead / 1588 dormant |
-| 14 | `dead-handlers.mjs` | A `v-on` binding (`@click`, `@keydown`, …) must CALL the handler it names — not just reference it as an unused operand of `&&`/`||`/`?:`, or via a `withModifiers`/`withKeys` call whose return value is discarded | 6 |
+| 14 | `dead-handlers.mjs` | A `v-on` binding (`@click`, `@keydown`, …) must CALL the handler it names — not just reference it as an unused operand of `&&`/`\|\|`/`?:`, or via a `withModifiers`/`withKeys` call whose return value is discarded | 6 |
 | 15 | `id-forwarding.mjs` | A bare `const {id, ...} = useStyle(xxxStyles)` (no `() => props.id` second argument) must not be the value an unshadowed `:id="id"` template binding resolves to — the generated stylesheet id silently wins over the consumer's prop | 0 |
 | 16 | `t-fallback.mjs` | (undocumented in this table — see the script header) | — |
 | 17 | `composable-setup-reads.mjs` | (undocumented in this table — see the script header) | — |
