@@ -1452,10 +1452,6 @@
 		max-width: none;
 	}
 
-	.origam-select__content .origam-menu__list {
-		max-width: none;
-	}
-
 	.origam-select__content .origam-list-item {
 		--origam-list-item---padding-inline-start: 32px;
 	}
