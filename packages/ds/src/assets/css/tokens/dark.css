@@ -22,7 +22,7 @@
   --origam-color__text---primary: var(--origam-color__neutral---50);
   --origam-color__text---secondary: var(--origam-color__neutral---400);
   --origam-color__text---disabled: var(--origam-color__neutral---600);
-  --origam-color__text---inverse: var(--origam-color__neutral---900);
+  --origam-color__text---inverse: var(--origam-color__neutral---950); /* #615 — voir light.css : le bloc runtime de `origamDarkTheme` pose #0a0a0a */
   --origam-color__text---onColor: var(--origam-color__neutral---0);
   --origam-color__border---default: var(--origam-color__neutral---700);
   --origam-color__border---subtle: var(--origam-color__neutral---800);
@@ -2755,7 +2755,7 @@
     --origam-color__text---primary: var(--origam-color__neutral---50);
     --origam-color__text---secondary: var(--origam-color__neutral---400);
     --origam-color__text---disabled: var(--origam-color__neutral---600);
-    --origam-color__text---inverse: var(--origam-color__neutral---900);
+    --origam-color__text---inverse: var(--origam-color__neutral---950); /* #615 — voir light.css : le bloc runtime de `origamDarkTheme` pose #0a0a0a */
     --origam-color__text---onColor: var(--origam-color__neutral---0);
     --origam-color__border---default: var(--origam-color__neutral---700);
     --origam-color__border---subtle: var(--origam-color__neutral---800);

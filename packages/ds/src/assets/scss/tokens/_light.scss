@@ -20,7 +20,19 @@
   --origam-color__surface---sunken: var(--origam-color__neutral---50);
   --origam-color__surface---disabled: var(--origam-color__neutral---200);
   --origam-color__surface---inverse: var(--origam-color__neutral---900);
-  --origam-color__text---primary: var(--origam-color__neutral---900);
+  /* #615 — `950`, PAS `900`. Cette feuille NE gagne PAS la cascade au niveau
+     document : `createOrigam()` appelle `applyThemes()`, qui serialise
+     `origamLightTheme` (src/themes/origam.theme.ts) en un bloc `:root { … }`
+     injecte dans <head> APRES cette feuille. A specificite egale (0,1,0) c'est
+     l'ordre source qui tranche, donc le bloc runtime gagne — et il pose
+     `#0a0a0a`, soit neutral-950. Tant que cette ligne disait `900`, le meme
+     theme « light » peignait DEUX couleurs : `#0a0a0a` a la racine et
+     `#171717` dans un sous-arbre `<OrigamThemeProvider theme="light">` (ou
+     `[data-theme="light"]` matche alors que `:root` ne matche plus). Les deux
+     valeurs mesurees en Chromium ; le contraste sur `surface.default` passe de
+     17.93:1 a 19.80:1. Si cette ligne doit revenir a `900`, c'est
+     `origam.theme.ts` qu'il faut changer AVEC, sinon la divergence revient. */
+  --origam-color__text---primary: var(--origam-color__neutral---950);
   --origam-color__text---secondary: var(--origam-color__neutral---600);
   --origam-color__text---disabled: var(--origam-color__neutral---400);
   --origam-color__text---inverse: var(--origam-color__neutral---0);
