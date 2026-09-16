@@ -38,7 +38,8 @@ const GUARDS = [
     'composables-doc-sync.mjs',
     'prop-shadowing.mjs',
     'class-fallthrough.mjs',
-    'md-table-cells.mjs'
+    'md-table-cells.mjs',
+    'unitless-zero-in-calc.mjs'
 ]
 
 /*********************************************************
