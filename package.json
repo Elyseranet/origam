@@ -60,21 +60,19 @@
             "postcss": "^8.5.18",
             "tar": "^7.5.19",
             "shell-quote": "^1.9.0",
-            "js-yaml@4": "^4.3.1",
-            "svgo@4": "^4.0.2",
+            "js-yaml@4": "^4.3.2",
+            "svgo@4": "^4.1.0",
             "fast-xml-parser@5": "^5.10.1",
             "brace-expansion@2": "^2.1.4",
             "brace-expansion@5": "^5.0.9",
             "nanoid@3": "^3.3.17",
             "@nuxt/devtools": "^3.3.1",
             "launch-editor": "^2.14.1",
-            "esbuild@0": "^0.28.1"
-        },
-        "auditConfig": {
-            "ignoreGhsas": [
-                "GHSA-w3rx-r6r6-pgpr",
-                "GHSA-5p2g-fcmc-qvqq"
-            ]
+            "esbuild@0": "^0.28.1",
+            "browserslist": "^4.28.7",
+            "baseline-browser-mapping": "^2.11.0",
+            "sharp": "^0.35.4",
+            "image-size": "^2.0.4"
         }
     },
     "devDependencies": {
