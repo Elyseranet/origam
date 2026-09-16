@@ -1,6 +1,9 @@
 import { expect, test, type Page } from '@playwright/test'
 
 import { selectHstOption, toggleHstCheckbox } from './_support/histoire-controls'
+import { recordOverlayTransitionClasses } from './_support/transition-recorder'
+
+import type { ITransitionRecorderWindow } from './_support/transition-recorder.interface'
 
 /**
  * RECIPE — OrigamSelect e2e spec (follows btn.spec.ts canonical pattern)
@@ -585,23 +588,65 @@ test.describe('OrigamSelect', () => {
             expect(bg).not.toBe('rgb(255, 255, 255)')
         })
 
+        // #750 — this test used to `waitForTimeout(50)` after the click and then
+        // read `.origam-overlay__content`'s classList ONCE. Vue's transition
+        // classes (`-enter-from` / `-enter-active` / `-enter-to`) exist only
+        // WHILE the animation runs and are removed on `transitionend`, so a
+        // single sample at a fixed offset is a race by construction: too early
+        // and the overlay is not in the DOM yet, too late and every class is
+        // already gone. The window's width comes from
+        // `--origam-transition--expand-y-enter-active---transition-duration`,
+        // a token — so no hardcoded offset can be correct for it, and raising
+        // 50 ms to 200 ms would only move the race (measured elsewhere in this
+        // repo: textarea-richtext 5 s → 12 s pushed 7 failures onto carousel).
+        //
+        // Fixed by ACCUMULATING instead of sampling: an `addInitScript`
+        // recorder (installed before the sandbox document runs — the only
+        // injection point that works inside Histoire's `__sandbox` iframe)
+        // logs every `origam-transition--*` class the overlay content ever
+        // carries. The assertion then waits on that STATE, never on a delay,
+        // and stays correct whether the animation lasts 1 ms or 1 s.
+        //
+        // The old negative half was ALSO vacuous: it filtered for
+        // `translate-scale`, and no transition in the DS is named that.
+        // `OrigamTranslateScale` — the Select's own `transition` prop default
+        // (OrigamSelect.vue:365), i.e. exactly what a regression on
+        // OrigamSelect.vue:81 would fall back to — emits
+        // `origam-transition--transform-scale-*`. So the filter could never
+        // match anything and the assertion could never fail. Replaced by
+        // "every recorded transition family is expand-y", which catches
+        // transform-scale, fade, and any other substitution.
         test('open animation uses OrigamExpandY transition', async ({ page }) => {
+            await page.addInitScript(recordOverlayTransitionClasses)
             await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
 
-            // Click then read the transition classes mid-animation
-            await select.locator('.origam-field').first().click()
-            await page.waitForTimeout(50)
+            const recorded = () => sandbox.locator('body').evaluate(
+                () => (window as unknown as ITransitionRecorderWindow).__origamOverlayTransitionClasses ?? null
+            )
 
-            const classes = await sandbox.locator('.origam-overlay__content').first()
-                .evaluate(el => Array.from(el.classList))
-            const expandY       = classes.filter(c => c.includes('expand-y'))
-            const translateScale = classes.filter(c => c.includes('translate-scale'))
-            // Must be expand-y, not the default scale
-            expect(expandY.length).toBeGreaterThan(0)
-            expect(translateScale).toEqual([])
+            // Harness check — prove the recorder actually reached the sandbox
+            // frame. Without it, an empty log would be indistinguishable from
+            // "no transition class was ever applied", and a broken injection
+            // would read as a green test.
+            expect(await recorded(), 'the addInitScript recorder never ran in the sandbox frame')
+                .not.toBeNull()
+
+            await select.locator('.origam-field').first().click()
+
+            // Wait on the STATE (a transition class was applied), not on time.
+            await expect
+                .poll(async () => (await recorded())?.length ?? 0, { timeout: 12000 })
+                .toBeGreaterThan(0)
+
+            const classes = (await recorded()) ?? []
+            // Must be expand-y — and nothing else.
+            expect(classes.filter(c => c.startsWith('origam-transition--expand-y-')).length)
+                .toBeGreaterThan(0)
+            expect(classes.filter(c => !c.startsWith('origam-transition--expand-y-')))
+                .toEqual([])
         })
     })
 
