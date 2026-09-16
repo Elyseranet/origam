@@ -26,7 +26,7 @@ does not depend on any of the three.
 ## `createHeaders`
 
 ```ts
-export function createHeaders ( props: IDataTableHeaderProps, options?:
+export function createHeaders ( props: IDataTableHeaderProps, options?: { groupBy?: Ref<Array<IDataTableSortItem>> | undefined showSelect?: Ref<boolean> showExpand?: Ref<boolean> } )
 ```
 
 Normalises the raw `headers` prop (or infers columns from the first
@@ -100,7 +100,7 @@ puisse s'en servir directement sans re-injecter.
 ## `provideGroupBy`
 
 ```ts
-export function provideGroupBy (options:
+export function provideGroupBy (options: { groupBy: Ref<Array<IDataTableSortItem>>, sortBy: Ref<Array<IDataTableSortItem>> }): IDataTableProvideGroup
 ```
 
 Provider-side hook: derives `sortByWithGroups` plus the
@@ -115,7 +115,7 @@ tree.
 ## `providePagination`
 
 ```ts
-export function providePagination (options:
+export function providePagination (options: { page: Ref<number> itemsPerPage: Ref<number> itemsLength: Ref<number> }): IDataTableProvidePagination
 ```
 
 Provider-side hook: derives `startIndex` / `stopIndex` / `pageCount`
@@ -130,7 +130,7 @@ mutators, and provides `ORIGAM_DATA_TABLE_PAGINATION_KEY` for
 ## `provideSelection`
 
 ```ts
-export function provideSelection ( props: IDataTableSelectProps,
+export function provideSelection ( props: IDataTableSelectProps, {allItems, currentPage}: { allItems: Ref<Array<IDataTableSelectableItem>>, currentPage: Ref<Array<IDataTableSelectableItem>> } ): IDataTableProvideSelection
 ```
 
 Cree l'etat de selection d'un `<origam-data-table>` et le `provide` sous
@@ -158,7 +158,7 @@ objet plutot qu'une cle primitive.
 ## `provideSort`
 
 ```ts
-export function provideSort (options:
+export function provideSort (options: { sortBy: Ref<Array<IDataTableSortItem>> mustSort: Ref<boolean> multiSort: Ref<boolean> page?: Ref<number> }): IDataTableProvideSort
 ```
 
 Provider-side hook: wires `toggleSort` / `isSorted` on top of the
@@ -294,7 +294,7 @@ same domain folder.
 ## `useOptions`
 
 ```ts
-export function useOptions (
+export function useOptions ({ page, itemsPerPage, sortBy, groupBy, search }: { page: Ref<number> itemsPerPage: Ref<number> sortBy: Ref<Array<IDataTableSortItem>> groupBy: Ref<Array<IDataTableSortItem>> search: Ref<string | undefined> })
 ```
 
 Regroupe pagination, tri, groupement et recherche en un seul objet
@@ -318,7 +318,7 @@ d'un jeu de resultats qui n'en a peut-etre qu'une.
 ## `usePaginatedItems`
 
 ```ts
-export function usePaginatedItems<T> (options:
+export function usePaginatedItems<T> (options: { items: Ref<readonly (T | IDataTableGroup<T>)[]> startIndex: Ref<number> stopIndex: Ref<number> itemsPerPage: Ref<number> })
 ```
 
 Pure item-slicing hook: slices a plain items array to the current
@@ -380,7 +380,7 @@ plain items array and never touches this injection.
 ## `useSortedItems`
 
 ```ts
-export function useSortedItems<T extends IInternalItem> ( props:
+export function useSortedItems<T extends IInternalItem> ( props: { customKeySort: TDataTableCompareFunction | undefined }, items: Ref<T[]>, sortBy: Ref<Array<IDataTableSortItem>>, options?: { transform?: (item: T) => Record<string, unknown> sortFunctions?: Ref<Record<string, TDataTableCompareFunction> | undefined> sortRawFunctions?: Ref<Record<string, TDataTableCompareFunction> | undefined> } )
 ```
 
 Pure item-sorting hook: applies `sortBy` (+ optional custom compare

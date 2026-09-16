@@ -10,7 +10,7 @@
 ## `useCalendar`
 
 ```ts
-export function useCalendar ( options: IUseCalendarOptions, setView?: (view: TCalendarView)
+export function useCalendar ( options: IUseCalendarOptions, setView?: (view: TCalendarView) => void, setCurrentDate?: (date: Date) => void )
 ```
 
 Public composable. Stateless over the inputs (every getter is a

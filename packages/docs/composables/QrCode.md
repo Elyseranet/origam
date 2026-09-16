@@ -23,7 +23,7 @@ unit-test suite and not advertised publicly.
 ## `useQrCode`
 
 ```ts
-export function useQrCode ( value: MaybeRefOrGetter<string>, options: MaybeRefOrGetter<IUseQrCodeOptions> =
+export function useQrCode ( value: MaybeRefOrGetter<string>, options: MaybeRefOrGetter<IUseQrCodeOptions> = {} ): { svg: ComputedRef<string> modules: ComputedRef<boolean[][]> size: ComputedRef<number> }
 ```
 
 Headless QR-code composable. Encodes `value` through
@@ -37,12 +37,14 @@ and server.
 **Exemple**
 
 ```ts
+```ts
 const value = ref('https://origam.dev')
 const { svg, modules, size } = useQrCode(value, {
     errorCorrectionLevel: 'M',
     foreground: '#000',
     background: '#fff'
 })
+```
 ```
 
 **Source** : `packages/ds/src/composables/QrCode/qr-code.composable.ts`

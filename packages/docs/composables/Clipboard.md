@@ -10,7 +10,7 @@
 ## `useClipboard`
 
 ```ts
-export function useClipboard (options: IUseClipboardOptions =
+export function useClipboard (options: IUseClipboardOptions = {})
 ```
 
 Headless clipboard composable. Wraps the modern Clipboard API + a
@@ -20,10 +20,12 @@ flag so consumers don't have to wire the timeout themselves.
 **Exemple**
 
 ```ts
+```ts
 const { copy, copied, error, isSupported } = useClipboard({ feedbackDuration: 2000 })
 
 await copy('hello world')
 // copied.value === true for 2000ms, then auto-resets to false
+```
 ```
 
 **Source** : `packages/ds/src/composables/Clipboard/clipboard.composable.ts`

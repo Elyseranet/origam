@@ -21,7 +21,7 @@ the options bag.
 
 **Source** : `packages/ds/src/composables/Parallax/parallax.composable.ts`
 
-**Consommateurs** (3) : `components/Parallax/OrigamParallax.vue`, `consts/Parallax/parallax-layer.const.ts`, `interfaces/Parallax/parallax.interface.ts`
+**Consommateurs** (4) : `components/Parallax/OrigamParallax.vue`, `components/Parallax/OrigamParallaxElement.vue`, `consts/Parallax/parallax-layer.const.ts`, `interfaces/Parallax/parallax.interface.ts`
 
 ## `useParallaxTransform`
 
