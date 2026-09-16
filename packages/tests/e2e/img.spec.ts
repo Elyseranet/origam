@@ -22,15 +22,26 @@ import { eventLogItems, fillHstNumber, fillHstText, openEventsTab, selectHstOpti
  * second test drives Width/Height on the Design Variant to prove the fix
  * isn't limited to the one prop that was measured in the issue.
  *
- * ⛔ Measured trap, specific to THIS sandbox: `curl` from the shell fetches
- * https://picsum.photos in ~0.2s, but the SAME URL requested from inside
- * Chromium (Playwright's browser process) never completes —
- * `img.complete` stayed `false` after 11+ seconds in a manual probe. The
- * shell and the browser do not share a network path here. Consequently:
+ * ⛔ NETWORK DEPENDENCE — the paragraph that used to sit here is OBSOLETE and
+ * was rewritten under #690 (2026-09-16). It claimed that picsum.photos "never
+ * completes" from inside Chromium while `curl` fetched it in ~0.2s. Re-measured
+ * on this branch: the image DOES complete in the browser
+ * (`img.complete === true`, `naturalWidth === 1600`), at ~620-700 ms from
+ * navigation start. Both that old claim and its opposite have been true in this
+ * sandbox on unchanged code — which is precisely the problem, and why no test
+ * here should depend on the real CDN any more.
+ *
+ * The lesson generalises past the one test #690 names: a spec that needs the
+ * image to be SLOW (to observe a placeholder) or FAST (to observe a loaded
+ * state) must create that condition with `page.route`, not hope for it. See
+ * the `Slots - Placeholder` test below for the working shape.
+ *
+ * What the remaining tests in this file do about it:
  *   - NOT tested: whether the real `<img>` ever becomes visible
  *     (`v-show="isLoaded"`, gated on the native `load` event actually
- *     firing) — unverifiable in this sandbox regardless of the component's
- *     correctness.
+ *     firing) for the tests that still use the live URL — these were written
+ *     under the old assumption and were NOT converted to `page.route` in
+ *     #690; their scope was deliberately left untouched.
  *   - Tested instead: attributes/computed-styles that resolve BEFORE and
  *     REGARDLESS OF `display:none` (verified directly: `getComputedStyle`
  *     on a `display:none` `<img>` still reports `object-fit`,
