@@ -18,6 +18,47 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### ⚠️ BREAKING — `BG_FG_ROLE.DISABLED` removed (#823)
+
+`BG_FG_ROLE` is part of the published surface — it is re-exported by
+`origam/enums` (and reachable directly as `origam/enums/Commons/color.enum`
+through the `./*` catch-all). Verified on the BUILT artefact, not inferred
+from the export map: `import { BG_FG_ROLE } from 'origam/enums'` now yields
+`['default', 'hover', 'active']`. The derived `TBgFgRole` (`origam/types`)
+narrows with it, so a consumer annotating a variable `TBgFgRole` and
+assigning `'disabled'` stops compiling.
+
+**No rendering changes.** The member was declared and **never passed**:
+`useColorEffect` and `useStateEffect` both derive `bgRole` from `isHover` /
+`isActive` alone, and every other call site passes the literal `'default'`.
+Measured in Chromium against the prebuilt Histoire — 70 story/variant
+captures, 801 computed `background-color` / `color` readings across the ten
+component families that consume those composables — the before and after
+dumps are byte-identical, with a hover positive control that moves
+(`rgb(124,58,237)` → `rgb(109,40,217)`) in both.
+
+**Why remove rather than declare the eight missing tokens.** The `disabled`
+rung resolved `--origam-color__feedback--{success,warning,danger,info}---bgDisabled`
+and `---fgDisabled` — eight names **no sheet declares**, with **no fallback**.
+`docs/integrations/theming-authoring.md` already documents `feedback.*` as
+having no `*Disabled` slot; only `action.*` does. A `var()` that fails at
+computed-value time does not yield: the declaration has already won the
+cascade, becomes `unset`, and **erases** the surface (the #813 / #568
+mechanism). The member was therefore an armed trap — the first caller to
+pass `'disabled'`, which the `tokenStylesForIntent(intent, role)` signature
+openly invited, would have wiped eight surfaces with every guard green.
+Disabled is an opacity veil in this DS, never a token swap.
+
+Guard 28 `ts-token-refs` drops from **20** baselined dead-channel entries to
+**12**. Negative control run: pre-fix code against the trimmed baseline
+reports exactly those 8 as NEW and exits 1.
+
+**Migration.** There is none to write, because nothing could have been
+painting: any consumer passing `'disabled'` was already emitting undeclared
+`var()` references. Use the disabled opacity veil the components already
+apply, or declare the eight `feedback.*` slots in your own theme and pass a
+bespoke `bgColor`.
+
 ## [2.17.1] - 2026-09-14
 
 Hotfix. Quatre correctifs, **aucune rupture d'API**. Trois des quatre ont
