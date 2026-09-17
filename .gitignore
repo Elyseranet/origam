@@ -16,6 +16,12 @@ node_modules
 # soit autant de candidats a un `git add -A` distrait. Mesure le 2026-09-16.
 packages/marketing/node-compile-cache/
 
+# Sonde memoire ecrite A LA VOLEE par packages/tests/bench/marketing-ssr-leak.mjs
+# (#248) et supprimee en sortie. Ignoree ici comme filet : un `kill -9` du bench
+# la laisserait sur place, et c'est une route de diagnostic qui n'a rien a faire
+# dans l'arbre ni, a plus forte raison, en production.
+packages/marketing/server/api/__mem.get.ts
+
 # Dist
 dist
 dist-ssr
