@@ -24,6 +24,12 @@
  * « zéro requête externe » et « ma sonde ne mesure rien » sont deux résultats
  * indiscernables — et le second passerait au vert pour toujours.
  *
+ * Ce spec tourne en CI : il est inscrit dans `MARKETING_GREEN_SPECS`
+ * (`playwright.marketing.config.ts`), la liste que le job `test-e2e-marketing`
+ * exécute sous `MARKETING_GREEN_ONLY=1`. Y figurer est la seule chose qui fasse
+ * tourner une spec — `MARKETING_SPEC_PATTERNS` ne suffit pas, et c'est le
+ * défaut que le garde `spec-coverage` (#824) a relevé sur ce fichier même.
+ *
  * Familles réellement chargées (mesuré, pas déduit de la config) : le thème
  * par défaut `geek` charge Inter + JetBrains Mono ; `editorial` y ajoute
  * Fraunces, romaine et italique. Les six autres thèmes n'ajoutent rien. Le
@@ -33,6 +39,14 @@ import { test, expect } from '@playwright/test'
 
 /** Pages publiques représentatives : accueil, une page de contenu, /privacy elle-même. */
 const PAGES = ['/', '/fr', '/fr/privacy', '/fr/components', '/fr/theming'] as const
+
+/**
+ * Délai laissé après `document.fonts.ready` pour qu'une requête déclenchée
+ * juste après le chargement soit tout de même enregistrée. Volontairement
+ * court : il s'ajoute à chaque page, et ce n'est pas lui qui porte la mesure
+ * — c'est `fonts.ready`.
+ */
+const SETTLE_MS = 500
 
 /** Un hôte est « externe » dès qu'il n'est pas celui que le test interroge. */
 function externalHosts(urls: string[], baseURL: string): string[] {
@@ -54,20 +68,26 @@ test.describe('marketing — aucun tiers contacté automatiquement (#761)', () =
 
         page.on('request', (r) => seen.push(r.url()))
 
-        // Une image hors-origine délibérée, injectée dans la page. Elle n'a pas
-        // besoin d'aboutir : `page.on('request')` enregistre la requête émise,
-        // pas la réponse — le test reste donc valable hors connexion.
+        // ⛔ L'hôte de contrôle est en `.invalid` — TLD réservé par la RFC 2606,
+        // qui ne résout JAMAIS. Trois raisons, toutes délibérées :
+        //   - la suite de tests ne contacte elle-même aucun tiers, ce qui serait
+        //     contradictoire avec ce qu'elle vérifie ;
+        //   - elle ne dépend pas de l'accès sortant du runner de CI ;
+        //   - l'échec est immédiat et déterministe, jamais un `timeout`.
+        // `page.on('request')` enregistre la requête ÉMISE, pas la réponse : que
+        // la résolution échoue est sans importance, et c'est justement le point.
         await page.goto('/', { waitUntil: 'domcontentloaded' })
         await page.evaluate(async () => {
-            await fetch('https://fonts.gstatic.com/origam-sonde-controle-positif.woff2', {
-                mode: 'no-cors'
+            await fetch('https://sonde-controle-positif.invalid/origam.woff2', {
+                mode: 'no-cors',
+                signal: AbortSignal.timeout(5000)
             }).catch(() => undefined)
         })
 
         expect(
             externalHosts(seen, baseURL!),
             'la sonde réseau doit voir un hôte externe quand la page en contacte un'
-        ).toContain('fonts.gstatic.com')
+        ).toContain('sonde-controle-positif.invalid')
     })
 
     for (const path of PAGES) {
@@ -76,8 +96,21 @@ test.describe('marketing — aucun tiers contacté automatiquement (#761)', () =
 
             page.on('request', (r) => seen.push(r.url()))
 
-            await page.goto(path, { waitUntil: 'networkidle' })
+            // ⛔ PAS `networkidle`. Le serveur Nuxt de dev que la CI monte garde
+            // ouverte la liaison HMR de Vite et compile les modules à la
+            // demande : le réseau n'est jamais « au repos », et l'attente
+            // expire au bout de 30 s sur les routes lourdes (/fr/theming,
+            // /fr/components). Mesuré : 2 expirations sur 5 exécutions, sans
+            // qu'aucune assertion n'ait jamais été évaluée.
+            //
+            // `load` + `document.fonts.ready` est l'attente EXACTE de ce qui est
+            // vérifié ici : la promesse se résout quand le chargement des
+            // polices est terminé — donc après l'émission de toute requête de
+            // police. Le court délai qui suit laisse partir ce qu'un script
+            // déclencherait juste après.
+            await page.goto(path, { waitUntil: 'load' })
             await page.evaluate(() => document.fonts.ready)
+            await page.waitForTimeout(SETTLE_MS)
 
             const hosts = externalHosts(seen, baseURL!)
 
@@ -95,8 +128,9 @@ test.describe('marketing — aucun tiers contacté automatiquement (#761)', () =
             { name: 'origam-mode', value: 'light', url: baseURL! }
         ])
 
-        await page.goto('/fr', { waitUntil: 'networkidle' })
+        await page.goto('/fr', { waitUntil: 'load' })
         await page.evaluate(() => document.fonts.ready)
+        await page.waitForTimeout(SETTLE_MS)
 
         const familles = await page.evaluate(() => {
             const out: string[] = []
