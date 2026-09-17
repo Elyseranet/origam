@@ -100,7 +100,16 @@ const GREEN_SPECS = [
     // Verifiees dans ce lot, `E2E_STATIC=1`, chromium, port isole :
     // `checkbox-radio-group-a11y` 8/8, `rating-field-a11y` 4/4.
     'checkbox-radio-group-a11y.spec.ts',
-    'rating-field-a11y.spec.ts'
+    'rating-field-a11y.spec.ts',
+    // wave 10 — #812. Same reason as waves 8 and 9, and the same component:
+    // `rating-field-a11y.spec.ts` (#810) spent its whole life green in local
+    // runs and never once executed in CI, because it was missing from this
+    // list. The keyboard defect it documented as out of scope is the one this
+    // spec pins; leaving the spec out would let it come back in silence.
+    //
+    // Verified in this lot, `E2E_STATIC=1`, chromium, isolated port:
+    // `rating-field-keyboard` 14/14.
+    'rating-field-keyboard.spec.ts'
 ]
 
 /**

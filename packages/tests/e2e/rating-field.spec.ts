@@ -59,19 +59,32 @@ test.describe('OrigamRatingField', () => {
             await page.goto(rfUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
-            // The component also renders a hidden item (index=-1, showStar=false) in __empty.
-            // Total .origam-rating-field-item = 6 (1 hidden + 5 visible).
+            // The component also renders a hidden item (index=-1, showStar=false)
+            // in __empty. Total .origam-rating-field-item = 6 (1 hidden + 5
+            // visible) — since #812 that hidden one is an EMPTY div: it carries
+            // no `<label>` and no `<input>` any more, only the component
+            // instance the parent uses as its `filterProps` delegation ref.
             // We assert the visible subset inside __content wrappers.
             const visibleItems = sandbox.locator('.origam-rating-field__content .origam-rating-field-item')
             await expect(visibleItems).toHaveCount(5)
         })
 
-        test('renders 6 native radio inputs (5 stars + 1 hidden value=0)', async ({ page }) => {
+        test('renders 5 native radio inputs — one per star, and no phantom', async ({ page }) => {
             await page.goto(rfUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
-            // 5 star items + 1 hidden item (value=0, index=-1) = 6 inputs total.
-            await expect(sandbox.locator('input[type="radio"]')).toHaveCount(6)
+            // ⚠️ This count was 6 until #812. The sixth was the `__empty` item's
+            // radio: `value=0`, never checked, 0×0 and transparent, yet a full
+            // member of the `name` group. Measured consequences, both real:
+            //   - `tabindex="-1"` kept it out of TAB but NOT out of the arrow
+            //     cycle, so ArrowRight from the last star landed the focus on an
+            //     invisible element — a WCAG 2.4.7 failure by wrap-around;
+            //   - it carried an accessible name ("Rating 0 of 5"), announced by a
+            //     screen reader as a sixth option that does not exist.
+            // The `<label>`/`<input>` pair now renders only when `showStar` is
+            // true — gating the `<input>` alone would have left a `<label for>`
+            // pointing at nothing, i.e. the #810 defect all over again.
+            await expect(sandbox.locator('input[type="radio"]')).toHaveCount(5)
         })
 
         test('inner btn elements use text variant — no background, no box-shadow', async ({ page }) => {
