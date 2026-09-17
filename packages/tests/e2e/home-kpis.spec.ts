@@ -98,9 +98,18 @@ test.describe('HomeKpis — T2', () => {
             // On apparie par ORDRE DU DOCUMENT (`dt` puis son `dd`), pas par
             // index fixe : OrigamGrid peut interposer des wrappers, et l'ordre
             // des KPI n'est pas un contrat.
+            //
+            // ⛔ Comparaison INSENSIBLE À LA CASSE : `.home-kpis__label` porte
+            // `text-transform: uppercase`, et `innerText` rend le texte TEL
+            // QU'IL EST PEINT — il renvoie donc « COMPONENTS ». Mesuré : la
+            // première version de ce test, en comparaison stricte, échouait
+            // sur les deux KPI. (`locator.filter({ hasText })`, utilisé par les
+            // tests de libellé plus haut, est insensible à la casse et masquait
+            // le piège.)
             const value = await page.locator('#kpis').evaluate((root, wanted) => {
+                const needle = wanted.toLowerCase()
                 const cells = Array.from(root.querySelectorAll('dt, dd'))
-                const i = cells.findIndex(el => el.tagName === 'DT' && (el as HTMLElement).innerText.trim().includes(wanted))
+                const i = cells.findIndex(el => el.tagName === 'DT' && (el as HTMLElement).innerText.trim().toLowerCase().includes(needle))
                 if (i < 0) return null
                 const dd = cells.slice(i + 1).find(el => el.tagName === 'DD')
                 return dd ? (dd as HTMLElement).innerText.trim() : null

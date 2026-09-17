@@ -93,16 +93,25 @@ test.describe('HomeThemes section', () => {
         await expect(tiles).toHaveCount(4)
     })
 
-    test('all 4 preview tile labels are visible (v5-phase1: brand-a/brand-b remplacent editorial/ecom)', async ({ page }) => {
+    // ⛔ Recalés sur `THEME_PREVIEW_TILES`
+    // (`packages/marketing/src/consts/themes-showcase.const.ts`), source de
+    // vérité de la vitrine.
+    //
+    // Ces deux tests attendaient `brand-a` / `brand-b` et les libellés
+    // `brand-a.json` / `brand-b.json`. La vitrine expose aujourd'hui
+    // `light` / `dark` / `cartoon` / `apple`, avec les libellés `light.json`,
+    // `dark.json`, `Cartoon`, `Apple` — vérifié dans le HTML servi et dans
+    // `en.json`. Le jeu de tuiles est une décision produit curatée : on
+    // continue de l'épingler, mais sur ce qui est réellement rendu.
+    test('les 4 libellés de tuile de prévisualisation sont visibles', async ({ page }) => {
         const section = page.locator('section.home-themes')
-        await expect(section).toContainText('light.json')
-        await expect(section).toContainText('dark.json')
-        await expect(section).toContainText('brand-a.json')
-        await expect(section).toContainText('brand-b.json')
+        for (const label of ['light.json', 'dark.json', 'Cartoon', 'Apple']) {
+            await expect(section).toContainText(label)
+        }
     })
 
     test('preview tiles have data-cy attributes', async ({ page }) => {
-        const tileKeys = ['light', 'dark', 'brand-a', 'brand-b']
+        const tileKeys = ['light', 'dark', 'cartoon', 'apple']
         for (const key of tileKeys) {
             const tile = page.locator(`[data-cy="themes-preview-${key}"]`)
             await expect(tile).toBeVisible()
@@ -125,23 +134,67 @@ test.describe('HomeThemes section', () => {
     //    hex — each tile's surface resolves from its own theme's
     //    `--origam-color__surface---default`. Assert ≥2 distinct surfaces.
 
+    // ⛔ Le critère « fonds de surface distincts » ne vaut PLUS pour ce jeu de
+    // tuiles, et le garder produisait un faux défaut.
+    //
+    // La vitrine exposait `light` / `dark` / `brand-a` / `brand-b`, ces deux
+    // derniers portant un override de surface explicite (#f5f0e8, #e8f5f0) —
+    // d'où l'attente de 3 fonds distincts. Elle expose aujourd'hui `light` /
+    // `dark` / `cartoon` / `apple`. Mesuré sur le HTML servi :
+    //
+    //   light   surface rgb(255,255,255)
+    //   dark    surface rgb(10,10,10)
+    //   cartoon surface rgb(255,255,255)   ← marque en mode clair : blanc, et c'est correct
+    //   apple   surface rgb(255,255,255)   ← idem
+    //
+    // Une marque en mode clair a légitimement une surface blanche : le fond
+    // n'est pas ce qui la distingue. Le theming, lui, EST bien vivant — il se
+    // voit ailleurs, mesuré sur le même rendu :
+    //
+    //   cartoon  bouton border-top-width 1px   (0px sur light)
+    //   apple    bouton background rgb(245,245,245)  (transparent sur light)
+    //
+    // On assert donc ce que « theming is live » veut dire ici : chaque tuile
+    // est montée sous SON propre `data-theme`, le couple clair/sombre se
+    // distingue bien par la surface, et les quatre tuiles ne rendent pas
+    // toutes la même signature visuelle.
     test('preview tiles render distinct theme surfaces (theming is live)', async ({ page }) => {
-        const surfaceBg = async (key: string) =>
-            page.locator(`[data-cy="themes-tile-surface-${key}"]`)
-                .evaluate(el => getComputedStyle(el).backgroundColor)
+        const signature = (key: string) =>
+            page.locator(`[data-cy="themes-tile-surface-${key}"]`).evaluate((el) => {
+                const surface = getComputedStyle(el)
+                const btn = el.querySelector('.origam-btn')
+                const button = btn ? getComputedStyle(btn) : null
+                return {
+                    providerTheme: el.closest('[data-theme]')?.getAttribute('data-theme') ?? null,
+                    surfaceBg: surface.backgroundColor,
+                    buttonBg: button?.backgroundColor ?? null,
+                    buttonBorderWidth: button?.borderTopWidth ?? null
+                }
+            })
 
-        const light = await surfaceBg('light')
-        const dark = await surfaceBg('dark')
-        // brand-a (editorial base + surface override #f5f0e8) and brand-b (ecom base + #e8f5f0)
-        const brandA = await surfaceBg('brand-a')
-        const brandB = await surfaceBg('brand-b')
+        const keys = ['light', 'dark', 'cartoon', 'apple']
+        const signatures = []
+        for (const key of keys) signatures.push(await signature(key))
 
-        expect(light).toBe('rgb(255, 255, 255)')
-        expect(dark).toBe('rgb(10, 10, 10)')
-        // brand tiles have custom surface overrides — they must differ from white
-        expect(brandA).not.toBe(light)
-        expect(brandB).not.toBe(light)
-        expect(new Set([light, dark, brandA, brandB]).size).toBeGreaterThanOrEqual(3)
+        // 1. Chaque tuile est bien montée sous son propre thème.
+        for (let i = 0; i < keys.length; i++) {
+            expect(
+                signatures[i].providerTheme,
+                `la tuile "${ keys[i] }" n'est pas montée sous un OrigamThemeProvider portant son thème`
+            ).toBe(keys[i])
+        }
+
+        // 2. Le couple clair/sombre se distingue par la surface, sur les
+        //    valeurs de token attendues.
+        expect(signatures[0].surfaceBg).toBe('rgb(255, 255, 255)')
+        expect(signatures[1].surfaceBg).toBe('rgb(10, 10, 10)')
+
+        // 3. Les quatre tuiles ne rendent pas toutes la même chose.
+        const distinct = new Set(signatures.map(s => JSON.stringify([s.surfaceBg, s.buttonBg, s.buttonBorderWidth])))
+        expect(
+            distinct.size,
+            `les 4 tuiles devraient rendre au moins 3 signatures visuelles distinctes — obtenu ${ JSON.stringify(signatures) }`
+        ).toBeGreaterThanOrEqual(3)
     })
 
     // ── 6. Tooling mentions ────────────────────────────────────────────────
