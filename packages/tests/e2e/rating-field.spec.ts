@@ -28,8 +28,16 @@ import { expect, test } from '@playwright/test'
  *   2  Events - click
  *   3  Events - mouseenter
  *   4  Events - mouseleave
- *   5  Slots - Item
- *   6  Default (playground)
+ *   5  Events - change      (#812 — keyboard channel)
+ *   6  Events - keydown     (#812 — keyboard channel)
+ *   7  Slots - Item
+ *   8  Default (playground)
+ *
+ * ⚠️ Indices 5 and 6 were inserted by #812, shifting `Slots - Item` 5 -> 7 and
+ * `Default` 6 -> 8. The canonical story order puts EMITS before SLOTS, so the
+ * new Variants cannot go at the end; the call sites below were renumbered
+ * instead. A stale index here does not fail loudly — Histoire simply renders a
+ * different Variant, and the spec asserts against the wrong fixture.
  */
 
 // ------------------------------------------------------------------ //
@@ -619,7 +627,7 @@ test.describe('OrigamRatingFieldItem', () => {
 
     test.describe('Slots - Item', () => {
         test('item slot variant: 5 rating-field-item roots render, each with exactly one origam-btn', async ({ page }) => {
-            await page.goto(rfiUrl(5), { waitUntil: 'domcontentloaded' })
+            await page.goto(rfiUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
             const btnsInsideItems = sandbox.locator('.origam-rating-field-item .origam-btn')
@@ -627,7 +635,7 @@ test.describe('OrigamRatingFieldItem', () => {
         })
 
         test('custom #item slot content is honoured: each origam-btn carries the story-provided aria-label (1..5)', async ({ page }) => {
-            await page.goto(rfiUrl(5), { waitUntil: 'domcontentloaded' })
+            await page.goto(rfiUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
             const visibleItems = sandbox.locator('.origam-rating-field-item')
@@ -647,20 +655,20 @@ test.describe('OrigamRatingFieldItem', () => {
 
     test.describe('Default (playground)', () => {
         test('renders the item root in playground', async ({ page }) => {
-            await page.goto(rfiUrl(6), { waitUntil: 'domcontentloaded' })
+            await page.goto(rfiUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
         })
 
         test('isFilled=true → origam-btn is present', async ({ page }) => {
-            await page.goto(rfiUrl(6), { waitUntil: 'domcontentloaded' })
+            await page.goto(rfiUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-rating-field-item .origam-btn').first()).toBeAttached()
         })
 
         test('native radio value matches value prop (3)', async ({ page }) => {
-            await page.goto(rfiUrl(6), { waitUntil: 'domcontentloaded' })
+            await page.goto(rfiUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
             const radioValue = await sandbox.locator('input[type="radio"]').first().getAttribute('value')

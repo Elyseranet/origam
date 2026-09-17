@@ -26,10 +26,10 @@
 
 			<input
 					:id="id"
-					:aria-readonly="readonly || undefined"
 					:checked="checked"
 					:disabled="disabled"
 					:name="name"
+					:readonly="readonly"
 					:value="value"
 					class="origam-rating-field-item__hidden"
 					type="radio"
