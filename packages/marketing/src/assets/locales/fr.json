@@ -1117,7 +1117,7 @@
     "privacy": {
         "meta": {
             "title": "Confidentialité",
-            "description": "Ce que ce site stocke et envoie, mesuré dans son propre code source : aucun analytics, aucun traceur, des cookies de préférence uniquement, et un seul tiers."
+            "description": "Ce que ce site stocke et envoie, mesuré dans son propre code source : aucun analytics, aucun traceur, des cookies de préférence uniquement, et aucun tiers sur ses propres pages."
         },
         "hero": {
             "badge": "Mesuré, pas rédigé",
@@ -1144,15 +1144,16 @@
             "body": "Ce site ne comporte qu’un seul formulaire — le panneau de propriétés du constructeur de thème — et il ne soumet rien : il modifie un aperçu à l’intérieur de la page. Le champ de recherche filtre un catalogue que votre navigateur a déjà téléchargé ; ce que vous y tapez n’est donc envoyé nulle part."
         },
         "third_party": {
-            "title": "Le seul tiers",
-            "body": "Les polices de caractères sont chargées depuis Google Fonts sur chaque page — fonts.googleapis.com pour la feuille de style, fonts.gstatic.com pour les fichiers de police. Votre navigateur effectue donc une requête vers Google, ce qui leur révèle votre adresse IP et votre navigateur, comme sur tout site utilisant ce service. C’est le seul hôte externe contacté automatiquement.",
+            "title": "Aucun tiers",
+            "body": "Rien, sur les pages de ce site, n’est chargé depuis le serveur d’une autre entreprise. Les polices de caractères — Fraunces, Inter et JetBrains Mono — sont servies par ce site lui-même, depuis son propre dossier /fonts. Elles étaient auparavant demandées à Google Fonts, ce qui révélait votre adresse IP et votre navigateur à Google sur chaque page ; cette requête n’existe plus. Les dix-neuf pages publiques ont été chargées une à une avec le journal réseau ouvert, et aucune n’a contacté d’autre hôte que celui-ci.",
+            "embeds": "Une exception, mesurée et nommée : les stories de composants publiées sous /stories sont une compilation séparée, produite par un outil tiers ; ouvrir cette page charge sa police d’interface depuis Google Fonts et ses icônes depuis api.iconify.design. On y accède en suivant un lien, jamais en naviguant sur le site. La documentation de référence sous /docs est elle aussi une compilation séparée ; elle n’a pas été mesurée, rien n’en est donc affirmé ici.",
             "links": "Les autres adresses externes de ce site — le dépôt GitHub, la page de don, Discord — sont de simples liens. Rien ne leur est demandé tant que vous ne cliquez pas."
         },
         "method": {
             "title": "Comment cette page a été établie",
             "body": "Chaque affirmation ci-dessus provient de la lecture du code source de ce site et du chargement d’une page dans un navigateur, journal réseau ouvert — pas d’un modèle type. Rien n’y a été supposé.",
             "scope": "Elle décrit le comportement de l’application elle-même. Ce que le serveur qui l’héberge enregistre au niveau réseau n’a pas été mesuré, et n’est donc pas décrit ici.",
-            "reviewed": "Dernière vérification par rapport au code source le 16 septembre 2026."
+            "reviewed": "Dernière vérification par rapport au code source le 17 septembre 2026."
         }
     },
     "roadmap": {

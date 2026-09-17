@@ -16,9 +16,38 @@ const REPO_ROOT = resolve(__dirname, '..', '..')
  */
 const MARKETING_GREEN_SPECS = [
     'nav-link-availability.spec.ts',
-    'marketing-nav-ssr.spec.ts'
+    'marketing-nav-ssr.spec.ts',
+
+    // #761 — relève les requêtes réellement émises et échoue en nommant l'hôte
+    // fautif dès qu'une page recontacte un tiers (un `<link>` vers un CDN, une
+    // police, un script d'analyse). C'est le filet qui garde honnête la page
+    // `/privacy`, laquelle affirme qu'aucun hôte externe n'est contacté : la
+    // promesse est publiée, elle doit donc être vérifiée à chaque exécution.
+    //
+    // Admise ici parce qu'elle tient le contrat de la liste, mesuré et non
+    // supposé : 5 exécutions consécutives sous `MARKETING_GREEN_ONLY=1`,
+    // **7/7 à chaque fois**, zéro instabilité ; 19,4 s pour le fichier seul.
+    //
+    // ⛔ Ce n'était PAS vrai au premier jet, et le dire importe : avec
+    // `waitUntil: 'networkidle'`, la même mesure donnait **3 expirations sur
+    // 5 exécutions**. Le serveur Nuxt de dev garde la liaison HMR de Vite
+    // ouverte et compile à la demande — le réseau n'est jamais au repos, donc
+    // l'attente expirait sur les routes lourdes sans qu'aucune assertion soit
+    // évaluée. Corrigé par la bonne attente (`load` + `document.fonts.ready`),
+    // pas par un délai plus long : voir l'en-tête du spec.
+    //
+    // Elle ne dépend d'aucun accès sortant du runner : son contrôle positif
+    // vise un hôte en `.invalid` (RFC 2606), qui ne résout jamais et échoue
+    // immédiatement — la suite ne contacte donc elle-même aucun tiers.
+    'marketing-no-third-party.spec.ts'
 ]
 
+/*
+ * ⚠️ `nav-link-availability.spec.ts`, déjà dans la liste, a produit 3 échecs
+ * sur 2 des 5 exécutions ci-dessus (expirations à 30 s, et un libellé « Docs »
+ * absent des menus). Constaté en mesurant l'entrée voisine, hors périmètre de
+ * #761 — non diagnostiqué, signalé pour que ce ne soit pas perdu.
+ */
 /**
  * Playwright configuration for marketing-site e2e specs.
  *
