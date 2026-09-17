@@ -136,7 +136,11 @@
                 </origam-title>
 
                 <p class="privacy-block__body">
-                    {{ t('privacy.third_party.body', 'Nothing here is fetched from another company\'s server. The typefaces — Fraunces, Inter and JetBrains Mono — are served by this site itself, from its own /fonts folder. They used to be requested from Google Fonts, which revealed your IP address and browser to Google on every page; that request no longer exists. Every public page of this site was loaded with the network log open, and none of them contacted any host other than this one.') }}
+                    {{ t('privacy.third_party.body', 'Nothing on the pages of this site is fetched from another company\'s server. The typefaces — Fraunces, Inter and JetBrains Mono — are served by this site itself, from its own /fonts folder. They used to be requested from Google Fonts, which revealed your IP address and browser to Google on every page; that request no longer exists. The nineteen public pages were each loaded with the network log open, and none of them contacted any host other than this one.') }}
+                </p>
+
+                <p class="privacy-block__body">
+                    {{ t('privacy.third_party.embeds', 'One exception, measured and named: the component stories published under /stories are a separate build produced by a third-party tool, and opening that page loads its interface font from Google Fonts and its icons from api.iconify.design. You reach it by following a link, never by browsing the site. The reference documentation under /docs is a separate build too; it was not measured, so nothing is claimed about it here.') }}
                 </p>
 
                 <origam-divider class="privacy-block__rule"/>
@@ -203,9 +207,9 @@
      ********************************************************/
     useSeoMeta({
         title: () => t('privacy.meta.title', 'Privacy'),
-        description: () => t('privacy.meta.description', 'What this site stores and sends, measured in its own source code: no analytics, no tracker, preference cookies only, and no third party.'),
+        description: () => t('privacy.meta.description', 'What this site stores and sends, measured in its own source code: no analytics, no tracker, preference cookies only, and no third party on its own pages.'),
         ogTitle: () => t('privacy.meta.title', 'Privacy'),
-        ogDescription: () => t('privacy.meta.description', 'What this site stores and sends, measured in its own source code: no analytics, no tracker, preference cookies only, and no third party.')
+        ogDescription: () => t('privacy.meta.description', 'What this site stores and sends, measured in its own source code: no analytics, no tracker, preference cookies only, and no third party on its own pages.')
     })
 
     /*********************************************************
