@@ -12,12 +12,14 @@
   import { SEARCH_SHORTCUT, GITHUB_STARS_MIN_DISPLAY } from '~/consts/chrome.const'
   import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
   import { THEME_CHIPS } from '~/consts/themes-showcase.const'
+  import { useLocaleHref } from '~/composables/useLocaleHref'
   import { useT } from '~/composables/useT'
   import { useVersion } from '~/composables/useVersion'
   import { useGithubStars } from '~/composables/useGithubStars'
   import { useGlobalSearch } from '~/composables/useGlobalSearch'
 
   const { t } = useT()
+  const { localeHref } = useLocaleHref()
   const { versionTag } = useVersion()
   const { public: publicConfig } = useRuntimeConfig()
 
@@ -314,7 +316,7 @@
       >
         <div class="site-footer__brand">
           <nuxt-link
-            to="/"
+            :to="localeHref('/')"
             class="brand"
             :aria-label="brandName"
           >
@@ -363,7 +365,7 @@
               </a>
               <nuxt-link
                 v-else
-                :to="link.href"
+                :to="localeHref(link.href)"
                 class="site-footer__link"
               >
                 {{ t(link.i18nKey, link.i18nFallback) }}
@@ -375,6 +377,17 @@
 
       <origam-divider class="site-footer__rule"/>
 
+      <!--
+        Items flagged `external` in NAV_SECTIONS (Stories, Docs) are separate
+        static sites, not app routes: they keep a plain anchor and are never
+        localised. See nav.const.ts for the why. #760
+
+        ⛔ Keep this note OUTSIDE the v-for, and free of angle brackets: dev
+        SSR preserves template comments (production strips them), so a comment
+        inside the loop is emitted once per item — and one containing a literal
+        anchor tag made `marketing-nav-ssr.spec.ts` count 30 links instead of
+        15, green in prod and red in dev.
+      -->
       <nav
         class="site-footer__sitemap"
         data-cy="footer-sitemap"
@@ -391,11 +404,19 @@
               :key="item.href"
             >
               <a
+                v-if="item.external"
                 :href="item.href"
                 class="site-footer__link"
               >
                 {{ t(item.i18nKey, item.i18nFallback) }}
               </a>
+              <nuxt-link
+                v-else
+                :to="localeHref(item.href)"
+                class="site-footer__link"
+              >
+                {{ t(item.i18nKey, item.i18nFallback) }}
+              </nuxt-link>
             </li>
           </ul>
         </template>

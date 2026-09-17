@@ -32,8 +32,12 @@ export const NAV_SECTIONS: INavSection[] = [
             { i18nKey: 'nav.interfaces', i18nFallback: 'Interfaces', href: '/interfaces' },
             { i18nKey: 'nav.utils', i18nFallback: 'Utils', href: '/utils' },
             { i18nKey: 'nav.consts', i18nFallback: 'Constants', href: '/consts' },
-            { i18nKey: 'nav.stories', i18nFallback: 'Stories', href: '/stories/' },
-            { i18nKey: 'nav.docs', i18nFallback: 'Docs', href: '/docs/' }
+            // ⛔ `external` — Stories (Histoire) and Docs (VitePress) are SEPARATE
+            // static sites served alongside the app, not routes of it. They must
+            // NOT go through localePath(): `/fr/stories/` is not a page and 404s
+            // (measured). The flag keeps them on a plain <a>. See #760.
+            { i18nKey: 'nav.stories', i18nFallback: 'Stories', href: '/stories/', external: true },
+            { i18nKey: 'nav.docs', i18nFallback: 'Docs', href: '/docs/', external: true }
         ]
     }
 ]
