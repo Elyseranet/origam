@@ -11,6 +11,25 @@
  * This file is now HAND-MAINTAINED SOURCE: edit it directly. There is no
  * regeneration step, and no "do not edit" rule any more. A design-token
  * pipeline may be reintroduced later, once the DS is stable.
+ *
+ * ── #789 — CONTRASTE : POURQUOI CES PALIERS-LÀ ─────────────────────────────
+ * `feedback--{success,warning,info}---bg` portent tous un `---fg` BLANC. Le
+ * couple doit donc tenir 4.5:1 (WCAG AA, texte). Mesuré en Chromium, alpha
+ * composité, avec témoins calculables à la main :
+ *
+ *     success   green-500 #4caf50  2.78  →  green-700 #15803d  5.02
+ *     warning   amber-600 #fb8c00  2.37  →  amber-700 #b45309  5.02
+ *     info      blue-500  #2196f3  3.12  →            #2563eb  5.17
+ *
+ * ⛔ Ne pas « re-éclaircir » ces trois paliers sans remesurer : sur cette
+ * palette, aucun palier plus clair ne tient AA avec du texte blanc. La
+ * mesure et ses témoins vivent dans
+ * `packages/tests/e2e/token-intent-contrast.spec.ts` — elle rougit ici.
+ *
+ * `info---bg` est le seul littéral du lot : `#2563eb` n'existe pas dans la
+ * palette primitive (son `blue---600` vaut `#1d4ed8`, soit le 700 de
+ * Tailwind). La valeur est celle de `origam.theme.ts`, ce qui ferme du même
+ * coup la divergence feuille ↔ thème que #793 suit.
  */
 :root,
 [data-theme="light"] {
