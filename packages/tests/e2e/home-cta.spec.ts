@@ -6,7 +6,9 @@
  *  - H2 via OrigamTitle, aria target on a <span id> (OrigamTitle drops id)
  *  - install snippet rendered by OrigamCode `copyable` (no manual copy btn,
  *    no useCopy) — copy control is the DS button [data-cy="origam-code-copy"]
- *  - "Read docs" OrigamBtn linking to /docs, carrying the shared Hero glow
+ *  - "Read docs" OrigamBtn linking to CTA_DOCS_HREF, carrying the shared Hero
+ *    glow (cf. `packages/marketing/src/consts/cta.const.ts` — source de vérité
+ *    des deux cibles ; elles ont changé le 2026-06-17, voir plus bas)
  *
  * Prerequisites: marketing dev server at http://localhost:3000 (or
  * MARKETING_BASE_URL env var). Run with:
@@ -15,6 +17,8 @@
  */
 
 import { expect, test } from '@playwright/test'
+
+import { applyBrand } from './_support/marketing-theme'
 
 test.describe('HomeCta section — T7 (DS-first)', () => {
 
@@ -58,11 +62,22 @@ test.describe('HomeCta section — T7 (DS-first)', () => {
 
     // ── 4. Read docs CTA (OrigamBtn) ───────────────────────────────────────
 
-    test('Read docs button renders and links to /docs', async ({ page }) => {
+    // ⛔ Cibles recalées sur `packages/marketing/src/consts/cta.const.ts`.
+    //
+    // Le produit a délibérément retargeté les deux CTA le 2026-06-17
+    // (`ddb07005b`, « nav 404-availability gating ») : `/docs` → `/components`
+    // et `/docs/getting-started` → `/installation`, c'est-à-dire vers deux
+    // vraies pages Nuxt au lieu de deux chemins du site statique VitePress. La
+    // spec n'a jamais suivi : elle est rouge depuis trois mois, et rien ne l'a
+    // dit — elle n'est exécutée par aucun job de CI (#824, #835).
+    //
+    // La cible d'un CTA est une décision produit : on continue de l'épingler,
+    // mais sur la valeur réellement servie, pas sur celle d'avant le retarget.
+    test('Read docs button renders and links to /components', async ({ page }) => {
         const btn = page.locator('[data-cy="cta-btn-docs"]')
         await expect(btn).toBeVisible()
         await expect(btn).toContainText('Read docs')
-        await expect(btn).toHaveAttribute('href', '/docs')
+        await expect(btn).toHaveAttribute('href', '/components')
     })
 
     test('Read docs button is keyboard-focusable', async ({ page }) => {
@@ -73,11 +88,11 @@ test.describe('HomeCta section — T7 (DS-first)', () => {
 
     // ── 5. Get started CTA (OrigamBtn) ────────────────────────────────────
 
-    test('Get started button renders and links to /docs/getting-started', async ({ page }) => {
+    test('Get started button renders and links to /installation', async ({ page }) => {
         const btn = page.locator('[data-cy="cta-btn-start"]')
         await expect(btn).toBeVisible()
         await expect(btn).toContainText('Get started')
-        await expect(btn).toHaveAttribute('href', '/docs/getting-started')
+        await expect(btn).toHaveAttribute('href', '/installation')
     })
 
     test('Get started button is keyboard-focusable', async ({ page }) => {
@@ -100,7 +115,15 @@ test.describe('HomeCta section — T7 (DS-first)', () => {
         expect(btns).toBe(2)
     })
 
+    // ⛔ Les tests « Sobre — … » DEMANDENT le thème sobre, ils ne l'héritent
+    // plus du défaut du site. Ils s'appuyaient sur le fait que `sobre` était le
+    // thème par défaut ; ce défaut a bougé deux fois (`sobre` → `origam` le
+    // 2026-06-27, puis `origam` → `geek` le 2026-09-17) et ces tests sont
+    // devenus rouges à chaque fois sans que leur objet ait changé. Voir
+    // `_support/marketing-theme.ts`.
     test('Sobre — le H2 CTA est à la taille display cta (64px)', async ({ page }) => {
+        await applyBrand(page, 'sobre')
+
         const title = page.locator('section.home-cta h2.home-cta__title')
         const styles = await title.evaluate(el => {
             const s = getComputedStyle(el)
@@ -113,6 +136,8 @@ test.describe('HomeCta section — T7 (DS-first)', () => {
     })
 
     test('Sobre — le H2 CTA est peint avec la couleur texte-ink', async ({ page }) => {
+        await applyBrand(page, 'sobre')
+
         const title = page.locator('section.home-cta h2.home-cta__title')
         const color = await title.evaluate(el => getComputedStyle(el).color)
         // sobre text---ink = #0A0A0A = rgb(10, 10, 10)

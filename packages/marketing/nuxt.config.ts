@@ -72,7 +72,22 @@ export default defineNuxtConfig({
     ],
 
     origam: {
-        defaultTheme: 'origam',
+        // ⛔ `geek` est l'apparence voulue du site — décision mainteneur,
+        // 2026-09-17 — et elle se déclare ICI, pas dans `app.head.htmlAttrs`.
+        //
+        // La différence n'est pas cosmétique. Ce champ est lu par
+        // `resolveServerTheme()` (`packages/ds/src/nuxt/plugin.server.ts`), qui
+        // résout `cookie ?? defaultTheme` : il ne s'applique donc QUE lorsque le
+        // visiteur n'a rien choisi. Un attribut dans `app.head.htmlAttrs` est au
+        // contraire réappliqué par unhead APRÈS l'hydratation, par-dessus le
+        // choix du visiteur — c'est ce qui cassait le sélecteur de thème du site
+        // entier depuis le 2026-06-12 (`958a1b6fa`), sur les deux axes.
+        //
+        // Les deux propriétés tiennent donc ensemble, et sont épinglées par
+        // `packages/tests/e2e/marketing-theme-honored.spec.ts` :
+        //   - sans préférence stockée, le site rend `geek` ;
+        //   - avec `cartoon` choisi, il rend `cartoon`, rechargement compris.
+        defaultTheme: 'geek',
         defaultMode: 'light',
         // Brand themes authored as clean IOrigamTheme objects (semantic vars,
         // light + dark). Component default props are inherited from the origam
@@ -160,10 +175,34 @@ export default defineNuxtConfig({
     app: {
         head: {
             titleTemplate: `%s · ${MARKETING_DEFAULTS.siteName}`,
+            // ⛔ NE JAMAIS remettre `data-theme` / `data-mode` ici.
+            //
+            // Ils y étaient en dur (`'geek'` / `'light'`) depuis le 2026-06-12
+            // (`958a1b6fa`), quand le site n'avait que deux thèmes de
+            // démonstration, et cassaient le theming du site entier depuis.
+            //
+            // ⚠️ `geek` RESTE l'apparence du site : elle est déclarée plus haut,
+            // en `origam.defaultTheme`, là où le DS la lit. La différence est que
+            // `defaultTheme` ne s'applique QU'EN L'ABSENCE de choix du visiteur,
+            // là où un attribut de `head` écrase ce choix à chaque rendu.
+            //
+            // Ce bloc est rendu par unhead, qui réécrit `<html>` APRÈS
+            // l'hydratation. Le serveur émettait le bon thème (le DS le pose
+            // par requête via `useHead` dans `plugin.server.ts`), puis unhead
+            // le remplaçait. Trace capturée en patchant `setAttribute` :
+            //
+            //   +1117 ms  data-theme="origam"   applyToDocument (DS)
+            //   +1296 ms  data-theme="origam"   applyToDocument (DS)
+            //   +1359 ms  data-theme="geek"     trackCtx → _renderDOMHead (unhead)
+            //
+            // Le dernier write gagne. Portée mesurée, 7 cas sur 7 : toutes les
+            // pages, et les DEUX axes — `cartoon`/`dark` choisis par cookie
+            // ressortaient en `geek`/`light`. Le sélecteur de thème du site ne
+            // survivait à aucun rechargement.
+            //
+            // Gardé par `packages/tests/e2e/marketing-theme-honored.spec.ts`.
             htmlAttrs: {
-                lang: MARKETING_DEFAULTS.defaultLocale,
-                'data-theme': 'geek',
-                'data-mode': 'light'
+                lang: MARKETING_DEFAULTS.defaultLocale
             },
             link: [
                 { rel: 'icon', type: 'image/svg+xml', href: MARKETING_DEFAULTS.logoPath },

@@ -68,7 +68,10 @@ test.describe('HomeHero — T1 (DS-first)', () => {
     test('sous-titre est visible avec la phrase attendue', async ({ page }) => {
         const subtitle = page.locator('#hero .home-hero__subtitle')
         await expect(subtitle).toBeVisible()
-        await expect(subtitle).toContainText('95 components')
+        // ⛔ `95 components` était un INVENTAIRE : `home.hero.subtitle` annonce
+        // `218 components` aujourd'hui. Le nombre bouge à chaque livraison ;
+        // la phrase, elle, est le contrat.
+        await expect(subtitle).toContainText(/\d+ components/)
         await expect(subtitle).toContainText('Vue 3')
     })
 

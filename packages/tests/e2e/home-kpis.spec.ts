@@ -20,10 +20,32 @@
 import { expect, test } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
+import { applyBrand } from './_support/marketing-theme'
+
 const BASE = '/'
 
-const EXPECTED_VALUES = ['95', '29', '100%', '<50kb', 'MIT']
+/**
+ * ⛔ Valeurs de CONTRAT uniquement — pas d'inventaire.
+ *
+ * `'95'` (composants) et `'29'` (primitives de graphes) figuraient ici. Ce
+ * sont deux INVENTAIRES : ils bougent à chaque livraison. Mesuré sur
+ * `packages/marketing/src/consts/kpis.const.ts`, ils valent aujourd'hui
+ * **218** et **26** — le second a même BAISSÉ, donc aucune borne « au moins N »
+ * ne tiendrait non plus. La spec était rouge sur ces deux tests, sans qu'aucun
+ * comportement n'ait changé, et le serait redevenue au prochain composant
+ * ajouté.
+ *
+ * Ce qui est garanti à la place, et qui ne périme pas : les deux KPI
+ * d'inventaire rendent bien un NOMBRE (test dédié plus bas). Les trois autres
+ * valeurs sont des engagements, pas des compteurs, et restent épinglées.
+ */
+const EXPECTED_VALUES = ['100%', '<50kb', 'MIT']
+
+/** Les libellés, eux, sont stables : ils nomment les KPI, ils ne les comptent pas. */
 const EXPECTED_LABELS = ['Components', 'Chart primitives', 'WCAG 2.1 AA', 'Tree-shakable', 'Open source']
+
+/** Les deux KPI dont la valeur est un compteur. */
+const INVENTORY_LABELS = ['Components', 'Chart primitives']
 
 test.describe('HomeKpis — T2', () => {
 
@@ -73,6 +95,33 @@ test.describe('HomeKpis — T2', () => {
         })
     }
 
+    for (const label of INVENTORY_LABELS) {
+        test(`le KPI "${label}" rend un nombre (inventaire, valeur non épinglée)`, async ({ page }) => {
+            // On apparie par ORDRE DU DOCUMENT (`dt` puis son `dd`), pas par
+            // index fixe : OrigamGrid peut interposer des wrappers, et l'ordre
+            // des KPI n'est pas un contrat.
+            //
+            // ⛔ Comparaison INSENSIBLE À LA CASSE : `.home-kpis__label` porte
+            // `text-transform: uppercase`, et `innerText` rend le texte TEL
+            // QU'IL EST PEINT — il renvoie donc « COMPONENTS ». Mesuré : la
+            // première version de ce test, en comparaison stricte, échouait
+            // sur les deux KPI. (`locator.filter({ hasText })`, utilisé par les
+            // tests de libellé plus haut, est insensible à la casse et masquait
+            // le piège.)
+            const value = await page.locator('#kpis').evaluate((root, wanted) => {
+                const needle = wanted.toLowerCase()
+                const cells = Array.from(root.querySelectorAll('dt, dd'))
+                const i = cells.findIndex(el => el.tagName === 'DT' && (el as HTMLElement).innerText.trim().toLowerCase().includes(needle))
+                if (i < 0) return null
+                const dd = cells.slice(i + 1).find(el => el.tagName === 'DD')
+                return dd ? (dd as HTMLElement).innerText.trim() : null
+            }, label)
+
+            expect(value, `aucun <dd> apparié au <dt> "${ label }"`).not.toBeNull()
+            expect(value!, `le KPI "${ label }" devrait rendre un nombre, obtenu "${ value }"`).toMatch(/\d/)
+        })
+    }
+
     test('règles haut/bas rendues par OrigamDivider (<hr>)', async ({ page }) => {
         const rules = page.locator('#kpis hr.origam-divider')
         await expect(rules).toHaveCount(2)
@@ -103,7 +152,11 @@ test.describe('HomeKpis — T2', () => {
         expect(styles.bgImage.toLowerCase()).toContain('gradient')
     })
 
+    // ⛔ Ce test DEMANDE le thème sobre — voir la note dans `home-cta.spec.ts`
+    // et `_support/marketing-theme.ts`.
     test('Sobre — le label KPI est uppercase + gris secondaire', async ({ page }) => {
+        await applyBrand(page, 'sobre')
+
         const label = page.locator('#kpis dt.home-kpis__label').first()
         const styles = await label.evaluate(el => {
             const s = getComputedStyle(el)

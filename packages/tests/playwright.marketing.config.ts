@@ -6,6 +6,8 @@ import { MARKETING_SPEC_PATTERNS } from './e2e/_support/marketing-specs.const'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = resolve(__dirname, '..', '..')
 
+const MARKETING_BASE_URL = process.env.MARKETING_BASE_URL ?? 'http://localhost:3000'
+
 /**
  * Specs verified green AND stable (5+ consecutive local runs, no flake) on
  * this config. CI runs ONLY these (`MARKETING_GREEN_ONLY=1`) — same pattern
@@ -17,6 +19,20 @@ const REPO_ROOT = resolve(__dirname, '..', '..')
 const MARKETING_GREEN_SPECS = [
     'nav-link-availability.spec.ts',
     'marketing-nav-ssr.spec.ts',
+
+    // #835 — garde le theming du site entier : le thème que le serveur rend
+    // doit encore être là après hydratation. Le défaut qu'elle a trouvé
+    // (`data-theme: 'geek'` en dur dans `app.head.htmlAttrs`, réécrit par
+    // unhead ~1,36 s après la navigation) cassait les DEUX axes, sur toutes
+    // les pages, pour tous les visiteurs, depuis le 2026-06-12 — et rien ne
+    // le disait, parce qu'aucun job de CI n'exécutait les specs marketing.
+    //
+    // Admise ici parce qu'elle tient le contrat de la liste, mesuré :
+    //   - contrôle positif : 4/4 ROUGE contre le produit non corrigé,
+    //     4/4 VERT après ;
+    //   - stabilité : 20 passed en `--repeat-each=5 --retries=0`, 1,2 min,
+    //     machine au repos, serveur de dev isolé sur un port à nous.
+    'marketing-theme-honored.spec.ts',
 
     // #761 — relève les requêtes réellement émises et échoue en nommant l'hôte
     // fautif dès qu'une page recontacte un tiers (un `<link>` vers un CDN, une
@@ -75,7 +91,7 @@ export default defineConfig({
     ],
 
     use: {
-        baseURL: process.env.MARKETING_BASE_URL ?? 'http://localhost:3000',
+        baseURL: MARKETING_BASE_URL,
         trace: 'on-first-retry',
         screenshot: 'only-on-failure',
         video: 'retain-on-failure'
@@ -91,7 +107,13 @@ export default defineConfig({
     webServer: {
         command: 'NUXT_IGNORE_LOCK=1 pnpm -F @origam/marketing dev',
         cwd: REPO_ROOT,
-        url: 'http://localhost:3000',
+        // ⛔ Must follow `baseURL`, never a hardcoded :3000. With
+        // `reuseExistingServer: true`, a probe on :3000 that finds ANOTHER
+        // worktree's dev server (there are ~55 of them) returns "reuse" while
+        // the specs hit `MARKETING_BASE_URL` — or worse, the specs hit :3000
+        // and measure a neighbour's build. Same trap as the :6006 Histoire
+        // one documented in CLAUDE.md. #836.
+        url: MARKETING_BASE_URL,
         reuseExistingServer: true,
         timeout: 120_000
     }
