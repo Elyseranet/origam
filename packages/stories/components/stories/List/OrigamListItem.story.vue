@@ -101,6 +101,53 @@
 			</template>
 		</Variant>
 
+		<!--
+			#571 — qui fait autorité sur la hauteur de ligne.
+
+			La ligne du HAUT est dans une `<origam-list>` : sans `density`
+			propre elle hérite de celle de la liste, avec `density` propre
+			elle l'emporte. La ligne du BAS n'a AUCUNE liste ancêtre — c'est
+			le cas qui, avant #571, rendait 56px quelle que soit la valeur
+			choisie, la classe `origam-list-item--density-*` n'étant lue par
+			aucune règle.
+
+			Les deux lignes partagent le même contrôle : les faire diverger
+			est le but du Variant.
+		-->
+		<Variant
+				title="Density"
+				:init-state="() => useStoryInitState<Partial<IListItemProps> & { listDensity?: TDensity }>({
+					density: 'compact',
+					listDensity: 'compact'
+				})"
+		>
+			<template #default="{ state }">
+				<origam-list :density="state.listDensity">
+					<origam-list-item
+							data-test="row-in-list"
+							:density="state.density"
+							title="Dans une liste"
+							:subtitle="`liste=${state.listDensity ?? '—'} · ligne=${state.density ?? '—'}`"
+					/>
+				</origam-list>
+
+				<origam-list-item
+						data-test="row-standalone"
+						:density="state.density"
+						title="Hors liste"
+						:subtitle="`ligne=${state.density ?? '—'}`"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Row">
+					<HstSelect v-model="state.density"     title="Item density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Parent list">
+					<HstSelect v-model="state.listDensity" title="List density" :options="DENSITY_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
 		<Variant
 				title="State"
 				:init-state="() => useStoryInitState<IHoverProps & IBgColorProps & { active?: boolean | object }>({ bgColor: 'primary' })"
@@ -323,7 +370,7 @@
 		IListItemProps,
 		IOptions,
 	} from '@origam/interfaces'
-	import type { TLines } from '@origam/types'
+	import type { TDensity, TLines } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'

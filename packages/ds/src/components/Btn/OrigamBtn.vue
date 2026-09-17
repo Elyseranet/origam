@@ -1260,7 +1260,7 @@
 		--origam-btn__prepend---margin-inline-start: calc(var(--origam-btn---height) / -9);
 		--origam-btn__prepend---margin-inline-end: calc(var(--origam-btn---height) / 4.5);
 
-		--origam-btn---min-width: calc(var(--origam-btn---width, 36px) + var(--origam-btn---density, 0));
-		--origam-btn---min-height: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0));
+		--origam-btn---min-width: calc(var(--origam-btn---width, 36px) + var(--origam-btn---density, 0px));
+		--origam-btn---min-height: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px));
 	}
 </style>

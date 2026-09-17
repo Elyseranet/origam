@@ -14,17 +14,26 @@
  *
  * ── TWO BLOCKS, ONE DECLARATION SET ────────────────────────────────────────
  * 1. `[data-theme="dark"]`            — the theme asked for EXPLICITLY.
- * 2. `@media (prefers-color-scheme: dark) { :root:not([data-theme]) }`
+ * 2. `@media (prefers-color-scheme: dark) {
+ *        :root:not([data-theme]):not([data-mode]) }`
  *                                     — AUTO mode: the OS preference, and
  *                                       only while the page has expressed no
- *                                       preference of its own.
+ *                                       preference of its own, ON EITHER AXIS.
  *
- * The `:not([data-theme])` guard is what makes auto mode safe. It gives the
- * rule specificity (0,2,0) — enough to outrank light.css's
- * `:root, [data-theme="light"]` (0,1,0) when nothing is pinned — while making
- * the selector fail to match at all as soon as a consumer writes
- * `data-theme="light"`. Drop the guard and the media query becomes a blanket
- * override that ignores an explicit light theme.
+ * ⛔ BOTH guards are load-bearing, and the second one is not optional.
+ * This DS is TWO-AXIS (see `useTheme`): `data-theme` carries the brand and
+ * `data-mode` carries light/dark. `applyModeToDocument()` ALWAYS writes a
+ * CONCRETE `data-mode`, and the Nuxt plugin OMITS `data-theme` when the
+ * brand resolves to `'auto'`. A page that pinned light therefore looks like
+ * `<html data-mode="light">` — no `data-theme` at all. With `:not([data-theme])`
+ * alone this media query MATCHES that page and repaints it dark against an
+ * explicit choice. Measured in Chromium before adding `:not([data-mode])`:
+ * OS dark + `data-mode="light"` → `rgb(10,10,10)` (the dark surface) instead
+ * of `rgb(255,255,255)`. The same shape is already used by `OrigamCode.vue`.
+ *
+ * Specificity: `:root:not([data-theme]):not([data-mode])` is (0,3,0) — enough
+ * to outrank light.css's `:root, [data-theme="light"]` (0,1,0) when nothing is
+ * pinned — while failing to match at all as soon as either axis is written.
  *
  * ⛔ The two blocks carry the SAME declarations, and this file is BYTE-IDENTICAL
  * to its twin — the whole file, header included. The pair is
@@ -113,7 +122,7 @@
   --origam-btn---border-style: solid;
   --origam-btn---border-color: currentColor;
   --origam-btn---position: relative;
-  --origam-btn---density: 0;
+  --origam-btn---density: 0px;
   --origam-btn---width: auto;
   --origam-btn---min-width: 64px;
   --origam-btn---max-width: 100%;
@@ -944,8 +953,8 @@
   --origam-field__input---padding-block-filled: 20px;
   --origam-field__input---padding-top: var(--origam-field__input---padding-block-md);
   --origam-field__input---padding-bottom: var(--origam-field__input---padding-block-md);
-  --origam-field__input---padding-start: 0;
-  --origam-field__input---padding-end: 0;
+  --origam-field__input---padding-start: 0px;
+  --origam-field__input---padding-end: 0px;
   --origam-field__input---opacity: 0.7;
   --origam-field__label---font-size: 0.75em;
   --origam-field__label---transition-duration: var(--origam-motion__duration---normal);
@@ -2770,7 +2779,7 @@
   --origam-tab-panels__panel--focus---outline-color: currentColor;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) {
+  :root:not([data-theme]):not([data-mode]) {
     --origam-color__surface---default: var(--origam-color__neutral---950);
     --origam-color__surface---raised: var(--origam-color__neutral---900);
     --origam-color__surface---overlay: var(--origam-color__neutral---800);
@@ -2846,7 +2855,7 @@
     --origam-btn---border-style: solid;
     --origam-btn---border-color: currentColor;
     --origam-btn---position: relative;
-    --origam-btn---density: 0;
+    --origam-btn---density: 0px;
     --origam-btn---width: auto;
     --origam-btn---min-width: 64px;
     --origam-btn---max-width: 100%;
@@ -3677,8 +3686,8 @@
     --origam-field__input---padding-block-filled: 20px;
     --origam-field__input---padding-top: var(--origam-field__input---padding-block-md);
     --origam-field__input---padding-bottom: var(--origam-field__input---padding-block-md);
-    --origam-field__input---padding-start: 0;
-    --origam-field__input---padding-end: 0;
+    --origam-field__input---padding-start: 0px;
+    --origam-field__input---padding-end: 0px;
     --origam-field__input---opacity: 0.7;
     --origam-field__label---font-size: 0.75em;
     --origam-field__label---transition-duration: var(--origam-motion__duration---normal);
