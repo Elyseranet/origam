@@ -108,6 +108,19 @@ const GREEN_SPECS = [
     // `XL (24)`), ce qui est une des raisons pour lesquelles le defaut a
     // survecu. Verifiee 2/2, chromium, port isole.
     'elevation-rungs.spec.ts',
+    // wave 10 — #824. Trouvee par le recensement du garde `spec-coverage` :
+    // hors liste blanche, donc jamais executee, donc ROUGE depuis deux jours
+    // sans que rien ne le dise. `#730` / PR #791 (`fd9c5cbca`) a corrige le
+    // libelle de l'echelon `thick` (3px -> 2px, la valeur reellement rendue) ;
+    // cette spec cliquait l'ancien libelle et ses 4 tests tombaient en
+    // `locator.click: Test timeout of 60000ms exceeded`. Libelle recale, la
+    // spec repasse 4/4 en 4,5 s (contre 4 minutes de timeouts).
+    //
+    // ⛔ C'est le second cas apres `rating-field-a11y` (#810) : un filet de
+    // regression mergé, jamais lance, et qui avait CESSE de retenir quoi que
+    // ce soit. Vérifiée 20/20, `--repeat-each=5`, `E2E_STATIC=1`, chromium,
+    // port isole.
+    'field-border-notch.spec.ts',
     // wave 11 — #812. Same reason as waves 8, 9 and 10, and the same component:
     // `rating-field-a11y.spec.ts` (#810) spent its whole life green in local
     // runs and never once executed in CI, because it was missing from this
