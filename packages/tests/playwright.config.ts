@@ -107,7 +107,20 @@ const GREEN_SPECS = [
     // les echelons `2xl`/`3xl` (`ELEVATION_OPTIONS` est numerique et s'arrete a
     // `XL (24)`), ce qui est une des raisons pour lesquelles le defaut a
     // survecu. Verifiee 2/2, chromium, port isole.
-    'elevation-rungs.spec.ts'
+    'elevation-rungs.spec.ts',
+    // wave 11 — #812. Same reason as waves 8, 9 and 10, and the same component:
+    // `rating-field-a11y.spec.ts` (#810) spent its whole life green in local
+    // runs and never once executed in CI, because it was missing from this
+    // list. The keyboard defect it documented as out of scope is the one this
+    // spec pins; leaving the spec out would let it come back in silence.
+    //
+    // ⛔ Was authored as "wave 10" and collided with #813's entry on rebase.
+    // Both stay: dropping either would make that one invisible to CI, which is
+    // exactly the defect #824 describes.
+    //
+    // Verified in this lot, `E2E_STATIC=1`, chromium, isolated port:
+    // `rating-field-keyboard` 14/14.
+    'rating-field-keyboard.spec.ts'
 ]
 
 /**
