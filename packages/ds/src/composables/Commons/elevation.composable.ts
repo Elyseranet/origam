@@ -70,6 +70,22 @@ function warnBgColorUsage (bgColor: TColor) {
  * jamais l'un a la place de l'autre (strategie A, cf. CLAUDE.md racine).
  *
  * @description
+ * ⛔ `2xl` et `3xl` SONT ACCEPTES ET NE PEIGNENT RIEN — #813.
+ * `ORIGAM_SHADOW_RUNGS` en declare huit, les feuilles de tokens n'en
+ * declarent que six : `--origam-shadow---2xl` et `---3xl` n'existent dans
+ * aucune feuille du DS. Et contrairement a `useRounded` — qui emet chaque
+ * echelon avec un repli dur (`var(--origam-radius---md, 8px)`) — on emet
+ * ici la reference nue. Un `var()` non resolu rend la declaration invalide
+ * AU COMPUTED-VALUE TIME : la propriete calcule `unset`, et `box-shadow`
+ * n'etant pas heritee, cela vaut `none`. La declaration gagne pourtant la
+ * cascade : elle ne cede donc pas la place a la regle scopee du composant,
+ * elle l'EFFACE. Mesure Chromium — regle du composant seule
+ * `rgba(0,0,0,.9) 0px 1px 2px 0px`, echelon `md` (token declare)
+ * `rgba(0,0,0,.3) 0px 4px 8px 0px`, echelon `2xl` (token absent) `none`.
+ * Le garde `token-var-channels` ne le voit pas : la reference est
+ * concatenee en TypeScript, pas ecrite dans une feuille.
+ *
+ * @description
  * `bgColor` est accepte pour compatibilite mais IGNORE (n'affecte plus
  * ni `elevationClasses` ni `elevationStyles`) — passer une valeur autre
  * que `ELEVATION_LEGACY_BG_COLOR` declenche un `console.warn` de
