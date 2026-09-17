@@ -578,6 +578,18 @@ declarations is what makes a direction mean the same thing everywhere
 instead of only on the two components that happen to declare per-side
 variables.
 
+⛔ LA FORME TABLEAU (`:border="['top', 'bottom']"`) N'EST QU'A MOITIE
+IMPLEMENTEE. Elle est portee par le type du parametre `Ref` et traversee
+par `borderClasses`, mais `borderStyles` ne la teste nulle part : ni
+`isUtilityBorder`, ni `isDirectionBorder`, ni `typeof === 'string'`, ni
+`typeof === 'number'` ne matchent un tableau. Mesure —
+`useBorder({border: ['top','bottom']})` rend
+`classes: ['{name}--border', '{name}--border-top,bottom']` et
+`styles: []` : la classe est interpolee depuis le tableau, donc porte la
+VIRGULE du `Array.prototype.toString`, et aucune feuille ne la declare.
+Aucune largeur n'est emise. Documente ici, non corrige : voir le lot de
+doc #600.
+
 WHEN #514 IS SETTLED, THIS INLINE PATH IS THE THING TO REMOVE. If the DS
 adopts `@layer` (measured in `packages/tests/e2e/btn-cascade-layer-probe.spec.ts`),
 the utility wins on its own and these `styles.push` calls become dead.
@@ -840,6 +852,16 @@ inline, jamais de classe utilitaire — c'est le composable de reference a
 `extends`-er (cf. CLAUDE.md racine) plutot que de parser `height`/`width`
 a la main dans un nouveau composant.
 
+⛔ La garde d'emission est `if (props[dimension])` — une garde de
+VERACITE, pas un test de presence. Toute valeur falsy est donc omise
+SILENCIEUSEMENT, y compris celles que `convertToUnit` sait pourtant
+traduire : mesure — `height={0}` n'emet RIEN (alors que
+`convertToUnit(0)` rend `"0px"`), et `height={NaN}` non plus. Pour une
+dimension nulle, passer la chaine `"0px"`. Symetriquement, `Infinity`
+est truthy et traverse la garde : `convertToUnit` rend `undefined` et la
+declaration emise est la chaine `"height: undefined"` — invalide, donc
+ignoree par le navigateur.
+
 **Source** : `packages/ds/src/composables/Commons/dimension.composable.ts`
 
 **Consommateurs** (68) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Btn/OrigamBtn.vue`, `components/Calendar/OrigamCalendar.vue`, …
@@ -902,7 +924,14 @@ jamais l'un a la place de l'autre (strategie A, cf. CLAUDE.md racine).
 `bgColor` est accepte pour compatibilite mais IGNORE (n'affecte plus
 ni `elevationClasses` ni `elevationStyles`) — passer une valeur autre
 que `ELEVATION_LEGACY_BG_COLOR` declenche un `console.warn` de
-depreciation une seule fois via `warnBgColorUsage`. La detection du
+depreciation. ⚠️ Cette banniere annoncait « une seule fois » : faux.
+Mesure — trois appels a `useElevation` avec un `bgColor` non defaut
+produisent TROIS avertissements. La deduplication de `warnBgColorUsage`
+est inerte : elle interroge un `WeakSet` avec un objet litteral
+reconstruit a chaque appel, donc `has()` rend toujours `false`. L'appel
+etant fait dans le corps de `useElevation` et non dans un `computed`,
+le plafond reste d'un avertissement par MONTAGE de composant, pas par
+rendu. La detection du
 `box-shadow` custom passe AVANT le `parseInt` de secours : sans cet
 ordre, `parseInt('0 4px 12px rgba(0,0,0,.24)', 10)` lirait `0` (chiffre
 de tete) et resoudrait silencieusement vers l'echelon `none`, perdant
@@ -1637,12 +1666,21 @@ export function usePosition (props: IPositionProps, name = getCurrentInstanceNam
 en classe `{name}--{position}`. `positionStyles` emet une declaration
 inline par cote present parmi `top`/`bottom`/`left`/`right`.
 
-⛔ Contrairement a `useDimension`, AUCUNE conversion via `convertToUnit`
-n'est appliquee sur `top`/`bottom`/`left`/`right` : bien que
-`IPositionProps` les type `number | string`, un nombre est interpole
-TEL QUEL (`"top: 8"`, pas `"top: 8px"`) — declaration CSS invalide.
-Passer une chaine unitee (`"8px"`) est le seul usage sur qui marche
-aujourd'hui.
+`top`/`bottom`/`left`/`right` passent par `convertToUnit`, comme les six
+props de `useDimension` : `top={8}` emet `top: 8px`, `top="8px"` reste
+verbatim. ⚠️ Cette banniere a longtemps annonce l'INVERSE (« AUCUNE
+conversion n'est appliquee ») — c'etait vrai jusqu'au correctif #557
+(`b357f7eba`), qui a change le code sans la mettre a jour.
+
+⛔ La garde d'emission est une garde de VERACITE (`if (props[layer])`),
+pas un test de presence : un cote a `0` est donc silencieusement omis.
+`top={0}` n'emet rien — mesure. Ecrire `top="0px"` pour un cote colle au
+bord. Meme forme que `useDimension`, meme consequence.
+
+`positionClasses` renvoie une CHAINE (ou `undefined`), pas un tableau —
+seul composable de l'axe dimension/espacement/forme dans ce cas ; tous
+ses voisins (`densityClasses`, `roundedClasses`, …) renvoient un
+`Array<string>`.
 
 **Source** : `packages/ds/src/composables/Commons/position.composable.ts`
 
@@ -1764,8 +1802,18 @@ the same corner). Mirrors `useBorder` / `usePadding` / `useMargin`:
   2. per-corner `roundedTopLeft` / `roundedTopRight` /
      `roundedBottomLeft` / `roundedBottomRight`
 
-So `roundedTopLeft="0"` beats `rounded="lg"` for the top-left corner
+So `roundedTopLeft="0px"` beats `rounded="lg"` for the top-left corner
 only; the other three keep the `lg` rung.
+
+⚠️ This example used to read `roundedTopLeft="0"`, and that form does
+NOT work — measured: `{rounded:'lg', roundedTopLeft:'0'}` emits the
+shorthand declaration ALONE. The bare string `"0"` is neither a utility
+rung, nor a named variant, nor a match for `CUSTOM_BORDER_RADIUS_REGEX`
+(which requires a unit), so `resolveRoundedCornerValue` returns `null`
+and the corner is silently skipped. `0` (the NUMBER) and `"0px"` both
+resolve to `0px`. In a template `roundedTopLeft="0"` is a string, which
+is exactly the failing form — bind `:rounded-top-left="0"` or write
+`"0px"`.
 
 ⚠️ The per-corner props are only reachable through the PROPS-OBJECT
 overload. The `Ref` overload carries a single scalar — the `rounded`
@@ -1952,6 +2000,19 @@ dont `size` implique aussi une echelle typographique (Btn, Chip). Un
 composant qui traite `size` comme une pure dimension de boite ne doit
 pas consommer `sizeClasses` dans son `:class` : `sizeStyles` reste seul
 autoritaire pour la geometrie.
+
+⛔ SURFACE ASYMETRIQUE — `sizeClasses` deballe un `Ref` (`isRef(props)
+? props.value : props.size`), `sizeStyles` lit `props.size` directement.
+La signature ne type que `ISizeProps`, donc passer un `Ref` est
+hors-contrat ; mais le premier canal l'accepte a moitie et le second
+l'ignore. Mesure : `useSize(ref(24))` rend `{classes: [], styles: []}`
+— inerte des deux cotes — quand `useSize({size: 24})` rend bien
+`["width: 24px", "height: 24px"]`. Passer l'objet de props.
+
+⚠️ Aucune validation de la valeur custom : `size="zzz"` ne figure pas
+dans `SIZES_ARRAY`, prend donc la branche inline et emet
+`width: zzz` / `height: zzz` — deux declarations invalides, sans
+avertissement. Meme absence de liste blanche que `useVariant`.
 
 **Source** : `packages/ds/src/composables/Commons/size.composable.ts`
 
@@ -2496,5 +2557,5 @@ une valeur de modele legitime.
 
 **Source** : `packages/ds/src/composables/Commons/vModel.composable.ts`
 
-**Consommateurs** (62) : `components/App/OrigamAppBar.vue`, `components/Calendar/OrigamCalendar.vue`, `components/Carousel/OrigamCarousel.vue`, `components/Checkbox/OrigamCheckbox.vue`, `components/Checkbox/OrigamCheckboxBtn.vue`, `components/Checkbox/OrigamCheckboxGroup.vue`, `components/ColorPicker/OrigamColorPicker.vue`, `components/ColorPicker/OrigamColorPickerPreview.vue`, …
+**Consommateurs** (64) : `components/App/OrigamAppBar.vue`, `components/Calendar/OrigamCalendar.vue`, `components/Carousel/OrigamCarousel.vue`, `components/Checkbox/OrigamCheckbox.vue`, `components/Checkbox/OrigamCheckboxBtn.vue`, `components/Checkbox/OrigamCheckboxGroup.vue`, `components/ColorPicker/OrigamColorPicker.vue`, `components/ColorPicker/OrigamColorPickerPreview.vue`, …
 
