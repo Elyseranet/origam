@@ -93,12 +93,30 @@ describe('the components that DO own a label still render exactly one', () => {
     it('RatingField keeps its own label after the interface move', async () => {
         // `IRatingFieldProps` gained an explicit `label?: string` with this
         // change — `IInputProps → IValidationProps` was its only source.
+        //
+        // ⚠️ #810 moved the ELEMENT, not the responsibility. RatingField no
+        // longer renders a `<label>`: a rating is a group of controls, so the
+        // text now names a `role="radiogroup"` through `aria-labelledby`
+        // instead of carrying a `for` that pointed at an id no element held
+        // (measured in Chromium — the `for` resolved to `null`). What this
+        // test is the regression net FOR — "the `label` prop still paints,
+        // exactly once, and is not swallowed by the forwarding chain" — is
+        // unchanged, so it is asserted here on the element that now carries it.
         const wrapper = mountWithLabel(OrigamRatingField)
         await nextTick()
         await nextTick()
 
-        const labels = wrapper.findAll('label').filter((l) => l.text().includes(PROBE))
+        expect(wrapper.findAll('label').filter((l) => l.text().includes(PROBE))).toHaveLength(0)
 
-        expect(labels).toHaveLength(1)
+        const painted = wrapper.findAll('.origam-label').filter((l) => l.text().includes(PROBE))
+
+        expect(painted).toHaveLength(1)
+        expect(painted[0].element.tagName).toBe('SPAN')
+
+        // …and the text is not merely rendered, it NAMES the group.
+        const labelledBy = wrapper.attributes('aria-labelledby')
+
+        expect(labelledBy).toBeTruthy()
+        expect(wrapper.find(`#${labelledBy}`).text()).toContain(PROBE)
     })
 })

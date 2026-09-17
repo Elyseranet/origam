@@ -3,8 +3,10 @@
 			:id="id"
 			ref="origamInputRef"
 			v-model="model"
+			:aria-labelledby="groupLabelledBy"
 			:class="ratingFieldClasses"
 			:style="ratingFieldStyles"
+			role="radiogroup"
 			v-bind="{...rootAttrs, ...inputProps}"
 	>
 		<template
@@ -19,12 +21,15 @@
 					name="default"
 					v-bind="{id,messagesId,isDisabled,isReadonly,isValid}"
 			>
-				<div class="origam-rating-field__label">
+				<div
+						:id="groupLabelId"
+						class="origam-rating-field__label"
+				>
 					<slot name="label">
 						<origam-label
-								:for="id"
 								:required="required"
 								:text="label"
+								tag="span"
 						/>
 					</slot>
 				</div>
@@ -355,6 +360,42 @@
 	 ********************************************************/
 	const {id, css, load, isLoaded, unload} = useStyle(ratingFieldStyles, () => props.id)
 
+	/*********************************************************
+	 * Group naming (#810)
+	 *
+	 * @description
+	 * This component used to render `<origam-label :for="id">`. That `for`
+	 * RESOLVED TO NOTHING — measured in Chromium against the built
+	 * Histoire, on the story's own "Default" variant and with no consumer
+	 * `id` at all: `for="origam-rating-field-v-2"`,
+	 * `document.getElementById(...)` → `null`. The id the Input exposes to
+	 * its `#default` slot lands on `…-messages`, never on an element the
+	 * `for` could reach.
+	 *
+	 * ⛔ Making `OrigamInput` honour that id would have been WORSE, not
+	 * better: the Input root is a `<div>`, which is not a labelable
+	 * element, so the `for` would have started "resolving" while a screen
+	 * reader still announced nothing. A detectable orphan would have become
+	 * an undetectable dead relation.
+	 *
+	 * So the label no longer labels a single control — it names the GROUP,
+	 * which is what a rating actually is (WAI-ARIA radiogroup pattern). The
+	 * `aria-labelledby` target is the WRAPPER `div`, not the `<origam-label>`
+	 * inside it, so a consumer overriding the `label` slot still gets a named
+	 * group. The `<origam-label>` renders as a `span`: a bare `<label>` with
+	 * no associated control would be exactly the dangling relation this
+	 * change removes.
+	 *
+	 * The name is only claimed when there IS one. Pointing `aria-labelledby`
+	 * at an empty wrapper would reproduce the defect in a new form, and
+	 * fabricating a fallback string is explicitly rejected in this DS
+	 * (#622 — a guessed name silences the audit tool and tells the user
+	 * nothing).
+	 ********************************************************/
+	const groupLabelId = computed(() => `${id.value}-label`)
+	const groupLabelledBy = computed(() => {
+		return (props.label || slots.label) ? groupLabelId.value : undefined
+	})
 
 	/*********************************************************
 	 * Expose
