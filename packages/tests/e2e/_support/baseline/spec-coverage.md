@@ -197,6 +197,35 @@ la mesure.
 
 ---
 
+## Pourquoi DEUX configs suffisent — vérifié, pas supposé
+
+Le garde n'interroge que deux configs. Si un troisième job de CI exécutait des
+specs de `e2e/`, le garde déclarerait « exécutée par AUCUN job » des specs qui
+tournent — un faux rouge, et surtout un recensement faux.
+
+`ci.yml` contient **cinq** invocations de Playwright. Leur `testDir` a été
+lu :
+
+| ligne | config | `testDir` | concerne `e2e/` ? |
+|---|---|---|---|
+| 379 | défaut (`E2E_GREEN_ONLY=1`) | `./e2e` | **oui** — modélisée |
+| 451 | `playwright.marketing.config.ts` (`MARKETING_GREEN_ONLY=1`) | `./e2e` | **oui** — modélisée |
+| 543 | `playwright.a11y.config.ts` | `./a11y` | non |
+| 610 | `playwright.a11y.marketing.config.ts` | `./a11y` | non |
+| 656 | `playwright.vrt.config.ts` | `./vrt` | non |
+
+Les deux seules configs pointant sur `./e2e` sont donc bien les deux
+modélisées.
+
+⚠️ **Et le mécanisme de liste blanche n'existe qu'ici** : `playwright.a11y`
+et `playwright.vrt` n'ont **aucune** variable `*_GREEN_ONLY` — seulement un
+`testIgnore` d'aires de brouillon. Les 3 specs de `a11y/` et `vrt/`
+tournent donc intégralement. Il n'y a pas de second angle mort du même type
+ailleurs dans le paquet : la question « depuis quand / où ailleurs »
+qu'ouvrait le ticket est close pour la classe de défaut décrite.
+
+---
+
 ## Angle mort connu, non levé
 
 `E2E_GREEN_ONLY` n'est posé que par la CI. Un agent qui lance la suite en
