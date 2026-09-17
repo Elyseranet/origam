@@ -489,7 +489,7 @@
         "icon": null,
         "description_key": null,
         "description_fallback": null,
-        "definition": "export enum BG_FG_ROLE {\n    DEFAULT = 'default',\n    HOVER = 'hover',\n    ACTIVE = 'active',\n    DISABLED = 'disabled'\n}",
+        "definition": "export enum BG_FG_ROLE {\n    DEFAULT = 'default',\n    HOVER = 'hover',\n    ACTIVE = 'active'\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -524,12 +524,6 @@
         {
           "value": "BG_FG_ROLE.ACTIVE",
           "position": 2,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "BG_FG_ROLE.DISABLED",
-          "position": 3,
           "description_key": null,
           "description_fallback": null
         }

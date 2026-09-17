@@ -149,6 +149,10 @@ describe('types derived from enums — new value sets', () => {
     })
 
     it('exposes the state-aware colour roles as an enum', () => {
-        expect(Object.values(BG_FG_ROLE)).toEqual(['default', 'hover', 'active', 'disabled'])
+        // #823 — `DISABLED` removed. Disabled is an opacity veil in this DS,
+        // never a token swap; the member was declared and never passed, and
+        // the 8 `feedback.*.{bg,fg}Disabled` tokens it would have emitted are
+        // declared by no sheet.
+        expect(Object.values(BG_FG_ROLE)).toEqual(['default', 'hover', 'active'])
     })
 })

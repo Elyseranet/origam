@@ -762,13 +762,16 @@ export function intentTokenBase (intent: TIntent): string {
  *   • `default`  → `var(--…-bg)`
  *   • `hover`    → `var(--…-bgHover, color-mix(in srgb, var(--…-bg), black 20%))`
  *   • `active`   → `var(--…-bgActive, color-mix(in srgb, var(--…-bg), black 30%))`
- *   • `disabled` → `var(--…-bgDisabled)`
+ *
+ * @description
+ * There is no `disabled` rung — disabled is an opacity veil, not a token
+ * swap. See `BG_FG_ROLE` (#823) for why emitting one would erase the
+ * surface rather than repaint it.
  ********************************************************/
 export function intentBgExpr (intent: TIntent, role: TBgFgRole): string {
     const base = intentTokenBase(intent)
     const baseVar = `var(--origam-color__${base}---bg)`
     if (role === 'default') return baseVar
-    if (role === 'disabled') return `var(--origam-color__${base}---bgDisabled)`
     const pct = role === 'hover' ? COLOR_HOVER_MIX_PCT : COLOR_ACTIVE_MIX_PCT
     const slot = role === 'hover' ? 'bgHover' : 'bgActive'
     return `var(--origam-color__${base}---${slot}, color-mix(in srgb, ${baseVar}, black ${pct}%))`
@@ -778,14 +781,14 @@ export function intentBgExpr (intent: TIntent, role: TBgFgRole): string {
  * intentFgExpr
  *
  * @description
- * Foreground stays the same hue across hover / active by design — we
- * darken the surface around the text, the text itself keeps the
- * WCAG-paired contrast token.
+ * Foreground stays the same hue across every role by design — we darken
+ * the surface around the text, the text itself keeps the WCAG-paired
+ * contrast token. `role` is therefore accepted for signature symmetry with
+ * `intentBgExpr` and does not branch (there is no `disabled` rung — #823).
  ********************************************************/
-export function intentFgExpr (intent: TIntent, role: TBgFgRole): string {
+export function intentFgExpr (intent: TIntent, _role: TBgFgRole): string {
     const base = intentTokenBase(intent)
-    const slot = role === 'disabled' ? 'fgDisabled' : 'fg'
-    return `var(--origam-color__${base}---${slot})`
+    return `var(--origam-color__${base}---fg)`
 }
 
 /*********************************************************
@@ -813,7 +816,6 @@ export function tokenStylesForIntent (intent: TIntent, role: TBgFgRole = BG_FG_R
  ********************************************************/
 export function rawBgExprWithState (raw: string, role: TBgFgRole): string {
     if (role === 'default') return raw
-    if (role === 'disabled') return raw // veil/opacity handles disabled
     const pct = role === 'hover' ? COLOR_HOVER_MIX_PCT : COLOR_ACTIVE_MIX_PCT
     return `color-mix(in srgb, ${raw}, black ${pct}%)`
 }

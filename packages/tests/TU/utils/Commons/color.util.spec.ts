@@ -48,6 +48,10 @@ import {
     warnUnsupportedProp,
 } from '@origam/utils/Commons/color.util'
 
+import { BG_FG_ROLE } from '@origam/enums/Commons/color.enum'
+import { INTENT } from '@origam/enums/Commons/intent.enum'
+import type { TBgFgRole } from '@origam/types/Commons/color.type'
+
 // ─── isCssColor ──────────────────────────────────────────────────────────────
 
 describe('isCssColor', () => {
@@ -604,9 +608,17 @@ describe('intentBgExpr', () => {
         expect(expr).toBe('var(--origam-color__action--primary---bg)')
     })
 
-    it('returns bgDisabled token for role=disabled', () => {
-        const expr = intentBgExpr('primary', 'disabled')
-        expect(expr).toBe('var(--origam-color__action--primary---bgDisabled)')
+    // #823 — `BG_FG_ROLE.DISABLED` was removed. No reachable role may emit a
+    // `bgDisabled` / `fgDisabled` reference: the four `feedback` intents
+    // declare neither slot in any sheet, and a `var()` that fails at
+    // computed-value time ERASES the surface instead of yielding it.
+    it('never emits a Disabled slot on any reachable role', () => {
+        for (const intent of Object.values(INTENT)) {
+            for (const role of Object.values(BG_FG_ROLE)) {
+                expect(intentBgExpr(intent, role)).not.toContain('Disabled')
+                expect(intentFgExpr(intent, role)).not.toContain('Disabled')
+            }
+        }
     })
 
     it('contains color-mix with 20% black for role=hover', () => {
@@ -636,9 +648,10 @@ describe('intentFgExpr', () => {
         expect(expr).not.toContain('fgDisabled')
     })
 
-    it('returns fgDisabled token for disabled role', () => {
-        const expr = intentFgExpr('primary', 'disabled')
-        expect(expr).toContain('---fgDisabled)')
+    it('keeps the SAME fg token across every reachable role', () => {
+        const at = (role: TBgFgRole) => intentFgExpr('primary', role)
+        expect(at('hover')).toBe(at('default'))
+        expect(at('active')).toBe(at('default'))
     })
 })
 
@@ -664,9 +677,6 @@ describe('rawBgExprWithState', () => {
         expect(rawBgExprWithState('#ff0000', 'default')).toBe('#ff0000')
     })
 
-    it('returns the raw color unchanged for role=disabled', () => {
-        expect(rawBgExprWithState('#ff0000', 'disabled')).toBe('#ff0000')
-    })
 
     it('wraps in color-mix with 20% for role=hover', () => {
         const expr = rawBgExprWithState('#ff0000', 'hover')
