@@ -10,7 +10,7 @@
 ## `useAudioPlayer`
 
 ```ts
-export function useAudioPlayer (options: IUseOrigamAudioPlayerOptions = {}): { audioRef: Ref<HTMLAudioElement | null> state: IAudioPlayerState methods: IAudioPlayerMethods }
+export function useAudioPlayer (options: IUseOrigamAudioPlayerOptions = {}): { audioRef: Ref<HTMLAudioElement | null>; state: IAudioPlayerState; methods: IAudioPlayerMethods }
 ```
 
 Headless audio player composable. Today this is a trivial wrapper
@@ -44,7 +44,7 @@ const { state, methods } = useAudioPlayer({ audioRef })
 ## `useWaveform`
 
 ```ts
-export function useWaveform ( srcRef: Ref<string | undefined | null>, options: IUseWaveformOptions = {} ): { peaks: Ref<Array<number>> isComputing: Ref<boolean> error: Ref<Error | null> compute: () => Promise<void> }
+export function useWaveform ( srcRef: Ref<string | undefined | null>, options: IUseWaveformOptions = {} ): { peaks: Ref<Array<number>>; isComputing: Ref<boolean>; error: Ref<Error | null>; compute: () => Promise<void> }
 ```
 
 Headless waveform composable. Decodes the audio referenced by

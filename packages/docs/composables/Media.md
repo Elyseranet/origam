@@ -26,7 +26,7 @@ has fired).
 ## `useMediaPlayer`
 
 ```ts
-export function useMediaPlayer (options: IUseMediaPlayerOptions = {}): { mediaRef: Ref<HTMLMediaElement | null> state: IMediaPlayerState methods: IMediaPlayerMethods }
+export function useMediaPlayer (options: IUseMediaPlayerOptions = {}): { mediaRef: Ref<HTMLMediaElement | null>; state: IMediaPlayerState; methods: IMediaPlayerMethods }
 ```
 
 Headless media-player composable. Owns the media-shared runtime

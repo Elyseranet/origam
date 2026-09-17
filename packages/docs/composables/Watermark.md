@@ -10,7 +10,7 @@
 ## `useWatermark`
 
 ```ts
-export function useWatermark ( options: MaybeRefOrGetter<IUseWatermarkOptions> = {} ): { patternUrl: ComputedRef<string> install: (target?: HTMLElement) => HTMLElement | null uninstall: () => void }
+export function useWatermark ( options: MaybeRefOrGetter<IUseWatermarkOptions> = {} ): { patternUrl: ComputedRef<string>; install: (target?: HTMLElement) => HTMLElement | null; uninstall: () => void }
 ```
 
 Headless watermark composable. Returns the data-URL pattern (for

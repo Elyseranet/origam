@@ -10,7 +10,7 @@
 ## `useVideoPlayer`
 
 ```ts
-export function useVideoPlayer (options: IUseVideoPlayerOptions = {}): { videoRef: Ref<HTMLVideoElement | null> state: IVideoPlayerState methods: IVideoPlayerMethods }
+export function useVideoPlayer (options: IUseVideoPlayerOptions = {}): { videoRef: Ref<HTMLVideoElement | null>; state: IVideoPlayerState; methods: IVideoPlayerMethods }
 ```
 
 Headless video player composable. Composes the media-shared

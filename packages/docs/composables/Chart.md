@@ -26,7 +26,7 @@ Returns `null` when required coordinates cannot be resolved
 ## `computePlotBandGeometry`
 
 ```ts
-export const computePlotBandGeometry = ( band: IChartPlotBand, scales: IChartScales, categories: Array<string>, plotX0: number, plotX1: number, plotY0: number, plotY1: number ): { x: number y: number width: number height: number fill: string opacity: number label: string | undefined labelX: number labelY: number labelColor: string } | null
+export const computePlotBandGeometry = ( band: IChartPlotBand, scales: IChartScales, categories: Array<string>, plotX0: number, plotX1: number, plotY0: number, plotY1: number ): { x: number; y: number; width: number; height: number; fill: string; opacity: number; label: string | undefined; labelX: number; labelY: number; labelColor: string } | null
 ```
 
 Compute geometry for a single plot band. Returns an object with
@@ -40,7 +40,7 @@ band falls entirely outside the plot.
 ## `computePlotLineGeometry`
 
 ```ts
-export const computePlotLineGeometry = ( line: IChartPlotLine, scales: IChartScales, categories: Array<string>, plotX0: number, plotX1: number, plotY0: number, plotY1: number ): { x1: number y1: number x2: number y2: number stroke: string strokeWidth: number strokeDasharray: string label: string | undefined labelX: number labelY: number labelAnchor: string } | null
+export const computePlotLineGeometry = ( line: IChartPlotLine, scales: IChartScales, categories: Array<string>, plotX0: number, plotX1: number, plotY0: number, plotY1: number ): { x1: number; y1: number; x2: number; y2: number; stroke: string; strokeWidth: number; strokeDasharray: string; label: string | undefined; labelX: number; labelY: number; labelAnchor: string } | null
 ```
 
 Compute geometry for a single plot line. Returns an object with

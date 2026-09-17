@@ -204,7 +204,7 @@ provider names returns after a Map lookup and one property lookup.
 ## `provideDefaults`
 
 ```ts
-export function provideDefaults ( defaults?: Ref<IDefault> | IDefault, options?: { scoped?: MaybeRefOrGetter<boolean | undefined> reset?: MaybeRefOrGetter<string | number | undefined> root?: MaybeRefOrGetter<string | number | undefined> disabled?: MaybeRefOrGetter<boolean | undefined> } )
+export function provideDefaults ( defaults?: Ref<IDefault> | IDefault, options?: { scoped?: MaybeRefOrGetter<boolean | undefined>; reset?: MaybeRefOrGetter<string | number | undefined>; root?: MaybeRefOrGetter<string | number | undefined>; disabled?: MaybeRefOrGetter<boolean | undefined> } )
 ```
 
 Cote fournisseur : declare une map de defauts pour le sous-arbre courant,
@@ -314,7 +314,7 @@ Pure — no Vue/DOM access — so it is called once, synchronously, at
 ## `useAccessibleCommand`
 
 ```ts
-export function useAccessibleCommand (options: { component: string zone: string prop: string active: Ref<boolean> | ComputedRef<boolean> label: () => string | undefined }): ComputedRef<Record<string, unknown>>
+export function useAccessibleCommand (options: { component: string; zone: string; prop: string; active: Ref<boolean> | ComputedRef<boolean>; label: () => string | undefined }): ComputedRef<Record<string, unknown>>
 ```
 
 ⛔ issues #747 / #653 / #660 — the ONE place the design system decides
@@ -1021,7 +1021,7 @@ les laisser en place.
 ## `useFilter`
 
 ```ts
-export function useFilter<T extends IInternalItem> ( props: IFiltersProps, items: MaybeRef<T[]>, query: Ref<string | undefined> | (() => string | undefined), options?: { transform?: (item: T) => Record<string, unknown> customKeyFilter?: MaybeRef<TFilterKeyFunctions | undefined> } )
+export function useFilter<T extends IInternalItem> ( props: IFiltersProps, items: MaybeRef<T[]>, query: Ref<string | undefined> | (() => string | undefined), options?: { transform?: (item: T) => Record<string, unknown>; customKeyFilter?: MaybeRef<TFilterKeyFunctions | undefined> } )
 ```
 
 Filtre reactivement `items` selon `query` (Ref ou getter) et les props de
@@ -1303,7 +1303,7 @@ level (no direct function dependency) — the three only share the
 ## `useLayoutItem`
 
 ```ts
-export function useLayoutItem (options: { id: string | undefined order: Ref<number> position: Ref<TDirectionBoth> layoutSize: Ref<number | string> elementSize: Ref<number | string | undefined> active: Ref<boolean> | ComputedRef<boolean> disableTransitions?: Ref<boolean> absolute: Ref<boolean | undefined> })
+export function useLayoutItem (options: { id: string | undefined; order: Ref<number>; position: Ref<TDirectionBoth>; layoutSize: Ref<number | string>; elementSize: Ref<number | string | undefined>; active: Ref<boolean> | ComputedRef<boolean>; disableTransitions?: Ref<boolean>; absolute: Ref<boolean | undefined> })
 ```
 
 Registers a component (BottomNav, AppBar, Drawer…) as an item of the
@@ -1359,7 +1359,7 @@ variant of it.
 ## `useLoader`
 
 ```ts
-export function useLoader ( props: ILoaderProps, defaultKind: TLoaderKind = LOADER_KIND.CIRCULAR, name = getCurrentInstanceName() ): { loaderClasses: ComputedRef<Record<string, boolean>> isLoading: ComputedRef<boolean> loaderConfig: ComputedRef<IResolvedLoader> }
+export function useLoader ( props: ILoaderProps, defaultKind: TLoaderKind = LOADER_KIND.CIRCULAR, name = getCurrentInstanceName() ): { loaderClasses: ComputedRef<Record<string, boolean>>; isLoading: ComputedRef<boolean>; loaderConfig: ComputedRef<IResolvedLoader> }
 ```
 
 Resout la prop polymorphe `loading` (`boolean | number | TLoaderConfig`)
@@ -2379,7 +2379,7 @@ relancer ses propres effets sans attendre un cycle `source` false→true.
 ## `useTouch`
 
 ```ts
-export function useTouch ({isActive, isTemporary, width, touchless, position}: { isActive: Ref<boolean> isTemporary: Ref<boolean> width: Ref<number> touchless: Ref<boolean> position: Ref<'left' | 'right' | 'top' | 'bottom'> })
+export function useTouch ({isActive, isTemporary, width, touchless, position}: { isActive: Ref<boolean>; isTemporary: Ref<boolean>; width: Ref<number>; touchless: Ref<boolean>; position: Ref<'left' | 'right' | 'top' | 'bottom'> })
 ```
 
 Geste tactile swipe-to-open/close pour un panneau ancre a un `position`
