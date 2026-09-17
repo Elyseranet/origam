@@ -933,7 +933,11 @@
 		}
 
 		:deep(.origam-field--appended) {
-			--origam-field---padding-end: 0;
+			// #800 — l'unite est obligatoire (`0` nu = `<number>`, jete toute
+			// declaration `max()` / `calc()` qui le lit). Sans effet de rendu ici
+			// (mesure Chromium) : `--padding-end` n'est pas un terme du plancher,
+			// il est passe tel quel comme seconde valeur de `padding-inline`.
+			--origam-field---padding-end: 0px;
 		}
 
 		&__control {
@@ -961,7 +965,9 @@
 			}
 
 			:deep(.origam-field--prepended) {
-				--origam-field---padding-start: 0;
+				// #800 — idem : l'unite est obligatoire. Sans effet de rendu, la
+				// cible etant `--prepended`, qui n'applique pas le plancher.
+				--origam-field---padding-start: 0px;
 			}
 		}
 

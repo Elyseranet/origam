@@ -482,7 +482,13 @@
 >
 	.origam-color-picker-field {
 		:deep(.origam-field) {
-			--origam-field---padding-start: 0;
+			// #800 — l'unite est obligatoire : sans elle, `0` est un `<number>`
+			// et tout `max()` / `calc()` qui lit ce token JETTE sa declaration.
+			// Sans effet de rendu ici (mesure Chromium, avant/apres identiques) :
+			// ce champ est TOUJOURS prepended — le `#prependInner` du swatch est
+			// inconditionnel — donc son `padding-inline` vient de la regle
+			// `.origam-field--prepended`, qui n'utilise pas de `max()`.
+			--origam-field---padding-start: 0px;
 		}
 
 		:deep(.origam-field__prepend-inner) {

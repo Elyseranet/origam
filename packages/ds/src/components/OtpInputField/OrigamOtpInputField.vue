@@ -654,8 +654,17 @@
 
 		.origam-field {
 			height: 100%;
-			--origam-field---padding-start: 0;
-			--origam-field---padding-end: 0;
+			// ⛔ #800 — une cellule OTP n'a ni etiquette ni texte aligne au bord :
+			// son chiffre est CENTRE. Le plancher de degagement des coins d'
+			// `OrigamField` n'y protege de rien et decentre le chiffre de 2px
+			// (mesure Chromium : `padding-inline` 4px / 0px). On le neutralise
+			// explicitement. Jusqu'a #800 le meme rendu etait obtenu par un `0`
+			// SANS UNITE qui rendait la declaration invalide — le bon rendu
+			// reposait donc sur une erreur de parse, et serait tombe au premier
+			// refactor du `max()`.
+			--origam-field---corner-clearance: 0px;
+			--origam-field---padding-start: 0px;
+			--origam-field---padding-end: 0px;
 		}
 
 		&__divider {

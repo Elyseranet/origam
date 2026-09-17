@@ -883,8 +883,23 @@
 		// Floor the inline padding at the effective radius (capped at the control
 		// height for pills). Prepended fields opt out below — their prepend icon
 		// already fills the corner.
+		//
+		// ⛔ LE PLANCHER EST UN CANAL, PAS UNE EXPRESSION FIGEE (#800).
+		// Un champ dont le contenu est CENTRE et sans etiquette (OtpInputField)
+		// n'a aucun risque de collision avec le coin : le plancher n'y a pas
+		// lieu d'etre, et l'appliquer decentre le chiffre. Ce cas s'exprimait
+		// jusqu'ici par un `--origam-field---padding-start: 0` SANS UNITE, qui
+		// melange `<number>` et `<length>` dans le `max()` et fait JETER la
+		// declaration entiere au computed-value time. Le rendu voulu etait donc
+		// obtenu par une erreur CSS — mesure Chromium : mettre l'unite donne
+		// `padding-inline-start: 4px` avec `padding-inline-end: 0px`, soit un
+		// chiffre decentre de 2px. Un consommateur qui veut vraiment zero met
+		// desormais `--origam-field---corner-clearance: 0px` : c'est explicite,
+		// ca survit a un refactor du `max()`, et ca ne repose sur rien d'invalide.
+		--origam-field---corner-clearance:
+			min(var(--origam-field---border-radius, 8px), var(--origam-input__control---height, 36px));
 		padding-inline:
-			max(var(--origam-field---padding-start), min(var(--origam-field---border-radius, 8px), var(--origam-input__control---height, 36px)))
+			max(var(--origam-field---padding-start), var(--origam-field---corner-clearance))
 			var(--origam-field---padding-end);
 		backdrop-filter: var(--origam-field---backdrop-filter, none);
 		-webkit-backdrop-filter: var(--origam-field---backdrop-filter, none);
@@ -1092,7 +1107,8 @@
 
 			#{$this}__outline {
 				&--start {
-					flex: 0 0 max(var(--origam-field---padding-start), min(var(--origam-field---border-radius, 8px), var(--origam-input__control---height, 36px)));
+					// Meme plancher que le padding, meme canal — cf. #800.
+					flex: 0 0 max(var(--origam-field---padding-start), var(--origam-field---corner-clearance));
 				}
 
 				&--end {

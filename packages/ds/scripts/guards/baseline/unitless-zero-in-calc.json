@@ -1,7 +1,1 @@
-[
-    "packages/ds/src/components/Field/OrigamField.vue::flex::--origam-field---padding-start",
-    "packages/ds/src/components/Field/OrigamField.vue::padding-inline::--origam-field---padding-start",
-    "packages/ds/src/components/TextareaField/OrigamTextareaField.vue::left::--origam-field---padding-start",
-    "packages/ds/src/components/TextareaField/OrigamTextareaField.vue::width::--origam-field---padding-end",
-    "packages/ds/src/components/TextareaField/OrigamTextareaField.vue::width::--origam-field---padding-start"
-]
+[]
