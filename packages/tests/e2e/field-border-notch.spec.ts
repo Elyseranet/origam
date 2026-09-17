@@ -50,8 +50,21 @@ const SELECT    = 'components-stories-select-origamselect-story-vue'
 const FIELD     = 'components-stories-field-origamfield-story-vue'
 const SWITCH    = 'components-stories-switch-origamswitch-story-vue'
 
-/** The `BORDER_OPTIONS` label for the 'thick' utility rung. */
-const BORDER_THICK = 'Width — thick (utility, 3px)'
+/**
+ * Le libelle `BORDER_OPTIONS` de l'echelon utilitaire `thick`.
+ *
+ * ⛔ IL DOIT CORRESPONDRE AU CARACTERE PRES a l'entree de
+ * `packages/stories/const/border.const.ts` : `selectHstOption` clique via
+ * `getByText(..., { exact: true })`.
+ *
+ * Cette constante disait `3px`. `#730` / PR #791 (`fd9c5cbca`, 2026-09-16) a
+ * corrige le libelle en `2px` — la valeur reellement rendue —, ce qui a rendu
+ * CETTE spec rouge le jour meme : les 4 tests echouaient en
+ * `locator.click: Test timeout of 60000ms exceeded`, l'option cliquee
+ * n'existant plus. Personne ne l'a su : la spec est hors `GREEN_SPECS`, donc
+ * AUCUN job de CI ne l'execute (#824). Elle est restee rouge et muette.
+ */
+const BORDER_THICK = 'Width — thick (utility, 2px)'
 
 const sandboxOf = (page: Page) => page.frameLocator('iframe[src*="__sandbox"]')
 
