@@ -85,7 +85,22 @@ const GREEN_SPECS = [
     // (`E2E_GREEN_ONLY=1`) et le defaut clavier qu'elle epingle repasserait
     // sans bruit, exactement comme il avait survecu a 35/35 verts sur
     // `tabs.spec.ts`. Verifiee 6/6 sur chromium, `E2E_STATIC=1`.
-    'inline-edit-keyboard-actions.spec.ts'
+    'inline-edit-keyboard-actions.spec.ts',
+    // wave 9 — #814, et la meme raison qu'en wave 8 : sans ces entrees les
+    // specs ne tournent PAS en CI (`E2E_GREEN_ONLY=1`), donc le filet de
+    // regression ne retient rien.
+    //
+    // ⛔ `rating-field-a11y.spec.ts` (#810) etait dans ce cas depuis son
+    // ajout : verte en local, jamais executee par la CI. Elle est ajoutee ici
+    // avec celle de #814 — les deux epinglent le meme patron de nommage de
+    // groupe, et la porte a11y ne les couvre ni l'une ni l'autre
+    // (`RatingField`, `CheckboxGroup` et `RadioGroup` sont tous les trois dans
+    // `UNSWEPT_STORIES`, soit 36 stories balayees sur 218).
+    //
+    // Verifiees dans ce lot, `E2E_STATIC=1`, chromium, port isole :
+    // `checkbox-radio-group-a11y` 8/8, `rating-field-a11y` 4/4.
+    'checkbox-radio-group-a11y.spec.ts',
+    'rating-field-a11y.spec.ts'
 ]
 
 /**

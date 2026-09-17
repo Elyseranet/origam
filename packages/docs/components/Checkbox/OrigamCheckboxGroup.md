@@ -39,7 +39,7 @@ mirrors `OrigamRadioGroup` deliberately, so the two are learned once.
 | `modelValue` | `unknown[]` | — | Selected values. An array, since several may be selected. |
 | `multiple` | `boolean` | `true` | Allow more than one selection. **This is the difference with RadioGroup.** |
 | `items` | `ICheckboxProps[]` | `[]` | The checkboxes to render. Each entry is spread onto its `<OrigamCheckbox>`. |
-| `label` | `string` | — | Group label, rendered through `<OrigamLabel>` and wired as `aria-labelledby`. |
+| `label` | `string` | — | Group label, rendered through `<OrigamLabel>` (as a `span`) and wired as `aria-labelledby` via a dedicated label wrapper. |
 | `required` | `boolean` | — | Forwarded to the label. |
 
 The group also accepts the full `IInputProps` surface (validation, messages,
@@ -87,6 +87,26 @@ matters more than it looks: `color` / `bgColor` are `TColor`, which includes
 concrete value `false` — there is no `undefined` left for a naive filter to
 catch. Forwarded unconditionally, they win the `mergeDeep` against a theme's
 `'origam-checkbox'` entry and erase it silently.
+
+## Group naming
+
+`aria-labelledby` points at a dedicated label wrapper (`{id}-label`,
+`display: contents`) — **not** at the `<OrigamLabel>` element, and **not**
+at the control group itself. It is emitted when `label` is set **or** the
+`#label` slot is filled, so overriding the slot keeps the group named.
+With neither, no `aria-labelledby` is emitted at all — this DS never
+fabricates a fallback name (#622).
+
+::: info #814
+Until 2.17.x the same id was carried by both the `<OrigamLabel>` and the
+control group. Measured in Chromium: `aria-labelledby` resolved to
+whichever came first in document order — the label — so the default
+rendering was already named correctly (`group "Notifications"`). But with
+`label` set **and** the `#label` slot overridden, the label element was
+gone and the only remaining carrier was the group itself, so the group
+named itself with its own options. With the slot overridden and no
+`label` prop, the group had no accessible name at all.
+:::
 
 ## Example — exclusive mode
 
