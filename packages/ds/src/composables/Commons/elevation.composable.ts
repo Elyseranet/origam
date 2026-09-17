@@ -73,7 +73,14 @@ function warnBgColorUsage (bgColor: TColor) {
  * `bgColor` est accepte pour compatibilite mais IGNORE (n'affecte plus
  * ni `elevationClasses` ni `elevationStyles`) — passer une valeur autre
  * que `ELEVATION_LEGACY_BG_COLOR` declenche un `console.warn` de
- * depreciation une seule fois via `warnBgColorUsage`. La detection du
+ * depreciation. ⚠️ Cette banniere annoncait « une seule fois » : faux.
+ * Mesure — trois appels a `useElevation` avec un `bgColor` non defaut
+ * produisent TROIS avertissements. La deduplication de `warnBgColorUsage`
+ * est inerte : elle interroge un `WeakSet` avec un objet litteral
+ * reconstruit a chaque appel, donc `has()` rend toujours `false`. L'appel
+ * etant fait dans le corps de `useElevation` et non dans un `computed`,
+ * le plafond reste d'un avertissement par MONTAGE de composant, pas par
+ * rendu. La detection du
  * `box-shadow` custom passe AVANT le `parseInt` de secours : sans cet
  * ordre, `parseInt('0 4px 12px rgba(0,0,0,.24)', 10)` lirait `0` (chiffre
  * de tete) et resoudrait silencieusement vers l'echelon `none`, perdant

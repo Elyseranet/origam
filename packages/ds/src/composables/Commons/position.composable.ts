@@ -13,12 +13,23 @@ import { computed } from 'vue'
  * inline par cote present parmi `top`/`bottom`/`left`/`right`.
  *
  * @description
- * ⛔ Contrairement a `useDimension`, AUCUNE conversion via `convertToUnit`
- * n'est appliquee sur `top`/`bottom`/`left`/`right` : bien que
- * `IPositionProps` les type `number | string`, un nombre est interpole
- * TEL QUEL (`"top: 8"`, pas `"top: 8px"`) — declaration CSS invalide.
- * Passer une chaine unitee (`"8px"`) est le seul usage sur qui marche
- * aujourd'hui.
+ * `top`/`bottom`/`left`/`right` passent par `convertToUnit`, comme les six
+ * props de `useDimension` : `top={8}` emet `top: 8px`, `top="8px"` reste
+ * verbatim. ⚠️ Cette banniere a longtemps annonce l'INVERSE (« AUCUNE
+ * conversion n'est appliquee ») — c'etait vrai jusqu'au correctif #557
+ * (`b357f7eba`), qui a change le code sans la mettre a jour.
+ *
+ * @description
+ * ⛔ La garde d'emission est une garde de VERACITE (`if (props[layer])`),
+ * pas un test de presence : un cote a `0` est donc silencieusement omis.
+ * `top={0}` n'emet rien — mesure. Ecrire `top="0px"` pour un cote colle au
+ * bord. Meme forme que `useDimension`, meme consequence.
+ *
+ * @description
+ * `positionClasses` renvoie une CHAINE (ou `undefined`), pas un tableau —
+ * seul composable de l'axe dimension/espacement/forme dans ce cas ; tous
+ * ses voisins (`densityClasses`, `roundedClasses`, …) renvoient un
+ * `Array<string>`.
  ********************************************************/
 export function usePosition (props: IPositionProps, name = getCurrentInstanceName()) {
     const positionClasses = computed(() => {
