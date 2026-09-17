@@ -26,6 +26,28 @@ Après cette PR : **62** gardées par `test-e2e` (`field-border-notch.spec.ts`
 promue, voir plus bas), **2** par `test-e2e-marketing`, **177** enregistrées
 dans la baseline.
 
+### Remesuré après rebase sur `develop` @ `3e48e873` (#825 / ticket #813)
+
+⚠️ Un recensement est une photographie de l'arbre : il périme à chaque merge.
+Celui-ci a été **entièrement rejoué** après le rebase, pas extrapolé.
+
+| | avant rebase | après rebase |
+|---|---|---|
+| specs sur le disque | 241 | **242** |
+| `test-e2e` (`E2E_GREEN_ONLY=1`) | 62 | **63** |
+| `test-e2e-marketing` | 2 | **2** |
+| **exécutées par AUCUN job** | 177 | **177** |
+
+#825 a ajouté `elevation-rungs.spec.ts` **et l'a inscrite dans
+`GREEN_SPECS`** : le disque et le sous-ensemble gardé montent tous deux de 1,
+et le nombre de specs orphelines **ne bouge pas**. C'est exactement le
+comportement que #824 cherche à rendre normal — une spec neuve arrive avec sa
+décision, au lieu de tomber en silence dans les 177.
+
+Le taux reste **177 / 242, soit 73 %**. Le classement par date est inchangé
+(**102** antérieures / **75** postérieures), `elevation-rungs.spec.ts` étant
+gardée et donc hors baseline.
+
 ⚠️ **Les deux specs de #810 / #814 sont bien dans `GREEN_SPECS`** —
 vérifié, pas supposé : `rating-field-a11y.spec.ts` et
 `checkbox-radio-group-a11y.spec.ts` apparaissent toutes deux dans la sortie
@@ -151,19 +173,22 @@ décision peut être la bonne — elle doit être écrite dans la PR.
 ⛔ Sans ce témoin, un garde qui ne détecterait rien afficherait exactement le
 même vert. Mesuré, exit codes capturés hors pipe :
 
+Rejoué **intégralement après le rebase** sur `develop` @ `3e48e873` — un
+témoin qui a fermé sur l'arbre précédent ne prouve rien sur celui-ci :
+
 | état du dépôt | verdict | exit |
 |---|---|---|
-| tel quel | `PASS — 177 known, 0 new` · 241 / 62 / 2 | **0** |
+| tel quel | `PASS — 177 known, 0 new` · 242 / 63 / 2 | **0** |
 | + `zz-…-positive-control.spec.ts` **à plat**, hors liste blanche | `FAIL — 1 NEW` · nomme le fichier | **1** |
-| la même spec **ajoutée à `GREEN_SPECS`** (fichier conservé) | `PASS` · 242 / **63** / 2 | **0** |
+| la même spec **ajoutée à `GREEN_SPECS`** (fichier conservé) | `PASS` · 243 / **64** / 2 | **0** |
 | + `ac76ctl/nested.spec.ts` **dans un sous-répertoire** | `FAIL — 1 NEW` · `ac76ctl/nested.spec.ts` | **1** |
-| témoins retirés | `PASS` · 241 / 62 / 2 | **0** |
+| témoins retirés | `PASS` · 242 / 63 / 2 | **0** |
 
 La troisième ligne est celle qui discrimine : elle prouve que le garde réagit
 à la **liste blanche**, et pas simplement à « un fichier est apparu ». Un
 garde qui ne ferait que compter les fichiers neufs serait rouge là aussi.
 
-**Non-vacuité** : le balayage lit 241 fichiers et 62 + 2 gardées à chaque
+**Non-vacuité** : le balayage lit 242 fichiers et 63 + 2 gardées à chaque
 passage. Un balayage vide est bloquant par construction (`blindnessCheck`,
 3 fixtures) — le piège du garde livré dans ce dépôt qui annonçait `PASS`
 après avoir lu zéro fichier ne peut pas se reproduire ici.
