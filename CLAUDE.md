@@ -1090,7 +1090,9 @@ origam:
 - `pnpm -F origam guards` must stay at **27/27** (measured 2026-09-17, this
   worktree, real exit code; it read `25/25` an hour earlier and `17/17` before
   that — recount, never quote).
-- `pnpm -F origam guards:self` must stay at **13/13**. It runs the guards' own
+- `pnpm -F origam guards:self` must stay at **14/14** (measured 2026-09-17, this
+  worktree, real exit code hors pipe ; ce fichier lisait `13/13` — recount,
+  never quote). It runs the guards' own
   detectors, discovered from `scripts/guards/lib/*.selftest.mjs`. A guard whose
   extractor has regressed goes QUIET, and a silent detector and a clean repo
   produce the same green — so a green `guards` means nothing without this. Both

@@ -13,16 +13,21 @@
 					v-bind="{id, messagesId, isDisabled, isReadonly, isValid}"
 			>
 
-				<slot
-						name="label"
-						v-bind="{label, required}"
+				<div
+						:id="groupLabelId"
+						class="origam-radio-group__label"
 				>
-					<origam-label
-							:id="id"
-							:required="required"
-							:text="label"
-					/>
-				</slot>
+					<slot
+							name="label"
+							v-bind="{label, required}"
+					>
+						<origam-label
+								:required="required"
+								:text="label"
+								tag="span"
+						/>
+					</slot>
+				</div>
 
 				<origam-defaults-provider :defaults="radioDefaults">
 					<origam-selection-control-group
@@ -30,7 +35,7 @@
 							ref="origamSelectionControlGroupRef"
 							v-model="model"
 							:aria-describedby="messagesId"
-							:aria-labelledby="label ? id : undefined"
+							:aria-labelledby="groupLabelledBy"
 							:disabled="isDisabled"
 							:items="items"
 							:multiple="false"
@@ -94,7 +99,7 @@
 		density: DENSITY.DEFAULT
 	})
 
-	defineSlots<IRadioGroupSlots>()
+	const slots = defineSlots<IRadioGroupSlots>()
 
 	defineEmits<IRadioGroupEmits>()
 
@@ -127,6 +132,51 @@
 	 ********************************************************/
 
 	const model = useVModel(props, 'modelValue')
+
+	/*********************************************************
+	 * Nommage du groupe (#814)
+	 *
+	 * @description
+	 * ⛔ Ce composant posait `:id="id"` A LA FOIS sur l'`<origam-label>` et
+	 * sur l'`<origam-selection-control-group>`, et pointait
+	 * `aria-labelledby` sur cet id partage. Mesure (Chromium, Histoire
+	 * construit, variante « Default ») : DEUX porteurs pour
+	 * `radio-group-v-2` — `<label class="origam-label">` et
+	 * `<div role="group">` — donc un id duplique, invalide en HTML.
+	 *
+	 * @description
+	 * ⚠️ La racine, elle, ne portait PAS cet id : `<origam-input>` pose
+	 * `:id="styleId"` sur sa racine et n'expose l'id du consommateur qu'a
+	 * son slot `#default` (#790). Le releve d'origine en annoncait trois,
+	 * il y en avait deux — mesure, pas lecture.
+	 *
+	 * @description
+	 * ⛔ L'AUTO-REFERENCE est reelle, mais seulement quand la prop `label`
+	 * est posee ET le slot `#label` surcharge : l'`<origam-label>` ne rend
+	 * plus rien, le seul porteur restant de l'id est le groupe lui-meme, et
+	 * `aria-labelledby` resout alors vers `<div class="origam-selection-
+	 * control-group">` — mesure `AUTO-REFERENCE : true` sur les deux
+	 * composants. Aucune variante de story ne couvrait ce cas. Dans le rendu
+	 * par defaut l'id resolvait vers le `<label>` (premier dans l'ordre du
+	 * document) et le nom calcule etait correct.
+	 *
+	 * @description
+	 * Patron repris de #810 (`OrigamRatingField`) : la cible d'
+	 * `aria-labelledby` est un WRAPPER dedie, pas l'element de libelle, pour
+	 * qu'un slot `label` surcharge garde un groupe nomme. Le wrapper est en
+	 * `display: contents` — il doit porter un id sans introduire de boite,
+	 * sinon les enfants du slot cessent d'etre les elements flex de
+	 * `.origam-input__control` et la mise en page bouge.
+	 *
+	 * @description
+	 * ⛔ Pas de libelle -> pas d'`aria-labelledby` du tout. Viser un wrapper
+	 * vide reproduirait le defaut sous une autre forme, et ce DS ne fabrique
+	 * pas de nom de repli (#622).
+	 ********************************************************/
+	const groupLabelId = computed(() => `${id.value}-label`)
+	const groupLabelledBy = computed(() => {
+		return (props.label || slots.label) ? groupLabelId.value : undefined
+	})
 
 	/*********************************************************
 	 * Forwarded props
@@ -208,3 +258,20 @@
 		styleId
 	})
 </script>
+
+<style
+		lang="scss"
+		scoped
+>
+	/*
+	 * Le wrapper n'existe que pour porter l'id cible d'`aria-labelledby`
+	 * (#814). `display: contents` le retire de l'arbre des boites : les
+	 * enfants du slot `label` restent les elements flex directs de
+	 * `.origam-input__control`, donc la mise en page est inchangee — mesure
+	 * avant/apres identique au pixel sur les variantes « Default » et
+	 * « Slots - Label ».
+	 */
+	.origam-radio-group__label {
+		display: contents;
+	}
+</style>
