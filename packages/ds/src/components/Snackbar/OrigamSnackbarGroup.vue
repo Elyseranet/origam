@@ -217,7 +217,25 @@
   // keeps screen-reader announcements addressable from outside.
   const resolvedDomId = computed(() => `origam-snackbar-group-${props.id}`)
 
-  const { id: styleId, css, load, isLoaded, unload } = useStyle(stackStyles)
+  /*********************************************************
+   * styleId — cible la racine reellement rendue
+   *
+   * @description
+   * ⛔ Ici `props.id` n'est PAS un id DOM : c'est la cle logique de la pile
+   * de snackbars (`useSnackbarGroup({ id })`), partagee par tous les appels
+   * qui poussent dans la meme file. D'ou `resolvedDomId`, qui la prefixe
+   * pour en faire un id DOM valide et non colisionnant. Le sweep #790 lit
+   * toute prop `id` comme un id DOM et classe donc ce composant « perdu » :
+   * c'est un FAUX POSITIF de l'instrument, pas un defaut de transmission.
+   *
+   * @description
+   * Le defaut REEL que #790 a mis au jour ici est ailleurs, et il est muet :
+   * `useStyle` etait appele sans son second argument, donc il injectait
+   * `#origam-snackbar-group-<uid> { … }` alors que la racine porte
+   * `resolvedDomId`. Aucun noeud ne matchait — un style MORT. Lui passer la
+   * cible reelle suffit ; le rendu, lui, ne change pas d'un caractere.
+   ********************************************************/
+  const { id: styleId, css, load, isLoaded, unload } = useStyle(stackStyles, () => resolvedDomId.value)
 
   /*********************************************************
    * Expose
