@@ -850,7 +850,7 @@ paragraph claimed it did. That is the reason guard 27 (`token-twins`) exists.
 ⚠️ Still NOT covered by the static sheets: `data-mode="dark"` **alone**, with
 no `data-theme`, paints nothing. `[data-mode="…"]` rules are emitted only by
 the runtime theme matrix (`apply-theme.util.ts`, injected by `createOrigam()`);
-`origam/styles` contains zero occurrence of `data-mode`. Tracked separately.
+`origam/styles` contains zero occurrence of `data-mode`. Tracked as **#807**.
 
 Runtime helpers:
 - `useTheme()` (composable) — singleton ref + persistence + toggle.

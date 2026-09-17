@@ -223,8 +223,8 @@ test.describe('#794 — `origam/styles` honours prefers-color-scheme', () => {
     // nothing: `[data-mode="…"]` rules are emitted only by the runtime theme
     // matrix (`apply-theme.util.ts`, injected by `createOrigam()`), and the
     // static `origam/styles` bundle contains ZERO occurrence of `data-mode`.
-    // Pre-existing, unchanged by #794 (`develop` measures the same), reported
-    // separately. This assertion exists so that fixing it is a DELIBERATE act
+    // Pre-existing, unchanged by #794 (`develop` measures the same) — tracked
+    // as #807. This assertion exists so that fixing it is a DELIBERATE act
     // that turns this test red, not a silent drift.
     test('PINNED GAP — data-mode="dark" alone paints light (the static sheet has no data-mode rule)', async ({ browser }) => {
         const css = readFileSync(shipped.path, 'utf8')
