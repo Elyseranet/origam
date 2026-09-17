@@ -21,7 +21,24 @@
 
 import { describe, expect, it } from 'vitest'
 
-import { signatureAt } from '../../../ds/scripts/analysis/lib/signature.mjs'
+import { restoreMemberSeparators, signatureAt } from '../../../ds/scripts/analysis/lib/signature.mjs'
+
+/**
+ * L'implementation d'AVANT #802, rejouee a l'envers.
+ *
+ * ⛔ Le correctif de #802 tient en UN appel : `restoreMemberSeparators`,
+ * insere juste avant l'ecrasement des blancs. Retirer les `;` de la sortie
+ * actuelle reproduit donc exactement l'ancienne — et c'est exact, pas
+ * approximatif : le lecteur de signature S'ARRETE sur un `;` de profondeur 0
+ * (fin de surcharge), donc aucun `;` ne peut survivre dans une signature
+ * autrement que comme separateur de membre a l'interieur d'un type objet.
+ *
+ * ⚠️ Un auteur qui ecrit ses separateurs a la main produit la meme sortie
+ * AVANT et APRES le correctif : ce cas-la n'a jamais ete fautif, et il est
+ * teste comme temoin negatif plus bas, sans assertion d'A/B.
+ */
+const preSeparatorsSignatureAt = (source: string, index: number, kind: string): string =>
+    signatureAt(source, index, kind).replace(/;\s+/g, ' ')
 
 /**
  * L'implementation d'AVANT #605, conservee comme fixture.
@@ -58,6 +75,13 @@ const readLegacy = (source: string): string => {
     return legacySignatureAt(source, m.index)
 }
 
+const readPreSeparators = (source: string): string => {
+    const m = /^export (function|const) ([A-Za-z0-9_]+)/m.exec(source)
+    if (!m) throw new Error('fixture sans declaration exportee')
+
+    return preSeparatorsSignatureAt(source, m.index, m[1])
+}
+
 describe('signatureAt — les trois motifs qui tronquaient (#605)', () => {
     it('1. parametre destructure : le `{` du motif n\'est pas le corps', () => {
         // packages/ds/src/composables/Commons/sticky.composable.ts
@@ -88,10 +112,15 @@ describe('signatureAt — les trois motifs qui tronquaient (#605)', () => {
             '}'
         ].join('\n')
 
+        // ⛔ #802 — cette attente encodait la sortie APLATIE
+        // (`…<string, boolean>> isLoading: …`). Elle etait verte, et elle
+        // decrivait une signature qui ne compile pas : #605 avait rendu la
+        // lecture complete, la RECONSTRUCTION perdait encore les separateurs.
+        // Les `;` sont l'objet du correctif, pas un detail de formatage.
         expect(read(source)).toBe(
             'export function useLoader ( props: ILoaderProps, defaultKind: TLoaderKind = LOADER_KIND.CIRCULAR,'
-            + ' name = getCurrentInstanceName() ): { loaderClasses: ComputedRef<Record<string, boolean>>'
-            + ' isLoading: ComputedRef<boolean> loaderConfig: ComputedRef<IResolvedLoader> }'
+            + ' name = getCurrentInstanceName() ): { loaderClasses: ComputedRef<Record<string, boolean>>;'
+            + ' isLoading: ComputedRef<boolean>; loaderConfig: ComputedRef<IResolvedLoader> }'
         )
         // L'ancienne perdait tout le type de retour, et finissait sur un `:` nu.
         expect(readLegacy(source)).toBe(
@@ -291,6 +320,146 @@ describe('signatureAt — formes que le parseur doit aussi tenir', () => {
         // se retrouver recopie au milieu du bloc ```ts de la page.
         expect(sig).not.toContain('Flat flag')
         expect(sig).not.toContain('/**')
+    })
+})
+
+describe('signatureAt — le retour a la ligne EST un separateur de membre (#802)', () => {
+    // ⛔ L'ETAPE D'APRES #605. La lecture va desormais jusqu'au bout — c'est
+    // acquis — mais la derniere ligne de `signatureAt` ecrase tous les blancs
+    // en une espace, et TypeScript accepte le retour a la ligne comme
+    // separateur de membres dans un type objet. La page publiait donc
+    // `{ component: string zone: string … }` : signature COMPLETE, et qui ne
+    // compile pas si on la recopie. Rien ne la signale comme fausse — meme
+    // famille de doc mensongere que #605, un cran plus loin.
+    //
+    // Mesure : 20 signatures publiees sur 180 etaient dans ce cas, sur 8
+    // domaines (Audio, Chart, Commons, DataTable, Media, QrCode, Video,
+    // Watermark), et non le seul `useAccessibleCommand` que nommait le ticket.
+
+    it('useAccessibleCommand : le type objet en parametre garde ses separateurs', () => {
+        // packages/ds/src/composables/Commons/accessibleCommand.composable.ts
+        const source = [
+            'export function useAccessibleCommand (options: {',
+            '    component: string',
+            '    zone: string',
+            '    prop: string',
+            '    active: Ref<boolean> | ComputedRef<boolean>',
+            '    label: () => string | undefined',
+            '}): ComputedRef<Record<string, unknown>> {',
+            '    const locale = useLocale(false)',
+            '}'
+        ].join('\n')
+
+        expect(read(source)).toBe(
+            'export function useAccessibleCommand (options: { component: string; zone: string; prop: string;'
+            + ' active: Ref<boolean> | ComputedRef<boolean>; label: () => string | undefined }):'
+            + ' ComputedRef<Record<string, unknown>>'
+        )
+        // L'implementation d'avant #802 rendait la meme chose, aplatie.
+        expect(readPreSeparators(source)).toBe(
+            'export function useAccessibleCommand (options: { component: string zone: string prop: string'
+            + ' active: Ref<boolean> | ComputedRef<boolean> label: () => string | undefined }):'
+            + ' ComputedRef<Record<string, unknown>>'
+        )
+    })
+
+    it('une union ecrite sur plusieurs lignes n\'est PAS coupee', () => {
+        // ⛔ Le piege symetrique. Un `|` en tete de ligne CONTINUE le membre
+        // precedent : y inserer un `;` casserait une signature qui etait juste.
+        const source = [
+            'export function useKind (o: {',
+            '    kind:',
+            '        | \'circular\'',
+            '        | \'linear\'',
+            '    size: number',
+            '}) {',
+            '}'
+        ].join('\n')
+
+        expect(read(source)).toBe('export function useKind (o: { kind: | \'circular\' | \'linear\'; size: number })')
+    })
+
+    it('un type fonction multi-lignes n\'est PAS coupe sur sa fleche', () => {
+        const source = [
+            'export function useCb (o: {',
+            '    run: (n: number)',
+            '        => void',
+            '    done: boolean',
+            '}) {',
+            '}'
+        ].join('\n')
+
+        expect(read(source)).toBe('export function useCb (o: { run: (n: number) => void; done: boolean })')
+    })
+
+    it('un membre optionnel et un generique imbrique gardent leur separateur', () => {
+        // packages/ds/src/composables/DataTable/headers.composable.ts
+        const source = [
+            'export function createHeaders (',
+            '    props: IDataTableHeaderProps,',
+            '    options?: {',
+            '        groupBy?: Ref<Array<IDataTableSortItem>> | undefined',
+            '        showSelect?: Ref<boolean>',
+            '        showExpand?: Ref<boolean>',
+            '    }',
+            ') {',
+            '}'
+        ].join('\n')
+
+        expect(read(source)).toBe(
+            'export function createHeaders ( props: IDataTableHeaderProps, options?: {'
+            + ' groupBy?: Ref<Array<IDataTableSortItem>> | undefined; showSelect?: Ref<boolean>;'
+            + ' showExpand?: Ref<boolean> } )'
+        )
+        expect(readPreSeparators(source)).toContain('| undefined showSelect?')
+    })
+
+    it('restoreMemberSeparators : ce qui separe, et ce qui continue', () => {
+        // Le coeur du correctif, teste seul — les cas ci-dessus l'exercent a
+        // travers toute la chaine, celui-ci fixe sa regle.
+        // ⚠️ Le retour a la ligne qui precede le `}` fermant ne separe RIEN :
+        // il n'y a pas de membre apres. Le dernier membre reste donc sans `;`,
+        // ce qui est du TypeScript valide — et ce qui evite d'ajouter du bruit
+        // la ou il n'apporte aucune information.
+        const separates: Array<[string, string]> = [
+            [ '{\na: string\nb: string\n}', '{\na: string;\nb: string\n}' ],
+            [ '{\nf: () => void\ng: number\n}', '{\nf: () => void;\ng: number\n}' ],
+            [ '{\na?: Ref<number>\nb: string\n}', '{\na?: Ref<number>;\nb: string\n}' ]
+        ]
+        for (const [ input, expected ] of separates) expect(restoreMemberSeparators(input)).toBe(expected)
+
+        const continues: Array<string> = [
+            // union / intersection en tete de ligne
+            '{\nkind:\n| \'a\'\n| \'b\'\n}',
+            // fleche en tete de ligne
+            '{\nrun: (n: number)\n=> void\n}',
+            // contrainte de generique
+            '{\na: Map<K\nextends string, V>\n}',
+            // separateur deja ecrit par l\'auteur
+            '{\na: string;\nb: string;\n}',
+            // accolade fermante : rien a separer apres le dernier membre
+            '{\na: string\n}'
+        ]
+        for (const input of continues) {
+            const out = restoreMemberSeparators(input)
+            // Aucun `;` AJOUTE : la sortie ne peut porter que ceux deja presents.
+            expect((out.match(/;/g) ?? []).length).toBe((input.match(/;/g) ?? []).length)
+        }
+    })
+
+    it('un retour a la ligne dans un GABARIT ne separe rien', () => {
+        // ⛔ Le generique de `useVModel` porte un gabarit ; une chaine n'est
+        // pas un bloc de membres, et y injecter un `;` corromprait le type.
+        const source = [
+            'export function useVModel<Props extends object, Prop extends Extract<keyof Props, string>, Inner = Props[Prop]> (',
+            '    props: Props,',
+            '    prop: Prop,',
+            '    defaultValue?: Inner',
+            ') {',
+            '}'
+        ].join('\n')
+
+        expect(read(source)).not.toContain(';')
     })
 })
 

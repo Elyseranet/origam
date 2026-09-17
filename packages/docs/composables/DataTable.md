@@ -26,7 +26,7 @@ does not depend on any of the three.
 ## `createHeaders`
 
 ```ts
-export function createHeaders ( props: IDataTableHeaderProps, options?: { groupBy?: Ref<Array<IDataTableSortItem>> | undefined showSelect?: Ref<boolean> showExpand?: Ref<boolean> } )
+export function createHeaders ( props: IDataTableHeaderProps, options?: { groupBy?: Ref<Array<IDataTableSortItem>> | undefined; showSelect?: Ref<boolean>; showExpand?: Ref<boolean> } )
 ```
 
 Normalises the raw `headers` prop (or infers columns from the first
@@ -115,7 +115,7 @@ tree.
 ## `providePagination`
 
 ```ts
-export function providePagination (options: { page: Ref<number> itemsPerPage: Ref<number> itemsLength: Ref<number> }): IDataTableProvidePagination
+export function providePagination (options: { page: Ref<number>; itemsPerPage: Ref<number>; itemsLength: Ref<number> }): IDataTableProvidePagination
 ```
 
 Provider-side hook: derives `startIndex` / `stopIndex` / `pageCount`
@@ -158,7 +158,7 @@ objet plutot qu'une cle primitive.
 ## `provideSort`
 
 ```ts
-export function provideSort (options: { sortBy: Ref<Array<IDataTableSortItem>> mustSort: Ref<boolean> multiSort: Ref<boolean> page?: Ref<number> }): IDataTableProvideSort
+export function provideSort (options: { sortBy: Ref<Array<IDataTableSortItem>>; mustSort: Ref<boolean>; multiSort: Ref<boolean>; page?: Ref<number> }): IDataTableProvideSort
 ```
 
 Provider-side hook: wires `toggleSort` / `isSorted` on top of the
@@ -294,7 +294,7 @@ same domain folder.
 ## `useOptions`
 
 ```ts
-export function useOptions ({ page, itemsPerPage, sortBy, groupBy, search }: { page: Ref<number> itemsPerPage: Ref<number> sortBy: Ref<Array<IDataTableSortItem>> groupBy: Ref<Array<IDataTableSortItem>> search: Ref<string | undefined> })
+export function useOptions ({ page, itemsPerPage, sortBy, groupBy, search }: { page: Ref<number>; itemsPerPage: Ref<number>; sortBy: Ref<Array<IDataTableSortItem>>; groupBy: Ref<Array<IDataTableSortItem>>; search: Ref<string | undefined> })
 ```
 
 Regroupe pagination, tri, groupement et recherche en un seul objet
@@ -318,7 +318,7 @@ d'un jeu de resultats qui n'en a peut-etre qu'une.
 ## `usePaginatedItems`
 
 ```ts
-export function usePaginatedItems<T> (options: { items: Ref<readonly (T | IDataTableGroup<T>)[]> startIndex: Ref<number> stopIndex: Ref<number> itemsPerPage: Ref<number> })
+export function usePaginatedItems<T> (options: { items: Ref<readonly (T | IDataTableGroup<T>)[]>; startIndex: Ref<number>; stopIndex: Ref<number>; itemsPerPage: Ref<number> })
 ```
 
 Pure item-slicing hook: slices a plain items array to the current
@@ -380,7 +380,7 @@ plain items array and never touches this injection.
 ## `useSortedItems`
 
 ```ts
-export function useSortedItems<T extends IInternalItem> ( props: { customKeySort: TDataTableCompareFunction | undefined }, items: Ref<T[]>, sortBy: Ref<Array<IDataTableSortItem>>, options?: { transform?: (item: T) => Record<string, unknown> sortFunctions?: Ref<Record<string, TDataTableCompareFunction> | undefined> sortRawFunctions?: Ref<Record<string, TDataTableCompareFunction> | undefined> } )
+export function useSortedItems<T extends IInternalItem> ( props: { customKeySort: TDataTableCompareFunction | undefined }, items: Ref<T[]>, sortBy: Ref<Array<IDataTableSortItem>>, options?: { transform?: (item: T) => Record<string, unknown>; sortFunctions?: Ref<Record<string, TDataTableCompareFunction> | undefined>; sortRawFunctions?: Ref<Record<string, TDataTableCompareFunction> | undefined> } )
 ```
 
 Pure item-sorting hook: applies `sortBy` (+ optional custom compare

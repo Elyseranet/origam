@@ -23,7 +23,7 @@ unit-test suite and not advertised publicly.
 ## `useQrCode`
 
 ```ts
-export function useQrCode ( value: MaybeRefOrGetter<string>, options: MaybeRefOrGetter<IUseQrCodeOptions> = {} ): { svg: ComputedRef<string> modules: ComputedRef<boolean[][]> size: ComputedRef<number> }
+export function useQrCode ( value: MaybeRefOrGetter<string>, options: MaybeRefOrGetter<IUseQrCodeOptions> = {} ): { svg: ComputedRef<string>; modules: ComputedRef<boolean[][]>; size: ComputedRef<number> }
 ```
 
 Headless QR-code composable. Encodes `value` through

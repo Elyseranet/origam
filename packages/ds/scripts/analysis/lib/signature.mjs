@@ -35,6 +35,94 @@
  */
 export const isTypePosition = (prev, prev2) => prev === '' || ':|&=,(<['.includes(prev) || (prev2 === '=' && prev === '>')
 
+/** Un caractere qui peut TERMINER un membre de type. */
+const MEMBER_END = /[A-Za-z0-9_$)\]}>'"`?]/
+/** Un caractere qui, en tete de ligne, CONTINUE le membre precedent. */
+const CONTINUES_MEMBER = new Set([ '}', ')', ']', ',', ';', ':', '|', '&', '?', '=', '>', '.', '<' ])
+/** Mots-cles qui, en tete de ligne, continuent eux aussi le membre precedent. */
+const CONTINUATION_WORDS = /^(extends|implements|in|keyof|infer|is|asserts)\b/
+
+/*********************************************************
+ * restoreMemberSeparators — le retour a la ligne EST un separateur
+ *
+ * @description
+ * ⛔ #802 — TypeScript accepte le retour a la ligne comme separateur de
+ * membres dans un type objet, exactement comme `;` ou `,` :
+ *
+ *     export function useAccessibleCommand (options: {
+ *         component: string
+ *         zone: string
+ *         …
+ *     })
+ *
+ * La derniere etape de `signatureAt` ecrase tous les blancs en une espace
+ * (`.replace(/\s+/g, ' ')`), ce qui est correct PARTOUT AILLEURS — et qui
+ * detruit ici l'unique separateur present. La page publiait
+ * `{ component: string zone: string … }` : une signature COMPLETE (le defaut
+ * de #605 est bien corrige) mais qui ne compile pas si on la recopie, et que
+ * rien ne signale comme fausse. Meme famille de doc mensongere que #605, une
+ * etape plus loin : la lecture va jusqu'au bout, c'est la RECONSTRUCTION qui
+ * perd l'information.
+ *
+ * @description
+ * On repasse donc sur le texte AVANT ecrasement, et on materialise en `;`
+ * tout retour a la ligne qui separe reellement deux membres — c'est-a-dire
+ * qui n'est ni une continuation (`|`, `&`, `extends`, `=>`, un `}` fermant…)
+ * ni precede d'un separateur deja ecrit. Les chaines et gabarits sont sautes :
+ * le generique de `useVModel` contient `` `onUpdate:${Prop}` ``, dont un
+ * retour a la ligne ne separerait aucun membre.
+ *
+ * @param raw  la signature lue, blancs d'origine encore presents
+ * @returns la meme, separateurs de membres materialises
+ ********************************************************/
+export const restoreMemberSeparators = (raw) => {
+    let out = ''
+    let curly = 0
+    let i = 0
+
+    while (i < raw.length) {
+        const c = raw[i]
+
+        // Chaines et gabarits : recopies tels quels, jamais interpretes.
+        if (c === '"' || c === "'" || c === '`') {
+            const quote = c
+            let j = i + 1
+            while (j < raw.length && raw[j] !== quote) {
+                if (raw[j] === '\\') j++
+                j++
+            }
+            out += raw.slice(i, Math.min(j + 1, raw.length))
+            i = j + 1
+            continue
+        }
+
+        if (c === '{') curly++
+        else if (c === '}') curly--
+
+        if (c !== '\n' || curly <= 0) {
+            out += c
+            i++
+            continue
+        }
+
+        // Un retour a la ligne DANS un bloc d'accolades : separateur ou pas ?
+        let k = i
+        while (k < raw.length && /\s/.test(raw[k])) k++
+        const after = raw.slice(k)
+        const before = out.replace(/\s+$/, '').slice(-1)
+
+        const separates = MEMBER_END.test(before)
+            && !CONTINUES_MEMBER.has(after[0])
+            && !CONTINUATION_WORDS.test(after)
+            && !after.startsWith('=>')
+
+        out += separates ? ';\n' : '\n'
+        i++
+    }
+
+    return out
+}
+
 /**
  * La signature, telle qu'elle est ecrite — jamais reconstruite.
  *
@@ -153,7 +241,10 @@ export const signatureAt = (source, index, kind) => {
 
     parts.push(source.slice(segStart, i))
 
-    return parts.join(' ')
+    // ⛔ #802 — les separateurs de membres sont materialises AVANT l'ecrasement
+    // des blancs, sans quoi le retour a la ligne qui separe deux membres d'un
+    // type objet disparait et la signature devient `{ a: string b: string }`.
+    return restoreMemberSeparators(parts.join(' '))
         .replace(/\s+/g, ' ')
         // Une virgule restee orpheline apres le retrait d'un commentaire.
         .replace(/,\s*\)/g, ' )')
