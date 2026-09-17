@@ -36,6 +36,8 @@ The pattern used by all six consumers, verbatim from `OrigamMenu.vue`:
 <script setup lang="ts">
 import { useScopeId } from 'origam/composables'
 
+const props = defineProps<{ overlayProps?: Record<string, unknown> }>()
+
 const { scopeId } = useScopeId()
 </script>
 

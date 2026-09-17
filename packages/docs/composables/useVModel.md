@@ -76,11 +76,15 @@ legitimate model value), and the seed is taken on first read, through the
 The same applies to the third argument: pass a **getter**.
 
 ```ts
+import { useVModel } from 'origam/composables'
+
+const props = defineProps<{ page?: number, defaultPage?: number }>()
+
 // ❌ evaluated during the host's setup() — frozen before the theme lands
-const page = useVModel(props, 'page', props.defaultPage)
+const eager = useVModel(props, 'page', props.defaultPage)
 
 // ✅ resolved by toValue() inside seed(), at first read
-const page = useVModel(props, 'page', () => props.defaultPage)
+const lazy = useVModel(props, 'page', () => props.defaultPage)
 ```
 
 Measured before this changed: a theme setting `modelValue` on Alert or
@@ -115,7 +119,11 @@ change in the rendered markup.
 With transforms — the external prop is a string, the internal value a number:
 
 ```ts
-const count = useVModel(
+import { useVModel } from 'origam/composables'
+
+const props = defineProps<{ value?: string }>()
+
+const count = useVModel<{ value?: string }, 'value', number>(
     props,
     'value',
     () => '0',

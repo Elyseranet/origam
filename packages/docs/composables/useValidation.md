@@ -208,9 +208,14 @@ tested on length.
 ```vue
 <script setup lang="ts">
     import { useMessage, useValidation } from 'origam/composables'
-    import type { IMessageProps, IValidationProps } from 'origam/interfaces'
+    import type { IValidationProps } from 'origam/interfaces'
 
-    const props = defineProps<IMessageProps & IValidationProps>()
+    // IMessageProps is NOT re-exported by `origam/interfaces` — add the two
+    // members you need, or import the file directly inside the library.
+    const props = defineProps<IValidationProps & {
+        messages?: Array<string>
+        hint?: string
+    }>()
 
     const { errorMessages } = useValidation(props)
     const { hasMessages, messages } = useMessage(props, errorMessages)

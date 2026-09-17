@@ -24,6 +24,8 @@ A real call site, copied verbatim from `OrigamChartGauge.vue`:
 ```ts
 import { useUnsupportedProp } from 'origam/composables'
 
+const props = defineProps<{ showLegend?: boolean }>()
+
 useUnsupportedProp(
     'OrigamChartGauge',
     'showLegend',

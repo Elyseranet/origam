@@ -103,6 +103,10 @@ source: `set()` → `isOn === true`; `toggle(false)` → `isOn` is **still `true
 Driving `active` off another prop:
 
 ```ts
+import { useStateFlag } from 'origam/composables'
+
+const props = defineProps<{ modelValue?: boolean, activeClass?: string }>()
+
 const { isOn: isActive, toggle } = useStateFlag(props, {
     state: 'active',
     source: 'modelValue',

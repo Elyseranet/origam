@@ -127,3 +127,6 @@ packages/ds/CHANGELOG.md
 
 # Fichiers d environnement — jamais suivis (cf. politique globale)
 .env
+
+# Dossier temporaire du type-check des exemples de doc (scripts/analysis/check-doc-examples.mjs)
+packages/ds/.doc-examples
