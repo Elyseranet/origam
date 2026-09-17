@@ -65,6 +65,10 @@ test.describe('#823 render probe', () => {
                 }
                 return out.slice(0, 120)
             })
+            // ⛔ An EMPTY capture is a cold-compile artefact, not a product
+            // fact. Left unguarded it silently turns "nothing changed" into
+            // "I measured nothing" — the two are indistinguishable in a diff.
+            expect(painted.length, `empty capture for ${id}#${v}`).toBeGreaterThan(0)
             record[`${id}#${v}`] = painted
 
             const buf = await page.screenshot({ fullPage: true })
