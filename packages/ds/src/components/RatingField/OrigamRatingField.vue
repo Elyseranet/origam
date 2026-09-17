@@ -4,6 +4,7 @@
 			ref="origamInputRef"
 			v-model="model"
 			:aria-labelledby="groupLabelledBy"
+			:aria-readonly="readonly || undefined"
 			:class="ratingFieldClasses"
 			:style="ratingFieldStyles"
 			role="radiogroup"
@@ -177,8 +178,15 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 
+	import {
+		RATING_FIELD_ENABLED_RADIO_SELECTOR,
+		RATING_FIELD_MUTATING_KEYS,
+		RATING_FIELD_ROOT_SELECTOR
+	} from '../../consts/RatingField/rating-field.const'
+
 	import { BLOCK } from '../../enums/Commons/anchor.enum'
 	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { SIZES } from '../../enums/Commons/size.enum'
 	import { VARIANT } from '../../enums/Commons/variant.enum'
@@ -262,6 +270,65 @@
 
 	const hoverIndex = shallowRef(-1)
 
+	/*********************************************************
+	 * Keyboard (#812)
+	 *
+	 * @description
+	 * What the PLATFORM already does for a radio group sharing one `name`,
+	 * measured in Chromium on a bare `<input type="radio">` group:
+	 *
+	 *   Tab                    one stop for the whole group, entering on the
+	 *                          checked radio (or the first when none is)
+	 *   Arrow{Right,Down}      focus AND selection to the next, wrapping
+	 *   Arrow{Left,Up}         focus AND selection to the previous, wrapping
+	 *   Space                  checks the focused radio when it is not already
+	 *   Home / End / Enter     NOTHING — plain no-ops
+	 *
+	 * The first four lines are the WAI-ARIA roving-tabindex behaviour, written
+	 * by the browser. They were unreachable only because every radio carried
+	 * `tabindex="-1"`; dropping it is the whole navigation fix. So this handler
+	 * implements strictly the remainder:
+	 *
+	 *   - `Home` / `End`, which the pattern asks for and the platform omits;
+	 *   - cancelling the native default while `readonly`, so the group stays
+	 *     REACHABLE and announced instead of being dropped out of the tab
+	 *     order (arrows are cancelable — verified: with `preventDefault()`,
+	 *     focus and `:checked` both stayed put).
+	 *
+	 * `Enter` is left as the no-op it natively is. The radiogroup pattern
+	 * assigns it no role, and claiming it here would break form submission for
+	 * a consumer who put the field in a `<form>`.
+	 *
+	 * `focus()` then `click()`, in that order and both needed: a scripted
+	 * `.click()` fires `change` but does NOT move focus (measured), and a bare
+	 * `focus()` on a radio changes no selection.
+	 ********************************************************/
+	const handleKeydown = (e: KeyboardEvent) => {
+		if (props.disabled || props.readonly) {
+			if (RATING_FIELD_MUTATING_KEYS.includes(e.key)) e.preventDefault()
+
+			return
+		}
+
+		if (e.key !== KEYBOARD_VALUES.HOME && e.key !== KEYBOARD_VALUES.END) return
+
+		const group = (e.target as Element | null)?.closest(RATING_FIELD_ROOT_SELECTOR)
+
+		if (!group) return
+
+		const radios = Array.from(group.querySelectorAll<HTMLInputElement>(RATING_FIELD_ENABLED_RADIO_SELECTOR))
+
+		if (!radios.length) return
+
+		e.preventDefault()
+
+		const target = e.key === KEYBOARD_VALUES.HOME ? radios[0] : radios[radios.length - 1]
+
+		target.focus()
+
+		if (!target.checked) target.click()
+	}
+
 	const itemState = computed(() => {
 		return increments.value.map((value) => {
 			const isFilled = normalizedValue.value >= value
@@ -287,10 +354,32 @@
 				model.value = normalizedValue.value === value && props.clearable ? 0 : value
 			}
 
+			/*********************************************************
+			 * onChange — the keyboard's ONLY signal
+			 *
+			 * @description
+			 * `onClick` above is wired to the star `<div>`; the browser's radio
+			 * navigation never goes through it. Arrows and `Space` fire `click`
+			 * + `change` on the `<input>` that just became checked, and nothing
+			 * was listening — the DOM moved, the model did not.
+			 *
+			 * @description
+			 * ⛔ No `clearable` toggle here, deliberately: a `change` only fires
+			 * when the checked radio ACTUALLY changes, so "re-select the current
+			 * value to clear it" has no keyboard equivalent to hook. The clear
+			 * affordance stays the `__clear` button.
+			 ********************************************************/
+			const onChange = () => {
+				if (props.disabled || props.readonly) return
+				model.value = value
+			}
+
 			return {
 				onMouseenter: props.hover ? onMouseenter : undefined,
 				onMouseleave: props.hover ? onMouseleave : undefined,
-				onClick
+				onClick,
+				onChange,
+				onKeydown: handleKeydown
 			}
 		})
 	})

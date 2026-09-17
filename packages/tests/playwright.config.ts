@@ -120,7 +120,20 @@ const GREEN_SPECS = [
     // regression mergé, jamais lance, et qui avait CESSE de retenir quoi que
     // ce soit. Vérifiée 20/20, `--repeat-each=5`, `E2E_STATIC=1`, chromium,
     // port isole.
-    'field-border-notch.spec.ts'
+    'field-border-notch.spec.ts',
+    // wave 11 — #812. Same reason as waves 8, 9 and 10, and the same component:
+    // `rating-field-a11y.spec.ts` (#810) spent its whole life green in local
+    // runs and never once executed in CI, because it was missing from this
+    // list. The keyboard defect it documented as out of scope is the one this
+    // spec pins; leaving the spec out would let it come back in silence.
+    //
+    // ⛔ Was authored as "wave 10" and collided with #813's entry on rebase.
+    // Both stay: dropping either would make that one invisible to CI, which is
+    // exactly the defect #824 describes.
+    //
+    // Verified in this lot, `E2E_STATIC=1`, chromium, isolated port:
+    // `rating-field-keyboard` 18/18.
+    'rating-field-keyboard.spec.ts'
 ]
 
 /**

@@ -41,7 +41,7 @@ building a custom rating widget; otherwise use `<OrigamRatingField>`.
 |---|---|---|---|
 | `fullIcon` | `TIcon` | `MDI_ICONS.STAR` | Glyph when the item counts as filled. |
 | `emptyIcon` | `TIcon` | `MDI_ICONS.STAR_OUTLINE` | Glyph otherwise. |
-| `showStar` | `boolean` | `true` | When `false`, the star (and the `item` slot) is not rendered — only the hidden input and label text remain. |
+| `showStar` | `boolean` | `true` | When `false`, the item renders **nothing at all** — no star, no `item` slot, and since #812 no `<label>` and no `<input type="radio">` either. It used to keep the hidden pair, which put a 0×0 transparent, invisibly-focusable radio into the group's arrow cycle; gating only the `<input>` would have left a `<label for>` resolving to nothing, i.e. the #810 defect. The component instance still mounts, which is all `<OrigamRatingField>` needs from its `__empty` delegation ref. |
 | `halfIncrements` | `boolean` | — | Enables half-star rendering: an item whose `value` has a fractional part gets `--half` (clipped to its left 50 %), an integer one gets `--full`. |
 | `tag` | `string` | `'div'` | Root element. |
 
@@ -54,7 +54,7 @@ building a custom rating widget; otherwise use `<OrigamRatingField>`.
 | `isHovered` | `boolean` | This item is below or at the hovered position. |
 | `checked` | `boolean` | Native `checked` on the hidden input. |
 | `disabled` | `boolean` | Native `disabled`. |
-| `readonly` | `boolean` | Native `readonly`. |
+| `readonly` | `boolean` | Native `readonly` on the input. ⚠️ **Inert on its own** — measured: `readonly` has no effect on a radio, the arrows moved the selection straight through it. What actually makes the group read-only is the parent, which cancels those keys' default on `keydown` and puts `aria-readonly="true"` on the `radiogroup` root. ⛔ Do NOT mirror that `aria-readonly` onto the radio itself: `aria-readonly` is not an allowed attribute on `role="radio"`, and axe-core reports it as a **critical** `aria-allowed-attr` violation — measured while building #812, on a first version of this fix that did exactly that. |
 
 ### Content & design
 
@@ -75,22 +75,25 @@ building a custom rating widget; otherwise use `<OrigamRatingField>`.
 
 ## Emits
 
-`IRatingFieldItemEmits` = `IClickEmits` + two pointer events:
+`IRatingFieldItemEmits` = `IClickEmits` + two pointer events + the two
+keyboard channels added in #812:
 
-| Event | Payload | Description |
-|---|---|---|
-| `click` | `MouseEvent` | The star was clicked. |
-| `mouseenter` | `MouseEvent` | Pointer entered the star — the parent uses it to drive the hover preview. |
-| `mouseleave` | `MouseEvent` | Pointer left the star. |
+| Event | Payload | Source | Description |
+|---|---|---|---|
+| `click` | `MouseEvent` | inner `<OrigamBtn>` | The star was clicked. |
+| `mouseenter` | `MouseEvent` | inner `<OrigamBtn>` | Pointer entered the star — the parent uses it to drive the hover preview. |
+| `mouseleave` | `MouseEvent` | inner `<OrigamBtn>` | Pointer left the star. |
+| `change` | `Event` | the `<input type="radio">` | The radio became the checked one. **This is the only signal a keyboard selection produces** — the browser's radio navigation fires `click` + `change` on the input and never touches the star `<div>` the pointer path goes through. |
+| `keydown` | `KeyboardEvent` | the `<input type="radio">` | Every key pressed while the radio holds focus. The parent uses it for `Home` / `End` (no-ops natively on a radio group) and to cancel the native default while `readonly`. |
 
-All three are re-emitted verbatim from the inner `<OrigamBtn>`; the item
-adds no logic of its own.
+The first three are re-emitted verbatim from the inner `<OrigamBtn>`, the
+last two verbatim from the input; the item adds no logic of its own.
 
 ## Slots
 
 | Slot | Scope | Description |
 |---|---|---|
-| `item` | `{ props, value }` | Replaces the star. `props` is the resolved `<OrigamBtn>` prop bag (already carrying the right icon for the current state, `variant: 'text'`, colour, ripple…), `value` is the item's rating value. Rendered only when `showStar` is `true`. |
+| `item` | `{ props, value }` | Replaces the star. `props` is the resolved `<OrigamBtn>` prop bag (already carrying the right icon for the current state, `variant: 'text'`, colour, ripple…), `value` is the item's rating value. Rendered only when `showStar` is `true` — and since #812 the whole `<label>` / `<input>` pair goes with it. |
 
 ```vue
 <template>
@@ -111,9 +114,20 @@ attaches them, a slot override does not.
 - The accessible name lives in a visually-hidden `<span>` inside the
   `<label>`, resolved from the `itemAriaLabel` locale key with the item's
   value and the row length.
-- The hidden `<input type="radio">` carries `tabindex="-1"`: the whole
-  row is meant to be reached as one control by the parent
-  `<OrigamRatingField>`, not star by star.
+- The hidden `<input type="radio">` no longer carries `tabindex="-1"`
+  (#812). Removing it is what gives the group its keyboard navigation:
+  radios sharing a `name` already implement the WAI-ARIA roving-tabindex
+  pattern natively — one `Tab` stop for the row, arrows moving focus and
+  selection with wrap-around, `Space` selecting. The row is still reached
+  as ONE control, by the browser rather than by us.
+- Because that focusable input is `0×0` and transparent,
+  `.origam-rating-field-item:has(:focus-visible)` paints the focus ring on
+  the **star**. Without it the group would be operable with an invisible
+  focus indicator — WCAG 2.4.7 — which is precisely the trade #810 refused
+  to make.
+- ⚠️ A **slot override that replaces the star** keeps the ring (it is painted
+  on the item root, not on the button), but that case was not exercised in a
+  browser.
 - `--half` items are absolutely positioned and clipped; they overlap
   their `--full` neighbour by design, which is why the ripple overlay is
   suppressed on them.
@@ -126,9 +140,12 @@ attaches them, a slot override does not.
         <span class="origam-rating-field-item__hidden">…accessible name…</span>
         <!-- the item slot, or an icon-only OrigamBtn -->
     </label>
-    <input class="origam-rating-field-item__hidden" type="radio" tabindex="-1">
+    <input class="origam-rating-field-item__hidden" type="radio">
 </div>
 ```
+
+Both the `<label>` and the `<input>` are inside a `v-if="showStar"`: an item
+with no visible star renders an empty root.
 
 `__label` carries `cursor: pointer` and the star's transform transition.
 The class had been dropped from the template while the rule stayed in the
