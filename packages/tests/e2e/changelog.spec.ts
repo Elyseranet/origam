@@ -62,10 +62,24 @@ test.describe('changelog — DS-first', () => {
         await expect(select).toHaveClass(/origam-select/)
     })
 
-    test('la carte de version par défaut affiche la 2.6.0 + ses highlights (régression contenu)', async ({ page }) => {
+    // ⛔ Ne PAS réintroduire un numéro de version en dur ici.
+    //
+    // Ces deux tests épinglaient `2.6.0` — la version la plus récente le jour
+    // où ils ont été écrits. `CHANGELOG_VERSIONS` est REGÉNÉRÉ depuis
+    // `/CHANGELOG.md` à chaque release (voir l'en-tête de
+    // `packages/marketing/src/consts/changelog-versions.const.ts`), et la page
+    // ouvre toujours sur la plus récente. Le dépôt est passé à `2.17.1` : la
+    // spec est donc devenue rouge sans qu'aucun comportement ne change, et
+    // elle le redeviendrait à la prochaine release. Mesuré dans le balayage de
+    // #835 — 6,7 s et 6,6 s, en assertion franche, pas en expiration.
+    //
+    // Ce qui est réellement garanti ici, et qui ne périme pas : la carte ouvre
+    // sur UNE version, cette version est celle que le select annonce, et
+    // changer d'option change effectivement le contenu rendu.
+    test('la carte de version par défaut affiche une version + ses highlights (régression contenu)', async ({ page }) => {
         const card = page.locator('[data-cy="changelog-release-card"]')
         await expect(card).toBeVisible()
-        await expect(card.locator('.changelog-release__version')).toHaveText('2.6.0')
+        await expect(card.locator('.changelog-release__version')).toHaveText(/^\d+\.\d+\.\d+/)
 
         const highlights = card.locator('.changelog-release__highlight')
         const count = await highlights.count()
@@ -81,19 +95,28 @@ test.describe('changelog — DS-first', () => {
 
     test('changer la version dans le select swappe le contenu de la carte', async ({ page }) => {
         const card = page.locator('[data-cy="changelog-release-card"]')
-        await expect(card.locator('.changelog-release__version')).toHaveText('2.6.0')
+        const version = card.locator('.changelog-release__version')
+
+        await expect(version).toHaveText(/^\d+\.\d+\.\d+/)
+
+        const before = (await version.innerText()).trim()
 
         const select = page.locator('[data-cy="changelog-version-select"]')
         await select.click()
-        await page.waitForTimeout(300)
 
-        const option = page.locator('.origam-list-item, [role="option"]').filter({ hasText: '2.0.0' }).first()
-        await option.click()
-        await page.waitForTimeout(400)
+        const options = page.locator('[role="option"], .origam-list-item')
+        await expect(options.first()).toBeVisible({ timeout: 10_000 })
 
-        await expect(card.locator('.changelog-release__version')).toHaveText('2.0.0')
-        const highlights = card.locator('.changelog-release__highlight')
-        expect(await highlights.count()).toBeGreaterThan(0)
+        // La PREMIÈRE option dont le libellé diffère de la version affichée :
+        // quelle que soit la release en cours, il en existe forcément une.
+        const labels = await options.evaluateAll(els => els.map(el => (el as HTMLElement).innerText.trim()))
+        const target = labels.find(l => l.length > 0 && !l.includes(before))
+        expect(target, `aucune autre version que "${ before }" dans le select — libellés : ${ JSON.stringify(labels) }`).toBeTruthy()
+
+        await options.filter({ hasText: target! }).first().click()
+
+        await expect(version).not.toHaveText(before, { timeout: 10_000 })
+        expect(await card.locator('.changelog-release__highlight').count()).toBeGreaterThan(0)
     })
 
     test('le badge hero est un OrigamChip (.origam-chip)', async ({ page }) => {
