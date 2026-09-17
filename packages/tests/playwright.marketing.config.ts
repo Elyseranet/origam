@@ -6,6 +6,8 @@ import { MARKETING_SPEC_PATTERNS } from './e2e/_support/marketing-specs.const'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = resolve(__dirname, '..', '..')
 
+const MARKETING_BASE_URL = process.env.MARKETING_BASE_URL ?? 'http://localhost:3000'
+
 /**
  * Specs verified green AND stable (5+ consecutive local runs, no flake) on
  * this config. CI runs ONLY these (`MARKETING_GREEN_ONLY=1`) — same pattern
@@ -75,7 +77,7 @@ export default defineConfig({
     ],
 
     use: {
-        baseURL: process.env.MARKETING_BASE_URL ?? 'http://localhost:3000',
+        baseURL: MARKETING_BASE_URL,
         trace: 'on-first-retry',
         screenshot: 'only-on-failure',
         video: 'retain-on-failure'
@@ -91,7 +93,13 @@ export default defineConfig({
     webServer: {
         command: 'NUXT_IGNORE_LOCK=1 pnpm -F @origam/marketing dev',
         cwd: REPO_ROOT,
-        url: 'http://localhost:3000',
+        // ⛔ Must follow `baseURL`, never a hardcoded :3000. With
+        // `reuseExistingServer: true`, a probe on :3000 that finds ANOTHER
+        // worktree's dev server (there are ~55 of them) returns "reuse" while
+        // the specs hit `MARKETING_BASE_URL` — or worse, the specs hit :3000
+        // and measure a neighbour's build. Same trap as the :6006 Histoire
+        // one documented in CLAUDE.md. #836.
+        url: MARKETING_BASE_URL,
         reuseExistingServer: true,
         timeout: 120_000
     }
