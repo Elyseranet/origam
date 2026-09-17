@@ -126,6 +126,8 @@
     "guards:pnpm-script-exists:self": "node scripts/guards/lib/pnpm-invocations.selftest.mjs",
     "guards:vrt-lockstep": "node scripts/guards/vrt-lockstep.mjs",
     "guards:vrt-lockstep:self": "node scripts/guards/lib/vrt-lockstep.selftest.mjs",
+    "guards:ts-token-refs": "node scripts/guards/ts-token-refs.mjs",
+    "guards:ts-token-refs:self": "node scripts/guards/lib/ts-token-refs.selftest.mjs",
     "docs:composables": "node scripts/analysis/gen-composables-doc.mjs --write"
   },
   "dependencies": {
