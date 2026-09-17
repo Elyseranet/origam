@@ -377,6 +377,17 @@
 
       <origam-divider class="site-footer__rule"/>
 
+      <!--
+        Items flagged `external` in NAV_SECTIONS (Stories, Docs) are separate
+        static sites, not app routes: they keep a plain anchor and are never
+        localised. See nav.const.ts for the why. #760
+
+        ⛔ Keep this note OUTSIDE the v-for, and free of angle brackets: dev
+        SSR preserves template comments (production strips them), so a comment
+        inside the loop is emitted once per item — and one containing a literal
+        anchor tag made `marketing-nav-ssr.spec.ts` count 30 links instead of
+        15, green in prod and red in dev.
+      -->
       <nav
         class="site-footer__sitemap"
         data-cy="footer-sitemap"
@@ -392,8 +403,6 @@
               v-for="item in section.items"
               :key="item.href"
             >
-              <!-- Stories / Docs are separate static sites, not app routes:
-                   plain <a>, never localised (cf. NAV_SECTIONS, #760). -->
               <a
                 v-if="item.external"
                 :href="item.href"
