@@ -32,6 +32,13 @@ import { expect, test } from '@playwright/test'
  * positive assertion below and silently override a consumer who explicitly
  * asked for `data-theme="light"`. The `data-theme="light"` + OS-dark row is the
  * assertion that separates the two.
+ *
+ * AND THERE ARE TWO AXES, SO THERE ARE TWO NEGATIVE CONTROLS
+ * ---------------------------------------------------------
+ * `data-theme` carries the brand, `data-mode` carries light/dark. The second
+ * one is the axis a real consumer actually writes — see the block above the
+ * `data-mode="light"` test. The original rule guarded only `data-theme`, which
+ * left every `useTheme()`/Nuxt consumer repainted against an explicit choice.
  */
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -57,6 +64,7 @@ interface IProbeResult {
     surface: string
     text: string
     attr: string
+    mode: string
     osDark: boolean
 }
 
@@ -71,12 +79,13 @@ test.describe('#794 — `origam/styles` honours prefers-color-scheme', () => {
     const pageDir = mkdtempSync(join(tmpdir(), 'origam-794-'))
     const pageUrls = new Map<string, string>()
 
-    function documentFor (dataTheme: 'light' | 'dark' | null): string {
-        const key = dataTheme ?? 'auto'
+    function documentFor (dataTheme: 'light' | 'dark' | 'brand-x' | null, dataMode: 'light' | 'dark' | null = null): string {
+        const key = `${dataTheme ?? 'auto'}--${dataMode ?? 'auto'}`
 
         if (!pageUrls.has(key)) {
             const file = join(pageDir, `${key}.html`)
-            const attr = dataTheme ? ` data-theme="${dataTheme}"` : ''
+            const attr = (dataTheme ? ` data-theme="${dataTheme}"` : '')
+                + (dataMode ? ` data-mode="${dataMode}"` : '')
 
             writeFileSync(
                 file,
@@ -92,17 +101,19 @@ test.describe('#794 — `origam/styles` honours prefers-color-scheme', () => {
     async function probe (
         browser: import('@playwright/test').Browser,
         colorScheme: 'light' | 'dark',
-        dataTheme: 'light' | 'dark' | null
+        dataTheme: 'light' | 'dark' | 'brand-x' | null,
+        dataMode: 'light' | 'dark' | null = null
     ): Promise<IProbeResult> {
         const context = await browser.newContext({ colorScheme })
         const page = await context.newPage()
 
-        await page.goto(documentFor(dataTheme))
+        await page.goto(documentFor(dataTheme, dataMode))
 
         const result = await page.evaluate(() => ({
             surface: getComputedStyle(document.getElementById('surface')!).backgroundColor,
             text: getComputedStyle(document.getElementById('text')!).color,
             attr: document.documentElement.getAttribute('data-theme') ?? '(none)',
+            mode: document.documentElement.getAttribute('data-mode') ?? '(none)',
             osDark: matchMedia('(prefers-color-scheme: dark)').matches
         }))
 
@@ -172,6 +183,57 @@ test.describe('#794 — `origam/styles` honours prefers-color-scheme', () => {
         expect(pinned.text).toBe(explicitLight.text)
         // Without this the auto rule could be a blanket override.
         expect(pinned.surface).not.toBe(explicitDark.surface)
+    })
+
+    // ── THE SECOND AXIS ────────────────────────────────────────────────────
+    // The negative control above tests `data-theme="light"`. That is NOT the
+    // shape a real consumer produces. This DS is two-axis: `useTheme()`'s
+    // `applyModeToDocument()` ALWAYS writes a concrete `data-mode`, and the
+    // Nuxt plugin OMITS `data-theme` when the brand resolves to `'auto'`. A
+    // page that pinned light therefore reads `<html data-mode="light">`, with
+    // no `data-theme` at all — which `:root:not([data-theme])` matches.
+    // Measured in Chromium on the shipped bundle, OS dark:
+    //   :not([data-theme])                   → rgb(10, 10, 10)    ⛔ repainted
+    //   :not([data-theme]):not([data-mode])  → rgb(255, 255, 255) ✅ pinned
+    // Without this test the guard on the second axis can be deleted and every
+    // other assertion in this file still passes.
+    test('NEGATIVE CONTROL — data-mode="light" pins light even under OS dark', async ({ browser }) => {
+        const pinned = await probe(browser, 'dark', null, 'light')
+        const explicitLight = await probe(browser, 'light', 'light')
+        const explicitDark = await probe(browser, 'light', 'dark')
+
+        expect(pinned.osDark).toBe(true)
+        expect(pinned.attr).toBe('(none)')
+        expect(pinned.mode).toBe('light')
+        expect(pinned.surface).toBe(explicitLight.surface)
+        expect(pinned.text).toBe(explicitLight.text)
+        expect(pinned.surface).not.toBe(explicitDark.surface)
+    })
+
+    test('NEGATIVE CONTROL — a brand theme + data-mode="light" stays light under OS dark', async ({ browser }) => {
+        // The realistic shape for a consumer who registered a brand theme.
+        const pinned = await probe(browser, 'dark', 'brand-x', 'light')
+        const explicitLight = await probe(browser, 'light', 'light')
+
+        expect(pinned.osDark).toBe(true)
+        expect(pinned.surface).toBe(explicitLight.surface)
+    })
+
+    // ⛔ PINNED DEFECT, not a blessing. `data-mode="dark"` ALONE paints
+    // nothing: `[data-mode="…"]` rules are emitted only by the runtime theme
+    // matrix (`apply-theme.util.ts`, injected by `createOrigam()`), and the
+    // static `origam/styles` bundle contains ZERO occurrence of `data-mode`.
+    // Pre-existing, unchanged by #794 (`develop` measures the same), reported
+    // separately. This assertion exists so that fixing it is a DELIBERATE act
+    // that turns this test red, not a silent drift.
+    test('PINNED GAP — data-mode="dark" alone paints light (the static sheet has no data-mode rule)', async ({ browser }) => {
+        const css = readFileSync(shipped.path, 'utf8')
+        expect(css.split('data-mode').length - 1, 'a data-mode rule appeared — reassess this pinned gap').toBe(1)
+
+        const modeOnly = await probe(browser, 'dark', null, 'dark')
+        const explicitLight = await probe(browser, 'light', 'light')
+
+        expect(modeOnly.surface).toBe(explicitLight.surface)
     })
 
     test('NEGATIVE CONTROL — data-theme="dark" stays dark under OS light', async ({ browser }) => {
