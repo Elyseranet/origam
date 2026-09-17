@@ -118,6 +118,9 @@ export default defineNuxtConfig({
     },
 
     css: [
+        // Polices auto-hébergées (#761) — doit précéder les thèmes, qui se
+        // contentent de référencer les familles par leur nom.
+        '~/assets/css/fonts.css',
         'origam/tokens/css/dark',
         '~/assets/css/themes/_shared.css',
         '~/assets/css/themes/geek.css',
@@ -164,10 +167,13 @@ export default defineNuxtConfig({
             },
             link: [
                 { rel: 'icon', type: 'image/svg+xml', href: MARKETING_DEFAULTS.logoPath },
-                { rel: 'icon', type: 'image/x-icon', href: MARKETING_DEFAULTS.faviconPath },
-                { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-                { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-                { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,600&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap' }
+                { rel: 'icon', type: 'image/x-icon', href: MARKETING_DEFAULTS.faviconPath }
+
+                // ⛔ #761 — plus aucune police distante ici. Les trois familles
+                // (Fraunces, Inter, JetBrains Mono) sont servies par ce site
+                // depuis public/fonts/, déclarées dans assets/css/fonts.css.
+                // Ne PAS réintroduire de <link> vers fonts.googleapis.com : la
+                // page /privacy affirme qu'aucun tiers n'est contacté.
             ]
         }
     },
