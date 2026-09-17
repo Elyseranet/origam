@@ -382,26 +382,77 @@ défaut de theming, pas à une spec périmée — **à instruire, ce n'est pas �
   stabilité. C'est la consigne de #771 : une CI rouge en permanence est le
   défaut symétrique de celle qui n'exécute rien.
 
-## ⚠️ Ce que le correctif de thème a mis au jour — à arbitrer
+## Arbitrage rendu — `geek` reste l'apparence, déclarée là où le DS la lit
 
-Restaurer le thème configuré (`origam`) fait apparaître une violation
-d'accessibilité qui existait déjà et que le `geek` en dur masquait.
-`components.spec.ts:314` (audit axe-core sur `/components/btn`) **passait
-avant, échoue après** — mesuré des deux côtés sur la vraie spec :
+Décision mainteneur, 2026-09-17 : **`geek` reste ce que le site montre**, mais
+via `origam.defaultTheme` (`nuxt.config.ts`) et non via `app.head.htmlAttrs`.
+
+La distinction est tout l'objet du correctif. `defaultTheme` est lu par
+`resolveServerTheme()`, qui résout `cookie ?? defaultTheme` : il ne s'applique
+**qu'en l'absence de choix du visiteur**. Un attribut de `head` est au contraire
+réappliqué par unhead à chaque rendu, **par-dessus** ce choix.
+
+Les deux propriétés tiennent ensemble, mesurées séparément :
+
+```
+1. defaut (aucune preference)      -> theme=geek     mode=light   cookie=null
+2. apres clic sur le chip cartoon  -> theme=cartoon  mode=light   cookie=cartoon
+3. apres rechargement              -> theme=cartoon  mode=light   cookie=cartoon
+4. apres navigation vers /roadmap  -> theme=cartoon  mode=light   cookie=cartoon
+```
+
+⛔ **Contrôle positif — et il dit quelque chose d'important.** En réintroduisant
+`'data-theme': 'geek'` dans `app.head.htmlAttrs`, avec `defaultTheme: 'geek'`
+en place :
+
+```
+✓ / — rend "geek" par défaut …                     (3 tests VERTS)
+✘ le couple marque + mode … survit au rechargement
+  « marque choisie "cartoon" perdue à l'hydratation — <html> affiche "geek" »
+```
+
+**Les trois tests d'apparence par défaut passent** : la valeur écrite par unhead
+et celle rendue par le serveur coïncident alors. Le défaut n'est visible QUE du
+point de vue d'un visiteur qui a choisi autre chose. **C'est exactement ainsi
+qu'il a vécu trois mois sans être vu : son symptôme est l'apparence normale du
+site.** Un test qui ne vérifierait que l'apparence par défaut ne le rattraperait
+jamais.
+
+## Conséquence : les tests « Sobre — … » demandent désormais leur thème
+
+Cinq tests de style calculé s'intitulent « Sobre — … » et assertent les valeurs
+du thème `sobre`. Aucun ne demandait ce thème : ils chargeaient `/`, à l'époque
+où `sobre` était le défaut. Ce défaut a bougé **deux fois** — `sobre` → `origam`
+(2026-06-27), puis `origam` → `geek` (2026-09-17) — et ils sont devenus rouges à
+chaque fois **sans que leur objet ait changé**.
+
+Ils appellent maintenant `applyBrand(page, 'sobre')`
+(`e2e/_support/marketing-theme.ts`) : un test nommé d'après une marque demande
+cette marque, et redevient un vrai filet — s'il casse, c'est que la marque a
+changé de rendu, pas qu'un réglage sans rapport a bougé.
+
+Le sixième de la famille épinglait `rgb(250, 250, 250)` pour la surface
+« raised » de sobre. Mesuré : `--origam-color__surface---raised` vaut `#ffffff`
+aujourd'hui, et la carte le consomme correctement — **la valeur appartient au
+thème, pas au test**. L'assertion compare désormais le fond rendu au jeton
+résolu, ce qui garantit le CÂBLAGE sans réécrire un hex qui bougera encore.
+
+## ⚠️ Une violation a11y préexistante, révélée puis remise au chaud — #842
+
+Restaurer le thème configuré a fait apparaître, sous **`origam`**, une violation
+que le `geek` en dur masquait :
 
 ```
 color-contrast · serious · 9 nœuds
-  #737373 sur #f7f7f7  →  4.42:1   (.component-hero__preview-variant-label, 10px)
-  #737373 sur #f5f5f5  →  4.34:1   (.component-tokens__meta-label, 12px bold)
+  #737373 sur #f7f7f7  →  4.42:1
+  #737373 sur #f5f5f5  →  4.34:1
   seuil WCAG 2 AA : 4.5:1
 ```
 
-Sous `geek`, ce même libellé était peint `rgb(126, 95, 176)` — un violet — sur
-une surface teintée : le couple passait. Sous `origam`, le gris secondaire sur
-surface `raised` ne passe pas.
+`components.spec.ts:314` passait avant, échouait après — A/B sur la vraie spec.
 
-⛔ **Ce n'est donc pas une régression du correctif : c'est un défaut du thème
-`origam` du site marketing, rendu visible.** Il n'est pas corrigé ici — choisir
-le jeton de remplacement est une décision de design, pas une retouche de test.
-`components.spec.ts` n'étant dans aucune liste verte, la CI ne rougit pas.
-**À arbitrer, puis à ticketer.**
+⛔ **Ce n'est pas une régression du correctif : c'est un défaut du thème
+`origam`.** Comme l'arbitrage garde `geek` en thème rendu, il n'est **pas
+exposé** par défaut — un visiteur ne le rencontre que s'il choisit `origam`
+lui-même. Non corrigé ici : choisir le jeton de remplacement est une décision de
+design. **Ticketé en #842**, famille de #789 et #819.

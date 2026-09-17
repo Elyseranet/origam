@@ -56,6 +56,21 @@ const SAMPLED_PATHS = ['/', '/components', '/roadmap']
 const PICKED_BRAND = 'cartoon'
 const PICKED_MODE = 'dark'
 
+/**
+ * L'apparence du site quand le visiteur n'a rien choisi — décision mainteneur
+ * (2026-09-17) : `geek` reste ce que le site montre.
+ *
+ * ⛔ Elle est épinglée ici parce qu'elle doit tenir EN MÊME TEMPS que la
+ * persistance testée plus bas. C'est tout l'enjeu de la correction : l'ancienne
+ * implémentation obtenait cette apparence-ci en écrasant le choix du visiteur.
+ * Un test qui ne vérifierait que l'une des deux laisserait repasser le défaut.
+ *
+ * Source de vérité : `origam.defaultTheme` / `origam.defaultMode` dans
+ * `packages/marketing/nuxt.config.ts`.
+ */
+const DEFAULT_BRAND = 'geek'
+const DEFAULT_MODE = 'light'
+
 interface IThemeAttrs {
     theme: string | null
     mode: string | null
@@ -161,7 +176,7 @@ function divergentWrites (writes: IAttrWrite[], served: IThemeAttrs): IAttrWrite
 test.describe('Thème marketing — ce que le serveur rend survit à l\'hydratation', () => {
 
     for (const path of SAMPLED_PATHS) {
-        test(`${path} — le thème servi n'est pas réécrit côté client`, async ({ page }) => {
+        test(`${path} — rend "${ DEFAULT_BRAND }" par défaut, et rien ne le réécrit côté client`, async ({ page }) => {
             await recordAttrWrites(page)
 
             const response = await page.goto(path)
@@ -169,8 +184,14 @@ test.describe('Thème marketing — ce que le serveur rend survit à l\'hydratat
 
             expect(
                 served.theme,
-                `${path} : le serveur n'a émis aucun data-theme sur <html>`
-            ).not.toBeNull()
+                `${path} : sans préférence stockée, le site doit rendre "${ DEFAULT_BRAND }" ` +
+                `(origam.defaultTheme dans nuxt.config.ts)`
+            ).toBe(DEFAULT_BRAND)
+
+            expect(
+                served.mode,
+                `${path} : sans préférence stockée, le site doit rendre le mode "${ DEFAULT_MODE }"`
+            ).toBe(DEFAULT_MODE)
 
             expect(
                 divergentWrites(writes, served),
@@ -190,6 +211,23 @@ test.describe('Thème marketing — ce que le serveur rend survit à l\'hydratat
         })
     }
 
+    /**
+     * ⛔ CE TEST EST LE SEUL QUI ATTRAPE LA RÉGRESSION. Ne pas le retirer en
+     * jugeant les trois précédents suffisants — contrôle positif mesuré.
+     *
+     * En réintroduisant `'data-theme': 'geek'` dans `app.head.htmlAttrs`, le
+     * défaut exact d'origine, avec `origam.defaultTheme: 'geek'` en place :
+     *
+     *     ✓ / — rend "geek" par défaut …                    (3 tests VERTS)
+     *     ✘ le couple marque + mode … survit au rechargement
+     *       « marque choisie "cartoon" perdue à l'hydratation — <html> affiche "geek" »
+     *
+     * Les trois tests d'apparence par défaut **passent**, parce que la valeur
+     * écrite par unhead et celle rendue par le serveur coïncident alors. Le
+     * défaut n'est visible QUE du point de vue d'un visiteur qui a choisi autre
+     * chose. C'est précisément ainsi qu'il a vécu trois mois sans être vu : son
+     * symptôme EST l'apparence normale du site.
+     */
     test('le couple marque + mode choisi par le visiteur survit au rechargement', async ({ page, context }) => {
         const baseURL = test.info().project.use.baseURL!
 

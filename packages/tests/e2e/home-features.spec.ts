@@ -17,6 +17,8 @@
 
 import { expect, test } from '@playwright/test'
 
+import { applyBrand } from './_support/marketing-theme'
+
 test.describe('HomeFeatures section', () => {
 
     test.beforeEach(async ({ page }) => {
@@ -62,15 +64,44 @@ test.describe('HomeFeatures section', () => {
         expect(color).toBe('rgb(109, 40, 217)')
     })
 
-    test('Sobre — carte feature = surface raised #FAFAFA, plat (sans ombre)', async ({ page }) => {
-        const card = page.locator('section.home-features .origam-card').first()
-        const styles = await card.evaluate(el => {
+    // ⛔ Les tests « Sobre — … » DEMANDENT le thème sobre — voir la note dans
+    // `home-cta.spec.ts` et `_support/marketing-theme.ts`.
+    test('Sobre — carte feature peinte par le jeton surface raised, et plate', async ({ page }) => {
+        await applyBrand(page, 'sobre')
+
+        // ⛔ Ne PAS réécrire un hex en dur ici. Ce test épinglait
+        // `rgb(250, 250, 250)` — la valeur de `--origam-color__surface---raised`
+        // sous sobre à l'époque. Mesuré aujourd'hui, ce jeton vaut `#ffffff`, et
+        // la carte le consomme correctement : la valeur appartient au THÈME, pas
+        // au test. Ce qu'on garantit, c'est le CÂBLAGE — la carte peint bien la
+        // surface « raised » — et la platitude.
+        const styles = await page.locator('section.home-features .origam-card').first().evaluate((el) => {
             const s = getComputedStyle(el)
-            return { bg: s.backgroundColor, shadow: s.boxShadow }
+            const token = getComputedStyle(document.documentElement)
+                .getPropertyValue('--origam-color__surface---raised').trim()
+            return { bg: s.backgroundColor, shadow: s.boxShadow, token }
         })
-        // sobre surface---raised = #FAFAFA = rgb(250, 250, 250)
-        expect(styles.bg).toBe('rgb(250, 250, 250)')
-        // flat card => no box-shadow
+
+        expect(styles.token, 'le thème sobre doit déclarer --origam-color__surface---raised').not.toBe('')
+
+        // Comparaison en pixels rendus : le jeton est un hex, `backgroundColor`
+        // un `rgb()`. On repasse par le navigateur plutôt que de convertir à la
+        // main — c'est lui qui fait foi.
+        const tokenAsRgb = await page.evaluate((hex) => {
+            const probe = document.createElement('div')
+            probe.style.backgroundColor = hex
+            document.body.appendChild(probe)
+            const value = getComputedStyle(probe).backgroundColor
+            probe.remove()
+            return value
+        }, styles.token)
+
+        expect(
+            styles.bg,
+            `la carte devrait peindre --origam-color__surface---raised (${ styles.token } → ${ tokenAsRgb })`
+        ).toBe(tokenAsRgb)
+
+        // carte plate => aucune ombre
         expect(styles.shadow === 'none' || styles.shadow === '').toBe(true)
     })
 
@@ -90,6 +121,8 @@ test.describe('HomeFeatures section', () => {
     })
 
     test('Sobre — tuile icône bordée violet, 44×44, radius 10px', async ({ page }) => {
+        await applyBrand(page, 'sobre')
+
         const tile = page.locator('section.home-features .home-features__icon-tile').first()
         const styles = await tile.evaluate(el => {
             const s = getComputedStyle(el)

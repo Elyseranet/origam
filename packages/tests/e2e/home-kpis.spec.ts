@@ -20,6 +20,8 @@
 import { expect, test } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
+import { applyBrand } from './_support/marketing-theme'
+
 const BASE = '/'
 
 /**
@@ -150,7 +152,11 @@ test.describe('HomeKpis — T2', () => {
         expect(styles.bgImage.toLowerCase()).toContain('gradient')
     })
 
+    // ⛔ Ce test DEMANDE le thème sobre — voir la note dans `home-cta.spec.ts`
+    // et `_support/marketing-theme.ts`.
     test('Sobre — le label KPI est uppercase + gris secondaire', async ({ page }) => {
+        await applyBrand(page, 'sobre')
+
         const label = page.locator('#kpis dt.home-kpis__label').first()
         const styles = await label.evaluate(el => {
             const s = getComputedStyle(el)

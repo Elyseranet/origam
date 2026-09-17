@@ -18,6 +18,8 @@
 
 import { expect, test } from '@playwright/test'
 
+import { applyBrand } from './_support/marketing-theme'
+
 test.describe('HomeCta section — T7 (DS-first)', () => {
 
     test.beforeEach(async ({ page }) => {
@@ -113,7 +115,15 @@ test.describe('HomeCta section — T7 (DS-first)', () => {
         expect(btns).toBe(2)
     })
 
+    // ⛔ Les tests « Sobre — … » DEMANDENT le thème sobre, ils ne l'héritent
+    // plus du défaut du site. Ils s'appuyaient sur le fait que `sobre` était le
+    // thème par défaut ; ce défaut a bougé deux fois (`sobre` → `origam` le
+    // 2026-06-27, puis `origam` → `geek` le 2026-09-17) et ces tests sont
+    // devenus rouges à chaque fois sans que leur objet ait changé. Voir
+    // `_support/marketing-theme.ts`.
     test('Sobre — le H2 CTA est à la taille display cta (64px)', async ({ page }) => {
+        await applyBrand(page, 'sobre')
+
         const title = page.locator('section.home-cta h2.home-cta__title')
         const styles = await title.evaluate(el => {
             const s = getComputedStyle(el)
@@ -126,6 +136,8 @@ test.describe('HomeCta section — T7 (DS-first)', () => {
     })
 
     test('Sobre — le H2 CTA est peint avec la couleur texte-ink', async ({ page }) => {
+        await applyBrand(page, 'sobre')
+
         const title = page.locator('section.home-cta h2.home-cta__title')
         const color = await title.evaluate(el => getComputedStyle(el).color)
         // sobre text---ink = #0A0A0A = rgb(10, 10, 10)

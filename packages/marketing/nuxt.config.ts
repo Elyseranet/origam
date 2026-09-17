@@ -72,7 +72,22 @@ export default defineNuxtConfig({
     ],
 
     origam: {
-        defaultTheme: 'origam',
+        // ⛔ `geek` est l'apparence voulue du site — décision mainteneur,
+        // 2026-09-17 — et elle se déclare ICI, pas dans `app.head.htmlAttrs`.
+        //
+        // La différence n'est pas cosmétique. Ce champ est lu par
+        // `resolveServerTheme()` (`packages/ds/src/nuxt/plugin.server.ts`), qui
+        // résout `cookie ?? defaultTheme` : il ne s'applique donc QUE lorsque le
+        // visiteur n'a rien choisi. Un attribut dans `app.head.htmlAttrs` est au
+        // contraire réappliqué par unhead APRÈS l'hydratation, par-dessus le
+        // choix du visiteur — c'est ce qui cassait le sélecteur de thème du site
+        // entier depuis le 2026-06-12 (`958a1b6fa`), sur les deux axes.
+        //
+        // Les deux propriétés tiennent donc ensemble, et sont épinglées par
+        // `packages/tests/e2e/marketing-theme-honored.spec.ts` :
+        //   - sans préférence stockée, le site rend `geek` ;
+        //   - avec `cartoon` choisi, il rend `cartoon`, rechargement compris.
+        defaultTheme: 'geek',
         defaultMode: 'light',
         // Brand themes authored as clean IOrigamTheme objects (semantic vars,
         // light + dark). Component default props are inherited from the origam
@@ -164,9 +179,12 @@ export default defineNuxtConfig({
             //
             // Ils y étaient en dur (`'geek'` / `'light'`) depuis le 2026-06-12
             // (`958a1b6fa`), quand le site n'avait que deux thèmes de
-            // démonstration. Ils ont survécu au passage de `defaultTheme` à
-            // `'origam'` (2026-06-27, `df88e8d24`) et cassaient le theming du
-            // site entier depuis.
+            // démonstration, et cassaient le theming du site entier depuis.
+            //
+            // ⚠️ `geek` RESTE l'apparence du site : elle est déclarée plus haut,
+            // en `origam.defaultTheme`, là où le DS la lit. La différence est que
+            // `defaultTheme` ne s'applique QU'EN L'ABSENCE de choix du visiteur,
+            // là où un attribut de `head` écrase ce choix à chaque rendu.
             //
             // Ce bloc est rendu par unhead, qui réécrit `<html>` APRÈS
             // l'hydratation. Le serveur émettait le bon thème (le DS le pose
