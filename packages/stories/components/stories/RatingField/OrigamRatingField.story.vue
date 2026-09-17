@@ -130,6 +130,16 @@
 					<HstCheckbox v-model="state.persistentHint" title="Persistent Hint"/>
 					<HstCheckbox v-model="state.hideDetails"    title="Hide Details"/>
 				</StoryGroup>
+				<!--
+					#810 — the root is a `role="radiogroup"` named by `label` through
+					`aria-labelledby`, not a `<label for>` pointing at a single control
+					(that `for` used to resolve to nothing at all). Clearing the "Label"
+					field above exercises the other branch: no label, no
+					`aria-labelledby` — the DS does not fabricate a fallback name.
+					`Slots - Label` covers the third case, where the slot replaces the
+					label element and the group stays named because `aria-labelledby`
+					targets the wrapper.
+				-->
 				<StoryGroup title="Identity / Accessibility">
 					<HstText v-model="state.name"          title="Name"/>
 					<HstText v-model="state.itemAriaLabel" title="Item Aria Label (locale key)"/>
