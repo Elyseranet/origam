@@ -298,8 +298,29 @@
 
 	let timer = -1
 
+	/*********************************************************
+	 * bootFrames — les deux rAF imbriques de `markBooted` (#779)
+	 *
+	 * @description
+	 * Le `clearTimeout(timer)` ci-dessous couvre `pollForSize`, et lui
+	 * seul. Les deux `requestAnimationFrame` de `markBooted` n'ont jamais
+	 * capture leur handle : c'est exactement le site qu'une heuristique
+	 * PAR FICHIER blanchit, puisque le fichier porte bien un
+	 * `onBeforeUnmount` — pose pour autre chose.
+	 *
+	 * @description
+	 * Les deux rungs sont suivis, pas seulement le dernier : le rung
+	 * externe arme le rung interne, donc annuler un seul handle laisse
+	 * l'autre en vol selon l'instant du demontage.
+	 ********************************************************/
+	const bootFrames = new Set<number>()
+
 	onBeforeUnmount(() => {
 		clearTimeout(timer)
+
+		for (const id of bootFrames) cancelAnimationFrame(id)
+
+		bootFrames.clear()
 	})
 
 	const pollForSize = (img: HTMLImageElement, timeout: number | null = 100) => {
@@ -348,11 +369,18 @@
 			// render — the rAF then flips it post-hydration with no mismatch.
 			if (IN_BROWSER) {
 				// Doesn't work with nextTick, idk why
-				requestAnimationFrame(() => {
-					requestAnimationFrame(() => {
+				const outer = requestAnimationFrame(() => {
+					bootFrames.delete(outer)
+
+					const inner = requestAnimationFrame(() => {
+						bootFrames.delete(inner)
 						isBooted.value = true
 					})
+
+					bootFrames.add(inner)
 				})
+
+				bootFrames.add(outer)
 			}
 			stop?.()
 		}

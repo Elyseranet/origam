@@ -2,6 +2,7 @@ import type { Ref } from 'vue'
 import { shallowRef, watch } from 'vue'
 import type { TOrigamList } from '../../types/List/list.type'
 import type { TOrigamTextField } from '../../types/TextField/text-field.type'
+import { tryOnScopeDispose } from '../../utils/Commons/commons.util'
 
 /*********************************************************
  * useScrolling
@@ -26,6 +27,56 @@ export function useScrolling (listRef: Ref<TOrigamList | undefined>, textFieldRe
             })
         })
     }
+
+    /*********************************************************
+     * Fin de vie — annuler la chaine de `onListScroll`, PAS celle de
+     * `finishScrolling` (#779)
+     *
+     * @description
+     * Le handle de `onListScroll` etait bien capture (`scrollTimeout`),
+     * mais seul le DEBUT de la fonction l'annulait, jamais la sortie de
+     * portee : une frame restait armee apres le demontage. Elle est
+     * annulee ici.
+     *
+     * @description
+     * ⛔ `isScrolling` est remis a `false` DANS le meme geste, et ce
+     * n'est pas de la cosmetique. Un `finishScrolling` en cours peut
+     * etre suspendu sur `watch(isScrolling)` ci-dessous ; c'est la frame
+     * qu'on vient d'annuler qui l'aurait libere. Annuler sans remettre
+     * le drapeau laisserait la promesse en suspens POUR TOUJOURS — une
+     * fuite strictement pire que celle qu'on repare, puisqu'elle retient
+     * la continuation entiere de `onListKeydown` au lieu d'une frame.
+     * Le drapeau n'est pas retourne par le composable : personne d'autre
+     * ne l'observe.
+     ********************************************************/
+    tryOnScopeDispose(() => {
+        cancelAnimationFrame(scrollTimeout)
+        isScrolling.value = false
+    })
+
+    /*********************************************************
+     * finishScrolling — ⛔ ses trois rAF restent NUS, et c'est voulu
+     * (#779)
+     *
+     * @description
+     * Ici la frame n'est pas un effet differe : c'est le seul moyen
+     * qu'a la promesse de se resoudre. `onListKeydown` fait
+     * `await finishScrolling()` puis lit le DOM pour deplacer le focus ;
+     * un `if (disposed) return` dans ces callbacks empecherait `resolve`
+     * d'etre appele, et la fonction asynchrone resterait suspendue
+     * indefiniment — elle retiendrait alors l'element, les enfants et
+     * l'evenement, la ou l'etat actuel ne retient qu'une frame de 16 ms.
+     * Le correctif « evident » remplacerait une fuite bornee par une
+     * fuite permanente. Mesure dans
+     * `TU/origam/raf-teardown-779.spec.ts`.
+     *
+     * @description
+     * Ce que ces trois frames coutent reellement au demontage est borne
+     * et connu : au plus UNE frame en vol a un instant donne (elles sont
+     * attendues l'une apres l'autre), dont la continuation est
+     * `resolve` — qui ne touche ni le DOM, ni un global, ni un `ref`.
+     * Rien a neutraliser.
+     ********************************************************/
     const finishScrolling = async () => {
         await new Promise(resolve => requestAnimationFrame(resolve))
         await new Promise(resolve => requestAnimationFrame(resolve))

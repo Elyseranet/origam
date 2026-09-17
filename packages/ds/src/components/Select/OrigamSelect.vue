@@ -674,12 +674,47 @@
 		scrollFrames.add(id)
 	}
 
+	/*********************************************************
+	 * scheduleMacrotask — le pendant `setTimeout` du garde ci-dessus
+	 * (#779)
+	 *
+	 * @description
+	 * Deux macrotaches de ce fichier n'ont jamais eu de garde :
+	 * la re-selection du texte au `mousedown:control` en mode
+	 * autocomplete, et le `listHasFocus = true` du `focusin`. Elles
+	 * cohabitaient avec le `disposed` de #719 — pose pour les frames de
+	 * defilement, jamais pour elles. C'est precisement le site qu'une
+	 * heuristique PAR FICHIER blanchit : le fichier a bien un
+	 * `onBeforeUnmount`, il ne couvrait simplement pas ces deux-la.
+	 *
+	 * @description
+	 * Rien d'observable ne change : la premiere dereference
+	 * `vm.proxy.$el` pour appeler `input.select()` — sur un arbre
+	 * demonte il n'y a plus d'input a selectionner ; la seconde ecrit un
+	 * `ref` interne que plus personne ne lit. Ce que le garde retire,
+	 * c'est la tache elle-meme, pas un effet.
+	 ********************************************************/
+	const macrotasks = new Set<number>()
+
+	const scheduleMacrotask = (cb: () => void) => {
+		if (disposed || !IN_BROWSER) return
+
+		const id = window.setTimeout(() => {
+			macrotasks.delete(id)
+			cb()
+		}, 0)
+
+		macrotasks.add(id)
+	}
+
 	onBeforeUnmount(() => {
 		disposed = true
 
 		for (const id of scrollFrames) window.cancelAnimationFrame(id)
+		for (const id of macrotasks) window.clearTimeout(id)
 
 		scrollFrames.clear()
+		macrotasks.clear()
 	})
 
 	/*********************************************************
@@ -789,11 +824,11 @@
 			// effect for an instant then gets clobbered. A macrotask
 			// (setTimeout) lands AFTER all that, so the selection
 			// sticks.
-			setTimeout(() => {
+			scheduleMacrotask(() => {
 				const root = vm?.proxy?.$el as HTMLElement | undefined
 				const input = root?.querySelector('input') as HTMLInputElement | null
 				input?.select()
-			}, 0)
+			})
 		}
 	}
 	const handleMousedownMenuIcon = (e: MouseEvent) => {
@@ -982,7 +1017,7 @@
 	const handleFocusin = () => {
 		isFocused.value = true
 
-		setTimeout(() => {
+		scheduleMacrotask(() => {
 			listHasFocus.value = true
 		})
 	}
