@@ -253,6 +253,15 @@ const {id: styleId, css, load} = useStyle(confirmWrapperStyles)`
      * `origam-input-v-0 | origam-input-v-0 | origam-audit-sentinel-id-messages`.
      * Guard 15 stays silent because the destructure is RENAMED, a shape its
      * own header lists as "the correct pattern". Reported, not fixed here.
+     *
+     * ⚠️ #790 — ET C'EST CORRECT AINSI, ce n'est pas un defaut a corriger.
+     * Le montage ci-dessus n'a PAS de slot `#default`. Remonte AVEC un slot,
+     * comme tout champ du DS l'utilise, `slotProps.id === 'mon-champ'` et le
+     * `<input>` rendu porte `id="mon-champ"` en valeur EXACTE. Le decalage
+     * est voulu (#421) : la racine ne doit pas peindre la meme valeur que le
+     * controle, sinon deux noeuds partagent un id et le pairage `label[for]`
+     * casse. Cette fixture pin donc la FORME que le detecteur doit voir, pas
+     * un bug produit.
      */
     ['OrigamInput (current develop)', wrap(
         `<div :id="styleId" :class="inputClasses">
@@ -342,5 +351,12 @@ if (invokedDirectly) {
         console.log(`FAIL — ${failures}/${total} self-test case(s) failed.`)
         process.exit(1)
     }
-    console.log(`PASS — ${total} cases: precision, recall, the textual traps, and the three real bugs.`)
+    /*
+     * ⚠️ « the three real bugs » se lisait ici. #790 a remonte les trois au
+     * montage : une seule l'etait (OtpInputField, depuis corrigee). Les deux
+     * fixtures « current develop » restantes pinnent la FORME que le
+     * detecteur doit reconnaitre — pas un defaut produit. Voir l'en-tete de
+     * `guards/id-forwarding.mjs` pour la mesure de chacune.
+     */
+    console.log(`PASS — ${total} cases: precision, recall, the textual traps, and the shapes the detector must still recognise.`)
 }

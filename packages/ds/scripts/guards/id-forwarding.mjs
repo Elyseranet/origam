@@ -63,18 +63,39 @@
  *     Faux NEGATIF connu, assume : le biais du garde est qu'un faux positif
  *     bloque une PR innocente, un faux negatif ne rate que de la dette.
  *
- * ⛔ LES 3 ENTREES DE BASELINE SONT DE VRAIS DEFAUTS, PAS UN BLANCHIMENT.
- * Aucune n'est corrigee ici — l'outillage et les correctifs produit ont deux
- * rayons de souffle differents, et le lot produit fait l'objet d'un ticket
- * separe. Chacune a ete confirmee par montage, attribut lu en EGALITE :
- *   - `Input:no-id-reach` — racine `:id="styleId"`, `useStyle(inputStyles)`
- *     a UN argument : la racine porte `origam-input-v-0`. L'id du
- *     consommateur n'existe que dans `…-messages` et dans une charge de slot
- *     scope. ⚠️ Rayon de souffle: tout champ bati sur `OrigamInput`.
- *   - `OtpInputField:no-id-reach` — meme forme que ConfirmWrapper pre-#632 :
- *     `id` calcule, seul `messagesId` binde, `filterProps` exclut `'id'`.
- *   - `SnackbarGroup:no-id-reach` — racine
- *     `:id="\`origam-snackbar-group-${props.id}\`"`.
+ * ⛔ LES 2 ENTREES DE BASELINE RESTANTES SONT DES LIMITES DE L'INSTRUMENT,
+ * PAS DES DEFAUTS. La version precedente de ce bloc affirmait l'inverse
+ * (« LES 3 ENTREES SONT DE VRAIS DEFAUTS ») ; #790 a remonte chacune au
+ * montage, attribut lu en EGALITE, et cette affirmation ne survit a la
+ * mesure que pour UNE des trois. Le garde est statique : il lit la forme du
+ * binding sur la RACINE. Deux mecanismes legitimes lui echappent par
+ * construction — un id remis a un slot, et une prop `id` qui n'est pas un
+ * id DOM.
+ *
+ *   - `Input:no-id-reach` — ⚠️ NON-DEFAUT, decision explicite de #421.
+ *     La racine porte bien `origam-input-v-<n>` (son propre id de style),
+ *     mais l'id du consommateur est remis au slot `#default`
+ *     (`inputProps.id`) pour que le CONTROLE REEL le porte — la cible que
+ *     vise un `<label for>`. Le poser AUSSI sur la racine peindrait la meme
+ *     valeur sur deux noeuds. Mesure #790, `OrigamInput` monte AVEC un slot
+ *     par defaut : `slotProps.id === 'mon-champ'`, `<input id="mon-champ">`,
+ *     porteur EXACT et labelable ; la regle `#origam-input-v-0` n'est pas
+ *     orpheline. Les 11 champs batis dessus (TextField, TextareaField,
+ *     Checkbox, Radio, Switch, NumberField, PasswordField, FileField,
+ *     SliderField, CheckboxGroup, RadioGroup) portent tous l'id EXACT.
+ *     Le garde le voit « perdu » parce qu'un slot n'a pas de forme statique.
+ *
+ *   - `SnackbarGroup:no-id-reach` — ⚠️ NON-DEFAUT : `props.id` n'est PAS un
+ *     id DOM ici, c'est la cle logique de la pile (`useSnackbarGroup({id})`,
+ *     defaut `'default'`), partagee par tous les appels qui poussent dans la
+ *     meme file. La racine porte `origam-snackbar-group-${props.id}` — un
+ *     prefixage VOULU, sans quoi une cle comme `default` deviendrait un id
+ *     DOM colisionnant. Le garde lit toute prop nommee `id` comme un id DOM.
+ *
+ * `OtpInputField:no-id-reach` est SORTI de la baseline : corrige par #790
+ * (racine `:id="styleId"` + `useStyle(styles, () => props.id)`). C'etait la
+ * seule des trois a etre un vrai defaut, et il etait double — l'id perdu ET
+ * la regle `#origam-otp-input-field-<uid>` orpheline, donc un style mort.
  *
  * Run: `node packages/ds/scripts/guards/id-forwarding.mjs`
  *      `node packages/ds/scripts/guards/id-forwarding.mjs --update-baseline`
