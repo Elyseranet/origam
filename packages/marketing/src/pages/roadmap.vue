@@ -324,6 +324,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                         <template #default>
                             <origam-card
                                 flat
+                                :border="false"
                                 class="roadmap-timeline__card"
                             >
                                 <template #header.title>
@@ -654,7 +655,25 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
 
 .roadmap-status {
     padding-block: var(--origam-space---24, 6rem);
-    background: var(--origam-color__surface---sunken, #f5f5f5);
+    // ⛔ NO `background` here — #744. This band used to paint
+    // `--origam-color__surface---sunken`, betting that "sunken" is always
+    // DARKER than the page. That bet is theme-dependent and it loses under
+    // `geek`, measured in Chromium on /roadmap:
+    //
+    //   theme   surface---default   surface---sunken   result
+    //   sobre   #ffffff             #f5f5f5            recessed  ✅
+    //   geek    #f6f0ff             #fbf5ff            RAISED    ❌
+    //
+    // The section then rendered LIGHTER than `.origam-main` (rgb(251,245,255)
+    // over rgb(246,240,255)) across its whole height — the "partie blanche"
+    // the user reported. Letting the page surface show through is correct
+    // under every theme by construction: a section that paints nothing can
+    // never be brighter than the page it sits on. The `border-block` hairline
+    // below still delimits the section.
+    //
+    // The mis-paired `geek` token itself is a real, separate defect (it also
+    // hits ~28 other `surface---sunken` consumers site-wide) — tracked apart,
+    // because repairing it needs a colour decision, not a bug fix.
     border-block: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
 
     &__header {
@@ -801,7 +820,10 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
 
 .roadmap-timeline-wrap {
     padding-block: var(--origam-space---24, 6rem);
-    background: var(--origam-color__surface---sunken, #f5f5f5);
+    // ⛔ NO `background` here — #744, same cause as `.roadmap-status` above.
+    // This is the band the user photographed: 4 211 px of
+    // `--origam-color__surface---sunken` rendering rgb(251,245,255) over a
+    // rgb(246,240,255) page under `geek`. See the note on `.roadmap-status`.
     border-block: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
 }
 

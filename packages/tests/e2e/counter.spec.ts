@@ -32,6 +32,19 @@ const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 /** Timeout d'attente pour toBeVisible : absorbe le cold-start HMR sandbox (≤ 30s). */
 const VIS = { timeout: 35000 }
 
+/**
+ * `#rrggbb` → `rgb(r, g, b)`, la forme que rend `getComputedStyle().color`.
+ *
+ * Sert a comparer la couleur CALCULEE a la valeur du TOKEN lu au runtime,
+ * plutot qu'a une constante recopiee : le test reste vrai si le token change,
+ * et faux si la regle qui le consomme disparait (#820).
+ */
+const hexToRgb = (hex: string): string => {
+    const m = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex.trim())
+    if (!m) throw new Error(`hexToRgb: format inattendu « ${hex} » — le token n'est pas un hex a 6 chiffres.`)
+    return `rgb(${parseInt(m[1], 16)}, ${parseInt(m[2], 16)}, ${parseInt(m[3], 16)})`
+}
+
 test.describe('OrigamCounter', () => {
     test.setTimeout(120000)
 
@@ -214,6 +227,40 @@ test.describe('OrigamCounter', () => {
             const display = await counter.evaluate(el => getComputedStyle(el).display)
             expect(display).not.toBe('none')
 
+            // ⛔ `opacity` EST ANIMEE — meme bloc `transition-property: color,
+            // opacity` sur 150ms (OrigamCounter.vue:175-177) que le test
+            // suivant. Une lecture SYNCHRONE juste apres le toggle renvoyait
+            // `1`, soit la valeur de DEPART : le test annoncait « la prop ne
+            // fait rien » sur du code correct.
+            //
+            // ⛔ TAUX MESURE — la version precedente de ce commentaire disait
+            // « 1 echec sur 5 ». C'est FAUX, et remesure : sur `develop`
+            // (`17b0e7eec`), `--repeat-each=5`, `E2E_STATIC=1`, chromium, port
+            // isole, machine au repos, ce test echoue **5 fois sur 5**, et
+            // toujours avec la MEME valeur recue (`1` exactement, jamais un
+            // intermediaire). C'est la signature d'une lecture faite AVANT que
+            // la transition n'ait bouge d'un pixel, pas d'un alea.
+            //
+            // Le taux depend de la charge machine — c'est ce qui explique le
+            // « 1 sur 5 » et le « 1 des 2 est tombe » du ticket : plus la
+            // machine est chargee, plus la lecture synchrone arrive TARD, donc
+            // plus elle a de chances de passer par accident. Un test qui
+            // reussit parce que la machine rame n'est pas un test vert.
+            // `retries: 1` finissait d'absorber ce qui restait en CI.
+            //
+            // La parade est de sonder jusqu'a la valeur STABILISEE, lue sur le
+            // token que la regle consomme (`--origam-counter---opacity`), et
+            // non jusqu'au premier echantillon qui differe — c'est exactement
+            // la nuance qui manquait au test suivant (voir son commentaire).
+            const dimTarget = parseFloat(await counter.evaluate(el =>
+                getComputedStyle(el).getPropertyValue('--origam-counter---opacity').trim()))
+            expect(dimTarget).toBeGreaterThan(0)
+            expect(dimTarget).toBeLessThan(activeOpacity)
+
+            await expect
+                .poll(async () => parseFloat(await counter.evaluate(el => getComputedStyle(el).opacity)), { timeout: 5000 })
+                .toBeCloseTo(dimTarget, 2)
+
             const dimmedOpacity = parseFloat(await counter.evaluate(el => getComputedStyle(el).opacity))
             expect(dimmedOpacity).toBeGreaterThan(0)
             expect(dimmedOpacity).toBeLessThan(activeOpacity)
@@ -244,12 +291,45 @@ test.describe('OrigamCounter', () => {
             // 600ms d'attente : `color` = `rgb(185, 28, 28)`, soit exactement
             // `--origam-counter---color-error` = `#b91c1c`.
             //
-            // `expect.poll` relit jusqu'a stabilisation au lieu de deviner un
-            // `waitForTimeout` — meme esprit que le test « la police n'est pas
-            // animee » plus bas, qui documente le cas symetrique.
+            // ⛔⛔ ET LA VERSION PRECEDENTE DE CETTE PARADE NE SONDAIT PAS LA
+            // BONNE CHOSE (#820). `expect.poll(...).not.toBe(baseColor)` sort
+            // au PREMIER echantillon qui differe de la couleur de depart —
+            // c'est-a-dire a la premiere image de l'interpolation, pas a la
+            // derniere. La lecture synchrone qui suivait tombait donc au
+            // milieu de la transition, et la comparaison ABSOLUE de la ligne
+            // finale echouait.
+            //
+            // Mesure sur `develop` (`17b0e7eec`), `--repeat-each=5`,
+            // `E2E_STATIC=1`, chromium, port isole : **5 echecs sur 5** — un
+            // echec SYSTEMATIQUE, que `retries: 1` transformait en vert en CI.
+            // Les valeurs recues etaient toutes DIFFERENTES les unes des
+            // autres — `rgb(138,51,191)`, `rgb(137,51,191)`, `rgb(149,46,152)`,
+            // `rgb(137,51,191)`, `rgb(167,37,90)` — et toutes situees ENTRE la
+            // couleur de base et la cible `rgb(185,28,28)`. C'est la signature
+            // d'une interpolation lue a des instants differents, pas celle
+            // d'une couleur fausse : un vrai defaut de couleur rendrait la
+            // MEME valeur a chaque passage.
+            //
+            // La parade correcte est de sonder jusqu'a la valeur CIBLE, lue
+            // sur le token que la regle consomme.
+            //
+            // ✅ CONTROLE NEGATIF — ce n'est pas qu'une intention. La regle
+            // `&--error { color: var(--origam-counter---color-error) }` de
+            // `OrigamCounter.vue` a ete neutralisee, les stories rebatties,
+            // et ce test repasse bien au ROUGE (1 failed). La sonde n'atteint
+            // jamais la cible et `expect.poll` expire, comme annonce — ce que
+            // la version « different de la base » ne garantissait PAS : elle
+            // sortait au premier echantillon different, donc une regle d'erreur
+            // supprimee mais une couleur qui bouge pour une autre raison
+            // l'aurait satisfaite.
+            const tokenError = await counter.evaluate(el =>
+                getComputedStyle(el).getPropertyValue('--origam-counter---color-error').trim())
+            expect(tokenError).toBe('#b91c1c')
+
+            const expectedRgb = hexToRgb(tokenError)
             await expect
                 .poll(async () => counter.evaluate(el => getComputedStyle(el).color), { timeout: 5000 })
-                .not.toBe(baseColor)
+                .toBe(expectedRgb)
 
             const errorColor = await counter.evaluate(el => getComputedStyle(el).color)
             expect(errorColor).not.toBe('rgba(0, 0, 0, 0)')
@@ -258,9 +338,7 @@ test.describe('OrigamCounter', () => {
 
             // Valeur ABSOLUE, pas un simple ecart : la couleur rendue doit
             // etre celle du token d'erreur, pas « une autre couleur ».
-            const tokenError = await counter.evaluate(el =>
-                getComputedStyle(el).getPropertyValue('--origam-counter---color-error').trim())
-            expect(tokenError).toBe('#b91c1c')
+            expect(expectedRgb).toBe('rgb(185, 28, 28)')
             expect(errorColor).toBe('rgb(185, 28, 28)')
         })
     })

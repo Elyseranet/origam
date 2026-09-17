@@ -35,10 +35,25 @@ export interface IRatingFieldItemProps extends ICommonsComponentProps, ITagProps
 }
 
 /** Emits fired by `<OrigamRatingFieldItem>` — click + hover surface
- *  (pointer enter / leave drive the half-rating preview). */
+ *  (pointer enter / leave drive the half-rating preview), plus the two
+ *  KEYBOARD channels added by #812.
+ *
+ *  `change` is the native `<input type="radio">` change event. It is the only
+ *  signal a keyboard selection produces: the browser's own radio-group
+ *  navigation (arrows, `Space`) fires `click` + `change` on the newly selected
+ *  radio and never touches the star `<div>` the pointer path goes through. Not
+ *  forwarding it is exactly why arrows moved nothing before #812.
+ *
+ *  `keydown` carries the keys the platform does NOT implement for a radio
+ *  group — measured in Chromium: `Home` and `End` are plain no-ops natively,
+ *  so the WAI-ARIA radiogroup pattern's "go to first / last" has to be
+ *  written. The parent also uses this channel to cancel the native arrow /
+ *  `Space` default while `readonly`. */
 export interface IRatingFieldItemEmits extends IClickEmits {
     (e: 'mouseenter', event: MouseEvent): void
     (e: 'mouseleave', event: MouseEvent): void
+    (e: 'change', event: Event): void
+    (e: 'keydown', event: KeyboardEvent): void
 }
 
 /** Slot signatures for `<OrigamRatingFieldItem>`. */
