@@ -78,48 +78,105 @@ function hydratedAttrs (page: Page): Promise<IThemeAttrs> {
     }))
 }
 
+/** Une écriture de `data-theme` / `data-mode` sur `<html>`, horodatée. */
+interface IAttrWrite {
+    at: number
+    name: string
+    value: string
+}
+
 /**
- * Attend la fin de l'hydratation, puis laisse unhead rendre le `<head>`.
+ * Enregistre CHAQUE écriture de `data-theme` / `data-mode` sur `<html>`.
  *
- * ⛔ Ne PAS utiliser `networkidle` : mesuré sur ce serveur de dev, il expire
- * parfois à 30 s sans que rien ne soit évalué (la liaison HMR de Vite reste
- * ouverte). On attend l'app montée, puis la réécriture éventuelle du `<head>`,
- * qui est ce qu'on cherche à observer — un état, pas une durée.
+ * ⛔ C'est le point de conception de ce fichier. Une simple lecture de
+ * l'attribut « après hydratation » ne suffit pas : la réécriture fautive
+ * arrive ~1,36 s après la navigation, donc une version antérieure de cette
+ * spec — qui lisait après deux `requestAnimationFrame` — passait AU VERT SUR
+ * LE CODE DÉFECTUEUX. Vérifié en la jouant contre le produit non corrigé :
+ * 4 passed. Une spec verte des deux côtés ne prouve rien.
+ *
+ * On observe donc l'INVARIANT (« rien ne réécrit ces attributs ») sur une
+ * fenêtre, au lieu d'échantillonner un instant.
  */
-async function waitForHydration (page: Page): Promise<void> {
+async function recordAttrWrites (page: Page): Promise<void> {
+    await page.addInitScript(() => {
+        const store: IAttrWrite[] = []
+        ;(window as unknown as { __origamAttrWrites: IAttrWrite[] }).__origamAttrWrites = store
+
+        const el = document.documentElement
+        if (!el) return
+
+        const original = el.setAttribute.bind(el)
+        el.setAttribute = (name: string, value: string) => {
+            if (name === 'data-theme' || name === 'data-mode') {
+                store.push({ at: Math.round(performance.now()), name, value })
+            }
+            return original(name, value)
+        }
+    })
+}
+
+/**
+ * Laisse passer la fenêtre d'observation : hydratation, puis le rendu du
+ * `<head>` par unhead qui la suit.
+ *
+ * ⛔ Ce n'est PAS un délai posé pour faire passer un test instable — il n'y a
+ * rien à attendre qui deviendrait vrai. C'est la durée pendant laquelle on
+ * SURVEILLE que rien ne change : la réécriture mesurée tombe à +1,36 s, la
+ * fenêtre est prise à plus du double. Un test qui « attend l'état » n'a pas de
+ * sens pour une propriété de non-événement.
+ */
+const OBSERVATION_WINDOW_MS = 3_500
+
+async function observeAfterHydration (page: Page): Promise<IAttrWrite[]> {
     await page.waitForFunction(
         () => Boolean((document.querySelector('#__nuxt') as unknown as { __vue_app__?: unknown } | null)?.__vue_app__),
         undefined,
         { timeout: 20_000 }
     )
 
-    // La réécriture fautive arrivait APRÈS l'hydratation (unhead rend le head
-    // sur un microtask suivant). On laisse deux tours de boucle de rendu.
-    await page.evaluate(() => new Promise<void>(resolve => {
-        requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
-    }))
+    await page.waitForFunction(
+        (deadline: number) => performance.now() >= deadline,
+        OBSERVATION_WINDOW_MS,
+        { timeout: OBSERVATION_WINDOW_MS + 15_000 }
+    )
+
+    return page.evaluate(() => (window as unknown as { __origamAttrWrites: IAttrWrite[] }).__origamAttrWrites ?? [])
 }
 
-async function readBothSides (page: Page, response: Response | null): Promise<{ served: IThemeAttrs, hydrated: IThemeAttrs }> {
+async function readBothSides (page: Page, response: Response | null): Promise<{ served: IThemeAttrs, hydrated: IThemeAttrs, writes: IAttrWrite[] }> {
     expect(response, 'aucune réponse pour le document principal').not.toBeNull()
 
     const served = servedAttrs(await response!.text())
-    await waitForHydration(page)
+    const writes = await observeAfterHydration(page)
 
-    return { served, hydrated: await hydratedAttrs(page) }
+    return { served, hydrated: await hydratedAttrs(page), writes }
+}
+
+/** Les écritures qui s'écartent de ce que le serveur avait rendu. */
+function divergentWrites (writes: IAttrWrite[], served: IThemeAttrs): IAttrWrite[] {
+    return writes.filter(w => w.value !== (w.name === 'data-theme' ? served.theme : served.mode))
 }
 
 test.describe('Thème marketing — ce que le serveur rend survit à l\'hydratation', () => {
 
     for (const path of SAMPLED_PATHS) {
         test(`${path} — le thème servi n'est pas réécrit côté client`, async ({ page }) => {
+            await recordAttrWrites(page)
+
             const response = await page.goto(path)
-            const { served, hydrated } = await readBothSides(page, response)
+            const { served, hydrated, writes } = await readBothSides(page, response)
 
             expect(
                 served.theme,
                 `${path} : le serveur n'a émis aucun data-theme sur <html>`
             ).not.toBeNull()
+
+            expect(
+                divergentWrites(writes, served),
+                `${path} : <html> a été réécrit avec une valeur que le serveur n'avait pas rendue ` +
+                `(servi data-theme="${ served.theme }" data-mode="${ served.mode }")`
+            ).toEqual([])
 
             expect(
                 hydrated.theme,
@@ -140,6 +197,8 @@ test.describe('Thème marketing — ce que le serveur rend survit à l\'hydratat
             { name: 'origam-theme', value: PICKED_BRAND, url: baseURL },
             { name: 'origam-mode', value: PICKED_MODE, url: baseURL }
         ])
+
+        await recordAttrWrites(page)
 
         const response = await page.goto('/')
         const { served, hydrated } = await readBothSides(page, response)

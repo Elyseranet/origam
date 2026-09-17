@@ -20,6 +20,20 @@ const MARKETING_GREEN_SPECS = [
     'nav-link-availability.spec.ts',
     'marketing-nav-ssr.spec.ts',
 
+    // #835 — garde le theming du site entier : le thème que le serveur rend
+    // doit encore être là après hydratation. Le défaut qu'elle a trouvé
+    // (`data-theme: 'geek'` en dur dans `app.head.htmlAttrs`, réécrit par
+    // unhead ~1,36 s après la navigation) cassait les DEUX axes, sur toutes
+    // les pages, pour tous les visiteurs, depuis le 2026-06-12 — et rien ne
+    // le disait, parce qu'aucun job de CI n'exécutait les specs marketing.
+    //
+    // Admise ici parce qu'elle tient le contrat de la liste, mesuré :
+    //   - contrôle positif : 4/4 ROUGE contre le produit non corrigé,
+    //     4/4 VERT après ;
+    //   - stabilité : 20 passed en `--repeat-each=5 --retries=0`, 1,2 min,
+    //     machine au repos, serveur de dev isolé sur un port à nous.
+    'marketing-theme-honored.spec.ts',
+
     // #761 — relève les requêtes réellement émises et échoue en nommant l'hôte
     // fautif dès qu'une page recontacte un tiers (un `<link>` vers un CDN, une
     // police, un script d'analyse). C'est le filet qui garde honnête la page
