@@ -11,6 +11,40 @@
  * This file is now HAND-MAINTAINED SOURCE: edit it directly. There is no
  * regeneration step, and no "do not edit" rule any more. A design-token
  * pipeline may be reintroduced later, once the DS is stable.
+ *
+ * ── TWO BLOCKS, ONE DECLARATION SET ────────────────────────────────────────
+ * 1. `[data-theme="dark"]`            — the theme asked for EXPLICITLY.
+ * 2. `@media (prefers-color-scheme: dark) {
+ *        :root:not([data-theme]):not([data-mode]) }`
+ *                                     — AUTO mode: the OS preference, and
+ *                                       only while the page has expressed no
+ *                                       preference of its own, ON EITHER AXIS.
+ *
+ * ⛔ BOTH guards are load-bearing, and the second one is not optional.
+ * This DS is TWO-AXIS (see `useTheme`): `data-theme` carries the brand and
+ * `data-mode` carries light/dark. `applyModeToDocument()` ALWAYS writes a
+ * CONCRETE `data-mode`, and the Nuxt plugin OMITS `data-theme` when the
+ * brand resolves to `'auto'`. A page that pinned light therefore looks like
+ * `<html data-mode="light">` — no `data-theme` at all. With `:not([data-theme])`
+ * alone this media query MATCHES that page and repaints it dark against an
+ * explicit choice. Measured in Chromium before adding `:not([data-mode])`:
+ * OS dark + `data-mode="light"` → `rgb(10,10,10)` (the dark surface) instead
+ * of `rgb(255,255,255)`. The same shape is already used by `OrigamCode.vue`.
+ *
+ * Specificity: `:root:not([data-theme]):not([data-mode])` is (0,3,0) — enough
+ * to outrank light.css's `:root, [data-theme="light"]` (0,1,0) when nothing is
+ * pinned — while failing to match at all as soon as either axis is written.
+ *
+ * ⛔ The two blocks carry the SAME declarations, and this file is BYTE-IDENTICAL
+ * to its twin — the whole file, header included. The pair is
+ * `src/assets/css/tokens/dark.css` ⇄ `src/assets/scss/tokens/_dark.scss`, and
+ * the same holds for every other token pair.
+ *
+ * Why it matters here in particular: `main.css` — the `./styles` export, the
+ * entry a consumer gets by default — is compiled from the SCSS side. A block
+ * present in the CSS file and missing from the SCSS one ships a bundle with NO
+ * auto dark mode, while this file and the documentation both say otherwise.
+ * That was #794. `scripts/guards/token-twins.mjs` now fails on any divergence.
  */
 [data-theme="dark"] {
   --origam-color__surface---default: var(--origam-color__neutral---950);
@@ -2745,7 +2779,7 @@
   --origam-tab-panels__panel--focus---outline-color: currentColor;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) {
+  :root:not([data-theme]):not([data-mode]) {
     --origam-color__surface---default: var(--origam-color__neutral---950);
     --origam-color__surface---raised: var(--origam-color__neutral---900);
     --origam-color__surface---overlay: var(--origam-color__neutral---800);

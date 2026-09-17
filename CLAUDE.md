@@ -824,8 +824,33 @@ When migrating a component:
 ## Multi-theme
 
 `<html data-theme="light|dark|brand-x">` switches the active token set.
-`prefers-color-scheme: dark` is honoured when no `data-theme` attribute
-is present (auto mode).
+
+`prefers-color-scheme: dark` is honoured **only when the page has pinned
+nothing on either axis** — no `data-theme` AND no `data-mode`. The rule
+shipped in `dark.css` / `_dark.scss` is:
+
+```css
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]):not([data-mode]) { /* the dark token set */ }
+}
+```
+
+Both guards are load-bearing. `useTheme()`'s `applyModeToDocument()` ALWAYS
+writes a concrete `data-mode`, and the Nuxt plugin OMITS `data-theme` when the
+brand resolves to `'auto'` — so a page that pinned light looks like
+`<html data-mode="light">`, with no `data-theme` at all. Guarding on
+`data-theme` alone would repaint that page dark against an explicit choice
+(measured in Chromium, #794).
+
+⚠️ Until **#794** this block existed in `dark.css` but NOT in its SCSS twin,
+and `main.css` — what the `./styles` export resolves to — is compiled from the
+SCSS. The published bundle therefore had no automatic dark mode while this
+paragraph claimed it did. That is the reason guard 27 (`token-twins`) exists.
+
+⚠️ Still NOT covered by the static sheets: `data-mode="dark"` **alone**, with
+no `data-theme`, paints nothing. `[data-mode="…"]` rules are emitted only by
+the runtime theme matrix (`apply-theme.util.ts`, injected by `createOrigam()`);
+`origam/styles` contains zero occurrence of `data-mode`. Tracked as **#807**.
 
 Runtime helpers:
 - `useTheme()` (composable) — singleton ref + persistence + toggle.
@@ -1062,8 +1087,9 @@ The global pre-delivery policy (TU + e2e + security) applies. Specific to
 origam:
 - Run tests on **Node 24** (`.nvmrc`); Node 18 produces unrelated
   `crypto.hash` failures.
-- `pnpm -F origam guards` must stay at **25/25** (measured 2026-09-16; the
-  `17/17` written here was stale — recount, never quote).
+- `pnpm -F origam guards` must stay at **27/27** (measured 2026-09-17, this
+  worktree, real exit code; it read `25/25` an hour earlier and `17/17` before
+  that — recount, never quote).
 - `pnpm -F origam guards:self` must stay at **13/13**. It runs the guards' own
   detectors, discovered from `scripts/guards/lib/*.selftest.mjs`. A guard whose
   extractor has regressed goes QUIET, and a silent detector and a clean repo

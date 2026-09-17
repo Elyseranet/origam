@@ -29,6 +29,7 @@ const GUARDS = [
     'comment-format.mjs',
     'pnpm-tree-integrity.mjs',
     'token-var-channels.mjs',
+    'token-twins.mjs',
     'dead-handlers.mjs',
     'function-as-value.mjs',
     'id-forwarding.mjs',
