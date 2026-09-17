@@ -36,11 +36,18 @@ describe('useElevation — classes-first', () => {
         expect(api().elevationClasses.value).toContain(`origam--shadow-${rung}`)
     })
 
-    it('non-utility rung "2xl" → no utility class, inline style still emitted', () => {
+    // ⚠️ #813 — `2xl` / `3xl` sont acceptes mais AUCUNE feuille ne declare leur
+    // token. La reference etait emise NUE, ce qui rendait la declaration
+    // invalide au computed-value time : elle gagnait la cascade puis calculait
+    // `none`, EFFACANT l'ombre propre du composant au lieu de lui ceder la
+    // place. Ils portent desormais un repli sur `xl` (`SHADOW_RUNG_FALLBACK`).
+    // Le rendu reel est mesure en navigateur — jsdom ne resout jamais `var()`
+    // (#398) — dans `e2e/elevation-rungs.spec.ts`.
+    it('non-utility rung "2xl" → no utility class, inline style carries a fallback', () => {
         const { api } = mountWith('2xl')
         const cls = api().elevationClasses.value
         expect(cls.some(c => /^origam--shadow-/.test(c))).toBe(false)
-        expect(api().elevationStyles.value).toContain('box-shadow: var(--origam-shadow---2xl)')
+        expect(api().elevationStyles.value).toContain('box-shadow: var(--origam-shadow---2xl, var(--origam-shadow---xl))')
     })
 
     it('Material number 8 → maps to "md" rung utility', () => {
@@ -129,9 +136,18 @@ describe('useElevation — custom box-shadow passthrough', () => {
         expect(api().elevationStyles.value).toEqual(['box-shadow: 0 4px 12px rgba(0,0,0,.24)'])
     })
 
-    it.each(['none', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'])('named rung "%s" is unaffected by the custom passthrough', (rung) => {
+    // Les six echelons DECLARES restent une reference nue : leur token existe,
+    // un repli serait du bruit mort.
+    it.each(['none', 'xs', 'sm', 'md', 'lg', 'xl'])('named rung "%s" is unaffected by the custom passthrough', (rung) => {
         const { api } = mountWith(rung)
         expect(api().elevationStyles.value).toEqual([`box-shadow: var(--origam-shadow---${rung})`])
+    })
+
+    // Les deux echelons SANS token portent leur repli (#813) — et le portent
+    // par la meme branche, donc ils restent hors du passthrough custom.
+    it.each(['2xl', '3xl'])('named rung "%s" carries its fallback and stays out of the custom passthrough', (rung) => {
+        const { api } = mountWith(rung)
+        expect(api().elevationStyles.value).toEqual([`box-shadow: var(--origam-shadow---${rung}, var(--origam-shadow---xl))`])
     })
 
     it.each([0, 1, 3, 8, 16, 24])('Material number %i is unaffected by the custom passthrough', (level) => {

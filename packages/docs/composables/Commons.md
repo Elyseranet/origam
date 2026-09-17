@@ -921,20 +921,31 @@ ET `elevationStyles` (toujours une declaration `box-shadow: var(--origam-shadow-
 ou la valeur custom telle quelle) — les deux canaux emis en parallele,
 jamais l'un a la place de l'autre (strategie A, cf. CLAUDE.md racine).
 
-⛔ `2xl` et `3xl` SONT ACCEPTES ET NE PEIGNENT RIEN — #813.
-`ORIGAM_SHADOW_RUNGS` en declare huit, les feuilles de tokens n'en
-declarent que six : `--origam-shadow---2xl` et `---3xl` n'existent dans
-aucune feuille du DS. Et contrairement a `useRounded` — qui emet chaque
-echelon avec un repli dur (`var(--origam-radius---md, 8px)`) — on emet
-ici la reference nue. Un `var()` non resolu rend la declaration invalide
-AU COMPUTED-VALUE TIME : la propriete calcule `unset`, et `box-shadow`
-n'etant pas heritee, cela vaut `none`. La declaration gagne pourtant la
-cascade : elle ne cede donc pas la place a la regle scopee du composant,
-elle l'EFFACE. Mesure Chromium — regle du composant seule
-`rgba(0,0,0,.9) 0px 1px 2px 0px`, echelon `md` (token declare)
-`rgba(0,0,0,.3) 0px 4px 8px 0px`, echelon `2xl` (token absent) `none`.
-Le garde `token-var-channels` ne le voit pas : la reference est
-concatenee en TypeScript, pas ecrite dans une feuille.
+⚠️ `2xl` et `3xl` RENDENT COMME `xl` — #813, corrige par un repli.
+`ORIGAM_SHADOW_RUNGS` declare huit echelons, les feuilles n'en declarent
+que six : `--origam-shadow---2xl` et `---3xl` n'existent dans aucune
+feuille du DS. On emettait la reference NUE, et un `var()` non resolu
+rend la declaration invalide AU COMPUTED-VALUE TIME : la propriete
+calcule `unset`, et `box-shadow` n'etant pas heritee, cela vaut `none`.
+La declaration gagnait pourtant la cascade : elle ne cedait donc pas la
+place a la regle scopee du composant, elle l'EFFACAIT. Mesure Chromium —
+regle du composant seule `rgba(0,0,0,.9) 0px 1px 2px 0px`, avec
+`elevation="2xl"` : `none`.
+
+Ces deux echelons passent desormais par `SHADOW_RUNG_FALLBACK`, comme
+`useRounded` le fait depuis toujours via `UTILITY_RADIUS_FALLBACK` — ce
+qui explique que le canal `rounded` n'ait jamais eu ce defaut. ⚠️ Ils
+rendent donc EXACTEMENT comme `xl` : ils cessent d'effacer, ils ne
+deviennent pas deux echelons de plus. Declarer de vrais tokens est une
+decision de DESIGN — `xl` est deja le sommet de l'echelle Material 0..24
+que ce composable mappe (`MATERIAL_ELEVATION_TOP_RUNG`), il n'y a aucun
+echelon au-dessus a emprunter. Le jour ou ces tokens existeront, le repli
+deviendra inerte tout seul.
+
+⛔ Le garde `token-var-channels` ne voit toujours RIEN de tout ceci : la
+reference est concatenee en TypeScript, pas ecrite dans une feuille.
+C'est l'angle mort structurel suivi par #823 — 90 references `var()`
+emises depuis du TS, aucune couverte par un garde.
 
 `bgColor` est accepte pour compatibilite mais IGNORE (n'affecte plus
 ni `elevationClasses` ni `elevationStyles`) — passer une valeur autre
@@ -1854,7 +1865,7 @@ Accepted per-corner value forms are documented on
 
 **Source** : `packages/ds/src/composables/Commons/rounded.composable.ts`
 
-**Consommateurs** (73) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, …
+**Consommateurs** (74) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, …
 
 ## `useRoute`
 
