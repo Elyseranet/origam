@@ -265,9 +265,13 @@ function resolveForeground (
  * legacy static resolver, not a variant of it — kept in its own file
  * rather than forced to share a base.
  *
- * Returns the same shape as before — `{ colorStyles, color, bgColor }` —
- * so existing callers (`OrigamAudio`, `OrigamVideo`) keep working
- * without changes.
+ * Returns `{ colorClasses, colorStyles, color, bgColor }`. `color` and
+ * `bgColor` are pass-through computeds over the raw props, not resolved
+ * declarations. The two real callers are `OrigamAudio` and `OrigamVideo`.
+ *
+ * `colorClasses` is EMPTY as soon as `isHover` / `isActive` / `isDisabled`
+ * is true: utility classes are static, and the resolved token is no longer
+ * the resting one `.origam--bg-{intent}` names.
  *
  * `colorStyles` is an array of CSS declarations like
  * `'background-color: …'`, either pointing to a token
