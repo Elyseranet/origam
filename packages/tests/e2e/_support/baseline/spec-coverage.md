@@ -258,3 +258,150 @@ local **sans** la variable exécute les **211** specs de la config Histoire
 (241 moins les 30 specs marketing écartées par `testIgnore` — mesuré), donc
 un périmètre différent de celui de la CI. Ce garde mesure le périmètre **de
 la CI** ; il ne dit rien de l'écart entre les deux, qui reste à documenter.
+
+---
+
+# Les 28 marketing baselinées ont enfin été EXÉCUTÉES (#835)
+
+#824 avait classé les 12 specs marketing **sans les exécuter** — il le disait
+dans ses non-vérifiés. #835 comble ce trou. Voici ce que ça a donné, et le
+critère de classement, pour que chaque ligne puisse être contestée.
+
+## Périmètre réel — mesuré, pas repris
+
+En interrogeant Playwright lui-même (`--list`, config marketing) :
+
+| | |
+|---|---|
+| fichiers marketing (`MARKETING_SPEC_PATTERNS`) | **31** |
+| tests marketing | **469** |
+
+⛔ Le chiffre de **75 échecs** du ticket était un relevé d'un agent sur **14
+fichiers**, pas un balayage. Le périmètre réel est plus du double.
+
+## Ce qui a pu être mesuré, et ce qui ne l'a pas été
+
+⚠️ **Le balayage complet n'a PAS abouti : le worker SSR du serveur de dev est
+mort en cours de route — #248, connu, hors périmètre de ce ticket.** Signature
+sans ambiguïté : à partir du test **#268**, **21 échecs consécutifs**, puis
+`curl` sur toute page renvoyant **HTTP 500** sur un process à 42 Mo de RSS et
+0 % de CPU, et un journal de dev de **1,2 Go** de dumps de structures
+circulaires.
+
+| | |
+|---|---|
+| tests exécutés avant la mort du worker | **267** |
+| dont échecs | **28** |
+| tests jamais exécutés | **~202** (13 fichiers) |
+
+**Les 17 fichiers couverts** : `api-docs-generated`, `changelog`, `components`,
+`composables`, `home-cta`, `home-features`, `home-hero`, `home-kpis`,
+`home-playground`, `home-showcase`, `home-themes`, `installation`,
+`marketing-brand-presets`, `marketing-nav-locale`, `marketing-nav-ssr`,
+`marketing-no-third-party`, `marketing-primary-nav` — plus
+`marketing-theme-builder` **partiellement** (19 tests sur 30, les derniers dans
+la zone de crash, donc **non fiables**).
+
+**Les 13 fichiers non exécutés** : `marketing-theme-live-switch`,
+`marketing-theming`, `marketing-theming-controls`,
+`marketing-theming-isolation`, `marketing-theming-theme-bg-and-triggers`,
+`marketing-theming-toggle-vs-split-parity`,
+`marketing-theming-viewport-height`, `nav-link-availability` (traitée par
+#836), `roadmap`, `theming-feedback-tokens`, `types`, `why-origam`,
+`wireframe`.
+
+## Le critère de classement
+
+Une spec rouge est classée **spec périmée** quand le produit a changé
+DÉLIBÉRÉMENT et que le commit qui l'a changé est identifiable ; **vrai
+défaut** quand le produit ne fait pas ce qu'il déclare faire. Les deux se
+tranchent en lisant la source du produit, jamais en regardant lequel des deux
+est le plus simple à modifier.
+
+### Vrai défaut produit — 6 échecs, **une seule cause**
+
+Les cinq tests « Sobre — … » de `home-cta` / `home-features` / `home-kpis`
+mesuraient des styles calculés sur une page peinte par le **mauvais thème**.
+Cause : `data-theme: 'geek'` codé en dur dans `app.head.htmlAttrs`
+(`nuxt.config.ts`), réécrit par unhead ~1,36 s après la navigation, par-dessus
+ce que le serveur avait rendu. Les deux axes (marque ET clair/sombre) étaient
+écrasés, sur toutes les pages, pour tous les visiteurs, depuis le 2026-06-12.
+
+➡️ **Ces specs n'étaient pas périmées : elles attrapaient un vrai défaut**, que
+personne ne voyait parce qu'aucun job de CI n'exécute les specs marketing.
+Corrigé ; gardé par `marketing-theme-honored.spec.ts`, désormais dans
+`MARKETING_GREEN_SPECS`.
+
+Le sixième — `home-showcase.spec.ts:238` (AvatarGroup sous `cartoon`, #263) —
+est **resté rouge après ce correctif** et n'a pas été instruit. Voir plus bas.
+
+### Spec périmée — 11 échecs, toutes datables
+
+| spec | ce qu'elle épinglait | ce que le produit fait | depuis |
+|---|---|---|---|
+| `changelog` ×2 | version par défaut `2.6.0` | `CHANGELOG_VERSIONS` regénéré à chaque release, aujourd'hui `2.17.1` | chaque release |
+| `home-cta` ×2 | `/docs`, `/docs/getting-started` | `/components`, `/installation` (`cta.const.ts`) | `ddb07005b`, 2026-06-17 |
+| `home-features` | `29 chart primitives` | `26` (`en.json`) | inventaire |
+| `home-hero` | `95 components` | `218` (`en.json`) | inventaire |
+| `home-kpis` ×2 | `95`, `29` | `218`, `26` (`kpis.const.ts`) | inventaire |
+| `home-themes` ×3 | tuiles `brand-a` / `brand-b`, 3 surfaces distinctes | `cartoon` / `apple`, surfaces blanches légitimes | `THEME_PREVIEW_TILES` |
+
+⛔ **Le remède n'est pas de recopier la nouvelle valeur quand la valeur est un
+INVENTAIRE.** `29 → 26` a BAISSÉ : même une borne « au moins N » ne tiendrait
+pas. Ces assertions portent désormais sur la forme (« un nombre suivi de
+`components` ») et non sur le compte. Là où la valeur est une DÉCISION produit
+— la cible d'un CTA, le jeu de tuiles de la vitrine — elle reste épinglée, sur
+ce qui est réellement servi.
+
+### Non tranché — 11 échecs, **explicitement laissés ouverts**
+
+Ils restent dans la baseline, avec leur motif :
+
+| spec | échecs | motif de l'exclusion |
+|---|---|---|
+| `marketing-theme-builder` | 7 | durées de 19 s à 2,6 min par test : coût d'accumulation de `waitForLoadState('networkidle')`, qui n'aboutit pas toujours sur un serveur Nuxt de dev (une expiration à 30 s mesurée directement). Le fichier en compte **34 occurrences**. Réparer suppose de remplacer l'attente dans 6 fichiers `/theming` — chantier à part entière, pas une retouche. |
+| `marketing-brand-presets` | 1 | même cause (8 occurrences de `networkidle`), même chantier. |
+| `components` | 2 | section « Design Tokens » et page de repli 404 ; dépendantes des données servies par PostgreSQL, non instruites. |
+| `composables` | 1 | page de repli 404 pour un slug inconnu ; même famille que ci-dessus. |
+
+⚠️ **`home-showcase.spec.ts:238` (#263) est rouge APRÈS le correctif de thème**
+et n'a pas été instruit non plus. Mesuré en marge : dans la vitrine, la tuile
+`cartoon` rend un bouton à `border-top-width: 1px` et `box-shadow: none`, là où
+l'identité cartoon annonce 3 px et une ombre dure. Ça ressemble à un vrai
+défaut de theming, pas à une spec périmée — **à instruire, ce n'est pas établi.**
+
+## Ce qui reste explicitement hors de ce lot
+
+- Les **13 fichiers jamais exécutés** (~202 tests) : le compte réel du lot
+  marketing n'est donc **pas** établi, et ne le sera pas tant que #248 rendra
+  un balayage complet impossible en une passe.
+- La famille `networkidle` sur `/theming` (6 fichiers) : identifiée, chiffrée,
+  non corrigée.
+- Aucune de ces specs n'a été promue en masse dans `MARKETING_GREEN_SPECS` —
+  une seule l'a été, neuve, avec son contrôle positif et sa mesure de
+  stabilité. C'est la consigne de #771 : une CI rouge en permanence est le
+  défaut symétrique de celle qui n'exécute rien.
+
+## ⚠️ Ce que le correctif de thème a mis au jour — à arbitrer
+
+Restaurer le thème configuré (`origam`) fait apparaître une violation
+d'accessibilité qui existait déjà et que le `geek` en dur masquait.
+`components.spec.ts:314` (audit axe-core sur `/components/btn`) **passait
+avant, échoue après** — mesuré des deux côtés sur la vraie spec :
+
+```
+color-contrast · serious · 9 nœuds
+  #737373 sur #f7f7f7  →  4.42:1   (.component-hero__preview-variant-label, 10px)
+  #737373 sur #f5f5f5  →  4.34:1   (.component-tokens__meta-label, 12px bold)
+  seuil WCAG 2 AA : 4.5:1
+```
+
+Sous `geek`, ce même libellé était peint `rgb(126, 95, 176)` — un violet — sur
+une surface teintée : le couple passait. Sous `origam`, le gris secondaire sur
+surface `raised` ne passe pas.
+
+⛔ **Ce n'est donc pas une régression du correctif : c'est un défaut du thème
+`origam` du site marketing, rendu visible.** Il n'est pas corrigé ici — choisir
+le jeton de remplacement est une décision de design, pas une retouche de test.
+`components.spec.ts` n'étant dans aucune liste verte, la CI ne rougit pas.
+**À arbitrer, puis à ticketer.**
