@@ -231,10 +231,22 @@ test.describe('OrigamCounter', () => {
             // opacity` sur 150ms (OrigamCounter.vue:175-177) que le test
             // suivant. Une lecture SYNCHRONE juste apres le toggle renvoyait
             // `1`, soit la valeur de DEPART : le test annoncait « la prop ne
-            // fait rien » sur du code correct. Mesure #820 : 1 echec sur 5
-            // executions du meme fichier (`--repeat-each=5`, `E2E_STATIC=1`,
-            // chromium, port isole) — une vraie instabilite, absorbee jusqu'ici
-            // par `retries: 1` en CI.
+            // fait rien » sur du code correct.
+            //
+            // ⛔ TAUX MESURE — la version precedente de ce commentaire disait
+            // « 1 echec sur 5 ». C'est FAUX, et remesure : sur `develop`
+            // (`17b0e7eec`), `--repeat-each=5`, `E2E_STATIC=1`, chromium, port
+            // isole, machine au repos, ce test echoue **5 fois sur 5**, et
+            // toujours avec la MEME valeur recue (`1` exactement, jamais un
+            // intermediaire). C'est la signature d'une lecture faite AVANT que
+            // la transition n'ait bouge d'un pixel, pas d'un alea.
+            //
+            // Le taux depend de la charge machine — c'est ce qui explique le
+            // « 1 sur 5 » et le « 1 des 2 est tombe » du ticket : plus la
+            // machine est chargee, plus la lecture synchrone arrive TARD, donc
+            // plus elle a de chances de passer par accident. Un test qui
+            // reussit parce que la machine rame n'est pas un test vert.
+            // `retries: 1` finissait d'absorber ce qui restait en CI.
             //
             // La parade est de sonder jusqu'a la valeur STABILISEE, lue sur le
             // token que la regle consomme (`--origam-counter---opacity`), et
@@ -287,19 +299,29 @@ test.describe('OrigamCounter', () => {
             // milieu de la transition, et la comparaison ABSOLUE de la ligne
             // finale echouait.
             //
-            // Mesure #820 (`--repeat-each=5`, `E2E_STATIC=1`, chromium, port
-            // isole) : 5 echecs sur 5 — donc un echec SYSTEMATIQUE, que
-            // `retries: 1` transformait en vert en CI. Les valeurs recues
-            // etaient toutes differentes les unes des autres
-            // (`rgb(148,46,153)`, `rgb(159,41,117)`, `rgb(149,46,151)`,
-            // `rgb(137,52,193)`), ce qui est la signature d'une interpolation
-            // lue a des instants differents, pas celle d'une couleur fausse.
+            // Mesure sur `develop` (`17b0e7eec`), `--repeat-each=5`,
+            // `E2E_STATIC=1`, chromium, port isole : **5 echecs sur 5** — un
+            // echec SYSTEMATIQUE, que `retries: 1` transformait en vert en CI.
+            // Les valeurs recues etaient toutes DIFFERENTES les unes des
+            // autres — `rgb(138,51,191)`, `rgb(137,51,191)`, `rgb(149,46,152)`,
+            // `rgb(137,51,191)`, `rgb(167,37,90)` — et toutes situees ENTRE la
+            // couleur de base et la cible `rgb(185,28,28)`. C'est la signature
+            // d'une interpolation lue a des instants differents, pas celle
+            // d'une couleur fausse : un vrai defaut de couleur rendrait la
+            // MEME valeur a chaque passage.
             //
             // La parade correcte est de sonder jusqu'a la valeur CIBLE, lue
-            // sur le token que la regle consomme. Si la regle SCSS d'erreur
-            // disparaissait, la sonde n'atteindrait jamais la cible et le test
-            // rougirait — ce que la version « different de la base » ne
-            // garantissait pas.
+            // sur le token que la regle consomme.
+            //
+            // ✅ CONTROLE NEGATIF — ce n'est pas qu'une intention. La regle
+            // `&--error { color: var(--origam-counter---color-error) }` de
+            // `OrigamCounter.vue` a ete neutralisee, les stories rebatties,
+            // et ce test repasse bien au ROUGE (1 failed). La sonde n'atteint
+            // jamais la cible et `expect.poll` expire, comme annonce — ce que
+            // la version « different de la base » ne garantissait PAS : elle
+            // sortait au premier echantillon different, donc une regle d'erreur
+            // supprimee mais une couleur qui bouge pour une autre raison
+            // l'aurait satisfaite.
             const tokenError = await counter.evaluate(el =>
                 getComputedStyle(el).getPropertyValue('--origam-counter---color-error').trim())
             expect(tokenError).toBe('#b91c1c')
