@@ -15,6 +15,14 @@ import { IN_BROWSER } from '../../consts/Commons/commons.const'
  * jamais ete creee en mode SSR (`ssr` falsy), le Ref demarre directement a
  * `true` — pas de delai artificiel dans une app 100% client. Hors
  * navigateur (`!IN_BROWSER`), retourne un Ref fige a `false`.
+ *
+ * @description
+ * ⛔ Dans un navigateur, ce composable DEPEND de `createOrigam()` : il
+ * appelle `useDisplay()`, dont l'injection n'existe que si le plugin est
+ * installe. Mesure, montage d'un composant sans `createOrigam()` :
+ * `useHydration()` LEVE `Could not find Origam display injection`. Ce
+ * n'est donc pas un utilitaire autonome, contrairement a `useSsrBoot` qui
+ * n'injecte rien.
  ********************************************************/
 export function useHydration () {
     if (!IN_BROWSER) return shallowRef(false)

@@ -13,6 +13,23 @@ import type { ILocationStrategyData, ILocationStrategyProps } from '../../interf
  * and on strategy change, inside a disposable toggle scope.
  * Independent from `useLocation` — no shared state or call
  * dependency.
+ *
+ * @description
+ * ⛔ `locationStrategy="static"` NE POSITIONNE RIEN. `staticLocationStrategy`
+ * (utils/Commons/location.util.ts) a un corps reduit a `// TODO` : elle rend
+ * `undefined`, donc `updateLocation` reste `undefined` et `contentStyles`
+ * reste `{}`. Mesure, contenu et cible reels attaches au document :
+ * `static` → `contentStyles = {}` / `updateLocation = undefined` ;
+ * `connected` → `contentStyles` rempli (`top`, `left`, `transformOrigin`,
+ * `maxHeight`…) / `updateLocation = function`. Seules la strategie
+ * `connected` et une fonction personnalisee font quelque chose.
+ *
+ * @description
+ * Cycle de vie : tout le cablage vit dans un `useToggleScope` arme sur
+ * `data.isActive && props.locationStrategy`. L'ecouteur `resize` est pose a
+ * l'entree du scope et retire par son `onScopeDispose` ; un changement de
+ * `props.locationStrategy` appelle le `reset` du scope, qui le rejoue en
+ * entier. Hors navigateur (`!IN_BROWSER`), aucun scope n'est cree du tout.
  ********************************************************/
 export function useLocationStrategies (
     props: ILocationStrategyProps,

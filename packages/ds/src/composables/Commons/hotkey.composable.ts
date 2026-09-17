@@ -17,16 +17,27 @@ import { splitKeyCombination, splitKeySequence } from '../../utils/Commons/hotke
  *
  * @description
  * Enregistre un raccourci clavier global (`window.addEventListener`) pour
- * `keys` (une combinaison `"ctrl+k"` ou une SEQUENCE `"g g"` separee par
- * espace, avec un `sequenceTimeout` entre chaque groupe). Traduit `cmd`/`meta`
- * selon la plateforme detectee (`navigator.userAgent`) : `ctrl` attendu sur
- * non-Mac, `meta` attendu sur Mac. Ignore l'evenement quand un champ de
- * saisie a le focus, sauf `options.inputs`.
+ * `keys` (une combinaison `"ctrl+k"`, ou une SEQUENCE de groupes separes
+ * par un TIRET `"g-g"`, avec un `sequenceTimeout` entre chaque groupe).
+ * Traduit `cmd`/`meta` selon la plateforme detectee (`navigator.userAgent`) :
+ * `ctrl` attendu sur non-Mac, `meta` attendu sur Mac. Ignore l'evenement
+ * quand un champ de saisie a le focus, sauf `options.inputs`.
+ *
+ * @description
+ * ⛔ Le separateur de SEQUENCE est le TIRET, pas l'espace — cette banniere
+ * a annonce `"g g"` pendant des mois et c'est faux. Mesure :
+ * `splitKeySequence('g-g')` rend `['g','g']` (deux groupes), tandis que
+ * `splitKeySequence('g g')` rend `['g g']` — un seul groupe dont la
+ * `actualKey` est la chaine `"g g"`, qu'aucun `e.key` n'egale jamais. Le
+ * raccourci est donc silencieusement MORT : deux `keydown` sur `g` ne
+ * declenchent rien du tout, sans avertissement. Les specs du depot
+ * utilisent la forme correcte (`a-b`).
  *
  * @description
  * ⛔ En dehors d'un contexte `setup()` Vue, AUCUN nettoyage automatique
- * n'est enregistre (pas de `onBeforeUnmount` possible) — un
- * `console.warn` (`HOTKEY_NO_AUTO_CLEANUP_WARNING`) le signale, et
+ * n'est enregistre (pas de `onBeforeUnmount` possible) — un avertissement
+ * (`HOTKEY_NO_AUTO_CLEANUP_WARNING`, via `consoleWarn`, donc rendu par le
+ * `warn()` de Vue : `[Vue warn]: Origam: Can't cleanup`) le signale, et
  * l'appelant DOIT invoquer lui-meme la fonction `cleanup` retournee.
  * Hors navigateur (`!IN_BROWSER`), la fonction est un no-op immediat, y
  * compris pour le retour (fonction vide, pas d'erreur).
