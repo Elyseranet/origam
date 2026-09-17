@@ -210,8 +210,8 @@ tested on length.
     import { useMessage, useValidation } from 'origam/composables'
     import type { IValidationProps } from 'origam/interfaces'
 
-    // IMessageProps is NOT re-exported by `origam/interfaces` — add the two
-    // members you need, or import the file directly inside the library.
+    // IMessageProps is NOT re-exported by `origam/interfaces` (#844) — add the
+    // two members you need, or import the file directly inside the library.
     const props = defineProps<IValidationProps & {
         messages?: Array<string>
         hint?: string

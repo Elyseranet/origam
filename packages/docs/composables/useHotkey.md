@@ -114,7 +114,7 @@ useHotkey('g-g', () => {
 })
 ```
 
-## ⚠️ It is not reachable from the published package
+## ⚠️ It is not reachable from the published package — #844
 
 `useHotkey` is **not** re-exported by `packages/ds/src/composables/index.ts`,
 and `packages/ds/package.json` declares `"./composables"` with **no wildcard
