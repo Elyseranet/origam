@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="styleId"
 			:aria-label="label || undefined"
 			:class="otpInputFieldClasses"
 			:style="otpInputFieldStyles"
@@ -569,7 +570,38 @@
 			props.class
 		]
 	})
-	const { id: styleId, css, load, isLoaded, unload } = useStyle(otpInputFieldStyles)
+	/*********************************************************
+	 * styleId — l'id de la RACINE, celui du consommateur quand il en passe un
+	 *
+	 * @description
+	 * #790 — la racine ne portait AUCUN `:id`, et `useStyle` etait appele
+	 * sans son second argument. Deux defauts en un, mesures :
+	 *   1. l'`id` du consommateur n'atteignait aucun noeud — un
+	 *      `getElementById` ou un `aria-describedby` externe ne trouvait
+	 *      rien, sans le moindre avertissement ;
+	 *   2. la regle `#origam-otp-input-field-<uid> { … }` injectee dans
+	 *      <head> ne matchait aucun noeud — un style MORT et silencieux.
+	 *
+	 * @description
+	 * Les deux contraintes de #790 se satisfont d'un seul geste, et c'est
+	 * la raison pour laquelle l'arbitrage redoute par le ticket n'existe
+	 * pas : `useStyle` retourne l'id qu'il CIBLE. Lier ce meme id sur la
+	 * racine garantit par construction que la regle generee continue de
+	 * s'appliquer, que l'id vienne du consommateur ou du repli genere.
+	 *
+	 * @description
+	 * ⛔ Pas de doublon ici, contrairement a `OrigamInput` / `OrigamField`
+	 * (#421/#422) : `props.id` n'est porte par aucun autre noeud de cet
+	 * arbre — les six `<origam-field>` l'excluent via `filterProps`, et
+	 * seul `messagesId` en DERIVE (`<id>-messages`). Mesure a l'appui dans
+	 * la sonde de rayon de souffle. La racine est bien le noeud a designer :
+	 * elle porte deja `role` et `aria-label`, c'est l'element de groupe.
+	 *
+	 * @description
+	 * Le getter garde la lecture PARESSEUSE (ADR-005) : le resolveur de
+	 * theme ecrit dans `beforeCreate`, donc APRES `setup()`.
+	 ********************************************************/
+	const { id: styleId, css, load, isLoaded, unload } = useStyle(otpInputFieldStyles, () => props.id)
 
 
 	/*********************************************************
