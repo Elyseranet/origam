@@ -100,7 +100,14 @@ const GREEN_SPECS = [
     // Verifiees dans ce lot, `E2E_STATIC=1`, chromium, port isole :
     // `checkbox-radio-group-a11y` 8/8, `rating-field-a11y` 4/4.
     'checkbox-radio-group-a11y.spec.ts',
-    'rating-field-a11y.spec.ts'
+    'rating-field-a11y.spec.ts',
+    // wave 10 — #813. Meme raison qu'aux vagues 8 et 9 : hors de cette liste,
+    // `E2E_GREEN_ONLY=1` (ci.yml) exclut la spec et la CI ne l'execute jamais.
+    // Celle-ci ne depend PAS de Histoire — aucune variante de story n'atteint
+    // les echelons `2xl`/`3xl` (`ELEVATION_OPTIONS` est numerique et s'arrete a
+    // `XL (24)`), ce qui est une des raisons pour lesquelles le defaut a
+    // survecu. Verifiee 2/2, chromium, port isole.
+    'elevation-rungs.spec.ts'
 ]
 
 /**

@@ -21,12 +21,66 @@ export const ORIGAM_SHADOW_RUNGS: ReadonlySet<string> = new Set([
  * @description
  * Subset of shadow rungs for which a global utility class exists in
  * `src/assets/css/tokens/origam-utilities.css` (Phase 1 manifest).
- * `2xl` and `3xl` are not yet emitted as utilities — they fall back
- * to the inline-style path.
+ * `2xl` and `3xl` are not emitted as utilities — they take the
+ * inline-style path instead.
+ *
+ * @description
+ * ⚠️ This comment used to say they « fall back » to that path. The word
+ * was reassuring for nothing: the inline path emitted a BARE
+ * `var(--origam-shadow---2xl)`, and no sheet declares that token, so the
+ * repli led to an unresolvable reference rather than to a value (#813).
+ * The declaration then lost at computed-value time — and since it had
+ * ALREADY won the cascade, it did not cede to the component's own rule,
+ * it ERASED it. See {@link SHADOW_RUNG_FALLBACK}.
  ********************************************************/
 export const UTILITY_SHADOW_RUNGS: ReadonlySet<string> = new Set([
     'none', 'xs', 'sm', 'md', 'lg', 'xl'
 ])
+
+/*********************************************************
+ * SHADOW_RUNG_FALLBACK
+ *
+ * @description
+ * Second argument of the `var()` emitted by `useElevation`, for the rungs
+ * `ORIGAM_SHADOW_RUNGS` accepts but NO sheet declares. Keyed by rung; a
+ * rung absent from this map is emitted as a bare `var()` because its token
+ * genuinely exists.
+ *
+ * @description
+ * ⛔ #813 — `2xl` and `3xl` are accepted by the prop and declared nowhere.
+ * Measured in Chromium: a component rule `rgba(0,0,0,.9) 0 1px 2px`
+ * computed `none` once `elevation="2xl"` was passed. The unresolvable
+ * reference does not merely fail to paint, it DESTROYS the shadow the
+ * component already had.
+ *
+ * @description
+ * The fallback targets `xl`, the top declared rung. Consequence, and it is
+ * deliberate: **`2xl` and `3xl` render exactly like `xl`** — they stop
+ * erasing, they do not become two extra rungs. Declaring real `2xl` / `3xl`
+ * tokens is a DESIGN decision, not a bug fix: the ladder has no derivable
+ * progression (`md` is a different family — a 1px ring plus a soft shadow)
+ * and `xl` is already the top of the Material 0..24 scale this DS maps
+ * (`MATERIAL_ELEVATION_TOP_RUNG`). There is no rung above to borrow from.
+ * The day those tokens are declared, this fallback goes inert on its own —
+ * nothing here has to be undone.
+ *
+ * @description
+ * ⚠️ The fallback MUST be a real shadow. `var(--origam-shadow---2xl, none)`
+ * was measured too: the declaration becomes valid but computes `none`,
+ * i.e. visually identical to the defect. A `none` fallback fixes nothing.
+ *
+ * @description
+ * Mirrors the intent of `UTILITY_RADIUS_FALLBACK` (`spacing.const.ts`),
+ * which is why `useRounded` never had this defect. It deliberately does NOT
+ * mirror its SHAPE: that map gives every rung a hard literal (`md: '8px'`),
+ * which for a 3-layer box-shadow would mean copying the token values into
+ * TypeScript — duplication plus guaranteed drift the first time a designer
+ * retunes `xl`. A var-to-var fallback carries no value at all.
+ ********************************************************/
+export const SHADOW_RUNG_FALLBACK: Readonly<Record<string, string>> = {
+    '2xl': 'var(--origam-shadow---xl)',
+    '3xl': 'var(--origam-shadow---xl)'
+}
 
 /*********************************************************
  * MATERIAL_ELEVATION_LADDER

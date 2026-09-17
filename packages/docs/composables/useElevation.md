@@ -44,7 +44,7 @@ const { elevationClasses, elevationStyles } = useElevation(props, toRef(props, '
 |---|---|---|
 | `'md'` | `['{name}--elevated', 'origam--shadow-md']` | `box-shadow: var(--origam-shadow---md)` |
 | `'none'` | `['{name}--elevated', 'origam--shadow-none']` | `box-shadow: var(--origam-shadow---none)` |
-| `'2xl'` | `['{name}--elevated']` | `box-shadow: var(--origam-shadow---2xl)` |
+| `'2xl'` | `['{name}--elevated']` | `box-shadow: var(--origam-shadow---2xl, var(--origam-shadow---xl))` |
 | `0` | `['{name}--elevated', 'origam--shadow-none']` | `box-shadow: var(--origam-shadow---none)` |
 | `4` | `['{name}--elevated', 'origam--shadow-md']` | `box-shadow: var(--origam-shadow---md)` |
 | `24` | `['{name}--elevated', 'origam--shadow-xl']` | `box-shadow: var(--origam-shadow---xl)` |
@@ -58,44 +58,60 @@ Note `'2xl'` and `'3xl'`: they are valid origam rungs (`ORIGAM_SHADOW_RUNGS`)
 but have **no** utility class (`UTILITY_SHADOW_RUNGS` stops at `xl`), so they
 take the inline path alone. The code deliberately skips the numeric bridge for
 them — `parseInt('2xl')` is `2`, which would otherwise resolve to the wrong
-rung. ⛔ But see the next section before using either.
+rung. ⚠️ But see the next section: they do not give you two extra rungs.
 
-## ⛔ `elevation="2xl"` and `"3xl"` paint NO shadow — and erase the one below
+## ⚠️ `elevation="2xl"` and `"3xl"` render exactly like `xl`
+
+**They are accepted, they paint, and they paint the `xl` shadow — not a
+stronger one.** If you need a shadow heavier than `xl`, pass a free-form
+`box-shadow` string; `2xl` / `3xl` will not give you one.
 
 `ORIGAM_SHADOW_RUNGS` accepts eight names; the token sheets declare **six**.
 `--origam-shadow---2xl` and `--origam-shadow---3xl` exist in **no** stylesheet
 of the DS — not `primitive.css`, not `light.css` / `dark.css`, not their SCSS
-twins. And unlike `useRounded`, which emits every rung with a hard fallback
-(`var(--origam-radius---md, 8px)`), `useElevation` emits the bare reference:
-
-An excerpt of the composable's own source, not a consumer snippet:
+twins. They are emitted with a fallback onto the top declared rung
+(`SHADOW_RUNG_FALLBACK`), the way `useRounded` has always done via
+`UTILITY_RADIUS_FALLBACK`:
 
 ```ts
 // elevation.composable.ts — the origam-rung branch
-styles.push(`box-shadow: var(${ SHADOW_TOKEN_PREFIX }${ elevation })`)
-// elevation="2xl"  →  'box-shadow: var(--origam-shadow---2xl)'   ← no fallback
+styles.push(`box-shadow: ${ shadowVar(elevation) }`)
+// elevation="2xl"  →  'box-shadow: var(--origam-shadow---2xl, var(--origam-shadow---xl))'
+// elevation="xl"   →  'box-shadow: var(--origam-shadow---xl)'    ← no fallback needed
 ```
 
-An unresolved `var()` does not make the declaration "do nothing": it makes it
-**invalid at computed-value time**, so the property computes to `unset` — and
-`box-shadow` is not inherited, so that is `none`. The declaration still wins
-the cascade first, which means it does not yield to the component's own rule,
-it **replaces it with nothing**. Measured in Chromium:
+### Why the fallback, and not just the tokens — #813
 
-| element | `box-shadow` computed |
-|---|---|
-| component rule alone | `rgba(0, 0, 0, 0.9) 0px 1px 2px 0px` |
-| `box-shadow: var(--origam-shadow---md)` (token declared) | `rgba(0, 0, 0, 0.3) 0px 4px 8px 0px` |
-| `box-shadow: var(--origam-shadow---2xl)` (token absent) | **`none`** |
-| the same with a fallback added | `rgba(0, 0, 0, 0.5) 0px 9px 9px 0px` |
+Until 2.17.x the reference was emitted **bare**, and that was not merely inert.
+An unresolved `var()` makes the declaration **invalid at computed-value time**,
+so the property computes to `unset` — and `box-shadow` is not inherited, so
+that is `none`. The declaration still wins the cascade first, which means it
+did not yield to the component's own rule, it **replaced it with nothing**. A
+component that would have had a shadow from its own SCSS *lost* it, because of
+a prop meant to strengthen it. Measured in Chromium, before → after:
 
-So the two top rungs are worse than inert: a component that would have had a
-shadow from its own SCSS loses it. Use `xl`, a Material number, or a free-form
-`box-shadow` string until the tokens exist. Tracked as **#813**.
+| element | before | after |
+|---|---|---|
+| component rule alone | `rgba(0,0,0,0.9) 0px 1px 2px 0px` | unchanged |
+| `md` (token declared) | `rgba(0,0,0,0.05) 0px 6px 24px 0px, …` | unchanged |
+| `xl` (token declared) | `rgba(0,0,0,0.2) 0px 11px 15px -7px, …` | unchanged |
+| `2xl` (token absent) | **`none`** — component shadow erased | `rgba(0,0,0,0.2) 0px 11px 15px -7px, …` |
+| `3xl` (token absent) | **`none`** | same as `xl` |
 
-The `token-var-channels` guard does not catch this because the reference is
-built in TypeScript, not written in a `.scss` block — the guard reads
-stylesheets.
+⚠️ The fallback has to be a real shadow: `var(--origam-shadow---2xl, none)` was
+measured too, and it computes `none` — valid, but visually identical to the
+defect.
+
+Declaring genuine `2xl` / `3xl` tokens stays open, and is a **design**
+decision rather than a bug fix: the ladder has no derivable progression (`md`
+is a different family — a 1px ring plus a soft shadow) and `xl` is already the
+top of the Material 0..24 scale this composable maps
+(`MATERIAL_ELEVATION_TOP_RUNG`), so there is no rung above to borrow from. The
+day those tokens land, the fallback goes inert on its own.
+
+The `token-var-channels` guard still does not catch this family, because the
+reference is built in TypeScript rather than written in a `.scss` block — the
+guard reads stylesheets. Tracked as **#823**.
 
 ⚠️ `'zzz'` is the one shape that emits a class with no shadow behind it:
 `parseInt('zzz')` is `NaN`, the style branch returns early, and the

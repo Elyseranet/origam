@@ -7,6 +7,7 @@ import {
     MATERIAL_ELEVATION_LADDER,
     MATERIAL_ELEVATION_TOP_RUNG,
     ORIGAM_SHADOW_RUNGS,
+    SHADOW_RUNG_FALLBACK,
     SHADOW_TOKEN_PREFIX,
     SHADOW_UTILITY_CLASS_PREFIX,
     UTILITY_SHADOW_RUNGS
@@ -47,6 +48,34 @@ function isUtilityRung (value: unknown): boolean {
     return typeof value === 'string' && UTILITY_SHADOW_RUNGS.has(value)
 }
 
+/*********************************************************
+ * shadowVar
+ *
+ * @description
+ * Build the `box-shadow` value for a rung: `var(--origam-shadow---{rung})`,
+ * plus a fallback for the rungs no sheet declares (#813).
+ *
+ * @description
+ * ⛔ A BARE `var()` on an undeclared token does not merely fail to paint.
+ * The declaration parses, so it WINS the cascade, and only then fails at
+ * computed-value time — `box-shadow` becomes `unset`, and being
+ * non-inherited that is `none`. The component's own shadow is therefore
+ * ERASED by the very prop meant to strengthen it. Measured in Chromium:
+ * rule alone `rgba(0,0,0,.9) 0px 1px 2px 0px`, with `elevation="2xl"`
+ * `none`.
+ *
+ * @description
+ * The fallback is looked up rather than applied to every rung: a rung whose
+ * token exists needs none, and `SHADOW_RUNG_FALLBACK` doubles as the list of
+ * rungs still waiting for a token. See that const for why the fallback must
+ * be a real shadow and not `none`.
+ ********************************************************/
+function shadowVar (rung: string): string {
+    const fallback = SHADOW_RUNG_FALLBACK[rung]
+
+    return `var(${SHADOW_TOKEN_PREFIX}${rung}${fallback ? `, ${fallback}` : ''})`
+}
+
 const _bgWarned = new WeakSet<object>()
 function warnBgColorUsage (bgColor: TColor) {
     if (typeof console === 'undefined' || !bgColor) return
@@ -70,20 +99,33 @@ function warnBgColorUsage (bgColor: TColor) {
  * jamais l'un a la place de l'autre (strategie A, cf. CLAUDE.md racine).
  *
  * @description
- * ⛔ `2xl` et `3xl` SONT ACCEPTES ET NE PEIGNENT RIEN — #813.
- * `ORIGAM_SHADOW_RUNGS` en declare huit, les feuilles de tokens n'en
- * declarent que six : `--origam-shadow---2xl` et `---3xl` n'existent dans
- * aucune feuille du DS. Et contrairement a `useRounded` — qui emet chaque
- * echelon avec un repli dur (`var(--origam-radius---md, 8px)`) — on emet
- * ici la reference nue. Un `var()` non resolu rend la declaration invalide
- * AU COMPUTED-VALUE TIME : la propriete calcule `unset`, et `box-shadow`
- * n'etant pas heritee, cela vaut `none`. La declaration gagne pourtant la
- * cascade : elle ne cede donc pas la place a la regle scopee du composant,
- * elle l'EFFACE. Mesure Chromium — regle du composant seule
- * `rgba(0,0,0,.9) 0px 1px 2px 0px`, echelon `md` (token declare)
- * `rgba(0,0,0,.3) 0px 4px 8px 0px`, echelon `2xl` (token absent) `none`.
- * Le garde `token-var-channels` ne le voit pas : la reference est
- * concatenee en TypeScript, pas ecrite dans une feuille.
+ * ⚠️ `2xl` et `3xl` RENDENT COMME `xl` — #813, corrige par un repli.
+ * `ORIGAM_SHADOW_RUNGS` declare huit echelons, les feuilles n'en declarent
+ * que six : `--origam-shadow---2xl` et `---3xl` n'existent dans aucune
+ * feuille du DS. On emettait la reference NUE, et un `var()` non resolu
+ * rend la declaration invalide AU COMPUTED-VALUE TIME : la propriete
+ * calcule `unset`, et `box-shadow` n'etant pas heritee, cela vaut `none`.
+ * La declaration gagnait pourtant la cascade : elle ne cedait donc pas la
+ * place a la regle scopee du composant, elle l'EFFACAIT. Mesure Chromium —
+ * regle du composant seule `rgba(0,0,0,.9) 0px 1px 2px 0px`, avec
+ * `elevation="2xl"` : `none`.
+ *
+ * @description
+ * Ces deux echelons passent desormais par `SHADOW_RUNG_FALLBACK`, comme
+ * `useRounded` le fait depuis toujours via `UTILITY_RADIUS_FALLBACK` — ce
+ * qui explique que le canal `rounded` n'ait jamais eu ce defaut. ⚠️ Ils
+ * rendent donc EXACTEMENT comme `xl` : ils cessent d'effacer, ils ne
+ * deviennent pas deux echelons de plus. Declarer de vrais tokens est une
+ * decision de DESIGN — `xl` est deja le sommet de l'echelle Material 0..24
+ * que ce composable mappe (`MATERIAL_ELEVATION_TOP_RUNG`), il n'y a aucun
+ * echelon au-dessus a emprunter. Le jour ou ces tokens existeront, le repli
+ * deviendra inerte tout seul.
+ *
+ * @description
+ * ⛔ Le garde `token-var-channels` ne voit toujours RIEN de tout ceci : la
+ * reference est concatenee en TypeScript, pas ecrite dans une feuille.
+ * C'est l'angle mort structurel suivi par #823 — 90 references `var()`
+ * emises depuis du TS, aucune couverte par un garde.
  *
  * @description
  * `bgColor` est accepte pour compatibilite mais IGNORE (n'affecte plus
@@ -162,7 +204,7 @@ export function useElevation (
         // the Material 0..24 → token mapping. Authors get an explicit
         // intent ("medium shadow") rather than an opaque number.
         if (isOrigamRung(elevation)) {
-            styles.push(`box-shadow: var(${SHADOW_TOKEN_PREFIX}${elevation})`)
+            styles.push(`box-shadow: ${shadowVar(elevation as string)}`)
             return styles
         }
 
@@ -183,7 +225,7 @@ export function useElevation (
         if (Number.isNaN(numeric)) return styles
 
         const tokenName = elevationToToken(numeric)
-        styles.push(`box-shadow: var(${SHADOW_TOKEN_PREFIX}${tokenName})`)
+        styles.push(`box-shadow: ${shadowVar(tokenName)}`)
 
         return styles
     })
