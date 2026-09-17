@@ -55,6 +55,16 @@ import { resolveThemeVars, themeSelector } from '@origam/utils/Commons/apply-the
  * rendu pour toute app qui appelle `createOrigam()`.
  *
  * @description
+ * ⚠️ TABLEAU CI-DESSUS PÉRIMÉ SUR TROIS LIGNES depuis #789. Aucune des deux
+ * colonnes ne tenait AA pour `success` (3.30 / 2.78) ni `warning`
+ * (3.19 / 2.37) : le bon sens n'était NI l'un NI l'autre, mais une troisième
+ * valeur. Les deux sources portent désormais la MÊME, conforme dans les deux
+ * cas — `success` 5.02, `warning` 5.02, `info` 5.17 des deux côtés. Six noms
+ * ont donc quitté `DIVERGENCES_CONNUES` ci-dessous, dans le sens A que #793
+ * recommande (la feuille suit le thème). Mesures et témoins :
+ * `packages/tests/e2e/token-intent-contrast.spec.ts`.
+ *
+ * @description
  * ⛔ `ghost` mesure **5.70**, pas 3.69 comme l'annonce #789. Sa couleur de
  * fond est `rgba(0, 0, 0, 0)` : une sonde qui lit ce fond sans le composer
  * sur la surface de page le prend pour du NOIR OPAQUE et fabrique un ratio
@@ -126,18 +136,12 @@ const DIVERGENCES_CONNUES = new Set([
     '--origam-color__action--secondary---bgDisabled',
     '--origam-color__action--secondary---fg',
     '--origam-color__action--ghost---bgHover',
-    '--origam-color__feedback--success---bg',
     '--origam-color__feedback--success---bgSubtle',
-    '--origam-color__feedback--success---border',
-    '--origam-color__feedback--warning---bg',
     '--origam-color__feedback--warning---bgSubtle',
-    '--origam-color__feedback--warning---border',
     '--origam-color__feedback--danger---bgSubtle',
     '--origam-color__feedback--danger---border',
-    '--origam-color__feedback--info---bg',
     '--origam-color__feedback--info---bgSubtle',
-    '--origam-color__feedback--info---fgSubtle',
-    '--origam-color__feedback--info---border'
+    '--origam-color__feedback--info---fgSubtle'
 ])
 
 /**
