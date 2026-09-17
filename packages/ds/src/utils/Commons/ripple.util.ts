@@ -227,9 +227,15 @@ export function rippleHide (e: Event) {
      * apres demontage elle ne faisait plus rien. Ce que le garde retire,
      * c'est la tache elle-meme et la reference a l'element qu'elle
      * retenait.
+     *
+     * @description
+     * `setTimeout` nu, pas `window.setTimeout` comme ses deux voisins :
+     * le registre est type `ReturnType<typeof setTimeout>` (ce que fait
+     * `ripple.const.ts`), et la forme `window.` rend un `number` que ce
+     * type refuse.
      ********************************************************/
     const store = element._ripple
-    const resetTouched = window.setTimeout(() => {
+    const resetTouched = setTimeout(() => {
         store.timers?.delete(resetTouched)
 
         if (element._ripple) {

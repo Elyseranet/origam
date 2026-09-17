@@ -207,21 +207,18 @@ describe('#779 — OrigamSelect, les deux setTimeout nus', () => {
         expect(pendingTimersFrom(SOURCE)).toBe(0)
     })
 
-    it('le drapeau `disposed` neutralise aussi un armement POSTERIEUR au demontage', async () => {
-        const wrapper = mountSelect()
-        const tf = wrapper.findComponent(OrigamTextField)
-
-        tf.vm.$emit('update:modelValue', 'de')
-        await nextTick()
-        wrapper.unmount()
-
-        // Un handler encore joignable apres le demontage : le garde doit
-        // REFUSER d'armer, pas seulement annuler apres coup.
-        tf.vm.$emit('mousedown:control', new MouseEvent('mousedown'))
-        await nextTick()
-
-        expect(pendingTimersFrom(SOURCE)).toBe(0)
-    })
+    /*
+     * ⚠️ NON COUVERT ICI : la branche `if (disposed) return` de
+     * `scheduleMacrotask`, c'est-a-dire le REFUS d'armer apres le
+     * demontage (par opposition a l'annulation de ce qui etait deja
+     * arme). Une version de ce test existait ; elle passait AUSSI contre
+     * `origin/develop`, ou aucun garde n'existe — `wrapper.unmount()`
+     * coupe la route des emits du TextField, donc le handler n'est plus
+     * joignable et la sonde ne mesurait rien. Un test qui verdit des
+     * deux cotes ne prouve rien : il a ete retire plutot que garde comme
+     * preuve. La branche est ecrite par symetrie avec
+     * `scheduleScrollFrame` (#719), pas parce qu'un test la mesure.
+     */
 })
 
 /*********************************************************
