@@ -354,19 +354,21 @@
 				model.value = normalizedValue.value === value && props.clearable ? 0 : value
 			}
 
-			/*
-			 * #812 — the keyboard's ONLY signal.
+			/*********************************************************
+			 * onChange — the keyboard's ONLY signal
 			 *
+			 * @description
 			 * `onClick` above is wired to the star `<div>`; the browser's radio
-			 * navigation never goes through it. Arrows and `Space` fire
-			 * `click` + `change` on the `<input>` that just became checked,
-			 * and nothing was listening — the DOM moved, the model did not.
+			 * navigation never goes through it. Arrows and `Space` fire `click`
+			 * + `change` on the `<input>` that just became checked, and nothing
+			 * was listening — the DOM moved, the model did not.
 			 *
-			 * ⛔ No `clearable` toggle here, deliberately: a `change` only
-			 * fires when the checked radio ACTUALLY changes, so "re-select the
-			 * current value to clear it" has no keyboard equivalent to hook.
-			 * The clear affordance stays the `__clear` button.
-			 */
+			 * @description
+			 * ⛔ No `clearable` toggle here, deliberately: a `change` only fires
+			 * when the checked radio ACTUALLY changes, so "re-select the current
+			 * value to clear it" has no keyboard equivalent to hook. The clear
+			 * affordance stays the `__clear` button.
+			 ********************************************************/
 			const onChange = () => {
 				if (props.disabled || props.readonly) return
 				model.value = value

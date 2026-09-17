@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
+import AxeBuilder from '@axe-core/playwright'
 import { eventLogItems, openEventsTab, toggleHstCheckbox } from './_support/histoire-controls'
 
 /**
@@ -399,6 +400,50 @@ test.describe('OrigamRatingField — keyboard operability (#812)', () => {
                 .toMatchObject({ active: entered.active, checked: entered.checked, filled: entered.filled })
         }
     })
+
+    // ------------------------------------------------------------------ //
+    // AXE — the a11y gate does NOT cover this component                    //
+    // ------------------------------------------------------------------ //
+
+    /**
+     * ⛔ `a11y/components.spec.ts` sweeps 36 of 218 stories, and BOTH RatingField
+     * stories sit in its `UNSWEPT_STORIES` list. Its green says nothing here, so
+     * axe is run directly — exactly as #810 had to.
+     *
+     * This assertion is not decorative: the first version of this fix mirrored
+     * `aria-readonly` onto each `<input type="radio">`, and axe reported a
+     * **critical** `aria-allowed-attr` — `aria-readonly` is not an allowed
+     * attribute on `role="radio"`. It is allowed on the `radiogroup` root, which
+     * is where it lives now. Without this test the fix would have shipped one
+     * WCAG failure traded for another, which is the precise mistake #810 and
+     * #812 both exist to refuse.
+     *
+     * The four violations axe always reports on a Histoire page — `frame-title`,
+     * `landmark-one-main`, `page-has-heading-one`, `region` — belong to the
+     * harness, not to the component, so the filter below keeps only violations
+     * that actually touch `origam-` markup.
+     */
+    for (const state of [null, 'Readonly', 'Disabled', 'Half Increments'] as (string | null)[]) {
+        test(`axe reports nothing on the component itself — ${state ?? 'default'}`, async ({ page }) => {
+            await page.goto(rfUrl(VARIANT_FUNCTIONAL))
+            const frame = page.frameLocator('iframe[src*="__sandbox"]')
+
+            await expect(frame.locator('.origam-rating-field').first()).toBeVisible({ timeout: 30000 })
+
+            if (state) {
+                await toggleHstCheckbox(page, state)
+                await page.waitForTimeout(400)
+            }
+
+            const result = await new AxeBuilder({ page }).include('iframe[src*="__sandbox"]').analyze()
+            const ours = result.violations.filter((v) => v.nodes.some((n) => n.html.includes('origam-') || n.target.join(' ').includes('origam')))
+
+            expect(
+                ours.map((v) => `${v.id} (${v.impact}) ${v.nodes[0]?.target.join(' ')}`),
+                'axe violation attributable to OrigamRatingField markup'
+            ).toEqual([])
+        })
+    }
 
     test('disabled — the group is out of the tab order (native, no code of ours)', async ({ page }) => {
         await page.goto(rfUrl(VARIANT_FUNCTIONAL))

@@ -119,7 +119,7 @@ const GREEN_SPECS = [
     // exactly the defect #824 describes.
     //
     // Verified in this lot, `E2E_STATIC=1`, chromium, isolated port:
-    // `rating-field-keyboard` 14/14.
+    // `rating-field-keyboard` 18/18.
     'rating-field-keyboard.spec.ts'
 ]
 
