@@ -45,6 +45,30 @@ export function specFilesFromListReport (report) {
 }
 
 /**
+ * Un chemin de spec est-il dans une aire de BROUILLON que Playwright ignore ?
+ *
+ * ⛔ Cette fonction doit dire EXACTEMENT ce que dit `scratchDirPatterns()`
+ * (`packages/tests/scratch-dirs.const.ts`), sinon le garde et le runner ne
+ * parlent plus du meme ensemble de fichiers :
+ *   - plus STRICTE que Playwright → le garde signale comme « jamais executee »
+ *     une spec que personne n'a jamais voulu executer (faux rouge, et la
+ *     pression sera de la baseliner, ce qui pollue le recensement) ;
+ *   - plus LACHE → une spec reelle echappe au balayage : c'est le defaut
+ *     #824 lui-meme, reintroduit dans l'outil cense l'empecher.
+ *
+ * La regle de `scratchDirPatterns` : tout repertoire commencant par un point
+ * SOUS le `testDir` (`.probe/`, `.results/`, `.report/`). Le fichier lui-meme
+ * n'est pas concerne — seuls les segments de REPERTOIRE.
+ *
+ * @param relPath Chemin relatif au `testDir`, separateurs `/`.
+ */
+export function isScratchSpecPath (relPath) {
+    const segments = relPath.split('/')
+    // Le dernier segment est le fichier : on ne juge que les repertoires.
+    return segments.slice(0, -1).some((s) => s.startsWith('.') || s === 'node_modules')
+}
+
+/**
  * Classe chaque spec du repertoire e2e.
  *
  * @param allSpecs      Noms de fichier presents sur le disque.
