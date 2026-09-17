@@ -62,7 +62,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { report, writeBaseline } from '../../../ds/scripts/guards/lib/baseline.mjs'
-import { blindnessCheck, classifySpecs, specFilesFromListReport } from './lib/spec-coverage.mjs'
+import { blindnessCheck, classifySpecs, isScratchSpecPath, specFilesFromListReport } from './lib/spec-coverage.mjs'
 import { runFixtures } from './lib/spec-coverage.selftest.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
@@ -158,7 +158,43 @@ function listSpecFiles ({ label, configArgs, env }) {
         process.exit(1)
     }
 
-    return new Set([...specFilesFromListReport(parsed)].map((f) => path.basename(f)))
+    // ⛔ Chemin RELATIF au testDir, pas `basename`. Playwright rapporte `file`
+    // relatif a son `rootDir`, qui EST `./e2e` (verifie : rootDir =
+    // <...>/packages/tests/e2e, et `file` vaut « alert.spec.ts »). Aplatir en
+    // basename ferait collisionner `a/x.spec.ts` et `b/x.spec.ts` le jour ou
+    // le repertoire cesse d'etre plat — et surtout, ca masquait le trou
+    // ci-dessous cote disque.
+    return new Set([...specFilesFromListReport(parsed)].map((f) => f.split(path.sep).join('/')))
+}
+
+/**
+ * Tous les fichiers de spec presents sur le DISQUE, en chemins relatifs a
+ * `E2E_DIR`.
+ *
+ * ⛔ LA RECURSION N'EST PAS DECORATIVE. La version precedente faisait un
+ * `readdirSync(E2E_DIR)` A PLAT. Les 241 specs sont effectivement a plat
+ * aujourd'hui (mesure), donc le garde rendait le bon verdict — mais une spec
+ * rangee dans un sous-repertoire aurait ete INVISIBLE au balayage, alors que
+ * Playwright, lui, l'aurait collectee. Elle n'aurait donc figure ni dans les
+ * gardees, ni dans les non-gardees, ni dans la baseline : exactement le
+ * silence structurel que #824 existe pour supprimer, reintroduit dans l'outil
+ * cense l'empecher.
+ *
+ * Les repertoires-points sont sautes pour coller a `scratchDirPatterns()` —
+ * voir `isScratchSpecPath` pour pourquoi les deux doivent dire la meme chose.
+ */
+function specsOnDisk (dir, prefix = '') {
+    const out = []
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+        const rel = prefix ? `${prefix}/${entry.name}` : entry.name
+        if (entry.isDirectory()) {
+            if (entry.name.startsWith('.') || entry.name === 'node_modules') continue
+            out.push(...specsOnDisk(path.join(dir, entry.name), rel))
+        } else if (entry.name.endsWith('.spec.ts') && !isScratchSpecPath(rel)) {
+            out.push(rel)
+        }
+    }
+    return out
 }
 
 const histoireGated = listSpecFiles({
@@ -176,7 +212,7 @@ const marketingGated = listSpecFiles({
     env: { MARKETING_GREEN_ONLY: '1' }
 })
 
-const allSpecs = readdirSync(E2E_DIR).filter((f) => f.endsWith('.spec.ts')).sort()
+const allSpecs = specsOnDisk(E2E_DIR).sort()
 
 /* ⛔ Un balayage vide est BLOQUANT — un garde livre dans ce depot a deja
  * annonce `PASS` apres avoir lu zero fichier. */

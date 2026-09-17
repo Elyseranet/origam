@@ -53,7 +53,17 @@ La liste blanche est née le **2026-06-22** (`bfefb6124`,
 - Une spec **postérieure** a été écrite alors que le mécanisme existait. Son
   auteur devait s'y inscrire et ne l'a pas fait : **candidat oubli**.
 
-Mesuré : **102 antérieures**, **76 postérieures** (dont 12 marketing).
+Mesuré sur les **178** specs non gardées d'avant cette PR : **102
+antérieures**, **76 postérieures** (dont 12 marketing).
+
+⚠️ Après promotion de `field-border-notch.spec.ts` (postérieure, voir plus
+bas), la baseline commitée en compte **177** : **102 antérieures**, **75
+postérieures** (dont 12 marketing, donc **63** relevant de la config
+Histoire). C'est ce second jeu de chiffres qui décrit le fichier
+`spec-coverage.json` tel qu'il est versionné — le premier décrit l'état
+mesuré avant l'intervention. Les deux ont été reproduits indépendamment en
+rejouant le critère de date (`git log --diff-filter=A` par fichier, comparé à
+la date de `bfefb6124`).
 
 ### Second tri — la spec passe-t-elle aujourd'hui ?
 
@@ -75,6 +85,22 @@ Histoire **statique** sur un port isolé (`E2E_STATIC=1 E2E_HISTOIRE_PORT=6074`
 ➡️ **63 specs écrites après la mise en place de la liste blanche passent
 aujourd'hui et ne sont exécutées par aucun job de CI.** Ce sont autant de
 filets qui ne retiennent rien.
+
+✅ **Rejoué indépendamment**, une fois `field-border-notch` réparée et
+promue, sur les **63** postérieures non-marketing restantes, en une seule
+invocation Playwright (`E2E_STATIC=1`, `E2E_HISTOIRE_PORT=6141`, chromium,
+build des stories à exit 0 capturé hors pipe) :
+
+```
+342 passed · 1 skipped · 0 failed · 2.0 min · exit 0
+```
+
+Le chiffre de 63 vertes est donc mesuré deux fois, par deux agents, sur deux
+exécutions distinctes. C'est la seule partie du recensement dont la valeur
+puisse bouger avec le temps : une spec verte aujourd'hui peut pourrir demain
+sans que rien ne le dise — c'est très exactement ce qui est arrivé à
+`field-border-notch`, et la raison pour laquelle « hors liste » n'est pas un
+état neutre.
 
 ⚠️ **« Verte sur une exécution » n'est pas « stable ».** C'est la leçon de
 #820, mesurée dans le même lot : un test tombant 1 fois sur 5 est invisible
@@ -117,6 +143,57 @@ rougir le garde jusqu'à ce qu'on la supprime.
 baseline qui grandit est en soi un signal de revue : il veut dire qu'une spec
 neuve a été écrite et qu'on a décidé qu'aucune CI ne l'exécuterait. Cette
 décision peut être la bonne — elle doit être écrite dans la PR.
+
+---
+
+## Le contrôle positif du garde — vert → rouge → vert
+
+⛔ Sans ce témoin, un garde qui ne détecterait rien afficherait exactement le
+même vert. Mesuré, exit codes capturés hors pipe :
+
+| état du dépôt | verdict | exit |
+|---|---|---|
+| tel quel | `PASS — 177 known, 0 new` · 241 / 62 / 2 | **0** |
+| + `zz-…-positive-control.spec.ts` **à plat**, hors liste blanche | `FAIL — 1 NEW` · nomme le fichier | **1** |
+| la même spec **ajoutée à `GREEN_SPECS`** (fichier conservé) | `PASS` · 242 / **63** / 2 | **0** |
+| + `ac76ctl/nested.spec.ts` **dans un sous-répertoire** | `FAIL — 1 NEW` · `ac76ctl/nested.spec.ts` | **1** |
+| témoins retirés | `PASS` · 241 / 62 / 2 | **0** |
+
+La troisième ligne est celle qui discrimine : elle prouve que le garde réagit
+à la **liste blanche**, et pas simplement à « un fichier est apparu ». Un
+garde qui ne ferait que compter les fichiers neufs serait rouge là aussi.
+
+**Non-vacuité** : le balayage lit 241 fichiers et 62 + 2 gardées à chaque
+passage. Un balayage vide est bloquant par construction (`blindnessCheck`,
+3 fixtures) — le piège du garde livré dans ce dépôt qui annonçait `PASS`
+après avoir lu zéro fichier ne peut pas se reproduire ici.
+
+---
+
+## Un trou trouvé dans le garde lui-même, et bouché
+
+La première version balayait le disque avec un `readdirSync` **à plat**.
+Mesuré : les 241 specs sont effectivement à plat aujourd'hui, donc le verdict
+était juste — mais une spec rangée dans un sous-répertoire aurait été
+**invisible au garde alors que Playwright la collecte**. Témoin :
+
+```
+ANCIEN balayage (plat)  : 241 fichiers · voit ac76ctl/nested.spec.ts ? false
+Playwright (--list)     : 211 → 212 fichiers · la collecte, elle, la voit
+```
+
+Elle n'aurait figuré ni dans les gardées, ni dans les non-gardées, ni dans la
+baseline : le silence structurel de #824, reproduit à l'intérieur de l'outil
+chargé de le supprimer. Le balayage est désormais **récursif**, en chemins
+relatifs au `testDir` plutôt qu'en `basename` (deux specs homonymes dans deux
+dossiers restent deux entrées), et saute les répertoires-points pour dire
+exactement ce que dit `scratchDirPatterns()` — une divergence dans un sens
+produirait un faux rouge sur une sonde jetable, dans l'autre un angle mort.
+6 fixtures supplémentaires épinglent cette règle (20 au total).
+
+Le verdict sur l'arbre réel est **inchangé** après ce durcissement
+(241 / 62 / 2 / 177), ce qui était l'objectif : boucher le trou sans déplacer
+la mesure.
 
 ---
 

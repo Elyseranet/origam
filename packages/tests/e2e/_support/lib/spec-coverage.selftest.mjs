@@ -17,7 +17,7 @@
  *   (ou `pnpm -F @origam/tests run test:e2e:audit:self`, qui l'appelle)
  */
 
-import { blindnessCheck, classifySpecs, specFilesFromListReport } from './spec-coverage.mjs'
+import { blindnessCheck, classifySpecs, isScratchSpecPath, specFilesFromListReport } from './spec-coverage.mjs'
 
 const CASES = []
 const push = (name, fn) => CASES.push({ name, fn })
@@ -102,6 +102,39 @@ push('une meme spec gardee par les DEUX configs n\'est comptee qu\'une fois', ()
 push('le classement est stable et trie — un diff de baseline reste lisible', () => {
     const r = classifySpecs(['z.spec.ts', 'a.spec.ts', 'm.spec.ts'], [], new Set())
     eq(r.newUngated, ['a.spec.ts', 'm.spec.ts', 'z.spec.ts'], 'ordre alphabetique')
+})
+
+/* ─── Aires de brouillon : le garde et Playwright doivent dire la meme chose ─── */
+
+push('spec a plat → jamais un brouillon', () => {
+    eq(isScratchSpecPath('counter.spec.ts'), false, 'fichier a la racine du testDir')
+})
+
+push('⛔ spec sous un repertoire-point → brouillon, comme `scratchDirPatterns()`', () => {
+    // `.probe/` (sondes jetables), `.results/` et `.report/` (sorties Playwright).
+    eq(isScratchSpecPath('.probe/oneoff.spec.ts'), true, 'sonde jetable')
+    eq(isScratchSpecPath('.results/x.spec.ts'), true, 'sortie de runner')
+    eq(isScratchSpecPath('a/.report/x.spec.ts'), true, 'repertoire-point imbrique')
+})
+
+push('spec dans un sous-repertoire ORDINAIRE → PAS un brouillon (elle doit etre jugee)', () => {
+    // ⛔ Le faux negatif a eviter : si ce cas rendait `true`, une vraie spec
+    // rangee dans un sous-dossier sortirait du balayage sans un mot — le
+    // defaut #824 lui-meme, reintroduit dans le garde.
+    eq(isScratchSpecPath('a11y/rating.spec.ts'), false, 'sous-repertoire ordinaire')
+    eq(isScratchSpecPath('a/b/c/deep.spec.ts'), false, 'trois niveaux')
+})
+
+push('un FICHIER commencant par un point n\'est pas un repertoire de brouillon', () => {
+    // Seuls les segments de REPERTOIRE comptent — c'est la regle de la regex
+    // de `scratchDirPatterns`, qui exige un `/` apres le segment pointe.
+    eq(isScratchSpecPath('.hidden.spec.ts'), false, 'le fichier lui-meme est juge, pas ecarte')
+})
+
+push('le classement travaille sur des CHEMINS, pas des basenames', () => {
+    // Deux specs de meme nom dans deux repertoires restent deux entrees.
+    const r = classifySpecs(['a/x.spec.ts', 'b/x.spec.ts'], ['a/x.spec.ts'], new Set())
+    eq(r.newUngated, ['b/x.spec.ts'], 'la seconde ne doit pas etre absorbee par la premiere')
 })
 
 /* ─── Non-vacuite : un balayage vide DOIT etre bloquant ─── */
