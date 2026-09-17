@@ -1,3 +1,5 @@
+import type { INavLink } from '../interfaces/nav.interface'
+
 /**
  * Localises an INTERNAL site path, fragment included.
  *
@@ -16,6 +18,11 @@
  * separate static sites (Histoire / VitePress) served next to the app, not
  * routes of it — localising them yields `/fr/stories/`, which 404s. They
  * are flagged `external: true` in NAV_SECTIONS and must keep a plain `<a>`.
+ *
+ * `navLinkHref()` below is that boundary expressed once, for the callers that
+ * iterate a list mixing both kinds (the header menus of #809). It is the ONLY
+ * place the `external` flag has to be read before localising — a v-if/v-else
+ * pair in a template duplicates six attributes to express the same thing.
  */
 export function useLocaleHref () {
     const localePath = useLocalePath()
@@ -32,5 +39,13 @@ export function useLocaleHref () {
         return `${ localePath(path || '/') }${ hash }`
     }
 
-    return { localeHref }
+    /**
+     * A nav entry's final href: localised when it is an app route, left
+     * strictly untouched when it points at a neighbouring static site.
+     */
+    const navLinkHref = (link: INavLink): string => (
+        link.external ? link.href : localeHref(link.href)
+    )
+
+    return { localeHref, navLinkHref }
 }
