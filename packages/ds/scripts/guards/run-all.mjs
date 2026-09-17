@@ -40,7 +40,8 @@ const GUARDS = [
     'class-fallthrough.mjs',
     'md-table-cells.mjs',
     'pnpm-script-exists.mjs',
-    'vrt-lockstep.mjs'
+    'vrt-lockstep.mjs',
+    'unitless-zero-in-calc.mjs'
 ]
 
 /*********************************************************

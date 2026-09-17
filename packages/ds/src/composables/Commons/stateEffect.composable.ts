@@ -55,15 +55,17 @@ import type { TStateEffectProps } from '../../types/Commons/state-effect.type'
 /**
  * Pick the effective value for a given axis based on the active state.
  *
- * Resolution order (per axis):
- *   1. isActive=true AND activeState?.{axis} != null  → activeState.{axis}
- *   2. isHover=true  AND hoverState?.{axis}  != null  → hoverState.{axis}
- *   3. default                                        → props[axis]
+ * Resolution order (per axis), matching the body below line for line:
+ *   1. isHover=true  AND hoverState?.{axis}  != null  → hoverState.{axis}
+ *   2. isActive=true AND activeState?.{axis} != null  → activeState.{axis}
+ *   3. default                                        → rest()
  *
- * `active` outranks `hover` when both are engaged (the user is pressing
- * AND hovering) — matches the existing role precedence in useColorEffect
- * where `active` takes precedence over `hover` (bg goes to bgActive, not
- * bgHover).
+ * ⛔ `hover` outranks `active`, not the reverse: hovering an element that is
+ * already pressed or selected shows the HOVER surface. This block previously
+ * claimed the opposite while the body did what it does now — measured with
+ * hoverState.bgColor='success' / activeState.bgColor='danger' over a resting
+ * 'primary', both engaged resolves to 'success'. Same precedence as the
+ * `bgRole` ternary in `colorStyles` below, and as `useColorEffect`.
  */
 function pickEffective<T> (
     // The RESTING value is passed as a GETTER, not an eager value: reading

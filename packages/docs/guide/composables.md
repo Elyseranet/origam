@@ -6,6 +6,25 @@ Voici la liste complète des composables disponibles dans le projet Origam.
 
 Les composables communs fournissent des fonctionnalités réutilisables pour tous les composants.
 
+> Ce tableau est une **liste partielle**, écrite à la main. La référence
+> exhaustive des symboles exportés, elle, est générée depuis les sources :
+> [Composables — Commons](../composables/Commons.md).
+>
+> Les pages détaillées suivantes couvrent l'axe **thème / couleur / style**
+> (lot 1 de l'issue #599) :
+> [useTheme](../composables/useTheme.md) ·
+> [useColor](../composables/useColor.md) ·
+> [useColorEffect](../composables/useColorEffect.md) ·
+> [useStateEffect](../composables/useStateEffect.md) ·
+> [useStyle](../composables/useStyle.md) ·
+> [useTypography](../composables/useTypography.md) ·
+> [useStatus](../composables/useStatus.md) ·
+> [useVariant](../composables/useVariant.md) ·
+> [useScopeId](../composables/useScopeId.md) ·
+> [useUnsupportedProp](../composables/useUnsupportedProp.md) ·
+> [useDefaults](../composables/useDefaults.md) ·
+> [installThemePropsResolver](../composables/installThemePropsResolver.md).
+
 | Composable            | Description                                                 |
 |:----------------------|:------------------------------------------------------------|
 | **useBothColor**      | Gère la couleur du texte et l'arrière-plan                  |
