@@ -148,7 +148,12 @@ test.describe('HomeFeatures section', () => {
 
     test('renders known feature titles from en.json', async ({ page }) => {
         const section = page.locator('section.home-features')
-        await expect(section).toContainText('29 chart primitives')
+        // ⛔ Le compte de primitives de graphes est un INVENTAIRE : il était
+        // épinglé à `29 chart primitives`, il vaut `26` aujourd'hui
+        // (`home.features.charts.title` dans en.json) — et il a BAISSÉ, donc
+        // aucune borne « au moins N » ne tiendrait. On garde ce que la carte
+        // promet réellement : un nombre, suivi de « chart primitives ».
+        await expect(section).toContainText(/\d+ chart primitives/)
         await expect(section).toContainText('WCAG 2.1 AA verified')
         await expect(section).toContainText('Design tokens')
         await expect(section).toContainText('TypeScript first')
