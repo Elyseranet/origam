@@ -807,6 +807,17 @@ The `token-var-channels` guard still checks both directions — every
 `var(--origam-…)` a component reads must be declared in one of the
 stylesheets above, and every declared token should be read by someone.
 
+⛔ **`token-var-channels` reads SHEETS. It evaluates no TypeScript**, and a
+reference concatenated at runtime appears in no sheet — the name is often not
+even grep-able (`var(${SHADOW_TOKEN_PREFIX}${rung})`). That is how #813 shipped
+`var(--origam-shadow---2xl)` on a token no sheet declares while every guard
+stayed green. Guard 28, `ts-token-refs.mjs` (#823), closes that half: it
+enumerates the concrete environments around each template and replays it one
+execution path at a time, then checks every produced name against the sheets —
+and requires a fallback whenever the name cannot be bounded statically. **A
+`var()` built in TS without a fallback is the shape to avoid**;
+`useRounded`'s `var(--origam-radius---md, 8px)` is the shape to copy.
+
 When migrating a component:
 1. Audit every `--origam-{cmp}---*` var the SCSS uses.
 2. Make sure each is declared in `light.css` / `dark.css` / `primitive.css`
@@ -1087,12 +1098,12 @@ The global pre-delivery policy (TU + e2e + security) applies. Specific to
 origam:
 - Run tests on **Node 24** (`.nvmrc`); Node 18 produces unrelated
   `crypto.hash` failures.
-- `pnpm -F origam guards` must stay at **27/27** (measured 2026-09-17, this
-  worktree, real exit code; it read `25/25` an hour earlier and `17/17` before
-  that — recount, never quote).
-- `pnpm -F origam guards:self` must stay at **14/14** (measured 2026-09-17, this
-  worktree, real exit code hors pipe ; ce fichier lisait `13/13` — recount,
-  never quote). It runs the guards' own
+- `pnpm -F origam guards` must stay at **28/28** (measured 2026-09-17, this
+  worktree, real exit code; it read `27/27` an hour earlier, `25/25` before
+  that and `17/17` before that — recount, never quote).
+- `pnpm -F origam guards:self` must stay at **15/15** (measured 2026-09-17, this
+  worktree, real exit code hors pipe ; ce fichier lisait `14/14` puis `13/13` —
+  recount, never quote). It runs the guards' own
   detectors, discovered from `scripts/guards/lib/*.selftest.mjs`. A guard whose
   extractor has regressed goes QUIET, and a silent detector and a clean repo
   produce the same green — so a green `guards` means nothing without this. Both
