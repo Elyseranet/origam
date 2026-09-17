@@ -47,6 +47,21 @@ const LEGACY_SIZE_TO_UTILITY: Readonly<Record<string, string>> = {
  * composant qui traite `size` comme une pure dimension de boite ne doit
  * pas consommer `sizeClasses` dans son `:class` : `sizeStyles` reste seul
  * autoritaire pour la geometrie.
+ *
+ * @description
+ * ⛔ SURFACE ASYMETRIQUE — `sizeClasses` deballe un `Ref` (`isRef(props)
+ * ? props.value : props.size`), `sizeStyles` lit `props.size` directement.
+ * La signature ne type que `ISizeProps`, donc passer un `Ref` est
+ * hors-contrat ; mais le premier canal l'accepte a moitie et le second
+ * l'ignore. Mesure : `useSize(ref(24))` rend `{classes: [], styles: []}`
+ * — inerte des deux cotes — quand `useSize({size: 24})` rend bien
+ * `["width: 24px", "height: 24px"]`. Passer l'objet de props.
+ *
+ * @description
+ * ⚠️ Aucune validation de la valeur custom : `size="zzz"` ne figure pas
+ * dans `SIZES_ARRAY`, prend donc la branche inline et emet
+ * `width: zzz` / `height: zzz` — deux declarations invalides, sans
+ * avertissement. Meme absence de liste blanche que `useVariant`.
  ********************************************************/
 export function useSize (props: ISizeProps, name = getCurrentInstanceName()) {
     const sizeClasses = computed(() => {

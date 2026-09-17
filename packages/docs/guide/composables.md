@@ -24,6 +24,19 @@ Les composables communs fournissent des fonctionnalités réutilisables pour tou
 > [useUnsupportedProp](../composables/useUnsupportedProp.md) ·
 > [useDefaults](../composables/useDefaults.md) ·
 > [installThemePropsResolver](../composables/installThemePropsResolver.md).
+>
+> Et l'axe **dimension / espacement / forme** (lot 2 de l'issue #600) :
+> [useDimension](../composables/useDimension.md) ·
+> [useMargin](../composables/useMargin.md) ·
+> [usePadding](../composables/usePadding.md) ·
+> [useBorder](../composables/useBorder.md) ·
+> [useRounded](../composables/useRounded.md) ·
+> [useElevation](../composables/useElevation.md) ·
+> [useSize](../composables/useSize.md) ·
+> [useDensity](../composables/useDensity.md) ·
+> [useLocation](../composables/useLocation.md) ·
+> [usePosition](../composables/usePosition.md) ·
+> [convertToUnit](../composables/convertToUnit.md).
 
 | Composable            | Description                                                 |
 |:----------------------|:------------------------------------------------------------|
