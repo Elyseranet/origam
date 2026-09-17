@@ -210,11 +210,36 @@ export function rippleHide (e: Event) {
         return
     }
 
-    window.setTimeout(() => {
+    /*********************************************************
+     * Le seul des trois setTimeout du fichier dont le handle
+     * n'etait capture NULLE PART (#779)
+     *
+     * @description
+     * Les deux autres atterrissent dans `_ripple.showTimer`, celui-ci
+     * n'allait nulle part : ni `rippleCancelShow`, ni le hook
+     * `unmounted` de la directive ne pouvaient l'atteindre. Il rejoint
+     * donc `_ripple.timers`, le registre que #753 a pose et que
+     * `unmounted` purge deja — pas un second mecanisme.
+     *
+     * @description
+     * Le comportement ne bouge pas : la continuation testait deja
+     * `element._ripple`, et `unmounted` fait `delete el._ripple`, donc
+     * apres demontage elle ne faisait plus rien. Ce que le garde retire,
+     * c'est la tache elle-meme et la reference a l'element qu'elle
+     * retenait.
+     ********************************************************/
+    const store = element._ripple
+    const resetTouched = window.setTimeout(() => {
+        store.timers?.delete(resetTouched)
+
         if (element._ripple) {
             element._ripple.touched = false
         }
     })
+
+    store.timers ??= new Set<ReturnType<typeof setTimeout>>()
+    store.timers.add(resetTouched)
+
     RIPPLES.hide(element)
 }
 
