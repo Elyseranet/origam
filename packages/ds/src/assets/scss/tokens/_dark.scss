@@ -45,6 +45,30 @@
  * present in the CSS file and missing from the SCSS one ships a bundle with NO
  * auto dark mode, while this file and the documentation both say otherwise.
  * That was #794. `scripts/guards/token-twins.mjs` now fails on any divergence.
+ *
+ * ── #789 — CONTRASTE : POURQUOI CES PALIERS-LÀ ─────────────────────────────
+ * Mêmes couples `bg`/`fg` blanc qu'en clair, mêmes valeurs (success
+ * `green-700`, warning `amber-700`, info `#2563eb`). S'y ajoutent deux
+ * paliers PROPRES au sombre, mesurés en Chromium, alpha composité :
+ *
+ *     action--primary---bg        primary-500 #8b5cf6  4.23  →  primary-600  5.70
+ *     action--primary---bgHover   primary-400 #a78bfa  2.72  →  primary-700  7.10
+ *
+ * ⛔ Le `bgHover` sombre était la pire paire du jeu — 2.72:1 en texte blanc,
+ * pire que le fond au repos — et n'était signalé nulle part.
+ *
+ * ⚠️ CONTRAINTE DE PALETTE, mesurée : sur la surface sombre `#0a0a0a`, le
+ * SEUL palier violet qui tienne À LA FOIS le texte blanc à 4.5:1 et les 3:1
+ * non textuels de 1.4.11 contre la page est `primary---600` (blanc 5.70,
+ * page 3.47). Deux paliers distincts pour repos ET survol sont donc
+ * impossibles avec du texte blanc : `bgHover` à `primary---700` tombe à
+ * 2.79 contre la page. Arbitrage assumé — le survol est transitoire et
+ * désigné par le curseur, l'état au repos reste à 3.47. L'alternative
+ * (garder `#8b5cf6` et passer `primary---fg` à l'encre en sombre) tient les
+ * deux critères mais fait du primaire la seule intention à texte foncé.
+ *
+ * Mesure, témoins et non-régression :
+ * `packages/tests/e2e/token-intent-contrast.spec.ts`.
  */
 [data-theme="dark"] {
   --origam-color__surface---default: var(--origam-color__neutral---950);
@@ -62,9 +86,9 @@
   --origam-color__border---subtle: var(--origam-color__neutral---800);
   --origam-color__border---strong: var(--origam-color__neutral---400);
   --origam-color__border---focus: var(--origam-color__primary---400);
-  --origam-color__action--primary---bg: var(--origam-color__primary---500);
+  --origam-color__action--primary---bg: var(--origam-color__primary---600);
   --origam-color__accent---base: var(--origam-color__action--primary---bg);
-  --origam-color__action--primary---bgHover: var(--origam-color__primary---400);
+  --origam-color__action--primary---bgHover: var(--origam-color__primary---700);
   --origam-color__action--primary---bgSubtle: var(--origam-color__primary---900);
   --origam-color__action--primary---bgDisabled: var(--origam-color__neutral---800);
   --origam-color__action--primary---fg: var(--origam-color__neutral---0);
@@ -81,12 +105,12 @@
   --origam-color__action--ghost---bgDisabled: rgba(0, 0, 0, 0);
   --origam-color__action--ghost---fg: var(--origam-color__primary---400);
   --origam-color__action--ghost---fgDisabled: var(--origam-color__neutral---600);
-  --origam-color__feedback--success---bg: var(--origam-color__green---500);
+  --origam-color__feedback--success---bg: var(--origam-color__green---700);
   --origam-color__feedback--success---bgSubtle: var(--origam-color__neutral---900);
   --origam-color__feedback--success---fg: var(--origam-color__neutral---0);
   --origam-color__feedback--success---fgSubtle: var(--origam-color__green---400);
   --origam-color__feedback--success---border: var(--origam-color__green---500);
-  --origam-color__feedback--warning---bg: var(--origam-color__amber---600);
+  --origam-color__feedback--warning---bg: var(--origam-color__amber---700);
   --origam-color__feedback--warning---bgSubtle: var(--origam-color__neutral---900);
   --origam-color__feedback--warning---fg: var(--origam-color__neutral---0);
   --origam-color__feedback--warning---fgSubtle: var(--origam-color__amber---400);
@@ -96,7 +120,7 @@
   --origam-color__feedback--danger---fg: var(--origam-color__neutral---0);
   --origam-color__feedback--danger---fgSubtle: var(--origam-color__red---400);
   --origam-color__feedback--danger---border: var(--origam-color__red---400);
-  --origam-color__feedback--info---bg: var(--origam-color__blue---500);
+  --origam-color__feedback--info---bg: #2563eb;
   --origam-color__feedback--info---bgSubtle: var(--origam-color__neutral---900);
   --origam-color__feedback--info---fg: var(--origam-color__neutral---0);
   --origam-color__feedback--info---fgSubtle: var(--origam-color__blue---400);
@@ -2795,9 +2819,9 @@
     --origam-color__border---subtle: var(--origam-color__neutral---800);
     --origam-color__border---strong: var(--origam-color__neutral---400);
     --origam-color__border---focus: var(--origam-color__primary---400);
-    --origam-color__action--primary---bg: var(--origam-color__primary---500);
+    --origam-color__action--primary---bg: var(--origam-color__primary---600);
     --origam-color__accent---base: var(--origam-color__action--primary---bg);
-    --origam-color__action--primary---bgHover: var(--origam-color__primary---400);
+    --origam-color__action--primary---bgHover: var(--origam-color__primary---700);
     --origam-color__action--primary---bgSubtle: var(--origam-color__primary---900);
     --origam-color__action--primary---bgDisabled: var(--origam-color__neutral---800);
     --origam-color__action--primary---fg: var(--origam-color__neutral---0);
@@ -2814,12 +2838,12 @@
     --origam-color__action--ghost---bgDisabled: rgba(0, 0, 0, 0);
     --origam-color__action--ghost---fg: var(--origam-color__primary---400);
     --origam-color__action--ghost---fgDisabled: var(--origam-color__neutral---600);
-    --origam-color__feedback--success---bg: var(--origam-color__green---500);
+    --origam-color__feedback--success---bg: var(--origam-color__green---700);
     --origam-color__feedback--success---bgSubtle: var(--origam-color__neutral---900);
     --origam-color__feedback--success---fg: var(--origam-color__neutral---0);
     --origam-color__feedback--success---fgSubtle: var(--origam-color__green---400);
     --origam-color__feedback--success---border: var(--origam-color__green---500);
-    --origam-color__feedback--warning---bg: var(--origam-color__amber---600);
+    --origam-color__feedback--warning---bg: var(--origam-color__amber---700);
     --origam-color__feedback--warning---bgSubtle: var(--origam-color__neutral---900);
     --origam-color__feedback--warning---fg: var(--origam-color__neutral---0);
     --origam-color__feedback--warning---fgSubtle: var(--origam-color__amber---400);
@@ -2829,7 +2853,7 @@
     --origam-color__feedback--danger---fg: var(--origam-color__neutral---0);
     --origam-color__feedback--danger---fgSubtle: var(--origam-color__red---400);
     --origam-color__feedback--danger---border: var(--origam-color__red---400);
-    --origam-color__feedback--info---bg: var(--origam-color__blue---500);
+    --origam-color__feedback--info---bg: #2563eb;
     --origam-color__feedback--info---bgSubtle: var(--origam-color__neutral---900);
     --origam-color__feedback--info---fg: var(--origam-color__neutral---0);
     --origam-color__feedback--info---fgSubtle: var(--origam-color__blue---400);
