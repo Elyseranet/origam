@@ -133,7 +133,18 @@ const GREEN_SPECS = [
     //
     // Verified in this lot, `E2E_STATIC=1`, chromium, isolated port:
     // `rating-field-keyboard` 18/18.
-    'rating-field-keyboard.spec.ts'
+    'rating-field-keyboard.spec.ts',
+    // wave 12 — #800. Meme raison qu'aux vagues 8 a 11 : hors de cette liste,
+    // `E2E_GREEN_ONLY=1` (ci.yml) exclut la spec et la CI ne l'execute jamais.
+    //
+    // ⛔ Celle-ci retient un defaut particulierement silencieux : le rendu
+    // VOULU (zero padding sur une cellule OTP) etait obtenu par une
+    // declaration CSS JETEE — un `0` sans unite dans un `max()`. Un assert sur
+    // la VALEUR du padding passerait des deux cotes du correctif ; la spec
+    // interroge donc la VALIDITE de la declaration via un temoin injecte par
+    // `addInitScript`. Verifiee 2/2 apres, 1/2 avant (A/B contre le parent),
+    // `E2E_STATIC=1`, chromium, port isole.
+    'field-corner-clearance.spec.ts'
 ]
 
 /**
