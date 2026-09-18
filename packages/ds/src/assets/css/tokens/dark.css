@@ -13,7 +13,9 @@
  * pipeline may be reintroduced later, once the DS is stable.
  *
  * ── TWO BLOCKS, ONE DECLARATION SET ────────────────────────────────────────
- * 1. `[data-theme="dark"]`            — the theme asked for EXPLICITLY.
+ * 1. `[data-theme="dark"], :root:not([data-theme])[data-mode="dark"]`
+ *                                     — the theme asked for EXPLICITLY, on
+ *                                       EITHER axis (see #807 below).
  * 2. `@media (prefers-color-scheme: dark) {
  *        :root:not([data-theme]):not([data-mode]) }`
  *                                     — AUTO mode: the OS preference, and
@@ -34,6 +36,38 @@
  * Specificity: `:root:not([data-theme]):not([data-mode])` is (0,3,0) — enough
  * to outrank light.css's `:root, [data-theme="light"]` (0,1,0) when nothing is
  * pinned — while failing to match at all as soon as either axis is written.
+ *
+ * ── #807 — `data-mode="dark"` SEUL NE PEIGNAIT RIEN ────────────────────────
+ * Avant ce correctif, seule la matrice runtime (`apply-theme.util.ts`)
+ * émettait des règles `[data-mode="…"]` — les feuilles statiques n'en
+ * avaient AUCUNE. Un consommateur qui appelle `useTheme().setMode('dark')`
+ * sans avoir enregistré de thème de marque obtenait `<html data-mode="dark">`
+ * et restait en clair : les deux setters de `useTheme()` ne faisaient pas la
+ * même chose. Mesuré en Chromium sur `dist/src/assets/css/main.css` :
+ * `data-mode="dark"` seul → `rgb(255,255,255)` (surface claire) au lieu de
+ * `rgb(10,10,10)`.
+ *
+ * Le correctif AJOUTE UN SÉLECTEUR à la liste du bloc 1 existant plutôt que
+ * de dupliquer un troisième bloc de ~2730 déclarations (le coût que #807
+ * chiffrait pour l'approche naïve — `main.css` était déjà passé de 364 ko à
+ * 538 ko avec le second bloc). `:root:not([data-theme])[data-mode="dark"]`
+ * a la même spécificité (0,3,0) que le sélecteur du bloc média ci-dessus et
+ * matche exactement le même monde que lui côté "explicite" : `data-theme`
+ * absent, `data-mode="dark"` posé. Les deux blocs restent mutuellement
+ * exclusifs sur l'attribut `data-mode` (présent ici, absent là) donc ne se
+ * recouvrent jamais. `data-theme="light" data-mode="dark"` reste clair : la
+ * marque (`data-theme`) gouverne dès qu'elle est posée, `data-mode` seul ne
+ * bascule que l'absence de marque.
+ *
+ * ⛔ Le sélecteur 1 (bloc explicite) et le sélecteur du bloc média restent
+ * BYTE-DIFFÉRENTS de propos : le bloc 1 est INCONDITIONNEL (s'applique quel
+ * que soit `prefers-color-scheme`) tandis que le bloc média ne s'active que
+ * si NI `data-theme` NI `data-mode` ne sont posés. Ne pas les fusionner.
+ *
+ * ⛔ Le deuxième bloc (media query, "AUTO mode") reste volontairement un
+ * SOUS-ENSEMBLE de 11 déclarations, pas une copie complète des 2731 du bloc
+ * 1 — c'est un fait préexistant à #807, non réévalué ici, et hors périmètre
+ * de ce ticket.
  *
  * ⛔ The two blocks carry the SAME declarations, and this file is BYTE-IDENTICAL
  * to its twin — the whole file, header included. The pair is
@@ -70,7 +104,8 @@
  * Mesure, témoins et non-régression :
  * `packages/tests/e2e/token-intent-contrast.spec.ts`.
  */
-[data-theme="dark"] {
+[data-theme="dark"],
+:root:not([data-theme])[data-mode="dark"] {
   --origam-color__surface---default: var(--origam-color__neutral---950);
   --origam-color__surface---raised: var(--origam-color__neutral---900);
   --origam-color__surface---overlay: var(--origam-color__neutral---800);

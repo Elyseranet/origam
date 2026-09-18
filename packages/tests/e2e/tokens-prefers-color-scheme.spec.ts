@@ -219,21 +219,47 @@ test.describe('#794 — `origam/styles` honours prefers-color-scheme', () => {
         expect(pinned.surface).toBe(explicitLight.surface)
     })
 
-    // ⛔ PINNED DEFECT, not a blessing. `data-mode="dark"` ALONE paints
-    // nothing: `[data-mode="…"]` rules are emitted only by the runtime theme
-    // matrix (`apply-theme.util.ts`, injected by `createOrigam()`), and the
-    // static `origam/styles` bundle contains ZERO occurrence of `data-mode`.
-    // Pre-existing, unchanged by #794 (`develop` measures the same) — tracked
-    // as #807. This assertion exists so that fixing it is a DELIBERATE act
-    // that turns this test red, not a silent drift.
-    test('PINNED GAP — data-mode="dark" alone paints light (the static sheet has no data-mode rule)', async ({ browser }) => {
+    // ── #807 — FIXED ─────────────────────────────────────────────────────
+    // `data-mode="dark"` ALONE used to paint nothing: `[data-mode="…"]` rules
+    // used to be emitted only by the runtime theme matrix
+    // (`apply-theme.util.ts`, injected by `createOrigam()`), and the static
+    // `origam/styles` bundle had ZERO occurrence of `data-mode`. The fix
+    // widens the explicit `[data-theme="dark"]` block's SELECTOR LIST —
+    // `:root:not([data-theme])[data-mode="dark"]` — rather than duplicating
+    // its ~2731 declarations a third time. This test used to be a PINNED
+    // GAP (asserted the defect, so a future fix would turn it red on
+    // purpose); it now asserts the fix and would go red again on a
+    // regression.
+    test('POSITIVE — data-mode="dark" alone (#807) now renders the dark theme', async ({ browser }) => {
         const css = readFileSync(shipped.path, 'utf8')
-        expect(css.split('data-mode').length - 1, 'a data-mode rule appeared — reassess this pinned gap').toBe(1)
+        // Was exactly 1 (the auto-mode media query's `:not([data-mode])`)
+        // before #807 — now the explicit block's added selector contributes
+        // a second occurrence.
+        expect(css.split('data-mode').length - 1, 'no data-mode rule found in the shipped bundle').toBeGreaterThan(1)
 
-        const modeOnly = await probe(browser, 'dark', null, 'dark')
+        const modeOnly = await probe(browser, 'light', null, 'dark')
+        const explicitDark = await probe(browser, 'light', 'dark')
         const explicitLight = await probe(browser, 'light', 'light')
 
-        expect(modeOnly.surface).toBe(explicitLight.surface)
+        expect(modeOnly.attr).toBe('(none)')
+        expect(modeOnly.mode).toBe('dark')
+        expect(modeOnly.surface).toBe(explicitDark.surface)
+        expect(modeOnly.text).toBe(explicitDark.text)
+        expect(modeOnly.surface).not.toBe(explicitLight.surface)
+    })
+
+    // The fix must not make `data-mode` outrank an explicitly pinned brand:
+    // `data-theme` carries the brand and governs the moment it is written,
+    // `data-mode` alone only ever fills in for an ABSENT brand.
+    test('NEGATIVE CONTROL — data-theme="light" + data-mode="dark" stays light (brand governs)', async ({ browser }) => {
+        const both = await probe(browser, 'light', 'light', 'dark')
+        const explicitLight = await probe(browser, 'light', 'light')
+        const explicitDark = await probe(browser, 'light', 'dark')
+
+        expect(both.attr).toBe('light')
+        expect(both.mode).toBe('dark')
+        expect(both.surface).toBe(explicitLight.surface)
+        expect(both.surface).not.toBe(explicitDark.surface)
     })
 
     test('NEGATIVE CONTROL — data-theme="dark" stays dark under OS light', async ({ browser }) => {

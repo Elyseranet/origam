@@ -835,6 +835,8 @@ When migrating a component:
 ## Multi-theme
 
 `<html data-theme="light|dark|brand-x">` switches the active token set.
+`<html data-mode="light|dark">` **alone** (no `data-theme`) also switches it,
+since **#807** — see below.
 
 `prefers-color-scheme: dark` is honoured **only when the page has pinned
 nothing on either axis** — no `data-theme` AND no `data-mode`. The rule
@@ -858,10 +860,30 @@ and `main.css` — what the `./styles` export resolves to — is compiled from t
 SCSS. The published bundle therefore had no automatic dark mode while this
 paragraph claimed it did. That is the reason guard 27 (`token-twins`) exists.
 
-⚠️ Still NOT covered by the static sheets: `data-mode="dark"` **alone**, with
-no `data-theme`, paints nothing. `[data-mode="…"]` rules are emitted only by
-the runtime theme matrix (`apply-theme.util.ts`, injected by `createOrigam()`);
-`origam/styles` contains zero occurrence of `data-mode`. Tracked as **#807**.
+⚠️ **#807 — fixed.** Until then, `data-mode="dark"` **alone** (no
+`data-theme`) painted nothing: `[data-mode="…"]` rules used to be emitted only
+by the runtime theme matrix (`apply-theme.util.ts`, injected by
+`createOrigam()`), and `origam/styles` had zero occurrence of `data-mode`. The
+fix widens the SELECTOR LIST of the existing explicit `[data-theme="dark"]`
+block instead of duplicating its ~2731 declarations a third time:
+
+```css
+[data-theme="dark"],
+:root:not([data-theme])[data-mode="dark"] { /* the dark token set, once */ }
+```
+
+Same (0,3,0) specificity as the auto-mode selector above, and disjoint from it
+on the `data-mode` attribute (one requires it present, the other absent) — the
+two rules never compete for the same page. `data-theme="light" data-mode="dark"`
+still resolves light: the brand axis governs the moment it is pinned, `data-mode`
+alone only ever fills in for an ABSENT brand. Measured in Chromium on
+`dist/src/assets/css/main.css`, before → after: `rgb(255,255,255)` →
+`rgb(10,10,10)`. Pinned by
+`packages/tests/e2e/tokens-prefers-color-scheme.spec.ts`.
+
+⚠️ Not touched by #807, and out of its scope: the AUTO-mode media block above
+carries only **11** declarations, a curated subset of the explicit block's
+2731 — it is not a full theme, a pre-existing fact unrelated to this fix.
 
 Runtime helpers:
 - `useTheme()` (composable) — singleton ref + persistence + toggle.
