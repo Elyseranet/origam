@@ -276,6 +276,7 @@
               <origam-btn
                 class="appbar-actions__btn"
                 variant="outlined"
+                data-cy="theme-switcher-trigger"
                 :aria-label="themeMenuAriaLabel"
                 :text="themeMenuLabel"
                 :append-icon="MDI_ICONS.CHEVRON_DOWN"
