@@ -107,12 +107,13 @@ test.describe('OrigamMasonry', () => {
             await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
-            // Allow one rAF for the first relayout to fire
-            await page.waitForTimeout(200)
-            const position = await sandbox.locator('.origam-masonry__item').first().evaluate(
-                (el) => getComputedStyle(el).position
-            )
-            expect(position).toBe('absolute')
+            // #783 — was "allow one rAF for the first relayout to fire" +
+            // `waitForTimeout(200)` + a single read. `toHaveCSS` retries until
+            // the value lands, so the relayout no longer has to happen inside a
+            // guessed window; it still reddens if the JS path never switches the
+            // item to absolute positioning.
+            await expect(sandbox.locator('.origam-masonry__item').first())
+                .toHaveCSS('position', 'absolute')
         })
 
         test('columns=3: items distribute into 3 distinct horizontal positions', async ({ page }) => {
@@ -182,13 +183,31 @@ test.describe('OrigamMasonry', () => {
             await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
-            await page.waitForTimeout(200)
+            // #783 — was `waitForTimeout(200)` then one read. The declaration is
+            // written by the same JS relayout as above, so the wait was a guess
+            // at when that lands. Poll for the state instead.
+            //
+            // ⚠️ `transition` is a SHORTHAND, and the root CLAUDE.md records
+            // that a shorthand containing `var()` serialises EMPTY. Read here
+            // via property access rather than `getPropertyValue`, and the
+            // `not.toBe('')` assertion below is precisely what would catch the
+            // day that stops holding — so it is kept, not folded into the poll.
+            //
+            // ⛔ NOT `readSettledStyle` here: before the relayout runs, the item
+            // already carries a perfectly stable `all 0s ease 0s`. "Settled" and
+            // "correct" are different questions, and settling on the pre-JS
+            // value would redden working code.
             const firstItem = sandbox.locator('.origam-masonry__item').first()
-            const transition = await firstItem.evaluate((el) => getComputedStyle(el).transition)
+            const readTransition = () => firstItem.evaluate((el) => getComputedStyle(el).transition)
+
+            await expect.poll(readTransition, {
+                timeout: 8000,
+                message: 'animated items must declare a non-no-op transition'
+            }).not.toMatch(/^all 0s/)
+
+            const transition = await readTransition()
             // Animated JS items declare top/left/width/transform transitions
             expect(transition).not.toBe('')
-            // Must NOT be "all 0s ease 0s" (no-op)
-            expect(transition).not.toMatch(/^all 0s/)
         })
 
         test('columns=3: 16 items distributed into 3 horizontal columns', async ({ page }) => {
@@ -215,10 +234,20 @@ test.describe('OrigamMasonry', () => {
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-masonry').first()
             await expect(root).toBeVisible({ timeout: 30000 })
-            await page.waitForTimeout(300)
-            const h = await root.evaluate(
+            // #783 — was `waitForTimeout(300)` then one read. The var is written
+            // by the JS relayout; poll for it to become a positive length rather
+            // than betting on when that happens. Times out red if the layout
+            // never publishes a height, which is the defect under test.
+            const readHeight = () => root.evaluate(
                 (el) => getComputedStyle(el).getPropertyValue('--origam-masonry---container-height').trim()
             )
+
+            await expect.poll(
+                async () => parseFloat(await readHeight()) > 0,
+                { timeout: 8000, message: '--origam-masonry---container-height should be published and > 0' }
+            ).toBe(true)
+
+            const h = await readHeight()
             expect(h).not.toBe('')
             const numeric = parseFloat(h)
             expect(numeric).toBeGreaterThan(0)
