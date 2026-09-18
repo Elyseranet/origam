@@ -82,11 +82,37 @@ import { expect, test } from '@playwright/test'
  * `rowspan="1"`/`colspan="1"` sur une seule ligne), ce qui a empêché toute
  * mesure du multiplicateur `y`. Ce point est distinct de #840 et n'est ni
  * corrigé ni classé ici.
+ *
+ * ## Navigation — par INDEX, pas par titre (piège trouvé après coup)
+ *
+ * ⛔ La première version de ce spec naviguait par
+ * `page.getByText(STICKY_VARIANT_TITLE, { exact: true }).first().click()`.
+ * Ça fait passer `audit-variant-titles.mjs` (garde `variant-titles`,
+ * `pnpm -F @origam/tests test:e2e:audit`) au ROUGE : la convention que CE
+ * garde impose est la navigation par INDEX (`?variantId=<slug>-N`), pas par
+ * titre — malgré ce que dit encore la section "Test-as-you-build" du
+ * `CLAUDE.md` racine de ce paquet (« via the dedicated Variant titles, not
+ * via the HstSelect picker dropdown »). **Contradiction doc/garde signalée
+ * en PR** : le garde fait foi ici, mais le paragraphe du `CLAUDE.md` est
+ * périmé et doit être corrigé séparément.
+ *
+ * Index → Titre (ordre dans `OrigamDataTable.story.vue`, vérifié par
+ * `node e2e/_support/audit-variant-pins.mjs`) :
+ *
+ *   23  → Prop — sticky (scroll-then-stick)
+ *   init: { sticky: true, height: '240' }
+ *
+ * ⚠️ `variantId` vaut `<storyId>-<index>` et l'index est la POSITION du
+ * `<Variant>` dans le fichier : insérer un `<Variant>` avant celui-ci décale
+ * cet index sans casser la navigation (elle pointerait juste sur le mauvais
+ * Variant en silence) — d'où le garde `variant-pins` ci-dessus.
  */
 
 const STORY_ID = 'components-stories-datatable-origamdatatable-story-vue'
 const STORY_PATH = '/stories/story/' + STORY_ID
-const STICKY_VARIANT_TITLE = 'Prop — sticky (scroll-then-stick)'
+const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
+
+const STICKY_VARIANT_INDEX = 23
 
 const TABLE_SELECTOR = '[data-cy="data-table-sticky-container"]'
 const WRAPPER_SELECTOR = `${TABLE_SELECTOR} .origam-table__wrapper`
@@ -96,8 +122,7 @@ test.describe('OrigamDataTable — prop sticky (#840)', () => {
     test.setTimeout(45000)
 
     test('le top calculé est une longueur réelle, jamais "auto"', async ({ page }) => {
-        await page.goto(STORY_PATH, { waitUntil: 'domcontentloaded' })
-        await page.getByText(STICKY_VARIANT_TITLE, { exact: true }).first().click()
+        await page.goto(variantUrl(STICKY_VARIANT_INDEX), { waitUntil: 'domcontentloaded' })
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -117,8 +142,7 @@ test.describe('OrigamDataTable — prop sticky (#840)', () => {
      * d'atteindre la mesure de `top`.
      */
     test('le style inline référence le token déclaré, jamais l\'ancien nom orphelin', async ({ page }) => {
-        await page.goto(STORY_PATH, { waitUntil: 'domcontentloaded' })
-        await page.getByText(STICKY_VARIANT_TITLE, { exact: true }).first().click()
+        await page.goto(variantUrl(STICKY_VARIANT_INDEX), { waitUntil: 'domcontentloaded' })
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -131,8 +155,7 @@ test.describe('OrigamDataTable — prop sticky (#840)', () => {
     })
 
     test('l\'en-tête reste collé au défilement du wrapper interne de la table (avant: défile hors champ)', async ({ page }) => {
-        await page.goto(STORY_PATH, { waitUntil: 'domcontentloaded' })
-        await page.getByText(STICKY_VARIANT_TITLE, { exact: true }).first().click()
+        await page.goto(variantUrl(STICKY_VARIANT_INDEX), { waitUntil: 'domcontentloaded' })
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -159,9 +182,22 @@ test.describe('OrigamDataTable — prop sticky (#840)', () => {
         expect(Math.abs(after - before)).toBeLessThan(1)
     })
 
+    /*
+     * ⛔ Densité changée en manipulant directement la classe
+     * `.origam-table--density-{compact,default,comfortable}` DANS le
+     * sandbox (comme `switch-density.spec.ts`), PAS en cliquant le
+     * `HstSelect` "Density" du panneau Histoire. Deux raisons :
+     *   1. le picker `HstSelect` est un DOM custom, brittle à piloter (cf.
+     *      CLAUDE.md racine, section "story conventions") ;
+     *   2. cliquer `page.getByText('Compact')` / `'Comfortable'` sur la
+     *      page-hôte fait un FAUX POSITIF au garde `variant-titles`
+     *      (`audit-variant-titles.mjs`) : ces libellés ne sont ni un titre
+     *      de `<Variant>` ni le `title` d'un `<Hst…>` — ce sont des valeurs
+     *      d'option internes au picker, invisibles pour l'extracteur — donc
+     *      classées comme navigation vers un titre inexistant.
+     */
     test('les 3 rangs de densité produisent 3 hauteurs de cellule distinctes et cohérentes avec padding-block', async ({ page }) => {
-        await page.goto(STORY_PATH, { waitUntil: 'domcontentloaded' })
-        await page.getByText(STICKY_VARIANT_TITLE, { exact: true }).first().click()
+        await page.goto(variantUrl(STICKY_VARIANT_INDEX), { waitUntil: 'domcontentloaded' })
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -174,26 +210,28 @@ test.describe('OrigamDataTable — prop sticky (#840)', () => {
         // lève l'ambiguïté avant la toute première mesure.
         await th.evaluate((el) => el.ownerDocument.fonts.ready)
 
-        const densityLabel = page.locator('label:has-text("Density") div.htw-cursor-pointer')
-
-        const measure = async (optionLabel: string) => {
-            await densityLabel.click()
-            await page.getByText(optionLabel, { exact: true }).click()
-            await page.waitForTimeout(200)
-            return th.evaluate((el) => el.getBoundingClientRect().height)
-        }
-
-        const compact = await measure('Compact')
-        const comfortable = await measure('Comfortable')
-        const defaultHeight = await measure('Default')
+        const measured = await th.evaluate((el) => {
+            const table = el.closest('.origam-table') as HTMLElement
+            const out: Record<string, number> = {}
+            for (const density of [ 'compact', 'default', 'comfortable' ]) {
+                table.classList.remove(
+                    'origam-table--density-compact',
+                    'origam-table--density-default',
+                    'origam-table--density-comfortable'
+                )
+                table.classList.add(`origam-table--density-${density}`)
+                out[density] = el.getBoundingClientRect().height
+            }
+            return out
+        })
 
         // Mesuré en Chromium sur cette branche, fonts chargées (voir en-tête du fichier).
-        expect(compact).toBeCloseTo(32, 0)
-        expect(defaultHeight).toBeCloseTo(44, 0)
-        expect(comfortable).toBeCloseTo(56, 0)
+        expect(measured.compact).toBeCloseTo(32, 0)
+        expect(measured.default).toBeCloseTo(44, 0)
+        expect(measured.comfortable).toBeCloseTo(56, 0)
 
         // Cohérence interne : chaque rang doit être strictement croissant.
-        expect(compact).toBeLessThan(defaultHeight)
-        expect(defaultHeight).toBeLessThan(comfortable)
+        expect(measured.compact).toBeLessThan(measured.default)
+        expect(measured.default).toBeLessThan(measured.comfortable)
     })
 })

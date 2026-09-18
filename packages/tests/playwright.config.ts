@@ -144,7 +144,14 @@ const GREEN_SPECS = [
     // interroge donc la VALIDITE de la declaration via un temoin injecte par
     // `addInitScript`. Verifiee 2/2 apres, 1/2 avant (A/B contre le parent),
     // `E2E_STATIC=1`, chromium, port isole.
-    'field-corner-clearance.spec.ts'
+    'field-corner-clearance.spec.ts',
+    // wave 13 — #840. `var(--origam-table-header-height)` n'etait declare par
+    // aucune feuille et sans repli ; la reference EFFACAIT `top` au lieu de
+    // laisser la cascade continuer (`unset` -> `auto` -> le header sticky
+    // defile avec le corps). A/B contre le composant pre-fix : 3/4 rouges
+    // avant, 4/4 verts apres. Verifiee stable 20/20, `--repeat-each=5`,
+    // `E2E_STATIC=1`, chromium, port isole.
+    'data-table-sticky.spec.ts'
 ]
 
 /**
