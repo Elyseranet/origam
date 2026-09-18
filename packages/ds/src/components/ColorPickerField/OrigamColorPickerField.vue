@@ -163,7 +163,7 @@
 
 	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
 	import { HSVtoCSS, isCompleteCssColor } from '../../utils/Commons/color.util'
-	import { matchesSelector } from '../../utils/Commons/commons.util'
+	import { has, matchesSelector } from '../../utils/Commons/commons.util'
 
 	import { computed, inject, nextTick, ref, shallowRef, StyleValue, useSlots, watch } from "vue"
 
@@ -225,8 +225,40 @@
 		})
 	}
 
+	/*********************************************************
+	 * selectedValue (#859)
+	 *
+	 * @description
+	 * Normalises `COLOR_NULL` (`{h:0,s:0,v:0,a:1}`) to `null` — measured
+	 * defect, confirmed in Chromium: `handleClear` writes `COLOR_NULL` to
+	 * `model`, a TRUTHY object, while every consumer of `selectedValue`
+	 * (the template's `v-if="selectedValue"` gating the selection-text
+	 * span, `hasSelectedValue`, the `:bg-color` swatch fallback) treats it
+	 * as "no value" via a truthiness/`!== null` check. Pre-fix, clicking
+	 * the clear button left the span rendering the sentinel's own
+	 * `JSON.stringify` (`{ "h": 0, "s": 0, "v": 0, "a": 1 }`) instead of
+	 * hiding it. `COLOR_NULL` itself stays untouched (it is a published
+	 * export — changing its shape would be an API break) and `model`
+	 * still holds it internally (`isDirty` still compares against it);
+	 * only the PUBLIC read this component exposes downstream is
+	 * normalised, at this single pass-through point.
+	 *
+	 * @description
+	 * ⛔ `model.value === COLOR_NULL` (reference equality) does NOT
+	 * catch this — measured, first attempt failed silently. `model` is
+	 * built on a plain `ref()` inside `useVModel`, and Vue 3 deep-wraps
+	 * any OBJECT assigned to a `ref` in a reactive `Proxy` — reading
+	 * `model.value` back returns that Proxy, never the original
+	 * `COLOR_NULL` literal, so `=== COLOR_NULL` is always `false` even
+	 * right after `model.value = COLOR_NULL`. A STRUCTURAL check
+	 * (`has(…, ['h','s','v','a'])`, the same helper `parseColor` already
+	 * uses for its own HSVA-shape test) survives the Proxy wrap because
+	 * it reads through it instead of comparing identities.
+	 ********************************************************/
 	const selectedValue = computed(() => {
-		return model.value
+		const v = model.value
+
+		return v !== null && typeof v === 'object' && has(v, ['h', 's', 'v', 'a']) ? null : v
 	})
 
 	/*********************************************************

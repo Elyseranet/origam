@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { toggleHstCheckbox } from './_support/histoire-controls'
 
 /**
  * #859 — direct keyboard typing into `<OrigamColorPickerField>` never
@@ -96,5 +97,50 @@ test.describe('OrigamColorPickerField — direct typing (#859)', () => {
         const selectionText = field.locator('.origam-color-picker-field__selection-text')
         await expect(selectionText).toBeVisible({ timeout: 8000 })
         await expect(selectionText).toHaveText(/^#/)
+    })
+
+    /**
+     * Clearing a color typed via keyboard — latent defect found while
+     * building this ticket's fix, unrelated to the typing wiring itself:
+     * `handleClear` writes `COLOR_NULL` (`{h:0,s:0,v:0,a:1}`, a TRUTHY
+     * object) to the model, and `selectedValue` used to pass it straight
+     * through. Since the selection-text span is gated on
+     * `v-if="selectedValue"` (a truthy check, not `!== null`), clicking
+     * Clear left the span rendering the sentinel's own `JSON.stringify`
+     * (`{ "h": 0, "s": 0, "v": 0, "a": 1 }`) instead of hiding it —
+     * measured in Chromium before the `selectedValue` normalisation fix.
+     * Both directions asserted: nothing shows after Clear, and typing a
+     * new value afterwards still works (a harness that only checked the
+     * first half would just prove the span had been hidden some other,
+     * wrong way).
+     */
+    test('clearing a typed value hides the selection text (and typing again after still works)', async ({ page }) => {
+        await page.goto(variantUrl(PLAYGROUND_VARIANT), { waitUntil: 'domcontentloaded' })
+
+        await toggleHstCheckbox(page, 'Clearable')
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const field = sandbox.locator('.origam-color-picker-field').first()
+        await expect(field).toBeVisible({ timeout: 12000 })
+
+        const input = field.locator('input').first()
+        await input.click()
+        await input.pressSequentially('#ff00aa', { delay: 20 })
+        await input.blur()
+
+        const selectionText = field.locator('.origam-color-picker-field__selection-text')
+        await expect(selectionText).toHaveText('#ff00aa', { timeout: 8000 })
+
+        const clearBtn = field.locator('.origam-field__clearable').first()
+        await expect(clearBtn).toBeVisible({ timeout: 8000 })
+        await clearBtn.click()
+
+        await expect(field.locator('.origam-color-picker-field__selection-text')).toHaveCount(0)
+
+        await input.click()
+        await input.pressSequentially('#00ff00', { delay: 20 })
+        await input.blur()
+
+        await expect(field.locator('.origam-color-picker-field__selection-text')).toHaveText('#00ff00', { timeout: 8000 })
     })
 })
