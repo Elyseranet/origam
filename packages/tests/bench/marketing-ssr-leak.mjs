@@ -23,16 +23,37 @@
  * stabilité d'une suite e2e — et ne consomme presque pas de CPU local, ce qui
  * évite de confondre la fuite avec la charge de la machine.
  *
- * ─── Usage ──────────────────────────────────────────────────────────────────
- *   # 1. un serveur de dev marketing À NOUS, jamais :3000 (~150 worktrees)
+ * ─── Usage — l'ORDRE COMPTE ─────────────────────────────────────────────────
+ * ⛔ La sonde doit exister AVANT le démarrage du serveur. Nitro scanne
+ * `server/api/` au boot ; un fichier de route déposé ensuite n'est PAS
+ * enregistré (mesuré : 404 pendant 60 s d'attente, worker parfaitement vivant).
+ * La version précédente de ce script installait la sonde à chaud et attendait
+ * un rechargement qui n'arrive jamais — elle ne pouvait donc rien mesurer.
+ *
+ *   # 1. déposer la sonde
+ *   node packages/tests/bench/marketing-ssr-leak.mjs --install-probe
+ *
+ *   # 2. un serveur de dev marketing À NOUS, jamais :3000 (~150 worktrees)
  *   DATABASE_URL="postgres://…" NUXT_IGNORE_LOCK=1 \
  *     pnpm -F @origam/marketing dev --port 3141
  *
- *   # 2. la charge
+ *   # 3. la charge
  *   PORT=3141 ROUNDS=120 node packages/tests/bench/marketing-ssr-leak.mjs
  *
- * `ROUNDS` × `URLS.length` rendus au total. Sur `develop` d'avant le correctif,
- * ~1 100 rendus suffisaient à tuer le worker (limite de tas mesurée à 4 144 Mo).
+ *   # 4. retirer la sonde
+ *   node packages/tests/bench/marketing-ssr-leak.mjs --remove-probe
+ *
+ * Pour rendre le témoin rapide, on RÉDUIT la limite de tas du worker plutôt que
+ * de l'augmenter : `NODE_OPTIONS=--max-old-space-size=1024` sur le serveur de
+ * dev. nitropack crée son worker sans `resourceLimits` (`core/index.mjs`,
+ * `#initWorker`), donc le worker hérite de la limite du process. La fuite tue
+ * alors le worker en ~200 rendus au lieu de ~1 100, et le correctif doit
+ * survivre au MÊME seau rétréci.
+ *
+ * `ROUNDS` × `URLS.length` rendus au total. À la limite de tas par défaut de
+ * cette machine (4 144 Mo), la pente mesurée ci-dessous place la mort du worker
+ * vers 1 070 rendus — extrapolation, pas une observation directe : le témoin
+ * ci-dessous a été obtenu à 1 216 Mo pour tenir en quelques minutes.
  *
  * ─── Lire le verdict ────────────────────────────────────────────────────────
  * La colonne `heapUsed` est relevée APRÈS un `gc()` forcé, donc elle mesure ce
@@ -42,10 +63,27 @@
  *   heapUsed plat            → pas de fuite (au pire un pic transitoire)
  *   heapUsed linéaire        → fuite ; la pente donne le coût par rendu
  *
- * Mesuré sur ce dépôt, mêmes 10 pages, 25 tours (250 rendus), machine locale :
+ * ─── TÉMOIN A/B mesuré le 2026-09-18 ───────────────────────────────────────
+ * Même arbre, même serveur, même charge, même limite de tas RÉDUITE à 1 216 Mo.
+ * SEULE variable : la présence de `server/plugins/01.vue-devtools-plugin-queue.ts`.
+ * Sans ce fichier, `server/plugins/` est identique à `develop`.
  *
- *   avant le correctif   186,6 → 1 084,2 Mo   (+897 Mo, ~3,75 Mo / rendu)
- *   après le correctif   188,5 →   199,5 Mo   (+11 Mo, oscillant)
+ *                        AVANT (= develop)        APRÈS (correctif actif)
+ *   rendus                mort au tour 23 (~230)   400, worker vivant
+ *   heapUsed              184,5 → 961,2 Mo         153,2 → 153,9 Mo
+ *   pente                 +3,70 Mo / rendu         ~0, oscillant 147-156
+ *   file devtools         = nombre de rendus       0 constant
+ *   état final            500 sur TOUTES les routes, définitif
+ *                                                  200 sur toutes les routes
+ *
+ * Le 500 porte le message exact du ticket, relevé dans le corps de la réponse
+ * (et NON dans le journal du serveur, qui ne l'imprime pas) :
+ *   « Worker terminated due to reaching memory limit: JS heap out of memory »
+ *   at [kOnExit] (node:internal/worker:398:26)
+ *
+ * La colonne `fileDevtools` est le juge de paix : elle suit le nombre de rendus
+ * À L'UNITÉ avant le correctif (10, 20, 30 … 220), ce qui prouve du même coup
+ * que le `globalThis` du worker Nitro est bien celui que voit le rendu Vue.
  *
  * ─── Sonde mémoire ──────────────────────────────────────────────────────────
  * Le relevé passe par `/api/__mem?gc=1`, une route de DIAGNOSTIC qui n'existe
@@ -139,23 +177,31 @@ async function probe () {
 }
 
 async function main () {
-    installProbe()
-    process.on('exit', removeProbe)
-    for (const signal of ['SIGINT', 'SIGTERM']) {
-        process.on(signal, () => { removeProbe(); process.exit(130) })
+    if (process.argv.includes('--install-probe')) {
+        installProbe()
+        process.stdout.write(`sonde écrite : ${PROBE_PATH}\n`)
+        process.stdout.write('DÉMARRER le serveur de dev MAINTENANT (la route est scannée au boot).\n')
+        return
     }
 
-    // Nitro recharge le worker quand un fichier de `server/` change : on laisse
-    // ce rechargement se produire AVANT de commencer à mesurer, sinon le tour 1
-    // relève un worker neuf et la pente démarre au mauvais endroit.
-    process.stdout.write('sonde installée, attente du rechargement Nitro…\n')
-    let first
-    for (let attempt = 0; ; attempt++) {
-        try { first = await probe(); break } catch (error) {
-            if (attempt >= 60) throw error
-            await new Promise((r) => setTimeout(r, 1000))
-        }
+    if (process.argv.includes('--remove-probe')) {
+        removeProbe()
+        process.stdout.write(`sonde retirée : ${PROBE_PATH}\n`)
+        return
     }
+
+    let first
+    try {
+        first = await probe()
+    } catch (error) {
+        console.error(`⛔ la sonde ne répond pas : ${error.message}`)
+        console.error('   Déposer la sonde PUIS (re)démarrer le serveur de dev :')
+        console.error('     node packages/tests/bench/marketing-ssr-leak.mjs --install-probe')
+        console.error('   Nitro scanne `server/api/` au boot ; une route ajoutée à chaud reste 404.')
+        process.exitCode = 1
+        return
+    }
+
     process.stdout.write(
         `worker thread=${first.threadId} isMainThread=${first.isMainThread} `
         + `limite de tas=${first.heapSizeLimitMB} Mo\n\n`
