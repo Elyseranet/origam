@@ -183,31 +183,61 @@ test.describe('OrigamMasonry', () => {
             await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
-            // #783 — was `waitForTimeout(200)` then one read. The declaration is
-            // written by the same JS relayout as above, so the wait was a guess
-            // at when that lands. Poll for the state instead.
+            // #783 — was `waitForTimeout(200)` then one read of the SHORTHAND,
+            // asserted with `not.toBe('')` and `not.toMatch(/^all 0s/)`.
             //
-            // ⚠️ `transition` is a SHORTHAND, and the root CLAUDE.md records
-            // that a shorthand containing `var()` serialises EMPTY. Read here
-            // via property access rather than `getPropertyValue`, and the
-            // `not.toBe('')` assertion below is precisely what would catch the
-            // day that stops holding — so it is kept, not folded into the poll.
+            // ⛔ BOTH of those assertions were incapable of failing, which is
+            // the second half of what #783 asked to look for. Measured here by
+            // deleting the SCSS rule that declares the transition and probing
+            // the item again — Chromium serialises the shorthand of a element
+            // with no transition as:
+            //
+            //     transition = "all"      (NOT "all 0s ease 0s")
+            //     transitionProperty = "all"
+            //     transitionDuration = "0s"
+            //
+            // `"all"` is neither `''` nor a match for `/^all 0s/`, so the test
+            // stayed GREEN on a component whose animation had been removed
+            // outright. The shorthand drops every longhand sitting at its
+            // initial value, so it is exactly the wrong thing to interrogate —
+            // the same family as the root CLAUDE.md's "query the longhand"
+            // note. Correct-code reading, same probe:
+            //
+            //     transitionProperty = "transform, top, left, width"
+            //     transitionDuration = "0.1s, 0.1s, 0.1s, 0.1s"
+            //
+            // So: read the LONGHANDS, and require an actual non-zero duration.
             //
             // ⛔ NOT `readSettledStyle` here: before the relayout runs, the item
-            // already carries a perfectly stable `all 0s ease 0s`. "Settled" and
-            // "correct" are different questions, and settling on the pre-JS
+            // already carries a perfectly stable no-op declaration. "Settled"
+            // and "correct" are different questions, and settling on the pre-JS
             // value would redden working code.
             const firstItem = sandbox.locator('.origam-masonry__item').first()
-            const readTransition = () => firstItem.evaluate((el) => getComputedStyle(el).transition)
+            const readTransition = () => firstItem.evaluate((el) => {
+                const style = getComputedStyle(el)
 
-            await expect.poll(readTransition, {
-                timeout: 8000,
-                message: 'animated items must declare a non-no-op transition'
-            }).not.toMatch(/^all 0s/)
+                return {
+                    property: style.transitionProperty,
+                    duration: style.transitionDuration
+                }
+            })
 
-            const transition = await readTransition()
-            // Animated JS items declare top/left/width/transform transitions
-            expect(transition).not.toBe('')
+            await expect.poll(
+                async () => {
+                    const { duration } = await readTransition()
+
+                    return duration
+                        .split(',')
+                        .some((raw) => parseFloat(raw) > 0)
+                },
+                { timeout: 8000, message: 'animated items must declare a transition with a non-zero duration' }
+            ).toBe(true)
+
+            // Animated JS items declare top/left/width/transform transitions —
+            // not the `all` the browser reports when nothing declares any.
+            const { property } = await readTransition()
+            expect(property).not.toBe('all')
+            expect(property).toContain('transform')
         })
 
         test('columns=3: 16 items distributed into 3 horizontal columns', async ({ page }) => {
