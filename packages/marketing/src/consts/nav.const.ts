@@ -48,13 +48,6 @@ export const NAV_THEMING_LINK: INavLink = {
     href: '/theming'
 }
 
-export const GITHUB_LINK: INavLink = {
-    i18nKey: 'nav.github',
-    i18nFallback: 'GitHub',
-    href: MARKETING_DEFAULTS.githubRepo,
-    external: true
-}
-
 export const DISCORD_LINK = 'https://discord.gg/origam'
 export const TWITTER_LINK = 'https://twitter.com/origam'
 
@@ -74,7 +67,6 @@ export const FOOTER_COLUMNS: IFooterColumn[] = [
         titleFallback: 'Resources',
         links: [
             { i18nKey: 'footer.resources.github', i18nFallback: 'GitHub', href: MARKETING_DEFAULTS.githubRepo, external: true },
-            { i18nKey: 'footer.resources.community', i18nFallback: 'Community', href: `${MARKETING_DEFAULTS.githubRepo}/discussions`, external: true },
             { i18nKey: 'footer.resources.discord', i18nFallback: 'Discord', href: DISCORD_LINK, external: true },
             { i18nKey: 'footer.resources.discussions', i18nFallback: 'Discussions', href: `${MARKETING_DEFAULTS.githubRepo}/discussions`, external: true },
             { i18nKey: 'footer.resources.twitter', i18nFallback: 'Twitter', href: TWITTER_LINK, external: true },
