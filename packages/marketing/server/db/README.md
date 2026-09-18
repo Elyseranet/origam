@@ -105,6 +105,42 @@ pnpm -F @origam/marketing db:migrate:make -- ./server/db/migrations/MyChange
 > NOT regenerate it; `migration:generate` cannot express the functional unique
 > indexes (`md5` / `coalesce`), CHECK constraints and the shared trigger.
 
+## ⛔ `db:migrate:make` output is NOT safe to apply verbatim (#831)
+
+None of the 16 entities declares a relation, a `@Check()`, or the 2 functional
+unique indexes (`md5(value)`, `coalesce(name, '')`) — those are inexpressible
+via TypeORM decorators at all. `migration:generate` therefore diffs the live
+schema against what the entities say, concludes 10 FKs, 4 CHECK constraints
+and those 2 indexes are superfluous, and proposes to **DROP all 16**. Applying
+that output as-is destroys referential integrity and two data invariants,
+silently — the command succeeds and the migration runs clean.
+
+**Every migration is gated by `pnpm -F @origam/marketing guard:migrations`**
+(CI job `migrations-guard`, and `lint-staged` on any staged
+`server/db/migrations/*.ts`). It parses each migration's `up()` (never
+`down()` — a migration undoing its own additions is normal) and fails the
+moment a `DROP CONSTRAINT` / `DROP INDEX` (raw SQL or the QueryRunner API)
+has no explicit authorization directly above it:
+
+```ts
+// origam-allow-destructive: <reason, reviewed by a human, >= 10 characters>
+await queryRunner.query(`ALTER TABLE "x" DROP CONSTRAINT "x_y_fkey"`)
+```
+
+A directive with no reason, or a trivially short one, authorizes nothing —
+the point is a reviewer reading WHY this specific drop is intentional, not a
+magic string that silences the tool. See `scripts/guard-migrations.mjs` and
+`scripts/lib/migration-guard.mjs` for the full detection logic and rationale
+(why only `up()`, why this shape rather than a baseline file, why it also
+covers the 2 functional indexes that no entity change could ever fix).
+
+After running `db:migrate:make`, read the generated file. If it contains a
+drop you didn't expect: either it's a real defect (declare the missing
+`@ManyToOne`/`@JoinColumn` or `@Check()` on the entity, then regenerate), or
+it's one of the 2 functional indexes / another case decorators can't express
+— in which case hand-edit the generated migration down to only the changes
+you actually intended, or annotate the drop if it is genuinely wanted.
+
 ## Schema (ADR §3)
 
 One generic root table `doc_entry` (discriminated by `kind`) + normalised child

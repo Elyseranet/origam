@@ -94,6 +94,46 @@ jobs:
       - name: Run e2e audit self-tests
         run: pnpm -F @origam/tests run test:e2e:audit:self
 
+  migrations-guard:
+    name: Migration guard (marketing)
+    runs-on: ubuntu-latest
+    # Deliberately its OWN job, not a step of `architecture-guards` above.
+    # That job's two families audit `packages/ds/src` (guards) and the
+    # Histoire stories/docs surface (e2e audit) — neither has ever looked at
+    # `packages/marketing/server/db`, which is not a component, a story, or
+    # a doc page. Bolting a third, unrelated concern onto that job would
+    # repeat the exact "confused the two families" mistake #831 flagged
+    # happening on this same day. See scripts/guard-migrations.mjs's header
+    # for the full placement rationale.
+    #
+    # Purely static (parses migration source with the TypeScript compiler
+    # API, no DB, no build) — refuses ANY DROP CONSTRAINT / DROP INDEX a
+    # migration's up() contains unless a developer explicitly authorized it
+    # with an inline `// origam-allow-destructive: <reason>` directive.
+    # #831: `db:migrate:make` currently proposes to drop 10 FKs, 4 CHECKs
+    # and 2 functional unique indexes — none expressible via TypeORM
+    # decorators — because the entities never declare them. This is the
+    # only protection that covers all 16 cases, since 2 of them cannot be
+    # fixed by declaring anything on an entity.
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run migration guard self-test (detector mutation-check)
+        run: pnpm -F @origam/marketing guard:migrations:self
+
+      - name: Run migration guard
+        run: pnpm -F @origam/marketing guard:migrations
+
   type-check:
     name: Type-check (vue-tsc)
     runs-on: ubuntu-latest
