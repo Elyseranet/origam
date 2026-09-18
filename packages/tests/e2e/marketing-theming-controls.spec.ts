@@ -15,6 +15,10 @@
  */
 
 import { expect, test, type Page } from '@playwright/test'
+import { requireMarketingDb } from './_support/require-marketing-db'
+
+// #835 — voir marketing-theme-builder.spec.ts pour le contexte complet.
+requireMarketingDb()
 
 /** All prop groups render collapsed (<details>) by default — expand before interacting. */
 async function expandGroup (page: Page, groupId: string): Promise<void> {
