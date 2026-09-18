@@ -280,17 +280,22 @@
 	 ********************************************************/
 	const commitTypedColor = (raw: string) => {
 		if (raw === '') {
-			// ⛔ `null`, NOT `COLOR_NULL` — deliberate deviation from
-			// `handleClear`'s convention. The template's selection-text
-			// span is gated on `v-if="selectedValue"` (a TRUTHY check, not
-			// `!== null`), and `COLOR_NULL` (`{h:0,s:0,v:0,a:1}`) is a
-			// truthy object — writing it here renders the span with a
-			// stringified object instead of hiding it (caught by this
-			// ticket's own e2e spec: clearing the typed input left 1
-			// `.origam-color-picker-field__selection-text` in the DOM
-			// where 0 was expected). `null` is what the field's OWN
-			// initial/untouched state already uses and correctly hides
-			// the span.
+			/*********************************************************
+			 * `null`, NOT `COLOR_NULL` (#859)
+			 *
+			 * @description
+			 * Deliberate deviation from `handleClear`'s convention. The
+			 * template's selection-text span is gated on
+			 * `v-if="selectedValue"` (a TRUTHY check, not `!== null`), and
+			 * `COLOR_NULL` (`{h:0,s:0,v:0,a:1}`) is a truthy object —
+			 * writing it here renders the span with a stringified object
+			 * instead of hiding it (caught by this ticket's own e2e spec:
+			 * clearing the typed input left 1
+			 * `.origam-color-picker-field__selection-text` in the DOM
+			 * where 0 was expected). `null` is what the field's OWN
+			 * initial/untouched state already uses and correctly hides
+			 * the span.
+			 ********************************************************/
 			model.value = null
 			return
 		}
