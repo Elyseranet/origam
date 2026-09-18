@@ -114,14 +114,29 @@ useHotkey('g-g', () => {
 })
 ```
 
-## ⚠️ It is not reachable from the published package — #844
+## ⚠️ Absent from the package's composable index — #844
 
-`useHotkey` is **not** re-exported by `packages/ds/src/composables/index.ts`,
-and `packages/ds/package.json` declares `"./composables"` with **no wildcard
-subpath**. An application installing `origam` therefore cannot import it at all
-— neither from `origam/composables` nor from a deep path. Inside the library it
-is reached by relative import only. The example above uses the internal path for
-that reason.
+`useHotkey` is **not** re-exported by `packages/ds/src/composables/index.ts`, so
+`import { useHotkey } from 'origam/composables'` does not resolve — that entry
+points at `dist/src/composables/index.js`, which never names the symbol. Inside
+the library, `OrigamCommandPalette` reaches it by relative import, which is what
+hides the hole.
+
+Read in `packages/ds/package.json`: there is no `"./composables/*"` subpath
+either. The only declared entry that can still reach the file is the terminal
+catch-all `"./*": "./dist/src/*"`, and `build.config.ts` builds with `mkdist`,
+which mirrors the source tree into `dist/src/` — so the file itself does ship.
+Subpath patterns perform no extension search, so a consumer going that way has
+to spell the built artefact in full,
+`origam/composables/Commons/hotkey.composable.js`. That is an implementation
+path, not a supported entry point, and it is the only route this page found.
+
+The extensionless `origam/composables/Commons/hotkey.composable` used in the
+examples above is the **in-repository** spelling: the doc type-checker rewrites
+it to the `@origam/*` → `src/*` alias. Do not read it as a published entry.
+
+**#844** is open on exactly this: add the re-export, or record the symbol as
+internal. This page does not settle it.
 
 ## Behaviour notes
 

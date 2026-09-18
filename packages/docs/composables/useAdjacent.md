@@ -62,9 +62,12 @@ the name together, or neither. Measured, on a probe component:
 | listener, **no** `prependAriaLabel` | `{}` + one dev warning |
 | listener **and** `prependAriaLabel="Ouvrir"` | `{"role":"button","tabindex":0,"aria-label":"Ouvrir"}` |
 
-**13** components bind these attrs: `Alert`, `Badge`, `BreadcrumbItem`,
+**12** components bind these two attrs: `Alert`, `Badge`, `BreadcrumbItem`,
 `CardHeader`, `Chip`, `ConfirmWrapper`, `DataText`, `DataTitle`,
-`DatePickerHeader`, `ExpansionPanelHeader`, `Field`, `Input`, `ListItem`.
+`DatePickerHeader`, `ExpansionPanelHeader`, `Input`, `ListItem`. `OrigamField`
+is **not** among them — it binds `prependInnerCommandAttrs` /
+`appendInnerCommandAttrs`, which come from
+[`useAdjacentInner`](#useadjacentinner), not from this hook.
 
 ### ⛔ `OrigamBtn` is the exception — and must stay one
 
@@ -75,8 +78,9 @@ does **not** consume — and cannot — is the `*CommandAttrs` pair.
 Btn's root renders as `<button>` or `<a>`. Both forbid an interactive-content
 descendant and any descendant carrying `tabindex`, so promoting the prepend
 `<span>` to a `role="button"` tab stop is illegal markup, not merely
-undesirable. The fix applied to the other ten consumers is therefore not
-available here.
+undesirable. The fix #747 applied to the ten components it migrated alongside
+Btn (`Alert`, `Badge`, `BreadcrumbItem`, `CardHeader`, `Chip`, `DataText`,
+`DataTitle`, `Field`, `Input`, `ListItem`) is therefore not available here.
 
 That is why Btn's inherited `click:prepend` / `click:append` are **deprecated**
 (#577) rather than repaired: they were never keyboard-reachable (a keyboard
@@ -95,7 +99,7 @@ Two actions are two buttons: compose them with `<origam-btn-group>`. The
 `prepend` / `append` **slots** are unaffected. `IBtnEmits` is marked
 `@deprecated`, to drop `IAdjacentEmits` in v3.0.0.
 
-> If you are about to "fix" Btn like the other ten, stop: the content model
+> If you are about to "fix" Btn like the ten above, stop: the content model
 > forbids it.
 
 ### Usage
