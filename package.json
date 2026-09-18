@@ -38,11 +38,15 @@
         "test:unit:coverage": "pnpm -F @origam/tests test:unit --coverage",
         "lint:fix": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
         "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --max-warnings 0",
+        "lint:staged": "lint-staged",
         "clean": "pnpm -r exec rm -rf dist node_modules && rm -rf node_modules",
         "prepare": "husky",
         "build:embeds": "pnpm run build:stories && pnpm run build:docs",
         "sonar": "node scripts/sonar.mjs",
         "sonar:gate": "node scripts/sonar-gate.mjs"
+    },
+    "lint-staged": {
+        "*.{vue,js,jsx,cjs,mjs,ts,tsx,cts,mts}": "eslint --fix"
     },
     "pnpm": {
         "overrides": {
