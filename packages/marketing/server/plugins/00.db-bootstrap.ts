@@ -22,10 +22,35 @@
 //   - idempotent : 2e boot sans changement de fixtures = fast path = 0 écriture ;
 //   - self-healing : une base déjà en prod sans ligne de hash (null) déclenche un
 //     sync idempotent au 1er boot post-déploiement (sûr, préserve les [ÉDIT]) ;
-//   - NON-FATAL : une base non configurée ou injoignable ne fait pas planter le
-//     serveur — le site tourne et /api/health reflète l'état (db.ok).
+//   - NON-FATAL EN DEV : une base non configurée ou injoignable ne fait pas
+//     planter le serveur en développement — le site tourne et /api/health
+//     reflète l'état (db.ok). C'est un confort réel, on ne le retire pas.
+//
+// #835 — SOUS CI, LE SKIP NE DOIT PLUS ÊTRE SILENCIEUX : un serveur qui
+// démarre quand même, catalogue vide, est indiscernable d'un serveur
+// correct — c'est précisément ce qui a rendu 69 échecs e2e illisibles (ils
+// ressemblaient à 13 specs cassées, alors que la cause unique était une
+// base absente que rien ne provisionne en isolation). `process.env.CI` est
+// déjà lu par `playwright.marketing.config.ts` (retries, forbidOnly) dans
+// ce même repo, et hérité tel quel par ce process puisque `webServer.command`
+// ne redéfinit pas `env` — c'est le signal le plus proche d'un « contexte de
+// test » qui existe déjà, réutilisé plutôt que fabriqué.
+//
+// ⚠️ Ceci NE fait PAS planter le process. Vérifié directement : sous
+// `nuxt dev`, le serveur Nitro tourne dans le worker de dev isolé que ce
+// dépôt appelle déjà « le worker SSR » ailleurs (#248) — ni `process.exit()`
+// (tue seulement ce worker, le process qui tient le port survit et répond
+// 500 à tout) ni un plugin qui rejette (intercepté et journalisé par le
+// handler `unhandledRejection` global de Nitro, conçu pour survivre en dev)
+// ne terminent le process que Playwright surveille. Le vrai verrou est donc
+// posé au niveau requête : `server/middleware/ci-db-required.ts` fait
+// échouer TOUTE requête en 503 tant que la base manque sous CI — ce qui
+// rend l'échec impossible à confondre avec un run vert, même si le process
+// technique reste debout. Ce plugin se contente de journaliser clairement
+// au boot, pour qu'un humain qui lit les logs CI voie la cause avant même
+// le premier test.
 
-import { DOC_KINDS, DOC_META_KEYS } from '../db/db.const.mjs'
+import { DOC_KINDS, DOC_META_KEYS, DB_ENV } from '../db/db.const.mjs'
 import { DocSyncRun } from '../db/entities'
 import { fixtureHash, readMeta, syncFixtures, writeMeta } from '../utils/doc-fixture-sync'
 
@@ -51,6 +76,15 @@ async function loadFixtureTexts (): Promise<Record<string, string | null>> {
 
 export default defineNitroPlugin(async () => {
     if (!isDbConfigured()) {
+        if (process.env.CI) {
+            const names = [DB_ENV.URL, DB_ENV.HOST, DB_ENV.PORT, DB_ENV.USER, DB_ENV.PASSWORD, DB_ENV.NAME].join(', ')
+            console.error(
+                `[db-bootstrap] DB non configurée sous CI (#835) — toute requête sera refusée ` +
+                `en 503 par server/middleware/ci-db-required.ts tant que ${DB_ENV.URL} ` +
+                `ou l'ensemble discret ${names} n'est pas renseigné.`
+            )
+            return
+        }
         console.info('[db-bootstrap] DB non configurée — skip (site OK, pages API-Reference vides tant que NUXT_DB_* absent).')
         return
     }
