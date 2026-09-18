@@ -127,13 +127,36 @@
 		}) + 1
 	}
 
+	/*********************************************************
+	 * getFixedStyles — #840
+	 *
+	 * @description
+	 * `top` used to read `var(--origam-table-header-height)` — a name NO
+	 * stylesheet ever declared (grep confirmed a single repo-wide hit: this
+	 * line, in read position) and with NO fallback. A `var()` reference
+	 * that cannot resolve does not fail at parse time, it fails at
+	 * COMPUTED-VALUE time: the `top` declaration had already won the
+	 * cascade, so it became `unset` — `auto` for `top` — instead of
+	 * yielding to nothing. Measured in Chromium: after 400px of scroll,
+	 * the header sat at `-399px` (scrolled out) instead of sticking.
+	 *
+	 * @description
+	 * `--origam-table__header-cell---height` (triple-tiret BEM child, the
+	 * grammar this family already uses for `padding-block` /
+	 * `border-bottom-width` two lines below) replaces it, WITH a fallback.
+	 * It is declared as `calc()` over the EXISTING density-aware
+	 * `padding-block` token rather than 3 hardcoded density rungs, so it
+	 * can never drift out of sync with the padding that actually produces
+	 * the row's height — see `light.css` / `dark.css` for the formula and
+	 * its provenance.
+	 ********************************************************/
 	const getFixedStyles = (column: IInternalDataTableHeader, y: number): CSSProperties | undefined => {
 		if (!props.sticky && !column.fixed) return undefined
 
 		return {
 			position: 'sticky',
 			left: column.fixed ? convertToUnit(column.fixedOffset) : undefined,
-			top: props.sticky ? `calc(var(--origam-table-header-height) * ${y})` : undefined
+			top: props.sticky ? `calc(var(--origam-table__header-cell---height, 44px) * ${y})` : undefined
 		}
 	}
 	const hasColumn = (name: string) => {

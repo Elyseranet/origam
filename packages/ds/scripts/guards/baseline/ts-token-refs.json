@@ -1,5 +1,4 @@
 [
-    "packages/ds/src/components/DataTable/OrigamDataTableHeaderCell.vue::--origam-table-header-height",
     "packages/ds/src/utils/Commons/color.util.ts::--origam-color__action--ghost---bgActive",
     "packages/ds/src/utils/Commons/color.util.ts::--origam-color__action--primary---bgActive",
     "packages/ds/src/utils/Commons/color.util.ts::--origam-color__action--secondary---bgActive",

@@ -90,6 +90,42 @@ const items = [
 | `hideDefaultFooter` | `boolean` | Hide the footer |
 | `loading` | `boolean \| string` | Show a loading state |
 
+## Sticky header
+
+```vue
+<template>
+    <OrigamDataTable :headers="headers" :items="items" sticky height="320" />
+</template>
+```
+
+| Prop | Type | Description |
+|---|---|---|
+| `sticky` | `boolean` | Keep the header row(s) pinned to the top of the table's own scroll wrapper while the body scrolls |
+
+⛔ `sticky` needs a bounded `height` (or `maxHeight`) **on `OrigamDataTable`
+itself** — it does not work through an outer scrolling `<div>` wrapped
+around the table. `OrigamTable`'s own wrapper (`.origam-table__wrapper`)
+always computes a non-`visible` overflow (its `overflow-x: auto` forces
+`overflow-y` to compute to `auto` too, per the CSS spec rule for mismatched
+overflow axes), so it is always the nearest scrolling ancestor for a sticky
+header cell — an outer wrapper's scroll never reaches past it. Measured in
+Chromium: wrapping the table in an external `overflow-y: auto` div left the
+header moving pixel-for-pixel with the scroll (not stuck); giving
+`OrigamDataTable` its own `height` made `.origam-table__wrapper` the real
+scrollport and the header stuck correctly. See the
+`Prop — sticky (scroll-then-stick)` story variant.
+
+This is a sibling mechanism to `fixedHeader` (inherited from `OrigamTable`),
+not a replacement for it: both rely on the SAME internal scroll wrapper.
+`fixedHeader` pins the header to a flat `top: 0` (single header row).
+`sticky` computes each header row's offset as
+`--origam-table__header-cell---height × row index`, so it is meant to also
+support stacking more than one header row — but only when every row
+genuinely shares that height. That part is **not verified**: an attempt to
+build a grouped/`children` header fixture for this fix did not render as
+multiple `<tr>` rows at all (see the `#840` fix notes), so the row-index
+multiplier could not be exercised end-to-end.
+
 ## Composition
 
 `OrigamDataTable` is composed from these internal sub-components (not re-exported for public API, documented here for reference):
@@ -135,4 +171,9 @@ grouping, there is nothing to listen for in return.
 
 ## Design tokens
 
-Inherits all tokens from `OrigamTable` (`--origam-table---*`).
+Inherits all tokens from `OrigamTable` (`--origam-table---*`), including
+`--origam-table__header-cell---height` — the stacking unit `sticky` uses for
+`top: height × row-index`. It is derived from the already density-aware
+`--origam-table__header-cell---padding-block` token via `calc()`, so
+overriding density (or the padding token directly) keeps the sticky offset
+correct without a separate override.
