@@ -34,7 +34,9 @@
     "db:migrate": "tsx --tsconfig ./tsconfig.typeorm.json ./node_modules/typeorm/cli.js migration:run -d ./server/db/data-source.cli.ts",
     "db:rollback": "tsx --tsconfig ./tsconfig.typeorm.json ./node_modules/typeorm/cli.js migration:revert -d ./server/db/data-source.cli.ts",
     "db:migrate:status": "tsx --tsconfig ./tsconfig.typeorm.json ./node_modules/typeorm/cli.js migration:show -d ./server/db/data-source.cli.ts",
-    "db:migrate:make": "tsx --tsconfig ./tsconfig.typeorm.json ./node_modules/typeorm/cli.js migration:generate -d ./server/db/data-source.cli.ts"
+    "db:migrate:make": "tsx --tsconfig ./tsconfig.typeorm.json ./node_modules/typeorm/cli.js migration:generate -d ./server/db/data-source.cli.ts",
+    "guard:migrations": "node scripts/guard-migrations.mjs",
+    "guard:migrations:self": "node scripts/guard-migrations.mjs --self-test"
   },
   "dependencies": {
     "@nuxtjs/i18n": "^10.6.0",

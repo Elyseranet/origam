@@ -46,7 +46,8 @@
         "sonar:gate": "node scripts/sonar-gate.mjs"
     },
     "lint-staged": {
-        "*.{vue,js,jsx,cjs,mjs,ts,tsx,cts,mts}": "eslint --fix"
+        "*.{vue,js,jsx,cjs,mjs,ts,tsx,cts,mts}": "eslint --fix",
+        "packages/marketing/server/db/migrations/*.ts": "node packages/marketing/scripts/guard-migrations.mjs"
     },
     "pnpm": {
         "overrides": {
