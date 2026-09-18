@@ -16,6 +16,7 @@
 			@blur="handleBlur"
 			@change="handleChange"
 			@click:clear="handleClear"
+			@input="handleInput"
 			@mousedown:control="handleMousedownControl"
 	>
 		<template
@@ -161,7 +162,7 @@
 	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
 	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
-	import { HSVtoCSS } from '../../utils/Commons/color.util'
+	import { HSVtoCSS, isCompleteCssColor } from '../../utils/Commons/color.util'
 	import { matchesSelector } from '../../utils/Commons/commons.util'
 
 	import { computed, inject, nextTick, ref, shallowRef, StyleValue, useSlots, watch } from "vue"
@@ -227,6 +228,77 @@
 	const selectedValue = computed(() => {
 		return model.value
 	})
+
+	/*********************************************************
+	 * commitTypedColor (#859)
+	 *
+	 * @description
+	 * Reads the RAW text the user types into the underlying
+	 * `<origam-text-field>` and commits it to `model` — the piece that
+	 * was entirely missing pre-fix. Wired via `@input` / `@change`
+	 * (below), NOT a `v-model` on the inner text field.
+	 *
+	 * @description
+	 * ⛔ `v-model:model-value` was tried first and REVERTED — measured
+	 * regression, not a style choice. Making the inner
+	 * `<origam-text-field>`'s `modelValue` CONTROLLED (both the prop AND
+	 * `onUpdate:modelValue` present) changes `useVModel`'s
+	 * controlled/uncontrolled detection for that field, which shifted the
+	 * render cascade that `useValidation`'s `watch(validationModel, …)`
+	 * (`validation.composable.ts:154`) relies on to observe the
+	 * `undefined -> value` transition once `validationValue` first
+	 * arrives through the two ref-gated `textFieldProps` /
+	 * `OrigamTextField`'s own `inputProps` hops. With the extra
+	 * reactivity hop, the watch's baseline read already saw the settled
+	 * value and never fired again — `rules` stopped being evaluated at
+	 * all (TU regression: `OrigamColorPickerField.spec.ts` "#693 …repli
+	 * reste le modele", `seen` went from `['#ff0000']` to `[]`).
+	 * `@input`/`@change` are plain NATIVE DOM event fallthrough (same
+	 * mechanism `@change` already used pre-fix, confirmed reaching the
+	 * real `<input>` — see the ticket's own addEventListener probe) and
+	 * touch none of TextField's internal v-model machinery.
+	 *
+	 * @description
+	 * A value is committed the instant it becomes a syntactically
+	 * COMPLETE CSS color (`isCompleteCssColor` — hex, functional
+	 * notation, named color, `var()`), never before. Typing `#ff00aa`
+	 * therefore commits progressively (`#ff0` alone is already a valid
+	 * 3-digit shorthand and commits; `#ff` does not, and is silently
+	 * REJECTED — not written to the model). Committing a syntactically
+	 * incomplete value would be a worse defect than the one this fixes.
+	 * An empty field clears to `null` — see the dedicated banner on the
+	 * empty-string branch below for why that's `null` and NOT
+	 * `COLOR_NULL` despite `handleClear` using the latter.
+	 *
+	 * @description
+	 * The underlying `<input>` is never visible (CSS positions it behind
+	 * the swatch/hex `colorSelection` span, see the `<style>` block below)
+	 * and is left UNCONTROLLED — its own native typed text is exactly
+	 * what the browser already shows, nothing here overwrites it. Only
+	 * the swatch/span (driven by `model`/`selectedValue`) is the real
+	 * visible readout.
+	 ********************************************************/
+	const commitTypedColor = (raw: string) => {
+		if (raw === '') {
+			// ⛔ `null`, NOT `COLOR_NULL` — deliberate deviation from
+			// `handleClear`'s convention. The template's selection-text
+			// span is gated on `v-if="selectedValue"` (a TRUTHY check, not
+			// `!== null`), and `COLOR_NULL` (`{h:0,s:0,v:0,a:1}`) is a
+			// truthy object — writing it here renders the span with a
+			// stringified object instead of hiding it (caught by this
+			// ticket's own e2e spec: clearing the typed input left 1
+			// `.origam-color-picker-field__selection-text` in the DOM
+			// where 0 was expected). `null` is what the field's OWN
+			// initial/untouched state already uses and correctly hides
+			// the span.
+			model.value = null
+			return
+		}
+
+		if (isCompleteCssColor(raw)) {
+			model.value = raw
+		}
+	}
 
 	/*********************************************************
 	 * effectiveValidationValue (#693)
@@ -340,10 +412,12 @@
 			isFocused.value = true
 		}
 	}
-	const handleChange = () => {
+	const handleInput = (e: Event) => {
+		commitTypedColor((e.target as HTMLInputElement)?.value ?? '')
+	}
+	const handleChange = (e: Event) => {
 		if (matchesSelector(origamTextFieldRef.value, ':autofill') || matchesSelector(origamTextFieldRef.value, ':-webkit-autofill')) {
-			// (e.target as HTMLInputElement).value
-			// TODO -  Select date
+			commitTypedColor((e.target as HTMLInputElement)?.value ?? '')
 		}
 	}
 	const handleAfterLeave = () => {

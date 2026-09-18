@@ -74,6 +74,9 @@ const GREEN_SPECS = [
     'timeline-debug.spec.ts',
     'color-picker.spec.ts',
     'color-picker-field.spec.ts',
+    // #859 — direct-typing wiring, verified stable (--repeat-each=5, 30/30)
+    'color-picker-field-typing.spec.ts',
+    'date-picker-field-typing.spec.ts',
     'theme-provider.spec.ts',
     'textarea-richtext.spec.ts',
     'defaults-provider.spec.ts',

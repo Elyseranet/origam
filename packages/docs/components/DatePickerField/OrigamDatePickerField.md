@@ -29,6 +29,24 @@ const date = ref(null)
 | `range` | `boolean` | `false` | Enables range mode (start + end dates) |
 | `multiple` | `boolean` | `false` | Enables multiple date selection |
 
+## Typing a date directly
+
+Besides picking a date from the popover calendar, the **single-date** field
+(no `range`, no `multiple`) also accepts a date typed directly into the text
+input, parsed through the DS's own date adapter (`useDate()` — the same one
+every calendar computation already goes through).
+
+`modelValue` is written the instant the typed text parses to a **complete,
+valid** date — not on every keystroke and not only on blur. A partial or
+invalid string (`09/1`, `not-a-date`) is silently rejected: it is never
+written to the model, and the field keeps its last committed value until the
+input is either completed or cleared. Clearing the field resets the model the
+same way `click:clear` already does.
+
+`range` and `multiple` remain popover-only for now — typing a free-text range
+or a multi-date list has no established format to parse against, so direct
+typing is intentionally not wired for those two modes.
+
 ## Chips display
 
 ```vue
