@@ -357,6 +357,43 @@
 			</template>
 		</Variant>
 
+		<Variant
+				title="Prop — sticky (scroll-then-stick)"
+				:init-state="() => useStoryInitState<Partial<IDataTableProps>>({ sticky: true, height: '240' })"
+		>
+			<template #default="{ state }">
+				<!--
+					⛔ #840 — NO external scrolling wrapper here on purpose.
+					`.origam-table__wrapper` (OrigamTable) always computes a
+					non-`visible` overflow (its own `overflow-x: auto` forces
+					`overflow-y` to compute to `auto` too, per the CSS spec rule
+					for mismatched overflow axes). That makes IT the nearest
+					scrolling ancestor for any `position: sticky` cell inside —
+					wrapping the table in an outer `overflow-y: auto` div never
+					reaches past it, so the header still scrolls away with the
+					body (measured, not guessed). `sticky` therefore has to be
+					combined with a bounded `height`/`maxHeight` on the table
+					itself, exactly like `fixedHeader` — that is what actually
+					turns `.origam-table__wrapper` into a real scrollport.
+				-->
+				<origam-data-table
+						data-cy="data-table-sticky-container"
+						:headers="sortableHeaders"
+						:items="manyItems"
+						:sticky="state.sticky"
+						:density="state.density"
+						:height="state.height"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Layout">
+					<HstCheckbox v-model="state.sticky" title="Sticky"/>
+					<HstSelect   v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+					<HstText     v-model="state.height"  title="Height"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
 		<Variant title="Prop — showSelect">
 			<origam-data-table
 					v-model="selected"

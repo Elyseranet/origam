@@ -2656,6 +2656,7 @@ export type TTokenName =
   | '--origam-table__header-cell---border-bottom-width'
   | '--origam-table__header-cell---color'
   | '--origam-table__header-cell---font-weight'
+  | '--origam-table__header-cell---height'
   | '--origam-table__header-cell---padding-block'
   | '--origam-table__header-cell---padding-inline'
   | '--origam-table__row---hover-background-color'

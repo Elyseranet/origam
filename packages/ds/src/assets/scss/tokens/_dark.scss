@@ -1488,6 +1488,9 @@
   --origam-table__header-cell---padding-inline: var(--origam-space---4);
   --origam-table__header-cell---border-bottom-color: var(--origam-color__border---default);
   --origam-table__header-cell---border-bottom-width: var(--origam-border__width---2);
+  /* #840 — see light.css: derived from the density-aware padding-block
+     token so it can't drift out of sync with it. */
+  --origam-table__header-cell---height: calc((2 * var(--origam-table__header-cell---padding-block, 12px)) + var(--origam-table__header-cell---border-bottom-width, 2px) + 18px);
   --origam-table__cell---padding-block: var(--origam-space---3);
   --origam-table__cell---padding-inline: var(--origam-space---4);
   --origam-table__cell---border-color: var(--origam-color__border---subtle);
@@ -4221,6 +4224,9 @@
     --origam-table__header-cell---padding-inline: var(--origam-space---4);
     --origam-table__header-cell---border-bottom-color: var(--origam-color__border---default);
     --origam-table__header-cell---border-bottom-width: var(--origam-border__width---2);
+    /* #840 — see light.css: derived from the density-aware padding-block
+       token so it can't drift out of sync with it. */
+    --origam-table__header-cell---height: calc((2 * var(--origam-table__header-cell---padding-block, 12px)) + var(--origam-table__header-cell---border-bottom-width, 2px) + 18px);
     --origam-table__cell---padding-block: var(--origam-space---3);
     --origam-table__cell---padding-inline: var(--origam-space---4);
     --origam-table__cell---border-color: var(--origam-color__border---subtle);
