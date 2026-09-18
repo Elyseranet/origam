@@ -61,6 +61,11 @@ const rfUrl = (idx: number) => `${RF_PATH}?variantId=${RF_ID}-${idx}`
 
 /** Variant 11 = "Default" playground — label:'Rating', modelValue:3. */
 const VARIANT_DEFAULT = 11
+/** Variant 1 = "Functional" — real `v-model`, the parent ACCEPTS every
+ *  value the field emits. Used below instead of `VARIANT_DEFAULT` for the
+ *  "clicking still selects" regression check — see the #827 note on that
+ *  test for why. */
+const VARIANT_FUNCTIONAL = 1
 
 test.describe('OrigamRatingField — a11y naming (#810)', () => {
     test.setTimeout(45000)
@@ -119,8 +124,21 @@ test.describe('OrigamRatingField — a11y naming (#810)', () => {
         expect(orphans).toEqual([])
     })
 
+    /**
+     * ⛔ #827 — this test used to run on `VARIANT_DEFAULT` (the "Default"
+     * playground, `v-bind="state"` with no `state.modelValue = $event`) and
+     * asserted on `input[type="radio"]:checked`. That variant's parent never
+     * writes the emitted value back, so what this test was actually reading
+     * was the DOM the BROWSER moved on its own, not the model — it happened
+     * to read '5' after the click regardless of whether the field accepted
+     * or refused it, because that variant always refuses. It passed on code
+     * that left the DOM permanently desynced from the model (see
+     * `rating-field-controlled.spec.ts`, #827 for the measurement and the
+     * fix). Moved to `VARIANT_FUNCTIONAL`, whose real `v-model` genuinely
+     * accepts the value, so this test now proves what its title claims.
+     */
     test('clicking a star still updates the selection (no regression from the markup change)', async ({ page }) => {
-        await page.goto(rfUrl(VARIANT_DEFAULT))
+        await page.goto(rfUrl(VARIANT_FUNCTIONAL))
         const frame = page.frameLocator('iframe[src*="__sandbox"]')
         const root = frame.locator('.origam-rating-field').first()
         await expect(root).toBeVisible({ timeout: 30000 })
