@@ -17,6 +17,7 @@ import { test, expect } from '@playwright/test'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
 import * as url from 'node:url'
+import { requireMarketingDb } from './_support/require-marketing-db'
 
 // ── Tier 1 — generated presets const (path: packages/tests/e2e → 3 levels up) ─
 
@@ -150,6 +151,11 @@ test.describe('Tier 1 — Brand presets const has correct feedback tokens', () =
 test.use({ baseURL: 'http://localhost:3000' })
 
 test.describe('Tier 2 — Runtime: preset canvas inline CSS vars', () => {
+    // #835 — Tier 1 ci-dessus est un check statique (aucune page, aucune base) et
+    // reste vert sans base ; seul ce bloc Tier 2 navigue vers /theming avec des
+    // presets réels. Voir marketing-theme-builder.spec.ts pour le contexte complet.
+    requireMarketingDb()
+
     test('apple preset: canvas receives --origam-color__feedback--success---bg = #28cd41', async ({ page }) => {
         await page.goto('/theming', { waitUntil: 'networkidle' })
 

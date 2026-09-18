@@ -17,6 +17,12 @@
  */
 
 import { expect, test, type Page } from '@playwright/test'
+import { requireMarketingDb } from './_support/require-marketing-db'
+
+// #835 — cette suite dépend de la base API-Reference (composants/tokens réels
+// via /theming). Échoue vite et clairement si elle manque, plutôt que chaque
+// test un par un contre un catalogue vide. Voir _support/require-marketing-db.ts.
+requireMarketingDb()
 
 const STORAGE_KEY = 'origam_theme_builder_state'
 

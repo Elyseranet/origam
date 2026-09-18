@@ -40,6 +40,10 @@
  */
 
 import { expect, test, type Page } from '@playwright/test'
+import { requireMarketingDb } from './_support/require-marketing-db'
+
+// #835 — voir marketing-theme-builder.spec.ts pour le contexte complet.
+requireMarketingDb()
 
 const BRAND_THEMES = ['cartoon', 'glass', 'geek', 'sobre'] as const
 
