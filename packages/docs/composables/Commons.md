@@ -464,11 +464,26 @@ zone — independent, no shared state.
 `click:appendInner` only ever fired from a literal DOM click inside
 the zone, never from a keyboard activation of an ancestor. See the
 long comment on `useAdjacent` for the full reasoning; mirrored here
-for the inner zone. `isClearClickable` stays permanently true when
-`hasClear` is — the clear zone only renders (`v-show="dirty"`) when
-there is something to clear, so it is unconditionally actionable
-whenever visible, unlike prependInner/appendInner whose
-actionability depends on whether the consumer wired a listener.
+for the inner zone.
+
+⛔ Cette banniere a longtemps decrit un `isClearClickable` — il
+n'existe NULLE PART dans le code, ni ici ni ailleurs dans
+`packages/ds/src` (verifie par recherche : la seule occurrence du depot
+etait cette phrase). Le generateur de `packages/docs/composables/Commons.md`
+recopie les bannieres, donc la doc publiee nommait un symbole
+inexistant — le defaut #493 exactement. La zone « clear » n'expose que
+`hasClear` et le handler `clickClear` ; elle ne passe par
+`useAccessibleCommand` ni par aucun test de clicabilite, parce qu'elle
+ne rend (`v-show="dirty"`) que lorsqu'il y a quelque chose a effacer.
+
+⚠️ `hasPrependInner` / `hasAppendInner` / `hasClear` ne sont PAS des
+booleens : ils rendent la FONCTION de slot quand le slot correspondant
+existe (`slots.prependInner || …`), sinon le booleen du media, et
+`hasClear` rend `undefined` quand ni `clearable` ni le slot `clear` ne
+sont fournis. Les trois sont a consommer en verite/faussete, jamais en
+comparaison stricte a `true`/`false`. `useAdjacent`, lui, normalise
+(`!!slots.prepend || …`) et rend de vrais booleens — les deux jumeaux
+ne se comportent pas pareil sur ce point.
 
 **Source** : `packages/ds/src/composables/Commons/adjacentInner.composable.ts`
 
@@ -806,6 +821,20 @@ Chaque appel a `runOpenDelay`/`runCloseDelay` ANNULE le delai en cours
 (`cancelRef.current()`) avant d'en programmer un nouveau — un
 enter/leave rapide (survol qui repasse) ne declenche donc jamais les
 deux callbacks empiles, seul le dernier delai programme aboutit.
+
+⛔ `0` et « absent » ne se comportent PAS pareil, parce que `defer` teste
+`timeout === 0` : avec `openDelay: 0`, `cb` est appele SYNCHRONEMENT
+pendant `runOpenDelay()` et le « canceller » rendu est un no-op — donc
+`clearDelay()` ne peut plus rien annuler. Avec la prop ABSENTE,
+`Number(undefined)` vaut `NaN`, le test `=== 0` echoue et on passe par
+`setTimeout(cb, NaN)`, que le navigateur traite comme 0 ms : le callback
+part au tick suivant, et reste annulable. Mesure : delai 0 → callback vu
+avant le retour de `runOpenDelay()` ; delai absent → rien a 0 ms, vu
+apres 1 ms.
+
+Aucun nettoyage automatique n'est enregistre : un delai arme juste avant
+le demontage n'est pas annule par ce composable. `useActivator`, son seul
+consommateur, ne l'annule pas non plus a la destruction du scope.
 
 **Source** : `packages/ds/src/composables/Commons/delay.composable.ts`
 
@@ -1152,15 +1181,25 @@ export function useHotkey ( keys: MaybeRef<string | undefined>, callback: (e: Ke
 ```
 
 Enregistre un raccourci clavier global (`window.addEventListener`) pour
-`keys` (une combinaison `"ctrl+k"` ou une SEQUENCE `"g g"` separee par
-espace, avec un `sequenceTimeout` entre chaque groupe). Traduit `cmd`/`meta`
-selon la plateforme detectee (`navigator.userAgent`) : `ctrl` attendu sur
-non-Mac, `meta` attendu sur Mac. Ignore l'evenement quand un champ de
-saisie a le focus, sauf `options.inputs`.
+`keys` (une combinaison `"ctrl+k"`, ou une SEQUENCE de groupes separes
+par un TIRET `"g-g"`, avec un `sequenceTimeout` entre chaque groupe).
+Traduit `cmd`/`meta` selon la plateforme detectee (`navigator.userAgent`) :
+`ctrl` attendu sur non-Mac, `meta` attendu sur Mac. Ignore l'evenement
+quand un champ de saisie a le focus, sauf `options.inputs`.
+
+⛔ Le separateur de SEQUENCE est le TIRET, pas l'espace — cette banniere
+a annonce `"g g"` pendant des mois et c'est faux. Mesure :
+`splitKeySequence('g-g')` rend `['g','g']` (deux groupes), tandis que
+`splitKeySequence('g g')` rend `['g g']` — un seul groupe dont la
+`actualKey` est la chaine `"g g"`, qu'aucun `e.key` n'egale jamais. Le
+raccourci est donc silencieusement MORT : deux `keydown` sur `g` ne
+declenchent rien du tout, sans avertissement. Les specs du depot
+utilisent la forme correcte (`a-b`).
 
 ⛔ En dehors d'un contexte `setup()` Vue, AUCUN nettoyage automatique
-n'est enregistre (pas de `onBeforeUnmount` possible) — un
-`console.warn` (`HOTKEY_NO_AUTO_CLEANUP_WARNING`) le signale, et
+n'est enregistre (pas de `onBeforeUnmount` possible) — un avertissement
+(`HOTKEY_NO_AUTO_CLEANUP_WARNING`, via `consoleWarn`, donc rendu par le
+`warn()` de Vue : `[Vue warn]: Origam: Can't cleanup`) le signale, et
 l'appelant DOIT invoquer lui-meme la fonction `cleanup` retournee.
 Hors navigateur (`!IN_BROWSER`), la fonction est un no-op immediat, y
 compris pour le retour (fonction vide, pas d'erreur).
@@ -1183,6 +1222,13 @@ Le flag SSR vient de `useDisplay().ssr` : si l'instance de display n'a
 jamais ete creee en mode SSR (`ssr` falsy), le Ref demarre directement a
 `true` — pas de delai artificiel dans une app 100% client. Hors
 navigateur (`!IN_BROWSER`), retourne un Ref fige a `false`.
+
+⛔ Dans un navigateur, ce composable DEPEND de `createOrigam()` : il
+appelle `useDisplay()`, dont l'injection n'existe que si le plugin est
+installe. Mesure, montage d'un composant sans `createOrigam()` :
+`useHydration()` LEVE `Could not find Origam display injection`. Ce
+n'est donc pas un utilitaire autonome, contrairement a `useSsrBoot` qui
+n'injecte rien.
 
 **Source** : `packages/ds/src/composables/Commons/hydration.composable.ts`
 
@@ -1352,6 +1398,24 @@ Depends on `useRoute` for the exact-match `isActive` derivation —
 kept in its own file since it is a consumer of `useRoute`, not a
 variant of it.
 
+⚠️ DEUX FORMES DE RETOUR. Quand `resolveDynamicComponent('RouterLink')`
+ne resout pas un composant (pas de vue-router installe), la fonction
+sort tot et ne rend QUE `{ tag, isLink, isClickable, href }` — mesure,
+`Object.keys(...)` sur un montage sans routeur rend exactement ces
+quatre clefs. `route`, `navigate` et `isActive` sont ABSENTS, pas
+`undefined` : un consommateur qui les deballe doit rester optionnel.
+
+⛔ ADR-005, angle mort residuel : `tag` a bien ete rendu paresseux (voir
+la banniere « TAG IS RESOLVED LAZILY » plus bas), mais `props.to` est
+ENCORE lu avidement dans le corps de `setup()`, a la ligne
+`const link = props.to ? RouterLink.useLink(...) : undefined`. Le
+detecteur `packages/ds/scripts/guards/lib/setup-reads.mjs` le compte
+toujours parmi ses deux lectures eager restantes (`useLink [to]`,
+`useNested [opened]`). Consequence : un theme qui nomme `to` sur Btn /
+Card / Chip / ListItem / BreadcrumbItem n'est jamais vu, puisque la
+decision « composant routeur ou pas » est prise une fois pour toutes
+avant `beforeCreate`.
+
 **Source** : `packages/ds/src/composables/Commons/link.composable.ts`
 
 **Consommateurs** (9) : `components/Breadcrumb/OrigamBreadcrumbItem.vue`, `components/Btn/OrigamBtn.vue`, `components/Card/OrigamCard.vue`, `components/Chip/OrigamChip.vue`, `components/DatePicker/OrigamDatePickerHeader.vue`, `components/List/OrigamListItem.vue`, `interfaces/Commons/link.interface.ts`, `interfaces/Commons/router.interface.ts`, …
@@ -1461,6 +1525,21 @@ and on strategy change, inside a disposable toggle scope.
 Independent from `useLocation` — no shared state or call
 dependency.
 
+⛔ `locationStrategy="static"` NE POSITIONNE RIEN. `staticLocationStrategy`
+(utils/Commons/location.util.ts) a un corps reduit a `// TODO` : elle rend
+`undefined`, donc `updateLocation` reste `undefined` et `contentStyles`
+reste `{}`. Mesure, contenu et cible reels attaches au document :
+`static` → `contentStyles = {}` / `updateLocation = undefined` ;
+`connected` → `contentStyles` rempli (`top`, `left`, `transformOrigin`,
+`maxHeight`…) / `updateLocation = function`. Seules la strategie
+`connected` et une fonction personnalisee font quelque chose.
+
+Cycle de vie : tout le cablage vit dans un `useToggleScope` arme sur
+`data.isActive && props.locationStrategy`. L'ecouteur `resize` est pose a
+l'entree du scope et retire par son `onScopeDispose` ; un changement de
+`props.locationStrategy` appelle le `reset` du scope, qui le rejoue en
+entier. Hors navigateur (`!IN_BROWSER`), aucun scope n'est cree du tout.
+
 **Source** : `packages/ds/src/composables/Commons/locationStrategies.composable.ts`
 
 **Consommateurs** (1) : `components/Overlay/OrigamOverlay.vue`
@@ -1540,11 +1619,23 @@ requis ; sinon la validite suit simplement `complete`.
 export function useMessage (props: IMessageProps, otherMessages: Ref<Array<string>> | ComputedRef<Array<string>> = ref([]))
 ```
 
-Resout les messages a afficher sous un champ (Field, TextField…) par
-ordre de priorite : `props.errorMessages`/`otherMessages` (erreurs
-externes, ex. validation) d'abord, sinon `props.hint`, sinon
-`props.messages`. `hasMessages` vaut vrai des qu'une SOURCE existe —
-y compris le slot `#message`, meme si les props textuelles sont vides.
+Resout les messages a afficher sous un conteneur de champ par ordre de
+priorite : `props.errorMessages`/`otherMessages` (erreurs externes, ex.
+validation) d'abord, sinon `props.hint`, sinon `props.messages`.
+`hasMessages` vaut vrai des qu'une SOURCE existe — y compris le slot
+`#message`, meme si les props textuelles sont vides.
+
+⛔ Un seul consommateur reel dans `packages/ds/src` : `OrigamForm`
+(verifie par import, pas par grep de nom). La famille Field affiche ses
+messages par un autre chemin — ne pas ecrire que ce composable est
+celui de `OrigamTextField`.
+
+⛔ La branche prioritaire rend `otherMessages.value`, PAS
+`props.errorMessages`. Mesure : avec `errorMessages: ['boum']` et le
+`otherMessages` par defaut (`ref([])`), `hasMessages` vaut `true` et
+`messages` vaut `[]` — la zone de message s'ouvre VIDE. La prop n'est
+donc qu'un DECLENCHEUR de priorite ; c'est a l'appelant de reinjecter
+ses erreurs par le second argument (ce que fait `OrigamForm`).
 
 `otherMessages` (typiquement les erreurs de `useValidation`) est un
 parametre separe plutot qu'une prop, pour que ce composable reste
@@ -1778,11 +1869,16 @@ pointant vers `(e) => updateRef(e, index)`) — pattern standard pour
 recuperer les instances/elements enfants d'une boucle dans un ordre
 stable.
 
-Le tableau est REINITIALISE a vide a chaque `onBeforeUpdate` : c'est ce
-qui evite d'accumuler des references perimees quand la liste retrecit
-(sans ce reset, un index au-dela de la nouvelle longueur garderait
-l'ancien element). Vue re-remplit ensuite les index via `updateRef`
-pendant le re-render qui suit.
+Le tableau est REINITIALISE a vide a chaque `onBeforeUpdate`, puis Vue
+re-remplit les index via `updateRef` pendant le re-render qui suit.
+
+⛔ Le tableau ne RETRECIT PAS pour autant. Mesure, liste de 3 items
+ramenee a 1 : `refs.value` vaut `[<li>, null, null]` et `refs.value.length`
+vaut toujours `3` — Vue rappelle la fonction `ref` des vnodes demontes
+avec `null`, donc les emplacements liberes sont REMIS A `null` (pas
+d'element perime conserve) mais restent presents. Un consommateur doit
+filtrer les trous et ne jamais deduire la longueur de la liste de
+`refs.value.length`.
 
 **Source** : `packages/ds/src/composables/Commons/refs.composable.ts`
 
@@ -2117,7 +2213,7 @@ reactivite sur un changement de prop ulterieur (meme piege que
 
 **Source** : `packages/ds/src/composables/Commons/stateEffect.composable.ts`
 
-**Consommateurs** (38) : `components/Alert/OrigamAlert.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Avatar/OrigamAvatarGroup.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
+**Consommateurs** (40) : `components/Alert/OrigamAlert.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Avatar/OrigamAvatarGroup.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
 
 ## `useStateFlag`
 

@@ -16,6 +16,26 @@ import { useRoute } from './route.composable'
  * Depends on `useRoute` for the exact-match `isActive` derivation —
  * kept in its own file since it is a consumer of `useRoute`, not a
  * variant of it.
+ *
+ * @description
+ * ⚠️ DEUX FORMES DE RETOUR. Quand `resolveDynamicComponent('RouterLink')`
+ * ne resout pas un composant (pas de vue-router installe), la fonction
+ * sort tot et ne rend QUE `{ tag, isLink, isClickable, href }` — mesure,
+ * `Object.keys(...)` sur un montage sans routeur rend exactement ces
+ * quatre clefs. `route`, `navigate` et `isActive` sont ABSENTS, pas
+ * `undefined` : un consommateur qui les deballe doit rester optionnel.
+ *
+ * @description
+ * ⛔ ADR-005, angle mort residuel : `tag` a bien ete rendu paresseux (voir
+ * la banniere « TAG IS RESOLVED LAZILY » plus bas), mais `props.to` est
+ * ENCORE lu avidement dans le corps de `setup()`, a la ligne
+ * `const link = props.to ? RouterLink.useLink(...) : undefined`. Le
+ * detecteur `packages/ds/scripts/guards/lib/setup-reads.mjs` le compte
+ * toujours parmi ses deux lectures eager restantes (`useLink [to]`,
+ * `useNested [opened]`). Consequence : un theme qui nomme `to` sur Btn /
+ * Card / Chip / ListItem / BreadcrumbItem n'est jamais vu, puisque la
+ * decision « composant routeur ou pas » est prise une fois pour toutes
+ * avant `beforeCreate`.
  ********************************************************/
 export function useLink (props: ILinkProps & ITagProps, attrs: SetupContext['attrs']): ILink {
     const RouterLink = resolveDynamicComponent('RouterLink') as typeof _RouterLink | string

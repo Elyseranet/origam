@@ -196,6 +196,16 @@ export function useStateFlag<S extends TStateName> (
      * === 'boolean'` only engages for an explicit `toggle(true)` /
      * `toggle(false)` call and lets any accidental non-boolean argument
      * (event, undefined) fall through to the unchanged toggle path.
+     *
+     * @description
+     * ⛔ COROLLAIRE MESURE : sur le chemin BOOLEEN, `toggle(true)` /
+     * `toggle(false)` n'ont AUCUN effet visible. Ils n'ecrivent que
+     * `internalToggle`, alors que `isOn` lit d'abord la branche booleenne
+     * du vmodel et ne regarde `internalToggle` qu'en dernier recours.
+     * Mesure, `source` booleen : `set()` → `isOn` vaut `true` ;
+     * `toggle(false)` ensuite → `isOn` vaut TOUJOURS `true`. La forme
+     * forcee ne sert donc qu'aux consommateurs dont la prop porte un objet
+     * de configuration. Pour eteindre un etat booleen, appeler `unset()`.
      ********************************************************/
     const toggle = (force?: boolean | null) => {
         if (typeof force === 'boolean') {

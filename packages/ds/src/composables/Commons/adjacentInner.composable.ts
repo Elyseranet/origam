@@ -20,11 +20,28 @@ import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
  * `click:appendInner` only ever fired from a literal DOM click inside
  * the zone, never from a keyboard activation of an ancestor. See the
  * long comment on `useAdjacent` for the full reasoning; mirrored here
- * for the inner zone. `isClearClickable` stays permanently true when
- * `hasClear` is — the clear zone only renders (`v-show="dirty"`) when
- * there is something to clear, so it is unconditionally actionable
- * whenever visible, unlike prependInner/appendInner whose
- * actionability depends on whether the consumer wired a listener.
+ * for the inner zone.
+ *
+ * @description
+ * ⛔ Cette banniere a longtemps decrit un `isClearClickable` — il
+ * n'existe NULLE PART dans le code, ni ici ni ailleurs dans
+ * `packages/ds/src` (verifie par recherche : la seule occurrence du depot
+ * etait cette phrase). Le generateur de `packages/docs/composables/Commons.md`
+ * recopie les bannieres, donc la doc publiee nommait un symbole
+ * inexistant — le defaut #493 exactement. La zone « clear » n'expose que
+ * `hasClear` et le handler `clickClear` ; elle ne passe par
+ * `useAccessibleCommand` ni par aucun test de clicabilite, parce qu'elle
+ * ne rend (`v-show="dirty"`) que lorsqu'il y a quelque chose a effacer.
+ *
+ * @description
+ * ⚠️ `hasPrependInner` / `hasAppendInner` / `hasClear` ne sont PAS des
+ * booleens : ils rendent la FONCTION de slot quand le slot correspondant
+ * existe (`slots.prependInner || …`), sinon le booleen du media, et
+ * `hasClear` rend `undefined` quand ni `clearable` ni le slot `clear` ne
+ * sont fournis. Les trois sont a consommer en verite/faussete, jamais en
+ * comparaison stricte a `true`/`false`. `useAdjacent`, lui, normalise
+ * (`!!slots.prepend || …`) et rend de vrais booleens — les deux jumeaux
+ * ne se comportent pas pareil sur ce point.
  ********************************************************/
 export function useAdjacentInner (props: IAdjacentInnerProps) {
     const vm = getCurrentInstance('OrigamAdjacentInner')

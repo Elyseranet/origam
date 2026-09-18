@@ -37,6 +37,25 @@ Les composables communs fournissent des fonctionnalités réutilisables pour tou
 > [useLocation](../composables/useLocation.md) ·
 > [usePosition](../composables/usePosition.md) ·
 > [convertToUnit](../composables/convertToUnit.md).
+>
+> Et l'axe **état / interaction / cycle de vie** (lot 3 de l'issue #601) :
+> [useVModel](../composables/useVModel.md) ·
+> [useStateFlag / useFocus](../composables/useStateFlag.md) ·
+> [useLazy](../composables/useLazy.md) ·
+> [useValidation / useMessage](../composables/useValidation.md) ·
+> [useLink](../composables/useLink.md) ·
+> [useAdjacent / useAdjacentInner / useAccessibleCommand](../composables/useAdjacent.md) ·
+> [useCssSupport / useCssSupportClient](../composables/useCssSupport.md) ·
+> [useToggleScope](../composables/useToggleScope.md) ·
+> [useEventListener](../composables/useEventListener.md) ·
+> [useActivator / useDelay](../composables/useActivator.md) ·
+> [useHotkey](../composables/useHotkey.md) ·
+> [useTouch / useVelocity](../composables/useTouch.md) ·
+> [useIntersectionObserver / useResizeObserver](../composables/useIntersectionObserver.md) ·
+> [useSsrBoot / useHydration](../composables/useSsrBoot.md) ·
+> [useRefs](../composables/useRefs.md) ·
+> [useThrottleFn](../composables/useThrottleFn.md) ·
+> [useLocationStrategies](../composables/useLocationStrategies.md).
 
 | Composable            | Description                                                 |
 |:----------------------|:------------------------------------------------------------|
@@ -50,7 +69,7 @@ Les composables communs fournissent des fonctionnalités réutilisables pour tou
 | **useLayout**         | Gère la mise en page (flex, grid)                           |
 | **useLink**           | Gère les liens (href, to)                                   |
 | **useLocale**         | Gère la localisation (i18n)                                 |
-| **useMessage**        | Gère les messages (snackbars, notifications)                |
+| **useMessage**        | Résout le message affiché sous un champ (erreurs / hint / messages) — un seul consommateur : `OrigamForm` |
 | **useProps**          | Filtre et extrait les props du composant                    |
 | **usePadding**        | Gère l'espacement interne, raccourci + par côté             |
 | **useMargin**         | Gère l'espacement externe, raccourci + par côté             |

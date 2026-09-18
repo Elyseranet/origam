@@ -13,11 +13,17 @@ import { onBeforeUpdate, ref } from 'vue'
  * stable.
  *
  * @description
- * Le tableau est REINITIALISE a vide a chaque `onBeforeUpdate` : c'est ce
- * qui evite d'accumuler des references perimees quand la liste retrecit
- * (sans ce reset, un index au-dela de la nouvelle longueur garderait
- * l'ancien element). Vue re-remplit ensuite les index via `updateRef`
- * pendant le re-render qui suit.
+ * Le tableau est REINITIALISE a vide a chaque `onBeforeUpdate`, puis Vue
+ * re-remplit les index via `updateRef` pendant le re-render qui suit.
+ *
+ * @description
+ * ⛔ Le tableau ne RETRECIT PAS pour autant. Mesure, liste de 3 items
+ * ramenee a 1 : `refs.value` vaut `[<li>, null, null]` et `refs.value.length`
+ * vaut toujours `3` — Vue rappelle la fonction `ref` des vnodes demontes
+ * avec `null`, donc les emplacements liberes sont REMIS A `null` (pas
+ * d'element perime conserve) mais restent presents. Un consommateur doit
+ * filtrer les trous et ne jamais deduire la longueur de la liste de
+ * `refs.value.length`.
  ********************************************************/
 export function useRefs<T extends object> () {
     const refs = ref<(T | null | undefined)[]>([]) as Ref<(T | null | undefined)[]>
