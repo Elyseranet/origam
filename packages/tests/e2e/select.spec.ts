@@ -571,11 +571,18 @@ test.describe('OrigamSelect', () => {
             const box = await secondItem.boundingBox()
             expect(box).not.toBeNull()
             await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2)
-            await page.waitForTimeout(300)
 
-            const hoverOpacity = await secondItem.locator('.origam-list-item__overlay').first()
-                .evaluate(el => parseFloat(getComputedStyle(el).opacity))
-            expect(hoverOpacity).toBeGreaterThan(0.05)
+            // #783 — was `waitForTimeout(300)` then one read. The overlay's
+            // opacity is TRANSITIONED from 0, so a single sample at a fixed
+            // offset reads the animation mid-flight: on a loaded machine it can
+            // land below the 0.05 threshold on a component that works. Poll for
+            // the state; red if the overlay never reveals.
+            const hoverOverlay = secondItem.locator('.origam-list-item__overlay').first()
+
+            await expect.poll(
+                async () => hoverOverlay.evaluate(el => parseFloat(getComputedStyle(el).opacity)),
+                { timeout: 5000, message: 'the hovered item overlay should reveal' }
+            ).toBeGreaterThan(0.05)
 
             // Non-hovered item stays at rest
             const otherStillResting = await firstItem.locator('.origam-list-item__overlay').first()

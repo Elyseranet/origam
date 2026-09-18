@@ -107,12 +107,13 @@ test.describe('OrigamMasonry', () => {
             await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
-            // Allow one rAF for the first relayout to fire
-            await page.waitForTimeout(200)
-            const position = await sandbox.locator('.origam-masonry__item').first().evaluate(
-                (el) => getComputedStyle(el).position
-            )
-            expect(position).toBe('absolute')
+            // #783 — was "allow one rAF for the first relayout to fire" +
+            // `waitForTimeout(200)` + a single read. `toHaveCSS` retries until
+            // the value lands, so the relayout no longer has to happen inside a
+            // guessed window; it still reddens if the JS path never switches the
+            // item to absolute positioning.
+            await expect(sandbox.locator('.origam-masonry__item').first())
+                .toHaveCSS('position', 'absolute')
         })
 
         test('columns=3: items distribute into 3 distinct horizontal positions', async ({ page }) => {
@@ -182,13 +183,61 @@ test.describe('OrigamMasonry', () => {
             await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
-            await page.waitForTimeout(200)
+            // #783 — was `waitForTimeout(200)` then one read of the SHORTHAND,
+            // asserted with `not.toBe('')` and `not.toMatch(/^all 0s/)`.
+            //
+            // ⛔ BOTH of those assertions were incapable of failing, which is
+            // the second half of what #783 asked to look for. Measured here by
+            // deleting the SCSS rule that declares the transition and probing
+            // the item again — Chromium serialises the shorthand of a element
+            // with no transition as:
+            //
+            //     transition = "all"      (NOT "all 0s ease 0s")
+            //     transitionProperty = "all"
+            //     transitionDuration = "0s"
+            //
+            // `"all"` is neither `''` nor a match for `/^all 0s/`, so the test
+            // stayed GREEN on a component whose animation had been removed
+            // outright. The shorthand drops every longhand sitting at its
+            // initial value, so it is exactly the wrong thing to interrogate —
+            // the same family as the root CLAUDE.md's "query the longhand"
+            // note. Correct-code reading, same probe:
+            //
+            //     transitionProperty = "transform, top, left, width"
+            //     transitionDuration = "0.1s, 0.1s, 0.1s, 0.1s"
+            //
+            // So: read the LONGHANDS, and require an actual non-zero duration.
+            //
+            // ⛔ NOT `readSettledStyle` here: before the relayout runs, the item
+            // already carries a perfectly stable no-op declaration. "Settled"
+            // and "correct" are different questions, and settling on the pre-JS
+            // value would redden working code.
             const firstItem = sandbox.locator('.origam-masonry__item').first()
-            const transition = await firstItem.evaluate((el) => getComputedStyle(el).transition)
-            // Animated JS items declare top/left/width/transform transitions
-            expect(transition).not.toBe('')
-            // Must NOT be "all 0s ease 0s" (no-op)
-            expect(transition).not.toMatch(/^all 0s/)
+            const readTransition = () => firstItem.evaluate((el) => {
+                const style = getComputedStyle(el)
+
+                return {
+                    property: style.transitionProperty,
+                    duration: style.transitionDuration
+                }
+            })
+
+            await expect.poll(
+                async () => {
+                    const { duration } = await readTransition()
+
+                    return duration
+                        .split(',')
+                        .some((raw) => parseFloat(raw) > 0)
+                },
+                { timeout: 8000, message: 'animated items must declare a transition with a non-zero duration' }
+            ).toBe(true)
+
+            // Animated JS items declare top/left/width/transform transitions —
+            // not the `all` the browser reports when nothing declares any.
+            const { property } = await readTransition()
+            expect(property).not.toBe('all')
+            expect(property).toContain('transform')
         })
 
         test('columns=3: 16 items distributed into 3 horizontal columns', async ({ page }) => {
@@ -215,10 +264,20 @@ test.describe('OrigamMasonry', () => {
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-masonry').first()
             await expect(root).toBeVisible({ timeout: 30000 })
-            await page.waitForTimeout(300)
-            const h = await root.evaluate(
+            // #783 — was `waitForTimeout(300)` then one read. The var is written
+            // by the JS relayout; poll for it to become a positive length rather
+            // than betting on when that happens. Times out red if the layout
+            // never publishes a height, which is the defect under test.
+            const readHeight = () => root.evaluate(
                 (el) => getComputedStyle(el).getPropertyValue('--origam-masonry---container-height').trim()
             )
+
+            await expect.poll(
+                async () => parseFloat(await readHeight()) > 0,
+                { timeout: 8000, message: '--origam-masonry---container-height should be published and > 0' }
+            ).toBe(true)
+
+            const h = await readHeight()
             expect(h).not.toBe('')
             const numeric = parseFloat(h)
             expect(numeric).toBeGreaterThan(0)
