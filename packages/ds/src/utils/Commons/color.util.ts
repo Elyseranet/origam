@@ -74,6 +74,39 @@ export function isParsableColor (color: string): boolean {
 }
 
 /*********************************************************
+ * isCompleteCssColor
+ *
+ * @description
+ * Is complete css color — a strictER sibling of `isCssColor`, meant to
+ * gate a COMMIT (a user's typed keystroke reaching the model), not a
+ * style-consumption path.
+ *
+ * @description
+ * `isCssColor`'s hex branch deliberately only checks the `#` prefix
+ * (`/^#/`) — a value that fails to paint at the CSS-consumption layer is
+ * harmless, so `#f`, `#ff`, `#fffff` (5 digits) all pass it today. That
+ * tolerance is wrong for a commit gate: a user mid-typing `#ff00aa`
+ * passes through `#f`, `#ff`, `#ff0`… and only a SYNTACTICALLY COMPLETE
+ * hex (3, 4, 6 or 8 digits) should actually reach `modelValue` — #859
+ * (`OrigamColorPickerField` / `OrigamDatePickerField` direct-typing
+ * wiring). Every other category (functional notation, named colors,
+ * `var()`) reuses `isCssColor` unchanged — its check is already exact
+ * there.
+ *
+ * @param color …
+ * @returns …
+ ********************************************************/
+export function isCompleteCssColor (color: string): boolean {
+    if (!color) return false
+
+    if (color.startsWith('#')) {
+        return /^#([0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(color)
+    }
+
+    return isCssColor(color)
+}
+
+/*********************************************************
  * parseColor
  *
  * @description

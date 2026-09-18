@@ -32,6 +32,22 @@ The picker opens when the user clicks the field. Use `close-on-select` to close 
 | `closeOnSelect` | `boolean` | `false` | Closes the picker immediately after colour selection |
 | `openOnClear` | `boolean` | `false` | Re-opens the picker when the field is cleared |
 
+## Typing a value directly
+
+Besides picking a colour from the popover, the field also accepts a value
+typed directly into the text input — a hex (`#ff0`, `#ff00aa`, with or without
+alpha), a functional notation (`rgb(...)`, `hsl(...)`, …), a named CSS colour,
+or a `var(--…)` reference.
+
+`modelValue` is written the instant the typed text becomes a **syntactically
+complete** CSS colour — not on every keystroke and not only on blur. Typing
+`#ff00aa` character by character commits progressively (`#ff0` alone is
+already a valid 3-digit shorthand, so it commits; `#ff` does not, and is
+silently rejected). A value that never becomes a complete colour is never
+written to the model — the field simply keeps its last committed value until
+the input is either completed or cleared. Clearing the field resets the model
+the same way `click:clear` already does.
+
 ## The dropdown follows your own typography
 
 The picker is teleported out of the field's DOM subtree so it can escape
