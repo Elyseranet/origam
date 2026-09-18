@@ -75,6 +75,30 @@ background. Use `:style` for one-off custom hexes.
 </template>
 ```
 
+### Foreground auto-derives from an intent `bgColor` (#819)
+
+When `bg-color` is a recognised intent (`neutral` / `primary` / `secondary`
+/ `success` / `warning` / `danger` / `info`), Avatar always paints text with
+that intent's own WCAG-AA audited foreground — even if a `color` prop or a
+brand theme default supplied a different, fixed value. This exists because
+`bg-color` is the one prop Avatar consumers routinely vary **per instance**
+(initials/colors generated per user or team member) while `color` is
+typically a single theme-wide default; without this, a fixed `color` can go
+unreadable the moment an instance's `bg-color` swaps to an intent it was
+never paired against (measured as low as 1.25:1 in production brand themes).
+
+`ghost` is the one exception — its background is always `transparent`
+(every intent ladder, not a per-theme choice): its own foreground is tuned
+as a link/icon accent against an *arbitrary* surface, not as a
+background-pill pairing, so `bg-color="ghost"` is left to resolve exactly
+as before. Setting `color` to one of the 8 named intents (a deliberate
+two-intent combination, e.g. `bg-color="secondary" color="primary"`) is
+also left untouched — only a fixed/legacy (hex, `var()`, raw CSS) `color`
+is overridden. A **custom** (non-intent) `bg-color` is never touched either
+— there is no audited pairing to derive from, and the existing
+auto-contrast fallback (`getForeground`) still applies when no `color` is
+set at all.
+
 ## Status
 
 Pass `status` to apply one of the feedback intents. The component reads

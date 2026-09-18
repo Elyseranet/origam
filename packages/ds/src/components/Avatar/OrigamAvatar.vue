@@ -65,6 +65,7 @@
 
 	import type { IAvatarEmits, IAvatarSlots } from '../../interfaces/Avatar/avatar.interface'
 	import { isEmpty } from '../../utils/Commons/commons.util'
+	import { isIntent, tokenStylesForIntent } from '../../utils/Commons/color.util'
 
 	import type { ComputedRef, StyleValue } from 'vue'
 	import { computed, useSlots } from 'vue'
@@ -98,7 +99,65 @@
 	 * Color
 	 ********************************************************/
 
-	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
+	const { color: effectiveColor, bgColor: effectiveBgColor, colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
+
+	/*********************************************************
+	 * Contrast — #819
+	 *
+	 * @description
+	 * `useStateEffect` trusts an explicit/legacy `color` (hex, `var(--…)`,
+	 * a brand theme default) verbatim, regardless of `bgColor`. That is
+	 * correct when the background is itself custom (no audited pairing
+	 * exists to fall back on), but wrong the moment `bgColor` resolves to
+	 * one of the 7 SATURATED intents (`primary`/`secondary`/`success`/
+	 * `warning`/`danger`/`info`/`neutral`): that intent's own bg/fg pair is
+	 * already WCAG-AA audited (#789), and Avatar is the one component whose
+	 * `bgColor` routinely varies PER INSTANCE (initials generated per user/
+	 * team member) while `color` is typically a single theme-wide default —
+	 * so a brand theme pinning `color` to one token (e.g. `fgSubtle`, paired
+	 * with `bgSubtle`) breaks the instant an instance's `bgColor` swaps to a
+	 * full-strength intent it was never paired against. Measured on
+	 * `material`/dark and `ecom` light+dark: ratios as low as 1.25:1
+	 * (invisible text), see #819.
+	 *
+	 * @description
+	 * `ghost` is EXCLUDED on purpose: its bg role is always `transparent`
+	 * (every brand theme, not a per-theme choice) — it carries no themed
+	 * FILL the other 7 intents do, so it never exhibited this mismatch
+	 * pattern, and its own native `fg` is tuned as a link/icon accent
+	 * against an ARBITRARY neutral surface (#789's own separately-audited
+	 * "ghost" pairing), not against a background pill. Measured: swapping
+	 * it in anyway REGRESSES a currently-passing case (`ecom`/light
+	 * `ghost`: fixed literal 5.93:1 → native `fg` 4.43:1, now failing) —
+	 * exactly the "12 passing must keep passing" the ticket forbids.
+	 *
+	 * @description
+	 * Only the FOREGROUND channel is touched, and only when `color` is NOT
+	 * itself a recognised intent — an explicit two-intent combo (e.g.
+	 * `bgColor="secondary" color="primary"`) is a deliberate design choice
+	 * `useStateEffect` already resolves correctly and is left alone. When
+	 * `color` is unset, `useStateEffect` already falls back to this exact
+	 * same token (`bgIntentFg`) internally, so the passing combinations
+	 * recompute to the identical value here — verified byte-for-byte equal
+	 * across all 7 marketing themes × 2 modes × 8 intents (112 combinations)
+	 * except the 3 marque/mode combos #819 reported failing (see the PR
+	 * description for the full before/after table).
+	 ********************************************************/
+	const avatarColorStyles = computed<string[]>(() => {
+		const bg = effectiveBgColor.value
+		const fg = effectiveColor.value
+
+		if (!bg || bg === 'ghost' || !isIntent(bg) || (fg != null && isIntent(fg))) {
+			return colorStyles.value
+		}
+
+		const intentFg = tokenStylesForIntent(bg, 'default').color
+
+		return [
+			...colorStyles.value.filter((decl) => !decl.startsWith('color:')),
+			`color: ${intentFg}`
+		]
+	})
 
 	/*********************************************************
 	 * Composables
@@ -158,7 +217,7 @@
 			paddingStyles.value,
 			marginStyles.value,
 			sizeStyles.value,
-			colorStyles.value,
+			avatarColorStyles.value,
 			elevationStyles.value,
 			typographyStyles.value,
 			props.style
