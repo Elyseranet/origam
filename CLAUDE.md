@@ -1111,11 +1111,26 @@ origam:
   stylesheets, `token-var-channels` is the guard that will catch a variable
   read but never declared (or the reverse).
 - **`pnpm audit` must be clean to ship — the full tree, not only `--prod`.**
-  Both return `No known vulnerabilities found` with exit code `0` since #718
-  and #796 (2026-09-16), and **no advisory is waived**:
-  `pnpm.auditConfig.ignoreGhsas` is absent from the root `package.json`.
-  ⛔ Capture the real `$?` outside a pipe — `pnpm audit | tail` returns
-  `tail`'s exit code, not the audit's.
+  Both return `No known vulnerabilities found` with exit code `0` — remeasured
+  **2026-09-18**, this worktree, real `$?` outside a pipe — and **no advisory is
+  waived**: `pnpm.auditConfig.ignoreGhsas` is absent from the root
+  `package.json`. ⛔ Capture the real `$?` outside a pipe — `pnpm audit | tail`
+  returns `tail`'s exit code, not the audit's.
+
+  ⚠️ **This line is perishable, and it has already been false once.** It read
+  "clean since #718 and #796 (2026-09-16)" while the tree carried a moderate:
+  the dependabot bump `84ae0347` brought in `devalue 5.9.0`
+  (GHSA-9rgm-9g3h-6x36, DoS, 45 paths via `@nuxtjs/i18n` and `@nuxtjs/seo`) and
+  nobody re-measured. Fixed under #248 by a third override, `"devalue@5":
+  "^5.9.2"` — scoped to the 5.x line on purpose, so the unrelated `devalue@2`
+  in the tree is not dragged across two majors. **A clean audit is a
+  measurement, never a quotation: re-run it, don't cite this paragraph.**
+
+  ⚠️ **And verify the audit still measures.** "0 vulnerability" and "my command
+  stopped seeing anything" are indistinguishable without a positive control.
+  The method that gave #718 its authority, replayed for `devalue` under #248:
+  re-pin the override to the vulnerable version, confirm the advisory comes
+  back (`exit 1`, same GHSA), then restore and confirm `exit 0`.
 
   The former note here — *"dev tree contains pre-existing histoire-alpha vulns
   documented as accepted risk"* — is retired, and it is worth knowing how it

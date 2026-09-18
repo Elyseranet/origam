@@ -9,6 +9,32 @@ const REPO_ROOT = resolve(__dirname, '..', '..')
 
 export default defineConfig({
     plugins: [
+        /*
+         * #248 — rejoue, pour les specs, la substitution que Nitro fait au BUILD.
+         *
+         * `import.meta.dev` est un drapeau injecte a la COMPILATION par
+         * Nitro/Nuxt. Hors de leur build il vaut `undefined`, si bien qu'un
+         * garde `if (!import.meta.dev) return` prend toujours la branche « pas
+         * en dev » : un test du cablage mesurerait alors l'absence du drapeau,
+         * jamais le cablage.
+         *
+         * ⛔ `define: { 'import.meta.dev': 'true' }` NE MARCHE PAS ici, et c'est
+         * mesure, pas suppose : sous la transformation SSR de Vitest le `define`
+         * n'atteint pas les expressions `import.meta.*`, et `import.meta.dev`
+         * reste `undefined`. Cette transformation ciblee est la parade.
+         *
+         * Portee volontairement reduite a UN fichier : on ne veut pas forcer en
+         * branche dev un futur consommateur du meme drapeau sans le savoir.
+         */
+        {
+            name: 'origam:import-meta-dev-for-nitro-plugin-specs',
+            enforce: 'pre',
+            transform (code: string, id: string) {
+                if (!id.includes('server/plugins/01.vue-devtools-plugin-queue')) return null
+
+                return { code: code.replaceAll('import.meta.dev', 'true'), map: null }
+            }
+        },
         vue(),
         // Walk up to the repo root tsconfig.json so the @origam / @stories /
         // @docs path aliases resolve consistently with the rest of the build.
