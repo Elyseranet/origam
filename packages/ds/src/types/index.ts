@@ -4,6 +4,7 @@ export * from './App/app.type'
 export * from './App/app-bar.type'
 
 export * from './Avatar/avatar.type'
+export * from './Avatar/avatar-group.type'
 
 export * from './Badge/badge.type'
 
@@ -255,6 +256,8 @@ export * from './Snackbar/snackbar.type'
 export * from './Snackbar/snackbar-item.type'
 
 export * from './Snackbar/snackbar-group.type'
+
+export * from './SystemBar/system-bar.type'
 
 export * from './CommandPalette/command-palette.type'
 
