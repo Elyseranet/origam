@@ -151,7 +151,23 @@ const GREEN_SPECS = [
     // defile avec le corps). A/B contre le composant pre-fix : 3/4 rouges
     // avant, 4/4 verts apres. Verifiee stable 20/20, `--repeat-each=5`,
     // `E2E_STATIC=1`, chromium, port isole.
-    'data-table-sticky.spec.ts'
+    'data-table-sticky.spec.ts',
+    // wave 14 — #827. Un parent CONTROLE qui refuse la valeur (v-bind="state"
+    // sans `state.modelValue = $event`, la forme du playground "Default")
+    // laissait le DOM de la radio avancer indefiniment : le navigateur coche
+    // lui-meme la radio cliquee/naviguee, Vue ne re-patch `:checked` que si sa
+    // valeur CALCULEE differe du rendu precedent, et un parent qui refuse
+    // reproduit exactement la meme booleenne — donc jamais. Le radio siblant
+    // que le navigateur decoche nativement (meme `name`) desynchronise aussi,
+    // sans le moindre evenement pour le signaler. Fixe par `resyncRadios`
+    // dans `OrigamRatingField.vue` : sur `nextTick` apres tout `click`/
+    // `change` qui atteint le groupe, force `.checked` de CHAQUE radio a
+    // correspondre au modele, que la valeur ait bouge ou non. A/B contre
+    // `develop` @ `b13647589` (avant ce correctif) : les 3 tests "REFUSING
+    // parent" rougissent, les 2 temoins "ACCEPTING parent" restent verts des
+    // deux cotes. Verifiee stable 25/25, `--repeat-each=5`, `E2E_STATIC=1`,
+    // chromium, port isole.
+    'rating-field-controlled.spec.ts'
 ]
 
 /**

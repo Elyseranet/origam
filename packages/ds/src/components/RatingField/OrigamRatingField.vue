@@ -167,7 +167,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, ref, shallowRef, StyleValue, useAttrs, useSlots } from 'vue'
+	import { computed, nextTick, ref, shallowRef, StyleValue, useAttrs, useSlots } from 'vue'
 	import OrigamBtn from '../Btn/OrigamBtn.vue'
 	import OrigamInput from '../Input/OrigamInput.vue'
 	import OrigamLabel from '../Label/OrigamLabel.vue'
@@ -349,9 +349,12 @@
 				hoverIndex.value = -1
 			}
 
-			const onClick = () => {
-				if (props.disabled || props.readonly) return
-				model.value = normalizedValue.value === value && props.clearable ? 0 : value
+			const onClick = (e?: MouseEvent) => {
+				if (!props.disabled && !props.readonly) {
+					model.value = normalizedValue.value === value && props.clearable ? 0 : value
+				}
+
+				void nextTick(() => resyncRadios(e?.target as Element | null))
 			}
 
 			/*********************************************************
@@ -369,9 +372,12 @@
 			 * value to clear it" has no keyboard equivalent to hook. The clear
 			 * affordance stays the `__clear` button.
 			 ********************************************************/
-			const onChange = () => {
-				if (props.disabled || props.readonly) return
-				model.value = value
+			const onChange = (e?: Event) => {
+				if (!props.disabled && !props.readonly) {
+					model.value = value
+				}
+
+				void nextTick(() => resyncRadios(e?.target as Element | null))
 			}
 
 			return {
@@ -385,6 +391,57 @@
 	})
 	const isChecked = (value: number) => {
 		return normalizedValue.value === value
+	}
+
+	/*********************************************************
+	 * resyncRadios (#827)
+	 *
+	 * @description
+	 * A CONTROLLED input must show only what the model says — nothing else.
+	 * Under this radiogroup, the browser is the one that flips `.checked`:
+	 * clicking a label, or the native arrow/Home/End navigation, sets the DOM
+	 * property directly on the radios it touches, `change` fires, and only
+	 * THEN does our handler run `model.value = value`. Two independent DOM
+	 * radios move on a single interaction — the one that becomes checked AND,
+	 * because they share one `name`, the sibling the browser un-checks at the
+	 * same time — while Vue's own patch only re-touches a `checked` binding
+	 * whose COMPUTED VALUE differs from the previous render.
+	 *
+	 * @description
+	 * When the parent accepts the new value, that computed value does differ
+	 * next render and Vue's normal patch already lines the DOM back up — this
+	 * function is then a no-op. When the parent silently refuses it (never
+	 * writes `modelValue` back), `isChecked(...)` returns the exact same
+	 * booleans as before for every item, Vue sees no prop change and never
+	 * revisits `checked` on either radio, and the browser's own mutation is
+	 * left standing indefinitely. Measured in Chromium (built Histoire, the
+	 * "Default" playground variant, `v-bind="state"` with no
+	 * `state.modelValue = $event`): clicking star 1 while the model holds 3
+	 * left `{value:"1",checked:true}` AND `{value:"3",checked:false}` in the
+	 * DOM — both wrong, only one of them the radio the click landed on.
+	 *
+	 * @description
+	 * `nextTick` is required, not optional: reading `model.value` (hence
+	 * `isChecked`) synchronously right after emitting `update:modelValue`
+	 * still sees the PRE-update props — a parent that accepts the value only
+	 * applies it once Vue flushes its render queue, and `props[prop]` here
+	 * only reflects that after the same flush. Deferring to `nextTick` lets
+	 * that queue drain (Vue's own patch included) before this reads the
+	 * settled state and reasserts it on every radio in the group — the
+	 * "accepts" and "refuses" cases end up going through the exact same code
+	 * path, which is what keeps this a correction rather than a bespoke
+	 * branch per outcome.
+	 ********************************************************/
+	const resyncRadios = (source: Element | null | undefined) => {
+		const group = source?.closest<HTMLElement>(RATING_FIELD_ROOT_SELECTOR)
+
+		if (!group) return
+
+		group.querySelectorAll<HTMLInputElement>('input[type="radio"]').forEach((radio) => {
+			const shouldBeChecked = isChecked(parseFloat(radio.value))
+
+			if (radio.checked !== shouldBeChecked) radio.checked = shouldBeChecked
+		})
 	}
 
 	/*********************************************************
