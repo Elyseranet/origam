@@ -1,6 +1,6 @@
 {
   "name": "origam",
-  "version": "2.17.1",
+  "version": "2.18.0",
   "type": "module",
   "description": "origam — a Vue 3 design system with multi-theme design tokens, CSS-first components and TypeScript types.",
   "keywords": [
@@ -82,7 +82,6 @@
     "./consts": "./dist/src/consts/index.js",
     "./types": "./dist/src/types/index.d.ts",
     "./interfaces": "./dist/src/interfaces/index.d.ts",
-    "./services": "./dist/src/services/index.js",
     "./utils": "./dist/src/utils/index.js",
     "./*": "./dist/src/*"
   },

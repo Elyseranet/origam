@@ -305,7 +305,10 @@ export default defineNuxtConfig({
                 'origam/utils': resolve(__dirname, '../ds/src/utils'),
                 'origam/types': resolve(__dirname, '../ds/src/types'),
                 'origam/interfaces': resolve(__dirname, '../ds/src/interfaces'),
-                'origam/services': resolve(__dirname, '../ds/src/services'),
+                // Pas d'alias `origam/services` : le repertoire source a ete
+                // renomme en `classes/` par 63120a402 (2026-08-19) et l'alias
+                // pointait depuis sur un chemin inexistant. L'entree `exports`
+                // jumelle est retiree du paquet en 2.18.0 ; cet alias suit.
                 'origam/themes': resolve(__dirname, '../ds/src/themes')
             }
         }
