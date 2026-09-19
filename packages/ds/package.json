@@ -82,7 +82,6 @@
     "./consts": "./dist/src/consts/index.js",
     "./types": "./dist/src/types/index.d.ts",
     "./interfaces": "./dist/src/interfaces/index.d.ts",
-    "./services": "./dist/src/services/index.js",
     "./utils": "./dist/src/utils/index.js",
     "./*": "./dist/src/*"
   },

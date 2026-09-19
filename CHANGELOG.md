@@ -22,17 +22,23 @@ This project follows [Semantic Versioning](https://semver.org).
 ne peignaient rien, des props déclarées et inertes, et une famille de défauts
 d'accessibilité où le clavier n'actionnait pas ce que la souris actionnait.
 
-> ### ⛔ DÉROGATION, LA DEUXIÈME — cette version MINEURE porte 1 rupture d'API
+> ### ⛔ DÉROGATION, LA DEUXIÈME — cette version MINEURE porte 2 ruptures d'API
 >
-> Comme la `2.17.0` avant elle, cette version mineure embarque une rupture
-> (`BG_FG_ROLE.DISABLED`, ci-dessous). Le versioning sémantique imposerait une
-> **majeure**. C'est de nouveau une **décision explicite du mainteneur**.
+> Comme la `2.17.0` avant elle, cette version mineure embarque des ruptures :
+> `BG_FG_ROLE.DISABLED` et le retrait du sous-chemin `origam/services`, toutes
+> deux détaillées ci-dessous. Le versioning sémantique imposerait une
+> **majeure**. C'est de nouveau une **décision explicite du mainteneur** —
+> le numéro `3.0.0` est réservé à la séparation en modules.
 >
-> Un consommateur épinglé en `^2.17` la reçoit **sans l'avoir demandée**.
-> La recette de migration est dans l'entrée ; elle est vide, parce que rien ne
-> pouvait peindre — mais le type, lui, se resserre pour de bon.
+> Ce bandeau ne demande aucune permission : **il documente**. Un consommateur
+> épinglé en `^2.17` reçoit ces deux ruptures **sans les avoir demandées**, et
+> il doit pouvoir le lire ici plutôt que de le découvrir à l'exécution.
 >
-> Le décompte cumulé est désormais de **9 ruptures entrées par deux versions
+> Les deux recettes de migration sont dans leurs entrées. Elles sont vides
+> toutes les deux — rien ne pouvait peindre, rien ne pouvait résoudre — mais
+> l'une resserre un type pour de bon, et l'autre retire une porte déclarée.
+>
+> Le décompte cumulé est désormais de **10 ruptures entrées par deux versions
 > mineures**. La note rétrospective plus bas les énumère une par une.
 >
 > Suivi de remédiation : **#717** (ouvert, non tranché).
@@ -78,17 +84,70 @@ painting: any consumer passing `'disabled'` was already emitting undeclared
 apply, or declare the eight `feedback.*` slots in your own theme and pass a
 bespoke `bgColor`.
 
-### ⛔ NOTE RÉTROSPECTIVE — écrite le 2026-09-19 : les 9 ruptures d'API entrées par des versions MINEURES
+### ⚠️ BREAKING — le sous-chemin `origam/services` est retiré de la map `exports`
+
+**Il ne résolvait déjà plus.** C'est une rupture de *contrat déclaré*, pas de
+comportement : la map annonçait une porte qui ne menait nulle part, et elle
+cesse de l'annoncer.
+
+`packages/ds/package.json` déclarait
+`"./services": "./dist/src/services/index.js"` alors que
+`packages/ds/src/services/` n'existe plus. Le répertoire a été **renommé en
+`classes/`** par `63120a402` (`refactor(ds)!: services/ -> classes/`, le
+2026-08-19) : les trois fichiers sont devenus
+`src/classes/Commons/{box,circular-buffer,date-adapter}.class.ts` et
+`src/services/index.ts` a été supprimé. **L'entrée `exports`, elle, est
+restée** — et a donc été publiée morte dans `2.16.0`, `2.17.0` et `2.17.1`.
+
+Mesuré contre le `dist` construit, avant retrait : `import 'origam/services'`
+lève `MODULE_NOT_FOUND` sur `dist/src/services/index.js`. Le `build` le
+signalait d'ailleurs à chaque passage, dans un avertissement que personne ne
+lisait : `Potential missing package.json files: … dist/src/services/index.js`.
+Cet avertissement **disparaît** avec l'entrée — c'est le témoin du retrait,
+et il est passé de 1 occurrence à 0 sur le build de cette release.
+
+**Migration.** Aucune, au sens strict : un `import 'origam/services'` échouait
+déjà, donc aucun code en état de marche ne peut en dépendre. Vérifié sur le
+dépôt entier avant le retrait — `packages/marketing`, `stories`, `docs` et
+`tests` compris : **zéro import réel**. La seule référence restante était un
+alias Vite inerte dans le `nuxt.config.ts` du site vitrine, qui pointait lui
+aussi sur le répertoire disparu ; il est retiré dans le même commit.
+
+⚠️ Et il faut être précis sur ce qui change, parce que l'attente naturelle est
+fausse : **le code d'erreur ne change pas**. On pourrait croire qu'un
+sous-chemin retiré d'`exports` lève désormais `ERR_PACKAGE_PATH_NOT_EXPORTED` ;
+mesuré, ce n'est pas le cas — le catch-all `"./*"` **reprend** le sous-chemin
+et le renvoie vers `dist/src/services`. Le consommateur voit donc toujours
+`MODULE_NOT_FOUND`, seule la cible résolue change :
+
+| | sous-chemin résolu vers | code |
+|---|---|---|
+| `2.17.1` | `dist/src/services/index.js` (l'entrée déclarée) | `MODULE_NOT_FOUND` |
+| `2.18.0` | `dist/src/services` (le catch-all) | `MODULE_NOT_FOUND` |
+
+C'est exactement le comportement observé sur `themes-all`, retiré en `2.17.0`.
+Ce qui est rompu ici est donc le **contrat déclaré**, rien d'autre : le paquet
+cesse d'annoncer une porte qu'il n'a pas.
+
+⚠️ **À savoir, et non corrigé ici** : la surface qui a remplacé `services/`
+n'est pas exportée non plus. `origam/classes` ne résout pas — le catch-all
+l'envoie vers `dist/src/classes`, un **répertoire**, et l'ESM refuse l'import
+de répertoire (`ERR_UNSUPPORTED_DIR_IMPORT`). Seul `origam/classes/index.js`,
+explicite, fonctionne. Déclarer proprement `"./classes"` est un **ajout** de
+surface, pas un retrait : ça ne relève pas de cette release.
+
+### ⛔ NOTE RÉTROSPECTIVE — écrite le 2026-09-19 : les 10 ruptures d'API entrées par des versions MINEURES
 
 Cette note est ajoutée **après coup**, et ne modifie aucune entrée passée.
 
 **Ce qu'il faut dire d'emblée : la `2.17.0` n'aurait pas dû être une mineure.**
-Elle a embarqué **8 ruptures d'API**, et la `2.18.0` en ajoute une neuvième.
-Un consommateur épinglé en `^2.16` a reçu les huit premières **automatiquement,
-sans action de sa part**, et son build a pu casser sans avertissement. Les deux
-dérogations sont documentées et assumées (note en tête de chaque section,
-ticket de remédiation **#717**) — mais une dérogation documentée reste une
-dérogation, et un `^2.16` qui casse reste un `^2.16` qui casse.
+Elle a embarqué **8 ruptures d'API**, et la `2.18.0` en ajoute **deux** — la
+neuvième et la dixième. Un consommateur épinglé en `^2.16` a reçu les huit
+premières **automatiquement, sans action de sa part**, et son build a pu casser
+sans avertissement. Les deux dérogations sont documentées et assumées (note en
+tête de chaque section, ticket de remédiation **#717**) — mais une dérogation
+documentée reste une dérogation, et un `^2.16` qui casse reste un `^2.16` qui
+casse.
 
 Le détail complet de chaque rupture, avec ses mesures navigateur, vit dans la
 section `[2.17.0]` plus bas. Ce qui suit est l'**index vérifié** : chacune a été
@@ -107,6 +166,7 @@ périmés.
 | 7 | `origam/tokens/{css,scss}/themes-all` retirés | confirmée sur le `dist` construit |
 | 8 | 206 custom properties retirées des feuilles livrées | confirmée, **octets d'origine faux** |
 | 9 | `BG_FG_ROLE.DISABLED` retiré (2.18.0) | confirmée sur le `dist` construit |
+| 10 | `origam/services` retiré d'`exports` (2.18.0) | confirmée sur le `dist` construit |
 
 **1. `aspect-ratio` CSS remplace le hack `__sizer`.**
 L'enfant `__sizer` (`padding-block-end` en pourcentage) et la marge de rappel
@@ -187,6 +247,12 @@ rendu ; retirez `'disabled'` de toute variable annotée `TBgFgRole`.
 références `var()` assemblées en TypeScript qu'aucune garde ne voyait. Le
 retrait de ce membre est une **trouvaille** de la garde livrée sous ce ticket,
 pas son objet. Aucun ticket dédié n'existe pour cette rupture.
+
+**10. `origam/services` retiré de la map `exports`** — la dixième, livrée par
+cette `2.18.0`. Détail complet en tête de section. *Ce que vous devez faire* :
+rien. Le sous-chemin ne résolvait déjà pas, et le dépôt entier a été balayé
+avant le retrait — zéro import réel. C'est le contrat déclaré qui est rompu,
+pas un comportement.
 
 **Ce que cette note ne fait pas.** Elle ne publie pas de guide de migration
 `v2.16 → v2.18` consolidé, ne déprécie pas `2.17.0` sur npm, et ne mesure pas le
