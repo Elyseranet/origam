@@ -1139,7 +1139,26 @@ Concretely, for anyone (human or agent) preparing a release:
 question for the owner about **the release**, never a proposal to spend the
 `3.0.0` number. Say what breaks and ask; do not offer `3.0.0` as an option.
 
-### ⛔ There are NO consumers yet — take the breaking changes NOW
+### ⛔ The `2.x` number is historical — this project is de facto PRE-1.0
+
+**Read this before reasoning about any version number.** The package has
+carried a `2.x` number for historical reasons, but there is **no client
+application depending on it**, and the owner's own framing is explicit:
+
+> *"là on est sur un tag 2.18 mais réellement on est sur une 1.0… donc on s'en
+> fout des ruptures, la première vraie rupture sera la séparation en modules et
+> donc la 3.0"*
+
+Three consequences, and they are not negotiable:
+
+1. **The minor/patch numbers below `3.0.0` are bookkeeping, not a contract.**
+   Nobody is pinned against them. Do not reason about them as if a consumer
+   were watching.
+2. **The FIRST real breaking change is the module split, and it is `3.0.0`.**
+   Everything before it is pre-1.0 churn wearing a 2.x label.
+3. **Therefore: breaking changes are free. Take them.**
+
+### ⛔ Corollary — take the breaking changes NOW, and never ask about them
 
 **`origam` has no client application depending on it today.** A breaking
 change therefore costs **nothing** right now, and will cost a migration guide,
