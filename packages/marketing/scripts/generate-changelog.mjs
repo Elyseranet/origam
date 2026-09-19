@@ -126,7 +126,7 @@ const SECTION_TYPE = {
 
 /**
  * Section families that are NOT release highlights. Matched on the part of
- * the title before any ` — `, lowercased. Exhaustive as of 2.17.1; an
+ * the title before any ` — `, lowercased. Exhaustive as of 2.18.0; an
  * unknown title aborts the run (see classifySection).
  */
 const SKIP_SECTIONS = [
@@ -137,7 +137,16 @@ const SKIP_SECTIONS = [
     'known limits',
     'notes for consumers',
     'outstanding',
-    'deep import paths are not a supported api'
+    'deep import paths are not a supported api',
+    /*
+     * 2.18.0 — la note rétrospective qui recense les 9 ruptures entrées par
+     * des versions mineures. C'est de la prose éditoriale, pas un fait de
+     * release : les ruptures elles-mêmes remontent déjà en highlights depuis
+     * leurs propres sections `### ⚠️ BREAKING` de la 2.17.0 et de la 2.18.0,
+     * et les faire remonter une seconde fois par cette note les compterait
+     * deux fois sur la carte de version.
+     */
+    '⛔ note rétrospective'
 ]
 
 /** Section titles that are prose prefixes rather than a vocabulary word. */

@@ -18,6 +18,22 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.18.0',
+        date: '2026-09-19',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2180.summary',
+        summaryFallback: '80 commits depuis v2.17.1. L\'essentiel est du correctif : des tokens qui ne peignaient rien, des props déclarées et inertes, et une famille de défauts d\'accessibilité où le clavier…',
+        highlights: [
+            { type: 'deprecated', textKey: 'changelog.versions.v2180.h1', textFallback: 'BG_FG_ROLE.DISABLED removed (#823)' },
+            { type: 'added', textKey: 'changelog.versions.v2180.h2', textFallback: 'Cinq symboles publics redeviennent importables' },
+            { type: 'fixed', textKey: 'changelog.versions.v2180.h3', textFallback: 'Le bundle publié n\'avait aucun mode sombre automatique' },
+            { type: 'changed', textKey: 'changelog.versions.v2180.h4', textFallback: 'Un repère ARIA anonyme n\'est plus annoncé comme un repère' },
+            { type: 'fixed', textKey: 'changelog.versions.v2180.h5', textFallback: 'Les 19 avis de pnpm audit sont corrigés par montée de version, sans aucun waiver' },
+            { type: 'added', textKey: 'changelog.versions.v2180.h6', textFallback: 'Nouveau type public TAnyString' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.17.1',
         date: '2026-09-14',
         type: 'patch',
