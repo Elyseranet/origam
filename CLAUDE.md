@@ -1114,6 +1114,31 @@ Version: **major** for a large user-facing feature or a breaking change,
 A dependency upgrade is judged by its size and impact, not by the file it
 touches — a test-runner major is a *medium feature*, not a patch.
 
+### ⛔ `3.0.0` IS RESERVED FOR THE SPLIT INTO MODULES — decided, not open
+
+**`3.0.0` is the module-separation release. Nothing else ships under that
+number.** This is a standing product decision by the repository owner. It is
+not a preference to be weighed against SemVer purity, and it is **not a
+question to re-open** — it has been raised more than once and the answer has
+not changed.
+
+Concretely, for anyone (human or agent) preparing a release:
+
+- **Never propose `3.0.0`** for a bug-fix lot, a contrast campaign, a
+  dependency bump, or "because SemVer says a breaking change needs a major".
+  The number is taken.
+- A breaking change that lands before the module split ships in a **minor**,
+  documented **explicitly and honestly** in `CHANGELOG.md` — that is the
+  agreed trade-off, and the retrospective note covering the 2.17.0 breaks is
+  the precedent to follow.
+- The deprecations already posted for "the next major" (#577
+  `IAdjacentEmits`, #360 bare `createOrigam()`) are therefore harvested **by
+  the module split**, not by whichever release happens to need a major next.
+
+⚠️ If you believe a release genuinely cannot ship as a minor, that is a
+question for the owner about **the release**, never a proposal to spend the
+`3.0.0` number. Say what breaks and ask; do not offer `3.0.0` as an option.
+
 ## Pre-delivery (project-specific overlay)
 
 The global pre-delivery policy (TU + e2e + security) applies. Specific to
