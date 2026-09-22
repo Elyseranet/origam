@@ -1131,9 +1131,17 @@ Concretely, for anyone (human or agent) preparing a release:
   documented **explicitly and honestly** in `CHANGELOG.md` — that is the
   agreed trade-off, and the retrospective note covering the 2.17.0 breaks is
   the precedent to follow.
-- The deprecations already posted for "the next major" (#577
-  `IAdjacentEmits`, #360 bare `createOrigam()`) are therefore harvested **by
-  the module split**, not by whichever release happens to need a major next.
+- ⛔ **The module split owns the NUMBER `3.0.0`, not a monopoly on breaking.**
+  Deprecations already posted "for the next major" — #577 `IAdjacentEmits`,
+  #360 bare `createOrigam()` — are harvested **as soon as someone gets to
+  them, in a minor**, like any other break. Waiting buys nothing while the
+  consumer set is empty, and a deprecation kept "just in case" is dead weight.
+
+  *(An earlier version of this line said these two were "harvested by the
+  module split". That was written before the no-consumer rule below was
+  recorded, and it contradicted it. An agent stopped mid-task on the
+  contradiction rather than guess — correctly. The line is fixed; if you find
+  another like it, stop and say so.)*
 
 ⚠️ If you believe a release genuinely cannot ship as a minor, that is a
 question for the owner about **the release**, never a proposal to spend the
