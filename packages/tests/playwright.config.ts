@@ -179,7 +179,14 @@ const GREEN_SPECS = [
     // `060c4356` (avant ce correctif) : 6 rouges / 2 verts, les 2 verts étant
     // exactement les deux CONTRÔLES NÉGATIFS, qui doivent passer des deux
     // côtés. Vérifiée 8/8, chromium, port isolé.
-    'derived-tokens-subtree.spec.ts'
+    'derived-tokens-subtree.spec.ts',
+    // #869 — regression net contre `v-contrast` silencieusement inerte sur
+    // fond opaque (les deux ruptures partagees toRgb()/channelsOf()).
+    // Verifiee stable 25/25, `--repeat-each=5`, `E2E_STATIC=1`, chromium,
+    // port isole. A/B contre le commit parent (avant le correctif) : 4/5
+    // tests rougissent (seul le controle negatif noir-sur-blanc reste vert
+    // des deux cotes, comme attendu).
+    'contrast-directive.spec.ts'
 ]
 
 /**
