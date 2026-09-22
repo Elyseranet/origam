@@ -9,6 +9,7 @@ import { mount } from '@vue/test-utils'
 
 import { createOrigam } from '@origam/origam'
 import { useInstalledThemes } from '@origam/composables/Commons/installed-themes.composable'
+import { origamTheme } from '@origam/themes'
 
 afterEach(() => {
     document.querySelectorAll('style[data-origam-theme]').forEach(el => el.remove())
@@ -92,11 +93,25 @@ describe('createOrigam({ themes }) — plural install', () => {
     })
 })
 
-describe('built-in origam baseline (always injected, root-scoped)', () => {
-    it('a bare install injects the root-scoped origam default (:root + [data-mode=dark])', () => {
+// ⛔ #360 (v3.0.0 harvest) — `createOrigam()` used to prefix EVERY install
+// with this exact baseline unconditionally, which is what this describe block
+// used to be named for ("always injected"). It no longer does: the baseline
+// is now injected ONLY when a consumer passes it explicitly. Renamed and
+// rewritten to pin the NEW contract rather than delete the coverage — see
+// `createOrigam-bare-no-theme-360.spec.ts` for the matching per-component
+// (`OrigamAvatar`) functional proof.
+describe('origam baseline — explicit opt-in only (#360)', () => {
+    it('a bare install injects NO theme at all — no :root block, no [data-mode=dark] block', () => {
+        mountWithOrigam({}, () => {})
+
+        expect(document.getElementById('origam-theme')).toBeNull()
+        expect(document.getElementById('origam-theme-dark')).toBeNull()
+    })
+
+    it('passing origamTheme explicitly injects the root-scoped baseline (:root + [data-mode=dark])', () => {
         // The default identity comes entirely from the injected blocks — no CSS
         // matrix is loaded in jsdom.
-        mountWithOrigam({}, () => {})
+        mountWithOrigam({ themes: origamTheme }, () => {})
 
         // origamLight has no name and no mode → :root, id `origam-theme`.
         const light = document.getElementById('origam-theme')
@@ -112,14 +127,25 @@ describe('built-in origam baseline (always injected, root-scoped)', () => {
 
     it('the origam baseline is NOT a selectable brand (name-less → not listed)', () => {
         let captured: ReturnType<typeof useInstalledThemes> | null = null
-        mountWithOrigam({}, (themes) => { captured = themes })
+        mountWithOrigam({ themes: origamTheme }, (themes) => { captured = themes })
         // No named brand supplied → the switcher list is empty; origam is the
-        // implicit baseline, not a data-theme option.
+        // baseline, not a data-theme option — even when explicitly installed.
         expect(captured).toEqual([])
     })
 
-    it('keeps the origam baseline injected even when brands are supplied', () => {
+    it('brands supplied WITHOUT the baseline do NOT get it appended automatically any more', () => {
         mountWithOrigam({ themes: [{ name: 'sobre', mode: 'light', cssVars: { '--origam-color__surface---default': '#fff' } }] }, () => {})
+        expect(document.getElementById('origam-theme')).toBeNull()
+        expect(document.getElementById('origam-theme-sobre-light')).not.toBeNull()
+    })
+
+    it('the baseline can still be combined with brands by listing both explicitly', () => {
+        mountWithOrigam({
+            themes: [
+                ...origamTheme,
+                { name: 'sobre', mode: 'light', cssVars: { '--origam-color__surface---default': '#fff' } }
+            ]
+        }, () => {})
         expect(document.getElementById('origam-theme')).not.toBeNull()
         expect(document.getElementById('origam-theme-sobre-light')).not.toBeNull()
     })

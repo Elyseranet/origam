@@ -12,6 +12,8 @@ import type { NuxtModule } from '@nuxt/schema'
 import type { IOrigamNuxtModuleOptions } from '../interfaces/Commons/nuxt-module.interface'
 import type { IOrigamTheme } from '../interfaces/Commons/theme.interface'
 
+import { origamTheme } from '../themes/origam.theme'
+
 const MODULE_NAME = 'origam-nuxt'
 const CONFIG_KEY = 'origam'
 
@@ -33,15 +35,19 @@ const NUXT_COMPOSABLES_BLOCKLIST = new Set([
 ])
 
 // ADR-004 (Implemented): the DS ships exactly ONE neutral identity (the origam
-// baseline, scoped to :root). It is the implicit default when no themes are
-// supplied. A bare install therefore needs no default `themes` array here —
-// an empty list lets `createOrigam` fall back to its built-in baseline.
+// baseline, scoped to :root). It is the implicit default a Nuxt consumer gets
+// when `origam.themes` is left unconfigured — the MODULE supplies it, not
+// `createOrigam()` any more (⛔ #360, v3.0.0 harvest: a bare `createOrigam()`
+// call installs no theme at all, see `origam.ts`). Baking the fallback in here
+// keeps every existing Nuxt consumer (this module's own `plugin.client.ts` /
+// `plugin.server.ts` pass `config.themes` straight through) unaffected by that
+// change — only DIRECT, non-Nuxt `createOrigam()` callers need to opt in.
 //
 // Array-valued options are NOT placed in `defineNuxtModule`'s `defaults`
 // because Nuxt merges defaults via `defu`, which CONCATENATES arrays. Array
 // options follow OVERRIDE semantics instead: a consumer-provided value replaces
 // the default entirely. We resolve them manually in `setup`.
-const DEFAULT_THEMES: IOrigamTheme[] = []
+const DEFAULT_THEMES: IOrigamTheme[] = origamTheme
 const DEFAULT_MODES: string[] = ['light', 'dark']
 
 // Only scalar defaults go through `defu` (safe to merge). The full
@@ -85,7 +91,9 @@ const origamNuxtModule: NuxtModule<IOrigamNuxtModuleOptions, IOrigamNuxtModuleOp
 
         // Array options use OVERRIDE semantics (see DEFAULT_THEMES note): the
         // consumer's value replaces the default — never merged/concatenated.
-        // An empty default lets `createOrigam` install its built-in baseline.
+        // `DEFAULT_THEMES` (the DS baseline) is what a Nuxt consumer gets when
+        // `origam.themes` is left unset — `createOrigam()` itself no longer
+        // supplies any fallback (#360).
         const themes = options.themes ?? DEFAULT_THEMES
         const defaultTheme = options.defaultTheme ?? DEFAULTS.defaultTheme
         const modes = options.modes ?? DEFAULT_MODES

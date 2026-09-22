@@ -16,6 +16,144 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ---
 
+## [Unreleased]
+
+Récolte de deux dépréciations posées "pour la prochaine majeure" avant que le
+`CLAUDE.md` n'acte que `3.0.0` est réservé à la séparation en modules et que
+les ruptures, elles, ne le sont pas — voir "Work priorities and versioning"
+du `CLAUDE.md`. `origam` n'a aucun consommateur : les deux ruptures
+ci-dessous partent en **mineure**, sans shim ni période de grâce.
+
+### ⚠️ BREAKING — `click:prepend` / `click:append` retirés d'`IBtnEmits` (#443, #577)
+
+`<OrigamBtn>` n'émet plus `click:prepend` ni `click:append` — ni au niveau du
+type, ni au niveau de l'exécution. `IBtnEmits` n'`extends` plus
+`IAdjacentEmits`, et les `<span>` `origam-btn__prepend` / `__append` ne
+portent plus de `@click` du tout : un clic souris dessus ne déclenche plus
+rien.
+
+**Pourquoi cette paire précisément, et pourquoi une suppression plutôt qu'un
+correctif.** Les deux émissions n'ont jamais été atteignables au clavier :
+l'événement partait d'un `<span>` descendant, alors qu'une activation clavier
+synthétise son clic sur la RACINE du composant — l'écouteur posé sur le
+descendant ne le voit jamais. Le correctif générique appliqué aux dix autres
+consommateurs d'`useAdjacent` (promouvoir la zone en `role="button"` + arrêt
+de tabulation) est **illégal** ici : `<OrigamBtn>` rend un `<button>` ou un
+`<a>`, et le modèle de contenu HTML interdit à tous deux un descendant de
+contenu interactif *et* tout descendant portant `tabindex`. Un
+`<button type="button">` imbriqué y est tout aussi invalide. La forme était
+fausse, pas seulement le balisage : un contrôle qui possède déjà une action
+ne peut pas en héberger une seconde — deux actions sont deux boutons,
+composés via `<origam-btn-group>`.
+
+**Ce qui NE bouge PAS** : les slots `prepend` / `append` (`IBtnSlots extends
+IAdjacentSlots`) restent intacts, ainsi que les props `prependIcon` /
+`appendIcon` / `prependAvatar` / `appendAvatar` — un contenu décoratif ou
+informationnel en prepend/append reste parfaitement légitime, seule
+l'émission d'un clic disparaît.
+
+**Preuve du comportement retiré** — A/B contre le commit parent, fonctionnel
+et pas seulement typé : `packages/tests/TU/components/Btn/OrigamBtn.adjacent-emit-removed.spec.ts`
+monte `<OrigamBtn>` avec un écouteur `onClick:prepend` / `onClick:append` et
+déclenche un vrai `click` DOM sur la zone. Sur le commit parent, ce même test
+appellerait l'écouteur (l'émission déclarée par `IAdjacentEmits` partait
+encore) ; sur ce commit, l'écouteur n'est jamais invoqué — vérifié en
+rejouant le fichier de spec avant/après le changement, pas seulement en le
+lisant une fois vert.
+
+Nettoyage induit : le helper `warnDeprecatedEmit` (`color.util.ts`) et la
+constante `ADJACENT_EMIT_REPLACEMENT` (`consts/Btn/btn.const.ts`) sont
+retirés — `<OrigamBtn>` était leur seul appelant, et le fichier `btn.const.ts`
+devenu vide est supprimé.
+
+**Migration.** Aucun consommateur interne (DS, marketing, stories, docs,
+tests) n'utilisait `click:prepend` / `click:append` sur `<OrigamBtn>` —
+balayage exhaustif, zéro résultat. Un consommateur externe qui les écoutait
+doit remplacer l'action posée sur la zone prepend/append par un second
+`<origam-btn>` dans un `<origam-btn-group>`.
+
+### ⚠️ BREAKING — `createOrigam()` nu n'installe plus le thème par défaut (#360)
+
+`createOrigam()` préfixait inconditionnellement chaque install avec le thème
+neutre interne `origamTheme` (`[...origamTheme, ...suppliedThemes]`) : même un
+appel nu, ou un `themes: []` explicite, recevait quand même les variables CSS
+et — surtout — les **props par défaut par composant** (ADR-005,
+`components: { 'origam-avatar': { rounded: 'full' }, … }`) de ce thème. Une
+application qui n'en voulait pas ne pouvait pas s'en défaire. Ce préfixage est
+retiré : `createOrigam()` installe désormais exactement ce qu'on lui passe,
+rien de plus.
+
+**Ce qui change concrètement.** Sans `themes`/`theme` explicite,
+`createOrigam()` n'injecte plus aucune variable `--origam-*` et le résolveur
+de props par défaut (`installThemePropsResolver`, ADR-005) n'a plus rien à
+résoudre — chaque composant retombe uniquement sur ses propres valeurs
+`withDefaults()`. Concrètement : un `<origam-avatar>` sans prop `rounded`
+explicite n'est plus automatiquement circulaire (`rounded="full"` venait du
+thème, pas du composant).
+
+**Le thème par défaut reste disponible, à la demande** — `origamTheme`,
+exporté par `origam/themes` (déjà public avant cette rupture, aucun nouvel
+export nécessaire) :
+
+```ts
+// AVANT (2.x) — enregistrait implicitement le thème origam par défaut
+import { createOrigam } from 'origam'
+app.use(createOrigam())
+
+// APRÈS — le thème par défaut est un choix explicite
+import { createOrigam } from 'origam'
+import { origamTheme } from 'origam/themes'
+app.use(createOrigam({ themes: origamTheme }))
+```
+
+**Rayon de souffle mesuré, corrigé dans le même lot** — quatre consommateurs
+directs de `createOrigam()` nu trouvés par balayage exhaustif (DS, marketing,
+stories, docs, tests) :
+- `packages/ds/src/nuxt/module.ts` — le module Nuxt officiel. **Non cassé** :
+  son propre `DEFAULT_THEMES` (utilisé quand l'option `origam.themes` du
+  consommateur est omise) passe désormais `origamTheme` explicitement à
+  `createOrigam()`, préservant à l'identique le comportement de tout
+  consommateur Nuxt existant (marketing compris) qui ne configurait rien.
+  Seul un `createOrigam()` direct, hors module Nuxt, doit s'adapter.
+- `packages/marketing/nuxt.config.ts` — configure `origam.themes`
+  explicitement (7 thèmes de marque + un thème `origam` renommé pour le
+  playground `/theming`), ce qui **contourne** le fallback du module. Le vrai
+  thème neutre non-nommé (celui que `activeDefaultsFor` fusionne toujours en
+  premier, avant la marque active) était fourni jusqu'ici par le préfixage
+  implicite de `createOrigam()` — invisible dans la config marketing. Il est
+  désormais listé explicitement, en premier, dans le tableau `themes`.
+- `packages/stories/histoire.setup.ts` — Histoire (utilisé par les ~208
+  stories de composants) appelait `createOrigam()` nu ; sans correction,
+  chaque story aurait silencieusement perdu les props par défaut du thème
+  (avatars carrés au lieu de circulaires, etc.). Passe désormais
+  `{ themes: origamTheme }`.
+- `packages/docs/.vitepress/theme/index.ts` — les démos de composants live de
+  la doc VitePress appelaient `createOrigam()` nu ; même correction.
+
+Les échantillons de code montrés au consommateur (`installation.const.ts` /
+`installation.vue` sur le marketing, `guide/usage.md` côté docs) sont mis à
+jour pour montrer la forme correcte — un utilisateur copiant l'ancien
+exemple aurait obtenu des composants non stylés selon le thème.
+
+**Tests adaptés** (comptés avant correction, comme demandé) — 3 fichiers /
+5 assertions reposaient sur l'enregistrement implicite et ont été corrigés
+pour installer `origamTheme` explicitement là où le test vérifie précisément
+une valeur par défaut issue du thème, ou réécrits pour pinner le NOUVEAU
+contrat plutôt que l'ancien :
+- `theme-props-resolver.spec.ts` (2 assertions — `origam-radio`/`origam-text-field`
+  vs `origam-input` density) ;
+- `installed-themes.composable.spec.ts` (describe block entier renommé
+  `origam baseline — explicit opt-in only (#360)`, 2 assertions corrigées et
+  2 nouvelles ajoutées pour couvrir explicitement le nouveau contrat) ;
+- `OrigamChip.spec.ts` (1 assertion — `components['origam-chip'].size`).
+
+**Preuve fonctionnelle** (pas seulement structurelle) —
+`packages/tests/TU/origam/createOrigam-bare-no-theme-360.spec.ts` monte un
+vrai `<OrigamAvatar>` : sans thème, la classe `origam--rounded-full` est
+absente ; avec `origamTheme` passé explicitement, elle est présente — la
+même monteuse prouve donc que le harnais peut actionner la prop avant de
+conclure qu'elle ne l'est plus par défaut.
+
 ## [2.18.0] - 2026-09-19
 
 80 commits depuis `v2.17.1`. L'essentiel est du **correctif** : des tokens qui

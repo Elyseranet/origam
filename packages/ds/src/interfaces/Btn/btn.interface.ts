@@ -1,6 +1,5 @@
 import type { IActiveProps } from '../Commons/active.interface'
 import type {
-    IAdjacentEmits,
     IAdjacentProps,
     IAdjacentSlots
 } from '../Commons/adjacent.interface'
@@ -59,12 +58,12 @@ export interface IBtnProps extends ICommonsComponentProps, IColorProps, IBgColor
 /**
  * Emit signatures for `<OrigamBtn>`.
  *
- * ⛔ DEPRECATED SURFACE (#443) — `click:prepend` / `click:append`, inherited
- * from {@link IAdjacentEmits}, are **deprecated and will be removed in
- * v3.0.0**. They still fire for now so no consumer breaks silently, and
- * `<OrigamBtn>` warns once per emit in dev builds.
+ * ⛔ REMOVED SURFACE (#443, #577) — `click:prepend` / `click:append` used to
+ * be inherited from `IAdjacentEmits`. They are GONE, not merely typed
+ * away: `<OrigamBtn>` no longer relays a click from the prepend/append zone
+ * at all (see `OrigamBtn.vue`, the spans carry no `@click` any more).
  *
- * They were never reachable by keyboard: the emit is bound to the
+ * They were never reachable by keyboard: the emit was bound to the
  * `origam-btn__prepend` / `origam-btn__append` `<span>`, while a keyboard
  * activation synthesises its click on the component ROOT, which never
  * reaches a descendant listener. The fix `useAdjacent` applies on the other
@@ -74,11 +73,8 @@ export interface IBtnProps extends ICommonsComponentProps, IColorProps, IBgColor
  *
  * Two actions are two buttons: compose them with `<origam-btn-group>`. The
  * `prepend` / `append` SLOTS are unaffected — see {@link IBtnSlots}.
- *
- * @deprecated The inherited `click:prepend` / `click:append` only. Drop
- * `IAdjacentEmits` from this interface in v3.0.0.
  */
-export interface IBtnEmits extends IAdjacentEmits, IGroupEmits {}
+export interface IBtnEmits extends IGroupEmits {}
 
 /** Slot signatures for `<OrigamBtn>`. */
 export interface IBtnSlots extends IAdjacentSlots {

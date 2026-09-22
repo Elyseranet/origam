@@ -964,7 +964,7 @@
             "register": {
                 "title": "2. Register the plugin",
                 "description": "Import the token sheets and register origam as a Vue plugin in your entry file.",
-                "note": "createOrigam() accepts an optional options bag to configure icons, locale, display, SSR, aliases and more. By default, all components and directives are registered globally."
+                "note": "createOrigam() accepts an optional options bag to configure icons, locale, display, SSR, aliases and more. By default, all components and directives are registered globally — but no theme is installed until you pass one explicitly, as shown above."
             },
             "use": {
                 "title": "3. Use a component",

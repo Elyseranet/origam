@@ -71,9 +71,11 @@ is **not** among them — it binds `prependInnerCommandAttrs` /
 
 ### ⛔ `OrigamBtn` is the exception — and must stay one
 
-Btn **does** import `useAdjacent`; it consumes `hasPrepend` / `hasAppend`,
-`onClickPrepend` / `onClickAppend` and the two `is*Clickable` flags. What it
-does **not** consume — and cannot — is the `*CommandAttrs` pair.
+Btn **does** import `useAdjacent`; it consumes only `hasPrepend` / `hasAppend`
+to decide whether to render the zone. It does **not** consume — and cannot —
+the `*CommandAttrs` pair, nor `onClickPrepend` / `onClickAppend`: since #577
+(v3.0.0 harvest of the #443 deprecation) the prepend/append `<span>` carry no
+`@click` at all, and `IBtnEmits` no longer `extends IAdjacentEmits`.
 
 Btn's root renders as `<button>` or `<a>`. Both forbid an interactive-content
 descendant and any descendant carrying `tabindex`, so promoting the prepend
@@ -82,22 +84,13 @@ undesirable. The fix #747 applied to the ten components it migrated alongside
 Btn (`Alert`, `Badge`, `BreadcrumbItem`, `CardHeader`, `Chip`, `DataText`,
 `DataTitle`, `Field`, `Input`, `ListItem`) is therefore not available here.
 
-That is why Btn's inherited `click:prepend` / `click:append` are **deprecated**
+That is why Btn's inherited `click:prepend` / `click:append` were **removed**
 (#577) rather than repaired: they were never keyboard-reachable (a keyboard
 activation synthesises its click on the component ROOT, which never reaches a
-descendant listener), and there is no legal way to make them so. Btn only uses
-the flags to warn:
-
-```ts
-onMounted(() => {
-    if (isPrependClickable.value) warnDeprecatedEmit('OrigamBtn', 'click:prepend', ADJACENT_EMIT_REPLACEMENT)
-    if (isAppendClickable.value) warnDeprecatedEmit('OrigamBtn', 'click:append', ADJACENT_EMIT_REPLACEMENT)
-})
-```
+descendant listener), and there is no legal way to make them so.
 
 Two actions are two buttons: compose them with `<origam-btn-group>`. The
-`prepend` / `append` **slots** are unaffected. `IBtnEmits` is marked
-`@deprecated`, to drop `IAdjacentEmits` in v3.0.0.
+`prepend` / `append` **slots** are unaffected — only the emit is gone.
 
 > If you are about to "fix" Btn like the ten above, stop: the content model
 > forbids it.

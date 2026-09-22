@@ -42,9 +42,13 @@ by intention, with **no `--origam-` prefixes** and **no DTCG `$value`**.
 
 ## Decision
 
-1. **The DS ships exactly ONE theme: `sobre`** (the neutral base). It is the
-   implicit default `createOrigam()` installs when no theme is supplied. All
-   other brands live in the consuming app and are passed in as objects.
+1. **The DS ships exactly ONE theme: `sobre`** (the neutral base). ⛔
+   **Superseded by #360 (v3.0.0 harvest)**: it was the implicit default
+   `createOrigam()` installed when no theme was supplied; a bare
+   `createOrigam()` now installs no theme at all, and a consumer passes
+   `origamTheme` (`origam/themes`) explicitly to get it — see
+   [`useTheme`](../composables/useTheme.md#what-no-theme-supplied-actually-installs).
+   All other brands live in the consuming app and are passed in as objects.
 
 2. **Themes are authored as plain semantic JSON.** A theme object exposes:
    - `colors` — the color surface (nested by intention), and

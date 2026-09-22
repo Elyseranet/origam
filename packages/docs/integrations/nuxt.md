@@ -104,7 +104,7 @@ export default defineNuxtConfig({
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `themes` | `(IOrigamTheme \| IOrigamTheme[])[]` | `[]` | Brand themes to install, as `IOrigamTheme` objects you author yourself (see [Theme authoring](theming-authoring.md)). Objects/arrays are injected as-is — no preset-name resolution, no per-theme CSS file. An empty list installs the DS neutral baseline. |
+| `themes` | `(IOrigamTheme \| IOrigamTheme[])[]` | the DS baseline (`origamTheme`) | Brand themes to install, as `IOrigamTheme` objects you author yourself (see [Theme authoring](theming-authoring.md)). Objects/arrays are injected as-is — no preset-name resolution, no per-theme CSS file. Omitting the option installs the DS neutral baseline; an explicit `themes: []` installs nothing at all (⛔ #360 — unlike `createOrigam()` called directly, which never auto-installs the baseline any more, this module still does when the option is left unset). |
 | `defaultTheme` | `string` | `'auto'` | Active brand when no cookie is set. `'auto'` renders no `data-theme` (the default brand). |
 | `modes` | `string[]` | `['light', 'dark']` | Color modes supported by the loaded token sheets. Used to validate the resolved mode. |
 | `defaultMode` | `string` | `'auto'` | Active color mode when no cookie is set. `'auto'` falls back to the `Sec-CH-Prefers-Color-Scheme` client hint, then to a concrete `'light'` SSR default (the client upgrades to the system preference). `data-mode` is always written concrete. |

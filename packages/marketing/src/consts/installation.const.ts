@@ -68,6 +68,7 @@ export const INSTALLATION_CODE_REGISTER: IInstallationCodeBlock = {
     filename: 'main.ts',
     code: `import { createApp } from 'vue'
 import { createOrigam } from 'origam'
+import { origamTheme } from 'origam/themes'
 
 import 'origam/tokens/css/primitive'
 import 'origam/tokens/css/light'
@@ -75,7 +76,7 @@ import 'origam/tokens/css/utilities'
 
 import App from './App.vue'
 
-const origam = createOrigam()
+const origam = createOrigam({ themes: origamTheme })
 
 createApp(App).use(origam).mount('#app')`
 }

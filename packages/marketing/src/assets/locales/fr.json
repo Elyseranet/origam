@@ -964,7 +964,7 @@
             "register": {
                 "title": "2. Enregistrer le plugin",
                 "description": "Importez les feuilles de tokens et enregistrez origam comme plugin Vue dans votre fichier d'entrée.",
-                "note": "createOrigam() accepte un sac d'options facultatif pour configurer les icônes, la locale, l'affichage, le SSR, les alias et plus encore. Par défaut, tous les composants et directives sont enregistrés globalement."
+                "note": "createOrigam() accepte un sac d'options facultatif pour configurer les icônes, la locale, l'affichage, le SSR, les alias et plus encore. Par défaut, tous les composants et directives sont enregistrés globalement — mais aucun thème n'est installé tant que vous n'en passez pas un explicitement, comme ci-dessus."
             },
             "use": {
                 "title": "3. Utiliser un composant",

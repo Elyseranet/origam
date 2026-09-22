@@ -1,5 +1,6 @@
 import { defineSetupVue3 } from '@histoire/plugin-vue'
 import { createOrigam } from '@origam/origam'
+import { origamTheme } from '@origam/themes'
 
 import OrigamStoryLayout from '@stories/components/_shared/OrigamStoryLayout.vue'
 
@@ -125,6 +126,10 @@ if (typeof document !== 'undefined') {
 }
 
 export const setupVue3 = defineSetupVue3(({ app, addWrapper }) => {
-    app.use(createOrigam())
+    // ⛔ #360 (v3.0.0 harvest) — `createOrigam()` no longer installs a theme by
+    // default. Stories rely on `origamTheme`'s per-component `components` prop
+    // defaults (ADR-005 — e.g. `origam-avatar`'s `rounded: 'full'`), so it must
+    // be passed explicitly or every story would silently lose those defaults.
+    app.use(createOrigam({ themes: origamTheme }))
     addWrapper(OrigamStoryLayout)
 })

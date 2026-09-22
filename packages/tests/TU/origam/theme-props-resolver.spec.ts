@@ -20,6 +20,7 @@ import { renderToString } from '@vue/server-renderer'
 
 import { activeDefaultsFor, createOrigam } from '@origam/origam'
 import { installThemePropsResolver, themedPropKeysUnion } from '@origam/composables/Commons/theme-props-resolver.composable'
+import { origamTheme } from '@origam/themes'
 import OrigamRadio from '@origam/components/Radio/OrigamRadio.vue'
 import OrigamTextField from '@origam/components/TextField/OrigamTextField.vue'
 import OrigamThemeProvider from '@origam/components/ThemeProvider/OrigamThemeProvider.vue'
@@ -775,7 +776,11 @@ describe('a themed prop stays reactive through MEMOISED readers, not just direct
 describe('an outer component\'s theme entry reaches the inner root it forwards to', () => {
     async function densityAfterSettle (Component: object): Promise<string> {
         const Host = defineComponent({ render: () => h(Component) })
-        const wrapper = mount(Host, { global: { plugins: [createOrigam({})] } })
+        // ⛔ #360 (v3.0.0 harvest) — `createOrigam({})` no longer installs the
+        // baseline theme implicitly; this test needs `origam-radio` /
+        // `origam-text-field` / `origam-input`'s density defaults from it, so
+        // it is now passed explicitly.
+        const wrapper = mount(Host, { global: { plugins: [createOrigam({ themes: origamTheme })] } })
         for (let i = 0; i < 6; i++) await nextTick()
         const root = wrapper.element as HTMLElement
         const inner = root.matches?.('.origam-input') ? root : root.querySelector('.origam-input')

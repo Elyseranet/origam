@@ -9,13 +9,16 @@ Pour rendre tous les composants disponibles dans votre application sans import m
 ```typescript
 import { createApp } from 'vue'
 import { createOrigam } from '@origam'
+import { origamTheme } from '@origam/themes'
 import App from './App.vue'
 
 // Import des styles obligatoires
 import '@origam/dist/style.css'
 
 const app = createApp(App)
-app.use(createOrigam())
+// ⛔ Depuis #360 (récolte v3.0.0), `createOrigam()` nu n'installe aucun thème —
+// le thème par défaut est un choix explicite du consommateur.
+app.use(createOrigam({ themes: origamTheme }))
 app.mount('#app')
 ```
 
