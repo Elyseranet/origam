@@ -16,10 +16,26 @@ import vue from '@vitejs/plugin-vue'
  * never the code.
  *
  * Measured after removing both from `package.json` and reinstalling:
- *   - `packages/tests/node_modules/.bin/` still carries `vite` AND `sass`,
- *     pulled in as peers of the already-declared `@vitejs/plugin-vue`;
+ *   - `vite` and `sass` are still installed, pulled in as peers of the
+ *     already-declared `@vitejs/plugin-vue`;
  *   - the audit runs to completion, `$? = 0`, identical numbers
- *     (11 / 1 664, three controls green).
+ *     (11 / 1 664, three controls green — that count predates the
+ *     `color(srgb …)` fix of #883; the real figure was 7).
+ *
+ * ⛔ CE QUI A CHANGE DEPUIS, ET QUI A CASSE L'AUDIT (#871, mesure du
+ * 2026-09-23) : ce commentaire affirmait aussi que
+ * `packages/tests/node_modules/.bin/` portait `vite` et `sass`. Ce n'est
+ * plus vrai — sur un `pnpm install --frozen-lockfile` propre au commit
+ * `4c23037ee`, ce dossier ne contient QUE `playwright` et `vitest`. Un peer
+ * auto-installe est lie a cote du paquet qui le reclame, dans le magasin
+ * virtuel, pas dans le `node_modules` du paquet consommateur.
+ *
+ * Consequence : le `npx vite build` de l'audit mourait en `127 — sh: vite:
+ * command not found`, et l'audit ne rendait plus AUCUN chiffre. Rien n'a
+ * signale la bascule, parce que rien ne rejoue cet audit en CI.
+ * `resolveViteBin()` (dans `../dark-contrast.audit.mjs`) resout desormais le
+ * binaire via le realpath de `@vitejs/plugin-vue`, ce qui ne depend ni du
+ * PATH ni du hoisting.
  *
  * The one thing that did NOT work was importing the `vite` PACKAGE here: an
  * auto-installed peer gets a `.bin` symlink, not a resolvable top-level
