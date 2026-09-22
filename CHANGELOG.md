@@ -262,9 +262,28 @@ déclenche rien ; non-régression du chemin translucide (fond composé via
 des 5 tests rougissent sur le code d'avant (le contrôle négatif reste vert
 des deux côtés, comme attendu).
 
-⚠️ **Rayon mesuré séparément, pas hérité de #871.** Le chiffrage initial du
-ticket (346 violations en mode sombre) datait d'avant #876, qui a fait
-tomber ce nombre à 11 — voir #871 et #876 pour la mesure et sa méthode.
+⚠️ **Rayon mesuré séparément, pas hérité de #871 — et le chiffre de #871
+lui-même contient un artefact.** Le chiffrage initial du ticket (346
+violations en mode sombre) datait d'avant #876, qui a fait tomber ce nombre
+à **11**. En rejouant `audit/dark-contrast.audit.mjs` avec la VRAIE directive
+(redirect du stub désactivé) au lieu de sa reformulation mathématique, la
+vraie directive corrigée ne déclenche que **7 `console.warn`** sur les 32
+configurations (30 composants × 8 identités × 2 modes, portées racine +
+sous-arbre) — pas 11. L'écart de 4 est localisé : `origam-tooltip__content`
+en identité `apple` (root + subtree, light + dark). Le fond réel de ce
+composant est `color(srgb 0.898039 0.898039 0.905882 / 0.94)` (translucide) ;
+`toRgb()` le résout correctement en `rgb(215, 215, 217)` une fois composé sur
+son ancêtre opaque, contre du texte noir : **ratio 14.61:1, conforme**. La
+fonction `parse()` de `dark-contrast.audit.mjs` (une réimplémentation
+distincte, pas la directive) ne reconnaît que `rgba?\(…\)` — elle ignore
+silencieusement cette couche `color(srgb …)`, saute jusqu'à l'ancêtre opaque
+suivant (`rgb(0, 0, 0)`) et rapporte à tort `rgb(0,0,0)` sur `rgb(0,0,0)`,
+ratio 1.00. **C'est un faux positif de l'audit, pas un défaut du DS ni de
+`v-contrast`** — la même classe de lacune que ce ticket corrige, mais dans un
+autre fichier. Les 7 restantes (4 `origam-badge__badge`, 3
+`origam-breadcrumb-item`) sont confirmées identiques entre les deux mesures.
+Non corrigé ici : `dark-contrast.audit.mjs` appartient à #871/#876, pas à ce
+ticket — signalé pour que le chiffre de référence soit corrigé séparément.
 
 **Rupture d'API** : aucune — `toRgb`/`channelsOf`/`hexToRgb` restent des
 fonctions privées du module, non exportées ; la surface publique
