@@ -154,6 +154,74 @@ absente ; avec `origamTheme` passé explicitement, elle est présente — la
 même monteuse prouve donc que le harnais peut actionner la prop avant de
 conclure qu'elle ne l'est plus par défaut.
 
+### Fixed
+
+- **#871 — le mode sombre ne peignait qu'à moitié dans un sous-arbre thémé.**
+  Les feuilles de tokens portent ~1 761 déclarations **dérivées**
+  (`--origam-title---color: var(--origam-color__text---primary)`). Une custom
+  property est substituée **sur l'élément qui la déclare** ; ce qu'un
+  descendant hérite est la valeur DÉJÀ substituée. Le bloc sombre étant ancré
+  à la racine (`:root:not([data-theme])[data-mode="dark"]`), un sous-arbre
+  `<OrigamThemeProvider mode="dark">` basculait bien les ~60 tokens
+  sémantiques — le bloc runtime, lui, émet `[data-mode="dark"]` — mais laissait
+  les 1 761 dérivés **gelés** sur les valeurs claires de la racine. Motif
+  dominant mesuré : `rgb(10,10,10)` sur `rgb(10,10,10)`, texte et fond
+  identiques.
+
+  Les deux feuilles s'accrochent désormais aussi à l'axe `data-mode` :
+
+  ```css
+  :root, [data-theme="light"], [data-mode="light"]      { /* clair */ }
+  [data-theme="dark"], [data-mode="dark"]:not([data-theme="light"]) { /* sombre */ }
+  ```
+
+  Rejoué sur 30 composants × 8 identités × 2 modes × 2 portées (racine ET
+  sous-arbre), soit **1 664 instances**, Chromium, contrôles positif et négatif
+  verts : **189 → 11 violations AA**, dont sombre **184 → 6** et clair
+  **5 → 5** (aucune régression). Les 11 restantes appartiennent toutes aux
+  palettes de marque de `packages/marketing`, aucune au DS. Harnais :
+  `pnpm -F @origam/tests audit:dark-contrast`.
+
+- **#871 — `system-bar` et `tooltip` illisibles en sombre.** Les deux peignent
+  une surface sombre dans les DEUX modes (`neutral---700` / `neutral---800`)
+  et lisaient `text---inverse`, qui vaut blanc en clair et **encre** en
+  sombre : 1.91:1 et 1.31:1. `dark.css` lit maintenant `text---primary` ;
+  `light.css` est inchangé.
+
+- **#871 — `bottom-nav` peignait une dalle claire dans une UI sombre.** Son
+  fond était épinglé à la primitive `neutral---200` (#e6e6e6) dans les deux
+  modes, sous un `text---primary` presque blanc (1.03:1). En sombre il passe
+  au token sémantique `surface---overlay`. Le clair est inchangé.
+
+### Changed — ⛔ RUPTURE (documentée, assumée)
+
+- **Les feuilles de tokens ne sont plus ancrées à `:root`.** Un consommateur
+  qui avait contourné le gel ci-dessus en re-déclarant lui-même des variables
+  de composant dans un sous-arbre `[data-mode]` voit désormais la feuille les
+  déclarer aussi, en (0,1,0) côté clair et (0,2,0) côté sombre. Son bloc de
+  contournement doit donc être au moins aussi spécifique, ou être retiré.
+
+  Concrètement dans ce dépôt : `packages/marketing` embarque
+  `ORIGAM_COMPONENT_RESET_LIGHT/DARK` (`themes/origam-reset.generated.ts`),
+  une re-déclaration GÉNÉRÉE de ~2 700 variables de composant, écrite
+  exactement pour ce défaut. Elle est maintenant redondante — **elle n'a pas
+  été retirée ici**, faute de mesure sur le rendu du site.
+
+  Ce qui NE change pas : `data-theme="light" data-mode="dark"` reste clair
+  (l'axe marque gouverne quand les deux se contredisent, règle #807),
+  `data-mode="light"` sous un OS sombre reste clair (#794), et une marque
+  claire continue de gagner sur la feuille par l'ordre source.
+
+### Documentation
+
+- `CLAUDE.md`, section *Multi-theme* : la note qui affirmait que le bloc
+  auto-mode ne porte que **11** déclarations est **fausse** — recompté en
+  parsant la feuille le 2026-09-22, les deux blocs en portent **2 731**
+  chacun. L'affirmation décrivait un état antérieur à #794 que plus rien ne
+  remesurait.
+
+---
+
 ## [2.18.0] - 2026-09-19
 
 80 commits depuis `v2.17.1`. L'essentiel est du **correctif** : des tokens qui

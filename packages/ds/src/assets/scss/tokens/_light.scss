@@ -30,9 +30,40 @@
  * palette primitive (son `blue---600` vaut `#1d4ed8`, soit le 700 de
  * Tailwind). La valeur est celle de `origam.theme.ts`, ce qui ferme du même
  * coup la divergence feuille ↔ thème que #793 suit.
+ *
+ * ── #871 — POURQUOI `[data-mode="light"]` DANS LA LISTE ────────────────────
+ * Les ~1 792 déclarations DÉRIVÉES de ce bloc — la forme
+ * `--origam-title---color: var(--origam-color__text---primary)` —
+ * ne se ré-évaluent QUE sur un élément que ce sélecteur matche. Sur tout autre
+ * élément, la valeur héritée est déjà SUBSTITUÉE — c'est la sémantique des
+ * custom properties, pas un bug : `--a: var(--b)` posé à `:root`, `--b`
+ * réécrit sur un enfant, et `--a` garde sur l'enfant la valeur calculée à la
+ * racine.
+ *
+ * Sans `[data-mode="light"]`, un sous-arbre `<OrigamThemeProvider mode="light">`
+ * à l'intérieur d'une page sombre gardait donc les 1 792 dérivés GELÉS sur les
+ * valeurs sombres de la racine. C'est le pendant clair du défaut mesuré en
+ * sombre par #871.
+ *
+ * ⛔ SPÉCIFICITÉ (0,1,0), VOLONTAIREMENT. Le bloc runtime d'une marque claire
+ * (`applyThemes()` sérialise `[data-theme="cartoon"]` sans `data-mode`) est
+ * lui aussi (0,1,0) et est injecté dans `<head>` APRÈS cette feuille : à
+ * égalité, l'ordre source tranche et la marque gagne. Monter ce sélecteur à
+ * (0,2,0) (p. ex. `[data-mode="light"]:not([data-theme="dark"])`) le ferait
+ * perdre, et cette feuille repeindrait par-dessus chaque marque claire.
+ *
+ * ── #871 — `system-bar` / `tooltip` : RIEN NE CHANGE ICI ──────────────────
+ * Ces deux composants peignent une surface SOMBRE dans les deux modes
+ * (`neutral---700` / `neutral---800`) et lisent `text---inverse`, qui vaut
+ * blanc EN CLAIR — correct, donc inchangé. C'est en SOMBRE que le même token
+ * vaut de l'encre et rend le texte illisible ; le correctif est donc dans
+ * `dark.css` seul. Voir son en-tête, y compris la piste écartée (passer les
+ * DEUX feuilles à `text---onColor`, qui a mesuré +2 violations en clair sur
+ * la marque `cartoon`).
  */
 :root,
-[data-theme="light"] {
+[data-theme="light"],
+[data-mode="light"] {
   --origam-color__surface---default: var(--origam-color__neutral---0);
   --origam-color__surface---raised: var(--origam-color__neutral---0);
   --origam-color__surface---overlay: var(--origam-color__neutral---100);

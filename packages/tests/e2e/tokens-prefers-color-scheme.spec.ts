@@ -225,11 +225,19 @@ test.describe('#794 — `origam/styles` honours prefers-color-scheme', () => {
     // (`apply-theme.util.ts`, injected by `createOrigam()`), and the static
     // `origam/styles` bundle had ZERO occurrence of `data-mode`. The fix
     // widens the explicit `[data-theme="dark"]` block's SELECTOR LIST —
-    // `:root:not([data-theme])[data-mode="dark"]` — rather than duplicating
-    // its ~2731 declarations a third time. This test used to be a PINNED
-    // GAP (asserted the defect, so a future fix would turn it red on
+    // it read `:root:not([data-theme])[data-mode="dark"]` — rather than
+    // duplicating its ~2731 declarations a third time. This test used to be a
+    // PINNED GAP (asserted the defect, so a future fix would turn it red on
     // purpose); it now asserts the fix and would go red again on a
     // regression.
+    //
+    // ⚠️ #871 widened that selector again, to
+    // `[data-mode="dark"]:not([data-theme="light"])`. The root anchor made the
+    // sheet's ~1761 DERIVED declarations unable to re-resolve inside a themed
+    // SUB-TREE; see `derived-tokens-subtree.spec.ts`. Everything this file
+    // asserts is root-level, so it is unaffected — including the negative
+    // control below, which is exactly what the `:not([data-theme="light"])`
+    // exists to keep true.
     test('POSITIVE — data-mode="dark" alone (#807) now renders the dark theme', async ({ browser }) => {
         const css = readFileSync(shipped.path, 'utf8')
         // Was exactly 1 (the auto-mode media query's `:not([data-mode])`)
