@@ -220,6 +220,43 @@ conclure qu'elle ne l'est plus par défaut.
   chacun. L'affirmation décrivait un état antérieur à #794 que plus rien ne
   remesurait.
 
+### Fixed
+
+- **#371 (point 3) — le sélecteur « Items per page » du footer
+  DataTable n'avait aucun nom accessible**, déjà corrigé par `3f063d727`
+  (2026-09-10) — ce commit **citait #371 sans le fermer**, sixième
+  occurrence cette semaine du même motif (cf. #570, #682, #537, #371
+  point 1, #371 point 2/ADR-005). Re-mesuré ici avant tout travail sur les
+  points restants du ticket : le `<span>` visible est désormais associé au
+  `<origam-select>` via `aria-labelledby`, et la suite unitaire complète
+  reste verte (7120/7120) — aucun code de production retouché sur ce point,
+  seule la mesure manquait au tableau.
+
+- **`<OrigamDataTableRow>` ne fuit plus `index` / `mobile` en attributs DOM**
+  (#371, point 4). `itemSlotProps()` (`OrigamDataTableRows.vue`) construisait
+  la ligne d'item avec deux clés qu'`IDataTableRowProps` ne déclare pas —
+  `index`, jamais lu par le composant, et `mobile`, un résidu d'avant
+  l'ajout du forwarding de `mobileBreakpoint` (chaque ligne calcule déjà son
+  propre `mobile` à partir de ce dernier). Une clé non déclarée tombe dans
+  `$attrs`, et le `v-bind="$attrs"` du `<tr>` racine la posait en attribut
+  DOM littéral sur **chaque** ligne rendue — `index="0" mobile="false"`.
+  Même mécanisme que le point 1 de ce ticket (déjà corrigé, `08c30693a`),
+  une famille plus loin. `aria-rowindex`, seul attribut voulu de ce canal,
+  continue de passer.
+
+### Added
+
+- **`mobileBreakpoint` a désormais un contrôle de story sur
+  `<OrigamDataTable>`** (#371, point 5). La prop — dont le défaut `'xs'`
+  corrige un bug de production documenté en commentaire
+  (`OrigamDataTable.vue:190-199` : sans lui, `useDisplay` retombait sur le
+  seuil global `'lg'` et forçait le rendu mobile empilé sur tout viewport
+  sous 1280px) — n'apparaissait dans aucune des 30 Variants de
+  `OrigamDataTable.story.vue`. Ajout de la Variant « Prop —
+  mobileBreakpoint » (même jeu d'options que celui déjà utilisé par
+  `OrigamDataTableRow.story.vue`) et d'une section « Responsive » +
+  ligne de table dans `OrigamDataTable.md`.
+
 ---
 
 ## [2.18.0] - 2026-09-19
