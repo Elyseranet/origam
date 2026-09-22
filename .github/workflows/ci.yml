@@ -504,7 +504,18 @@ jobs:
   test-a11y-components:
     name: A11y tests — components (axe-core / Chromium)
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # ⛔ 20 -> 30 min — #818. Le balayage est passe de 36 a 218 stories
+    # (+7 Variants d'intention non-primary) : 226 tests au lieu de 37. Mesure
+    # reelle sur ce worktree (histoire preview statique, port isole) : 17.9
+    # min pour la suite seule sous charge machine EXTREME (load average
+    # 30-115, cf. commentaire de root CLAUDE.md sur les serveurs zombies
+    # #875) ; les segments mesures sous charge plus normale tournent a
+    # 3.5-4s/test, soit ~14-16 min projetes pour la suite seule. Le job
+    # ajoute checkout + install + build Histoire par-dessus. 30 min donne la
+    # meme marge relative que le job e2e shard (30 min pour ~15.7 min
+    # mesures, cf. root CLAUDE.md "Running the full e2e suite") plutot que
+    # de laisser 20 min courir a moins de 2 min de marge sur un chiffre reel.
+    timeout-minutes: 30
     # ⛔ POURQUOI CE JOB EXISTE — #765.
     #
     # `packages/tests/a11y/components.spec.ts` balaie les Variants du
