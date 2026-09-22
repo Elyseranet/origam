@@ -140,7 +140,6 @@
 	import OrigamDataTableRow from './OrigamDataTableRow.vue'
 	import OrigamSkeleton from '../Skeleton/OrigamSkeleton.vue'
 
-	import { useDisplay } from '../../composables/Commons/display.composable'
 	import { useExpanded } from '../../composables/DataTable/expand.composable'
 	import { useGroupBy } from '../../composables/DataTable/group.composable'
 	import { useHeaders } from '../../composables/DataTable/headers.composable'
@@ -240,7 +239,6 @@
 	const {expandOnClick, toggleExpand, isExpanded} = useExpanded()
 	const {isSelected, toggleSelect} = useSelection()
 	const {toggleGroup, isGroupOpen} = useGroupBy()
-	const {mobile} = useDisplay(props)
 	const {startIndex} = usePagination()
 
 	const slotProps = (item: any, index: number): IDataTableItemBaseSlot => {
@@ -311,20 +309,32 @@
 						onClick: expandOnClick.value ? () => {
 							toggleExpand(item)
 						} : undefined,
-						index,
 						item,
 						cellProps: props.cellProps,
-						// Forward `mobileBreakpoint` so each row's own
-						// `useDisplay(props)` resolves to the SAME
-						// threshold the table-level resolved. Pre-fix
-						// only `mobile: mobile.value` was passed but the
-						// row's interface declares `mobileBreakpoint`,
-						// not `mobile` — so the row fell back to the
-						// global `'lg'` (1280px), forcing mobile mode
-						// on every viewport <1280px regardless of what
-						// the consumer set on the DataTable.
+						/*********************************************************
+						 * Forward `mobileBreakpoint` — never `mobile` (#371)
+						 *
+						 * @description
+						 * `IDataTableRowProps` (extends `IDisplayProps`)
+						 * declares `mobileBreakpoint`, not `index` or
+						 * `mobile`. Each row resolves its OWN `mobile` from
+						 * `mobileBreakpoint` via its own `useDisplay(props)`
+						 * call — passing a precomputed `mobile` here was
+						 * always dead weight, and passing `index` was never
+						 * read by the row at all. Both fell through
+						 * `<OrigamDataTableRow>`'s undeclared-key path
+						 * straight into `$attrs`, which its
+						 * `v-bind="$attrs"` root then serialised as literal
+						 * DOM attributes on every rendered `<tr>`:
+						 * `index="0" mobile="false"`.
+						 *
+						 * @description
+						 * A prior fix (mobileBreakpoint forwarding) added
+						 * the correct key without removing the stale one it
+						 * replaced — same shape as the point-1 closure leak
+						 * in this same file's `groupHeaderRowProps()`.
+						 ********************************************************/
 						mobileBreakpoint: props.mobileBreakpoint,
-						mobile: mobile.value,
 						'aria-rowindex': startIndex.value + index + 2
 					},
 					getPrefixedEventHandlers(attrs, ':row', () => slotPropsLocal),
