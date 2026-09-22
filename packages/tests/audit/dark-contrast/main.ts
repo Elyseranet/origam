@@ -2,6 +2,7 @@ import { createApp, h } from 'vue'
 
 import { createOrigam } from '../../../ds/src/origam'
 import OrigamThemeProvider from '../../../ds/src/components/ThemeProvider/OrigamThemeProvider.vue'
+import { origamTheme } from '../../../ds/src/themes/origam.theme'
 import '../../../ds/src/assets/css/main.css'
 
 import { appleThemes } from '../../../marketing/src/themes/apple.theme'
@@ -60,8 +61,24 @@ if (cfg.scope === 'root') {
     html.setAttribute('data-mode', 'light')
 }
 
+/*********************************************************
+ * ⛔ `origamTheme` is passed EXPLICITLY — required since #360 / #877
+ *
+ * @description
+ * `createOrigam()` used to prefix the theme list with the DS's own
+ * `origamTheme` baseline. Since #877 it does not: a bare call installs NO
+ * theme — no `vars` CSS injected, no per-component `components` default
+ * resolved (ADR-005).
+ *
+ * Without this explicit opt-in the `native` identity of the matrix would not
+ * be "the DS's zero-config surface" at all, it would be "no runtime theme",
+ * and the brand identities would lose the baseline they layer on top of. The
+ * harness would still produce numbers — it would just be measuring a
+ * different product.
+ ********************************************************/
 const origam = createOrigam({
     themes: [
+        ...origamTheme,
         ...appleThemes,
         ...cartoonThemes,
         ...ecomThemes,
