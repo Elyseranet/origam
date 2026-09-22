@@ -177,10 +177,52 @@ conclure qu'elle ne l'est plus par défaut.
 
   Rejoué sur 30 composants × 8 identités × 2 modes × 2 portées (racine ET
   sous-arbre), soit **1 664 instances**, Chromium, contrôles positif et négatif
-  verts : **189 → 11 violations AA**, dont sombre **184 → 6** et clair
-  **5 → 5** (aucune régression). Les 11 restantes appartiennent toutes aux
-  palettes de marque de `packages/marketing`, aucune au DS. Harnais :
-  `pnpm -F @origam/tests audit:dark-contrast`.
+  verts : **185 → 7 violations AA**, dont sombre **182 → 4** et clair
+  **3 → 3** (aucune régression). Les 7 restantes appartiennent toutes aux
+  palettes de marque de `packages/marketing`, aucune au DS, et aucune ne
+  descend sous 2:1. Harnais : `pnpm -F @origam/tests audit:dark-contrast`.
+
+  ⚠️ **Ces bornes ont d'abord été publiées à `189 → 11`, et les deux étaient
+  fausses de 4.** Le parseur de couleurs du harnais ne connaissait pas
+  `color(srgb …)`, que la palette `apple` émet : le fond translucide du
+  tooltip était pris pour « pas de fond », la remontée d'ancêtres sautait
+  jusqu'à la surface opaque et rapportait du noir sur noir à 1.00 — quatre
+  violations **fabriquées**, présentes des DEUX côtés de la mesure. Le
+  **delta de 178 n'a jamais été faux** ; seules les bornes l'étaient. Détail
+  et garde de non-récidive plus bas.
+
+- **#871 — le harnais de contraste ne savait pas lire `color(srgb …)`, et
+  FABRIQUAIT donc des violations.** Son `parse()` ne reconnaissait que
+  `rgb()` / `rgba()`. Un fond qu'il ne sait pas lire n'est pas « ignoré » : il
+  est traité comme **non peint**, la remontée d'ancêtres saute l'élément et
+  composite contre une couche qui n'est pas celle que voit l'œil. Sur le
+  tooltip `apple` — `color(srgb 0.898 0.898 0.906 / 0.94)` sur une surface
+  noire — cela donnait du noir sur noir à **1.00** là où le rendu réel est
+  ~`rgb(215,215,217)` sur noir. 4 instances (root + sous-arbre × clair +
+  sombre), des deux côtés de la mesure.
+
+  `parse()` reconnaît désormais `color(srgb r g b [/ a])`, avec **la même
+  expression régulière que `srgbToRgb` dans `contrast.directive.ts`** — la
+  vraie directive gérait déjà cette forme, et son commentaire le disait :
+  *« design tokens resolve to exactly this form in several themes »*.
+
+  ⛔ **Un quatrième contrôle, parce que le correctif ponctuel ne suffit pas.**
+  Le harnais échoue maintenant (`$? = 1`) dès qu'une chaîne de couleur non
+  vide lui est illisible, en listant les formes rencontrées. Sans lui, la
+  prochaine syntaxe (`oklch()`, `lab()`, résidu de `color-mix()`) décalerait
+  le chiffre en silence exactement de la même façon. Contrôle positif du
+  garde lui-même : branche `srgb` désactivée → `$? = 1`, 8 formes listées, et
+  le compte réaffiche l'ancien **11** ; branche active → `$? = 0`, tout lu,
+  **7**.
+
+  ⚠️ #871 listait déjà ce risque sous « non vérifié » — *« les couleurs
+  `oklch()` / `color(srgb …)` — aucun token actuel n'en emploie, mais un futur
+  thème invaliderait l'instrumentation »*. Un thème le faisait **déjà** au
+  moment où la phrase a été écrite. Écart signalé en marge de la **PR #882**
+  (#869, `v-contrast`) par l'agent qui rejouait ce harnais avec la vraie
+  directive au lieu du stub ; reproduit, remesuré et corrigé ici. Aucun ticket
+  propre n'a été ouvert : le défaut est dans l'instrumentation de #871, donc
+  il se règle sous #871.
 
 - **#871 — `system-bar` et `tooltip` illisibles en sombre.** Les deux peignent
   une surface sombre dans les DEUX modes (`neutral---700` / `neutral---800`)
