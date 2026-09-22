@@ -85,12 +85,55 @@ const MIME = {
  * `ds/src/directives/Contrast/contrast.directive.ts`.
  ********************************************************/
 function measureInPage (rootSelector) {
+    /*********************************************************
+     * unparsed — the colour strings this probe could not read
+     *
+     * @description
+     * ⛔ A parser that silently returns `null` on a colour form it does not
+     * know does NOT under-report: it MIS-reports. An unreadable background is
+     * treated as "this element paints nothing", so the ancestor walk skips it
+     * and composites against a layer further up — inventing a pair that does
+     * not exist on screen.
+     *
+     * That is exactly what happened: `color(srgb …)` was unhandled, and the
+     * `apple` tooltip (`color(srgb 0.898 0.898 0.906 / 0.94)` on a black
+     * surface) was reported as black-on-black at 1.00 while it really renders
+     * ~`rgb(215,215,217)` on black. Four fabricated violations.
+     *
+     * #871 itself listed this under "non vérifié" — *"les couleurs `oklch()` /
+     * `color(srgb …)` — aucun token actuel n'en emploie, mais un futur thème
+     * invaliderait l'instrumentation"*. A theme already did. The lesson is not
+     * "add `color(srgb)"` — it is that a colour form this probe cannot read
+     * must FAIL THE RUN, never quietly shift a number.
+     ********************************************************/
+    const unparsed = []
+
     const parse = (s) => {
-        const m = String(s ?? '').match(/rgba?\(([^)]+)\)/i)
-        if (!m) return null
-        const p = m[1].split(',').map((x) => parseFloat(x.trim()))
-        if (p.length < 3 || p.slice(0, 3).some(Number.isNaN)) return null
-        return { r: p[0], g: p[1], b: p[2], a: p[3] == null || Number.isNaN(p[3]) ? 1 : p[3] }
+        const raw = String(s ?? '').trim()
+        if (!raw) return null
+
+        const rgbMatch = raw.match(/rgba?\(([^)]+)\)/i)
+        if (rgbMatch) {
+            const p = rgbMatch[1].split(',').map((x) => parseFloat(x.trim()))
+            if (p.length < 3 || p.slice(0, 3).some(Number.isNaN)) {
+                unparsed.push(raw)
+                return null
+            }
+            return { r: p[0], g: p[1], b: p[2], a: p[3] == null || Number.isNaN(p[3]) ? 1 : p[3] }
+        }
+
+        /*** Same regex as `srgbToRgb` in `contrast.directive.ts` — 0–1 channels. ***/
+        const srgb = raw.match(/color\(\s*srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?\s*\)/i)
+        if (srgb) {
+            const ch = (v) => Math.min(1, Math.max(0, parseFloat(v))) * 255
+            const a = srgb[4] !== undefined ? parseFloat(srgb[4]) : 1
+            return { r: ch(srgb[1]), g: ch(srgb[2]), b: ch(srgb[3]), a: Number.isNaN(a) ? 1 : a }
+        }
+
+        if (raw === 'transparent' || raw === 'none') return { r: 0, g: 0, b: 0, a: 0 }
+
+        unparsed.push(raw)
+        return null
     }
 
     const over = (top, bottom) => ({
@@ -141,9 +184,9 @@ function measureInPage (rootSelector) {
     }
 
     const root = document.querySelector(rootSelector)
-    if (!root) return []
+    if (!root) return { measures: [], unparsed: [] }
 
-    return [...root.querySelectorAll('[data-origam-probe]')].map((el) => {
+    const measures = [...root.querySelectorAll('[data-origam-probe]')].map((el) => {
         const fg = parse(getComputedStyle(el).color)
         const bgLayers = paintedBackground(el)
         if (!fg || !bgLayers) return null
@@ -156,6 +199,8 @@ function measureInPage (rootSelector) {
             ratio: Math.round(ratio(fgOver, bgLayers) * 100) / 100
         }
     }).filter(Boolean)
+
+    return { measures, unparsed: [...new Set(unparsed)] }
 }
 
 async function serveDist () {
@@ -194,6 +239,7 @@ const browser = await chromium.launch()
 const rows = []
 const controls = []
 const actuation = []
+const unparsed = new Set()
 
 try {
     /*** ROOT theming — the identity pinned on <html>, one page per config ***/
@@ -215,10 +261,12 @@ try {
             })))
 
             const measured = await page.evaluate(measureInPage, '#app')
-            for (const m of measured) rows.push({ scope: 'root', identity, mode, ...m })
+            for (const m of measured.measures) rows.push({ scope: 'root', identity, mode, ...m })
+            for (const u of measured.unparsed) unparsed.add(`${identity}|${mode} root :: ${u}`)
 
             const ctl = await page.evaluate(measureInPage, '#controls')
-            for (const m of ctl) controls.push({ scope: 'root', identity, mode, ...m })
+            for (const m of ctl.measures) controls.push({ scope: 'root', identity, mode, ...m })
+            for (const u of ctl.unparsed) unparsed.add(`${identity}|${mode} controls :: ${u}`)
 
             await page.close()
         }
@@ -244,7 +292,8 @@ try {
                 }
             }, sel))
             const measured = await page.evaluate(measureInPage, sel)
-            for (const m of measured) rows.push({ scope: 'subtree', identity, mode, ...m })
+            for (const m of measured.measures) rows.push({ scope: 'subtree', identity, mode, ...m })
+            for (const u of measured.unparsed) unparsed.add(`${identity}|${mode} subtree :: ${u}`)
         }
     }
     await page.close()
@@ -288,8 +337,31 @@ if (!actuationOk) {
     for (const a of actuation) console.log(`   ${a.attrs.padEnd(24)} ${a.surface}`)
 }
 
-if (!positiveOk || !negativeOk || !actuationOk) {
-    console.error('\n⛔ Control failed — the probe does not actuate. Numbers below are meaningless.')
+/*********************************************************
+ * Legibility gate — every colour the page produced was READ
+ *
+ * @description
+ * The fourth control, and the one the first three could not cover. An
+ * unreadable colour string does not lower the count, it CORRUPTS it: the
+ * ancestor walk treats the element as unpainted and composites against a
+ * layer that is not what the viewer sees.
+ *
+ * Found the hard way — `color(srgb …)`, which several brand palettes emit,
+ * fabricated 4 violations on the `apple` tooltip. Nothing was red; the number
+ * was simply wrong. Any new colour syntax (oklch, lab, color-mix residue)
+ * would do the same, so this gate fails the run rather than let the next one
+ * through.
+ ********************************************************/
+const legibilityOk = unparsed.size === 0
+console.log(`colour strings read                  : ${legibilityOk ? 'all parsed ✔' : `${unparsed.size} UNREADABLE FORM(S) ✘`}`)
+if (!legibilityOk) {
+    for (const u of unparsed) console.log(`   ${u}`)
+    console.log('   → teach `parse()` this form (mirror `srgbToRgb` in contrast.directive.ts), then re-run.')
+}
+
+if (!positiveOk || !negativeOk || !actuationOk || !legibilityOk) {
+    console.error('\n⛔ Control failed — the probe does not actuate, or could not read what it measured.')
+    console.error('   Numbers below are meaningless.')
     process.exitCode = 1
 }
 

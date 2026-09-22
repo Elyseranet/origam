@@ -918,7 +918,16 @@ switched the ~60 SEMANTIC tokens (the runtime block does emit `[data-mode]`)
 while the 1 761 derived ones stayed FROZEN on the root's light values. Measured
 motif: `rgb(10,10,10)` on `rgb(10,10,10)`. Replayed over 30 components × 8
 identities × 2 modes × 2 scopes (1 664 instances), the widening takes the whole
-contrast surface from **189 violations to 11**, light unchanged at 5.
+contrast surface from **185 violations to 7**, light unchanged at 3.
+
+⚠️ Those endpoints read **189 → 11** when #871 shipped. Both were inflated by
+the SAME 4 fabricated violations: the harness's colour parser did not know
+`color(srgb …)`, which the `apple` palette emits, so it treated the tooltip's
+translucent background as *unpainted*, skipped to the opaque ancestor and
+reported black-on-black at 1.00. Corrected in a follow-up under #871 (spotted
+alongside PR #882) — the **delta of 178 was never wrong**, only the two
+endpoints. `under 2:1` also drops from 4 to **0**:
+nothing that remains is anywhere near invisible.
 
 **The specificities are load-bearing in both directions**, and this is the part
 to re-read before touching either selector:

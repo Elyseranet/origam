@@ -1,0 +1,88 @@
+{
+    "OrigamCalendar::default": [
+        "aria-required-parent"
+    ],
+    "OrigamChartMap::default": [
+        "aria-prohibited-attr"
+    ],
+    "OrigamChartRangeSelector::default": [
+        "color-contrast"
+    ],
+    "OrigamColorGradient::default": [
+        "color-contrast"
+    ],
+    "OrigamColorPickerField::default": [
+        "aria-allowed-attr",
+        "aria-valid-attr-value"
+    ],
+    "OrigamDataTable::default": [
+        "aria-allowed-attr"
+    ],
+    "OrigamDataTableFooter::default": [
+        "aria-allowed-attr"
+    ],
+    "OrigamDataTableGroupHeaderRow::default": [
+        "aria-allowed-attr",
+        "button-name"
+    ],
+    "OrigamDataTableHeaderCell::default": [
+        "aria-allowed-attr"
+    ],
+    "OrigamDataTableHeaders::default": [
+        "aria-allowed-attr"
+    ],
+    "OrigamDataTableHeadersCell::default": [
+        "aria-allowed-attr"
+    ],
+    "OrigamDataTableHeadersCellMobile::default": [
+        "aria-allowed-attr",
+        "aria-prohibited-attr"
+    ],
+    "OrigamDataTableRow::default": [
+        "aria-allowed-attr"
+    ],
+    "OrigamDataTableRows::default": [
+        "aria-allowed-attr",
+        "color-contrast"
+    ],
+    "OrigamDatePicker::default": [
+        "button-name",
+        "color-contrast"
+    ],
+    "OrigamDatePickerControls::default": [
+        "button-name"
+    ],
+    "OrigamDatePickerField::default": [
+        "aria-allowed-attr",
+        "aria-valid-attr-value",
+        "color-contrast"
+    ],
+    "OrigamFileFieldListItem::default": [
+        "listitem"
+    ],
+    "OrigamInfiniteScroll::default": [
+        "scrollable-region-focusable"
+    ],
+    "OrigamInfiniteScrollIntersect::default": [
+        "scrollable-region-focusable"
+    ],
+    "OrigamListGroup::default": [
+        "aria-required-children"
+    ],
+    "OrigamNumberField::default": [
+        "aria-allowed-attr",
+        "color-contrast"
+    ],
+    "OrigamPicker::default": [
+        "color-contrast"
+    ],
+    "OrigamSlideGroup::default": [
+        "scrollable-region-focusable"
+    ],
+    "OrigamUtilities::Background color (.origam--bg-*)": [
+        "color-contrast"
+    ],
+    "OrigamUtilities::default": [
+        "color-contrast"
+    ]
+}

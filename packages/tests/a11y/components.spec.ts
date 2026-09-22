@@ -1,4 +1,4 @@
-import { readdirSync, statSync } from 'node:fs'
+import { readdirSync, statSync, writeFileSync } from 'node:fs'
 import { join, relative, resolve } from 'node:path'
 
 import { test, expect, type Page } from '@playwright/test'
@@ -7,9 +7,16 @@ import AxeBuilder from '@axe-core/playwright'
 import { HISTOIRE_BASE_PATH } from '../e2e/_support/histoire-manifest.const'
 import {
     STORIES_PACKAGE_ROOT,
+    readLocalStories,
     resolveHistoireBaseUrl,
     storyIdForFile
 } from '../e2e/_support/histoire-manifest'
+import {
+    A11Y_BASELINE_PATH,
+    diffViolations,
+    loadViolationBaseline,
+    type TViolationBaseline
+} from './_support/violation-baseline'
 
 /*
  * Component-level a11y sweep.
@@ -98,10 +105,17 @@ const HISTOIRE_BASE_URL = process.env.HISTOIRE_BASE_URL ?? resolveHistoireBaseUr
  * prouve donc pas.
  *
  * @description
- * ⚠️ La portee reste 36 stories sur 218. Ce seuil ne dit RIEN des 182
- * entrees de `UNSWEPT_STORIES` — elargir la couverture est un autre
- * chantier, et un `serious` bloquant sur 36 composants n'est pas une
- * conformite de catalogue.
+ * ⚠️ MIS A JOUR PAR #818 (2026-09-22) — la portee etait alors 36 stories
+ * sur 218 ; ce n'est plus le cas. `SWEPT_STORIES` couvre desormais 218/218
+ * (voir son commentaire plus bas). CE SEUIL RESTE MORDANT SUR LES 36
+ * COMPOSANTS D'ORIGINE (baseline vide pour eux) mais ne l'est PAS encore
+ * sur les 182 nouvellement couverts : leurs violations `serious`/`critical`
+ * deja connues sont documentees dans `a11y-violations.baseline.json`
+ * (mecanisme de baseline a sens unique, voir `_support/violation-baseline.ts`)
+ * plutot que bloquantes — un `serious` bloquant sur 218 composants du jour
+ * au lendemain aurait fait rougir la suite sur 34 violations pre-existantes
+ * jamais corrigees dans cette PR. Une NOUVELLE violation, elle, bloque
+ * toujours, y compris sur les 182.
  ********************************************************/
 const IMPACT_FAIL_LEVEL: Array<'serious' | 'critical'> = ['serious', 'critical']
 
@@ -138,84 +152,55 @@ const IGNORED_RULES = new Set<string>([
  * slug recopié à la main. L'identifiant Histoire en est dérivé par
  * `storyIdForFile()`, le helper que la suite e2e utilise déjà.
  *
- * ⛔ CETTE LISTE N'A JAMAIS SUIVI LE CATALOGUE (#573) :
+ * ⛔ HISTORIQUE DE LA COUVERTURE — #573 puis #818 :
  *   2026-05-24 (création) ....  28 entrées
- *   2026-08-27 (dernière MAJ)   30 entrées   (+2 en trois mois)
- *   catalogue au 2026-09-16 .. 218 stories
+ *   2026-08-27 (MAJ #573) ....  30 entrées   (+2 en trois mois)
+ *   2026-09-16 (mesure #818) .  36 entrées / 218 stories au catalogue (16 %)
+ *   2026-09-22 (ce lot, #818)  218 entrées / 218 stories au catalogue (100 %)
  *
- * La famille Media n'avait rien de particulier : elle était l'une des 72
- * familles à couverture ZÉRO. Les 6 stories Media ajoutées par #573 sont en
- * fin de liste.
+ * #818 a mesuré, sur ce worktree, que les 218 stories du catalogue rendent
+ * TOUTES au moins un nœud `origam-*` sur leur Variant par défaut
+ * (`variantId=<id>-0`) en ~430ms médian — la sonde de reconnaissance
+ * (`node_modules`/Playwright, navigation séquentielle sur `histoire preview`)
+ * ne relève aucun cas où la page reste vide. Il n'y a donc PLUS de raison
+ * technique de laisser une story hors du balayage : la liste
+ * `UNSWEPT_STORIES` ci-dessous redevient vide.
+ *
+ * ⚠️ Élargir la COUVERTURE (nombre de composants balayés) n'élargit PAS
+ * l'INTENTION testée : la grande majorité des Variants par défaut fixent
+ * `color`/`bgColor` à `'primary'` (ou à `undefined`, qui résout la couleur
+ * neutre du composant — PAS nécessairement `'primary'` non plus, mais pas
+ * les 7 autres intents pour autant). Voir `INTENT_VARIANT_STORIES` plus bas
+ * pour la partie de la réponse à « sors de primary » que ce lot livre.
  */
 const SWEPT_STORIES: readonly string[] = [
     'components/stories/Alert/OrigamAlert.story.vue',
-    'components/stories/Avatar/OrigamAvatar.story.vue',
-    'components/stories/Badge/OrigamBadge.story.vue',
-    'components/stories/Breadcrumb/OrigamBreadcrumb.story.vue',
-    'components/stories/Btn/OrigamBtn.story.vue',
-    'components/stories/Card/OrigamCard.story.vue',
-    'components/stories/Checkbox/OrigamCheckbox.story.vue',
-    'components/stories/Chip/OrigamChip.story.vue',
-    'components/stories/Dialog/OrigamDialog.story.vue',
-    'components/stories/Drawer/OrigamDrawer.story.vue',
-    'components/stories/Field/OrigamField.story.vue',
-    'components/stories/Form/OrigamForm.story.vue',
-    'components/stories/Input/OrigamInput.story.vue',
-    'components/stories/Label/OrigamLabel.story.vue',
-    'components/stories/Menu/OrigamMenu.story.vue',
-    'components/stories/Pagination/OrigamPagination.story.vue',
-    'components/stories/Progress/OrigamProgress.story.vue',
-    'components/stories/Progress/OrigamProgressCircular.story.vue',
-    'components/stories/Progress/OrigamProgressLinear.story.vue',
-    'components/stories/Radio/OrigamRadio.story.vue',
-    'components/stories/Select/OrigamSelect.story.vue',
-    'components/stories/Sheet/OrigamSheet.story.vue',
-    'components/stories/Snackbar/OrigamSnackbar.story.vue',
-    'components/stories/Stepper/OrigamStepper.story.vue',
-    'components/stories/Switch/OrigamSwitch.story.vue',
-    'components/stories/TextField/OrigamTextField.story.vue',
-    'components/stories/Tooltip/OrigamTooltip.story.vue',
-    'components/stories/Tabs/OrigamTabs.story.vue',
-    'components/stories/Treeview/OrigamTreeview.story.vue',
-    'components/stories/Chart/OrigamChart.story.vue',
-    'components/stories/Audio/OrigamAudio.story.vue',
-    'components/stories/Audio/OrigamAudioWaveform.story.vue',
-    'components/stories/Video/OrigamVideo.story.vue',
-    'components/stories/MediaController/OrigamMediaController.story.vue',
-    'components/stories/MediaScrubber/OrigamMediaScrubber.story.vue',
-    'components/stories/MediaVolumeControl/OrigamMediaVolumeControl.story.vue'
-]
-
-/*
- * Stories du catalogue qui ne sont PAS balayées par axe aujourd'hui.
- *
- * ⛔ Ce n'est PAS une liste d'exemptions : aucune de ces stories n'a été
- * déclarée conforme. C'est l'aveu, chiffré, de ce que la porte
- * pré-livraison ne regarde pas. Elle doit DÉCROÎTRE.
- *
- * Le test « inventaire » plus bas la maintient honnête dans les deux sens :
- * une story retirée du disque et laissée ici fait échouer la suite, tout
- * comme une story neuve qui n'entre dans aucune des deux listes.
- */
-const UNSWEPT_STORIES: readonly string[] = [
     'components/stories/App/OrigamApp.story.vue',
     'components/stories/App/OrigamAppBar.story.vue',
+    'components/stories/Audio/OrigamAudio.story.vue',
+    'components/stories/Audio/OrigamAudioWaveform.story.vue',
+    'components/stories/Avatar/OrigamAvatar.story.vue',
     'components/stories/Avatar/OrigamAvatarGroup.story.vue',
+    'components/stories/Badge/OrigamBadge.story.vue',
     'components/stories/Blockquote/OrigamBlockquote.story.vue',
     'components/stories/BottomNav/OrigamBottomNav.story.vue',
     'components/stories/Bracket/OrigamBracket.story.vue',
     'components/stories/Bracket/OrigamBracketCompetitor.story.vue',
     'components/stories/Bracket/OrigamBracketMatch.story.vue',
     'components/stories/Bracket/OrigamBracketRound.story.vue',
+    'components/stories/Breadcrumb/OrigamBreadcrumb.story.vue',
     'components/stories/Breadcrumb/OrigamBreadcrumbDivider.story.vue',
     'components/stories/Breadcrumb/OrigamBreadcrumbItem.story.vue',
+    'components/stories/Btn/OrigamBtn.story.vue',
     'components/stories/Btn/OrigamBtnGroup.story.vue',
     'components/stories/Btn/OrigamBtnToggle.story.vue',
     'components/stories/Calendar/OrigamCalendar.story.vue',
+    'components/stories/Card/OrigamCard.story.vue',
     'components/stories/Card/OrigamCardHeader.story.vue',
     'components/stories/Card/OrigamCardText.story.vue',
     'components/stories/Carousel/OrigamCarousel.story.vue',
     'components/stories/Carousel/OrigamCarouselItem.story.vue',
+    'components/stories/Chart/OrigamChart.story.vue',
     'components/stories/Chart/OrigamChartAxis.story.vue',
     'components/stories/Chart/OrigamChartBoxPlot.story.vue',
     'components/stories/Chart/OrigamChartBullet.story.vue',
@@ -241,8 +226,10 @@ const UNSWEPT_STORIES: readonly string[] = [
     'components/stories/Chart/OrigamChartTreemap.story.vue',
     'components/stories/Chart/OrigamChartVariwide.story.vue',
     'components/stories/Chart/OrigamChartWordCloud.story.vue',
+    'components/stories/Checkbox/OrigamCheckbox.story.vue',
     'components/stories/Checkbox/OrigamCheckboxBtn.story.vue',
     'components/stories/Checkbox/OrigamCheckboxGroup.story.vue',
+    'components/stories/Chip/OrigamChip.story.vue',
     'components/stories/Chip/OrigamChipGroup.story.vue',
     'components/stories/ClientOnly/OrigamClientOnly.story.vue',
     'components/stories/Clipboard/OrigamClipboard.story.vue',
@@ -279,16 +266,20 @@ const UNSWEPT_STORIES: readonly string[] = [
     'components/stories/DatePicker/OrigamDatePickerYears.story.vue',
     'components/stories/DatePickerField/OrigamDatePickerField.story.vue',
     'components/stories/DefaultsProvider/OrigamDefaultsProvider.story.vue',
+    'components/stories/Dialog/OrigamDialog.story.vue',
     'components/stories/Dialog/OrigamDialogConfirmation.story.vue',
     'components/stories/Divider/OrigamDivider.story.vue',
+    'components/stories/Drawer/OrigamDrawer.story.vue',
     'components/stories/EmptyState/OrigamEmptyState.story.vue',
     'components/stories/ExpansionPanel/OrigamExpansionPanel.story.vue',
     'components/stories/ExpansionPanel/OrigamExpansionPanelContent.story.vue',
     'components/stories/ExpansionPanel/OrigamExpansionPanelHeader.story.vue',
     'components/stories/ExpansionPanel/OrigamExpansionPanels.story.vue',
+    'components/stories/Field/OrigamField.story.vue',
     'components/stories/FileField/OrigamFileField.story.vue',
     'components/stories/FileField/OrigamFileFieldDragNDropItem.story.vue',
     'components/stories/FileField/OrigamFileFieldListItem.story.vue',
+    'components/stories/Form/OrigamForm.story.vue',
     'components/stories/Grid/OrigamGrid.story.vue',
     'components/stories/Grid/OrigamGridItem.story.vue',
     'components/stories/Grids/OrigamCol.story.vue',
@@ -304,9 +295,11 @@ const UNSWEPT_STORIES: readonly string[] = [
     'components/stories/InfiniteScroll/OrigamInfiniteScroll.story.vue',
     'components/stories/InfiniteScroll/OrigamInfiniteScrollIntersect.story.vue',
     'components/stories/InlineEdit/OrigamInlineEdit.story.vue',
+    'components/stories/Input/OrigamInput.story.vue',
     'components/stories/ItemGroup/OrigamItem.story.vue',
     'components/stories/ItemGroup/OrigamItemGroup.story.vue',
     'components/stories/Kbd/OrigamKbd.story.vue',
+    'components/stories/Label/OrigamLabel.story.vue',
     'components/stories/Layout/OrigamLayout.story.vue',
     'components/stories/Lazy/OrigamLazy.story.vue',
     'components/stories/List/OrigamList.story.vue',
@@ -318,45 +311,62 @@ const UNSWEPT_STORIES: readonly string[] = [
     'components/stories/Loader/OrigamLoader.story.vue',
     'components/stories/Main/OrigamMain.story.vue',
     'components/stories/Masonry/OrigamMasonry.story.vue',
+    'components/stories/MediaController/OrigamMediaController.story.vue',
+    'components/stories/MediaScrubber/OrigamMediaScrubber.story.vue',
+    'components/stories/MediaVolumeControl/OrigamMediaVolumeControl.story.vue',
+    'components/stories/Menu/OrigamMenu.story.vue',
     'components/stories/Messages/OrigamMessages.story.vue',
     'components/stories/NumberField/OrigamNumberField.story.vue',
     'components/stories/NumberFormat/OrigamNumberFormat.story.vue',
     'components/stories/OtpInputField/OrigamOtpInputField.story.vue',
     'components/stories/Overlay/OrigamOverlay.story.vue',
     'components/stories/Overlay/OrigamOverlayScrim.story.vue',
+    'components/stories/Pagination/OrigamPagination.story.vue',
     'components/stories/Parallax/OrigamParallax.story.vue',
     'components/stories/Parallax/OrigamParallaxElement.story.vue',
     'components/stories/Parallax/OrigamParallaxLayer.story.vue',
     'components/stories/PasswordField/OrigamPasswordField.story.vue',
     'components/stories/Picker/OrigamPicker.story.vue',
     'components/stories/Picker/OrigamPickerTitle.story.vue',
+    'components/stories/Progress/OrigamProgress.story.vue',
+    'components/stories/Progress/OrigamProgressCircular.story.vue',
+    'components/stories/Progress/OrigamProgressLinear.story.vue',
     'components/stories/QrCode/OrigamQrCode.story.vue',
+    'components/stories/Radio/OrigamRadio.story.vue',
     'components/stories/Radio/OrigamRadioBtn.story.vue',
     'components/stories/Radio/OrigamRadioGroup.story.vue',
     'components/stories/RatingField/OrigamRatingField.story.vue',
     'components/stories/RatingField/OrigamRatingFieldItem.story.vue',
     'components/stories/Responsive/OrigamResponsive.story.vue',
+    'components/stories/Select/OrigamSelect.story.vue',
     'components/stories/SelectionControl/OrigamSelectionControl.story.vue',
     'components/stories/SelectionControl/OrigamSelectionControlGroup.story.vue',
+    'components/stories/Sheet/OrigamSheet.story.vue',
     'components/stories/Skeleton/OrigamSkeleton.story.vue',
     'components/stories/Slide/OrigamSlideGroup.story.vue',
-    'components/stories/SliderField/OrigamSliderField.story.vue',
     'components/stories/SliderField/OrigamSliderField.emits.story.vue',
     'components/stories/SliderField/OrigamSliderField.slots.story.vue',
+    'components/stories/SliderField/OrigamSliderField.story.vue',
     'components/stories/SliderField/OrigamSliderFieldTrack.story.vue',
+    'components/stories/Snackbar/OrigamSnackbar.story.vue',
     'components/stories/Snackbar/OrigamSnackbarGroup.story.vue',
     'components/stories/Snackbar/OrigamSnackbarItem.story.vue',
+    'components/stories/Stepper/OrigamStepper.story.vue',
     'components/stories/Stepper/OrigamStepperItem.story.vue',
+    'components/stories/Switch/OrigamSwitch.story.vue',
     'components/stories/Switch/OrigamSwitchTrack.story.vue',
     'components/stories/SystemBar/OrigamSystemBar.story.vue',
     'components/stories/Table/OrigamTable.story.vue',
-    'components/stories/TextareaField/OrigamTextareaField.story.vue',
+    'components/stories/Tabs/OrigamTabs.story.vue',
+    'components/stories/TextField/OrigamTextField.story.vue',
     'components/stories/TextMask/OrigamTextMask.story.vue',
+    'components/stories/TextareaField/OrigamTextareaField.story.vue',
     'components/stories/ThemeProvider/OrigamThemeProvider.story.vue',
     'components/stories/Timeline/OrigamTimeline.story.vue',
     'components/stories/Timeline/OrigamTimelineItem.story.vue',
     'components/stories/Title/OrigamTitle.story.vue',
     'components/stories/Toolbar/OrigamToolbar.story.vue',
+    'components/stories/Tooltip/OrigamTooltip.story.vue',
     'components/stories/Transition/OrigamExpandX.story.vue',
     'components/stories/Transition/OrigamExpandY.story.vue',
     'components/stories/Transition/OrigamFade.story.vue',
@@ -373,14 +383,38 @@ const UNSWEPT_STORIES: readonly string[] = [
     'components/stories/Transition/OrigamWindowXTranslate.story.vue',
     'components/stories/Transition/OrigamWindowYReverseTranslate.story.vue',
     'components/stories/Transition/OrigamWindowYTranslate.story.vue',
+    'components/stories/Treeview/OrigamTreeview.story.vue',
     'components/stories/Treeview/OrigamTreeviewNode.story.vue',
     'components/stories/Utilities/OrigamUtilities.story.vue',
+    'components/stories/Video/OrigamVideo.story.vue',
     'components/stories/VirtualScroll/OrigamVirtualScroll.story.vue',
     'components/stories/VirtualScroll/OrigamVirtualScrollItem.story.vue',
     'components/stories/Watermark/OrigamWatermark.story.vue',
     'components/stories/Window/OrigamWindow.story.vue',
     'components/stories/Window/OrigamWindowItem.story.vue'
 ]
+
+/*
+ * Stories du catalogue qui ne sont PAS balayées par axe aujourd'hui.
+ *
+ * ⛔ Ce n'est PAS une liste d'exemptions : aucune de ces stories n'a été
+ * déclarée conforme. C'est l'aveu, chiffré, de ce que la porte
+ * pré-livraison ne regarde pas. Elle doit DÉCROÎTRE.
+ *
+ * Le test « inventaire » plus bas la maintient honnête dans les deux sens :
+ * une story retirée du disque et laissée ici fait échouer la suite, tout
+ * comme une story neuve qui n'entre dans aucune des deux listes.
+ *
+ * ⛔ VIDE DEPUIS #818 (2026-09-22) — les 218 stories du catalogue rendent
+ * toutes au moins un nœud `origam-*` sur leur Variant par défaut (mesuré,
+ * voir le commentaire au-dessus de `SWEPT_STORIES`). La liste RESTE en
+ * place (plutôt que supprimée) : le test « inventaire » continue d'exiger
+ * qu'une story nouvellement ajoutée au catalogue soit classée quelque
+ * part — dans `SWEPT_STORIES` de préférence, ou ici avec une raison
+ * explicite si elle ne rend légitimement rien par défaut (ex. un composant
+ * qui exige un slot obligatoire pour exister).
+ */
+const UNSWEPT_STORIES: readonly string[] = []
 
 /** Nom lisible d'une story à partir de son fichier (`OrigamBtn.story.vue` -> `OrigamBtn`). */
 function storyName (storyFile: string): string {
@@ -438,9 +472,9 @@ async function assertStoryRendered (page: Page, name: string) {
     return componentNodes
 }
 
-async function runAxeOn (page: Page, storyFile: string, name: string) {
+async function runAxeOn (page: Page, storyFile: string, name: string, variantIndex = 0) {
     const storyId = storyIdForFile(resolve(STORIES_PACKAGE_ROOT, storyFile))
-    const url = `${HISTOIRE_BASE_URL}${HISTOIRE_BASE_PATH}story/${storyId}?variantId=${storyId}-0`
+    const url = `${HISTOIRE_BASE_URL}${HISTOIRE_BASE_PATH}story/${storyId}?variantId=${storyId}-${variantIndex}`
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30_000 })
 
     const componentNodes = await assertStoryRendered(page, name)
@@ -491,6 +525,80 @@ async function runAxeOn (page: Page, storyFile: string, name: string) {
  */
 const KNOWN_FAILURES = new Set<string>(['OrigamSelect'])
 
+/*********************************************************
+ * INTENT_VARIANT_STORIES — sortir de « toujours primary » (#818, point 3)
+ *
+ * @description
+ * #818 mesure que la Variant par défaut de la plupart des composants fixe
+ * `color`/`bgColor` à `'primary'` (13 des 36 stories déjà balayées le
+ * font explicitement — `Avatar`, `Badge`, `Btn`, `Checkbox`, `Chip`,
+ * `Field`, `Progress`, `Radio`, `Select`, `Stepper`, `Switch`, `Treeview`,
+ * `+1` — les autres passent `undefined`, qui résout la couleur NEUTRE du
+ * composant, pas une des 7 autres intentions pour autant). Un axe qui ne
+ * regarde jamais que `primary` valide une seule intention sur huit — c'est
+ * le point 3 du ticket.
+ *
+ * @description
+ * ⛔ CE QUI A ÉTÉ TENTÉ ET ÉCARTÉ : piloter interactivement le contrôle
+ * « Bg Color » de la Variant « Design » pour balayer les 7 autres intentions
+ * sur chaque composant qui expose ce contrôle (~107 composants référencent
+ * `IColorProps`/`IBgColorProps`). Prototypé en direct contre Histoire :
+ *   - le menu déroulant Histoire (`v-popper`) ne rend PAS les options en
+ *     `<li>`/`[role=option]` mais en `<div class="htw-cursor-pointer">`
+ *     brut — un premier prototype basé sur ce sélecteur remontait une
+ *     liste d'options VIDE ;
+ *   - une fois corrigé, la mesure de `background-color` sur `.origam-btn`
+ *     restait `rgba(0,0,0,0)` AVANT ET APRÈS le changement d'intention —
+ *     pas un bug de la sonde : la Variant « Design » de Btn instancie le
+ *     variant `text` par défaut (aucun fond peint), donc le contrôle
+ *     « Bg Color » n'a RIEN à peindre à cet endroit. Le vrai test de
+ *     contraste fond/texte (la classe de bug #789) vit sur les Variants
+ *     `variant="flat"` que la DS a déjà rédigées à la main pour quelques
+ *     composants (`Btn`, `Sheet`, `Toolbar`… — voir ci-dessous).
+ * Généraliser correctement demanderait de dériver, composant par
+ * composant, quel variant peint réellement un fond — un chantier
+ * d'instrumentation à part entière, pas une extension mécanique de cette
+ * suite. Coût non mesuré, donc non engagé ici (cf. l'avertissement du
+ * ticket : « mesure le coût avant de t'engager »).
+ *
+ * @description
+ * CE QUE CE LOT LIVRE À LA PLACE : les Variants qu'un auteur DS a déjà
+ * rédigées à la main pour montrer plusieurs intentions CÔTE À CÔTE avec un
+ * fond réellement peint (`variant="flat"` / `bg-color="…"` explicites) —
+ * zéro nouvelle automatisation d'interaction, donc zéro nouvelle source de
+ * flakiness, et un test de la VRAIE classe de bug (#789 : fond+texte, pas
+ * texte seul sur la page). Trouvées par recherche statique des titres de
+ * Variant (`grep` sur `<Variant … title="…">`), l'index réel de chacune est
+ * résolu via `readLocalStories()` — jamais un numéro codé en dur, qui
+ * dérive au moindre ajout de Variant (voir le commentaire de
+ * `histoire-manifest.ts` sur les ids positionnels).
+ *
+ * @description
+ * ⚠️ RESTE OUVERT, chiffré pour la décision utilisateur : ces 7 stories ne
+ * couvrent qu'une fraction du catalogue. Étendre plus largement demande
+ * soit un balayage interactif robuste (coût/fragilité à instruire), soit
+ * que la DS rédige plus de Variants « Prop — color & bgColor » dédiées
+ * (un chantier de stories, pas de tests). Signalé au projet, pas tranché
+ * ici — cf. règle globale sur les arbitrages.
+ ********************************************************/
+const INTENT_VARIANT_STORIES: Readonly<Record<string, string>> = {
+    'components/stories/Btn/OrigamBtn.story.vue': 'Prop — color & bgColor',
+    'components/stories/Sheet/OrigamSheet.story.vue': 'Prop — color & bgColor',
+    'components/stories/Toolbar/OrigamToolbar.story.vue': 'Prop — color & bgColor',
+    'components/stories/Input/OrigamInput.story.vue': 'Prop — color',
+    'components/stories/Field/OrigamField.story.vue': 'Prop — color',
+    'components/stories/Pagination/OrigamPagination.story.vue': 'Color — default vs primary',
+    'components/stories/Utilities/OrigamUtilities.story.vue': 'Background color (.origam--bg-*)'
+}
+
+/** Index positionnel (`${storyId}-${index}`) d'une Variant nommée, ou `null` si absente/renommée. */
+function variantIndexForTitle (storyFile: string, title: string): number | null {
+    const local = readLocalStories().find((s) => s.relativePath === storyFile)
+    if (!local) return null
+    const index = local.staticTitles.indexOf(title)
+    return index === -1 ? null : index
+}
+
 /*
  * ⛔ INVENTAIRE — l'écart de couverture doit être MESURÉ, pas supposé (#573)
  *
@@ -540,6 +648,39 @@ test('inventaire — chaque story est balayée ou explicitement reconnue non bal
     ).toEqual([])
 })
 
+/*
+ * UPDATE_A11Y_BASELINE=1 — (ré)génère `a11y-violations.baseline.json` à
+ * partir du balayage RÉEL au lieu d'asserter dessus. Réservé à une mise à
+ * jour délibérée et relue (ajout d'un lot de composants, correctif dont on
+ * confirme la disparition d'une entrée) — jamais un réflexe pour faire
+ * passer la suite. Voir `_support/violation-baseline.ts`.
+ */
+const UPDATE_BASELINE = process.env.UPDATE_A11Y_BASELINE === '1'
+const collectedBaseline: TViolationBaseline = UPDATE_BASELINE ? { ...loadViolationBaseline() } : {}
+
+/** Assertion partagée par les deux boucles ci-dessous — voir le mécanisme documenté dans `_support/violation-baseline.ts`. */
+function assertAgainstBaseline (key: string, name: string, blocking: { id: string, impact?: string | null }[]) {
+    const ruleIds = blocking.map((v) => v.id)
+    if (UPDATE_BASELINE) {
+        if (ruleIds.length > 0) collectedBaseline[key] = [...new Set(ruleIds)].sort()
+        else delete collectedBaseline[key]
+        return
+    }
+    const { newViolations, staleEntries, knownCount } = diffViolations(key, ruleIds)
+    if (knownCount > 0) console.log(`[a11y] ${key}: ${knownCount} violation(s) connue(s) (baseline), 0 nouvelle`)
+    expect(
+        newViolations,
+        `${name} : ${newViolations.length} violation(s) a11y NOUVELLE(S) non baselinée(s) pour "${key}" ` +
+        `— ${newViolations.join(', ')}. Si volontaire (nouveau balayage, dette assumée), ` +
+        `relancer avec UPDATE_A11Y_BASELINE=1 après revue.`
+    ).toEqual([])
+    expect(
+        staleEntries,
+        `${name} : entrée(s) de baseline OBSOLÈTE(S) pour "${key}" (violation corrigée mais ligne pas retirée) ` +
+        `— retire ${staleEntries.join(', ')} de ${A11Y_BASELINE_PATH}`
+    ).toEqual([])
+}
+
 for (const storyFile of SWEPT_STORIES) {
     const name = storyName(storyFile)
     const runner = KNOWN_FAILURES.has(name) ? test.fixme : test
@@ -551,10 +692,42 @@ for (const storyFile of SWEPT_STORIES) {
                 console.log(`  ${IMPACT_FAIL_LEVEL.includes(v.impact as never) ? '✗' : '·'} ${v.id} (${v.impact}): ${v.help}`)
             }
         }
+        assertAgainstBaseline(`${name}::default`, name, blocking)
+    })
+}
+
+/*
+ * Balayage d'intention supplémentaire — voir le commentaire de
+ * `INTENT_VARIANT_STORIES` ci-dessus pour ce que ça couvre et ce que ça ne
+ * couvre pas.
+ */
+for (const [storyFile, variantTitle] of Object.entries(INTENT_VARIANT_STORIES)) {
+    const name = storyName(storyFile)
+    test(`a11y — ${name} "${variantTitle}" Variant (intention non-primary)`, async ({ page }) => {
+        const variantIndex = variantIndexForTitle(storyFile, variantTitle)
         expect(
-            blocking,
-            `${name} : ${blocking.length} violation(s) a11y bloquante(s) ` +
-            `(${IMPACT_FAIL_LEVEL.join(' / ')}) — ${blocking.map((v) => `${v.id} (${v.impact})`).join(', ')}`
-        ).toHaveLength(0)
+            variantIndex,
+            `${name} : Variant "${variantTitle}" introuvable — a-t-elle été renommée ? ` +
+            `Mettre à jour INTENT_VARIANT_STORIES dans components.spec.ts.`
+        ).not.toBeNull()
+
+        const { blocking, all, componentNodes } = await runAxeOn(page, storyFile, name, variantIndex!)
+        if (all.length > 0) {
+            console.log(`[a11y] ${name} (${variantTitle}): ${all.length} total violation(s), ${blocking.length} blocking (${componentNodes} noeuds)`)
+            for (const v of all) {
+                console.log(`  ${IMPACT_FAIL_LEVEL.includes(v.impact as never) ? '✗' : '·'} ${v.id} (${v.impact}): ${v.help}`)
+            }
+        }
+        assertAgainstBaseline(`${name}::${variantTitle}`, name, blocking)
+    })
+}
+
+if (UPDATE_BASELINE) {
+    test.afterAll(() => {
+        const sortedKeys = Object.keys(collectedBaseline).sort()
+        const sorted: TViolationBaseline = {}
+        for (const key of sortedKeys) sorted[key] = collectedBaseline[key]
+        writeFileSync(A11Y_BASELINE_PATH, JSON.stringify(sorted, null, 4) + '\n')
+        console.log(`[a11y] baseline (ré)écrite : ${A11Y_BASELINE_PATH} (${sortedKeys.length} entrée(s))`)
     })
 }
