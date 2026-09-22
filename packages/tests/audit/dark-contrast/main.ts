@@ -74,25 +74,32 @@ const origam = createOrigam({
 
 const root = document.getElementById('app')!
 
-if (cfg.scope === 'root') {
-    createApp({
-        render: () => h(ProbeSurface)
-    }).use(origam).mount(root)
-} else {
-    createApp({
-        render: () => PROBE_IDENTITIES.flatMap((identity) =>
-            PROBE_MODES.map((mode) => h(
-                OrigamThemeProvider,
-                {
-                    'theme': identity === 'native' ? 'auto' : identity,
-                    'mode': mode,
-                    'data-probe-config': `${identity}|${mode}`,
-                    'key': `${identity}|${mode}`
-                },
-                { default: () => h(ProbeSurface) }
-            ))
-        )
-    }).use(origam).mount(root)
-}
+/*********************************************************
+ * renderRoot / renderSubtrees
+ *
+ * @description
+ * Two render functions, ONE component definition: `vue/one-component-per-file`
+ * counts each `createApp({ … })` literal, and the root lint script runs with
+ * `--max-warnings 0`. Branching on the render function instead of on the
+ * `createApp` call keeps the file at a single component.
+ ********************************************************/
+const renderRoot = () => h(ProbeSurface)
+
+const renderSubtrees = () => PROBE_IDENTITIES.flatMap((identity) =>
+    PROBE_MODES.map((mode) => h(
+        OrigamThemeProvider,
+        {
+            'theme': identity === 'native' ? 'auto' : identity,
+            'mode': mode,
+            'data-probe-config': `${identity}|${mode}`,
+            'key': `${identity}|${mode}`
+        },
+        { default: () => h(ProbeSurface) }
+    ))
+)
+
+createApp({
+    render: cfg.scope === 'root' ? renderRoot : renderSubtrees
+}).use(origam).mount(root)
 
 ;(window as unknown as { __ORIGAM_PROBE_READY__?: boolean }).__ORIGAM_PROBE_READY__ = true
