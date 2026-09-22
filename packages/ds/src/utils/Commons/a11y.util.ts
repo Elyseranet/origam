@@ -3,9 +3,9 @@
  *
  * @description
  * ⛔ issues #747 / #653 / #660. Same once-per-key, `import.meta.env.DEV`-gated
- * shape as `warnUnsupportedProp` / `warnDeprecatedEmit` (`color.util.ts`), but
- * filed here rather than grown as a fifth warning inside a colour utility —
- * these two say nothing about colour.
+ * shape as `warnUnsupportedProp` (`color.util.ts`), but filed here rather
+ * than grown as a fifth warning inside a colour utility — these two say
+ * nothing about colour.
  *
  * Both warnings are SILENT in production builds. They exist to tell the
  * developer what to add, at the moment they can still add it; shipping the

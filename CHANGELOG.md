@@ -16,6 +16,62 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ---
 
+## [Unreleased]
+
+Récolte de dépréciations posées "pour la prochaine majeure" avant que le
+`CLAUDE.md` n'acte que `3.0.0` est réservé à la séparation en modules et que
+les ruptures, elles, ne le sont pas — voir "Work priorities and versioning"
+du `CLAUDE.md`. `origam` n'a aucun consommateur : les ruptures ci-dessous
+partent en **mineure**, sans shim ni période de grâce.
+
+### ⚠️ BREAKING — `click:prepend` / `click:append` retirés d'`IBtnEmits` (#443, #577)
+
+`<OrigamBtn>` n'émet plus `click:prepend` ni `click:append` — ni au niveau du
+type, ni au niveau de l'exécution. `IBtnEmits` n'`extends` plus
+`IAdjacentEmits`, et les `<span>` `origam-btn__prepend` / `__append` ne
+portent plus de `@click` du tout : un clic souris dessus ne déclenche plus
+rien.
+
+**Pourquoi cette paire précisément, et pourquoi une suppression plutôt qu'un
+correctif.** Les deux émissions n'ont jamais été atteignables au clavier :
+l'événement partait d'un `<span>` descendant, alors qu'une activation clavier
+synthétise son clic sur la RACINE du composant — l'écouteur posé sur le
+descendant ne le voit jamais. Le correctif générique appliqué aux dix autres
+consommateurs d'`useAdjacent` (promouvoir la zone en `role="button"` + arrêt
+de tabulation) est **illégal** ici : `<OrigamBtn>` rend un `<button>` ou un
+`<a>`, et le modèle de contenu HTML interdit à tous deux un descendant de
+contenu interactif *et* tout descendant portant `tabindex`. Un
+`<button type="button">` imbriqué y est tout aussi invalide. La forme était
+fausse, pas seulement le balisage : un contrôle qui possède déjà une action
+ne peut pas en héberger une seconde — deux actions sont deux boutons,
+composés via `<origam-btn-group>`.
+
+**Ce qui NE bouge PAS** : les slots `prepend` / `append` (`IBtnSlots extends
+IAdjacentSlots`) restent intacts, ainsi que les props `prependIcon` /
+`appendIcon` / `prependAvatar` / `appendAvatar` — un contenu décoratif ou
+informationnel en prepend/append reste parfaitement légitime, seule
+l'émission d'un clic disparaît.
+
+**Preuve du comportement retiré** — A/B contre le commit parent, fonctionnel
+et pas seulement typé : `packages/tests/TU/components/Btn/OrigamBtn.adjacent-emit-removed.spec.ts`
+monte `<OrigamBtn>` avec un écouteur `onClick:prepend` / `onClick:append` et
+déclenche un vrai `click` DOM sur la zone. Sur le commit parent, ce même test
+appellerait l'écouteur (l'émission déclarée par `IAdjacentEmits` partait
+encore) ; sur ce commit, l'écouteur n'est jamais invoqué — vérifié en
+rejouant le fichier de spec avant/après le changement, pas seulement en le
+lisant une fois vert.
+
+Nettoyage induit : le helper `warnDeprecatedEmit` (`color.util.ts`) et la
+constante `ADJACENT_EMIT_REPLACEMENT` (`consts/Btn/btn.const.ts`) sont
+retirés — `<OrigamBtn>` était leur seul appelant, et le fichier `btn.const.ts`
+devenu vide est supprimé.
+
+**Migration.** Aucun consommateur interne (DS, marketing, stories, docs,
+tests) n'utilisait `click:prepend` / `click:append` sur `<OrigamBtn>` —
+balayage exhaustif, zéro résultat. Un consommateur externe qui les écoutait
+doit remplacer l'action posée sur la zone prepend/append par un second
+`<origam-btn>` dans un `<origam-btn-group>`.
+
 ## [2.18.0] - 2026-09-19
 
 80 commits depuis `v2.17.1`. L'essentiel est du **correctif** : des tokens qui

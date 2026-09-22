@@ -62,7 +62,6 @@
 		          v-if="hasPrepend"
 		          key="prepend"
 		          class="origam-btn__prepend"
-		          @click="handleClickPrepend"
           >
             <slot name="prepend">
               <origam-avatar
@@ -101,7 +100,6 @@
 							v-if="hasAppend"
 							key="append"
 							class="origam-btn__append"
-							@click="handleClickAppend"
 					>
             <slot name="append">
              <origam-avatar
@@ -128,7 +126,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, onMounted, ref, StyleValue, toRef, useAttrs, useSlots, watchEffect } from 'vue'
+	import { computed, ref, StyleValue, toRef, useAttrs, useSlots, watchEffect } from 'vue'
 	import type { ComputedRef, ExtractPropTypes } from 'vue'
 	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
@@ -155,9 +153,7 @@
 	import { useVariant } from '../../composables/Commons/variant.composable'
 
 	import { warnMissingNativeControlName } from '../../utils/Commons/a11y.util'
-	import { warnDeprecatedEmit } from '../../utils/Commons/color.util'
 
-	import { ADJACENT_EMIT_REPLACEMENT } from '../../consts/Btn/btn.const'
 	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts/Btn/btn-toggle.const'
 
 	import vContrast from '../../directives/Contrast/contrast.directive'
@@ -321,18 +317,9 @@
 	} = useStateEffect(props, isHover, isActive as ComputedRef<boolean>, hoverState, activeState, isDisabled, toRef(props, 'flat'))
 	const {variantClasses} = useVariant(props)
 	const {
-		onClickPrepend: handleClickPrepend,
-		onClickAppend: handleClickAppend,
-		isPrependClickable,
-		isAppendClickable,
 		hasAppend,
 		hasPrepend
 	} = useAdjacent(props, prependIcon, appendIcon)
-
-	onMounted(() => {
-		if (isPrependClickable.value) warnDeprecatedEmit('OrigamBtn', 'click:prepend', ADJACENT_EMIT_REPLACEMENT)
-		if (isAppendClickable.value) warnDeprecatedEmit('OrigamBtn', 'click:append', ADJACENT_EMIT_REPLACEMENT)
-	})
 
 	/*********************************************************
 	 * Click handler
