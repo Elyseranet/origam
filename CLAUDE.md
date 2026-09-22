@@ -1274,6 +1274,37 @@ What this means in practice, and it is the opposite of the usual reflex:
 package. Whoever notices that happen should come back and rewrite this
 section — it will then be wrong, loudly and expensively.
 
+## ⛔ One ticket = one merge = one patch tag `2.18.X`
+
+**Standing instruction from the owner (2026-09-22): every ticket that lands gets
+its own patch release.** Not a weekly batch, not "when enough has piled up" —
+merge, bump, tag, push.
+
+```sh
+# after the PR is merged and develop is pulled
+#   1. bump the PATCH in packages/ds/package.json   (2.18.3 -> 2.18.4)
+#   2. commit that bump on develop
+#   3. tag it and push
+git tag -a v2.18.4 -m "origam 2.18.4"
+git push origin v2.18.4
+```
+
+⛔ **`release.yml` asserts the tag equals `packages/ds/package.json`.** A tag that
+does not match fails the workflow at its first step — so the bump commit must be
+on `develop` *before* the tag is pushed, and the tag must point at it.
+
+⚠️ **The tag is what publishes to npm.** It is irreversible: a published version
+is never removed, only superseded. Verify before tagging — CI green, real `$?`
+outside a pipe, and ideally an install from the registry afterwards
+(`npm i origam@<version>` in an empty directory) rather than trusting the
+workflow's own "success".
+
+⚠️ **A change that does not touch `packages/ds/` produces a byte-identical
+tarball.** Docs, tests, marketing, tooling and CI changes fall in that bucket.
+Publishing them as a new version is not wrong, but it is noise — **say so
+explicitly rather than tagging silently**, and let the owner decide. When in
+doubt, tag: a redundant patch costs nothing, a missing one costs a consumer.
+
 ## Pre-delivery (project-specific overlay)
 
 The global pre-delivery policy (TU + e2e + security) applies. Specific to
