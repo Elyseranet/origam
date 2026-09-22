@@ -41,22 +41,73 @@ function srgbToRgb (color: string): string | null {
     return a < 1 ? `rgba(${r}, ${g}, ${b}, ${a})` : `rgb(${r}, ${g}, ${b})`
 }
 
-/**
+/*********************************************************
+ * hexToRgb
+ *
+ * @description
+ * Convert a `#rgb` / `#rgba` / `#rrggbb` / `#rrggbbaa` hex string to
+ * `rgb()/rgba()`. Chromium's canvas `fillStyle` GETTER re-serialises any
+ * OPAQUE colour it is fed to `#rrggbb` — this is the counterpart to
+ * `srgbToRgb` that turns that hex back into a form `channelsOf`/`rgbaParts`
+ * (which only understand `rgba?\(…\)`) can read. See #869.
+ ********************************************************/
+function hexToRgb (hex: string): string | null {
+    const m = hex.match(/^#([0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i)
+    if (!m) return null
+    const h = m[1].length <= 4 ? [...m[1]].map(c => c + c).join('') : m[1]
+    const r = parseInt(h.slice(0, 2), 16)
+    const g = parseInt(h.slice(2, 4), 16)
+    const b = parseInt(h.slice(4, 6), 16)
+    if (h.length === 8) {
+        const a = parseInt(h.slice(6, 8), 16) / 255
+        return a < 1 ? `rgba(${r}, ${g}, ${b}, ${a})` : `rgb(${r}, ${g}, ${b})`
+    }
+    return `rgb(${r}, ${g}, ${b})`
+}
+
+/*********************************************************
+ * toRgb
+ *
+ * @description
  * Normalise any CSS colour string — `color(srgb …)`, `color-mix(…)`, named
- * colours, hsl(), etc. — to a plain `rgb()/#hex` the WCAG maths can parse.
- */
+ * colours, hsl(), etc. — to a plain `rgb()/rgba()` string the WCAG maths
+ * (`rgbaParts`, `channelsOf`) can parse. NEVER returns hex: see #869.
+ ********************************************************/
 function toRgb (color: string | null | undefined): string | null {
     if (!color) return null
 
     const direct = srgbToRgb(color)
     if (direct) return direct
 
+    /*********************************************************
+     * Skip the canvas round-trip when already exploitable (#869)
+     *
+     * @description
+     * `getComputedStyle` already resolves the vast majority of colours to
+     * `rgb()/rgba()` — the form every call site here needs. Chromium's
+     * `fillStyle` GETTER re-serialises any OPAQUE colour to `#rrggbb`, which
+     * turned an already exploitable value into a dead one for no reason.
+     * This was the FIRST of two independent ruptures that made
+     * `v-contrast` silently inert whenever fg AND bg were both opaque —
+     * the DS's default look on every one of the 30 components wiring it.
+     ********************************************************/
+    if (/^rgba?\(/i.test(color)) return color
+
     if (typeof document === 'undefined') return color
     if (normCtx === undefined) normCtx = document.createElement('canvas').getContext('2d')
     if (!normCtx) return color
 
-    // Canvas resolves named / hsl / color-mix; it may still emit color(srgb …)
-    // for wide-gamut inputs, so feed the result back through srgbToRgb.
+    /*********************************************************
+     * Canvas fallback (named colours, hsl(), color-mix(), …)
+     *
+     * @description
+     * Canvas resolves named / hsl / color-mix; it may still emit
+     * `color(srgb …)` for wide-gamut inputs, so feed the result back
+     * through `srgbToRgb`. It also re-serialises any OPAQUE result to hex,
+     * so feed that through `hexToRgb` too (#869 — the SECOND rupture:
+     * `channelsOf`'s digit-only regex cannot read hex). Only a shape
+     * neither recognises falls through as-is.
+     ********************************************************/
     normCtx.fillStyle = '#000'
     normCtx.fillStyle = color
     const onBlack = normCtx.fillStyle
@@ -65,7 +116,7 @@ function toRgb (color: string | null | undefined): string | null {
     const onWhite = normCtx.fillStyle
 
     if (onBlack !== onWhite) return null
-    return srgbToRgb(onBlack) ?? onBlack
+    return srgbToRgb(onBlack) ?? hexToRgb(onBlack) ?? onBlack
 }
 
 type TRgba = { r: number; g: number; b: number; a: number }

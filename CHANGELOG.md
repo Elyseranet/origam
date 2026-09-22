@@ -222,6 +222,54 @@ conclure qu'elle ne l'est plus par défaut.
 
 ---
 
+#### `v-contrast` était silencieusement inerte sur fond opaque (#869)
+
+La directive `v-contrast`, câblée sur 30 composants, n'émettait **jamais**
+rien — ni classe, ni `color: !important`, ni `console.warn` — dès que fond
+**et** texte étaient tous deux OPAQUES, c'est-à-dire la configuration par
+défaut du DS. Deux ruptures indépendantes dans le code partagé, corrigeant
+l'une ne suffisait pas sans l'autre :
+
+1. **`toRgb()`** faisait **toujours** passer la couleur par un aller-retour
+   `canvas.fillStyle`, même quand `getComputedStyle` avait déjà rendu une
+   chaîne `rgb()/rgba()` exploitable. Le getter `fillStyle` de Chromium
+   sérialise toute couleur OPAQUE en hexadécimal `#rrggbb` (seul l'alpha < 1
+   ressort en `rgba(…)`), ce qui transformait une valeur déjà utilisable en
+   une valeur morte pour `rgbaParts`/`channelsOf`.
+2. **`channelsOf()`** extrayait les canaux via `match(/[\d.]+/g)`, taillé
+   pour `rgb(r, g, b)` — une suite de chiffres hexadécimaux SANS séparateur
+   (ex. `#777777`, six chiffres) s'agrège en UN seul grand nombre au lieu de
+   trois, donc `channelsOf` rend `null` sur exactement la forme hex que la
+   rupture 1 pouvait encore produire (couleur nommée, `hsl()`, …
+   nécessitant légitimement le détour par le canvas).
+
+**Correctif** : `toRgb()` court-circuite désormais le canvas quand l'entrée
+est déjà `rgb()/rgba()` (le cas de la quasi-totalité des appels, puisqu'ils
+lisent `getComputedStyle`), et le chemin canvas restant convertit son
+résultat hexadécimal en `rgb()/rgba()` via un nouveau `hexToRgb()` avant de
+le rendre — `toRgb()` ne rend plus jamais de hex. La mécanique de correction
+elle-même (forcer noir/blanc, poser `data-origam-contrast-fixed`, journaliser
+le ratio) n'est pas modifiée : elle fonctionnait déjà, elle n'était
+simplement jamais atteinte.
+
+**Preuve** — `packages/tests/e2e/contrast-directive.spec.ts` (Playwright,
+Chromium réel — jsdom n'a pas de `canvas.getContext('2d')` fonctionnel dans
+ce dépôt, donc ne peut ni reproduire ni vérifier ce bug) : contrôle positif
+(`#777777` sur blanc, 4.48:1, opaque des deux côtés) déclenche désormais la
+correction + le `console.warn` ; contrôle négatif (noir sur blanc, 21:1) ne
+déclenche rien ; non-régression du chemin translucide (fond composé via
+`resolvePaintedBackground`) inchangée. **A/B contre le commit parent** : 4
+des 5 tests rougissent sur le code d'avant (le contrôle négatif reste vert
+des deux côtés, comme attendu).
+
+⚠️ **Rayon mesuré séparément, pas hérité de #871.** Le chiffrage initial du
+ticket (346 violations en mode sombre) datait d'avant #876, qui a fait
+tomber ce nombre à 11 — voir #871 et #876 pour la mesure et sa méthode.
+
+**Rupture d'API** : aucune — `toRgb`/`channelsOf`/`hexToRgb` restent des
+fonctions privées du module, non exportées ; la surface publique
+(`setContrastConfig`, `v-contrast` par défaut) est inchangée.
+
 ## [2.18.0] - 2026-09-19
 
 80 commits depuis `v2.17.1`. L'essentiel est du **correctif** : des tokens qui
