@@ -135,6 +135,35 @@ test.describe('OrigamDataTable', () => {
         await expect(sandbox.locator('.origam-data-table').first()).toBeVisible({ timeout: 5000 })
     })
 
+    // #371 (point 5) — `mobileBreakpoint` had zero story control. Its
+    // default, `'xs'` (threshold 0), is itself the documented fix for a
+    // production bug: the row's own `useDisplay(props)` compares the REAL
+    // window width to the resolved threshold (`mobile = width < threshold`),
+    // so at `'xs'` the comparison is `width < 0`, which is false at every
+    // possible viewport width — the table can never be forced into the
+    // stacked mobile layout unless the consumer opts in with a higher
+    // breakpoint. That is a real-browser layout computation, not a `var()`
+    // resolution, so it is verified against Playwright/Chromium rather than
+    // asserted in jsdom (cf. CLAUDE.md #398).
+    test('mobileBreakpoint variant — default (xs) never forces the stacked mobile layout, even at a narrow viewport', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Prop — mobileBreakpoint', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        // Narrower than every named breakpoint (`sm` = 600 in this DS) —
+        // if the default leaked back to the old global 'lg' (1280px), every
+        // row here would carry `--mobile`.
+        await page.setViewportSize({ width: 375, height: 800 })
+        await page.waitForTimeout(300)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const row = sandbox.locator('.origam-data-table-row').first()
+
+        await expect(row).toBeVisible({ timeout: 5000 })
+        await expect(row).not.toHaveClass(/origam-data-table-row--mobile/)
+    })
+
     test('Slot — top renders custom header content', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
