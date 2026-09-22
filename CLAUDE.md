@@ -503,6 +503,32 @@ always done it right, and only local runs went the slow way.
   worker twice as long; the run went 37 → 54 min and `carousel.spec.ts` — green
   in the three previous runs — took its place with 7 failures. Re-run alone,
   carousel was **33/33**. Under `E2E_STATIC=1` all 7 vanish.
+- ⛔ **Before any measurement that matters, run `uptime`. The "contention" this
+  file has treated as a fact of life had a concrete, removable cause.**
+  Measured 2026-09-22: **nine dev servers belonging to agents that had died
+  five and six days earlier** were still running inside `.claude/worktrees`,
+  holding ports and burning CPU. Load average **82.93**. Same commit, same
+  unit suite, the only variable being those corpses:
+
+  | | zombies alive | after `pkill -9 -f 'claude/worktrees'` |
+  |---|---|---|
+  | load average | **82.93** | **3.28** |
+  | failures | **7** | **0** |
+  | tests run | 7 094 | **7 120** |
+  | duration | **560 s** | **112 s** |
+  | real `$?` | 1 | **0** |
+
+  **Zero assertion failures in either run** — every red was `Test timed out`
+  or `Failed to start forks worker`, i.e. workers that never got to run. The
+  26-test gap is the files whose worker never started at all.
+
+  **An agent's dev server outlives the agent.** Nothing reaps them, they
+  accumulate across sessions, and each one makes the next measurement worse.
+  So: `uptime` first — above ~10, do not measure, clean up. `pgrep -fl
+  'claude/worktrees'` lists them. And **kill your own servers before handing
+  back control**; a forgotten server also holds a port the next agent will
+  believe is free.
+
 - **Never measure suite stability while other work loads the machine.** Three
   agents building packages and running Nuxt/Postgres servers were enough to
   manufacture failures. That measures your own load, not your code.
