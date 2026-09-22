@@ -73,9 +73,10 @@
  * ── #871 — POURQUOI `[data-mode="dark"]` REMPLACE `:root:not([data-theme])…` ─
  * Le sélecteur précédent, `:root:not([data-theme])[data-mode="dark"]`, était
  * ancré à la RACINE. Or les ~1 761 déclarations DÉRIVÉES de ce bloc
- * (`--origam-X: var(--origam-Y)`) ne se ré-évaluent QUE sur un élément que le
- * sélecteur matche : ailleurs, la valeur héritée est déjà SUBSTITUÉE. Un
- * sous-arbre `<OrigamThemeProvider mode="dark">` — avec ou sans marque —
+ * (`--origam-title---color: var(--origam-color__text---primary)`) ne se
+ * ré-évaluent QUE sur un élément que le sélecteur matche : ailleurs, la
+ * valeur héritée est déjà SUBSTITUÉE. Un sous-arbre
+ * `<OrigamThemeProvider mode="dark">` — avec ou sans marque —
  * basculait donc bien les ~60 tokens sémantiques (bloc runtime
  * `[data-mode="dark"]` / `[data-theme="X"][data-mode="dark"]`) mais gardait
  * les 1 761 dérivés GELÉS sur les valeurs CLAIRES de la racine. D'où le motif

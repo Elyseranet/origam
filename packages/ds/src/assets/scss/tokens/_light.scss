@@ -32,7 +32,8 @@
  * coup la divergence feuille ↔ thème que #793 suit.
  *
  * ── #871 — POURQUOI `[data-mode="light"]` DANS LA LISTE ────────────────────
- * Les ~1 792 déclarations DÉRIVÉES de ce bloc (`--origam-X: var(--origam-Y)`)
+ * Les ~1 792 déclarations DÉRIVÉES de ce bloc — la forme
+ * `--origam-title---color: var(--origam-color__text---primary)` —
  * ne se ré-évaluent QUE sur un élément que ce sélecteur matche. Sur tout autre
  * élément, la valeur héritée est déjà SUBSTITUÉE — c'est la sémantique des
  * custom properties, pas un bug : `--a: var(--b)` posé à `:root`, `--b`
