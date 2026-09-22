@@ -12,6 +12,12 @@ import { materialThemes } from './src/themes/material.theme'
 import { ecomThemes } from './src/themes/ecom.theme'
 import { appleThemes } from './src/themes/apple.theme'
 import { origamThemes } from './src/themes/origam.theme'
+// The DS's own UN-NAMED baseline (name-less → ROOT-scoped, always merged in by
+// `activeDefaultsFor` regardless of the active brand — see its doc comment).
+// Imported straight from SOURCE, matching `src/themes/origam.theme.ts`'s own
+// note: `nuxt.config.ts` loads via jiti at config-load time, before the DS lib
+// is built, so a `dist`-bound `origam/themes` import would break `nuxt prepare`.
+import { origamTheme as origamBaseline } from '../ds/src/themes/origam.theme'
 
 // Single source of truth for the displayed version: the published `origam`
 // package version. Read at build time so badges/translations never need a
@@ -94,7 +100,16 @@ export default defineNuxtConfig({
         // base theme (sobre identity, name-less → applies to every brand). The
         // legacy per-brand CSS sheets still carry bespoke marketing selectors
         // (.home-* hacks) — to be removed in the themes-showcase cleanup.
+        //
+        // ⛔ #360 (v3.0.0 harvest) — `createOrigam()` used to prefix EVERY
+        // install (this one included) with this exact un-named baseline. It no
+        // longer does, so it is listed here explicitly, FIRST, so every brand
+        // below still layers on top of it exactly as before (`activeDefaultsFor`
+        // always merges the name-less theme's `components` first, brand-named
+        // entries override). Omitting it would silently drop any component
+        // default prop a brand theme does not itself redeclare.
         themes: [
+            ...origamBaseline,
             ...geekThemes,
             ...glassThemes,
             ...cartoonThemes,

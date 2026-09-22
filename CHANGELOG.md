@@ -18,11 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
-Récolte de dépréciations posées "pour la prochaine majeure" avant que le
+Récolte de deux dépréciations posées "pour la prochaine majeure" avant que le
 `CLAUDE.md` n'acte que `3.0.0` est réservé à la séparation en modules et que
 les ruptures, elles, ne le sont pas — voir "Work priorities and versioning"
-du `CLAUDE.md`. `origam` n'a aucun consommateur : les ruptures ci-dessous
-partent en **mineure**, sans shim ni période de grâce.
+du `CLAUDE.md`. `origam` n'a aucun consommateur : les deux ruptures
+ci-dessous partent en **mineure**, sans shim ni période de grâce.
 
 ### ⚠️ BREAKING — `click:prepend` / `click:append` retirés d'`IBtnEmits` (#443, #577)
 
@@ -71,6 +71,88 @@ tests) n'utilisait `click:prepend` / `click:append` sur `<OrigamBtn>` —
 balayage exhaustif, zéro résultat. Un consommateur externe qui les écoutait
 doit remplacer l'action posée sur la zone prepend/append par un second
 `<origam-btn>` dans un `<origam-btn-group>`.
+
+### ⚠️ BREAKING — `createOrigam()` nu n'installe plus le thème par défaut (#360)
+
+`createOrigam()` préfixait inconditionnellement chaque install avec le thème
+neutre interne `origamTheme` (`[...origamTheme, ...suppliedThemes]`) : même un
+appel nu, ou un `themes: []` explicite, recevait quand même les variables CSS
+et — surtout — les **props par défaut par composant** (ADR-005,
+`components: { 'origam-avatar': { rounded: 'full' }, … }`) de ce thème. Une
+application qui n'en voulait pas ne pouvait pas s'en défaire. Ce préfixage est
+retiré : `createOrigam()` installe désormais exactement ce qu'on lui passe,
+rien de plus.
+
+**Ce qui change concrètement.** Sans `themes`/`theme` explicite,
+`createOrigam()` n'injecte plus aucune variable `--origam-*` et le résolveur
+de props par défaut (`installThemePropsResolver`, ADR-005) n'a plus rien à
+résoudre — chaque composant retombe uniquement sur ses propres valeurs
+`withDefaults()`. Concrètement : un `<origam-avatar>` sans prop `rounded`
+explicite n'est plus automatiquement circulaire (`rounded="full"` venait du
+thème, pas du composant).
+
+**Le thème par défaut reste disponible, à la demande** — `origamTheme`,
+exporté par `origam/themes` (déjà public avant cette rupture, aucun nouvel
+export nécessaire) :
+
+```ts
+// AVANT (2.x) — enregistrait implicitement le thème origam par défaut
+import { createOrigam } from 'origam'
+app.use(createOrigam())
+
+// APRÈS — le thème par défaut est un choix explicite
+import { createOrigam } from 'origam'
+import { origamTheme } from 'origam/themes'
+app.use(createOrigam({ themes: origamTheme }))
+```
+
+**Rayon de souffle mesuré, corrigé dans le même lot** — quatre consommateurs
+directs de `createOrigam()` nu trouvés par balayage exhaustif (DS, marketing,
+stories, docs, tests) :
+- `packages/ds/src/nuxt/module.ts` — le module Nuxt officiel. **Non cassé** :
+  son propre `DEFAULT_THEMES` (utilisé quand l'option `origam.themes` du
+  consommateur est omise) passe désormais `origamTheme` explicitement à
+  `createOrigam()`, préservant à l'identique le comportement de tout
+  consommateur Nuxt existant (marketing compris) qui ne configurait rien.
+  Seul un `createOrigam()` direct, hors module Nuxt, doit s'adapter.
+- `packages/marketing/nuxt.config.ts` — configure `origam.themes`
+  explicitement (7 thèmes de marque + un thème `origam` renommé pour le
+  playground `/theming`), ce qui **contourne** le fallback du module. Le vrai
+  thème neutre non-nommé (celui que `activeDefaultsFor` fusionne toujours en
+  premier, avant la marque active) était fourni jusqu'ici par le préfixage
+  implicite de `createOrigam()` — invisible dans la config marketing. Il est
+  désormais listé explicitement, en premier, dans le tableau `themes`.
+- `packages/stories/histoire.setup.ts` — Histoire (utilisé par les ~208
+  stories de composants) appelait `createOrigam()` nu ; sans correction,
+  chaque story aurait silencieusement perdu les props par défaut du thème
+  (avatars carrés au lieu de circulaires, etc.). Passe désormais
+  `{ themes: origamTheme }`.
+- `packages/docs/.vitepress/theme/index.ts` — les démos de composants live de
+  la doc VitePress appelaient `createOrigam()` nu ; même correction.
+
+Les échantillons de code montrés au consommateur (`installation.const.ts` /
+`installation.vue` sur le marketing, `guide/usage.md` côté docs) sont mis à
+jour pour montrer la forme correcte — un utilisateur copiant l'ancien
+exemple aurait obtenu des composants non stylés selon le thème.
+
+**Tests adaptés** (comptés avant correction, comme demandé) — 3 fichiers /
+5 assertions reposaient sur l'enregistrement implicite et ont été corrigés
+pour installer `origamTheme` explicitement là où le test vérifie précisément
+une valeur par défaut issue du thème, ou réécrits pour pinner le NOUVEAU
+contrat plutôt que l'ancien :
+- `theme-props-resolver.spec.ts` (2 assertions — `origam-radio`/`origam-text-field`
+  vs `origam-input` density) ;
+- `installed-themes.composable.spec.ts` (describe block entier renommé
+  `origam baseline — explicit opt-in only (#360)`, 2 assertions corrigées et
+  2 nouvelles ajoutées pour couvrir explicitement le nouveau contrat) ;
+- `OrigamChip.spec.ts` (1 assertion — `components['origam-chip'].size`).
+
+**Preuve fonctionnelle** (pas seulement structurelle) —
+`packages/tests/TU/origam/createOrigam-bare-no-theme-360.spec.ts` monte un
+vrai `<OrigamAvatar>` : sans thème, la classe `origam--rounded-full` est
+absente ; avec `origamTheme` passé explicitement, elle est présente — la
+même monteuse prouve donc que le harnais peut actionner la prop avant de
+conclure qu'elle ne l'est plus par défaut.
 
 ## [2.18.0] - 2026-09-19
 

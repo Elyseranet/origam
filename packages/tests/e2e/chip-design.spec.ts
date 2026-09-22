@@ -12,8 +12,10 @@ import { expect, test, type Page } from '@playwright/test'
  *
  * The `withDefaults` fallback is still `size: SIZES.DEFAULT` (32px), but
  * that value is only ever seen by a consumer who opts out of the shipped
- * baseline theme. `createOrigam()` — used unconditionally by every
- * consumer, including this Histoire sandbox (`histoire.setup.ts`) — always
+ * baseline theme. ⛔ Since #360 (v3.0.0 harvest), `createOrigam()` no longer
+ * installs it unconditionally — a consumer opts in via
+ * `createOrigam({ themes: origamTheme })`. This Histoire sandbox
+ * (`histoire.setup.ts`) does exactly that, which is why it still always
  * layers the root-scoped `origam` identity theme (ADR-004/005,
  * `packages/ds/src/themes/origam.theme.ts`) on top, which sets
  * `'origam-chip': { size: 'small', variant: 'outlined', color: 'primary',

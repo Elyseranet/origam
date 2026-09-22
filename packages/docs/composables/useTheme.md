@@ -193,15 +193,33 @@ how the `components` block reaches a component's props is
 
 ### What "no theme supplied" actually installs
 
-`createOrigam()` always prepends the two built-in objects exported from
+⛔ **Changed by #360 (v3.0.0 harvest).** `createOrigam()` used to always
+prepend the two built-in objects exported from
 `packages/ds/src/themes/origam.theme.ts` — `origamLightTheme` (no `name`, no
 `mode`, injected at `:root`) and `origamDarkTheme` (`mode: 'dark'`, injected at
-`[data-mode="dark"]`). Both are labelled `Origam`; the source comment nicknames
-that identity *"sobre"*, but **no theme object carries `name: 'sobre'`**, and
-`'sobre'` is not a value you can pass to `setTheme()`.
+`[data-mode="dark"]`) — to whatever `themes`/`theme` the consumer supplied. It
+no longer does: a bare `createOrigam()` (or one called with `themes: []`)
+installs **no theme at all** — no `vars` CSS, no per-component `components`
+prop default (ADR-005). The baseline still ships, under the same names, from
+the same file, re-exported as `origamTheme` from `origam/themes` — but a
+consumer now passes it explicitly:
 
-Because both built-ins are **nameless**, they are not brands: measured,
-`createOrigam({})` leaves `useInstalledThemes()` returning `[]`.
+```ts
+import { createOrigam } from 'origam'
+import { origamTheme } from 'origam/themes'
+
+app.use(createOrigam({ themes: origamTheme }))
+```
+
+Both built-ins are **nameless**, so they are not brands: measured,
+`createOrigam({ themes: origamTheme })` still leaves `useInstalledThemes()`
+returning `[]` — nothing changed on that front.
+
+**Nuxt consumers of the official `origam/nuxt` module are unaffected** — the
+module itself now supplies this same baseline as the default for its
+`origam.themes` option (`packages/ds/src/nuxt/module.ts`), so an app that
+configures nothing still gets it, exactly as before. Only DIRECT,
+non-Nuxt `createOrigam()` callers need to pass `origamTheme` explicitly.
 
 Read the installed brands back with [`useInstalledThemes()`](#installed-themes)
 to drive a switcher. Under Nuxt the `origam/nuxt` module does this install for

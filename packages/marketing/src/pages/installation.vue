@@ -215,7 +215,7 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
                             />
 
                             <p class="installation-step__note">
-                                {{ t('installation.steps.register.note', 'createOrigam() accepts an optional options bag to configure icons, locale, display, SSR, aliases and more. By default, all components and directives are registered globally.') }}
+                                {{ t('installation.steps.register.note', 'createOrigam() accepts an optional options bag to configure icons, locale, display, SSR, aliases and more. By default, all components and directives are registered globally — but no theme is installed until you pass one explicitly, as shown above.') }}
                             </p>
                         </div>
                     </origam-grid-item>
