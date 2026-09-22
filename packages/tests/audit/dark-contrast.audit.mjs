@@ -33,6 +33,13 @@
  * white that MUST NOT be flagged. The run fails if either misbehaves — a probe
  * that cannot prove it actuates is not a measurement.
  *
+ * COSTS NOTHING TO THE DEPENDENCY TREE
+ * ------------------------------------
+ * It adds no dependency to `packages/tests`: the Vite and Sass binaries it
+ * needs already arrive as peers of the declared `@vitejs/plugin-vue`. See the
+ * long comment in `dark-contrast/vite.config.mjs` for the measurement, and
+ * for why declaring `vite` explicitly is the thing NOT to do here.
+ *
  * Usage:
  *   pnpm -F @origam/tests audit:dark-contrast
  *   pnpm -F @origam/tests audit:dark-contrast -- --json /tmp/before.json

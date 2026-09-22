@@ -2,7 +2,34 @@ import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 
 import vue from '@vitejs/plugin-vue'
-import { defineConfig } from 'vite'
+
+/*********************************************************
+ * ⛔ NO `import { defineConfig } from 'vite'`, AND NO `vite` DEVDEP — measured
+ *
+ * @description
+ * This harness added `vite` and `sass` to `packages/tests/package.json` in its
+ * first version. Both were unnecessary, and the `vite` one broke CI: with
+ * `auto-install-peers=true` (see `.npmrc`), pnpm normalises the spec to
+ * `@vitejs/plugin-vue`'s PEER range, so a hand-written `"vite": "^8.2.1"`
+ * desynchronises the lockfile and every job dies at `Install dependencies`
+ * with `ERR_PNPM_OUTDATED_LOCKFILE`. 18/18 red — and when 18/18 go red, it is
+ * never the code.
+ *
+ * Measured after removing both from `package.json` and reinstalling:
+ *   - `packages/tests/node_modules/.bin/` still carries `vite` AND `sass`,
+ *     pulled in as peers of the already-declared `@vitejs/plugin-vue`;
+ *   - the audit runs to completion, `$? = 0`, identical numbers
+ *     (11 / 1 664, three controls green).
+ *
+ * The one thing that did NOT work was importing the `vite` PACKAGE here: an
+ * auto-installed peer gets a `.bin` symlink, not a resolvable top-level
+ * import, so `defineConfig` threw `ERR_MODULE_NOT_FOUND`. It is a typing
+ * helper only — a plain object export is equivalent.
+ *
+ * ⚠️ The coupling this leaves: the harness needs `auto-install-peers=true` and
+ * a declared `@vitejs/plugin-vue`. Both hold today; if either changes, add
+ * `vite` back with the spec pnpm itself writes, never a hand-picked range.
+ ********************************************************/
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const PROBE = resolve(HERE, 'probe-contrast.directive.ts')
@@ -36,7 +63,7 @@ function instrumentContrastDirective () {
     }
 }
 
-export default defineConfig({
+export default {
     root: HERE,
     base: './',
     plugins: [instrumentContrastDirective(), vue()],
@@ -46,4 +73,4 @@ export default defineConfig({
         sourcemap: false
     },
     logLevel: 'warn'
-})
+}
