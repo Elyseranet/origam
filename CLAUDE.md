@@ -1114,6 +1114,79 @@ Version: **major** for a large user-facing feature or a breaking change,
 A dependency upgrade is judged by its size and impact, not by the file it
 touches — a test-runner major is a *medium feature*, not a patch.
 
+### ⛔ `3.0.0` IS RESERVED FOR THE SPLIT INTO MODULES — decided, not open
+
+**`3.0.0` is the module-separation release. Nothing else ships under that
+number.** This is a standing product decision by the repository owner. It is
+not a preference to be weighed against SemVer purity, and it is **not a
+question to re-open** — it has been raised more than once and the answer has
+not changed.
+
+Concretely, for anyone (human or agent) preparing a release:
+
+- **Never propose `3.0.0`** for a bug-fix lot, a contrast campaign, a
+  dependency bump, or "because SemVer says a breaking change needs a major".
+  The number is taken.
+- A breaking change that lands before the module split ships in a **minor**,
+  documented **explicitly and honestly** in `CHANGELOG.md` — that is the
+  agreed trade-off, and the retrospective note covering the 2.17.0 breaks is
+  the precedent to follow.
+- The deprecations already posted for "the next major" (#577
+  `IAdjacentEmits`, #360 bare `createOrigam()`) are therefore harvested **by
+  the module split**, not by whichever release happens to need a major next.
+
+⚠️ If you believe a release genuinely cannot ship as a minor, that is a
+question for the owner about **the release**, never a proposal to spend the
+`3.0.0` number. Say what breaks and ask; do not offer `3.0.0` as an option.
+
+### ⛔ The `2.x` number is historical — this project is de facto PRE-1.0
+
+**Read this before reasoning about any version number.** The package has
+carried a `2.x` number for historical reasons, but there is **no client
+application depending on it**, and the owner's own framing is explicit:
+
+> *"là on est sur un tag 2.18 mais réellement on est sur une 1.0… donc on s'en
+> fout des ruptures, la première vraie rupture sera la séparation en modules et
+> donc la 3.0"*
+
+Three consequences, and they are not negotiable:
+
+1. **The minor/patch numbers below `3.0.0` are bookkeeping, not a contract.**
+   Nobody is pinned against them. Do not reason about them as if a consumer
+   were watching.
+2. **The FIRST real breaking change is the module split, and it is `3.0.0`.**
+   Everything before it is pre-1.0 churn wearing a 2.x label.
+3. **Therefore: breaking changes are free. Take them.**
+
+### ⛔ Corollary — take the breaking changes NOW, and never ask about them
+
+**`origam` has no client application depending on it today.** A breaking
+change therefore costs **nothing** right now, and will cost a migration guide,
+a deprecation cycle and someone else's afternoon later. The owner's standing
+instruction is explicit: *"c'est maintenant qu'il faut faire les ruptures"*.
+
+What this means in practice, and it is the opposite of the usual reflex:
+
+- **Do NOT gate work on "that would be a breaking change."** It is not a
+  blocker, it is not a reason to ask, and it is not a reason to postpone.
+  Removing a dead export, narrowing an enum, dropping a prop nobody consumes
+  — take it.
+- **Do NOT open an arbitration for a break alone.** Ask only about the
+  *substance* (is this the right design?), never about the *breakage*.
+  ⛔ This has been re-asked several times and the answer has never changed;
+  asking again wastes the owner's time.
+- **Breaks ship in a MINOR** and are documented honestly in `CHANGELOG.md` —
+  the "dérogation assumée" recorded in the title of **#717** is the standing
+  precedent, and the retrospective note covering the 2.17.0 breaks is the
+  shape to copy.
+- **Prefer the clean break to the compatibility shim.** A deprecation kept
+  "just in case" is dead weight while the consumer set is empty, and it is
+  exactly what `#577` / `#360` became.
+
+⚠️ This rule has an expiry the moment a real consumer ships against the
+package. Whoever notices that happen should come back and rewrite this
+section — it will then be wrong, loudly and expensively.
+
 ## Pre-delivery (project-specific overlay)
 
 The global pre-delivery policy (TU + e2e + security) applies. Specific to
