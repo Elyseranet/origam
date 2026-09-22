@@ -8,9 +8,6 @@
     "OrigamChartRangeSelector::default": [
         "color-contrast"
     ],
-    "OrigamColorGradient::default": [
-        "color-contrast"
-    ],
     "OrigamColorPickerField::default": [
         "aria-allowed-attr",
         "aria-valid-attr-value"
