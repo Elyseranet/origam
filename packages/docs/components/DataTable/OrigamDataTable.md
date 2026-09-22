@@ -126,6 +126,26 @@ build a grouped/`children` header fixture for this fix did not render as
 multiple `<tr>` rows at all (see the `#840` fix notes), so the row-index
 multiplier could not be exercised end-to-end.
 
+## Responsive
+
+```vue
+<template>
+    <OrigamDataTable :headers="headers" :items="items" mobile-breakpoint="sm" />
+</template>
+```
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `mobileBreakpoint` | `number \| TBreakpoint` | `'xs'` | Viewport width (or named breakpoint) below which each row switches from the tabular layout to a stacked `[label, value]` layout |
+
+Compared against the real window width (`useDisplay` listens for `resize`),
+not a container's width. Defaults to `'xs'` (0px) — the table only switches
+to the mobile layout when the consumer explicitly opts in with a higher
+breakpoint. An earlier default of the global `'lg'` (1280px) forced the
+mobile layout on every viewport under 1280px regardless of what the
+consumer set — see the `Prop — mobileBreakpoint` story variant to resize a
+live example.
+
 ## Composition
 
 `OrigamDataTable` is composed from these internal sub-components (not re-exported for public API, documented here for reference):
