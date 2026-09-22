@@ -890,26 +890,70 @@ paragraph claimed it did. That is the reason guard 27 (`token-twins`) exists.
 `data-theme`) painted nothing: `[data-mode="…"]` rules used to be emitted only
 by the runtime theme matrix (`apply-theme.util.ts`, injected by
 `createOrigam()`), and `origam/styles` had zero occurrence of `data-mode`. The
-fix widens the SELECTOR LIST of the existing explicit `[data-theme="dark"]`
-block instead of duplicating its ~2731 declarations a third time:
+fix widened the SELECTOR LIST of the existing explicit `[data-theme="dark"]`
+block instead of duplicating its ~2731 declarations a third time. **#871
+widened it further** — see below.
+
+⚠️ **#871 — the token sets now attach to any element, not only `:root`.**
+The current selectors are:
 
 ```css
+/* light.css */
+:root,
+[data-theme="light"],
+[data-mode="light"]                          { /* the light token set */ }
+
+/* dark.css */
 [data-theme="dark"],
-:root:not([data-theme])[data-mode="dark"] { /* the dark token set, once */ }
+[data-mode="dark"]:not([data-theme="light"]) { /* the dark token set  */ }
 ```
 
-Same (0,3,0) specificity as the auto-mode selector above, and disjoint from it
-on the `data-mode` attribute (one requires it present, the other absent) — the
-two rules never compete for the same page. `data-theme="light" data-mode="dark"`
-still resolves light: the brand axis governs the moment it is pinned, `data-mode`
-alone only ever fills in for an ABSENT brand. Measured in Chromium on
-`dist/src/assets/css/main.css`, before → after: `rgb(255,255,255)` →
-`rgb(10,10,10)`. Pinned by
-`packages/tests/e2e/tokens-prefers-color-scheme.spec.ts`.
+**Why the root anchor had to go.** ~1 761 of the dark sheet's declarations are
+DERIVED — `--origam-title---color: var(--origam-color__text---primary)`. A
+custom property is substituted **on the element that declares it**; a
+descendant inherits the already-substituted value. So a derived token
+re-resolves **only on an element the declaring selector matches**. With the
+block anchored to `:root`, an `<OrigamThemeProvider mode="dark">` sub-tree
+switched the ~60 SEMANTIC tokens (the runtime block does emit `[data-mode]`)
+while the 1 761 derived ones stayed FROZEN on the root's light values. Measured
+motif: `rgb(10,10,10)` on `rgb(10,10,10)`. Replayed over 30 components × 8
+identities × 2 modes × 2 scopes (1 664 instances), the widening takes the whole
+contrast surface from **189 violations to 11**, light unchanged at 5.
 
-⚠️ Not touched by #807, and out of its scope: the AUTO-mode media block above
-carries only **11** declarations, a curated subset of the explicit block's
-2731 — it is not a full theme, a pre-existing fact unrelated to this fix.
+**The specificities are load-bearing in both directions**, and this is the part
+to re-read before touching either selector:
+
+| selector | spec. | must beat | must lose to |
+|---|---|---|---|
+| `[data-mode="light"]` | (0,1,0) | `:root` only by source order | a brand's `[data-theme="X"]` (0,1,0), injected later |
+| `[data-mode="dark"]:not([data-theme="light"])` | (0,2,0) | every light selector | a brand's `[data-theme="X"][data-mode="dark"]` (0,2,0), injected later |
+
+Raising the light one to (0,2,0) (the tempting `:not([data-theme="dark"])`
+symmetry) makes the sheet outrank **every light brand block** — the brand's own
+component vars stop painting. The `:not([data-theme="light"])` on the dark side
+is not decoration either: it is what keeps `data-theme="light" data-mode="dark"`
+light, i.e. the #807 rule that the brand axis governs when the two axes
+contradict. Both are pinned —
+`packages/tests/e2e/tokens-prefers-color-scheme.spec.ts` and
+`packages/tests/e2e/derived-tokens-subtree.spec.ts`, the latter verified RED on
+the parent commit (6 failed / 2 passed, the 2 being the negative controls).
+
+⛔ **Breaking change, deliberate.** A consumer that re-declared a component var
+inside a `[data-mode]` sub-tree to work around the freeze now has the sheet
+declaring it too — at (0,1,0) / (0,2,0). `packages/marketing`'s
+`ORIGAM_COMPONENT_RESET_LIGHT/DARK` (a GENERATED re-declaration of ~2 700
+component vars, `themes/origam-reset.generated.ts`) is exactly such a
+workaround and is now redundant; it has NOT been removed here.
+
+⚠️ A previous version of this section claimed the AUTO-mode media block carried
+only **11** declarations. **False** — recounted 2026-09-22 by parsing the sheet:
+both blocks carry **2 731** each. The note described a state nobody had
+re-measured since #794.
+
+⛔ Still NOT covered by the static sheets: a brand's *component* vars in a
+sub-tree come only from the runtime matrix, so a page that never calls
+`createOrigam()` gets the neutral identity in a `[data-theme="X"]` sub-tree.
+That is unchanged by #871.
 
 Runtime helpers:
 - `useTheme()` (composable) — singleton ref + persistence + toggle.

@@ -170,7 +170,16 @@ const GREEN_SPECS = [
     // parent" rougissent, les 2 temoins "ACCEPTING parent" restent verts des
     // deux cotes. Verifiee stable 25/25, `--repeat-each=5`, `E2E_STATIC=1`,
     // chromium, port isole.
-    'rating-field-controlled.spec.ts'
+    'rating-field-controlled.spec.ts',
+    // wave 14 — #871. Même raison qu'aux vagues 8 à 13 : hors de cette liste,
+    // `E2E_GREEN_ONLY=1` (ci.yml) exclut la spec et la CI ne l'exécute jamais,
+    // donc le filet ne retient rien. Celle-ci ne dépend PAS de Histoire — elle
+    // écrit ses pages sur disque et les ouvre en `file://`, comme
+    // `tokens-prefers-color-scheme.spec.ts`. A/B contre `origin/develop` @
+    // `060c4356` (avant ce correctif) : 6 rouges / 2 verts, les 2 verts étant
+    // exactement les deux CONTRÔLES NÉGATIFS, qui doivent passer des deux
+    // côtés. Vérifiée 8/8, chromium, port isolé.
+    'derived-tokens-subtree.spec.ts'
 ]
 
 /**

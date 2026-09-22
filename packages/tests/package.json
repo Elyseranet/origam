@@ -14,6 +14,7 @@
     "test:coverage": "vitest --run --coverage",
     "audit:inert-props": "node audit/run-inert-props-audit.mjs",
     "audit:id-forwarding": "node audit/id-forwarding.audit.mjs",
+    "audit:dark-contrast": "node audit/dark-contrast.audit.mjs",
     "test:e2e": "playwright test",
     "test:e2e:audit": "node e2e/_support/run-guards.mjs",
     "test:e2e:audit:self": "node e2e/_support/run-guards.mjs --self-test",
@@ -48,6 +49,8 @@
     "axe-core": "^4.11.4",
     "happy-dom": "^20.11.1",
     "jsdom": "^30.0.1",
+    "sass": "^1.102.0",
+    "vite": "^8.2.1",
     "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^4.1.11",
     "vue-router": "^4.5.0"

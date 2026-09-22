@@ -64,10 +64,40 @@
  * que soit `prefers-color-scheme`) tandis que le bloc média ne s'active que
  * si NI `data-theme` NI `data-mode` ne sont posés. Ne pas les fusionner.
  *
- * ⛔ Le deuxième bloc (media query, "AUTO mode") reste volontairement un
- * SOUS-ENSEMBLE de 11 déclarations, pas une copie complète des 2731 du bloc
- * 1 — c'est un fait préexistant à #807, non réévalué ici, et hors périmètre
- * de ce ticket.
+ * ⚠️ Cette phrase disait « le deuxième bloc reste volontairement un
+ * SOUS-ENSEMBLE de 11 déclarations ». C'est FAUX depuis #794 : recompté le
+ * 2026-09-22 en parsant la feuille, les deux blocs portent **2731
+ * déclarations chacun**. La note décrivait un état antérieur que plus rien ne
+ * remesurait.
+ *
+ * ── #871 — POURQUOI `[data-mode="dark"]` REMPLACE `:root:not([data-theme])…` ─
+ * Le sélecteur précédent, `:root:not([data-theme])[data-mode="dark"]`, était
+ * ancré à la RACINE. Or les ~1 761 déclarations DÉRIVÉES de ce bloc
+ * (`--origam-X: var(--origam-Y)`) ne se ré-évaluent QUE sur un élément que le
+ * sélecteur matche : ailleurs, la valeur héritée est déjà SUBSTITUÉE. Un
+ * sous-arbre `<OrigamThemeProvider mode="dark">` — avec ou sans marque —
+ * basculait donc bien les ~60 tokens sémantiques (bloc runtime
+ * `[data-mode="dark"]` / `[data-theme="X"][data-mode="dark"]`) mais gardait
+ * les 1 761 dérivés GELÉS sur les valeurs CLAIRES de la racine. D'où le motif
+ * dominant de #871 : `rgb(10,10,10)` sur `rgb(10,10,10)`, texte et fond
+ * identiques.
+ *
+ * `[data-mode="dark"]` matche aussi bien la racine que n'importe quel
+ * sous-arbre, et subsume donc l'ancien sélecteur (une racine sans
+ * `data-theme` portant `data-mode="dark"` le matche).
+ *
+ * ⛔ Le `:not([data-theme="light"])` n'est PAS décoratif : il préserve la
+ * règle de #807 — « la marque gouverne dès qu'elle est posée » — pour la
+ * seule combinaison où les deux axes se contredisent,
+ * `data-theme="light" data-mode="dark"`, épinglée par le contrôle négatif de
+ * `packages/tests/e2e/tokens-prefers-color-scheme.spec.ts`.
+ *
+ * ⛔ Spécificité (0,2,0). Elle doit rester ≥ celle de `light.css`
+ * (`:root` / `[data-theme="light"]` / `[data-mode="light"]`, toutes (0,1,0))
+ * et ≤ celle du bloc runtime d'une marque sombre
+ * (`[data-theme="X"][data-mode="dark"]`, (0,2,0), injecté plus tard donc
+ * gagnant à égalité). Monter ou descendre ce sélecteur casse l'un des deux
+ * côtés.
  *
  * ⛔ The two blocks carry the SAME declarations, and this file is BYTE-IDENTICAL
  * to its twin — the whole file, header included. The pair is
@@ -103,9 +133,46 @@
  *
  * Mesure, témoins et non-régression :
  * `packages/tests/e2e/token-intent-contrast.spec.ts`.
+ *
+ * ── #871 — SURFACE QUI NE BASCULE PAS × PREMIER PLAN QUI BASCULE ───────────
+ * Deuxième famille de défauts trouvée en rejouant le chiffrage, INDÉPENDANTE
+ * du mécanisme de sélecteur ci-dessus : elle se voit aussi bien en theming
+ * RACINE qu'en sous-arbre.
+ *
+ * `--origam-color__text---inverse` est défini comme l'opposé de
+ * `text---primary` : blanc en clair, encre en sombre. Posé sur une surface
+ * qui, elle, est épinglée à une PRIMITIVE (donc identique dans les deux
+ * modes), il est correct en clair et illisible en sombre :
+ *
+ *     system-bar   fond neutral-700 (#404040) · fg text---inverse → 1.91:1
+ *     tooltip      fond neutral-800 (#262626) · fg text---inverse → 1.31:1
+ *
+ * Le correctif se fait DANS CETTE FEUILLE UNIQUEMENT : `text---primary`, qui
+ * est clair en sombre par définition, sur une surface sombre. `light.css`
+ * n'est pas touché et garde `text---inverse`, qui y vaut blanc.
+ *
+ * ⛔ Premier essai, ÉCARTÉ PAR LA MESURE : passer les deux feuilles à
+ * `text---onColor`. Blanc dans les deux modes pour l'identité native, donc
+ * NO-OP apparent en clair — sauf qu'une marque est libre de redéfinir
+ * `onColor`, et `cartoon` le pose à `#3a2a2e` (brun foncé). Le « no-op » a
+ * mesuré **+2 violations en mode CLAIR** (system-bar cartoon, 1.31:1). La
+ * leçon vaut au-delà de ce ticket : sur cette famille, un token sémantique
+ * n'est jamais « le même dans les deux modes » — seules les 8 identités
+ * mesurées le disent.
+ *
+ * Symétriquement, `--origam-bottom-nav---background` était épinglé à
+ * `neutral---200` (#e6e6e6) dans les DEUX modes : une dalle claire au milieu
+ * d'une UI sombre, avec un `text---primary` presque blanc par-dessus
+ * (1.03:1). Il passe au token sémantique `surface---overlay`, qui bascule.
+ * Le bloc clair n'est pas touché.
+ *
+ * ⚠️ Non traité ici : `video__controls`, `video--error`, `audio__cover-label`,
+ * `media-scrubber__tooltip`, `media-volume-control__tooltip` sont eux aussi
+ * épinglés à une primitive neutre sombre — mais leur premier plan ne bascule
+ * pas, donc aucun d'eux n'est ressorti de la mesure. Non vérifié un par un.
  */
 [data-theme="dark"],
-:root:not([data-theme])[data-mode="dark"] {
+[data-mode="dark"]:not([data-theme="light"]) {
   --origam-color__surface---default: var(--origam-color__neutral---950);
   --origam-color__surface---raised: var(--origam-color__neutral---900);
   --origam-color__surface---overlay: var(--origam-color__neutral---800);
@@ -675,7 +742,7 @@
   --origam-bottom-nav---density: 0px;
   --origam-bottom-nav---max-width: 100%;
   --origam-bottom-nav---height: var(--origam-space---12);
-  --origam-bottom-nav---background: var(--origam-color__neutral---200);
+  --origam-bottom-nav---background: var(--origam-color__surface---overlay);
   --origam-bottom-nav---color: var(--origam-color__text---primary);
   --origam-bottom-nav---box-shadow: var(--origam-shadow---none);
   --origam-bottom-nav---padding-block-start: var(--origam-space---2);
@@ -945,7 +1012,7 @@
   --origam-system-bar---height-window: 32px;
   --origam-system-bar---padding-inline: var(--origam-space---2);
   --origam-system-bar---background: var(--origam-color__neutral---700);
-  --origam-system-bar---color: var(--origam-color__text---inverse);
+  --origam-system-bar---color: var(--origam-color__text---primary);
   --origam-system-bar---font-size: var(--origam-font__size---sm);
   --origam-system-bar---font-weight: var(--origam-font__weight---regular);
   --origam-system-bar---letter-spacing: var(--origam-font__letterSpacing---wide);
@@ -1463,7 +1530,7 @@
   --origam-menu---offset-left: var(--origam-space---0);
   --origam-menu---offset-right: var(--origam-space---0);
   --origam-tooltip---background-color: var(--origam-color__neutral---800);
-  --origam-tooltip---color: var(--origam-color__text---inverse);
+  --origam-tooltip---color: var(--origam-color__text---primary);
   --origam-tooltip---backdrop-filter: none;
   --origam-tooltip---font-size: var(--origam-font__size---sm);
   --origam-tooltip---font-weight: var(--origam-font__weight---medium);
@@ -3411,7 +3478,7 @@
     --origam-bottom-nav---density: 0px;
     --origam-bottom-nav---max-width: 100%;
     --origam-bottom-nav---height: var(--origam-space---12);
-    --origam-bottom-nav---background: var(--origam-color__neutral---200);
+    --origam-bottom-nav---background: var(--origam-color__surface---overlay);
     --origam-bottom-nav---color: var(--origam-color__text---primary);
     --origam-bottom-nav---box-shadow: var(--origam-shadow---none);
     --origam-bottom-nav---padding-block-start: var(--origam-space---2);
@@ -3681,7 +3748,7 @@
     --origam-system-bar---height-window: 32px;
     --origam-system-bar---padding-inline: var(--origam-space---2);
     --origam-system-bar---background: var(--origam-color__neutral---700);
-    --origam-system-bar---color: var(--origam-color__text---inverse);
+    --origam-system-bar---color: var(--origam-color__text---primary);
     --origam-system-bar---font-size: var(--origam-font__size---sm);
     --origam-system-bar---font-weight: var(--origam-font__weight---regular);
     --origam-system-bar---letter-spacing: var(--origam-font__letterSpacing---wide);
@@ -4199,7 +4266,7 @@
     --origam-menu---offset-left: var(--origam-space---0);
     --origam-menu---offset-right: var(--origam-space---0);
     --origam-tooltip---background-color: var(--origam-color__neutral---800);
-    --origam-tooltip---color: var(--origam-color__text---inverse);
+    --origam-tooltip---color: var(--origam-color__text---primary);
     --origam-tooltip---backdrop-filter: none;
     --origam-tooltip---font-size: var(--origam-font__size---sm);
     --origam-tooltip---font-weight: var(--origam-font__weight---medium);
