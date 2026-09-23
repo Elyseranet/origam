@@ -1,17 +1,27 @@
 /**
- * THEME_BUILDER_PRESETS — seed values for the /theming builder, one entry per
- * DS preset (origam light, origam dark) plus the 8 brand themes (cartoon,
- * apple, geek, glass, editorial, material, ecom, sobre) × 2 modes = 18 total.
+ * THEME_BUILDER_PRESETS — seed values for the /theming builder : le preset DS
+ * `origam` + les 7 thèmes de marque (cartoon, apple, geek, glass, editorial,
+ * material, ecom), chacun portant ses modes light ET dark.
  *
- * Origam presets: GÉNÉRÉ depuis packages/ds/src/themes/origam.theme.ts.
- * Brand presets: GÉNÉRÉS depuis packages/marketing/src/assets/css/themes/*.css
- * via scripts/generate-brand-presets.mjs — ne PAS éditer à la main.
+ * ⛔ PROPS D'ABORD (logique DS). Les presets de marque ne sont PAS générés :
+ * ils sont dérivés À L'EXÉCUTION de leur objet `IOrigamTheme` canonique
+ * (`~/themes/*.theme.ts`) par `presetFromThemes()` ci-dessous, qui en tire
+ * les PROPS par composant (`theme.components`) ET les variables CSS
+ * (`resolveThemeVars`, soit `vars` + l'échappatoire `cssVars`).
+ *
+ * Il n'y a donc plus rien à regénérer ni à synchroniser : le thème EST la
+ * source de vérité, et un preset ne peut pas dériver de ce dont il est
+ * calculé. Un générateur `presets:generate` lisait autrefois
+ * `assets/css/themes/*.css` (cssVars seules, aucune prop) pour écrire un
+ * `theme-builder-brand-presets.const.ts` ; sa sortie était filtrée et donc
+ * morte — supprimé sous #267, mesure à l'appui.
+ *
+ * Le preset `origam` reste un instantané des vars du thème DS.
  */
 import type { IOrigamTheme } from 'origam/interfaces'
 import { resolveThemeVars } from 'origam/utils'
 
 import type { IThemeBuilderPreset } from '~/interfaces/theme-builder.interface'
-import { THEME_BUILDER_BRAND_PRESETS } from '~/consts/theme-builder-brand-presets.const'
 import { cartoonThemes } from '~/themes/cartoon.theme'
 import { appleThemes } from '~/themes/apple.theme'
 import { geekThemes } from '~/themes/geek.theme'
@@ -577,10 +587,7 @@ export const THEME_BUILDER_PRESETS: IThemeBuilderPreset[] = [
     presetFromThemes('glass', 'Glass', glassThemes),
     presetFromThemes('editorial', 'Editorial', editorialThemes),
     presetFromThemes('material', 'Material', materialThemes),
-    presetFromThemes('ecom', 'E-commerce', ecomThemes),
-    // `sobre` est exclu : c'est la baseline DS = le thème `origam` ci-dessus
-    // (même identité), donc le lister en plus ferait un doublon.
-    ...THEME_BUILDER_BRAND_PRESETS.filter(
-        p => !['cartoon', 'apple', 'geek', 'glass', 'editorial', 'material', 'ecom', 'sobre'].includes(p.key)
-    )
+    presetFromThemes('ecom', 'E-commerce', ecomThemes)
+    // `sobre` n'est pas listé : c'est la baseline DS = le thème `origam`
+    // ci-dessus (même identité), donc l'ajouter ferait un doublon.
 ]
