@@ -653,9 +653,6 @@
 		}
 
 		&--size-default {
-			--origam-btn---height: var(--origam-btn---height-md, 36px);
-			--origam-btn---font-size: 0.875rem;
-			--origam-btn---min-width: 64px;
 			padding: 0 calc(var(--origam-btn---padding-md, 16px) + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
@@ -691,7 +688,6 @@
 		}
 
 		&--density-default {
-			--origam-btn---density: 0px;
 			--origam-btn---density-padding-x: 0px;
 		}
 

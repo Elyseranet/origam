@@ -773,12 +773,3 @@
 		}
 	}
 </style>
-
-<style
-		lang="scss"
-		scoped
->
-	.origam-chip {
-		--origam-chip---density: 0px;
-	}
-</style>
