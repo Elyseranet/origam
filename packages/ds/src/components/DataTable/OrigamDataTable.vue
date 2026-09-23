@@ -426,7 +426,24 @@
 		}
 
 		&--loading {
-			&:deep(.origam-data-table-cell) {
+			/*********************************************************
+			 * #818 — le voile de chargement epargne les EN-TETES
+			 *
+			 * @description
+			 * Un libelle de colonne n'est pas la donnee en cours de
+			 * rafraichissement : c'est la structure du tableau, elle
+			 * reste lisible pendant le chargement. Le voile s'applique
+			 * donc au corps, pas a l'en-tete.
+			 *
+			 * @description
+			 * Mesure axe-core (Chromium, theme origam clair) : l'en-tete
+			 * peint `--origam-color__action--primary---fgSubtle`
+			 * (#6d28d9) ; a 0.5 sur blanc il composite en #b694ec, soit
+			 * 2.38:1 — tres sous les 4.5:1 de l'AA. Remonter l'opacite ne
+			 * sauve pas la regle : il faudrait >= 0.82 pour repasser AA,
+			 * et un voile a 0.82 n'est plus un voile.
+			 ********************************************************/
+			&:deep(.origam-data-table-cell:not(.origam-data-table-header-cell)) {
 				opacity: var(--origam-data-table--loading---opacity, var(--origam-data-table__loading---opacity, 0.5));
 			}
 		}
