@@ -70,10 +70,17 @@ peinte** (4 entrées : `OrigamPicker`, `OrigamDatePicker`,
 
 **Cause 3 — un couple en dur réellement insuffisant** (1 entrée :
 `OrigamChartRangeSelector`). Le bouton actif peignait blanc sur `#3b82f6`,
-**3.68:1**. `#3b82f6` n'appartient à aucune échelle du DS (bleu Tailwind) ;
-l'état actif et son survol rejoignent l'échelle maison —
-`--origam-color__blue---600` (**6.70:1**) et `---700` (**8.72:1**) — ce qui
-retire deux hex bruts et conserve l'assombrissement au survol.
+**3.68:1**. `#3b82f6` n'appartient à **aucune échelle du DS** (bleu
+Tailwind) : c'était une valeur isolée, et c'est elle qui produisait la
+violation. Corriger le contraste en gardant une valeur hors échelle aurait
+réglé le symptôme en laissant la cause — l'état actif rejoint donc la
+convention que `chip--selected`, `pagination__item---active` et `stepper`
+appliquent déjà, **la paire complète** :
+`--origam-color__action--primary---bg` + `---fg` (**5.70:1**), survol
+`---bgHover` + `---fg` (**7.10:1**). Le premier plan passe du token brut
+`--origam-color---white` au sémantique `---fg` : l'état sélectionné
+devient **atteignable par le theming**, ce qu'un `#3b82f6` en dur ne serait
+jamais. Mesuré rendu : `rgb(124, 58, 237)` sur `rgb(255, 255, 255)`.
 
 Baseline : **18 → 10 violations, 17 → 10 clés, zéro `color-contrast`**.
 Aucune autre entrée touchée. Formule de contraste reprise telle quelle de
@@ -85,7 +92,8 @@ mais celles-ci se voient) : `.origam--color-{intent}` passe du blanc à la
 couleur de l'intention ; `.origam--bg-{intent}` impose son premier plan ;
 le titre de Picker suit sa surface (sur un Picker neutre il passe du gris
 `#525252` à l'encre héritée) ; le bouton actif de `OrigamChartRangeSelector`
-fonce d'un cran.
+passe du bleu au violet de l'identité (`action--primary`), comme tout autre
+état sélectionné du DS.
 
 ### Fixed — #818 baseline shrink : `aria-allowed-attr`/`aria-prohibited-attr`/`aria-valid-attr-value` (12 des 25 entrées)
 
