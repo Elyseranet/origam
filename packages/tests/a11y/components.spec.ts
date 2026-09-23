@@ -517,13 +517,18 @@ async function runAxeOn (page: Page, storyFile: string, name: string, variantInd
  * skipped while tracked in the a11y backlog. Each entry must
  * reference the backlog item / PR that resolves it.
  *
- * - `OrigamSelect` — `OrigamInput` wrapper `<div>` inherits the
- *   fall-through `aria-haspopup` / `aria-expanded` from
- *   `OrigamSelect.comboboxAriaAttrs` alongside the native
- *   `<input>`. Needs `inheritAttrs: false` + explicit
- *   distribution on `OrigamInput`.
+ * ⛔ `OrigamSelect` REMOVED from this set — #818 baseline shrink lot.
+ * The fall-through was real (`OrigamInput`'s wrapper `<div>` AND the
+ * native `<input>` both received `aria-haspopup`/`aria-expanded` from
+ * `OrigamSelect.comboboxAriaAttrs`, neither with a role that allows
+ * them), but the fix landed at the source: `OrigamTextField` now sets
+ * `inheritAttrs: false` (it already redistributes every fall-through
+ * attr explicitly via `filterInputAttrs`) and forwards `role` to the
+ * real `<input>` in addition to `<origam-field>`. Verified — real
+ * browser, axe-core, zero `aria-allowed-attr`/`aria-prohibited-attr`
+ * left on `OrigamSelect` or any of its consumers.
  */
-const KNOWN_FAILURES = new Set<string>(['OrigamSelect'])
+const KNOWN_FAILURES = new Set<string>()
 
 /*********************************************************
  * INTENT_VARIANT_STORIES — sortir de « toujours primary » (#818, point 3)

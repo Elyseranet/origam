@@ -8,38 +8,10 @@
     "OrigamChartRangeSelector::default": [
         "color-contrast"
     ],
-    "OrigamColorPickerField::default": [
-        "aria-allowed-attr",
-        "aria-valid-attr-value"
-    ],
-    "OrigamDataTable::default": [
-        "aria-allowed-attr"
-    ],
-    "OrigamDataTableFooter::default": [
-        "aria-allowed-attr"
-    ],
     "OrigamDataTableGroupHeaderRow::default": [
-        "aria-allowed-attr",
         "button-name"
     ],
-    "OrigamDataTableHeaderCell::default": [
-        "aria-allowed-attr"
-    ],
-    "OrigamDataTableHeaders::default": [
-        "aria-allowed-attr"
-    ],
-    "OrigamDataTableHeadersCell::default": [
-        "aria-allowed-attr"
-    ],
-    "OrigamDataTableHeadersCellMobile::default": [
-        "aria-allowed-attr",
-        "aria-prohibited-attr"
-    ],
-    "OrigamDataTableRow::default": [
-        "aria-allowed-attr"
-    ],
     "OrigamDataTableRows::default": [
-        "aria-allowed-attr",
         "color-contrast"
     ],
     "OrigamDatePicker::default": [
@@ -50,8 +22,6 @@
         "button-name"
     ],
     "OrigamDatePickerField::default": [
-        "aria-allowed-attr",
-        "aria-valid-attr-value",
         "color-contrast"
     ],
     "OrigamFileFieldListItem::default": [
@@ -67,7 +37,6 @@
         "aria-required-children"
     ],
     "OrigamNumberField::default": [
-        "aria-allowed-attr",
         "color-contrast"
     ],
     "OrigamPicker::default": [
