@@ -83,7 +83,7 @@
 							:data-cy="`origam-chart-map-country-${ country.code }`"
 							:tabindex="country.hasData ? 0 : -1"
 							:role="country.hasData ? 'button' : undefined"
-							:aria-label="countryAriaLabel(country)"
+							:aria-label="country.hasData ? countryAriaLabel(country) : undefined"
 							@click="onCountryActivate(country, $event)"
 							@keydown.enter.prevent="onCountryActivate(country, $event)"
 							@keydown.space.prevent="onCountryActivate(country, $event)"
