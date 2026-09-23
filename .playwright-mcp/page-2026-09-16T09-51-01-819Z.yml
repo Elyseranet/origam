@@ -1,0 +1,188 @@
+- generic [ref=f2e4]:
+  - link "Skip to content" [ref=f2e5] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=f2e6]:
+    - generic [ref=f2e7]:
+      - link "origam" [ref=f2e9] [cursor=pointer]:
+        - /url: /
+        - img "origam" [ref=f2e10]
+        - generic [ref=f2e12]: v2.17.1
+      - navigation "Primary navigation" [ref=f2e15]:
+        - button "Open Introduction menu" [ref=f2e16] [cursor=pointer]:
+          - generic [ref=f2e17]:
+            - generic [ref=f2e18]: Introduction
+            - generic [aria-hidden] [ref=f2e20]: 󰅀
+        - button "Open Getting started menu" [ref=f2e21] [cursor=pointer]:
+          - generic [ref=f2e22]:
+            - generic [ref=f2e23]: Getting started
+            - generic [aria-hidden] [ref=f2e25]: 󰅀
+        - button "Open Features menu" [ref=f2e26] [cursor=pointer]:
+          - generic [ref=f2e27]:
+            - generic [ref=f2e28]: Features
+            - generic [aria-hidden] [ref=f2e30]: 󰅀
+        - link "Theming" [ref=f2e31] [cursor=pointer]:
+          - /url: /theming
+      - generic [ref=f2e35]:
+        - button "Search the documentation" [ref=f2e36] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f2e37]: 󰍉
+          - generic [ref=f2e38]: Search…
+          - generic [ref=f2e39]: ⌘K
+        - button "Toggle light and dark mode" [ref=f2e40] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f2e43]: 󰖔
+        - button "Change language" [ref=f2e44] [cursor=pointer]:
+          - generic [ref=f2e45]:
+            - generic [aria-hidden] [ref=f2e47]: 󰗊
+            - generic [ref=f2e48]: EN
+            - generic [aria-hidden] [ref=f2e50]: 󰅀
+        - button "Switch brand theme" [ref=f2e51] [cursor=pointer]:
+          - generic [ref=f2e52]:
+            - generic [ref=f2e55]: "Theme: Theme"
+            - generic [aria-hidden] [ref=f2e57]: 󰅀
+  - main [ref=f2e58]:
+    - article [ref=f2e60]:
+      - region [ref=f2e61]:
+        - generic [ref=f2e62]:
+          - generic [ref=f2e63]: Measured, not drafted
+          - heading "Privacy" [level=1] [ref=f2e65]
+          - paragraph [ref=f2e66]: This page lists only what was verified in the source code of this site, and by loading a page with the network log open. It is deliberately short — there is very little to report. Each statement names the thing it describes, so you can check it yourself in your browser.
+      - region [ref=f2e67]:
+        - generic [ref=f2e68]:
+          - heading "What is not collected" [level=2] [ref=f2e69]
+          - paragraph [ref=f2e70]: There is no analytics, no tracking pixel and no third-party measurement script anywhere on this site. Nothing records which pages you visit, how long you stay, or where you arrived from. No visitor account exists, so nothing is attached to an identity.
+      - region [ref=f2e71]:
+        - generic [ref=f2e72]:
+          - heading "Cookies" [level=2] [ref=f2e73]
+          - paragraph [ref=f2e74]: "Browsing this site sets cookies for two things only, both of them preferences you chose yourself:"
+          - list [ref=f2e75]:
+            - listitem [ref=f2e76]: origam_locale — the display language, so the site does not revert to English on your next visit.
+            - listitem [ref=f2e77]: origam-theme and origam-mode — the theme and the light or dark appearance you selected.
+          - paragraph [ref=f2e78]: A separate session cookie exists for the private administration area. It is created by logging in there and never by browsing the public site.
+      - region [ref=f2e79]:
+        - generic [ref=f2e80]:
+          - heading "Local storage" [level=2] [ref=f2e81]
+          - paragraph [ref=f2e82]: "The theme builder saves your work in progress in your browser, under the key origam_theme_builder_state, alongside origam-theme and origam-mode for your appearance choice. These entries never leave the browser: they are not sent to any server, and clearing the site data removes them."
+      - region [ref=f2e83]:
+        - generic [ref=f2e84]:
+          - heading "Forms and search" [level=2] [ref=f2e85]
+          - paragraph [ref=f2e86]: "This site carries a single form — the property panel of the theme builder — and it submits nothing: it edits a preview inside the page. The search field filters a catalogue your browser has already downloaded, so what you type into it is never sent anywhere."
+      - region [ref=f2e87]:
+        - generic [ref=f2e88]:
+          - heading "The one third party" [level=2] [ref=f2e89]
+          - paragraph [ref=f2e90]: Typefaces are loaded from Google Fonts on every page — fonts.googleapis.com for the stylesheet, fonts.gstatic.com for the font files. Your browser therefore makes a request to Google, which reveals your IP address and browser to them, as it does on any site using that service. It is the only external host contacted automatically.
+          - separator [ref=f2e91]
+          - paragraph [ref=f2e92]: The other external addresses on this site — the GitHub repository, the donation page, Discord — are ordinary links. Nothing is requested from them unless you click.
+      - region [ref=f2e93]:
+        - generic [ref=f2e94]:
+          - heading "How this page was established" [level=2] [ref=f2e95]
+          - paragraph [ref=f2e96]: Every statement above comes from reading the source code of this site and from loading a page in a browser with the network log open — not from a template. Nothing here was assumed.
+          - paragraph [ref=f2e97]: It describes the behaviour of the application itself. What the server hosting it records at the network level was not measured, and is therefore not described here.
+          - paragraph [ref=f2e98]: Last verified against the source code on 16 September 2026.
+  - contentinfo [ref=f2e99]:
+    - generic [ref=f2e100]:
+      - generic [ref=f2e101]:
+        - link "origam" [ref=f2e102] [cursor=pointer]:
+          - /url: /
+          - img "origam" [ref=f2e103]
+        - paragraph [ref=f2e105]: The Vue 3 design system that just works.
+      - navigation "Product" [ref=f2e106]:
+        - heading "Product" [level=2] [ref=f2e107]
+        - list [ref=f2e108]:
+          - listitem [ref=f2e109]:
+            - link "Charts" [ref=f2e110] [cursor=pointer]:
+              - /url: /components#charts
+          - listitem [ref=f2e111]:
+            - link "Themes" [ref=f2e112] [cursor=pointer]:
+              - /url: /#themes
+      - navigation "Resources" [ref=f2e113]:
+        - heading "Resources" [level=2] [ref=f2e114]
+        - list [ref=f2e115]:
+          - listitem [ref=f2e116]:
+            - link "GitHub" [ref=f2e117] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam
+          - listitem [ref=f2e118]:
+            - link "Community" [ref=f2e119] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam/discussions
+          - listitem [ref=f2e120]:
+            - link "Discord" [ref=f2e121] [cursor=pointer]:
+              - /url: https://discord.gg/origam
+          - listitem [ref=f2e122]:
+            - link "Discussions" [ref=f2e123] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam/discussions
+          - listitem [ref=f2e124]:
+            - link "Twitter" [ref=f2e125] [cursor=pointer]:
+              - /url: https://twitter.com/origam
+          - listitem [ref=f2e126]:
+            - link "Support origam" [ref=f2e127] [cursor=pointer]:
+              - /url: /support
+      - navigation "Legal" [ref=f2e128]:
+        - heading "Legal" [level=2] [ref=f2e129]
+        - list [ref=f2e130]:
+          - listitem [ref=f2e131]:
+            - link "MIT License" [ref=f2e132] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam/blob/main/LICENSE
+          - listitem [ref=f2e133]:
+            - link "Privacy" [ref=f2e134] [cursor=pointer]:
+              - /url: /privacy
+          - listitem [ref=f2e135]:
+            - link "Contact" [ref=f2e136] [cursor=pointer]:
+              - /url: /contact
+    - separator [ref=f2e137]
+    - navigation "Site map" [ref=f2e138]:
+      - heading "Introduction" [level=3] [ref=f2e139]
+      - list [ref=f2e140]:
+        - listitem [ref=f2e141]:
+          - link "Why origam?" [ref=f2e142] [cursor=pointer]:
+            - /url: /why-origam
+        - listitem [ref=f2e143]:
+          - link "Roadmap" [ref=f2e144] [cursor=pointer]:
+            - /url: /roadmap
+        - listitem [ref=f2e145]:
+          - link "Changelog" [ref=f2e146] [cursor=pointer]:
+            - /url: /changelog
+      - heading "Getting started" [level=3] [ref=f2e147]
+      - list [ref=f2e148]:
+        - listitem [ref=f2e149]:
+          - link "Installation" [ref=f2e150] [cursor=pointer]:
+            - /url: /installation
+        - listitem [ref=f2e151]:
+          - link "Wireframe" [ref=f2e152] [cursor=pointer]:
+            - /url: /wireframe
+      - heading "Features" [level=3] [ref=f2e153]
+      - list [ref=f2e154]:
+        - listitem [ref=f2e155]:
+          - link "Components" [ref=f2e156] [cursor=pointer]:
+            - /url: /components
+        - listitem [ref=f2e157]:
+          - link "Directives" [ref=f2e158] [cursor=pointer]:
+            - /url: /directives
+        - listitem [ref=f2e159]:
+          - link "Composables" [ref=f2e160] [cursor=pointer]:
+            - /url: /composables
+        - listitem [ref=f2e161]:
+          - link "Types" [ref=f2e162] [cursor=pointer]:
+            - /url: /types
+        - listitem [ref=f2e163]:
+          - link "Enums" [ref=f2e164] [cursor=pointer]:
+            - /url: /enums
+        - listitem [ref=f2e165]:
+          - link "Interfaces" [ref=f2e166] [cursor=pointer]:
+            - /url: /interfaces
+        - listitem [ref=f2e167]:
+          - link "Utils" [ref=f2e168] [cursor=pointer]:
+            - /url: /utils
+        - listitem [ref=f2e169]:
+          - link "Constants" [ref=f2e170] [cursor=pointer]:
+            - /url: /consts
+        - listitem [ref=f2e171]:
+          - link "Stories" [ref=f2e172] [cursor=pointer]:
+            - /url: /stories/
+        - listitem [ref=f2e173]:
+          - link "Docs" [ref=f2e174] [cursor=pointer]:
+            - /url: /docs/
+    - separator [ref=f2e175]
+    - generic [ref=f2e176]:
+      - paragraph [ref=f2e177]: © 2026 origam · MIT
+      - paragraph [ref=f2e178]: Made with origam, by humans.
+      - link "Support origam with a donation" [ref=f2e179] [cursor=pointer]:
+        - /url: https://www.paypal.com/donate/?hosted_button_id=EQFUQ2JV95YGQ
+        - text: Support origam

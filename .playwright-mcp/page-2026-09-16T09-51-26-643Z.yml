@@ -1,0 +1,179 @@
+- generic [ref=f4e4]:
+  - link "Aller au contenu" [ref=f4e5] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=f4e6]:
+    - generic [ref=f4e7]:
+      - link "origam" [ref=f4e9] [cursor=pointer]:
+        - /url: /
+        - img "origam" [ref=f4e10]
+        - generic [ref=f4e12]: v2.17.1
+      - navigation "Navigation principale" [ref=f4e15]:
+        - button "Ouvrir le menu Introduction" [ref=f4e16] [cursor=pointer]:
+          - generic [ref=f4e17]:
+            - generic [ref=f4e18]: Introduction
+            - generic [aria-hidden] [ref=f4e20]: 󰅀
+        - button "Ouvrir le menu Prise en main" [ref=f4e21] [cursor=pointer]:
+          - generic [ref=f4e22]:
+            - generic [ref=f4e23]: Prise en main
+            - generic [aria-hidden] [ref=f4e25]: 󰅀
+        - button "Ouvrir le menu Fonctionnalités" [ref=f4e26] [cursor=pointer]:
+          - generic [ref=f4e27]:
+            - generic [ref=f4e28]: Fonctionnalités
+            - generic [aria-hidden] [ref=f4e30]: 󰅀
+        - link "Thématisation" [ref=f4e31] [cursor=pointer]:
+          - /url: /theming
+      - generic [ref=f4e35]:
+        - button "Rechercher dans la documentation" [ref=f4e36] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f4e37]: 󰍉
+          - generic [ref=f4e38]: Rechercher…
+          - generic [ref=f4e39]: ⌘K
+        - button "Basculer entre thème clair et sombre" [ref=f4e40] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f4e43]: 󰖔
+        - button "Changer de langue" [ref=f4e44] [cursor=pointer]:
+          - generic [ref=f4e45]:
+            - generic [aria-hidden] [ref=f4e47]: 󰗊
+            - generic [ref=f4e48]: FR
+            - generic [aria-hidden] [ref=f4e50]: 󰅀
+        - button "Changer de thème" [ref=f4e51] [cursor=pointer]:
+          - generic [ref=f4e52]:
+            - generic [ref=f4e55]: "Thème : Thème"
+            - generic [aria-hidden] [ref=f4e57]: 󰅀
+  - main [ref=f4e58]:
+    - article [ref=f4e60]:
+      - region [ref=f4e61]:
+        - generic [ref=f4e62]:
+          - generic [ref=f4e63]: Un seul mainteneur
+          - heading "Contact" [level=1] [ref=f4e65]
+          - paragraph [ref=f4e66]: origam est maintenu par un seul développeur. Tout passe par GitHub, à découvert — une question posée là-bas aide la personne suivante qui la cherchera, et rien ne s’enterre dans une boîte mail.
+      - region [ref=f4e67]:
+        - generic [ref=f4e68]:
+          - heading "Signaler un bug" [level=2] [ref=f4e69]
+          - paragraph [ref=f4e70]: Ouvrez un ticket sur le dépôt. Un rapport utile nomme le composant, la version d’origam, ce que vous attendiez et ce qui s’est produit à la place — une reproduction minimale vaut mieux qu’un paragraphe de description.
+          - link "Ouvrir un ticket sur GitHub" [ref=f4e71] [cursor=pointer]:
+            - /url: https://github.com/Elyseranet/origam/issues
+      - region [ref=f4e74]:
+        - generic [ref=f4e75]:
+          - heading "Poser une question" [level=2] [ref=f4e76]
+          - paragraph [ref=f4e77]: "Utilisez les discussions du dépôt pour tout ce qui n’est pas une anomalie : comment utiliser un composant, une idée de composant qui n’existe pas encore, ou un retour sur la documentation."
+          - link "Ouvrir une discussion sur GitHub" [ref=f4e78] [cursor=pointer]:
+            - /url: https://github.com/Elyseranet/origam/discussions
+      - region [ref=f4e81]:
+        - generic [ref=f4e82]:
+          - heading "Soutenir le projet" [level=2] [ref=f4e83]
+          - paragraph [ref=f4e84]: origam est gratuit et sous licence MIT. S’il vous fait gagner du temps, la page de soutien explique comment un don finance le travail de maintenance.
+          - link "Aller à la page de soutien" [ref=f4e85] [cursor=pointer]:
+            - /url: /support
+      - region [ref=f4e88]:
+        - generic [ref=f4e89]:
+          - heading "Il n’y a pas d’adresse de support" [level=2] [ref=f4e90]
+          - separator [ref=f4e91]
+          - paragraph [ref=f4e92]: "Ce projet ne publie aucune adresse e-mail, et aucune n’est dissimulée derrière un formulaire sur ce site. Les demandes faites à découvert reçoivent une réponse à découvert : il n’y a pas de canal privé, ni d’engagement sur le délai de réponse."
+  - contentinfo [ref=f4e93]:
+    - generic [ref=f4e94]:
+      - generic [ref=f4e95]:
+        - link "origam" [ref=f4e96] [cursor=pointer]:
+          - /url: /
+          - img "origam" [ref=f4e97]
+        - paragraph [ref=f4e99]: Le design system Vue 3 qui marche, tout simplement.
+      - navigation "Produit" [ref=f4e100]:
+        - heading "Produit" [level=2] [ref=f4e101]
+        - list [ref=f4e102]:
+          - listitem [ref=f4e103]:
+            - link "Graphiques" [ref=f4e104] [cursor=pointer]:
+              - /url: /components#charts
+          - listitem [ref=f4e105]:
+            - link "Thèmes" [ref=f4e106] [cursor=pointer]:
+              - /url: /#themes
+      - navigation "Ressources" [ref=f4e107]:
+        - heading "Ressources" [level=2] [ref=f4e108]
+        - list [ref=f4e109]:
+          - listitem [ref=f4e110]:
+            - link "GitHub" [ref=f4e111] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam
+          - listitem [ref=f4e112]:
+            - link "Communauté" [ref=f4e113] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam/discussions
+          - listitem [ref=f4e114]:
+            - link "Discord" [ref=f4e115] [cursor=pointer]:
+              - /url: https://discord.gg/origam
+          - listitem [ref=f4e116]:
+            - link "Discussions" [ref=f4e117] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam/discussions
+          - listitem [ref=f4e118]:
+            - link "Twitter" [ref=f4e119] [cursor=pointer]:
+              - /url: https://twitter.com/origam
+          - listitem [ref=f4e120]:
+            - link "Soutenir origam" [ref=f4e121] [cursor=pointer]:
+              - /url: /support
+      - navigation "Mentions légales" [ref=f4e122]:
+        - heading "Mentions légales" [level=2] [ref=f4e123]
+        - list [ref=f4e124]:
+          - listitem [ref=f4e125]:
+            - link "Licence MIT" [ref=f4e126] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam/blob/main/LICENSE
+          - listitem [ref=f4e127]:
+            - link "Confidentialité" [ref=f4e128] [cursor=pointer]:
+              - /url: /privacy
+          - listitem [ref=f4e129]:
+            - link "Contact" [ref=f4e130] [cursor=pointer]:
+              - /url: /contact
+    - separator [ref=f4e131]
+    - navigation "Plan du site" [ref=f4e132]:
+      - heading "Introduction" [level=3] [ref=f4e133]
+      - list [ref=f4e134]:
+        - listitem [ref=f4e135]:
+          - link "Pourquoi origam ?" [ref=f4e136] [cursor=pointer]:
+            - /url: /why-origam
+        - listitem [ref=f4e137]:
+          - link "Feuille de route" [ref=f4e138] [cursor=pointer]:
+            - /url: /roadmap
+        - listitem [ref=f4e139]:
+          - link "Journal" [ref=f4e140] [cursor=pointer]:
+            - /url: /changelog
+      - heading "Prise en main" [level=3] [ref=f4e141]
+      - list [ref=f4e142]:
+        - listitem [ref=f4e143]:
+          - link "Installation" [ref=f4e144] [cursor=pointer]:
+            - /url: /installation
+        - listitem [ref=f4e145]:
+          - link "Wireframe" [ref=f4e146] [cursor=pointer]:
+            - /url: /wireframe
+      - heading "Fonctionnalités" [level=3] [ref=f4e147]
+      - list [ref=f4e148]:
+        - listitem [ref=f4e149]:
+          - link "Composants" [ref=f4e150] [cursor=pointer]:
+            - /url: /components
+        - listitem [ref=f4e151]:
+          - link "Directives" [ref=f4e152] [cursor=pointer]:
+            - /url: /directives
+        - listitem [ref=f4e153]:
+          - link "Composables" [ref=f4e154] [cursor=pointer]:
+            - /url: /composables
+        - listitem [ref=f4e155]:
+          - link "Types" [ref=f4e156] [cursor=pointer]:
+            - /url: /types
+        - listitem [ref=f4e157]:
+          - link "Énumérations" [ref=f4e158] [cursor=pointer]:
+            - /url: /enums
+        - listitem [ref=f4e159]:
+          - link "Interfaces" [ref=f4e160] [cursor=pointer]:
+            - /url: /interfaces
+        - listitem [ref=f4e161]:
+          - link "Utilitaires" [ref=f4e162] [cursor=pointer]:
+            - /url: /utils
+        - listitem [ref=f4e163]:
+          - link "Constantes" [ref=f4e164] [cursor=pointer]:
+            - /url: /consts
+        - listitem [ref=f4e165]:
+          - link "Stories" [ref=f4e166] [cursor=pointer]:
+            - /url: /stories/
+        - listitem [ref=f4e167]:
+          - link "Docs" [ref=f4e168] [cursor=pointer]:
+            - /url: /docs/
+    - separator [ref=f4e169]
+    - generic [ref=f4e170]:
+      - paragraph [ref=f4e171]: © 2026 origam · MIT
+      - paragraph [ref=f4e172]: Fait avec origam, par des humains.
+      - link "Soutenir origam par un don" [ref=f4e173] [cursor=pointer]:
+        - /url: https://www.paypal.com/donate/?hosted_button_id=EQFUQ2JV95YGQ
+        - text: Soutenir origam

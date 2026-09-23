@@ -1,0 +1,801 @@
+- generic [ref=f12e4]:
+  - link "Aller au contenu" [ref=f12e5] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=f12e6]:
+    - generic [ref=f12e7]:
+      - link "origam" [ref=f12e9] [cursor=pointer]:
+        - /url: /
+        - img "origam" [ref=f12e10]
+        - generic [ref=f12e12]: v2.17.1
+      - navigation "Navigation principale" [ref=f12e15]:
+        - button "Ouvrir le menu Introduction" [ref=f12e16] [cursor=pointer]:
+          - generic [ref=f12e17]:
+            - generic [ref=f12e18]: Introduction
+            - generic [aria-hidden] [ref=f12e20]: 󰅀
+        - button "Ouvrir le menu Prise en main" [ref=f12e21] [cursor=pointer]:
+          - generic [ref=f12e22]:
+            - generic [ref=f12e23]: Prise en main
+            - generic [aria-hidden] [ref=f12e25]: 󰅀
+        - button "Ouvrir le menu Fonctionnalités" [ref=f12e26] [cursor=pointer]:
+          - generic [ref=f12e27]:
+            - generic [ref=f12e28]: Fonctionnalités
+            - generic [aria-hidden] [ref=f12e30]: 󰅀
+        - link "Thématisation" [ref=f12e31] [cursor=pointer]:
+          - /url: /theming
+      - generic [ref=f12e35]:
+        - button "Rechercher dans la documentation" [ref=f12e36] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f12e37]: 󰍉
+          - generic [ref=f12e38]: Rechercher…
+          - generic [ref=f12e39]: ⌘K
+        - button "Basculer entre thème clair et sombre" [ref=f12e40] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f12e43]: 󰖔
+        - button "Changer de langue" [ref=f12e44] [cursor=pointer]:
+          - generic [ref=f12e45]:
+            - generic [aria-hidden] [ref=f12e47]: 󰗊
+            - generic [ref=f12e48]: FR
+            - generic [aria-hidden] [ref=f12e50]: 󰅀
+        - button "Changer de thème" [ref=f12e51] [cursor=pointer]:
+          - generic [ref=f12e52]:
+            - generic [ref=f12e55]: "Thème : Thème"
+            - generic [aria-hidden] [ref=f12e57]: 󰅀
+  - main [ref=f12e58]:
+    - article [ref=f12e60]:
+      - region [ref=f12e61]:
+        - generic [ref=f12e62]:
+          - generic [ref=f12e63]: v2.17.1 — Vague 4 livrée
+          - heading "Feuille de route. Honnête & publique." [level=1] [ref=f12e65]:
+            - generic [ref=f12e66]: Feuille de route.
+            - generic [ref=f12e67]: Honnête & publique.
+          - paragraph [ref=f12e68]: origam est un design system Vue 3 en phase de démarrage. Voici où nous en sommes aujourd'hui, ce que nous avons livré, et ce qui arrive.
+      - region [ref=f12e69]:
+        - generic [ref=f12e70]:
+          - generic [ref=f12e71]:
+            - paragraph [ref=f12e72]: OÙ ON EN EST
+            - heading "Où en est la 2.17.1." [level=2] [ref=f12e73]:
+              - generic [ref=f12e74]: Où en est
+              - generic [ref=f12e75]: la 2.17.1.
+            - paragraph [ref=f12e76]: Chaque ligne ci-dessous a été mesurée sur le dépôt le 15 septembre 2026 — ce qui est livré, et ce qui manque encore.
+          - list [ref=f12e77]:
+            - listitem [ref=f12e78]:
+              - generic [ref=f12e81]:
+                - generic [aria-hidden] [ref=f12e82]: 󰗠
+                - paragraph [ref=f12e83]: Publié sur npm — origam 2.17.1, archive de 1,73 Mo, publication automatisée avec attestation sigstore
+            - listitem [ref=f12e84]:
+              - generic [ref=f12e87]:
+                - generic [aria-hidden] [ref=f12e88]: 󰗠
+                - paragraph [ref=f12e89]: "Chaîne d'intégration complète — 17 jobs répartis sur 5 workflows : lint, gardes d'architecture, vérification des types, tests unitaires, builds, contrôle i18n, e2e, e2e marketing, a11y marketing et régression visuelle"
+            - listitem [ref=f12e90]:
+              - generic [ref=f12e93]:
+                - generic [aria-hidden] [ref=f12e94]: 󰗠
+                - paragraph [ref=f12e95]: Documentation et stories déployées — la référence VitePress et le build Histoire répondent tous deux en HTTP 200
+            - listitem [ref=f12e96]:
+              - generic [ref=f12e99]:
+                - generic [aria-hidden] [ref=f12e100]: 󰗠
+                - paragraph [ref=f12e101]: 6 953 tests unitaires au vert sur 532 fichiers de specs — 78 % des instructions et 79,9 % des lignes couvertes
+            - listitem [ref=f12e102]:
+              - generic [ref=f12e105]:
+                - generic [aria-hidden] [ref=f12e106]: 󰗠
+                - paragraph [ref=f12e107]: 229 fichiers de specs Playwright pour 218 stories — chaque famille de composants a son garde-fou e2e
+            - listitem [ref=f12e108]:
+              - generic [ref=f12e111]:
+                - generic [aria-hidden] [ref=f12e112]: 󰗠
+                - paragraph [ref=f12e113]: 21 gardes d'architecture sur 21 au vert
+            - listitem [ref=f12e114]:
+              - generic [ref=f12e117]:
+                - generic [aria-hidden] [ref=f12e118]: 󰗠
+                - paragraph [ref=f12e119]: "216 composants inspectés sur 8 critères — rendu, canal du thème, réactivité, résolution des props, emits, sémantique, cohérence story et doc, chaînes en dur : zéro défaut restant"
+            - listitem [ref=f12e120]:
+              - generic [ref=f12e123]:
+                - generic [aria-hidden] [ref=f12e124]: 󰗠
+                - paragraph [ref=f12e125]: SonarQube branché avec la couverture des tests unitaires et une quality gate qui bloque sur la sécurité et la criticité
+            - listitem [ref=f12e126]:
+              - generic [ref=f12e129]:
+                - generic [aria-hidden] [ref=f12e130]: 󰗠
+                - paragraph [ref=f12e131]: Mises à jour de dépendances automatisées — Dependabot ouvre chaque semaine des pull requests groupées pour npm et GitHub Actions
+            - listitem [ref=f12e132]:
+              - generic [ref=f12e135]:
+                - generic [aria-hidden] [ref=f12e136]: 󰗠
+                - paragraph [ref=f12e137]: Monorepo en place — 5 packages pnpm workspace (ds, docs, marketing, stories, tests), la bibliothèque publiant toujours depuis packages/ds
+            - listitem [ref=f12e138]:
+              - generic [ref=f12e141]:
+                - generic [aria-hidden] [ref=f12e142]: 󰗠
+                - paragraph [ref=f12e143]: README correct, CHANGELOG à jour
+            - listitem [ref=f12e144]:
+              - generic [ref=f12e147]:
+                - generic [aria-hidden] [ref=f12e148]: 󰗠
+                - paragraph [ref=f12e149]: Wave 4 livrée — 13 composants + support des dégradés + OrigamTextMask (v2.6.0)
+            - listitem [ref=f12e150]:
+              - generic [ref=f12e153]:
+                - generic [aria-hidden] [ref=f12e154]: 󰅙
+                - paragraph [ref=f12e155]: L'intégration continue ne barre que 58 des 229 specs Playwright — les 171 autres existent mais ne bloquent encore rien
+            - listitem [ref=f12e156]:
+              - generic [ref=f12e159]:
+                - generic [aria-hidden] [ref=f12e160]: 󰅙
+                - paragraph [ref=f12e161]: Le balayage d'accessibilité par composant est écrit mais ne tourne dans aucun job de CI, et les overlays n'ont toujours pas d'assertions de piège au focus
+            - listitem [ref=f12e162]:
+              - generic [ref=f12e165]:
+                - generic [aria-hidden] [ref=f12e166]: 󰅙
+                - paragraph [ref=f12e167]: La régression visuelle est seulement amorcée — la suite en conteneur épinglé ne couvre qu'un composant pour l'instant
+            - listitem [ref=f12e168]:
+              - generic [ref=f12e171]:
+                - generic [aria-hidden] [ref=f12e172]: 󰅙
+                - paragraph [ref=f12e173]: Aucun suivi de la taille du bundle — aucun budget de poids n'est imposé sur les sous-exports
+            - listitem [ref=f12e174]:
+              - generic [ref=f12e177]:
+                - generic [aria-hidden] [ref=f12e178]: 󰅙
+                - paragraph [ref=f12e179]: Le guide de migration v2 vers v3 n'existe pas encore — il bloque la pose du tag v3
+            - listitem [ref=f12e180]:
+              - generic [ref=f12e183]:
+                - generic [aria-hidden] [ref=f12e184]: 󰅙
+                - paragraph [ref=f12e185]: La documentation et les stories sont servies depuis un hôte interne — le domaine du projet ne résout pas encore
+            - listitem [ref=f12e186]:
+              - generic [ref=f12e189]:
+                - generic [aria-hidden] [ref=f12e190]: 󰅙
+                - paragraph [ref=f12e191]: Pas encore de communauté — ni discussions ouvertes, ni contributeur externe
+      - region [ref=f12e192]:
+        - generic [ref=f12e193]:
+          - generic [ref=f12e194]:
+            - paragraph [ref=f12e195]: DÉJÀ LIVRÉ
+            - heading "Un design system complet. Déjà en production." [level=2] [ref=f12e196]:
+              - generic [ref=f12e197]: Un design system complet.
+              - generic [ref=f12e198]: Déjà en production.
+            - paragraph [ref=f12e199]: origam ne part pas de zéro — voici l'ampleur déjà livrée sur npm, avec les dernières vagues ci-dessous.
+          - list "Ce qu'origam est déjà" [ref=f12e200]:
+            - listitem [ref=f12e201]:
+              - generic [ref=f12e203]:
+                - generic [aria-hidden] [ref=f12e204]: 󰠲
+                - strong [ref=f12e205]: "96"
+                - generic [ref=f12e206]: familles de composants
+            - listitem [ref=f12e207]:
+              - generic [ref=f12e209]:
+                - generic [aria-hidden] [ref=f12e210]: 󰡱
+                - strong [ref=f12e211]: "138"
+                - generic [ref=f12e212]: composables
+            - listitem [ref=f12e213]:
+              - generic [ref=f12e215]:
+                - generic [aria-hidden] [ref=f12e216]: 󰅴
+                - strong [ref=f12e217]: "6"
+                - generic [ref=f12e218]: directives
+            - listitem [ref=f12e219]:
+              - generic [ref=f12e221]:
+                - generic [aria-hidden] [ref=f12e222]: 󱓷
+                - strong [ref=f12e223]: "218"
+                - generic [ref=f12e224]: stories interactives
+            - listitem [ref=f12e225]:
+              - generic [ref=f12e227]:
+                - generic [aria-hidden] [ref=f12e228]: 󰔎
+                - strong [ref=f12e229]: "2"
+                - generic [ref=f12e230]: thèmes de base (clair + sombre)
+            - listitem [ref=f12e231]:
+              - generic [ref=f12e233]:
+                - generic [aria-hidden] [ref=f12e234]: 󰽙
+                - strong [ref=f12e235]: "3"
+                - generic [ref=f12e236]: niveaux de design tokens
+          - list [ref=f12e237]:
+            - listitem [ref=f12e238]:
+              - generic [ref=f12e239]:
+                - generic [ref=f12e240]:
+                  - generic [ref=f12e241]: Livré
+                  - heading "Vague 1 — Nouveaux composants" [level=3] [ref=f12e246]
+                - table [ref=f12e250]:
+                  - caption [ref=f12e251]: Vague 1 — Nouveaux composants
+                  - rowgroup [ref=f12e252]:
+                    - row [ref=f12e253]:
+                      - cell [ref=f12e254]:
+                        - generic [aria-hidden] [ref=f12e255]: 󰗠
+                      - cell "Tabs / Tab / TabPanel / TabPanels — 3 variantes, 2 orientations, ARIA WAI-ARIA APG, lazy panel mount" [ref=f12e256]
+                    - row [ref=f12e257]:
+                      - cell [ref=f12e258]:
+                        - generic [aria-hidden] [ref=f12e259]: 󰗠
+                      - cell "CommandPalette (⌘K) — fuzzy match, useHotkey cross-platform, réutilise OrigamKbd" [ref=f12e260]
+                    - row [ref=f12e261]:
+                      - cell [ref=f12e262]:
+                        - generic [aria-hidden] [ref=f12e263]: 󰗠
+                      - cell "SnackbarStack — 8 emplacements, pile FIFO max, singleton useSnackbarStack, role=status/alert par intent" [ref=f12e264]
+                    - row [ref=f12e265]:
+                      - cell [ref=f12e266]:
+                        - generic [aria-hidden] [ref=f12e267]: 󰗠
+                      - cell "Bracket (arbre tournoi) — 3 variantes (simple-élim, double-élim, round-robin), connecteurs SVG" [ref=f12e268]
+            - listitem [ref=f12e269]:
+              - generic [ref=f12e270]:
+                - generic [ref=f12e271]:
+                  - generic [ref=f12e272]: Livré
+                  - heading "Vague 2 — Enrichissements" [level=3] [ref=f12e277]
+                - table [ref=f12e281]:
+                  - caption [ref=f12e282]: Vague 2 — Enrichissements
+                  - rowgroup [ref=f12e283]:
+                    - row [ref=f12e284]:
+                      - cell [ref=f12e285]:
+                        - generic [aria-hidden] [ref=f12e286]: 󰗠
+                      - cell "OrigamParallax — multi-layer, direction, easing, animation scroll-driven CSS-first" [ref=f12e287]
+                    - row [ref=f12e288]:
+                      - cell [ref=f12e289]:
+                        - generic [aria-hidden] [ref=f12e290]: 󰗠
+                      - cell "OrigamCode — coloration syntaxique Shiki, 14 langages, 2 thèmes, numéros de ligne, copie, nom de fichier" [ref=f12e291]
+                    - row [ref=f12e292]:
+                      - cell [ref=f12e293]:
+                        - generic [aria-hidden] [ref=f12e294]: 󰗠
+                      - cell "OrigamTextareaField — éditeur contenteditable rich mode avec 9 commandes de barre d'outils" [ref=f12e295]
+                    - row [ref=f12e296]:
+                      - cell [ref=f12e297]:
+                        - generic [aria-hidden] [ref=f12e298]: 󰗠
+                      - cell "OrigamTextField — moteur de masque avec 13 patterns intégrés + Luhn + IBAN mod-97" [ref=f12e299]
+            - listitem [ref=f12e300]:
+              - generic [ref=f12e301]:
+                - generic [ref=f12e302]:
+                  - generic [ref=f12e303]: Livré
+                  - heading "Vague 3 — Infrastructure" [level=3] [ref=f12e308]
+                - table [ref=f12e312]:
+                  - caption [ref=f12e313]: Vague 3 — Infrastructure
+                  - rowgroup [ref=f12e314]:
+                    - row [ref=f12e315]:
+                      - cell [ref=f12e316]:
+                        - generic [aria-hidden] [ref=f12e317]: 󰗠
+                      - cell "Module Nuxt officiel (sous-export origam/nuxt) — auto-import, plugin thème SSR-safe" [ref=f12e318]
+                    - row [ref=f12e319]:
+                      - cell [ref=f12e320]:
+                        - generic [aria-hidden] [ref=f12e321]: 󰗠
+                      - cell "Audit sécurité SSR + useCssSupportClient + OrigamClientOnly" [ref=f12e322]
+                    - row [ref=f12e323]:
+                      - cell [ref=f12e324]:
+                        - generic [aria-hidden] [ref=f12e325]: 󰗠
+                      - cell "Monorepo pnpm — 6 packages (ds, marketing, stories, docs, tests, figma-plugin)" [ref=f12e326]
+            - listitem [ref=f12e327]:
+              - generic [ref=f12e328]:
+                - generic [ref=f12e329]:
+                  - generic [ref=f12e330]: Livré
+                  - heading "Vague 4 — Nouveaux composants et fonctionnalités" [level=3] [ref=f12e335]
+                - table [ref=f12e339]:
+                  - caption [ref=f12e340]: Vague 4 — Nouveaux composants et fonctionnalités
+                  - rowgroup [ref=f12e341]:
+                    - row [ref=f12e342]:
+                      - cell [ref=f12e343]:
+                        - generic [aria-hidden] [ref=f12e344]: 󰗠
+                      - cell "OrigamGrid — CSS Grid déclaratif avec columns, rows, areas, gap, auto-flow" [ref=f12e345]
+                    - row [ref=f12e346]:
+                      - cell [ref=f12e347]:
+                        - generic [aria-hidden] [ref=f12e348]: 󰗠
+                      - 'cell "OrigamMasonry — CSS-first via grid-template-rows: masonry, fallback JS" [ref=f12e349]'
+                    - row [ref=f12e350]:
+                      - cell [ref=f12e351]:
+                        - generic [aria-hidden] [ref=f12e352]: 󰗠
+                      - 'cell "OrigamBlockquote — typographie : citation + auteur + source + variantes" [ref=f12e353]'
+                    - row [ref=f12e354]:
+                      - cell [ref=f12e355]:
+                        - generic [aria-hidden] [ref=f12e356]: 󰗠
+                      - 'cell "OrigamEmptyState — 5 presets : no-data, no-results, error, offline, locked" [ref=f12e357]'
+                    - row [ref=f12e358]:
+                      - cell [ref=f12e359]:
+                        - generic [aria-hidden] [ref=f12e360]: 󰗠
+                      - cell "OrigamClipboard — wrapper copie + feedback Copié !, sans dépendance" [ref=f12e361]
+                    - row [ref=f12e362]:
+                      - cell [ref=f12e363]:
+                        - generic [aria-hidden] [ref=f12e364]: 󰗠
+                      - cell "OrigamInlineEdit — pattern edit-in-place, v-model + validators, ARIA live" [ref=f12e365]
+                    - row [ref=f12e366]:
+                      - cell [ref=f12e367]:
+                        - generic [aria-hidden] [ref=f12e368]: 󰗠
+                      - cell "OrigamNumberFormat — formatage i18n via Intl.NumberFormat, affichage seul" [ref=f12e369]
+                    - row [ref=f12e370]:
+                      - cell [ref=f12e371]:
+                        - generic [aria-hidden] [ref=f12e372]: 󰗠
+                      - cell "OrigamQRCode — rendu SVG, ISO/IEC 18004, niveau de correction, overlay logo" [ref=f12e373]
+                    - row [ref=f12e374]:
+                      - cell [ref=f12e375]:
+                        - generic [aria-hidden] [ref=f12e376]: 󰗠
+                      - cell "OrigamWatermark — overlay diagonal en répétition, texte SVG ou canvas data-URI" [ref=f12e377]
+                    - row [ref=f12e378]:
+                      - cell [ref=f12e379]:
+                        - generic [aria-hidden] [ref=f12e380]: 󰗠
+                      - 'cell "OrigamVideo — player custom : play/pause, scrubber, PIP, légendes, HLS optionnel" [ref=f12e381]'
+                    - row [ref=f12e382]:
+                      - cell [ref=f12e383]:
+                        - generic [aria-hidden] [ref=f12e384]: 󰗠
+                      - cell "OrigamSound — player audio + waveform via Web Audio API, Media Session API" [ref=f12e385]
+                    - row [ref=f12e386]:
+                      - cell [ref=f12e387]:
+                        - generic [aria-hidden] [ref=f12e388]: 󰗠
+                      - cell "OrigamCalendar — vues mois/semaine/jour/agenda, RRULE, drag-to-create, 100 % maison" [ref=f12e389]
+                    - row [ref=f12e390]:
+                      - cell [ref=f12e391]:
+                        - generic [aria-hidden] [ref=f12e392]: 󰗠
+                      - 'cell "OrigamChart — SVG natif : ligne, aire, barre, camembert, radar, scatter — sans d3 ni chart.js" [ref=f12e393]'
+                    - row [ref=f12e394]:
+                      - cell [ref=f12e395]:
+                        - generic [aria-hidden] [ref=f12e396]: 󰗠
+                      - cell "Support gradient — les props color/bgColor/textColor acceptent les valeurs gradient" [ref=f12e397]
+                    - row [ref=f12e398]:
+                      - cell [ref=f12e399]:
+                        - generic [aria-hidden] [ref=f12e400]: 󰗠
+                      - 'cell "OrigamTextMask — révélation de texte via background-clip: text, fonds gradient + image" [ref=f12e401]'
+      - region [ref=f12e402]:
+        - generic [ref=f12e403]:
+          - generic [ref=f12e404]:
+            - paragraph [ref=f12e405]: LA SUITE
+            - heading "Une roadmap par phases." [level=2] [ref=f12e406]
+            - paragraph [ref=f12e407]: Chaque phase s'appuie sur la précédente. L'ordre reflète de vraies dépendances techniques, pas des jalons arbitraires.
+          - list "Une roadmap par phases." [ref=f12e408]:
+            - listitem [ref=f12e409]:
+              - generic [aria-hidden] [ref=f12e412]: 󱓟
+              - generic [ref=f12e415]:
+                - generic [ref=f12e419]:
+                  - generic [ref=f12e420]: Q3 2026
+                  - heading "Court terme" [level=3] [ref=f12e422]
+                - list [ref=f12e424]:
+                  - listitem [ref=f12e425]:
+                    - generic [aria-hidden] [ref=f12e429]: 󰙨
+                    - generic [ref=f12e430]:
+                      - strong [ref=f12e431]: Élargir la barrière e2e en CI
+                      - paragraph [ref=f12e432]: 229 fichiers de specs couvrent déjà les familles de composants, mais le job de CI n'en exécute que les 58 déclarés verts. Faire entrer les 171 restants dans la barrière, vague par vague, en traitant les instabilités au lieu de les contourner.
+                    - generic "Effort" [ref=f12e433]: L
+                  - listitem [ref=f12e435]:
+                    - generic [aria-hidden] [ref=f12e439]: 󰱽
+                    - generic [ref=f12e440]:
+                      - strong [ref=f12e441]: Audit d'API avant la v3
+                      - paragraph [ref=f12e442]: "Le guide de migration v2 vers v3 n'existe pas encore, et l'écrire est une condition bloquante avant de poser le tag v3 : inventaire exhaustif des dépréciations, marqueurs @deprecated manquants complétés, et codemod pour les renommages mécaniques."
+                    - generic "Effort" [ref=f12e443]: L
+                  - listitem [ref=f12e445]:
+                    - generic [aria-hidden] [ref=f12e449]: 󰖟
+                    - generic [ref=f12e450]:
+                      - strong [ref=f12e451]: Publier la documentation sous le domaine du projet
+                      - paragraph [ref=f12e452]: La référence VitePress et le build Histoire sont en ligne et répondent en HTTP 200, mais sur un hôte interne. Tant qu'ils ne vivent pas sous le domaine du projet, le marketing n'a aucune adresse où envoyer les gens.
+                    - generic "Effort" [ref=f12e453]: S
+                  - listitem [ref=f12e455]:
+                    - generic [aria-hidden] [ref=f12e459]: 󱎍
+                    - generic [ref=f12e460]:
+                      - strong [ref=f12e461]: Audit d'accessibilité des overlays
+                      - paragraph [ref=f12e462]: Le balayage axe sur chaque story de composant existe mais ne tourne dans aucun job de CI, et son seuil d'échec est abaissé au seul niveau critique. Le piège au focus, sa restitution, aria-modal et la touche Échap ne sont assertés que pour Dialog, Select et la palette de commandes — Menu, menu contextuel, Tooltip, Drawer, Sheet et Snackbar n'en ont aucun.
+                    - generic "Effort" [ref=f12e463]: M
+                  - listitem [ref=f12e465]:
+                    - generic [aria-hidden] [ref=f12e469]: 󰳈
+                    - generic [ref=f12e470]:
+                      - strong [ref=f12e471]: SonarQube — résorber la dette restante
+                      - paragraph [ref=f12e472]: "La couverture des tests unitaires alimente le scan et la quality gate est armée : elle bloque sur la sécurité et la criticité. Reste le verdict lui-même — une note A sur les quatre axes et zéro dette ouverte. L'analyse des pull requests reste hors périmètre tant que le serveur tourne en Community Edition, qui n'analyse qu'une seule branche."
+                    - generic "Effort" [ref=f12e473]: M
+                  - listitem [ref=f12e475]:
+                    - generic [aria-hidden] [ref=f12e479]: 󰏗
+                    - generic [ref=f12e480]:
+                      - strong [ref=f12e481]: Suivi de la taille du bundle
+                      - paragraph [ref=f12e482]: "Aucun budget de poids n'est imposé aujourd'hui. Ajouter size-limit sur chaque sous-export avec commentaire automatique sur les pull requests, et fixer le seuil depuis la mesure actuelle : l'archive 2.17.1 pèse 1,73 Mo."
+                    - generic "Effort" [ref=f12e483]: S
+            - listitem [ref=f12e485]:
+              - generic [aria-hidden] [ref=f12e488]: 󰧾
+              - generic [ref=f12e491]:
+                - generic [ref=f12e495]:
+                  - generic [ref=f12e496]: Q4 2026 / Q1 2027
+                  - heading "Moyen terme" [level=3] [ref=f12e498]
+                - list [ref=f12e500]:
+                  - listitem [ref=f12e501]:
+                    - generic [aria-hidden] [ref=f12e505]: 󱐌
+                    - generic [ref=f12e506]:
+                      - strong [ref=f12e507]: v3.0.0 — Strategy B
+                      - paragraph [ref=f12e508]: Suppression des retours *Styles quand la valeur est tokenisée. Les classes utilitaires deviennent l'unique API. ~2× moins de calcul réactif.
+                    - generic "Effort" [ref=f12e509]: XL
+                  - listitem [ref=f12e511]:
+                    - generic [aria-hidden] [ref=f12e515]: 󰩦
+                    - generic [ref=f12e516]:
+                      - strong [ref=f12e517]: Sous-exports modulaires (origam/core, origam/form, origam/chart, …)
+                      - paragraph [ref=f12e518]: Découper la librairie publiée en sous-exports tree-shakables par domaine, pour qu'une application ne paie que ce qu'elle importe réellement. Le barrel global origam reste disponible pour la rétrocompatibilité.
+                    - generic "Effort" [ref=f12e519]: XL
+                  - listitem [ref=f12e521]:
+                    - generic [aria-hidden] [ref=f12e525]: 󰸌
+                    - generic [ref=f12e526]:
+                      - strong [ref=f12e527]: Renommage accentColor (breaking v3)
+                      - paragraph [ref=f12e528]: Renommage bgColor → accentColor, aligné sur le standard CSS accent-color. Chemin de dépréciation complet inclus.
+                    - generic "Effort" [ref=f12e529]: M
+                  - listitem [ref=f12e531]:
+                    - generic [aria-hidden] [ref=f12e535]: 󰉹
+                    - generic [ref=f12e536]:
+                      - strong [ref=f12e537]: Variants de liste sémantiques (OrigamList)
+                      - paragraph [ref=f12e538]: OrigamList / OrigamListItem rendent aujourd'hui des div role="listbox". Une nouvelle prop variant (unordered → ul/li, ordered → ol/li, nav, listbox) émettra du vrai ul/ol/li, en remplacement de la prop booléenne nav.
+                    - generic "Effort" [ref=f12e539]: M
+                  - listitem [ref=f12e541]:
+                    - generic [aria-hidden] [ref=f12e545]: 󰓍
+                    - generic [ref=f12e546]:
+                      - strong [ref=f12e547]: OrigamWizardForm — formulaire multi-étapes
+                      - paragraph [ref=f12e548]: Compose les composants existants OrigamForm et OrigamStepper — aucune réimplémentation de la validation ni de la navigation par étapes. La validation par étape bloque la progression tant que l'étape active n'est pas valide ; un seul v-model agrège les valeurs de toutes les étapes.
+                    - generic "Effort" [ref=f12e549]: M
+                  - listitem [ref=f12e551]:
+                    - generic [aria-hidden] [ref=f12e555]: 󰽿
+                    - generic [ref=f12e556]:
+                      - strong [ref=f12e557]: OrigamPage — wrapper de page
+                      - paragraph [ref=f12e558]: Un wrapper structurel volontairement simple, avec trois zones optionnelles — header, content, footer — rendues en éléments sémantiques réels. Aucun comportement de scroll ou de sticky imposé, juste un squelette de page cohérent avec les tokens de spacing du DS.
+                    - generic "Effort" [ref=f12e559]: S
+                  - listitem [ref=f12e561]:
+                    - generic [aria-hidden] [ref=f12e565]: 󱇘
+                    - generic [ref=f12e566]:
+                      - strong [ref=f12e567]: OrigamSection — schémas de section
+                      - paragraph [ref=f12e568]: "OrigamSection a été retiré du dépôt le 26/08/2026 — c'était une coquille vide de 14 lignes, sans valeur livrée. Ce jalon le crée entièrement : des schémas de section prédéfinis comme hero, split, centered ou full-bleed, en presets de props overridables sur un vrai élément section, props d'abord."
+                    - generic "Effort" [ref=f12e569]: M
+                  - listitem [ref=f12e571]:
+                    - generic [aria-hidden] [ref=f12e575]: 󰪐
+                    - generic [ref=f12e576]:
+                      - strong [ref=f12e577]: Tokens motion & media a11y
+                      - paragraph [ref=f12e578]: tokens/semantic/motion.json — durées, easings. Auto 0ms si prefers-reduced-motion. Rampe high-contrast.
+                    - generic "Effort" [ref=f12e579]: M
+                  - listitem [ref=f12e581]:
+                    - generic [aria-hidden] [ref=f12e585]: 󰋯
+                    - generic [ref=f12e586]:
+                      - strong [ref=f12e587]: Directive v-background
+                      - paragraph [ref=f12e588]: Composer un ou plusieurs fonds sur n'importe quel élément — image ou dégradé de couleur (intents tokenisés + custom). Position, taille, répétition et un masque simple par couche. Chaque couche se matérialise en pseudo-élément (défaut, zéro DOM en plus) ou en div injectée, au choix dans la config de la directive.
+                    - generic "Effort" [ref=f12e589]: L
+                  - listitem [ref=f12e591]:
+                    - generic [aria-hidden] [ref=f12e595]: 󰚞
+                    - generic [ref=f12e596]:
+                      - strong [ref=f12e597]: TextMask — contour et fill colorés
+                      - paragraph [ref=f12e598]: "Étendre OrigamTextMask avec un mode ajouré : texte transparent au contour coloré par lettre (-webkit-text-stroke) et/ou un fill distinct, pour des effets de titraille « outline only » et contrastés. Reste du vrai texte sélectionnable ; CSS-first avec fallback."
+                    - generic "Effort" [ref=f12e599]: M
+                  - listitem [ref=f12e601]:
+                    - generic [aria-hidden] [ref=f12e605]: 󱍜
+                    - generic [ref=f12e606]:
+                      - strong [ref=f12e607]: Compléter le builder /theming
+                      - paragraph [ref=f12e608]: "Le theme builder marketing est livré en V1 partielle (~14 composants core, tokens plafonnés, modals/slot-driven non prévisualisables). À finir : couvrir tous les composants éditables, gérer les previews overlay/slot-driven, lever le cap de tokens, et refondre l'UI — l'ergonomie actuelle n'est clairement pas assez bonne. Reste data-driven et DS-first."
+                    - generic "Effort" [ref=f12e609]: L
+                  - listitem [ref=f12e611]:
+                    - generic [ref=f12e612]:
+                      - strong [ref=f12e613]: Tests de régression visuelle
+                      - paragraph [ref=f12e614]: Playwright toHaveScreenshot() par Variant, ou Chromatic / Lost-Pixel. Baseline sur main, diff bloque les PR.
+                    - generic "Effort" [ref=f12e615]: M
+                  - listitem [ref=f12e617]:
+                    - generic [aria-hidden] [ref=f12e621]: 󱎯
+                    - generic [ref=f12e622]:
+                      - strong [ref=f12e623]: Cache de build Turborepo
+                      - paragraph [ref=f12e624]: Remplacement des scripts pnpm -r bruts par des pipelines Turborepo. Le cache distant réduit drastiquement les temps de rebuild en CI.
+                    - generic "Effort" [ref=f12e625]: S
+                  - listitem [ref=f12e627]:
+                    - generic [aria-hidden] [ref=f12e631]: 󱕂
+                    - generic [ref=f12e632]:
+                      - strong [ref=f12e633]: variant comme préconfiguration de props
+                      - paragraph [ref=f12e634]: Transformer chaque variant visuel en préconfiguration transparente et intégralement surchargeable des props du composant, plutôt qu'un traitement visuel figé en dur — piloté sur OrigamBlockquote, puis généralisé.
+                    - generic "Effort" [ref=f12e635]: L
+                  - listitem [ref=f12e637]:
+                    - generic [aria-hidden] [ref=f12e641]: 󰐒
+                    - generic [ref=f12e642]:
+                      - strong [ref=f12e643]: OrigamAddMore — répéteur de champs de formulaire
+                      - paragraph [ref=f12e644]: Un nouveau composant de formulaire pour répéter un groupe de champs avec une action « Add more », des bornes min/max, et un support clavier et lecteur d'écran complet.
+                    - generic "Effort" [ref=f12e645]: M
+                  - listitem [ref=f12e647]:
+                    - generic [aria-hidden] [ref=f12e651]: 󱇃
+                    - generic [ref=f12e652]:
+                      - strong [ref=f12e653]: OrigamBtn — prop contentJustify
+                      - paragraph [ref=f12e654]: Un moyen props-first de contrôler l'alignement du contenu d'un bouton dans sa mise en page, pour les boutons qui n'utilisent pas les slots d'icône prepend/append.
+                    - generic "Effort" [ref=f12e655]: S
+            - listitem [ref=f12e657]:
+              - generic [aria-hidden] [ref=f12e660]: 󰭎
+              - generic [ref=f12e663]:
+                - generic [ref=f12e667]:
+                  - generic [ref=f12e668]: "> 6 MOIS"
+                  - heading "Long terme" [level=3] [ref=f12e670]
+                - list [ref=f12e672]:
+                  - listitem [ref=f12e673]:
+                    - generic [aria-hidden] [ref=f12e677]: 󰓅
+                    - generic [ref=f12e678]:
+                      - strong [ref=f12e679]: Vue Vapor mode (exploratoire)
+                      - paragraph [ref=f12e680]: Compilation sans virtual DOM — ~40 % moins d'overhead runtime. POC sur 5 composants pivots, benchmarks d'abord.
+                    - generic "Effort" [ref=f12e681]: XL
+                  - listitem [ref=f12e683]:
+                    - generic [aria-hidden] [ref=f12e687]: 󰖟
+                    - generic [ref=f12e688]:
+                      - strong [ref=f12e689]: Export Web Components
+                      - paragraph [ref=f12e690]: Sous-export origam/elements via defineCustomElement. Démo cross-framework (React, Svelte, Angular).
+                    - generic "Effort" [ref=f12e691]: L
+                  - listitem [ref=f12e693]:
+                    - generic [aria-hidden] [ref=f12e697]: 󱍜
+                    - generic [ref=f12e698]:
+                      - strong [ref=f12e699]: Theme Builder UI
+                      - paragraph [ref=f12e700]: "App standalone consommant origam elle-même : édition tokens primitifs, preview composants en temps réel, export JSON de marque."
+                    - generic "Effort" [ref=f12e701]: XL
+                  - listitem [ref=f12e703]:
+                    - generic [aria-hidden] [ref=f12e707]: 󱘸
+                    - generic [ref=f12e708]:
+                      - strong [ref=f12e709]: Marketing — base de données + sync DS auto
+                      - paragraph [ref=f12e710]: Persister tout le catalogue référentiel (composants, composables, types, enums, interfaces, utils, consts) en base de données (Nitro + TypeORM / PostgreSQL) au lieu de fichiers glob statiques. Un job de sync lit le code du DS et upsert la BDD à chaque release, pour que la doc référentielle suive automatiquement le design system. Le contenu éditorial vit dans les mêmes tables avec un flag « DS auto » vs « édité ».
+                    - generic "Effort" [ref=f12e711]: XL
+                  - listitem [ref=f12e713]:
+                    - generic [aria-hidden] [ref=f12e717]: 󱥈
+                    - generic [ref=f12e718]:
+                      - strong [ref=f12e719]: Marketing — backend d'administration (CMS)
+                      - paragraph [ref=f12e720]: "Un back-office pour gérer tout le contenu du site quand l'auto-génération est imparfaite : éditer n'importe quelle page (référentiel + éditorial), réordonner, publier/masquer, sans toucher au code. Entièrement traduisible (i18n piloté par la BDD, complétude par langue) et construit avec origam lui-même — une vitrine grandeur nature du DS. Auth + rôles, audit des modifications, garde-fou pré-publication. Stack : Nitro + TypeORM/PostgreSQL + Redis."
+                    - generic "Effort" [ref=f12e721]: XL
+                  - listitem [ref=f12e723]:
+                    - generic [aria-hidden] [ref=f12e727]: 󱲚
+                    - generic [ref=f12e728]:
+                      - strong [ref=f12e729]: Vue Server Components
+                      - paragraph [ref=f12e730]: Suivre l'écosystème du compilateur Vue et s'aligner sur un modèle façon React Server Components une fois qu'il se stabilise.
+                    - generic "Effort" [ref=f12e731]: M
+                  - listitem [ref=f12e733]:
+                    - generic [aria-hidden] [ref=f12e737]: 󰁨
+                    - generic [ref=f12e738]:
+                      - strong [ref=f12e739]: Génération assistée par IA (Figma → code)
+                      - paragraph [ref=f12e740]: Rendre le plugin Figma bidirectionnel — transformer automatiquement des designs Figma en composants origam accélère la création de nouveaux composants.
+                    - generic "Effort" [ref=f12e741]: L
+                  - listitem [ref=f12e743]:
+                    - generic [aria-hidden] [ref=f12e747]: 󱛡
+                    - generic [ref=f12e748]:
+                      - strong [ref=f12e749]: Politique de maintenance & fin de vie
+                      - paragraph [ref=f12e750]: "Une politique LTS documentée : une fois la v3.0 publiée, la branche v2.x continue de recevoir des correctifs de sécurité et bugs critiques pendant une période définie."
+            - listitem [ref=f12e751]:
+              - generic [aria-hidden] [ref=f12e754]: 󰑐
+              - generic [ref=f12e757]:
+                - generic [ref=f12e761]:
+                  - generic [ref=f12e762]: CHAQUE SPRINT
+                  - heading "Hygiène continue" [level=3] [ref=f12e764]
+                - list [ref=f12e766]:
+                  - listitem [ref=f12e767]:
+                    - generic [aria-hidden] [ref=f12e771]: 󰚰
+                    - generic [ref=f12e772]:
+                      - strong [ref=f12e773]: Hygiène des dépendances
+                      - paragraph [ref=f12e774]: Mises à jour de dépendances automatisées chaque semaine ; zéro vulnérabilité high ou critical tolérée au merge.
+                  - listitem [ref=f12e775]:
+                    - generic [aria-hidden] [ref=f12e779]: 󱗖
+                    - generic [ref=f12e780]:
+                      - strong [ref=f12e781]: Couverture documentaire
+                      - paragraph [ref=f12e782]: Aucun composant ne passe la review sans sa page de doc. Audit trimestriel des liens de la documentation.
+                  - listitem [ref=f12e783]:
+                    - generic [aria-hidden] [ref=f12e787]: 󰓅
+                    - generic [ref=f12e788]:
+                      - strong [ref=f12e789]: Budget de performance
+                      - paragraph [ref=f12e790]: Les contrôles de taille de bundle bloquent toute PR qui dépasse son budget ; chaque composant modifié est profilé avant merge.
+                  - listitem [ref=f12e791]:
+                    - generic [aria-hidden] [ref=f12e795]: 󰃢
+                    - generic [ref=f12e796]:
+                      - strong [ref=f12e797]: Refacto opportuniste
+                      - paragraph [ref=f12e798]: Toute PR qui touche un composant aux anciens patterns (couleurs en dur, styles inline uniquement) le migre avant merge.
+                  - listitem [ref=f12e799]:
+                    - generic [aria-hidden] [ref=f12e803]: 󱝀
+                    - generic [ref=f12e804]:
+                      - strong [ref=f12e805]: Garde-fou qualité de code
+                      - paragraph [ref=f12e806]: Analyse statique, lint strict et vérification de types s'exécutent sur chaque PR — pas d'échappatoire non justifiée.
+                  - listitem [ref=f12e807]:
+                    - generic [aria-hidden] [ref=f12e811]: 󰷉
+                    - generic [ref=f12e812]:
+                      - strong [ref=f12e813]: Discipline du changelog
+                      - paragraph [ref=f12e814]: Le changelog est tenu à jour à chaque pull request, pas seulement à la release.
+                  - listitem [ref=f12e815]:
+                    - generic [aria-hidden] [ref=f12e819]: 󰢨
+                    - generic [ref=f12e820]:
+                      - strong [ref=f12e821]: Test-as-you-build
+                      - paragraph [ref=f12e822]: Chaque nouvelle story est livrée avec sa couverture end-to-end dans la même pull request — vérifié automatiquement en CI.
+                  - listitem [ref=f12e823]:
+                    - generic [aria-hidden] [ref=f12e827]: 󰳌
+                    - generic [ref=f12e828]:
+                      - strong [ref=f12e829]: Contrôles de sécurité sur chaque PR
+                      - paragraph [ref=f12e830]: Scan de secrets sur chaque pull request, plus une revue de sécurité dédiée pour toute modification du code serveur, des services, ou de la configuration de build.
+      - region [ref=f12e831]:
+        - generic [ref=f12e832]:
+          - generic [ref=f12e833]:
+            - paragraph [ref=f12e834]: VAGUE 4 — LIVRÉE
+            - heading "15 composants et fonctionnalités déjà livrés." [level=2] [ref=f12e835]:
+              - generic [ref=f12e836]: 15 composants et fonctionnalités
+              - generic [ref=f12e837]: déjà livrés.
+            - paragraph [ref=f12e838]: Tout ce qui est dans la Vague 4 est disponible sur npm. Ce sont les composants et fonctionnalités accessibles dès maintenant dans origam.
+          - list [ref=f12e839]:
+            - listitem [ref=f12e840]:
+              - generic [ref=f12e843]:
+                - generic [ref=f12e844]:
+                  - generic [aria-hidden] [ref=f12e848]: 󰋁
+                  - heading "OrigamGrid" [level=3] [ref=f12e849]
+                  - generic "Livré" [ref=f12e850]
+                - paragraph [ref=f12e852]: CSS Grid déclaratif avec columns, rows, areas, gap, auto-flow
+            - listitem [ref=f12e853]:
+              - generic [ref=f12e856]:
+                - generic [ref=f12e857]:
+                  - generic [aria-hidden] [ref=f12e861]: 󱒎
+                  - heading "OrigamMasonry" [level=3] [ref=f12e862]
+                  - generic "Livré" [ref=f12e863]
+                - paragraph [ref=f12e865]: "CSS-first via grid-template-rows: masonry, fallback JS"
+            - listitem [ref=f12e866]:
+              - generic [ref=f12e869]:
+                - generic [ref=f12e870]:
+                  - generic [aria-hidden] [ref=f12e874]: 󰉾
+                  - heading "OrigamBlockquote" [level=3] [ref=f12e875]
+                  - generic "Livré" [ref=f12e876]
+                - paragraph [ref=f12e878]: "Typographie : citation + auteur + source + variantes"
+            - listitem [ref=f12e879]:
+              - generic [ref=f12e882]:
+                - generic [ref=f12e883]:
+                  - generic [aria-hidden] [ref=f12e887]: 󱉴
+                  - heading "OrigamEmptyState" [level=3] [ref=f12e888]
+                  - generic "Livré" [ref=f12e889]
+                - paragraph [ref=f12e891]: "5 presets : no-data, no-results, error, offline, locked"
+            - listitem [ref=f12e892]:
+              - generic [ref=f12e895]:
+                - generic [ref=f12e896]:
+                  - generic [aria-hidden] [ref=f12e900]: 󰅌
+                  - heading "OrigamClipboard" [level=3] [ref=f12e901]
+                  - generic "Livré" [ref=f12e902]
+                - paragraph [ref=f12e904]: Wrapper copie + feedback Copié !, sans dépendance
+            - listitem [ref=f12e905]:
+              - generic [ref=f12e908]:
+                - generic [ref=f12e909]:
+                  - generic [aria-hidden] [ref=f12e913]: 󰲶
+                  - heading "OrigamInlineEdit" [level=3] [ref=f12e914]
+                  - generic "Livré" [ref=f12e915]
+                - paragraph [ref=f12e917]: Pattern edit-in-place, v-model + validators, ARIA live
+            - listitem [ref=f12e918]:
+              - generic [ref=f12e921]:
+                - generic [ref=f12e922]:
+                  - generic [aria-hidden] [ref=f12e926]: 󰎠
+                  - heading "OrigamNumberFormat" [level=3] [ref=f12e927]
+                  - generic "Livré" [ref=f12e928]
+                - paragraph [ref=f12e930]: Formatage i18n via Intl.NumberFormat, affichage seul
+            - listitem [ref=f12e931]:
+              - generic [ref=f12e934]:
+                - generic [ref=f12e935]:
+                  - generic [aria-hidden] [ref=f12e939]: 󰐲
+                  - heading "OrigamQRCode" [level=3] [ref=f12e940]
+                  - generic "Livré" [ref=f12e941]
+                - paragraph [ref=f12e943]: Rendu SVG, ISO/IEC 18004, niveau de correction, overlay logo
+            - listitem [ref=f12e944]:
+              - generic [ref=f12e947]:
+                - generic [ref=f12e948]:
+                  - generic [aria-hidden] [ref=f12e952]: 󰘒
+                  - heading "OrigamWatermark" [level=3] [ref=f12e953]
+                  - generic "Livré" [ref=f12e954]
+                - paragraph [ref=f12e956]: Overlay diagonal en répétition, texte SVG ou canvas data-URI
+            - listitem [ref=f12e957]:
+              - generic [ref=f12e960]:
+                - generic [ref=f12e961]:
+                  - generic [aria-hidden] [ref=f12e965]: 󰐍
+                  - heading "OrigamVideo" [level=3] [ref=f12e966]
+                  - generic "Livré" [ref=f12e967]
+                - paragraph [ref=f12e969]: "Player custom : play/pause, scrubber, PIP, légendes, HLS optionnel"
+            - listitem [ref=f12e970]:
+              - generic [ref=f12e973]:
+                - generic [ref=f12e974]:
+                  - generic [aria-hidden] [ref=f12e978]: 󰕾
+                  - heading "OrigamSound" [level=3] [ref=f12e979]
+                  - generic "Livré" [ref=f12e980]
+                - paragraph [ref=f12e982]: Player audio + waveform via Web Audio API, Media Session API
+            - listitem [ref=f12e983]:
+              - generic [ref=f12e986]:
+                - generic [ref=f12e987]:
+                  - generic [aria-hidden] [ref=f12e991]: 󰭧
+                  - heading "OrigamCalendar" [level=3] [ref=f12e992]
+                  - generic "Livré" [ref=f12e993]
+                - paragraph [ref=f12e995]: Vues mois/semaine/jour/agenda, RRULE, drag-to-create, 100 % maison
+            - listitem [ref=f12e996]:
+              - generic [ref=f12e999]:
+                - generic [ref=f12e1000]:
+                  - generic [aria-hidden] [ref=f12e1004]: 󰄪
+                  - heading "OrigamChart" [level=3] [ref=f12e1005]
+                  - generic "Livré" [ref=f12e1006]
+                - paragraph [ref=f12e1008]: "SVG natif : ligne, aire, barre, camembert, radar, scatter — sans d3 ni chart.js"
+            - listitem [ref=f12e1009]:
+              - generic [ref=f12e1012]:
+                - generic [ref=f12e1013]:
+                  - generic [aria-hidden] [ref=f12e1017]: 󱝊
+                  - heading "Support gradient" [level=3] [ref=f12e1018]
+                  - generic "Livré" [ref=f12e1019]
+                - paragraph [ref=f12e1021]: Les props color/bgColor/textColor acceptent désormais les valeurs gradient
+            - listitem [ref=f12e1022]:
+              - generic [ref=f12e1025]:
+                - generic [ref=f12e1026]:
+                  - generic [aria-hidden] [ref=f12e1030]: 󰧭
+                  - heading "OrigamTextMask" [level=3] [ref=f12e1031]
+                  - generic "Livré" [ref=f12e1032]
+                - paragraph [ref=f12e1034]: "Révélation de texte via background-clip: text, fonds gradient + image"
+      - region [ref=f12e1035]:
+        - generic [ref=f12e1036]:
+          - heading "Suivez l'avancement." [level=2] [ref=f12e1037]
+          - paragraph [ref=f12e1038]: Mettez une étoile au dépôt sur GitHub pour rester informé. Les contributions et retours sont les bienvenus.
+          - navigation "Suivre origam" [ref=f12e1039]:
+            - link "Star sur GitHub" [ref=f12e1040] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam
+              - generic [ref=f12e1041]:
+                - generic [aria-hidden] [ref=f12e1043]: 󰊤
+                - generic [ref=f12e1044]: Star sur GitHub
+            - link "Lire le CHANGELOG" [ref=f12e1045] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam/blob/main/CHANGELOG.md
+              - generic [ref=f12e1046]:
+                - generic [aria-hidden] [ref=f12e1048]: 󰧮
+                - generic [ref=f12e1049]: Lire le CHANGELOG
+  - contentinfo [ref=f12e1050]:
+    - generic [ref=f12e1051]:
+      - generic [ref=f12e1052]:
+        - link "origam" [ref=f12e1053] [cursor=pointer]:
+          - /url: /fr
+          - img "origam" [ref=f12e1054]
+        - paragraph [ref=f12e1056]: Le design system Vue 3 qui marche, tout simplement.
+      - navigation "Produit" [ref=f12e1057]:
+        - heading "Produit" [level=2] [ref=f12e1058]
+        - list [ref=f12e1059]:
+          - listitem [ref=f12e1060]:
+            - link "Graphiques" [ref=f12e1061] [cursor=pointer]:
+              - /url: /fr/components#charts
+          - listitem [ref=f12e1062]:
+            - link "Thèmes" [ref=f12e1063] [cursor=pointer]:
+              - /url: /fr#themes
+      - navigation "Ressources" [ref=f12e1064]:
+        - heading "Ressources" [level=2] [ref=f12e1065]
+        - list [ref=f12e1066]:
+          - listitem [ref=f12e1067]:
+            - link "GitHub" [ref=f12e1068] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam
+          - listitem [ref=f12e1069]:
+            - link "Communauté" [ref=f12e1070] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam/discussions
+          - listitem [ref=f12e1071]:
+            - link "Discord" [ref=f12e1072] [cursor=pointer]:
+              - /url: https://discord.gg/origam
+          - listitem [ref=f12e1073]:
+            - link "Discussions" [ref=f12e1074] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam/discussions
+          - listitem [ref=f12e1075]:
+            - link "Twitter" [ref=f12e1076] [cursor=pointer]:
+              - /url: https://twitter.com/origam
+          - listitem [ref=f12e1077]:
+            - link "Soutenir origam" [ref=f12e1078] [cursor=pointer]:
+              - /url: /fr/support
+      - navigation "Mentions légales" [ref=f12e1079]:
+        - heading "Mentions légales" [level=2] [ref=f12e1080]
+        - list [ref=f12e1081]:
+          - listitem [ref=f12e1082]:
+            - link "Licence MIT" [ref=f12e1083] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam/blob/main/LICENSE
+          - listitem [ref=f12e1084]:
+            - link "Confidentialité" [ref=f12e1085] [cursor=pointer]:
+              - /url: /fr/privacy
+          - listitem [ref=f12e1086]:
+            - link "Contact" [ref=f12e1087] [cursor=pointer]:
+              - /url: /fr/contact
+    - separator [ref=f12e1088]
+    - navigation "Plan du site" [ref=f12e1089]:
+      - heading "Introduction" [level=3] [ref=f12e1090]
+      - list [ref=f12e1091]:
+        - listitem [ref=f12e1092]:
+          - link "Pourquoi origam ?" [ref=f12e1093] [cursor=pointer]:
+            - /url: /fr/why-origam
+        - listitem [ref=f12e1094]:
+          - link "Feuille de route" [ref=f12e1095] [cursor=pointer]:
+            - /url: /fr/roadmap
+        - listitem [ref=f12e1096]:
+          - link "Journal" [ref=f12e1097] [cursor=pointer]:
+            - /url: /fr/changelog
+      - heading "Prise en main" [level=3] [ref=f12e1098]
+      - list [ref=f12e1099]:
+        - listitem [ref=f12e1100]:
+          - link "Installation" [ref=f12e1101] [cursor=pointer]:
+            - /url: /fr/installation
+        - listitem [ref=f12e1102]:
+          - link "Wireframe" [ref=f12e1103] [cursor=pointer]:
+            - /url: /fr/wireframe
+      - heading "Fonctionnalités" [level=3] [ref=f12e1104]
+      - list [ref=f12e1105]:
+        - listitem [ref=f12e1106]:
+          - link "Composants" [ref=f12e1107] [cursor=pointer]:
+            - /url: /fr/components
+        - listitem [ref=f12e1108]:
+          - link "Directives" [ref=f12e1109] [cursor=pointer]:
+            - /url: /fr/directives
+        - listitem [ref=f12e1110]:
+          - link "Composables" [ref=f12e1111] [cursor=pointer]:
+            - /url: /fr/composables
+        - listitem [ref=f12e1112]:
+          - link "Types" [ref=f12e1113] [cursor=pointer]:
+            - /url: /fr/types
+        - listitem [ref=f12e1114]:
+          - link "Énumérations" [ref=f12e1115] [cursor=pointer]:
+            - /url: /fr/enums
+        - listitem [ref=f12e1116]:
+          - link "Interfaces" [ref=f12e1117] [cursor=pointer]:
+            - /url: /fr/interfaces
+        - listitem [ref=f12e1118]:
+          - link "Utilitaires" [ref=f12e1119] [cursor=pointer]:
+            - /url: /fr/utils
+        - listitem [ref=f12e1120]:
+          - link "Constantes" [ref=f12e1121] [cursor=pointer]:
+            - /url: /fr/consts
+        - listitem [ref=f12e1122]:
+          - link "Stories" [ref=f12e1123] [cursor=pointer]:
+            - /url: /stories/
+        - listitem [ref=f12e1124]:
+          - link "Docs" [ref=f12e1125] [cursor=pointer]:
+            - /url: /docs/
+    - separator [ref=f12e1126]
+    - generic [ref=f12e1127]:
+      - paragraph [ref=f12e1128]: © 2026 origam · MIT
+      - paragraph [ref=f12e1129]: Fait avec origam, par des humains.
+      - link "Soutenir origam par un don" [ref=f12e1130] [cursor=pointer]:
+        - /url: https://www.paypal.com/donate/?hosted_button_id=EQFUQ2JV95YGQ
+        - text: Soutenir origam
