@@ -446,7 +446,7 @@
 			if (hasData && datum !== undefined) {
 				fill = choroplethColorFor(datum.value, min, max)
 			} else {
-				fill = props.defaultCountryFill
+				fill = resolveColor(props.defaultCountryFill)
 			}
 			return {
 				code,

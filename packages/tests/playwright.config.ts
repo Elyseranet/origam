@@ -198,7 +198,20 @@ const GREEN_SPECS = [
     // (le stroke reste fige sur l'ancien litteral), le test des valeurs
     // CSS explicites reste vert des deux cotes, comme attendu. Verifiee
     // stable 10/10, `--repeat-each=5`, `E2E_STATIC=1`, chromium, port isole.
-    'chart-map-border-color-theme.spec.ts'
+    'chart-map-border-color-theme.spec.ts',
+    // #411 (suite) — meme defaut, une ligne au-dessus dans le meme fichier :
+    // `defaultCountryFill` allait dans `fill` sans `resolveColor()` non plus.
+    // Repere par le project-manager APRES la PR initiale (le harnais et le
+    // fichier etaient deja ouverts) plutot qu'ouvert en ticket separe. A/B
+    // contre le commit d'avant ce second correctif : le test « repaints
+    // under a themed intent » rougit (fill fige sur le litteral, le pays
+    // sans donnee disparaitrait sous un theme nommant un intent), le test
+    // CSS explicite reste vert des deux cotes. Le defaut PAR DEFAUT reste le
+    // litteral `rgba(0,0,0,0.08)` — deliberement NON retype vers un intent,
+    // aucun ne reproduit le scrim semi-transparent compositee sur le
+    // `bgColor` du graphique (cf. JSDoc de l'interface). Verifiee stable
+    // 10/10, `--repeat-each=5`, `E2E_STATIC=1`, chromium, port isole.
+    'chart-map-default-country-fill-theme.spec.ts'
 ]
 
 /**
