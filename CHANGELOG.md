@@ -218,6 +218,31 @@ conclure qu'elle ne l'est plus par défaut.
   coexistent dans le magasin). Les commentaires qui affirmaient le contraire
   dans les deux fichiers ont été corrigés.
 
+- **#871 — l'état SURVOL était en défaut plus grave encore, et le correctif
+  d'encre l'a réglé sans qu'on y touche.** Le survol n'a pas d'encre à lui :
+  `--origam-btn--primary---background-color-hover` bascule la surface, mais il
+  n'existe **aucun** `--origam-btn--primary---color-hover` (ni de
+  `--origam-badge__badge---color-hover`) — l'encre reste `action.primary.fg`
+  dans les deux états. Sous l'encre blanche, `apple` sombre y tombait à
+  **2.19:1** et `ecom` sombre à **2.69:1** : *pires que n'importe laquelle des
+  7 violations comptées*, et invisibles parce que la sonde de
+  `dark-contrast.audit.mjs` ne rend que l'état au repos.
+
+  **Aucun `bgHover` n'a été modifié.** La direction du survol n'était pas le
+  problème — l'encre l'était. Mesuré sur les deux marques :
+
+  | mode · encre | direction du survol | ratio repos → survol |
+  |---|---|---|
+  | clair · blanche | fonce | 4.70 → **6.95** / **6.29** ↑ |
+  | sombre · blanche *(avant)* | éclaircit | 3.65 → **2.19** / 3.67 → **2.69** ↓ |
+  | sombre · foncée *(après)* | éclaircit | 5.76 → **9.60** / 5.12 → **6.99** ↑ |
+
+  La règle n'est donc pas *« le survol doit foncer »* mais **« le survol doit
+  déplacer l'accent à l'opposé de la clarté de son encre »**. Les palettes la
+  respectaient déjà dans 3 quadrants sur 4 ; le seul cassé l'était par son
+  encre. L'idiome « le survol éclaircit », qui est le bon en mode sombre, est
+  conservé dans les deux marques.
+
 - **#871 — non-régression : `packages/tests/TU/marketing/brand-palette-contrast.spec.ts`.**
   Les couples `{bg, fg}` littéraux des 7 palettes de marque (14 thèmes) doivent
   tenir AA. L'audit de #871 est un script qu'on lance à la main : rien ne le

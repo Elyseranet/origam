@@ -83,10 +83,42 @@ const isLiteralHex = (value: unknown): value is string =>
 
 interface IPairSource {
     bg?: unknown
+    bgHover?: unknown
     fg?: unknown
 }
 
-/** Les couples `{bg, fg}` litteraux d'un theme, nommes pour le message d'echec. */
+/**
+ * Les couples litteraux d'un theme, nommes pour le message d'echec.
+ *
+ * ⛔ DEUX couples par entree, pas un : `{bg, fg}` ET `{bgHover, fg}`.
+ *
+ * Le survol n'a PAS d'encre a lui. Verifie dans les feuilles :
+ * `--origam-btn--primary---background-color-hover` existe et bascule la
+ * surface, mais il n'y a AUCUN `--origam-btn--primary---color-hover` (ni de
+ * `--origam-badge__badge---color-hover`) — l'encre reste
+ * `action.primary.fg` dans les deux etats. Un `bgHover` se lit donc sous la
+ * MEME encre que `bg`, et doit tenir AA au meme titre.
+ *
+ * C'est le trou par lequel #871 a failli passer : la sonde de
+ * `dark-contrast.audit.mjs` ne rend que l'etat au REPOS, donc aucune mesure
+ * navigateur de ce depot ne regarde le survol. Avant le correctif de #871,
+ * `apple` sombre y etait a 2.19:1 et `ecom` sombre a 2.69:1 — pires que
+ * n'importe laquelle des 7 violations qui, elles, etaient comptees.
+ *
+ * ⛔ LA REGLE QUE CE COUPLE FAIT RESPECTER : le survol doit deplacer l'accent
+ * A L'OPPOSE de la clarte de son encre. Ce n'est PAS « le survol doit
+ * foncer » — mesure sur les deux marques concernees :
+ *
+ *   clair,  encre blanche, le survol FONCE      4.70 -> 6.95 / 6.29   ↑
+ *   sombre, encre blanche, le survol ECLAIRCIT  3.65 -> 2.19 / 2.69   ↓
+ *   sombre, encre foncee,  le survol ECLAIRCIT  5.76 -> 9.60 / 6.99   ↑
+ *
+ * Les palettes deplacaient donc DEJA leur accent dans le bon sens dans trois
+ * quadrants sur quatre ; le seul casse etait le sombre, et il l'etait par son
+ * ENCRE, pas par la direction de son survol. Corriger l'encre a suffi : aucun
+ * `bgHover` n'a ete touche, et l'idiome « le survol eclaircit » — qui est le
+ * bon en mode sombre — est conserve dans les deux marques.
+ */
 function literalPairs (theme: IOrigamTheme): { label: string, fg: string, bg: string }[] {
     const color = (theme.vars?.color ?? {}) as Record<string, unknown>
     const pairs: { label: string, fg: string, bg: string }[] = []
@@ -94,9 +126,12 @@ function literalPairs (theme: IOrigamTheme): { label: string, fg: string, bg: st
     const push = (label: string, source: unknown): void => {
         const entry = source as IPairSource | undefined
 
-        if (!entry || !isLiteralHex(entry.bg) || !isLiteralHex(entry.fg)) return
+        if (!entry || !isLiteralHex(entry.fg)) return
 
-        pairs.push({ label, fg: entry.fg.trim(), bg: entry.bg.trim() })
+        const fg = entry.fg.trim()
+
+        if (isLiteralHex(entry.bg)) pairs.push({ label, fg, bg: entry.bg.trim() })
+        if (isLiteralHex(entry.bgHover)) pairs.push({ label: `${label} (survol)`, fg, bg: entry.bgHover.trim() })
     }
 
     for (const [name, entry] of Object.entries((color.action ?? {}) as Record<string, unknown>)) {
