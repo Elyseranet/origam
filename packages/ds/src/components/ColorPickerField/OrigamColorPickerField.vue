@@ -409,8 +409,31 @@
 		return {
 			...props.menuProps,
 			activatorProps: {
+				/*********************************************************
+				 * role + aria-haspopup — #818
+				 *
+				 * @description
+				 * `'colorpickerbox'` was never a valid `aria-haspopup` token
+				 * (spec allows `false|true|menu|listbox|tree|grid|dialog`) —
+				 * axe-core's `aria-valid-attr-value` flagged it, measured
+				 * against a real browser. The popup is a free-form panel
+				 * (a color canvas + swatches), not a list of options, so
+				 * `'dialog'` is the correct token — same family as the
+				 * WAI-ARIA "Date Picker Dialog" pattern `OrigamDatePickerField`
+				 * uses right below.
+				 *
+				 * @description
+				 * `role: 'combobox'` is ALSO required here: `activator="parent"`
+				 * (below) lands these ARIA attrs on the `.origam-field` wrapper
+				 * `<div>`, which carries no role by default — `aria-allowed-attr`
+				 * rejects `aria-expanded` on an element whose role doesn't
+				 * support it. Same fix, same rationale as
+				 * `OrigamSelect.comboboxAriaAttrs` (`role` MUST sit on the same
+				 * element as `aria-haspopup`/`aria-expanded`).
+				 ********************************************************/
+				role: 'combobox',
 				...(props.menuProps?.activatorProps || {}),
-				'aria-haspopup': 'colorpickerbox' // Set aria-haspopup to 'listbox'
+				'aria-haspopup': 'dialog'
 			},
 			contentProps: {
 				...consumerContentProps,

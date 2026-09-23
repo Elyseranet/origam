@@ -18,6 +18,71 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — #818 baseline shrink : `aria-allowed-attr`/`aria-prohibited-attr`/`aria-valid-attr-value` (12 des 25 entrées)
+
+Recompté sur `a11y-violations.baseline.json` (pas repris d'un chiffre cité
+ailleurs) : la baseline #818 portait **25 clés / 33 violations** sur 24
+composants, dont **12 `aria-allowed-attr`** concentrées sur la famille
+`OrigamDataTable*`. Cause commune, pas 12 défauts distincts :
+`OrigamTextField` ne posait pas `inheritAttrs: false` alors qu'il
+redistribue déjà explicitement chaque attr de fall-through
+(`filterInputAttrs` → `rootAttrs` sur `<origam-input>`, `inputAttrs` sur le
+vrai `<input>`). Sans ce flag, Vue appliquait EN PLUS le `$attrs` brut sur
+la racine `<origam-input>`, qui ne s'y soustrayait pas non plus — doublant
+`aria-haspopup`/`aria-expanded`/`aria-controls`/`aria-valuenow`/… sur le
+`<div>` wrapper, qui ne porte aucun rôle les autorisant. `role` (prop
+déclarée sur `OrigamTextField`) n'atteignait par ailleurs que
+`<origam-field>`, jamais le vrai `<input>` — c'est ce défaut exact que le
+commentaire `KNOWN_FAILURES` documentait déjà pour `OrigamSelect` (test
+`fixme`).
+
+**Correctif à la source** (`packages/ds/src/components/TextField/OrigamTextField.vue`) :
+`defineOptions({ inheritAttrs: false })` + `role` désormais aussi lié sur le
+`<input>` réel. Élimine, mesuré axe-core en navigateur réel (Playwright +
+Histoire statique) :
+- `OrigamSelect` — sort de `KNOWN_FAILURES` (`components.spec.ts`), test
+  `fixme` → vert.
+- `OrigamDataTable`, `OrigamDataTableFooter`, `OrigamDataTableHeaderCell`,
+  `OrigamDataTableHeaders`, `OrigamDataTableHeadersCell`,
+  `OrigamDataTableRow` — `aria-allowed-attr` disparaît, entrée de baseline
+  retirée entièrement.
+- `OrigamDataTableGroupHeaderRow`, `OrigamDataTableRows`, `OrigamNumberField`
+  — `aria-allowed-attr` disparaît, l'entrée reste pour leur AUTRE violation
+  (`button-name` / `color-contrast`), non touchée par ce lot.
+- `OrigamDataTableHeadersCellMobile` — `aria-allowed-attr` ET
+  `aria-prohibited-attr` disparaissent (même fuite, deux règles axe
+  différentes), entrée retirée entièrement.
+
+**Deuxième cause, distincte, deux composants** —
+`packages/ds/src/components/ColorPickerField/OrigamColorPickerField.vue` et
+`.../DatePickerField/OrigamDatePickerField.vue` posaient un
+`aria-haspopup` avec une valeur inventée (`'colorpickerbox'` /
+`'datepickerbox'`, jamais un token ARIA valide) sur l'élément
+`.origam-field` (via `activator="parent"` d'`OrigamMenu`), sans `role` le
+justifiant. Remplacé par `aria-haspopup: 'dialog'` (motif WAI-ARIA « Date
+Picker Dialog ») + `role: 'combobox'` sur le même élément — même principe
+que `comboboxAriaAttrs` d'`OrigamSelect`. `aria-allowed-attr` ET
+`aria-valid-attr-value` disparaissent pour les deux ; `OrigamColorPickerField`
+est intégralement retiré de la baseline, `OrigamDatePickerField` y reste
+pour son `color-contrast` (non touché).
+
+**Bilan mesuré** : baseline #818 25 clés/33 violations → **17 clés/18
+violations**. Suite `pnpm -F @origam/tests test:a11y` complète (226 tests,
+catalogue 218/218) : **226 passed**, aucune régression sur les 36
+composants à baseline vide. Contrôle positif exécuté : réintroduire l'ancien
+comportement fait échouer `a11y — OrigamSelect Default Variant` avec
+`aria-allowed-attr`/`aria-prohibited-attr` NON baselinés — la porte capte
+la régression, pas seulement l'édition du JSON.
+
+**Laissé de côté, délibérément** (17 clés / 18 violations restent dans
+`a11y-violations.baseline.json`, cf. #818) : `color-contrast` (8 instances —
+plusieurs agents dédiés au contraste travaillent déjà sur ce périmètre),
+`button-name` (3, boutons icône sans libellé — famille distincte),
+`scrollable-region-focusable` (3), `aria-required-parent`/`aria-required-children`/
+`listitem`/`aria-prohibited-attr` (`OrigamChartMap`, sans lien avec ce
+correctif) — un défaut chacun, cause non partagée avec ce lot, non
+instruit ici.
+
 Récolte de deux dépréciations posées "pour la prochaine majeure" avant que le
 `CLAUDE.md` n'acte que `3.0.0` est réservé à la séparation en modules et que
 les ruptures, elles, ne le sont pas — voir "Work priorities and versioning"
