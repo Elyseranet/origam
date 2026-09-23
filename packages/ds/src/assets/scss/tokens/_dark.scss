@@ -2064,7 +2064,7 @@
   --origam-picker---z-index: var(--origam-zIndex---dropdown);
   --origam-picker---transition-duration: var(--origam-motion__duration---medium);
   --origam-picker---transition-timing-function: var(--origam-motion__easing---standard);
-  --origam-picker-title---color: var(--origam-color__text---secondary);
+  --origam-picker-title---color: currentColor;
   --origam-picker-title---font-size: 0.75rem;
   --origam-picker-title---font-weight: 400;
   --origam-picker-title---letter-spacing: 0.1667em;
@@ -2833,10 +2833,10 @@
   --origam-chart-range-selector__btn---font-size: var(--origam-font__size---sm);
   --origam-chart-range-selector__btn--hover---background-color: rgba(0, 0, 0, 0.06);
   --origam-chart-range-selector__btn--hover---color: #111827;
-  --origam-chart-range-selector__btn--active---background-color: #3b82f6;
+  --origam-chart-range-selector__btn--active---background-color: var(--origam-color__blue---600);
   --origam-chart-range-selector__btn--active---border-color: rgba(0, 0, 0, 0);
   --origam-chart-range-selector__btn--active---color: var(--origam-color---white);
-  --origam-chart-range-selector__btn--active--hover---background-color: #2563eb;
+  --origam-chart-range-selector__btn--active--hover---background-color: var(--origam-color__blue---700);
   --origam-chart-range-selector__btn--active--hover---color: var(--origam-color---white);
   --origam-chart-sparkline__bar---border-radius: 1;
   --origam-chart-sparkline__marker-min---stroke: rgba(0, 0, 0, 0);
@@ -4800,7 +4800,7 @@
     --origam-picker---z-index: var(--origam-zIndex---dropdown);
     --origam-picker---transition-duration: var(--origam-motion__duration---medium);
     --origam-picker---transition-timing-function: var(--origam-motion__easing---standard);
-    --origam-picker-title---color: var(--origam-color__text---secondary);
+    --origam-picker-title---color: currentColor;
     --origam-picker-title---font-size: 0.75rem;
     --origam-picker-title---font-weight: 400;
     --origam-picker-title---letter-spacing: 0.1667em;
@@ -5569,10 +5569,10 @@
     --origam-chart-range-selector__btn---font-size: var(--origam-font__size---sm);
     --origam-chart-range-selector__btn--hover---background-color: rgba(0, 0, 0, 0.06);
     --origam-chart-range-selector__btn--hover---color: #111827;
-    --origam-chart-range-selector__btn--active---background-color: #3b82f6;
+    --origam-chart-range-selector__btn--active---background-color: var(--origam-color__blue---600);
     --origam-chart-range-selector__btn--active---border-color: rgba(0, 0, 0, 0);
     --origam-chart-range-selector__btn--active---color: var(--origam-color---white);
-    --origam-chart-range-selector__btn--active--hover---background-color: #2563eb;
+    --origam-chart-range-selector__btn--active--hover---background-color: var(--origam-color__blue---700);
     --origam-chart-range-selector__btn--active--hover---color: var(--origam-color---white);
     --origam-chart-sparkline__bar---border-radius: 1;
     --origam-chart-sparkline__marker-min---stroke: rgba(0, 0, 0, 0);
