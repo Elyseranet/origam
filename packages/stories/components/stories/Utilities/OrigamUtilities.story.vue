@@ -17,7 +17,7 @@
 					<div>
 						<h4 style="margin: 0 0 8px;">Background color (.origam--bg-*)</h4>
 						<div :style="rowStyle">
-							<div v-for="intent in intents" :key="`pg-bg-${intent}`" :class="`origam--bg-${intent}`" :style="swatchStyle">.origam--bg-{{ intent }}</div>
+							<div v-for="intent in intents" :key="`pg-bg-${intent}`" :class="`origam--bg-${intent}`" :style="bgSwatchStyle">.origam--bg-{{ intent }}</div>
 						</div>
 					</div>
 					<div>
@@ -205,7 +205,11 @@ const rowStyle = 'display: flex; flex-wrap: wrap; gap: 12px; padding: 16px;'
 const stackStyle = 'display: flex; flex-direction: column; gap: 12px; padding: 16px;'
 
 const swatchStyle = 'min-width: 160px; padding: 12px 16px; background: #fafafa; border: 1px solid #ddd; border-radius: 4px; font-family: monospace; font-size: 13px;'
-const bgSwatchStyle = 'min-width: 160px; padding: 16px; color: #fff; border-radius: 4px; font-family: monospace; font-size: 13px; text-shadow: 0 1px 2px rgba(0,0,0,0.4);'
+// No hardcoded `color` / `text-shadow`: `.origam--bg-*` now carries its own
+// paired on-intent foreground, so the swatch demonstrates the real pairing a
+// consumer gets. Hardcoding white here painted white-on-#f5f5f5 for
+// `secondary` and white-on-white for `neutral` (#818).
+const bgSwatchStyle = 'min-width: 160px; padding: 16px; border-radius: 4px; font-family: monospace; font-size: 13px;'
 const cardStyle = 'min-width: 140px; padding: 20px; background: #fff; border-radius: 8px; font-family: monospace; font-size: 13px; text-align: center;'
 const roundedSwatchStyle = 'min-width: 100px; min-height: 100px; display: flex; align-items: center; justify-content: center; background: #c4b5fd; color: #4c1d95; font-family: monospace; font-size: 13px; font-weight: 600;'
 const borderSwatchStyle = 'min-width: 140px; padding: 12px 16px; background: #fff; border-color: #7c3aed; font-family: monospace; font-size: 13px;'
