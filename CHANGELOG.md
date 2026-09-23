@@ -156,6 +156,105 @@ conclure qu'elle ne l'est plus par défaut.
 
 ### Fixed
 
+- **#871 (clôture) — les 7 dernières violations AA étaient UN défaut de
+  palette répété, pas sept défauts de composant.** Mesuré avec
+  `packages/tests/audit/dark-contrast.audit.mjs` : **7 / 1 664 → 0 / 1 664**,
+  les 8 identités × 2 modes × 2 portées, quatre contrôles verts des deux
+  côtés. Exactement **7 lignes changent, aucune ne se dégrade**, et le ratio
+  minimum de toute la surface passe de 3.65 à **4.70**.
+
+  Les 7 se répartissaient en deux causes, toutes deux dans
+  `packages/marketing/src/themes` — **aucune dans le DS**, qui était déjà à
+  zéro :
+
+  | cause | marque · mode | couple | avant | après |
+  |---|---|---|---|---|
+  | encre héritée du mode clair | `apple` sombre | `#ffffff` → `#000000` sur `#0a84ff` | 3.65 | **5.76** |
+  | encre héritée du mode clair | `ecom` sombre | `#ffffff` → `#1a0f0a` sur `#f43f5e` | 3.67 | **5.12** |
+  | jeton de rôle inversé | `ecom` clair | `action.primary.bg` → `.fgSubtle` sur la crème | 4.43 | **5.93** |
+
+  **La cause commune.** Le mode sombre ÉCLAIRCIT l'accent de marque — c'est
+  la bonne pratique pour une grande surface (`#0071e3` → `#0a84ff` chez
+  `apple`, rose-600 → rose-500 chez `ecom`) — mais les deux palettes gardaient
+  l'encre `#ffffff` de leur jumeau clair. Or chacune applique **déjà** la règle
+  inverse à ses intentions `feedback` : les 4 d'`ecom` et 3 des 4 d'`apple`
+  encrent leur accent éclairci avec le `text.inverse` de la palette.
+  `action.primary` était la dernière exception. Le badge n'était pas en cause :
+  `--origam-badge__badge---{background-color,color}` lit exactement ce couple —
+  tout comme `--origam-btn--primary---*`, qui n'est pas dans la sonde et était
+  donc en défaut sans être mesuré.
+
+  ⚠️ **On n'a PAS foncé l'accent**, bien que ce soit l'autre levier : chez
+  `apple`, `action.primary.bg` sert aussi d'ENCRE (le bloc `components` passe
+  ce `var()` en `color` sur `origam-breadcrumb-item`). Le ramener à `#0071e3`
+  donnait 4.70 sous du blanc mais faisait tomber le fil d'Ariane à **4.47** sur
+  le fond noir — un défaut échangé contre un autre. Vérifié par calcul avant
+  d'écrire la moindre ligne.
+
+  La 3ᵉ cause est une erreur de RÔLE : `bg` est un jeton de surface, `fgSubtle`
+  la teinte prévue pour être LUE sur une surface neutre. `ecomDarkTheme` posait
+  déjà `fgSubtle` ; seul le bloc clair se trompait de jeton. Les deux modes sont
+  désormais symétriques.
+
+- **#871 — une 8ᵉ violation, que la sonde ne pouvait pas voir** :
+  `material` sombre, `feedback.success`, `#1b5e20` sur `#81c784` = **3.91**
+  → `#0d3b10` = **6.32**. La sonde de `dark-contrast.audit.mjs` ne rend qu'UNE
+  intention par famille de composant, donc elle ne peint jamais
+  `feedback.success`. Trouvée par la spec statique ajoutée ci-dessous. C'est
+  l'encre qui était l'intruse, pas le conteneur : les trois autres intentions
+  sombres de `material` tiennent 5.79 / 7.70 / 7.71 avec des encres bespoke
+  très profondes, `success` était la seule à se contenter du green-900 de la
+  rampe.
+
+- **#871 — l'audit lui-même ne démarrait plus.** Son `npx vite build` résolvait
+  vite par le PATH, via un lien `node_modules/.bin` qu'un peer auto-installé
+  ne garantit pas : sur un `pnpm install --frozen-lockfile` propre,
+  `packages/tests/node_modules/.bin/` ne contient que `playwright` et `vitest`,
+  et la commande mourait en `127 — sh: vite: command not found`. **L'audit ne
+  rendait plus aucun chiffre**, et rien ne le signalait puisque rien ne le
+  rejoue en CI. `resolveViteBin()` passe désormais par le realpath de
+  `@vitejs/plugin-vue`, ce qui ne dépend ni du PATH ni du hoisting et
+  sélectionne la copie de vite que le plugin utilise réellement (deux majeures
+  coexistent dans le magasin). Les commentaires qui affirmaient le contraire
+  dans les deux fichiers ont été corrigés.
+
+- **#871 — l'état SURVOL était en défaut plus grave encore, et le correctif
+  d'encre l'a réglé sans qu'on y touche.** Le survol n'a pas d'encre à lui :
+  `--origam-btn--primary---background-color-hover` bascule la surface, mais il
+  n'existe **aucun** `--origam-btn--primary---color-hover` (ni de
+  `--origam-badge__badge---color-hover`) — l'encre reste `action.primary.fg`
+  dans les deux états. Sous l'encre blanche, `apple` sombre y tombait à
+  **2.19:1** et `ecom` sombre à **2.69:1** : *pires que n'importe laquelle des
+  7 violations comptées*, et invisibles parce que la sonde de
+  `dark-contrast.audit.mjs` ne rend que l'état au repos.
+
+  **Aucun `bgHover` n'a été modifié.** La direction du survol n'était pas le
+  problème — l'encre l'était. Mesuré sur les deux marques :
+
+  | mode · encre | direction du survol | ratio repos → survol |
+  |---|---|---|
+  | clair · blanche | fonce | 4.70 → **6.95** / **6.29** ↑ |
+  | sombre · blanche *(avant)* | éclaircit | 3.65 → **2.19** / 3.67 → **2.69** ↓ |
+  | sombre · foncée *(après)* | éclaircit | 5.76 → **9.60** / 5.12 → **6.99** ↑ |
+
+  La règle n'est donc pas *« le survol doit foncer »* mais **« le survol doit
+  déplacer l'accent à l'opposé de la clarté de son encre »**. Les palettes la
+  respectaient déjà dans 3 quadrants sur 4 ; le seul cassé l'était par son
+  encre. L'idiome « le survol éclaircit », qui est le bon en mode sombre, est
+  conservé dans les deux marques.
+
+- **#871 — non-régression : `packages/tests/TU/marketing/brand-palette-contrast.spec.ts`.**
+  Les couples `{bg, fg}` littéraux des 7 palettes de marque (14 thèmes) doivent
+  tenir AA. L'audit de #871 est un script qu'on lance à la main : rien ne le
+  rejoue, donc rien n'empêchait une retouche de palette de ramener ces couples
+  en silence. La spec lit les hex **dans l'objet `IOrigamTheme`**, avant toute
+  indirection CSS — la règle jsdom/`var()` du `CLAUDE.md` ne s'y applique pas,
+  et le navigateur reste l'arbitre de ce qui est peint. Elle embarque ses
+  propres garde-fous : les 3 témoins de la formule, un contrôle négatif sur les
+  3 couples corrigés, et un plancher de couverture qui rend bruyante une dérive
+  du filtre. **Vérifiée ROUGE sur `origin/develop`** : 3 échecs / 14 succès.
+  C'est elle qui a trouvé la 8ᵉ violation ci-dessus.
+
 - **#871 — le mode sombre ne peignait qu'à moitié dans un sous-arbre thémé.**
   Les feuilles de tokens portent ~1 761 déclarations **dérivées**
   (`--origam-title---color: var(--origam-color__text---primary)`). Une custom

@@ -35,10 +35,17 @@
  *
  * COSTS NOTHING TO THE DEPENDENCY TREE
  * ------------------------------------
- * It adds no dependency to `packages/tests`: the Vite and Sass binaries it
- * needs already arrive as peers of the declared `@vitejs/plugin-vue`. See the
- * long comment in `dark-contrast/vite.config.mjs` for the measurement, and
- * for why declaring `vite` explicitly is the thing NOT to do here.
+ * It adds no dependency to `packages/tests`: Vite and Sass already arrive as
+ * auto-installed peers of the declared `@vitejs/plugin-vue`. See the long
+ * comment in `dark-contrast/vite.config.mjs` for why declaring `vite`
+ * explicitly is the thing NOT to do here.
+ *
+ * ⚠️ What an auto-installed peer does NOT give you is a `.bin` symlink in
+ * `packages/tests/node_modules/`. It used to be there; a later dependency
+ * bump moved it, `npx vite` started failing with 127, and the audit stopped
+ * producing a number at all. `resolveViteBin()` below resolves the binary
+ * through the plugin's own realpath instead of through PATH — read its
+ * comment before touching the build step.
  *
  * Usage:
  *   pnpm -F @origam/tests audit:dark-contrast
@@ -47,9 +54,10 @@
 
 import { createServer } from 'node:http'
 import { readFile } from 'node:fs/promises'
-import { existsSync } from 'node:fs'
+import { existsSync, realpathSync } from 'node:fs'
 import { extname, join, dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { createRequire } from 'node:module'
 import { execFileSync } from 'node:child_process'
 
 import { chromium } from '@playwright/test'
@@ -220,9 +228,46 @@ async function serveDist () {
     return { server, port: server.address().port }
 }
 
+/*********************************************************
+ * resolveViteBin
+ *
+ * @description
+ * ⛔ Do NOT go back to `npx vite`. It resolved through `node_modules/.bin`,
+ * and that symlink is NOT guaranteed to exist here: `vite` is an
+ * AUTO-INSTALLED PEER of the declared `@vitejs/plugin-vue`, so pnpm links its
+ * bin next to the package that asked for it — inside the virtual store — not
+ * into `packages/tests/node_modules/.bin`. Measured on a clean
+ * `pnpm install --frozen-lockfile` at `4c23037ee`:
+ *
+ *     ls packages/tests/node_modules/.bin/   →  playwright  vitest
+ *     npx vite build …                       →  sh: vite: command not found (127)
+ *
+ * The harness's own header claimed that `.bin` carried `vite` and `sass`. It
+ * did when the measurement was taken; a later dependency bump moved it, and
+ * nothing failed loudly — the audit simply stopped running at all. Anyone
+ * re-running #871's count hit a stack trace instead of a number.
+ *
+ * Resolving through `@vitejs/plugin-vue`'s OWN realpath removes the guess:
+ * it returns the exact vite copy the config's `vue()` plugin is already
+ * linked against, whatever pnpm decided to hoist. Two vite majors coexist in
+ * this store (7.3.6 and 8.1.0) — a PATH lookup could pick either, this
+ * cannot.
+ *
+ * Adding `vite` as an explicit devDep is the thing NOT to do: with
+ * `auto-install-peers=true`, a hand-written range desynchronises the lockfile
+ * and every CI job dies at `Install dependencies` (see the long comment in
+ * `dark-contrast/vite.config.mjs`).
+ ********************************************************/
+function resolveViteBin () {
+    const req = createRequire(import.meta.url)
+    const pluginPkg = req.resolve('@vitejs/plugin-vue/package.json', { paths: [resolve(HERE, '..')] })
+    const fromPlugin = createRequire(realpathSync(pluginPkg))
+    return join(dirname(fromPlugin.resolve('vite/package.json')), 'bin', 'vite.js')
+}
+
 function buildHarness () {
     process.stdout.write('building harness … ')
-    execFileSync('npx', ['vite', 'build', '--config', join(APP, 'vite.config.mjs')], {
+    execFileSync(process.execPath, [resolveViteBin(), 'build', '--config', join(APP, 'vite.config.mjs')], {
         cwd: resolve(HERE, '..'),
         stdio: ['ignore', 'ignore', 'inherit']
     })
