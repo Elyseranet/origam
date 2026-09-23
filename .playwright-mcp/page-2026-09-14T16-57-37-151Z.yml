@@ -1,0 +1,155 @@
+- generic [ref=f2e4]:
+  - link "Skip to content" [ref=f2e5] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=f2e6]:
+    - generic [ref=f2e7]:
+      - link "origam" [ref=f2e9] [cursor=pointer]:
+        - /url: /
+        - img "origam" [ref=f2e10]
+        - generic [ref=f2e12]: v2.17.0
+      - navigation "Primary navigation" [ref=f2e15]:
+        - button "Open Introduction menu" [ref=f2e16] [cursor=pointer]:
+          - generic [ref=f2e17]:
+            - generic [ref=f2e18]: Introduction
+            - generic [aria-hidden] [ref=f2e20]: 󰅀
+        - button "Open Getting started menu" [ref=f2e21] [cursor=pointer]:
+          - generic [ref=f2e22]:
+            - generic [ref=f2e23]: Getting started
+            - generic [aria-hidden] [ref=f2e25]: 󰅀
+        - button "Open Features menu" [ref=f2e26] [cursor=pointer]:
+          - generic [ref=f2e27]:
+            - generic [ref=f2e28]: Features
+            - generic [aria-hidden] [ref=f2e30]: 󰅀
+        - link "Theming" [ref=f2e31] [cursor=pointer]:
+          - /url: /theming
+      - generic [ref=f2e35]:
+        - button "Search the documentation" [ref=f2e36] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f2e37]: 󰍉
+          - generic [ref=f2e38]: Search…
+          - generic [ref=f2e39]: ⌘K
+        - button "Toggle light and dark mode" [ref=f2e40] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f2e43]: 󰖔
+        - button "Change language" [ref=f2e44] [cursor=pointer]:
+          - generic [ref=f2e45]:
+            - generic [aria-hidden] [ref=f2e47]: 󰗊
+            - generic [ref=f2e48]: EN
+            - generic [aria-hidden] [ref=f2e50]: 󰅀
+        - button "Switch brand theme" [ref=f2e51] [cursor=pointer]:
+          - generic [ref=f2e52]:
+            - generic [ref=f2e55]: "Theme: Theme"
+            - generic [aria-hidden] [ref=f2e57]: 󰅀
+  - main [ref=f2e58]:
+    - generic [ref=f2e60]:
+      - heading "repro 734" [level=1] [ref=f2e61]
+      - paragraph [ref=f2e63]: wrapper
+      - paragraph [ref=f2e65]: fixed-height
+      - paragraph [ref=f2e67]: renderless
+  - contentinfo [ref=f2e68]:
+    - generic [ref=f2e69]:
+      - generic [ref=f2e70]:
+        - link "origam" [ref=f2e71] [cursor=pointer]:
+          - /url: /
+          - img "origam" [ref=f2e72]
+        - paragraph [ref=f2e74]: The Vue 3 design system that just works.
+      - navigation "Product" [ref=f2e75]:
+        - heading "Product" [level=2] [ref=f2e76]
+        - list [ref=f2e77]:
+          - listitem [ref=f2e78]:
+            - link "Charts" [ref=f2e79] [cursor=pointer]:
+              - /url: /components#charts
+          - listitem [ref=f2e80]:
+            - link "Themes" [ref=f2e81] [cursor=pointer]:
+              - /url: /#themes
+      - navigation "Resources" [ref=f2e82]:
+        - heading "Resources" [level=2] [ref=f2e83]
+        - list [ref=f2e84]:
+          - listitem [ref=f2e85]:
+            - link "GitHub" [ref=f2e86] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam
+          - listitem [ref=f2e87]:
+            - link "Community" [ref=f2e88] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam/discussions
+          - listitem [ref=f2e89]:
+            - link "Discord" [ref=f2e90] [cursor=pointer]:
+              - /url: https://discord.gg/origam
+          - listitem [ref=f2e91]:
+            - link "Discussions" [ref=f2e92] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam/discussions
+          - listitem [ref=f2e93]:
+            - link "Twitter" [ref=f2e94] [cursor=pointer]:
+              - /url: https://twitter.com/origam
+          - listitem [ref=f2e95]:
+            - link "Support origam" [ref=f2e96] [cursor=pointer]:
+              - /url: /support
+      - navigation "Legal" [ref=f2e97]:
+        - heading "Legal" [level=2] [ref=f2e98]
+        - list [ref=f2e99]:
+          - listitem [ref=f2e100]:
+            - link "MIT License" [ref=f2e101] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam/blob/main/LICENSE
+          - listitem [ref=f2e102]:
+            - link "Privacy" [ref=f2e103] [cursor=pointer]:
+              - /url: /privacy
+          - listitem [ref=f2e104]:
+            - link "Contact" [ref=f2e105] [cursor=pointer]:
+              - /url: /contact
+    - separator [ref=f2e106]
+    - navigation "Site map" [ref=f2e107]:
+      - heading "Introduction" [level=3] [ref=f2e108]
+      - list [ref=f2e109]:
+        - listitem [ref=f2e110]:
+          - link "Why origam?" [ref=f2e111] [cursor=pointer]:
+            - /url: /why-origam
+        - listitem [ref=f2e112]:
+          - link "Roadmap" [ref=f2e113] [cursor=pointer]:
+            - /url: /roadmap
+        - listitem [ref=f2e114]:
+          - link "Changelog" [ref=f2e115] [cursor=pointer]:
+            - /url: /changelog
+      - heading "Getting started" [level=3] [ref=f2e116]
+      - list [ref=f2e117]:
+        - listitem [ref=f2e118]:
+          - link "Installation" [ref=f2e119] [cursor=pointer]:
+            - /url: /installation
+        - listitem [ref=f2e120]:
+          - link "Wireframe" [ref=f2e121] [cursor=pointer]:
+            - /url: /wireframe
+      - heading "Features" [level=3] [ref=f2e122]
+      - list [ref=f2e123]:
+        - listitem [ref=f2e124]:
+          - link "Components" [ref=f2e125] [cursor=pointer]:
+            - /url: /components
+        - listitem [ref=f2e126]:
+          - link "Directives" [ref=f2e127] [cursor=pointer]:
+            - /url: /directives
+        - listitem [ref=f2e128]:
+          - link "Composables" [ref=f2e129] [cursor=pointer]:
+            - /url: /composables
+        - listitem [ref=f2e130]:
+          - link "Types" [ref=f2e131] [cursor=pointer]:
+            - /url: /types
+        - listitem [ref=f2e132]:
+          - link "Enums" [ref=f2e133] [cursor=pointer]:
+            - /url: /enums
+        - listitem [ref=f2e134]:
+          - link "Interfaces" [ref=f2e135] [cursor=pointer]:
+            - /url: /interfaces
+        - listitem [ref=f2e136]:
+          - link "Utils" [ref=f2e137] [cursor=pointer]:
+            - /url: /utils
+        - listitem [ref=f2e138]:
+          - link "Constants" [ref=f2e139] [cursor=pointer]:
+            - /url: /consts
+        - listitem [ref=f2e140]:
+          - link "Stories" [ref=f2e141] [cursor=pointer]:
+            - /url: /stories/
+        - listitem [ref=f2e142]:
+          - link "Docs" [ref=f2e143] [cursor=pointer]:
+            - /url: /docs/
+    - separator [ref=f2e144]
+    - generic [ref=f2e145]:
+      - paragraph [ref=f2e146]: © 2026 origam · MIT
+      - paragraph [ref=f2e147]: Made with origam, by humans.
+      - link "Support origam with a donation" [ref=f2e148] [cursor=pointer]:
+        - /url: https://www.paypal.com/donate/?hosted_button_id=EQFUQ2JV95YGQ
+        - text: Support origam

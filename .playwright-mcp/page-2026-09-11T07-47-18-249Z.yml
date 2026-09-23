@@ -1,0 +1,439 @@
+- generic [ref=f5e4]:
+  - link "Skip to content" [ref=f5e5] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=f5e6]:
+    - generic [ref=f5e7]:
+      - link "origam" [ref=f5e9] [cursor=pointer]:
+        - /url: /
+        - img "origam" [ref=f5e10]
+        - generic [ref=f5e12]: v2.16.0
+      - navigation "Primary navigation" [ref=f5e15]:
+        - button "Open Introduction menu" [ref=f5e16] [cursor=pointer]:
+          - generic [ref=f5e17]:
+            - generic [ref=f5e18]: Introduction
+            - generic [aria-hidden] [ref=f5e20]: 󰅀
+        - button "Open Getting started menu" [ref=f5e21] [cursor=pointer]:
+          - generic [ref=f5e22]:
+            - generic [ref=f5e23]: Getting started
+            - generic [aria-hidden] [ref=f5e25]: 󰅀
+        - button "Open Features menu" [ref=f5e26] [cursor=pointer]:
+          - generic [ref=f5e27]:
+            - generic [ref=f5e28]: Features
+            - generic [aria-hidden] [ref=f5e30]: 󰅀
+        - link "Theming" [ref=f5e31] [cursor=pointer]:
+          - /url: /theming
+      - generic [ref=f5e35]:
+        - button "Search the documentation" [ref=f5e36] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f5e37]: 󰍉
+          - generic [ref=f5e38]: Search…
+          - generic [ref=f5e39]: ⌘K
+        - button "Toggle light and dark mode" [ref=f5e40] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f5e43]: 󰖔
+        - button "Change language" [ref=f5e44] [cursor=pointer]:
+          - generic [ref=f5e45]:
+            - generic [aria-hidden] [ref=f5e47]: 󰗊
+            - generic [ref=f5e48]: EN
+            - generic [aria-hidden] [ref=f5e50]: 󰅀
+        - button "Switch brand theme" [ref=f5e51] [cursor=pointer]:
+          - generic [ref=f5e52]:
+            - generic [ref=f5e55]: "Theme: Theme"
+            - generic [aria-hidden] [ref=f5e57]: 󰅀
+  - main [ref=f5e58]:
+    - article [ref=f5e60]:
+      - region [ref=f5e61]:
+        - generic [ref=f5e62]:
+          - generic [ref=f5e63]:
+            - generic [ref=f5e64]:
+              - generic [ref=f5e65]: v2.16.0 — 29 charts shipped, WCAG 2.1 AA pass
+              - generic [aria-hidden] [ref=f5e67]: 󰁔
+            - heading "The Vue 3 design system that just works." [level=1] [ref=f5e68]:
+              - generic [ref=f5e69]: The Vue 3 design system
+              - generic [ref=f5e70]: that just works.
+            - paragraph [ref=f5e71]: 95 components. 29 chart primitives. Full a11y. Design tokens out of the box. Built for Vue 3 with TypeScript-first DX.
+          - navigation "Hero calls to action" [ref=f5e72]:
+            - link "Browse components" [ref=f5e73] [cursor=pointer]:
+              - /url: /components
+              - generic [ref=f5e74]:
+                - generic [ref=f5e75]: Browse components
+                - generic [aria-hidden] [ref=f5e77]: 󰁔
+            - link "Star on GitHub" [ref=f5e78] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam
+              - generic [ref=f5e79]:
+                - generic [aria-hidden] [ref=f5e81]: 󰓒
+                - generic [ref=f5e82]: Star on GitHub
+          - figure [ref=f5e83]:
+            - generic [aria-hidden] [ref=f5e84]: $
+            - region "bash code block, scrollable region":
+              - generic:
+                - code
+      - region [ref=f5e85]:
+        - heading "origam by the numbers" [level=2] [ref=f5e86]
+        - separator [ref=f5e87]
+        - generic [ref=f5e88]:
+          - generic [ref=f5e89]:
+            - term [ref=f5e90]: Components
+            - definition [ref=f5e91]: "95"
+          - generic [ref=f5e92]:
+            - term [ref=f5e93]: Chart primitives
+            - definition [ref=f5e94]: "29"
+          - generic [ref=f5e95]:
+            - term [ref=f5e96]: WCAG 2.1 AA
+            - definition [ref=f5e97]: 100%
+          - generic [ref=f5e98]:
+            - term [ref=f5e99]: Tree-shakable
+            - definition [ref=f5e100]: <50kb
+          - generic [ref=f5e101]:
+            - term [ref=f5e102]: Open source
+            - definition [ref=f5e103]: MIT
+        - separator [ref=f5e104]
+      - region [ref=f5e105]:
+        - generic [ref=f5e106]:
+          - paragraph [ref=f5e107]: WHAT'S INSIDE
+          - heading "Everything you'd expect. Nothing you wouldn't." [level=2] [ref=f5e108]:
+            - generic [ref=f5e109]: Everything you'd expect.
+            - generic [ref=f5e110]: Nothing you wouldn't.
+          - paragraph [ref=f5e111]: A complete toolkit for shipping Vue 3 apps — from atomic primitives to complex data viz, every piece tested, themed and a11y-compliant.
+        - list [ref=f5e112]:
+          - listitem [ref=f5e113]:
+            - article [ref=f5e114]:
+              - generic [ref=f5e115]:
+                - generic [aria-hidden] [ref=f5e119]: 󰄪
+                - heading "29 chart primitives" [level=3] [ref=f5e120]
+                - paragraph [ref=f5e121]: Line, area, bar, donut, candlestick, heatmap — Highcharts-tier coverage without the license.
+          - listitem [ref=f5e122]:
+            - article [ref=f5e123]:
+              - generic [ref=f5e124]:
+                - generic [aria-hidden] [ref=f5e128]: 󰋦
+                - heading "WCAG 2.1 AA verified" [level=3] [ref=f5e129]
+                - paragraph [ref=f5e130]: "Each component ships with axe-core + Playwright a11y tests. Keyboard, screen-readers, motion: covered."
+          - listitem [ref=f5e131]:
+            - article [ref=f5e132]:
+              - generic [ref=f5e133]:
+                - generic [aria-hidden] [ref=f5e137]: 󰸌
+                - heading "Design tokens" [level=3] [ref=f5e138]
+                - paragraph [ref=f5e139]: Multi-theme via Tokens Studio. Switch between light, dark, or your own brand at runtime with zero remount.
+          - listitem [ref=f5e140]:
+            - article [ref=f5e141]:
+              - generic [ref=f5e142]:
+                - generic [aria-hidden] [ref=f5e146]: 󰛦
+                - heading "TypeScript first" [level=3] [ref=f5e147]
+                - paragraph [ref=f5e148]: Strict mode, full type inference, generics on Data Table/List. Your IDE will thank you.
+          - listitem [ref=f5e149]:
+            - article [ref=f5e150]:
+              - generic [ref=f5e151]:
+                - generic [aria-hidden] [ref=f5e155]: 󰌜
+                - heading "CSS-first" [level=3] [ref=f5e156]
+                - paragraph [ref=f5e157]: Container queries, :has(), color-mix(), view-transition-name. We use modern CSS so you don't reinvent it.
+          - listitem [ref=f5e158]:
+            - article [ref=f5e159]:
+              - generic [ref=f5e160]:
+                - generic [aria-hidden] [ref=f5e164]: 󰩦
+                - heading "Composition API" [level=3] [ref=f5e165]
+                - paragraph [ref=f5e166]: Built on script setup + Composition API. Headless composables exposed when you need to go low-level.
+      - region [ref=f5e167]:
+        - generic [ref=f5e168]:
+          - paragraph [ref=f5e169]: LIVE PLAYGROUND
+          - heading "Try before you ship." [level=2] [ref=f5e170]
+        - figure [ref=f5e171]:
+          - generic [ref=f5e172]:
+            - toolbar "Editor toolbar" [ref=f5e173]:
+              - generic [ref=f5e178]: App.vue
+            - generic [ref=f5e179]:
+              - figure [ref=f5e180]:
+                - region "vue code block, scrollable region" [ref=f5e181]:
+                  - generic:
+                    - code
+              - generic [ref=f5e184]:
+                - heading "Hello Origam" [level=3] [ref=f5e185]
+                - paragraph [ref=f5e186]: The Vue 3 design system that just works. Try a component live.
+                - button "Get started" [ref=f5e187] [cursor=pointer]:
+                  - generic [ref=f5e188]:
+                    - generic [ref=f5e189]: Get started
+                    - generic [aria-hidden] [ref=f5e191]: 󰁔
+        - generic [ref=f5e192]: The Vue 3 design system that just works. Try a component live.
+      - region [ref=f5e193]:
+        - generic [ref=f5e194]:
+          - paragraph [ref=f5e195]: SHOWCASE
+          - generic [ref=f5e196]:
+            - heading "95 components. One vibe." [level=2] [ref=f5e197]:
+              - generic [ref=f5e198]: 95 components.
+              - generic [ref=f5e199]: One vibe.
+            - link "View all" [ref=f5e200] [cursor=pointer]:
+              - /url: /components
+              - generic [ref=f5e201]:
+                - generic [ref=f5e202]: View all
+                - generic [aria-hidden] [ref=f5e204]: 󰁔
+        - list "Component showcase" [ref=f5e205]:
+          - listitem [ref=f5e206]:
+            - figure [ref=f5e207]:
+              - generic [ref=f5e208]:
+                - generic [ref=f5e209]:
+                  - generic [ref=f5e210]:
+                    - strong [ref=f5e211]: Data Table
+                    - generic [ref=f5e212]: Sortable · filterable · virtualized
+                  - generic [ref=f5e213]: Data
+                - table [ref=f5e217]:
+                  - rowgroup [ref=f5e218]:
+                    - row [ref=f5e219]:
+                      - columnheader "PROJECT" [ref=f5e220]: PROJECT ↓
+                      - columnheader "Owner" [ref=f5e221]
+                      - columnheader "Status" [ref=f5e222]
+                  - rowgroup [ref=f5e223]:
+                    - row [ref=f5e224]:
+                      - cell "Aurora release" [ref=f5e225]
+                      - cell "Arnaud" [ref=f5e226]
+                      - cell "Shipped Row actions" [ref=f5e227]:
+                        - generic [ref=f5e228]:
+                          - generic [ref=f5e230]: Shipped
+                          - button "Row actions" [ref=f5e231] [cursor=pointer]:
+                            - generic [aria-hidden] [ref=f5e234]: 󰇘
+                    - row [ref=f5e235]:
+                      - cell "Tokens v2" [ref=f5e236]
+                      - cell "Léa" [ref=f5e237]
+                      - cell "In review Row actions" [ref=f5e238]:
+                        - generic [ref=f5e239]:
+                          - generic [ref=f5e241]: In review
+                          - button "Row actions" [ref=f5e242] [cursor=pointer]:
+                            - generic [aria-hidden] [ref=f5e245]: 󰇘
+                    - row [ref=f5e246]:
+                      - cell "A11y audit" [ref=f5e247]
+                      - cell "Jade" [ref=f5e248]
+                      - cell "Shipped Row actions" [ref=f5e249]:
+                        - generic [ref=f5e250]:
+                          - generic [ref=f5e252]: Shipped
+                          - button "Row actions" [ref=f5e253] [cursor=pointer]:
+                            - generic [aria-hidden] [ref=f5e256]: 󰇘
+                    - row [ref=f5e257]:
+                      - cell "Chart engine" [ref=f5e258]
+                      - cell "Marc" [ref=f5e259]
+                      - cell "Draft Row actions" [ref=f5e260]:
+                        - generic [ref=f5e261]:
+                          - generic [ref=f5e263]: Draft
+                          - button "Row actions" [ref=f5e264] [cursor=pointer]:
+                            - generic [aria-hidden] [ref=f5e267]: 󰇘
+                    - row [ref=f5e268]:
+                      - cell "New theme" [ref=f5e269]
+                      - cell "Romi" [ref=f5e270]
+                      - cell "In review Row actions" [ref=f5e271]:
+                        - generic [ref=f5e272]:
+                          - generic [ref=f5e274]: In review
+                          - button "Row actions" [ref=f5e275] [cursor=pointer]:
+                            - generic [aria-hidden] [ref=f5e278]: 󰇘
+          - listitem [ref=f5e279]:
+            - figure [ref=f5e280]:
+              - generic [ref=f5e281]:
+                - generic [ref=f5e282]:
+                  - strong [ref=f5e283]: Chart Line
+                  - generic [ref=f5e284]: +12.4% this month
+                - figure "+12.4% this month" [ref=f5e285]:
+                  - img "+12.4% this month" [ref=f5e286]:
+                    - 'button "growth, 11: 15"'
+          - listitem [ref=f5e290]:
+            - figure [ref=f5e291]:
+              - generic [ref=f5e292]:
+                - generic [ref=f5e293]:
+                  - strong [ref=f5e294]: Switch
+                  - generic [ref=f5e295]: inset · flat · default
+                - group "Switch" [ref=f5e296]:
+                  - generic [ref=f5e297]:
+                    - generic [ref=f5e300]:
+                      - generic [ref=f5e301] [cursor=pointer]
+                      - checkbox [ref=f5e303] [cursor=pointer]
+                    - status [ref=f5e305]
+                  - generic [ref=f5e306]:
+                    - generic [ref=f5e309]:
+                      - generic [ref=f5e310] [cursor=pointer]
+                      - checkbox [checked] [ref=f5e312] [cursor=pointer]
+                    - status [ref=f5e314]
+          - listitem [ref=f5e315]:
+            - figure [ref=f5e316]:
+              - generic [ref=f5e317]:
+                - generic [ref=f5e318]:
+                  - strong [ref=f5e319]: Chips
+                  - generic [ref=f5e320]: 6 intents
+                - list "Chip intents" [ref=f5e321]:
+                  - listitem [ref=f5e322]:
+                    - generic [ref=f5e323]: Primary
+                  - listitem [ref=f5e325]:
+                    - generic [ref=f5e326]: Neutral
+                  - listitem [ref=f5e328]:
+                    - generic [ref=f5e329]: Success
+          - listitem [ref=f5e331]:
+            - figure [ref=f5e332]:
+              - generic [ref=f5e333]:
+                - generic [ref=f5e334]:
+                  - strong [ref=f5e335]: Avatar Group
+                  - generic [ref=f5e336]: +3 members
+                - group "+3 members" [ref=f5e338]:
+                  - generic [ref=f5e339]: AR
+                  - generic [ref=f5e342]: LB
+                  - generic [ref=f5e345]: JD
+                  - generic [ref=f5e348]: MC
+                  - generic [ref=f5e351]: "+3"
+      - region [ref=f5e353]:
+        - generic [ref=f5e354]:
+          - generic [ref=f5e355]:
+            - paragraph [ref=f5e356]: THEMING
+            - heading "One design system. Every brand." [level=2] [ref=f5e357]:
+              - generic [ref=f5e358]: One design system.
+              - generic [ref=f5e359]: Every brand.
+            - paragraph [ref=f5e360]: DTCG-compliant design tokens, multi-theme out of the box. Switch between light, dark or your custom brand at runtime — zero remount, zero flicker.
+            - group "Available themes" [ref=f5e361]:
+              - button "Sobre" [ref=f5e363] [cursor=pointer]
+              - button "Glass" [ref=f5e366] [cursor=pointer]
+              - button "Geek" [ref=f5e369] [cursor=pointer]
+              - button "Cartoon" [ref=f5e372] [cursor=pointer]
+              - button "Editorial" [ref=f5e375] [cursor=pointer]
+              - button "Material" [ref=f5e378] [cursor=pointer]
+              - button "Ecom" [ref=f5e381] [cursor=pointer]
+              - button "Apple" [ref=f5e384] [cursor=pointer]
+            - paragraph [ref=f5e386]:
+              - generic [ref=f5e387]: → tokens.studio compatible
+              - generic [ref=f5e388]: · → Style Dictionary v4
+            - navigation "Try the theme builder" [ref=f5e389]:
+              - link "Try the theme builder" [ref=f5e390] [cursor=pointer]:
+                - /url: /theming
+                - generic [ref=f5e391]:
+                  - generic [ref=f5e392]: Try the theme builder
+                  - generic [aria-hidden] [ref=f5e394]: 󰁔
+          - list "Theme preview tiles" [ref=f5e396]:
+            - listitem [ref=f5e397]:
+              - article [ref=f5e399]:
+                - figure "light.json" [ref=f5e400]:
+                  - button "Button" [ref=f5e406] [cursor=pointer]
+            - listitem [ref=f5e409]:
+              - article [ref=f5e411]:
+                - figure "dark.json" [ref=f5e412]:
+                  - button "Button" [ref=f5e418] [cursor=pointer]
+            - listitem [ref=f5e421]:
+              - article [ref=f5e423]:
+                - figure "Cartoon" [ref=f5e424]:
+                  - button "Button" [ref=f5e430] [cursor=pointer]
+            - listitem [ref=f5e433]:
+              - article [ref=f5e435]:
+                - figure "Apple" [ref=f5e436]:
+                  - button "Button" [ref=f5e442] [cursor=pointer]
+      - region [ref=f5e445]:
+        - generic [ref=f5e446]:
+          - heading "Ready to ship faster?" [level=2] [ref=f5e447]
+          - paragraph [ref=f5e448]: Spin up your Vue 3 project with origam in 30 seconds.
+          - navigation "Get started" [ref=f5e449]:
+            - link "Get started" [ref=f5e450] [cursor=pointer]:
+              - /url: /installation
+              - generic [ref=f5e451]:
+                - generic [ref=f5e452]: Get started
+                - generic [aria-hidden] [ref=f5e454]: 󰁔
+            - link "Read docs" [ref=f5e455] [cursor=pointer]:
+              - /url: /components
+              - generic [ref=f5e456]:
+                - generic [aria-hidden] [ref=f5e458]: 󰅴
+                - generic [ref=f5e459]: Read docs
+  - contentinfo [ref=f5e460]:
+    - generic [ref=f5e461]:
+      - generic [ref=f5e462]:
+        - link "origam" [ref=f5e463] [cursor=pointer]:
+          - /url: /
+          - img "origam" [ref=f5e464]
+        - paragraph [ref=f5e466]: The Vue 3 design system that just works.
+      - navigation "Product" [ref=f5e467]:
+        - heading "Product" [level=2] [ref=f5e468]
+        - list [ref=f5e469]:
+          - listitem [ref=f5e470]:
+            - link "Charts" [ref=f5e471] [cursor=pointer]:
+              - /url: /components#charts
+          - listitem [ref=f5e472]:
+            - link "Themes" [ref=f5e473] [cursor=pointer]:
+              - /url: /#themes
+      - navigation "Resources" [ref=f5e474]:
+        - heading "Resources" [level=2] [ref=f5e475]
+        - list [ref=f5e476]:
+          - listitem [ref=f5e477]:
+            - link "GitHub" [ref=f5e478] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam
+          - listitem [ref=f5e479]:
+            - link "Community" [ref=f5e480] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam/discussions
+          - listitem [ref=f5e481]:
+            - link "Discord" [ref=f5e482] [cursor=pointer]:
+              - /url: https://discord.gg/origam
+          - listitem [ref=f5e483]:
+            - link "Discussions" [ref=f5e484] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam/discussions
+          - listitem [ref=f5e485]:
+            - link "Twitter" [ref=f5e486] [cursor=pointer]:
+              - /url: https://twitter.com/origam
+          - listitem [ref=f5e487]:
+            - link "Support origam" [ref=f5e488] [cursor=pointer]:
+              - /url: /support
+      - navigation "Legal" [ref=f5e489]:
+        - heading "Legal" [level=2] [ref=f5e490]
+        - list [ref=f5e491]:
+          - listitem [ref=f5e492]:
+            - link "MIT License" [ref=f5e493] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam/blob/main/LICENSE
+          - listitem [ref=f5e494]:
+            - link "Privacy" [ref=f5e495] [cursor=pointer]:
+              - /url: /privacy
+          - listitem [ref=f5e496]:
+            - link "Contact" [ref=f5e497] [cursor=pointer]:
+              - /url: /contact
+    - separator [ref=f5e498]
+    - navigation "Site map" [ref=f5e499]:
+      - heading "Introduction" [level=3] [ref=f5e500]
+      - list [ref=f5e501]:
+        - listitem [ref=f5e502]:
+          - link "Why origam?" [ref=f5e503] [cursor=pointer]:
+            - /url: /why-origam
+        - listitem [ref=f5e504]:
+          - link "Roadmap" [ref=f5e505] [cursor=pointer]:
+            - /url: /roadmap
+        - listitem [ref=f5e506]:
+          - link "Changelog" [ref=f5e507] [cursor=pointer]:
+            - /url: /changelog
+      - heading "Getting started" [level=3] [ref=f5e508]
+      - list [ref=f5e509]:
+        - listitem [ref=f5e510]:
+          - link "Installation" [ref=f5e511] [cursor=pointer]:
+            - /url: /installation
+        - listitem [ref=f5e512]:
+          - link "Wireframe" [ref=f5e513] [cursor=pointer]:
+            - /url: /wireframe
+      - heading "Features" [level=3] [ref=f5e514]
+      - list [ref=f5e515]:
+        - listitem [ref=f5e516]:
+          - link "Components" [ref=f5e517] [cursor=pointer]:
+            - /url: /components
+        - listitem [ref=f5e518]:
+          - link "Directives" [ref=f5e519] [cursor=pointer]:
+            - /url: /directives
+        - listitem [ref=f5e520]:
+          - link "Composables" [ref=f5e521] [cursor=pointer]:
+            - /url: /composables
+        - listitem [ref=f5e522]:
+          - link "Types" [ref=f5e523] [cursor=pointer]:
+            - /url: /types
+        - listitem [ref=f5e524]:
+          - link "Enums" [ref=f5e525] [cursor=pointer]:
+            - /url: /enums
+        - listitem [ref=f5e526]:
+          - link "Interfaces" [ref=f5e527] [cursor=pointer]:
+            - /url: /interfaces
+        - listitem [ref=f5e528]:
+          - link "Utils" [ref=f5e529] [cursor=pointer]:
+            - /url: /utils
+        - listitem [ref=f5e530]:
+          - link "Constants" [ref=f5e531] [cursor=pointer]:
+            - /url: /consts
+        - listitem [ref=f5e532]:
+          - link "Stories" [ref=f5e533] [cursor=pointer]:
+            - /url: /stories/
+        - listitem [ref=f5e534]:
+          - link "Docs" [ref=f5e535] [cursor=pointer]:
+            - /url: /docs/
+    - separator [ref=f5e536]
+    - generic [ref=f5e537]:
+      - paragraph [ref=f5e538]: © 2026 origam · MIT
+      - paragraph [ref=f5e539]: Made with origam, by humans.
+      - link "Support origam with a donation" [ref=f5e540] [cursor=pointer]:
+        - /url: https://www.paypal.com/donate/?hosted_button_id=EQFUQ2JV95YGQ
+        - text: Support origam

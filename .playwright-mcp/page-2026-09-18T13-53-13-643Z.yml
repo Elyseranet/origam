@@ -1,0 +1,546 @@
+- generic [ref=f22e1]:
+  - generic [ref=f22e4]:
+    - generic [ref=f22e6]:
+      - generic [ref=f22e7]:
+        - img "Origam Page Builder logo" [ref=f22e10]
+        - generic [ref=f22e11]:
+          - generic [ref=f22e12] [cursor=pointer]
+          - generic [ref=f22e15] [cursor=pointer]
+      - generic [ref=f22e18]:
+        - generic [ref=f22e19]:
+          - button "Styles & Design token" [ref=f22e21] [cursor=pointer]
+          - button "Utilities" [ref=f22e27] [cursor=pointer]
+        - generic [ref=f22e33]:
+          - button "Components" [ref=f22e35] [cursor=pointer]
+          - generic [ref=f22e39]:
+            - button "Alert" [ref=f22e41] [cursor=pointer]
+            - button "App" [ref=f22e48] [cursor=pointer]
+            - button "Audio" [ref=f22e55] [cursor=pointer]
+            - button "Avatar" [ref=f22e62] [cursor=pointer]
+            - button "Badge" [ref=f22e69] [cursor=pointer]
+            - button "Blockquote" [ref=f22e76] [cursor=pointer]
+            - button "BottomNav" [ref=f22e83] [cursor=pointer]
+            - button "Bracket" [ref=f22e90] [cursor=pointer]
+            - button "Breadcrumb" [ref=f22e97] [cursor=pointer]
+            - button "Btn" [ref=f22e104] [cursor=pointer]
+            - button "Calendar" [ref=f22e111] [cursor=pointer]
+            - button "Card" [ref=f22e118] [cursor=pointer]
+            - button "Carousel" [ref=f22e125] [cursor=pointer]
+            - button "Chart" [ref=f22e132] [cursor=pointer]
+            - button "Checkbox" [ref=f22e139] [cursor=pointer]
+            - button "Chip" [ref=f22e146] [cursor=pointer]
+            - button "ClientOnly" [ref=f22e153] [cursor=pointer]
+            - button "Clipboard" [ref=f22e160] [cursor=pointer]
+            - button "Code" [ref=f22e167] [cursor=pointer]
+            - button "ColorGradient" [ref=f22e174] [cursor=pointer]
+            - button "ColorPicker" [ref=f22e181] [cursor=pointer]
+            - button "ColorPickerField" [ref=f22e188] [cursor=pointer]
+            - button "CommandPalette" [ref=f22e195] [cursor=pointer]
+            - button "ConfirmWrapper" [ref=f22e202] [cursor=pointer]
+            - button "ContextualMenu" [ref=f22e209] [cursor=pointer]
+            - button "Counter" [ref=f22e216] [cursor=pointer]
+            - button "DataList" [ref=f22e223] [cursor=pointer]
+            - generic [ref=f22e229]:
+              - button "DataTable" [ref=f22e230] [cursor=pointer]
+              - generic [ref=f22e236]:
+                - link "OrigamDataTable 28" [ref=f22e818] [cursor=pointer]:
+                  - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue
+                  - generic [ref=f22e239]: OrigamDataTable
+                  - generic [ref=f22e243]: "28"
+                - link "OrigamDataTableColumnCell 4" [ref=f22e245] [cursor=pointer]:
+                  - /url: /stories/story/components-stories-datatable-origamdatatablecolumncell-story-vue
+                  - generic [ref=f22e246]: OrigamDataTableColumnCell
+                  - generic [ref=f22e250]: "4"
+                - link "OrigamDataTableFooter 5" [ref=f22e252] [cursor=pointer]:
+                  - /url: /stories/story/components-stories-datatable-origamdatatablefooter-story-vue
+                  - generic [ref=f22e253]: OrigamDataTableFooter
+                  - generic [ref=f22e257]: "5"
+                - link "OrigamDataTableGroupHeaderRow 5" [ref=f22e259] [cursor=pointer]:
+                  - /url: /stories/story/components-stories-datatable-origamdatatablegroupheaderrow-story-vue
+                  - generic [ref=f22e260]: OrigamDataTableGroupHeaderRow
+                  - generic [ref=f22e264]: "5"
+                - link "OrigamDataTableHeaderCell 4" [ref=f22e266] [cursor=pointer]:
+                  - /url: /stories/story/components-stories-datatable-origamdatatableheadercell-story-vue
+                  - generic [ref=f22e267]: OrigamDataTableHeaderCell
+                  - generic [ref=f22e271]: "4"
+                - link "OrigamDataTableHeaders 7" [ref=f22e273] [cursor=pointer]:
+                  - /url: /stories/story/components-stories-datatable-origamdatatableheaders-story-vue
+                  - generic [ref=f22e274]: OrigamDataTableHeaders
+                  - generic [ref=f22e278]: "7"
+                - link "OrigamDataTableHeadersCell 3" [ref=f22e280] [cursor=pointer]:
+                  - /url: /stories/story/components-stories-datatable-origamdatatableheaderscell-story-vue
+                  - generic [ref=f22e281]: OrigamDataTableHeadersCell
+                  - generic [ref=f22e285]: "3"
+                - link "OrigamDataTableHeadersCellMobile 27" [ref=f22e287] [cursor=pointer]:
+                  - /url: /stories/story/components-stories-datatable-origamdatatableheaderscellmobile-story-vue
+                  - generic [ref=f22e288]: OrigamDataTableHeadersCellMobile
+                  - generic [ref=f22e292]: "27"
+                - link "OrigamDataTableRow 8" [ref=f22e294] [cursor=pointer]:
+                  - /url: /stories/story/components-stories-datatable-origamdatatablerow-story-vue
+                  - generic [ref=f22e295]: OrigamDataTableRow
+                  - generic [ref=f22e299]: "8"
+                - link "OrigamDataTableRows 8" [ref=f22e301] [cursor=pointer]:
+                  - /url: /stories/story/components-stories-datatable-origamdatatablerows-story-vue
+                  - generic [ref=f22e302]: OrigamDataTableRows
+                  - generic [ref=f22e306]: "8"
+            - button "DatePicker" [ref=f22e308] [cursor=pointer]
+            - button "DatePickerField" [ref=f22e315] [cursor=pointer]
+            - button "DefaultsProvider" [ref=f22e322] [cursor=pointer]
+            - button "Dialog" [ref=f22e329] [cursor=pointer]
+            - button "Divider" [ref=f22e336] [cursor=pointer]
+            - button "Drawer" [ref=f22e343] [cursor=pointer]
+            - button "EmptyState" [ref=f22e350] [cursor=pointer]
+            - button "ExpansionPanel" [ref=f22e357] [cursor=pointer]
+            - button "Field" [ref=f22e364] [cursor=pointer]
+            - button "FileField" [ref=f22e371] [cursor=pointer]
+            - button "Form" [ref=f22e378] [cursor=pointer]
+            - button "Grid" [ref=f22e385] [cursor=pointer]
+            - button "Grids" [ref=f22e392] [cursor=pointer]
+            - button "Icon" [ref=f22e399] [cursor=pointer]
+            - button "Img" [ref=f22e406] [cursor=pointer]
+            - button "InfiniteScroll" [ref=f22e413] [cursor=pointer]
+            - button "InlineEdit" [ref=f22e420] [cursor=pointer]
+            - button "Input" [ref=f22e427] [cursor=pointer]
+            - button "ItemGroup" [ref=f22e434] [cursor=pointer]
+            - button "Kbd" [ref=f22e441] [cursor=pointer]
+            - button "Label" [ref=f22e448] [cursor=pointer]
+            - button "Layout" [ref=f22e455] [cursor=pointer]
+            - button "Lazy" [ref=f22e462] [cursor=pointer]
+            - button "List" [ref=f22e469] [cursor=pointer]
+            - button "Loader" [ref=f22e476] [cursor=pointer]
+            - button "Main" [ref=f22e483] [cursor=pointer]
+            - button "Masonry" [ref=f22e490] [cursor=pointer]
+            - button "MediaController" [ref=f22e497] [cursor=pointer]
+            - button "MediaScrubber" [ref=f22e504] [cursor=pointer]
+            - button "MediaVolumeControl" [ref=f22e511] [cursor=pointer]
+            - button "Menu" [ref=f22e518] [cursor=pointer]
+            - button "Messages" [ref=f22e525] [cursor=pointer]
+            - button "NumberField" [ref=f22e532] [cursor=pointer]
+            - button "NumberFormat" [ref=f22e539] [cursor=pointer]
+            - button "OtpInputField" [ref=f22e546] [cursor=pointer]
+            - button "Overlay" [ref=f22e553] [cursor=pointer]
+            - button "Pagination" [ref=f22e560] [cursor=pointer]
+            - button "Parallax" [ref=f22e567] [cursor=pointer]
+            - button "PasswordField" [ref=f22e574] [cursor=pointer]
+            - button "Picker" [ref=f22e581] [cursor=pointer]
+            - button "Progress" [ref=f22e588] [cursor=pointer]
+            - button "QrCode" [ref=f22e595] [cursor=pointer]
+            - button "Radio" [ref=f22e602] [cursor=pointer]
+            - button "RatingField" [ref=f22e609] [cursor=pointer]
+            - button "Responsive" [ref=f22e616] [cursor=pointer]
+            - button "Select" [ref=f22e623] [cursor=pointer]
+            - button "SelectionControl" [ref=f22e630] [cursor=pointer]
+            - button "Sheet" [ref=f22e637] [cursor=pointer]
+            - button "Skeleton" [ref=f22e644] [cursor=pointer]
+            - button "Slide" [ref=f22e651] [cursor=pointer]
+            - button "SliderField" [ref=f22e658] [cursor=pointer]
+            - button "Snackbar" [ref=f22e665] [cursor=pointer]
+            - button "Stepper" [ref=f22e672] [cursor=pointer]
+            - button "Switch" [ref=f22e679] [cursor=pointer]
+            - button "SystemBar" [ref=f22e686] [cursor=pointer]
+            - button "Table" [ref=f22e693] [cursor=pointer]
+            - button "Tabs" [ref=f22e700] [cursor=pointer]
+            - button "TextareaField" [ref=f22e707] [cursor=pointer]
+            - button "TextField" [ref=f22e714] [cursor=pointer]
+            - button "TextMask" [ref=f22e721] [cursor=pointer]
+            - button "ThemeProvider" [ref=f22e728] [cursor=pointer]
+            - button "Timeline" [ref=f22e735] [cursor=pointer]
+            - button "Title" [ref=f22e742] [cursor=pointer]
+            - button "Toolbar" [ref=f22e749] [cursor=pointer]
+            - button "Tooltip" [ref=f22e756] [cursor=pointer]
+            - button "Transition" [ref=f22e763] [cursor=pointer]
+            - button "Treeview" [ref=f22e770] [cursor=pointer]
+            - button "Video" [ref=f22e777] [cursor=pointer]
+            - button "VirtualScroll" [ref=f22e784] [cursor=pointer]
+            - button "Watermark" [ref=f22e791] [cursor=pointer]
+            - button "Window" [ref=f22e798] [cursor=pointer]
+        - button "Page Builder" [ref=f22e806] [cursor=pointer]
+        - button "Helpers" [ref=f22e812] [cursor=pointer]
+    - generic [ref=f22e820]:
+      - generic [ref=f22e823]:
+        - generic [ref=f22e825]:
+          - link "Design" [ref=f22e827] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-0
+          - link "State" [ref=f22e832] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-1
+          - link "Functional" [ref=f22e837] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-2
+          - link "Events - update:currentItems" [ref=f22e842] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-3
+          - link "Events - update:expanded" [ref=f22e847] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-4
+          - link "Events - update:itemsPerPage" [ref=f22e852] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-5
+          - link "Events - update:modelValue" [ref=f22e857] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-6
+          - link "Events - update:options" [ref=f22e862] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-7
+          - link "Events - update:page" [ref=f22e867] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-8
+          - link "Events - update:sortBy" [ref=f22e872] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-9
+          - link "Slots - Top" [ref=f22e877] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-10
+          - link "Slots - Prepend" [ref=f22e882] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-11
+          - link "Slots - Append" [ref=f22e887] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-12
+          - link "Slots - Body" [ref=f22e892] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-13
+          - link "Slots - Bottom" [ref=f22e897] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-14
+          - link "Slots - Colgroup" [ref=f22e902] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-15
+          - link "Slots - Default" [ref=f22e907] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-16
+          - link "Slots - Header" [ref=f22e912] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-17
+          - link "Slots - Header.loader" [ref=f22e917] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-18
+          - link "Slots - Header.mobile" [ref=f22e922] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-19
+          - link "Slots - Thead" [ref=f22e927] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-20
+          - link "Prop — multiSort & mustSort" [ref=f22e932] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-21
+          - link "Prop — itemsPerPage (pagination)" [ref=f22e937] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-22
+          - link "Prop — showSelect" [ref=f22e942] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-23
+          - link "Prop — search" [ref=f22e947] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-24
+          - link "Prop — loading" [ref=f22e952] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-25
+          - link "Prop — loading (all shapes)" [ref=f22e957] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-26
+          - link "Default" [ref=f22e962] [cursor=pointer]:
+            - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-27
+        - generic [ref=f22e969]:
+          - generic [ref=f22e970]:
+            - generic [ref=f22e971]: Prop — showSelect
+            - generic [ref=f22e976] [cursor=pointer]
+            - generic [ref=f22e982]: a
+            - link [ref=f22e991] [cursor=pointer]:
+              - /url: /stories/__sandbox.html?storyId=components-stories-datatable-origamdatatable-story-vue&variantId=components-stories-datatable-origamdatatable-story-vue-23
+          - iframe [ref=f22e1007]:
+            - generic [ref=f23e9]:
+              - table [ref=f23e11]:
+                - rowgroup [ref=f23e12]:
+                  - row [ref=f23e13]:
+                    - columnheader "ID" [ref=f23e14] [cursor=pointer]:
+                      - generic [ref=f23e15]:
+                        - generic [ref=f23e16]: ID
+                        - generic [aria-hidden] [ref=f23e17]: 󰁝
+                    - columnheader "First name" [ref=f23e18] [cursor=pointer]:
+                      - generic [ref=f23e19]:
+                        - generic [ref=f23e20]: First name
+                        - generic [aria-hidden] [ref=f23e21]: 󰁝
+                    - columnheader "Last name" [ref=f23e22] [cursor=pointer]:
+                      - generic [ref=f23e23]:
+                        - generic [ref=f23e24]: Last name
+                        - generic [aria-hidden] [ref=f23e25]: 󰁝
+                    - columnheader "Age" [ref=f23e26] [cursor=pointer]:
+                      - generic [ref=f23e27]:
+                        - generic [ref=f23e28]: Age
+                        - generic [aria-hidden] [ref=f23e29]: 󰁝
+                - rowgroup [ref=f23e30]:
+                  - row [ref=f23e31] [cursor=pointer]:
+                    - cell "1" [ref=f23e32]
+                    - cell "First1" [ref=f23e34]
+                    - cell "Last1" [ref=f23e36]
+                    - cell "20" [ref=f23e38]
+                  - row [ref=f23e40] [cursor=pointer]:
+                    - cell "2" [ref=f23e41]
+                    - cell "First2" [ref=f23e43]
+                    - cell "Last2" [ref=f23e45]
+                    - cell "21" [ref=f23e47]
+                  - row [ref=f23e49] [cursor=pointer]:
+                    - cell "3" [ref=f23e50]
+                    - cell "First3" [ref=f23e52]
+                    - cell "Last3" [ref=f23e54]
+                    - cell "22" [ref=f23e56]
+                  - row [ref=f23e58] [cursor=pointer]:
+                    - cell "4" [ref=f23e59]
+                    - cell "First4" [ref=f23e61]
+                    - cell "Last4" [ref=f23e63]
+                    - cell "23" [ref=f23e65]
+                  - row [ref=f23e67] [cursor=pointer]:
+                    - cell "5" [ref=f23e68]
+                    - cell "First5" [ref=f23e70]
+                    - cell "Last5" [ref=f23e72]
+                    - cell "24" [ref=f23e74]
+                  - row [ref=f23e76] [cursor=pointer]:
+                    - cell "6" [ref=f23e77]
+                    - cell "First6" [ref=f23e79]
+                    - cell "Last6" [ref=f23e81]
+                    - cell "25" [ref=f23e83]
+                  - row [ref=f23e85] [cursor=pointer]:
+                    - cell "7" [ref=f23e86]
+                    - cell "First7" [ref=f23e88]
+                    - cell "Last7" [ref=f23e90]
+                    - cell "26" [ref=f23e92]
+                  - row [ref=f23e94] [cursor=pointer]:
+                    - cell "8" [ref=f23e95]
+                    - cell "First8" [ref=f23e97]
+                    - cell "Last8" [ref=f23e99]
+                    - cell "27" [ref=f23e101]
+                  - row [ref=f23e103] [cursor=pointer]:
+                    - cell "9" [ref=f23e104]
+                    - cell "First9" [ref=f23e106]
+                    - cell "Last9" [ref=f23e108]
+                    - cell "28" [ref=f23e110]
+                  - row [ref=f23e112] [cursor=pointer]:
+                    - cell "10" [ref=f23e113]
+                    - cell "First10" [ref=f23e115]
+                    - cell "Last10" [ref=f23e117]
+                    - cell "29" [ref=f23e119]
+              - separator [ref=f23e121]
+              - generic [ref=f23e123]:
+                - generic [ref=f23e124]:
+                  - generic [ref=f23e125]: "Items per page:"
+                  - generic "Items per page:" [ref=f23e126]:
+                    - combobox [ref=f23e128]:
+                      - generic [ref=f23e130] [cursor=pointer]:
+                        - generic [ref=f23e131]: "10"
+                        - textbox "Items per page:"
+                      - generic [ref=f23e133]: 󰅀
+                - generic [ref=f23e135]: 1-10 of 25
+                - navigation "Pagination Navigation" [ref=f23e138]:
+                  - list [ref=f23e139]:
+                    - listitem [ref=f23e140]:
+                      - button "First page" [disabled]:
+                        - generic:
+                          - generic:
+                            - generic [aria-hidden]: 󰄽
+                    - listitem [ref=f23e141]:
+                      - button "Previous page" [disabled]:
+                        - generic:
+                          - generic:
+                            - generic [aria-hidden]: 󰅁
+                    - listitem [ref=f23e142]:
+                      - button "Page 1, Current page" [ref=f23e143] [cursor=pointer]:
+                        - generic [ref=f23e144]: "1"
+                    - listitem [ref=f23e146]:
+                      - button "Next page" [ref=f23e147] [cursor=pointer]:
+                        - generic [aria-hidden] [ref=f23e150]: 󰅂
+                    - listitem [ref=f23e151]:
+                      - button "Last page" [ref=f23e152] [cursor=pointer]:
+                        - generic [aria-hidden] [ref=f23e155]: 󰄾
+      - generic [ref=f22e1025]:
+        - generic [ref=f22e1027]:
+          - generic [ref=f22e1028]:
+            - link "Controls" [ref=f22e1030] [cursor=pointer]:
+              - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-23&tab=
+            - link "Docs" [ref=f22e1033] [cursor=pointer]:
+              - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-23&tab=docs
+            - link "Events" [ref=f22e1035] [cursor=pointer]:
+              - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue?variantId=components-stories-datatable-origamdatatable-story-vue-23&tab=events
+          - generic [ref=f22e1036]:
+            - generic [ref=f22e1038]:
+              - generic [ref=f22e1039]: Initial state
+              - img [aria-hidden] [ref=f22e1047] [cursor=pointer]
+              - img [aria-hidden] [ref=f22e1050] [cursor=pointer]
+            - group "Layout" [ref=f22e1057]:
+              - generic [ref=f22e1059]:
+                - checkbox "Sticky" [ref=f22e1061] [cursor=pointer]
+                - generic [ref=f22e1070]:
+                  - generic [ref=f22e1071]: Density
+                  - generic [ref=f22e1072]: (none)
+        - generic [ref=f22e1081]:
+          - generic [ref=f22e1082]:
+            - generic [ref=f22e1083]: Source
+            - generic [ref=f22e1084]:
+              - button "Dynamic" [ref=f22e1085] [cursor=pointer]
+              - button "Static" [ref=f22e1089] [cursor=pointer]
+            - img [aria-hidden] [ref=f22e1094] [cursor=pointer]
+          - code [ref=f22e1100]:
+            - generic [ref=f22e1101]: <div
+            - generic [ref=f22e1102]: data-cy="data-table-sticky-container"
+            - generic [ref=f22e1103]: ":style=\"{"
+            - generic [ref=f22e1104]: "'max-height': '240px',"
+            - generic [ref=f22e1105]: "'overflow-y': 'auto',"
+            - generic [ref=f22e1106]: "}\""
+            - generic [ref=f22e1107]: ">"
+            - generic [ref=f22e1108]: <OrigamDataTable
+            - generic [ref=f22e1109]: :headers="[
+            - generic [ref=f22e1110]: "{"
+            - generic [ref=f22e1111]: "title: 'ID',"
+            - generic [ref=f22e1112]: "key: 'id',"
+            - generic [ref=f22e1113]: "sortable: true,"
+            - generic [ref=f22e1114]: "},"
+            - generic [ref=f22e1115]: "{"
+            - generic [ref=f22e1116]: "title: 'First name',"
+            - generic [ref=f22e1117]: "key: 'firstName',"
+            - generic [ref=f22e1118]: "sortable: true,"
+            - generic [ref=f22e1119]: "},"
+            - generic [ref=f22e1120]: "{"
+            - generic [ref=f22e1121]: "title: 'Last name',"
+            - generic [ref=f22e1122]: "key: 'lastName',"
+            - generic [ref=f22e1123]: "sortable: true,"
+            - generic [ref=f22e1124]: "},"
+            - generic [ref=f22e1125]: "{"
+            - generic [ref=f22e1126]: "title: 'Age',"
+            - generic [ref=f22e1127]: "key: 'age',"
+            - generic [ref=f22e1128]: "sortable: true,"
+            - generic [ref=f22e1129]: "},"
+            - generic [ref=f22e1130]: "]\""
+            - generic [ref=f22e1131]: :items="[
+            - generic [ref=f22e1132]: "{"
+            - generic [ref=f22e1133]: "id: 1,"
+            - generic [ref=f22e1134]: "firstName: 'First1',"
+            - generic [ref=f22e1135]: "lastName: 'Last1',"
+            - generic [ref=f22e1136]: "age: 20,"
+            - generic [ref=f22e1137]: "},"
+            - generic [ref=f22e1138]: "{"
+            - generic [ref=f22e1139]: "id: 2,"
+            - generic [ref=f22e1140]: "firstName: 'First2',"
+            - generic [ref=f22e1141]: "lastName: 'Last2',"
+            - generic [ref=f22e1142]: "age: 21,"
+            - generic [ref=f22e1143]: "},"
+            - generic [ref=f22e1144]: "{"
+            - generic [ref=f22e1145]: "id: 3,"
+            - generic [ref=f22e1146]: "firstName: 'First3',"
+            - generic [ref=f22e1147]: "lastName: 'Last3',"
+            - generic [ref=f22e1148]: "age: 22,"
+            - generic [ref=f22e1149]: "},"
+            - generic [ref=f22e1150]: "{"
+            - generic [ref=f22e1151]: "id: 4,"
+            - generic [ref=f22e1152]: "firstName: 'First4',"
+            - generic [ref=f22e1153]: "lastName: 'Last4',"
+            - generic [ref=f22e1154]: "age: 23,"
+            - generic [ref=f22e1155]: "},"
+            - generic [ref=f22e1156]: "{"
+            - generic [ref=f22e1157]: "id: 5,"
+            - generic [ref=f22e1158]: "firstName: 'First5',"
+            - generic [ref=f22e1159]: "lastName: 'Last5',"
+            - generic [ref=f22e1160]: "age: 24,"
+            - generic [ref=f22e1161]: "},"
+            - generic [ref=f22e1162]: "{"
+            - generic [ref=f22e1163]: "id: 6,"
+            - generic [ref=f22e1164]: "firstName: 'First6',"
+            - generic [ref=f22e1165]: "lastName: 'Last6',"
+            - generic [ref=f22e1166]: "age: 25,"
+            - generic [ref=f22e1167]: "},"
+            - generic [ref=f22e1168]: "{"
+            - generic [ref=f22e1169]: "id: 7,"
+            - generic [ref=f22e1170]: "firstName: 'First7',"
+            - generic [ref=f22e1171]: "lastName: 'Last7',"
+            - generic [ref=f22e1172]: "age: 26,"
+            - generic [ref=f22e1173]: "},"
+            - generic [ref=f22e1174]: "{"
+            - generic [ref=f22e1175]: "id: 8,"
+            - generic [ref=f22e1176]: "firstName: 'First8',"
+            - generic [ref=f22e1177]: "lastName: 'Last8',"
+            - generic [ref=f22e1178]: "age: 27,"
+            - generic [ref=f22e1179]: "},"
+            - generic [ref=f22e1180]: "{"
+            - generic [ref=f22e1181]: "id: 9,"
+            - generic [ref=f22e1182]: "firstName: 'First9',"
+            - generic [ref=f22e1183]: "lastName: 'Last9',"
+            - generic [ref=f22e1184]: "age: 28,"
+            - generic [ref=f22e1185]: "},"
+            - generic [ref=f22e1186]: "{"
+            - generic [ref=f22e1187]: "id: 10,"
+            - generic [ref=f22e1188]: "firstName: 'First10',"
+            - generic [ref=f22e1189]: "lastName: 'Last10',"
+            - generic [ref=f22e1190]: "age: 29,"
+            - generic [ref=f22e1191]: "},"
+            - generic [ref=f22e1192]: "{"
+            - generic [ref=f22e1193]: "id: 11,"
+            - generic [ref=f22e1194]: "firstName: 'First11',"
+            - generic [ref=f22e1195]: "lastName: 'Last11',"
+            - generic [ref=f22e1196]: "age: 30,"
+            - generic [ref=f22e1197]: "},"
+            - generic [ref=f22e1198]: "{"
+            - generic [ref=f22e1199]: "id: 12,"
+            - generic [ref=f22e1200]: "firstName: 'First12',"
+            - generic [ref=f22e1201]: "lastName: 'Last12',"
+            - generic [ref=f22e1202]: "age: 31,"
+            - generic [ref=f22e1203]: "},"
+            - generic [ref=f22e1204]: "{"
+            - generic [ref=f22e1205]: "id: 13,"
+            - generic [ref=f22e1206]: "firstName: 'First13',"
+            - generic [ref=f22e1207]: "lastName: 'Last13',"
+            - generic [ref=f22e1208]: "age: 32,"
+            - generic [ref=f22e1209]: "},"
+            - generic [ref=f22e1210]: "{"
+            - generic [ref=f22e1211]: "id: 14,"
+            - generic [ref=f22e1212]: "firstName: 'First14',"
+            - generic [ref=f22e1213]: "lastName: 'Last14',"
+            - generic [ref=f22e1214]: "age: 33,"
+            - generic [ref=f22e1215]: "},"
+            - generic [ref=f22e1216]: "{"
+            - generic [ref=f22e1217]: "id: 15,"
+            - generic [ref=f22e1218]: "firstName: 'First15',"
+            - generic [ref=f22e1219]: "lastName: 'Last15',"
+            - generic [ref=f22e1220]: "age: 34,"
+            - generic [ref=f22e1221]: "},"
+            - generic [ref=f22e1222]: "{"
+            - generic [ref=f22e1223]: "id: 16,"
+            - generic [ref=f22e1224]: "firstName: 'First16',"
+            - generic [ref=f22e1225]: "lastName: 'Last16',"
+            - generic [ref=f22e1226]: "age: 35,"
+            - generic [ref=f22e1227]: "},"
+            - generic [ref=f22e1228]: "{"
+            - generic [ref=f22e1229]: "id: 17,"
+            - generic [ref=f22e1230]: "firstName: 'First17',"
+            - generic [ref=f22e1231]: "lastName: 'Last17',"
+            - generic [ref=f22e1232]: "age: 36,"
+            - generic [ref=f22e1233]: "},"
+            - generic [ref=f22e1234]: "{"
+            - generic [ref=f22e1235]: "id: 18,"
+            - generic [ref=f22e1236]: "firstName: 'First18',"
+            - generic [ref=f22e1237]: "lastName: 'Last18',"
+            - generic [ref=f22e1238]: "age: 37,"
+            - generic [ref=f22e1239]: "},"
+            - generic [ref=f22e1240]: "{"
+            - generic [ref=f22e1241]: "id: 19,"
+            - generic [ref=f22e1242]: "firstName: 'First19',"
+            - generic [ref=f22e1243]: "lastName: 'Last19',"
+            - generic [ref=f22e1244]: "age: 38,"
+            - generic [ref=f22e1245]: "},"
+            - generic [ref=f22e1246]: "{"
+            - generic [ref=f22e1247]: "id: 20,"
+            - generic [ref=f22e1248]: "firstName: 'First20',"
+            - generic [ref=f22e1249]: "lastName: 'Last20',"
+            - generic [ref=f22e1250]: "age: 39,"
+            - generic [ref=f22e1251]: "},"
+            - generic [ref=f22e1252]: "{"
+            - generic [ref=f22e1253]: "id: 21,"
+            - generic [ref=f22e1254]: "firstName: 'First21',"
+            - generic [ref=f22e1255]: "lastName: 'Last21',"
+            - generic [ref=f22e1256]: "age: 40,"
+            - generic [ref=f22e1257]: "},"
+            - generic [ref=f22e1258]: "{"
+            - generic [ref=f22e1259]: "id: 22,"
+            - generic [ref=f22e1260]: "firstName: 'First22',"
+            - generic [ref=f22e1261]: "lastName: 'Last22',"
+            - generic [ref=f22e1262]: "age: 41,"
+            - generic [ref=f22e1263]: "},"
+            - generic [ref=f22e1264]: "{"
+            - generic [ref=f22e1265]: "id: 23,"
+            - generic [ref=f22e1266]: "firstName: 'First23',"
+            - generic [ref=f22e1267]: "lastName: 'Last23',"
+            - generic [ref=f22e1268]: "age: 42,"
+            - generic [ref=f22e1269]: "},"
+            - generic [ref=f22e1270]: "{"
+            - generic [ref=f22e1271]: "id: 24,"
+            - generic [ref=f22e1272]: "firstName: 'First24',"
+            - generic [ref=f22e1273]: "lastName: 'Last24',"
+            - generic [ref=f22e1274]: "age: 43,"
+            - generic [ref=f22e1275]: "},"
+            - generic [ref=f22e1276]: "{"
+            - generic [ref=f22e1277]: "id: 25,"
+            - generic [ref=f22e1278]: "firstName: 'First25',"
+            - generic [ref=f22e1279]: "lastName: 'Last25',"
+            - generic [ref=f22e1280]: "age: 44,"
+            - generic [ref=f22e1281]: "},"
+            - generic [ref=f22e1282]: "]\""
+            - generic [ref=f22e1283]: :sticky="true"
+            - generic [ref=f22e1284]: />
+            - generic [ref=f22e1285]: </div>
+  - generic [ref=f22e1290]:
+    - generic [ref=f22e1291] [cursor=pointer]: (none)
+    - generic [ref=f22e1292] [cursor=pointer]: Default
+    - generic [ref=f22e1293] [cursor=pointer]: Compact
+    - generic [ref=f22e1294] [cursor=pointer]: Comfortable

@@ -9,7 +9,10 @@
 				:init-state="() => useStoryInitState<Partial<IFileFieldListItemProps>>({ color: 'primary', showSize: true, downloadable: true })"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 480px;">
+				<ul
+						role="list"
+						style="padding: 24px; max-width: 480px; margin: 0; list-style: none;"
+				>
 					<origam-file-field-list-item
 							:file="mockFile('design.pdf', 'application/pdf', 256000)"
 							:index="0"
@@ -20,7 +23,7 @@
 							:downloadable="state.downloadable"
 							:show-size="state.showSize"
 					/>
-				</div>
+				</ul>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Color">
@@ -43,7 +46,10 @@
 				:init-state="() => useStoryInitState<Partial<IFileFieldListItemProps>>({ progress: 0, disabled: false, readonly: false, showSize: true, downloadable: true })"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 480px;">
+				<ul
+						role="list"
+						style="padding: 24px; max-width: 480px; margin: 0; list-style: none;"
+				>
 					<origam-file-field-list-item
 							:file="mockFile('functional.pdf', 'application/pdf', 524288)"
 							:index="0"
@@ -53,7 +59,7 @@
 							:downloadable="state.downloadable"
 							:show-size="state.showSize"
 					/>
-				</div>
+				</ul>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="States">
@@ -71,35 +77,44 @@
 		</Variant>
 
 		<Variant title="Events - click:remove">
-			<div style="padding: 24px; max-width: 480px;">
+			<ul
+					role="list"
+					style="padding: 24px; max-width: 480px; margin: 0; list-style: none;"
+			>
 				<origam-file-field-list-item
 						:file="mockFile('removable.pdf', 'application/pdf', 65536)"
 						:index="0"
 						@click:remove="logEvent('click:remove', $event)"
 				/>
-			</div>
+			</ul>
 		</Variant>
 
 		<Variant title="Events - click:download">
-			<div style="padding: 24px; max-width: 480px;">
+			<ul
+					role="list"
+					style="padding: 24px; max-width: 480px; margin: 0; list-style: none;"
+			>
 				<origam-file-field-list-item
 						:file="mockFile('downloadable.pdf', 'application/pdf', 65536)"
 						:index="0"
 						downloadable
 						@click:download="logEvent('click:download', $event)"
 				/>
-			</div>
+			</ul>
 		</Variant>
 
 		<Variant title="Slots - Default">
-			<div style="padding: 24px; max-width: 480px;">
+			<ul
+					role="list"
+					style="padding: 24px; max-width: 480px; margin: 0; list-style: none;"
+			>
 				<origam-file-field-list-item
 						:file="mockFile('custom.pdf', 'application/pdf', 102400)"
 						:index="0"
 				>
 					<span>Custom slot content</span>
 				</origam-file-field-list-item>
-			</div>
+			</ul>
 		</Variant>
 
 		<Variant
@@ -107,7 +122,10 @@
 				:init-state="() => useStoryInitState<Partial<IFileFieldListItemProps>>({ color: 'primary', progress: 0, disabled: false, readonly: false, showSize: true, downloadable: true })"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 480px;">
+				<ul
+						role="list"
+						style="padding: 24px; max-width: 480px; margin: 0; list-style: none;"
+				>
 					<origam-file-field-list-item
 							v-bind="state"
 							:file="mockFile('playground.pdf', 'application/pdf', 256000)"
@@ -115,7 +133,7 @@
 							@click:remove="logEvent('click:remove', $event)"
 							@click:download="logEvent('click:download', $event)"
 					/>
-				</div>
+				</ul>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Content">

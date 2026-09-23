@@ -95,6 +95,67 @@ le titre de Picker suit sa surface (sur un Picker neutre il passe du gris
 passe du bleu au violet de l'identité (`action--primary`), comme tout autre
 état sélectionné du DS.
 
+### Fixed — #818 baseline shrink : structure ARIA — `aria-required-parent`/`aria-required-children`/`listitem`/`aria-prohibited-attr` (4 entrées)
+
+Recompté sur `a11y-violations.baseline.json` **après rebase sur `develop`**
+(le lot `button-name`/`scrollable-region-focusable` ci-dessous, #892, est
+passé pendant ce travail et a déjà fait bouger le compteur : 18/17 → 12/12
+avant ce commit) : **12 violations / 12 clés → 8 violations / 8 clés** avec
+ce lot. Les quatre entrées traitées ici sont la même famille de défaut vue
+sous quatre angles : un rôle ARIA exigeant un parent ou des enfants d'un
+rôle précis, et l'arbre rendu ne les fournissait pas.
+
+- **`OrigamCalendar` — `aria-required-parent`** (`role="row"` sans parent
+  `grid`/`rowgroup`/`table`/`treegrid`). La ligne d'en-tête des jours
+  (`.origam-calendar__weekdays`, `role="row"`) était un SIBLING de
+  `.origam-calendar__month-grid` (qui seul portait `role="grid"`), jamais un
+  descendant. `role="grid"` + l'`aria-label` du mois sont montés d'un cran,
+  sur `.origam-calendar__body--month` (qui enveloppe déjà les deux) ; la
+  grille interne redevient un simple conteneur de mise en page. Les lignes du
+  mois (`role="row"`, déjà correctement rattachées) ne changent pas de statut.
+- **`OrigamListGroup` — `aria-required-children`** (`<origam-list>` /
+  `role="list"` ou `"listbox"` sans AUCUN `listitem`/`option` descendant
+  lorsque le groupe est fermé — l'activateur porte délibérément aucun rôle,
+  ce n'est pas une ligne de la liste). Le groupe entier (activateur + sous-
+  liste) est désormais lui-même compté comme UNE ligne de la liste ambiante,
+  via un nouveau `groupRole` calculé sur `list.itemRole` : `listitem` en mode
+  `list` (seul rôle que `list` autorise comme enfant — vérifié empiriquement
+  contre `axe-core@4.13`, `role="group"` y est refusé), `group` en mode
+  `listbox` (rôle explicitement autorisé là). Sans liste ambiante (composant
+  autonome), aucun rôle n'est posé — un `listitem` hors de tout `list`
+  aurait simplement déplacé la violation vers `aria-required-parent`.
+  `OrigamListGroupActivator.story.vue` plaçait ses lignes hors du slot
+  `#items` (bug de story pré-existant, invisible tant que le wrapper ne
+  portait aucun rôle) ; corrigé dans le même commit — sans quoi le nouveau
+  rôle aurait cassé la ligne réelle imbriquée (`aria-required-parent` par
+  ricochet, capturé en re-testant la suite complète après le fix).
+- **`OrigamFileFieldListItem` — `listitem`** (un `<li>` isolé sans `<ul>`
+  parent). Le composant réel est toujours monté par `OrigamFileField` dans
+  un vrai `<ul>` — la violation venait uniquement de la story qui démontre
+  le sous-composant seul, enveloppé dans un `<div>`. Les six Variants de
+  `OrigamFileFieldListItem.story.vue` enveloppent désormais le `<li>` dans un
+  `<ul role="list">` (le `role="list"` explicite est une marge de sécurité
+  contre le bug WebKit qui retire la sémantique de liste implicite quand
+  `list-style: none` est appliqué — présent aussi sur le vrai
+  `OrigamFileField.vue`, non corrigé ici, aucun outil de la suite ne le
+  détecte).
+- **`OrigamChartMap` — `aria-prohibited-attr`** (`aria-label` sur un
+  `<path>` SVG sans rôle). `:role="country.hasData ? 'button' : undefined"`
+  gérait déjà le cas « pays sans donnée », mais `:aria-label` restait posé
+  sans condition — un `<path>` sans rôle a un rôle implicite `generic`, qui
+  interdit `aria-label`. `aria-label` suit désormais la même condition que
+  `role`.
+
+**Preuve** : porte a11y ciblée (`OrigamCalendar`/`OrigamListGroup`/
+`OrigamFileFieldListItem`/`OrigamChartMap`/`OrigamListGroupActivator`
+Default Variant) verte, `axe-core` réel via Playwright + Histoire statique
+(`E2E_STATIC=1`). Contrôle positif exécuté sur `OrigamListGroup` : rôle
+retiré → `aria-required-children` NOUVELLE (non baselinée) → `exit 1` réel ;
+rôle restauré → vert. Suite a11y complète (218 stories + 8 Variants
+d'intention) rejouée après le lot : **226 passed, 0 failed**. Suite unitaire
+complète : **7149 passed**. `pnpm -F origam guards` 28/28, `guards:self`
+15/15, `type-check` et `pnpm audit` propres.
+
 ### Fixed — #818 baseline shrink : `aria-allowed-attr`/`aria-prohibited-attr`/`aria-valid-attr-value` (12 des 25 entrées)
 
 Recompté sur `a11y-violations.baseline.json` (pas repris d'un chiffre cité

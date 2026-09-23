@@ -1,0 +1,249 @@
+- generic [ref=f1e4]:
+  - generic [ref=f1e6]:
+    - generic [ref=f1e7]:
+      - img "Origam Page Builder logo" [ref=f1e10]
+      - generic [ref=f1e11]:
+        - generic [ref=f1e12] [cursor=pointer]
+        - generic [ref=f1e15] [cursor=pointer]
+    - generic [ref=f1e18]:
+      - generic [ref=f1e19]:
+        - button "Styles & Design token" [ref=f1e21] [cursor=pointer]
+        - button "Utilities" [ref=f1e27] [cursor=pointer]
+      - generic [ref=f1e33]:
+        - button "Components" [ref=f1e35] [cursor=pointer]
+        - generic [ref=f1e39]:
+          - button "Alert" [ref=f1e41] [cursor=pointer]
+          - button "App" [ref=f1e48] [cursor=pointer]
+          - button "Audio" [ref=f1e55] [cursor=pointer]
+          - button "Avatar" [ref=f1e62] [cursor=pointer]
+          - button "Badge" [ref=f1e69] [cursor=pointer]
+          - button "Blockquote" [ref=f1e76] [cursor=pointer]
+          - button "BottomNav" [ref=f1e83] [cursor=pointer]
+          - button "Bracket" [ref=f1e90] [cursor=pointer]
+          - button "Breadcrumb" [ref=f1e97] [cursor=pointer]
+          - button "Btn" [ref=f1e104] [cursor=pointer]
+          - button "Calendar" [ref=f1e111] [cursor=pointer]
+          - button "Card" [ref=f1e118] [cursor=pointer]
+          - button "Carousel" [ref=f1e125] [cursor=pointer]
+          - button "Chart" [ref=f1e132] [cursor=pointer]
+          - button "Checkbox" [ref=f1e139] [cursor=pointer]
+          - button "Chip" [ref=f1e146] [cursor=pointer]
+          - button "ClientOnly" [ref=f1e153] [cursor=pointer]
+          - button "Clipboard" [ref=f1e160] [cursor=pointer]
+          - button "Code" [ref=f1e167] [cursor=pointer]
+          - button "ColorGradient" [ref=f1e174] [cursor=pointer]
+          - button "ColorPicker" [ref=f1e181] [cursor=pointer]
+          - button "ColorPickerField" [ref=f1e188] [cursor=pointer]
+          - button "CommandPalette" [ref=f1e195] [cursor=pointer]
+          - button "ConfirmWrapper" [ref=f1e202] [cursor=pointer]
+          - button "ContextualMenu" [ref=f1e209] [cursor=pointer]
+          - button "Counter" [ref=f1e216] [cursor=pointer]
+          - button "DataList" [ref=f1e223] [cursor=pointer]
+          - button "DataTable" [ref=f1e230] [cursor=pointer]
+          - button "DatePicker" [ref=f1e237] [cursor=pointer]
+          - button "DatePickerField" [ref=f1e244] [cursor=pointer]
+          - button "DefaultsProvider" [ref=f1e251] [cursor=pointer]
+          - button "Dialog" [ref=f1e258] [cursor=pointer]
+          - button "Divider" [ref=f1e265] [cursor=pointer]
+          - button "Drawer" [ref=f1e272] [cursor=pointer]
+          - button "EmptyState" [ref=f1e279] [cursor=pointer]
+          - button "ExpansionPanel" [ref=f1e286] [cursor=pointer]
+          - button "Field" [ref=f1e293] [cursor=pointer]
+          - button "FileField" [ref=f1e300] [cursor=pointer]
+          - button "Form" [ref=f1e307] [cursor=pointer]
+          - button "Grid" [ref=f1e314] [cursor=pointer]
+          - button "Grids" [ref=f1e321] [cursor=pointer]
+          - button "Icon" [ref=f1e328] [cursor=pointer]
+          - button "Img" [ref=f1e335] [cursor=pointer]
+          - button "InfiniteScroll" [ref=f1e342] [cursor=pointer]
+          - button "InlineEdit" [ref=f1e349] [cursor=pointer]
+          - button "Input" [ref=f1e356] [cursor=pointer]
+          - button "ItemGroup" [ref=f1e363] [cursor=pointer]
+          - button "Kbd" [ref=f1e370] [cursor=pointer]
+          - button "Label" [ref=f1e377] [cursor=pointer]
+          - button "Layout" [ref=f1e384] [cursor=pointer]
+          - button "Lazy" [ref=f1e391] [cursor=pointer]
+          - button "List" [ref=f1e398] [cursor=pointer]
+          - button "Loader" [ref=f1e405] [cursor=pointer]
+          - button "Main" [ref=f1e412] [cursor=pointer]
+          - button "Masonry" [ref=f1e419] [cursor=pointer]
+          - button "MediaController" [ref=f1e426] [cursor=pointer]
+          - button "MediaScrubber" [ref=f1e433] [cursor=pointer]
+          - button "MediaVolumeControl" [ref=f1e440] [cursor=pointer]
+          - button "Menu" [ref=f1e447] [cursor=pointer]
+          - button "Messages" [ref=f1e454] [cursor=pointer]
+          - button "NumberField" [ref=f1e461] [cursor=pointer]
+          - button "NumberFormat" [ref=f1e468] [cursor=pointer]
+          - button "OtpInputField" [ref=f1e475] [cursor=pointer]
+          - button "Overlay" [ref=f1e482] [cursor=pointer]
+          - button "Pagination" [ref=f1e489] [cursor=pointer]
+          - button "Parallax" [ref=f1e496] [cursor=pointer]
+          - button "PasswordField" [ref=f1e503] [cursor=pointer]
+          - button "Picker" [ref=f1e510] [cursor=pointer]
+          - button "Progress" [ref=f1e517] [cursor=pointer]
+          - button "QrCode" [ref=f1e524] [cursor=pointer]
+          - button "Radio" [ref=f1e531] [cursor=pointer]
+          - button "RatingField" [ref=f1e538] [cursor=pointer]
+          - button "Responsive" [ref=f1e545] [cursor=pointer]
+          - button "Select" [ref=f1e552] [cursor=pointer]
+          - button "SelectionControl" [ref=f1e559] [cursor=pointer]
+          - button "Sheet" [ref=f1e566] [cursor=pointer]
+          - button "Skeleton" [ref=f1e573] [cursor=pointer]
+          - button "Slide" [ref=f1e580] [cursor=pointer]
+          - button "SliderField" [ref=f1e587] [cursor=pointer]
+          - button "Snackbar" [ref=f1e594] [cursor=pointer]
+          - button "Stepper" [ref=f1e601] [cursor=pointer]
+          - button "Switch" [ref=f1e608] [cursor=pointer]
+          - button "SystemBar" [ref=f1e615] [cursor=pointer]
+          - button "Table" [ref=f1e622] [cursor=pointer]
+          - button "Tabs" [ref=f1e629] [cursor=pointer]
+          - button "TextareaField" [ref=f1e636] [cursor=pointer]
+          - button "TextField" [ref=f1e643] [cursor=pointer]
+          - button "TextMask" [ref=f1e650] [cursor=pointer]
+          - button "ThemeProvider" [ref=f1e657] [cursor=pointer]
+          - button "Timeline" [ref=f1e664] [cursor=pointer]
+          - button "Title" [ref=f1e671] [cursor=pointer]
+          - button "Toolbar" [ref=f1e678] [cursor=pointer]
+          - button "Tooltip" [ref=f1e685] [cursor=pointer]
+          - button "Transition" [ref=f1e692] [cursor=pointer]
+          - button "Treeview" [ref=f1e699] [cursor=pointer]
+          - button "Video" [ref=f1e706] [cursor=pointer]
+          - button "VirtualScroll" [ref=f1e713] [cursor=pointer]
+          - button "Watermark" [ref=f1e720] [cursor=pointer]
+          - button "Window" [ref=f1e727] [cursor=pointer]
+      - button "Page Builder" [ref=f1e735] [cursor=pointer]
+      - button "Helpers" [ref=f1e741] [cursor=pointer]
+  - generic [ref=f1e748]:
+    - generic [ref=f1e751]:
+      - generic [ref=f1e753]:
+        - link "Design" [ref=f1e755] [cursor=pointer]:
+          - /url: /stories/story/components-stories-chip-origamchip-story-vue?variantId=components-stories-chip-origamchip-story-vue-0
+        - link "State" [ref=f1e760] [cursor=pointer]:
+          - /url: /stories/story/components-stories-chip-origamchip-story-vue?variantId=components-stories-chip-origamchip-story-vue-1
+        - link "Functional" [ref=f1e765] [cursor=pointer]:
+          - /url: /stories/story/components-stories-chip-origamchip-story-vue?variantId=components-stories-chip-origamchip-story-vue-2
+        - link "Events - click" [ref=f1e770] [cursor=pointer]:
+          - /url: /stories/story/components-stories-chip-origamchip-story-vue?variantId=components-stories-chip-origamchip-story-vue-3
+        - link "Events - click:prepend" [ref=f1e775] [cursor=pointer]:
+          - /url: /stories/story/components-stories-chip-origamchip-story-vue?variantId=components-stories-chip-origamchip-story-vue-4
+        - link "Events - click:append" [ref=f1e780] [cursor=pointer]:
+          - /url: /stories/story/components-stories-chip-origamchip-story-vue?variantId=components-stories-chip-origamchip-story-vue-5
+        - link "Events - click:close" [ref=f1e785] [cursor=pointer]:
+          - /url: /stories/story/components-stories-chip-origamchip-story-vue?variantId=components-stories-chip-origamchip-story-vue-6
+        - link "Events - group:selected" [ref=f1e790] [cursor=pointer]:
+          - /url: /stories/story/components-stories-chip-origamchip-story-vue?variantId=components-stories-chip-origamchip-story-vue-7
+        - link "Events - update:modelValue" [ref=f1e795] [cursor=pointer]:
+          - /url: /stories/story/components-stories-chip-origamchip-story-vue?variantId=components-stories-chip-origamchip-story-vue-8
+        - link "Slots - Default" [ref=f1e800] [cursor=pointer]:
+          - /url: /stories/story/components-stories-chip-origamchip-story-vue?variantId=components-stories-chip-origamchip-story-vue-9
+        - link "Slots - Prepend" [ref=f1e805] [cursor=pointer]:
+          - /url: /stories/story/components-stories-chip-origamchip-story-vue?variantId=components-stories-chip-origamchip-story-vue-10
+        - link "Slots - Append" [ref=f1e810] [cursor=pointer]:
+          - /url: /stories/story/components-stories-chip-origamchip-story-vue?variantId=components-stories-chip-origamchip-story-vue-11
+        - link "Slots - Close" [ref=f1e815] [cursor=pointer]:
+          - /url: /stories/story/components-stories-chip-origamchip-story-vue?variantId=components-stories-chip-origamchip-story-vue-12
+        - link "Slots - Filter" [ref=f1e820] [cursor=pointer]:
+          - /url: /stories/story/components-stories-chip-origamchip-story-vue?variantId=components-stories-chip-origamchip-story-vue-13
+        - link "Default" [ref=f1e825] [cursor=pointer]:
+          - /url: /stories/story/components-stories-chip-origamchip-story-vue?variantId=components-stories-chip-origamchip-story-vue-14
+      - generic [ref=f1e832]:
+        - generic [ref=f1e833]:
+          - generic [ref=f1e834]: Design
+          - generic [ref=f1e839] [cursor=pointer]
+          - generic [ref=f1e845]: a
+          - link [ref=f1e854] [cursor=pointer]:
+            - /url: /stories/__sandbox.html?storyId=components-stories-chip-origamchip-story-vue&variantId=components-stories-chip-origamchip-story-vue-0
+        - iframe [ref=f1e870]:
+          - generic [ref=f2e1]: Chip
+    - generic [ref=f1e888]:
+      - generic [ref=f1e890]:
+        - generic [ref=f1e891]:
+          - link "Controls" [ref=f1e893] [cursor=pointer]:
+            - /url: /stories/story/components-stories-chip-origamchip-story-vue?variantId=components-stories-chip-origamchip-story-vue-0&tab=
+          - link "Docs" [ref=f1e896] [cursor=pointer]:
+            - /url: /stories/story/components-stories-chip-origamchip-story-vue?variantId=components-stories-chip-origamchip-story-vue-0&tab=docs
+          - link "Events" [ref=f1e898] [cursor=pointer]:
+            - /url: /stories/story/components-stories-chip-origamchip-story-vue?variantId=components-stories-chip-origamchip-story-vue-0&tab=events
+        - generic [ref=f1e899]:
+          - generic [ref=f1e901]:
+            - generic [ref=f1e902]: Initial state
+            - img [aria-hidden] [ref=f1e910] [cursor=pointer]
+            - img [aria-hidden] [ref=f1e913] [cursor=pointer]
+          - generic [ref=f1e919]:
+            - group "Color" [ref=f1e920]:
+              - generic [ref=f1e922]:
+                - generic [ref=f1e924]:
+                  - generic [ref=f1e925]: Color
+                  - generic [ref=f1e926]: (none)
+                - generic [ref=f1e934]:
+                  - generic [ref=f1e935]: Bg Color
+                  - generic [ref=f1e936]: Primary
+            - group "Sizing" [ref=f1e943]:
+              - generic [ref=f1e945]:
+                - generic [ref=f1e947]:
+                  - generic [ref=f1e948]: Size
+                  - generic [ref=f1e949]: (none)
+                - generic [ref=f1e957]:
+                  - generic [ref=f1e958]: Density
+                  - generic [ref=f1e959]: (none)
+            - group "Typography" [ref=f1e966]:
+              - generic [ref=f1e968]:
+                - generic [ref=f1e970]:
+                  - generic [ref=f1e971]: Font Size
+                  - generic [ref=f1e972]: (none)
+                - generic [ref=f1e980]:
+                  - generic [ref=f1e981]: Font Weight
+                  - generic [ref=f1e982]: (none)
+            - group "Shape" [ref=f1e989]:
+              - generic [ref=f1e991]:
+                - generic [ref=f1e993]:
+                  - generic [ref=f1e994]: Rounded
+                  - generic [ref=f1e998] [cursor=pointer]
+                - generic [ref=f1e1002]:
+                  - generic [ref=f1e1003]: Elevation
+                  - generic [ref=f1e1004]: (none)
+                - checkbox "Pill (round is the default — visible only against Label)" [ref=f1e1012] [cursor=pointer]
+                - checkbox "Label (square corners)" [ref=f1e1021] [cursor=pointer]
+            - group "Border" [ref=f1e1029]:
+              - generic [ref=f1e1031]:
+                - generic [ref=f1e1033]:
+                  - generic [ref=f1e1034]: Border
+                  - generic [ref=f1e1038] [cursor=pointer]
+                - generic [ref=f1e1042]:
+                  - generic [ref=f1e1043]: Border Color
+                  - textbox "Border Color" [ref=f1e1046]
+                - generic [ref=f1e1048]:
+                  - generic [ref=f1e1049]: Border Style
+                  - generic [ref=f1e1053] [cursor=pointer]
+            - group "Icons" [ref=f1e1056]:
+              - generic [ref=f1e1058]:
+                - generic [ref=f1e1060]:
+                  - generic [ref=f1e1061]: Prepend Icon
+                  - generic [ref=f1e1062]: (none)
+                - generic [ref=f1e1070]:
+                  - generic [ref=f1e1071]: Append Icon
+                  - generic [ref=f1e1072]: (none)
+            - group "Content" [ref=f1e1079]:
+              - generic [ref=f1e1083]:
+                - generic [ref=f1e1084]: Text
+                - textbox "Text" [ref=f1e1087]: Chip
+            - group "Spacing" [ref=f1e1088]:
+              - generic [ref=f1e1090]:
+                - generic [ref=f1e1092]:
+                  - generic [ref=f1e1093]: Padding
+                  - textbox "Padding" [ref=f1e1096]
+                - generic [ref=f1e1098]:
+                  - generic [ref=f1e1099]: Margin
+                  - textbox "Margin" [ref=f1e1102]
+      - generic [ref=f1e1105]:
+        - generic [ref=f1e1106]:
+          - generic [ref=f1e1107]: Source
+          - generic [ref=f1e1108]:
+            - button "Dynamic" [ref=f1e1109] [cursor=pointer]
+            - button "Static" [ref=f1e1113] [cursor=pointer]
+          - img [aria-hidden] [ref=f1e1118] [cursor=pointer]
+        - code [ref=f1e1124]:
+          - generic [ref=f1e1125]: <OrigamChip
+          - generic [ref=f1e1126]: :bg-color="'primary'"
+          - generic [ref=f1e1127]: :text="'Chip'"
+          - generic [ref=f1e1128]: />

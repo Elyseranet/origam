@@ -88,6 +88,8 @@
     <div
       v-if="resolvedView === CALENDAR_VIEW.MONTH"
       class="origam-calendar__body origam-calendar__body--month"
+      role="grid"
+      :aria-label="ariaMonthLabel"
       data-cy="origam-calendar-body-month"
     >
       <div
@@ -110,8 +112,6 @@
       </div>
       <div
         class="origam-calendar__month-grid"
-        role="grid"
-        :aria-label="ariaMonthLabel"
       >
         <div
           v-for="(weekRow, rowIndex) in monthGrid"

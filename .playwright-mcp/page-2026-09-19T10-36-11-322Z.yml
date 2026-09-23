@@ -1,0 +1,1756 @@
+- generic [active] [ref=f7e1]:
+  - generic [ref=f7e2]: Aa positive control
+  - generic [ref=f7e3]: Aa negative control
+  - generic [ref=f7e5]:
+    - generic [ref=f7e7]:
+      - status [ref=f7e8]:
+        - generic [ref=f7e9]:
+          - generic [ref=f7e10]: Alert title
+          - generic [ref=f7e12]: Alert message.
+      - status "3" [ref=f7e14]
+      - navigation "Bottom navigation" [ref=f7e17]:
+        - generic [ref=f7e18]:
+          - button "Home" [ref=f7e19] [cursor=pointer]:
+            - generic [ref=f7e20]:
+              - generic [aria-hidden] [ref=f7e22]: 󰋜
+              - generic [ref=f7e23]: Home
+          - button "Search" [ref=f7e24] [cursor=pointer]:
+            - generic [ref=f7e25]:
+              - generic [aria-hidden] [ref=f7e27]: 󰍉
+              - generic [ref=f7e28]: Search
+          - button "Profile" [ref=f7e29] [cursor=pointer]:
+            - generic [ref=f7e30]:
+              - generic [aria-hidden] [ref=f7e32]: 󰀄
+              - generic [ref=f7e33]: Profile
+      - navigation "Breadcrumb" [ref=f7e34]:
+        - list [ref=f7e35]:
+          - listitem [ref=f7e36]:
+            - link "Home" [ref=f7e37] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e39]: /
+          - listitem [ref=f7e40]:
+            - link "Section" [ref=f7e41] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e43]: /
+          - listitem [ref=f7e44]:
+            - generic: Current
+      - generic [ref=f7e45]:
+        - generic [ref=f7e46]: Segment A
+        - generic [ref=f7e47]: /
+        - generic [ref=f7e48]: Segment B
+      - navigation "Breadcrumb" [ref=f7e49]:
+        - list [ref=f7e50]:
+          - listitem [ref=f7e51]:
+            - link "Item" [ref=f7e52] [cursor=pointer]:
+              - /url: "[object Object]"
+      - button "Bouton" [ref=f7e54] [cursor=pointer]
+      - generic [ref=f7e57]: Card content text
+      - generic [ref=f7e59]: Chip
+      - figure "plaintext Copy code to clipboard" [ref=f7e61]:
+        - generic [ref=f7e62]:
+          - generic [ref=f7e63]: plaintext
+          - button "Copy code to clipboard" [ref=f7e64] [cursor=pointer]:
+            - generic [ref=f7e65]: Copy
+        - region "Code block, scrollable region" [ref=f7e67]:
+          - code [ref=f7e69]:
+            - generic [ref=f7e70]: const a = 1
+        - text: const a = 1
+      - generic [ref=f7e72]:
+        - term [ref=f7e73]:
+          - generic [ref=f7e74]: Label
+        - definition [ref=f7e75]:
+          - generic [ref=f7e76]: Value
+      - button "Panel 1" [ref=f7e80]:
+        - generic [ref=f7e82]:
+          - generic [ref=f7e83]: Panel 1
+          - generic [aria-hidden] [ref=f7e85]: 󰅀
+      - generic [ref=f7e87]:
+        - generic: Field label
+        - textbox "Field label Field label" [ref=f7e88]
+      - generic [ref=f7e89]:
+        - generic [ref=f7e90]: Input text content
+        - status [ref=f7e92]
+      - generic [ref=f7e93]: Ctrl
+      - generic: Label text
+      - list [ref=f7e94]:
+        - generic [ref=f7e97] [cursor=pointer]:
+          - generic [ref=f7e98]: Group
+          - generic [aria-hidden] [ref=f7e101]: 󰅀
+      - list [ref=f7e102]:
+        - generic [ref=f7e103]: Subheader
+      - status [ref=f7e105]:
+        - generic [ref=f7e106]:
+          - generic [aria-hidden] [ref=f7e108]: 󰋼
+          - generic [ref=f7e109]:
+            - generic [ref=f7e110]: Notification title
+            - generic [ref=f7e111]: A body message with more context.
+        - button "Dismiss notification" [ref=f7e112] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f7e115]: 󰅖
+      - navigation "Progress steps" [ref=f7e116]:
+        - 'generic "Step 1: Account" [ref=f7e117]':
+          - generic [aria-hidden] [ref=f7e119]: 󰄬
+          - generic [ref=f7e120]:
+            - generic [ref=f7e121]: Account
+            - generic [ref=f7e122]: Email & password
+        - 'generic "Step 2: Profile" [ref=f7e124]':
+          - generic [aria-hidden] [ref=f7e125]: "2"
+          - generic [ref=f7e126]:
+            - generic [ref=f7e127]: Profile
+            - generic [ref=f7e128]: Personal info
+      - generic [ref=f7e129]: System bar
+      - tablist [ref=f7e130]:
+        - tab "Profile" [selected] [ref=f7e131] [cursor=pointer]
+        - tab "Settings" [ref=f7e133] [cursor=pointer]
+      - heading "Title text" [level=2] [ref=f7e135]
+      - banner [ref=f7e136]: Toolbar content
+      - button "Hover me" [ref=f7e138]
+    - generic [ref=f7e142]:
+      - status [ref=f7e143]:
+        - generic [ref=f7e144]:
+          - generic [ref=f7e145]: Alert title
+          - generic [ref=f7e147]: Alert message.
+      - status "3" [ref=f7e149]
+      - navigation "Bottom navigation" [ref=f7e152]:
+        - generic [ref=f7e153]:
+          - button "Home" [ref=f7e154] [cursor=pointer]:
+            - generic [ref=f7e155]:
+              - generic [aria-hidden] [ref=f7e157]: 󰋜
+              - generic [ref=f7e158]: Home
+          - button "Search" [ref=f7e159] [cursor=pointer]:
+            - generic [ref=f7e160]:
+              - generic [aria-hidden] [ref=f7e162]: 󰍉
+              - generic [ref=f7e163]: Search
+          - button "Profile" [ref=f7e164] [cursor=pointer]:
+            - generic [ref=f7e165]:
+              - generic [aria-hidden] [ref=f7e167]: 󰀄
+              - generic [ref=f7e168]: Profile
+      - navigation "Breadcrumb" [ref=f7e169]:
+        - list [ref=f7e170]:
+          - listitem [ref=f7e171]:
+            - link "Home" [ref=f7e172] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e174]: /
+          - listitem [ref=f7e175]:
+            - link "Section" [ref=f7e176] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e178]: /
+          - listitem [ref=f7e179]:
+            - generic: Current
+      - generic [ref=f7e180]:
+        - generic [ref=f7e181]: Segment A
+        - generic [ref=f7e182]: /
+        - generic [ref=f7e183]: Segment B
+      - navigation "Breadcrumb" [ref=f7e184]:
+        - list [ref=f7e185]:
+          - listitem [ref=f7e186]:
+            - link "Item" [ref=f7e187] [cursor=pointer]:
+              - /url: "[object Object]"
+      - button "Bouton" [ref=f7e189] [cursor=pointer]
+      - generic [ref=f7e192]: Card content text
+      - generic [ref=f7e194]: Chip
+      - figure "plaintext Copy code to clipboard" [ref=f7e196]:
+        - generic [ref=f7e197]:
+          - generic [ref=f7e198]: plaintext
+          - button "Copy code to clipboard" [ref=f7e199] [cursor=pointer]:
+            - generic [ref=f7e200]: Copy
+        - region "Code block, scrollable region" [ref=f7e202]:
+          - code [ref=f7e204]:
+            - generic [ref=f7e205]: const a = 1
+        - text: const a = 1
+      - generic [ref=f7e207]:
+        - term [ref=f7e208]:
+          - generic [ref=f7e209]: Label
+        - definition [ref=f7e210]:
+          - generic [ref=f7e211]: Value
+      - button "Panel 1" [ref=f7e215]:
+        - generic [ref=f7e217]:
+          - generic [ref=f7e218]: Panel 1
+          - generic [aria-hidden] [ref=f7e220]: 󰅀
+      - generic [ref=f7e222]:
+        - generic: Field label
+        - textbox "Field label Field label" [ref=f7e223]
+      - generic [ref=f7e224]:
+        - generic [ref=f7e225]: Input text content
+        - status [ref=f7e227]
+      - generic [ref=f7e228]: Ctrl
+      - generic: Label text
+      - list [ref=f7e229]:
+        - generic [ref=f7e232] [cursor=pointer]:
+          - generic [ref=f7e233]: Group
+          - generic [aria-hidden] [ref=f7e236]: 󰅀
+      - list [ref=f7e237]:
+        - generic [ref=f7e238]: Subheader
+      - status [ref=f7e240]:
+        - generic [ref=f7e241]:
+          - generic [aria-hidden] [ref=f7e243]: 󰋼
+          - generic [ref=f7e244]:
+            - generic [ref=f7e245]: Notification title
+            - generic [ref=f7e246]: A body message with more context.
+        - button "Dismiss notification" [ref=f7e247] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f7e250]: 󰅖
+      - navigation "Progress steps" [ref=f7e251]:
+        - 'generic "Step 1: Account" [ref=f7e252]':
+          - generic [aria-hidden] [ref=f7e254]: 󰄬
+          - generic [ref=f7e255]:
+            - generic [ref=f7e256]: Account
+            - generic [ref=f7e257]: Email & password
+        - 'generic "Step 2: Profile" [ref=f7e259]':
+          - generic [aria-hidden] [ref=f7e260]: "2"
+          - generic [ref=f7e261]:
+            - generic [ref=f7e262]: Profile
+            - generic [ref=f7e263]: Personal info
+      - generic [ref=f7e264]: System bar
+      - tablist [ref=f7e265]:
+        - tab "Profile" [selected] [ref=f7e266] [cursor=pointer]
+        - tab "Settings" [ref=f7e268] [cursor=pointer]
+      - heading "Title text" [level=2] [ref=f7e270]
+      - banner [ref=f7e271]: Toolbar content
+      - button "Hover me" [ref=f7e273]
+    - generic [ref=f7e277]:
+      - status [ref=f7e278]:
+        - generic [ref=f7e279]:
+          - generic [ref=f7e280]: Alert title
+          - generic [ref=f7e282]: Alert message.
+      - status "3" [ref=f7e284]
+      - navigation "Bottom navigation" [ref=f7e287]:
+        - generic [ref=f7e288]:
+          - button "Home" [ref=f7e289] [cursor=pointer]:
+            - generic [ref=f7e290]:
+              - generic [aria-hidden] [ref=f7e292]: 󰋜
+              - generic [ref=f7e293]: Home
+          - button "Search" [ref=f7e294] [cursor=pointer]:
+            - generic [ref=f7e295]:
+              - generic [aria-hidden] [ref=f7e297]: 󰍉
+              - generic [ref=f7e298]: Search
+          - button "Profile" [ref=f7e299] [cursor=pointer]:
+            - generic [ref=f7e300]:
+              - generic [aria-hidden] [ref=f7e302]: 󰀄
+              - generic [ref=f7e303]: Profile
+      - navigation "Breadcrumb" [ref=f7e304]:
+        - list [ref=f7e305]:
+          - listitem [ref=f7e306]:
+            - link "Home" [ref=f7e307] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e309]: /
+          - listitem [ref=f7e310]:
+            - link "Section" [ref=f7e311] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e313]: /
+          - listitem [ref=f7e314]:
+            - generic: Current
+      - generic [ref=f7e315]:
+        - generic [ref=f7e316]: Segment A
+        - generic [ref=f7e317]: /
+        - generic [ref=f7e318]: Segment B
+      - navigation "Breadcrumb" [ref=f7e319]:
+        - list [ref=f7e320]:
+          - listitem [ref=f7e321]:
+            - link "Item" [ref=f7e322] [cursor=pointer]:
+              - /url: "[object Object]"
+      - button "Bouton" [ref=f7e324] [cursor=pointer]
+      - generic [ref=f7e327]: Card content text
+      - generic [ref=f7e329]: Chip
+      - figure "plaintext Copy code to clipboard" [ref=f7e331]:
+        - generic [ref=f7e332]:
+          - generic [ref=f7e333]: plaintext
+          - button "Copy code to clipboard" [ref=f7e334] [cursor=pointer]:
+            - generic [ref=f7e335]: Copy
+        - region "Code block, scrollable region" [ref=f7e337]:
+          - code [ref=f7e339]:
+            - generic [ref=f7e340]: const a = 1
+        - text: const a = 1
+      - generic [ref=f7e342]:
+        - term [ref=f7e343]:
+          - generic [ref=f7e344]: Label
+        - definition [ref=f7e345]:
+          - generic [ref=f7e346]: Value
+      - button "Panel 1" [ref=f7e350]:
+        - generic [ref=f7e352]:
+          - generic [ref=f7e353]: Panel 1
+          - generic [aria-hidden] [ref=f7e355]: 󰅀
+      - generic [ref=f7e357]:
+        - generic: Field label
+        - textbox "Field label Field label" [ref=f7e358]
+      - generic [ref=f7e359]:
+        - generic [ref=f7e360]: Input text content
+        - status [ref=f7e362]
+      - generic [ref=f7e363]: Ctrl
+      - generic: Label text
+      - list [ref=f7e364]:
+        - generic [ref=f7e367] [cursor=pointer]:
+          - generic [ref=f7e368]: Group
+          - generic [aria-hidden] [ref=f7e371]: 󰅀
+      - list [ref=f7e372]:
+        - generic [ref=f7e373]: Subheader
+      - status [ref=f7e375]:
+        - generic [ref=f7e376]:
+          - generic [aria-hidden] [ref=f7e378]: 󰋼
+          - generic [ref=f7e379]:
+            - generic [ref=f7e380]: Notification title
+            - generic [ref=f7e381]: A body message with more context.
+        - button "Dismiss notification" [ref=f7e382] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f7e385]: 󰅖
+      - navigation "Progress steps" [ref=f7e386]:
+        - 'generic "Step 1: Account" [ref=f7e387]':
+          - generic [aria-hidden] [ref=f7e389]: 󰄬
+          - generic [ref=f7e390]:
+            - generic [ref=f7e391]: Account
+            - generic [ref=f7e392]: Email & password
+        - 'generic "Step 2: Profile" [ref=f7e394]':
+          - generic [aria-hidden] [ref=f7e395]: "2"
+          - generic [ref=f7e396]:
+            - generic [ref=f7e397]: Profile
+            - generic [ref=f7e398]: Personal info
+      - generic [ref=f7e399]: System bar
+      - tablist [ref=f7e400]:
+        - tab "Profile" [selected] [ref=f7e401] [cursor=pointer]
+        - tab "Settings" [ref=f7e403] [cursor=pointer]
+      - heading "Title text" [level=2] [ref=f7e405]
+      - banner [ref=f7e406]: Toolbar content
+      - button "Hover me" [ref=f7e408]
+    - generic [ref=f7e412]:
+      - status [ref=f7e413]:
+        - generic [ref=f7e414]:
+          - generic [ref=f7e415]: Alert title
+          - generic [ref=f7e417]: Alert message.
+      - status "3" [ref=f7e419]
+      - navigation "Bottom navigation" [ref=f7e422]:
+        - generic [ref=f7e423]:
+          - button "Home" [ref=f7e424] [cursor=pointer]:
+            - generic [ref=f7e425]:
+              - generic [aria-hidden] [ref=f7e427]: 󰋜
+              - generic [ref=f7e428]: Home
+          - button "Search" [ref=f7e429] [cursor=pointer]:
+            - generic [ref=f7e430]:
+              - generic [aria-hidden] [ref=f7e432]: 󰍉
+              - generic [ref=f7e433]: Search
+          - button "Profile" [ref=f7e434] [cursor=pointer]:
+            - generic [ref=f7e435]:
+              - generic [aria-hidden] [ref=f7e437]: 󰀄
+              - generic [ref=f7e438]: Profile
+      - navigation "Breadcrumb" [ref=f7e439]:
+        - list [ref=f7e440]:
+          - listitem [ref=f7e441]:
+            - link "Home" [ref=f7e442] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e444]: /
+          - listitem [ref=f7e445]:
+            - link "Section" [ref=f7e446] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e448]: /
+          - listitem [ref=f7e449]:
+            - generic: Current
+      - generic [ref=f7e450]:
+        - generic [ref=f7e451]: Segment A
+        - generic [ref=f7e452]: /
+        - generic [ref=f7e453]: Segment B
+      - navigation "Breadcrumb" [ref=f7e454]:
+        - list [ref=f7e455]:
+          - listitem [ref=f7e456]:
+            - link "Item" [ref=f7e457] [cursor=pointer]:
+              - /url: "[object Object]"
+      - button "Bouton" [ref=f7e459] [cursor=pointer]
+      - generic [ref=f7e462]: Card content text
+      - generic [ref=f7e464]: Chip
+      - figure "plaintext Copy code to clipboard" [ref=f7e466]:
+        - generic [ref=f7e467]:
+          - generic [ref=f7e468]: plaintext
+          - button "Copy code to clipboard" [ref=f7e469] [cursor=pointer]:
+            - generic [ref=f7e470]: Copy
+        - region "Code block, scrollable region" [ref=f7e472]:
+          - code [ref=f7e474]:
+            - generic [ref=f7e475]: const a = 1
+        - text: const a = 1
+      - generic [ref=f7e477]:
+        - term [ref=f7e478]:
+          - generic [ref=f7e479]: Label
+        - definition [ref=f7e480]:
+          - generic [ref=f7e481]: Value
+      - button "Panel 1" [ref=f7e485]:
+        - generic [ref=f7e487]:
+          - generic [ref=f7e488]: Panel 1
+          - generic [aria-hidden] [ref=f7e490]: 󰅀
+      - generic [ref=f7e492]:
+        - generic: Field label
+        - textbox "Field label Field label" [ref=f7e493]
+      - generic [ref=f7e494]:
+        - generic [ref=f7e495]: Input text content
+        - status [ref=f7e497]
+      - generic [ref=f7e498]: Ctrl
+      - generic: Label text
+      - list [ref=f7e499]:
+        - generic [ref=f7e502] [cursor=pointer]:
+          - generic [ref=f7e503]: Group
+          - generic [aria-hidden] [ref=f7e506]: 󰅀
+      - list [ref=f7e507]:
+        - generic [ref=f7e508]: Subheader
+      - status [ref=f7e510]:
+        - generic [ref=f7e511]:
+          - generic [aria-hidden] [ref=f7e513]: 󰋼
+          - generic [ref=f7e514]:
+            - generic [ref=f7e515]: Notification title
+            - generic [ref=f7e516]: A body message with more context.
+        - button "Dismiss notification" [ref=f7e517] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f7e520]: 󰅖
+      - navigation "Progress steps" [ref=f7e521]:
+        - 'generic "Step 1: Account" [ref=f7e522]':
+          - generic [aria-hidden] [ref=f7e524]: 󰄬
+          - generic [ref=f7e525]:
+            - generic [ref=f7e526]: Account
+            - generic [ref=f7e527]: Email & password
+        - 'generic "Step 2: Profile" [ref=f7e529]':
+          - generic [aria-hidden] [ref=f7e530]: "2"
+          - generic [ref=f7e531]:
+            - generic [ref=f7e532]: Profile
+            - generic [ref=f7e533]: Personal info
+      - generic [ref=f7e534]: System bar
+      - tablist [ref=f7e535]:
+        - tab "Profile" [selected] [ref=f7e536] [cursor=pointer]
+        - tab "Settings" [ref=f7e538] [cursor=pointer]
+      - heading "Title text" [level=2] [ref=f7e540]
+      - banner [ref=f7e541]: Toolbar content
+      - button "Hover me" [ref=f7e543]
+    - generic [ref=f7e547]:
+      - status [ref=f7e548]:
+        - generic [ref=f7e549]:
+          - generic [ref=f7e550]: Alert title
+          - generic [ref=f7e552]: Alert message.
+      - status "3" [ref=f7e554]
+      - navigation "Bottom navigation" [ref=f7e557]:
+        - generic [ref=f7e558]:
+          - button "Home" [ref=f7e559] [cursor=pointer]:
+            - generic [ref=f7e560]:
+              - generic [aria-hidden] [ref=f7e562]: 󰋜
+              - generic [ref=f7e563]: Home
+          - button "Search" [ref=f7e564] [cursor=pointer]:
+            - generic [ref=f7e565]:
+              - generic [aria-hidden] [ref=f7e567]: 󰍉
+              - generic [ref=f7e568]: Search
+          - button "Profile" [ref=f7e569] [cursor=pointer]:
+            - generic [ref=f7e570]:
+              - generic [aria-hidden] [ref=f7e572]: 󰀄
+              - generic [ref=f7e573]: Profile
+      - navigation "Breadcrumb" [ref=f7e574]:
+        - list [ref=f7e575]:
+          - listitem [ref=f7e576]:
+            - link "Home" [ref=f7e577] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e579]: /
+          - listitem [ref=f7e580]:
+            - link "Section" [ref=f7e581] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e583]: /
+          - listitem [ref=f7e584]:
+            - generic: Current
+      - generic [ref=f7e585]:
+        - generic [ref=f7e586]: Segment A
+        - generic [ref=f7e587]: /
+        - generic [ref=f7e588]: Segment B
+      - navigation "Breadcrumb" [ref=f7e589]:
+        - list [ref=f7e590]:
+          - listitem [ref=f7e591]:
+            - link "Item" [ref=f7e592] [cursor=pointer]:
+              - /url: "[object Object]"
+      - button "Bouton" [ref=f7e594] [cursor=pointer]
+      - generic [ref=f7e597]: Card content text
+      - generic [ref=f7e599]: Chip
+      - figure "plaintext Copy code to clipboard" [ref=f7e601]:
+        - generic [ref=f7e602]:
+          - generic [ref=f7e603]: plaintext
+          - button "Copy code to clipboard" [ref=f7e604] [cursor=pointer]:
+            - generic [ref=f7e605]: Copy
+        - region "Code block, scrollable region" [ref=f7e607]:
+          - code [ref=f7e609]:
+            - generic [ref=f7e610]: const a = 1
+        - text: const a = 1
+      - generic [ref=f7e612]:
+        - term [ref=f7e613]:
+          - generic [ref=f7e614]: Label
+        - definition [ref=f7e615]:
+          - generic [ref=f7e616]: Value
+      - button "Panel 1" [ref=f7e620]:
+        - generic [ref=f7e622]:
+          - generic [ref=f7e623]: Panel 1
+          - generic [aria-hidden] [ref=f7e625]: 󰅀
+      - generic [ref=f7e627]:
+        - generic: Field label
+        - textbox "Field label Field label" [ref=f7e628]
+      - generic [ref=f7e629]:
+        - generic [ref=f7e630]: Input text content
+        - status [ref=f7e632]
+      - generic [ref=f7e633]: Ctrl
+      - generic: Label text
+      - list [ref=f7e634]:
+        - generic [ref=f7e637] [cursor=pointer]:
+          - generic [ref=f7e638]: Group
+          - generic [aria-hidden] [ref=f7e641]: 󰅀
+      - list [ref=f7e642]:
+        - generic [ref=f7e643]: Subheader
+      - status [ref=f7e645]:
+        - generic [ref=f7e646]:
+          - generic [aria-hidden] [ref=f7e648]: 󰋼
+          - generic [ref=f7e649]:
+            - generic [ref=f7e650]: Notification title
+            - generic [ref=f7e651]: A body message with more context.
+        - button "Dismiss notification" [ref=f7e652] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f7e655]: 󰅖
+      - navigation "Progress steps" [ref=f7e656]:
+        - 'generic "Step 1: Account" [ref=f7e657]':
+          - generic [aria-hidden] [ref=f7e659]: 󰄬
+          - generic [ref=f7e660]:
+            - generic [ref=f7e661]: Account
+            - generic [ref=f7e662]: Email & password
+        - 'generic "Step 2: Profile" [ref=f7e664]':
+          - generic [aria-hidden] [ref=f7e665]: "2"
+          - generic [ref=f7e666]:
+            - generic [ref=f7e667]: Profile
+            - generic [ref=f7e668]: Personal info
+      - generic [ref=f7e669]: System bar
+      - tablist [ref=f7e670]:
+        - tab "Profile" [selected] [ref=f7e671] [cursor=pointer]
+        - tab "Settings" [ref=f7e673] [cursor=pointer]
+      - heading "Title text" [level=2] [ref=f7e675]
+      - banner [ref=f7e676]: Toolbar content
+      - button "Hover me" [ref=f7e678]
+    - generic [ref=f7e682]:
+      - status [ref=f7e683]:
+        - generic [ref=f7e684]:
+          - generic [ref=f7e685]: Alert title
+          - generic [ref=f7e687]: Alert message.
+      - status "3" [ref=f7e689]
+      - navigation "Bottom navigation" [ref=f7e692]:
+        - generic [ref=f7e693]:
+          - button "Home" [ref=f7e694] [cursor=pointer]:
+            - generic [ref=f7e695]:
+              - generic [aria-hidden] [ref=f7e697]: 󰋜
+              - generic [ref=f7e698]: Home
+          - button "Search" [ref=f7e699] [cursor=pointer]:
+            - generic [ref=f7e700]:
+              - generic [aria-hidden] [ref=f7e702]: 󰍉
+              - generic [ref=f7e703]: Search
+          - button "Profile" [ref=f7e704] [cursor=pointer]:
+            - generic [ref=f7e705]:
+              - generic [aria-hidden] [ref=f7e707]: 󰀄
+              - generic [ref=f7e708]: Profile
+      - navigation "Breadcrumb" [ref=f7e709]:
+        - list [ref=f7e710]:
+          - listitem [ref=f7e711]:
+            - link "Home" [ref=f7e712] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e714]: /
+          - listitem [ref=f7e715]:
+            - link "Section" [ref=f7e716] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e718]: /
+          - listitem [ref=f7e719]:
+            - generic: Current
+      - generic [ref=f7e720]:
+        - generic [ref=f7e721]: Segment A
+        - generic [ref=f7e722]: /
+        - generic [ref=f7e723]: Segment B
+      - navigation "Breadcrumb" [ref=f7e724]:
+        - list [ref=f7e725]:
+          - listitem [ref=f7e726]:
+            - link "Item" [ref=f7e727] [cursor=pointer]:
+              - /url: "[object Object]"
+      - button "Bouton" [ref=f7e729] [cursor=pointer]
+      - generic [ref=f7e732]: Card content text
+      - generic [ref=f7e734]: Chip
+      - figure "plaintext Copy code to clipboard" [ref=f7e736]:
+        - generic [ref=f7e737]:
+          - generic [ref=f7e738]: plaintext
+          - button "Copy code to clipboard" [ref=f7e739] [cursor=pointer]:
+            - generic [ref=f7e740]: Copy
+        - region "Code block, scrollable region" [ref=f7e742]:
+          - code [ref=f7e744]:
+            - generic [ref=f7e745]: const a = 1
+        - text: const a = 1
+      - generic [ref=f7e747]:
+        - term [ref=f7e748]:
+          - generic [ref=f7e749]: Label
+        - definition [ref=f7e750]:
+          - generic [ref=f7e751]: Value
+      - button "Panel 1" [ref=f7e755]:
+        - generic [ref=f7e757]:
+          - generic [ref=f7e758]: Panel 1
+          - generic [aria-hidden] [ref=f7e760]: 󰅀
+      - generic [ref=f7e762]:
+        - generic: Field label
+        - textbox "Field label Field label" [ref=f7e763]
+      - generic [ref=f7e764]:
+        - generic [ref=f7e765]: Input text content
+        - status [ref=f7e767]
+      - generic [ref=f7e768]: Ctrl
+      - generic: Label text
+      - list [ref=f7e769]:
+        - generic [ref=f7e772] [cursor=pointer]:
+          - generic [ref=f7e773]: Group
+          - generic [aria-hidden] [ref=f7e776]: 󰅀
+      - list [ref=f7e777]:
+        - generic [ref=f7e778]: Subheader
+      - status [ref=f7e780]:
+        - generic [ref=f7e781]:
+          - generic [aria-hidden] [ref=f7e783]: 󰋼
+          - generic [ref=f7e784]:
+            - generic [ref=f7e785]: Notification title
+            - generic [ref=f7e786]: A body message with more context.
+        - button "Dismiss notification" [ref=f7e787] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f7e790]: 󰅖
+      - navigation "Progress steps" [ref=f7e791]:
+        - 'generic "Step 1: Account" [ref=f7e792]':
+          - generic [aria-hidden] [ref=f7e794]: 󰄬
+          - generic [ref=f7e795]:
+            - generic [ref=f7e796]: Account
+            - generic [ref=f7e797]: Email & password
+        - 'generic "Step 2: Profile" [ref=f7e799]':
+          - generic [aria-hidden] [ref=f7e800]: "2"
+          - generic [ref=f7e801]:
+            - generic [ref=f7e802]: Profile
+            - generic [ref=f7e803]: Personal info
+      - generic [ref=f7e804]: System bar
+      - tablist [ref=f7e805]:
+        - tab "Profile" [selected] [ref=f7e806] [cursor=pointer]
+        - tab "Settings" [ref=f7e808] [cursor=pointer]
+      - heading "Title text" [level=2] [ref=f7e810]
+      - banner [ref=f7e811]: Toolbar content
+      - button "Hover me" [ref=f7e813]
+    - generic [ref=f7e817]:
+      - status [ref=f7e818]:
+        - generic [ref=f7e819]:
+          - generic [ref=f7e820]: Alert title
+          - generic [ref=f7e822]: Alert message.
+      - status "3" [ref=f7e824]
+      - navigation "Bottom navigation" [ref=f7e827]:
+        - generic [ref=f7e828]:
+          - button "Home" [ref=f7e829] [cursor=pointer]:
+            - generic [ref=f7e830]:
+              - generic [aria-hidden] [ref=f7e832]: 󰋜
+              - generic [ref=f7e833]: Home
+          - button "Search" [ref=f7e834] [cursor=pointer]:
+            - generic [ref=f7e835]:
+              - generic [aria-hidden] [ref=f7e837]: 󰍉
+              - generic [ref=f7e838]: Search
+          - button "Profile" [ref=f7e839] [cursor=pointer]:
+            - generic [ref=f7e840]:
+              - generic [aria-hidden] [ref=f7e842]: 󰀄
+              - generic [ref=f7e843]: Profile
+      - navigation "Breadcrumb" [ref=f7e844]:
+        - list [ref=f7e845]:
+          - listitem [ref=f7e846]:
+            - link "Home" [ref=f7e847] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e849]: /
+          - listitem [ref=f7e850]:
+            - link "Section" [ref=f7e851] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e853]: /
+          - listitem [ref=f7e854]:
+            - generic: Current
+      - generic [ref=f7e855]:
+        - generic [ref=f7e856]: Segment A
+        - generic [ref=f7e857]: /
+        - generic [ref=f7e858]: Segment B
+      - navigation "Breadcrumb" [ref=f7e859]:
+        - list [ref=f7e860]:
+          - listitem [ref=f7e861]:
+            - link "Item" [ref=f7e862] [cursor=pointer]:
+              - /url: "[object Object]"
+      - button "Bouton" [ref=f7e864] [cursor=pointer]
+      - generic [ref=f7e867]: Card content text
+      - generic [ref=f7e869]: Chip
+      - figure "plaintext Copy code to clipboard" [ref=f7e871]:
+        - generic [ref=f7e872]:
+          - generic [ref=f7e873]: plaintext
+          - button "Copy code to clipboard" [ref=f7e874] [cursor=pointer]:
+            - generic [ref=f7e875]: Copy
+        - region "Code block, scrollable region" [ref=f7e877]:
+          - code [ref=f7e879]:
+            - generic [ref=f7e880]: const a = 1
+        - text: const a = 1
+      - generic [ref=f7e882]:
+        - term [ref=f7e883]:
+          - generic [ref=f7e884]: Label
+        - definition [ref=f7e885]:
+          - generic [ref=f7e886]: Value
+      - button "Panel 1" [ref=f7e890]:
+        - generic [ref=f7e892]:
+          - generic [ref=f7e893]: Panel 1
+          - generic [aria-hidden] [ref=f7e895]: 󰅀
+      - generic [ref=f7e897]:
+        - generic: Field label
+        - textbox "Field label Field label" [ref=f7e898]
+      - generic [ref=f7e899]:
+        - generic [ref=f7e900]: Input text content
+        - status [ref=f7e902]
+      - generic [ref=f7e903]: Ctrl
+      - generic: Label text
+      - list [ref=f7e904]:
+        - generic [ref=f7e907] [cursor=pointer]:
+          - generic [ref=f7e908]: Group
+          - generic [aria-hidden] [ref=f7e911]: 󰅀
+      - list [ref=f7e912]:
+        - generic [ref=f7e913]: Subheader
+      - status [ref=f7e915]:
+        - generic [ref=f7e916]:
+          - generic [aria-hidden] [ref=f7e918]: 󰋼
+          - generic [ref=f7e919]:
+            - generic [ref=f7e920]: Notification title
+            - generic [ref=f7e921]: A body message with more context.
+        - button "Dismiss notification" [ref=f7e922] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f7e925]: 󰅖
+      - navigation "Progress steps" [ref=f7e926]:
+        - 'generic "Step 1: Account" [ref=f7e927]':
+          - generic [aria-hidden] [ref=f7e929]: 󰄬
+          - generic [ref=f7e930]:
+            - generic [ref=f7e931]: Account
+            - generic [ref=f7e932]: Email & password
+        - 'generic "Step 2: Profile" [ref=f7e934]':
+          - generic [aria-hidden] [ref=f7e935]: "2"
+          - generic [ref=f7e936]:
+            - generic [ref=f7e937]: Profile
+            - generic [ref=f7e938]: Personal info
+      - generic [ref=f7e939]: System bar
+      - tablist [ref=f7e940]:
+        - tab "Profile" [selected] [ref=f7e941] [cursor=pointer]
+        - tab "Settings" [ref=f7e943] [cursor=pointer]
+      - heading "Title text" [level=2] [ref=f7e945]
+      - banner [ref=f7e946]: Toolbar content
+      - button "Hover me" [ref=f7e948]
+    - generic [ref=f7e952]:
+      - status [ref=f7e953]:
+        - generic [ref=f7e954]:
+          - generic [ref=f7e955]: Alert title
+          - generic [ref=f7e957]: Alert message.
+      - status "3" [ref=f7e959]
+      - navigation "Bottom navigation" [ref=f7e962]:
+        - generic [ref=f7e963]:
+          - button "Home" [ref=f7e964] [cursor=pointer]:
+            - generic [ref=f7e965]:
+              - generic [aria-hidden] [ref=f7e967]: 󰋜
+              - generic [ref=f7e968]: Home
+          - button "Search" [ref=f7e969] [cursor=pointer]:
+            - generic [ref=f7e970]:
+              - generic [aria-hidden] [ref=f7e972]: 󰍉
+              - generic [ref=f7e973]: Search
+          - button "Profile" [ref=f7e974] [cursor=pointer]:
+            - generic [ref=f7e975]:
+              - generic [aria-hidden] [ref=f7e977]: 󰀄
+              - generic [ref=f7e978]: Profile
+      - navigation "Breadcrumb" [ref=f7e979]:
+        - list [ref=f7e980]:
+          - listitem [ref=f7e981]:
+            - link "Home" [ref=f7e982] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e984]: /
+          - listitem [ref=f7e985]:
+            - link "Section" [ref=f7e986] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e988]: /
+          - listitem [ref=f7e989]:
+            - generic: Current
+      - generic [ref=f7e990]:
+        - generic [ref=f7e991]: Segment A
+        - generic [ref=f7e992]: /
+        - generic [ref=f7e993]: Segment B
+      - navigation "Breadcrumb" [ref=f7e994]:
+        - list [ref=f7e995]:
+          - listitem [ref=f7e996]:
+            - link "Item" [ref=f7e997] [cursor=pointer]:
+              - /url: "[object Object]"
+      - button "Bouton" [ref=f7e999] [cursor=pointer]
+      - generic [ref=f7e1002]: Card content text
+      - generic [ref=f7e1004]: Chip
+      - figure "plaintext Copy code to clipboard" [ref=f7e1006]:
+        - generic [ref=f7e1007]:
+          - generic [ref=f7e1008]: plaintext
+          - button "Copy code to clipboard" [ref=f7e1009] [cursor=pointer]:
+            - generic [ref=f7e1010]: Copy
+        - region "Code block, scrollable region" [ref=f7e1012]:
+          - code [ref=f7e1014]:
+            - generic [ref=f7e1015]: const a = 1
+        - text: const a = 1
+      - generic [ref=f7e1017]:
+        - term [ref=f7e1018]:
+          - generic [ref=f7e1019]: Label
+        - definition [ref=f7e1020]:
+          - generic [ref=f7e1021]: Value
+      - button "Panel 1" [ref=f7e1025]:
+        - generic [ref=f7e1027]:
+          - generic [ref=f7e1028]: Panel 1
+          - generic [aria-hidden] [ref=f7e1030]: 󰅀
+      - generic [ref=f7e1032]:
+        - generic: Field label
+        - textbox "Field label Field label" [ref=f7e1033]
+      - generic [ref=f7e1034]:
+        - generic [ref=f7e1035]: Input text content
+        - status [ref=f7e1037]
+      - generic [ref=f7e1038]: Ctrl
+      - generic: Label text
+      - list [ref=f7e1039]:
+        - generic [ref=f7e1042] [cursor=pointer]:
+          - generic [ref=f7e1043]: Group
+          - generic [aria-hidden] [ref=f7e1046]: 󰅀
+      - list [ref=f7e1047]:
+        - generic [ref=f7e1048]: Subheader
+      - status [ref=f7e1050]:
+        - generic [ref=f7e1051]:
+          - generic [aria-hidden] [ref=f7e1053]: 󰋼
+          - generic [ref=f7e1054]:
+            - generic [ref=f7e1055]: Notification title
+            - generic [ref=f7e1056]: A body message with more context.
+        - button "Dismiss notification" [ref=f7e1057] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f7e1060]: 󰅖
+      - navigation "Progress steps" [ref=f7e1061]:
+        - 'generic "Step 1: Account" [ref=f7e1062]':
+          - generic [aria-hidden] [ref=f7e1064]: 󰄬
+          - generic [ref=f7e1065]:
+            - generic [ref=f7e1066]: Account
+            - generic [ref=f7e1067]: Email & password
+        - 'generic "Step 2: Profile" [ref=f7e1069]':
+          - generic [aria-hidden] [ref=f7e1070]: "2"
+          - generic [ref=f7e1071]:
+            - generic [ref=f7e1072]: Profile
+            - generic [ref=f7e1073]: Personal info
+      - generic [ref=f7e1074]: System bar
+      - tablist [ref=f7e1075]:
+        - tab "Profile" [selected] [ref=f7e1076] [cursor=pointer]
+        - tab "Settings" [ref=f7e1078] [cursor=pointer]
+      - heading "Title text" [level=2] [ref=f7e1080]
+      - banner [ref=f7e1081]: Toolbar content
+      - button "Hover me" [ref=f7e1083]
+    - generic [ref=f7e1087]:
+      - status [ref=f7e1088]:
+        - generic [ref=f7e1089]:
+          - generic [ref=f7e1090]: Alert title
+          - generic [ref=f7e1092]: Alert message.
+      - status "3" [ref=f7e1094]
+      - navigation "Bottom navigation" [ref=f7e1097]:
+        - generic [ref=f7e1098]:
+          - button "Home" [ref=f7e1099] [cursor=pointer]:
+            - generic [ref=f7e1100]:
+              - generic [aria-hidden] [ref=f7e1102]: 󰋜
+              - generic [ref=f7e1103]: Home
+          - button "Search" [ref=f7e1104] [cursor=pointer]:
+            - generic [ref=f7e1105]:
+              - generic [aria-hidden] [ref=f7e1107]: 󰍉
+              - generic [ref=f7e1108]: Search
+          - button "Profile" [ref=f7e1109] [cursor=pointer]:
+            - generic [ref=f7e1110]:
+              - generic [aria-hidden] [ref=f7e1112]: 󰀄
+              - generic [ref=f7e1113]: Profile
+      - navigation "Breadcrumb" [ref=f7e1114]:
+        - list [ref=f7e1115]:
+          - listitem [ref=f7e1116]:
+            - link "Home" [ref=f7e1117] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e1119]: /
+          - listitem [ref=f7e1120]:
+            - link "Section" [ref=f7e1121] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e1123]: /
+          - listitem [ref=f7e1124]:
+            - generic: Current
+      - generic [ref=f7e1125]:
+        - generic [ref=f7e1126]: Segment A
+        - generic [ref=f7e1127]: /
+        - generic [ref=f7e1128]: Segment B
+      - navigation "Breadcrumb" [ref=f7e1129]:
+        - list [ref=f7e1130]:
+          - listitem [ref=f7e1131]:
+            - link "Item" [ref=f7e1132] [cursor=pointer]:
+              - /url: "[object Object]"
+      - button "Bouton" [ref=f7e1134] [cursor=pointer]
+      - generic [ref=f7e1137]: Card content text
+      - generic [ref=f7e1139]: Chip
+      - figure "plaintext Copy code to clipboard" [ref=f7e1141]:
+        - generic [ref=f7e1142]:
+          - generic [ref=f7e1143]: plaintext
+          - button "Copy code to clipboard" [ref=f7e1144] [cursor=pointer]:
+            - generic [ref=f7e1145]: Copy
+        - region "Code block, scrollable region" [ref=f7e1147]:
+          - code [ref=f7e1149]:
+            - generic [ref=f7e1150]: const a = 1
+        - text: const a = 1
+      - generic [ref=f7e1152]:
+        - term [ref=f7e1153]:
+          - generic [ref=f7e1154]: Label
+        - definition [ref=f7e1155]:
+          - generic [ref=f7e1156]: Value
+      - button "Panel 1" [ref=f7e1160]:
+        - generic [ref=f7e1162]:
+          - generic [ref=f7e1163]: Panel 1
+          - generic [aria-hidden] [ref=f7e1165]: 󰅀
+      - generic [ref=f7e1167]:
+        - generic: Field label
+        - textbox "Field label Field label" [ref=f7e1168]
+      - generic [ref=f7e1169]:
+        - generic [ref=f7e1170]: Input text content
+        - status [ref=f7e1172]
+      - generic [ref=f7e1173]: Ctrl
+      - generic: Label text
+      - list [ref=f7e1174]:
+        - generic [ref=f7e1177] [cursor=pointer]:
+          - generic [ref=f7e1178]: Group
+          - generic [aria-hidden] [ref=f7e1181]: 󰅀
+      - list [ref=f7e1182]:
+        - generic [ref=f7e1183]: Subheader
+      - status [ref=f7e1185]:
+        - generic [ref=f7e1186]:
+          - generic [aria-hidden] [ref=f7e1188]: 󰋼
+          - generic [ref=f7e1189]:
+            - generic [ref=f7e1190]: Notification title
+            - generic [ref=f7e1191]: A body message with more context.
+        - button "Dismiss notification" [ref=f7e1192] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f7e1195]: 󰅖
+      - navigation "Progress steps" [ref=f7e1196]:
+        - 'generic "Step 1: Account" [ref=f7e1197]':
+          - generic [aria-hidden] [ref=f7e1199]: 󰄬
+          - generic [ref=f7e1200]:
+            - generic [ref=f7e1201]: Account
+            - generic [ref=f7e1202]: Email & password
+        - 'generic "Step 2: Profile" [ref=f7e1204]':
+          - generic [aria-hidden] [ref=f7e1205]: "2"
+          - generic [ref=f7e1206]:
+            - generic [ref=f7e1207]: Profile
+            - generic [ref=f7e1208]: Personal info
+      - generic [ref=f7e1209]: System bar
+      - tablist [ref=f7e1210]:
+        - tab "Profile" [selected] [ref=f7e1211] [cursor=pointer]
+        - tab "Settings" [ref=f7e1213] [cursor=pointer]
+      - heading "Title text" [level=2] [ref=f7e1215]
+      - banner [ref=f7e1216]: Toolbar content
+      - button "Hover me" [ref=f7e1218]
+    - generic [ref=f7e1222]:
+      - status [ref=f7e1223]:
+        - generic [ref=f7e1224]:
+          - generic [ref=f7e1225]: Alert title
+          - generic [ref=f7e1227]: Alert message.
+      - status "3" [ref=f7e1229]
+      - navigation "Bottom navigation" [ref=f7e1232]:
+        - generic [ref=f7e1233]:
+          - button "Home" [ref=f7e1234] [cursor=pointer]:
+            - generic [ref=f7e1235]:
+              - generic [aria-hidden] [ref=f7e1237]: 󰋜
+              - generic [ref=f7e1238]: Home
+          - button "Search" [ref=f7e1239] [cursor=pointer]:
+            - generic [ref=f7e1240]:
+              - generic [aria-hidden] [ref=f7e1242]: 󰍉
+              - generic [ref=f7e1243]: Search
+          - button "Profile" [ref=f7e1244] [cursor=pointer]:
+            - generic [ref=f7e1245]:
+              - generic [aria-hidden] [ref=f7e1247]: 󰀄
+              - generic [ref=f7e1248]: Profile
+      - navigation "Breadcrumb" [ref=f7e1249]:
+        - list [ref=f7e1250]:
+          - listitem [ref=f7e1251]:
+            - link "Home" [ref=f7e1252] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e1254]: /
+          - listitem [ref=f7e1255]:
+            - link "Section" [ref=f7e1256] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e1258]: /
+          - listitem [ref=f7e1259]:
+            - generic: Current
+      - generic [ref=f7e1260]:
+        - generic [ref=f7e1261]: Segment A
+        - generic [ref=f7e1262]: /
+        - generic [ref=f7e1263]: Segment B
+      - navigation "Breadcrumb" [ref=f7e1264]:
+        - list [ref=f7e1265]:
+          - listitem [ref=f7e1266]:
+            - link "Item" [ref=f7e1267] [cursor=pointer]:
+              - /url: "[object Object]"
+      - button "Bouton" [ref=f7e1269] [cursor=pointer]
+      - generic [ref=f7e1272]: Card content text
+      - generic [ref=f7e1274]: Chip
+      - figure "plaintext Copy code to clipboard" [ref=f7e1276]:
+        - generic [ref=f7e1277]:
+          - generic [ref=f7e1278]: plaintext
+          - button "Copy code to clipboard" [ref=f7e1279] [cursor=pointer]:
+            - generic [ref=f7e1280]: Copy
+        - region "Code block, scrollable region" [ref=f7e1282]:
+          - code [ref=f7e1284]:
+            - generic [ref=f7e1285]: const a = 1
+        - text: const a = 1
+      - generic [ref=f7e1287]:
+        - term [ref=f7e1288]:
+          - generic [ref=f7e1289]: Label
+        - definition [ref=f7e1290]:
+          - generic [ref=f7e1291]: Value
+      - button "Panel 1" [ref=f7e1295]:
+        - generic [ref=f7e1297]:
+          - generic [ref=f7e1298]: Panel 1
+          - generic [aria-hidden] [ref=f7e1300]: 󰅀
+      - generic [ref=f7e1302]:
+        - generic: Field label
+        - textbox "Field label Field label" [ref=f7e1303]
+      - generic [ref=f7e1304]:
+        - generic [ref=f7e1305]: Input text content
+        - status [ref=f7e1307]
+      - generic [ref=f7e1308]: Ctrl
+      - generic: Label text
+      - list [ref=f7e1309]:
+        - generic [ref=f7e1312] [cursor=pointer]:
+          - generic [ref=f7e1313]: Group
+          - generic [aria-hidden] [ref=f7e1316]: 󰅀
+      - list [ref=f7e1317]:
+        - generic [ref=f7e1318]: Subheader
+      - status [ref=f7e1320]:
+        - generic [ref=f7e1321]:
+          - generic [aria-hidden] [ref=f7e1323]: 󰋼
+          - generic [ref=f7e1324]:
+            - generic [ref=f7e1325]: Notification title
+            - generic [ref=f7e1326]: A body message with more context.
+        - button "Dismiss notification" [ref=f7e1327] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f7e1330]: 󰅖
+      - navigation "Progress steps" [ref=f7e1331]:
+        - 'generic "Step 1: Account" [ref=f7e1332]':
+          - generic [aria-hidden] [ref=f7e1334]: 󰄬
+          - generic [ref=f7e1335]:
+            - generic [ref=f7e1336]: Account
+            - generic [ref=f7e1337]: Email & password
+        - 'generic "Step 2: Profile" [ref=f7e1339]':
+          - generic [aria-hidden] [ref=f7e1340]: "2"
+          - generic [ref=f7e1341]:
+            - generic [ref=f7e1342]: Profile
+            - generic [ref=f7e1343]: Personal info
+      - generic [ref=f7e1344]: System bar
+      - tablist [ref=f7e1345]:
+        - tab "Profile" [selected] [ref=f7e1346] [cursor=pointer]
+        - tab "Settings" [ref=f7e1348] [cursor=pointer]
+      - heading "Title text" [level=2] [ref=f7e1350]
+      - banner [ref=f7e1351]: Toolbar content
+      - button "Hover me" [ref=f7e1353]
+    - generic [ref=f7e1357]:
+      - status [ref=f7e1358]:
+        - generic [ref=f7e1359]:
+          - generic [ref=f7e1360]: Alert title
+          - generic [ref=f7e1362]: Alert message.
+      - status "3" [ref=f7e1364]
+      - navigation "Bottom navigation" [ref=f7e1367]:
+        - generic [ref=f7e1368]:
+          - button "Home" [ref=f7e1369] [cursor=pointer]:
+            - generic [ref=f7e1370]:
+              - generic [aria-hidden] [ref=f7e1372]: 󰋜
+              - generic [ref=f7e1373]: Home
+          - button "Search" [ref=f7e1374] [cursor=pointer]:
+            - generic [ref=f7e1375]:
+              - generic [aria-hidden] [ref=f7e1377]: 󰍉
+              - generic [ref=f7e1378]: Search
+          - button "Profile" [ref=f7e1379] [cursor=pointer]:
+            - generic [ref=f7e1380]:
+              - generic [aria-hidden] [ref=f7e1382]: 󰀄
+              - generic [ref=f7e1383]: Profile
+      - navigation "Breadcrumb" [ref=f7e1384]:
+        - list [ref=f7e1385]:
+          - listitem [ref=f7e1386]:
+            - link "Home" [ref=f7e1387] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e1389]: /
+          - listitem [ref=f7e1390]:
+            - link "Section" [ref=f7e1391] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e1393]: /
+          - listitem [ref=f7e1394]:
+            - generic: Current
+      - generic [ref=f7e1395]:
+        - generic [ref=f7e1396]: Segment A
+        - generic [ref=f7e1397]: /
+        - generic [ref=f7e1398]: Segment B
+      - navigation "Breadcrumb" [ref=f7e1399]:
+        - list [ref=f7e1400]:
+          - listitem [ref=f7e1401]:
+            - link "Item" [ref=f7e1402] [cursor=pointer]:
+              - /url: "[object Object]"
+      - button "Bouton" [ref=f7e1404] [cursor=pointer]
+      - generic [ref=f7e1407]: Card content text
+      - generic [ref=f7e1409]: Chip
+      - figure "plaintext Copy code to clipboard" [ref=f7e1411]:
+        - generic [ref=f7e1412]:
+          - generic [ref=f7e1413]: plaintext
+          - button "Copy code to clipboard" [ref=f7e1414] [cursor=pointer]:
+            - generic [ref=f7e1415]: Copy
+        - region "Code block, scrollable region" [ref=f7e1417]:
+          - code [ref=f7e1419]:
+            - generic [ref=f7e1420]: const a = 1
+        - text: const a = 1
+      - generic [ref=f7e1422]:
+        - term [ref=f7e1423]:
+          - generic [ref=f7e1424]: Label
+        - definition [ref=f7e1425]:
+          - generic [ref=f7e1426]: Value
+      - button "Panel 1" [ref=f7e1430]:
+        - generic [ref=f7e1432]:
+          - generic [ref=f7e1433]: Panel 1
+          - generic [aria-hidden] [ref=f7e1435]: 󰅀
+      - generic [ref=f7e1437]:
+        - generic: Field label
+        - textbox "Field label Field label" [ref=f7e1438]
+      - generic [ref=f7e1439]:
+        - generic [ref=f7e1440]: Input text content
+        - status [ref=f7e1442]
+      - generic [ref=f7e1443]: Ctrl
+      - generic: Label text
+      - list [ref=f7e1444]:
+        - generic [ref=f7e1447] [cursor=pointer]:
+          - generic [ref=f7e1448]: Group
+          - generic [aria-hidden] [ref=f7e1451]: 󰅀
+      - list [ref=f7e1452]:
+        - generic [ref=f7e1453]: Subheader
+      - status [ref=f7e1455]:
+        - generic [ref=f7e1456]:
+          - generic [aria-hidden] [ref=f7e1458]: 󰋼
+          - generic [ref=f7e1459]:
+            - generic [ref=f7e1460]: Notification title
+            - generic [ref=f7e1461]: A body message with more context.
+        - button "Dismiss notification" [ref=f7e1462] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f7e1465]: 󰅖
+      - navigation "Progress steps" [ref=f7e1466]:
+        - 'generic "Step 1: Account" [ref=f7e1467]':
+          - generic [aria-hidden] [ref=f7e1469]: 󰄬
+          - generic [ref=f7e1470]:
+            - generic [ref=f7e1471]: Account
+            - generic [ref=f7e1472]: Email & password
+        - 'generic "Step 2: Profile" [ref=f7e1474]':
+          - generic [aria-hidden] [ref=f7e1475]: "2"
+          - generic [ref=f7e1476]:
+            - generic [ref=f7e1477]: Profile
+            - generic [ref=f7e1478]: Personal info
+      - generic [ref=f7e1479]: System bar
+      - tablist [ref=f7e1480]:
+        - tab "Profile" [selected] [ref=f7e1481] [cursor=pointer]
+        - tab "Settings" [ref=f7e1483] [cursor=pointer]
+      - heading "Title text" [level=2] [ref=f7e1485]
+      - banner [ref=f7e1486]: Toolbar content
+      - button "Hover me" [ref=f7e1488]
+    - generic [ref=f7e1492]:
+      - status [ref=f7e1493]:
+        - generic [ref=f7e1494]:
+          - generic [ref=f7e1495]: Alert title
+          - generic [ref=f7e1497]: Alert message.
+      - status "3" [ref=f7e1499]
+      - navigation "Bottom navigation" [ref=f7e1502]:
+        - generic [ref=f7e1503]:
+          - button "Home" [ref=f7e1504] [cursor=pointer]:
+            - generic [ref=f7e1505]:
+              - generic [aria-hidden] [ref=f7e1507]: 󰋜
+              - generic [ref=f7e1508]: Home
+          - button "Search" [ref=f7e1509] [cursor=pointer]:
+            - generic [ref=f7e1510]:
+              - generic [aria-hidden] [ref=f7e1512]: 󰍉
+              - generic [ref=f7e1513]: Search
+          - button "Profile" [ref=f7e1514] [cursor=pointer]:
+            - generic [ref=f7e1515]:
+              - generic [aria-hidden] [ref=f7e1517]: 󰀄
+              - generic [ref=f7e1518]: Profile
+      - navigation "Breadcrumb" [ref=f7e1519]:
+        - list [ref=f7e1520]:
+          - listitem [ref=f7e1521]:
+            - link "Home" [ref=f7e1522] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e1524]: /
+          - listitem [ref=f7e1525]:
+            - link "Section" [ref=f7e1526] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e1528]: /
+          - listitem [ref=f7e1529]:
+            - generic: Current
+      - generic [ref=f7e1530]:
+        - generic [ref=f7e1531]: Segment A
+        - generic [ref=f7e1532]: /
+        - generic [ref=f7e1533]: Segment B
+      - navigation "Breadcrumb" [ref=f7e1534]:
+        - list [ref=f7e1535]:
+          - listitem [ref=f7e1536]:
+            - link "Item" [ref=f7e1537] [cursor=pointer]:
+              - /url: "[object Object]"
+      - button "Bouton" [ref=f7e1539] [cursor=pointer]
+      - generic [ref=f7e1542]: Card content text
+      - generic [ref=f7e1544]: Chip
+      - figure "plaintext Copy code to clipboard" [ref=f7e1546]:
+        - generic [ref=f7e1547]:
+          - generic [ref=f7e1548]: plaintext
+          - button "Copy code to clipboard" [ref=f7e1549] [cursor=pointer]:
+            - generic [ref=f7e1550]: Copy
+        - region "Code block, scrollable region" [ref=f7e1552]:
+          - code [ref=f7e1554]:
+            - generic [ref=f7e1555]: const a = 1
+        - text: const a = 1
+      - generic [ref=f7e1557]:
+        - term [ref=f7e1558]:
+          - generic [ref=f7e1559]: Label
+        - definition [ref=f7e1560]:
+          - generic [ref=f7e1561]: Value
+      - button "Panel 1" [ref=f7e1565]:
+        - generic [ref=f7e1567]:
+          - generic [ref=f7e1568]: Panel 1
+          - generic [aria-hidden] [ref=f7e1570]: 󰅀
+      - generic [ref=f7e1572]:
+        - generic: Field label
+        - textbox "Field label Field label" [ref=f7e1573]
+      - generic [ref=f7e1574]:
+        - generic [ref=f7e1575]: Input text content
+        - status [ref=f7e1577]
+      - generic [ref=f7e1578]: Ctrl
+      - generic: Label text
+      - list [ref=f7e1579]:
+        - generic [ref=f7e1582] [cursor=pointer]:
+          - generic [ref=f7e1583]: Group
+          - generic [aria-hidden] [ref=f7e1586]: 󰅀
+      - list [ref=f7e1587]:
+        - generic [ref=f7e1588]: Subheader
+      - status [ref=f7e1590]:
+        - generic [ref=f7e1591]:
+          - generic [aria-hidden] [ref=f7e1593]: 󰋼
+          - generic [ref=f7e1594]:
+            - generic [ref=f7e1595]: Notification title
+            - generic [ref=f7e1596]: A body message with more context.
+        - button "Dismiss notification" [ref=f7e1597] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f7e1600]: 󰅖
+      - navigation "Progress steps" [ref=f7e1601]:
+        - 'generic "Step 1: Account" [ref=f7e1602]':
+          - generic [aria-hidden] [ref=f7e1604]: 󰄬
+          - generic [ref=f7e1605]:
+            - generic [ref=f7e1606]: Account
+            - generic [ref=f7e1607]: Email & password
+        - 'generic "Step 2: Profile" [ref=f7e1609]':
+          - generic [aria-hidden] [ref=f7e1610]: "2"
+          - generic [ref=f7e1611]:
+            - generic [ref=f7e1612]: Profile
+            - generic [ref=f7e1613]: Personal info
+      - generic [ref=f7e1614]: System bar
+      - tablist [ref=f7e1615]:
+        - tab "Profile" [selected] [ref=f7e1616] [cursor=pointer]
+        - tab "Settings" [ref=f7e1618] [cursor=pointer]
+      - heading "Title text" [level=2] [ref=f7e1620]
+      - banner [ref=f7e1621]: Toolbar content
+      - button "Hover me" [ref=f7e1623]
+    - generic [ref=f7e1627]:
+      - status [ref=f7e1628]:
+        - generic [ref=f7e1629]:
+          - generic [ref=f7e1630]: Alert title
+          - generic [ref=f7e1632]: Alert message.
+      - status "3" [ref=f7e1634]
+      - navigation "Bottom navigation" [ref=f7e1637]:
+        - generic [ref=f7e1638]:
+          - button "Home" [ref=f7e1639] [cursor=pointer]:
+            - generic [ref=f7e1640]:
+              - generic [aria-hidden] [ref=f7e1642]: 󰋜
+              - generic [ref=f7e1643]: Home
+          - button "Search" [ref=f7e1644] [cursor=pointer]:
+            - generic [ref=f7e1645]:
+              - generic [aria-hidden] [ref=f7e1647]: 󰍉
+              - generic [ref=f7e1648]: Search
+          - button "Profile" [ref=f7e1649] [cursor=pointer]:
+            - generic [ref=f7e1650]:
+              - generic [aria-hidden] [ref=f7e1652]: 󰀄
+              - generic [ref=f7e1653]: Profile
+      - navigation "Breadcrumb" [ref=f7e1654]:
+        - list [ref=f7e1655]:
+          - listitem [ref=f7e1656]:
+            - link "Home" [ref=f7e1657] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e1659]: /
+          - listitem [ref=f7e1660]:
+            - link "Section" [ref=f7e1661] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e1663]: /
+          - listitem [ref=f7e1664]:
+            - generic: Current
+      - generic [ref=f7e1665]:
+        - generic [ref=f7e1666]: Segment A
+        - generic [ref=f7e1667]: /
+        - generic [ref=f7e1668]: Segment B
+      - navigation "Breadcrumb" [ref=f7e1669]:
+        - list [ref=f7e1670]:
+          - listitem [ref=f7e1671]:
+            - link "Item" [ref=f7e1672] [cursor=pointer]:
+              - /url: "[object Object]"
+      - button "Bouton" [ref=f7e1674] [cursor=pointer]
+      - generic [ref=f7e1677]: Card content text
+      - generic [ref=f7e1679]: Chip
+      - figure "plaintext Copy code to clipboard" [ref=f7e1681]:
+        - generic [ref=f7e1682]:
+          - generic [ref=f7e1683]: plaintext
+          - button "Copy code to clipboard" [ref=f7e1684] [cursor=pointer]:
+            - generic [ref=f7e1685]: Copy
+        - region "Code block, scrollable region" [ref=f7e1687]:
+          - code [ref=f7e1689]:
+            - generic [ref=f7e1690]: const a = 1
+        - text: const a = 1
+      - generic [ref=f7e1692]:
+        - term [ref=f7e1693]:
+          - generic [ref=f7e1694]: Label
+        - definition [ref=f7e1695]:
+          - generic [ref=f7e1696]: Value
+      - button "Panel 1" [ref=f7e1700]:
+        - generic [ref=f7e1702]:
+          - generic [ref=f7e1703]: Panel 1
+          - generic [aria-hidden] [ref=f7e1705]: 󰅀
+      - generic [ref=f7e1707]:
+        - generic: Field label
+        - textbox "Field label Field label" [ref=f7e1708]
+      - generic [ref=f7e1709]:
+        - generic [ref=f7e1710]: Input text content
+        - status [ref=f7e1712]
+      - generic [ref=f7e1713]: Ctrl
+      - generic: Label text
+      - list [ref=f7e1714]:
+        - generic [ref=f7e1717] [cursor=pointer]:
+          - generic [ref=f7e1718]: Group
+          - generic [aria-hidden] [ref=f7e1721]: 󰅀
+      - list [ref=f7e1722]:
+        - generic [ref=f7e1723]: Subheader
+      - status [ref=f7e1725]:
+        - generic [ref=f7e1726]:
+          - generic [aria-hidden] [ref=f7e1728]: 󰋼
+          - generic [ref=f7e1729]:
+            - generic [ref=f7e1730]: Notification title
+            - generic [ref=f7e1731]: A body message with more context.
+        - button "Dismiss notification" [ref=f7e1732] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f7e1735]: 󰅖
+      - navigation "Progress steps" [ref=f7e1736]:
+        - 'generic "Step 1: Account" [ref=f7e1737]':
+          - generic [aria-hidden] [ref=f7e1739]: 󰄬
+          - generic [ref=f7e1740]:
+            - generic [ref=f7e1741]: Account
+            - generic [ref=f7e1742]: Email & password
+        - 'generic "Step 2: Profile" [ref=f7e1744]':
+          - generic [aria-hidden] [ref=f7e1745]: "2"
+          - generic [ref=f7e1746]:
+            - generic [ref=f7e1747]: Profile
+            - generic [ref=f7e1748]: Personal info
+      - generic [ref=f7e1749]: System bar
+      - tablist [ref=f7e1750]:
+        - tab "Profile" [selected] [ref=f7e1751] [cursor=pointer]
+        - tab "Settings" [ref=f7e1753] [cursor=pointer]
+      - heading "Title text" [level=2] [ref=f7e1755]
+      - banner [ref=f7e1756]: Toolbar content
+      - button "Hover me" [ref=f7e1758]
+    - generic [ref=f7e1762]:
+      - status [ref=f7e1763]:
+        - generic [ref=f7e1764]:
+          - generic [ref=f7e1765]: Alert title
+          - generic [ref=f7e1767]: Alert message.
+      - status "3" [ref=f7e1769]
+      - navigation "Bottom navigation" [ref=f7e1772]:
+        - generic [ref=f7e1773]:
+          - button "Home" [ref=f7e1774] [cursor=pointer]:
+            - generic [ref=f7e1775]:
+              - generic [aria-hidden] [ref=f7e1777]: 󰋜
+              - generic [ref=f7e1778]: Home
+          - button "Search" [ref=f7e1779] [cursor=pointer]:
+            - generic [ref=f7e1780]:
+              - generic [aria-hidden] [ref=f7e1782]: 󰍉
+              - generic [ref=f7e1783]: Search
+          - button "Profile" [ref=f7e1784] [cursor=pointer]:
+            - generic [ref=f7e1785]:
+              - generic [aria-hidden] [ref=f7e1787]: 󰀄
+              - generic [ref=f7e1788]: Profile
+      - navigation "Breadcrumb" [ref=f7e1789]:
+        - list [ref=f7e1790]:
+          - listitem [ref=f7e1791]:
+            - link "Home" [ref=f7e1792] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e1794]: /
+          - listitem [ref=f7e1795]:
+            - link "Section" [ref=f7e1796] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e1798]: /
+          - listitem [ref=f7e1799]:
+            - generic: Current
+      - generic [ref=f7e1800]:
+        - generic [ref=f7e1801]: Segment A
+        - generic [ref=f7e1802]: /
+        - generic [ref=f7e1803]: Segment B
+      - navigation "Breadcrumb" [ref=f7e1804]:
+        - list [ref=f7e1805]:
+          - listitem [ref=f7e1806]:
+            - link "Item" [ref=f7e1807] [cursor=pointer]:
+              - /url: "[object Object]"
+      - button "Bouton" [ref=f7e1809] [cursor=pointer]
+      - generic [ref=f7e1812]: Card content text
+      - generic [ref=f7e1814]: Chip
+      - figure "plaintext Copy code to clipboard" [ref=f7e1816]:
+        - generic [ref=f7e1817]:
+          - generic [ref=f7e1818]: plaintext
+          - button "Copy code to clipboard" [ref=f7e1819] [cursor=pointer]:
+            - generic [ref=f7e1820]: Copy
+        - region "Code block, scrollable region" [ref=f7e1822]:
+          - code [ref=f7e1824]:
+            - generic [ref=f7e1825]: const a = 1
+        - text: const a = 1
+      - generic [ref=f7e1827]:
+        - term [ref=f7e1828]:
+          - generic [ref=f7e1829]: Label
+        - definition [ref=f7e1830]:
+          - generic [ref=f7e1831]: Value
+      - button "Panel 1" [ref=f7e1835]:
+        - generic [ref=f7e1837]:
+          - generic [ref=f7e1838]: Panel 1
+          - generic [aria-hidden] [ref=f7e1840]: 󰅀
+      - generic [ref=f7e1842]:
+        - generic: Field label
+        - textbox "Field label Field label" [ref=f7e1843]
+      - generic [ref=f7e1844]:
+        - generic [ref=f7e1845]: Input text content
+        - status [ref=f7e1847]
+      - generic [ref=f7e1848]: Ctrl
+      - generic: Label text
+      - list [ref=f7e1849]:
+        - generic [ref=f7e1852] [cursor=pointer]:
+          - generic [ref=f7e1853]: Group
+          - generic [aria-hidden] [ref=f7e1856]: 󰅀
+      - list [ref=f7e1857]:
+        - generic [ref=f7e1858]: Subheader
+      - status [ref=f7e1860]:
+        - generic [ref=f7e1861]:
+          - generic [aria-hidden] [ref=f7e1863]: 󰋼
+          - generic [ref=f7e1864]:
+            - generic [ref=f7e1865]: Notification title
+            - generic [ref=f7e1866]: A body message with more context.
+        - button "Dismiss notification" [ref=f7e1867] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f7e1870]: 󰅖
+      - navigation "Progress steps" [ref=f7e1871]:
+        - 'generic "Step 1: Account" [ref=f7e1872]':
+          - generic [aria-hidden] [ref=f7e1874]: 󰄬
+          - generic [ref=f7e1875]:
+            - generic [ref=f7e1876]: Account
+            - generic [ref=f7e1877]: Email & password
+        - 'generic "Step 2: Profile" [ref=f7e1879]':
+          - generic [aria-hidden] [ref=f7e1880]: "2"
+          - generic [ref=f7e1881]:
+            - generic [ref=f7e1882]: Profile
+            - generic [ref=f7e1883]: Personal info
+      - generic [ref=f7e1884]: System bar
+      - tablist [ref=f7e1885]:
+        - tab "Profile" [selected] [ref=f7e1886] [cursor=pointer]
+        - tab "Settings" [ref=f7e1888] [cursor=pointer]
+      - heading "Title text" [level=2] [ref=f7e1890]
+      - banner [ref=f7e1891]: Toolbar content
+      - button "Hover me" [ref=f7e1893]
+    - generic [ref=f7e1897]:
+      - status [ref=f7e1898]:
+        - generic [ref=f7e1899]:
+          - generic [ref=f7e1900]: Alert title
+          - generic [ref=f7e1902]: Alert message.
+      - status "3" [ref=f7e1904]
+      - navigation "Bottom navigation" [ref=f7e1907]:
+        - generic [ref=f7e1908]:
+          - button "Home" [ref=f7e1909] [cursor=pointer]:
+            - generic [ref=f7e1910]:
+              - generic [aria-hidden] [ref=f7e1912]: 󰋜
+              - generic [ref=f7e1913]: Home
+          - button "Search" [ref=f7e1914] [cursor=pointer]:
+            - generic [ref=f7e1915]:
+              - generic [aria-hidden] [ref=f7e1917]: 󰍉
+              - generic [ref=f7e1918]: Search
+          - button "Profile" [ref=f7e1919] [cursor=pointer]:
+            - generic [ref=f7e1920]:
+              - generic [aria-hidden] [ref=f7e1922]: 󰀄
+              - generic [ref=f7e1923]: Profile
+      - navigation "Breadcrumb" [ref=f7e1924]:
+        - list [ref=f7e1925]:
+          - listitem [ref=f7e1926]:
+            - link "Home" [ref=f7e1927] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e1929]: /
+          - listitem [ref=f7e1930]:
+            - link "Section" [ref=f7e1931] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e1933]: /
+          - listitem [ref=f7e1934]:
+            - generic: Current
+      - generic [ref=f7e1935]:
+        - generic [ref=f7e1936]: Segment A
+        - generic [ref=f7e1937]: /
+        - generic [ref=f7e1938]: Segment B
+      - navigation "Breadcrumb" [ref=f7e1939]:
+        - list [ref=f7e1940]:
+          - listitem [ref=f7e1941]:
+            - link "Item" [ref=f7e1942] [cursor=pointer]:
+              - /url: "[object Object]"
+      - button "Bouton" [ref=f7e1944] [cursor=pointer]
+      - generic [ref=f7e1947]: Card content text
+      - generic [ref=f7e1949]: Chip
+      - figure "plaintext Copy code to clipboard" [ref=f7e1951]:
+        - generic [ref=f7e1952]:
+          - generic [ref=f7e1953]: plaintext
+          - button "Copy code to clipboard" [ref=f7e1954] [cursor=pointer]:
+            - generic [ref=f7e1955]: Copy
+        - region "Code block, scrollable region" [ref=f7e1957]:
+          - code [ref=f7e1959]:
+            - generic [ref=f7e1960]: const a = 1
+        - text: const a = 1
+      - generic [ref=f7e1962]:
+        - term [ref=f7e1963]:
+          - generic [ref=f7e1964]: Label
+        - definition [ref=f7e1965]:
+          - generic [ref=f7e1966]: Value
+      - button "Panel 1" [ref=f7e1970]:
+        - generic [ref=f7e1972]:
+          - generic [ref=f7e1973]: Panel 1
+          - generic [aria-hidden] [ref=f7e1975]: 󰅀
+      - generic [ref=f7e1977]:
+        - generic: Field label
+        - textbox "Field label Field label" [ref=f7e1978]
+      - generic [ref=f7e1979]:
+        - generic [ref=f7e1980]: Input text content
+        - status [ref=f7e1982]
+      - generic [ref=f7e1983]: Ctrl
+      - generic: Label text
+      - list [ref=f7e1984]:
+        - generic [ref=f7e1987] [cursor=pointer]:
+          - generic [ref=f7e1988]: Group
+          - generic [aria-hidden] [ref=f7e1991]: 󰅀
+      - list [ref=f7e1992]:
+        - generic [ref=f7e1993]: Subheader
+      - status [ref=f7e1995]:
+        - generic [ref=f7e1996]:
+          - generic [aria-hidden] [ref=f7e1998]: 󰋼
+          - generic [ref=f7e1999]:
+            - generic [ref=f7e2000]: Notification title
+            - generic [ref=f7e2001]: A body message with more context.
+        - button "Dismiss notification" [ref=f7e2002] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f7e2005]: 󰅖
+      - navigation "Progress steps" [ref=f7e2006]:
+        - 'generic "Step 1: Account" [ref=f7e2007]':
+          - generic [aria-hidden] [ref=f7e2009]: 󰄬
+          - generic [ref=f7e2010]:
+            - generic [ref=f7e2011]: Account
+            - generic [ref=f7e2012]: Email & password
+        - 'generic "Step 2: Profile" [ref=f7e2014]':
+          - generic [aria-hidden] [ref=f7e2015]: "2"
+          - generic [ref=f7e2016]:
+            - generic [ref=f7e2017]: Profile
+            - generic [ref=f7e2018]: Personal info
+      - generic [ref=f7e2019]: System bar
+      - tablist [ref=f7e2020]:
+        - tab "Profile" [selected] [ref=f7e2021] [cursor=pointer]
+        - tab "Settings" [ref=f7e2023] [cursor=pointer]
+      - heading "Title text" [level=2] [ref=f7e2025]
+      - banner [ref=f7e2026]: Toolbar content
+      - button "Hover me" [ref=f7e2028]
+    - generic [ref=f7e2032]:
+      - status [ref=f7e2033]:
+        - generic [ref=f7e2034]:
+          - generic [ref=f7e2035]: Alert title
+          - generic [ref=f7e2037]: Alert message.
+      - status "3" [ref=f7e2039]
+      - navigation "Bottom navigation" [ref=f7e2042]:
+        - generic [ref=f7e2043]:
+          - button "Home" [ref=f7e2044] [cursor=pointer]:
+            - generic [ref=f7e2045]:
+              - generic [aria-hidden] [ref=f7e2047]: 󰋜
+              - generic [ref=f7e2048]: Home
+          - button "Search" [ref=f7e2049] [cursor=pointer]:
+            - generic [ref=f7e2050]:
+              - generic [aria-hidden] [ref=f7e2052]: 󰍉
+              - generic [ref=f7e2053]: Search
+          - button "Profile" [ref=f7e2054] [cursor=pointer]:
+            - generic [ref=f7e2055]:
+              - generic [aria-hidden] [ref=f7e2057]: 󰀄
+              - generic [ref=f7e2058]: Profile
+      - navigation "Breadcrumb" [ref=f7e2059]:
+        - list [ref=f7e2060]:
+          - listitem [ref=f7e2061]:
+            - link "Home" [ref=f7e2062] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e2064]: /
+          - listitem [ref=f7e2065]:
+            - link "Section" [ref=f7e2066] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e2068]: /
+          - listitem [ref=f7e2069]:
+            - generic: Current
+      - generic [ref=f7e2070]:
+        - generic [ref=f7e2071]: Segment A
+        - generic [ref=f7e2072]: /
+        - generic [ref=f7e2073]: Segment B
+      - navigation "Breadcrumb" [ref=f7e2074]:
+        - list [ref=f7e2075]:
+          - listitem [ref=f7e2076]:
+            - link "Item" [ref=f7e2077] [cursor=pointer]:
+              - /url: "[object Object]"
+      - button "Bouton" [ref=f7e2079] [cursor=pointer]
+      - generic [ref=f7e2082]: Card content text
+      - generic [ref=f7e2084]: Chip
+      - figure "plaintext Copy code to clipboard" [ref=f7e2086]:
+        - generic [ref=f7e2087]:
+          - generic [ref=f7e2088]: plaintext
+          - button "Copy code to clipboard" [ref=f7e2089] [cursor=pointer]:
+            - generic [ref=f7e2090]: Copy
+        - region "Code block, scrollable region" [ref=f7e2092]:
+          - code [ref=f7e2094]:
+            - generic [ref=f7e2095]: const a = 1
+        - text: const a = 1
+      - generic [ref=f7e2097]:
+        - term [ref=f7e2098]:
+          - generic [ref=f7e2099]: Label
+        - definition [ref=f7e2100]:
+          - generic [ref=f7e2101]: Value
+      - button "Panel 1" [ref=f7e2105]:
+        - generic [ref=f7e2107]:
+          - generic [ref=f7e2108]: Panel 1
+          - generic [aria-hidden] [ref=f7e2110]: 󰅀
+      - generic [ref=f7e2112]:
+        - generic: Field label
+        - textbox "Field label Field label" [ref=f7e2113]
+      - generic [ref=f7e2114]:
+        - generic [ref=f7e2115]: Input text content
+        - status [ref=f7e2117]
+      - generic [ref=f7e2118]: Ctrl
+      - generic: Label text
+      - list [ref=f7e2119]:
+        - generic [ref=f7e2122] [cursor=pointer]:
+          - generic [ref=f7e2123]: Group
+          - generic [aria-hidden] [ref=f7e2126]: 󰅀
+      - list [ref=f7e2127]:
+        - generic [ref=f7e2128]: Subheader
+      - status [ref=f7e2130]:
+        - generic [ref=f7e2131]:
+          - generic [aria-hidden] [ref=f7e2133]: 󰋼
+          - generic [ref=f7e2134]:
+            - generic [ref=f7e2135]: Notification title
+            - generic [ref=f7e2136]: A body message with more context.
+        - button "Dismiss notification" [ref=f7e2137] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f7e2140]: 󰅖
+      - navigation "Progress steps" [ref=f7e2141]:
+        - 'generic "Step 1: Account" [ref=f7e2142]':
+          - generic [aria-hidden] [ref=f7e2144]: 󰄬
+          - generic [ref=f7e2145]:
+            - generic [ref=f7e2146]: Account
+            - generic [ref=f7e2147]: Email & password
+        - 'generic "Step 2: Profile" [ref=f7e2149]':
+          - generic [aria-hidden] [ref=f7e2150]: "2"
+          - generic [ref=f7e2151]:
+            - generic [ref=f7e2152]: Profile
+            - generic [ref=f7e2153]: Personal info
+      - generic [ref=f7e2154]: System bar
+      - tablist [ref=f7e2155]:
+        - tab "Profile" [selected] [ref=f7e2156] [cursor=pointer]
+        - tab "Settings" [ref=f7e2159] [cursor=pointer]
+      - heading "Title text" [level=2] [ref=f7e2161]
+      - banner [ref=f7e2162]: Toolbar content
+      - button "Hover me" [ref=f7e2164]
+    - generic [ref=f7e2168]:
+      - status [ref=f7e2169]:
+        - generic [ref=f7e2170]:
+          - generic [ref=f7e2171]: Alert title
+          - generic [ref=f7e2173]: Alert message.
+      - status "3" [ref=f7e2175]
+      - navigation "Bottom navigation" [ref=f7e2178]:
+        - generic [ref=f7e2179]:
+          - button "Home" [ref=f7e2180] [cursor=pointer]:
+            - generic [ref=f7e2181]:
+              - generic [aria-hidden] [ref=f7e2183]: 󰋜
+              - generic [ref=f7e2184]: Home
+          - button "Search" [ref=f7e2185] [cursor=pointer]:
+            - generic [ref=f7e2186]:
+              - generic [aria-hidden] [ref=f7e2188]: 󰍉
+              - generic [ref=f7e2189]: Search
+          - button "Profile" [ref=f7e2190] [cursor=pointer]:
+            - generic [ref=f7e2191]:
+              - generic [aria-hidden] [ref=f7e2193]: 󰀄
+              - generic [ref=f7e2194]: Profile
+      - navigation "Breadcrumb" [ref=f7e2195]:
+        - list [ref=f7e2196]:
+          - listitem [ref=f7e2197]:
+            - link "Home" [ref=f7e2198] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e2200]: /
+          - listitem [ref=f7e2201]:
+            - link "Section" [ref=f7e2202] [cursor=pointer]:
+              - /url: "[object Object]"
+            - generic [ref=f7e2204]: /
+          - listitem [ref=f7e2205]:
+            - generic: Current
+      - generic [ref=f7e2206]:
+        - generic [ref=f7e2207]: Segment A
+        - generic [ref=f7e2208]: /
+        - generic [ref=f7e2209]: Segment B
+      - navigation "Breadcrumb" [ref=f7e2210]:
+        - list [ref=f7e2211]:
+          - listitem [ref=f7e2212]:
+            - link "Item" [ref=f7e2213] [cursor=pointer]:
+              - /url: "[object Object]"
+      - button "Bouton" [ref=f7e2215] [cursor=pointer]
+      - generic [ref=f7e2218]: Card content text
+      - generic [ref=f7e2220]: Chip
+      - figure "plaintext Copy code to clipboard" [ref=f7e2222]:
+        - generic [ref=f7e2223]:
+          - generic [ref=f7e2224]: plaintext
+          - button "Copy code to clipboard" [ref=f7e2225] [cursor=pointer]:
+            - generic [ref=f7e2226]: Copy
+        - region "Code block, scrollable region" [ref=f7e2228]:
+          - code [ref=f7e2230]:
+            - generic [ref=f7e2231]: const a = 1
+        - text: const a = 1
+      - generic [ref=f7e2233]:
+        - term [ref=f7e2234]:
+          - generic [ref=f7e2235]: Label
+        - definition [ref=f7e2236]:
+          - generic [ref=f7e2237]: Value
+      - button "Panel 1" [ref=f7e2241]:
+        - generic [ref=f7e2243]:
+          - generic [ref=f7e2244]: Panel 1
+          - generic [aria-hidden] [ref=f7e2246]: 󰅀
+      - generic [ref=f7e2248]:
+        - generic: Field label
+        - textbox "Field label Field label" [ref=f7e2249]
+      - generic [ref=f7e2250]:
+        - generic [ref=f7e2251]: Input text content
+        - status [ref=f7e2253]
+      - generic [ref=f7e2254]: Ctrl
+      - generic: Label text
+      - list [ref=f7e2255]:
+        - generic [ref=f7e2258] [cursor=pointer]:
+          - generic [ref=f7e2259]: Group
+          - generic [aria-hidden] [ref=f7e2262]: 󰅀
+      - list [ref=f7e2263]:
+        - generic [ref=f7e2264]: Subheader
+      - status [ref=f7e2266]:
+        - generic [ref=f7e2267]:
+          - generic [aria-hidden] [ref=f7e2269]: 󰋼
+          - generic [ref=f7e2270]:
+            - generic [ref=f7e2271]: Notification title
+            - generic [ref=f7e2272]: A body message with more context.
+        - button "Dismiss notification" [ref=f7e2273] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f7e2276]: 󰅖
+      - navigation "Progress steps" [ref=f7e2277]:
+        - 'generic "Step 1: Account" [ref=f7e2278]':
+          - generic [aria-hidden] [ref=f7e2280]: 󰄬
+          - generic [ref=f7e2281]:
+            - generic [ref=f7e2282]: Account
+            - generic [ref=f7e2283]: Email & password
+        - 'generic "Step 2: Profile" [ref=f7e2285]':
+          - generic [aria-hidden] [ref=f7e2286]: "2"
+          - generic [ref=f7e2287]:
+            - generic [ref=f7e2288]: Profile
+            - generic [ref=f7e2289]: Personal info
+      - generic [ref=f7e2290]: System bar
+      - tablist [ref=f7e2291]:
+        - tab "Profile" [selected] [ref=f7e2292] [cursor=pointer]
+        - tab "Settings" [ref=f7e2295] [cursor=pointer]
+      - heading "Title text" [level=2] [ref=f7e2297]
+      - banner [ref=f7e2298]: Toolbar content
+      - button "Hover me" [ref=f7e2300]
+  - generic:
+    - tooltip
+    - tooltip
+    - tooltip
+    - tooltip
+    - tooltip
+    - tooltip
+    - tooltip
+    - tooltip
+    - tooltip
+    - tooltip
+    - tooltip
+    - tooltip
+    - tooltip
+    - tooltip
+    - tooltip
+    - tooltip
+    - tooltip

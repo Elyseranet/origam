@@ -1,14 +1,1 @@
-{
-    "OrigamCalendar::default": [
-        "aria-required-parent"
-    ],
-    "OrigamChartMap::default": [
-        "aria-prohibited-attr"
-    ],
-    "OrigamFileFieldListItem::default": [
-        "listitem"
-    ],
-    "OrigamListGroup::default": [
-        "aria-required-children"
-    ]
-}
+{}

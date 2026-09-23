@@ -1,0 +1,199 @@
+- generic [ref=f1e4]:
+  - generic [ref=f1e6]:
+    - generic [ref=f1e7]:
+      - img "Origam Page Builder logo" [ref=f1e10]
+      - generic [ref=f1e11]:
+        - generic [ref=f1e12] [cursor=pointer]
+        - generic [ref=f1e14] [cursor=pointer]
+    - generic [ref=f1e16]:
+      - generic [ref=f1e17]:
+        - button "Styles & Design token" [ref=f1e19] [cursor=pointer]
+        - button "Utilities" [ref=f1e24] [cursor=pointer]
+      - generic [ref=f1e29]:
+        - button "Components" [ref=f1e31] [cursor=pointer]
+        - generic [ref=f1e34]:
+          - button "Alert" [ref=f1e36] [cursor=pointer]
+          - button "App" [ref=f1e42] [cursor=pointer]
+          - button "Audio" [ref=f1e48] [cursor=pointer]
+          - button "Avatar" [ref=f1e54] [cursor=pointer]
+          - button "Badge" [ref=f1e60] [cursor=pointer]
+          - button "Blockquote" [ref=f1e66] [cursor=pointer]
+          - button "BottomNav" [ref=f1e72] [cursor=pointer]
+          - button "Bracket" [ref=f1e78] [cursor=pointer]
+          - button "Breadcrumb" [ref=f1e84] [cursor=pointer]
+          - button "Btn" [ref=f1e90] [cursor=pointer]
+          - button "Calendar" [ref=f1e96] [cursor=pointer]
+          - button "Card" [ref=f1e102] [cursor=pointer]
+          - button "Carousel" [ref=f1e108] [cursor=pointer]
+          - button "Chart" [ref=f1e114] [cursor=pointer]
+          - button "Checkbox" [ref=f1e120] [cursor=pointer]
+          - button "Chip" [ref=f1e126] [cursor=pointer]
+          - button "ClientOnly" [ref=f1e132] [cursor=pointer]
+          - button "Clipboard" [ref=f1e138] [cursor=pointer]
+          - button "Code" [ref=f1e144] [cursor=pointer]
+          - button "ColorGradient" [ref=f1e150] [cursor=pointer]
+          - button "ColorPicker" [ref=f1e156] [cursor=pointer]
+          - generic [ref=f1e161]:
+            - button "ColorPickerField" [ref=f1e162] [cursor=pointer]
+            - link "OrigamColorPickerField 19" [ref=f1e169] [cursor=pointer]:
+              - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue
+              - generic [ref=f1e170]: OrigamColorPickerField
+              - generic [ref=f1e173]: "19"
+          - button "CommandPalette" [ref=f1e175] [cursor=pointer]
+          - button "ConfirmWrapper" [ref=f1e181] [cursor=pointer]
+          - button "ContextualMenu" [ref=f1e187] [cursor=pointer]
+          - button "Counter" [ref=f1e193] [cursor=pointer]
+          - button "DataList" [ref=f1e199] [cursor=pointer]
+          - button "DataTable" [ref=f1e205] [cursor=pointer]
+          - button "DatePicker" [ref=f1e211] [cursor=pointer]
+          - button "DatePickerField" [ref=f1e217] [cursor=pointer]
+          - button "DefaultsProvider" [ref=f1e223] [cursor=pointer]
+          - button "Dialog" [ref=f1e229] [cursor=pointer]
+          - button "Divider" [ref=f1e235] [cursor=pointer]
+          - button "Drawer" [ref=f1e241] [cursor=pointer]
+          - button "EmptyState" [ref=f1e247] [cursor=pointer]
+          - button "ExpansionPanel" [ref=f1e253] [cursor=pointer]
+          - button "Field" [ref=f1e259] [cursor=pointer]
+          - button "FileField" [ref=f1e265] [cursor=pointer]
+          - button "Form" [ref=f1e271] [cursor=pointer]
+          - button "Grid" [ref=f1e277] [cursor=pointer]
+          - button "Grids" [ref=f1e283] [cursor=pointer]
+          - button "Icon" [ref=f1e289] [cursor=pointer]
+          - button "Img" [ref=f1e295] [cursor=pointer]
+          - button "InfiniteScroll" [ref=f1e301] [cursor=pointer]
+          - button "InlineEdit" [ref=f1e307] [cursor=pointer]
+          - button "Input" [ref=f1e313] [cursor=pointer]
+          - button "ItemGroup" [ref=f1e319] [cursor=pointer]
+          - button "Kbd" [ref=f1e325] [cursor=pointer]
+          - button "Label" [ref=f1e331] [cursor=pointer]
+          - button "Layout" [ref=f1e337] [cursor=pointer]
+          - button "Lazy" [ref=f1e343] [cursor=pointer]
+          - button "List" [ref=f1e349] [cursor=pointer]
+          - button "Loader" [ref=f1e355] [cursor=pointer]
+          - button "Main" [ref=f1e361] [cursor=pointer]
+          - button "Masonry" [ref=f1e367] [cursor=pointer]
+          - button "MediaController" [ref=f1e373] [cursor=pointer]
+          - button "MediaScrubber" [ref=f1e379] [cursor=pointer]
+          - button "MediaVolumeControl" [ref=f1e385] [cursor=pointer]
+          - button "Menu" [ref=f1e391] [cursor=pointer]
+          - button "Messages" [ref=f1e397] [cursor=pointer]
+          - button "NumberField" [ref=f1e403] [cursor=pointer]
+          - button "NumberFormat" [ref=f1e409] [cursor=pointer]
+          - button "OtpInputField" [ref=f1e415] [cursor=pointer]
+          - button "Overlay" [ref=f1e421] [cursor=pointer]
+          - button "Pagination" [ref=f1e427] [cursor=pointer]
+          - button "Parallax" [ref=f1e433] [cursor=pointer]
+          - button "PasswordField" [ref=f1e439] [cursor=pointer]
+          - button "Picker" [ref=f1e445] [cursor=pointer]
+          - button "Progress" [ref=f1e451] [cursor=pointer]
+          - button "QrCode" [ref=f1e457] [cursor=pointer]
+          - button "Radio" [ref=f1e463] [cursor=pointer]
+          - button "RatingField" [ref=f1e469] [cursor=pointer]
+          - button "Responsive" [ref=f1e475] [cursor=pointer]
+          - button "Select" [ref=f1e481] [cursor=pointer]
+          - button "SelectionControl" [ref=f1e487] [cursor=pointer]
+          - button "Sheet" [ref=f1e493] [cursor=pointer]
+          - button "Skeleton" [ref=f1e499] [cursor=pointer]
+          - button "Slide" [ref=f1e505] [cursor=pointer]
+          - button "SliderField" [ref=f1e511] [cursor=pointer]
+          - button "Snackbar" [ref=f1e517] [cursor=pointer]
+          - button "Stepper" [ref=f1e523] [cursor=pointer]
+          - button "Switch" [ref=f1e529] [cursor=pointer]
+          - button "SystemBar" [ref=f1e535] [cursor=pointer]
+          - button "Table" [ref=f1e541] [cursor=pointer]
+          - button "Tabs" [ref=f1e547] [cursor=pointer]
+          - button "TextareaField" [ref=f1e553] [cursor=pointer]
+          - button "TextField" [ref=f1e559] [cursor=pointer]
+          - button "TextMask" [ref=f1e565] [cursor=pointer]
+          - button "ThemeProvider" [ref=f1e571] [cursor=pointer]
+          - button "Timeline" [ref=f1e577] [cursor=pointer]
+          - button "Title" [ref=f1e583] [cursor=pointer]
+          - button "Toolbar" [ref=f1e589] [cursor=pointer]
+          - button "Tooltip" [ref=f1e595] [cursor=pointer]
+          - button "Transition" [ref=f1e601] [cursor=pointer]
+          - button "Treeview" [ref=f1e607] [cursor=pointer]
+          - button "Video" [ref=f1e613] [cursor=pointer]
+          - button "VirtualScroll" [ref=f1e619] [cursor=pointer]
+          - button "Watermark" [ref=f1e625] [cursor=pointer]
+          - button "Window" [ref=f1e631] [cursor=pointer]
+      - button "Page Builder" [ref=f1e638] [cursor=pointer]
+      - button "Helpers" [ref=f1e643] [cursor=pointer]
+  - generic [ref=f1e649]:
+    - generic [ref=f1e652]:
+      - generic [ref=f1e654]:
+        - link "Design" [ref=f1e656] [cursor=pointer]:
+          - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue?variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-0&tab=events
+        - link "State" [ref=f1e660] [cursor=pointer]:
+          - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue?variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-1&tab=events
+        - link "Functional" [ref=f1e664] [cursor=pointer]:
+          - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue?variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-2&tab=events
+        - link "Prop — disabled & readonly" [ref=f1e668] [cursor=pointer]:
+          - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue?variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-3&tab=events
+        - link "Prop — rules" [ref=f1e672] [cursor=pointer]:
+          - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue?variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-4&tab=events
+        - link "Events - update:modelValue" [ref=f1e676] [cursor=pointer]:
+          - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue?variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-5&tab=events
+        - link "Events - update:menu" [ref=f1e680] [cursor=pointer]:
+          - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue?variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-6&tab=events
+        - link "Slots - Prepend" [ref=f1e684] [cursor=pointer]:
+          - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue?variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-7&tab=events
+        - link "Slots - Append" [ref=f1e688] [cursor=pointer]:
+          - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue?variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-8&tab=events
+        - link "Slots - PrependInner" [ref=f1e692] [cursor=pointer]:
+          - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue?variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-9&tab=events
+        - link "Slots - AppendInner" [ref=f1e696] [cursor=pointer]:
+          - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue?variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-10&tab=events
+        - link "Slots - Clear" [ref=f1e700] [cursor=pointer]:
+          - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue?variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-11&tab=events
+        - link "Slots - ColorSelection" [ref=f1e704] [cursor=pointer]:
+          - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue?variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-12&tab=events
+        - link "Slots - FloatingLabel" [ref=f1e708] [cursor=pointer]:
+          - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue?variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-13&tab=events
+        - link "Slots - Label" [ref=f1e712] [cursor=pointer]:
+          - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue?variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-14&tab=events
+        - link "Slots - Loader" [ref=f1e716] [cursor=pointer]:
+          - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue?variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-15&tab=events
+        - link "Slots - Prefix" [ref=f1e720] [cursor=pointer]:
+          - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue?variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-16&tab=events
+        - link "Slots - Suffix" [ref=f1e724] [cursor=pointer]:
+          - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue?variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-17&tab=events
+        - link "Default" [ref=f1e728] [cursor=pointer]:
+          - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue?variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-18&tab=events
+      - generic [ref=f1e864]:
+        - generic [ref=f1e865]:
+          - generic [ref=f1e866]: Events - update:modelValue
+          - generic [ref=f1e871] [cursor=pointer]
+          - generic [ref=f1e877]: a
+          - link [ref=f1e886] [cursor=pointer]:
+            - /url: /stories/__sandbox.html?storyId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue&variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-5
+        - iframe [ref=f1e899]:
+          - generic "Colour" [ref=f2e8]:
+            - generic [ref=f2e13]:
+              - generic: Colour
+              - textbox "Colour" [ref=f2e15]
+            - status [ref=f2e17]
+    - generic [ref=f1e915]:
+      - generic [ref=f1e917]:
+        - generic [ref=f1e918]:
+          - link "Controls" [ref=f1e920] [cursor=pointer]:
+            - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue?variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-5&tab=
+          - link "Docs" [ref=f1e923] [cursor=pointer]:
+            - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue?variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-5&tab=docs
+          - link "Events" [active] [ref=f1e925] [cursor=pointer]:
+            - /url: /stories/story/components-stories-colorpickerfield-origamcolorpickerfield-story-vue?variantId=components-stories-colorpickerfield-origamcolorpickerfield-story-vue-5&tab=events
+        - generic [ref=f1e976]: No event fired
+      - generic [ref=f1e948]:
+        - generic [ref=f1e949]:
+          - generic [ref=f1e950]: Source
+          - generic [ref=f1e951]:
+            - button "Dynamic" [ref=f1e952] [cursor=pointer]
+            - button "Static" [ref=f1e956] [cursor=pointer]
+          - img [aria-hidden] [ref=f1e961] [cursor=pointer]
+        - code [ref=f1e967]:
+          - generic [ref=f1e968]: <OrigamColorPickerField
+          - generic [ref=f1e969]: v-model="emitColor"
+          - generic [ref=f1e970]: label="Colour"
+          - generic [ref=f1e971]: ":style=\"{"
+          - generic [ref=f1e972]: "'max-width': '320px',"
+          - generic [ref=f1e973]: "}\""
+          - generic [ref=f1e974]: />

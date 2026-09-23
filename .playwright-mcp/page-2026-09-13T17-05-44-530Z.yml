@@ -1,0 +1,133 @@
+- generic [ref=f16e4]:
+  - generic [ref=f16e6]:
+    - generic [ref=f16e7]:
+      - img "Origam Page Builder logo" [ref=f16e10]
+      - generic [ref=f16e11]:
+        - generic [ref=f16e12] [cursor=pointer]
+        - generic [ref=f16e14] [cursor=pointer]
+    - generic [ref=f16e16]:
+      - generic [ref=f16e17]:
+        - button "Styles & Design token" [ref=f16e19] [cursor=pointer]
+        - button "Utilities" [ref=f16e24] [cursor=pointer]
+      - generic [ref=f16e29]:
+        - button "Components" [ref=f16e31] [cursor=pointer]
+        - generic [ref=f16e34]:
+          - button "Alert" [ref=f16e36] [cursor=pointer]
+          - button "App" [ref=f16e42] [cursor=pointer]
+          - button "Audio" [ref=f16e48] [cursor=pointer]
+          - button "Avatar" [ref=f16e54] [cursor=pointer]
+          - button "Badge" [ref=f16e60] [cursor=pointer]
+          - button "Blockquote" [ref=f16e66] [cursor=pointer]
+          - button "BottomNav" [ref=f16e72] [cursor=pointer]
+          - button "Bracket" [ref=f16e78] [cursor=pointer]
+          - button "Breadcrumb" [ref=f16e84] [cursor=pointer]
+          - button "Btn" [ref=f16e90] [cursor=pointer]
+          - button "Calendar" [ref=f16e96] [cursor=pointer]
+          - button "Card" [ref=f16e102] [cursor=pointer]
+          - button "Carousel" [ref=f16e108] [cursor=pointer]
+          - button "Chart" [ref=f16e114] [cursor=pointer]
+          - button "Checkbox" [ref=f16e120] [cursor=pointer]
+          - button "Chip" [ref=f16e126] [cursor=pointer]
+          - button "ClientOnly" [ref=f16e132] [cursor=pointer]
+          - button "Clipboard" [ref=f16e138] [cursor=pointer]
+          - button "Code" [ref=f16e144] [cursor=pointer]
+          - button "ColorGradient" [ref=f16e150] [cursor=pointer]
+          - button "ColorPicker" [ref=f16e156] [cursor=pointer]
+          - button "ColorPickerField" [ref=f16e162] [cursor=pointer]
+          - button "CommandPalette" [ref=f16e168] [cursor=pointer]
+          - button "ConfirmWrapper" [ref=f16e174] [cursor=pointer]
+          - button "ContextualMenu" [ref=f16e180] [cursor=pointer]
+          - button "Counter" [ref=f16e186] [cursor=pointer]
+          - button "DataList" [ref=f16e192] [cursor=pointer]
+          - button "DataTable" [ref=f16e198] [cursor=pointer]
+          - button "DatePicker" [ref=f16e204] [cursor=pointer]
+          - button "DatePickerField" [ref=f16e210] [cursor=pointer]
+          - button "DefaultsProvider" [ref=f16e216] [cursor=pointer]
+          - button "Dialog" [ref=f16e222] [cursor=pointer]
+          - button "Divider" [ref=f16e228] [cursor=pointer]
+          - button "Drawer" [ref=f16e234] [cursor=pointer]
+          - button "EmptyState" [ref=f16e240] [cursor=pointer]
+          - button "ExpansionPanel" [ref=f16e246] [cursor=pointer]
+          - button "Field" [ref=f16e252] [cursor=pointer]
+          - button "FileField" [ref=f16e258] [cursor=pointer]
+          - button "Form" [ref=f16e264] [cursor=pointer]
+          - button "Grid" [ref=f16e270] [cursor=pointer]
+          - button "Grids" [ref=f16e276] [cursor=pointer]
+          - button "Icon" [ref=f16e282] [cursor=pointer]
+          - button "Img" [ref=f16e288] [cursor=pointer]
+          - button "InfiniteScroll" [ref=f16e294] [cursor=pointer]
+          - button "InlineEdit" [ref=f16e300] [cursor=pointer]
+          - button "Input" [ref=f16e306] [cursor=pointer]
+          - button "ItemGroup" [ref=f16e312] [cursor=pointer]
+          - button "Kbd" [ref=f16e318] [cursor=pointer]
+          - button "Label" [ref=f16e324] [cursor=pointer]
+          - button "Layout" [ref=f16e330] [cursor=pointer]
+          - button "Lazy" [ref=f16e336] [cursor=pointer]
+          - button "List" [ref=f16e342] [cursor=pointer]
+          - button "Loader" [ref=f16e348] [cursor=pointer]
+          - button "Main" [ref=f16e354] [cursor=pointer]
+          - button "Masonry" [ref=f16e360] [cursor=pointer]
+          - button "MediaController" [ref=f16e366] [cursor=pointer]
+          - button "MediaScrubber" [ref=f16e372] [cursor=pointer]
+          - button "MediaVolumeControl" [ref=f16e378] [cursor=pointer]
+          - button "Menu" [ref=f16e384] [cursor=pointer]
+          - button "Messages" [ref=f16e390] [cursor=pointer]
+          - button "NumberField" [ref=f16e396] [cursor=pointer]
+          - button "NumberFormat" [ref=f16e402] [cursor=pointer]
+          - button "OtpInputField" [ref=f16e408] [cursor=pointer]
+          - button "Overlay" [ref=f16e414] [cursor=pointer]
+          - button "Pagination" [ref=f16e420] [cursor=pointer]
+          - button "Parallax" [ref=f16e426] [cursor=pointer]
+          - button "PasswordField" [ref=f16e432] [cursor=pointer]
+          - button "Picker" [ref=f16e438] [cursor=pointer]
+          - button "Progress" [ref=f16e444] [cursor=pointer]
+          - button "QrCode" [ref=f16e450] [cursor=pointer]
+          - button "Radio" [ref=f16e456] [cursor=pointer]
+          - button "RatingField" [ref=f16e462] [cursor=pointer]
+          - button "Responsive" [ref=f16e468] [cursor=pointer]
+          - button "Select" [ref=f16e474] [cursor=pointer]
+          - button "SelectionControl" [ref=f16e480] [cursor=pointer]
+          - button "Sheet" [ref=f16e486] [cursor=pointer]
+          - button "Skeleton" [ref=f16e492] [cursor=pointer]
+          - button "Slide" [ref=f16e498] [cursor=pointer]
+          - button "SliderField" [ref=f16e504] [cursor=pointer]
+          - button "Snackbar" [ref=f16e510] [cursor=pointer]
+          - button "Stepper" [ref=f16e516] [cursor=pointer]
+          - button "Switch" [ref=f16e522] [cursor=pointer]
+          - button "SystemBar" [ref=f16e528] [cursor=pointer]
+          - button "Table" [ref=f16e534] [cursor=pointer]
+          - button "Tabs" [ref=f16e540] [cursor=pointer]
+          - button "TextareaField" [ref=f16e546] [cursor=pointer]
+          - button "TextField" [ref=f16e552] [cursor=pointer]
+          - button "TextMask" [ref=f16e558] [cursor=pointer]
+          - button "ThemeProvider" [ref=f16e564] [cursor=pointer]
+          - button "Timeline" [ref=f16e570] [cursor=pointer]
+          - button "Title" [ref=f16e576] [cursor=pointer]
+          - button "Toolbar" [ref=f16e582] [cursor=pointer]
+          - button "Tooltip" [ref=f16e588] [cursor=pointer]
+          - button "Transition" [ref=f16e594] [cursor=pointer]
+          - button "Treeview" [ref=f16e600] [cursor=pointer]
+          - button "Video" [ref=f16e606] [cursor=pointer]
+          - button "VirtualScroll" [ref=f16e612] [cursor=pointer]
+          - button "Watermark" [ref=f16e618] [cursor=pointer]
+          - button "Window" [ref=f16e624] [cursor=pointer]
+      - button "Page Builder" [ref=f16e631] [cursor=pointer]
+      - button "Helpers" [ref=f16e636] [cursor=pointer]
+  - generic [ref=f16e642]:
+    - generic [ref=f16e645]:
+      - generic [ref=f16e647]:
+        - link "Design" [ref=f16e649] [cursor=pointer]:
+          - /url: /stories/story/components-stories-sliderfield-origamsliderfieldtrack-story-vue?variantId=components-stories-sliderfield-origamsliderfieldtrack-story-vue-0
+        - link "Functional" [ref=f16e653] [cursor=pointer]:
+          - /url: /stories/story/components-stories-sliderfield-origamsliderfieldtrack-story-vue?variantId=components-stories-sliderfield-origamsliderfieldtrack-story-vue-1
+        - link "Slots - item" [ref=f16e657] [cursor=pointer]:
+          - /url: /stories/story/components-stories-sliderfield-origamsliderfieldtrack-story-vue?variantId=components-stories-sliderfield-origamsliderfieldtrack-story-vue-2
+        - link "Default" [ref=f16e661] [cursor=pointer]:
+          - /url: /stories/story/components-stories-sliderfield-origamsliderfieldtrack-story-vue?variantId=components-stories-sliderfield-origamsliderfieldtrack-story-vue-3
+      - generic [ref=f16e668]:
+        - generic [ref=f16e669]: Design
+        - generic [ref=f16e673] [cursor=pointer]
+        - generic [ref=f16e676]: a
+        - link [ref=f16e683] [cursor=pointer]:
+          - /url: /stories/__sandbox.html?storyId=components-stories-sliderfield-origamsliderfieldtrack-story-vue&variantId=components-stories-sliderfield-origamsliderfieldtrack-story-vue-0
+    - generic [ref=f16e708]: Loading...

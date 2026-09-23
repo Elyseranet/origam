@@ -1,0 +1,423 @@
+- generic [ref=f11e4]:
+  - link "Skip to content" [ref=f11e5] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=f11e6]:
+    - generic [ref=f11e7]:
+      - link "origam" [ref=f11e9] [cursor=pointer]:
+        - /url: /
+        - img "origam" [ref=f11e10]
+        - generic [ref=f11e12]: v2.17.1
+      - navigation "Primary navigation" [ref=f11e15]:
+        - button "Open Introduction menu" [ref=f11e16] [cursor=pointer]:
+          - generic [ref=f11e17]:
+            - generic [ref=f11e18]: Introduction
+            - generic [aria-hidden] [ref=f11e20]: 󰅀
+        - button "Open Getting started menu" [ref=f11e21] [cursor=pointer]:
+          - generic [ref=f11e22]:
+            - generic [ref=f11e23]: Getting started
+            - generic [aria-hidden] [ref=f11e25]: 󰅀
+        - button "Open Features menu" [ref=f11e26] [cursor=pointer]:
+          - generic [ref=f11e27]:
+            - generic [ref=f11e28]: Features
+            - generic [aria-hidden] [ref=f11e30]: 󰅀
+        - link "Theming" [ref=f11e31] [cursor=pointer]:
+          - /url: /theming
+      - generic [ref=f11e35]:
+        - button "Search the documentation" [ref=f11e36] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f11e37]: 󰍉
+          - generic [ref=f11e38]: Search…
+          - generic [ref=f11e39]: ⌘K
+        - button "Toggle light and dark mode" [ref=f11e40] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f11e43]: 󰖔
+        - button "Change language" [ref=f11e44] [cursor=pointer]:
+          - generic [ref=f11e45]:
+            - generic [aria-hidden] [ref=f11e47]: 󰗊
+            - generic [ref=f11e48]: EN
+            - generic [aria-hidden] [ref=f11e50]: 󰅀
+        - button "Switch brand theme" [ref=f11e51] [cursor=pointer]:
+          - generic [ref=f11e52]:
+            - generic [ref=f11e55]: "Theme: Theme"
+            - generic [aria-hidden] [ref=f11e57]: 󰅀
+  - main [ref=f11e58]:
+    - article [ref=f11e60]:
+      - region [ref=f11e61]:
+        - generic [ref=f11e62]:
+          - generic [ref=f11e63]: Honest by design
+          - heading "Why origam? An honest answer." [level=1] [ref=f11e65]:
+            - generic [ref=f11e66]: Why origam?
+            - generic [ref=f11e67]: An honest answer.
+          - paragraph [ref=f11e68]: We built origam for Vue 3 teams who care about design quality, accessibility, and token-driven consistency. Here's what we do well — and where we're still growing.
+      - region [ref=f11e69]:
+        - generic [ref=f11e70]:
+          - generic [ref=f11e71]:
+            - paragraph [ref=f11e72]: WHAT WE DO WELL
+            - heading "Built for Vue 3. From the ground up." [level=2] [ref=f11e73]:
+              - generic [ref=f11e74]: Built for Vue 3.
+              - generic [ref=f11e75]: From the ground up.
+            - paragraph [ref=f11e76]: Every API, every composable, every prop — designed for Composition API and TypeScript from day one.
+          - list [ref=f11e77]:
+            - listitem [ref=f11e78]:
+              - generic [ref=f11e79]:
+                - generic [ref=f11e80]:
+                  - generic [aria-hidden] [ref=f11e85]: 󰡄
+                  - generic [ref=f11e86]: Vue 3 native
+                - generic [ref=f11e88]: Built with Composition API and script setup. No legacy Options API shim, no Vue 2 baggage — just clean, idiomatic Vue 3.
+            - listitem [ref=f11e90]:
+              - generic [ref=f11e91]:
+                - generic [ref=f11e92]:
+                  - generic [aria-hidden] [ref=f11e97]: 󰸌
+                  - generic [ref=f11e98]: Design tokens DTCG
+                - generic [ref=f11e100]: Tokens Studio-compatible, Style Dictionary v4. 8 themes switch at runtime with zero remount and zero flicker.
+            - listitem [ref=f11e102]:
+              - generic [ref=f11e103]:
+                - generic [ref=f11e104]:
+                  - generic [aria-hidden] [ref=f11e109]: 󰄪
+                  - generic [ref=f11e110]: 218 components + 26 chart primitives
+                - generic [ref=f11e112]: From atomic buttons to line, area, donut, heatmap and candlestick charts — all in one coherent package.
+            - listitem [ref=f11e114]:
+              - generic [ref=f11e115]:
+                - generic [ref=f11e116]:
+                  - generic [aria-hidden] [ref=f11e121]: 󰋦
+                  - generic [ref=f11e122]: WCAG 2.1 AA verified
+                - generic [ref=f11e124]: "axe-core + Playwright a11y tests ship with every component. Keyboard, screen-readers and reduced-motion: covered."
+            - listitem [ref=f11e126]:
+              - generic [ref=f11e127]:
+                - generic [ref=f11e128]:
+                  - generic [aria-hidden] [ref=f11e133]: 󰌜
+                  - generic [ref=f11e134]: CSS-first architecture
+                - generic [ref=f11e136]: Container queries, :has(), color-mix(), view-transition-name. We use the platform so your bundle doesn't pay for polyfills.
+            - listitem [ref=f11e138]:
+              - generic [ref=f11e139]:
+                - generic [ref=f11e140]:
+                  - generic [aria-hidden] [ref=f11e145]: 󰏗
+                  - generic [ref=f11e146]: < 50 kb tree-shakable
+                - generic [ref=f11e148]: ESM-first build. Import what you use; the rest never reaches your users.
+            - listitem [ref=f11e150]:
+              - generic [ref=f11e151]:
+                - generic [ref=f11e152]:
+                  - generic [aria-hidden] [ref=f11e157]: 󰩦
+                  - generic [ref=f11e158]: Headless composables
+                - generic [ref=f11e160]: Every component exposes its logic as a standalone composable. Use our UI or build your own on top of our primitives.
+            - listitem [ref=f11e162]:
+              - generic [ref=f11e163]:
+                - generic [ref=f11e164]:
+                  - generic [aria-hidden] [ref=f11e169]: 󰗑
+                  - generic [ref=f11e170]: MIT licensed
+                - generic [ref=f11e172]: No license fees, no usage restrictions. origam is and will remain open source.
+      - region [ref=f11e174]:
+        - generic [ref=f11e175]:
+          - generic [ref=f11e176]:
+            - paragraph [ref=f11e177]: HONEST COMPARISON
+            - heading "How does origam compare?" [level=2] [ref=f11e178]
+            - paragraph [ref=f11e179]: A feature-by-feature look at the Vue ecosystem's main design systems. Assessments are our own and may be out of date — always verify against the project's current docs.
+          - table [ref=f11e182]:
+            - caption [ref=f11e183]: How does origam compare?
+            - rowgroup [ref=f11e184]:
+              - row [ref=f11e185]:
+                - columnheader "Library" [ref=f11e186]
+                - columnheader "Vue 3 native" [ref=f11e187]
+                - columnheader "DTCG tokens" [ref=f11e188]
+                - columnheader "A11y tested" [ref=f11e189]
+                - columnheader "CSS-first" [ref=f11e190]
+                - columnheader "Tree-shakable" [ref=f11e191]
+                - columnheader "Charts included" [ref=f11e192]
+            - rowgroup [ref=f11e193]:
+              - row [ref=f11e194]:
+                - cell "origam" [ref=f11e195]
+                - cell [ref=f11e198]:
+                  - generic [aria-hidden] [ref=f11e199]: 󰗠
+                - cell [ref=f11e200]:
+                  - generic [aria-hidden] [ref=f11e201]: 󰗠
+                - cell [ref=f11e202]:
+                  - generic [aria-hidden] [ref=f11e203]: 󰗠
+                - cell [ref=f11e204]:
+                  - generic [aria-hidden] [ref=f11e205]: 󰗠
+                - cell [ref=f11e206]:
+                  - generic [aria-hidden] [ref=f11e207]: 󰗠
+                - cell [ref=f11e208]:
+                  - generic [aria-hidden] [ref=f11e209]: 󰗠
+              - row [ref=f11e210]:
+                - cell "Vuetify Mature Material Design system, large community and ecosystem." [ref=f11e211]:
+                  - generic [ref=f11e212]:
+                    - generic [ref=f11e213]: Vuetify
+                    - generic [ref=f11e214]: Mature Material Design system, large community and ecosystem.
+                - cell [ref=f11e215]:
+                  - generic [aria-hidden] [ref=f11e216]: 󰗠
+                - cell [ref=f11e217]:
+                  - generic [aria-hidden] [ref=f11e218]: 󰍷
+                - cell [ref=f11e219]:
+                  - generic [aria-hidden] [ref=f11e220]: 󰗠
+                - cell [ref=f11e221]:
+                  - generic [aria-hidden] [ref=f11e222]: 󰍷
+                - cell [ref=f11e223]:
+                  - generic [aria-hidden] [ref=f11e224]: 󰗠
+                - cell [ref=f11e225]:
+                  - generic [aria-hidden] [ref=f11e226]: 󰍷
+              - row [ref=f11e227]:
+                - cell "PrimeVue Very large component count, has its own token system (PrimeFlex)." [ref=f11e228]:
+                  - generic [ref=f11e229]:
+                    - generic [ref=f11e230]: PrimeVue
+                    - generic [ref=f11e231]: Very large component count, has its own token system (PrimeFlex).
+                - cell [ref=f11e232]:
+                  - generic [aria-hidden] [ref=f11e233]: 󰗠
+                - cell [ref=f11e234]:
+                  - generic [aria-hidden] [ref=f11e235]: 󰗠
+                - cell [ref=f11e236]:
+                  - generic [aria-hidden] [ref=f11e237]: 󰗠
+                - cell [ref=f11e238]:
+                  - generic [aria-hidden] [ref=f11e239]: 󰍷
+                - cell [ref=f11e240]:
+                  - generic [aria-hidden] [ref=f11e241]: 󰗠
+                - cell [ref=f11e242]:
+                  - generic [aria-hidden] [ref=f11e243]: 󰍷
+              - row [ref=f11e244]:
+                - cell "Quasar Full multi-platform framework (web, Cordova, Electron). Different scope." [ref=f11e245]:
+                  - generic [ref=f11e246]:
+                    - generic [ref=f11e247]: Quasar
+                    - generic [ref=f11e248]: Full multi-platform framework (web, Cordova, Electron). Different scope.
+                - cell [ref=f11e249]:
+                  - generic [aria-hidden] [ref=f11e250]: 󰗠
+                - cell [ref=f11e251]:
+                  - generic [aria-hidden] [ref=f11e252]: 󰍷
+                - cell [ref=f11e253]:
+                  - generic [aria-hidden] [ref=f11e254]: 󰍷
+                - cell [ref=f11e255]:
+                  - generic [aria-hidden] [ref=f11e256]: 󰍷
+                - cell [ref=f11e257]:
+                  - generic [aria-hidden] [ref=f11e258]: 󰍷
+                - cell [ref=f11e259]:
+                  - generic [aria-hidden] [ref=f11e260]: 󰍷
+              - row [ref=f11e261]:
+                - cell "Element Plus Popular in the Chinese developer community, wide component coverage." [ref=f11e262]:
+                  - generic [ref=f11e263]:
+                    - generic [ref=f11e264]: Element Plus
+                    - generic [ref=f11e265]: Popular in the Chinese developer community, wide component coverage.
+                - cell [ref=f11e266]:
+                  - generic [aria-hidden] [ref=f11e267]: 󰗠
+                - cell [ref=f11e268]:
+                  - generic [aria-hidden] [ref=f11e269]: 󰍷
+                - cell [ref=f11e270]:
+                  - generic [aria-hidden] [ref=f11e271]: 󰍷
+                - cell [ref=f11e272]:
+                  - generic [aria-hidden] [ref=f11e273]: 󰍷
+                - cell [ref=f11e274]:
+                  - generic [aria-hidden] [ref=f11e275]: 󰗠
+                - cell [ref=f11e276]:
+                  - generic [aria-hidden] [ref=f11e277]: 󰍷
+              - row [ref=f11e278]:
+                - cell "Naive UI TypeScript-first, theme customisation via JS, lightweight." [ref=f11e279]:
+                  - generic [ref=f11e280]:
+                    - generic [ref=f11e281]: Naive UI
+                    - generic [ref=f11e282]: TypeScript-first, theme customisation via JS, lightweight.
+                - cell [ref=f11e283]:
+                  - generic [aria-hidden] [ref=f11e284]: 󰗠
+                - cell [ref=f11e285]:
+                  - generic [aria-hidden] [ref=f11e286]: 󰍷
+                - cell [ref=f11e287]:
+                  - generic [aria-hidden] [ref=f11e288]: 󰍷
+                - cell [ref=f11e289]:
+                  - generic [aria-hidden] [ref=f11e290]: 󰍷
+                - cell [ref=f11e291]:
+                  - generic [aria-hidden] [ref=f11e292]: 󰗠
+                - cell [ref=f11e293]:
+                  - generic [aria-hidden] [ref=f11e294]: 󰍷
+          - paragraph [ref=f11e295]: Some assessments reflect our interpretation of publicly available documentation. Competitors ship fast — check their docs.
+      - region [ref=f11e296]:
+        - generic [ref=f11e297]:
+          - generic [ref=f11e298]:
+            - paragraph [ref=f11e299]: LET'S BE HONEST
+            - heading "Where we're still growing." [level=2] [ref=f11e300]:
+              - generic [ref=f11e301]: Where we're
+              - generic [ref=f11e302]: still growing.
+            - paragraph [ref=f11e303]: origam is young. That's a strength in terms of API freshness — and a constraint in terms of maturity.
+          - list [ref=f11e304]:
+            - listitem [ref=f11e305]:
+              - generic [ref=f11e306]:
+                - generic [ref=f11e307]:
+                  - generic [aria-hidden] [ref=f11e312]: 󰭘
+                  - generic [ref=f11e313]: Smaller community
+                - generic [ref=f11e315]: Vuetify and PrimeVue have years of production usage, thousands of Stack Overflow answers, and rich third-party template markets. origam doesn't — yet.
+            - listitem [ref=f11e317]:
+              - generic [ref=f11e318]:
+                - generic [ref=f11e319]:
+                  - generic [aria-hidden] [ref=f11e324]: 󰭣
+                  - generic [ref=f11e325]: Fewer ready-made templates
+                - generic [ref=f11e327]: You won't find dozens of admin dashboards or landing-page kits built on origam today. You build with the primitives.
+            - listitem [ref=f11e329]:
+              - generic [ref=f11e330]:
+                - generic [ref=f11e331]:
+                  - generic [aria-hidden] [ref=f11e336]: 󰒍
+                  - generic [ref=f11e337]: Less battle-tested at scale
+                - generic [ref=f11e339]: We haven't been stress-tested in apps with hundreds of devs and millions of daily users. If that's your situation, factor this in.
+      - region [ref=f11e341]:
+        - generic [ref=f11e342]:
+          - generic [ref=f11e343]:
+            - paragraph [ref=f11e344]: WHO IS ORIGAM FOR
+            - heading "Pick origam when…" [level=2] [ref=f11e345]
+          - generic [ref=f11e346]:
+            - generic [ref=f11e348]:
+              - heading "origam is a great fit" [level=3] [ref=f11e349]
+              - list [ref=f11e350]:
+                - listitem [ref=f11e351]:
+                  - generic [ref=f11e352]:
+                    - generic [ref=f11e353]:
+                      - generic [aria-hidden] [ref=f11e355]: 󰗡
+                      - generic [ref=f11e356]: Greenfield Vue 3 project
+                    - generic [ref=f11e358]: Starting fresh on Vue 3 with a design team that works in Figma and tokens? origam is built for this exact setup.
+                - listitem [ref=f11e360]:
+                  - generic [ref=f11e361]:
+                    - generic [ref=f11e362]:
+                      - generic [aria-hidden] [ref=f11e364]: 󰗡
+                      - generic [ref=f11e365]: Design-token-driven team
+                    - generic [ref=f11e367]: If your designer uses Tokens Studio or Style Dictionary, origam integrates natively — no translation layer needed.
+                - listitem [ref=f11e369]:
+                  - generic [ref=f11e370]:
+                    - generic [ref=f11e371]:
+                      - generic [aria-hidden] [ref=f11e373]: 󰗡
+                      - generic [ref=f11e374]: SaaS / product requiring multiple brand themes
+                    - generic [ref=f11e376]: Need to ship the same app in client-A colours and client-B colours? Multi-theme at runtime is a first-class feature.
+                - listitem [ref=f11e378]:
+                  - generic [ref=f11e379]:
+                    - generic [ref=f11e380]:
+                      - generic [aria-hidden] [ref=f11e382]: 󰗡
+                      - generic [ref=f11e383]: Data-heavy UI with charts
+                    - generic [ref=f11e385]: 26 chart primitives — line, area, bar, donut, heatmap, candlestick — themed and accessible, in one install.
+            - generic [ref=f11e388]:
+              - heading "origam might not be the right call" [level=3] [ref=f11e389]
+              - list [ref=f11e390]:
+                - listitem [ref=f11e391]:
+                  - generic [ref=f11e392]:
+                    - generic [ref=f11e393]:
+                      - generic [aria-hidden] [ref=f11e395]: 󰅚
+                      - generic [ref=f11e396]: Migrating a large Vuetify 2 codebase
+                    - generic [ref=f11e398]: If you have thousands of Vuetify components to migrate, Vuetify 3 will be a lower-friction path than origam.
+                - listitem [ref=f11e400]:
+                  - generic [ref=f11e401]:
+                    - generic [ref=f11e402]:
+                      - generic [aria-hidden] [ref=f11e404]: 󰅚
+                      - generic [ref=f11e405]: Needing a large third-party template market
+                    - generic [ref=f11e407]: If you rely on pre-built admin themes or marketplace templates, Vuetify or PrimeVue have a larger catalogue today.
+      - region [ref=f11e409]:
+        - generic [ref=f11e410]:
+          - heading "Ready to try it?" [level=2] [ref=f11e411]
+          - paragraph [ref=f11e412]: Install origam in 30 seconds and see how far the defaults take you.
+          - navigation "Try origam" [ref=f11e413]:
+            - link "Get started" [ref=f11e414] [cursor=pointer]:
+              - /url: /installation
+              - generic [ref=f11e415]:
+                - generic [ref=f11e416]: Get started
+                - generic [aria-hidden] [ref=f11e418]: 󰁔
+            - link "Browse components" [ref=f11e419] [cursor=pointer]:
+              - /url: /components
+              - generic [ref=f11e420]:
+                - generic [aria-hidden] [ref=f11e422]: 󱇙
+                - generic [ref=f11e423]: Browse components
+  - contentinfo [ref=f11e424]:
+    - generic [ref=f11e425]:
+      - generic [ref=f11e426]:
+        - link "origam" [ref=f11e427] [cursor=pointer]:
+          - /url: /
+          - img "origam" [ref=f11e428]
+        - paragraph [ref=f11e430]: The Vue 3 design system that just works.
+      - navigation "Product" [ref=f11e431]:
+        - heading "Product" [level=2] [ref=f11e432]
+        - list [ref=f11e433]:
+          - listitem [ref=f11e434]:
+            - link "Charts" [ref=f11e435] [cursor=pointer]:
+              - /url: /components#charts
+          - listitem [ref=f11e436]:
+            - link "Themes" [ref=f11e437] [cursor=pointer]:
+              - /url: /#themes
+      - navigation "Resources" [ref=f11e438]:
+        - heading "Resources" [level=2] [ref=f11e439]
+        - list [ref=f11e440]:
+          - listitem [ref=f11e441]:
+            - link "GitHub" [ref=f11e442] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam
+          - listitem [ref=f11e443]:
+            - link "Community" [ref=f11e444] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam/discussions
+          - listitem [ref=f11e445]:
+            - link "Discord" [ref=f11e446] [cursor=pointer]:
+              - /url: https://discord.gg/origam
+          - listitem [ref=f11e447]:
+            - link "Discussions" [ref=f11e448] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam/discussions
+          - listitem [ref=f11e449]:
+            - link "Twitter" [ref=f11e450] [cursor=pointer]:
+              - /url: https://twitter.com/origam
+          - listitem [ref=f11e451]:
+            - link "Support origam" [ref=f11e452] [cursor=pointer]:
+              - /url: /support
+      - navigation "Legal" [ref=f11e453]:
+        - heading "Legal" [level=2] [ref=f11e454]
+        - list [ref=f11e455]:
+          - listitem [ref=f11e456]:
+            - link "MIT License" [ref=f11e457] [cursor=pointer]:
+              - /url: https://github.com/Elyseranet/origam/blob/main/LICENSE
+          - listitem [ref=f11e458]:
+            - link "Privacy" [ref=f11e459] [cursor=pointer]:
+              - /url: /privacy
+          - listitem [ref=f11e460]:
+            - link "Contact" [ref=f11e461] [cursor=pointer]:
+              - /url: /contact
+    - separator [ref=f11e462]
+    - navigation "Site map" [ref=f11e463]:
+      - heading "Introduction" [level=3] [ref=f11e464]
+      - list [ref=f11e465]:
+        - listitem [ref=f11e466]:
+          - link "Why origam?" [ref=f11e467] [cursor=pointer]:
+            - /url: /why-origam
+        - listitem [ref=f11e468]:
+          - link "Roadmap" [ref=f11e469] [cursor=pointer]:
+            - /url: /roadmap
+        - listitem [ref=f11e470]:
+          - link "Changelog" [ref=f11e471] [cursor=pointer]:
+            - /url: /changelog
+      - heading "Getting started" [level=3] [ref=f11e472]
+      - list [ref=f11e473]:
+        - listitem [ref=f11e474]:
+          - link "Installation" [ref=f11e475] [cursor=pointer]:
+            - /url: /installation
+        - listitem [ref=f11e476]:
+          - link "Wireframe" [ref=f11e477] [cursor=pointer]:
+            - /url: /wireframe
+      - heading "Features" [level=3] [ref=f11e478]
+      - list [ref=f11e479]:
+        - listitem [ref=f11e480]:
+          - link "Components" [ref=f11e481] [cursor=pointer]:
+            - /url: /components
+        - listitem [ref=f11e482]:
+          - link "Directives" [ref=f11e483] [cursor=pointer]:
+            - /url: /directives
+        - listitem [ref=f11e484]:
+          - link "Composables" [ref=f11e485] [cursor=pointer]:
+            - /url: /composables
+        - listitem [ref=f11e486]:
+          - link "Types" [ref=f11e487] [cursor=pointer]:
+            - /url: /types
+        - listitem [ref=f11e488]:
+          - link "Enums" [ref=f11e489] [cursor=pointer]:
+            - /url: /enums
+        - listitem [ref=f11e490]:
+          - link "Interfaces" [ref=f11e491] [cursor=pointer]:
+            - /url: /interfaces
+        - listitem [ref=f11e492]:
+          - link "Utils" [ref=f11e493] [cursor=pointer]:
+            - /url: /utils
+        - listitem [ref=f11e494]:
+          - link "Constants" [ref=f11e495] [cursor=pointer]:
+            - /url: /consts
+        - listitem [ref=f11e496]:
+          - link "Stories" [ref=f11e497] [cursor=pointer]:
+            - /url: /stories/
+        - listitem [ref=f11e498]:
+          - link "Docs" [ref=f11e499] [cursor=pointer]:
+            - /url: /docs/
+    - separator [ref=f11e500]
+    - generic [ref=f11e501]:
+      - paragraph [ref=f11e502]: © 2026 origam · MIT
+      - paragraph [ref=f11e503]: Made with origam, by humans.
+      - link "Support origam with a donation" [ref=f11e504] [cursor=pointer]:
+        - /url: https://www.paypal.com/donate/?hosted_button_id=EQFUQ2JV95YGQ
+        - text: Support origam
