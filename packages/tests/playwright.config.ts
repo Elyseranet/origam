@@ -186,7 +186,19 @@ const GREEN_SPECS = [
     // port isole. A/B contre le commit parent (avant le correctif) : 4/5
     // tests rougissent (seul le controle negatif noir-sur-blanc reste vert
     // des deux cotes, comme attendu).
-    'contrast-directive.spec.ts'
+    'contrast-directive.spec.ts',
+    // #411 — `OrigamChartMap.borderColor` etait applique au `stroke` du
+    // pays sans passer par `resolveColor()` : un theme nommant l'intent
+    // (`components['origam-chart-map'].borderColor`) atteignait deja la
+    // prop (ADR-005), mais la valeur atterrissait telle quelle dans
+    // `stroke:`, ce qui est un mot-cle CSS invalide pour cette propriete —
+    // le navigateur JETAIT la declaration et le contour disparaissait
+    // (pas seulement « toujours gris »). A/B contre `develop` avant ce
+    // correctif : le test « repaints under a themed intent » rougit
+    // (le stroke reste fige sur l'ancien litteral), le test des valeurs
+    // CSS explicites reste vert des deux cotes, comme attendu. Verifiee
+    // stable 10/10, `--repeat-each=5`, `E2E_STATIC=1`, chromium, port isole.
+    'chart-map-border-color-theme.spec.ts'
 ]
 
 /**

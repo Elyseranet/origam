@@ -105,9 +105,11 @@ export interface IChartMapProps extends IChartBaseProps {
     defaultCountryFill?: string
     /**
      * Stroke colour applied to all country path outlines.
-     * Default `'rgba(0,0,0,0.2)'`.
+     * Supports intent names and raw CSS strings, resolved the same way as
+     * `lineColor` (#411 — was a hardcoded literal the theme could not reach).
+     * Default `'neutral'`.
      */
-    borderColor?: string
+    borderColor?: TIntent | string
     /**
      * Default stroke colour for flight-route arcs.
      * Overridden per route via `IChartMapRouteDatum.color`.

@@ -101,7 +101,7 @@ import { OrigamChartMap } from '@origam/ds'
 | `subtitle` | `string` | `undefined` | Optional subtitle below the title. |
 | `colorRange` | `[TIntent \| string, TIntent \| string]` | `['info', 'danger']` | Choropleth gradient endpoints. First = min value, second = max value. |
 | `defaultCountryFill` | `string` | `'rgba(0,0,0,0.08)'` | Fill for countries absent from the dataset (both modes). |
-| `borderColor` | `string` | `'rgba(0,0,0,0.2)'` | Stroke applied to all country paths. |
+| `borderColor` | `TIntent \| string` | `'neutral'` | Stroke applied to all country paths. Supports intent names and raw CSS strings, resolved the same way as `lineColor`. |
 | `lineColor` | `TIntent \| string` | `'primary'` | Default stroke colour for flight-route arcs. Overridden per route. |
 | `nodeRadius` | `number` | `4` | Radius of the endpoint circles in flight-routes mode. |
 | `routeCurvature` | `number` | `0.3` | Bezier offset as a fraction of chord length `[0..1]`. `0` = straight. |
