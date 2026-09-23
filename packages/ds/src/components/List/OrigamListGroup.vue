@@ -3,7 +3,9 @@
 			:is="tag"
 			:id="styleId"
 			v-contrast
+			:aria-labelledby="id"
 			:class="listGroupClasses"
+			:role="groupRole"
 			:style="listGroupStyles"
 	>
 		<origam-defaults-provider :defaults="slotDefaults">
@@ -72,6 +74,7 @@
 
 	import { omitUndefined } from '../../utils/Commons/commons.util'
 
+	import { LIST_ITEM_ROLE } from '../../enums/List/list-item.enum'
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { IListActivatorProps, IListGroupProps } from '../../interfaces/List/list-group.interface'
@@ -126,6 +129,33 @@
 	const list = useList()
 	const {isBooted} = useSsrBoot()
 	const transition = ref({component: OrigamExpandY})
+
+	/*********************************************************
+	 * groupRole (aria-required-children)
+	 *
+	 * @description
+	 * The activator row deliberately carries NO role (see `OrigamListItem`'s
+	 * `itemRole` — a group activator toggles expand/collapse, it is not one
+	 * of the list's own rows). Closed by default, that left the ambient
+	 * `<origam-list>` with ZERO `listitem`/`option` descendant — axe's
+	 * `aria-required-children` flags a `list`/`listbox` with no owned row at
+	 * all. The whole group (activator + its nested items) is, from the
+	 * ambient list's point of view, ONE of its own rows — exactly the native
+	 * `<li><button aria-expanded>…</button><ul>…</ul></li>` shape.
+	 * @description
+	 * The role must match what the AMBIENT list actually allows as an owned
+	 * child: a plain `list` only owns `listitem` (`role="group"` is NOT a
+	 * permitted child of `list` — verified against axe-core's aria-roles
+	 * table), while a `listbox` owns `group` (never `listitem`, which would
+	 * misreport a non-selectable row as an option-bearing item). No ambient
+	 * list at all (a standalone `<OrigamListGroup>`) gets no role — a
+	 * `listitem` outside any `list` would trade this violation for
+	 * `aria-required-parent`.
+	 ********************************************************/
+	const groupRole = computed(() => {
+		if (!list) return undefined
+		return list.itemRole.value === LIST_ITEM_ROLE.OPTION ? 'group' : LIST_ITEM_ROLE.LISTITEM
+	})
 
 	const toggleIcon = computed(() => {
 		if (isOpen.value) {

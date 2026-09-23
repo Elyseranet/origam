@@ -19,8 +19,10 @@
 								Mail
 							</origam-list-group-activator>
 						</template>
-						<origam-list-item title="Inbox"/>
-						<origam-list-item title="Sent"/>
+						<template #items>
+							<origam-list-item title="Inbox"/>
+							<origam-list-item title="Sent"/>
+						</template>
 					</origam-list-group>
 				</origam-list>
 			</template>
@@ -39,8 +41,10 @@
 							<span>Custom slot content</span>
 						</origam-list-group-activator>
 					</template>
-					<origam-list-item title="Inbox"/>
-					<origam-list-item title="Sent"/>
+					<template #items>
+						<origam-list-item title="Inbox"/>
+						<origam-list-item title="Sent"/>
+					</template>
 				</origam-list-group>
 			</origam-list>
 		</Variant>
@@ -57,12 +61,16 @@
 								Mail
 							</origam-list-group-activator>
 						</template>
-						<origam-list-item title="Inbox"/>
-						<origam-list-item title="Sent"/>
+						<template #items>
+							<origam-list-item title="Inbox"/>
+							<origam-list-item title="Sent"/>
+						</template>
 					</origam-list-group>
 					<origam-list-group title="Calendar" :prepend-icon="calendarIcon">
-						<origam-list-item title="Today"/>
-						<origam-list-item title="Upcoming"/>
+						<template #items>
+							<origam-list-item title="Today"/>
+							<origam-list-item title="Upcoming"/>
+						</template>
 					</origam-list-group>
 				</origam-list>
 			</template>

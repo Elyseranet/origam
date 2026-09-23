@@ -1,0 +1,156 @@
+- generic [ref=f19e6]:
+  - generic [ref=f19e7]:
+    - img "Origam Page Builder logo" [ref=f19e10]
+    - generic [ref=f19e11]:
+      - generic [ref=f19e12] [cursor=pointer]
+      - generic [ref=f19e15] [cursor=pointer]
+  - generic [ref=f19e18]:
+    - generic [ref=f19e19]:
+      - button "Styles & Design token" [ref=f19e21] [cursor=pointer]
+      - button "Utilities" [ref=f19e27] [cursor=pointer]
+    - generic [ref=f19e33]:
+      - button "Components" [ref=f19e35] [cursor=pointer]
+      - generic [ref=f19e39]:
+        - button "Alert" [ref=f19e41] [cursor=pointer]
+        - button "App" [ref=f19e48] [cursor=pointer]
+        - button "Audio" [ref=f19e55] [cursor=pointer]
+        - button "Avatar" [ref=f19e62] [cursor=pointer]
+        - button "Badge" [ref=f19e69] [cursor=pointer]
+        - button "Blockquote" [ref=f19e76] [cursor=pointer]
+        - button "BottomNav" [ref=f19e83] [cursor=pointer]
+        - button "Bracket" [ref=f19e90] [cursor=pointer]
+        - button "Breadcrumb" [ref=f19e97] [cursor=pointer]
+        - button "Btn" [ref=f19e104] [cursor=pointer]
+        - button "Calendar" [ref=f19e111] [cursor=pointer]
+        - button "Card" [ref=f19e118] [cursor=pointer]
+        - button "Carousel" [ref=f19e125] [cursor=pointer]
+        - button "Chart" [ref=f19e132] [cursor=pointer]
+        - button "Checkbox" [ref=f19e139] [cursor=pointer]
+        - button "Chip" [ref=f19e146] [cursor=pointer]
+        - button "ClientOnly" [ref=f19e153] [cursor=pointer]
+        - button "Clipboard" [ref=f19e160] [cursor=pointer]
+        - button "Code" [ref=f19e167] [cursor=pointer]
+        - button "ColorGradient" [ref=f19e174] [cursor=pointer]
+        - button "ColorPicker" [ref=f19e181] [cursor=pointer]
+        - button "ColorPickerField" [ref=f19e188] [cursor=pointer]
+        - button "CommandPalette" [ref=f19e195] [cursor=pointer]
+        - button "ConfirmWrapper" [ref=f19e202] [cursor=pointer]
+        - button "ContextualMenu" [ref=f19e209] [cursor=pointer]
+        - button "Counter" [ref=f19e216] [cursor=pointer]
+        - button "DataList" [ref=f19e223] [cursor=pointer]
+        - generic [ref=f19e229]:
+          - button "DataTable" [ref=f19e230] [cursor=pointer]
+          - generic [ref=f19e236]:
+            - link "OrigamDataTable 28" [ref=f19e238] [cursor=pointer]:
+              - /url: /stories/story/components-stories-datatable-origamdatatable-story-vue
+              - generic [ref=f19e239]: OrigamDataTable
+              - generic [ref=f19e243]: "28"
+            - link "OrigamDataTableColumnCell 4" [ref=f19e245] [cursor=pointer]:
+              - /url: /stories/story/components-stories-datatable-origamdatatablecolumncell-story-vue
+              - generic [ref=f19e246]: OrigamDataTableColumnCell
+              - generic [ref=f19e250]: "4"
+            - link "OrigamDataTableFooter 5" [ref=f19e252] [cursor=pointer]:
+              - /url: /stories/story/components-stories-datatable-origamdatatablefooter-story-vue
+              - generic [ref=f19e253]: OrigamDataTableFooter
+              - generic [ref=f19e257]: "5"
+            - link "OrigamDataTableGroupHeaderRow 5" [ref=f19e259] [cursor=pointer]:
+              - /url: /stories/story/components-stories-datatable-origamdatatablegroupheaderrow-story-vue
+              - generic [ref=f19e260]: OrigamDataTableGroupHeaderRow
+              - generic [ref=f19e264]: "5"
+            - link "OrigamDataTableHeaderCell 4" [ref=f19e266] [cursor=pointer]:
+              - /url: /stories/story/components-stories-datatable-origamdatatableheadercell-story-vue
+              - generic [ref=f19e267]: OrigamDataTableHeaderCell
+              - generic [ref=f19e271]: "4"
+            - link "OrigamDataTableHeaders 7" [ref=f19e273] [cursor=pointer]:
+              - /url: /stories/story/components-stories-datatable-origamdatatableheaders-story-vue
+              - generic [ref=f19e274]: OrigamDataTableHeaders
+              - generic [ref=f19e278]: "7"
+            - link "OrigamDataTableHeadersCell 3" [ref=f19e280] [cursor=pointer]:
+              - /url: /stories/story/components-stories-datatable-origamdatatableheaderscell-story-vue
+              - generic [ref=f19e281]: OrigamDataTableHeadersCell
+              - generic [ref=f19e285]: "3"
+            - link "OrigamDataTableHeadersCellMobile 27" [ref=f19e287] [cursor=pointer]:
+              - /url: /stories/story/components-stories-datatable-origamdatatableheaderscellmobile-story-vue
+              - generic [ref=f19e288]: OrigamDataTableHeadersCellMobile
+              - generic [ref=f19e292]: "27"
+            - link "OrigamDataTableRow 8" [ref=f19e294] [cursor=pointer]:
+              - /url: /stories/story/components-stories-datatable-origamdatatablerow-story-vue
+              - generic [ref=f19e295]: OrigamDataTableRow
+              - generic [ref=f19e299]: "8"
+            - link "OrigamDataTableRows 8" [ref=f19e301] [cursor=pointer]:
+              - /url: /stories/story/components-stories-datatable-origamdatatablerows-story-vue
+              - generic [ref=f19e302]: OrigamDataTableRows
+              - generic [ref=f19e306]: "8"
+        - button "DatePicker" [ref=f19e308] [cursor=pointer]
+        - button "DatePickerField" [ref=f19e315] [cursor=pointer]
+        - button "DefaultsProvider" [ref=f19e322] [cursor=pointer]
+        - button "Dialog" [ref=f19e329] [cursor=pointer]
+        - button "Divider" [ref=f19e336] [cursor=pointer]
+        - button "Drawer" [ref=f19e343] [cursor=pointer]
+        - button "EmptyState" [ref=f19e350] [cursor=pointer]
+        - button "ExpansionPanel" [ref=f19e357] [cursor=pointer]
+        - button "Field" [ref=f19e364] [cursor=pointer]
+        - button "FileField" [ref=f19e371] [cursor=pointer]
+        - button "Form" [ref=f19e378] [cursor=pointer]
+        - button "Grid" [ref=f19e385] [cursor=pointer]
+        - button "Grids" [ref=f19e392] [cursor=pointer]
+        - button "Icon" [ref=f19e399] [cursor=pointer]
+        - button "Img" [ref=f19e406] [cursor=pointer]
+        - button "InfiniteScroll" [ref=f19e413] [cursor=pointer]
+        - button "InlineEdit" [ref=f19e420] [cursor=pointer]
+        - button "Input" [ref=f19e427] [cursor=pointer]
+        - button "ItemGroup" [ref=f19e434] [cursor=pointer]
+        - button "Kbd" [ref=f19e441] [cursor=pointer]
+        - button "Label" [ref=f19e448] [cursor=pointer]
+        - button "Layout" [ref=f19e455] [cursor=pointer]
+        - button "Lazy" [ref=f19e462] [cursor=pointer]
+        - button "List" [ref=f19e469] [cursor=pointer]
+        - button "Loader" [ref=f19e476] [cursor=pointer]
+        - button "Main" [ref=f19e483] [cursor=pointer]
+        - button "Masonry" [ref=f19e490] [cursor=pointer]
+        - button "MediaController" [ref=f19e497] [cursor=pointer]
+        - button "MediaScrubber" [ref=f19e504] [cursor=pointer]
+        - button "MediaVolumeControl" [ref=f19e511] [cursor=pointer]
+        - button "Menu" [ref=f19e518] [cursor=pointer]
+        - button "Messages" [ref=f19e525] [cursor=pointer]
+        - button "NumberField" [ref=f19e532] [cursor=pointer]
+        - button "NumberFormat" [ref=f19e539] [cursor=pointer]
+        - button "OtpInputField" [ref=f19e546] [cursor=pointer]
+        - button "Overlay" [ref=f19e553] [cursor=pointer]
+        - button "Pagination" [ref=f19e560] [cursor=pointer]
+        - button "Parallax" [ref=f19e567] [cursor=pointer]
+        - button "PasswordField" [ref=f19e574] [cursor=pointer]
+        - button "Picker" [ref=f19e581] [cursor=pointer]
+        - button "Progress" [ref=f19e588] [cursor=pointer]
+        - button "QrCode" [ref=f19e595] [cursor=pointer]
+        - button "Radio" [ref=f19e602] [cursor=pointer]
+        - button "RatingField" [ref=f19e609] [cursor=pointer]
+        - button "Responsive" [ref=f19e616] [cursor=pointer]
+        - button "Select" [ref=f19e623] [cursor=pointer]
+        - button "SelectionControl" [ref=f19e630] [cursor=pointer]
+        - button "Sheet" [ref=f19e637] [cursor=pointer]
+        - button "Skeleton" [ref=f19e644] [cursor=pointer]
+        - button "Slide" [ref=f19e651] [cursor=pointer]
+        - button "SliderField" [ref=f19e658] [cursor=pointer]
+        - button "Snackbar" [ref=f19e665] [cursor=pointer]
+        - button "Stepper" [ref=f19e672] [cursor=pointer]
+        - button "Switch" [ref=f19e679] [cursor=pointer]
+        - button "SystemBar" [ref=f19e686] [cursor=pointer]
+        - button "Table" [ref=f19e693] [cursor=pointer]
+        - button "Tabs" [ref=f19e700] [cursor=pointer]
+        - button "TextareaField" [ref=f19e707] [cursor=pointer]
+        - button "TextField" [ref=f19e714] [cursor=pointer]
+        - button "TextMask" [ref=f19e721] [cursor=pointer]
+        - button "ThemeProvider" [ref=f19e728] [cursor=pointer]
+        - button "Timeline" [ref=f19e735] [cursor=pointer]
+        - button "Title" [ref=f19e742] [cursor=pointer]
+        - button "Toolbar" [ref=f19e749] [cursor=pointer]
+        - button "Tooltip" [ref=f19e756] [cursor=pointer]
+        - button "Transition" [ref=f19e763] [cursor=pointer]
+        - button "Treeview" [ref=f19e770] [cursor=pointer]
+        - button "Video" [ref=f19e777] [cursor=pointer]
+        - button "VirtualScroll" [ref=f19e784] [cursor=pointer]
+        - button "Watermark" [ref=f19e791] [cursor=pointer]
+        - button "Window" [ref=f19e798] [cursor=pointer]
+    - button "Page Builder" [ref=f19e806] [cursor=pointer]
+    - button "Helpers" [ref=f19e812] [cursor=pointer]
