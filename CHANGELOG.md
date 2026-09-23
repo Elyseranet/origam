@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.18.8] - 2026-09-23
+
 ### Fixed — #901 `OrigamBtn` — `calc(auto + 0px)` ramenait `min-width` à `0` sur tous les boutons
 
 `OrigamBtn.vue`, second bloc `<style scoped>`, déclarait sans condition sur
@@ -68,6 +70,8 @@ capture ne bouge**. Les 7 libellés de la matrice (`Text` … `Outlined`, 4 à
 8 caractères) dépassent déjà le plancher `size=small` (`50px`) une fois le
 padding `12px`×2 ajouté, donc le nouveau plancher ne change la largeur
 d'aucun bouton de ce pilote. Aucune baseline à régénérer dans cette PR.
+
+## [2.18.7] - 2026-09-23
 
 ### Fixed — #607 / #569 : 19 canaux de thème confisqués par le bloc du composant
 
@@ -207,6 +211,8 @@ sont **compositées** sur le `default` de leur propre thème, avec l'opération
 décimales (composite 0.9757 contre pixel rendu 0.9754). Vérifiée ROUGE sur les
 valeurs du commit parent, une fois par marque : `geek/light` puis `glass/light`.
 
+## [2.18.6] - 2026-09-23
+
 ### Fixed — #818 baseline shrink : les 8 `color-contrast` du DS (8 → 0)
 
 ⚠️ **Ce lot porte sur le DS lui-même, pas sur une palette marketing** : il
@@ -345,76 +351,7 @@ d'intention) rejouée après le lot : **226 passed, 0 failed**. Suite unitaire
 complète : **7149 passed**. `pnpm -F origam guards` 28/28, `guards:self`
 15/15, `type-check` et `pnpm audit` propres.
 
-### Fixed — #818 baseline shrink : `aria-allowed-attr`/`aria-prohibited-attr`/`aria-valid-attr-value` (12 des 25 entrées)
-
-Recompté sur `a11y-violations.baseline.json` (pas repris d'un chiffre cité
-ailleurs) : la baseline #818 portait **25 clés / 33 violations** sur 24
-composants, dont **12 `aria-allowed-attr`** concentrées sur la famille
-`OrigamDataTable*`. Cause commune, pas 12 défauts distincts :
-`OrigamTextField` ne posait pas `inheritAttrs: false` alors qu'il
-redistribue déjà explicitement chaque attr de fall-through
-(`filterInputAttrs` → `rootAttrs` sur `<origam-input>`, `inputAttrs` sur le
-vrai `<input>`). Sans ce flag, Vue appliquait EN PLUS le `$attrs` brut sur
-la racine `<origam-input>`, qui ne s'y soustrayait pas non plus — doublant
-`aria-haspopup`/`aria-expanded`/`aria-controls`/`aria-valuenow`/… sur le
-`<div>` wrapper, qui ne porte aucun rôle les autorisant. `role` (prop
-déclarée sur `OrigamTextField`) n'atteignait par ailleurs que
-`<origam-field>`, jamais le vrai `<input>` — c'est ce défaut exact que le
-commentaire `KNOWN_FAILURES` documentait déjà pour `OrigamSelect` (test
-`fixme`).
-
-**Correctif à la source** (`packages/ds/src/components/TextField/OrigamTextField.vue`) :
-`defineOptions({ inheritAttrs: false })` + `role` désormais aussi lié sur le
-`<input>` réel. Élimine, mesuré axe-core en navigateur réel (Playwright +
-Histoire statique) :
-- `OrigamSelect` — sort de `KNOWN_FAILURES` (`components.spec.ts`), test
-  `fixme` → vert.
-- `OrigamDataTable`, `OrigamDataTableFooter`, `OrigamDataTableHeaderCell`,
-  `OrigamDataTableHeaders`, `OrigamDataTableHeadersCell`,
-  `OrigamDataTableRow` — `aria-allowed-attr` disparaît, entrée de baseline
-  retirée entièrement.
-- `OrigamDataTableGroupHeaderRow`, `OrigamDataTableRows`, `OrigamNumberField`
-  — `aria-allowed-attr` disparaît, l'entrée reste pour leur AUTRE violation
-  (`button-name` / `color-contrast`), non touchée par ce lot.
-- `OrigamDataTableHeadersCellMobile` — `aria-allowed-attr` ET
-  `aria-prohibited-attr` disparaissent (même fuite, deux règles axe
-  différentes), entrée retirée entièrement.
-
-**Deuxième cause, distincte, deux composants** —
-`packages/ds/src/components/ColorPickerField/OrigamColorPickerField.vue` et
-`.../DatePickerField/OrigamDatePickerField.vue` posaient un
-`aria-haspopup` avec une valeur inventée (`'colorpickerbox'` /
-`'datepickerbox'`, jamais un token ARIA valide) sur l'élément
-`.origam-field` (via `activator="parent"` d'`OrigamMenu`), sans `role` le
-justifiant. Remplacé par `aria-haspopup: 'dialog'` (motif WAI-ARIA « Date
-Picker Dialog ») + `role: 'combobox'` sur le même élément — même principe
-que `comboboxAriaAttrs` d'`OrigamSelect`. `aria-allowed-attr` ET
-`aria-valid-attr-value` disparaissent pour les deux ; `OrigamColorPickerField`
-est intégralement retiré de la baseline, `OrigamDatePickerField` y reste
-pour son `color-contrast` (non touché).
-
-**Bilan mesuré** : baseline #818 25 clés/33 violations → **17 clés/18
-violations**. Suite `pnpm -F @origam/tests test:a11y` complète (226 tests,
-catalogue 218/218) : **226 passed**, aucune régression sur les 36
-composants à baseline vide. Contrôle positif exécuté : réintroduire l'ancien
-comportement fait échouer `a11y — OrigamSelect Default Variant` avec
-`aria-allowed-attr`/`aria-prohibited-attr` NON baselinés — la porte capte
-la régression, pas seulement l'édition du JSON.
-
-**Laissé de côté, délibérément** (17 clés / 18 violations restent dans
-`a11y-violations.baseline.json`, cf. #818) : `color-contrast` (8 instances —
-plusieurs agents dédiés au contraste travaillent déjà sur ce périmètre),
-`button-name` (3, boutons icône sans libellé — famille distincte),
-`scrollable-region-focusable` (3), `aria-required-parent`/`aria-required-children`/
-`listitem`/`aria-prohibited-attr` (`OrigamChartMap`, sans lien avec ce
-correctif) — un défaut chacun, cause non partagée avec ce lot, non
-instruit ici.
-
-Récolte de deux dépréciations posées "pour la prochaine majeure" avant que le
-`CLAUDE.md` n'acte que `3.0.0` est réservé à la séparation en modules et que
-les ruptures, elles, ne le sont pas — voir "Work priorities and versioning"
-du `CLAUDE.md`. `origam` n'a aucun consommateur : les deux ruptures
-ci-dessous partent en **mineure**, sans shim ni période de grâce.
+## [2.18.5] - 2026-09-23
 
 ### Fixed — `button-name` et `scrollable-region-focusable` (6 des 18 violations laissées de côté par le lot précédent)
 
@@ -492,6 +429,334 @@ au vert. `pnpm -F origam guards` (28/28), `guards:self` (15/15),
 `a11y-violations.baseline.json`) : `color-contrast` (8 instances, périmètre
 d'autres agents), `aria-required-parent`/`aria-required-children`/`listitem`/
 `aria-prohibited-attr` (un défaut chacun, cause non partagée avec ce lot).
+
+## [2.18.4] - 2026-09-23
+
+### Fixed — #818 baseline shrink : `aria-allowed-attr`/`aria-prohibited-attr`/`aria-valid-attr-value` (12 des 25 entrées)
+
+Recompté sur `a11y-violations.baseline.json` (pas repris d'un chiffre cité
+ailleurs) : la baseline #818 portait **25 clés / 33 violations** sur 24
+composants, dont **12 `aria-allowed-attr`** concentrées sur la famille
+`OrigamDataTable*`. Cause commune, pas 12 défauts distincts :
+`OrigamTextField` ne posait pas `inheritAttrs: false` alors qu'il
+redistribue déjà explicitement chaque attr de fall-through
+(`filterInputAttrs` → `rootAttrs` sur `<origam-input>`, `inputAttrs` sur le
+vrai `<input>`). Sans ce flag, Vue appliquait EN PLUS le `$attrs` brut sur
+la racine `<origam-input>`, qui ne s'y soustrayait pas non plus — doublant
+`aria-haspopup`/`aria-expanded`/`aria-controls`/`aria-valuenow`/… sur le
+`<div>` wrapper, qui ne porte aucun rôle les autorisant. `role` (prop
+déclarée sur `OrigamTextField`) n'atteignait par ailleurs que
+`<origam-field>`, jamais le vrai `<input>` — c'est ce défaut exact que le
+commentaire `KNOWN_FAILURES` documentait déjà pour `OrigamSelect` (test
+`fixme`).
+
+**Correctif à la source** (`packages/ds/src/components/TextField/OrigamTextField.vue`) :
+`defineOptions({ inheritAttrs: false })` + `role` désormais aussi lié sur le
+`<input>` réel. Élimine, mesuré axe-core en navigateur réel (Playwright +
+Histoire statique) :
+- `OrigamSelect` — sort de `KNOWN_FAILURES` (`components.spec.ts`), test
+  `fixme` → vert.
+- `OrigamDataTable`, `OrigamDataTableFooter`, `OrigamDataTableHeaderCell`,
+  `OrigamDataTableHeaders`, `OrigamDataTableHeadersCell`,
+  `OrigamDataTableRow` — `aria-allowed-attr` disparaît, entrée de baseline
+  retirée entièrement.
+- `OrigamDataTableGroupHeaderRow`, `OrigamDataTableRows`, `OrigamNumberField`
+  — `aria-allowed-attr` disparaît, l'entrée reste pour leur AUTRE violation
+  (`button-name` / `color-contrast`), non touchée par ce lot.
+- `OrigamDataTableHeadersCellMobile` — `aria-allowed-attr` ET
+  `aria-prohibited-attr` disparaissent (même fuite, deux règles axe
+  différentes), entrée retirée entièrement.
+
+**Deuxième cause, distincte, deux composants** —
+`packages/ds/src/components/ColorPickerField/OrigamColorPickerField.vue` et
+`.../DatePickerField/OrigamDatePickerField.vue` posaient un
+`aria-haspopup` avec une valeur inventée (`'colorpickerbox'` /
+`'datepickerbox'`, jamais un token ARIA valide) sur l'élément
+`.origam-field` (via `activator="parent"` d'`OrigamMenu`), sans `role` le
+justifiant. Remplacé par `aria-haspopup: 'dialog'` (motif WAI-ARIA « Date
+Picker Dialog ») + `role: 'combobox'` sur le même élément — même principe
+que `comboboxAriaAttrs` d'`OrigamSelect`. `aria-allowed-attr` ET
+`aria-valid-attr-value` disparaissent pour les deux ; `OrigamColorPickerField`
+est intégralement retiré de la baseline, `OrigamDatePickerField` y reste
+pour son `color-contrast` (non touché).
+
+**Bilan mesuré** : baseline #818 25 clés/33 violations → **17 clés/18
+violations**. Suite `pnpm -F @origam/tests test:a11y` complète (226 tests,
+catalogue 218/218) : **226 passed**, aucune régression sur les 36
+composants à baseline vide. Contrôle positif exécuté : réintroduire l'ancien
+comportement fait échouer `a11y — OrigamSelect Default Variant` avec
+`aria-allowed-attr`/`aria-prohibited-attr` NON baselinés — la porte capte
+la régression, pas seulement l'édition du JSON.
+
+**Laissé de côté, délibérément** (17 clés / 18 violations restent dans
+`a11y-violations.baseline.json`, cf. #818) : `color-contrast` (8 instances —
+plusieurs agents dédiés au contraste travaillent déjà sur ce périmètre),
+`button-name` (3, boutons icône sans libellé — famille distincte),
+`scrollable-region-focusable` (3), `aria-required-parent`/`aria-required-children`/
+`listitem`/`aria-prohibited-attr` (`OrigamChartMap`, sans lien avec ce
+correctif) — un défaut chacun, cause non partagée avec ce lot, non
+instruit ici.
+
+### Fixed
+
+- **#871 (clôture) — les 7 dernières violations AA étaient UN défaut de
+  palette répété, pas sept défauts de composant.** Mesuré avec
+  `packages/tests/audit/dark-contrast.audit.mjs` : **7 / 1 664 → 0 / 1 664**,
+  les 8 identités × 2 modes × 2 portées, quatre contrôles verts des deux
+  côtés. Exactement **7 lignes changent, aucune ne se dégrade**, et le ratio
+  minimum de toute la surface passe de 3.65 à **4.70**.
+
+  Les 7 se répartissaient en deux causes, toutes deux dans
+  `packages/marketing/src/themes` — **aucune dans le DS**, qui était déjà à
+  zéro :
+
+  | cause | marque · mode | couple | avant | après |
+  |---|---|---|---|---|
+  | encre héritée du mode clair | `apple` sombre | `#ffffff` → `#000000` sur `#0a84ff` | 3.65 | **5.76** |
+  | encre héritée du mode clair | `ecom` sombre | `#ffffff` → `#1a0f0a` sur `#f43f5e` | 3.67 | **5.12** |
+  | jeton de rôle inversé | `ecom` clair | `action.primary.bg` → `.fgSubtle` sur la crème | 4.43 | **5.93** |
+
+  **La cause commune.** Le mode sombre ÉCLAIRCIT l'accent de marque — c'est
+  la bonne pratique pour une grande surface (`#0071e3` → `#0a84ff` chez
+  `apple`, rose-600 → rose-500 chez `ecom`) — mais les deux palettes gardaient
+  l'encre `#ffffff` de leur jumeau clair. Or chacune applique **déjà** la règle
+  inverse à ses intentions `feedback` : les 4 d'`ecom` et 3 des 4 d'`apple`
+  encrent leur accent éclairci avec le `text.inverse` de la palette.
+  `action.primary` était la dernière exception. Le badge n'était pas en cause :
+  `--origam-badge__badge---{background-color,color}` lit exactement ce couple —
+  tout comme `--origam-btn--primary---*`, qui n'est pas dans la sonde et était
+  donc en défaut sans être mesuré.
+
+  ⚠️ **On n'a PAS foncé l'accent**, bien que ce soit l'autre levier : chez
+  `apple`, `action.primary.bg` sert aussi d'ENCRE (le bloc `components` passe
+  ce `var()` en `color` sur `origam-breadcrumb-item`). Le ramener à `#0071e3`
+  donnait 4.70 sous du blanc mais faisait tomber le fil d'Ariane à **4.47** sur
+  le fond noir — un défaut échangé contre un autre. Vérifié par calcul avant
+  d'écrire la moindre ligne.
+
+  La 3ᵉ cause est une erreur de RÔLE : `bg` est un jeton de surface, `fgSubtle`
+  la teinte prévue pour être LUE sur une surface neutre. `ecomDarkTheme` posait
+  déjà `fgSubtle` ; seul le bloc clair se trompait de jeton. Les deux modes sont
+  désormais symétriques.
+
+- **#871 — une 8ᵉ violation, que la sonde ne pouvait pas voir** :
+  `material` sombre, `feedback.success`, `#1b5e20` sur `#81c784` = **3.91**
+  → `#0d3b10` = **6.32**. La sonde de `dark-contrast.audit.mjs` ne rend qu'UNE
+  intention par famille de composant, donc elle ne peint jamais
+  `feedback.success`. Trouvée par la spec statique ajoutée ci-dessous. C'est
+  l'encre qui était l'intruse, pas le conteneur : les trois autres intentions
+  sombres de `material` tiennent 5.79 / 7.70 / 7.71 avec des encres bespoke
+  très profondes, `success` était la seule à se contenter du green-900 de la
+  rampe.
+
+- **#871 — l'audit lui-même ne démarrait plus.** Son `npx vite build` résolvait
+  vite par le PATH, via un lien `node_modules/.bin` qu'un peer auto-installé
+  ne garantit pas : sur un `pnpm install --frozen-lockfile` propre,
+  `packages/tests/node_modules/.bin/` ne contient que `playwright` et `vitest`,
+  et la commande mourait en `127 — sh: vite: command not found`. **L'audit ne
+  rendait plus aucun chiffre**, et rien ne le signalait puisque rien ne le
+  rejoue en CI. `resolveViteBin()` passe désormais par le realpath de
+  `@vitejs/plugin-vue`, ce qui ne dépend ni du PATH ni du hoisting et
+  sélectionne la copie de vite que le plugin utilise réellement (deux majeures
+  coexistent dans le magasin). Les commentaires qui affirmaient le contraire
+  dans les deux fichiers ont été corrigés.
+
+- **#871 — l'état SURVOL était en défaut plus grave encore, et le correctif
+  d'encre l'a réglé sans qu'on y touche.** Le survol n'a pas d'encre à lui :
+  `--origam-btn--primary---background-color-hover` bascule la surface, mais il
+  n'existe **aucun** `--origam-btn--primary---color-hover` (ni de
+  `--origam-badge__badge---color-hover`) — l'encre reste `action.primary.fg`
+  dans les deux états. Sous l'encre blanche, `apple` sombre y tombait à
+  **2.19:1** et `ecom` sombre à **2.69:1** : *pires que n'importe laquelle des
+  7 violations comptées*, et invisibles parce que la sonde de
+  `dark-contrast.audit.mjs` ne rend que l'état au repos.
+
+  **Aucun `bgHover` n'a été modifié.** La direction du survol n'était pas le
+  problème — l'encre l'était. Mesuré sur les deux marques :
+
+  | mode · encre | direction du survol | ratio repos → survol |
+  |---|---|---|
+  | clair · blanche | fonce | 4.70 → **6.95** / **6.29** ↑ |
+  | sombre · blanche *(avant)* | éclaircit | 3.65 → **2.19** / 3.67 → **2.69** ↓ |
+  | sombre · foncée *(après)* | éclaircit | 5.76 → **9.60** / 5.12 → **6.99** ↑ |
+
+  La règle n'est donc pas *« le survol doit foncer »* mais **« le survol doit
+  déplacer l'accent à l'opposé de la clarté de son encre »**. Les palettes la
+  respectaient déjà dans 3 quadrants sur 4 ; le seul cassé l'était par son
+  encre. L'idiome « le survol éclaircit », qui est le bon en mode sombre, est
+  conservé dans les deux marques.
+
+- **#871 — non-régression : `packages/tests/TU/marketing/brand-palette-contrast.spec.ts`.**
+  Les couples `{bg, fg}` littéraux des 7 palettes de marque (14 thèmes) doivent
+  tenir AA. L'audit de #871 est un script qu'on lance à la main : rien ne le
+  rejoue, donc rien n'empêchait une retouche de palette de ramener ces couples
+  en silence. La spec lit les hex **dans l'objet `IOrigamTheme`**, avant toute
+  indirection CSS — la règle jsdom/`var()` du `CLAUDE.md` ne s'y applique pas,
+  et le navigateur reste l'arbitre de ce qui est peint. Elle embarque ses
+  propres garde-fous : les 3 témoins de la formule, un contrôle négatif sur les
+  3 couples corrigés, et un plancher de couverture qui rend bruyante une dérive
+  du filtre. **Vérifiée ROUGE sur `origin/develop`** : 3 échecs / 14 succès.
+  C'est elle qui a trouvé la 8ᵉ violation ci-dessus.
+
+## [2.18.3] - 2026-09-23
+
+#### `v-contrast` était silencieusement inerte sur fond opaque (#869)
+
+La directive `v-contrast`, câblée sur 30 composants, n'émettait **jamais**
+rien — ni classe, ni `color: !important`, ni `console.warn` — dès que fond
+**et** texte étaient tous deux OPAQUES, c'est-à-dire la configuration par
+défaut du DS. Deux ruptures indépendantes dans le code partagé, corrigeant
+l'une ne suffisait pas sans l'autre :
+
+1. **`toRgb()`** faisait **toujours** passer la couleur par un aller-retour
+   `canvas.fillStyle`, même quand `getComputedStyle` avait déjà rendu une
+   chaîne `rgb()/rgba()` exploitable. Le getter `fillStyle` de Chromium
+   sérialise toute couleur OPAQUE en hexadécimal `#rrggbb` (seul l'alpha < 1
+   ressort en `rgba(…)`), ce qui transformait une valeur déjà utilisable en
+   une valeur morte pour `rgbaParts`/`channelsOf`.
+2. **`channelsOf()`** extrayait les canaux via `match(/[\d.]+/g)`, taillé
+   pour `rgb(r, g, b)` — une suite de chiffres hexadécimaux SANS séparateur
+   (ex. `#777777`, six chiffres) s'agrège en UN seul grand nombre au lieu de
+   trois, donc `channelsOf` rend `null` sur exactement la forme hex que la
+   rupture 1 pouvait encore produire (couleur nommée, `hsl()`, …
+   nécessitant légitimement le détour par le canvas).
+
+**Correctif** : `toRgb()` court-circuite désormais le canvas quand l'entrée
+est déjà `rgb()/rgba()` (le cas de la quasi-totalité des appels, puisqu'ils
+lisent `getComputedStyle`), et le chemin canvas restant convertit son
+résultat hexadécimal en `rgb()/rgba()` via un nouveau `hexToRgb()` avant de
+le rendre — `toRgb()` ne rend plus jamais de hex. La mécanique de correction
+elle-même (forcer noir/blanc, poser `data-origam-contrast-fixed`, journaliser
+le ratio) n'est pas modifiée : elle fonctionnait déjà, elle n'était
+simplement jamais atteinte.
+
+**Preuve** — `packages/tests/e2e/contrast-directive.spec.ts` (Playwright,
+Chromium réel — jsdom n'a pas de `canvas.getContext('2d')` fonctionnel dans
+ce dépôt, donc ne peut ni reproduire ni vérifier ce bug) : contrôle positif
+(`#777777` sur blanc, 4.48:1, opaque des deux côtés) déclenche désormais la
+correction + le `console.warn` ; contrôle négatif (noir sur blanc, 21:1) ne
+déclenche rien ; non-régression du chemin translucide (fond composé via
+`resolvePaintedBackground`) inchangée. **A/B contre le commit parent** : 4
+des 5 tests rougissent sur le code d'avant (le contrôle négatif reste vert
+des deux côtés, comme attendu).
+
+⚠️ **Rayon mesuré séparément, pas hérité de #871 — et le chiffre publié par
+#871 contenait un artefact, corrigé depuis par #883.** Le chiffrage initial
+du ticket (346 violations en mode sombre) datait d'avant #876. #876 avait
+d'abord publié **189 → 11** ; en rejouant `audit/dark-contrast.audit.mjs`
+avec la VRAIE directive (redirect du stub désactivé) au lieu de sa
+reformulation mathématique, seuls **7 `console.warn` réels** se
+déclenchaient sur les 32 configurations (30 composants × 8 identités × 2
+modes, portées racine + sous-arbre) — écart signalé à l'auteur de #876, qui
+l'a reproduit, creusé et corrigé sous #883 : **les bornes AVANT et APRÈS
+étaient toutes les deux fausses (185 → 7, pas 189 → 11)**, la même erreur de
+mesure existant déjà dans le comptage "avant". Le delta réel (178) n'a
+jamais changé.
+
+L'écart venait d'`origam-tooltip__content` (identité `apple`, root + subtree,
+light + dark) et, découvert par #883, également d'`origam-bottom-nav` sur la
+même identité. Fond réel : `color(srgb 0.898039 0.898039 0.905882 / 0.94)`
+(translucide) ; `toRgb()` le résout correctement en `rgb(215, 215, 217)` une
+fois composé sur son ancêtre opaque, contre du texte noir : **ratio 14.61:1,
+conforme** — vérifié en appelant directement `toRgb()`/
+`resolvePaintedBackground()` de la vraie directive sur cette page. La
+fonction `parse()` de `dark-contrast.audit.mjs` (une réimplémentation
+distincte, pas la directive) ne reconnaissait que `rgba?\(…\)` — elle
+ignorait silencieusement cette couche `color(srgb …)`, sautait jusqu'à
+l'ancêtre opaque suivant et rapportait à tort un faux "noir sur noir"
+(ratio 1.00). **Ce n'était pas un défaut du DS ni de `v-contrast`** — la
+même classe de lacune que ce ticket corrige, mais dans un autre fichier. Les
+7 restantes (4 `origam-badge__badge`, 3 `origam-breadcrumb-item`) sont
+confirmées identiques entre les deux mesures, et `sous 2:1` passe à **0** une
+fois l'artefact retiré : plus rien de ce qui reste n'est proche d'invisible.
+
+Non corrigé ici : `dark-contrast.audit.mjs` appartenait à #871/#876, pas à ce
+ticket — signalé, reproduit et corrigé séparément sous #883 (ne pas citer
+189 → 11, c'était faux des deux côtés).
+
+**Rupture d'API** : aucune — `toRgb`/`channelsOf`/`hexToRgb` restent des
+fonctions privées du module, non exportées ; la surface publique
+(`setContrastConfig`, `v-contrast` par défaut) est inchangée.
+
+## [2.18.2] - 2026-09-23
+
+### Fixed
+
+- **#871 — le harnais de contraste ne savait pas lire `color(srgb …)`, et
+  FABRIQUAIT donc des violations.** Son `parse()` ne reconnaissait que
+  `rgb()` / `rgba()`. Un fond qu'il ne sait pas lire n'est pas « ignoré » : il
+  est traité comme **non peint**, la remontée d'ancêtres saute l'élément et
+  composite contre une couche qui n'est pas celle que voit l'œil. Sur le
+  tooltip `apple` — `color(srgb 0.898 0.898 0.906 / 0.94)` sur une surface
+  noire — cela donnait du noir sur noir à **1.00** là où le rendu réel est
+  ~`rgb(215,215,217)` sur noir. 4 instances (root + sous-arbre × clair +
+  sombre), des deux côtés de la mesure.
+
+  `parse()` reconnaît désormais `color(srgb r g b [/ a])`, avec **la même
+  expression régulière que `srgbToRgb` dans `contrast.directive.ts`** — la
+  vraie directive gérait déjà cette forme, et son commentaire le disait :
+  *« design tokens resolve to exactly this form in several themes »*.
+
+  ⛔ **Un quatrième contrôle, parce que le correctif ponctuel ne suffit pas.**
+  Le harnais échoue maintenant (`$? = 1`) dès qu'une chaîne de couleur non
+  vide lui est illisible, en listant les formes rencontrées. Sans lui, la
+  prochaine syntaxe (`oklch()`, `lab()`, résidu de `color-mix()`) décalerait
+  le chiffre en silence exactement de la même façon. Contrôle positif du
+  garde lui-même : branche `srgb` désactivée → `$? = 1`, 8 formes listées, et
+  le compte réaffiche l'ancien **11** ; branche active → `$? = 0`, tout lu,
+  **7**.
+
+  ⚠️ #871 listait déjà ce risque sous « non vérifié » — *« les couleurs
+  `oklch()` / `color(srgb …)` — aucun token actuel n'en emploie, mais un futur
+  thème invaliderait l'instrumentation »*. Un thème le faisait **déjà** au
+  moment où la phrase a été écrite. Écart signalé en marge de la **PR #882**
+  (#869, `v-contrast`) par l'agent qui rejouait ce harnais avec la vraie
+  directive au lieu du stub ; reproduit, remesuré et corrigé ici. Aucun ticket
+  propre n'a été ouvert : le défaut est dans l'instrumentation de #871, donc
+  il se règle sous #871.
+
+- **#371 (point 3) — le sélecteur « Items per page » du footer
+  DataTable n'avait aucun nom accessible**, déjà corrigé par `3f063d727`
+  (2026-09-10) — ce commit **citait #371 sans le fermer**, sixième
+  occurrence cette semaine du même motif (cf. #570, #682, #537, #371
+  point 1, #371 point 2/ADR-005). Re-mesuré ici avant tout travail sur les
+  points restants du ticket : le `<span>` visible est désormais associé au
+  `<origam-select>` via `aria-labelledby`, et la suite unitaire complète
+  reste verte (7120/7120) — aucun code de production retouché sur ce point,
+  seule la mesure manquait au tableau.
+
+- **`<OrigamDataTableRow>` ne fuit plus `index` / `mobile` en attributs DOM**
+  (#371, point 4). `itemSlotProps()` (`OrigamDataTableRows.vue`) construisait
+  la ligne d'item avec deux clés qu'`IDataTableRowProps` ne déclare pas —
+  `index`, jamais lu par le composant, et `mobile`, un résidu d'avant
+  l'ajout du forwarding de `mobileBreakpoint` (chaque ligne calcule déjà son
+  propre `mobile` à partir de ce dernier). Une clé non déclarée tombe dans
+  `$attrs`, et le `v-bind="$attrs"` du `<tr>` racine la posait en attribut
+  DOM littéral sur **chaque** ligne rendue — `index="0" mobile="false"`.
+  Même mécanisme que le point 1 de ce ticket (déjà corrigé, `08c30693a`),
+  une famille plus loin. `aria-rowindex`, seul attribut voulu de ce canal,
+  continue de passer.
+
+### Added
+
+- **`mobileBreakpoint` a désormais un contrôle de story sur
+  `<OrigamDataTable>`** (#371, point 5). La prop — dont le défaut `'xs'`
+  corrige un bug de production documenté en commentaire
+  (`OrigamDataTable.vue:190-199` : sans lui, `useDisplay` retombait sur le
+  seuil global `'lg'` et forçait le rendu mobile empilé sur tout viewport
+  sous 1280px) — n'apparaissait dans aucune des 30 Variants de
+  `OrigamDataTable.story.vue`. Ajout de la Variant « Prop —
+  mobileBreakpoint » (même jeu d'options que celui déjà utilisé par
+  `OrigamDataTableRow.story.vue`) et d'une section « Responsive » +
+  ligne de table dans `OrigamDataTable.md`.
+
+## [2.18.1] - 2026-09-22
+
+Récolte de deux dépréciations posées "pour la prochaine majeure" avant que le
+`CLAUDE.md` n'acte que `3.0.0` est réservé à la séparation en modules et que
+les ruptures, elles, ne le sont pas — voir "Work priorities and versioning"
+du `CLAUDE.md`. `origam` n'a aucun consommateur : les deux ruptures
+ci-dessous partent en **mineure**, sans shim ni période de grâce.
 
 ### ⚠️ BREAKING — `click:prepend` / `click:append` retirés d'`IBtnEmits` (#443, #577)
 
@@ -625,105 +890,6 @@ conclure qu'elle ne l'est plus par défaut.
 
 ### Fixed
 
-- **#871 (clôture) — les 7 dernières violations AA étaient UN défaut de
-  palette répété, pas sept défauts de composant.** Mesuré avec
-  `packages/tests/audit/dark-contrast.audit.mjs` : **7 / 1 664 → 0 / 1 664**,
-  les 8 identités × 2 modes × 2 portées, quatre contrôles verts des deux
-  côtés. Exactement **7 lignes changent, aucune ne se dégrade**, et le ratio
-  minimum de toute la surface passe de 3.65 à **4.70**.
-
-  Les 7 se répartissaient en deux causes, toutes deux dans
-  `packages/marketing/src/themes` — **aucune dans le DS**, qui était déjà à
-  zéro :
-
-  | cause | marque · mode | couple | avant | après |
-  |---|---|---|---|---|
-  | encre héritée du mode clair | `apple` sombre | `#ffffff` → `#000000` sur `#0a84ff` | 3.65 | **5.76** |
-  | encre héritée du mode clair | `ecom` sombre | `#ffffff` → `#1a0f0a` sur `#f43f5e` | 3.67 | **5.12** |
-  | jeton de rôle inversé | `ecom` clair | `action.primary.bg` → `.fgSubtle` sur la crème | 4.43 | **5.93** |
-
-  **La cause commune.** Le mode sombre ÉCLAIRCIT l'accent de marque — c'est
-  la bonne pratique pour une grande surface (`#0071e3` → `#0a84ff` chez
-  `apple`, rose-600 → rose-500 chez `ecom`) — mais les deux palettes gardaient
-  l'encre `#ffffff` de leur jumeau clair. Or chacune applique **déjà** la règle
-  inverse à ses intentions `feedback` : les 4 d'`ecom` et 3 des 4 d'`apple`
-  encrent leur accent éclairci avec le `text.inverse` de la palette.
-  `action.primary` était la dernière exception. Le badge n'était pas en cause :
-  `--origam-badge__badge---{background-color,color}` lit exactement ce couple —
-  tout comme `--origam-btn--primary---*`, qui n'est pas dans la sonde et était
-  donc en défaut sans être mesuré.
-
-  ⚠️ **On n'a PAS foncé l'accent**, bien que ce soit l'autre levier : chez
-  `apple`, `action.primary.bg` sert aussi d'ENCRE (le bloc `components` passe
-  ce `var()` en `color` sur `origam-breadcrumb-item`). Le ramener à `#0071e3`
-  donnait 4.70 sous du blanc mais faisait tomber le fil d'Ariane à **4.47** sur
-  le fond noir — un défaut échangé contre un autre. Vérifié par calcul avant
-  d'écrire la moindre ligne.
-
-  La 3ᵉ cause est une erreur de RÔLE : `bg` est un jeton de surface, `fgSubtle`
-  la teinte prévue pour être LUE sur une surface neutre. `ecomDarkTheme` posait
-  déjà `fgSubtle` ; seul le bloc clair se trompait de jeton. Les deux modes sont
-  désormais symétriques.
-
-- **#871 — une 8ᵉ violation, que la sonde ne pouvait pas voir** :
-  `material` sombre, `feedback.success`, `#1b5e20` sur `#81c784` = **3.91**
-  → `#0d3b10` = **6.32**. La sonde de `dark-contrast.audit.mjs` ne rend qu'UNE
-  intention par famille de composant, donc elle ne peint jamais
-  `feedback.success`. Trouvée par la spec statique ajoutée ci-dessous. C'est
-  l'encre qui était l'intruse, pas le conteneur : les trois autres intentions
-  sombres de `material` tiennent 5.79 / 7.70 / 7.71 avec des encres bespoke
-  très profondes, `success` était la seule à se contenter du green-900 de la
-  rampe.
-
-- **#871 — l'audit lui-même ne démarrait plus.** Son `npx vite build` résolvait
-  vite par le PATH, via un lien `node_modules/.bin` qu'un peer auto-installé
-  ne garantit pas : sur un `pnpm install --frozen-lockfile` propre,
-  `packages/tests/node_modules/.bin/` ne contient que `playwright` et `vitest`,
-  et la commande mourait en `127 — sh: vite: command not found`. **L'audit ne
-  rendait plus aucun chiffre**, et rien ne le signalait puisque rien ne le
-  rejoue en CI. `resolveViteBin()` passe désormais par le realpath de
-  `@vitejs/plugin-vue`, ce qui ne dépend ni du PATH ni du hoisting et
-  sélectionne la copie de vite que le plugin utilise réellement (deux majeures
-  coexistent dans le magasin). Les commentaires qui affirmaient le contraire
-  dans les deux fichiers ont été corrigés.
-
-- **#871 — l'état SURVOL était en défaut plus grave encore, et le correctif
-  d'encre l'a réglé sans qu'on y touche.** Le survol n'a pas d'encre à lui :
-  `--origam-btn--primary---background-color-hover` bascule la surface, mais il
-  n'existe **aucun** `--origam-btn--primary---color-hover` (ni de
-  `--origam-badge__badge---color-hover`) — l'encre reste `action.primary.fg`
-  dans les deux états. Sous l'encre blanche, `apple` sombre y tombait à
-  **2.19:1** et `ecom` sombre à **2.69:1** : *pires que n'importe laquelle des
-  7 violations comptées*, et invisibles parce que la sonde de
-  `dark-contrast.audit.mjs` ne rend que l'état au repos.
-
-  **Aucun `bgHover` n'a été modifié.** La direction du survol n'était pas le
-  problème — l'encre l'était. Mesuré sur les deux marques :
-
-  | mode · encre | direction du survol | ratio repos → survol |
-  |---|---|---|
-  | clair · blanche | fonce | 4.70 → **6.95** / **6.29** ↑ |
-  | sombre · blanche *(avant)* | éclaircit | 3.65 → **2.19** / 3.67 → **2.69** ↓ |
-  | sombre · foncée *(après)* | éclaircit | 5.76 → **9.60** / 5.12 → **6.99** ↑ |
-
-  La règle n'est donc pas *« le survol doit foncer »* mais **« le survol doit
-  déplacer l'accent à l'opposé de la clarté de son encre »**. Les palettes la
-  respectaient déjà dans 3 quadrants sur 4 ; le seul cassé l'était par son
-  encre. L'idiome « le survol éclaircit », qui est le bon en mode sombre, est
-  conservé dans les deux marques.
-
-- **#871 — non-régression : `packages/tests/TU/marketing/brand-palette-contrast.spec.ts`.**
-  Les couples `{bg, fg}` littéraux des 7 palettes de marque (14 thèmes) doivent
-  tenir AA. L'audit de #871 est un script qu'on lance à la main : rien ne le
-  rejoue, donc rien n'empêchait une retouche de palette de ramener ces couples
-  en silence. La spec lit les hex **dans l'objet `IOrigamTheme`**, avant toute
-  indirection CSS — la règle jsdom/`var()` du `CLAUDE.md` ne s'y applique pas,
-  et le navigateur reste l'arbitre de ce qui est peint. Elle embarque ses
-  propres garde-fous : les 3 témoins de la formule, un contrôle négatif sur les
-  3 couples corrigés, et un plancher de couverture qui rend bruyante une dérive
-  du filtre. **Vérifiée ROUGE sur `origin/develop`** : 3 échecs / 14 succès.
-  C'est elle qui a trouvé la 8ᵉ violation ci-dessus.
-
 - **#871 — le mode sombre ne peignait qu'à moitié dans un sous-arbre thémé.**
   Les feuilles de tokens portent ~1 761 déclarations **dérivées**
   (`--origam-title---color: var(--origam-color__text---primary)`). Une custom
@@ -758,39 +924,6 @@ conclure qu'elle ne l'est plus par défaut.
   violations **fabriquées**, présentes des DEUX côtés de la mesure. Le
   **delta de 178 n'a jamais été faux** ; seules les bornes l'étaient. Détail
   et garde de non-récidive plus bas.
-
-- **#871 — le harnais de contraste ne savait pas lire `color(srgb …)`, et
-  FABRIQUAIT donc des violations.** Son `parse()` ne reconnaissait que
-  `rgb()` / `rgba()`. Un fond qu'il ne sait pas lire n'est pas « ignoré » : il
-  est traité comme **non peint**, la remontée d'ancêtres saute l'élément et
-  composite contre une couche qui n'est pas celle que voit l'œil. Sur le
-  tooltip `apple` — `color(srgb 0.898 0.898 0.906 / 0.94)` sur une surface
-  noire — cela donnait du noir sur noir à **1.00** là où le rendu réel est
-  ~`rgb(215,215,217)` sur noir. 4 instances (root + sous-arbre × clair +
-  sombre), des deux côtés de la mesure.
-
-  `parse()` reconnaît désormais `color(srgb r g b [/ a])`, avec **la même
-  expression régulière que `srgbToRgb` dans `contrast.directive.ts`** — la
-  vraie directive gérait déjà cette forme, et son commentaire le disait :
-  *« design tokens resolve to exactly this form in several themes »*.
-
-  ⛔ **Un quatrième contrôle, parce que le correctif ponctuel ne suffit pas.**
-  Le harnais échoue maintenant (`$? = 1`) dès qu'une chaîne de couleur non
-  vide lui est illisible, en listant les formes rencontrées. Sans lui, la
-  prochaine syntaxe (`oklch()`, `lab()`, résidu de `color-mix()`) décalerait
-  le chiffre en silence exactement de la même façon. Contrôle positif du
-  garde lui-même : branche `srgb` désactivée → `$? = 1`, 8 formes listées, et
-  le compte réaffiche l'ancien **11** ; branche active → `$? = 0`, tout lu,
-  **7**.
-
-  ⚠️ #871 listait déjà ce risque sous « non vérifié » — *« les couleurs
-  `oklch()` / `color(srgb …)` — aucun token actuel n'en emploie, mais un futur
-  thème invaliderait l'instrumentation »*. Un thème le faisait **déjà** au
-  moment où la phrase a été écrite. Écart signalé en marge de la **PR #882**
-  (#869, `v-contrast`) par l'agent qui rejouait ce harnais avec la vraie
-  directive au lieu du stub ; reproduit, remesuré et corrigé ici. Aucun ticket
-  propre n'a été ouvert : le défaut est dans l'instrumentation de #871, donc
-  il se règle sous #871.
 
 - **#871 — `system-bar` et `tooltip` illisibles en sombre.** Les deux peignent
   une surface sombre dans les DEUX modes (`neutral---700` / `neutral---800`)
@@ -829,123 +962,6 @@ conclure qu'elle ne l'est plus par défaut.
   parsant la feuille le 2026-09-22, les deux blocs en portent **2 731**
   chacun. L'affirmation décrivait un état antérieur à #794 que plus rien ne
   remesurait.
-
-### Fixed
-
-- **#371 (point 3) — le sélecteur « Items per page » du footer
-  DataTable n'avait aucun nom accessible**, déjà corrigé par `3f063d727`
-  (2026-09-10) — ce commit **citait #371 sans le fermer**, sixième
-  occurrence cette semaine du même motif (cf. #570, #682, #537, #371
-  point 1, #371 point 2/ADR-005). Re-mesuré ici avant tout travail sur les
-  points restants du ticket : le `<span>` visible est désormais associé au
-  `<origam-select>` via `aria-labelledby`, et la suite unitaire complète
-  reste verte (7120/7120) — aucun code de production retouché sur ce point,
-  seule la mesure manquait au tableau.
-
-- **`<OrigamDataTableRow>` ne fuit plus `index` / `mobile` en attributs DOM**
-  (#371, point 4). `itemSlotProps()` (`OrigamDataTableRows.vue`) construisait
-  la ligne d'item avec deux clés qu'`IDataTableRowProps` ne déclare pas —
-  `index`, jamais lu par le composant, et `mobile`, un résidu d'avant
-  l'ajout du forwarding de `mobileBreakpoint` (chaque ligne calcule déjà son
-  propre `mobile` à partir de ce dernier). Une clé non déclarée tombe dans
-  `$attrs`, et le `v-bind="$attrs"` du `<tr>` racine la posait en attribut
-  DOM littéral sur **chaque** ligne rendue — `index="0" mobile="false"`.
-  Même mécanisme que le point 1 de ce ticket (déjà corrigé, `08c30693a`),
-  une famille plus loin. `aria-rowindex`, seul attribut voulu de ce canal,
-  continue de passer.
-
-### Added
-
-- **`mobileBreakpoint` a désormais un contrôle de story sur
-  `<OrigamDataTable>`** (#371, point 5). La prop — dont le défaut `'xs'`
-  corrige un bug de production documenté en commentaire
-  (`OrigamDataTable.vue:190-199` : sans lui, `useDisplay` retombait sur le
-  seuil global `'lg'` et forçait le rendu mobile empilé sur tout viewport
-  sous 1280px) — n'apparaissait dans aucune des 30 Variants de
-  `OrigamDataTable.story.vue`. Ajout de la Variant « Prop —
-  mobileBreakpoint » (même jeu d'options que celui déjà utilisé par
-  `OrigamDataTableRow.story.vue`) et d'une section « Responsive » +
-  ligne de table dans `OrigamDataTable.md`.
-
----
-
-#### `v-contrast` était silencieusement inerte sur fond opaque (#869)
-
-La directive `v-contrast`, câblée sur 30 composants, n'émettait **jamais**
-rien — ni classe, ni `color: !important`, ni `console.warn` — dès que fond
-**et** texte étaient tous deux OPAQUES, c'est-à-dire la configuration par
-défaut du DS. Deux ruptures indépendantes dans le code partagé, corrigeant
-l'une ne suffisait pas sans l'autre :
-
-1. **`toRgb()`** faisait **toujours** passer la couleur par un aller-retour
-   `canvas.fillStyle`, même quand `getComputedStyle` avait déjà rendu une
-   chaîne `rgb()/rgba()` exploitable. Le getter `fillStyle` de Chromium
-   sérialise toute couleur OPAQUE en hexadécimal `#rrggbb` (seul l'alpha < 1
-   ressort en `rgba(…)`), ce qui transformait une valeur déjà utilisable en
-   une valeur morte pour `rgbaParts`/`channelsOf`.
-2. **`channelsOf()`** extrayait les canaux via `match(/[\d.]+/g)`, taillé
-   pour `rgb(r, g, b)` — une suite de chiffres hexadécimaux SANS séparateur
-   (ex. `#777777`, six chiffres) s'agrège en UN seul grand nombre au lieu de
-   trois, donc `channelsOf` rend `null` sur exactement la forme hex que la
-   rupture 1 pouvait encore produire (couleur nommée, `hsl()`, …
-   nécessitant légitimement le détour par le canvas).
-
-**Correctif** : `toRgb()` court-circuite désormais le canvas quand l'entrée
-est déjà `rgb()/rgba()` (le cas de la quasi-totalité des appels, puisqu'ils
-lisent `getComputedStyle`), et le chemin canvas restant convertit son
-résultat hexadécimal en `rgb()/rgba()` via un nouveau `hexToRgb()` avant de
-le rendre — `toRgb()` ne rend plus jamais de hex. La mécanique de correction
-elle-même (forcer noir/blanc, poser `data-origam-contrast-fixed`, journaliser
-le ratio) n'est pas modifiée : elle fonctionnait déjà, elle n'était
-simplement jamais atteinte.
-
-**Preuve** — `packages/tests/e2e/contrast-directive.spec.ts` (Playwright,
-Chromium réel — jsdom n'a pas de `canvas.getContext('2d')` fonctionnel dans
-ce dépôt, donc ne peut ni reproduire ni vérifier ce bug) : contrôle positif
-(`#777777` sur blanc, 4.48:1, opaque des deux côtés) déclenche désormais la
-correction + le `console.warn` ; contrôle négatif (noir sur blanc, 21:1) ne
-déclenche rien ; non-régression du chemin translucide (fond composé via
-`resolvePaintedBackground`) inchangée. **A/B contre le commit parent** : 4
-des 5 tests rougissent sur le code d'avant (le contrôle négatif reste vert
-des deux côtés, comme attendu).
-
-⚠️ **Rayon mesuré séparément, pas hérité de #871 — et le chiffre publié par
-#871 contenait un artefact, corrigé depuis par #883.** Le chiffrage initial
-du ticket (346 violations en mode sombre) datait d'avant #876. #876 avait
-d'abord publié **189 → 11** ; en rejouant `audit/dark-contrast.audit.mjs`
-avec la VRAIE directive (redirect du stub désactivé) au lieu de sa
-reformulation mathématique, seuls **7 `console.warn` réels** se
-déclenchaient sur les 32 configurations (30 composants × 8 identités × 2
-modes, portées racine + sous-arbre) — écart signalé à l'auteur de #876, qui
-l'a reproduit, creusé et corrigé sous #883 : **les bornes AVANT et APRÈS
-étaient toutes les deux fausses (185 → 7, pas 189 → 11)**, la même erreur de
-mesure existant déjà dans le comptage "avant". Le delta réel (178) n'a
-jamais changé.
-
-L'écart venait d'`origam-tooltip__content` (identité `apple`, root + subtree,
-light + dark) et, découvert par #883, également d'`origam-bottom-nav` sur la
-même identité. Fond réel : `color(srgb 0.898039 0.898039 0.905882 / 0.94)`
-(translucide) ; `toRgb()` le résout correctement en `rgb(215, 215, 217)` une
-fois composé sur son ancêtre opaque, contre du texte noir : **ratio 14.61:1,
-conforme** — vérifié en appelant directement `toRgb()`/
-`resolvePaintedBackground()` de la vraie directive sur cette page. La
-fonction `parse()` de `dark-contrast.audit.mjs` (une réimplémentation
-distincte, pas la directive) ne reconnaissait que `rgba?\(…\)` — elle
-ignorait silencieusement cette couche `color(srgb …)`, sautait jusqu'à
-l'ancêtre opaque suivant et rapportait à tort un faux "noir sur noir"
-(ratio 1.00). **Ce n'était pas un défaut du DS ni de `v-contrast`** — la
-même classe de lacune que ce ticket corrige, mais dans un autre fichier. Les
-7 restantes (4 `origam-badge__badge`, 3 `origam-breadcrumb-item`) sont
-confirmées identiques entre les deux mesures, et `sous 2:1` passe à **0** une
-fois l'artefact retiré : plus rien de ce qui reste n'est proche d'invisible.
-
-Non corrigé ici : `dark-contrast.audit.mjs` appartenait à #871/#876, pas à ce
-ticket — signalé, reproduit et corrigé séparément sous #883 (ne pas citer
-189 → 11, c'était faux des deux côtés).
-
-**Rupture d'API** : aucune — `toRgb`/`channelsOf`/`hexToRgb` restent des
-fonctions privées du module, non exportées ; la surface publique
-(`setContrastConfig`, `v-contrast` par défaut) est inchangée.
 
 ## [2.18.0] - 2026-09-19
 

@@ -18,6 +18,109 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.18.8',
+        date: '2026-09-23',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2188.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2188.h1', textFallback: '#901 OrigamBtn — calc(auto + 0px) ramenait min-width à 0 sur tous les boutons' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.18.7',
+        date: '2026-09-23',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2187.summary',
+        summaryFallback: '2 fixes. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2187.h1', textFallback: '#607 / #569 : 19 canaux de thème confisqués par le bloc du composant' },
+            { type: 'fixed', textKey: 'changelog.versions.v2187.h2', textFallback: '#829 : geek ET glass déclaraient surface.sunken PLUS CLAIR que surface.default (mode clair)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.18.6',
+        date: '2026-09-23',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2186.summary',
+        summaryFallback: '2 fixes. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2186.h1', textFallback: '#818 baseline shrink : les 8 color-contrast du DS (8 → 0)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2186.h2', textFallback: '#818 baseline shrink : structure ARIA — aria-required-parent/aria-required-children/listitem/aria-prohibited-attr (4 entrées)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.18.5',
+        date: '2026-09-23',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2185.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2185.h1', textFallback: 'button-name et scrollable-region-focusable (6 des 18 violations laissées de côté par le lot précédent)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.18.4',
+        date: '2026-09-23',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2184.summary',
+        summaryFallback: '6 fixes. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2184.h1', textFallback: '#818 baseline shrink : aria-allowed-attr/aria-prohibited-attr/aria-valid-attr-value (12 des 25 entrées)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2184.h2', textFallback: '#871 (clôture) — les 7 dernières violations AA étaient UN défaut de palette répété, pas sept défauts de composant' },
+            { type: 'fixed', textKey: 'changelog.versions.v2184.h3', textFallback: '#871 — une 8ᵉ violation, que la sonde ne pouvait pas voir' },
+            { type: 'fixed', textKey: 'changelog.versions.v2184.h4', textFallback: '#871 — l\'audit lui-même ne démarrait plus' },
+            { type: 'fixed', textKey: 'changelog.versions.v2184.h5', textFallback: '#871 — l\'état SURVOL était en défaut plus grave encore, et le correctif d\'encre l\'a réglé sans qu\'on y touche' },
+            { type: 'fixed', textKey: 'changelog.versions.v2184.h6', textFallback: '#871 — non-régression : packages/tests/TU/marketing/brand-palette-contrast.spec.ts' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.18.3',
+        date: '2026-09-23',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2183.summary',
+        summaryFallback: 'La directive v-contrast, câblée sur 30 composants, n\'émettait jamais rien — ni classe, ni color: !important, ni console.warn — dès que fond et texte étaient tous deux OPAQUES, c\'est-à-dire…',
+        highlights: [
+
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.18.2',
+        date: '2026-09-23',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2182.summary',
+        summaryFallback: '1 addition and 3 fixes. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2182.h1', textFallback: '#871 — le harnais de contraste ne savait pas lire color(srgb …), et FABRIQUAIT donc des violations' },
+            { type: 'added', textKey: 'changelog.versions.v2182.h2', textFallback: 'mobileBreakpoint a désormais un contrôle de story sur <OrigamDataTable>' },
+            { type: 'fixed', textKey: 'changelog.versions.v2182.h3', textFallback: '#371 (point 3) — le sélecteur « Items per page » du footer DataTable n\'avait aucun nom accessible' },
+            { type: 'fixed', textKey: 'changelog.versions.v2182.h4', textFallback: '<OrigamDataTableRow> ne fuit plus index / mobile en attributs DOM' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.18.1',
+        date: '2026-09-22',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2181.summary',
+        summaryFallback: 'Récolte de deux dépréciations posées "pour la prochaine majeure" avant que le CLAUDE.md n\'acte que 3.0.0 est réservé à la séparation en modules et que les ruptures, elles, ne le sont pas…',
+        highlights: [
+            { type: 'deprecated', textKey: 'changelog.versions.v2181.h1', textFallback: 'click:prepend / click:append retirés d\'IBtnEmits (#443, #577)' },
+            { type: 'deprecated', textKey: 'changelog.versions.v2181.h2', textFallback: 'createOrigam() nu n\'installe plus le thème par défaut (#360)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2181.h3', textFallback: '#871 — le mode sombre ne peignait qu\'à moitié dans un sous-arbre thémé' },
+            { type: 'changed', textKey: 'changelog.versions.v2181.h4', textFallback: '⛔ RUPTURE (documentée, assumée)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2181.h5', textFallback: '#871 — system-bar et tooltip illisibles en sombre' },
+            { type: 'fixed', textKey: 'changelog.versions.v2181.h6', textFallback: '#871 — bottom-nav peignait une dalle claire dans une UI sombre' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.18.0',
         date: '2026-09-19',
         type: 'minor',

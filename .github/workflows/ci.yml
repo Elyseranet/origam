@@ -356,6 +356,43 @@ jobs:
       - name: i18n check (marketing)
         run: pnpm -F @origam/marketing i18n:check
 
+  changelog-check:
+    name: Changelog drift check (marketing)
+    runs-on: ubuntu-latest
+    # `CHANGELOG_VERSIONS` (packages/marketing/src/consts/changelog-versions.const.ts)
+    # is GENERATED from the repository's own /CHANGELOG.md — that is what makes
+    # the /changelog page structurally unable to drift away from the real
+    # release history (#740). The detector for that drift,
+    # `changelog:generate:check`, existed since then but was wired to NOTHING:
+    # no workflow, no hook. It sat RED for eight published versions while
+    # /changelog stopped at 2.18.0 and npm served 2.18.8 (#913) — the third
+    # unwired drift detector found that day, after `presets:generate:check`
+    # (#267) and the `theming-feedback-tokens` Tier 1.
+    #
+    # Its own job rather than a step of `i18n-check` above: that job gates the
+    # marketing TRANSLATION surface (key definitions, EN/FR parity, hardcoded
+    # strings), this one gates a generated constant against a repository-root
+    # document. Different source, different failure, different owner.
+    #
+    # Purely static and dependency-free: the generator imports only
+    # node:fs / node:path / node:url — no DB, no build, no network. It can
+    # therefore always run here, unlike checks that need `requireMarketingDb()`.
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Assert CHANGELOG_VERSIONS matches CHANGELOG.md
+        run: pnpm -F @origam/marketing changelog:generate:check
+
   test-e2e:
     name: E2E tests (Playwright / Chromium)
     runs-on: ubuntu-latest
