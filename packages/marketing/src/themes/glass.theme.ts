@@ -16,7 +16,30 @@ export const glassLightTheme: IOrigamTheme = {
             surface: {
                 default: '#e9ecff',
                 raised: 'rgba(255, 255, 255, 0.65)',
-                sunken: 'rgba(255, 255, 255, 0.85)',
+                // `sunken` must read as a WELL — darker than `default` in light
+                // mode. It was `rgba(255, 255, 255, 0.85)`, the SAME value as
+                // `overlay`, which rendered `rgb(252, 252, 255)` over a page at
+                // `rgb(233, 236, 255)`: lighter than the page, and even further
+                // from it than `raised`. Same defect as `geek` (#829).
+                //
+                // ⛔ "Frosted glass lightens what it covers" does NOT explain it,
+                // and the theme's own dark mode is what rules it out: there,
+                // `sunken` (white 4 %) is a SHALLOWER lift than `raised`
+                // (white 5 %) — it sits BETWEEN `default` and `raised`. In light
+                // it sat BEYOND `raised`. The identity contradicted itself
+                // across its two modes; it is not a deliberate idiom.
+                //
+                // The fix keeps the translucency the identity is built on (so
+                // `backdrop-filter` consumers still see through) and swaps the
+                // white for the palette's own ink at 3 %. Depth —
+                // contrast(default, sunken) — lands at 1.0598, which is what
+                // glass's OWN dark mode already uses (1.0591), and inside the
+                // repo band 1.0487 (material) .. 1.1001 (editorial).
+                sunken: 'rgba(26, 21, 56, 0.03)',
+                // `overlay` deliberately keeps the frosted white: it is a
+                // component-fill role (chip, menu, avatar, kbd), where "more
+                // opaque than a card" is the right glassmorphism reading. Only
+                // `sunken` was wrong, by having been paired with it.
                 overlay: 'rgba(255, 255, 255, 0.85)',
                 disabled: 'rgba(196, 181, 253, 0.20)'
             },

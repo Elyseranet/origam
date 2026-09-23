@@ -137,3 +137,7 @@ packages/ds/CHANGELOG.md
 
 # Dossier temporaire du type-check des exemples de doc (scripts/analysis/check-doc-examples.mjs)
 packages/ds/.doc-examples
+
+# Dumps du navigateur MCP produits par les agents (arbres a11y, snapshots de page).
+# 177 fichiers / 5,8 Mo avaient ete committes par accident depuis le 2026-09-04.
+.playwright-mcp/
