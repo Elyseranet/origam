@@ -25,6 +25,7 @@
 				key="container"
 				ref="containerRef"
 				class="origam-slide-group__container"
+				:tabindex="isOverflowing && !hasFocusableContent ? 0 : undefined"
 				@scroll="handleScroll"
 		>
 			<div
@@ -129,6 +130,32 @@
 	const {displayClasses, mobile} = useDisplay(props)
 	const group = useGroup(props, ORIGAM_SLIDE_GROUP_KEY)
 	const isOverflowing = shallowRef(false)
+	/*********************************************************
+	 * hasFocusableContent — scrollable-region-focusable (a11y baseline)
+	 *
+	 * @description
+	 * `.origam-slide-group__container` is the element that actually
+	 * scrolls (`overflow-x: auto`) — axe-core's
+	 * `scrollable-region-focusable` rule requires it to be reachable by
+	 * keyboard, either through its own `tabindex` or a focusable
+	 * descendant. The DS's one real consumer (`OrigamChipGroup`) always
+	 * slots in focusable items, so the container is already reachable —
+	 * giving it a `tabindex` unconditionally would insert a redundant
+	 * stop BEFORE those items. It is therefore only made focusable when
+	 * the slotted content has no focusable descendant at all (see the
+	 * `:tabindex` binding on `__container`), which is exactly the shape
+	 * of a `<origam-slide-group>` used directly with plain, non-
+	 * interactive children.
+	 *
+	 * @description
+	 * The root (`<component :is="tag">`) already carries a conditional
+	 * `tabindex` of its own, but that is a DIFFERENT mechanism (a roving-
+	 * tabindex proxy that redirects focus to the first group item on
+	 * `focus`, cf. `handleFocus`) — it is not read by axe here because
+	 * `__container`, the scrollable element, is not an ancestor of the
+	 * root, so the root's tabindex cannot satisfy this rule.
+	 ********************************************************/
+	const hasFocusableContent = shallowRef(false)
 	const scrollOffset = shallowRef(0)
 	const containerSize = shallowRef(0)
 	const contentSize = shallowRef(0)
@@ -171,6 +198,10 @@
 					contentSize.value = contentRect.value[sizeProperty]
 
 					isOverflowing.value = containerSize.value + 1 < contentSize.value
+				}
+
+				if (contentRef.value) {
+					hasFocusableContent.value = focusableChildren(contentRef.value).length > 0
 				}
 
 				if (firstSelectedIndex.value >= 0 && contentRef.value) {

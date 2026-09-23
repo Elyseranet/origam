@@ -17,6 +17,7 @@
 
 				<origam-btn
 						key="mode-btn"
+						:aria-label="t('origam.date_picker_controls.toggle_year')"
 						:disabled="disableYear"
 						:icon="modeIcon"
 						class="origam-date-picker-controls__mode-btn"
@@ -35,6 +36,7 @@
 			<origam-btn-group>
 				<template #default>
 					<origam-btn
+							:aria-label="t('origam.date_picker_controls.prev')"
 							:disabled="disablePrev"
 							:icon="prevIcon"
 							:rounded="0"
@@ -42,6 +44,7 @@
 					/>
 
 					<origam-btn
+							:aria-label="t('origam.date_picker_controls.next')"
 							:disabled="disableNext"
 							:icon="nextIcon"
 							:rounded="0"
@@ -62,6 +65,7 @@
 	import OrigamSpacer from '../Grids/OrigamSpacer.vue'
 
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
@@ -116,6 +120,8 @@
 	defineSlots<IDatePickerControlsSlots>()
 
 	const {filterProps} = useProps<IDatePickerControlsProps>(props)
+
+	const {t} = useLocale()
 
 	/*********************************************************
 	 * Disabled state

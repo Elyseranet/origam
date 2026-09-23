@@ -8,30 +8,17 @@
     "OrigamChartRangeSelector::default": [
         "color-contrast"
     ],
-    "OrigamDataTableGroupHeaderRow::default": [
-        "button-name"
-    ],
     "OrigamDataTableRows::default": [
         "color-contrast"
     ],
     "OrigamDatePicker::default": [
-        "button-name",
         "color-contrast"
-    ],
-    "OrigamDatePickerControls::default": [
-        "button-name"
     ],
     "OrigamDatePickerField::default": [
         "color-contrast"
     ],
     "OrigamFileFieldListItem::default": [
         "listitem"
-    ],
-    "OrigamInfiniteScroll::default": [
-        "scrollable-region-focusable"
-    ],
-    "OrigamInfiniteScrollIntersect::default": [
-        "scrollable-region-focusable"
     ],
     "OrigamListGroup::default": [
         "aria-required-children"
@@ -41,9 +28,6 @@
     ],
     "OrigamPicker::default": [
         "color-contrast"
-    ],
-    "OrigamSlideGroup::default": [
-        "scrollable-region-focusable"
     ],
     "OrigamUtilities::Background color (.origam--bg-*)": [
         "color-contrast"

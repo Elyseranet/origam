@@ -51,6 +51,11 @@
         "placeholder": "Enter date"
       }
     },
+    "date_picker_controls": {
+      "prev": "Previous",
+      "next": "Next",
+      "toggle_year": "Toggle year selection"
+    },
     "no_data_text": "No data available",
     "bracket": {
       "aria_label": "Tournament bracket",
@@ -198,6 +203,10 @@
     "data_table_row": {
       "expand_row": "Expand row",
       "collapse_row": "Collapse row"
+    },
+    "data_table_group_header_row": {
+      "expand_group": "Expand group",
+      "collapse_group": "Collapse group"
     },
     "rating": {
       "aria_label": {
