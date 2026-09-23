@@ -450,10 +450,6 @@
 			--origam-list-group---prepend-width: var(--origam-list---slim-prepend-width, 28px);
 		}
 
-		&--density-default {
-			--origam-list---density: 0px;
-		}
-
 		&--density-compact {
 			--origam-list---density: -8px;
 		}

@@ -43,7 +43,8 @@ const GUARDS = [
     'pnpm-script-exists.mjs',
     'vrt-lockstep.mjs',
     'unitless-zero-in-calc.mjs',
-    'ts-token-refs.mjs'
+    'ts-token-refs.mjs',
+    'theme-channel-confiscation.mjs'
 ]
 
 /*********************************************************

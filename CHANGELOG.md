@@ -69,6 +69,66 @@ capture ne bouge**. Les 7 libellés de la matrice (`Text` … `Outlined`, 4 à
 padding `12px`×2 ajouté, donc le nouveau plancher ne change la largeur
 d'aucun bouton de ce pilote. Aucune baseline à régénérer dans cette PR.
 
+### Fixed — #607 / #569 : 19 canaux de thème confisqués par le bloc du composant
+
+Un composant qui redéclare un token que les feuilles déclarent déjà rend ce
+canal **inatteignable par tout `IOrigamTheme` de marque**. Une custom property
+est substituée sur l'élément **qui la déclare**, et l'héritage depuis
+`[data-theme="brand-x"]` perd contre n'importe quelle déclaration directe — la
+spécificité n'entre même pas en jeu.
+
+**Le motif dominant, mesuré, n'est pas celui que les tickets décrivaient.** Sur
+les 503 déclarations scopées visant un token de feuille, **434 sont portées par
+un modificateur que le consommateur doit demander** (`&--rounded-large`,
+`&--density-compact`) : `useRounded` / `useDensity` n'émettent rien quand la
+prop est absente, donc ces règles ne confisquent rien — c'est la logique
+PROPS-FIRST du DS en train de fonctionner. La vraie cause commune est plus
+étroite : **un modificateur dont la valeur est aussi le défaut de la prop dans
+`withDefaults`** (`&--size-default` sur `size: SIZES.DEFAULT`,
+`&--density-default` sur `density: DENSITY.DEFAULT`). La classe est alors posée
+sur **chaque** instance, et la règle épingle le token à vie.
+
+Les 19 déclarations retirées résolvent toutes **exactement** la valeur de la
+feuille, chaîne de `var()` déroulée — `12px` = `var(--origam-space---3)`,
+`0.875rem` = `var(--origam-font__size---md)`, `48px` = `var(--origam-space---12)`.
+Le rendu par défaut est donc inchangé ; seul le canal redevient atteignable.
+(3 seulement sont littéralement identiques : une comparaison de chaînes ne voit
+rien, d'où le résolveur.)
+
+- `OrigamAlert`, `OrigamBtn`, `OrigamList`, `OrigamTable`, `OrigamTabs`,
+  `OrigamToolbar` — `&--density-default`
+- `OrigamBtn`, `OrigamStepper` — `&--size-default`
+- `OrigamKbd` — `&--variant-outlined` (`border-color`)
+- `OrigamChip` — second bloc `<style scoped>` entier, qui épinglait `density`
+- `OrigamTabs` — plus son bloc `<style>:root{}` (#569)
+
+**Preuve navigateur, A/B contre le commit parent** (Chromium, Histoire statique,
+thème de marque injecté par `addInitScript` avant le document). Même story, même
+liste de classes, sur `--origam-btn---density` que `.origam-btn--density-default`
+épinglait à `0px` :
+
+| | avant | après |
+|---|---|---|
+| `--origam-btn---density` | `0px` | **`24px`** |
+| hauteur calculée | 28px | **52px** |
+
+**Changed** — `--origam-btn---height` et `--origam-toolbar---height` lisent
+désormais leur échelon (`…---height-md` / `…---height-default`) depuis les
+feuilles, dans les quatre fichiers miroirs css/scss. Sans ça l'échelon restait
+sans lecteur après le retrait et `token-var-channels` rougissait ; les deux
+canaux sont vivants.
+
+**Added** — garde 29 `theme-channel-confiscation` : il ne lève que
+l'intersection « règle toujours active » × « valeur identique après résolution
+des `var()` », les deux discriminants pinnés par 13 témoins de rappel **et de
+précision**. Baseline à **37** entrées : 14 blocs `<style>:root{}` restants
+(#569) et 22 surcharges parent→enfant où le canal est **renommé** et non mort
+(`OrigamSnackbarGroup` expose `--origam-snackbar-group__item---*` depuis #436,
+la famille Media configure ses `.origam-btn` imbriqués). Livraison
+**volontairement partielle** : chacune de ces deux familles demande une
+migration de feuille composant par composant, avec risque de rendu — donc un
+arbitrage, pas un correctif.
+
 ### Fixed — #829 : `geek` ET `glass` déclaraient `surface.sunken` PLUS CLAIR que `surface.default` (mode clair)
 
 `sunken` et `default` ne sont pas deux couleurs interchangeables, ce sont des
