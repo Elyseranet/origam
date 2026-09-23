@@ -78,6 +78,82 @@ la famille Media configure ses `.origam-btn` imbriqués). Livraison
 migration de feuille composant par composant, avec risque de rendu — donc un
 arbitrage, pas un correctif.
 
+### Fixed — #818 baseline shrink : les 8 `color-contrast` du DS (8 → 0)
+
+⚠️ **Ce lot porte sur le DS lui-même, pas sur une palette marketing** : il
+part dans le paquet npm publié, un consommateur le reçoit.
+
+Recompté sur `a11y-violations.baseline.json` (aucun chiffre repris
+d'ailleurs) : **18 violations / 17 clés**, dont **8 `color-contrast`**.
+Mesurées par axe-core en navigateur réel (Playwright + Histoire statique,
+thème `origamTheme` — celui que `histoire.setup.ts` installe via
+`createOrigam()`), elles valaient **15 nœuds** en défaut. Ce ne sont pas 8
+défauts : ce sont **3 causes**.
+
+**Cause 1 — une `opacity` décorative délave le TEXTE qu'elle contient**
+(3 entrées : `OrigamNumberField`, `OrigamDatePickerField`,
+`OrigamDataTableRows`). `opacity` crée un groupe de composition qui
+s'applique à tout le sous-arbre, pas au seul trait qu'on visait.
+- `OrigamField` : le label flottant est monté DANS
+  `.origam-field__outline--notch`, dont l'`opacity: .38` ne visait que la
+  bordure. Mesuré : `#6d28d9` à .38 sur blanc → `#c8adf1`, soit **1.96:1**.
+  L'alpha passe sur `border-color` (`color-mix`) — trait identique, label à
+  pleine opacité : **7.10:1**. Appliqué aux trois variantes (`outlined`,
+  `underlined`, `filled`).
+- `OrigamDataTable` : `.origam-data-table--loading .origam-data-table-cell`
+  voilait aussi les en-têtes. Mesuré : `#6d28d9` à .5 → `#b694ec`,
+  **2.38:1**. Remonter l'opacité ne sauve pas la règle (il faudrait ≥ .82,
+  ce n'est plus un voile) : le voile épargne désormais les en-têtes, qui
+  sont la structure du tableau et non la donnée rafraîchie → **6.52:1**.
+
+**Cause 2 — un premier plan choisi sans regarder la surface réellement
+peinte** (4 entrées : `OrigamPicker`, `OrigamDatePicker`,
+`OrigamUtilities` ×2). Même famille que #777 (Card) et #514.
+- `--origam-picker-title---color` épinglait `text---secondary` (`#525252`)
+  quel que soit le fond ; sur un en-tête `bgColor="primary"` (`#7c3aed`)
+  cela donnait **1.37:1**. Le token vaut désormais `currentColor` : le
+  titre suit le premier plan de sa surface → **5.70:1** sur primary, et il
+  s'aligne visuellement sur le reste de l'en-tête.
+- `.origam--color-{intent}` lisait `---fg`, le premier plan *sur* la
+  couleur (blanc) — donc `.origam--color-primary` peignait blanc sur
+  `#fafafa`, **1.04:1** : 5 des 7 pastilles étaient littéralement
+  invisibles. Ces classes miroitent désormais `tokenForegroundForIntent()`
+  (`---fgSubtle`), c'est-à-dire **la valeur que la déclaration inline du
+  même prop `color="{intent}"` applique déjà et qui l'emporte sur la
+  classe** : la correction fait converger les deux canaux (cf. #514, « 7
+  intents sur 8 rendaient une couleur différente »). 4.81:1 à 6.81:1 selon
+  l'intention.
+- `.origam--bg-{intent}` porte désormais son premier plan apparié
+  (`---fg`), l'appariement que `useColor()` effectue déjà sur le canal
+  inline pour `bgColor`. Sans lui, du markup nu héritait de l'encre de la
+  page. Les 7 paires sont ≥ 4.5:1 (4.83 → 19.80).
+
+**Cause 3 — un couple en dur réellement insuffisant** (1 entrée :
+`OrigamChartRangeSelector`). Le bouton actif peignait blanc sur `#3b82f6`,
+**3.68:1**. `#3b82f6` n'appartient à **aucune échelle du DS** (bleu
+Tailwind) : c'était une valeur isolée, et c'est elle qui produisait la
+violation. Corriger le contraste en gardant une valeur hors échelle aurait
+réglé le symptôme en laissant la cause — l'état actif rejoint donc la
+convention que `chip--selected`, `pagination__item---active` et `stepper`
+appliquent déjà, **la paire complète** :
+`--origam-color__action--primary---bg` + `---fg` (**5.70:1**), survol
+`---bgHover` + `---fg` (**7.10:1**). Le premier plan passe du token brut
+`--origam-color---white` au sémantique `---fg` : l'état sélectionné
+devient **atteignable par le theming**, ce qu'un `#3b82f6` en dur ne serait
+jamais. Mesuré rendu : `rgb(124, 58, 237)` sur `rgb(255, 255, 255)`.
+
+Baseline : **18 → 10 violations, 17 → 10 clés, zéro `color-contrast`**.
+Aucune autre entrée touchée. Formule de contraste reprise telle quelle de
+`packages/tests/e2e/token-intent-contrast.spec.ts` (témoins rejoués :
+noir/blanc **21.00**, `#767676` **4.54**, `#777777` **4.48**).
+
+⚠️ **Rupture visuelle assumée** (les ruptures sont gratuites sur ce dépôt,
+mais celles-ci se voient) : `.origam--color-{intent}` passe du blanc à la
+couleur de l'intention ; `.origam--bg-{intent}` impose son premier plan ;
+le titre de Picker suit sa surface (sur un Picker neutre il passe du gris
+`#525252` à l'encre héritée) ; le bouton actif de `OrigamChartRangeSelector`
+passe du bleu au violet de l'identité (`action--primary`), comme tout autre
+état sélectionné du DS.
 
 ### Fixed — #818 baseline shrink : structure ARIA — `aria-required-parent`/`aria-required-children`/`listitem`/`aria-prohibited-attr` (4 entrées)
 
@@ -139,7 +215,6 @@ rôle restauré → vert. Suite a11y complète (218 stories + 8 Variants
 d'intention) rejouée après le lot : **226 passed, 0 failed**. Suite unitaire
 complète : **7149 passed**. `pnpm -F origam guards` 28/28, `guards:self`
 15/15, `type-check` et `pnpm audit` propres.
-
 
 ### Fixed — #818 baseline shrink : `aria-allowed-attr`/`aria-prohibited-attr`/`aria-valid-attr-value` (12 des 25 entrées)
 

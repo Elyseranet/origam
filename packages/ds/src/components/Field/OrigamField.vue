@@ -1319,10 +1319,18 @@
 				border-radius: var(--origam-field---border-radius, 8px) var(--origam-field---border-radius, 8px) 0 0;
 				--origam-field__input---padding-top: var(--origam-field__input---padding-block-filled);
 
+				// #818 — meme correctif que les variantes `outlined` /
+				// `underlined` : l'alpha du trait passe sur `border-color`,
+				// sans quoi le groupe de composition delave le label flottant
+				// monte dans `__outline--notch`.
 				#{$this}__outlines {
 					#{$this}__outline {
-						border-bottom: 1px solid var(--origam-field---border-color, currentColor);
-						opacity: var(--origam-field--variant-filled---border-opacity, 0.42);
+						border-bottom: 1px solid color-mix(
+							in srgb,
+							var(--origam-field---border-color, currentColor)
+							calc(var(--origam-field--variant-filled---border-opacity, .42) * 100%),
+							transparent
+						);
 					}
 				}
 
@@ -1330,7 +1338,7 @@
 				&#{$this}--focused {
 					#{$this}__outlines {
 						#{$this}__outline {
-							opacity: 1;
+							border-bottom-color: var(--origam-field---border-color, currentColor);
 						}
 					}
 				}
@@ -1363,9 +1371,32 @@
 				background: var(--origam-field---background-color, var(--origam-field---variant-outlined-background-color, transparent));
 
 				#{$this}__outline {
-					border-color: var(--origam-field---border-color, var(--origam-field__outline---border-color, currentColor));
+					/*********************************************************
+					 * #818 — l'alpha du trait vit sur la COULEUR, pas sur la boite
+					 *
+					 * @description
+					 * `opacity` sur `__outline` cree un groupe de composition
+					 * qui delave TOUT le sous-arbre. Or `__outline--notch`
+					 * n'est pas vide : le label flottant y est monte (voir le
+					 * template). Le label heritait donc du .38 destine au seul
+					 * trait de bordure — mesure axe-core, Chromium :
+					 * #6d28d9 a .38 sur blanc = #c8adf1, soit 1.96:1, tres
+					 * sous les 4.5:1 de l'AA.
+					 *
+					 * @description
+					 * Porter l'alpha sur `border-color` rend EXACTEMENT le meme
+					 * trait (la boite n'a ni fond ni autre contenu peint :
+					 * `__outlines` est en `position: absolute` /
+					 * `pointer-events: none`, les pattes ne portent que des
+					 * bordures) et laisse le label a son opacite pleine.
+					 ********************************************************/
+					border-color: color-mix(
+						in srgb,
+						var(--origam-field---border-color, var(--origam-field__outline---border-color, currentColor))
+						calc(var(--origam-field---border-opacity, var(--origam-field__outline---border-opacity, .38)) * 100%),
+						transparent
+					);
 					border-style: var(--origam-field__outline---border-style, solid);
-					opacity: var(--origam-field---border-opacity, var(--origam-field__outline---border-opacity, .38));
 
 					&--start {
 						border-top-width: var(--origam-field---border-width);
@@ -1429,11 +1460,19 @@
 				--origam-field---border-width: 1px;
 				--origam-field---border-opacity: .38;
 
+				// #818 — meme raison que la variante `outlined` ci-dessus :
+				// l'alpha passe sur `border-color` pour ne plus delaver le
+				// label flottant, enfant de `__outline--notch`. La transition
+				// suit la couleur puisque c'est elle qui porte desormais l'alpha.
 				#{$this}__outline {
-					border-color: var(--origam-field---border-color, var(--origam-field__outline---border-color, currentColor));
+					border-color: color-mix(
+						in srgb,
+						var(--origam-field---border-color, var(--origam-field__outline---border-color, currentColor))
+						calc(var(--origam-field---border-opacity, var(--origam-field__outline---border-opacity, .38)) * 100%),
+						transparent
+					);
 					border-style: var(--origam-field__outline---border-style, solid);
-					opacity: var(--origam-field---border-opacity, var(--origam-field__outline---border-opacity, .38));
-					transition: opacity var(--origam-field__outline---transition-duration, .25s) var(--origam-field__outline---transition-easing, cubic-bezier(.4, 0, .2, 1));
+					transition: border-color var(--origam-field__outline---transition-duration, .25s) var(--origam-field__outline---transition-easing, cubic-bezier(.4, 0, .2, 1));
 					border-width: 0;
 
 					&--start {
