@@ -20,6 +20,15 @@
         ],
         "createdAt": "2026-09-13T17:38:41.793Z",
         "reason": "Playwright e2e spec: line matches a CSS locator string '.origam-img img' targeting a test page element, not an authored <img> asset"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "packages/ds/src/components/Code/OrigamCode.vue"
+        ],
+        "createdAt": "2026-09-23T13:59:11.886Z",
+        "reason": "Faux positif: .origam-code__row--highlighted:637 n'est pas un accent de carte mais le marqueur de gouttiere d'une LIGNE de code surlignee (inset 3px 0 0), convention de tout afficheur de code (GitHub, Shiki, Prism). Ligne anterieure a cette session (9f5a4eea1, 2026-05-16), non modifiee par le lot #535 qui n'a touche que code.const.ts et la doc."
       }
     ]
   }
