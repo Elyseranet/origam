@@ -35,10 +35,66 @@
  * Fraunces, romaine et italique. Les six autres thèmes n'ajoutent rien. Le
  * dernier test épingle ce fait, pour qu'une police devenue inutile se voie.
  */
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
 
-/** Pages publiques représentatives : accueil, une page de contenu, /privacy elle-même. */
+/**
+ * Pages publiques représentatives : accueil, une page de contenu, /privacy
+ * elle-même.
+ *
+ * `/` n'est PAS une page finale : `nuxt.config.ts` déclare
+ * `i18n.detectBrowserLanguage.redirectOn: 'root'`, donc `/` est le point
+ * d'entrée qui déclenche la détection de locale. Elle est conservée ici
+ * délibérément (#910) pour vérifier que la redirection ELLE-MÊME ne contacte
+ * aucun tiers — ce que `/fr` (déjà dans cette liste) ne peut pas garantir,
+ * puisque `/fr` n'exécute jamais ce chemin de détection.
+ */
 const PAGES = ['/', '/fr', '/fr/privacy', '/fr/components', '/fr/theming'] as const
+
+/**
+ * `#910` — `/` peut déclencher, après le premier `load`, une navigation
+ * client supplémentaire (le même URL, sans changement visible) pendant que
+ * `detectBrowserLanguage` termine sa détection. Rare (~1 % mesuré), mais
+ * quand elle tombe entre notre `goto`/`evaluate` et la fin de cette
+ * navigation, Chromium détruit le contexte d'exécution en cours
+ * (`Execution context was destroyed`) ou annule la navigation initiale
+ * (`net::ERR_ABORTED`) — sans qu'aucune assertion n'ait jamais tourné.
+ *
+ * La correction n'est PAS un délai : c'est une barrière sur l'état. On
+ * capture l'erreur transitoire précise que cette course produit, puis on
+ * attend que la navigation en cours ait fini de charger (`waitForLoadState`,
+ * qui suit la frame quel que soit l'URL final) avant de rejouer l'opération
+ * — une seule fois. Une autre erreur, ou une deuxième course, remonte
+ * normalement : on ne boucle pas indéfiniment sur un pari.
+ */
+function isTransientNavigationRace(error: unknown): boolean {
+    return (
+        error instanceof Error &&
+        (error.message.includes('net::ERR_ABORTED') ||
+            error.message.includes('Execution context was destroyed'))
+    )
+}
+
+/**
+ * Navigue vers `path` puis attend `document.fonts.ready`, en absorbant UNE
+ * course transitoire contre la redirection de locale (#910) à chacune des
+ * deux étapes.
+ */
+async function gotoAndWaitForFonts(page: Page, path: string): Promise<void> {
+    try {
+        await page.goto(path, { waitUntil: 'load' })
+    } catch (error) {
+        if (!isTransientNavigationRace(error)) throw error
+        await page.waitForLoadState('load')
+    }
+
+    try {
+        await page.evaluate(() => document.fonts.ready)
+    } catch (error) {
+        if (!isTransientNavigationRace(error)) throw error
+        await page.waitForLoadState('load')
+        await page.evaluate(() => document.fonts.ready)
+    }
+}
 
 /**
  * Délai laissé après `document.fonts.ready` pour qu'une requête déclenchée
@@ -108,8 +164,10 @@ test.describe('marketing — aucun tiers contacté automatiquement (#761)', () =
             // polices est terminé — donc après l'émission de toute requête de
             // police. Le court délai qui suit laisse partir ce qu'un script
             // déclencherait juste après.
-            await page.goto(path, { waitUntil: 'load' })
-            await page.evaluate(() => document.fonts.ready)
+            //
+            // `gotoAndWaitForFonts` absorbe la course #910 (voir sa doc
+            // ci-dessus) sans jamais parier sur un délai.
+            await gotoAndWaitForFonts(page, path)
             await page.waitForTimeout(SETTLE_MS)
 
             const hosts = externalHosts(seen, baseURL!)
