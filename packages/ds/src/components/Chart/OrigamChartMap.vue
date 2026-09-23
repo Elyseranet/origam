@@ -79,7 +79,7 @@
 								'origam-chart__map-country--active': hoveredCode === country.code
 							}"
 							:d="country.d"
-							:style="{ fill: country.fill, stroke: borderColor }"
+							:style="{ fill: country.fill, stroke: resolveColor(borderColor) }"
 							:data-cy="`origam-chart-map-country-${ country.code }`"
 							:tabindex="country.hasData ? 0 : -1"
 							:role="country.hasData ? 'button' : undefined"
@@ -268,7 +268,7 @@
 		subtitle: undefined,
 		colorRange: () => ['info', 'danger'],
 		defaultCountryFill: 'rgba(0,0,0,0.08)',
-		borderColor: 'rgba(0,0,0,0.2)',
+		borderColor: 'neutral',
 		lineColor: 'primary',
 		nodeRadius: 4,
 		routeCurvature: 0.3,
@@ -446,7 +446,7 @@
 			if (hasData && datum !== undefined) {
 				fill = choroplethColorFor(datum.value, min, max)
 			} else {
-				fill = props.defaultCountryFill
+				fill = resolveColor(props.defaultCountryFill)
 			}
 			return {
 				code,

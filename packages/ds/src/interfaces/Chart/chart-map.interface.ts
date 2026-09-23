@@ -100,14 +100,26 @@ export interface IChartMapProps extends IChartBaseProps {
     colorRange?: [TIntent | string, TIntent | string]
     /**
      * Fill colour for countries that have no value in the dataset.
-     * Default `'rgba(0,0,0,0.08)'`.
+     * Supports intent names and raw CSS strings, resolved the same way as
+     * `borderColor` / `lineColor` (#411 — was applied to `fill` verbatim,
+     * an intent keyword is invalid CSS there and the browser dropped the
+     * declaration, making dataless countries disappear under a theme).
+     * Default stays the literal `'rgba(0,0,0,0.08)'` — no intent token
+     * reproduces it: the literal is a semi-transparent SCRIM composited
+     * over whatever `bgColor` the chart itself renders on top of (so it
+     * self-adjusts to light/dark and to a custom `bgColor`), whereas an
+     * intent resolves to a fixed OPAQUE colour unrelated to the chart's
+     * own background. Swapping the default would trade an adaptive
+     * behaviour for a fixed one, not just move a pixel.
      */
-    defaultCountryFill?: string
+    defaultCountryFill?: TIntent | string
     /**
      * Stroke colour applied to all country path outlines.
-     * Default `'rgba(0,0,0,0.2)'`.
+     * Supports intent names and raw CSS strings, resolved the same way as
+     * `lineColor` (#411 — was a hardcoded literal the theme could not reach).
+     * Default `'neutral'`.
      */
-    borderColor?: string
+    borderColor?: TIntent | string
     /**
      * Default stroke colour for flight-route arcs.
      * Overridden per route via `IChartMapRouteDatum.color`.
