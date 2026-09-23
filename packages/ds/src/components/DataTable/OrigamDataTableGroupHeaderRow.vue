@@ -15,6 +15,8 @@
 				>
 					<origam-data-table-column-cell class="origam-data-table-group-header-row__column">
 						<origam-btn
+								:aria-expanded="isGroupOpen(item)"
+								:aria-label="isGroupOpen(item) ? t('origam.data_table_group_header_row.collapse_group') : t('origam.data_table_group_header_row.expand_group')"
 								:icon="groupIcon"
 								size="small"
 								variant="text"
@@ -58,6 +60,7 @@
 
 	import { useGroupBy } from '../../composables/DataTable/group.composable'
 	import { useHeaders } from '../../composables/DataTable/headers.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useSelection } from '../../composables/DataTable/select.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
@@ -83,6 +86,8 @@
 	/*********************************************************
 	 * Composables
 	 ********************************************************/
+
+	const {t} = useLocale()
 
 	const {isGroupOpen, toggleGroup, extractRows} = useGroupBy()
 	const {isSelected, isSomeSelected, select} = useSelection()
