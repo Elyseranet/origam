@@ -2086,7 +2086,10 @@
   --origam-date-picker-month__weeks---font-size: 0.85rem;
   --origam-date-picker-month__weekday---font-size: 0.85rem;
   --origam-date-picker-month__day---font-size: 0.85rem;
-  --origam-code---background-color: var(--origam-color__surface---sunken);
+  /* #535 — was `surface---sunken`. See the matching comment in light.css:
+   * `surface---raised` clears WCAG AA against Shiki's fixed token colours
+   * with margin in dark mode too (measured worst case 5.79:1, #535 PR). */
+  --origam-code---background-color: var(--origam-color__surface---raised);
   --origam-code---color: var(--origam-color__text---primary);
   --origam-code---border-color: var(--origam-color__border---subtle);
   --origam-code---border-width: var(--origam-border__width---thin);
@@ -4822,7 +4825,9 @@
     --origam-date-picker-month__weeks---font-size: 0.85rem;
     --origam-date-picker-month__weekday---font-size: 0.85rem;
     --origam-date-picker-month__day---font-size: 0.85rem;
-    --origam-code---background-color: var(--origam-color__surface---sunken);
+    /* #535 — was `surface---sunken`; see light.css / the top of this file
+     * for the AA rationale (`surface---raised`, measured worst 5.79:1). */
+    --origam-code---background-color: var(--origam-color__surface---raised);
     --origam-code---color: var(--origam-color__text---primary);
     --origam-code---border-color: var(--origam-color__border---subtle);
     --origam-code---border-width: var(--origam-border__width---thin);

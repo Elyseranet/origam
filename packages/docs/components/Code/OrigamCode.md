@@ -141,14 +141,29 @@ see below for why), and no `theme` prop.
 
 ```ts
 codeToHtml(code, {
-    themes: { light: 'github-light', dark: 'github-dark' },
+    themes: { light: 'github-light-high-contrast', dark: 'github-dark-high-contrast' },
     defaultColor: false
 })
 ```
 
+⛔ **#535** — the themes were `github-light` / `github-dark` until this fix.
+Several of their fixed per-token colours fail WCAG AA (4.5:1) against every
+`--origam-code---background-color` this DS or its marketing brand themes can
+produce — the "parameter/property" hue (`#e36209`) tops out at 3.49:1 even
+against pure white, so no background choice could have fixed it. shiki's own
+`github-*-high-contrast` themes are the same GitHub palette re-tuned for
+accessibility, bundled at no extra cost (same theme count, just different
+names). Paired with `--origam-code---background-color` now resolving to
+`--origam-color__surface---raised` (the lightest surface every theme already
+defines) instead of `--origam-color__surface---sunken`, every one of the 8
+token categories clears AA with margin — measured worst case 4.77:1 (light)
+/ 5.79:1 (dark) across the 7 marketing brand themes, Playwright-verified
+against the built Histoire `OrigamCode` story. See the PR for the full
+before/after table.
+
 In this mode shiki writes BOTH computed colours directly onto every
 token `<span>` it emits, e.g.
-`style="--shiki-light:#24292e;--shiki-dark:#e1e4e8"`. The component's scoped
+`style="--shiki-light:#0e1116;--shiki-dark:#f0f3f6"`. The component's scoped
 `<style>` block then just picks whichever custom property the current
 `data-theme` / `data-mode` calls for:
 
@@ -209,11 +224,19 @@ Consequences:
   no JS involved.
 - **Tarball impact**: shiki sits in `dependencies` and adds ~3 MB to the
   installed `node_modules` (curated to 14 langs + 2 built-in themes,
-  `github-light` + `github-dark` — far below the ~30 MB of the full default
-  bundle). The actual JS shipped to
+  `github-light-high-contrast` + `github-dark-high-contrast` — far below the
+  ~30 MB of the full default bundle). The actual JS shipped to
   the browser is split per chunk via dynamic import.
 
 ## Accessibility
+
+- **Syntax colours meet WCAG AA (4.5:1) — #535.** Both shiki themes are the
+  `github-*-high-contrast` variants (see "Syntax colouring" above), and the
+  component background resolves to `--origam-color__surface---raised`, not
+  `---sunken`. Together they clear 4.5:1 on every one of the 8 token
+  categories (keyword, punctuation, string, comment, number/variable,
+  function, parameter, tag), in both modes, across every marketing brand
+  theme — measured, not assumed (see the linked PR for the full table).
 
 - The scroll wrapper (`.origam-code__scroller`) is a **`<section>`** carrying
   `tabindex="0"` so a code block wider than its column stays readable without
