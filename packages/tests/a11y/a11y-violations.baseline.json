@@ -1,10 +1,4 @@
 {
-    "OrigamCalendar::default": [
-        "aria-required-parent"
-    ],
-    "OrigamChartMap::default": [
-        "aria-prohibited-attr"
-    ],
     "OrigamChartRangeSelector::default": [
         "color-contrast"
     ],
@@ -16,12 +10,6 @@
     ],
     "OrigamDatePickerField::default": [
         "color-contrast"
-    ],
-    "OrigamFileFieldListItem::default": [
-        "listitem"
-    ],
-    "OrigamListGroup::default": [
-        "aria-required-children"
     ],
     "OrigamNumberField::default": [
         "color-contrast"
