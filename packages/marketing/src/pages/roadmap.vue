@@ -24,6 +24,37 @@ const heroBadge = computed(() =>
     t('roadmap.hero.badge', `v${ version.value } — Wave 4 shipped`, { version: version.value })
 )
 
+// #913 — the SAME page rendered two different versions of itself. Fifteen
+// lines under the badge above, the "WHERE WE STAND" title read
+// `t('roadmap.status.title_line1')`, whose locale value was the LITERAL
+// string "Where 2.17.1" — no interpolation, so `useVersion()` never reached
+// it. #743 had already fixed the badge this way and left the title behind;
+// substituting a fresh number in the locale would only restart the same
+// drift, eight versions later. Both this title and the npm status line below
+// now interpolate `{version}`, exactly like `roadmap.hero.badge`, so a
+// release never requires editing a translated string again.
+//
+// BOTH lines take `{version}` even though only line 1 uses it today: the
+// number sits on line 1 in EN ("Where {version}" / "stands.") and the FR
+// value was reshaped to match ("Où en est la {version}" / "aujourd'hui."),
+// so `i18n:check`'s EN/FR placeholder parity stays at 0 gaps. Handing the
+// parameter to both lines means a future rewording can move the number to
+// the other half without touching this file.
+const statusTitleLine1 = computed(() =>
+    t('roadmap.status.title_line1', `Where ${ version.value }`, { version: version.value })
+)
+
+const statusTitleLine2 = computed(() =>
+    t('roadmap.status.title_line2', 'stands.', { version: version.value })
+)
+
+// The status list renders a flat `labelKey` loop. `{ version }` is handed to
+// every entry rather than to the one that needs it today: vue-i18n drops a
+// named parameter a message does not reference, so this costs nothing and
+// means the NEXT status line that wants the live version only edits a locale
+// value — never this file. That is the whole point of #913.
+const statusParams = computed(() => ({ version: version.value }))
+
 useSeoMeta({
     title: () => t('roadmap.meta.title', 'Roadmap · origam design system'),
     description: () => t('roadmap.meta.description', 'Where origam is today, what has been delivered, and what is coming next.'),
@@ -95,8 +126,8 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                         tag="h2"
                         class="roadmap-section__title"
                     >
-                        <span class="roadmap-section__title-line">{{ t('roadmap.status.title_line1', 'Post-2.6.0') }}</span>
-                        <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ t('roadmap.status.title_line2', 'Status.') }}</span>
+                        <span class="roadmap-section__title-line">{{ statusTitleLine1 }}</span>
+                        <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ statusTitleLine2 }}</span>
                     </origam-title>
 
                     <p class="roadmap-section__subtitle">
@@ -133,7 +164,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                                     />
 
                                     <p class="roadmap-status__label">
-                                        {{ t(item.labelKey, item.labelKey) }}
+                                        {{ t(item.labelKey, item.labelKey, statusParams) }}
                                     </p>
                                 </div>
                             </template>

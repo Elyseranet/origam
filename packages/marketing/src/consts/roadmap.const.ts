@@ -15,21 +15,36 @@ export const ROADMAP_HERO_BADGE_VARS: CSSProperties = {
 } as CSSProperties
 
 /**
- * Current status items — measured against the repository on 2026-09-15, not
+ * Current status items — measured against the repository on 2026-09-23, not
  * transcribed from CHANGELOG.md. Every `done: true` below is backed by a
- * command recorded in the root ROADMAP.md ("Où on en est"):
- *   - npm            : registry.npmjs.org/origam → 2.17.1, tarball 1 733 668 B
- *   - CI             : 17 jobs across 5 workflows in .github/workflows/
+ * command, re-run on that date with the real exit code captured outside any
+ * pipe:
+ *   - npm            : registry.npmjs.org/origam → 2.18.8, tarball 1 858 354 B
+ *                      (unpacked 9 688 709 B, 3 501 files), published 15:06 UTC
+ *   - CI             : 20 jobs across 5 workflows in .github/workflows/
  *   - docs online    : HTTP 200 on the deployed VitePress + Histoire builds
- *   - unit tests     : 6 953 tests green, 532 spec files (test:coverage, exit 0)
- *   - e2e specs      : 229 spec files for 218 stories
- *   - guards         : 21/21 (scripts/guards/run-all.mjs, exit 0)
+ *   - unit tests     : 7 187 tests green, 563 spec files, 77.81 % statements /
+ *                      79.86 % lines (pnpm -F @origam/tests test:coverage, $? = 0)
+ *   - e2e specs      : 254 spec files for 218 stories
+ *   - guards         : 29/29 + 16/16 self-tests (pnpm -F origam guards,
+ *                      guards:self — both $? = 0)
  *   - inspection     : docs/mesures/classeur-complet-maj-2026-09-01.csv
  *   - dependencies   : .github/dependabot.yml
  *
+ * ⛔ The VERSION is deliberately absent from every string these keys resolve
+ * to. `roadmap.status.title_line1` used to read the literal "Where 2.17.1"
+ * while the hero badge fifteen lines above already read `useVersion()` — the
+ * same page rendering two different versions of itself (#913, a repeat of
+ * #743). The version now arrives through `{version}` interpolation from
+ * `useVersion()`; only values with no live source (test counts, tarball size)
+ * stay literal here, and those carry the measurement date above.
+ *
  * The `done: false` entries name the REMAINING GAP, not the whole topic — a
- * red cross next to "the CI gates 58 of 229 specs" is accurate, while one
- * next to "e2e coverage" would not be.
+ * red cross next to "the CI gates 81 of 254 specs" is accurate, while one
+ * next to "e2e coverage" would not be. Each was re-verified on 2026-09-23:
+ * the a11y one was rescoped (the sweep DOES gate CI since #765, and the
+ * violation baseline is now empty — only focus-trap coverage is still thin),
+ * the other five still name a real gap.
  */
 export const ROADMAP_STATUS_ITEMS: IRoadmapStatusItem[] = [
     { labelKey: 'roadmap.status.npm_published', done: true },
@@ -55,9 +70,9 @@ export const ROADMAP_STATUS_ITEMS: IRoadmapStatusItem[] = [
 
 /**
  * Delivered overview stats — exact counts taken from the DS source tree on
- * 2026-09-15, not rounded-down placeholders:
+ * 2026-09-23, not rounded-down placeholders:
  *   96  directories under packages/ds/src/components/ (218 Origam*.vue files)
- *   138 *.composable.ts under packages/ds/src/composables/
+ *   139 *.composable.ts under packages/ds/src/composables/
  *   6   directories under packages/ds/src/directives/
  *   218 *.story.vue under packages/stories/components/
  *   2   base token themes (light.css + dark.css)
@@ -68,7 +83,7 @@ export const ROADMAP_STATUS_ITEMS: IRoadmapStatusItem[] = [
  */
 export const ROADMAP_OVERVIEW_STATS: IRoadmapStat[] = [
     { value: '96', labelKey: 'roadmap.overview.components', icon: 'mdi-shape-outline' },
-    { value: '138', labelKey: 'roadmap.overview.composables', icon: 'mdi-function-variant' },
+    { value: '139', labelKey: 'roadmap.overview.composables', icon: 'mdi-function-variant' },
     { value: '6', labelKey: 'roadmap.overview.directives', icon: 'mdi-code-tags' },
     { value: '218', labelKey: 'roadmap.overview.stories', icon: 'mdi-book-open-variant' },
     { value: '2', labelKey: 'roadmap.overview.themes', icon: 'mdi-theme-light-dark' },
