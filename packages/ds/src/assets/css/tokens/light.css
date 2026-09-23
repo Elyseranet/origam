@@ -682,7 +682,7 @@
   --origam-toolbar---border-end-end-radius: var(--origam-radius---none);
   --origam-toolbar---max-width: 100%;
   --origam-toolbar---width: 100%;
-  --origam-toolbar---height: var(--origam-space---14);
+  --origam-toolbar---height: var(--origam-toolbar---height-default, var(--origam-space---14));
   --origam-toolbar---height-compact: var(--origam-space---10);
   --origam-toolbar---height-default: var(--origam-space---14);
   --origam-toolbar---height-prominent: var(--origam-space---20);
