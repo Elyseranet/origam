@@ -5,28 +5,10 @@
     "OrigamChartMap::default": [
         "aria-prohibited-attr"
     ],
-    "OrigamDataTableGroupHeaderRow::default": [
-        "button-name"
-    ],
-    "OrigamDatePicker::default": [
-        "button-name"
-    ],
-    "OrigamDatePickerControls::default": [
-        "button-name"
-    ],
     "OrigamFileFieldListItem::default": [
         "listitem"
     ],
-    "OrigamInfiniteScroll::default": [
-        "scrollable-region-focusable"
-    ],
-    "OrigamInfiniteScrollIntersect::default": [
-        "scrollable-region-focusable"
-    ],
     "OrigamListGroup::default": [
         "aria-required-children"
-    ],
-    "OrigamSlideGroup::default": [
-        "scrollable-region-focusable"
     ]
 }

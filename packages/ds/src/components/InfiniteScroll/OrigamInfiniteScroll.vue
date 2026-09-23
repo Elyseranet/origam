@@ -5,6 +5,7 @@
 			ref="rootEl"
 			:class="infiniteScrollClasses"
 			:style="infiniteScrollStyles"
+			:tabindex="hasFocusableDescendant ? undefined : 0"
 	>
 		<div class="origam-infinite-scroll__side" role="status" aria-live="polite" :style="typographyStyles">
 			<template v-if="hasStartIntersect">
@@ -142,6 +143,8 @@
 
 	import type { TInfiniteScrollSide, TInfiniteScrollStatus } from '../../types/InfiniteScroll/infinite-scroll.type'
 
+	import { focusableChildren } from '../../utils/Commons/commons.util'
+
 	/*********************************************************
 	 * Global
 	 *
@@ -186,6 +189,56 @@
 
 	const rootEl = ref<HTMLDivElement>()
 	const isIntersecting = shallowRef(false)
+
+	/*********************************************************
+	 * hasFocusableDescendant — scrollable-region-focusable (a11y baseline)
+	 *
+	 * @description
+	 * The root renders `overflow-y: auto` unconditionally, so as soon as
+	 * the `default` slot's content is taller than the container it
+	 * becomes a genuinely scrollable region. axe-core's
+	 * `scrollable-region-focusable` rule requires such a region to be
+	 * reachable by keyboard: either it carries its own `tabindex`, or it
+	 * contains at least one focusable descendant already in the tab
+	 * order.
+	 *
+	 * @description
+	 * Most real consumers slot in interactive rows (links, buttons) —
+	 * axe already passes there, and forcing `tabindex="0"` on the root
+	 * regardless would add a redundant tab stop in front of content
+	 * that is already reachable. The root is therefore only made
+	 * focusable when the slotted content has NO focusable descendant at
+	 * all (the exact shape of the `intersect`-mode default story: plain
+	 * non-interactive rows) — the one case where the region would
+	 * otherwise be unreachable by keyboard entirely.
+	 *
+	 * @description
+	 * Recomputed on every DOM mutation inside the root — infinite
+	 * scroll content changes constantly (rows are appended on
+	 * `@load`), so a value captured only once at mount would go stale
+	 * the moment the first page of results lands.
+	 ********************************************************/
+	const hasFocusableDescendant = shallowRef(false)
+	let focusableObserver: MutationObserver | undefined
+
+	const refreshHasFocusableDescendant = () => {
+		if (!rootEl.value) return
+
+		hasFocusableDescendant.value = focusableChildren(rootEl.value).length > 0
+	}
+
+	onMounted(() => {
+		if (!IN_BROWSER || !rootEl.value) return
+
+		refreshHasFocusableDescendant()
+
+		focusableObserver = new MutationObserver(refreshHasFocusableDescendant)
+		focusableObserver.observe(rootEl.value, {childList: true, subtree: true})
+	})
+
+	onBeforeUnmount(() => {
+		focusableObserver?.disconnect()
+	})
 
 	const propertyDirection = computed(() => {
 		return props.direction === DIRECTION.VERTICAL ? 'scrollTop' : 'scrollLeft'

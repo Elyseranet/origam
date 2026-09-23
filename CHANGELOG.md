@@ -166,6 +166,83 @@ les ruptures, elles, ne le sont pas — voir "Work priorities and versioning"
 du `CLAUDE.md`. `origam` n'a aucun consommateur : les deux ruptures
 ci-dessous partent en **mineure**, sans shim ni période de grâce.
 
+### Fixed — `button-name` et `scrollable-region-focusable` (6 des 18 violations laissées de côté par le lot précédent)
+
+Recompté sur `a11y-violations.baseline.json` avant de commencer (pas repris
+d'un chiffre cité ailleurs) : **18 violations / 17 clés**, dont deux familles
+explicitement laissées de côté par le lot ci-dessus.
+
+**`button-name` (3, cause commune)** — `OrigamDataTableGroupHeaderRow`,
+`OrigamDatePicker`, `OrigamDatePickerControls` rendaient chacun un
+`<origam-btn icon="…">` sans `aria-label`/`aria-labelledby`/`title` : un
+bouton icône réel, annoncé "button" et rien d'autre par un lecteur d'écran
+(`OrigamBtn` avertit déjà de ce cas précis en dev depuis #653, mais ne
+fabrique jamais de libellé — cf. son commentaire `isUnnamedIconOnly`, à
+raison : un libellé deviné tairait axe sans rien dire à l'utilisateur).
+Corrigé à la source de chaque bouton (pas dans `OrigamBtn`, qui n'a pas
+l'information sémantique) :
+- `OrigamDataTableGroupHeaderRow` — le bouton d'expand/collapse du groupe
+  reçoit `aria-expanded` + `aria-label` dynamique (`origam.data_table_group_header_row.{expand_group,collapse_group}`),
+  même motif que le correctif `data_table_row.{expand_row,collapse_row}`
+  déjà en place sur `OrigamDataTableRow`.
+- `OrigamDatePickerControls` — les 3 boutons icône (bascule mois/année,
+  précédent, suivant) reçoivent chacun un `aria-label` via `useLocale()`
+  (`origam.date_picker_controls.{toggle_year,prev,next}`).
+- `OrigamDatePicker::default` en héritait sans bouton icône propre — sa
+  Variant par défaut rend `OrigamDatePickerControls`, donc le correctif
+  ci-dessus l'assainit aussi ; son AUTRE violation (`color-contrast`,
+  hors périmètre) reste dans la baseline.
+
+Nouvelles clés ajoutées à `en.json` ET `fr.json` dans le même commit,
+`snake_case` minuscule, aucune chaîne en dur dans les templates.
+
+**`scrollable-region-focusable` (3, cause commune)** — `OrigamInfiniteScroll`,
+`OrigamInfiniteScrollIntersect` (dont la story monte elle-même un
+`OrigamInfiniteScroll`) et `OrigamSlideGroup` rendent chacun un conteneur
+`overflow: auto` sans jamais être atteignables au clavier quand leur contenu
+n'a aucun descendant focusable — axe-core l'exige (technique WAI WCAG
+SCR29).
+
+⚠️ `tabindex="0"` inconditionnel a été essayé et écarté : `OrigamSlideGroup`
+a un seul consommateur réel (`OrigamChipGroup`), qui slotte toujours des
+puces focusables — y poser `tabindex` sans condition aurait inséré un arrêt
+de tabulation redondant AVANT les items, dégradant le parcours clavier réel
+pour corriger un cas de story synthétique. Le correctif retenu conditionne
+donc le `tabindex` sur l'ABSENCE de descendant focusable (`focusableChildren()`,
+déjà utilisé ailleurs dans le DS) :
+- `OrigamInfiniteScroll` — `hasFocusableDescendant` (recalculé par
+  `MutationObserver` sur la racine, le contenu s'accumulant en continu via
+  `@load`) pilote un `:tabindex` conditionnel sur la racine.
+- `OrigamSlideGroup` — `hasFocusableContent` (recalculé dans le même
+  `requestAnimationFrame` qui mesure déjà `isOverflowing`) pilote un
+  `:tabindex` conditionnel sur `.origam-slide-group__container`, l'élément
+  RÉELLEMENT scrollable — distinct de la racine, qui porte déjà son propre
+  `tabindex` conditionnel pour un mécanisme sans rapport (proxy de focus
+  vers le premier item, cf. `handleFocus`) qu'axe ne peut pas lire ici
+  puisque `__container` n'est pas un ancêtre de la racine.
+- `OrigamInfiniteScrollIntersect::default` en héritait sans conteneur
+  scrollable propre — sa Variant par défaut monte un `OrigamInfiniteScroll`,
+  donc le correctif ci-dessus l'assainit aussi.
+
+**Bilan mesuré** : baseline **18 clés/17 violations → 12 clés/12 violations**
+(6 clés retirées : `OrigamDataTableGroupHeaderRow`, `OrigamDatePickerControls`,
+`OrigamInfiniteScroll`, `OrigamInfiniteScrollIntersect`, `OrigamSlideGroup`,
+et `button-name` retiré de l'entrée `OrigamDatePicker` qui garde son
+`color-contrast`). Suite `pnpm -F @origam/tests test:a11y` complète (226
+tests, catalogue 218/218) : **226 passed**, aucune régression sur les 36
+composants à baseline vide. Contrôle positif exécuté sur
+`OrigamDataTableGroupHeaderRow` : retirer `aria-expanded`/`aria-label` fait
+échouer la porte avec `1 violation(s) a11y NOUVELLE(S) non baselinée(s) —
+button-name` (`REAL_EXIT=1`) ; le correctif remis, la suite ciblée repasse
+au vert. `pnpm -F origam guards` (28/28), `guards:self` (15/15),
+`pnpm -F @origam/tests test:e2e:audit` (3/3) et `pnpm run lint`
+(`--max-warnings 0`) verts sur le dernier commit.
+
+**Laissé de côté, délibérément** (12 clés / 12 violations restent dans
+`a11y-violations.baseline.json`) : `color-contrast` (8 instances, périmètre
+d'autres agents), `aria-required-parent`/`aria-required-children`/`listitem`/
+`aria-prohibited-attr` (un défaut chacun, cause non partagée avec ce lot).
+
 ### ⚠️ BREAKING — `click:prepend` / `click:append` retirés d'`IBtnEmits` (#443, #577)
 
 `<OrigamBtn>` n'émet plus `click:prepend` ni `click:append` — ni au niveau du
