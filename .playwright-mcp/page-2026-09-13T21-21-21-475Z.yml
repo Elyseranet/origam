@@ -1,0 +1,139 @@
+- generic [ref=f41e4]:
+  - generic [ref=f41e6]:
+    - generic [ref=f41e7]:
+      - img "Origam Page Builder logo" [ref=f41e10]
+      - generic [ref=f41e11]:
+        - generic [ref=f41e12] [cursor=pointer]
+        - generic [ref=f41e15] [cursor=pointer]
+    - generic [ref=f41e18]:
+      - generic [ref=f41e19]:
+        - button "Styles & Design token" [ref=f41e21] [cursor=pointer]
+        - button "Utilities" [ref=f41e27] [cursor=pointer]
+      - generic [ref=f41e33]:
+        - button "Components" [ref=f41e35] [cursor=pointer]
+        - generic [ref=f41e39]:
+          - button "Alert" [ref=f41e41] [cursor=pointer]
+          - button "App" [ref=f41e48] [cursor=pointer]
+          - button "Audio" [ref=f41e55] [cursor=pointer]
+          - button "Avatar" [ref=f41e62] [cursor=pointer]
+          - button "Badge" [ref=f41e69] [cursor=pointer]
+          - button "Blockquote" [ref=f41e76] [cursor=pointer]
+          - button "BottomNav" [ref=f41e83] [cursor=pointer]
+          - button "Bracket" [ref=f41e90] [cursor=pointer]
+          - button "Breadcrumb" [ref=f41e97] [cursor=pointer]
+          - button "Btn" [ref=f41e104] [cursor=pointer]
+          - button "Calendar" [ref=f41e111] [cursor=pointer]
+          - button "Card" [ref=f41e118] [cursor=pointer]
+          - button "Carousel" [ref=f41e125] [cursor=pointer]
+          - button "Chart" [ref=f41e132] [cursor=pointer]
+          - button "Checkbox" [ref=f41e139] [cursor=pointer]
+          - button "Chip" [ref=f41e146] [cursor=pointer]
+          - button "ClientOnly" [ref=f41e153] [cursor=pointer]
+          - button "Clipboard" [ref=f41e160] [cursor=pointer]
+          - button "Code" [ref=f41e167] [cursor=pointer]
+          - button "ColorGradient" [ref=f41e174] [cursor=pointer]
+          - button "ColorPicker" [ref=f41e181] [cursor=pointer]
+          - button "ColorPickerField" [ref=f41e188] [cursor=pointer]
+          - button "CommandPalette" [ref=f41e195] [cursor=pointer]
+          - button "ConfirmWrapper" [ref=f41e202] [cursor=pointer]
+          - button "ContextualMenu" [ref=f41e209] [cursor=pointer]
+          - button "Counter" [ref=f41e216] [cursor=pointer]
+          - button "DataList" [ref=f41e223] [cursor=pointer]
+          - button "DataTable" [ref=f41e230] [cursor=pointer]
+          - button "DatePicker" [ref=f41e237] [cursor=pointer]
+          - button "DatePickerField" [ref=f41e244] [cursor=pointer]
+          - button "DefaultsProvider" [ref=f41e251] [cursor=pointer]
+          - button "Dialog" [ref=f41e258] [cursor=pointer]
+          - button "Divider" [ref=f41e265] [cursor=pointer]
+          - button "Drawer" [ref=f41e272] [cursor=pointer]
+          - button "EmptyState" [ref=f41e279] [cursor=pointer]
+          - button "ExpansionPanel" [ref=f41e286] [cursor=pointer]
+          - button "Field" [ref=f41e293] [cursor=pointer]
+          - button "FileField" [ref=f41e300] [cursor=pointer]
+          - button "Form" [ref=f41e307] [cursor=pointer]
+          - button "Grid" [ref=f41e314] [cursor=pointer]
+          - button "Grids" [ref=f41e321] [cursor=pointer]
+          - button "Icon" [ref=f41e328] [cursor=pointer]
+          - button "Img" [ref=f41e335] [cursor=pointer]
+          - button "InfiniteScroll" [ref=f41e342] [cursor=pointer]
+          - button "InlineEdit" [ref=f41e349] [cursor=pointer]
+          - button "Input" [ref=f41e356] [cursor=pointer]
+          - button "ItemGroup" [ref=f41e363] [cursor=pointer]
+          - button "Kbd" [ref=f41e370] [cursor=pointer]
+          - button "Label" [ref=f41e377] [cursor=pointer]
+          - button "Layout" [ref=f41e384] [cursor=pointer]
+          - button "Lazy" [ref=f41e391] [cursor=pointer]
+          - button "List" [ref=f41e398] [cursor=pointer]
+          - button "Loader" [ref=f41e405] [cursor=pointer]
+          - button "Main" [ref=f41e412] [cursor=pointer]
+          - button "Masonry" [ref=f41e419] [cursor=pointer]
+          - button "MediaController" [ref=f41e426] [cursor=pointer]
+          - button "MediaScrubber" [ref=f41e433] [cursor=pointer]
+          - button "MediaVolumeControl" [ref=f41e440] [cursor=pointer]
+          - button "Menu" [ref=f41e447] [cursor=pointer]
+          - button "Messages" [ref=f41e454] [cursor=pointer]
+          - button "NumberField" [ref=f41e461] [cursor=pointer]
+          - button "NumberFormat" [ref=f41e468] [cursor=pointer]
+          - button "OtpInputField" [ref=f41e475] [cursor=pointer]
+          - button "Overlay" [ref=f41e482] [cursor=pointer]
+          - button "Pagination" [ref=f41e489] [cursor=pointer]
+          - button "Parallax" [ref=f41e496] [cursor=pointer]
+          - button "PasswordField" [ref=f41e503] [cursor=pointer]
+          - button "Picker" [ref=f41e510] [cursor=pointer]
+          - button "Progress" [ref=f41e517] [cursor=pointer]
+          - button "QrCode" [ref=f41e524] [cursor=pointer]
+          - button "Radio" [ref=f41e531] [cursor=pointer]
+          - button "RatingField" [ref=f41e538] [cursor=pointer]
+          - button "Responsive" [ref=f41e545] [cursor=pointer]
+          - button "Select" [ref=f41e552] [cursor=pointer]
+          - button "SelectionControl" [ref=f41e559] [cursor=pointer]
+          - button "Sheet" [ref=f41e566] [cursor=pointer]
+          - button "Skeleton" [ref=f41e573] [cursor=pointer]
+          - button "Slide" [ref=f41e580] [cursor=pointer]
+          - button "SliderField" [ref=f41e587] [cursor=pointer]
+          - button "Snackbar" [ref=f41e594] [cursor=pointer]
+          - button "Stepper" [ref=f41e601] [cursor=pointer]
+          - button "Switch" [ref=f41e608] [cursor=pointer]
+          - button "SystemBar" [ref=f41e615] [cursor=pointer]
+          - button "Table" [ref=f41e622] [cursor=pointer]
+          - button "Tabs" [ref=f41e629] [cursor=pointer]
+          - button "TextareaField" [ref=f41e636] [cursor=pointer]
+          - button "TextField" [ref=f41e643] [cursor=pointer]
+          - button "TextMask" [ref=f41e650] [cursor=pointer]
+          - button "ThemeProvider" [ref=f41e657] [cursor=pointer]
+          - button "Timeline" [ref=f41e664] [cursor=pointer]
+          - button "Title" [ref=f41e671] [cursor=pointer]
+          - button "Toolbar" [ref=f41e678] [cursor=pointer]
+          - button "Tooltip" [ref=f41e685] [cursor=pointer]
+          - button "Transition" [ref=f41e692] [cursor=pointer]
+          - button "Treeview" [ref=f41e699] [cursor=pointer]
+          - button "Video" [ref=f41e706] [cursor=pointer]
+          - button "VirtualScroll" [ref=f41e713] [cursor=pointer]
+          - button "Watermark" [ref=f41e720] [cursor=pointer]
+          - button "Window" [ref=f41e727] [cursor=pointer]
+      - button "Page Builder" [ref=f41e735] [cursor=pointer]
+      - button "Helpers" [ref=f41e741] [cursor=pointer]
+  - generic [ref=f41e748]:
+    - generic [ref=f41e751]:
+      - generic [ref=f41e753]:
+        - link "Design" [ref=f41e755] [cursor=pointer]:
+          - /url: /stories/story/components-stories-snackbar-origamsnackbaritem-story-vue?variantId=components-stories-snackbar-origamsnackbaritem-story-vue-0
+        - link "Functional" [ref=f41e759] [cursor=pointer]:
+          - /url: /stories/story/components-stories-snackbar-origamsnackbaritem-story-vue?variantId=components-stories-snackbar-origamsnackbaritem-story-vue-1
+        - link "Events - dismiss" [ref=f41e763] [cursor=pointer]:
+          - /url: /stories/story/components-stories-snackbar-origamsnackbaritem-story-vue?variantId=components-stories-snackbar-origamsnackbaritem-story-vue-2
+        - link "Events - action" [ref=f41e767] [cursor=pointer]:
+          - /url: /stories/story/components-stories-snackbar-origamsnackbaritem-story-vue?variantId=components-stories-snackbar-origamsnackbaritem-story-vue-3
+        - link "Slots - Prepend" [ref=f41e771] [cursor=pointer]:
+          - /url: /stories/story/components-stories-snackbar-origamsnackbaritem-story-vue?variantId=components-stories-snackbar-origamsnackbaritem-story-vue-4
+        - link "Slots - Actions" [ref=f41e775] [cursor=pointer]:
+          - /url: /stories/story/components-stories-snackbar-origamsnackbaritem-story-vue?variantId=components-stories-snackbar-origamsnackbaritem-story-vue-5
+        - link "Default" [ref=f41e779] [cursor=pointer]:
+          - /url: /stories/story/components-stories-snackbar-origamsnackbaritem-story-vue?variantId=components-stories-snackbar-origamsnackbaritem-story-vue-6
+      - generic [ref=f41e786]:
+        - generic [ref=f41e787]: Design
+        - generic [ref=f41e791] [cursor=pointer]
+        - generic [ref=f41e794]: a
+        - link [ref=f41e801] [cursor=pointer]:
+          - /url: /stories/__sandbox.html?storyId=components-stories-snackbar-origamsnackbaritem-story-vue&variantId=components-stories-snackbar-origamsnackbaritem-story-vue-0
+    - generic [ref=f41e828]: Loading...

@@ -354,7 +354,7 @@
 					model.value = normalizedValue.value === value && props.clearable ? 0 : value
 				}
 
-				void nextTick(() => resyncRadios(e?.target as Element | null))
+				nextTick(() => resyncRadios(e?.target as Element | null))
 			}
 
 			/*********************************************************
@@ -377,7 +377,7 @@
 					model.value = value
 				}
 
-				void nextTick(() => resyncRadios(e?.target as Element | null))
+				nextTick(() => resyncRadios(e?.target as Element | null))
 			}
 
 			return {

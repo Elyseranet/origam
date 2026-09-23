@@ -1,0 +1,426 @@
+# Census #824
+
+## Ungated, born AFTER the whitelist (candidate OUBLI)
+2026-06-24  MARKETING-NOT-GATED    api-docs-generated.spec.ts
+2026-06-24  MARKETING-NOT-GATED    marketing-theme-builder.spec.ts
+2026-06-26  MARKETING-NOT-GATED    marketing-brand-presets.spec.ts
+2026-07-04  MARKETING-NOT-GATED    theming-feedback-tokens.spec.ts
+2026-07-06  MARKETING-NOT-GATED    marketing-theming-isolation.spec.ts
+2026-07-15  MARKETING-NOT-GATED    marketing-theming-controls.spec.ts
+2026-07-15  MARKETING-NOT-GATED    marketing-theming-viewport-height.spec.ts
+2026-07-16  MARKETING-NOT-GATED    marketing-theming-theme-bg-and-triggers.spec.ts
+2026-07-18  MARKETING-NOT-GATED    marketing-theming-toggle-vs-split-parity.spec.ts
+2026-07-20  UNGATED                avatar-group.spec.ts
+2026-07-21  MARKETING-NOT-GATED    marketing-theme-live-switch.spec.ts
+2026-07-22  MARKETING-NOT-GATED    marketing-primary-nav.spec.ts
+2026-07-28  UNGATED                selection-control.spec.ts
+2026-07-31  UNGATED                bottom-nav-shift.spec.ts
+2026-07-31  UNGATED                selection-control-group-layout.spec.ts
+2026-08-21  UNGATED                breadcrumb-token-namespace.spec.ts
+2026-08-26  UNGATED                window-item-phantom-transitions.spec.ts
+2026-08-27  UNGATED                switch-slider-error-tokens.spec.ts
+2026-08-28  UNGATED                bottom-nav-height-unit.spec.ts
+2026-08-28  UNGATED                parallax-layer.spec.ts
+2026-08-30  UNGATED                bracket-competitor-contrast.spec.ts
+2026-08-30  UNGATED                chart-tokens-529.spec.ts
+2026-08-30  UNGATED                loader.spec.ts
+2026-09-01  UNGATED                bracket-match-final.spec.ts
+2026-09-01  UNGATED                color-picker-preview.spec.ts
+2026-09-01  UNGATED                responsive.spec.ts
+2026-09-01  UNGATED                window-live-region.spec.ts
+2026-09-04  UNGATED                translate-scale-origin.spec.ts
+2026-09-05  UNGATED                chart-radar.spec.ts
+2026-09-05  UNGATED                switch-density.spec.ts
+2026-09-07  UNGATED                bottom-nav-location.spec.ts
+2026-09-07  UNGATED                date-picker-color.spec.ts
+2026-09-07  UNGATED                dead-props-550-lot1.spec.ts
+2026-09-07  UNGATED                loading-text-wiring.spec.ts
+2026-09-07  UNGATED                messages-elevation.spec.ts
+2026-09-07  UNGATED                system-bar-location.spec.ts
+2026-09-07  UNGATED                tabs-bg-color.spec.ts
+2026-09-09  UNGATED                border-keywords-sample.spec.ts
+2026-09-09  UNGATED                breadcrumb-theme-channel.spec.ts
+2026-09-09  UNGATED                btn-border.spec.ts
+2026-09-09  UNGATED                btn-cascade-layer-probe.spec.ts
+2026-09-09  UNGATED                field-affix-min-height.spec.ts
+2026-09-09  UNGATED                field-variant-padding.spec.ts
+2026-09-10  UNGATED                bottom-nav-token-prefix.spec.ts
+2026-09-10  UNGATED                chart-gauge.spec.ts
+2026-09-10  UNGATED                checkbox-group-accumulation.spec.ts
+2026-09-10  UNGATED                color-picker-swatches.spec.ts
+2026-09-10  UNGATED                file-field-download.spec.ts
+2026-09-10  UNGATED                input-theme-channel.spec.ts
+2026-09-10  UNGATED                list-item-dead-props.spec.ts
+2026-09-10  UNGATED                list-roles-a11y.spec.ts
+2026-09-10  UNGATED                main-surface-tokens.spec.ts
+2026-09-10  UNGATED                media-volume-control.spec.ts
+2026-09-10  UNGATED                overlay-scrim.spec.ts
+2026-09-10  UNGATED                row-adjacent-margin.spec.ts
+2026-09-10  UNGATED                row-gutters.spec.ts
+2026-09-10  UNGATED                text-mask-font-tokens.spec.ts
+2026-09-10  UNGATED                transition-duration-tokens.spec.ts
+2026-09-10  UNGATED                transition-reduced-motion.spec.ts
+2026-09-10  UNGATED                window-surface-props.spec.ts
+2026-09-11  UNGATED                chart-family-padding-margin-cascade.spec.ts
+2026-09-11  UNGATED                grid-item.spec.ts
+2026-09-13  UNGATED                client-only.spec.ts
+2026-09-13  UNGATED                expansion-panel-content.spec.ts
+2026-09-13  UNGATED                img.spec.ts
+2026-09-14  UNGATED                field-border-notch.spec.ts
+2026-09-14  UNGATED                responsive-aspect-ratio.spec.ts
+2026-09-16  UNGATED                adjacent-command-name-a11y.spec.ts
+2026-09-16  UNGATED                chart-cartesian-zoom-reset-label-fit.spec.ts
+2026-09-16  UNGATED                dialog-reachability.spec.ts
+2026-09-16  UNGATED                menu-scroll.spec.ts
+2026-09-16  UNGATED                slider-field-track-rounded.spec.ts
+2026-09-17  UNGATED                list-item-density.spec.ts
+2026-09-17  MARKETING-NOT-GATED    marketing-nav-locale.spec.ts
+2026-09-17  UNGATED                token-intent-contrast.spec.ts
+2026-09-17  UNGATED                tokens-prefers-color-scheme.spec.ts
+
+## Ungated, born BEFORE/ON the whitelist (backlog VOULU)
+2026-05-27  UNGATED                alert-status-icon.spec.ts
+2026-05-27  UNGATED                appbar-debug.spec.ts
+2026-05-27  UNGATED                audio.spec.ts
+2026-05-27  UNGATED                border-default-zero.spec.ts
+2026-05-27  UNGATED                bottom-nav-border.spec.ts
+2026-05-27  UNGATED                bottom-nav-width.spec.ts
+2026-05-27  UNGATED                bottom-nav.spec.ts
+2026-05-27  UNGATED                bracket.spec.ts
+2026-05-27  UNGATED                btn-group.spec.ts
+2026-05-27  UNGATED                btn-hover-active-debug.spec.ts
+2026-05-27  UNGATED                btn-loader-debug.spec.ts
+2026-05-27  UNGATED                btn-propagation.spec.ts
+2026-05-27  UNGATED                btn-toggle-active-visual.spec.ts
+2026-05-27  UNGATED                btn-toggle.spec.ts
+2026-05-27  UNGATED                calendar.spec.ts
+2026-05-27  UNGATED                chart-box-plot.spec.ts
+2026-05-27  UNGATED                chart-bullet.spec.ts
+2026-05-27  UNGATED                chart-candlestick.spec.ts
+2026-05-27  UNGATED                chart-cartesian.spec.ts
+2026-05-27  UNGATED                chart-heatmap.spec.ts
+2026-05-27  UNGATED                chart-honeycomb.spec.ts
+2026-05-27  UNGATED                chart-map.spec.ts
+2026-05-27  UNGATED                chart-pareto.spec.ts
+2026-05-27  UNGATED                chart-pictorial.spec.ts
+2026-05-27  UNGATED                chart-polar-bar.spec.ts
+2026-05-27  UNGATED                chart-pyramid.spec.ts
+2026-05-27  UNGATED                chart-sankey.spec.ts
+2026-05-27  UNGATED                chart-sparkline.spec.ts
+2026-05-27  UNGATED                chart-streamgraph.spec.ts
+2026-05-27  UNGATED                chart-sunburst.spec.ts
+2026-05-27  UNGATED                chart-treemap.spec.ts
+2026-05-27  UNGATED                chart-variwide.spec.ts
+2026-05-27  UNGATED                chart-word-cloud.spec.ts
+2026-05-27  UNGATED                chart.spec.ts
+2026-05-27  UNGATED                chip-design.spec.ts
+2026-05-27  UNGATED                chip-group.spec.ts
+2026-05-27  UNGATED                color-gradient.spec.ts
+2026-05-27  UNGATED                command-palette.spec.ts
+2026-05-27  UNGATED                confirm-wrapper.spec.ts
+2026-05-27  UNGATED                contextual-menu.spec.ts
+2026-05-27  UNGATED                data-list.spec.ts
+2026-05-27  UNGATED                data-table.spec.ts
+2026-05-27  UNGATED                date-picker-field.spec.ts
+2026-05-27  UNGATED                date-picker.spec.ts
+2026-05-27  UNGATED                density-contract.spec.ts
+2026-05-27  UNGATED                expansion-panels.spec.ts
+2026-05-27  UNGATED                field.spec.ts
+2026-05-27  UNGATED                file-field.spec.ts
+2026-05-27  UNGATED                filefield-debug.spec.ts
+2026-05-27  UNGATED                form.spec.ts
+2026-05-27  UNGATED                grids.spec.ts
+2026-05-27  UNGATED                group-propagation.spec.ts
+2026-05-27  UNGATED                icons.spec.ts
+2026-05-27  UNGATED                infinite-scroll-load.spec.ts
+2026-05-27  UNGATED                infinite-scroll.spec.ts
+2026-05-27  UNGATED                inline-edit.spec.ts
+2026-05-27  UNGATED                input.spec.ts
+2026-05-27  UNGATED                item-group.spec.ts
+2026-05-27  UNGATED                itemgroup-debug.spec.ts
+2026-05-27  UNGATED                layout.spec.ts
+2026-05-27  UNGATED                lazy.spec.ts
+2026-05-27  UNGATED                media-controller.spec.ts
+2026-05-27  UNGATED                media-scrubber.spec.ts
+2026-05-27  UNGATED                media.spec.ts
+2026-05-27  UNGATED                messages.spec.ts
+2026-05-27  UNGATED                number-format.spec.ts
+2026-05-27  UNGATED                pagination-active-debug.spec.ts
+2026-05-27  UNGATED                pagination-colored-debug.spec.ts
+2026-05-27  UNGATED                pagination-debug.spec.ts
+2026-05-27  UNGATED                parallax-element.spec.ts
+2026-05-27  UNGATED                picker-overlay.spec.ts
+2026-05-27  UNGATED                prop-audit-phase4.spec.ts
+2026-05-27  UNGATED                prop-audit.spec.ts
+2026-05-27  UNGATED                scroll.spec.ts
+2026-05-27  UNGATED                selection-control-group.spec.ts
+2026-05-27  UNGATED                sheet.spec.ts
+2026-05-27  UNGATED                slidegroup-arrows.spec.ts
+2026-05-27  UNGATED                snackbar-group.spec.ts
+2026-05-27  UNGATED                snackbar-item.spec.ts
+2026-05-27  UNGATED                text-mask.spec.ts
+2026-05-27  UNGATED                textfield-mask.spec.ts
+2026-05-27  UNGATED                transitions.spec.ts
+2026-05-27  UNGATED                utilities.spec.ts
+2026-05-27  UNGATED                video.spec.ts
+2026-05-27  UNGATED                virtual-scroll-jump.spec.ts
+2026-05-27  UNGATED                window.spec.ts
+2026-05-30  MARKETING-NOT-GATED    marketing-theming.spec.ts
+2026-05-31  MARKETING-NOT-GATED    home-cta.spec.ts
+2026-05-31  MARKETING-NOT-GATED    home-features.spec.ts
+2026-05-31  MARKETING-NOT-GATED    home-hero.spec.ts
+2026-05-31  MARKETING-NOT-GATED    home-kpis.spec.ts
+2026-05-31  MARKETING-NOT-GATED    home-playground.spec.ts
+2026-05-31  MARKETING-NOT-GATED    home-showcase.spec.ts
+2026-05-31  MARKETING-NOT-GATED    home-themes.spec.ts
+2026-06-15  MARKETING-NOT-GATED    changelog.spec.ts
+2026-06-15  MARKETING-NOT-GATED    components.spec.ts
+2026-06-15  MARKETING-NOT-GATED    installation.spec.ts
+2026-06-15  MARKETING-NOT-GATED    roadmap.spec.ts
+2026-06-15  MARKETING-NOT-GATED    why-origam.spec.ts
+2026-06-17  MARKETING-NOT-GATED    composables.spec.ts
+2026-06-17  MARKETING-NOT-GATED    types.spec.ts
+2026-06-17  MARKETING-NOT-GATED    wireframe.spec.ts
+
+## All rows
+2026-09-16  UNGATED                adjacent-command-name-a11y.spec.ts
+2026-05-27  UNGATED                alert-status-icon.spec.ts
+2026-05-27  CI-GATED (histoire)    alert.spec.ts
+2026-06-24  MARKETING-NOT-GATED    api-docs-generated.spec.ts
+2026-05-27  CI-GATED (histoire)    app.spec.ts
+2026-05-27  UNGATED                appbar-debug.spec.ts
+2026-05-27  UNGATED                audio.spec.ts
+2026-07-20  UNGATED                avatar-group.spec.ts
+2026-05-27  CI-GATED (histoire)    avatar.spec.ts
+2026-05-27  CI-GATED (histoire)    badge.spec.ts
+2026-05-27  CI-GATED (histoire)    blockquote.spec.ts
+2026-05-27  UNGATED                border-default-zero.spec.ts
+2026-09-09  UNGATED                border-keywords-sample.spec.ts
+2026-05-27  UNGATED                bottom-nav-border.spec.ts
+2026-08-28  UNGATED                bottom-nav-height-unit.spec.ts
+2026-09-07  UNGATED                bottom-nav-location.spec.ts
+2026-07-31  UNGATED                bottom-nav-shift.spec.ts
+2026-09-10  UNGATED                bottom-nav-token-prefix.spec.ts
+2026-05-27  UNGATED                bottom-nav-width.spec.ts
+2026-05-27  UNGATED                bottom-nav.spec.ts
+2026-08-30  UNGATED                bracket-competitor-contrast.spec.ts
+2026-09-01  UNGATED                bracket-match-final.spec.ts
+2026-05-27  UNGATED                bracket.spec.ts
+2026-09-09  UNGATED                breadcrumb-theme-channel.spec.ts
+2026-08-21  UNGATED                breadcrumb-token-namespace.spec.ts
+2026-05-27  CI-GATED (histoire)    breadcrumb.spec.ts
+2026-09-09  UNGATED                btn-border.spec.ts
+2026-09-09  UNGATED                btn-cascade-layer-probe.spec.ts
+2026-05-27  UNGATED                btn-group.spec.ts
+2026-05-27  UNGATED                btn-hover-active-debug.spec.ts
+2026-05-27  UNGATED                btn-loader-debug.spec.ts
+2026-05-27  UNGATED                btn-propagation.spec.ts
+2026-05-27  UNGATED                btn-toggle-active-visual.spec.ts
+2026-05-27  UNGATED                btn-toggle.spec.ts
+2026-05-27  CI-GATED (histoire)    btn.spec.ts
+2026-05-27  UNGATED                calendar.spec.ts
+2026-05-27  CI-GATED (histoire)    card.spec.ts
+2026-05-27  CI-GATED (histoire)    carousel.spec.ts
+2026-06-15  MARKETING-NOT-GATED    changelog.spec.ts
+2026-05-27  UNGATED                chart-box-plot.spec.ts
+2026-05-27  UNGATED                chart-bullet.spec.ts
+2026-05-27  UNGATED                chart-candlestick.spec.ts
+2026-09-16  UNGATED                chart-cartesian-zoom-reset-label-fit.spec.ts
+2026-05-27  UNGATED                chart-cartesian.spec.ts
+2026-09-11  UNGATED                chart-family-padding-margin-cascade.spec.ts
+2026-09-10  UNGATED                chart-gauge.spec.ts
+2026-05-27  UNGATED                chart-heatmap.spec.ts
+2026-05-27  UNGATED                chart-honeycomb.spec.ts
+2026-05-27  UNGATED                chart-map.spec.ts
+2026-05-27  UNGATED                chart-pareto.spec.ts
+2026-05-27  UNGATED                chart-pictorial.spec.ts
+2026-05-27  UNGATED                chart-polar-bar.spec.ts
+2026-05-27  UNGATED                chart-pyramid.spec.ts
+2026-09-05  UNGATED                chart-radar.spec.ts
+2026-05-27  UNGATED                chart-sankey.spec.ts
+2026-05-27  UNGATED                chart-sparkline.spec.ts
+2026-05-27  UNGATED                chart-streamgraph.spec.ts
+2026-05-27  UNGATED                chart-sunburst.spec.ts
+2026-08-30  UNGATED                chart-tokens-529.spec.ts
+2026-05-27  UNGATED                chart-treemap.spec.ts
+2026-05-27  UNGATED                chart-variwide.spec.ts
+2026-05-27  UNGATED                chart-word-cloud.spec.ts
+2026-05-27  UNGATED                chart.spec.ts
+2026-09-10  UNGATED                checkbox-group-accumulation.spec.ts
+2026-09-17  CI-GATED (histoire)    checkbox-radio-group-a11y.spec.ts
+2026-05-27  CI-GATED (histoire)    checkbox.spec.ts
+2026-05-27  UNGATED                chip-design.spec.ts
+2026-05-27  UNGATED                chip-group.spec.ts
+2026-05-27  CI-GATED (histoire)    chip.spec.ts
+2026-09-13  UNGATED                client-only.spec.ts
+2026-05-27  CI-GATED (histoire)    clipboard.spec.ts
+2026-05-27  CI-GATED (histoire)    code.spec.ts
+2026-05-27  UNGATED                color-gradient.spec.ts
+2026-05-27  CI-GATED (histoire)    color-picker-field.spec.ts
+2026-09-01  UNGATED                color-picker-preview.spec.ts
+2026-09-10  UNGATED                color-picker-swatches.spec.ts
+2026-05-27  CI-GATED (histoire)    color-picker.spec.ts
+2026-05-27  UNGATED                command-palette.spec.ts
+2026-06-15  MARKETING-NOT-GATED    components.spec.ts
+2026-06-17  MARKETING-NOT-GATED    composables.spec.ts
+2026-05-27  UNGATED                confirm-wrapper.spec.ts
+2026-05-27  UNGATED                contextual-menu.spec.ts
+2026-05-27  CI-GATED (histoire)    counter.spec.ts
+2026-05-27  UNGATED                data-list.spec.ts
+2026-05-27  UNGATED                data-table.spec.ts
+2026-09-07  UNGATED                date-picker-color.spec.ts
+2026-05-27  UNGATED                date-picker-field.spec.ts
+2026-05-27  UNGATED                date-picker.spec.ts
+2026-09-07  UNGATED                dead-props-550-lot1.spec.ts
+2026-05-27  CI-GATED (histoire)    defaults-provider.spec.ts
+2026-05-27  UNGATED                density-contract.spec.ts
+2026-09-16  UNGATED                dialog-reachability.spec.ts
+2026-05-27  CI-GATED (histoire)    dialog.spec.ts
+2026-08-17  CI-GATED (histoire)    directional-story-controls.spec.ts
+2026-05-27  CI-GATED (histoire)    divider.spec.ts
+2026-05-27  CI-GATED (histoire)    drawer.spec.ts
+2026-05-27  CI-GATED (histoire)    empty-state.spec.ts
+2026-09-13  UNGATED                expansion-panel-content.spec.ts
+2026-05-27  CI-GATED (histoire)    expansion-panel.spec.ts
+2026-05-27  UNGATED                expansion-panels.spec.ts
+2026-09-09  UNGATED                field-affix-min-height.spec.ts
+2026-09-14  UNGATED                field-border-notch.spec.ts
+2026-05-27  CI-GATED (histoire)    field-height.spec.ts
+2026-09-09  UNGATED                field-variant-padding.spec.ts
+2026-05-27  UNGATED                field.spec.ts
+2026-09-10  UNGATED                file-field-download.spec.ts
+2026-05-27  UNGATED                file-field.spec.ts
+2026-05-27  UNGATED                filefield-debug.spec.ts
+2026-05-27  UNGATED                form.spec.ts
+2026-09-11  UNGATED                grid-item.spec.ts
+2026-05-27  CI-GATED (histoire)    grid.spec.ts
+2026-05-27  UNGATED                grids.spec.ts
+2026-05-27  UNGATED                group-propagation.spec.ts
+2026-05-31  MARKETING-NOT-GATED    home-cta.spec.ts
+2026-05-31  MARKETING-NOT-GATED    home-features.spec.ts
+2026-05-31  MARKETING-NOT-GATED    home-hero.spec.ts
+2026-05-31  MARKETING-NOT-GATED    home-kpis.spec.ts
+2026-05-31  MARKETING-NOT-GATED    home-playground.spec.ts
+2026-05-31  MARKETING-NOT-GATED    home-showcase.spec.ts
+2026-05-31  MARKETING-NOT-GATED    home-themes.spec.ts
+2026-05-27  UNGATED                icons.spec.ts
+2026-09-13  UNGATED                img.spec.ts
+2026-05-27  UNGATED                infinite-scroll-load.spec.ts
+2026-05-27  UNGATED                infinite-scroll.spec.ts
+2026-09-16  CI-GATED (histoire)    inline-edit-keyboard-actions.spec.ts
+2026-05-27  UNGATED                inline-edit.spec.ts
+2026-09-10  UNGATED                input-theme-channel.spec.ts
+2026-05-27  UNGATED                input.spec.ts
+2026-06-15  MARKETING-NOT-GATED    installation.spec.ts
+2026-05-27  UNGATED                item-group.spec.ts
+2026-05-27  UNGATED                itemgroup-debug.spec.ts
+2026-05-27  CI-GATED (histoire)    kbd.spec.ts
+2026-05-27  CI-GATED (histoire)    label.spec.ts
+2026-05-27  UNGATED                layout.spec.ts
+2026-05-27  UNGATED                lazy.spec.ts
+2026-09-10  UNGATED                list-item-dead-props.spec.ts
+2026-09-17  UNGATED                list-item-density.spec.ts
+2026-09-10  UNGATED                list-roles-a11y.spec.ts
+2026-05-27  CI-GATED (histoire)    list.spec.ts
+2026-08-30  UNGATED                loader.spec.ts
+2026-09-07  UNGATED                loading-text-wiring.spec.ts
+2026-09-10  UNGATED                main-surface-tokens.spec.ts
+2026-06-26  MARKETING-NOT-GATED    marketing-brand-presets.spec.ts
+2026-09-17  MARKETING-NOT-GATED    marketing-nav-locale.spec.ts
+2026-08-31  CI-GATED (marketing)   marketing-nav-ssr.spec.ts
+2026-07-22  MARKETING-NOT-GATED    marketing-primary-nav.spec.ts
+2026-06-24  MARKETING-NOT-GATED    marketing-theme-builder.spec.ts
+2026-07-21  MARKETING-NOT-GATED    marketing-theme-live-switch.spec.ts
+2026-07-15  MARKETING-NOT-GATED    marketing-theming-controls.spec.ts
+2026-07-06  MARKETING-NOT-GATED    marketing-theming-isolation.spec.ts
+2026-07-16  MARKETING-NOT-GATED    marketing-theming-theme-bg-and-triggers.spec.ts
+2026-07-18  MARKETING-NOT-GATED    marketing-theming-toggle-vs-split-parity.spec.ts
+2026-07-15  MARKETING-NOT-GATED    marketing-theming-viewport-height.spec.ts
+2026-05-30  MARKETING-NOT-GATED    marketing-theming.spec.ts
+2026-05-27  CI-GATED (histoire)    masonry.spec.ts
+2026-05-27  UNGATED                media-controller.spec.ts
+2026-05-27  UNGATED                media-scrubber.spec.ts
+2026-09-10  UNGATED                media-volume-control.spec.ts
+2026-05-27  UNGATED                media.spec.ts
+2026-09-16  UNGATED                menu-scroll.spec.ts
+2026-05-27  CI-GATED (histoire)    menu.spec.ts
+2026-09-07  UNGATED                messages-elevation.spec.ts
+2026-05-27  UNGATED                messages.spec.ts
+2026-06-17  CI-GATED (marketing)   nav-link-availability.spec.ts
+2026-05-27  CI-GATED (histoire)    number-field.spec.ts
+2026-05-27  UNGATED                number-format.spec.ts
+2026-05-27  CI-GATED (histoire)    otp-input-field.spec.ts
+2026-09-10  UNGATED                overlay-scrim.spec.ts
+2026-05-27  UNGATED                pagination-active-debug.spec.ts
+2026-05-27  UNGATED                pagination-colored-debug.spec.ts
+2026-05-27  UNGATED                pagination-debug.spec.ts
+2026-05-27  CI-GATED (histoire)    pagination.spec.ts
+2026-05-27  UNGATED                parallax-element.spec.ts
+2026-08-28  UNGATED                parallax-layer.spec.ts
+2026-05-27  CI-GATED (histoire)    parallax.spec.ts
+2026-05-27  CI-GATED (histoire)    password-field.spec.ts
+2026-05-27  UNGATED                picker-overlay.spec.ts
+2026-05-27  CI-GATED (histoire)    progress.spec.ts
+2026-05-27  UNGATED                prop-audit-phase4.spec.ts
+2026-05-27  UNGATED                prop-audit.spec.ts
+2026-05-27  CI-GATED (histoire)    qr-code.spec.ts
+2026-05-27  CI-GATED (histoire)    radio.spec.ts
+2026-09-17  CI-GATED (histoire)    rating-field-a11y.spec.ts
+2026-05-27  CI-GATED (histoire)    rating-field.spec.ts
+2026-09-14  UNGATED                responsive-aspect-ratio.spec.ts
+2026-09-01  UNGATED                responsive.spec.ts
+2026-06-15  MARKETING-NOT-GATED    roadmap.spec.ts
+2026-09-10  UNGATED                row-adjacent-margin.spec.ts
+2026-09-10  UNGATED                row-gutters.spec.ts
+2026-05-27  UNGATED                scroll.spec.ts
+2026-05-27  CI-GATED (histoire)    select.spec.ts
+2026-07-31  UNGATED                selection-control-group-layout.spec.ts
+2026-05-27  UNGATED                selection-control-group.spec.ts
+2026-07-28  UNGATED                selection-control.spec.ts
+2026-05-27  UNGATED                sheet.spec.ts
+2026-05-27  CI-GATED (histoire)    skeleton.spec.ts
+2026-05-27  UNGATED                slidegroup-arrows.spec.ts
+2026-09-16  UNGATED                slider-field-track-rounded.spec.ts
+2026-05-27  CI-GATED (histoire)    slider-field.spec.ts
+2026-05-27  UNGATED                snackbar-group.spec.ts
+2026-05-27  UNGATED                snackbar-item.spec.ts
+2026-05-27  CI-GATED (histoire)    snackbar.spec.ts
+2026-05-27  CI-GATED (histoire)    stepper.spec.ts
+2026-09-05  UNGATED                switch-density.spec.ts
+2026-08-27  UNGATED                switch-slider-error-tokens.spec.ts
+2026-05-27  CI-GATED (histoire)    switch.spec.ts
+2026-09-07  UNGATED                system-bar-location.spec.ts
+2026-05-27  CI-GATED (histoire)    table.spec.ts
+2026-09-07  UNGATED                tabs-bg-color.spec.ts
+2026-05-27  CI-GATED (histoire)    tabs.spec.ts
+2026-05-27  CI-GATED (histoire)    text-field.spec.ts
+2026-09-10  UNGATED                text-mask-font-tokens.spec.ts
+2026-05-27  UNGATED                text-mask.spec.ts
+2026-05-27  CI-GATED (histoire)    textarea-field.spec.ts
+2026-05-27  CI-GATED (histoire)    textarea-richtext.spec.ts
+2026-05-27  UNGATED                textfield-mask.spec.ts
+2026-05-27  CI-GATED (histoire)    theme-provider.spec.ts
+2026-07-04  MARKETING-NOT-GATED    theming-feedback-tokens.spec.ts
+2026-05-27  CI-GATED (histoire)    timeline-debug.spec.ts
+2026-05-27  CI-GATED (histoire)    timeline.spec.ts
+2026-05-27  CI-GATED (histoire)    title.spec.ts
+2026-09-17  UNGATED                token-intent-contrast.spec.ts
+2026-09-17  UNGATED                tokens-prefers-color-scheme.spec.ts
+2026-05-27  CI-GATED (histoire)    toolbar.spec.ts
+2026-05-27  CI-GATED (histoire)    tooltip.spec.ts
+2026-09-10  UNGATED                transition-duration-tokens.spec.ts
+2026-09-10  UNGATED                transition-reduced-motion.spec.ts
+2026-05-27  UNGATED                transitions.spec.ts
+2026-09-04  UNGATED                translate-scale-origin.spec.ts
+2026-05-27  CI-GATED (histoire)    treeview.spec.ts
+2026-06-17  MARKETING-NOT-GATED    types.spec.ts
+2026-05-27  UNGATED                utilities.spec.ts
+2026-05-27  UNGATED                video.spec.ts
+2026-05-27  UNGATED                virtual-scroll-jump.spec.ts
+2026-05-27  CI-GATED (histoire)    watermark.spec.ts
+2026-06-15  MARKETING-NOT-GATED    why-origam.spec.ts
+2026-08-26  UNGATED                window-item-phantom-transitions.spec.ts
+2026-09-01  UNGATED                window-live-region.spec.ts
+2026-09-10  UNGATED                window-surface-props.spec.ts
+2026-05-27  UNGATED                window.spec.ts
+2026-06-17  MARKETING-NOT-GATED    wireframe.spec.ts

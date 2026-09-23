@@ -590,7 +590,7 @@
 		if (root && next instanceof Node && root.contains(next)) return
 
 		noteTransition(true)
-		void confirm()
+		confirm()
 	}
 
 	/*********************************************************
@@ -634,7 +634,7 @@
 	 ********************************************************/
 	watch(isEditing, async (next: boolean): Promise<void> => {
 		if (!next) {
-			void restoreFocusAfterEdit()
+			restoreFocusAfterEdit()
 			return
 		}
 		if (!props.autoFocus) return
