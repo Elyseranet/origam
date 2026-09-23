@@ -560,7 +560,7 @@
 		padding: 0 calc(16px + var(--origam-btn---density-padding-x, 0px));
 
 		width: var(--origam-btn---width, auto);
-		min-width: var(--origam-btn---min-width, calc(var(--origam-btn---width, 64px) + var(--origam-btn---density, 0px)));
+		min-width: calc(var(--origam-btn---min-width, 64px) + var(--origam-btn---density, 0px));
 		max-width: var(--origam-btn---max-width, 100%);
 		height: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px));
 		min-height: var(--origam-btn---min-height, calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px)));
@@ -799,7 +799,7 @@
 		&--icon {
 			--origam-btn---border-radius: var(--origam-btn---border-radius-icon, 50%);
 
-			--origam-btn---min-width: 0;
+			--origam-btn---min-width: 0px;
 			--origam-btn---width: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px));
 
 			padding: 0;
@@ -1242,8 +1242,5 @@
 
 		--origam-btn__prepend---margin-inline-start: calc(var(--origam-btn---height) / -9);
 		--origam-btn__prepend---margin-inline-end: calc(var(--origam-btn---height) / 4.5);
-
-		--origam-btn---min-width: calc(var(--origam-btn---width, 36px) + var(--origam-btn---density, 0px));
-		--origam-btn---min-height: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px));
 	}
 </style>

@@ -513,7 +513,7 @@
 	.origam-code__copy--compact {
 		flex: none;
 		--origam-btn---min-height: 0;
-		--origam-btn---min-width: 0;
+		--origam-btn---min-width: 0px;
 		--origam-btn---height: auto;
 		--origam-btn---padding-block: var(--origam-code__compact-copy---padding-block);
 		--origam-btn---padding-inline: var(--origam-code__compact-copy---padding-inline);
@@ -557,7 +557,7 @@
 
 	.origam-code__copy {
 		--origam-btn---min-height: 0;
-		--origam-btn---min-width: 0;
+		--origam-btn---min-width: 0px;
 		--origam-btn---border-radius: var(--origam-code__copy---border-radius);
 		--origam-btn---font-size: var(--origam-code__copy---font-size);
 		--origam-btn---color: var(--origam-code__copy---color);

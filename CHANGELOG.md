@@ -18,6 +18,57 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — #901 `OrigamBtn` — `calc(auto + 0px)` ramenait `min-width` à `0` sur tous les boutons
+
+`OrigamBtn.vue`, second bloc `<style scoped>`, déclarait sans condition sur
+`.origam-btn` `--origam-btn---min-width: calc(var(--origam-btn---width, 36px)
++ var(--origam-btn---density, 0px))`. La feuille (`light.css`/`dark.css`)
+déclare `--origam-btn---width: auto`, donc le repli `36px` n'était jamais
+atteint et la valeur devenait `calc(auto + 0px)` — invalide au moment de la
+substitution dans `min-width` (ligne 563), pas au parse : la propriété
+retombait sur sa valeur initiale (`auto` → `0` hors flex), jamais sur le
+repli `64px`. Même spécificité `(0,2,0)` que les modificateurs `&--size-*`,
+mais déclaré APRÈS eux : les 5 échelons de `size` et `&--icon` étaient donc
+tous écrasés — famille de la garde 29 `unitless-zero-in-calc` / #607.
+
+Mesuré en navigateur réel (Playwright + Histoire statique, chromium) :
+
+| | avant | après |
+|---|---|---|
+| `size=x-small` | `0px` | `36px` |
+| `size=small` | `0px` | `50px` |
+| `size=default` | `0px` | `64px` |
+| `size=large` | `0px` | `78px` |
+| `size=x-large` | `0px` | `92px` |
+| `density=comfortable` (size=default) | `0px` | `72px` |
+| `icon=true` | `28px` (dépendait de `--origam-btn---height` résolue, pas de 0 voulu) | `0px` |
+
+Correctif : `min-width` (l.563) lit désormais directement
+`--origam-btn---min-width` (repli `64px`) plutôt que `--origam-btn---width`,
+et le second bloc `<style scoped>` ne réécrit plus ce canal (ni
+`--origam-btn---min-height`, strictement identique au repli déjà présent
+l.566 et jamais déclaré par aucune feuille — retrait vérifié sans effet).
+
+⛔ **Corollaire découvert en réparant** : le nouveau `calc(var(--origam-
+btn---min-width, 64px) + var(--origam-btn---density, 0px))` fait
+maintenant participer `--origam-btn---min-width` à une addition — et
+`&--icon` le posait à `0` NU (`<number>`, pas `<length>`), le même défaut
+que celui réparé ici. `OrigamCode.vue` déclarait le même canal en `0` nu
+pour son bouton de copie compact (`.origam-code__copy`,
+`.origam-code__copy--compact`). Les trois déclarations passent à `0px` —
+changement sémantiquement neutre (`0` == `0px` en CSS), guard
+`unitless-zero-in-calc` self-testé vert. `token-var-channels` gagne 1 entrée
+« canal mort connu » pour `--origam-btn---min-height` (jamais alimenté par
+le pipeline de tokens, extension locale volontaire — baseline mise à jour).
+
+**VRT** : mesuré (pas supposé) via `pnpm -F @origam/tests test:vrt:docker`
+(image `mcr.microsoft.com/playwright:v1.59.1-jammy` pinnée, seule verdict
+valable — cf. `vrt/VRT.md`) — `vrt/btn-variant.spec.ts`, 7/7 verts, **aucune
+capture ne bouge**. Les 7 libellés de la matrice (`Text` … `Outlined`, 4 à
+8 caractères) dépassent déjà le plancher `size=small` (`50px`) une fois le
+padding `12px`×2 ajouté, donc le nouveau plancher ne change la largeur
+d'aucun bouton de ce pilote. Aucune baseline à régénérer dans cette PR.
+
 ### Fixed — #607 / #569 : 19 canaux de thème confisqués par le bloc du composant
 
 Un composant qui redéclare un token que les feuilles déclarent déjà rend ce
