@@ -187,7 +187,6 @@
 		&--variant-outlined,
 		&--variant-outlined &__key {
 			--origam-kbd---background-color: var(--origam-kbd--outlined---background-color, var(--origam-color__surface---raised, #fff));
-			--origam-kbd---border-color: var(--origam-color__border---subtle, #d4d4d4);
 			--origam-kbd---border-width: var(--origam-kbd--outlined---border-width, 1px);
 			--origam-kbd---box-shadow: 0 1px 0 0 color-mix(in srgb, currentColor 12%, transparent),
 			                            inset 0 1px 0 0 color-mix(in srgb, white 50%, transparent);

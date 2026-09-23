@@ -253,7 +253,7 @@
   --origam-btn---width: auto;
   --origam-btn---min-width: 64px;
   --origam-btn---max-width: 100%;
-  --origam-btn---height: 36px;
+  --origam-btn---height: var(--origam-btn---height-md, 36px);
   --origam-btn---max-height: 100%;
   --origam-btn---height-xs: 20px;
   --origam-btn---height-sm: 28px;
@@ -780,7 +780,7 @@
   --origam-toolbar---border-end-end-radius: var(--origam-radius---none);
   --origam-toolbar---max-width: 100%;
   --origam-toolbar---width: 100%;
-  --origam-toolbar---height: var(--origam-space---14);
+  --origam-toolbar---height: var(--origam-toolbar---height-default, var(--origam-space---14));
   --origam-toolbar---height-compact: var(--origam-space---10);
   --origam-toolbar---height-default: var(--origam-space---14);
   --origam-toolbar---height-prominent: var(--origam-space---20);
@@ -2989,7 +2989,7 @@
     --origam-btn---width: auto;
     --origam-btn---min-width: 64px;
     --origam-btn---max-width: 100%;
-    --origam-btn---height: 36px;
+    --origam-btn---height: var(--origam-btn---height-md, 36px);
     --origam-btn---max-height: 100%;
     --origam-btn---height-xs: 20px;
     --origam-btn---height-sm: 28px;
@@ -3516,7 +3516,7 @@
     --origam-toolbar---border-end-end-radius: var(--origam-radius---none);
     --origam-toolbar---max-width: 100%;
     --origam-toolbar---width: 100%;
-    --origam-toolbar---height: var(--origam-space---14);
+    --origam-toolbar---height: var(--origam-toolbar---height-default, var(--origam-space---14));
     --origam-toolbar---height-compact: var(--origam-space---10);
     --origam-toolbar---height-default: var(--origam-space---14);
     --origam-toolbar---height-prominent: var(--origam-space---20);

@@ -449,9 +449,6 @@
       --origam-alert---density: -8px;
     }
 
-    &--density-default {
-      --origam-alert---density: 0px;
-    }
 
     &--density-compact {
       --origam-alert---density: 8px;

@@ -234,13 +234,6 @@
 			--origam-table__cell---padding-inline: 8px;
 		}
 
-		&--density-default {
-			--origam-table__header-cell---padding-block: 12px;
-			--origam-table__header-cell---padding-inline: 16px;
-			--origam-table__cell---padding-block: 12px;
-			--origam-table__cell---padding-inline: 16px;
-		}
-
 		&--density-comfortable {
 			--origam-table__header-cell---padding-block: 18px;
 			--origam-table__header-cell---padding-inline: 24px;

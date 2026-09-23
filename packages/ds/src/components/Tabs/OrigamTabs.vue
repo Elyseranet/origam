@@ -374,27 +374,8 @@
 			--origam-tabs---height: 56px;
 		}
 
-		&--density-default {
-			--origam-tabs---height: 48px;
-		}
-
 		&--density-compact {
 			--origam-tabs---height: 36px;
 		}
-	}
-</style>
-
-<style>
-	:root {
-		--origam-tabs---height: 48px;
-		--origam-tabs---gap: 0;
-		--origam-tabs---padding-block: 0;
-		--origam-tabs---padding-inline: 0;
-		--origam-tabs---background-color: transparent;
-		--origam-tabs---border-radius: 0;
-		--origam-tabs---border-width: 0;
-		--origam-tabs---border-style: solid;
-		--origam-tabs---border-color: currentColor;
-		--origam-tabs---color: inherit;
 	}
 </style>
