@@ -78,6 +78,84 @@ la famille Media configure ses `.origam-btn` imbriqués). Livraison
 migration de feuille composant par composant, avec risque de rendu — donc un
 arbitrage, pas un correctif.
 
+### Fixed — #829 : `geek` ET `glass` déclaraient `surface.sunken` PLUS CLAIR que `surface.default` (mode clair)
+
+`sunken` et `default` ne sont pas deux couleurs interchangeables, ce sont des
+**rôles** : `sunken` promet une surface encaissée. En mode **clair**, `geek`
+déclarait `#fbf5ff` — un ton plus clair que son `default` `#f6f0ff` — donc
+tout consommateur demandant un creux recevait un ton **surélevé**.
+
+Mesuré en navigateur réel (Chromium, `/installation`, `data-theme="geek"`,
+valeur peinte sur une sonde, pas le littéral du fichier) :
+
+| | avant | après |
+|---|---|---|
+| `surface---default` | `rgb(246, 240, 255)` L=0.891 | inchangé |
+| `surface---sunken` | `rgb(251, 245, 255)` **L=0.930** | `rgb(239, 232, 252)` **L=0.831** |
+| relation | **surélevé** ❌ | **encaissé** ✅ |
+
+**Valeur choisie par la grammaire du dépôt, pas à l'œil.** Sur les 5 autres
+thèmes clairs corrects, la « profondeur du creux » — contrast(default,
+sunken) — va de 1.0487 (`material`) à 1.1001 (`editorial`). `#efe8fc` place
+`geek` à **1.0686**, dans cette bande, conserve la teinte lavande et
+respecte l'ordre `disabled < sunken < default`.
+
+**Consommateurs** : 41 occurrences de `surface---sunken` dans 20 fichiers de
+`packages/marketing/src` (le ticket annonçait « ~30 » ; recompté). La plus
+large est `assets/css/themes/_shared.css:88`, qui alimente
+`--origam-code---background-color` : vérifié sur les **13** blocs
+`.origam-code` de `/installation`, qui passent de `rgb(251,245,255)` à
+`rgb(239,232,252)`.
+
+⛔ **La moitié « mode sombre » du ticket n'est pas reproduite, et rien n'y a
+été changé.** En mode sombre un creux se lit plus CLAIR que la page, et c'est
+déjà le cas : `sunken` L=0.009 > `default` L=0.002. Le ticket la signalait au
+motif que `sunken` y dépasse `raised` ; sur cette relation le dépôt n'est pas
+uniforme (`apple`, `cartoon`, `editorial`, `material` et `geek` font ainsi,
+seuls `ecom` et `glass` l'inversent), donc elle ne constitue pas une règle.
+
+`overlay` n'a **pas** suivi `sunken` : c'est un rôle de remplissage de
+composant (chip, avatar, kbd, btn tonal, lignes survolées — 58 occurrences),
+pas une surface encaissée, et le bloc sombre de `geek` découplait déjà les
+deux.
+
+#### `glass` — même défaut, même mode
+
+Trouvé en relevant les 7 marques pour choisir la valeur de `geek`. `glass`
+déclarait `sunken: rgba(255, 255, 255, 0.85)` — **la même valeur que son
+`overlay`**. Mesure des pixels **rendus** (capture relue via canvas, donc
+compositing réel) :
+
+| | avant | après |
+|---|---|---|
+| `default` | `rgb(233, 236, 255)` L=0.8453 | inchangé |
+| `raised` | `rgb(247, 248, 255)` L=0.9413 | inchangé |
+| `sunken` | `rgb(252, 252, 255)` **L=0.9754** | `rgb(226, 229, 249)` **L=0.7905** |
+
+⛔ **« Un verre dépoli éclaircit ce qu'il couvre » ne l'excusait pas, et c'est
+le mode SOMBRE de `glass` lui-même qui le prouve.** En sombre, l'identité place
+déjà `sunken` (blanc 4 %) ENTRE `default` et `raised` (blanc 5 %) — une
+élévation plus faible. En clair elle le plaçait AU-DELÀ de `raised` (blanc 85 %
+contre 65 %). La thèse prédirait le même sens dans les deux modes : l'identité
+se contredisait elle-même. Ce n'est pas un idiome assumé.
+
+Le correctif **garde la translucidité** sur laquelle l'identité est bâtie (les
+consommateurs de `backdrop-filter` voient toujours au travers) et remplace le
+blanc par l'encre de la palette à 3 % : `rgba(26, 21, 56, 0.03)`. Profondeur
+rendue **1.0653**, contre **1.0591** pour le mode sombre de `glass` lui-même —
+la valeur est celle que l'identité utilise déjà, et elle est dans la bande du
+dépôt. `overlay` garde le blanc dépoli : c'est un rôle de remplissage de
+composant, où « plus opaque qu'une carte » est la bonne lecture glassmorphism.
+
+Non-régression : `audit:dark-contrast` reste à **0 / 1 664**.
+
+Ajouté `packages/tests/TU/marketing/brand-surface-elevation.spec.ts` — **14 cas
+(7 marques × 2 modes), tous arbitrés**, aucun sauté : les surfaces translucides
+sont **compositées** sur le `default` de leur propre thème, avec l'opération
+`over()` de `audit/dark-contrast.audit.mjs`. Accord avec le navigateur à 3
+décimales (composite 0.9757 contre pixel rendu 0.9754). Vérifiée ROUGE sur les
+valeurs du commit parent, une fois par marque : `geek/light` puis `glass/light`.
+
 ### Fixed — #818 baseline shrink : les 8 `color-contrast` du DS (8 → 0)
 
 ⚠️ **Ce lot porte sur le DS lui-même, pas sur une palette marketing** : il

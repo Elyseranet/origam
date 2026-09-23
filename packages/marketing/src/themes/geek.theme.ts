@@ -16,7 +16,23 @@ export const geekLightTheme: IOrigamTheme = {
             surface: {
                 default: '#f6f0ff',
                 raised: '#ffffff',
-                sunken: '#fbf5ff',
+                // `sunken` must read as a WELL: darker than `default` in light
+                // mode (and lighter than it in dark mode — see the dark block
+                // below, which is already correct). It was `#fbf5ff`, a tone
+                // LIGHTER than `default`, so every consumer asking for an
+                // inset surface got a raised one instead (#829).
+                //
+                // Value derived from the repo's own grammar rather than picked
+                // by eye. Across the 5 other light themes that get this right,
+                // the "well depth" — contrast(default, sunken) — spans
+                // 1.0487 (material) .. 1.1001 (editorial). `#efe8fc` puts geek
+                // at 1.0686, inside that band, and keeps the lavender hue while
+                // respecting the ordering disabled < sunken < default.
+                sunken: '#efe8fc',
+                // `overlay` deliberately does NOT follow `sunken` here. It is a
+                // component-fill role (chip, avatar, kbd, tonal btn, hover
+                // rows), not an inset surface, and the dark block below already
+                // decouples the two (overlay = default there).
                 overlay: '#fbf5ff',
                 disabled: '#e9e1f5'
             },
@@ -377,6 +393,14 @@ export const geekDarkTheme: IOrigamTheme = {
         color: {
             surface: {
                 default: '#0a0612',
+                // MEASURED CORRECT — left untouched by #829, which claimed this
+                // block was "hit by the same error". It is not. In dark mode a
+                // well reads LIGHTER than the page, and it does: sunken L=0.009
+                // sits above default L=0.002 (Chromium, /installation, geek).
+                // The ticket's argument was that sunken > raised; on that
+                // relation the repo is not uniform, and geek is in the majority
+                // (apple, cartoon, editorial, material do the same; only ecom
+                // and glass invert it). No change was warranted here.
                 raised: '#140c24',
                 sunken: '#1c1138',
                 overlay: '#0a0612',
