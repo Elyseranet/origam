@@ -1990,7 +1990,12 @@
   --origam-date-picker-month__weeks---font-size: 0.85rem;
   --origam-date-picker-month__weekday---font-size: 0.85rem;
   --origam-date-picker-month__day---font-size: 0.85rem;
-  --origam-code---background-color: var(--origam-color__surface---sunken);
+  /* #535 — was `surface---sunken`. Shiki's fixed per-token colours (see
+   * `code.const.ts`) cannot reach 4.5:1 against several brand `sunken`
+   * surfaces no matter how dark the theme goes; `surface---raised` is the
+   * lightest surface already defined by every theme (own palette, no new
+   * token) and clears AA with margin everywhere it was measured (#535 PR). */
+  --origam-code---background-color: var(--origam-color__surface---raised);
   --origam-code---color: var(--origam-color__text---primary);
   --origam-code---border-color: var(--origam-color__border---subtle);
   --origam-code---border-width: var(--origam-border__width---thin);

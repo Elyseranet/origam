@@ -311,6 +311,7 @@ console.log(greet('origam'))`
 
 	const shortSnippet = `import { ref, computed } from 'vue'
 
+// derived state
 const count = ref(0)
 const double = computed(() => count.value * 2)`
 

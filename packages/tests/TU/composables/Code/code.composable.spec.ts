@@ -67,7 +67,7 @@ describe.skip('useCode', () => {
 
         expect(codeToHtml).toHaveBeenCalledWith(
             'const x = 1',
-            { lang: CODE_LANG.TS, themes: { light: 'github-light', dark: 'github-dark' }, defaultColor: false }
+            { lang: CODE_LANG.TS, themes: { light: 'github-light-high-contrast', dark: 'github-dark-high-contrast' }, defaultColor: false }
         )
     })
 
@@ -108,7 +108,7 @@ describe.skip('useCode', () => {
         expect(warn).toHaveBeenCalledTimes(1)
         // shiki gets called twice, but both with `plaintext` as lang.
         expect(codeToHtml).toHaveBeenCalledTimes(2)
-        expect(codeToHtml).toHaveBeenNthCalledWith(1, 'x', { lang: CODE_LANG.PLAINTEXT, themes: { light: 'github-light', dark: 'github-dark' }, defaultColor: false })
+        expect(codeToHtml).toHaveBeenNthCalledWith(1, 'x', { lang: CODE_LANG.PLAINTEXT, themes: { light: 'github-light-high-contrast', dark: 'github-dark-high-contrast' }, defaultColor: false })
         warn.mockRestore()
     })
 
