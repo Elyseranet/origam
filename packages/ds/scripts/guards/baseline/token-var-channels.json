@@ -136,6 +136,7 @@
     "packages/ds/src/components/Btn/OrigamBtn.vue::--origam-btn---box-shadow-ghost-hover",
     "packages/ds/src/components/Btn/OrigamBtn.vue::--origam-btn---loader-skeleton-min-height",
     "packages/ds/src/components/Btn/OrigamBtn.vue::--origam-btn---loader-skeleton-min-width",
+    "packages/ds/src/components/Btn/OrigamBtn.vue::--origam-btn---min-height",
     "packages/ds/src/components/Btn/OrigamBtn.vue::--origam-btn---overlay-opacity-active",
     "packages/ds/src/components/Btn/OrigamBtn.vue::--origam-btn---overlay-opacity-active-hover",
     "packages/ds/src/components/Btn/OrigamBtn.vue::--origam-btn__progress---linear-height",
