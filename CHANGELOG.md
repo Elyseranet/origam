@@ -71,6 +71,115 @@ capture ne bouge**. Les 7 libellés de la matrice (`Text` … `Outlined`, 4 à
 padding `12px`×2 ajouté, donc le nouveau plancher ne change la largeur
 d'aucun bouton de ce pilote. Aucune baseline à régénérer dans cette PR.
 
+### Fixed — #411 : `OrigamChartMap` faisait **disparaître** contours et pays sous un thème de marque
+
+Ce n'est pas « la couleur ne suit pas le thème ». `borderColor` **était** une
+prop déclarée, donc le résolveur d'ADR-005 l'atteignait déjà : un thème
+nommant `components['origam-chart-map'].borderColor` posait bien sa valeur.
+Le défaut est en aval — la valeur partait **verbatim dans le `stroke` inline
+du SVG, sans passer par `resolveColor()`**, contrairement à sa voisine
+`lineColor` qui y passait déjà.
+
+Or un intent comme `'success'` **n'est pas du CSS valide pour `stroke`** : le
+navigateur ne repeint pas en gris, il **jette la déclaration entière**. Une
+marque nommant cette prop ne recevait donc pas un contour mal thémé — elle
+n'avait **plus de contours de pays du tout**.
+
+```
+- :style="{ fill: country.fill, stroke: borderColor }"
++ :style="{ fill: country.fill, stroke: resolveColor(borderColor) }"
+```
+
+**Le jumeau, trouvé en réparant et livré dans la même PR** :
+`defaultCountryFill` portait le défaut identique une ligne plus bas
+(`fill = props.defaultCountryFill` sans `resolveColor()`, typé `string` nu
+face au `TIntent | string` de `lineColor`) — donc les pays **absents du jeu
+de données** disparaissaient de la même façon. Vérifié dans le code avant de
+le traiter, pas déduit par symétrie.
+
+Les deux props sont retypées `TIntent | string` et passent par
+`resolveColor()`, qui laisse traverser les littéraux CSS.
+
+⚠️ **Le défaut de `defaultCountryFill` reste le littéral
+`rgba(0,0,0,0.08)`, délibérément.** `resolveColor()` ne rend qu'une couleur
+**opaque fixe**, là où ce littéral est un **voile semi-transparent composité
+sur le `bgColor` que le graphique peint lui-même** : il s'adapte donc au
+clair, au sombre et à un `bgColor` personnalisé. Aucun intent ne reproduit
+ça — le retyper « pour la symétrie » aurait échangé un comportement
+adaptatif contre un comportement figé. Consigné dans le JSDoc de
+`IChartMapProps` et dans la table de la doc. Le défaut de `borderColor`,
+lui, passe de `rgba(0,0,0,0.2)` à l'intent `'neutral'`.
+
+⚠️ **Le ticket était périmé aux deux tiers**, revérifié avant d'écrire une
+ligne : des trois composants qu'il nomme, `OrigamSelect` était déjà réparé
+par `331d9b62` (#456) et `OrigamDatePickerField` par `374858be5` — lequel
+citait déjà #411 sans le fermer. Son périmètre à 3 était en revanche exact :
+grep des littéraux cités, aucune 4ᵉ occurrence dans le DS.
+
+A/B contre le commit parent, en Vitest (chaîne `style` littérale) **et** en
+Chromium réel (`getComputedStyle`) : `borderColor` stable **10/10** ;
+`defaultCountryFill` **2/4 rouge avant, 4/4 vert après** en unitaire, rouge
+puis vert en navigateur, stable 10/10 sous `--repeat-each=5`. Story, doc,
+2 specs TU et 2 specs e2e (ajoutées à `GREEN_SPECS`).
+
+### Fixed — #535 : le contraste syntaxique de `OrigamCode` était sous AA, deux fois plus bas que le ticket ne le disait
+
+⚠️ **Le `4,27:1` du ticket ne se reproduit plus** — `HomeHero` a migré vers
+un extrait `bash` qui ne touche que 2 des 8 catégories shiki, toutes deux
+déjà conformes. Le défaut sous-jacent, lui, est réel et bien plus large.
+
+Remesuré sur **8 catégories shiki** (mots-clés, ponctuation, chaînes,
+commentaires, nombres/variables, fonctions, paramètres, balises) × **8 fonds**
+(DS par défaut + 7 thèmes de marque) × **2 modes**, depuis les valeurs hex
+littérales réelles (shiki 4.3.1, `*.theme.ts`) :
+
+| | avant | thème shiki seul | **livré** |
+|---|---|---|---|
+| clair, pire cas | **2,93:1** *(paramètre, `geek`)* | 4,23:1 | **4,77:1** *(commentaire, `glass`)* |
+| sombre, pire cas | **2,55:1** *(commentaire, `material`)* | 5,79:1 | **6,77:1** *(mot-clé, `material`)* |
+
+**Le pire cas réel était à 2,55:1 : le ticket sous-estimait son propre défaut
+d'un facteur deux.**
+
+**D'où vient la couleur, établi et non supposé.** Shiki peint chaque token via
+`--shiki-light` / `--shiki-dark` **inline sur chaque `<span>`**, depuis deux
+thèmes figés déclarés dans `consts/Code/code.const.ts`. **Aucun token
+`--origam-code---syntax-*` par catégorie n'existe** — déjà établi par #399 /
+#661, reconfirmé en relisant le code. La fausse piste signalée dans le ticket
+tient toujours : `--origam-color__feedback--success---fgSubtle` (touché par
+#524) alimente bien `--origam-code__syntax---string`, mais **ce n'est pas ce
+que shiki peint**.
+
+**Aucun token créé, et l'arbitrage a été évité plutôt que contourné.** La
+question « faut-il des tokens de syntaxe par catégorie ? » était posée comme
+point d'arrêt ; le calcul a montré qu'aucune décision d'architecture n'était
+nécessaire :
+
+1. `CODE_LIGHT_THEME` / `CODE_DARK_THEME` → `github-light-high-contrast` /
+   `github-dark-high-contrast` — **mêmes paquets shiki, coût de bundle
+   inchangé**.
+2. `--origam-code---background-color` : `surface---sunken` →
+   `surface---raised`, **un token sémantique qui existe déjà par thème**.
+
+Le thème shiki seul ne suffisait pas (4,23:1 en clair) : **il fallait les
+deux**.
+
+Nouveau `describe` `Syntax contrast (#535)` dans `code.spec.ts`,
+`getComputedStyle` réel sur chaque couleur shiki distincte, clair + sombre —
+**3/3 vert**.
+
+**Non vérifié** : les 7 thèmes de marque **via Playwright contre le site
+marketing lui-même** — calcul déterministe sur les valeurs source à la place,
+le mécanisme CSS étant, lui, vérifié en navigateur réel. VitePress a son
+propre pipeline shiki indépendant, hors périmètre. Le seed marketing
+(`server/db/seed/const.json`) garde une copie figée des anciens noms de
+thème : signalé, **non resynchronisé**, ça demande un re-sync de base séparé.
+
+**Trouvaille annexe** : le `#29` cité dans les commentaires « bugs DS
+connus » de `code.spec.ts` ne correspond à aucun ticket — `gh issue view 29`
+est une PR dependabot sans rapport. Corrigé dans le commentaire. Même motif
+que le `#46` qui a circulé des mois dans la doc de ce dépôt.
+
 ## [2.18.7] - 2026-09-23
 
 ### Fixed — #607 / #569 : 19 canaux de thème confisqués par le bloc du composant

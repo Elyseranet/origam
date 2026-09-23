@@ -22,9 +22,11 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: '2026-09-23',
         type: 'patch',
         summaryKey: 'changelog.versions.v2188.summary',
-        summaryFallback: '1 fix. See the full changelog for detail.',
+        summaryFallback: '3 fixes. See the full changelog for detail.',
         highlights: [
-            { type: 'fixed', textKey: 'changelog.versions.v2188.h1', textFallback: '#901 OrigamBtn — calc(auto + 0px) ramenait min-width à 0 sur tous les boutons' }
+            { type: 'fixed', textKey: 'changelog.versions.v2188.h1', textFallback: '#901 OrigamBtn — calc(auto + 0px) ramenait min-width à 0 sur tous les boutons' },
+            { type: 'fixed', textKey: 'changelog.versions.v2188.h2', textFallback: '#411 : OrigamChartMap faisait disparaître contours et pays sous un thème de marque' },
+            { type: 'fixed', textKey: 'changelog.versions.v2188.h3', textFallback: '#535 : le contraste syntaxique de OrigamCode était sous AA, deux fois plus bas que le ticket ne le disait' }
         ]
     },
     {
