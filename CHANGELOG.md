@@ -18,6 +18,54 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — #829 : le thème `geek` déclarait `surface.sunken` PLUS CLAIR que `surface.default` (mode clair)
+
+`sunken` et `default` ne sont pas deux couleurs interchangeables, ce sont des
+**rôles** : `sunken` promet une surface encaissée. En mode **clair**, `geek`
+déclarait `#fbf5ff` — un ton plus clair que son `default` `#f6f0ff` — donc
+tout consommateur demandant un creux recevait un ton **surélevé**.
+
+Mesuré en navigateur réel (Chromium, `/installation`, `data-theme="geek"`,
+valeur peinte sur une sonde, pas le littéral du fichier) :
+
+| | avant | après |
+|---|---|---|
+| `surface---default` | `rgb(246, 240, 255)` L=0.891 | inchangé |
+| `surface---sunken` | `rgb(251, 245, 255)` **L=0.930** | `rgb(239, 232, 252)` **L=0.831** |
+| relation | **surélevé** ❌ | **encaissé** ✅ |
+
+**Valeur choisie par la grammaire du dépôt, pas à l'œil.** Sur les 5 autres
+thèmes clairs corrects, la « profondeur du creux » — contrast(default,
+sunken) — va de 1.0487 (`material`) à 1.1001 (`editorial`). `#efe8fc` place
+`geek` à **1.0686**, dans cette bande, conserve la teinte lavande et
+respecte l'ordre `disabled < sunken < default`.
+
+**Consommateurs** : 41 occurrences de `surface---sunken` dans 20 fichiers de
+`packages/marketing/src` (le ticket annonçait « ~30 » ; recompté). La plus
+large est `assets/css/themes/_shared.css:88`, qui alimente
+`--origam-code---background-color` : vérifié sur les **13** blocs
+`.origam-code` de `/installation`, qui passent de `rgb(251,245,255)` à
+`rgb(239,232,252)`.
+
+⛔ **La moitié « mode sombre » du ticket n'est pas reproduite, et rien n'y a
+été changé.** En mode sombre un creux se lit plus CLAIR que la page, et c'est
+déjà le cas : `sunken` L=0.009 > `default` L=0.002. Le ticket la signalait au
+motif que `sunken` y dépasse `raised` ; sur cette relation le dépôt n'est pas
+uniforme (`apple`, `cartoon`, `editorial`, `material` et `geek` font ainsi,
+seuls `ecom` et `glass` l'inversent), donc elle ne constitue pas une règle.
+
+`overlay` n'a **pas** suivi `sunken` : c'est un rôle de remplissage de
+composant (chip, avatar, kbd, btn tonal, lignes survolées — 58 occurrences),
+pas une surface encaissée, et le bloc sombre de `geek` découplait déjà les
+deux.
+
+Non-régression : `audit:dark-contrast` reste à **0 / 1 664**.
+
+Ajouté `packages/tests/TU/marketing/brand-surface-elevation.spec.ts` — 14 cas
+(7 marques × 2 modes) asservissant l'invariant, `glass` étant hors portée
+d'un test statique (surfaces `rgba`). Vérifiée ROUGE sur la valeur du commit
+parent, exactement sur le cas `geek/light`.
+
 ### Fixed — #818 baseline shrink : structure ARIA — `aria-required-parent`/`aria-required-children`/`listitem`/`aria-prohibited-attr` (4 entrées)
 
 Recompté sur `a11y-violations.baseline.json` **après rebase sur `develop`**
