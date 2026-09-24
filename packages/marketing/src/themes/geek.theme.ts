@@ -193,7 +193,34 @@ export const geekLightTheme: IOrigamTheme = {
     //     #242/#249 qui sont mergées). Posé quand même (prêt à s'activer le
     //     jour où #241 est corrigé) — pending #241, voir la PR.
     components: {
-        'origam-btn': { variant: 'outlined', rounded: 'sm', border: true, elevation: 2 },
+        // ⛔ PAS de `rounded` ici — retrait délibéré, décision propriétaire.
+        //
+        // Ce bloc portait `rounded: 'sm'`, qui ÉPINGLAIT le bouton sur
+        // l'échelon `sm` de l'échelle et écrasait tout le câblage de radius
+        // en-dessous. Mesuré : 2px avant la correction de l'échelle, 4px
+        // après — alors que l'identité réserve `btn: 8px` aux boutons, et que
+        // les cartes du même thème rendent 8px (et 12px pour `rounded="lg"`).
+        // Les boutons lisaient donc plus anguleux que tout ce qui les entoure.
+        //
+        // ⚠️ Ce bloc N'A PAS de champ `mode` (voir `geekLightTheme` plus haut),
+        // il est donc mode-AGNOSTIQUE : il gouverne le clair ET le sombre.
+        // `geekDarkTheme` n'a aucun bloc `components` — il héritait de
+        // celui-ci. L'épinglage valait donc pour les deux modes, ce qui
+        // explique que geek SOMBRE rendait lui aussi ses boutons sur `sm`
+        // (4px) et jamais sur son propre échelon `btn` (8px).
+        //
+        // Sans cette prop, le bouton retombe sur `--origam-btn---border-radius`.
+        // ⚠️ Cette variable n'a PAS la même valeur partout :
+        //   • feuille du DS (`packages/ds/.../tokens/light.css:147`) :
+        //       --origam-btn---border-radius: var(--origam-radius---sm)   → 4px
+        //   • CSS marketing (`src/assets/css/themes/_shared.css:79`) :
+        //       --origam-btn---border-radius: var(--origam-radius---btn)  → 8px
+        // Sur CE site c'est donc 8px — vérifié en navigateur, pas déduit.
+        // Un consommateur du DS qui n'embarque pas `_shared.css` obtiendrait
+        // 4px ; c'est le comportement du DS, pas celui du thème.
+        //
+        // `variant` / `border` / `elevation` restent : seul `rounded` part.
+        'origam-btn': { variant: 'outlined', border: true, elevation: 2 },
         'origam-btn-group': { variant: 'outlined', rounded: 'sm', border: true, elevation: 2 },
         'origam-btn-toggle': { variant: 'outlined', rounded: 'sm', border: true, elevation: 2 },
 
@@ -267,7 +294,10 @@ export const geekLightTheme: IOrigamTheme = {
         '--origam-appbar---bg': 'rgba(251, 245, 255, 0.80)',
         '--origam-menu---background': 'var(--origam-color__surface---default)',
         '--origam-menu---color': 'var(--origam-color__text---primary)',
-        '--origam-menu---border-radius': '4px',
+        // Aligné sur le mode SOMBRE du même thème (`8px`, plus bas) — même
+        // raisonnement que pour `vars.rounded` : le clair portait la moitié
+        // de la valeur du sombre sur tout son vocabulaire de rayons.
+        '--origam-menu---border-radius': '8px',
         '--origam-menu---box-shadow': '0 4px 16px -4px rgba(124, 58, 237, 0.14), 0 1px 4px -1px rgba(124, 58, 237, 0.08), 0 0 0 1px var(--origam-color__border---default)',
         '--origam-menu__content---padding': '4px',
         '--origam-list---background': 'transparent',
@@ -286,13 +316,15 @@ export const geekLightTheme: IOrigamTheme = {
 
         // ── Tooltip (SYNTHESE §3, DS GAP note ci-dessus) — seul hook réel
         // exposé par OrigamTooltip.vue. Coins nets, en cohérence avec
-        // l'identité geek (rounded sm). Pas de border-color/box-shadow hook.
-        '--origam-tooltip---border-radius': '2px',
+        // l'identité geek. Pas de border-color/box-shadow hook.
+        // Aligné sur le mode SOMBRE (`4px`, plus bas) — le clair valait 2px.
+        '--origam-tooltip---border-radius': '4px',
 
         // ── Pagination (SYNTHESE §4) — couple actif = fill accent + on-color.
         // `rounded` n'est pas une prop valide (voir note `components`) ; le
         // radius passe ici, en vraie cssVar.
-        '--origam-pagination---border-radius': '2px',
+        // Aligné sur le mode SOMBRE (`4px`, plus bas) — le clair valait 2px.
+        '--origam-pagination---border-radius': '4px',
         '--origam-pagination__item--is-active---background-color': '#7c3aed',
         '--origam-pagination__item--is-active---color': '#ffffff',
 
