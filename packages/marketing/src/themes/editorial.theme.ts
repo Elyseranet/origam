@@ -158,7 +158,10 @@ export const editorialLightTheme: IOrigamTheme = {
         // d'équivalent `bgColor`-toujours-actif à poser à la place — ce
         // serait un changement visuel différent (rail coloré en permanence,
         // pas seulement à l'état coché), hors du périmètre d'une purge.
-        'origam-switch': { rounded: 'none', border: true },
+        // #931 — `border: true` retiré (doublon depuis #919, cf. cartoon.theme.ts
+        // pour le détail mesuré). La prop peignait le wrapper racine et l'anneau
+        // du pouce, jamais le track : celui-ci garde le 1px du défaut DS (#727).
+        'origam-switch': { rounded: 'none' },
         // Slider (Refs #35) — `rounded:'none'` set per spec intent, but flagged
         // BLOQUÉ visually: OrigamSliderField/OrigamSliderFieldTrack never call
         // `useRounded` (grep confirmed 0 hits across both files) — thumb
