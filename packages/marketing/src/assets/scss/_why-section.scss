@@ -1,0 +1,50 @@
+/*
+ * Shared section-header treatment for the /why-origam redesign.
+ *
+ * Vue `<style scoped>` does not cross a component boundary, and the page and
+ * the demo component both render the same eyebrow / two-line title / lead
+ * triplet. A mixin keeps ONE definition instead of two copies that drift.
+ *
+ * Every value is a token reference. The literal fallbacks mirror the ones
+ * already used across `packages/marketing/src` — they only apply if a sheet
+ * fails to load, never in normal rendering.
+ */
+
+@mixin why-section-header {
+    &__eyebrow {
+        margin: 0 0 var(--origam-space---3, 0.75rem);
+        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-weight: var(--origam-font__weight---semibold, 600);
+        color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
+        text-transform: uppercase;
+        letter-spacing: var(--origam-letter-spacing---wide, 0.08em);
+    }
+
+    &__title {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        font-family: var(--origam-font-family---heading);
+        font-size: clamp(2rem, 4.5vw, var(--origam-font-size---section, 3rem));
+        font-weight: var(--origam-font__weight---bold, 700);
+        letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
+        line-height: var(--origam-line-height---tight, 1.25);
+        color: var(--origam-color__text---primary, #0a0a0a);
+
+        &--single {
+            display: block;
+        }
+    }
+
+    &__title-line--muted {
+        color: var(--origam-color__text---secondary, #525252);
+    }
+
+    &__subtitle {
+        margin: var(--origam-space---4, 1rem) 0 0;
+        max-inline-size: 46ch;
+        font-size: var(--origam-font-size---lg, 1.125rem);
+        line-height: var(--origam-line-height---relaxed, 1.7);
+        color: var(--origam-color__text---secondary, #525252);
+    }
+}

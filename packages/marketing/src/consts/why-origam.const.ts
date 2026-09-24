@@ -9,37 +9,6 @@ export const WHY_HERO_BADGE_VARS: CSSProperties = {
 } as CSSProperties
 
 /**
- * Comparison table: alternating row tint.
- */
-export const WHY_TABLE_ACCENT_VARS: CSSProperties = {
-    '--origam-card---background': 'var(--origam-color__surface---raised, #fafafa)'
-} as CSSProperties
-
-/**
- * Strength icon tile background — same pattern as HomeFeatures.
- */
-export const WHY_STRENGTH_ICON_TILE_VARS: CSSProperties = {
-    '--origam-sheet---background': 'var(--origam-color__action--primary---bgSubtle, rgba(124, 58, 237, 0.1))'
-} as CSSProperties
-
-export const WHY_STRENGTH_ICON_TILE_RADIUS = 'var(--origam-radius---card, 10px)'
-
-export const WHY_STRENGTH_ICON_VARS: CSSProperties = {
-    '--origam-icon---color': 'var(--origam-color__action--primary---fgSubtle, #6d28d9)'
-} as CSSProperties
-
-/**
- * Weakness icon tile — amber/warning tint.
- */
-export const WHY_WEAKNESS_ICON_TILE_VARS: CSSProperties = {
-    '--origam-sheet---background': 'var(--origam-color__feedback--warning---bgSubtle, rgba(245, 158, 11, 0.1))'
-} as CSSProperties
-
-export const WHY_WEAKNESS_ICON_VARS: CSSProperties = {
-    '--origam-icon---color': 'var(--origam-color__feedback--warning---fg, #b45309)'
-} as CSSProperties
-
-/**
  * Strengths list (S2).
  */
 export const WHY_STRENGTHS: IStrength[] = [

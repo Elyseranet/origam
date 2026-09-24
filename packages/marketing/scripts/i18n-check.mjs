@@ -104,7 +104,18 @@ const DYNAMIC_KEY_ALLOWLIST = [
     'changelog.highlight.added',
     'changelog.highlight.changed',
     'changelog.highlight.fixed',
-    'changelog.highlight.deprecated'
+    'changelog.highlight.deprecated',
+    // src/pages/why-origam.vue + src/components/WhyOrigamThemeDemo.vue —
+    // `t(`why_origam.demo.identity_${entry.key}`, ...)`, `entry.key` ranges
+    // over the 8 brand identities in `WHY_DEMO_THEMES` (why-origam-demo.const.ts).
+    'why_origam.demo.identity_origam',
+    'why_origam.demo.identity_apple',
+    'why_origam.demo.identity_cartoon',
+    'why_origam.demo.identity_ecom',
+    'why_origam.demo.identity_editorial',
+    'why_origam.demo.identity_geek',
+    'why_origam.demo.identity_glass',
+    'why_origam.demo.identity_material'
 ]
 
 // Fields whose translation is resolved at runtime from the database (doc
