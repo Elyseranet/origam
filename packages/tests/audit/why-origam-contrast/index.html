@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>origam — why-origam contrast probe</title>
+	<style>
+		html, body { margin: 0; padding: 0; }
+		.probe-control { padding: 4px; }
+	</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="controls">
+	<div
+			class="probe-control"
+			data-probe-control="negative"
+			style="background-color: #ffffff; color: #000000;"
+	>Aa negative control — must NOT be flagged
+	</div>
+	<div
+			class="probe-control"
+			data-probe-control="positive"
+			style="background-color: #0a0a0a; color: #0a0a0a;"
+	>Aa positive control — must be flagged at 1.00
+	</div>
+</div>
+<script type="module" src="./main.ts"></script>
+</body>
+</html>
