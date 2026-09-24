@@ -15,3 +15,10 @@ dist
 # Built embeds (Histoire stories + VitePress docs) served at /stories and /docs
 public/stories
 public/docs
+wireframe/
+
+# Maquettes haute fidelite temporaires (ui-designer). Support de validation,
+# pas un livrable versionne : a supprimer une fois le design acte et reporte
+# dans src/. Le pattern couvre aussi la route de preview src/pages/design/.
+# (wireframe/ est deja ignore plus haut.)
+design/

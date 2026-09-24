@@ -29,6 +29,15 @@
         ],
         "createdAt": "2026-09-23T13:59:11.886Z",
         "reason": "Faux positif: .origam-code__row--highlighted:637 n'est pas un accent de carte mais le marqueur de gouttiere d'une LIGNE de code surlignee (inset 3px 0 0), convention de tout afficheur de code (GitHub, Shiki, Prism). Ligne anterieure a cette session (9f5a4eea1, 2026-05-16), non modifiee par le lot #535 qui n'a touche que code.const.ts et la doc."
+      },
+      {
+        "rule": "flat-type-hierarchy",
+        "value": "*",
+        "files": [
+          "packages/marketing/wireframe/why-origam-demo.html"
+        ],
+        "createdAt": "2026-09-24T07:18:20.971Z",
+        "reason": "Faux positif sur un WIREFRAME basse fidelite, artefact temporaire et gitignore (packages/marketing/.gitignore:18 'wireframe/'). Une echelle typographique plate y est la convention meme: on supprime la hierarchie visuelle pour que le relecteur juge la STRUCTURE et pas le style, le visuel etant le travail du ui-designer qui prend la suite. La feuille porte par ailleurs h1/h2/h3 a 32/24/16px, soit des ratios 1.33 et 1.5, conformes. SORTIE DE CETTE ENTREE: supprimer des que le dossier wireframe/ est supprime apres validation de la refonte /why-origam."
       }
     ]
   }
