@@ -1,14 +1,17 @@
 /**
- * why-origam — spec e2e (DS-first rebuild)
+ * why-origam — spec e2e (redesign #921+ — hero actions/identities, live theme
+ * demo, hairline strengths board, plain weaknesses list, 3-way CTA)
  *
  * Vérifie que la page /why-origam utilise bien les composants origam :
  * - Zéro balise HTML brute (h1-h6, ul, ol, li, table, thead, tbody, tr, th, td)
  * - Les titres sont rendus par OrigamTitle (élément portant la classe origam-title)
- * - Les strength cards sont rendues par OrigamCard (origam-card)
- * - La liste weaknesses est rendue par OrigamList + OrigamListItem
- * - Les avatars icon tiles sont rendus par OrigamAvatar (origam-avatar)
- * - Le tableau de comparaison est rendu par OrigamDataTable (origam-data-table)
+ * - Les 8 cellules "strengths" sont dans un seul panneau (OrigamSheet) avec avatar OrigamAvatar
+ * - La liste "weaknesses" est une liste de lignes plates (pas de carte) avec icône OrigamIcon
+ * - Le tableau de comparaison est rendu par OrigamTable (origam-table)
  * - Les icônes ✓/✗ du tableau ont une couleur intent success/error visible
+ * - La démo de theming (WhyOrigamThemeDemo) change les 6 composants et le
+ *   panneau de code quand on change d'identité
+ * - Le CTA final expose 3 liens (install, components, theming)
  * - Contraste a11y : 0 violation axe-core critical/serious sur la section
  *
  * Run (avec serveur sur 3001) :
@@ -22,7 +25,7 @@ import AxeBuilder from '@axe-core/playwright'
 
 const BASE = '/why-origam'
 
-test.describe('why-origam — DS-first rebuild', () => {
+test.describe('why-origam — redesign', () => {
     test.beforeEach(async ({ page }) => {
         await page.goto(BASE)
         await page.waitForLoadState('networkidle')
@@ -46,24 +49,28 @@ test.describe('why-origam — DS-first rebuild', () => {
     })
 
     test('les titres de section sont des OrigamTitle (h2)', async ({ page }) => {
-        const sectionTitles = page.locator('#why-strengths-title, #why-comparison-title, #why-weaknesses-title, #why-usecases-title, #why-cta-title')
+        const sectionTitles = page.locator('#why-demo-title, #why-strengths-title, #why-comparison-title, #why-weaknesses-title, #why-usecases-title, #why-cta-title')
         const count = await sectionTitles.count()
-        expect(count).toBeGreaterThanOrEqual(4)
+        expect(count).toBeGreaterThanOrEqual(5)
         for (let i = 0; i < count; i++) {
             await expect(sectionTitles.nth(i)).toHaveClass(/origam-title/)
         }
     })
 
-    test('les strength cards sont des OrigamCard (.origam-card)', async ({ page }) => {
-        const cards = page.locator('.why-strengths__card')
-        const count = await cards.count()
-        expect(count).toBe(8)
-        for (let i = 0; i < count; i++) {
-            await expect(cards.nth(i)).toHaveClass(/origam-card/)
-        }
+    test('la barre d\'actions du hero pointe vers la démo et le comparatif', async ({ page }) => {
+        await expect(page.locator('[data-cy="why-hero-demo-link"]')).toHaveClass(/origam-btn/)
+        await expect(page.locator('[data-cy="why-hero-comparison-link"]')).toHaveClass(/origam-btn/)
     })
 
-    test('les avatars des strengths sont des OrigamAvatar (.origam-avatar)', async ({ page }) => {
+    test('la bande d\'identités du hero liste les 8 marques', async ({ page }) => {
+        const identities = page.locator('.why-hero__identity')
+        await expect(identities).toHaveCount(8)
+    })
+
+    test('les 8 cellules "strengths" sont dans un seul panneau, chacune avec un OrigamAvatar', async ({ page }) => {
+        const cells = page.locator('.why-strengths__cell')
+        await expect(cells).toHaveCount(8)
+
         const avatars = page.locator('.why-strengths__avatar')
         const count = await avatars.count()
         expect(count).toBe(8)
@@ -89,42 +96,81 @@ test.describe('why-origam — DS-first rebuild', () => {
         await expect(firstIcon).toHaveClass(/origam-icon/)
     })
 
-    test('la section weaknesses utilise OrigamCard par item', async ({ page }) => {
-        const grid = page.locator('.why-weaknesses__grid')
-        await expect(grid).toBeVisible()
-        const items = page.locator('.why-weaknesses__item .why-weaknesses__card')
-        const count = await items.count()
+    test('la section weaknesses est une liste plate de 3 lignes avec OrigamIcon', async ({ page }) => {
+        const list = page.locator('.why-weaknesses__list')
+        await expect(list).toBeVisible()
+
+        const rows = page.locator('.why-weaknesses__row')
+        await expect(rows).toHaveCount(3)
+
+        const icons = page.locator('.why-weaknesses__icon')
+        const count = await icons.count()
         expect(count).toBe(3)
         for (let i = 0; i < count; i++) {
-            await expect(items.nth(i)).toHaveClass(/origam-card/)
+            await expect(icons.nth(i)).toHaveClass(/origam-icon/)
         }
     })
 
-    test('les avatars de weaknesses sont des OrigamAvatar (.origam-avatar)', async ({ page }) => {
-        const avatars = page.locator('.why-weaknesses__avatar')
-        const count = await avatars.count()
-        expect(count).toBe(3)
-        for (let i = 0; i < count; i++) {
-            await expect(avatars.nth(i)).toHaveClass(/origam-avatar/)
-        }
-    })
-
-    test('les colonnes use-cases sont des OrigamCard', async ({ page }) => {
+    test('les colonnes use-cases sont au nombre de 2 (fits / no-fits)', async ({ page }) => {
         const cols = page.locator('.why-usecases__col')
-        const count = await cols.count()
-        expect(count).toBe(2)
-        for (let i = 0; i < count; i++) {
-            await expect(cols.nth(i)).toHaveClass(/origam-card/)
-        }
+        await expect(cols).toHaveCount(2)
     })
 
-    test('les boutons CTA sont des OrigamBtn (.origam-btn)', async ({ page }) => {
-        const btns = page.locator('[data-cy="why-cta-install"], [data-cy="why-cta-components"]')
+    test('les boutons CTA finaux sont 3 OrigamBtn (install, components, theming)', async ({ page }) => {
+        const btns = page.locator('[data-cy="why-cta-install"], [data-cy="why-cta-components"], [data-cy="why-cta-theming"]')
         const count = await btns.count()
-        expect(count).toBe(2)
+        expect(count).toBe(3)
         for (let i = 0; i < count; i++) {
             await expect(btns.nth(i)).toHaveClass(/origam-btn/)
         }
+        await expect(page.locator('[data-cy="why-cta-theming"]')).toHaveAttribute('href', '/theming')
+    })
+
+    test.describe('démo de theming (WhyOrigamThemeDemo)', () => {
+        test('la démo est visible avec ses 6 composants sur scène', async ({ page }) => {
+            const demo = page.locator('[data-cy="why-demo"]')
+            await expect(demo).toBeVisible()
+
+            await expect(page.locator('[data-cy="why-demo-stage"] .origam-card')).toBeVisible()
+            await expect(page.locator('[data-cy="why-demo-card-primary"]')).toBeVisible()
+            await expect(page.locator('[data-cy="why-demo-card-secondary"]')).toBeVisible()
+            await expect(page.locator('[data-cy="why-demo-card-chip"]')).toBeVisible()
+            await expect(page.locator('[data-cy="why-demo-card-switch"]')).toBeVisible()
+            await expect(page.locator('[data-cy="why-demo-card-field"]')).toBeVisible()
+        })
+
+        test('changer d\'identité change le contenu du panneau de code', async ({ page }) => {
+            const code = page.locator('[data-cy="why-demo-code"]')
+            const before = await code.innerText()
+
+            await page.locator('[data-cy="why-demo-identity-cartoon"]').click()
+            await page.waitForTimeout(200)
+
+            const after = await code.innerText()
+            expect(after).not.toBe(before)
+            expect(after).toContain("'origam-")
+        })
+
+        test('changer de mode (light/dark) est reflété par aria-checked', async ({ page }) => {
+            const lightBtn = page.locator('[data-cy="why-demo-mode-light"]')
+            const darkBtn = page.locator('[data-cy="why-demo-mode-dark"]')
+
+            await expect(lightBtn).toHaveAttribute('aria-checked', 'true')
+            await darkBtn.click()
+            await expect(darkBtn).toHaveAttribute('aria-checked', 'true')
+            await expect(lightBtn).toHaveAttribute('aria-checked', 'false')
+        })
+
+        test('la navigation clavier (flèches) déplace la sélection du radiogroup identité', async ({ page }) => {
+            const origamBtn = page.locator('[data-cy="why-demo-identity-origam"]')
+            const appleBtn = page.locator('[data-cy="why-demo-identity-apple"]')
+
+            await origamBtn.focus()
+            await page.keyboard.press('ArrowRight')
+
+            await expect(appleBtn).toHaveAttribute('aria-checked', 'true')
+            await expect(appleBtn).toBeFocused()
+        })
     })
 
     test('audit a11y axe-core — 0 violation critical/serious', async ({ page }) => {
