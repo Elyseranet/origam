@@ -308,6 +308,33 @@ export const geekLightTheme: IOrigamTheme = {
         '--origam-btn---border-color': 'rgba(217, 70, 239, 0.55)',
         '--origam-btn---border-width-outlined': '1px',
         '--origam-btn---border-width-ghost': '1px',
+
+        // ── Bouton-icône : 8px, PAS un cercle ────────────────────────────
+        // Le DS rend tout bouton-icône circulaire par défaut
+        // (`OrigamBtn.vue:800` → `var(--origam-btn---border-radius-icon, 50%)`,
+        // et les feuilles du DS résolvent ce token sur
+        // `var(--origam-radius---full)` = 9999px, à l'identique en clair et
+        // en sombre). C'est un défaut sain pour la plupart des identités.
+        //
+        // Pas pour geek : un cercle parfait posé sur un bloc de code carré,
+        // dans une identité dont aucun arrondi ne dépasse 12px, se lit comme
+        // un accident plutôt que comme un accent. Le DS n'a pas tort — c'est
+        // à geek de dire ce qu'il veut, et il ne le disait pas : le
+        // `rounded: 'sm'` du bloc `components` masquait le comportement natif
+        // en épinglant TOUS les boutons, icônes comprises. Ce pin est parti,
+        // donc les icônes sont redevenues rondes (6 boutons 20x20 sur
+        // l'accueil, mesurés à 9999px) — d'où cette déclaration explicite.
+        //
+        // ⚠️ Ce bloc est mode-AGNOSTIQUE (voir `components` plus haut) : il
+        // vaut pour le clair ET le sombre. C'est voulu — ni geekLightTheme ni
+        // geekDarkTheme ne déclaraient ce token, et les deux feuilles du DS
+        // lui donnent la même valeur, donc il n'y a aucune intention
+        // mode-spécifique à préserver ici.
+        //
+        // N'affecte NI la pagination NI la toolbar/appbar : les deux
+        // re-déclarent ce token localement sur leur propre sous-arbre
+        // (`OrigamPagination.vue:970`, `OrigamToolbar.vue:509`), qui gagne.
+        '--origam-btn---border-radius-icon': '8px',
         '--origam-btn---box-shadow-elevated': '0 4px 14px -4px rgba(124, 58, 237, 0.30), 0 1px 3px -1px rgba(124, 58, 237, 0.15)',
         '--origam-btn---box-shadow-ghost': 'rgba(217, 70, 239, 0.35) 0px 0px 10px -4px',
         '--origam-card---box-shadow': '0 1px 3px rgba(124, 58, 237, 0.06), 0 8px 24px -16px rgba(124, 58, 237, 0.20)',
