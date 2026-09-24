@@ -536,6 +536,44 @@
           }
         }
       }
+
+      /*
+       * ⛔ MEASURED (Chromium, /why-origam demo, all 8 marketing identities,
+       * light + dark, checked + unchecked): `OrigamSelectionControl`'s shared
+       * `&--focus-visible` rule draws its outline on
+       * `.origam-selection-control__input` — a ~28px square hit-area that is
+       * a SIBLING of `.origam-switch-track` (rendered via the `default`
+       * slot), never a descendant. The track's `overflow: hidden` therefore
+       * can never clip that outline, and because the square hit-area is
+       * already taller than the track (24px default / 32px inset) and offset
+       * by the thumb's hardcoded ±10px `translateX`, the ring visibly
+       * detaches from the track: 8px past its top/bottom edge and 8px past
+       * whichever side the thumb isn't currently near (right when ON, left
+       * when OFF) on every identity, `material` included — its own
+       * screenshot simply wasn't captured while focused.
+       *
+       * For Checkbox/Radio the square hit-area IS the visible control, so
+       * the shared rule is correct there and stays untouched
+       * (`OrigamSelectionControl.vue` is not modified). For Switch the
+       * visible control is the elongated track, so the ring is moved onto
+       * `.origam-switch-track` instead — same two tokens the shared rule
+       * already reads (`--origam-border__width---2`,
+       * `--origam-color__border---focus`), just retargeted to the shape a
+       * switch actually is. Native `outline` already follows an element's
+       * own `border-radius` in every supported browser, so the ring traces
+       * the track's real shape (pill / rounded / square per `rounded` prop)
+       * with no extra CSS.
+       */
+      &--focus-visible {
+        :deep(.origam-selection-control__input) {
+          outline: none;
+        }
+
+        :deep(.origam-switch-track) {
+          outline: var(--origam-border__width---2, 2px) solid var(--origam-color__border---focus, currentColor);
+          outline-offset: var(--origam-space---1, 2px);
+        }
+      }
     }
 
     &.origam-input {

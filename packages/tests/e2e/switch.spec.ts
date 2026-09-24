@@ -625,4 +625,107 @@ test.describe('OrigamSwitch', () => {
             })
         })
     })
+
+    /*
+     * ⛔ Regression guard — measured live (Chromium, /why-origam marketing demo,
+     * real keyboard Tab focus, all 8 identities × 2 modes × checked/unchecked =
+     * 32 configurations, `material` included).
+     *
+     * `OrigamSelectionControl`'s shared `&--focus-visible` rule painted its
+     * outline on `.origam-selection-control__input` — a ~28px square hit-area
+     * that is a SIBLING of `.origam-switch-track` (rendered through the
+     * `default` slot), never a descendant. The track's own `overflow: hidden`
+     * can therefore never clip it. Because that square is already taller than
+     * the track (28px vs 24px default / 32px inset) and offset by the thumb's
+     * ±10px `translateX`, the ring visibly detached from the track: measured
+     * 8px past its top/bottom edge and 8px past whichever side the thumb
+     * wasn't currently near (right when ON, left when OFF) — reproduced
+     * pixel-for-pixel against the reported screenshots on `cartoon` before the
+     * fix, `material`'s own witness screenshot included once actually
+     * focused (it had simply never been captured while focused).
+     *
+     * Fix moves the ring onto `.origam-switch-track` itself — the element a
+     * switch's `overflow: hidden` / `border-radius` actually describe — reusing
+     * the SAME two tokens the shared rule already read
+     * (`--origam-border__width---2`, `--origam-color__border---focus`), and
+     * suppresses the now-redundant one on the square hit-area. `Checkbox` /
+     * `Radio` are untouched: the fix lives in `OrigamSwitch.vue`'s own scoped
+     * `<style>`, not in the shared `OrigamSelectionControl.vue`.
+     *
+     * The class asserted here (`origam-selection-control--focus-visible`) is
+     * not synthetic — it is the exact modifier
+     * `OrigamSelectionControl.vue`'s own focus handler adds to
+     * `.origam-selection-control` on a real `:focus-visible` match
+     * (`matchesSelector(e.target, ':focus-visible')`). Applying it directly
+     * (rather than driving a real Tab keypress) follows this file's own
+     * established pattern for the border/rounded/elevation tests above —
+     * `:focus-visible`'s "was this a keyboard interaction" heuristic is a
+     * genuine flake risk in a headless runner; the resulting CSS state is
+     * identical either way.
+     */
+    test.describe('Focus-visible ring — outlines the track, not the square hit-area', () => {
+        test('outline moves from .origam-selection-control__input to .origam-switch-track', async ({ page }) => {
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const sw = sandbox.locator('.origam-switch').first()
+            await expect(sw).toBeVisible({ timeout: 12000 })
+
+            await sw.evaluate((el) => {
+                el.querySelector('.origam-selection-control')!.classList.add('origam-selection-control--focus-visible')
+            })
+
+            const inputOutlineStyle = await sandbox.locator('.origam-selection-control__input').first().evaluate(
+                el => getComputedStyle(el).outlineStyle
+            )
+            expect(inputOutlineStyle).toBe('none')
+
+            const trackOutlineStyle = await sandbox.locator('.origam-switch-track').first().evaluate(
+                el => getComputedStyle(el).outlineStyle
+            )
+            expect(trackOutlineStyle).toBe('solid')
+        })
+
+        test('the relocated ring still resolves a real color and width (not silently dropped)', async ({ page }) => {
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const sw = sandbox.locator('.origam-switch').first()
+            await expect(sw).toBeVisible({ timeout: 12000 })
+
+            await sw.evaluate((el) => {
+                el.querySelector('.origam-selection-control')!.classList.add('origam-selection-control--focus-visible')
+            })
+
+            const track = sandbox.locator('.origam-switch-track').first()
+            const outlineWidth = await track.evaluate(el => getComputedStyle(el).outlineWidth)
+            const outlineColor = await track.evaluate(el => getComputedStyle(el).outlineColor)
+            const outlineOffset = await track.evaluate(el => getComputedStyle(el).outlineOffset)
+
+            expect(outlineWidth).not.toBe('0px')
+            expect(outlineColor).not.toBe('rgba(0, 0, 0, 0)')
+            expect(outlineOffset).not.toBe('0px')
+        })
+
+        test('regression: with the ring on the track, .origam-selection-control__input paints no visible halo past the track', async ({ page }) => {
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const sw = sandbox.locator('.origam-switch').first()
+            await expect(sw).toBeVisible({ timeout: 12000 })
+
+            await sw.evaluate((el) => {
+                el.querySelector('.origam-selection-control')!.classList.add('origam-selection-control--focus-visible')
+            })
+
+            // `outline-style: none` alone makes the outline fully inert
+            // (nothing paints) regardless of what `outline-width` computes to
+            // — the UA resets that longhand to its initial `medium` (commonly
+            // 3px) even when the shorthand is `none`, so asserting width here
+            // would be a false positive/negative on browser plumbing, not on
+            // this component. `outline-style` is the only property that
+            // decides whether anything is drawn.
+            const inputOutlineStyle = await sandbox.locator('.origam-selection-control__input').first().evaluate(
+                el => getComputedStyle(el).outlineStyle
+            )
+            expect(inputOutlineStyle).toBe('none')
+        })
+    })
 })
