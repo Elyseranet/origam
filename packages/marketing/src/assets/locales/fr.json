@@ -341,7 +341,7 @@
             "tokens": {
                 "title": "Design tokens",
                 "eyebrow": "Fondation",
-                "desc": "Extrait DTCG du fichier de tokens du composant. Construit avec Style Dictionary v4.",
+                "desc": "Extrait des tokens de ce composant — les variables --origam-<composant>---<propriété>, déclarées dans sa feuille de tokens tenue à la main, sans étape de build.",
                 "col_token": "Chemin du token",
                 "col_value": "Valeur",
                 "col_type": "Type",
@@ -825,7 +825,7 @@
             },
             "tokens": {
                 "title": "Design tokens",
-                "description": "Multi-thème via Tokens Studio. Basculez entre clair, sombre ou votre propre marque à l'exécution, sans remontage."
+                "description": "Multi-thème via un objet de thème props-first. createOrigam() le résout sur les 218 composants — basculez entre clair, sombre ou votre propre marque à l'exécution, sans remontage."
             },
             "typescript": {
                 "title": "TypeScript d'abord",
@@ -909,7 +909,7 @@
             "eyebrow": "THÉMATISATION",
             "title_line1": "Un design system.",
             "title_line2": "Toutes les marques.",
-            "subtitle": "Design tokens conformes DTCG, multi-thème nativement. Basculez entre clair, sombre ou votre marque à l'exécution — sans remontage, sans clignotement.",
+            "subtitle": "Design tokens tenus à la main, props-first — multi-thème nativement. Basculez entre clair, sombre ou votre marque à l'exécution, sans remontage.",
             "chip_sobre": "Sobre",
             "chip_glass": "Glass",
             "chip_geek": "Geek",
@@ -919,8 +919,8 @@
             "chip_ecom": "Ecom",
             "chip_apple": "Apple",
             "tooling_label": "Outillage",
-            "tokens_studio": "→ compatible tokens.studio",
-            "style_dictionary": "→ Style Dictionary v4",
+            "tokens_studio": "→ theming props-first (218 composants)",
+            "style_dictionary": "→ CSS/SCSS tenus à la main, sans build",
             "preview_light": "light.json",
             "preview_dark": "dark.json",
             "preview_brand_a": "brand-a.json",

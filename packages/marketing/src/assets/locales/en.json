@@ -341,7 +341,7 @@
             "tokens": {
                 "title": "Design tokens",
                 "eyebrow": "Foundation",
-                "desc": "DTCG token excerpt from the component token file. Built with Style Dictionary v4.",
+                "desc": "Excerpt from this component's token declarations — the --origam-<component>---<property> variables, declared in its hand-maintained token sheet with no build step.",
                 "col_token": "Token path",
                 "col_value": "Value",
                 "col_type": "Type",
@@ -825,7 +825,7 @@
             },
             "tokens": {
                 "title": "Design tokens",
-                "description": "Multi-theme via Tokens Studio. Switch between light, dark, or your own brand at runtime with zero remount."
+                "description": "Multi-theme via a props-first theme object. createOrigam() resolves it across all 218 components — switch between light, dark, or your own brand at runtime with zero remount."
             },
             "typescript": {
                 "title": "TypeScript first",
@@ -909,7 +909,7 @@
             "eyebrow": "THEMING",
             "title_line1": "One design system.",
             "title_line2": "Every brand.",
-            "subtitle": "DTCG-compliant design tokens, multi-theme out of the box. Switch between light, dark or your custom brand at runtime — zero remount, zero flicker.",
+            "subtitle": "Hand-maintained, props-first design tokens — multi-theme out of the box. Switch between light, dark or your custom brand at runtime, with zero remount.",
             "chip_sobre": "Sobre",
             "chip_glass": "Glass",
             "chip_geek": "Geek",
@@ -919,8 +919,8 @@
             "chip_ecom": "Ecom",
             "chip_apple": "Apple",
             "tooling_label": "Tooling",
-            "tokens_studio": "→ tokens.studio compatible",
-            "style_dictionary": "→ Style Dictionary v4",
+            "tokens_studio": "→ props-first theming (218 components)",
+            "style_dictionary": "→ hand-maintained CSS/SCSS, no build step",
             "preview_light": "light.json",
             "preview_dark": "dark.json",
             "preview_brand_a": "brand-a.json",
