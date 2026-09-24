@@ -2064,7 +2064,8 @@
   --origam-switch__track---width: 44px;
   --origam-switch__track---height: 24px;
   --origam-switch__track---border-radius: var(--origam-radius---full);
-  --origam-switch__track---background-color: var(--origam-color__surface---disabled);
+  /* #919 — track-vs-page mesure 1.06-1.83:1 sur les 16 combos identite x mode (Playwright/Chromium) quand ce token vaut surface---disabled : la teinte est visuellement trop proche de la page dans les 8 identites. Derive de text---primary (garanti contraste contre la page par la lisibilite du texte) via color-mix ; comme le pouce par defaut vaut surface---default (= la page), il herite automatiquement du meme contraste contre ce nouveau track. Pire cas remesure apres correctif (cartoon|light) : 3.90:1. */
+  --origam-switch__track---background-color: color-mix(in srgb, var(--origam-color__text---primary) 60%, var(--origam-color__surface---default));
   --origam-switch__track---background-color-checked: var(--origam-color__action--primary---bg);
   --origam-switch__track---background-color-disabled: var(--origam-color__surface---disabled);
   --origam-switch__track---background-color-error: var(--origam-color__feedback--danger---bg);
@@ -2077,7 +2078,19 @@
   --origam-switch__thumb---background-color: var(--origam-color__surface---default);
   --origam-switch__thumb---background-color-checked: var(--origam-color__surface---default);
   --origam-switch__thumb---background-color-disabled: var(--origam-color__surface---overlay);
-  --origam-switch__thumb---background-color-error: var(--origam-color__feedback--danger---bg);
+  /* #919 point 5 (etats non mesures) — le pouce et le rail utilisaient le MEME
+     token (danger---bg) : pouce totalement invisible sur le rail en erreur,
+     ratio 1.00:1 mesure sur les 16 configs (Playwright/Chromium, `switch-error`
+     dans why-origam-contrast.audit.mjs). Le pouce revient a surface---default —
+     le MEME token que le pouce par defaut (non colore) — au lieu de copier la
+     couleur du rail. Note : `--origam-switch__thumb---color-error` (icone/texte
+     DANS le pouce, applique par le meme selecteur SCSS) reste danger---fg
+     (blanc) ; s'il n'y a pas d'icone (cas par defaut), cette valeur ne peint
+     rien de visible et ne cree aucun conflit. Avec un `icon` explicite EN PLUS
+     de `error`, l'icone blanche perdrait en lisibilite sur un pouce clair en
+     light — combinaison rare, non couverte ici, a traiter separement si elle
+     se presente. */
+  --origam-switch__thumb---background-color-error: var(--origam-color__surface---default);
   --origam-switch__thumb---color-error: var(--origam-color__feedback--danger---fg);
   --origam-switch__thumb---box-shadow: var(--origam-shadow---sm);
   --origam-switch__thumb---border-radius: var(--origam-radius---full);

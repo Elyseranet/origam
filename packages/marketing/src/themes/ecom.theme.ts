@@ -710,7 +710,17 @@ export const ecomDarkTheme: IOrigamTheme = {
         // ── Switch thumb (Refs #36) — même override que light : "thumb
         // blanc" constant, ne doit PAS suivre surface.default (qui serait
         // brun foncé #1a0f0a en dark sans cet override, vérifié).
-        '--origam-switch__thumb---background-color': '#ffffff'
+        '--origam-switch__thumb---background-color': '#ffffff',
+        // #919 — le pouce fixe blanc ci-dessus rend le dosage DS par défaut
+        // (color-mix 60 %, packages/ds/src/assets/css/tokens/dark.css) trop
+        // clair en dark : track-vs-page passait (6.83:1) mais pouce-vs-track
+        // tombait a 2.75:1 (mesure Playwright/Chromium — un pouce blanc fixe
+        // se rapproche trop d'un track qui monte vers le blanc). Dosage reduit
+        // a 48 % (meme raisonnement que glass.theme.ts) pour satisfaire les
+        // deux contraintes a la fois. Remesure : track-vs-page 4.77:1,
+        // pouce-vs-track 3.95:1. Le light n'a pas besoin de cet override : il
+        // passe deja les deux contraintes au dosage DS par defaut (60 %).
+        '--origam-switch__track---background-color': 'color-mix(in srgb, var(--origam-color__text---primary) 48%, var(--origam-color__surface---default))'
     }
 }
 
