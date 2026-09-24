@@ -834,12 +834,23 @@ const comparisonItems = computed(() =>
             font-size: var(--origam-font-size---sm, 0.875rem);
         }
 
+        /*
+          ⚠️ MEASURED (#921 follow-up): under the site's default identity this
+          text used `--origam-color__text---tertiary`, which axe-core flags at
+          4.03:1 on this section's background — below the 4.5:1 AA floor for
+          body text (WCAG 1.4.3). `--origam-color__text---secondary` is the
+          next rung up the same DS text hierarchy — already used one section
+          up for `.why-section__subtitle` on this very page — and clears AA
+          here. `tertiary` stays correct for truly decorative/disabled text
+          (e.g. `.why-comparison__cell[data-yes='false']`), just not for a
+          full sentence of body copy.
+        */
         &__lib-note {
             display: block;
             margin-block-start: var(--origam-space---1, 0.25rem);
             font-size: var(--origam-font-size---xs, 0.75rem);
             font-weight: var(--origam-font__weight---regular, 400);
-            color: var(--origam-color__text---tertiary);
+            color: var(--origam-color__text---secondary);
             max-inline-size: 15rem;
         }
 
@@ -865,10 +876,11 @@ const comparisonItems = computed(() =>
             font-size: var(--origam-font-size---lg, 1.125rem);
         }
 
+        /* Same AA fix as `&__lib-note` above — see that comment. */
         &__disclaimer {
             margin-block-start: var(--origam-space---5, 1.25rem);
             font-size: var(--origam-font-size---xs, 0.75rem);
-            color: var(--origam-color__text---tertiary);
+            color: var(--origam-color__text---secondary);
             font-style: italic;
         }
     }
