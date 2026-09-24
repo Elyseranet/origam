@@ -409,7 +409,16 @@
 		}
 
 		&--nav {
-			--origam-list---padding-inline: 8px;
+			// ⛔ #934 — this used to declare `--origam-list---padding-inline`,
+			// a name NOTHING reads. A custom property is not a shorthand: it
+			// expands to nothing, so `padding-inline-start/end` above kept
+			// resolving to the sheet's `--origam-space---0`. Measured on the
+			// marketing appbar menu across all 8 identities: list inline
+			// padding `0px/0px`, so the rows ran edge-to-edge inside the menu
+			// and their hover surface was clipped by the menu's own corner
+			// radius. The two longhands are the names the base rule reads.
+			--origam-list---padding-inline-start: var(--origam-space---2, 8px);
+			--origam-list---padding-inline-end: var(--origam-space---2, 8px);
 			--origam-list-subheader---font-size: var(--origam-list__subheader---nav-font-size, 0.75rem);
 			--origam-list---indent-padding: var(--origam-list---indent-padding-nav, -8px);
 		}

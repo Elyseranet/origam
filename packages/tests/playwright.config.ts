@@ -211,7 +211,50 @@ const GREEN_SPECS = [
     // aucun ne reproduit le scrim semi-transparent compositee sur le
     // `bgColor` du graphique (cf. JSDoc de l'interface). Verifiee stable
     // 10/10, `--repeat-each=5`, `E2E_STATIC=1`, chromium, port isole.
-    'chart-map-default-country-fill-theme.spec.ts'
+    'chart-map-default-country-fill-theme.spec.ts',
+    // wave 15 — #933. Même raison qu'aux vagues 8 à 14, et la garde
+    // `spec-coverage` l'a attrapé AVANT le merge cette fois : hors de cette
+    // liste, `E2E_GREEN_ONLY=1` (ci.yml) exclut la spec et aucun job ne
+    // l'exécute jamais.
+    //
+    // ⛔ Ce qu'elle épingle est invisible autrement : `.origam-btn` ne
+    // déclarait AUCUN `display`, donc le root retombait sur le défaut UA du
+    // tag rendu — `inline` pour le `<a>` que `useLink` produit dès qu'on
+    // passe `href`. Une boîte inline ignore `height`, `min-width` et le
+    // padding vertical : mesuré 984 × 15 px au lieu de 199 × 28 sur le CTA de
+    // `/why-origam`. Le défaut est resté invisible parce que 178 des 181
+    // instances du marketing ont un parent flex/grid, qui BLOCKIFIE l'enfant.
+    //
+    // ⛔ Sa première version était VERTE contre le commit parent, donc sans
+    // valeur : elle visait le Variant Design, qui rend un `<button>`, dont le
+    // défaut UA de Chromium est déjà `inline-block` — elle mesurait le
+    // navigateur, pas la règle. Réécrite pour passer par `href`. A/B contre
+    // `origin/develop` : le test « parent BLOCK » rougit (`inline`), le test
+    // « parent FLEX » reste vert des deux côtés — c'est le témoin de
+    // non-régression, il doit passer avant comme après.
+    //
+    // Vérifiée stable 10/10, `--repeat-each=5`, `E2E_STATIC=1`, chromium,
+    // port isolé.
+    'btn-display.spec.ts',
+    // wave 15 — #934. Même raison. `.origam-list--nav` et
+    // `.origam-list-item--nav` déclaraient `--origam-*---padding-inline`, un
+    // nom que RIEN ne lit : les règles de base consomment les longhands
+    // `-start` / `-end`, et une custom property n'est pas un raccourci. La
+    // gouttière intérieure que `nav` promet n'a donc jamais existé — mesuré
+    // `0px/0px` sous les 8 identités du marketing, d'où des lignes à ras bord
+    // dont la pastille de survol était rognée par le rayon du menu.
+    //
+    // ⛔ La garde `token-var-channels` ne voit PAS ce cas : elle compare les
+    // `var()` lus aux tokens déclarés dans les FEUILLES, et ces deux
+    // déclarations vivent dans le SCSS d'un composant. Sans cette spec, rien
+    // ne retient le défaut.
+    //
+    // Attentes en valeurs ABSOLUES (0px/8px pour la liste, 16px/8px pour la
+    // ligne), jamais un simple écart entre deux valeurs. A/B contre
+    // `origin/develop` : les deux tests rougissent (`0px` et `16px`).
+    // Vérifiée stable 10/10, `--repeat-each=5`, `E2E_STATIC=1`, chromium,
+    // port isolé.
+    'list-nav-padding.spec.ts'
 ]
 
 /**
