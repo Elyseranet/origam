@@ -30,11 +30,33 @@ const MARKETING_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)),
 const DS_TOKENS = path.resolve(MARKETING_DIR, '..', 'ds', 'src', 'assets', 'css', 'tokens')
 const OUT = path.join(MARKETING_DIR, 'src', 'themes', 'origam-reset.generated.ts')
 
-/** Extract `--origam-*` declarations from the first `selector { … }` block. */
+/**
+ * Extract `--origam-*` declarations from the first `selector { … }` block.
+ *
+ * ⛔ The selector is matched ANCHORED TO THE START OF A LINE, on a source with
+ * its `/* … *\/` comments stripped. A plain `indexOf` found the FIRST textual
+ * occurrence anywhere — and both sheets mention their own selector in their
+ * header comment. On `light.css` the real rule (l. 65) happens to come before
+ * the mention (l. 81) and it worked by luck; on `dark.css` the mention sits at
+ * l. 16, sixteen lines above the rule, so `indexOf` anchored on prose, the
+ * brace walk ran off, and the generator emitted **`dark: 0 vars`** — a silent
+ * amputation of the whole dark reset, which nobody read because the script
+ * still exits 0.
+ *
+ * Stripping comments also stops the declaration loop below from harvesting a
+ * commented-out `--origam-…: …;` line as if it were live.
+ */
 function extractBlock (cssPath, selectorStart) {
-    const css = fs.readFileSync(cssPath, 'utf8')
-    const start = css.indexOf(selectorStart)
-    if (start === -1) throw new Error(`${path.basename(cssPath)}: selector "${selectorStart}" not found`)
+    const raw = fs.readFileSync(cssPath, 'utf8')
+    // Replace each comment by the same number of newlines, so line-anchored
+    // matching still works and reported positions stay meaningful.
+    const css = raw.replace(/\/\*[\s\S]*?\*\//g, (c) => c.replace(/[^\n]/g, ' '))
+
+    const anchored = new RegExp('^[ \\t]*' + selectorStart.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'm')
+    const found = anchored.exec(css)
+    if (!found) throw new Error(`${path.basename(cssPath)}: selector "${selectorStart}" not found at the start of any line`)
+    const start = found.index
+
     const open = css.indexOf('{', start)
     let depth = 1
     let i = open + 1
@@ -59,6 +81,25 @@ function extractBlock (cssPath, selectorStart) {
 
 const light = extractBlock(path.join(DS_TOKENS, 'light.css'), '[data-theme="light"]')
 const dark = extractBlock(path.join(DS_TOKENS, 'dark.css'), '[data-theme="dark"]')
+
+/*
+ * ⛔ Refuse to write an amputated reset. The previous version of this script
+ * printed `dark: 0 vars` and exited 0 — a generator that silently empties half
+ * its output is indistinguishable from one that is merely up to date. Same
+ * failure family as #903 (`presets:generate`, 804 lines amputated).
+ * The threshold is deliberately loose: it catches "the block was not found",
+ * not "a few tokens were removed".
+ */
+const MIN_VARS = 500
+for (const [label, block] of [['light', light], ['dark', dark]]) {
+    const n = Object.keys(block).length
+    if (n < MIN_VARS) {
+        throw new Error(
+            `${label}: only ${n} var(s) extracted (< ${MIN_VARS}). The selector block was probably not found — ` +
+            'refusing to overwrite the reset with an amputated one.'
+        )
+    }
+}
 
 const stringify = (obj) => Object.keys(obj).sort()
     .map(key => `    ${JSON.stringify(key)}: ${JSON.stringify(obj[key])}`)

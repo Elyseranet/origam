@@ -315,17 +315,38 @@
                                               rendering defect on 3 of the 8
                                               identities.
                                             -->
+                                            <!--
+                                              `hide-details="auto"` : sans
+                                              validation, `OrigamInput` réserve
+                                              quand même sa bande de messages —
+                                              22px (min-height 22 + padding-top
+                                              8) de vide mesurés sous la piste,
+                                              qui portaient le switch à 70px et
+                                              écrasaient toute la rangée. La
+                                              valeur `auto` plutôt que `true` :
+                                              la bande revient d'elle-même si un
+                                              message apparaît un jour, donc pas
+                                              de message avalé en silence.
+                                            -->
                                             <origam-switch
                                                 v-model="demoSwitch"
                                                 color="primary"
+                                                hide-details="auto"
                                                 :aria-label="t('why_origam.demo.card_switch', 'Auto-update')"
                                                 data-cy="why-demo-card-switch"
                                             />
                                         </div>
 
+                                        <!-- Même raison que le switch ci-dessus : ce champ
+                                             ne porte aucune règle de validation, donc la
+                                             bande de messages réservée par défaut ne
+                                             pouvait qu'être vide — c'est elle qu'on voyait
+                                             comme un blanc entre le champ et le bas de la
+                                             carte. -->
                                         <origam-text-field
                                             v-model="demoField"
                                             class="why-demo__field"
+                                            hide-details="auto"
                                             :label="t('why_origam.demo.card_field_label', 'Release tag')"
                                             :placeholder="t('why_origam.demo.card_field_placeholder', 'v2.18.4')"
                                             data-cy="why-demo-card-field"
