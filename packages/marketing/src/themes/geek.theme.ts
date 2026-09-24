@@ -4,13 +4,31 @@ export const geekLightTheme: IOrigamTheme = {
     name: 'geek',
     label: 'Geek',
     vars: {
+        // ⛔ Cette échelle DOIT rester GRADUÉE. Elle ne l'était pas : jusqu'ici
+        // `md` et `lg` valaient tous les deux `4px`, donc demander
+        // `rounded="lg"` ne rendait rien de plus que `rounded="md"` — mesuré en
+        // Chromium sur `<html data-theme="geek" data-mode="light">` :
+        // `--origam-radius---lg` résolvait à `4px` au lieu de `12px`.
+        //
+        // Ce n'est PAS une régression : `lg: '4px'` est là depuis le premier
+        // commit du thème (2026-06-12). C'est un défaut d'origine, devenu
+        // visible parce que `geek` est l'apparence par défaut du site depuis le
+        // 2026-09-17 (`nuxt.config.ts`, `defaultTheme: 'geek'`) — donc toutes
+        // les pages, pour tout visiteur qui n'a rien choisi.
+        //
+        // La valeur vient de l'IDENTITÉ, pas d'un jugement à l'œil : le mode
+        // SOMBRE du même thème (`geekDarkTheme.vars.rounded`, plus bas) porte
+        // déjà une échelle graduée et correcte. C'est le clair qui n'avait pas
+        // suivi. Même raisonnement que #829 sur ce même thème : quand une
+        // identité a déjà tranché dans son autre mode, on recopie, on
+        // n'invente pas. Les deux blocs sont maintenant identiques.
         rounded: {
-            card: '4px',
-            btn: '4px',
+            card: '8px',
+            btn: '8px',
             pill: '4px',
-            sm: '2px',
-            md: '4px',
-            lg: '4px'
+            sm: '4px',
+            md: '8px',
+            lg: '12px'
         },
         color: {
             surface: {
