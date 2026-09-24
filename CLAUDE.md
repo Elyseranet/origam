@@ -1311,12 +1311,14 @@ The global pre-delivery policy (TU + e2e + security) applies. Specific to
 origam:
 - Run tests on **Node 24** (`.nvmrc`); Node 18 produces unrelated
   `crypto.hash` failures.
-- `pnpm -F origam guards` must stay at **28/28** (measured 2026-09-17, this
-  worktree, real exit code; it read `27/27` an hour earlier, `25/25` before
-  that and `17/17` before that — recount, never quote).
-- `pnpm -F origam guards:self` must stay at **15/15** (measured 2026-09-17, this
-  worktree, real exit code hors pipe ; ce fichier lisait `14/14` puis `13/13` —
-  recount, never quote). It runs the guards' own
+- `pnpm -F origam guards` must stay at **29/29** (measured 2026-09-24, this
+  worktree, real exit code hors pipe; it read `28/28` on 2026-09-17, `27/27` an
+  hour before that, `25/25` and `17/17` earlier still — **recount, never
+  quote**. This line has been stale four times; an agent caught it again today
+  while the paragraph still said 28/28).
+- `pnpm -F origam guards:self` must stay at **16/16** (measured 2026-09-24, this
+  worktree, real exit code hors pipe ; ce fichier lisait `15/15`, puis `14/14`,
+  puis `13/13` — **recount, never quote**). It runs the guards' own
   detectors, discovered from `scripts/guards/lib/*.selftest.mjs`. A guard whose
   extractor has regressed goes QUIET, and a silent detector and a clean repo
   produce the same green — so a green `guards` means nothing without this. Both
