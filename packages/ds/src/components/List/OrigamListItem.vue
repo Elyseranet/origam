@@ -741,7 +741,12 @@
 		}
 
 		&--nav {
-			--origam-list-item---padding-inline: 8px;
+			// ⛔ #934 — same dead name as `.origam-list--nav` carried:
+			// `--origam-list-item---padding-inline` is read nowhere. The base
+			// rule reads the two longhands, inside a `calc()` that also folds
+			// in indent and density, so they go in here under the same names.
+			--origam-list-item---padding-inline-start: var(--origam-space---2, 8px);
+			--origam-list-item---padding-inline-end: var(--origam-space---2, 8px);
 
 			&:not(:only-child) {
 				--origam-list-item---margin-block-end: 4px;

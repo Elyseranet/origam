@@ -542,6 +542,24 @@
 	.origam-btn {
 		$this: &;
 
+		// ⛔ #933 — `display` was never declared here. The root then fell back
+		// to the UA default, which for the `<a>` / `<span>` tags `useLink`
+		// renders is `inline`. An inline box ignores `height`, `min-width` and
+		// vertical `padding`, and it stretches to the full line box — so a Btn
+		// dropped into a plain block parent (`<p>`, `<div>`) rendered as a
+		// full-width, 15px-tall strip. Every Btn in this DS *looked* correct
+		// only because its parent happened to be a flex/grid container, which
+		// blockifies the child: measured on the marketing site, all 9 visible
+		// Btn roots computed `display: block` with a `display: flex` parent,
+		// and the single Btn inside a `<p>` computed `inline` at 984px wide.
+		//
+		// `inline-block` is the value the rest of this rule already assumed —
+		// `vertical-align: middle` right below only has meaning on an
+		// inline-level box. It is also the safest: inside a flex/grid parent it
+		// blockifies to `block`, i.e. byte-for-byte today's computed value, so
+		// no existing layout moves. `&--block` still overrides it with `flex`.
+		display: inline-block;
+
 		position: var(--origam-btn---position, relative);
 		vertical-align: middle;
 		flex-shrink: 0;
