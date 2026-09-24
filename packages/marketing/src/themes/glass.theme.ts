@@ -207,7 +207,10 @@ export const glassLightTheme: IOrigamTheme = {
         // ISwitchProps extends IColorProps (vérifié) — nécessaire pour obtenir
         // le "fill accent bombé" au ON exigé par la règle couple-actif §1.2 ;
         // sans lui le thumb/track ON restent sur la couleur neutre par défaut.
-        'origam-switch': { rounded: 'lg', border: true, elevation: 3, inset: true, color: 'primary' },
+        // #931 — `border: true` retiré (doublon depuis #919, cf. cartoon.theme.ts
+        // pour le détail mesuré). La prop peignait le wrapper racine et l'anneau
+        // du pouce, jamais le track : celui-ci garde le 1px du défaut DS (#727).
+        'origam-switch': { rounded: 'lg', elevation: 3, inset: true, color: 'primary' },
         'origam-slider-field': { rounded: true, color: 'primary', trackProps: { rounded: true } },
 
         // ── Form & Input — champs (SYNTHESE §3) ─────────────────────────

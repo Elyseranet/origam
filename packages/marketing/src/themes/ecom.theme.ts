@@ -175,7 +175,10 @@ export const ecomLightTheme: IOrigamTheme = {
         // dédié posé plus bas (`--origam-switch__thumb---background-color:
         // #ffffff`, constant, même valeur les 2 modes) pour honorer "thumb
         // blanc".
-        'origam-switch': { rounded: 'sm', border: true },
+        // #931 — `border: true` retiré (doublon depuis #919, cf. cartoon.theme.ts
+        // pour le détail mesuré). La prop peignait le wrapper racine et l'anneau
+        // du pouce, jamais le track : celui-ci garde le 1px du défaut DS (#727).
+        'origam-switch': { rounded: 'sm' },
         // SliderField (Refs #36) — ⚠️ BLOQUÉ, confirmé EMPIRIQUEMENT
         // (Playwright) : `OrigamSliderField.vue` utilise un simple
         // `withDefaults(defineProps<...>(), {...})` (grep confirmé, PAS de

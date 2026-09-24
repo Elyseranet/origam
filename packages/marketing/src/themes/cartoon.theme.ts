@@ -171,7 +171,18 @@ export const cartoonLightTheme: IOrigamTheme = {
         // glyph-based shape they render can't honour these props without a
         // rendering-mechanism change (issue #241), AND they share the same
         // missing-`useDefaults()` gap as 11 other components (issue #242).
-        'origam-switch': { rounded: 'lg', border: true, elevation: 2 },
+        // #931 — `border: true` retiré. Posé par 3ac20d506 (2026-07-17) pour
+        // rapprocher le switch du design des champs, à une époque où le track
+        // valait `surface---disabled` (contraste 1,06:1, invisible) : la
+        // bordure le délimitait seule. Depuis #919 le track est à 3,06:1 et se
+        // délimite tout seul, et la bordure fait doublon.
+        // ⚠️ MESURÉ (Chromium, démo /why-origam, sélecteur cliqué) : la prop ne
+        // peignait PAS le track — elle peignait le wrapper racine
+        // `.origam-input.origam-switch` ET l'anneau
+        // `.origam-selection-control__input` autour du pouce, 1px chacun. Le
+        // track garde son propre 1px, qui vient du défaut DS (#727,
+        // `--origam-switch__track---border-width: thin`) et n'est pas touché ici.
+        'origam-switch': { rounded: 'lg', elevation: 2 },
         'origam-snackbar': { rounded: 'lg', border: true, elevation: 4 },
         // ── Composants NOUVEAUX (synthèse §3), aucun n'était présent avant ──
         // Badge : 'pill' n'est PAS une valeur `rounded` valide côté DS

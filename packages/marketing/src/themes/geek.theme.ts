@@ -256,7 +256,13 @@ export const geekLightTheme: IOrigamTheme = {
         // Switch harmony (lot 4) — mirrors `origam-text-field`'s rounded/
         // border so the track reads as the same visual family as the
         // theme's fields (see cartoon.theme.ts for the full rationale).
-        'origam-switch': { rounded: 'sm', border: true },
+        // #931 — `border: true` retiré (doublon depuis #919, cf. cartoon.theme.ts
+        // pour le détail mesuré). La prop peignait le wrapper racine et l'anneau
+        // du pouce, jamais le track : celui-ci garde le 1px du défaut DS (#727).
+        // ⚠️ Ce bloc `components` est celui de `geekLightTheme`, qui ne déclare
+        // AUCUN champ `mode` — il est donc mode-agnostique et gouvernait les
+        // deux modes. `geekDarkTheme` n'a pas de bloc `components` du tout.
+        'origam-switch': { rounded: 'sm' },
         'origam-slider-field': { rounded: 'sm', color: 'primary' },
 
         // ── Navigation (SYNTHESE §3) ──────────────────────────────────────
