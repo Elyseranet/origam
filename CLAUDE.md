@@ -503,6 +503,32 @@ always done it right, and only local runs went the slow way.
   worker twice as long; the run went 37 → 54 min and `carousel.spec.ts` — green
   in the three previous runs — took its place with 7 failures. Re-run alone,
   carousel was **33/33**. Under `E2E_STATIC=1` all 7 vanish.
+- ⛔ **Before any measurement that matters, run `uptime`. The "contention" this
+  file has treated as a fact of life had a concrete, removable cause.**
+  Measured 2026-09-22: **nine dev servers belonging to agents that had died
+  five and six days earlier** were still running inside `.claude/worktrees`,
+  holding ports and burning CPU. Load average **82.93**. Same commit, same
+  unit suite, the only variable being those corpses:
+
+  | | zombies alive | after `pkill -9 -f 'claude/worktrees'` |
+  |---|---|---|
+  | load average | **82.93** | **3.28** |
+  | failures | **7** | **0** |
+  | tests run | 7 094 | **7 120** |
+  | duration | **560 s** | **112 s** |
+  | real `$?` | 1 | **0** |
+
+  **Zero assertion failures in either run** — every red was `Test timed out`
+  or `Failed to start forks worker`, i.e. workers that never got to run. The
+  26-test gap is the files whose worker never started at all.
+
+  **An agent's dev server outlives the agent.** Nothing reaps them, they
+  accumulate across sessions, and each one makes the next measurement worse.
+  So: `uptime` first — above ~10, do not measure, clean up. `pgrep -fl
+  'claude/worktrees'` lists them. And **kill your own servers before handing
+  back control**; a forgotten server also holds a port the next agent will
+  believe is free.
+
 - **Never measure suite stability while other work loads the machine.** Three
   agents building packages and running Nuxt/Postgres servers were enough to
   manufacture failures. That measures your own load, not your code.
@@ -512,8 +538,22 @@ Measured 2026-09-05, three false diagnoses in one session, in both directions:
 a correct fix looked broken, and a stale bundle looked green. `histoire preview`
 binds :6006 from *whichever* worktree started it, and there are ~55 of them.
 Playwright's `reuseExistingServer` then happily attaches to the neighbour's
-build. The manifest guard in `e2e-global-setup.ts` catches the case — **but it
-returns `exit 0`**, so a caller checking only the exit code sees success.
+build. The manifest guard in `e2e-global-setup.ts` catches the case **and aborts
+the run with `exit 1`** — the claim that stood here, that it "returns `exit 0`",
+is false. Remeasured 2026-09-16: from this worktree, pointed at a neighbour's
+:6006, real `$?` captured outside any pipe:
+
+```
+✗ Histoire server on this port does NOT serve this worktree's stories — run aborted.
+  • [variant drift] components/stories/Dialog/OrigamDialog.story.vue
+  • [variant drift] components/stories/SliderField/OrigamSliderFieldTrack.story.vue
+REAL_EXIT=1
+```
+
+The guard `throw`s from `globalSetup`, and a throwing `globalSetup` fails the
+Playwright run. Checking the port owner is still worth doing — it tells you
+*which* worktree you hit, which the abort message cannot — but the exit code
+alone will not lie to you here.
 
 ```sh
 lsof -ti :6006                              # is anyone there?
@@ -600,13 +640,41 @@ does not exist, and **passes against pre-fix code**. Caught only by running the
 spec against `HEAD~1`. **Always A/B a new spec against the parent commit** — a
 green that also passes before the fix proves nothing.
 
-⛔ **Do NOT use `pnpm -F @origam/tests test:e2e`** — the `pretest:e2e` hook
-fails on a guard and **blocks Playwright before a single spec starts, while
-still returning `exit 0`** to the caller. ⛔ Tracked as **#574**. Do NOT cite
-`#46` for this — that is a *merged pull request* about a CSS typo, unrelated,
-and the wrong number circulated in this repo's docs for months. Same family: a
-piped `pnpm build | tail -30` returns `exit 0` while the build fails. **Capture
-the real `$?`.**
+✅ **`pnpm -F @origam/tests test:e2e` is usable again** — the prohibition that
+stood here was obsolete. The `pretest:e2e` hook (`run-guards.mjs`) aggregates
+its guards' exit codes and propagates a failure; it never returns `exit 0` on a
+red guard. Fixed by `7034f429` (2026-08-17), tracked as **#534** then **#574**.
+Remeasured 2026-09-16 on `develop` @ `16607e69`, real `$?` captured outside any
+pipe:
+
+| invocation | `$?` | Playwright |
+|---|---|---|
+| hook red (a guard exits 1) | **1** | never starts — 0 spec run |
+| hook green, `… test:e2e e2e/btn.spec.ts --project=chromium` | **0** | starts — **30 tests executed, 30 passed** |
+
+⛔ **But the pattern this warning was about is real and is NOT fixed by that** —
+it is a property of **pnpm itself**, not of any one script. Measured on pnpm
+9.15.0: **a FILTERED invocation of a script that does not exist prints a notice
+and returns `exit 0`**, so `set -euo pipefail` cannot catch it. `pnpm run <x>`
+unfiltered correctly exits 1; only the `pnpm -F` form — the one this file
+mandates everywhere — swallows it. That is how `vrt-docker.sh` went on calling
+`tokens:build` for weeks after the script was deleted (#606). Guard 24,
+`pnpm-script-exists.mjs`, now fails on any such dead call.
+
+⛔ Do NOT cite `#46` for this — that is a *merged pull request* about a CSS
+typo, unrelated, and the wrong number circulated in this repo's docs for
+months. Same family: a piped `pnpm build | tail -30` returns `exit 0` while the
+build fails. **Capture the real `$?`.**
+
+⛔ **A green e2e run still needs the static Histoire and an unowned port.** The
+gate only checks Variant navigation drift — it says nothing about the server
+you are about to hit. Build first, and isolate the port if `lsof -ti :6006`
+answers (it usually does — there are ~150 worktrees):
+
+```sh
+pnpm -F @origam/stories build; echo $?          # capture it, a stale bundle reads green
+E2E_STATIC=1 E2E_HISTOIRE_PORT=6031 pnpm -F @origam/tests test:e2e <spec> --project=chromium
+```
 
 ### Adding dependencies
 
@@ -765,6 +833,17 @@ The `token-var-channels` guard still checks both directions — every
 `var(--origam-…)` a component reads must be declared in one of the
 stylesheets above, and every declared token should be read by someone.
 
+⛔ **`token-var-channels` reads SHEETS. It evaluates no TypeScript**, and a
+reference concatenated at runtime appears in no sheet — the name is often not
+even grep-able (`var(${SHADOW_TOKEN_PREFIX}${rung})`). That is how #813 shipped
+`var(--origam-shadow---2xl)` on a token no sheet declares while every guard
+stayed green. Guard 28, `ts-token-refs.mjs` (#823), closes that half: it
+enumerates the concrete environments around each template and replays it one
+execution path at a time, then checks every produced name against the sheets —
+and requires a fallback whenever the name cannot be bounded statically. **A
+`var()` built in TS without a fallback is the shape to avoid**;
+`useRounded`'s `var(--origam-radius---md, 8px)` is the shape to copy.
+
 When migrating a component:
 1. Audit every `--origam-{cmp}---*` var the SCSS uses.
 2. Make sure each is declared in `light.css` / `dark.css` / `primitive.css`
@@ -782,8 +861,108 @@ When migrating a component:
 ## Multi-theme
 
 `<html data-theme="light|dark|brand-x">` switches the active token set.
-`prefers-color-scheme: dark` is honoured when no `data-theme` attribute
-is present (auto mode).
+`<html data-mode="light|dark">` **alone** (no `data-theme`) also switches it,
+since **#807** — see below.
+
+`prefers-color-scheme: dark` is honoured **only when the page has pinned
+nothing on either axis** — no `data-theme` AND no `data-mode`. The rule
+shipped in `dark.css` / `_dark.scss` is:
+
+```css
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]):not([data-mode]) { /* the dark token set */ }
+}
+```
+
+Both guards are load-bearing. `useTheme()`'s `applyModeToDocument()` ALWAYS
+writes a concrete `data-mode`, and the Nuxt plugin OMITS `data-theme` when the
+brand resolves to `'auto'` — so a page that pinned light looks like
+`<html data-mode="light">`, with no `data-theme` at all. Guarding on
+`data-theme` alone would repaint that page dark against an explicit choice
+(measured in Chromium, #794).
+
+⚠️ Until **#794** this block existed in `dark.css` but NOT in its SCSS twin,
+and `main.css` — what the `./styles` export resolves to — is compiled from the
+SCSS. The published bundle therefore had no automatic dark mode while this
+paragraph claimed it did. That is the reason guard 27 (`token-twins`) exists.
+
+⚠️ **#807 — fixed.** Until then, `data-mode="dark"` **alone** (no
+`data-theme`) painted nothing: `[data-mode="…"]` rules used to be emitted only
+by the runtime theme matrix (`apply-theme.util.ts`, injected by
+`createOrigam()`), and `origam/styles` had zero occurrence of `data-mode`. The
+fix widened the SELECTOR LIST of the existing explicit `[data-theme="dark"]`
+block instead of duplicating its ~2731 declarations a third time. **#871
+widened it further** — see below.
+
+⚠️ **#871 — the token sets now attach to any element, not only `:root`.**
+The current selectors are:
+
+```css
+/* light.css */
+:root,
+[data-theme="light"],
+[data-mode="light"]                          { /* the light token set */ }
+
+/* dark.css */
+[data-theme="dark"],
+[data-mode="dark"]:not([data-theme="light"]) { /* the dark token set  */ }
+```
+
+**Why the root anchor had to go.** ~1 761 of the dark sheet's declarations are
+DERIVED — `--origam-title---color: var(--origam-color__text---primary)`. A
+custom property is substituted **on the element that declares it**; a
+descendant inherits the already-substituted value. So a derived token
+re-resolves **only on an element the declaring selector matches**. With the
+block anchored to `:root`, an `<OrigamThemeProvider mode="dark">` sub-tree
+switched the ~60 SEMANTIC tokens (the runtime block does emit `[data-mode]`)
+while the 1 761 derived ones stayed FROZEN on the root's light values. Measured
+motif: `rgb(10,10,10)` on `rgb(10,10,10)`. Replayed over 30 components × 8
+identities × 2 modes × 2 scopes (1 664 instances), the widening takes the whole
+contrast surface from **185 violations to 7**, light unchanged at 3.
+
+⚠️ Those endpoints read **189 → 11** when #871 shipped. Both were inflated by
+the SAME 4 fabricated violations: the harness's colour parser did not know
+`color(srgb …)`, which the `apple` palette emits, so it treated the tooltip's
+translucent background as *unpainted*, skipped to the opaque ancestor and
+reported black-on-black at 1.00. Corrected in a follow-up under #871 (spotted
+alongside PR #882) — the **delta of 178 was never wrong**, only the two
+endpoints. `under 2:1` also drops from 4 to **0**:
+nothing that remains is anywhere near invisible.
+
+**The specificities are load-bearing in both directions**, and this is the part
+to re-read before touching either selector:
+
+| selector | spec. | must beat | must lose to |
+|---|---|---|---|
+| `[data-mode="light"]` | (0,1,0) | `:root` only by source order | a brand's `[data-theme="X"]` (0,1,0), injected later |
+| `[data-mode="dark"]:not([data-theme="light"])` | (0,2,0) | every light selector | a brand's `[data-theme="X"][data-mode="dark"]` (0,2,0), injected later |
+
+Raising the light one to (0,2,0) (the tempting `:not([data-theme="dark"])`
+symmetry) makes the sheet outrank **every light brand block** — the brand's own
+component vars stop painting. The `:not([data-theme="light"])` on the dark side
+is not decoration either: it is what keeps `data-theme="light" data-mode="dark"`
+light, i.e. the #807 rule that the brand axis governs when the two axes
+contradict. Both are pinned —
+`packages/tests/e2e/tokens-prefers-color-scheme.spec.ts` and
+`packages/tests/e2e/derived-tokens-subtree.spec.ts`, the latter verified RED on
+the parent commit (6 failed / 2 passed, the 2 being the negative controls).
+
+⛔ **Breaking change, deliberate.** A consumer that re-declared a component var
+inside a `[data-mode]` sub-tree to work around the freeze now has the sheet
+declaring it too — at (0,1,0) / (0,2,0). `packages/marketing`'s
+`ORIGAM_COMPONENT_RESET_LIGHT/DARK` (a GENERATED re-declaration of ~2 700
+component vars, `themes/origam-reset.generated.ts`) is exactly such a
+workaround and is now redundant; it has NOT been removed here.
+
+⚠️ A previous version of this section claimed the AUTO-mode media block carried
+only **11** declarations. **False** — recounted 2026-09-22 by parsing the sheet:
+both blocks carry **2 731** each. The note described a state nobody had
+re-measured since #794.
+
+⛔ Still NOT covered by the static sheets: a brand's *component* vars in a
+sub-tree come only from the runtime matrix, so a page that never calls
+`createOrigam()` gets the neutral identity in a `[data-theme="X"]` sub-tree.
+That is unchanged by #871.
 
 Runtime helpers:
 - `useTheme()` (composable) — singleton ref + persistence + toggle.
@@ -1014,14 +1193,172 @@ Version: **major** for a large user-facing feature or a breaking change,
 A dependency upgrade is judged by its size and impact, not by the file it
 touches — a test-runner major is a *medium feature*, not a patch.
 
+### ⛔ `3.0.0` IS RESERVED FOR THE SPLIT INTO MODULES — decided, not open
+
+**`3.0.0` is the module-separation release. Nothing else ships under that
+number.** This is a standing product decision by the repository owner. It is
+not a preference to be weighed against SemVer purity, and it is **not a
+question to re-open** — it has been raised more than once and the answer has
+not changed.
+
+Concretely, for anyone (human or agent) preparing a release:
+
+- **Never propose `3.0.0`** for a bug-fix lot, a contrast campaign, a
+  dependency bump, or "because SemVer says a breaking change needs a major".
+  The number is taken.
+- A breaking change that lands before the module split ships in a **minor**,
+  documented **explicitly and honestly** in `CHANGELOG.md` — that is the
+  agreed trade-off, and the retrospective note covering the 2.17.0 breaks is
+  the precedent to follow.
+- ⛔ **The module split owns the NUMBER `3.0.0`, not a monopoly on breaking.**
+  Deprecations already posted "for the next major" — #577 `IAdjacentEmits`,
+  #360 bare `createOrigam()` — are harvested **as soon as someone gets to
+  them, in a minor**, like any other break. Waiting buys nothing while the
+  consumer set is empty, and a deprecation kept "just in case" is dead weight.
+
+  *(An earlier version of this line said these two were "harvested by the
+  module split". That was written before the no-consumer rule below was
+  recorded, and it contradicted it. An agent stopped mid-task on the
+  contradiction rather than guess — correctly. The line is fixed; if you find
+  another like it, stop and say so.)*
+
+⚠️ If you believe a release genuinely cannot ship as a minor, that is a
+question for the owner about **the release**, never a proposal to spend the
+`3.0.0` number. Say what breaks and ask; do not offer `3.0.0` as an option.
+
+### ⛔ The `2.x` number is historical — this project is de facto PRE-1.0
+
+**Read this before reasoning about any version number.** The package has
+carried a `2.x` number for historical reasons, but there is **no client
+application depending on it**, and the owner's own framing is explicit:
+
+> *"là on est sur un tag 2.18 mais réellement on est sur une 1.0… donc on s'en
+> fout des ruptures, la première vraie rupture sera la séparation en modules et
+> donc la 3.0"*
+
+Three consequences, and they are not negotiable:
+
+1. **The minor/patch numbers below `3.0.0` are bookkeeping, not a contract.**
+   Nobody is pinned against them. Do not reason about them as if a consumer
+   were watching.
+2. **The FIRST real breaking change is the module split, and it is `3.0.0`.**
+   Everything before it is pre-1.0 churn wearing a 2.x label.
+3. **Therefore: breaking changes are free. Take them.**
+
+### ⛔ Corollary — take the breaking changes NOW, and never ask about them
+
+**`origam` has no client application depending on it today.** A breaking
+change therefore costs **nothing** right now, and will cost a migration guide,
+a deprecation cycle and someone else's afternoon later. The owner's standing
+instruction is explicit: *"c'est maintenant qu'il faut faire les ruptures"*.
+
+What this means in practice, and it is the opposite of the usual reflex:
+
+- **Do NOT gate work on "that would be a breaking change."** It is not a
+  blocker, it is not a reason to ask, and it is not a reason to postpone.
+  Removing a dead export, narrowing an enum, dropping a prop nobody consumes
+  — take it.
+- **Do NOT open an arbitration for a break alone.** Ask only about the
+  *substance* (is this the right design?), never about the *breakage*.
+  ⛔ This has been re-asked several times and the answer has never changed;
+  asking again wastes the owner's time.
+- **Breaks ship in a MINOR** and are documented honestly in `CHANGELOG.md` —
+  the "dérogation assumée" recorded in the title of **#717** is the standing
+  precedent, and the retrospective note covering the 2.17.0 breaks is the
+  shape to copy.
+- **Prefer the clean break to the compatibility shim.** A deprecation kept
+  "just in case" is dead weight while the consumer set is empty, and it is
+  exactly what `#577` / `#360` became.
+
+⚠️ This rule has an expiry the moment a real consumer ships against the
+package. Whoever notices that happen should come back and rewrite this
+section — it will then be wrong, loudly and expensively.
+
+## ⛔ One ticket = one merge = one patch tag `2.18.X`
+
+**Standing instruction from the owner (2026-09-22): every ticket that lands gets
+its own patch release.** Not a weekly batch, not "when enough has piled up" —
+merge, bump, tag, push.
+
+```sh
+# after the PR is merged and develop is pulled
+#   1. bump the PATCH in packages/ds/package.json   (2.18.3 -> 2.18.4)
+#   2. commit that bump on develop
+#   3. tag it and push
+git tag -a v2.18.4 -m "origam 2.18.4"
+git push origin v2.18.4
+```
+
+⛔ **`release.yml` asserts the tag equals `packages/ds/package.json`.** A tag that
+does not match fails the workflow at its first step — so the bump commit must be
+on `develop` *before* the tag is pushed, and the tag must point at it.
+
+⚠️ **The tag is what publishes to npm.** It is irreversible: a published version
+is never removed, only superseded. Verify before tagging — CI green, real `$?`
+outside a pipe, and ideally an install from the registry afterwards
+(`npm i origam@<version>` in an empty directory) rather than trusting the
+workflow's own "success".
+
+⚠️ **A change that does not touch `packages/ds/` produces a byte-identical
+tarball.** Docs, tests, marketing, tooling and CI changes fall in that bucket.
+Publishing them as a new version is not wrong, but it is noise — **say so
+explicitly rather than tagging silently**, and let the owner decide. When in
+doubt, tag: a redundant patch costs nothing, a missing one costs a consumer.
+
 ## Pre-delivery (project-specific overlay)
 
 The global pre-delivery policy (TU + e2e + security) applies. Specific to
 origam:
 - Run tests on **Node 24** (`.nvmrc`); Node 18 produces unrelated
   `crypto.hash` failures.
-- `pnpm -F origam guards` must stay at 17/17. If a change touches the token
+- `pnpm -F origam guards` must stay at **28/28** (measured 2026-09-17, this
+  worktree, real exit code; it read `27/27` an hour earlier, `25/25` before
+  that and `17/17` before that — recount, never quote).
+- `pnpm -F origam guards:self` must stay at **15/15** (measured 2026-09-17, this
+  worktree, real exit code hors pipe ; ce fichier lisait `14/14` puis `13/13` —
+  recount, never quote). It runs the guards' own
+  detectors, discovered from `scripts/guards/lib/*.selftest.mjs`. A guard whose
+  extractor has regressed goes QUIET, and a silent detector and a clean repo
+  produce the same green — so a green `guards` means nothing without this. Both
+  run in the `architecture-guards` CI job. If a change touches the token
   stylesheets, `token-var-channels` is the guard that will catch a variable
   read but never declared (or the reverse).
-- `pnpm audit --prod` should be clean to ship; dev tree contains
-  pre-existing histoire-alpha vulns documented as accepted risk.
+- **`pnpm audit` must be clean to ship — the full tree, not only `--prod`.**
+  Both return `No known vulnerabilities found` with exit code `0` — remeasured
+  **2026-09-18**, this worktree, real `$?` outside a pipe — and **no advisory is
+  waived**: `pnpm.auditConfig.ignoreGhsas` is absent from the root
+  `package.json`. ⛔ Capture the real `$?` outside a pipe — `pnpm audit | tail`
+  returns `tail`'s exit code, not the audit's.
+
+  ⚠️ **This line is perishable, and it has already been false once.** It read
+  "clean since #718 and #796 (2026-09-16)" while the tree carried a moderate:
+  the dependabot bump `84ae0347` brought in `devalue 5.9.0`
+  (GHSA-9rgm-9g3h-6x36, DoS, 45 paths via `@nuxtjs/i18n` and `@nuxtjs/seo`) and
+  nobody re-measured. Fixed under #248 by a third override, `"devalue@5":
+  "^5.9.2"` — scoped to the 5.x line on purpose, so the unrelated `devalue@2`
+  in the tree is not dragged across two majors. **A clean audit is a
+  measurement, never a quotation: re-run it, don't cite this paragraph.**
+
+  ⚠️ **And verify the audit still measures.** "0 vulnerability" and "my command
+  stopped seeing anything" are indistinguishable without a positive control.
+  The method that gave #718 its authority, replayed for `devalue` under #248:
+  re-pin the override to the vulnerable version, confirm the advisory comes
+  back (`exit 1`, same GHSA), then restore and confirm `exit 0`.
+
+  The former note here — *"dev tree contains pre-existing histoire-alpha vulns
+  documented as accepted risk"* — is retired, and it is worth knowing how it
+  was wrong, because the shape of the error is easy to repeat. It was right
+  about the **origin**: 7 of those 10 advisories did arrive through
+  `histoire@1.0.0-beta.1` (`js-yaml@3` via `gray-matter`, plus `markdown-it`
+  and its `linkify-it`). It was wrong about the **conclusion**. Every one of
+  the 10 had a published fix reachable by a minor bump, and the three
+  remaining ones did not come from histoire at all (`js-cookie` via
+  `@vue/test-utils` → `js-beautify`, and `vitest` itself). "Accepted risk"
+  described a state nobody had re-measured — an alert that stops being
+  checked because a document says it is fine.
+
+  If a future advisory genuinely has no published fix, it goes through
+  `docs/security-waivers.md` — maintainer approval, written justification,
+  dependency chain, review date — never a silent entry in `ignoreGhsas`.
+  A waiver also has an **exit**: `image-size` sat under one for a month
+  after its fix shipped, because nothing re-checked the premise.

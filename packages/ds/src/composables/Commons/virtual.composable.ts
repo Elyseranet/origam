@@ -46,6 +46,60 @@ export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
     const display = useDisplay()
     const goTo = useGoTo()
 
+    /*********************************************************
+     * Frames bound to the owner's lifetime (#719)
+     *
+     * @description
+     * Three rAF sites lived here and NONE was cancelled when the scope
+     * was disposed:
+     *   - the deferred `scrollToIndex` retry, armed from a `nextTick`
+     *     inside the first-render watcher;
+     *   - the viewport-shrink recompute;
+     *   - `calculateVisibleItems`, whose handle WAS tracked (`raf`) but
+     *     only ever cancelled by the next call, never by `onScopeDispose`.
+     *
+     * @description
+     * None of these bodies is benign: they all end in
+     * `calculateVisibleItems` → `requestAnimationFrame` (bare global) or
+     * in `useGoTo`, which reads `window`. A frame landing after the
+     * jsdom environment is torn down throws
+     * `ReferenceError: window is not defined` from the SCHEDULER — the
+     * exact shape that made `OrigamImg` fail a whole Vitest run with
+     * zero red tests (#706).
+     *
+     * @description
+     * One mechanism covers both failure modes: `onScopeDispose` cancels
+     * whatever frame is armed AND flips `disposed`, which turns any
+     * later scheduling attempt into a no-op. The flag is what the
+     * `nextTick`-deferred site needs, since at dispose time it has no
+     * handle to cancel yet.
+     *
+     * @description
+     * Every armed id is tracked, NOT just the latest. Collapsing them into
+     * a single handle would make a later call supersede an earlier one —
+     * a coalescing semantic this scope never had, and one no failing test
+     * asks for. The fix adds cancellation at dispose and nothing else.
+     *
+     * @description
+     * `raf` is the coalescing handle of `calculateVisibleItems`. It is
+     * declared up here, far from its only writer, so `onScopeDispose`
+     * below can cancel it without a forward reference.
+     ********************************************************/
+    const frames = new Set<number>()
+    let raf = -1
+    let disposed = false
+
+    const scheduleFrame = (cb: () => void) => {
+        if (disposed || !IN_BROWSER) return
+
+        const id = requestAnimationFrame(() => {
+            frames.delete(id)
+            cb()
+        })
+
+        frames.add(id)
+    }
+
     const itemHeight = shallowRef(0)
 
     watchEffect(() => {
@@ -150,17 +204,25 @@ export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
         if (!~targetScrollIndex) return
 
         nextTick(() => {
-            if (IN_BROWSER) {
-                window.requestAnimationFrame(() => {
-                    scrollToIndex(targetScrollIndex)
-                    targetScrollIndex = -1
-                })
-            }
+            scheduleFrame(() => {
+                scrollToIndex(targetScrollIndex)
+                targetScrollIndex = -1
+            })
         })
     })
 
     onScopeDispose(() => {
         updateOffsets.clear()
+        disposed = true
+
+        for (const id of frames) cancelAnimationFrame(id)
+
+        frames.clear()
+
+        if (raf !== -1) {
+            cancelAnimationFrame(raf)
+            raf = -1
+        }
     })
 
     const handleItemResize = (index: number, height: number) => {
@@ -191,7 +253,7 @@ export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
         if (oldVal) {
             calculateVisibleItems()
             if (val < oldVal) {
-                requestAnimationFrame(() => {
+                scheduleFrame(() => {
                     scrollVelocity = 0
                     calculateVisibleItems()
                 })
@@ -230,9 +292,9 @@ export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
         calculateVisibleItems()
     }
 
-    let raf = -1
-
     const calculateVisibleItems = () => {
+        if (disposed || !IN_BROWSER) return
+
         cancelAnimationFrame(raf)
         raf = requestAnimationFrame(calcVisibleItems)
     }

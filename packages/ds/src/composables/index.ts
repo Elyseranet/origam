@@ -41,6 +41,7 @@ export * from './Commons/link.composable'
 export * from './Commons/backButton.composable'
 export * from './Commons/scopeId.composable'
 export * from './Commons/stateEffect.composable'
+export * from './Commons/accessibleCommand.composable'
 export * from './Commons/adjacent.composable'
 export * from './Commons/adjacentInner.composable'
 export * from './Commons/validation.composable'
@@ -129,6 +130,8 @@ export * from './Commons/cssSupportClient.composable'
 
 export * from './Commons/mask.composable'
 
+export * from './Commons/hotkey.composable'
+
 export * from './QrCode/qr-code.composable'
 
 export * from './Watermark/watermark.composable'
@@ -148,6 +151,7 @@ export * from './Media/use-media-player.composable'
  ********************************************************/
 export { useVideoPlayer } from './Video/video-player.composable'
 
+export * from './Audio/use-audio-player.composable'
 export * from './Audio/use-waveform.composable'
 
 export * from './Calendar/calendar.composable'

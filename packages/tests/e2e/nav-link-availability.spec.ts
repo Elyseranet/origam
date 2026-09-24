@@ -36,7 +36,7 @@
  *     --config=playwright.marketing.config.ts nav-link-availability
  */
 
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test, type Locator, type Page } from '@playwright/test'
 
 // '/figma-plugin' a été ajouté par un autre agent (purge-figma-vitrine),
 // en parallèle de ce chantier — non touché ici (hors périmètre). À noter :
@@ -48,36 +48,118 @@ const DEAD_HREFS = ['/figma-plugin']
 
 const LIVE_LABELS_BY_TEXT = ['Docs', 'Stories']
 
+/**
+ * Les TROIS activateurs de méga-menu, et eux seuls.
+ *
+ * ⛔ Ne PAS élargir à `.primary-nav .origam-btn` : ce sélecteur attrape aussi
+ * « Theming » (`data-cy="nav-theming"`), qui n'est pas un activateur mais un
+ * `<a href="/theming">` rendu par `origam-btn`. Le cliquer NAVIGUE vers la
+ * page la plus lourde du site (Theme Builder) au milieu de la collecte, et
+ * tous les locators suivants se mettent à attendre cette navigation. Mesuré
+ * (sonde, 3 tours, serveur de dev tiède, machine au repos) :
+ *
+ *   btn#0 nav-section-introduction   total 10 485 ms   0 lien lu
+ *   btn#1 nav-section-getting-started   total   506 ms   2 liens
+ *   btn#2 nav-section-features          total   500 ms  10 liens
+ *   btn#3 nav-theming <A href=/theming> total 11 404 ms   0 lien → url=/theming
+ *   ————— boucle complète 22,9 s, dont 50 % pour le seul lien Theming
+ *
+ * soit ~45 % du budget de 30 s d'un test consommé par une navigation dont il
+ * n'a aucun besoin. C'est le symptôme « expiration à 30 s » de #836 : il ne
+ * faut pas doubler ce budget, il faut supprimer le détour.
+ */
+const NAV_SECTION_ACTIVATORS = '.primary-nav [data-cy^="nav-section-"]'
+
+/** Le lien Theming, couvert SANS clic (lecture d'attribut). */
+const NAV_THEMING_LINK = '.primary-nav [data-cy="nav-theming"]'
+
+/** Contenu de méga-menu réellement ouvert (les autres ne sont pas montés). */
+const OPEN_MENU_CONTENT = '.origam-menu__content:visible'
+
+/**
+ * Attend que la nav soit visible ET que l'app soit HYDRATÉE.
+ *
+ * ⛔ `.primary-nav` visible ne suffit pas : c'est du HTML SSR, présent avant
+ * que Vue n'ait attaché quoi que ce soit. Mesuré (sonde, 3 tours sur 3) — à
+ * l'instant où la nav devient visible (+222 à +397 ms selon le tour) :
+ *
+ *   #__nuxt présent : true     __vue_app__ présent : FALSE
+ *   1er clic sur nav-section-introduction ouvre le menu : FALSE
+ *   2e  clic, après hydratation                         : TRUE
+ *
+ * Le premier clic est donc PERDU, systématiquement. L'ancienne version de ce
+ * fichier ne le voyait pas : les trois liens de la section Introduction sont
+ * aussi dans le sitemap du footer, qui rattrapait l'assertion. Un des trois
+ * méga-menus ne contribuait donc RIEN, à chaque exécution, dans un fichier
+ * dont c'est l'objet même.
+ */
 async function waitForPrimaryNav (page: Page): Promise<void> {
     await page.locator('.primary-nav').waitFor({ state: 'visible', timeout: 15_000 })
+
+    await page.waitForFunction(
+        () => Boolean((document.querySelector('#__nuxt') as unknown as { __vue_app__?: unknown } | null)?.__vue_app__),
+        undefined,
+        { timeout: 15_000 }
+    )
+}
+
+/**
+ * Ouvre le méga-menu `index` et rend son contenu une fois qu'il porte
+ * réellement des liens.
+ *
+ * ⛔ Ne PAS revenir à `waitForTimeout(300)`. Un délai fixe n'atteste de rien :
+ * quand l'ouverture arrive plus tard (machine chargée, compilation Vite à la
+ * demande), la collecte lit un menu vide et le test échoue sur « aucun lien
+ * n'a le libellé "Docs" » — le second symptôme de #836. Rallonger le délai
+ * ne corrige pas ça, ça déplace le seuil. On attend l'ÉTAT, pas le temps.
+ */
+async function openSectionMenu (page: Page, index: number): Promise<Locator> {
+    await page.locator(NAV_SECTION_ACTIVATORS).nth(index).click()
+
+    const content = page.locator(OPEN_MENU_CONTENT)
+
+    await expect(content.locator('a[href]').first()).toBeVisible({ timeout: 10_000 })
+
+    return content
+}
+
+/** Referme le méga-menu ouvert, en attendant sa disparition effective. */
+async function closeSectionMenu (page: Page): Promise<void> {
+    await page.keyboard.press('Escape')
+    await expect(page.locator(OPEN_MENU_CONTENT)).toHaveCount(0, { timeout: 10_000 })
+}
+
+/** Les `href` d'un lot de liens, en un seul aller-retour. */
+function hrefsOf (links: Locator): Promise<(string | null)[]> {
+    return links.evaluateAll(els => els.map(el => el.getAttribute('href')))
+}
+
+/** Les libellés visibles d'un lot de liens, en un seul aller-retour. */
+function labelsOf (links: Locator): Promise<string[]> {
+    return links.evaluateAll(els => els.map(el => (el as HTMLElement).innerText.trim()))
 }
 
 async function collectAllNavHrefs (page: Page): Promise<Set<string>> {
     const found = new Set<string>()
 
-    const navBtns = page.locator('.primary-nav .origam-btn')
-    const count = await navBtns.count()
+    const sectionCount = await page.locator(NAV_SECTION_ACTIVATORS).count()
 
-    for (let i = 0; i < count; i++) {
-        const btn = navBtns.nth(i)
-        await btn.click()
-        await page.waitForTimeout(300)
+    for (let i = 0; i < sectionCount; i++) {
+        const content = await openSectionMenu(page, i)
 
-        const menuLinks = page.locator('.origam-menu__content a[href]')
-        const linkCount = await menuLinks.count()
-        for (let j = 0; j < linkCount; j++) {
-            const href = await menuLinks.nth(j).getAttribute('href')
+        for (const href of await hrefsOf(content.locator('a[href]'))) {
             if (href) found.add(href)
         }
 
-        await page.keyboard.press('Escape')
-        await page.waitForTimeout(150)
+        await closeSectionMenu(page)
     }
 
-    const footerLinks = page.locator('.site-footer a[href]')
-    const footerCount = await footerLinks.count()
-    for (let i = 0; i < footerCount; i++) {
-        const href = await footerLinks.nth(i).getAttribute('href')
+    // Theming reste couvert, mais par lecture d'attribut : le cliquer ferait
+    // exactement le détour que ce fichier vient de supprimer.
+    const themingHref = await page.locator(NAV_THEMING_LINK).getAttribute('href')
+    if (themingHref) found.add(themingHref)
+
+    for (const href of await hrefsOf(page.locator('.site-footer a[href]'))) {
         if (href) found.add(href)
     }
 
@@ -87,31 +169,20 @@ async function collectAllNavHrefs (page: Page): Promise<Set<string>> {
 async function collectAllNavLabels (page: Page): Promise<string[]> {
     const labels: string[] = []
 
-    const navBtns = page.locator('.primary-nav .origam-btn')
-    const count = await navBtns.count()
+    const sectionCount = await page.locator(NAV_SECTION_ACTIVATORS).count()
 
-    for (let i = 0; i < count; i++) {
-        const btn = navBtns.nth(i)
-        await btn.click()
-        await page.waitForTimeout(300)
+    for (let i = 0; i < sectionCount; i++) {
+        const content = await openSectionMenu(page, i)
 
-        const menuLinks = page.locator('.origam-menu__content a[href]')
-        const linkCount = await menuLinks.count()
-        for (let j = 0; j < linkCount; j++) {
-            const text = await menuLinks.nth(j).innerText()
-            if (text.trim()) labels.push(text.trim())
-        }
+        labels.push(...(await labelsOf(content.locator('a[href]'))).filter(Boolean))
 
-        await page.keyboard.press('Escape')
-        await page.waitForTimeout(150)
+        await closeSectionMenu(page)
     }
 
-    const footerLinks = page.locator('.site-footer a[href]')
-    const footerCount = await footerLinks.count()
-    for (let i = 0; i < footerCount; i++) {
-        const text = await footerLinks.nth(i).innerText()
-        if (text.trim()) labels.push(text.trim())
-    }
+    const themingLabel = (await page.locator(NAV_THEMING_LINK).innerText()).trim()
+    if (themingLabel) labels.push(themingLabel)
+
+    labels.push(...(await labelsOf(page.locator('.site-footer a[href]'))).filter(Boolean))
 
     return labels
 }

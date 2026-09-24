@@ -131,14 +131,49 @@
 	 * / `End` jump to first/last. Disabled items are skipped
 	 * but `useGroup.step` already handles the wrap-around.
 	 * Focus stays on the freshly-selected tab so screen
-	 * readers announce the change.
+	 * readers announce the change — WAI-ARIA APG « Tabs with
+	 * Automatic Activation » : la fleche deplace le focus ET
+	 * la selection.
+	 *
+	 * @description
+	 * ⛔ `next()` / `prev()` RENVOIENT l'id retenu et c'est CET id
+	 * qu'on focalise (#786). La version precedente relisait
+	 * `selected.value[0]` juste apres l'appel — sous `v-model` le
+	 * getter de `useVModel` rend `props.modelValue`, donc encore
+	 * l'ANCIEN id : le focus retournait sur l'onglet qu'on venait
+	 * de quitter pendant que `aria-selected` basculait ailleurs.
+	 * Mesure jsdom d'avant correctif, 3 onglets sous v-model,
+	 * focus de depart sur l'onglet 0 :
+	 *
+	 *   ArrowRight  aria-selected -> 1   activeElement -> 0
+	 *   ArrowRight  aria-selected -> 2   activeElement -> 1
+	 *
+	 * `Home` / `End` y echappaient parce que
+	 * `focusFirstNonDisabled` PORTE l'id au lieu de le relire.
+	 * `packages/tests/TU/components/Tabs/tabs-keyboard-focus.spec.ts`
+	 * assert `document.activeElement` sur les 4 touches.
+	 *
+	 * @description
+	 * ⛔ `focusTab` RESOLVES THE DOM NODE THROUGH THE ID THE TAB
+	 * PUBLISHED on its own registry entry (`IGroupItem.domId`),
+	 * never through a `data-` attribute carrying `groupItem.id`
+	 * (#741). That counter is module-global and never reset, so on
+	 * a persistent SSR process it differs between the served HTML
+	 * and the client render. Vue does not rectify attribute
+	 * mismatches in production: the attribute kept its SERVER value
+	 * while this lookup ran with the CLIENT value, and matched
+	 * nothing. `domId` is the very id rendered on the element, so
+	 * the two sides cannot drift apart.
 	 ********************************************************/
 	const ariaOrientation = computed(() => props.direction === DIRECTION.VERTICAL ? 'vertical' : 'horizontal')
 
 	const focusTab = (id: number) => {
 		if (!rootRef.value) return
 
-		const target = rootRef.value.querySelector(`[data-origam-tab-id="${id}"]`) as HTMLElement | null
+		const domId = items.value.find(item => item.id === id)?.domId
+		if (!domId) return
+
+		const target = rootRef.value.querySelector(`[id=${JSON.stringify(domId)}]`) as HTMLElement | null
 		target?.focus()
 	}
 
@@ -168,12 +203,12 @@
 
 		if (event.key === prevKey) {
 			event.preventDefault()
-			prev()
-			if (selected.value[0] != null) focusTab(selected.value[0])
+			const movedTo = prev()
+			if (movedTo != null) focusTab(movedTo)
 		} else if (event.key === nextKey) {
 			event.preventDefault()
-			next()
-			if (selected.value[0] != null) focusTab(selected.value[0])
+			const movedTo = next()
+			if (movedTo != null) focusTab(movedTo)
 		} else if (event.key === 'Home') {
 			event.preventDefault()
 			focusFirstNonDisabled(1)
@@ -339,27 +374,8 @@
 			--origam-tabs---height: 56px;
 		}
 
-		&--density-default {
-			--origam-tabs---height: 48px;
-		}
-
 		&--density-compact {
 			--origam-tabs---height: 36px;
 		}
-	}
-</style>
-
-<style>
-	:root {
-		--origam-tabs---height: 48px;
-		--origam-tabs---gap: 0;
-		--origam-tabs---padding-block: 0;
-		--origam-tabs---padding-inline: 0;
-		--origam-tabs---background-color: transparent;
-		--origam-tabs---border-radius: 0;
-		--origam-tabs---border-width: 0;
-		--origam-tabs---border-style: solid;
-		--origam-tabs---border-color: currentColor;
-		--origam-tabs---color: inherit;
 	}
 </style>

@@ -26,7 +26,7 @@ has fired).
 ## `useMediaPlayer`
 
 ```ts
-export function useMediaPlayer (options: IUseMediaPlayerOptions =
+export function useMediaPlayer (options: IUseMediaPlayerOptions = {}): { mediaRef: Ref<HTMLMediaElement | null>; state: IMediaPlayerState; methods: IMediaPlayerMethods }
 ```
 
 Headless media-player composable. Owns the media-shared runtime
@@ -43,14 +43,16 @@ own specialisations on top of this base.
 **Exemple**
 
 ```ts
+```ts
 const audioRef = ref<HTMLAudioElement | null>(null)
 const { state, methods } = useMediaPlayer({ mediaRef: audioRef })
 
 // template:
 // <audio ref="audioRef" src="…" />
 ```
+```
 
 **Source** : `packages/ds/src/composables/Media/use-media-player.composable.ts`
 
-**Consommateurs** (4) : `consts/Media/media.const.ts`, `interfaces/Media/media-controller.interface.ts`, `interfaces/Media/media-player.interface.ts`, `utils/Commons/animation.util.ts`
+**Consommateurs** (6) : `components/Audio/OrigamAudio.vue`, `components/Video/OrigamVideo.vue`, `consts/Media/media.const.ts`, `interfaces/Media/media-controller.interface.ts`, `interfaces/Media/media-player.interface.ts`, `utils/Commons/animation.util.ts`
 

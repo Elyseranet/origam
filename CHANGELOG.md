@@ -18,6 +18,1751 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.18.8] - 2026-09-23
+
+### Fixed — #901 `OrigamBtn` — `calc(auto + 0px)` ramenait `min-width` à `0` sur tous les boutons
+
+`OrigamBtn.vue`, second bloc `<style scoped>`, déclarait sans condition sur
+`.origam-btn` `--origam-btn---min-width: calc(var(--origam-btn---width, 36px)
++ var(--origam-btn---density, 0px))`. La feuille (`light.css`/`dark.css`)
+déclare `--origam-btn---width: auto`, donc le repli `36px` n'était jamais
+atteint et la valeur devenait `calc(auto + 0px)` — invalide au moment de la
+substitution dans `min-width` (ligne 563), pas au parse : la propriété
+retombait sur sa valeur initiale (`auto` → `0` hors flex), jamais sur le
+repli `64px`. Même spécificité `(0,2,0)` que les modificateurs `&--size-*`,
+mais déclaré APRÈS eux : les 5 échelons de `size` et `&--icon` étaient donc
+tous écrasés — famille de la garde 29 `unitless-zero-in-calc` / #607.
+
+Mesuré en navigateur réel (Playwright + Histoire statique, chromium) :
+
+| | avant | après |
+|---|---|---|
+| `size=x-small` | `0px` | `36px` |
+| `size=small` | `0px` | `50px` |
+| `size=default` | `0px` | `64px` |
+| `size=large` | `0px` | `78px` |
+| `size=x-large` | `0px` | `92px` |
+| `density=comfortable` (size=default) | `0px` | `72px` |
+| `icon=true` | `28px` (dépendait de `--origam-btn---height` résolue, pas de 0 voulu) | `0px` |
+
+Correctif : `min-width` (l.563) lit désormais directement
+`--origam-btn---min-width` (repli `64px`) plutôt que `--origam-btn---width`,
+et le second bloc `<style scoped>` ne réécrit plus ce canal (ni
+`--origam-btn---min-height`, strictement identique au repli déjà présent
+l.566 et jamais déclaré par aucune feuille — retrait vérifié sans effet).
+
+⛔ **Corollaire découvert en réparant** : le nouveau `calc(var(--origam-
+btn---min-width, 64px) + var(--origam-btn---density, 0px))` fait
+maintenant participer `--origam-btn---min-width` à une addition — et
+`&--icon` le posait à `0` NU (`<number>`, pas `<length>`), le même défaut
+que celui réparé ici. `OrigamCode.vue` déclarait le même canal en `0` nu
+pour son bouton de copie compact (`.origam-code__copy`,
+`.origam-code__copy--compact`). Les trois déclarations passent à `0px` —
+changement sémantiquement neutre (`0` == `0px` en CSS), guard
+`unitless-zero-in-calc` self-testé vert. `token-var-channels` gagne 1 entrée
+« canal mort connu » pour `--origam-btn---min-height` (jamais alimenté par
+le pipeline de tokens, extension locale volontaire — baseline mise à jour).
+
+**VRT** : mesuré (pas supposé) via `pnpm -F @origam/tests test:vrt:docker`
+(image `mcr.microsoft.com/playwright:v1.59.1-jammy` pinnée, seule verdict
+valable — cf. `vrt/VRT.md`) — `vrt/btn-variant.spec.ts`, 7/7 verts, **aucune
+capture ne bouge**. Les 7 libellés de la matrice (`Text` … `Outlined`, 4 à
+8 caractères) dépassent déjà le plancher `size=small` (`50px`) une fois le
+padding `12px`×2 ajouté, donc le nouveau plancher ne change la largeur
+d'aucun bouton de ce pilote. Aucune baseline à régénérer dans cette PR.
+
+### Fixed — #411 : `OrigamChartMap` faisait **disparaître** contours et pays sous un thème de marque
+
+Ce n'est pas « la couleur ne suit pas le thème ». `borderColor` **était** une
+prop déclarée, donc le résolveur d'ADR-005 l'atteignait déjà : un thème
+nommant `components['origam-chart-map'].borderColor` posait bien sa valeur.
+Le défaut est en aval — la valeur partait **verbatim dans le `stroke` inline
+du SVG, sans passer par `resolveColor()`**, contrairement à sa voisine
+`lineColor` qui y passait déjà.
+
+Or un intent comme `'success'` **n'est pas du CSS valide pour `stroke`** : le
+navigateur ne repeint pas en gris, il **jette la déclaration entière**. Une
+marque nommant cette prop ne recevait donc pas un contour mal thémé — elle
+n'avait **plus de contours de pays du tout**.
+
+```
+- :style="{ fill: country.fill, stroke: borderColor }"
++ :style="{ fill: country.fill, stroke: resolveColor(borderColor) }"
+```
+
+**Le jumeau, trouvé en réparant et livré dans la même PR** :
+`defaultCountryFill` portait le défaut identique une ligne plus bas
+(`fill = props.defaultCountryFill` sans `resolveColor()`, typé `string` nu
+face au `TIntent | string` de `lineColor`) — donc les pays **absents du jeu
+de données** disparaissaient de la même façon. Vérifié dans le code avant de
+le traiter, pas déduit par symétrie.
+
+Les deux props sont retypées `TIntent | string` et passent par
+`resolveColor()`, qui laisse traverser les littéraux CSS.
+
+⚠️ **Le défaut de `defaultCountryFill` reste le littéral
+`rgba(0,0,0,0.08)`, délibérément.** `resolveColor()` ne rend qu'une couleur
+**opaque fixe**, là où ce littéral est un **voile semi-transparent composité
+sur le `bgColor` que le graphique peint lui-même** : il s'adapte donc au
+clair, au sombre et à un `bgColor` personnalisé. Aucun intent ne reproduit
+ça — le retyper « pour la symétrie » aurait échangé un comportement
+adaptatif contre un comportement figé. Consigné dans le JSDoc de
+`IChartMapProps` et dans la table de la doc. Le défaut de `borderColor`,
+lui, passe de `rgba(0,0,0,0.2)` à l'intent `'neutral'`.
+
+⚠️ **Le ticket était périmé aux deux tiers**, revérifié avant d'écrire une
+ligne : des trois composants qu'il nomme, `OrigamSelect` était déjà réparé
+par `331d9b62` (#456) et `OrigamDatePickerField` par `374858be5` — lequel
+citait déjà #411 sans le fermer. Son périmètre à 3 était en revanche exact :
+grep des littéraux cités, aucune 4ᵉ occurrence dans le DS.
+
+A/B contre le commit parent, en Vitest (chaîne `style` littérale) **et** en
+Chromium réel (`getComputedStyle`) : `borderColor` stable **10/10** ;
+`defaultCountryFill` **2/4 rouge avant, 4/4 vert après** en unitaire, rouge
+puis vert en navigateur, stable 10/10 sous `--repeat-each=5`. Story, doc,
+2 specs TU et 2 specs e2e (ajoutées à `GREEN_SPECS`).
+
+### Fixed — #535 : le contraste syntaxique de `OrigamCode` était sous AA, deux fois plus bas que le ticket ne le disait
+
+⚠️ **Le `4,27:1` du ticket ne se reproduit plus** — `HomeHero` a migré vers
+un extrait `bash` qui ne touche que 2 des 8 catégories shiki, toutes deux
+déjà conformes. Le défaut sous-jacent, lui, est réel et bien plus large.
+
+Remesuré sur **8 catégories shiki** (mots-clés, ponctuation, chaînes,
+commentaires, nombres/variables, fonctions, paramètres, balises) × **8 fonds**
+(DS par défaut + 7 thèmes de marque) × **2 modes**, depuis les valeurs hex
+littérales réelles (shiki 4.3.1, `*.theme.ts`) :
+
+| | avant | thème shiki seul | **livré** |
+|---|---|---|---|
+| clair, pire cas | **2,93:1** *(paramètre, `geek`)* | 4,23:1 | **4,77:1** *(commentaire, `glass`)* |
+| sombre, pire cas | **2,55:1** *(commentaire, `material`)* | 5,79:1 | **6,77:1** *(mot-clé, `material`)* |
+
+**Le pire cas réel était à 2,55:1 : le ticket sous-estimait son propre défaut
+d'un facteur deux.**
+
+**D'où vient la couleur, établi et non supposé.** Shiki peint chaque token via
+`--shiki-light` / `--shiki-dark` **inline sur chaque `<span>`**, depuis deux
+thèmes figés déclarés dans `consts/Code/code.const.ts`. **Aucun token
+`--origam-code---syntax-*` par catégorie n'existe** — déjà établi par #399 /
+#661, reconfirmé en relisant le code. La fausse piste signalée dans le ticket
+tient toujours : `--origam-color__feedback--success---fgSubtle` (touché par
+#524) alimente bien `--origam-code__syntax---string`, mais **ce n'est pas ce
+que shiki peint**.
+
+**Aucun token créé, et l'arbitrage a été évité plutôt que contourné.** La
+question « faut-il des tokens de syntaxe par catégorie ? » était posée comme
+point d'arrêt ; le calcul a montré qu'aucune décision d'architecture n'était
+nécessaire :
+
+1. `CODE_LIGHT_THEME` / `CODE_DARK_THEME` → `github-light-high-contrast` /
+   `github-dark-high-contrast` — **mêmes paquets shiki, coût de bundle
+   inchangé**.
+2. `--origam-code---background-color` : `surface---sunken` →
+   `surface---raised`, **un token sémantique qui existe déjà par thème**.
+
+Le thème shiki seul ne suffisait pas (4,23:1 en clair) : **il fallait les
+deux**.
+
+Nouveau `describe` `Syntax contrast (#535)` dans `code.spec.ts`,
+`getComputedStyle` réel sur chaque couleur shiki distincte, clair + sombre —
+**3/3 vert**.
+
+**Non vérifié** : les 7 thèmes de marque **via Playwright contre le site
+marketing lui-même** — calcul déterministe sur les valeurs source à la place,
+le mécanisme CSS étant, lui, vérifié en navigateur réel. VitePress a son
+propre pipeline shiki indépendant, hors périmètre. Le seed marketing
+(`server/db/seed/const.json`) garde une copie figée des anciens noms de
+thème : signalé, **non resynchronisé**, ça demande un re-sync de base séparé.
+
+**Trouvaille annexe** : le `#29` cité dans les commentaires « bugs DS
+connus » de `code.spec.ts` ne correspond à aucun ticket — `gh issue view 29`
+est une PR dependabot sans rapport. Corrigé dans le commentaire. Même motif
+que le `#46` qui a circulé des mois dans la doc de ce dépôt.
+
+## [2.18.7] - 2026-09-23
+
+### Fixed — #607 / #569 : 19 canaux de thème confisqués par le bloc du composant
+
+Un composant qui redéclare un token que les feuilles déclarent déjà rend ce
+canal **inatteignable par tout `IOrigamTheme` de marque**. Une custom property
+est substituée sur l'élément **qui la déclare**, et l'héritage depuis
+`[data-theme="brand-x"]` perd contre n'importe quelle déclaration directe — la
+spécificité n'entre même pas en jeu.
+
+**Le motif dominant, mesuré, n'est pas celui que les tickets décrivaient.** Sur
+les 503 déclarations scopées visant un token de feuille, **434 sont portées par
+un modificateur que le consommateur doit demander** (`&--rounded-large`,
+`&--density-compact`) : `useRounded` / `useDensity` n'émettent rien quand la
+prop est absente, donc ces règles ne confisquent rien — c'est la logique
+PROPS-FIRST du DS en train de fonctionner. La vraie cause commune est plus
+étroite : **un modificateur dont la valeur est aussi le défaut de la prop dans
+`withDefaults`** (`&--size-default` sur `size: SIZES.DEFAULT`,
+`&--density-default` sur `density: DENSITY.DEFAULT`). La classe est alors posée
+sur **chaque** instance, et la règle épingle le token à vie.
+
+Les 19 déclarations retirées résolvent toutes **exactement** la valeur de la
+feuille, chaîne de `var()` déroulée — `12px` = `var(--origam-space---3)`,
+`0.875rem` = `var(--origam-font__size---md)`, `48px` = `var(--origam-space---12)`.
+Le rendu par défaut est donc inchangé ; seul le canal redevient atteignable.
+(3 seulement sont littéralement identiques : une comparaison de chaînes ne voit
+rien, d'où le résolveur.)
+
+- `OrigamAlert`, `OrigamBtn`, `OrigamList`, `OrigamTable`, `OrigamTabs`,
+  `OrigamToolbar` — `&--density-default`
+- `OrigamBtn`, `OrigamStepper` — `&--size-default`
+- `OrigamKbd` — `&--variant-outlined` (`border-color`)
+- `OrigamChip` — second bloc `<style scoped>` entier, qui épinglait `density`
+- `OrigamTabs` — plus son bloc `<style>:root{}` (#569)
+
+**Preuve navigateur, A/B contre le commit parent** (Chromium, Histoire statique,
+thème de marque injecté par `addInitScript` avant le document). Même story, même
+liste de classes, sur `--origam-btn---density` que `.origam-btn--density-default`
+épinglait à `0px` :
+
+| | avant | après |
+|---|---|---|
+| `--origam-btn---density` | `0px` | **`24px`** |
+| hauteur calculée | 28px | **52px** |
+
+**Changed** — `--origam-btn---height` et `--origam-toolbar---height` lisent
+désormais leur échelon (`…---height-md` / `…---height-default`) depuis les
+feuilles, dans les quatre fichiers miroirs css/scss. Sans ça l'échelon restait
+sans lecteur après le retrait et `token-var-channels` rougissait ; les deux
+canaux sont vivants.
+
+**Added** — garde 29 `theme-channel-confiscation` : il ne lève que
+l'intersection « règle toujours active » × « valeur identique après résolution
+des `var()` », les deux discriminants pinnés par 13 témoins de rappel **et de
+précision**. Baseline à **37** entrées : 14 blocs `<style>:root{}` restants
+(#569) et 22 surcharges parent→enfant où le canal est **renommé** et non mort
+(`OrigamSnackbarGroup` expose `--origam-snackbar-group__item---*` depuis #436,
+la famille Media configure ses `.origam-btn` imbriqués). Livraison
+**volontairement partielle** : chacune de ces deux familles demande une
+migration de feuille composant par composant, avec risque de rendu — donc un
+arbitrage, pas un correctif.
+
+### Fixed — #829 : `geek` ET `glass` déclaraient `surface.sunken` PLUS CLAIR que `surface.default` (mode clair)
+
+`sunken` et `default` ne sont pas deux couleurs interchangeables, ce sont des
+**rôles** : `sunken` promet une surface encaissée. En mode **clair**, `geek`
+déclarait `#fbf5ff` — un ton plus clair que son `default` `#f6f0ff` — donc
+tout consommateur demandant un creux recevait un ton **surélevé**.
+
+Mesuré en navigateur réel (Chromium, `/installation`, `data-theme="geek"`,
+valeur peinte sur une sonde, pas le littéral du fichier) :
+
+| | avant | après |
+|---|---|---|
+| `surface---default` | `rgb(246, 240, 255)` L=0.891 | inchangé |
+| `surface---sunken` | `rgb(251, 245, 255)` **L=0.930** | `rgb(239, 232, 252)` **L=0.831** |
+| relation | **surélevé** ❌ | **encaissé** ✅ |
+
+**Valeur choisie par la grammaire du dépôt, pas à l'œil.** Sur les 5 autres
+thèmes clairs corrects, la « profondeur du creux » — contrast(default,
+sunken) — va de 1.0487 (`material`) à 1.1001 (`editorial`). `#efe8fc` place
+`geek` à **1.0686**, dans cette bande, conserve la teinte lavande et
+respecte l'ordre `disabled < sunken < default`.
+
+**Consommateurs** : 41 occurrences de `surface---sunken` dans 20 fichiers de
+`packages/marketing/src` (le ticket annonçait « ~30 » ; recompté). La plus
+large est `assets/css/themes/_shared.css:88`, qui alimente
+`--origam-code---background-color` : vérifié sur les **13** blocs
+`.origam-code` de `/installation`, qui passent de `rgb(251,245,255)` à
+`rgb(239,232,252)`.
+
+⛔ **La moitié « mode sombre » du ticket n'est pas reproduite, et rien n'y a
+été changé.** En mode sombre un creux se lit plus CLAIR que la page, et c'est
+déjà le cas : `sunken` L=0.009 > `default` L=0.002. Le ticket la signalait au
+motif que `sunken` y dépasse `raised` ; sur cette relation le dépôt n'est pas
+uniforme (`apple`, `cartoon`, `editorial`, `material` et `geek` font ainsi,
+seuls `ecom` et `glass` l'inversent), donc elle ne constitue pas une règle.
+
+`overlay` n'a **pas** suivi `sunken` : c'est un rôle de remplissage de
+composant (chip, avatar, kbd, btn tonal, lignes survolées — 58 occurrences),
+pas une surface encaissée, et le bloc sombre de `geek` découplait déjà les
+deux.
+
+#### `glass` — même défaut, même mode
+
+Trouvé en relevant les 7 marques pour choisir la valeur de `geek`. `glass`
+déclarait `sunken: rgba(255, 255, 255, 0.85)` — **la même valeur que son
+`overlay`**. Mesure des pixels **rendus** (capture relue via canvas, donc
+compositing réel) :
+
+| | avant | après |
+|---|---|---|
+| `default` | `rgb(233, 236, 255)` L=0.8453 | inchangé |
+| `raised` | `rgb(247, 248, 255)` L=0.9413 | inchangé |
+| `sunken` | `rgb(252, 252, 255)` **L=0.9754** | `rgb(226, 229, 249)` **L=0.7905** |
+
+⛔ **« Un verre dépoli éclaircit ce qu'il couvre » ne l'excusait pas, et c'est
+le mode SOMBRE de `glass` lui-même qui le prouve.** En sombre, l'identité place
+déjà `sunken` (blanc 4 %) ENTRE `default` et `raised` (blanc 5 %) — une
+élévation plus faible. En clair elle le plaçait AU-DELÀ de `raised` (blanc 85 %
+contre 65 %). La thèse prédirait le même sens dans les deux modes : l'identité
+se contredisait elle-même. Ce n'est pas un idiome assumé.
+
+Le correctif **garde la translucidité** sur laquelle l'identité est bâtie (les
+consommateurs de `backdrop-filter` voient toujours au travers) et remplace le
+blanc par l'encre de la palette à 3 % : `rgba(26, 21, 56, 0.03)`. Profondeur
+rendue **1.0653**, contre **1.0591** pour le mode sombre de `glass` lui-même —
+la valeur est celle que l'identité utilise déjà, et elle est dans la bande du
+dépôt. `overlay` garde le blanc dépoli : c'est un rôle de remplissage de
+composant, où « plus opaque qu'une carte » est la bonne lecture glassmorphism.
+
+Non-régression : `audit:dark-contrast` reste à **0 / 1 664**.
+
+Ajouté `packages/tests/TU/marketing/brand-surface-elevation.spec.ts` — **14 cas
+(7 marques × 2 modes), tous arbitrés**, aucun sauté : les surfaces translucides
+sont **compositées** sur le `default` de leur propre thème, avec l'opération
+`over()` de `audit/dark-contrast.audit.mjs`. Accord avec le navigateur à 3
+décimales (composite 0.9757 contre pixel rendu 0.9754). Vérifiée ROUGE sur les
+valeurs du commit parent, une fois par marque : `geek/light` puis `glass/light`.
+
+## [2.18.6] - 2026-09-23
+
+### Fixed — #818 baseline shrink : les 8 `color-contrast` du DS (8 → 0)
+
+⚠️ **Ce lot porte sur le DS lui-même, pas sur une palette marketing** : il
+part dans le paquet npm publié, un consommateur le reçoit.
+
+Recompté sur `a11y-violations.baseline.json` (aucun chiffre repris
+d'ailleurs) : **18 violations / 17 clés**, dont **8 `color-contrast`**.
+Mesurées par axe-core en navigateur réel (Playwright + Histoire statique,
+thème `origamTheme` — celui que `histoire.setup.ts` installe via
+`createOrigam()`), elles valaient **15 nœuds** en défaut. Ce ne sont pas 8
+défauts : ce sont **3 causes**.
+
+**Cause 1 — une `opacity` décorative délave le TEXTE qu'elle contient**
+(3 entrées : `OrigamNumberField`, `OrigamDatePickerField`,
+`OrigamDataTableRows`). `opacity` crée un groupe de composition qui
+s'applique à tout le sous-arbre, pas au seul trait qu'on visait.
+- `OrigamField` : le label flottant est monté DANS
+  `.origam-field__outline--notch`, dont l'`opacity: .38` ne visait que la
+  bordure. Mesuré : `#6d28d9` à .38 sur blanc → `#c8adf1`, soit **1.96:1**.
+  L'alpha passe sur `border-color` (`color-mix`) — trait identique, label à
+  pleine opacité : **7.10:1**. Appliqué aux trois variantes (`outlined`,
+  `underlined`, `filled`).
+- `OrigamDataTable` : `.origam-data-table--loading .origam-data-table-cell`
+  voilait aussi les en-têtes. Mesuré : `#6d28d9` à .5 → `#b694ec`,
+  **2.38:1**. Remonter l'opacité ne sauve pas la règle (il faudrait ≥ .82,
+  ce n'est plus un voile) : le voile épargne désormais les en-têtes, qui
+  sont la structure du tableau et non la donnée rafraîchie → **6.52:1**.
+
+**Cause 2 — un premier plan choisi sans regarder la surface réellement
+peinte** (4 entrées : `OrigamPicker`, `OrigamDatePicker`,
+`OrigamUtilities` ×2). Même famille que #777 (Card) et #514.
+- `--origam-picker-title---color` épinglait `text---secondary` (`#525252`)
+  quel que soit le fond ; sur un en-tête `bgColor="primary"` (`#7c3aed`)
+  cela donnait **1.37:1**. Le token vaut désormais `currentColor` : le
+  titre suit le premier plan de sa surface → **5.70:1** sur primary, et il
+  s'aligne visuellement sur le reste de l'en-tête.
+- `.origam--color-{intent}` lisait `---fg`, le premier plan *sur* la
+  couleur (blanc) — donc `.origam--color-primary` peignait blanc sur
+  `#fafafa`, **1.04:1** : 5 des 7 pastilles étaient littéralement
+  invisibles. Ces classes miroitent désormais `tokenForegroundForIntent()`
+  (`---fgSubtle`), c'est-à-dire **la valeur que la déclaration inline du
+  même prop `color="{intent}"` applique déjà et qui l'emporte sur la
+  classe** : la correction fait converger les deux canaux (cf. #514, « 7
+  intents sur 8 rendaient une couleur différente »). 4.81:1 à 6.81:1 selon
+  l'intention.
+- `.origam--bg-{intent}` porte désormais son premier plan apparié
+  (`---fg`), l'appariement que `useColor()` effectue déjà sur le canal
+  inline pour `bgColor`. Sans lui, du markup nu héritait de l'encre de la
+  page. Les 7 paires sont ≥ 4.5:1 (4.83 → 19.80).
+
+**Cause 3 — un couple en dur réellement insuffisant** (1 entrée :
+`OrigamChartRangeSelector`). Le bouton actif peignait blanc sur `#3b82f6`,
+**3.68:1**. `#3b82f6` n'appartient à **aucune échelle du DS** (bleu
+Tailwind) : c'était une valeur isolée, et c'est elle qui produisait la
+violation. Corriger le contraste en gardant une valeur hors échelle aurait
+réglé le symptôme en laissant la cause — l'état actif rejoint donc la
+convention que `chip--selected`, `pagination__item---active` et `stepper`
+appliquent déjà, **la paire complète** :
+`--origam-color__action--primary---bg` + `---fg` (**5.70:1**), survol
+`---bgHover` + `---fg` (**7.10:1**). Le premier plan passe du token brut
+`--origam-color---white` au sémantique `---fg` : l'état sélectionné
+devient **atteignable par le theming**, ce qu'un `#3b82f6` en dur ne serait
+jamais. Mesuré rendu : `rgb(124, 58, 237)` sur `rgb(255, 255, 255)`.
+
+Baseline : **18 → 10 violations, 17 → 10 clés, zéro `color-contrast`**.
+Aucune autre entrée touchée. Formule de contraste reprise telle quelle de
+`packages/tests/e2e/token-intent-contrast.spec.ts` (témoins rejoués :
+noir/blanc **21.00**, `#767676` **4.54**, `#777777` **4.48**).
+
+⚠️ **Rupture visuelle assumée** (les ruptures sont gratuites sur ce dépôt,
+mais celles-ci se voient) : `.origam--color-{intent}` passe du blanc à la
+couleur de l'intention ; `.origam--bg-{intent}` impose son premier plan ;
+le titre de Picker suit sa surface (sur un Picker neutre il passe du gris
+`#525252` à l'encre héritée) ; le bouton actif de `OrigamChartRangeSelector`
+passe du bleu au violet de l'identité (`action--primary`), comme tout autre
+état sélectionné du DS.
+
+### Fixed — #818 baseline shrink : structure ARIA — `aria-required-parent`/`aria-required-children`/`listitem`/`aria-prohibited-attr` (4 entrées)
+
+Recompté sur `a11y-violations.baseline.json` **après rebase sur `develop`**
+(le lot `button-name`/`scrollable-region-focusable` ci-dessous, #892, est
+passé pendant ce travail et a déjà fait bouger le compteur : 18/17 → 12/12
+avant ce commit) : **12 violations / 12 clés → 8 violations / 8 clés** avec
+ce lot. Les quatre entrées traitées ici sont la même famille de défaut vue
+sous quatre angles : un rôle ARIA exigeant un parent ou des enfants d'un
+rôle précis, et l'arbre rendu ne les fournissait pas.
+
+- **`OrigamCalendar` — `aria-required-parent`** (`role="row"` sans parent
+  `grid`/`rowgroup`/`table`/`treegrid`). La ligne d'en-tête des jours
+  (`.origam-calendar__weekdays`, `role="row"`) était un SIBLING de
+  `.origam-calendar__month-grid` (qui seul portait `role="grid"`), jamais un
+  descendant. `role="grid"` + l'`aria-label` du mois sont montés d'un cran,
+  sur `.origam-calendar__body--month` (qui enveloppe déjà les deux) ; la
+  grille interne redevient un simple conteneur de mise en page. Les lignes du
+  mois (`role="row"`, déjà correctement rattachées) ne changent pas de statut.
+- **`OrigamListGroup` — `aria-required-children`** (`<origam-list>` /
+  `role="list"` ou `"listbox"` sans AUCUN `listitem`/`option` descendant
+  lorsque le groupe est fermé — l'activateur porte délibérément aucun rôle,
+  ce n'est pas une ligne de la liste). Le groupe entier (activateur + sous-
+  liste) est désormais lui-même compté comme UNE ligne de la liste ambiante,
+  via un nouveau `groupRole` calculé sur `list.itemRole` : `listitem` en mode
+  `list` (seul rôle que `list` autorise comme enfant — vérifié empiriquement
+  contre `axe-core@4.13`, `role="group"` y est refusé), `group` en mode
+  `listbox` (rôle explicitement autorisé là). Sans liste ambiante (composant
+  autonome), aucun rôle n'est posé — un `listitem` hors de tout `list`
+  aurait simplement déplacé la violation vers `aria-required-parent`.
+  `OrigamListGroupActivator.story.vue` plaçait ses lignes hors du slot
+  `#items` (bug de story pré-existant, invisible tant que le wrapper ne
+  portait aucun rôle) ; corrigé dans le même commit — sans quoi le nouveau
+  rôle aurait cassé la ligne réelle imbriquée (`aria-required-parent` par
+  ricochet, capturé en re-testant la suite complète après le fix).
+- **`OrigamFileFieldListItem` — `listitem`** (un `<li>` isolé sans `<ul>`
+  parent). Le composant réel est toujours monté par `OrigamFileField` dans
+  un vrai `<ul>` — la violation venait uniquement de la story qui démontre
+  le sous-composant seul, enveloppé dans un `<div>`. Les six Variants de
+  `OrigamFileFieldListItem.story.vue` enveloppent désormais le `<li>` dans un
+  `<ul role="list">` (le `role="list"` explicite est une marge de sécurité
+  contre le bug WebKit qui retire la sémantique de liste implicite quand
+  `list-style: none` est appliqué — présent aussi sur le vrai
+  `OrigamFileField.vue`, non corrigé ici, aucun outil de la suite ne le
+  détecte).
+- **`OrigamChartMap` — `aria-prohibited-attr`** (`aria-label` sur un
+  `<path>` SVG sans rôle). `:role="country.hasData ? 'button' : undefined"`
+  gérait déjà le cas « pays sans donnée », mais `:aria-label` restait posé
+  sans condition — un `<path>` sans rôle a un rôle implicite `generic`, qui
+  interdit `aria-label`. `aria-label` suit désormais la même condition que
+  `role`.
+
+**Preuve** : porte a11y ciblée (`OrigamCalendar`/`OrigamListGroup`/
+`OrigamFileFieldListItem`/`OrigamChartMap`/`OrigamListGroupActivator`
+Default Variant) verte, `axe-core` réel via Playwright + Histoire statique
+(`E2E_STATIC=1`). Contrôle positif exécuté sur `OrigamListGroup` : rôle
+retiré → `aria-required-children` NOUVELLE (non baselinée) → `exit 1` réel ;
+rôle restauré → vert. Suite a11y complète (218 stories + 8 Variants
+d'intention) rejouée après le lot : **226 passed, 0 failed**. Suite unitaire
+complète : **7149 passed**. `pnpm -F origam guards` 28/28, `guards:self`
+15/15, `type-check` et `pnpm audit` propres.
+
+## [2.18.5] - 2026-09-23
+
+### Fixed — `button-name` et `scrollable-region-focusable` (6 des 18 violations laissées de côté par le lot précédent)
+
+Recompté sur `a11y-violations.baseline.json` avant de commencer (pas repris
+d'un chiffre cité ailleurs) : **18 violations / 17 clés**, dont deux familles
+explicitement laissées de côté par le lot ci-dessus.
+
+**`button-name` (3, cause commune)** — `OrigamDataTableGroupHeaderRow`,
+`OrigamDatePicker`, `OrigamDatePickerControls` rendaient chacun un
+`<origam-btn icon="…">` sans `aria-label`/`aria-labelledby`/`title` : un
+bouton icône réel, annoncé "button" et rien d'autre par un lecteur d'écran
+(`OrigamBtn` avertit déjà de ce cas précis en dev depuis #653, mais ne
+fabrique jamais de libellé — cf. son commentaire `isUnnamedIconOnly`, à
+raison : un libellé deviné tairait axe sans rien dire à l'utilisateur).
+Corrigé à la source de chaque bouton (pas dans `OrigamBtn`, qui n'a pas
+l'information sémantique) :
+- `OrigamDataTableGroupHeaderRow` — le bouton d'expand/collapse du groupe
+  reçoit `aria-expanded` + `aria-label` dynamique (`origam.data_table_group_header_row.{expand_group,collapse_group}`),
+  même motif que le correctif `data_table_row.{expand_row,collapse_row}`
+  déjà en place sur `OrigamDataTableRow`.
+- `OrigamDatePickerControls` — les 3 boutons icône (bascule mois/année,
+  précédent, suivant) reçoivent chacun un `aria-label` via `useLocale()`
+  (`origam.date_picker_controls.{toggle_year,prev,next}`).
+- `OrigamDatePicker::default` en héritait sans bouton icône propre — sa
+  Variant par défaut rend `OrigamDatePickerControls`, donc le correctif
+  ci-dessus l'assainit aussi ; son AUTRE violation (`color-contrast`,
+  hors périmètre) reste dans la baseline.
+
+Nouvelles clés ajoutées à `en.json` ET `fr.json` dans le même commit,
+`snake_case` minuscule, aucune chaîne en dur dans les templates.
+
+**`scrollable-region-focusable` (3, cause commune)** — `OrigamInfiniteScroll`,
+`OrigamInfiniteScrollIntersect` (dont la story monte elle-même un
+`OrigamInfiniteScroll`) et `OrigamSlideGroup` rendent chacun un conteneur
+`overflow: auto` sans jamais être atteignables au clavier quand leur contenu
+n'a aucun descendant focusable — axe-core l'exige (technique WAI WCAG
+SCR29).
+
+⚠️ `tabindex="0"` inconditionnel a été essayé et écarté : `OrigamSlideGroup`
+a un seul consommateur réel (`OrigamChipGroup`), qui slotte toujours des
+puces focusables — y poser `tabindex` sans condition aurait inséré un arrêt
+de tabulation redondant AVANT les items, dégradant le parcours clavier réel
+pour corriger un cas de story synthétique. Le correctif retenu conditionne
+donc le `tabindex` sur l'ABSENCE de descendant focusable (`focusableChildren()`,
+déjà utilisé ailleurs dans le DS) :
+- `OrigamInfiniteScroll` — `hasFocusableDescendant` (recalculé par
+  `MutationObserver` sur la racine, le contenu s'accumulant en continu via
+  `@load`) pilote un `:tabindex` conditionnel sur la racine.
+- `OrigamSlideGroup` — `hasFocusableContent` (recalculé dans le même
+  `requestAnimationFrame` qui mesure déjà `isOverflowing`) pilote un
+  `:tabindex` conditionnel sur `.origam-slide-group__container`, l'élément
+  RÉELLEMENT scrollable — distinct de la racine, qui porte déjà son propre
+  `tabindex` conditionnel pour un mécanisme sans rapport (proxy de focus
+  vers le premier item, cf. `handleFocus`) qu'axe ne peut pas lire ici
+  puisque `__container` n'est pas un ancêtre de la racine.
+- `OrigamInfiniteScrollIntersect::default` en héritait sans conteneur
+  scrollable propre — sa Variant par défaut monte un `OrigamInfiniteScroll`,
+  donc le correctif ci-dessus l'assainit aussi.
+
+**Bilan mesuré** : baseline **18 clés/17 violations → 12 clés/12 violations**
+(6 clés retirées : `OrigamDataTableGroupHeaderRow`, `OrigamDatePickerControls`,
+`OrigamInfiniteScroll`, `OrigamInfiniteScrollIntersect`, `OrigamSlideGroup`,
+et `button-name` retiré de l'entrée `OrigamDatePicker` qui garde son
+`color-contrast`). Suite `pnpm -F @origam/tests test:a11y` complète (226
+tests, catalogue 218/218) : **226 passed**, aucune régression sur les 36
+composants à baseline vide. Contrôle positif exécuté sur
+`OrigamDataTableGroupHeaderRow` : retirer `aria-expanded`/`aria-label` fait
+échouer la porte avec `1 violation(s) a11y NOUVELLE(S) non baselinée(s) —
+button-name` (`REAL_EXIT=1`) ; le correctif remis, la suite ciblée repasse
+au vert. `pnpm -F origam guards` (28/28), `guards:self` (15/15),
+`pnpm -F @origam/tests test:e2e:audit` (3/3) et `pnpm run lint`
+(`--max-warnings 0`) verts sur le dernier commit.
+
+**Laissé de côté, délibérément** (12 clés / 12 violations restent dans
+`a11y-violations.baseline.json`) : `color-contrast` (8 instances, périmètre
+d'autres agents), `aria-required-parent`/`aria-required-children`/`listitem`/
+`aria-prohibited-attr` (un défaut chacun, cause non partagée avec ce lot).
+
+## [2.18.4] - 2026-09-23
+
+### Fixed — #818 baseline shrink : `aria-allowed-attr`/`aria-prohibited-attr`/`aria-valid-attr-value` (12 des 25 entrées)
+
+Recompté sur `a11y-violations.baseline.json` (pas repris d'un chiffre cité
+ailleurs) : la baseline #818 portait **25 clés / 33 violations** sur 24
+composants, dont **12 `aria-allowed-attr`** concentrées sur la famille
+`OrigamDataTable*`. Cause commune, pas 12 défauts distincts :
+`OrigamTextField` ne posait pas `inheritAttrs: false` alors qu'il
+redistribue déjà explicitement chaque attr de fall-through
+(`filterInputAttrs` → `rootAttrs` sur `<origam-input>`, `inputAttrs` sur le
+vrai `<input>`). Sans ce flag, Vue appliquait EN PLUS le `$attrs` brut sur
+la racine `<origam-input>`, qui ne s'y soustrayait pas non plus — doublant
+`aria-haspopup`/`aria-expanded`/`aria-controls`/`aria-valuenow`/… sur le
+`<div>` wrapper, qui ne porte aucun rôle les autorisant. `role` (prop
+déclarée sur `OrigamTextField`) n'atteignait par ailleurs que
+`<origam-field>`, jamais le vrai `<input>` — c'est ce défaut exact que le
+commentaire `KNOWN_FAILURES` documentait déjà pour `OrigamSelect` (test
+`fixme`).
+
+**Correctif à la source** (`packages/ds/src/components/TextField/OrigamTextField.vue`) :
+`defineOptions({ inheritAttrs: false })` + `role` désormais aussi lié sur le
+`<input>` réel. Élimine, mesuré axe-core en navigateur réel (Playwright +
+Histoire statique) :
+- `OrigamSelect` — sort de `KNOWN_FAILURES` (`components.spec.ts`), test
+  `fixme` → vert.
+- `OrigamDataTable`, `OrigamDataTableFooter`, `OrigamDataTableHeaderCell`,
+  `OrigamDataTableHeaders`, `OrigamDataTableHeadersCell`,
+  `OrigamDataTableRow` — `aria-allowed-attr` disparaît, entrée de baseline
+  retirée entièrement.
+- `OrigamDataTableGroupHeaderRow`, `OrigamDataTableRows`, `OrigamNumberField`
+  — `aria-allowed-attr` disparaît, l'entrée reste pour leur AUTRE violation
+  (`button-name` / `color-contrast`), non touchée par ce lot.
+- `OrigamDataTableHeadersCellMobile` — `aria-allowed-attr` ET
+  `aria-prohibited-attr` disparaissent (même fuite, deux règles axe
+  différentes), entrée retirée entièrement.
+
+**Deuxième cause, distincte, deux composants** —
+`packages/ds/src/components/ColorPickerField/OrigamColorPickerField.vue` et
+`.../DatePickerField/OrigamDatePickerField.vue` posaient un
+`aria-haspopup` avec une valeur inventée (`'colorpickerbox'` /
+`'datepickerbox'`, jamais un token ARIA valide) sur l'élément
+`.origam-field` (via `activator="parent"` d'`OrigamMenu`), sans `role` le
+justifiant. Remplacé par `aria-haspopup: 'dialog'` (motif WAI-ARIA « Date
+Picker Dialog ») + `role: 'combobox'` sur le même élément — même principe
+que `comboboxAriaAttrs` d'`OrigamSelect`. `aria-allowed-attr` ET
+`aria-valid-attr-value` disparaissent pour les deux ; `OrigamColorPickerField`
+est intégralement retiré de la baseline, `OrigamDatePickerField` y reste
+pour son `color-contrast` (non touché).
+
+**Bilan mesuré** : baseline #818 25 clés/33 violations → **17 clés/18
+violations**. Suite `pnpm -F @origam/tests test:a11y` complète (226 tests,
+catalogue 218/218) : **226 passed**, aucune régression sur les 36
+composants à baseline vide. Contrôle positif exécuté : réintroduire l'ancien
+comportement fait échouer `a11y — OrigamSelect Default Variant` avec
+`aria-allowed-attr`/`aria-prohibited-attr` NON baselinés — la porte capte
+la régression, pas seulement l'édition du JSON.
+
+**Laissé de côté, délibérément** (17 clés / 18 violations restent dans
+`a11y-violations.baseline.json`, cf. #818) : `color-contrast` (8 instances —
+plusieurs agents dédiés au contraste travaillent déjà sur ce périmètre),
+`button-name` (3, boutons icône sans libellé — famille distincte),
+`scrollable-region-focusable` (3), `aria-required-parent`/`aria-required-children`/
+`listitem`/`aria-prohibited-attr` (`OrigamChartMap`, sans lien avec ce
+correctif) — un défaut chacun, cause non partagée avec ce lot, non
+instruit ici.
+
+### Fixed
+
+- **#871 (clôture) — les 7 dernières violations AA étaient UN défaut de
+  palette répété, pas sept défauts de composant.** Mesuré avec
+  `packages/tests/audit/dark-contrast.audit.mjs` : **7 / 1 664 → 0 / 1 664**,
+  les 8 identités × 2 modes × 2 portées, quatre contrôles verts des deux
+  côtés. Exactement **7 lignes changent, aucune ne se dégrade**, et le ratio
+  minimum de toute la surface passe de 3.65 à **4.70**.
+
+  Les 7 se répartissaient en deux causes, toutes deux dans
+  `packages/marketing/src/themes` — **aucune dans le DS**, qui était déjà à
+  zéro :
+
+  | cause | marque · mode | couple | avant | après |
+  |---|---|---|---|---|
+  | encre héritée du mode clair | `apple` sombre | `#ffffff` → `#000000` sur `#0a84ff` | 3.65 | **5.76** |
+  | encre héritée du mode clair | `ecom` sombre | `#ffffff` → `#1a0f0a` sur `#f43f5e` | 3.67 | **5.12** |
+  | jeton de rôle inversé | `ecom` clair | `action.primary.bg` → `.fgSubtle` sur la crème | 4.43 | **5.93** |
+
+  **La cause commune.** Le mode sombre ÉCLAIRCIT l'accent de marque — c'est
+  la bonne pratique pour une grande surface (`#0071e3` → `#0a84ff` chez
+  `apple`, rose-600 → rose-500 chez `ecom`) — mais les deux palettes gardaient
+  l'encre `#ffffff` de leur jumeau clair. Or chacune applique **déjà** la règle
+  inverse à ses intentions `feedback` : les 4 d'`ecom` et 3 des 4 d'`apple`
+  encrent leur accent éclairci avec le `text.inverse` de la palette.
+  `action.primary` était la dernière exception. Le badge n'était pas en cause :
+  `--origam-badge__badge---{background-color,color}` lit exactement ce couple —
+  tout comme `--origam-btn--primary---*`, qui n'est pas dans la sonde et était
+  donc en défaut sans être mesuré.
+
+  ⚠️ **On n'a PAS foncé l'accent**, bien que ce soit l'autre levier : chez
+  `apple`, `action.primary.bg` sert aussi d'ENCRE (le bloc `components` passe
+  ce `var()` en `color` sur `origam-breadcrumb-item`). Le ramener à `#0071e3`
+  donnait 4.70 sous du blanc mais faisait tomber le fil d'Ariane à **4.47** sur
+  le fond noir — un défaut échangé contre un autre. Vérifié par calcul avant
+  d'écrire la moindre ligne.
+
+  La 3ᵉ cause est une erreur de RÔLE : `bg` est un jeton de surface, `fgSubtle`
+  la teinte prévue pour être LUE sur une surface neutre. `ecomDarkTheme` posait
+  déjà `fgSubtle` ; seul le bloc clair se trompait de jeton. Les deux modes sont
+  désormais symétriques.
+
+- **#871 — une 8ᵉ violation, que la sonde ne pouvait pas voir** :
+  `material` sombre, `feedback.success`, `#1b5e20` sur `#81c784` = **3.91**
+  → `#0d3b10` = **6.32**. La sonde de `dark-contrast.audit.mjs` ne rend qu'UNE
+  intention par famille de composant, donc elle ne peint jamais
+  `feedback.success`. Trouvée par la spec statique ajoutée ci-dessous. C'est
+  l'encre qui était l'intruse, pas le conteneur : les trois autres intentions
+  sombres de `material` tiennent 5.79 / 7.70 / 7.71 avec des encres bespoke
+  très profondes, `success` était la seule à se contenter du green-900 de la
+  rampe.
+
+- **#871 — l'audit lui-même ne démarrait plus.** Son `npx vite build` résolvait
+  vite par le PATH, via un lien `node_modules/.bin` qu'un peer auto-installé
+  ne garantit pas : sur un `pnpm install --frozen-lockfile` propre,
+  `packages/tests/node_modules/.bin/` ne contient que `playwright` et `vitest`,
+  et la commande mourait en `127 — sh: vite: command not found`. **L'audit ne
+  rendait plus aucun chiffre**, et rien ne le signalait puisque rien ne le
+  rejoue en CI. `resolveViteBin()` passe désormais par le realpath de
+  `@vitejs/plugin-vue`, ce qui ne dépend ni du PATH ni du hoisting et
+  sélectionne la copie de vite que le plugin utilise réellement (deux majeures
+  coexistent dans le magasin). Les commentaires qui affirmaient le contraire
+  dans les deux fichiers ont été corrigés.
+
+- **#871 — l'état SURVOL était en défaut plus grave encore, et le correctif
+  d'encre l'a réglé sans qu'on y touche.** Le survol n'a pas d'encre à lui :
+  `--origam-btn--primary---background-color-hover` bascule la surface, mais il
+  n'existe **aucun** `--origam-btn--primary---color-hover` (ni de
+  `--origam-badge__badge---color-hover`) — l'encre reste `action.primary.fg`
+  dans les deux états. Sous l'encre blanche, `apple` sombre y tombait à
+  **2.19:1** et `ecom` sombre à **2.69:1** : *pires que n'importe laquelle des
+  7 violations comptées*, et invisibles parce que la sonde de
+  `dark-contrast.audit.mjs` ne rend que l'état au repos.
+
+  **Aucun `bgHover` n'a été modifié.** La direction du survol n'était pas le
+  problème — l'encre l'était. Mesuré sur les deux marques :
+
+  | mode · encre | direction du survol | ratio repos → survol |
+  |---|---|---|
+  | clair · blanche | fonce | 4.70 → **6.95** / **6.29** ↑ |
+  | sombre · blanche *(avant)* | éclaircit | 3.65 → **2.19** / 3.67 → **2.69** ↓ |
+  | sombre · foncée *(après)* | éclaircit | 5.76 → **9.60** / 5.12 → **6.99** ↑ |
+
+  La règle n'est donc pas *« le survol doit foncer »* mais **« le survol doit
+  déplacer l'accent à l'opposé de la clarté de son encre »**. Les palettes la
+  respectaient déjà dans 3 quadrants sur 4 ; le seul cassé l'était par son
+  encre. L'idiome « le survol éclaircit », qui est le bon en mode sombre, est
+  conservé dans les deux marques.
+
+- **#871 — non-régression : `packages/tests/TU/marketing/brand-palette-contrast.spec.ts`.**
+  Les couples `{bg, fg}` littéraux des 7 palettes de marque (14 thèmes) doivent
+  tenir AA. L'audit de #871 est un script qu'on lance à la main : rien ne le
+  rejoue, donc rien n'empêchait une retouche de palette de ramener ces couples
+  en silence. La spec lit les hex **dans l'objet `IOrigamTheme`**, avant toute
+  indirection CSS — la règle jsdom/`var()` du `CLAUDE.md` ne s'y applique pas,
+  et le navigateur reste l'arbitre de ce qui est peint. Elle embarque ses
+  propres garde-fous : les 3 témoins de la formule, un contrôle négatif sur les
+  3 couples corrigés, et un plancher de couverture qui rend bruyante une dérive
+  du filtre. **Vérifiée ROUGE sur `origin/develop`** : 3 échecs / 14 succès.
+  C'est elle qui a trouvé la 8ᵉ violation ci-dessus.
+
+## [2.18.3] - 2026-09-23
+
+#### `v-contrast` était silencieusement inerte sur fond opaque (#869)
+
+La directive `v-contrast`, câblée sur 30 composants, n'émettait **jamais**
+rien — ni classe, ni `color: !important`, ni `console.warn` — dès que fond
+**et** texte étaient tous deux OPAQUES, c'est-à-dire la configuration par
+défaut du DS. Deux ruptures indépendantes dans le code partagé, corrigeant
+l'une ne suffisait pas sans l'autre :
+
+1. **`toRgb()`** faisait **toujours** passer la couleur par un aller-retour
+   `canvas.fillStyle`, même quand `getComputedStyle` avait déjà rendu une
+   chaîne `rgb()/rgba()` exploitable. Le getter `fillStyle` de Chromium
+   sérialise toute couleur OPAQUE en hexadécimal `#rrggbb` (seul l'alpha < 1
+   ressort en `rgba(…)`), ce qui transformait une valeur déjà utilisable en
+   une valeur morte pour `rgbaParts`/`channelsOf`.
+2. **`channelsOf()`** extrayait les canaux via `match(/[\d.]+/g)`, taillé
+   pour `rgb(r, g, b)` — une suite de chiffres hexadécimaux SANS séparateur
+   (ex. `#777777`, six chiffres) s'agrège en UN seul grand nombre au lieu de
+   trois, donc `channelsOf` rend `null` sur exactement la forme hex que la
+   rupture 1 pouvait encore produire (couleur nommée, `hsl()`, …
+   nécessitant légitimement le détour par le canvas).
+
+**Correctif** : `toRgb()` court-circuite désormais le canvas quand l'entrée
+est déjà `rgb()/rgba()` (le cas de la quasi-totalité des appels, puisqu'ils
+lisent `getComputedStyle`), et le chemin canvas restant convertit son
+résultat hexadécimal en `rgb()/rgba()` via un nouveau `hexToRgb()` avant de
+le rendre — `toRgb()` ne rend plus jamais de hex. La mécanique de correction
+elle-même (forcer noir/blanc, poser `data-origam-contrast-fixed`, journaliser
+le ratio) n'est pas modifiée : elle fonctionnait déjà, elle n'était
+simplement jamais atteinte.
+
+**Preuve** — `packages/tests/e2e/contrast-directive.spec.ts` (Playwright,
+Chromium réel — jsdom n'a pas de `canvas.getContext('2d')` fonctionnel dans
+ce dépôt, donc ne peut ni reproduire ni vérifier ce bug) : contrôle positif
+(`#777777` sur blanc, 4.48:1, opaque des deux côtés) déclenche désormais la
+correction + le `console.warn` ; contrôle négatif (noir sur blanc, 21:1) ne
+déclenche rien ; non-régression du chemin translucide (fond composé via
+`resolvePaintedBackground`) inchangée. **A/B contre le commit parent** : 4
+des 5 tests rougissent sur le code d'avant (le contrôle négatif reste vert
+des deux côtés, comme attendu).
+
+⚠️ **Rayon mesuré séparément, pas hérité de #871 — et le chiffre publié par
+#871 contenait un artefact, corrigé depuis par #883.** Le chiffrage initial
+du ticket (346 violations en mode sombre) datait d'avant #876. #876 avait
+d'abord publié **189 → 11** ; en rejouant `audit/dark-contrast.audit.mjs`
+avec la VRAIE directive (redirect du stub désactivé) au lieu de sa
+reformulation mathématique, seuls **7 `console.warn` réels** se
+déclenchaient sur les 32 configurations (30 composants × 8 identités × 2
+modes, portées racine + sous-arbre) — écart signalé à l'auteur de #876, qui
+l'a reproduit, creusé et corrigé sous #883 : **les bornes AVANT et APRÈS
+étaient toutes les deux fausses (185 → 7, pas 189 → 11)**, la même erreur de
+mesure existant déjà dans le comptage "avant". Le delta réel (178) n'a
+jamais changé.
+
+L'écart venait d'`origam-tooltip__content` (identité `apple`, root + subtree,
+light + dark) et, découvert par #883, également d'`origam-bottom-nav` sur la
+même identité. Fond réel : `color(srgb 0.898039 0.898039 0.905882 / 0.94)`
+(translucide) ; `toRgb()` le résout correctement en `rgb(215, 215, 217)` une
+fois composé sur son ancêtre opaque, contre du texte noir : **ratio 14.61:1,
+conforme** — vérifié en appelant directement `toRgb()`/
+`resolvePaintedBackground()` de la vraie directive sur cette page. La
+fonction `parse()` de `dark-contrast.audit.mjs` (une réimplémentation
+distincte, pas la directive) ne reconnaissait que `rgba?\(…\)` — elle
+ignorait silencieusement cette couche `color(srgb …)`, sautait jusqu'à
+l'ancêtre opaque suivant et rapportait à tort un faux "noir sur noir"
+(ratio 1.00). **Ce n'était pas un défaut du DS ni de `v-contrast`** — la
+même classe de lacune que ce ticket corrige, mais dans un autre fichier. Les
+7 restantes (4 `origam-badge__badge`, 3 `origam-breadcrumb-item`) sont
+confirmées identiques entre les deux mesures, et `sous 2:1` passe à **0** une
+fois l'artefact retiré : plus rien de ce qui reste n'est proche d'invisible.
+
+Non corrigé ici : `dark-contrast.audit.mjs` appartenait à #871/#876, pas à ce
+ticket — signalé, reproduit et corrigé séparément sous #883 (ne pas citer
+189 → 11, c'était faux des deux côtés).
+
+**Rupture d'API** : aucune — `toRgb`/`channelsOf`/`hexToRgb` restent des
+fonctions privées du module, non exportées ; la surface publique
+(`setContrastConfig`, `v-contrast` par défaut) est inchangée.
+
+## [2.18.2] - 2026-09-23
+
+### Fixed
+
+- **#871 — le harnais de contraste ne savait pas lire `color(srgb …)`, et
+  FABRIQUAIT donc des violations.** Son `parse()` ne reconnaissait que
+  `rgb()` / `rgba()`. Un fond qu'il ne sait pas lire n'est pas « ignoré » : il
+  est traité comme **non peint**, la remontée d'ancêtres saute l'élément et
+  composite contre une couche qui n'est pas celle que voit l'œil. Sur le
+  tooltip `apple` — `color(srgb 0.898 0.898 0.906 / 0.94)` sur une surface
+  noire — cela donnait du noir sur noir à **1.00** là où le rendu réel est
+  ~`rgb(215,215,217)` sur noir. 4 instances (root + sous-arbre × clair +
+  sombre), des deux côtés de la mesure.
+
+  `parse()` reconnaît désormais `color(srgb r g b [/ a])`, avec **la même
+  expression régulière que `srgbToRgb` dans `contrast.directive.ts`** — la
+  vraie directive gérait déjà cette forme, et son commentaire le disait :
+  *« design tokens resolve to exactly this form in several themes »*.
+
+  ⛔ **Un quatrième contrôle, parce que le correctif ponctuel ne suffit pas.**
+  Le harnais échoue maintenant (`$? = 1`) dès qu'une chaîne de couleur non
+  vide lui est illisible, en listant les formes rencontrées. Sans lui, la
+  prochaine syntaxe (`oklch()`, `lab()`, résidu de `color-mix()`) décalerait
+  le chiffre en silence exactement de la même façon. Contrôle positif du
+  garde lui-même : branche `srgb` désactivée → `$? = 1`, 8 formes listées, et
+  le compte réaffiche l'ancien **11** ; branche active → `$? = 0`, tout lu,
+  **7**.
+
+  ⚠️ #871 listait déjà ce risque sous « non vérifié » — *« les couleurs
+  `oklch()` / `color(srgb …)` — aucun token actuel n'en emploie, mais un futur
+  thème invaliderait l'instrumentation »*. Un thème le faisait **déjà** au
+  moment où la phrase a été écrite. Écart signalé en marge de la **PR #882**
+  (#869, `v-contrast`) par l'agent qui rejouait ce harnais avec la vraie
+  directive au lieu du stub ; reproduit, remesuré et corrigé ici. Aucun ticket
+  propre n'a été ouvert : le défaut est dans l'instrumentation de #871, donc
+  il se règle sous #871.
+
+- **#371 (point 3) — le sélecteur « Items per page » du footer
+  DataTable n'avait aucun nom accessible**, déjà corrigé par `3f063d727`
+  (2026-09-10) — ce commit **citait #371 sans le fermer**, sixième
+  occurrence cette semaine du même motif (cf. #570, #682, #537, #371
+  point 1, #371 point 2/ADR-005). Re-mesuré ici avant tout travail sur les
+  points restants du ticket : le `<span>` visible est désormais associé au
+  `<origam-select>` via `aria-labelledby`, et la suite unitaire complète
+  reste verte (7120/7120) — aucun code de production retouché sur ce point,
+  seule la mesure manquait au tableau.
+
+- **`<OrigamDataTableRow>` ne fuit plus `index` / `mobile` en attributs DOM**
+  (#371, point 4). `itemSlotProps()` (`OrigamDataTableRows.vue`) construisait
+  la ligne d'item avec deux clés qu'`IDataTableRowProps` ne déclare pas —
+  `index`, jamais lu par le composant, et `mobile`, un résidu d'avant
+  l'ajout du forwarding de `mobileBreakpoint` (chaque ligne calcule déjà son
+  propre `mobile` à partir de ce dernier). Une clé non déclarée tombe dans
+  `$attrs`, et le `v-bind="$attrs"` du `<tr>` racine la posait en attribut
+  DOM littéral sur **chaque** ligne rendue — `index="0" mobile="false"`.
+  Même mécanisme que le point 1 de ce ticket (déjà corrigé, `08c30693a`),
+  une famille plus loin. `aria-rowindex`, seul attribut voulu de ce canal,
+  continue de passer.
+
+### Added
+
+- **`mobileBreakpoint` a désormais un contrôle de story sur
+  `<OrigamDataTable>`** (#371, point 5). La prop — dont le défaut `'xs'`
+  corrige un bug de production documenté en commentaire
+  (`OrigamDataTable.vue:190-199` : sans lui, `useDisplay` retombait sur le
+  seuil global `'lg'` et forçait le rendu mobile empilé sur tout viewport
+  sous 1280px) — n'apparaissait dans aucune des 30 Variants de
+  `OrigamDataTable.story.vue`. Ajout de la Variant « Prop —
+  mobileBreakpoint » (même jeu d'options que celui déjà utilisé par
+  `OrigamDataTableRow.story.vue`) et d'une section « Responsive » +
+  ligne de table dans `OrigamDataTable.md`.
+
+## [2.18.1] - 2026-09-22
+
+Récolte de deux dépréciations posées "pour la prochaine majeure" avant que le
+`CLAUDE.md` n'acte que `3.0.0` est réservé à la séparation en modules et que
+les ruptures, elles, ne le sont pas — voir "Work priorities and versioning"
+du `CLAUDE.md`. `origam` n'a aucun consommateur : les deux ruptures
+ci-dessous partent en **mineure**, sans shim ni période de grâce.
+
+### ⚠️ BREAKING — `click:prepend` / `click:append` retirés d'`IBtnEmits` (#443, #577)
+
+`<OrigamBtn>` n'émet plus `click:prepend` ni `click:append` — ni au niveau du
+type, ni au niveau de l'exécution. `IBtnEmits` n'`extends` plus
+`IAdjacentEmits`, et les `<span>` `origam-btn__prepend` / `__append` ne
+portent plus de `@click` du tout : un clic souris dessus ne déclenche plus
+rien.
+
+**Pourquoi cette paire précisément, et pourquoi une suppression plutôt qu'un
+correctif.** Les deux émissions n'ont jamais été atteignables au clavier :
+l'événement partait d'un `<span>` descendant, alors qu'une activation clavier
+synthétise son clic sur la RACINE du composant — l'écouteur posé sur le
+descendant ne le voit jamais. Le correctif générique appliqué aux dix autres
+consommateurs d'`useAdjacent` (promouvoir la zone en `role="button"` + arrêt
+de tabulation) est **illégal** ici : `<OrigamBtn>` rend un `<button>` ou un
+`<a>`, et le modèle de contenu HTML interdit à tous deux un descendant de
+contenu interactif *et* tout descendant portant `tabindex`. Un
+`<button type="button">` imbriqué y est tout aussi invalide. La forme était
+fausse, pas seulement le balisage : un contrôle qui possède déjà une action
+ne peut pas en héberger une seconde — deux actions sont deux boutons,
+composés via `<origam-btn-group>`.
+
+**Ce qui NE bouge PAS** : les slots `prepend` / `append` (`IBtnSlots extends
+IAdjacentSlots`) restent intacts, ainsi que les props `prependIcon` /
+`appendIcon` / `prependAvatar` / `appendAvatar` — un contenu décoratif ou
+informationnel en prepend/append reste parfaitement légitime, seule
+l'émission d'un clic disparaît.
+
+**Preuve du comportement retiré** — A/B contre le commit parent, fonctionnel
+et pas seulement typé : `packages/tests/TU/components/Btn/OrigamBtn.adjacent-emit-removed.spec.ts`
+monte `<OrigamBtn>` avec un écouteur `onClick:prepend` / `onClick:append` et
+déclenche un vrai `click` DOM sur la zone. Sur le commit parent, ce même test
+appellerait l'écouteur (l'émission déclarée par `IAdjacentEmits` partait
+encore) ; sur ce commit, l'écouteur n'est jamais invoqué — vérifié en
+rejouant le fichier de spec avant/après le changement, pas seulement en le
+lisant une fois vert.
+
+Nettoyage induit : le helper `warnDeprecatedEmit` (`color.util.ts`) et la
+constante `ADJACENT_EMIT_REPLACEMENT` (`consts/Btn/btn.const.ts`) sont
+retirés — `<OrigamBtn>` était leur seul appelant, et le fichier `btn.const.ts`
+devenu vide est supprimé.
+
+**Migration.** Aucun consommateur interne (DS, marketing, stories, docs,
+tests) n'utilisait `click:prepend` / `click:append` sur `<OrigamBtn>` —
+balayage exhaustif, zéro résultat. Un consommateur externe qui les écoutait
+doit remplacer l'action posée sur la zone prepend/append par un second
+`<origam-btn>` dans un `<origam-btn-group>`.
+
+### ⚠️ BREAKING — `createOrigam()` nu n'installe plus le thème par défaut (#360)
+
+`createOrigam()` préfixait inconditionnellement chaque install avec le thème
+neutre interne `origamTheme` (`[...origamTheme, ...suppliedThemes]`) : même un
+appel nu, ou un `themes: []` explicite, recevait quand même les variables CSS
+et — surtout — les **props par défaut par composant** (ADR-005,
+`components: { 'origam-avatar': { rounded: 'full' }, … }`) de ce thème. Une
+application qui n'en voulait pas ne pouvait pas s'en défaire. Ce préfixage est
+retiré : `createOrigam()` installe désormais exactement ce qu'on lui passe,
+rien de plus.
+
+**Ce qui change concrètement.** Sans `themes`/`theme` explicite,
+`createOrigam()` n'injecte plus aucune variable `--origam-*` et le résolveur
+de props par défaut (`installThemePropsResolver`, ADR-005) n'a plus rien à
+résoudre — chaque composant retombe uniquement sur ses propres valeurs
+`withDefaults()`. Concrètement : un `<origam-avatar>` sans prop `rounded`
+explicite n'est plus automatiquement circulaire (`rounded="full"` venait du
+thème, pas du composant).
+
+**Le thème par défaut reste disponible, à la demande** — `origamTheme`,
+exporté par `origam/themes` (déjà public avant cette rupture, aucun nouvel
+export nécessaire) :
+
+```ts
+// AVANT (2.x) — enregistrait implicitement le thème origam par défaut
+import { createOrigam } from 'origam'
+app.use(createOrigam())
+
+// APRÈS — le thème par défaut est un choix explicite
+import { createOrigam } from 'origam'
+import { origamTheme } from 'origam/themes'
+app.use(createOrigam({ themes: origamTheme }))
+```
+
+**Rayon de souffle mesuré, corrigé dans le même lot** — quatre consommateurs
+directs de `createOrigam()` nu trouvés par balayage exhaustif (DS, marketing,
+stories, docs, tests) :
+- `packages/ds/src/nuxt/module.ts` — le module Nuxt officiel. **Non cassé** :
+  son propre `DEFAULT_THEMES` (utilisé quand l'option `origam.themes` du
+  consommateur est omise) passe désormais `origamTheme` explicitement à
+  `createOrigam()`, préservant à l'identique le comportement de tout
+  consommateur Nuxt existant (marketing compris) qui ne configurait rien.
+  Seul un `createOrigam()` direct, hors module Nuxt, doit s'adapter.
+- `packages/marketing/nuxt.config.ts` — configure `origam.themes`
+  explicitement (7 thèmes de marque + un thème `origam` renommé pour le
+  playground `/theming`), ce qui **contourne** le fallback du module. Le vrai
+  thème neutre non-nommé (celui que `activeDefaultsFor` fusionne toujours en
+  premier, avant la marque active) était fourni jusqu'ici par le préfixage
+  implicite de `createOrigam()` — invisible dans la config marketing. Il est
+  désormais listé explicitement, en premier, dans le tableau `themes`.
+- `packages/stories/histoire.setup.ts` — Histoire (utilisé par les ~208
+  stories de composants) appelait `createOrigam()` nu ; sans correction,
+  chaque story aurait silencieusement perdu les props par défaut du thème
+  (avatars carrés au lieu de circulaires, etc.). Passe désormais
+  `{ themes: origamTheme }`.
+- `packages/docs/.vitepress/theme/index.ts` — les démos de composants live de
+  la doc VitePress appelaient `createOrigam()` nu ; même correction.
+
+Les échantillons de code montrés au consommateur (`installation.const.ts` /
+`installation.vue` sur le marketing, `guide/usage.md` côté docs) sont mis à
+jour pour montrer la forme correcte — un utilisateur copiant l'ancien
+exemple aurait obtenu des composants non stylés selon le thème.
+
+**Tests adaptés** (comptés avant correction, comme demandé) — 3 fichiers /
+5 assertions reposaient sur l'enregistrement implicite et ont été corrigés
+pour installer `origamTheme` explicitement là où le test vérifie précisément
+une valeur par défaut issue du thème, ou réécrits pour pinner le NOUVEAU
+contrat plutôt que l'ancien :
+- `theme-props-resolver.spec.ts` (2 assertions — `origam-radio`/`origam-text-field`
+  vs `origam-input` density) ;
+- `installed-themes.composable.spec.ts` (describe block entier renommé
+  `origam baseline — explicit opt-in only (#360)`, 2 assertions corrigées et
+  2 nouvelles ajoutées pour couvrir explicitement le nouveau contrat) ;
+- `OrigamChip.spec.ts` (1 assertion — `components['origam-chip'].size`).
+
+**Preuve fonctionnelle** (pas seulement structurelle) —
+`packages/tests/TU/origam/createOrigam-bare-no-theme-360.spec.ts` monte un
+vrai `<OrigamAvatar>` : sans thème, la classe `origam--rounded-full` est
+absente ; avec `origamTheme` passé explicitement, elle est présente — la
+même monteuse prouve donc que le harnais peut actionner la prop avant de
+conclure qu'elle ne l'est plus par défaut.
+
+### Fixed
+
+- **#871 — le mode sombre ne peignait qu'à moitié dans un sous-arbre thémé.**
+  Les feuilles de tokens portent ~1 761 déclarations **dérivées**
+  (`--origam-title---color: var(--origam-color__text---primary)`). Une custom
+  property est substituée **sur l'élément qui la déclare** ; ce qu'un
+  descendant hérite est la valeur DÉJÀ substituée. Le bloc sombre étant ancré
+  à la racine (`:root:not([data-theme])[data-mode="dark"]`), un sous-arbre
+  `<OrigamThemeProvider mode="dark">` basculait bien les ~60 tokens
+  sémantiques — le bloc runtime, lui, émet `[data-mode="dark"]` — mais laissait
+  les 1 761 dérivés **gelés** sur les valeurs claires de la racine. Motif
+  dominant mesuré : `rgb(10,10,10)` sur `rgb(10,10,10)`, texte et fond
+  identiques.
+
+  Les deux feuilles s'accrochent désormais aussi à l'axe `data-mode` :
+
+  ```css
+  :root, [data-theme="light"], [data-mode="light"]      { /* clair */ }
+  [data-theme="dark"], [data-mode="dark"]:not([data-theme="light"]) { /* sombre */ }
+  ```
+
+  Rejoué sur 30 composants × 8 identités × 2 modes × 2 portées (racine ET
+  sous-arbre), soit **1 664 instances**, Chromium, contrôles positif et négatif
+  verts : **185 → 7 violations AA**, dont sombre **182 → 4** et clair
+  **3 → 3** (aucune régression). Les 7 restantes appartiennent toutes aux
+  palettes de marque de `packages/marketing`, aucune au DS, et aucune ne
+  descend sous 2:1. Harnais : `pnpm -F @origam/tests audit:dark-contrast`.
+
+  ⚠️ **Ces bornes ont d'abord été publiées à `189 → 11`, et les deux étaient
+  fausses de 4.** Le parseur de couleurs du harnais ne connaissait pas
+  `color(srgb …)`, que la palette `apple` émet : le fond translucide du
+  tooltip était pris pour « pas de fond », la remontée d'ancêtres sautait
+  jusqu'à la surface opaque et rapportait du noir sur noir à 1.00 — quatre
+  violations **fabriquées**, présentes des DEUX côtés de la mesure. Le
+  **delta de 178 n'a jamais été faux** ; seules les bornes l'étaient. Détail
+  et garde de non-récidive plus bas.
+
+- **#871 — `system-bar` et `tooltip` illisibles en sombre.** Les deux peignent
+  une surface sombre dans les DEUX modes (`neutral---700` / `neutral---800`)
+  et lisaient `text---inverse`, qui vaut blanc en clair et **encre** en
+  sombre : 1.91:1 et 1.31:1. `dark.css` lit maintenant `text---primary` ;
+  `light.css` est inchangé.
+
+- **#871 — `bottom-nav` peignait une dalle claire dans une UI sombre.** Son
+  fond était épinglé à la primitive `neutral---200` (#e6e6e6) dans les deux
+  modes, sous un `text---primary` presque blanc (1.03:1). En sombre il passe
+  au token sémantique `surface---overlay`. Le clair est inchangé.
+
+### Changed — ⛔ RUPTURE (documentée, assumée)
+
+- **Les feuilles de tokens ne sont plus ancrées à `:root`.** Un consommateur
+  qui avait contourné le gel ci-dessus en re-déclarant lui-même des variables
+  de composant dans un sous-arbre `[data-mode]` voit désormais la feuille les
+  déclarer aussi, en (0,1,0) côté clair et (0,2,0) côté sombre. Son bloc de
+  contournement doit donc être au moins aussi spécifique, ou être retiré.
+
+  Concrètement dans ce dépôt : `packages/marketing` embarque
+  `ORIGAM_COMPONENT_RESET_LIGHT/DARK` (`themes/origam-reset.generated.ts`),
+  une re-déclaration GÉNÉRÉE de ~2 700 variables de composant, écrite
+  exactement pour ce défaut. Elle est maintenant redondante — **elle n'a pas
+  été retirée ici**, faute de mesure sur le rendu du site.
+
+  Ce qui NE change pas : `data-theme="light" data-mode="dark"` reste clair
+  (l'axe marque gouverne quand les deux se contredisent, règle #807),
+  `data-mode="light"` sous un OS sombre reste clair (#794), et une marque
+  claire continue de gagner sur la feuille par l'ordre source.
+
+### Documentation
+
+- `CLAUDE.md`, section *Multi-theme* : la note qui affirmait que le bloc
+  auto-mode ne porte que **11** déclarations est **fausse** — recompté en
+  parsant la feuille le 2026-09-22, les deux blocs en portent **2 731**
+  chacun. L'affirmation décrivait un état antérieur à #794 que plus rien ne
+  remesurait.
+
+## [2.18.0] - 2026-09-19
+
+80 commits depuis `v2.17.1`. L'essentiel est du **correctif** : des tokens qui
+ne peignaient rien, des props déclarées et inertes, et une famille de défauts
+d'accessibilité où le clavier n'actionnait pas ce que la souris actionnait.
+
+> ### ⛔ DÉROGATION, LA DEUXIÈME — cette version MINEURE porte 2 ruptures d'API
+>
+> Comme la `2.17.0` avant elle, cette version mineure embarque des ruptures :
+> `BG_FG_ROLE.DISABLED` et le retrait du sous-chemin `origam/services`, toutes
+> deux détaillées ci-dessous. Le versioning sémantique imposerait une
+> **majeure**. C'est de nouveau une **décision explicite du mainteneur** —
+> le numéro `3.0.0` est réservé à la séparation en modules.
+>
+> Ce bandeau ne demande aucune permission : **il documente**. Un consommateur
+> épinglé en `^2.17` reçoit ces deux ruptures **sans les avoir demandées**, et
+> il doit pouvoir le lire ici plutôt que de le découvrir à l'exécution.
+>
+> Les deux recettes de migration sont dans leurs entrées. Elles sont vides
+> toutes les deux — rien ne pouvait peindre, rien ne pouvait résoudre — mais
+> l'une resserre un type pour de bon, et l'autre retire une porte déclarée.
+>
+> Le décompte cumulé est désormais de **10 ruptures entrées par deux versions
+> mineures**. La note rétrospective plus bas les énumère une par une.
+>
+> Suivi de remédiation : **#717** (ouvert, non tranché).
+
+### ⚠️ BREAKING — `BG_FG_ROLE.DISABLED` removed (#823)
+
+`BG_FG_ROLE` is part of the published surface — it is re-exported by
+`origam/enums` (and reachable directly as `origam/enums/Commons/color.enum`
+through the `./*` catch-all). Verified on the BUILT artefact, not inferred
+from the export map: `import { BG_FG_ROLE } from 'origam/enums'` now yields
+`['default', 'hover', 'active']`. The derived `TBgFgRole` (`origam/types`)
+narrows with it, so a consumer annotating a variable `TBgFgRole` and
+assigning `'disabled'` stops compiling.
+
+**No rendering changes.** The member was declared and **never passed**:
+`useColorEffect` and `useStateEffect` both derive `bgRole` from `isHover` /
+`isActive` alone, and every other call site passes the literal `'default'`.
+Measured in Chromium against the prebuilt Histoire — 70 story/variant
+captures, 801 computed `background-color` / `color` readings across the ten
+component families that consume those composables — the before and after
+dumps are byte-identical, with a hover positive control that moves
+(`rgb(124,58,237)` → `rgb(109,40,217)`) in both.
+
+**Why remove rather than declare the eight missing tokens.** The `disabled`
+rung resolved `--origam-color__feedback--{success,warning,danger,info}---bgDisabled`
+and `---fgDisabled` — eight names **no sheet declares**, with **no fallback**.
+`docs/integrations/theming-authoring.md` already documents `feedback.*` as
+having no `*Disabled` slot; only `action.*` does. A `var()` that fails at
+computed-value time does not yield: the declaration has already won the
+cascade, becomes `unset`, and **erases** the surface (the #813 / #568
+mechanism). The member was therefore an armed trap — the first caller to
+pass `'disabled'`, which the `tokenStylesForIntent(intent, role)` signature
+openly invited, would have wiped eight surfaces with every guard green.
+Disabled is an opacity veil in this DS, never a token swap.
+
+Guard 28 `ts-token-refs` drops from **20** baselined dead-channel entries to
+**12**. Negative control run: pre-fix code against the trimmed baseline
+reports exactly those 8 as NEW and exits 1.
+
+**Migration.** There is none to write, because nothing could have been
+painting: any consumer passing `'disabled'` was already emitting undeclared
+`var()` references. Use the disabled opacity veil the components already
+apply, or declare the eight `feedback.*` slots in your own theme and pass a
+bespoke `bgColor`.
+
+### ⚠️ BREAKING — le sous-chemin `origam/services` est retiré de la map `exports`
+
+**Il ne résolvait déjà plus.** C'est une rupture de *contrat déclaré*, pas de
+comportement : la map annonçait une porte qui ne menait nulle part, et elle
+cesse de l'annoncer.
+
+`packages/ds/package.json` déclarait
+`"./services": "./dist/src/services/index.js"` alors que
+`packages/ds/src/services/` n'existe plus. Le répertoire a été **renommé en
+`classes/`** par `63120a402` (`refactor(ds)!: services/ -> classes/`, le
+2026-08-19) : les trois fichiers sont devenus
+`src/classes/Commons/{box,circular-buffer,date-adapter}.class.ts` et
+`src/services/index.ts` a été supprimé. **L'entrée `exports`, elle, est
+restée** — et a donc été publiée morte dans `2.16.0`, `2.17.0` et `2.17.1`.
+
+Mesuré contre le `dist` construit, avant retrait : `import 'origam/services'`
+lève `MODULE_NOT_FOUND` sur `dist/src/services/index.js`. Le `build` le
+signalait d'ailleurs à chaque passage, dans un avertissement que personne ne
+lisait : `Potential missing package.json files: … dist/src/services/index.js`.
+Cet avertissement **disparaît** avec l'entrée — c'est le témoin du retrait,
+et il est passé de 1 occurrence à 0 sur le build de cette release.
+
+**Migration.** Aucune, au sens strict : un `import 'origam/services'` échouait
+déjà, donc aucun code en état de marche ne peut en dépendre. Vérifié sur le
+dépôt entier avant le retrait — `packages/marketing`, `stories`, `docs` et
+`tests` compris : **zéro import réel**. La seule référence restante était un
+alias Vite inerte dans le `nuxt.config.ts` du site vitrine, qui pointait lui
+aussi sur le répertoire disparu ; il est retiré dans le même commit.
+
+⚠️ Et il faut être précis sur ce qui change, parce que l'attente naturelle est
+fausse : **le code d'erreur ne change pas**. On pourrait croire qu'un
+sous-chemin retiré d'`exports` lève désormais `ERR_PACKAGE_PATH_NOT_EXPORTED` ;
+mesuré, ce n'est pas le cas — le catch-all `"./*"` **reprend** le sous-chemin
+et le renvoie vers `dist/src/services`. Le consommateur voit donc toujours
+`MODULE_NOT_FOUND`, seule la cible résolue change :
+
+| | sous-chemin résolu vers | code |
+|---|---|---|
+| `2.17.1` | `dist/src/services/index.js` (l'entrée déclarée) | `MODULE_NOT_FOUND` |
+| `2.18.0` | `dist/src/services` (le catch-all) | `MODULE_NOT_FOUND` |
+
+C'est exactement le comportement observé sur `themes-all`, retiré en `2.17.0`.
+Ce qui est rompu ici est donc le **contrat déclaré**, rien d'autre : le paquet
+cesse d'annoncer une porte qu'il n'a pas.
+
+⚠️ **À savoir, et non corrigé ici** : la surface qui a remplacé `services/`
+n'est pas exportée non plus. `origam/classes` ne résout pas — le catch-all
+l'envoie vers `dist/src/classes`, un **répertoire**, et l'ESM refuse l'import
+de répertoire (`ERR_UNSUPPORTED_DIR_IMPORT`). Seul `origam/classes/index.js`,
+explicite, fonctionne. Déclarer proprement `"./classes"` est un **ajout** de
+surface, pas un retrait : ça ne relève pas de cette release.
+
+### ⛔ NOTE RÉTROSPECTIVE — écrite le 2026-09-19 : les 10 ruptures d'API entrées par des versions MINEURES
+
+Cette note est ajoutée **après coup**, et ne modifie aucune entrée passée.
+
+**Ce qu'il faut dire d'emblée : la `2.17.0` n'aurait pas dû être une mineure.**
+Elle a embarqué **8 ruptures d'API**, et la `2.18.0` en ajoute **deux** — la
+neuvième et la dixième. Un consommateur épinglé en `^2.16` a reçu les huit
+premières **automatiquement, sans action de sa part**, et son build a pu casser
+sans avertissement. Les deux dérogations sont documentées et assumées (note en
+tête de chaque section, ticket de remédiation **#717**) — mais une dérogation
+documentée reste une dérogation, et un `^2.16` qui casse reste un `^2.16` qui
+casse.
+
+Le détail complet de chaque rupture, avec ses mesures navigateur, vit dans la
+section `[2.17.0]` plus bas. Ce qui suit est l'**index vérifié** : chacune a été
+recontrôlée sur le code de cette release (`HEAD` = `2aca4db6d`) avant d'être
+écrite ici, parce que plusieurs tickets de ce dépôt portaient des chiffres
+périmés.
+
+| # | Rupture | Vérifiée sur le code de 2.18.0 |
+|---|---|---|
+| 1 | `aspect-ratio` CSS remplace le hack `__sizer` | confirmée |
+| 2 | `inline` retirée d'`IResponsiveProps` | confirmée |
+| 3 | `label` retirée d'`IValidationProps` | confirmée |
+| 4 | échelle `max-width` d'`OrigamContainer` réalignée | confirmée |
+| 5 | 88 paires typographiques mortes retirées | confirmée, le 88 se recompte |
+| 6 | props plates `hover*` / `active*` retirées | confirmée, **titre d'origine inexact** |
+| 7 | `origam/tokens/{css,scss}/themes-all` retirés | confirmée sur le `dist` construit |
+| 8 | 206 custom properties retirées des feuilles livrées | confirmée, **octets d'origine faux** |
+| 9 | `BG_FG_ROLE.DISABLED` retiré (2.18.0) | confirmée sur le `dist` construit |
+| 10 | `origam/services` retiré d'`exports` (2.18.0) | confirmée sur le `dist` construit |
+
+**1. `aspect-ratio` CSS remplace le hack `__sizer`.**
+L'enfant `__sizer` (`padding-block-end` en pourcentage) et la marge de rappel
+sur `__content` ont disparu de `OrigamResponsive`, `OrigamImg`,
+`OrigamCarouselItem` et `OrigamVideo` ; `aspect-ratio` résout désormais l'axe
+manquant **dans les deux sens**. *Ce que vous devez faire* : si vous posez une
+`height` explicite et que vous vouliez garder la pleine largeur, posez aussi
+`width` (`width="100%"`) — sinon la largeur est maintenant contrainte par le
+ratio.
+
+**2. `inline` retirée d'`IResponsiveProps`** (donc de `<OrigamResponsive>`,
+`<OrigamImg>`, `<OrigamCarouselItem>`). *Ce que vous devez faire* : rien dans le
+cas courant. L'attribut résiduel retombe dans `$attrs` et atterrit inerte sur la
+racine. La prop réduisait la largeur à `0` : elle ne peignait rien qu'on puisse
+regretter.
+
+**3. `label` retirée d'`IValidationProps`** (donc de `<OrigamInput>`).
+*Ce que vous devez faire* : rien pour Checkbox, Switch, TextField, RatingField,
+SliderField, RadioGroup — ils gardent leur `label`. Si vous passiez `label` à un
+`<origam-input>` nu, c'était déjà un no-op (zéro `<label>` rendu) : déplacez-le
+sur le contrôle placé dans le slot.
+
+**4. Échelle `max-width` d'`OrigamContainer` réalignée sur les tokens.**
+`900/1200/1800/2400px` → `768/992/1280/1440px`, aux mêmes seuils de viewport
+(`960/1280/1920/2560px`). *Ce que vous devez faire* : c'est un **changement
+visible de largeur**, pas un no-op. Si vos maquettes reposaient sur l'ancienne
+échelle, surchargez `--origam-container---max-width-{md,lg,xl,xxl}`.
+
+**5. 88 paires (composant, prop) typographiques mortes retirées sur 40
+interfaces.** `fontFamily` / `fontWeight` / `lineHeight` / `letterSpacing` là où
+aucune règle CSS ne les relisait. `fontSize` n'a pas été touché.
+*Ce que vous devez faire* : le rendu ne bouge pas (ces props ne peignaient rien),
+mais **le type se resserre** — un `<origam-btn font-family="…">` cesse de
+compiler. Passez par les tokens de typographie, ou par `:style`.
+*Recompté pour cette note* : 84 retraits déclarés en direct + 4 hérités par
+`IOtpInputFieldProps` (passé à `Omit<…>`) = **88**. Le total de paires
+typographiques déclarées passe de **212 à 129**. Rien n'est revenu depuis.
+
+**6. Props plates par état retirées.** ⚠️ **Le titre de l'entrée `[2.17.0]` est
+inexact** et cette note le corrige plutôt que de réécrire l'entrée : il liste
+`hoverBgColor` **deux fois** et omet `hoverColor`. Les quatre props réellement
+retirées sont `hoverColor`, `hoverBgColor`, `activeColor`, `activeBgColor` — le
+corps de l'entrée, lui, les cite bien toutes les quatre.
+⚠️ Deuxième correction : le corps annonce `Pagination`, `Field`, `DataText`,
+`DataTitle` comme « les derniers déclarants » — il y en avait **cinq** :
+`ISelectionControlProps` déclarait `activeColor` / `activeBgColor` en `2.16.0`
+et n'est pas mentionné. *Ce que vous devez faire* : passez l'override comme clé
+des props objet `hover` / `active`.
+
+**7. `origam/tokens/css/themes-all` et `origam/tokens/scss/themes-all`
+retirés.** *Ce que vous devez faire* : importez les feuilles nommées
+(`origam/tokens/css/light`, `.../dark`, `.../primitive`, `.../utilities`) ou
+`origam/styles`, qui les agrège. ⚠️ Le catch-all `"./*"` de la map `exports` ne
+rattrape pas ces sous-chemins : il les envoie vers `dist/src/tokens/…`, qui
+n'existe pas. Vérifié par résolution réelle contre le `dist` construit de cette
+release : les deux lèvent `MODULE_NOT_FOUND` sur
+`dist/src/tokens/{css,scss}/themes-all`.
+
+**8. 206 custom properties retirées des feuilles de tokens livrées.**
+Ces propriétés venaient de 12 fichiers `tokens/component/*.json` qu'aucun
+composant ne lisait. ⚠️ **C'est bien une rupture pour un consommateur**, et non
+un remaniement de sources internes : mesuré nom par nom, **206/206 étaient
+déclarées dans `light.css` et dans `dark.css` en `2.16.0`, et 0/206 le sont
+aujourd'hui** — or ces deux feuilles sont dans le paquet publié. *Ce que vous
+devez faire* : si vous surchargiez l'une d'elles, la déclaration n'a plus de
+base ; redéclarez-la dans votre propre thème.
+⚠️ Troisième correction : les tailles d'octets annoncées dans l'entrée
+`[2.17.0]` (`light.css 187293 → 171736`, `dark.css 380189 → 348663`) **ne se
+reproduisent pas**. Remesuré : `2.16.0` = 187 468 / 380 549 octets ; aujourd'hui
+= 193 455 / 376 376. `light.css` a même **grossi** depuis, d'autres travaux
+ayant touché les feuilles entre-temps. Le chiffre qui tient est 206/206 → 0/206,
+pas les octets.
+
+**9. `BG_FG_ROLE.DISABLED` retiré** — la neuvième, livrée par cette `2.18.0`.
+Détail complet en tête de cette section. *Ce que vous devez faire* : rien au
+rendu ; retirez `'disabled'` de toute variable annotée `TBgFgRole`.
+⚠️ Le numéro **#823 cité par le commit est indirect** : ce ticket porte sur les
+références `var()` assemblées en TypeScript qu'aucune garde ne voyait. Le
+retrait de ce membre est une **trouvaille** de la garde livrée sous ce ticket,
+pas son objet. Aucun ticket dédié n'existe pour cette rupture.
+
+**10. `origam/services` retiré de la map `exports`** — la dixième, livrée par
+cette `2.18.0`. Détail complet en tête de section. *Ce que vous devez faire* :
+rien. Le sous-chemin ne résolvait déjà pas, et le dépôt entier a été balayé
+avant le retrait — zéro import réel. C'est le contrat déclaré qui est rompu,
+pas un comportement.
+
+**Ce que cette note ne fait pas.** Elle ne publie pas de guide de migration
+`v2.16 → v2.18` consolidé, ne déprécie pas `2.17.0` sur npm, et ne mesure pas le
+nombre de consommateurs externes réellement exposés. Ces trois options sont
+listées dans **#717**, qui reste **ouvert** et attend une décision.
+
+### Added
+
+- **Cinq symboles publics redeviennent importables** (#844). `useHotkey` et
+  `useAudioPlayer` depuis `origam/composables`, `IMessageProps` depuis
+  `origam/interfaces`, `TOrigamAvatarGroup` et `TOrigamSystemBar` depuis
+  `origam/types`. Ils existaient dans les sources mais aucun barrel ne les
+  réexportait : un `import { useHotkey } from 'origam/composables'` échouait en
+  `MISSING_EXPORT` au bundling, et les trois types en `TS2724` / `TS2305`.
+  Vérifié par import réel contre le `dist` construit, pas par lecture de la map
+  `exports`.
+  Le sixième réexport que demandait le ticket, `IHotkeyOptions`, n'a **pas** été
+  ajouté : il est atteignable depuis `origam/interfaces` depuis 2025, l'ajouter
+  aurait dupliqué un export existant.
+  ⚠️ Au passage, le fichier vide `types/Commons/locale.type.ts` (1 octet, zéro
+  symbole) a été supprimé : le sous-chemin profond
+  `origam/types/Commons/locale.type` ne résout plus. Il n'exportait rien, donc
+  aucun symbole ne disparaît.
+
+- **Nouveau type public `TAnyString`** (`origam/types`), qui remplace l'idiome
+  `(string & {})` sur 6 unions exportées (`data-table-header`, `theme.type`,
+  `sheet.type`, `activator` ×2, `scroll`, `date-picker-month`). Purement
+  nominatif : la sémantique de l'union est identique, l'autocomplétion des
+  littéraux nommés est préservée.
+
+- **`<OrigamRatingFieldItem>` émet `change` et `keydown`**, deux emits publics
+  nouveaux, nécessaires pour que la navigation clavier native atteigne le modèle
+  (#812).
+
+- **La référence des composables couvre enfin `Commons`** (#599, #600, #601).
+  Trois lots, 80 symboles documentés sur 39 pages : thème / couleur / style,
+  dimension / espacement / forme, puis état / interaction / cycle de vie. Chaque
+  table est **mesurée** sur les symboles réels, jamais recopiée d'une bannière —
+  ce qui a mis au jour des pièges d'API que la documentation annonçait à
+  l'envers, et qui valent pour tout consommateur :
+  `useRounded` — `rounded-top-left="0"` est un **no-op** (la chaîne `"0"` n'a pas
+  d'unité), `rounded="4px 8px"` n'émet rien, et l'ordre à 4 valeurs est
+  TL/TR/BL/BR — ni celui de CSS, ni celui de `useMargin` ;
+  `useMargin` / `usePadding` — `margin="1.5rem"`, `margin="auto"` et
+  `margin="8px 16px 24px"` n'émettent **rien**, en silence, alors que
+  `margin-top` accepte les trois ;
+  `useBorder` — la forme tableau émet une classe portant la virgule
+  d'`Array.toString` et aucune largeur ;
+  `useSize` — `useSize(ref(24))` est inerte, `size="zzz"` émet `width: zzz`
+  sans avertir.
+  Ces comportements ne changent pas dans cette release : ils sont désormais
+  **écrits**. La documentation n'est pas livrée dans le paquet npm.
+
+### Fixed
+
+#### Thème et tokens — des déclarations qui ne peignaient rien
+
+- **Le bundle publié n'avait aucun mode sombre automatique** (#794).
+  `dark.css` portait bien son bloc `@media (prefers-color-scheme: dark)`, mais
+  son jumeau `_dark.scss` ne l'avait pas — or `origam/styles` résout vers
+  `main.css`, **compilé depuis le SCSS**. Un consommateur qui importait
+  `origam/styles` et n'épinglait rien restait en clair sur un système en
+  sombre, pendant que la documentation affirmait le contraire. Le bloc est
+  désormais dans les deux sources, et une garde (`token-twins`) échoue
+  maintenant sur toute divergence CSS/SCSS. Mesuré sur le `dist` de cette
+  release : `main.css` contient
+  `@media(prefers-color-scheme: dark){:root:not([data-theme]):not([data-mode]){…}}`,
+  et ce bloc porte **2 731 déclarations** — exactement autant que le bloc
+  explicite. C'est un thème sombre complet, pas un sous-ensemble.
+  Le correctif hérité a été **resserré** en cours de route : `:root:not([data-theme])`
+  seul repeignait en sombre une page ayant épinglé le clair sur l'axe
+  `data-mode`, c'est-à-dire la forme exacte que produit `useTheme()`. D'où le
+  second `:not([data-mode])`.
+
+- **`data-mode="dark"` seul peint désormais le thème sombre** (#807).
+  Les feuilles statiques n'émettaient **aucune** règle `[data-mode]` : seule la
+  matrice de thème injectée en JS par `createOrigam()` en produisait. Un
+  consommateur appelant `useTheme().setMode('dark')` sans thème de marque
+  enregistré obtenait `<html data-mode="dark">` et **restait en clair**.
+  Le sélecteur du bloc `[data-theme="dark"]` est élargi à
+  `:root:not([data-theme])[data-mode="dark"]` — même spécificité, disjoint sur
+  l'attribut, donc jamais en concurrence avec le bloc `@media`.
+  `data-theme` reste prioritaire dès qu'il est posé : `data-theme="light"` +
+  `data-mode="dark"` reste clair. Mesuré en Chromium, `rgb(255,255,255)` →
+  `rgb(10,10,10)`. Vérifié à nouveau sur le `dist` de cette release : la règle
+  est là, et elle porte **2 731 déclarations** de tokens — le jeu sombre
+  complet, obtenu en élargissant la liste de sélecteurs plutôt qu'en dupliquant
+  un troisième bloc de 170 Ko.
+
+- **`elevation="2xl"` et `"3xl"` n'effacent plus l'ombre du composant** (#813).
+  `ORIGAM_SHADOW_RUNGS` accepte huit échelons, les feuilles n'en déclarent que
+  six : ces deux-là émettaient un `var()` **nu** sur un token inexistant. Un
+  `var()` qui échoue au calcul ne cède pas la main — la déclaration a déjà gagné
+  la cascade, devient `unset`, et **efface** l'ombre du composant. Une prop
+  censée renforcer l'ombre détruisait celle qui existait : `none` →
+  `rgba(0,0,0,.2) 0 11px 15px -7px…`, `md` et `xl` inchangés comme témoins.
+  ⚠️ **Contrat assumé** : `2xl` et `3xl` rendent désormais **exactement comme
+  `xl`**. Ils cessent d'effacer, ils ne deviennent pas deux échelons
+  supplémentaires. Le repli deviendra inerte de lui-même le jour où ces deux
+  tokens seront déclarés.
+
+- **Un `0` sans unité ne jette plus la déclaration qui le contient** (#568,
+  #800). `calc(36px + 0)` est **invalide** en CSS — le zéro nu est un `<number>`,
+  pas une longueur — et quand la valeur transite par un `var()`, la déclaration
+  gagne la cascade puis devient `unset` : elle **écrase** au lieu de céder.
+  Mesuré en Chromium, avant → après : hauteur d'`<OrigamBtn>` et
+  d'`<OrigamBtnGroup>` `0px` → `36px` ; `max-width` du label de champ `none` →
+  `100%` (largeur rendue `1000px` → `300px`) ; `row-gap` du field `normal` →
+  `8px`. Le cas du label **n'était pas latent** : son `max-width` était mort
+  pour tous les champs du catalogue.
+  ⚠️ Le ticket #800 annonçait **trois** champs vivant de cette erreur ; la mesure
+  en trouve **un** (`<OrigamOtpInputField>`, `0px` → `4px`). `ColorPickerField`
+  et `NumberField` tirent leur `padding` d'une règle sans `max()`, où un zéro nu
+  est valide. Le plancher de dégagement des coins devient un canal explicite
+  (`--origam-field---corner-clearance`) plutôt qu'un effet de bord.
+
+- **L'en-tête collant de `<OrigamDataTable>` colle** (#840). Le calcul du `top`
+  lisait `--origam-table-header-height`, déclaré nulle part et sans repli : le
+  `var()` nu **effaçait** le `top`, donc `sticky` n'accrochait rien. La hauteur
+  est désormais dérivée du remplissage sensible à la densité — mesuré
+  `compact` 32 px, `default` 44 px, `comfortable` 56 px — avec un repli explicite.
+  À savoir : `sticky` n'agit que si `<OrigamDataTable>` reçoit sa propre
+  `height` ou `maxHeight`, ce qui est désormais documenté.
+
+- **`--origam-color__text---primary` résout la valeur qu'il annonce** (#615).
+  Il rendait `#0a0a0a` alors que toutes ses déclarations pointaient
+  `neutral-900` (`#171717`) : la déclaration gagnante n'était pas une feuille,
+  mais le thème runtime injecté en JS. Ce n'était pas un simple écart de
+  documentation — sous `<OrigamThemeProvider theme="light">`, le sous-arbre ne
+  matche plus `:root`, et **le même thème peignait deux couleurs de texte**
+  (`#0a0a0a` à la racine, `#171717` dans le sous-arbre). Sur les 2 892 tokens
+  comparés entre thème runtime et feuilles, 268 divergeaient ; ce seul correctif
+  en règle 89.
+
+- **Cinq paires couleur de texte / fond d'intention repassent au-dessus de
+  4,5:1** (#789), et dans **les deux sources** — feuilles `origam/styles` **et**
+  bloc runtime injecté par `createOrigam()` : n'en corriger qu'une n'aurait rien
+  changé pour l'autre moitié des consommateurs. Mesuré, avant → après :
+  `success` 2,78 / 3,30 → 5,02 ; `warning` 2,37 / 3,19 → 5,02 ; `info` 3,12 →
+  5,17 ; `primary` en sombre 4,23 → 5,70 ; `primary | bgHover` en sombre 2,72 →
+  7,10 — cette dernière n'était signalée nulle part.
+  ⚠️ L'intention `ghost` (3,69 annoncé) est un **artefact de la sonde**, pas un
+  défaut : son fond est `rgba(0,0,0,0)` et une mesure sans composition alpha le
+  prend pour du noir opaque. Sa vraie valeur est 5,70, conforme. Elle n'a donc
+  **pas** été « corrigée ».
+  Contrepartie mesurée et assumée : `primary | bgHover` en sombre descend à 2,79
+  en contraste **non textuel** (WCAG 1.4.11), seule paire sous 3:1, sur un état
+  transitoire.
+
+- **`<OrigamAvatar>` dérive son texte de son `bgColor` d'intention** (#819).
+  `useStateEffect` appliquait une couleur de premier plan fixe, issue du thème,
+  sans égard au `bgColor` réel — or `bgColor` est justement la prop qu'un avatar
+  fait varier par instance. Mesuré sur 8 marques × 2 modes × 8 intentions :
+  **3 combinaisons** tombaient entre 1,25:1 et 1,86:1, c'est-à-dire **texte
+  invisible**. Les trois passent AA ; les 91 autres sont **identiques au bit
+  près**.
+  ⚠️ #819 reste **ouvert** : 4 échecs résiduels sont des paires de tokens sous AA
+  indépendamment d'Avatar, hors périmètre de ce correctif.
+
+- **`<OrigamListItem>` : la ligne fait autorité sur sa densité** (#571). Le
+  composant émettait des classes `origam-list-item--density-*` qu'aucune règle
+  ni token ne lisait : la hauteur ne venait que de la liste, alors que la
+  documentation annonçait « hérité de la liste parente **sauf si défini** » —
+  la moitié « sauf si défini » était fausse. Matrice mesurée après correctif
+  (liste `compact` / liste `comfortable` / hors liste) : ligne sans densité
+  48 / 64 / 56 px, ligne `compact` 48 / 48 / 48 px, ligne `comfortable`
+  64 / 64 / 64 px. Le défaut `'origam-list-item': { density: 'compact' }` a été
+  retiré des deux blocs du thème livré : une fois la ligne prioritaire, un
+  défaut posé sur **chaque** ligne battrait le `density` qu'un consommateur pose
+  sur sa **liste**.
+
+#### Accessibilité — le clavier actionne enfin ce que la souris actionne
+
+- **`<OrigamRatingField>` est opérable au clavier** (#812). Mesuré avant : huit
+  `Tab` d'affilée laissaient `activeElement` sur `<body>` à chaque fois ; ni les
+  flèches, ni `Home`/`End`, ni `Espace`, ni `Entrée` ne bougeaient quoi que ce
+  soit. Après : un seul arrêt de tabulation pour tout le groupe, entrée sur la
+  radio cochée, flèches avec bouclage, `Home`/`End`, `Espace`. Trois causes
+  distinctes — un `tabindex="-1"` qui rendait les radios focusables mais hors
+  tabulation, un modèle qui n'écoutait que le `click` du `<div>` étoile alors
+  que la navigation native émet sur l'`<input>`, et un focus qui n'aurait rien
+  éclairé (`height: 0; width: 0; opacity: 0`). L'anneau de focus est peint en
+  CSS pur via `:has(:focus-visible)`.
+  ⚠️ **Changement de rendu** : la **radio fantôme** `value=0` — sixième radio de
+  taille nulle, jamais cochée, atteignable aux flèches et annoncée « Rating 0 of
+  5 » comme une option qui n'existe pas — n'est plus rendue. Le composant rend
+  **5** radios natives, pas 6.
+
+- **`<OrigamRatingField>` nomme son groupe** (#810) : sur le rendu **par
+  défaut**, sans aucun `id` consommateur, le `<label for>` ne résolvait vers
+  rien, la racine n'avait pas de rôle, et **aucun groupe n'existait dans l'arbre
+  ARIA**. Passage à `role="radiogroup"` + `aria-labelledby`.
+
+- **`<OrigamCheckboxGroup>` et `<OrigamRadioGroup>` nomment leur groupe**
+  (#814). Le défaut le plus grave n'était pas celui du ticket : avec le slot
+  `#label` surchargé et sans prop `label` — le cas nominal de la variante
+  « Slots - Label » livrée dans les deux stories — **le groupe n'avait aucun nom
+  accessible du tout**. `aria-labelledby` vise désormais un conteneur dédié en
+  `display: contents` (boîtes englobantes identiques au pixel sur les
+  4 variantes), et l'`id` dupliqué disparaît.
+  ⚠️ Le relevé du ticket annonçait le même `id` sur **trois** éléments ; la mesure
+  en trouve **deux**.
+
+- **`<OrigamTabs>` : le focus suit les flèches** (#786). Il suivait en réalité
+  **avec un cran de retard** — il refocalisait l'onglet qu'on venait de quitter
+  — parce que le gestionnaire relisait la sélection après l'avoir changée, or
+  sous `v-model` le getter rend encore l'ancien identifiant.
+
+- **`InlineEdit` : Confirmer et Annuler sont atteignables et actionnables**
+  (#614). ⚠️ **Le ticket se trompait de cause** : ce n'est pas un motif
+  `nested-interactive`, c'est qu'un seul `Tab` déclenchait le `blur`, lequel
+  **démontait** les deux boutons avant que le focus les atteigne. Deux défauts
+  voisins corrigés au passage : `Entrée` sur **Annuler** confirmait, et `Espace`
+  sur l'un ou l'autre ne faisait rien. Le focus revient désormais sur
+  l'affordance d'affichage au lieu de retomber sur `<body>`.
+
+- **Le DS n'émet plus un rôle ARIA qu'il ne peut pas nommer** (#747, #660,
+  #653) : 54 nœuds en violation `aria-command-name` (impact `serious`, WCAG
+  4.1.2) sur **17 composants**, où le DS posait `role="button"` et un `tabindex`
+  sur des éléments dont il n'avait aucun nom. Un nouveau composable arbitre :
+  nom disponible → rôle + tabulation + `aria-label` ; pas de nom → **aucun rôle,
+  aucun arrêt de tabulation**, plus un avertissement en développement nommant la
+  prop à ajouter. Aucun libellé n'est fabriqué, et le `@click` continue de
+  partir à la souris. `<OrigamSvgIcon>` était la seule feuille de la famille
+  Icon à n'avoir jamais appelé `useIconAccessibility()` : `aria-hidden="true"`
+  en dur, à vie.
+  ⚠️ **Changement de rendu** : une zone `prepend` / `append` sans nom n'émet plus
+  de rôle. Voir la section `Changed`.
+
+- **Trois violations `axe` réelles corrigées sur le catalogue** (#777) :
+  le sous-titre de `<OrigamCardHeader>` passe de **1,37:1 à 5,69:1** — il était
+  figé sur un neutre absolu pendant que le titre héritait du premier plan résolu
+  par la carte, soit du gris sur du violet saturé, pour **tout** consommateur
+  passant un `bgColor` d'intention ; la page courante d'un fil d'Ariane passe de
+  3,69:1 à 19,79:1 (elle était marquée « désactivée », donc à `opacity: .5`, et
+  l'exemption WCAG 1.4.3 ne couvre pas un contenu) ; et la légende de graphique
+  redevient une vraie liste. Le niveau `serious` devient bloquant dans la suite
+  d'accessibilité.
+
+- **Neuf emplacements d'accessibilité supplémentaires** mesurés un par un
+  (#781), dont des `aria-label` construits à partir d'un nom de série absent —
+  un graphique radar annonçait littéralement « undefined, x: 1 ». ⚠️ #781 reste
+  **ouvert** : c'est un lot partiel d'une famille bien plus large.
+
+- **La prop `id` du consommateur atteint le DOM** sur **2 des 5** composants
+  signalés (#790) : `<OrigamOtpInputField>`, dont la racine ne portait aucun
+  `:id` — un `getElementById` ou un `aria-describedby` externe était mort — et
+  `<OrigamDataTableHeadersCell>`, où chaque ligne recevait un `id` **dérivé**, si
+  bien que la valeur exacte demandée n'existait nulle part.
+  ⚠️ Contrairement à ce qu'annonçait le titre du ticket, **`<OrigamInput>` n'est
+  pas concerné** : mesuré, il remet l'`id` exact à son slot. `<OrigamSnackbarGroup>`
+  ne l'est pas non plus — son `id` est une clé logique de pile, pas un `id` DOM.
+  Les trois cas ont été mesurés non défectueux ou hors de portée, et c'est dit
+  plutôt que corrigé à tort.
+
+#### Comportement des composants
+
+- **La frappe clavier atteint enfin le modèle** sur `<OrigamColorPickerField>`
+  et `<OrigamDatePickerField>` (#859). Les deux portaient le même défaut par
+  copier-coller : aucun `v-model` ni événement entre le champ texte interne et
+  le modèle, un `handleChange` en talon vide, et `modelValue` exclu du
+  forwarding. **Seul le popover écrivait le modèle** ; tout ce qui était tapé
+  restait dans le DOM. La valeur est validée avant d'être écrite, pour ne jamais
+  committer une saisie partielle (`#ab` n'est pas une couleur, `09/1` n'est pas
+  une date). Portée volontairement limitée au mode date unique — `range` et
+  `multiple` restent pilotés par le popover.
+  Défaut latent corrigé au passage : après un `Clear` suivant une saisie
+  clavier, le champ couleur affichait **littéralement**
+  `{ "h": 0, "s": 0, "v": 0, "a": 1 }`, la constante « pas de couleur » étant un
+  objet, donc `truthy`. La constante elle-même reste inchangée — c'est un export
+  public.
+
+- **`<OrigamRatingField>` respecte un parent qui contrôle et refuse la valeur**
+  (#827). Cliquer une étoile laissait `:checked` avancer dans le DOM pendant que
+  le modèle restait en arrière — et la radio correctement cochée se retrouvait
+  **décochée par le navigateur**, sans le moindre événement pour le signaler.
+  Vue ne re-patche une prop DOM que si sa valeur calculée diffère ; quand le
+  parent refuse, elle ne diffère pas. Les radios sont désormais resynchronisées
+  sur le modèle après tout `click` / `change`. ⚠️ #827 reste **ouvert**.
+
+- **`<OrigamSelect>` et `<OrigamMenu>` défilent au lieu de déborder** (#742).
+  Le plafond de hauteur était sur une boîte et l'`overflow` sur une autre — or
+  **une boîte ne défile que si les deux sont sur elle**. Mesuré avant, 30 options,
+  molette à fond : les trois boîtes à `scrollTop` 0, 20 options inatteignables.
+  Après, la 30ᵉ option est atteignable dans tous les cas.
+  ⚠️ Effet de bord assumé : le contenu passe de `inline-block` à `block`, ce qui
+  **retire la bande transparente de 5 px** que le descendeur de ligne imposait à
+  chaque panneau. A/B géométrique sur 9 panneaux : 8 rectangles identiques au
+  pixel, seul le menu long change (`596×580` → `596×310` — le plafond est enfin
+  tenu).
+
+- **`<OrigamDialog>` : la boîte qui porte le plafond porte le défilement**
+  (#563). Le contenu placé hors de la zone de contenu de la carte était
+  inatteignable, aucun ancêtre ne défilant : le pied tombait 1 112 px sous la
+  fenêtre. Une seule déclaration ajoutée.
+  ⚠️ Deux affirmations du ticket **mesurées fausses** et corrigées dans la
+  documentation : la zone de contenu de la carte ne défilait pas non plus, et le
+  slot `#asset` n'est pas concerné.
+
+- **Un attribut booléen nu résout à `true`** (#644) — et la portée réelle
+  dépasse largement le titre du ticket : **aucun** attribut booléen nu ne
+  résolvait à `true` sur **aucune** prop qu'un thème enregistré nomme.
+  `<origam-card flat>` ne valait pas `flat="true"`, tandis que `:flat="true"`
+  fonctionnait. Le mécanisme : un attribut nu compile en `flat: ''` et c'est
+  **Vue** qui le transforme en `true` pendant la normalisation — le résolveur de
+  thème rendait l'instantané brut d'avant cette normalisation, et défaisait donc
+  le casting de Vue. Ce qui rendait le défaut illisible, c'est qu'il ne frappe
+  que les props qu'un thème **nomme**, que la forme attribut nu, et qu'il est
+  indépendant du thème actif — il suffit qu'un thème soit enregistré.
+
+- **Déclarer `class` comme prop ne tue plus le fallthrough** (#620) : relevé
+  refait au résolveur plutôt qu'au `grep` — 192 composants déclarent `class`
+  transitivement, 189 la re-bindent, **3** ne le faisaient pas.
+  `<OrigamChartBullet>` et `<OrigamChartStreamgraph>` perdaient la `class`,
+  `<OrigamDialogConfirmation>` perdait **la `class` et le `style`**, ce que le
+  ticket n'annonçait pas.
+
+- **Aucun travail asynchrone ne survit à son propriétaire** (#719, #753, #779).
+  Des `requestAnimationFrame` et `setTimeout` non annulés au démontage, sur une
+  vingtaine de sites : `useAudio`, `scrollTo`, `useLocationStrategies`,
+  `OtpInputField`, `Menu`, les transitions `ExpandX` / `ExpandY` /
+  `TranslateScale`, `clickOutside`, `ripple`, `Carousel`, `parallax`,
+  `activator`, `stack`, `InfiniteScroll`, `Select`, `Field`, `useSsrBoot`,
+  `useVirtual`, `useMasonry`, `Img`. Une boucle qui se reprogramme ne s'annule
+  pas, elle s'**arrête** : d'où le couple systématique drapeau + annulation au
+  démontage. Mesuré en A/B contre `develop` : 11 des 24 tests rouges sur le
+  parent, verts après ; les 13 autres sont les témoins.
+  Sur #779, 6 sites ont été relevés un par un : **4 corrigés, 2 écartés avec la
+  mesure qui le justifie**.
+  ⚠️ Un lot intermédiaire avait introduit une **coalescence** de frames non
+  mesurée ; elle a été retirée dans le même chantier. Chaque portée suit
+  désormais l'ensemble de ses frames armées : le correctif ajoute l'annulation
+  au démontage et **ne change rien d'autre**.
+
+- **La validation redéclenche ses règles sur un modèle devenu nullish sans
+  focus** (#702). Une des trois branches du `watch` était **vide** : les
+  messages d'erreur restaient périmés et `isValid` restait `true`. Dans l'autre
+  sens, un champ en erreur vidé par le code gardait son message. L'agrégat du
+  formulaire parent est touché aussi — il restait valide sur un champ vide. Le
+  report au `blur` **quand le champ a le focus** est délibéré et conservé.
+
+- **Quinze chaînes en dur passent par `t()`** (#764), dans 9 composants —
+  `<OrigamVideo>` (`Playback error`, mot pour mot le défaut qui avait fait
+  naître #567 sur `<OrigamAudio>`, la clé existait déjà dans les deux locales et
+  le composant ne la lisait pas), `CommandPalette`, `SliderField`, et cinq
+  familles de graphiques. `<OrigamChartCartesian>` portait **déjà** la prop et
+  ses deux traductions : seul le texte visible ne les consultait pas, si bien
+  qu'en français le bouton affichait « Reset zoom » pendant que son propre
+  `aria-label` disait « Réinitialiser le zoom ». La pilule de ce bouton était un
+  rectangle de largeur codée en dur, dimensionnée pour l'anglais : mesuré, le
+  texte français débordait de 34 px. La boîte a été élargie — **la traduction
+  n'a pas été raccourcie**.
+
+- **Quatorze remontées critiques de qualité de code** corrigées dans le DS
+  (#771). Aucun changement de comportement attendu, et c'est **prouvé** là où le
+  risque était réel : la refonte de `useColorEffect`, qui alimente 101 des 216
+  composants, a été comparée à l'ancienne implémentation sur **6 272 cas**
+  (28 couleurs × 28 fonds × 8 combinaisons d'état) — **zéro divergence**, avec
+  un harnais vérifié par mutation.
+
+- **Deux divergences d'hydratation**, de deux causes distinctes (#741). Un
+  compteur d'identifiants vivait **au niveau module**, jamais remis à zéro, sous
+  un commentaire affirmant que cet identifiant n'atteignait jamais le DOM — il
+  l'atteignait, via `<OrigamTab>` et `<OrigamTabPanel>`. Sur un processus SSR
+  persistant, le serveur rendait `id="origam-tab-285"` et le client
+  `id="origam-tab-9"`. Mesuré : 1 erreur console / 1 erreur d'hydratation /
+  4 avertissements → 0 / 0 / 0.
+  ⚠️ **Changement de DOM** : l'attribut `data-origam-tab-id` est supprimé. Il
+  portait le même compteur, et un `data-*` échappe à la rectification que Vue
+  applique en production — il divergeait donc en silence.
+
+### Changed
+
+⚠️ Aucune de ces entrées n'est une rupture de type — rien ne cesse de compiler.
+Toutes changent en revanche ce qui **sort dans le DOM ou à l'écran**, et méritent
+d'être relues avant de monter de version.
+
+- **Un repère ARIA anonyme n'est plus annoncé comme un repère.** `<OrigamWindow>`
+  et `<origam-carousel>` sans nom accessible cessent d'émettre `role="region"` et
+  `aria-roledescription` (#781) ; une zone `prepend` / `append` sans nom cesse
+  d'émettre `role="button"` et son arrêt de tabulation (#747, #660, #653). C'est
+  volontaire : un repère qu'on ne peut pas nommer n'est pas navigable, et un
+  `role` sans nom est une violation `serious`. Si vous comptiez sur l'un de ces
+  rôles, passez un nom (`aria-label`, ou la prop que l'avertissement de
+  développement vous indique).
+  Au passage, `aria-roledescription` était une **chaîne anglaise en dur**, lue
+  telle quelle par les lecteurs d'écran ; elle passe par une clé de traduction.
+
+- **`<OrigamRatingField>` rend 5 radios natives et non 6** (#812) — la sixième,
+  de taille nulle, était annoncée comme une option inexistante.
+
+- **`elevation="2xl"` et `"3xl"` rendent comme `xl`** (#813), au lieu
+  d'effacer l'ombre. Voir `Fixed`.
+
+- **L'attribut `data-origam-tab-id` disparaît du DOM** (#741). Voir `Fixed`.
+
+- **`IGroupProvide.prev()` / `.next()` renvoient l'identifiant retenu**
+  (`() => number | undefined`) au lieu de `void` (#786). Additif : les cinq
+  autres appelants ignorent la valeur.
+
+- **Montées de dépendances** : `typeorm` 0.3.31 → 1.1.1, `pg` 8.22.0 → 8.23.0,
+  et 6 outils de développement (PR #559, #558, #539 — ce sont des numéros de
+  *pull request*, pas de tickets).
+  ⚠️ **Aucune n'atteint le paquet publié.** Mesuré : entre `v2.17.1` et cette
+  release, `packages/ds/package.json` ne change que dans son bloc `scripts` —
+  ni `dependencies`, ni `peerDependencies`, ni la map `exports` ne bougent.
+  `typeorm` n'est déclaré que par le site vitrine, qui est `private`.
+
+### Security
+
+- **Les 19 avis de `pnpm audit` sont corrigés par montée de version, sans aucun
+  waiver** (#718, #796).
+  `pnpm audit --prod` : 9 vulnérabilités (2 `moderate`, 7 `high`, 2 ignorées) →
+  `No known vulnerabilities found`. `pnpm audit` sur l'arbre **complet** :
+  10 vulnérabilités (4 `moderate`, 6 `high`) → idem. Codes de sortie `1` → `0`,
+  capturés **hors pipe**. Remesuré sur cette release : les deux répondent encore
+  `No known vulnerabilities found`, exit `0`.
+  Le bloc `pnpm.auditConfig.ignoreGhsas` est **supprimé**, pas élargi, et la
+  dérogation accordée à `image-size` est **révoquée** : son critère de sortie —
+  la publication d'un correctif — avait joué, et le waiver avait survécu un mois
+  à son propre correctif. Vérifié dans le **code** des paquets et non dans la
+  plage `semver`, l'avis annonçant toujours `first_patched_version: null`.
+  Aucune montée de majeur. `docs/security-waivers.md` passe à « aucun waiver
+  actif ».
+  ⚠️ **Le paquet npm `origam` n'était pas concerné.** Ces avis vivaient dans
+  l'arbre de **build et de développement** du dépôt, et les 6 paquets de
+  production incriminés n'arrivaient que par le site vitrine, qui est `private`.
+  Les dépendances déclarées du paquet publié n'ont pas changé depuis `2.17.1` :
+  un consommateur n'était pas exposé, et ne gagne ici qu'une chaîne de
+  construction propre.
+
+### Internal
+
+**42 des 80 commits ne touchent pas `packages/ds/src/`** et sont invisibles pour
+un consommateur du paquet. Quatre thèmes :
+
+- **Site vitrine** — 117 pages sorties du 404 (`/privacy` et `/contact`
+  créées), 34 liens de navigation et de pied de page qui suivent enfin la langue
+  du visiteur, polices auto-hébergées (plus aucun hôte tiers sur les 19 pages),
+  une fuite mémoire du worker SSR de développement (~3,7 Mo par rendu), et une
+  garde contre une migration de base destructive.
+- **Fiabilité des tests e2e** — la garde de couverture a mesuré que **177 specs
+  sur 242 n'étaient exécutées par aucun job de CI**, sans le moindre signal ;
+  une spec rouge 5 fois sur 5 était repeinte en vert par les `retries` ; treize
+  attentes codées en dur ont été remplacées par des attentes d'état.
+- **Gardes d'architecture** — de 17 à **28 gardes**, et **15 auto-tests qui
+  s'exécutent enfin** (rien ne les lançait). Parmi les nouveaux : `ts-token-refs`
+  (garde 28), qui rejoue chaque gabarit `var()` assemblé en TypeScript un chemin
+  d'exécution à la fois — **158 références qu'aucune garde ne regardait**, et
+  c'est par là que #813 était passé.
+- **Outillage de documentation** — le générateur de référence des composables
+  tronquait 56 signatures sur 179, puis aplatissait 20 types de retour objet :
+  ces deux défauts sont à zéro.
+
 ## [2.17.1] - 2026-09-14
 
 Hotfix. Quatre correctifs, **aucune rupture d'API**. Trois des quatre ont

@@ -5,19 +5,21 @@
   import { useTheme } from 'origam/composables'
   import { MDI_ICONS } from 'origam/enums'
   import type { ICommand } from 'origam/interfaces'
-  import type { INavSection } from '~/interfaces/nav.interface'
+  import type { INavLink, INavSection } from '~/interfaces/nav.interface'
 
   import { SKIP_LINK_HREF, SKIP_LINK_TARGET_ID } from '~/consts/a11y.const'
   import { FOOTER_COLUMNS, FOOTER_GRID_COLUMNS, NAV_SECTIONS, NAV_THEMING_LINK } from '~/consts/nav.const'
   import { SEARCH_SHORTCUT, GITHUB_STARS_MIN_DISPLAY } from '~/consts/chrome.const'
   import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
   import { THEME_CHIPS } from '~/consts/themes-showcase.const'
+  import { useLocaleHref } from '~/composables/useLocaleHref'
   import { useT } from '~/composables/useT'
   import { useVersion } from '~/composables/useVersion'
   import { useGithubStars } from '~/composables/useGithubStars'
   import { useGlobalSearch } from '~/composables/useGlobalSearch'
 
   const { t } = useT()
+  const { localeHref, navLinkHref } = useLocaleHref()
   const { versionTag } = useVersion()
   const { public: publicConfig } = useRuntimeConfig()
 
@@ -39,8 +41,14 @@
     paletteOpen.value = true
   }
 
+  // ⛔ `getHref` returns a RAW app path (`/components/btn`, `/installation`).
+  // Under `prefix_except_default` that resolves to the default locale, so the
+  // palette used to eject a French visitor into the English page just like the
+  // nav links did — measured on /fr/roadmap: "Installation" landed on
+  // `/installation`, lang=en-US. #809. Every id `getHref` can answer for is an
+  // app route, so `localeHref` applies unconditionally here.
   function handlePaletteSelect (cmd: ICommand) {
-    navigateTo(getHref(cmd.id))
+    navigateTo(localeHref(getHref(cmd.id)))
   }
 
   const { locale, locales, setLocale } = useI18n()
@@ -74,13 +82,24 @@
 
   const route = useRoute()
 
-  function isRouteActive (href: string): boolean {
-    if (!href || href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('#')) return false
-    return route.path === href || `${route.path}/` === href
+  // `route.path` ALWAYS carries the locale prefix (`/fr/roadmap`); a nav entry
+  // holds a raw path (`/roadmap`). Comparing the two raw made the highlight
+  // permanently dead outside the default locale — measured on /fr/roadmap:
+  // 0 element matched `.primary-nav__link--active`, though the Introduction
+  // section does contain /roadmap. #809. Taking the whole link rather than its
+  // href is what keeps the `external` entries (Stories, Docs) off localePath().
+  function isLinkActive (link: INavLink): boolean {
+    const { href, external } = link
+
+    if (!href || external || href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('#')) return false
+
+    const target = localeHref(href)
+
+    return route.path === target || `${route.path}/` === target
   }
 
   function isSectionActive (section: Pick<INavSection, 'items'>): boolean {
-    return section.items.some(item => isRouteActive(item.href))
+    return section.items.some(isLinkActive)
   }
 
 </script>
@@ -97,7 +116,7 @@
     <origam-app-bar class="site-appbar">
       <template #prepend>
         <nuxt-link
-          to="/"
+          :to="localeHref('/')"
           class="brand"
           :aria-label="brandName"
           data-cy="brand-home"
@@ -153,7 +172,7 @@
                   v-for="item in section.items"
                   :key="item.href"
                   :title="t(item.i18nKey, item.i18nFallback)"
-                  :href="item.href"
+                  :href="navLinkHref(item)"
                   :data-cy="`nav-item-${item.i18nFallback.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}`"
                 />
               </origam-list>
@@ -161,13 +180,13 @@
           </origam-menu>
 
           <origam-btn
-            :href="NAV_THEMING_LINK.href"
+            :href="navLinkHref(NAV_THEMING_LINK)"
             variant="text"
             :elevation="0"
             rounded="small"
             class="primary-nav__link"
-            :class="{ 'primary-nav__link--active': isRouteActive(NAV_THEMING_LINK.href) }"
-            :aria-current="isRouteActive(NAV_THEMING_LINK.href) ? 'page' : undefined"
+            :class="{ 'primary-nav__link--active': isLinkActive(NAV_THEMING_LINK) }"
+            :aria-current="isLinkActive(NAV_THEMING_LINK) ? 'page' : undefined"
             data-cy="nav-theming"
           >
             {{ themingLabel }}
@@ -257,6 +276,7 @@
               <origam-btn
                 class="appbar-actions__btn"
                 variant="outlined"
+                data-cy="theme-switcher-trigger"
                 :aria-label="themeMenuAriaLabel"
                 :text="themeMenuLabel"
                 :append-icon="MDI_ICONS.CHEVRON_DOWN"
@@ -314,7 +334,7 @@
       >
         <div class="site-footer__brand">
           <nuxt-link
-            to="/"
+            :to="localeHref('/')"
             class="brand"
             :aria-label="brandName"
           >
@@ -363,7 +383,7 @@
               </a>
               <nuxt-link
                 v-else
-                :to="link.href"
+                :to="localeHref(link.href)"
                 class="site-footer__link"
               >
                 {{ t(link.i18nKey, link.i18nFallback) }}
@@ -375,6 +395,17 @@
 
       <origam-divider class="site-footer__rule"/>
 
+      <!--
+        Items flagged `external` in NAV_SECTIONS (Stories, Docs) are separate
+        static sites, not app routes: they keep a plain anchor and are never
+        localised. See nav.const.ts for the why. #760
+
+        ⛔ Keep this note OUTSIDE the v-for, and free of angle brackets: dev
+        SSR preserves template comments (production strips them), so a comment
+        inside the loop is emitted once per item — and one containing a literal
+        anchor tag made `marketing-nav-ssr.spec.ts` count 30 links instead of
+        15, green in prod and red in dev.
+      -->
       <nav
         class="site-footer__sitemap"
         data-cy="footer-sitemap"
@@ -391,11 +422,19 @@
               :key="item.href"
             >
               <a
+                v-if="item.external"
                 :href="item.href"
                 class="site-footer__link"
               >
                 {{ t(item.i18nKey, item.i18nFallback) }}
               </a>
+              <nuxt-link
+                v-else
+                :to="localeHref(item.href)"
+                class="site-footer__link"
+              >
+                {{ t(item.i18nKey, item.i18nFallback) }}
+              </nuxt-link>
             </li>
           </ul>
         </template>

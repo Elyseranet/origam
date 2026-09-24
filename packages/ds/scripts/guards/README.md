@@ -32,7 +32,7 @@ pnpm -F origam guards:unemitted-declarations  # guard 18 only
 No build step required — every guard parses `.vue`/`.ts`/`.scss` source
 text directly. The full suite runs in under two seconds.
 
-## The fifteen guards
+## The guards
 
 | # | Script | Rule | Baseline size |
 |---|---|---|---|
@@ -49,13 +49,22 @@ text directly. The full suite runs in under two seconds.
 | 11 | `comment-format.mjs` | No comment block is ADDED outside the repo's block format (per-file counts, total may only fall) | 6925 blocks |
 | 12 | `pnpm-tree-integrity.mjs` | No `node_modules/` entry is a physical copy — every package is a pnpm store link or a workspace link | 0 |
 | 13 | `token-var-channels.mjs` | Every `var(--origam-…)` a component reads is emitted by the token pipeline, or synthesised locally — and (secondary, non-fatal-by-default in spirit but still baselined) every emitted var is read by at least one component | 1275 dead / 1588 dormant |
-| 14 | `dead-handlers.mjs` | A `v-on` binding (`@click`, `@keydown`, …) must CALL the handler it names — not just reference it as an unused operand of `&&`/`||`/`?:`, or via a `withModifiers`/`withKeys` call whose return value is discarded | 6 |
-| 15 | `id-forwarding.mjs` | A bare `const {id, ...} = useStyle(xxxStyles)` (no `() => props.id` second argument) must not be the value an unshadowed `:id="id"` template binding resolves to — the generated stylesheet id silently wins over the consumer's prop | 0 |
+| 14 | `dead-handlers.mjs` | A `v-on` binding (`@click`, `@keydown`, …) must CALL the handler it names — not just reference it as an unused operand of `&&`/`\|\|`/`?:`, or via a `withModifiers`/`withKeys` call whose return value is discarded | 6 |
+| 15 | `id-forwarding.mjs` | **Two halves.** (a) SHADOWING: a bare `const {id, ...} = useStyle(xxxStyles)` (no `() => props.id` second argument) must not be the value an unshadowed `:id="id"` template binding resolves to — the generated stylesheet id silently wins over the consumer's prop. (b) REACH (#633): a component declaring an `id` prop must carry that id to SOME rendered node — root or descendant, directly or through a whole-props channel. A DERIVED value (`` `${id}-messages` ``) does not count, nor does a `<slot v-bind>` payload, nor a `useStyle()` id from a one-argument call. Pinned by 29 fixtures run BEFORE the sweep | 3 |
 | 16 | `t-fallback.mjs` | (undocumented in this table — see the script header) | — |
 | 17 | `composable-setup-reads.mjs` | (undocumented in this table — see the script header) | — |
 | 18 | `unemitted-declarations.mjs` | Every emit DECLARED by `IXxxEmits` — its full `extends` chain resolved — must actually be EMITTED (literally, or by a known relay composable): the inverse of guard 7 | 35 (21 components) |
 | 21 | `prop-shadowing.mjs` | A module-scope `const`/`let`/`function` bearing the name of a DECLARED prop (full `extends` chain resolved) shadows that prop in the template, which reads bare names. Only two provably-harmful shapes are raised: **A** the prop is read nowhere in the script (dead prop), **B** the bare name feeds a user-facing TEXT attribute (`aria-label`, `title`, `placeholder`, …) and the local does not carry the prop's value. 49 of the 66 raw shadowings in the catalogue are deliberate derivations and are deliberately NOT raised | 4 |
+| 22 | `class-fallthrough.mjs` | Declaring `class` as a prop REMOVES it from `$attrs`, so Vue's automatic attribute fallthrough stops and the component owes a MANUAL re-bind. Any component whose props interface declares `class` transitively must read it back — `props.class` (the conventional shape: last entry of `rootClasses`), `$props.class` / `v-bind="$props"` in the template, or a `filterProps(props, [...])` whose explicit exclusion array omits `'class'`. AST-based, so a mention in a comment or a string does not count. Covers `class` only, not `style` — see the lib header for the measured reason | 0 |
 | 19 | `function-as-value.mjs` | A name bound to a function LITERAL in a component's own `<script setup>` must not be used where the code consumes a VALUE — interpolated (`{{ fn }}`), used as a condition (`v-if="fn"`, operand of `&&`/`\|\|`/`!`/`?:`), or compared (`fn === x`, `deepEqual(x, fn)`): the mirror image of guard 14 | 0 |
+| 23 | `md-table-cells.mjs` | Every markdown table row in `packages/docs/**` has the cell count of its header. Markdown fills left to right and reports nothing, so a row short of one cell shifts every value into the wrong column — #621 found 15, all of them the rows WARNING that a prop is inert, with the warning rendered under « Default ». Escaped `\|` are not separators (a naive split over-counted by 40×) | 0 |
+| 24 | `pnpm-script-exists.mjs` | Every `pnpm -F <paquet> <script>` in an EXECUTABLE surface (`.github/workflows/*.yml`, workspace `package.json` scripts, versioned `*.sh`) targets a package that exists and a script that exists in it. pnpm returns **`exit 0`** on a missing script as soon as a filter is present — measured on pnpm 9.15.0 — so `set -euo pipefail` cannot catch a dead call. That is how `vrt-docker.sh` kept calling `tokens:build` for 16 days after the script was deleted (#606). `pnpm run <script>`, unfiltered, correctly exits 1; only the filtered form — the one this repo's CLAUDE.md mandates everywhere — swallows it. Docs (`*.md`) are out of scope: a command quoted in prose may legitimately describe a past state | 0 |
+| 25 | `vrt-lockstep.mjs` | `packages/tests/vrt/vrt-docker.sh` and the `vrt` job of `.github/workflows/ci.yml` pin the same Playwright image (checked against the version `pnpm-lock.yaml` resolves, not the `^` range in `package.json`) and run the same ordered `pnpm` recipe. The script's own header already asserted this lockstep; nothing verified it. CI does not execute the script — it replays the steps inline — so only a local run exercises it, which is how a deleted `tokens:build` survived in it for over two weeks (#606). `pnpm config set …` is excluded as container plumbing; the exclusion list is one entry and pinned by the self-test | 0 |
+| 26 | `unitless-zero-in-calc.mjs` | A custom property set to a UNITLESS `0`, read as an ADDITIVE term of a `calc()`/`min()`/`max()`/`clamp()` that also carries a length or percentage literal. `0` is a `<number>`, `<length> + <number>` is illegal, and the browser discards the WHOLE declaration — not the offending term. With `var()` the failure lands at computed-value time, AFTER the declaration has won the cascade, so it ERASES the previous value instead of yielding to it (measured: `calc(36px + var(--x:0))` → `auto`, not the 7px witness underneath). Three occurrences before the guard (`OrigamRow`, `OrigamBtnGroup`, then #568's sweep found three more), none caught by a red test — jsdom's `getComputedStyle` never resolves `var()` and fabricates `16px`. Multiplicative operands are deliberately NOT raised: `calc(var(--depth, 0) * 16px)` REQUIRES a unitless number | 5 |
+| 27 | `token-twins.mjs` | Each token sheet `src/assets/css/tokens/{n}.css` is BYTE-IDENTICAL to its SCSS twin `src/assets/scss/tokens/_{n}.scss`, header comment included. The root `CLAUDE.md` has always stated the rule; nothing checked it. #794 is what that cost: `dark.css` carried a `@media (prefers-color-scheme: dark)` block of ~2730 declarations that `_dark.scss` did not, and `main.css` — the file the `./styles` export resolves to, i.e. the entry a consumer gets by default — is COMPILED FROM THE SCSS. The published bundle therefore had no automatic dark mode at all, while the CSS file, `main.scss`'s own header comment and the Multi-theme section of `CLAUDE.md` all three said otherwise. Measured in Chromium: OS dark, no `data-theme` → `rgb(255, 255, 255)`. Byte identity rather than "equivalent declarations" on purpose — the four pairs are already identical, a textual diff points at a line, and the rule becomes impossible to satisfy by halves. A looser comparison would have let exactly #794 through, since it is a divergence of STRUCTURE, not of values | 0 |
+
+| 28 | `ts-token-refs.mjs` | Every `var(--origam-…)` **assemblé en TypeScript** (fichiers `.ts`/`.mts` et blocs `<script>` des SFC) doit nommer un token qu'une feuille déclare, ou porter un repli. Guard 13 lit les blocs `<style>`, guard 26 lit les feuilles ; ni l'un ni l'autre n'évalue du TS — c'est par là que #813 est passé (`useElevation` émettait `var(--origam-shadow---2xl)`, aucune feuille ne le déclare, 27 gardes verts). Le nom n'est même pas grep-able : `var(${SHADOW_TOKEN_PREFIX}${rung})`. Le détecteur ÉNUMÈRE les environnements concrets (paramètres à type union de littéraux — `` type T = `${ENUM}` `` compris —, variables de boucle, rappels `.map`/`.find`, gardes `X.has(v)` / `X.includes(v)`), puis rejoue le gabarit **un chemin d'exécution à la fois** : une évaluation compositionnelle perdrait la corrélation entre `rung` et sa table de repli et fabriquerait des références qui n'arrivent jamais. Deux directions, deux baselines : canal mort (nom calculable, jamais déclaré) et nom non calculable sans repli | 20 + 6 |
+| 29 | `theme-channel-confiscation.mjs` | Un composant qui redéclare, **sur une règle toujours active**, un token que les feuilles déclarent déjà rend ce canal **inatteignable par tout `IOrigamTheme` de marque** (#607, #569). Une custom property est substituée sur l'élément QUI LA DÉCLARE, et l'héritage depuis `[data-theme="brand-x"]` perd contre n'importe quelle déclaration directe — la spécificité n'entre même pas en jeu. Deux formes : un `<style scoped>`, et un `<style>` NON scopé portant `:root` (injecté APRÈS les feuilles, donc gagnant par l'ordre source). C'est le défaut le plus silencieux de la campagne : **tous les indicateurs disent que ça marche** — `token-var-channels` vert dans les deux sens, type-check vert, aucun test rouge. Le détecteur ne lève que l'intersection de deux conditions : (a) la règle est posée sur CHAQUE instance — sélecteur sans condition, ou modificateur égal à la valeur par défaut de la prop dans `withDefaults` (`&--density-default` sur un composant qui déclare `density: DENSITY.DEFAULT`) ; (b) la valeur scopée résout EXACTEMENT celle de la feuille, chaîne de `var()` déroulée, ce qui rend le retrait sans effet visuel. Une règle portée par un modificateur que le consommateur doit demander (`&--rounded-large`) est la logique PROPS-FIRST et n'est PAS levée ; une règle toujours active dont la valeur DIFFÈRE est bien un canal mort mais la retirer change le rendu — c'est un arbitrage, pas un correctif, et le garde s'arrête là. Mesure navigateur A/B contre le commit parent sur `--origam-btn---density`, épinglé à `0px` par `.origam-btn--density-default` (classe posée sur CHAQUE bouton) : thème à `24px` → avant `0px`/28px, après `24px`/52px | 36 |
 
 ### Guard 13 — the token pipeline can break silently, and nothing else watches for it
 
@@ -249,9 +258,28 @@ real components' PRE-FIX source verbatim (Alert, Badge — id on a nested
 content pill rather than the root, Snackbar — id on a nested
 `<origam-overlay>`, Treeview) and asserts the guard catches each, alongside
 11 synthetic precision/recall cases covering the shadowing shapes above.
-Baseline is 0 — all 16 known occurrences were fixed in the same campaign
-that added this guard, so any future occurrence of this exact shape is an
-immediate new violation, not a pre-existing one to triage.
+All 16 known occurrences of the SHADOWING shape were fixed in the same
+campaign that added this guard, so any future occurrence of that exact shape
+is an immediate new violation, not a pre-existing one to triage.
+
+**Second half — REACH (#633).** The guard's original header declared "a real
+control with NO `:id` binding at all" out of scope for a static pass. That
+was true of the textual shape `:id="id"`, not of the fact: whether ANY
+channel carries the consumer id to a rendered node is decidable.
+`lib/id-reach.mjs` decides it, and `lib/id-reach.selftest.mjs` — 29 fixtures,
+run by the guard BEFORE it sweeps, exactly like `class-fallthrough` — pins
+both directions.
+
+⛔ **The three baseline entries are real defects, measured, not a
+whitewash.** The runtime companion `pnpm -F @origam/tests audit:id-forwarding`
+announces `lost 0`; **that zero is wrong**, because its `descendant` verdict
+is `html.includes(SENTINEL)` — a SUBSTRING test that any derivative
+satisfies. Replayed with an exact `getAttribute('id')` comparison the same
+sweep gives root 154 / descendant 33 / **lost 5**. The static half flags 3 of
+those 5 with 0 false positives; the two it misses are explained in the
+guard's header (one is a downstream consequence of `OrigamInput`, the other a
+documented ternary-condition limitation). The product fixes are deliberately
+NOT in this PR — tooling and product fixes have different blast radii.
 
 Guard 12 was written after issue #382, and its value is entirely in the
 class of failure it covers: one nothing else in this repo can see. A

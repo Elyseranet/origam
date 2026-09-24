@@ -221,10 +221,20 @@ export const ecomLightTheme: IOrigamTheme = {
         // #35's verified pattern) — `color` est la SEULE route thémable (pas
         // de cssVar dédiée sur BreadcrumbItem, vérifié — `--origam-breadcrumb-item
         // ---color-token` existe mais n'est jamais défini nulle part, mort).
-        // Valeur light ici (#e11d48 = action.primary.bg) ; ecomDarkTheme
-        // surcharge avec fgSubtle (#fb7185, spec explicite — divergence réelle
-        // de token, pas juste une valeur adaptée).
-        'origam-breadcrumb-item': { color: 'var(--origam-color__action--primary---bg)' },
+        // ⛔ CORRECTIF CONTRASTE (Refs #871) : ce bloc posait
+        // `action.primary---bg` (#e11d48) comme ENCRE, sur la surface creme
+        // #fff7f0 → 4.43:1, juste sous le seuil AA de 4.5:1. Bascule sur
+        // `action.primary---fgSubtle` (#be123c) → 5.93:1.
+        //
+        // C'est une erreur de ROLE, pas de valeur : `bg` est un jeton de
+        // SURFACE, `fgSubtle` est la teinte de l'intention prevue pour ETRE
+        // LUE sur une surface neutre. ecomDarkTheme posait deja `fgSubtle`
+        // pour son propre override — le bloc clair etait le seul des deux a
+        // se tromper de jeton. Les deux modes sont maintenant symetriques.
+        //
+        // Ecart visuel : rose-600 → rose-700, un cran plus profond sur un
+        // texte de lien. La famille de teinte ne bouge pas.
+        'origam-breadcrumb-item': { color: 'var(--origam-color__action--primary---fgSubtle)' },
         'origam-snackbar': { rounded: 'sm', border: true, elevation: 2 }
     },
     cssVars: {
@@ -498,7 +508,30 @@ export const ecomDarkTheme: IOrigamTheme = {
                     bgHover: '#fb7185',
                     bgSubtle: 'rgba(244, 63, 94, 0.14)',
                     bgDisabled: '#3d2518',
-                    fg: '#ffffff',
+                    // ⛔ CORRECTIF CONTRASTE (Refs #871) : #ffffff sur
+                    // #f43f5e = 3.67:1 (echec WCAG AA, seuil 4.5:1 pour du
+                    // texte). #1a0f0a sur #f43f5e = 5.12:1.
+                    //
+                    // Meme cause exacte qu'apple.theme.ts : le mode sombre
+                    // eclaircit l'accent (rose-600 #e11d48 en clair ->
+                    // rose-500 #f43f5e ici) et gardait l'encre blanche du
+                    // jumeau clair. Mesure sur
+                    // `--origam-badge__badge---{background-color,color}`, qui
+                    // lit `action.primary.{bg,fg}` — comme
+                    // `--origam-btn--primary---*`.
+                    //
+                    // ⚠️ ON NE TOUCHE PAS A L'ACCENT #f43f5e : la spec le
+                    // fixe explicitement pour le sombre (cf. le commentaire
+                    // du bloc `components` plus bas, qui distingue #f43f5e de
+                    // #fb7185). C'est l'encre qui etait fausse, pas la teinte.
+                    //
+                    // #1a0f0a = `text.inverse` de cette palette, et c'est
+                    // DEJA la convention du fichier : les QUATRE intentions
+                    // `feedback` sombres encrent leur accent eclairci en
+                    // #1a0f0a. `action.primary` etait la seule exception, et
+                    // #ffffff y etait de toute facon un intrus — tout le
+                    // reste du bloc `text` sombre est en creme #fff7f0.
+                    fg: '#1a0f0a',
                     fgSubtle: '#fb7185',
                     fgDisabled: '#a3786a'
                 },
@@ -582,6 +615,12 @@ export const ecomDarkTheme: IOrigamTheme = {
         // correspond à action.primary.fgSubtle (PAS action.primary.bg =
         // #f43f5e, une teinte différente) : divergence réelle de token,
         // override dédié nécessaire (même pattern qu'editorial.theme.ts #35).
+        //
+        // ⚠️ Depuis #871, ecomLightTheme pose LUI AUSSI `fgSubtle` (il posait
+        // `bg`, qui tombait à 4.43:1 sur la crème). Cet override devient donc
+        // une redite de la valeur héritée. Il est CONSERVÉ à dessein : c'est
+        // lui qui porte la spec #36, et il garde le sombre épinglé si la
+        // valeur claire rebouge un jour.
         'origam-breadcrumb-item': { color: 'var(--origam-color__action--primary---fgSubtle)' }
     },
     cssVars: {
@@ -671,7 +710,17 @@ export const ecomDarkTheme: IOrigamTheme = {
         // ── Switch thumb (Refs #36) — même override que light : "thumb
         // blanc" constant, ne doit PAS suivre surface.default (qui serait
         // brun foncé #1a0f0a en dark sans cet override, vérifié).
-        '--origam-switch__thumb---background-color': '#ffffff'
+        '--origam-switch__thumb---background-color': '#ffffff',
+        // #919 — le pouce fixe blanc ci-dessus rend le dosage DS par défaut
+        // (color-mix 60 %, packages/ds/src/assets/css/tokens/dark.css) trop
+        // clair en dark : track-vs-page passait (6.83:1) mais pouce-vs-track
+        // tombait a 2.75:1 (mesure Playwright/Chromium — un pouce blanc fixe
+        // se rapproche trop d'un track qui monte vers le blanc). Dosage reduit
+        // a 48 % (meme raisonnement que glass.theme.ts) pour satisfaire les
+        // deux contraintes a la fois. Remesure : track-vs-page 4.77:1,
+        // pouce-vs-track 3.95:1. Le light n'a pas besoin de cet override : il
+        // passe deja les deux contraintes au dosage DS par defaut (60 %).
+        '--origam-switch__track---background-color': 'color-mix(in srgb, var(--origam-color__text---primary) 48%, var(--origam-color__surface---default))'
     }
 }
 

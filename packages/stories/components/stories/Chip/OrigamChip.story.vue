@@ -144,6 +144,7 @@
 					bg-color="primary"
 					:prepend-icon="prependIcon"
 					text="Click the icon"
+					prepend-aria-label="Open details"
 					@click:prepend="logEvent('click:prepend', $event)"
 			/>
 		</Variant>
@@ -153,6 +154,7 @@
 					bg-color="primary"
 					:append-icon="appendIcon"
 					text="Click the chevron"
+					append-aria-label="Show options"
 					@click:append="logEvent('click:append', $event)"
 			/>
 		</Variant>

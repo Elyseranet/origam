@@ -5,6 +5,25 @@ export type TChangelogHighlightType = 'added' | 'changed' | 'fixed' | 'deprecate
 export interface IChangelogHighlight {
     type: TChangelogHighlightType
     textKey: string
+    /**
+     * English text extracted from CHANGELOG.md, rendered by
+     * `t(textKey, textFallback)` when `textKey` is absent from the ACTIVE
+     * locale. Follows the site's `*Key` / `*Fallback` convention — see
+     * scripts/i18n-check.mjs ("Channel B") and composables/useT.ts.
+     */
+    textFallback: string
+}
+
+/**
+ * A hand-written release note spliced into the generated list by
+ * scripts/generate-changelog.mjs. Carries no `date` or `type`: those come
+ * from CHANGELOG.md, so a curated entry can never contradict the log.
+ */
+export interface IChangelogCuratedEntry {
+    version: string
+    summaryKey: string
+    summaryFallback: string
+    highlights: IChangelogHighlight[]
 }
 
 export interface IChangelogVersion {
@@ -12,5 +31,7 @@ export interface IChangelogVersion {
     date: string | null
     type: TChangelogVersionType
     summaryKey: string
+    /** See IChangelogHighlight.textFallback. */
+    summaryFallback: string
     highlights: IChangelogHighlight[]
 }

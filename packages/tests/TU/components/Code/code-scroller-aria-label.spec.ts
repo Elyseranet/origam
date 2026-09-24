@@ -70,12 +70,41 @@ describe('OrigamCode — .origam-code__scroller aria-label', () => {
         second.unmount()
     })
 
-    it('keeps role="region" and tabindex="0" on that same element', () => {
+    /*********************************************************
+     * #781 — la region est desormais un <section>, pas un role
+     *
+     * @description
+     * Sonar signalait « role="region" + tabIndex sur un element non
+     * interactif ». La moitie « role » est reelle et se corrige par la
+     * balise : un `<section>` PORTE le role `region` des qu'il a un nom
+     * accessible (HTML-AAM), et `scrollerLabel` n'est jamais vide — les
+     * trois tests ci-dessus en epinglent les trois formes. Le `role`
+     * explicite ne faisait que repeter la balise.
+     *
+     * @description
+     * La moitie « tabIndex » est un FAUX POSITIF de la regle, et le test
+     * ci-dessous le verrouille : cette boite defile
+     * (`overflow-x: auto`), donc elle DOIT etre atteignable au clavier
+     * (WCAG 2.1.1, regle axe `scrollable-region-focusable`). Retirer le
+     * tabindex echangerait une coquetterie de nommage contre un echec de
+     * niveau A.
+     ********************************************************/
+    it('la zone defilante est un <section> nomme, sans role explicite', () => {
         const wrapper = mountCode({ filename: 'App.vue' })
         const scroller = wrapper.find('.origam-code__scroller')
 
-        expect(scroller.attributes('role')).toBe('region')
-        expect(scroller.attributes('tabindex')).toBe('0')
+        expect(scroller.element.tagName).toBe('SECTION')
+        expect(scroller.attributes('role')).toBeUndefined()
+        // Le nom accessible est ce qui fait qu'un <section> EST une region.
+        expect(scroller.attributes('aria-label')).toBe('App.vue, code block, scrollable region')
+
+        wrapper.unmount()
+    })
+
+    it('garde tabindex="0" — la zone defile, WCAG 2.1.1 l\'exige', () => {
+        const wrapper = mountCode({ filename: 'App.vue' })
+
+        expect(wrapper.find('.origam-code__scroller').attributes('tabindex')).toBe('0')
 
         wrapper.unmount()
     })

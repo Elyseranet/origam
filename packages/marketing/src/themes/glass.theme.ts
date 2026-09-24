@@ -16,7 +16,30 @@ export const glassLightTheme: IOrigamTheme = {
             surface: {
                 default: '#e9ecff',
                 raised: 'rgba(255, 255, 255, 0.65)',
-                sunken: 'rgba(255, 255, 255, 0.85)',
+                // `sunken` must read as a WELL — darker than `default` in light
+                // mode. It was `rgba(255, 255, 255, 0.85)`, the SAME value as
+                // `overlay`, which rendered `rgb(252, 252, 255)` over a page at
+                // `rgb(233, 236, 255)`: lighter than the page, and even further
+                // from it than `raised`. Same defect as `geek` (#829).
+                //
+                // ⛔ "Frosted glass lightens what it covers" does NOT explain it,
+                // and the theme's own dark mode is what rules it out: there,
+                // `sunken` (white 4 %) is a SHALLOWER lift than `raised`
+                // (white 5 %) — it sits BETWEEN `default` and `raised`. In light
+                // it sat BEYOND `raised`. The identity contradicted itself
+                // across its two modes; it is not a deliberate idiom.
+                //
+                // The fix keeps the translucency the identity is built on (so
+                // `backdrop-filter` consumers still see through) and swaps the
+                // white for the palette's own ink at 3 %. Depth —
+                // contrast(default, sunken) — lands at 1.0598, which is what
+                // glass's OWN dark mode already uses (1.0591), and inside the
+                // repo band 1.0487 (material) .. 1.1001 (editorial).
+                sunken: 'rgba(26, 21, 56, 0.03)',
+                // `overlay` deliberately keeps the frosted white: it is a
+                // component-fill role (chip, menu, avatar, kbd), where "more
+                // opaque than a card" is the right glassmorphism reading. Only
+                // `sunken` was wrong, by having been paired with it.
                 overlay: 'rgba(255, 255, 255, 0.85)',
                 disabled: 'rgba(196, 181, 253, 0.20)'
             },
@@ -394,7 +417,17 @@ export const glassLightTheme: IOrigamTheme = {
         // (glyphe mdi, sans effet), MAIS backdrop-filter n'est PAS soumis à cette
         // limitation : il floute la zone derrière l'élément (cercle 40x40,
         // border-radius:50%) indépendamment du glyphe dessiné dessus — appliqué.
-        '--origam-switch__track---background-color': 'rgba(255, 255, 255, 0.35)',
+        // #919 — le remplissage translucide (35 % blanc) composite a ~1.06:1 contre
+        // la page et ~1.11:1 contre le pouce blanc fixe (mesure Playwright/Chromium) :
+        // un track de switch quasi invisible. Meme derivation que le token DS
+        // (color-mix text---primary / surface---default), mais avec un dosage
+        // propre au theme (48 %, pas 60 %) car ICI le pouce est un blanc FIXE
+        // (pas surface---default qui suit le mode) : 60 % rapprocherait trop le
+        // track du pouce blanc. Verifie sur les deux contraintes simultanement
+        // (track vs page ET pouce vs track) pour light ET dark — 48 % est le
+        // point d'intersection des deux fenetres. Remesure : track-vs-page 3.06:1,
+        // pouce-vs-track 3.59:1 (light) ; 4.96:1 / 3.13:1 (dark).
+        '--origam-switch__track---background-color': 'color-mix(in srgb, var(--origam-color__text---primary) 48%, var(--origam-color__surface---default))',
         '--origam-switch__track---backdrop-filter': 'blur(20px) saturate(2.6)',
         '--origam-switch__thumb---background-color': '#ffffff',
         '--origam-switch__thumb---border-color': 'rgba(124, 58, 237, 0.35)',
@@ -673,7 +706,12 @@ export const glassDarkTheme: IOrigamTheme = {
         '--origam-progress-circular__underlay---opacity': '0.10',
         '--origam-progress-circular__overlay---color': '#a78bfa',
 
-        '--origam-switch__track---background-color': 'rgba(255, 255, 255, 0.10)',
+        // #919 — meme correctif que le light (voir la note plus haut) : 10 % blanc
+        // composite a ~1.23:1 contre la page et le pouce lavande fixe (#e4deff)
+        // n'atteignait le track qu'a ~12.6:1 par accident (track deja tres sombre).
+        // Meme dosage 48 % — verifie sur les deux contraintes : track-vs-page 4.96:1,
+        // pouce-vs-track 3.13:1.
+        '--origam-switch__track---background-color': 'color-mix(in srgb, var(--origam-color__text---primary) 48%, var(--origam-color__surface---default))',
         '--origam-switch__track---backdrop-filter': 'blur(20px) saturate(2.6)',
         '--origam-switch__thumb---background-color': '#e4deff',
         '--origam-switch__thumb---border-color': 'rgba(255, 255, 255, 0.20)',

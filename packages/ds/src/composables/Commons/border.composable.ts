@@ -102,6 +102,19 @@ function isDirectionBorder (value: unknown): value is TDirectionBoth {
  * variables.
  *
  * @description
+ * ⛔ LA FORME TABLEAU (`:border="['top', 'bottom']"`) N'EST QU'A MOITIE
+ * IMPLEMENTEE. Elle est portee par le type du parametre `Ref` et traversee
+ * par `borderClasses`, mais `borderStyles` ne la teste nulle part : ni
+ * `isUtilityBorder`, ni `isDirectionBorder`, ni `typeof === 'string'`, ni
+ * `typeof === 'number'` ne matchent un tableau. Mesure —
+ * `useBorder({border: ['top','bottom']})` rend
+ * `classes: ['{name}--border', '{name}--border-top,bottom']` et
+ * `styles: []` : la classe est interpolee depuis le tableau, donc porte la
+ * VIRGULE du `Array.prototype.toString`, et aucune feuille ne la declare.
+ * Aucune largeur n'est emise. Documente ici, non corrige : voir le lot de
+ * doc #600.
+ *
+ * @description
  * WHEN #514 IS SETTLED, THIS INLINE PATH IS THE THING TO REMOVE. If the DS
  * adopts `@layer` (measured in `packages/tests/e2e/btn-cascade-layer-probe.spec.ts`),
  * the utility wins on its own and these `styles.push` calls become dead.

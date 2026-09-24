@@ -21,12 +21,24 @@ import { expect, test } from '@playwright/test'
  *
  * ## Non-testable headless
  *   - Chargement de la font monospace (async WebFont)
- *   - Détail de couleur exact des tokens shiki (palette dépend de la résolution CSS de la sandbox)
  *   - navigator.clipboard dans certains contextes headless stricts
  *
  * ## Bugs DS connus (ne pas faire échouer la CI sur ceux-là)
  *   #30 — OrigamCode ne propage pas l'attribut `class` posé par le consommateur sur <figure> racine.
- *   #29 — tokens shiki-light sous WCAG AA sur thèmes de marque non-blancs.
+ *
+ * ## #535 — contraste syntaxique (voir describe dédié en fin de fichier)
+ *   ⛔ Le "#29" qui figurait ici avant renvoyait en réalité à un PR
+ *   dependabot sans rapport (`gh issue view 29`, vérifié) — probablement une
+ *   référence à un système de suivi interne distinct, jamais confirmée
+ *   équivalente à #535. Ne pas la reprendre sans re-vérifier `gh issue view`.
+ *   Les deux themes shiki sont desormais `github-*-high-contrast` (etaient
+ *   `github-light`/`github-dark`) et `--origam-code---background-color`
+ *   resout `surface---raised` (etait `surface---sunken`) — voir
+ *   `code.const.ts` et `light.css`/`dark.css` pour la justification chiffree.
+ *   Le describe "Syntax contrast (#535)" ci-dessous mesure le ratio WCAG reel
+ *   (getComputedStyle, vrai Chromium) pour CHAQUE couleur shiki distincte
+ *   rendue par les échantillons TS + Vue déjà présents dans les Variants
+ *   Design/Slots-Header, en light ET dark, et échoue sous 4.5:1.
  */
 
 const STORY_ID   = 'components-stories-code-origamcode-story-vue'
@@ -541,6 +553,133 @@ test.describe('OrigamCode', () => {
             expect(darkColor).not.toBeNull()
             // Light and dark must resolve to distinct colours.
             expect(lightColor).not.toBe(darkColor)
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // SYNTAX CONTRAST (#535)                                              //
+    //                                                                      //
+    // Real WCAG 2.x ratio, computed in-browser (getComputedStyle never    //
+    // resolves var() under jsdom — CLAUDE.md #398 — this is the reason    //
+    // this measurement can only run here). For every DISTINCT shiki       //
+    // colour rendered by the already-shipped Design (ts) and Slots-Header //
+    // (vue) samples, in both `data-mode`s, we assert ratio >= 4.5:1       //
+    // against the composited `.origam-code` background. Distinct colours, //
+    // not named categories on purpose: this stays correct even if a       //
+    // future shiki bump changes exactly which hex a given token type      //
+    // gets, as long as the DS's own background token keeps clearing AA.   //
+    // ------------------------------------------------------------------ //
+
+    test.describe('Syntax contrast (#535)', () => {
+        test.setTimeout(45000)
+
+        /**
+         * Runs entirely inside the sandbox `<html>` evaluate — mutating
+         * `data-mode` and reading `getComputedStyle` in the SAME call, the
+         * shape CLAUDE.md documents as correct for a class/attribute-driven
+         * CSS-cascade change inside Histoire's `__sandbox` iframe (same
+         * pattern as the "theme switch" test above, which already passes).
+         */
+        async function contrastReport (
+            sandboxHtml: ReturnType<import('@playwright/test').FrameLocator['locator']>,
+            mode: 'light' | 'dark'
+        ) {
+            return sandboxHtml.evaluate((html: HTMLElement, mode: string) => {
+                if (mode === 'dark') html.setAttribute('data-mode', 'dark')
+                else html.removeAttribute('data-mode')
+
+                function parseRgb (str: string) {
+                    const m = str.match(/rgba?\(([^)]+)\)/i)
+                    if (!m) return null
+                    const p = m[1].split(',').map((x) => parseFloat(x.trim()))
+                    if (p.length < 3 || p.slice(0, 3).some(Number.isNaN)) return null
+                    return { r: p[0], g: p[1], b: p[2], a: p[3] == null || Number.isNaN(p[3]) ? 1 : p[3] }
+                }
+                function over (top: { r: number, g: number, b: number, a: number }, bottom: { r: number, g: number, b: number, a: number }) {
+                    return {
+                        r: top.r * top.a + bottom.r * (1 - top.a),
+                        g: top.g * top.a + bottom.g * (1 - top.a),
+                        b: top.b * top.a + bottom.b * (1 - top.a),
+                        a: 1
+                    }
+                }
+                function lum ({ r, g, b }: { r: number, g: number, b: number }) {
+                    const c = (v: number) => { const s = v / 255; return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4 }
+                    return 0.2126 * c(r) + 0.7152 * c(g) + 0.0722 * c(b)
+                }
+                function ratio (x: { r: number, g: number, b: number }, y: { r: number, g: number, b: number }) {
+                    const a = lum(x)
+                    const b = lum(y)
+                    return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)
+                }
+
+                const codeRoot = html.querySelector('.origam-code')
+                const bgRaw = codeRoot ? getComputedStyle(codeRoot).backgroundColor : null
+                const bg = bgRaw ? parseRgb(bgRaw) : null
+
+                const spans = Array.from(html.querySelectorAll('.origam-code__code span[style*="--shiki-light"]'))
+                const seen = new Map<string, { fg: string, bg: string, ratio: number, sample: string }>()
+                for (const s of spans) {
+                    const fgRaw = getComputedStyle(s).color
+                    const fg = parseRgb(fgRaw)
+                    if (!fg || !bg) continue
+                    if (seen.has(fgRaw)) continue
+                    const fgOver = over({ ...fg, a: fg.a }, { ...bg, a: 1 })
+                    seen.set(fgRaw, {
+                        fg: fgRaw,
+                        bg: bgRaw as string,
+                        ratio: Math.round(ratio(fgOver, bg) * 100) / 100,
+                        sample: (s.textContent ?? '').trim().slice(0, 24)
+                    })
+                }
+                return { bg: bgRaw, colors: [...seen.values()] }
+            }, mode)
+        }
+
+        test('Design (ts) — every distinct shiki colour clears 4.5:1 in light AND dark', async ({ page }) => {
+            await gotoVariant(page, 0)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-code__row').first()).toBeVisible({ timeout: 16000 })
+
+            const shikiSpanCount = await sandbox.locator('.origam-code__code span[style*="--shiki-light"]').count()
+            test.skip(shikiSpanCount === 0, 'shiki highlighting unavailable (plain fallback) — no token spans to measure')
+
+            const html = sandbox.locator('html')
+            const light = await contrastReport(html, 'light')
+            const dark = await contrastReport(html, 'dark')
+
+            expect(light.colors.length, 'expected at least one distinct shiki colour in the ts sample').toBeGreaterThan(0)
+            expect(dark.colors.length, 'expected at least one distinct shiki colour in the ts sample').toBeGreaterThan(0)
+
+            for (const c of light.colors) {
+                expect(c.ratio, `LIGHT ${c.fg} on ${c.bg} (sample "${c.sample}") = ${c.ratio}:1`).toBeGreaterThanOrEqual(4.5)
+            }
+            for (const c of dark.colors) {
+                expect(c.ratio, `DARK ${c.fg} on ${c.bg} (sample "${c.sample}") = ${c.ratio}:1`).toBeGreaterThanOrEqual(4.5)
+            }
+        })
+
+        test('Slots - Header (vue) — tag-name colour clears 4.5:1 in light AND dark', async ({ page }) => {
+            await gotoVariant(page, 6)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-code__row').first()).toBeVisible({ timeout: 16000 })
+
+            const shikiSpanCount = await sandbox.locator('.origam-code__code span[style*="--shiki-light"]').count()
+            test.skip(shikiSpanCount === 0, 'shiki highlighting unavailable (plain fallback) — no token spans to measure')
+
+            const html = sandbox.locator('html')
+            const light = await contrastReport(html, 'light')
+            const dark = await contrastReport(html, 'dark')
+
+            expect(light.colors.length, 'expected at least one distinct shiki colour in the vue sample').toBeGreaterThan(0)
+            expect(dark.colors.length, 'expected at least one distinct shiki colour in the vue sample').toBeGreaterThan(0)
+
+            for (const c of light.colors) {
+                expect(c.ratio, `LIGHT ${c.fg} on ${c.bg} (sample "${c.sample}") = ${c.ratio}:1`).toBeGreaterThanOrEqual(4.5)
+            }
+            for (const c of dark.colors) {
+                expect(c.ratio, `DARK ${c.fg} on ${c.bg} (sample "${c.sample}") = ${c.ratio}:1`).toBeGreaterThanOrEqual(4.5)
+            }
         })
     })
 })

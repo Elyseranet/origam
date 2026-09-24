@@ -9,11 +9,17 @@
         </p>
 
         <nuxt-error-boundary v-else>
+            <!-- ⛔ Deux branches, pas un `<template #default>` conditionnel :
+                 un slot DÉCLARÉ est un slot FOURNI, même vide. Les composants
+                 dont le slot par défaut REMPLACE un visuel porté par les props
+                 (l'icône d'`avatar`, les `items` de `breadcrumb`) rendaient
+                 alors un wrapper vide — mesuré : `<div
+                 class="origam-avatar__wrapper"> </div>`, icône absente. Quand
+                 il n'y a rien à mettre dedans, on ne passe pas de slot. -->
             <component
                 :is="tag"
-                v-bind="mergedProps"
-                :aria-label="instanceAriaLabel"
-                :data-cy="instanceDataCy"
+                v-if="hasSlotContent"
+                v-bind="instanceProps"
             >
                 <template #default>
                     <component
@@ -27,6 +33,12 @@
                     {{ slotText }}
                 </template>
             </component>
+
+            <component
+                :is="tag"
+                v-else
+                v-bind="instanceProps"
+            />
 
             <template #error="{ error }">
                 <p
@@ -80,6 +92,7 @@
     const props = withDefaults(defineProps<IComponentLivePreviewProps>(), {
         doc: null,
         userProps: () => ({}),
+        uneditedProps: () => ({}),
         slotContent: '',
         instanceAriaLabel: undefined,
         dataCySuffix: 'live',
@@ -95,13 +108,23 @@
      ********************************************************/
     const tag = computed(() => previewTagFor(props.slug, props.doc))
 
-    const mergedProps = computed(() => previewPropsFor(props.slug, props.userProps))
+    const mergedProps = computed(() => previewPropsFor(props.slug, props.userProps, props.uneditedProps))
 
     const children = computed(() => previewChildrenFor(props.slug))
 
     const slotText = computed(() => previewSlotTextFor(props.slug, props.doc, props.slotContent))
 
     const instanceDataCy = computed(() => `playground-${props.dataCySuffix}-${props.slug}`)
+
+    /** Y a-t-il quelque chose à mettre dans le slot par défaut ? */
+    const hasSlotContent = computed(() => children.value.length > 0 || slotText.value !== '')
+
+    /** Attributs communs aux deux branches de rendu (avec / sans slot). */
+    const instanceProps = computed(() => ({
+        ...mergedProps.value,
+        'aria-label': props.instanceAriaLabel,
+        'data-cy': instanceDataCy.value
+    }))
 
     /*********************************************************
      * Replis honnêtes

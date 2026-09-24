@@ -33,6 +33,7 @@ import { mount } from '@vue/test-utils'
 
 import OrigamInput from '@origam/components/Input/OrigamInput.vue'
 import OrigamCheckbox from '@origam/components/Checkbox/OrigamCheckbox.vue'
+import OrigamCheckboxGroup from '@origam/components/Checkbox/OrigamCheckboxGroup.vue'
 import OrigamRadioGroup from '@origam/components/Radio/OrigamRadioGroup.vue'
 import OrigamRatingField from '@origam/components/RatingField/OrigamRatingField.vue'
 import OrigamSliderField from '@origam/components/SliderField/OrigamSliderField.vue'
@@ -74,8 +75,10 @@ describe('the components that DO own a label still render exactly one', () => {
         ['Switch', OrigamSwitch, 1],
         // static + floating label, both carrying the same text
         ['TextField', OrigamTextField, 2],
-        ['SliderField', OrigamSliderField, 1],
-        ['RadioGroup', OrigamRadioGroup, 1]
+        ['SliderField', OrigamSliderField, 1]
+        // ⚠️ RadioGroup / CheckboxGroup left this table with #814 — see the
+        // dedicated case below. Same reason as RatingField: the element moved,
+        // the responsibility did not.
     ]
 
     for (const [name, component, expected] of cases) {
@@ -93,12 +96,66 @@ describe('the components that DO own a label still render exactly one', () => {
     it('RatingField keeps its own label after the interface move', async () => {
         // `IRatingFieldProps` gained an explicit `label?: string` with this
         // change — `IInputProps → IValidationProps` was its only source.
+        //
+        // ⚠️ #810 moved the ELEMENT, not the responsibility. RatingField no
+        // longer renders a `<label>`: a rating is a group of controls, so the
+        // text now names a `role="radiogroup"` through `aria-labelledby`
+        // instead of carrying a `for` that pointed at an id no element held
+        // (measured in Chromium — the `for` resolved to `null`). What this
+        // test is the regression net FOR — "the `label` prop still paints,
+        // exactly once, and is not swallowed by the forwarding chain" — is
+        // unchanged, so it is asserted here on the element that now carries it.
         const wrapper = mountWithLabel(OrigamRatingField)
         await nextTick()
         await nextTick()
 
-        const labels = wrapper.findAll('label').filter((l) => l.text().includes(PROBE))
+        expect(wrapper.findAll('label').filter((l) => l.text().includes(PROBE))).toHaveLength(0)
 
-        expect(labels).toHaveLength(1)
+        const painted = wrapper.findAll('.origam-label').filter((l) => l.text().includes(PROBE))
+
+        expect(painted).toHaveLength(1)
+        expect(painted[0].element.tagName).toBe('SPAN')
+
+        // …and the text is not merely rendered, it NAMES the group.
+        const labelledBy = wrapper.attributes('aria-labelledby')
+
+        expect(labelledBy).toBeTruthy()
+        expect(wrapper.find(`#${labelledBy}`).text()).toContain(PROBE)
     })
+
+    // ⚠️ #814 applied the #810 treatment to the two selection groups, for the
+    // same measured reason: their `<origam-label>` rendered a `<label>` with
+    // NO `for` and wrapping no control — a relation that labelled nothing.
+    // Worse, it carried the SAME id as the `<div role="group">`, so the id was
+    // duplicated, and once the `#label` slot was overridden the group's
+    // `aria-labelledby` resolved to the group itself (measured:
+    // `AUTO-REFERENCE : true`).
+    //
+    // What this table was the regression net FOR — "the `label` prop still
+    // paints, exactly once, and is not swallowed by the forwarding chain" — is
+    // unchanged, so it is asserted here on the element that now carries it.
+    // Each individual radio / checkbox keeps its OWN `<label for>`, which is
+    // why the counts below are per-group, not zero overall.
+    for (const [name, component] of [['RadioGroup', OrigamRadioGroup], ['CheckboxGroup', OrigamCheckboxGroup]] as const) {
+        it(`${name} names its group instead of rendering a dangling <label>`, async () => {
+            const wrapper = mountWithLabel(component)
+            await nextTick()
+            await nextTick()
+
+            // Plus aucun `<label>` ne porte le texte du GROUPE.
+            expect(wrapper.findAll('label').filter((l) => l.text().includes(PROBE))).toHaveLength(0)
+
+            const painted = wrapper.findAll('.origam-label').filter((l) => l.text().includes(PROBE))
+
+            expect(painted).toHaveLength(1)
+            expect(painted[0].element.tagName).toBe('SPAN')
+
+            // …et le texte NOMME le groupe, via un wrapper dedie.
+            const group = wrapper.find('[role="group"]')
+            const labelledBy = group.attributes('aria-labelledby')
+
+            expect(labelledBy).toBeTruthy()
+            expect(wrapper.find(`#${labelledBy}`).text()).toContain(PROBE)
+        })
+    }
 })

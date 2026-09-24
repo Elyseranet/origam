@@ -130,32 +130,66 @@ export function useGroup (
         }
     }
 
-    const step = (offset: number) => {
+    /*********************************************************
+     * step / next / prev
+     *
+     * @description
+     * ⛔ RENVOIE L'ID RETENU (#786). Un appelant qui a besoin de
+     * savoir ou la selection vient d'atterrir ne peut PAS relire
+     * `selected.value` juste apres : quand le modele est CONTROLE
+     * (le consommateur a pose un `v-model`), le getter de
+     * `useVModel` renvoie `props[prop]` — donc encore l'ANCIEN id,
+     * jusqu'au tour de rendu ou le parent a repercute l'emit.
+     *
+     * @description
+     * Mesure jsdom avant correctif, `<OrigamTabs>` sous v-model,
+     * 3 onglets, focus de depart sur l'onglet 0 :
+     *
+     *   ArrowRight  aria-selected -> 1   document.activeElement -> 0
+     *   ArrowRight  aria-selected -> 2   document.activeElement -> 1
+     *   ArrowLeft   aria-selected -> 1   document.activeElement -> 2
+     *
+     * Le focus suivait avec UN CRAN DE RETARD — il refocalisait
+     * l'onglet qu'on venait de quitter. Sans `v-model` (modele non
+     * controle) le getter passe par `internalValue()` et la relecture
+     * est immediate : le defaut n'existait QUE en modele controle.
+     * `Home` / `End` y echappaient deja parce que
+     * `focusFirstNonDisabled` porte l'id au lieu de le relire.
+     *
+     * @description
+     * `undefined` signifie « aucun deplacement » : groupe vide, ou
+     * seul candidat desactive. L'appelant ne doit alors rien focaliser.
+     ********************************************************/
+    const step = (offset: number): number | undefined => {
         // getting an offset from selected value obviously won't work with multiple values
         if (props.multiple) consoleWarn('This method is not supported when using "multiple" prop')
 
         if (!selected.value.length) {
             const item = items.find(item => !item.disabled)
 
-            if (item) {
-                selected.value = [item.id]
-            }
-        } else {
-            const currentId = selected.value[0]
-            const currentIndex = items.findIndex(i => i.id === currentId)
+            if (!item) return undefined
 
-            let newIndex = (currentIndex + offset) % items.length
-            let newItem = items[newIndex]
+            selected.value = [item.id]
 
-            while (newItem.disabled && newIndex !== currentIndex) {
-                newIndex = (newIndex + offset) % items.length
-                newItem = items[newIndex]
-            }
-
-            if (newItem.disabled) return
-
-            selected.value = [items[newIndex].id]
+            return item.id
         }
+
+        const currentId = selected.value[0]
+        const currentIndex = items.findIndex(i => i.id === currentId)
+
+        let newIndex = (currentIndex + offset) % items.length
+        let newItem = items[newIndex]
+
+        while (newItem.disabled && newIndex !== currentIndex) {
+            newIndex = (newIndex + offset) % items.length
+            newItem = items[newIndex]
+        }
+
+        if (newItem.disabled) return undefined
+
+        selected.value = [items[newIndex].id]
+
+        return items[newIndex].id
     }
 
     const state: IGroupProvide = {

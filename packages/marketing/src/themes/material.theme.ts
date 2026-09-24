@@ -469,7 +469,27 @@ export const materialDarkTheme: IOrigamTheme = {
                 success: {
                     bg: '#81c784',
                     bgSubtle: 'rgba(110, 231, 183, 0.14)',
-                    fg: '#1b5e20',
+                    // ⛔ CORRECTIF CONTRASTE (Refs #871) : #1b5e20 (green-900)
+                    // sur #81c784 (green-300) = 3.91:1, echec WCAG AA.
+                    // #0d3b10 sur le meme fond = 6.32:1.
+                    //
+                    // ⚠️ Ce couple n'etait PAS dans les 7 de #871 : la sonde
+                    // de `dark-contrast.audit.mjs` ne rend qu'UNE intention
+                    // par famille de composant, donc elle ne peint jamais
+                    // `feedback.success`. Trouve par la spec statique
+                    // `TU/marketing/brand-palette-contrast.spec.ts`, qui lit
+                    // les couples dans l'objet de theme au lieu d'attendre
+                    // qu'un composant les affiche.
+                    //
+                    // On FONCE L'ENCRE plutot que d'eclaircir le conteneur :
+                    // c'est l'encre qui etait l'intruse. Les trois autres
+                    // intentions sombres tiennent 5.79 / 7.70 / 7.71 avec des
+                    // encres bespoke tres profondes (#3e0012, #3e2723,
+                    // #381e72 — aucune n'est une valeur de palette Material
+                    // non plus) ; success etait la seule a se contenter du
+                    // green-900 de la rampe. #0d3b10 la ramene dans la bande
+                    // de ses freres, et le conteneur green-300 ne bouge pas.
+                    fg: '#0d3b10',
                     fgSubtle: '#c5e1a5',
                     border: '#c5e1a5'
                 },

@@ -6,7 +6,7 @@
 			:style="iconStyles"
 	>
 		<svg
-				aria-hidden="true"
+				:aria-hidden="ariaHidden"
 				class="origam-icon__svg"
 				focusable="false"
 				viewBox="0 0 24 24"
@@ -43,6 +43,7 @@
 	import { useBorder } from '../../composables/Commons/border.composable'
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useIconAccessibility } from '../../composables/Icon/iconAccessibility.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
 	import { usePadding } from '../../composables/Commons/padding.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
@@ -88,6 +89,26 @@
 	 * `dimensionStyles` is pushed AFTER the `size`-derived width/height so an
 	 * explicit `width` / `height` beats the size shorthand.
 	 ********************************************************/
+	/*********************************************************
+	 * Accessibility — ⛔ issue #660
+	 *
+	 * @description
+	 * This was the ONE leaf of the Icon family that never called
+	 * `useIconAccessibility()`: the inner `<svg>` carried a HARDCODED
+	 * `aria-hidden="true"`, unconditionally. `<origam-svg-icon @click="…"/>`
+	 * therefore stayed invisible to assistive technology for ever — and,
+	 * unlike the four sibling leaves, produced no dev warning either, so the
+	 * defect was completely silent.
+	 *
+	 * @description
+	 * Adding the hook is alignment, not a reintroduction of what #653 removed:
+	 * `useIconAccessibility` no longer sets `role="button"` anywhere. All it
+	 * does now is un-hide a glyph a consumer made clickable, and warn — in
+	 * development — that a clickable icon should be an `<origam-btn icon="…"
+	 * aria-label="…"/>` instead. That is exactly what the other four leaves do.
+	 ********************************************************/
+	const {ariaHidden} = useIconAccessibility()
+
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)

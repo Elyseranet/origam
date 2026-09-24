@@ -67,7 +67,12 @@ test.describe('roadmap — DS-first', () => {
     test('le bloc overview affiche 6 stats livrées (OrigamCard)', async ({ page }) => {
         const cards = page.locator('[data-cy="roadmap-overview"] .roadmap-overview__card')
         await expect(cards).toHaveCount(6)
-        await expect(page.locator('.roadmap-overview__value').first()).toHaveText('90+')
+        // Valeur exacte comptee dans l'arbre source du DS (96 dossiers sous
+        // packages/ds/src/components/), et non un plancher arrondi. Elle est
+        // pilotee par ROADMAP_OVERVIEW_STATS[0] dans
+        // packages/marketing/src/consts/roadmap.const.ts : les deux bougent
+        // ensemble ou ce test rougit.
+        await expect(page.locator('.roadmap-overview__value').first()).toHaveText('96')
     })
 
     test('les waves livrées contiennent des OrigamTable (.origam-table)', async ({ page }) => {
@@ -85,12 +90,19 @@ test.describe('roadmap — DS-first', () => {
         await expect(timeline).toHaveClass(/origam-timeline/)
     })
 
-    test('les phases de la timeline sont 3 items OrigamTimelineItem (.origam-timeline-item)', async ({ page }) => {
+    /*
+     * Le compte attendu etait 3 et ROADMAP_PHASES en contient 4 depuis
+     * l'ajout de la phase `ongoing` : ce test etait rouge sur develop avant
+     * la presente branche (verifie en A/B contre le serveur du depot
+     * principal, 2026-09-15). Les 4 rendus sont short-term, mid-term,
+     * long-term et ongoing.
+     */
+    test('les phases de la timeline sont 4 items OrigamTimelineItem (.origam-timeline-item)', async ({ page }) => {
         const timeline = page.locator('[data-cy="roadmap-timeline"]')
         await expect(timeline).toBeVisible()
         const phaseItems = page.locator('[data-cy^="roadmap-phase-"]')
         const count = await phaseItems.count()
-        expect(count).toBe(3)
+        expect(count).toBe(4)
     })
 
     test('les avatars dans la timeline sont des OrigamAvatar (.origam-avatar)', async ({ page }) => {

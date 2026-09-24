@@ -3,6 +3,7 @@ import { GLOBAL_STACK, ORIGAM_STACK_KEY, STACK_Z_INDEX_STEP } from '../../consts
 import type { IStackProvide } from '../../interfaces/Commons/stack.interface'
 
 import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
+import { tryOnScopeDispose } from '../../utils/Commons/commons.util'
 
 import { computed, inject, onScopeDispose, provide, reactive, readonly, Ref, shallowRef, toRaw, watchEffect } from 'vue'
 
@@ -61,11 +62,57 @@ export function useStack (
 
     const globalTop = shallowRef(true)
 
+    /*********************************************************
+     * Timer borne a la duree de vie du scope (#753 — hors releve)
+     *
+     * @description
+     * Absent de la liste du ticket, trouve par mon propre balayage. Meme
+     * forme que `useActivator` : le `watchEffect` s'arrete au dispose,
+     * mais le timer arme au dernier tick survivait et ecrivait
+     * `globalTop.value` sur un scope detruit.
+     ********************************************************/
+    /*********************************************************
+     * ⛔ `setTimeout` NU, jamais `window.setTimeout` — casse le SSR
+     *
+     * @description
+     * Ce `watchEffect` s'execute IMMEDIATEMENT au setup, donc aussi sur
+     * le serveur, ou `window` n'existe pas. Une premiere version de ce
+     * correctif ecrivait `window.clearTimeout(...)` : mesure CI, les deux
+     * jobs marketing echouaient sur
+     * `Timed out waiting 120000ms from config.webServer` SANS aucune
+     * erreur dans le log, parce que le serveur repondait `500` et que la
+     * sonde `webServer.url` de Playwright attend sur un 5xx. Cause reelle
+     * lue dans le corps de la reponse :
+     * `Cannot read properties of undefined (reading 'clearTimeout')`,
+     * stack `stack.composable.js:39`.
+     *
+     * @description
+     * Les globaux NUS existent dans Node ET dans le navigateur — c'est
+     * pour ca que le code d'origine les utilisait, et le prefixe
+     * `window.` etait un ajout gratuit de ma part. Ironie utile a garder :
+     * un ticket sur du code qui explose parce qu'un global a disparu, et
+     * dont le correctif a introduit un plantage en allant chercher un
+     * global qui n'existe pas cote serveur.
+     ********************************************************/
+    let topTimer: ReturnType<typeof setTimeout> | undefined
+
     watchEffect(() => {
         if (!createStackEntry.value) return
 
         const _isTop = GLOBAL_STACK.at(-1)?.[0] === vm.uid
-        setTimeout(() => globalTop.value = _isTop)
+
+        clearTimeout(topTimer)
+        topTimer = setTimeout(() => {
+            topTimer = undefined
+            globalTop.value = _isTop
+        })
+    })
+
+    tryOnScopeDispose(() => {
+        if (topTimer !== undefined) {
+            clearTimeout(topTimer)
+            topTimer = undefined
+        }
     })
 
     const localTop = computed(() => !stack.activeChildren.size)

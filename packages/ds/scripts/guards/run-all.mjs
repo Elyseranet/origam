@@ -29,6 +29,7 @@ const GUARDS = [
     'comment-format.mjs',
     'pnpm-tree-integrity.mjs',
     'token-var-channels.mjs',
+    'token-twins.mjs',
     'dead-handlers.mjs',
     'function-as-value.mjs',
     'id-forwarding.mjs',
@@ -36,7 +37,14 @@ const GUARDS = [
     'composable-setup-reads.mjs',
     'unemitted-declarations.mjs',
     'composables-doc-sync.mjs',
-    'prop-shadowing.mjs'
+    'prop-shadowing.mjs',
+    'class-fallthrough.mjs',
+    'md-table-cells.mjs',
+    'pnpm-script-exists.mjs',
+    'vrt-lockstep.mjs',
+    'unitless-zero-in-calc.mjs',
+    'ts-token-refs.mjs',
+    'theme-channel-confiscation.mjs'
 ]
 
 /*********************************************************

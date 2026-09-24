@@ -80,12 +80,15 @@
     --origam-btn-group---border-radius: var(--origam-btn---border-radius, var(--origam-radius---btn, 4px));
 
     /* ── OrigamCode — follow the active theme ────────────────────────────────
-       Style Dictionary bakes component tokens to literals at build time, so the
-       DS code surface keeps the base value (#fafafa) and ignores runtime theme
-       overrides of the semantic surfaces. Re-point the code tokens (base +
-       compact, used by the hero install pill) at the live semantic vars so the
-       code chrome follows each theme instead of staying grey. */
-    --origam-code---background-color: var(--origam-color__surface---sunken);
+       Re-point the code tokens (base + compact, used by the hero install
+       pill) at the live semantic vars so the code chrome follows each theme
+       instead of a single hardcoded grey.
+       #535 — background was `surface---sunken`: Shiki's fixed per-token
+       colours (packages/ds/src/consts/Code/code.const.ts) fail WCAG AA
+       against several brands' `sunken` tone. `surface---raised` is the
+       lightest surface every theme already defines and clears AA with
+       margin (measured worst case 4.77:1 light / 6.77:1 dark, #535 PR). */
+    --origam-code---background-color: var(--origam-color__surface---raised);
     --origam-code---color: var(--origam-color__text---primary);
     --origam-code---border-color: var(--origam-color__border---subtle);
     --origam-code__compact---background-color: var(--origam-color__surface---overlay);

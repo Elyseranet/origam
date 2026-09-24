@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="styleId"
 			:aria-label="label || undefined"
 			:class="otpInputFieldClasses"
 			:style="otpInputFieldStyles"
@@ -152,7 +153,7 @@
 		setup
 >
 
-	import { computed, nextTick, ref, StyleValue, useAttrs, useSlots, watch } from "vue"
+	import { computed, nextTick, onBeforeUnmount, ref, StyleValue, useAttrs, useSlots, watch } from "vue"
 	import OrigamField from '../Field/OrigamField.vue'
 	import OrigamOverlay from '../Overlay/OrigamOverlay.vue'
 	import OrigamProgress from '../Progress/OrigamProgress.vue'
@@ -196,6 +197,42 @@
 	const emits = defineEmits<IOtpInputFieldEmits>()
 
 	defineSlots<IOtpInputFieldSlots>()
+
+	/*********************************************************
+	 * Frames bornees a la duree de vie du composant (#753)
+	 *
+	 * @description
+	 * Les deux rAF de gestion du focus etaient nus. Leur corps
+	 * dereference `contentRef.value!` et `inputRef.value[index]` avec un
+	 * `!` — or apres le demontage `contentRef.value` vaut `null`, et
+	 * `focusChild(null, target)` n'a aucune raison de survivre a ca. La
+	 * frame est armee depuis un `keydown`, donc typiquement une touche
+	 * pressee au moment ou le champ disparait (validation d'OTP qui ferme
+	 * la modale) tombe pile dans la fenetre.
+	 ********************************************************/
+	let disposed = false
+	const frames = new Set<number>()
+
+	const scheduleFrame = (cb: () => void) => {
+		if (disposed) return
+
+		const id = requestAnimationFrame(() => {
+			frames.delete(id)
+
+			if (disposed) return
+
+			cb()
+		})
+
+		frames.add(id)
+	}
+
+	onBeforeUnmount(() => {
+		disposed = true
+
+		for (const id of frames) cancelAnimationFrame(id)
+		frames.clear()
+	})
 
 	const { filterProps } = useProps<IOtpInputFieldProps>(props)
 
@@ -402,13 +439,13 @@
 			if (focusIndex.value > 0 && e.key === 'Backspace') {
 				target = 'prev'
 			} else {
-				requestAnimationFrame(() => {
+				scheduleFrame(() => {
 					inputRef.value[index]?.select()
 				})
 			}
 		}
 
-		requestAnimationFrame(() => {
+		scheduleFrame(() => {
 			if (target != null) {
 				focusChild(contentRef.value!, target)
 			}
@@ -533,7 +570,38 @@
 			props.class
 		]
 	})
-	const { id: styleId, css, load, isLoaded, unload } = useStyle(otpInputFieldStyles)
+	/*********************************************************
+	 * styleId — l'id de la RACINE, celui du consommateur quand il en passe un
+	 *
+	 * @description
+	 * #790 — la racine ne portait AUCUN `:id`, et `useStyle` etait appele
+	 * sans son second argument. Deux defauts en un, mesures :
+	 *   1. l'`id` du consommateur n'atteignait aucun noeud — un
+	 *      `getElementById` ou un `aria-describedby` externe ne trouvait
+	 *      rien, sans le moindre avertissement ;
+	 *   2. la regle `#origam-otp-input-field-<uid> { … }` injectee dans
+	 *      <head> ne matchait aucun noeud — un style MORT et silencieux.
+	 *
+	 * @description
+	 * Les deux contraintes de #790 se satisfont d'un seul geste, et c'est
+	 * la raison pour laquelle l'arbitrage redoute par le ticket n'existe
+	 * pas : `useStyle` retourne l'id qu'il CIBLE. Lier ce meme id sur la
+	 * racine garantit par construction que la regle generee continue de
+	 * s'appliquer, que l'id vienne du consommateur ou du repli genere.
+	 *
+	 * @description
+	 * ⛔ Pas de doublon ici, contrairement a `OrigamInput` / `OrigamField`
+	 * (#421/#422) : `props.id` n'est porte par aucun autre noeud de cet
+	 * arbre — les six `<origam-field>` l'excluent via `filterProps`, et
+	 * seul `messagesId` en DERIVE (`<id>-messages`). Mesure a l'appui dans
+	 * la sonde de rayon de souffle. La racine est bien le noeud a designer :
+	 * elle porte deja `role` et `aria-label`, c'est l'element de groupe.
+	 *
+	 * @description
+	 * Le getter garde la lecture PARESSEUSE (ADR-005) : le resolveur de
+	 * theme ecrit dans `beforeCreate`, donc APRES `setup()`.
+	 ********************************************************/
+	const { id: styleId, css, load, isLoaded, unload } = useStyle(otpInputFieldStyles, () => props.id)
 
 
 	/*********************************************************
@@ -586,8 +654,17 @@
 
 		.origam-field {
 			height: 100%;
-			--origam-field---padding-start: 0;
-			--origam-field---padding-end: 0;
+			// ⛔ #800 — une cellule OTP n'a ni etiquette ni texte aligne au bord :
+			// son chiffre est CENTRE. Le plancher de degagement des coins d'
+			// `OrigamField` n'y protege de rien et decentre le chiffre de 2px
+			// (mesure Chromium : `padding-inline` 4px / 0px). On le neutralise
+			// explicitement. Jusqu'a #800 le meme rendu etait obtenu par un `0`
+			// SANS UNITE qui rendait la declaration invalide — le bon rendu
+			// reposait donc sur une erreur de parse, et serait tombe au premier
+			// refactor du `max()`.
+			--origam-field---corner-clearance: 0px;
+			--origam-field---padding-start: 0px;
+			--origam-field---padding-end: 0px;
 		}
 
 		&__divider {

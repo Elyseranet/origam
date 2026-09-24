@@ -238,6 +238,7 @@
 						:prepend-icon="iconHeart"
 						field="text-field"
 						:defaults="{ label: 'Email' }"
+						prepend-aria-label="Open details"
 						@click:prepend="logEvent('click:prepend', $event)"
 				/>
 			</div>
@@ -251,6 +252,7 @@
 						:append-icon="iconArrowRight"
 						field="text-field"
 						:defaults="{ label: 'Email' }"
+						append-aria-label="Show options"
 						@click:append="logEvent('click:append', $event)"
 				/>
 			</div>

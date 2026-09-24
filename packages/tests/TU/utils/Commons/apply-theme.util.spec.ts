@@ -111,7 +111,10 @@ describe('origam theme — vars carries the semantic + scale surface (a real the
         expect(vars['--origam-color__action--secondary---bgHover']).toBe('#e6e6e6')
         expect(vars['--origam-color__action--ghost---bg']).toBe('rgba(0, 0, 0, 0)')
         // Feedback (bg / fg / border / subtle).
-        expect(vars['--origam-color__feedback--success---bg']).toBe('#16a34a')
+        // #789 : `#16a34a` ne tenait que 3.30:1 avec le `fg` blanc du meme
+        // palier. Ramene a `green-700`, mesure a 5.02:1 en navigateur reel
+        // (packages/tests/e2e/token-intent-contrast.spec.ts).
+        expect(vars['--origam-color__feedback--success---bg']).toBe('#15803d')
         expect(vars['--origam-color__feedback--danger---bgSubtle']).toBe('rgba(220, 38, 38, 0.08)')
     })
 

@@ -17,7 +17,11 @@ export default {
     // dynamic import behind the SSR guard keeps origam out of the server pass.
     if (!import.meta.env.SSR) {
       const { createOrigam } = await import('@origam/origam')
-      app.use(createOrigam())
+      // ⛔ #360 (v3.0.0 harvest) — a bare `createOrigam()` installs no theme
+      // any more. The live component demos need `origamTheme`'s per-component
+      // prop defaults (ADR-005), so it is passed explicitly.
+      const { origamTheme } = await import('@origam/themes')
+      app.use(createOrigam({ themes: origamTheme }))
     }
   }
 } satisfies Theme

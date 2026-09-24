@@ -28,8 +28,7 @@
 					v-if="hasPrepend"
 					key="prepend"
 					class="origam-list-item__prepend"
-					:role="isPrependZoneFocusable ? 'button' : undefined"
-					:tabindex="isPrependZoneFocusable ? 0 : undefined"
+					v-bind="prependCommandAttrs"
 					@click="handleClickPrepend"
 					@keydown="handleKeydownPrepend"
 			>
@@ -92,8 +91,7 @@
 					v-if="hasAppend"
 					key="append"
 					class="origam-list-item__append"
-					:role="isAppendZoneFocusable ? 'button' : undefined"
-					:tabindex="isAppendZoneFocusable ? 0 : undefined"
+					v-bind="appendCommandAttrs"
 					@click="handleClickAppend"
 					@keydown="handleKeydownAppend"
 			>
@@ -127,6 +125,7 @@
 	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
+	import { useAccessibleCommand } from '../../composables/Commons/accessibleCommand.composable'
 	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
@@ -257,6 +256,30 @@
 	 ********************************************************/
 	const isPrependZoneFocusable = computed(() => isPrependClickable.value && !link.isLink.value)
 	const isAppendZoneFocusable = computed(() => isAppendClickable.value && !link.isLink.value)
+
+	/*********************************************************
+	 * prependCommandAttrs / appendCommandAttrs — #747
+	 *
+	 * @description
+	 * Built locally rather than taken from `useAdjacent`, because the gate
+	 * is `isXxxZoneFocusable` (link-aware) and not raw clickability. The
+	 * hook's own pair is never read here, so its lazy warning never fires
+	 * twice for the same zone.
+	 ********************************************************/
+	const prependCommandAttrs = useAccessibleCommand({
+		component: 'OrigamListItem',
+		zone: 'prepend',
+		prop: 'prependAriaLabel',
+		active: isPrependZoneFocusable,
+		label: () => props.prependAriaLabel
+	})
+	const appendCommandAttrs = useAccessibleCommand({
+		component: 'OrigamListItem',
+		zone: 'append',
+		prop: 'appendAriaLabel',
+		active: isAppendZoneFocusable,
+		label: () => props.appendAriaLabel
+	})
 
 	const isActive = computed(() => {
 		return isActiveFlag.value || link.isActive?.value || isSelected.value
@@ -578,6 +601,55 @@
 		&--slim {
 			--origam-list-item---padding-inline-start: var(--origam-list-item--slim---padding-inline-start, 8px);
 			--origam-list-item---padding-inline-end: var(--origam-list-item--slim---padding-inline-end, 8px);
+		}
+
+		/*********************************************************
+		 * Densité — la LIGNE fait autorité, la liste ne pose qu'un défaut
+		 *
+		 * @description
+		 * Ces trois règles REDÉCLARENT `--origam-list---density`, la même
+		 * custom property que `.origam-list--density-*` pose sur la liste
+		 * (`OrigamList.vue:453-463`), avec les mêmes valeurs. Elles
+		 * n'ajoutent PAS un second terme au `calc()` de la règle de base.
+		 *
+		 * @description
+		 * ⛔ CETTE DISTINCTION EST TOUT LE TICKET (#571). Mesuré en
+		 * Chromium, liste en `compact` :
+		 *
+		 *   redéclaration (ici)          min-height = 48px  — inchangé
+		 *   second terme dans le calc()  min-height = 40px  — -8px compté DEUX FOIS
+		 *
+		 * Une redéclaration écrit la même valeur sur un élément plus
+		 * proche : le `calc()` la lit une fois. C'est ce qui rend ce
+		 * câblage gratuit en rendu à l'intérieur d'une liste, et c'est la
+		 * promesse sur laquelle l'arbitrage a été rendu.
+		 *
+		 * @description
+		 * Ce que ça répare : une ligne SANS liste ancêtre n'avait aucune
+		 * densité — la variable ne venait que de la liste, donc la prop
+		 * rendait 56px quelle que soit sa valeur. Mesuré avant/après :
+		 * `density="compact"` hors liste passe de 56px à 48px.
+		 *
+		 * @description
+		 * ⚠️ `withDefaults` ne pose AUCUNE densité par défaut et
+		 * `useDensity` n'émet rien sur `null`/`undefined` : une ligne à
+		 * laquelle personne ne passe `density` n'émet donc aucune de ces
+		 * classes, et la valeur de la liste la traverse intacte. C'est ce
+		 * qui préserve `<origam-list density="comfortable">`. Le thème
+		 * livré posait `density: 'compact'` sur CHAQUE ligne, ce qui aurait
+		 * fait gagner la ligne contre la liste sur tout le catalogue —
+		 * l'entrée a été retirée de `origam.theme.ts` dans le même lot.
+		 ********************************************************/
+		&--density-default {
+			--origam-list---density: 0px;
+		}
+
+		&--density-compact {
+			--origam-list---density: -8px;
+		}
+
+		&--density-comfortable {
+			--origam-list---density: 8px;
 		}
 
 		// Row-height scale, aligned rung for rung on the control-height scale

@@ -1,6 +1,6 @@
 {
   "name": "origam",
-  "version": "2.17.1",
+  "version": "2.18.10",
   "type": "module",
   "description": "origam — a Vue 3 design system with multi-theme design tokens, CSS-first components and TypeScript types.",
   "keywords": [
@@ -82,7 +82,6 @@
     "./consts": "./dist/src/consts/index.js",
     "./types": "./dist/src/types/index.d.ts",
     "./interfaces": "./dist/src/interfaces/index.d.ts",
-    "./services": "./dist/src/services/index.js",
     "./utils": "./dist/src/utils/index.js",
     "./*": "./dist/src/*"
   },
@@ -99,6 +98,7 @@
     "type-check:canary": "node scripts/nounusedlocals-canary.mjs",
     "styles:build": "sass src/assets/scss/main.scss src/assets/css/main.css --no-source-map --style=compressed",
     "guards": "node scripts/guards/run-all.mjs",
+    "guards:self": "node scripts/guards/run-all-selftests.mjs",
     "guards:declarations": "node scripts/guards/no-declarations-in-vue.mjs",
     "guards:variant-css": "node scripts/guards/no-variant-css.mjs",
     "guards:instance-types": "node scripts/guards/instance-types.mjs",
@@ -107,6 +107,7 @@
     "guards:emits-completeness": "node scripts/guards/emits-completeness.mjs",
     "guards:no-usedefaults": "node scripts/guards/no-usedefaults-in-components.mjs",
     "guards:token-var-channels": "node scripts/guards/token-var-channels.mjs",
+    "guards:token-twins": "node scripts/guards/token-twins.mjs",
     "guards:dead-handlers": "node scripts/guards/dead-handlers.mjs",
     "guards:function-as-value": "node scripts/guards/function-as-value.mjs",
     "guards:id-forwarding": "node scripts/guards/id-forwarding.mjs",
@@ -116,6 +117,16 @@
     "guards:composables-doc": "node scripts/guards/composables-doc-sync.mjs",
     "guards:prop-shadowing": "node scripts/guards/prop-shadowing.mjs",
     "guards:prop-shadowing:self": "node scripts/guards/lib/prop-shadowing.selftest.mjs",
+    "guards:class-fallthrough": "node scripts/guards/class-fallthrough.mjs",
+    "guards:class-fallthrough:self": "node scripts/guards/lib/class-fallthrough.selftest.mjs",
+    "guards:id-reach:self": "node scripts/guards/lib/id-reach.selftest.mjs",
+    "guards:unconsumed-props:self": "node scripts/guards/lib/interface-resolution.selftest.mjs",
+    "guards:pnpm-script-exists": "node scripts/guards/pnpm-script-exists.mjs",
+    "guards:pnpm-script-exists:self": "node scripts/guards/lib/pnpm-invocations.selftest.mjs",
+    "guards:vrt-lockstep": "node scripts/guards/vrt-lockstep.mjs",
+    "guards:vrt-lockstep:self": "node scripts/guards/lib/vrt-lockstep.selftest.mjs",
+    "guards:ts-token-refs": "node scripts/guards/ts-token-refs.mjs",
+    "guards:ts-token-refs:self": "node scripts/guards/lib/ts-token-refs.selftest.mjs",
     "docs:composables": "node scripts/analysis/gen-composables-doc.mjs --write"
   },
   "dependencies": {

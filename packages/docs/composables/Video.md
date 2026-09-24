@@ -10,7 +10,7 @@
 ## `useVideoPlayer`
 
 ```ts
-export function useVideoPlayer (options: IUseVideoPlayerOptions =
+export function useVideoPlayer (options: IUseVideoPlayerOptions = {}): { videoRef: Ref<HTMLVideoElement | null>; state: IVideoPlayerState; methods: IVideoPlayerMethods }
 ```
 
 Headless video player composable. Composes the media-shared
@@ -29,11 +29,13 @@ clean: `<OrigamVideo>` is just a default skin on top of this state.
 **Exemple**
 
 ```ts
+```ts
 const videoRef = ref<HTMLVideoElement | null>(null)
 const { state, methods } = useVideoPlayer({ videoRef, autoplay: false })
 
 // template:
 // <video ref="videoRef" src="…" />
+```
 ```
 
 **Source** : `packages/ds/src/composables/Video/video-player.composable.ts`

@@ -2,6 +2,7 @@ import { computed, useSlots } from 'vue'
 import type { IAdjacentInnerProps } from '../../interfaces/Commons/adjacent.interface'
 import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 import { hasEvent } from '../../utils/Commons/commons.util'
+import { useAccessibleCommand } from './accessibleCommand.composable'
 import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
 
 /*********************************************************
@@ -19,11 +20,28 @@ import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
  * `click:appendInner` only ever fired from a literal DOM click inside
  * the zone, never from a keyboard activation of an ancestor. See the
  * long comment on `useAdjacent` for the full reasoning; mirrored here
- * for the inner zone. `isClearClickable` stays permanently true when
- * `hasClear` is — the clear zone only renders (`v-show="dirty"`) when
- * there is something to clear, so it is unconditionally actionable
- * whenever visible, unlike prependInner/appendInner whose
- * actionability depends on whether the consumer wired a listener.
+ * for the inner zone.
+ *
+ * @description
+ * ⛔ Cette banniere a longtemps decrit un `isClearClickable` — il
+ * n'existe NULLE PART dans le code, ni ici ni ailleurs dans
+ * `packages/ds/src` (verifie par recherche : la seule occurrence du depot
+ * etait cette phrase). Le generateur de `packages/docs/composables/Commons.md`
+ * recopie les bannieres, donc la doc publiee nommait un symbole
+ * inexistant — le defaut #493 exactement. La zone « clear » n'expose que
+ * `hasClear` et le handler `clickClear` ; elle ne passe par
+ * `useAccessibleCommand` ni par aucun test de clicabilite, parce qu'elle
+ * ne rend (`v-show="dirty"`) que lorsqu'il y a quelque chose a effacer.
+ *
+ * @description
+ * ⚠️ `hasPrependInner` / `hasAppendInner` / `hasClear` ne sont PAS des
+ * booleens : ils rendent la FONCTION de slot quand le slot correspondant
+ * existe (`slots.prependInner || …`), sinon le booleen du media, et
+ * `hasClear` rend `undefined` quand ni `clearable` ni le slot `clear` ne
+ * sont fournis. Les trois sont a consommer en verite/faussete, jamais en
+ * comparaison stricte a `true`/`false`. `useAdjacent`, lui, normalise
+ * (`!!slots.prepend || …`) et rend de vrais booleens — les deux jumeaux
+ * ne se comportent pas pareil sur ce point.
  ********************************************************/
 export function useAdjacentInner (props: IAdjacentInnerProps) {
     const vm = getCurrentInstance('OrigamAdjacentInner')
@@ -72,8 +90,48 @@ export function useAdjacentInner (props: IAdjacentInnerProps) {
         return hasEvent(vm.attrs, 'click:appendInner') || hasEvent(vm.vnode.props ?? {}, 'click:appendInner')
     })
 
+    /*********************************************************
+     * ownsKey — la zone ne confisque QUE ses propres touches
+     *
+     * @description
+     * ⛔ #614. `Entree` / `Espace` REMONTENT depuis tout ce que le
+     * consommateur rend dans le slot. Sans ce garde, la zone appelait
+     * `preventDefault()` sur un evenement qui ne lui appartient pas et
+     * tuait l'activation native d'un vrai `<button>` place dedans.
+     *
+     * @description
+     * Mesure Chromium, `<OrigamInlineEdit show-actions>` — le bouton
+     * Annuler est rendu dans `appendInner` — remontee du `keydown` de
+     * l'Espace, ancetre par ancetre :
+     *
+     *   button.origam-btn                defaultPrevented = false
+     *   div.origam-field__append-inner   defaultPrevented = TRUE   ← ici
+     *   div.origam-field                 defaultPrevented = true
+     *
+     * Aucun `click` n'etait donc synthetise : Annuler etait focalisable
+     * mais inactionnable a l'Espace.
+     *
+     * @description
+     * ⛔ Et ce n'est pas un cas de bord rare : `OrigamTextField` lie
+     * `@click:append-inner` a `<origam-field>` SANS CONDITION, donc
+     * `isAppendInnerClickable` vaut `true` sur CHAQUE champ texte du
+     * catalogue, que le consommateur ait cable quoi que ce soit ou non.
+     * C'est aussi ce qui donnait a la zone `role="button"` + `tabindex`
+     * partout avant #747 — d'ou le `nested-interactive` de #614, que
+     * #747 a fait disparaitre en refusant un role qu'il ne peut nommer.
+     * Le role est parti ; l'interception clavier, elle, etait restee.
+     *
+     * @description
+     * `e.target === e.currentTarget` est le test exact : quand la zone
+     * est elle-meme le controle focalise (role + tabindex emis par
+     * `useAccessibleCommand`), c'est elle la cible. Des qu'un descendant
+     * focalisable a le focus, la touche lui appartient.
+     ********************************************************/
+    const ownsKey = (e: KeyboardEvent) => e.target === e.currentTarget
+
     const onKeydownPrependInner = (e: KeyboardEvent) => {
         if (!isPrependInnerClickable.value) return
+        if (!ownsKey(e)) return
         if (e.key !== KEYBOARD_VALUES.ENTER && e.key !== KEYBOARD_VALUES.EMPTY) return
 
         e.preventDefault()
@@ -81,13 +139,41 @@ export function useAdjacentInner (props: IAdjacentInnerProps) {
     }
     const onKeydownAppendInner = (e: KeyboardEvent) => {
         if (!isAppendInnerClickable.value) return
+        if (!ownsKey(e)) return
         if (e.key !== KEYBOARD_VALUES.ENTER && e.key !== KEYBOARD_VALUES.EMPTY) return
 
         e.preventDefault()
         onClickAppendInner(e)
     }
 
+    /*********************************************************
+     * prependInnerCommandAttrs / appendInnerCommandAttrs
+     *
+     * @description
+     * ⛔ #747 — mirror of `useAdjacent`'s pair for the INNER zone. `OrigamField`
+     * bound `:role="isPrependInnerClickable ? 'button' : undefined"` by hand and
+     * had no channel for a name, so every field family member (TextField,
+     * NumberField, OtpInputField, DatePickerField…) shipped an anonymous ARIA
+     * button the moment `click:prependInner` was wired.
+     ********************************************************/
+    const prependInnerCommandAttrs = useAccessibleCommand({
+        component: vm.type?.__name ?? 'Origam',
+        zone: 'prependInner',
+        prop: 'prependInnerAriaLabel',
+        active: isPrependInnerClickable,
+        label: () => props.prependInnerAriaLabel
+    })
+    const appendInnerCommandAttrs = useAccessibleCommand({
+        component: vm.type?.__name ?? 'Origam',
+        zone: 'appendInner',
+        prop: 'appendInnerAriaLabel',
+        active: isAppendInnerClickable,
+        label: () => props.appendInnerAriaLabel
+    })
+
     return {
+        prependInnerCommandAttrs,
+        appendInnerCommandAttrs,
         hasPrependInnerMedia,
         hasPrependInner,
         hasAppendInnerMedia,

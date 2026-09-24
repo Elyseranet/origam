@@ -12,6 +12,15 @@ export interface IComponentLivePreviewProps {
     doc?: IComponentDoc | null
     /** Props éditées par l'utilisateur, fusionnées AU-DESSUS de l'adaptateur. */
     userProps?: Record<string, unknown>
+    /**
+     * Valeurs de contrôle auxquelles l'utilisateur n'a PAS touché, fusionnées
+     * SOUS l'adaptateur.
+     *
+     * ⛔ Ce sont les défauts extraits du DS, pas un choix : les mélanger à
+     * `userProps` obligeait à filtrer `''` et `false` avant la fusion, et donc
+     * à rendre toute prop booléenne impossible à décocher (#739).
+     */
+    uneditedProps?: Record<string, unknown>
     /** Contenu texte du slot, prioritaire sur celui de l'adaptateur. */
     slotContent?: string
     /** `aria-label` posé sur l'instance rendue. */

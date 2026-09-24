@@ -32,8 +32,12 @@ export const NAV_SECTIONS: INavSection[] = [
             { i18nKey: 'nav.interfaces', i18nFallback: 'Interfaces', href: '/interfaces' },
             { i18nKey: 'nav.utils', i18nFallback: 'Utils', href: '/utils' },
             { i18nKey: 'nav.consts', i18nFallback: 'Constants', href: '/consts' },
-            { i18nKey: 'nav.stories', i18nFallback: 'Stories', href: '/stories/' },
-            { i18nKey: 'nav.docs', i18nFallback: 'Docs', href: '/docs/' }
+            // ⛔ `external` — Stories (Histoire) and Docs (VitePress) are SEPARATE
+            // static sites served alongside the app, not routes of it. They must
+            // NOT go through localePath(): `/fr/stories/` is not a page and 404s
+            // (measured). The flag keeps them on a plain <a>. See #760.
+            { i18nKey: 'nav.stories', i18nFallback: 'Stories', href: '/stories/', external: true },
+            { i18nKey: 'nav.docs', i18nFallback: 'Docs', href: '/docs/', external: true }
         ]
     }
 ]
@@ -42,13 +46,6 @@ export const NAV_THEMING_LINK: INavLink = {
     i18nKey: 'nav.theming',
     i18nFallback: 'Theming',
     href: '/theming'
-}
-
-export const GITHUB_LINK: INavLink = {
-    i18nKey: 'nav.github',
-    i18nFallback: 'GitHub',
-    href: MARKETING_DEFAULTS.githubRepo,
-    external: true
 }
 
 export const DISCORD_LINK = 'https://discord.gg/origam'
@@ -70,7 +67,6 @@ export const FOOTER_COLUMNS: IFooterColumn[] = [
         titleFallback: 'Resources',
         links: [
             { i18nKey: 'footer.resources.github', i18nFallback: 'GitHub', href: MARKETING_DEFAULTS.githubRepo, external: true },
-            { i18nKey: 'footer.resources.community', i18nFallback: 'Community', href: `${MARKETING_DEFAULTS.githubRepo}/discussions`, external: true },
             { i18nKey: 'footer.resources.discord', i18nFallback: 'Discord', href: DISCORD_LINK, external: true },
             { i18nKey: 'footer.resources.discussions', i18nFallback: 'Discussions', href: `${MARKETING_DEFAULTS.githubRepo}/discussions`, external: true },
             { i18nKey: 'footer.resources.twitter', i18nFallback: 'Twitter', href: TWITTER_LINK, external: true },

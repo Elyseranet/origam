@@ -20,8 +20,7 @@
         <div
           key="prepend"
           class="origam-alert__prepend"
-          :role="isPrependClickable ? 'button' : undefined"
-          :tabindex="isPrependClickable ? 0 : undefined"
+          v-bind="prependCommandAttrs"
           @click="handleClickPrepend"
           @keydown="handleKeydownPrepend"
         >
@@ -71,8 +70,7 @@
         <div
           key="append"
           class="origam-alert__append"
-          :role="isAppendClickable ? 'button' : undefined"
-          :tabindex="isAppendClickable ? 0 : undefined"
+          v-bind="appendCommandAttrs"
           @click="handleClickAppend"
           @keydown="handleKeydownAppend"
         >
@@ -231,8 +229,8 @@
     onClickAppend: handleClickAppend,
     onKeydownPrepend: handleKeydownPrepend,
     onKeydownAppend: handleKeydownAppend,
-    isPrependClickable,
-    isAppendClickable,
+    prependCommandAttrs,
+    appendCommandAttrs,
     hasAppend,
     hasPrepend
   } = useAdjacent(props, prependIcon, appendIcon)
@@ -451,9 +449,6 @@
       --origam-alert---density: -8px;
     }
 
-    &--density-default {
-      --origam-alert---density: 0px;
-    }
 
     &--density-compact {
       --origam-alert---density: 8px;

@@ -26,6 +26,7 @@
 import { readdirSync, readFileSync, statSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { signatureAt } from './lib/signature.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const REPO = path.resolve(HERE, '../../../..')
@@ -42,6 +43,82 @@ const walk = (dir, filter, acc = []) => {
 
     return acc
 }
+
+/**
+ * Pose une fence ```ts autour du corps de chaque `@example`.
+ *
+ * ⛔ VitePress compile le markdown comme un SFC Vue. Un exemple emis EN CLAIR
+ * au milieu de la prose n'est pas du texte : c'est du template. Mesure (#605,
+ * defaut 2) — `useCssSupportClient` documente son usage avec
+ * `<div v-else>…</div>`, que le compilateur a pris pour une VRAIE directive et
+ * a rejete avec « v-else has no adjacent v-if » ; ailleurs, `ref<TOrigamChild>()`
+ * a ete lu comme une balise HTML. Dans les deux cas le build entier tombait.
+ *
+ * ⛔ Ce defaut avait ete corrige A LA MAIN dans `Commons.md` (e7f89f0a) sans
+ * toucher au generateur : toute regeneration le reintroduisait. Mesure faite
+ * avant ce correctif — regenerer sur `develop` retirait la fence posee a la
+ * main. C'est la raison pour laquelle le correctif vit ICI.
+ */
+const fenceExamples = (text) => {
+    const out = []
+    let buf = null
+
+    const flush = () => {
+        if (!buf) return
+        while (buf.length && !buf[0].trim()) buf.shift()
+        while (buf.length && !buf[buf.length - 1].trim()) buf.pop()
+        if (buf.length) {
+            // La banniere indente le corps de l'exemple ; le laisser tel quel
+            // en ferait un bloc indente IMBRIQUE dans la fence.
+            const pad = Math.min(...buf.filter((l) => l.trim()).map((l) => l.match(/^ */)[0].length))
+            out.push('```ts', ...buf.map((l) => l.slice(pad)), '```')
+        }
+        buf = null
+    }
+
+    for (const line of text.split('\n')) {
+        const trimmed = line.trim()
+        if (/^@example\b/.test(trimmed)) {
+            flush()
+            out.push('', '**Exemple**', '')
+            buf = []
+            continue
+        }
+        // Une autre balise `@xxx` clot l'exemple en cours.
+        if (buf && /^@[a-z]/i.test(trimmed)) {
+            flush()
+            out.push(line)
+            continue
+        }
+        if (buf) buf.push(line)
+        else out.push(line)
+    }
+    flush()
+
+    return out.join('\n')
+}
+
+/**
+ * Neutralise les moustaches Vue hors des blocs de code fences.
+ *
+ * ⛔ `{{ … }}` est une INTERPOLATION pour le compilateur VitePress, y compris
+ * dans du code INLINE entre simples backticks — seules les fences sont
+ * protegees par `v-pre`. Mesure (#605, defaut 1) : la description de
+ * `useLoader` contient `loading={{ type: 'line', modelValue: 42 }}`, sur
+ * lequel le parseur tombait avec « Error parsing JavaScript expression: Did
+ * not expect a type annotation here », en pointant une position dans le SFC
+ * GENERE (742:18) et non dans la source — d'ou une bisection sur 2360 lignes.
+ *
+ * ⛔ Corrige a la main dans `Commons.md` (e7f89f0a), pas dans le generateur :
+ * regenerer reintroduisait les moustaches brutes. Mesure faite avant ce
+ * correctif.
+ */
+const escapeMustaches = (md) => md
+    .split(/(```[\s\S]*?```)/g)
+    .map((chunk, i) => (i % 2 === 1
+        ? chunk
+        : chunk.replace(/\{\{/g, '&#123;&#123;').replace(/\}\}/g, '&#125;&#125;')))
+    .join('')
 
 /** Les lignes `@description` de la banniere qui precede immediatement le symbole. */
 const descriptionAbove = (source, index) => {
@@ -68,12 +145,15 @@ const descriptionAbove = (source, index) => {
     // `bucketFill`, dont l'algorithme en 4 etapes devenait une phrase de six
     // lignes). Markdown recolle les retours simples de toute facon ; ceux qui
     // portent une structure survivent.
-    const clean = (chunk) => chunk
+    const stripStars = (chunk) => chunk
         .split('\n')
         .map((l) => l.replace(/^\s*\*+\s?/, '').trimEnd())
         .filter((l, i, arr) => !/^\*+$/.test(l) && !(l === '' && arr[i - 1] === ''))
         .join('\n')
-        .replace(/\n@example\s*/g, '\n\n**Exemple**\n\n')
+
+    // Ordre impose : on fence AVANT d'echapper, sinon `escapeMustaches` ne sait
+    // pas encore quelles portions sont du code protege par `v-pre`.
+    const clean = (chunk) => escapeMustaches(fenceExamples(stripStars(chunk)))
         .replace(/\n{3,}/g, '\n\n')
         .trim()
 
@@ -100,15 +180,6 @@ const descriptionAbove = (source, index) => {
     return prose ? [ prose ] : null
 }
 
-/** La signature, telle qu'elle est ecrite — jamais reconstruite. */
-const signatureAt = (source, index) => {
-    const rest = source.slice(index)
-    const arrow = rest.indexOf('=>')
-    const brace = rest.indexOf('{')
-    const end = arrow > -1 && (brace === -1 || arrow < brace) ? arrow : brace
-    return rest.slice(0, end === -1 ? 200 : end).replace(/\s+/g, ' ').trim()
-}
-
 const files = walk(COMPOSABLES, (f) => f.endsWith('.composable.ts'))
 const consumersRoot = walk(SRC, (f) => /\.(vue|ts)$/.test(f) && !f.includes('/composables/'))
 const consumerBlobs = consumersRoot.map((f) => [ path.relative(SRC, f), readFileSync(f, 'utf8') ])
@@ -119,8 +190,11 @@ for (const file of files) {
     const source = readFileSync(file, 'utf8')
     const domain = path.relative(COMPOSABLES, file).split(path.sep)[0]
 
-    for (const m of source.matchAll(/^export (?:function|const) ([A-Za-z0-9_]+)/gm)) {
-        const name = m[1]
+    // ⛔ Le groupe `kind` n'est pas decoratif : `function` et `const` ne se
+    // terminent pas au meme endroit (cf. `signatureAt`).
+    for (const m of source.matchAll(/^export (function|const) ([A-Za-z0-9_]+)/gm)) {
+        const kind = m[1]
+        const name = m[2]
         const consumers = consumerBlobs
             .filter(([ , blob ]) => new RegExp(`\\b${ name }\\b`).test(blob))
             .map(([ rel ]) => rel)
@@ -129,7 +203,7 @@ for (const file of files) {
         byDomain.get(domain).push({
             name,
             file: path.relative(REPO, file),
-            signature: signatureAt(source, m.index),
+            signature: signatureAt(source, m.index, kind),
             descriptions: descriptionAbove(source, m.index),
             consumers
         })

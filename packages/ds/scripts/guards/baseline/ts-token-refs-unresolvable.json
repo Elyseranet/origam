@@ -1,0 +1,8 @@
+[
+    "packages/ds/src/components/Timeline/OrigamTimelineItem.vue::`var(--origam-color__feedback--${intent}---bg)`",
+    "packages/ds/src/components/Timeline/OrigamTimelineItem.vue::`var(--origam-color__feedback--${intent}---fg)`",
+    "packages/ds/src/composables/Commons/elevation.composable.ts::`var(${SHADOW_TOKEN_PREFIX}${rung}${fallback ? `, ${fallback}` : ''})`",
+    "packages/ds/src/composables/Commons/typography.composable.ts::`var(--origam-${tokenGroup}---${value})`",
+    "packages/ds/src/utils/Commons/gradient.util.ts::`var(--origam-color__${intentTokenBase(color)}---bg)`",
+    "packages/ds/src/utils/Commons/gradient.util.ts::`var(--origam-gradient---${slug})`"
+]

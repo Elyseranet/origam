@@ -15,6 +15,10 @@
  */
 
 import { expect, test } from '@playwright/test'
+import { requireMarketingDb } from './_support/require-marketing-db'
+
+// #835 — voir marketing-theme-builder.spec.ts pour le contexte complet.
+requireMarketingDb()
 
 test.describe('Types — catalogue /types', () => {
     test.beforeEach(async ({ page }) => {

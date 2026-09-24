@@ -129,16 +129,38 @@ export function useValidation (props: IValidationProps, name = getCurrentInstanc
         form?.update(uid.value, isValid.value, errorMessages.value)
     })
 
+    /*********************************************************
+     *  MODE `input` — le report au blur ne vaut QUE pendant la saisie
+     *
+     *  @description
+     *  Vider un champ met son modele a une valeur nullish. Tant que le
+     *  champ a le FOCUS, relancer les regles immediatement ferait crier
+     *  « requis » au milieu de la frappe : la validation est donc differee
+     *  au blur (branche `props.focused`). Ce report est delibere et sain.
+     *
+     *  @description
+     *  ⛔ Il n'a en revanche AUCUN sens quand le champ n'a PAS le focus :
+     *  personne n'est en train de saisir. C'est le cas d'un effacement
+     *  PROGRAMMATIQUE — parent qui remet le `v-model` a `null`, effacement
+     *  externe, chargement de donnees. Une troisieme branche vide laissait
+     *  alors l'etat de validation PERIME, mesure dans les deux sens (#702) :
+     *  une regle `required` ne se redeclenchait jamais (le champ vide
+     *  restait `isValid: true`), et un message d'erreur affiche avant
+     *  l'effacement restait a l'ecran alors que la regle repassait sur
+     *  `null`. Le `form?.update()` du `<origam-form>` parent n'etait pas
+     *  notifie non plus — l'agregat du formulaire restait valide sur un
+     *  champ vide.
+     ********************************************************/
     useToggleScope(() => validateOn.value.input, () => {
         watch(validationModel, () => {
-            if (validationModel.value != null) {
-                validate()
-            } else if (props.focused) {
+            if (validationModel.value == null && props.focused) {
                 const unwatch = watch(() => props.focused, val => {
                     if (!val) validate()
 
                     unwatch()
                 })
+            } else {
+                validate()
             }
         })
     })

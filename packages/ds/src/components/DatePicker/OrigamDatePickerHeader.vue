@@ -12,8 +12,7 @@
 			<div
 					key="prepend"
 					class="origam-date-picker-header__prepend"
-					:role="isPrependClickable ? 'button' : undefined"
-					:tabindex="isPrependClickable ? 0 : undefined"
+					v-bind="prependCommandAttrs"
 					@click="handleClickPrepend"
 					@keydown="handleKeydownPrepend"
 			>
@@ -54,8 +53,7 @@
 			<div
 					key="append"
 					class="origam-date-picker-header__append"
-					:role="isAppendClickable ? 'button' : undefined"
-					:tabindex="isAppendClickable ? 0 : undefined"
+					v-bind="appendCommandAttrs"
 					@click="handleClickAppend"
 					@keydown="handleKeydownAppend"
 			>
@@ -156,8 +154,8 @@
 		onClickAppend: handleClickAppend,
 		onKeydownPrepend: handleKeydownPrepend,
 		onKeydownAppend: handleKeydownAppend,
-		isPrependClickable,
-		isAppendClickable,
+		prependCommandAttrs,
+		appendCommandAttrs,
 		hasAppend,
 		hasPrepend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))

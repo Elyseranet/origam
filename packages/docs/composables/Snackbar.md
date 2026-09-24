@@ -35,7 +35,7 @@ manuel.
 ## `useSnackbarGroup`
 
 ```ts
-export function useSnackbarGroup (options: IUseSnackbarGroupOptions =
+export function useSnackbarGroup (options: IUseSnackbarGroupOptions = {}): IUseSnackbarGroupReturn
 ```
 
 Public API. Returns an interface to push / pop items

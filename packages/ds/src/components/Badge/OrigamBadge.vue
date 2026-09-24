@@ -29,8 +29,7 @@
 								<span
 										key="prepend"
 										class="origam-badge__prepend"
-										:role="isPrependClickable ? 'button' : undefined"
-										:tabindex="isPrependClickable ? 0 : undefined"
+										v-bind="prependCommandAttrs"
 										@click="handleClickPrepend"
 										@keydown="handleKeydownPrepend"
 								>
@@ -63,8 +62,7 @@
 								<span
 										key="append"
 										class="origam-badge__append"
-										:role="isAppendClickable ? 'button' : undefined"
-										:tabindex="isAppendClickable ? 0 : undefined"
+										v-bind="appendCommandAttrs"
 										@click="handleClickAppend"
 										@keydown="handleKeydownAppend"
 								>
@@ -180,8 +178,8 @@
 		onClickAppend: handleClickAppend,
 		onKeydownPrepend: handleKeydownPrepend,
 		onKeydownAppend: handleKeydownAppend,
-		isPrependClickable,
-		isAppendClickable,
+		prependCommandAttrs,
+		appendCommandAttrs,
 		hasAppend,
 		hasPrepend
 	} = useAdjacent(props, prependIcon, appendIcon)

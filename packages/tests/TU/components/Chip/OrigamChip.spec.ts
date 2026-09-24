@@ -21,6 +21,7 @@ import { nextTick } from 'vue'
 
 import OrigamChip from '@origam/components/Chip/OrigamChip.vue'
 import { createOrigam } from '@origam/origam'
+import { origamTheme } from '@origam/themes'
 
 Object.defineProperty(window, 'matchMedia', {
     writable: true,
@@ -323,7 +324,14 @@ describe('OrigamChip — size', () => {
         // The default origam theme sets `'origam-chip': { size: 'small' }` (derived
         // from the marketing's common chip usage), so a chip with no explicit size
         // inherits 'small' via useDefaults — proving the theme's component defaults apply.
-        const wrapper = mountChip()
+        //
+        // ⛔ #360 (v3.0.0 harvest) — `createOrigam()` no longer installs this theme
+        // implicitly (unlike the rest of this file's `mountChip()` calls, which
+        // deliberately mount bare to test the component's OWN hardcoded defaults),
+        // so it is passed explicitly here, the one test in this file that needs it.
+        const wrapper = mount(OrigamChip, {
+            global: { plugins: [createOrigam({ themes: origamTheme })] }
+        })
         expect(wrapper.find('.origam-chip').classes().some(c => c.includes('size-small'))).toBe(true)
     })
 

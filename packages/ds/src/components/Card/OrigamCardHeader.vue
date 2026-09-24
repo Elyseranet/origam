@@ -16,8 +16,7 @@
 					v-if="hasPrepend"
 					key="prepend"
 					class="origam-card-header__prepend"
-					:role="isPrependClickable ? 'button' : undefined"
-					:tabindex="isPrependClickable ? 0 : undefined"
+					v-bind="prependCommandAttrs"
 					@click="handleClickPrepend"
 					@keydown="handleKeydownPrepend"
 			>
@@ -75,8 +74,7 @@
 					v-if="hasAppend"
 					key="append"
 					class="origam-card-header__append"
-					:role="isAppendClickable ? 'button' : undefined"
-					:tabindex="isAppendClickable ? 0 : undefined"
+					v-bind="appendCommandAttrs"
 					@click="handleClickAppend"
 					@keydown="handleKeydownAppend"
 			>
@@ -190,8 +188,8 @@
 		onClickAppend: handleClickAppend,
 		onKeydownPrepend: handleKeydownPrepend,
 		onKeydownAppend: handleKeydownAppend,
-		isPrependClickable,
-		isAppendClickable,
+		prependCommandAttrs,
+		appendCommandAttrs,
 		hasPrepend,
 		hasAppend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
@@ -519,7 +517,7 @@
 		--origam-card-header__title---line-height: 1.5rem;
 		--origam-card-header__title---text-transform: none;
 
-		--origam-card-header__subtitle---color: var(--origam-color__text---secondary);
+		--origam-card-header__subtitle---color: currentColor;
 		--origam-card-header__subtitle---display: -webkit-box;
 		--origam-card-header__subtitle---overflow: hidden;
 

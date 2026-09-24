@@ -57,8 +57,18 @@ function isUtilityRounded (value: unknown): value is string {
  *   2. per-corner `roundedTopLeft` / `roundedTopRight` /
  *      `roundedBottomLeft` / `roundedBottomRight`
  *
- * So `roundedTopLeft="0"` beats `rounded="lg"` for the top-left corner
+ * So `roundedTopLeft="0px"` beats `rounded="lg"` for the top-left corner
  * only; the other three keep the `lg` rung.
+ *
+ * ⚠️ This example used to read `roundedTopLeft="0"`, and that form does
+ * NOT work — measured: `{rounded:'lg', roundedTopLeft:'0'}` emits the
+ * shorthand declaration ALONE. The bare string `"0"` is neither a utility
+ * rung, nor a named variant, nor a match for `CUSTOM_BORDER_RADIUS_REGEX`
+ * (which requires a unit), so `resolveRoundedCornerValue` returns `null`
+ * and the corner is silently skipped. `0` (the NUMBER) and `"0px"` both
+ * resolve to `0px`. In a template `roundedTopLeft="0"` is a string, which
+ * is exactly the failing form — bind `:rounded-top-left="0"` or write
+ * `"0px"`.
  *
  * ⚠️ The per-corner props are only reachable through the PROPS-OBJECT
  * overload. The `Ref` overload carries a single scalar — the `rounded`

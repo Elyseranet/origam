@@ -22,6 +22,17 @@ import { convertToUnit, toKebabCase } from '../../utils/Commons/commons.util'
  * inline, jamais de classe utilitaire — c'est le composable de reference a
  * `extends`-er (cf. CLAUDE.md racine) plutot que de parser `height`/`width`
  * a la main dans un nouveau composant.
+ *
+ * @description
+ * ⛔ La garde d'emission est `if (props[dimension])` — une garde de
+ * VERACITE, pas un test de presence. Toute valeur falsy est donc omise
+ * SILENCIEUSEMENT, y compris celles que `convertToUnit` sait pourtant
+ * traduire : mesure — `height={0}` n'emet RIEN (alors que
+ * `convertToUnit(0)` rend `"0px"`), et `height={NaN}` non plus. Pour une
+ * dimension nulle, passer la chaine `"0px"`. Symetriquement, `Infinity`
+ * est truthy et traverse la garde : `convertToUnit` rend `undefined` et la
+ * declaration emise est la chaine `"height: undefined"` — invalide, donc
+ * ignoree par le navigateur.
  ********************************************************/
 export function useDimension (props: IDimensionProps) {
     const dimensionStyles = computed(() => {

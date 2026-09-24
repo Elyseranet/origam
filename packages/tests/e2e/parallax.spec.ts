@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 import { toggleHstCheckbox } from './_support/histoire-controls'
+import { readSettledStyle, waitForOwnAnimationsToLand } from './_support/settled-style'
 
 /**
  * Probe spec for OrigamParallax runtime behaviour. Covers the three legacy
@@ -57,11 +58,17 @@ test.describe('OrigamParallax — legacy element runtime', () => {
                 await new Promise(r => setTimeout(r, 120))
             }
         })
-        await page.waitForTimeout(400)
-
-        const finalTransform = await element.evaluate((el) => getComputedStyle(el).transform)
-        console.log('[move] initial:', initialTransform, '→ final:', finalTransform)
-        expect(finalTransform).not.toBe(initialTransform)
+        // #783 — was `waitForTimeout(400)` then a single read. The translate is
+        // produced by a rAF loop whose easing duration comes from the variant,
+        // so no fixed offset is correct for it: too early reads the resting
+        // transform and reddens on working code. Wait on the STATE (the
+        // transform differs from the one captured before the gesture); the
+        // verdict is the same whether the loop settles in 5 ms or 2 s, and it
+        // still goes red when the element never moves at all.
+        await expect.poll(
+            async () => element.evaluate((el) => getComputedStyle(el).transform),
+            { timeout: 8000, message: 'event="move" should translate the element' }
+        ).not.toBe(initialTransform)
     })
 
     test('event="scroll" — window scroll translates the element', async ({ page }) => {
@@ -83,11 +90,12 @@ test.describe('OrigamParallax — legacy element runtime', () => {
                 await new Promise(r => setTimeout(r, 120))
             }
         })
-        await page.waitForTimeout(400)
-
-        const finalTransform = await element.evaluate((el) => getComputedStyle(el).transform)
-        console.log('[scroll] initial:', initialTransform, '→ final:', finalTransform)
-        expect(finalTransform).not.toBe(initialTransform)
+        // #783 — same substitution as the `move` case above: wait on the state,
+        // never on a duration.
+        await expect.poll(
+            async () => element.evaluate((el) => getComputedStyle(el).transform),
+            { timeout: 8000, message: 'event="scroll" should translate the element' }
+        ).not.toBe(initialTransform)
     })
 
     test('event="orientation" — deviceorientation translates the element', async ({ page }) => {
@@ -111,11 +119,11 @@ test.describe('OrigamParallax — legacy element runtime', () => {
                 await new Promise(r => setTimeout(r, 120))
             }
         })
-        await page.waitForTimeout(400)
-
-        const finalTransform = await element.evaluate((el) => getComputedStyle(el).transform)
-        console.log('[orientation] initial:', initialTransform, '→ final:', finalTransform)
-        expect(finalTransform).not.toBe(initialTransform)
+        // #783 — same substitution as the two cases above.
+        await expect.poll(
+            async () => element.evaluate((el) => getComputedStyle(el).transform),
+            { timeout: 8000, message: 'event="orientation" should translate the element' }
+        ).not.toBe(initialTransform)
     })
 })
 
@@ -146,9 +154,16 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
             win.dispatchEvent(new Event('scroll'))
             await new Promise(r => setTimeout(r, 200))
         })
-        await page.waitForTimeout(300)
-
-        const initial = await layers.evaluateAll((els) => els.map((el) => getComputedStyle(el).transform))
+        // #783 — was `waitForTimeout(300)` before capturing the baseline. The
+        // priming scroll above leaves the SPRING rAF loop still easing back to
+        // 0, so a snapshot taken at a fixed offset is a MOVING value: the
+        // "initial" it records is one the layers will leave on their own a few
+        // frames later, and the change asserted at the end is then partly the
+        // baseline's own drift. Wait for the transforms to STOP moving instead.
+        const initial = await readSettledStyle(
+            () => layers.evaluateAll((els) => els.map((el) => getComputedStyle(el).transform)),
+            { stableSamples: 4, message: 'layer transforms after the priming scroll' }
+        )
 
         await sandbox.locator('body').evaluate(async () => {
             const win = window
@@ -158,13 +173,17 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
                 await new Promise(r => setTimeout(r, 120))
             }
         })
-        await page.waitForTimeout(500)
+        // #783 — was `waitForTimeout(500)` then one read. Wait on the state: at
+        // least one layer's transform has to differ from the settled baseline.
+        // Red when no layer ever moves, which is the defect this test owns.
+        await expect.poll(
+            async () => {
+                const final = await layers.evaluateAll((els) => els.map((el) => getComputedStyle(el).transform))
 
-        const final = await layers.evaluateAll((els) => els.map((el) => getComputedStyle(el).transform))
-        console.log('[multi-layer] initial:', initial, '→ final:', final)
-        // At least one layer must have changed transform (JS rAF path with SPRING easing).
-        const someMoved = final.some((t, i) => t !== initial[i])
-        expect(someMoved).toBeTruthy()
+                return final.some((t, i) => t !== initial[i])
+            },
+            { timeout: 8000, message: 'at least one layer should translate on scroll (rAF/SPRING path)' }
+        ).toBe(true)
     })
 
     test('direction="horizontal" — translateX changes (not translateY)', async ({ page }) => {
@@ -299,7 +318,9 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
         // which is what makes this unconditional click safe — HstCheckbox exposes
         // no `aria-checked` to read back (see _support/histoire-controls.ts).
         await toggleHstCheckbox(page, 'Disabled')
-        await page.waitForTimeout(300)
+        // #783 — the `waitForTimeout(300)` that stood here was dead time: the
+        // assertion under it already retries until the class lands. Removing it
+        // does not weaken the gate, it only stops paying 300 ms for nothing.
         await expect(sandbox.locator('.origam-parallax--disabled')).toHaveCount(1)
 
         const initial = await element.evaluate((el) => getComputedStyle(el).transform)
@@ -318,12 +339,30 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
                 await new Promise(r => setTimeout(r, 120))
             }
         })
-        await page.waitForTimeout(400)
+        // #783 — was `waitForTimeout(400)` then one read. This assertion is
+        // NEGATIVE ("nothing moved"), so there is no state to poll for: a
+        // polled equality against `initial` is satisfied at t=0, before the
+        // component has had any chance to react. The wait has to stay — but it
+        // has to be long enough that a defect WOULD have shown, and 400 ms was
+        // not: this Variant runs `duration: 1000` (documented by the companion
+        // test below), so the spec was sampling less than half-way into the
+        // element's own transition. Derive it from the DOM instead of guessing,
+        // then require the value to have SETTLED before comparing.
+        const ownAnimationMs = await waitForOwnAnimationsToLand(element)
 
-        const final = await element.evaluate((el) => getComputedStyle(el).transform)
-        console.log('[disabled/move] initial:', initial, '→ final:', final)
+        const final = await readSettledStyle(
+            () => element.evaluate((el) => getComputedStyle(el).transform),
+            { message: 'element transform while disabled' }
+        )
+        console.log('[disabled/move] initial:', initial, '→ final:', final, `(own animation ${ownAnimationMs}ms)`)
         // `disabled` is documented on IParallaxProps as "translate stays at 0
         // regardless of scroll / events" — the mouse is one of those events.
+        //
+        // ⚠️ Actuation is NOT proven here; if the gesture above silently stopped
+        // dispatching, this passes vacuously. It is the companion test below
+        // that runs the identical gesture on the identical Variant and asserts
+        // it DOES move — the pair is what makes this half meaningful. Do not
+        // delete one without the other.
         expect(final).toBe(initial)
     })
 
@@ -362,13 +401,14 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
                 await new Promise(r => setTimeout(r, 120))
             }
         })
-        await page.waitForTimeout(400)
-
-        const moved = await element.evaluate((el) => getComputedStyle(el).transform)
-        console.log('[disabled/mid-hover] resting:', resting, '→ moved:', moved)
-        // Self-check: if the gesture didn't move anything, the assertion below
-        // would pass vacuously — exactly the failure mode this pass exists to remove.
-        expect(moved).not.toBe(resting)
+        // #783 — was `waitForTimeout(400)` then one read. Self-check: if the
+        // gesture didn't move anything, the assertion after it would pass
+        // vacuously — exactly the failure mode this pass exists to remove. It
+        // is a POSITIVE assertion, so it is polled, not timed.
+        await expect.poll(
+            async () => element.evaluate((el) => getComputedStyle(el).transform),
+            { timeout: 8000, message: 'the hover gesture must actually move the element before disabled is flipped' }
+        ).not.toBe(resting)
 
         await toggleHstCheckbox(page, 'Disabled')
         await expect(sandbox.locator('.origam-parallax--disabled')).toHaveCount(1)
@@ -404,11 +444,24 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
                 await new Promise(r => setTimeout(r, 100))
             }
         })
-        await page.waitForTimeout(400)
+        // #783 — was `waitForTimeout(400)` then one read. Negative assertion,
+        // same treatment as the `disabled` case: the delay is derived from the
+        // layer's own declared animation rather than guessed, and the value has
+        // to have SETTLED before it is compared.
+        const ownAnimationMs = await waitForOwnAnimationsToLand(layers.first())
 
-        const final = await layers.evaluateAll((els) => els.map((el) => getComputedStyle(el).transform))
-        console.log('[reduced-motion] initial:', initial, '→ final:', final)
+        const final = await readSettledStyle(
+            () => layers.evaluateAll((els) => els.map((el) => getComputedStyle(el).transform)),
+            { message: 'layer transforms under prefers-reduced-motion' }
+        )
+        console.log('[reduced-motion] initial:', initial, '→ final:', final, `(own animation ${ownAnimationMs}ms)`)
         // No layer should have moved with reduced-motion active.
+        //
+        // ⚠️ Actuation is NOT proven here either: the scroll gesture could stop
+        // dispatching and this would stay green. The positive control is the
+        // "multi-layer — scroll translates 3 layers" test above, which runs the
+        // same gesture on the SAME Variant (index 4) with reduced-motion off
+        // and asserts a layer DOES move.
         for (let i = 0; i < final.length; i++) {
             expect(final[i]).toBe(initial[i])
         }

@@ -11,16 +11,78 @@
  * This file is now HAND-MAINTAINED SOURCE: edit it directly. There is no
  * regeneration step, and no "do not edit" rule any more. A design-token
  * pipeline may be reintroduced later, once the DS is stable.
+ *
+ * ── #789 — CONTRASTE : POURQUOI CES PALIERS-LÀ ─────────────────────────────
+ * `feedback--{success,warning,info}---bg` portent tous un `---fg` BLANC. Le
+ * couple doit donc tenir 4.5:1 (WCAG AA, texte). Mesuré en Chromium, alpha
+ * composité, avec témoins calculables à la main :
+ *
+ *     success   green-500 #4caf50  2.78  →  green-700 #15803d  5.02
+ *     warning   amber-600 #fb8c00  2.37  →  amber-700 #b45309  5.02
+ *     info      blue-500  #2196f3  3.12  →            #2563eb  5.17
+ *
+ * ⛔ Ne pas « re-éclaircir » ces trois paliers sans remesurer : sur cette
+ * palette, aucun palier plus clair ne tient AA avec du texte blanc. La
+ * mesure et ses témoins vivent dans
+ * `packages/tests/e2e/token-intent-contrast.spec.ts` — elle rougit ici.
+ *
+ * `info---bg` est le seul littéral du lot : `#2563eb` n'existe pas dans la
+ * palette primitive (son `blue---600` vaut `#1d4ed8`, soit le 700 de
+ * Tailwind). La valeur est celle de `origam.theme.ts`, ce qui ferme du même
+ * coup la divergence feuille ↔ thème que #793 suit.
+ *
+ * ── #871 — POURQUOI `[data-mode="light"]` DANS LA LISTE ────────────────────
+ * Les ~1 792 déclarations DÉRIVÉES de ce bloc — la forme
+ * `--origam-title---color: var(--origam-color__text---primary)` —
+ * ne se ré-évaluent QUE sur un élément que ce sélecteur matche. Sur tout autre
+ * élément, la valeur héritée est déjà SUBSTITUÉE — c'est la sémantique des
+ * custom properties, pas un bug : `--a: var(--b)` posé à `:root`, `--b`
+ * réécrit sur un enfant, et `--a` garde sur l'enfant la valeur calculée à la
+ * racine.
+ *
+ * Sans `[data-mode="light"]`, un sous-arbre `<OrigamThemeProvider mode="light">`
+ * à l'intérieur d'une page sombre gardait donc les 1 792 dérivés GELÉS sur les
+ * valeurs sombres de la racine. C'est le pendant clair du défaut mesuré en
+ * sombre par #871.
+ *
+ * ⛔ SPÉCIFICITÉ (0,1,0), VOLONTAIREMENT. Le bloc runtime d'une marque claire
+ * (`applyThemes()` sérialise `[data-theme="cartoon"]` sans `data-mode`) est
+ * lui aussi (0,1,0) et est injecté dans `<head>` APRÈS cette feuille : à
+ * égalité, l'ordre source tranche et la marque gagne. Monter ce sélecteur à
+ * (0,2,0) (p. ex. `[data-mode="light"]:not([data-theme="dark"])`) le ferait
+ * perdre, et cette feuille repeindrait par-dessus chaque marque claire.
+ *
+ * ── #871 — `system-bar` / `tooltip` : RIEN NE CHANGE ICI ──────────────────
+ * Ces deux composants peignent une surface SOMBRE dans les deux modes
+ * (`neutral---700` / `neutral---800`) et lisent `text---inverse`, qui vaut
+ * blanc EN CLAIR — correct, donc inchangé. C'est en SOMBRE que le même token
+ * vaut de l'encre et rend le texte illisible ; le correctif est donc dans
+ * `dark.css` seul. Voir son en-tête, y compris la piste écartée (passer les
+ * DEUX feuilles à `text---onColor`, qui a mesuré +2 violations en clair sur
+ * la marque `cartoon`).
  */
 :root,
-[data-theme="light"] {
+[data-theme="light"],
+[data-mode="light"] {
   --origam-color__surface---default: var(--origam-color__neutral---0);
   --origam-color__surface---raised: var(--origam-color__neutral---0);
   --origam-color__surface---overlay: var(--origam-color__neutral---100);
   --origam-color__surface---sunken: var(--origam-color__neutral---50);
   --origam-color__surface---disabled: var(--origam-color__neutral---200);
   --origam-color__surface---inverse: var(--origam-color__neutral---900);
-  --origam-color__text---primary: var(--origam-color__neutral---900);
+  /* #615 — `950`, PAS `900`. Cette feuille NE gagne PAS la cascade au niveau
+     document : `createOrigam()` appelle `applyThemes()`, qui serialise
+     `origamLightTheme` (src/themes/origam.theme.ts) en un bloc `:root { … }`
+     injecte dans <head> APRES cette feuille. A specificite egale (0,1,0) c'est
+     l'ordre source qui tranche, donc le bloc runtime gagne — et il pose
+     `#0a0a0a`, soit neutral-950. Tant que cette ligne disait `900`, le meme
+     theme « light » peignait DEUX couleurs : `#0a0a0a` a la racine et
+     `#171717` dans un sous-arbre `<OrigamThemeProvider theme="light">` (ou
+     `[data-theme="light"]` matche alors que `:root` ne matche plus). Les deux
+     valeurs mesurees en Chromium ; le contraste sur `surface.default` passe de
+     17.93:1 a 19.80:1. Si cette ligne doit revenir a `900`, c'est
+     `origam.theme.ts` qu'il faut changer AVEC, sinon la divergence revient. */
+  --origam-color__text---primary: var(--origam-color__neutral---950);
   --origam-color__text---secondary: var(--origam-color__neutral---600);
   --origam-color__text---disabled: var(--origam-color__neutral---400);
   --origam-color__text---inverse: var(--origam-color__neutral---0);
@@ -48,26 +110,26 @@
   --origam-color__action--ghost---bgDisabled: rgba(0, 0, 0, 0);
   --origam-color__action--ghost---fg: var(--origam-color__primary---600);
   --origam-color__action--ghost---fgDisabled: var(--origam-color__neutral---400);
-  --origam-color__feedback--success---bg: var(--origam-color__green---500);
+  --origam-color__feedback--success---bg: var(--origam-color__green---700);
   --origam-color__feedback--success---bgSubtle: var(--origam-color__green---50);
   --origam-color__feedback--success---fg: var(--origam-color__neutral---0);
   --origam-color__feedback--success---fgSubtle: var(--origam-color__green---700);
-  --origam-color__feedback--success---border: var(--origam-color__green---500);
-  --origam-color__feedback--warning---bg: var(--origam-color__amber---600);
+  --origam-color__feedback--success---border: var(--origam-color__green---700);
+  --origam-color__feedback--warning---bg: var(--origam-color__amber---700);
   --origam-color__feedback--warning---bgSubtle: var(--origam-color__amber---50);
   --origam-color__feedback--warning---fg: var(--origam-color__neutral---0);
   --origam-color__feedback--warning---fgSubtle: var(--origam-color__amber---700);
-  --origam-color__feedback--warning---border: var(--origam-color__amber---600);
+  --origam-color__feedback--warning---border: var(--origam-color__amber---700);
   --origam-color__feedback--danger---bg: var(--origam-color__red---600);
   --origam-color__feedback--danger---bgSubtle: var(--origam-color__red---50);
   --origam-color__feedback--danger---fg: var(--origam-color__neutral---0);
   --origam-color__feedback--danger---fgSubtle: var(--origam-color__red---700);
   --origam-color__feedback--danger---border: var(--origam-color__red---400);
-  --origam-color__feedback--info---bg: var(--origam-color__blue---500);
+  --origam-color__feedback--info---bg: #2563eb;
   --origam-color__feedback--info---bgSubtle: var(--origam-color__blue---50);
   --origam-color__feedback--info---fg: var(--origam-color__neutral---0);
   --origam-color__feedback--info---fgSubtle: var(--origam-color__blue---700);
-  --origam-color__feedback--info---border: var(--origam-color__blue---500);
+  --origam-color__feedback--info---border: #2563eb;
   --origam-color__overlay---scrim: var(--origam-color---white);
   --origam-gradient---sunset: linear-gradient(135deg, #ff7e5f, #feb47b);
   --origam-gradient---ocean: linear-gradient(135deg, #2193b0, #6dd5ed);
@@ -89,11 +151,11 @@
   --origam-btn---border-style: solid;
   --origam-btn---border-color: currentColor;
   --origam-btn---position: relative;
-  --origam-btn---density: 0;
+  --origam-btn---density: 0px;
   --origam-btn---width: auto;
   --origam-btn---min-width: 64px;
   --origam-btn---max-width: 100%;
-  --origam-btn---height: 36px;
+  --origam-btn---height: var(--origam-btn---height-md, 36px);
   --origam-btn---max-height: 100%;
   --origam-btn---height-xs: 20px;
   --origam-btn---height-sm: 28px;
@@ -620,7 +682,7 @@
   --origam-toolbar---border-end-end-radius: var(--origam-radius---none);
   --origam-toolbar---max-width: 100%;
   --origam-toolbar---width: 100%;
-  --origam-toolbar---height: var(--origam-space---14);
+  --origam-toolbar---height: var(--origam-toolbar---height-default, var(--origam-space---14));
   --origam-toolbar---height-compact: var(--origam-space---10);
   --origam-toolbar---height-default: var(--origam-space---14);
   --origam-toolbar---height-prominent: var(--origam-space---20);
@@ -920,8 +982,8 @@
   --origam-field__input---padding-block-filled: 20px;
   --origam-field__input---padding-top: var(--origam-field__input---padding-block-md);
   --origam-field__input---padding-bottom: var(--origam-field__input---padding-block-md);
-  --origam-field__input---padding-start: 0;
-  --origam-field__input---padding-end: 0;
+  --origam-field__input---padding-start: 0px;
+  --origam-field__input---padding-end: 0px;
   --origam-field__input---opacity: 0.7;
   --origam-field__label---font-size: 0.75em;
   --origam-field__label---transition-duration: var(--origam-motion__duration---normal);
@@ -1431,6 +1493,11 @@
   --origam-table__header-cell---padding-inline: var(--origam-space---4);
   --origam-table__header-cell---border-bottom-color: var(--origam-color__border---default);
   --origam-table__header-cell---border-bottom-width: var(--origam-border__width---2);
+  /* #840 — derived from the SAME density-aware padding-block token, so it
+     never drifts out of sync with it: 2 * padding-block + border-bottom
+     + 18px (measured content-box line height of a single-line header
+     cell in Chromium, constant across the 3 density rungs). */
+  --origam-table__header-cell---height: calc((2 * var(--origam-table__header-cell---padding-block, 12px)) + var(--origam-table__header-cell---border-bottom-width, 2px) + 18px);
   --origam-table__cell---padding-block: var(--origam-space---3);
   --origam-table__cell---padding-inline: var(--origam-space---4);
   --origam-table__cell---border-color: var(--origam-color__border---subtle);
@@ -1901,7 +1968,7 @@
   --origam-picker---z-index: var(--origam-zIndex---dropdown);
   --origam-picker---transition-duration: var(--origam-motion__duration---medium);
   --origam-picker---transition-timing-function: var(--origam-motion__easing---standard);
-  --origam-picker-title---color: var(--origam-color__text---secondary);
+  --origam-picker-title---color: currentColor;
   --origam-picker-title---font-size: 0.75rem;
   --origam-picker-title---font-weight: 400;
   --origam-picker-title---letter-spacing: 0.1667em;
@@ -1923,7 +1990,12 @@
   --origam-date-picker-month__weeks---font-size: 0.85rem;
   --origam-date-picker-month__weekday---font-size: 0.85rem;
   --origam-date-picker-month__day---font-size: 0.85rem;
-  --origam-code---background-color: var(--origam-color__surface---sunken);
+  /* #535 — was `surface---sunken`. Shiki's fixed per-token colours (see
+   * `code.const.ts`) cannot reach 4.5:1 against several brand `sunken`
+   * surfaces no matter how dark the theme goes; `surface---raised` is the
+   * lightest surface already defined by every theme (own palette, no new
+   * token) and clears AA with margin everywhere it was measured (#535 PR). */
+  --origam-code---background-color: var(--origam-color__surface---raised);
   --origam-code---color: var(--origam-color__text---primary);
   --origam-code---border-color: var(--origam-color__border---subtle);
   --origam-code---border-width: var(--origam-border__width---thin);
@@ -1992,7 +2064,8 @@
   --origam-switch__track---width: 44px;
   --origam-switch__track---height: 24px;
   --origam-switch__track---border-radius: var(--origam-radius---full);
-  --origam-switch__track---background-color: var(--origam-color__surface---disabled);
+  /* #919 — track-vs-page mesure 1.06-1.83:1 sur les 16 combos identite x mode (Playwright/Chromium) quand ce token vaut surface---disabled : la teinte est visuellement trop proche de la page dans les 8 identites. Derive de text---primary (garanti contraste contre la page par la lisibilite du texte) via color-mix ; comme le pouce par defaut vaut surface---default (= la page), il herite automatiquement du meme contraste contre ce nouveau track. Pire cas remesure apres correctif (cartoon|light) : 3.90:1. */
+  --origam-switch__track---background-color: color-mix(in srgb, var(--origam-color__text---primary) 60%, var(--origam-color__surface---default));
   --origam-switch__track---background-color-checked: var(--origam-color__action--primary---bg);
   --origam-switch__track---background-color-disabled: var(--origam-color__surface---disabled);
   --origam-switch__track---background-color-error: var(--origam-color__feedback--danger---bg);
@@ -2005,7 +2078,19 @@
   --origam-switch__thumb---background-color: var(--origam-color__surface---default);
   --origam-switch__thumb---background-color-checked: var(--origam-color__surface---default);
   --origam-switch__thumb---background-color-disabled: var(--origam-color__surface---overlay);
-  --origam-switch__thumb---background-color-error: var(--origam-color__feedback--danger---bg);
+  /* #919 point 5 (etats non mesures) — le pouce et le rail utilisaient le MEME
+     token (danger---bg) : pouce totalement invisible sur le rail en erreur,
+     ratio 1.00:1 mesure sur les 16 configs (Playwright/Chromium, `switch-error`
+     dans why-origam-contrast.audit.mjs). Le pouce revient a surface---default —
+     le MEME token que le pouce par defaut (non colore) — au lieu de copier la
+     couleur du rail. Note : `--origam-switch__thumb---color-error` (icone/texte
+     DANS le pouce, applique par le meme selecteur SCSS) reste danger---fg
+     (blanc) ; s'il n'y a pas d'icone (cas par defaut), cette valeur ne peint
+     rien de visible et ne cree aucun conflit. Avec un `icon` explicite EN PLUS
+     de `error`, l'icone blanche perdrait en lisibilite sur un pouce clair en
+     light — combinaison rare, non couverte ici, a traiter separement si elle
+     se presente. */
+  --origam-switch__thumb---background-color-error: var(--origam-color__surface---default);
   --origam-switch__thumb---color-error: var(--origam-color__feedback--danger---fg);
   --origam-switch__thumb---box-shadow: var(--origam-shadow---sm);
   --origam-switch__thumb---border-radius: var(--origam-radius---full);
@@ -2670,11 +2755,11 @@
   --origam-chart-range-selector__btn---font-size: var(--origam-font__size---sm);
   --origam-chart-range-selector__btn--hover---background-color: rgba(0, 0, 0, 0.06);
   --origam-chart-range-selector__btn--hover---color: #111827;
-  --origam-chart-range-selector__btn--active---background-color: #3b82f6;
+  --origam-chart-range-selector__btn--active---background-color: var(--origam-color__action--primary---bg);
   --origam-chart-range-selector__btn--active---border-color: rgba(0, 0, 0, 0);
-  --origam-chart-range-selector__btn--active---color: var(--origam-color---white);
-  --origam-chart-range-selector__btn--active--hover---background-color: #2563eb;
-  --origam-chart-range-selector__btn--active--hover---color: var(--origam-color---white);
+  --origam-chart-range-selector__btn--active---color: var(--origam-color__action--primary---fg);
+  --origam-chart-range-selector__btn--active--hover---background-color: var(--origam-color__action--primary---bgHover);
+  --origam-chart-range-selector__btn--active--hover---color: var(--origam-color__action--primary---fg);
   --origam-chart-sparkline__bar---border-radius: 1;
   --origam-chart-sparkline__marker-min---stroke: rgba(0, 0, 0, 0);
   --origam-chart-sparkline__marker-max---stroke: rgba(0, 0, 0, 0);

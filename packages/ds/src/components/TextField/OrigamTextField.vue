@@ -91,6 +91,7 @@
 									:readonly="isReadonly"
 									:required="required || undefined"
 									:aria-required="required ? 'true' : undefined"
+									:role="role"
 									:size="1"
 									:type="resolvedInputType"
 									:value="displayValue"
@@ -228,6 +229,28 @@
 	 * @description
 	 * Props, emits, slots and composables.
 	 ********************************************************/
+
+	/*********************************************************
+	 * inheritAttrs: false — #818
+	 *
+	 * @description
+	 * `filterInputAttrs(attrs)` below already redistributes EVERY
+	 * fall-through attr explicitly: `rootAttrs` (class/style/id/data-*) onto
+	 * `<origam-input>`, `inputAttrs` (everything else — including the
+	 * combobox ARIA bridge `OrigamSelect.comboboxAriaAttrs` sends here:
+	 * `aria-haspopup`/`aria-expanded`/`aria-controls`/`aria-autocomplete`/
+	 * `aria-activedescendant`) onto the real `<input>` a few lines below.
+	 * Without this flag, Vue's default attrs inheritance ALSO merges the
+	 * raw, unfiltered `$attrs` onto this component's root (`<origam-input>`),
+	 * which itself doesn't opt out either — so the same ARIA attrs land a
+	 * SECOND time on `OrigamInput`'s wrapper `<div>`, which has no
+	 * supporting role. That double application is the `aria-allowed-attr`
+	 * / `aria-prohibited-attr` violation baselined for `OrigamSelect`'s
+	 * consumers (`OrigamDataTable*`) and `OrigamNumberField` — verified via
+	 * axe-core against a real browser, not jsdom (see root CLAUDE.md on why
+	 * `getComputedStyle`/jsdom can't be trusted for this class of bug).
+	 ********************************************************/
+	defineOptions({ inheritAttrs: false })
 
 	const props = withDefaults(defineProps<ITextFieldProps>(), {
 		type: TEXT_FIELD_TYPE.TEXT,

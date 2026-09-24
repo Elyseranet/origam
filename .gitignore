@@ -10,6 +10,19 @@ lerna-debug.log*
 # Node modules
 node_modules
 
+# Cache de compilation Node ecrit par le postinstall de marketing
+# (`nuxt prepare`). Genere par CHAQUE `pnpm install`, jamais versionne, et
+# jusqu'ici non ignore : 1448 fichiers non suivis dans un worktree frais,
+# soit autant de candidats a un `git add -A` distrait. Mesure le 2026-09-16.
+packages/marketing/node-compile-cache/
+
+# Sonde memoire deposee par `marketing-ssr-leak.mjs --install-probe` (#248) et
+# retiree par `--remove-probe`. Elle doit SURVIVRE au demarrage du serveur de
+# dev (Nitro scanne `server/api/` au boot), donc elle n'est pas supprimee en fin
+# de charge : cet ignore est ce qui l'empeche d'atterrir dans un commit. C'est
+# une route de diagnostic qui n'a rien a faire dans l'arbre ni en production.
+packages/marketing/server/api/__mem.get.ts
+
 # Dist
 dist
 dist-ssr
@@ -121,3 +134,10 @@ packages/ds/CHANGELOG.md
 
 # Fichiers d environnement — jamais suivis (cf. politique globale)
 .env
+
+# Dossier temporaire du type-check des exemples de doc (scripts/analysis/check-doc-examples.mjs)
+packages/ds/.doc-examples
+
+# Dumps du navigateur MCP produits par les agents (arbres a11y, snapshots de page).
+# 177 fichiers / 5,8 Mo avaient ete committes par accident depuis le 2026-09-04.
+.playwright-mcp/

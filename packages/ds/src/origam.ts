@@ -31,8 +31,6 @@ import type { IDefault, INuxtAwareApp, IOrigamOptions, IOrigamTheme } from './in
 import type { TIconOptions, TModeResolved } from './types'
 import { applyThemes, installedThemesFromList, mergeDeep } from './utils'
 
-import { origamTheme } from './themes/origam.theme'
-
 import '@mdi/font/css/materialdesignicons.css'
 
 import { App, ComponentPublicInstance, defineComponent, effectScope, InjectionKey, nextTick, reactive } from 'vue'
@@ -50,19 +48,20 @@ export function createOrigam (origam: IOrigamOptions = {}) {
     // installed-brand summary is computed eagerly (pure, SSR-safe) so it can be
     // provided to the app context on both server and client.
     //
-    // ADR-004 + the two-axis model: the DS ships ONE default identity, `origam`,
-    // ROOT-scoped (no `name`: light at `:root`, dark at `[data-mode="dark"]`). It
-    // is ALWAYS injected first as the zero-config baseline, so every component has
-    // a complete token surface even when no brand is selected. Consumer brands
-    // (named, e.g. marketing's `sobre` / `glass` / …) are layered ON TOP and
-    // override via `[data-theme="<brand>"]`. A bare `app.use(createOrigam())`
-    // therefore paints with the neutral origam identity; the 7 brand themes live
-    // in the marketing package.
+    // ⛔ #360 (v3.0.0 harvest) — `createOrigam()` no longer prefixes this list
+    // with the DS's own `origamTheme` baseline. A bare `app.use(createOrigam())`
+    // installs NO theme: no `vars` CSS is injected, and no per-component
+    // `components` prop default (ADR-005) is resolved — components fall back to
+    // their own hardcoded `withDefaults()` values only. The baseline identity
+    // (`origamTheme`, ROOT-scoped: light at `:root`, dark at `[data-mode="dark"]`)
+    // is still shipped — `import { origamTheme } from 'origam/themes'` — but a
+    // consumer now opts in explicitly: `createOrigam({ themes: origamTheme })`.
+    // See CHANGELOG.md [Unreleased] for the before/after migration snippet.
     const suppliedThemes = [
         ...(options.theme ? [options.theme] : []),
         ...(options.themes ?? [])
     ]
-    const allThemes: IOrigamTheme[] = [...origamTheme, ...suppliedThemes]
+    const allThemes: IOrigamTheme[] = [...suppliedThemes]
     const installedThemes = installedThemesFromList(allThemes)
 
     // Seed the per-component DEFAULT PROPS provider. The active brand×mode

@@ -67,8 +67,8 @@ export const origamLightTheme: IOrigamTheme = {
             feedback: {
                 danger: { bg: '#dc2626', bgSubtle: 'rgba(220, 38, 38, 0.08)', fg: '#ffffff', fgSubtle: '#b91c1c', border: '#dc2626' },
                 info: { bg: '#2563eb', bgSubtle: 'rgba(37, 99, 235, 0.08)', fg: '#ffffff', fgSubtle: '#1d4ed8', border: '#2563eb' },
-                success: { bg: '#16a34a', bgSubtle: 'rgba(22, 163, 74, 0.08)', fg: '#ffffff', fgSubtle: '#15803d', border: '#16a34a' },
-                warning: { bg: '#d97706', bgSubtle: 'rgba(217, 119, 6, 0.08)', fg: '#ffffff', fgSubtle: '#b45309', border: '#d97706' }
+                success: { bg: '#15803d', bgSubtle: 'rgba(22, 163, 74, 0.08)', fg: '#ffffff', fgSubtle: '#15803d', border: '#15803d' },
+                warning: { bg: '#b45309', bgSubtle: 'rgba(217, 119, 6, 0.08)', fg: '#ffffff', fgSubtle: '#b45309', border: '#b45309' }
             }
         },
         rounded: {
@@ -205,7 +205,6 @@ export const origamLightTheme: IOrigamTheme = {
         'origam-input': { density: 'default' },
         'origam-kbd': { variant: 'outlined' },
         'origam-list': { tag: 'div', density: 'compact' },
-        'origam-list-item': { density: 'compact' },
         'origam-loader': { tag: 'span' },
         'origam-main': { tag: 'main' },
         'origam-masonry': { tag: 'div', gap: 'md', align: 'top' },
@@ -278,8 +277,8 @@ export const origamDarkTheme: IOrigamTheme = {
             },
             action: {
                 primary: {
-                    bg: '#8b5cf6',
-                    bgHover: '#7c3aed',
+                    bg: '#7c3aed',
+                    bgHover: '#6d28d9',
                     bgDisabled: '#262626',
                     bgSubtle: 'rgba(124, 58, 237, 0.14)',
                     fg: '#ffffff',
@@ -312,8 +311,8 @@ export const origamDarkTheme: IOrigamTheme = {
             feedback: {
                 danger: { bg: '#dc2626', bgSubtle: 'rgba(220, 38, 38, 0.12)', fg: '#ffffff', fgSubtle: '#f87171', border: '#f87171' },
                 info: { bg: '#2563eb', bgSubtle: 'rgba(37, 99, 235, 0.12)', fg: '#ffffff', fgSubtle: '#60a5fa', border: '#60a5fa' },
-                success: { bg: '#16a34a', bgSubtle: 'rgba(22, 163, 74, 0.12)', fg: '#ffffff', fgSubtle: '#6ee7b7', border: '#6ee7b7' },
-                warning: { bg: '#d97706', bgSubtle: 'rgba(217, 119, 6, 0.12)', fg: '#ffffff', fgSubtle: '#fbbf24', border: '#fbbf24' }
+                success: { bg: '#15803d', bgSubtle: 'rgba(22, 163, 74, 0.12)', fg: '#ffffff', fgSubtle: '#6ee7b7', border: '#6ee7b7' },
+                warning: { bg: '#b45309', bgSubtle: 'rgba(217, 119, 6, 0.12)', fg: '#ffffff', fgSubtle: '#fbbf24', border: '#fbbf24' }
             }
         },
         shadow: {
@@ -371,7 +370,6 @@ export const origamDarkTheme: IOrigamTheme = {
         'origam-input': { density: 'default' },
         'origam-kbd': { variant: 'outlined' },
         'origam-list': { tag: 'div', density: 'compact' },
-        'origam-list-item': { density: 'compact' },
         'origam-loader': { tag: 'span' },
         'origam-main': { tag: 'main' },
         'origam-masonry': { tag: 'div', gap: 'md', align: 'top' },

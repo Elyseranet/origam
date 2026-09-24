@@ -26,7 +26,7 @@ Returns `null` when required coordinates cannot be resolved
 ## `computePlotBandGeometry`
 
 ```ts
-export const computePlotBandGeometry = ( band: IChartPlotBand, scales: IChartScales, categories: Array<string>, plotX0: number, plotX1: number, plotY0: number, plotY1: number ):
+export const computePlotBandGeometry = ( band: IChartPlotBand, scales: IChartScales, categories: Array<string>, plotX0: number, plotX1: number, plotY0: number, plotY1: number ): { x: number; y: number; width: number; height: number; fill: string; opacity: number; label: string | undefined; labelX: number; labelY: number; labelColor: string } | null
 ```
 
 Compute geometry for a single plot band. Returns an object with
@@ -40,7 +40,7 @@ band falls entirely outside the plot.
 ## `computePlotLineGeometry`
 
 ```ts
-export const computePlotLineGeometry = ( line: IChartPlotLine, scales: IChartScales, categories: Array<string>, plotX0: number, plotX1: number, plotY0: number, plotY1: number ):
+export const computePlotLineGeometry = ( line: IChartPlotLine, scales: IChartScales, categories: Array<string>, plotX0: number, plotX1: number, plotY0: number, plotY1: number ): { x1: number; y1: number; x2: number; y2: number; stroke: string; strokeWidth: number; strokeDasharray: string; label: string | undefined; labelX: number; labelY: number; labelAnchor: string } | null
 ```
 
 Compute geometry for a single plot line. Returns an object with
@@ -130,9 +130,11 @@ Resulting priority: consumer explicit > theme (either channel:
 
 **Exemple**
 
+```ts
 const chartAnimationStyle = useChartAnimationStyle(props)
 // merge into the root styles computed, alongside the other entries:
 Object.assign(out, chartAnimationStyle.value)
+```
 
 **Source** : `packages/ds/src/composables/Chart/chart-animation.composable.ts`
 
@@ -141,7 +143,7 @@ Object.assign(out, chartAnimationStyle.value)
 ## `useChartGauge`
 
 ```ts
-export const useChartGauge = (options: IUseChartGaugeOptions):
+export const useChartGauge = (options: IUseChartGaugeOptions): { geometry: ComputedRef<IChartGaugeGeometry> }
 ```
 
 Solid-gauge geometry engine. Given a `value` clamped between
@@ -187,9 +189,11 @@ typography recipe.
 
 **Exemple**
 
+```ts
 // in a chart component:
 const { headerTypographyStyles } = useChartHeaderTypography(props)
 // template root: :style="[rootStyles, …, headerTypographyStyles]"
+```
 
 **Source** : `packages/ds/src/composables/Chart/chart-header-typography.composable.ts`
 
@@ -198,7 +202,7 @@ const { headerTypographyStyles } = useChartHeaderTypography(props)
 ## `useChartZoom`
 
 ```ts
-export function useChartZoom(options:
+export function useChartZoom(options: { dataLength: () => number })
 ```
 
 Manages interactive zoom / pan state for `<OrigamChartCartesian>`.

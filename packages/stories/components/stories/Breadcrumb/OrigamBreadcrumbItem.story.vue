@@ -137,6 +137,7 @@
 						<origam-breadcrumb-item
 								title="Click the prepend icon"
 								:prepend-icon="homeIcon"
+								prepend-aria-label="Open details"
 								@click:prepend="logEvent('click:prepend', $event)"
 						/>
 					</li>
@@ -151,6 +152,7 @@
 						<origam-breadcrumb-item
 								title="Click the append icon"
 								:append-icon="openInNewIcon"
+								append-aria-label="Show options"
 								@click:append="logEvent('click:append', $event)"
 						/>
 					</li>
@@ -210,7 +212,9 @@
 						<li class="origam-breadcrumb__item">
 							<origam-breadcrumb-item
 									v-bind="state"
+									prepend-aria-label="Open details"
 									@click:prepend="logEvent('click:prepend', $event)"
+									append-aria-label="Show options"
 									@click:append="logEvent('click:append', $event)"
 							/>
 						</li>

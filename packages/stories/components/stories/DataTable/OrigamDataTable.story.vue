@@ -357,6 +357,43 @@
 			</template>
 		</Variant>
 
+		<Variant
+				title="Prop — sticky (scroll-then-stick)"
+				:init-state="() => useStoryInitState<Partial<IDataTableProps>>({ sticky: true, height: '240' })"
+		>
+			<template #default="{ state }">
+				<!--
+					⛔ #840 — NO external scrolling wrapper here on purpose.
+					`.origam-table__wrapper` (OrigamTable) always computes a
+					non-`visible` overflow (its own `overflow-x: auto` forces
+					`overflow-y` to compute to `auto` too, per the CSS spec rule
+					for mismatched overflow axes). That makes IT the nearest
+					scrolling ancestor for any `position: sticky` cell inside —
+					wrapping the table in an outer `overflow-y: auto` div never
+					reaches past it, so the header still scrolls away with the
+					body (measured, not guessed). `sticky` therefore has to be
+					combined with a bounded `height`/`maxHeight` on the table
+					itself, exactly like `fixedHeader` — that is what actually
+					turns `.origam-table__wrapper` into a real scrollport.
+				-->
+				<origam-data-table
+						data-cy="data-table-sticky-container"
+						:headers="sortableHeaders"
+						:items="manyItems"
+						:sticky="state.sticky"
+						:density="state.density"
+						:height="state.height"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Layout">
+					<HstCheckbox v-model="state.sticky" title="Sticky"/>
+					<HstSelect   v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+					<HstText     v-model="state.height"  title="Height"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
 		<Variant title="Prop — showSelect">
 			<origam-data-table
 					v-model="selected"
@@ -433,6 +470,40 @@
 			</template>
 		</Variant>
 
+		<Variant
+				title="Prop — mobileBreakpoint"
+				:init-state="() => useStoryInitState<IMobileBreakpointState>({ mobileBreakpoint: undefined })"
+		>
+			<template #default="{ state }">
+				<!--
+					⛔ #371 (point 5) — `mobileBreakpoint` n'avait aucun
+					controle dans cette story alors que son defaut ('xs',
+					OrigamDataTable.vue) corrige un bug de production
+					documente en commentaire au meme endroit : sans lui,
+					`useDisplay` retombait sur le seuil global 'lg' (1280px)
+					et forcait le rendu mobile empile sur tout viewport en
+					dessous, quoi que le consommateur ait voulu.
+
+					Le seuil se compare a la LARGEUR REELLE DE LA FENETRE
+					(useDisplay ecoute `resize`), pas a la largeur de ce
+					conteneur — resize la fenetre du navigateur (ou la
+					toolbar de viewport d'Histoire) pour voir la ligne
+					basculer entre le rendu tabulaire et le rendu empile
+					`item.{cle}` / `header.{cle}` de `OrigamDataTableRow`.
+				-->
+				<origam-data-table
+						:headers="headers"
+						:items="items"
+						:mobile-breakpoint="state.mobileBreakpoint || undefined"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Responsive">
+					<HstSelect v-model="state.mobileBreakpoint" title="Mobile Breakpoint" :options="MOBILE_BREAKPOINT_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
 				<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<Partial<IDataTableProps>>({
@@ -483,9 +554,9 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamDataTable, OrigamIcon, OrigamTextField } from '@origam/components'
-	import { MDI_ICONS } from '@origam/enums'
-	import type { IDataTableProps } from '@origam/interfaces'
-	import type { TLoadingValue } from '@origam/types'
+	import { BREAKPOINTS, MDI_ICONS } from '@origam/enums'
+	import type { IDataTableProps, IOptions } from '@origam/interfaces'
+	import type { TBreakpoint, TLoadingValue } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
@@ -507,12 +578,26 @@
 		circularSize: number
 	}
 
+	interface IMobileBreakpointState {
+		mobileBreakpoint?: number | TBreakpoint
+	}
+
 	const LOADING_KIND_OPTIONS = [
 		{ label: 'true (default)', value: 'bool' },
 		{ label: 'number', value: 'number' },
 		{ label: '{ type: line }', value: 'line' },
 		{ label: '{ type: circular }', value: 'circular' },
 		{ label: '{ type: skeleton }', value: 'skeleton' }
+	]
+
+	const MOBILE_BREAKPOINT_OPTIONS: Array<IOptions<TBreakpoint | undefined>> = [
+		{ label: '(default — xs)', value: undefined },
+		{ label: 'xs', value: BREAKPOINTS.XS },
+		{ label: 'sm', value: BREAKPOINTS.SM },
+		{ label: 'md', value: BREAKPOINTS.MD },
+		{ label: 'lg', value: BREAKPOINTS.LG },
+		{ label: 'xl', value: BREAKPOINTS.XL },
+		{ label: 'xxl', value: BREAKPOINTS.XXL }
 	]
 
 	const resolveLoading = (state: ILoadingState): TLoadingValue => {

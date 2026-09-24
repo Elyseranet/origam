@@ -12,6 +12,12 @@ import { materialThemes } from './src/themes/material.theme'
 import { ecomThemes } from './src/themes/ecom.theme'
 import { appleThemes } from './src/themes/apple.theme'
 import { origamThemes } from './src/themes/origam.theme'
+// The DS's own UN-NAMED baseline (name-less → ROOT-scoped, always merged in by
+// `activeDefaultsFor` regardless of the active brand — see its doc comment).
+// Imported straight from SOURCE, matching `src/themes/origam.theme.ts`'s own
+// note: `nuxt.config.ts` loads via jiti at config-load time, before the DS lib
+// is built, so a `dist`-bound `origam/themes` import would break `nuxt prepare`.
+import { origamTheme as origamBaseline } from '../ds/src/themes/origam.theme'
 
 // Single source of truth for the displayed version: the published `origam`
 // package version. Read at build time so badges/translations never need a
@@ -46,21 +52,64 @@ export default defineNuxtConfig({
         shim: false
     },
 
+    // ⛔ The origam module is referenced by SOURCE PATH, not by the bare
+    // `origam/nuxt` specifier — see #565.
+    //
+    // `modules: []` entries are resolved by Nuxt/exsolve at config-load time,
+    // through the `origam` package's `exports` map. `./nuxt` there points at
+    // `dist/src/nuxt/module.js`, which only exists after `pnpm -F origam build`.
+    // Nothing builds `ds` during `pnpm install` (it carries no postinstall —
+    // only `prepublishOnly`, which npm publish runs and pnpm install does not),
+    // so on a virgin worktree the specifier resolved to a file that was not on
+    // disk yet and `nuxt prepare` aborted, making `pnpm install` exit 1.
+    //
+    // The `vite.resolve.alias` block at the bottom of this file could not help:
+    // it governs bundling, not Nuxt's module resolution. Pointing straight at
+    // the source makes this entry consistent with the 11 sibling `origam/*`
+    // aliases already declared there, and with how `stories` and `tests`
+    // resolve the DS (`packages/tests/vitest.config.ts` states outright that
+    // its aliases exist so specs "don't require a full `pnpm -F origam build`").
+    // Measured: identical module output either way — 218 registered Origam
+    // components, byte-for-byte the same list, with and without `ds/dist`.
     modules: [
-        'origam/nuxt',
+        resolve(__dirname, '../ds/src/nuxt/module.ts'),
         '@nuxtjs/seo',
         '@nuxtjs/i18n'
     ],
 
     origam: {
-        defaultTheme: 'origam',
+        // ⛔ `geek` est l'apparence voulue du site — décision mainteneur,
+        // 2026-09-17 — et elle se déclare ICI, pas dans `app.head.htmlAttrs`.
+        //
+        // La différence n'est pas cosmétique. Ce champ est lu par
+        // `resolveServerTheme()` (`packages/ds/src/nuxt/plugin.server.ts`), qui
+        // résout `cookie ?? defaultTheme` : il ne s'applique donc QUE lorsque le
+        // visiteur n'a rien choisi. Un attribut dans `app.head.htmlAttrs` est au
+        // contraire réappliqué par unhead APRÈS l'hydratation, par-dessus le
+        // choix du visiteur — c'est ce qui cassait le sélecteur de thème du site
+        // entier depuis le 2026-06-12 (`958a1b6fa`), sur les deux axes.
+        //
+        // Les deux propriétés tiennent donc ensemble, et sont épinglées par
+        // `packages/tests/e2e/marketing-theme-honored.spec.ts` :
+        //   - sans préférence stockée, le site rend `geek` ;
+        //   - avec `cartoon` choisi, il rend `cartoon`, rechargement compris.
+        defaultTheme: 'geek',
         defaultMode: 'light',
         // Brand themes authored as clean IOrigamTheme objects (semantic vars,
         // light + dark). Component default props are inherited from the origam
         // base theme (sobre identity, name-less → applies to every brand). The
         // legacy per-brand CSS sheets still carry bespoke marketing selectors
         // (.home-* hacks) — to be removed in the themes-showcase cleanup.
+        //
+        // ⛔ #360 (v3.0.0 harvest) — `createOrigam()` used to prefix EVERY
+        // install (this one included) with this exact un-named baseline. It no
+        // longer does, so it is listed here explicitly, FIRST, so every brand
+        // below still layers on top of it exactly as before (`activeDefaultsFor`
+        // always merges the name-less theme's `components` first, brand-named
+        // entries override). Omitting it would silently drop any component
+        // default prop a brand theme does not itself redeclare.
         themes: [
+            ...origamBaseline,
             ...geekThemes,
             ...glassThemes,
             ...cartoonThemes,
@@ -99,6 +148,9 @@ export default defineNuxtConfig({
     },
 
     css: [
+        // Polices auto-hébergées (#761) — doit précéder les thèmes, qui se
+        // contentent de référencer les familles par leur nom.
+        '~/assets/css/fonts.css',
         'origam/tokens/css/dark',
         '~/assets/css/themes/_shared.css',
         '~/assets/css/themes/geek.css',
@@ -138,17 +190,44 @@ export default defineNuxtConfig({
     app: {
         head: {
             titleTemplate: `%s · ${MARKETING_DEFAULTS.siteName}`,
+            // ⛔ NE JAMAIS remettre `data-theme` / `data-mode` ici.
+            //
+            // Ils y étaient en dur (`'geek'` / `'light'`) depuis le 2026-06-12
+            // (`958a1b6fa`), quand le site n'avait que deux thèmes de
+            // démonstration, et cassaient le theming du site entier depuis.
+            //
+            // ⚠️ `geek` RESTE l'apparence du site : elle est déclarée plus haut,
+            // en `origam.defaultTheme`, là où le DS la lit. La différence est que
+            // `defaultTheme` ne s'applique QU'EN L'ABSENCE de choix du visiteur,
+            // là où un attribut de `head` écrase ce choix à chaque rendu.
+            //
+            // Ce bloc est rendu par unhead, qui réécrit `<html>` APRÈS
+            // l'hydratation. Le serveur émettait le bon thème (le DS le pose
+            // par requête via `useHead` dans `plugin.server.ts`), puis unhead
+            // le remplaçait. Trace capturée en patchant `setAttribute` :
+            //
+            //   +1117 ms  data-theme="origam"   applyToDocument (DS)
+            //   +1296 ms  data-theme="origam"   applyToDocument (DS)
+            //   +1359 ms  data-theme="geek"     trackCtx → _renderDOMHead (unhead)
+            //
+            // Le dernier write gagne. Portée mesurée, 7 cas sur 7 : toutes les
+            // pages, et les DEUX axes — `cartoon`/`dark` choisis par cookie
+            // ressortaient en `geek`/`light`. Le sélecteur de thème du site ne
+            // survivait à aucun rechargement.
+            //
+            // Gardé par `packages/tests/e2e/marketing-theme-honored.spec.ts`.
             htmlAttrs: {
-                lang: MARKETING_DEFAULTS.defaultLocale,
-                'data-theme': 'geek',
-                'data-mode': 'light'
+                lang: MARKETING_DEFAULTS.defaultLocale
             },
             link: [
                 { rel: 'icon', type: 'image/svg+xml', href: MARKETING_DEFAULTS.logoPath },
-                { rel: 'icon', type: 'image/x-icon', href: MARKETING_DEFAULTS.faviconPath },
-                { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-                { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-                { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,600&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap' }
+                { rel: 'icon', type: 'image/x-icon', href: MARKETING_DEFAULTS.faviconPath }
+
+                // ⛔ #761 — plus aucune police distante ici. Les trois familles
+                // (Fraunces, Inter, JetBrains Mono) sont servies par ce site
+                // depuis public/fonts/, déclarées dans assets/css/fonts.css.
+                // Ne PAS réintroduire de <link> vers fonts.googleapis.com : la
+                // page /privacy affirme qu'aucun tiers n'est contacté.
             ]
         }
     },
@@ -210,6 +289,28 @@ export default defineNuxtConfig({
         },
         resolve: {
             alias: {
+                // ⛔ The four `origam/tokens/css/*` sheets are aliased to SOURCE
+                // for the same reason as `modules[]` above — see #774.
+                //
+                // One of them is declared in this file's own `css[]` array
+                // (`dark`); the other three are injected into `nuxt.options.css`
+                // by the DS Nuxt module (`primitive`, `light`, `utilities` —
+                // `packages/ds/src/nuxt/module.ts:106-116`). Nuxt funnels that
+                // array into the virtual `#build/css.mjs`, whose imports the
+                // bundler resolves through the `origam` package's `exports` map
+                // — and every `./tokens/css/*` entry there points into `dist/`,
+                // which only `pnpm -F origam build` creates.
+                //
+                // Measured on a worktree with no `packages/ds/dist`:
+                // `pnpm -F @origam/marketing build` exited 1 on
+                // `Rolldown failed to resolve import "origam/tokens/css/primitive"`.
+                // The token stylesheets are hand-maintained sources committed
+                // under `ds/src/assets/css/tokens/` and `dist/` only copies
+                // them, so pointing at the source is lossless.
+                'origam/tokens/css/primitive': resolve(__dirname, '../ds/src/assets/css/tokens/primitive.css'),
+                'origam/tokens/css/light': resolve(__dirname, '../ds/src/assets/css/tokens/light.css'),
+                'origam/tokens/css/dark': resolve(__dirname, '../ds/src/assets/css/tokens/dark.css'),
+                'origam/tokens/css/utilities': resolve(__dirname, '../ds/src/assets/css/tokens/origam-utilities.css'),
                 'origam/nuxt': resolve(__dirname, '../ds/src/nuxt/module.ts'),
                 'origam/components': resolve(__dirname, '../ds/src/components'),
                 'origam/composables': resolve(__dirname, '../ds/src/composables'),
@@ -219,7 +320,10 @@ export default defineNuxtConfig({
                 'origam/utils': resolve(__dirname, '../ds/src/utils'),
                 'origam/types': resolve(__dirname, '../ds/src/types'),
                 'origam/interfaces': resolve(__dirname, '../ds/src/interfaces'),
-                'origam/services': resolve(__dirname, '../ds/src/services'),
+                // Pas d'alias `origam/services` : le repertoire source a ete
+                // renomme en `classes/` par 63120a402 (2026-08-19) et l'alias
+                // pointait depuis sur un chemin inexistant. L'entree `exports`
+                // jumelle est retiree du paquet en 2.18.0 ; cet alias suit.
                 'origam/themes': resolve(__dirname, '../ds/src/themes')
             }
         }

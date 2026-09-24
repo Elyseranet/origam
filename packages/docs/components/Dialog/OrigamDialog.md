@@ -61,9 +61,33 @@ props exercised by the component's own story, not every inherited prop.
 
 ## Scrolling
 
-The dialog's content area scrolls internally, **unconditionally** — the header
-and footer stay pinned while `.origam-card__content` takes the overflow. There
+**The dialog as a whole scrolls** — `.origam-overlay__content`, the box that
+carries the `--origam-dialog---max-height` ceiling, is also the scrollport
+(`overflow-y: auto`). Header, asset, content and footer scroll together. There
 is no prop to configure this, and none is needed.
+
+::: tip Why the ceiling and the scroll sit on the same box — issue #563
+`.origam-overlay__content` is `position: absolute` with an **auto** height, so
+the `max-height: 100%` the dialog puts on `.origam-card` resolves to `none`:
+the card grows without a ceiling. Before the fix the overlay was
+`overflow: visible`, so it let the card spill off screen and **nothing**
+scrolled — not the card, not `.origam-card__content`, and not the document
+(`scrollStrategy: 'block'`). Measured in Chromium (Design dialog, 900 px added
+to `#footer`): card `overflow hidden`, `clientHeight 1047 === scrollHeight 1047`;
+footer **459 px below the viewport** with zero scrollable ancestors. The
+`&--fullscreen` branch already declared `overflow-y: auto`; the default mode now
+matches it. Geometry after: the overlay reports `clientHeight 564 /
+scrollHeight 1700`, and the footer is fully reachable by wheel.
+:::
+
+::: warning A tall `#asset` is clipped by `OrigamCard`, not by the dialog
+`.origam-card__asset` declares `aspect-ratio: 16 / 9; overflow: hidden` — it is
+a media well. Slot content taller than that well is clipped with no scroll, and
+this is **identical outside any dialog** (measured on a standalone `OrigamCard`:
+`clientHeight 334 / scrollHeight 1720`, no scrollable ancestor). Making the
+dialog scroll does not change it. Size the asset, or put the tall content in
+`#content`.
+:::
 
 ::: warning `scrollable` was removed — issue #419
 `<OrigamDialog>` used to declare a `scrollable` boolean. It emitted an
@@ -84,15 +108,9 @@ Removing it changes no rendering whatsoever. It is a typed-API removal only:
 code passing `scrollable` now fails to type-check, and should simply drop the
 prop.
 
-**A separate, still-open defect was explicitly carved out of this decision** —
-tracked as **#563**. Content that overflows *outside* `.origam-card__content` —
-chiefly a tall `#asset`, which `OrigamCard` renders as a **sibling** of that
-block — becomes unreachable. Measured: no ancestor of the overflowing content is
-scrollable, the document is not either (`scrollStrategy: 'block'`), and 1219 px
-end up below the viewport with no way to get to them. The card is not truncated
-at its own boundary — it *grows*; `.origam-overlay__content` (`overflow:
-visible`) is what lets it spill off screen. Removing `scrollable` neither caused
-nor fixed this. Do not read #419 as having settled it.
+**A separate defect was explicitly carved out of this decision** — **#563**,
+fixed since, see the *Scrolling* note above. Removing `scrollable` neither
+caused nor fixed it. Do not read #419 as having settled it.
 :::
 
 ## Status / icon

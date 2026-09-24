@@ -640,7 +640,8 @@
 		elevationClasses.value,
 		marginClasses.value,
 		paddingClasses.value,
-		roundedClasses.value
+		roundedClasses.value,
+		props.class
 	])
 
 	const rootStyles = computed<StyleValue>(() => {
@@ -677,7 +678,7 @@ return [ out, props.style as StyleValue ]
 
 	const bulletAriaLabel = (bullet: IChartBulletBullet): string => {
 		const pct = bullet.datum.target ? Math.round((bullet.datum.value / bullet.datum.target) * 100) : 0
-		return `${ bullet.category }: value ${ bullet.datum.value }, target ${ bullet.datum.target }, ${ pct }% achievement`
+		return t('origam.chart.bullet.bullet_aria_label', bullet.category, bullet.datum.value, bullet.datum.target, pct)
 	}
 
 	/*********************************************************

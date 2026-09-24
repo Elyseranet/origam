@@ -62,7 +62,6 @@
 		          v-if="hasPrepend"
 		          key="prepend"
 		          class="origam-btn__prepend"
-		          @click="handleClickPrepend"
           >
             <slot name="prepend">
               <origam-avatar
@@ -101,7 +100,6 @@
 							v-if="hasAppend"
 							key="append"
 							class="origam-btn__append"
-							@click="handleClickAppend"
 					>
             <slot name="append">
              <origam-avatar
@@ -128,7 +126,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, onMounted, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
+	import { computed, ref, StyleValue, toRef, useAttrs, useSlots, watchEffect } from 'vue'
 	import type { ComputedRef, ExtractPropTypes } from 'vue'
 	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
@@ -154,9 +152,8 @@
 	import { useTypography } from '../../composables/Commons/typography.composable'
 	import { useVariant } from '../../composables/Commons/variant.composable'
 
-	import { warnDeprecatedEmit } from '../../utils/Commons/color.util'
+	import { warnMissingNativeControlName } from '../../utils/Commons/a11y.util'
 
-	import { ADJACENT_EMIT_REPLACEMENT } from '../../consts/Btn/btn.const'
 	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts/Btn/btn-toggle.const'
 
 	import vContrast from '../../directives/Contrast/contrast.directive'
@@ -320,18 +317,9 @@
 	} = useStateEffect(props, isHover, isActive as ComputedRef<boolean>, hoverState, activeState, isDisabled, toRef(props, 'flat'))
 	const {variantClasses} = useVariant(props)
 	const {
-		onClickPrepend: handleClickPrepend,
-		onClickAppend: handleClickAppend,
-		isPrependClickable,
-		isAppendClickable,
 		hasAppend,
 		hasPrepend
 	} = useAdjacent(props, prependIcon, appendIcon)
-
-	onMounted(() => {
-		if (isPrependClickable.value) warnDeprecatedEmit('OrigamBtn', 'click:prepend', ADJACENT_EMIT_REPLACEMENT)
-		if (isAppendClickable.value) warnDeprecatedEmit('OrigamBtn', 'click:append', ADJACENT_EMIT_REPLACEMENT)
-	})
 
 	/*********************************************************
 	 * Click handler
@@ -368,6 +356,43 @@
 	const hasLoader = computed(() => {
 		return slots.loader || loaderConfig.value.isActive
 	})
+
+	/*********************************************************
+	 * Icon-only accessible name — ⛔ issue #653
+	 *
+	 * @description
+	 * #427 was closed as "corrigé et mergé" while its own closing commit
+	 * (`20123d8a`) said in writing that this exact finding was NOT fixed.
+	 * An icon-only `<origam-btn icon="…"/>` renders a real `<button>` whose
+	 * only child is an `aria-hidden` glyph: axe reports `button-name`,
+	 * impact **critical**, and a screen reader announces "button" and
+	 * nothing else (WCAG 2.1 4.1.2).
+	 *
+	 * @description
+	 * Unlike the adjacent zones (#747), the role here CANNOT be withdrawn —
+	 * the element IS a `<button>`, and that is the correct semantic. And no
+	 * label is fabricated: a guessed string would silence axe while telling
+	 * the user nothing (#622). All the DS can legitimately do is say so, in
+	 * development, once per component. `title` counts as a name source
+	 * because the accname algorithm accepts it as the last fallback.
+	 ********************************************************/
+	const isUnnamedIconOnly = computed(() => {
+		if (!hasIcon.value) return false
+		if (slots.default || props.text) return false
+
+		return !(attrs['aria-label'] || attrs['aria-labelledby'] || attrs.title)
+	})
+
+	if (import.meta.env?.DEV) {
+		watchEffect(() => {
+			if (isUnnamedIconOnly.value) {
+				warnMissingNativeControlName(
+					'OrigamBtn',
+					'icon-only mode renders a <button> whose only content is an aria-hidden glyph'
+				)
+			}
+		})
+	}
 
 	// Skeleton mode REPLACES the btn content entirely — OrigamLoader's
 	// v-if removes the default slot from the DOM, so the btn collapses
@@ -535,7 +560,7 @@
 		padding: 0 calc(16px + var(--origam-btn---density-padding-x, 0px));
 
 		width: var(--origam-btn---width, auto);
-		min-width: var(--origam-btn---min-width, calc(var(--origam-btn---width, 64px) + var(--origam-btn---density, 0px)));
+		min-width: calc(var(--origam-btn---min-width, 64px) + var(--origam-btn---density, 0px));
 		max-width: var(--origam-btn---max-width, 100%);
 		height: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px));
 		min-height: var(--origam-btn---min-height, calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px)));
@@ -628,9 +653,6 @@
 		}
 
 		&--size-default {
-			--origam-btn---height: var(--origam-btn---height-md, 36px);
-			--origam-btn---font-size: 0.875rem;
-			--origam-btn---min-width: 64px;
 			padding: 0 calc(var(--origam-btn---padding-md, 16px) + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
@@ -666,7 +688,6 @@
 		}
 
 		&--density-default {
-			--origam-btn---density: 0px;
 			--origam-btn---density-padding-x: 0px;
 		}
 
@@ -778,7 +799,7 @@
 		&--icon {
 			--origam-btn---border-radius: var(--origam-btn---border-radius-icon, 50%);
 
-			--origam-btn---min-width: 0;
+			--origam-btn---min-width: 0px;
 			--origam-btn---width: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px));
 
 			padding: 0;
@@ -1221,8 +1242,5 @@
 
 		--origam-btn__prepend---margin-inline-start: calc(var(--origam-btn---height) / -9);
 		--origam-btn__prepend---margin-inline-end: calc(var(--origam-btn---height) / 4.5);
-
-		--origam-btn---min-width: calc(var(--origam-btn---width, 36px) + var(--origam-btn---density, 0));
-		--origam-btn---min-height: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0));
 	}
 </style>

@@ -267,6 +267,43 @@
 				</origam-menu>
 			</div>
 		</Variant>
+
+		<!--
+			#742 — la liste doit DÉFILER, pas déborder.
+			Deux Variants, une par façon de poser le plafond de hauteur :
+
+			  • « Long list - token ceiling »  : aucun `max-height`, le
+			    plafond vient du token `--origam-menu---max-height`, porté
+			    par `.origam-menu__content` lui-même (ici ramené à 240px
+			    par le conteneur pour rester mesurable dans la sandbox).
+			  • « Long list - prop ceiling »   : `max-height` prop, posé en
+			    inline par `useDimension` sur `.origam-overlay__content`,
+			    c'est-à-dire sur le PARENT de `.origam-menu__content` —
+			    exactement le chemin qu'emprunte OrigamSelect.
+
+			Les deux doivent défiler ; c'est le point du ticket.
+			Appendues EN DERNIER pour ne décaler aucun index 0-based
+			déjà documenté dans `packages/tests/e2e/menu.spec.ts`.
+		-->
+		<Variant title="Long list - token ceiling">
+			<div style="padding: 48px; display: flex; justify-content: center; --origam-menu---max-height: 240px;">
+				<origam-menu :items="longItems">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Open long menu"/>
+					</template>
+				</origam-menu>
+			</div>
+		</Variant>
+
+		<Variant title="Long list - prop ceiling">
+			<div style="padding: 48px; display: flex; justify-content: center;">
+				<origam-menu :items="longItems" :max-height="240">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Open capped menu"/>
+					</template>
+				</origam-menu>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -310,6 +347,12 @@
 		},
 		{ title: 'Settings', prependIcon: 'mdi-cog' }
 	]
+
+	// 30 entrées : reproduit le volume de la page /changelog du site
+	// marketing où le débordement a été trouvé (#742).
+	const longItems = Array.from({ length: 30 }, (_, i) => ({
+		title: `Option ${ i + 1 }`
+	}))
 
 	const LOCATION_OPTIONS = [
 		{ label: '(default)', value: undefined },

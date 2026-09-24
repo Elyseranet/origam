@@ -111,6 +111,15 @@
 					<HstNumber v-model="state.length" title="Length (row size, read by the aria label)" :min="1" :max="20"/>
 					<HstText   v-model="state.itemAriaLabel" title="Item Aria Label (locale key)"/>
 				</StoryGroup>
+				<!--
+					#812 — unticking "Show Star" now renders an EMPTY element: the
+					`<label>` and the `<input type="radio">` go with the star. A control
+					nobody can see must not be focusable, and this pair used to be — the
+					field's own hidden `value=0` item sat in the radio group's arrow
+					cycle with a 0x0 transparent focus target. Gating the `<input>`
+					alone would have left a `<label for>` resolving to nothing, which is
+					exactly the #810 defect.
+				-->
 				<StoryGroup title="States">
 					<HstCheckbox v-model="state.showStar"      title="Show Star"/>
 					<HstCheckbox v-model="state.isFilled"      title="Is Filled"/>
@@ -163,6 +172,44 @@
 						:is-filled="true"
 						color="warning"
 						@mouseleave="logEvent('mouseleave', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<!--
+			#812 — `change` and `keydown` are the KEYBOARD channels. The pointer
+			path goes through the star `<div>` and fires `click` above; the
+			browser's own radio-group navigation never touches it and fires
+			`click` + `change` on the `<input>` instead. Tab into the row below,
+			then press ArrowRight / ArrowLeft / Space and watch the log — that is
+			the signal the parent field consumes to move its model.
+		-->
+		<Variant title="Events - change">
+			<div style="padding: 24px; display: flex; gap: 4px; align-items: center;">
+				<origam-rating-field-item
+						v-for="star in 3"
+						:key="star"
+						:value="star"
+						:show-star="true"
+						:is-filled="star <= 1"
+						color="warning"
+						name="rating-change"
+						@change="logEvent('change', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Events - keydown">
+			<div style="padding: 24px; display: flex; gap: 4px; align-items: center;">
+				<origam-rating-field-item
+						v-for="star in 3"
+						:key="star"
+						:value="star"
+						:show-star="true"
+						:is-filled="star <= 1"
+						color="warning"
+						name="rating-keydown"
+						@keydown="logEvent('keydown', $event)"
 				/>
 			</div>
 		</Variant>

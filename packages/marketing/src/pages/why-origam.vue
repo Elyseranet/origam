@@ -32,7 +32,7 @@ const comparisonItems = computed(() =>
         libraryNote: lib.noteKey,
         isOrigam: lib.nameKey === 'why_origam.comparison.origam',
         vueNative: lib.vueNative,
-        designTokens: lib.designTokens,
+        themingPropsFirst: lib.themingPropsFirst,
         a11yTested: lib.a11yTested,
         cssFirst: lib.cssFist,
         treeShakable: lib.treeShakable,
@@ -187,7 +187,7 @@ const comparisonItems = computed(() =>
                                 scope="col"
                                 class="why-comparison__th"
                             >
-                                {{ t('why_origam.comparison.col_design_tokens', 'DTCG tokens') }}
+                                {{ t('why_origam.comparison.col_theming_props_first', 'Theming props-first') }}
                             </th>
                             <th
                                 scope="col"
@@ -241,9 +241,9 @@ const comparisonItems = computed(() =>
                             </td>
                             <td class="why-comparison__td">
                                 <origam-icon
-                                    :icon="lib.designTokens ? 'mdi-check-circle' : 'mdi-minus-circle-outline'"
-                                    :color="lib.designTokens ? 'success' : 'error'"
-                                    :aria-label="lib.designTokens ? t('why_origam.comparison.yes', 'Yes') : t('why_origam.comparison.no', 'No')"
+                                    :icon="lib.themingPropsFirst ? 'mdi-check-circle' : 'mdi-minus-circle-outline'"
+                                    :color="lib.themingPropsFirst ? 'success' : 'error'"
+                                    :aria-label="lib.themingPropsFirst ? t('why_origam.comparison.yes', 'Yes') : t('why_origam.comparison.no', 'No')"
                                     class="why-comparison__cell-icon"
                                 />
                             </td>

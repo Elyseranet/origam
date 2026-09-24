@@ -38,8 +38,16 @@ import { expect, test } from '@playwright/test'
  *
  * ## Variants de la story OrigamListItem (index 0-based)
  *   0 → Design      (color, bgColor, density, size, rounded, elevation, …)
- *   1 → State       (hover / active)
- *   2 → Functional  (disabled, nav, slim, link, tag, href, value, activeClass)
+ *   1 → Density     (ligne dans une liste vs hors liste — #571)
+ *   2 → State       (hover / active)
+ *   3 → Functional  (disabled, nav, slim, link, tag, href, value, activeClass)
+ *
+ * ⛔ Ces index sont POSITIONNELS : insérer un Variant dans la story les décale
+ * tous et ce spec part mesurer un autre écran — sans erreur, juste une valeur
+ * inattendue. `Density` a été inséré en 1 sous #571, ce qui a poussé
+ * `Functional` de 2 à 3. Si une mesure devient inexplicable ici, vérifier
+ * d'abord que la carte ci-dessus correspond encore à l'ordre des `<Variant>`
+ * dans `OrigamListItem.story.vue`.
  */
 
 const STORY_ID = 'components-stories-list-origamlistitem-story-vue'
@@ -47,7 +55,7 @@ const STORY_PATH = '/stories/story/' + STORY_ID
 const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
 const DESIGN_VARIANT = 0
-const FUNCTIONAL_VARIANT = 2
+const FUNCTIONAL_VARIANT = 3
 
 test.describe('OrigamListItem — props mortes (#436 / #440)', () => {
     test.setTimeout(45000)

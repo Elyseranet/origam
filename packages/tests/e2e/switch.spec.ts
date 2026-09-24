@@ -30,7 +30,12 @@ import { expect, test } from '@playwright/test'
  *   et applique background-color: currentColor.
  *
  * ## Track background
- *   Gris par défaut (var --origam-switch__track---background-color = rgb(163,163,163)).
+ *   #919 — le repli SCSS `rgb(163,163,163)` ne reflétait déjà pas la valeur réelle
+ *   AVANT ce correctif (le token résolvait `surface---disabled`, rgb(230,230,230) en
+ *   light) ; c'était une valeur de secours jamais atteinte, pas la valeur rendue.
+ *   Depuis #919, le token dérive de `color-mix(in srgb, text---primary 60%,
+ *   surface---default)` — un remplissage garanti ≥3:1 contre la page, mesuré sur les
+ *   8 identités × 2 modes (`packages/tests/audit/why-origam-contrast.audit.mjs`).
  *   Coloré via backgroundColorStyles sur OrigamSwitchTrack quand bgColor est fourni.
  *
  * ## Timing note (important)
@@ -129,14 +134,22 @@ test.describe('OrigamSwitch', () => {
             const trackBg = await sandbox.locator('.origam-switch-track').first().evaluate(
                 el => getComputedStyle(el).backgroundColor
             )
-            // Default track is a neutral grey (no bgColor provided).
-            // The token value resolves to rgb(230, 230, 230) in the current light theme
-            // (var --origam-switch__track---background-color).
+            // #919 — pre-fix this token was `var(--origam-color__surface---disabled)`,
+            // rgb(230, 230, 230): 1.25:1 against the page (Playwright/Chromium
+            // measurement across 8 identities × 2 modes, all under the 3:1 AA floor
+            // for a non-text UI component, WCAG 1.4.11). It now derives from
+            // `color-mix(in srgb, var(--origam-color__text---primary) 60%,
+            // var(--origam-color__surface---default))` — see light.css/dark.css.
+            // ⛔ `getComputedStyle` serializes a `color-mix()` result as a
+            // `color(srgb …)` functional notation, NOT legacy `rgb()` — even
+            // though every channel is still plain sRGB. 0.423529 × 255 ≈ 108,
+            // the same track-vs-page pairing this literal used to assert as
+            // rgb(230, 230, 230). Verified in a real Chromium, not computed.
             // We assert it is NOT transparent and NOT the primary color.
             expect(trackBg).not.toBe('rgba(0, 0, 0, 0)')
             expect(trackBg).not.toBe('rgb(124, 58, 237)')  // primary.bg
             // Actual resolved grey — update if the token changes
-            expect(trackBg).toBe('rgb(230, 230, 230)')
+            expect(trackBg).toBe('color(srgb 0.423529 0.423529 0.423529)')
         })
 
         test('label text is rendered', async ({ page }) => {

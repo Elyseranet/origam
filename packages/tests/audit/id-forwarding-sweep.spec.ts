@@ -21,10 +21,13 @@
  * puis chercher cette sentinelle dans le DOM rendu. Trois verdicts utiles :
  *
  *   root       — la sentinelle est l'id de l'element racine. Ideal.
- *   descendant — elle est ailleurs dans l'arbre. Legitime pour les champs :
- *                l'id appartient a l'`<input>`, c'est lui que vise un
+ *   descendant — elle est l'id d'un autre noeud de l'arbre. Legitime pour les
+ *                champs : l'id appartient a l'`<input>`, c'est lui que vise un
  *                `<label for>`. Pas un defaut.
- *   lost       — introuvable. DEFAUT : la prop est acceptee et jetee.
+ *   lost       — aucun noeud ne porte cet id. DEFAUT : la prop est acceptee et
+ *                jetee. Inclut le cas ou seule une valeur DERIVEE
+ *                (`<id>-messages`) est rendue — voir la comparaison exacte
+ *                plus bas (#633).
  *
  * ⛔ LE PIEGE QUI REND CE FICHIER NECESSAIRE PLUTOT QU'UN SIMPLE SWEEP_PROPS=id
  * ---------------------------------------------------------------------------
@@ -158,13 +161,46 @@ for (const [path, mod] of Object.entries(modules)) {
         const html: string = wrapper.html()
         const root = wrapper.element as HTMLElement
 
+        /*
+         * ⛔ COMPARAISON EXACTE D'ATTRIBUT, PAS `html.includes()` — #633.
+         *
+         * Le verdict `descendant` reposait sur `html.includes(SENTINEL)`, un
+         * test de SOUS-CHAINE. Toute DERIVATION le satisfait :
+         * `origam-snackbar-group-<sentinelle>` contient la sentinelle, donc
+         * un composant dont l'id du consommateur n'atteint AUCUN noeud etait
+         * compte sain. L'instrument creditait exactement le defaut qu'il
+         * etait cense trouver.
+         *
+         * Mesure du changement, meme commit, meme machine :
+         *   sous-chaine : root 154 / descendant 38 / lost 0
+         *   exact       : root 154 / descendant 33 / lost 5
+         *
+         * Les 5 : OrigamInput, OrigamOtpInputField, OrigamSnackbarGroup,
+         * OrigamRatingField (consequence d'OrigamInput, a qui il transmet
+         * correctement son id), OrigamDataTableHeadersCell. `detail` conserve
+         * les id REELLEMENT rendus, pour que le rapport dise ou est parti
+         * l'id plutot que seulement qu'il est parti.
+         */
+        const renderedIds = [
+            root?.getAttribute?.('id') ?? null,
+            ...wrapper.findAll('[id]').map((e) => (e.element as HTMLElement).getAttribute('id'))
+        ].filter((v): v is string => Boolean(v))
+        const exact = renderedIds.includes(SENTINEL)
+
         let verdict: Verdict
         if (html.trim() === '' || html.startsWith('<!--')) verdict = 'not-rendered'
         else if (root?.getAttribute?.('id') === SENTINEL) verdict = 'root'
-        else if (html.includes(SENTINEL)) verdict = 'descendant'
+        else if (exact) verdict = 'descendant'
         else verdict = 'lost'
 
-        rows.push({ component: name, verdict, immediate })
+        rows.push({
+            component: name,
+            verdict,
+            immediate,
+            detail: verdict === 'lost' && html.includes(SENTINEL)
+                ? `la sentinelle n'apparait que DERIVEE — id rendus : ${[...new Set(renderedIds)].join(' | ')}`
+                : undefined
+        })
 
         wrapper.unmount()
         // jsdom garde chaque <style> injecte vivant ; on nettoie comme le fait

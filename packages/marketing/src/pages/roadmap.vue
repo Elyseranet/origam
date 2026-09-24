@@ -24,6 +24,37 @@ const heroBadge = computed(() =>
     t('roadmap.hero.badge', `v${ version.value } — Wave 4 shipped`, { version: version.value })
 )
 
+// #913 — the SAME page rendered two different versions of itself. Fifteen
+// lines under the badge above, the "WHERE WE STAND" title read
+// `t('roadmap.status.title_line1')`, whose locale value was the LITERAL
+// string "Where 2.17.1" — no interpolation, so `useVersion()` never reached
+// it. #743 had already fixed the badge this way and left the title behind;
+// substituting a fresh number in the locale would only restart the same
+// drift, eight versions later. Both this title and the npm status line below
+// now interpolate `{version}`, exactly like `roadmap.hero.badge`, so a
+// release never requires editing a translated string again.
+//
+// BOTH lines take `{version}` even though only line 1 uses it today: the
+// number sits on line 1 in EN ("Where {version}" / "stands.") and the FR
+// value was reshaped to match ("Où en est la {version}" / "aujourd'hui."),
+// so `i18n:check`'s EN/FR placeholder parity stays at 0 gaps. Handing the
+// parameter to both lines means a future rewording can move the number to
+// the other half without touching this file.
+const statusTitleLine1 = computed(() =>
+    t('roadmap.status.title_line1', `Where ${ version.value }`, { version: version.value })
+)
+
+const statusTitleLine2 = computed(() =>
+    t('roadmap.status.title_line2', 'stands.', { version: version.value })
+)
+
+// The status list renders a flat `labelKey` loop. `{ version }` is handed to
+// every entry rather than to the one that needs it today: vue-i18n drops a
+// named parameter a message does not reference, so this costs nothing and
+// means the NEXT status line that wants the live version only edits a locale
+// value — never this file. That is the whole point of #913.
+const statusParams = computed(() => ({ version: version.value }))
+
 useSeoMeta({
     title: () => t('roadmap.meta.title', 'Roadmap · origam design system'),
     description: () => t('roadmap.meta.description', 'Where origam is today, what has been delivered, and what is coming next.'),
@@ -95,8 +126,8 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                         tag="h2"
                         class="roadmap-section__title"
                     >
-                        <span class="roadmap-section__title-line">{{ t('roadmap.status.title_line1', 'Post-2.6.0') }}</span>
-                        <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ t('roadmap.status.title_line2', 'Status.') }}</span>
+                        <span class="roadmap-section__title-line">{{ statusTitleLine1 }}</span>
+                        <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ statusTitleLine2 }}</span>
                     </origam-title>
 
                     <p class="roadmap-section__subtitle">
@@ -127,13 +158,13 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                                 <div class="roadmap-status__row">
                                     <origam-icon
                                         :icon="item.done ? 'mdi-check-circle' : 'mdi-close-circle'"
-                                        :color="item.done ? 'success' : 'error'"
+                                        :color="item.done ? 'success' : 'danger'"
                                         class="roadmap-status__icon"
                                         aria-hidden="true"
                                     />
 
                                     <p class="roadmap-status__label">
-                                        {{ t(item.labelKey, item.labelKey) }}
+                                        {{ t(item.labelKey, item.labelKey, statusParams) }}
                                     </p>
                                 </div>
                             </template>
@@ -324,6 +355,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                         <template #default>
                             <origam-card
                                 flat
+                                :border="false"
                                 class="roadmap-timeline__card"
                             >
                                 <template #header.title>
@@ -654,7 +686,25 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
 
 .roadmap-status {
     padding-block: var(--origam-space---24, 6rem);
-    background: var(--origam-color__surface---sunken, #f5f5f5);
+    // ⛔ NO `background` here — #744. This band used to paint
+    // `--origam-color__surface---sunken`, betting that "sunken" is always
+    // DARKER than the page. That bet is theme-dependent and it loses under
+    // `geek`, measured in Chromium on /roadmap:
+    //
+    //   theme   surface---default   surface---sunken   result
+    //   sobre   #ffffff             #f5f5f5            recessed  ✅
+    //   geek    #f6f0ff             #fbf5ff            RAISED    ❌
+    //
+    // The section then rendered LIGHTER than `.origam-main` (rgb(251,245,255)
+    // over rgb(246,240,255)) across its whole height — the "partie blanche"
+    // the user reported. Letting the page surface show through is correct
+    // under every theme by construction: a section that paints nothing can
+    // never be brighter than the page it sits on. The `border-block` hairline
+    // below still delimits the section.
+    //
+    // The mis-paired `geek` token itself is a real, separate defect (it also
+    // hits ~28 other `surface---sunken` consumers site-wide) — tracked apart,
+    // because repairing it needs a colour decision, not a bug fix.
     border-block: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
 
     &__header {
@@ -801,7 +851,10 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
 
 .roadmap-timeline-wrap {
     padding-block: var(--origam-space---24, 6rem);
-    background: var(--origam-color__surface---sunken, #f5f5f5);
+    // ⛔ NO `background` here — #744, same cause as `.roadmap-status` above.
+    // This is the band the user photographed: 4 211 px of
+    // `--origam-color__surface---sunken` rendering rgb(251,245,255) over a
+    // rgb(246,240,255) page under `geek`. See the note on `.roadmap-status`.
     border-block: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
 }
 
@@ -826,8 +879,8 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
         --origam-card---background: transparent;
         --origam-card---padding-block-start: var(--origam-space---2, 0.5rem);
         --origam-card---padding-block-end: var(--origam-space---6, 1.5rem);
-        --origam-card---padding-inline-start: 0;
-        --origam-card---padding-inline-end: 0;
+        --origam-card---padding-inline-start: 0px;
+        --origam-card---padding-inline-end: 0px;
     }
 
     &__card-header {

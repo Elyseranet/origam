@@ -4,37 +4,39 @@
 			:class="ratingFieldItemClasses"
 			:style="ratingFieldItemStyles"
 	>
-		<label
-				:for="id"
-				class="origam-rating-field-item__label"
-		>
-			<span class="origam-rating-field-item__hidden">{{ t(itemAriaLabel, value, length) }}</span>
-			<slot
-					v-if="showStar"
-					name="item"
-					v-bind="{props: ratingBtnProps, value}"
+		<template v-if="showStar">
+			<label
+					:for="id"
+					class="origam-rating-field-item__label"
 			>
-				<origam-btn
-						ref="origamBtnRef"
-						v-bind="{...ratingBtnProps}"
-						@click="handleClick"
-						@mouseenter="handleMouseEnter"
-						@mouseleave="handleMouseLeave"
-				/>
-			</slot>
-		</label>
+				<span class="origam-rating-field-item__hidden">{{ t(itemAriaLabel, value, length) }}</span>
+				<slot
+						name="item"
+						v-bind="{props: ratingBtnProps, value}"
+				>
+					<origam-btn
+							ref="origamBtnRef"
+							v-bind="{...ratingBtnProps}"
+							@click="handleClick"
+							@mouseenter="handleMouseEnter"
+							@mouseleave="handleMouseLeave"
+					/>
+				</slot>
+			</label>
 
-		<input
-				:id="id"
-				:checked="checked"
-				:disabled="disabled"
-				:name="name"
-				:readonly="readonly"
-				:value="value"
-				class="origam-rating-field-item__hidden"
-				tabindex="-1"
-				type="radio"
-		/>
+			<input
+					:id="id"
+					:checked="checked"
+					:disabled="disabled"
+					:name="name"
+					:readonly="readonly"
+					:value="value"
+					class="origam-rating-field-item__hidden"
+					type="radio"
+					@change="handleChange"
+					@keydown="handleKeydown"
+			/>
+		</template>
 	</component>
 </template>
 
@@ -132,6 +134,14 @@
 	 *
 	 * @description
 	 * Mouse and click events forwarded to the parent RatingField.
+	 *
+	 * #812 — `change` and `keydown` are the KEYBOARD channels, and they come
+	 * from the radio, not from the star. The pointer path goes
+	 * star `<div>` -> `@click` -> parent; the browser's own radio-group
+	 * navigation never touches that `<div>`, it fires `click` + `change` on
+	 * the newly checked `<input>`. With no listener there, every arrow press
+	 * changed the DOM's `:checked` and the model stayed behind — which is the
+	 * defect #812 reported as "arrows do nothing".
 	 ********************************************************/
 	const handleMouseEnter = (e: MouseEvent) => {
 		emits('mouseenter', e)
@@ -141,6 +151,12 @@
 	}
 	const handleClick = (e: MouseEvent) => {
 		emits('click', e)
+	}
+	const handleChange = (e: Event) => {
+		emits('change', e)
+	}
+	const handleKeydown = (e: KeyboardEvent) => {
+		emits('keydown', e)
 	}
 
 	/*********************************************************
@@ -190,6 +206,30 @@
 		scoped
 >
 	.origam-rating-field-item {
+		/*
+		 * #812 — WCAG 2.4.7 (Focus Visible).
+		 *
+		 * The control a keyboard user focuses is the native
+		 * `<input type="radio">`, and `&__hidden` below makes it
+		 * `height:0; width:0; opacity:0`. Putting it back in the tab order
+		 * without this rule would have swapped one defect for another: the
+		 * group would become operable while the focus indicator landed on a
+		 * 0x0 transparent element. That is the trade #810 refused to make and
+		 * #812 names explicitly.
+		 *
+		 * `:has()` is the CSS-first answer — the ring is painted on the STAR,
+		 * which is the box the user actually sees, while focus stays on the
+		 * input that owns the radio semantics. No JS, no second focusable
+		 * element, no `tabindex` bookkeeping.
+		 *
+		 * `:focus-visible` (not `:focus`) so a mouse click on a star does not
+		 * leave a ring behind — the browser's own heuristic, not ours.
+		 */
+		&:has(:focus-visible) {
+			outline: var(--origam-border__width---2, 2px) solid var(--origam-color__border---focus, currentColor);
+			outline-offset: var(--origam-space---1, 4px);
+		}
+
 		&__label {
 			cursor: pointer;
 
@@ -216,6 +256,22 @@
 			position: absolute;
 			clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
 			z-index: 1;
+
+			/*
+			 * #812 — a `clip-path` clips the element's OWN outline too, not
+			 * just its descendants. Measured: with the shared
+			 * `outline-offset: 4px` above, focusing a half-step radio painted
+			 * a ring entirely outside the polygon — computed `outline-width`
+			 * read `2px` while the screenshot showed nothing at all. That is
+			 * the exact shape of a false green: the property is set, the pixel
+			 * is not there.
+			 *
+			 * An INSET offset puts the ring back inside the clipped region, so
+			 * it survives and outlines precisely the half the step selects.
+			 */
+			&:has(:focus-visible) {
+				outline-offset: calc(-1 * var(--origam-border__width---2, 2px));
+			}
 
 			&,
 			&:hover {

@@ -97,6 +97,31 @@
 	import { getScrollParent } from '../../utils/Commons/scroll.util'
 
 	/*********************************************************
+	 * inheritAttrs — #853
+	 *
+	 * @description
+	 * The template's actual root is a FRAGMENT: the `activator` slot
+	 * (line 2) sits as a sibling of the `<template v-if="isMounted &&
+	 * hasContent">` block that wraps the `<Teleport>`. With a multi-root
+	 * template, Vue's automatic single-root attrs fallthrough cannot
+	 * apply, and — since `$attrs` is already explicitly forwarded onto
+	 * the teleported `<div>` below (`v-bind="{ ...scopeId, ...$attrs }"`)
+	 * — the automatic attempt is redundant, not missing. Without this
+	 * flag, Vue still runs its dev-only fallthrough check on every
+	 * render, finds the "fragment root" case, and logs a "Extraneous
+	 * non-props attributes" warning whose component trace serializes
+	 * every ancestor's props — including Vue Router's `RouteProvider`,
+	 * whose `vnode` prop is the entire page's reactive vnode graph
+	 * (~4.4 MB per occurrence, dominated by repeated "[Circular]").
+	 * `OrigamOverlay` backs every floating/teleported component (Menu,
+	 * Dialog, Tooltip, Snackbar, Picker, …), so this single flag removes
+	 * the warning at its only source rather than in each consumer.
+	 * Same defect family as #818 (a single missing `inheritAttrs` caused
+	 * 12 `aria-allowed-attr` violations).
+	 ********************************************************/
+	defineOptions({ inheritAttrs: false })
+
+	/*********************************************************
 	 * Global
 	 *
 	 * @description

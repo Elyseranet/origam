@@ -5,7 +5,7 @@
 > rien n'est redige ici. Corriger une description se fait dans la banniere du symbole,
 > puis en regenerant. Issue #545.
 
-107 symbole(s) exporte(s).
+108 symbole(s) exporte(s).
 
 ## `_resetCssSupportCache`
 
@@ -204,7 +204,7 @@ provider names returns after a Map lookup and one property lookup.
 ## `provideDefaults`
 
 ```ts
-export function provideDefaults ( defaults?: Ref<IDefault> | IDefault, options?:
+export function provideDefaults ( defaults?: Ref<IDefault> | IDefault, options?: { scoped?: MaybeRefOrGetter<boolean | undefined>; reset?: MaybeRefOrGetter<string | number | undefined>; root?: MaybeRefOrGetter<string | number | undefined>; disabled?: MaybeRefOrGetter<boolean | undefined> } )
 ```
 
 Cote fournisseur : declare une map de defauts pour le sous-arbre courant,
@@ -311,10 +311,80 @@ Pure — no Vue/DOM access — so it is called once, synchronously, at
 
 **Consommateurs** (1) : `origam.ts`
 
+## `useAccessibleCommand`
+
+```ts
+export function useAccessibleCommand (options: { component: string; zone: string; prop: string; active: Ref<boolean> | ComputedRef<boolean>; label: () => string | undefined }): ComputedRef<Record<string, unknown>>
+```
+
+⛔ issues #747 / #653 / #660 — the ONE place the design system decides
+whether a non-native element may claim `role="button"`.
+
+The three tickets are three readings of the same defect: the DS puts an
+ARIA claim on an element it has no name for. `useAdjacent` /
+`useAdjacentInner` promote the prepend/append zone to `role="button"` +
+`tabindex="0"` the moment a consumer attaches `click:prepend` /
+`click:append` (#443) — but neither hook, nor any of the 13 templates
+that bind them, ever had a channel through which a name could arrive.
+Measured against axe-core in Chromium, that produced **54
+`aria-command-name` nodes (impact `serious`, WCAG 2.1 4.1.2 level A)
+across 17 components** on untouched `develop`, every one of them
+announced to a screen reader as "button" and nothing else.
+
+**The rule this hook encodes: the DS never emits an ARIA role it cannot
+name, and it never invents the name.**
+
+- A name IS available → `role="button"` + `tabindex="0"` + `aria-label`.
+  The zone is a real, reachable, announceable control.
+- No name → the returned object is EMPTY: no role, no tab stop. The
+  `@click` listener the template binds is untouched and still fires on
+  mouse, exactly as it did before #443 added the role; what disappears is
+  the false claim, not a working feature. A dev-only warning names the
+  prop to add.
+
+⛔ The rejected third option was to keep the role and fabricate a
+default label ("Prepend action", or an i18n key resolving to it). It
+would silence axe while telling a screen-reader user strictly nothing
+about what the control does — the failure mode #622 already shipped
+once (an auto-label that overwrote a visible `<label for>`), and the
+reason #653 chose a warning over a fabricated string on the icon family.
+"No ARIA is better than bad ARIA" is the same principle
+`useIconAccessibility` applies when it refuses to announce a glyph as a
+control it cannot operate.
+
+⛔ A NATIVE control cannot use this escape hatch — a `<button>` is a
+button whether or not anyone named it. `OrigamBtn`'s icon-only mode
+therefore keeps rendering its `<button>` and only warns; see
+`warnMissingAccessibleName` and `OrigamBtn.vue`.
+
+`label` is resolved through `useLocale().t`, matching the existing
+`closeLabel` contract on Alert / Chip / Dialog: an i18n key resolves,
+and any other string is returned verbatim by the builtin adapter — so
+a consumer may pass either. `useLocale(false)` (non-strict) is used on
+purpose: this hook runs inside 13 components, several of which are
+mounted in unit tests without `createOrigam()` installed, and a strict
+`useLocale()` would throw there.
+
+ADR-005: the label is read INSIDE the returned `computed`, never in the
+`setup()` body, so a value coming from a theme's `components` block is
+seen at render time rather than snapshotted too early.
+
+OPTIONS. `component` and `zone` name the offender in the dev warning
+(`OrigamCardHeader` / `prepend`); `prop` names the prop that fixes it
+(`prependAriaLabel`). `active` is true when the zone is meant to behave as
+a command — raw clickability for most consumers, clickability AND
+not-a-link for the three `useLink` ones, whose `<a>` root forbids a
+descendant tab stop. `label` is a GETTER, not a value, precisely so the
+read stays inside the computed.
+
+**Source** : `packages/ds/src/composables/Commons/accessibleCommand.composable.ts`
+
+**Consommateurs** (5) : `components/Breadcrumb/OrigamBreadcrumbItem.vue`, `components/Chip/OrigamChip.vue`, `components/List/OrigamListItem.vue`, `interfaces/Commons/adjacent.interface.ts`, `utils/Commons/a11y.util.ts`
+
 ## `useActivator`
 
 ```ts
-export function useActivator (props: IActivatorProps,
+export function useActivator (props: IActivatorProps, {isActive, isTop}: { isActive: Ref<boolean>, isTop: Ref<boolean> })
 ```
 
 Cablage complet de l'activateur pour les composants flottants (Menu,
@@ -365,9 +435,18 @@ consumer actually attached a `click:prepend`/`click:append`
 listener — a decorative icon with nobody listening stays exactly
 as inert as before, no spurious tab stop.
 
+⛔ issue #747 — being CLICKABLE was never sufficient. `role="button"`
+with no accessible name is a WCAG 2.1 4.1.2 failure, and it was the
+shipped behaviour of every consumer of this hook: axe-core measured
+**54 `aria-command-name` nodes (`serious`) across 17 components** on
+untouched `develop`. `prependCommandAttrs` / `appendCommandAttrs`
+replace the raw `:role` / `:tabindex` bindings the templates used to
+write by hand — they emit the role AND the name together, or neither.
+See `useAccessibleCommand` for why no default label is fabricated.
+
 **Source** : `packages/ds/src/composables/Commons/adjacent.composable.ts`
 
-**Consommateurs** (29) : `components/Alert/OrigamAlert.vue`, `components/Badge/OrigamBadge.vue`, `components/Breadcrumb/OrigamBreadcrumbItem.vue`, `components/Btn/OrigamBtn.vue`, `components/Card/OrigamCard.vue`, `components/Card/OrigamCardHeader.vue`, `components/Chip/OrigamChip.vue`, `components/ConfirmWrapper/OrigamConfirmWrapper.vue`, …
+**Consommateurs** (32) : `components/Alert/OrigamAlert.vue`, `components/Badge/OrigamBadge.vue`, `components/Breadcrumb/OrigamBreadcrumbItem.vue`, `components/Btn/OrigamBtn.vue`, `components/Card/OrigamCard.vue`, `components/Card/OrigamCardHeader.vue`, `components/Chip/OrigamChip.vue`, `components/ConfirmWrapper/OrigamConfirmWrapper.vue`, …
 
 ## `useAdjacentInner`
 
@@ -385,11 +464,26 @@ zone — independent, no shared state.
 `click:appendInner` only ever fired from a literal DOM click inside
 the zone, never from a keyboard activation of an ancestor. See the
 long comment on `useAdjacent` for the full reasoning; mirrored here
-for the inner zone. `isClearClickable` stays permanently true when
-`hasClear` is — the clear zone only renders (`v-show="dirty"`) when
-there is something to clear, so it is unconditionally actionable
-whenever visible, unlike prependInner/appendInner whose
-actionability depends on whether the consumer wired a listener.
+for the inner zone.
+
+⛔ Cette banniere a longtemps decrit un `isClearClickable` — il
+n'existe NULLE PART dans le code, ni ici ni ailleurs dans
+`packages/ds/src` (verifie par recherche : la seule occurrence du depot
+etait cette phrase). Le generateur de `packages/docs/composables/Commons.md`
+recopie les bannieres, donc la doc publiee nommait un symbole
+inexistant — le defaut #493 exactement. La zone « clear » n'expose que
+`hasClear` et le handler `clickClear` ; elle ne passe par
+`useAccessibleCommand` ni par aucun test de clicabilite, parce qu'elle
+ne rend (`v-show="dirty"`) que lorsqu'il y a quelque chose a effacer.
+
+⚠️ `hasPrependInner` / `hasAppendInner` / `hasClear` ne sont PAS des
+booleens : ils rendent la FONCTION de slot quand le slot correspondant
+existe (`slots.prependInner || …`), sinon le booleen du media, et
+`hasClear` rend `undefined` quand ni `clearable` ni le slot `clear` ne
+sont fournis. Les trois sont a consommer en verite/faussete, jamais en
+comparaison stricte a `true`/`false`. `useAdjacent`, lui, normalise
+(`!!slots.prepend || …`) et rend de vrais booleens — les deux jumeaux
+ne se comportent pas pareil sur ce point.
 
 **Source** : `packages/ds/src/composables/Commons/adjacentInner.composable.ts`
 
@@ -419,7 +513,7 @@ l'ancien.
 ## `useBackButton`
 
 ```ts
-export function useBackButton (router: Router | undefined, cb: (next: NavigationGuardNext)
+export function useBackButton (router: Router | undefined, cb: (next: NavigationGuardNext) => void)
 ```
 
 Wires a `popstate` listener + router navigation guard so a consumer
@@ -446,7 +540,7 @@ split by hook stays one-file-one-hook, without duplicating
 
 **Source** : `packages/ds/src/composables/Commons/backgroundColor.composable.ts`
 
-**Consommateurs** (32) : `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, `components/Chart/OrigamChartGauge.vue`, `components/Chart/OrigamChartHeatmap.vue`, `components/Chart/OrigamChartHoneycomb.vue`, `components/Chart/OrigamChartMap.vue`, …
+**Consommateurs** (33) : `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, `components/Chart/OrigamChartGauge.vue`, `components/Chart/OrigamChartHeatmap.vue`, `components/Chart/OrigamChartHoneycomb.vue`, `components/Chart/OrigamChartMap.vue`, …
 
 ## `useBorder`
 
@@ -476,9 +570,49 @@ axis-level color, and the global `borderColor` — each rung only
 overrides the side(s)/axis it actually targets, everything else keeps
 cascading from the rung below.
 
+WIDTH KEYWORDS AND DIRECTIONS ARE EMITTED INLINE (#391). 'none' | 'thin'
+| 'thick' and 'top' | 'right' | 'bottom' | 'left' resolve to a WIDTH, so
+they take the same inline path the numeric `:border="4"` form already
+took — which is precisely why the numeric case always worked while the
+keywords did not. The global `.origam--border-{kw}` utility is still
+emitted and still paints wherever nothing competes, but it CANNOT be the
+mechanism on its own: a utility is specificity (0,1,0) while a Vue scoped
+rule is `.class[data-v-hash]` = (0,2,0), so a component painting from
+`border-width: var(--origam-{cmp}---border-width, …)` outranks it
+whatever the sheet order. Measured: 10 of the 43 `useBorder` consumers
+carry such a rule (Btn, List, Kbd, Code, Card*, Audio, Calendar, …) and
+on every one of them `thick` painted `thin` and `none` painted `thin`.
+Widths come from `BORDER_KEYWORD_WIDTH`, the same tokens the utility
+declares, so the two channels cannot drift.
+
+A DIRECTION ISOLATES ITS EDGE. `border="top"` emits all four physical
+widths — `thin` on the named side, `0` on the other three — because the
+components that paint from a single `border-width` shorthand have no
+per-side custom property a class could target. Emitting the four
+declarations is what makes a direction mean the same thing everywhere
+instead of only on the two components that happen to declare per-side
+variables.
+
+⛔ LA FORME TABLEAU (`:border="['top', 'bottom']"`) N'EST QU'A MOITIE
+IMPLEMENTEE. Elle est portee par le type du parametre `Ref` et traversee
+par `borderClasses`, mais `borderStyles` ne la teste nulle part : ni
+`isUtilityBorder`, ni `isDirectionBorder`, ni `typeof === 'string'`, ni
+`typeof === 'number'` ne matchent un tableau. Mesure —
+`useBorder({border: ['top','bottom']})` rend
+`classes: ['{name}--border', '{name}--border-top,bottom']` et
+`styles: []` : la classe est interpolee depuis le tableau, donc porte la
+VIRGULE du `Array.prototype.toString`, et aucune feuille ne la declare.
+Aucune largeur n'est emise. Documente ici, non corrige : voir le lot de
+doc #600.
+
+WHEN #514 IS SETTLED, THIS INLINE PATH IS THE THING TO REMOVE. If the DS
+adopts `@layer` (measured in `packages/tests/e2e/btn-cascade-layer-probe.spec.ts`),
+the utility wins on its own and these `styles.push` calls become dead.
+Until then the inline copy is the only channel that can actually paint.
+
 **Source** : `packages/ds/src/composables/Commons/border.composable.ts`
 
-**Consommateurs** (50) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Btn/OrigamBtn.vue`, `components/Calendar/OrigamCalendar.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chip/OrigamChipGroup.vue`, …
+**Consommateurs** (52) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Btn/OrigamBtn.vue`, `components/Calendar/OrigamCalendar.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chip/OrigamChipGroup.vue`, …
 
 ## `useBothColor`
 
@@ -493,12 +627,12 @@ one-file-one-hook, without duplicating `useColor`'s resolution logic.
 
 **Source** : `packages/ds/src/composables/Commons/bothColor.composable.ts`
 
-**Consommateurs** (47) : `components/Breadcrumb/OrigamBreadcrumbDivider.vue`, `components/Card/OrigamCard.vue`, `components/Card/OrigamCardHeader.vue`, `components/Chip/OrigamChip.vue`, `components/Clipboard/OrigamClipboard.vue`, `components/Code/OrigamCode.vue`, `components/Counter/OrigamCounter.vue`, `components/DataList/OrigamDataList.vue`, …
+**Consommateurs** (49) : `components/Breadcrumb/OrigamBreadcrumbDivider.vue`, `components/Card/OrigamCard.vue`, `components/Card/OrigamCardHeader.vue`, `components/Chip/OrigamChip.vue`, `components/Clipboard/OrigamClipboard.vue`, `components/Code/OrigamCode.vue`, `components/Counter/OrigamCounter.vue`, `components/DataList/OrigamDataList.vue`, …
 
 ## `useColor`
 
 ```ts
-export function useColor (colors: ComputedRef<
+export function useColor (colors: ComputedRef<{ background?: TColor, text?: TColor }>)
 ```
 
 Legacy bg/text colour resolver (kept for backward compat — used by
@@ -512,7 +646,7 @@ algorithm, not a variant of this one.
 
 **Source** : `packages/ds/src/composables/Commons/color.composable.ts`
 
-**Consommateurs** (6) : `consts/Commons/color.const.ts`, `interfaces/Commons/state-effect.interface.ts`, `types/Commons/state-effect.type.ts`, `utils/Commons/color.util.ts`, `utils/Commons/gradient.util.ts`, `utils/QrCode/qr-code-adapters.util.ts`
+**Consommateurs** (8) : `components/List/OrigamListItem.vue`, `components/Tabs/OrigamTabs.vue`, `consts/Commons/color.const.ts`, `interfaces/Commons/state-effect.interface.ts`, `types/Commons/state-effect.type.ts`, `utils/Commons/color.util.ts`, `utils/Commons/gradient.util.ts`, `utils/QrCode/qr-code-adapters.util.ts`
 
 ## `useColorEffect`
 
@@ -527,9 +661,13 @@ Deliberately independent from `useColor`: the role/state derivation
 legacy static resolver, not a variant of it — kept in its own file
 rather than forced to share a base.
 
-Returns the same shape as before — `{ colorStyles, color, bgColor }` —
-so existing callers (`OrigamAudio`, `OrigamVideo`) keep working
-without changes.
+Returns `{ colorClasses, colorStyles, color, bgColor }`. `color` and
+`bgColor` are pass-through computeds over the raw props, not resolved
+declarations. The two real callers are `OrigamAudio` and `OrigamVideo`.
+
+`colorClasses` is EMPTY as soon as `isHover` / `isActive` / `isDisabled`
+is true: utility classes are static, and the resolved token is no longer
+the resting one `.origam--bg-{intent}` names.
 
 `colorStyles` is an array of CSS declarations like
 `'background-color: …'`, either pointing to a token
@@ -554,7 +692,7 @@ declared them, so the foreground/background scalars are now just
 ## `useCreateLayout`
 
 ```ts
-export function useCreateLayout (props:
+export function useCreateLayout (props: { id?: string, overlaps?: Array<string>, fullHeight?: boolean })
 ```
 
 Root of the layout system — provides `ORIGAM_LAYOUT_KEY` so
@@ -567,7 +705,7 @@ direct function dependency) — the three only share the
 
 **Source** : `packages/ds/src/composables/Commons/createLayout.composable.ts`
 
-**Consommateurs** (3) : `components/Layout/OrigamLayout.vue`, `interfaces/Commons/layout.interface.ts`, `interfaces/Layout/layout.interface.ts`
+**Consommateurs** (5) : `components/BottomNav/OrigamBottomNav.vue`, `components/Layout/OrigamLayout.vue`, `components/SystemBar/OrigamSystemBar.vue`, `interfaces/Commons/layout.interface.ts`, `interfaces/Layout/layout.interface.ts`
 
 ## `useCssSupport`
 
@@ -588,7 +726,7 @@ markup-driving flags — both share the cached `rawSupports` primitive.
 ## `useCssSupportClient`
 
 ```ts
-export function useCssSupportClient ( feature: TCssFeatureName | string, options: IUseCssSupportClientOptions =
+export function useCssSupportClient ( feature: TCssFeatureName | string, options: IUseCssSupportClientOptions = {} ): Ref<boolean>
 ```
 
 Hydration-safe single-feature gate. Returns a `Ref<boolean>` that
@@ -600,9 +738,9 @@ branches prefer `useCssSupport().css.value.X` directly.
 
 ```ts
 const supportsContainer = useCssSupportClient('containerQueries')
-  // template:
-  //   <div v-if="supportsContainer">…CSS path…</div>
-  //   <div v-else>…JS fallback path…</div>
+// template:
+//   <div v-if="supportsContainer">…CSS path…</div>
+//   <div v-else>…JS fallback path…</div>
 ```
 
 **Source** : `packages/ds/src/composables/Commons/cssSupportClient.composable.ts`
@@ -670,7 +808,7 @@ explicitly passed?" check to `usePassedProps`.
 ## `useDelay`
 
 ```ts
-export function useDelay (props: IDelayProps, cb?: (value: boolean)
+export function useDelay (props: IDelayProps, cb?: (value: boolean) => void)
 ```
 
 Temporise l'ouverture/fermeture d'un composant flottant selon
@@ -683,6 +821,20 @@ Chaque appel a `runOpenDelay`/`runCloseDelay` ANNULE le delai en cours
 (`cancelRef.current()`) avant d'en programmer un nouveau — un
 enter/leave rapide (survol qui repasse) ne declenche donc jamais les
 deux callbacks empiles, seul le dernier delai programme aboutit.
+
+⛔ `0` et « absent » ne se comportent PAS pareil, parce que `defer` teste
+`timeout === 0` : avec `openDelay: 0`, `cb` est appele SYNCHRONEMENT
+pendant `runOpenDelay()` et le « canceller » rendu est un no-op — donc
+`clearDelay()` ne peut plus rien annuler. Avec la prop ABSENTE,
+`Number(undefined)` vaut `NaN`, le test `=== 0` echoue et on passe par
+`setTimeout(cb, NaN)`, que le navigateur traite comme 0 ms : le callback
+part au tick suivant, et reste annulable. Mesure : delai 0 → callback vu
+avant le retour de `runOpenDelay()` ; delai absent → rien a 0 ms, vu
+apres 1 ms.
+
+Aucun nettoyage automatique n'est enregistre : un delai arme juste avant
+le demontage n'est pas annule par ce composable. `useActivator`, son seul
+consommateur, ne l'annule pas non plus a la destruction du scope.
 
 **Source** : `packages/ds/src/composables/Commons/delay.composable.ts`
 
@@ -708,7 +860,7 @@ valeur non tokenisee.
 
 **Source** : `packages/ds/src/composables/Commons/density.composable.ts`
 
-**Consommateurs** (44) : `components/Alert/OrigamAlert.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Avatar/OrigamAvatarGroup.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, `components/Breadcrumb/OrigamBreadcrumbDivider.vue`, …
+**Consommateurs** (46) : `components/Alert/OrigamAlert.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Avatar/OrigamAvatarGroup.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, `components/Breadcrumb/OrigamBreadcrumbDivider.vue`, …
 
 ## `useDimension`
 
@@ -729,14 +881,24 @@ inline, jamais de classe utilitaire — c'est le composable de reference a
 `extends`-er (cf. CLAUDE.md racine) plutot que de parser `height`/`width`
 a la main dans un nouveau composant.
 
+⛔ La garde d'emission est `if (props[dimension])` — une garde de
+VERACITE, pas un test de presence. Toute valeur falsy est donc omise
+SILENCIEUSEMENT, y compris celles que `convertToUnit` sait pourtant
+traduire : mesure — `height={0}` n'emet RIEN (alors que
+`convertToUnit(0)` rend `"0px"`), et `height={NaN}` non plus. Pour une
+dimension nulle, passer la chaine `"0px"`. Symetriquement, `Infinity`
+est truthy et traverse la garde : `convertToUnit` rend `undefined` et la
+declaration emise est la chaine `"height: undefined"` — invalide, donc
+ignoree par le navigateur.
+
 **Source** : `packages/ds/src/composables/Commons/dimension.composable.ts`
 
-**Consommateurs** (67) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Btn/OrigamBtn.vue`, `components/Calendar/OrigamCalendar.vue`, …
+**Consommateurs** (68) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Btn/OrigamBtn.vue`, `components/Calendar/OrigamCalendar.vue`, …
 
 ## `useDisplay`
 
 ```ts
-export function useDisplay ( props: IDisplayProps =
+export function useDisplay ( props: IDisplayProps = {}, name = getCurrentInstanceName() )
 ```
 
 Cote composant : lit l'instance de display globale (injectee sous
@@ -788,10 +950,43 @@ ET `elevationStyles` (toujours une declaration `box-shadow: var(--origam-shadow-
 ou la valeur custom telle quelle) — les deux canaux emis en parallele,
 jamais l'un a la place de l'autre (strategie A, cf. CLAUDE.md racine).
 
+⚠️ `2xl` et `3xl` RENDENT COMME `xl` — #813, corrige par un repli.
+`ORIGAM_SHADOW_RUNGS` declare huit echelons, les feuilles n'en declarent
+que six : `--origam-shadow---2xl` et `---3xl` n'existent dans aucune
+feuille du DS. On emettait la reference NUE, et un `var()` non resolu
+rend la declaration invalide AU COMPUTED-VALUE TIME : la propriete
+calcule `unset`, et `box-shadow` n'etant pas heritee, cela vaut `none`.
+La declaration gagnait pourtant la cascade : elle ne cedait donc pas la
+place a la regle scopee du composant, elle l'EFFACAIT. Mesure Chromium —
+regle du composant seule `rgba(0,0,0,.9) 0px 1px 2px 0px`, avec
+`elevation="2xl"` : `none`.
+
+Ces deux echelons passent desormais par `SHADOW_RUNG_FALLBACK`, comme
+`useRounded` le fait depuis toujours via `UTILITY_RADIUS_FALLBACK` — ce
+qui explique que le canal `rounded` n'ait jamais eu ce defaut. ⚠️ Ils
+rendent donc EXACTEMENT comme `xl` : ils cessent d'effacer, ils ne
+deviennent pas deux echelons de plus. Declarer de vrais tokens est une
+decision de DESIGN — `xl` est deja le sommet de l'echelle Material 0..24
+que ce composable mappe (`MATERIAL_ELEVATION_TOP_RUNG`), il n'y a aucun
+echelon au-dessus a emprunter. Le jour ou ces tokens existeront, le repli
+deviendra inerte tout seul.
+
+⛔ Le garde `token-var-channels` ne voit toujours RIEN de tout ceci : la
+reference est concatenee en TypeScript, pas ecrite dans une feuille.
+C'est l'angle mort structurel suivi par #823 — 90 references `var()`
+emises depuis du TS, aucune couverte par un garde.
+
 `bgColor` est accepte pour compatibilite mais IGNORE (n'affecte plus
 ni `elevationClasses` ni `elevationStyles`) — passer une valeur autre
 que `ELEVATION_LEGACY_BG_COLOR` declenche un `console.warn` de
-depreciation une seule fois via `warnBgColorUsage`. La detection du
+depreciation. ⚠️ Cette banniere annoncait « une seule fois » : faux.
+Mesure — trois appels a `useElevation` avec un `bgColor` non defaut
+produisent TROIS avertissements. La deduplication de `warnBgColorUsage`
+est inerte : elle interroge un `WeakSet` avec un objet litteral
+reconstruit a chaque appel, donc `has()` rend toujours `false`. L'appel
+etant fait dans le corps de `useElevation` et non dans un `computed`,
+le plafond reste d'un avertissement par MONTAGE de composant, pas par
+rendu. La detection du
 `box-shadow` custom passe AVANT le `parseInt` de secours : sans cet
 ordre, `parseInt('0 4px 12px rgba(0,0,0,.24)', 10)` lirait `0` (chiffre
 de tete) et resoudrait silencieusement vers l'echelon `none`, perdant
@@ -799,12 +994,12 @@ l'ombre custom.
 
 **Source** : `packages/ds/src/composables/Commons/elevation.composable.ts`
 
-**Consommateurs** (49) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Card/OrigamCard.vue`, `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, `components/Chart/OrigamChartGauge.vue`, …
+**Consommateurs** (50) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Card/OrigamCard.vue`, `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, `components/Chart/OrigamChartGauge.vue`, …
 
 ## `useEventListener`
 
 ```ts
-export function useEventListener ( events: TEventListenerEvents, listeners: TEventListenerListeners, options?: TEventListenerOptions ): ()
+export function useEventListener ( events: TEventListenerEvents, listeners: TEventListenerListeners, options?: TEventListenerOptions ): () => void
 ```
 
 Forme courte : sans premier argument cible, attache sur `window` (ou
@@ -818,7 +1013,7 @@ l'implementation ci-dessous pour le comportement complet.
 ## `useEventListener`
 
 ```ts
-export function useEventListener ( target: TEventListenerTarget, events: TEventListenerEvents, listeners: TEventListenerListeners, options?: TEventListenerOptions ): ()
+export function useEventListener ( target: TEventListenerTarget, events: TEventListenerEvents, listeners: TEventListenerListeners, options?: TEventListenerOptions ): () => void
 ```
 
 Forme longue : `target` peut etre un element, un `Ref`/getter d'element,
@@ -832,7 +1027,7 @@ l'implementation ci-dessous pour le comportement complet.
 ## `useEventListener`
 
 ```ts
-export function useEventListener (...args: Array<unknown>): ()
+export function useEventListener (...args: Array<unknown>): () => void
 ```
 
 Attache un ou plusieurs listeners a un ou plusieurs evenements sur une
@@ -855,7 +1050,7 @@ les laisser en place.
 ## `useFilter`
 
 ```ts
-export function useFilter<T extends IInternalItem> ( props: IFiltersProps, items: MaybeRef<T[]>, query: Ref<string | undefined> | (()
+export function useFilter<T extends IInternalItem> ( props: IFiltersProps, items: MaybeRef<T[]>, query: Ref<string | undefined> | (() => string | undefined), options?: { transform?: (item: T) => Record<string, unknown>; customKeyFilter?: MaybeRef<TFilterKeyFunctions | undefined> } )
 ```
 
 Filtre reactivement `items` selon `query` (Ref ou getter) et les props de
@@ -892,7 +1087,7 @@ de template. `name` par defaut le nom kebab-case du composant courant.
 ## `useGoTo`
 
 ```ts
-export function useGoTo (_options: Partial<IGoToOptions> =
+export function useGoTo (_options: Partial<IGoToOptions> = {})
 ```
 
 Retourne une fonction `go(target, options)` qui scrolle vers un
@@ -907,7 +1102,7 @@ sans que l'instance globale de `createGoTo()` le sache.
 
 **Source** : `packages/ds/src/composables/Commons/goTo.composable.ts`
 
-**Consommateurs** (3) : `components/Slide/OrigamSlideGroup.vue`, `consts/Commons/virtual.const.ts`, `interfaces/Commons/virtual.interface.ts`
+**Consommateurs** (5) : `components/Select/OrigamSelect.vue`, `components/Slide/OrigamSlideGroup.vue`, `consts/Commons/virtual.const.ts`, `interfaces/Commons/virtual.interface.ts`, `utils/Commons/goTo.util.ts`
 
 ## `useGroup`
 
@@ -941,7 +1136,7 @@ contract.
 
 **Source** : `packages/ds/src/composables/Commons/groupItem.composable.ts`
 
-**Consommateurs** (15) : `components/Btn/OrigamBtn.vue`, `components/Chip/OrigamChip.vue`, `components/ExpansionPanel/OrigamExpansionPanel.vue`, `components/ItemGroup/OrigamItemGroupItem.vue`, `components/Tabs/OrigamTab.vue`, `components/Tabs/OrigamTabPanel.vue`, `components/Tabs/OrigamTabs.vue`, `components/Window/OrigamWindowItem.vue`, …
+**Consommateurs** (16) : `components/Btn/OrigamBtn.vue`, `components/Chip/OrigamChip.vue`, `components/ExpansionPanel/OrigamExpansionPanel.vue`, `components/ItemGroup/OrigamItemGroup.vue`, `components/ItemGroup/OrigamItemGroupItem.vue`, `components/Tabs/OrigamTab.vue`, `components/Tabs/OrigamTabPanel.vue`, `components/Tabs/OrigamTabs.vue`, …
 
 ## `useGroupSiblingLink`
 
@@ -982,19 +1177,29 @@ during their own `setup()` body.
 ## `useHotkey`
 
 ```ts
-export function useHotkey ( keys: MaybeRef<string | undefined>, callback: (e: KeyboardEvent)
+export function useHotkey ( keys: MaybeRef<string | undefined>, callback: (e: KeyboardEvent) => void, options: IHotkeyOptions = {} )
 ```
 
 Enregistre un raccourci clavier global (`window.addEventListener`) pour
-`keys` (une combinaison `"ctrl+k"` ou une SEQUENCE `"g g"` separee par
-espace, avec un `sequenceTimeout` entre chaque groupe). Traduit `cmd`/`meta`
-selon la plateforme detectee (`navigator.userAgent`) : `ctrl` attendu sur
-non-Mac, `meta` attendu sur Mac. Ignore l'evenement quand un champ de
-saisie a le focus, sauf `options.inputs`.
+`keys` (une combinaison `"ctrl+k"`, ou une SEQUENCE de groupes separes
+par un TIRET `"g-g"`, avec un `sequenceTimeout` entre chaque groupe).
+Traduit `cmd`/`meta` selon la plateforme detectee (`navigator.userAgent`) :
+`ctrl` attendu sur non-Mac, `meta` attendu sur Mac. Ignore l'evenement
+quand un champ de saisie a le focus, sauf `options.inputs`.
+
+⛔ Le separateur de SEQUENCE est le TIRET, pas l'espace — cette banniere
+a annonce `"g g"` pendant des mois et c'est faux. Mesure :
+`splitKeySequence('g-g')` rend `['g','g']` (deux groupes), tandis que
+`splitKeySequence('g g')` rend `['g g']` — un seul groupe dont la
+`actualKey` est la chaine `"g g"`, qu'aucun `e.key` n'egale jamais. Le
+raccourci est donc silencieusement MORT : deux `keydown` sur `g` ne
+declenchent rien du tout, sans avertissement. Les specs du depot
+utilisent la forme correcte (`a-b`).
 
 ⛔ En dehors d'un contexte `setup()` Vue, AUCUN nettoyage automatique
-n'est enregistre (pas de `onBeforeUnmount` possible) — un
-`console.warn` (`HOTKEY_NO_AUTO_CLEANUP_WARNING`) le signale, et
+n'est enregistre (pas de `onBeforeUnmount` possible) — un avertissement
+(`HOTKEY_NO_AUTO_CLEANUP_WARNING`, via `consoleWarn`, donc rendu par le
+`warn()` de Vue : `[Vue warn]: Origam: Can't cleanup`) le signale, et
 l'appelant DOIT invoquer lui-meme la fonction `cleanup` retournee.
 Hors navigateur (`!IN_BROWSER`), la fonction est un no-op immediat, y
 compris pour le retour (fonction vide, pas d'erreur).
@@ -1017,6 +1222,13 @@ Le flag SSR vient de `useDisplay().ssr` : si l'instance de display n'a
 jamais ete creee en mode SSR (`ssr` falsy), le Ref demarre directement a
 `true` — pas de delai artificiel dans une app 100% client. Hors
 navigateur (`!IN_BROWSER`), retourne un Ref fige a `false`.
+
+⛔ Dans un navigateur, ce composable DEPEND de `createOrigam()` : il
+appelle `useDisplay()`, dont l'injection n'existe que si le plugin est
+installe. Mesure, montage d'un composant sans `createOrigam()` :
+`useHydration()` LEVE `Could not find Origam display injection`. Ce
+n'est donc pas un utilitaire autonome, contrairement a `useSsrBoot` qui
+n'injecte rien.
 
 **Source** : `packages/ds/src/composables/Commons/hydration.composable.ts`
 
@@ -1047,7 +1259,7 @@ marque et le mode actifs.
 ## `useIntersectionObserver`
 
 ```ts
-export function useIntersectionObserver (callback?: IntersectionObserverCallback, options?: IntersectionObserverInit)
+export function useIntersectionObserver (callback?: IntersectionObserverCallback, options?: MaybeRefOrGetter<IntersectionObserverInit | undefined>)
 ```
 
 Expose `intersectionRef` (a poser en template ref sur l'element a
@@ -1061,6 +1273,33 @@ AUCUN observer n'est cree — `isIntersecting` reste fige a `false` et
 `callback` n'est jamais appele, silencieusement. Aucun fallback
 polyfill.
 
+⛔ issue #682 / critere C4 — `options` accepte desormais un ref/getter
+(`MaybeRefOrGetter`), pas seulement un objet fige. `rootMargin`/`root`
+sont des options NATIVES d'`IntersectionObserver`, figees a la creation :
+aucune reactivite ne peut les rattraper sans RECREER l'observateur.
+
+⛔ La creation initiale de l'observateur — ET l'abonnement reactif a
+`options` — sont deliberement DEFERES tous les deux a l'INTERIEUR du
+callback `onMounted`, jamais au corps de `useIntersectionObserver` (donc
+au corps de `setup()` du composant appelant). Mesure, pas suppose : un
+appelant qui passait `options` sous forme de valeur deballee UNE FOIS
+pendant `setup()` (l'ancien usage d'`OrigamInfiniteScrollIntersect`, via
+`observerOptions.value`) figeait la valeur AVANT que le resolveur de
+themes (ADR-005, hook global `beforeCreate`, qui s'execute APRES le corps
+de `setup()`) ait pu patcher le prop — un theme visant `margin` n'atteignait
+donc jamais l'observateur. Passer le ref/computed lui-meme (sans le
+deballer) NE SUFFIT PAS a corriger ce point tant que la toute PREMIERE
+lecture de `options` a encore lieu pendant `setup()` — meme via
+`watch(() => toValue(options), …)`, dont l'evaluation initiale (pour
+capturer `oldValue`) est SYNCHRONE au moment de l'appel : verifie
+empiriquement, `Object.defineProperty` remplace le descripteur SANS
+declencher `trigger()` pour les abonnements deja etablis sur l'ancien,
+donc un `computed` (ou un watcher) dont la toute premiere evaluation a eu
+lieu avant `beforeCreate` reste fige sur la valeur pre-theme pour
+toujours, quel que soit le nombre de lectures ulterieures. Seul un report
+de la PREMIERE lecture — creation ET abonnement — apres `beforeCreate`
+referme le trou ; `onMounted` le garantit dans tous les cas.
+
 **Source** : `packages/ds/src/composables/Commons/intersectionObserver.composable.ts`
 
 **Consommateurs** (3) : `components/InfiniteScroll/OrigamInfiniteScrollIntersect.vue`, `components/Progress/OrigamProgressCircular.vue`, `components/Progress/OrigamProgressLinear.vue`
@@ -1068,7 +1307,7 @@ polyfill.
 ## `useItems`
 
 ```ts
-export function useItems (props: IItemProps &
+export function useItems (props: IItemProps & { itemType?: string })
 ```
 
 Normalise `props.items` (formats varies : chaine, objet, `itemTitle`/
@@ -1110,7 +1349,7 @@ level (no direct function dependency) — the three only share the
 ## `useLayoutItem`
 
 ```ts
-export function useLayoutItem (options:
+export function useLayoutItem (options: { id: string | undefined; order: Ref<number>; position: Ref<TDirectionBoth>; layoutSize: Ref<number | string>; elementSize: Ref<number | string | undefined>; active: Ref<boolean> | ComputedRef<boolean>; disableTransitions?: Ref<boolean>; absolute: Ref<boolean | undefined> })
 ```
 
 Registers a component (BottomNav, AppBar, Drawer…) as an item of the
@@ -1128,7 +1367,7 @@ Independent from `useLayout` / `useCreateLayout` at the call level
 ## `useLazy`
 
 ```ts
-export function useLazy (props:
+export function useLazy (props: { eager: boolean }, active: Ref<boolean>)
 ```
 
 Rendu paresseux du contenu d'un composant flottant/conditionnel :
@@ -1145,7 +1384,7 @@ reste toujours monte.
 
 **Source** : `packages/ds/src/composables/Commons/lazy.composable.ts`
 
-**Consommateurs** (4) : `components/ExpansionPanel/OrigamExpansionPanelContent.vue`, `components/Overlay/OrigamOverlay.vue`, `components/Tabs/OrigamTabPanel.vue`, `components/Window/OrigamWindowItem.vue`
+**Consommateurs** (5) : `components/ExpansionPanel/OrigamExpansionPanelContent.vue`, `components/ExpansionPanel/OrigamExpansionPanels.vue`, `components/Overlay/OrigamOverlay.vue`, `components/Tabs/OrigamTabPanel.vue`, `components/Window/OrigamWindowItem.vue`
 
 ## `useLink`
 
@@ -1159,6 +1398,24 @@ Depends on `useRoute` for the exact-match `isActive` derivation —
 kept in its own file since it is a consumer of `useRoute`, not a
 variant of it.
 
+⚠️ DEUX FORMES DE RETOUR. Quand `resolveDynamicComponent('RouterLink')`
+ne resout pas un composant (pas de vue-router installe), la fonction
+sort tot et ne rend QUE `{ tag, isLink, isClickable, href }` — mesure,
+`Object.keys(...)` sur un montage sans routeur rend exactement ces
+quatre clefs. `route`, `navigate` et `isActive` sont ABSENTS, pas
+`undefined` : un consommateur qui les deballe doit rester optionnel.
+
+⛔ ADR-005, angle mort residuel : `tag` a bien ete rendu paresseux (voir
+la banniere « TAG IS RESOLVED LAZILY » plus bas), mais `props.to` est
+ENCORE lu avidement dans le corps de `setup()`, a la ligne
+`const link = props.to ? RouterLink.useLink(...) : undefined`. Le
+detecteur `packages/ds/scripts/guards/lib/setup-reads.mjs` le compte
+toujours parmi ses deux lectures eager restantes (`useLink [to]`,
+`useNested [opened]`). Consequence : un theme qui nomme `to` sur Btn /
+Card / Chip / ListItem / BreadcrumbItem n'est jamais vu, puisque la
+decision « composant routeur ou pas » est prise une fois pour toutes
+avant `beforeCreate`.
+
 **Source** : `packages/ds/src/composables/Commons/link.composable.ts`
 
 **Consommateurs** (9) : `components/Breadcrumb/OrigamBreadcrumbItem.vue`, `components/Btn/OrigamBtn.vue`, `components/Card/OrigamCard.vue`, `components/Chip/OrigamChip.vue`, `components/DatePicker/OrigamDatePickerHeader.vue`, `components/List/OrigamListItem.vue`, `interfaces/Commons/link.interface.ts`, `interfaces/Commons/router.interface.ts`, …
@@ -1166,7 +1423,7 @@ variant of it.
 ## `useLoader`
 
 ```ts
-export function useLoader ( props: ILoaderProps, defaultKind: TLoaderKind = LOADER_KIND.CIRCULAR, name = getCurrentInstanceName() ):
+export function useLoader ( props: ILoaderProps, defaultKind: TLoaderKind = LOADER_KIND.CIRCULAR, name = getCurrentInstanceName() ): { loaderClasses: ComputedRef<Record<string, boolean>>; isLoading: ComputedRef<boolean>; loaderConfig: ComputedRef<IResolvedLoader> }
 ```
 
 Resout la prop polymorphe `loading` (`boolean | number | TLoaderConfig`)
@@ -1179,8 +1436,8 @@ bon renderer. `defaultKind` est choisi par CHAQUE consommateur —
 
 Determinisme derive de la FORME de la valeur, pas d'un flag explicite :
 `loading={true}` → indetermine ; `loading={42}` → determine a 42 ;
-`loading=&#123;&#123; type: 'line', modelValue: 42 &#125;&#125;` → determine ;
-`loading=&#123;&#123; type: 'line' &#125;&#125;` (sans `modelValue`) → indetermine. Un objet SANS
+`loading=&#123;&#123; type: 'line', modelValue: 42 &#125;&#125;` → determine ; `loading=
+&#123;&#123; type: 'line' &#125;&#125;` (sans `modelValue`) → indetermine. Un objet SANS
 `type` est traite comme "pas d'objet reconnu" et retombe sur l'etat
 inactif.
 
@@ -1191,7 +1448,7 @@ inactif.
 ## `useLocale`
 
 ```ts
-export function useLocale (strict?: true): ILocaleInstance /********************************************************* * useLocale (surcharge `strict: false`) * * @description * Variante non stricte : retourne `null` plutot que de lever quand aucun * `createOrigam()` n'est installe. Voir la banniere au-dessus de la * premiere surcharge pour le comportement complet et son unique usage * legitime (#444, `OrigamLoader`). ********************************************************/ export function useLocale (strict: false): ILocaleInstance | null /********************************************************* * useLocale (implementation) * * @description * Lit l'instance de locale injectee sous `ORIGAM_LOCALE_KEY` ; leve si * absente et `strict` (defaut `true`), retourne `null` sinon. Voir la * banniere au-dessus de la premiere surcharge pour le detail du contrat. ********************************************************/ export function useLocale (strict: boolean = true): ILocaleInstance | null
+export function useLocale (strict?: true): ILocaleInstance
 ```
 
 Reads the injected locale instance (i18n adapter + RTL state).
@@ -1209,12 +1466,12 @@ is responsible for its own fallback (issue #444, `OrigamLoader`).
 
 **Source** : `packages/ds/src/composables/Commons/locale.composable.ts`
 
-**Consommateurs** (75) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, `components/Calendar/OrigamCalendar.vue`, `components/Carousel/OrigamCarousel.vue`, `components/Chart/OrigamChartBoxPlot.vue`, …
+**Consommateurs** (87) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
 
 ## `useLocale`
 
 ```ts
-export function useLocale (strict: false): ILocaleInstance | null /********************************************************* * useLocale (implementation) * * @description * Lit l'instance de locale injectee sous `ORIGAM_LOCALE_KEY` ; leve si * absente et `strict` (defaut `true`), retourne `null` sinon. Voir la * banniere au-dessus de la premiere surcharge pour le detail du contrat. ********************************************************/ export function useLocale (strict: boolean = true): ILocaleInstance | null
+export function useLocale (strict: false): ILocaleInstance | null
 ```
 
 Variante non stricte : retourne `null` plutot que de lever quand aucun
@@ -1224,7 +1481,7 @@ legitime (#444, `OrigamLoader`).
 
 **Source** : `packages/ds/src/composables/Commons/locale.composable.ts`
 
-**Consommateurs** (75) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, `components/Calendar/OrigamCalendar.vue`, `components/Carousel/OrigamCarousel.vue`, `components/Chart/OrigamChartBoxPlot.vue`, …
+**Consommateurs** (87) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
 
 ## `useLocale`
 
@@ -1238,12 +1495,12 @@ banniere au-dessus de la premiere surcharge pour le detail du contrat.
 
 **Source** : `packages/ds/src/composables/Commons/locale.composable.ts`
 
-**Consommateurs** (75) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, `components/Calendar/OrigamCalendar.vue`, `components/Carousel/OrigamCarousel.vue`, `components/Chart/OrigamChartBoxPlot.vue`, …
+**Consommateurs** (87) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
 
 ## `useLocation`
 
 ```ts
-export function useLocation (props: ILocationProps, opposite = false, offset?: (side: string)
+export function useLocation (props: ILocationProps, opposite = false, offset?: (side: string) => number)
 ```
 
 Resolves a `location` prop (e.g. `'top end'`) into absolute-position
@@ -1267,6 +1524,21 @@ Runs a floating component's configured location strategy
 and on strategy change, inside a disposable toggle scope.
 Independent from `useLocation` — no shared state or call
 dependency.
+
+⛔ `locationStrategy="static"` NE POSITIONNE RIEN. `staticLocationStrategy`
+(utils/Commons/location.util.ts) a un corps reduit a `// TODO` : elle rend
+`undefined`, donc `updateLocation` reste `undefined` et `contentStyles`
+reste `{}`. Mesure, contenu et cible reels attaches au document :
+`static` → `contentStyles = {}` / `updateLocation = undefined` ;
+`connected` → `contentStyles` rempli (`top`, `left`, `transformOrigin`,
+`maxHeight`…) / `updateLocation = function`. Seules la strategie
+`connected` et une fonction personnalisee font quelque chose.
+
+Cycle de vie : tout le cablage vit dans un `useToggleScope` arme sur
+`data.isActive && props.locationStrategy`. L'ecouteur `resize` est pose a
+l'entree du scope et retire par son `onScopeDispose` ; un changement de
+`props.locationStrategy` appelle le `reset` du scope, qui le rejoue en
+entier. Hors navigateur (`!IN_BROWSER`), aucun scope n'est cree du tout.
 
 **Source** : `packages/ds/src/composables/Commons/locationStrategies.composable.ts`
 
@@ -1347,11 +1619,23 @@ requis ; sinon la validite suit simplement `complete`.
 export function useMessage (props: IMessageProps, otherMessages: Ref<Array<string>> | ComputedRef<Array<string>> = ref([]))
 ```
 
-Resout les messages a afficher sous un champ (Field, TextField…) par
-ordre de priorite : `props.errorMessages`/`otherMessages` (erreurs
-externes, ex. validation) d'abord, sinon `props.hint`, sinon
-`props.messages`. `hasMessages` vaut vrai des qu'une SOURCE existe —
-y compris le slot `#message`, meme si les props textuelles sont vides.
+Resout les messages a afficher sous un conteneur de champ par ordre de
+priorite : `props.errorMessages`/`otherMessages` (erreurs externes, ex.
+validation) d'abord, sinon `props.hint`, sinon `props.messages`.
+`hasMessages` vaut vrai des qu'une SOURCE existe — y compris le slot
+`#message`, meme si les props textuelles sont vides.
+
+⛔ Un seul consommateur reel dans `packages/ds/src` : `OrigamForm`
+(verifie par import, pas par grep de nom). La famille Field affiche ses
+messages par un autre chemin — ne pas ecrire que ce composable est
+celui de `OrigamTextField`.
+
+⛔ La branche prioritaire rend `otherMessages.value`, PAS
+`props.errorMessages`. Mesure : avec `errorMessages: ['boum']` et le
+`otherMessages` par defaut (`ref([])`), `hasMessages` vaut `true` et
+`messages` vaut `[]` — la zone de message s'ouvre VIDE. La prop n'est
+donc qu'un DECLENCHEUR de priorite ; c'est a l'appelant de reinjecter
+ses erreurs par le second argument (ce que fait `OrigamForm`).
 
 `otherMessages` (typiquement les erreurs de `useValidation`) est un
 parametre separe plutot qu'une prop, pour que ce composable reste
@@ -1447,12 +1731,12 @@ Accepted per-side value forms are documented on `resolveSpacingValue`.
 
 **Source** : `packages/ds/src/composables/Commons/padding.composable.ts`
 
-**Consommateurs** (69) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumbDivider.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chart/OrigamChartBoxPlot.vue`, …
+**Consommateurs** (70) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumbDivider.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chart/OrigamChartBoxPlot.vue`, …
 
 ## `usePassedProps`
 
 ```ts
-export function usePassedProps<T extends object> ( _props: T, instanceLabel = 'usePassedProps' ): (key: Extract<keyof T, string> | string)
+export function usePassedProps<T extends object> ( _props: T, instanceLabel = 'usePassedProps' ): (key: Extract<keyof T, string> | string) => boolean
 ```
 
 Was-prop-passed factory — component-side primitive: for the CURRENT
@@ -1499,12 +1783,21 @@ export function usePosition (props: IPositionProps, name = getCurrentInstanceNam
 en classe `{name}--{position}`. `positionStyles` emet une declaration
 inline par cote present parmi `top`/`bottom`/`left`/`right`.
 
-⛔ Contrairement a `useDimension`, AUCUNE conversion via `convertToUnit`
-n'est appliquee sur `top`/`bottom`/`left`/`right` : bien que
-`IPositionProps` les type `number | string`, un nombre est interpole
-TEL QUEL (`"top: 8"`, pas `"top: 8px"`) — declaration CSS invalide.
-Passer une chaine unitee (`"8px"`) est le seul usage sur qui marche
-aujourd'hui.
+`top`/`bottom`/`left`/`right` passent par `convertToUnit`, comme les six
+props de `useDimension` : `top={8}` emet `top: 8px`, `top="8px"` reste
+verbatim. ⚠️ Cette banniere a longtemps annonce l'INVERSE (« AUCUNE
+conversion n'est appliquee ») — c'etait vrai jusqu'au correctif #557
+(`b357f7eba`), qui a change le code sans la mettre a jour.
+
+⛔ La garde d'emission est une garde de VERACITE (`if (props[layer])`),
+pas un test de presence : un cote a `0` est donc silencieusement omis.
+`top={0}` n'emet rien — mesure. Ecrire `top="0px"` pour un cote colle au
+bord. Meme forme que `useDimension`, meme consequence.
+
+`positionClasses` renvoie une CHAINE (ou `undefined`), pas un tableau —
+seul composable de l'axe dimension/espacement/forme dans ce cas ; tous
+ses voisins (`densityClasses`, `roundedClasses`, …) renvoient un
+`Array<string>`.
 
 **Source** : `packages/ds/src/composables/Commons/position.composable.ts`
 
@@ -1523,10 +1816,8 @@ export function useProps<T extends object> (props: T): IFilterPropsOptions<T>
 ) forward their resolved props to an INTERNAL ROOT component through that
 child's own exposed `filterProps`, reached via a TEMPLATE REF:
 
-```ts
     const childRef = ref<TOrigamChild>()
     const childProps = computed(() => childRef.value?.filterProps(props, […]))
-```
 
 A template ref is `undefined` during the first render — it is assigned while
 that very render is being patched. So render 1 binds NOTHING and the child
@@ -1578,11 +1869,16 @@ pointant vers `(e) => updateRef(e, index)`) — pattern standard pour
 recuperer les instances/elements enfants d'une boucle dans un ordre
 stable.
 
-Le tableau est REINITIALISE a vide a chaque `onBeforeUpdate` : c'est ce
-qui evite d'accumuler des references perimees quand la liste retrecit
-(sans ce reset, un index au-dela de la nouvelle longueur garderait
-l'ancien element). Vue re-remplit ensuite les index via `updateRef`
-pendant le re-render qui suit.
+Le tableau est REINITIALISE a vide a chaque `onBeforeUpdate`, puis Vue
+re-remplit les index via `updateRef` pendant le re-render qui suit.
+
+⛔ Le tableau ne RETRECIT PAS pour autant. Mesure, liste de 3 items
+ramenee a 1 : `refs.value` vaut `[<li>, null, null]` et `refs.value.length`
+vaut toujours `3` — Vue rappelle la fonction `ref` des vnodes demontes
+avec `null`, donc les emplacements liberes sont REMIS A `null` (pas
+d'element perime conserve) mais restent presents. Un consommateur doit
+filtrer les trous et ne jamais deduire la longueur de la liste de
+`refs.value.length`.
 
 **Source** : `packages/ds/src/composables/Commons/refs.composable.ts`
 
@@ -1628,8 +1924,18 @@ the same corner). Mirrors `useBorder` / `usePadding` / `useMargin`:
   2. per-corner `roundedTopLeft` / `roundedTopRight` /
      `roundedBottomLeft` / `roundedBottomRight`
 
-So `roundedTopLeft="0"` beats `rounded="lg"` for the top-left corner
+So `roundedTopLeft="0px"` beats `rounded="lg"` for the top-left corner
 only; the other three keep the `lg` rung.
+
+⚠️ This example used to read `roundedTopLeft="0"`, and that form does
+NOT work — measured: `{rounded:'lg', roundedTopLeft:'0'}` emits the
+shorthand declaration ALONE. The bare string `"0"` is neither a utility
+rung, nor a named variant, nor a match for `CUSTOM_BORDER_RADIUS_REGEX`
+(which requires a unit), so `resolveRoundedCornerValue` returns `null`
+and the corner is silently skipped. `0` (the NUMBER) and `"0px"` both
+resolve to `0px`. In a template `roundedTopLeft="0"` is a string, which
+is exactly the failing form — bind `:rounded-top-left="0"` or write
+`"0px"`.
 
 ⚠️ The per-corner props are only reachable through the PROPS-OBJECT
 overload. The `Ref` overload carries a single scalar — the `rounded`
@@ -1655,7 +1961,7 @@ Accepted per-corner value forms are documented on
 
 **Source** : `packages/ds/src/composables/Commons/rounded.composable.ts`
 
-**Consommateurs** (71) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, …
+**Consommateurs** (74) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, …
 
 ## `useRoute`
 
@@ -1728,7 +2034,7 @@ plus sans le re-poser explicitement sur la racine teleportee.
 ## `useScroll`
 
 ```ts
-export function useScroll ( props: IScrollProps, args: IScrollArguments =
+export function useScroll ( props: IScrollProps, args: IScrollArguments = {} )
 ```
 
 Tracks scroll position / direction / threshold ratio for a target
@@ -1776,7 +2082,7 @@ call dependency.
 ## `useSelectLink`
 
 ```ts
-export function useSelectLink (link: IUseLink, select?: (value: boolean, e?: Event)
+export function useSelectLink (link: IUseLink, select?: (value: boolean, e?: Event) => void)
 ```
 
 Relie un lien de navigation (`link`, la valeur retournee par `useLink`)
@@ -1817,9 +2123,22 @@ composant qui traite `size` comme une pure dimension de boite ne doit
 pas consommer `sizeClasses` dans son `:class` : `sizeStyles` reste seul
 autoritaire pour la geometrie.
 
+⛔ SURFACE ASYMETRIQUE — `sizeClasses` deballe un `Ref` (`isRef(props)
+? props.value : props.size`), `sizeStyles` lit `props.size` directement.
+La signature ne type que `ISizeProps`, donc passer un `Ref` est
+hors-contrat ; mais le premier canal l'accepte a moitie et le second
+l'ignore. Mesure : `useSize(ref(24))` rend `{classes: [], styles: []}`
+— inerte des deux cotes — quand `useSize({size: 24})` rend bien
+`["width: 24px", "height: 24px"]`. Passer l'objet de props.
+
+⚠️ Aucune validation de la valeur custom : `size="zzz"` ne figure pas
+dans `SIZES_ARRAY`, prend donc la branche inline et emet
+`width: zzz` / `height: zzz` — deux declarations invalides, sans
+avertissement. Meme absence de liste blanche que `useVariant`.
+
 **Source** : `packages/ds/src/composables/Commons/size.composable.ts`
 
-**Consommateurs** (21) : `components/Avatar/OrigamAvatar.vue`, `components/Breadcrumb/OrigamBreadcrumbDivider.vue`, `components/Btn/OrigamBtn.vue`, `components/Btn/OrigamBtnGroup.vue`, `components/Chip/OrigamChip.vue`, `components/Dialog/OrigamDialog.vue`, `components/Field/OrigamField.vue`, `components/Icon/OrigamIcon.vue`, …
+**Consommateurs** (23) : `components/Avatar/OrigamAvatar.vue`, `components/Breadcrumb/OrigamBreadcrumbDivider.vue`, `components/Btn/OrigamBtn.vue`, `components/Btn/OrigamBtnGroup.vue`, `components/Chip/OrigamChip.vue`, `components/Dialog/OrigamDialog.vue`, `components/Field/OrigamField.vue`, `components/Icon/OrigamIcon.vue`, …
 
 ## `useSsrBoot`
 
@@ -1869,7 +2188,7 @@ must not snapshot `disableGlobalStack` either.
 ## `useStateEffect`
 
 ```ts
-export function useStateEffect ( props: TStateEffectProps, isHover: Ref<boolean> | ComputedRef<boolean> = noopRef, isActive: Ref<boolean> | ComputedRef<boolean> = noopRef, hoverState: ComputedRef<IHoverState | undefined> = computed(()
+export function useStateEffect ( props: TStateEffectProps, isHover: Ref<boolean> | ComputedRef<boolean> = noopRef, isActive: Ref<boolean> | ComputedRef<boolean> = noopRef, hoverState: ComputedRef<IHoverState | undefined> = computed(() => undefined), activeState: ComputedRef<IActiveState | undefined> = computed(() => undefined), isDisabled: Ref<boolean> | ComputedRef<boolean> = noopRef, flat: Ref<boolean> | ComputedRef<boolean> = noopRef )
 ```
 
 Composable unique remplacant la chaine `useColorEffect` +
@@ -1894,7 +2213,7 @@ reactivite sur un changement de prop ulterieur (meme piege que
 
 **Source** : `packages/ds/src/composables/Commons/stateEffect.composable.ts`
 
-**Consommateurs** (38) : `components/Alert/OrigamAlert.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Avatar/OrigamAvatarGroup.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
+**Consommateurs** (40) : `components/Alert/OrigamAlert.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Avatar/OrigamAvatarGroup.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
 
 ## `useStateFlag`
 
@@ -1932,7 +2251,7 @@ free.
 
 **Source** : `packages/ds/src/composables/Commons/stateFlag.composable.ts`
 
-**Consommateurs** (35) : `components/Alert/OrigamAlert.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Avatar/OrigamAvatarGroup.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumbItem.vue`, …
+**Consommateurs** (38) : `components/Alert/OrigamAlert.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Avatar/OrigamAvatarGroup.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
 
 ## `useStatus`
 
@@ -1959,7 +2278,7 @@ deja fournie par le consommateur passe toujours avant l'icone de statut.
 ## `useSticky`
 
 ```ts
-export function useSticky (
+export function useSticky ({rootEl, isSticky, layoutItemStyles}: ISticky)
 ```
 
 Cale `rootEl` en `sticky` manuel (via un listener `scroll` passif,
@@ -2002,7 +2321,7 @@ flattening (`toDeclarations`).
 ## `useStyleTag`
 
 ```ts
-export function useStyleTag ( css: MaybeRef<string>, options: IStyleTagOptions =
+export function useStyleTag ( css: MaybeRef<string>, options: IStyleTagOptions = {} )
 ```
 
 Injects a reactive `<style>` element into `<head>`, keyed by a
@@ -2035,12 +2354,12 @@ alors sur son rendu non-teleporte plutot que de crasher. En SSR
 
 **Source** : `packages/ds/src/composables/Commons/teleport.composable.ts`
 
-**Consommateurs** (1) : `components/Overlay/OrigamOverlay.vue`
+**Consommateurs** (2) : `components/Menu/OrigamMenu.vue`, `components/Overlay/OrigamOverlay.vue`
 
 ## `useTeleportTypography`
 
 ```ts
-export function useTeleportTypography ( fieldRef: Ref<
+export function useTeleportTypography ( fieldRef: Ref<{ $el?: HTMLElement } | undefined>, isOpen: Ref<boolean>, extraVars: (fontSize: string) => Record<string, string>, measureSelector = TELEPORT_TYPOGRAPHY_MEASURE_SELECTOR, neutralFontSize: string = TELEPORT_TYPOGRAPHY_NEUTRAL_FONT_SIZE )
 ```
 
 Fait passer la typographie REELLE d'un champ (mesuree via
@@ -2081,7 +2400,7 @@ logic.
 
 **Source** : `packages/ds/src/composables/Commons/textColor.composable.ts`
 
-**Consommateurs** (8) : `components/DatePickerField/OrigamDatePickerField.vue`, `components/Messages/OrigamMessages.vue`, `components/Progress/OrigamProgressCircular.vue`, `components/Progress/OrigamProgressLinear.vue`, `components/QrCode/OrigamQrCode.vue`, `components/Select/OrigamSelect.vue`, `components/SliderField/OrigamSliderField.vue`, `utils/Commons/gradient.util.ts`
+**Consommateurs** (15) : `components/DataTable/OrigamDataTableGroupHeaderRow.vue`, `components/DataTable/OrigamDataTableRows.vue`, `components/DatePicker/OrigamDatePickerHeader.vue`, `components/DatePicker/OrigamDatePickerMonth.vue`, `components/DatePickerField/OrigamDatePickerField.vue`, `components/Media/OrigamMediaVolumeControl.vue`, `components/Messages/OrigamMessages.vue`, `components/Progress/OrigamProgressCircular.vue`, …
 
 ## `useTheme`
 
@@ -2113,7 +2432,7 @@ d'equivalent "sans mode".
 ## `useThrottleFn`
 
 ```ts
-export function useThrottleFn<T extends unknown[], R = void> (fn: (...args: T)
+export function useThrottleFn<T extends unknown[], R = void> (fn: (...args: T) => R, wait: number): (...args: T) => void
 ```
 
 Limite `fn` a un appel toutes les `wait` ms — pattern LEADING-edge :
@@ -2135,7 +2454,7 @@ timer continue de tourner en memoire jusqu'a son echeance.
 ## `useToggleScope`
 
 ```ts
-export function useToggleScope (source: WatchSource<boolean>, fn: (reset: ()
+export function useToggleScope (source: WatchSource<boolean>, fn: (reset: () => void) => void)
 ```
 
 Execute `fn` dans un `EffectScope` dedie tant que `source` (un booleen
@@ -2156,7 +2475,7 @@ relancer ses propres effets sans attendre un cycle `source` false→true.
 ## `useTouch`
 
 ```ts
-export function useTouch (
+export function useTouch ({isActive, isTemporary, width, touchless, position}: { isActive: Ref<boolean>; isTemporary: Ref<boolean>; width: Ref<number>; touchless: Ref<boolean>; position: Ref<'left' | 'right' | 'top' | 'bottom'> })
 ```
 
 Geste tactile swipe-to-open/close pour un panneau ancre a un `position`
@@ -2211,7 +2530,7 @@ en repli.
 ## `useUnsupportedProp`
 
 ```ts
-export function useUnsupportedProp ( component: string, prop: string, reason: string, isPassed: ()
+export function useUnsupportedProp ( component: string, prop: string, reason: string, isPassed: () => boolean ): void
 ```
 
 Avertit, une fois et en developpement seulement, qu'une prop declaree par un
@@ -2237,7 +2556,7 @@ morte, ce qui est exact — elle est desormais surveillee, pas ignoree.
 
 **Source** : `packages/ds/src/composables/Commons/unsupportedProp.composable.ts`
 
-**Consommateurs** (21) : `components/Audio/OrigamAudio.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartGauge.vue`, `components/Chart/OrigamChartHeatmap.vue`, `components/Chart/OrigamChartHoneycomb.vue`, `components/Chart/OrigamChartMap.vue`, `components/Chart/OrigamChartPictorial.vue`, …
+**Consommateurs** (20) : `components/Audio/OrigamAudio.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartGauge.vue`, `components/Chart/OrigamChartHeatmap.vue`, `components/Chart/OrigamChartHoneycomb.vue`, `components/Chart/OrigamChartMap.vue`, `components/Chart/OrigamChartPictorial.vue`, …
 
 ## `useValidation`
 
@@ -2265,7 +2584,7 @@ resolveur de theme ait patché `props.error`.
 
 **Source** : `packages/ds/src/composables/Commons/validation.composable.ts`
 
-**Consommateurs** (5) : `components/Form/OrigamForm.vue`, `components/Input/OrigamInput.vue`, `components/NumberField/OrigamNumberField.vue`, `components/OtpInputField/OrigamOtpInputField.vue`, `interfaces/Input/input.interface.ts`
+**Consommateurs** (11) : `components/ColorPickerField/OrigamColorPickerField.vue`, `components/DatePickerField/OrigamDatePickerField.vue`, `components/Form/OrigamForm.vue`, `components/Input/OrigamInput.vue`, `components/NumberField/OrigamNumberField.vue`, `components/OtpInputField/OrigamOtpInputField.vue`, `components/Select/OrigamSelect.vue`, `interfaces/Commons/validation.interface.ts`, …
 
 ## `useVariant`
 
@@ -2333,12 +2652,12 @@ les items reellement mesures.
 
 **Source** : `packages/ds/src/composables/Commons/virtual.composable.ts`
 
-**Consommateurs** (2) : `components/VirtualScroll/OrigamVirtualScroll.vue`, `interfaces/VirtualScroll/virtual-scroll.interface.ts`
+**Consommateurs** (3) : `components/Select/OrigamSelect.vue`, `components/VirtualScroll/OrigamVirtualScroll.vue`, `interfaces/VirtualScroll/virtual-scroll.interface.ts`
 
 ## `useVModel`
 
 ```ts
-export function useVModel< Props extends object &
+export function useVModel< Props extends object & { [key in Prop as `onUpdate:${Prop}`]?: TEventProp | undefined }, Prop extends Extract<keyof Props, string>, Inner = Props[Prop], > ( props: Props, prop: Prop, defaultValue?: MaybeRefOrGetter<Props[Prop] | undefined>, transformIn: (value?: Props[Prop]) => Inner = (v?: Props[Prop]) => v as Inner, transformOut: (value: Inner) => Props[Prop] = (v: Inner) => v as Props[Prop] ): TVModel<Props, Prop, Inner>
 ```
 
 V-model generique pour n'importe quelle prop (pas seulement
@@ -2360,5 +2679,5 @@ une valeur de modele legitime.
 
 **Source** : `packages/ds/src/composables/Commons/vModel.composable.ts`
 
-**Consommateurs** (59) : `components/App/OrigamAppBar.vue`, `components/Carousel/OrigamCarousel.vue`, `components/Checkbox/OrigamCheckbox.vue`, `components/Checkbox/OrigamCheckboxBtn.vue`, `components/Checkbox/OrigamCheckboxGroup.vue`, `components/ColorPicker/OrigamColorPicker.vue`, `components/ColorPicker/OrigamColorPickerPreview.vue`, `components/ColorPickerField/OrigamColorPickerField.vue`, …
+**Consommateurs** (64) : `components/App/OrigamAppBar.vue`, `components/Calendar/OrigamCalendar.vue`, `components/Carousel/OrigamCarousel.vue`, `components/Checkbox/OrigamCheckbox.vue`, `components/Checkbox/OrigamCheckboxBtn.vue`, `components/Checkbox/OrigamCheckboxGroup.vue`, `components/ColorPicker/OrigamColorPicker.vue`, `components/ColorPicker/OrigamColorPickerPreview.vue`, …
 

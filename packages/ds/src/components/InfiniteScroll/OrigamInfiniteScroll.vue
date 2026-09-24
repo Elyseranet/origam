@@ -5,6 +5,7 @@
 			ref="rootEl"
 			:class="infiniteScrollClasses"
 			:style="infiniteScrollStyles"
+			:tabindex="hasFocusableDescendant ? undefined : 0"
 	>
 		<div class="origam-infinite-scroll__side" role="status" aria-live="polite" :style="typographyStyles">
 			<template v-if="hasStartIntersect">
@@ -118,7 +119,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, nextTick, onMounted, ref, shallowRef, StyleValue, toRef } from 'vue'
+	import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, StyleValue, toRef } from 'vue'
 	import OrigamBtn from '../Btn/OrigamBtn.vue'
 	import OrigamInfiniteScrollIntersect from './OrigamInfiniteScrollIntersect.vue'
 	import OrigamProgress from '../Progress/OrigamProgress.vue'
@@ -130,6 +131,8 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
 
+	import { IN_BROWSER } from '../../consts/Commons/commons.const'
+
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
 	import { INFINITE_SCROLL_MODE, INFINITE_SCROLL_SIDE, INFINITE_SCROLL_STATUS } from '../../enums/InfiniteScroll/infinite-scroll.enum'
 	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
@@ -139,6 +142,8 @@
 	import type { IInfiniteScrollEmits, IInfiniteScrollSlots } from '../../interfaces/InfiniteScroll/infinite-scroll.interface'
 
 	import type { TInfiniteScrollSide, TInfiniteScrollStatus } from '../../types/InfiniteScroll/infinite-scroll.type'
+
+	import { focusableChildren } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global
@@ -184,6 +189,56 @@
 
 	const rootEl = ref<HTMLDivElement>()
 	const isIntersecting = shallowRef(false)
+
+	/*********************************************************
+	 * hasFocusableDescendant — scrollable-region-focusable (a11y baseline)
+	 *
+	 * @description
+	 * The root renders `overflow-y: auto` unconditionally, so as soon as
+	 * the `default` slot's content is taller than the container it
+	 * becomes a genuinely scrollable region. axe-core's
+	 * `scrollable-region-focusable` rule requires such a region to be
+	 * reachable by keyboard: either it carries its own `tabindex`, or it
+	 * contains at least one focusable descendant already in the tab
+	 * order.
+	 *
+	 * @description
+	 * Most real consumers slot in interactive rows (links, buttons) —
+	 * axe already passes there, and forcing `tabindex="0"` on the root
+	 * regardless would add a redundant tab stop in front of content
+	 * that is already reachable. The root is therefore only made
+	 * focusable when the slotted content has NO focusable descendant at
+	 * all (the exact shape of the `intersect`-mode default story: plain
+	 * non-interactive rows) — the one case where the region would
+	 * otherwise be unreachable by keyboard entirely.
+	 *
+	 * @description
+	 * Recomputed on every DOM mutation inside the root — infinite
+	 * scroll content changes constantly (rows are appended on
+	 * `@load`), so a value captured only once at mount would go stale
+	 * the moment the first page of results lands.
+	 ********************************************************/
+	const hasFocusableDescendant = shallowRef(false)
+	let focusableObserver: MutationObserver | undefined
+
+	const refreshHasFocusableDescendant = () => {
+		if (!rootEl.value) return
+
+		hasFocusableDescendant.value = focusableChildren(rootEl.value).length > 0
+	}
+
+	onMounted(() => {
+		if (!IN_BROWSER || !rootEl.value) return
+
+		refreshHasFocusableDescendant()
+
+		focusableObserver = new MutationObserver(refreshHasFocusableDescendant)
+		focusableObserver.observe(rootEl.value, {childList: true, subtree: true})
+	})
+
+	onBeforeUnmount(() => {
+		focusableObserver?.disconnect()
+	})
 
 	const propertyDirection = computed(() => {
 		return props.direction === DIRECTION.VERTICAL ? 'scrollTop' : 'scrollLeft'
@@ -257,28 +312,104 @@
 		}
 	}
 
+	/*********************************************************
+	 * scheduleFrame — rAF bound to the component's lifetime (#719)
+	 *
+	 * @description
+	 * `done()` re-arms the intersection three frames later, through two
+	 * `nextTick`s. Nothing used to cancel that chain, so a component
+	 * unmounted in between kept a continuation queued on a torn-down
+	 * environment — the family measured in #706: under Vitest the frame
+	 * lands AFTER jsdom is destroyed, `window` no longer exists, and the
+	 * *scheduler* itself (`window.requestAnimationFrame` on the next
+	 * rung) throws `ReferenceError: window is not defined`. That failure
+	 * kills the whole run with zero red tests.
+	 *
+	 * @description
+	 * One mechanism, both failure modes: `onBeforeUnmount` cancels the
+	 * frame already armed AND flips `disposed`, which makes any LATER
+	 * scheduling attempt a no-op — needed because the scheduling here is
+	 * itself deferred behind two `nextTick`s, so at unmount time there is
+	 * not always a handle to cancel yet.
+	 *
+	 * @description
+	 * Every armed id is tracked, NOT just the latest: `done()` is called
+	 * once per side, so two chains can be in flight at the same time and
+	 * a single handle would lose one of them.
+	 ********************************************************/
+	const frames = new Set<number>()
+	let disposed = false
+
+	const scheduleFrame = (cb: () => void) => {
+		if (disposed || !IN_BROWSER) return
+
+		const id = window.requestAnimationFrame(() => {
+			frames.delete(id)
+			cb()
+		})
+
+		frames.add(id)
+	}
+
+	onBeforeUnmount(() => {
+		disposed = true
+
+		for (const id of frames) window.cancelAnimationFrame(id)
+
+		frames.clear()
+	})
+
+	/*********************************************************
+	 * scheduleFrames — la chaine de rAF, mise a plat
+	 *
+	 * @description
+	 * Remplace mot pour mot l'imbrication
+	 * `scheduleFrame(scheduleFrame(scheduleFrame(cb)))` que `done`
+	 * portait en ligne : meme nombre de frames, meme ordre, meme
+	 * court-circuit sur `disposed` (porte par `scheduleFrame`).
+	 *
+	 * @description
+	 * `count <= 1 ? cb : …` et non `count <= 0` : a 1 il reste UNE
+	 * frame a armer, celle qui execute `cb`. Avec `<= 0` la recursion
+	 * armerait une frame de trop et decalerait la re-mesure d'un tick.
+	 ********************************************************/
+	const scheduleFrames = (count: number, cb: () => void) => {
+		scheduleFrame(count <= 1 ? cb : () => scheduleFrames(count - 1, cb))
+	}
+
+	const rearmIntersect = () => {
+		intersecting(currentSide.value)
+	}
+
+	/*********************************************************
+	 * afterDoneTick — le corps du `nextTick` de `done`, extrait
+	 *
+	 * @description
+	 * Extraction pure (Sonar #771 : plus de 4 niveaux de fonctions
+	 * imbriquees a l'ancienne ligne 324). Aucune instruction deplacee,
+	 * ajoutee ni retiree — seul le niveau d'imbrication change.
+	 ********************************************************/
+	const afterDoneTick = () => {
+		if (disposed) return
+
+		if (status.value === INFINITE_SCROLL_STATUS.EMPTY || status.value === INFINITE_SCROLL_STATUS.ERROR) return
+
+		if (status.value === INFINITE_SCROLL_STATUS.OK && currentSide.value === INFINITE_SCROLL_SIDE.START) {
+			setScrollAmount(getScrollSize() - previousScrollSize + getScrollAmount())
+		}
+
+		if (props.mode !== INFINITE_SCROLL_MODE.MANUAL) {
+			/*********************************************************
+			 * 3 frames — exactement la triple imbrication d'origine.
+			 ********************************************************/
+			nextTick(() => scheduleFrames(3, rearmIntersect))
+		}
+	}
+
 	const done = (_status: TInfiniteScrollStatus) => {
 		status.value = _status
 
-		nextTick(() => {
-			if (status.value === INFINITE_SCROLL_STATUS.EMPTY || status.value === INFINITE_SCROLL_STATUS.ERROR) return
-
-			if (status.value === INFINITE_SCROLL_STATUS.OK && currentSide.value === INFINITE_SCROLL_SIDE.START) {
-				setScrollAmount(getScrollSize() - previousScrollSize + getScrollAmount())
-			}
-
-			if (props.mode !== INFINITE_SCROLL_MODE.MANUAL) {
-				nextTick(() => {
-					window.requestAnimationFrame(() => {
-						window.requestAnimationFrame(() => {
-							window.requestAnimationFrame(() => {
-								intersecting(currentSide.value)
-							})
-						})
-					})
-				})
-			}
-		})
+		nextTick(afterDoneTick)
 	}
 	const intersecting = (side: TInfiniteScrollSide) => {
 		if (props.mode !== 'manual' && !isIntersecting.value) return

@@ -88,6 +88,8 @@
     <div
       v-if="resolvedView === CALENDAR_VIEW.MONTH"
       class="origam-calendar__body origam-calendar__body--month"
+      role="grid"
+      :aria-label="ariaMonthLabel"
       data-cy="origam-calendar-body-month"
     >
       <div
@@ -110,8 +112,6 @@
       </div>
       <div
         class="origam-calendar__month-grid"
-        role="grid"
-        :aria-label="ariaMonthLabel"
       >
         <div
           v-for="(weekRow, rowIndex) in monthGrid"
@@ -1086,7 +1086,15 @@
       emit('update:currentDate', next)
 
       const focusTarget = next
-      void nextTick(() => focusDayCell(focusTarget))
+      /*********************************************************
+       * Promesse flottante, deliberement
+       *
+       * @description
+       * Le focus se pose au tick suivant et rien n'attend la promesse.
+       * Le `void` qui marquait cette intention est retire (Sonar #771) :
+       * la valeur de retour reste ignoree a l'identique.
+       ********************************************************/
+      nextTick(() => focusDayCell(focusTarget))
     }
   }
 

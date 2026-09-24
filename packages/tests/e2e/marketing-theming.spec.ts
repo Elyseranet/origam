@@ -169,12 +169,15 @@ test.describe('A · Vérif finale install model', () => {
         expect(fs.existsSync(cssFile), `${cssFile} ne doit plus exister`).toBe(false)
         expect(fs.existsSync(scssFile), `${scssFile} ne doit plus exister`).toBe(false)
 
-        const buildScript = fs.readFileSync(
-            path.join(REPO_ROOT, 'packages/ds/scripts/build-tokens.mjs'),
-            'utf-8'
-        )
-        expect(buildScript, 'le générateur ré-écrit themes-all.css — la branche morte est revenue')
-            .not.toContain('themes-all.css')
+        // #835 — la 4e assertion de ce test lisait `packages/ds/scripts/build-tokens.mjs`
+        // et vérifiait que ce générateur ne réécrivait plus `themes-all.css`. Le fichier
+        // a été supprimé le 2026-08-31 (pipeline Style Dictionary retiré, voir CLAUDE.md
+        // « Design tokens ») : il n'y a plus de générateur du tout, donc plus rien contre
+        // quoi cette assertion puisse échouer OU passer avec un sens — elle ne faisait
+        // que crasher (ENOENT). Retirée : les deux assertions ci-dessus (exports
+        // package.json + fichiers CSS/SCSS absents) restent, et couvrent encore un objet
+        // réel. Si le pipeline est un jour réintroduit, cette régression statique devra
+        // être réécrite contre le nouveau générateur — pas restaurée telle quelle.
     })
 
     // ── A5. ThemeSwitcher — exactement 8 options ─────────────────────────
@@ -184,15 +187,25 @@ test.describe('A · Vérif finale install model', () => {
             await page.goto('/')
             await page.waitForLoadState('networkidle')
 
-            // Le ThemeSwitcher rend un OrigamBtn qui contient .theme-switcher__label.
-            // On cible le bouton parent du span — le span seul ne déclenche pas le menu.
-            const activatorBtn = page.locator('button:has(.theme-switcher__label)').first()
+            // #835 — `.theme-switcher__label` n'existe plus : `layouts/default.vue`
+            // rend le libellé via la prop `text` d'OrigamBtn (pas de span dédié), et
+            // porte un `aria-label` stable (`a11y.toggle_brand_theme`, fallback "Switch
+            // brand theme") — on cible le bouton par son nom accessible plutôt que par
+            // une classe qui n'a jamais appartenu qu'à un span disparu.
+            const activatorBtn = page.getByRole('button', { name: 'Switch brand theme' })
             await activatorBtn.click()
             await page.waitForTimeout(600)
 
-            // OrigamMenu téléporte le contenu dans le body via un <div role="menu" ...>
-            // Les OrigamListItem portent role="option".
-            const options = page.locator('[role="option"]')
+            // OrigamMenu téléporte le contenu dans le body via un <div role="menu" ...>.
+            // #835 — les OrigamListItem ne portent PLUS role="option" : c'est un
+            // changement d'accessibilité délibéré (voir OrigamList.vue `isSelectable`),
+            // une liste `nav` qui ne passe ni `selected` ni `select-strategy` n'est plus
+            // annoncée comme un listbox de sélection — c'est la « bad ARIA » que la W3C
+            // déconseille pour un menu de navigation. Chaque item garde en revanche son
+            // `data-cy="theme-menu-{key}"` (`layouts/default.vue`), stable et déjà la
+            // convention de ce dépôt — on cible ça plutôt qu'un rôle ARIA qui a changé
+            // de sens depuis.
+            const options = page.locator('[data-cy^="theme-menu-"]')
             await options.first().waitFor({ state: 'visible', timeout: 3000 }).catch(() => {})
             const count = await options.count()
 
@@ -202,11 +215,12 @@ test.describe('A · Vérif finale install model', () => {
         test("aucune option ne porte le label 'origam'", async ({ page }) => {
             await page.goto('/')
             await page.waitForLoadState('networkidle')
-            const activatorBtn = page.locator('button:has(.theme-switcher__label)').first()
+            const activatorBtn = page.getByRole('button', { name: 'Switch brand theme' })
             await activatorBtn.click()
             await page.waitForTimeout(600)
 
-            const options = page.locator('[role="option"]')
+            // #835 — même motif que le test précédent : `data-cy` remplace `role="option"`.
+            const options = page.locator('[data-cy^="theme-menu-"]')
             await options.first().waitFor({ state: 'visible', timeout: 3000 }).catch(() => {})
             const labels = await options.allTextContents()
             for (const label of labels) {

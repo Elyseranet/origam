@@ -44,6 +44,9 @@ export const MARKETING_SPEC_PATTERNS = [
     '**/types.spec.ts',
     '**/composables.spec.ts',
     '**/nav-link-availability.spec.ts',
+    '**/marketing-no-third-party.spec.ts',
     '**/marketing-nav-ssr.spec.ts',
+    '**/marketing-theme-honored.spec.ts',
+    '**/marketing-nav-locale.spec.ts',
     '**/api-docs-generated.spec.ts'
 ]

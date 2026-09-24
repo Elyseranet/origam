@@ -766,13 +766,18 @@ test.describe('OrigamBreadcrumbDivider', () => {
             await expect(divider).toBeVisible({ timeout: 12000 })
 
             const before = await divider.evaluate((el) => getComputedStyle(el).paddingInlineStart)
+            // Guard the "not a dead control" claim BEFORE acting: if the divider
+            // already sat at 30px, the assertion below would pass whatever the
+            // control does.
+            expect(before).not.toBe('30px')
 
             await fillHstText(page, 'Padding Inline', '30px')
-            await page.waitForTimeout(300)
 
-            const after = await divider.evaluate((el) => getComputedStyle(el).paddingInlineStart)
-            expect(after).not.toBe(before)
-            expect(after).toBe('30px')
+            // #783 — was `waitForTimeout(300)` then one read. `toHaveCSS`
+            // retries until the value lands and times out red if it never does,
+            // so the control's propagation delay stops being something the spec
+            // has to guess.
+            await expect(divider).toHaveCSS('padding-inline-start', '30px')
         })
     })
 

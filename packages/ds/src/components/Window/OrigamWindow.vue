@@ -6,8 +6,7 @@
 			v-touch="touchOptions"
 			:class="windowClasses"
 			:style="windowStyles"
-			aria-roledescription="carousel"
-			role="region"
+			v-bind="landmarkAttrs"
 	>
 		<p
 				class="origam-window__live-region"
@@ -81,7 +80,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, provide, ref, shallowRef, StyleValue, watch } from 'vue'
+	import { computed, provide, ref, shallowRef, StyleValue, useAttrs, watch } from 'vue'
 	import OrigamBtn from '../Btn/OrigamBtn.vue'
 	import OrigamSpacer from '../Grids/OrigamSpacer.vue'
 
@@ -96,6 +95,8 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 
 	import { ORIGAM_WINDOW_GROUP_KEY, ORIGAM_WINDOW_KEY } from '../../consts/Window/window.const'
+
+	import { warnMissingLandmarkName } from '../../utils/Commons/a11y.util'
 
 	import vTouch from '../../directives/Touch/touch.directive'
 
@@ -151,6 +152,77 @@
 	const {filterProps} = useProps<IWindowProps>(props)
 
 	const {t} = useLocale()
+
+	/*********************************************************
+	 * landmarkAttrs — ⛔ #781
+	 *
+	 * @description
+	 * Le DS n'émet plus un rôle ARIA qu'il ne peut pas nommer (principe acté
+	 * par 9637961f, #747 / #660 / #653). `region` est l'un des rares rôles
+	 * dont la définition WAI-ARIA 1.2 marque le nom accessible comme REQUIS
+	 * (« Name Required: True ») ; HTML-AAM le dit dans l'autre sens, un
+	 * `<section>` ne devient une `region` QUE s'il est nommé. Mesuré sur
+	 * `develop`, la racine rendue portait `role="region"` +
+	 * `aria-roledescription="carousel"` et AUCUN nom : un repère anonyme
+	 * dans la liste des repères, et une roledescription accrochée à rien.
+	 *
+	 * @description
+	 * Aucun libellé n'est inventé. Un défaut « Carousel » nommerait à
+	 * l'identique tous les carrousels d'une page — exactement le défaut
+	 * corrigé sur la zone défilante d'`OrigamCode` (cinq régions homonymes
+	 * dans la même liste). Seul le consommateur détient la chaîne qui
+	 * distingue.
+	 *
+	 * @description
+	 * Le nom est lu dans `$attrs` plutôt que dans une nouvelle prop : c'est
+	 * le canal que la doc annonce déjà (« pass an aria-label, it falls
+	 * through automatically »), et `useIconAccessibility` fait le même choix
+	 * pour la même raison — aucune surface de props n'est ajoutée.
+	 *
+	 * @description
+	 * `aria-roledescription` est LU TEL QUEL par un lecteur d'écran : c'est
+	 * du texte destiné à l'utilisateur, il passe donc par la locale, comme
+	 * `origam.carousel.slide` côté `OrigamCarouselItem`. Il était en dur en
+	 * anglais dans le gabarit.
+	 *
+	 * @description
+	 * ⛔ Piège mesuré en écrivant ceci : un commentaire HTML placé AVANT
+	 * l'élément racine du gabarit le transforme en fragment multi-racines.
+	 * `$attrs` cesse alors de descendre sur la racine et `wrapper.classes()`
+	 * lit le nœud commentaire — cinq tests de `window-surface-props.spec.ts`
+	 * (rounded / border / elevation / padding / margin) sont passés au rouge
+	 * pour cette seule raison. L'explication vit donc ici, pas au-dessus du
+	 * `<component>`.
+	 *
+	 * @description
+	 * ADR-005 : la lecture se fait DANS le `computed`, jamais dans le corps
+	 * de `setup()`.
+	 ********************************************************/
+	const attrs = useAttrs()
+
+	const hasAccessibleName = computed(() => {
+		const label = attrs['aria-label']
+		const labelledBy = attrs['aria-labelledby']
+
+		return !!(typeof label === 'string' ? label.trim() : label) ||
+			!!(typeof labelledBy === 'string' ? labelledBy.trim() : labelledBy)
+	})
+
+	const landmarkAttrs = computed(() => {
+		const roleDescription = t('origam.carousel.role_description')
+		const attributes: Record<string, string> = {}
+
+		if (!hasAccessibleName.value) {
+			warnMissingLandmarkName('OrigamWindow', 'region', roleDescription)
+
+			return attributes
+		}
+
+		attributes.role = 'region'
+		attributes['aria-roledescription'] = roleDescription
+
+		return attributes
+	})
 
 	/*********************************************************
 	 * Group & window state

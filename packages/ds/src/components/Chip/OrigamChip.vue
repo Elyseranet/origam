@@ -44,8 +44,7 @@
 				v-if="hasPrepend"
 				key="prepend"
 				class="origam-chip__prepend"
-				:role="isPrependZoneFocusable ? 'button' : undefined"
-				:tabindex="isPrependZoneFocusable ? 0 : undefined"
+				v-bind="prependCommandAttrs"
 				@click="handleClickPrepend"
 				@keydown="handleKeydownPrepend"
 		>
@@ -81,8 +80,7 @@
 				v-if="hasAppend"
 				key="append"
 				class="origam-chip__append"
-				:role="isAppendZoneFocusable ? 'button' : undefined"
-				:tabindex="isAppendZoneFocusable ? 0 : undefined"
+				v-bind="appendCommandAttrs"
 				@click="handleClickAppend"
 				@keydown="handleKeydownAppend"
 		>
@@ -141,6 +139,7 @@
 	import OrigamExpandX from '../Transition/OrigamExpandX.vue'
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
+	import { useAccessibleCommand } from '../../composables/Commons/accessibleCommand.composable'
 	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useGroupItem } from '../../composables/Commons/groupItem.composable'
@@ -286,6 +285,30 @@
 	 ********************************************************/
 	const isPrependZoneFocusable = computed(() => isPrependClickable.value && !link.isLink.value)
 	const isAppendZoneFocusable = computed(() => isAppendClickable.value && !link.isLink.value)
+
+	/*********************************************************
+	 * prependCommandAttrs / appendCommandAttrs — #747
+	 *
+	 * @description
+	 * Built locally rather than taken from `useAdjacent`, because the gate
+	 * is `isXxxZoneFocusable` (link-aware) and not raw clickability. The
+	 * hook's own pair is never read here, so its lazy warning never fires
+	 * twice for the same zone.
+	 ********************************************************/
+	const prependCommandAttrs = useAccessibleCommand({
+		component: 'OrigamChip',
+		zone: 'prepend',
+		prop: 'prependAriaLabel',
+		active: isPrependZoneFocusable,
+		label: () => props.prependAriaLabel
+	})
+	const appendCommandAttrs = useAccessibleCommand({
+		component: 'OrigamChip',
+		zone: 'append',
+		prop: 'appendAriaLabel',
+		active: isAppendZoneFocusable,
+		label: () => props.appendAriaLabel
+	})
 
 	/*********************************************************
 	 * rootTag / typeAttr — issue #530 (a11y sweep)
@@ -748,14 +771,5 @@
 		&--filter {
 			user-select: none;
 		}
-	}
-</style>
-
-<style
-		lang="scss"
-		scoped
->
-	.origam-chip {
-		--origam-chip---density: 0px;
 	}
 </style>

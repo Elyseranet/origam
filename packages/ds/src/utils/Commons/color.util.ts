@@ -74,6 +74,39 @@ export function isParsableColor (color: string): boolean {
 }
 
 /*********************************************************
+ * isCompleteCssColor
+ *
+ * @description
+ * Is complete css color — a strictER sibling of `isCssColor`, meant to
+ * gate a COMMIT (a user's typed keystroke reaching the model), not a
+ * style-consumption path.
+ *
+ * @description
+ * `isCssColor`'s hex branch deliberately only checks the `#` prefix
+ * (`/^#/`) — a value that fails to paint at the CSS-consumption layer is
+ * harmless, so `#f`, `#ff`, `#fffff` (5 digits) all pass it today. That
+ * tolerance is wrong for a commit gate: a user mid-typing `#ff00aa`
+ * passes through `#f`, `#ff`, `#ff0`… and only a SYNTACTICALLY COMPLETE
+ * hex (3, 4, 6 or 8 digits) should actually reach `modelValue` — #859
+ * (`OrigamColorPickerField` / `OrigamDatePickerField` direct-typing
+ * wiring). Every other category (functional notation, named colors,
+ * `var()`) reuses `isCssColor` unchanged — its check is already exact
+ * there.
+ *
+ * @param color …
+ * @returns …
+ ********************************************************/
+export function isCompleteCssColor (color: string): boolean {
+    if (!color) return false
+
+    if (color.startsWith('#')) {
+        return /^#([0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(color)
+    }
+
+    return isCssColor(color)
+}
+
+/*********************************************************
  * parseColor
  *
  * @description
@@ -762,13 +795,16 @@ export function intentTokenBase (intent: TIntent): string {
  *   • `default`  → `var(--…-bg)`
  *   • `hover`    → `var(--…-bgHover, color-mix(in srgb, var(--…-bg), black 20%))`
  *   • `active`   → `var(--…-bgActive, color-mix(in srgb, var(--…-bg), black 30%))`
- *   • `disabled` → `var(--…-bgDisabled)`
+ *
+ * @description
+ * There is no `disabled` rung — disabled is an opacity veil, not a token
+ * swap. See `BG_FG_ROLE` (#823) for why emitting one would erase the
+ * surface rather than repaint it.
  ********************************************************/
 export function intentBgExpr (intent: TIntent, role: TBgFgRole): string {
     const base = intentTokenBase(intent)
     const baseVar = `var(--origam-color__${base}---bg)`
     if (role === 'default') return baseVar
-    if (role === 'disabled') return `var(--origam-color__${base}---bgDisabled)`
     const pct = role === 'hover' ? COLOR_HOVER_MIX_PCT : COLOR_ACTIVE_MIX_PCT
     const slot = role === 'hover' ? 'bgHover' : 'bgActive'
     return `var(--origam-color__${base}---${slot}, color-mix(in srgb, ${baseVar}, black ${pct}%))`
@@ -778,14 +814,14 @@ export function intentBgExpr (intent: TIntent, role: TBgFgRole): string {
  * intentFgExpr
  *
  * @description
- * Foreground stays the same hue across hover / active by design — we
- * darken the surface around the text, the text itself keeps the
- * WCAG-paired contrast token.
+ * Foreground stays the same hue across every role by design — we darken
+ * the surface around the text, the text itself keeps the WCAG-paired
+ * contrast token. `role` is therefore accepted for signature symmetry with
+ * `intentBgExpr` and does not branch (there is no `disabled` rung — #823).
  ********************************************************/
-export function intentFgExpr (intent: TIntent, role: TBgFgRole): string {
+export function intentFgExpr (intent: TIntent, _role: TBgFgRole): string {
     const base = intentTokenBase(intent)
-    const slot = role === 'disabled' ? 'fgDisabled' : 'fg'
-    return `var(--origam-color__${base}---${slot})`
+    return `var(--origam-color__${base}---fg)`
 }
 
 /*********************************************************
@@ -813,7 +849,6 @@ export function tokenStylesForIntent (intent: TIntent, role: TBgFgRole = BG_FG_R
  ********************************************************/
 export function rawBgExprWithState (raw: string, role: TBgFgRole): string {
     if (role === 'default') return raw
-    if (role === 'disabled') return raw // veil/opacity handles disabled
     const pct = role === 'hover' ? COLOR_HOVER_MIX_PCT : COLOR_ACTIVE_MIX_PCT
     return `color-mix(in srgb, ${raw}, black ${pct}%)`
 }
@@ -959,42 +994,3 @@ export function warnUnsupportedProp (
 }
 
 
-const _warnedDeprecatedEmitKeys = new Set<string>()
-
-/*********************************************************
- * warnDeprecatedEmit
- *
- * @description
- * Warn (once per component / emit, dev builds only) that the consumer
- * attached a listener to an emit scheduled for removal. The emit KEEPS
- * FIRING until the removal version — this announces the break instead of
- * shipping it. `replacement` should name what to do instead, not merely
- * say the emit is going away. Same once-per-key cache as the three
- * warnings above, but for a public EMIT rather than a prop.
- *
- * @description
- * First use case: `click:prepend` / `click:append` on `<OrigamBtn>` (#443).
- * Those two were reachable by MOUSE ONLY — the emit is bound to a
- * descendant span, while keyboard activation synthesises its click on the
- * button root. The `role="button"` + tab-stop remedy `useAdjacent` applies
- * on the other ten consumers is ILLEGAL here: Btn's root is a
- * `<button>`/`<a>`, whose content model forbids both an interactive
- * descendant and any descendant carrying `tabindex`. A control that already
- * owns one action cannot host a second — two actions are two buttons
- * (`origam-btn-group`).
- ********************************************************/
-export function warnDeprecatedEmit (
-    component: string,
-    emit: string,
-    replacement: string,
-    removalVersion = 'v3.0.0',
-): void {
-    if (typeof console === 'undefined') return
-    if (!import.meta.env?.DEV) return
-    const key = `${component}::${emit}`
-    if (_warnedDeprecatedEmitKeys.has(key)) return
-    _warnedDeprecatedEmitKeys.add(key)
-    console.warn(
-        `[origam] <${component}> emit "${emit}" is deprecated and will be removed in ${removalVersion}. ${replacement}`
-    )
-}

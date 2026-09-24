@@ -5,7 +5,7 @@ import { ORIGAM_GO_TO_KEY } from '../../consts/Commons/goTo.const'
 import type { IGoToInstance, IGoToOptions } from '../../interfaces/Commons/goTo.interface'
 import type { ILocaleInstance, IRtlInstance } from '../../interfaces/Commons/locale.interface'
 
-import { mergeDeep } from '../../utils/Commons/commons.util'
+import { mergeDeep, tryOnScopeDispose } from '../../utils/Commons/commons.util'
 import { genDefaults, scrollTo } from '../../utils/Commons/goTo.util'
 
 /*********************************************************
@@ -55,18 +55,34 @@ export function useGoTo (_options: Partial<IGoToOptions> = {}) {
         rtl: computed(() => goToInstance.rtl.value || isRtl.value)
     }
 
+    /*********************************************************
+     * Proprietaire de la boucle de scroll (#753)
+     *
+     * @description
+     * `scrollTo` anime par une boucle rAF auto-reprogrammee que rien
+     * n'arretait. Le scope qui a appele `useGoTo()` est le seul
+     * proprietaire identifiable : `go()` est le plus souvent declenchee
+     * depuis un gestionnaire d'evenement, ou aucun scope actif n'existe
+     * plus pour s'enregistrer. On ouvre donc le controleur ICI, a
+     * l'appel du composable, et `tryOnScopeDispose` (qui no-op hors
+     * scope) l'abandonne au demontage.
+     ********************************************************/
+    const controller = new AbortController()
+
+    tryOnScopeDispose(() => controller.abort())
+
     async function go (
         target: ComponentPublicInstance | HTMLElement | string | number,
         options?: Partial<IGoToOptions>
     ) {
-        return scrollTo(target, mergeDeep(_options, options), false, goTo)
+        return scrollTo(target, mergeDeep(_options, options), false, goTo, controller.signal)
     }
 
     go.horizontal = async (
         target: ComponentPublicInstance | HTMLElement | string | number,
         options?: Partial<IGoToOptions>
     ) => {
-        return scrollTo(target, mergeDeep(_options, options), true, goTo)
+        return scrollTo(target, mergeDeep(_options, options), true, goTo, controller.signal)
     }
 
     return go

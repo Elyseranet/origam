@@ -7,8 +7,16 @@
 //
 // Order matters: primitives must load first so semantic and component layers
 // can resolve their alias references. Light is loaded as the default theme;
-// dark is layered on top and activated by `data-theme="dark"` (or the
-// `prefers-color-scheme` media query handled inside the dark partial).
+// dark is layered on top and activated by `data-theme="dark"`, or by the
+// `@media (prefers-color-scheme: dark)` block that `tokens/_dark` carries at
+// its end — which matches only `:root:not([data-theme]):not([data-mode])`, so
+// it never overrides a page that pinned a choice on either axis.
+//
+// ⛔ That media query was MISSING from `_dark.scss` until #794 (it existed in
+// the CSS twin `tokens/dark.css` only). This very comment described it as
+// present for months while the compiled `main.css` — the `./styles` export —
+// shipped no automatic dark mode at all. Guard 27 (`token-twins`) now fails
+// on any divergence between a token sheet and its twin.
 
 @forward 'tokens/primitive';
 @forward 'tokens/light';

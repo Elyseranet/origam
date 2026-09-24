@@ -101,5 +101,5 @@ regardless of how many function calls deep it's invoked from.
 
 **Source** : `packages/ds/src/composables/Icon/iconAccessibility.composable.ts`
 
-**Consommateurs** (5) : `components/Icon/OrigamClassIcon.vue`, `components/Icon/OrigamComponentIcon.vue`, `components/Icon/OrigamIcon.vue`, `components/Icon/OrigamLigatureIcon.vue`, `utils/Commons/color.util.ts`
+**Consommateurs** (7) : `components/Icon/OrigamClassIcon.vue`, `components/Icon/OrigamComponentIcon.vue`, `components/Icon/OrigamIcon.vue`, `components/Icon/OrigamLigatureIcon.vue`, `components/Icon/OrigamSvgIcon.vue`, `components/Window/OrigamWindow.vue`, `utils/Commons/color.util.ts`
 

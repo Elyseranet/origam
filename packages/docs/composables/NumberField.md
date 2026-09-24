@@ -10,7 +10,7 @@
 ## `useHold`
 
 ```ts
-export function useHold (
+export function useHold ({toggleUpDown}: { toggleUpDown: (increment: boolean) => void }, holdRepeat: MaybeRefOrGetter<number> = NUMBER_FIELD_DEFAULT_HOLD_REPEAT, holdDelay: MaybeRefOrGetter<number> = NUMBER_FIELD_DEFAULT_HOLD_DELAY)
 ```
 
 `holdRepeat` / `holdDelay` accept `MaybeRefOrGetter<number>` (a plain

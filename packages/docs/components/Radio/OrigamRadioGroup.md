@@ -52,7 +52,7 @@ The rows below are the ones you reach for in practice.
 
 | Prop | Type | Description |
 |---|---|---|
-| `label` | `string` | Group label, rendered through `<OrigamLabel>` and wired as `aria-labelledby` on the control group. |
+| `label` | `string` | Group label, rendered through `<OrigamLabel>` (as a `span`) and wired as `aria-labelledby` via a dedicated label wrapper. |
 | `required` | `boolean` | Marks the label as required. |
 | `disabled` / `readonly` | `boolean` | Forwarded down to every radio. |
 | `error` | `string \| boolean` | Error state; a string doubles as the message. |
@@ -68,7 +68,7 @@ The rows below are the ones you reach for in practice.
 | `size` | `TSize` | — | Cascaded to the radios. |
 | `inline` | `boolean` | — | Lays the radios out on one line. |
 | `trueIcon` / `falseIcon` | `TIcon` | Radio glyphs | Forwarded to the control group. |
-| `border` / `rounded` / `elevation` / `padding*` / `margin*` | Commons | Applied to the group's own box. |
+| `border` / `rounded` / `elevation` / `padding*` / `margin*` | Commons | — | Applied to the group's own box. |
 
 > **Cascade rule.** The group forwards `color` / `bgColor` / `density` /
 > `size` to its radios through an `<OrigamDefaultsProvider>`, and it
@@ -117,9 +117,25 @@ The rows below are the ones you reach for in practice.
 
 - **`multiple` is pinned to `false`** on the inner control group and is
   omitted from the prop surface — passing it has no effect.
-- **`aria-labelledby`** points at the group id only when `label` is set;
+- **`aria-labelledby`** points at a dedicated label wrapper
+  (`{id}-label`, `display: contents`), **not** at the `<OrigamLabel>`
+  element and **not** at the control group itself. It is emitted when
+  `label` is set **or** the `#label` slot is filled, so overriding the
+  slot keeps the group named. With neither, no `aria-labelledby` is
+  emitted at all — this DS never fabricates a fallback name (#622).
   `aria-describedby` always points at the messages id, so validation
   text is announced.
+
+  ::: info #814
+  Until 2.17.x the same id was carried by both the `<OrigamLabel>` and
+  the control group. Measured in Chromium: `aria-labelledby` then
+  resolved to whichever came first in document order — the label, so
+  the default rendering was already named correctly. But with `label`
+  set **and** the `#label` slot overridden, the label element was gone
+  and the only remaining carrier was the group, so the group named
+  itself with its own options. With the slot overridden and no `label`
+  prop, the group had no name at all.
+  :::
 - **Recursion guard** — the radios inherit visual props through
   `<OrigamDefaultsProvider>` rather than through a `computed` reading a
   `v-for` array ref. Reading that ref re-triggered the render endlessly

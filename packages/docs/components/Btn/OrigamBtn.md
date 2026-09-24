@@ -250,13 +250,14 @@ utility wins on its own and this inline path is the thing to delete.
 </template>
 ```
 
-::: danger `click:prepend` / `click:append` are deprecated — removed in v3.0.0 (#443)
-They still fire, and `<OrigamBtn>` warns once per emit in dev builds, but
-**do not use them**: they were never reachable by keyboard. The emit is bound
-to the `origam-btn__prepend` / `origam-btn__append` `<span>`, while a keyboard
-activation synthesises its click on the button ROOT — a listener bound to a
-descendant never sees it. Anyone navigating by keyboard, and every assistive
-technology driving the button that way, simply could not trigger the action.
+::: danger `click:prepend` / `click:append` were removed (#443, #577)
+`<OrigamBtn>` no longer emits them at all — the prepend/append `<span>`
+carries no click listener any more. They never worked for a keyboard user:
+the emit was bound to the `origam-btn__prepend` / `origam-btn__append`
+`<span>`, while a keyboard activation synthesises its click on the button
+ROOT — a listener bound to a descendant never sees it. Anyone navigating by
+keyboard, and every assistive technology driving the button that way, simply
+could not trigger the action.
 
 The remedy applied to the ten other `useAdjacent` consumers — promote the zone
 to a `role="button"` tab stop when a listener is attached — **cannot** be used
@@ -390,6 +391,24 @@ The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
   ```vue
   <origam-btn icon="mdi-content-save" :aria-label="t('btn_save', 'Save')"/>
   ```
+
+  ⛔ **#653 — this is now enforced by a dev-time warning, not just by this
+  paragraph.** #427 was closed as fixed while its own closing commit stated
+  in writing that this finding was out of scope, so the defect survived a
+  ticket that claimed to have handled it. An icon-only `<origam-btn>` with
+  no `aria-label` / `aria-labelledby` / `title` now logs, once per component
+  in development builds:
+
+  > `[origam] <OrigamBtn> renders a control with no accessible name: icon-only
+  > mode renders a <button> whose only content is an aria-hidden glyph. Add
+  > aria-label (or aria-labelledby) …`
+
+  The `<button>` itself is **not** withdrawn, and no label is invented. Unlike
+  a prepend/append zone — where the DS adds `role="button"` itself and can
+  therefore decline to (see `useAccessibleCommand`, #747) — this element IS a
+  button. axe will keep reporting `button-name` (impact `critical`) until the
+  consumer supplies the name, which is the correct outcome: the missing text
+  is theirs to provide.
 
 ## Theming notes
 

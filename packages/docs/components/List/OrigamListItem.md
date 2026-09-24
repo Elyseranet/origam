@@ -71,10 +71,40 @@ prefixes (`list-item__title` and `list-item__subtitle`).
 | `appendIcon`  | `string`                  | —       | Icon shown after content                      |
 | `prependAvatar` | `string`                | —       | Avatar image URL shown before content         |
 | `appendAvatar`  | `string`                | —       | Avatar image URL shown after content          |
-| `density`     | `TDensity`                | —       | Row density (`default` · `compact` · `comfortable`). Inherited from the parent list unless set. Shifts the row height by `0` / `-8px` / `+8px` |
+| `density`     | `TDensity`                | —       | Row density (`default` · `compact` · `comfortable`). Shifts the row height by `0` / `-8px` / `+8px`. **The row has authority** — see below |
 | `size`        | `TSize`                   | —       | Row-height rung — see the section below. Inherited from the parent list unless set |
 | `color`       | `TColor`                  | —       | Foreground (text) colour — an intent (`primary`, `success`, …) or a raw CSS colour. Inherited from the parent list / group unless set |
 | `bgColor`     | `TColor`                  | —       | Surface colour. An intent also pairs the matching contrast foreground automatically. Inherited from the parent list / group unless set |
+
+### Props — `density`: who decides the row height
+
+**The row decides; the list only supplies a default** (#571).
+
+- A row that is **not given** a `density` inherits the one its parent
+  `<origam-list>` carries. This is the common case and it is unchanged.
+- A row that **is given** a `density` wins over its list, because it
+  re-declares the same custom property (`--origam-list---density`) on
+  itself, closer in the cascade.
+- A row with **no list ancestor at all** now honours its own `density`.
+  Before #571 it did not: the value reached only a class
+  (`origam-list-item--density-*`) that no rule read, so a standalone row
+  rendered at the default rung whatever you passed it.
+
+⛔ **The row re-declares the property, it does not add a second term to the
+`calc()`.** The distinction is load-bearing: measured in Chromium on a
+`compact` list, re-declaring keeps the row at **48px** (unchanged), while
+adding a second term would count `-8px` twice and drop it to **40px**.
+
+| | list `compact` | list `comfortable` | no list |
+|---|---|---|---|
+| row density unset | 48px | 64px | 56px |
+| row `compact` | 48px | **48px** | **48px** |
+| row `comfortable` | **64px** | 64px | **64px** |
+
+The shipped `origam` theme sets `density: 'compact'` on `origam-list` only.
+It used to set it on `origam-list-item` as well; that entry was removed in
+#571, because once the row has authority a blanket theme default on every
+row would beat any `density` a consumer puts on the **list**.
 
 ### Props — `size`: the row-height scale
 

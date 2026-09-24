@@ -284,13 +284,6 @@
 			--origam-stepper---subtitle-font-size: 0.6875rem;
 		}
 
-		&--size-default {
-			--origam-stepper---indicator-size: 32px;
-			--origam-stepper---indicator-font-size: 0.75rem;
-			--origam-stepper---title-font-size: 0.875rem;
-			--origam-stepper---subtitle-font-size: 0.75rem;
-		}
-
 		&--size-large {
 			--origam-stepper---indicator-size: 40px;
 			--origam-stepper---indicator-font-size: 0.875rem;

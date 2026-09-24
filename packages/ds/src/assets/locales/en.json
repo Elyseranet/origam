@@ -51,6 +51,11 @@
         "placeholder": "Enter date"
       }
     },
+    "date_picker_controls": {
+      "prev": "Previous",
+      "next": "Next",
+      "toggle_year": "Toggle year selection"
+    },
     "no_data_text": "No data available",
     "bracket": {
       "aria_label": "Tournament bracket",
@@ -83,6 +88,7 @@
       "pause": "Pause the carousel",
       "play": "Play the carousel",
       "slide": "slide",
+      "role_description": "carousel",
       "aria_label": {
         "delimiter": "Carousel slide {0} of {1}"
       }
@@ -198,6 +204,10 @@
       "expand_row": "Expand row",
       "collapse_row": "Collapse row"
     },
+    "data_table_group_header_row": {
+      "expand_group": "Expand group",
+      "collapse_group": "Collapse group"
+    },
     "rating": {
       "aria_label": {
         "item": "Rating {0} of {1}"
@@ -286,7 +296,9 @@
     "command_palette": {
       "aria_label": "Command palette",
       "placeholder": "Search…",
-      "empty_text": "No results"
+      "empty_text": "No results",
+      "footer_navigate": "Navigate",
+      "footer_select": "Select"
     },
     "chart": {
       "aria_label": "Chart",
@@ -303,17 +315,22 @@
       "box_plot": {
         "aria_label": "box plot chart",
         "desc_one": "Box plot with {count} category.",
-        "desc_other": "Box plot with {count} categories."
+        "desc_other": "Box plot with {count} categories.",
+        "box_aria_label": "{0}: min={1} Q1={2} median={3} Q3={4} max={5}"
       },
       "bullet": {
         "aria_label": "bullet chart",
         "desc_one": "Bullet chart with {count} indicator.",
-        "desc_other": "Bullet chart with {count} indicators."
+        "desc_other": "Bullet chart with {count} indicators.",
+        "bullet_aria_label": "{0}: value {1}, target {2}, {3}% achievement"
       },
       "candlestick": {
         "aria_label": "candlestick chart",
         "desc_one": "Candlestick chart with {count} candle.",
-        "desc_other": "Candlestick chart with {count} candles."
+        "desc_other": "Candlestick chart with {count} candles.",
+        "direction_bullish": "bullish",
+        "direction_bearish": "bearish",
+        "candle_aria_label": "{0}: {1}, open {2}, high {3}, low {4}, close {5}"
       },
       "gauge": {
         "aria_label": "gauge chart",
@@ -344,12 +361,15 @@
         "aria_label": "Pareto chart",
         "cumulative_label": "Cumulative %",
         "desc_one": "Pareto chart with {count} category, sorted descending by value.",
-        "desc_other": "Pareto chart with {count} categories, sorted descending by value."
+        "desc_other": "Pareto chart with {count} categories, sorted descending by value.",
+        "bar_aria_label": "{0}: {1} ({2}%, cumulative {3}%)"
       },
       "pictorial": {
         "aria_label": "pictorial chart",
         "desc_one": "Pictorial chart with {count} column.",
-        "desc_other": "Pictorial chart with {count} columns."
+        "desc_other": "Pictorial chart with {count} columns.",
+        "fill_column_aria_label": "{0}: {1} — {2}% of maximum",
+        "column_aria_label": "{0}: {1} ({2} of {3} icons)"
       },
       "range_selector": {
         "aria_label": "Chart range selector"
@@ -477,6 +497,10 @@
     "treeview": {
       "aria_label": "File tree",
       "node_children_aria_label": "{0} contents"
+    },
+    "slider_field": {
+      "thumb_start_aria_label": "{0} (start)",
+      "thumb_end_aria_label": "{0} (end)"
     }
   }
 }

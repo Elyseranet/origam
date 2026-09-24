@@ -28,14 +28,15 @@ test('Alert: default has 0 border on every side', async ({ page }) => {
 
 test('Sheet: default has a 1px thin border on every side (origam baseline theme)', async ({ page }) => {
     // The Default variant leaves `border: undefined`, so `withDefaults()`
-    // never sets it — but `createOrigam()` (used unconditionally by every
-    // consumer, including this Histoire sandbox) always layers the
-    // root-scoped `origam` baseline theme (ADR-004/005,
-    // packages/ds/src/themes/origam.theme.ts) on top, which sets
+    // never sets it — but ⛔ since #360 (v3.0.0 harvest), `createOrigam()`
+    // only layers the root-scoped `origam` baseline theme (ADR-004/005,
+    // packages/ds/src/themes/origam.theme.ts) when a consumer opts in via
+    // `createOrigam({ themes: origamTheme })`. This Histoire sandbox
+    // (`histoire.setup.ts`) does exactly that, which sets
     // 'origam-sheet': { border: true, borderColor: '...' }. That theme
     // block is resolved onto every instance's props by the global props
     // resolver, so it wins over the component's own (unset) default for
-    // any app built with `createOrigam()` — the actual, current default
+    // any app that opts in the same way — the actual, current default
     // Sheet border is 1px (`--origam-border__width---thin`) on every side,
     // not 0. See CLAUDE.md ADR-005 ("How theme.components props actually
     // resolve") — the same mechanism verified against OrigamChip in

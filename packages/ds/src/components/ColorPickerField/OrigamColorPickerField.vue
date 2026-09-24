@@ -16,6 +16,7 @@
 			@blur="handleBlur"
 			@change="handleChange"
 			@click:clear="handleClear"
+			@input="handleInput"
 			@mousedown:control="handleMousedownControl"
 	>
 		<template
@@ -161,8 +162,8 @@
 	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
 	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
-	import { HSVtoCSS } from '../../utils/Commons/color.util'
-	import { matchesSelector } from '../../utils/Commons/commons.util'
+	import { HSVtoCSS, isCompleteCssColor } from '../../utils/Commons/color.util'
+	import { has, matchesSelector } from '../../utils/Commons/commons.util'
 
 	import { computed, inject, nextTick, ref, shallowRef, StyleValue, useSlots, watch } from "vue"
 
@@ -224,9 +225,117 @@
 		})
 	}
 
+	/*********************************************************
+	 * selectedValue (#859)
+	 *
+	 * @description
+	 * Normalises `COLOR_NULL` (`{h:0,s:0,v:0,a:1}`) to `null` — measured
+	 * defect, confirmed in Chromium: `handleClear` writes `COLOR_NULL` to
+	 * `model`, a TRUTHY object, while every consumer of `selectedValue`
+	 * (the template's `v-if="selectedValue"` gating the selection-text
+	 * span, `hasSelectedValue`, the `:bg-color` swatch fallback) treats it
+	 * as "no value" via a truthiness/`!== null` check. Pre-fix, clicking
+	 * the clear button left the span rendering the sentinel's own
+	 * `JSON.stringify` (`{ "h": 0, "s": 0, "v": 0, "a": 1 }`) instead of
+	 * hiding it. `COLOR_NULL` itself stays untouched (it is a published
+	 * export — changing its shape would be an API break) and `model`
+	 * still holds it internally (`isDirty` still compares against it);
+	 * only the PUBLIC read this component exposes downstream is
+	 * normalised, at this single pass-through point.
+	 *
+	 * @description
+	 * ⛔ `model.value === COLOR_NULL` (reference equality) does NOT
+	 * catch this — measured, first attempt failed silently. `model` is
+	 * built on a plain `ref()` inside `useVModel`, and Vue 3 deep-wraps
+	 * any OBJECT assigned to a `ref` in a reactive `Proxy` — reading
+	 * `model.value` back returns that Proxy, never the original
+	 * `COLOR_NULL` literal, so `=== COLOR_NULL` is always `false` even
+	 * right after `model.value = COLOR_NULL`. A STRUCTURAL check
+	 * (`has(…, ['h','s','v','a'])`, the same helper `parseColor` already
+	 * uses for its own HSVA-shape test) survives the Proxy wrap because
+	 * it reads through it instead of comparing identities.
+	 ********************************************************/
 	const selectedValue = computed(() => {
-		return model.value
+		const v = model.value
+
+		return v !== null && typeof v === 'object' && has(v, ['h', 's', 'v', 'a']) ? null : v
 	})
+
+	/*********************************************************
+	 * commitTypedColor (#859)
+	 *
+	 * @description
+	 * Reads the RAW text the user types into the underlying
+	 * `<origam-text-field>` and commits it to `model` — the piece that
+	 * was entirely missing pre-fix. Wired via `@input` / `@change`
+	 * (below), NOT a `v-model` on the inner text field.
+	 *
+	 * @description
+	 * ⛔ `v-model:model-value` was tried first and REVERTED — measured
+	 * regression, not a style choice. Making the inner
+	 * `<origam-text-field>`'s `modelValue` CONTROLLED (both the prop AND
+	 * `onUpdate:modelValue` present) changes `useVModel`'s
+	 * controlled/uncontrolled detection for that field, which shifted the
+	 * render cascade that `useValidation`'s `watch(validationModel, …)`
+	 * (`validation.composable.ts:154`) relies on to observe the
+	 * `undefined -> value` transition once `validationValue` first
+	 * arrives through the two ref-gated `textFieldProps` /
+	 * `OrigamTextField`'s own `inputProps` hops. With the extra
+	 * reactivity hop, the watch's baseline read already saw the settled
+	 * value and never fired again — `rules` stopped being evaluated at
+	 * all (TU regression: `OrigamColorPickerField.spec.ts` "#693 …repli
+	 * reste le modele", `seen` went from `['#ff0000']` to `[]`).
+	 * `@input`/`@change` are plain NATIVE DOM event fallthrough (same
+	 * mechanism `@change` already used pre-fix, confirmed reaching the
+	 * real `<input>` — see the ticket's own addEventListener probe) and
+	 * touch none of TextField's internal v-model machinery.
+	 *
+	 * @description
+	 * A value is committed the instant it becomes a syntactically
+	 * COMPLETE CSS color (`isCompleteCssColor` — hex, functional
+	 * notation, named color, `var()`), never before. Typing `#ff00aa`
+	 * therefore commits progressively (`#ff0` alone is already a valid
+	 * 3-digit shorthand and commits; `#ff` does not, and is silently
+	 * REJECTED — not written to the model). Committing a syntactically
+	 * incomplete value would be a worse defect than the one this fixes.
+	 * An empty field clears to `null` — see the dedicated banner on the
+	 * empty-string branch below for why that's `null` and NOT
+	 * `COLOR_NULL` despite `handleClear` using the latter.
+	 *
+	 * @description
+	 * The underlying `<input>` is never visible (CSS positions it behind
+	 * the swatch/hex `colorSelection` span, see the `<style>` block below)
+	 * and is left UNCONTROLLED — its own native typed text is exactly
+	 * what the browser already shows, nothing here overwrites it. Only
+	 * the swatch/span (driven by `model`/`selectedValue`) is the real
+	 * visible readout.
+	 ********************************************************/
+	const commitTypedColor = (raw: string) => {
+		if (raw === '') {
+			/*********************************************************
+			 * `null`, NOT `COLOR_NULL` (#859)
+			 *
+			 * @description
+			 * Deliberate deviation from `handleClear`'s convention. The
+			 * template's selection-text span is gated on
+			 * `v-if="selectedValue"` (a TRUTHY check, not `!== null`), and
+			 * `COLOR_NULL` (`{h:0,s:0,v:0,a:1}`) is a truthy object —
+			 * writing it here renders the span with a stringified object
+			 * instead of hiding it (caught by this ticket's own e2e spec:
+			 * clearing the typed input left 1
+			 * `.origam-color-picker-field__selection-text` in the DOM
+			 * where 0 was expected). `null` is what the field's OWN
+			 * initial/untouched state already uses and correctly hides
+			 * the span.
+			 ********************************************************/
+			model.value = null
+			return
+		}
+
+		if (isCompleteCssColor(raw)) {
+			model.value = raw
+		}
+	}
 
 	/*********************************************************
 	 * effectiveValidationValue (#693)
@@ -300,8 +409,31 @@
 		return {
 			...props.menuProps,
 			activatorProps: {
+				/*********************************************************
+				 * role + aria-haspopup — #818
+				 *
+				 * @description
+				 * `'colorpickerbox'` was never a valid `aria-haspopup` token
+				 * (spec allows `false|true|menu|listbox|tree|grid|dialog`) —
+				 * axe-core's `aria-valid-attr-value` flagged it, measured
+				 * against a real browser. The popup is a free-form panel
+				 * (a color canvas + swatches), not a list of options, so
+				 * `'dialog'` is the correct token — same family as the
+				 * WAI-ARIA "Date Picker Dialog" pattern `OrigamDatePickerField`
+				 * uses right below.
+				 *
+				 * @description
+				 * `role: 'combobox'` is ALSO required here: `activator="parent"`
+				 * (below) lands these ARIA attrs on the `.origam-field` wrapper
+				 * `<div>`, which carries no role by default — `aria-allowed-attr`
+				 * rejects `aria-expanded` on an element whose role doesn't
+				 * support it. Same fix, same rationale as
+				 * `OrigamSelect.comboboxAriaAttrs` (`role` MUST sit on the same
+				 * element as `aria-haspopup`/`aria-expanded`).
+				 ********************************************************/
+				role: 'combobox',
 				...(props.menuProps?.activatorProps || {}),
-				'aria-haspopup': 'colorpickerbox' // Set aria-haspopup to 'listbox'
+				'aria-haspopup': 'dialog'
 			},
 			contentProps: {
 				...consumerContentProps,
@@ -340,10 +472,12 @@
 			isFocused.value = true
 		}
 	}
-	const handleChange = () => {
+	const handleInput = (e: Event) => {
+		commitTypedColor((e.target as HTMLInputElement)?.value ?? '')
+	}
+	const handleChange = (e: Event) => {
 		if (matchesSelector(origamTextFieldRef.value, ':autofill') || matchesSelector(origamTextFieldRef.value, ':-webkit-autofill')) {
-			// (e.target as HTMLInputElement).value
-			// TODO -  Select date
+			commitTypedColor((e.target as HTMLInputElement)?.value ?? '')
 		}
 	}
 	const handleAfterLeave = () => {
@@ -482,7 +616,13 @@
 >
 	.origam-color-picker-field {
 		:deep(.origam-field) {
-			--origam-field---padding-start: 0;
+			// #800 — l'unite est obligatoire : sans elle, `0` est un `<number>`
+			// et tout `max()` / `calc()` qui lit ce token JETTE sa declaration.
+			// Sans effet de rendu ici (mesure Chromium, avant/apres identiques) :
+			// ce champ est TOUJOURS prepended — le `#prependInner` du swatch est
+			// inconditionnel — donc son `padding-inline` vient de la regle
+			// `.origam-field--prepended`, qui n'utilise pas de `max()`.
+			--origam-field---padding-start: 0px;
 		}
 
 		:deep(.origam-field__prepend-inner) {

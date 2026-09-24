@@ -1,5 +1,7 @@
 import { COLOR_MODE } from '../../enums/Commons/theme.enum'
 
+import type { TAnyString } from './commons.type'
+
 /**
  * Runtime theme (brand) name applied to `<html data-theme="…">` (or to a
  * sub-tree via `<OrigamThemeProvider>`).
@@ -14,7 +16,7 @@ import { COLOR_MODE } from '../../enums/Commons/theme.enum'
  * - any other string is treated as a custom theme (e.g. `'brand-a'`) — the
  *   matching CSS file must be loaded by the consumer.
  */
-export type TTheme = `${COLOR_MODE}` | (string & {})
+export type TTheme = `${COLOR_MODE}` | TAnyString
 
 /**
  * Concrete (resolved) theme — what `data-theme` actually equals after

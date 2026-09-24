@@ -749,7 +749,13 @@ return [ out, props.style as StyleValue ]
 	})
 
 	const barAriaLabel = (bar: IChartParetoBar): string =>
-		`${ bar.category }: ${ bar.formattedValue } (${ Math.round(bar.share * 100) }%, cumulative ${ Math.round(bar.cumulative * 100) }%)`
+		t(
+			'origam.chart.pareto.bar_aria_label',
+			bar.category,
+			bar.formattedValue,
+			Math.round(bar.share * 100),
+			Math.round(bar.cumulative * 100)
+		)
 
 	/*********************************************************
 	 * Interaction

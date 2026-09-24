@@ -16,6 +16,7 @@
 			@blur="handleBlur"
 			@change="handleChange"
 			@click:clear="handleClear"
+			@input="handleInput"
 			@mousedown:control="handleMousedownControl"
 	>
 		<template
@@ -324,6 +325,93 @@
 		return props.range && model.value.length > 1
 	})
 
+	/*********************************************************
+	 * commitTypedDate (#859)
+	 *
+	 * @description
+	 * Reads the RAW text the user types into the underlying
+	 * `<origam-text-field>` and commits it to `model` — the piece that
+	 * was entirely missing pre-fix (only `handleSelectDate`, driven by
+	 * the popover calendar, ever wrote it). Wired via `@input` /
+	 * `@change` (below), NOT a `v-model` on the inner text field.
+	 *
+	 * @description
+	 * ⛔ `v-model:model-value` was tried first and REVERTED — measured
+	 * regression, not a style choice, and for TWO independent reasons:
+	 *
+	 * 1. Making the inner `<origam-text-field>`'s `modelValue` CONTROLLED
+	 *    (both the prop AND `onUpdate:modelValue` present) changes
+	 *    `useVModel`'s controlled/uncontrolled detection for that field,
+	 *    which shifted the render cascade `useValidation`'s
+	 *    `watch(validationModel, …)` (`validation.composable.ts:154`)
+	 *    relies on to observe the `undefined -> value` transition once
+	 *    `validationValue` first arrives through the two ref-gated
+	 *    `textFieldProps` / `OrigamTextField`'s own `inputProps` hops.
+	 *    With the extra reactivity hop, the watch's baseline read already
+	 *    saw the settled value and never fired again — `rules` stopped
+	 *    being evaluated at all (TU regression, identical mechanism on
+	 *    both fields: `seen` went from `['#ff0000']` to `[]` on
+	 *    `OrigamColorPickerField.spec.ts`'s #693 test).
+	 * 2. A CONTROLLED input feeding back a REFORMATTED display value
+	 *    (`selectedValues[0]`, the `keyboardDate`-formatted canonical
+	 *    text) fights the browser's own caret/typing state — every
+	 *    syntactically-valid intermediate keystroke re-triggers
+	 *    `selectedValues` and overwrites the `<input>` mid-keystroke.
+	 *    Reproduced against Chromium: typing `09/18/2026` character by
+	 *    character landed as `01/01/20009`.
+	 *
+	 * `@input` / `@change` are plain NATIVE DOM event fallthrough (same
+	 * mechanism `@change` already used pre-fix, confirmed reaching the
+	 * real `<input>` — see the ticket's own addEventListener probe) and
+	 * touch none of TextField's internal v-model machinery, so neither
+	 * problem applies. The underlying `<input>` is never visible (CSS
+	 * positions it behind the formatted selection text, see the
+	 * `<style>` block below) and is left UNCONTROLLED — its own native
+	 * typed text is exactly what the browser already shows.
+	 *
+	 * @description
+	 * `adapter.date(raw)` (the same DS date adapter every other date
+	 * computation here already goes through) parses the typed text;
+	 * `adapter.isValid(...)` gates the commit. `adapter.date()` ALONE is
+	 * not a strict-enough gate though — measured: it falls back to
+	 * `Date.parse()` for anything that isn't `YYYY-MM-DD`, and
+	 * `Date.parse()` is far more lenient than the `keyboardDate` shape
+	 * this field displays (`Date.parse('09/1')` resolves to a real, WRONG
+	 * date instead of failing — which would have committed a PARTIAL
+	 * string mid-typing, since `09/18/2026` typed character by character
+	 * passes through `09/1`). Round-tripping through the SAME
+	 * `keyboardDate` formatter `selectedValues` already uses, and
+	 * requiring an EXACT match against what the user typed, rejects every
+	 * partial/ambiguous string — only a complete, canonically-formatted
+	 * date survives. Committing an unparsed value would be a worse defect
+	 * than the one this fixes. An empty field clears to `[]`, matching
+	 * `handleClear`'s existing convention.
+	 *
+	 * @description
+	 * Scoped to the SINGLE-date case on purpose (`!range && !multiple`):
+	 * typing a free-text range or a multi-date list is ambiguous with no
+	 * established DS convention to reuse, and this ticket (#859) only
+	 * measured the single-value defect. `range` / `multiple` stay
+	 * popover-only, unchanged from before this fix — see the PR's "non
+	 * vérifié" section.
+	 ********************************************************/
+	const commitTypedDate = (raw: string) => {
+		if (props.multiple || props.range) return
+
+		if (raw === '') {
+			model.value = []
+			return
+		}
+
+		const parsed = adapter.date(raw)
+
+		if (!parsed || !adapter.isValid(parsed)) return
+
+		if (adapter.format(parsed, 'keyboardDate') !== raw) return
+
+		model.value = [adapter.toISO(parsed)]
+	}
+
 	const isFocused = shallowRef(false)
 	const form = inject(ORIGAM_FORM_KEY, null)
 
@@ -349,8 +437,29 @@
 		return {
 			...props.menuProps,
 			activatorProps: {
+				/*********************************************************
+				 * role + aria-haspopup — #818
+				 *
+				 * @description
+				 * `'datepickerbox'` was never a valid `aria-haspopup` token
+				 * (spec allows `false|true|menu|listbox|tree|grid|dialog`) —
+				 * axe-core's `aria-valid-attr-value` flagged it, measured
+				 * against a real browser. `'dialog'` matches the WAI-ARIA
+				 * "Date Picker Dialog" pattern: a button/combobox opening a
+				 * calendar dialog.
+				 *
+				 * @description
+				 * `role: 'combobox'` is ALSO required here: `activator="parent"`
+				 * (below) lands these ARIA attrs on the `.origam-field` wrapper
+				 * `<div>`, which carries no role by default — `aria-allowed-attr`
+				 * rejects `aria-expanded` on an element whose role doesn't
+				 * support it. Same fix, same rationale as
+				 * `OrigamSelect.comboboxAriaAttrs` (`role` MUST sit on the same
+				 * element as `aria-haspopup`/`aria-expanded`).
+				 ********************************************************/
+				role: 'combobox',
 				...(props.menuProps?.activatorProps || {}),
-				'aria-haspopup': 'datepickerbox' // Set aria-haspopup to 'listbox'
+				'aria-haspopup': 'dialog'
 			},
 			contentProps: {
 				...consumerContentProps,
@@ -385,10 +494,12 @@
 			isFocused.value = true
 		}
 	}
-	const handleChange = () => {
+	const handleInput = (e: Event) => {
+		commitTypedDate((e.target as HTMLInputElement)?.value ?? '')
+	}
+	const handleChange = (e: Event) => {
 		if (matchesSelector(origamTextFieldRef.value, ':autofill') || matchesSelector(origamTextFieldRef.value, ':-webkit-autofill')) {
-			// (e.target as HTMLInputElement).value
-			// TODO -  Select date
+			commitTypedDate((e.target as HTMLInputElement)?.value ?? '')
 		}
 	}
 	const handleAfterLeave = () => {

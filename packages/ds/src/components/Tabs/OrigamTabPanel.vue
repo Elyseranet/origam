@@ -31,6 +31,7 @@
 
 	import { useGroupItem } from '../../composables/Commons/groupItem.composable'
 	import { useLazy } from '../../composables/Commons/lazy.composable'
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
@@ -95,11 +96,21 @@
 	 * generated-fallback naming scheme (#519-#522) — symmetric to
 	 * `<OrigamTab>`'s own wiring.
 	 *
-	 * `tabLabelledBy` mirrors that lookup in the other direction —
-	 * the generated-fallback string is kept as a defensive default
-	 * for the brief window before the tab's own effect has run.
+	 * `tabLabelledBy` mirrors that lookup in the other direction,
+	 * and returns the id the tab PUBLISHED or nothing — no
+	 * reconstructed guess (#741), symmetric to `<OrigamTab>`'s
+	 * `panelId`.
+	 *
+	 * @description
+	 * ⛔ THE GENERATED FALLBACK DERIVES FROM `getUid()`, never from
+	 * the process-global `groupItem.id`, which is not stable across
+	 * an SSR render and its hydration — same contract as
+	 * `<OrigamTab>`'s `tabDomId`, where the measurement is written
+	 * out in full (#741).
 	 ********************************************************/
-	const panelDomId = computed(() => props.id || `origam-tab-panel-${groupItem!.id}`)
+	const uid = getUid()
+
+	const panelDomId = computed(() => props.id || `origam-tab-panel-${uid}`)
 
 	watchEffect(() => {
 		const self = groupItem!.group.items.value.find(item => item.id === groupItem!.id)
@@ -113,7 +124,7 @@
 		const tab = tabsGroup.items.value.find(item => item.value === groupItem!.value.value)
 		if (!tab) return undefined
 
-		return tab.domId || `origam-tab-${tab.id}`
+		return tab.domId
 	})
 
 	/*********************************************************

@@ -102,6 +102,7 @@
 				<origam-data-text
 						text="Click the icon on the left"
 						:prepend-icon="prependIcon"
+						prepend-aria-label="Open details"
 						@click:prepend="logEvent('click:prepend', $event)"
 				/>
 			</dl>
@@ -112,6 +113,7 @@
 				<origam-data-text
 						text="Click the icon on the right"
 						:append-icon="appendIcon"
+						append-aria-label="Show options"
 						@click:append="logEvent('click:append', $event)"
 				/>
 			</dl>
@@ -153,7 +155,9 @@
 				<dl style="margin: 24px;">
 					<origam-data-text
 							v-bind="state"
+							prepend-aria-label="Open details"
 							@click:prepend="logEvent('click:prepend', $event)"
+							append-aria-label="Show options"
 							@click:append="logEvent('click:append', $event)"
 					/>
 				</dl>

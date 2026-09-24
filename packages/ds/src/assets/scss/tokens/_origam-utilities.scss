@@ -23,22 +23,40 @@
 /* import below the component layer.                         */
 
 /* ── Foreground color (intent) ───────────────────────────────── */
-.origam--color-primary { color: var(--origam-color__action--primary---fg); }
+/*                                                                */
+/* The intent's own colour, AS TEXT, on a neutral surface. These  */
+/* MUST mirror `tokenForegroundForIntent()`                       */
+/* (utils/Commons/color.util.ts) — that helper is what the inline */
+/* `color:` declaration uses for the very same `color="{intent}"` */
+/* prop, and an inline declaration outranks this class. Reading   */
+/* `---fg` here made the two channels disagree on 5 of 7 intents: */
+/* `---fg` is the on-intent foreground (white), legible only ON   */
+/* the saturated `---bg`, so a standalone `.origam--color-primary` */
+/* painted white-on-white. Pair it with `.origam--bg-*` below     */
+/* when you want the on-intent foreground instead. See #818.      */
+.origam--color-primary { color: var(--origam-color__action--primary---fgSubtle); }
 .origam--color-secondary { color: var(--origam-color__action--secondary---fg); }
-.origam--color-success { color: var(--origam-color__feedback--success---fg); }
-.origam--color-warning { color: var(--origam-color__feedback--warning---fg); }
-.origam--color-danger { color: var(--origam-color__feedback--danger---fg); }
-.origam--color-info { color: var(--origam-color__feedback--info---fg); }
+.origam--color-success { color: var(--origam-color__feedback--success---fgSubtle); }
+.origam--color-warning { color: var(--origam-color__feedback--warning---fgSubtle); }
+.origam--color-danger { color: var(--origam-color__feedback--danger---fgSubtle); }
+.origam--color-info { color: var(--origam-color__feedback--info---fgSubtle); }
 .origam--color-neutral { color: var(--origam-color__text---primary); }
 
 /* ── Background color (intent) ───────────────────────────────── */
-.origam--bg-primary { background-color: var(--origam-color__action--primary---bg); }
-.origam--bg-secondary { background-color: var(--origam-color__action--secondary---bg); }
-.origam--bg-success { background-color: var(--origam-color__feedback--success---bg); }
-.origam--bg-warning { background-color: var(--origam-color__feedback--warning---bg); }
-.origam--bg-danger { background-color: var(--origam-color__feedback--danger---bg); }
-.origam--bg-info { background-color: var(--origam-color__feedback--info---bg); }
-.origam--bg-neutral { background-color: var(--origam-color__surface---default); }
+/*                                                                */
+/* Each intent surface carries its PAIRED on-intent foreground,   */
+/* the same auto-pairing `useColor()` already performs on the     */
+/* inline channel ("lets `bgColor=primary` alone auto-pair the    */
+/* right text colour"). Without it, `.origam--bg-primary` on bare */
+/* markup inherited the page's dark ink onto a saturated surface. */
+/* Every pair below is >= 4.5:1 in the light token set. See #818. */
+.origam--bg-primary { background-color: var(--origam-color__action--primary---bg); color: var(--origam-color__action--primary---fg); }
+.origam--bg-secondary { background-color: var(--origam-color__action--secondary---bg); color: var(--origam-color__action--secondary---fg); }
+.origam--bg-success { background-color: var(--origam-color__feedback--success---bg); color: var(--origam-color__feedback--success---fg); }
+.origam--bg-warning { background-color: var(--origam-color__feedback--warning---bg); color: var(--origam-color__feedback--warning---fg); }
+.origam--bg-danger { background-color: var(--origam-color__feedback--danger---bg); color: var(--origam-color__feedback--danger---fg); }
+.origam--bg-info { background-color: var(--origam-color__feedback--info---bg); color: var(--origam-color__feedback--info---fg); }
+.origam--bg-neutral { background-color: var(--origam-color__surface---default); color: var(--origam-color__text---primary); }
 
 /* ── Elevation (box-shadow) ───────────────────────────────── */
 .origam--shadow-none { box-shadow: var(--origam-shadow---none); }

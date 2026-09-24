@@ -266,7 +266,31 @@ export const appleDarkTheme: IOrigamTheme = {
                     bgHover: '#64b5ff',
                     bgSubtle: 'rgba(10, 132, 255, 0.16)',
                     bgDisabled: '#38383a',
-                    fg: '#ffffff',
+                    // ⛔ CORRECTIF CONTRASTE (Refs #871) : #ffffff sur #0a84ff
+                    // = 3.65:1 (echec WCAG AA, seuil 4.5:1 pour du texte).
+                    // #000000 sur #0a84ff = 5.76:1.
+                    //
+                    // Le mode sombre RELEVE l'accent (systemBlue passe de
+                    // #0071e3 en clair a #0a84ff ici) et gardait l'encre
+                    // blanche du jumeau clair : c'est ce couple, pas le
+                    // composant, qui etait en defaut. Mesure sur
+                    // `--origam-badge__badge---{background-color,color}`, qui
+                    // lit exactement `action.primary.{bg,fg}` — tout comme
+                    // `--origam-btn--primary---*`.
+                    //
+                    // ⚠️ ON NE FONCE PAS L'ACCENT : `action.primary.bg` sert
+                    // AUSSI d'encre ici (`'origam-breadcrumb-item'` plus haut
+                    // passe ce var en `color`). Le ramener a #0071e3 donnerait
+                    // bien 4.70:1 sous du blanc, mais ferait tomber le fil
+                    // d'Ariane a 4.47:1 sur le fond noir — un defaut echange
+                    // contre un autre. Verifie par calcul avant d'ecrire.
+                    //
+                    // #000000 = `text.inverse` de cette palette, et c'est
+                    // DEJA la convention du fichier : success / warning /
+                    // danger en sombre encrent toutes les trois leur accent
+                    // eclairci en noir. `action.primary` etait la derniere
+                    // exception.
+                    fg: '#000000',
                     fgSubtle: '#64b5ff',
                     fgDisabled: '#6e6e73'
                 },
@@ -320,7 +344,14 @@ export const appleDarkTheme: IOrigamTheme = {
                 info: {
                     bg: '#0a84ff',
                     bgSubtle: 'rgba(10, 132, 255, 0.12)',
-                    fg: '#ffffff',
+                    // ⛔ CORRECTIF CONTRASTE (Refs #871) : meme couple, meme
+                    // valeur, meme 3.65:1 que `action.primary` ci-dessus —
+                    // `info` etait la seule des quatre intentions `feedback`
+                    // sombres a garder l'encre blanche, les trois autres
+                    // (success / warning / danger) sont deja en #000000.
+                    // Corrige ici pour ne pas laisser le defaut survivre dans
+                    // un jeton jumeau que la sonde de #871 ne rend pas.
+                    fg: '#000000',
                     fgSubtle: '#64b5ff',
                     border: '#0a84ff'
                 }

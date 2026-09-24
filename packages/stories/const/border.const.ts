@@ -22,8 +22,15 @@ export const borderList: Array<IOptions<boolean | number | string | undefined>> 
     { label: 'Border (legacy boolean → thin)', value: true },
 
     // ── Utility widths ──────────────────────────────────────────
+    // ⛔ #730 — les largeurs annoncées ici doivent rester collées à
+    // `BORDER_KEYWORD_WIDTH` (consts/Commons/border.const.ts), seul endroit
+    // qui décide à quel échelon de `--origam-border__width---*` chaque
+    // mot-clé renvoie. L'échelle ne compte que quatre échelons — 0px / thin
+    // 1px / 2px / 4px — et aucun ne vaut 3px : `thick` pointe sur l'échelon
+    // `2`, mesuré à 2px dans le navigateur. Le libellé annonçait 3px, ce qui
+    // faisait passer un rendu correct pour un défaut de composant.
     { label: 'Width — thin (utility, 1px)', value: 'thin' },
-    { label: 'Width — thick (utility, 3px)', value: 'thick' },
+    { label: 'Width — thick (utility, 2px)', value: 'thick' },
 
     // ── Numeric widths ──────────────────────────────────────────
     { label: 'Width — 4px', value: 4 },

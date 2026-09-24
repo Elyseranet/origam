@@ -42,16 +42,19 @@ import { describe, expect, it } from 'vitest'
 import {
     ALIGN,
     BG_FG_ROLE,
+    BLOCK,
     BORDER_LOGICAL_AXIS,
     CODE_THEME,
     COLOR_MODE,
     FONT_FAMILY,
     FONT_SIZE,
+    INLINE,
     JUSTIFY,
     LETTER_SPACING,
     LINE_HEIGHT,
     LOADER_KIND,
-    TEXT_ALIGN
+    TEXT_ALIGN,
+    TEXT_FIELD_TYPE
 } from '@origam/enums'
 
 import type {
@@ -95,10 +98,28 @@ describe('types derived from enums — narrowed (Extract / Exclude) surfaces', (
 
     it('TInlineEditInputType is the 4-value subset of TTextFieldType', () => {
         assertType<Equals<TInlineEditInputType, 'text' | 'number' | 'email' | 'tel'>>()
+
+        /*
+         * `Extract<TTextFieldType, …>` yields `never` for any literal the
+         * source enum no longer carries, and TypeScript reports nothing. Pin
+         * the four inputs the narrowing extracts: drop or rename one in
+         * TEXT_FIELD_TYPE and this fails, naming the narrowing that shrank.
+         */
+        expect(Object.values(TEXT_FIELD_TYPE)).toEqual(
+            expect.arrayContaining(['text', 'number', 'email', 'tel'])
+        )
     })
 
     it('TChartLegendPosition is the physical-side vocabulary (BLOCK + INLINE)', () => {
         assertType<Equals<TChartLegendPosition, 'top' | 'bottom' | 'left' | 'right'>>()
+
+        /*
+         * TChartLegendPosition aliases TDirectionBoth = `${BLOCK}` | `${INLINE}`.
+         * Pin the two source enums, in order, so a value added to or removed
+         * from either widens/shrinks the legend vocabulary loudly.
+         */
+        expect([...Object.values(BLOCK), ...Object.values(INLINE)])
+            .toEqual(['top', 'bottom', 'left', 'right'])
     })
 })
 
@@ -128,6 +149,10 @@ describe('types derived from enums — new value sets', () => {
     })
 
     it('exposes the state-aware colour roles as an enum', () => {
-        expect(Object.values(BG_FG_ROLE)).toEqual(['default', 'hover', 'active', 'disabled'])
+        // #823 — `DISABLED` removed. Disabled is an opacity veil in this DS,
+        // never a token swap; the member was declared and never passed, and
+        // the 8 `feedback.*.{bg,fg}Disabled` tokens it would have emitted are
+        // declared by no sheet.
+        expect(Object.values(BG_FG_ROLE)).toEqual(['default', 'hover', 'active'])
     })
 })

@@ -50,10 +50,30 @@ const HERE = dirname(fileURLToPath(import.meta.url))
 const argv = process.argv.slice(2)
 const SELF_TEST = argv.includes('--self-test')
 
-const GUARDS = [
-    { name: 'variant-titles', file: join(HERE, 'audit-variant-titles.mjs'), covers: 'specs naviguant par TITRE de Variant' },
-    { name: 'variant-pins', file: join(HERE, 'audit-variant-pins.mjs'), covers: 'specs naviguant par INDEX (?variantId=<slug>-N)' }
-]
+// Test-only override (see TU/e2e-support/run-guards.spec.ts, #534): the
+// aggregation logic below (spawn each guard, OR their exit codes, never
+// short-circuit) is exactly the thing #534 was filed against — "a failing
+// guard blocks Playwright but the caller still sees exit 0". Proving that
+// stays fixed means running THIS file, unmodified, against a guard we
+// control instead of the real (and currently drifting) variant-titles /
+// variant-pins detectors. RUN_GUARDS_FIXTURE_FILES, when set, replaces
+// GUARDS with a synthetic list built from a comma-separated list of
+// absolute script paths. Unset in every real invocation (CLI, pretest:e2e,
+// CI) — the production GUARDS list below is untouched.
+const FIXTURE_FILES = process.env.RUN_GUARDS_FIXTURE_FILES
+
+const GUARDS = FIXTURE_FILES
+    ? FIXTURE_FILES.split(',').map((file, i) => ({ name: `fixture-${i}`, file, covers: '(fixture — test-only, RUN_GUARDS_FIXTURE_FILES)' }))
+    : [
+        { name: 'variant-titles', file: join(HERE, 'audit-variant-titles.mjs'), covers: 'specs naviguant par TITRE de Variant' },
+        { name: 'variant-pins', file: join(HERE, 'audit-variant-pins.mjs'), covers: 'specs naviguant par INDEX (?variantId=<slug>-N)' },
+        // #824 — troisieme partition, orthogonale aux deux precedentes : elles
+        // jugent COMMENT une spec navigue, celle-ci juge SI un job de CI
+        // l'execute. Les deux premieres peuvent etre vertes sur une spec que
+        // la CI n'a jamais lancee — c'est exactement ce qui est arrive a
+        // `rating-field-a11y.spec.ts` (#810).
+        { name: 'spec-coverage', file: join(HERE, 'audit-spec-coverage.mjs'), covers: 'specs executees par un job de CI, ou enregistrees comme ne l\'etant pas' }
+    ]
 
 const mode = SELF_TEST ? '--self-test' : null
 const label = SELF_TEST ? 'self-tests' : 'audits'
@@ -81,7 +101,11 @@ for (const r of results) {
 
 const failed = results.filter((r) => r.code !== 0)
 if (!failed.length) {
-    console.log(`\n✓ ${results.length}/${results.length} gardes verts — les deux moitiés de la suite ont été examinées.\n`)
+    // ⛔ Le compte est derive de `results`, jamais ecrit en dur : la phrase
+    // disait « les DEUX moities » et il y a trois gardes depuis #824. Un
+    // recapitulatif qui annonce un perimetre faux est la meme famille de
+    // defaut que les gardes qu'il agrege.
+    console.log(`\n✓ ${results.length}/${results.length} gardes verts — les ${results.length} partitions de la suite ont été examinées.\n`)
     process.exit(0)
 }
 

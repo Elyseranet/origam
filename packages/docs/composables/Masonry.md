@@ -45,9 +45,11 @@ Exposed for unit testing — the bucket-fill itself is pure.
 
 **Exemple**
 
+```ts
 pickColumnsForWidth(750, { 600: 2, 900: 3, 1200: 4 }, 1) → 2
-  pickColumnsForWidth(1500, { 600: 2, 900: 3, 1200: 4 }, 1) → 4
-  pickColumnsForWidth(400, { 600: 2, 900: 3, 1200: 4 }, 1) → 1
+pickColumnsForWidth(1500, { 600: 2, 900: 3, 1200: 4 }, 1) → 4
+pickColumnsForWidth(400, { 600: 2, 900: 3, 1200: 4 }, 1) → 1
+```
 
 **Source** : `packages/ds/src/composables/Masonry/masonry.composable.ts`
 

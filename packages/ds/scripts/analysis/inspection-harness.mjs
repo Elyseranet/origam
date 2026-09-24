@@ -51,8 +51,11 @@
  */
 
 import { readFileSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 import { getRealComponents, DS_ROOT } from '../guards/lib/components.mjs'
 import { analyseSource as analyseSetupReads } from '../guards/lib/setup-reads.mjs'
@@ -119,12 +122,14 @@ function analyseComponent ({ pascalName, kebabName, file }, emitsIndex) {
     // ── C8 ───────────────────────────────────────────────────────────
     const strings = analyseHardcodedStrings(source, file)
     const c8Count = strings.static.length + strings.boundLiteral.length +
-        strings.templateText.length + strings.withDefaults.length
+        strings.templateText.length + strings.withDefaults.length +
+        strings.scriptDisplay.length
     const c8 = {
         static: strings.static,
         boundLiteral: strings.boundLiteral,
         templateText: strings.templateText,
         withDefaults: strings.withDefaults,
+        scriptDisplay: strings.scriptDisplay,
         count: c8Count,
         violation: c8Count > 0
     }
@@ -139,8 +144,52 @@ export function analyseCatalogue () {
     return getRealComponents().map(c => analyseComponent(c, emitsIndex))
 }
 
+/*********************************************************
+ * Le harnais EXERCE son self-test avant de rendre un verdict — #567
+ *
+ * @description
+ * `inspection-harness.selftest.mjs` existait déjà, avec ses fixtures de
+ * précision ET de rappel, et RIEN ne l'exécutait : ni `guards/run-all.mjs`
+ * (il n'est pas un garde), ni la CI, ni le harnais lui-même. Il décorait.
+ *
+ * @description
+ * C'est exactement le mode de panne que #567 documente : le détecteur a
+ * classé `OrigamAudio` « conforme / 0 » au commit même où il portait deux
+ * chaînes anglaises, et aucune fixture n'a protesté parce qu'aucune
+ * fixture ne tournait. Un instrument de mesure qui ne vérifie pas son
+ * propre étalonnage produit un chiffre, pas une mesure.
+ *
+ * @description
+ * On refuse donc de CONCLURE quand le self-test échoue : `exit 1`, aucun
+ * tableau imprimé. Un tableau partiel serait lu comme un résultat — c'est
+ * la même erreur que le « exit 0 » sur guard en échec documenté pour
+ * `pretest:e2e` (#574).
+ *
+ * @description
+ * Échappatoire assumée : `--skip-selftest`, pour boucler pendant qu'on
+ * travaille SUR les fixtures elles-mêmes. Elle imprime un avertissement,
+ * de sorte qu'une sortie obtenue sous ce drapeau ne puisse pas être
+ * confondue avec une mesure étalonnée.
+ ********************************************************/
+function runSelfTestOrRefuse () {
+    if (process.argv.includes('--skip-selftest')) {
+        console.log('⛔ --skip-selftest : le detecteur N\'A PAS ete verifie. Sortie NON etalonnee, ne pas citer comme mesure.\n')
+        return
+    }
+    try {
+        const out = execFileSync('node', [path.join(__dirname, 'inspection-harness.selftest.mjs')], { stdio: 'pipe' }).toString()
+        console.log(`Self-test du detecteur : ${out.trim().split('\n').at(-1)}\n`)
+    } catch (err) {
+        console.log('⛔ REFUS DE CONCLURE — le self-test du detecteur echoue.')
+        console.log('   Un detecteur non verifie ne produit pas une mesure, seulement un chiffre.')
+        console.log(`${err.stdout ?? ''}${err.stderr ?? ''}`)
+        process.exit(1)
+    }
+}
+
 // ── CLI ─────────────────────────────────────────────────────────────────────
 if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
+    runSelfTestOrRefuse()
     const rows = analyseCatalogue()
 
     if (process.argv[2] === 'json') {

@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
 /**
  * RECIPE — Pattern canonique (réf. btn.spec.ts).
@@ -576,5 +576,108 @@ test.describe('OrigamTabs', () => {
 
         const tab1Id = await tab1.getAttribute('id')
         expect(labelledBy).toBe(tab1Id)
+    })
+
+    // ------------------------------------------------------------------ //
+    // #786 — LE FOCUS, pas seulement `aria-selected`                       //
+    //                                                                      //
+    // ⛔ POURQUOI CE BLOC EXISTE                                            //
+    // Le bloc « Keyboard navigation » ci-dessus couvrait deja les 4         //
+    // touches — mais n'assertait QUE `aria-selected`. 35/35 verts sur un    //
+    // clavier casse : les fleches deplacaient la selection en laissant le   //
+    // focus sur l'onglet PRECEDENT, donc aucun lecteur d'ecran n'annoncait  //
+    // le changement. Un test qui ne regarde pas `document.activeElement`    //
+    // ne peut pas voir ce defaut-la.                                        //
+    //                                                                      //
+    // Et il ENFONCE les touches (`page.keyboard.press`) la ou le bloc       //
+    // precedent synthetise un `KeyboardEvent` via `dispatchEvent` — poser   //
+    // un gestionnaire sans verifier qu'il declenche quelque chose reproduit //
+    // le defaut sous une autre forme.                                       //
+    // ------------------------------------------------------------------ //
+    test.describe('#786 — les fleches deplacent le focus', () => {
+        /** Index de l'onglet reellement focalise, -1 si le focus est ailleurs. */
+        const focusedIndex = (page: Page) =>
+            page.frameLocator('iframe[src*="__sandbox"]').locator('body').evaluate(() => {
+                const tabs = Array.from(document.querySelectorAll('[role="tab"]'))
+                return tabs.indexOf(document.activeElement as Element)
+            })
+
+        const selectedIndex = (page: Page) =>
+            page.frameLocator('iframe[src*="__sandbox"]').locator('body').evaluate(() => {
+                const tabs = Array.from(document.querySelectorAll('[role="tab"]'))
+                return tabs.findIndex((t) => t.getAttribute('aria-selected') === 'true')
+            })
+
+        const openAndFocusFirstTab = async (page: Page) => {
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-tabs').first()).toBeVisible({ timeout: 12000 })
+            await sandbox.locator('[role="tab"]').first().focus()
+            await page.waitForTimeout(200)
+            expect(await focusedIndex(page)).toBe(0)
+        }
+
+        test('ArrowRight deplace le FOCUS, pas seulement la selection', async ({ page }) => {
+            await openAndFocusFirstTab(page)
+
+            await page.keyboard.press('ArrowRight')
+            await page.waitForTimeout(250)
+
+            // Avant #786 : le focus restait a 0 pendant que aria-selected passait a 1.
+            expect(await focusedIndex(page)).toBe(1)
+            expect(await selectedIndex(page)).toBe(1)
+        })
+
+        test('deux ArrowRight ne laissent pas le focus d\'un cran en arriere', async ({ page }) => {
+            await openAndFocusFirstTab(page)
+
+            await page.keyboard.press('ArrowRight')
+            await page.waitForTimeout(200)
+            await page.keyboard.press('ArrowRight')
+            await page.waitForTimeout(250)
+
+            expect(await focusedIndex(page)).toBe(2)
+            expect(await selectedIndex(page)).toBe(2)
+        })
+
+        test('ArrowLeft deplace le FOCUS', async ({ page }) => {
+            await openAndFocusFirstTab(page)
+
+            await page.keyboard.press('ArrowRight')
+            await page.waitForTimeout(200)
+            await page.keyboard.press('ArrowLeft')
+            await page.waitForTimeout(250)
+
+            expect(await focusedIndex(page)).toBe(0)
+            expect(await selectedIndex(page)).toBe(0)
+        })
+
+        test('Home / End deplacent le focus (deja corrects, epingles)', async ({ page }) => {
+            await openAndFocusFirstTab(page)
+
+            await page.keyboard.press('End')
+            await page.waitForTimeout(250)
+            const last = await selectedIndex(page)
+            expect(last).toBeGreaterThan(0)
+            expect(await focusedIndex(page)).toBe(last)
+
+            await page.keyboard.press('Home')
+            await page.waitForTimeout(250)
+            expect(await focusedIndex(page)).toBe(0)
+            expect(await selectedIndex(page)).toBe(0)
+        })
+
+        test('focus et aria-selected ne divergent jamais sur une sequence de 5 touches', async ({ page }) => {
+            await openAndFocusFirstTab(page)
+
+            for (const key of ['ArrowRight', 'ArrowRight', 'ArrowLeft', 'End', 'Home']) {
+                await page.keyboard.press(key)
+                await page.waitForTimeout(220)
+
+                const focused = await focusedIndex(page)
+                const selected = await selectedIndex(page)
+                expect(focused, `apres ${key} : focus=${focused}, aria-selected=${selected}`).toBe(selected)
+            }
+        })
     })
 })

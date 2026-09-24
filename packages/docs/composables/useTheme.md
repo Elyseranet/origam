@@ -96,13 +96,34 @@ type TModeResolved = Exclude<TMode, 'auto'>
   real `prefers-color-scheme` at mount — see the Nuxt integration.
 - **Persistence**: `setTheme(...)` writes `localStorage['origam-theme']`,
   `setMode(...)` writes `localStorage['origam-mode']`. The first
-  `useTheme()` call on hydration reads both back.
+  `useTheme()` call on hydration reads both back. Both writes happen in a
+  `watch`, so they land on the **next tick**, not synchronously inside the
+  setter — a test that asserts on `localStorage` right after `setTheme()`
+  reads the previous value.
+- **The two axes do not persist symmetrically on the first call.** The brand
+  watcher is `immediate: true`, the mode watcher is not. Measured on a clean
+  `localStorage`, right after the first `useTheme()`:
+  `origam-theme` is `"auto"`, `origam-mode` is still absent, `data-theme` is
+  absent and `data-mode` is `"light"`. The mode key only appears once
+  `setMode()` has been called.
 - **`prefers-color-scheme`**: when `mode === 'auto'` (or `theme === 'auto'`),
   the composable attaches a `change` listener on
   `window.matchMedia('(prefers-color-scheme: dark)')` and updates
   `resolvedMode` / `resolved` reactively when the OS-level theme changes.
 - **Singleton**: every component shares the same refs, so toggling the
-  mode in a header instantly reflows every consumer.
+  mode in a header instantly reflows every consumer. Measured: a second
+  `useTheme()` call returns the *same ref object* (`t2.theme === t.theme`),
+  not a copy. On the client the singleton is anchored on `globalThis` so it
+  survives a duplicated module instance (#275); on the server it is a plain
+  module-level object on purpose, because `globalThis` would leak per-request
+  theme state across concurrent SSR requests.
+- **`theme` and `mode` are `readonly()`.** Assigning to `theme.value` logs
+  `[Vue warn] Set operation on key "value" failed: target is readonly` and
+  changes nothing. Go through `setTheme` / `setMode`.
+- **`resolved` treats any unknown brand as light-like.** Measured:
+  `setTheme('brand-a')` → `resolved === 'light'`; only the literal `'dark'`
+  resolves to `'dark'`. `resolved` is about the *brand* axis and its legacy
+  light/dark aliases — for the actual colour mode, read `resolvedMode`.
 
 ## Custom brands
 
@@ -125,29 +146,80 @@ consumer install path (ADR-004). Each `IOrigamTheme` is injected as a
 `[data-theme][data-mode]` scoped `--origam-*` block; no per-theme CSS file is
 needed.
 
-A theme is **plain JSON** authored by intention — `colors`, `radius`,
-`typography`, `shadow`, `spacing`, `animation` — never `--origam-*` strings.
-The DS ships one built-in theme, `sobre`; you write your own brands in the same
-format and pass them in:
+An `IOrigamTheme` is **plain JSON** with exactly three authoring surfaces:
+
+| key | what it carries |
+|---|---|
+| `components` | **per-component default props** — `{ global, 'origam-btn', … }` |
+| `vars` | design tokens, nested by group (`color`, `rounded`, `border`, `typo`, `shadow`, `spacing`, `motion`) — never `--origam-*` strings |
+| `cssVars` | the escape hatch: a flat map of raw `--origam-*` properties, for a var with no slot in `vars`. Wins over `vars` on collision |
+
+⛔ **`components` comes first.** A component is configured through its
+**props**; you drop to tokens only for what a prop cannot express, and to raw
+`cssVars` only as a last resort. A theme made of `cssVars` alone, with no
+`components` block, is not how this design system is meant to be configured.
 
 ```ts
 const myLight = {
-  name: 'mybrand', mode: 'light',
-  colors: {
-    surface: { default: '#ffffff' },
-    text:    { primary: '#171717', secondary: '#737373' },
-    action:  { primary: { bg: '#7c3aed', fg: '#ffffff' } }
-  },
-  radius: { md: '0.5rem' }
+    name: 'mybrand',
+    mode: 'light',
+    label: 'My Brand',
+
+    // 1 — props first
+    components: {
+        global: { density: 'comfortable' },
+        'origam-btn': { variant: 'flat', color: 'primary', rounded: 'lg' }
+    },
+
+    // 2 — then semantic tokens
+    vars: {
+        color: {
+            surface: { default: '#ffffff' },
+            text: { primary: '#171717', secondary: '#737373' },
+            action: { primary: { bg: '#7c3aed', fg: '#ffffff' } }
+        },
+        rounded: { md: '0.5rem' }
+    }
 }
 
-createOrigam({ themes: [myLight, /* myDark */] })
+createOrigam({ themes: [myLight /*, myDark */] })
 ```
 
-A color slot accepts any CSS color **or a gradient** (there is no dedicated
+A color leaf accepts any CSS color **or a gradient** (there is no dedicated
 gradient group). The full authoring surface and the resolved `--origam-*` names
-are documented in **[Theme authoring](../integrations/theming-authoring.md)**.
-When you supply no theme, `createOrigam` installs `sobre` for you.
+are documented in **[Theme authoring](../integrations/theming-authoring.md)**;
+how the `components` block reaches a component's props is
+[ADR-005](./installThemePropsResolver.md).
+
+### What "no theme supplied" actually installs
+
+⛔ **Changed by #360 (v3.0.0 harvest).** `createOrigam()` used to always
+prepend the two built-in objects exported from
+`packages/ds/src/themes/origam.theme.ts` — `origamLightTheme` (no `name`, no
+`mode`, injected at `:root`) and `origamDarkTheme` (`mode: 'dark'`, injected at
+`[data-mode="dark"]`) — to whatever `themes`/`theme` the consumer supplied. It
+no longer does: a bare `createOrigam()` (or one called with `themes: []`)
+installs **no theme at all** — no `vars` CSS, no per-component `components`
+prop default (ADR-005). The baseline still ships, under the same names, from
+the same file, re-exported as `origamTheme` from `origam/themes` — but a
+consumer now passes it explicitly:
+
+```ts
+import { createOrigam } from 'origam'
+import { origamTheme } from 'origam/themes'
+
+app.use(createOrigam({ themes: origamTheme }))
+```
+
+Both built-ins are **nameless**, so they are not brands: measured,
+`createOrigam({ themes: origamTheme })` still leaves `useInstalledThemes()`
+returning `[]` — nothing changed on that front.
+
+**Nuxt consumers of the official `origam/nuxt` module are unaffected** — the
+module itself now supplies this same baseline as the default for its
+`origam.themes` option (`packages/ds/src/nuxt/module.ts`), so an app that
+configures nothing still gets it, exactly as before. Only DIRECT,
+non-Nuxt `createOrigam()` callers need to pass `origamTheme` explicitly.
 
 Read the installed brands back with [`useInstalledThemes()`](#installed-themes)
 to drive a switcher. Under Nuxt the `origam/nuxt` module does this install for
@@ -155,20 +227,38 @@ you from its `themes` option — see the [Nuxt integration](../integrations/nuxt
 
 ## Installed themes
 
-`useInstalledThemes()` returns the distinct brands installed via
-`createOrigam({ themes })` — one entry per `name`, each listing its modes:
+`useInstalledThemes(): TInstalledThemes` returns the distinct **named** brands
+installed via `createOrigam({ themes })` — one entry per `name`, collapsing the
+per-mode objects into a single `modes` list:
 
 ```ts
 import { useInstalledThemes } from 'origam/composables'
 
 const installed = useInstalledThemes()
-// → [{ name: 'sobre', modes: ['light', 'dark'], label: 'Sobre', swatch: '…' }, …]
 ```
 
-Each entry carries `name`, `modes`, and the UI metadata the installed theme
-objects provided: `label` (falls back to `name`), and optional `description`
-and `swatch`. It returns `[]` when nothing was installed (or outside a
-`createOrigam` app), so a switcher can map over it without a null-guard.
+Measured, for
+`createOrigam({ themes: [ {name:'mybrand', mode:'light', label:'My Brand', swatch:'#7c3aed', …}, {name:'mybrand', mode:'dark', …}, {name:'nolabel', mode:'light', …} ] })`:
+
+```json
+[
+  { "name": "mybrand", "modes": ["light", "dark"], "label": "My Brand", "swatch": "#7c3aed" },
+  { "name": "nolabel", "modes": ["light"], "label": "nolabel" }
+]
+```
+
+Each entry carries `name`, `modes`, and the UI metadata the installed objects
+provided: `label` (falling back to `name`, as `nolabel` shows), plus optional
+`description` and `swatch` — **omitted entirely** when not provided, rather
+than set to `undefined`.
+
+⚠️ **A theme object with no `name` is skipped**, which is why the two built-ins
+never appear. It returns `[]` when nothing named was installed, and `[]` again
+outside a `createOrigam` app (it is a plain `inject` with `[]` as the default),
+so a switcher can map over it without a null-guard.
+
+The list is a **static snapshot** taken at install time; pair it with
+`useTheme()` to read and change the active brand and mode.
 
 ## Sub-tree overrides
 
@@ -233,25 +323,58 @@ applyModeSync('dark')
 These power the no-flash plugin pattern above and are exported for custom
 integrations.
 
+⚠️ They apply to the document and **do not persist**: measured,
+`applyThemeSync('brand-z')` sets `data-theme="brand-z"` and leaves
+`localStorage['origam-theme']` untouched. Persistence is `setTheme` /
+`setMode`'s job. `applyThemeSync('auto')` *removes* `data-theme`;
+`applyModeSync('auto')` resolves against `prefers-color-scheme` and always
+writes a concrete `data-mode` (falling back to `'light'` where `matchMedia` is
+unavailable).
+
+Neither helper instantiates `useTheme()` — `readPersistedTheme()` /
+`readPersistedMode()` create no ref and touch no singleton, and return
+`'auto'` when nothing is persisted or when there is no `window`.
+
+## Test helper
+
+```ts
+function _resetThemeForTesting (): void
+```
+
+Clears the module singletons (`theme`, `mode`, `systemPrefersDark`,
+`mediaInitDone`) so each spec starts from a clean state. **Not public API** —
+the leading underscore is the marker. Its only caller is
+`packages/tests/TU/composables/Commons/theme.composable.spec.ts`. It does not
+clear `localStorage` or the `<html>` attributes; a spec that needs those reset
+must do it itself.
+
 ## Tests
 
-The composable ships with [`theme.composable.spec.ts`][1] covering:
+`packages/tests/TU/composables/Commons/theme.composable.spec.ts` covers (not
+exhaustively):
 
 - Default `'auto'` for both axes when no persisted value.
-- Reading from / writing to localStorage (both cookies/keys).
-- Toggling `data-theme` and `data-mode` on the document root.
+- Reading from / writing to `localStorage` on both keys.
+- Toggling `data-theme` and `data-mode` on the document root, including
+  `data-mode` staying concrete when the mode is `'auto'`.
 - `toggle()` (brand) and `toggleMode()` (mode) flipping light ↔ dark.
-- `applyThemeSync` / `applyModeSync` writing to `<html>` outside Vue's lifecycle.
+- `applyThemeSync` / `applyModeSync` / `readPersistedMode` outside Vue's
+  lifecycle.
 - The two axes not interfering (brand + mode applied together).
 - Custom theme strings (`'brand-a'`).
+- #275 — the singleton anchored on `globalThis` surviving module duplication.
 
-[1]: https://github.com/your-org/origam/blob/main/src/composables/Commons/theme.composable.spec.ts
+`packages/tests/TU/ssr-smoke.spec.ts` additionally exercises the four
+imperative helpers in a server-like context.
 
 ## Related
 
 - [`<OrigamThemeProvider>`](../components/ThemeProvider/OrigamThemeProvider.md) — sub-tree theme/mode override.
-- [`useCssSupport`](./useCssSupport.md) — feature detection, used together
-  with `useTheme` to gate dark-mode-specific CSS features.
+- [`installThemePropsResolver`](./installThemePropsResolver.md) — how a theme's
+  `components` block reaches every component's props (ADR-005). Theming is
+  props-first; CSS variables are the fallback, not the entry point.
+- [`useDefaults`](./useDefaults.md) — the provider side of the same defaults map.
+- [`useColor`](./useColor.md) — the intent tokens that resolve against these axes.
 - [Nuxt integration](../integrations/nuxt.md) — SSR no-flash for both axes.
-- [Design tokens guide](../guide/design-tokens.md) — how `data-theme` /
-  `data-mode` compose with the generated CSS layers.
+- [Theme authoring](../integrations/theming-authoring.md) — the full
+  `IOrigamTheme` surface and the `--origam-*` names it resolves to.

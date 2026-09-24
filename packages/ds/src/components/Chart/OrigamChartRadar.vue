@@ -358,11 +358,27 @@ return [ out, props.style as StyleValue ]
 		})
 	})
 
+	/*********************************************************
+	 * pointAriaLabel
+	 *
+	 * @description
+	 * ⛔ issue #781 — the accessible name of each `role="button"` vertex.
+	 * `IChartSeries.name` is typed `string` but nothing enforces it at
+	 * RUNTIME, and the previous template literal interpolated the missing
+	 * value straight into the string: a series without a name produced
+	 * `aria-label="undefined, x: 1"`, and a screen reader read the word
+	 * "undefined" aloud. Same family as the Sparkline fix in this commit —
+	 * the vertex is focusable and Enter/Space-operable either way, what was
+	 * broken is the NAME, not the role.
+	 ********************************************************/
 	const pointAriaLabel = (path: IChartPath) => {
 		const entry = path.series.data[path.dataIndex ?? 0]
 		const y = typeof entry === 'number' ? entry : entry.y
 		const cat = props.categories[path.dataIndex ?? 0] ?? path.dataIndex
-		return `${ path.series.name }, ${ cat }: ${ y }`
+		const seriesName = path.series.name?.trim()
+		const value = `${ cat }: ${ y }`
+
+		return seriesName ? `${ seriesName }, ${ value }` : value
 	}
 
 	const onPointActivate = (path: IChartPath, originalEvent: MouseEvent | KeyboardEvent): void => {

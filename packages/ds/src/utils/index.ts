@@ -1,6 +1,7 @@
 export * from './Media/format-time.util'
 export * from './Snackbar/snackbar-group.util'
 
+export * from './Commons/a11y.util'
 export * from './Commons/anchor.util'
 export * from './Commons/border.util'
 export * from './Commons/color.util'

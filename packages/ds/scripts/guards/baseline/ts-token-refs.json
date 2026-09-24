@@ -1,0 +1,13 @@
+[
+    "packages/ds/src/utils/Commons/color.util.ts::--origam-color__action--ghost---bgActive",
+    "packages/ds/src/utils/Commons/color.util.ts::--origam-color__action--primary---bgActive",
+    "packages/ds/src/utils/Commons/color.util.ts::--origam-color__action--secondary---bgActive",
+    "packages/ds/src/utils/Commons/color.util.ts::--origam-color__feedback--danger---bgActive",
+    "packages/ds/src/utils/Commons/color.util.ts::--origam-color__feedback--danger---bgHover",
+    "packages/ds/src/utils/Commons/color.util.ts::--origam-color__feedback--info---bgActive",
+    "packages/ds/src/utils/Commons/color.util.ts::--origam-color__feedback--info---bgHover",
+    "packages/ds/src/utils/Commons/color.util.ts::--origam-color__feedback--success---bgActive",
+    "packages/ds/src/utils/Commons/color.util.ts::--origam-color__feedback--success---bgHover",
+    "packages/ds/src/utils/Commons/color.util.ts::--origam-color__feedback--warning---bgActive",
+    "packages/ds/src/utils/Commons/color.util.ts::--origam-color__feedback--warning---bgHover"
+]

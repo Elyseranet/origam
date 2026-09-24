@@ -17,11 +17,24 @@ const VIS = { timeout: 35000 }
 test.describe('OrigamWindow — #474 carousel region + live-region', () => {
     test.setTimeout(60000)
 
-    test('root carries role=region and aria-roledescription=carousel', async ({ page }) => {
+    /**
+     * ⛔ #781 — le repère est conditionné au nom accessible.
+     *
+     * `region` est l'un des rares rôles dont WAI-ARIA 1.2 marque le nom
+     * comme REQUIS ; `<OrigamWindow>` ne déclare donc plus ni `role` ni
+     * `aria-roledescription` tant qu'aucun `aria-label` /
+     * `aria-labelledby` n'arrive. La Variant « Design » en pose un
+     * désormais — c'est l'usage que la story doit montrer — donc ce test
+     * mesure la branche NOMMÉE. La branche anonyme est mesurée en TU
+     * (`TU/components/Window/window-live-region.spec.ts`) : elle porte sur
+     * des attributs et n'a pas besoin d'un vrai navigateur.
+     */
+    test('root carries role=region and aria-roledescription=carousel once named', async ({ page }) => {
         await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const root = sandbox.locator('.origam-window').first()
         await expect(root).toBeVisible(VIS)
+        await expect(root).toHaveAttribute('aria-label', 'Design window demo')
         await expect(root).toHaveAttribute('role', 'region')
         await expect(root).toHaveAttribute('aria-roledescription', 'carousel')
     })

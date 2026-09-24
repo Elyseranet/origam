@@ -152,6 +152,7 @@
     "--origam-color__neutral---500",
     "--origam-color__primary---100",
     "--origam-color__primary---200",
+    "--origam-color__primary---500",
     "--origam-color__primary---800",
     "--origam-color__red---100",
     "--origam-color__red---200",

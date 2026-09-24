@@ -181,14 +181,6 @@
             "actions_label": "Suivre origam"
         },
         "versions": {
-            "unreleased": {
-                "summary": "En cours — pas encore publié. Extraction des thèmes de marque, tokens glassmorphism, corrections de rendu serveur.",
-                "h1": "OrigamCode — modes d'affichage compact et prompt ; support du thème biaxial (data-theme × data-mode)",
-                "h2": "Tokens backdrop-filter glassmorphism sur Card / Sheet / Toolbar / Menu",
-                "h3": "Thèmes de marque extraits du DS (ADR-004) — installés via createOrigam() avec une option themes au lieu d'être intégrés à la lib",
-                "h4": "OrigamImg — garde rAF markBooted derrière IN_BROWSER (crash SSR corrigé)",
-                "h5": "Six problèmes SSR/thème résolus : course cookie, data-mode au premier rendu, mismatch hydratation"
-            },
             "v260": {
                 "summary": "La version bracket + a11y + thématisation. Directive v-contrast, OrigamBracket double-élimination, moteur de thème biaxial, migration monorepo. 170 commits.",
                 "h1": "Directive v-contrast — garde WCAG 2.1 AA sur la lisibilité du texte, appliquée à tous les composants colorés",
@@ -349,7 +341,7 @@
             "tokens": {
                 "title": "Design tokens",
                 "eyebrow": "Fondation",
-                "desc": "Extrait DTCG du fichier de tokens du composant. Construit avec Style Dictionary v4.",
+                "desc": "Extrait des tokens de ce composant — les variables --origam-<composant>---<propriété>, déclarées dans sa feuille de tokens tenue à la main, sans étape de build.",
                 "col_token": "Chemin du token",
                 "col_value": "Valeur",
                 "col_type": "Type",
@@ -583,6 +575,36 @@
             "const": "const"
         }
     },
+    "contact": {
+        "meta": {
+            "title": "Contact",
+            "description": "Comment joindre le projet origam : les tickets GitHub pour les anomalies, les discussions GitHub pour les questions. Aucune adresse de support n’est publiée."
+        },
+        "hero": {
+            "badge": "Un seul mainteneur",
+            "title": "Contact",
+            "lead": "origam est maintenu par un seul développeur. Tout passe par GitHub, à découvert — une question posée là-bas aide la personne suivante qui la cherchera, et rien ne s’enterre dans une boîte mail."
+        },
+        "issues": {
+            "title": "Signaler un bug",
+            "body": "Ouvrez un ticket sur le dépôt. Un rapport utile nomme le composant, la version d’origam, ce que vous attendiez et ce qui s’est produit à la place — une reproduction minimale vaut mieux qu’un paragraphe de description.",
+            "cta": "Ouvrir un ticket sur GitHub"
+        },
+        "discussions": {
+            "title": "Poser une question",
+            "body": "Utilisez les discussions du dépôt pour tout ce qui n’est pas une anomalie : comment utiliser un composant, une idée de composant qui n’existe pas encore, ou un retour sur la documentation.",
+            "cta": "Ouvrir une discussion sur GitHub"
+        },
+        "support": {
+            "title": "Soutenir le projet",
+            "body": "origam est gratuit et sous licence MIT. S’il vous fait gagner du temps, la page de soutien explique comment un don finance le travail de maintenance.",
+            "cta": "Aller à la page de soutien"
+        },
+        "no_email": {
+            "title": "Il n’y a pas d’adresse de support",
+            "body": "Ce projet ne publie aucune adresse e-mail, et aucune n’est dissimulée derrière un formulaire sur ce site. Les demandes faites à découvert reçoivent une réponse à découvert : il n’y a pas de canal privé, ni d’engagement sur le délai de réponse."
+        }
+    },
     "directives": {
         "meta": {
             "title": "Directives · origam design system",
@@ -742,7 +764,6 @@
         "resources": {
             "title": "Ressources",
             "github": "GitHub",
-            "community": "Communauté",
             "discord": "Discord",
             "discussions": "Discussions",
             "twitter": "Twitter",
@@ -804,7 +825,7 @@
             },
             "tokens": {
                 "title": "Design tokens",
-                "description": "Multi-thème via Tokens Studio. Basculez entre clair, sombre ou votre propre marque à l'exécution, sans remontage."
+                "description": "Multi-thème via un objet de thème props-first. createOrigam() le résout sur les 218 composants — basculez entre clair, sombre ou votre propre marque à l'exécution, sans remontage."
             },
             "typescript": {
                 "title": "TypeScript d'abord",
@@ -888,7 +909,7 @@
             "eyebrow": "THÉMATISATION",
             "title_line1": "Un design system.",
             "title_line2": "Toutes les marques.",
-            "subtitle": "Design tokens conformes DTCG, multi-thème nativement. Basculez entre clair, sombre ou votre marque à l'exécution — sans remontage, sans clignotement.",
+            "subtitle": "Design tokens tenus à la main, props-first — multi-thème nativement. Basculez entre clair, sombre ou votre marque à l'exécution, sans remontage.",
             "chip_sobre": "Sobre",
             "chip_glass": "Glass",
             "chip_geek": "Geek",
@@ -898,8 +919,8 @@
             "chip_ecom": "Ecom",
             "chip_apple": "Apple",
             "tooling_label": "Outillage",
-            "tokens_studio": "→ compatible tokens.studio",
-            "style_dictionary": "→ Style Dictionary v4",
+            "tokens_studio": "→ theming props-first (218 composants)",
+            "style_dictionary": "→ CSS/SCSS tenus à la main, sans build",
             "preview_light": "light.json",
             "preview_dark": "dark.json",
             "preview_brand_a": "brand-a.json",
@@ -943,7 +964,7 @@
             "register": {
                 "title": "2. Enregistrer le plugin",
                 "description": "Importez les feuilles de tokens et enregistrez origam comme plugin Vue dans votre fichier d'entrée.",
-                "note": "createOrigam() accepte un sac d'options facultatif pour configurer les icônes, la locale, l'affichage, le SSR, les alias et plus encore. Par défaut, tous les composants et directives sont enregistrés globalement."
+                "note": "createOrigam() accepte un sac d'options facultatif pour configurer les icônes, la locale, l'affichage, le SSR, les alias et plus encore. Par défaut, tous les composants et directives sont enregistrés globalement — mais aucun thème n'est installé tant que vous n'en passez pas un explicitement, comme ci-dessus."
             },
             "use": {
                 "title": "3. Utiliser un composant",
@@ -1092,6 +1113,48 @@
             "sitemap": "Plan du site"
         }
     },
+    "privacy": {
+        "meta": {
+            "title": "Confidentialité",
+            "description": "Ce que ce site stocke et envoie, mesuré dans son propre code source : aucun analytics, aucun traceur, des cookies de préférence uniquement, et aucun tiers sur ses propres pages."
+        },
+        "hero": {
+            "badge": "Mesuré, pas rédigé",
+            "title": "Confidentialité",
+            "lead": "Cette page n’énonce que ce qui a été vérifié dans le code source de ce site, et en chargeant une page avec le journal réseau ouvert. Elle est volontairement courte — il y a très peu à signaler. Chaque affirmation nomme ce qu’elle décrit, pour que vous puissiez la vérifier vous-même dans votre navigateur."
+        },
+        "collect": {
+            "title": "Ce qui n’est pas collecté",
+            "body": "Il n’y a sur ce site aucun analytics, aucun pixel de suivi et aucun script de mesure tiers. Rien n’enregistre les pages que vous consultez, le temps que vous y passez, ni d’où vous venez. Aucun compte visiteur n’existe : rien n’est rattaché à une identité."
+        },
+        "cookies": {
+            "title": "Cookies",
+            "intro": "La navigation sur ce site ne pose de cookies que pour deux choses, toutes deux des préférences que vous avez choisies vous-même :",
+            "locale": "origam_locale — la langue d’affichage, pour que le site ne revienne pas à l’anglais à votre prochaine visite.",
+            "theme": "origam-theme et origam-mode — le thème et l’apparence claire ou sombre que vous avez sélectionnés.",
+            "admin": "Un cookie de session distinct existe pour l’espace d’administration privé. Il est créé en s’y connectant, jamais en naviguant sur le site public."
+        },
+        "storage": {
+            "title": "Stockage local",
+            "body": "Le constructeur de thème enregistre votre travail en cours dans votre navigateur, sous la clé origam_theme_builder_state, aux côtés de origam-theme et origam-mode pour votre choix d’apparence. Ces entrées ne quittent jamais le navigateur : elles ne sont envoyées à aucun serveur, et effacer les données du site les supprime."
+        },
+        "forms": {
+            "title": "Formulaires et recherche",
+            "body": "Ce site ne comporte qu’un seul formulaire — le panneau de propriétés du constructeur de thème — et il ne soumet rien : il modifie un aperçu à l’intérieur de la page. Le champ de recherche filtre un catalogue que votre navigateur a déjà téléchargé ; ce que vous y tapez n’est donc envoyé nulle part."
+        },
+        "third_party": {
+            "title": "Aucun tiers",
+            "body": "Rien, sur les pages de ce site, n’est chargé depuis le serveur d’une autre entreprise. Les polices de caractères — Fraunces, Inter et JetBrains Mono — sont servies par ce site lui-même, depuis son propre dossier /fonts. Elles étaient auparavant demandées à Google Fonts, ce qui révélait votre adresse IP et votre navigateur à Google sur chaque page ; cette requête n’existe plus. Les dix-neuf pages publiques ont été chargées une à une avec le journal réseau ouvert, et aucune n’a contacté d’autre hôte que celui-ci.",
+            "embeds": "Une exception, mesurée et nommée : les stories de composants publiées sous /stories sont une compilation séparée, produite par un outil tiers ; ouvrir cette page charge sa police d’interface depuis Google Fonts et ses icônes depuis api.iconify.design. On y accède en suivant un lien, jamais en naviguant sur le site. La documentation de référence sous /docs est elle aussi une compilation séparée ; elle n’a pas été mesurée, rien n’en est donc affirmé ici.",
+            "links": "Les autres adresses externes de ce site — le dépôt GitHub, la page de don, Discord — sont de simples liens. Rien ne leur est demandé tant que vous ne cliquez pas."
+        },
+        "method": {
+            "title": "Comment cette page a été établie",
+            "body": "Chaque affirmation ci-dessus provient de la lecture du code source de ce site et du chargement d’une page dans un navigateur, journal réseau ouvert — pas d’un modèle type. Rien n’y a été supposé.",
+            "scope": "Elle décrit le comportement de l’application elle-même. Ce que le serveur qui l’héberge enregistre au niveau réseau n’a pas été mesuré, et n’est donc pas décrit ici.",
+            "reviewed": "Dernière vérification par rapport au code source le 17 septembre 2026."
+        }
+    },
     "roadmap": {
         "meta": {
             "title": "Feuille de route · origam design system",
@@ -1105,18 +1168,28 @@
         },
         "status": {
             "eyebrow": "OÙ ON EN EST",
-            "title_line1": "Statut",
-            "title_line2": "post-2.6.0.",
-            "subtitle": "Un état honnête de ce qui fonctionne, ce qui est en cours et ce qui manque encore.",
-            "npm_published": "Première release publique sur npm — tarball 869 ko, 0 vulnérabilité critique",
-            "pre_delivery": "Pre-delivery automatisé via prepublishOnly (tokens + build + 220 tests unitaires)",
+            "title_line1": "Où en est la {version}",
+            "title_line2": "aujourd'hui.",
+            "subtitle": "Chaque ligne ci-dessous a été mesurée sur le dépôt le 23 septembre 2026 — ce qui est livré, et ce qui manque encore.",
+            "npm_published": "Publié sur npm — origam {version}, publication automatisée avec attestation sigstore",
             "readme_changelog": "README correct, CHANGELOG à jour",
-            "monorepo": "Migration monorepo terminée (mai 2026) — 6 packages pnpm workspace",
-            "doc_online": "Pas de documentation en ligne. Pas de stories déployées.",
-            "ci": "Pipeline CI incomplet — lint / test / build / publication pas encore automatisés",
-            "playwright_coverage": "Coverage Playwright partielle (~100 specs pour 161 stories)",
-            "bundle_monitoring": "Pas de monitoring bundle-size. Pas d'audit a11y systématique.",
-            "wave4_shipped": "Vague 4 livrée — 13 composants + support gradient + OrigamTextMask (v2.6.0)"
+            "monorepo": "Monorepo en place — 5 packages pnpm workspace (ds, docs, marketing, stories, tests), la bibliothèque publiant toujours depuis packages/ds",
+            "bundle_monitoring": "Aucun suivi de la taille du bundle — aucun budget de poids n'est imposé sur les sous-exports",
+            "wave4_shipped": "Wave 4 livrée — 13 composants + support des dégradés + OrigamTextMask (v2.6.0)",
+            "ci_pipeline": "Chaîne d'intégration complète — 20 jobs répartis sur 5 workflows : lint, gardes d'architecture, garde des migrations, vérification des types, tests unitaires, builds, contrôle i18n, contrôle de dérive du changelog, e2e, e2e marketing, a11y des composants, a11y marketing et régression visuelle",
+            "docs_deployed": "Documentation et stories déployées — la référence VitePress et le build Histoire répondent tous deux en HTTP 200",
+            "unit_tests": "7 187 tests unitaires au vert sur 563 fichiers de specs — 77,8 % des instructions et 79,9 % des lignes couvertes",
+            "e2e_specs": "254 fichiers de specs Playwright pour 218 stories — chaque famille de composants a son garde-fou e2e",
+            "guards": "29 gardes d'architecture sur 29 au vert, et 16 auto-tests sur 16 prouvant que les détecteurs mesurent encore",
+            "inspection": "216 composants inspectés sur 8 critères — rendu, canal du thème, réactivité, résolution des props, emits, sémantique, cohérence story et doc, chaînes en dur : zéro défaut restant",
+            "sonarqube": "SonarQube branché avec la couverture des tests unitaires et une quality gate qui bloque sur la sécurité et la criticité",
+            "dependency_automation": "Mises à jour de dépendances automatisées — Dependabot ouvre chaque semaine des pull requests groupées pour npm et GitHub Actions",
+            "e2e_ci_gate": "L'intégration continue ne barre que 81 des 254 specs Playwright — les 173 autres existent mais ne bloquent encore rien",
+            "a11y_sweep": "Les overlays n'ont toujours pas d'assertions de piège au focus — un seul composant de toute la famille est couvert, alors que le balayage par composant barre désormais la CI sur une baseline de violations vide",
+            "visual_regression": "La régression visuelle est seulement amorcée — la suite en conteneur épinglé ne couvre qu'un composant pour l'instant",
+            "migration_guide": "Le guide de migration v2 vers v3 n'existe pas encore — il bloque la pose du tag v3",
+            "public_domain": "La documentation et les stories sont servies depuis un hôte interne — le domaine du projet ne résout pas encore",
+            "community": "Pas encore de communauté — ni discussions ouvertes, ni contributeur externe"
         },
         "delivered": {
             "eyebrow": "DÉJÀ LIVRÉ",
@@ -1181,45 +1254,29 @@
             "short_term": {
                 "eyebrow": "Q3 2026",
                 "title": "Court terme",
-                "ci": {
-                    "title": "Pipeline CI / CD complet",
-                    "description": "GitHub Actions : lint, token:lint, tests unitaires, e2e, build sur chaque PR. Publication automatisée sur tag v*."
-                },
-                "deployment": {
-                    "title": "Déploiement VitePress + Histoire",
-                    "description": "Docs sur origam.dev, stories sur stories.origam.dev. Bloque toute adoption externe."
-                },
-                "playwright": {
-                    "title": "Coverage Playwright complète",
-                    "description": "100 % des composants publics couverts — un spec par composant exerçant chaque Variant et prop."
-                },
                 "a11y_audit": {
-                    "title": "Audit a11y des overlays",
-                    "description": "Focus trap, restitution du focus, aria-modal, touche Esc pour Dialog, Menu, Tooltip, Drawer, Snackbar."
+                    "title": "Audit d'accessibilité des overlays",
+                    "description": "Le balayage axe sur chaque story de composant existe mais ne tourne dans aucun job de CI, et son seuil d'échec est abaissé au seul niveau critique. Le piège au focus, sa restitution, aria-modal et la touche Échap ne sont assertés que pour Dialog, Select et la palette de commandes — Menu, menu contextuel, Tooltip, Drawer, Sheet et Snackbar n'en ont aucun."
                 },
                 "bundle_size": {
-                    "title": "Monitoring bundle-size",
-                    "description": "size-limit sur chaque sous-export. Commentaires PR auto-générés. La chute 5,6 Mo → 869 ko doit rester un acquis."
-                },
-                "tu_audit": {
-                    "title": "Consolidation de la suite de tests unitaires",
-                    "description": "Adopter une convention unique tests/unit/{Domain}/{name}.spec.ts et augmenter la couverture de branches des composables transversaux, en mockant CSS.supports sous jsdom."
+                    "title": "Suivi de la taille du bundle",
+                    "description": "Aucun budget de poids n'est imposé aujourd'hui. Ajouter size-limit sur chaque sous-export avec commentaire automatique sur les pull requests, et fixer le seuil depuis une mesure fraîche de l'archive publiée : 1,86 Mo au 23 septembre 2026."
                 },
                 "api_audit": {
-                    "title": "Audit API pré-v3",
-                    "description": "Un inventaire exhaustif des dépréciations dans le guide de migration v2 vers v3, les marqueurs {'@'}deprecated manquants complétés, et un codemod pour les renommages mécaniques."
-                },
-                "dependency_automation": {
-                    "title": "Mise à jour automatisée des dépendances",
-                    "description": "Renovate avec des politiques de regroupement, fusion automatique des dépendances de dev en version patch, et une PR groupée hebdomadaire pour les montées mineures."
+                    "title": "Audit d'API avant la v3",
+                    "description": "Le guide de migration v2 vers v3 n'existe pas encore, et l'écrire est une condition bloquante avant de poser le tag v3 : inventaire exhaustif des dépréciations, marqueurs {'@'}deprecated manquants complétés, et codemod pour les renommages mécaniques."
                 },
                 "sonarqube": {
-                    "title": "SonarQube — note A, zéro dette",
-                    "description": "Le scan Sonar est déjà branché (build.yml + sonar-project.properties) mais incomplet. Câbler la couverture lcov des TU Vitest dans Sonar (sonar.javascript.lcov.reportPaths), activer une quality gate bloquante, et résorber chaque bug / vulnérabilité / security hotspot / code smell pour atteindre la note A sur tous les axes avec zéro dette technique. Le faire tourner sur les PR et l'ajouter aux checks pre-delivery."
+                    "title": "SonarQube — résorber la dette restante",
+                    "description": "La couverture des tests unitaires alimente le scan et la quality gate est armée : elle bloque sur la sécurité et la criticité. Reste le verdict lui-même — une note A sur les quatre axes et zéro dette ouverte. L'analyse des pull requests reste hors périmètre tant que le serveur tourne en Community Edition, qui n'analyse qu'une seule branche."
                 },
-                "ci_e2e": {
-                    "title": "CI E2E — job annulé à chaque run",
-                    "description": "Le job E2E Playwright est annulé à chaque run CI (les 5 autres jobs passent) : il dépasse son timeout de 30 min même sur le sous-ensemble vert. Cause : le webServer Playwright lance Histoire en mode Vite DEV, qui compile chaque story au premier accès (cold-start de 19-30 s par story) — trop lent sur un runner froid. À trancher : corriger en pointant le webServer e2e sur le build statique de Histoire déjà produit par build:embeds (public/stories, servi via http-server — sans cold-start Vite), ou rendre le job e2e non-bloquant / le déplacer dans un workflow nightly séparé en attendant."
+                "e2e_gate": {
+                    "title": "Élargir la barrière e2e en CI",
+                    "description": "229 fichiers de specs couvrent déjà les familles de composants, mais le job de CI n'en exécute que les 58 déclarés verts. Faire entrer les 171 restants dans la barrière, vague par vague, en traitant les instabilités au lieu de les contourner."
+                },
+                "public_domain": {
+                    "title": "Publier la documentation sous le domaine du projet",
+                    "description": "La référence VitePress et le build Histoire sont en ligne et répondent en HTTP 200, mais sur un hôte interne. Tant qu'ils ne vivent pas sous le domaine du projet, le marketing n'a aucune adresse où envoyer les gens."
                 }
             },
             "mid_term": {
@@ -1872,29 +1929,29 @@
                 "title": "Vue 3 natif",
                 "description": "Construit avec la Composition API et script setup. Pas de shim Options API, pas d'héritage Vue 2 — juste du Vue 3 idiomatique et propre."
             },
-            "tokens": {
-                "title": "Design tokens DTCG",
-                "description": "Compatible Tokens Studio, Style Dictionary v4. 8 thèmes basculent à l'exécution sans remontage ni clignotement."
+            "theming": {
+                "title": "Theming, props d'abord",
+                "description": "Chaque thème est un objet IOrigamTheme dont le bloc components configure d'abord les props des composants, les tokens sémantiques ensuite. Un seul résolveur (ADR-005) l'applique aux 218 composants sans aucune inscription requise. Deux axes indépendants, data-theme x data-mode : 8 thèmes basculent à l'exécution sans remontage."
             },
             "charts": {
                 "title": "218 composants + 26 primitives de graphiques",
                 "description": "Des boutons atomiques aux graphiques ligne, aire, donut, heatmap et chandelier — dans un seul package cohérent."
             },
             "a11y": {
-                "title": "Certifié WCAG 2.1 AA",
-                "description": "Tests axe-core + Playwright livrés avec chaque composant. Clavier, lecteurs d'écran et mouvement réduit : couverts."
+                "title": "218/218 composants testés en accessibilité",
+                "description": "axe-core + Playwright balaient chaque composant — la variante par défaut plus 7 variantes d'intention — et la baseline est à zéro violation depuis le 2026-09-23. Ça couvre la variante par défaut, pas tous les états ; les défauts moderate/minor ne bloquent pas la porte."
             },
             "css": {
                 "title": "Architecture CSS-first",
-                "description": "Container queries, :has(), color-mix(), view-transition-name. Nous utilisons la plateforme pour que votre bundle ne paye pas de polyfills."
+                "description": "Nous utilisons directement :has() et color-mix() dans le CSS du DS lui-même. Container queries et view-transition-name sont détectés via useCssSupport() et exposés à vos composants — nous ne nous en servons pas encore en interne."
             },
             "treeshake": {
-                "title": "< 50 ko tree-shakable",
-                "description": "Build ESM-first. Importez ce que vous utilisez ; le reste n'atteint jamais vos utilisateurs."
+                "title": "Vous payez ce que le composant fait",
+                "description": "Build ESM-first : vous n'importez que ce que vous utilisez. Mesuré sur de vrais builds Vite — Divider pèse environ 7 ko gzip, Btn environ 35 ko car il embarque icônes, transitions et loader, DataTable environ 172 ko car il embarque tri, pagination et groupement."
             },
             "composables": {
                 "title": "Composables headless",
-                "description": "Chaque composant expose sa logique en tant que composable autonome. Utilisez notre UI ou construisez la vôtre sur nos primitives."
+                "description": "Les logiques transversales — couleur, layout, accessibilité — sont exposées comme composables réutilisables. Les familles complexes comme Chart, DataTable et Transition exposent aussi leur propre logique dédiée — mais ce n'est pas le cas de chaque composant."
             },
             "mit": {
                 "title": "Licence MIT",
@@ -1908,7 +1965,7 @@
             "disclaimer": "Certaines appréciations reflètent notre interprétation de la documentation publique disponible. Les concurrents évoluent vite — vérifiez leurs docs.",
             "col_library": "Bibliothèque",
             "col_vue_native": "Vue 3 natif",
-            "col_design_tokens": "Tokens DTCG",
+            "col_theming_props_first": "Theming props d'abord",
             "col_a11y_tested": "A11y testée",
             "col_css_first": "CSS-first",
             "col_tree_shakable": "Tree-shakable",
@@ -1917,7 +1974,7 @@
             "vuetify": "Vuetify",
             "vuetify_note": "Design system Material Design mature, grande communauté et riche écosystème.",
             "prime_vue": "PrimeVue",
-            "prime_vue_note": "Très grand nombre de composants, dispose de son propre système de tokens (PrimeFlex).",
+            "prime_vue_note": "Très grand nombre de composants. Tokens de design conformes DTCG via PrimeOne 3.0 — mais pas de résolveur de theming props-first.",
             "quasar": "Quasar",
             "quasar_note": "Framework multi-plateforme complet (web, Cordova, Electron). Un périmètre différent.",
             "element_plus": "Element Plus",
@@ -1934,8 +1991,8 @@
             "title_line2": "progressons encore.",
             "subtitle": "origam est jeune. C'est un atout en termes de fraîcheur d'API — et une contrainte en termes de maturité.",
             "community": {
-                "title": "Communauté plus petite",
-                "description": "Vuetify et PrimeVue ont des années d'usage en production, des milliers de réponses Stack Overflow et de riches marchés de templates tiers. origam n'en est pas encore là."
+                "title": "Pas encore de communauté externe",
+                "description": "origam n'a aucun consommateur externe à ce jour, donc pas encore de communauté à l'extérieur — pas de trace Stack Overflow accumulée, pas de marché de templates tiers. C'est l'état honnête d'un design system jeune et construit en interne, pas une comparaison avec des bibliothèques ayant des années d'usage externe en production."
             },
             "templates": {
                 "title": "Moins de templates prêts à l'emploi",
@@ -1954,10 +2011,6 @@
             "greenfield": {
                 "title": "Projet Vue 3 greenfield",
                 "description": "Vous démarrez sur Vue 3 avec une équipe design qui travaille en Figma et en tokens ? origam est conçu exactement pour cette configuration."
-            },
-            "token_team": {
-                "title": "Équipe pilotée par les design tokens",
-                "description": "Si votre designer utilise Tokens Studio ou Style Dictionary, origam s'intègre nativement — sans couche de traduction."
             },
             "saas_product": {
                 "title": "SaaS / produit nécessitant plusieurs thèmes de marque",

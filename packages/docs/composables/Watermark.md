@@ -10,7 +10,7 @@
 ## `useWatermark`
 
 ```ts
-export function useWatermark ( options: MaybeRefOrGetter<IUseWatermarkOptions> =
+export function useWatermark ( options: MaybeRefOrGetter<IUseWatermarkOptions> = {} ): { patternUrl: ComputedRef<string>; install: (target?: HTMLElement) => HTMLElement | null; uninstall: () => void }
 ```
 
 Headless watermark composable. Returns the data-URL pattern (for
@@ -24,6 +24,7 @@ access. `install()` short-circuits when `document` is undefined.
 **Exemple**
 
 ```ts
+```ts
 const { patternUrl, install, uninstall } = useWatermark({
     text: 'CONFIDENTIAL — john.doe@example.com',
     opacity: 0.08,
@@ -32,6 +33,7 @@ const { patternUrl, install, uninstall } = useWatermark({
 })
 onMounted(() => install(document.body))
 onBeforeUnmount(() => uninstall())
+```
 ```
 
 **Source** : `packages/ds/src/composables/Watermark/watermark.composable.ts`

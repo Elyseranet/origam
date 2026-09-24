@@ -810,11 +810,21 @@
 			!state.error.value
 	})
 
-	const errorMessage = computed(() => {
+	/*********************************************************
+	 * Le message generique passe par `t()` : il resout
+	 * `origam.media.playback_error`, partage avec les autres surfaces
+	 * media (cf. OrigamAudio, #567). Un `MediaError` ne porte qu'un
+	 * `code` numerique, donc c'est cette branche qu'atteint une vraie
+	 * panne de decodage ; une `Error` JS levee par le composable garde
+	 * son propre `message`.
+	 ********************************************************/
+	const genericErrorMessage = computed<string>(() => t('origam.media.playback_error'))
+
+	const errorMessage = computed<string>(() => {
 		const err = state.error.value
-		if (!err) return 'Playback error'
+		if (!err) return genericErrorMessage.value
 		if ('message' in err && err.message) return err.message
-		return 'Playback error'
+		return genericErrorMessage.value
 	})
 
 	/*********************************************************

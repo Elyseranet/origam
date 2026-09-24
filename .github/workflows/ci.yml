@@ -64,6 +64,15 @@ jobs:
       - name: Run architecture guards
         run: pnpm -F origam guards
 
+      # Pins the DS guards' own detectors, for the same reason the e2e audit
+      # self-tests are pinned below: a guard whose extractor has regressed
+      # goes QUIET, and a silent detector and a clean repo produce the same
+      # green. The 13 self-tests existed and were run by nothing — measured
+      # 2026-09-16, #574. The list is discovered, not written, so a new
+      # self-test is covered without anyone having to remember.
+      - name: Run architecture guard self-tests
+        run: pnpm -F origam guards:self
+
       # The e2e audit guards, added 2026-08-17. They were repaired and wired
       # into `pretest:e2e` that day, and then measured to be in NO workflow at
       # all — so they protected local runs only and blocked no merge. That is
@@ -84,6 +93,46 @@ jobs:
       # broken specs pass as "no drift".
       - name: Run e2e audit self-tests
         run: pnpm -F @origam/tests run test:e2e:audit:self
+
+  migrations-guard:
+    name: Migration guard (marketing)
+    runs-on: ubuntu-latest
+    # Deliberately its OWN job, not a step of `architecture-guards` above.
+    # That job's two families audit `packages/ds/src` (guards) and the
+    # Histoire stories/docs surface (e2e audit) — neither has ever looked at
+    # `packages/marketing/server/db`, which is not a component, a story, or
+    # a doc page. Bolting a third, unrelated concern onto that job would
+    # repeat the exact "confused the two families" mistake #831 flagged
+    # happening on this same day. See scripts/guard-migrations.mjs's header
+    # for the full placement rationale.
+    #
+    # Purely static (parses migration source with the TypeScript compiler
+    # API, no DB, no build) — refuses ANY DROP CONSTRAINT / DROP INDEX a
+    # migration's up() contains unless a developer explicitly authorized it
+    # with an inline `// origam-allow-destructive: <reason>` directive.
+    # #831: `db:migrate:make` currently proposes to drop 10 FKs, 4 CHECKs
+    # and 2 functional unique indexes — none expressible via TypeORM
+    # decorators — because the entities never declare them. This is the
+    # only protection that covers all 16 cases, since 2 of them cannot be
+    # fixed by declaring anything on an entity.
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run migration guard self-test (detector mutation-check)
+        run: pnpm -F @origam/marketing guard:migrations:self
+
+      - name: Run migration guard
+        run: pnpm -F @origam/marketing guard:migrations
 
   type-check:
     name: Type-check (vue-tsc)
@@ -307,6 +356,43 @@ jobs:
       - name: i18n check (marketing)
         run: pnpm -F @origam/marketing i18n:check
 
+  changelog-check:
+    name: Changelog drift check (marketing)
+    runs-on: ubuntu-latest
+    # `CHANGELOG_VERSIONS` (packages/marketing/src/consts/changelog-versions.const.ts)
+    # is GENERATED from the repository's own /CHANGELOG.md — that is what makes
+    # the /changelog page structurally unable to drift away from the real
+    # release history (#740). The detector for that drift,
+    # `changelog:generate:check`, existed since then but was wired to NOTHING:
+    # no workflow, no hook. It sat RED for eight published versions while
+    # /changelog stopped at 2.18.0 and npm served 2.18.8 (#913) — the third
+    # unwired drift detector found that day, after `presets:generate:check`
+    # (#267) and the `theming-feedback-tokens` Tier 1.
+    #
+    # Its own job rather than a step of `i18n-check` above: that job gates the
+    # marketing TRANSLATION surface (key definitions, EN/FR parity, hardcoded
+    # strings), this one gates a generated constant against a repository-root
+    # document. Different source, different failure, different owner.
+    #
+    # Purely static and dependency-free: the generator imports only
+    # node:fs / node:path / node:url — no DB, no build, no network. It can
+    # therefore always run here, unlike checks that need `requireMarketingDb()`.
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Assert CHANGELOG_VERSIONS matches CHANGELOG.md
+        run: pnpm -F @origam/marketing changelog:generate:check
+
   test-e2e:
     name: E2E tests (Playwright / Chromium)
     runs-on: ubuntu-latest
@@ -452,6 +538,109 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
 
+  test-a11y-components:
+    name: A11y tests — components (axe-core / Chromium)
+    runs-on: ubuntu-latest
+    # ⛔ 20 -> 30 min — #818. Le balayage est passe de 36 a 218 stories
+    # (+7 Variants d'intention non-primary) : 226 tests au lieu de 37. Mesure
+    # reelle sur ce worktree (histoire preview statique, port isole) : 17.9
+    # min pour la suite seule sous charge machine EXTREME (load average
+    # 30-115, cf. commentaire de root CLAUDE.md sur les serveurs zombies
+    # #875) ; les segments mesures sous charge plus normale tournent a
+    # 3.5-4s/test, soit ~14-16 min projetes pour la suite seule. Le job
+    # ajoute checkout + install + build Histoire par-dessus. 30 min donne la
+    # meme marge relative que le job e2e shard (30 min pour ~15.7 min
+    # mesures, cf. root CLAUDE.md "Running the full e2e suite") plutot que
+    # de laisser 20 min courir a moins de 2 min de marge sur un chiffre reel.
+    timeout-minutes: 30
+    # ⛔ POURQUOI CE JOB EXISTE — #765.
+    #
+    # `packages/tests/a11y/components.spec.ts` balaie les Variants du
+    # catalogue avec axe-core, et le script `test:a11y` l'expose depuis mai
+    # 2026. AUCUN workflow ne l'a jamais invoque : le seul job a11y etait
+    # `test-a11y-marketing` ci-dessous, qui lance la config MARKETING. La
+    # porte pre-livraison du CLAUDE.md portait donc sur une suite que la CI
+    # n'executait pas.
+    #
+    # #763 venait de reparer cette meme suite (ses URL chargeaient une page
+    # d'erreur depuis ~16 mois, cf. #573/#575, et `assertStoryRendered()`
+    # refuse desormais de rendre un verdict sur une page vide). Une suite
+    # reparee que rien n'execute ne protege toujours de rien : c'est la
+    # seconde moitie du meme defaut.
+    #
+    # CONTROLE POSITIF, mesure avant d'ajouter ce job (obligatoire — un job
+    # vert sur une suite muette est pire qu'aucun job). Deux temoins injectes
+    # dans la premiere Variant de `OrigamBtn.story.vue`, catalogue rebati
+    # entre chaque etape :
+    #   `<button class="origam-a11y-witness-critical" />`   -> button-name
+    #       (critical)  -> BLOQUANT  -> job ROUGE (exit 1)
+    #   `<div role="button" class="…-serious" />`           -> aria-command-name
+    #       (serious)   -> rapporte mais NON bloquant -> job VERT
+    # Temoins retires + rebuild -> 36 passed / 1 skipped, exit 0.
+    #
+    # Le second temoin dit exactement ce que `IMPACT_FAIL_LEVEL = ['critical']`
+    # laisse passer aujourd'hui. Le seuil reste inchange ici : c'est un
+    # arbitrage mainteneur, pose avec les chiffres dans #765.
+    env:
+      # Sert le catalogue Histoire PREBATI (`histoire preview`) au lieu de
+      # payer une compilation Vite a froid par story — meme levier, meme
+      # raison que `test-e2e` ci-dessus.
+      E2E_STATIC: '1'
+      NODE_OPTIONS: --max-old-space-size=6144
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Resolve Playwright version
+        id: pw
+        run: |
+          version=$(node -p "require('./packages/tests/package.json').devDependencies['@playwright/test'].replace(/[^\d.]/g,'')")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        id: pw-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-${{ runner.os }}-${{ steps.pw.outputs.version }}-chromium
+
+      - name: Install Playwright Chromium
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: pnpm -F @origam/tests exec playwright install --with-deps chromium
+
+      - name: Install Playwright OS deps only
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: pnpm -F @origam/tests exec playwright install-deps chromium
+
+      # Plain `run:`, no pipe: `pnpm build | tail` returns `tail`'s exit code
+      # and a broken build would then run green. Same rationale as the
+      # marketing jobs above.
+      - name: Build static Histoire (served by the a11y webServer)
+        run: pnpm -F @origam/stories build
+
+      - name: Run Playwright (components a11y, chromium)
+        run: pnpm -F @origam/tests exec playwright test --config=playwright.a11y.config.ts --project=chromium
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-a11y-components
+          path: |
+            packages/tests/a11y/.report
+            packages/tests/a11y/.results
+          retention-days: 7
+          if-no-files-found: ignore
+
   test-a11y-marketing:
     name: A11y tests — marketing pages (axe-core / Chromium)
     runs-on: ubuntu-latest
@@ -459,8 +648,13 @@ jobs:
     # Sweeps real marketing pages (landmarks, skip link, no-JS nav) — the
     # existing `a11y/components.spec.ts` only ever scans a component inside
     # a Histoire story iframe and explicitly ignores `region` /
-    # `landmark-one-main` / `page-has-heading-one` as iframe noise. Neither
-    # that suite nor this one ran in CI before this job existed.
+    # `landmark-one-main` / `page-has-heading-one` as iframe noise.
+    #
+    # Ce job a longtemps ete le SEUL job a11y de la CI — la suite composants
+    # n'etait invoquee par aucun workflow. Elle l'est depuis
+    # `test-a11y-components` ci-dessus (#765). Les deux restent distinctes :
+    # l'une mesure des PAGES completes, l'autre des composants montes dans
+    # une iframe de story.
     steps:
       - uses: actions/checkout@v7
 

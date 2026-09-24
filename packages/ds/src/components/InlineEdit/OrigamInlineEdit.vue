@@ -2,6 +2,7 @@
 	<component
 			:is="tag"
 			:id="id"
+			ref="rootRef"
 			class="origam-inline-edit"
 			:class="rootClasses"
 			:style="rootStyles"
@@ -76,8 +77,8 @@
 						data-cy="origam-inline-edit-input"
 						hide-details
 						@update:model-value="handleInput"
+						@focusout="handleFocusOut"
 						@keydown="handleKeyDown"
-						@blur="handleBlur"
 				>
 					<template
 							v-if="showActions"
@@ -131,8 +132,8 @@
 						data-cy="origam-inline-edit-input"
 						hide-details
 						@update:model-value="handleInput"
+						@focusout="handleFocusOut"
 						@keydown="handleKeyDown"
-						@blur="handleBlur"
 				>
 					<template
 							v-if="showActions"
@@ -336,6 +337,26 @@
 	const errorId = `origam-inline-edit-error-${useId()}`
 
 	/*********************************************************
+	 * rootRef / rootEl — l'element racine, pas l'instance
+	 *
+	 * @description
+	 * `tag` est une prop : la racine peut etre un element natif (`ref`
+	 * rend alors l'`Element`) comme un composant (`ref` rend l'instance).
+	 * `rootEl()` normalise les deux cas en un `HTMLElement | null`, seule
+	 * forme sur laquelle `.contains()` a un sens. Sert au confinement du
+	 * focus (#614, `handleFocusOut`) et au rapatriement du focus apres
+	 * confirmation / annulation.
+	 ********************************************************/
+	const rootRef = ref<Element | ComponentPublicInstance | null>(null)
+
+	const rootEl = (): HTMLElement | null => {
+		const r = rootRef.value
+		if (!r) return null
+		const el = r instanceof Element ? r : (r as ComponentPublicInstance).$el
+		return el instanceof HTMLElement ? el : null
+	}
+
+	/*********************************************************
 	 * Derived display state
 	 ********************************************************/
 	const displayValue = computed<string>(() => {
@@ -394,11 +415,55 @@
 		emit('edit')
 	}
 
+	/*********************************************************
+	 * noteTransition — la RAISON de la sortie, decidee a l'instant ou
+	 * elle est demandee
+	 *
+	 * @description
+	 * ⛔ #614. Il faut distinguer deux sorties qui produisent le meme
+	 * etat final mais appellent des gestes de focus opposes :
+	 *
+	 *   - Confirmer / Annuler actionnes, ou `Entree` / `Echap` dans le
+	 *     champ : le focus est DANS le composant et l'element qui le
+	 *     porte va etre demonte. Il faut le rapatrier, sinon il retombe
+	 *     sur `<body>` (mesure) et le clavier est largue.
+	 *   - `focusout` sortant : l'utilisateur est parti de lui-meme. Lui
+	 *     reprendre le focus serait un defaut de plus.
+	 *
+	 * @description
+	 * La question « le focus est-il encore chez moi ? » ne peut PAS etre
+	 * posee plus tard : pendant la phase `focusout`, le navigateur a deja
+	 * retire le focus a l'ancien element sans l'avoir donne au nouveau,
+	 * et `activeElement` vaut transitoirement `<body>` — une tabulation
+	 * sortante se lit alors exactement comme un focus perdu. Mesure a
+	 * l'appui : le focus revenait sur l'affordance d'affichage au lieu de
+	 * continuer vers le controle suivant. On tranche donc AU MOMENT de la
+	 * demande, ou l'information est encore vraie, et on transporte la
+	 * reponse jusqu'au watcher.
+	 ********************************************************/
+	let restoreFocusOnLeave = false
+
+	const noteTransition = (fromFocusOut: boolean): void => {
+		if (fromFocusOut) {
+			restoreFocusOnLeave = false
+			return
+		}
+		if (typeof document === 'undefined') {
+			restoreFocusOnLeave = false
+			return
+		}
+		const root = rootEl()
+		const active = document.activeElement
+		restoreFocusOnLeave = !!root && !!active && root.contains(active)
+	}
+
 	const handleConfirm = (): void => {
+		noteTransition(false)
 		void confirm()
 	}
 
 	const handleCancel = (): void => {
+		noteTransition(false)
 		cancel()
 	}
 
@@ -411,7 +476,37 @@
 		setValue(value ?? '')
 	}
 
+	/*********************************************************
+	 * handleKeyDown — les raccourcis appartiennent au CHAMP DE SAISIE
+	 *
+	 * @description
+	 * ⛔ #614. L'ecouteur est pose sur `<origam-text-field>` ; `onKeydown`
+	 * fait partie des evenements que `filterInputAttrs` route vers la
+	 * RACINE du champ, pas vers le `<input>`. Un `keydown` emis par les
+	 * boutons Confirmer / Annuler — rendus DANS le champ, slot
+	 * `appendInner` — y remontait donc lui aussi, et `Entree` sur
+	 * ANNULER partait dans la branche `confirmOnEnter`.
+	 *
+	 * @description
+	 * Mesure Chromium d'avant correctif, brouillon « BROUILLON », focus
+	 * sur le bouton Annuler, `Entree` :
+	 *
+	 *   valeur committee  "Editable value"  ->  "BROUILLON"
+	 *
+	 * Annuler CONFIRMAIT. Et le `preventDefault()` de cette branche tuait
+	 * au passage l'activation native du bouton, donc son propre `click`
+	 * n'arrivait jamais.
+	 *
+	 * @description
+	 * `Entree` et `Echap` sont les raccourcis DU CHAMP. On ne les traite
+	 * donc que lorsque la cible est le controle de saisie lui-meme — ce
+	 * qui reste vrai pour un `#edit` personnalise, tant qu'il rend un
+	 * `<input>` ou un `<textarea>`.
+	 ********************************************************/
 	const handleKeyDown = (event: KeyboardEvent): void => {
+		const target = event.target
+		if (!(target instanceof HTMLInputElement) && !(target instanceof HTMLTextAreaElement)) return
+
 		if (event.key === 'Enter' && props.confirmOnEnter && !props.multiline) {
 			event.preventDefault()
 			handleConfirm()
@@ -428,15 +523,104 @@
 		}
 	}
 
-	/**
-	 * Blur is intentionally async-aware: while a validator Promise is
-	 * pending we let it land; we never re-fire confirm on blur in that
-	 * window or we would double-commit.
-	 */
-	const handleBlur = (): void => {
+	/*********************************************************
+	 * handleFocusOut — `confirmOnBlur`, mais au niveau du COMPOSANT
+	 *
+	 * @description
+	 * ⛔ #614 — la version precedente ecoutait `@blur` sur le champ et
+	 * appelait `handleConfirm()` sans regarder OU partait le focus. Un
+	 * seul `Tab` depuis le champ suffisait donc a quitter le mode edition
+	 * et a DEMONTER Confirmer / Annuler avant que le focus puisse les
+	 * atteindre. Mesure Chromium d'avant correctif, story InlineEdit,
+	 * `showActions` actif :
+	 *
+	 *   entree en edition   activeElement = input   confirmBtn present
+	 *   Tab #1              activeElement = body    confirmBtn ABSENT
+	 *   Tab #2              activeElement = button.origam-inline-edit__display
+	 *
+	 * Les deux boutons etaient donc inatteignables au clavier seul — la
+	 * souris y arrivait uniquement grace au `@mousedown.prevent` pose sur
+	 * chacun d'eux, qui empeche le blur avant le `click`. Il n'existait
+	 * aucun equivalent clavier de ce garde-fou.
+	 *
+	 * @description
+	 * Le correctif ne supprime PAS le comportement voulu : sortir du mode
+	 * edition quand l'utilisateur s'en va reste exactement ce que promet
+	 * `confirmOnBlur`. Il en corrige la portee — « le focus quitte le
+	 * CHAMP » devient « le focus quitte le COMPOSANT ». C'est la
+	 * transposition clavier du `@mousedown.prevent` : les deux disent que
+	 * passer sur un bouton de la barre d'action n'est pas partir.
+	 *
+	 * @description
+	 * Mecanisme de plate-forme, aucune minuterie : `focusout` REMONTE
+	 * (contrairement a `blur`), et son `relatedTarget` porte deja
+	 * l'element qui recoit le focus. `relatedTarget === null` (fenetre
+	 * quittee, zone non focalisable) vaut « parti » — c'est le
+	 * comportement qu'avait deja `@blur`.
+	 *
+	 * @description
+	 * ⛔ L'ECOUTEUR EST SUR LE CHAMP, PAS SUR LA RACINE — et ce n'est pas
+	 * un detail. Pose sur la racine il attrape aussi le focusout de
+	 * l'affordance d'AFFICHAGE au moment ou elle cede la place au champ,
+	 * et confirme aussitot : le composant rouvrait puis refermait le mode
+	 * edition dans le meme clic. Mesure Chromium de ce focusout parasite :
+	 *
+	 *   target = origam-inline-edit-display   relatedTarget = null
+	 *   target.isConnected = true             document.hasFocus() = true
+	 *
+	 * Aucun de ces trois signaux ne le distingue d'un vrai depart : ni
+	 * `relatedTarget`, ni `isConnected`, ni `hasFocus`. Ce qui le
+	 * distingue, c'est son ORIGINE — il ne vient pas du sous-arbre
+	 * d'edition. Ecouter sur le champ le dit sans aucun test : les deux
+	 * boutons sont rendus DANS le champ (slot `appendInner`), l'affordance
+	 * d'affichage non. Un seul ecouteur, zero garde compensatoire.
+	 *
+	 * @description
+	 * Reste asynchrone-conscient : tant qu'une promesse de validation est
+	 * en vol on la laisse atterrir, sinon on double-commit.
+	 ********************************************************/
+	const handleFocusOut = (event: FocusEvent): void => {
 		if (!props.confirmOnBlur) return
+		if (!isEditing.value) return
 		if (isPending.value) return
-		handleConfirm()
+
+		const root = rootEl()
+		const next = event.relatedTarget
+
+		if (root && next instanceof Node && root.contains(next)) return
+
+		noteTransition(true)
+		confirm()
+	}
+
+	/*********************************************************
+	 * restoreFocusAfterEdit — ne pas echouer le focus sur `<body>`
+	 *
+	 * @description
+	 * ⛔ #614, seconde moitie. Quitter le mode edition DEMONTE le champ
+	 * et les deux boutons. Si l'utilisateur venait d'actionner Confirmer
+	 * ou Annuler au clavier, l'element qui portait le focus disparait
+	 * sous lui : mesure Chromium, `document.activeElement` retombe sur
+	 * `body`. Le point d'insertion du clavier est perdu et la tabulation
+	 * repart du debut du document — atteindre les boutons ne suffit donc
+	 * pas, encore faut-il ne pas etre largue apres les avoir actionnes.
+	 *
+	 * @description
+	 * La decision — rapatrier ou pas — a ete prise par `noteTransition`
+	 * AU MOMENT de la demande, pas ici : voir le bloc de ce nom pour la
+	 * raison (pendant un `focusout`, `activeElement` vaut transitoirement
+	 * `<body>` et une sortie volontaire se lit comme un focus perdu). Ici
+	 * il ne reste qu'a attendre que l'affordance d'affichage soit remontee
+	 * avant de la focaliser.
+	 ********************************************************/
+	const restoreFocusAfterEdit = async (): Promise<void> => {
+		if (!restoreFocusOnLeave) return
+		restoreFocusOnLeave = false
+
+		await nextTick()
+
+		const target = rootEl()?.querySelector<HTMLElement>('[data-cy="origam-inline-edit-display"]')
+		if (target && typeof target.focus === 'function') target.focus()
 	}
 
 	/*********************************************************
@@ -449,7 +633,10 @@
 	 * their internal HTMLInputElement / HTMLTextAreaElement.
 	 ********************************************************/
 	watch(isEditing, async (next: boolean): Promise<void> => {
-		if (!next) return
+		if (!next) {
+			restoreFocusAfterEdit()
+			return
+		}
 		if (!props.autoFocus) return
 		await nextTick()
 		const el = inputRef.value
@@ -459,6 +646,7 @@
 			el.select()
 		}
 	})
+
 
 	/*********************************************************
 	 * Class & Style

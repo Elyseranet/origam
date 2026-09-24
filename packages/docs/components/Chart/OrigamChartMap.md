@@ -100,12 +100,12 @@ import { OrigamChartMap } from '@origam/ds'
 | `title` | `string` | `undefined` | Optional title above the chart. Replaceable via `#title` slot. |
 | `subtitle` | `string` | `undefined` | Optional subtitle below the title. |
 | `colorRange` | `[TIntent \| string, TIntent \| string]` | `['info', 'danger']` | Choropleth gradient endpoints. First = min value, second = max value. |
-| `defaultCountryFill` | `string` | `'rgba(0,0,0,0.08)'` | Fill for countries absent from the dataset (both modes). |
-| `borderColor` | `string` | `'rgba(0,0,0,0.2)'` | Stroke applied to all country paths. |
+| `defaultCountryFill` | `TIntent \| string` | `'rgba(0,0,0,0.08)'` | Fill for countries absent from the dataset (both modes). Supports intent names and raw CSS strings, resolved the same way as `borderColor` / `lineColor`. Default stays the literal — it is a semi-transparent scrim composited over the chart's own `bgColor`, which no fixed intent token reproduces. |
+| `borderColor` | `TIntent \| string` | `'neutral'` | Stroke applied to all country paths. Supports intent names and raw CSS strings, resolved the same way as `lineColor`. |
 | `lineColor` | `TIntent \| string` | `'primary'` | Default stroke colour for flight-route arcs. Overridden per route. |
 | `nodeRadius` | `number` | `4` | Radius of the endpoint circles in flight-routes mode. |
 | `routeCurvature` | `number` | `0.3` | Bezier offset as a fraction of chord length `[0..1]`. `0` = straight. |
-| `colorScheme` | `Array<TIntent \| string>` | ⛔ **Sans effet sur ce composant** — colour is a continuous gradient (colorRange, choropleth mode) or a single lineColor (flight-routes mode) — a rotating discrete palette does not apply to either. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
+| `colorScheme` | `Array<TIntent \| string>` | `[]` | ⛔ **Sans effet sur ce composant** — colour is a continuous gradient (colorRange, choropleth mode) or a single lineColor (flight-routes mode) — a rotating discrete palette does not apply to either. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
 
 ### Legend
 

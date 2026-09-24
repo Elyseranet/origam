@@ -28,6 +28,10 @@
  */
 
 import { expect, test, type Page } from '@playwright/test'
+import { requireMarketingDb } from './_support/require-marketing-db'
+
+// #835 — voir marketing-theme-builder.spec.ts pour le contexte complet.
+requireMarketingDb()
 
 // Les 8 marques marketing (celles qui posent un `[data-theme]` au document).
 const BRANDS = ['cartoon', 'glass', 'geek', 'editorial', 'material', 'ecom', 'apple', 'sobre'] as const

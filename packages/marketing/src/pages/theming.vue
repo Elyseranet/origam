@@ -63,7 +63,26 @@
     return firstPreviewable?.slug ?? entries.value[0]?.slug ?? ''
   })
 
-  const activeSlug = ref<string>(defaultSlug.value)
+  /*
+   * ⛔ `activeSlug` must NOT snapshot `defaultSlug.value` into a `ref` here
+   * (#741). `entries` is derived from a `useFetch` that has not resolved yet
+   * when this setup body runs on the SERVER: the snapshot captured `''`, the
+   * lookup below fell through to `entries.value[0]` and the server rendered
+   * the FIRST component of the catalogue (Alert) in the preview and the
+   * controls column. On the client the same `useFetch` reads the payload
+   * synchronously during setup, so the snapshot captured `'btn'` — a whole
+   * different component. Measured on /theming: 1 console error
+   * (« Hydration completed but contains mismatches. ») and 40 mismatch
+   * warnings, among them `- rendered on server: Alert / - expected on
+   * client: Btn` and the `tb-nav__item--active` class on the nav item.
+   *
+   * `selectedSlug` therefore holds only an EXPLICIT user choice, and the
+   * effective slug is a `computed` that falls back to `defaultSlug` — read at
+   * render time, so both sides agree.
+   */
+  const selectedSlug = ref<string>('')
+
+  const activeSlug = computed<string>(() => selectedSlug.value || defaultSlug.value)
 
   const activeEntry = computed(() => entries.value.find(e => e.slug === activeSlug.value) ?? entries.value[0])
 
@@ -86,7 +105,7 @@
   ])
 
   const onSelectComponent = (slug: string): void => {
-    activeSlug.value = slug
+    selectedSlug.value = slug
   }
 
   const onSetProp = (slug: string, prop: string, value: unknown): void => setProp(slug, prop, value)

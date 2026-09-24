@@ -507,6 +507,22 @@
 				</StoryGroup>
 			</template>
 		</Variant>
+
+		<!--
+			#742 — 30 options : la liste doit DÉFILER dans le plafond de
+			310px qu'OrigamSelect pose lui-même (`:max-height="310"` sur
+			son OrigamMenu interne, appliqué en inline par `useDimension`
+			sur `.origam-overlay__content`). Appendue EN DERNIER pour ne
+			décaler aucun index déjà documenté dans
+			`packages/tests/e2e/select.spec.ts`.
+		-->
+		<Variant title="Long list">
+			<origam-select
+					:items="longItems"
+					label="Long list"
+					data-cy="select-long-list"
+			/>
+		</Variant>
 	</Story>
 </template>
 
@@ -569,6 +585,9 @@
 	const clearIcon        = MDI_ICONS.CLOSE_CIRCLE
 
 	const stringItems = ['France', 'Germany', 'Spain', 'Italy', 'Portugal']
+
+	// 30 entrées — volume de la page /changelog qui a révélé #742.
+	const longItems = Array.from({ length: 30 }, (_, i) => `Option ${ i + 1 }`)
 
 	const designModel        = ref<string | null>(null)
 	const functionalModel    = ref<any>(null)

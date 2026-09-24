@@ -32,12 +32,13 @@ export type TColorType = string | number | THSVA | TRGBA | THSLA
 /**
  * Interaction role for state-aware color resolution.
  *
- * Used by `useColorEffect` (and its helpers) to pick the right token
- * rung / math-derivation for a given visual state:
+ * Used by `useColorEffect` / `useStateEffect` (and their helpers) to pick
+ * the right token rung / math-derivation for a given visual state:
  *
  *   • `default`  → resting bgColor (no transformation)
  *   • `hover`    → cascading `var(bgHover, color-mix(bg, black 20%))`
  *   • `active`   → cascading `var(bgActive, color-mix(bg, black 30%))`
- *   • `disabled` → resting `bgDisabled` token (per-intent)
+ *
+ * No `disabled` rung — see `BG_FG_ROLE` (#823).
  */
 export type TBgFgRole = `${BG_FG_ROLE}`

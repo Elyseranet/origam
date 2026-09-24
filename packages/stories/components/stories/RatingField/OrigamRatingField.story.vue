@@ -112,6 +112,22 @@
 				/>
 			</template>
 			<template #controls="{ state }">
+				<!--
+					#812 — this Variant is where the keyboard is exercised. Tab into the
+					stars (ONE stop for the whole group), then ArrowRight / ArrowLeft /
+					ArrowUp / ArrowDown to move focus AND selection with wrap-around,
+					Home / End for the ends, Space to pick the focused star. The focused
+					star carries a visible outline — that is the half of the fix that
+					kept #810 from doing this: the focusable element is a 0x0 transparent
+					`<input type="radio">`, so without the ring the group would be
+					operable and its focus invisible (WCAG 2.4.7).
+
+					"Readonly" keeps the group reachable, announced `aria-readonly` and
+					inert — every one of those keys stops moving anything. "Disabled"
+					drops it out of the tab order, which the browser does on its own.
+					"Half Increments" steps by 0.5, and the focus ring then outlines the
+					half star the step selects.
+				-->
 				<StoryGroup title="States">
 					<HstCheckbox v-model="state.disabled"  title="Disabled"/>
 					<HstCheckbox v-model="state.readonly"  title="Readonly"/>
@@ -130,6 +146,16 @@
 					<HstCheckbox v-model="state.persistentHint" title="Persistent Hint"/>
 					<HstCheckbox v-model="state.hideDetails"    title="Hide Details"/>
 				</StoryGroup>
+				<!--
+					#810 — the root is a `role="radiogroup"` named by `label` through
+					`aria-labelledby`, not a `<label for>` pointing at a single control
+					(that `for` used to resolve to nothing at all). Clearing the "Label"
+					field above exercises the other branch: no label, no
+					`aria-labelledby` — the DS does not fabricate a fallback name.
+					`Slots - Label` covers the third case, where the slot replaces the
+					label element and the group stays named because `aria-labelledby`
+					targets the wrapper.
+				-->
 				<StoryGroup title="Identity / Accessibility">
 					<HstText v-model="state.name"          title="Name"/>
 					<HstText v-model="state.itemAriaLabel" title="Item Aria Label (locale key)"/>
