@@ -50,8 +50,8 @@ export const WHY_STRENGTHS: IStrength[] = [
     },
     {
         icon: 'mdi-palette-outline',
-        titleKey: 'why_origam.strengths.tokens.title',
-        descriptionKey: 'why_origam.strengths.tokens.description'
+        titleKey: 'why_origam.strengths.theming.title',
+        descriptionKey: 'why_origam.strengths.theming.description'
     },
     {
         icon: 'mdi-chart-line',
@@ -88,7 +88,11 @@ export const WHY_STRENGTHS: IStrength[] = [
 /**
  * Comparison data (S3). Facts only — no invented metrics on competitors.
  * "Vue native" means the lib is built for Vue 3 (Composition API, script setup).
- * "Design tokens" means DTCG-compliant token system.
+ * "Theming props-first" means a theme configures component PROPS first (a `components`
+ * block resolved for every component without opt-in), semantic tokens second — not just
+ * a raw CSS-variable/token dump. See ADR-005 (theme-props-resolver.composable.ts). None
+ * of the listed competitors ship this mechanism — including PrimeVue, whose PrimeOne 3.0
+ * tokens are DTCG-compliant but are not a props-first resolver (see its noteKey).
  * "A11y tested" means the lib ships automated a11y tests per component.
  * "CSS-first" means the lib documents CSS-modern techniques as primary approach.
  * "Tree-shakable" = the lib publishes an ESM build; all listed libs do.
@@ -98,7 +102,7 @@ export const WHY_COMPARISONS: IComparison[] = [
     {
         nameKey: 'why_origam.comparison.origam',
         vueNative: true,
-        designTokens: true,
+        themingPropsFirst: true,
         a11yTested: true,
         cssFist: true,
         treeShakable: true,
@@ -107,7 +111,7 @@ export const WHY_COMPARISONS: IComparison[] = [
     {
         nameKey: 'why_origam.comparison.vuetify',
         vueNative: true,
-        designTokens: false,
+        themingPropsFirst: false,
         a11yTested: true,
         cssFist: false,
         treeShakable: true,
@@ -117,7 +121,7 @@ export const WHY_COMPARISONS: IComparison[] = [
     {
         nameKey: 'why_origam.comparison.prime_vue',
         vueNative: true,
-        designTokens: true,
+        themingPropsFirst: false,
         a11yTested: true,
         cssFist: false,
         treeShakable: true,
@@ -127,7 +131,7 @@ export const WHY_COMPARISONS: IComparison[] = [
     {
         nameKey: 'why_origam.comparison.quasar',
         vueNative: true,
-        designTokens: false,
+        themingPropsFirst: false,
         a11yTested: false,
         cssFist: false,
         treeShakable: false,
@@ -137,7 +141,7 @@ export const WHY_COMPARISONS: IComparison[] = [
     {
         nameKey: 'why_origam.comparison.element_plus',
         vueNative: true,
-        designTokens: false,
+        themingPropsFirst: false,
         a11yTested: false,
         cssFist: false,
         treeShakable: true,
@@ -147,7 +151,7 @@ export const WHY_COMPARISONS: IComparison[] = [
     {
         nameKey: 'why_origam.comparison.naive_ui',
         vueNative: true,
-        designTokens: false,
+        themingPropsFirst: false,
         a11yTested: false,
         cssFist: false,
         treeShakable: true,
@@ -189,12 +193,6 @@ export const WHY_USE_CASES: IUseCase[] = [
     },
     {
         icon: 'mdi-check-circle-outline',
-        titleKey: 'why_origam.use_cases.token_team.title',
-        descriptionKey: 'why_origam.use_cases.token_team.description',
-        fits: true
-    },
-    {
-        icon: 'mdi-check-circle-outline',
         titleKey: 'why_origam.use_cases.saas_product.title',
         descriptionKey: 'why_origam.use_cases.saas_product.description',
         fits: true
@@ -224,7 +222,7 @@ export const WHY_USE_CASES: IUseCase[] = [
  */
 export const WHY_COMPARISON_COLUMNS: string[] = [
     'why_origam.comparison.col_vue_native',
-    'why_origam.comparison.col_design_tokens',
+    'why_origam.comparison.col_theming_props_first',
     'why_origam.comparison.col_a11y_tested',
     'why_origam.comparison.col_css_first',
     'why_origam.comparison.col_tree_shakable',

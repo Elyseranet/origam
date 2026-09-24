@@ -1929,29 +1929,29 @@
                 "title": "Vue 3 natif",
                 "description": "Construit avec la Composition API et script setup. Pas de shim Options API, pas d'héritage Vue 2 — juste du Vue 3 idiomatique et propre."
             },
-            "tokens": {
-                "title": "Design tokens DTCG",
-                "description": "Compatible Tokens Studio, Style Dictionary v4. 8 thèmes basculent à l'exécution sans remontage ni clignotement."
+            "theming": {
+                "title": "Theming, props d'abord",
+                "description": "Chaque thème est un objet IOrigamTheme dont le bloc components configure d'abord les props des composants, les tokens sémantiques ensuite. Un seul résolveur (ADR-005) l'applique aux 218 composants sans aucune inscription requise. Deux axes indépendants, data-theme x data-mode : 8 thèmes basculent à l'exécution sans remontage."
             },
             "charts": {
                 "title": "218 composants + 26 primitives de graphiques",
                 "description": "Des boutons atomiques aux graphiques ligne, aire, donut, heatmap et chandelier — dans un seul package cohérent."
             },
             "a11y": {
-                "title": "Certifié WCAG 2.1 AA",
-                "description": "Tests axe-core + Playwright livrés avec chaque composant. Clavier, lecteurs d'écran et mouvement réduit : couverts."
+                "title": "218/218 composants testés en accessibilité",
+                "description": "axe-core + Playwright balaient chaque composant — la variante par défaut plus 7 variantes d'intention — et la baseline est à zéro violation depuis le 2026-09-23. Ça couvre la variante par défaut, pas tous les états ; les défauts moderate/minor ne bloquent pas la porte."
             },
             "css": {
                 "title": "Architecture CSS-first",
-                "description": "Container queries, :has(), color-mix(), view-transition-name. Nous utilisons la plateforme pour que votre bundle ne paye pas de polyfills."
+                "description": "Nous utilisons directement :has() et color-mix() dans le CSS du DS lui-même. Container queries et view-transition-name sont détectés via useCssSupport() et exposés à vos composants — nous ne nous en servons pas encore en interne."
             },
             "treeshake": {
-                "title": "< 50 ko tree-shakable",
-                "description": "Build ESM-first. Importez ce que vous utilisez ; le reste n'atteint jamais vos utilisateurs."
+                "title": "Vous payez ce que le composant fait",
+                "description": "Build ESM-first : vous n'importez que ce que vous utilisez. Mesuré sur de vrais builds Vite — Divider pèse environ 7 ko gzip, Btn environ 35 ko car il embarque icônes, transitions et loader, DataTable environ 172 ko car il embarque tri, pagination et groupement."
             },
             "composables": {
                 "title": "Composables headless",
-                "description": "Chaque composant expose sa logique en tant que composable autonome. Utilisez notre UI ou construisez la vôtre sur nos primitives."
+                "description": "Les logiques transversales — couleur, layout, accessibilité — sont exposées comme composables réutilisables. Les familles complexes comme Chart, DataTable et Transition exposent aussi leur propre logique dédiée — mais ce n'est pas le cas de chaque composant."
             },
             "mit": {
                 "title": "Licence MIT",
@@ -1965,7 +1965,7 @@
             "disclaimer": "Certaines appréciations reflètent notre interprétation de la documentation publique disponible. Les concurrents évoluent vite — vérifiez leurs docs.",
             "col_library": "Bibliothèque",
             "col_vue_native": "Vue 3 natif",
-            "col_design_tokens": "Tokens DTCG",
+            "col_theming_props_first": "Theming props d'abord",
             "col_a11y_tested": "A11y testée",
             "col_css_first": "CSS-first",
             "col_tree_shakable": "Tree-shakable",
@@ -1974,7 +1974,7 @@
             "vuetify": "Vuetify",
             "vuetify_note": "Design system Material Design mature, grande communauté et riche écosystème.",
             "prime_vue": "PrimeVue",
-            "prime_vue_note": "Très grand nombre de composants, dispose de son propre système de tokens (PrimeFlex).",
+            "prime_vue_note": "Très grand nombre de composants. Tokens de design conformes DTCG via PrimeOne 3.0 — mais pas de résolveur de theming props-first.",
             "quasar": "Quasar",
             "quasar_note": "Framework multi-plateforme complet (web, Cordova, Electron). Un périmètre différent.",
             "element_plus": "Element Plus",
@@ -1991,8 +1991,8 @@
             "title_line2": "progressons encore.",
             "subtitle": "origam est jeune. C'est un atout en termes de fraîcheur d'API — et une contrainte en termes de maturité.",
             "community": {
-                "title": "Communauté plus petite",
-                "description": "Vuetify et PrimeVue ont des années d'usage en production, des milliers de réponses Stack Overflow et de riches marchés de templates tiers. origam n'en est pas encore là."
+                "title": "Pas encore de communauté externe",
+                "description": "origam n'a aucun consommateur externe à ce jour, donc pas encore de communauté à l'extérieur — pas de trace Stack Overflow accumulée, pas de marché de templates tiers. C'est l'état honnête d'un design system jeune et construit en interne, pas une comparaison avec des bibliothèques ayant des années d'usage externe en production."
             },
             "templates": {
                 "title": "Moins de templates prêts à l'emploi",
@@ -2011,10 +2011,6 @@
             "greenfield": {
                 "title": "Projet Vue 3 greenfield",
                 "description": "Vous démarrez sur Vue 3 avec une équipe design qui travaille en Figma et en tokens ? origam est conçu exactement pour cette configuration."
-            },
-            "token_team": {
-                "title": "Équipe pilotée par les design tokens",
-                "description": "Si votre designer utilise Tokens Studio ou Style Dictionary, origam s'intègre nativement — sans couche de traduction."
             },
             "saas_product": {
                 "title": "SaaS / produit nécessitant plusieurs thèmes de marque",
