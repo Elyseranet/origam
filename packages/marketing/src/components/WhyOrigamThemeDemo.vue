@@ -46,11 +46,12 @@
 
     /**
      * Built as a variable, never inlined as a template-literal directly inside
-     * `t(...)` — `i18n-check.mjs`'s Channel A extractor matches ANY quote char
-     * (including a backtick) as the opening delimiter of the first `t(` argument
-     * and would otherwise capture the raw `${themeKey}` placeholder as a bogus
-     * "referenced but undefined" key. The 8 concrete keys this resolves to are
-     * declared in `DYNAMIC_KEY_ALLOWLIST` (Channel C) in that script.
+     * `t(...)` — `i18n-check.mjs`'s Channel A extractor matches ANY quote char,
+     * backtick included, as the opening delimiter of that call's first
+     * argument, and would otherwise capture the raw `${themeKey}` placeholder
+     * as a bogus "referenced but undefined" key. The 8 concrete keys this
+     * resolves to are declared in `DYNAMIC_KEY_ALLOWLIST` (Channel C) in that
+     * script.
      */
     function identityKey (themeKey: string): string {
         return `why_origam.demo.identity_${themeKey}`
@@ -266,11 +267,20 @@
                                     :text="t('why_origam.demo.card_text', 'Not one line of this card is styled by this page. Every radius, border, shadow and tone comes from the identity you picked.')"
                                 >
                                     <template #header.prepend>
+                                        <!--
+                                          Decorative only — the card title right next to it already
+                                          says "Release 2.18". `OrigamAvatar` renders a plain `<div>`
+                                          with no `role`, so an `aria-label` on it is an INVALID
+                                          ARIA attribute (axe: aria-prohibited-attr, WCAG 4.1.2) — a
+                                          role-less div cannot carry an accessible name. `aria-hidden`
+                                          is the correct treatment here, same as the other purely
+                                          decorative avatars on this page (`why-strengths__avatar`).
+                                        -->
                                         <origam-avatar
                                             icon="mdi-shape-outline"
                                             color="primary"
                                             class="why-demo__avatar"
-                                            :aria-label="t('why_origam.demo.avatar_label', 'origam')"
+                                            aria-hidden="true"
                                         />
                                     </template>
 

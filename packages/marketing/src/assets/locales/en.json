@@ -1945,7 +1945,6 @@
             "card_title": "Release 2.18",
             "card_subtitle": "Shipping today",
             "card_text": "Not one line of this card is styled by this page. Every radius, border, shadow and tone comes from the identity you picked.",
-            "avatar_label": "origam",
             "card_cta": "Deploy",
             "card_cta_secondary": "Changelog",
             "card_chip": "Stable",
