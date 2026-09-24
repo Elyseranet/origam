@@ -1929,29 +1929,29 @@
                 "title": "Vue 3 native",
                 "description": "Built with Composition API and script setup. No legacy Options API shim, no Vue 2 baggage — just clean, idiomatic Vue 3."
             },
-            "tokens": {
-                "title": "Design tokens DTCG",
-                "description": "Tokens Studio-compatible, Style Dictionary v4. 8 themes switch at runtime with zero remount and zero flicker."
+            "theming": {
+                "title": "Theming, props-first",
+                "description": "Every theme is an IOrigamTheme object whose components block sets component props first, semantic tokens second. One resolver (ADR-005) applies it across all 218 components with zero opt-in. Two independent axes, data-theme x data-mode: 8 themes switch at runtime with no remount."
             },
             "charts": {
                 "title": "218 components + 26 chart primitives",
                 "description": "From atomic buttons to line, area, donut, heatmap and candlestick charts — all in one coherent package."
             },
             "a11y": {
-                "title": "WCAG 2.1 AA verified",
-                "description": "axe-core + Playwright a11y tests ship with every component. Keyboard, screen-readers and reduced-motion: covered."
+                "title": "218/218 components accessibility-tested",
+                "description": "axe-core + Playwright sweep every component — the default variant plus 7 intent variants — and the baseline has held zero violations since 2026-09-23. That covers the default variant, not every state; moderate/minor issues don't block the gate."
             },
             "css": {
                 "title": "CSS-first architecture",
-                "description": "Container queries, :has(), color-mix(), view-transition-name. We use the platform so your bundle doesn't pay for polyfills."
+                "description": "We reach for :has() and color-mix() directly in the DS's own CSS. Container queries and view-transition-name are feature-detected via useCssSupport() and exposed to your components — we don't rely on them internally yet."
             },
             "treeshake": {
-                "title": "< 50 kb tree-shakable",
-                "description": "ESM-first build. Import what you use; the rest never reaches your users."
+                "title": "Pay for what it does",
+                "description": "ESM-first build: import only what you use. Measured with real Vite builds — Divider is about 7 kb gzip, Btn about 35 kb because it bundles icons, transitions and a loader, DataTable about 172 kb because it bundles sorting, pagination and grouping."
             },
             "composables": {
                 "title": "Headless composables",
-                "description": "Every component exposes its logic as a standalone composable. Use our UI or build your own on top of our primitives."
+                "description": "Cross-cutting logic — color, layout, accessibility — ships as reusable composables. Complex families like Chart, DataTable and Transition expose their own dedicated logic too — not every component does."
             },
             "mit": {
                 "title": "MIT licensed",
@@ -1965,7 +1965,7 @@
             "disclaimer": "Some assessments reflect our interpretation of publicly available documentation. Competitors ship fast — check their docs.",
             "col_library": "Library",
             "col_vue_native": "Vue 3 native",
-            "col_design_tokens": "DTCG tokens",
+            "col_theming_props_first": "Theming props-first",
             "col_a11y_tested": "A11y tested",
             "col_css_first": "CSS-first",
             "col_tree_shakable": "Tree-shakable",
@@ -1974,7 +1974,7 @@
             "vuetify": "Vuetify",
             "vuetify_note": "Mature Material Design system, large community and ecosystem.",
             "prime_vue": "PrimeVue",
-            "prime_vue_note": "Very large component count, has its own token system (PrimeFlex).",
+            "prime_vue_note": "Very large component count. DTCG-compliant design tokens via PrimeOne 3.0 — no props-first theming resolver, though.",
             "quasar": "Quasar",
             "quasar_note": "Full multi-platform framework (web, Cordova, Electron). Different scope.",
             "element_plus": "Element Plus",
@@ -1991,8 +1991,8 @@
             "title_line2": "still growing.",
             "subtitle": "origam is young. That's a strength in terms of API freshness — and a constraint in terms of maturity.",
             "community": {
-                "title": "Smaller community",
-                "description": "Vuetify and PrimeVue have years of production usage, thousands of Stack Overflow answers, and rich third-party template markets. origam doesn't — yet."
+                "title": "No external community yet",
+                "description": "origam has no external consumers today, so there's no outside community yet — no accumulated Stack Overflow trail, no third-party template market. That's the honest state of a young, internally-built design system, not a comparison against libraries with years of external production use."
             },
             "templates": {
                 "title": "Fewer ready-made templates",
@@ -2011,10 +2011,6 @@
             "greenfield": {
                 "title": "Greenfield Vue 3 project",
                 "description": "Starting fresh on Vue 3 with a design team that works in Figma and tokens? origam is built for this exact setup."
-            },
-            "token_team": {
-                "title": "Design-token-driven team",
-                "description": "If your designer uses Tokens Studio or Style Dictionary, origam integrates natively — no translation layer needed."
             },
             "saas_product": {
                 "title": "SaaS / product requiring multiple brand themes",

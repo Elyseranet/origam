@@ -7,7 +7,7 @@ export interface IStrength {
 export interface IComparison {
     nameKey: string
     vueNative: boolean
-    designTokens: boolean
+    themingPropsFirst: boolean
     a11yTested: boolean
     cssFist: boolean
     treeShakable: boolean
