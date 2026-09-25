@@ -18,6 +18,47 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.18.11',
+        date: '2026-09-24',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v21811.summary',
+        summaryFallback: '1 addition and 5 fixes. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v21811.h1', textFallback: '#935 : l\'anneau focus-visible du Switch débordait de la piste, peint sur un frère non clippé' },
+            { type: 'fixed', textKey: 'changelog.versions.v21811.h2', textFallback: '#933 : .origam-btn ne déclarait aucun display — un CTA rendu 984 × 15 px' },
+            { type: 'fixed', textKey: 'changelog.versions.v21811.h3', textFallback: '#934 : --*---padding-inline, un nom que rien ne lit — la gouttière nav n\'a jamais existé' },
+            { type: 'fixed', textKey: 'changelog.versions.v21811.h4', textFallback: '#937 : la bande de messages vide (22px) et le bouton à 12px de la carte de démo — deux zéros côté marketing' },
+            { type: 'fixed', textKey: 'changelog.versions.v21811.h5', textFallback: '#931 : border: true retiré du switch sur 5 identités — la prop ne peignait pas l\'élément que le ticket mesurait' },
+            { type: 'added', textKey: 'changelog.versions.v21811.h6', textFallback: '/why-origam : la refonte validée intégrée dans la vraie page' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.18.10',
+        date: '2026-09-24',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v21810.summary',
+        summaryFallback: '3 fixes. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v21810.h1', textFallback: '#919 : le track et le pouce d\'OrigamSwitch étaient illisibles contre la page — les 16 couples identité × mode' },
+            { type: 'fixed', textKey: 'changelog.versions.v21810.h2', textFallback: '#922 : le site vendait encore le pipeline Style Dictionary / Tokens Studio, supprimé le 2026-08-31' },
+            { type: 'fixed', textKey: 'changelog.versions.v21810.h3', textFallback: '/why-origam affirmait six choses fausses ou invérifiables' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.18.9',
+        date: '2026-09-23',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2189.summary',
+        summaryFallback: '2 fixes. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2189.h1', textFallback: '#853 : OrigamOverlay sans inheritAttrs: false — un warning Vue qui sérialisait le vnode de RouteProvider, ~4,4 Mo par occurrence' },
+            { type: 'fixed', textKey: 'changelog.versions.v2189.h2', textFallback: '#913 : /roadmap affichait 2.17.1 à côté de sa propre version vivante, /changelog s\'arrêtait à 2.18.0, et le détecteur de dérive était rouge et…' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.18.8',
         date: '2026-09-23',
         type: 'patch',
