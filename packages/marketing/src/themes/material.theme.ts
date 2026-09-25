@@ -8,6 +8,12 @@ export const materialLightTheme: IOrigamTheme = {
             card: '28px',
             btn: '999px',
             pill: '999px',
+            // `xs` = M3 `md.sys.shape.corner.extra-small` = 4dp, vérifié dans la
+            // source de tokens Material (material-web
+            // `tokens/versions/v0_192/_md-sys-shape.scss` : `'corner-extra-small':
+            // … 4px`). Le rung manquait, donc `rounded="xs"` retombait sur le
+            // primitif DS (2px). C'est le rung que porte le MENU déroulant.
+            xs: '4px',
             sm: '12px',
             md: '16px',
             lg: '28px'
@@ -144,7 +150,24 @@ export const materialLightTheme: IOrigamTheme = {
         'origam-file-field': { rounded: 'lg' },
         'origam-color-picker-field': { rounded: 'lg' },
         'origam-code': { rounded: 'lg', elevation: 1 },
-        'origam-menu': { rounded: 'lg', elevation: 2 },
+        // ⛔ Menu déroulant ≠ tiroir de navigation. M3 donne au CONTENEUR de menu
+        // `md.sys.shape.corner.extra-small` (4dp) — pas `corner-extra-large`
+        // (28dp), qui est la forme du TIROIR et de ses destinations. Vérifié dans
+        // les sources Material : `material-web/tokens/versions/v0_192/
+        // _md-comp-menu.scss` → `'container-shape': … 'corner-extra-small'`, et
+        // `_md-sys-shape.scss` → `corner-extra-small: 4px`.
+        //
+        // `rounded: 'lg'` (= 28px ici) posait donc le traitement de TIROIR sur un
+        // MENU — 28px sur une ligne de 48px de haut, soit une pilule, exactement
+        // ce que le propriétaire a signalé comme « beaucoup trop fort ».
+        //
+        // ⚠️ Ce n'était PAS un rognage : mesuré, l'item ne déborde jamais de
+        // `.origam-menu__content` (`scrollWidth === clientWidth`, bord droit à
+        // 351.5 pour un conteneur à 363.5) et forcer `overflow: visible` ne
+        // change pas un pixel. Deux arcs de MÊME rayon (28px) laissaient un
+        // croissant blanc très fin au coin bas-droit, ce qui se lit comme une
+        // coupe à l'échelle 1×.
+        'origam-menu': { rounded: 'xs', elevation: 2 },
         'origam-table': { rounded: 'lg', border: false, elevation: 1 },
         // Avatar tonal container — vérifié IAvatarProps extends IColorProps,
         // IBgColorProps. bgSubtle/fgSubtle du token action.primary égalent déjà
@@ -249,8 +272,39 @@ export const materialLightTheme: IOrigamTheme = {
         // besoin. Couleurs actives via les vars dédiées
         // `--origam-pagination__item--is-active---*` (hooks propres, indépendants du
         // `--origam-btn---background-color-active` global — voir note bottom-nav).
-        'origam-list': { nav: true, rounded: 'lg' },
-        'origam-list-item': { rounded: 'lg' },
+        // ⛔ Même arbitrage que `origam-menu` ci-dessus, côté items. M3 donne aux
+        // items de liste `md.sys.shape.corner.none` (0) — vérifié dans
+        // `material-web/tokens/versions/v0_192/_md-comp-list.scss` :
+        // `'list-item-container-shape': … 'corner-none'`. Les 28px en pilule
+        // appartiennent à la DESTINATION DE TIROIR (`ShapeAppearance.Material3.
+        // Corner.Full` sur `itemShapeAppearance`, material-components-android
+        // `navigation/res/values/styles.xml`), et le site n'a aucun tiroir : les
+        // seuls `origam-list` du marketing vivent dans un `origam-menu`.
+        //
+        // ⚠️ Ces deux clés sont des DÉFAUTS GLOBAUX : le jour où le site gagne un
+        // vrai tiroir de navigation, il devra redemander la pilule explicitement
+        // (`rounded="full"` sur ses items), le DS n'ayant pas de canal « item de
+        // menu » vs « item de tiroir ». Noté dans #944.
+        'origam-list': { nav: true, rounded: 'none' },
+        // `paddingInline: 12` — PROP, pas cssVar : la gouttière interne du label
+        // valait 0px à gauche, mesurée. Le DS calcule
+        // `padding-inline-start: calc(base + indent + density)` et, sur un
+        // `origam-list nav` en densité compacte, `--origam-list---indent-padding`
+        // vaut -8px ET `--origam-list---density` -8px → `calc(12px - 8px - 8px)`
+        // = -4px, clampé à 0 (la fin ne reçoit que la densité → 4px). Le libellé
+        // touchait donc le bord gauche de la surbrillance ; la pilule de 28px le
+        // masquait, le rectangle M3 ne le masque plus. Défaut DS préexistant sur
+        // les 8 identités, ticket séparé — ici on repose la valeur par la prop,
+        // qui court-circuite le `calc()`.
+        // `xs` (= 4px ici) et non `none` : M3 donne `corner-none` à un item de
+        // liste parce que sa surbrillance est PLEINE LARGEUR ; la nôtre est
+        // encartée (12px de gouttière de chaque côté, cf. `.appbar-menu
+        // .origam-menu__content` + le padding de `origam-list`). Un rectangle à
+        // angles vifs flottant dans un conteneur arrondi n'est une forme M3 ni
+        // d'un côté ni de l'autre — on aligne donc l'item sur le rung du
+        // conteneur, `corner-extra-small`. Les deux rendus sont dans la PR ;
+        // arbitrage ouvert côté propriétaire.
+        'origam-list-item': { rounded: 'xs', paddingInline: 12 },
         // Title — ITitleProps extends ITypographyProps. `fontWeight:'regular'` (400,
         // valeur réelle de TFontWeight). `fontFamily` NON réglé ici : le thème fixe déjà
         // `--origam-title---font-family` / `--origam-font-family---heading` à Roboto via
@@ -411,6 +465,12 @@ export const materialDarkTheme: IOrigamTheme = {
             card: '28px',
             btn: '999px',
             pill: '999px',
+            // `xs` = M3 `md.sys.shape.corner.extra-small` = 4dp, vérifié dans la
+            // source de tokens Material (material-web
+            // `tokens/versions/v0_192/_md-sys-shape.scss` : `'corner-extra-small':
+            // … 4px`). Le rung manquait, donc `rounded="xs"` retombait sur le
+            // primitif DS (2px). C'est le rung que porte le MENU déroulant.
+            xs: '4px',
             sm: '12px',
             md: '16px',
             lg: '28px'
