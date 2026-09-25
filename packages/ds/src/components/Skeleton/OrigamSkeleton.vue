@@ -11,6 +11,7 @@
 			:aria-label="skeletonAriaLabel"
 			aria-busy="true"
 			role="status"
+			v-bind="$attrs"
 	>
 		<div
 				:class="skeletonCircularClasses"
@@ -30,6 +31,7 @@
 			:aria-label="skeletonAriaLabel"
 			aria-busy="true"
 			role="status"
+			v-bind="$attrs"
 	>
 		<div :class="skeletonRectangularClasses"/>
 		<div :class="skeletonTextClasses"/>
@@ -45,6 +47,7 @@
 			:aria-label="skeletonAriaLabel"
 			aria-busy="true"
 			role="status"
+			v-bind="$attrs"
 	/>
 </template><script
 		lang="ts"
@@ -61,6 +64,37 @@
 	import { convertToUnit } from '../../utils/Commons/commons.util'
 	import { computed, toRef } from 'vue'
 	import type { StyleValue } from 'vue'
+
+	/*
+	 * inheritAttrs — #916 / #853
+	 *
+	 * The root `v-if` chain is MIXED: `v-if="!loading"` renders `<slot/>`
+	 * (a FRAGMENT vnode — `renderSlot()` always returns one), while the three
+	 * `v-else-if` / `v-else` branches each render a single `<div>`. Vue cannot
+	 * merge fallthrough attributes onto the fragment branch, so it logs
+	 * "Extraneous non-props attributes" — and that warning's trace serialises
+	 * every ancestor's props, including Vue Router's `RouteProvider` vnode,
+	 * ~4.4 MB per occurrence (#853).
+	 *
+	 * ⛔ THE MIXED SHAPE IS WHY THE FLAG ALONE WOULD BE A REGRESSION, and it
+	 * is measured, not assumed. On `develop` before this change, mounting with
+	 * `class` / `data-cy` / `aria-label`:
+	 *
+	 *     loading=true  (element branch)  -> all three LAND
+	 *     loading=false (fragment branch) -> all three land NOWHERE
+	 *
+	 * So `inheritAttrs: false` on its own would silently strip a consumer's
+	 * attributes from the skeleton itself — #492's defect. They are therefore
+	 * re-bound by hand with `v-bind="$attrs"` on each of the three element
+	 * branches. The fragment branch keeps forwarding nothing, which is what it
+	 * already did: the `default` slot's own content is the consumer's markup
+	 * and carries the consumer's attributes already.
+	 *
+	 * `v-bind="$attrs"` sits LAST on each element so a consumer's `aria-label`
+	 * wins over the component's `skeletonAriaLabel` default, while `class` and
+	 * `style` are concatenated by `mergeProps` rather than replaced.
+	 */
+	defineOptions({ inheritAttrs: false })
 
 	/*********************************************************
 	 * Global

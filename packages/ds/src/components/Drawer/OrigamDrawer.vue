@@ -99,6 +99,30 @@
 
 	import { int } from '../../utils/Commons/commons.util'
 
+	/*
+	 * inheritAttrs — #916 / #853
+	 *
+	 * The single root is a `<teleport>`, and Vue treats the TELEPORT
+	 * shapeFlag exactly like a fragment for automatic attrs inheritance —
+	 * its own message says so ("renders fragment or text or teleport root
+	 * nodes"). It therefore logs "Extraneous non-props attributes", whose
+	 * component trace serialises every ancestor's props including Vue
+	 * Router's `RouteProvider` vnode (~4.4 MB per occurrence, #853).
+	 *
+	 * `$attrs` is ALREADY forwarded by hand onto the visible root below
+	 * (`v-bind="{...scopeId, ...$attrs}"` on the `<component :is="tag">`),
+	 * so this flag removes a redundant attempt, not a working one.
+	 *
+	 * ⛔ Reading `$attrs` in the template is NOT enough on its own, and that
+	 * is worth knowing: Vue suppresses the warning when `$attrs` was read
+	 * through the public proxy DURING THE RENDER THAT WOULD WARN
+	 * (`markAttrsAccessed()`). Here the read sits inside `v-if="isActive"`
+	 * under a `defer`red teleport, so on any render where the drawer is
+	 * closed the read never happens and the warning fires. Measured before
+	 * this flag: 2 occurrences on a single closed mount.
+	 */
+	defineOptions({ inheritAttrs: false })
+
 	/*********************************************************
 	 * Global
 	 *

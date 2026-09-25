@@ -96,6 +96,29 @@
 	 * Global
 	 ********************************************************/
 
+	/*
+	 * inheritAttrs — #916 / #853
+	 *
+	 * BOTH branches of the root `v-if="mobile"` render a `<slot>`, and
+	 * `renderSlot()` returns a FRAGMENT vnode — the root is a fragment in
+	 * either case. Vue cannot merge fallthrough attributes onto a fragment
+	 * and logs "Extraneous non-props attributes", whose trace serialises the
+	 * whole ancestor chain including Vue Router's `RouteProvider` vnode
+	 * (~4.4 MB per occurrence, #853).
+	 *
+	 * ⛔ NOTHING is forwarded, deliberately, and this one is a JUDGEMENT the
+	 * next reader should be able to re-open: the slot's DEFAULT content is a
+	 * single `<origam-data-table-headers-cell(-mobile)>`, so attributes
+	 * COULD be pushed onto it. They are not, because a consumer overriding
+	 * the slot leaves that element non-existent — the attributes would then
+	 * land somewhere in one configuration and nowhere in the other, which is
+	 * worse than consistently nowhere. Measured on `develop` before this
+	 * flag, a consumer's `class` / `data-cy` / `aria-label` reached NOTHING;
+	 * the flag keeps exactly that, and the cell's own `class` / `style` come
+	 * from the `dataTableHeadersClasses` / `…Styles` props as before.
+	 */
+	defineOptions({ inheritAttrs: false })
+
 	const props = withDefaults(defineProps<IDataTableHeadersProps>(), {})
 
 	defineEmits<IDataTableHeadersEmits>()

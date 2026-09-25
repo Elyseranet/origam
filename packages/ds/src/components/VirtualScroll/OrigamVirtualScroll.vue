@@ -40,6 +40,7 @@
 				ref="containerRef"
 				:class="virtualScrollClasses"
 				:style="virtualScrollStyles"
+				v-bind="$attrs"
 				@scrollend="handleScrollend"
 				@scroll-passive="handleScroll"
 		>
@@ -96,6 +97,31 @@
 	import { convertToUnit } from '../../utils/Commons/commons.util'
 	import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
 	import { getScrollParent } from '../../utils/Commons/scroll.util'
+
+	/*
+	 * inheritAttrs — #916 / #853
+	 *
+	 * The root `v-if` chain is MIXED: `v-if="renderless"` renders a FRAGMENT
+	 * (spacer div + a `v-for` of items + spacer div, three top-level nodes),
+	 * while `v-else` renders a single scroll container `<div>`. Vue cannot
+	 * merge fallthrough attributes onto the fragment branch and logs
+	 * "Extraneous non-props attributes", whose trace serialises every
+	 * ancestor's props including Vue Router's `RouteProvider` vnode
+	 * (~4.4 MB per occurrence, #853).
+	 *
+	 * ⛔ Measured on `develop` before this change, mounting with `class` /
+	 * `data-cy` / `aria-label`:
+	 *
+	 *     renderless=false -> all three LAND on the container
+	 *     renderless=true  -> all three land NOWHERE
+	 *
+	 * The flag alone would therefore silently strip them in the normal
+	 * (non-renderless) mode — #492's defect. They are re-bound by hand with
+	 * `v-bind="$attrs"` on the container above. The renderless branch keeps
+	 * forwarding nothing: by definition it owns no element of its own, the
+	 * consumer supplies the markup through the `item.renderless` slots.
+	 */
+	defineOptions({ inheritAttrs: false })
 
 	/*********************************************************
 	 * Global

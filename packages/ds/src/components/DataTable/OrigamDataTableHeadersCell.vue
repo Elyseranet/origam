@@ -56,6 +56,25 @@
 	 * Global
 	 ********************************************************/
 
+	/*
+	 * inheritAttrs — #916 / #853
+	 *
+	 * The template root is a `<template v-for="(row, y) in headers">`, i.e. a
+	 * FRAGMENT of N `<tr>` elements. A `v-for` root compiles to a Fragment
+	 * block even when the list holds a single entry, so there is no
+	 * configuration in which this component has a single root. Vue cannot
+	 * merge fallthrough attributes onto a fragment and logs "Extraneous
+	 * non-props attributes", whose trace serialises every ancestor's props
+	 * including Vue Router's `RouteProvider` vnode (~4.4 MB, #853).
+	 *
+	 * ⛔ NOTHING is forwarded, deliberately: N sibling `<tr>` rows have no
+	 * single home for one `id` / `data-cy` / `aria-label`, and duplicating a
+	 * consumer's `id` across rows would produce invalid markup. Measured on
+	 * `develop` before this flag, a consumer's attributes reached NONE of the
+	 * rows — the flag preserves that exactly.
+	 */
+	defineOptions({ inheritAttrs: false })
+
 	const props = withDefaults(defineProps<IDataTableHeadersCellProps>(), {})
 
 	defineEmits<IDataTableHeadersCellEmits>()

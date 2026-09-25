@@ -109,8 +109,30 @@
 	 *
 	 * No JS interaction, no DOM measurement, SSR-safe.
 	 ********************************************************/
+	/*
+	 * inheritAttrs — #916 / #853
+	 *
+	 * The template root is a FRAGMENT: three PEER `<g>` groups (grid,
+	 * primary axis, secondary axis), each with its own `v-if`. Vue cannot
+	 * merge fallthrough attributes onto a fragment, so it logs "Extraneous
+	 * non-props attributes" — and that warning's component trace serialises
+	 * every ancestor's props, including Vue Router's `RouteProvider` whose
+	 * `vnode` prop is the whole page's reactive graph (~4.4 MB per
+	 * occurrence, #853).
+	 *
+	 * ⛔ NOTHING is forwarded, deliberately. There is no single root here:
+	 * the three groups are peers, each already carrying its own `class` and
+	 * `data-cy`, and picking one (or all three) would be arbitrary. Measured
+	 * on `develop` before this flag: a consumer's `class` / `data-cy` /
+	 * `aria-label` landed on NONE of them — a fragment root never receives
+	 * fallthrough. The flag therefore changes nothing observable; it only
+	 * stops Vue from re-testing, and re-reporting, an impossibility on every
+	 * render. Adding a `v-bind="$attrs"` would be a NEW feature, not the
+	 * restoration of a lost one.
+	 */
 	defineOptions({
-		name: 'OrigamChartAxis'
+		name: 'OrigamChartAxis',
+		inheritAttrs: false
 	})
 
 	/*********************************************************
