@@ -30,6 +30,7 @@ const SHEETS = [
         source: `:root {
             --origam-space---3: 12px;
             --origam-space---4: 16px;
+            --origam-space---6: 24px;
             --origam-font__size---md: 0.875rem;
         }`
     },
@@ -40,6 +41,7 @@ const SHEETS = [
             --origam-demo---padding: var(--origam-space---3);
             --origam-demo---font-size: var(--origam-font__size---md);
             --origam-demo---gap: var(--origam-space---4);
+            --origam-demo---gutter: var(--origam-space---6);
         }`
     }
 ]
@@ -72,6 +74,18 @@ const MUST_FLAG = [
         'litteral contre var() — meme pixel, ecritures differentes',
         [{ path: 'B.vue', source: sfc('.origam-demo { &--density-default { --origam-demo---padding: 12px; } }') }],
         ['B.vue::--origam-demo---padding']
+    ],
+    /*
+     * ⛔ CONTROLE POSITIF APPARIE de la fixture K de #902 : la MEME
+     * declaration, sans `!important`, doit rester detectee. C'est ce qui
+     * prouve que l'exclusion `carriesImportant` n'a pas emousse le detecteur
+     * — sans cette paire, un `carriesImportant` qui renverrait `true` partout
+     * rendrait le garde muet sans qu'aucun test ne bouge.
+     */
+    [
+        '#902 — la meme declaration SANS `!important` reste detectee (le pendant de K)',
+        [{ path: 'K2.vue', source: sfc('.origam-demo { --origam-demo---density: 0px; }') }],
+        ['K2.vue::--origam-demo---density']
     ],
     [
         'rem contre token de typographie',
@@ -110,6 +124,31 @@ const MUST_NOT_FLAG = [
     [
         'derivation d\'instance en calc() — valeur non resolvable, hors verdict',
         [{ path: 'J.vue', source: sfc('.origam-demo { --origam-demo---gap: calc(var(--origam-demo---runtime) * 2); }') }]
+    ],
+
+    /*
+     * ⛔ LES DEUX FIXTURES DE #902 — les deux corrections que le ticket
+     * prescrivait auraient produit ici un faux positif. Mesure du 2026-09-25 :
+     * les 5 declarations visees sont PORTEUSES, pas redondantes. Ces deux cas
+     * epinglent le refus ; les retirer, c'est reouvrir #902 dans le mauvais
+     * sens. Le raisonnement complet est dans `carriesImportant` et dans
+     * l'en-tete de `resolveValue`.
+     */
+    [
+        '#902 — `!important` : meme valeur, poids de cascade different (forme OrigamAudio)',
+        [{ path: 'K.vue', source: sfc('.origam-demo { --origam-demo---density: 0px !important; }') }]
+    ],
+    [
+        '#902 — calc() DERIVE d\'un token que le composant fait varier (forme OrigamRow)',
+        [{
+            path: 'L.vue',
+            source: sfc(
+                '.origam-demo {'
+                + ' --origam-demo---padding: calc(var(--origam-demo---gutter) / 2);'
+                + ' &--gutter-none { --origam-demo---gutter: 0px; }'
+                + ' }'
+            )
+        }]
     ]
 ]
 

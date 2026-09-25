@@ -41,7 +41,8 @@
  ********************************************************/
 
 import path from 'node:path'
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
 import { tmpdir } from 'node:os'
 import { collectSources, splitSource, walkSources, IGNORED_DIRS } from './marketing-token-scan.mjs'
 import { analyseChannels } from '../token-var-channels.mjs'
@@ -198,24 +199,92 @@ console.log('\nwalkSources — `node_modules`, `.nuxt`, `.output`, `dist` sont s
      * ⛔ Preuve d'EXÉCUTION, pas seulement de constante. Vérifier que
      * `IGNORED_DIRS` contient bien les quatre noms ne prouve rien : le
      * parcours pourrait avoir cessé de consulter l'ensemble. On monte donc un
-     * vrai petit arbre sur disque, avec un `node_modules` piégé, et on exige
-     * que `walkSources` ramène le fichier légitime et SEULEMENT lui.
+     * VRAI DÉPÔT GIT sur disque et on exige que `walkSources` ramène les
+     * fichiers légitimes et SEULEMENT eux.
+     *
+     * ⛔ POURQUOI UN DÉPÔT GIT ET PLUS UN SIMPLE RÉPERTOIRE (#966). Depuis
+     * #966, l'énumération passe par `git ls-files` et non plus par
+     * `readdirSync` : un arbre non versionné ne mesure donc plus rien. C'est
+     * le prix — et le sens — du correctif, puisque c'est `.gitignore` qui
+     * porte désormais la connaissance de « ceci est un artefact de build ».
      */
     const tmp = mkdtempSync(path.join(tmpdir(), 'origam-mts-'))
     try {
+        const git = (...args) => execFileSync('git', args, { cwd: tmp, stdio: 'ignore' })
+        git('init', '-q')
+        git('config', 'user.email', 'selftest@origam.local')
+        git('config', 'user.name', 'selftest')
+
         mkdirSync(path.join(tmp, 'src'), { recursive: true })
         mkdirSync(path.join(tmp, 'node_modules', 'evil'), { recursive: true })
         mkdirSync(path.join(tmp, '.nuxt'), { recursive: true })
+
+        /*
+         * ⛔ LE CAS #966 : `public/stories/` est la sortie d'un
+         * `pnpm -F @origam/stories build` recopiée dans le `public/` du
+         * marketing — 35 Mo, zéro fichier suivi, ignorée par
+         * `packages/marketing/.gitignore:16`. Elle N'EST PAS dans
+         * `IGNORED_DIRS` et ne l'a jamais été : c'est exactement pour ça que
+         * la liste de noms ne pouvait pas être la défense. Ce fichier porte
+         * les deux moitiés du défaut — une LECTURE (qui fabriquait une fausse
+         * violation) et une DÉCLARATION (qui, entrant dans l'ensemble
+         * émetteur, faisait passer de vraies entrées de baseline en
+         * « STALE — already fixed »).
+         */
+        writeFileSync(path.join(tmp, '.gitignore'), [ 'node_modules', '.nuxt', 'public/stories', '' ].join('\n'))
+        mkdirSync(path.join(tmp, 'public', 'stories', 'assets'), { recursive: true })
+        writeFileSync(
+            path.join(tmp, 'public', 'stories', 'assets', 'style-hash.css'),
+            '.a { color: var(--origam-bundle-invented---chan); --origam-x---y: 0px; }'
+        )
+
         writeFileSync(path.join(tmp, 'src', 'a.css'), ':root { --origam-x---y: 1px; }')
         writeFileSync(path.join(tmp, 'src', 'types.d.ts'), 'declare const x: number')
         writeFileSync(path.join(tmp, 'node_modules', 'evil', 'b.css'), ':root { --origam-evil---z: 1px; }')
         writeFileSync(path.join(tmp, '.nuxt', 'c.ts'), 'export const G = "var(--origam-generated---w)"')
 
-        const found = walkSources(tmp).map((f) => path.relative(tmp, f))
+        git('add', '.gitignore', 'src/a.css', 'src/types.d.ts')
+        git('commit', '-qm', 'seed')
 
-        if (found.length === 1 && found[0] === path.join('src', 'a.css')) {
-            ok('parcours réel : le fichier légitime est ramené, `node_modules` / `.nuxt` / `.d.ts` sont sautés')
-        } else fail(`parcours réel — obtenu [${found.join(', ')}]`)
+        /*
+         * ⛔ Écrit APRÈS le commit et jamais `git add`é : un fichier source
+         * qu'un développeur vient de créer. Il DOIT être balayé. Se limiter à
+         * `--cached` introduirait ici un faux négatif neuf — le garde serait
+         * vert sur du code fautif tant qu'il n'est pas indexé.
+         */
+        writeFileSync(path.join(tmp, 'src', 'brand-new.css'), '.b { color: var(--origam-fresh---read); }')
+
+        const found = walkSources(tmp, tmp).map((f) => path.relative(tmp, f)).sort()
+        const expected = [ path.join('src', 'a.css'), path.join('src', 'brand-new.css') ]
+
+        if (found.join('|') === expected.join('|')) {
+            ok('énumération réelle : les sources versionnées ET la source neuve non indexée sont ramenées')
+        } else fail(`énumération réelle — attendu [${expected.join(', ')}], obtenu [${found.join(', ')}]`)
+
+        if (!found.some((f) => f.startsWith('public'))) {
+            ok('#966 : un artefact de build ignoré par .gitignore (`public/stories/`) est écarté, bien qu\'absent d\'IGNORED_DIRS')
+        } else fail('#966 : `public/stories/` est encore balayé — l\'énumération ne passe pas par l\'index git')
+
+        if (!found.some((f) => f.endsWith('.d.ts'))) {
+            ok('les `.d.ts` restent écartés')
+        } else fail('un `.d.ts` a été ramené')
+
+        /*
+         * ⛔ La conséquence VERDICT, pas seulement la liste de fichiers. Le
+         * `--origam-x---y: 0px` du bundle entrait dans l'ensemble émetteur ;
+         * pour prouver que l'artefact n'efface plus rien, on vérifie que sa
+         * LECTURE inventée ne produit aucune violation et que son nom ne
+         * figure dans aucun ensemble.
+         */
+        const { consumerTexts, localDeclarations } = collectSources(
+            new Map(walkSources(tmp, tmp).map((f) => [ path.relative(tmp, f), readFileSync(f, 'utf8') ]))
+        )
+        const bundleLeaked = [ ...consumerTexts.keys() ].some((f) => f.startsWith('public'))
+            || localDeclarations.has('--origam-bundle-invented---chan')
+
+        if (!bundleLeaked) {
+            ok('#966 (les deux sens) : le bundle ne fabrique plus de violation et n\'alimente plus l\'ensemble émetteur')
+        } else fail('#966 : le bundle contamine encore la collecte')
     } finally {
         rmSync(tmp, { recursive: true, force: true })
     }
@@ -295,4 +364,4 @@ if (failures) {
     console.log(`FAIL — ${failures} cas de self-test en échec.`)
     process.exit(1)
 }
-console.log('PASS — 4 cas de découpage, 3 cas de collecte TS, 2 cas de portée globale, 2 cas de parcours, 4 cas de mutation.')
+console.log('PASS — 4 cas de decoupage, 3 cas de collecte TS, 2 cas de portee globale, 5 cas d\'enumeration (dont 2 pour #966), 4 cas de mutation.')

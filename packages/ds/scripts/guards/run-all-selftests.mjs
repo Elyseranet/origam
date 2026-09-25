@@ -30,16 +30,23 @@
  * Run: `node packages/ds/scripts/guards/run-all-selftests.mjs`
  ********************************************************/
 import { spawnSync } from 'node:child_process'
-import { readdirSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { discoverSelftests, findOrphanSelftests } from './lib/selftest-discovery.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
-const LIB = path.join(HERE, 'lib')
+const SCRIPTS = path.resolve(HERE, '..')
 
-const selftests = readdirSync(LIB)
-    .filter((entry) => entry.endsWith('.selftest.mjs'))
-    .sort()
+/*********************************************************
+ * ⛔ DEUX NIVEAUX, PAS UN SEUL (#964)
+ *
+ * @description
+ * Ce runner ne lisait que `lib/`. Cinq self-tests vivent au niveau `guards/`
+ * et n'etaient donc invoques par RIEN — dont celui de `token-var-channels`,
+ * le garde le plus sollicite du depot. La decouverte vit desormais dans
+ * `lib/selftest-discovery.mjs`, qui porte le detail de la mesure.
+ ********************************************************/
+const selftests = discoverSelftests(HERE)
 
 console.log(`\n═══ Self-tests des gardes DS (${selftests.length} decouverts, executes tous, codes agreges) ═══\n`)
 
@@ -52,14 +59,38 @@ console.log(`\n═══ Self-tests des gardes DS (${selftests.length} decouvert
  * existe pour empecher, reproduit dans le runner lui-meme.
  ********************************************************/
 if (!selftests.length) {
-    console.error(`✗ Aucun *.selftest.mjs trouve dans ${LIB} — le repertoire a bouge, ou les self-tests ont disparu.`)
+    console.error(`✗ Aucun *.selftest.mjs trouve sous ${HERE} — le repertoire a bouge, ou les self-tests ont disparu.`)
+    process.exit(1)
+}
+
+/*********************************************************
+ * ⛔ CONTROLE ANTI-RECIDIVE (#964)
+ *
+ * @description
+ * Un `*.selftest.mjs` range ailleurs que sur les deux niveaux decouverts est
+ * un detecteur que rien n'execute — exactement l'etat dans lequel cinq
+ * fichiers ont vecu jusqu'a #964, sans que personne le sache. On echoue AVANT
+ * d'executer quoi que ce soit : un recapitulatif « tout vert » sur une liste
+ * incomplete est pire qu'un rouge, puisqu'il affiche une garantie absente.
+ ********************************************************/
+const orphans = findOrphanSelftests(SCRIPTS, HERE)
+
+if (orphans.length) {
+    console.error(
+        `✗ ${orphans.length} self-test(s) que ce runner ne decouvrirait PAS :\n`
+        + orphans.map((o) => `    scripts/${o}`).join('\n')
+        + '\n\n  Un self-test qu\'aucun runner n\'execute est une garantie affichee qui n\'existe pas :'
+        + '\n  son detecteur peut avoir regresse depuis des mois, `guards` comme `guards:self`'
+        + '\n  resteraient verts (#964). Deplacez-le dans `scripts/guards/` ou `scripts/guards/lib/`,'
+        + '\n  ou ajoutez son niveau a DISCOVERED_LEVELS dans lib/selftest-discovery.mjs.\n'
+    )
     process.exit(1)
 }
 
 const results = []
 
 for (const entry of selftests) {
-    const run = spawnSync(process.execPath, [path.join(LIB, entry)], { stdio: 'inherit' })
+    const run = spawnSync(process.execPath, [path.join(HERE, entry)], { stdio: 'inherit' })
     // Un self-test tue par un signal (OOM, timeout) a `status === null`.
     // Le compter comme 0 ferait passer un crash pour un succes.
     results.push({ name: entry, code: run.status === null ? 1 : run.status, signal: run.signal })
