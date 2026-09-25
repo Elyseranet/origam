@@ -218,9 +218,20 @@ export const glassLightTheme: IOrigamTheme = {
         'origam-textarea-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
         'origam-number-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
         'origam-password-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
+        // ⛔ `menuProps.rounded: 'sm'` (#946) — décision du propriétaire : TOUS
+        // les menus du site doivent se lire pareil, quel que soit ce qui les
+        // ouvre. Le champ, lui, garde `rounded: 'lg'` : c'est un contrôle de
+        // formulaire, pas un menu.
+        //
+        // `menuProps` est un binding EXPLICITE transmis à l'OrigamMenu interne
+        // (`OrigamSelect.vue` étale `menuProps` sur le menu) : il bat le défaut
+        // de thème `components['origam-menu']`. C'est pour ça que ce dropdown
+        // était resté à 22px (clair) / 30px (sombre) quand les trois autres
+        // surfaces à menu du site sont passées à 10/16px sous #944 — mesuré, et
+        // l'écart se voyait sur une même page.
         'origam-select': {
             variant: 'outlined', rounded: 'lg', border: true,
-            menuProps: { rounded: 'lg', elevation: 3, nav: true }
+            menuProps: { rounded: 'sm', elevation: 3, nav: true }
         },
 
         // ── Overlay & Surface (SYNTHESE §3) ─────────────────────────────

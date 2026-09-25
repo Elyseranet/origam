@@ -570,6 +570,45 @@ Same session, same cause, two more ways to fool yourself:
   served**: `curl` the `style-*.css` the page links and `grep` the token name
   in it. If the corrected name is there, the fix is not the problem.
 
+⛔ **You edited a marketing THEME and the page renders the old values — the
+Nuxt dev server does not reload themes.** Symptom: you change
+`packages/marketing/src/themes/<x>.theme.ts`, re-measure, and every number is
+identical to before. It reads exactly like a dead prop or a theme the resolver
+ignores, and it is neither. Measured twice in one session (#944): a correct
+`rounded: 'lg' → 'xs'` reported "no change" until the server was restarted.
+
+The themes are imported by `nuxt.config.ts` (`origam: { themes: [...] }`), so
+they are **config dependencies, not application modules** — Vite's HMR graph
+never sees them, and the restart-on-config-change watcher did not fire either.
+Nothing is logged. **Kill and restart the dev server after every theme edit**,
+and do not trust a measurement taken across one:
+
+```sh
+lsof -ti :<your-port> | xargs -r kill -9
+PORT=<your-port> pnpm -F @origam/marketing dev --port <your-port>
+```
+
+⛔ **A probe that clicks blind in the app bar measures the OPPOSITE colour
+mode, and the numbers look right.** Symptom: light and dark come back swapped —
+internally consistent, plausible, and wrong. `.appbar-actions` holds the mode
+toggle (`@click="toggleMode"` in `layouts/default.vue`) next to the menu
+triggers, so a probe that iterates over the buttons until a menu opens flips
+the mode on the way. Measured (#944): `glass light` reported the dark radius
+and vice-versa, on four surfaces, before anyone noticed.
+
+**Name every target, and re-read `data-mode` / `data-theme` INSIDE the same
+`evaluate` that reads the value** — then fail loudly when they disagree with
+what you asked for, rather than returning the number:
+
+```js
+if (r.modeAtRead !== mode || r.themeAtRead !== theme) {
+    return { error: `CONTAMINE — asked ${theme}/${mode}, read ${r.themeAtRead}/${r.modeAtRead}` }
+}
+```
+
+Same family as the stale-bundle trap above: the harness answered a question you
+did not ask, and its answer was well-formed.
+
 ⛔ **The `alert.spec.ts` pattern — set a class in the DOM, then assert with
 `toHaveCSS` — breaks whenever that class is bound to a `computed`.** Vue
 re-patches the class list between the `evaluate` and the assertion, and

@@ -132,7 +132,14 @@ export const cartoonLightTheme: IOrigamTheme = {
         'origam-password-field': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2 },
         // menuProps ajouté (synthèse §3) — respiration du dropdown (nav:true)
         // + radius propre. Vérifié: ISelectProps.menuProps?: IMenuProps existe.
-        'origam-select': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2, menuProps: { rounded: 'md', nav: true } },
+        //
+        // ⛔ `menuProps.rounded: 'md' → 'sm'` (#946) — même décision qu'en glass :
+        // tous les menus du site se lisent pareil. `menuProps` est un binding
+        // explicite qui bat le défaut de thème `components['origam-menu']`, donc
+        // ce dropdown était resté à 14px pendant que les trois autres surfaces à
+        // menu passaient à 8px sous #944. Le CHAMP garde `rounded: 'lg'` : c'est
+        // un contrôle de formulaire, pas un menu.
+        'origam-select': { variant: 'outlined', rounded: 'lg', border: true, elevation: 2, menuProps: { rounded: 'sm', nav: true } },
         'origam-date-picker-field': { rounded: 'lg', border: true, elevation: 2 },
         'origam-file-field': { rounded: 'lg', border: true, elevation: 2 },
         'origam-color-picker-field': { rounded: 'lg', border: true, elevation: 2 },
