@@ -825,7 +825,7 @@
             },
             "tokens": {
                 "title": "Design tokens",
-                "description": "Multi-thème via un objet de thème props-first. createOrigam() le résout sur les 218 composants — basculez entre clair, sombre ou votre propre marque à l'exécution, sans remontage."
+                "description": "Multi-thème via un objet de thème props-first. createOrigam() le résout sur tout le catalogue, sans qu'aucun composant n'ait à s'y abonner — basculez entre clair, sombre ou votre propre marque à l'exécution, sans remontage."
             },
             "typescript": {
                 "title": "TypeScript d'abord",
@@ -919,8 +919,8 @@
             "chip_ecom": "Ecom",
             "chip_apple": "Apple",
             "tooling_label": "Outillage",
-            "tokens_studio": "→ theming props-first (218 composants)",
-            "style_dictionary": "→ CSS/SCSS tenus à la main, sans build",
+            "tooling_theming": "→ theming props-first, tout le catalogue",
+            "tooling_tokens": "→ CSS/SCSS tenus à la main, sans build",
             "preview_light": "light.json",
             "preview_dark": "dark.json",
             "preview_brand_a": "brand-a.json",

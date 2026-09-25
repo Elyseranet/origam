@@ -402,11 +402,12 @@ export interface IComponentA11y {
 }
 
 /**
- * Design tokens DTCG excerpt — shown in the "Design tokens" section.
- * Sourced from packages/ds/tokens/component/{slug}.json.
+ * Design tokens excerpt — shown in the "Design tokens" section.
+ * Sourced from the hand-maintained token sheets under
+ * packages/ds/src/assets/css/tokens/ (no build step since 2026-08-31).
  */
 export interface IComponentTokens {
-    /** Source JSON file path (relative to repo root) */
+    /** Source token-sheet path (relative to repo root) */
     sourceFile: string
     /** Selected key tokens shown in the UI (not all — just the most important) */
     excerpt: Array<{

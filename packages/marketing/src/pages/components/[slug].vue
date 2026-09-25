@@ -1058,7 +1058,7 @@ useSeoMeta({
                                     {{ t('components.detail.tokens.title', 'Design tokens') }}
                                 </origam-title>
                                 <p class="component-section__desc">
-                                    {{ t('components.detail.tokens.desc', 'DTCG token excerpt from the component token file. Built with Style Dictionary v4.') }}
+                                    {{ t('components.detail.tokens.desc', 'Excerpt from this component\'s token declarations — the --origam-<component>---<property> variables, declared in its hand-maintained token sheet with no build step.') }}
                                 </p>
                             </header>
 
@@ -1072,10 +1072,27 @@ useSeoMeta({
                                         class="component-tokens__source-code"
                                     />
                                 </div>
-                                <div class="component-tokens__meta-row">
-                                    <span class="component-tokens__meta-label">{{ t('components.detail.tokens.pipeline_label', 'Pipeline') }}</span>
-                                    <span class="component-tokens__pipeline-note">{{ displayDoc?.tokens?.pipelineNote }}</span>
-                                </div>
+                                <!--
+                                    ⛔ Ligne « Pipeline » MASQUEE — decision du proprietaire,
+                                    2026-09-25, en attendant #960.
+
+                                    Le champ `pipelineNote` vit en BASE (seed de documentation), pas
+                                    dans ce depot : 129 entrees, dont **125 vendent encore
+                                    « Built with Style Dictionary v4 + @tokens-studio/sd-transforms »**
+                                    et une nomme `packages/figma-plugin`. Ce pipeline a ete SUPPRIME
+                                    le 2026-08-31, et il n'y a plus d'etape de build du tout.
+
+                                    Rendue, cette ligne contredisait le paragraphe juste au-dessus,
+                                    sur CHAQUE composant du catalogue. Un visiteur qui verifie une
+                                    affirmation fausse cesse de croire les chiffres justes d'a cote —
+                                    c'est le raisonnement qui a fait retirer les autres (#922).
+
+                                    ⚠️ On MASQUE une donnee, on ne la corrige pas : #960 doit
+                                    re-deriver les 129 blocs depuis light.css / dark.css (et d'abord
+                                    etablir si le generateur du seed les re-emettrait a l'identique,
+                                    sinon le prochain `docs:sync` regresse la correction). Retirer ce
+                                    commentaire ET restaurer la ligne font partie de #960.
+                                -->
                             </div>
 
                             <dl
