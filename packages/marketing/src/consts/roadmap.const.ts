@@ -27,16 +27,6 @@ export const ROADMAP_HERO_BADGE_VARS: CSSProperties = {
  *   - unit tests     : 7 192 tests green, 564 spec files, 77.81 % statements /
  *                      79.86 % lines (pnpm -F @origam/tests test:coverage, $? = 0)
  *   - e2e specs      : 256 spec files under packages/tests/e2e for 218 stories
- *   - e2e gate       : 81 of those 256 run in CI — 75 under `E2E_GREEN_ONLY=1`
- *                      plus 6 under `MARKETING_GREEN_ONLY=1`, the two lists
- *                      disjoint. Counted by asking Playwright itself
- *                      (`playwright test --list` on each CI config, which is
- *                      also what the `spec-coverage` guard does), never by
- *                      re-counting the whitelist literals: a `testMatch`
- *                      pattern can resolve to more than one file.
- *                      ⛔ The 6th marketing spec is `roadmap.spec.ts`, gated
- *                      by THIS delivery — the figure moved because of the
- *                      commit that writes it. Re-run the guard, never quote.
  *   - guards         : 29/29 + 16/16 self-tests (pnpm -F origam guards,
  *                      guards:self — both $? = 0)
  *   - inspection     : docs/mesures/classeur-complet-maj-2026-09-01.csv
@@ -50,23 +40,21 @@ export const ROADMAP_HERO_BADGE_VARS: CSSProperties = {
  * `useVersion()`; only values with no live source (test counts, tarball size)
  * stay literal here, and those carry the measurement date above.
  *
- * ⛔ Same reason, one layer further: `roadmap.status.readme_changelog` names
- * NO version number either. It used to read "CHANGELOG up to date", which was
- * false — the document stops at 2.18.8 while npm serves 2.18.11, and
- * `changelog:generate:check` is GREEN on that state because it compares the
- * generated constant to the document and both stop at the same place. It
- * guards constant↔document drift, not document↔published-tags drift, which is
- * how three tags shipped with no write-up and nothing went red. The value now
- * says the CHANGELOG lags the published `{version}` and carries `done: false`
- * — enumerating "2.18.9, 2.18.10, 2.18.11" in the locale would be #913 all
- * over again, wrong at the next tag with nobody watching.
- *
  * The `done: false` entries name the REMAINING GAP, not the whole topic — a
- * red cross next to "the CI gates 81 of 256 specs" is accurate, while one
- * next to "e2e coverage" would not be. Each was re-verified on 2026-09-25:
- * the a11y one stays rescoped (the sweep DOES gate CI since #765, and the
+ * red cross next to "no visual-regression gate" is accurate, while one next to
+ * "visual quality" would not be. Three remain, re-verified on 2026-09-25: the
+ * a11y one stays rescoped (the sweep DOES gate CI since #765, and the
  * violation baseline is now empty — only focus-trap coverage is still thin),
- * the other six still name a real gap.
+ * visual regression and bundle monitoring have no gate at all.
+ *
+ * ⛔ Five entries were REMOVED on 2026-09-25 on the owner's instruction, and
+ * they are named here so nobody re-adds them believing the list is merely
+ * incomplete: `readme_changelog` (fixed by #948 — the CHANGELOG no longer
+ * lags), `migration_guide` (there is no v2→v3 to migrate: `3.0.0` is not
+ * released, so a guide "blocking the v3 tag" was describing nothing),
+ * `e2e_ci_gate`, `public_domain` and `community`. The last three are internal
+ * engineering and go-to-market state — true, but not what a public roadmap is
+ * for. This page says what the LIBRARY does and does not do yet.
  */
 export const ROADMAP_STATUS_ITEMS: IRoadmapStatusItem[] = [
     { labelKey: 'roadmap.status.npm_published', done: true },
@@ -80,14 +68,9 @@ export const ROADMAP_STATUS_ITEMS: IRoadmapStatusItem[] = [
     { labelKey: 'roadmap.status.dependency_automation', done: true },
     { labelKey: 'roadmap.status.monorepo', done: true },
     { labelKey: 'roadmap.status.wave4_shipped', done: true },
-    { labelKey: 'roadmap.status.readme_changelog', done: false },
-    { labelKey: 'roadmap.status.e2e_ci_gate', done: false },
     { labelKey: 'roadmap.status.a11y_sweep', done: false },
     { labelKey: 'roadmap.status.visual_regression', done: false },
-    { labelKey: 'roadmap.status.bundle_monitoring', done: false },
-    { labelKey: 'roadmap.status.migration_guide', done: false },
-    { labelKey: 'roadmap.status.public_domain', done: false },
-    { labelKey: 'roadmap.status.community', done: false }
+    { labelKey: 'roadmap.status.bundle_monitoring', done: false }
 ]
 
 /**
@@ -174,6 +157,14 @@ export const ROADMAP_DELIVERED_WAVES: IRoadmapWave[] = [
  * useCssSupportClient (v2.3.0), which live in Wave 3 above.
  *
  * Only technical-public items remain: no KPI thresholds, no marketing tactics.
+ *
+ * ⛔ Removed on 2026-09-25, same instruction as the five status entries above:
+ * `public_domain` (where the docs are HOSTED is infrastructure, not library
+ * roadmap). `api_audit` and `e2e_gate` were KEPT — the work is real — but
+ * their copy no longer states the internal accounting the owner does not want
+ * published (a missing v2→v3 migration guide "blocking the v3 tag", when no
+ * v3 exists; "81 of 256 specs gated"). Say what the library will do, not how
+ * many of our own files are wired into our own CI.
  */
 export const ROADMAP_PHASES: IRoadmapPhase[] = [
     {
@@ -199,12 +190,6 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
                 descriptionKey: 'roadmap.phases.short_term.api_audit.description',
                 icon: 'mdi-file-search-outline',
                 effortKey: 'roadmap.effort.large'
-            },
-            {
-                titleKey: 'roadmap.phases.short_term.public_domain.title',
-                descriptionKey: 'roadmap.phases.short_term.public_domain.description',
-                icon: 'mdi-web',
-                effortKey: 'roadmap.effort.small'
             },
             {
                 titleKey: 'roadmap.phases.short_term.a11y_audit.title',

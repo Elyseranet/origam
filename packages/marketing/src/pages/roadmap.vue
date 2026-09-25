@@ -631,9 +631,8 @@
      * `statusParams` hands `{ version }` to EVERY status entry rather than to
      * the one that needs it today: vue-i18n drops a named parameter a message
      * does not reference, so this costs nothing and means the next status line
-     * that wants the live version only edits a locale value. That is what let
-     * `roadmap.status.readme_changelog` name the lagging version with no code
-     * change at all.
+     * that wants the live version only edits a locale value — no code change at
+     * all. `roadmap.status.npm_published` is the one consuming it today.
      ********************************************************/
     const heroBadge = computed(() =>
         t('roadmap.hero.badge', `v${ version.value } — Wave 4 shipped`, { version: version.value })
