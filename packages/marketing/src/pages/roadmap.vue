@@ -99,7 +99,7 @@
                 <origam-sheet
                     tag="div"
                     rounded="lg"
-                    border
+                    :border="false"
                     class="roadmap-status__panel"
                     data-cy="roadmap-status-panel"
                 >
@@ -259,7 +259,7 @@
                 <origam-sheet
                     tag="div"
                     rounded="lg"
-                    border
+                    :border="false"
                     class="roadmap-delivered__panel"
                     data-cy="roadmap-delivered-waves"
                 >
