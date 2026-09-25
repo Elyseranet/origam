@@ -66,6 +66,47 @@ export function normalise (value) {
 }
 
 /*
+ * ⛔ `!important` N'EST PAS DU BRUIT DE MISE EN FORME — #902, mesure du
+ * 2026-09-25, et c'est l'inverse de ce que le ticket prescrivait.
+ * -------------------------------------------------------------------------
+ * #902 demandait que `normalise()` retire un `!important` terminal avant
+ * comparaison, pour que `0px !important` (OrigamAudio) soit reconnu egal au
+ * `0px` de la feuille et donc signale comme doublon retirable. MESURE : ce
+ * serait un FAUX POSITIF, et il pousserait a supprimer du code porteur.
+ *
+ * `--origam-btn---density` n'est pas declare qu'a la racine. `OrigamBtn.vue`
+ * le repose AU NIVEAU DE L'ELEMENT dans ses modificateurs de densite :
+ *
+ *     &--density-comfortable { --origam-btn---density:  8px; }
+ *     &--density-compact     { --origam-btn---density: -8px; }
+ *
+ * Or la logique PROPS-FIRST du DS (ADR-005) fait qu'un theme de marque posant
+ * `'origam-btn': { density: 'comfortable' }` met cette classe sur CHAQUE
+ * bouton — y compris ceux de la barre de transport audio. Sans le
+ * `!important`, la declaration d'Audio et celle de Btn sont deux declarations
+ * de NIVEAU ELEMENT sur le meme element : le gagnant depend de la specificite
+ * et de l'ordre source, ce que l'en-tete d'OrigamAudio documente deja comme
+ * fragile a travers les rechargements HMR. Le `!important` est ce qui garantit
+ * la hierarchie visuelle de l'audio quel que soit le theme.
+ *
+ * Autrement dit : l'egalite de VALEUR avec la feuille ne prouve rien quand le
+ * POIDS DE CASCADE differe. La condition B du garde — « retirer la
+ * declaration ne change aucun pixel » — est indemontrable par comparaison de
+ * valeurs des qu'un `!important` est en jeu, parce que la declaration ne
+ * defend pas contre la racine mais contre un concurrent intermediaire.
+ *
+ * Une declaration `!important` est donc EXCLUE du verdict, explicitement.
+ * C'est exactement le comportement actuel — aujourd'hui la comparaison de
+ * chaines echoue par accident, `'0px !important' !== '0px'` — mais un accident
+ * n'est pas une decision : quelqu'un « nettoiera » `normalise()` un jour. Cet
+ * appel-ci, et la fixture qui l'epingle dans le self-test, transforment le
+ * hasard en choix documente.
+ */
+export function carriesImportant (value) {
+    return /!\s*important\s*$/i.test(normalise(value))
+}
+
+/*
  * Table des tokens telle que la resout le THEME CLAIR : `primitive.css` pose
  * les valeurs brutes, `light.css` les valeurs semantiques par dessus. C'est
  * l'etat par defaut d'une page, donc celui contre lequel « meme valeur » doit
@@ -86,6 +127,39 @@ export function buildTokenTable (sheets) {
  * Deroule les `var(--x, repli)` contre la table. Un nom absent tombe sur son
  * repli ; sans repli il devient `UNRESOLVED(...)`, ce qui exclut la
  * declaration du verdict plutot que de la comparer a l'aveugle.
+ *
+ * ⛔ AUCUNE REDUCTION ARITHMETIQUE DES `calc()` — #902, et c'est delibere.
+ * -------------------------------------------------------------------------
+ * #902 demandait de reduire les `calc()` dont les termes sont des longueurs de
+ * meme unite, pour que les quatre declarations d'OrigamRow —
+ * `--origam-col---padding-{block,inline}-{start,end}: calc(var(--origam-row---gutter) / 2)`
+ * — soient reconnues egales au `var(--origam-space---3)` = `12px` de la
+ * feuille, et donc signalees comme doublons retirables. MESURE : ce serait un
+ * FAUX POSITIF quadruple, et le suivre casserait la gouttiere.
+ *
+ * La table des tokens est celle du theme clair PAR DEFAUT. Elle resout
+ * `--origam-row---gutter` a `var(--origam-row--gutter-comfortable---gap)` =
+ * `24px`, donc `calc(24px / 2)` = `12px` = la feuille. L'egalite est vraie
+ * A CE SEUL ECHELON. Or OrigamRow fait precisement varier ce token :
+ *
+ *     @each $rung in (none, dense, default, comfortable) {
+ *         &--gutter-#{$rung} { --origam-row---gutter: var(--origam-row--gutter-#{$rung}---gap); }
+ *     }
+ *
+ * avec `none` = `var(--origam-space---0)`. Sous `gutter="none"` la declaration
+ * de Row produit `0px` la ou la feuille produit `12px`, et OrigamCol consomme
+ * bien ces quatre tokens (`padding-block-start: var(--origam-col---padding-block-start)`,
+ * lignes 138-141). La declaration de Row n'est donc pas un DOUBLON mais une
+ * relation DERIVEE — « le padding d'une colonne vaut la moitie de la
+ * gouttiere de sa ligne » — et la retirer figerait les colonnes a 12px sur les
+ * quatre echelons.
+ *
+ * La cause est structurelle et vaut au-dela de ce cas : resoudre contre la
+ * table PAR DEFAUT ne permet pas de distinguer « la meme valeur » de « la meme
+ * valeur tant que rien ne varie ». Reduire les `calc()` ne corrigerait pas ce
+ * defaut, il le rendrait exploitable. C'est le faux negatif dont le ticket
+ * avertissait lui-meme dans sa section « Attention en corrigeant » — il visait
+ * juste, sur un autre mecanisme que celui qu'il soupconnait.
  */
 export function resolveValue (value, table, depth = 0) {
     const v = normalise(value)
@@ -272,6 +346,12 @@ export function analyseSources ({ sheets, components, enums = [] }) {
             for (const row of collectDeclarations(body)) {
                 if (!table.has(row.token)) continue
                 if (!isAlwaysActive(row.selector, defaults)) continue
+
+                /*
+                 * #902 — poids de cascade different, egalite de valeur sans
+                 * valeur probante. Voir `carriesImportant` pour la mesure.
+                 */
+                if (carriesImportant(row.value)) continue
 
                 const resolvedScoped = resolveValue(row.value, table)
                 const resolvedSheet = resolveValue(table.get(row.token), table)
