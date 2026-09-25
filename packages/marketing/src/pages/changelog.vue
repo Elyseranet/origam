@@ -488,7 +488,7 @@ const currentVersionLabel = computed(() =>
         margin: 0;
         font-size: var(--origam-font-size---3xl, 2rem);
         font-weight: var(--origam-font__weight---bold, 700);
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
         letter-spacing: var(--origam-letter-spacing---tight, -0.02em);
         color: var(--origam-color__text---primary, #0a0a0a);
     }
@@ -501,7 +501,7 @@ const currentVersionLabel = computed(() =>
         margin: 0;
         font-size: var(--origam-font-size---sm, 0.875rem);
         color: var(--origam-color__text---secondary, #525252);
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
 
         &--unreleased {
             font-style: italic;
@@ -537,7 +537,7 @@ const currentVersionLabel = computed(() =>
     }
 
     &__highlight-text {
-        font-size: var(--origam-font-size---base, 1rem);
+        font-size: var(--origam-font__size---lg, 1rem);
         line-height: 1.6;
         color: var(--origam-color__text---primary, #0a0a0a);
     }

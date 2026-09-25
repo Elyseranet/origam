@@ -327,7 +327,7 @@ const tableHeaders = computed(() => [
     }
 
     &__trigger-title {
-        --origam-title---font-size: var(--origam-font-size---base, 1rem);
+        --origam-title---font-size: var(--origam-font__size---lg, 1rem);
         --origam-title---font-weight: 600;
         margin: 0 0 var(--origam-space---1, 0.25rem);
     }
@@ -383,7 +383,7 @@ const tableHeaders = computed(() => [
     }
 
     &__cell-mono {
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
         font-size: var(--origam-font-size---xs, 0.75rem);
     }
 

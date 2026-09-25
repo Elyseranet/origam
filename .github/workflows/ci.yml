@@ -61,6 +61,12 @@ jobs:
       # how the baseline mechanism works. No build prerequisite: the guards
       # parse .vue/.ts/.scss source text directly (~1s total), so this job
       # adds negligible wall-clock to the pipeline.
+      #
+      # ⛔ ONE guard reaches OUTSIDE packages/ds/src: guard 30,
+      # `token-var-channels-marketing`, scans packages/marketing's own
+      # sources (#958). The site is the biggest token consumer in the repo
+      # and was audited by nothing — 841 dead reads on 52 names. It still
+      # needs no build: it reads source text like every other guard.
       - name: Run architecture guards
         run: pnpm -F origam guards
 

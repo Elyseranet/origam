@@ -417,7 +417,7 @@ async function handleSave () {
 
     &__kind-chip {
         --origam-chip---background-color: transparent;
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
         font-size: var(--origam-font-size---xs, 0.75rem);
     }
 
@@ -425,7 +425,7 @@ async function handleSave () {
         margin: 0;
         font-size: var(--origam-font-size---sm, 0.875rem);
         color: var(--origam-color__text---secondary, #525252);
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
     }
 
     &__loading {
@@ -465,7 +465,7 @@ async function handleSave () {
         }
 
         &-title {
-            --origam-title---font-size: var(--origam-font-size---base, 1rem);
+            --origam-title---font-size: var(--origam-font__size---lg, 1rem);
             --origam-title---font-weight: 600;
             margin: 0;
         }
@@ -559,7 +559,7 @@ async function handleSave () {
         margin: 0;
 
         &--mono {
-            font-family: var(--origam-font-family---mono, monospace);
+            font-family: var(--origam-font__family---mono, monospace);
         }
 
         &--code {
@@ -573,7 +573,7 @@ async function handleSave () {
         background-color: var(--origam-color__surface---sunken, #f5f5f5);
         border-radius: var(--origam-radius---sm, 4px);
         font-size: var(--origam-font-size---xs, 0.75rem);
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
         white-space: pre-wrap;
         word-break: break-all;
     }

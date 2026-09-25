@@ -760,7 +760,7 @@ const comparisonItems = computed(() =>
 
         &__cell-title {
             margin: 0;
-            font-size: var(--origam-font-size---base, 1rem) !important;
+            font-size: var(--origam-font__size---lg, 1rem) !important;
             font-weight: var(--origam-font__weight---semibold, 600);
             line-height: var(--origam-line-height---tight, 1.25);
             color: var(--origam-color__text---primary);
@@ -928,7 +928,7 @@ const comparisonItems = computed(() =>
 
         &__row-title {
             margin: 0 0 var(--origam-space---1, 0.25rem);
-            font-size: var(--origam-font-size---base, 1rem) !important;
+            font-size: var(--origam-font__size---lg, 1rem) !important;
             font-weight: var(--origam-font__weight---semibold, 600);
             color: var(--origam-color__text---primary);
         }
@@ -966,7 +966,7 @@ const comparisonItems = computed(() =>
             align-items: center;
             gap: var(--origam-space---2, 0.5rem);
             margin: 0 0 var(--origam-space---5, 1.25rem);
-            font-size: var(--origam-font-size---base, 1rem);
+            font-size: var(--origam-font__size---lg, 1rem);
             font-weight: var(--origam-font__weight---semibold, 600);
 
             &--yes {

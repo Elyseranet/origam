@@ -394,7 +394,7 @@ const STATUS_DOT_COLOR: Record<string, string> = {
     }
 
     &__widget-title {
-        font-size: var(--origam-font-size---base, 1rem);
+        font-size: var(--origam-font__size---lg, 1rem);
         font-weight: var(--origam-font__weight---semibold, 600);
         color: var(--origam-color__text---primary, #0a0a0a);
     }

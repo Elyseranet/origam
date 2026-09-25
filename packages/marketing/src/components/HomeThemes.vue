@@ -198,7 +198,7 @@ const { theme, setTheme } = useTheme()
     &__subtitle {
         margin: 0;
         max-inline-size: 34rem;
-        font-size: var(--origam-font-size---base, 1rem);
+        font-size: var(--origam-font__size---lg, 1rem);
         line-height: 1.6;
         color: var(--origam-color__text---secondary, #525252);
     }

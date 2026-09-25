@@ -232,7 +232,7 @@ const headers = computed(() => [
 
     &__cell-name {
         font-weight: 600;
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
         font-size: var(--origam-font-size---sm, 0.875rem);
     }
 
