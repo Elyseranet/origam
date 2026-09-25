@@ -112,7 +112,6 @@
     "main-surface-tokens.spec.ts",
     "marketing-brand-presets.spec.ts",
     "marketing-nav-locale.spec.ts",
-    "marketing-primary-nav.spec.ts",
     "marketing-theme-builder.spec.ts",
     "marketing-theme-live-switch.spec.ts",
     "marketing-theming-controls.spec.ts",
