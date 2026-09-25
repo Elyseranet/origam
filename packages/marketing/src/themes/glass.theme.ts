@@ -226,7 +226,26 @@ export const glassLightTheme: IOrigamTheme = {
         // ── Overlay & Surface (SYNTHESE §3) ─────────────────────────────
         'origam-card': { rounded: 'lg', border: true, elevation: 4 },
         'origam-sheet': { rounded: 'lg', border: true, elevation: 4 },
-        'origam-menu': { rounded: 'lg', border: true, elevation: 4, nav: true },
+        // ⛔ `sm` et non `lg` (#944) — décision du propriétaire sur pièce, après
+        // la planche des 8 identités × 2 modes.
+        //
+        // La valeur vient du THÈME, pas d'un choix à l'œil : glass déclare dans
+        // son `vars.rounded` les rungs `sm`, `md`, `lg` (+ `card`, `btn`,
+        // `pill`) et ne déclare PAS `xs` — `rounded: 'xs'` retomberait sur le
+        // primitif DS à 2px, une valeur que glass n'a jamais choisie. `sm` est
+        // donc le plus léger des rungs qui lui appartiennent : 10px en clair,
+        // 16px en sombre (contre 22px / 30px avant).
+        //
+        // Conteneur et item se retrouvent ainsi sur le MÊME rung, ce que
+        // `material` fait déjà (`corner-extra-small` des deux côtés) : on étend
+        // une règle existante au lieu d'en inventer une.
+        //
+        // ⚠️ Défaut de composant, donc TOUT `origam-menu` de l'app suit — y
+        // compris le déclencheur riche du Theme Builder. Constaté, pas supposé
+        // (mesures dans la PR). Le menu de `origam-select` ne suit PAS : il
+        // passe par `menuProps` plus haut, un binding explicite qui bat le
+        // défaut de thème.
+        'origam-menu': { rounded: 'sm', border: true, elevation: 4, nav: true },
         'origam-dialog': { rounded: 'lg', border: true, elevation: 5 },
         // origam-tooltip volontairement ABSENT d'ici : ITooltipProps n'a NI
         // `rounded`, NI `border`, NI `elevation` (confirmé — aucune de ces
@@ -243,8 +262,25 @@ export const glassLightTheme: IOrigamTheme = {
         // radius est 100% cssVar-driven (`--origam-pagination---border-radius`
         // / `-rounded`), câblé plus bas dans `cssVars`.
         'origam-pagination': { border: true, elevation: 2 },
+        // ⛔ #294 — consolidation prop vs cssVar, côté item. `rounded: 'lg'`
+        // donnait 22px (clair) / 30px (sombre) à une ligne de 48px de haut :
+        // une pilule, le même rung que le conteneur du menu. Le thème portait
+        // par ailleurs `--origam-list-item---border-radius: 11px` en cssVars —
+        // l'intention de l'auteur — et cette déclaration ne peignait RIEN :
+        // `useRounded` émet, pour un rung utilitaire, la classe ET un
+        // `border-radius` inline, lequel bat toute déclaration de feuille.
+        // Mesuré en Chromium : 22px/30px rendus, jamais 11px.
+        //
+        // On tranche donc dans le sens que #294 demande — UNE seule source, la
+        // prop — et on reprend la valeur visée : `sm` = 10px (clair) / 16px
+        // (sombre). La cssVar morte est supprimée plus bas.
+        //
+        // `paddingInline: 12` — la gouttière intérieure du libellé valait 0px à
+        // gauche (mesurée) : `calc(12px - 8px d'indent `nav` - 8px de densité
+        // compacte)` clampé à 0. #934 a corrigé la gouttière de la LISTE, pas
+        // celle de la LIGNE. La prop court-circuite le `calc()`.
         'origam-list': { rounded: 'lg', nav: true },
-        'origam-list-item': { rounded: 'lg' },
+        'origam-list-item': { rounded: 'sm', paddingInline: 12 },
 
         // ── Data Display (SYNTHESE §3) ───────────────────────────────────
         'origam-table': { rounded: 'lg', border: true, elevation: 3, hover: true },
@@ -324,8 +360,11 @@ export const glassLightTheme: IOrigamTheme = {
         '--origam-list-item---padding-inline-end': '12px',
         // Respiration items (SYNTHESE §1.5/§4) — `nav:true` (posé en props sur
         // origam-menu/origam-list) applique déjà `margin-block-end:4px` via son
-        // propre modificateur ; seul le radius d'item reste à fixer ici.
-        '--origam-list-item---border-radius': '11px',
+        // propre modificateur.
+        // ⛔ `--origam-list-item---border-radius: 11px` RETIRÉ ici (#294) : la
+        // prop `rounded` du bloc `components` émet un `border-radius` inline
+        // qui battait cette déclaration — elle n'a jamais peint. La valeur vit
+        // désormais dans la prop (`rounded: 'sm'` = 10px en clair).
         // Tint hover/actif (SYNTHESE §4) — le "fill" de l'item est un overlay
         // `currentColor` dont seule l'opacité varie par état (.08 hover-link /
         // .12 actif / .16 actif+hover) ; on route sa COULEUR sur l'accent pour
@@ -666,7 +705,8 @@ export const glassDarkTheme: IOrigamTheme = {
         '--origam-list---padding-block-end': '0',
         '--origam-list-item---padding-inline-start': '12px',
         '--origam-list-item---padding-inline-end': '12px',
-        '--origam-list-item---border-radius': '11px',
+        // ⛔ `--origam-list-item---border-radius: 11px` RETIRÉ (#294) — morte,
+        // battue par le style inline de la prop `rounded`. Cf. bloc clair.
         // Dark = verre teinté sombre (SYNTHESE §1.3), pas blanc — l'overlay actif
         // reste sur l'accent clair `#a78bfa` (7.4:1 sur fond sombre, cf. §1.2 fill
         // accent bombé) plutôt que sur `#7c3aed` (trop sombre pour un tint dark).

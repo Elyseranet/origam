@@ -55,7 +55,33 @@ const MARKETING_GREEN_SPECS = [
     // Elle ne dépend d'aucun accès sortant du runner : son contrôle positif
     // vise un hôte en `.invalid` (RFC 2606), qui ne résout jamais et échoue
     // immédiatement — la suite ne contacte donc elle-même aucun tiers.
-    'marketing-no-third-party.spec.ts'
+    'marketing-no-third-party.spec.ts',
+
+    // #944 — la forme du menu déroulant sous les 8 identités. Le fichier
+    // existait depuis longtemps SANS être gardé : il était inscrit dans
+    // `e2e/_support/baseline/spec-coverage.json` comme non exécuté, donc la
+    // garde `spec-coverage` restait verte et rien ne le signalait.
+    //
+    // Admis ici parce qu'il tient le contrat de la liste, mesuré et non
+    // supposé :
+    //   - contrôle positif : les 6 cas de `menu shape` sont **6/6 ROUGES**
+    //     contre un serveur servant `develop`, et ils échouent sur la VALEUR
+    //     reçue (`28px` / `22px` / `30px` / `20px`), pas sur une expiration —
+    //     une spec qui expire ne prouve rien ;
+    //   - stabilité : **110/110** en `--repeat-each=5 --retries=0` sur le
+    //     FICHIER ENTIER (22 cas × 5), 2,3 min, machine au repos (load 3,3),
+    //     serveur de dev isolé sur un port à nous. Les 16 cas préexistants
+    //     sont donc verts et stables eux aussi — c'est la condition pour
+    //     brancher un fichier plutôt que des cas.
+    //
+    // ⛔ Le premier clic sur l'activateur tombe dans le vide tant que Nuxt
+    // n'a pas hydraté : le bouton est peint et « actionable » pour Playwright,
+    // mais Vue n'a pas encore attaché son écouteur. Mesuré : 6/6 expirations.
+    // Le site n'expose aucun marqueur d'hydratation (`[data-v-app]` absent),
+    // d'où la boucle de re-clic dans le spec. Ne pas la remplacer par un
+    // `waitForTimeout` : c'est ce qui rendrait le fichier instable en CI, où
+    // la machine est plus lente que la nôtre.
+    'marketing-primary-nav.spec.ts'
 ]
 
 /*

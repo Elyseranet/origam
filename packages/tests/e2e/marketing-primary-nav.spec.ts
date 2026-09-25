@@ -120,3 +120,134 @@ test.describe('primary-nav active state (route-driven)', () => {
     expect(outlineStyle).not.toBe('none')
   })
 })
+
+/**
+ * SPEC — le menu déroulant ne porte pas la forme de TIROIR (#944)
+ *
+ * ## Ce qui est encodé ici
+ *
+ * `material`, `glass` et `cartoon` donnaient au conteneur du menu ET à ses
+ * lignes le MÊME rung (`rounded: 'lg'`) — 28px / 22-30px / 20px sur une ligne
+ * de 48px de haut. Au-delà de 24px le navigateur ramène les rayons et la ligne
+ * devient une pilule pleine.
+ *
+ * Pour `material` c'est une erreur de forme documentable, pas un goût. Vérifié
+ * dans les sources de tokens Material :
+ *   - conteneur de menu déroulant = `corner-extra-small` = 4px
+ *     (`material-web/tokens/versions/v0_192/_md-comp-menu.scss` →
+ *      `'container-shape': … 'corner-extra-small'`, `_md-sys-shape.scss` → 4px)
+ *   - item de liste = `corner-none` = 0
+ *     (`_md-comp-list.scss` → `'list-item-container-shape': … 'corner-none'`)
+ *   - destination de TIROIR = `ShapeAppearance.Material3.Corner.Full` = pilule
+ *     (`material-components-android`, `navigation/res/values/styles.xml`)
+ * La pilule de 28px est `corner-extra-large` : une forme de tiroir, posée sur
+ * un menu.
+ *
+ * ## ⛔ Pourquoi `.origam-menu__content` et pas `.origam-menu`
+ *
+ * Le menu est TÉLÉPORTÉ. `.origam-menu` est la racine du téléport et ne porte
+ * aucun rayon — une mesure qui la vise rend `0px` sous les 8 identités et
+ * conclut, à tort, que rien n'est arrondi. La surface visible est
+ * `.origam-menu__content`.
+ *
+ * ## ⛔ Pourquoi des valeurs absolues
+ *
+ * « le menu est moins arrondi que la ligne » passerait sur n'importe quelle
+ * valeur fausse. Les attentes viennent du rung que chaque thème pose, relu
+ * dans son `vars.rounded`.
+ *
+ * ## ⛔ Les longhands, jamais le raccourci
+ *
+ * `getPropertyValue()` sur `border-radius` rend `""` dès que la valeur contient
+ * un `var()` — ce qui est le cas ici, la prop `rounded` émettant
+ * `border-radius: var(--origam-radius---xs, …)` en style inline.
+ *
+ * ## Le témoin positif
+ *
+ * Rejoué contre le produit d'avant correctif (`MARKETING_BASE_URL` pointé sur
+ * un serveur marketing servant `develop`), les six cas rendent le rayon du
+ * CONTENEUR sur la ligne — 28 / 28 / 22 / 30 / 20 / 20 — et le bloc est ROUGE.
+ *
+ * ⚠️ Ce fichier n'est PAS dans `MARKETING_GREEN_SPECS` : la CI ne l'exécute
+ * pas. Il ne garde que les exécutions locales de la suite marketing.
+ */
+const MENU_SHAPE = [
+  // identité, mode, rayon du conteneur, rayon de la ligne — mesurés en Chromium.
+  //
+  // ⛔ Les trois identités posent desormais conteneur ET ligne sur le MÊME rung,
+  // le plus léger que chacune déclare dans son propre `vars.rounded` :
+  //   material → `xs` = 4px  (M3 `corner-extra-small`)
+  //   glass    → `sm` = 10px clair / 16px sombre
+  //   cartoon  → `sm` = 8px  (identique dans les deux modes)
+  // Aucune ne déclare de rung plus bas : `xs` en glass et cartoon retomberait
+  // sur le primitif DS (2px), une valeur qu'aucune des deux n'a choisie.
+  { name: 'material', mode: 'light', content: '4px', item: '4px' },
+  { name: 'material', mode: 'dark', content: '4px', item: '4px' },
+  { name: 'glass', mode: 'light', content: '10px', item: '10px' },
+  { name: 'glass', mode: 'dark', content: '16px', item: '16px' },
+  { name: 'cartoon', mode: 'light', content: '8px', item: '8px' },
+  { name: 'cartoon', mode: 'dark', content: '8px', item: '8px' }
+]
+
+for (const { name, mode, content, item } of MENU_SHAPE) {
+  test.describe(`menu shape — ${name}/${mode} (#944)`, () => {
+    test('la ligne ne porte pas le rayon du conteneur, et garde sa gouttière', async ({ page }) => {
+      await setTheme(page, name, mode)
+      await page.goto(`${BASE_URL}/`, { waitUntil: 'load' })
+
+      // ⛔ Le premier clic tombe dans le vide tant que Nuxt n'a pas hydraté :
+      // le bouton est peint et « actionable » pour Playwright, mais Vue n'a
+      // pas encore attaché son écouteur, donc `click()` réussit et le menu ne
+      // s'ouvre jamais (mesuré : 6/6 expirations sur `waitFor visible`). Le
+      // site n'expose aucun marqueur d'hydratation (`[data-v-app]` absent),
+      // donc on reclique tant que le menu n'est pas ouvert — jamais quand il
+      // l'est déjà, pour ne pas le refermer.
+      const activator = page.locator('[data-cy="nav-section-introduction"]')
+      await activator.waitFor({ state: 'visible' })
+      const menuContent = page.locator('.origam-menu__content').first()
+
+      await expect.poll(async () => {
+        if (await menuContent.isVisible()) return true
+        await activator.click().catch(() => undefined)
+        await page.waitForTimeout(250)
+        return menuContent.isVisible()
+      }, {
+        timeout: 20_000,
+        message: 'le menu « Introduction » ne s’est jamais ouvert'
+      }).toBe(true)
+
+      await page.locator('[data-cy="nav-item-changelog"]').first().waitFor({ state: 'visible' })
+
+      // Rien n'est muté : on lit ce que Vue a rendu, donc la règle du
+      // « single evaluate » (classe liée à un computed) ne s'applique pas.
+      const shape = await page.evaluate(() => {
+        const contentEl = document.querySelector('.origam-menu__content')!
+        const rows = [...contentEl.querySelectorAll('.origam-list-item')]
+        const rowEl = rows[rows.length - 1]
+        const rowCs = getComputedStyle(rowEl)
+        const titleEl = rowEl.querySelector('.origam-list-item__title')
+        return {
+          content: getComputedStyle(contentEl).borderTopLeftRadius,
+          item: rowCs.borderTopLeftRadius,
+          itemBottomRight: rowCs.borderBottomRightRadius,
+          padInlineStart: rowCs.paddingInlineStart,
+          overflows: rowEl.getBoundingClientRect().right > contentEl.getBoundingClientRect().right,
+          labelFlush: titleEl
+            ? Math.abs(titleEl.getBoundingClientRect().left - rowEl.getBoundingClientRect().left) < 1
+            : null
+        }
+      })
+
+      expect(shape.content, 'rayon du conteneur du menu').toBe(content)
+      expect(shape.item, 'rayon de la ligne — coin haut-gauche').toBe(item)
+      expect(shape.itemBottomRight, 'rayon de la ligne — coin bas-droit').toBe(item)
+      // La RÈGLE, pas seulement les valeurs : conteneur et ligne partagent le
+      // rung. Une dérive qui garderait les deux « légers » mais casserait
+      // l'appariement passerait les trois assertions ci-dessus.
+      expect(shape.content, 'conteneur et ligne doivent partager le même rung').toBe(shape.item)
+      expect(shape.overflows, 'la ligne ne doit jamais déborder de .origam-menu__content').toBe(false)
+      expect(shape.padInlineStart, 'gouttière intérieure de la ligne — 0px = libellé collé au bord').toBe('12px')
+      expect(shape.labelFlush, 'le libellé ne doit pas toucher le bord de la surbrillance').toBe(false)
+    })
+  })
+}

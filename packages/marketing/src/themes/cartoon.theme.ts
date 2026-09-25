@@ -140,7 +140,19 @@ export const cartoonLightTheme: IOrigamTheme = {
         'origam-code': { rounded: 'lg', border: true, elevation: 2, copyable: true },
         // nav:true ajouté (synthèse §3, "respiration des items") — IMenuProps
         // forwarde vers le List interne. Vérifié: IListProps.nav existe.
-        'origam-menu': { rounded: 'lg', border: true, elevation: 4, nav: true },
+        // ⛔ `sm` et non `lg` (#944) — même décision qu'en glass, prise par le
+        // propriétaire devant la planche des 8 identités × 2 modes.
+        //
+        // La valeur vient du THÈME : cartoon déclare `sm`, `md`, `lg` (+ `card`,
+        // `btn`, `pill`) et ne déclare PAS `xs` — `rounded: 'xs'` retomberait
+        // sur le primitif DS à 2px, que cartoon n'a jamais choisi. `sm` = 8px
+        // dans les deux modes (contre 20px avant), et met le conteneur sur le
+        // même rung que l'item, comme `material`.
+        //
+        // ⚠️ Défaut de composant : tout `origam-menu` de l'app suit. Le menu de
+        // `origam-select` ne suit PAS — il porte son propre `menuProps` plus
+        // haut, un binding explicite qui bat le défaut de thème.
+        'origam-menu': { rounded: 'sm', border: true, elevation: 4, nav: true },
         // hover:true ajouté (synthèse §3) — ITableProps extends IHoverProps, vérifié.
         'origam-table': { rounded: 'lg', border: true, hover: true },
         // Arbitrage utilisateur (Refs #30, PR #254) — la synthèse design
@@ -211,8 +223,16 @@ export const cartoonLightTheme: IOrigamTheme = {
         // de chaque item passe par le token --origam-pagination---border-radius
         // déjà présent (pas de cssVars nécessaire, valeur par défaut correcte).
         'origam-pagination': { border: true, elevation: 2 },
+        // ⛔ Même consolidation qu'en glass (#294) : l'item portait le rung du
+        // conteneur (`lg` = 20px sur une ligne de 48px), pendant que le thème
+        // déclarait `--origam-list-item---border-radius: 9px` en cssVars — une
+        // déclaration qui ne peignait RIEN, le style inline émis par
+        // `useRounded` pour un rung utilitaire battant toute feuille. Mesuré :
+        // 20px rendus, jamais 9px. `sm` = 8px reprend la valeur visée, par la
+        // prop. La cssVar morte est supprimée plus bas.
+        // `paddingInline: 12` : gouttière du libellé mesurée à 0px, cf. glass.
         'origam-list': { rounded: 'lg', nav: true },
-        'origam-list-item': { rounded: 'lg' },
+        'origam-list-item': { rounded: 'sm', paddingInline: 12 },
         'origam-blockquote': { variant: 'default', rounded: 'lg', border: true, accentColor: 'primary' }
     },
     // Overrides bruts non exprimables en props (couleur + épaisseur de bordure,
@@ -295,7 +315,9 @@ export const cartoonLightTheme: IOrigamTheme = {
         // is no per-token-type design token" for the full explanation.
 
         '--origam-field--error---border-color': '#ef4444',
-        '--origam-list-item---border-radius': '9px',
+        // ⛔ `--origam-list-item---border-radius: 9px` RETIRÉ (#294) — morte,
+        // battue par le `border-radius` inline que la prop `rounded` émet. La
+        // valeur vit désormais dans la prop (`rounded: 'sm'` = 8px).
         '--origam-table---header-cell-background-color': 'var(--origam-color__action--primary---bgSubtle)',
         '--origam-code---line-highlight-background-color': 'var(--origam-color__action--primary---bgSubtle)',
         '--origam-overlay-scrim---background-color': 'rgba(23, 23, 23, 0.6)',
@@ -463,7 +485,9 @@ export const cartoonDarkTheme: IOrigamTheme = {
         // ── Synthèse §4 (dark) — voir le bloc light pour le détail des gaps
         // DS non applicables et des couples déjà corrects sans override.
         '--origam-field--error---border-color': '#ef4444',
-        '--origam-list-item---border-radius': '9px',
+        // ⛔ `--origam-list-item---border-radius: 9px` RETIRÉ (#294) — morte,
+        // battue par le `border-radius` inline que la prop `rounded` émet. La
+        // valeur vit désormais dans la prop (`rounded: 'sm'` = 8px).
         '--origam-table---header-cell-background-color': 'var(--origam-color__action--primary---bgSubtle)',
         '--origam-code---line-highlight-background-color': 'var(--origam-color__action--primary---bgSubtle)',
         '--origam-overlay-scrim---background-color': 'rgba(23, 23, 23, 0.6)',
