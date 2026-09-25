@@ -251,3 +251,96 @@ for (const { name, mode, content, item } of MENU_SHAPE) {
     })
   })
 }
+
+/**
+ * SPEC — tous les menus du site se lisent pareil, quel que soit ce qui les
+ * ouvre (#946)
+ *
+ * ## Ce qui est encodé ici
+ *
+ * `rounded` sur `origam-menu` est un DÉFAUT DE COMPOSANT : trois des quatre
+ * surfaces à menu du site en héritent (menu de nav, menu de langue, sélecteur
+ * d'identité). La quatrième — le dropdown d'`origam-select` — reçoit un
+ * `menuProps` EXPLICITE depuis le thème, un binding qui bat le défaut. C'est
+ * pour ça qu'elle était restée en arrière quand #944 a allégé les trois autres :
+ * en glass sombre, un menu de nav à 16px côtoyait un dropdown à 30px sur la
+ * même page. Mesuré, photographié, corrigé sous #946.
+ *
+ * ⛔ C'est un canal SÉPARÉ, pas une conséquence : un spec qui ne mesure que le
+ * menu de nav reste vert pendant que le dropdown dérive. D'où ce bloc.
+ *
+ * ## ⛔ Pourquoi dans CE fichier
+ *
+ * Le dropdown n'est pas de la navigation primaire, et le nom du fichier le dit
+ * mal. Il vit ici quand même parce que c'est ce fichier qui est inscrit dans
+ * `MARKETING_GREEN_SPECS` : un fichier neuf sortirait du périmètre exécuté par
+ * la CI et devrait repasser par la baseline `spec-coverage`. Un spec qu'aucun
+ * job n'exécute ne garde rien.
+ *
+ * ## Le témoin positif
+ *
+ * Contre un serveur servant `develop`, les six cas rendent la valeur d'avant —
+ * glass 22px / 30px, cartoon 14px — et le bloc est ROUGE. Ces trois valeurs
+ * sont celles de `develop` APRÈS le merge de #945 : #945 n'a pas touché
+ * `menuProps` (vérifiable par `git show origin/develop:packages/marketing/src/
+ * themes/glass.theme.ts`), donc le témoin ne dépend pas de la fraîcheur du
+ * serveur témoin.
+ *
+ * ## Les témoins négatifs
+ *
+ * `geek` et `editorial` portent DÉJÀ un `menuProps` explicite, à une valeur qui
+ * coïncide avec leur menu (`sm` = 4px, `none` = 0). Ils ne doivent pas bouger —
+ * s'ils bougent, le correctif a débordé de sa cible.
+ */
+const SELECT_MENU_SHAPE = [
+  // identité, mode, rayon attendu sur TOUTES les surfaces à menu
+  { name: 'glass', mode: 'light', radius: '10px' },
+  { name: 'glass', mode: 'dark', radius: '16px' },
+  { name: 'cartoon', mode: 'light', radius: '8px' },
+  { name: 'cartoon', mode: 'dark', radius: '8px' },
+  // témoins négatifs — déjà alignés avant #946, ne doivent pas bouger
+  { name: 'geek', mode: 'light', radius: '4px' },
+  { name: 'editorial', mode: 'light', radius: '0px' }
+]
+
+for (const { name, mode, radius } of SELECT_MENU_SHAPE) {
+  test.describe(`select dropdown shape — ${name}/${mode} (#946)`, () => {
+    test('le dropdown d’un origam-select porte le même rayon que le menu de nav', async ({ page }) => {
+      await setTheme(page, name, mode)
+      await page.goto(`${BASE_URL}/changelog`, { waitUntil: 'load' })
+
+      // Même boucle de re-clic que le bloc précédent : avant hydratation, le
+      // clic réussit pour Playwright et n'ouvre rien.
+      const select = page.locator('.changelog-release__select').first()
+      await select.waitFor({ state: 'visible', timeout: 15000 })
+      const menuContent = page.locator('.origam-menu__content').first()
+
+      await expect.poll(async () => {
+        if (await menuContent.isVisible()) return true
+        await select.click().catch(() => undefined)
+        await page.waitForTimeout(250)
+        return menuContent.isVisible()
+      }, {
+        timeout: 20_000,
+        message: 'le dropdown du select ne s’est jamais ouvert'
+      }).toBe(true)
+
+      const shape = await page.evaluate(() => {
+        const el = [...document.querySelectorAll('.origam-menu__content')]
+          .find((e) => e.getBoundingClientRect().width > 0)!
+        return {
+          radius: getComputedStyle(el).borderTopLeftRadius,
+          // ⛔ relu AU MOMENT de la mesure : une sonde antérieure cliquait en
+          // aveugle dans la barre, tombait sur la bascule de mode et rendait
+          // des valeurs du mode OPPOSÉ, inversées mais cohérentes.
+          themeAtRead: document.documentElement.getAttribute('data-theme'),
+          modeAtRead: document.documentElement.getAttribute('data-mode')
+        }
+      })
+
+      expect(shape.themeAtRead, 'identité réellement active à la mesure').toBe(name)
+      expect(shape.modeAtRead, 'mode réellement actif à la mesure').toBe(mode)
+      expect(shape.radius, 'rayon du dropdown de select').toBe(radius)
+    })
+  })
+}
