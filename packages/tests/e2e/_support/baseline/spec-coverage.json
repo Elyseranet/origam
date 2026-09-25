@@ -139,7 +139,6 @@
     "prop-audit.spec.ts",
     "responsive-aspect-ratio.spec.ts",
     "responsive.spec.ts",
-    "roadmap.spec.ts",
     "row-adjacent-margin.spec.ts",
     "row-gutters.spec.ts",
     "scroll.spec.ts",

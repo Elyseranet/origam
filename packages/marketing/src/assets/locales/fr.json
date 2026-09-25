@@ -1164,39 +1164,44 @@
             "badge": "v{version} — Vague 4 livrée",
             "title_line1": "Feuille de route.",
             "title_line2": "Honnête & publique.",
-            "subtitle": "origam est un design system Vue 3 en phase de démarrage. Voici où nous en sommes aujourd'hui, ce que nous avons livré, et ce qui arrive."
+            "subtitle": "origam est un design system Vue 3 en phase de démarrage. Voici où nous en sommes aujourd'hui, ce que nous avons livré, et ce qui arrive.",
+            "actions_label": "Explorer la feuille de route",
+            "cta_status": "Voir où on en est",
+            "cta_phases": "Aller à la suite"
         },
         "status": {
             "eyebrow": "OÙ ON EN EST",
             "title_line1": "Où en est la {version}",
             "title_line2": "aujourd'hui.",
-            "subtitle": "Chaque ligne ci-dessous a été mesurée sur le dépôt le 23 septembre 2026 — ce qui est livré, et ce qui manque encore.",
+            "subtitle": "Un état honnête de ce qui marche, de ce qui avance et de ce qui manque encore — chaque ligne ci-dessous a été mesurée, pas recopiée.",
             "npm_published": "Publié sur npm — origam {version}, publication automatisée avec attestation sigstore",
-            "readme_changelog": "README correct, CHANGELOG à jour",
+            "readme_changelog": "README correct, mais le CHANGELOG retarde sur la version publiée {version} — les dernières versions ne sont pas encore rédigées",
             "monorepo": "Monorepo en place — 5 packages pnpm workspace (ds, docs, marketing, stories, tests), la bibliothèque publiant toujours depuis packages/ds",
             "bundle_monitoring": "Aucun suivi de la taille du bundle — aucun budget de poids n'est imposé sur les sous-exports",
             "wave4_shipped": "Wave 4 livrée — 13 composants + support des dégradés + OrigamTextMask (v2.6.0)",
             "ci_pipeline": "Chaîne d'intégration complète — 20 jobs répartis sur 5 workflows : lint, gardes d'architecture, garde des migrations, vérification des types, tests unitaires, builds, contrôle i18n, contrôle de dérive du changelog, e2e, e2e marketing, a11y des composants, a11y marketing et régression visuelle",
             "docs_deployed": "Documentation et stories déployées — la référence VitePress et le build Histoire répondent tous deux en HTTP 200",
-            "unit_tests": "7 187 tests unitaires au vert sur 563 fichiers de specs — 77,8 % des instructions et 79,9 % des lignes couvertes",
-            "e2e_specs": "254 fichiers de specs Playwright pour 218 stories — chaque famille de composants a son garde-fou e2e",
+            "unit_tests": "7 192 tests unitaires au vert sur 564 fichiers de specs — 77,8 % des instructions et 79,9 % des lignes couvertes",
+            "e2e_specs": "256 fichiers de specs Playwright pour 218 stories — chaque famille de composants a son garde-fou e2e",
             "guards": "29 gardes d'architecture sur 29 au vert, et 16 auto-tests sur 16 prouvant que les détecteurs mesurent encore",
-            "inspection": "216 composants inspectés sur 8 critères — rendu, canal du thème, réactivité, résolution des props, emits, sémantique, cohérence story et doc, chaînes en dur : zéro défaut restant",
+            "inspection": "Inspectés le 1er septembre 2026 : 216 composants sur 8 critères — rendu, canal du thème, réactivité, résolution des props, emits, sémantique, cohérence story et doc, chaînes en dur : zéro défaut à cette date",
             "sonarqube": "SonarQube branché avec la couverture des tests unitaires et une quality gate qui bloque sur la sécurité et la criticité",
             "dependency_automation": "Mises à jour de dépendances automatisées — Dependabot ouvre chaque semaine des pull requests groupées pour npm et GitHub Actions",
-            "e2e_ci_gate": "L'intégration continue ne barre que 81 des 254 specs Playwright — les 173 autres existent mais ne bloquent encore rien",
+            "e2e_ci_gate": "L’intégration continue ne barre que 81 des 256 specs Playwright — les 175 autres existent mais ne bloquent encore rien",
             "a11y_sweep": "Les overlays n'ont toujours pas d'assertions de piège au focus — un seul composant de toute la famille est couvert, alors que le balayage par composant barre désormais la CI sur une baseline de violations vide",
             "visual_regression": "La régression visuelle est seulement amorcée — la suite en conteneur épinglé ne couvre qu'un composant pour l'instant",
             "migration_guide": "Le guide de migration v2 vers v3 n'existe pas encore — il bloque la pose du tag v3",
             "public_domain": "La documentation et les stories sont servies depuis un hôte interne — le domaine du projet ne résout pas encore",
-            "community": "Pas encore de communauté — ni discussions ouvertes, ni contributeur externe"
+            "community": "Pas encore de communauté — ni discussions ouvertes, ni contributeur externe",
+            "measured_on": "Mesuré sur le dépôt le 25 septembre 2026",
+            "live_title": "En place aujourd’hui ({count})",
+            "pending_title": "Pas encore ({count})"
         },
         "delivered": {
             "eyebrow": "DÉJÀ LIVRÉ",
             "title_line1": "Un design system complet.",
             "title_line2": "Déjà en production.",
-            "subtitle": "origam ne part pas de zéro — voici l'ampleur déjà livrée sur npm, avec les dernières vagues ci-dessous.",
-            "badge_done": "Livré"
+            "subtitle": "origam ne part pas de zéro — voici l'ampleur déjà livrée sur npm, avec les dernières vagues ci-dessous."
         },
         "overview": {
             "label": "Ce qu'origam est déjà",
@@ -1205,7 +1210,8 @@
             "directives": "directives",
             "stories": "stories interactives",
             "themes": "thèmes de base (clair + sombre)",
-            "token_tiers": "niveaux de design tokens"
+            "token_tiers": "niveaux de design tokens",
+            "measured_on": "Compté dans l’arbre source du dépôt le 25 septembre 2026"
         },
         "waves": {
             "wave1": {
@@ -1226,41 +1232,23 @@
                 "title": "Vague 3 — Infrastructure",
                 "nuxt_module": "Module Nuxt officiel (sous-export origam/nuxt) — auto-import, plugin thème SSR-safe",
                 "ssr_safety": "Audit sécurité SSR + useCssSupportClient + OrigamClientOnly",
-                "monorepo": "Monorepo pnpm — 6 packages (ds, marketing, stories, docs, tests, figma-plugin)"
-            },
-            "wave4": {
-                "title": "Vague 4 — Nouveaux composants et fonctionnalités",
-                "grid": "OrigamGrid — CSS Grid déclaratif avec columns, rows, areas, gap, auto-flow",
-                "masonry": "OrigamMasonry — CSS-first via grid-template-rows: masonry, fallback JS",
-                "blockquote": "OrigamBlockquote — typographie : citation + auteur + source + variantes",
-                "empty_state": "OrigamEmptyState — 5 presets : no-data, no-results, error, offline, locked",
-                "clipboard": "OrigamClipboard — wrapper copie + feedback Copié !, sans dépendance",
-                "inline_edit": "OrigamInlineEdit — pattern edit-in-place, v-model + validators, ARIA live",
-                "number_format": "OrigamNumberFormat — formatage i18n via Intl.NumberFormat, affichage seul",
-                "qr_code": "OrigamQRCode — rendu SVG, ISO/IEC 18004, niveau de correction, overlay logo",
-                "watermark": "OrigamWatermark — overlay diagonal en répétition, texte SVG ou canvas data-URI",
-                "video": "OrigamVideo — player custom : play/pause, scrubber, PIP, légendes, HLS optionnel",
-                "sound": "OrigamSound — player audio + waveform via Web Audio API, Media Session API",
-                "calendar": "OrigamCalendar — vues mois/semaine/jour/agenda, RRULE, drag-to-create, 100 % maison",
-                "chart": "OrigamChart — SVG natif : ligne, aire, barre, camembert, radar, scatter — sans d3 ni chart.js",
-                "gradient": "Support gradient — les props color/bgColor/textColor acceptent les valeurs gradient",
-                "text_mask": "OrigamTextMask — révélation de texte via background-clip: text, fonds gradient + image"
+                "monorepo": "Monorepo pnpm — 5 packages (ds, marketing, stories, docs, tests)"
             }
         },
         "phases": {
             "eyebrow": "LA SUITE",
             "title": "Une roadmap par phases.",
-            "subtitle": "Chaque phase s'appuie sur la précédente. L'ordre reflète de vraies dépendances techniques, pas des jalons arbitraires.",
+            "subtitle": "Chaque phase s’appuie sur la précédente. L’ordre reflète de vraies dépendances techniques, pas des jalons arbitraires. Dépliez une phase pour lire chaque chantier en entier.",
             "short_term": {
                 "eyebrow": "Q3 2026",
                 "title": "Court terme",
                 "a11y_audit": {
                     "title": "Audit d'accessibilité des overlays",
-                    "description": "Le balayage axe sur chaque story de composant existe mais ne tourne dans aucun job de CI, et son seuil d'échec est abaissé au seul niveau critique. Le piège au focus, sa restitution, aria-modal et la touche Échap ne sont assertés que pour Dialog, Select et la palette de commandes — Menu, menu contextuel, Tooltip, Drawer, Sheet et Snackbar n'en ont aucun."
+                    "description": "Le balayage axe par composant barre la CI sur une baseline de violations vide : la passe automatisée est donc couverte. Ce qui manque est le contrat propre aux overlays — le piège au focus, sa restitution, aria-modal et la touche Échap ne sont assertés que pour Dialog, Select et la palette de commandes ; Menu, menu contextuel, Tooltip, Drawer, Sheet et Snackbar n’en ont aucun."
                 },
                 "bundle_size": {
                     "title": "Suivi de la taille du bundle",
-                    "description": "Aucun budget de poids n'est imposé aujourd'hui. Ajouter size-limit sur chaque sous-export avec commentaire automatique sur les pull requests, et fixer le seuil depuis une mesure fraîche de l'archive publiée : 1,86 Mo au 23 septembre 2026."
+                    "description": "Aucun budget de poids n’est imposé aujourd’hui. Ajouter size-limit sur chaque sous-export avec commentaire automatique sur les pull requests, et fixer le seuil depuis une mesure fraîche de l’archive publiée : 1 864 944 o au 25 septembre 2026."
                 },
                 "api_audit": {
                     "title": "Audit d'API avant la v3",
@@ -1272,7 +1260,7 @@
                 },
                 "e2e_gate": {
                     "title": "Élargir la barrière e2e en CI",
-                    "description": "229 fichiers de specs couvrent déjà les familles de composants, mais le job de CI n'en exécute que les 58 déclarés verts. Faire entrer les 171 restants dans la barrière, vague par vague, en traitant les instabilités au lieu de les contourner."
+                    "description": "256 fichiers de specs couvrent déjà les familles de composants, mais l’intégration continue n’en barre que 81. Faire entrer les 175 restants dans la barrière, vague par vague, en traitant les instabilités au lieu de les contourner."
                 },
                 "public_domain": {
                     "title": "Publier la documentation sous le domaine du projet",
@@ -1418,7 +1406,8 @@
                     "title": "Contrôles de sécurité sur chaque PR",
                     "description": "Scan de secrets sur chaque pull request, plus une revue de sécurité dédiée pour toute modification du code serveur, des services, ou de la configuration de build."
                 }
-            }
+            },
+            "items_count": "{count} chantiers"
         },
         "effort": {
             "small": "S",
@@ -1479,10 +1468,6 @@
                 "name": "OrigamVideo",
                 "note": "Player custom : play/pause, scrubber, PIP, légendes, HLS optionnel"
             },
-            "sound": {
-                "name": "OrigamSound",
-                "note": "Player audio + waveform via Web Audio API, Media Session API"
-            },
             "calendar": {
                 "name": "OrigamCalendar",
                 "note": "Vues mois/semaine/jour/agenda, RRULE, drag-to-create, 100 % maison"
@@ -1498,6 +1483,10 @@
             "text_mask": {
                 "name": "OrigamTextMask",
                 "note": "Révélation de texte via background-clip: text, fonds gradient + image"
+            },
+            "audio": {
+                "name": "OrigamAudio",
+                "note": "Lecteur audio + forme d’onde via la Web Audio API, Media Session API"
             }
         }
     },

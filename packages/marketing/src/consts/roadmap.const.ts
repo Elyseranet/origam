@@ -15,17 +15,28 @@ export const ROADMAP_HERO_BADGE_VARS: CSSProperties = {
 } as CSSProperties
 
 /**
- * Current status items — measured against the repository on 2026-09-23, not
+ * Current status items — measured against the repository on 2026-09-25, not
  * transcribed from CHANGELOG.md. Every `done: true` below is backed by a
  * command, re-run on that date with the real exit code captured outside any
- * pipe:
- *   - npm            : registry.npmjs.org/origam → 2.18.8, tarball 1 858 354 B
- *                      (unpacked 9 688 709 B, 3 501 files), published 15:06 UTC
+ * pipe (load average 2.7 — above ~10 this repository manufactures both false
+ * reds and false greens, so the load is part of the measurement):
+ *   - npm            : registry.npmjs.org/origam → 2.18.11, tarball
+ *                      1 864 944 B (unpacked 9 705 239 B, 3 501 files)
  *   - CI             : 20 jobs across 5 workflows in .github/workflows/
  *   - docs online    : HTTP 200 on the deployed VitePress + Histoire builds
- *   - unit tests     : 7 187 tests green, 563 spec files, 77.81 % statements /
+ *   - unit tests     : 7 192 tests green, 564 spec files, 77.81 % statements /
  *                      79.86 % lines (pnpm -F @origam/tests test:coverage, $? = 0)
- *   - e2e specs      : 254 spec files for 218 stories
+ *   - e2e specs      : 256 spec files under packages/tests/e2e for 218 stories
+ *   - e2e gate       : 81 of those 256 run in CI — 75 under `E2E_GREEN_ONLY=1`
+ *                      plus 6 under `MARKETING_GREEN_ONLY=1`, the two lists
+ *                      disjoint. Counted by asking Playwright itself
+ *                      (`playwright test --list` on each CI config, which is
+ *                      also what the `spec-coverage` guard does), never by
+ *                      re-counting the whitelist literals: a `testMatch`
+ *                      pattern can resolve to more than one file.
+ *                      ⛔ The 6th marketing spec is `roadmap.spec.ts`, gated
+ *                      by THIS delivery — the figure moved because of the
+ *                      commit that writes it. Re-run the guard, never quote.
  *   - guards         : 29/29 + 16/16 self-tests (pnpm -F origam guards,
  *                      guards:self — both $? = 0)
  *   - inspection     : docs/mesures/classeur-complet-maj-2026-09-01.csv
@@ -39,12 +50,23 @@ export const ROADMAP_HERO_BADGE_VARS: CSSProperties = {
  * `useVersion()`; only values with no live source (test counts, tarball size)
  * stay literal here, and those carry the measurement date above.
  *
+ * ⛔ Same reason, one layer further: `roadmap.status.readme_changelog` names
+ * NO version number either. It used to read "CHANGELOG up to date", which was
+ * false — the document stops at 2.18.8 while npm serves 2.18.11, and
+ * `changelog:generate:check` is GREEN on that state because it compares the
+ * generated constant to the document and both stop at the same place. It
+ * guards constant↔document drift, not document↔published-tags drift, which is
+ * how three tags shipped with no write-up and nothing went red. The value now
+ * says the CHANGELOG lags the published `{version}` and carries `done: false`
+ * — enumerating "2.18.9, 2.18.10, 2.18.11" in the locale would be #913 all
+ * over again, wrong at the next tag with nobody watching.
+ *
  * The `done: false` entries name the REMAINING GAP, not the whole topic — a
- * red cross next to "the CI gates 81 of 254 specs" is accurate, while one
- * next to "e2e coverage" would not be. Each was re-verified on 2026-09-23:
- * the a11y one was rescoped (the sweep DOES gate CI since #765, and the
+ * red cross next to "the CI gates 81 of 256 specs" is accurate, while one
+ * next to "e2e coverage" would not be. Each was re-verified on 2026-09-25:
+ * the a11y one stays rescoped (the sweep DOES gate CI since #765, and the
  * violation baseline is now empty — only focus-trap coverage is still thin),
- * the other five still name a real gap.
+ * the other six still name a real gap.
  */
 export const ROADMAP_STATUS_ITEMS: IRoadmapStatusItem[] = [
     { labelKey: 'roadmap.status.npm_published', done: true },
@@ -57,8 +79,8 @@ export const ROADMAP_STATUS_ITEMS: IRoadmapStatusItem[] = [
     { labelKey: 'roadmap.status.sonarqube', done: true },
     { labelKey: 'roadmap.status.dependency_automation', done: true },
     { labelKey: 'roadmap.status.monorepo', done: true },
-    { labelKey: 'roadmap.status.readme_changelog', done: true },
     { labelKey: 'roadmap.status.wave4_shipped', done: true },
+    { labelKey: 'roadmap.status.readme_changelog', done: false },
     { labelKey: 'roadmap.status.e2e_ci_gate', done: false },
     { labelKey: 'roadmap.status.a11y_sweep', done: false },
     { labelKey: 'roadmap.status.visual_regression', done: false },
@@ -70,7 +92,8 @@ export const ROADMAP_STATUS_ITEMS: IRoadmapStatusItem[] = [
 
 /**
  * Delivered overview stats — exact counts taken from the DS source tree on
- * 2026-09-23, not rounded-down placeholders:
+ * 2026-09-25, not rounded-down placeholders. All six re-counted on that date;
+ * none moved:
  *   96  directories under packages/ds/src/components/ (218 Origam*.vue files)
  *   139 *.composable.ts under packages/ds/src/composables/
  *   6   directories under packages/ds/src/directives/
@@ -91,9 +114,23 @@ export const ROADMAP_OVERVIEW_STATS: IRoadmapStat[] = [
 ]
 
 /**
- * Delivered waves — sourced from CHANGELOG.md Waves 1/2/3/4.
+ * Delivered waves 1 to 3 — sourced from CHANGELOG.md.
+ *
+ * ⛔ Wave 4 is NOT here, and that is the point. It used to be a fourth entry
+ * of this array, rendered as a fourth card of equal width holding 15 items
+ * next to three cards holding 4, 4 and 3 — roughly three times their height,
+ * and an exact duplicate of `ROADMAP_WAVE4_COMPONENTS` rendered in its own
+ * dedicated section 200 px further down, with MORE detail (an icon and a
+ * "Shipped" badge per component). Nothing was cut: wave 4 is still on the
+ * page, once, in the richer of the two renderings.
+ *
+ * The three that remain are old, entirely delivered, and low-value to read
+ * line by line today, so they share ONE compact panel with three sub-lists
+ * instead of three cards. The `IRoadmapWave` shape is unchanged — only the
+ * name (`ROADMAP_WAVES` → `ROADMAP_DELIVERED_WAVES`) and the membership moved,
+ * so a future reader cannot mistake this for "every wave ever shipped".
  */
-export const ROADMAP_WAVES: IRoadmapWave[] = [
+export const ROADMAP_DELIVERED_WAVES: IRoadmapWave[] = [
     {
         titleKey: 'roadmap.waves.wave1.title',
         items: [
@@ -118,26 +155,6 @@ export const ROADMAP_WAVES: IRoadmapWave[] = [
             { nameKey: 'roadmap.waves.wave3.nuxt_module', done: true },
             { nameKey: 'roadmap.waves.wave3.ssr_safety', done: true },
             { nameKey: 'roadmap.waves.wave3.monorepo', done: true }
-        ]
-    },
-    {
-        titleKey: 'roadmap.waves.wave4.title',
-        items: [
-            { nameKey: 'roadmap.waves.wave4.grid', done: true },
-            { nameKey: 'roadmap.waves.wave4.masonry', done: true },
-            { nameKey: 'roadmap.waves.wave4.blockquote', done: true },
-            { nameKey: 'roadmap.waves.wave4.empty_state', done: true },
-            { nameKey: 'roadmap.waves.wave4.clipboard', done: true },
-            { nameKey: 'roadmap.waves.wave4.inline_edit', done: true },
-            { nameKey: 'roadmap.waves.wave4.number_format', done: true },
-            { nameKey: 'roadmap.waves.wave4.qr_code', done: true },
-            { nameKey: 'roadmap.waves.wave4.watermark', done: true },
-            { nameKey: 'roadmap.waves.wave4.video', done: true },
-            { nameKey: 'roadmap.waves.wave4.sound', done: true },
-            { nameKey: 'roadmap.waves.wave4.calendar', done: true },
-            { nameKey: 'roadmap.waves.wave4.chart', done: true },
-            { nameKey: 'roadmap.waves.wave4.gradient', done: true },
-            { nameKey: 'roadmap.waves.wave4.text_mask', done: true }
         ]
     }
 ]
@@ -165,6 +182,11 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
         titleKey: 'roadmap.phases.short_term.title',
         intent: 'primary',
         icon: 'mdi-rocket-launch-outline',
+        // The nearest and the most actionable phase, so it is the one that
+        // renders expanded — every other `<details>` starts closed. This is the
+        // ONLY place the default-open choice lives; the template reads the flag
+        // rather than testing `phase.id === 'short-term'`.
+        defaultOpen: true,
         items: [
             {
                 titleKey: 'roadmap.phases.short_term.e2e_gate.title',
@@ -417,8 +439,17 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
 ]
 
 /**
- * Wave 4 — recently shipped components. Sourced from CHANGELOG.md [Unreleased].
- * All 13 components + gradient support + OrigamTextMask are delivered.
+ * Wave 4 — recently shipped components. All 13 components + gradient support
+ * + OrigamTextMask are delivered, and 14 of the 15 rows below name a component
+ * that exists under `packages/ds/src/components/` (the 15th, "Gradient
+ * support", is a prop capability, not a component).
+ *
+ * ⛔ The `sound` key was renamed `audio` on 2026-09-25 because the component it
+ * described does not exist: the shipped pair is `OrigamAudio.vue` +
+ * `OrigamAudioWaveform.vue`, registered as `<origam-audio>`. "OrigamSound" was
+ * never an export, so the page advertised an import that would fail. The key
+ * name moved with the value — a locale key that keeps the wrong noun is how
+ * the wrong noun comes back.
  */
 export const ROADMAP_WAVE4_COMPONENTS: IRoadmapWave4Component[] = [
     { nameKey: 'roadmap.wave4_grid.grid.name', noteKey: 'roadmap.wave4_grid.grid.note', icon: 'mdi-grid' },
@@ -431,7 +462,7 @@ export const ROADMAP_WAVE4_COMPONENTS: IRoadmapWave4Component[] = [
     { nameKey: 'roadmap.wave4_grid.qr_code.name', noteKey: 'roadmap.wave4_grid.qr_code.note', icon: 'mdi-qrcode' },
     { nameKey: 'roadmap.wave4_grid.watermark.name', noteKey: 'roadmap.wave4_grid.watermark.note', icon: 'mdi-watermark' },
     { nameKey: 'roadmap.wave4_grid.video.name', noteKey: 'roadmap.wave4_grid.video.note', icon: 'mdi-play-circle-outline' },
-    { nameKey: 'roadmap.wave4_grid.sound.name', noteKey: 'roadmap.wave4_grid.sound.note', icon: 'mdi-volume-high' },
+    { nameKey: 'roadmap.wave4_grid.audio.name', noteKey: 'roadmap.wave4_grid.audio.note', icon: 'mdi-volume-high' },
     { nameKey: 'roadmap.wave4_grid.calendar.name', noteKey: 'roadmap.wave4_grid.calendar.note', icon: 'mdi-calendar-outline' },
     { nameKey: 'roadmap.wave4_grid.chart.name', noteKey: 'roadmap.wave4_grid.chart.note', icon: 'mdi-chart-line' },
     { nameKey: 'roadmap.wave4_grid.gradient.name', noteKey: 'roadmap.wave4_grid.gradient.note', icon: 'mdi-gradient-horizontal' },
