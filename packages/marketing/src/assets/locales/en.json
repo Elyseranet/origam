@@ -1175,7 +1175,6 @@
             "title_line2": "stands.",
             "subtitle": "An honest snapshot of what works, what is in progress, and what is still missing — every line below was measured, not transcribed.",
             "npm_published": "Published on npm — origam {version}, released automatically with sigstore provenance",
-            "readme_changelog": "README correct, but the CHANGELOG lags the published version {version} — the latest releases have no write-up yet",
             "monorepo": "Monorepo in place — 5 pnpm workspace packages (ds, docs, marketing, stories, tests), the library still publishing from packages/ds",
             "bundle_monitoring": "No bundle-size monitoring — no size budget is enforced on any sub-export",
             "wave4_shipped": "Wave 4 shipped — 13 components + gradient support + OrigamTextMask (v2.6.0)",
@@ -1187,12 +1186,8 @@
             "inspection": "Inspected on 1 September 2026: 216 components against 8 criteria — rendering, theme channel, reactivity, prop resolution, emits, semantics, story and doc sync, hardcoded strings: zero defect at that date",
             "sonarqube": "SonarQube wired with unit-test coverage and a quality gate that blocks on security and critical issues",
             "dependency_automation": "Automated dependency updates — Dependabot opens grouped weekly pull requests for npm and GitHub Actions",
-            "e2e_ci_gate": "Continuous integration only gates 81 of the 256 Playwright specs — the other 175 exist but block nothing yet",
             "a11y_sweep": "Overlays still lack focus-trap assertions — one component out of the whole overlay family is covered, even though the per-component sweep now gates CI on an empty violation baseline",
             "visual_regression": "Visual regression only started — the pinned-container suite covers a single component so far",
-            "migration_guide": "The v2-to-v3 migration guide does not exist yet — it blocks tagging v3",
-            "public_domain": "Docs and stories are served from an internal host — the project domain does not resolve yet",
-            "community": "No community yet — no discussions, no external contributors",
             "measured_on": "Measured against the repository on 25 September 2026",
             "live_title": "Live today ({count})",
             "pending_title": "Not yet ({count})"
@@ -1251,20 +1246,16 @@
                     "description": "No size budget is enforced today. Add size-limit on every sub-export with automatic pull-request comments, and set the threshold from a fresh measurement of the published tarball — 1 864 944 B when measured on 25 September 2026."
                 },
                 "api_audit": {
-                    "title": "Pre-v3 API audit",
-                    "description": "The v2-to-v3 migration guide does not exist yet, and writing it is a blocking condition before v3 can be tagged: a full deprecation inventory, the missing {'@'}deprecated markers completed, and a codemod for the mechanical renames."
+                    "title": "API audit before the module split",
+                    "description": "Sweep the public surface before packages/ds is split into modules: a full deprecation inventory, the missing {'@'}deprecated markers completed, and a codemod for the mechanical renames."
                 },
                 "sonarqube": {
                     "title": "SonarQube — clear the remaining debt",
                     "description": "Unit-test coverage is wired into the scan and the quality gate is armed, blocking on security and critical issues. What remains is the verdict itself: an A rating on all four axes and zero open debt. Pull-request analysis stays out of scope while the server runs Community Edition, which analyses a single branch."
                 },
                 "e2e_gate": {
-                    "title": "Widen the e2e gate in CI",
-                    "description": "256 spec files already cover the component families, but continuous integration gates only 81 of them. Bring the remaining 175 into the gate, wave by wave, fixing the instability instead of skipping it."
-                },
-                "public_domain": {
-                    "title": "Publish the docs under the project domain",
-                    "description": "The VitePress reference and the Histoire build are online and answer HTTP 200, but on an internal host. Until they live under the project domain, marketing has no address to send people to."
+                    "title": "Every e2e spec blocking in CI",
+                    "description": "Every component family already has Playwright coverage. Bring the whole suite into the blocking gate, wave by wave, fixing the instability instead of skipping it."
                 }
             },
             "mid_term": {
@@ -1422,72 +1413,18 @@
             "cta_changelog": "Read CHANGELOG",
             "actions_label": "Follow origam"
         },
-        "wave4_grid": {
-            "eyebrow": "WAVE 4 — SHIPPED",
-            "title_line1": "15 components & features",
+        "catalogue": {
+            "eyebrow": "THE WHOLE CATALOGUE IS SHIPPED",
+            "title_line1": "{count} components",
+            "title_line1_unavailable": "The whole component catalogue",
             "title_line2": "already shipped.",
-            "subtitle": "Everything in Wave 4 is live on npm. These are the components and features available right now in origam.",
-            "badge_shipped": "Shipped",
-            "grid": {
-                "name": "OrigamGrid",
-                "note": "Declarative CSS Grid with columns, rows, areas, gap, auto-flow"
-            },
-            "masonry": {
-                "name": "OrigamMasonry",
-                "note": "CSS-first via grid-template-rows: masonry, JS fallback"
-            },
-            "blockquote": {
-                "name": "OrigamBlockquote",
-                "note": "Typography: quote + author + source + variants"
-            },
-            "empty_state": {
-                "name": "OrigamEmptyState",
-                "note": "5 presets: no-data, no-results, error, offline, locked"
-            },
-            "clipboard": {
-                "name": "OrigamClipboard",
-                "note": "Copy wrapper + Copied! feedback, no dependencies"
-            },
-            "inline_edit": {
-                "name": "OrigamInlineEdit",
-                "note": "Edit-in-place pattern, v-model + validators, ARIA live"
-            },
-            "number_format": {
-                "name": "OrigamNumberFormat",
-                "note": "i18n formatting via Intl.NumberFormat, display only"
-            },
-            "qr_code": {
-                "name": "OrigamQRCode",
-                "note": "SVG output, ISO/IEC 18004, error correction level, logo overlay"
-            },
-            "watermark": {
-                "name": "OrigamWatermark",
-                "note": "Diagonal repeat overlay, SVG text or canvas data-URI"
-            },
-            "video": {
-                "name": "OrigamVideo",
-                "note": "Custom player: play/pause, scrubber, PIP, captions, HLS optional"
-            },
-            "calendar": {
-                "name": "OrigamCalendar",
-                "note": "Month/week/day/agenda views, RRULE, drag-to-create, 100 % in-house"
-            },
-            "chart": {
-                "name": "OrigamChart",
-                "note": "SVG-native: line, area, bar, pie, radar, scatter — no d3 or chart.js"
-            },
-            "gradient": {
-                "name": "Gradient support",
-                "note": "color/bgColor/textColor props now accept gradient values"
-            },
-            "text_mask": {
-                "name": "OrigamTextMask",
-                "note": "Text reveal via background-clip: text, gradient + image backgrounds"
-            },
-            "audio": {
-                "name": "OrigamAudio",
-                "note": "Audio player + waveform via Web Audio API, Media Session API"
-            }
+            "subtitle": "Every component in origam is published on npm and usable today — there is no waiting list. What is left to build is above, in the roadmap phases.",
+            "measured_live": "{count} components in {categories} categories, read live from the catalogue",
+            "measured_unavailable": "Read live from the catalogue",
+            "category_other": "Other",
+            "empty_title": "Catalogue unavailable right now",
+            "empty_description": "The component list could not be loaded. Every component is still published on npm — browse them on the components page.",
+            "empty_cta": "Browse the components"
         }
     },
     "support": {

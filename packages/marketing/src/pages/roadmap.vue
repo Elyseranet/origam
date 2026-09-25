@@ -99,7 +99,7 @@
                 <origam-sheet
                     tag="div"
                     rounded="lg"
-                    border
+                    :border="false"
                     class="roadmap-status__panel"
                     data-cy="roadmap-status-panel"
                 >
@@ -259,7 +259,7 @@
                 <origam-sheet
                     tag="div"
                     rounded="lg"
-                    border
+                    :border="false"
                     class="roadmap-delivered__panel"
                     data-cy="roadmap-delivered-waves"
                 >
@@ -431,92 +431,126 @@
         </section>
 
         <section
-            class="roadmap-wave4"
-            aria-labelledby="roadmap-wave4-title"
-            data-cy="roadmap-wave4"
+            class="roadmap-catalogue"
+            aria-labelledby="roadmap-catalogue-title"
+            data-cy="roadmap-catalogue"
         >
             <origam-container>
-                <header class="roadmap-wave4__header roadmap-section">
+                <header class="roadmap-catalogue__header roadmap-section">
                     <p class="roadmap-section__eyebrow">
-                        {{ t('roadmap.wave4_grid.eyebrow', 'WAVE 4 — SHIPPED') }}
+                        {{ t('roadmap.catalogue.eyebrow', 'THE WHOLE CATALOGUE IS SHIPPED') }}
                     </p>
 
                     <origam-title
-                        id="roadmap-wave4-title"
+                        id="roadmap-catalogue-title"
                         tag="h2"
                         class="roadmap-section__title"
                     >
                         <template #default>
-                            <span class="roadmap-section__title-line">{{ t('roadmap.wave4_grid.title_line1', '15 components & features') }}</span>
-                            <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ t('roadmap.wave4_grid.title_line2', 'already shipped.') }}</span>
+                            <span class="roadmap-section__title-line">{{ catalogueTitleLine1 }}</span>
+                            <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ t('roadmap.catalogue.title_line2', 'already shipped.') }}</span>
                         </template>
                     </origam-title>
 
                     <p class="roadmap-section__subtitle">
-                        {{ t('roadmap.wave4_grid.subtitle', 'Everything in Wave 4 is live on npm. These are the components and features available right now in origam.') }}
+                        {{ t('roadmap.catalogue.subtitle', 'Every component in origam is published on npm and usable today — there is no waiting list. What is left to build is above, in the roadmap phases.') }}
                     </p>
                 </header>
 
+                <origam-chip
+                    size="small"
+                    pill
+                    prepend-icon="mdi-database-outline"
+                    class="roadmap-measured roadmap-measured--standalone"
+                    data-cy="roadmap-catalogue-measured"
+                >
+                    <template #default>
+                        {{ catalogueMeasuredLabel }}
+                    </template>
+                </origam-chip>
+
                 <origam-grid
+                    v-if="hasCatalogue"
                     tag="ul"
-                    columns="repeat(3, minmax(0, 1fr))"
-                    gap="md"
-                    class="roadmap-wave4__grid"
-                    data-cy="roadmap-wave4-grid"
+                    columns="minmax(0, 1fr)"
+                    gap="lg"
+                    class="roadmap-catalogue__groups"
+                    data-cy="roadmap-catalogue-groups"
                 >
                     <origam-grid-item
-                        v-for="cmp in wave4Components"
-                        :key="cmp.nameKey"
+                        v-for="group in catalogueGroups"
+                        :key="group.key"
                         tag="li"
-                        class="roadmap-wave4__item"
+                        class="roadmap-catalogue__group"
+                        :data-cy="group.dataCy"
                     >
-                        <origam-card
-                            border
-                            rounded="lg"
-                            flat
-                            class="roadmap-wave4__card"
-                        >
-                            <template #default>
-                                <div class="roadmap-wave4__card-inner">
-                                    <div class="roadmap-wave4__card-header">
-                                        <origam-avatar
-                                            :icon="cmp.icon"
-                                            color="success"
-                                            rounded="lg"
-                                            :size="36"
-                                            class="roadmap-wave4__avatar"
-                                            aria-hidden="true"
-                                        />
+                        <header class="roadmap-catalogue__group-header">
+                            <origam-title
+                                tag="h3"
+                                class="roadmap-catalogue__group-title"
+                            >
+                                <template #default>
+                                    {{ group.label }}
+                                </template>
+                            </origam-title>
 
-                                        <origam-title
-                                            tag="h3"
-                                            class="roadmap-wave4__cmp-name"
-                                        >
-                                            <template #default>
-                                                {{ t(cmp.nameKey, cmp.nameKey) }}
-                                            </template>
-                                        </origam-title>
+                            <origam-chip
+                                size="x-small"
+                                pill
+                                class="roadmap-catalogue__group-count"
+                            >
+                                <template #default>
+                                    {{ group.count }}
+                                </template>
+                            </origam-chip>
+                        </header>
 
-                                        <origam-chip
-                                            color="success"
-                                            size="x-small"
-                                            pill
-                                            class="roadmap-wave4__shipped-badge"
-                                        >
-                                            <template #default>
-                                                {{ t('roadmap.wave4_grid.badge_shipped', 'Shipped') }}
-                                            </template>
-                                        </origam-chip>
-                                    </div>
-
-                                    <p class="roadmap-wave4__note">
-                                        {{ t(cmp.noteKey, cmp.noteKey) }}
-                                    </p>
-                                </div>
-                            </template>
-                        </origam-card>
+                        <ul class="roadmap-catalogue__chips">
+                            <li
+                                v-for="component in group.links"
+                                :key="component.slug"
+                                class="roadmap-catalogue__chip-item"
+                            >
+                                <origam-chip
+                                    link
+                                    pill
+                                    size="small"
+                                    :to="component.to"
+                                    class="roadmap-catalogue__chip"
+                                    :data-cy="`roadmap-catalogue-component-${ component.slug }`"
+                                >
+                                    <template #default>
+                                        {{ component.name }}
+                                    </template>
+                                </origam-chip>
+                            </li>
+                        </ul>
                     </origam-grid-item>
                 </origam-grid>
+
+                <origam-empty-state
+                    v-else
+                    preset="offline"
+                    align="left"
+                    size="sm"
+                    class="roadmap-catalogue__empty"
+                    :title="t('roadmap.catalogue.empty_title', 'Catalogue unavailable right now')"
+                    :description="t('roadmap.catalogue.empty_description', 'The component list could not be loaded. Every component is still published on npm — browse them on the components page.')"
+                    data-cy="roadmap-catalogue-empty"
+                >
+                    <template #actions>
+                        <origam-btn
+                            variant="text"
+                            prepend-icon="mdi-shape-outline"
+                            :to="componentsHref"
+                            data-cy="roadmap-catalogue-empty-link"
+                        >
+                            <template #default>
+                                {{ t('roadmap.catalogue.empty_cta', 'Browse the components') }}
+                            </template>
+                        </origam-btn>
+                    </template>
+                </origam-empty-state>
             </origam-container>
         </section>
 
@@ -581,15 +615,19 @@
     import { computed } from 'vue'
     import { useT } from '~/composables/useT'
     import { useVersion } from '~/composables/useVersion'
+    import { useReferenceCatalog, useReferenceCategories } from '~/composables/useApiReference'
     import {
         ROADMAP_HERO_BADGE_VARS,
         ROADMAP_STATUS_ITEMS,
         ROADMAP_OVERVIEW_STATS,
         ROADMAP_DELIVERED_WAVES,
         ROADMAP_PHASES,
-        ROADMAP_WAVE4_COMPONENTS
+        ROADMAP_CATALOGUE_FALLBACK_CATEGORY
     } from '~/consts/roadmap.const'
     import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
+    import { groupComponentsByCategory } from '~/utils/components-catalog.util'
+    import type { IComponentEntry } from '~/interfaces/components-catalog.interface'
+    import type { IRoadmapCatalogueGroup } from '~/interfaces/roadmap.interface'
 
     /*********************************************************
      * Global
@@ -631,9 +669,8 @@
      * `statusParams` hands `{ version }` to EVERY status entry rather than to
      * the one that needs it today: vue-i18n drops a named parameter a message
      * does not reference, so this costs nothing and means the next status line
-     * that wants the live version only edits a locale value. That is what let
-     * `roadmap.status.readme_changelog` name the lagging version with no code
-     * change at all.
+     * that wants the live version only edits a locale value — no code change at
+     * all. `roadmap.status.npm_published` is the one consuming it today.
      ********************************************************/
     const heroBadge = computed(() =>
         t('roadmap.hero.badge', `v${ version.value } — Wave 4 shipped`, { version: version.value })
@@ -680,14 +717,13 @@
      * Page data
      *
      * @description
-     * `ROADMAP_DELIVERED_WAVES` holds waves 1 to 3 only — wave 4 lives in
-     * `ROADMAP_WAVE4_COMPONENTS` and renders once, in its own section, with
-     * more detail than the wave card ever carried.
+     * `ROADMAP_DELIVERED_WAVES` holds waves 1 to 3 only. Wave 4 no longer has
+     * a section of its own: its 15 members are in the shipped-catalogue
+     * section below, alongside every other component.
      ********************************************************/
     const overviewStats = computed(() => ROADMAP_OVERVIEW_STATS)
     const deliveredWaves = computed(() => ROADMAP_DELIVERED_WAVES)
     const phases = computed(() => ROADMAP_PHASES)
-    const wave4Components = computed(() => ROADMAP_WAVE4_COMPONENTS)
 
     /*********************************************************
      * Phase summaries
@@ -712,6 +748,92 @@
      ********************************************************/
     const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
     const changelogHref = computed(() => `${ MARKETING_DEFAULTS.githubRepo }/blob/main/CHANGELOG.md`)
+
+    /*********************************************************
+     * Shipped catalogue
+     *
+     * @description
+     * The section this replaces was titled "15 components & features / already
+     * shipped" and rendered 15 hand-written tiles. A reader counted 15 and
+     * concluded origam ships 15 components, while the whole catalogue is
+     * published. Two things had to change together — the wording AND the
+     * source.
+     *
+     * ⛔ A corrected literal would have been the same defect with a nicer
+     * number. The catalogue is editorial data and its size DIFFERS PER
+     * ENVIRONMENT — measured the day this was written: 218 entries on the
+     * local dev server, 194 on the deployed one. A hardcoded figure would
+     * therefore already have been false on one of the two, before any
+     * component was ever merged. So nothing here counts: the title, the pill
+     * and the list all read the response the page just received, and the
+     * `t()` fallbacks take `{count}` rather than a number.
+     *
+     * Same two endpoints as `pages/components/index.vue`, so there is one
+     * source of truth and the Nuxt fetch cache is shared when a visitor walks
+     * from one page to the other. The difference is the SCOPE: that page shows
+     * the top-level families, this one shows every entry, because the claim it
+     * makes is about the whole catalogue.
+     *
+     * ⛔ These two awaits are LAST in the script on purpose. A top-level await
+     * splits `setup()`, and anything registered after the split runs outside
+     * the synchronous window Vue expects for lifecycle registration. Every
+     * statement above is therefore already evaluated when the first fetch
+     * suspends, and nothing below registers a hook.
+     ********************************************************/
+    const localePath = useLocalePath()
+
+    const { data: catalogueData } = await useReferenceCatalog<IComponentEntry>('component')
+    const { data: catalogueCategoriesData } = await useReferenceCategories('component')
+
+    const catalogueEntries = computed<IComponentEntry[]>(() => catalogueData.value ?? [])
+    const catalogueCategories = computed<string[]>(() => catalogueCategoriesData.value ?? [])
+    const catalogueCount = computed(() => catalogueEntries.value.length)
+    const hasCatalogue = computed(() => catalogueCount.value > 0)
+
+    /*
+     * The fallback bucket is the only group whose label is translated: every
+     * other one is the raw `doc_entry.category` value the API serves, which is
+     * what `/components` renders too. Translating those would need a key per
+     * category, kept in sync by hand with editable DB rows — the exact drift
+     * this section was rewritten to remove.
+     */
+    const catalogueGroups = computed<IRoadmapCatalogueGroup[]>(() =>
+        groupComponentsByCategory(
+            catalogueEntries.value,
+            catalogueCategories.value,
+            ROADMAP_CATALOGUE_FALLBACK_CATEGORY
+        ).map(group => ({
+            key: group.category,
+            label: group.category === ROADMAP_CATALOGUE_FALLBACK_CATEGORY
+                ? t('roadmap.catalogue.category_other', 'Other')
+                : group.category,
+            count: group.entries.length,
+            dataCy: `roadmap-catalogue-category-${ group.category.toLowerCase().replace(/[^a-z0-9]+/g, '-') }`,
+            links: group.entries.map(entry => ({
+                slug: entry.slug,
+                name: entry.name,
+                to: localePath(`/components/${ entry.slug }`)
+            }))
+        }))
+    )
+
+    const catalogueTitleLine1 = computed(() =>
+        hasCatalogue.value
+            ? t('roadmap.catalogue.title_line1', `${ catalogueCount.value } components`, { count: catalogueCount.value })
+            : t('roadmap.catalogue.title_line1_unavailable', 'The whole component catalogue')
+    )
+
+    const catalogueMeasuredLabel = computed(() =>
+        hasCatalogue.value
+            ? t(
+                'roadmap.catalogue.measured_live',
+                `${ catalogueCount.value } components in ${ catalogueGroups.value.length } categories, read live from the catalogue`,
+                { count: catalogueCount.value, categories: catalogueGroups.value.length }
+            )
+            : t('roadmap.catalogue.measured_unavailable', 'Read live from the catalogue')
+    )
+
+    const componentsHref = computed(() => localePath('/components'))
 </script>
 
 <style scoped lang="scss">
@@ -1143,65 +1265,82 @@
         rotate: 180deg;
     }
 
-    .roadmap-wave4 {
+    .roadmap-catalogue {
         padding-block: var(--origam-space---24, 6rem);
 
         &__header {
-            margin-block-end: var(--origam-space---10, 2.5rem);
+            margin-block-end: var(--origam-space---6, 1.5rem);
         }
 
-        &__grid {
+        &__groups {
             list-style: none;
             padding: 0;
             margin: 0;
         }
 
-        &__item {
+        &__group {
             list-style: none;
-            display: flex;
-            flex-direction: column;
         }
 
-        &__card {
-            block-size: 100%;
-        }
-
-        &__card-inner {
-            padding: var(--origam-space---4, 1rem);
-            display: flex;
-            flex-direction: column;
-            gap: var(--origam-space---3, 0.75rem);
-        }
-
-        &__card-header {
+        &__group-header {
             display: flex;
             align-items: center;
-            gap: var(--origam-space---2, 0.5rem);
-            flex-wrap: wrap;
+            gap: var(--origam-space---3, 0.75rem);
+            margin-block-end: var(--origam-space---4, 1rem);
+            padding-block-end: var(--origam-space---2, 0.5rem);
+            border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
         }
 
-        &__avatar {
-            flex-shrink: 0;
-        }
-
-        &__cmp-name {
+        &__group-title {
             display: block;
-            flex: 1;
-            font-size: var(--origam-font-size---sm, 0.875rem) !important;
-            font-weight: var(--origam-font__weight---semibold, 600);
-            font-family: var(--origam-font-family---mono, monospace);
-            color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
-        }
-
-        &__shipped-badge {
-            flex-shrink: 0;
-        }
-
-        &__note {
             margin: 0;
-            font-size: var(--origam-font-size---xs, 0.75rem);
-            line-height: 1.55;
+            font-size: var(--origam-font-size---base, 1rem) !important;
+            font-weight: var(--origam-font__weight---semibold, 600);
+            color: var(--origam-color__text---primary, #0a0a0a);
+        }
+
+        &__group-count {
+            --origam-chip---background-color: var(--origam-color__surface---sunken);
+
+            flex-shrink: 0;
+            font-family: var(--origam-font-family---mono, monospace);
+        }
+
+        &__chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--origam-space---2, 0.5rem);
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        &__chip-item {
+            list-style: none;
+            display: flex;
+        }
+
+        &__chip {
+            --origam-chip---background-color: var(--origam-color__surface---sunken);
+
+            font-family: var(--origam-font-family---mono, monospace);
+            text-decoration: none;
             color: var(--origam-color__text---secondary, #525252);
+
+            &:hover {
+                --origam-chip---background-color: var(--origam-color__action--primary---bgSubtle, #ede9fe);
+
+                color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
+            }
+
+            &:focus-visible {
+                outline: 2px solid var(--origam-color__action--primary---bg, #7c3aed);
+                outline-offset: 2px;
+            }
+        }
+
+        &__empty {
+            margin-block-start: var(--origam-space---4, 1rem);
         }
     }
 
@@ -1309,10 +1448,6 @@
         */
         .roadmap-overview {
             grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .roadmap-wave4__grid {
-            grid-template-columns: minmax(0, 1fr);
         }
 
         .roadmap-cta {

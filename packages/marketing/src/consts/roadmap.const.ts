@@ -3,7 +3,6 @@ import type {
     IRoadmapStatusItem,
     IRoadmapWave,
     IRoadmapPhase,
-    IRoadmapWave4Component,
     IRoadmapStat
 } from '~/interfaces/roadmap.interface'
 
@@ -27,16 +26,6 @@ export const ROADMAP_HERO_BADGE_VARS: CSSProperties = {
  *   - unit tests     : 7 192 tests green, 564 spec files, 77.81 % statements /
  *                      79.86 % lines (pnpm -F @origam/tests test:coverage, $? = 0)
  *   - e2e specs      : 256 spec files under packages/tests/e2e for 218 stories
- *   - e2e gate       : 81 of those 256 run in CI — 75 under `E2E_GREEN_ONLY=1`
- *                      plus 6 under `MARKETING_GREEN_ONLY=1`, the two lists
- *                      disjoint. Counted by asking Playwright itself
- *                      (`playwright test --list` on each CI config, which is
- *                      also what the `spec-coverage` guard does), never by
- *                      re-counting the whitelist literals: a `testMatch`
- *                      pattern can resolve to more than one file.
- *                      ⛔ The 6th marketing spec is `roadmap.spec.ts`, gated
- *                      by THIS delivery — the figure moved because of the
- *                      commit that writes it. Re-run the guard, never quote.
  *   - guards         : 29/29 + 16/16 self-tests (pnpm -F origam guards,
  *                      guards:self — both $? = 0)
  *   - inspection     : docs/mesures/classeur-complet-maj-2026-09-01.csv
@@ -50,23 +39,21 @@ export const ROADMAP_HERO_BADGE_VARS: CSSProperties = {
  * `useVersion()`; only values with no live source (test counts, tarball size)
  * stay literal here, and those carry the measurement date above.
  *
- * ⛔ Same reason, one layer further: `roadmap.status.readme_changelog` names
- * NO version number either. It used to read "CHANGELOG up to date", which was
- * false — the document stops at 2.18.8 while npm serves 2.18.11, and
- * `changelog:generate:check` is GREEN on that state because it compares the
- * generated constant to the document and both stop at the same place. It
- * guards constant↔document drift, not document↔published-tags drift, which is
- * how three tags shipped with no write-up and nothing went red. The value now
- * says the CHANGELOG lags the published `{version}` and carries `done: false`
- * — enumerating "2.18.9, 2.18.10, 2.18.11" in the locale would be #913 all
- * over again, wrong at the next tag with nobody watching.
- *
  * The `done: false` entries name the REMAINING GAP, not the whole topic — a
- * red cross next to "the CI gates 81 of 256 specs" is accurate, while one
- * next to "e2e coverage" would not be. Each was re-verified on 2026-09-25:
- * the a11y one stays rescoped (the sweep DOES gate CI since #765, and the
+ * red cross next to "no visual-regression gate" is accurate, while one next to
+ * "visual quality" would not be. Three remain, re-verified on 2026-09-25: the
+ * a11y one stays rescoped (the sweep DOES gate CI since #765, and the
  * violation baseline is now empty — only focus-trap coverage is still thin),
- * the other six still name a real gap.
+ * visual regression and bundle monitoring have no gate at all.
+ *
+ * ⛔ Five entries were REMOVED on 2026-09-25 on the owner's instruction, and
+ * they are named here so nobody re-adds them believing the list is merely
+ * incomplete: `readme_changelog` (fixed by #948 — the CHANGELOG no longer
+ * lags), `migration_guide` (there is no v2→v3 to migrate: `3.0.0` is not
+ * released, so a guide "blocking the v3 tag" was describing nothing),
+ * `e2e_ci_gate`, `public_domain` and `community`. The last three are internal
+ * engineering and go-to-market state — true, but not what a public roadmap is
+ * for. This page says what the LIBRARY does and does not do yet.
  */
 export const ROADMAP_STATUS_ITEMS: IRoadmapStatusItem[] = [
     { labelKey: 'roadmap.status.npm_published', done: true },
@@ -80,14 +67,9 @@ export const ROADMAP_STATUS_ITEMS: IRoadmapStatusItem[] = [
     { labelKey: 'roadmap.status.dependency_automation', done: true },
     { labelKey: 'roadmap.status.monorepo', done: true },
     { labelKey: 'roadmap.status.wave4_shipped', done: true },
-    { labelKey: 'roadmap.status.readme_changelog', done: false },
-    { labelKey: 'roadmap.status.e2e_ci_gate', done: false },
     { labelKey: 'roadmap.status.a11y_sweep', done: false },
     { labelKey: 'roadmap.status.visual_regression', done: false },
-    { labelKey: 'roadmap.status.bundle_monitoring', done: false },
-    { labelKey: 'roadmap.status.migration_guide', done: false },
-    { labelKey: 'roadmap.status.public_domain', done: false },
-    { labelKey: 'roadmap.status.community', done: false }
+    { labelKey: 'roadmap.status.bundle_monitoring', done: false }
 ]
 
 /**
@@ -116,13 +98,17 @@ export const ROADMAP_OVERVIEW_STATS: IRoadmapStat[] = [
 /**
  * Delivered waves 1 to 3 — sourced from CHANGELOG.md.
  *
- * ⛔ Wave 4 is NOT here, and that is the point. It used to be a fourth entry
- * of this array, rendered as a fourth card of equal width holding 15 items
- * next to three cards holding 4, 4 and 3 — roughly three times their height,
- * and an exact duplicate of `ROADMAP_WAVE4_COMPONENTS` rendered in its own
- * dedicated section 200 px further down, with MORE detail (an icon and a
- * "Shipped" badge per component). Nothing was cut: wave 4 is still on the
- * page, once, in the richer of the two renderings.
+ * ⛔ Wave 4 is NOT here, and no longer anywhere on this page as a WAVE. It was
+ * first a fourth entry of this array, then its own section driven by
+ * `ROADMAP_WAVE4_COMPONENTS` — 15 hand-written rows under the heading
+ * "15 components & features / already shipped". That heading is what a reader
+ * counted, and it read as "origam ships 15 components" while the whole
+ * catalogue is published. The section is now the LIVE catalogue grouped by
+ * category (see `ROADMAP_CATALOGUE_FALLBACK_CATEGORY` at the bottom of this
+ * file); wave 4's 15 members are in it, alongside every other component, each
+ * a link to its own API page. `roadmap.status.wave4_shipped` still records
+ * that the wave landed — that is a fact about the release, not a component
+ * count.
  *
  * The three that remain are old, entirely delivered, and low-value to read
  * line by line today, so they share ONE compact panel with three sub-lists
@@ -174,6 +160,14 @@ export const ROADMAP_DELIVERED_WAVES: IRoadmapWave[] = [
  * useCssSupportClient (v2.3.0), which live in Wave 3 above.
  *
  * Only technical-public items remain: no KPI thresholds, no marketing tactics.
+ *
+ * ⛔ Removed on 2026-09-25, same instruction as the five status entries above:
+ * `public_domain` (where the docs are HOSTED is infrastructure, not library
+ * roadmap). `api_audit` and `e2e_gate` were KEPT — the work is real — but
+ * their copy no longer states the internal accounting the owner does not want
+ * published (a missing v2→v3 migration guide "blocking the v3 tag", when no
+ * v3 exists; "81 of 256 specs gated"). Say what the library will do, not how
+ * many of our own files are wired into our own CI.
  */
 export const ROADMAP_PHASES: IRoadmapPhase[] = [
     {
@@ -199,12 +193,6 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
                 descriptionKey: 'roadmap.phases.short_term.api_audit.description',
                 icon: 'mdi-file-search-outline',
                 effortKey: 'roadmap.effort.large'
-            },
-            {
-                titleKey: 'roadmap.phases.short_term.public_domain.title',
-                descriptionKey: 'roadmap.phases.short_term.public_domain.description',
-                icon: 'mdi-web',
-                effortKey: 'roadmap.effort.small'
             },
             {
                 titleKey: 'roadmap.phases.short_term.a11y_audit.title',
@@ -439,32 +427,34 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
 ]
 
 /**
- * Wave 4 — recently shipped components. All 13 components + gradient support
- * + OrigamTextMask are delivered, and 14 of the 15 rows below name a component
- * that exists under `packages/ds/src/components/` (the 15th, "Gradient
- * support", is a prop capability, not a component).
+ * Fallback bucket for the shipped-catalogue section.
  *
- * ⛔ The `sound` key was renamed `audio` on 2026-09-25 because the component it
- * described does not exist: the shipped pair is `OrigamAudio.vue` +
- * `OrigamAudioWaveform.vue`, registered as `<origam-audio>`. "OrigamSound" was
- * never an export, so the page advertised an import that would fail. The key
- * name moved with the value — a locale key that keeps the wrong noun is how
- * the wrong noun comes back.
+ * ⛔ Replaces `ROADMAP_WAVE4_COMPONENTS`, a hand-maintained list of 15 rows.
+ * The section it fed was titled "15 components & features / already shipped",
+ * which a reader could only understand as "origam ships 15 components" — while
+ * every component in the catalogue is published. The section now reads the
+ * LIVE catalogue (`/api/reference/component`), so adding a component to
+ * `packages/ds/src/components/` is enough for it to appear: nothing to edit
+ * here, nothing to drift.
+ *
+ * ⛔ Do NOT write a component count anywhere — not in the title, not in a
+ * `t()` fallback, not in a comment stated as a fact. The catalogue is
+ * editorial data and it differs per environment (the day this was written:
+ * 218 entries on the local dev server, 194 on the deployed one). Every figure
+ * the page shows comes from the API response it just rendered.
+ *
+ * This constant is the one thing the live data cannot supply. Grouping the
+ * catalogue by category leaves exactly ONE entry homeless: `slide-group`
+ * declares `parentSlug: 'slide'`, and `slide` is not a catalogue entry —
+ * `Slide/` is a grouping directory with no homonymous component — while also
+ * carrying an empty `category`. It is the only entry cumulating both defects.
+ *
+ * ⛔ PROVISIONAL — this bucket is a workaround, not a fix. The defect is in
+ * the data (seven entries point at a `parentSlug` that is not a catalogue
+ * entry; a group of sub-components carry `category: ''`) and is tracked in
+ * **#954**. When #954 lands, this constant and its bucket should disappear
+ * rather than be kept "just in case". The value is a category KEY, never a
+ * label: the label is translated in the page via
+ * `roadmap.catalogue.category_other`.
  */
-export const ROADMAP_WAVE4_COMPONENTS: IRoadmapWave4Component[] = [
-    { nameKey: 'roadmap.wave4_grid.grid.name', noteKey: 'roadmap.wave4_grid.grid.note', icon: 'mdi-grid' },
-    { nameKey: 'roadmap.wave4_grid.masonry.name', noteKey: 'roadmap.wave4_grid.masonry.note', icon: 'mdi-view-quilt-outline' },
-    { nameKey: 'roadmap.wave4_grid.blockquote.name', noteKey: 'roadmap.wave4_grid.blockquote.note', icon: 'mdi-format-quote-close' },
-    { nameKey: 'roadmap.wave4_grid.empty_state.name', noteKey: 'roadmap.wave4_grid.empty_state.note', icon: 'mdi-inbox-outline' },
-    { nameKey: 'roadmap.wave4_grid.clipboard.name', noteKey: 'roadmap.wave4_grid.clipboard.note', icon: 'mdi-clipboard-outline' },
-    { nameKey: 'roadmap.wave4_grid.inline_edit.name', noteKey: 'roadmap.wave4_grid.inline_edit.note', icon: 'mdi-pencil-outline' },
-    { nameKey: 'roadmap.wave4_grid.number_format.name', noteKey: 'roadmap.wave4_grid.number_format.note', icon: 'mdi-numeric' },
-    { nameKey: 'roadmap.wave4_grid.qr_code.name', noteKey: 'roadmap.wave4_grid.qr_code.note', icon: 'mdi-qrcode' },
-    { nameKey: 'roadmap.wave4_grid.watermark.name', noteKey: 'roadmap.wave4_grid.watermark.note', icon: 'mdi-watermark' },
-    { nameKey: 'roadmap.wave4_grid.video.name', noteKey: 'roadmap.wave4_grid.video.note', icon: 'mdi-play-circle-outline' },
-    { nameKey: 'roadmap.wave4_grid.audio.name', noteKey: 'roadmap.wave4_grid.audio.note', icon: 'mdi-volume-high' },
-    { nameKey: 'roadmap.wave4_grid.calendar.name', noteKey: 'roadmap.wave4_grid.calendar.note', icon: 'mdi-calendar-outline' },
-    { nameKey: 'roadmap.wave4_grid.chart.name', noteKey: 'roadmap.wave4_grid.chart.note', icon: 'mdi-chart-line' },
-    { nameKey: 'roadmap.wave4_grid.gradient.name', noteKey: 'roadmap.wave4_grid.gradient.note', icon: 'mdi-gradient-horizontal' },
-    { nameKey: 'roadmap.wave4_grid.text_mask.name', noteKey: 'roadmap.wave4_grid.text_mask.note', icon: 'mdi-text-box-outline' }
-]
+export const ROADMAP_CATALOGUE_FALLBACK_CATEGORY = 'other'

@@ -29,6 +29,19 @@ export interface IComponentEntry {
     parentSlug?: string
 }
 
+/**
+ * One display group of the component catalogue: a category and every entry
+ * that belongs to it, sub-components included.
+ *
+ * Produced by `groupComponentsByCategory` (utils/components-catalog.util.ts).
+ * `category` is the raw DB value (`'Form & Input'`) — never a translated
+ * label — except for the caller-supplied fallback bucket.
+ */
+export interface IComponentCatalogGroup {
+    category: string
+    entries: IComponentEntry[]
+}
+
 /** A related sub-component shown in the "family" section of a component page. */
 export interface IComponentFamilyMember {
     /** kebab-case slug for this sub-component — its own /components/{slug} page */

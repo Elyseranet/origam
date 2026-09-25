@@ -6,11 +6,12 @@
  * - Le H1 hero est rendu par OrigamTitle (.origam-title)
  * - Les deux liens d'ancrage du hero sont des OrigamBtn et atterrissent SOUS
  *   l'app bar fixe (et non dessous, cachés)
- * - Le panneau de statut partitionne les 19 items en deux colonnes
+ * - Le panneau de statut partitionne les 14 items en deux colonnes
  * - Les vagues 1-3 livrées tiennent dans UN panneau à trois sous-listes
  * - Les 4 phases sont des <details> natifs, « short term » ouvert par défaut
  * - Les avatars des phases sont des OrigamAvatar
- * - Les composants Wave 4 sont rendus en OrigamCard
+ * - La section « catalogue livré » rend TOUTES les catégories servies par
+ *   l'API et une puce cliquable par composant, sans compte gravé nulle part
  * - Les boutons CTA sont des OrigamBtn
  * - Audit a11y axe-core : 0 violation critical/serious
  *
@@ -38,6 +39,17 @@ import AxeBuilder from '@axe-core/playwright'
 
 const BASE = '/roadmap'
 
+/*
+ * Plancher de bon sens, PAS une mesure du catalogue. Le nombre réel d'entrées
+ * change d'un environnement à l'autre (218 en dev local, 194 sur l'env
+ * déployé, mesurés le 2026-09-25) et changera encore : l'épingler reviendrait
+ * à réintroduire, dans le test, le nombre gravé que la refonte de la page
+ * supprime. Ce seuil n'est là que pour distinguer « le catalogue est servi »
+ * de « la page rend trois composants » ; l'assertion qui porte le sens est
+ * l'égalité entre les puces rendues et les entrées servies.
+ */
+const CATALOGUE_SANITY_FLOOR = 50
+
 test.describe('roadmap — DS-first', () => {
     test.beforeEach(async ({ page }) => {
         await page.goto(BASE)
@@ -63,7 +75,7 @@ test.describe('roadmap — DS-first', () => {
 
     test('les titres de section sont des OrigamTitle (h2)', async ({ page }) => {
         const sectionTitles = page.locator(
-            '#roadmap-status-title, #roadmap-delivered-title, #roadmap-phases-title, #roadmap-wave4-title, #roadmap-cta-title'
+            '#roadmap-status-title, #roadmap-delivered-title, #roadmap-phases-title, #roadmap-catalogue-title, #roadmap-cta-title'
         )
         const count = await sectionTitles.count()
         expect(count).toBeGreaterThanOrEqual(4)
@@ -107,13 +119,25 @@ test.describe('roadmap — DS-first', () => {
     })
 
     /*
-     * Le panneau de statut : les 19 items d'origine sont TOUS conservés, mais
-     * partitionnés en deux colonnes au lieu d'une liste plate. Le test somme
-     * les deux colonnes plutôt que d'épingler 11 et 8 séparément — le partage
-     * bouge à chaque mesure (une ligne passe de `done: false` à `done: true`),
-     * le total ne bouge que si un item est réellement ajouté ou retiré.
+     * Le panneau de statut, partitionné en deux colonnes au lieu d'une liste
+     * plate. Le test somme les deux colonnes plutôt que d'épingler 11 et 3
+     * séparément — le partage bouge à chaque mesure (une ligne passe de
+     * `done: false` à `done: true`), le total ne bouge que si un item est
+     * réellement ajouté ou retiré.
+     *
+     * ⛔ Le total attendu est passé de 19 à 14, et c'était un ROUGE déjà
+     * présent sur cette branche avant la refonte de la section catalogue :
+     * `64f580b15` (« retire 5 constats internes que la page publiait ») a
+     * enlevé 5 entrées de `ROADMAP_STATUS_ITEMS` sans toucher ce spec. Comme
+     * `roadmap.spec.ts` est inscrit dans `MARKETING_GREEN_SPECS`, la CI était
+     * rouge sur ce seul cas. Recompté sur `packages/marketing/src/consts/
+     * roadmap.const.ts` : 14 entrées, 11 `done: true` et 3 `done: false`.
+     * Le nombre reste un littéral parce qu'il n'y a pas de source
+     * indépendante à interroger — lire le compte rendu par la page le
+     * rendrait tautologique, les titres de colonnes étant dérivés du même
+     * tableau.
      */
-    test('le panneau de statut partitionne les 19 items en deux colonnes', async ({ page }) => {
+    test('le panneau de statut partitionne les 14 items en deux colonnes', async ({ page }) => {
         const panel = page.locator('[data-cy="roadmap-status-panel"]')
         await expect(panel).toBeVisible()
         await expect(panel).toHaveClass(/origam-sheet/)
@@ -126,7 +150,7 @@ test.describe('roadmap — DS-first', () => {
 
         expect(liveCount).toBeGreaterThan(0)
         expect(pendingCount).toBeGreaterThan(0)
-        expect(liveCount + pendingCount).toBe(19)
+        expect(liveCount + pendingCount).toBe(14)
     })
 
     test('la date de mesure est rendue en pastille, pas noyée dans la prose', async ({ page }) => {
@@ -296,36 +320,125 @@ test.describe('roadmap — DS-first', () => {
         }
     })
 
-    test('la grille Wave 4 (livrée) contient 15 OrigamCard (.origam-card)', async ({ page }) => {
-        const grid = page.locator('[data-cy="roadmap-wave4-grid"]')
-        await expect(grid).toBeVisible()
-        const cards = page.locator('.roadmap-wave4__card')
-        const count = await cards.count()
-        expect(count).toBe(15)
-        for (let i = 0; i < count; i++) {
-            await expect(cards.nth(i)).toHaveClass(/origam-card/)
-        }
-    })
+    /*
+     * ⛔ Cette section a remplacé la grille « Wave 4 ». Ce qui est asserté ici
+     * n'est PAS un nombre gravé : c'est l'ACCORD entre ce que l'API sert et ce
+     * que la page rend. Le défaut d'origine était précisément un nombre gravé —
+     * le titre annonçait « 15 components & features / already shipped » alors
+     * que tout le catalogue est publié, et un lecteur en déduisait que le DS
+     * n'en livre que 15.
+     *
+     * ⛔ Et la taille du catalogue DÉPEND DE L'ENVIRONNEMENT : mesuré le
+     * 2026-09-25, le serveur de dev local sert 218 entrées et l'env déployé
+     * 194. Un `toBeGreaterThan(200)` aurait donc été ROUGE sur du code correct
+     * face à la base déployée d'aujourd'hui — le même défaut que le titre
+     * qu'on corrige, déguisé en assertion. Le plancher ci-dessous est
+     * volontairement bas : il n'existe que pour attraper une régression
+     * catastrophique (une page qui ne rendrait qu'une poignée de composants),
+     * et toute la force du test est dans l'ÉGALITÉ puces = entrées servies.
+     *
+     * ⛔ Le job CI `test-e2e-marketing` n'a NI service postgres NI variables
+     * `NUXT_DB_*`, donc `/api/reference/component` y répond 503 « Database is
+     * not configured » (mesuré : `packages/marketing/server/utils/db.ts:32`).
+     * Le cache nitro qui masque cela en local vit dans le worktree
+     * (`packages/marketing/.nuxt/cache/nitro/handlers/reference-catalog/`), donc
+     * un checkout CI neuf n'en a pas. La branche est choisie sur le STATUT RÉEL
+     * de l'API, jamais sur une supposition : catalogue servi → on vérifie que
+     * la page rend exactement ce qu'il contient ; catalogue indisponible → on
+     * vérifie que la section dégrade en `origam-empty-state` au lieu de
+     * laisser un trou blanc. Les deux branches gardent quelque chose de vrai.
+     * Même remarque pour `/components`, vide en CI pour la même raison depuis
+     * toujours.
+     *
+     * Le mécanisme exact du masquage local est versé dans **#953** : le
+     * handler caché sert la valeur périmée pendant que la revalidation échoue,
+     * et nitro l'écrit dans son log au démarrage sans que la page en sache
+     * rien — `ERROR [cache] SWR handler error. Database is not configured`,
+     * `[cause] { statusCode: 503 }` levé depuis `useDb`.
+     */
+    test('la section catalogue rend toutes les catégories servies par l\'API', async ({ page, request }) => {
+        const section = page.locator('[data-cy="roadmap-catalogue"]')
+        await expect(section).toBeVisible()
 
-    test('les avatars Wave 4 sont des OrigamAvatar (.origam-avatar)', async ({ page }) => {
-        await page.locator('[data-cy="roadmap-wave4"]').scrollIntoViewIfNeeded()
-        const avatars = page.locator('.roadmap-wave4__avatar')
-        const count = await avatars.count()
-        expect(count).toBe(15)
-        for (let i = 0; i < count; i++) {
-            await expect(avatars.nth(i)).toHaveClass(/origam-avatar/)
+        const catalogResponse = await request.get('/api/reference/component')
+
+        if (!catalogResponse.ok()) {
+            console.warn(
+                `[diagnostic] /api/reference/component → ${catalogResponse.status()} ` +
+                `(${catalogResponse.statusText()}). Pas de base de données sur cette ` +
+                'cible — on vérifie l\'état dégradé, pas le catalogue.'
+            )
+            await expect(page.locator('[data-cy="roadmap-catalogue-empty"]')).toBeVisible()
+            await expect(page.locator('[data-cy="roadmap-catalogue-groups"]')).toHaveCount(0)
+            await expect(page.locator('[data-cy="roadmap-catalogue-empty-link"]')).toHaveAttribute(
+                'href', /\/components$/
+            )
+            return
         }
+
+        const catalog = await catalogResponse.json()
+        const categoriesResponse = await request.get('/api/reference/categories/component')
+        expect(categoriesResponse.ok()).toBe(true)
+        const categories: string[] = await categoriesResponse.json()
+
+        expect(catalog.length).toBeGreaterThan(CATALOGUE_SANITY_FLOOR)
+
+        await expect(page.locator('[data-cy="roadmap-catalogue-empty"]')).toHaveCount(0)
+
+        /*
+         * Toutes les catégories servies sont rendues, plus AU PLUS un bucket
+         * « Other » — celui-ci n'apparaît que tant qu'une entrée reste
+         * inclassable (#954). Épingler `categories.length + 1` rendrait ce
+         * test rouge le jour où #954 corrige la donnée, sur du code correct.
+         */
+        const groups = page.locator('[data-cy^="roadmap-catalogue-category-"]')
+        const groupCount = await groups.count()
+        expect(groupCount).toBeGreaterThanOrEqual(categories.length)
+        expect(groupCount).toBeLessThanOrEqual(categories.length + 1)
+
+        for (const category of categories) {
+            const slug = category.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+            await expect(page.locator(`[data-cy="roadmap-catalogue-category-${slug}"]`)).toHaveCount(1)
+        }
+
+        const chips = page.locator('[data-cy^="roadmap-catalogue-component-"]')
+        await expect(chips).toHaveCount(catalog.length)
     })
 
     /*
-     * Le composant s'appelle OrigamAudio — `packages/ds/src/components/Audio/
+     * Le compte affiché dans le titre doit être CELUI du catalogue servi, et
+     * chaque puce doit être un OrigamChip qui mène à sa propre page d'API. Une
+     * liste de noms non cliquables serait une capture d'écran, pas un
+     * catalogue.
+     */
+    test('le titre porte le compte du catalogue et chaque puce est un lien OrigamChip', async ({ page, request }) => {
+        const catalogResponse = await request.get('/api/reference/component')
+        test.skip(!catalogResponse.ok(), 'catalogue indisponible sur cette cible (pas de base de données)')
+
+        const catalog = await catalogResponse.json()
+
+        await expect(page.locator('#roadmap-catalogue-title'))
+            .toContainText(String(catalog.length))
+
+        const chips = page.locator('[data-cy^="roadmap-catalogue-component-"]')
+        const first = chips.first()
+        await expect(first).toHaveClass(/origam-chip/)
+        await expect(first).toHaveJSProperty('tagName', 'A')
+        await expect(first).toHaveAttribute('href', /\/components\/[a-z0-9-]+$/)
+    })
+
+    /*
+     * Le composant s'appelle Audio — `packages/ds/src/components/Audio/
      * OrigamAudio.vue`, enregistré `<origam-audio>`. La page a annoncé
      * « OrigamSound » pendant toute la vie de la vague 4 : un import qui
-     * échouerait. Ce test épingle le nom pour qu'il ne revienne pas.
+     * échouerait. La grille vague 4 qui portait ce nom n'existe plus, mais le
+     * garde-fou reste utile — il vise désormais l'entrée du catalogue.
      */
-    test('la vague 4 nomme OrigamAudio, jamais OrigamSound', async ({ page }) => {
-        const grid = page.locator('[data-cy="roadmap-wave4-grid"]')
-        await expect(grid.getByText('OrigamAudio', { exact: true })).toHaveCount(1)
+    test('le catalogue nomme Audio, jamais OrigamSound', async ({ page, request }) => {
+        const catalogResponse = await request.get('/api/reference/component')
+        test.skip(!catalogResponse.ok(), 'catalogue indisponible sur cette cible (pas de base de données)')
+
+        await expect(page.locator('[data-cy="roadmap-catalogue-component-audio"]')).toHaveCount(1)
         await expect(page.getByText('OrigamSound')).toHaveCount(0)
     })
 

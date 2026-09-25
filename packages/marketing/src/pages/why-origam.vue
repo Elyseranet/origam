@@ -863,8 +863,15 @@ const comparisonItems = computed(() =>
         &__cell {
             text-align: center;
 
+            /*
+              ⛔ `fgSubtle`, jamais `fg` (#951). `fg` est l'ENCRE posee SUR l'aplat
+              de l'intention, pas sa teinte : hors de cet aplat il peint un neutre.
+              Mesure 8 identites x 2 modes : `fg` ne rend une teinte NULLE PART, et
+              9 des 16 configurations tombent sous 1.6:1 (glass sombre a 1.00 — le
+              filet a la couleur de son fond). `fgSubtle` tient 4.38:1 a 13.22:1.
+            */
             &[data-yes='true'] .why-comparison__cell-icon {
-                color: var(--origam-color__feedback--success---fg);
+                color: var(--origam-color__feedback--success---fgSubtle);
             }
 
             &[data-yes='false'] .why-comparison__cell-icon {
@@ -915,7 +922,8 @@ const comparisonItems = computed(() =>
             flex: none;
             margin-block-start: 0.15em;
             font-size: var(--origam-font-size---lg, 1.125rem);
-            color: var(--origam-color__feedback--warning---fg);
+            /* `fgSubtle` et pas `fg` — meme raison qu'au-dessus (#951). */
+            color: var(--origam-color__feedback--warning---fgSubtle);
         }
 
         &__row-title {
@@ -947,8 +955,9 @@ const comparisonItems = computed(() =>
             padding-inline-start: var(--origam-space---5, 1.25rem);
             border-inline-start: 2px solid var(--origam-color__border---subtle);
 
+            /* Le filet NOIR signale en production sous `geek` — voir #951. */
             &[data-tone='yes'] {
-                border-inline-start-color: var(--origam-color__feedback--success---fg);
+                border-inline-start-color: var(--origam-color__feedback--success---fgSubtle);
             }
         }
 

@@ -1175,7 +1175,6 @@
             "title_line2": "aujourd'hui.",
             "subtitle": "Un état honnête de ce qui marche, de ce qui avance et de ce qui manque encore — chaque ligne ci-dessous a été mesurée, pas recopiée.",
             "npm_published": "Publié sur npm — origam {version}, publication automatisée avec attestation sigstore",
-            "readme_changelog": "README correct, mais le CHANGELOG retarde sur la version publiée {version} — les dernières versions ne sont pas encore rédigées",
             "monorepo": "Monorepo en place — 5 packages pnpm workspace (ds, docs, marketing, stories, tests), la bibliothèque publiant toujours depuis packages/ds",
             "bundle_monitoring": "Aucun suivi de la taille du bundle — aucun budget de poids n'est imposé sur les sous-exports",
             "wave4_shipped": "Wave 4 livrée — 13 composants + support des dégradés + OrigamTextMask (v2.6.0)",
@@ -1187,12 +1186,8 @@
             "inspection": "Inspectés le 1er septembre 2026 : 216 composants sur 8 critères — rendu, canal du thème, réactivité, résolution des props, emits, sémantique, cohérence story et doc, chaînes en dur : zéro défaut à cette date",
             "sonarqube": "SonarQube branché avec la couverture des tests unitaires et une quality gate qui bloque sur la sécurité et la criticité",
             "dependency_automation": "Mises à jour de dépendances automatisées — Dependabot ouvre chaque semaine des pull requests groupées pour npm et GitHub Actions",
-            "e2e_ci_gate": "L’intégration continue ne barre que 81 des 256 specs Playwright — les 175 autres existent mais ne bloquent encore rien",
             "a11y_sweep": "Les overlays n'ont toujours pas d'assertions de piège au focus — un seul composant de toute la famille est couvert, alors que le balayage par composant barre désormais la CI sur une baseline de violations vide",
             "visual_regression": "La régression visuelle est seulement amorcée — la suite en conteneur épinglé ne couvre qu'un composant pour l'instant",
-            "migration_guide": "Le guide de migration v2 vers v3 n'existe pas encore — il bloque la pose du tag v3",
-            "public_domain": "La documentation et les stories sont servies depuis un hôte interne — le domaine du projet ne résout pas encore",
-            "community": "Pas encore de communauté — ni discussions ouvertes, ni contributeur externe",
             "measured_on": "Mesuré sur le dépôt le 25 septembre 2026",
             "live_title": "En place aujourd’hui ({count})",
             "pending_title": "Pas encore ({count})"
@@ -1251,20 +1246,16 @@
                     "description": "Aucun budget de poids n’est imposé aujourd’hui. Ajouter size-limit sur chaque sous-export avec commentaire automatique sur les pull requests, et fixer le seuil depuis une mesure fraîche de l’archive publiée : 1 864 944 o au 25 septembre 2026."
                 },
                 "api_audit": {
-                    "title": "Audit d'API avant la v3",
-                    "description": "Le guide de migration v2 vers v3 n'existe pas encore, et l'écrire est une condition bloquante avant de poser le tag v3 : inventaire exhaustif des dépréciations, marqueurs {'@'}deprecated manquants complétés, et codemod pour les renommages mécaniques."
+                    "title": "Audit d'API avant la séparation en modules",
+                    "description": "Passer la surface publique au peigne fin avant la séparation de packages/ds en modules : inventaire exhaustif des dépréciations, marqueurs {'@'}deprecated manquants complétés, et codemod pour les renommages mécaniques."
                 },
                 "sonarqube": {
                     "title": "SonarQube — résorber la dette restante",
                     "description": "La couverture des tests unitaires alimente le scan et la quality gate est armée : elle bloque sur la sécurité et la criticité. Reste le verdict lui-même — une note A sur les quatre axes et zéro dette ouverte. L'analyse des pull requests reste hors périmètre tant que le serveur tourne en Community Edition, qui n'analyse qu'une seule branche."
                 },
                 "e2e_gate": {
-                    "title": "Élargir la barrière e2e en CI",
-                    "description": "256 fichiers de specs couvrent déjà les familles de composants, mais l’intégration continue n’en barre que 81. Faire entrer les 175 restants dans la barrière, vague par vague, en traitant les instabilités au lieu de les contourner."
-                },
-                "public_domain": {
-                    "title": "Publier la documentation sous le domaine du projet",
-                    "description": "La référence VitePress et le build Histoire sont en ligne et répondent en HTTP 200, mais sur un hôte interne. Tant qu'ils ne vivent pas sous le domaine du projet, le marketing n'a aucune adresse où envoyer les gens."
+                    "title": "Toutes les specs e2e bloquantes en CI",
+                    "description": "Chaque famille de composants a déjà sa couverture Playwright. Faire entrer toute la suite dans la barrière bloquante, vague par vague, en traitant les instabilités au lieu de les contourner."
                 }
             },
             "mid_term": {
@@ -1422,72 +1413,18 @@
             "cta_changelog": "Lire le CHANGELOG",
             "actions_label": "Suivre origam"
         },
-        "wave4_grid": {
-            "eyebrow": "VAGUE 4 — LIVRÉE",
-            "title_line1": "15 composants et fonctionnalités",
+        "catalogue": {
+            "eyebrow": "TOUT LE CATALOGUE EST LIVRÉ",
+            "title_line1": "{count} composants",
+            "title_line1_unavailable": "Tout le catalogue de composants",
             "title_line2": "déjà livrés.",
-            "subtitle": "Tout ce qui est dans la Vague 4 est disponible sur npm. Ce sont les composants et fonctionnalités accessibles dès maintenant dans origam.",
-            "badge_shipped": "Livré",
-            "grid": {
-                "name": "OrigamGrid",
-                "note": "CSS Grid déclaratif avec columns, rows, areas, gap, auto-flow"
-            },
-            "masonry": {
-                "name": "OrigamMasonry",
-                "note": "CSS-first via grid-template-rows: masonry, fallback JS"
-            },
-            "blockquote": {
-                "name": "OrigamBlockquote",
-                "note": "Typographie : citation + auteur + source + variantes"
-            },
-            "empty_state": {
-                "name": "OrigamEmptyState",
-                "note": "5 presets : no-data, no-results, error, offline, locked"
-            },
-            "clipboard": {
-                "name": "OrigamClipboard",
-                "note": "Wrapper copie + feedback Copié !, sans dépendance"
-            },
-            "inline_edit": {
-                "name": "OrigamInlineEdit",
-                "note": "Pattern edit-in-place, v-model + validators, ARIA live"
-            },
-            "number_format": {
-                "name": "OrigamNumberFormat",
-                "note": "Formatage i18n via Intl.NumberFormat, affichage seul"
-            },
-            "qr_code": {
-                "name": "OrigamQRCode",
-                "note": "Rendu SVG, ISO/IEC 18004, niveau de correction, overlay logo"
-            },
-            "watermark": {
-                "name": "OrigamWatermark",
-                "note": "Overlay diagonal en répétition, texte SVG ou canvas data-URI"
-            },
-            "video": {
-                "name": "OrigamVideo",
-                "note": "Player custom : play/pause, scrubber, PIP, légendes, HLS optionnel"
-            },
-            "calendar": {
-                "name": "OrigamCalendar",
-                "note": "Vues mois/semaine/jour/agenda, RRULE, drag-to-create, 100 % maison"
-            },
-            "chart": {
-                "name": "OrigamChart",
-                "note": "SVG natif : ligne, aire, barre, camembert, radar, scatter — sans d3 ni chart.js"
-            },
-            "gradient": {
-                "name": "Support gradient",
-                "note": "Les props color/bgColor/textColor acceptent désormais les valeurs gradient"
-            },
-            "text_mask": {
-                "name": "OrigamTextMask",
-                "note": "Révélation de texte via background-clip: text, fonds gradient + image"
-            },
-            "audio": {
-                "name": "OrigamAudio",
-                "note": "Lecteur audio + forme d’onde via la Web Audio API, Media Session API"
-            }
+            "subtitle": "Chaque composant d’origam est publié sur npm et utilisable aujourd’hui — il n’y a pas de liste d’attente. Ce qu’il reste à construire est au-dessus, dans les phases de la roadmap.",
+            "measured_live": "{count} composants dans {categories} catégories, lus en direct dans le catalogue",
+            "measured_unavailable": "Lu en direct dans le catalogue",
+            "category_other": "Autres",
+            "empty_title": "Catalogue indisponible pour le moment",
+            "empty_description": "La liste des composants n’a pas pu être chargée. Tous les composants restent publiés sur npm — parcourez-les sur la page composants.",
+            "empty_cta": "Parcourir les composants"
         }
     },
     "support": {
