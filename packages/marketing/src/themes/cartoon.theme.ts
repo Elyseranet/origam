@@ -58,7 +58,28 @@ export const cartoonLightTheme: IOrigamTheme = {
                 default: '#171717',
                 subtle: '#171717',
                 strong: '#000000',
-                focus: '#ff8fa3',
+                /*
+                 * ⛔ #924 — était `#ff8fa3`, le rose de `action.primary.bg`, qui
+                 * ne se détache d'aucune surface claire de cartoon : mesuré en
+                 * Chromium réel à 2,07:1 sur la page, 2,16 sur `raised`, 1,96 sur
+                 * `overlay`/`sunken` et 1,53 sur `feedback.danger.bgSubtle` —
+                 * sous le seuil de 3:1 de WCAG 2.1 SC 1.4.11 sur les QUATRE.
+                 * Le token est GLOBAL : 38 des 96 familles de composants peignent
+                 * leur anneau de focus avec (10 le lisent directement, 28 y
+                 * accèdent en composant Btn / Field / SelectionControl).
+                 *
+                 * La valeur n'est pas choisie à l'œil : c'est `action.primary
+                 * .fgSubtle` de cette même palette — la réponse que cartoon donne
+                 * déjà à « le rose, à une valeur qui se lit sur un fond clair ».
+                 * Elle place l'anneau à 4,30–6,06:1 sur ces quatre surfaces, dans
+                 * la bande des 7 autres identités (3,82–12,56), et reste
+                 * distincte du `#171717` de la bordure au repos.
+                 *
+                 * ⚠️ Le bloc SOMBRE (plus bas) garde `#ff8fa3` À DESSEIN : mesuré
+                 * conforme, 6,09–8,05:1. Corriger les deux par symétrie est
+                 * l'erreur qu'a faite #829.
+                 */
+                focus: '#c0174a',
                 'subtle-alpha': 'rgba(23, 23, 23, 0.60)',
                 ghost: 'rgba(23, 23, 23, 0.40)'
             },
