@@ -140,7 +140,19 @@ export const cartoonLightTheme: IOrigamTheme = {
         'origam-code': { rounded: 'lg', border: true, elevation: 2, copyable: true },
         // nav:true ajouté (synthèse §3, "respiration des items") — IMenuProps
         // forwarde vers le List interne. Vérifié: IListProps.nav existe.
-        'origam-menu': { rounded: 'lg', border: true, elevation: 4, nav: true },
+        // ⛔ `sm` et non `lg` (#944) — même décision qu'en glass, prise par le
+        // propriétaire devant la planche des 8 identités × 2 modes.
+        //
+        // La valeur vient du THÈME : cartoon déclare `sm`, `md`, `lg` (+ `card`,
+        // `btn`, `pill`) et ne déclare PAS `xs` — `rounded: 'xs'` retomberait
+        // sur le primitif DS à 2px, que cartoon n'a jamais choisi. `sm` = 8px
+        // dans les deux modes (contre 20px avant), et met le conteneur sur le
+        // même rung que l'item, comme `material`.
+        //
+        // ⚠️ Défaut de composant : tout `origam-menu` de l'app suit. Le menu de
+        // `origam-select` ne suit PAS — il porte son propre `menuProps` plus
+        // haut, un binding explicite qui bat le défaut de thème.
+        'origam-menu': { rounded: 'sm', border: true, elevation: 4, nav: true },
         // hover:true ajouté (synthèse §3) — ITableProps extends IHoverProps, vérifié.
         'origam-table': { rounded: 'lg', border: true, hover: true },
         // Arbitrage utilisateur (Refs #30, PR #254) — la synthèse design

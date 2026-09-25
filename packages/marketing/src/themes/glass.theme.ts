@@ -226,7 +226,26 @@ export const glassLightTheme: IOrigamTheme = {
         // ── Overlay & Surface (SYNTHESE §3) ─────────────────────────────
         'origam-card': { rounded: 'lg', border: true, elevation: 4 },
         'origam-sheet': { rounded: 'lg', border: true, elevation: 4 },
-        'origam-menu': { rounded: 'lg', border: true, elevation: 4, nav: true },
+        // ⛔ `sm` et non `lg` (#944) — décision du propriétaire sur pièce, après
+        // la planche des 8 identités × 2 modes.
+        //
+        // La valeur vient du THÈME, pas d'un choix à l'œil : glass déclare dans
+        // son `vars.rounded` les rungs `sm`, `md`, `lg` (+ `card`, `btn`,
+        // `pill`) et ne déclare PAS `xs` — `rounded: 'xs'` retomberait sur le
+        // primitif DS à 2px, une valeur que glass n'a jamais choisie. `sm` est
+        // donc le plus léger des rungs qui lui appartiennent : 10px en clair,
+        // 16px en sombre (contre 22px / 30px avant).
+        //
+        // Conteneur et item se retrouvent ainsi sur le MÊME rung, ce que
+        // `material` fait déjà (`corner-extra-small` des deux côtés) : on étend
+        // une règle existante au lieu d'en inventer une.
+        //
+        // ⚠️ Défaut de composant, donc TOUT `origam-menu` de l'app suit — y
+        // compris le déclencheur riche du Theme Builder. Constaté, pas supposé
+        // (mesures dans la PR). Le menu de `origam-select` ne suit PAS : il
+        // passe par `menuProps` plus haut, un binding explicite qui bat le
+        // défaut de thème.
+        'origam-menu': { rounded: 'sm', border: true, elevation: 4, nav: true },
         'origam-dialog': { rounded: 'lg', border: true, elevation: 5 },
         // origam-tooltip volontairement ABSENT d'ici : ITooltipProps n'a NI
         // `rounded`, NI `border`, NI `elevation` (confirmé — aucune de ces

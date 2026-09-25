@@ -172,13 +172,21 @@ test.describe('primary-nav active state (route-driven)', () => {
  * pas. Il ne garde que les exécutions locales de la suite marketing.
  */
 const MENU_SHAPE = [
-  // identité, mode, rayon du conteneur, rayon de la ligne — mesurés en Chromium
+  // identité, mode, rayon du conteneur, rayon de la ligne — mesurés en Chromium.
+  //
+  // ⛔ Les trois identités posent desormais conteneur ET ligne sur le MÊME rung,
+  // le plus léger que chacune déclare dans son propre `vars.rounded` :
+  //   material → `xs` = 4px  (M3 `corner-extra-small`)
+  //   glass    → `sm` = 10px clair / 16px sombre
+  //   cartoon  → `sm` = 8px  (identique dans les deux modes)
+  // Aucune ne déclare de rung plus bas : `xs` en glass et cartoon retomberait
+  // sur le primitif DS (2px), une valeur qu'aucune des deux n'a choisie.
   { name: 'material', mode: 'light', content: '4px', item: '4px' },
   { name: 'material', mode: 'dark', content: '4px', item: '4px' },
-  { name: 'glass', mode: 'light', content: '22px', item: '10px' },
-  { name: 'glass', mode: 'dark', content: '30px', item: '16px' },
-  { name: 'cartoon', mode: 'light', content: '20px', item: '8px' },
-  { name: 'cartoon', mode: 'dark', content: '20px', item: '8px' }
+  { name: 'glass', mode: 'light', content: '10px', item: '10px' },
+  { name: 'glass', mode: 'dark', content: '16px', item: '16px' },
+  { name: 'cartoon', mode: 'light', content: '8px', item: '8px' },
+  { name: 'cartoon', mode: 'dark', content: '8px', item: '8px' }
 ]
 
 for (const { name, mode, content, item } of MENU_SHAPE) {
@@ -233,6 +241,10 @@ for (const { name, mode, content, item } of MENU_SHAPE) {
       expect(shape.content, 'rayon du conteneur du menu').toBe(content)
       expect(shape.item, 'rayon de la ligne — coin haut-gauche').toBe(item)
       expect(shape.itemBottomRight, 'rayon de la ligne — coin bas-droit').toBe(item)
+      // La RÈGLE, pas seulement les valeurs : conteneur et ligne partagent le
+      // rung. Une dérive qui garderait les deux « légers » mais casserait
+      // l'appariement passerait les trois assertions ci-dessus.
+      expect(shape.content, 'conteneur et ligne doivent partager le même rung').toBe(shape.item)
       expect(shape.overflows, 'la ligne ne doit jamais déborder de .origam-menu__content').toBe(false)
       expect(shape.padInlineStart, 'gouttière intérieure de la ligne — 0px = libellé collé au bord').toBe('12px')
       expect(shape.labelFlush, 'le libellé ne doit pas toucher le bord de la surbrillance').toBe(false)
