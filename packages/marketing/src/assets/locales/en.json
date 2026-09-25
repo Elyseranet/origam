@@ -825,7 +825,7 @@
             },
             "tokens": {
                 "title": "Design tokens",
-                "description": "Multi-theme via a props-first theme object. createOrigam() resolves it across all 218 components — switch between light, dark, or your own brand at runtime with zero remount."
+                "description": "Multi-theme via a props-first theme object. createOrigam() resolves it across the whole catalogue, with no per-component wiring — switch between light, dark, or your own brand at runtime with zero remount."
             },
             "typescript": {
                 "title": "TypeScript first",
@@ -919,8 +919,8 @@
             "chip_ecom": "Ecom",
             "chip_apple": "Apple",
             "tooling_label": "Tooling",
-            "tokens_studio": "→ props-first theming (218 components)",
-            "style_dictionary": "→ hand-maintained CSS/SCSS, no build step",
+            "tooling_theming": "→ props-first theming, whole catalogue",
+            "tooling_tokens": "→ hand-maintained CSS/SCSS, no build step",
             "preview_light": "light.json",
             "preview_dark": "dark.json",
             "preview_brand_a": "brand-a.json",

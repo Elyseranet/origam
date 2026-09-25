@@ -42,7 +42,7 @@ const { theme, setTheme } = useTheme()
                 </origam-title>
 
                 <p class="home-themes__subtitle">
-                    {{ t('home.themes.subtitle', 'DTCG-compliant design tokens, multi-theme out of the box. Switch between light, dark or your custom brand at runtime — zero remount, zero flicker.') }}
+                    {{ t('home.themes.subtitle', 'Hand-maintained, props-first design tokens — multi-theme out of the box. Switch between light, dark or your custom brand at runtime, with zero remount.') }}
                 </p>
 
                 <div

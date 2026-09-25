@@ -146,8 +146,9 @@ export const THEME_BUILDER_BORDER_STYLE_OPTIONS: Array<{ value: string; labelKey
 export const THEME_BUILDER_SPACING_SCALE: readonly string[] = ['0', '1', '2', '3', '4', '5', '6', '8', '10', '12']
 
 /**
- * Scale step → px, verified against `packages/ds/tokens/primitive.json`
- * (`space.*`, DTCG source of `--origam-space---N`). Used ONLY to seed the
+ * Scale step → px, re-verified 2026-09-25 against the live sheet
+ * `packages/ds/src/assets/css/tokens/primitive.css` (lines 80-89,
+ * `--origam-space---N`) — all 10 rungs match. Used ONLY to seed the
  * box-model editor with a sane px starting point when the user switches
  * from a scale chip into "Autre" — never written back as a scale token.
  */

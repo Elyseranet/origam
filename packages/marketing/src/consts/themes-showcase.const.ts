@@ -27,8 +27,8 @@ export const THEME_CHIPS: IThemeChip[] = [
  * separate <p> row (NOT inside the chip group / carousel).
  */
 export const THEMES_TOOLING_TEXT: IThemeChip[] = [
-    { key: 'tokens-studio', labelKey: 'home.themes.tokens_studio', labelFallback: '→ tokens.studio compatible' },
-    { key: 'style-dictionary', labelKey: 'home.themes.style_dictionary', labelFallback: '→ Style Dictionary v4' },
+    { key: 'theming', labelKey: 'home.themes.tooling_theming', labelFallback: '→ props-first theming, whole catalogue' },
+    { key: 'tokens', labelKey: 'home.themes.tooling_tokens', labelFallback: '→ hand-maintained CSS/SCSS, no build step' },
 ]
 
 /**

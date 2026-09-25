@@ -1058,7 +1058,7 @@ useSeoMeta({
                                     {{ t('components.detail.tokens.title', 'Design tokens') }}
                                 </origam-title>
                                 <p class="component-section__desc">
-                                    {{ t('components.detail.tokens.desc', 'DTCG token excerpt from the component token file. Built with Style Dictionary v4.') }}
+                                    {{ t('components.detail.tokens.desc', 'Excerpt from this component\'s token declarations — the --origam-<component>---<property> variables, declared in its hand-maintained token sheet with no build step.') }}
                                 </p>
                             </header>
 
