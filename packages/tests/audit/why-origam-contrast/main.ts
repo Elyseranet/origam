@@ -36,6 +36,7 @@ import { geekThemes } from '../../../marketing/src/themes/geek.theme'
 import { glassThemes } from '../../../marketing/src/themes/glass.theme'
 import { materialThemes } from '../../../marketing/src/themes/material.theme'
 
+import ProbeFocusSurface from './ProbeFocusSurface.vue'
 import ProbeSurface from './ProbeSurface.vue'
 import type { IProbeConfig } from './probe-matrix.interface'
 
@@ -84,8 +85,15 @@ const origam = createOrigam({
 
 const root = document.getElementById('app')!
 
+/*
+ * #924 — the focus surface is opt-in via `surface: 'focus'`. Absent (the
+ * historical shape) keeps mounting the text-contrast surface, so
+ * `why-origam-contrast.audit.mjs`'s own numbers are untouched by this addition.
+ */
+const surface = cfg.surface === 'focus' ? ProbeFocusSurface : ProbeSurface
+
 createApp({
-    render: () => h(ProbeSurface)
+    render: () => h(surface)
 }).use(origam).mount(root)
 
 ;(window as unknown as { __ORIGAM_PROBE_READY__?: boolean }).__ORIGAM_PROBE_READY__ = true

@@ -21,3 +21,14 @@ export type TProbeIdentity =
         | 'material'
 
 export type TProbeMode = 'light' | 'dark'
+
+/*********************************************************
+ * TProbeSurface — which probe component the harness mounts
+ *
+ * @description
+ * `'contrast'` (the default when `surface` is absent) is the original
+ * text-contrast surface. `'focus'` is #924's surface: the same identities and
+ * modes, but every focusable family laid out once per semantic BACKDROP, so
+ * the focus ring can be measured against what actually surrounds it.
+ ********************************************************/
+export type TProbeSurface = 'contrast' | 'focus'

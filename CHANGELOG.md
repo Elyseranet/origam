@@ -353,7 +353,8 @@ n'est **pas** la couleur réellement peinte — et il reste sous 3:1
 (**1,37–1,84:1**). `indeterminate` : aucun changement de couleur, hérite du
 correctif de base. **Anneau de focus** : mesuré sur les 16 configurations via
 un vrai `Tab` clavier (nouveau
-`packages/tests/audit/switch-focus-ring.audit.mjs`), 15/16 ≥ **4,43:1** ;
+`packages/tests/audit/focus-ring.audit.mjs`, alors nommé
+`switch-focus-ring.audit.mjs` et élargi depuis par #924), 15/16 ≥ **4,43:1** ;
 `cartoon|light` échoue à **2,07:1**, mais la cause est le token de thème global
 `border.focus` (`#ff8fa3`, un rose pastel) qui pilote l'anneau de **tous** les
 composants focusables sous ce thème — hors périmètre, à traiter par un ticket
