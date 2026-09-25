@@ -27,6 +27,7 @@ export interface IRoadmapPhase {
     titleKey: string
     intent: 'primary' | 'secondary' | 'warning' | 'info' | 'success'
     icon: string
+    defaultOpen?: boolean
     items: IRoadmapPhaseItem[]
 }
 

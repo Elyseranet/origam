@@ -1,77 +1,3 @@
-<script setup lang="ts">
-import { computed } from 'vue'
-import { useT } from '~/composables/useT'
-import { useVersion } from '~/composables/useVersion'
-import {
-    ROADMAP_HERO_BADGE_VARS,
-    ROADMAP_STATUS_ITEMS,
-    ROADMAP_OVERVIEW_STATS,
-    ROADMAP_WAVES,
-    ROADMAP_PHASES,
-    ROADMAP_WAVE4_COMPONENTS
-} from '~/consts/roadmap.const'
-import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
-
-const { t } = useT()
-
-// The badge used to hardcode "v2.6.0", which drifted to four minor versions
-// behind what npm actually served. `useVersion` is the single source of truth
-// (live registry, build-time fallback) — the same one the home hero reads, so
-// a release only requires bumping the package, never editing a badge string.
-const { version } = useVersion()
-
-const heroBadge = computed(() =>
-    t('roadmap.hero.badge', `v${ version.value } — Wave 4 shipped`, { version: version.value })
-)
-
-// #913 — the SAME page rendered two different versions of itself. Fifteen
-// lines under the badge above, the "WHERE WE STAND" title read
-// `t('roadmap.status.title_line1')`, whose locale value was the LITERAL
-// string "Where 2.17.1" — no interpolation, so `useVersion()` never reached
-// it. #743 had already fixed the badge this way and left the title behind;
-// substituting a fresh number in the locale would only restart the same
-// drift, eight versions later. Both this title and the npm status line below
-// now interpolate `{version}`, exactly like `roadmap.hero.badge`, so a
-// release never requires editing a translated string again.
-//
-// BOTH lines take `{version}` even though only line 1 uses it today: the
-// number sits on line 1 in EN ("Where {version}" / "stands.") and the FR
-// value was reshaped to match ("Où en est la {version}" / "aujourd'hui."),
-// so `i18n:check`'s EN/FR placeholder parity stays at 0 gaps. Handing the
-// parameter to both lines means a future rewording can move the number to
-// the other half without touching this file.
-const statusTitleLine1 = computed(() =>
-    t('roadmap.status.title_line1', `Where ${ version.value }`, { version: version.value })
-)
-
-const statusTitleLine2 = computed(() =>
-    t('roadmap.status.title_line2', 'stands.', { version: version.value })
-)
-
-// The status list renders a flat `labelKey` loop. `{ version }` is handed to
-// every entry rather than to the one that needs it today: vue-i18n drops a
-// named parameter a message does not reference, so this costs nothing and
-// means the NEXT status line that wants the live version only edits a locale
-// value — never this file. That is the whole point of #913.
-const statusParams = computed(() => ({ version: version.value }))
-
-useSeoMeta({
-    title: () => t('roadmap.meta.title', 'Roadmap · origam design system'),
-    description: () => t('roadmap.meta.description', 'Where origam is today, what has been delivered, and what is coming next.'),
-    ogTitle: () => t('roadmap.meta.title', 'Roadmap · origam design system'),
-    ogDescription: () => t('roadmap.meta.description', 'Where origam is today, what has been delivered, and what is coming next.')
-})
-
-const statusItems = computed(() => ROADMAP_STATUS_ITEMS)
-const overviewStats = computed(() => ROADMAP_OVERVIEW_STATS)
-const waves = computed(() => ROADMAP_WAVES)
-const phases = computed(() => ROADMAP_PHASES)
-const wave4Components = computed(() => ROADMAP_WAVE4_COMPONENTS)
-
-const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
-const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main/CHANGELOG.md`)
-</script>
-
 <template>
     <article
         class="roadmap"
@@ -92,7 +18,9 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                     pill
                     data-cy="roadmap-hero-badge"
                 >
-                    {{ heroBadge }}
+                    <template #default>
+                        {{ heroBadge }}
+                    </template>
                 </origam-chip>
 
                 <origam-title
@@ -100,13 +28,44 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                     tag="h1"
                     class="roadmap-hero__title"
                 >
-                    <span class="roadmap-hero__title-line">{{ t('roadmap.hero.title_line1', 'Roadmap.') }}</span>
-                    <span class="roadmap-hero__title-line roadmap-hero__title-line--accent">{{ t('roadmap.hero.title_line2', 'Honest & public.') }}</span>
+                    <template #default>
+                        <span class="roadmap-hero__title-line">{{ t('roadmap.hero.title_line1', 'Roadmap.') }}</span>
+                        <span class="roadmap-hero__title-line roadmap-hero__title-line--accent">{{ t('roadmap.hero.title_line2', 'Honest & public.') }}</span>
+                    </template>
                 </origam-title>
 
                 <p class="roadmap-hero__subtitle">
                     {{ t('roadmap.hero.subtitle', 'origam is an early-stage Vue 3 design system. Here is where we stand today, what we have already shipped, and what is on the horizon.') }}
                 </p>
+
+                <nav
+                    class="roadmap-hero__actions"
+                    :aria-label="t('roadmap.hero.actions_label', 'Explore the roadmap')"
+                >
+                    <origam-btn
+                        class="roadmap-hero__action"
+                        variant="text"
+                        append-icon="mdi-arrow-down"
+                        href="#roadmap-status-title"
+                        data-cy="roadmap-hero-status-link"
+                    >
+                        <template #default>
+                            {{ t('roadmap.hero.cta_status', 'See where we stand') }}
+                        </template>
+                    </origam-btn>
+
+                    <origam-btn
+                        class="roadmap-hero__action"
+                        variant="text"
+                        prepend-icon="mdi-map-marker-path"
+                        href="#roadmap-phases-title"
+                        data-cy="roadmap-hero-phases-link"
+                    >
+                        <template #default>
+                            {{ t('roadmap.hero.cta_phases', "Jump to what's next") }}
+                        </template>
+                    </origam-btn>
+                </nav>
             </origam-container>
         </section>
 
@@ -116,7 +75,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
             data-cy="roadmap-status"
         >
             <origam-container>
-                <header class="roadmap-status__header">
+                <header class="roadmap-status__header roadmap-section">
                     <p class="roadmap-section__eyebrow">
                         {{ t('roadmap.status.eyebrow', 'WHERE WE STAND') }}
                     </p>
@@ -126,8 +85,10 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                         tag="h2"
                         class="roadmap-section__title"
                     >
-                        <span class="roadmap-section__title-line">{{ statusTitleLine1 }}</span>
-                        <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ statusTitleLine2 }}</span>
+                        <template #default>
+                            <span class="roadmap-section__title-line">{{ statusTitleLine1 }}</span>
+                            <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ statusTitleLine2 }}</span>
+                        </template>
                     </origam-title>
 
                     <p class="roadmap-section__subtitle">
@@ -135,42 +96,88 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                     </p>
                 </header>
 
-                <origam-grid
-                    tag="ul"
-                    columns="1"
-                    gap="0.75rem"
-                    class="roadmap-status__list"
-                    data-cy="roadmap-status-list"
+                <origam-sheet
+                    tag="div"
+                    rounded="lg"
+                    border
+                    class="roadmap-status__panel"
+                    data-cy="roadmap-status-panel"
                 >
-                    <origam-grid-item
-                        v-for="item in statusItems"
-                        :key="item.labelKey"
-                        tag="li"
-                        class="roadmap-status__item"
-                    >
-                        <origam-card
-                            flat
-                            border
-                            rounded="lg"
-                            class="roadmap-status__card"
+                    <template #default>
+                        <origam-chip
+                            size="small"
+                            pill
+                            prepend-icon="mdi-calendar-check-outline"
+                            class="roadmap-measured"
+                            data-cy="roadmap-status-measured"
                         >
                             <template #default>
-                                <div class="roadmap-status__row">
+                                {{ t('roadmap.status.measured_on', 'Measured against the repository on 25 September 2026') }}
+                            </template>
+                        </origam-chip>
+
+                        <origam-grid
+                            tag="div"
+                            columns="repeat(2, minmax(0, 1fr))"
+                            gap="lg"
+                            class="roadmap-status__columns"
+                        >
+                            <origam-grid-item
+                                tag="div"
+                                class="roadmap-status__col"
+                                data-tone="live"
+                            >
+                                <p class="roadmap-status__col-title roadmap-status__col-title--live">
                                     <origam-icon
-                                        :icon="item.done ? 'mdi-check-circle' : 'mdi-close-circle'"
-                                        :color="item.done ? 'success' : 'danger'"
-                                        class="roadmap-status__icon"
+                                        icon="mdi-check-circle"
                                         aria-hidden="true"
                                     />
+                                    {{ statusLiveTitle }}
+                                </p>
 
-                                    <p class="roadmap-status__label">
+                                <ul
+                                    class="roadmap-status__list"
+                                    data-cy="roadmap-status-live"
+                                >
+                                    <li
+                                        v-for="item in statusLive"
+                                        :key="item.labelKey"
+                                        class="roadmap-status__item"
+                                    >
                                         {{ t(item.labelKey, item.labelKey, statusParams) }}
-                                    </p>
-                                </div>
-                            </template>
-                        </origam-card>
-                    </origam-grid-item>
-                </origam-grid>
+                                    </li>
+                                </ul>
+                            </origam-grid-item>
+
+                            <origam-grid-item
+                                tag="div"
+                                class="roadmap-status__col"
+                                data-tone="pending"
+                            >
+                                <p class="roadmap-status__col-title roadmap-status__col-title--pending">
+                                    <origam-icon
+                                        icon="mdi-close-circle-outline"
+                                        aria-hidden="true"
+                                    />
+                                    {{ statusPendingTitle }}
+                                </p>
+
+                                <ul
+                                    class="roadmap-status__list"
+                                    data-cy="roadmap-status-pending"
+                                >
+                                    <li
+                                        v-for="item in statusPending"
+                                        :key="item.labelKey"
+                                        class="roadmap-status__item"
+                                    >
+                                        {{ t(item.labelKey, item.labelKey, statusParams) }}
+                                    </li>
+                                </ul>
+                            </origam-grid-item>
+                        </origam-grid>
+                    </template>
+                </origam-sheet>
             </origam-container>
         </section>
 
@@ -180,7 +187,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
             data-cy="roadmap-delivered"
         >
             <origam-container>
-                <header class="roadmap-delivered__header">
+                <header class="roadmap-delivered__header roadmap-section">
                     <p class="roadmap-section__eyebrow">
                         {{ t('roadmap.delivered.eyebrow', 'ALREADY SHIPPED') }}
                     </p>
@@ -190,19 +197,33 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                         tag="h2"
                         class="roadmap-section__title"
                     >
-                        <span class="roadmap-section__title-line">{{ t('roadmap.delivered.title_line1', 'Four waves.') }}</span>
-                        <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ t('roadmap.delivered.title_line2', 'Delivered.') }}</span>
+                        <template #default>
+                            <span class="roadmap-section__title-line">{{ t('roadmap.delivered.title_line1', 'A full design system.') }}</span>
+                            <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ t('roadmap.delivered.title_line2', 'Already in production.') }}</span>
+                        </template>
                     </origam-title>
 
                     <p class="roadmap-section__subtitle">
-                        {{ t('roadmap.delivered.subtitle', 'Every item below is shipped and available on npm since v2.6.0.') }}
+                        {{ t('roadmap.delivered.subtitle', 'origam is not starting from zero — here is the scope already shipped on npm, with the latest waves below.') }}
                     </p>
                 </header>
 
+                <origam-chip
+                    size="small"
+                    pill
+                    prepend-icon="mdi-calendar-check-outline"
+                    class="roadmap-measured roadmap-measured--standalone"
+                    data-cy="roadmap-overview-measured"
+                >
+                    <template #default>
+                        {{ t('roadmap.overview.measured_on', 'Counted from the repository source tree on 25 September 2026') }}
+                    </template>
+                </origam-chip>
+
                 <origam-grid
                     tag="ul"
-                    columns="repeat(auto-fit, minmax(160px, 1fr))"
-                    gap="1rem"
+                    columns="repeat(3, minmax(0, 1fr))"
+                    gap="md"
                     class="roadmap-overview"
                     data-cy="roadmap-overview"
                     :aria-label="t('roadmap.overview.label', 'What origam already is')"
@@ -235,85 +256,64 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                     </origam-grid-item>
                 </origam-grid>
 
-                <origam-grid
-                    tag="ul"
-                    columns="repeat(auto-fit, minmax(280px, 1fr))"
-                    gap="1.5rem"
-                    class="roadmap-delivered__grid"
+                <origam-sheet
+                    tag="div"
+                    rounded="lg"
+                    border
+                    class="roadmap-delivered__panel"
+                    data-cy="roadmap-delivered-waves"
                 >
-                    <origam-grid-item
-                        v-for="wave in waves"
-                        :key="wave.titleKey"
-                        tag="li"
-                        class="roadmap-delivered__wave"
-                    >
-                        <origam-card
-                            border
-                            rounded="lg"
-                            class="roadmap-delivered__wave-card"
+                    <template #default>
+                        <origam-grid
+                            tag="div"
+                            columns="repeat(3, minmax(0, 1fr))"
+                            gap="lg"
+                            class="roadmap-delivered__waves"
                         >
-                            <template #header.prepend>
-                                <origam-chip
-                                    color="success"
-                                    size="small"
-                                    pill
-                                    class="roadmap-delivered__badge"
-                                    aria-hidden="true"
-                                >
-                                    {{ t('roadmap.delivered.badge_done', 'Delivered') }}
-                                </origam-chip>
-                            </template>
-
-                            <template #header.title>
+                            <origam-grid-item
+                                v-for="wave in deliveredWaves"
+                                :key="wave.titleKey"
+                                tag="div"
+                                class="roadmap-delivered__wave"
+                            >
                                 <origam-title
                                     tag="h3"
                                     class="roadmap-delivered__wave-title"
                                 >
-                                    {{ t(wave.titleKey, wave.titleKey) }}
+                                    <template #default>
+                                        {{ t(wave.titleKey, wave.titleKey) }}
+                                    </template>
                                 </origam-title>
-                            </template>
 
-                            <template #default>
-                                <origam-table
-                                    flat
-                                    :caption="t(wave.titleKey, wave.titleKey)"
-                                    class="roadmap-delivered__table"
-                                    data-cy="roadmap-wave-table"
-                                >
-                                    <tbody>
-                                        <tr
-                                            v-for="item in wave.items"
-                                            :key="item.nameKey"
-                                            class="roadmap-delivered__table-row"
-                                        >
-                                            <td class="roadmap-delivered__table-icon-cell">
-                                                <origam-icon
-                                                    icon="mdi-check-circle"
-                                                    color="success"
-                                                    aria-hidden="true"
-                                                    class="roadmap-delivered__table-icon"
-                                                />
-                                            </td>
-                                            <td class="roadmap-delivered__table-text-cell">
-                                                {{ t(item.nameKey, item.nameKey) }}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </origam-table>
-                            </template>
-                        </origam-card>
-                    </origam-grid-item>
-                </origam-grid>
+                                <ul class="roadmap-delivered__wave-list">
+                                    <li
+                                        v-for="item in wave.items"
+                                        :key="item.nameKey"
+                                        class="roadmap-delivered__wave-item"
+                                    >
+                                        <origam-icon
+                                            icon="mdi-check"
+                                            color="success"
+                                            aria-hidden="true"
+                                            class="roadmap-delivered__wave-icon"
+                                        />
+                                        {{ t(item.nameKey, item.nameKey) }}
+                                    </li>
+                                </ul>
+                            </origam-grid-item>
+                        </origam-grid>
+                    </template>
+                </origam-sheet>
             </origam-container>
         </section>
 
         <section
-            class="roadmap-timeline-wrap"
+            class="roadmap-phases"
             aria-labelledby="roadmap-phases-title"
             data-cy="roadmap-phases"
         >
             <origam-container>
-                <header class="roadmap-phases__header">
+                <header class="roadmap-phases__header roadmap-section">
                     <p class="roadmap-section__eyebrow">
                         {{ t('roadmap.phases.eyebrow', "WHAT'S NEXT") }}
                     </p>
@@ -323,109 +323,110 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                         tag="h2"
                         class="roadmap-section__title roadmap-section__title--single"
                     >
-                        {{ t('roadmap.phases.title', 'A phased roadmap.') }}
+                        <template #default>
+                            {{ t('roadmap.phases.title', 'A phased roadmap.') }}
+                        </template>
                     </origam-title>
 
                     <p class="roadmap-section__subtitle">
-                        {{ t('roadmap.phases.subtitle', 'Each phase builds on the previous. The order reflects real technical dependencies, not arbitrary milestones.') }}
+                        {{ t('roadmap.phases.subtitle', 'Each phase builds on the previous. The order reflects real technical dependencies, not arbitrary milestones. Open a phase to read every item in full.') }}
                     </p>
                 </header>
 
-                <origam-timeline
-                    class="roadmap-timeline"
-                    :aria-label="t('roadmap.phases.title', 'Roadmap phases')"
-                    data-cy="roadmap-timeline"
+                <div
+                    class="roadmap-phases__list"
+                    data-cy="roadmap-phases-list"
                 >
-                    <origam-timeline-item
-                        v-for="(phase, index) in phases"
+                    <details
+                        v-for="phase in phases"
                         :key="phase.id"
-                        :intent="phase.intent"
-                        :is-last="index === phases.length - 1"
-                        class="roadmap-timeline__phase"
+                        :open="phase.defaultOpen"
+                        class="roadmap-phases__phase"
+                        :data-intent="phase.intent"
                         :data-cy="`roadmap-phase-${phase.id}`"
                     >
-                        <template #dot>
+                        <summary class="roadmap-phases__summary">
                             <origam-icon
                                 :icon="phase.icon"
-                                :size="20"
                                 aria-hidden="true"
+                                class="roadmap-phases__summary-icon"
                             />
-                        </template>
 
-                        <template #default>
-                            <origam-card
-                                flat
-                                :border="false"
-                                class="roadmap-timeline__card"
+                            <origam-title
+                                tag="h3"
+                                class="roadmap-phases__summary-title"
                             >
-                                <template #header.title>
-                                    <div class="roadmap-timeline__card-header">
-                                        <origam-chip
-                                            :color="phase.intent"
-                                            size="small"
-                                            pill
-                                            class="roadmap-timeline__phase-chip"
-                                        >
-                                            {{ t(phase.eyebrowKey, phase.eyebrowKey) }}
-                                        </origam-chip>
-
-                                        <origam-title
-                                            tag="h3"
-                                            class="roadmap-timeline__phase-title"
-                                        >
-                                            {{ t(phase.titleKey, phase.titleKey) }}
-                                        </origam-title>
-                                    </div>
-                                </template>
-
                                 <template #default>
-                                    <origam-grid
-                                        tag="ul"
-                                        columns="1"
-                                        gap="0.75rem"
-                                        class="roadmap-timeline__items"
-                                    >
-                                        <origam-grid-item
-                                            v-for="item in phase.items"
-                                            :key="item.titleKey"
-                                            tag="li"
-                                            class="roadmap-timeline__item"
-                                        >
-                                            <origam-avatar
-                                                :icon="item.icon"
-                                                :color="phase.intent"
-                                                rounded="lg"
-                                                size="44"
-                                                class="roadmap-timeline__item-avatar"
-                                                aria-hidden="true"
-                                            />
-
-                                            <div class="roadmap-timeline__item-content">
-                                                <strong class="roadmap-timeline__item-title">
-                                                    {{ t(item.titleKey, item.titleKey) }}
-                                                </strong>
-
-                                                <p class="roadmap-timeline__item-desc">
-                                                    {{ t(item.descriptionKey, item.descriptionKey) }}
-                                                </p>
-                                            </div>
-
-                                            <origam-chip
-                                                v-if="item.effortKey"
-                                                size="x-small"
-                                                pill
-                                                class="roadmap-timeline__effort"
-                                                :aria-label="t('a11y.roadmap_effort', 'Effort')"
-                                            >
-                                                {{ t(item.effortKey, item.effortKey) }}
-                                            </origam-chip>
-                                        </origam-grid-item>
-                                    </origam-grid>
+                                    {{ t(phase.titleKey, phase.titleKey) }}
                                 </template>
-                            </origam-card>
-                        </template>
-                    </origam-timeline-item>
-                </origam-timeline>
+                            </origam-title>
+
+                            <origam-chip
+                                :color="phase.intent"
+                                size="x-small"
+                                pill
+                                class="roadmap-phases__summary-due"
+                            >
+                                <template #default>
+                                    {{ t(phase.eyebrowKey, phase.eyebrowKey) }}
+                                </template>
+                            </origam-chip>
+
+                            <span class="roadmap-phases__summary-count">{{ phaseItemsLabels[phase.id] }}</span>
+
+                            <origam-icon
+                                icon="mdi-chevron-down"
+                                aria-hidden="true"
+                                class="roadmap-phases__chevron"
+                            />
+                        </summary>
+
+                        <origam-grid
+                            tag="ul"
+                            columns="repeat(2, minmax(0, 1fr))"
+                            gap="lg"
+                            class="roadmap-phases__items"
+                        >
+                            <origam-grid-item
+                                v-for="item in phase.items"
+                                :key="item.titleKey"
+                                tag="li"
+                                class="roadmap-phases__item"
+                            >
+                                <origam-avatar
+                                    :icon="item.icon"
+                                    :color="phase.intent"
+                                    rounded="lg"
+                                    :size="36"
+                                    class="roadmap-phases__item-avatar"
+                                    aria-hidden="true"
+                                />
+
+                                <div class="roadmap-phases__item-content">
+                                    <strong class="roadmap-phases__item-title">
+                                        {{ t(item.titleKey, item.titleKey) }}
+                                    </strong>
+
+                                    <p class="roadmap-phases__item-desc">
+                                        {{ t(item.descriptionKey, item.descriptionKey) }}
+                                    </p>
+                                </div>
+
+                                <origam-chip
+                                    v-if="item.effortKey"
+                                    size="x-small"
+                                    pill
+                                    class="roadmap-phases__effort"
+                                    :aria-label="t('a11y.roadmap_effort', 'Effort')"
+                                >
+                                    <template #default>
+                                        {{ t(item.effortKey, item.effortKey) }}
+                                    </template>
+                                </origam-chip>
+                            </origam-grid-item>
+                        </origam-grid>
+                    </details>
+                </div>
             </origam-container>
         </section>
 
@@ -435,7 +436,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
             data-cy="roadmap-wave4"
         >
             <origam-container>
-                <header class="roadmap-wave4__header">
+                <header class="roadmap-wave4__header roadmap-section">
                     <p class="roadmap-section__eyebrow">
                         {{ t('roadmap.wave4_grid.eyebrow', 'WAVE 4 — SHIPPED') }}
                     </p>
@@ -445,8 +446,10 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                         tag="h2"
                         class="roadmap-section__title"
                     >
-                        <span class="roadmap-section__title-line">{{ t('roadmap.wave4_grid.title_line1', '15 components & features') }}</span>
-                        <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ t('roadmap.wave4_grid.title_line2', 'already shipped.') }}</span>
+                        <template #default>
+                            <span class="roadmap-section__title-line">{{ t('roadmap.wave4_grid.title_line1', '15 components & features') }}</span>
+                            <span class="roadmap-section__title-line roadmap-section__title-line--muted">{{ t('roadmap.wave4_grid.title_line2', 'already shipped.') }}</span>
+                        </template>
                     </origam-title>
 
                     <p class="roadmap-section__subtitle">
@@ -456,8 +459,8 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
 
                 <origam-grid
                     tag="ul"
-                    columns="repeat(auto-fill, minmax(240px, 1fr))"
-                    gap="1rem"
+                    columns="repeat(3, minmax(0, 1fr))"
+                    gap="md"
                     class="roadmap-wave4__grid"
                     data-cy="roadmap-wave4-grid"
                 >
@@ -480,7 +483,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                                             :icon="cmp.icon"
                                             color="success"
                                             rounded="lg"
-                                            size="36"
+                                            :size="36"
                                             class="roadmap-wave4__avatar"
                                             aria-hidden="true"
                                         />
@@ -489,7 +492,9 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                                             tag="h3"
                                             class="roadmap-wave4__cmp-name"
                                         >
-                                            {{ t(cmp.nameKey, cmp.nameKey) }}
+                                            <template #default>
+                                                {{ t(cmp.nameKey, cmp.nameKey) }}
+                                            </template>
                                         </origam-title>
 
                                         <origam-chip
@@ -497,9 +502,10 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                                             size="x-small"
                                             pill
                                             class="roadmap-wave4__shipped-badge"
-                                            :aria-label="t('roadmap.wave4_grid.badge_shipped', 'Shipped')"
                                         >
-                                            {{ t('roadmap.wave4_grid.badge_shipped', 'Shipped') }}
+                                            <template #default>
+                                                {{ t('roadmap.wave4_grid.badge_shipped', 'Shipped') }}
+                                            </template>
                                         </origam-chip>
                                     </div>
 
@@ -525,7 +531,9 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                     tag="h2"
                     class="roadmap-cta__title"
                 >
-                    {{ t('roadmap.cta.title', 'Follow the progress.') }}
+                    <template #default>
+                        {{ t('roadmap.cta.title', 'Follow the progress.') }}
+                    </template>
                 </origam-title>
 
                 <p class="roadmap-cta__desc">
@@ -545,7 +553,9 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                         rel="noopener noreferrer"
                         data-cy="roadmap-cta-github"
                     >
-                        {{ t('roadmap.cta.cta_github', 'Star on GitHub') }}
+                        <template #default>
+                            {{ t('roadmap.cta.cta_github', 'Star on GitHub') }}
+                        </template>
                     </origam-btn>
 
                     <origam-btn
@@ -557,7 +567,9 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                         rel="noopener noreferrer"
                         data-cy="roadmap-cta-changelog"
                     >
-                        {{ t('roadmap.cta.cta_changelog', 'Read CHANGELOG') }}
+                        <template #default>
+                            {{ t('roadmap.cta.cta_changelog', 'Read CHANGELOG') }}
+                        </template>
                     </origam-btn>
                 </nav>
             </div>
@@ -565,568 +577,759 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
     </article>
 </template>
 
+<script setup lang="ts">
+    import { computed } from 'vue'
+    import { useT } from '~/composables/useT'
+    import { useVersion } from '~/composables/useVersion'
+    import {
+        ROADMAP_HERO_BADGE_VARS,
+        ROADMAP_STATUS_ITEMS,
+        ROADMAP_OVERVIEW_STATS,
+        ROADMAP_DELIVERED_WAVES,
+        ROADMAP_PHASES,
+        ROADMAP_WAVE4_COMPONENTS
+    } from '~/consts/roadmap.const'
+    import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
+
+    /*********************************************************
+     * Global
+     *
+     * @description
+     * Translation entry point and the LIVE package version. The badge used to
+     * hardcode "v2.6.0", which drifted four minor versions behind what npm
+     * actually served. `useVersion` is the single source of truth (live
+     * registry, build-time fallback) — the same one the home hero reads, so a
+     * release only requires bumping the package, never editing a badge string.
+     ********************************************************/
+    const { t } = useT()
+    const { version } = useVersion()
+
+    useSeoMeta({
+        title: () => t('roadmap.meta.title', 'Roadmap · origam design system'),
+        description: () => t('roadmap.meta.description', 'Where origam is today, what has been delivered, and what is coming next.'),
+        ogTitle: () => t('roadmap.meta.title', 'Roadmap · origam design system'),
+        ogDescription: () => t('roadmap.meta.description', 'Where origam is today, what has been delivered, and what is coming next.')
+    })
+
+    /*********************************************************
+     * Version interpolation
+     *
+     * @description
+     * #913 — the SAME page rendered two different versions of itself. Fifteen
+     * lines under the badge, the "WHERE WE STAND" title read a locale value
+     * whose text was the LITERAL string "Where 2.17.1" — no interpolation, so
+     * `useVersion()` never reached it. #743 had already fixed the badge this
+     * way and left the title behind; substituting a fresh number in the locale
+     * would only restart the same drift, eight versions later.
+     *
+     * BOTH title halves take `{version}` even though only line 1 uses it
+     * today: the number sits on line 1 in EN and the FR value was reshaped to
+     * match, so `i18n:check`'s EN/FR placeholder parity stays at 0 gaps.
+     * Handing the parameter to both means a future rewording can move the
+     * number across without touching this file.
+     *
+     * `statusParams` hands `{ version }` to EVERY status entry rather than to
+     * the one that needs it today: vue-i18n drops a named parameter a message
+     * does not reference, so this costs nothing and means the next status line
+     * that wants the live version only edits a locale value. That is what let
+     * `roadmap.status.readme_changelog` name the lagging version with no code
+     * change at all.
+     ********************************************************/
+    const heroBadge = computed(() =>
+        t('roadmap.hero.badge', `v${ version.value } — Wave 4 shipped`, { version: version.value })
+    )
+
+    const statusTitleLine1 = computed(() =>
+        t('roadmap.status.title_line1', `Where ${ version.value }`, { version: version.value })
+    )
+
+    const statusTitleLine2 = computed(() =>
+        t('roadmap.status.title_line2', 'stands.', { version: version.value })
+    )
+
+    const statusParams = computed(() => ({ version: version.value }))
+
+    /*********************************************************
+     * Status — two columns instead of nineteen identical rows
+     *
+     * @description
+     * The status used to render as a flat list of 19 rows, each a bordered
+     * card carrying the same icon + text rhythm, with a green tick or a red
+     * cross as the ONLY carrier of the distinction — invisible to a
+     * red-green colour-blind reader.
+     *
+     * Splitting the same 19 items into "live today" / "not yet" moves that
+     * information onto the column POSITION and the column TITLE, where colour
+     * is a reinforcement rather than the signal. No item is dropped: the two
+     * arrays below partition `ROADMAP_STATUS_ITEMS`, and the counts in the
+     * column titles are derived from the arrays, so they cannot drift from
+     * what is rendered underneath them.
+     ********************************************************/
+    const statusLive = computed(() => ROADMAP_STATUS_ITEMS.filter(item => item.done))
+    const statusPending = computed(() => ROADMAP_STATUS_ITEMS.filter(item => !item.done))
+
+    const statusLiveTitle = computed(() =>
+        t('roadmap.status.live_title', `Live today (${ statusLive.value.length })`, { count: statusLive.value.length })
+    )
+
+    const statusPendingTitle = computed(() =>
+        t('roadmap.status.pending_title', `Not yet (${ statusPending.value.length })`, { count: statusPending.value.length })
+    )
+
+    /*********************************************************
+     * Page data
+     *
+     * @description
+     * `ROADMAP_DELIVERED_WAVES` holds waves 1 to 3 only — wave 4 lives in
+     * `ROADMAP_WAVE4_COMPONENTS` and renders once, in its own section, with
+     * more detail than the wave card ever carried.
+     ********************************************************/
+    const overviewStats = computed(() => ROADMAP_OVERVIEW_STATS)
+    const deliveredWaves = computed(() => ROADMAP_DELIVERED_WAVES)
+    const phases = computed(() => ROADMAP_PHASES)
+    const wave4Components = computed(() => ROADMAP_WAVE4_COMPONENTS)
+
+    /*********************************************************
+     * Phase summaries
+     *
+     * @description
+     * Each `<summary>` announces how many items the phase hides, so a reader
+     * decides whether to open it without opening it. The count is resolved
+     * here, keyed by phase id, rather than computed in the template: the
+     * template stays free of expressions and reads a plain property.
+     ********************************************************/
+    const phaseItemsLabels = computed<Record<string, string>>(() =>
+        Object.fromEntries(
+            ROADMAP_PHASES.map(phase => [
+                phase.id,
+                t('roadmap.phases.items_count', `${ phase.items.length } items`, { count: phase.items.length })
+            ])
+        )
+    )
+
+    /*********************************************************
+     * Outbound links
+     ********************************************************/
+    const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
+    const changelogHref = computed(() => `${ MARKETING_DEFAULTS.githubRepo }/blob/main/CHANGELOG.md`)
+</script>
+
 <style scoped lang="scss">
-.roadmap {
-    display: flex;
-    flex-direction: column;
-}
+    @use '../assets/scss/why-section' as why;
 
-.roadmap-section {
-    &__eyebrow {
-        margin: 0 0 var(--origam-space---3, 0.75rem);
-        font-size: var(--origam-font-size---xs, 0.75rem);
-        font-weight: var(--origam-font__weight---semibold, 600);
-        color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-    }
+    .roadmap-section {
+        @include why.why-section-header;
 
-    &__title {
-        margin: 0 0 var(--origam-space---2, 0.5rem);
-        display: flex;
-        flex-direction: column;
-        font-size: var(--origam-font-size---section, 3rem);
-        font-weight: var(--origam-font__weight---bold, 700);
-        letter-spacing: var(--origam-letter-spacing---tight, -0.03em);
-        line-height: 1.05;
-        color: var(--origam-color__text---primary, #0a0a0a);
-
-        &--single {
-            display: block;
+        /*
+          The site chrome is a FIXED app bar. Without this, the hero's two
+          anchor links scroll their target heading to viewport top and the
+          bar covers it — measured in Chromium before this rule:
+          `#roadmap-status-title` landed at `top: 0` under a 56 px bar, i.e.
+          the reader jumps to a section whose title is invisible. The token
+          carries the bar height (64 px), the extra rung is breathing room.
+        */
+        &__title {
+            scroll-margin-block-start: calc(
+                var(--origam-app-bar---height, 64px) + var(--origam-space---6, 1.5rem)
+            );
         }
     }
 
-    &__title-line {
-        &--muted {
+    .roadmap {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .roadmap-measured {
+        --origam-chip---background-color: var(--origam-color__surface---sunken);
+
+        align-self: flex-start;
+        margin-block-end: var(--origam-space---5, 1.25rem);
+        font-family: var(--origam-font-family---mono, monospace);
+        color: var(--origam-color__text---secondary, #525252);
+
+        &--standalone {
+            display: inline-flex;
+            margin-block-end: var(--origam-space---4, 1rem);
+        }
+    }
+
+    .roadmap-hero {
+        position: relative;
+        padding-block: var(--origam-space---20, 5rem) var(--origam-space---10, 2.5rem);
+        overflow: hidden;
+
+        &::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: var(--origam-gradient---hero-grid);
+            background-size: 64px 64px;
+            background-position: center top;
+            -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
+            mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            inset-inline: 0;
+            inset-block-start: 0;
+            block-size: 260px;
+            background-image: var(--origam-gradient---hero-glow);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        &__inner {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--origam-space---5, 1.25rem);
+            text-align: center;
+        }
+
+        &__badge {
+            --origam-chip---background-color: transparent;
+        }
+
+        &__title {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: var(--origam-font-size---hero, 5.25rem);
+            font-weight: var(--origam-font-weight---extrabold, 800);
+            line-height: var(--origam-line-height---hero, 0.95);
+            letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
+            padding-block-end: 0.1em;
+            color: var(--origam-color__text---ink, #0a0a0a);
+        }
+
+        &__title-line {
+            display: block;
+
+            &--accent {
+                color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
+            }
+        }
+
+        &__subtitle {
+            margin: 0;
+            max-inline-size: 40rem;
+            font-size: var(--origam-font-size---lg, 1.125rem);
+            line-height: var(--origam-line-height---relaxed, 1.7);
+            color: var(--origam-color__text---secondary, #525252);
+        }
+
+        &__actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: var(--origam-space---3, 0.75rem);
+        }
+    }
+
+    .roadmap-status {
+        padding-block: var(--origam-space---24, 6rem);
+        border-block: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+
+        &__header {
+            margin-block-end: var(--origam-space---10, 2.5rem);
+        }
+
+        /*
+          ⛔ The padding goes through the component's OWN vars, not through
+          `<origam-sheet padding="6">`. The prop is not ignored by accident —
+          it emits `.origam--p-6`, a (0,1,0) utility declaring the `padding`
+          SHORTHAND, while `OrigamSheet`'s scoped rule declares all four
+          longhands at (0,2,0). The utility can never win, whatever the load
+          order. Measured in Chromium on this page: class present,
+          `padding-top` computed `0px`. Same cascade family as #391 / #514.
+          Reported — do not "restore" the prop here, it would render nothing.
+        */
+        &__panel {
+            display: block;
+            --origam-sheet---padding-block-start: var(--origam-space---6, 1.5rem);
+            --origam-sheet---padding-block-end: var(--origam-space---6, 1.5rem);
+            --origam-sheet---padding-inline-start: var(--origam-space---6, 1.5rem);
+            --origam-sheet---padding-inline-end: var(--origam-space---6, 1.5rem);
+        }
+
+        /*
+          `success---fg` is the ON-SATURATED foreground (white on a green
+          fill); under the `geek` identity it resolves to `#000000`, which is
+          why this rule reads `fgSubtle` — the intent's own hue, meant for a
+          neutral surface, `#166534`. /why-origam's `use_cases` column still
+          uses `---fg` here and paints a black rule instead of a green one.
+        */
+        &__col {
+            padding-inline-start: var(--origam-space---5, 1.25rem);
+            border-inline-start: 2px solid var(--origam-color__border---subtle);
+
+            &[data-tone='live'] {
+                border-inline-start-color: var(--origam-color__feedback--success---fgSubtle, #166534);
+            }
+        }
+
+        &__col-title {
+            display: flex;
+            align-items: center;
+            gap: var(--origam-space---2, 0.5rem);
+            margin: 0 0 var(--origam-space---4, 1rem);
+            font-size: var(--origam-font-size---base, 1rem);
+            font-weight: var(--origam-font__weight---semibold, 600);
+
+            &--live {
+                color: var(--origam-color__feedback--success---fgSubtle, #15803d);
+            }
+
+            &--pending {
+                color: var(--origam-color__text---secondary, #525252);
+            }
+        }
+
+        &__list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: var(--origam-space---3, 0.75rem);
+        }
+
+        &__item {
+            font-size: var(--origam-font-size---sm, 0.875rem);
+            line-height: 1.6;
             color: var(--origam-color__text---secondary, #525252);
         }
     }
 
-    &__subtitle {
-        margin: var(--origam-space---4, 1rem) 0 0;
-        max-inline-size: 42rem;
-        font-size: var(--origam-font-size---lg, 1.125rem);
-        line-height: 1.65;
-        color: var(--origam-color__text---secondary, #525252);
-    }
-}
+    .roadmap-delivered {
+        padding-block: var(--origam-space---24, 6rem);
 
-.roadmap-hero {
-    position: relative;
-    padding-block: var(--origam-space---20, 5rem) var(--origam-space---16, 4rem);
-    overflow: hidden;
-
-    &::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background-image: var(--origam-gradient---hero-grid);
-        background-size: 64px 64px;
-        background-position: center top;
-        -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
-        mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
-        pointer-events: none;
-        z-index: 0;
-    }
-
-    &::after {
-        content: '';
-        position: absolute;
-        inset-inline: 0;
-        inset-block-start: 0;
-        block-size: 260px;
-        background-image: var(--origam-gradient---hero-glow);
-        pointer-events: none;
-        z-index: 0;
-    }
-
-    &__inner {
-        position: relative;
-        z-index: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: var(--origam-space---6, 1.5rem);
-        text-align: center;
-    }
-
-    &__badge {
-        --origam-chip---background-color: transparent;
-    }
-
-    &__title {
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        font-size: var(--origam-font-size---hero, 5.25rem);
-        font-weight: var(--origam-font-weight---extrabold, 800);
-        line-height: var(--origam-line-height---hero, 0.95);
-        letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
-        padding-block-end: 0.1em;
-        color: var(--origam-color__text---ink, #0a0a0a);
-    }
-
-    &__title-line {
-        display: block;
-
-        &--accent {
-            color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
+        &__header {
+            margin-block-end: var(--origam-space---8, 2rem);
         }
-    }
 
-    &__subtitle {
-        margin: 0;
-        max-inline-size: 40rem;
-        font-size: var(--origam-font-size---lg, 1.125rem);
-        line-height: var(--origam-line-height---relaxed, 1.7);
-        color: var(--origam-color__text---secondary, #525252);
-    }
-}
+        &__panel {
+            display: block;
+            --origam-sheet---padding-block-start: var(--origam-space---6, 1.5rem);
+            --origam-sheet---padding-block-end: var(--origam-space---6, 1.5rem);
+            --origam-sheet---padding-inline-start: var(--origam-space---6, 1.5rem);
+            --origam-sheet---padding-inline-end: var(--origam-space---6, 1.5rem);
+        }
 
-.roadmap-status {
-    padding-block: var(--origam-space---24, 6rem);
-    // ⛔ NO `background` here — #744. This band used to paint
-    // `--origam-color__surface---sunken`, betting that "sunken" is always
-    // DARKER than the page. That bet is theme-dependent and it loses under
-    // `geek`, measured in Chromium on /roadmap:
-    //
-    //   theme   surface---default   surface---sunken   result
-    //   sobre   #ffffff             #f5f5f5            recessed  ✅
-    //   geek    #f6f0ff             #fbf5ff            RAISED    ❌
-    //
-    // The section then rendered LIGHTER than `.origam-main` (rgb(251,245,255)
-    // over rgb(246,240,255)) across its whole height — the "partie blanche"
-    // the user reported. Letting the page surface show through is correct
-    // under every theme by construction: a section that paints nothing can
-    // never be brighter than the page it sits on. The `border-block` hairline
-    // below still delimits the section.
-    //
-    // The mis-paired `geek` token itself is a real, separate defect (it also
-    // hits ~28 other `surface---sunken` consumers site-wide) — tracked apart,
-    // because repairing it needs a colour decision, not a bug fix.
-    border-block: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+        &__wave {
+            padding-inline-start: var(--origam-space---5, 1.25rem);
+            border-inline-start: 2px solid var(--origam-color__border---subtle);
+        }
 
-    &__header {
-        margin-block-end: var(--origam-space---10, 2.5rem);
-    }
+        &__wave-title {
+            margin: 0 0 var(--origam-space---4, 1rem);
+            font-size: var(--origam-font-size---sm, 0.875rem) !important;
+            font-weight: var(--origam-font__weight---semibold, 600);
+            text-transform: uppercase;
+            letter-spacing: var(--origam-letter-spacing---wide, 0.08em);
+            color: var(--origam-color__text---primary, #0a0a0a);
+        }
 
-    &__list {
-        max-inline-size: 56rem;
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    &__item {
-        list-style: none;
-    }
-
-    &__card {
-        block-size: 100%;
-    }
-
-    &__row {
-        display: flex;
-        align-items: flex-start;
-        gap: var(--origam-space---3, 0.75rem);
-        padding: var(--origam-space---4, 1rem) var(--origam-space---5, 1.25rem);
-    }
-
-    &__icon {
-        flex-shrink: 0;
-        font-size: var(--origam-font-size---xl, 1.25rem);
-        margin-block-start: 2px;
-    }
-
-    &__label {
-        margin: 0;
-        font-size: var(--origam-font-size---sm, 0.875rem);
-        line-height: 1.6;
-        color: var(--origam-color__text---primary, #0a0a0a);
-    }
-}
-
-.roadmap-delivered {
-    padding-block: var(--origam-space---24, 6rem);
-
-    &__header {
-        margin-block-end: var(--origam-space---10, 2.5rem);
-    }
-
-    &__grid {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    &__wave {
-        list-style: none;
-        display: flex;
-        flex-direction: column;
-    }
-
-    &__wave-card {
-        block-size: 100%;
-    }
-
-    &__wave-title {
-        display: block;
-        font-size: var(--origam-font-size---base, 1rem);
-        font-weight: var(--origam-font__weight---semibold, 600);
-        color: var(--origam-color__text---primary, #0a0a0a);
-    }
-
-    &__badge {
-        margin-inline-end: var(--origam-space---2, 0.5rem);
-    }
-
-    &__table {
-        inline-size: 100%;
-    }
-
-    &__table-icon-cell {
-        inline-size: 2rem;
-        padding-block: var(--origam-space---1, 0.25rem);
-        vertical-align: middle;
-    }
-
-    &__table-icon {
-        font-size: 1rem;
-    }
-
-    &__table-text-cell {
-        padding-block: var(--origam-space---1, 0.25rem);
-        font-size: var(--origam-font-size---sm, 0.875rem);
-        line-height: 1.6;
-        color: var(--origam-color__text---primary, #0a0a0a);
-        vertical-align: middle;
-    }
-}
-
-.roadmap-overview {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 var(--origam-space---12, 3rem);
-
-    &__item {
-        list-style: none;
-        display: flex;
-    }
-
-    &__card {
-        flex: 1;
-        --origam-card---padding-block-start: var(--origam-space---5, 1.25rem);
-        --origam-card---padding-block-end: var(--origam-space---5, 1.25rem);
-        --origam-card---padding-inline-start: var(--origam-space---4, 1rem);
-        --origam-card---padding-inline-end: var(--origam-space---4, 1rem);
-
-        :deep(.origam-card__content) {
+        &__wave-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
             display: flex;
             flex-direction: column;
+            gap: var(--origam-space---2, 0.5rem);
+        }
+
+        &__wave-item {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr);
+            align-items: start;
+            gap: var(--origam-space---2, 0.5rem);
+            font-size: var(--origam-font-size---sm, 0.875rem);
+            line-height: 1.55;
+            color: var(--origam-color__text---secondary, #525252);
+        }
+
+        &__wave-icon {
+            font-size: var(--origam-font-size---base, 1rem);
+            margin-block-start: 0.15em;
+        }
+    }
+
+    .roadmap-overview {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 var(--origam-space---10, 2.5rem);
+
+        &__item {
+            list-style: none;
+            display: flex;
+        }
+
+        &__card {
+            flex: 1;
+            --origam-card---padding-block-start: var(--origam-space---5, 1.25rem);
+            --origam-card---padding-block-end: var(--origam-space---5, 1.25rem);
+            --origam-card---padding-inline-start: var(--origam-space---4, 1rem);
+            --origam-card---padding-inline-end: var(--origam-space---4, 1rem);
+
+            :deep(.origam-card__content) {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: var(--origam-space---1, 0.25rem);
+                text-align: center;
+            }
+        }
+
+        &__icon {
+            margin-block-end: var(--origam-space---1, 0.25rem);
+            font-size: var(--origam-font-size---xl, 1.5rem);
+        }
+
+        &__value {
+            font-size: var(--origam-font-size---section, 2rem);
+            font-weight: var(--origam-font__weight---bold, 700);
+            line-height: 1.1;
+            color: var(--origam-color__text---primary, #0a0a0a);
+        }
+
+        &__label {
+            font-size: var(--origam-font-size---sm, 0.875rem);
+            line-height: 1.4;
+            color: var(--origam-color__text---secondary, #525252);
+        }
+    }
+
+    .roadmap-phases {
+        padding-block: var(--origam-space---24, 6rem);
+        border-block: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
+
+        &__header {
+            margin-block-end: var(--origam-space---10, 2.5rem);
+        }
+
+        &__list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--origam-space---4, 1rem);
+        }
+
+        &__phase {
+            border: 1px solid var(--origam-color__border---subtle);
+            border-radius: var(--origam-radius---lg, 12px);
+            background: var(--origam-color__surface---default);
+            overflow: hidden;
+        }
+
+        &__summary {
+            display: flex;
             align-items: center;
-            gap: var(--origam-space---1, 0.25rem);
-            text-align: center;
+            flex-wrap: wrap;
+            gap: var(--origam-space---3, 0.75rem);
+            min-block-size: 44px;
+            padding: var(--origam-space---4, 1rem) var(--origam-space---5, 1.25rem);
+            cursor: pointer;
+            list-style: none;
+
+            &::-webkit-details-marker {
+                display: none;
+            }
+
+            &:hover {
+                background: var(--origam-color__surface---raised);
+            }
+
+            &:focus-visible {
+                outline: 2px solid var(--origam-color__action--primary---bg);
+                outline-offset: -2px;
+            }
+        }
+
+        &__summary-icon {
+            flex-shrink: 0;
+            font-size: var(--origam-font-size---xl, 1.25rem);
+            color: var(--origam-color__text---secondary);
+        }
+
+        &__summary-title {
+            margin: 0;
+            flex: 1 1 auto;
+            min-inline-size: 0;
+            font-size: var(--origam-font-size---lg, 1.125rem) !important;
+            font-weight: var(--origam-font__weight---bold, 700);
+            color: var(--origam-color__text---primary, #0a0a0a);
+        }
+
+        &__summary-due {
+            flex-shrink: 0;
+        }
+
+        &__summary-count {
+            flex-shrink: 0;
+            font-size: var(--origam-font-size---sm, 0.875rem);
+            font-family: var(--origam-font-family---mono, monospace);
+            color: var(--origam-color__text---secondary, #525252);
+        }
+
+        &__chevron {
+            flex-shrink: 0;
+            font-size: var(--origam-font-size---xl, 1.25rem);
+            color: var(--origam-color__text---secondary, #525252);
+        }
+
+        &__items {
+            list-style: none;
+            margin: 0;
+            padding: 0 var(--origam-space---5, 1.25rem) var(--origam-space---6, 1.5rem);
+            border-block-start: 1px solid var(--origam-color__border---subtle);
+            padding-block-start: var(--origam-space---5, 1.25rem);
+        }
+
+        &__item {
+            list-style: none;
+            display: flex;
+            align-items: flex-start;
+            gap: var(--origam-space---3, 0.75rem);
+        }
+
+        &__item-avatar {
+            flex-shrink: 0;
+            margin-block-start: 2px;
+        }
+
+        &__item-content {
+            flex: 1;
+            min-inline-size: 0;
+        }
+
+        &__item-title {
+            display: block;
+            font-size: var(--origam-font-size---sm, 0.875rem);
+            font-weight: var(--origam-font__weight---semibold, 600);
+            color: var(--origam-color__text---primary, #0a0a0a);
+            margin-block-end: var(--origam-space---1, 0.25rem);
+        }
+
+        &__item-desc {
+            margin: 0;
+            font-size: var(--origam-font-size---sm, 0.875rem);
+            line-height: 1.55;
+            color: var(--origam-color__text---secondary, #525252);
+        }
+
+        &__effort {
+            flex-shrink: 0;
+            margin-block-start: 2px;
+            font-family: var(--origam-font-family---mono, monospace);
         }
     }
 
-    &__icon {
-        margin-block-end: var(--origam-space---1, 0.25rem);
-        font-size: var(--origam-font-size---xl, 1.5rem);
-    }
-
-    &__value {
-        font-size: var(--origam-font-size---section, 2rem);
-        font-weight: var(--origam-font__weight---bold, 700);
-        line-height: 1.1;
-        color: var(--origam-color__text---primary, #0a0a0a);
-    }
-
-    &__label {
-        font-size: var(--origam-font-size---sm, 0.875rem);
-        line-height: 1.4;
-        color: var(--origam-color__text---secondary, #525252);
-    }
-}
-
-.roadmap-timeline-wrap {
-    padding-block: var(--origam-space---24, 6rem);
-    // ⛔ NO `background` here — #744, same cause as `.roadmap-status` above.
-    // This is the band the user photographed: 4 211 px of
-    // `--origam-color__surface---sunken` rendering rgb(251,245,255) over a
-    // rgb(246,240,255) page under `geek`. See the note on `.roadmap-status`.
-    border-block: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-}
-
-.roadmap-phases {
-    &__header {
-        margin-block-end: var(--origam-space---12, 3rem);
-    }
-}
-
-.roadmap-timeline {
-    max-inline-size: 54rem;
-    --origam-timeline---background-color: transparent;
-    --origam-timeline---dot-size: 40px;
-    --origam-timeline---track-width: 48px;
-
-    &__phase {
-        padding-block-end: var(--origam-space---6, 1.5rem);
-    }
-
-    &__card {
-        margin-block-start: var(--origam-space---1, 0.25rem);
-        --origam-card---background: transparent;
-        --origam-card---padding-block-start: var(--origam-space---2, 0.5rem);
-        --origam-card---padding-block-end: var(--origam-space---6, 1.5rem);
-        --origam-card---padding-inline-start: 0px;
-        --origam-card---padding-inline-end: 0px;
-    }
-
-    &__card-header {
-        display: flex;
-        flex-direction: column;
-        gap: var(--origam-space---2, 0.5rem);
-        margin-block-end: var(--origam-space---4, 1rem);
-    }
-
-    &__phase-chip {
-        align-self: flex-start;
-    }
-
-    &__phase-title {
-        display: block;
-        font-size: var(--origam-font-size---xl, 1.25rem);
-        font-weight: var(--origam-font__weight---bold, 700);
-        color: var(--origam-color__text---primary, #0a0a0a);
-    }
-
-    &__items {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    &__item {
-        list-style: none;
-        display: flex;
-        align-items: flex-start;
-        gap: var(--origam-space---3, 0.75rem);
-    }
-
-    &__item-avatar {
-        flex-shrink: 0;
-        margin-block-start: 2px;
-    }
-
-    &__item-content {
-        flex: 1;
-        min-inline-size: 0;
-    }
-
-    &__item-title {
-        display: block;
-        font-size: var(--origam-font-size---sm, 0.875rem);
-        font-weight: var(--origam-font__weight---semibold, 600);
-        color: var(--origam-color__text---primary, #0a0a0a);
-        margin-block-end: var(--origam-space---1, 0.25rem);
-    }
-
-    &__item-desc {
-        margin: 0;
-        font-size: var(--origam-font-size---sm, 0.875rem);
-        line-height: 1.55;
-        color: var(--origam-color__text---secondary, #525252);
-    }
-
-    &__effort {
-        flex-shrink: 0;
-        margin-block-start: 2px;
-        font-family: var(--origam-font-family---mono, monospace);
-    }
-}
-
-.roadmap-wave4 {
-    padding-block: var(--origam-space---24, 6rem);
-
-    &__header {
-        margin-block-end: var(--origam-space---12, 3rem);
-    }
-
-    &__grid {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    &__item {
-        list-style: none;
-        display: flex;
-        flex-direction: column;
-    }
-
-    &__card {
-        block-size: 100%;
-    }
-
-    &__card-inner {
-        padding: var(--origam-space---4, 1rem);
-        display: flex;
-        flex-direction: column;
-        gap: var(--origam-space---3, 0.75rem);
-    }
-
-    &__card-header {
-        display: flex;
-        align-items: center;
-        gap: var(--origam-space---2, 0.5rem);
-        flex-wrap: wrap;
-    }
-
-    &__avatar {
-        flex-shrink: 0;
-    }
-
-    &__cmp-name {
-        display: block;
-        flex: 1;
-        font-size: var(--origam-font-size---sm, 0.875rem);
-        font-weight: var(--origam-font__weight---semibold, 600);
-        font-family: var(--origam-font-family---mono, monospace);
-        color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
-    }
-
-    &__shipped-badge {
-        flex-shrink: 0;
-    }
-
-    &__note {
-        margin: 0;
-        font-size: var(--origam-font-size---xs, 0.75rem);
-        line-height: 1.55;
-        color: var(--origam-color__text---secondary, #525252);
-    }
-}
-
-.roadmap-cta {
-    position: relative;
-    padding-block: var(--origam-space---30, 7.5rem);
-    padding-inline: var(--origam-space---6, 1.5rem);
-    overflow: hidden;
-
-    &::before {
-        content: '';
-        position: absolute;
-        inset-inline: 0;
-        inset-block-start: 0;
-        block-size: 280px;
-        background-image: var(--origam-gradient---cta-glow-top);
-        pointer-events: none;
-        z-index: 0;
-    }
-
-    &__inner {
-        position: relative;
-        z-index: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: var(--origam-space---6, 1.5rem);
-        max-inline-size: 48rem;
-        margin-inline: auto;
-        text-align: center;
-    }
-
-    &__title {
-        margin: 0;
-        font-size: var(--origam-font-size---cta, 4rem) !important;
-        font-weight: var(--origam-font-weight---extrabold, 800);
-        letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
-        line-height: var(--origam-line-height---hero, 0.95);
-        color: var(--origam-color__text---ink, #0a0a0a);
-    }
-
-    &__desc {
-        margin: 0;
-        font-size: var(--origam-font-size---lg, 1.125rem);
-        color: var(--origam-color__text---secondary, #525252);
-        max-inline-size: 36rem;
-    }
-
-    &__actions {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: center;
-        gap: var(--origam-space---3, 0.75rem);
-        margin-block-start: var(--origam-space---2, 0.5rem);
-    }
-
-    &__btn {
-        --origam-btn---height: 52px;
-        --origam-btn---density: 0px;
-        --origam-btn---density-padding-x: var(--origam-space---6, 1.5rem);
-        --origam-btn---font-size: 1rem;
-        --origam-btn---font-weight: 400;
-        --origam-btn---border-radius: var(--origam-radius---btn, 10px);
-
-        &--primary {
-            background-image: var(--origam-gradient---btn-primary);
-            background-color: var(--origam-color---btn-primary-bg, transparent);
-            box-shadow: var(--origam-shadow---btn-primary);
-            --origam-btn---color: var(--origam-color---btn-primary-text);
-        }
-
-        &--secondary {
-            background-image: var(--origam-gradient---btn-secondary);
-            background-color: var(--origam-color---btn-secondary-bg);
-            box-shadow: var(--origam-shadow---btn-secondary);
-            border: 1px solid var(--origam-color---btn-secondary-border);
-            --origam-btn---color: var(--origam-color---btn-secondary-text);
-            --origam-btn---density-padding-x: var(--origam-space---4, 1rem);
+    @media (prefers-reduced-motion: no-preference) {
+        .roadmap-phases__chevron {
+            transition: rotate var(--origam-motion__duration---fast, 100ms) var(--origam-motion__easing---standard, cubic-bezier(0.4, 0, 0.2, 1));
         }
     }
-}
 
-@media (max-width: 1080px) {
-    .roadmap-hero {
-        &__title {
-            font-size: clamp(2.5rem, 9vw, 5.25rem);
-        }
+    .roadmap-phases__phase[open] .roadmap-phases__chevron {
+        rotate: 180deg;
     }
-}
 
-@media (max-width: 768px) {
-    .roadmap-section {
-        &__title {
-            font-size: clamp(1.75rem, 7vw, 3rem);
+    .roadmap-wave4 {
+        padding-block: var(--origam-space---24, 6rem);
+
+        &__header {
+            margin-block-end: var(--origam-space---10, 2.5rem);
+        }
+
+        &__grid {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        &__item {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        &__card {
+            block-size: 100%;
+        }
+
+        &__card-inner {
+            padding: var(--origam-space---4, 1rem);
+            display: flex;
+            flex-direction: column;
+            gap: var(--origam-space---3, 0.75rem);
+        }
+
+        &__card-header {
+            display: flex;
+            align-items: center;
+            gap: var(--origam-space---2, 0.5rem);
+            flex-wrap: wrap;
+        }
+
+        &__avatar {
+            flex-shrink: 0;
+        }
+
+        &__cmp-name {
+            display: block;
+            flex: 1;
+            font-size: var(--origam-font-size---sm, 0.875rem) !important;
+            font-weight: var(--origam-font__weight---semibold, 600);
+            font-family: var(--origam-font-family---mono, monospace);
+            color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
+        }
+
+        &__shipped-badge {
+            flex-shrink: 0;
+        }
+
+        &__note {
+            margin: 0;
+            font-size: var(--origam-font-size---xs, 0.75rem);
+            line-height: 1.55;
+            color: var(--origam-color__text---secondary, #525252);
         }
     }
 
     .roadmap-cta {
+        position: relative;
+        padding-block: var(--origam-space---30, 7.5rem);
+        padding-inline: var(--origam-space---6, 1.5rem);
+        overflow: hidden;
+
+        &::before {
+            content: '';
+            position: absolute;
+            inset-inline: 0;
+            inset-block-start: 0;
+            block-size: 280px;
+            background-image: var(--origam-gradient---cta-glow-top);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        &__inner {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--origam-space---6, 1.5rem);
+            max-inline-size: 48rem;
+            margin-inline: auto;
+            text-align: center;
+        }
+
         &__title {
-            font-size: clamp(2rem, 8vw, 4rem) !important;
+            margin: 0;
+            font-size: var(--origam-font-size---cta, 4rem) !important;
+            font-weight: var(--origam-font-weight---extrabold, 800);
+            letter-spacing: var(--origam-letter-spacing---hero, -0.045em);
+            line-height: var(--origam-line-height---hero, 0.95);
+            color: var(--origam-color__text---ink, #0a0a0a);
         }
-    }
 
-    .roadmap-timeline {
-        &__item {
+        &__desc {
+            margin: 0;
+            font-size: var(--origam-font-size---lg, 1.125rem);
+            color: var(--origam-color__text---secondary, #525252);
+            max-inline-size: 36rem;
+        }
+
+        &__actions {
+            display: flex;
             flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: var(--origam-space---3, 0.75rem);
+            margin-block-start: var(--origam-space---2, 0.5rem);
         }
-    }
-}
 
-@media (max-width: 640px) {
-    .roadmap-delivered {
-        &__grid {
-            grid-template-columns: 1fr;
+        &__btn {
+            --origam-btn---height: 52px;
+            --origam-btn---density: 0px;
+            --origam-btn---density-padding-x: var(--origam-space---6, 1.5rem);
+            --origam-btn---font-size: 1rem;
+            --origam-btn---font-weight: 400;
+            --origam-btn---border-radius: var(--origam-radius---btn, 10px);
+
+            &--primary {
+                background-image: var(--origam-gradient---btn-primary);
+                background-color: var(--origam-color---btn-primary-bg, transparent);
+                box-shadow: var(--origam-shadow---btn-primary);
+                --origam-btn---color: var(--origam-color---btn-primary-text);
+            }
+
+            &--secondary {
+                background-image: var(--origam-gradient---btn-secondary);
+                background-color: var(--origam-color---btn-secondary-bg);
+                box-shadow: var(--origam-shadow---btn-secondary);
+                border: 1px solid var(--origam-color---btn-secondary-border);
+                --origam-btn---color: var(--origam-color---btn-secondary-text);
+                --origam-btn---density-padding-x: var(--origam-space---4, 1rem);
+            }
         }
     }
 
-    .roadmap-wave4 {
-        &__grid {
-            grid-template-columns: 1fr;
+    @media (max-width: 1080px) {
+        .roadmap-hero {
+            &__title {
+                font-size: clamp(2.5rem, 9vw, 5.25rem);
+            }
         }
     }
-}
+
+    @media (max-width: 48rem) {
+        .roadmap-status__columns,
+        .roadmap-delivered__waves,
+        .roadmap-phases__items {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        /*
+          6 numbers divide by 2, so two columns fill without a remainder.
+          The 15 wave-4 tiles do NOT — two columns would strand the 15th
+          alone on its own row, the exact orphan this redesign removed from
+          the numbers grid. They keep 3 columns down to this breakpoint
+          (15 / 3 = 5 full rows) and drop straight to 1 below it.
+        */
+        .roadmap-overview {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .roadmap-wave4__grid {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .roadmap-cta {
+            &__title {
+                font-size: clamp(2rem, 8vw, 4rem) !important;
+            }
+        }
+
+        .roadmap-phases {
+            &__summary-title {
+                flex: 1 1 100%;
+                order: -1;
+            }
+
+            &__item {
+                flex-wrap: wrap;
+            }
+        }
+    }
 </style>

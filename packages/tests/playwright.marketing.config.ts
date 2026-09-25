@@ -57,6 +57,26 @@ const MARKETING_GREEN_SPECS = [
     // immédiatement — la suite ne contacte donc elle-même aucun tiers.
     'marketing-no-third-party.spec.ts',
 
+    // Refonte de /roadmap sur wireframe valide. Admise ici parce qu'elle tient
+    // le contrat de la liste, mesure et non suppose :
+    //   - controle positif (A/B) : la MEME spec contre la page d'AVANT la
+    //     refonte donne **12 rouges / 11 verts**, et les 11 verts sont
+    //     exactement les temoins de non-regression (h1, titres de section,
+    //     erreurs console, 6 tuiles de chiffres et la valeur 96, 15 cartes
+    //     vague 4 et leurs avatars, CTA, badge hero, les deux audits axe).
+    //     Les 12 rouges sont les 12 assertions neuves.
+    //   - stabilite : **115 passed** en `--repeat-each=5 --retries=0`, 3,4 min,
+    //     charge machine 4,17, serveur de dev isole sur un port a nous.
+    //
+    // Ce qu'elle retient et que rien d'autre ne retenait : les 4 phases sont
+    // des `<details>` NATIFS avec « short term » seul ouvert, une phase FERMEE
+    // garde ses 16 items titre + description complets (rien n'est coupe par le
+    // repli), le `<summary>` fait >= 44 px et repond a Entree, la grille de
+    // chiffres ne laisse aucune tuile orpheline, les deux liens d'ancrage du
+    // hero amenent leur cible SOUS l'app bar fixe, et la vague 4 nomme
+    // `OrigamAudio` — jamais `OrigamSound`, qui n'a jamais ete un export.
+    'roadmap.spec.ts',
+
     // #944 — la forme du menu déroulant sous les 8 identités. Le fichier
     // existait depuis longtemps SANS être gardé : il était inscrit dans
     // `e2e/_support/baseline/spec-coverage.json` comme non exécuté, donc la

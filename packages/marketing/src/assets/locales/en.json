@@ -1164,39 +1164,44 @@
             "badge": "v{version} — Wave 4 shipped",
             "title_line1": "Roadmap.",
             "title_line2": "Honest & public.",
-            "subtitle": "origam is an early-stage Vue 3 design system. Here is where we stand today, what we have already shipped, and what is on the horizon."
+            "subtitle": "origam is an early-stage Vue 3 design system. Here is where we stand today, what we have already shipped, and what is on the horizon.",
+            "actions_label": "Explore the roadmap",
+            "cta_status": "See where we stand",
+            "cta_phases": "Jump to what's next"
         },
         "status": {
             "eyebrow": "WHERE WE STAND",
             "title_line1": "Where {version}",
             "title_line2": "stands.",
-            "subtitle": "Every line below was measured against the repository on 23 September 2026 — what is delivered, and what is still missing.",
+            "subtitle": "An honest snapshot of what works, what is in progress, and what is still missing — every line below was measured, not transcribed.",
             "npm_published": "Published on npm — origam {version}, released automatically with sigstore provenance",
-            "readme_changelog": "README correct, CHANGELOG up to date",
+            "readme_changelog": "README correct, but the CHANGELOG lags the published version {version} — the latest releases have no write-up yet",
             "monorepo": "Monorepo in place — 5 pnpm workspace packages (ds, docs, marketing, stories, tests), the library still publishing from packages/ds",
             "bundle_monitoring": "No bundle-size monitoring — no size budget is enforced on any sub-export",
             "wave4_shipped": "Wave 4 shipped — 13 components + gradient support + OrigamTextMask (v2.6.0)",
             "ci_pipeline": "Full CI pipeline — 20 jobs across 5 workflows: lint, architecture guards, migration guard, type-check, unit tests, builds, i18n check, changelog drift check, e2e, marketing e2e, component a11y, marketing a11y and visual regression",
             "docs_deployed": "Documentation and stories deployed — the VitePress reference and the Histoire build both answer HTTP 200",
-            "unit_tests": "7,187 unit tests green across 563 spec files — 77.8 % statement coverage, 79.9 % line coverage",
-            "e2e_specs": "254 Playwright spec files for 218 stories — every component family has an e2e guard",
+            "unit_tests": "7,192 unit tests green across 564 spec files — 77.8 % statement coverage, 79.9 % line coverage",
+            "e2e_specs": "256 Playwright spec files for 218 stories — every component family has an e2e guard",
             "guards": "29 of 29 architecture guards passing, and 16 of 16 guard self-tests proving the detectors still measure",
-            "inspection": "216 components inspected against 8 criteria — rendering, theme channel, reactivity, prop resolution, emits, semantics, story and doc sync, hardcoded strings: zero defect left",
+            "inspection": "Inspected on 1 September 2026: 216 components against 8 criteria — rendering, theme channel, reactivity, prop resolution, emits, semantics, story and doc sync, hardcoded strings: zero defect at that date",
             "sonarqube": "SonarQube wired with unit-test coverage and a quality gate that blocks on security and critical issues",
             "dependency_automation": "Automated dependency updates — Dependabot opens grouped weekly pull requests for npm and GitHub Actions",
-            "e2e_ci_gate": "Continuous integration only gates 81 of the 254 Playwright specs — the other 173 exist but block nothing yet",
+            "e2e_ci_gate": "Continuous integration only gates 81 of the 256 Playwright specs — the other 175 exist but block nothing yet",
             "a11y_sweep": "Overlays still lack focus-trap assertions — one component out of the whole overlay family is covered, even though the per-component sweep now gates CI on an empty violation baseline",
             "visual_regression": "Visual regression only started — the pinned-container suite covers a single component so far",
             "migration_guide": "The v2-to-v3 migration guide does not exist yet — it blocks tagging v3",
             "public_domain": "Docs and stories are served from an internal host — the project domain does not resolve yet",
-            "community": "No community yet — no discussions, no external contributors"
+            "community": "No community yet — no discussions, no external contributors",
+            "measured_on": "Measured against the repository on 25 September 2026",
+            "live_title": "Live today ({count})",
+            "pending_title": "Not yet ({count})"
         },
         "delivered": {
             "eyebrow": "ALREADY SHIPPED",
             "title_line1": "A full design system.",
             "title_line2": "Already in production.",
-            "subtitle": "origam is not starting from zero — here is the scope already shipped on npm, with the latest waves below.",
-            "badge_done": "Delivered"
+            "subtitle": "origam is not starting from zero — here is the scope already shipped on npm, with the latest waves below."
         },
         "overview": {
             "label": "What origam already is",
@@ -1205,7 +1210,8 @@
             "directives": "directives",
             "stories": "interactive stories",
             "themes": "base themes (light + dark)",
-            "token_tiers": "design-token tiers"
+            "token_tiers": "design-token tiers",
+            "measured_on": "Counted from the repository source tree on 25 September 2026"
         },
         "waves": {
             "wave1": {
@@ -1226,41 +1232,23 @@
                 "title": "Wave 3 — Infrastructure",
                 "nuxt_module": "Official Nuxt module (sub-export origam/nuxt) — auto-import, SSR-safe theme plugin",
                 "ssr_safety": "SSR safety audit + useCssSupportClient + OrigamClientOnly",
-                "monorepo": "pnpm monorepo — 6 packages (ds, marketing, stories, docs, tests, figma-plugin)"
-            },
-            "wave4": {
-                "title": "Wave 4 — New components & features",
-                "grid": "OrigamGrid — declarative CSS Grid with columns, rows, areas, gap, auto-flow",
-                "masonry": "OrigamMasonry — CSS-first via grid-template-rows: masonry, JS fallback",
-                "blockquote": "OrigamBlockquote — typography: quote + author + source + variants",
-                "empty_state": "OrigamEmptyState — 5 presets: no-data, no-results, error, offline, locked",
-                "clipboard": "OrigamClipboard — copy wrapper + Copied! feedback, no dependencies",
-                "inline_edit": "OrigamInlineEdit — edit-in-place pattern, v-model + validators, ARIA live",
-                "number_format": "OrigamNumberFormat — i18n formatting via Intl.NumberFormat, display only",
-                "qr_code": "OrigamQRCode — SVG output, ISO/IEC 18004, error correction level, logo overlay",
-                "watermark": "OrigamWatermark — diagonal repeat overlay, SVG text or canvas data-URI",
-                "video": "OrigamVideo — custom player: play/pause, scrubber, PIP, captions, HLS optional",
-                "sound": "OrigamSound — audio player + waveform via Web Audio API, Media Session API",
-                "calendar": "OrigamCalendar — month/week/day/agenda views, RRULE, drag-to-create, 100 % in-house",
-                "chart": "OrigamChart — SVG-native: line, area, bar, pie, radar, scatter — no d3 or chart.js",
-                "gradient": "Gradient support — color/bgColor/textColor props accept gradient values",
-                "text_mask": "OrigamTextMask — text reveal via background-clip: text, gradient + image backgrounds"
+                "monorepo": "pnpm monorepo — 5 packages (ds, marketing, stories, docs, tests)"
             }
         },
         "phases": {
             "eyebrow": "WHAT'S NEXT",
             "title": "A phased roadmap.",
-            "subtitle": "Each phase builds on the previous. The order reflects real technical dependencies, not arbitrary milestones.",
+            "subtitle": "Each phase builds on the previous. The order reflects real technical dependencies, not arbitrary milestones. Open a phase to read every item in full.",
             "short_term": {
                 "eyebrow": "Q3 2026",
                 "title": "Short term",
                 "a11y_audit": {
                     "title": "Overlay a11y audit",
-                    "description": "The axe sweep over every component story exists but runs in no CI job, and its failure threshold is lowered to critical only. Focus trap, focus restoration, aria-modal and Escape are asserted for Dialog, Select and the command palette — Menu, contextual menu, Tooltip, Drawer, Sheet and Snackbar have none."
+                    "description": "The per-component axe sweep gates CI on an empty violation baseline, so the automated pass is covered. What is missing is the overlay-specific contract: focus trap, focus restoration, aria-modal and Escape are asserted for Dialog, Select and the command palette — Menu, contextual menu, Tooltip, Drawer, Sheet and Snackbar have none."
                 },
                 "bundle_size": {
                     "title": "Bundle-size monitoring",
-                    "description": "No size budget is enforced today. Add size-limit on every sub-export with automatic pull-request comments, and set the threshold from a fresh measurement of the published tarball — 1.86 MB when measured on 23 September 2026."
+                    "description": "No size budget is enforced today. Add size-limit on every sub-export with automatic pull-request comments, and set the threshold from a fresh measurement of the published tarball — 1 864 944 B when measured on 25 September 2026."
                 },
                 "api_audit": {
                     "title": "Pre-v3 API audit",
@@ -1272,7 +1260,7 @@
                 },
                 "e2e_gate": {
                     "title": "Widen the e2e gate in CI",
-                    "description": "229 spec files already cover the component families, but the CI job runs only the 58 listed as green. Bring the remaining 171 into the gate, wave by wave, fixing the instability instead of skipping it."
+                    "description": "256 spec files already cover the component families, but continuous integration gates only 81 of them. Bring the remaining 175 into the gate, wave by wave, fixing the instability instead of skipping it."
                 },
                 "public_domain": {
                     "title": "Publish the docs under the project domain",
@@ -1418,7 +1406,8 @@
                     "title": "Security checks on every PR",
                     "description": "Secret scanning on every pull request, plus a dedicated security review for any change to server code, services, or build configuration."
                 }
-            }
+            },
+            "items_count": "{count} items"
         },
         "effort": {
             "small": "S",
@@ -1479,10 +1468,6 @@
                 "name": "OrigamVideo",
                 "note": "Custom player: play/pause, scrubber, PIP, captions, HLS optional"
             },
-            "sound": {
-                "name": "OrigamSound",
-                "note": "Audio player + waveform via Web Audio API, Media Session API"
-            },
             "calendar": {
                 "name": "OrigamCalendar",
                 "note": "Month/week/day/agenda views, RRULE, drag-to-create, 100 % in-house"
@@ -1498,6 +1483,10 @@
             "text_mask": {
                 "name": "OrigamTextMask",
                 "note": "Text reveal via background-clip: text, gradient + image backgrounds"
+            },
+            "audio": {
+                "name": "OrigamAudio",
+                "note": "Audio player + waveform via Web Audio API, Media Session API"
             }
         }
     },
