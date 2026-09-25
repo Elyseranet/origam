@@ -961,7 +961,7 @@ useSeoMeta({
 
     &__title {
         display: block;
-        font-size: var(--origam-font-size---base, 1rem);
+        font-size: var(--origam-font__size---lg, 1rem);
         font-weight: var(--origam-font__weight---semibold, 600);
         color: var(--origam-color__text---primary, #0a0a0a);
         margin: 0 0 var(--origam-space---1, 0.25rem);
@@ -1005,7 +1005,7 @@ useSeoMeta({
 
     &__chip {
         --origam-chip---background-color: var(--origam-color__surface---sunken, #f5f5f5);
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
         font-size: 0.65rem;
     }
 }

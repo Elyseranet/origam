@@ -715,7 +715,7 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
 
     &__desc {
         margin: 0 0 var(--origam-space---4, 1rem);
-        font-size: var(--origam-font-size---base, 1rem);
+        font-size: var(--origam-font__size---lg, 1rem);
         line-height: 1.65;
         color: var(--origam-color__text---secondary, #525252);
         max-inline-size: 52rem;

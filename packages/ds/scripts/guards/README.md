@@ -23,6 +23,7 @@ pnpm -F origam guards:unconsumed-props     # guard 5 only
 pnpm -F origam guards:emits-completeness   # guard 7 only
 pnpm -F origam guards:no-usedefaults       # guard 8 only
 pnpm -F origam guards:token-var-channels   # guard 13 only
+pnpm -F origam guards:token-var-channels-marketing   # guard 30 only
 pnpm -F origam guards:dead-handlers        # guard 14 only
 pnpm -F origam guards:function-as-value    # guard 19 only
 pnpm -F origam guards:id-forwarding        # guard 15 only
@@ -65,6 +66,7 @@ text directly. The full suite runs in under two seconds.
 
 | 28 | `ts-token-refs.mjs` | Every `var(--origam-…)` **assemblé en TypeScript** (fichiers `.ts`/`.mts` et blocs `<script>` des SFC) doit nommer un token qu'une feuille déclare, ou porter un repli. Guard 13 lit les blocs `<style>`, guard 26 lit les feuilles ; ni l'un ni l'autre n'évalue du TS — c'est par là que #813 est passé (`useElevation` émettait `var(--origam-shadow---2xl)`, aucune feuille ne le déclare, 27 gardes verts). Le nom n'est même pas grep-able : `var(${SHADOW_TOKEN_PREFIX}${rung})`. Le détecteur ÉNUMÈRE les environnements concrets (paramètres à type union de littéraux — `` type T = `${ENUM}` `` compris —, variables de boucle, rappels `.map`/`.find`, gardes `X.has(v)` / `X.includes(v)`), puis rejoue le gabarit **un chemin d'exécution à la fois** : une évaluation compositionnelle perdrait la corrélation entre `rung` et sa table de repli et fabriquerait des références qui n'arrivent jamais. Deux directions, deux baselines : canal mort (nom calculable, jamais déclaré) et nom non calculable sans repli | 20 + 6 |
 | 29 | `theme-channel-confiscation.mjs` | Un composant qui redéclare, **sur une règle toujours active**, un token que les feuilles déclarent déjà rend ce canal **inatteignable par tout `IOrigamTheme` de marque** (#607, #569). Une custom property est substituée sur l'élément QUI LA DÉCLARE, et l'héritage depuis `[data-theme="brand-x"]` perd contre n'importe quelle déclaration directe — la spécificité n'entre même pas en jeu. Deux formes : un `<style scoped>`, et un `<style>` NON scopé portant `:root` (injecté APRÈS les feuilles, donc gagnant par l'ordre source). C'est le défaut le plus silencieux de la campagne : **tous les indicateurs disent que ça marche** — `token-var-channels` vert dans les deux sens, type-check vert, aucun test rouge. Le détecteur ne lève que l'intersection de deux conditions : (a) la règle est posée sur CHAQUE instance — sélecteur sans condition, ou modificateur égal à la valeur par défaut de la prop dans `withDefaults` (`&--density-default` sur un composant qui déclare `density: DENSITY.DEFAULT`) ; (b) la valeur scopée résout EXACTEMENT celle de la feuille, chaîne de `var()` déroulée, ce qui rend le retrait sans effet visuel. Une règle portée par un modificateur que le consommateur doit demander (`&--rounded-large`) est la logique PROPS-FIRST et n'est PAS levée ; une règle toujours active dont la valeur DIFFÈRE est bien un canal mort mais la retirer change le rendu — c'est un arbitrage, pas un correctif, et le garde s'arrête là. Mesure navigateur A/B contre le commit parent sur `--origam-btn---density`, épinglé à `0px` par `.origam-btn--density-default` (classe posée sur CHAQUE bouton) : thème à `24px` → avant `0px`/28px, après `24px`/52px | 36 |
+| 30 | `token-var-channels-marketing.mjs` | Jumeau marketing du garde 13. Toute variable `var(--origam-…)` que **`packages/marketing`** lit doit être déclarée soit dans une feuille de tokens du DS, soit dans la couche marketing elle-même (`assets/css/**.css`, `assets/scss/*.scss`, un `<style>` de `.vue`, ou une clé d'objet `'--origam-x':` dans `themes/*.ts`). Le garde 13 ne balaie que `packages/ds/` — le site marketing, plus gros consommateur de tokens du dépôt et sa vitrine, était hors périmètre. C'est par là que #958 est passé : **841 lectures mortes sur 52 noms distincts**, dont 151 sur `--origam-font-family---mono` / `--origam-font-size---base`, deux noms qui n'existent nulle part (tiret simple là où la grammaire veut `__`, et un échelon `base` absent de l'échelle). Chaque lecture portait un repli littéral, donc la page était belle et le canal de thème mort. Le **verdict** est délégué à `analyseChannels` du garde 13 (aucun doublon) ; seule la COLLECTE diffère, sur trois points qui interdisaient d'élargir simplement le périmètre : l'ensemble émetteur est double (le marketing déclare légitimement ses propres `--origam-…`), la portée de ces déclarations est GLOBALE (`_shared.css` à `:root:root`) et non locale au fichier comme un `<style scoped>` du DS, et les consommateurs ne sont pas que des `.vue`. ⛔ La direction « dormant » n'est PAS reprise, délibérément : « ce token du DS n'est lu par personne » est un défaut dans une bibliothèque publiée et le cas NORMAL chez un consommateur. Deux sous-classes étiquetées : **44** lectures **sans repli** (la déclaration entière est jetée par le navigateur — rendu réellement cassé) et 248 avec repli (canal mort, rendu OK) | 292 |
 
 ### Guard 13 — the token pipeline can break silently, and nothing else watches for it
 
@@ -134,6 +136,49 @@ ONE emitted declaration to the exact flattened form #435 measured, and
 asserts the guard flips from 0 violations to exactly 1, on exactly the
 mutated name. A selftest that only checks fixtures can pass while the
 detector itself is inert; the mutation cannot.
+
+### Guard 30 — le garde 13 posait la bonne question au mauvais périmètre
+
+Écrit pour #958. Le garde 13 vérifie depuis #435 que toute variable lue est
+déclarée quelque part — mais **seulement dans `packages/ds/`**. Le site
+marketing, qui est à la fois le plus gros consommateur de tokens du dépôt et
+la démonstration publique qu'on thème origam par ses canaux, n'était regardé
+par personne. Mesuré sur `develop` @ `198853216` : **841 lectures mortes, 52
+noms distincts**, là où le ticket en avait recensé 151 sur 2 noms.
+
+Le défaut est invisible par construction, et il l'est de deux façons
+différentes :
+
+- **avec repli** (`var(--x, 1rem)`) — le repli peint, *toujours*. La page est
+  belle, la valeur est juste, et seule la capacité à la thémer a disparu. Un
+  thème de marque qui règle sa police monospace ne change rien.
+- **sans repli** (`var(--x)`) — le navigateur jette la déclaration ENTIÈRE.
+  Le rendu est réellement cassé, sans erreur console ni test rouge. 44 des
+  292 canaux baselinés sont dans ce cas.
+
+⛔ **Le père de #958 est la grammaire, pas la distraction.** Les vrais noms
+séparent le bloc BEM par un DOUBLE TIRET BAS (`--origam-font__size---md`) ;
+le marketing écrivait un tiret simple. Les deux orthographes y coexistaient,
+la correcte minoritaire — 10 occurrences contre 87 — signature d'une faute de
+frappe propagée par copier-coller, pas d'une convention locale.
+
+⚠️ **L'échelon retenu n'est pas celui que le ticket proposait, et c'est une
+mesure qui l'a décidé.** Le ticket suggérait `--origam-font__size---md` pour
+remplacer `--origam-font-size---base`. Or `primitive.css:98` pose
+`--origam-font__size---md: 0.875rem`, tandis que le repli effectivement rendu
+par les 64 lectures était `1rem` — c'est-à-dire l'échelon **`lg`**
+(`primitive.css:99`). Substituer `md` aurait rétréci le texte de 12,5 % dans
+27 fichiers en croyant faire un renommage. Un renommage de token se vérifie
+en mesurant la valeur, jamais en lisant le nom.
+
+**Mutation-verified, dans les deux sens.** `lib/marketing-token-scan.selftest.mjs`
+part d'un arbre où tout résout proprement, puis mute le séparateur de bloc —
+d'abord côté DÉCLARATION, ensuite côté LECTURE (le cas réel de #958) — et exige
+que le verdict bascule de 0 à exactement 1 violation à chaque fois. Le
+parcours de l'arbre est également prouvé à l'exécution, sur un vrai
+répertoire temporaire portant un `node_modules` piégé : vérifier que
+`IGNORED_DIRS` contient les bons noms ne prouverait pas que le parcours le
+consulte encore.
 
 ### Guard 14 — a `v-on` that references a handler is not the same as one that calls it
 

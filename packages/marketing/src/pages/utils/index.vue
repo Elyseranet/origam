@@ -403,7 +403,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 
     &__desc {
         margin: 0;
-        font-size: var(--origam-font-size---base, 1rem);
+        font-size: var(--origam-font__size---lg, 1rem);
         color: var(--origam-color__text---secondary, #525252);
     }
 }
@@ -495,9 +495,9 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
     &__name {
         display: block;
         flex: 1;
-        font-size: var(--origam-font-size---base, 1rem);
+        font-size: var(--origam-font__size---lg, 1rem);
         font-weight: var(--origam-font__weight---semibold, 600);
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
         color: var(--origam-color__text---primary, #0a0a0a);
         margin: 0;
         white-space: nowrap;
@@ -522,7 +522,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 
     &__related-chip {
         --origam-chip---background-color: var(--origam-color__surface---sunken, #f5f5f5);
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
 
         &--more {
             --origam-chip---background-color: var(--origam-color__action--primary---bgSubtle, #ede9fe);

@@ -673,7 +673,7 @@ useSeoMeta({
 
     &__desc {
         margin: 0;
-        font-size: var(--origam-font-size---base, 1rem);
+        font-size: var(--origam-font__size---lg, 1rem);
         color: var(--origam-color__text---secondary, #525252);
         display: flex;
         align-items: center;
@@ -772,11 +772,11 @@ useSeoMeta({
         line-height: 1;
         color: var(--origam-color__text---ink, #0a0a0a);
         display: block;
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
     }
 
     &__domain-chip {
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
         font-size: 0.625rem;
         letter-spacing: 0.05em;
         text-transform: uppercase;
@@ -789,7 +789,7 @@ useSeoMeta({
     &__desc {
         margin: 0;
         max-inline-size: 52ch;
-        font-size: var(--origam-font-size---base, 1rem);
+        font-size: var(--origam-font__size---lg, 1rem);
         line-height: 1.65;
         color: var(--origam-color__text---secondary, #525252);
     }
@@ -808,7 +808,7 @@ useSeoMeta({
     }
 
     &__import {
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
         font-size: var(--origam-font-size---xs, 0.75rem);
         border: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
         background: var(--origam-color__surface---sunken, #f5f5f5);
@@ -818,7 +818,7 @@ useSeoMeta({
     }
 
     &__import-text {
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
         font-size: var(--origam-font-size---xs, 0.75rem);
         overflow: hidden;
         text-overflow: ellipsis;
@@ -909,7 +909,7 @@ useSeoMeta({
 
     &__desc {
         margin: 0;
-        font-size: var(--origam-font-size---base, 1rem);
+        font-size: var(--origam-font__size---lg, 1rem);
         line-height: 1.65;
         color: var(--origam-color__text---secondary, #525252);
     }
@@ -1022,7 +1022,7 @@ useSeoMeta({
     }
 
     &__name-btn {
-        --origam-btn---font-size: var(--origam-font-size---base, 1rem);
+        --origam-btn---font-size: var(--origam-font__size---lg, 1rem);
         gap: var(--origam-space---1, 0.25rem);
 
         &:hover .prop-list__copy-icon {
@@ -1031,7 +1031,7 @@ useSeoMeta({
     }
 
     &__name-mono {
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
         font-size: var(--origam-font-size---sm, 0.875rem);
         font-weight: var(--origam-font__weight---semibold, 600);
         color: var(--origam-color__text---primary, #0a0a0a);
@@ -1043,7 +1043,7 @@ useSeoMeta({
     }
 
     &__type-chip--primitive {
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
         font-size: 0.7rem;
     }
 
@@ -1052,7 +1052,7 @@ useSeoMeta({
     }
 
     &__default {
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
         font-size: var(--origam-font-size---xs, 0.75rem);
         color: var(--origam-color__text---tertiary, #737373);
     }
@@ -1071,7 +1071,7 @@ useSeoMeta({
 
     &__item-title {
         display: block;
-        font-size: var(--origam-font-size---base, 1rem);
+        font-size: var(--origam-font__size---lg, 1rem);
         font-weight: var(--origam-font__weight---semibold, 600);
         color: var(--origam-color__text---primary, #0a0a0a);
         margin: 0 0 var(--origam-space---3, 0.75rem);
@@ -1130,7 +1130,7 @@ useSeoMeta({
         flex: 1;
         font-size: var(--origam-font-size---sm, 0.875rem);
         font-weight: var(--origam-font__weight---semibold, 600);
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
         color: var(--origam-color__text---primary, #0a0a0a);
         margin: 0;
     }

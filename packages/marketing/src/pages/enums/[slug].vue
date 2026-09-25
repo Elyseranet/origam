@@ -554,7 +554,7 @@ useSeoMeta({
 
     &__desc {
         margin: 0;
-        font-size: var(--origam-font-size---base, 1rem);
+        font-size: var(--origam-font__size---lg, 1rem);
         color: var(--origam-color__text---secondary, #525252);
         display: flex;
         align-items: center;
@@ -629,7 +629,7 @@ useSeoMeta({
     &__breadcrumb-current {
         color: var(--origam-color__text---primary, #0a0a0a);
         font-weight: var(--origam-font__weight---semibold, 600);
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
     }
 
     &__identity {
@@ -654,11 +654,11 @@ useSeoMeta({
         line-height: 1;
         color: var(--origam-color__text---ink, #0a0a0a);
         display: block;
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
     }
 
     &__kind-chip {
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
         font-size: 0.625rem;
         letter-spacing: 0.05em;
         text-transform: uppercase;
@@ -671,7 +671,7 @@ useSeoMeta({
     &__desc {
         margin: 0;
         max-inline-size: 52ch;
-        font-size: var(--origam-font-size---base, 1rem);
+        font-size: var(--origam-font__size---lg, 1rem);
         line-height: 1.65;
         color: var(--origam-color__text---secondary, #525252);
     }
@@ -829,7 +829,7 @@ useSeoMeta({
 
     &__title {
         display: block;
-        font-size: var(--origam-font-size---base, 1rem);
+        font-size: var(--origam-font__size---lg, 1rem);
         font-weight: 700;
         color: var(--origam-color__text---primary, #0a0a0a);
         margin: 0;
@@ -873,7 +873,7 @@ useSeoMeta({
     }
 
     &__copy-btn {
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
         display: inline-flex;
         align-items: center;
         gap: var(--origam-space---2, 0.5rem);
@@ -881,7 +881,7 @@ useSeoMeta({
     }
 
     &__value-mono {
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
         font-size: var(--origam-font-size---sm, 0.875rem);
         font-weight: 600;
         color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
@@ -952,9 +952,9 @@ useSeoMeta({
     &__card-name {
         display: block;
         flex: 1;
-        font-size: var(--origam-font-size---base, 1rem);
+        font-size: var(--origam-font__size---lg, 1rem);
         font-weight: 600;
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
         color: var(--origam-color__text---primary, #0a0a0a);
         margin: 0;
     }
@@ -982,7 +982,7 @@ useSeoMeta({
 
     &__item-title {
         display: block;
-        font-size: var(--origam-font-size---base, 1rem);
+        font-size: var(--origam-font__size---lg, 1rem);
         font-weight: 600;
         color: var(--origam-color__text---primary, #0a0a0a);
         margin: 0 0 var(--origam-space---3, 0.75rem);

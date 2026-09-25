@@ -867,7 +867,7 @@
 
         align-self: flex-start;
         margin-block-end: var(--origam-space---5, 1.25rem);
-        font-family: var(--origam-font-family---mono, monospace);
+        font-family: var(--origam-font__family---mono, monospace);
         color: var(--origam-color__text---secondary, #525252);
 
         &--standalone {
@@ -1004,7 +1004,7 @@
             align-items: center;
             gap: var(--origam-space---2, 0.5rem);
             margin: 0 0 var(--origam-space---4, 1rem);
-            font-size: var(--origam-font-size---base, 1rem);
+            font-size: var(--origam-font__size---lg, 1rem);
             font-weight: var(--origam-font__weight---semibold, 600);
 
             &--live {
@@ -1081,7 +1081,7 @@
         }
 
         &__wave-icon {
-            font-size: var(--origam-font-size---base, 1rem);
+            font-size: var(--origam-font__size---lg, 1rem);
             margin-block-start: 0.15em;
         }
     }
@@ -1198,7 +1198,7 @@
         &__summary-count {
             flex-shrink: 0;
             font-size: var(--origam-font-size---sm, 0.875rem);
-            font-family: var(--origam-font-family---mono, monospace);
+            font-family: var(--origam-font__family---mono, monospace);
             color: var(--origam-color__text---secondary, #525252);
         }
 
@@ -1251,7 +1251,7 @@
         &__effort {
             flex-shrink: 0;
             margin-block-start: 2px;
-            font-family: var(--origam-font-family---mono, monospace);
+            font-family: var(--origam-font__family---mono, monospace);
         }
     }
 
@@ -1294,7 +1294,7 @@
         &__group-title {
             display: block;
             margin: 0;
-            font-size: var(--origam-font-size---base, 1rem) !important;
+            font-size: var(--origam-font__size---lg, 1rem) !important;
             font-weight: var(--origam-font__weight---semibold, 600);
             color: var(--origam-color__text---primary, #0a0a0a);
         }
@@ -1303,7 +1303,7 @@
             --origam-chip---background-color: var(--origam-color__surface---sunken);
 
             flex-shrink: 0;
-            font-family: var(--origam-font-family---mono, monospace);
+            font-family: var(--origam-font__family---mono, monospace);
         }
 
         &__chips {
@@ -1323,7 +1323,7 @@
         &__chip {
             --origam-chip---background-color: var(--origam-color__surface---sunken);
 
-            font-family: var(--origam-font-family---mono, monospace);
+            font-family: var(--origam-font__family---mono, monospace);
             text-decoration: none;
             color: var(--origam-color__text---secondary, #525252);
 

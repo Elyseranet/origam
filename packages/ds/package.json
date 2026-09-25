@@ -107,6 +107,8 @@
     "guards:emits-completeness": "node scripts/guards/emits-completeness.mjs",
     "guards:no-usedefaults": "node scripts/guards/no-usedefaults-in-components.mjs",
     "guards:token-var-channels": "node scripts/guards/token-var-channels.mjs",
+    "guards:token-var-channels-marketing": "node scripts/guards/token-var-channels-marketing.mjs",
+    "guards:token-var-channels-marketing:self": "node scripts/guards/lib/marketing-token-scan.selftest.mjs",
     "guards:token-twins": "node scripts/guards/token-twins.mjs",
     "guards:dead-handlers": "node scripts/guards/dead-handlers.mjs",
     "guards:function-as-value": "node scripts/guards/function-as-value.mjs",
