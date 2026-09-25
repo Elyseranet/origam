@@ -18,6 +18,648 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.18.11] - 2026-09-24
+
+### Fixed — #935 : l'anneau `focus-visible` du Switch débordait de la piste, peint sur un frère non clippé
+
+Ce n'est pas le pouce qui débordait — mesuré sur **32 configurations**
+(8 identités × 2 modes × coché/décoché) en Chromium réel, sans exception. Ce
+qui débordait est l'**anneau de focus**, peint par le `&--focus-visible`
+d'`OrigamSelectionControl` sur `.origam-selection-control__input` : un carré
+de ~28px, **frère** de `.origam-switch-track`, donc jamais clippé par son
+`overflow: hidden`.
+
+Avant correctif, Chromium réel (`/why-origam`, sélecteur d'identité cliqué,
+`Tab` réel), état coché :
+
+| identité | débord haut/bas | débord (côté opposé au pouce) |
+|---|---|---|
+| origam, apple, cartoon, ecom, editorial, geek, material | 8px | 8px |
+| glass (inset) | 4px | 4px |
+
+Après : **`0px` sur les 16 configurations** (8 identités × 2 modes), pouce et
+anneau tous deux contenus.
+
+Le correctif déplace l'anneau sur `.origam-switch-track` — le contrôle
+réellement visible — en réutilisant les deux tokens déjà lus par la règle
+partagée. `OrigamSelectionControl.vue` n'est **pas** modifié : pour Checkbox
+et Radio, le carré EST le contrôle visible, ils ne sont pas concernés.
+
+Deux pistes écartées avant celle-là, et pourquoi. Clipper via `overflow` sur
+le wrapper commun : il est déjà plus grand que la piste (formule de densité
+indépendante des tokens de piste), donc ça ne résout rien à la racine et ça
+risque de tronquer l'indicateur de focus selon les combinaisons de props
+(WCAG 2.4.11). Agrandir la piste pour englober le carré de hit-area : ça
+changerait la taille visuelle du switch sur les 8 marques pour un problème de
+**référence** — l'anneau vise le mauvais élément — et non de taille.
+
+3 nouveaux tests e2e (`packages/tests/e2e/switch.spec.ts`, describe
+`Focus-visible ring`), vérifiés **rouges sur le commit parent**.
+`switch.spec.ts` 38/38, `checkbox.spec.ts` 34/34, `radio.spec.ts` +
+accumulation + a11y 57/57, Vitest 7187/7187, `guards` 29/29, `guards:self`
+16/16, `pnpm audit` propre — `$?` réel hors pipe. PR #936.
+
+### Fixed — #933 : `.origam-btn` ne déclarait **aucun** `display` — un CTA rendu 984 × 15 px
+
+Le root retombait sur le défaut UA du tag rendu — `inline` pour le `<a>` que
+`useLink` produit dès qu'on passe `href`. Une boîte inline ignore `height`,
+`min-width` et le padding vertical, et s'étale sur toute sa ligne.
+
+| | avant | après |
+|---|---|---|
+| CTA « Build your own identity » (`/why-origam`, dans un `<p>`) | **984 × 15** (`display: inline`) | **199 × 28** (`inline-block`) |
+
+Vérifié sur les **8 identités** (984–986 → 199–201 px).
+
+**`inline-block` et non `inline-flex`, exprès** : dans un parent flex/grid il
+se blockifie en `block`, c'est-à-dire byte pour byte la valeur calculée
+d'avant — donc aucune instance saine ne bouge. Balayage A/B de **181 instances
+de `.origam-btn`** sur 8 pages marketing (serveur pré-fix contre serveur
+post-fix) : **2 changements de géométrie**, tous deux les instances cassées
+(`/why-origam`, et `themes-cta-builder` sur `/`, 168 × 17 → 167 × 28). 178 des
+181 ont un parent flex/grid et sont inertes au changement.
+`vertical-align: middle`, déjà déclaré dans la même règle, n'a de sens que sur
+une boîte de niveau inline : c'est la valeur que le reste de la règle supposait
+déjà.
+
+⚠️ **Effet visible à valider** : le CTA était *visuellement* centré sous la
+démo — par accident, la grille interne `__loader` flottant dans une boîte 5×
+trop large. À la bonne taille il s'aligne à gauche, comme le titre et les
+légendes de la même section. Si le centrage était voulu, c'est un
+`text-align: center` sur `.why-demo__outro`, une ligne.
+
+⛔ **La première version de `btn-display.spec.ts` était verte contre le commit
+parent, donc sans valeur.** Elle visait le Variant Design, qui rend un
+`<button>` — dont le défaut UA de Chromium est déjà `inline-block` : le spec
+mesurait le navigateur, pas la règle. Réécrit pour passer par `href`, donc par
+le `<a>` que `useLink` produit — le seul tag qui distingue les deux mondes, et
+exactement la forme du CTA cassé sur le site. PR #939.
+
+### Fixed — #934 : `--*---padding-inline`, un nom que rien ne lit — la gouttière `nav` n'a jamais existé
+
+`.origam-list--nav` et `.origam-list-item--nav` déclaraient
+`--origam-*---padding-inline`. Les règles de base consomment les longhands
+`-start` / `-end`, et **une custom property n'est pas un raccourci** : elle ne
+se décompose pas. Même famille que **#440**, sens inverse.
+
+| | avant | après |
+|---|---|---|
+| `padding-inline` de la liste du menu (8 identités) | **`0px / 0px`** | **`8px / 8px`** |
+| largeur de ligne dans un menu de 180px | 170–172 | **154–156** |
+
+Conséquence corrigée du même coup : sous **material / glass / cartoon**,
+`.origam-menu__content` porte `overflow: auto` et un rayon supérieur à sa
+propre gouttière de 4px — la pastille de survol de la première et de la
+dernière ligne était donc **rognée à plat par le coin arrondi du menu**. Les 4
+menus de la barre (`Introduction`, `Getting started`, `Features`, sélecteur
+d'identité) : **0 titre tronqué, 0 débordement horizontal**, avant comme
+après.
+
+`list-nav-padding.spec.ts` vérifié **rouge sur le commit parent** (liste
+`0px`, ligne `16px`). Rayon d'impact e2e (btn × 8, list × 5, menu × 2,
+select) : **193 passed / 1 failed** — l'échec est **#938**, pré-existant,
+reproduit à l'identique sur le commit parent. `guards` 29/29, `guards:self`
+16/16, `test:unit:run` 7192 passed / 3 expected fail / 78 skipped,
+`pnpm -F origam build` et `pnpm audit` à `$?` = 0. PR #939.
+
+### Fixed — #937 : la bande de messages vide (22px) et le bouton à 12px de la carte de démo — deux zéros côté marketing
+
+`origam-input__details` est réservée par défaut, même sans message, et c'est
+**voulu** côté DS (`hasDetails`, `OrigamInput.vue:222`) : réserver la bande
+évite qu'une erreur qui apparaît fasse sauter la mise en page. Mais le switch
+et le champ de la carte de démo ne portent **aucune** `rules`, aucun `error`,
+aucun `messages` — leur bande ne pouvait qu'être vide, pour toujours. Mesuré
+sur les **8 identités** : `min-height: 22px`, `padding-top` 6–8px,
+`textContent` **`""`** partout. C'est elle qui portait le switch à 70px et
+écrasait la rangée de contrôles.
+
+Corrigé par **`hide-details="auto"`** sur les deux contrôles — `"auto"` et non
+`true` : la bande **revient** dès qu'un message existe, donc aucun message
+avalé. Épinglé par 5 tests unitaires (`OrigamInput.hide-details.spec.ts`), dont
+« la restitue sur `messages` » et « la restitue sur une erreur de validation ».
+
+| | champ | switch | pied de carte | carte |
+|---|---|---|---|---|
+| avant | 58 | 70 | 144 | 297 |
+| après | **36** | **48** | **100** | **253** |
+
+⚠️ **Arbitrage laissé au propriétaire** : replier la bande **par défaut dans
+le DS** changerait le comportement de tous les consommateurs et créerait
+partout le saut de 22px à la première erreur. Non pris ici ; les quatre états
+sont rendus et mesurés dans #937 pour trancher sur pièce.
+
+**Le bouton à 12px — le second zéro.** `--origam-btn---min-height` n'est
+déclarée nulle part, `--origam-btn---height` vaut `28px`, et
+`--origam-btn---density` valait `0` **sans unité** : `calc(28px + 0)` est
+invalide, donc `min-height` retombait sur `auto` et le bouton rendait 12px.
+Mutation à une seule variable en navigateur réel — `0` → `0px` — rend
+`min-height` auto → **28px**, `min-width` auto → **50px**, hauteur 12 → **28**.
+Le `0` venait de `origam-reset.generated.ts`, le `cssVars` du thème `origam`.
+**Signature décisive : le défaut ne touchait que l'identité `origam`** ; les 7
+autres rendaient déjà 28px. Si la règle DS était en cause, les 8 le seraient.
+
+⛔ **Ce n'est PAS une régression de #904 / 2.18.8.** `git show 8e2937df7^`
+porte **déjà** `"--origam-btn---density": "0"`, 12 jours plus tôt. Le fichier
+était figé au 2026-09-11 (`630755c35`), la feuille DS corrigée le 2026-09-17
+(#568 / PR #799) — et les deux versions de la règle, avant comme après #904,
+traversent `var(--origam-btn---density)`.
+
+**Le générateur (#609).** `generate-origam-reset.mjs` localisait son bloc par
+`indexOf`, qui tombait sur la **citation du sélecteur dans le commentaire
+d'en-tête** de `dark.css` (l. 16) au lieu de la vraie règle (l. 175). Le script
+écrivait `dark: 0 vars` **en sortant 0** : une régénération de bonne foi aurait
+amputé tout le bloc sombre (−3 398 lignes). Même famille que **#903**. Corrigé
+par un sélecteur ancré en début de ligne sur une source dont les commentaires
+sont neutralisés, **plus un garde-fou** qui refuse d'écrire un bloc de moins de
+500 variables. La régénération resynchronise **13 jours de dérive** : 731 clés
+ajoutées / 671 retirées (des **renommages** de la campagne de grammaire) et 60
+valeurs corrigées, dont les deux familles mortes de #609
+(`--origam-grids__*` 36 → 0, `--origam-inline-edit--error---*` 16 → 0). Elle
+fait au passage suivre le playground sur
+`--origam-switch__track---background-color`, qui passe de
+`var(--origam-color__surface---disabled)` au `color-mix()` de #919 : c'est **la
+valeur que le DS livre réellement**, là où le playground affichait un
+instantané figé sous une légende disant *« Live components from the published
+origam package. Not a screenshot. »* PR #939.
+
+### Fixed — #931 : `border: true` retiré du switch sur 5 identités — la prop ne peignait pas l'élément que le ticket mesurait
+
+`cartoon`, `ecom`, `editorial`, `geek` et `glass` déclaraient
+`border: true` sur `'origam-switch'`. Mesuré en Chromium réel sur
+`/why-origam` — sonde qui **clique le vrai sélecteur d'identité** et vérifie
+`track.closest('.origam-theme-provider').getAttribute('data-theme')` avant
+chaque lecture, ce qui écarte par construction le piège du cookie de page —
+la prop **ne peint pas le track**. Elle peint deux autres éléments :
+`.origam-input.origam-switch`, le wrapper racine qui entoure tout le contrôle,
+et `.origam-selection-control__input`, l'anneau autour du pouce. Sur le track
+elle n'ajoute que `.origam--border-thin`, qui déclare
+`border-width: var(--origam-border__width---thin)` — **exactement la valeur du
+défaut DS déjà en place**.
+
+| identité (mode clair) | wrapper racine | anneau pouce | track (non touché) |
+|---|---|---|---|
+| origam | 0px → 0px | 0px → 0px | 0px |
+| apple | 0px → 0px | 0px → 0px | 1px |
+| **cartoon** | **1px → 0px** | **1px → 0px** | 1px |
+| **ecom** | **1px → 0px** | **1px → 0px** | 1px |
+| **editorial** | **1px → 0px** | **1px → 0px** | 1px |
+| **geek** | **1px → 0px** | **1px → 0px** | 1px |
+| **glass** | **1px → 0px** | **1px → 0px** | 1px |
+| material | 0px → 0px | 0px → 0px | 1px |
+
+Mode sombre remesuré après correctif : les 8 identités à 0px sur le wrapper et
+l'anneau. Diff complet du sous-arbre (`border-*`, `background-color`,
+`box-shadow`, `outline`, style inline, élément par élément) : les seules
+valeurs qui bougent sont `border-width` / `border-style` sur ces deux éléments
+et ces 5 identités. `rounded` et `elevation` ne bougent **nulle part**.
+
+L'« anomalie 1 » du ticket — *« deux identités rendent une bordure qu'elles ne
+déclarent pas »* — se dissout : le 1px du track vient de **#727**
+(`b6a0a5fa7`), `--origam-switch__track---border-width:
+var(--origam-border__width---thin)`, peint à spécificité **(0,0,0)** par
+`:where(.origam-switch-track[data-v-…])` dans `OrigamSwitchTrack.vue`. C'est un
+défaut DS partagé par tout le monde — voilà pourquoi `apple` et `material`
+rendaient déjà 1px sans rien déclarer. Le tableau du ticket mesurait
+`border-top-width` du track alors que la prop agit ailleurs.
+
+La bordure était délibérée (`3ac20d506`, 2026-07-17, *« les switch devraient
+être plus proches du design des input »*) : à l'époque le track valait
+`surface---disabled`, contraste **1,06:1**, invisible, et la bordure le
+délimitait seule. Depuis **#919** le track est à **3,06:1** et se délimite tout
+seul — les deux faisaient doublon.
+
+⛔ **L'anomalie 2 du ticket est diagnostiquée mais non corrigée** : le track
+d'`origam` rend `rgb(230, 230, 230)` (l'ancien `surface---disabled`) et 0px de
+bordure, parce que le bloc `:root:root[data-theme="origam"], [data-theme="origam"]`
+injecté par `createOrigam()` depuis `origam-reset.generated.ts` bat
+`:root, [data-theme="light"], [data-mode="light"]` (0,1,0) avec des valeurs
+antérieures à #727 **et** à #919. Aucun fichier de `packages/ds` n'est touché
+par ce lot ; le ticket reste ouvert. PR #932.
+
+### Added — `/why-origam` : la refonte validée intégrée dans la vraie page
+
+Nouveau hero (badge, titre sur deux lignes, sous-titre, nav d'action, bandeau
+des 8 identités dont chaque point est peint par son propre
+`<OrigamThemeProvider>`), nouvelle démo de thème vivante
+(`WhyOrigamThemeDemo` : un radiogroup marque × mode pilote 6 composants DS
+réels d'un côté et un extrait `components: {…}` **lu depuis l'objet de thème**
+de l'autre, jamais retapé), les 8 forces en un tableau à filets au lieu de 8
+cartes séparées, les faiblesses en liste à filets, et un troisième lien de CTA
+vers le Theme Builder.
+
+Le contenu vient **exclusivement** des `en.json` / `fr.json` de `develop` — la
+copie de la maquette n'a jamais servi de source : 81 clés `why_origam.*`
+pré-existantes reprises telles quelles, ~37 clés nouvelles (EN + FR) pour la
+section de démo et les éléments de hero/CTA sans équivalent. `i18n:check` : 0
+chaîne en dur, 0 écart de parité EN/FR, 0 `@` non échappé.
+
+Deux références périmées de la maquette, écrite avant que #921 ne renomme
+`IComparison.designTokens` → `themingPropsFirst` et
+`comparison.col_design_tokens` → `comparison.col_theming_props_first`, sont
+corrigées : `lib.designTokens` (champ inexistant) et `col_theming_props` (clé
+sans son suffixe `_first`).
+
+Deux correctifs a11y remontés en exécutant réellement les contrôles plutôt
+qu'en les supposant verts : l'`aria-label` d'un avatar de démo était invalide
+sur un `<div>` sans rôle (axe `aria-prohibited-attr`) → `aria-hidden` ; et la
+note par bibliothèque et le disclaimer du tableau comparatif utilisaient
+`--origam-color__text---tertiary`, mesuré par axe entre **4,03 et 4,24:1**
+contre le fond de cette section — **défaut pré-existant vérifié** en
+rechargeant la page de `develop` telle quelle dans le même serveur (1 violation
+avant que cette PR ne touche quoi que ce soit), dont la refonte a fait
+apparaître 6 instances de plus. Passé à
+`--origam-color__text---secondary`, déjà utilisé une section plus haut.
+
+`why-origam.spec.ts` mis à jour pour le nouveau DOM : **16/16**, axe-core 0
+critical / 0 serious inclus. PR #930.
+
+### Documentation — les comptes de gardes du `CLAUDE.md` étaient périmés pour la quatrième fois
+
+`pnpm -F origam guards` → **29/29** et `pnpm -F origam guards:self` →
+**16/16**, remesurés, `$?` réels hors pipe. Ces deux lignes ont lu `17/17`,
+puis `25/25`, `27/27`, `28/28` : chaque lot qui ajoute une garde les périme
+mécaniquement, ce qui est exactement pourquoi *« recount, never quote »* est
+dans la même phrase que le chiffre. L'historique des valeurs précédentes est
+conservé dans le fichier — il montre la vitesse de péremption mieux qu'un
+avertissement. Remonté spontanément par un agent qui avait recompté au lieu de
+citer, hors de son périmètre et hors de son brief. PR #940.
+
+## [2.18.10] - 2026-09-24
+
+### Fixed — #919 : le track et le pouce d'`OrigamSwitch` étaient illisibles contre la page — les 16 couples identité × mode
+
+`--origam-switch__track---background-color` valait
+`var(--origam-color__surface---disabled)`, une teinte trop proche de la page
+dans les **8 identités**. Mesuré en Playwright / Chromium réel, switch par
+défaut (aucune prop `color`) :
+
+- **track contre page** : 16/16 sous le seuil AA 3:1 (WCAG 1.4.11), pire cas
+  `glass|light` à **1,06:1** ;
+- **pouce contre track (décoché)** : 14/16 sous le seuil, pire cas
+  `glass|light` à **1,11:1**.
+
+Le défaut se reproduisait à l'identique sous `origam` seule, sans aucune
+marque : c'est le composant, pas un thème.
+
+Correctif :
+`color-mix(in srgb, var(--origam-color__text---primary) 60%, var(--origam-color__surface---default))`
+— contrasté contre la page **par construction** (`text---primary` doit déjà
+être lisible sur la page, sinon tout le texte du DS serait illisible). Le pouce
+par défaut vaut déjà `surface---default`, donc la page : il hérite
+automatiquement du même contraste contre le nouveau track, et **un seul token
+corrigé répare les deux paires**. `glass` et `ecom` (sombre) redéfinissent ce
+token avec un pouce **fixe** plutôt que `surface---default` — dosage
+théma-spécifique de **48 %**, vérifié sur les deux contraintes pour chacun
+(commentaires dans `glass.theme.ts` / `ecom.theme.ts`).
+
+Track contre page, Chromium réel :
+
+| identité | mode | avant | après |
+|---|---|---|---|
+| origam | clair | 1.25 | **5.25** |
+| origam | sombre | 1.31 | **7.04** |
+| apple | clair | 1.51 | **4.45** |
+| apple | sombre | 1.79 | **6.84** |
+| cartoon | clair | 1.20 | **3.90** |
+| cartoon | sombre | 1.68 | **6.88** |
+| ecom | clair | 1.28 | **4.48** |
+| ecom | sombre | 1.32 | **4.77** |
+| editorial | clair | 1.24 | **4.57** |
+| editorial | sombre | 1.31 | **7.30** |
+| geek | clair | 1.14 | **4.64** |
+| geek | sombre | 1.31 | **6.20** |
+| glass | clair | **1.06** | **3.06** |
+| glass | sombre | 1.23 | **4.96** |
+| material | clair | 1.23 | **4.43** |
+| material | sombre | 1.83 | **5.56** |
+
+Pouce contre track (décoché) suit la même paire de valeurs, le pouce valant la
+page dans ce mode — sauf `ecom` et `glass`, qui ont leur pouce fixe :
+`ecom|dark` 2,75 → **3,95**, `glass|light` **1,11 → 3,59**, `glass|dark`
+12,6 → **3,13**.
+
+⛔ **Trouvé en mesurant les états que la QA ne couvrait pas : l'état `error`
+posait le pouce et le rail sur le MÊME token**
+(`--origam-color__feedback--danger---bg`) — **1,00:1 sur les 16
+configurations, pouce littéralement invisible**.
+`--origam-switch__thumb---background-color-error` ramené à
+`surface---default`, le même token que le pouce non coloré : remesuré, 16/16
+≥ **3,55:1**.
+
+Les autres états, mesurés et non supposés. `disabled` : WCAG 1.4.11 exempte
+les contrôles inactifs, donc pas un défaut, mais mesuré quand même en
+corrigeant pour l'opacité 0.32 — la valeur brute lue par `getComputedStyle`
+n'est **pas** la couleur réellement peinte — et il reste sous 3:1
+(**1,37–1,84:1**). `indeterminate` : aucun changement de couleur, hérite du
+correctif de base. **Anneau de focus** : mesuré sur les 16 configurations via
+un vrai `Tab` clavier (nouveau
+`packages/tests/audit/switch-focus-ring.audit.mjs`), 15/16 ≥ **4,43:1** ;
+`cartoon|light` échoue à **2,07:1**, mais la cause est le token de thème global
+`border.focus` (`#ff8fa3`, un rose pastel) qui pilote l'anneau de **tous** les
+composants focusables sous ce thème — hors périmètre, à traiter par un ticket
+dédié plutôt qu'en aveugle sur un seul composant.
+
+⛔ **Régression connue, assumée, non corrigée ici.** Le cas *coché + couleur
+explicite* (`color="primary"`) passe de « majoritairement bon » à **FAIL sur
+12/16 configurations**. Vérifié mathématiquement qu'**aucun** pourcentage de
+mélange ne satisfait simultanément track-contre-page et pouce-accent-contre-track
+pour les 8 thèmes : le meilleur compromis plafonne à ~2,1:1 de marge minimale,
+jamais 3:1 — l'accent d'`ecom` notamment a une luminance trop proche du point
+milieu entre page et texte. Le vrai correctif est de teinter le **rail** avec
+la couleur d'intention quand il est coché (pattern iOS / Material / Ant) et de
+découpler le pouce, ce qui déplace des pixels sur tous les switches
+cochés-colorés du DS : un lot à part entière, pas une retouche.
+
+⚠️ Ce changement déplace des pixels sur **tous** les switches non colorés
+(track plus foncé ou plus clair selon le mode) — assumé, cf. la règle des
+ruptures pré-1.0. ⛔ Note technique : Chromium sérialise le résultat d'un
+`color-mix()` en `color(srgb …)` et non en `rgb()` legacy, même quand chaque
+canal reste du sRGB plat — une assertion e2e figée sur
+`rgb(230, 230, 230)` a dû être mise à jour en conséquence.
+
+Périmètre : `packages/ds/src/assets/css/tokens/{light,dark}.css` et leurs
+jumelles SCSS (`token-twins` vérifié, diff vide après chaque édition),
+`packages/marketing/src/themes/{glass,ecom}.theme.ts`,
+`packages/tests/e2e/switch.spec.ts`, et le harnais de mesure de
+`packages/tests/audit/` — committé pour la première fois, étendu à
+`disabled` / `error` / `indeterminate` / anneau de focus. `guards` 29/29,
+`guards:self` 16/16, `test:unit:run` **7187 passed**, les 3 spécs Switch
+**43/43** en Playwright réel contre Histoire statique, `pnpm audit` à `$?` = 0
+hors pipe. PR #923.
+
+### Fixed — #922 : le site vendait encore le pipeline Style Dictionary / Tokens Studio, supprimé le 2026-08-31
+
+Les feuilles de tokens sont des fichiers CSS/SCSS tenus à la main depuis le
+2026-08-31, sans étape de build. Le marketing continuait à annoncer le
+contraire sur quatre écrans — `/why-origam` traité par PR #921, le reste ici,
+dans `en.json` et `fr.json` au même commit :
+
+| clé | avant | après |
+|---|---|---|
+| `home.features.tokens.description` | « Multi-theme via Tokens Studio… » | multi-thème via un objet de thème props-first, résolu par `createOrigam()` sur les 218 composants |
+| `home.themes.subtitle` | « DTCG-compliant design tokens… zero flicker » | conformité DTCG retirée (fausse pour nous) et « zero flicker » retiré (invérifiable) |
+| `home.themes.style_dictionary` | « → Style Dictionary v4 » | « → hand-maintained CSS/SCSS, no build step » |
+| `home.themes.tokens_studio` | « → tokens.studio compatible » | « → props-first theming (218 components) » |
+| `components.detail.tokens.desc` | « DTCG token excerpt… Built with Style Dictionary v4. » | décrit ce que la section affiche réellement : les `--origam-<component>---<property>` de la feuille tenue à la main du composant |
+
+**« zero remount » est conservé** dans les deux premières : c'est vrai et
+vérifié (`theme.composable.ts:129`). `home.themes.tokens_studio` n'était pas
+listée dans le ticket, mais c'est le **pill jumeau** de
+`home.themes.style_dictionary` dans le même tableau `THEMES_TOOLING_TEXT` et
+elle portait exactement la même affirmation désormais fausse — laisser l'une
+juste à côté de l'autre corrigée aurait été incohérent.
+
+Non touché volontairement : `changelog.versions.v210.h1` / `v200.h1`
+(légitimes, ces versions ont réellement livré ça), les ADR
+`packages/docs/internal/adr-00{1,2,3,4}-*.md` (historique de décision), et
+`packages/docs/integrations/theming-authoring.md`, qui mentionne l'export
+Tokens Studio comme **format d'entrée possible** du champ `tokens` — une
+capacité d'`IOrigamTheme`, pas notre pipeline de build.
+
+⚠️ **Signalé, plus massif, non traité** :
+`packages/marketing/server/db/seed/component.json` porte **129 occurrences** de
+`pipelineNote` mentionnant « Style Dictionary v4 + @tokens-studio/sd-transforms »
+— un champ affiché en direct dans la ligne « Pipeline » de la page de détail de
+**chaque** composant. Une correction de données, un lot à part. `i18n:check`
+PASS : 0 violation bloquante, 0 écart de parité EN/FR, 0 `@` non échappé.
+Le ticket reste ouvert. PR #926.
+
+### Fixed — `/why-origam` affirmait six choses fausses ou invérifiables
+
+Audit factuel de la page, corrigé dans les locales, `why-origam.const.ts`,
+`why-origam.interface.ts` et la page elle-même — aucun design, layout ni CSS
+touché.
+
+- **« Design tokens DTCG / Style Dictionary v4 »** — pipeline supprimé le
+  2026-08-31. Remplacé par le mécanisme réel : theming props-first
+  (`IOrigamTheme.components`), résolu pour les 218 composants par un unique
+  installeur sans opt-in (ADR-005). L'affirmation vérifiée « 8 thèmes
+  commutent à l'exécution sans remount » est conservée. Clé
+  `why_origam.strengths.tokens` renommée → `.theming` : changement de sens
+  complet, pas de formulation.
+- **« < 50 kb tree-shakable »** — mesuré **faux** : Divider ≈ 7 ko, Btn
+  ≈ 35 ko, DataTable ≈ 172 ko gzip, builds Vite réels. Remplacé par « pay for
+  what it does », avec les chiffres et la raison (icônes / transitions /
+  loader sur Btn ; tri / pagination / regroupement sur DataTable).
+- **« Certified / WCAG 2.1 AA verified »** — **aucun audit tiers, aucun
+  VPAT**. Remplacé par l'affirmation vérifiable : 218/218 composants balayés
+  par axe-core + Playwright (variante par défaut + 7 variantes d'intention),
+  baseline à zéro violation depuis le 2026-09-23 — avec son périmètre énoncé
+  honnêtement (la variante par défaut, pas chaque état ; moderate/minor ne
+  bloquent pas la porte).
+- **« Every component exposes its logic as a standalone composable »** —
+  faux : **122 des 218** n'ont aucun composable dédié. Réécrit sans
+  l'absolu.
+- **Carte CSS-first** : elle citait `:has()`, `color-mix()`, les container
+  queries et `view-transition-name` comme utilisés en interne ; seuls les deux
+  premiers le sont. Les deux autres sont détectés via `useCssSupport()` et
+  exposés aux consommateurs, pas appliqués dans le CSS du DS — la description
+  le dit désormais.
+- **Tableau comparatif** : colonne « DTCG tokens » renommée « Theming
+  props-first » (`col_design_tokens` → `col_theming_props_first`,
+  `IComparison.designTokens` → `themingPropsFirst`) — origam oui, les cinq
+  concurrents listés non, aucun ne livre de résolveur de thème props-first. La
+  conformité DTCG réelle de PrimeVue (PrimeOne 3.0) est préservée dans sa note,
+  puisque le tableau ne suit plus cette dimension.
+- **Cas d'usage « design-token-driven team » supprimé** (`token_team`) : il
+  décrivait une intégration qui n'existe plus.
+- **Faiblesses** : « Smaller community » sous-entendait qu'une communauté
+  externe existe. Remplacé par l'état honnête — aucune communauté externe à
+  ce jour, aucun consommateur externe.
+
+`i18n-check.mjs` PASS (0 chaîne en dur bloquante, 0 écart de parité EN/FR),
+eslint propre sur les 5 fichiers, grep dépôt entier sur `designTokens`,
+`col_design_tokens`, `why_origam.strengths.tokens` et
+`why_origam.use_cases.token_team` : aucune référence périmée restante. Diff
+chirurgical, 46 insertions / 56 suppressions sur exactement 5 fichiers. PR
+#921.
+
+## [2.18.9] - 2026-09-23
+
+### Fixed — #853 : `OrigamOverlay` sans `inheritAttrs: false` — un warning Vue qui sérialisait le `vnode` de `RouteProvider`, ~4,4 Mo par occurrence
+
+`OrigamOverlay` a un template **multi-racine** (le slot `activator` est frère
+du bloc `<template v-if>` qui enveloppe le `<Teleport>`) et forwarde déjà
+`$attrs` à la main sur le `<div>` téléporté
+(`v-bind="{ ...scopeId, ...$attrs }"`). Sans `inheritAttrs: false`, Vue tente
+quand même sa vérification de fallthrough automatique en dev, la trouve
+impossible sur une racine fragment/teleport, et émet un
+**« Extraneous non-props attributes »** à chaque rendu portant un attribut non
+déclaré (`role`, `data-cy`, l'attribut de scope CSS).
+
+La trace de composant de ce warning sérialise les props de chaque ancêtre — y
+compris `RouteProvider` (Vue Router), dont le prop `vnode` est **tout le graphe
+réactif de la page**, ~4,4 Mo par occurrence, dominé par des `"[Circular]"`
+répétés. C'est ce qui gonflait le journal du serveur dev de 1,1 à 5,5 Go,
+mesuré pendant #835.
+
+`OrigamOverlay` sert de base à **tout** composant flottant ou téléporté — Menu,
+Dialog, Tooltip, Snackbar, Drawer, OtpInputField… — donc un seul
+`defineOptions({ inheritAttrs: false })` élimine le mécanisme à sa source
+plutôt que chez chaque consommateur. Même famille que #818, où un seul
+`inheritAttrs` manquant produisait 12 violations `aria-allowed-attr`.
+
+Serveur `pnpm -F @origam/marketing dev` sans Postgres (le cas le plus
+facilement reproductible du ticket), navigation Playwright réelle vers
+`/theming` puis 3 clics réels (menu langue, menu thème, bouton Import) :
+
+| | avant | après |
+|---|---|---|
+| occurrences « Extraneous non-props » | **32** | **1** |
+| octets de journal attribuables | **45 967** | **2 111** |
+| dumps `RouteProvider` / `vnode` | **7** | **0** |
+
+**Contrôle positif tenu** : le code d'avant a été rejoué avec exactement la
+même méthode — même séquence de clics, même serveur, même port — et reproduit
+bien le défaut (32 occurrences, 7 dumps), donc la disparition après correctif
+n'est pas un artefact de mesure. L'unique occurrence résiduelle ne porte **pas**
+sur `RouteProvider` : c'est un warning `data-cy` sans rapport sur
+`OrigamCommandPalette`, déjà présent avant.
+
+⚠️ **L'hypothèse initiale du ticket pointait `OrigamSelect` — établie fausse**
+en reproduisant en réel : `OrigamSelect` a une racine unique
+(`<origam-text-field>`), donc n'est jamais concerné par ce warning. Le
+composant fautif est `OrigamOverlay`, atteint ici par les menus langue/thème du
+header et le dialogue « Import a theme » de `/theming`.
+
+Non re-mesuré, et dit comme tel : le run « avec base Postgres » (5,5 Go),
+coûteux à rejouer — le ticket note déjà que la version sans Postgres est la
+plus reproductible et porte le même mécanisme (94,6 % du volume).
+`guards` 29/29, `guards:self` 16/16, `vue-tsc --noEmit` sur `packages/ds` 0
+erreur, tests unitaires des 10 consommateurs d'`OrigamOverlay` 237/238 (1 skip
+pré-existant). Aucune prop, slot ni emit public modifié — donc pas de story ni
+de doc à synchroniser. Le ticket reste ouvert. PR #915.
+
+### Fixed — #913 : `/roadmap` affichait 2.17.1 à côté de sa propre version vivante, `/changelog` s'arrêtait à 2.18.0, et le détecteur de dérive était rouge et branché nulle part
+
+Trois retards d'un seul ticket.
+
+**`CHANGELOG.md` — huit sections publiées manquaient.** `[Unreleased]`
+empilait ~930 lignes couvrant `2.18.1` → `2.18.8`, toutes déjà sur npm.
+Découpées en huit sections datées des tags réels. **L'attribution ne vient pas
+du texte** : elle vient de `git diff <tagA>..<tagB> -- CHANGELOG.md` pour
+chaque plage, puis d'un `git blame` ligne à ligne du bloc entier — chaque ligne
+rattachée au commit qui l'a écrite, chaque commit à sa version. Aucune entrée
+reformulée, uniquement déplacée. Comptage, lignes non vides triées et diffées :
+**4 012 → 4 020**, le delta expliqué exactement par les 8 en-têtes ajoutés,
+un `### Fixed` ajouté pour le lot #871 de la 2.18.4, moins un `---` orphelin.
+**Zéro ligne de contenu perdue, zéro ligne réécrite.** Deux défauts de
+structure corrigés au passage : le paragraphe « Récolte de deux déprécations »
+était séparé de ses deux sections BREAKING par **77 lignes appartenant à un
+autre lot** — le défaut « un titre à 60 lignes de son corps » déjà vu ici.
+
+**#411 et #535, publiés dans la 2.18.8, documentés nulle part.** Trouvés en
+découpant `[Unreleased]` : les deux lots ont mergé dans la 2.18.8
+(`eda18226e` / PR #908, `94e1574c6` / PR #909) sans jamais écrire une ligne de
+changelog — `grep -cE '#411|#535' CHANGELOG.md` rendait **0** sur `develop`.
+Les deux touchent `packages/ds` : un consommateur les reçoit dans le paquet npm
+sans qu'aucune note ne les annonce. Contrairement au reste du ticket, ces deux
+entrées sont **rédigées** — depuis les commentaires de fermeture, les PR, et
+une relecture du code livré pour chaque affirmation.
+
+**`changelog:generate:check` branché en CI.** Rouge et appelé par aucun
+workflow ni hook — **troisième détecteur de dérive non câblé trouvé le même
+jour**, après `presets:generate:check` (#903) et le Tier 1 de
+`theming-feedback-tokens`. Nouveau job `changelog-check` dans `ci.yml`, son
+**propre** job plutôt qu'une étape d'`i18n-check` : celui-là garde la surface
+de traduction, celui-ci une constante générée face à un document racine. Il
+peut réellement tourner là : le générateur n'importe que `node:fs`,
+`node:path` et `node:url` — ni DB, ni build, ni réseau.
+
+**`/roadmap` consomme `useVersion()`.** Le titre rendait la chaîne littérale
+« Where 2.17.1 » quinze lignes sous un badge qui lisait déjà `useVersion()` :
+**c'est #743 qui recommence**, ce ticket avait corrigé le badge et laissé le
+titre. Remplacer le numéro aurait redémarré la même dérive — le titre et la
+ligne npm interpolent désormais `{version}`. La valeur `fr` a été remodelée
+pour que le placeholder tombe sur la **même ligne** dans les deux langues, la
+parité EN/FR d'`i18n:check` restant à **0 écart** (elle passait à 2 avec la
+découpe naïve). La **taille de l'archive quitte la phrase où la version est
+vivante** : apparier une valeur live et une valeur gelée dans une même phrase
+est exactement le défaut de ce ticket.
+
+**Les chiffres de `roadmap.const.ts`, tous datés du 2026-09-15, remesurés** le
+2026-09-23, vrais `$?` hors pipe :
+
+| | fichier | mesure |
+|---|---|---|
+| `guards` | 21/21 | **29/29** |
+| `guards:self` | absent | **16/16** |
+| tests unitaires | 6 953 / 532 fichiers | **7 187 / 563** |
+| couverture | 78 % / 79.9 % | **77.81 % instr. / 79.86 % lignes** |
+| spécs e2e | 229 | **254** |
+| spécs barrées en CI | 58 | **81** |
+| npm | 2.17.1, 1 733 668 o | **2.18.8, 1 858 354 o** |
+| composables | 138 | **139** |
+| jobs CI | 17 | **20** |
+
+Les `done: false` ont été revérifiées une par une. Une seule ne nommait plus un
+manque réel : le balayage a11y par composant **tourne en CI depuis #765** et
+`a11y-violations.baseline.json` est désormais `{}` — l'entrée est recadrée sur
+ce qui manque vraiment, la couverture focus-trap des overlays, **un seul
+composant** (`OrigamDialog`) sur toute la famille. Les cinq autres tiennent,
+vérifiées.
+
+Rendu réel, serveur isolé puis tué : `/roadmap` affiche « v2.18.8 — Wave 4
+shipped », « Where 2.18.8 / stands. », « origam 2.18.8 » ; `/fr/roadmap`
+« Où en est la 2.18.8 / aujourd'hui. » ; **zéro occurrence de `2.17.1`** sur les
+deux pages ; `/changelog` part désormais sur 2.18.8 et non 2.18.0. Tous `$?` = 0
+hors pipe : `changelog:generate:check`, `guards` 29/29, `guards:self` 16/16,
+`lint --max-warnings 0`, `i18n:check`, `pnpm audit`, suite unitaire 7 187
+passed. Le ticket reste ouvert. PR #914.
+
+### Internal — #910 : `marketing-no-third-party` sondait `/` PENDANT sa redirection de locale
+
+`packages/tests/e2e/marketing-no-third-party.spec.ts:94`, cas `/`, échouait par
+intermittence en CI **sans qu'aucune assertion ne tourne** :
+`net::ERR_ABORTED; maybe frame was detached?` et
+`Execution context was destroyed, most likely because of a navigation`.
+`nuxt.config.ts` déclare `i18n.detectBrowserLanguage.redirectOn: 'root'` — `/`
+n'est pas une page finale, c'est le point d'entrée qui déclenche la détection
+de locale ; une navigation client peut survenir juste après le `load` initial
+pendant que cette détection se termine.
+
+`gotoAndWaitForFonts()` capture les deux signatures transitoires **exactes**
+sur `goto` et sur `evaluate`, et attend `page.waitForLoadState('load')` — une
+barrière sur l'état de la frame, valable quel que soit l'URL final — avant de
+rejouer l'opération **une seule fois**. Une deuxième course, ou une erreur
+différente, remonte normalement. ⛔ Aucun `waitForTimeout` ajouté, aucun
+timeout relevé — conformément à la mise en garde du ticket sur #889.
+
+Même worktree, même serveur `nuxt dev` isolé, même config que la CI
+(`workers: 1`, `fullyParallel: false`), `uptime` relevé avant et après chaque
+série :
+
+| | N | échecs | charge (load avg 1 min) |
+|---|---|---|---|
+| **avant** (3 séries) | 100 | **1** (1 %) | ~5.1 → 7.9 → 6.7 |
+| **après** (2 séries) | 250 | **0** | ~5.5 → 6.0 |
+
+**Contrôle positif tenu** : l'unique échec relevé « avant » porte la signature
+exacte du ticket. ⚠️ **Écart assumé avec les taux rapportés ailleurs sur ce
+flake (20 %, 56 %, 96 % selon les séries citées)** : la mesure locale tombe à
+1 %. Le mécanisme est confirmé identique, l'amplitude non — très probablement
+parce qu'un serveur `nuxt dev` local déjà chaud élargit beaucoup moins la
+fenêtre de course qu'un serveur CI démarré à froid sous charge concurrente.
+Le taux CI réel reste **non mesuré**. `/` est délibérément conservée dans
+`PAGES`, avec un commentaire disant pourquoi : c'est la seule entrée qui
+exécute réellement le chemin de détection de locale, `/fr` étant déjà préfixé.
+PR #917.
+
+### Internal — le faux positif `side-tab` sur `OrigamCode`, acté plutôt que laissé à redécouvrir
+
+Le contrôle design signalait `OrigamCode.vue:637` comme « side-tab accent
+border ». `.origam-code__row--highlighted` porte
+`box-shadow: inset 3px 0 0 var(--origam-code__line-highlight---accent-color)`
+— ce n'est pas l'accent latéral d'une carte, c'est le **marqueur de gouttière
+d'une ligne de code surlignée**, la convention de tout afficheur de code
+(GitHub, Shiki, Prism) ; le retirer supprimerait la seule indication visuelle
+qu'une ligne est mise en avant. Deux éléments confirment le déclenchement
+collatéral : la ligne date de `9f5a4eea1` (2026-05-16), et le lot #535 qui a
+fait réagir le contrôle n'a touché **ni ce fichier ni ce bloc**. Ignore le plus
+étroit disponible : `side-tab` sur **ce seul fichier**, via `ignore-value` —
+pas un `ignore-rule`, pas un `ignore-file`, qui demandent l'accord du
+propriétaire. PR #912.
+
 ## [2.18.8] - 2026-09-23
 
 ### Fixed — #901 `OrigamBtn` — `calc(auto + 0px)` ramenait `min-width` à `0` sur tous les boutons
