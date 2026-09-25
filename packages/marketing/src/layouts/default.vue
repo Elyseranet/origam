@@ -518,7 +518,12 @@
     gap: var(--origam-space---1, 0.25rem);
 
     &__link {
-      --origam-btn---font-size: 13px;
+      // ⛔ Lit la MEME variable que les items des menus de l'appbar
+      // (`.appbar-menu .origam-list-item__title`, bloc non scope plus bas).
+      // Le menu est TELEPORTE hors de `.primary-nav`, donc la variable est
+      // declaree sur `:root` : posee ici, elle n'atteindrait jamais le menu.
+      // Une seule source = activateur et menu ne peuvent plus diverger.
+      --origam-btn---font-size: var(--appbar-nav---font-size);
       --origam-btn---font-weight: 500;
       --origam-btn---color: var(--origam-color__text---secondary, #525252);
       --origam-btn---padding-inline: var(--origam-space---3, 0.75rem);
@@ -751,9 +756,39 @@
 </style>
 
 <style lang="scss">
+  /*
+    Taille du texte de la barre de navigation — UNE seule declaration, lue a la
+    fois par l'activateur (`.primary-nav__link`, bloc scope plus haut) et par les
+    items de tous les menus de l'appbar (nav, langue, theme).
+
+    Sur `:root` et pas sur `.primary-nav` : le contenu d'`origam-menu` est
+    TELEPORTE hors de la barre, une variable posee sur la barre ne l'atteindrait
+    jamais.
+
+    Mesure avant (8 identites, clair, menu nav ET menu theme) : activateur 13px,
+    item de menu 16px — +3px partout sauf `geek`, qui etait le seul aligne parce
+    qu'une regle `[data-theme="geek"]` lui donnait 0.8125rem au passage, pour sa
+    police monospace. Cette exception devient la regle generale ; le bloc `geek`
+    ne garde plus que ce qui lui est propre (famille et interlettrage).
+  */
+  :root {
+    --appbar-nav---font-size: 13px;
+  }
+
+  .appbar-menu .origam-list-item__title {
+    font-size: var(--appbar-nav---font-size);
+  }
+
   .appbar-menu .origam-menu__content {
     min-width: 200px;
     width: 200px;
+    /*
+      ⚠️ Ce `padding` litteral ECRASE `--origam-menu__content---padding`, que
+      des themes declarent (material: 6px) et qui ne peint donc rien. Constate
+      en mesurant : la variable vaut bien 6px sur l'element, le rendu est 4px.
+      Laisse en l'etat ici — le corriger change la geometrie des trois menus sur
+      les 8 identites, ca se mesure a part. Ticket #955.
+    */
     padding: 4px;
   }
 
@@ -780,9 +815,12 @@
     font-weight: 600;
   }
 
+  /* `geek` ne garde que ce qui lui est PROPRE : la taille vient de la regle
+     generale ci-dessus (son ancien `font-size: 0.8125rem` valait deja 13px,
+     c'est-a-dire la meme valeur — il etait la source cachee de la seule
+     identite alignee). */
   [data-theme="geek"] .appbar-menu .origam-list-item__title {
     font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
-    font-size: 0.8125rem;
     letter-spacing: -0.01em;
   }
 
