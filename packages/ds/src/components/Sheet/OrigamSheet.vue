@@ -343,15 +343,24 @@
 		max-height: var(--origam-sheet---max-height);
 		min-height: var(--origam-sheet---min-height);
 
-		padding-block-start: var(--origam-sheet---padding-block-start);
-		padding-block-end: var(--origam-sheet---padding-block-end);
-		padding-inline-start: var(--origam-sheet---padding-inline-start);
-		padding-inline-end: var(--origam-sheet---padding-inline-end);
+		// ⛔ #950 — zero-specificity defaults so the scale-driven utility
+		// classes (`.origam--p-6` from `padding="6"`, `.origam--m-6` from
+		// `margin="6"`) win the cascade. Without `:where()`, Vue's scoped
+		// compiler appends `[data-v-hash]` here and pushes this rule to
+		// (0,2,0), beating the utility's (0,1,0) — and the scale form of
+		// both props goes silently inert. Only the DEFAULT is lowered:
+		// every modifier / state rule keeps its (0,2,0) and still wins.
+		:where(&) {
+			padding-block-start: var(--origam-sheet---padding-block-start);
+			padding-block-end: var(--origam-sheet---padding-block-end);
+			padding-inline-start: var(--origam-sheet---padding-inline-start);
+			padding-inline-end: var(--origam-sheet---padding-inline-end);
 
-		margin-block-start: var(--origam-sheet---margin-block-start);
-		margin-block-end: var(--origam-sheet---margin-block-end);
-		margin-inline-start: var(--origam-sheet---margin-inline-start);
-		margin-inline-end: var(--origam-sheet---margin-inline-end);
+			margin-block-start: var(--origam-sheet---margin-block-start);
+			margin-block-end: var(--origam-sheet---margin-block-end);
+			margin-inline-start: var(--origam-sheet---margin-inline-start);
+			margin-inline-end: var(--origam-sheet---margin-inline-end);
+		}
 
 		background: var(--origam-sheet---background);
 		backdrop-filter: var(--origam-sheet---backdrop-filter, none);

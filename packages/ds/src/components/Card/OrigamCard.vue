@@ -583,15 +583,26 @@
 		box-shadow: var(--origam-card---box-shadow);
 		color: var(--origam-card---color);
 
-		padding-block-start: calc(var(--origam-card---padding-block-start) + var(--origam-card---density));
-		padding-block-end: calc(var(--origam-card---padding-block-end) + var(--origam-card---density));
-		padding-inline-start: calc(var(--origam-card---padding-inline-start) + var(--origam-card---density));
-		padding-inline-end: calc(var(--origam-card---padding-inline-end) + var(--origam-card---density));
+		// ⛔ #950 — zero-specificity defaults. `:where(&)` compiles to
+		// `:where(.origam-card[data-v-hash])` = (0,0,0), so the
+		// scale-driven utility classes (`.origam--p-6`, `.origam--m-6`)
+		// win the cascade. Without it the scoped compiler pushes this rule
+		// to (0,2,0), beats the utility's (0,1,0), and the scale form of
+		// both props goes silently inert. Only the DEFAULT is lowered —
+		// modifier / state rules keep their (0,2,0) and still win.
+		// (`useRounded` already carried this lesson naming Card as the
+		// victim; #950 is where it finally reached the padding channel.)
+		:where(&) {
+			padding-block-start: calc(var(--origam-card---padding-block-start) + var(--origam-card---density));
+			padding-block-end: calc(var(--origam-card---padding-block-end) + var(--origam-card---density));
+			padding-inline-start: calc(var(--origam-card---padding-inline-start) + var(--origam-card---density));
+			padding-inline-end: calc(var(--origam-card---padding-inline-end) + var(--origam-card---density));
 
-		margin-block-start: var(--origam-card---margin-block-start);
-		margin-block-end: var(--origam-card---margin-block-end);
-		margin-inline-start: var(--origam-card---margin-inline-start);
-		margin-inline-end: var(--origam-card---margin-inline-end);
+			margin-block-start: var(--origam-card---margin-block-start);
+			margin-block-end: var(--origam-card---margin-block-end);
+			margin-inline-start: var(--origam-card---margin-inline-start);
+			margin-inline-end: var(--origam-card---margin-inline-end);
+		}
 
 		border-color: var(--origam-card---border-color);
 		border-style: var(--origam-card---border-style);

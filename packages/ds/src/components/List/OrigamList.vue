@@ -377,10 +377,19 @@
 		scoped
 >
 	.origam-list {
-		padding-block-start: var(--origam-list---padding-block-start, 8px);
-		padding-block-end: var(--origam-list---padding-block-end, 8px);
-		padding-inline-start: var(--origam-list---padding-inline-start, 0);
-		padding-inline-end: var(--origam-list---padding-inline-end, 0);
+		// ⛔ #950 — zero-specificity default. `:where(&)` compiles to
+		// `:where(.origam-list[data-v-hash])` = (0,0,0), so the
+		// scale-driven utility class (`.origam--p-6` from `padding="6"`)
+		// wins the cascade. Without it the scoped compiler pushes this
+		// rule to (0,2,0), beats the utility's (0,1,0), and the scale
+		// form of `padding` goes silently inert. Only the DEFAULT is
+		// lowered — modifier / state rules keep their (0,2,0).
+		:where(&) {
+			padding-block-start: var(--origam-list---padding-block-start, 8px);
+			padding-block-end: var(--origam-list---padding-block-end, 8px);
+			padding-inline-start: var(--origam-list---padding-inline-start, 0);
+			padding-inline-end: var(--origam-list---padding-inline-end, 0);
+		}
 
 		position: var(--origam-list---position, relative);
 		overflow: var(--origam-list---overflow, auto);

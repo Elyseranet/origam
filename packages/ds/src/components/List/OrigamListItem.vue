@@ -565,15 +565,24 @@
 		outline: var(--origam-list-item---outline, none);
 		position: var(--origam-list-item---position, relative);
 
-		padding-block-start: var(--origam-list-item---padding-block-start, 8px);
-		padding-block-end: var(--origam-list-item---padding-block-end, 8px);
-		padding-inline-start: calc(var(--origam-list-item---padding-inline-start, 16px) + var(--origam-list---indent-padding, 0px) + var(--origam-list---density, 0px));
-		padding-inline-end: calc(var(--origam-list-item---padding-inline-end, 16px) + var(--origam-list---density, 0px));
+		// ⛔ #950 — zero-specificity defaults. `:where(&)` compiles to
+		// `:where(.origam-list-item[data-v-hash])` = (0,0,0), so the
+		// scale-driven utility classes (`.origam--p-6`, `.origam--m-6`)
+		// win the cascade. Without it the scoped compiler pushes this rule
+		// to (0,2,0), beats the utility's (0,1,0), and the scale form of
+		// both props goes silently inert. Only the DEFAULT is lowered —
+		// `&--active`, `&:hover` and the rest keep their (0,2,0).
+		:where(&) {
+			padding-block-start: var(--origam-list-item---padding-block-start, 8px);
+			padding-block-end: var(--origam-list-item---padding-block-end, 8px);
+			padding-inline-start: calc(var(--origam-list-item---padding-inline-start, 16px) + var(--origam-list---indent-padding, 0px) + var(--origam-list---density, 0px));
+			padding-inline-end: calc(var(--origam-list-item---padding-inline-end, 16px) + var(--origam-list---density, 0px));
 
-		margin-block-start: var(--origam-list-item---margin-block-start, 0);
-		margin-block-end: var(--origam-list-item---margin-block-end, 0);
-		margin-inline-start: var(--origam-list-item---margin-inline-start, 0);
-		margin-inline-end: var(--origam-list-item---margin-inline-end, 0);
+			margin-block-start: var(--origam-list-item---margin-block-start, 0);
+			margin-block-end: var(--origam-list-item---margin-block-end, 0);
+			margin-inline-start: var(--origam-list-item---margin-inline-start, 0);
+			margin-inline-end: var(--origam-list-item---margin-inline-end, 0);
+		}
 
 		border-color: var(--origam-list-item---border-color, var(--origam-color__text---primary));
 		border-style: var(--origam-list-item---border-style, solid);

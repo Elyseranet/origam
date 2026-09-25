@@ -145,8 +145,25 @@
 		border-right-width: 0;
 		border-bottom-width: 0;
 		border-left-width: 0;
-		margin: 0;
-		margin-block: var(--origam-divider---margin-block, 0);
+		// ⛔ #950 — zero-specificity defaults. `:where(&)` compiles to
+		// `:where(.origam-divider[data-v-hash])` = (0,0,0), so the
+		// scale-driven utility class (`.origam--m-6` from `margin="6"`)
+		// wins the cascade. Without it the scoped compiler pushes this
+		// rule to (0,2,0) and beats the utility's (0,1,0) — and with
+		// `margin: 0` as the default the prop painted nothing at all.
+		// Only the DEFAULT is lowered: `&--vertical` (`margin-left`) and
+		// `&--inset` (`margin-inline-start`) below keep their (0,2,0) and
+		// still win when those modifiers are active.
+		//
+		// The `padding-*` defaults below are deliberately LEFT at (0,2,0):
+		// this component never calls `usePadding`, so it exposes no
+		// `padding` prop and there is no utility class to make room for.
+		// The census did not list Divider/padding as a suspect either.
+		:where(&) {
+			margin: 0;
+			margin-block: var(--origam-divider---margin-block, 0);
+		}
+
 		padding-block-start: var(--origam-divider---padding-block-start, 0);
 		padding-block-end: var(--origam-divider---padding-block-end, 0);
 		padding-inline-start: var(--origam-divider---padding-inline-start, 0);

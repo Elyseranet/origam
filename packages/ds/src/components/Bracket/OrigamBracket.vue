@@ -1013,8 +1013,17 @@
 		position: relative;
 		color: var(--origam-bracket---color, currentColor);
 		background-color: var(--origam-bracket---background-color, transparent);
-		padding-block: var(--origam-bracket---padding-block, 16px);
-		padding-inline: var(--origam-bracket---padding-inline, 16px);
+		// ⛔ #950 — zero-specificity default. `:where(&)` compiles to
+		// `:where(.origam-bracket[data-v-hash])` = (0,0,0), so the
+		// scale-driven utility class (`.origam--p-6` from `padding="6"`)
+		// wins the cascade. Without it the scoped compiler pushes this
+		// rule to (0,2,0) and beats the utility's (0,1,0). Only the
+		// DEFAULT is lowered — modifier / state rules keep their (0,2,0).
+		:where(&) {
+			padding-block: var(--origam-bracket---padding-block, 16px);
+			padding-inline: var(--origam-bracket---padding-inline, 16px);
+		}
+
 		overflow: auto;
 
 		&__tree {

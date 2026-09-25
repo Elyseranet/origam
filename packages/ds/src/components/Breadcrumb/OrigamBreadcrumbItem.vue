@@ -296,15 +296,24 @@
 		border-width: var(--origam-breadcrumb-item---border-width);
 		border-radius: var(--origam-breadcrumb-item---border-radius);
 
-		padding-block-start: calc(var(--origam-breadcrumb-item---padding-block-start) - var(--origam-breadcrumb-item---density));
-		padding-block-end: calc(var(--origam-breadcrumb-item---padding-block-end) - var(--origam-breadcrumb-item---density));
-		padding-inline-start: calc(var(--origam-breadcrumb-item---padding-inline-start) - var(--origam-breadcrumb-item---density));
-		padding-inline-end: calc(var(--origam-breadcrumb-item---padding-inline-end) - var(--origam-breadcrumb-item---density));
+		// ⛔ #950 — zero-specificity defaults. `:where(&)` compiles to
+		// `:where(.origam-breadcrumb-item[data-v-hash])` = (0,0,0), so the
+		// scale-driven utility classes (`.origam--p-6`, `.origam--m-6`)
+		// win the cascade. Without it the scoped compiler pushes this rule
+		// to (0,2,0), beats the utility's (0,1,0), and the scale form of
+		// both props goes silently inert. Only the DEFAULT is lowered —
+		// `&--disabled`, `&--active` and the rest keep their (0,2,0).
+		:where(&) {
+			padding-block-start: calc(var(--origam-breadcrumb-item---padding-block-start) - var(--origam-breadcrumb-item---density));
+			padding-block-end: calc(var(--origam-breadcrumb-item---padding-block-end) - var(--origam-breadcrumb-item---density));
+			padding-inline-start: calc(var(--origam-breadcrumb-item---padding-inline-start) - var(--origam-breadcrumb-item---density));
+			padding-inline-end: calc(var(--origam-breadcrumb-item---padding-inline-end) - var(--origam-breadcrumb-item---density));
 
-		margin-block-start: var(--origam-breadcrumb-item---margin-block-start);
-		margin-block-end: var(--origam-breadcrumb-item---margin-block-end);
-		margin-inline-start: var(--origam-breadcrumb-item---margin-inline-start);
-		margin-inline-end: var(--origam-breadcrumb-item---margin-inline-end);
+			margin-block-start: var(--origam-breadcrumb-item---margin-block-start);
+			margin-block-end: var(--origam-breadcrumb-item---margin-block-end);
+			margin-inline-start: var(--origam-breadcrumb-item---margin-inline-start);
+			margin-inline-end: var(--origam-breadcrumb-item---margin-inline-end);
+		}
 
 		&--disabled {
 			--origam-breadcrumb-item---opacity: var(--origam-breadcrumb-item---opacity-disabled, 0.5);

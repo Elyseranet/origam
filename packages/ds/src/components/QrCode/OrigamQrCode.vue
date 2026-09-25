@@ -283,10 +283,22 @@
 		position: relative;
 		// Baseline inner spacing — matches the `gap` between title and
 		// SVG so the wrapper has the same breathing room on every side
-		// of the matrix. Overridden by the `padding` prop (via
-		// `usePadding(props)` inline styles) when the consumer
-		// provides one.
-		padding: 8px;
+		// of the matrix.
+		//
+		// ⛔ #950 — this comment used to claim the `padding` prop simply
+		// overrode the default "via `usePadding(props)` inline styles".
+		// That was only HALF true, and the untrue half was silent: the
+		// inline path (`:padding="6"`, `padding="6px 8px"`) does win, but
+		// the tokenised SCALE path (`padding="6"`) emits ONLY the utility
+		// class `.origam--p-6` (0,1,0) with no inline companion — and the
+		// scoped compiler put this rule at (0,2,0), so it won and the prop
+		// was inert. `:where(&)` compiles to
+		// `:where(.origam-qr-code[data-v-hash])` = (0,0,0), which hands
+		// the cascade back to the utility. Only the DEFAULT is lowered —
+		// modifier / state rules keep their (0,2,0).
+		:where(&) {
+			padding: 8px;
+		}
 	}
 
 	.origam-qr-code__title {

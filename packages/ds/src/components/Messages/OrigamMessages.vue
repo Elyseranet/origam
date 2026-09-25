@@ -217,7 +217,16 @@
 <style lang="scss" scoped>
 	.origam-messages {
 		color: var(--origam-messages---color, currentColor);
-		padding: var(--origam-messages---padding, var(--origam-messages---density, 0));
+		// ⛔ #950 — zero-specificity default. `:where(&)` compiles to
+		// `:where(.origam-messages[data-v-hash])` = (0,0,0), so the
+		// scale-driven utility class (`.origam--p-6` from `padding="6"`)
+		// wins the cascade. Without it the scoped compiler pushes this
+		// rule to (0,2,0) and beats the utility's (0,1,0). Only the
+		// DEFAULT is lowered — modifier / state rules keep their (0,2,0).
+		:where(&) {
+			padding: var(--origam-messages---padding, var(--origam-messages---density, 0));
+		}
+
 		flex: var(--origam-messages---flex, 1 1 auto);
 		font-size: var(--origam-messages---font-size, 12px);
 		min-height: var(--origam-messages---min-height, 14px);

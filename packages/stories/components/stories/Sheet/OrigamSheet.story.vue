@@ -4,6 +4,22 @@
 			title="Sheet/OrigamSheet"
 	>
 
+		<!--
+			⛔ #950 — `padding` est pilote par la PROP, plus par un
+			`style="padding: 16px"` en dur.
+
+			L'ancien hatch inline rendait le controle « Padding » de cette
+			variante DEFINITIVEMENT inerte, et pas pour la raison qu'on
+			croirait : `OrigamSheet` reverse son binding `:style` dans une
+			regle generee portant l'id de l'element
+			(`#origam-sheet-v-N { padding: 16px }`), soit une specificite
+			(1,0,0). Elle battait donc l'utilitaire, la regle scopee, et le
+			retrait de l'attribut `style` lui-meme.
+
+			`padding: '4'` rend exactement le meme visuel (`--origam-space---4`
+			= 16px) en passant par la prop — ce qui, avant #950, ne peignait
+			rien du tout.
+		-->
 		<Variant
 				title="Design"
 				:init-state="() => useStoryInitState<Partial<ISheetProps>>({
@@ -16,7 +32,8 @@
 					borderStyle: undefined,
 					width: '240',
 					height: '120',
-					position: undefined
+					position: undefined,
+					padding: '4'
 				})"
 		>
 			<template #default="{ state }">
@@ -33,7 +50,6 @@
 						:width="state.width"
 						:height="state.height"
 						:position="state.position"
-						style="padding: 16px;"
 				>
 					Sheet content
 				</origam-sheet>

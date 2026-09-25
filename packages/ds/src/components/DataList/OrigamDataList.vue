@@ -375,7 +375,16 @@
 		background-color: var(--origam-data-list---background-color, transparent);
 		color: var(--origam-data-list---color, inherit);
 		border-radius: var(--origam-data-list---border-radius, 0);
-		padding: var(--origam-data-list---padding, 0);
+		// ⛔ #950 — zero-specificity default. `:where(&)` compiles to
+		// `:where(.origam-data-list[data-v-hash])` = (0,0,0), so the
+		// scale-driven utility class (`.origam--p-6` from `padding="6"`)
+		// wins the cascade. Without it the scoped compiler pushes this
+		// rule to (0,2,0) and beats the utility's (0,1,0). Only the
+		// DEFAULT is lowered — modifier / state rules keep their (0,2,0).
+		:where(&) {
+			padding: var(--origam-data-list---padding, 0);
+		}
+
 		gap: var(--origam-data-list---gap, 0);
 
 		&__title {

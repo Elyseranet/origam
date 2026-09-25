@@ -791,8 +791,20 @@
 		align-items: center;
 		justify-content: center;
 		gap: var(--origam-pagination---gap-info, 16px);
-		padding-block: var(--origam-pagination---padding-block, 0);
-		padding-inline: var(--origam-pagination---padding-inline, 0);
+		// ⛔ #950 — zero-specificity default. `:where(&)` compiles to
+		// `:where(.origam-pagination[data-v-hash])` = (0,0,0), so the
+		// scale-driven utility class (`.origam--p-6` from `padding="6"`)
+		// wins the cascade. Without it the scoped compiler pushes this
+		// rule to (0,2,0) and beats the utility's (0,1,0). Only the
+		// DEFAULT is lowered — `&--with-info` and the other modifiers
+		// keep their (0,2,0).
+		// NB — `margin` is NOT wrapped here: the census measured it ALIVE
+		// on this component (the root declares no margin at all), so
+		// there is nothing to lower.
+		:where(&) {
+			padding-block: var(--origam-pagination---padding-block, 0);
+			padding-inline: var(--origam-pagination---padding-inline, 0);
+		}
 
 		&--with-info {
 			justify-content: space-between;

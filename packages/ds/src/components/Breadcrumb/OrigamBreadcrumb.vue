@@ -295,15 +295,24 @@
 		border-width: var(--origam-breadcrumb---border-width);
 		border-radius: var(--origam-breadcrumb---border-radius);
 
-		padding-block-start: calc(var(--origam-breadcrumb---padding-block-start) - var(--origam-breadcrumb---density));
-		padding-block-end: calc(var(--origam-breadcrumb---padding-block-end) - var(--origam-breadcrumb---density));
-		padding-inline-start: calc(var(--origam-breadcrumb---padding-inline-start) - var(--origam-breadcrumb---density));
-		padding-inline-end: calc(var(--origam-breadcrumb---padding-inline-end) - var(--origam-breadcrumb---density));
+		// ⛔ #950 — zero-specificity defaults. `:where(&)` compiles to
+		// `:where(.origam-breadcrumb[data-v-hash])` = (0,0,0), so the
+		// scale-driven utility classes (`.origam--p-6`, `.origam--m-6`)
+		// win the cascade. Without it the scoped compiler pushes this rule
+		// to (0,2,0), beats the utility's (0,1,0), and the scale form of
+		// both props goes silently inert. Only the DEFAULT is lowered —
+		// modifier / state rules keep their (0,2,0) and still win.
+		:where(&) {
+			padding-block-start: calc(var(--origam-breadcrumb---padding-block-start) - var(--origam-breadcrumb---density));
+			padding-block-end: calc(var(--origam-breadcrumb---padding-block-end) - var(--origam-breadcrumb---density));
+			padding-inline-start: calc(var(--origam-breadcrumb---padding-inline-start) - var(--origam-breadcrumb---density));
+			padding-inline-end: calc(var(--origam-breadcrumb---padding-inline-end) - var(--origam-breadcrumb---density));
 
-		margin-block-start: var(--origam-breadcrumb---margin-block-start);
-		margin-block-end: var(--origam-breadcrumb---margin-block-end);
-		margin-inline-start: var(--origam-breadcrumb---margin-inline-start);
-		margin-inline-end: var(--origam-breadcrumb---margin-inline-end);
+			margin-block-start: var(--origam-breadcrumb---margin-block-start);
+			margin-block-end: var(--origam-breadcrumb---margin-block-end);
+			margin-inline-start: var(--origam-breadcrumb---margin-inline-start);
+			margin-inline-end: var(--origam-breadcrumb---margin-inline-end);
+		}
 
 		&__items {
 			display: flex;
