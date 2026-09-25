@@ -285,7 +285,35 @@ export const materialLightTheme: IOrigamTheme = {
         // vrai tiroir de navigation, il devra redemander la pilule explicitement
         // (`rounded="full"` sur ses items), le DS n'ayant pas de canal « item de
         // menu » vs « item de tiroir ». Noté dans #944.
-        'origam-list': { nav: true, rounded: 'none' },
+        // `paddingInline: 0` — PROP, pas cssVar, et c'est obligatoire : sur un
+        // `origam-list nav`, `OrigamList.vue:420-421` RE-DECLARE
+        // `--origam-list---padding-inline-start/end: var(--origam-space---2, 8px)`
+        // sur l'element lui-meme, depuis sa regle scopee. Une cssVar de theme,
+        // posee sur `[data-theme="material"]` a la racine, est HERITEE — elle ne
+        // peut pas battre une declaration locale sur l'element. La prop, elle,
+        // sort en style inline et gagne. (Meme mecanique que `paddingInline: 12`
+        // sur l'item juste en dessous.)
+        //
+        // Pourquoi 0 : mesure du budget d'encart, thème material, menu ouvert sur
+        // `[data-cy="nav-section-introduction"]`, identite et mode relus dans le
+        // meme `evaluate` :
+        //     haut   = contenu 4px + liste 0px + item 8px  = 12px
+        //     gauche = contenu 4px + liste 8px + item 12px = 24px
+        // Le libelle etait donc a 24px du bord du panneau a gauche contre 12px en
+        // haut — un rapport de 2, visible a l'oeil, signale par le proprietaire.
+        // Liste a 0 : la gauche tombe a 16px contre 12px en haut. C'est aussi ce
+        // que fait M3, dont le conteneur de menu n'a AUCUN padding horizontal
+        // (`md.comp.menu.container`, padding vertical 8px seulement) et confie la
+        // gouttiere du libelle a l'item (12px). La surbrillance devient encartee
+        // de 4px au lieu de 12px, soit quasi pleine largeur, ce que M3 fait aussi.
+        //
+        // ⛔ `glass` et `cartoon` portent la MEME valeur (8px) et NE SONT PAS
+        // alignes — decision du proprietaire, 2026-09-25, apres avoir vu les
+        // rendus. Ce n'est pas un oubli : chez eux la surbrillance est une
+        // PILULE qui flotte dans le panneau, et l'encart de 13px fait partie de
+        // l'identite ; ici c'est un rectangle M3, et un rectangle encarte se lit
+        // comme un defaut. Meme chiffre, deux intentions. Ne pas « harmoniser ».
+        'origam-list': { nav: true, rounded: 'none', paddingInline: 0 },
         // `paddingInline: 12` — PROP, pas cssVar : la gouttière interne du label
         // valait 0px à gauche, mesurée. Le DS calcule
         // `padding-inline-start: calc(base + indent + density)` et, sur un
