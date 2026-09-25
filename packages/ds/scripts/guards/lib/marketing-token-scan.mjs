@@ -47,13 +47,29 @@
  * fait désactiver.
  ********************************************************/
 
-import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
 import path from 'node:path'
 import { parse as parseSFC } from 'vue/compiler-sfc'
 import { stripComments } from './scss-scan.mjs'
 import { findVarReads, findVarDeclarations } from './css-var-scan.mjs'
+import { listRepoFiles } from './git-files.mjs'
 
-/** Répertoires qu'on ne descend jamais : artefacts de build, pas des sources. */
+/*********************************************************
+ * Répertoires qu'on ne descend jamais — CEINTURE, plus bretelles
+ *
+ * @description
+ * ⛔ Depuis #966 ce n'est PLUS la défense principale : l'énumération passe par
+ * l'index git (`listRepoFiles`), qui exclut tout artefact de build parce que
+ * `.gitignore` le fait déjà. Cette liste reste comme seconde barrière — si un
+ * jour un arbre généré se retrouve SUIVI par erreur, il sera encore sauté.
+ *
+ * @description
+ * Elle est conservée aussi comme pièce à conviction : elle ne contenait pas
+ * `public/`, et c'est tout le défaut de #966. Une liste de noms à sauter ne
+ * peut pas contenir le nom du prochain artefact ; l'index git, lui, le sait
+ * déjà. C'est la raison pour laquelle la source de vérité a changé plutôt que
+ * cette liste de s'allonger.
+ ********************************************************/
 export const IGNORED_DIRS = new Set([ 'node_modules', '.nuxt', '.output', 'dist', '.data' ])
 
 /** Extensions qui peuvent porter un `var(--origam-…)` ou une déclaration. */
@@ -77,23 +93,23 @@ const SCANNED_EXT = /\.(vue|css|scss|ts|mts)$/
 const TS_DECLARATION = /['"`](--origam-[A-Za-z0-9_-]+)['"`]\s*:/g
 
 /*********************************************************
- * walkSources — énumère les fichiers scannables d'un arbre
+ * walkSources — énumère les fichiers scannables d'un arbre, PAR L'INDEX GIT
  *
- * @param root  racine absolue à descendre
- * @returns string[] chemins absolus, ordre de parcours du système de fichiers
+ * @description
+ * ⛔ CE N'EST PLUS UN PARCOURS DE DISQUE (#966). L'ancienne version descendait
+ * `readdirSync` en sautant `IGNORED_DIRS`, et balayait donc
+ * `packages/marketing/public/stories/` — 35 Mo de bundle Histoire, zéro
+ * fichier suivi. Voir `lib/git-files.mjs` pour la mesure complète et pourquoi
+ * l'artefact fabriquait des violations *et* en effaçait.
+ *
+ * @param root      racine absolue à énumérer
+ * @param repoRoot  racine du dépôt git (défaut : `root`, pour un arbre autonome)
+ * @returns string[] chemins absolus, triés
  ********************************************************/
-export function walkSources (root) {
-    const out = []
-    if (!existsSync(root)) return out
-
-    for (const entry of readdirSync(root)) {
-        if (IGNORED_DIRS.has(entry)) continue
-        const full = path.join(root, entry)
-        if (statSync(full).isDirectory()) out.push(...walkSources(full))
-        else if (SCANNED_EXT.test(full) && !full.endsWith('.d.ts')) out.push(full)
-    }
-
-    return out
+export function walkSources (root, repoRoot = root) {
+    return listRepoFiles(root, repoRoot)
+        .filter((full) => SCANNED_EXT.test(full) && !full.endsWith('.d.ts'))
+        .filter((full) => !path.relative(repoRoot, full).split(path.sep).some((seg) => IGNORED_DIRS.has(seg)))
 }
 
 /*********************************************************
@@ -184,7 +200,8 @@ export function readEmittedFromSheets (tokensDir) {
 export function readSourceTree (root, relRoot) {
     const sources = new Map()
 
-    for (const file of walkSources(root)) {
+    // `relRoot` est la racine du dépôt : c'est elle qui sert de cwd à git.
+    for (const file of walkSources(root, relRoot)) {
         sources.set(path.relative(relRoot, file), readFileSync(file, 'utf8'))
     }
 
