@@ -1413,72 +1413,18 @@
             "cta_changelog": "Lire le CHANGELOG",
             "actions_label": "Suivre origam"
         },
-        "wave4_grid": {
-            "eyebrow": "VAGUE 4 — LIVRÉE",
-            "title_line1": "15 composants et fonctionnalités",
+        "catalogue": {
+            "eyebrow": "TOUT LE CATALOGUE EST LIVRÉ",
+            "title_line1": "{count} composants",
+            "title_line1_unavailable": "Tout le catalogue de composants",
             "title_line2": "déjà livrés.",
-            "subtitle": "Tout ce qui est dans la Vague 4 est disponible sur npm. Ce sont les composants et fonctionnalités accessibles dès maintenant dans origam.",
-            "badge_shipped": "Livré",
-            "grid": {
-                "name": "OrigamGrid",
-                "note": "CSS Grid déclaratif avec columns, rows, areas, gap, auto-flow"
-            },
-            "masonry": {
-                "name": "OrigamMasonry",
-                "note": "CSS-first via grid-template-rows: masonry, fallback JS"
-            },
-            "blockquote": {
-                "name": "OrigamBlockquote",
-                "note": "Typographie : citation + auteur + source + variantes"
-            },
-            "empty_state": {
-                "name": "OrigamEmptyState",
-                "note": "5 presets : no-data, no-results, error, offline, locked"
-            },
-            "clipboard": {
-                "name": "OrigamClipboard",
-                "note": "Wrapper copie + feedback Copié !, sans dépendance"
-            },
-            "inline_edit": {
-                "name": "OrigamInlineEdit",
-                "note": "Pattern edit-in-place, v-model + validators, ARIA live"
-            },
-            "number_format": {
-                "name": "OrigamNumberFormat",
-                "note": "Formatage i18n via Intl.NumberFormat, affichage seul"
-            },
-            "qr_code": {
-                "name": "OrigamQRCode",
-                "note": "Rendu SVG, ISO/IEC 18004, niveau de correction, overlay logo"
-            },
-            "watermark": {
-                "name": "OrigamWatermark",
-                "note": "Overlay diagonal en répétition, texte SVG ou canvas data-URI"
-            },
-            "video": {
-                "name": "OrigamVideo",
-                "note": "Player custom : play/pause, scrubber, PIP, légendes, HLS optionnel"
-            },
-            "calendar": {
-                "name": "OrigamCalendar",
-                "note": "Vues mois/semaine/jour/agenda, RRULE, drag-to-create, 100 % maison"
-            },
-            "chart": {
-                "name": "OrigamChart",
-                "note": "SVG natif : ligne, aire, barre, camembert, radar, scatter — sans d3 ni chart.js"
-            },
-            "gradient": {
-                "name": "Support gradient",
-                "note": "Les props color/bgColor/textColor acceptent désormais les valeurs gradient"
-            },
-            "text_mask": {
-                "name": "OrigamTextMask",
-                "note": "Révélation de texte via background-clip: text, fonds gradient + image"
-            },
-            "audio": {
-                "name": "OrigamAudio",
-                "note": "Lecteur audio + forme d’onde via la Web Audio API, Media Session API"
-            }
+            "subtitle": "Chaque composant d’origam est publié sur npm et utilisable aujourd’hui — il n’y a pas de liste d’attente. Ce qu’il reste à construire est au-dessus, dans les phases de la roadmap.",
+            "measured_live": "{count} composants dans {categories} catégories, lus en direct dans le catalogue",
+            "measured_unavailable": "Lu en direct dans le catalogue",
+            "category_other": "Autres",
+            "empty_title": "Catalogue indisponible pour le moment",
+            "empty_description": "La liste des composants n’a pas pu être chargée. Tous les composants restent publiés sur npm — parcourez-les sur la page composants.",
+            "empty_cta": "Parcourir les composants"
         }
     },
     "support": {

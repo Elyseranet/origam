@@ -3,7 +3,6 @@ import type {
     IRoadmapStatusItem,
     IRoadmapWave,
     IRoadmapPhase,
-    IRoadmapWave4Component,
     IRoadmapStat
 } from '~/interfaces/roadmap.interface'
 
@@ -99,13 +98,17 @@ export const ROADMAP_OVERVIEW_STATS: IRoadmapStat[] = [
 /**
  * Delivered waves 1 to 3 — sourced from CHANGELOG.md.
  *
- * ⛔ Wave 4 is NOT here, and that is the point. It used to be a fourth entry
- * of this array, rendered as a fourth card of equal width holding 15 items
- * next to three cards holding 4, 4 and 3 — roughly three times their height,
- * and an exact duplicate of `ROADMAP_WAVE4_COMPONENTS` rendered in its own
- * dedicated section 200 px further down, with MORE detail (an icon and a
- * "Shipped" badge per component). Nothing was cut: wave 4 is still on the
- * page, once, in the richer of the two renderings.
+ * ⛔ Wave 4 is NOT here, and no longer anywhere on this page as a WAVE. It was
+ * first a fourth entry of this array, then its own section driven by
+ * `ROADMAP_WAVE4_COMPONENTS` — 15 hand-written rows under the heading
+ * "15 components & features / already shipped". That heading is what a reader
+ * counted, and it read as "origam ships 15 components" while the whole
+ * catalogue is published. The section is now the LIVE catalogue grouped by
+ * category (see `ROADMAP_CATALOGUE_FALLBACK_CATEGORY` at the bottom of this
+ * file); wave 4's 15 members are in it, alongside every other component, each
+ * a link to its own API page. `roadmap.status.wave4_shipped` still records
+ * that the wave landed — that is a fact about the release, not a component
+ * count.
  *
  * The three that remain are old, entirely delivered, and low-value to read
  * line by line today, so they share ONE compact panel with three sub-lists
@@ -424,32 +427,34 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
 ]
 
 /**
- * Wave 4 — recently shipped components. All 13 components + gradient support
- * + OrigamTextMask are delivered, and 14 of the 15 rows below name a component
- * that exists under `packages/ds/src/components/` (the 15th, "Gradient
- * support", is a prop capability, not a component).
+ * Fallback bucket for the shipped-catalogue section.
  *
- * ⛔ The `sound` key was renamed `audio` on 2026-09-25 because the component it
- * described does not exist: the shipped pair is `OrigamAudio.vue` +
- * `OrigamAudioWaveform.vue`, registered as `<origam-audio>`. "OrigamSound" was
- * never an export, so the page advertised an import that would fail. The key
- * name moved with the value — a locale key that keeps the wrong noun is how
- * the wrong noun comes back.
+ * ⛔ Replaces `ROADMAP_WAVE4_COMPONENTS`, a hand-maintained list of 15 rows.
+ * The section it fed was titled "15 components & features / already shipped",
+ * which a reader could only understand as "origam ships 15 components" — while
+ * every component in the catalogue is published. The section now reads the
+ * LIVE catalogue (`/api/reference/component`), so adding a component to
+ * `packages/ds/src/components/` is enough for it to appear: nothing to edit
+ * here, nothing to drift.
+ *
+ * ⛔ Do NOT write a component count anywhere — not in the title, not in a
+ * `t()` fallback, not in a comment stated as a fact. The catalogue is
+ * editorial data and it differs per environment (the day this was written:
+ * 218 entries on the local dev server, 194 on the deployed one). Every figure
+ * the page shows comes from the API response it just rendered.
+ *
+ * This constant is the one thing the live data cannot supply. Grouping the
+ * catalogue by category leaves exactly ONE entry homeless: `slide-group`
+ * declares `parentSlug: 'slide'`, and `slide` is not a catalogue entry —
+ * `Slide/` is a grouping directory with no homonymous component — while also
+ * carrying an empty `category`. It is the only entry cumulating both defects.
+ *
+ * ⛔ PROVISIONAL — this bucket is a workaround, not a fix. The defect is in
+ * the data (seven entries point at a `parentSlug` that is not a catalogue
+ * entry; a group of sub-components carry `category: ''`) and is tracked in
+ * **#954**. When #954 lands, this constant and its bucket should disappear
+ * rather than be kept "just in case". The value is a category KEY, never a
+ * label: the label is translated in the page via
+ * `roadmap.catalogue.category_other`.
  */
-export const ROADMAP_WAVE4_COMPONENTS: IRoadmapWave4Component[] = [
-    { nameKey: 'roadmap.wave4_grid.grid.name', noteKey: 'roadmap.wave4_grid.grid.note', icon: 'mdi-grid' },
-    { nameKey: 'roadmap.wave4_grid.masonry.name', noteKey: 'roadmap.wave4_grid.masonry.note', icon: 'mdi-view-quilt-outline' },
-    { nameKey: 'roadmap.wave4_grid.blockquote.name', noteKey: 'roadmap.wave4_grid.blockquote.note', icon: 'mdi-format-quote-close' },
-    { nameKey: 'roadmap.wave4_grid.empty_state.name', noteKey: 'roadmap.wave4_grid.empty_state.note', icon: 'mdi-inbox-outline' },
-    { nameKey: 'roadmap.wave4_grid.clipboard.name', noteKey: 'roadmap.wave4_grid.clipboard.note', icon: 'mdi-clipboard-outline' },
-    { nameKey: 'roadmap.wave4_grid.inline_edit.name', noteKey: 'roadmap.wave4_grid.inline_edit.note', icon: 'mdi-pencil-outline' },
-    { nameKey: 'roadmap.wave4_grid.number_format.name', noteKey: 'roadmap.wave4_grid.number_format.note', icon: 'mdi-numeric' },
-    { nameKey: 'roadmap.wave4_grid.qr_code.name', noteKey: 'roadmap.wave4_grid.qr_code.note', icon: 'mdi-qrcode' },
-    { nameKey: 'roadmap.wave4_grid.watermark.name', noteKey: 'roadmap.wave4_grid.watermark.note', icon: 'mdi-watermark' },
-    { nameKey: 'roadmap.wave4_grid.video.name', noteKey: 'roadmap.wave4_grid.video.note', icon: 'mdi-play-circle-outline' },
-    { nameKey: 'roadmap.wave4_grid.audio.name', noteKey: 'roadmap.wave4_grid.audio.note', icon: 'mdi-volume-high' },
-    { nameKey: 'roadmap.wave4_grid.calendar.name', noteKey: 'roadmap.wave4_grid.calendar.note', icon: 'mdi-calendar-outline' },
-    { nameKey: 'roadmap.wave4_grid.chart.name', noteKey: 'roadmap.wave4_grid.chart.note', icon: 'mdi-chart-line' },
-    { nameKey: 'roadmap.wave4_grid.gradient.name', noteKey: 'roadmap.wave4_grid.gradient.note', icon: 'mdi-gradient-horizontal' },
-    { nameKey: 'roadmap.wave4_grid.text_mask.name', noteKey: 'roadmap.wave4_grid.text_mask.note', icon: 'mdi-text-box-outline' }
-]
+export const ROADMAP_CATALOGUE_FALLBACK_CATEGORY = 'other'

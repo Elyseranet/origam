@@ -1413,72 +1413,18 @@
             "cta_changelog": "Read CHANGELOG",
             "actions_label": "Follow origam"
         },
-        "wave4_grid": {
-            "eyebrow": "WAVE 4 — SHIPPED",
-            "title_line1": "15 components & features",
+        "catalogue": {
+            "eyebrow": "THE WHOLE CATALOGUE IS SHIPPED",
+            "title_line1": "{count} components",
+            "title_line1_unavailable": "The whole component catalogue",
             "title_line2": "already shipped.",
-            "subtitle": "Everything in Wave 4 is live on npm. These are the components and features available right now in origam.",
-            "badge_shipped": "Shipped",
-            "grid": {
-                "name": "OrigamGrid",
-                "note": "Declarative CSS Grid with columns, rows, areas, gap, auto-flow"
-            },
-            "masonry": {
-                "name": "OrigamMasonry",
-                "note": "CSS-first via grid-template-rows: masonry, JS fallback"
-            },
-            "blockquote": {
-                "name": "OrigamBlockquote",
-                "note": "Typography: quote + author + source + variants"
-            },
-            "empty_state": {
-                "name": "OrigamEmptyState",
-                "note": "5 presets: no-data, no-results, error, offline, locked"
-            },
-            "clipboard": {
-                "name": "OrigamClipboard",
-                "note": "Copy wrapper + Copied! feedback, no dependencies"
-            },
-            "inline_edit": {
-                "name": "OrigamInlineEdit",
-                "note": "Edit-in-place pattern, v-model + validators, ARIA live"
-            },
-            "number_format": {
-                "name": "OrigamNumberFormat",
-                "note": "i18n formatting via Intl.NumberFormat, display only"
-            },
-            "qr_code": {
-                "name": "OrigamQRCode",
-                "note": "SVG output, ISO/IEC 18004, error correction level, logo overlay"
-            },
-            "watermark": {
-                "name": "OrigamWatermark",
-                "note": "Diagonal repeat overlay, SVG text or canvas data-URI"
-            },
-            "video": {
-                "name": "OrigamVideo",
-                "note": "Custom player: play/pause, scrubber, PIP, captions, HLS optional"
-            },
-            "calendar": {
-                "name": "OrigamCalendar",
-                "note": "Month/week/day/agenda views, RRULE, drag-to-create, 100 % in-house"
-            },
-            "chart": {
-                "name": "OrigamChart",
-                "note": "SVG-native: line, area, bar, pie, radar, scatter — no d3 or chart.js"
-            },
-            "gradient": {
-                "name": "Gradient support",
-                "note": "color/bgColor/textColor props now accept gradient values"
-            },
-            "text_mask": {
-                "name": "OrigamTextMask",
-                "note": "Text reveal via background-clip: text, gradient + image backgrounds"
-            },
-            "audio": {
-                "name": "OrigamAudio",
-                "note": "Audio player + waveform via Web Audio API, Media Session API"
-            }
+            "subtitle": "Every component in origam is published on npm and usable today — there is no waiting list. What is left to build is above, in the roadmap phases.",
+            "measured_live": "{count} components in {categories} categories, read live from the catalogue",
+            "measured_unavailable": "Read live from the catalogue",
+            "category_other": "Other",
+            "empty_title": "Catalogue unavailable right now",
+            "empty_description": "The component list could not be loaded. Every component is still published on npm — browse them on the components page.",
+            "empty_cta": "Browse the components"
         }
     },
     "support": {
