@@ -1299,11 +1299,35 @@ outside a pipe, and ideally an install from the registry afterwards
 (`npm i origam@<version>` in an empty directory) rather than trusting the
 workflow's own "success".
 
-⚠️ **A change that does not touch `packages/ds/` produces a byte-identical
-tarball.** Docs, tests, marketing, tooling and CI changes fall in that bucket.
-Publishing them as a new version is not wrong, but it is noise — **say so
-explicitly rather than tagging silently**, and let the owner decide. When in
-doubt, tag: a redundant patch costs nothing, a missing one costs a consumer.
+### ⛔ A change that does not touch `packages/ds/` is NOT tagged — decided
+
+**Marketing, docs, tests, tooling and CI changes ship without a tag and
+without a release.** Standing instruction from the owner (2026-09-25):
+*« lorsque c'est le marketing, il n'y a pas besoin de tagger »*.
+
+The reason is mechanical: `release.yml` publishes from `packages/ds/`
+exclusively, so a change outside it produces a **byte-identical tarball**.
+The version number would move while the artefact does not — a consumer who
+diffs two versions finds nothing, and the changelog gains an entry that
+describes a package that did not change.
+
+Concretely, before opening a release PR:
+
+```sh
+gh pr diff <n> --name-only | grep -c '^packages/ds/'   # 0 → NO tag
+```
+
+- **Merge, close the ticket, stop there.** No version bump, no release PR,
+  no tag.
+- ⛔ Do NOT ask the owner whether to tag a marketing lot. This question was
+  posed once and answered; asking again wastes his time.
+- A lot that touches **both** `packages/ds/` and marketing is tagged — the
+  published package really moves.
+
+⚠️ The previous version of this paragraph said the opposite — *« when in
+doubt, tag: a redundant patch costs nothing »*. It was wrong: a redundant
+patch costs a version number that means nothing, on a registry where a
+published version is never removed.
 
 ## Pre-delivery (project-specific overlay)
 
