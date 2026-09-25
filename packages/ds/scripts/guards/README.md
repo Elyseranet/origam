@@ -14,7 +14,8 @@ below from getting worse. The existing debt is grandfathered in a baseline
 ## Run locally
 
 ```bash
-pnpm -F origam guards                      # all eight
+pnpm -F origam guards                      # the whole suite (recount it — never quote a number from a doc)
+pnpm -F origam guards:self                 # the guards' OWN detectors (see below)
 pnpm -F origam guards:declarations         # guard 1 only
 pnpm -F origam guards:variant-css          # guard 2 only
 pnpm -F origam guards:instance-types       # guard 3 only
@@ -32,6 +33,37 @@ pnpm -F origam guards:unemitted-declarations  # guard 18 only
 
 No build step required — every guard parses `.vue`/`.ts`/`.scss` source
 text directly. The full suite runs in under two seconds.
+
+### `guards:self` — and where a self-test must live (#964)
+
+A guard whose extractor has regressed goes **quiet**, and a silent detector
+and a clean repo produce the same green. So a green `guards` means nothing
+without `guards:self`, which runs the guards' own detectors.
+
+`run-all-selftests.mjs` **discovers** that list rather than holding one —
+a hand-maintained list is exactly how a detector ends up orphaned. It reads
+three levels, and a `*.selftest.mjs` must live in one of them:
+
+| level | what lives there |
+|---|---|
+| `scripts/guards/` | the self-test of a guard, next to the guard |
+| `scripts/guards/lib/` | the self-test of a scanner, next to the scanner |
+| `scripts/analysis/` | the self-test of a campaign scanner |
+
+⛔ **Until #964 only `lib/` was read**, so five self-tests at the `guards/`
+level were invoked by *nothing* — not the runner, not CI, not an npm script.
+Their only "references" were the `Run: node …` lines in their own headers.
+Among them was `token-var-channels`, the most-used guard in the repo. The
+recap printed "17/17 green" while ignoring five detectors, which is the false
+green one storey up: the casualty is the guarantee itself.
+
+Writing one somewhere else now **fails the runner before it executes
+anything** — `findOrphanSelftests` walks all of `scripts/` and refuses any
+self-test the discovery would miss. That check found a sixth orphan the ticket
+had not listed (`analysis/inspection-harness.selftest.mjs`); adding
+`analysis/` to the read levels is a deliberate scope decision, documented at
+`DISCOVERED_LEVELS` in `lib/selftest-discovery.mjs` and reversible by
+deleting that one entry.
 
 ## The guards
 
