@@ -1374,14 +1374,39 @@ The global pre-delivery policy (TU + e2e + security) applies. Specific to
 origam:
 - Run tests on **Node 24** (`.nvmrc`); Node 18 produces unrelated
   `crypto.hash` failures.
-- `pnpm -F origam guards` must stay at **29/29** (measured 2026-09-24, this
-  worktree, real exit code hors pipe; it read `28/28` on 2026-09-17, `27/27` an
-  hour before that, `25/25` and `17/17` earlier still — **recount, never
-  quote**. This line has been stale four times; an agent caught it again today
-  while the paragraph still said 28/28).
-- `pnpm -F origam guards:self` must stay at **16/16** (measured 2026-09-24, this
-  worktree, real exit code hors pipe ; ce fichier lisait `15/15`, puis `14/14`,
-  puis `13/13` — **recount, never quote**). It runs the guards' own
+- `pnpm -F origam guards` must stay at **30/30** (measured 2026-09-25, this
+  worktree, real exit code hors pipe; it read `29/29` on 2026-09-24, `28/28` on
+  2026-09-17, `27/27` an hour before that, `25/25` and `17/17` earlier still —
+  **recount, never quote**. This line has been stale FIVE times; an agent caught
+  it again on 2026-09-25 while the paragraph still said 29/29).
+
+  ⛔ **A red `guards` on your machine may be the artefacts, not the code.**
+  Guard 30 (`token-var-channels-marketing`) walks the DISK, not git's index, so
+  it scans build output that no checkout of CI has. Measured 2026-09-25 — same
+  tree, the only variable being the presence of `packages/marketing/public/stories/`
+  (35 MB, **zero files tracked by git**, left behind by a stories build):
+
+  | | `guards` | violations | stale baseline entries |
+  |---|---|---|---|
+  | artefact present | **29/30**, exit 1 | hundreds | **8** |
+  | artefact set aside | **30/30**, exit 0 | **0** | **0** |
+
+  ⚠️ The pollution runs BOTH WAYS, which is what makes the symptom dangerous:
+  the stories bundle *declares* thousands of `--origam-*`, so it also joins the
+  EMITTER set, and legitimately dead reads turn up as "already fixed". A
+  maintainer following the guard's own message would delete 8 baseline lines
+  describing real defects, believing they were making progress. Tracked as
+  **#966**; until it lands, `git ls-files`-clean your tree before trusting a red.
+- `pnpm -F origam guards:self` must stay at **17/17** (measured 2026-09-25, this
+  worktree, real exit code hors pipe ; ce fichier lisait `16/16` le 2026-09-24,
+  puis `15/15`, `14/14` et `13/13` — **recount, never quote**).
+
+  ⚠️ Ce compteur ne couvre PAS tout : `run-all-selftests.mjs` ne découvre que
+  `lib/*.selftest.mjs`, et **cinq self-tests vivent au niveau `guards/` sans être
+  invoqués par quoi que ce soit** — dont celui de `token-var-channels`, le garde
+  que ce fichier désigne dès qu'on touche aux feuilles de tokens. Vérifié : leurs
+  seules « références » sont les lignes `Run: node …` de leurs propres en-têtes.
+  Tracé dans **#964**. It runs the guards' own
   detectors, discovered from `scripts/guards/lib/*.selftest.mjs`. A guard whose
   extractor has regressed goes QUIET, and a silent detector and a clean repo
   produce the same green — so a green `guards` means nothing without this. Both
