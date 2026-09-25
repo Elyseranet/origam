@@ -64,10 +64,22 @@
     /*
      * OrigamBtn / OrigamBtnGroup border-radius live-link.
      *
-     * Style Dictionary bakes component tokens to literals at build time (e.g.
-     * --origam-btn---border-radius: 4px), so per-theme overrides of the semantic
-     * --origam-radius---btn variable are NOT automatically reflected in the
-     * component token. Re-pointing them here with specificity 0,2,0 means:
+     * ⛔ CE COMMENTAIRE DISAIT FAUX — corrige le 2026-09-25 (#961).
+     *
+     * Il affirmait : « Style Dictionary bakes component tokens to literals at
+     * build time (e.g. --origam-btn---border-radius: 4px) ». C'est faux deux
+     * fois. Le pipeline Style Dictionary a ete SUPPRIME le 2026-08-31 et il n'y
+     * a plus d'etape de build du tout ; et le token n'est pas un litteral —
+     * `light.css:147` declare `--origam-btn---border-radius: var(--origam-radius---sm)`.
+     *
+     * La VRAIE raison de ce re-pointage, elle, tient toujours : le DS fait
+     * pointer le rayon du bouton vers `--origam-radius---sm`, un rung de
+     * l'echelle generale. Le marketing veut que ce rayon suive un rung qui lui
+     * est propre, `--origam-radius---btn` (declare 10px ligne 37 de ce fichier),
+     * pour que chaque identite le regle sans redeclarer le token de composant.
+     * C'est ce que la declaration ci-dessous fait, et c'est pourquoi elle reste.
+     *
+     * Re-pointing them here with specificity 0,2,0 means:
      *   - themes that declare --origam-radius---btn (cartoon 14px, apple 12px,
      *     glass 999px, geek 4px / 8px, ecom 6px, material 999px …) at 0,3,0
      *     automatically propagate that value into the button and group border-radius
