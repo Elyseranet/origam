@@ -8,6 +8,7 @@
 					:class="rootClasses"
 					:style="rootStyles"
 					:data-cy="dataCy"
+					v-bind="{ ...$attrs }"
 					@click.self="handleBackdropClick"
 					@keydown="handleKeydown"
 			>
@@ -197,6 +198,36 @@
 	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 	import { fuzzyMatch, type IFuzzyMatchResult } from '../../utils/CommandPalette/fuzzy-match.util'
+
+	/*********************************************************
+	 * inheritAttrs — #916 / #853
+	 *
+	 * @description
+	 * The single root is a `<teleport to="body">`, and Vue treats the TELEPORT
+	 * shapeFlag like a fragment for automatic attrs inheritance — its own
+	 * message says "renders fragment or text or teleport root nodes". It
+	 * therefore logs "Extraneous non-props attributes", whose component trace
+	 * serialises every ancestor's props including Vue Router's `RouteProvider`
+	 * vnode: ~4.4 MB per occurrence, the mechanism behind #853's 5.5 GB log.
+	 *
+	 * This palette does NOT go through `OrigamOverlay` — it owns a hand-rolled
+	 * `<teleport>` — so #915's fix on the overlay does not reach it.
+	 *
+	 * ⛔ The flag alone would SILENTLY swallow the consumer's attributes, and
+	 * there is a real one: `packages/marketing/src/layouts/default.vue` passes
+	 * `data-cy="global-command-palette"`, which is not a declared prop and so
+	 * arrives in `$attrs`. They are therefore forwarded explicitly onto the
+	 * backdrop root above — the visible root of the teleported subtree, the
+	 * element already carrying `id`, `class`, `style` and `data-cy`.
+	 *
+	 * ⚠️ `v-bind="{ ...$attrs }"` sits AFTER `:data-cy="dataCy"` ON PURPOSE. The
+	 * component hardcodes `dataCy = 'origam-command-palette'`; placed before
+	 * the spread it would mask the consumer's own value, which is exactly
+	 * #492's silent loss. Standard Vue merge order applies: for a scalar key
+	 * the later source wins, while `class` and `style` are concatenated by
+	 * `mergeProps` rather than replaced.
+	 ********************************************************/
+	defineOptions({ inheritAttrs: false })
 
 	/*********************************************************
 	 * Global

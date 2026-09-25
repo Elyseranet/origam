@@ -41,6 +41,7 @@
 				class="origam-data-table-rows origam-data-table-rows--no-data"
 				:class="textColorClasses"
 				:style="textColorStyles"
+				v-bind="{ ...$attrs }"
 		>
 			<td :colspan="columns.length">
 				<slot name="no-data">
@@ -165,6 +166,58 @@
 	import { computed, mergeProps, useAttrs, useSlots } from 'vue'
 
 	const attrs = useAttrs()
+
+	/*********************************************************
+	 * inheritAttrs — #916 / #853
+	 *
+	 * @description
+	 * The root `v-if` chain is MIXED. Asked of the Vue 3.5.39 compiler rather
+	 * than eyeballed, the root codegen node is:
+	 *
+	 *     COND{ FRAGMENT | COND{ element(tr) | FRAGMENT } }
+	 *
+	 * i.e. EXACTLY ONE of the three outcomes is a single element — the
+	 * `no-data` `<tr>`. The `loaderConfig.isActive` branch is a FRAGMENT even
+	 * when it renders one `<tr>`, because that outer `<template v-if>` wraps a
+	 * nested `v-if` chain and the compiler emits a `Fragment` block for it;
+	 * the default branch is a `v-for` over `items`. Vue cannot merge
+	 * fallthrough attributes onto a fragment and logs "Extraneous non-props
+	 * attributes", whose trace serialises every ancestor's props including Vue
+	 * Router's `RouteProvider` vnode (~4.4 MB per occurrence, #853).
+	 *
+	 * ⛔ Measured on `develop` before this change, mounting with `class` /
+	 * `data-cy` / `aria-label`:
+	 *
+	 *     no-data branch   (element root) -> all three LAND
+	 *     loader   branch  (fragment)     -> all three land NOWHERE
+	 *     items    branch  (fragment)     -> all three land NOWHERE
+	 *
+	 * So the flag alone would silently strip them from the `no-data` row —
+	 * #492's defect. `v-bind="{ ...$attrs }"` is re-bound THERE ONLY.
+	 *
+	 * ⚠️ Deliberately NOT added to the `--loading` `<tr>`, even though it
+	 * looks like a twin of the `no-data` one. It is not a root: attributes do
+	 * not reach it today, and binding them there would be a NEW behaviour
+	 * smuggled in under a warning fix. The resulting asymmetry — the no-data
+	 * row carries a consumer's `class`, the loading row does not — is
+	 * pre-existing, is now measured, and is left for a decision of its own.
+	 * The `v-for` branches likewise forward nothing: N sibling rows have no
+	 * single home for one `id`, and each row already receives its own
+	 * attributes through `itemSlotProps()` / `groupHeaderRowProps()`.
+	 *
+	 * ⚠️ The explicit `v-bind="{ ...$attrs }"` is EQUIVALENT to the automatic
+	 * fallthrough it replaces — same object, same element, same merge order
+	 * (`mergeProps` concatenates `class` / `style`, later source wins for a
+	 * scalar). That equivalence is what makes it safe here, and it matters
+	 * because this component's `$attrs` is also a CONTROL channel: the
+	 * prefixed `:row` / `:group-header` handlers are read out of it by
+	 * `getPrefixedEventHandlers` above. #371 was exactly the failure of
+	 * letting a non-DOM key reach a `<tr>` root, where Vue serialises it as a
+	 * literal attribute (`index="0" mobile="false"`). This change neither
+	 * adds nor removes any key from that path — do NOT "tidy" it into a
+	 * broader forward without re-measuring #371's symptom.
+	 ********************************************************/
+	defineOptions({ inheritAttrs: false })
 
 	/*********************************************************
 	 * Global
@@ -324,7 +377,7 @@
 						 * read by the row at all. Both fell through
 						 * `<OrigamDataTableRow>`'s undeclared-key path
 						 * straight into `$attrs`, which its
-						 * `v-bind="$attrs"` root then serialised as literal
+						 * `v-bind="{ ...$attrs }"` root then serialised as literal
 						 * DOM attributes on every rendered `<tr>`:
 						 * `index="0" mobile="false"`.
 						 *

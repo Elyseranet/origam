@@ -32,6 +32,34 @@
 	import type { IVirtualScrollItemEmits, IVirtualScrollItemSlots } from '../../interfaces/VirtualScroll/virtual-scroll-item.interface'
 
 	/*********************************************************
+	 * inheritAttrs — #916 / #853
+	 *
+	 * @description
+	 * The root `v-if` chain is MIXED: `v-if="renderless"` renders
+	 * `<slot name="renderless">` (a FRAGMENT vnode — `renderSlot()` always
+	 * returns one), while `v-else` renders a single wrapper `<div>`. Vue
+	 * cannot merge fallthrough attributes onto the fragment branch and logs
+	 * "Extraneous non-props attributes", whose trace serialises every
+	 * ancestor's props including Vue Router's `RouteProvider` vnode
+	 * (~4.4 MB per occurrence, #853).
+	 *
+	 * The non-renderless branch ALREADY re-binds them by hand —
+	 * `v-bind="{ ...attrs }"` with `attrs = useAttrs()` below — so this flag
+	 * removes a duplicate attempt, not a working one. Measured on `develop`
+	 * before the flag: `class` / `data-cy` / `aria-label` landed in the
+	 * `v-else` branch (via BOTH paths, deduplicated by `mergeProps`) and
+	 * nowhere in the renderless branch. Behaviour is unchanged.
+	 *
+	 * ⛔ Note why `useAttrs()` did NOT already silence the warning: Vue skips
+	 * it only when `$attrs` was read through the PUBLIC instance proxy during
+	 * the render (`markAttrsAccessed()`). `useAttrs()` returns
+	 * `instance.attrs` directly and never marks the access, so the warning
+	 * fired on every render regardless — measured at 2 occurrences per
+	 * renderless mount.
+	 ********************************************************/
+	defineOptions({ inheritAttrs: false })
+
+	/*********************************************************
 	 * Global
 	 *
 	 * @description

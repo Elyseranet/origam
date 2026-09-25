@@ -8,6 +8,7 @@
       :class="stackClasses"
       :style="stackStyles"
       role="region"
+      v-bind="{ ...$attrs }"
     >
       <transition-group
         :name="transitionName"
@@ -57,6 +58,43 @@
 
   import type { TIntent } from '../../types/Commons/intent.type'
   import type { TSnackbarGroupDirection } from '../../types/Snackbar/snackbar-group.type'
+
+  /*********************************************************
+   * inheritAttrs — #916 / #853
+   *
+   * @description
+   * The single root is a `<teleport to="body">`, and Vue treats the TELEPORT
+   * shapeFlag like a fragment for automatic attrs inheritance — its own
+   * message says "renders fragment or text or teleport root nodes". It
+   * therefore logs "Extraneous non-props attributes", and that warning
+   * serialises every ancestor's props including Vue Router's `RouteProvider`
+   * vnode: ~4.4 MB per occurrence (#853).
+   *
+   * ⛔ The flag alone would SILENTLY swallow a consumer's `class` / `style` /
+   * `data-cy` / `aria-*` / listeners — #492's defect. They are therefore
+   * forwarded explicitly, onto the `<component :is="tag">` above: the
+   * stack's single visible root inside the teleport, already the element
+   * that owns `id`, `class`, `style` and `role="region"`. The spread sits
+   * LAST so a consumer's attribute wins over the component's own default for
+   * the same key, which is standard Vue merge order; `class` and `style` are
+   * concatenated rather than replaced by `mergeProps`.
+   *
+   * @description
+   * ⛔ THE OBJECT-SPREAD FORM `{ ...$attrs }` IS DELIBERATE, not cosmetic —
+   * the bare `v-bind="$attrs"` measurably breaks a NEIGHBOURING guard. Rule 3
+   * of `scripts/guards/lib/id-reach.mjs` credits a literal `v-bind="$attrs"`
+   * as proof that the `id` prop reaches the DOM. That inference is false
+   * whenever `id` is a DECLARED prop, because Vue REMOVES a declared prop
+   * from `$attrs` — the same mechanism guard 22 (`class-fallthrough`) is
+   * built on. With the bare form, `id-forwarding` reported this component's
+   * baselined `no-id-reach` entry as "already fixed" and demanded its
+   * deletion, on a component where the consumer's `id` still does not reach
+   * any node: `resolvedDomId` prefixes it with `origam-snackbar-group-`, on
+   * purpose, per #790. Deleting that entry would have hidden a live defect.
+   * The spread form carries exactly the same attributes at runtime and makes
+   * no such claim. Same shape as `OrigamOverlay` and `OrigamDrawer`.
+   ********************************************************/
+  defineOptions({ inheritAttrs: false })
 
   /*********************************************************
    * Global
