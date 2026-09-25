@@ -109,9 +109,10 @@
 	 *
 	 * No JS interaction, no DOM measurement, SSR-safe.
 	 ********************************************************/
-	/*
+	/*********************************************************
 	 * inheritAttrs — #916 / #853
 	 *
+	 * @description
 	 * The template root is a FRAGMENT: three PEER `<g>` groups (grid,
 	 * primary axis, secondary axis), each with its own `v-if`. Vue cannot
 	 * merge fallthrough attributes onto a fragment, so it logs "Extraneous
@@ -129,7 +130,7 @@
 	 * stops Vue from re-testing, and re-reporting, an impossibility on every
 	 * render. Adding a `v-bind="$attrs"` would be a NEW feature, not the
 	 * restoration of a lost one.
-	 */
+	 ********************************************************/
 	defineOptions({
 		name: 'OrigamChartAxis',
 		inheritAttrs: false

@@ -99,9 +99,10 @@
 
 	import { int } from '../../utils/Commons/commons.util'
 
-	/*
+	/*********************************************************
 	 * inheritAttrs — #916 / #853
 	 *
+	 * @description
 	 * The single root is a `<teleport>`, and Vue treats the TELEPORT
 	 * shapeFlag exactly like a fragment for automatic attrs inheritance —
 	 * its own message says so ("renders fragment or text or teleport root
@@ -120,7 +121,7 @@
 	 * under a `defer`red teleport, so on any render where the drawer is
 	 * closed the read never happens and the warning fires. Measured before
 	 * this flag: 2 occurrences on a single closed mount.
-	 */
+	 ********************************************************/
 	defineOptions({ inheritAttrs: false })
 
 	/*********************************************************

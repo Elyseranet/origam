@@ -8,7 +8,7 @@
 					:class="rootClasses"
 					:style="rootStyles"
 					:data-cy="dataCy"
-					v-bind="$attrs"
+					v-bind="{ ...$attrs }"
 					@click.self="handleBackdropClick"
 					@keydown="handleKeydown"
 			>
@@ -199,9 +199,10 @@
 
 	import { fuzzyMatch, type IFuzzyMatchResult } from '../../utils/CommandPalette/fuzzy-match.util'
 
-	/*
+	/*********************************************************
 	 * inheritAttrs — #916 / #853
 	 *
+	 * @description
 	 * The single root is a `<teleport to="body">`, and Vue treats the TELEPORT
 	 * shapeFlag like a fragment for automatic attrs inheritance — its own
 	 * message says "renders fragment or text or teleport root nodes". It
@@ -219,13 +220,13 @@
 	 * backdrop root above — the visible root of the teleported subtree, the
 	 * element already carrying `id`, `class`, `style` and `data-cy`.
 	 *
-	 * ⚠️ `v-bind="$attrs"` sits AFTER `:data-cy="dataCy"` ON PURPOSE. The
+	 * ⚠️ `v-bind="{ ...$attrs }"` sits AFTER `:data-cy="dataCy"` ON PURPOSE. The
 	 * component hardcodes `dataCy = 'origam-command-palette'`; placed before
 	 * the spread it would mask the consumer's own value, which is exactly
 	 * #492's silent loss. Standard Vue merge order applies: for a scalar key
 	 * the later source wins, while `class` and `style` are concatenated by
 	 * `mergeProps` rather than replaced.
-	 */
+	 ********************************************************/
 	defineOptions({ inheritAttrs: false })
 
 	/*********************************************************

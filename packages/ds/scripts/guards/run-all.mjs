@@ -45,7 +45,8 @@ const GUARDS = [
     'vrt-lockstep.mjs',
     'unitless-zero-in-calc.mjs',
     'ts-token-refs.mjs',
-    'theme-channel-confiscation.mjs'
+    'theme-channel-confiscation.mjs',
+    'inherit-attrs-fragment-root.mjs'
 ]
 
 /*********************************************************

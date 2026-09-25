@@ -96,9 +96,10 @@
 	 * Global
 	 ********************************************************/
 
-	/*
+	/*********************************************************
 	 * inheritAttrs — #916 / #853
 	 *
+	 * @description
 	 * BOTH branches of the root `v-if="mobile"` render a `<slot>`, and
 	 * `renderSlot()` returns a FRAGMENT vnode — the root is a fragment in
 	 * either case. Vue cannot merge fallthrough attributes onto a fragment
@@ -116,7 +117,7 @@
 	 * flag, a consumer's `class` / `data-cy` / `aria-label` reached NOTHING;
 	 * the flag keeps exactly that, and the cell's own `class` / `style` come
 	 * from the `dataTableHeadersClasses` / `…Styles` props as before.
-	 */
+	 ********************************************************/
 	defineOptions({ inheritAttrs: false })
 
 	const props = withDefaults(defineProps<IDataTableHeadersProps>(), {})

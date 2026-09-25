@@ -40,7 +40,7 @@
 				ref="containerRef"
 				:class="virtualScrollClasses"
 				:style="virtualScrollStyles"
-				v-bind="$attrs"
+				v-bind="{ ...$attrs }"
 				@scrollend="handleScrollend"
 				@scroll-passive="handleScroll"
 		>
@@ -98,9 +98,10 @@
 	import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
 	import { getScrollParent } from '../../utils/Commons/scroll.util'
 
-	/*
+	/*********************************************************
 	 * inheritAttrs — #916 / #853
 	 *
+	 * @description
 	 * The root `v-if` chain is MIXED: `v-if="renderless"` renders a FRAGMENT
 	 * (spacer div + a `v-for` of items + spacer div, three top-level nodes),
 	 * while `v-else` renders a single scroll container `<div>`. Vue cannot
@@ -117,10 +118,10 @@
 	 *
 	 * The flag alone would therefore silently strip them in the normal
 	 * (non-renderless) mode — #492's defect. They are re-bound by hand with
-	 * `v-bind="$attrs"` on the container above. The renderless branch keeps
+	 * `v-bind="{ ...$attrs }"` on the container above. The renderless branch keeps
 	 * forwarding nothing: by definition it owns no element of its own, the
 	 * consumer supplies the markup through the `item.renderless` slots.
-	 */
+	 ********************************************************/
 	defineOptions({ inheritAttrs: false })
 
 	/*********************************************************

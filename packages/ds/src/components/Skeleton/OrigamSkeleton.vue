@@ -11,7 +11,7 @@
 			:aria-label="skeletonAriaLabel"
 			aria-busy="true"
 			role="status"
-			v-bind="$attrs"
+			v-bind="{ ...$attrs }"
 	>
 		<div
 				:class="skeletonCircularClasses"
@@ -31,7 +31,7 @@
 			:aria-label="skeletonAriaLabel"
 			aria-busy="true"
 			role="status"
-			v-bind="$attrs"
+			v-bind="{ ...$attrs }"
 	>
 		<div :class="skeletonRectangularClasses"/>
 		<div :class="skeletonTextClasses"/>
@@ -47,7 +47,7 @@
 			:aria-label="skeletonAriaLabel"
 			aria-busy="true"
 			role="status"
-			v-bind="$attrs"
+			v-bind="{ ...$attrs }"
 	/>
 </template><script
 		lang="ts"
@@ -65,9 +65,10 @@
 	import { computed, toRef } from 'vue'
 	import type { StyleValue } from 'vue'
 
-	/*
+	/*********************************************************
 	 * inheritAttrs — #916 / #853
 	 *
+	 * @description
 	 * The root `v-if` chain is MIXED: `v-if="!loading"` renders `<slot/>`
 	 * (a FRAGMENT vnode — `renderSlot()` always returns one), while the three
 	 * `v-else-if` / `v-else` branches each render a single `<div>`. Vue cannot
@@ -85,15 +86,15 @@
 	 *
 	 * So `inheritAttrs: false` on its own would silently strip a consumer's
 	 * attributes from the skeleton itself — #492's defect. They are therefore
-	 * re-bound by hand with `v-bind="$attrs"` on each of the three element
+	 * re-bound by hand with `v-bind="{ ...$attrs }"` on each of the three element
 	 * branches. The fragment branch keeps forwarding nothing, which is what it
 	 * already did: the `default` slot's own content is the consumer's markup
 	 * and carries the consumer's attributes already.
 	 *
-	 * `v-bind="$attrs"` sits LAST on each element so a consumer's `aria-label`
+	 * `v-bind="{ ...$attrs }"` sits LAST on each element so a consumer's `aria-label`
 	 * wins over the component's `skeletonAriaLabel` default, while `class` and
 	 * `style` are concatenated by `mergeProps` rather than replaced.
-	 */
+	 ********************************************************/
 	defineOptions({ inheritAttrs: false })
 
 	/*********************************************************

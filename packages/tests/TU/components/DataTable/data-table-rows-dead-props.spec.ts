@@ -124,22 +124,56 @@ describe('OrigamDataTableRows — `class` / `style` ne sont plus captees puis je
         expect(wrapper.attributes('style') ?? '').toContain('outline')
     })
 
-    it('sur une branche a plusieurs lignes, Vue AVERTIT au lieu d\'avaler', () => {
-        // Nuance mesuree, pas supposee : le fallthrough n'atterrit que sur
-        // les branches a racine unique (« loading » / « no-data »). La
-        // branche squelette rend cinq `<tr>` — Vue ne peut rien appliquer,
-        // mais il le DIT. C'est tout le gain par rapport a l'etat d'avant :
-        // la prop declaree, elle, sortait `class` de `$attrs` et personne
-        // n'etait prevenu de rien.
+    /*********************************************************
+     * ⛔ RENVERSEMENT ASSUME — #916 arbitre contre #550 sur CE point precis
+     *
+     * @description
+     * La version #550 de ce test asserait l'INVERSE : que sur la branche a
+     * plusieurs lignes « Vue AVERTIT au lieu d'avaler », et elle presentait
+     * cet avertissement comme « tout le gain » — un consommateur prevenu
+     * valant mieux qu'une perte muette. Le raisonnement se tenait tant qu'on
+     * ignorait ce que coute l'avertissement.
+     *
+     * @description
+     * #853 l'a mesure. `warn()` de Vue ajoute une TRACE DE COMPOSANTS qui
+     * serialise les props de chaque ancetre, dont le `vnode` de
+     * `<RouteProvider>` — le graphe reactif de toute la page rendue. ~4,4 Mo
+     * par occurrence. Releve : 1,1 Go de journal Nitro sans base, 5,5 Go
+     * avec, puis sur un autre run 161 Mo en 45 min suivis d'un
+     * `JS heap out of memory` et d'un HTTP 500 sur toutes les routes. Le
+     * developpeur voit un site entierement casse, sans rapport apparent avec
+     * ce qu'il faisait.
+     *
+     * @description
+     * L'avertissement n'etait donc pas un signal bon marche : c'etait le
+     * mecanisme de la panne. #916 le supprime a la source avec
+     * `defineOptions({ inheritAttrs: false })`, et le critere d'acceptation
+     * du ticket est explicitement « l'avertissement a disparu ».
+     *
+     * @description
+     * ⚠️ CE QUI N'A PAS CHANGE, et qui est la part legitime de #550 : sur
+     * cette branche, la classe du consommateur n'atterrit toujours nulle
+     * part. Elle n'y atterrissait pas avant non plus — un fragment ne recoit
+     * jamais le fallthrough — donc rien n'est perdu ici, seul le bruit
+     * disparait. Les deux moities sont asserees ci-dessous pour que la
+     * distinction reste visible : plus d'avertissement ET toujours pas de
+     * classe. Si un jour on veut que la classe arrive vraiment sur ces
+     * lignes, c'est une fonctionnalite a decider, pas un effet de bord d'un
+     * correctif de journal.
+     ********************************************************/
+    it('sur une branche a plusieurs lignes : plus d\'avertissement, et toujours pas de classe', () => {
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
-        mountRows({loading: {type: 'skeleton'}}, {class: 'sonde-fragment'})
+        const wrapper = mountRows({loading: {type: 'skeleton'}}, {class: 'sonde-fragment'})
 
         const messages = warn.mock.calls.map((c) => String(c[0])).join(' ')
         warn.mockRestore()
 
-        expect(messages).toContain('Extraneous non-props attributes')
-        expect(messages).toContain('class')
+        // #916 — le mecanisme du journal de 5,5 Go a disparu.
+        expect(messages).not.toContain('Extraneous non-props attributes')
+
+        // #550 — mais la classe n'atteint toujours aucune ligne, comme avant.
+        expect(wrapper.html()).not.toContain('sonde-fragment')
     })
 })
 

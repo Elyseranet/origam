@@ -56,9 +56,10 @@
 	 * Global
 	 ********************************************************/
 
-	/*
+	/*********************************************************
 	 * inheritAttrs — #916 / #853
 	 *
+	 * @description
 	 * The template root is a `<template v-for="(row, y) in headers">`, i.e. a
 	 * FRAGMENT of N `<tr>` elements. A `v-for` root compiles to a Fragment
 	 * block even when the list holds a single entry, so there is no
@@ -72,7 +73,7 @@
 	 * consumer's `id` across rows would produce invalid markup. Measured on
 	 * `develop` before this flag, a consumer's attributes reached NONE of the
 	 * rows — the flag preserves that exactly.
-	 */
+	 ********************************************************/
 	defineOptions({ inheritAttrs: false })
 
 	const props = withDefaults(defineProps<IDataTableHeadersCellProps>(), {})

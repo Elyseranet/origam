@@ -41,7 +41,7 @@
 				class="origam-data-table-rows origam-data-table-rows--no-data"
 				:class="textColorClasses"
 				:style="textColorStyles"
-				v-bind="$attrs"
+				v-bind="{ ...$attrs }"
 		>
 			<td :colspan="columns.length">
 				<slot name="no-data">
@@ -167,9 +167,10 @@
 
 	const attrs = useAttrs()
 
-	/*
+	/*********************************************************
 	 * inheritAttrs — #916 / #853
 	 *
+	 * @description
 	 * The root `v-if` chain is MIXED. Asked of the Vue 3.5.39 compiler rather
 	 * than eyeballed, the root codegen node is:
 	 *
@@ -192,7 +193,7 @@
 	 *     items    branch  (fragment)     -> all three land NOWHERE
 	 *
 	 * So the flag alone would silently strip them from the `no-data` row —
-	 * #492's defect. `v-bind="$attrs"` is re-bound THERE ONLY.
+	 * #492's defect. `v-bind="{ ...$attrs }"` is re-bound THERE ONLY.
 	 *
 	 * ⚠️ Deliberately NOT added to the `--loading` `<tr>`, even though it
 	 * looks like a twin of the `no-data` one. It is not a root: attributes do
@@ -204,7 +205,7 @@
 	 * single home for one `id`, and each row already receives its own
 	 * attributes through `itemSlotProps()` / `groupHeaderRowProps()`.
 	 *
-	 * ⚠️ The explicit `v-bind="$attrs"` is EQUIVALENT to the automatic
+	 * ⚠️ The explicit `v-bind="{ ...$attrs }"` is EQUIVALENT to the automatic
 	 * fallthrough it replaces — same object, same element, same merge order
 	 * (`mergeProps` concatenates `class` / `style`, later source wins for a
 	 * scalar). That equivalence is what makes it safe here, and it matters
@@ -215,7 +216,7 @@
 	 * literal attribute (`index="0" mobile="false"`). This change neither
 	 * adds nor removes any key from that path — do NOT "tidy" it into a
 	 * broader forward without re-measuring #371's symptom.
-	 */
+	 ********************************************************/
 	defineOptions({ inheritAttrs: false })
 
 	/*********************************************************
@@ -376,7 +377,7 @@
 						 * read by the row at all. Both fell through
 						 * `<OrigamDataTableRow>`'s undeclared-key path
 						 * straight into `$attrs`, which its
-						 * `v-bind="$attrs"` root then serialised as literal
+						 * `v-bind="{ ...$attrs }"` root then serialised as literal
 						 * DOM attributes on every rendered `<tr>`:
 						 * `index="0" mobile="false"`.
 						 *

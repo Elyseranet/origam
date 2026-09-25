@@ -31,9 +31,10 @@
 
 	import type { IVirtualScrollItemEmits, IVirtualScrollItemSlots } from '../../interfaces/VirtualScroll/virtual-scroll-item.interface'
 
-	/*
+	/*********************************************************
 	 * inheritAttrs — #916 / #853
 	 *
+	 * @description
 	 * The root `v-if` chain is MIXED: `v-if="renderless"` renders
 	 * `<slot name="renderless">` (a FRAGMENT vnode — `renderSlot()` always
 	 * returns one), while `v-else` renders a single wrapper `<div>`. Vue
@@ -55,7 +56,7 @@
 	 * `instance.attrs` directly and never marks the access, so the warning
 	 * fired on every render regardless — measured at 2 occurrences per
 	 * renderless mount.
-	 */
+	 ********************************************************/
 	defineOptions({ inheritAttrs: false })
 
 	/*********************************************************

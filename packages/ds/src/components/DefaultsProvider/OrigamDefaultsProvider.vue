@@ -27,9 +27,10 @@
 	 *   - `reset`      : same effect as `scoped`, with a discriminator value
 	 *   - `root`       : same as `reset`, communicates "top of defaults tree"
 	 ********************************************************/
-	/*
+	/*********************************************************
 	 * inheritAttrs — #916 / #853
 	 *
+	 * @description
 	 * The template renders ONLY `<slot name="default"/>`, and `renderSlot()`
 	 * returns a FRAGMENT vnode. Vue cannot merge fallthrough attributes onto
 	 * a fragment and logs "Extraneous non-props attributes", whose component
@@ -42,7 +43,7 @@
 	 * consumer's `class` / `data-cy` / `aria-label` reached NOTHING — so the
 	 * flag is behaviour-preserving and merely stops Vue re-reporting an
 	 * impossibility on every render.
-	 */
+	 ********************************************************/
 	defineOptions({ inheritAttrs: false })
 
 	const props = withDefaults(defineProps<IDefaultProviderProps>(), {})

@@ -23,9 +23,10 @@ import type {
     IClientOnlySlots
 } from '../../interfaces/ClientOnly/client-only.interface'
 
-/*
+/*********************************************************
  * inheritAttrs — #916 / #853
  *
+ * @description
  * BOTH branches of the root `v-if` render a `<slot>`, and `renderSlot()`
  * always returns a FRAGMENT vnode — so the root is a fragment whatever the
  * mount state. Vue cannot merge fallthrough attributes onto a fragment and
@@ -38,7 +39,7 @@ import type {
  * `default` slot and the `fallback` slot. Measured on `develop` before this
  * flag, a consumer's `class` / `data-cy` / `aria-label` reached NOTHING in
  * either branch. The flag is therefore behaviour-preserving by construction.
- */
+ ********************************************************/
 defineOptions({ name: 'OrigamClientOnly', inheritAttrs: false })
 
 defineProps<IClientOnlyProps>()
