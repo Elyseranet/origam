@@ -19,6 +19,13 @@ const GREEN_SPECS = [
     // #957 — verifiee verte et stable avant inscription : 6/6 puis 30/30 sous
     // `--repeat-each=5`, E2E_STATIC=1, chromium, port isole.
     'chip-affix-gutter.spec.ts',
+    // #924 — promu plutot que baseline : 18 tests, verts, et rouge sans le
+    // correctif (1 echec cible, pas un rouge en bloc). Il tourne SANS serveur
+    // ni port (fichiers `file://`, attributs ecrits avant le parse), donc il
+    // echappe aux trois pieges de mesure de ce depot : le port :6006 partage
+    // entre ~150 worktrees, l'iframe `__sandbox` qui ne recalcule pas, et jsdom
+    // qui ne resout pas `var()`. Cout en CI proche de zero.
+    'theme-focus-ring-contrast.spec.ts',
     'card.spec.ts',
     'avatar.spec.ts',
     'alert.spec.ts',
