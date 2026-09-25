@@ -571,6 +571,44 @@
 			display: inline-flex;
 		}
 
+		// #957 — `__close` owned both of its margin channels since forever;
+		// `__prepend` / `__append` owned NEITHER, so a chip with an icon
+		// rendered it glued to its label (measured: 0px, `margin-inline-end:
+		// 0px`, `gap: normal`, on all 8 identities) and no theme could fix it
+		// — the channel had never been opened. Default 6px is not a new design
+		// value: it is `--origam-chip__close---margin-inline-start`'s, i.e.
+		// the component's own precedent for "gutter between an affix and the
+		// label".
+		//
+		// ⛔ The gutter is CONDITIONAL on the label being non-empty, and that
+		// is the whole difficulty. `__content` has NO `v-if`: an icon-only
+		// chip (`<origam-chip prepend-icon="…"/>`, no text, no default slot)
+		// still renders `<div class="origam-chip__content">` holding the
+		// empty text node Vue emits for `{{ text }}`. An unconditional margin
+		// would therefore hang a 6px PHANTOM gutter off the trailing edge of
+		// every icon-only chip, in 217 places. Measured in Chromium, which is
+		// what makes `:empty` the right discriminator here:
+		//
+		//   content = "text"                  → :empty false → gutter 6px
+		//   content = <div></div>             → :empty true  → gutter 0px
+		//   content = empty text node (Vue!)  → :empty true  → gutter 0px
+		//   content = " " (one space)         → :empty false → gutter 6px
+		//
+		// `__prepend` needs `:has(+ …)` because the element it depends on is
+		// its FOLLOWING sibling; `__append` reads its PRECEDING sibling, so a
+		// plain `+` combinator suffices. Both keep the declaration on the
+		// element the token NAMES, so `--origam-chip__prepend---*` stays
+		// readable as "the prepend zone's own margin". Where `:has()` is
+		// unsupported the prepend gutter is simply absent — today's rendering,
+		// not a regression.
+		&__prepend:has(+ #{$this}__content:not(:empty)) {
+			margin-inline-end: var(--origam-chip__prepend---margin-inline-end, 6px);
+		}
+
+		&__content:not(:empty) + &__append {
+			margin-inline-start: var(--origam-chip__append---margin-inline-start, 6px);
+		}
+
 		&__close {
 			cursor: var(--origam-chip__close---cursor, pointer);
 			flex: var(--origam-chip__close---flex, 0 1 auto);

@@ -196,8 +196,22 @@
 			</origam-chip>
 		</Variant>
 
+		<!--
+			#957 — the second chip of each pair carries NO label. It is the
+			negative control for the prepend/append gutter: `__content` has no
+			`v-if`, so an icon-only chip still renders an EMPTY content div,
+			and an unconditional margin would hang a phantom 6px off its
+			trailing edge. Rendering both side by side makes the difference
+			visible in Histoire and gives `chip-affix-gutter.spec.ts` its two
+			fixtures without adding a Variant (ids are positional).
+		-->
 		<Variant title="Slots - Prepend">
 			<origam-chip text="With prepend">
+				<template #prepend>
+					<origam-icon :icon="prependIcon" size="x-small"/>
+				</template>
+			</origam-chip>
+			<origam-chip data-cy="chip-prepend-only">
 				<template #prepend>
 					<origam-icon :icon="prependIcon" size="x-small"/>
 				</template>
@@ -206,6 +220,11 @@
 
 		<Variant title="Slots - Append">
 			<origam-chip text="With append">
+				<template #append>
+					<origam-icon :icon="appendIcon" size="x-small"/>
+				</template>
+			</origam-chip>
+			<origam-chip data-cy="chip-append-only">
 				<template #append>
 					<origam-icon :icon="appendIcon" size="x-small"/>
 				</template>

@@ -448,6 +448,8 @@
   --origam-chip__close---max-width: 18px;
   --origam-chip__close---user-select: none;
   --origam-chip__close---flex: 0 1 auto;
+  --origam-chip__prepend---margin-inline-end: 6px;
+  --origam-chip__append---margin-inline-start: 6px;
   --origam-chip__filter---transition-property: transform, opacity;
   --origam-chip__filter---transition-duration: var(--origam-motion__duration---normal);
   --origam-chip__filter---transition-timing-function: var(--origam-motion__easing---standard);
@@ -3190,6 +3192,8 @@
     --origam-chip__close---max-width: 18px;
     --origam-chip__close---user-select: none;
     --origam-chip__close---flex: 0 1 auto;
+    --origam-chip__prepend---margin-inline-end: 6px;
+    --origam-chip__append---margin-inline-start: 6px;
     --origam-chip__filter---transition-property: transform, opacity;
     --origam-chip__filter---transition-duration: var(--origam-motion__duration---normal);
     --origam-chip__filter---transition-timing-function: var(--origam-motion__easing---standard);
