@@ -1,8 +1,8 @@
 {
   "kind": "const",
-  "exportedAt": "2026-09-14T14:04:03.369Z",
-  "sourceCommit": "c425a79f",
-  "entryCount": 407,
+  "exportedAt": "2026-09-26T17:07:46.442Z",
+  "sourceCommit": "6fa18d4c9",
+  "entryCount": 414,
   "entries": [
     {
       "entry": {
@@ -1024,103 +1024,6 @@
     {
       "entry": {
         "kind": "const",
-        "slug": "block-start-end-array",
-        "name": "BLOCK_START_END_ARRAY",
-        "category": "Layout & Sizing",
-        "domain": null,
-        "icon": null,
-        "description_key": "consts.catalog.block_start_end_array.description",
-        "description_fallback": "Extended block-axis anchor array that includes logical start/end values in addition to the physical top/bottom from BLOCK_ARRAY. Enables logical CSS property alignment alongside physical positioning.",
-        "definition": "export const BLOCK_START_END_ARRAY: Array<TBlockStartEnd> = [...BLOCK_ARRAY, START_END.START, START_END.END]",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/consts/Commons/anchor.const.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [
-        {
-          "value": "...BLOCK_ARRAY",
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "START_END.START",
-          "position": 1,
-          "description_key": "consts.detail.block_start_end_array.start",
-          "description_fallback": "Logical block-start (maps to top in LTR)."
-        },
-        {
-          "value": "START_END.END",
-          "position": 2,
-          "description_key": "consts.detail.block_start_end_array.end",
-          "description_fallback": "Logical block-end (maps to bottom in LTR)."
-        }
-      ],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "consts.detail.block_start_end_array.example",
-          "title_fallback": "Checking if a value is a block or logical axis anchor",
-          "code": "import { BLOCK_START_END_ARRAY } from 'origam'\n\nconst isBlockOrLogical = (pos: string) =>\n  BLOCK_START_END_ARRAY.includes(pos as never)",
-          "lang": "typescript"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "used_by",
-          "to_kind": null,
-          "to_slug": null,
-          "to_name": "useAnchor",
-          "prop_name": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "used_by",
-          "to_kind": null,
-          "to_slug": null,
-          "to_name": "OrigamMenu",
-          "prop_name": null,
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "used_by",
-          "to_kind": null,
-          "to_slug": null,
-          "to_name": "OrigamTooltip",
-          "prop_name": null,
-          "position": 2,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "const",
         "slug": "blocked-tags",
         "name": "BLOCKED_TAGS",
         "category": "Form & Input",
@@ -1516,6 +1419,103 @@
     {
       "entry": {
         "kind": "const",
+        "slug": "block-start-end-array",
+        "name": "BLOCK_START_END_ARRAY",
+        "category": "Layout & Sizing",
+        "domain": null,
+        "icon": null,
+        "description_key": "consts.catalog.block_start_end_array.description",
+        "description_fallback": "Extended block-axis anchor array that includes logical start/end values in addition to the physical top/bottom from BLOCK_ARRAY. Enables logical CSS property alignment alongside physical positioning.",
+        "definition": "export const BLOCK_START_END_ARRAY: Array<TBlockStartEnd> = [...BLOCK_ARRAY, START_END.START, START_END.END]",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/consts/Commons/anchor.const.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "...BLOCK_ARRAY",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "START_END.START",
+          "position": 1,
+          "description_key": "consts.detail.block_start_end_array.start",
+          "description_fallback": "Logical block-start (maps to top in LTR)."
+        },
+        {
+          "value": "START_END.END",
+          "position": 2,
+          "description_key": "consts.detail.block_start_end_array.end",
+          "description_fallback": "Logical block-end (maps to bottom in LTR)."
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "consts.detail.block_start_end_array.example",
+          "title_fallback": "Checking if a value is a block or logical axis anchor",
+          "code": "import { BLOCK_START_END_ARRAY } from 'origam'\n\nconst isBlockOrLogical = (pos: string) =>\n  BLOCK_START_END_ARRAY.includes(pos as never)",
+          "lang": "typescript"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "used_by",
+          "to_kind": null,
+          "to_slug": null,
+          "to_name": "useAnchor",
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "used_by",
+          "to_kind": null,
+          "to_slug": null,
+          "to_name": "OrigamMenu",
+          "prop_name": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "used_by",
+          "to_kind": null,
+          "to_slug": null,
+          "to_name": "OrigamTooltip",
+          "prop_name": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "const",
         "slug": "border-keyword-width",
         "name": "BORDER_KEYWORD_WIDTH",
         "category": "Commons",
@@ -1674,6 +1674,124 @@
         {
           "value": "{side: INLINE.LEFT, widthProp: 'borderLeft', colorProp: 'borderLeftColor'}",
           "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "const",
+        "slug": "border-prop-keys",
+        "name": "BORDER_PROP_KEYS",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export const BORDER_PROP_KEYS = [\n    'border',\n    'borderTop',\n    'borderRight',\n    'borderBottom',\n    'borderLeft',\n    'borderBlock',\n    'borderInline',\n    'borderColor',\n    'borderStyle',\n    'borderTopColor',\n    'borderRightColor',\n    'borderBottomColor',\n    'borderLeftColor',\n] as const",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/consts/Commons/border.const.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "'border'",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "'borderTop'",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "'borderRight'",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "'borderBottom'",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "'borderLeft'",
+          "position": 4,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "'borderBlock'",
+          "position": 5,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "'borderInline'",
+          "position": 6,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "'borderColor'",
+          "position": 7,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "'borderStyle'",
+          "position": 8,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "'borderTopColor'",
+          "position": 9,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "'borderRightColor'",
+          "position": 10,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "'borderBottomColor'",
+          "position": 11,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "'borderLeftColor'",
+          "position": 12,
           "description_key": null,
           "description_fallback": null
         }
@@ -5338,6 +5456,123 @@
     {
       "entry": {
         "kind": "const",
+        "slug": "chart-zoom-reset-gap",
+        "name": "CHART_ZOOM_RESET_GAP",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export const CHART_ZOOM_RESET_GAP = 4",
+        "signature": null,
+        "tag": null,
+        "value": "4",
+        "source_file": "packages/ds/src/consts/Chart/chart-cartesian.const.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "const",
+        "slug": "chart-zoom-reset-min-width",
+        "name": "CHART_ZOOM_RESET_MIN_WIDTH",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export const CHART_ZOOM_RESET_MIN_WIDTH = 64",
+        "signature": null,
+        "tag": null,
+        "value": "64",
+        "source_file": "packages/ds/src/consts/Chart/chart-cartesian.const.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "const",
+        "slug": "chart-zoom-reset-padding-x",
+        "name": "CHART_ZOOM_RESET_PADDING_X",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export const CHART_ZOOM_RESET_PADDING_X = 10",
+        "signature": null,
+        "tag": null,
+        "value": "10",
+        "source_file": "packages/ds/src/consts/Chart/chart-cartesian.const.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "const",
         "slug": "chart-zoom-wheel-step",
         "name": "CHART_ZOOM_WHEEL_STEP",
         "category": "Chart",
@@ -5724,10 +5959,10 @@
         "icon": null,
         "description_key": "consts.catalog.code_dark_theme.description",
         "description_fallback": "Shiki theme name used by useCode for dark mode. Maps to GitHub's dark theme — best contrast and nicest defaults. Override at the composable level for a different palette.",
-        "definition": "export const CODE_DARK_THEME = 'github-dark'",
+        "definition": "export const CODE_DARK_THEME = 'github-dark-high-contrast'",
         "signature": null,
         "tag": null,
-        "value": "'github-dark'",
+        "value": "'github-dark-high-contrast'",
         "source_file": "packages/ds/src/consts/Code/code.const.ts",
         "package_note": null,
         "note_key": null,
@@ -5860,10 +6095,10 @@
         "icon": null,
         "description_key": "consts.catalog.code_light_theme.description",
         "description_fallback": "Shiki theme name used by useCode for light mode. Maps to GitHub's light theme — best contrast and nicest defaults. Override at the composable level for a different palette.",
-        "definition": "export const CODE_LIGHT_THEME = 'github-light'",
+        "definition": "export const CODE_LIGHT_THEME = 'github-light-high-contrast'",
         "signature": null,
         "tag": null,
-        "value": "'github-light'",
+        "value": "'github-light-high-contrast'",
         "source_file": "packages/ds/src/consts/Code/code.const.ts",
         "package_note": null,
         "note_key": null,
@@ -11111,95 +11346,6 @@
     {
       "entry": {
         "kind": "const",
-        "slug": "grid-gap-size-var",
-        "name": "GRID_GAP_SIZE_VAR",
-        "category": "Layout & Sizing",
-        "domain": null,
-        "icon": null,
-        "description_key": "consts.catalog.grid_gap_size_var.description",
-        "description_fallback": "Maps every gap-size token to its corresponding CSS custom property emitted by Style Dictionary from tokens/component/grid.json. Provides a single source of truth so a token rename propagates automatically.",
-        "definition": "export const GRID_GAP_SIZE_VAR: Readonly<Record<TGridGapSize, string>> = {\n    xs: 'var(--origam-grid---gap-xs)',\n    sm: 'var(--origam-grid---gap-sm)',\n    md: 'var(--origam-grid---gap-md)',\n    lg: 'var(--origam-grid---gap-lg)',\n    xl: 'var(--origam-grid---gap-xl)'\n}",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/consts/Grid/grid.const.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [
-        {
-          "value": "xs: 'var(--origam-grid---gap-xs)'",
-          "position": 0,
-          "description_key": "consts.detail.grid_gap_size_var.xs",
-          "description_fallback": "CSS variable for the xs gap token."
-        },
-        {
-          "value": "sm: 'var(--origam-grid---gap-sm)'",
-          "position": 1,
-          "description_key": "consts.detail.grid_gap_size_var.sm",
-          "description_fallback": "CSS variable for the sm gap token."
-        },
-        {
-          "value": "md: 'var(--origam-grid---gap-md)'",
-          "position": 2,
-          "description_key": "consts.detail.grid_gap_size_var.md",
-          "description_fallback": "CSS variable for the md gap token."
-        },
-        {
-          "value": "lg: 'var(--origam-grid---gap-lg)'",
-          "position": 3,
-          "description_key": "consts.detail.grid_gap_size_var.lg",
-          "description_fallback": "CSS variable for the lg gap token."
-        },
-        {
-          "value": "xl: 'var(--origam-grid---gap-xl)'",
-          "position": 4,
-          "description_key": "consts.detail.grid_gap_size_var.xl",
-          "description_fallback": "CSS variable for the xl gap token."
-        }
-      ],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "consts.detail.grid_gap_size_var.example",
-          "title_fallback": "Resolving a gap token to its CSS variable",
-          "code": "import { GRID_GAP_SIZE_VAR } from 'origam'\n\nconst cssVar = GRID_GAP_SIZE_VAR['md']\n// → 'var(--origam-grid---gap-md)'",
-          "lang": "typescript"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "used_by",
-          "to_kind": null,
-          "to_slug": "grid",
-          "to_name": "OrigamGrid",
-          "prop_name": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "const",
         "slug": "grid-gap-sizes",
         "name": "GRID_GAP_SIZES",
         "category": "Layout & Sizing",
@@ -11291,6 +11437,95 @@
           "to_name": "GRID_GAP_SIZE_VAR",
           "prop_name": null,
           "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "const",
+        "slug": "grid-gap-size-var",
+        "name": "GRID_GAP_SIZE_VAR",
+        "category": "Layout & Sizing",
+        "domain": null,
+        "icon": null,
+        "description_key": "consts.catalog.grid_gap_size_var.description",
+        "description_fallback": "Maps every gap-size token to its corresponding CSS custom property emitted by Style Dictionary from tokens/component/grid.json. Provides a single source of truth so a token rename propagates automatically.",
+        "definition": "export const GRID_GAP_SIZE_VAR: Readonly<Record<TGridGapSize, string>> = {\n    xs: 'var(--origam-grid---gap-xs)',\n    sm: 'var(--origam-grid---gap-sm)',\n    md: 'var(--origam-grid---gap-md)',\n    lg: 'var(--origam-grid---gap-lg)',\n    xl: 'var(--origam-grid---gap-xl)'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/consts/Grid/grid.const.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "xs: 'var(--origam-grid---gap-xs)'",
+          "position": 0,
+          "description_key": "consts.detail.grid_gap_size_var.xs",
+          "description_fallback": "CSS variable for the xs gap token."
+        },
+        {
+          "value": "sm: 'var(--origam-grid---gap-sm)'",
+          "position": 1,
+          "description_key": "consts.detail.grid_gap_size_var.sm",
+          "description_fallback": "CSS variable for the sm gap token."
+        },
+        {
+          "value": "md: 'var(--origam-grid---gap-md)'",
+          "position": 2,
+          "description_key": "consts.detail.grid_gap_size_var.md",
+          "description_fallback": "CSS variable for the md gap token."
+        },
+        {
+          "value": "lg: 'var(--origam-grid---gap-lg)'",
+          "position": 3,
+          "description_key": "consts.detail.grid_gap_size_var.lg",
+          "description_fallback": "CSS variable for the lg gap token."
+        },
+        {
+          "value": "xl: 'var(--origam-grid---gap-xl)'",
+          "position": 4,
+          "description_key": "consts.detail.grid_gap_size_var.xl",
+          "description_fallback": "CSS variable for the xl gap token."
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "consts.detail.grid_gap_size_var.example",
+          "title_fallback": "Resolving a gap token to its CSS variable",
+          "code": "import { GRID_GAP_SIZE_VAR } from 'origam'\n\nconst cssVar = GRID_GAP_SIZE_VAR['md']\n// → 'var(--origam-grid---gap-md)'",
+          "lang": "typescript"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "used_by",
+          "to_kind": null,
+          "to_slug": "grid",
+          "to_name": "OrigamGrid",
+          "prop_name": null,
+          "position": 0,
           "description_key": null,
           "description_fallback": null
         }
@@ -12973,6 +13208,165 @@
     {
       "entry": {
         "kind": "const",
+        "slug": "locale-rtl-default",
+        "name": "LOCALE_RTL_DEFAULT",
+        "category": "Internals",
+        "domain": null,
+        "icon": null,
+        "description_key": "consts.catalog.locale_rtl_default.description",
+        "description_fallback": "Frozen map of every supported locale code to its RTL flag. Used by the locale system to set the text-direction automatically when a locale is activated. RTL locales: ar, fa, he.",
+        "definition": "export const LOCALE_RTL_DEFAULT = Object.freeze({\n    af: false,\n    ar: true,\n    bg: false,\n    ca: false,\n    ckb: false,\n    cs: false,\n    de: false,\n    el: false,\n    en: false,\n    es: false,\n    et: false,\n    fa: true,\n    fi: false,\n    fr: false,\n    hr: false,\n    hu: false,\n    he: true,\n    id: false,\n    it: false,\n    ja: false,\n    km: false,\n    ko: false,\n    lv: false,\n    lt: false,\n    nl: false,\n    no: false,\n    pl: false,\n    pt: false,\n    ro: false,\n    ru: false,\n    sk: false,\n    sl: false,\n    srCyrl: false,\n    srLatn: false,\n    sv: false,\n    th: false,\n    tr: false,\n    az: false,\n    uk: false,\n    vi: false,\n    zhHans: false,\n    zhHant: false\n})",
+        "signature": null,
+        "tag": null,
+        "value": "Object.freeze({ af: false, ar: true, bg: false, ca: false, ckb: false, cs: false, de: false, el: false, en: false, es: false, et: false, fa: true, fi: false, fr: false, hr: false, hu: false, he: true, id: false, it: false, ja: false, km: false, ko: false, lv: false, lt: false, nl: false, no: false, pl: false, pt: false, ro: false, ru: false, sk: false, sl: false, srCyrl: false, srLatn: false, sv: false, th: false, tr: false, az: false, uk: false, vi: false, zhHans: false, zhHant: false })",
+        "source_file": "packages/ds/src/consts/Commons/locale.const.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "consts.detail.locale_rtl_default.example",
+          "title_fallback": "Checking if a locale is RTL",
+          "code": "import { LOCALE_RTL_DEFAULT } from 'origam'\n\nconst isRtl = (locale: string) =>\n  LOCALE_RTL_DEFAULT[locale as keyof typeof LOCALE_RTL_DEFAULT] ?? false\n\nisRtl('ar') // → true\nisRtl('en') // → false",
+          "lang": "typescript"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "used_by",
+          "to_kind": null,
+          "to_slug": null,
+          "to_name": "useLocale",
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "used_by",
+          "to_kind": null,
+          "to_slug": null,
+          "to_name": "useRtl",
+          "prop_name": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "const",
+        "slug": "location-strategies",
+        "name": "LOCATION_STRATEGIES",
+        "category": "Layout & Sizing",
+        "domain": null,
+        "icon": null,
+        "description_key": "consts.catalog.location_strategies.description",
+        "description_fallback": "Map of the two built-in positioning strategies used by floating components (Menu, Tooltip, Picker). static = fixed viewport position (centered by default); connected = anchored to a triggering element.",
+        "definition": "export const LOCATION_STRATEGIES = {\n    static: staticLocationStrategy, // specific viewport position, usually centered\n    connected: connectedLocationStrategy // connected to a certain element\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/consts/Commons/location.const.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "static: staticLocationStrategy",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "connected: connectedLocationStrategy",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "consts.detail.location_strategies.example",
+          "title_fallback": "Referencing a location strategy by name",
+          "code": "import { LOCATION_STRATEGIES } from 'origam'\n\nconst strategy = LOCATION_STRATEGIES['connected']\n// → connectedLocationStrategy function",
+          "lang": "typescript"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "used_by",
+          "to_kind": null,
+          "to_slug": null,
+          "to_name": "useLocationStrategies",
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "used_by",
+          "to_kind": null,
+          "to_slug": "menu",
+          "to_name": "OrigamMenu",
+          "prop_name": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "used_by",
+          "to_kind": null,
+          "to_slug": "tooltip",
+          "to_name": "OrigamTooltip",
+          "prop_name": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "const",
         "slug": "lo-clip",
         "name": "LO_CLIP",
         "category": "Internals",
@@ -13237,165 +13631,6 @@
           "to_name": "useColor",
           "prop_name": null,
           "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "const",
-        "slug": "locale-rtl-default",
-        "name": "LOCALE_RTL_DEFAULT",
-        "category": "Internals",
-        "domain": null,
-        "icon": null,
-        "description_key": "consts.catalog.locale_rtl_default.description",
-        "description_fallback": "Frozen map of every supported locale code to its RTL flag. Used by the locale system to set the text-direction automatically when a locale is activated. RTL locales: ar, fa, he.",
-        "definition": "export const LOCALE_RTL_DEFAULT = Object.freeze({\n    af: false,\n    ar: true,\n    bg: false,\n    ca: false,\n    ckb: false,\n    cs: false,\n    de: false,\n    el: false,\n    en: false,\n    es: false,\n    et: false,\n    fa: true,\n    fi: false,\n    fr: false,\n    hr: false,\n    hu: false,\n    he: true,\n    id: false,\n    it: false,\n    ja: false,\n    km: false,\n    ko: false,\n    lv: false,\n    lt: false,\n    nl: false,\n    no: false,\n    pl: false,\n    pt: false,\n    ro: false,\n    ru: false,\n    sk: false,\n    sl: false,\n    srCyrl: false,\n    srLatn: false,\n    sv: false,\n    th: false,\n    tr: false,\n    az: false,\n    uk: false,\n    vi: false,\n    zhHans: false,\n    zhHant: false\n})",
-        "signature": null,
-        "tag": null,
-        "value": "Object.freeze({ af: false, ar: true, bg: false, ca: false, ckb: false, cs: false, de: false, el: false, en: false, es: false, et: false, fa: true, fi: false, fr: false, hr: false, hu: false, he: true, id: false, it: false, ja: false, km: false, ko: false, lv: false, lt: false, nl: false, no: false, pl: false, pt: false, ro: false, ru: false, sk: false, sl: false, srCyrl: false, srLatn: false, sv: false, th: false, tr: false, az: false, uk: false, vi: false, zhHans: false, zhHant: false })",
-        "source_file": "packages/ds/src/consts/Commons/locale.const.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "consts.detail.locale_rtl_default.example",
-          "title_fallback": "Checking if a locale is RTL",
-          "code": "import { LOCALE_RTL_DEFAULT } from 'origam'\n\nconst isRtl = (locale: string) =>\n  LOCALE_RTL_DEFAULT[locale as keyof typeof LOCALE_RTL_DEFAULT] ?? false\n\nisRtl('ar') // → true\nisRtl('en') // → false",
-          "lang": "typescript"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "used_by",
-          "to_kind": null,
-          "to_slug": null,
-          "to_name": "useLocale",
-          "prop_name": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "used_by",
-          "to_kind": null,
-          "to_slug": null,
-          "to_name": "useRtl",
-          "prop_name": null,
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "const",
-        "slug": "location-strategies",
-        "name": "LOCATION_STRATEGIES",
-        "category": "Layout & Sizing",
-        "domain": null,
-        "icon": null,
-        "description_key": "consts.catalog.location_strategies.description",
-        "description_fallback": "Map of the two built-in positioning strategies used by floating components (Menu, Tooltip, Picker). static = fixed viewport position (centered by default); connected = anchored to a triggering element.",
-        "definition": "export const LOCATION_STRATEGIES = {\n    static: staticLocationStrategy, // specific viewport position, usually centered\n    connected: connectedLocationStrategy // connected to a certain element\n}",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/consts/Commons/location.const.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [
-        {
-          "value": "static: staticLocationStrategy",
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "connected: connectedLocationStrategy",
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "consts.detail.location_strategies.example",
-          "title_fallback": "Referencing a location strategy by name",
-          "code": "import { LOCATION_STRATEGIES } from 'origam'\n\nconst strategy = LOCATION_STRATEGIES['connected']\n// → connectedLocationStrategy function",
-          "lang": "typescript"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "used_by",
-          "to_kind": null,
-          "to_slug": null,
-          "to_name": "useLocationStrategies",
-          "prop_name": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "used_by",
-          "to_kind": null,
-          "to_slug": "menu",
-          "to_name": "OrigamMenu",
-          "prop_name": null,
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "rel_type": "used_by",
-          "to_kind": null,
-          "to_slug": "tooltip",
-          "to_name": "OrigamTooltip",
-          "prop_name": null,
-          "position": 2,
           "description_key": null,
           "description_fallback": null
         }
@@ -19547,64 +19782,6 @@
     {
       "entry": {
         "kind": "const",
-        "slug": "origam-theme-storage-key",
-        "name": "ORIGAM_THEME_STORAGE_KEY",
-        "category": "Theme",
-        "domain": null,
-        "icon": null,
-        "description_key": "consts.catalog.origam_theme_storage_key.description",
-        "description_fallback": "localStorage key under which the user's chosen theme name is persisted across page reloads. useTheme() reads and writes this key automatically.",
-        "definition": "export const ORIGAM_THEME_STORAGE_KEY = 'origam-theme'",
-        "signature": null,
-        "tag": null,
-        "value": "'origam-theme'",
-        "source_file": "packages/ds/src/consts/Commons/theme.const.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [
-        {
-          "position": 0,
-          "title_key": "consts.detail.origam_theme_storage_key.example",
-          "title_fallback": "Reading the persisted theme directly from localStorage",
-          "code": "import { ORIGAM_THEME_STORAGE_KEY } from 'origam'\n\nconst savedTheme = localStorage.getItem(ORIGAM_THEME_STORAGE_KEY) // 'dark' | 'light' | null",
-          "lang": "typescript"
-        }
-      ],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": [
-        {
-          "rel_type": "used_by",
-          "to_kind": null,
-          "to_slug": null,
-          "to_name": "useTheme",
-          "prop_name": null,
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ]
-    },
-    {
-      "entry": {
-        "kind": "const",
         "slug": "origam-themes-key",
         "name": "ORIGAM_THEMES_KEY",
         "category": "Theme",
@@ -19675,6 +19852,64 @@
           "to_name": "useTheme",
           "prop_name": null,
           "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "const",
+        "slug": "origam-theme-storage-key",
+        "name": "ORIGAM_THEME_STORAGE_KEY",
+        "category": "Theme",
+        "domain": null,
+        "icon": null,
+        "description_key": "consts.catalog.origam_theme_storage_key.description",
+        "description_fallback": "localStorage key under which the user's chosen theme name is persisted across page reloads. useTheme() reads and writes this key automatically.",
+        "definition": "export const ORIGAM_THEME_STORAGE_KEY = 'origam-theme'",
+        "signature": null,
+        "tag": null,
+        "value": "'origam-theme'",
+        "source_file": "packages/ds/src/consts/Commons/theme.const.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": "consts.detail.origam_theme_storage_key.example",
+          "title_fallback": "Reading the persisted theme directly from localStorage",
+          "code": "import { ORIGAM_THEME_STORAGE_KEY } from 'origam'\n\nconst savedTheme = localStorage.getItem(ORIGAM_THEME_STORAGE_KEY) // 'dark' | 'light' | null",
+          "lang": "typescript"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "used_by",
+          "to_kind": null,
+          "to_slug": null,
+          "to_name": "useTheme",
+          "prop_name": null,
+          "position": 0,
           "description_key": null,
           "description_fallback": null
         }
@@ -22109,6 +22344,166 @@
     {
       "entry": {
         "kind": "const",
+        "slug": "rating-field-enabled-radio-selector",
+        "name": "RATING_FIELD_ENABLED_RADIO_SELECTOR",
+        "category": "RatingField",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export const RATING_FIELD_ENABLED_RADIO_SELECTOR = 'input[type=\"radio\"]:not(:disabled)'",
+        "signature": null,
+        "tag": null,
+        "value": "'input[type=\"radio\"]:not(:disabled)'",
+        "source_file": "packages/ds/src/consts/RatingField/rating-field.const.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "const",
+        "slug": "rating-field-mutating-keys",
+        "name": "RATING_FIELD_MUTATING_KEYS",
+        "category": "RatingField",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export const RATING_FIELD_MUTATING_KEYS: string[] = [\n    KEYBOARD_VALUES.UP,\n    KEYBOARD_VALUES.DOWN,\n    KEYBOARD_VALUES.LEFT,\n    KEYBOARD_VALUES.RIGHT,\n    KEYBOARD_VALUES.HOME,\n    KEYBOARD_VALUES.END,\n    KEYBOARD_VALUES.EMPTY\n]",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/consts/RatingField/rating-field.const.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "KEYBOARD_VALUES.UP",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "KEYBOARD_VALUES.DOWN",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "KEYBOARD_VALUES.LEFT",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "KEYBOARD_VALUES.RIGHT",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "KEYBOARD_VALUES.HOME",
+          "position": 4,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "KEYBOARD_VALUES.END",
+          "position": 5,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "KEYBOARD_VALUES.EMPTY",
+          "position": 6,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "const",
+        "slug": "rating-field-root-selector",
+        "name": "RATING_FIELD_ROOT_SELECTOR",
+        "category": "RatingField",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export const RATING_FIELD_ROOT_SELECTOR = '.origam-rating-field'",
+        "signature": null,
+        "tag": null,
+        "value": "'.origam-rating-field'",
+        "source_file": "packages/ds/src/consts/RatingField/rating-field.const.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "const",
         "slug": "rco",
         "name": "RCO",
         "category": "Color & A11y",
@@ -22933,7 +23328,7 @@
         "icon": null,
         "description_key": "consts.catalog.ripples.description",
         "description_fallback": "Low-level ripple controller used internally by v-ripple. Exposes show() and hide() methods that create, animate, and remove the ripple DOM elements on the target element.",
-        "definition": "export const RIPPLES = {\n\n    show (\n        e: TRippleEvent,\n        el: IRippleHtmlElement,\n        value: IRippleOptions = {}\n    ) {\n        if (!el?._ripple?.enabled) {\n            return\n        }\n\n        const container = document.createElement('span')\n        const animation = document.createElement('span')\n\n        container.appendChild(animation)\n        container.className = 'origam-ripple__container'\n\n        if (value.class) {\n            container.className += ` ${value.class}`\n        }\n\n        const {radius, scale, x, y, centerX, centerY} = calculate(e, el, value)\n\n        const size = `${radius * 2}px`\n        animation.className = 'origam-ripple__animation'\n        animation.style.width = size\n        animation.style.height = size\n\n        el.appendChild(container)\n\n        const computed = window.getComputedStyle(el)\n        if (computed && computed.position === 'static') {\n            el.style.position = 'relative'\n            el.dataset.previousPosition = 'static'\n        }\n\n        animation.classList.add('origam-ripple__animation--enter')\n        animation.classList.add('origam-ripple__animation--visible')\n        rippleTransform(animation, `translate(${x}, ${y}) scale3d(${scale},${scale},${scale})`)\n        animation.dataset.activated = String(performance.now())\n\n        setTimeout(() => {\n            animation.classList.remove('origam-ripple__animation--enter')\n            animation.classList.add('origam-ripple__animation--in')\n            rippleTransform(animation, `translate(${centerX}, ${centerY}) scale3d(1,1,1)`)\n        }, 0)\n    },\n\n    hide (el: IRippleHtmlElement | null) {\n        if (!el?._ripple?.enabled) return\n\n        const ripples = el.getElementsByClassName('origam-ripple__animation')\n\n        if (ripples.length === 0) return\n        const animation: IRippleElement = ripples[ripples.length - 1]\n\n        if (animation.dataset?.isHiding) return\n        else animation.dataset!.isHiding = 'true'\n\n        const diff = performance.now() - Number(animation.dataset!.activated)\n        const delay = Math.max(250 - diff, 0)\n\n        setTimeout(() => {\n            animation.classList.remove('origam-ripple__animation--in')\n            animation.classList.add('origam-ripple__animation--out')\n\n            setTimeout(() => {\n                const ripples = el.getElementsByClassName('origam-ripple__animation')\n                if (ripples.length === 1 && el.dataset.previousPosition) {\n                    el.style.position = el.dataset.previousPosition\n                    delete el.dataset.previousPosition\n                }\n\n                if (animation.parentNode?.parentNode === el) el.removeChild(animation.parentNode)\n            }, 300)\n        }, delay)\n    }\n}",
+        "definition": "export const RIPPLES = {\n\n    show (\n        e: TRippleEvent,\n        el: IRippleHtmlElement,\n        value: IRippleOptions = {}\n    ) {\n        if (!el?._ripple?.enabled) {\n            return\n        }\n\n        const container = document.createElement('span')\n        const animation = document.createElement('span')\n\n        container.appendChild(animation)\n        container.className = 'origam-ripple__container'\n\n        if (value.class) {\n            container.className += ` ${value.class}`\n        }\n\n        const {radius, scale, x, y, centerX, centerY} = calculate(e, el, value)\n\n        const size = `${radius * 2}px`\n        animation.className = 'origam-ripple__animation'\n        animation.style.width = size\n        animation.style.height = size\n\n        el.appendChild(container)\n\n        const computed = window.getComputedStyle(el)\n        if (computed && computed.position === 'static') {\n            el.style.position = 'relative'\n            el.dataset.previousPosition = 'static'\n        }\n\n        animation.classList.add('origam-ripple__animation--enter')\n        animation.classList.add('origam-ripple__animation--visible')\n        rippleTransform(animation, `translate(${x}, ${y}) scale3d(${scale},${scale},${scale})`)\n        animation.dataset.activated = String(performance.now())\n\n        scheduleRippleTimer(el, () => {\n            animation.classList.remove('origam-ripple__animation--enter')\n            animation.classList.add('origam-ripple__animation--in')\n            rippleTransform(animation, `translate(${centerX}, ${centerY}) scale3d(1,1,1)`)\n        }, 0)\n    },\n\n    hide (el: IRippleHtmlElement | null) {\n        if (!el?._ripple?.enabled) return\n\n        const ripples = el.getElementsByClassName('origam-ripple__animation')\n\n        if (ripples.length === 0) return\n        const animation: IRippleElement = ripples[ripples.length - 1]\n\n        if (animation.dataset?.isHiding) return\n        else animation.dataset!.isHiding = 'true'\n\n        const diff = performance.now() - Number(animation.dataset!.activated)\n        const delay = Math.max(250 - diff, 0)\n\n        scheduleRippleTimer(el, () => {\n            animation.classList.remove('origam-ripple__animation--in')\n            animation.classList.add('origam-ripple__animation--out')\n\n            scheduleRippleTimer(el, () => {\n                const ripples = el.getElementsByClassName('origam-ripple__animation')\n                if (ripples.length === 1 && el.dataset.previousPosition) {\n                    el.style.position = el.dataset.previousPosition\n                    delete el.dataset.previousPosition\n                }\n\n                if (animation.parentNode?.parentNode === el) el.removeChild(animation.parentNode)\n            }, 300)\n        }, delay)\n    }\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -23400,6 +23795,58 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "const",
+        "slug": "shadow-rung-fallback",
+        "name": "SHADOW_RUNG_FALLBACK",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export const SHADOW_RUNG_FALLBACK: Readonly<Record<string, string>> = {\n    '2xl': 'var(--origam-shadow---xl)',\n    '3xl': 'var(--origam-shadow---xl)'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/consts/Commons/elevation.const.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "'2xl': 'var(--origam-shadow---xl)'",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "'3xl': 'var(--origam-shadow---xl)'",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
