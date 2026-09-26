@@ -91,12 +91,38 @@ export async function useReferenceDoc<T>(
             (result.error.value as any)?.statusCode ??
             (result.error.value as any)?.status ??
             0
+
+        /*
+         * ⛔ 404 : on NE LEVE PAS. On rend `null`, et la page affiche son
+         * propre etat « introuvable » — #855.
+         *
+         * Avant, toute erreur levait un `createError({ fatal: true })`. Les
+         * HUIT pages de detail (`components`, `types`, `enums`, `interfaces`,
+         * `consts`, `composables`, `utils`, `directives`) portent pourtant
+         * chacune un bloc `v-if="!catalogEntry"` avec son `data-cy`
+         * (`component-not-found`, `type-not-found`, …) — et ce bloc etait
+         * STRUCTURELLEMENT MORT : le composable levait avant que la page
+         * puisse rendre quoi que ce soit.
+         *
+         * Mesure avant : `/components/<slug-inconnu>` et
+         * `/types/<slug-inconnu>` rendaient tous deux **HTTP 500**, jamais
+         * l'etat de repli. Les specs qui l'attendent
+         * (`types.spec.ts:209`, `components.spec.ts:360`) echouaient donc
+         * sur un chemin que le produit ne pouvait pas emprunter.
+         *
+         * Les autres statuts continuent de lever : un 500 ou un 503 (base
+         * absente) n'est pas « cette entree n'existe pas », c'est une panne,
+         * et la masquer derriere un joli « introuvable » mentirait au
+         * visiteur comme au developpeur.
+         */
+        if (status === 404) {
+            return result
+        }
+
         throw createError({
-            statusCode: status === 404 ? 404 : 500,
+            statusCode: 500,
             fatal: true,
-            statusMessage: status === 404
-                ? `${kind} '${slugRef.value}' not found`
-                : `Failed to load ${kind} '${slugRef.value}'`,
+            statusMessage: `Failed to load ${kind} '${slugRef.value}'`,
         })
     }
 
