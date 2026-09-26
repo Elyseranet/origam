@@ -597,6 +597,7 @@ useSeoMeta({
                                                                             :color="pi === 1 ? undefined : 'primary'"
                                                                             disabled
                                                                             aria-hidden="true"
+                                                                            class="wf__pricing-cta"
                                                                         >
                                                                             {{ t('wireframe.preview.get_started', 'Get started') }}
                                                                         </origam-btn>
@@ -1330,8 +1331,39 @@ useSeoMeta({
         block-size: 100%;
     }
 
+    /*
+      Les CTA doivent etre alignes EN BAS des trois cartes, meme quand une
+      carte a moins de contenu que sa voisine.
+
+      La grille etire deja les trois cartes a la meme hauteur (mesure : 184px
+      chacune). Ce qui cassait, c'est le maillon du milieu :
+      `.origam-card__content` est en `display: block` et ne remplit PAS la
+      carte (mesure : 159px dans une carte de 184). Le `block-size: 100%` de
+      l'inner resolvait donc sur 159, pas sur 184 — d'ou un CTA remonte de
+      32px sur les deux cartes courtes, et un debordement de 5px sur celle du
+      milieu, plus haute a cause de sa pastille « Popular ».
+
+      On chaine donc l'etirement sur toute la profondeur — carte, contenu,
+      inner — au lieu de demander « 100% » a un parent qui ne fait pas 100%.
+      `min-block-size: 0` a chaque etage : sans lui, un enfant flex refuse de
+      passer sous sa taille de contenu et le debordement revient.
+
+      ⚠️ Le `:deep` porte sur un enfant interne du DS. C'est assume ici — une
+      carte a hauteur imposee dont le contenu ne s'etire pas est un manque
+      cote DS, pas un besoin propre au wireframe. A regler la-bas, pas par un
+      contournement de plus dans cette page.
+    */
     &__pricing-card {
         block-size: 100%;
+        display: flex;
+        flex-direction: column;
+
+        :deep(.origam-card__content) {
+            flex: 1;
+            min-block-size: 0;
+            display: flex;
+            flex-direction: column;
+        }
     }
 
     &__pricing-inner {
@@ -1339,7 +1371,8 @@ useSeoMeta({
         display: flex;
         flex-direction: column;
         gap: var(--origam-space---2, 0.5rem);
-        block-size: 100%;
+        flex: 1;
+        min-block-size: 0;
     }
 
     &__pricing-badge {
@@ -1361,6 +1394,24 @@ useSeoMeta({
         display: flex;
         align-items: center;
         gap: var(--origam-space---1, 0.25rem);
+    }
+
+    /*
+      ⛔ `origam-btn` avec la prop `block` pose `flex-grow: 1`. Dans une
+      colonne flex, le bouton ABSORBE donc l'espace libre au lieu de rester
+      en bas : mesure sur les cartes courtes, 51px de haut contre 28px sur
+      celle du milieu qui n'a pas d'espace a reprendre.
+
+      C'est ce que la premiere version de ce correctif avait produit — les
+      trois CTA etaient bien alignes par le bas (ecart 0), et pourtant le
+      rendu etait faux. Les chiffres disaient oui, la capture disait non.
+
+      On epingle donc le CTA a sa taille naturelle ; c'est
+      `.wf__pricing-features` qui reprend seul l'espace libre, et le bouton
+      se retrouve en bas sans s'etirer.
+    */
+    &__pricing-cta {
+        flex: 0 0 auto;
     }
 
     &__landing-hero {
