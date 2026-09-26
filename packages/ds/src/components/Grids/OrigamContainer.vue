@@ -118,15 +118,24 @@
 		max-height: var(--origam-container---max-height);
 		min-height: var(--origam-container---min-height);
 
-		padding-block-start: var(--origam-container---padding-block-start);
-		padding-block-end: var(--origam-container---padding-block-end);
-		padding-inline-start: var(--origam-container---padding-inline-start);
-		padding-inline-end: var(--origam-container---padding-inline-end);
+		// ⛔ #950 — zero-specificity defaults. `:where(&)` compiles to
+		// `:where(.origam-container[data-v-hash])` = (0,0,0), so the
+		// scale-driven utility classes (`.origam--p-6`, `.origam--m-6`)
+		// win the cascade. Without it the scoped compiler pushes this rule
+		// to (0,2,0), beats the utility's (0,1,0), and the scale form of
+		// both props goes silently inert. Only the DEFAULT is lowered —
+		// modifier / state rules keep their (0,2,0) and still win.
+		:where(&) {
+			padding-block-start: var(--origam-container---padding-block-start);
+			padding-block-end: var(--origam-container---padding-block-end);
+			padding-inline-start: var(--origam-container---padding-inline-start);
+			padding-inline-end: var(--origam-container---padding-inline-end);
 
-		margin-block-start: var(--origam-container---margin-block-start);
-		margin-block-end: var(--origam-container---margin-block-end);
-		margin-inline-start: var(--origam-container---margin-inline-start);
-		margin-inline-end: var(--origam-container---margin-inline-end);
+			margin-block-start: var(--origam-container---margin-block-start);
+			margin-block-end: var(--origam-container---margin-block-end);
+			margin-inline-start: var(--origam-container---margin-inline-start);
+			margin-inline-end: var(--origam-container---margin-inline-end);
+		}
 
     &--is-rtl {
       direction: rtl;

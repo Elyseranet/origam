@@ -301,7 +301,19 @@
 		flex-wrap: wrap;
 		justify-content: center;
 		list-style-type: none;
-		padding: 0;
+
+		// ⛔ #950 — zero-specificity default. `:where(&)` compiles to
+		// `:where(.origam-expansion-panels[data-v-hash])` = (0,0,0), so
+		// the scale-driven utility class (`.origam--p-6` from
+		// `padding="6"`) wins the cascade. Without it the scoped compiler
+		// pushes this rule to (0,2,0) and beats the utility's (0,1,0) —
+		// and since the default here is the UA list reset `padding: 0`,
+		// the prop was not merely overridden, it painted nothing at all.
+		// Only the DEFAULT is lowered — modifiers keep their (0,2,0).
+		:where(&) {
+			padding: 0;
+		}
+
 		width: 100%;
 		position: relative;
 		z-index: 1;

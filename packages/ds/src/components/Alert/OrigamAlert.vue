@@ -350,14 +350,23 @@
     overflow: hidden;
     position: var(--origam-alert---position);
 
-    padding-block-start: calc(var(--origam-alert---padding-block-start) - var(--origam-alert---density));
-    padding-block-end: calc(var(--origam-alert---padding-block-end) - var(--origam-alert---density));
-    padding-inline-start: calc(var(--origam-alert---padding-inline-start) - var(--origam-alert---density));
-    padding-inline-end: calc(var(--origam-alert---padding-inline-end) - var(--origam-alert---density));
-    margin-block-start: var(--origam-alert---margin-block-start);
-    margin-block-end: var(--origam-alert---margin-block-end);
-    margin-inline-start: var(--origam-alert---margin-inline-start);
-    margin-inline-end: var(--origam-alert---margin-inline-end);
+    // ⛔ #950 — zero-specificity defaults. `:where(&)` compiles to
+    // `:where(.origam-alert[data-v-hash])` = (0,0,0), so the scale-driven
+    // utility classes (`.origam--p-6` from `padding="6"`, `.origam--m-6`
+    // from `margin="6"`) win the cascade. Without it the scoped compiler
+    // pushes this rule to (0,2,0), beats the utility's (0,1,0), and the
+    // scale form of both props goes silently inert. Only the DEFAULT is
+    // lowered — modifier / state rules keep their (0,2,0) and still win.
+    :where(&) {
+      padding-block-start: calc(var(--origam-alert---padding-block-start) - var(--origam-alert---density));
+      padding-block-end: calc(var(--origam-alert---padding-block-end) - var(--origam-alert---density));
+      padding-inline-start: calc(var(--origam-alert---padding-inline-start) - var(--origam-alert---density));
+      padding-inline-end: calc(var(--origam-alert---padding-inline-end) - var(--origam-alert---density));
+      margin-block-start: var(--origam-alert---margin-block-start);
+      margin-block-end: var(--origam-alert---margin-block-end);
+      margin-inline-start: var(--origam-alert---margin-inline-start);
+      margin-inline-end: var(--origam-alert---margin-inline-end);
+    }
 
     border-top-width: var(--origam-alert---border-top-width, var(--origam-alert---border-width, 0));
     border-right-width: var(--origam-alert---border-right-width, var(--origam-alert---border-width, 0));

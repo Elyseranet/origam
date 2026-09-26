@@ -289,9 +289,27 @@
 		--origam-blockquote---resolved-author-color: var(--origam-blockquote__author---color, var(--origam-color__text---secondary, #525252));
 
 		position: relative;
-		margin: 0;
-		padding-block: var(--origam-blockquote---resolved-padding-block);
-		padding-inline: var(--origam-blockquote---resolved-padding-inline);
+
+		// ⛔ #950 — zero-specificity defaults. `:where(&)` compiles to
+		// `:where(.origam-blockquote[data-v-hash])` = (0,0,0), so the
+		// scale-driven utility classes (`.origam--p-6`, `.origam--m-6`)
+		// win the cascade. Without it the scoped compiler pushes this rule
+		// to (0,2,0) and beats the utility's (0,1,0).
+		//
+		// ⚠️ Deliberately PARTIAL. The `--variant-*` rules further down are
+		// modifiers and keep their (0,2,0) per #950's decision — and
+		// `variant` defaults to `'default'`, so
+		// `.origam-blockquote--variant-default` is ALWAYS present and owns
+		// `padding-inline-start`. After this change `padding-block-*` and
+		// `padding-inline-end` answer the utility; `padding-inline-start`
+		// stays held by the active variant. That is the intended trade:
+		// the variant's accent-bar offset must not lose to a utility.
+		:where(&) {
+			margin: 0;
+			padding-block: var(--origam-blockquote---resolved-padding-block);
+			padding-inline: var(--origam-blockquote---resolved-padding-inline);
+		}
+
 		font-family: var(--origam-blockquote---resolved-font-family);
 		font-size: var(--origam-blockquote---resolved-font-size);
 		font-style: var(--origam-blockquote---resolved-font-style);

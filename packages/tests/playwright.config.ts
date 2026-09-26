@@ -26,6 +26,11 @@ const GREEN_SPECS = [
     // entre ~150 worktrees, l'iframe `__sandbox` qui ne recalcule pas, et jsdom
     // qui ne resout pas `var()`. Cout en CI proche de zero.
     'theme-focus-ring-contrast.spec.ts',
+    // #950 — promu plutot que baseline : 34 tests, verts et stables, et rouges
+    // a HEAD~1 (A/B fait). Le critere de `spec-coverage` est « cette spec
+    // est-elle verte aujourd'hui ? » — une spec verte et NON gardee est un
+    // filet perdu, pas une dette a enregistrer.
+    'utility-cascade-padding-margin-950.spec.ts',
     'card.spec.ts',
     'avatar.spec.ts',
     'alert.spec.ts',

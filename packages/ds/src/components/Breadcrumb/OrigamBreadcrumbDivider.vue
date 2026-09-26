@@ -166,15 +166,24 @@
 		border-width: var(--origam-breadcrumb-divider---border-width);
 		border-radius: var(--origam-breadcrumb-divider---border-radius);
 
-		padding-block-start: calc(var(--origam-breadcrumb-divider---padding-block-start) - var(--origam-breadcrumb-divider---density));
-		padding-block-end: calc(var(--origam-breadcrumb-divider---padding-block-end) - var(--origam-breadcrumb-divider---density));
-		padding-inline-start: calc(var(--origam-breadcrumb-divider---padding-inline-start) - var(--origam-breadcrumb-divider---density));
-		padding-inline-end: calc(var(--origam-breadcrumb-divider---padding-inline-end) - var(--origam-breadcrumb-divider---density));
+		// ⛔ #950 — zero-specificity defaults. `:where(&)` compiles to
+		// `:where(.origam-breadcrumb-divider[data-v-hash])` = (0,0,0), so
+		// the scale-driven utility classes (`.origam--p-6`, `.origam--m-6`)
+		// win the cascade. Without it the scoped compiler pushes this rule
+		// to (0,2,0), beats the utility's (0,1,0), and the scale form of
+		// both props goes silently inert. Only the DEFAULT is lowered —
+		// `&--density-*` and other modifiers keep their (0,2,0).
+		:where(&) {
+			padding-block-start: calc(var(--origam-breadcrumb-divider---padding-block-start) - var(--origam-breadcrumb-divider---density));
+			padding-block-end: calc(var(--origam-breadcrumb-divider---padding-block-end) - var(--origam-breadcrumb-divider---density));
+			padding-inline-start: calc(var(--origam-breadcrumb-divider---padding-inline-start) - var(--origam-breadcrumb-divider---density));
+			padding-inline-end: calc(var(--origam-breadcrumb-divider---padding-inline-end) - var(--origam-breadcrumb-divider---density));
 
-		margin-block-start: var(--origam-breadcrumb-divider---margin-block-start);
-		margin-block-end: var(--origam-breadcrumb-divider---margin-block-end);
-		margin-inline-start: var(--origam-breadcrumb-divider---margin-inline-start);
-		margin-inline-end: var(--origam-breadcrumb-divider---margin-inline-end);
+			margin-block-start: var(--origam-breadcrumb-divider---margin-block-start);
+			margin-block-end: var(--origam-breadcrumb-divider---margin-block-end);
+			margin-inline-start: var(--origam-breadcrumb-divider---margin-inline-start);
+			margin-inline-end: var(--origam-breadcrumb-divider---margin-inline-end);
+		}
 
 		&--density-comfortable {
 			--origam-breadcrumb-divider---density: -8px;

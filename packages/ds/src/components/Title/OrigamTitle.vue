@@ -145,8 +145,17 @@
 		font-weight:    var(--origam-title---font-weight);
 		letter-spacing: var(--origam-title---letter-spacing);
 		line-height:    var(--origam-title---line-height);
-		margin-block-start: var(--origam-title---margin-block-start);
-		margin-block-end:   var(--origam-title---margin-block-end);
+		// ⛔ #950 — zero-specificity default. `:where(&)` compiles to
+		// `:where(.origam-title[data-v-hash])` = (0,0,0), so the
+		// scale-driven utility class (`.origam--m-6` from `margin="6"`)
+		// wins the cascade. Without it the scoped compiler pushes this
+		// rule to (0,2,0), beats the utility's (0,1,0), and the scale
+		// form of `margin` goes silently inert. Only the DEFAULT is
+		// lowered — `&--density-*` and other modifiers keep their (0,2,0).
+		:where(&) {
+			margin-block-start: var(--origam-title---margin-block-start);
+			margin-block-end:   var(--origam-title---margin-block-end);
+		}
 
 		&--density-compact {
 			font-size: var(--origam-title---font-size, var(--origam-title---font-size-xs));

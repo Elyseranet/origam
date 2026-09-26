@@ -1177,7 +1177,19 @@
 		display: flex;
 		flex-direction: column;
 		position: var(--origam-audio---position, static);
-		padding: var(--origam-audio---padding, 16px);
+		// ⛔ #950 — zero-specificity default. `:where(&)` compiles to
+		// `:where(.origam-audio[data-v-hash])` = (0,0,0), so the
+		// scale-driven utility class (`.origam--p-6` from `padding="6"`)
+		// wins the cascade. Without it the scoped compiler pushes this
+		// rule to (0,2,0) and beats the utility's (0,1,0).
+		// Only the DEFAULT is lowered: `&--compact` below still declares
+		// `padding` at (0,2,0) and therefore still wins whenever the
+		// compact variant is active — which is the point of #950's
+		// decision (modifiers must never lose to a utility class).
+		:where(&) {
+			padding: var(--origam-audio---padding, 16px);
+		}
+
 		border-radius: var(--origam-audio---border-radius, var(--origam-radius---lg, 12px));
 		color: var(--origam-audio---color, var(--origam-color__text---primary));
 		background-color: var(--origam-audio---background-color, var(--origam-color__surface---raised));

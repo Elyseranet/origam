@@ -1232,7 +1232,16 @@
     flex-direction: column;
     gap: var(--origam-calendar---gap, 0);
     width: 100%;
-    padding: var(--origam-calendar---padding, 0);
+    // ⛔ #950 — zero-specificity default. `:where(&)` compiles to
+    // `:where(.origam-calendar[data-v-hash])` = (0,0,0), so the
+    // scale-driven utility class (`.origam--p-6` from `padding="6"`) wins
+    // the cascade. Without it the scoped compiler pushes this rule to
+    // (0,2,0) and beats the utility's (0,1,0). Only the DEFAULT is
+    // lowered — modifier / state rules keep their (0,2,0).
+    :where(&) {
+      padding: var(--origam-calendar---padding, 0);
+    }
+
     background-color: var(--origam-calendar---background-color, #ffffff);
     color: var(--origam-calendar---color, inherit);
     border: var(--origam-calendar---border-width, 1px) solid var(--origam-calendar---border-color, #e5e7eb);
