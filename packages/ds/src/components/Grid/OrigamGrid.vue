@@ -229,6 +229,34 @@
 		lang="scss"
 		scoped
 >
+	/*
+	 * ⛔ Neutralise la feuille du NAVIGATEUR, pas celle d'un consommateur.
+	 *
+	 * Le theme de base du DS (`themes/origam.theme.ts`) pose `tag: 'ul'` sur
+	 * `origam-grid` et `tag: 'li'` sur `origam-grid-item` — choix semantique
+	 * volontaire. Mais une grille n'est pas une liste a puces, et le navigateur
+	 * applique quand meme ses styles de `ul` : une PUCE par element et une
+	 * INDENTATION de 40px.
+	 *
+	 * Mesure sur `/wireframe` avant correctif : `list-style-type: circle` sur
+	 * 9 `origam-grid-item` visibles, et `padding-inline-start: 40px` sur 3 des
+	 * 7 grilles de la page. Les autres pages du site ne montraient rien parce
+	 * qu'elles remettaient `list-style: none` a la main, page par page — c'est
+	 * exactement le signal qu'il manquait quelque chose ICI.
+	 *
+	 * ⚠️ `:where()` n'est pas decoratif : il met la specificite a ZERO. Une
+	 * regle scopee ordinaire vaudrait (0,2,0) et CONFISQUERAIT le canal
+	 * `padding` — les classes utilitaires emises par `usePadding` valent
+	 * (0,1,0) et perdraient. C'est precisement le defaut mesure dans #950.
+	 * A (0,0,0) la regle bat l'origine NAVIGATEUR (toute declaration d'auteur
+	 * la bat, quelle que soit sa specificite) et perd contre tout ce qu'un
+	 * consommateur ecrit.
+	 */
+	:where(.origam-grid) {
+		list-style: none;
+		padding-inline-start: 0;
+	}
+
 	.origam-grid {
 		display: grid;
 		grid-template-columns: var(--origam-grid---template-columns, none);
