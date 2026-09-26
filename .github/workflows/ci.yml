@@ -485,8 +485,43 @@ jobs:
     # existed but nothing ever invoked `playwright.marketing.config.ts` on
     # a merge, so a real SSR regression (nav/footer rendering empty — see
     # `marketing-nav-ssr.spec.ts`) could ship without a single red check.
+    #
+    # ⛔ Base de donnees ephemere — #953.
+    #
+    # Sans elle, `/api/reference/*` repond 503 et TOUTE page lisant le
+    # catalogue rend du VIDE en CI, sans qu'aucun check ne rougisse :
+    # `useReferenceCatalog` declare `default: () => []`, donc « 0 famille sur
+    # 0 categorie » passe pour un succes. `/components` — 218 composants, la
+    # vitrine du DS — pouvait se vider entierement sans une seule ligne rouge.
+    #
+    # Les trois etapes ci-dessous sont copiees de `docs-fixtures.yml`, ou
+    # elles tournent deja : service postgres:16, `db:migrate`, `docs:seed`
+    # depuis les fixtures commitees (`server/db/seed/*.json`, 218 entrees
+    # pour les composants).
+    #
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: origam
+          POSTGRES_PASSWORD: origam
+          POSTGRES_DB: origam_docs
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U origam -d origam_docs"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+
     env:
       MARKETING_GREEN_ONLY: '1'
+      NUXT_DB_HOST: localhost
+      NUXT_DB_PORT: '5432'
+      NUXT_DB_NAME: origam_docs
+      NUXT_DB_USER: origam
+      NUXT_DB_PASSWORD: origam
+      DATABASE_URL: postgres://origam:origam@localhost:5432/origam_docs
     steps:
       - uses: actions/checkout@v7
 
@@ -499,6 +534,15 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      # #953 — sans ces deux etapes, le catalogue est vide et les pages qui le
+      # lisent rendent du vide en silence. `docs:seed` charge les fixtures
+      # commitees, il n'extrait rien : il ne peut donc pas diverger des sources.
+      - name: Apply migrations
+        run: pnpm -F @origam/marketing db:migrate
+
+      - name: Seed DB from committed fixtures
+        run: pnpm -F @origam/marketing docs:seed
 
       - name: Resolve Playwright version
         id: pw
