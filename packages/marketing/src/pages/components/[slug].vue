@@ -2258,12 +2258,37 @@ useSeoMeta({
             flex-wrap: wrap;
         }
 
+        /*
+          ⛔ `secondary`, PAS `tertiary` — echec WCAG AA mesure.
+
+          Ce libelle rend en 12px GRAS, donc « texte normal » au sens de
+          WCAG 1.4.3 : le seuil est 4,5:1, pas 3:1.
+
+          Mesure des deux encres contre le fond reel de ce panneau
+          (`surface---sunken` COMPOSITE sur `surface---default` — sans la
+          composition, `glass` sort des chiffres absurdes, son sunken etant
+          a 3 % d'alpha), 8 identites x 2 modes :
+
+            tertiary  : 6 echecs / 16   (apple sombre 2,75 · apple clair 3,33
+                                         · origam sombre 3,78 · geek sombre
+                                         3,95 · geek clair 4,24 · origam
+                                         clair 4,35)
+            secondary : 0 echec / 16    (minimum 5,42, apple sombre)
+
+          C'est axe qui l'a leve sur /components/btn : #7e5fb0 sur #efe8fc,
+          4,24:1. Le token n'etait pas mort — `geek.theme.ts:60` declare bien
+          `tertiary: '#7e5fb0'` — c'est sa VALEUR qui ne passe pas.
+
+          ⚠️ `--origam-color__text---tertiary` reste lu a ~72 endroits du
+          marketing, et echoue sur 6 configurations partout ou il sert de
+          texte lisible. Hors perimetre ici.
+        */
         &-label {
             font-size: var(--origam-font-size---xs, 0.75rem);
             font-weight: 700;
             letter-spacing: 0.07em;
             text-transform: uppercase;
-            color: var(--origam-color__text---tertiary, #737373);
+            color: var(--origam-color__text---secondary, #525252);
             white-space: nowrap;
             padding-block-start: 0.15rem;
         }
