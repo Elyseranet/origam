@@ -783,14 +783,32 @@
     min-width: 200px;
     width: 200px;
     /*
-      ⚠️ Ce `padding` litteral ECRASE `--origam-menu__content---padding`, que
-      des themes declarent (material: 6px) et qui ne peint donc rien. Constate
-      en mesurant : la variable vaut bien 6px sur l'element, le rendu est 4px.
-      Laisse en l'etat ici — le corriger change la geometrie des trois menus sur
-      les 8 identites, ca se mesure a part. Ticket #955.
+      ⛔ Lit la variable, ne pose PAS de litteral — #955.
+
+      Il y avait ici `padding: 4px` en dur. Il ECRASAIT
+      `--origam-menu__content---padding`, que sept themes declarent : quatre
+      demandaient 6px et obtenaient 4px.
+
+      ⚠️ Mais le simple RETRAIT du litteral ne rend pas la main au theme — il
+      supprime tout le padding. Mesure, 8 identites x 2 modes : le panneau
+      tombe a 0px partout. Raison, cote DS : `OrigamMenu.vue:599-602` applique
+      `var(--origam-menu__content---padding, 4px)` sur `.origam-menu__list`,
+      un element qui n'est rendu QUE dans le repli du slot par defaut
+      (`OrigamMenu.vue:31-36`). Des qu'un consommateur fournit son contenu — ce
+      que fait toute la navigation de ce site — l'element n'existe pas, et le
+      panneau ne recoit AUCUN padding du DS. Verifie : zero regle ne pose de
+      padding sur `.origam-menu__content` dans la feuille servie.
+
+      D'ou la forme ci-dessous : on garde une declaration ici, mais elle LIT le
+      canal de theme au lieu de le court-circuiter, avec le meme repli 4px que
+      le DS. Les quatre identites a 6px l'obtiennent enfin, les trois a 4px ne
+      bougent pas.
+
+      Le vrai defaut reste cote DS — le padding du panneau est accroche a un
+      enfant de repli plutot qu'au panneau. Le corriger changerait la geometrie
+      de tous les consommateurs d'`origam-menu` : pas ici.
     */
-    padding: 4px;
-  }
+    padding: var(--origam-menu__content---padding, 4px);  }
 
   .appbar-menu .origam-menu__list {
     min-width: 200px;
