@@ -266,6 +266,14 @@
 		grid-auto-columns: var(--origam-grid---auto-columns, auto);
 		grid-auto-rows: var(--origam-grid---auto-rows, auto);
 		gap: var(--origam-grid---gap, var(--origam-grid---gap-md));
+		// ⛔ C2 (#597) — `--origam-grid---column-gap` et `---row-gap` restent NON
+		// DECLARES, a dessein. Leur repli est le bouton general
+		// `--origam-grid---gap`, que ce composant ecrit EN STYLE INLINE par
+		// instance (prop `gap`, voir `gridStyles` ci-dessus). Une custom property
+		// est substituee sur l'element qui la declare : une declaration `:root`
+		// figerait les deux gouttieres a la valeur racine et la prop `gap`
+		// cesserait d'agir sur elles. Les 10 autres vars de ce bloc n'ont pas ce
+		// probleme — leur repli est un mot-cle CSS constant — et sont declarees.
 		column-gap: var(--origam-grid---column-gap, var(--origam-grid---gap));
 		row-gap: var(--origam-grid---row-gap, var(--origam-grid---gap));
 		align-items: var(--origam-grid---align-items, stretch);

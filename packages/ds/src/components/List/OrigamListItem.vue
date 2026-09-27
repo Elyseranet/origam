@@ -800,6 +800,13 @@
 		}
 
 		&__overlay {
+			// ⛔ C2 (#597, deja tranche en PR #586) — `--origam-list-item__overlay
+			// ---background-color` et `---transition-timing-function` restent NON
+			// DECLARES, a dessein : leur second echelon
+			// (`--origam-list__item---overlay-*`) est, lui, declare et type
+			// (`TTokenName`). Declarer le premier echelon a `:root` le figerait et
+			// MASQUERAIT DEFINITIVEMENT ce crochet de theming public. La garde
+			// compare des noms, pas des chaines de repli : faux positif, pas dette.
 			background-color: var(--origam-list-item__overlay---background-color, var(--origam-list__item---overlay-background-color, currentColor));
 			border-radius: var(--origam-list-item__overlay---border-radius, inherit);
 			opacity: var(--origam-list-item__overlay---opacity, var(--origam-list__item---overlay-opacity, 0));

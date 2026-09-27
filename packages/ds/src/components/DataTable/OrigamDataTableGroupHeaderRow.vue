@@ -211,6 +211,13 @@
 		font-weight: var(--origam-data-table-group-header-row---font-weight, var(--origam-data-table---group-header-row-font-weight, 500));
 
 		&__column {
+			// ⛔ C2 (#597) — `--origam-data-table-group-header-row--depth` reste NON
+			// DECLARE, a dessein : ce n'est PAS un token de theme mais une DONNEE
+			// d'instance, ecrite en style inline par ce composant
+			// (`dataTableGroupHeaderRowStyles`, `props.item.depth`). La declarer
+			// dans les feuilles exposerait la profondeur d'un noeud comme un
+			// reglage de theme, et son repli `0` doit rester SANS UNITE : c'est un
+			// multiplicateur de `calc()`, `0px * 16px` serait invalide (#568).
 			padding-inline-start: calc(var(--origam-data-table-group-header-row--depth, 0) * var(--origam-data-table-group-header-row__column---padding-inline-start-factor, var(--origam-data-table---group-header-row-column-padding-inline-start-factor, 16px)));
 		}
 	}

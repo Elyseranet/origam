@@ -416,7 +416,7 @@
 >
 	.origam-data-table-rows {
 		&--no-data {
-			text-align: var(--origam-data-table-empty---text-align, var(--origam-data-table__empty---text-align, center));
+			text-align: var(--origam-data-table-rows--no-data---text-align, var(--origam-data-table__empty---text-align, center));
 			color: var(--origam-data-table-rows--no-data---color, var(--origam-data-table__empty---color, var(--origam-color__text---secondary)));
 		}
 

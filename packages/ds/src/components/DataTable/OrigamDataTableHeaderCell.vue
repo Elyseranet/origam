@@ -277,7 +277,7 @@
 		}
 
 		&#{$this}--sortable {
-			cursor: var(--origam-data-table-sortable---cursor, var(--origam-data-table__sortable---cursor, pointer));
+			cursor: var(--origam-data-table-header-cell--sortable---cursor, var(--origam-data-table__sortable---cursor, pointer));
 
 			&:hover {
 				#{$this}__sort-icon {
