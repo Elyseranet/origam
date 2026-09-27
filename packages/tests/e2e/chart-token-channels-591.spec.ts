@@ -73,6 +73,8 @@ interface ICase {
     probes: IProbe[]
     /** Pilotage des controles Histoire a faire APRES l'ouverture de la Variant. */
     prepare?: (page: Page) => Promise<void>
+    /** Verification supplementaire greffee sur la page deja ouverte. */
+    andThen?: (page: Page) => Promise<void>
 }
 
 const STORY = (slug: string) => `/stories/story/components-stories-chart-origamchart${slug}-story-vue`
@@ -92,8 +94,9 @@ const CASES: ICase[] = [
         ]
     },
     {
-        name: 'Treemap — tuiles et deux rangs d etiquette',
+        name: 'Treemap — tuiles, deux rangs d etiquette, et la feuille qui declare',
         story: STORY('treemap'),
+        andThen: (page) => assertSheetDeclares(page),
         probes: [
             { variant: 'Design', selector: '.origam-chart__treemap-tile', property: 'stroke', expected: 'rgb(255, 255, 255)' },
             { variant: 'Design', selector: '.origam-chart__treemap-tile', property: 'stroke-width', expected: '2px' },
@@ -169,31 +172,45 @@ const record = (key: string, value: string) => {
     appendFileSync(resolve(JOURNAL), `${JSON.stringify({ key, value })}\n`)
 }
 
+/**
+ * UN test par variante, pas un par sonde.
+ *
+ * ⛔ La premiere version ouvrait la story une fois PAR mesure : 31 chargements
+ * d'un catalogue Histoire lourd, chacun avec son propre budget de 30 s. Sous
+ * charge la moitie mourait sur `Test timeout`, sans une seule assertion
+ * fausse — le faux rouge que le CLAUDE.md racine decrit. Regrouper les sondes
+ * d'une meme Variant ramene 33 chargements a 9 et supprime la cause, au lieu
+ * de rallonger les delais (le « timeout whack-a-mole » qui deplace le flake
+ * sans le corriger).
+ *
+ * Les assertions sont SOUPLES (`expect.soft`) pour que l'echec nomme TOUTES
+ * les mesures fausses d'un coup, pas seulement la premiere.
+ */
 for (const kase of CASES) {
-    test.describe(`#591 ${kase.name}`, () => {
-        for (const probe of kase.probes) {
-            test(`${probe.selector} → ${probe.property} = ${probe.expected}`, async ({ page }) => {
-                await openVariant(page, kase.story, probe.variant)
-                if (kase.prepare) {
-                    await kase.prepare(page)
-                    await page.waitForTimeout(400)
-                }
-
-                const el = sandboxOf(page).locator(probe.selector).first()
-                await el.waitFor({ state: 'attached', timeout: 15000 })
-
-                // Mesure ET lecture dans le MEME evaluate : pas de mutation ici,
-                // donc pas de piege de recalcul — mais on lit le longhand, jamais
-                // le raccourci.
-                const value = await el.evaluate(
-                    (node, prop) => getComputedStyle(node as Element).getPropertyValue(prop).trim(),
-                    probe.property
-                )
-
-                record(`${kase.story}|${probe.selector}|${probe.property}`, value)
-                expect(value).toBe(probe.expected)
-            })
+    test(`#591 ${kase.name}`, async ({ page }) => {
+        await openVariant(page, kase.story, kase.probes[0].variant)
+        if (kase.prepare) {
+            await kase.prepare(page)
+            await page.waitForTimeout(400)
         }
+
+        for (const probe of kase.probes) {
+            const el = sandboxOf(page).locator(probe.selector).first()
+            await el.waitFor({ state: 'attached', timeout: 15000 })
+
+            // Mesure ET lecture dans le MEME evaluate : pas de mutation ici,
+            // donc pas de piege de recalcul — mais on lit le longhand, jamais
+            // le raccourci.
+            const value = await el.evaluate(
+                (node, prop) => getComputedStyle(node as Element).getPropertyValue(prop).trim(),
+                probe.property
+            )
+
+            record(`${kase.story}|${probe.selector}|${probe.property}`, value)
+            expect.soft(value, `${probe.selector} → ${probe.property}`).toBe(probe.expected)
+        }
+
+        if (kase.andThen) await kase.andThen(page)
     })
 }
 
@@ -256,11 +273,14 @@ const RECONCILED_TOKENS: Array<[token: string, expected: string]> = [
     ['--origam-chart-pictorial__label---font-weight', '600']
 ]
 
-test('#591 — les tokens reconcilies sont DECLARES par la feuille (rouge avant le correctif)', async ({ page }) => {
-    await openVariant(page, STORY('treemap'), 'Design')
-
-    const sandbox = sandboxOf(page)
-    const host = sandbox.locator('[data-cy="origam-chart-treemap"]').first()
+/**
+ * ⛔ Cette verification NE charge PAS sa propre story : elle se greffe sur la
+ * page deja ouverte par le cas Treemap. Un chargement de catalogue Histoire
+ * en moins, donc un budget de 30 s en moins a tenir sous charge — c'est la
+ * meme raison qui a fait regrouper les sondes par variante plus haut.
+ */
+const assertSheetDeclares = async (page: Page) => {
+    const host = sandboxOf(page).locator('[data-cy="origam-chart-treemap"]').first()
     await host.waitFor({ state: 'attached', timeout: 15000 })
 
     const declared = await host.evaluate(
@@ -272,6 +292,6 @@ test('#591 — les tokens reconcilies sont DECLARES par la feuille (rouge avant 
     )
 
     for (const [token, expected] of RECONCILED_TOKENS) {
-        expect(declared[token], `${token} doit etre declare par la feuille`).toBe(expected)
+        expect.soft(declared[token], `${token} doit etre declare par la feuille`).toBe(expected)
     }
-})
+}
