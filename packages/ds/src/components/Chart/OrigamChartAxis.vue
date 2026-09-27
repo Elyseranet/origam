@@ -199,6 +199,16 @@
 		stroke-width: var(--origam-chart__axis---stroke-width, 1);
 	}
 
+	/*
+	 * ⛔ `--origam-chart__axis-label---font-size` reste NON DECLARE dans les
+	 * feuilles (#591), volontairement : les huit lectures de la famille Chart
+	 * ne s'accordent pas sur leur repli — 0.75rem ici, dans Bullet (echelle
+	 * principale), Cartesian, Gauge et Radar ; 0.6875rem dans BoxPlot,
+	 * Candlestick et la seconde echelle de Bullet. Une declaration unique
+	 * changerait donc le rendu de l'un des deux camps. Trancher demande un
+	 * choix de design (valeur commune, ou second token pour l'echelle
+	 * secondaire) : remonte a l'utilisateur, pas cable en silence.
+	 */
 	.origam-chart__axis-label {
 		fill: var(--origam-chart__axis-label---color, var(--origam-color__text---secondary, #6b7280));
 		font-size: var(--origam-chart__axis-label---font-size, 0.75rem);
