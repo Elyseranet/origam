@@ -1107,6 +1107,12 @@
 		}
 
 		&__connector {
+			// ⛔ `---stroke-color` and `---stroke-color-winner` LEFT UNDECLARED (#592):
+			// both fall back to `--origam-bracket-match---border-color`, which #592
+			// declared, so the connector tracks the match box's border by default.
+			// Declaring the stroke tokens at `:root` would substitute that reference
+			// once at root and freeze the link — same mechanism as the long note in
+			// OrigamBracketMatch.vue's border block.
 			stroke: var(--origam-bracket-connector---stroke-color, var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))));
 			stroke-width: var(--origam-bracket-connector---stroke-width, var(--origam-bracket-match---border-width, 1px));
 			stroke-dasharray: var(--origam-bracket-connector---stroke-dasharray, none);
@@ -1134,6 +1140,15 @@
 			gap: 1px;
 		}
 
+		// ⛔ `--origam-bracket-round-robin---header-background` and
+		// `---cell-background-diag` LEFT UNDECLARED (#592): both fall back to
+		// `--origam-color__surface---subtle`, a name no token sheet declares (the DS
+		// has `sunken`, not `subtle`), so the literal `#f5f5f5` is what paints — in
+		// dark mode too. Choosing the replacement is a design decision, not a
+		// rename; see the note in OrigamBracketMatch.vue.
+		//
+		// NOTE also: no Variant of any Bracket story renders the round-robin layout,
+		// so these two channels have never been exercised by a spec either.
 		&__rr-corner {
 			background: var(--origam-bracket-round-robin---header-background, var(--origam-color__surface---subtle, #f5f5f5));
 		}
