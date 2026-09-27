@@ -1092,6 +1092,24 @@ return [ out, props.style as StyleValue ]
 	const effectiveTypeOf = (path: IChartPath) =>
 		path.series.type ?? props.type
 
+	/*********************************************************
+	 * strokeStyleFor — `--origam-chart-path---length` n'est PAS un token
+	 *
+	 * @description
+	 * ⛔ Cette variable ne doit PAS etre declaree dans les feuilles de tokens
+	 * (#591). C'est une synthese locale : la longueur MESUREE de chaque
+	 * trace, ecrite en style inline par instance et relue par
+	 * `stroke-dasharray` / `stroke-dashoffset` dans le bloc `<style>` pour
+	 * l'animation de dessin.
+	 *
+	 * @description
+	 * Une declaration de feuille serait inerte (le style inline gagne) et
+	 * surtout mensongere : un theme qui la reglerait casserait l'animation
+	 * sur tous les traces a la fois. Le garde `token-var-channels` la compte
+	 * en « canal mort » a tort — son exclusion « synthese locale » ne regarde
+	 * que les LHS du `<style>`, pas celles ecrites depuis le `<script>`.
+	 * Laissee en baseline volontairement.
+	 ********************************************************/
 	const strokeStyleFor = (path: IChartPath): StyleValue => {
 		if (!props.animated) return {}
 		const length = path.pathLength ?? 0
@@ -1736,7 +1754,7 @@ return [ out, props.style as StyleValue ]
 		}
 
 		.origam-chart__annotation-callout-text {
-			fill: var(--origam-chart__annotation-callout---text-color, #ffffff);
+			fill: var(--origam-chart__annotation-callout---color, #ffffff);
 			font-size: var(--origam-chart__annotation-callout---font-size, 0.6875rem);
 			font-weight: var(--origam-chart__annotation-callout---font-weight, 600);
 			pointer-events: none;

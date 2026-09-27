@@ -820,19 +820,19 @@ return [ out, props.style as StyleValue ]
 		}
 
 		.origam-chart__grid-line {
-			stroke: var(--origam-chart__grid---stroke-color, var(--origam-color__border---subtle, #e5e7eb));
+			stroke: var(--origam-chart__grid---color, var(--origam-color__border---subtle, #e5e7eb));
 			stroke-width: 1;
 			stroke-dasharray: 4 4;
 		}
 
 		.origam-chart__axis-line {
-			stroke: var(--origam-chart__axis---stroke-color, var(--origam-color__border---default, #d1d5db));
+			stroke: var(--origam-chart__axis---color, var(--origam-color__border---default, #d1d5db));
 			stroke-width: 1;
 		}
 
 		.origam-chart__axis-label {
 			font-size: var(--origam-chart__axis-label---font-size, 0.6875rem);
-			fill: var(--origam-chart__axis-label---fill, var(--origam-color__text---secondary, #6b7280));
+			fill: var(--origam-chart__axis-label---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		.origam-chart__box-rect {

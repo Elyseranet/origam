@@ -727,14 +727,14 @@ return [ out, props.style as StyleValue ]
 		}
 
 		&__grid-line {
-			stroke: var(--origam-chart__grid---stroke-color, var(--origam-color__border---subtle, #e5e7eb));
+			stroke: var(--origam-chart__grid---color, var(--origam-color__border---subtle, #e5e7eb));
 			stroke-width: var(--origam-chart__grid---stroke-width, 1);
 			fill: none;
 		}
 
 		&__axis-label {
 			font-size: var(--origam-chart__axis-label---font-size, 0.6875rem);
-			fill: var(--origam-chart__axis-label---fill, var(--origam-color__text---secondary, #6b7280));
+			fill: var(--origam-chart__axis-label---color, var(--origam-color__text---secondary, #6b7280));
 			user-select: none;
 			pointer-events: none;
 		}
