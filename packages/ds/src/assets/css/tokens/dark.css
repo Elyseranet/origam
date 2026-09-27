@@ -406,6 +406,21 @@
   --origam-card__overlay---transition-duration: var(--origam-motion__duration---medium);
   --origam-card__overlay---transition-timing-function: var(--origam-motion__easing---standard);
   --origam-card__underlay---position: absolute;
+  /* Card — #593. Each value is the literal the component SCSS already fell back
+     to, so nothing moves on screen. --origam-card--loading---min-{width,height}
+     replace the ungrammatical flat --origam-card---loading-min-* the SCSS used
+     to read ("--loading" is a state modifier, so the grammar is the
+     --state---property form, not a flat suffix).
+     --origam-card__loader---overlay-background stays undeclared on purpose —
+     see the comment at its read site in OrigamCard.vue. */
+  --origam-card--loading---min-width: 240px;
+  --origam-card--loading---min-height: 120px;
+  --origam-card__asset---aspect-ratio: 16 / 9;
+  --origam-card__loader---min-height: 4px;
+  --origam-card__loader---min-height-skeleton: 200px;
+  --origam-card__loader---z-index: 3;
+  --origam-card__progress---linear-height: 4px;
+  --origam-card__progress---circular-margin: 24px auto;
   --origam-card__before---border-radius: inherit;
   --origam-card__before---bottom: var(--origam-space---0);
   --origam-card__before---content: "";
@@ -3199,6 +3214,21 @@
     --origam-card__overlay---transition-duration: var(--origam-motion__duration---medium);
     --origam-card__overlay---transition-timing-function: var(--origam-motion__easing---standard);
     --origam-card__underlay---position: absolute;
+    /* Card — #593. Each value is the literal the component SCSS already fell back
+       to, so nothing moves on screen. --origam-card--loading---min-{width,height}
+       replace the ungrammatical flat --origam-card---loading-min-* the SCSS used
+       to read ("--loading" is a state modifier, so the grammar is the
+       --state---property form, not a flat suffix).
+       --origam-card__loader---overlay-background stays undeclared on purpose —
+       see the comment at its read site in OrigamCard.vue. */
+    --origam-card--loading---min-width: 240px;
+    --origam-card--loading---min-height: 120px;
+    --origam-card__asset---aspect-ratio: 16 / 9;
+    --origam-card__loader---min-height: 4px;
+    --origam-card__loader---min-height-skeleton: 200px;
+    --origam-card__loader---z-index: 3;
+    --origam-card__progress---linear-height: 4px;
+    --origam-card__progress---circular-margin: 24px auto;
     --origam-card__before---border-radius: inherit;
     --origam-card__before---bottom: var(--origam-space---0);
     --origam-card__before---content: "";
