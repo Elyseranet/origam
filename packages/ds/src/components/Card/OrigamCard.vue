@@ -623,20 +623,20 @@
 		&__overlay {
 			background-color: var(--origam-card__overlay---background-color, var(--origam-color__overlay---scrim));
 			border-radius: var(--origam-card__overlay---border-radius, inherit);
-			opacity: var(--origam-card__overlay---opacity, var(--origam-card---overlay-opacity, 0));
+			opacity: var(--origam-card__overlay---opacity, 0);
 			pointer-events: var(--origam-card__overlay---pointer-events, none);
 			position: var(--origam-card__overlay---position, absolute);
-			bottom: var(--origam-card__overlay---position-bottom, var(--origam-card---overlay-position-bottom, 0));
-			left: var(--origam-card__overlay---position-left, var(--origam-card---overlay-position-left, 0));
-			right: var(--origam-card__overlay---position-right, var(--origam-card---overlay-position-right, 0));
-			top: var(--origam-card__overlay---position-top, var(--origam-card---overlay-position-top, 0));
-			transition-property: var(--origam-card__overlay---transition-property, var(--origam-card---overlay-transition-property, opacity));
-			transition-duration: var(--origam-card__overlay---transition-duration, var(--origam-card---overlay-transition-duration, 0.2s));
-			transition-timing-function: var(--origam-card__overlay---transition-timing-function, var(--origam-card---overlay-transition-timing-function, ease-in-out));
+			bottom: var(--origam-card__overlay---position-bottom, 0);
+			left: var(--origam-card__overlay---position-left, 0);
+			right: var(--origam-card__overlay---position-right, 0);
+			top: var(--origam-card__overlay---position-top, 0);
+			transition-property: var(--origam-card__overlay---transition-property, opacity);
+			transition-duration: var(--origam-card__overlay---transition-duration, 0.2s);
+			transition-timing-function: var(--origam-card__overlay---transition-timing-function, ease-in-out);
 		}
 
 		&__underlay {
-			position: var(--origam-card__underlay---position, var(--origam-card---underlay-position, absolute));
+			position: var(--origam-card__underlay---position, absolute);
 		}
 
 		> * {
@@ -686,8 +686,8 @@
 		}
 
 		&--loading {
-			min-width: var(--origam-card---loading-min-width, 240px);
-			min-height: var(--origam-card---loading-min-height, 120px);
+			min-width: var(--origam-card--loading---min-width, 240px);
+			min-height: var(--origam-card--loading---min-height, 120px);
 		}
 
 		&__loader {
@@ -727,6 +727,13 @@
 			z-index: var(--origam-card__loader---z-index, 3);
 			min-height: 0;
 			border-radius: inherit;
+			// ⛔ LEFT UNDECLARED ON PURPOSE (#593). Declaring this token in the token
+			// sheets would substitute the `color-mix()` at `:root`, where
+			// `--origam-card---background` holds the root default — freezing the
+			// scrim to that one colour. Undeclared, the fallback is evaluated on THIS
+			// element, so the mix follows whatever background the card actually
+			// carries. Wiring it would cost that and buy a channel that
+			// `--origam-card---background` already covers.
 			background-color: var(--origam-card__loader---overlay-background, color-mix(in srgb, var(--origam-card---background) 62%, transparent));
 
 			:deep(.origam-progress--circular) {
@@ -812,34 +819,34 @@
 			--origam-card---cursor: pointer;
 
 			&:before {
-				border-radius: var(--origam-card__before---border-radius, var(--origam-card---before-border-radius, inherit));
-				bottom: var(--origam-card__before---bottom, var(--origam-card---before-bottom, 0));
-				content: var(--origam-card__before---content, var(--origam-card---before-content, ""));
-				display: var(--origam-card__before---display, var(--origam-card---before-display, block));
-				left: var(--origam-card__before---left, var(--origam-card---before-left, 0));
-				pointer-events: var(--origam-card__before---pointer-events, var(--origam-card---before-pointer-events, none));
-				position: var(--origam-card__before---position, var(--origam-card---before-position, absolute));
-				right: var(--origam-card__before---right, var(--origam-card---before-right, 0));
-				top: var(--origam-card__before---top, var(--origam-card---before-top, 0));
-				transition: var(--origam-card__before---transition, var(--origam-card---before-transition, inherit));
-				opacity: var(--origam-card__before---opacity, var(--origam-card---before-opacity, 1));
-				z-index: var(--origam-card__before---z-index, var(--origam-card---before-z-index, -1));
+				border-radius: var(--origam-card__before---border-radius, inherit);
+				bottom: var(--origam-card__before---bottom, 0);
+				content: var(--origam-card__before---content, "");
+				display: var(--origam-card__before---display, block);
+				left: var(--origam-card__before---left, 0);
+				pointer-events: var(--origam-card__before---pointer-events, none);
+				position: var(--origam-card__before---position, absolute);
+				right: var(--origam-card__before---right, 0);
+				top: var(--origam-card__before---top, 0);
+				transition: var(--origam-card__before---transition, inherit);
+				opacity: var(--origam-card__before---opacity, 1);
+				z-index: var(--origam-card__before---z-index, -1);
 				box-shadow: var(--origam-card__before---box-shadow, var(--origam-card---before-box-shadow));
 			}
 
 			&:after {
-				border-radius: var(--origam-card__after---border-radius, var(--origam-card---after-border-radius, inherit));
-				bottom: var(--origam-card__after---bottom, var(--origam-card---after-bottom, 0));
-				content: var(--origam-card__after---content, var(--origam-card---after-content, ""));
-				display: var(--origam-card__after---display, var(--origam-card---after-display, block));
-				left: var(--origam-card__after---left, var(--origam-card---after-left, 0));
-				pointer-events: var(--origam-card__after---pointer-events, var(--origam-card---after-pointer-events, none));
-				position: var(--origam-card__after---position, var(--origam-card---after-position, absolute));
-				right: var(--origam-card__after---right, var(--origam-card---after-right, 0));
-				top: var(--origam-card__after---top, var(--origam-card---after-top, 0));
-				transition: var(--origam-card__after---transition, var(--origam-card---after-transition, inherit));
-				z-index: var(--origam-card__after---z-index, var(--origam-card---after-z-index, 1));
-				opacity: var(--origam-card__after---opacity, var(--origam-card---after-opacity, 0));
+				border-radius: var(--origam-card__after---border-radius, inherit);
+				bottom: var(--origam-card__after---bottom, 0);
+				content: var(--origam-card__after---content, "");
+				display: var(--origam-card__after---display, block);
+				left: var(--origam-card__after---left, 0);
+				pointer-events: var(--origam-card__after---pointer-events, none);
+				position: var(--origam-card__after---position, absolute);
+				right: var(--origam-card__after---right, 0);
+				top: var(--origam-card__after---top, 0);
+				transition: var(--origam-card__after---transition, inherit);
+				z-index: var(--origam-card__after---z-index, 1);
+				opacity: var(--origam-card__after---opacity, 0);
 				box-shadow: var(--origam-card__after---box-shadow, var(--origam-card---after-box-shadow));
 			}
 

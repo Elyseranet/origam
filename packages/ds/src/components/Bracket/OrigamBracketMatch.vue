@@ -373,6 +373,19 @@
 		border-color: var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12)));
 		border-radius: var(--origam-bracket-match---border-radius, 6px);
 
+		// ⛔ THE 14 PER-SIDE LONGHANDS BELOW ARE LEFT UNDECLARED ON PURPOSE (#592).
+		// Each falls back to the general knob above it (`---border-width`,
+		// `---border-color`, `---border-radius`), which #592 DID declare in the
+		// token sheets. That cascade is the feature: a theme sets the general
+		// token once and all four sides follow — measured in Chromium, setting
+		// only `---border-width: 5px` gives 5px on all four sides.
+		//
+		// Declaring a longhand would destroy it. A custom property is substituted
+		// ON THE ELEMENT THAT DECLARES IT, so a `:root` declaration of
+		// `---border-top-width: var(---border-block-width, var(---border-width, 1px))`
+		// resolves to `1px` AT ROOT and every descendant inherits that literal.
+		// A consumer then setting `---border-width: 3px` on a wrapper would move
+		// the shorthand and nothing else — the four sides would stay pinned at 1px.
 		border-block-width: var(--origam-bracket-match---border-block-width, var(--origam-bracket-match---border-width, 1px));
 		border-inline-width: var(--origam-bracket-match---border-inline-width, var(--origam-bracket-match---border-width, 1px));
 
@@ -475,7 +488,15 @@
 			cursor: pointer;
 
 			&:hover {
-				background-color: var(--origam-bracket-match--hover---background-color, var(--origam-color__surface---elevated, #fafafa));
+				// ⛔ LEFT UNDECLARED (#592). Its fallback names
+			// `--origam-color__surface---elevated`, which NO token sheet declares —
+			// the DS vocabulary has `raised` and `sunken`, not `elevated`. So the
+			// literal `#fafafa` is what paints, in dark mode too. Declaring this
+			// token means choosing a semantic token on the strength of a name, which
+			// is the mistake #550 recorded on OrigamBottomNav. Pending the
+			// arbitration on the missing `surface---elevated` / `surface---subtle` /
+			// `text---tertiary` names — 13 such reads repo-wide, 5 in this family.
+			background-color: var(--origam-bracket-match--hover---background-color, var(--origam-color__surface---elevated, #fafafa));
 				border-color: var(--origam-bracket-match--hover---border-color, var(--origam-color__border---default, rgba(0, 0, 0, 0.24)));
 			}
 		}

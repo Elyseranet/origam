@@ -139,6 +139,55 @@
   --origam-bracket-match--final---background-color: var(--origam-color__surface---raised);
   --origam-bracket-match--final---border-color: var(--origam-color__action--primary---bg);
   --origam-bracket-match--final---box-shadow: 0 2px 8px color-mix(in srgb, var(--origam-color__action--primary---bg) 24%, transparent);
+  /* Bracket — #592. Each value is the literal (or token reference) the
+     component SCSS already fell back to, so nothing moves on screen; what was
+     a component-local default becomes a real, per-mode, typed token channel.
+     DELIBERATELY ABSENT — the per-side border longhands
+     (---border-{top,right,bottom,left}-{width,color}, ---border-{block,inline}-width,
+     the four corner radii) and ---bracket-connector---stroke-color{,-winner}:
+     each falls back to the general knob declared here, and declaring a rung
+     would freeze that cascade at its root value. Measured in Chromium: setting
+     only ---border-width moves all four sides. See the notes at the read sites. */
+  --origam-bracket---background-color: transparent;
+  --origam-bracket---color: currentColor;
+  --origam-bracket-connector---stroke-dasharray: none;
+  --origam-bracket-connector---stroke-linecap: butt;
+  --origam-bracket-double---section-gap: 40px;
+  --origam-bracket-double-label---color: var(--origam-color__text---primary);
+  --origam-bracket-double-label---font-size: 0.75rem;
+  --origam-bracket-double-label---font-weight: 700;
+  --origam-bracket-double-label---letter-spacing: 0.08em;
+  --origam-bracket-double-label---margin-block-end: 12px;
+  --origam-bracket-double-label---text-transform: uppercase;
+  --origam-bracket-match---background-color: var(--origam-color__surface---default);
+  --origam-bracket-match---border-color: var(--origam-color__border---subtle);
+  --origam-bracket-match---border-width: 1px;
+  --origam-bracket-match---box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --origam-bracket-match--hover---border-color: var(--origam-color__border---default);
+  --origam-bracket-round-robin---cell-background: var(--origam-color__surface---default);
+  --origam-bracket-round-robin---cell-size: 56px;
+  --origam-bracket-round-robin---header-color: var(--origam-color__text---secondary);
+  --origam-bracket-round---match-gap: 24px;
+  --origam-bracket-round-title---color: var(--origam-color__text---secondary);
+  --origam-bracket-competitor---background-color: transparent;
+  --origam-bracket-competitor---color: currentColor;
+  --origam-bracket-competitor--forfeit---color: var(--origam-color__text---secondary);
+  --origam-bracket-competitor--hover---background-color: rgba(0, 0, 0, 0.04);
+  --origam-bracket-competitor--loser---color: var(--origam-color__text---secondary);
+  --origam-bracket-competitor--pending---color: var(--origam-color__text---secondary);
+  --origam-bracket-competitor--pending---font-style: italic;
+  --origam-bracket-competitor--winner---background-color: rgba(25, 118, 210, 0.08);
+  --origam-bracket-competitor--winner---color: currentColor;
+  --origam-bracket-competitor--winner---font-weight: 600;
+  --origam-bracket-seed---color: var(--origam-color__text---secondary);
+  --origam-bracket-score---color: currentColor;
+  --origam-bracket-advantage---background-color: var(--origam-color__action--primary---bg);
+  --origam-bracket-advantage---border-radius: 9999px;
+  --origam-bracket-advantage---color: var(--origam-color__action--primary---fg);
+  --origam-bracket-advantage---font-size: 0.6875rem;
+  --origam-bracket-advantage---font-weight: 700;
+  --origam-bracket-advantage---padding-block: 1px;
+  --origam-bracket-advantage---padding-inline: 6px;
   --origam-btn---background-color: var(--origam-color__action--secondary---bg);
   --origam-btn---color: var(--origam-color__action--secondary---fg);
   --origam-btn---background-color-hover: var(--origam-color__action--secondary---bgHover);
@@ -259,6 +308,21 @@
   --origam-card__overlay---transition-duration: var(--origam-motion__duration---medium);
   --origam-card__overlay---transition-timing-function: var(--origam-motion__easing---standard);
   --origam-card__underlay---position: absolute;
+  /* Card — #593. Each value is the literal the component SCSS already fell back
+     to, so nothing moves on screen. --origam-card--loading---min-{width,height}
+     replace the ungrammatical flat --origam-card---loading-min-* the SCSS used
+     to read ("--loading" is a state modifier, so the grammar is the
+     --state---property form, not a flat suffix).
+     --origam-card__loader---overlay-background stays undeclared on purpose —
+     see the comment at its read site in OrigamCard.vue. */
+  --origam-card--loading---min-width: 240px;
+  --origam-card--loading---min-height: 120px;
+  --origam-card__asset---aspect-ratio: 16 / 9;
+  --origam-card__loader---min-height: 4px;
+  --origam-card__loader---min-height-skeleton: 200px;
+  --origam-card__loader---z-index: 3;
+  --origam-card__progress---linear-height: 4px;
+  --origam-card__progress---circular-margin: 24px auto;
   --origam-card__before---border-radius: inherit;
   --origam-card__before---bottom: var(--origam-space---0);
   --origam-card__before---content: "";
