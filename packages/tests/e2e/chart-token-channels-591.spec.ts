@@ -33,6 +33,26 @@ import { selectHstOption } from './_support/histoire-controls'
  * le correctif sur le commit parent, puis reproduite apres : identique.
  */
 
+/**
+ * ⛔ 90 s par test, et ce n'est PAS du « timeout whack-a-mole ».
+ *
+ * La mise en garde du CLAUDE.md racine vise le cas ou l'on allonge un delai
+ * pour qu'une ASSERTION instable ait plus de temps de devenir vraie : le test
+ * garde alors son worker deux fois plus longtemps et affame les autres. Ici
+ * il n'y a aucune assertion en jeu. Ce qui depasse est l'AMORCAGE a froid du
+ * catalogue Histoire : sur la seule rougeur qui subsistait, la capture montre
+ * la page d'Histoire encore vide et le log dit `waiting for
+ * locator('iframe[src*="__sandbox"]')` — l'iframe du bac a sable n'existait
+ * pas encore. Mesure sur 245 executions reparties sur six passes
+ * `--repeat-each=5` : ZERO assertion fausse, chaque rougeur etant un
+ * `Test timeout`.
+ *
+ * Le cout est borne : 8 tests, 13 s a chaud pour le fichier entier, et la CI
+ * tourne `workers=1`. Le budget sert de marge d'amorcage, pas de sursis
+ * d'assertion.
+ */
+test.describe.configure({ timeout: 90_000 })
+
 const SANDBOX = 'iframe[src*="__sandbox"]'
 
 const sandboxOf = (page: Page) => page.frameLocator(SANDBOX)
@@ -50,10 +70,17 @@ const openVariant = async (page: Page, storyUrl: string, title: string) => {
     await page.goto(storyUrl, { waitUntil: 'domcontentloaded' })
 
     const entry = page.getByText(title, { exact: true }).first()
-    await entry.waitFor({ state: 'visible', timeout: 20000 })
+    await entry.waitFor({ state: 'visible', timeout: 30000 })
     await entry.click()
 
-    await page.locator(SANDBOX).first().waitFor({ state: 'attached', timeout: 20000 })
+    // ⛔ N'attendre le bac a sable qu'APRES le clic. Mesure : tant qu'aucune
+    // Variant n'est choisie, `iframe[src*="__sandbox"]` n'existe pas — une
+    // attente placee avant le clic brule son delai a chaque test puis echoue
+    // (22 `TimeoutError: waiting for locator('iframe[src*="__sandbox"]')`
+    // avant correction). Et attendre son CONTENU, pas seulement son
+    // rattachement : l'iframe peut etre la et vide.
+    await page.locator(SANDBOX).first().waitFor({ state: 'attached', timeout: 30000 })
+    await sandboxOf(page).locator('body > *').first().waitFor({ state: 'attached', timeout: 30000 })
 }
 
 interface IProbe {
@@ -196,7 +223,7 @@ for (const kase of CASES) {
 
         for (const probe of kase.probes) {
             const el = sandboxOf(page).locator(probe.selector).first()
-            await el.waitFor({ state: 'attached', timeout: 15000 })
+            await el.waitFor({ state: 'attached', timeout: 30000 })
 
             // Mesure ET lecture dans le MEME evaluate : pas de mutation ici,
             // donc pas de piege de recalcul — mais on lit le longhand, jamais
@@ -281,7 +308,7 @@ const RECONCILED_TOKENS: Array<[token: string, expected: string]> = [
  */
 const assertSheetDeclares = async (page: Page) => {
     const host = sandboxOf(page).locator('[data-cy="origam-chart-treemap"]').first()
-    await host.waitFor({ state: 'attached', timeout: 15000 })
+    await host.waitFor({ state: 'attached', timeout: 30000 })
 
     const declared = await host.evaluate(
         (node, tokens) => Object.fromEntries((tokens as string[]).map((t) => [

@@ -269,7 +269,28 @@ const GREEN_SPECS = [
     // `origin/develop` : les deux tests rougissent (`0px` et `16px`).
     // Vérifiée stable 10/10, `--repeat-each=5`, `E2E_STATIC=1`, chromium,
     // port isolé.
-    'list-nav-padding.spec.ts'
+    'list-nav-padding.spec.ts',
+    // wave 16 — #591. Même raison qu'aux vagues 8 à 15 : hors de cette liste,
+    // la CI ne l'exécute pas et ce qu'elle épingle n'est gardé par rien.
+    //
+    // Ce que la spec tient : 92 tokens de la famille Chart que le SCSS LISAIT
+    // sans qu'aucune feuille ne les DÉCLARE viennent d'être déclarés, à la
+    // valeur exacte du repli déjà rendu. L'exigence est « le rendu ne bouge
+    // pas », donc 31 mesures de valeurs ABSOLUES (jamais un écart entre deux
+    // valeurs) sur 7 variantes — dont `OrigamChartPolar`, qui n'a aucune
+    // autre spec dédiée et dont tout le rendu ne passait que par le relais
+    // d'`OrigamChart`.
+    //
+    // ⛔ La garde `token-var-channels` ne prouve PAS l'absence de régression
+    // visuelle : elle compare des NOMS, jamais des valeurs calculées. Sans
+    // cette spec, rien ne retient un renommage qui déplacerait un pixel.
+    //
+    // A/B fait : l'assertion « la feuille déclare ces tokens » est ROUGE
+    // contre le bundle du commit parent (`""` au lieu de `200px`, mesuré) et
+    // verte après. Vérifiée stable 80/80 — deux passes `--repeat-each=5`,
+    // `E2E_STATIC=1`, chromium, `--workers=1`, retries 0, port isolé 6042,
+    // load average 2,8 → 4,5.
+    'chart-token-channels-591.spec.ts'
 ]
 
 /**
