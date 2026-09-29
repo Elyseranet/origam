@@ -16360,7 +16360,7 @@
           "type": "TInstalledThemes",
           "position": 0,
           "description_key": "utils.detail.installed_themes_from_list.returns",
-          "description_fallback": "An ordered array of TInstalledTheme objects — one per unique brand name — each carrying the available modes and aggregated UI metadata."
+          "description_fallback": "An ordered array of IInstalledTheme objects — one per unique brand name — each carrying the available modes and aggregated UI metadata."
         }
       ],
       "emits": [],

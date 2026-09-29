@@ -13,6 +13,20 @@ import type { TIcon } from '../../types/Icon/icon.type'
 import type { TIntent } from '../../types/Commons/intent.type'
 
 /**
+ * Per-preset bundle: default icon + semantic intent.
+ *
+ * Consumers can override either side at the prop level (`icon` and
+ * `iconColor`) without leaving the preset — the preset is the
+ * "starting point", not a lock. The map is intentionally a plain
+ * object so brand consumers can extend it through a defaults provider
+ * in the future without touching the type.
+ */
+export interface IEmptyStatePresetConfig {
+    icon: TIcon
+    intent: TIntent
+}
+
+/**
  * Props for `<OrigamEmptyState>` — placeholder shown when a list, table
  * or collection has nothing to render.
  *

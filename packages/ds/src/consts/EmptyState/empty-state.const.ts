@@ -1,8 +1,6 @@
 import { EMPTY_STATE_PRESET, MDI_ICONS } from '../../enums'
-
-import type { TIntent } from '../../types/Commons/intent.type'
-import type { TEmptyStateAlign, TEmptyStatePreset, TEmptyStateSize } from '../../types/EmptyState/empty-state.type'
-import type { TIcon } from '../../types/Icon/icon.type'
+import type { IEmptyStatePresetConfig } from "../../interfaces"
+import type { TEmptyStateAlign, TEmptyStatePreset, TEmptyStateSize } from '../../types'
 
 /**
  * Closed list of valid `preset` values for `<OrigamEmptyState>`.
@@ -27,20 +25,6 @@ export const EMPTY_STATE_ALIGNS: ReadonlyArray<TEmptyStateAlign> = [
     'center',
     'left'
 ]
-
-/**
- * Per-preset bundle: default icon + semantic intent.
- *
- * Consumers can override either side at the prop level (`icon` and
- * `iconColor`) without leaving the preset — the preset is the
- * "starting point", not a lock. The map is intentionally a plain
- * object so brand consumers can extend it through a defaults provider
- * in the future without touching the type.
- */
-export interface IEmptyStatePresetConfig {
-    icon: TIcon
-    intent: TIntent
-}
 
 export const EMPTY_STATE_PRESET_CONFIG: Record<TEmptyStatePreset, IEmptyStatePresetConfig> = {
     [EMPTY_STATE_PRESET.NO_DATA]: {
