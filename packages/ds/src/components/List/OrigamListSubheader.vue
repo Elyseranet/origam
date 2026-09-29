@@ -121,6 +121,11 @@
 		background: inherit;
 		color: var(--origam-list-subheader---color, var(--origam-color__text---secondary));
 		display: flex;
+		// ⛔ C2 (#597, deja tranche en PR #586) — `--origam-list-subheader
+		// ---font-size` reste NON DECLARE, a dessein : il est ECRIT PAR LE PARENT
+		// (`OrigamList.vue`, variante `nav`) et son second echelon
+		// `--origam-list__subheader---font-size` est declare et type. Le declarer a
+		// `:root` masquerait definitivement ce second crochet.
 		font-size: var(--origam-list-subheader---font-size, var(--origam-list__subheader---font-size, 0.875rem));
 		font-weight: var(--origam-list-subheader---font-weight, 400);
 		line-height: var(--origam-list-subheader---line-height, 1.375rem);

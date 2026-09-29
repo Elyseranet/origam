@@ -397,6 +397,11 @@
 			box-shadow: none;
 		}
 
+		// ⛔ C2 (#597) — les 3 tokens `ghost` lus ici restent NON DECLARES, pour
+		// la meme raison que dans `OrigamBtn.vue` (voir le commentaire detaille
+		// devant son propre `&--variant-ghost`) : leurs replis sont des
+		// `color-mix()` relatifs a `currentColor`, qui doivent etre evalues sur
+		// l'element et non figes a `:root`.
 		&--variant-ghost {
 			background-color: var(
 				--origam-btn---background-color-ghost,

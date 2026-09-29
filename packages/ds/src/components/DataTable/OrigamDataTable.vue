@@ -444,7 +444,7 @@
 			 * et un voile a 0.82 n'est plus un voile.
 			 ********************************************************/
 			&:deep(.origam-data-table-cell:not(.origam-data-table-header-cell)) {
-				opacity: var(--origam-data-table--loading---opacity, var(--origam-data-table__loading---opacity, 0.5));
+				opacity: var(--origam-data-table--loading---opacity, 0.5);
 			}
 		}
 	}

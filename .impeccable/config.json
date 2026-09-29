@@ -38,6 +38,15 @@
         ],
         "createdAt": "2026-09-24T07:18:20.971Z",
         "reason": "Faux positif sur un WIREFRAME basse fidelite, artefact temporaire et gitignore (packages/marketing/.gitignore:18 'wireframe/'). Une echelle typographique plate y est la convention meme: on supprime la hierarchie visuelle pour que le relecteur juge la STRUCTURE et pas le style, le visuel etant le travail du ui-designer qui prend la suite. La feuille porte par ailleurs h1/h2/h3 a 32/24/16px, soit des ratios 1.33 et 1.5, conformes. SORTIE DE CETTE ENTREE: supprimer des que le dossier wireframe/ est supprime apres validation de la refonte /why-origam."
+      },
+      {
+        "rule": "layout-transition",
+        "value": "*",
+        "files": [
+          "packages/ds/src/components/List/OrigamListSubheader.vue"
+        ],
+        "createdAt": "2026-09-29T18:31:46.952Z",
+        "reason": "Claude (non confirme par l utilisateur) : motion domaine-appropriee. La transition porte sur min-height, dont le token change avec la densite ; on veut un redimensionnement reel qui fasse refluer la liste, ce que transform ne fait pas, et grid-template-rows suppose un conteneur grid alors que le subheader est en display:flex. Precedent interne : OrigamExpansionPanelHeader.vue:326 emploie la construction identique. Mesure : 6 composants du DS animent une propriete de layout, 2 precisement min-height. Convention du depot (CLAUDE.md) : animations via CSS transitions uniquement."
       }
     ]
   }
