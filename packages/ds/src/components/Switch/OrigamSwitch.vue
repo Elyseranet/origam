@@ -634,6 +634,38 @@
       background-color: currentColor;
     }
 
+    /*
+     * ⛔ #595 — DOUZE tokens `--origam-switch__*` que les feuilles declarent
+     * et que ce SCSS ne lit PAS. Mesure du 2026-09-27 : dans les douze cas la
+     * feuille decrit une intention de design que le SCSS n a jamais
+     * implementee, et la cabler DEPLACERAIT le rendu. Ils restent donc en
+     * baseline `token-var-channels-dormant.json`, ici est la raison :
+     *
+     *   · `__thumb---background-color-checked` (surface---default) — le pouce
+     *     coche est peint `currentColor` par les regles `:has()` ci-dessus, pas
+     *     par un token : la valeur declaree est une AUTRE couleur ;
+     *   · `__thumb---background-color-disabled` (surface---overlay),
+     *     `__thumb---box-shadow` (shadow---sm) — aucune declaration
+     *     correspondante n existe sur le pouce (ni fond desactive, ni ombre) :
+     *     les ajouter serait ajouter une propriete ABSENTE du rendu, ce que la
+     *     regle de securite de #550 interdit apres un revert ;
+     *   · `__thumb---transition-duration` (motion---medium) — la transition du
+     *     pouce est un raccourci multi-proprietes ecrit en dur a 0.15s/0.2s ;
+     *   · `__thumb---translate-distance` (20px) — le deplacement est pose en
+     *     `translateX(±10px)` sur `.origam-selection-control__input`, soit la
+     *     MOITIE du token. Cabler par le nom exigerait un `calc()` derive ;
+     *   · `__track---background-color-checked` (action--primary---bg) — le rail
+     *     coche est peint par `bgColor` / la classe utilitaire, pas par une
+     *     regle `--dirty` ;
+     *   · `__input---opacity` (0) — aucune classe `.origam-switch__input` :
+     *     l input natif appartient a `OrigamSelectionControl` ;
+     *   · les cinq `__label---*` (color, color-disabled, color-error,
+     *     font-size, padding-inline) — le libelle est rendu par `OrigamLabel`,
+     *     qui lit `--origam-label---*`. La seule regle que Switch pose sur lui
+     *     est `padding-inline-start: 10px`, quand le token vaut `space---2`
+     *     (8px) : cabler decalerait chaque libelle de 2px, et le nom
+     *     `padding-inline` mentirait sur une regle qui ne touche que `-start`.
+     */
     &__thumb {
       align-items: center;
       background-color: var(--origam-switch__thumb---background-color, rgb(255, 255, 255));

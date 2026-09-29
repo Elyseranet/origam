@@ -870,8 +870,41 @@
 		display: grid;
 		grid-template-areas: "prepend-inner field clear append-inner";
 		grid-template-columns: min-content minmax(0, 1fr) min-content min-content;
+		/*
+		 * ⛔ #595 — NEUF tokens `--origam-field*` (plus un `--origam-input*`)
+		 * que les feuilles declarent et que ce SCSS ne lit pas. Ils restent en
+		 * baseline `token-var-channels-dormant.json` :
+		 *
+		 *   · les quatre `__overlay---{background-color,opacity,
+		 *     pointer-events,position}` — l element `.origam-field__overlay`
+		 *     EXISTE dans le template (ligne 10) mais AUCUNE regle ne le style :
+		 *     il est aujourd hui sans position, sans fond, sans opacite. Les
+		 *     cabler ajouterait quatre proprietes absentes du rendu. C est le
+		 *     raisonnement « visuellement inerte » qu un lot de #550 a tenu
+		 *     avant de devoir tout reverter (hypothese de containment non
+		 *     verifiee en navigateur) : on ne le rejoue pas ;
+		 *   · `---color` (text---primary) — la racine ne declare aucun `color`,
+		 *     la couleur du champ est heritee ;
+		 *   · `---transition-duration`, `---transition-easing` — la racine ne
+		 *     declare aucune `transition` ; celles qui existent sont portees par
+		 *     `__label` / `__clearable` / `__outline`, chacune avec son propre
+		 *     couple de tokens deja cable ;
+		 *   · `---prepend-inner-icon-opacity-focused`,
+		 *     `---append-inner-icon-opacity-focused` (opacity---100) — au focus,
+		 *     `opacity: 1` est pose sur les CONTENEURS `__prepend-inner` /
+		 *     `__append-inner`, pas sur l icone : l icone garde son 0.7. Cabler
+		 *     par le nom la ferait passer a 1 (changement de rendu) ; cabler le
+		 *     conteneur graverait un nom faux ;
+		 *   · `--origam-input---icon-opacity-active` (opacity---100) — le seul
+		 *     `opacity: 1` d icone vit dans `OrigamInput` sous
+		 *     `&--disabled, &--error`. La valeur coinciderait, le nom
+		 *     « active » non.
+		 *
+		 * `---letter-spacing`, lui, vient d etre cable : la valeur livree en dur
+		 * est identique aux deux sites, et la feuille a ete realignee sur elle.
+		 */
 		font-size: var(--origam-field---font-size, 16px);
-		letter-spacing: 0.009375em;
+		letter-spacing: var(--origam-field---letter-spacing, 0.009375em);
 		max-width: 100%;
 		border-radius: var(--origam-field---border-radius, 8px);
 		contain: layout;
@@ -906,6 +939,18 @@
 
 		&__skeleton {
 			width: 100%;
+			/*
+			 * ⛔ #595 — FAUX POSITIF de `token-var-channels`, a laisser en
+			 * baseline. Le repli est `var(--origam-input__control---height, 36px)`,
+			 * et ce token-la est ECRIT PAR INSTANCE : les quatre modificateurs
+			 * de taille de ce composant (~l.1532-1550) comme ceux d `OrigamInput`
+			 * et d `OrigamTextareaField` le posent sur l element
+			 * (`sm`=28 / `md`=36 / `lg`=44 / `xl`=52px). Declarer
+			 * `--origam-field__skeleton---min-height` a `:root` avec ce repli
+			 * substituerait la valeur RACINE (36px) une fois pour toutes : le
+			 * squelette cesserait de suivre la taille du champ. Meme piege que
+			 * `---hover-x` sur SliderField.
+			 */
 			min-height: var(--origam-field__skeleton---min-height, var(--origam-input__control---height, 36px));
 			border-radius: var(--origam-field---border-radius, 8px);
 			grid-column: 1 / -1;
@@ -933,9 +978,24 @@
 			column-gap: 2px;
 			display: flex;
 			flex-wrap: wrap;
-			letter-spacing: 0.009375em;
+			letter-spacing: var(--origam-field---letter-spacing, 0.009375em);
 			opacity: var(--origam-field__input---opacity, 0.7);
 			box-sizing: border-box;
+			/*
+			 * ⛔ #595 — FAUX POSITIF de `token-var-channels`, a laisser en
+			 * baseline (5 lectures ici, 1 dans OrigamSwitch, 1 dans
+			 * OrigamCheckbox). `--origam-input---density` est ECRIT PAR
+			 * INSTANCE par les trois modificateurs de densite d `OrigamInput`
+			 * (~l.424-432 : `default`=0px, `compact`=-8px,
+			 * `comfortable`=+8px) — ce sont eux, et non une feuille, qui
+			 * portent la valeur. Ce que les feuilles declarent, c est l ECHELLE
+			 * (`--origam-input---density-{default,compact,comfortable}-density`),
+			 * qui est bien atteignable par un theme ; le token agrege ne doit
+			 * pas l etre. La declarer a `:root` figerait la densite racine pour
+			 * tout champ dont le modificateur ne serait pas un ancetre du
+			 * lecteur — et le lot ne peut pas le verifier sur les trois
+			 * composants sans changer de perimetre.
+			 */
 			min-height: max(calc(var(--origam-input__control---height, 36px) + var(--origam-input---density, 0px)), 1.5rem + var(--origam-field__input---padding-top) + var(--origam-field__input---padding-bottom));
 			min-width: 0;
 			padding-inline: var(--origam-field__input---padding-start) var(--origam-field__input---padding-end);
@@ -1309,7 +1369,20 @@
 
 		&--variant {
 			&-solo {
-				box-shadow: var(--origam-theme---elevation, var(--origam-field--variant-solo---box-shadow, var(--origam-shadow---sm)));
+				/*
+				 * #595 — EFFONDREMENT d un repli fantome. Cette ligne lisait
+				 * `var(--origam-theme---elevation, var(RUNG2, ...))`. Mesure du
+				 * 2026-09-29 : `--origam-theme---elevation` a UNE SEULE
+				 * occurrence dans tout le depot — ce site de lecture. Aucune
+				 * feuille ne la declare, aucun composant ne l ecrit, et la
+				 * matrice runtime (`apply-theme.util.ts`) ne l emet pas non
+				 * plus. Le nom n est d ailleurs pas grammatical : `--origam-theme`
+				 * n est pas un bloc de composant. RUNG2
+				 * (`--origam-field--variant-solo---box-shadow`) est lui declare
+				 * light ET dark a `var(--origam-shadow---sm)` : c est lui qui
+				 * peignait, et qui peint toujours. Zero pixel deplace.
+				 */
+				box-shadow: var(--origam-field--variant-solo---box-shadow, var(--origam-shadow---sm));
 				border-color: transparent;
 				--origam-field__input---padding-top: var(--origam-field__input---padding-block-solo);
 			}
