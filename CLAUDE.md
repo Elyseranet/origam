@@ -1374,11 +1374,12 @@ The global pre-delivery policy (TU + e2e + security) applies. Specific to
 origam:
 - Run tests on **Node 24** (`.nvmrc`); Node 18 produces unrelated
   `crypto.hash` failures.
-- `pnpm -F origam guards` must stay at **30/30** (measured 2026-09-25, this
-  worktree, real exit code hors pipe; it read `29/29` on 2026-09-24, `28/28` on
-  2026-09-17, `27/27` an hour before that, `25/25` and `17/17` earlier still —
-  **recount, never quote**. This line has been stale FIVE times; an agent caught
-  it again on 2026-09-25 while the paragraph still said 29/29).
+- `pnpm -F origam guards` must stay at **31/31** (measured 2026-09-29, this
+  worktree, real exit code hors pipe; it read `30/30` on 2026-09-25, `29/29` on
+  2026-09-24, `28/28` on 2026-09-17, `27/27` an hour before that, `25/25` and
+  `17/17` earlier still — **recount, never quote**. This line has been stale SIX
+  times; an agent caught it again on 2026-09-29 while the paragraph still said
+  30/30).
 
   ⛔ **A red `guards` on your machine may be the artefacts, not the code.**
   Guard 30 (`token-var-channels-marketing`) walks the DISK, not git's index, so
@@ -1397,9 +1398,18 @@ origam:
   maintainer following the guard's own message would delete 8 baseline lines
   describing real defects, believing they were making progress. Tracked as
   **#966**; until it lands, `git ls-files`-clean your tree before trusting a red.
-- `pnpm -F origam guards:self` must stay at **17/17** (measured 2026-09-25, this
-  worktree, real exit code hors pipe ; ce fichier lisait `16/16` le 2026-09-24,
-  puis `15/15`, `14/14` et `13/13` — **recount, never quote**).
+- `pnpm -F origam guards:self` must stay at **25/25** (measured 2026-09-29, this
+  worktree, real exit code hors pipe ; ce fichier lisait `17/17` le 2026-09-25,
+  `16/16` le 2026-09-24, puis `15/15`, `14/14` et `13/13` — **recount, never
+  quote**).
+
+  ⛔ Le 17 → 25 n'est pas un saut de huit nouveaux self-tests : c'est un
+  **undercount corrige**. `ls lib/*.selftest.mjs` en denombre 19 et rate les 6
+  autres, que `run-all-selftests.mjs` decouvre ailleurs — 5 a la racine
+  `scripts/guards/` (`comment-format`, `layer-folders`,
+  `no-usedefaults-in-components`, `pnpm-tree-integrity`, `token-var-channels`)
+  et 1 sous `scripts/analysis/` (`inspection-harness`). 19 + 5 + 1 = 25.
+  **Ne pas denombrer les self-tests avec un glob sur `lib/` seul.**
 
   ⚠️ Ce compteur ne couvre PAS tout : `run-all-selftests.mjs` ne découvre que
   `lib/*.selftest.mjs`, et **cinq self-tests vivent au niveau `guards/` sans être
