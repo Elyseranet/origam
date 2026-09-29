@@ -206,9 +206,9 @@
 		scoped
 >
 	.origam-data-table-group-header-row {
-		background-color: var(--origam-data-table-group-header-row---background-color, var(--origam-data-table---group-header-row-background-color, var(--origam-color__surface---overlay)));
-		color: var(--origam-data-table-group-header-row---color, var(--origam-data-table---group-header-row-color, var(--origam-color__text---primary)));
-		font-weight: var(--origam-data-table-group-header-row---font-weight, var(--origam-data-table---group-header-row-font-weight, 500));
+		background-color: var(--origam-data-table-group-header-row---background-color, var(--origam-color__surface---overlay));
+		color: var(--origam-data-table-group-header-row---color, var(--origam-color__text---primary));
+		font-weight: var(--origam-data-table-group-header-row---font-weight, 500);
 
 		&__column {
 			// ⛔ C2 (#597) — `--origam-data-table-group-header-row--depth` reste NON
@@ -218,7 +218,7 @@
 			// dans les feuilles exposerait la profondeur d'un noeud comme un
 			// reglage de theme, et son repli `0` doit rester SANS UNITE : c'est un
 			// multiplicateur de `calc()`, `0px * 16px` serait invalide (#568).
-			padding-inline-start: calc(var(--origam-data-table-group-header-row--depth, 0) * var(--origam-data-table-group-header-row__column---padding-inline-start-factor, var(--origam-data-table---group-header-row-column-padding-inline-start-factor, 16px)));
+			padding-inline-start: calc(var(--origam-data-table-group-header-row--depth, 0) * var(--origam-data-table-group-header-row__column---padding-inline-start-factor, 16px));
 		}
 	}
 </style>
