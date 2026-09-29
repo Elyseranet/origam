@@ -1248,6 +1248,27 @@
 			}
 		}
 
+		/*
+		 * ⛔ #594 — SEPT tokens `--origam-audio*` que les feuilles declarent et
+		 * que ce SCSS ne lit pas. Ils restent en baseline
+		 * `token-var-channels-dormant.json` :
+		 *
+		 *   · `__cover---border-radius` (radius---md = 8px) — la pochette est un
+		 *     DISQUE : `border-radius: 50%` ci-dessous, sillons concentriques et
+		 *     trou de broche compris. Cabler par le nom transformerait le vinyle
+		 *     en carre arrondi. Exemple type du « ne jamais cabler un orphelin
+		 *     sur la foi de son nom » ;
+		 *   · `__artist---color`, `__album---color`, `__duration---color`
+		 *     (text---secondary) — les trois elements existent, mais leur
+		 *     couleur vient de `.origam-audio__meta`, en
+		 *     `color-mix(in srgb, currentColor 60%, transparent)`. La valeur
+		 *     declaree est une AUTRE couleur ;
+		 *   · `__body---gap` (space---3), `__compact---body-gap` (space---2) —
+		 *     aucune classe `.origam-audio__body` dans le template ;
+		 *   · `__transport---btn-icon-size` (20px) — la taille livree pour les
+		 *     boutons de la rangee est 16px (`__btn---icon-size`, cable), et le
+		 *     bloc `&__transport` est de toute facon un selecteur mort.
+		 */
 		&__cover {
 			margin: 0;
 			display: flex;
@@ -1449,6 +1470,27 @@
 			color: var(--origam-audio__waveform---color, color-mix(in srgb, currentColor 50%, transparent));
 		}
 
+		/*
+		 * ⛔ #594 — SELECTEURS MORTS, mesure du 2026-09-27. Ni
+		 * `.origam-audio__transport`, ni `__nav-btn`, ni `__play-btn`, ni
+		 * `__time`, ni `__spacer`, ni `__volume`, ni `__cast`, ni `__config`
+		 * n existent dans le template : la barre de transport a ete remplacee
+		 * par `OrigamMediaController` (`.origam-audio__controller`, ligne 65),
+		 * et ces blocs sont restes. Verifie sur les 45 variants de la story
+		 * dans Chromium — `document.querySelector` renvoie `null` partout.
+		 *
+		 * Consequence pour la campagne C2 : les tokens que ces regles lisent
+		 * (`__transport---min-height`, les quatre `__nav-btn---*`,
+		 * `__play-btn---color`, `__play-btn---icon-size`, `__time---color`)
+		 * sont LAISSES non declares a dessein. Les declarer ne deplacerait
+		 * aucun pixel — precisement parce que rien ne matche — mais graverait
+		 * dans le canal public des noms qu un theme pourrait regler sans
+		 * jamais rien voir changer. Ils restent en baseline
+		 * `token-var-channels.json` jusqu a ce que ces blocs soient soit
+		 * supprimes, soit recables sur le controleur (cf. #578).
+		 *
+		 * Meme cas une trentaine de lignes plus bas pour `&__playlist-artist`.
+		 */
 		&__transport {
 			display: flex;
 			align-items: center;
@@ -1541,8 +1583,22 @@
 			align-items: center;
 			gap: var(--origam-audio--error---gap, 6px);
 			padding: var(--origam-audio--error---padding, 8px 12px);
-			background-color: var(--origam-audio--error---background-color, var(--origam-color__status--error--bg, transparent));
-			color: var(--origam-audio--error---color, var(--origam-color__status--error---color, inherit));
+			/*
+			 * #594 — EFFONDREMENT de deux replis fantomes. Les deux lignes
+			 * lisaient `var(RUNG1, var(--origam-color__status--error---*, T))`.
+			 * Mesure : la famille `--origam-color__status--*` n est declaree
+			 * NULLE PART (zero occurrence en partie gauche dans
+			 * `assets/css/tokens/*` ni `assets/scss/tokens/*`) — c est une
+			 * grammaire fantome, et `--error--bg` y ecrivait meme `--bg` au
+			 * lieu de `---bg`. Les deux RUNG1 sont eux declares light ET dark
+			 * (`--origam-color__feedback--danger---bgSubtle` / `---fgSubtle`),
+			 * donc l echelon fantome etait INATTEIGNABLE par construction : il
+			 * ne peignait rien et ne pouvait rien peindre. Retire du site de
+			 * lecture — zero pixel deplace, deux canaux morts en moins, et pas
+			 * un nom faux grave dans le canal public.
+			 */
+			background-color: var(--origam-audio--error---background-color, transparent);
+			color: var(--origam-audio--error---color, inherit);
 			border-radius: var(--origam-audio--error---border-radius, var(--origam-radius---sm, 4px));
 			font-size: var(--origam-audio--error---font-size, 0.875rem);
 			grid-column: 1 / -1;
@@ -1681,6 +1737,14 @@
 			}
 		}
 
+		/*
+		 * ⛔ #594 — SELECTEUR MORT : aucune `.origam-audio__playlist-artist`
+		 * dans le template (la ligne de playlist rend un `OrigamListItem`,
+		 * dont le sous-titre porte `.origam-list-item__subtitle`, cable juste
+		 * au-dessus). `--origam-audio__playlist-artist---color` reste donc non
+		 * declare, pour la meme raison que le bloc `&__transport` : un canal
+		 * qui ne peint rien ne doit pas entrer dans la feuille publique.
+		 */
 		&__playlist-artist {
 			color: var(--origam-audio__playlist-artist---color, var(--origam-color__text---secondary));
 			font-size: 12px;
