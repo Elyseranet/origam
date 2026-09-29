@@ -616,10 +616,11 @@ hors pipe : sans le correctif **1 échec / 17 verts**, l'échec étant
 
 ## [2.18.12] - 2026-09-25
 
-Un seul des 19 commits touche `packages/ds/` autrement que par la version : le
-reste est marketing, outillage et documentation, donc **absent du paquet
-publié**. Les compteurs de gardes cités dans les corps de commit de ce lot
-divergent (29/29 puis 30/30) : la garde 30 est **arrivée au milieu du lot**.
+Un seul des 19 commits touche `packages/ds/src`, donc le **code publié** : le
+reste est marketing, outillage et documentation. Deux autres touchent bien
+`packages/ds/` mais sous `scripts/`, que le tarball n'embarque pas. Les
+compteurs de gardes cités dans les corps de commit de ce lot divergent (29/29
+puis 30/30) : la garde 30 est **arrivée au milieu du lot**.
 
 ### Fixed — #957 : `OrigamChip` n'ouvrait aucune gouttière pour `prepend` / `append`
 

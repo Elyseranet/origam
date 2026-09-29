@@ -86,7 +86,7 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: '2026-09-25',
         type: 'patch',
         summaryKey: 'changelog.versions.v21812.summary',
-        summaryFallback: 'Un seul des 19 commits touche packages/ds/ autrement que par la version : le reste est marketing, outillage et documentation, donc absent du paquet publié.',
+        summaryFallback: 'Un seul des 19 commits touche packages/ds/src, donc le code publié : le reste est marketing, outillage et documentation.',
         highlights: [
             { type: 'fixed', textKey: 'changelog.versions.v21812.h1', textFallback: '#957 : OrigamChip n\'ouvrait aucune gouttière pour prepend / append' },
             { type: 'fixed', textKey: 'changelog.versions.v21812.h2', textFallback: '#958 : 151 lectures de deux tokens qui n\'existent pas' },
