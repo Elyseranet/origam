@@ -1374,17 +1374,21 @@ The global pre-delivery policy (TU + e2e + security) applies. Specific to
 origam:
 - Run tests on **Node 24** (`.nvmrc`); Node 18 produces unrelated
   `crypto.hash` failures.
-- `pnpm -F origam guards` must stay at **30/30** (measured 2026-09-25, this
-  worktree, real exit code hors pipe; it read `29/29` on 2026-09-24, `28/28` on
-  2026-09-17, `27/27` an hour before that, `25/25` and `17/17` earlier still —
-  **recount, never quote**. This line has been stale FIVE times; an agent caught
-  it again on 2026-09-25 while the paragraph still said 29/29).
+- `pnpm -F origam guards` must stay at **31/31** (measured 2026-09-29, this
+  worktree, real exit code hors pipe; it read `30/30` on 2026-09-25, `29/29` on
+  2026-09-24, `28/28` on 2026-09-17, `27/27` an hour before that, `25/25` and
+  `17/17` earlier still — **recount, never quote**. This line has been stale SIX
+  times; an agent caught it again on 2026-09-29 while the paragraph still said
+  30/30).
 
-  ⛔ **A red `guards` on your machine may be the artefacts, not the code.**
-  Guard 30 (`token-var-channels-marketing`) walks the DISK, not git's index, so
-  it scans build output that no checkout of CI has. Measured 2026-09-25 — same
-  tree, the only variable being the presence of `packages/marketing/public/stories/`
-  (35 MB, **zero files tracked by git**, left behind by a stories build):
+  ✅ **#966 — CORRIGÉ.** Guard 30 (`token-var-channels-marketing`) énumérait le
+  DISQUE et balayait donc des artefacts de build qu'aucun checkout de CI ne
+  porte. `walkSources` passe désormais par **l'index git** (`listRepoFiles`,
+  `lib/git-files.mjs`) — vérifié 2026-09-29 : les 35 Mo de
+  `packages/marketing/public/stories/` sont présents dans ce worktree et le
+  garde ne scanne que **216 fichiers suivis**, vert. L'historique reste ici
+  parce que la forme du piège se reproduira ailleurs — mesure d'origine,
+  2026-09-25, même arbre, seule variable la présence de l'artefact :
 
   | | `guards` | violations | stale baseline entries |
   |---|---|---|---|
@@ -1395,19 +1399,37 @@ origam:
   the stories bundle *declares* thousands of `--origam-*`, so it also joins the
   EMITTER set, and legitimately dead reads turn up as "already fixed". A
   maintainer following the guard's own message would delete 8 baseline lines
-  describing real defects, believing they were making progress. Tracked as
-  **#966**; until it lands, `git ls-files`-clean your tree before trusting a red.
-- `pnpm -F origam guards:self` must stay at **17/17** (measured 2026-09-25, this
-  worktree, real exit code hors pipe ; ce fichier lisait `16/16` le 2026-09-24,
-  puis `15/15`, `14/14` et `13/13` — **recount, never quote**).
+  describing real defects, believing they were making progress.
 
-  ⚠️ Ce compteur ne couvre PAS tout : `run-all-selftests.mjs` ne découvre que
-  `lib/*.selftest.mjs`, et **cinq self-tests vivent au niveau `guards/` sans être
-  invoqués par quoi que ce soit** — dont celui de `token-var-channels`, le garde
-  que ce fichier désigne dès qu'on touche aux feuilles de tokens. Vérifié : leurs
-  seules « références » sont les lignes `Run: node …` de leurs propres en-têtes.
-  Tracé dans **#964**. It runs the guards' own
-  detectors, discovered from `scripts/guards/lib/*.selftest.mjs`. A guard whose
+  ⛔ La leçon qui SURVIT au correctif : **une garde qui énumère le disque
+  mesure ta machine, pas le dépôt.** Toute nouvelle garde qui parcourt un arbre
+  doit passer par `listRepoFiles`, jamais par `readdirSync`.
+- `pnpm -F origam guards:self` must stay at **25/25** (measured 2026-09-29, this
+  worktree, real exit code hors pipe ; ce fichier lisait `17/17` le 2026-09-25,
+  `16/16` le 2026-09-24, puis `15/15`, `14/14` et `13/13` — **recount, never
+  quote**).
+
+  ⛔ Le 17 → 25 n'est pas un saut de huit nouveaux self-tests : c'est un
+  **undercount corrige**. `ls lib/*.selftest.mjs` en denombre 19 et rate les 6
+  autres, que `run-all-selftests.mjs` decouvre ailleurs — 5 a la racine
+  `scripts/guards/` (`comment-format`, `layer-folders`,
+  `no-usedefaults-in-components`, `pnpm-tree-integrity`, `token-var-channels`)
+  et 1 sous `scripts/analysis/` (`inspection-harness`). 19 + 5 + 1 = 25.
+  **Ne pas denombrer les self-tests avec un glob sur `lib/` seul.**
+
+  ✅ **#964 — CORRIGÉ, et ce paragraphe disait le contraire.** Il affirmait que
+  `run-all-selftests.mjs` ne découvre que `lib/*.selftest.mjs` et que cinq
+  self-tests à la racine `guards/` n'étaient invoqués par rien. Le runner appelle
+  désormais `discoverSelftests()` (`lib/selftest-discovery.mjs`, niveaux
+  déclarés dans `DISCOVERED_LEVELS`) **et** `findOrphanSelftests()`, qui ROUGIT
+  sur tout `*.selftest.mjs` rangé hors des niveaux couverts — l'orphelin ne peut
+  plus passer inaperçu. Vérifié 2026-09-29 : les cinq sont exécutés et comptés.
+
+  ⚠️ L'en-tête de `run-all-selftests.mjs` porte encore la même phrase périmée
+  (« Execute TOUS les `lib/*.selftest.mjs` »). Corrigé dans le même lot.
+
+  Pourquoi ce compteur existe : it runs the guards' own
+  detectors. A guard whose
   extractor has regressed goes QUIET, and a silent detector and a clean repo
   produce the same green — so a green `guards` means nothing without this. Both
   run in the `architecture-guards` CI job. If a change touches the token
