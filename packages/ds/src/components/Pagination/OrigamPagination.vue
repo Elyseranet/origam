@@ -828,12 +828,25 @@
 		}
 
 		&--colored {
+			// ⛔ #596 — these two READ the `--primary` state tokens, not a
+			// `-colored` suffix. The sheets have always declared
+			// `--origam-pagination--primary---{background-color,color}` with
+			// exactly the values below as their value, while this block read
+			// `--origam-pagination---{background-color,color}-colored` — two
+			// grammars whose names never coincide, so the declaration was
+			// dormant and the fallback did all the work (the #550 defect
+			// shape). Renaming the READ side rather than duplicating the
+			// declaration keeps ONE grammar — `--{state}---{property}` — and
+			// matches `--origam-pagination--primary---box-shadow` three lines
+			// below, which this file already reads correctly. Rendering is
+			// unchanged: declared value == the fallback it replaces, in light
+			// and in dark.
 			--bg-base: var(
-				--origam-pagination---background-color-colored,
+				--origam-pagination--primary---background-color,
 				var(--origam-color__action--primary---bg)
 			);
 			--fg-base: var(
-				--origam-pagination---color-colored,
+				--origam-pagination--primary---color,
 				var(--origam-color__action--primary---fg)
 			);
 
@@ -850,6 +863,20 @@
 
 		// Hover state — derived: 20 % darker than --bg-base.
 		// Consumer can override via --origam-pagination---background-color-hover.
+		//
+		// ⛔ #596 — `--origam-pagination---color-hover` STAYS UNDECLARED in the
+		// token sheets, deliberately. Its fallback is `var(--fg-base)`, and
+		// `--fg-base` is synthesised PER INSTANCE on `.origam-pagination`
+		// itself (line ~800, and repointed by `&--colored`). A custom
+		// property's computed value is its specified value with `var()`
+		// ALREADY substituted ON THE DECLARING ELEMENT — so a `:root`
+		// declaration of `var(--fg-base)` would be substituted where
+		// `--fg-base` does not exist, become guaranteed-invalid, and every
+		// read would fall straight back to the inline fallback again. The
+		// rendering would be byte-identical and the guard would go green on a
+		// channel that does nothing: a lie, not a fix. It therefore stays in
+		// `baseline/token-var-channels.json` as a known false positive — the
+		// guard compares NAMES, not fallback chains.
 		:deep(.origam-btn:hover:not(.origam-btn--active)) {
 			--origam-btn---background-color: var(
 				--origam-pagination---background-color-hover,
@@ -882,6 +909,41 @@
 
 		// Active state — derived: 30 % darker than --bg-base.
 		// Consumer can override via the matching `is-active` vars.
+		//
+		// ⛔ #596 — of the four `--item--is-active---*` channels read below,
+		// only `---border-color` is declared in the token sheets (its fallback
+		// is the plain literal `transparent`). The other three STAY UNDECLARED
+		// on purpose, each for a measured reason:
+		//
+		//   • `---color` falls back to `var(--fg-base)` — synthesised per
+		//     instance, so a `:root` declaration is guaranteed-invalid and
+		//     inert (same mechanism as the hover block above). Worse, the
+		//     sheets carry a DORMANT near-twin under the other grammar,
+		//     `--origam-pagination__item---active-color:
+		//     var(--origam-color__action--primary---fg)` = WHITE. "Renaming"
+		//     that declaration onto this read — the #550 reflex — would paint
+		//     the active page label white on the untinted (transparent /
+		//     white) surface of uncolored mode: invisible. Exactly the
+		//     BottomNav trap: a name that reads right and inverts the render.
+		//
+		//   • `---background-color` is read TWICE with two DIFFERENT fallbacks
+		//     — `color-mix(… var(--bg-base), black 30%)` here, and
+		//     `var(--origam-color__neutral---200, #e6e6e6)` on the overlay
+		//     below. No single declaration preserves both, and its dormant
+		//     twin `--origam-pagination__item---active-background-color` is
+		//     `action--primary---bg`, which matches neither. The overlay value
+		//     is the one a user-reported defect was fixed to (652a770e, then
+		//     cb10d654) — re-pointing it is a design decision, not a wiring
+		//     one.
+		//
+		//   • `---active-overlay-opacity` is likewise read twice, with `1` on
+		//     the uncolored branch and `0` on the colored one — opposite
+		//     defaults by design, so no root value can hold both (its dormant
+		//     twin says `0.12`, which is neither).
+		//
+		// All three stay in `baseline/token-var-channels.json`. A theme can
+		// still set them: an override lands on an element inside the
+		// component, where `--bg-base` / `--fg-base` DO resolve.
 		&__item--is-active :deep(.origam-btn) {
 			--origam-btn---background-color: var(
 				--origam-pagination__item--is-active---background-color,

@@ -923,6 +923,18 @@
   --origam-toolbar__append---flex-basis: auto;
   --origam-toolbar__append---margin-inline-start: auto;
   --origam-toolbar__append---margin-inline-end: var(--origam-space---2);
+  /* Toolbar + AppBar — #596. Same rule: every value is the literal the SCSS
+     already fell back to, so nothing moves on screen.
+     --origam-toolbar---btn-background-color-{hover,active},
+     --origam-appbar---backdrop-filter and --origam-layout---position-{left,right}
+     stay UNDECLARED on purpose — see the comments at their read sites in
+     OrigamToolbar.vue. */
+  --origam-toolbar---padding-inline: var(--origam-space---4);
+  --origam-toolbar---btn-background-color: rgba(0, 0, 0, 0);
+  --origam-toolbar---btn-color: currentColor;
+  --origam-toolbar---btn-border-radius: var(--origam-radius---md);
+  --origam-toolbar__wrapper---gap: var(--origam-space---3);
+  --origam-toolbar__title---color: currentColor;
   --origam-app---background-color: var(--origam-color__surface---default);
   --origam-app---color: var(--origam-color__text---primary);
   --origam-app---min-height: 100vh;
@@ -1646,6 +1658,12 @@
   --origam-pagination---input-width: var(--origam-space---10);
   --origam-pagination---input-padding-inline: var(--origam-space---2);
   --origam-pagination---label-gap: var(--origam-space---2);
+  /* Pagination — #596. rgba(0, 0, 0, 0) is the computed equivalent of the
+     `transparent` literal the SCSS already fell back to for the active item's
+     border, so nothing moves on screen. The three other --item--is-active
+     channels and --origam-pagination---color-hover stay UNDECLARED on purpose
+     — see the comments at their read sites in OrigamPagination.vue. */
+  --origam-pagination__item--is-active---border-color: rgba(0, 0, 0, 0);
   --origam-table---background-color: var(--origam-color__surface---default);
   --origam-table---color: var(--origam-color__text---primary);
   --origam-table---font-size: var(--origam-font__size---md);
@@ -2527,6 +2545,32 @@
   --origam-tabs__item---transition-easing: var(--origam-motion__easing---standard);
   --origam-tabs__indicator---color: var(--origam-color__action--primary---bg);
   --origam-tabs__indicator---height: var(--origam-border__width---2);
+  /* Tabs — #596. Each value is exactly the literal (or token reference) the
+     component SCSS already fell back to, so nothing moves on screen: the
+     variant (--default / --pills / --underline) and item-state channels were
+     simply never declared, so every theme edit to them was a no-op.
+     --item--disabled---color and --item--hover---background-color keep their
+     legacy hardcoded rgba(0, 0, 0, …) — that is what the DS renders today in
+     BOTH themes, and swapping them for a semantic token would move the dark
+     rendering, which is a design decision and not a token-wiring one.
+     Declaring them here is what finally lets a theme fix that. */
+  --origam-tabs--default---border-block-end-width: var(--origam-border__width---thin);
+  --origam-tabs--default---border-block-end-color: var(--origam-color__border---subtle);
+  --origam-tabs--underline---border-block-end-width: var(--origam-border__width---thin);
+  --origam-tabs--underline---border-block-end-color: var(--origam-color__border---subtle);
+  --origam-tabs--pills---background-color: rgba(0, 0, 0, 0);
+  --origam-tabs--pills---gap: var(--origam-space---2);
+  --origam-tabs--pills---padding: var(--origam-space---1);
+  --origam-tabs__item--hover---color: currentColor;
+  --origam-tabs__item--hover---background-color: rgba(0, 0, 0, 0.04);
+  --origam-tabs__item--active---color: currentColor;
+  --origam-tabs__item--active---background-color: rgba(0, 0, 0, 0);
+  --origam-tabs__item--active---font-weight: var(--origam-font__weight---semibold);
+  --origam-tabs__item--disabled---color: rgba(0, 0, 0, 0.38);
+  --origam-tabs__item--disabled---background-color: rgba(0, 0, 0, 0);
+  --origam-tabs__item--focus---outline-color: currentColor;
+  --origam-tabs__item--pills--active---background-color: var(--origam-color__action--primary---bg);
+  --origam-tabs__item--pills--active---color: var(--origam-color__action--primary---fg);
   --origam-tab-panels__panel---padding-block: var(--origam-space---4);
   --origam-tab-panels__panel---padding-inline: var(--origam-space---0);
   --origam-tabs__panel---transition-duration: var(--origam-motion__duration---fast);
@@ -3823,6 +3867,18 @@
     --origam-toolbar__append---flex-basis: auto;
     --origam-toolbar__append---margin-inline-start: auto;
     --origam-toolbar__append---margin-inline-end: var(--origam-space---2);
+    /* Toolbar + AppBar — #596. Same rule: every value is the literal the SCSS
+       already fell back to, so nothing moves on screen.
+       --origam-toolbar---btn-background-color-{hover,active},
+       --origam-appbar---backdrop-filter and --origam-layout---position-{left,right}
+       stay UNDECLARED on purpose — see the comments at their read sites in
+       OrigamToolbar.vue. */
+    --origam-toolbar---padding-inline: var(--origam-space---4);
+    --origam-toolbar---btn-background-color: rgba(0, 0, 0, 0);
+    --origam-toolbar---btn-color: currentColor;
+    --origam-toolbar---btn-border-radius: var(--origam-radius---md);
+    --origam-toolbar__wrapper---gap: var(--origam-space---3);
+    --origam-toolbar__title---color: currentColor;
     --origam-app---background-color: var(--origam-color__surface---default);
     --origam-app---color: var(--origam-color__text---primary);
     --origam-app---min-height: 100vh;
@@ -4546,6 +4602,12 @@
     --origam-pagination---input-width: var(--origam-space---10);
     --origam-pagination---input-padding-inline: var(--origam-space---2);
     --origam-pagination---label-gap: var(--origam-space---2);
+    /* Pagination — #596. rgba(0, 0, 0, 0) is the computed equivalent of the
+       `transparent` literal the SCSS already fell back to for the active item's
+       border, so nothing moves on screen. The three other --item--is-active
+       channels and --origam-pagination---color-hover stay UNDECLARED on purpose
+       — see the comments at their read sites in OrigamPagination.vue. */
+    --origam-pagination__item--is-active---border-color: rgba(0, 0, 0, 0);
     --origam-table---background-color: var(--origam-color__surface---default);
     --origam-table---color: var(--origam-color__text---primary);
     --origam-table---font-size: var(--origam-font__size---md);
@@ -5426,6 +5488,32 @@
     --origam-tabs__item---transition-easing: var(--origam-motion__easing---standard);
     --origam-tabs__indicator---color: var(--origam-color__action--primary---bg);
     --origam-tabs__indicator---height: var(--origam-border__width---2);
+    /* Tabs — #596. Each value is exactly the literal (or token reference) the
+       component SCSS already fell back to, so nothing moves on screen: the
+       variant (--default / --pills / --underline) and item-state channels were
+       simply never declared, so every theme edit to them was a no-op.
+       --item--disabled---color and --item--hover---background-color keep their
+       legacy hardcoded rgba(0, 0, 0, …) — that is what the DS renders today in
+       BOTH themes, and swapping them for a semantic token would move the dark
+       rendering, which is a design decision and not a token-wiring one.
+       Declaring them here is what finally lets a theme fix that. */
+    --origam-tabs--default---border-block-end-width: var(--origam-border__width---thin);
+    --origam-tabs--default---border-block-end-color: var(--origam-color__border---subtle);
+    --origam-tabs--underline---border-block-end-width: var(--origam-border__width---thin);
+    --origam-tabs--underline---border-block-end-color: var(--origam-color__border---subtle);
+    --origam-tabs--pills---background-color: rgba(0, 0, 0, 0);
+    --origam-tabs--pills---gap: var(--origam-space---2);
+    --origam-tabs--pills---padding: var(--origam-space---1);
+    --origam-tabs__item--hover---color: currentColor;
+    --origam-tabs__item--hover---background-color: rgba(0, 0, 0, 0.04);
+    --origam-tabs__item--active---color: currentColor;
+    --origam-tabs__item--active---background-color: rgba(0, 0, 0, 0);
+    --origam-tabs__item--active---font-weight: var(--origam-font__weight---semibold);
+    --origam-tabs__item--disabled---color: rgba(0, 0, 0, 0.38);
+    --origam-tabs__item--disabled---background-color: rgba(0, 0, 0, 0);
+    --origam-tabs__item--focus---outline-color: currentColor;
+    --origam-tabs__item--pills--active---background-color: var(--origam-color__action--primary---bg);
+    --origam-tabs__item--pills--active---color: var(--origam-color__action--primary---fg);
     --origam-tab-panels__panel---padding-block: var(--origam-space---4);
     --origam-tab-panels__panel---padding-inline: var(--origam-space---0);
     --origam-tabs__panel---transition-duration: var(--origam-motion__duration---fast);

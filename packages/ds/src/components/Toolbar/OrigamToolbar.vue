@@ -245,6 +245,22 @@
 		// the toolbar's own gutter (16 px) with whatever the layout
 		// reserved on each side (defaults to 0 when no layout item is
 		// present, so the standalone case still gets the 16 px gutter).
+		//
+		// ⛔ #596 — `--origam-layout---position-{left,right}` STAY UNDECLARED
+		// in the token sheets, deliberately. They are not theme tokens: they
+		// are runtime MEASUREMENTS, written as INLINE STYLES on the layout
+		// root by `useCreateLayout`'s `layoutStyles` (and on main by
+		// `mainStyles`) from `mainRect`, via `LAYOUT_POSITION_VARS` — see
+		// `composables/Commons/createLayout.composable.ts`. Descendants
+		// inherit them from that element, which is how this toolbar receives
+		// them. Declaring them at `:root` would publish a themeable channel
+		// that the layout's inline style overrides on every real instance —
+		// dead by construction — and `LAYOUT_DEFAULT_OFFSET` already is the
+		// `0px` written below. The guard flags them only because it compares
+		// names against the SHEETS; `OrigamMain` reads the same four vars and
+		// is absent from the baseline solely because it declares its own
+		// `0px` block locally. They stay in
+		// `baseline/token-var-channels.json` as known false positives.
 		padding-inline-start: calc(
 			var(--origam-toolbar---padding-inline, 16px) +
 			var(--origam-layout---position-left, 0px)
@@ -283,6 +299,28 @@
 		border-end-start-radius: var(--origam-toolbar---border-end-start-radius, 0);
 
 		background: var(--origam-toolbar---background);
+		// ⛔ #596 — `--origam-appbar---backdrop-filter` STAYS UNDECLARED in the
+		// token sheets, and that is a NAMING decision left open on purpose,
+		// not an oversight. Measured: the DS's canonical AppBar family is
+		// spelt with a hyphen — `--origam-app-bar---*`, 11 tokens declared in
+		// all four sheets and listed in `TTokenName`, every one of them
+		// DORMANT because `OrigamAppBar.vue` contains no `var(--origam-…)` at
+		// all and delegates its whole surface to this component. This read
+		// uses a THIRD spelling, `--origam-appbar---`, which is also the
+		// namespace `packages/marketing` adopted locally (7 themes set
+		// `--origam-appbar---bg`, read by `marketing/src/layouts/default.vue`;
+		// 5 of them additionally set `--origam-appbar---backdrop-filter`, and
+		// it does reach this line today).
+		// Declaring `none` here would engrave a SECOND grammar for one
+		// component into the public token surface, three lines from the
+		// `--origam-app-bar---*` block. The two defensible renames —
+		// `--origam-app-bar---backdrop-filter` (matches the authoring intent
+		// and marketing's naming) or `--origam-toolbar---backdrop-filter`
+		// (matches the component that actually reads it, per the
+		// `--origam-{component}---{property}` rule) — both break the 5
+		// marketing themes unless they move in the same commit, i.e. a
+		// cross-package decision. Left in `baseline/token-var-channels.json`
+		// until that call is made.
 		backdrop-filter: var(--origam-appbar---backdrop-filter, none);
 		-webkit-backdrop-filter: var(--origam-appbar---backdrop-filter, none);
 		box-shadow: var(--origam-toolbar---box-shadow);
@@ -488,6 +526,26 @@
 		//
 		// Shape: rounded SQUARE (8 px), overrides Btn's default
 		// `&--icon { border-radius: 50% }`.
+		//
+		// ⛔ #596 — the two DERIVED channels,
+		// `--origam-toolbar---btn-background-color-{hover,active}`, STAY
+		// UNDECLARED in the token sheets. Their fallbacks are
+		// `color-mix(in srgb, var(--btn-bg-base), black {20,30}%)`, and
+		// `--btn-bg-base` is synthesised PER INSTANCE at the top of this block
+		// from `--origam-toolbar---btn-background-color` (which #596 DID
+		// declare, its fallback being the plain literal `transparent`). A
+		// custom property's computed value is its specified value with `var()`
+		// already substituted ON THE DECLARING ELEMENT, so a `:root`
+		// declaration of that `color-mix()` would be substituted where
+		// `--btn-bg-base` does not exist → guaranteed-invalid → every read
+		// falls back to the inline fallback anyway. Identical rendering, green
+		// guard, dead channel: a lie, not a fix. Freezing them to a static
+		// colour instead would be worse — it would sever the derivation from
+		// whatever base colour the consumer sets, which is the whole point of
+		// the block above. They stay in `baseline/token-var-channels.json` as
+		// known false positives; the guard compares NAMES, not fallback
+		// chains. A theme overriding them on the toolbar element itself (or
+		// deeper) still works, because `--btn-bg-base` resolves there.
 		:deep(.origam-btn:not(:hover):not(.origam-btn--active)) {
 			--origam-btn---background-color: var(--btn-bg-base);
 			--origam-btn---color: var(--btn-fg-base);
