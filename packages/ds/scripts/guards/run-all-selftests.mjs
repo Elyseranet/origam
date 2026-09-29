@@ -3,9 +3,16 @@
  * Runner — les self-tests des gardes du DS (#574)
  *
  * @description
- * Execute TOUS les `lib/*.selftest.mjs`, agrege leurs codes de sortie, et
- * ne court-circuite jamais. Le gate echoue si UN seul a echoue, et le
- * recapitulatif dit lequel.
+ * Execute TOUS les `*.selftest.mjs` que `discoverSelftests()` trouve sur les
+ * niveaux declares (`DISCOVERED_LEVELS` dans `lib/selftest-discovery.mjs`),
+ * agrege leurs codes de sortie, et ne court-circuite jamais. Le gate echoue si
+ * UN seul a echoue, et le recapitulatif dit lequel.
+ *
+ * ⛔ Cette ligne disait « TOUS les `lib/*.selftest.mjs` » — perime depuis #964,
+ * qui a precisement corrige le fait que la decouverte se limitait a `lib/` et
+ * laissait cinq self-tests a la racine `guards/` invoques par RIEN. La portee
+ * est desormais plus large, et `findOrphanSelftests()` rougit sur tout
+ * `*.selftest.mjs` range hors des niveaux couverts.
  *
  * @description
  * ⛔ POURQUOI CE FICHIER EXISTE. Les 13 self-tests du DS existaient et
