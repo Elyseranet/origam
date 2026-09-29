@@ -950,10 +950,13 @@
 		//     design a arbitrer, pas une correction mecanique.
 		//
 		// Les jumeaux `--origam-btn--ghost---{background-color,color,
-		// background-color-hover}` existent bien dans les feuilles mais portent
-		// une couleur d'intention OPAQUE (`color__action--ghost---bg`), pas un
-		// voile relatif : les cabler ici changerait le rendu. Ils restent donc
-		// dormants — meme arbitrage.
+		// background-color-hover}` existent bien dans les feuilles, mais ils ne
+		// portent PAS un voile relatif : `--origam-color__action--ghost---bg` vaut
+		// `rgba(0, 0, 0, 0)` (mesure, light.css:108) et `---bgHover` un neutre
+		// OPAQUE (`neutral---100`, light.css:109). Les cabler ici supprimerait donc
+		// le voile a 12 % au repos et le remplacerait par un aplat neutre au
+		// survol : changement de rendu, pas correction. Ils restent dormants —
+		// meme arbitrage.
 		&--variant-ghost {
 			background-color: var(
 				--origam-btn---background-color-ghost,

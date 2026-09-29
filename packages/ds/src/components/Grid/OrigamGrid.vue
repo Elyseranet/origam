@@ -267,13 +267,24 @@
 		grid-auto-rows: var(--origam-grid---auto-rows, auto);
 		gap: var(--origam-grid---gap, var(--origam-grid---gap-md));
 		// ⛔ C2 (#597) — `--origam-grid---column-gap` et `---row-gap` restent NON
-		// DECLARES, a dessein. Leur repli est le bouton general
-		// `--origam-grid---gap`, que ce composant ecrit EN STYLE INLINE par
-		// instance (prop `gap`, voir `gridStyles` ci-dessus). Une custom property
-		// est substituee sur l'element qui la declare : une declaration `:root`
-		// figerait les deux gouttieres a la valeur racine et la prop `gap`
-		// cesserait d'agir sur elles. Les 10 autres vars de ce bloc n'ont pas ce
-		// probleme — leur repli est un mot-cle CSS constant — et sont declarees.
+		// DECLARES, a dessein, et ils sont les SEULS de ce bloc dans ce cas
+		// (mesure : les 8 autres sont declares dans light.css, ces deux-la a 0).
+		//
+		// La difference n'est pas la forme du repli, c'est QUI le repli designe :
+		//
+		//  - les 8 autres lisent LEUR PROPRE token, que `gridStyles` ci-dessus
+		//    ecrit en style INLINE sur l'element. La declaration de l'element bat
+		//    celle de `:root`, donc la prop continue d'agir et la declaration de
+		//    feuille est inoffensive.
+		//  - ces deux-ci lisent le token DU VOISIN en repli
+		//    (`var(--origam-grid---column-gap, var(--origam-grid---gap))`), et
+		//    c'est `--origam-grid---gap` — lui aussi ecrit inline par la prop
+		//    `gap` — qui porte la valeur utile. Les declarer a `:root` ferait
+		//    resoudre le premier echelon et la chaine NE CONSULTERAIT JAMAIS
+		//    `---gap` : la prop `gap` cesserait d'agir sur les deux gouttieres.
+		//
+		// Faux positif de la garde, qui compare des noms et non des chaines de
+		// repli.
 		column-gap: var(--origam-grid---column-gap, var(--origam-grid---gap));
 		row-gap: var(--origam-grid---row-gap, var(--origam-grid---gap));
 		align-items: var(--origam-grid---align-items, stretch);
