@@ -675,6 +675,18 @@
 			color: var(--origam-chip--selected---color);
 		}
 
+		/*
+		 * ⛔ #595 — `--origam-chip---font-size` est lu par les cinq paliers et
+		 * DOIT rester non declare. C est le premier maillon d une chaine de
+		 * replis dont le second est par-palier : le declarer a `:root` figerait
+		 * la meme taille de police pour `x-small` comme pour `x-large` et
+		 * rendrait `--origam-chip---font-size-{xs..xl}` inatteignables — la
+		 * prop `size` perdrait son canal typographique. Meme piege que la
+		 * cascade de replis de Card (#593).
+		 *
+		 * Les cinq `---height-{xs..xl}`, eux, sont un niveau unique : ils
+		 * viennent d etre declares a leur valeur livree (20/24/32/38/44px).
+		 */
 		&--size-x-small {
 			font-size: var(--origam-chip---font-size, var(--origam-chip---font-size-xs, 0.625rem));
 			line-height: 1;
@@ -710,6 +722,28 @@
 			padding: 0 var(--origam-chip---padding-xl, 17px);
 		}
 
+		/*
+		 * ⛔ #595 — QUINZE tokens `--origam-chip--*` que les feuilles declarent
+		 * et que ce SCSS ne lit PAS. Ils restent en baseline
+		 * `token-var-channels-dormant.json`, voici pourquoi :
+		 *
+		 *   · les douze `--{success,warning,danger,info}---{background-color,
+		 *     color,border-color}` et les deux `--outlined---{background-color,
+		 *     border-color}` supposent des regles `&--danger` / `&--outlined`
+		 *     que le composant n a pas et ne doit pas avoir : l intention est
+		 *     peinte par `useColorEffect` (style INLINE) et par les classes
+		 *     utilitaires `.origam--bg-*`. Une regle de variante au selecteur
+		 *     perdrait de toute facon contre l inline, ou — pire, avec un
+		 *     `!important` — empecherait la prop de peindre : c est exactement
+		 *     l incident qui a produit l ADR-005 et le garde `no-variant-css`.
+		 *     La classe emise reste un point d accroche CONSOMMATEUR ;
+		 *   · `---density` (0px) est ECRIT juste en dessous par les deux
+		 *     modificateurs de densite et LU par personne. C est un defaut
+		 *     distinct de C2 — la prop `density` de Chip est inerte, aucune
+		 *     hauteur ni marge ne consomme la variable — et le corriger
+		 *     changerait le rendu de `density="compact"`. Hors perimetre de ce
+		 *     lot, signale sans ticket ouvert (consigne du lot).
+		 */
 		&--density-default {
 			--origam-chip---density: 0px;
 		}
