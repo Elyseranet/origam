@@ -18,6 +18,26 @@ const MARKETING_BASE_URL = process.env.MARKETING_BASE_URL ?? 'http://localhost:3
  */
 const MARKETING_GREEN_SPECS = [
     'nav-link-availability.spec.ts',
+
+    // #953 — le catalogue ne peut plus se vider en silence.
+    //
+    // Ce spec existait depuis longtemps et n'etait execute par AUCUN job :
+    // `/components` — 218 composants, la vitrine du DS — pouvait donc rendre
+    // une page VIDE sans une seule ligne rouge, parce que
+    // `useReferenceCatalog` declare `default: () => []` et que « 0 famille
+    // sur 0 categorie » passe pour un succes.
+    //
+    // Il entre dans la barriere maintenant, et pas avant, parce que les
+    // QUATRE defauts qui l'empechaient sont traites :
+    //   - la CI n'avait pas de base           -> service postgres + seed (#953)
+    //   - contraste 4,24:1, WCAG AA           -> corrige, 0 echec sur 16
+    //   - le fallback 404 ne s'affichait pas  -> #855, les 8 familles a 200
+    //   - la table de tokens rendait 0 ligne  -> l'assertion cherchait des
+    //     `tbody tr` dans un `<dl>` : defaut du TEST, pas du produit
+    //
+    // Mesure d'admission : 29 passed, REAL_EXIT=0, contre un build de
+    // production pointe sur une base fraichement semee (2733 entrees).
+    'components.spec.ts',
     'marketing-nav-ssr.spec.ts',
 
     // #835 — garde le theming du site entier : le thème que le serveur rend

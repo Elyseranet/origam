@@ -346,7 +346,12 @@
 				column-gap: 4px;
 				display: grid;
 				grid-template-columns: repeat(2, 1fr);
-				min-height: var(--origam-data-table-row--mobile__column-min-height, var(--origam-data-table-row--mobile__column, var(--origam-data-table__row---mobile-column-min-height, 52px)));
+				// C2 (#597) — l'echelon intermediaire
+				// `var(--origam-data-table-row--mobile__column, …)` a ete RETIRE :
+				// le premier echelon est declare dans les feuilles (52px), donc il
+				// resout toujours et l'intermediaire etait inatteignable. Mesure
+				// avant/apres : `min-height` = 52px de part et d'autre.
+				min-height: var(--origam-data-table-row--mobile__column-min-height, var(--origam-data-table__row---mobile-column-min-height, 52px));
 
 				&:not(:last-child) {
 					border-bottom: 0;

@@ -25,6 +25,58 @@ import { usePassedProps } from './passedProps.composable'
 // SSR-safe: no DOM access. The injection key is a global symbol so multiple
 // bundle copies of origam still cooperate.
 //
+/*********************************************************
+ * POURQUOI `useDefaults` RESTE, sans aucun appelant interne (#544)
+ *
+ * @description
+ * ⛔ TRANCHE PAR LA MESURE, 2026-09-29 — NE PAS ROUVRIR. #544 le classait
+ * « doublon du resolveur ADR-005, plus aucun appelant, a retirer ». Zero
+ * appelant est exact : les 40 derniers sont partis sous #363, et un grep dans
+ * `packages/ds/src` ne remonte que des mentions en commentaire. La conclusion,
+ * elle, est FAUSSE — ce n'est pas un doublon.
+ *
+ * @description
+ * `installThemePropsResolver` a une limitation STRUCTURELLE, documentee dans
+ * `theme-props-resolver.composable.ts` (section « Known limitation »). Ce n'est
+ * pas un oubli mais le sequencement de Vue : le hook ecrit dans `beforeCreate`,
+ * qui s'execute APRES le retour de `setup()`. Un prop lu UNE FOIS,
+ * SYNCHRONEMENT, au top level de `setup()` — hors `computed()`,
+ * `watchEffect()` ou fonction de rendu — capture donc la valeur d'AVANT le
+ * patch : le theme ne l'atteint jamais, et rien n'avertit.
+ *
+ * @description
+ * `useDefaults` n'a PAS cette lacune : le getter de son `computed` s'evalue a
+ * l'acces `.value`, a n'importe quel instant, la ref de defauts etant deja
+ * injectee au moment ou `setup()` tourne. C'est donc le SEUL echappatoire pour
+ * un prop qui doit etre lu tot — precisement le piege qui avait casse les props
+ * thematises de 16 composants a travers `useLink` et `useVModel`, jusqu'a ce
+ * que les deux soient rendus paresseux.
+ *
+ * @description
+ * S'y ajoute une surface publique reelle : `useDefaults` a une page de doc
+ * dediee (`packages/docs/composables/useDefaults.md`) et est cite par
+ * `docs/guide/composables.md` et `docs/composables/Commons.md`. C'est
+ * exactement le controle que #544 reclamait, et qui avait deja evite une
+ * suppression fautive sur `useCountdown` et `provideLocale`.
+ *
+ * @description
+ * ⚠️ La lacune est EPINGLEE PAR UNE PAIRE APPARIEE de tests, qui est la preuve
+ * executable que ce composable n'est pas redondant —
+ * `packages/tests/TU/origam/setup-level-prop-reads.spec.ts` :
+ *   it('WITHOUT useDefaults, a value read eagerly in setup() misses the theme')
+ *   it('WITH useDefaults, the same eager read sees the theme')
+ * La spec cite meme un cas reel du catalogue :
+ * `useClipboard({ feedbackDuration: props.feedbackDuration })` dans
+ * `OrigamClipboard`. `probe/preexisting-eager-reads.spec.ts` couvre le meme axe.
+ * Retirer `useDefaults` retire le temoin, donc la preuve.
+ *
+ * @description
+ * ⛔ Et le rayon d'action est large : 35 fichiers sous `packages/tests/TU`
+ * referencent `useDefaults` (mesure, 2026-09-29). Une note anterieure de session
+ * avancait « 3 specs, 23 tests » — chiffre de memoire, FAUX, et c'est exactement
+ * le genre d'affirmation non remesuree qui a fait ouvrir #544.
+ ********************************************************/
+
 // `usePassedProps` (the "was this prop explicitly passed?" primitive this
 // hook depends on) lives in its own file — see `passedProps.composable.ts`.
 // `camelize` (kebab→camel prop-name matching) moved to

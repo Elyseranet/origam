@@ -581,6 +581,13 @@
 		min-width: calc(var(--origam-btn---min-width, 64px) + var(--origam-btn---density, 0px));
 		max-width: var(--origam-btn---max-width, 100%);
 		height: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px));
+		// ⛔ C2 (#597) — `--origam-btn---min-height` reste NON DECLARE, a dessein.
+		// Son repli est `calc(height + density)`, deux vars reglees PAR INSTANCE
+		// (`&--size-*` / `&--density-*` plus bas dans ce bloc). Une custom property
+		// est substituee SUR L'ELEMENT QUI LA DECLARE : une declaration `:root`
+		// figerait la hauteur minimale a la taille/densite racine et les props
+		// `size` / `density` cesseraient d'agir sur elle. Faux positif de la garde,
+		// qui compare des noms et non des chaines de repli.
 		min-height: var(--origam-btn---min-height, calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px)));
 		max-height: var(--origam-btn---max-height, 100%);
 
@@ -902,6 +909,15 @@
 			// no longer forced to share one token. Themes that don't
 			// declare it fall straight through to the existing behaviour
 			// (their own `-background-color`), so this is additive only.
+			//
+			// ⛔ C2 (#597) — `--origam-btn---background-color-active` reste NON
+			// DECLARE, a dessein. Son repli est le bouton general
+			// `--origam-btn---background-color`, lui DECLARE dans les feuilles et
+			// surcharge par intention / variante sur l'element. Le declarer a
+			// `:root` y substituerait la couleur RACINE une fois pour toutes :
+			// l'etat actif d'un bouton `primary` repeindrait le gris secondaire.
+			// Non declare, le repli est evalue sur l'element et suit la couleur
+			// reelle du bouton — c'est une cascade voulue, pas un oubli.
 			&#{$this}--active {
 				background-color: var(--origam-btn---background-color-active, var(--origam-btn---background-color)) !important;
 				color: var(--origam-btn---color);
@@ -920,6 +936,27 @@
 			}
 		}
 
+		// ⛔ C2 (#597) — les 5 tokens `ghost` lus ici restent NON DECLARES, a
+		// dessein, pour DEUX raisons independantes :
+		//
+		//  1. chaque repli est un `color-mix()` relatif a `currentColor` (ou a
+		//     `white`) : il doit etre evalue SUR LE BOUTON, dont la couleur
+		//     depend de l'intention. Une declaration `:root` le figerait a la
+		//     teinte racine et le verre prendrait la meme nuance partout.
+		//  2. `--origam-btn---background-color-ghost` est lu DEUX FOIS avec DEUX
+		//     replis differents (12 % ici, 18 % dans la branche
+		//     `@supports not (backdrop-filter)` plus bas). Le declarer
+		//     imposerait une seule valeur aux deux branches : c'est un choix de
+		//     design a arbitrer, pas une correction mecanique.
+		//
+		// Les jumeaux `--origam-btn--ghost---{background-color,color,
+		// background-color-hover}` existent bien dans les feuilles, mais ils ne
+		// portent PAS un voile relatif : `--origam-color__action--ghost---bg` vaut
+		// `rgba(0, 0, 0, 0)` (mesure, light.css:108) et `---bgHover` un neutre
+		// OPAQUE (`neutral---100`, light.css:109). Les cabler ici supprimerait donc
+		// le voile a 12 % au repos et le remplacerait par un aplat neutre au
+		// survol : changement de rendu, pas correction. Ils restent dormants —
+		// meme arbitrage.
 		&--variant-ghost {
 			background-color: var(
 				--origam-btn---background-color-ghost,
@@ -1045,8 +1082,8 @@
 		// the skeleton's natural size unless we give it a sensible
 		// min-width / min-height.
 		&--loader-skeleton {
-			min-width: var(--origam-btn---loader-skeleton-min-width, 96px);
-			min-height: var(--origam-btn---loader-skeleton-min-height, 36px);
+			min-width: var(--origam-btn--loader-skeleton---min-width, 96px);
+			min-height: var(--origam-btn--loader-skeleton---min-height, 36px);
 
 			:deep(.origam-skeleton--rectangular) {
 				position: absolute;

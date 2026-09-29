@@ -225,9 +225,26 @@ test.describe('/components/btn — page détail', () => {
         const tokensTable = page.locator('[data-cy="component-tokens-table"]')
         await expect(tokensTable).toBeVisible()
 
-        const rows = tokensTable.locator('tbody tr')
+        /*
+         * ⛔ `.prop-list__item`, PAS `tbody tr`.
+         *
+         * Ce test comptait des `tbody tr` et rendait donc TOUJOURS 0, quelle
+         * que soit la donnee : la section n'a jamais contenu de `<table>`.
+         * C'est un `<dl class="prop-list">` dont chaque ligne est un
+         * `<div class="prop-list__item">` — verifie, zero occurrence de
+         * `<table>`, `<tbody>` ou `<tr>` dans tout le bloc.
+         *
+         * Le defaut etait donc dans l'assertion, pas dans le produit ni dans
+         * les fixtures : mesure en base sur un seed frais, `btn` porte bien
+         * 8 lignes de `kind_extra.tokens.excerpt`, et 127 des 218 composants
+         * en ont au moins une.
+         *
+         * Un test qui cherche une forme inexistante echoue sur du code
+         * correct — et il a masque une fonctionnalite qui marchait.
+         */
+        const rows = tokensTable.locator('.prop-list__item')
         const count = await rows.count()
-        expect(count).toBeGreaterThanOrEqual(3)
+        expect(count, `la section tokens rend ${ count } ligne(s) pour btn — la base en contient 8`).toBeGreaterThanOrEqual(3)
     })
 
     test('le playground est présent et son bouton live répond aux changements de contrôle', async ({ page }) => {
