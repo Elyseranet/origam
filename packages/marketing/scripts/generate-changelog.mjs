@@ -78,6 +78,49 @@
  *   --verbose  per-version extraction detail.
  */
 
+/*********************************************************
+ * Angle mort de la garde « Changelog drift check (marketing) »
+ *
+ * @description
+ * CE QUE LA GARDE VÉRIFIE. `--check` compare le fichier committé
+ * `changelog-versions.const.ts` à ce que CE script produirait depuis
+ * `/CHANGELOG.md`. Elle garde donc la dérive CONSTANTE ↔ DOCUMENT, dans un
+ * seul sens : le fichier généré ne peut pas s'écarter de sa source.
+ *
+ * @description
+ * ⛔ CE QU'ELLE NE VÉRIFIE PAS. Elle ne compare RIEN aux tags git ni à ce que
+ * npm sert. `/CHANGELOG.md` est la source de vérité de ce script, jamais son
+ * objet de contrôle : un document qui oublie une version publiée produit une
+ * constante fidèle à ce document, donc un `--check` VERT. La garde ne peut
+ * pas voir un trou dans sa propre source.
+ *
+ * @description
+ * C'EST AINSI QUE CINQ VERSIONS PUBLIÉES ONT DISPARU DE LA PAGE PUBLIQUE.
+ * Mesuré le 2026-09-29 : `v2.18.12` … `v2.18.16` étaient taguées et servies
+ * par npm, absentes de `/CHANGELOG.md`, donc absentes de la constante et de
+ * `/changelog` — qui annonçait `2.18.11`, cinq crans en retard. Pendant tout
+ * ce temps `changelog:generate:check` sortait `UP TO DATE`, exit 0. Le même
+ * trou s'était déjà produit à `2.18.8` et avait été relevé par la refonte de
+ * `/roadmap` (#913, PR #949) — deux fois le même angle mort.
+ *
+ * @description
+ * LA VÉRIFICATION QUI MANQUE, si quelqu'un la câble un jour : comparer
+ * `git tag --list 'v*'` aux titres `## [x.y.z]` du document, et non le
+ * document à la constante. Elle n'est PAS ajoutée ici — ce script génère, il
+ * n'audite pas le dépôt, et la porter ici lui donnerait deux responsabilités.
+ *
+ * @description
+ * ⚠️ ET UNE ÉDITION DE `/CHANGELOG.md` CHANGE LE PAQUET PUBLIÉ. Le `prepack`
+ * de `packages/ds/package.json` copie `../../CHANGELOG.md` en
+ * `packages/ds/CHANGELOG.md`, que `files` embarque. Le fichier est absent de
+ * tout checkout (`.gitignore`) et n'existe qu'à l'instant du pack, ce qui
+ * fait croire à une entrée `files` morte : elle ne l'est pas. Vérifié par
+ * `npm pack --dry-run` depuis `packages/ds` — 4 fichiers, dont
+ * `CHANGELOG.md`. Conséquence pour la règle « pas de tag hors
+ * `packages/ds/` » : un lot qui ne touche QUE ce document produit malgré tout
+ * un tarball différent. Arbitrage du propriétaire, pas de ce script.
+ ********************************************************/
+
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'

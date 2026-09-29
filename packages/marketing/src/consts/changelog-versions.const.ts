@@ -18,6 +18,85 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.18.17',
+        date: '2026-09-29',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v21817.summary',
+        summaryFallback: 'Dix-huit commits, dont la réparation qui débloquait Type-check (vue-tsc) sur develop et bloquait donc toute PR.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v21817.h1', textFallback: '#597 : 32 canaux de thème morts résorbés sur Btn, DataTable et Grid, zéro changement de rendu' },
+            { type: 'changed', textKey: 'changelog.versions.v21817.h2', textFallback: '#597 : les 13 alias DataTable sont renommés, pas dupliqués' },
+            { type: 'fixed', textKey: 'changelog.versions.v21817.h3', textFallback: 'develop était rouge : un import cassé par la scission des interfaces' },
+            { type: 'fixed', textKey: 'changelog.versions.v21817.h4', textFallback: '#953 : le catalogue de composants entre dans la barrière CI, et l\'assertion qui l\'en empêchait était fausse' },
+            { type: 'changed', textKey: 'changelog.versions.v21817.h5', textFallback: '#544 : la conclusion du ticket est inversée, useDefaults reste' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.18.16',
+        date: '2026-09-27',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v21816.summary',
+        summaryFallback: '⚠️ Ce tag couvre deux merges, pas un — dérogation assumée à la règle « un ticket = un merge = un tag ».',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v21816.h1', textFallback: '#591, #592, #593 : 221 canaux de thème rendus au DS, zéro changement de rendu' },
+            { type: 'fixed', textKey: 'changelog.versions.v21816.h2', textFallback: '#855 : l\'état « introuvable » des 8 pages de détail était structurellement mort' },
+            { type: 'fixed', textKey: 'changelog.versions.v21816.h3', textFallback: 'contraste WCAG du libellé des métadonnées de tokens (4,24:1 → conforme sur 16/16)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.18.15',
+        date: '2026-09-26',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v21815.summary',
+        summaryFallback: 'Un correctif de DS et deux de marketing. Le correctif DS est la moitié invisible d\'un défaut signalé sur capture : la puce se voyait, l\'indentation de 40px qui l\'accompagnait non.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v21815.h1', textFallback: 'OrigamGrid neutralise la puce et l\'indentation que le navigateur pose sur un ul' },
+            { type: 'fixed', textKey: 'changelog.versions.v21815.h2', textFallback: '#955 : le menu du site lit enfin son canal de thème (et le retrait seul aurait tout cassé)' },
+            { type: 'fixed', textKey: 'changelog.versions.v21815.h3', textFallback: 'wireframe pricing : les CTA alignés en bas quelle que soit la longueur du contenu' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.18.14',
+        date: '2026-09-26',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v21814.summary',
+        summaryFallback: 'Un seul correctif, sur deux props que 21 composants ignoraient en silence depuis toujours — la classe était émise, et rien ne bougeait.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v21814.h1', textFallback: '#950 : :where(&) sur les défauts padding / margin, 21 composants, 93 déclarations' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.18.13',
+        date: '2026-09-26',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v21813.summary',
+        summaryFallback: 'Deux correctifs, dont la cause racine du journal de 5,5 Go de #853.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v21813.h1', textFallback: '#916 : inheritAttrs sur 12 racines fragment/teleport — pas 15, et 4 auraient été cassés' },
+            { type: 'fixed', textKey: 'changelog.versions.v21813.h2', textFallback: '#924 : sous cartoon clair, l\'anneau de focus était invisible sur toutes ses surfaces claires' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.18.12',
+        date: '2026-09-25',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v21812.summary',
+        summaryFallback: 'Un seul des 19 commits touche packages/ds/ autrement que par la version : le reste est marketing, outillage et documentation, donc absent du paquet publié.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v21812.h1', textFallback: '#957 : OrigamChip n\'ouvrait aucune gouttière pour prepend / append' },
+            { type: 'fixed', textKey: 'changelog.versions.v21812.h2', textFallback: '#958 : 151 lectures de deux tokens qui n\'existent pas' },
+            { type: 'fixed', textKey: 'changelog.versions.v21812.h3', textFallback: '#922 : les résidus du pipeline supprimé que la première passe avait laissés' },
+            { type: 'fixed', textKey: 'changelog.versions.v21812.h4', textFallback: '#951, #944, #946, #294 : quatre défauts de menu mesurés sur les 8 identités' },
+            { type: 'changed', textKey: 'changelog.versions.v21812.h5', textFallback: '/roadmap refondue sur wireframe validé, et 8 affirmations fausses corrigées' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.18.11',
         date: '2026-09-24',
         type: 'patch',
