@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import type { Page } from '@playwright/test'
 
 /**
  * SPEC — C2, canaux de thème ouverts sur Audio (#594) et sur les champs et
@@ -98,8 +99,8 @@ const SLIDER_CASES: TokenCase[] = [
     { token: '--origam-slider-field__buffered---opacity', prop: 'opacity', read: 'opacity', was: '0.5' },
     { token: '--origam-slider-field__buffered--bare---background-color', prop: 'background-color', read: 'background-color', was: 'color-mix(in srgb, currentColor 40%, transparent)' },
     { token: '--origam-slider-field__track---transition', prop: 'transition', read: 'transition-duration', was: '0.3s cubic-bezier(0.25, 0.8, 0.5, 1)' },
-    { token: '--origam-slider-field__hover-tooltip---background-color', prop: 'background-color', read: 'background-color', was: 'var(--origam-color__surface--inverse---bg, rgba(0, 0, 0, 0.85))' },
-    { token: '--origam-slider-field__hover-tooltip---color', prop: 'color', read: 'color', was: 'var(--origam-color__on--inverse---fg, #ffffff)' },
+    // ⛔ Les deux `__hover-tooltip---*` NE sont PAS dans ce jeu : leur rendu
+    //    change volontairement. Voir `INVERTING` et son test dédié.
     { token: '--origam-slider-field--bare---accent-color', prop: 'color', read: 'color', was: 'var(--origam-color__action--primary---bg)' },
     { token: '--origam-slider-field--bare---thumb-size', prop: 'width', read: 'width', was: '12px' },
     { token: '--origam-slider-field--bare---track-background-color', prop: 'background-color', read: 'background-color', was: 'color-mix(in srgb, currentColor 25%, transparent)' },
@@ -189,6 +190,33 @@ const LITERAL_AT_ROOT: Record<string, string> = {
  * le canal public des noms que rien ne consomme (et pour trois d'entre eux, des
  * noms d'une grammaire qui n'existe pas).
  */
+/**
+ * ⛔ TROIS références FAUSSES, corrigées — et ici le rendu change EXPRÈS.
+ *
+ * Chacune de ces lectures nommait un token qu'aucune feuille ne déclare, avec
+ * son jumeau correct déjà présent à côté. Le composant retombait donc
+ * éternellement sur son repli en dur, sans erreur ni avertissement :
+ *
+ *   · `--origam-color__surface--inverse---bg` → `--origam-color__surface---inverse`
+ *   · `--origam-color__on--inverse---fg`      → `--origam-color__text---inverse`
+ *   · `--origam-font---family`                → `--origam-font__family---sans`
+ *
+ * Les deux premières sont la forme d'ÉTAT (`--inverse---`) d'une famille qui
+ * n'existe pas ; la troisième invente un bloc `font` là où l'échelle réelle est
+ * `font__family---{sans,serif,mono}`. Conséquence mesurée : l'infobulle de
+ * SliderField était peinte en dur sombre et **n'inversait jamais** en mode
+ * sombre, et trois composants ignoraient la police du DS.
+ *
+ * Ce n'est pas un arbitrage : c'est faire ce que le code croyait déjà faire.
+ */
+const INVERTING: { token: string, mustDifferBetweenModes: true }[] = [
+    { token: '--origam-slider-field__hover-tooltip---background-color', mustDifferBetweenModes: true },
+    { token: '--origam-slider-field__hover-tooltip---color', mustDifferBetweenModes: true }
+]
+
+/** La police, elle, ne dépend pas du mode — seule sa valeur devait changer. */
+const FONT_TOKEN = '--origam-font__family---sans'
+
 const COLLAPSED_MUST_STAY_UNDECLARED = [
     // Famille fantôme : zéro déclaration de `--origam-color__status--*` dans
     // tout `assets/`, et `--error--bg` écrivait même `--bg` au lieu de `---bg`.
@@ -197,10 +225,13 @@ const COLLAPSED_MUST_STAY_UNDECLARED = [
     // Nom à occurrence unique dans tout le dépôt (son propre site de lecture),
     // et `--origam-theme` n'est pas un bloc de composant.
     '--origam-theme---elevation',
-    // Toujours lus, mais par la FEUILLE (déclaration de
-    // `--origam-slider-field__hover-tooltip---*`), plus par le composant.
+    // Forme d'ÉTAT (`--inverse---`) d'une famille qui n'existe pas. Plus lus
+    // NULLE PART depuis que les déclarations pointent sur les vrais jumeaux
+    // (`surface---inverse` / `text---inverse`) — voir `INVERTING`.
     '--origam-color__on--inverse---fg',
-    '--origam-color__surface--inverse---bg'
+    '--origam-color__surface--inverse---bg',
+    // Invente un bloc `font` ; l'échelle réelle est `font__family---{sans,…}`.
+    '--origam-font---family'
 ]
 
 /**
@@ -233,7 +264,7 @@ test.describe('C2 — canaux de thème d\'Audio et des champs / contrôles (#594
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('.origam-switch').first()).toBeVisible({ timeout: 15000 })
 
-        const names = [ ...ALL_CASES.map((c) => c.token), ...EXTRA_TOKENS, ...REALIGNED.map((r) => r.token) ]
+        const names = [ ...ALL_CASES.map((c) => c.token), ...EXTRA_TOKENS, ...REALIGNED.map((r) => r.token), ...INVERTING.map((i) => i.token) ]
 
         const frame = page.frames().find((f) => f.url().includes('__sandbox'))
         expect(frame, 'iframe __sandbox introuvable').toBeTruthy()
@@ -250,6 +281,95 @@ test.describe('C2 — canaux de thème d\'Audio et des champs / contrôles (#594
 
         expect(empty, 'tokens encore non déclarés (canal de thème mort)').toEqual([])
         expect(Object.keys(resolved)).toHaveLength(53)
+    })
+
+/**
+ * Les trois références fausses sont corrigées — et on le prouve en MESURANT,
+ * dans les deux modes.
+ *
+ * ⛔ Le mode doit être posé DANS le document du `__sandbox`, pas sur la page
+ * hôte. Première version de cette sonde : `page.addInitScript` — le mode s'est
+ * relu `null` et le garde de contamination ci-dessous a rejeté la mesure.
+ * L'iframe est un document séparé ; l'attribut posé sur la racine de l'hôte n'y
+ * est pas. C'est précisément le genre de sonde qui renvoie des nombres bien
+ * formés et faux.
+ *
+ * On écrit donc dans l'iframe, puis on lit dans un SECOND `evaluate` : la règle
+ * « une seule `evaluate` » vaut pour une classe liée à un `computed` que Vue
+ * re-patche, pas pour laisser le recalcul de style atterrir après un
+ * changement d'attribut sur la racine (CLAUDE.md, mesures du 2026-09-09).
+ *
+ * ⛔ Et il faut piloter `data-theme`, PAS `data-mode` seul. La racine du
+ * sandbox porte déjà `data-theme="light"` ; or le sélecteur du jeu sombre est
+ * `[data-theme="dark"], [data-mode="dark"]:not([data-theme="light"])`. Poser
+ * `data-mode="dark"` par-dessus un `data-theme="light"` laisse donc la page
+ * CLAIRE — et c'est voulu : c'est la règle #807/#871 qui donne le dernier mot à
+ * l'axe de marque quand les deux axes se contredisent. Une sonde qui pilote
+ * `data-mode` seul mesure ici une page restée claire et conclut « le token
+ * n'inverse pas » sur du code correct. Mesuré : `surface---inverse` rendait
+ * `#171717` dans les deux cas, tandis que `text---inverse` bougeait (il est
+ * dans le jeu SÉMANTIQUE que la matrice runtime réémet par `data-mode`) — deux
+ * réponses incohérentes qui signalaient la sonde, pas le produit.
+ */
+async function readTokensInMode(page: Page, mode: 'light' | 'dark', names: string[]) {
+    await page.goto(STORY_PATH, { waitUntil: 'domcontentloaded' })
+    const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+    await expect(sandbox.locator('.origam-switch').first()).toBeVisible({ timeout: 15000 })
+
+    const frame = page.frames().find((f) => f.url().includes('__sandbox'))
+    expect(frame, 'iframe __sandbox introuvable').toBeTruthy()
+
+    // 1. écrire les DEUX axes dans le document du sandbox — voir ci-dessus
+    await frame!.evaluate((m) => {
+        document.documentElement.setAttribute('data-theme', m)
+        document.documentElement.setAttribute('data-mode', m)
+    }, mode)
+
+    // 2. laisser le recalcul atterrir
+    await frame!.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))))
+
+    // 3. lire — en relisant le mode DANS le même evaluate que les valeurs
+    const r = await frame!.evaluate((list: string[]) => {
+        const de = document.documentElement
+        const cs = getComputedStyle(de)
+        const out: Record<string, string> = {}
+        for (const n of list) out[n] = cs.getPropertyValue(n).trim()
+
+        return { out, modeAtRead: de.getAttribute('data-mode'), themeAtRead: de.getAttribute('data-theme') }
+    }, names)
+
+    expect(
+        { mode: r.modeAtRead, theme: r.themeAtRead },
+        `CONTAMINE — demandé ${mode}/${mode}, lu ${r.themeAtRead}/${r.modeAtRead}`
+    ).toEqual({ mode, theme: mode })
+
+    return r.out
+}
+
+    for (const mode of [ 'light', 'dark' ] as const) {
+        test(`references corrigees — mode ${mode}`, async ({ page }) => {
+            const out = await readTokensInMode(page, mode, [ ...INVERTING.map((i) => i.token), FONT_TOKEN ])
+
+            // La police vient enfin de l'échelle du DS, plus de `system-ui`.
+            expect(out[FONT_TOKEN], 'la police doit venir de l\'échelle du DS').toContain('Inter')
+
+            for (const { token } of INVERTING) {
+                expect(out[token], `${token} doit résoudre en mode ${mode}`).not.toBe('')
+            }
+        })
+    }
+
+    test('l\'infobulle de SliderField inverse enfin entre les deux modes', async ({ page }) => {
+        const names = INVERTING.map((i) => i.token)
+        const light = await readTokensInMode(page, 'light', names)
+        const dark = await readTokensInMode(page, 'dark', names)
+
+        const identical = names.filter((t) => light[t] === dark[t])
+
+        expect(
+            identical,
+            'ces tokens rendent la MÊME valeur en clair et en sombre : l\'infobulle est repeinte en dur et le canal est mort'
+        ).toEqual([])
     })
 
     /**
