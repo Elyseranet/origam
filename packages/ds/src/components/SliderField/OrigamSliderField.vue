@@ -1223,21 +1223,40 @@
 			 * construction. Retire : zero pixel deplace, deux canaux morts en
 			 * moins.
 			 *
-			 * ⛔ Ne PAS « reparer » en renommant vers les tokens semantiques
-			 * existants : mesure du 2026-09-29, `--origam-color__surface---inverse`
-			 * vaut `#171717` en light comme en dark, la ou l infobulle livre
-			 * `rgba(0, 0, 0, 0.85)` — un renommage la repeindrait. (Le pendant
-			 * texte, `--origam-color__text---inverse`, vaut bien `#ffffff` dans
-			 * les deux modes, mais renommer un seul des deux couples casserait
-			 * la paire.) Consequence a connaitre : cette infobulle est peinte
-			 * en dur sombre et n inverse donc PAS en mode sombre. Corriger cela
-			 * change le rendu — hors du contrat « zero pixel deplace » de ce lot.
+			 * ⛔ Et les deux noms de l echelon 2 etaient FAUX. Forme d ETAT
+			 * (`--inverse---`) d une famille qui n existe pas : zero
+			 * declaration dans tout `assets/`. L infobulle retombait donc
+			 * eternellement sur son repli sombre en dur, qui n inversait
+			 * JAMAIS. Les vrais noms existaient a cote depuis toujours, et ils
+			 * inversent — mesure en Chromium le 2026-09-29, data-theme pilote :
+			 *
+			 *     --origam-color__surface---inverse   light #171717  dark #ffffff
+			 *     --origam-color__text---inverse      light #ffffff  dark #0a0a0a
+			 *
+			 * La DECLARATION de chaque RUNG1, dans les quatre feuilles, pointe
+			 * maintenant sur eux. C est la que vit la correction : RUNG1 etant
+			 * declare, le repli ecrit ici ne serait jamais atteint — corriger
+			 * ce fichier seul n aurait rien change.
+			 *
+			 * ⚠️ Ceci CHANGE le rendu, volontairement : l infobulle inverse
+			 * enfin (surface claire + texte sombre en mode sombre). Avant, les
+			 * deux tokens rendaient la MEME valeur dans les deux modes.
 			 */
 			background: var(--origam-slider-field__hover-tooltip---background-color, rgba(0, 0, 0, 0.85));
 			color: var(--origam-slider-field__hover-tooltip---color, #ffffff);
 			font-size: 11px;
 			font-weight: 600;
-			font-family: var(--origam-font---family, system-ui, sans-serif);
+			/*
+			 * #595 — REFERENCE CORRIGEE : lisait `var(--origam-font---family, …)`,
+			 * un nom que AUCUNE feuille ne declare (zero occurrence en partie
+			 * gauche dans `assets/`). Ce composant retombait donc toujours sur
+			 * `system-ui` et ignorait la police du DS. Le barreau reel est
+			 * `--origam-font__family---sans` (primitive.css) = `Inter, 'Helvetica
+			 * Neue', Arial, sans-serif`. ⚠️ Change le rendu, volontairement. Le
+			 * repli `system-ui, sans-serif` reste en ceinture de securite si la
+			 * feuille de primitives n est pas chargee.
+			 */
+			font-family: var(--origam-font__family---sans, system-ui, sans-serif);
 			border-radius: 3px;
 			white-space: nowrap;
 			z-index: 4;

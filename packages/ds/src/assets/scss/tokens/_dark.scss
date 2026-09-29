@@ -2317,8 +2317,8 @@
   --origam-slider-field__buffered---opacity: 0.5;
   --origam-slider-field__buffered--bare---background-color: color-mix(in srgb, currentColor 40%, transparent);
   --origam-slider-field__track---transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-  --origam-slider-field__hover-tooltip---background-color: var(--origam-color__surface--inverse---bg, rgba(0, 0, 0, 0.85));
-  --origam-slider-field__hover-tooltip---color: var(--origam-color__on--inverse---fg, #ffffff);
+  --origam-slider-field__hover-tooltip---background-color: var(--origam-color__surface---inverse);
+  --origam-slider-field__hover-tooltip---color: var(--origam-color__text---inverse);
   --origam-slider-field--bare---accent-color: var(--origam-color__action--primary---bg);
   --origam-slider-field--bare---thumb-size: 12px;
   --origam-slider-field--bare---track-background-color: color-mix(in srgb, currentColor 25%, transparent);
@@ -5291,8 +5291,8 @@
     --origam-slider-field__buffered---opacity: 0.5;
     --origam-slider-field__buffered--bare---background-color: color-mix(in srgb, currentColor 40%, transparent);
     --origam-slider-field__track---transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-    --origam-slider-field__hover-tooltip---background-color: var(--origam-color__surface--inverse---bg, rgba(0, 0, 0, 0.85));
-    --origam-slider-field__hover-tooltip---color: var(--origam-color__on--inverse---fg, #ffffff);
+    --origam-slider-field__hover-tooltip---background-color: var(--origam-color__surface---inverse);
+    --origam-slider-field__hover-tooltip---color: var(--origam-color__text---inverse);
     --origam-slider-field--bare---accent-color: var(--origam-color__action--primary---bg);
     --origam-slider-field--bare---thumb-size: 12px;
     --origam-slider-field--bare---track-background-color: color-mix(in srgb, currentColor 25%, transparent);

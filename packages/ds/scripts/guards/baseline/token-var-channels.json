@@ -119,7 +119,6 @@
     "packages/ds/src/components/Masonry/OrigamMasonry.vue::--origam-masonry---container-height",
     "packages/ds/src/components/Masonry/OrigamMasonry.vue::--origam-masonry---resolved-gap",
     "packages/ds/src/components/Masonry/OrigamMasonry.vue::--origam-masonry---template-columns",
-    "packages/ds/src/components/Media/OrigamMediaScrubber.vue::--origam-font---family",
     "packages/ds/src/components/OtpInputField/OrigamOtpInputField.vue::--origam-otp-input-field---error-color",
     "packages/ds/src/components/OtpInputField/OrigamOtpInputField.vue::--origam-otp-input-field__cell---border",
     "packages/ds/src/components/OtpInputField/OrigamOtpInputField.vue::--origam-otp-input-field__details---padding-inline",
@@ -143,7 +142,6 @@
     "packages/ds/src/components/Sheet/OrigamSheet.vue::--origam-sheet---border-width",
     "packages/ds/src/components/Sheet/OrigamSheet.vue::--origam-sheet---swipe-height",
     "packages/ds/src/components/Skeleton/OrigamSkeleton.vue::--origam-skeleton---wave-color",
-    "packages/ds/src/components/SliderField/OrigamSliderField.vue::--origam-font---family",
     "packages/ds/src/components/SliderField/OrigamSliderField.vue::--origam-slider-field---hover-x",
     "packages/ds/src/components/SliderField/OrigamSliderField.vue::--origam-slider-field---track-size",
     "packages/ds/src/components/SliderField/OrigamSliderField.vue::--origam-slider-field--pressed---transition",
@@ -208,6 +206,5 @@
     "packages/ds/src/components/Transition/OrigamExpandX.vue::--origam-transition--expand-x-enter-leave---transition-timing-function",
     "packages/ds/src/components/Transition/OrigamExpandY.vue::--origam-transition--expand-y-enter-leave---transition-duration",
     "packages/ds/src/components/Transition/OrigamExpandY.vue::--origam-transition--expand-y-enter-leave---transition-property",
-    "packages/ds/src/components/Transition/OrigamExpandY.vue::--origam-transition--expand-y-enter-leave---transition-timing-function",
-    "packages/ds/src/components/Video/OrigamVideo.vue::--origam-font---family"
+    "packages/ds/src/components/Transition/OrigamExpandY.vue::--origam-transition--expand-y-enter-leave---transition-timing-function"
 ]

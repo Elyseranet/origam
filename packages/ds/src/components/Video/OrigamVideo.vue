@@ -1280,7 +1280,17 @@
 	.origam-video__skip-ripple-label {
 		font-size: 13px;
 		font-weight: 600;
-		font-family: var(--origam-font---family, system-ui, sans-serif);
+		/*
+		 * #595 — REFERENCE CORRIGEE : lisait `var(--origam-font---family, …)`,
+		 * un nom que AUCUNE feuille ne declare (zero occurrence en partie
+		 * gauche dans `assets/`). Ce composant retombait donc toujours sur
+		 * `system-ui` et ignorait la police du DS. Le barreau reel est
+		 * `--origam-font__family---sans` (primitive.css) = `Inter, 'Helvetica
+		 * Neue', Arial, sans-serif`. ⚠️ Change le rendu, volontairement. Le
+		 * repli `system-ui, sans-serif` reste en ceinture de securite si la
+		 * feuille de primitives n est pas chargee.
+		 */
+		font-family: var(--origam-font__family---sans, system-ui, sans-serif);
 		letter-spacing: 0.02em;
 		white-space: nowrap;
 		user-select: none;
