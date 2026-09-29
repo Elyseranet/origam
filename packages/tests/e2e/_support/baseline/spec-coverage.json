@@ -61,7 +61,6 @@
     "color-picker-preview.spec.ts",
     "color-picker-swatches.spec.ts",
     "command-palette.spec.ts",
-    "components.spec.ts",
     "composables.spec.ts",
     "confirm-wrapper.spec.ts",
     "contextual-menu.spec.ts",
