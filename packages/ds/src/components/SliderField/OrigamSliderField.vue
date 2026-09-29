@@ -1655,12 +1655,34 @@
 	 *     le template mais aucune regle ne lui donne de hauteur ; la hauteur
 	 *     vivante est celle de `.origam-slider-field-track` (sous-composant).
 	 *
-	 * ⛔ ARBITRAGE EN ATTENTE, a ne pas trancher ici :
-	 * `--origam-slider-field---track-size` est lu avec DEUX replis
-	 * differents — `4px` aux lignes du `__buffered` / du mode vertical, `14px`
-	 * aux six lignes du bloc `--horizontal`. Le declarer change donc le rendu
-	 * d un des deux camps, quelle que soit la valeur choisie. Meme motif que
-	 * les huit lectures de Chart (#591). Laisse non declare.
+	 * ⛔ `--origam-slider-field---track-size` : FAUX POSITIF de la garde, a
+	 * laisser en baseline et surtout a NE PAS declarer.
+	 *
+	 * Il est ECRIT PAR INSTANCE, inconditionnellement, par `sliderFieldStyles`
+	 * (~l.1018) : `convertToUnit(trackProps.size ?? 4)`. Ce style inline est
+	 * pose sur la RACINE des deux variantes (`<origam-input>` et `<section>`),
+	 * donc tout le sous-arbre en herite et les HUIT sites de lecture prennent
+	 * cette valeur. Mesure en Chromium le 2026-09-29, trois variants de la
+	 * story, bloc `--horizontal` present :
+	 *
+	 *     style inline sur la racine  --origam-slider-field---track-size: 4px
+	 *     token relu sur la racine    4px
+	 *     token relu sur la piste     4px
+	 *     hauteur rendue de la piste  4px   <- la regle au repli 14px
+	 *
+	 * ⚠️ Deux consequences, contre-intuitives toutes les deux :
+	 *
+	 *   1. Les replis `14px` des six lignes du bloc `--horizontal` sont du CODE
+	 *      MORT : ils ne sont jamais atteints, la piste horizontale mesure 4px.
+	 *      Il n y a donc PAS « deux camps » a arbitrer — la lecture precedente
+	 *      de ce commentaire, qui annoncait un arbitrage entre 4px et 14px,
+	 *      etait fausse : elle comparait des textes de repli sans verifier
+	 *      lequel s applique.
+	 *   2. Le declarer a `:root` serait INERTE : l ecriture inline sur la
+	 *      racine bat une declaration de feuille pour tout le sous-arbre. Un
+	 *      theme qui le reglerait ne verrait RIEN changer — on annoncerait un
+	 *      canal qui ne fonctionne pas. C est exactement le motif que la
+	 *      campagne interdit de cabler.
 	 */
 	.origam-slider-field-thumb {
 		$this: &;
