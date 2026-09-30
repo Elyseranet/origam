@@ -18,8 +18,7 @@ import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 
 import { installThemePropsResolver } from '@origam/composables/Commons/theme-props-resolver.composable'
-import { VARIANT_PRESETS, VARIANT_PROP_KEY } from '@origam/consts'
-import { KBD_VARIANT_PRESETS } from '@origam/consts'
+import { KBD_VARIANT_PRESETS, VARIANT_PRESETS, VARIANT_PROP_KEY } from '@origam/consts'
 import OrigamKbd from '@origam/components/Kbd/OrigamKbd.vue'
 
 const KBD_NAME = 'origam-kbd'
