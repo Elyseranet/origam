@@ -18,6 +18,47 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.18.20] - 2026-09-30
+
+### Added — surfaces de props `opacity` et `backdrop`, et les deux trous de `IStateEffectConfig`
+
+**Aucun composant converti.** Ce lot pose les surfaces de props sans lesquelles
+les variants `plain` et `ghost` d'`OrigamBtn` ne peuvent pas devenir des presets
+ADR-005 — c'est du déblocage, la conversion vient après.
+
+- `IOpacityProps` + `useOpacity`, `IBackdropProps` + `useBackdrop` — quatre
+  absences vérifiées à **0 occurrence** avant ce lot.
+- `IStateEffectConfig` gagne **`opacity` ET `borderColor`**. L'audit D6 de
+  l'ADR-005 ne citait que le premier : `outlined --active` pose un
+  `border-color`, que le raccourci `border` ne peut pas porter. Trouvé à la
+  mesure, consigné en commentaire sur la prop elle-même.
+- Nouvelle échelle primitive de flou — `--origam-blur---{xs,sm,md,lg,xl}` =
+  `4 / 6 / 8 / 16 / 24px`. Les échelons viennent d'un **comptage des littéraux
+  `blur(Npx)`** sur `packages/ds/src` + `packages/marketing/src`
+  (`8px ×25, 16px ×21, 6px ×17, 20px ×14, 24px ×7, 12px ×7, 28px ×5`), d'où
+  `sm = 6px` plutôt qu'un doublement régulier.
+- 30 classes utilitaires, dans la feuille CSS **et** son jumeau SCSS.
+
+### Internal — réutilisé plutôt que créé
+
+Deux des quatre manques annoncés par l'ADR n'en étaient qu'à moitié :
+
+- **L'échelle primitive d'opacité existait déjà** — `--origam-opacity---{0,12,
+  26,32,50,60,70,87,100}`, déclarée dans `primitive.css` et **déjà lue** par la
+  règle `--variant-plain` de Btn. D6 proposait « `IOpacityProps` + un groupe de
+  tokens » : seule la première moitié manquait. Aucune seconde échelle n'a été
+  déclarée.
+- **Le canal `--origam-{cmp}---backdrop-filter` était déjà en place sur 12
+  composants** (Alert, Card, Chip, Field, Menu, Sheet, Snackbar, Tooltip,
+  Toolbar, Overlay, CommandPalette, Btn). Ce qui manquait vraiment, c'était
+  l'échelle de flou ci-dessus.
+
+`borderColor` et `opacity` sur `IStateEffectConfig` empruntent leurs types à
+`IBorderProps['borderColor']` et `IOpacityProps` — comme `border` le faisait
+déjà. `useStateEffect` transmettait **déjà** `borderColor` à `useBorder`, mais
+en le lisant sur `props` et documenté « non state-swappable » : le getter passe
+désormais par `pickEffective`, sans nouveau chemin de code.
+
 ## [2.18.19] - 2026-09-30
 
 ### Changed — ⚠️ RUPTURE : `useLayout` renommé `useLayoutMain`
