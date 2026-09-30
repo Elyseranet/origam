@@ -29,6 +29,17 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     },
     {
         // extracted from CHANGELOG.md
+        version: '2.18.20',
+        date: '2026-09-30',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v21820.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v21820.h1', textFallback: 'surfaces de props opacity et backdrop, et les deux trous de IStateEffectConfig' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.18.19',
         date: '2026-09-30',
         type: 'patch',
