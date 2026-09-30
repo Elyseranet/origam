@@ -96,7 +96,7 @@
   import OrigamSnackbarItem from './OrigamSnackbarItem.vue'
 
   import { useBothColor } from '../../composables/Commons/bothColor.composable'
-  import { useLayout } from '../../composables/Commons/layout.composable'
+  import { useLayoutMain } from '../../composables/Commons/layout.composable'
   import { usePosition } from '../../composables/Commons/position.composable'
   import { useProps } from '../../composables/Commons/props.composable'
   import { useScopeId } from '../../composables/Commons/scopeId.composable'
@@ -175,7 +175,7 @@
   const timerKey = shallowRef(0)
 
   useToggleScope(() => !!hasLayout, () => {
-    const layout = useLayout()
+    const layout = useLayoutMain()
 
     watchEffect(() => {
       mainStyles.value = layout.mainStyles.value

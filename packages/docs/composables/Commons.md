@@ -728,10 +728,10 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
 ```
 
 Root of the layout system — provides `ORIGAM_LAYOUT_KEY` so
-`useLayout` / `useLayoutItem` consumers down the tree can register
+`useLayoutMain` / `useLayoutItem` consumers down the tree can register
 (drawers, toolbars, bottom-navs…) and read back the reserved main
 area.
-Independent from `useLayout` / `useLayoutItem` at the call level (no
+Independent from `useLayoutMain` / `useLayoutItem` at the call level (no
 direct function dependency) — the three only share the
 `ORIGAM_LAYOUT_KEY` provide/inject contract.
 
@@ -1359,10 +1359,10 @@ item ad hoc.
 
 **Consommateurs** (2) : `components/List/OrigamList.vue`, `components/Select/OrigamSelect.vue`
 
-## `useLayout`
+## `useLayoutMain`
 
 ```ts
-export function useLayout ()
+export function useLayoutMain ()
 ```
 
 Reads the nearest `ORIGAM_LAYOUT_KEY` injection provided by
@@ -1388,7 +1388,7 @@ Registers a component (BottomNav, AppBar, Drawer…) as an item of the
 nearest `ORIGAM_LAYOUT_KEY` layout provided by `useCreateLayout`.
 Falls back to inert styles when no layout provider is present so the
 component still renders standalone (stories, modal previews, tests).
-Independent from `useLayout` / `useCreateLayout` at the call level
+Independent from `useLayoutMain` / `useCreateLayout` at the call level
 (no direct function dependency) — the three only share the
 `ORIGAM_LAYOUT_KEY` provide/inject contract.
 
