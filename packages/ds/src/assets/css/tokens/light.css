@@ -1738,6 +1738,8 @@
   --origam-list---user-select: auto;
   --origam-list---indent-padding: 0px;
   --origam-list--nav---item-gap: 2px;
+  --origam-list--nav---item-min-height: 44px;
+  --origam-list--nav---item-padding-block: 6px;
   --origam-list---density: 0px;
   --origam-list---slim-prepend-width: 28px;
   --origam-list__overlay---background-color: var(--origam-color__overlay---scrim);
