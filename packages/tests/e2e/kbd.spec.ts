@@ -27,6 +27,31 @@ import { expect, test } from '@playwright/test'
  * Non-testable headless :
  *   - Rendu de police JetBrains Mono / Fira Code (chargement de font async)
  *   - v-contrast directif (couleur contrastée calculée en runtime selon le thème)
+ *
+ * ⛔ A/B CONTRE LE COMMIT PARENT — mesuré, et le détail compte.
+ * `E2E_STATIC=1`, port isolé, DS ramené à l'état pré-conversion (`git checkout
+ * <parent> -- packages/ds`), stories reconstruites, même spec :
+ *
+ *   après conversion : 22 passed, $? = 0
+ *   avant conversion : 2 failed / 20 passed, $? = 1
+ *
+ * Les DEUX qui rougissent sont celles qui décrivent le changement :
+ *   - « échanger la classe de variant ne change RIEN » — avant, la classe
+ *     PORTAIT le style, donc l'échanger changeait le fond ;
+ *   - « sur une combinaison, un bg-color peint LES TOUCHES » — avant, il
+ *     peignait l'enveloppe.
+ *
+ * ⚠️ Les trois autres assertions du bloc « Preset de variant » passent DES DEUX
+ * CÔTÉS, et c'est voulu : ce sont des garde-fous de NON-RÉGRESSION (les trois
+ * variants se distinguent, la surface d'une combinaison est le `__key`, un
+ * bg-color bat le variant en forme simple). Elles épinglent ce qui ne doit pas
+ * bouger ; elles ne discriminent pas la conversion, et ne sont pas présentées
+ * comme telles.
+ *
+ * La matrice complète — 3 variants x 2 formes x 8 identités x 2 modes — n'est
+ * pas ici : Histoire est épinglé `data-theme="light"` et n'enregistre aucun
+ * thème de marque, donc l'axe des identités y est immesurable. Elle vit dans
+ * `pnpm -F @origam/tests audit:kbd-preset`.
  */
 
 const STORY_ID   = 'components-stories-kbd-origamkbd-story-vue'
