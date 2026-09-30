@@ -30,9 +30,5 @@
     "packages/ds/src/components/Btn/OrigamBtnGroup.vue::selector::&--variant-outlined",
     "packages/ds/src/components/Btn/OrigamBtnGroup.vue::selector::&--variant-text, &--variant-plain",
     "packages/ds/src/components/Btn/OrigamBtnGroup.vue::selector::&--variant-tonal",
-    "packages/ds/src/components/Kbd/OrigamKbd.vue::selector::&--combination#{&}--variant-outlined, &--combination#{&}--variant-filled, &--combination#{&}--variant-tonal",
-    "packages/ds/src/components/Kbd/OrigamKbd.vue::selector::&--variant-filled, &--variant-filled &__key",
-    "packages/ds/src/components/Kbd/OrigamKbd.vue::selector::&--variant-outlined, &--variant-outlined &__key",
-    "packages/ds/src/components/Kbd/OrigamKbd.vue::selector::&--variant-tonal, &--variant-tonal &__key",
     "packages/ds/src/components/SliderField/OrigamSliderField.vue::selector::.origam-slider-field--variant-audio"
 ]

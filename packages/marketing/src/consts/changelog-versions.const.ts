@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: 'Unreleased',
+        date: null,
+        type: 'unreleased',
+        summaryKey: 'changelog.versions.unreleased.summary',
+        summaryFallback: '1 change. See the full changelog for detail.',
+        highlights: [
+            { type: 'changed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'ADR-005 lot 2 : OrigamKbd converti, ⚠️ deux ruptures' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.18.21',
         date: '2026-09-30',
         type: 'patch',

@@ -6,7 +6,7 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<IKbdProps>>({ variant: 'outlined', color: undefined, bgColor: undefined, size: undefined, rounded: undefined, border: undefined, fontFamily: undefined, fontSize: undefined, fontWeight: undefined })"
+				:init-state="() => useStoryInitState<Partial<IKbdProps>>({ variant: 'outlined', color: undefined, bgColor: undefined, size: undefined, rounded: undefined, border: undefined, elevation: undefined, fontFamily: undefined, fontSize: undefined, fontWeight: undefined })"
 		>
 			<template #default="{ state }">
 				<origam-kbd
@@ -16,6 +16,7 @@
 						:size="state.size"
 						:rounded="state.rounded"
 						:border="state.border"
+						:elevation="state.elevation"
 						:font-family="state.fontFamily"
 						:font-size="state.fontSize"
 						:font-weight="state.fontWeight"
@@ -38,6 +39,9 @@
 				</StoryGroup>
 				<StoryGroup title="Border">
 					<HstSelect v-model="state.border" title="Border" :options="BORDER_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Elevation">
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Typography">
 					<HstSelect v-model="state.fontFamily" title="Font Family" :options="FONT_FAMILY_OPTIONS"/>
@@ -84,6 +88,25 @@
 			</div>
 		</Variant>
 
+		<Variant title="Prop — variant (preset matrix)">
+			<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;" data-cy="kbd-preset-matrix">
+				<div style="display: flex; gap: 12px; align-items: center;">
+					<origam-kbd variant="outlined" text="K" data-cy="kbd-single-outlined"/>
+					<origam-kbd variant="filled" text="K" data-cy="kbd-single-filled"/>
+					<origam-kbd variant="tonal" text="K" data-cy="kbd-single-tonal"/>
+				</div>
+				<div style="display: flex; gap: 12px; align-items: center;">
+					<origam-kbd variant="outlined" :combination="['Ctrl', 'S']" data-cy="kbd-combo-outlined"/>
+					<origam-kbd variant="filled" :combination="['Ctrl', 'S']" data-cy="kbd-combo-filled"/>
+					<origam-kbd variant="tonal" :combination="['Ctrl', 'S']" data-cy="kbd-combo-tonal"/>
+				</div>
+				<div style="display: flex; gap: 12px; align-items: center;">
+					<origam-kbd variant="outlined" text="K" bg-color="primary" data-cy="kbd-override-single"/>
+					<origam-kbd variant="tonal" :combination="['Ctrl', 'S']" bg-color="primary" data-cy="kbd-override-combo"/>
+				</div>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IKbdProps>({ text: '⌘', variant: 'outlined', separator: '+' })"
@@ -103,6 +126,7 @@
 					<HstSelect v-model="state.size"    title="Size"     :options="SIZE_OPTIONS"/>
 					<HstSelect v-model="state.rounded" title="Rounded"  :options="ROUNDED_OPTIONS"/>
 					<HstSelect v-model="state.border"  title="Border"   :options="BORDER_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Typography">
 					<HstSelect v-model="state.fontFamily" title="Font Family" :options="FONT_FAMILY_OPTIONS"/>
@@ -128,6 +152,7 @@
 	import {
 		BORDER_OPTIONS,
 		COLOR_OPTIONS,
+		ELEVATION_OPTIONS,
 		FONT_FAMILY_OPTIONS,
 		FONT_SIZE_OPTIONS,
 		FONT_WEIGHT_OPTIONS,

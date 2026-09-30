@@ -18,6 +18,69 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Changed — ADR-005 lot 2 : `OrigamKbd` converti, ⚠️ deux ruptures
+
+Le lot 1 avait posé le mécanisme et laissé le registre **vide**. Premier
+composant converti : le variant de Kbd n'est plus un bloc SCSS, c'est
+`KBD_VARIANT_PRESETS`. La garde `no-variant-css` passe de **36 à 32**.
+
+Kbd n'était pas convertible mécaniquement, et la cause tient en une phrase :
+**une propriété custom hérite.** `&--combination` posait
+`--origam-kbd---border-width: 0` pour désépaissir l'enveloppe, la valeur
+descendait dans chaque `__key` — dont le mixin `key-surface` lit précisément
+`var(--origam-kbd---border-width, …)` — et les touches perdaient leur bordure.
+C'est **pour la rattraper** que chaque règle de variant devait se redéclarer une
+seconde fois en `&--variant-x &__key`, et c'est ce doublon qui rendait le variant
+inconvertible : une prop de racine ne peut pas peindre un descendant. La
+neutralisation passe donc par `border-width: 0`, propriété physique, qui n'hérite
+pas ; et le composant lie ses déclarations de surface à l'élément qui **est** une
+touche — la racine en forme simple, chaque `__key` en combinaison, les deux ne
+coexistant jamais.
+
+Bénéfice non prévu, relevé par une garde : la règle `&--variant-outlined`, **toujours
+active** puisque `outlined` est le défaut de `withDefaults`, **confisquait**
+`--origam-kbd---border-width` à tout thème de marque.
+`theme-channel-confiscation` passe de **37 à 36**.
+
+⚠️ **Rupture 1** — sur une combinaison, les props de surface (`bgColor`, `color`,
+`border`, `elevation`) peignent désormais **les touches** et non l'enveloppe.
+`<origam-kbd :combination="['Ctrl','S']" bg-color="primary">` rendait un cadre
+coloré autour de touches non colorées ; il colore les touches.
+
+⚠️ **Rupture 2** — `--origam-kbd--outlined---border-width`,
+`--origam-kbd__filled---border-width` et `--origam-kbd__tonal---border-width`
+sont **supprimés**. Ils ne portaient aucune valeur propre : les deux premiers
+valaient `{border.width.thin}`, déjà le défaut de `--origam-kbd---border-width`,
+et le troisième `{border.width.0}`. Pour régler la largeur d'un variant, passer
+par `--origam-kbd---border-width` ou par le prop `border`.
+
+`OrigamKbd` gagne `elevation` (`IElevationProps`) — c'est le canal sur lequel
+voyage l'ombre d'embossage de chaque variant.
+
+Non-régression **mesurée** et non affirmée : un harnais neuf
+(`pnpm -F @origam/tests audit:kbd-preset`) monte le composant sous les **8
+identités × 2 modes** et relève 11 longhands sur chaque surface peinte, `__key`
+compris — Histoire étant épinglé `data-theme="light"` et n'enregistrant aucune
+marque, l'axe des identités y est immesurable. Sur le variant **nu**, zéro écart
+sur `background-color`, `border-*`, `color`, `border-radius`, `padding`,
+`font-size` et `min-width`. Seul `box-shadow` bouge, en deux familles **prouvées
+non-peignantes au pixel** : la sérialisation du blanc
+(`rgba(255,255,255,a)` → `color(srgb 1 1 1 / a)`, même couleur) et, sur `tonal`,
+le mot-clé `none` → `rgba(0,0,0,0) 0px 0px 0px 0px` — étendue et alpha nuls,
+`elevation` ne pouvant pas émettre le mot-clé.
+
+⚠️ La limite du canal `border` découverte en chemin — un
+`border="var(--…---border-width, 1px)"` matchait le groupe `color` de
+`BORDER_REGEX` et émettait un `border-color` — **a été corrigée depuis, en
+2.18.21** (section juste en dessous). Ce qui reste : `IBorderProps` n'expose
+toujours pas de `borderWidth` autonome, et une largeur `var()` **contenant une
+espace** ne voyage que par une prop par côté ou d'axe, la prop globale `border`
+la coupant à son `split(' ')`. Ajouter `borderWidth` avait par ailleurs été
+rejeté sur la mesure, indépendamment de la regex : 24 composants déclarent
+`IBorderProps` sans consommer ses props autonomes, et `unconsumed-props` passait
+de 0 à 24. La suppression des trois tokens de largeur ne repose de toute façon
+pas sur cette limite, mais sur le fait qu'ils ne portaient **aucune valeur
+propre**.
 ## [2.18.21] - 2026-09-30
 
 ### Fixed — `useBorder` supprimait silencieusement une largeur en `var()`
