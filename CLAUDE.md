@@ -363,6 +363,40 @@ did not, promote it to a real branch — never into your working tree:
 git stash branch recover/<topic> stash@{N}
 ```
 
+### ⛔ `refs/stash` is not the only shared ref — `origin/*` moves under you too
+
+`refs/remotes/origin/*` is **just as shared as `refs/stash`**: any worktree's
+fetch or push updates it for all the others, with nothing in your own session
+to tell you. So `origin/develop` is not a snapshot of the develop you branched
+from — it is wherever develop is **right now**.
+
+Measured 2026-09-30, and it nearly committed a reversion of someone else's
+release. A branch was cut from `origin/develop` @ `2517bcbaf`. While the work
+ran, another agent pushed `714c716a0 chore(release): origam 2.18.20`. A later
+`git reset --soft origin/develop` — intended only to reword two commits —
+silently **re-based them onto that new tip**. The commits were fine; the
+WORKING TREE was not, because it still held the pre-release copies of the three
+files the release touched:
+
+```
+ M CHANGELOG.md
+ M packages/ds/package.json                             ← 2.18.20 -> 2.18.19
+ M packages/marketing/src/consts/changelog-versions.const.ts
+```
+
+A `git commit -am` at that moment would have **un-released 2.18.20** inside a
+`fix(deps)` PR, and the diff would have read like a deliberate downgrade.
+
+Two habits that catch it:
+
+- **`git reset --soft origin/<branch>` is not a reword tool.** It moves HEAD to
+  a ref you do not control. To rewrite only your own commits, reset to a
+  concrete SHA (`git reset --soft <sha>`) or to `HEAD~N`, never to a remote ref.
+- ⛔ **Read `git status --porcelain` before every commit, and account for every
+  line.** A file you never opened appearing dirty is not noise — it means a ref
+  moved under you. `git checkout -- <files>` restores them from HEAD; never
+  stage them to "clean up the tree".
+
 ## Tech stack (snapshot)
 
 - **Vue 3** (Composition API + `<script setup lang="ts">`), strict TS.
