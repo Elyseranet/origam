@@ -1,8 +1,10 @@
 import { type App, type ComponentInternalInstance, getCurrentInstance, inject, ref, type Ref, shallowRef } from 'vue'
 
 import { ORIGAM_DEFAULTS_KEY } from '../../consts/Commons/defaults.const'
+import { VARIANT_PROP_KEY } from '../../consts/Commons/variant-preset.const'
 import type { IDefault } from '../../interfaces/DefaultsProvider/defaults-provider.interface'
-import { camelize } from '../../utils/Commons/commons.util'
+import type { TVariantPresetRegistry, TVariantPresetTable } from '../../types/Commons/variant-preset.type'
+import { camelize, mergeDeep } from '../../utils/Commons/commons.util'
 import { warnUnsupportedProp } from '../../utils/Commons/color.util'
 import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
 
@@ -456,6 +458,49 @@ export function themedPropKeysUnion (themes: IDefault[]): Map<string, Set<string
 }
 
 /*********************************************************
+ * resolveVariantPresetRegistry
+ *
+ * @description
+ * ADR-005 D4 — collapse les tables de presets que le DS livre avec celles
+ * que les themes enregistres redefinissent, en un seul registre.
+ *
+ * @description
+ * Un theme retune ce que `outlined` VEUT DIRE en changeant des valeurs de
+ * PROPS, et ne descend aux `vars` / `cssVars` que pour ce que les props
+ * n'expriment pas. C'est ce qui reconcilie les variants avec la regle
+ * PROPS-D'ABORD : le seul API du DS qui la violait structurellement.
+ *
+ * @description
+ * `variants` est un FRERE de `components`, pas une cle imbriquee dedans.
+ * `components` est type `IDefault` (composant -> map de props) ; y nicher
+ * un niveau de variant rendrait `{ 'origam-btn': { outlined: … } }`
+ * ambigu avec un prop qui s'appellerait litteralement `outlined`.
+ *
+ * @description
+ * Fusion par `mergeDeep`, celui-la meme que `provideDefaults` utilise —
+ * le theme gagne, prop par prop. Consequence a connaitre : un preset
+ * d'ETAT (`active: { … }`, autorise par Q3) est donc FUSIONNE et non
+ * remplace, comme l'est deja un bloc `components` de theme. Une marque qui
+ * veut effacer une cle d'etat la repose explicitement.
+ *
+ * @description
+ * Pure — aucun acces Vue/DOM — donc appelee une fois, synchronement, a
+ * l'installation par `createOrigam()`, comme `themedPropKeysUnion`.
+ ********************************************************/
+export function resolveVariantPresetRegistry (
+    shipped: TVariantPresetRegistry,
+    themeVariants: Array<TVariantPresetRegistry>
+): TVariantPresetRegistry {
+    let out: Record<string, unknown> = { ...shipped }
+
+    for (const variants of themeVariants) {
+        out = mergeDeep(out, variants as Record<string, unknown>)
+    }
+
+    return out as TVariantPresetRegistry
+}
+
+/*********************************************************
  * passedPropValue
  *
  * @description
@@ -519,11 +564,25 @@ function passedPropValue (vnodeProps: Record<string, unknown> | null, key: strin
  * a theme nor an ancestor provider names is out after a Map lookup and one
  * property lookup. Extracted from the hook body (Sonar #771: cognitive
  * complexity 16 > 15) — same reads, same order, same early-out condition.
+ *
+ * @description
+ * ⛔ TROISIEME SOURCE DEPUIS ADR-005 D1 : la table de presets de variant.
+ * Elle DOIT elargir l'early-out, et c'est le seul point ou l'ADR etait
+ * muette. `createOrigam()` n'enregistre que les themes qu'on lui passe,
+ * donc sans theme `themedKeysUnion` est vide et `defaults.value` vaut
+ * `{}` : les quatre conditions ci-dessous etaient fausses, la fonction
+ * rendait `null`, et AUCUN slot n'etait patche. Or D1 exige que le DS
+ * livre un `outlined` fonctionnel SANS theme installe. Un composant
+ * portant une table de presets ne doit donc jamais atteindre cet
+ * early-out — sinon le preset est un no-op parfaitement silencieux.
+ * Non-regression : `variant-preset-resolver.spec.ts`, « sans aucun
+ * theme ».
  ********************************************************/
 function collectTargetKeys (
     themedKeysUnion: Map<string, Set<string>>,
     defaults: Ref<IDefault>,
-    name: string
+    name: string,
+    presetTable: TVariantPresetTable | undefined
 ): Set<string> | null {
     const ownKeys = themedKeysUnion.get(name)
     const globalKeys = themedKeysUnion.get('global')
@@ -531,13 +590,31 @@ function collectTargetKeys (
     const providerOwnKeys = defaults.value?.[name]
     const providerGlobalKeys = defaults.value?.global
 
-    if (!ownKeys?.size && !globalKeys?.size && !providerOwnKeys && !providerGlobalKeys) return null
+    if (!ownKeys?.size && !globalKeys?.size && !providerOwnKeys && !providerGlobalKeys && !presetTable) return null
 
     const targetKeys = ownKeys ? new Set(ownKeys) : new Set<string>()
 
     if (globalKeys) for (const key of globalKeys) targetKeys.add(key)
     if (providerOwnKeys) for (const key in providerOwnKeys) targetKeys.add(key)
     if (providerGlobalKeys) for (const key in providerGlobalKeys) targetKeys.add(key)
+
+    /*********************************************************
+     * presetTable
+     *
+     * @description
+     * ⛔ L'UNION PORTE SUR TOUS LES VARIANTS, jamais sur le seul variant
+     * actif — exactement l'argument de `themedPropKeysUnion` pour les
+     * themes enregistres. Le slot doit deja etre patche AVANT un
+     * basculement a l'execution : `beforeCreate` ne se rejoue pas, donc
+     * une cle que seule la valeur d'arrivee nomme ne serait jamais
+     * interceptee et le prop resterait fige sur sa valeur de depart.
+     * Non-regression : `variant-preset-resolver.spec.ts`, « basculement ».
+     ********************************************************/
+    if (presetTable) {
+        for (const variantValue in presetTable) {
+            for (const key in presetTable[variantValue]) targetKeys.add(key)
+        }
+    }
 
     return targetKeys
 }
@@ -556,7 +633,8 @@ function patchThemedPropSlot (
     instance: ComponentInternalInstance,
     defaults: Ref<IDefault>,
     name: string,
-    key: string
+    key: string,
+    presetTable: TVariantPresetTable | undefined
 ): void {
     const rawProps = instance.props as Record<string, unknown>
 
@@ -653,6 +731,63 @@ function patchThemedPropSlot (
                 return globalDefaults[key]
             }
 
+            /*********************************************************
+             * preset de variant — LE RANG LE PLUS FAIBLE
+             *
+             * @description
+             * ADR-005, arbitrage Q2 du 2026-08-12, qui a INVERSE la
+             * proposition de D2. Ordre du plus fort au plus faible :
+             * prop du site d'appel > defaut de theme > PRESET >
+             * `withDefaults`. Le preset s'insere donc ici : apres les
+             * deux branches de theme ci-dessus, avant le `fallback` qui
+             * porte la valeur de `withDefaults`.
+             *
+             * @description
+             * Raison du mainteneur, verbatim : « rien n'oblige
+             * l'utilisateur a garder le bgColor en ghost, il peut le
+             * transformer en primary ». Un variant est une COMMODITE, pas
+             * une identite que le DS defend ; ce qu'il doit garantir
+             * appartient a un token ou a une prop, jamais a un preset.
+             *
+             * @description
+             * ⛔ POURQUOI IL N'Y A AUCUNE LOGIQUE DE FUSION ICI. La
+             * directive d'implementation de l'ADR est explicite : « si
+             * l'implementation finit par ecrire une nouvelle logique de
+             * merge pour les presets, elle a pris un mauvais virage ». Un
+             * preset est la MEME chose qu'une config de theme, un rang
+             * plus bas — donc une branche de plus dans le meme getter, et
+             * rien d'autre.
+             *
+             * @description
+             * ⛔ ET POURQUOI IL N'Y A QU'UN SEUL MIXIN. Deux
+             * `Object.defineProperty` sur la meme cle se REMPLACENT en
+             * silence : le second accesseur gagne et le rang que portait
+             * le premier disparait sans erreur ni avertissement. Un
+             * second mixin pour les presets perdrait donc soit le theme,
+             * soit le preset, selon l'ordre d'installation. Le canal
+             * preset vit dans ce getter-ci ou nulle part.
+             *
+             * @description
+             * La lecture de `props.variant` passe par le proxy
+             * `shallowReactive`, ce qui abonne l'effet appelant a la cle
+             * `variant` : un changement de variant re-resout donc les
+             * props qui en dependent, sans watcher explicite.
+             *
+             * @description
+             * `key !== VARIANT_PROP_KEY` est la garde anti-recursion —
+             * voir `VARIANT_PROP_KEY` dans
+             * `consts/Commons/variant-preset.const.ts`.
+             ********************************************************/
+            if (presetTable && key !== VARIANT_PROP_KEY) {
+                const activeVariant = rawProps[VARIANT_PROP_KEY]
+
+                if (typeof activeVariant === 'string') {
+                    const preset = presetTable[activeVariant]
+
+                    if (preset && preset[key] !== undefined) return preset[key]
+                }
+            }
+
             return fallback
         },
         set (value: unknown) {
@@ -700,7 +835,11 @@ function patchThemedPropSlot (
  * carries the cost argument: an instance that neither a theme nor an ancestor
  * provider names returns after a Map lookup and one property lookup.
  ********************************************************/
-export function installThemePropsResolver (app: App, themedKeysUnion: Map<string, Set<string>>): void {
+export function installThemePropsResolver (
+    app: App,
+    themedKeysUnion: Map<string, Set<string>>,
+    variantPresets: TVariantPresetRegistry = {}
+): void {
     app.mixin({
         beforeCreate () {
             /*********************************************************
@@ -732,7 +871,9 @@ export function installThemePropsResolver (app: App, themedKeysUnion: Map<string
              ********************************************************/
             const defaults = inject(ORIGAM_DEFAULTS_KEY, ref<IDefault>({}))
 
-            const targetKeys = collectTargetKeys(themedKeysUnion, defaults, name)
+            const presetTable = variantPresets[name]
+
+            const targetKeys = collectTargetKeys(themedKeysUnion, defaults, name, presetTable)
             if (!targetKeys) return
 
             const rawProps = instance.props as Record<string, unknown>
@@ -758,7 +899,7 @@ export function installThemePropsResolver (app: App, themedKeysUnion: Map<string
                     continue
                 }
 
-                patchThemedPropSlot(instance, defaults, name, key)
+                patchThemedPropSlot(instance, defaults, name, key, presetTable)
             }
         }
     })
