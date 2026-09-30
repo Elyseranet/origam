@@ -18,6 +18,7 @@ import type { TLineHeight } from '../../types/Commons/line-height.type'
  * | `fontWeight`    | `font-weight`     | `--origam-font__weight---*`        |
  * | `lineHeight`    | `line-height`     | `--origam-font__lineHeight---*`    |
  * | `letterSpacing` | `letter-spacing`  | `--origam-font__letterSpacing---*` |
+ * | `fontStyle`     | `font-style`      | *none — passthrough, see below*    |
  *
  * Collision-free names by design: `fontSize` / `fontWeight` / `fontFamily`
  * (not `size` / `weight` / `family`) so the surface composes with
@@ -54,4 +55,36 @@ export interface ITypographyProps {
      * When unset, the component keeps its theme letter-spacing.
      */
     letterSpacing?: TLetterSpacing
+    /*********************************************************
+     * fontStyle
+     *
+     * @description
+     * Style de fonte, emis LITTERALEMENT dans
+     * `--origam-{prefix}---font-style`. Seul membre PASSTHROUGH de cette
+     * interface : les cinq autres props sont des cles de token que
+     * `useTypography` enveloppe en `var(--origam-font__{groupe}---{valeur})`.
+     *
+     * @description
+     * ⛔ POURQUOI PAS UN TOKEN. `italic` / `normal` / `oblique` sont des
+     * MOTS-CLES CSS, pas les echelons d'une echelle de design : il n'existe
+     * aucun groupe `--origam-font__style---*` dans `primitive.css` (verifie,
+     * zero occurrence) et il n'en faut pas. Enveloppee, la valeur sortirait
+     * en `var(--origam-font__style---italic)`, un nom que nulle feuille ne
+     * declare — donc rien ne peindrait.
+     *
+     * @description
+     * Type `string` volontairement large, par coherence avec
+     * `IBorderProps.borderStyle` / `borderColor`, les deux autres
+     * passthrough de mot-cle CSS des interfaces Commons. Laisse passer
+     * `oblique 10deg`, qu'une union fermee rejetterait.
+     *
+     * @description
+     * ⚠️ N'a d'EFFET que si la SCSS du composant lit reellement
+     * `--origam-{prefix}---font-style`. Mesure a l'ajout : deux composants
+     * le lisent — `OrigamBlockquote` et `OrigamBracketCompetitor`. Ailleurs
+     * la prop type-check et emet sa variable sans rien peindre, exactement
+     * comme `fontFamily` sur Btn ; ne pas ajouter de regle SCSS pour lui
+     * forcer un effet sans le signaler.
+     ********************************************************/
+    fontStyle?: string
 }
