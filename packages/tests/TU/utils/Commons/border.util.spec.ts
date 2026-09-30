@@ -206,6 +206,52 @@ describe('BORDER_REGEX — width accepts var() only before a style keyword', () 
         expect(shape('1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))')).toBeNull()
     })
 
+    /*********************************************************
+     * ⛔ LA FRONTIERE ENTRE LES DEUX CHEMINS — a lire avant d'ecrire un preset
+     *
+     * @description
+     * `BORDER_REGEX` sert DEUX consommateurs qui ne traitent pas ses groupes
+     * de la meme facon, et la difference decide quelle prop un preset doit
+     * viser.
+     * @description
+     * • PAR COTE (`parseBorderPositionValue` -> `borderLeft` / `borderBlock`
+     *   / …) prend `match.width` EN ENTIER. Une largeur `var()` contenant une
+     *   espace (`var(--x, 4px)`) passe intacte.
+     * @description
+     * • GLOBAL (`useBorder` sur la prop `border`) fait
+     *   `String(match[key]).split(' ')` pour distribuer 1/2/4 valeurs sur les
+     *   axes. Une largeur `var()` avec une espace y est donc COUPEE EN DEUX
+     *   et produit deux declarations invalides.
+     * @description
+     * Mesure : `var(--x, 4px) solid var(--c)` -> le chemin global scinde la
+     * largeur en `['var(--x,', '4px)']`. Avant ce lot la MEME valeur tombait
+     * entiere dans `color` et y etait scindee en QUATRE — donc aucun bord
+     * dans les deux cas, ce n'est pas une regression visible, mais ce n'est
+     * pas repare pour autant.
+     * @description
+     * Consequence pratique : un preset de variant qui porte une largeur
+     * tokenisee doit viser une prop PAR COTE ou D'AXE, jamais la prop
+     * globale `border`. Les valeurs de Blockquote contiennent `, 4px`.
+     ********************************************************/
+    it('per-side path keeps a space-bearing var() width intact', () => {
+        const parsed = parseBorderPositionValue('var(--origam-blockquote__accent---width, 4px) solid var(--c)')
+
+        expect(parsed?.width).toBe('var(--origam-blockquote__accent---width, 4px)')
+    })
+
+    it('global-shorthand path still splits a space-bearing var() width (documented limit)', () => {
+        const width = BORDER_REGEX.exec('var(--origam-blockquote__accent---width, 4px) solid var(--c)')?.groups?.width
+
+        // `useBorder`'s global path splits on ' ' to distribute across axes,
+        // so this value yields 2 fragments rather than 1 usable width.
+        expect(String(width).trim().split(' ')).toHaveLength(2)
+    })
+
+    it('a space-FREE var() width survives both paths', () => {
+        expect(parseBorderPositionValue('var(--w) solid var(--c)')?.width).toBe('var(--w)')
+        expect(String(BORDER_REGEX.exec('var(--w) solid var(--c)')?.groups?.width).trim().split(' ')).toHaveLength(1)
+    })
+
     it('style keywords come from BORDER_STYLE, so the two copies cannot drift', () => {
         for (const keyword of Object.values(BORDER_STYLE)) {
             expect(shape(`var(--w) ${keyword} var(--c)`)).toEqual({

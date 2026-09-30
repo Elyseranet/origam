@@ -54,6 +54,21 @@ import type { TBorderLogicalAxis, TBorderWidthKeyword } from '../../types/Common
  * 0, 0, 0.12))`.
  *
  * @description
+ * ⚠️ UNE LARGEUR `var()` QUI CONTIENT UNE ESPACE NE PASSE QUE PAR LE CHEMIN
+ * PAR COTE. Les deux consommateurs ne traitent pas les groupes pareil :
+ * `parseBorderPositionValue` (props `borderLeft` / `borderBlock` / …) prend
+ * `match.width` EN ENTIER, alors que `useBorder` sur la prop GLOBALE `border`
+ * fait `String(match[key]).split(' ')` pour distribuer 1/2/4 valeurs sur les
+ * axes — et y coupe donc `var(--x, 4px)` en deux fragments invalides. Mesure
+ * et non-regression : voir les trois tests « path » dans
+ * `packages/tests/TU/utils/Commons/border.util.spec.ts`.
+ * @description
+ * Avant ce lot la meme valeur tombait entiere dans `color` et y etait scindee
+ * en QUATRE : aucun bord dans les deux cas, donc pas de regression visible —
+ * mais ce n'est pas repare pour autant. Un preset de variant portant une
+ * largeur tokenisee doit viser une prop PAR COTE ou D'AXE, jamais `border`.
+ *
+ * @description
  * La liste des mots-cles de style vient de `BORDER_STYLE` plutot que d'etre
  * recopiee : le lookahead et le groupe `style` doivent nommer le MEME
  * ensemble, et deux copies litterales finiraient par deriver.
