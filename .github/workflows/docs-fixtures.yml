@@ -104,9 +104,27 @@ jobs:
       #
       # ⚠️ This job's Postgres is a fresh service container, which matters:
       # `upsertEntry` writes every column on INSERT but only the [SRC] ones on
-      # a row whose `edited_by_user` lock is set. Against an ALREADY-POPULATED
-      # DB the one locked component (`btn`) would keep its stale block —
-      # measured. On an empty DB the INSERT path applies it.
+      # a row whose `edited_by_user` lock is set, and `kind_extra` is an [ÉDIT]
+      # column. Against an ALREADY-POPULATED DB the one locked component
+      # (`btn`) keeps its stale block — measured, and it is silent: the run
+      # stays green and only `btn` comes back in the old notation.
+      #
+      # WHAT TO DO IF YOU SEE IT. Symptom: after this job, `guard:seed-tokens`
+      # reports notation findings on `component/btn` alone, or a `docs:dump`
+      # diff reverts only that entry. It means the DB was not empty. Fix:
+      #
+      #   1. drop and recreate the database, then re-run from `db:migrate`;
+      #      the INSERT path then applies every column, `btn` included.
+      #   2. if you cannot recreate it, clear the lock for that one row
+      #      (`UPDATE doc_entry SET edited_by_user = false WHERE kind =
+      #      'component' AND slug = 'btn'`), re-run `docs:seed`, and let the
+      #      fixture's own `edited_by_user: true` restore it — `syncFixtures`
+      #      re-asserts the flag after ingesting.
+      #
+      # ⛔ Do NOT "fix" it by editing `component.json` by hand: the next dump
+      # from the same database reverts it again. The database is the
+      # intermediate both artefacts are dumped from, so the correction has to
+      # reach the database.
       - name: Re-derive token excerpts from the sheets
         run: pnpm -F @origam/marketing docs:tokens
 

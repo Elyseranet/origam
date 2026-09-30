@@ -1,49 +1,46 @@
-# `seed-tokens.json` — what is in this baseline, and why
+# `seed-tokens.json` — empty, and it must stay that way
 
-`guard-seed-tokens.mjs` has two channels. Only the second one is baselined.
+`guard-seed-tokens.mjs` has two channels. Both are at **zero**, so this baseline
+is an empty array and every finding is a failure.
 
-- **notation** — hard, no baseline, **0 entries**. Every token the catalogue
-  documents names a `--origam-…` variable one of the hand-maintained sheets
-  really declares, with the value the sheet gives it.
-- **retired tooling** — baselined, **230 entries**, and every one of them is a
-  `kind_extra.tokens.pipelineNote` naming the Style Dictionary v4 /
-  `@tokens-studio/sd-transforms` pipeline removed on 2026-08-31. One of them
-  (`btn`) additionally names `packages/figma-plugin`, a directory removed with
-  it.
+- **notation** — hard, no baseline. Every token the catalogue documents names a
+  `--origam-…` variable one of the hand-maintained sheets really declares, with
+  the value the sheet gives it.
+- **retired tooling** — baselined, and the baseline is **empty**. No field of
+  any of the eight seed files names the Style Dictionary v4 /
+  `@tokens-studio/sd-transforms` pipeline, the deleted `packages/ds/tokens/`
+  sources, a removed `tokens/<layer>/<name>.json`, or `packages/figma-plugin/`.
 
-## Why 230 entries and not zero — the field is under arbitration
+## Why it is empty rather than holding the 129 `pipelineNote`
 
-`pipelineNote` is a **decision the repository owner has not yet taken**, and
-#960 asks for it to be put to him rather than settled in passing. The two
-options are not equivalent:
+The first shape of this lot baselined 230 findings, all of them
+`kind_extra.tokens.pipelineNote` — the field that carried *"Built with Style
+Dictionary v4 + @tokens-studio/sd-transforms"* on 125 of 129 components, plus
+one naming `packages/figma-plugin`. **The field has since been removed
+outright**, so the baseline collapsed to nothing.
 
-- **delete the field** from the seed and from
-  `src/interfaces/components-catalog.interface.ts` — the catalogue stops
-  carrying a sentence about how tokens are produced at all;
-- **rewrite it truthfully** and restore the row the page used to render — the
-  catalogue says "hand-maintained sheet, no build step" on every component.
+Removing it was the right call on three counts:
 
-Both are one commit. Neither is reversible for free, because the second one
-also decides that the detail page gets a PIPELINE row back.
+- **It was not content, it was dead data.** The row was masked on 2026-09-25 by
+  an explicit owner decision, and the commented-out block carrying that decision
+  went with the page refactor in `a81d2f342`. No visitor could read the field.
+- **The legend already says it, better.** The Design-tokens section states on
+  *every* component that these are hand-maintained sheets with no build step. A
+  truthful `pipelineNote` would repeat that sentence 129 times.
+- **The alternative added a row nobody asked for.** Restoring a PIPELINE line
+  the owner had removed is not a side effect a data-correction lot gets to have.
 
-**The field is not rendered today.** It was masked on 2026-09-25 by an explicit
-owner decision, and the commented-out block carrying that decision was removed
-by `a81d2f342` ("refactoring component page", 2026-09-28) along with the rest
-of the section's markup. So the 230 strings are committed data that no visitor
-can read — a real defect in the archive, not a live one on the page.
+⛔ **Do not reintroduce the field**, and do not restore the PIPELINE row in
+`src/pages/components/[slug].vue`. `sync-token-excerpts.mjs` strips
+`DROPPED_FIELDS` on every run, so a fixture regenerated from an older database
+drops it again instead of resurrecting it.
 
-That is exactly what a baseline is for: the stock is frozen and can only
-shrink. Whichever option the owner picks, applying it empties this file, and
-the guard goes red until the file is emptied in the same commit.
+## Adding an entry here
 
-## Retiring entries
-
-Fix the data, run the guard, delete the lines it reports as STALE — in the same
-commit. Never add an id here to make the guard pass.
-
-```sh
-pnpm -F @origam/marketing guard:seed-tokens
-```
+Don't. Fix the data instead. If a finding is genuinely not fixable in its own
+lot, the entry needs a paragraph in this file saying what decides it — a bare id
+in a JSON array tells the next reader nothing. A baseline diff that GROWS is a
+review smell.
 
 ## The 80 excerpt lines this lot dropped, for the enrichment work
 
@@ -81,14 +78,17 @@ the sheets:
 | — `name` that NO sheet declares (rendered with a copy button) | **336** |
 | — `name` + `defaultValue` both already correct | **211** |
 
+**The defect next door is bigger than the one this lot fixes** — 1090 lines
+against 603, on a section that sits directly above the corrected one.
+
 The `name` side is already a `--origam-…` variable everywhere (0 exceptions),
 so the 543 values are correctable by the same lookup this lot uses. The 336
 undeclared names are a different question — dead variables, overlapping the
 `token-var-channels` work — and deleting them blind would remove real
 documentation of variables a component may still read with a fallback.
 
-**It is deliberately out of this lot**, not an oversight: it is three times the
-surface, it touches a second rendered section, and it collides with work in
+**It is deliberately out of this lot**, not an oversight: it is nearly twice the
+line count, it touches a second rendered section, and it collides with work in
 flight.
 
 To reprint the table, compare each `cssVars[].name` / `.defaultValue` pair
