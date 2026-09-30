@@ -1,4 +1,5 @@
 import type { TVariantPresetRegistry } from '../../types/Commons/variant-preset.type'
+import { KBD_VARIANT_PRESETS } from '../Kbd/kbd.const'
 
 /*********************************************************
  * VARIANT_PROP_KEY
@@ -27,20 +28,23 @@ export const VARIANT_PROP_KEY = 'variant'
  * constitue pas.
  *
  * @description
- * ⛔ VIDE A DESSEIN DANS CE LOT, et ce n'est pas du code mort. Le lot 1
+ * ⛔ UN SEUL COMPOSANT CONVERTI A CE JOUR — `OrigamKbd`, lot 2. Le lot 1
  * d'ADR-005 livre le MECANISME (type partage, rang dans le resolveur,
- * canal `theme.variants`) et aucune conversion de composant : chaque
- * composant arrive avec son propre lot, parce qu'aucun ne se convertit
- * mecaniquement. Mesure a l'appui (2026-09-30), la taxonomie « famille A »
- * de D5 est optimiste sur trois des quatre composants qu'elle liste :
+ * canal `theme.variants`) et aucune conversion : chaque composant arrive
+ * avec son propre lot, parce qu'aucun ne se convertit mecaniquement.
+ * Mesure a l'appui (2026-09-30), la taxonomie « famille A » de D5 est
+ * optimiste sur trois des quatre composants qu'elle liste :
  * @description
- * - `OrigamKbd` — ses regles de variant posent des PROPRIETES CUSTOM que
- *   `key-surface` consomme sur la racine ET sur les descendants `__key`
- *   (`&--variant-outlined &__key`). Un prop de racine emet
- *   `background-color`, qui n'herite pas jusqu'a `__key` ; et la
- *   declaration de `key-surface` siege a (0,2,0), donc une valeur de
- *   preset TOKENISEE lui perdrait. Conversion fidele = revoir par ou
- *   `key-surface` recoit sa couleur.
+ * - `OrigamKbd` — FAIT (lot 2). Ses regles de variant posaient des
+ *   PROPRIETES CUSTOM que `key-surface` consomme sur la racine ET sur les
+ *   descendants `__key` (`&--variant-outlined &__key`). Resolu en rendant
+ *   explicite ce que la CSS supposait : la surface peinte est la RACINE en
+ *   forme simple et chaque `__key` en forme combinaison — les deux ne
+ *   coexistent jamais — donc le composant lie les declarations de surface
+ *   a cet element-la, et a lui seul. Le second point, la declaration de
+ *   `key-surface` a (0,2,0) contre une classe utilitaire a (0,1,0), tombe
+ *   de lui-meme : un preset porte une chaine `var(…)`, qu'`isCssColor`
+ *   route vers le canal INLINE, lequel passe devant la regle scopee.
  * - `OrigamBtnGroup` — recopie `--origam-btn-group---border-width` dans
  *   une propriete custom qui alimente un `calc()` de rayon interieur.
  *   Inexprimable en prop de racine.
@@ -58,5 +62,13 @@ export const VARIANT_PROP_KEY = 'variant'
  * theme de marque ne touche un seul token `origam-kbd` (verifie, zero
  * occurrence sur les 8 themes), donc le zero-changement y est prouvable en
  * isolation. `OrigamBtn` vient au lot 4.
+ *
+ * @description
+ * La mesure d'acceptation se rejoue :
+ * `pnpm -F @origam/tests audit:kbd-preset -- --json <fichier>`, puis
+ * `-- --compare <avant> <apres>`. Elle monte le composant sous les 8
+ * identites x 2 modes et lit chaque surface peinte, `__key` compris.
  ********************************************************/
-export const VARIANT_PRESETS: TVariantPresetRegistry = {}
+export const VARIANT_PRESETS: TVariantPresetRegistry = {
+    'origam-kbd': KBD_VARIANT_PRESETS
+}

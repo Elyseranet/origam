@@ -41,6 +41,53 @@ Three visual styles are available via the `variant` prop:
 </template>
 ```
 
+### A variant is a props preset, not CSS
+
+Since ADR-005, `variant` ships **no stylesheet rule at all**. It resolves to a
+named bag of props — `KBD_VARIANT_PRESETS`, in
+`packages/ds/src/consts/Kbd/kbd.const.ts` — inserted at the weakest rung of the
+resolution chain:
+
+```
+prop written at the call site  >  theme default  >  VARIANT PRESET  >  withDefaults
+```
+
+This is the whole table, verbatim. Nothing else is applied:
+
+| Variant | `bgColor` | `border` | `borderColor` | `elevation` |
+|---|---|---|---|---|
+| `outlined` | `var(--origam-kbd--outlined---background-color, …)` | — | — | 2-layer emboss |
+| `filled` | `var(--origam-kbd__filled---background-color, …)` | — | — | 2-layer emboss, stronger |
+| `tonal` | `var(--origam-kbd__tonal---background-color, …)` | `'none'` | `transparent` | `'none'` |
+
+A dash means *the preset sets nothing*, so the generic
+`--origam-kbd---{property}` token applies — that is deliberate, and it is what
+keeps those tokens reachable by a theme.
+
+**Every value you pass wins over the preset.** `<OrigamKbd variant="tonal"
+bg-color="primary">` paints primary; before ADR-005 the variant's CSS won and
+your value was ignored.
+
+**The `origam-kbd--variant-{value}` class is still emitted**, and the DS
+attaches no rule to it. It exists as *your* override hook.
+
+### Combinations paint their keys, not the wrapper
+
+On a combination the root `<kbd>` is a transparent wrapper and each
+`.origam-kbd__key` is a painted surface, so surface props (`bgColor`, `color`,
+`border`, `elevation`) land on the **keys**:
+
+```vue
+<template>
+    <OrigamKbd :combination="['Ctrl', 'S']" bg-color="primary" />
+</template>
+```
+
+⚠️ This changed with ADR-005 lot 2. Previously the same markup painted the
+*wrapper* primary and left the keys on the variant surface — a coloured frame
+around un-coloured keys. If you relied on that, wrap the component and style
+your own container.
+
 ## Size
 
 Five sizes mirror the design system scale via the `size` prop:
@@ -90,7 +137,9 @@ The default slot overrides `text` and `combination` entirely, enabling rich cont
 | `color` | `TColor` | — | Text color intent |
 | `bgColor` | `TColor` | — | Background color intent |
 | `rounded` | `TRounded \| boolean` | — | Corner-radius override |
-| `border` | `boolean \| string` | — | Border override |
+| `border` | `boolean \| string` | — | Border override. Inherits from `IBorderProps` |
+| `borderColor` | `string` | — | Border colour override. Inherits from `IBorderProps` |
+| `elevation` | `TElevation` | — | Shadow: an origam rung (`none` · `xs` … `xl`), a Material `0..24` number, or a free-form `box-shadow`. Inherits from `IElevationProps`. This is the channel each variant's emboss shadow now travels on |
 | `fontFamily` | `TFontFamily` | — | Font family token override (`sans` · `mono` · `serif`). Maps to `--origam-kbd---font-family`. |
 | `fontSize` | `TFontSize` | — | Font size token override (`xs` · `sm` · `md` · `lg` · `xl` · `2xl` · `3xl` · `4xl` · `5xl`). Maps to `--origam-kbd---font-size`. |
 | `fontWeight` | `TFontWeight` | — | Font weight token override (`regular` · `medium` · `semibold` · `bold` · `extrabold` · `black`). Maps to `--origam-kbd---font-weight`. |
@@ -117,16 +166,20 @@ The default slot overrides `text` and `combination` entirely, enabling rich cont
 | `--origam-kbd---gap` | `{space.1}` | Gap between keys in a combination |
 | `--origam-kbd---box-shadow` | `{shadow.xs}` | Embossing shadow (filled variant only) |
 
-### Per-variant overrides
+### Per-variant background tokens
 
-Each `variant` reads its own background-color / border-width pair, falling
-back to the generic tokens above when unset:
+Each variant's **background** is a token, read by the preset table rather than
+by a stylesheet rule. Retune a variant's fill by redeclaring one of these:
 
 | Variable | Token | Description |
 |---|---|---|
 | `--origam-kbd--outlined---background-color` | `rgba(0, 0, 0, 0)` | `outlined` background (transparent by design) |
-| `--origam-kbd--outlined---border-width` | `{border.width.thin}` | `outlined` border width |
 | `--origam-kbd__filled---background-color` | `{color.surface.raised}` | `filled` background |
-| `--origam-kbd__filled---border-width` | `{border.width.thin}` | `filled` border width |
 | `--origam-kbd__tonal---background-color` | `{color.surface.sunken}` | `tonal` background |
-| `--origam-kbd__tonal---border-width` | `{border.width.0}` | `tonal` border width (none by default) |
+
+⚠️ The three matching `…---border-width` tokens were **removed** in ADR-005
+lot 2. They carried no distinct value: `outlined` and `filled` both resolved to
+`{border.width.thin}` — already what `--origam-kbd---border-width` gives — and
+`tonal` to `{border.width.0}`, which is exactly what the preset's
+`border: 'none'` emits. Change a variant's border width through
+`--origam-kbd---border-width`, or pass `border` at the call site.

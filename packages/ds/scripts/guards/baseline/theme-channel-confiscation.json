@@ -11,7 +11,6 @@
     "packages/ds/src/components/Grids/OrigamRow.vue::style-root-block",
     "packages/ds/src/components/Grids/OrigamSpacer.vue::style-root-block",
     "packages/ds/src/components/Img/OrigamImg.vue::style-root-block",
-    "packages/ds/src/components/Kbd/OrigamKbd.vue::--origam-kbd---border-width",
     "packages/ds/src/components/Media/OrigamMediaController.vue::--origam-media-scrubber---color",
     "packages/ds/src/components/Media/OrigamMediaScrubber.vue::--origam-media-scrubber---primary",
     "packages/ds/src/components/Media/OrigamMediaVolumeControl.vue::--origam-media-scrubber---track-size",

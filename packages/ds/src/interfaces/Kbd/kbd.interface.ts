@@ -4,13 +4,14 @@ import type {
     IColorProps
 } from '../Commons/color.interface'
 import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
 import type { ISizeProps } from '../Commons/size.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
 
 import type { TKbdVariant } from '../../types/Kbd/kbd.type'
 
-export interface IKbdProps extends ICommonsComponentProps, IColorProps, IBgColorProps, ISizeProps, IBorderProps, IRoundedProps, Pick<ITypographyProps, 'fontFamily' | 'fontSize' | 'fontWeight'> {
+export interface IKbdProps extends ICommonsComponentProps, IColorProps, IBgColorProps, ISizeProps, IBorderProps, IElevationProps, IRoundedProps, Pick<ITypographyProps, 'fontFamily' | 'fontSize' | 'fontWeight'> {
     /** Single key label (e.g. "⌘", "Ctrl", "A"). Overridden by the default slot. */
     text?: string
     /** Composed shortcut rendered as individual nested `<kbd>` elements (e.g. ['Ctrl', 'Shift', 'Z']). */

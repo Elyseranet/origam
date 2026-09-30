@@ -212,21 +212,39 @@ test.describe('OrigamKbd', () => {
             expect(bg).toBe('rgba(0, 0, 0, 0)')
         })
 
-        test('variant=filled resolves a non-transparent background from its own token', async ({ page }) => {
+        /*
+         * ⛔ CE TEST A ETE INVERSE PAR ADR-005 LOT 2, ET C'EST LE POINT.
+         *
+         * Il pilotait `filled` en REMPLACANT la classe
+         * `origam-kbd--variant-outlined` par `origam-kbd--variant-filled`, et
+         * attendait que le fond change. Cela ne marchait que parce que le DS
+         * livrait un bloc SCSS par variant : la classe PORTAIT le style.
+         *
+         * Le variant est desormais un preset de PROPS et le DS n'attache plus
+         * aucune regle a cette classe — echanger la classe ne peut donc plus
+         * rien changer. On assertait la mecanique que l'ADR existe pour
+         * supprimer ; on asserte maintenant sa disparition, ce qui est
+         * exactement le point (c) de la definition de fini d'ADR-005 D7 : « la
+         * classe emise ne porte aucun style du DS ».
+         *
+         * Le vrai rendu de `filled` est mesure depuis la Variant dediee, en
+         * passant le PROP — voir « Preset de variant » plus bas.
+         */
+        test('echanger la classe de variant ne change RIEN — le DS n\'y attache aucune regle', async ({ page }) => {
             await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
-            // Mutate the class AND read the computed style in the SAME
-            // `evaluate` — a class bound to Vue's `computed` (kbdClasses)
-            // gets re-patched between two separate round-trips (see the
-            // repo-wide `alert.spec.ts` pattern warning).
-            const bg = await kbd.evaluate(el => {
-                (el as HTMLElement).className = el.className.replace('origam-kbd--variant-outlined', 'origam-kbd--variant-filled')
-                return getComputedStyle(el).backgroundColor
+            // Mutation ET lecture dans le MEME `evaluate` : une classe liee a
+            // un `computed` (kbdClasses) est re-patchee par Vue entre deux
+            // aller-retours (piege `alert.spec.ts` du CLAUDE.md).
+            const measured = await kbd.evaluate((el) => {
+                const before = getComputedStyle(el).backgroundColor
+                ;(el as HTMLElement).className = el.className
+                        .replace('origam-kbd--variant-outlined', 'origam-kbd--variant-filled')
+                return { before, after: getComputedStyle(el).backgroundColor }
             })
-            expect(bg).not.toBe('rgba(0, 0, 0, 0)')
-            expect(bg).not.toBe('transparent')
+            expect(measured.after).toBe(measured.before)
         })
 
         test('has a non-zero font-size from the token', async ({ page }) => {
@@ -245,6 +263,107 @@ test.describe('OrigamKbd', () => {
             await expect(kbd).toBeVisible({ timeout: 12000 })
             const borderWidth = await kbd.evaluate(el => parseFloat(getComputedStyle(el).borderTopWidth))
             expect(borderWidth).toBeGreaterThan(0)
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // PRESET DE VARIANT (index 4) — ADR-005 lot 2                         //
+    // ------------------------------------------------------------------ //
+
+    /*
+     * Les trois points de la definition de fini d'ADR-005 D7 :
+     *   (a) le preset s'applique ;
+     *   (b) un prop explicite le bat ;
+     *   (c) la classe emise ne porte aucun style du DS.
+     *
+     * (c) est couvert par « echanger la classe ne change RIEN » plus haut.
+     *
+     * ⛔ Ces tests lisent le rendu par PROP, jamais en echangeant une classe.
+     * La matrice complete — 3 variants x 2 formes x 8 identites x 2 modes,
+     * avec le diff avant/apres — vit dans
+     * `pnpm -F @origam/tests audit:kbd-preset`, parce que Histoire est
+     * epingle `data-theme="light"` et n'enregistre aucun theme de marque :
+     * l'axe des identites y est immesurable.
+     */
+    test.describe('Preset de variant', () => {
+        const PRESET_VARIANT = 4
+
+        test('(a) le preset peint chaque variant differemment, en forme SIMPLE', async ({ page }) => {
+            await page.goto(variantUrl(PRESET_VARIANT), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('[data-cy="kbd-single-outlined"]')).toBeVisible({ timeout: 12000 })
+
+            const read = async (cy: string) => sandbox.locator(`[data-cy="${cy}"]`)
+                    .evaluate((el) => getComputedStyle(el).backgroundColor)
+
+            const outlined = await read('kbd-single-outlined')
+            const filled = await read('kbd-single-filled')
+            const tonal = await read('kbd-single-tonal')
+
+            // `outlined` est transparent PAR DESIGN — son token propre vaut
+            // `rgba(0, 0, 0, 0)`, comme l'outlined de Chip.
+            expect(outlined).toBe('rgba(0, 0, 0, 0)')
+            expect(filled).not.toBe(outlined)
+            expect(tonal).not.toBe(outlined)
+            expect(tonal).not.toBe(filled)
+        })
+
+        test('(a) en forme COMBINAISON la surface est le __key, pas l\'enveloppe', async ({ page }) => {
+            await page.goto(variantUrl(PRESET_VARIANT), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const host = sandbox.locator('[data-cy="kbd-combo-filled"]')
+            await expect(host).toBeVisible({ timeout: 12000 })
+
+            const measured = await host.evaluate((el) => {
+                const key = el.querySelector('.origam-kbd__key') as HTMLElement
+                return {
+                    wrapper: getComputedStyle(el).backgroundColor,
+                    key: getComputedStyle(key).backgroundColor,
+                    keyBorder: parseFloat(getComputedStyle(key).borderTopWidth)
+                }
+            })
+
+            // L'enveloppe ne peint pas ; la touche peint et garde sa bordure.
+            expect(measured.wrapper).toBe('rgba(0, 0, 0, 0)')
+            expect(measured.key).not.toBe('rgba(0, 0, 0, 0)')
+            expect(measured.keyBorder).toBeGreaterThan(0)
+        })
+
+        test('(b) un bg-color du site d\'appel bat le preset', async ({ page }) => {
+            await page.goto(variantUrl(PRESET_VARIANT), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('[data-cy="kbd-single-outlined"]')).toBeVisible({ timeout: 12000 })
+
+            const presetOnly = await sandbox.locator('[data-cy="kbd-single-outlined"]')
+                    .evaluate((el) => getComputedStyle(el).backgroundColor)
+            const overridden = await sandbox.locator('[data-cy="kbd-override-single"]')
+                    .evaluate((el) => getComputedStyle(el).backgroundColor)
+
+            // Le preset d'outlined est transparent ; le prop doit peindre.
+            expect(presetOnly).toBe('rgba(0, 0, 0, 0)')
+            expect(overridden).not.toBe('rgba(0, 0, 0, 0)')
+        })
+
+        test('(b) sur une combinaison, un bg-color du site d\'appel peint LES TOUCHES', async ({ page }) => {
+            await page.goto(variantUrl(PRESET_VARIANT), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const host = sandbox.locator('[data-cy="kbd-override-combo"]')
+            await expect(host).toBeVisible({ timeout: 12000 })
+
+            const measured = await host.evaluate((el) => {
+                const key = el.querySelector('.origam-kbd__key') as HTMLElement
+                return {
+                    wrapper: getComputedStyle(el).backgroundColor,
+                    key: getComputedStyle(key).backgroundColor
+                }
+            })
+
+            const plainTonalKey = await sandbox.locator('[data-cy="kbd-combo-tonal"]').evaluate(
+                (el) => getComputedStyle(el.querySelector('.origam-kbd__key') as HTMLElement).backgroundColor
+            )
+
+            expect(measured.wrapper).toBe('rgba(0, 0, 0, 0)')
+            expect(measured.key).not.toBe(plainTonalKey)
         })
     })
 })

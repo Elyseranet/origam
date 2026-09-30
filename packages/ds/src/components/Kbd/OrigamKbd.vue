@@ -9,14 +9,17 @@
 			<slot/>
 		</template>
 
-		<template v-else-if="combination && combination.length > 0">
+		<template v-else-if="hasCombination">
 			<template
 					v-for="(key, index) in combination"
 					:key="index"
 			>
-				<kbd class="origam-kbd__key">{{ key }}</kbd>
+				<kbd
+						class="origam-kbd__key"
+						:style="surfaceStyles"
+				>{{ key }}</kbd>
 				<span
-						v-if="index < combination.length - 1"
+						v-if="index < lastKeyIndex"
 						class="origam-kbd__separator"
 						aria-hidden="true"
 				>{{ separator }}</span>
@@ -33,6 +36,7 @@
 
 	import { useBorder } from '../../composables/Commons/border.composable'
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useRounded } from '../../composables/Commons/rounded.composable'
 	import { useSize } from '../../composables/Commons/size.composable'
@@ -67,6 +71,7 @@
 	const { sizeClasses, sizeStyles } = useSize(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { borderClasses, borderStyles } = useBorder(props)
+	const { elevationClasses, elevationStyles } = useElevation(props)
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 	const { typographyStyles } = useTypography(props, 'kbd')
 
@@ -75,6 +80,79 @@
 	 ********************************************************/
 
 	const { colorClasses, colorStyles } = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+
+	/*********************************************************
+	 * Combination
+	 *
+	 * @description
+	 * `hasCombination` decide AUSSI quel element est la surface peinte —
+	 * voir la section Surface. `lastKeyIndex` sort du template le calcul
+	 * qui place les separateurs.
+	 ********************************************************/
+	const hasCombination = computed(() => !!props.combination && props.combination.length > 0)
+
+	const lastKeyIndex = computed(() => (props.combination?.length ?? 0) - 1)
+
+	/*********************************************************
+	 * Surface
+	 *
+	 * @description
+	 * ADR-005 lot 2 — par ou `key-surface` recoit desormais sa couleur.
+	 *
+	 * @description
+	 * Le variant n'est plus un bloc SCSS mais un preset de props
+	 * (`KBD_VARIANT_PRESETS`), resolu au rang le plus faible par le
+	 * resolveur. Les composables en tirent des declarations INLINE, et une
+	 * declaration inline se pose sur UN element : il faut donc dire lequel.
+	 *
+	 * @description
+	 * ⛔ LES DEUX SURFACES NE COEXISTENT JAMAIS, et c'est ce qui rend la
+	 * regle simple. Sans combinaison, la touche EST la racine et aucun
+	 * `__key` n'est rendu. Avec combinaison, la racine n'est qu'une
+	 * enveloppe — `&--combination` la rend transparente, sans bordure ni
+	 * ombre — et les touches sont les `__key`. La surface va donc a la
+	 * racine dans le premier cas, a chaque `__key` dans le second.
+	 *
+	 * @description
+	 * ⛔ POURQUOI LA RACINE DOIT ETRE PRIVEE DE CES STYLES EN COMBINAISON.
+	 * `&--combination` neutralise l'enveloppe depuis une regle scopee ;
+	 * une declaration inline la battrait. Laisser la surface sur la racine
+	 * ferait donc peindre l'enveloppe DERRIERE des touches deja peintes —
+	 * un cadre colore qui n'existe pas aujourd'hui.
+	 *
+	 * @description
+	 * ⚠️ Consequence ASSUMEE sur le canal du consommateur. Avant, un
+	 * `bg-color` pose sur une combinaison peignait l'ENVELOPPE (l'inline
+	 * battait le `transparent` de la regle) et laissait les touches au
+	 * variant ; il peint desormais LES TOUCHES. C'est le comportement que
+	 * la regle `&--combination` visait depuis le debut, et le cas est
+	 * mesure sous `override-combo-tonal` dans `audit:kbd-preset`.
+	 *
+	 * @description
+	 * ⛔ ET POURQUOI `&--combination` NEUTRALISE DESORMAIS AVEC
+	 * `border-width: 0` AU LIEU DE `--origam-kbd---border-width: 0`. C'est
+	 * la cause racine de toute l'affaire. Une propriete custom HERITE :
+	 * posee sur l'enveloppe pour la desepaissir, elle descendait dans
+	 * chaque `__key`, dont `key-surface` lit precisement
+	 * `var(--origam-kbd---border-width, …)` — les touches perdaient donc
+	 * leur bordure. C'est pour la RATTRAPER que chaque regle de variant
+	 * devait se redeclarer une seconde fois en `&--variant-x &__key`, et
+	 * c'est ce doublon qui rendait le variant inconvertible. La propriete
+	 * physique, elle, n'herite pas : elle neutralise l'enveloppe et laisse
+	 * les descendants sur le defaut du composant.
+	 *
+	 * @description
+	 * `rounded`, `size` et la typographie restent sur la racine, inchanges :
+	 * ils atteignent les `__key` par la propriete custom que leurs classes
+	 * posent, qui elle herite — le meme heritage, utilise a bon escient.
+	 ********************************************************/
+	const surfaceStyles = computed(() => {
+		return [
+			borderStyles.value,
+			colorStyles.value,
+			elevationStyles.value,
+		] as StyleValue
+	})
 
 	/*********************************************************
 	 * Class & Style
@@ -87,12 +165,13 @@
 			'origam-kbd',
 			{
 				[`origam-kbd--variant-${props.variant}`]: props.variant,
-				'origam-kbd--combination': props.combination && props.combination.length > 0,
+				'origam-kbd--combination': hasCombination.value,
 			},
 			colorClasses.value,
 			sizeClasses.value,
 			roundedClasses.value,
 			borderClasses.value,
+			elevationClasses.value,
 			props.class,
 		]
 	})
@@ -101,8 +180,7 @@
 		return [
 			sizeStyles.value,
 			roundedStyles.value,
-			borderStyles.value,
-			colorStyles.value,
+			hasCombination.value ? [] : surfaceStyles.value,
 			typographyStyles.value,
 			props.style,
 		] as StyleValue
@@ -174,48 +252,15 @@
 
 			padding-block: 0;
 			padding-inline: 0;
-			--origam-kbd---border-width: 0;
+			border-width: 0;
 			background-color: transparent;
+			border-color: transparent;
 			box-shadow: none;
 			min-width: 0;
 		}
 
 		&__key {
 			@include key-surface;
-		}
-
-		&--variant-outlined,
-		&--variant-outlined &__key {
-			--origam-kbd---background-color: var(--origam-kbd--outlined---background-color, var(--origam-color__surface---raised, #fff));
-			--origam-kbd---border-width: var(--origam-kbd--outlined---border-width, 1px);
-			--origam-kbd---box-shadow: 0 1px 0 0 color-mix(in srgb, currentColor 12%, transparent),
-			                            inset 0 1px 0 0 color-mix(in srgb, white 50%, transparent);
-		}
-
-		&--variant-filled,
-		&--variant-filled &__key {
-			--origam-kbd---background-color: var(--origam-kbd__filled---background-color, var(--origam-color__surface---overlay, #f5f5f5));
-			--origam-kbd---border-color: var(--origam-color__border---subtle, #d4d4d4);
-			--origam-kbd---border-width: var(--origam-kbd__filled---border-width, 1px);
-			--origam-kbd---box-shadow: 0 1px 2px 0 color-mix(in srgb, currentColor 18%, transparent),
-			                            inset 0 1px 0 0 color-mix(in srgb, white 60%, transparent);
-		}
-
-		&--variant-tonal,
-		&--variant-tonal &__key {
-			--origam-kbd---background-color: var(--origam-kbd__tonal---background-color, color-mix(in srgb, currentColor 8%, transparent));
-			--origam-kbd---border-color: transparent;
-			--origam-kbd---border-width: var(--origam-kbd__tonal---border-width, 0px);
-			--origam-kbd---box-shadow: none;
-		}
-
-		&--combination#{&}--variant-outlined,
-		&--combination#{&}--variant-filled,
-		&--combination#{&}--variant-tonal {
-			background-color: transparent;
-			border-color: transparent;
-			--origam-kbd---border-width: 0;
-			box-shadow: none;
 		}
 
 		&--size-x-small { font-size: var(--origam-kbd---font-size, var(--origam-kbd---font-size-xs, 0.625rem)); }
