@@ -426,8 +426,8 @@
 			// padding `0px/0px`, so the rows ran edge-to-edge inside the menu
 			// and their hover surface was clipped by the menu's own corner
 			// radius. The two longhands are the names the base rule reads.
-			--origam-list---padding-inline-start: var(--origam-space---2, 8px);
-			--origam-list---padding-inline-end: var(--origam-space---2, 8px);
+			--origam-list---padding-inline-start: var(--origam-space---1, 4px);
+			--origam-list---padding-inline-end: var(--origam-space---1, 4px);
 
 			// ⛔ L'AXE VERTICAL DOIT ETRE DECLARE ICI AUSSI, et pas seulement dans
 			// la feuille. Mesure du 2026-09-30, menu nav de la barre marketing sur
@@ -442,8 +442,8 @@
 			// neutralise l'ecart entre identites sans toucher aux 7 themes. Le
 			// rendu passait de 5-7px en vertical contre 13-27px en inline — un
 			// facteur 4 sur cartoon et glass — a des gouttieres du meme ordre.
-			--origam-list---padding-block-start: var(--origam-space---2, 8px);
-			--origam-list---padding-block-end: var(--origam-space---2, 8px);
+			--origam-list---padding-block-start: var(--origam-space---1, 4px);
+			--origam-list---padding-block-end: var(--origam-space---1, 4px);
 
 			--origam-list-subheader---font-size: var(--origam-list__subheader---nav-font-size, 0.75rem);
 
@@ -461,6 +461,36 @@
 			// navigation est plat, il n'a rien a indenter. Les listes imbriquees
 			// gardent `--origam-list---indent-padding` intact hors mode nav.
 			--origam-list---indent-padding: 0px;
+
+			// ⛔ HAUTEUR DE RANGEE RESSERREE — 48px -> 36px, decision de
+			// l'utilisateur (2026-09-30), et elle a un COUT qu'il a accepte en
+			// connaissance de cause.
+			//
+			// `OrigamListItem` calcule
+			// `min-height: max(calc(base + densite), 1.5rem)`. Avec la base de
+			// feuille a 56px et la densite compacte a -8px, une rangee de menu
+			// faisait 48px : les libelles restaient a 50px les uns des autres
+			// alors que les gouttieres venaient d'etre resserrees a 8-11px. C'est
+			// la hauteur de rangee, PAS une gouttiere, qui portait le reste du
+			// desequilibre signale.
+			//
+			// ⚠️ 36px passe SOUS la cible tactile de 44x44 recommandee par WCAG
+			// 2.5.5. Le compromis est assume pour un menu de navigation d'en-tete,
+			// dense et pointe a la souris. ⛔ NE PAS propager cette valeur aux
+			// listes hors mode `nav` : une liste de contenu garde 48px, et c'est
+			// pour cela que la declaration vit dans `&--nav` et nulle part
+			// ailleurs. La base ajoute la densite, donc on vise 44 pour obtenir 36
+			// en densite compacte.
+			--origam-list-item---min-height: var(--origam-list--nav---item-min-height, 44px);
+
+			// Le `min-height` seul ne suffit pas : mesure, la rangee rendait 40px
+			// et non 36, parce que le CONTENU la depassait — texte plus les 8px de
+			// padding haut et bas de l'item. On resserre donc aussi ce padding en
+			// mode nav, sinon la hauteur demandee reste theorique.
+			:deep(.origam-list-item) {
+				--origam-list-item---padding-block-start: var(--origam-list--nav---item-padding-block, 6px);
+				--origam-list-item---padding-block-end: var(--origam-list--nav---item-padding-block, 6px);
+			}
 
 			// ⛔ L'ECART ENTRE PASTILLES ETAIT NUL — le desequilibre signale.
 			// Mesure du 2026-09-30 sur le menu « Features » (10 items), 8
@@ -485,7 +515,7 @@
 			// a l'etat d'avant. `:deep()` pose l'attribut sur l'ANCETRE, qui lui
 			// le porte.
 			:deep(.origam-list-item + .origam-list-item) {
-				margin-block-start: var(--origam-list--nav---item-gap, 8px);
+				margin-block-start: var(--origam-list--nav---item-gap, 2px);
 			}
 		}
 

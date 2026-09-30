@@ -29,12 +29,12 @@ import { expect, test } from '@playwright/test'
  *
  *   liste :  padding-inline-start/end = var(--origam-list---padding-inline-start, 0)
  *            feuille  → var(--origam-space---0) = 0px
- *            --nav    → var(--origam-space---2) = 8px
+ *            --nav    → var(--origam-space---1) = 4px
  *
  *   ligne :  padding-inline-end = calc(var(--origam-list-item---padding-inline-end, 16px)
  *                                      + var(--origam-list---density, 0px))
  *            feuille  → var(--origam-space---4) = 16px
- *            --nav    → var(--origam-space---2) = 8px
+ *            --nav    → var(--origam-space---1) = 4px
  *
  * On lit la custom property ELLE-MÊME en plus du longhand résolu : c'est
  * exactement le canal qui était cassé (la propriété portait un autre nom, donc
@@ -63,8 +63,34 @@ const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
 const FUNCTIONAL_VARIANT = 1
 
-/** `--origam-space---2`, la valeur que les deux blocs `--nav` visent. */
-const NAV_GUTTER = '8px'
+/**
+ * `--origam-space---1`, la valeur que le bloc `--nav` vise depuis 2026-09-30.
+ *
+ * ⛔ C'ETAIT 8px (`--origam-space---2`) quand ce spec a ete ecrit, pour epingler
+ * le correctif de #934 : les gouttieres valaient 0, les rangees couraient bord a
+ * bord dans le menu et leur surface de survol etait rognee par le rayon du
+ * panneau. CE DEFAUT-LA EST TOUJOURS GARDE — ce qui compte ici est que la
+ * gouttiere soit NON NULLE et declaree par `--nav`, pas qu'elle vaille 8.
+ *
+ * La valeur est descendue a 4px sur decision du proprietaire : le menu etait
+ * disproportionne, 12-15px de gouttiere contre 0 a 2px entre les rangees. Voir
+ * le bloc `&--nav` d'`OrigamList.vue`, qui porte la mesure sur les 8 identites.
+ */
+const NAV_GUTTER = '4px'
+
+/**
+ * La gouttiere de l'ITEM, restee a `--origam-space---2` = 8px.
+ *
+ * ⛔ NE PAS la confondre avec `NAV_GUTTER`. Les deux ne positionnent pas la meme
+ * chose : celle de la LISTE place la pastille dans le panneau du menu, celle de
+ * l'ITEM place le texte dans la pastille. Le lot du 2026-09-30 n'a resserre que
+ * la premiere — c'est elle que l'utilisateur voyait comme « un tres gros espace
+ * a droite et a gauche ».
+ *
+ * Les aligner par erreur fait rougir ce test avec « Expected 4px, Received 8px »,
+ * ce qui est exactement ce qui est arrive en ecrivant ce lot.
+ */
+const NAV_ITEM_GUTTER = '8px'
 /** `--origam-space---0`, ce que la feuille déclare pour la liste. */
 const LIST_SHEET_GUTTER = '0px'
 /** `--origam-space---4`, ce que la feuille déclare pour la ligne. */
@@ -135,7 +161,7 @@ test.describe('nav — gouttière intérieure (#934)', () => {
         expect(off.itemVar).toBe(ITEM_SHEET_GUTTER)
 
         const on = await measure(page, true)
-        expect(on.itemVar).toBe(NAV_GUTTER)
+        expect(on.itemVar).toBe(NAV_ITEM_GUTTER)
         // Le longhand résolu passe par un `calc()` qui ajoute la densité de la
         // liste. On vérifie donc que la ligne a bien RÉTRÉCI de 8px exactement.
         const delta = parseFloat(off.itemEnd) - parseFloat(on.itemEnd)

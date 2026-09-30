@@ -1917,6 +1917,8 @@ export type TTokenName =
   | '--origam-list---density'
   | '--origam-list---indent-padding'
   | '--origam-list--nav---item-gap'
+  | '--origam-list--nav---item-min-height'
+  | '--origam-list--nav---item-padding-block'
   | '--origam-list---outline'
   | '--origam-list---overflow'
   | '--origam-list---padding-block-end'
