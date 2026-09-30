@@ -2732,7 +2732,7 @@
   --origam-audio__header---margin-bottom: 12px;
   --origam-audio__btn---size: 28px;
   --origam-audio__btn---icon-size: 16px;
-  --origam-audio__meta-separator---content: "·";
+  --origam-audio__meta-separator---content: "\00B7"; /* #594 — U+00B7 ECHAPPE, et il DOIT le rester. Ecrit en litteral, ce seul caractere non-ASCII faisait emettre a dart-sass un BOM en tete de main.css (`--style=compressed` pose un BOM la ou le mode etendu poserait `@charset`). Un BOM n est PAS retire a l interieur d un `<style>` : il se collait au premier selecteur, qui ne matchait alors plus rien — les 156 declarations primitives mortes, tous les tokens semantiques et derives a vide. Mesure le 2026-09-30 : 7 echecs sur derived-tokens-subtree.spec.ts. L echappement rend le MEME glyphe (verifie en Chromium) et garde la feuille compilee en ASCII pur. Regle : aucune valeur de token ne doit contenir de caractere non-ASCII — utiliser la forme \XXXX. */
   --origam-audio__playlist---max-height: 220px;
   --origam-audio__playlist---padding-top: 8px;
   --origam-audio__playlist---margin-top: 12px;
