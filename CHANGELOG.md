@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.19.0] - 2026-09-30
+
 ### Changed — ADR-005 lot 2 : `OrigamKbd` converti, ⚠️ deux ruptures
 
 Le lot 1 avait posé le mécanisme et laissé le registre **vide**. Premier
