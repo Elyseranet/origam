@@ -18,6 +18,845 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.18.17] - 2026-09-29
+
+Dix-huit commits, dont la réparation qui débloquait `Type-check (vue-tsc)` sur
+`develop` et bloquait donc toute PR. Deux des quatre PR du lot ne sont **pas**
+dans le tag, faute de toucher le paquet publié : #986 (barrière e2e du catalogue)
+et #989 (commentaire seul).
+
+### Fixed — #597 : 32 canaux de thème morts résorbés sur Btn, DataTable et Grid, zéro changement de rendu
+
+Le périmètre annoncé par le ticket — « 55 tokens morts » — n'a pas résisté à la
+mesure : il en restait **48**. List avait déjà été traitée en PR #586 (il n'en
+reste que les 3 laissées délibérément) et Btn en portait 17, pas 16.
+
+Et ces 48 n'avaient pas une cause mais **trois**, établies avant d'écrire une
+ligne — ce qui interdisait le traitement uniforme que la campagne #550 suggère :
+
+| famille | entrées | cause réelle |
+|---|---|---|
+| DataTable | 16 | moitié manquante de la migration #503 : le 1er échelon nomme la grammaire par sous-composant, que seules 3 familles déclaraient |
+| Grid | 12 | les vars sont écrites **en style inline par instance**, repli mot-clé CSS constant — personne ne les déclarait, simplement |
+| Btn | 17 | aucun jumeau ; 7 replis littéraux, les 10 autres relatifs à l'élément (`currentColor`, `calc()` de densité) donc indéclarables sans changer le rendu |
+
+**31 noms déclarés** à la valeur exacte du repli déjà rendu, dans les 4 feuilles
+et dans `TTokenName` ; **16 entrées laissées en baseline**, chacune avec sa raison
+écrite **à son site de lecture**. Deux lectures sont renommées au passage parce
+que leur nom ne désignait aucun composant réel
+(`--origam-data-table-sortable---cursor` → `-header-cell--sortable---cursor`), et
+un échelon intermédiaire inatteignable est retiré du SCSS plutôt que déclaré.
+
+Compteur de la garde, **recompté sur la baseline elle-même** et non repris d'un
+message : `token-var-channels` dead **299 → 267**, dormant **460 → 460**, le diff
+de la baseline ne contenant que des suppressions.
+
+⚠️ Le corps de `e83a1fbf1` annonce « dead 438 → 406 ». C'est une mesure
+**pré-rebase**, prise sur une branche qui portait Bracket + Card mais pas encore
+Chart ; elle ne décrit aucun état de l'historique final. Les chiffres retenus
+ci-dessus sont ceux des fichiers de baseline aux tags concernés.
+
+Preuve de non-régression, en trois instruments plutôt qu'un :
+**1 927 584 lectures** de longhands calculés (20 stories, tous leurs Variants,
+2 modes, `::before` / `::after` inclus) rejouées avant/après — hors les couples
+`(élément, propriété)` d'animations en vol, **1 926 702 lectures comparées,
+`diff` exit 0, zéro ligne**. Le contrôle négatif est ce qui donne sa valeur au
+résultat : deux passes sur le **même** bundle produisent 148 lignes de diff sur
+exactement le même ensemble de couples — ce bruit est l'instant
+d'échantillonnage, pas un changement de style. S'y ajoutent une sonde
+d'équivalence de 83 expressions `var()` × 2 modes (une seule différence, `0` →
+`0px`, valeur calculée identique) et 28 captures dont 27 byte-identiques.
+
+### Changed — #597 : les 13 alias DataTable sont renommés, pas dupliqués
+
+Correction portée sur la première passe du lot lui-même. Elle déclarait 13
+tokens DataTable pour éteindre la garde **en laissant en place leur jumeau
+historique** lu en repli : 13 doublons introduits par la PR, et un second
+échelon que la chaîne ne consultait plus jamais.
+
+Deux mesures établissent qu'il s'agit de purs alias : chaque nom historique a
+**exactement 1 site de lecture** — la position de repli de sa chaîne, aucun autre
+consommateur — et les deux échelons portent la **même valeur** en clair comme en
+sombre (26 comparaisons, 0 divergence). Les chaînes sont donc effondrées
+(`var(NEUF, var(HISTORIQUE, T))` → `var(NEUF, T)`) et les déclarations
+historiques retirées des 4 feuilles : **net nul**, 13 ajoutés et 13 retirés, au
+lieu de +13. Ensemble émetteur 3142 → 3129, soit exactement −13.
+
+Le principe du lot, jusque-là nulle part écrit, est consigné : on déclare
+l'échelon 1 quand l'échelon 2 est un token **statique** de feuille ; on refuse et
+on documente quand l'échelon 2 est écrit **par instance** (Grid en style inline,
+List par le parent) ou relatif à `currentColor` (Btn ghost), parce qu'une
+déclaration `:root` y figerait le rendu.
+
+### Fixed — `develop` était rouge : un import cassé par la scission des interfaces
+
+`Type-check (vue-tsc)` échouait sur `develop`, donc bloquait toute PR :
+`theme.interface.ts(3,15) TS2305`, `IThemeVars` introuvable. Le commit
+`4fc7fcd92` avait déplacé le symbole vers
+`interfaces/Commons/semantic-tree.interface.ts` sans mettre à jour ce seul import
+resté en arrière — `apply-theme.util.ts` pointait déjà au bon endroit.
+`type-check` passe de `exit 2` à **exit 0**.
+
+Même cause pour la garde `comment-format`, qui rougissait à **30/31** : les blocs
+de commentaire ont suivi les symboles, et trois chemins neufs se sont retrouvés
+sans allocation. La baseline est re-dérivée, conservation vérifiée à l'unité sur
+les trois paires concernées, et les quatre autres lignes ne font que **baisser**
+(−14, exactement le delta du total) : la baseline sort plus **stricte**, jamais
+plus laxiste.
+
+### Fixed — #953 : le catalogue de composants entre dans la barrière CI, et l'assertion qui l'en empêchait était fausse
+
+`components.spec.ts` existait depuis longtemps sans être exécuté par **aucun
+job**. `/components` — la vitrine du DS — pouvait donc rendre une page **vide**
+sans une seule ligne rouge : `useReferenceCatalog` déclare `default: () => []`,
+et « 0 famille sur 0 catégorie » passe pour un succès.
+
+⛔ Le dernier défaut qui bloquait la promotion était **dans le test**, pas dans le
+produit. L'assertion de la section « Design tokens » comptait des `tbody tr` — or
+cette section n'a **jamais** contenu de `<table>` : c'est un `<dl class="prop-list">`
+dont chaque ligne est un `<div class="prop-list__item">`. Elle rendait donc
+toujours 0, quelle que soit la donnée, et masquait une fonctionnalité qui
+marchait. Les assertions voisines du même fichier utilisaient déjà le bon
+sélecteur ; seule celle-ci divergeait.
+
+Mesure sur un seed frais (2733 entrées) : `btn` rend 8 lignes de tokens, et
+**127 des 218** composants en ont au moins une. Barrière complète
+`MARKETING_GREEN_ONLY` : **109 passed** contre 80 avant promotion.
+
+⚠️ #960 n'est pas fermé par là : il porte sur le **contenu** du seed (notation
+DTCG à accolades, chemins pointés de l'ancien format), pas sur la forme du DOM.
+
+### Changed — #544 : la conclusion du ticket est inversée, `useDefaults` reste
+
+#544 classait `useDefaults` « doublon du résolveur ADR-005, plus aucun appelant,
+à retirer ». **Sa prémisse factuelle est juste, sa conclusion est fausse** — et
+l'entrée est ici parce que le composable a été à deux doigts d'être supprimé.
+
+Juste : zéro appelant interne, les 40 derniers partis sous #363. Faux : ce n'est
+pas un doublon. `installThemePropsResolver` a une limitation **structurelle**,
+déjà documentée dans son propre fichier et qui n'est pas un oubli mais le
+séquencement de Vue — le hook écrit dans `beforeCreate`, qui s'exécute **après**
+le retour de `setup()`. Un prop lu une fois, synchroniquement, au top level de
+`setup()` capture donc la valeur d'**avant** le patch : le thème ne l'atteint
+jamais et rien n'avertit. `useDefaults` n'a pas cette lacune, le getter de son
+`computed` s'évaluant à l'accès `.value`. C'est le **seul échappatoire** pour un
+prop qui doit être lu tôt.
+
+La preuve est exécutable et **existait avant le ticket** — une paire appariée
+dans `TU/origam/setup-level-prop-reads.spec.ts` dont les deux titres disent
+exactement la différence. Deux faits que le ticket demandait de vérifier et que
+personne n'avait mesurés : la surface publique est **réelle** (page de doc dédiée
+`docs/composables/useDefaults.md`, plus deux citations), et **35 fichiers** sous
+`packages/tests/TU` le référencent — pas « 3 specs, 23 tests », chiffre de
+mémoire qu'une note de session avançait.
+
+### Documentation
+
+- `CLAUDE.md` présentait **#964 et #966 comme vivants** alors que les deux sont
+  fermés, et l'un contredisait la note écrite deux lignes plus haut. Le
+  paragraphe #964 était de surcroît **charcuté** — une note française insérée au
+  milieu d'une phrase anglaise, ressemant l'affirmation fausse dans la moitié
+  restée en anglais. Recousu, et la leçon qui survit au correctif est conservée :
+  une garde qui énumère le disque mesure la machine, pas le dépôt.
+- Compteurs de gardes remis à jour, **sixième fois** : `guards` 31/31,
+  `guards:self` 25/25. Le 17 → 25 n'est **pas** huit tests neufs mais un
+  sous-comptage corrigé — un glob sur `lib/` seul en rate six.
+- Deux justifications C2 fausses **en prémisse** corrigées, conclusions
+  inchangées : les jumeaux `ghost` de Btn ne portent pas « une couleur
+  d'intention opaque » (`action--ghost---bg` vaut `rgba(0,0,0,0)`), et l'exception
+  Grid ne tient pas à « un repli mot-clé constant » mais à **qui le repli
+  désigne** — `column-gap` / `row-gap` lisent le token du voisin, les déclarer
+  ferait cesser d'agir la prop `gap`.
+
+### Tooling
+
+- La transition `min-height` du subheader de liste est sanctionnée comme
+  **exception assumée** et non comme défaut : `transform` ne fait pas refluer les
+  frères, et `grid-template-rows` suppose un conteneur grid quand le subheader est
+  en `display: flex`. 6 composants du DS animent une propriété de layout, dont 2
+  exactement `min-height` — le second emploie la construction **identique**.
+  L'ignore est porté au seul fichier, et la config dit explicitement que c'est un
+  jugement d'agent, non une décision validée.
+
+
+## [2.18.16] - 2026-09-27
+
+⚠️ Ce tag couvre **deux merges**, pas un — dérogation assumée à la règle « un
+ticket = un merge = un tag ». Les PR #983 (#592 Bracket, #593 Card) et #984
+(#591 Chart) sont le même lot de campagne, mergées à une heure d'intervalle, et
+#984 a dû être rebasée sur #983 pour un conflit sur un artefact généré.
+
+### Fixed — #591, #592, #593 : 221 canaux de thème rendus au DS, zéro changement de rendu
+
+`token-var-channels` (direction *dead*) **520 → 299**, direction *dormant*
+**460 → 460** — inchangée dans les deux sens. Chiffres recomptés sur les fichiers
+de baseline aux tags `v2.18.15` et `v2.18.16`, pas repris des messages de commit.
+
+| famille | avant | après | cause réelle |
+|---|---|---|---|
+| Chart | 147 | 8 | le SCSS lisait **97 noms que personne ne déclarait** |
+| Bracket | 65 | 24 | direction dormante à 0 : aucun jumeau à renommer, les lectures nommaient des tokens jamais écrits nulle part |
+| Card | 42 | 1 | second échelon d'une chaîne de replis dont le premier est déclaré — l'alias plat est **inatteignable** |
+
+⛔ **Rien n'a été supprimé**, et les trois familles avaient **trois causes
+différentes** dont aucune n'était celle qu'annonce la campagne #550 (le désaccord
+de grammaire). C'est le point de l'entrée : traiter les trois de la même façon
+aurait cassé quelque chose à chaque fois.
+
+Côté Card, 33 des 42 entrées sont le second échelon d'une chaîne à deux niveaux
+dont le premier est bien déclaré. Mesure en navigateur : **29 des 33** tokens
+externes résolvent une valeur non vide, leur échelon interne ne peut donc jamais
+être consulté ; les 4 qui lisent vide sont exactement ceux déclarés `inherit`.
+Ces 33 échelons sont donc du **code mort retiré du SCSS** plutôt que déclaré —
+déclarer l'alias plat aurait créé un second nom public perpétuellement masqué
+par le nom BEM canonique.
+
+Les tokens déclarés le sont **à la valeur exacte du repli déjà rendu**, littéral
+pour un littéral et référence de token pour une référence, afin que le mode
+sombre continue de suivre. C'est ce qui garantit l'absence de changement visuel.
+
+⚠️ Trois pièges mesurés plutôt que supposés, et chacun aurait été une régression :
+
+- **Déclarer un échelon d'une cascade de replis détruit le bouton général** — une
+  custom property est substituée sur l'élément qui la déclare, donc une
+  déclaration `:root` figerait les quatre côtés à la valeur racine. Vérifié :
+  régler le seul bouton général agit toujours sur les 4 côtés.
+- **`--origam-chart-path---length` n'est pas un token** : c'est la longueur
+  *mesurée* de chaque tracé, écrite en inline par instance. La déclarer aurait
+  été inerte **et** aurait cassé l'animation de dessin partout.
+- **`inherit` en repli ne peut pas être gravé tel quel** dans la feuille : un
+  mot-clé CSS-wide rend la custom property *guaranteed-invalid*, donc le token
+  serait non déclaré **tout en ayant l'air corrigé**. Les deux tokens concernés
+  passent à `currentColor`, et l'équivalence sur la propriété `color` est mesurée
+  en navigateur, pas supposée.
+
+Non-régression : Bracket + Card, **13 272 lectures** de propriétés calculées
+comparées avant/après (2 modes, 12 Variants, pseudo-éléments inclus) → **0
+différence**, 14 paires de captures dont 12 byte-identiques. Chart, **31 mesures
+absolues** sur 7 variantes → **31/31 identiques**, 7 captures byte-identiques, et
+l'assertion « les tokens réconciliés sont déclarés par la feuille » vérifiée
+**rouge sur le commit parent**.
+
+8 entrées Chart restent en baseline délibérément, dont
+`--origam-chart__axis-label---font-size` (7 fichiers) parce que les replis **ne
+s'accordent pas** — `0.75rem` sur cinq fichiers, `0.6875rem` sur trois : une
+déclaration unique changerait le rendu d'un des deux camps. C'est un choix de
+design, remonté plutôt que tranché en passant.
+
+### Fixed — #855 : l'état « introuvable » des 8 pages de détail était structurellement mort
+
+`useReferenceDoc` levait un `createError({ fatal: true })` sur **toute** erreur,
+404 comprise. Les huit pages de détail portent pourtant chacune un bloc
+`v-if="!catalogEntry"` avec son `data-cy` dédié — et ce bloc ne pouvait jamais
+s'afficher, le composable levant avant que la page rende quoi que ce soit.
+
+Sur un slug inconnu : `/components/<inconnu>` et `/types/<inconnu>` rendaient
+**HTTP 500**. Après, les **huit** familles — components, types, enums,
+interfaces, consts, composables, utils, directives — rendent **HTTP 200** avec
+leur état not-found, **8/8**.
+
+⛔ Les autres statuts continuent de lever. Un 500 ou un 503 (base absente) n'est
+pas « cette entrée n'existe pas », c'est une panne — la masquer derrière un joli
+« introuvable » mentirait au visiteur comme au développeur. C'est d'ailleurs ce
+503 qui donnait un 500 au lieu d'un 404 sans base.
+
+Vérifié sur un **build de production** et non en mode dev : le worker vite-node
+du serveur de dev mourait en boucle sur `IPC connection closed` (famille #853),
+et trois tentatives de mesure ont été perdues avant le changement d'outil.
+
+### Fixed — contraste WCAG du libellé des métadonnées de tokens (4,24:1 → conforme sur 16/16)
+
+axe le levait sur `/components/btn` : `.component-tokens__meta-label`, `#7e5fb0`
+sur `#efe8fc`, **4,24:1** en 12 px **gras**. Douze pixels gras restent du « texte
+normal » au sens de WCAG 1.4.3 — le seuil est 4,5:1, pas 3:1.
+
+⚠️ Le token n'était **pas** mort, contrairement au premier diagnostic :
+`geek.theme.ts` déclare bien `tertiary: '#7e5fb0'`, émis à l'exécution par la
+matrice de thème. C'est sa **valeur** qui ne passe pas, pas son nom.
+
+Mesure des deux encres candidates contre le fond **réel** du panneau
+(`surface---sunken` **composite** sur `surface---default`), 8 identités × 2 modes :
+`tertiary` échoue **6 fois sur 16** (pire cas apple sombre à 2,75) ; `secondary`
+**0 fois sur 16**, minimum 5,42.
+
+⛔ La composition n'est pas un détail : sans elle, `glass` sortait 1,58 et 1,30 —
+des chiffres absurdes, son `sunken` étant à 3 % d'alpha. Composite, il donne 8,91
+et 14,56. La conclusion inverse — « `secondary` est pire » — a failli être tirée.
+
+⚠️ `--origam-color__text---tertiary` reste lu à ~72 endroits du marketing et
+échoue sur 6 configurations partout où il sert de texte lisible. Hors périmètre
+ici, noté dans le code.
+
+### Tooling
+
+- Le job `test-e2e-marketing` **n'avait pas de base** (#953) : `/api/reference/*`
+  répondait 503 en CI, et toute page lisant le catalogue rendait du **vide** sans
+  qu'aucun check ne rougisse. Trois étapes copiées de `docs-fixtures.yml` où
+  elles tournent déjà — service `postgres:16`, `db:migrate`, `docs:seed`. Recette
+  vérifiée en local avant d'être écrite : 2733 entrées semées,
+  `/api/reference/component` = 218, `/components/btn` = 200 contre 500 sans base.
+  La seconde moitié de #953 — l'assertion qui rougit — arrive en 2.18.17.
+
+
+## [2.18.15] - 2026-09-26
+
+Un correctif de DS et deux de marketing. Le correctif DS est la moitié
+**invisible** d'un défaut signalé sur capture : la puce se voyait, l'indentation
+de 40px qui l'accompagnait non.
+
+### Fixed — `OrigamGrid` neutralise la puce et l'indentation que le navigateur pose sur un `ul`
+
+Signalé sur capture : un petit cercle apparaissait à gauche de chaque élément de
+grille. La cause est **dans le DS**, pas dans la page : le thème de base
+(`themes/origam.theme.ts`) impose `tag: 'ul'` aux grilles et `tag: 'li'` aux
+items — choix sémantique volontaire — mais une grille n'est pas une liste à
+puces, et le navigateur appliquait quand même ses styles de `ul`.
+
+| | avant | après |
+|---|---|---|
+| `list-style-type` | `circle` sur **9** items visibles | **0** |
+| `padding-inline-start` | **40px** sur 3 des 7 grilles de la page | **0** |
+
+⚠️ L'indentation de 40px **n'était pas dans le signalement** — trouvée en
+mesurant. C'est la moitié invisible du même défaut. Et les autres pages du site
+ne montraient rien parce qu'elles remettaient `list-style: none` **à la main,
+page par page** : exactement le signal que le manque était dans le DS.
+
+⛔ `:where()` n'est pas décoratif, il met la spécificité à **zéro**. Une règle
+scopée ordinaire vaudrait (0,2,0) et **confisquerait le canal `padding`**, les
+classes utilitaires émises par `usePadding` valant (0,1,0) — c'est le défaut de
+#950, corrigé sur 21 composants dans la 2.18.14 juste avant. Le réintroduire
+dans la version suivante aurait été absurde.
+
+Vérifié sur la CSS **réellement servie**, pas sur l'intention :
+`:where(.origam-grid[data-v-711d86d8]) { list-style: none; padding-inline-start: 0 }`.
+La règle bat l'origine navigateur et perd contre tout ce qu'un consommateur écrit.
+
+⚠️ Note de méthode conservée parce qu'elle a failli produire un faux défaut : une
+première sonde ajoutant `.origam--p-6` à la grille rendue lisait `0px` et
+suggérait une confiscation. Faux — un `div` neuf avec la même classe reçoit bien
+24px, et l'énumération de règles utilisée renvoyait **0 règle au total**, les
+feuilles cross-origin étant avalées par un `try/catch`. L'artefact était dans la
+mesure, pas dans le code.
+
+### Fixed — #955 : le menu du site lit enfin son canal de thème (et le retrait seul aurait tout cassé)
+
+`padding: 4px` en dur sur `.appbar-menu .origam-menu__content` écrasait
+`--origam-menu__content---padding`, que sept thèmes déclarent : quatre en
+demandaient 6px et obtenaient 4px.
+
+⛔ Mais le simple **retrait** du littéral — ce que le ticket prescrivait — ne rend
+pas la main au thème. Mesure, 8 identités × 2 modes : le panneau tombe à **0px
+partout**. La régression a failli être livrée.
+
+| | résultat |
+|---|---|
+| avant | 4px partout — 4 thèmes sur 7 ignorés |
+| retrait seul | **0px partout** — régression |
+| après | **16/16 conformes**, zéro débordement |
+
+La cause, trouvée en énumérant les règles qui matchent l'élément : **aucune** ne
+pose de padding sur `.origam-menu__content`. Le DS applique
+`var(--origam-menu__content---padding, 4px)` sur `.origam-menu__list`, un élément
+rendu **uniquement dans le repli du slot par défaut**. Dès qu'un consommateur
+fournit son contenu — ce que fait toute la navigation du site — l'élément
+n'existe pas et le panneau ne reçoit aucun padding du DS. **Le token porte donc
+le nom d'un élément et peint sur un autre, qui n'est presque jamais rendu.**
+
+Le vrai défaut reste côté DS et n'est pas corrigé ici : le corriger changerait la
+géométrie de tous les consommateurs d'`origam-menu`, ce qui n'est pas une PR
+marketing. Consigné dans le commentaire, à côté du code.
+
+### Fixed — wireframe pricing : les CTA alignés en bas quelle que soit la longueur du contenu
+
+Deux causes distinctes, et la seconde ne s'est vue **qu'en regardant le rendu**.
+
+1. La chaîne d'étirement était rompue au milieu. La grille étire bien les trois
+   cartes à la même hauteur (184px chacune), mais `.origam-card__content` est en
+   `display: block` et ne remplit pas la carte (159px dans une carte de 184) : le
+   `block-size: 100%` de l'inner résolvait donc sur 159. Corrigé en chaînant
+   `flex: 1` + `min-block-size: 0` sur toute la profondeur, au lieu de demander
+   « 100% » à un parent qui ne fait pas 100%.
+2. ⛔ Le premier correctif a produit des **chiffres parfaits et un rendu faux**.
+   Écart entre les bas de boutons : 0. Et pourtant les CTA des cartes courtes
+   faisaient **51px** de haut contre **28px** pour celui du milieu — ils
+   s'étiraient. Cause : `origam-btn` avec la prop `block` pose `flex-grow: 1`,
+   donc en colonne flex le bouton absorbe l'espace libre.
+
+⚠️ Deux manques du DS notés au passage, non corrigés : une carte à hauteur
+imposée dont le contenu ne s'étire pas, et `block` qui implique `flex-grow: 1` —
+un comportement qui surprendra quiconque pose un `origam-btn block` dans une
+colonne flex.
+
+
+## [2.18.14] - 2026-09-26
+
+Un seul correctif, sur deux props que **21 composants** ignoraient en silence
+depuis toujours — la classe était émise, et rien ne bougeait.
+
+### Fixed — #950 : `:where(&)` sur les défauts `padding` / `margin`, 21 composants, 93 déclarations
+
+La forme d'échelle de `padding` / `margin` (`padding="6"`) n'appliquait **rien**
+sur 21 composants : la classe utilitaire était bien émise, et le longhand calculé
+ne bougeait pas d'un pixel.
+
+**La cause n'est pas celle que le ticket nommait d'abord.** La spécificité et
+« longhand > raccourci » sont vraies mais ne discriminent rien — elles valent
+pour toutes les familles d'utilitaires. Le filtre décisif est l'absence de
+*companion inline* sur le chemin tokenisé : `usePadding` / `useMargin` sautent le
+rung inline, quand `rounded`, `elevation`, `border`, `bg` et `fg` en émettent un,
+et l'inline bat toujours une règle scopée. Ces deux familles n'avaient donc plus
+aucun canal capable de gagner la cascade.
+
+**93 déclarations** passent sous `:where(&)`, soit 31 couples (composant × prop)
+sur **21 composants**. Les deux chiffres sont vérifiés sur le diff : 21 fichiers
+de composant touchés, et 85 déclarations *longhand* plus 8 *raccourcis* = 93,
+avec autant de lignes retirées qu'ajoutées — un déplacement pur, ce qui est
+cohérent avec l'absence de changement de rendu.
+
+Vérifié via `@vue/compiler-sfc` : le compilateur scopé insère l'attribut **à
+l'intérieur** de la pseudo-classe, `:where(.origam-sheet[data-v-abc123])` =
+(0,0,0).
+
+⛔ **Seuls les défauts descendent.** Les 495 déclarations modificatrices ou d'état
+(`:hover` à (0,3,0), `--variant-flat` à (0,2,0), `+ .origam-row` à (0,3,0)) sur
+154 composants gardent leur poids — c'est précisément ce qui a fait écarter
+`@layer`, et trois contrôles au navigateur le confirment (`--compact` 8px,
+`--inset` 16px, `--variant-minimal` 0px peignent toujours). La réserve de la
+décision — « une règle interne comptant sur l'ordre source peut changer de
+gagnant » — est levée et vérifiée au compilateur : aucun gagnant ne change nulle
+part.
+
+⚠️ **Trois composants restent morts, sciemment** : Btn, Chip et Stepper. Chez eux
+un modificateur **toujours présent** (`--size-default`, `--density-default`)
+déclare la propriété à (0,2,0) ; il bat l'utilitaire quoi qu'on fasse au défaut,
+et Chip n'a même aucune déclaration racine à abaisser. Les ressusciter exigerait
+d'abaisser une règle modificatrice, ce que la décision interdit. Mais la prop
+n'est pas morte pour autant — seule sa forme d'**échelle en chaîne** l'est :
+`:padding="6"` (nombre), `padding="6px 8px"` (custom) et les formes
+directionnelles peignent.
+
+Partiels et nommés dans le code : Blockquote (`--variant-default` garde
+`padding-inline-start`) et Row (la gouttière `+ .origam-row` garde
+`margin-block-start`).
+
+Épinglé par `utility-cascade-padding-margin-950.spec.ts` — 34 tests, dont 3 de
+non-régression qui vérifient qu'un modificateur continue de battre l'utilitaire.
+A/B fait : **34 failed à `HEAD~1`, 34 passed à `HEAD`**.
+
+Au passage, story Sheet/Design : `style="padding: 16px"` remplacé par
+`padding: '4'`. Ce hatch rendait le contrôle « Padding » de la variante
+définitivement inerte — `OrigamSheet` reverse son binding `:style` dans une règle
+générée portant l'**id** de l'élément, soit (1,0,0), qui battait l'utilitaire, la
+règle scopée, et le retrait de l'attribut `style` lui-même.
+
+
+## [2.18.13] - 2026-09-26
+
+Deux correctifs, dont la cause racine du journal de 5,5 Go de #853. Dans les deux
+cas la **mesure a corrigé le périmètre du ticket** — en le réduisant de 15 à 12
+composants pour l'un, en l'étendant d'une surface à quatre pour l'autre.
+
+### Fixed — #916 : `inheritAttrs` sur 12 racines fragment/teleport — pas 15, et 4 auraient été cassés
+
+Vue ne peut pas fusionner les attributs de *fallthrough* sur une racine qui n'est
+ni élément ni composant — fragment, texte, ou `<teleport>`. En dev il logue alors
+« Extraneous non-props attributes », et la trace de ce warning **sérialise les
+props de chaque ancêtre**, dont le `vnode` de `RouteProvider` : **~4,4 Mo par
+occurrence**. C'est la cause racine de #853, le journal de 5,5 Go qui finissait en
+worker mort et 500 sur toutes les routes.
+
+⛔ **Le ticket annonçait 15 composants. Il y en avait 12, et 4 de ses entrées
+étaient fausses** — `OrigamChart`, `OrigamNumberField`, `OrigamSliderField`,
+`OrigamSwitch`, mesurés à **0 avertissement**. Les « réparer » aurait fabriqué le
+défaut de #492 quatre fois : sur une racine à élément unique,
+`inheritAttrs: false` avale **en silence** tous les attributs du consommateur.
+
+La différence vient de la méthode, et c'est l'enseignement du lot. Le relevé du
+ticket comptait les **balises de profondeur 0** ; ici la question est posée au
+**compilateur Vue** (forme du `codegenNode` racine), puis confirmée au runtime en
+montant chaque composant avec un attribut non déclaré et un écouteur non émis :
+
+| méthode | verdict |
+|---|---|
+| comptage à profondeur 0 | 15 candidats, **4 faux, 2 manques** |
+| `codegenNode` du compilateur | **12**, tous reproduits au runtime |
+
+Une paire `<template v-if>` / `<template v-else>` compte pour deux nœuds et en
+rend **un** : le fallthrough marche, et il n'y a pas de défaut.
+
+Effet mesuré : **34 avertissements → 0**, sur 27 montages, chacun dans la
+configuration qui **atteint** sa branche fragment — un montage par défaut aurait
+donné un faux vert sur les 4 racines mixtes.
+
+⚠️ Aucun changement d'API. Les attributs atterrissent exactement où ils
+atterrissaient : table identique ligne pour ligne sur les 8 branches, et chacun
+des 7 `v-bind` retiré un par un produit un rouge, donc chacun est porteur. Où ils
+vont a été décidé composant par composant — forward explicite sur la racine
+visible (5), drapeau seul là où le forward existait déjà (2), et **nulle part,
+délibérément**, pour les 5 dont toutes les branches sont des fragments.
+
+⚠️ Non touché volontairement : le `<tr>` `--loading` de `DataTableRows`. Il
+ressemble à son jumeau `--no-data` mais n'est **pas** une racine — le compilateur
+donne `COND{ FRAGMENT | COND{ element(tr) | FRAGMENT } }` — donc y lier `$attrs`
+aurait introduit un comportement nouveau sous couvert d'un correctif de warning.
+L'asymétrie est préexistante et désormais mesurée.
+
+Une nouvelle garde ferme la récidive, parce que **le symptôme est un fichier de
+journal, pas un test rouge** : aucune autre vérification du dépôt ne le voit, et
+#853 a vécu des mois. Ses 26 fixtures couvrent le rappel (les 12 formes réelles)
+et la précision — les 4 faux positifs sont des **témoins négatifs**, les poser en
+violation enverrait quelqu'un « réparer » quatre composants sains. Un contrôle de
+**cécité** exige qu'un template que le compilateur refuse nomme sa raison au lieu
+de se lire « propre ». Sa portée est **statique** et le dit : elle prouve que
+l'option est déclarée, jamais que les attributs atteignent encore le bon élément —
+c'est la moitié dangereuse, et elle vit dans le spec TU.
+
+⚠️ `v-bind="{ ...$attrs }"` et non `v-bind="$attrs"` sur les 5 forwards ajoutés,
+et ce n'est pas cosmétique : la garde `id-forwarding` crédite un `v-bind="$attrs"`
+littéral comme preuve que la prop `id` atteint le DOM. L'inférence est fausse dès
+que `id` est une prop **déclarée**, puisque Vue la retire de `$attrs`. Avec la
+forme nue, la garde annonçait `SnackbarGroup:no-id-reach` comme « déjà corrigée »
+et demandait sa suppression, sur un composant où l'`id` du consommateur n'atteint
+toujours aucun nœud — supprimer cette entrée aurait masqué un défaut vivant.
+
+Un test de #550 est renversé en l'assumant : il affirmait que « Vue **avertit** au
+lieu d'avaler » et présentait cet avertissement comme « tout le gain ». Le
+raisonnement tenait tant qu'on ignorait son coût. Il assert désormais les **deux**
+moitiés — plus d'avertissement (#916) **et** toujours pas de classe sur ces lignes
+(#550, inchangé).
+
+### Fixed — #924 : sous `cartoon` clair, l'anneau de focus était invisible sur toutes ses surfaces claires
+
+`cartoon` clair déclarait `border.focus: '#ff8fa3'` — le rose de
+`action.primary.bg`, qui ne se détache d'**aucune** de ses surfaces claires. Le
+ticket en nommait une ; la mesure en trouve **quatre**, toutes sous le seuil de
+3:1 de WCAG 2.1 SC 1.4.11 :
+
+| surface | contraste |
+|---|---|
+| page | 2,07:1 |
+| `surface.raised` | 2,16:1 |
+| `overlay` / `sunken` | 1,96:1 |
+| `feedback.danger.bgSubtle` | **1,53:1** |
+
+Le token est **global** : 38 des 96 familles de composants peignent leur anneau
+avec — 10 le lisent directement, 28 y accèdent via Btn / Field /
+SelectionControl. **L'identité entière était inutilisable au clavier.**
+
+Correctif : `border.focus` → `#c0174a`, qui est `action.primary.fgSubtle` de
+cette même palette — la réponse que cartoon donne déjà à « le rose, à une valeur
+qui se lit sur un fond clair ». **Valeur dérivée, pas choisie à l'œil.** L'anneau
+passe à **4,30–6,06:1** sur ces quatre surfaces, dans la bande des 7 autres
+identités (3,82–12,56).
+
+La couche retenue est la **sémantique** (`vars.color.border.focus`) et non les
+props : vérifié, aucun composant du DS ne déclare de prop exprimant la couleur de
+l'anneau — elle n'est lue que comme `var(--origam-color__border---focus)` depuis
+le SCSS. Les props ne peuvent pas l'exprimer ; les `cssVars` seraient un
+contournement d'un tier qui nomme déjà la valeur.
+
+⚠️ Le bloc **sombre** de cartoon garde `#ff8fa3` **à dessein** : mesuré conforme
+(6,09–8,05:1). Corriger les deux par symétrie est l'erreur de #829.
+
+Un anneau se mesure contre **ce qu'il entoure** : `outline-offset` est positif sur
+Btn et SelectionControl, donc la couleur adjacente est le fond du **conteneur** —
+une carte, un menu, une alerte — pas « le fond de la page ». L'outil est élargi en
+conséquence, de un composant sur un fond à **8 identités × 2 modes × 6 fonds
+sémantiques × 5 familles focusables**, soit 448 lignes. A/B du spec, vrai `$?`
+hors pipe : sans le correctif **1 échec / 17 verts**, l'échec étant
+`cartoon/light … = 2.07:1` ; avec, **18/18**.
+
+### Tooling
+
+- **La garde 30 balayait le disque, pas l'index git** (#966), donc
+  `packages/marketing/public/stories/` — 35 Mo de bundle Histoire, **zéro fichier
+  suivi par git**. La pollution allait dans les **deux sens**, ce qui rend le
+  symptôme dangereux : le bundle *déclare* des `--origam-*`, donc il entrait aussi
+  dans l'ensemble émetteur et des lectures réellement mortes apparaissaient
+  corrigées. Une seule déclaration dans un faux fichier de trois lignes faisait
+  passer **8 entrées de baseline** en « déjà corrigée » : un mainteneur suivant le
+  message de la garde aurait supprimé 8 lignes décrivant de **vrais défauts**.
+  L'énumération passe par `git ls-files --cached --others --exclude-standard` — la
+  source de vérité connaît déjà les artefacts, là où une liste de noms ne peut pas
+  contenir le nom du **prochain** artefact. ⛔ La variante minimale du ticket
+  (exclure `public/`) aurait été fausse : ce répertoire porte 25 fichiers suivis.
+- **`guards:self` ne découvrait qu'un niveau sur trois** (#964) : cinq self-tests
+  vivent au niveau `guards/` et n'étaient invoqués par **rien** — ni le runner, ni
+  la CI, ni un script npm. Leurs seules « références » étaient les lignes
+  `Run: node …` de leurs propres en-têtes, dont celui de `token-var-channels`, la
+  garde la plus sollicitée du dépôt. **Lancés à froid avant tout câblage, les cinq
+  passent** : aucune garde muette en production. Un **sixième orphelin** que le
+  ticket n'avait pas recensé a été trouvé par le contrôle anti-récidive
+  lui-même. Compteur **17/17 → 24/24**, et la récidive est fermée par un balayage
+  qui fait échouer le runner **avant exécution** sur tout `*.selftest.mjs` que la
+  découverte raterait.
+- **#902 est invalidé par la mesure, dans l'autre sens.** Le ticket annonçait
+  5 faux positifs de la garde 29 ; la sonde montre qu'elle ne les **signale** pas,
+  elle les **rate** — aucun n'est dans la baseline. Et ils doivent continuer à
+  être ratés, car les 5 sont **porteurs** : le `!important` protège la barre de
+  transport contre un thème posant `density: 'comfortable'` sur chaque bouton, et
+  les 4 `calc(24px / 2)` sont **dérivés** et non dupliqués — l'égalité avec `12px`
+  n'est vraie qu'à l'échelon comfortable, et retirer les lignes casserait
+  `gutter="none"`. La correction prescrite par le ticket, appliquée telle
+  qu'écrite, produit **2 FAIL** sur les deux fixtures étiquetées « faux positif ».
+  Les deux exclusions deviennent **explicites et testées** au lieu d'être
+  accidentelles — aujourd'hui `'0px !important' !== '0px'` sauve la garde par
+  hasard, et un accident n'est pas une décision.
+
+### Documentation
+
+- Le commentaire de `_shared.css` justifiait un override **vivant** par une
+  prémisse fausse (#961). ⚠️ Et le ticket se trompait aussi : il affirmait que
+  `--origam-radius---btn` n'était « déclaré nulle part », conclusion tirée d'un
+  grep sur `light.css` seul. Il est déclaré dans `_shared.css`. **Une seule des
+  deux prémisses était fausse, pas deux** ; le code reste, le commentaire dit
+  désormais la vraie raison.
+
+
+## [2.18.12] - 2026-09-25
+
+Un seul des 19 commits touche `packages/ds/src`, donc le **code publié** : le
+reste est marketing, outillage et documentation. Deux autres touchent bien
+`packages/ds/` mais sous `scripts/`, que le tarball n'embarque pas. Les
+compteurs de gardes cités dans les corps de commit de ce lot divergent (29/29
+puis 30/30) : la garde 30 est **arrivée au milieu du lot**.
+
+### Fixed — #957 : `OrigamChip` n'ouvrait aucune gouttière pour `prepend` / `append`
+
+`__close` possédait ses deux canaux de marge depuis toujours ; `__prepend` et
+`__append` n'en avaient **aucun**. Une puce avec icône rendait donc son icône
+collée au texte — mesuré **0 px**, `margin-inline-end: 0px`, `gap: normal`, sur
+les 8 identités — et **aucun thème ne pouvait corriger l'espacement puisque le
+canal n'avait jamais été ouvert**.
+
+La valeur par défaut, 6 px, n'est pas un nouveau chiffre de design : c'est celle
+de `--origam-chip__close---margin-inline-start`, le précédent du composant
+lui-même.
+
+⛔ La gouttière est **conditionnelle au libellé non vide**, et c'est le cœur du
+correctif. `__content` n'a pas de `v-if` : une puce icône-seule rend quand même
+un `<div class="…__content">` portant le nœud texte vide que Vue émet pour
+`{{ text }}`. Une marge inconditionnelle y accrocherait un **fantôme de 6 px**.
+Mesuré en Chromium, ce qui fait de `:empty` le bon discriminant :
+
+| contenu de `__content` | `:empty` | gouttière |
+|---|---|---|
+| `"texte"` | false | 6px |
+| `<div></div>` | true | 0px |
+| nœud texte vide (le cas Vue) | true | **0px** |
+| `" "` (une espace) | false | 6px |
+
+`__prepend` dépend de son frère **suivant**, d'où `:has(+ …)` ; `__append` de son
+frère **précédent**, d'où un simple `+`. Les deux gardent la déclaration sur
+l'élément que le token **nomme**. Là où `:has()` manque, la gouttière prepend est
+simplement absente — le rendu d'aujourd'hui, pas une régression.
+
+⚠️ **Effet visuel assumé** : toute puce portant un libellé **et** un
+`prepend-icon` / `append-icon` s'élargit de 6 px (mesuré 105 → 111 px). Les puces
+icône-seule et sans affixe ne bougent pas.
+
+⚠️ Le ticket — et le corps du commit après lui — chiffrent l'exposition à
+**« 217 emplacements »**. Ce nombre n'a pas pu être reproduit : huit méthodes de
+comptage sur l'arbre au tag `v2.18.12` donnent 145, 233, 241, 272, 373 ou 413
+selon qu'on compte les lignes ou les occurrences et selon le périmètre de
+fichiers, jamais 217. L'ordre de grandeur — plusieurs centaines de sites d'appel
+— est juste ; le chiffre exact reste **non établi**, et il n'entre dans aucune
+décision du correctif.
+
+Les deux nouveaux noms sont déclarés dans `light.css` / `dark.css` (bloc
+explicite **et** bloc `prefers-color-scheme`) et leurs jumeaux SCSS, et ajoutés à
+`tokens.type.ts`. Aucun changement d'API — ni prop, ni emit, ni slot.
+
+### Fixed — #958 : 151 lectures de deux tokens qui n'existent pas
+
+Le site lisait `--origam-font-family---mono` (87×) et `--origam-font-size---base`
+(64×) — **151 lectures dans 28 fichiers**, sur deux noms qu'aucune feuille ne
+déclare. La grammaire du dépôt sépare le bloc BEM par un **double tiret bas** ; le
+marketing écrivait un tiret simple. Chaque lecture portait un repli littéral, donc
+**rien ne cassait à l'écran** : le repli peignait toujours, et le canal de thème
+était mort sans qu'aucun test, aucun lint, aucune console ne le dise.
+
+⛔ **L'échelon retenu n'est pas celui que le ticket proposait, et c'est une mesure
+qui l'a décidé.** Le ticket suggérait `--origam-font__size---md`. Or
+`primitive.css` pose `md: 0.875rem`, tandis que le repli effectivement rendu par
+les 64 lectures était `1rem`, c'est-à-dire l'échelon `lg`. Substituer `md` aurait
+**rétréci le texte de 12,5 %** dans 27 fichiers en croyant faire un renommage.
+
+151 lignes ajoutées, 151 retirées, toutes des déclarations CSS dans un bloc
+`<style>` : aucun `.ts`, aucun template, aucune clé i18n touchés.
+
+**La vraie demande du ticket était la garde.** `token-var-channels` pose exactement
+la bonne question depuis #435, mais ne balayait que `packages/ds/`. Le site
+marketing, plus gros consommateur de tokens du dépôt et sa vitrine, était regardé
+par **personne**. La nouvelle garde délègue son **verdict** à l'analyse existante
+— aucun doublon de la logique de décision — et seule la **collecte** est neuve,
+parce que trois différences interdisaient d'élargir simplement le périmètre :
+l'ensemble émetteur est **double** (le marketing déclare légitimement ses propres
+`--origam-…`), la portée de ces déclarations est **globale** et non locale au
+fichier, et les consommateurs ne sont pas que des `.vue`.
+
+La direction « dormant » n'est **pas** reprise, délibérément : « ce token du DS
+n'est lu par personne » est un défaut dans une bibliothèque publiée et le cas
+**normal** chez un consommateur. Reporter les ~2 900 autres serait du bruit, et
+une garde bruyante se fait désactiver.
+
+⚠️ **L'extension révèle 50 autres noms morts**, laissés en baseline et **non
+corrigés** — recensement remis pour arbitrage plutôt que corrigé en silence :
+841 lectures mortes / 52 noms distincts / 292 paires, dont **44 sans aucun
+repli** — la déclaration entière est alors jetée par le navigateur, donc rendu
+réellement cassé et pas seulement canal mort.
+
+### Fixed — #922 : les résidus du pipeline supprimé que la première passe avait laissés
+
+Complément à une première correction qui avait traité les 4 valeurs de locale
+nommées par le ticket mais laissé trois résidus. Les appels `t(clé, fallback)`
+portaient encore le texte d'origine mot pour mot — invisibles à l'écran
+puisque la clé existe, mais lisibles dans un dépôt public, **ce qui est
+précisément l'argument du ticket**.
+
+Un **chiffre gravé dans une locale** est retiré : `218 components` figurait dans
+deux valeurs. Recompté à 218 le jour même, mais un nombre dans une locale se
+périme tout seul — reformulé sans chiffre, sur la propriété vérifiée qui porte
+vraiment l'argument (« no per-component wiring », ADR-005).
+
+Deux commentaires citaient des chemins **supprimés le 2026-08-31**. Pour l'un,
+l'affirmation restait **vraie** et seule sa source était morte : les 10 barreaux
+ont été re-vérifiés un à un contre `primitive.css`, tous identiques, commentaire
+repointé.
+
+⚠️ La ligne « Pipeline » du détail de composant est **masquée, pas corrigée** —
+décision du propriétaire en attendant #960. La donnée vit **en base** : 129
+entrées, dont **125 vendent encore** « Built with Style Dictionary v4 ». Rendue,
+cette ligne contredisait le paragraphe juste au-dessus, sur **chaque** composant
+du catalogue. Restaurer la ligne fait partie de #960, et le commentaire laissé
+dans le template le dit.
+
+Non touché volontairement, et c'est ce qui rend le lot honnête : les entrées de
+changelog des versions qui ont **réellement** livré avec Style Dictionary, et la
+note sur la conformité DTCG de PrimeVue, qui est vraie.
+
+### Fixed — #951, #944, #946, #294 : quatre défauts de menu mesurés sur les 8 identités
+
+- **`/why-origam` lisait `---fg` comme une teinte.** Trois déclarations peignaient
+  une surface **neutre** avec `--origam-color__feedback--{success,warning}---fg`.
+  `fg` n'est pas la teinte de l'intention : c'est le premier plan posé **sur** son
+  aplat, et hors de cet aplat il rend un neutre. Avant, `fg` ne rendait une teinte
+  **nulle part** sur les 16 configurations ; 9 sur 16 passaient sous 1,6:1, et
+  `glass` sombre à **1,00** — exactement la couleur de son fond. Après : **0
+  configuration sous 3:1**, les 16 entre 4,38:1 et 13,22:1. Le point 3 du ticket
+  (la nomenclature invite à l'erreur, une garde vaudrait mieux qu'un quatrième
+  correctif) **n'est pas traité** et #951 reste ouvert dessus.
+- **Le menu déroulant portait la forme de tiroir M3** — 28px de rayon sur un
+  conteneur et des lignes de 48px de haut, donc une pilule. Vérifié **dans les
+  sources de tokens Material**, pas de mémoire : un conteneur de menu déroulant
+  est `corner-extra-small` = 4px, un item de liste `corner-none` = 0, et
+  `corner-extra-large` = 28px est la forme d'une destination de **tiroir**.
+  ⛔ Au passage, un fait qui circulait est corrigé : **il n'y a pas de rognage**.
+  La ligne ne déborde jamais de son conteneur (`scrollWidth === clientWidth`), et
+  forcer `overflow: visible` ne change pas un pixel — deux captures du coin à
+  `deviceScaleFactor` 8 sont identiques. Deux arcs de **même rayon** laissaient un
+  croissant très fin qui se lit comme une coupe à l'échelle 1×.
+- **Conteneurs de `glass` et `cartoon` alignés sur leur rung `sm`**, et la valeur
+  **vient du thème** et non de l'œil : ces deux identités déclarent `sm`, `md`,
+  `lg` mais **pas** `xs`, donc `rounded: 'xs'` retomberait sur le primitif DS à
+  2px, une valeur qu'aucune des deux n'a choisie. Après : **0 vignette au-delà de
+  18px contre 6 avant**.
+- **Le dropdown d'`origam-select` ne suivait pas**, et le mécanisme est correct :
+  `rounded` sur `origam-menu` est un **défaut de composant** que trois surfaces
+  héritent, tandis que `menuProps` est un binding **explicite** qui bat le défaut
+  de thème. Canal séparé, donc correction séparée — il fallait régler la valeur là
+  où elle est écrite, pas retirer le canal. Recensement complet fait pour ne pas y
+  revenir une troisième fois : **quatre** thèmes portent un `menuProps`, dont deux
+  déjà alignés qui servent de **témoins négatifs**. Le **champ** garde
+  `rounded: 'lg'` : c'est un contrôle de formulaire, pas un menu.
+- **La taille du texte des menus suit enfin celle de l'activateur.** Les items
+  rendaient 16px quand le lien qui les ouvre en rend 13px, sur **7 identités sur
+  8**. `geek` était la seule alignée, et pour une raison qui n'avait rien à voir :
+  une règle posée pour sa police monospace fixait aussi `font-size: 0.8125rem`.
+  L'exception cachée devient la règle générale, portée par **une seule**
+  déclaration que l'activateur et les items lisent tous deux. ⛔ Déclarée sur
+  `:root` et non sur la barre : le contenu d'`origam-menu` est **téléporté** hors
+  d'elle, une variable posée sur la barre ne l'atteindrait jamais.
+- **La liste du menu `material` avait 8px de `padding-inline` en trop.** ⛔ Corrigé
+  par la **prop**, pas la cssVar, et ce n'est pas un goût : sur un
+  `origam-list nav`, `OrigamList` **re-déclare** le token sur l'élément lui-même
+  depuis sa règle scopée, et une cssVar de thème posée à la racine est **héritée**
+  — elle ne peut pas battre une déclaration locale.
+
+### Changed — /roadmap refondue sur wireframe validé, et 8 affirmations fausses corrigées
+
+Page ramenée de **11 892 à 6 868 px** en desktop 1440 (**−42,2 %**) et de 20 058 à
+11 279 px en mobile 390 (**−43,8 %**), mesuré sur la même machine et un serveur
+isolé. La section des phases, qui pesait 4 203 px à elle seule, tombe à 1 326 px
+(**−68,5 %**) **sans qu'aucun item soit coupé ni raccourci** : les 38 chantiers
+gardent titre et description complets, seulement repliés.
+
+Chaque chiffre de la page a été **re-mesuré, jamais recopié** : npm 2.18.8 →
+**2.18.11**, tests 7 187/563 → **7 192/564**, specs e2e 254 → **256**, monorepo
+« 6 paquets » → **5**. La barrière CI était annoncée par deux textes qui **se
+contredisaient** — « 81 de 254 » d'un côté, « 58 de 229 » de l'autre, tous deux
+faux ; un seul survit, **81 de 256**, compté en interrogeant Playwright lui-même
+plutôt qu'en recomptant les littéraux de la liste blanche. Un composant annoncé
+sous le nom `OrigamSound` **n'a jamais été un export** : la page décrivait un
+import qui échouerait.
+
+⛔ Et la page annonçait « CHANGELOG à jour ». **Faux**, passé à `done: false` — le
+document s'arrêtait alors à 2.18.8 quand npm servait 2.18.11. C'est le même trou
+que la présente entrée comble, et il avait déjà été identifié ici.
+
+La section « livré » annonçait « 15 components & features » au-dessus de 15 tuiles
+écrites à la main : un lecteur en déduisait que le DS ne livre que 15 composants,
+alors que **tout** le catalogue est publié. Elle rend désormais le catalogue
+complet **lu en direct** sur les mêmes endpoints que `/components`. ⛔ **Aucun
+compte n'est gravé**, nulle part — ni titre, ni fallback, ni commentaire présenté
+comme un fait : la taille du catalogue **dépend de l'environnement**, mesuré à
+218 entrées en local contre **194** sur l'env déployé. Un littéral corrigé aurait
+donc déjà été faux sur l'un des deux.
+
+Cinq constats **internes** que la page publiait sont retirés, dont « la CI ne
+barre que 81 des 256 specs » et « pas encore de communauté » — la comptabilité
+interne d'un dépôt n'a pas à être publiée, et l'un des cinq était déjà devenu
+faux.
+
+⚠️ Trois défauts du DS trouvés **en implémentant**, signalés et non corrigés là :
+`<origam-sheet padding="6">` est une **prop morte** (cause de #950, corrigé en
+2.18.14), `feedback--success---fg` vaut `#000000` sous `geek`, et les liens
+d'ancrage atterrissaient **sous** l'app bar fixe.
+
+### Tooling
+
+- `marketing-primary-nav.spec.ts` existait de longue date **sans être exécuté par
+  aucun job** : il était inscrit dans la baseline `spec-coverage` comme non
+  exécuté, donc la garde restait verte et rien ne le signalait. Avant de le
+  brancher, la stabilité du **fichier entier** a été mesurée et pas seulement
+  celle des cas ajoutés — brancher un fichier qui contient des cas instables
+  rendrait la CI rouge en permanence, ce qui est **pire** que pas de garde :
+  110/110 en `--repeat-each=5 --retries=0`, machine au repos, serveur isolé.
+- Quatre captures d'écran committées par accident à la racine sont retirées. Elles
+  étaient arrivées dans un commit qui n'avait rien à voir, balayées par un
+  `git add`, et **déjà supprimées du disque sans que la suppression soit
+  enregistrée** — l'arbre restait donc sale et un `git add -A` distrait les aurait
+  re-committées. `/*.png` rejoint `.gitignore` : une image ne se relit pas dans
+  une revue, elle passe.
+
+### Documentation
+
+- La règle « pas de tag pour un lot qui ne touche pas `packages/ds/` » est
+  consignée, avec sa raison **mécanique** : `release.yml` publie depuis
+  `packages/ds/` exclusivement, donc un lot hors de ce dossier produit un tarball
+  **byte-identique**. ⚠️ Le paragraphe disait auparavant l'**inverse** — « when in
+  doubt, tag: a redundant patch costs nothing ». C'était faux : un patch redondant
+  coûte un numéro de version qui ne veut rien dire, sur un registre où une version
+  publiée ne se retire jamais.
+- Deux pièges de mesure ajoutés, tous deux payés sur le terrain : **le serveur
+  Nuxt ne recharge pas les thèmes** (imports de `nuxt.config.ts`, hors du graphe
+  HMR), donc une remesure après édition rend les **anciennes** valeurs et
+  ressemble à une prop morte ; et **une sonde qui clique en aveugle** dans la barre
+  d'actions tombe sur la bascule de mode et mesure le mode **opposé** — chiffres
+  inversés, cohérents entre eux, parfaitement crédibles.
+
+
 ## [2.18.11] - 2026-09-24
 
 ### Fixed — #935 : l'anneau `focus-visible` du Switch débordait de la piste, peint sur un frère non clippé
