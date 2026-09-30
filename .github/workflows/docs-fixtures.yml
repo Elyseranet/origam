@@ -88,6 +88,46 @@ jobs:
       - name: Apply migrations
         run: pnpm -F @origam/marketing db:migrate
 
+      # #960 — re-derive kind_extra.tokens from the hand-maintained token
+      # sheets BEFORE the DB is loaded, so the correction flows through the
+      # whole chain: committed JSON -> docs:seed -> DB -> docs:dump (JSON) and
+      # docs:dump:sql (SQL). Both artefacts are dumped from the DB, so this is
+      # the only position that reaches both. Verified on a fresh Postgres, the
+      # shape this job uses: seed -> dump returns the corrected content
+      # byte-for-byte, 0 entries drifted.
+      #
+      # `kind_extra` is absent from RESYNC_POLICY.components, so docs:sync
+      # never refreshes it; without this step the block stays frozen on
+      # whatever it was last dumped with — which is how it went on naming the
+      # Style Dictionary / Tokens Studio pipeline for a month after its
+      # deletion. Idempotent: a run over already-derived data writes nothing.
+      #
+      # ⚠️ This job's Postgres is a fresh service container, which matters:
+      # `upsertEntry` writes every column on INSERT but only the [SRC] ones on
+      # a row whose `edited_by_user` lock is set, and `kind_extra` is an [ÉDIT]
+      # column. Against an ALREADY-POPULATED DB the one locked component
+      # (`btn`) keeps its stale block — measured, and it is silent: the run
+      # stays green and only `btn` comes back in the old notation.
+      #
+      # WHAT TO DO IF YOU SEE IT. Symptom: after this job, `guard:seed-tokens`
+      # reports notation findings on `component/btn` alone, or a `docs:dump`
+      # diff reverts only that entry. It means the DB was not empty. Fix:
+      #
+      #   1. drop and recreate the database, then re-run from `db:migrate`;
+      #      the INSERT path then applies every column, `btn` included.
+      #   2. if you cannot recreate it, clear the lock for that one row
+      #      (`UPDATE doc_entry SET edited_by_user = false WHERE kind =
+      #      'component' AND slug = 'btn'`), re-run `docs:seed`, and let the
+      #      fixture's own `edited_by_user: true` restore it — `syncFixtures`
+      #      re-asserts the flag after ingesting.
+      #
+      # ⛔ Do NOT "fix" it by editing `component.json` by hand: the next dump
+      # from the same database reverts it again. The database is the
+      # intermediate both artefacts are dumped from, so the correction has to
+      # reach the database.
+      - name: Re-derive token excerpts from the sheets
+        run: pnpm -F @origam/marketing docs:tokens
+
       # CRITICAL: seed the ephemeral DB from the committed fixtures BEFORE the
       # sync. The curated kinds (component catalog, composables, directives,
       # types) are NOT source-extracted — without this step the DB only holds

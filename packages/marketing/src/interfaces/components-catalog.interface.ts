@@ -405,6 +405,15 @@ export interface IComponentA11y {
  * Design tokens excerpt — shown in the "Design tokens" section.
  * Sourced from the hand-maintained token sheets under
  * packages/ds/src/assets/css/tokens/ (no build step since 2026-08-31).
+ *
+ * ⛔ There is no `pipelineNote` any more (#960). The field carried
+ * "Built with Style Dictionary v4 + @tokens-studio/sd-transforms" on 125 of
+ * the 129 components, describing a pipeline deleted on 2026-08-31. Its render
+ * was masked by the owner on 2026-09-25 and the markup went with the page
+ * refactor in `a81d2f342`, so it had become committed data no visitor could
+ * read. Do not reintroduce it: the section's own legend already states, on
+ * every component, that these are hand-maintained sheets with no build step —
+ * a per-component note would only repeat it.
  */
 export interface IComponentTokens {
     /** Source token-sheet path (relative to repo root) */
@@ -417,8 +426,6 @@ export interface IComponentTokens {
         descriptionKey: string
         descriptionFallback: string
     }>
-    /** Pipeline mention */
-    pipelineNote: string
 }
 
 /**

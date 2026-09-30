@@ -2338,12 +2338,6 @@
     &__source-code {
       display: inline-flex;
     }
-
-    &__pipeline-note {
-      font-size: var(--origam-font-size---xs, 0.75rem);
-      color: var(--origam-color__text---secondary, #525252);
-      line-height: 1.5;
-    }
   }
 
   /* ── PLAYGROUND ───────────────────────────────────────────── */
