@@ -1,6 +1,8 @@
 // TU — border.util.ts
 
 import { describe, expect, it } from 'vitest'
+import { BORDER_REGEX } from '@origam/consts/Commons/border.const'
+import { BORDER_STYLE } from '@origam/enums'
 import {
     formatBorderPositionStylesVar,
     formatBorderStylesVar,
@@ -117,6 +119,147 @@ describe('parseBorderPositionValue', () => {
     it('returns null for an unparsable / empty string', () => {
         expect(parseBorderPositionValue('')).toBeNull()
         expect(parseBorderPositionValue('not-a-border-value-!!!')).toBeNull()
+    })
+})
+
+/*********************************************************
+ * BORDER_REGEX — table de verite du groupe `width`
+ *
+ * @description
+ * Le groupe `width` accepte un `var()` DEPUIS ce lot, et seulement quand un
+ * mot-cle de style le suit. Cette table pinne les deux moities du contrat :
+ * les formes que le lookahead debloque, et les CONTROLES NEGATIFS qu'il doit
+ * laisser intacts.
+ *
+ * @description
+ * ⛔ LES CONTROLES NEGATIFS SONT LA PARTIE QUI COMPTE, et ce n'est pas une
+ * precaution de principe. Mesure a l'ecriture : une alternative `var()` NUE
+ * dans `width` (sans lookahead) ne diverge sur AUCUNE des valeurs `border*`
+ * reellement presentes dans le depot — 0 divergence sur 81 valeurs
+ * distinctes — parce qu'aucun fichier ne passe aujourd'hui une couleur
+ * `var()` SEULE a une prop de bordure. Le corpus reel n'aurait donc pas
+ * attrape la regression ; `var(--c)` ci-dessous est ce qui l'attrape.
+ ********************************************************/
+describe('BORDER_REGEX — width accepts var() only before a style keyword', () => {
+    const shape = (value: string) => {
+        const g = BORDER_REGEX.exec(value)?.groups
+
+        return g ? { width: g.width, style: g.style.trim(), color: g.color } : null
+    }
+
+    it.each([
+        ['var(--w) solid var(--c)', 'var(--w)', 'solid', 'var(--c)'],
+        ['var(--w) solid', 'var(--w)', 'solid', ''],
+        ['var(--w) dashed var(--c)', 'var(--w)', 'dashed', 'var(--c)'],
+    ])('parses %j as width=%j style=%j color=%j', (value, width, style, color) => {
+        expect(shape(value)).toEqual({ width, style, color })
+    })
+
+    // ── CONTROLES NEGATIFS — un var() SEUL reste une couleur ──────────────
+    it.each([
+        ['var(--c)', '', '', 'var(--c)'],
+        ['4px solid var(--c)', '4px', 'solid', 'var(--c)'],
+        ['red', '', '', 'red'],
+        ['solid', '', 'solid', ''],
+        ['2px', '2px', '', ''],
+    ])('NEG %j stays width=%j style=%j color=%j', (value, width, style, color) => {
+        expect(shape(value)).toEqual({ width, style, color })
+    })
+
+    it('a lone var() colour never lands in the width group', () => {
+        expect(shape('var(--origam-color__action--primary---bg)')).toEqual({
+            width: '',
+            style: '',
+            color: 'var(--origam-color__action--primary---bg)',
+        })
+    })
+
+    /*********************************************************
+     * Les deux chaines reelles que ce lot existe pour debloquer
+     *
+     * @description
+     * Portees aujourd'hui par la SCSS de variant de `OrigamBlockquote`
+     * (`--variant-default` / `--variant-elegant`, et `--variant-pull` pour
+     * la seconde). Avant ce lot elles tombaient ENTIEREMENT dans le groupe
+     * `color`, donc `useBorder` emettait un `border-*-color` invalide que le
+     * navigateur jetait : bord absent, sans le moindre diagnostic.
+     ********************************************************/
+    it.each([
+        'var(--origam-blockquote__accent---width, 4px) solid var(--origam-blockquote---resolved-accent-color)',
+        'var(--origam-blockquote__pull---rule-width, 2px) solid var(--origam-blockquote---resolved-accent-color)',
+    ])('routes a tokenised width to width, not color: %j', (value) => {
+        const parsed = parseBorderPositionValue(value)
+
+        expect(parsed?.width).toMatch(/^var\(--origam-blockquote/)
+        expect(parsed?.style).toBe('solid')
+        expect(parsed?.color).toBe('var(--origam-blockquote---resolved-accent-color)')
+        expect(formatBorderPositionStylesVar('left', parsed!)).toEqual([
+            `border-left-width: ${parsed!.width}`,
+            'border-left-style: solid',
+            'border-left-color: var(--origam-blockquote---resolved-accent-color)',
+        ])
+    })
+
+    it('keeps the documented nested-fallback limitation (var() with an inner paren)', () => {
+        // `[^)]+` stops at the first `)`, so the whole value is rejected. Already
+        // true before this lot; pinned so a future widening is a deliberate act.
+        expect(shape('1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))')).toBeNull()
+    })
+
+    /*********************************************************
+     * ⛔ LA FRONTIERE ENTRE LES DEUX CHEMINS — a lire avant d'ecrire un preset
+     *
+     * @description
+     * `BORDER_REGEX` sert DEUX consommateurs qui ne traitent pas ses groupes
+     * de la meme facon, et la difference decide quelle prop un preset doit
+     * viser.
+     * @description
+     * • PAR COTE (`parseBorderPositionValue` -> `borderLeft` / `borderBlock`
+     *   / …) prend `match.width` EN ENTIER. Une largeur `var()` contenant une
+     *   espace (`var(--x, 4px)`) passe intacte.
+     * @description
+     * • GLOBAL (`useBorder` sur la prop `border`) fait
+     *   `String(match[key]).split(' ')` pour distribuer 1/2/4 valeurs sur les
+     *   axes. Une largeur `var()` avec une espace y est donc COUPEE EN DEUX
+     *   et produit deux declarations invalides.
+     * @description
+     * Mesure : `var(--x, 4px) solid var(--c)` -> le chemin global scinde la
+     * largeur en `['var(--x,', '4px)']`. Avant ce lot la MEME valeur tombait
+     * entiere dans `color` et y etait scindee en QUATRE — donc aucun bord
+     * dans les deux cas, ce n'est pas une regression visible, mais ce n'est
+     * pas repare pour autant.
+     * @description
+     * Consequence pratique : un preset de variant qui porte une largeur
+     * tokenisee doit viser une prop PAR COTE ou D'AXE, jamais la prop
+     * globale `border`. Les valeurs de Blockquote contiennent `, 4px`.
+     ********************************************************/
+    it('per-side path keeps a space-bearing var() width intact', () => {
+        const parsed = parseBorderPositionValue('var(--origam-blockquote__accent---width, 4px) solid var(--c)')
+
+        expect(parsed?.width).toBe('var(--origam-blockquote__accent---width, 4px)')
+    })
+
+    it('global-shorthand path still splits a space-bearing var() width (documented limit)', () => {
+        const width = BORDER_REGEX.exec('var(--origam-blockquote__accent---width, 4px) solid var(--c)')?.groups?.width
+
+        // `useBorder`'s global path splits on ' ' to distribute across axes,
+        // so this value yields 2 fragments rather than 1 usable width.
+        expect(String(width).trim().split(' ')).toHaveLength(2)
+    })
+
+    it('a space-FREE var() width survives both paths', () => {
+        expect(parseBorderPositionValue('var(--w) solid var(--c)')?.width).toBe('var(--w)')
+        expect(String(BORDER_REGEX.exec('var(--w) solid var(--c)')?.groups?.width).trim().split(' ')).toHaveLength(1)
+    })
+
+    it('style keywords come from BORDER_STYLE, so the two copies cannot drift', () => {
+        for (const keyword of Object.values(BORDER_STYLE)) {
+            expect(shape(`var(--w) ${keyword} var(--c)`)).toEqual({
+                width: 'var(--w)',
+                style: keyword,
+                color: 'var(--c)',
+            })
+        }
     })
 })
 

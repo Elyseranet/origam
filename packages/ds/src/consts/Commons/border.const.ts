@@ -1,25 +1,93 @@
-import { BLOCK, BORDER_LOGICAL_AXIS, INLINE } from '../../enums'
+import { BLOCK, BORDER_LOGICAL_AXIS, BORDER_STYLE, INLINE } from '../../enums'
 import type { TBorderLogicalAxis, TBorderWidthKeyword } from '../../types/Commons/border.type'
 
-/**
- * Parse a free-form `border` value into width / style / color groups.
+/*********************************************************
+ * BORDER_REGEX
  *
- * Accepted color forms (in alternation order — `var()` MUST come before
- * the bare `[A-Za-z]+` branch, otherwise `var` would be eaten as a word
- * before the parenthesis group has a chance to match):
+ * @description
+ * Decoupe une valeur `border` libre en trois groupes — `width`, `style`,
+ * `color`. Sert la prop globale `border` (`useBorder`) ET les six props
+ * directionnelles, via `parseBorderPositionValue`.
  *
- *   • Hex literal       — `#abc` / `#aabbcc`
- *   • CSS function      — `rgb(…)` / `rgba(…)` / `hsl(…)` / `hsla(…)`
- *   • CSS custom prop   — `var(--origam-color__action--primary---bg)` (with optional
- *                          fallback: `var(--x, fallback)`)
- *   • Named keyword     — `red`, `currentColor`, `transparent`, etc.
+ * @description
+ * Formes acceptees en COULEUR, dans cet ordre d'alternance : `var()` DOIT
+ * preceder la branche `[A-Za-z]+`, sinon `var` serait mange comme un mot
+ * avant que le groupe parenthese ait sa chance.
+ * @description
+ * • litteral hex — `#abc` / `#aabbcc`
+ * @description
+ * • fonction CSS — `rgb(…)` / `rgba(…)` / `hsl(…)` / `hsla(…)`
+ * @description
+ * • custom property — `var(--origam-color__action--primary---bg)`, repli inclus
+ * @description
+ * • mot-cle nomme — `red`, `currentColor`, `transparent`, …
  *
- * The user reported that DS-token references (`var(--…)`) silently
- * dropped through this regex and were never emitted as `border-color`,
- * while raw hex / named colors worked. Adding the `var()` alternative
- * fixes the design-token path.
- */
-export const BORDER_REGEX = /^(?<width>(?: ?(?:[0-9]+)(?:px|pt|PC|in|cm|mm|em|rem|%|ex|ch|fr)?){0,4}) {0,1}(?<style>(?:(?: ?(?:none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset))+){0,4}) ?(?<color>(?: ?(?:(?:(?:#)(?:[a-f0-9]{3}|[a-f0-9]{6}))|(?:var\(--[^)]+\))|(?:(?:rgb|hsl|rgba)a?\(.*\))|(?:[A-Za-z]+))){0,4})$/
+ * @description
+ * ⛔ UN `var()` EN LARGEUR N'EST ACCEPTE QUE S'IL EST SUIVI D'UN MOT-CLE DE
+ * STYLE, et le lookahead qui l'impose est la partie a ne pas simplifier.
+ * Les trois groupes sont quantifies `{0,4}` et peuvent TOUS matcher vide :
+ * une alternative `var()` NUE dans `width` happerait donc `var(--ma-couleur)`
+ * — une couleur SEULE, cas courant — avant que `color` ait sa chance. On
+ * reparerait la chaine a trois jetons en cassant celle a un jeton.
+ * @description
+ * `(?= +(?:<styles>))` leve l'ambiguite : `var(--w) solid var(--c)` donne
+ * `width=var(--w)`, tandis que `var(--c)` seul reste une couleur. Mesure —
+ * table de verite et CONTROLES NEGATIFS dans
+ * `packages/tests/TU/utils/Commons/border.util.spec.ts`.
+ * @description
+ * Ce que le `var()` en largeur debloque, et pourquoi c'est un defaut de
+ * production et pas un confort : avant ce lot, `borderLeft="var(--w) solid
+ * var(--c)"` faisait tomber la valeur ENTIERE dans le groupe `color`, donc
+ * `useBorder` emettait un `border-left-color` invalide que le navigateur
+ * jetait — bord absent, aucun diagnostic. Les deux chaines que la SCSS de
+ * Blockquote porte aujourd'hui sont exactement de cette forme.
+ * @description
+ * Le cas `var(--w) var(--c)` (largeur + couleur, sans style) reste NON
+ * resolu, a dessein : il est ambigu par nature et aucune valeur du depot ne
+ * l'utilise. Tordre la regex pour lui couterait la garantie ci-dessus.
+ *
+ * @description
+ * ⚠️ LIMITE CONNUE, NON CORRIGEE ICI : `[^)]+` s'arrete a la premiere
+ * parenthese fermante, donc un repli imbrique ne matche pas DU TOUT et la
+ * valeur entiere est rejetee. Deja vrai avant ce lot, et le depot en porte
+ * une occurrence — `1px solid var(--origam-color__border---subtle, rgba(0,
+ * 0, 0, 0.12))`.
+ *
+ * @description
+ * ⚠️ UNE LARGEUR `var()` QUI CONTIENT UNE ESPACE NE PASSE QUE PAR LE CHEMIN
+ * PAR COTE. Les deux consommateurs ne traitent pas les groupes pareil :
+ * `parseBorderPositionValue` (props `borderLeft` / `borderBlock` / …) prend
+ * `match.width` EN ENTIER, alors que `useBorder` sur la prop GLOBALE `border`
+ * fait `String(match[key]).split(' ')` pour distribuer 1/2/4 valeurs sur les
+ * axes — et y coupe donc `var(--x, 4px)` en deux fragments invalides. Mesure
+ * et non-regression : voir les trois tests « path » dans
+ * `packages/tests/TU/utils/Commons/border.util.spec.ts`.
+ * @description
+ * Avant ce lot la meme valeur tombait entiere dans `color` et y etait scindee
+ * en QUATRE : aucun bord dans les deux cas, donc pas de regression visible —
+ * mais ce n'est pas repare pour autant. Un preset de variant portant une
+ * largeur tokenisee doit viser une prop PAR COTE ou D'AXE, jamais `border`.
+ *
+ * @description
+ * La liste des mots-cles de style vient de `BORDER_STYLE` plutot que d'etre
+ * recopiee : le lookahead et le groupe `style` doivent nommer le MEME
+ * ensemble, et deux copies litterales finiraient par deriver.
+ ********************************************************/
+const BORDER_STYLE_ALTERNATION = Object.values(BORDER_STYLE).join('|')
+
+const BORDER_LENGTH_UNITS = '(?:px|pt|PC|in|cm|mm|em|rem|%|ex|ch|fr)?'
+
+const BORDER_COLOR_GROUP = '(?<color>(?: ?(?:(?:(?:#)(?:[a-f0-9]{3}|[a-f0-9]{6}))|(?:var\\(--[^)]+\\))|(?:(?:rgb|hsl|rgba)a?\\(.*\\))|(?:[A-Za-z]+))){0,4})'
+
+export const BORDER_REGEX = new RegExp(
+    '^'
+    + `(?<width>(?: ?var\\(--[^)]+\\)(?= +(?:${BORDER_STYLE_ALTERNATION}))| ?(?:[0-9]+)${BORDER_LENGTH_UNITS}){0,4})`
+    + ' {0,1}'
+    + `(?<style>(?:(?: ?(?:${BORDER_STYLE_ALTERNATION}))+){0,4})`
+    + ' ?'
+    + BORDER_COLOR_GROUP
+    + '$'
+)
 
 /**
  * Physical-side lookup driving the per-side border wiring (issue #215).
