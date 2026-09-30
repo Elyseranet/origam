@@ -1833,7 +1833,7 @@
   --origam-list---pointer-events: auto;
   --origam-list---user-select: auto;
   --origam-list---indent-padding: 0px;
-  --origam-list--nav---item-gap: var(--origam-space---2);
+  --origam-list--nav---item-gap: 2px;
   --origam-list---density: 0px;
   --origam-list---slim-prepend-width: 28px;
   --origam-list__overlay---background-color: var(--origam-color__overlay---scrim);
@@ -4852,7 +4852,7 @@
     --origam-list---pointer-events: auto;
     --origam-list---user-select: auto;
     --origam-list---indent-padding: 0px;
-    --origam-list--nav---item-gap: var(--origam-space---2);
+    --origam-list--nav---item-gap: 2px;
     --origam-list---density: 0px;
     --origam-list---slim-prepend-width: 28px;
     --origam-list__overlay---background-color: var(--origam-color__overlay---scrim);

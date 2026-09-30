@@ -426,8 +426,8 @@
 			// padding `0px/0px`, so the rows ran edge-to-edge inside the menu
 			// and their hover surface was clipped by the menu's own corner
 			// radius. The two longhands are the names the base rule reads.
-			--origam-list---padding-inline-start: var(--origam-space---2, 8px);
-			--origam-list---padding-inline-end: var(--origam-space---2, 8px);
+			--origam-list---padding-inline-start: var(--origam-space---1, 4px);
+			--origam-list---padding-inline-end: var(--origam-space---1, 4px);
 
 			// ⛔ L'AXE VERTICAL DOIT ETRE DECLARE ICI AUSSI, et pas seulement dans
 			// la feuille. Mesure du 2026-09-30, menu nav de la barre marketing sur
@@ -442,8 +442,8 @@
 			// neutralise l'ecart entre identites sans toucher aux 7 themes. Le
 			// rendu passait de 5-7px en vertical contre 13-27px en inline — un
 			// facteur 4 sur cartoon et glass — a des gouttieres du meme ordre.
-			--origam-list---padding-block-start: var(--origam-space---2, 8px);
-			--origam-list---padding-block-end: var(--origam-space---2, 8px);
+			--origam-list---padding-block-start: var(--origam-space---1, 4px);
+			--origam-list---padding-block-end: var(--origam-space---1, 4px);
 
 			--origam-list-subheader---font-size: var(--origam-list__subheader---nav-font-size, 0.75rem);
 
@@ -485,7 +485,7 @@
 			// a l'etat d'avant. `:deep()` pose l'attribut sur l'ANCETRE, qui lui
 			// le porte.
 			:deep(.origam-list-item + .origam-list-item) {
-				margin-block-start: var(--origam-list--nav---item-gap, 8px);
+				margin-block-start: var(--origam-list--nav---item-gap, 2px);
 			}
 		}
 
