@@ -35,6 +35,25 @@ import { expect, test } from '@playwright/test'
  *
  * C'est la vérification que le coordinateur a demandé de traiter comme le
  * cœur du travail, et elle n'existe qu'ici.
+ *
+ * ## #938 — le test du pont combobox attendait un attribut absent
+ *
+ * Le second test de ce fichier ciblait `[aria-controls]` sans nommer le
+ * combobox. Aucun élément ne portait cet attribut : `OrigamTextField`
+ * appelait `filterInputAttrs(attrs)` UNE FOIS dans le corps de `setup()`,
+ * ce qui copie les clés hors du proxy `$attrs` et fige la distribution au
+ * montage. `aria-expanded` restait donc `"false"` listbox ouvert, et
+ * `aria-controls` / `aria-activedescendant` — `undefined` menu fermé, donc
+ * absents du cliché — n'apparaissaient jamais. Trois attributs du contrat
+ * combobox morts, pas une Variant qui aurait bougé. Le test n'atteignait
+ * aucune assertion : il expirait à 45 s sur l'attente du locator.
+ *
+ * ⚠️ Observé au passage, NON corrigé ici : la `<div class="origam-field">`
+ * qui enveloppe l'`<input>` porte elle aussi `role="combobox"`, avec
+ * `aria-haspopup="menu"` et `aria-owns` (attributs d'activateur posés par
+ * `<origam-menu>`). Deux comboboxes imbriqués, dont l'externe annonce un
+ * popup `menu` là où le popup est un `listbox`. Hors périmètre de #938 —
+ * les assertions ci-dessous nomment donc l'`<input>`, jamais `.origam-field`.
  */
 
 const SELECT_ID = 'components-stories-select-origamselect-story-vue'
@@ -88,9 +107,37 @@ test.describe('OrigamSelect — le contrat combobox tient (mode sélection)', ()
 
         const field = sandbox.locator('.origam-field').first()
         await expect(field).toBeVisible({ timeout: 12000 })
-        await field.click()
 
+        /*
+         * Le combobox est l'`<input role="combobox">` — c'est LUI qui doit
+         * porter la paire `aria-expanded` / `aria-controls` (axe-core
+         * `aria-allowed-attr` les refuse sur un element sans le role). Il
+         * existe des le premier rendu, donc on le NOMME au lieu d'attendre un
+         * `[aria-controls]` quelconque : c'est cette attente aveugle qui
+         * expirait a 45 s quand l'attribut manquait (#938).
+         */
+        const combobox = sandbox.locator('input[role="combobox"]').first()
+        await expect(combobox, 'la Variant Design doit rendre un <input role="combobox">')
+            .toHaveCount(1, { timeout: 12000 })
+        await expect(combobox, 'combobox ferme : aria-expanded="false"')
+            .toHaveAttribute('aria-expanded', 'false', { timeout: 5000 })
+
+        await field.click()
         await expect(sandbox.locator('.origam-list').first()).toBeVisible({ timeout: 12000 })
+
+        /*
+         * Les trois attributs du pont combobox etaient MORTS avant #938 :
+         * `OrigamTextField` figeait la distribution de ses `$attrs` dans le
+         * corps de `setup()`, donc l'`<input>` gardait `aria-expanded="false"`
+         * une fois le listbox ouvert et ne recevait jamais `aria-controls` ni
+         * `aria-activedescendant` (tous deux `undefined` menu ferme, donc
+         * absents du cliche initial). Chacun est assorti d'un message : un
+         * echec doit dire ce qui manque, en quelques centaines de ms.
+         */
+        await expect(combobox, 'aria-expanded doit suivre l ouverture du listbox')
+            .toHaveAttribute('aria-expanded', 'true', { timeout: 5000 })
+        await expect(combobox, 'le combobox ouvert doit designer son listbox par aria-controls')
+            .toHaveAttribute('aria-controls', /\S/, { timeout: 5000 })
 
         /*
          * La chaîne complète, résolue dans le document réel : l'élément que
@@ -98,7 +145,7 @@ test.describe('OrigamSelect — le contrat combobox tient (mode sélection)', ()
          * précisément ce qu'une racine retombée en `role="list"` casserait,
          * en silence.
          */
-        const resolved = await sandbox.locator('[aria-controls]').first().evaluate((el) => {
+        const resolved = await combobox.evaluate((el) => {
             const id = el.getAttribute('aria-controls')
             const target = id ? el.ownerDocument.getElementById(id) : null
 
@@ -113,6 +160,33 @@ test.describe('OrigamSelect — le contrat combobox tient (mode sélection)', ()
         expect(resolved.found, `aria-controls="${resolved.id}" doit designer un element existant`).toBe(true)
         expect(resolved.role).toBe('listbox')
         expect(resolved.optionCount).toBeGreaterThan(0)
+
+        /*
+         * `aria-activedescendant` : le seul canal par lequel un lecteur
+         * d'ecran annonce la ligne surlignee au clavier, le focus DOM ne
+         * quittant jamais l'`<input>`. Il doit designer une `option` DU
+         * listbox que `aria-controls` vient de nommer.
+         */
+        await combobox.press('ArrowDown')
+        await expect(combobox, 'le surlignage clavier doit se publier en aria-activedescendant')
+            .toHaveAttribute('aria-activedescendant', /\S/, { timeout: 5000 })
+
+        const highlighted = await combobox.evaluate((el) => {
+            const listboxId = el.getAttribute('aria-controls')
+            const activeId = el.getAttribute('aria-activedescendant')
+            const active = activeId ? el.ownerDocument.getElementById(activeId) : null
+
+            return {
+                activeId,
+                found: Boolean(active),
+                role: active?.getAttribute('role') ?? null,
+                insideListbox: Boolean(active && listboxId && active.closest(`#${listboxId}`))
+            }
+        })
+
+        expect(highlighted.found, `aria-activedescendant="${highlighted.activeId}" doit designer un element existant`).toBe(true)
+        expect(highlighted.role).toBe('option')
+        expect(highlighted.insideListbox, 'l option surlignee doit appartenir au listbox designe').toBe(true)
     })
 })
 
