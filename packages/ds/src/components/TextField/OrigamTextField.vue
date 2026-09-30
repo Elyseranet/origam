@@ -565,7 +565,33 @@
 		return base
 	})
 
-	const [rootAttrs, inputAttrs] = filterInputAttrs(attrs)
+	/*********************************************************
+	 * Attrs distribution — REACTIVE, not a setup snapshot — #938
+	 *
+	 * @description
+	 * `filterInputAttrs` COPIES keys out of the `$attrs` proxy into two
+	 * plain objects, so calling it once in the `setup()` body froze the
+	 * distribution at mount time.
+	 * Every fall-through attr that CHANGES afterwards was therefore lost:
+	 * measured on `OrigamSelect`'s combobox bridge, the `<input>` kept
+	 * `aria-expanded="false"` after the listbox opened, and never received
+	 * the `aria-controls` / `aria-activedescendant` that are `undefined`
+	 * while the menu is closed.
+	 * Reading `attrs` inside a `computed` re-runs the split on every attrs
+	 * change, which is what the `<input>` v-bind below needs.
+	 * The template spreads these as `{ ...rootAttrs }` / `{ ...inputAttrs }`
+	 * — the SFC compiler wraps a known `computed` binding in `unref()`, so
+	 * the spread sees the object, not the ref.
+	 * ⚠️ The same eager call exists in every other field component that
+	 * uses `filterInputAttrs` (Checkbox, Radio, Switch, FileField,
+	 * PasswordField, OtpInputField, TextareaField, RatingField,
+	 * SelectionControl, and their group wrappers). It only bites where a
+	 * fall-through attr is expected to change after mount, which is why
+	 * only the combobox path is corrected here.
+	 ********************************************************/
+	const filteredAttrs = computed(() => filterInputAttrs(attrs))
+	const rootAttrs = computed(() => filteredAttrs.value[0])
+	const inputAttrs = computed(() => filteredAttrs.value[1])
 
 	/*********************************************************
 	 * Forwarded props
