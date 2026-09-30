@@ -170,6 +170,15 @@ const GREEN_SPECS = [
     // avant, 4/4 verts apres. Verifiee stable 20/20, `--repeat-each=5`,
     // `E2E_STATIC=1`, chromium, port isole.
     'data-table-sticky.spec.ts',
+    // #371 (point 1) — verdict navigateur reel sur la closure serialisee en
+    // attribut DOM des lignes d'en-tete de groupe. Gardee plutot que
+    // baselisee : elle porte une vraie verification, et elle est rouge sans
+    // le correctif (A/B fait en re-cassant la ligne 64 de
+    // `OrigamDataTableRows.vue` — 2 des 3 tests tombent, le troisieme etant
+    // le controle positif qui prouve que le site de rendu existe). La Variant
+    // `Prop — groupBy` qu'elle visite a ete creee avec elle : aucune des 30
+    // Variants de la story ne rendait de ligne de groupe.
+    'data-table-group-attr-leak.spec.ts',
     // wave 14 — #827. Un parent CONTROLE qui refuse la valeur (v-bind="state"
     // sans `state.modelValue = $event`, la forme du playground "Default")
     // laissait le DOM de la radio avancer indefiniment : le navigateur coche
