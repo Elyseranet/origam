@@ -123,3 +123,33 @@
 .origam--text-lg { font-size: var(--origam-font__size---lg); }
 .origam--text-xl { font-size: var(--origam-font__size---xl); }
 .origam--text-2xl { font-size: var(--origam-font__size---2xl); }
+
+/* --- Opacity --------------------------------------------- */
+/*                                                            */
+/* Emitted by `useOpacity` when the value lands on a rung of   */
+/* the primitive ladder. `useOpacity` ALSO emits the matching  */
+/* inline `opacity:` declaration (strategy A). That is not     */
+/* redundancy: a scoped component rule is (0,2,0) and beats    */
+/* this (0,1,0) class whatever the load order, and OrigamBtn   */
+/* already declares `opacity` in its own SCSS. See #514.       */
+.origam--opacity-0 { opacity: var(--origam-opacity---0); }
+.origam--opacity-12 { opacity: var(--origam-opacity---12); }
+.origam--opacity-26 { opacity: var(--origam-opacity---26); }
+.origam--opacity-32 { opacity: var(--origam-opacity---32); }
+.origam--opacity-50 { opacity: var(--origam-opacity---50); }
+.origam--opacity-60 { opacity: var(--origam-opacity---60); }
+.origam--opacity-70 { opacity: var(--origam-opacity---70); }
+.origam--opacity-87 { opacity: var(--origam-opacity---87); }
+.origam--opacity-100 { opacity: var(--origam-opacity---100); }
+
+/* --- Backdrop blur --------------------------------------- */
+/*                                                            */
+/* Emitted by `useBackdrop`. The -webkit- twin is required:    */
+/* Safari still ships backdrop-filter prefixed only. Rung      */
+/* values follow the measured distribution of blur() literals  */
+/* in this repo, not a tidy doubling, hence sm = 6px.          */
+.origam--backdrop-blur-xs { backdrop-filter: blur(var(--origam-blur---xs)); -webkit-backdrop-filter: blur(var(--origam-blur---xs)); }
+.origam--backdrop-blur-sm { backdrop-filter: blur(var(--origam-blur---sm)); -webkit-backdrop-filter: blur(var(--origam-blur---sm)); }
+.origam--backdrop-blur-md { backdrop-filter: blur(var(--origam-blur---md)); -webkit-backdrop-filter: blur(var(--origam-blur---md)); }
+.origam--backdrop-blur-lg { backdrop-filter: blur(var(--origam-blur---lg)); -webkit-backdrop-filter: blur(var(--origam-blur---lg)); }
+.origam--backdrop-blur-xl { backdrop-filter: blur(var(--origam-blur---xl)); -webkit-backdrop-filter: blur(var(--origam-blur---xl)); }

@@ -1,6 +1,7 @@
 import type { IBorderProps } from './border.interface'
 import type { IElevationProps } from './elevation.interface'
 import type { IMarginProps } from './margin.interface'
+import type { IOpacityProps } from './opacity.interface'
 import type { IPaddingProps } from './padding.interface'
 import type { IRoundedProps } from './rounded.interface'
 
@@ -44,6 +45,23 @@ export interface IStateEffectConfig {
     bgColor?: TColor
     /** Border width / style / direction override. */
     border?: IBorderProps['border']
+    /*********************************************************
+     * borderColor
+     *
+     * @description
+     * Border COLOUR override, independent of the `border` shorthand.
+     *
+     * @description
+     * ⚠️ ADR-005's D6 audit missed this one. It lists `opacity` as the
+     * single gap on this interface, having checked the variants that set
+     * a border WIDTH; `outlined --active` sets a border-COLOUR, which the
+     * `border` shorthand above cannot carry.
+     *
+     * @description
+     * Found by remeasuring D6 rather than by reading it, and recorded
+     * here because the ADR's own table is incomplete on this row.
+     ********************************************************/
+    borderColor?: IBorderProps['borderColor']
     /** Corner radius override. */
     rounded?: IRoundedProps['rounded']
     /** Box-shadow elevation override. */
@@ -54,6 +72,19 @@ export interface IStateEffectConfig {
     margin?: IMarginProps['margin']
     /** Gap (flex/grid) override. Components that expose a `gap` prop pick it up. */
     gap?: boolean | number | string
+    /*********************************************************
+     * opacity
+     *
+     * @description
+     * Opacity override. This is the half of `OrigamBtn`'s `plain` variant
+     * that a preset could not express.
+     *
+     * @description
+     * `plain` is `opacity: var(--origam-opacity---70)` at rest plus
+     * `:hover { opacity: 1 }` — i.e. `{ opacity: 70, hover: { opacity: 100 } }`
+     * once this key exists (ADR-005 D6).
+     ********************************************************/
+    opacity?: IOpacityProps['opacity']
 }
 
 /**

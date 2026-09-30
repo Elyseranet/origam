@@ -162,6 +162,11 @@
   --origam-opacity---70: 0.7;
   --origam-opacity---87: 0.87;
   --origam-opacity---100: 1;
+  --origam-blur---xs: 4px;
+  --origam-blur---sm: 6px;
+  --origam-blur---md: 8px;
+  --origam-blur---lg: 16px;
+  --origam-blur---xl: 24px;
   --origam-border__width---0: 0px;
   --origam-border__width---2: 2px;
   --origam-border__width---4: 4px;
