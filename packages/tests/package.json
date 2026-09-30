@@ -16,6 +16,7 @@
     "audit:id-forwarding": "node audit/id-forwarding.audit.mjs",
     "audit:dark-contrast": "node audit/dark-contrast.audit.mjs",
     "audit:focus-ring": "node audit/focus-ring.audit.mjs",
+    "audit:kbd-preset": "node audit/kbd-preset.audit.mjs",
     "test:e2e": "playwright test",
     "test:e2e:audit": "node e2e/_support/run-guards.mjs",
     "test:e2e:audit:self": "node e2e/_support/run-guards.mjs --self-test",
