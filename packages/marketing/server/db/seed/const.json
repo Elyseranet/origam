@@ -11117,7 +11117,7 @@
         "domain": null,
         "icon": null,
         "description_key": "consts.catalog.grid_gap_size_var.description",
-        "description_fallback": "Maps every gap-size token to its corresponding CSS custom property emitted by Style Dictionary from tokens/component/grid.json. Provides a single source of truth so a token rename propagates automatically.",
+        "description_fallback": "Maps every gap-size token to its corresponding CSS custom property, declared in the hand-maintained token sheet packages/ds/src/assets/css/tokens/light.css. Provides a single source of truth so a token rename propagates automatically.",
         "definition": "export const GRID_GAP_SIZE_VAR: Readonly<Record<TGridGapSize, string>> = {\n    xs: 'var(--origam-grid---gap-xs)',\n    sm: 'var(--origam-grid---gap-sm)',\n    md: 'var(--origam-grid---gap-md)',\n    lg: 'var(--origam-grid---gap-lg)',\n    xl: 'var(--origam-grid---gap-xl)'\n}",
         "signature": null,
         "tag": null,

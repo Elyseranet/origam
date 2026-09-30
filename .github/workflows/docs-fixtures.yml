@@ -88,6 +88,28 @@ jobs:
       - name: Apply migrations
         run: pnpm -F @origam/marketing db:migrate
 
+      # #960 — re-derive kind_extra.tokens from the hand-maintained token
+      # sheets BEFORE the DB is loaded, so the correction flows through the
+      # whole chain: committed JSON -> docs:seed -> DB -> docs:dump (JSON) and
+      # docs:dump:sql (SQL). Both artefacts are dumped from the DB, so this is
+      # the only position that reaches both. Verified on a fresh Postgres, the
+      # shape this job uses: seed -> dump returns the corrected content
+      # byte-for-byte, 0 entries drifted.
+      #
+      # `kind_extra` is absent from RESYNC_POLICY.components, so docs:sync
+      # never refreshes it; without this step the block stays frozen on
+      # whatever it was last dumped with — which is how it went on naming the
+      # Style Dictionary / Tokens Studio pipeline for a month after its
+      # deletion. Idempotent: a run over already-derived data writes nothing.
+      #
+      # ⚠️ This job's Postgres is a fresh service container, which matters:
+      # `upsertEntry` writes every column on INSERT but only the [SRC] ones on
+      # a row whose `edited_by_user` lock is set. Against an ALREADY-POPULATED
+      # DB the one locked component (`btn`) would keep its stale block —
+      # measured. On an empty DB the INSERT path applies it.
+      - name: Re-derive token excerpts from the sheets
+        run: pnpm -F @origam/marketing docs:tokens
+
       # CRITICAL: seed the ephemeral DB from the committed fixtures BEFORE the
       # sync. The curated kinds (component catalog, composables, directives,
       # types) are NOT source-extracted — without this step the DB only holds

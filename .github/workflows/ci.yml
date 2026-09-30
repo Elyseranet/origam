@@ -140,6 +140,18 @@ jobs:
       - name: Run migration guard
         run: pnpm -F @origam/marketing guard:migrations
 
+      # #960 — the catalogue may not document a token the design system does
+      # not declare, nor name the Style Dictionary / Tokens Studio pipeline
+      # deleted on 2026-08-31. `server/db/seed/*.json` is a committed artefact
+      # that NOTHING regenerates from the DS (`kind_extra` is absent from
+      # RESYNC_POLICY), so it drifted for a month across three passes that each
+      # touched the very lines concerned. Static, no DB, no build.
+      - name: Run seed-tokens guard self-test (detector mutation-check)
+        run: pnpm -F @origam/marketing guard:seed-tokens:self
+
+      - name: Run seed-tokens guard
+        run: pnpm -F @origam/marketing guard:seed-tokens
+
   type-check:
     name: Type-check (vue-tsc)
     runs-on: ubuntu-latest

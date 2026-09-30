@@ -69,8 +69,8 @@ export interface IMasonryProps extends ICommonsComponentProps, ITagProps, IDimen
      * Gap between items, both vertically and horizontally. Accepts:
      *
      * - one of the grid size tokens `'xs' | 'sm' | 'md' | 'lg' | 'xl'`
-     *   (resolved via `tokens/component/grid.json`, same matrix as
-     *   `<OrigamGrid>` for visual consistency).
+     *   (resolved via `GRID_GAP_SIZE_VAR` to `--origam-grid---gap-{size}`,
+     *   same matrix as `<OrigamGrid>` for visual consistency).
      * - any CSS length string (`'24px'`, `'1rem'`).
      * - a plain `number` interpreted as pixels.
      *
