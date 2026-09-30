@@ -59,7 +59,7 @@ import type { ITypographyProps } from '../../interfaces/Commons/typography.inter
  *                              |    font-family rule → no effect; document it)
  *   Label       | label        | fontSize fontWeight letterSpacing lineHeight
  *   Chip        | chip         | fontSize fontWeight
- *   Blockquote  | blockquote   | fontFamily fontSize fontWeight lineHeight
+ *   Blockquote  | blockquote   | fontFamily fontSize fontWeight lineHeight fontStyle
  *   Code        | code         | fontFamily fontSize lineHeight
  *   Kbd         | kbd          | fontFamily fontSize fontWeight
  *   Tooltip     | tooltip      | fontSize fontWeight lineHeight

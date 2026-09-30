@@ -7,9 +7,14 @@ import type { TLineHeight } from '../../types/Commons/line-height.type'
 /**
  * Cross-cutting typography surface — the font equivalent of
  * `IColorProps` / `IBorderProps` / `IMarginProps`. Every prop is optional
- * and maps a primitive font token key to the matching component CSS
- * variable via `useTypography`. When a prop is unset the component keeps
- * its theme value (no override emitted).
+ * and resolves to the matching component CSS variable via `useTypography`.
+ * When a prop is unset the component keeps its theme value (no override
+ * emitted).
+ *
+ * The first FIVE props are primitive font token KEYS, wrapped into
+ * `var(--origam-font__{group}---{value})`. `fontStyle` is the one
+ * PASSTHROUGH: a CSS keyword emitted verbatim, because `font-style` has no
+ * design scale — see its own note below.
  *
  * | Prop            | CSS property      | Primitive token group        |
  * |-----------------|-------------------|------------------------------|
@@ -79,11 +84,17 @@ export interface ITypographyProps {
      * `oblique 10deg`, qu'une union fermee rejetterait.
      *
      * @description
-     * ⚠️ N'a d'EFFET que si la SCSS du composant lit reellement
-     * `--origam-{prefix}---font-style`. Mesure a l'ajout : deux composants
-     * le lisent — `OrigamBlockquote` et `OrigamBracketCompetitor`. Ailleurs
-     * la prop type-check et emet sa variable sans rien peindre, exactement
-     * comme `fontFamily` sur Btn ; ne pas ajouter de regle SCSS pour lui
+     * ⚠️ N'a d'EFFET que si la SCSS du composant lit le var GENERIQUE
+     * `--origam-{prefix}---font-style`. Mesure a l'ajout : un seul composant
+     * le fait — `OrigamBlockquote`
+     * (`--origam-blockquote---resolved-font-style` retombe dessus).
+     * @description
+     * ⛔ `OrigamBracketCompetitor` ne compte PAS, et la nuance vaut d'etre
+     * lue : il lit `--origam-bracket-competitor--pending---font-style`, un
+     * var de MODIFICATEUR D'ETAT (double tiret `--pending---`), pas le
+     * generique que `useTypography(props, 'bracket-competitor')` emet. La
+     * prop y type-check et emet sa variable sans rien peindre — meme cas
+     * que `fontFamily` sur Btn. Ne pas ajouter de regle SCSS pour lui
      * forcer un effet sans le signaler.
      ********************************************************/
     fontStyle?: string
