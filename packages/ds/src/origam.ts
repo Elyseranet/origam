@@ -8,6 +8,7 @@ import {
     createIcons,
     createLocale,
     installThemePropsResolver,
+    resolveVariantPresetRegistry,
     themedPropKeysUnion
 } from './composables'
 
@@ -21,14 +22,15 @@ import {
     ORIGAM_ICONS_KEY,
     ORIGAM_LOCALE_KEY,
     ORIGAM_THEME_DEFAULTS_KEY,
-    ORIGAM_THEMES_KEY
+    ORIGAM_THEMES_KEY,
+    VARIANT_PRESETS
 } from './consts'
 
 import * as origamDirectives from './directives'
 import { setContrastConfig } from './directives/Contrast/contrast.directive'
 
 import type { IDefault, INuxtAwareApp, IOrigamOptions, IOrigamTheme } from './interfaces'
-import type { TIconOptions, TModeResolved } from './types'
+import type { TIconOptions, TModeResolved, TVariantPresetRegistry } from './types'
 import { applyThemes, installedThemesFromList, mergeDeep } from './utils'
 
 import '@mdi/font/css/materialdesignicons.css'
@@ -84,6 +86,24 @@ export function createOrigam (origam: IOrigamOptions = {}) {
         allThemes.map((theme) => theme.components).filter((components): components is IDefault => !!components)
     )
 
+    /*********************************************************
+     * variantPresets
+     *
+     * @description
+     * ADR-005 D1 + D4 — les tables de presets que le DS livre, surchargees
+     * par ce que les themes enregistres declarent sous `variants`.
+     *
+     * @description
+     * Collapse une seule fois, synchronement, comme `themedKeysUnion` :
+     * pure, SSR-safe, et sur la liste COMPLETE des themes installes plutot
+     * que sur la marque active au montage — un basculement de marque a
+     * l'execution doit trouver les slots deja patches.
+     ********************************************************/
+    const variantPresets = resolveVariantPresetRegistry(
+        VARIANT_PRESETS,
+        allThemes.map((theme) => theme.variants).filter((variants): variants is TVariantPresetRegistry => !!variants)
+    )
+
     const scope = effectScope()
     return scope.run(() => {
         const icons = createIcons(options.icons)
@@ -136,7 +156,7 @@ export function createOrigam (origam: IOrigamOptions = {}) {
             // `theme-props-resolver.composable.ts` for the full mechanism;
             // this is invisible machinery, read that file before assuming a
             // resolved prop value came from `withDefaults()`.
-            installThemePropsResolver(app, themedKeysUnion)
+            installThemePropsResolver(app, themedKeysUnion, variantPresets)
             // Resolver over the full install list so `<OrigamThemeProvider>` can
             // re-apply a named brand's default props to its sub-tree, mirroring
             // the document-root defaults collapse. Static (install-time) — no

@@ -3,6 +3,7 @@ import type { Ref } from 'vue'
 import type { IThemeVars } from './semantic-tree.interface'
 import type { TThemeVars } from '../../types/Commons/token-tree.type'
 import type { TMode, TTheme } from '../../types/Commons/theme.type'
+import type { TVariantPresetRegistry } from '../../types/Commons/variant-preset.type'
 import type { IDefault } from '../DefaultsProvider/defaults-provider.interface'
 
 /**
@@ -137,4 +138,37 @@ export interface IOrigamTheme {
      * }
      */
     components?: IDefault
+
+    /*********************************************************
+     * variants
+     *
+     * @description
+     * ADR-005 D4 — redefinit en PROPS ce qu'un `variant` veut dire, par
+     * composant puis par valeur de variant :
+     *
+     *     variants: {
+     *         'origam-btn': { outlined: { border: 3, rounded: 'lg' } }
+     *     }
+     *
+     * @description
+     * C'est ce qui rend les variants conformes a la regle PROPS-D'ABORD :
+     * un theme retune `outlined` en changeant des valeurs de props, et ne
+     * descend a `vars` / `cssVars` que pour ce que les props n'expriment
+     * pas. Les variants etaient le seul API du DS a violer cette regle
+     * structurellement.
+     *
+     * @description
+     * FRERE de `components`, pas une cle imbriquee dedans : `components`
+     * est type `IDefault` (composant -> map de props), donc y nicher un
+     * niveau de variant rendrait `{ 'origam-btn': { outlined: … } }`
+     * ambigu avec un prop qui s'appellerait litteralement `outlined`.
+     *
+     * @description
+     * Fusionne par-dessus la table livree par le DS a l'installation
+     * (`resolveVariantPresetRegistry`), avec le `mergeDeep` que
+     * `provideDefaults` utilise deja. Le preset resultant reste le rang
+     * LE PLUS FAIBLE de la resolution (arbitrage Q2) : un prop ecrit au
+     * site d'appel, comme un defaut de `components`, le battent tous deux.
+     ********************************************************/
+    variants?: TVariantPresetRegistry
 }

@@ -19,6 +19,41 @@
  * exact bug ADR-005 exists to fix. Re-introducing either half (a
  * variant-target selector, or `!important` inside one) reopens it.
  *
+ * ⛔ WHAT EACH `!important` ACTUALLY WON AGAINST — MEASURED, NOT INFERRED
+ * -------------------------------------------------------------------
+ * If you are here because this guard blocked you from adding an
+ * `!important` back, this is the paragraph you want. Reproduced in
+ * Chromium (2026-09-30) with the DS's real specificities — utility class
+ * (0,1,0), Vue-scoped variant rule (0,2,0), inline declaration:
+ *
+ *   variant rule NORMAL      vs utility class  -> the VARIANT RULE wins
+ *   variant rule NORMAL      vs INLINE style   -> the INLINE STYLE wins
+ *   variant rule !important  vs INLINE style   -> the VARIANT RULE wins
+ *   variant rule !important  vs utility class  -> the VARIANT RULE wins
+ *
+ * So every `background-color: … !important` in a variant block existed
+ * for ONE purpose: to beat the INLINE declaration. It was never needed
+ * against a tokenised `bgColor` — the scoped rule already outranked that
+ * utility on specificity alone, with no `!important` at all.
+ *
+ * The three inline channels it was beating: a CUSTOM (non-tokenised)
+ * `bgColor` value; ANY value while hover/active/disabled is engaged
+ * (`useColorEffect` emits no utility class then — CLAUDE.md
+ * "Classes-first", rule 4); and `fgDecl`, which is always inline (#514).
+ *
+ * ⛔ AND WHY IT IS NOT NEEDED ANY MORE — the point that matters. Once the
+ * variant is a props PRESET resolved at the prop tier, the preset and the
+ * consumer's value are THE SAME CHANNEL: exactly one declaration ever
+ * reaches the DOM. The cascade battle does not need winning by other
+ * means — it no longer takes place. An `!important` reappearing here is
+ * therefore evidence that something went back to emitting CSS per
+ * variant, not that a cascade needed arbitrating.
+ *
+ * This is also, independently, why ADR-005 rejected its own alternative
+ * A1 ("keep the variant CSS, just drop the `!important`"): per the table
+ * above that would fix custom colours and leave tokenised ones broken by
+ * specificity. A1 was a half-fix, and the measurement says so.
+ *
  * WHAT COUNTS AS "IN CURRENT SCOPE" TODAY (documented, not silent)
  * -------------------------------------------------------------------
  * As of this guard's introduction, ADR-005's migration has NOT landed on

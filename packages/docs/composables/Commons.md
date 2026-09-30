@@ -5,7 +5,7 @@
 > rien n'est redige ici. Corriger une description se fait dans la banniere du symbole,
 > puis en regenerant. Issue #545.
 
-108 symbole(s) exporte(s).
+109 symbole(s) exporte(s).
 
 ## `_resetCssSupportCache`
 
@@ -176,7 +176,7 @@ direct siblings on the same RTL contract.
 ## `installThemePropsResolver`
 
 ```ts
-export function installThemePropsResolver (app: App, themedKeysUnion: Map<string, Set<string>>): void
+export function installThemePropsResolver ( app: App, themedKeysUnion: Map<string, Set<string>>, variantPresets: TVariantPresetRegistry = {} ): void
 ```
 
 Install the global `beforeCreate` hook described at the top of this file.
@@ -226,7 +226,7 @@ montage initial.
 
 **Source** : `packages/ds/src/composables/Commons/defaults.composable.ts`
 
-**Consommateurs** (10) : `components/Avatar/OrigamAvatar.vue`, `components/Avatar/OrigamAvatarGroup.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Btn/OrigamBtnGroup.vue`, `components/DefaultsProvider/OrigamDefaultsProvider.vue`, `components/SelectionControl/OrigamSelectionControl.vue`, `components/SelectionControl/OrigamSelectionControlGroup.vue`, `components/ThemeProvider/OrigamThemeProvider.vue`, …
+**Consommateurs** (11) : `components/Avatar/OrigamAvatar.vue`, `components/Avatar/OrigamAvatarGroup.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Btn/OrigamBtnGroup.vue`, `components/DefaultsProvider/OrigamDefaultsProvider.vue`, `components/SelectionControl/OrigamSelectionControl.vue`, `components/SelectionControl/OrigamSelectionControlGroup.vue`, `components/ThemeProvider/OrigamThemeProvider.vue`, …
 
 ## `provideLocale`
 
@@ -286,6 +286,38 @@ navigateur.
 **Source** : `packages/ds/src/composables/Commons/theme.composable.ts`
 
 **Consommateurs** : aucun dans `packages/ds/src` — symbole exporte pour les consommateurs externes.
+
+## `resolveVariantPresetRegistry`
+
+```ts
+export function resolveVariantPresetRegistry ( shipped: TVariantPresetRegistry, themeVariants: Array<TVariantPresetRegistry> ): TVariantPresetRegistry
+```
+
+ADR-005 D4 — collapse les tables de presets que le DS livre avec celles
+que les themes enregistres redefinissent, en un seul registre.
+
+Un theme retune ce que `outlined` VEUT DIRE en changeant des valeurs de
+PROPS, et ne descend aux `vars` / `cssVars` que pour ce que les props
+n'expriment pas. C'est ce qui reconcilie les variants avec la regle
+PROPS-D'ABORD : le seul API du DS qui la violait structurellement.
+
+`variants` est un FRERE de `components`, pas une cle imbriquee dedans.
+`components` est type `IDefault` (composant -> map de props) ; y nicher
+un niveau de variant rendrait `{ 'origam-btn': { outlined: … } }`
+ambigu avec un prop qui s'appellerait litteralement `outlined`.
+
+Fusion par `mergeDeep`, celui-la meme que `provideDefaults` utilise —
+le theme gagne, prop par prop. Consequence a connaitre : un preset
+d'ETAT (`active: { … }`, autorise par Q3) est donc FUSIONNE et non
+remplace, comme l'est deja un bloc `components` de theme. Une marque qui
+veut effacer une cle d'etat la repose explicitement.
+
+Pure — aucun acces Vue/DOM — donc appelee une fois, synchronement, a
+l'installation par `createOrigam()`, comme `themedPropKeysUnion`.
+
+**Source** : `packages/ds/src/composables/Commons/theme-props-resolver.composable.ts`
+
+**Consommateurs** (2) : `interfaces/Commons/theme.interface.ts`, `origam.ts`
 
 ## `themedPropKeysUnion`
 
@@ -446,7 +478,7 @@ See `useAccessibleCommand` for why no default label is fabricated.
 
 **Source** : `packages/ds/src/composables/Commons/adjacent.composable.ts`
 
-**Consommateurs** (32) : `components/Alert/OrigamAlert.vue`, `components/Badge/OrigamBadge.vue`, `components/Breadcrumb/OrigamBreadcrumbItem.vue`, `components/Btn/OrigamBtn.vue`, `components/Card/OrigamCard.vue`, `components/Card/OrigamCardHeader.vue`, `components/Chip/OrigamChip.vue`, `components/ConfirmWrapper/OrigamConfirmWrapper.vue`, …
+**Consommateurs** (30) : `components/Alert/OrigamAlert.vue`, `components/Badge/OrigamBadge.vue`, `components/Breadcrumb/OrigamBreadcrumbItem.vue`, `components/Btn/OrigamBtn.vue`, `components/Card/OrigamCard.vue`, `components/Card/OrigamCardHeader.vue`, `components/Chip/OrigamChip.vue`, `components/ConfirmWrapper/OrigamConfirmWrapper.vue`, …
 
 ## `useAdjacentInner`
 
@@ -687,7 +719,7 @@ declared them, so the foreground/background scalars are now just
 
 **Source** : `packages/ds/src/composables/Commons/colorEffect.composable.ts`
 
-**Consommateurs** (8) : `components/Audio/OrigamAudio.vue`, `components/Video/OrigamVideo.vue`, `consts/Commons/color.const.ts`, `enums/Commons/color.enum.ts`, `enums/Commons/intent.enum.ts`, `types/Commons/color.type.ts`, `types/Commons/intent.type.ts`, `utils/Commons/color.util.ts`
+**Consommateurs** (9) : `components/Audio/OrigamAudio.vue`, `components/Chip/OrigamChip.vue`, `components/Video/OrigamVideo.vue`, `consts/Commons/color.const.ts`, `enums/Commons/color.enum.ts`, `enums/Commons/intent.enum.ts`, `types/Commons/color.type.ts`, `types/Commons/intent.type.ts`, …
 
 ## `useCreateLayout`
 
@@ -705,7 +737,7 @@ direct function dependency) — the three only share the
 
 **Source** : `packages/ds/src/composables/Commons/createLayout.composable.ts`
 
-**Consommateurs** (5) : `components/BottomNav/OrigamBottomNav.vue`, `components/Layout/OrigamLayout.vue`, `components/SystemBar/OrigamSystemBar.vue`, `interfaces/Commons/layout.interface.ts`, `interfaces/Layout/layout.interface.ts`
+**Consommateurs** (6) : `components/BottomNav/OrigamBottomNav.vue`, `components/Layout/OrigamLayout.vue`, `components/SystemBar/OrigamSystemBar.vue`, `components/Toolbar/OrigamToolbar.vue`, `interfaces/Commons/layout.interface.ts`, `interfaces/Layout/layout.interface.ts`
 
 ## `useCssSupport`
 
@@ -1466,7 +1498,7 @@ is responsible for its own fallback (issue #444, `OrigamLoader`).
 
 **Source** : `packages/ds/src/composables/Commons/locale.composable.ts`
 
-**Consommateurs** (87) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
+**Consommateurs** (89) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
 
 ## `useLocale`
 
@@ -1481,7 +1513,7 @@ legitime (#444, `OrigamLoader`).
 
 **Source** : `packages/ds/src/composables/Commons/locale.composable.ts`
 
-**Consommateurs** (87) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
+**Consommateurs** (89) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
 
 ## `useLocale`
 
@@ -1495,7 +1527,7 @@ banniere au-dessus de la premiere surcharge pour le detail du contrat.
 
 **Source** : `packages/ds/src/composables/Commons/locale.composable.ts`
 
-**Consommateurs** (87) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
+**Consommateurs** (89) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
 
 ## `useLocation`
 
@@ -1731,7 +1763,7 @@ Accepted per-side value forms are documented on `resolveSpacingValue`.
 
 **Source** : `packages/ds/src/composables/Commons/padding.composable.ts`
 
-**Consommateurs** (70) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumbDivider.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chart/OrigamChartBoxPlot.vue`, …
+**Consommateurs** (71) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumbDivider.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chart/OrigamChartBoxPlot.vue`, …
 
 ## `usePassedProps`
 
@@ -1961,7 +1993,7 @@ Accepted per-corner value forms are documented on
 
 **Source** : `packages/ds/src/composables/Commons/rounded.composable.ts`
 
-**Consommateurs** (74) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, …
+**Consommateurs** (75) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Card/OrigamCard.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, …
 
 ## `useRoute`
 
@@ -2600,7 +2632,7 @@ compris une variante que le composant ne connait pas.
 
 **Source** : `packages/ds/src/composables/Commons/variant.composable.ts`
 
-**Consommateurs** (3) : `components/Btn/OrigamBtn.vue`, `components/Btn/OrigamBtnGroup.vue`, `components/Field/OrigamField.vue`
+**Consommateurs** (4) : `components/Btn/OrigamBtn.vue`, `components/Btn/OrigamBtnGroup.vue`, `components/Field/OrigamField.vue`, `types/Commons/variant-preset.type.ts`
 
 ## `useVelocity`
 
