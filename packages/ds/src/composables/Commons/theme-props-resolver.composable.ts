@@ -578,6 +578,56 @@ function passedPropValue (vnodeProps: Record<string, unknown> | null, key: strin
  * Non-regression : `variant-preset-resolver.spec.ts`, « sans aucun
  * theme ».
  ********************************************************/
+/*********************************************************
+ * addSetKeys / addObjectKeys / addPresetKeys
+ *
+ * @description
+ * Trois verses de l'union des cles, extraits de `collectTargetKeys` pour sa
+ * complexite cognitive. Le gate SonarQube du depot est BLOQUANT sur
+ * « securite ou criticite », et l'ajout du rang preset avait porte cette
+ * fonction a 18, au-dessus des 15 autorises — la double boucle imbriquee
+ * des presets coutant le plus cher, une imbrication comptant double.
+ *
+ * @description
+ * ⛔ Piege a eviter pour qui relira ce fichier : la premiere tentative a
+ * refactore le GETTER de `patchThemedPropSlot`, parce que c'est la que le
+ * rang preset avait ete ajoute. Le rapport pointait la ligne 581, soit
+ * `collectTargetKeys`. Les deux avaient grossi ; une seule etait signalee.
+ * Lire le NUMERO DE LIGNE du rapport, pas l'endroit ou l'on croit avoir
+ * ecrit le code.
+ ********************************************************/
+function addSetKeys (source: Set<string> | undefined, target: Set<string>): void {
+    if (!source) return
+
+    for (const key of source) target.add(key)
+}
+
+function addObjectKeys (source: Record<string, unknown> | undefined, target: Set<string>): void {
+    if (!source) return
+
+    for (const key in source) target.add(key)
+}
+
+/*********************************************************
+ * addPresetKeys
+ *
+ * @description
+ * ⛔ L'UNION PORTE SUR TOUS LES VARIANTS, jamais sur le seul variant actif
+ * — exactement l'argument de `themedPropKeysUnion` pour les themes
+ * enregistres. Le slot doit deja etre patche AVANT un basculement a
+ * l'execution : `beforeCreate` ne se rejoue pas, donc une cle que seule la
+ * valeur d'arrivee nomme ne serait jamais interceptee et le prop resterait
+ * fige sur sa valeur de depart.
+ * Non-regression : `variant-preset-resolver.spec.ts`, « basculement ».
+ ********************************************************/
+function addPresetKeys (presetTable: TVariantPresetTable | undefined, target: Set<string>): void {
+    if (!presetTable) return
+
+    for (const variantValue in presetTable) {
+        for (const key in presetTable[variantValue]) target.add(key)
+    }
+}
+
 function collectTargetKeys (
     themedKeysUnion: Map<string, Set<string>>,
     defaults: Ref<IDefault>,
@@ -594,9 +644,9 @@ function collectTargetKeys (
 
     const targetKeys = ownKeys ? new Set(ownKeys) : new Set<string>()
 
-    if (globalKeys) for (const key of globalKeys) targetKeys.add(key)
-    if (providerOwnKeys) for (const key in providerOwnKeys) targetKeys.add(key)
-    if (providerGlobalKeys) for (const key in providerGlobalKeys) targetKeys.add(key)
+    addSetKeys(globalKeys, targetKeys)
+    addObjectKeys(providerOwnKeys, targetKeys)
+    addObjectKeys(providerGlobalKeys, targetKeys)
 
     /*********************************************************
      * presetTable
@@ -610,11 +660,7 @@ function collectTargetKeys (
      * interceptee et le prop resterait fige sur sa valeur de depart.
      * Non-regression : `variant-preset-resolver.spec.ts`, « basculement ».
      ********************************************************/
-    if (presetTable) {
-        for (const variantValue in presetTable) {
-            for (const key in presetTable[variantValue]) targetKeys.add(key)
-        }
-    }
+    addPresetKeys(presetTable, targetKeys)
 
     return targetKeys
 }

@@ -2,6 +2,7 @@ import type { IBgColorProps, IColorProps } from '../../interfaces/Commons/color.
 import type { IBorderProps } from '../../interfaces/Commons/border.interface'
 import type { IElevationProps } from '../../interfaces/Commons/elevation.interface'
 import type { IMarginProps } from '../../interfaces/Commons/margin.interface'
+import type { IOpacityProps } from '../../interfaces/Commons/opacity.interface'
 import type { IPaddingProps } from '../../interfaces/Commons/padding.interface'
 import type { IRoundedProps } from '../../interfaces/Commons/rounded.interface'
 
@@ -34,4 +35,5 @@ export type TStateEffectProps =
     & IElevationProps
     & IPaddingProps
     & IMarginProps
+    & IOpacityProps
     & { gap?: boolean | number | string }

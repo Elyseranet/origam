@@ -96,5 +96,7 @@ export * from './Audio/audio-waveform.const'
 export * from './Clipboard/clipboard.const'
 
 export * from './Commons/css-support.const'
+export * from './Commons/backdrop.const'
 export * from './Commons/elevation.const'
+export * from './Commons/opacity.const'
 export * from './Commons/variant-preset.const'

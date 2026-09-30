@@ -5,7 +5,7 @@
 > rien n'est redige ici. Corriger une description se fait dans la banniere du symbole,
 > puis en regenerant. Issue #545.
 
-109 symbole(s) exporte(s).
+111 symbole(s) exporte(s).
 
 ## `_resetCssSupportCache`
 
@@ -559,6 +559,35 @@ delegate to any of them.
 
 **Consommateurs** (1) : `components/Overlay/OrigamOverlay.vue`
 
+## `useBackdrop`
+
+```ts
+export function useBackdrop (props: IBackdropProps | Ref<TBackdropBlur | undefined>)
+```
+
+Translates the `backdropBlur` prop into `backdropClasses` (the global
+utility class, when the value lands on a token rung) AND
+`backdropStyles` (always a `backdrop-filter` pair). Both channels are
+emitted in PARALLEL — strategy A, same contract as `useElevation`.
+
+The `-webkit-` prefixed twin is emitted alongside the standard property
+on every path: Safari still ships `backdrop-filter` prefixed only, and
+every one of the 12 components already painting glass in this DS writes
+the pair. Dropping it would make the prop a no-op on Safari while
+looking correct everywhere the author tests.
+
+No `@supports` gate, and that is not an oversight. An unsupported
+browser drops an unknown declaration by itself, so the gate would buy
+nothing here — and an inline style cannot carry one anyway. The
+`@supports not (backdrop-filter: ...)` blocks that exist in the DS
+today thicken the BACKGROUND COLOUR when blur is unavailable, which is
+a `bgColor` decision belonging to whoever writes the preset, not to
+this composable.
+
+**Source** : `packages/ds/src/composables/Commons/backdrop.composable.ts`
+
+**Consommateurs** (3) : `consts/Commons/backdrop.const.ts`, `interfaces/Commons/backdrop.interface.ts`, `types/Commons/backdrop.type.ts`
+
 ## `useBackgroundColor`
 
 ```ts
@@ -728,10 +757,10 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
 ```
 
 Root of the layout system — provides `ORIGAM_LAYOUT_KEY` so
-`useLayoutMain` / `useLayoutItem` consumers down the tree can register
+`useLayout` / `useLayoutItem` consumers down the tree can register
 (drawers, toolbars, bottom-navs…) and read back the reserved main
 area.
-Independent from `useLayoutMain` / `useLayoutItem` at the call level (no
+Independent from `useLayout` / `useLayoutItem` at the call level (no
 direct function dependency) — the three only share the
 `ORIGAM_LAYOUT_KEY` provide/inject contract.
 
@@ -1026,7 +1055,7 @@ l'ombre custom.
 
 **Source** : `packages/ds/src/composables/Commons/elevation.composable.ts`
 
-**Consommateurs** (50) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Card/OrigamCard.vue`, `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, `components/Chart/OrigamChartGauge.vue`, …
+**Consommateurs** (51) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Card/OrigamCard.vue`, `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, `components/Chart/OrigamChartGauge.vue`, …
 
 ## `useEventListener`
 
@@ -1359,11 +1388,42 @@ item ad hoc.
 
 **Consommateurs** (2) : `components/List/OrigamList.vue`, `components/Select/OrigamSelect.vue`
 
+## `useLayoutItem`
+
+```ts
+export function useLayoutItem (options: { id: string | undefined; order: Ref<number>; position: Ref<TDirectionBoth>; layoutSize: Ref<number | string>; elementSize: Ref<number | string | undefined>; active: Ref<boolean> | ComputedRef<boolean>; disableTransitions?: Ref<boolean>; absolute: Ref<boolean | undefined> })
+```
+
+Registers a component (BottomNav, AppBar, Drawer…) as an item of the
+nearest `ORIGAM_LAYOUT_KEY` layout provided by `useCreateLayout`.
+Falls back to inert styles when no layout provider is present so the
+component still renders standalone (stories, modal previews, tests).
+Independent from `useLayout` / `useCreateLayout` at the call level
+(no direct function dependency) — the three only share the
+`ORIGAM_LAYOUT_KEY` provide/inject contract.
+
+**Source** : `packages/ds/src/composables/Commons/layoutItem.composable.ts`
+
+**Consommateurs** (7) : `components/App/OrigamAppBar.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Drawer/OrigamDrawer.vue`, `components/SystemBar/OrigamSystemBar.vue`, `interfaces/Commons/layout.interface.ts`, `interfaces/Layout/layout.interface.ts`, `interfaces/SystemBar/system-bar.interface.ts`
+
 ## `useLayoutMain`
 
 ```ts
 export function useLayoutMain ()
 ```
+
+⛔ RENOMME depuis `useLayout`, qui ECRASAIT le composable natif de Nuxt.
+Nuxt expose `useLayout` en auto-import (`#app/composables/layout`) ; le nôtre
+portant le même nom, c'est LE NOTRE QUI GAGNAIT et celui du framework qui
+était ignoré. Relevé sur le serveur de dev de l'utilisateur :
+  WARN [NUXT_B6002] useLayout is already auto-imported by Nuxt as a built-in,
+       and overriding it will likely cause issues.
+  WARN Duplicated imports "useLayout", the one from "#app/composables/layout"
+       has been ignored
+Ce n'était pas cosmétique : notre version LEVE une exception sans provider
+Origam, donc tout code Nuxt attendant `useLayout` plantait au lieu de recevoir
+le composable du framework. Le nom `useLayoutMain` dit ce qu'il fait — il
+expose la zone MAIN — et s'aligne sur `useLayoutItem`.
 
 Reads the nearest `ORIGAM_LAYOUT_KEY` injection provided by
 `useCreateLayout` and exposes its main-area rect/styles.
@@ -1377,24 +1437,6 @@ level (no direct function dependency) — the three only share the
 **Source** : `packages/ds/src/composables/Commons/layout.composable.ts`
 
 **Consommateurs** (2) : `components/Main/OrigamMain.vue`, `components/Snackbar/OrigamSnackbar.vue`
-
-## `useLayoutItem`
-
-```ts
-export function useLayoutItem (options: { id: string | undefined; order: Ref<number>; position: Ref<TDirectionBoth>; layoutSize: Ref<number | string>; elementSize: Ref<number | string | undefined>; active: Ref<boolean> | ComputedRef<boolean>; disableTransitions?: Ref<boolean>; absolute: Ref<boolean | undefined> })
-```
-
-Registers a component (BottomNav, AppBar, Drawer…) as an item of the
-nearest `ORIGAM_LAYOUT_KEY` layout provided by `useCreateLayout`.
-Falls back to inert styles when no layout provider is present so the
-component still renders standalone (stories, modal previews, tests).
-Independent from `useLayoutMain` / `useCreateLayout` at the call level
-(no direct function dependency) — the three only share the
-`ORIGAM_LAYOUT_KEY` provide/inject contract.
-
-**Source** : `packages/ds/src/composables/Commons/layoutItem.composable.ts`
-
-**Consommateurs** (7) : `components/App/OrigamAppBar.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Drawer/OrigamDrawer.vue`, `components/SystemBar/OrigamSystemBar.vue`, `interfaces/Commons/layout.interface.ts`, `interfaces/Layout/layout.interface.ts`, `interfaces/SystemBar/system-bar.interface.ts`
 
 ## `useLazy`
 
@@ -1730,6 +1772,36 @@ level (no direct function dependency) — the three only share the
 
 **Consommateurs** (2) : `components/List/OrigamListGroup.vue`, `components/List/OrigamListItem.vue`
 
+## `useOpacity`
+
+```ts
+export function useOpacity (props: IOpacityProps | Ref<TOpacity | undefined>)
+```
+
+Translates the `opacity` prop into `opacityClasses` (the global utility
+class, when the value lands on a token rung) AND `opacityStyles`
+(always an `opacity:` declaration). Both channels are emitted in
+PARALLEL, never one instead of the other — strategy A, the same
+contract `useElevation` and `useRounded` honour.
+
+⛔ THE STYLE IS NOT REDUNDANT WITH THE CLASS, and dropping it would
+break the prop on most components. A utility class is `(0,1,0)`; a Vue
+scoped component rule is `.class[data-v-hash]` = `(0,2,0)` and wins
+regardless of load order. `OrigamBtn` already declares `opacity` in its
+own scoped SCSS (`--variant-plain`, `--disabled`), so on Btn the class
+alone would paint nothing. This is the measured lesson of #514 on the
+foreground channel, applied here before it can be re-learned.
+
+REUSES the primitive ladder that already existed
+(`--origam-opacity---{0,12,26,32,50,60,70,87,100}`, `primitive.css`);
+this composable declares no token of its own. See
+{@link IOpacityProps} for why ADR-005's "add a token group" was already
+half-done.
+
+**Source** : `packages/ds/src/composables/Commons/opacity.composable.ts`
+
+**Consommateurs** (3) : `consts/Commons/opacity.const.ts`, `interfaces/Commons/opacity.interface.ts`, `types/Commons/opacity.type.ts`
+
 ## `usePadding`
 
 ```ts
@@ -1993,7 +2065,7 @@ Accepted per-corner value forms are documented on
 
 **Source** : `packages/ds/src/composables/Commons/rounded.composable.ts`
 
-**Consommateurs** (75) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Card/OrigamCard.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, …
+**Consommateurs** (76) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Card/OrigamCard.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, …
 
 ## `useRoute`
 
@@ -2227,8 +2299,9 @@ Composable unique remplacant la chaine `useColorEffect` +
 `useBorder` + `useRounded` + `useElevation` + `usePadding` + `useMargin`
 que chaque composant visuel devait repeter. Lit les etats `isHover`/
 `isActive`/`isDisabled` (et leurs overrides `hoverState`/`activeState`)
-et resout 8 axes state-aware : color, bgColor, border, rounded,
-elevation, padding, margin, gap — chacun avec classes ET styles.
+et resout 10 axes state-aware : color, bgColor, border, borderColor,
+rounded, elevation, padding, margin, gap, opacity — chacun avec
+classes ET styles.
 Priorite de resolution par axe : HOVER gagne sur ACTIVE (survoler un
 element presse/selectionne montre la surface hover), qui gagne sur la
 valeur de repos (`props.xxx`).
