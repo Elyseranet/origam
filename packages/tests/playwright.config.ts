@@ -56,6 +56,14 @@ const GREEN_SPECS = [
     'otp-input-field.spec.ts',
     'textarea-field.spec.ts',
     'list.spec.ts',
+    /* Promu 2026-09-30 apres #938 : il attendait 45s un `aria-controls` qui
+     * n'existait pas — trois attributs du contrat combobox etaient morts sur
+     * tout OrigamSelect (`aria-expanded` fige, `controls` et
+     * `activedescendant` jamais poses). Corrige en `58a445b06`, le fichier
+     * passe en 5,9s et tient 25/25 en --repeat-each=5, meme a load 35,8.
+     * L'instabilite a donc ete TRAITEE, pas contournee : c'est ce que la
+     * ROADMAP (l. 415-416) demande avant toute entree dans cette liste. */
+    'list-roles-a11y.spec.ts',
     'menu.spec.ts',
     'expansion-panel.spec.ts',
     // wave 4

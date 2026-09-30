@@ -105,7 +105,6 @@
     "lazy.spec.ts",
     "list-item-dead-props.spec.ts",
     "list-item-density.spec.ts",
-    "list-roles-a11y.spec.ts",
     "loader.spec.ts",
     "loading-text-wiring.spec.ts",
     "main-surface-tokens.spec.ts",
