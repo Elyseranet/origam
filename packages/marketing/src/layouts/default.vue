@@ -842,13 +842,32 @@
     letter-spacing: -0.01em;
   }
 
+  /*
+    ⛔ LARGEUR PILOTEE PAR LE CONTENU — il y avait ici `min-width: 180px` ET
+    `width: 180px`, donc une largeur FIXE, pas un plancher.
+
+    Mesure du 2026-09-30, menu « Features » (10 items), 8 identites : le libelle
+    le plus long (« Composables ») fait 86px, les gouttieres ~28px, soit ~114px
+    utiles — pour 180px imposes. Il restait donc 64 a 67px de VIDE a droite du
+    texte sur chaque identite, contre 12 a 15px de retrait a gauche.
+
+    C'est ce que l'utilisateur signalait par « un tres gros espace a droite et a
+    gauche ». Mesurer les paddings ne le montrait pas : la pastille est bien
+    symetrique, elle s'etend simplement dans du vide. Le defaut n'etait pas une
+    gouttiere, c'etait la largeur.
+
+    `max-content` dimensionne sur le libelle le plus long ; le plancher evite un
+    menu ridicule sur une section a un seul mot, et le plafond protege des
+    libelles longs et des petits ecrans.
+  */
   .appbar-menu--nav .origam-menu__content {
-    min-width: 180px;
-    width: 180px;
+    min-width: 8rem;
+    width: max-content;
+    max-width: min(20rem, 90vw);
   }
 
   .appbar-menu--nav .origam-menu__list {
-    min-width: 180px;
+    min-width: 0;
   }
 
   .appbar-menu--nav .origam-list-item {
