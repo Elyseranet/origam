@@ -18,6 +18,34 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.18.19',
+        date: '2026-09-30',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v21819.summary',
+        summaryFallback: '1 addition, 1 change and 4 fixes. See the full changelog for detail.',
+        highlights: [
+            { type: 'changed', textKey: 'changelog.versions.v21819.h1', textFallback: '⚠️ RUPTURE : useLayout renommé useLayoutMain' },
+            { type: 'added', textKey: 'changelog.versions.v21819.h2', textFallback: 'ADR-005 lot 1 : le variant devient un preset de props' },
+            { type: 'fixed', textKey: 'changelog.versions.v21819.h3', textFallback: 'le menu de navigation était disproportionné sur les 8 identités' },
+            { type: 'fixed', textKey: 'changelog.versions.v21819.h4', textFallback: 'le catalogue marketing vendait un pipeline supprimé (#960)' },
+            { type: 'fixed', textKey: 'changelog.versions.v21819.h5', textFallback: 'trois attributs ARIA morts sur tout OrigamSelect (#938)' },
+            { type: 'fixed', textKey: 'changelog.versions.v21819.h6', textFallback: '#597, #596 : 58 canaux de thème morts résorbés' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.18.18',
+        date: '2026-09-30',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v21818.summary',
+        summaryFallback: '2 fixes. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v21818.h1', textFallback: '#596 : Tabs, Toolbar et Pagination (26 canaux morts)' },
+            { type: 'fixed', textKey: 'changelog.versions.v21818.h2', textFallback: 'six versions publiées sans entrée de changelog' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.18.17',
         date: '2026-09-29',
         type: 'patch',

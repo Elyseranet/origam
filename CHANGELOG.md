@@ -18,6 +18,148 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.18.19] - 2026-09-30
+
+### Changed — ⚠️ RUPTURE : `useLayout` renommé `useLayoutMain`
+
+Le DS exportait `useLayout`, **le même nom que l'auto-import natif de Nuxt**
+(`#app/composables/layout`). Chez tout consommateur Nuxt, c'est le nôtre qui
+gagnait et celui du framework qui était ignoré — relevé dans le journal d'un
+serveur de dev, pas par un test :
+
+```
+WARN [NUXT_B6002] useLayout is already auto-imported by Nuxt as a built-in
+WARN Duplicated imports "useLayout", the one from "#app/composables/layout"
+     has been ignored
+```
+
+⛔ Ce n'était pas cosmétique : notre version **lève une exception** sans provider
+Origam (`throw new Error('[Origam] Could not find injected layout')`). Tout code
+Nuxt appelant `useLayout` hors d'un `OrigamLayout` plantait au lieu de recevoir
+le composable du framework.
+
+Le nouveau nom dit ce qu'il fait — il expose la zone **main** (`mainRect`,
+`mainStyles`, `mainId`) — et s'aligne sur `useLayoutItem` et `useCreateLayout`,
+avec lesquels il partage le contrat `ORIGAM_LAYOUT_KEY`. Rupture d'API publique
+assumée, livrée en mineure conformément à la politique du dépôt.
+
+### Added — ADR-005 lot 1 : le variant devient un preset de props
+
+Le mécanisme que l'ADR décrivait depuis des mois **n'avait jamais été
+construit** : ni `variant-preset.type.ts`, ni table de presets, ni code
+d'application. Seule la garde `no-variant-css` existait, et elle ne faisait que
+**geler** 36 violations sans jamais en retirer une.
+
+Ce lot pose le mécanisme, pas les conversions : le type, le registre, le **rang
+dans le resolver** (site d'appel > thème > preset > `withDefaults`, l'ordre
+arbitré en round 2 de l'ADR), la clé `IOrigamTheme.variants` et sa fusion à
+l'installation. 19 specs, dont deux qui épinglent des **no-op silencieux** que le
+lot risquait : l'early-out qui ne patchait rien sans thème enregistré — le cas
+par défaut depuis #360 — et l'union des clés limitée au variant actif, qui gelait
+un basculement à l'exécution.
+
+La preuve de non-régression est une VRT : les 7 variants d'`OrigamBtn` restent
+**pixel-identiques** à leurs références.
+
+Mesure conservée dans l'en-tête de la garde : chaque `!important` d'un bloc
+variant n'existait que pour battre la déclaration **inline**, jamais l'utilitaire
+tokenisé que la règle scopée battait déjà sur la spécificité. Une fois le variant
+résolu au rang des props, la bataille de cascade **n'a plus lieu**.
+
+### Fixed — le menu de navigation était disproportionné sur les 8 identités
+
+Signalé par le propriétaire. Mesuré sur la section « Features » (10 items), en
+mesurant la **pastille** et non le texte :
+
+| | avant | après |
+|---|---|---|
+| rangée | 48px | **36px** |
+| côtés gauche/droite | 12-15px | **8-11px** |
+| haut/bas | 5-7px | **8-11px** |
+| écart entre pastilles | **0px** sur 7 identités sur 8 | **2px** |
+| largeur du menu | **180px fixes** pour 114px de contenu | **128-140px** |
+| hauteur du menu | ~590px | **394px** |
+
+Quatre causes distinctes :
+
+- `--origam-list---padding-block-*` valait **0 sur sept identités** — la matrice
+  runtime l'émet à zéro pour chaque marque, et `origam` n'y échappait que par le
+  reset généré qu'elle traîne encore (#609) ;
+- l'indent `-8px` du mode nav ne s'applique qu'au côté *start*, d'où une
+  asymétrie gauche/droite sur cinq identités ;
+- aucun écart entre items, et la liste étant un conteneur **bloc**, `gap` n'était
+  pas disponible sans la passer en flex — ce qui toucherait ~200 consommateurs ;
+- `layouts/default.vue` posait `min-width: 180px` **et** `width: 180px`, une
+  largeur figée pour 114px de contenu utile.
+
+⚠️ La rangée à 36px passe **sous la cible tactile 44×44** de WCAG 2.5.5.
+Compromis assumé par le propriétaire pour un menu d'en-tête pointé à la souris,
+et confiné à `&--nav` : une liste de contenu garde ses 48px. Les trois valeurs
+sont des **tokens déclarés**, pas des littéraux.
+
+### Fixed — le catalogue marketing vendait un pipeline supprimé (#960)
+
+Le tableau de tokens de **chaque** page composant affichait une légende
+promettant `--origam-<composant>---<propriété>` au-dessus d'un bouton **Copier**
+qui livrait `alert.background-color` pour `{color.surface.disabled}`.
+
+523 des 603 lignes re-dérivées ; **80 abandonnées sans qu'aucune soit inventée**
+— repointer vers un token voisin aurait remplacé un nom qui ne résout rien par un
+nom qui résout *la mauvaise chose*. Vérifié par un second analyseur de feuilles
+écrit indépendamment : 3204 déclarations des deux côtés, 0 divergence.
+`pipelineNote` supprimé partout, baseline 230 → 0.
+
+### Fixed — trois attributs ARIA morts sur tout `OrigamSelect` (#938)
+
+`OrigamTextField` appelait `filterInputAttrs(attrs)` **une seule fois dans le
+corps de `setup()`**, ce qui **copie** les clés hors du proxy `$attrs` et fige la
+distribution au montage. `aria-expanded` restait donc à `"false"` listbox ouvert,
+et `aria-controls` / `aria-activedescendant` n'étaient **jamais posés** : un
+lecteur d'écran annonçait le select comme toujours replié, et la navigation
+clavier était muette de bout en bout.
+
+C'est la règle « un prop lu *eagerly* dans `setup()` ne voit jamais le thème »
+appliquée aux `$attrs`. Le spec qui gardait ce contrat expirait à **45,7 s** sans
+jamais atteindre son assertion ; il passe en **796 ms** et tient 25/25 en
+`--repeat-each=5`.
+
+⛔ Ce spec **ne tournait pas en CI** : il figurait parmi les 174 enregistrées
+comme non exécutées. La garantie n'existait donc pas. Il entre dans `GREEN_SPECS`
+(81 → 82 specs réellement exécutées).
+
+### Fixed — #597, #596 : 58 canaux de thème morts résorbés
+
+Btn, DataTable, Grid, List (#597) puis Tabs, Toolbar, Pagination (#596).
+**Aucune** variante ni état de `Tabs` n'était déclaré — 17 canaux, donc toute
+édition de thème sur eux était un **no-op silencieux**.
+
+13 alias de nommage DataTable **renommés au lieu d'être dupliqués** : net nul au
+lieu de +13 tokens, confirmé par l'ensemble émetteur passant de 3142 à 3129.
+
+## [2.18.18] - 2026-09-30
+
+### Fixed — #596 : Tabs, Toolbar et Pagination (26 canaux morts)
+
+299 → 273 canaux de thème morts. Le constat qui justifie le tag à lui seul :
+**aucune** des variantes ni des états de `Tabs` n'était déclarée (17 canaux), donc
+toute édition de thème sur eux était un no-op silencieux.
+
+Zéro changement de rendu, **mesuré par canal** : Playwright/Chromium contre le
+Histoire statique, light et dark, A (livré) vs B (token neutralisé à `initial`,
+donc le repli reconstitue le rendu d'avant) vs C (sonde) — 52 lignes, A==B
+partout, C!=A partout.
+
+### Fixed — six versions publiées sans entrée de changelog
+
+`v2.18.12` à `v2.18.17` étaient **taguées et publiées sur npm** mais absentes de
+ce document — et donc de la page publique `/changelog`, qui annonçait 2.18.11
+quand npm servait 2.18.16.
+
+⚠️ Le job « Changelog drift check » ne pouvait pas le voir : il vérifie que la
+constante marketing colle au document, **jamais que le document couvre les
+tags**. Angle mot documenté dans l'en-tête de `generate-changelog.mjs`.
+
+
 ## [2.18.17] - 2026-09-29
 
 Dix-huit commits, dont la réparation qui débloquait `Type-check (vue-tsc)` sur
