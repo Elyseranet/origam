@@ -44,6 +44,29 @@ const items = [
 | `multiSort` | `boolean` | Allow sorting by multiple columns |
 | `mustSort` | `boolean` | Always maintain a sort (can't unsort) |
 
+## Grouping
+
+```vue
+<template>
+    <OrigamDataTable :headers="headers" :items="items" :group-by="[{ key: 'team', order: 'asc' }]" />
+</template>
+```
+
+| Prop | Type | Description |
+|---|---|---|
+| `groupBy` | `IDataTableSortItem[]` | Columns to group rows by — each group gets a collapsible header row |
+
+Each group renders an `<OrigamDataTableGroupHeaderRow>` carrying the group
+label, its row count and a toggle. The `#group-header` slot replaces that row
+entirely; its scope deliberately carries more keys than the row component
+declares (`isGroupOpen`, `isExpanded`, `toggleExpand`, `toggleSelect`,
+`internalItem`) so a custom render has everything it needs. Those extra keys
+are **not** forwarded to the default row — see the note in
+`OrigamDataTableRows.vue`, which explains why spreading the full slot scope
+onto the component would serialise a function into a DOM attribute.
+
+See the `Prop — groupBy` story Variant for a live control.
+
 ## Pagination
 
 ```vue

@@ -504,6 +504,41 @@
 			</template>
 		</Variant>
 
+		<Variant
+				title="Prop — groupBy"
+				:init-state="() => useStoryInitState<IGroupByState>({ groupKey: 'team' })"
+		>
+			<template #default="{ state }">
+				<!--
+					⛔ #371 (point 1) — `groupBy` n'avait aucun controle dans
+					cette story : sur 30 Variants, AUCUNE ne rendait de ligne
+					d'en-tete de groupe. C'est precisement pourquoi le defaut
+					du point 1 a survecu si longtemps — le code source d'une
+					closure etait serialise en attribut DOM sur chaque
+					`<tr class="origam-data-table-group-header-row">`, et
+					aucun rendu d'Histoire ne pouvait le montrer.
+
+					Cette Variant est le site de rendu que la spec e2e
+					`data-table-group-attr-leak.spec.ts` inspecte dans un vrai
+					navigateur.
+				-->
+				<origam-data-table
+						:group-by="[{ key: state.groupKey, order: 'asc' }]"
+						:headers="groupedHeaders"
+						:items="groupedItems"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Grouping">
+					<HstSelect
+							v-model="state.groupKey"
+							:options="GROUP_KEY_OPTIONS"
+							title="Group by"
+					/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
 				<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<Partial<IDataTableProps>>({
@@ -582,6 +617,10 @@
 		mobileBreakpoint?: number | TBreakpoint
 	}
 
+	interface IGroupByState {
+		groupKey: string
+	}
+
 	const LOADING_KIND_OPTIONS = [
 		{ label: 'true (default)', value: 'bool' },
 		{ label: 'number', value: 'number' },
@@ -598,6 +637,11 @@
 		{ label: 'lg', value: BREAKPOINTS.LG },
 		{ label: 'xl', value: BREAKPOINTS.XL },
 		{ label: 'xxl', value: BREAKPOINTS.XXL }
+	]
+
+	const GROUP_KEY_OPTIONS: Array<IOptions<string>> = [
+		{ label: 'team', value: 'team' },
+		{ label: 'role', value: 'role' }
 	]
 
 	const resolveLoading = (state: ILoadingState): TLoadingValue => {
@@ -627,6 +671,21 @@
 		{ id: 3, firstName: 'Claire', lastName: 'Bernard', age: 35 },
 		{ id: 4, firstName: 'David',  lastName: 'Leroy',   age: 28 },
 		{ id: 5, firstName: 'Eve',    lastName: 'Moreau',  age: 22 }
+	]
+
+	const groupedHeaders = [
+		{ title: 'First name', key: 'firstName' },
+		{ title: 'Team',       key: 'team' },
+		{ title: 'Role',       key: 'role' },
+		{ title: 'Age',        key: 'age' }
+	]
+
+	const groupedItems = [
+		{ id: 1, firstName: 'Alice',  team: 'Design',  role: 'Lead',   age: 30 },
+		{ id: 2, firstName: 'Bob',    team: 'Design',  role: 'Member', age: 25 },
+		{ id: 3, firstName: 'Claire', team: 'Backend', role: 'Lead',   age: 35 },
+		{ id: 4, firstName: 'David',  team: 'Backend', role: 'Member', age: 28 },
+		{ id: 5, firstName: 'Eve',    team: 'Ops',     role: 'Member', age: 22 }
 	]
 
 	const manyItems = Array.from({ length: 25 }, (_, i) => ({
