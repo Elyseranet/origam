@@ -1471,10 +1471,46 @@ origam:
   read but never declared (or the reverse).
 - **`pnpm audit` must be clean to ship — the full tree, not only `--prod`.**
   Both return `No known vulnerabilities found` with exit code `0` — remeasured
-  **2026-09-18**, this worktree, real `$?` outside a pipe — and **no advisory is
+  **2026-09-30**, this worktree, real `$?` outside a pipe — and **no advisory is
   waived**: `pnpm.auditConfig.ignoreGhsas` is absent from the root
   `package.json`. ⛔ Capture the real `$?` outside a pipe — `pnpm audit | tail`
   returns `tail`'s exit code, not the audit's.
+
+  ⛔ **An `overrides` entry FREEZES a floor; it does not follow the line.** This
+  is how the 2026-09-30 lot arrived — `0 critical, 7 high, 7 moderate, 3 low`,
+  `$?` = 1 on `develop` @ `2517bcbaf`, and **every one of the 17 advisories came
+  from a module an override was already pinning or from one nobody pinned**:
+
+  | module | pinned at | needed | advisories cleared |
+  |---|---|---|---|
+  | `brace-expansion@2` | `^2.1.4` | `^2.1.7` | 2 high, 1 moderate |
+  | `brace-expansion@5` | `^5.0.9` | `^5.0.12` | 2 high, 1 moderate |
+  | `undici@8` | *(unpinned, 8.10.0)* | `^8.10.2` | 3 high, 5 moderate, 3 low |
+
+  The caret ranges would *allow* the fixed versions — pnpm simply never
+  re-resolves a lockfile entry whose range is still satisfied, so `^2.1.4`
+  stayed on 2.1.4 for as long as nobody edited the string. **An override posted
+  to fix advisory N therefore becomes the reason advisory N+1 survives**, and it
+  does so silently: no warning, no outdated notice, `pnpm install` green. When
+  an advisory names a module the root `package.json` already overrides, the fix
+  is to *raise that entry*, never to add a second one.
+
+  `undici` looked like the dangerous half (it arrives through
+  `@nuxtjs/seo → … → nuxt → undici`) and was not: `nuxt@4.5.2` declares
+  `undici: ^8.10.0` and `jsdom@30.0.1` declares `^8.9.0`, so `^8.10.2` sits
+  **inside both declared ranges** — it raises a floor, it does not cross a
+  major. `pnpm -F @origam/marketing build` exits `0` on the resolved 8.11.2.
+  Check the consumers' declared ranges before assuming an override is risky;
+  that check is two `npm view` calls.
+
+  ⚠️ **`packages/ds` carries zero audit paths — anything you see under it is
+  your disk, not the project.** Paths through `style-dictionary` /
+  `@tokens-studio/sd-transforms` are survivors of the pipeline deleted on
+  2026-08-31: no `package.json` declares them, they have **0 occurrence in
+  `pnpm-lock.yaml`**, and only stale symlinks in a long-lived
+  `packages/ds/node_modules` keep them alive. A freshly installed worktree, and
+  CI under `--frozen-lockfile`, never see them. Do not post an override for
+  them — `rm -rf` that `node_modules` and reinstall.
 
   ⚠️ **This line is perishable, and it has already been false once.** It read
   "clean since #718 and #796 (2026-09-16)" while the tree carried a moderate:
