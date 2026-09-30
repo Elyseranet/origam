@@ -4,10 +4,18 @@ import type { ITypographyProps } from '../../interfaces/Commons/typography.inter
 
 /**
  * useTypography — cross-cutting typography surface, the font counterpart of
- * `useMargin` / `useBorder` / `useColor`. Reads the five `ITypographyProps`
+ * `useMargin` / `useBorder` / `useColor`. Reads the six `ITypographyProps`
  * and, for every prop the consumer set, emits an inline custom property that
  * re-points the component's own font variable at the matching primitive
  * token. Unset props emit nothing, so the theme value stays in control.
+ *
+ * TWO CHANNELS, and the difference is load-bearing. The five TOKEN props
+ * (`fontFamily` / `fontSize` / `fontWeight` / `lineHeight` /
+ * `letterSpacing`) are token KEYS, wrapped into
+ * `var(--origam-font__{group}---{value})`. `fontStyle` is a PASSTHROUGH: its
+ * value is a CSS keyword emitted verbatim, because `font-style` has no
+ * design scale and no `--origam-font__style---*` group exists (nor should).
+ * See `TYPOGRAPHY_PASSTHROUGH_MAP` below.
  *
  * Inline-styles ONLY (no utility classes). There is no `.origam--font-*`
  * family in `assets/css/tokens/origam-utilities.css`, so — per the
@@ -51,7 +59,7 @@ import type { ITypographyProps } from '../../interfaces/Commons/typography.inter
  *                              |    font-family rule → no effect; document it)
  *   Label       | label        | fontSize fontWeight letterSpacing lineHeight
  *   Chip        | chip         | fontSize fontWeight
- *   Blockquote  | blockquote   | fontFamily fontSize fontWeight lineHeight
+ *   Blockquote  | blockquote   | fontFamily fontSize fontWeight lineHeight fontStyle
  *   Code        | code         | fontFamily fontSize lineHeight
  *   Kbd         | kbd          | fontFamily fontSize fontWeight
  *   Tooltip     | tooltip      | fontSize fontWeight lineHeight
@@ -137,15 +145,49 @@ const TYPOGRAPHY_TOKEN_MAP = [
 ] as const satisfies ReadonlyArray<readonly [keyof ITypographyProps, string, string]>
 
 /*********************************************************
+ * TYPOGRAPHY_PASSTHROUGH_MAP
+ *
+ * @description
+ * Les props dont la valeur sort TELLE QUELLE dans
+ * `--origam-{prefix}---{propriete}`, sans enveloppe `var()`. Table separee
+ * de `TYPOGRAPHY_TOKEN_MAP` parce que les deux canaux ne font pas la meme
+ * chose, et melanger les deux dans une seule table a trois colonnes
+ * demanderait une colonne sentinelle que chaque lecteur devrait decoder.
+ *
+ * @description
+ * ⛔ `font-style` n'est PAS une echelle de design. `italic` / `normal` /
+ * `oblique` sont des mots-cles CSS ; aucun groupe `--origam-font__style---*`
+ * n'existe dans `primitive.css` et il n'en faut pas. Passee par
+ * `TYPOGRAPHY_TOKEN_MAP`, la valeur sortirait en
+ * `var(--origam-font__style---italic)` — un nom que nulle feuille ne
+ * declare, donc une declaration invalide qui ne peint rien.
+ *
+ * @description
+ * Emis APRES le canal token dans `typographyStyles`, mais l'ordre est sans
+ * effet ici : les deux canaux ecrivent des cles disjointes dans le meme
+ * objet plat. L'ordre compterait si une prop appartenait aux deux tables —
+ * ce que le type `keyof ITypographyProps` n'interdit pas, et qu'il ne faut
+ * donc pas introduire.
+ ********************************************************/
+const TYPOGRAPHY_PASSTHROUGH_MAP = [
+    ['fontStyle', 'font-style']
+] as const satisfies ReadonlyArray<readonly [keyof ITypographyProps, string]>
+
+/*********************************************************
  * useTypography
  *
  * @description
  * Volet typographique de `useMargin`/`useBorder`/`useColor` : pour
- * chacune des cinq `ITypographyProps` (`fontFamily`, `fontSize`,
+ * chacune des cinq `ITypographyProps` de TOKEN (`fontFamily`, `fontSize`,
  * `fontWeight`, `lineHeight`, `letterSpacing`) que le consommateur a
  * fixee, emet une custom property inline `--origam-{varPrefix}---{prop}`
  * qui repointe vers le token primitif correspondant. Une prop non fixee
  * n'emet rien — le theme/la variante du composant garde la main.
+ *
+ * @description
+ * La sixieme, `fontStyle`, passe par un canal PASSTHROUGH : sa valeur est
+ * un mot-cle CSS rendu verbatim, sans enveloppe `var()`. Voir
+ * `TYPOGRAPHY_PASSTHROUGH_MAP` pour le pourquoi.
  *
  * @description
  * INLINE UNIQUEMENT (pas de classe utilitaire — `origam-utilities.css`
@@ -170,6 +212,14 @@ export function useTypography (props: ITypographyProps, varPrefix: string) {
 
             if (value) {
                 styles[`--origam-${varPrefix}---${cssProp}`] = `var(--origam-${tokenGroup}---${value})`
+            }
+        }
+
+        for (const [propKey, cssProp] of TYPOGRAPHY_PASSTHROUGH_MAP) {
+            const value = props[propKey]
+
+            if (value) {
+                styles[`--origam-${varPrefix}---${cssProp}`] = String(value)
             }
         }
 

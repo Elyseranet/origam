@@ -69,12 +69,78 @@ non-peignantes au pixel** : la sérialisation du blanc
 le mot-clé `none` → `rgba(0,0,0,0) 0px 0px 0px 0px` — étendue et alpha nuls,
 `elevation` ne pouvant pas émettre le mot-clé.
 
-⚠️ Limite du canal `border`, découverte en chemin et **non corrigée** : le groupe
-`width` de `BORDER_REGEX` n'accepte que chiffres + unité tandis que son groupe
-`color` accepte `var(--…)`, donc un `border="var(--…---border-width, 1px)"` ne
-tombe pas en erreur — **il émet un `border-color`**. `IBorderProps` n'a pas de
-`borderWidth` autonome ; l'ajouter a été tenté puis rejeté sur la mesure, 24
-composants déclarant `IBorderProps` sans consommer ses props autonomes.
+⚠️ La limite du canal `border` découverte en chemin — un
+`border="var(--…---border-width, 1px)"` matchait le groupe `color` de
+`BORDER_REGEX` et émettait un `border-color` — **a été corrigée depuis, en
+2.18.21** (section juste en dessous). Ce qui reste : `IBorderProps` n'expose
+toujours pas de `borderWidth` autonome, et une largeur `var()` **contenant une
+espace** ne voyage que par une prop par côté ou d'axe, la prop globale `border`
+la coupant à son `split(' ')`. Ajouter `borderWidth` avait par ailleurs été
+rejeté sur la mesure, indépendamment de la regex : 24 composants déclarent
+`IBorderProps` sans consommer ses props autonomes, et `unconsumed-props` passait
+de 0 à 24. La suppression des trois tokens de largeur ne repose de toute façon
+pas sur cette limite, mais sur le fait qu'ils ne portaient **aucune valeur
+propre**.
+## [2.18.21] - 2026-09-30
+
+### Fixed — `useBorder` supprimait silencieusement une largeur en `var()`
+
+`BORDER_REGEX` n'acceptait en largeur que des chiffres suivis d'une unite,
+tandis que son groupe **couleur** accepte `var(--…)`. Une chaine comme
+`borderLeft="var(--x) solid var(--y)"` etait donc happee **entierement par le
+groupe couleur** : `parseBorderPositionValue` renvoyait une largeur vide,
+`formatBorderPositionStylesVar` sautait la declaration, et le navigateur
+jetait le `border-left-color` invalide. Resultat rendu : un bord `medium`
+(~3px) en `currentColor` au lieu de la largeur et de la couleur demandees.
+
+⛔ **Aucun diagnostic.** Le type-check passait, rien n'etait leve, rien
+n'etait logue. Le chemin booleen (`borderLeft: true`) emettait pourtant un
+`var()` correctement — seul l'analyseur de chaine refusait.
+
+Le groupe `width` accepte desormais une alternative `var()`, **conditionnee
+par un lookahead sur un mot-clé de style**. Ce garde n'est pas decoratif : les
+trois groupes de la regex peuvent matcher vide, donc une alternative `var()`
+nue aurait happe `var(--ma-couleur)` — une couleur SEULE, cas courant qui
+fonctionnait — et aurait inverse la panne. Le lookahead tire sa liste de
+`BORDER_STYLE`, pour qu'elle ne puisse plus deriver de celle du groupe `style`.
+
+⚠️ **Limite connue, pinnee par trois tests et non corrigee ici.** Une largeur
+`var()` **contenant une espace** (`var(--x, 4px)`) ne passe que par les props
+PAR COTE. La prop globale `border` fait un `split(' ')` et coupe la valeur en
+fragments invalides. Avant ce lot la meme valeur tombait entiere dans `color`
+et y etait scindee en quatre — aucun bord dans les deux cas, donc pas de
+regression, mais pas repare. **Un preset portant une largeur tokenisee doit
+viser une prop par cote ou d'axe, jamais `border`.**
+
+### Added — `fontStyle` en passthrough sur `ITypographyProps`
+
+`font-style` n'avait ni prop, ni groupe de tokens, ni classe utilitaire
+(`0` occurrence dans `interfaces/Commons/` et `composables/Commons/`, `0` pour
+`font__style` dans `primitive.css`). `useTypography` enveloppant toute valeur
+en token, `italic` / `normal` — des mots-clés CSS, pas des echelons — devaient
+passer **litteralement**. Aucun canal nouveau : `--origam-blockquote---font-style`
+etait deja declare et deja lu.
+
+### Internal — ce que la campagne zero-changement ne prouve pas
+
+`BORDER_REGEX` sert la prop `border` sur ~100 composants sans baseline VRT, et
+la verification exigee etait donc : aucune valeur du depot ne change de
+decoupage. Verdict — **81 valeurs `border*` distinctes, 81 decoupages
+identiques, delta zero**.
+
+⛔ Mais la regex **naive** que ce garde-fou existe pour eviter ne diverge, elle
+non plus, **sur aucune des 81 valeurs reelles** : aucun fichier du depot ne
+passe une couleur `var()` seule a une prop de bordure. **Le corpus reel
+n'aurait pas attrape la regression inverse** — seul le controle negatif
+synthetique `var(--c)` l'attrape. Une campagne sur valeurs reelles prouve
+moins qu'elle n'en a l'air ; les controles negatifs sont ce qui la rend
+concluante. Consigne dans `border.const.ts`.
+
+Hors paquet publie, dans le meme intervalle : `pnpm audit` est repasse de
+**7 high / 7 moderate / 3 low** a **0**, par relevement de trois `overrides`
+(`brace-expansion@2`, `brace-expansion@5`, `undici@8`). Aucun fichier de
+`packages/ds` touche, donc le tarball est inchange par cette partie.
+
 ## [2.18.20] - 2026-09-30
 
 ### Added — surfaces de props `opacity` et `backdrop`, et les deux trous de `IStateEffectConfig`

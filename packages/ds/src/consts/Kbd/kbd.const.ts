@@ -53,26 +53,42 @@ import type { TKbdVariant } from '../../types/Kbd/kbd.type'
  * qu'elle est censee servir.
  *
  * @description
- * ⛔ AUCUNE LARGEUR DE BORDURE NE PASSE PAR UNE CHAINE `var()`, ET C'EST
- * UNE LIMITE MESUREE DU CANAL, pas un oubli. `IBorderProps` n'expose pas de
- * `borderWidth` autonome, et le raccourci `border` parse par
- * `BORDER_REGEX`, dont le groupe `width` n'accepte que des chiffres suivis
- * d'une unite tandis que le groupe `color` accepte `var(--[^)]+)` : un
- * `border="var(--…---border-width, 1px)"` ne tombe pas en erreur, il matche
- * comme COULEUR et emet un `border-color`. Ajouter `borderWidth` a
- * `IBorderProps` a ete tente et REJETE sur la mesure : 24 composants
- * declarent `IBorderProps` sans consommer ses props autonomes, et le garde
- * `unconsumed-props` — qui ne peut que retrecir — passait de 0 a 24
- * nouvelles violations.
- * @description
- * Le cout de s'en passer est nul ici, parce que les trois largeurs de
- * variant n'apportaient aucune valeur distincte :
+ * ⛔ AUCUNE LARGEUR DE BORDURE N'EST POSEE ICI, ET LA RAISON PORTANTE EST
+ * QUE LES TROIS TOKENS DE VARIANT NE PORTAIENT AUCUNE VALEUR PROPRE :
  * `--origam-kbd--outlined---border-width` et `__filled---border-width`
  * valent tous deux `var(--origam-border__width---thin)`, c'est-a-dire
  * exactement le defaut de `key-surface`, et `__tonal---border-width` vaut
  * `var(--origam-border__width---0)`, c'est-a-dire exactement ce que le
- * mot-cle `border: 'none'` emet via `BORDER_KEYWORD_WIDTH`. Les trois
- * tokens etaient une indirection sans valeur propre.
+ * mot-cle `border: 'none'` emet via `BORDER_KEYWORD_WIDTH`. Une indirection
+ * sans valeur distincte : les trois sont donc supprimes des feuilles, ce que
+ * `token-var-channels` prescrit lui-meme pour un token que plus rien ne lit.
+ *
+ * @description
+ * ⚠️ CE PARAGRAPHE A ETE CORRIGE, et l'ecart vaut d'etre connu. Il affirmait
+ * qu'« aucune largeur ne passe par une chaine `var()` » parce que le groupe
+ * `width` de `BORDER_REGEX` n'acceptait que chiffres + unite tandis que son
+ * groupe `color` acceptait `var(--…)` — un `border="var(--…)"` matchait donc
+ * comme COULEUR. Cette moitie est CORRIGEE sur `develop` depuis `cb3c68955`
+ * (lot 5) : le groupe `width` accepte desormais un `var()`, a condition
+ * qu'un mot-cle de style le suive.
+ *
+ * @description
+ * Ce qui RESTE vrai, et qui suffit a la decision : `IBorderProps` n'expose
+ * toujours pas de `borderWidth` autonome, et une largeur `var()` CONTENANT
+ * UNE ESPACE — ce qu'est n'importe quelle chaine a repli, `var(--x, 0px)` —
+ * ne voyage QUE par une prop par cote ou d'axe. La prop globale `border`
+ * fait un `split(' ')` pour distribuer ses 1/2/4 valeurs et coupe donc la
+ * chaine en fragments invalides ; voir l'en-tete de `BORDER_REGEX` et les
+ * trois tests « path » de `border.util.spec.ts`. Un preset qui reintroduirait
+ * une largeur tokenisee devrait viser `borderLeft` / `borderBlock` / …,
+ * jamais `border`.
+ *
+ * @description
+ * Ajouter `borderWidth` a `IBorderProps` a par ailleurs ete tente et REJETE
+ * sur la mesure, independamment de la regex : 24 composants declarent
+ * `IBorderProps` sans consommer ses props autonomes, et le garde
+ * `unconsumed-props` — qui ne peut que retrecir — passait de 0 a 24
+ * nouvelles violations.
  *
  * @description
  * ⚠️ `tonal` portait `box-shadow: none`, le MOT-CLE. `elevation: 'none'`

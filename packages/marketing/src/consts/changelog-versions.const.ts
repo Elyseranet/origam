@@ -29,6 +29,18 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     },
     {
         // extracted from CHANGELOG.md
+        version: '2.18.21',
+        date: '2026-09-30',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v21821.summary',
+        summaryFallback: '1 addition and 1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v21821.h1', textFallback: 'useBorder supprimait silencieusement une largeur en var()' },
+            { type: 'added', textKey: 'changelog.versions.v21821.h2', textFallback: 'fontStyle en passthrough sur ITypographyProps' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.18.20',
         date: '2026-09-30',
         type: 'patch',
