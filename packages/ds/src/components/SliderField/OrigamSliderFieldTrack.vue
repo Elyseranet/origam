@@ -290,7 +290,18 @@
 			position: absolute;
 			opacity: 0;
 			transition: 0.2s opacity cubic-bezier(0.4, 0, 0.2, 1);
-			border-radius: 2px;
+			// #595 — remplacement litteral : la valeur livree (`2px`) est
+			// desormais lue depuis son token, dont la feuille a ete realignee
+			// sur elle (elle annoncait `radius---full`, soit 9999px). Zero
+			// pixel deplace, un canal de theme de plus.
+			//
+			// ⛔ `--origam-slider-field-track__tick---size` juste en dessous
+			// reste NON declare a dessein : OrigamSliderFieldTrack l ecrit en
+			// style INLINE par instance (`convertToUnit(props.tickSize)`,
+			// ligne ~152). Le declarer a `:root` remplacerait le repli par une
+			// valeur de feuille des que la prop est absente — un changement de
+			// rendu, pas un canal.
+			border-radius: var(--origam-slider-field__tick---border-radius, 2px);
 			width: var(--origam-slider-field-track__tick---size, 2);
 			height: var(--origam-slider-field-track__tick---size, 2);
 			transform: translate(calc(var(--origam-slider-field-track__tick---size, 2) / -2), calc(var(--origam-slider-field-track__tick---size, 2) / -2));

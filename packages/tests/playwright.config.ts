@@ -290,7 +290,28 @@ const GREEN_SPECS = [
     // verte après. Vérifiée stable 80/80 — deux passes `--repeat-each=5`,
     // `E2E_STATIC=1`, chromium, `--workers=1`, retries 0, port isolé 6042,
     // load average 2,8 → 4,5.
-    'chart-token-channels-591.spec.ts'
+    'chart-token-channels-591.spec.ts',
+    // #594 / #595 — C2 : les 51 canaux de thème ouverts sur Audio, Chip,
+    // Switch, SliderField et Field résolvent bien à `:root`, chaque valeur
+    // déclarée rend EXACTEMENT ce que rendait le repli littéral qu'elle
+    // remplace (équivalence mesurée propriété par propriété, sur deux `<div>`
+    // frais posés sous une couleur d'hôte connue pour que `currentColor` et
+    // `color-mix(… currentColor …)` résolvent sur la même base), et les trois
+    // références à des tokens INEXISTANTS sont repointées — l'infobulle de
+    // SliderField inverse enfin entre les deux modes.
+    //
+    // Porte deux CONTRÔLES NÉGATIFS, et c'est ce qui lui donne sa valeur :
+    // les 5 noms résorbés par effondrement d'un repli inatteignable doivent
+    // rester NON déclarés. Sans eux, un lot qui déclarerait ces noms « pour
+    // faire baisser le compteur » passerait au vert — la garde compte les deux
+    // cas pareil, puisqu'elle compare des noms et non des chaînes de repli.
+    //
+    // A/B fait, et il est décisif : contre les sources de `develop`, 6 échecs
+    // sur 7 — 51 tokens résolvent vide et les DEUX tokens de l'infobulle
+    // rendent la même valeur en clair et en sombre. Le seul test vert des deux
+    // côtés est le contrôle négatif, ce qu'on attend de lui. Vérifiée 7/7,
+    // `E2E_STATIC=1`, chromium, port isolé, load average < 10.
+    'token-channels-c2-594-595.spec.ts'
 ]
 
 /**

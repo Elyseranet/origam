@@ -426,6 +426,15 @@
   --origam-chip__filter---transition-property: transform, opacity;
   --origam-chip__filter---transition-duration: var(--origam-motion__duration---normal);
   --origam-chip__filter---transition-timing-function: var(--origam-motion__easing---standard);
+  /* #595 — canaux C2 ouverts : lus par OrigamChip, declares par personne. Valeurs = le repli deja rendu. Les hauteurs ne passent PAS par l echelle `space` : 38px et 44px n y ont aucun barreau. */
+  --origam-chip---height-xs: 20px;
+  --origam-chip---height-sm: 24px;
+  --origam-chip---height-md: 32px;
+  --origam-chip---height-lg: 38px;
+  --origam-chip---height-xl: 44px;
+  --origam-chip---border-radius-rounded: var(--origam-radius---xl);
+  --origam-chip__close---margin-inline-start: 6px;
+  --origam-chip__close---margin-inline-end: -4px;
   --origam-avatar---background-color: var(--origam-color__surface---overlay);
   --origam-avatar---color: var(--origam-color__text---secondary);
   --origam-avatar---border-color: currentColor;
@@ -1035,7 +1044,7 @@
   --origam-field---padding-top: var(--origam-space---2);
   --origam-field---padding-bottom: 6px;
   --origam-field---font-size: 16px;
-  --origam-field---letter-spacing: var(--origam-font__letterSpacing---wide);
+  --origam-field---letter-spacing: 0.009375em; /* #595 — PAS `letterSpacing---wide` (0.0094em) : `.origam-field` et `.origam-field__input` livrent 0.009375em en dur depuis toujours. Le barreau de l echelle en differe de 0.000025em, assez pour deplacer la piste de tous les champs. Valeur reellement livree, barreau assume hors echelle — meme arbitrage que `--origam-input__details---padding-top: 6px` (#595). */
   --origam-field---border-radius: var(--origam-radius---sm);
   --origam-field---border-color: var(--origam-color__border---default);
   --origam-field---border-width: var(--origam-border__width---thin);
@@ -1054,6 +1063,11 @@
   --origam-field---focus-ring-width: 0px;
   --origam-field---focus-ring-offset: 0px;
   --origam-field--variant-solo---box-shadow: var(--origam-shadow---sm);
+  /* #595 — canaux C2 ouverts : lus par OrigamField, declares par personne. Valeurs = le repli deja rendu. `16px` et `4px` coincident EXACTEMENT avec `radius---xl` et `space---1` (verifie sur primitive.css), donc routes par leurs barreaux ; `0.42` n a aucun barreau (l echelle opacity va 0/12/26/32/50/60/70/87/100), litteral assume ; le `color-mix` est recopie VERBATIM — `currentColor` doit rester substitue sur l element consommateur, pas ici. */
+  --origam-field---border-radius-rounded: var(--origam-radius---xl);
+  --origam-field--inline---padding-inline: var(--origam-space---1);
+  --origam-field--variant-filled---background-color: color-mix(in srgb, currentColor 12%, transparent);
+  --origam-field--variant-filled---border-opacity: 0.42;
   --origam-field---variant-outlined-background-color: rgba(0, 0, 0, 0);
   --origam-field__overlay---background-color: var(--origam-color__overlay---scrim);
   --origam-field__overlay---opacity: var(--origam-opacity---0);
@@ -2194,6 +2208,16 @@
   --origam-switch__label---font-size: var(--origam-font__size---md);
   --origam-switch__label---padding-inline: var(--origam-space---2);
   --origam-switch__input---opacity: 0;
+  /* #595 — canaux C2 ouverts : ces neuf noms etaient lus par OrigamSwitch / OrigamSwitchTrack et declares par personne. Chaque valeur est le repli deja rendu, recopie a l identique. */
+  --origam-switch__thumb---border-color: rgba(0, 0, 0, 0.18);
+  --origam-switch__thumb---color: currentColor;
+  --origam-switch__selection-control---min-height: 56px;
+  --origam-switch__skeleton---width: 52px;
+  --origam-switch__skeleton---height: 32px;
+  --origam-switch__skeleton-track---background-color: color-mix(in srgb, currentColor 14%, transparent);
+  --origam-switch__skeleton-thumb---background-color: color-mix(in srgb, currentColor 28%, transparent);
+  --origam-switch__track--inset---height: 32px;
+  --origam-switch__track--inset---width: 52px;
   --origam-switch---opacity-disabled: var(--origam-opacity---32);
   --origam-slider-field---padding-block: var(--origam-space---2);
   --origam-slider-field---transition-duration: var(--origam-motion__duration---fast);
@@ -2216,11 +2240,24 @@
   --origam-slider-field__tick---size: 4px;
   --origam-slider-field__tick---background-color: var(--origam-color__text---disabled);
   --origam-slider-field__tick---background-color-active: var(--origam-color__action--primary---fg);
-  --origam-slider-field__tick---border-radius: var(--origam-radius---full);
+  --origam-slider-field__tick---border-radius: 2px; /* #595 — PAS `radius---full` (9999px) : `.origam-slider-field-track__tick` livre `border-radius: 2px` en dur. Valeur reellement livree. */
   --origam-slider-field__label---color: var(--origam-color__text---secondary);
   --origam-slider-field__label---font-size: var(--origam-font__size---sm);
   --origam-slider-field__label---padding: var(--origam-space---1);
   --origam-slider-field---opacity-disabled: var(--origam-opacity---32);
+  /* #595 — canaux C2 ouverts : lus par OrigamSliderField / OrigamSliderFieldTrack, declares par personne. Valeurs = le repli deja rendu ; les `var()` internes sont recopies VERBATIM pour ne pas fermer le canal `--origam-color__*--inverse---*`, encore non declare. */
+  --origam-slider-field-thumb__surface---border-color: rgba(0, 0, 0, 0.18);
+  --origam-slider-field__buffered---background-color: color-mix(in srgb, currentColor 40%, transparent);
+  --origam-slider-field__buffered---opacity: 0.5;
+  --origam-slider-field__buffered--bare---background-color: color-mix(in srgb, currentColor 40%, transparent);
+  --origam-slider-field__track---transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+  --origam-slider-field__hover-tooltip---background-color: var(--origam-color__surface---inverse);
+  --origam-slider-field__hover-tooltip---color: var(--origam-color__text---inverse);
+  --origam-slider-field--bare---accent-color: var(--origam-color__action--primary---bg);
+  --origam-slider-field--bare---thumb-size: 12px;
+  --origam-slider-field--bare---track-background-color: color-mix(in srgb, currentColor 25%, transparent);
+  --origam-slider-field--bare---track-thickness: 2px;
+  --origam-slider-field--bare---track-thickness-active: 4px;
   --origam-icon---color: currentColor;
   --origam-icon---transition-duration: var(--origam-motion__duration---fast);
   --origam-icon---transition-timing-function: var(--origam-motion__easing---standard);
@@ -2691,6 +2728,26 @@
   --origam-audio--error---padding: var(--origam-space---2) var(--origam-space---3);
   --origam-audio--error---gap: var(--origam-space---2);
   --origam-audio--error---icon-font-size: var(--origam-font__size---lg);
+  /* #594 — canaux C2 ouverts : lus par OrigamAudio depuis des selecteurs VIVANTS, declares par personne. Valeurs = le repli deja rendu. */
+  --origam-audio__header---margin-bottom: 12px;
+  --origam-audio__btn---size: 28px;
+  --origam-audio__btn---icon-size: 16px;
+  --origam-audio__meta-separator---content: "\00B7"; /* #594 — U+00B7 ECHAPPE, et il DOIT le rester. Ecrit en litteral, ce seul caractere non-ASCII faisait emettre a dart-sass un BOM en tete de main.css (`--style=compressed` pose un BOM la ou le mode etendu poserait `@charset`). Un BOM n est PAS retire a l interieur d un `<style>` : il se collait au premier selecteur, qui ne matchait alors plus rien — les 156 declarations primitives mortes, tous les tokens semantiques et derives a vide. Mesure le 2026-09-30 : 7 echecs sur derived-tokens-subtree.spec.ts. L echappement rend le MEME glyphe (verifie en Chromium) et garde la feuille compilee en ASCII pur. Regle : aucune valeur de token ne doit contenir de caractere non-ASCII — utiliser la forme \XXXX. */
+  --origam-audio__playlist---max-height: 220px;
+  --origam-audio__playlist---padding-top: 8px;
+  --origam-audio__playlist---margin-top: 12px;
+  --origam-audio__playlist---border-color: color-mix(in srgb, currentColor 8%, transparent);
+  /* Les deux lignes de meta de la playlist resolvaient `var(--origam-color__text---secondary)` par repli — exactement ce que `--origam-audio---secondary-color` declare deja. Les brancher dessus ouvre les deux canaux ET rend ce token atteignable, a valeur rendue identique. */
+  --origam-audio__playlist-subtitle---color: var(--origam-audio---secondary-color);
+  --origam-audio__playlist-duration---color: var(--origam-audio---secondary-color);
+  --origam-audio__playlist-item__prepend---margin-inline-end: 12px;
+  --origam-audio--compact---padding: 8px 12px;
+  --origam-audio--compact__header---gap: 12px;
+  --origam-audio--compact__btn---size: 24px;
+  --origam-audio--compact__btn---icon-size: 14px;
+  --origam-audio--compact__play-btn---size: 56px;
+  --origam-audio--compact__play-btn---icon-size: 40px;
+  --origam-audio--compact__progress---height: 3px;
   --origam-media-scrubber---color: var(--origam-color__action--primary---bg);
   --origam-media-scrubber---primary: var(--origam-color__action--primary---bg);
   --origam-media-scrubber---track-background-color: var(--origam-color__surface---overlay);

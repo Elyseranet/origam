@@ -1196,14 +1196,67 @@
 			position: absolute;
 			pointer-events: none;
 			bottom: calc(100% + 6px);
+			/*
+			 * ⛔ #595 — FAUX POSITIF de `token-var-channels`, a laisser en
+			 * baseline. `--origam-slider-field---hover-x` est ECRIT PAR
+			 * INSTANCE, en style inline, par le `pointermove` de ce meme
+			 * composant (`container.style.setProperty(...)`, ~l.680) et RETIRE
+			 * au `pointerleave` (`removeProperty`, ~l.703). Une custom property
+			 * est substituee SUR L ELEMENT QUI LA DECLARE : la declarer a
+			 * `:root` ferait que, apres `removeProperty`, l infobulle ne
+			 * retomberait plus sur le repli `0%` mais sur la valeur de la
+			 * feuille — l infobulle resterait collee a sa derniere position au
+			 * lieu de revenir au depart. La garde compare des noms, pas des
+			 * chaines de repli : elle ne peut pas voir la difference.
+			 */
 			inset-inline-start: var(--origam-slider-field---hover-x, 0%);
 			transform: translateX(-50%);
 			padding: 3px 6px;
-			background: var(--origam-slider-field__hover-tooltip---background-color, var(--origam-color__surface--inverse---bg, rgba(0, 0, 0, 0.85)));
-			color: var(--origam-slider-field__hover-tooltip---color, var(--origam-color__on--inverse---fg, #ffffff));
+			/*
+			 * #595 — EFFONDREMENT. Ces deux lignes lisaient
+			 * `var(RUNG1, var(--origam-color__{surface--inverse---bg,
+			 * on--inverse---fg}, T))`. Les deux RUNG1 viennent d etre declares
+			 * dans les feuilles — AVEC leur `var()` interne recopie verbatim,
+			 * donc le canal `--inverse` reste atteignable PAR LA FEUILLE. Le
+			 * garder aussi ici etait du poids mort : RUNG1 etant declare,
+			 * l echelon 2 du site de lecture est inatteignable par
+			 * construction. Retire : zero pixel deplace, deux canaux morts en
+			 * moins.
+			 *
+			 * ⛔ Et les deux noms de l echelon 2 etaient FAUX. Forme d ETAT
+			 * (`--inverse---`) d une famille qui n existe pas : zero
+			 * declaration dans tout `assets/`. L infobulle retombait donc
+			 * eternellement sur son repli sombre en dur, qui n inversait
+			 * JAMAIS. Les vrais noms existaient a cote depuis toujours, et ils
+			 * inversent — mesure en Chromium le 2026-09-29, data-theme pilote :
+			 *
+			 *     --origam-color__surface---inverse   light #171717  dark #ffffff
+			 *     --origam-color__text---inverse      light #ffffff  dark #0a0a0a
+			 *
+			 * La DECLARATION de chaque RUNG1, dans les quatre feuilles, pointe
+			 * maintenant sur eux. C est la que vit la correction : RUNG1 etant
+			 * declare, le repli ecrit ici ne serait jamais atteint — corriger
+			 * ce fichier seul n aurait rien change.
+			 *
+			 * ⚠️ Ceci CHANGE le rendu, volontairement : l infobulle inverse
+			 * enfin (surface claire + texte sombre en mode sombre). Avant, les
+			 * deux tokens rendaient la MEME valeur dans les deux modes.
+			 */
+			background: var(--origam-slider-field__hover-tooltip---background-color, rgba(0, 0, 0, 0.85));
+			color: var(--origam-slider-field__hover-tooltip---color, #ffffff);
 			font-size: 11px;
 			font-weight: 600;
-			font-family: var(--origam-font---family, system-ui, sans-serif);
+			/*
+			 * #595 — REFERENCE CORRIGEE : lisait `var(--origam-font---family, …)`,
+			 * un nom que AUCUNE feuille ne declare (zero occurrence en partie
+			 * gauche dans `assets/`). Ce composant retombait donc toujours sur
+			 * `system-ui` et ignorait la police du DS. Le barreau reel est
+			 * `--origam-font__family---sans` (primitive.css) = `Inter, 'Helvetica
+			 * Neue', Arial, sans-serif`. ⚠️ Change le rendu, volontairement. Le
+			 * repli `system-ui, sans-serif` reste en ceinture de securite si la
+			 * feuille de primitives n est pas chargee.
+			 */
+			font-family: var(--origam-font__family---sans, system-ui, sans-serif);
 			border-radius: 3px;
 			white-space: nowrap;
 			z-index: 4;
@@ -1314,6 +1367,22 @@
 				height: 100%;
 				display: flex;
 				justify-content: center;
+				/*
+				 * ⛔ #595, trouvaille hors perimetre : le repli `2` est SANS
+				 * UNITE. `width: 2` est invalide et `calc(2 + 2px)` aussi — le
+				 * navigateur jette la declaration entiere. Tant que
+				 * `OrigamSliderFieldTrack` n ecrit pas
+				 * `--origam-slider-field-track---size` en inline (il ne le fait
+				 * que si la prop `size` est fournie), TOUTES les regles de
+				 * largeur du mode vertical sont mortes. Meme famille que la
+				 * gouttiere d `OrigamRow` (#568) et que le garde
+				 * `unitless-zero-in-calc`.
+				 *
+				 * Non corrige ici : declarer le token ou unifier le repli a
+				 * `2px` REPARERAIT le rendu, donc le changerait — hors du
+				 * contrat « zero pixel deplace » de ce lot. Signale sans
+				 * ticket (consigne du lot).
+				 */
 				width: calc(var(--origam-slider-field-track---size, 2) + 2px);
 
 				.origam-slider-field-track__background {
@@ -1549,6 +1618,72 @@
 		}
 	}
 
+	/*
+	 * ⛔ #595 — SEIZE tokens `--origam-slider-field*` que les feuilles
+	 * declarent et que ce SCSS ne lit pas. Ils restent en baseline
+	 * `token-var-channels-dormant.json` ; raison par famille :
+	 *
+	 *   · `__thumb---border-color` (surface---default) — DEUXIEME grammaire
+	 *     pour la meme propriete. La grammaire VIVANTE est
+	 *     `--origam-slider-field-thumb__surface---border-color`, lue trois
+	 *     lignes plus bas, et `packages/marketing/src/themes/ecom.theme.ts`
+	 *     la surcharge deja (`#e11d48`). Renommer la lecture casserait ce
+	 *     theme ; c est donc le nom `-thumb__surface-` qui vient d etre
+	 *     declare, et celui-ci qui reste dormant ;
+	 *   · `__thumb---border-width` (border__width---2 = 2px) — le pouce livre
+	 *     `border: 1px solid` ; `__thumb---box-shadow` (shadow---sm) — il
+	 *     livre `box-shadow: none`. Cabler l un ou l autre change le rendu ;
+	 *   · `__thumb---focus-ring-color`, `---focus-ring-width`,
+	 *     `---scale-hover`, `---scale-active` — l anneau et l agrandissement
+	 *     sont dessines par `&__surface:before` (`transform: scale(2)`,
+	 *     `opacity: .12/.04`), pas par un anneau dimensionne : aucune
+	 *     declaration a remplacer ;
+	 *   · `---opacity-disabled` (opacity---32 = 0.32) — le rendu desactive est
+	 *     `opacity: 0.38` ;
+	 *   · `---padding-block` (space---2) — aucune declaration `padding-block`
+	 *     sur la racine ;
+	 *   · `---transition-duration` (motion---fast), `---transition-timing-
+	 *     function` (easing---standard) — les transitions sont des raccourcis
+	 *     multi-proprietes ecrits en dur (0.15s/0.2s/0.3s/120ms) ;
+	 *   · les trois `__label---{color,font-size,padding}` — le libelle est
+	 *     rendu par `OrigamLabel`, qui lit `--origam-label---*` ;
+	 *   · `__tick---size` (4px) — la taille du tick est ECRITE EN INLINE par
+	 *     `OrigamSliderFieldTrack` (`convertToUnit(props.tickSize)`) sous le
+	 *     nom `--origam-slider-field-track__tick---size` : c est une valeur
+	 *     d instance, pas un canal de theme ;
+	 *   · `__track---height` (4px) — `.origam-slider-field__track` existe dans
+	 *     le template mais aucune regle ne lui donne de hauteur ; la hauteur
+	 *     vivante est celle de `.origam-slider-field-track` (sous-composant).
+	 *
+	 * ⛔ `--origam-slider-field---track-size` : FAUX POSITIF de la garde, a
+	 * laisser en baseline et surtout a NE PAS declarer.
+	 *
+	 * Il est ECRIT PAR INSTANCE, inconditionnellement, par `sliderFieldStyles`
+	 * (~l.1018) : `convertToUnit(trackProps.size ?? 4)`. Ce style inline est
+	 * pose sur la RACINE des deux variantes (`<origam-input>` et `<section>`),
+	 * donc tout le sous-arbre en herite et les HUIT sites de lecture prennent
+	 * cette valeur. Mesure en Chromium le 2026-09-29, trois variants de la
+	 * story, bloc `--horizontal` present :
+	 *
+	 *     style inline sur la racine  --origam-slider-field---track-size: 4px
+	 *     token relu sur la racine    4px
+	 *     token relu sur la piste     4px
+	 *     hauteur rendue de la piste  4px   <- la regle au repli 14px
+	 *
+	 * ⚠️ Deux consequences, contre-intuitives toutes les deux :
+	 *
+	 *   1. Les replis `14px` des six lignes du bloc `--horizontal` sont du CODE
+	 *      MORT : ils ne sont jamais atteints, la piste horizontale mesure 4px.
+	 *      Il n y a donc PAS « deux camps » a arbitrer — la lecture precedente
+	 *      de ce commentaire, qui annoncait un arbitrage entre 4px et 14px,
+	 *      etait fausse : elle comparait des textes de repli sans verifier
+	 *      lequel s applique.
+	 *   2. Le declarer a `:root` serait INERTE : l ecriture inline sur la
+	 *      racine bat une declaration de feuille pour tout le sous-arbre. Un
+	 *      theme qui le reglerait ne verrait RIEN changer — on annoncerait un
+	 *      canal qui ne fonctionne pas. C est exactement le motif que la
+	 *      campagne interdit de cabler.
+	 */
 	.origam-slider-field-thumb {
 		$this: &;
 
