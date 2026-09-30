@@ -84,6 +84,25 @@
 			</div>
 		</Variant>
 
+		<Variant title="Prop — variant (preset matrix)">
+			<div style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;" data-cy="kbd-preset-matrix">
+				<div style="display: flex; gap: 12px; align-items: center;">
+					<origam-kbd variant="outlined" text="K" data-cy="kbd-single-outlined"/>
+					<origam-kbd variant="filled" text="K" data-cy="kbd-single-filled"/>
+					<origam-kbd variant="tonal" text="K" data-cy="kbd-single-tonal"/>
+				</div>
+				<div style="display: flex; gap: 12px; align-items: center;">
+					<origam-kbd variant="outlined" :combination="['Ctrl', 'S']" data-cy="kbd-combo-outlined"/>
+					<origam-kbd variant="filled" :combination="['Ctrl', 'S']" data-cy="kbd-combo-filled"/>
+					<origam-kbd variant="tonal" :combination="['Ctrl', 'S']" data-cy="kbd-combo-tonal"/>
+				</div>
+				<div style="display: flex; gap: 12px; align-items: center;">
+					<origam-kbd variant="outlined" text="K" bg-color="primary" data-cy="kbd-override-single"/>
+					<origam-kbd variant="tonal" :combination="['Ctrl', 'S']" bg-color="primary" data-cy="kbd-override-combo"/>
+				</div>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IKbdProps>({ text: '⌘', variant: 'outlined', separator: '+' })"

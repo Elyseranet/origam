@@ -7,7 +7,13 @@ import { expect, test } from '@playwright/test'
  *   0 → Design      init: { variant: 'outlined', combination: ['⌘', 'S'] }
  *   1 → Functional  init: { text: '⌘', separator: '+' }
  *   2 → Slots - Default  (slot avec <origam-icon>)
- *   3 → Default     init: { text: '⌘', variant: 'outlined', separator: '+' }
+ *   3 → Prop — border (VRT matrix)
+ *   4 → Prop — variant (preset matrix)   surface de mesure ADR-005 lot 2
+ *   5 → Default     init: { text: '⌘', variant: 'outlined', separator: '+' }
+ *
+ * ⛔ CES INDEX SONT ORDINAUX. Ajouter une Variant AVANT « Default » decale
+ * son `variantId` : l'en-tete ci-dessus a porte `3 → Default` alors que le
+ * code allait deja chercher `variantUrl(4)`. Recompter a chaque ajout.
  *
  * Structure du composant :
  *   <kbd class="origam-kbd origam-kbd--variant-{v} …">
@@ -179,7 +185,7 @@ test.describe('OrigamKbd', () => {
 
     test.describe('Default (playground)', () => {
         test('renders the kbd root', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
@@ -198,7 +204,7 @@ test.describe('OrigamKbd', () => {
         // playground IS transparent by design — asserting the opposite was
         // asserting the pre-fix defect.
         test('variant=outlined resolves the transparent background token (by design)', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
@@ -207,7 +213,7 @@ test.describe('OrigamKbd', () => {
         })
 
         test('variant=filled resolves a non-transparent background from its own token', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
@@ -224,7 +230,7 @@ test.describe('OrigamKbd', () => {
         })
 
         test('has a non-zero font-size from the token', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
@@ -233,7 +239,7 @@ test.describe('OrigamKbd', () => {
         })
 
         test('variant=outlined produces a visible border', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
