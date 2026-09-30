@@ -2,7 +2,7 @@
 
 `<OrigamMain>` is the central content slot of the application shell.
 It registers itself with the surrounding `<OrigamLayout>` via
-`useLayout` so that drawers, app-bars, system-bars and bottom-navs
+`useLayoutMain` so that drawers, app-bars, system-bars and bottom-navs
 push it around without overlapping. Renders as `<main>` by default.
 
 ## Basic usage

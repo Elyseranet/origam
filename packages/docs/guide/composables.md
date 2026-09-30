@@ -66,7 +66,7 @@ Les composables communs fournissent des fonctionnalités réutilisables pour tou
 | **useDimension**      | Gère les dimensions (width, height)                         |
 | **useElevation**      | Gère l'élévation (box-shadow)                               |
 | **useGroup**          | Gère les groupes de composants                              |
-| **useLayout**         | Gère la mise en page (flex, grid)                           |
+| **useLayoutMain**         | Gère la mise en page (flex, grid)                           |
 | **useLink**           | Gère les liens (href, to)                                   |
 | **useLocale**         | Gère la localisation (i18n)                                 |
 | **useMessage**        | Résout le message affiché sous un champ (erreurs / hint / messages) — un seul consommateur : `OrigamForm` |

@@ -1,7 +1,7 @@
-// Tests for `useLayout`, `useLayoutItem`, and `useCreateLayout` composables.
+// Tests for `useLayoutMain`, `useLayoutItem`, and `useCreateLayout` composables.
 //
 // Strategy:
-//   - `useLayout` requires ORIGAM_LAYOUT_KEY provided — tested via
+//   - `useLayoutMain` requires ORIGAM_LAYOUT_KEY provided — tested via
 //     useCreateLayout (which is the only producer of that key).
 //   - `useLayoutItem` without a parent layout falls back to inert styles
 //     (no throw) — that orphan path is the critical regression guard from
@@ -23,13 +23,13 @@ import {
     ROOT_ZINDEX
 } from '@origam/consts/Commons/layout.const'
 
-import { useLayout } from '@origam/composables/Commons/layout.composable'
+import { useLayoutMain } from '@origam/composables/Commons/layout.composable'
 import { useLayoutItem } from '@origam/composables/Commons/layoutItem.composable'
 import { useCreateLayout } from '@origam/composables/Commons/createLayout.composable'
 
-// ─── useLayout — missing provider ───────────────────────────────────────────
+// ─── useLayoutMain — missing provider ───────────────────────────────────────────
 
-describe('useLayout — missing injection', () => {
+describe('useLayoutMain — missing injection', () => {
     it('throws inside setup when ORIGAM_LAYOUT_KEY is not provided', () => {
         // Vue traps component errors in warnings in test mode — mount() does not
         // re-throw them. We catch directly inside setup.
@@ -38,7 +38,7 @@ describe('useLayout — missing injection', () => {
             name: 'OrigamLayoutNoProvider',
             setup () {
                 try {
-                    useLayout()
+                    useLayoutMain()
                 } catch (e) {
                     threwInSetup = e instanceof Error
                 }
@@ -301,15 +301,15 @@ describe('useCreateLayout — registered layout item', () => {
     })
 })
 
-// ─── useLayout — via provider ─────────────────────────────────────────────────
+// ─── useLayoutMain — via provider ─────────────────────────────────────────────────
 
-describe('useLayout — via useCreateLayout provider', () => {
+describe('useLayoutMain — via useCreateLayout provider', () => {
     it('getLayoutItem returns the layout API when injected', () => {
-        let layoutApi!: ReturnType<typeof useLayout>
+        let layoutApi!: ReturnType<typeof useLayoutMain>
         const Inner = defineComponent({
             name: 'OrigamLayoutInner',
             setup () {
-                layoutApi = useLayout()
+                layoutApi = useLayoutMain()
                 return () => h('div')
             }
         })

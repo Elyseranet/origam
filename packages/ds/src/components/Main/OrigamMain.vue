@@ -23,7 +23,7 @@
 	import { useBorder } from '../../composables/Commons/border.composable'
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
-	import { useLayout } from '../../composables/Commons/layout.composable'
+	import { useLayoutMain } from '../../composables/Commons/layout.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
 	import { usePadding } from '../../composables/Commons/padding.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
@@ -60,7 +60,7 @@
 	 * Composables
 	 ********************************************************/
 
-	const {mainStyles: mainLayoutStyles} = useLayout()
+	const {mainStyles: mainLayoutStyles} = useLayoutMain()
 	const {ssrBootStyles} = useSsrBoot()
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {elevationClasses} = useElevation(props)
