@@ -620,6 +620,47 @@ function collectTargetKeys (
 }
 
 /*********************************************************
+ * readVariantPreset
+ *
+ * @description
+ * Rend la valeur que le preset du variant ACTIF donne a `key`, ou
+ * `undefined` s'il n'en donne aucune. Extrait du getter de
+ * `patchThemedPropSlot` pour la complexite cognitive : le gate SonarQube
+ * du depot est bloquant sur « securite ou criticite », et l'ajout du rang
+ * preset avait porte ce getter de 15 a 18, au-dessus du seuil.
+ *
+ * @description
+ * ⛔ CETTE FONCTION DOIT RESTER APPELEE DEPUIS LE GETTER, de facon
+ * synchrone. La lecture de `rawProps[VARIANT_PROP_KEY]` passe par le proxy
+ * `shallowReactive` : c'est elle qui ABONNE l'effet appelant a la cle
+ * `variant`, et donc ce qui fait qu'un changement de variant re-resout les
+ * props qui en dependent, sans watcher explicite. La deplacer hors de
+ * l'execution synchrone du getter — dans un `computed` pose a
+ * l'installation, par exemple — romprait cet abonnement en silence, et le
+ * prop resterait fige sur le variant de depart.
+ *
+ * @description
+ * `key !== VARIANT_PROP_KEY` est la garde anti-recursion : sans elle, le
+ * getter de `variant` lirait `variant` pour se resoudre lui-meme. Voir
+ * `VARIANT_PROP_KEY` dans `consts/Commons/variant-preset.const.ts`.
+ * Non-regression : `variant-preset-resolver.spec.ts`, « table
+ * pathologique ».
+ ********************************************************/
+function readVariantPreset (
+    presetTable: TVariantPresetTable | undefined,
+    rawProps: Record<string, unknown>,
+    key: string
+): unknown {
+    if (!presetTable || key === VARIANT_PROP_KEY) return undefined
+
+    const activeVariant = rawProps[VARIANT_PROP_KEY]
+
+    if (typeof activeVariant !== 'string') return undefined
+
+    return presetTable[activeVariant]?.[key]
+}
+
+/*********************************************************
  * patchThemedPropSlot
  *
  * @description
@@ -778,15 +819,9 @@ function patchThemedPropSlot (
              * voir `VARIANT_PROP_KEY` dans
              * `consts/Commons/variant-preset.const.ts`.
              ********************************************************/
-            if (presetTable && key !== VARIANT_PROP_KEY) {
-                const activeVariant = rawProps[VARIANT_PROP_KEY]
+            const fromPreset = readVariantPreset(presetTable, rawProps, key)
 
-                if (typeof activeVariant === 'string') {
-                    const preset = presetTable[activeVariant]
-
-                    if (preset && preset[key] !== undefined) return preset[key]
-                }
-            }
+            if (fromPreset !== undefined) return fromPreset
 
             return fallback
         },
