@@ -4,6 +4,7 @@ import type { ComputedRef, Ref } from 'vue'
 import { useBorder } from './border.composable'
 import { useElevation } from './elevation.composable'
 import { useMargin } from './margin.composable'
+import { useOpacity } from './opacity.composable'
 import { usePadding } from './padding.composable'
 import { useRounded } from './rounded.composable'
 
@@ -11,6 +12,7 @@ import { getForeground, intentBgExpr, isCssColor, isIntent, isParsableColor, isU
 
 import type { IBorderProps } from '../../interfaces/Commons/border.interface'
 import type { IMarginProps } from '../../interfaces/Commons/margin.interface'
+import type { IOpacityProps } from '../../interfaces/Commons/opacity.interface'
 import type { IPaddingProps } from '../../interfaces/Commons/padding.interface'
 import type { IRoundedProps } from '../../interfaces/Commons/rounded.interface'
 import type { IActiveState, IHoverState } from '../../interfaces/Commons/state-effect.interface'
@@ -27,7 +29,8 @@ import type { TStateEffectProps } from '../../types/Commons/state-effect.type'
 // now `boolean | IHoverState | IActiveState`) and emits 8 axes of state-
 // aware classes + styles.
 //
-// Axes covered (8 — matches the surface of IStateEffectConfig):
+// Axes covered (10 — matches the surface of IStateEffectConfig; 9 opacity
+// and 10 borderColor are documented at their pickEffective call below):
 //   1. color          — foreground / text
 //   2. bgColor        — surface background
 //   3. border         — width / style / direction / color
@@ -36,7 +39,6 @@ import type { TStateEffectProps } from '../../types/Commons/state-effect.type'
 //   6. padding        — inner spacing (single scalar)
 //   7. margin         — outer spacing (single scalar)
 //   8. gap            — flex / grid gap (single scalar)
-//
 // Color resolution keeps the existing `useColorEffect` semantics
 // verbatim (intent darkening at -20 % hover / -30 % active, same-intent
 // rule, color-clash auto-contrast). Only the WIRING changes: instead
@@ -104,8 +106,9 @@ const noopRef = computed(() => false)
  * `useBorder` + `useRounded` + `useElevation` + `usePadding` + `useMargin`
  * que chaque composant visuel devait repeter. Lit les etats `isHover`/
  * `isActive`/`isDisabled` (et leurs overrides `hoverState`/`activeState`)
- * et resout 8 axes state-aware : color, bgColor, border, rounded,
- * elevation, padding, margin, gap — chacun avec classes ET styles.
+ * et resout 10 axes state-aware : color, bgColor, border, borderColor,
+ * rounded, elevation, padding, margin, gap, opacity — chacun avec
+ * classes ET styles.
  * Priorite de resolution par axe : HOVER gagne sur ACTIVE (survoler un
  * element presse/selectionne montre la surface hover), qui gagne sur la
  * valeur de repos (`props.xxx`).
@@ -167,6 +170,29 @@ export function useStateEffect (
     const margin   = pickEffective(() => props.margin, isHover, isActive, hoverState, activeState, 'margin')
     const gap      = pickEffective<boolean | number | string>(
         () => props.gap, isHover, isActive, hoverState, activeState, 'gap',
+    )
+    /*********************************************************
+     * Axes 9 and 10 — opacity, borderColor (ADR-005 lot 3)
+     *
+     * @description
+     * `opacity` is the half of `OrigamBtn`'s `plain` variant a preset
+     * could not express: `{ opacity: 70, hover: { opacity: 100 } }`.
+     *
+     * @description
+     * `borderColor` was ALREADY forwarded to `useBorder` below, but read
+     * straight from `props` and documented as "not state-swappable".
+     * That held while no state override could name it; `outlined
+     * --active` paints a border-COLOUR, so the getter now reads the
+     * resolved ref instead.
+     *
+     * @description
+     * Behaviour is unchanged for every existing consumer: `pickEffective`
+     * falls back to `props.borderColor` whenever neither state override
+     * names the key, which is every call site today.
+     ********************************************************/
+    const opacity  = pickEffective(() => props.opacity, isHover, isActive, hoverState, activeState, 'opacity')
+    const borderColor = pickEffective(
+        () => props.borderColor, isHover, isActive, hoverState, activeState, 'borderColor',
     )
 
     // ── Color axis (preserved verbatim from useColorEffect) ──────────
@@ -284,7 +310,7 @@ export function useStateEffect (
     const { borderClasses, borderStyles }       = useBorder(
         reactive({
             get border () { return border.value },
-            get borderColor () { return props.borderColor },
+            get borderColor () { return borderColor.value },
             get borderStyle () { return props.borderStyle },
             get borderBlock () { return props.borderBlock },
             get borderInline () { return props.borderInline },
@@ -372,6 +398,24 @@ export function useStateEffect (
     })
     const gapClasses = computed<string[]>(() => [])
 
+    /*********************************************************
+     * Opacity axis
+     *
+     * @description
+     * Delegates to `useOpacity` through the same `reactive` getter pattern
+     * padding / margin use.
+     *
+     * @description
+     * A plain literal (`{ opacity: opacity.value }`) would capture the
+     * value once at call time and never re-run on a hover/active swap —
+     * precisely the state change this axis exists for.
+     ********************************************************/
+    const { opacityClasses, opacityStyles } = useOpacity(
+        reactive({
+            get opacity () { return opacity.value },
+        }) as IOpacityProps,
+    )
+
     return {
         // Resolved scalar refs (so consumers can read the effective value)
         color,
@@ -382,6 +426,8 @@ export function useStateEffect (
         padding,
         margin,
         gap,
+        opacity,
+        borderColor,
 
         // Per-axis classes + styles (state-aware)
         colorClasses,
@@ -398,5 +444,7 @@ export function useStateEffect (
         marginStyles,
         gapClasses,
         gapStyles,
+        opacityClasses,
+        opacityStyles,
     }
 }
