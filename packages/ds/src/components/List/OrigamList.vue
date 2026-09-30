@@ -428,8 +428,65 @@
 			// radius. The two longhands are the names the base rule reads.
 			--origam-list---padding-inline-start: var(--origam-space---2, 8px);
 			--origam-list---padding-inline-end: var(--origam-space---2, 8px);
+
+			// ⛔ L'AXE VERTICAL DOIT ETRE DECLARE ICI AUSSI, et pas seulement dans
+			// la feuille. Mesure du 2026-09-30, menu nav de la barre marketing sur
+			// les 8 identites : `--origam-list---padding-block-start/end` valait
+			// `0` sur SEPT d'entre elles, et `var(--origam-space---2)` sur la seule
+			// `origam`. La feuille (`light.css:1716`) donne bien 8px, mais la
+			// matrice de theme runtime emet `0` pour chaque marque, et `origam`
+			// n'y echappe que parce qu'elle porte encore le reset genere
+			// (`origam-reset.generated.ts`, cf. #609) qui le re-declare.
+			//
+			// Une declaration SUR L'ELEMENT bat celle de `:root` : la poser ici
+			// neutralise l'ecart entre identites sans toucher aux 7 themes. Le
+			// rendu passait de 5-7px en vertical contre 13-27px en inline — un
+			// facteur 4 sur cartoon et glass — a des gouttieres du meme ordre.
+			--origam-list---padding-block-start: var(--origam-space---2, 8px);
+			--origam-list---padding-block-end: var(--origam-space---2, 8px);
+
 			--origam-list-subheader---font-size: var(--origam-list__subheader---nav-font-size, 0.75rem);
-			--origam-list---indent-padding: var(--origam-list---indent-padding-nav, -8px);
+
+			// ⛔ INDENT A ZERO EN MODE NAV — il rendait les items ASYMETRIQUES.
+			// `OrigamListItem` calcule
+			// `padding-inline-start: calc(base + indent + density)` mais
+			// `padding-inline-end: calc(base + density)` : l'indent ne s'applique
+			// QU'AU COTE START. Avec -8px, un item de menu recevait donc 8px de
+			// moins a gauche qu'a droite. Mesure : du bord du menu au texte,
+			// `origam` 12px a gauche contre 20px a droite, `apple` 14/18,
+			// `ecom`/`editorial`/`geek` 13/17 — cinq identites sur huit
+			// desequilibrees.
+			//
+			// L'indent sert a decaler les niveaux IMBRIQUES ; un menu de
+			// navigation est plat, il n'a rien a indenter. Les listes imbriquees
+			// gardent `--origam-list---indent-padding` intact hors mode nav.
+			--origam-list---indent-padding: 0px;
+
+			// ⛔ L'ECART ENTRE PASTILLES ETAIT NUL — le desequilibre signale.
+			// Mesure du 2026-09-30 sur le menu « Features » (10 items), 8
+			// identites : la pastille d'un item est en retrait de 12 a 15px a
+			// gauche ET a droite, mais l'ecart VERTICAL entre deux pastilles
+			// valait `0` sur SEPT identites sur huit (geek : 5px). Les rangees se
+			// touchent donc bord a bord pendant que les cotes respirent — un
+			// rapport infini, pas seulement desequilibre.
+			//
+			// La liste est un conteneur BLOC : pas de `gap` disponible sans la
+			// passer en flex, ce qui toucherait les ~200 consommateurs de
+			// `origam-list`. La marge entre freres adjacents obtient le meme
+			// resultat sans changer le mode de disposition, et ne s'applique qu'au
+			// mode nav.
+			// ⛔ `:deep()` EST OBLIGATOIRE ICI, et une regle scopee nue ne marche
+			// PAS. Mesure : l'item porte `data-v-5f5f508b` (OrigamListItem) et le
+			// scope de l'appelant, mais PAS `data-v-05b52ddf` (OrigamList) — les
+			// items arrivent par le SLOT, donc ils appartiennent au scope de celui
+			// qui les ecrit, pas a celui de la liste qui les recoit. Une regle
+			// scopee nue compile en `… .origam-list-item[data-v-05b52ddf]` et ne
+			// matche jamais : le premier essai a rendu un ecart de 0px, identique
+			// a l'etat d'avant. `:deep()` pose l'attribut sur l'ANCETRE, qui lui
+			// le porte.
+			:deep(.origam-list-item + .origam-list-item) {
+				margin-block-start: var(--origam-list--nav---item-gap, 8px);
+			}
 		}
 
 		&--rounded {

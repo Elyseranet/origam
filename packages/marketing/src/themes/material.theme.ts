@@ -313,7 +313,7 @@ export const materialLightTheme: IOrigamTheme = {
         // PILULE qui flotte dans le panneau, et l'encart de 13px fait partie de
         // l'identite ; ici c'est un rectangle M3, et un rectangle encarte se lit
         // comme un defaut. Meme chiffre, deux intentions. Ne pas « harmoniser ».
-        'origam-list': { nav: true, rounded: 'none', paddingInline: 0 },
+        'origam-list': { nav: true, rounded: 'none' },
         // `paddingInline: 12` — PROP, pas cssVar : la gouttière interne du label
         // valait 0px à gauche, mesurée. Le DS calcule
         // `padding-inline-start: calc(base + indent + density)` et, sur un
