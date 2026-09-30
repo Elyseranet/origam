@@ -1215,6 +1215,40 @@ a drive-by edit.
 
 ---
 
+## ⛔ Un ticket OUVERT n'est pas un ticket VIVANT — verifie avant de deleguer
+
+**Mesure, 2026-09-30 : un agent a ete lance sur #371, dont les CINQ points
+etaient deja corriges sur `develop`.** Les quatre commits porteurs y etaient
+depuis un moment — `08c30693a` (#548), `8545aaaa6`, `3f063d727`, `d3930ff2c` —
+et personne n'avait ferme le ticket.
+
+Le pendant de la regle « merge != ferme » est donc vrai aussi, et il coute cher
+dans l'autre sens : **un ticket dont le travail a atterri mais qui reste ouvert
+consomme un agent entier.** Le tableau ne mentait pas sur le travail restant, il
+mentait sur le travail fait.
+
+**Avant de confier un ticket a quiconque, etablis qu'il est encore vivant** — et
+par la mesure, pas en lisant sa date :
+
+```sh
+gh issue view <n> --json title,body                     # quels sont ses constats ?
+git log --oneline --all --grep "#<n>"                    # quelque chose les cite-t-il deja ?
+git log --oneline origin/develop --grep "#<n>"           # est-ce sur develop ?
+```
+
+Puis reproduis UN de ses constats. S'il ne se reproduit pas, le ticket est a
+fermer avec la mesure, pas a confier.
+
+⚠️ Le lot lance par erreur n'a pas ete perdu pour autant, et c'est instructif :
+il a ETABLI que les trois constats etaient reels (verdict navigateur, jamais
+pris avant), trouve une **seconde fuite non rapportee** (`isexpanded`, a cote de
+`isgroupopen`), et surtout decouvert POURQUOI le defaut avait survecu — aucune
+des 30 Variants de la story ne rendait de ligne de groupe, `groupBy` n'ayant
+aucun controle. **Un defaut qu'aucune Variant n'expose ne peut etre attrape par
+personne**, et c'est la vraie lecon du lot.
+
+---
+
 ## Work priorities and versioning
 
 Which work is picked up first, and how a release number is chosen, live in
