@@ -18,6 +18,51 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.21.0] - 2026-10-01
+
+### Changed — ⚠️ `OrigamBlockquote` : le `variant` est un preset de props, plus un bloc SCSS
+
+Deuxième composant converti après le pilote `OrigamKbd`, et premier de la **famille A** au sens de
+la décision D5. Les cinq valeurs — `default`, `elegant`, `quoted`, `minimal`, `pull` — ne sont plus
+cinq règles CSS : ce sont cinq `Partial<IBlockquoteProps>` dans
+`consts/Blockquote/blockquote.const.ts`, résolus au rang **preset** du resolveur de props.
+
+La garde `no-variant-css` passe de **32 à 27** entrées, sans aucune `Blockquote` restante.
+
+**Ce que ça change pour un consommateur** : une prop écrite au site d'appel **bat désormais le
+variant**. Avant, `<origam-blockquote variant="elegant" font-size="sm">` rendait 18px — la taille
+du variant — et la prop était **inerte**. Elle peint maintenant.
+
+⚠️ **La classe `--variant-{valeur}` est conservée** et reste émise : c'est un crochet d'override
+pour le consommateur. Mais le DS ne livre plus **aucune** règle qui la cible (décision D3), donc une
+feuille applicative qui comptait sur la cascade du DS pour la styler ne trouve plus rien à battre.
+
+⚠️ **Deux effets quittent le variant pour une prop comportementale**, parce qu'ils n'étaient pas du
+style : le marqueur de citation de `quoted` (il *monte un élément*) et l'alignement par défaut de
+`pull`. L'exemption est désormais documentée **sur la prop**, au lieu d'être implicite dans une
+règle CSS.
+
+### Removed — ⚠️ 8 tokens typographiques de variant
+
+`--origam-blockquote__{elegant,minimal,pull}---{font-family,font-size,font-weight,line-height}`
+sont retirés des 4 feuilles et de `TTokenName`. Ils n'avaient **plus aucun lecteur** une fois les
+règles supprimées, et **aucun thème ne les lisait** : chaque échelon visé par le preset est
+byte-pour-byte l'alias que la feuille portait déjà. Le canal de personnalisation n'est pas perdu,
+il a changé de nature — il passe par `theme.variants['origam-blockquote']`, ce que D4 prévoit.
+
+⛔ **Le canal de thème des filets d'accent est préservé, et c'était la contrainte dure du lot.**
+Vérifié en navigateur sur les 8 identités × 2 modes : le thème `editorial`, qui pose
+`--origam-blockquote__accent---width: 3px`, rend **3px avant comme après**, les sept autres
+identités rendant 4px — **zéro écart** sur les variants nus. Le preset porte la chaîne
+`var(--origam-blockquote__accent---width, 4px)` et non une largeur en dur, précisément pour ça.
+
+### Fixed — une non-régression qui affirmait le contraire de ce qu'elle garantissait
+
+`utility-cascade-padding-margin-950.spec.ts` échangeait la **classe** de variant et attendait que
+le style suive — l'inverse de la décision D3, qui veut que cette classe ne porte aucun style du DS.
+Réécrit sur le canal **inline**, avec le contrôle d'actuation qu'il n'avait jamais eu : la garantie
+de #950 tient désormais par un mécanisme plus fort que la spécificité.
+
 ## [2.20.0] - 2026-10-01
 
 ### Added — la grille de props LOGIQUES PAR CÔTÉ, les 20 qui manquaient

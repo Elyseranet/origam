@@ -18,6 +18,19 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.21.0',
+        date: '2026-10-01',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2210.summary',
+        summaryFallback: '1 change, 1 fix and 1 breaking change. See the full changelog for detail.',
+        highlights: [
+            { type: 'changed', textKey: 'changelog.versions.v2210.h1', textFallback: '⚠️ OrigamBlockquote : le variant est un preset de props, plus un bloc SCSS' },
+            { type: 'deprecated', textKey: 'changelog.versions.v2210.h2', textFallback: '⚠️ 8 tokens typographiques de variant' },
+            { type: 'fixed', textKey: 'changelog.versions.v2210.h3', textFallback: 'une non-régression qui affirmait le contraire de ce qu\'elle garantissait' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.20.0',
         date: '2026-10-01',
         type: 'minor',
