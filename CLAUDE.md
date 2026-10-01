@@ -1815,10 +1815,13 @@ origam:
   ask is the single most expensive failure mode in this repo, because its
   output looks exactly like an answer.
 
-  Measured 2026-10-01, during #1013 — **eight occurrences in one lot, four
-  from the developer and four from the coordinator reviewing him**. Nobody
-  involved was being careless; the count is this high because the pattern is
-  the *default* outcome of asking a text tool a structural question:
+  Measured 2026-10-01, during #1013 — **nine occurrences in one lot, four
+  from the developer and five from the coordinator reviewing him**, and
+  **numbers 6 to 9 are all LATER than this section**: two by its author, one
+  by the coordinator who had just approved it, and one by that coordinator
+  *while the author was writing up the previous one*. Nobody involved was
+  being careless; the count is this high because the pattern is the *default*
+  outcome of asking a convenient tool a structural question:
 
   | measurement | what it aimed at | what it actually answered |
   |---|---|---|
@@ -1830,6 +1833,7 @@ origam:
   | `grep -c roundedStartStart bracket.interface.ts` | "did the corner `Omit` survive the rebase?" | **0**, read as "it vanished" — it was in `bracket.type.ts:193` as `TBracketRoundedProps` |
   | `git diff --name-only origin/develop..HEAD \| grep -c '^packages/ds/'` | "does MY branch touch `packages/ds/`?" | **1** — but it was `develop`'s own release bump. `A..B` lists BOTH sides; the question needed the **merge base** (`gh pr diff` → 0) |
   | `until [ "$(gh pr checks … \| grep -c pending)" = 0 ]` | "have all checks concluded?" | **"ALL CONCLUDED"** while checks were *re-queueing* — `gh` printed `no checks reported` as plain text, so zero matched |
+  | `gh run list --branch develop --limit 1 --jq '.[0]'` | "is CI green on the bump commit?" | **`success`** — from `docs-fixtures`. The `CI` run carrying the 19 checks was `in_progress`. **This one was about to publish to npm.** |
 
   Each was reproducible, each was well-formed, and each produced a confident
   wrong conclusion. Three nearly cost real work: the first made the author
@@ -1837,15 +1841,37 @@ origam:
   fourth nearly blocked a green PR, and the sixth nearly had a reviewer report
   a restriction as lost when it had merely been *harmonised* into a named type.
 
-  ⛔ **Occurrences 6, 7 and 8 are LATER THAN THIS SECTION — two of them by its
-  own author, minutes after writing it, and one by the reviewer who had just
-  approved it.** That does not weaken the rule; it is the whole argument for
-  the ORDER of the remedies below. A warning does not survive contact with a
-  convenient one-liner, so **treat "I know about this trap" as no protection
-  whatsoever** — only the first remedy (*observe the resolved artefact, not
-  the source text*) actually holds.
+  ⛔ **Occurrences 6 to 9 are LATER THAN THIS SECTION — two by its own author,
+  minutes after writing it, and two by the reviewer who had just approved
+  it.** That does not weaken the rule; it is the whole argument for the ORDER
+  of the remedies below. A warning does not survive contact with a convenient
+  one-liner, so **treat "I know about this trap" as no protection whatsoever**
+  — only the first remedy (*observe the resolved artefact, not the source
+  text*) actually holds.
 
-  The last two are worth their own warnings, because both are shapes this
+  ⛔ **8 and 9 share one root, and it is the costliest shape in the family:
+  AN ABSENCE OF EVIDENCE OF RED, READ AS EVIDENCE OF GREEN.** "No line matches
+  *pending*" → "everything concluded". "The one run I asked for is green" →
+  "the commit is green". Both reduced a set before testing it, and in both the
+  convenient flag (`grep -c pending`, `--limit 1`) is exactly what made the
+  error comfortable. **Number 9 was one step from publishing to npm**, where a
+  version is never withdrawn — only the reflex of enumerating stopped it.
+
+  So before concluding anything from a set, require it to be **non-empty AND
+  complete**, and say **which SHA** it describes rather than "the latest":
+
+  - `gh run list --branch <b> --limit 1` answers *"the most recent run"*, never
+    *"the state of this commit"*. `develop` carries **three** workflows per
+    SHA (`CI`, `Build`, `docs-fixtures`), and the one holding the 19 checks is
+    the slowest — so the first row is routinely a green `docs-fixtures` sitting
+    in front of an `in_progress` `CI`. Enumerate the runs **for that SHA** and
+    require all three `completed`.
+  - ⚠️ `completed` is not `success`. Measured on `1528603d4`: `CI` concluded
+    **`cancelled`**. A check for `== "success"` and a check for
+    `!= "success"` disagree about that row, and both are wrong in one
+    direction — enumerate the terminal states you accept, explicitly.
+
+  Numbers 7 and 8 also get their own warnings, because both are shapes this
   repo's own conventions push you toward:
 
   - ⛔ **`git diff A..B` lists changes from BOTH sides.** To ask "what does my
