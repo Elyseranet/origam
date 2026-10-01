@@ -36,7 +36,52 @@ import type { IBracketRound } from './bracket-round.interface'
  * data and re-render. No internal state is held about scores or
  * winners — the data passed in is the source of truth.
  */
-export interface IBracketProps extends ICommonsComponentProps, ITagProps, IDensityProps, IRoundedProps, IColorProps, IBgColorProps, IBorderProps, IDimensionProps, IElevationProps, IMarginProps, IPaddingProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'letterSpacing'> {
+/*********************************************************
+ * Pourquoi la surface `rounded` est RESTREINTE ici — #1013
+ *
+ * @description
+ * `IRoundedProps` a gagné quatre coins LOGIQUES (`roundedStartStart`,
+ * `roundedStartEnd`, `roundedEndStart`, `roundedEndEnd`). Les trois autres
+ * composants Bracket les consomment réellement — `OrigamBracketMatch` et
+ * `OrigamBracketCompetitor` appellent `useRounded` / `useStateEffect`, donc
+ * leurs interfaces gardent la surface complète. `OrigamBracket` ne les
+ * appelle PAS : il passe `props` en bloc à `utils/Bracket/bracket-surface.util.ts`,
+ * qui émet des custom properties `--origam-bracket-match---*` relues par le
+ * SCSS d'`OrigamBracketMatch`, une déclaration PHYSIQUE par coin.
+ *
+ * @description
+ * ⛔ CES QUATRE COINS SONT STRUCTURELLEMENT INCÂBLABLES PAR CETTE VOIE, et
+ * ce n'est pas un manque de travail. Analyse de cas faite sur les quatre
+ * combinaisons : avec les deux familles de longhands déclarées sans
+ * condition dans une feuille, AUCUNE chaîne de fallback ne donne à la fois
+ * « le physique gagne » et « le logique se retourne en RTL ». La
+ * déclaration physique résout toujours via son fallback, donc elle écrase
+ * toujours la logique ; et si son fallback traverse la var logique, alors
+ * en RTL les DEUX coins sont peints. Cause racine : la substitution `var()`
+ * est aveugle au writing-mode, alors que le mapping de propriété ne l'est
+ * pas.
+ *
+ * @description
+ * ⛔ ET LE RACCOURCI DU CÔTÉ BORDER N'EXISTE PAS ICI. Les arêtes `border`
+ * purement BLOC (`block-start` / `block-end`) sont invariantes en
+ * `horizontal-tb` — ce que Bracket suppose partout — donc câblables. Un
+ * COIN n'a pas cette propriété : tout nom de coin logique est
+ * `{bloc}-{inline}` et porte donc une composante inline. Mesuré dans
+ * Chromium, les quatre coins changent de coin physique sous RTL
+ * (`start-start` : top-left -> top-RIGHT ; `start-end` : top-right ->
+ * top-LEFT ; idem pour les deux coins `end-*`), avec `padding-block-start`
+ * -> `padding-top` comme contrôle négatif, invariant à 40px. Les quatre
+ * sortent donc, pas deux.
+ *
+ * @description
+ * On RESTREINT plutôt que de baseliner : le garde `unconsumed-props` dit
+ * « Fix it, do not baseline it », et une prop qu'on retire de l'interface
+ * ne peut plus mentir au consommateur. Le même `Pick<ITypographyProps, …>`
+ * ci-dessous est le précédent de cet idiome dans cette interface. Le jour
+ * où `OrigamBracket` passe par `useRounded` — ou où son SCSS devient
+ * logique — retirer l'`Omit<>` suffit.
+ ********************************************************/
+export interface IBracketProps extends ICommonsComponentProps, ITagProps, IDensityProps, Omit<IRoundedProps, 'roundedStartStart' | 'roundedStartEnd' | 'roundedEndStart' | 'roundedEndEnd'>, IColorProps, IBgColorProps, IBorderProps, IDimensionProps, IElevationProps, IMarginProps, IPaddingProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'letterSpacing'> {
     /**
      * Required. Pre-ordered list of rounds. For single-elimination,
      * the rounds are laid out from earliest (e.g. round-of-16) to
