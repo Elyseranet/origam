@@ -9249,13 +9249,6 @@
               },
               {
                 "type": "dimension",
-                "value": "var(--origam-font__size---3xl)",
-                "tokenPath": "--origam-blockquote__pull---font-size",
-                "descriptionKey": "components.blockquote.tokens.pull_font_size",
-                "descriptionFallback": "Font size in pull variant."
-              },
-              {
-                "type": "dimension",
                 "value": "8rem",
                 "tokenPath": "--origam-blockquote--quoted---glyph-size",
                 "descriptionKey": "components.blockquote.tokens.glyph_size",
@@ -9277,13 +9270,13 @@
                 "cls": ".origam-blockquote__mark--bg",
                 "num": 2,
                 "descriptionKey": "components.blockquote.anatomy.mark",
-                "descriptionFallback": "Decorative opening quote glyph. Absolute, z-index 0, opacity ~0.08. Visible only in variant=\"quoted\"."
+                "descriptionFallback": "Decorative opening quote glyph. Absolute, z-index 0, opacity ~0.08. Rendered when the quoteMark prop is on — the quoted variant preset turns it on, and it is reachable on any variant."
               },
               {
                 "cls": ".origam-blockquote__body",
                 "num": 3,
                 "descriptionKey": "components.blockquote.anatomy.body",
-                "descriptionFallback": "Citation body wrapper. z-index 1 in quoted variant to sit above the glyph."
+                "descriptionFallback": "Citation body wrapper. Raised to z-index 1 by a sibling selector whenever the decorative glyph is present, so the text sits above it."
               },
               {
                 "cls": ".origam-blockquote__attribution",
@@ -9380,12 +9373,6 @@
               "descriptionFallback": "Resolved locale (after \"auto\" resolution from DOM or fallback to \"en\")."
             },
             {
-              "name": "effectiveAlign",
-              "type": "ComputedRef<string>",
-              "descriptionKey": "components.blockquote.exposed.effective_align",
-              "descriptionFallback": "Resolved text alignment after applying per-variant defaults."
-            },
-            {
               "name": "openMark",
               "type": "ComputedRef<string>",
               "descriptionKey": "components.blockquote.exposed.open_mark",
@@ -9396,12 +9383,6 @@
               "type": "ComputedRef<string>",
               "descriptionKey": "components.blockquote.exposed.close_mark",
               "descriptionFallback": "Locale-appropriate closing quote glyph."
-            },
-            {
-              "name": "showQuoteMark",
-              "type": "ComputedRef<boolean>",
-              "descriptionKey": "components.blockquote.exposed.show_quote_mark",
-              "descriptionFallback": "True when the decorative glyph should render (variant=\"quoted\")."
             },
             {
               "name": "hasAttribution",
@@ -9541,6 +9522,13 @@
                 "labelKey": "components.blockquote.playground.lang",
                 "defaultValue": "auto",
                 "labelFallback": "Quote mark lang"
+              },
+              {
+                "kind": "switch",
+                "prop": "quoteMark",
+                "labelKey": "components.blockquote.playground.quote_mark",
+                "defaultValue": false,
+                "labelFallback": "Quote mark glyph"
               }
             ],
             "defaultSlotContent": "Design is not just what it looks like and feels like. Design is how it works."
