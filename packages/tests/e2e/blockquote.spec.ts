@@ -11,9 +11,14 @@ import { expect, test } from '@playwright/test'
  *   2 → Slots - Default
  *   3 → Slots - Author
  *   4 → Slots - Source
- *   5 → Default     (playground)
+ *   5 → Prop — variant (preset matrix)   [ADR-005 D7, data-cy driven]
+ *   6 → Default     (playground)
  *
- * No data-cy attributes in the story — selectors use BEM classes.
+ * ⛔ Les index sont ORDINAUX : inserer une Variant DECALE tous les suivants.
+ * L'ajout de la matrice de presets (index 5) a pousse le playground de 5 a 6.
+ *
+ * Only the preset matrix carries data-cy; the other Variants are addressed
+ * by BEM class.
  * Navigation: direct goto with variantId query param (pattern: btn.spec.ts / alert.spec.ts).
  * No waitForLoadState('networkidle') — Histoire keeps an HMR WebSocket open.
  * VIS = { timeout: 20000 } absorbs cold Histoire sandbox startup (~15s).
@@ -288,7 +293,7 @@ test.describe('OrigamBlockquote', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // DEFAULT / PLAYGROUND (index 5)                                       //
+    // DEFAULT / PLAYGROUND (index 6)                                       //
     // init: variant='default', bgColor='primary', lang='auto', align='left'//
     //        author='Linus Torvalds', source='LKML, 2003',                 //
     //        cite='https://lkml.org/lkml/2003/8/26/142', tag='blockquote' //
@@ -296,13 +301,13 @@ test.describe('OrigamBlockquote', () => {
 
     test.describe('Default (playground)', () => {
         test('renders with BEM root class', async ({ page }) => {
-            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-blockquote').first()).toBeVisible(VIS)
         })
 
         test('variant=default + bgColor=primary classes coexist', async ({ page }) => {
-            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const host = sandbox.locator('.origam-blockquote').first()
             await expect(host).toBeVisible(VIS)
@@ -311,7 +316,7 @@ test.describe('OrigamBlockquote', () => {
         })
 
         test('quote mark is absent (variant is not quoted)', async ({ page }) => {
-            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const host = sandbox.locator('.origam-blockquote').first()
             await expect(host).toBeVisible(VIS)
@@ -319,7 +324,7 @@ test.describe('OrigamBlockquote', () => {
         })
 
         test('cite attribute is set on the root element', async ({ page }) => {
-            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const host = sandbox.locator('.origam-blockquote').first()
             await expect(host).toBeVisible(VIS)
