@@ -1807,6 +1807,60 @@ origam:
   times; an agent caught it again on 2026-09-29 while the paragraph still said
   30/30).
 
+  ### ⛔ Recounting is not enough — **name the tree and the file**
+
+  **Before citing a number, name the TREE and the FILE it was taken from.**
+  "Recount, never quote" says to re-measure; it does not say *where*, and a
+  re-measurement taken on the wrong tree or the wrong file is a fresh number
+  that is still false. A well-formed command answering a question you did not
+  ask is the single most expensive failure mode in this repo, because its
+  output looks exactly like an answer.
+
+  Measured 2026-10-01, during #1013 — **four occurrences in one lot, two from
+  the developer and two from the coordinator reviewing him**:
+
+  | measurement | what it aimed at | what it actually answered |
+  |---|---|---|
+  | `grep -c 'useBorder\|useStateEffect' <component>.vue` | real call sites | **comment prose** — including a comment the author had just added himself |
+  | `grep -c 'bracket-match---border' <baseline>.json` | 14 pre-existing sibling entries | **18**, because it was run on the author's own tree *after* his 4 additions |
+  | `grep Omit bracket.interface.ts` | "is this interface restricted?" | **0**, on a file that IS restricted — the wrong question entirely |
+  | `jq 'conclusion != "SUCCESS"'` over CI checks | failing checks | **8 "failures"** that were checks *not yet concluded* |
+
+  Each was reproducible, each was well-formed, and each produced a confident
+  wrong conclusion. Two nearly cost real work: the first made the author write
+  a test asserting a component consumed a composable it never calls, and the
+  fourth nearly blocked a green PR.
+
+  ⛔ **`grep Omit` on an interface file does NOT answer "is this interface
+  restricted".** The restriction can live in a *named type declared somewhere
+  else*, which is exactly the case for `IBracketProps` — its
+  `Omit<IBorderProps, …>` sits in `types/Bracket/bracket.type.ts` as
+  `TBracketBorderProps`, so the interface file contains zero occurrences of
+  `Omit` while being fully restricted. Generalised: **a grep over source text
+  cannot answer a question about a RESOLVED type.**
+
+  What to do instead, in order of preference:
+
+  - **Prefer an observation of the resolved artefact over a grep of the
+    source.** For a prop surface, the Vue SFC compiler emits a runtime props
+    descriptor whose keys are the interface's resolved set with the `extends`
+    chain flattened — so `Component.props` observes the real answer, immune to
+    the type's name, the file the `Omit` lives in, and the number of files it
+    crosses. Pinned in
+    `packages/tests/TU/components/Bracket/bracket-logical-side-restriction.spec.ts`.
+  - **State the tree in the sentence**: `git show origin/develop:<path>` and
+    `git show origin/<branch>:<path>` make the tree explicit and
+    unfalsifiable. A bare `grep` in a worktree measures whatever is on your
+    disk right now, including your own uncommitted work.
+  - **Exclude comments when counting code**, or count call sites with an AST
+    pass rather than a line match.
+  - **Enumerate every terminal state**, never `!= SUCCESS` — "pending" is not
+    "failed".
+
+  The cheap habit that catches all four: **say the tree out loud.** "14 on
+  `origin/develop`" cannot be confused with "18 on my branch after my own
+  additions"; "14" alone can.
+
   ✅ **#966 — CORRIGÉ.** Guard 30 (`token-var-channels-marketing`) énumérait le
   DISQUE et balayait donc des artefacts de build qu'aucun checkout de CI ne
   porte. `walkSources` passe désormais par **l'index git** (`listRepoFiles`,
