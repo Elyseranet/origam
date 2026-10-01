@@ -105,3 +105,52 @@ export type TBracketElevation = TElevation | boolean | null | undefined
  * layer.
  */
 export type TBracketBorder = IBorderProps['borderTop'] | null | undefined
+
+/*********************************************************
+ * TBracketBorderProps
+ *
+ * @description
+ * `IBorderProps` MOINS les quatre aretes logiques INLINE (#1013). Partage
+ * par les interfaces Bracket dont les props de bordure sont resolues par
+ * `bracketSurfaceVars` — `IBracketProps` (la racine) et `IBracketMatchProps`
+ * (la carte). Declare UNE fois ici plutot que deux `Omit<>` recopies.
+ *
+ * @description
+ * ⛔ `IBracketCompetitorProps` n'utilise PAS ce type, a dessein :
+ * `OrigamBracketCompetitor` appelle `useStateEffect` pour de vrai
+ * (`OrigamBracketCompetitor.vue:209`), donc ses quatre aretes logiques
+ * atteignent `useBorder` et peignent. Restreindre par FAMILLE de composant
+ * au lieu de par consommation mesuree y retirerait quatre props qui
+ * marchent.
+ *
+ * @description
+ * Pourquoi les deux autres sont restreintes : elles ne peignent pas via
+ * `useBorder` mais via des custom properties `--origam-bracket-match---*`
+ * lues dans des declarations PHYSIQUES. Mapper une arete logique sur une
+ * arete physique au moment d'ecrire la feuille exige de connaitre le mode
+ * d'ecriture, et `inline-start` vaut `left` en LTR mais `right` en RTL.
+ * Aucune chaine de repli `var()` ne peut l'exprimer : la substitution est
+ * AVEUGLE au mode d'ecriture alors que le mapping de la propriete ne l'est
+ * pas.
+ *
+ * @description
+ * Les deux aretes de BLOC restent declarees et sont honorees :
+ * `block-start`/`block-end` valent invariablement `top`/`bottom` en
+ * `horizontal-tb`, hypothese que la feuille faisait deja pour `borderBlock`.
+ * Confirme par sonde navigateur sur l'axe logique (Chromium, LTR vs RTL) :
+ * les noms porteurs d'une composante INLINE changent d'arete, le controle
+ * negatif `padding-block-start` ne bouge pas.
+ *
+ * @description
+ * ⛔ Retirer plutot que declarer-et-ignorer est la regle que
+ * `bracket-surface.interface.ts` enonce deja pour cette couche : une prop
+ * typee, editable dans Histoire, et inerte est pire qu'une prop absente.
+ * Arbitre par le proprietaire le 2026-10-01. La completude de l'axe inline
+ * part dans son propre ticket (elle demande de convertir la cascade en
+ * longhands logiques, ce qui change le comportement RTL des props physiques
+ * existantes).
+ ********************************************************/
+export type TBracketBorderProps = Omit<IBorderProps,
+    'borderInlineStart' | 'borderInlineEnd' | 'borderInlineStartColor' | 'borderInlineEndColor'
+>
+

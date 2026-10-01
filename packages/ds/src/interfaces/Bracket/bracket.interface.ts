@@ -2,7 +2,6 @@ import type {
     IBgColorProps,
     IColorProps
 } from '../Commons/color.interface'
-import type { IBorderProps } from '../Commons/border.interface'
 import type {
     ICommonsComponentProps,
     ITagProps
@@ -16,6 +15,7 @@ import type { IRoundedProps } from '../Commons/rounded.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
 
 import type {
+    TBracketBorderProps,
     TBracketConnectorPath,
     TBracketVariant
 } from '../../types/Bracket/bracket.type'
@@ -36,7 +36,7 @@ import type { IBracketRound } from './bracket-round.interface'
  * data and re-render. No internal state is held about scores or
  * winners — the data passed in is the source of truth.
  */
-export interface IBracketProps extends ICommonsComponentProps, ITagProps, IDensityProps, IRoundedProps, IColorProps, IBgColorProps, IBorderProps, IDimensionProps, IElevationProps, IMarginProps, IPaddingProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'letterSpacing'> {
+export interface IBracketProps extends ICommonsComponentProps, ITagProps, IDensityProps, IRoundedProps, IColorProps, IBgColorProps, TBracketBorderProps, IDimensionProps, IElevationProps, IMarginProps, IPaddingProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'letterSpacing'> {
     /**
      * Required. Pre-ordered list of rounds. For single-elimination,
      * the rounds are laid out from earliest (e.g. round-of-16) to

@@ -178,6 +178,19 @@ the "shared grammar limits" tests in
 with the physical prop as a negative control, so a future regex change has
 to acknowledge all three grids at once.
 
+### ⚠️ One component omits the two inline edges — `OrigamBracket`
+
+Every component that inherits `IBorderProps` and routes through `useBorder`
+gets all four logical edges. `OrigamBracket` is the exception: it does not
+paint its own root, it routes its surface onto the match card through
+`--origam-bracket-match---*` custom properties read inside **physical**
+declarations, so a logical-to-physical mapping has to be chosen when the
+stylesheet is written. `block-start` / `block-end` are `top` / `bottom`
+invariantly in `horizontal-tb` and are supported; `inline-start` /
+`inline-end` flip under RTL and no `var()` fallback chain can express that,
+so those four are removed from Bracket's surface with `Omit<>` rather than
+declared and ignored (#1013). See `OrigamBracket.md` for the full note.
+
 ## ⛔ Width keywords go through the INLINE channel (#391)
 
 `none` / `thin` / `thick` emit **both** the `.origam--border-{kw}` utility class

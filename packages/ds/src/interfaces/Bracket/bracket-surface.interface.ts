@@ -62,4 +62,45 @@ export interface IBracketSurfaceInput {
     borderRightColor?: TBracketColor
     borderBottomColor?: TBracketColor
     borderLeftColor?: TBracketColor
+
+    /*********************************************************
+     * LES DEUX ARETES LOGIQUES DE BLOC — ET POURQUOI PAS LES INLINE
+     *
+     * @description
+     * `borderBlockStart` / `borderBlockEnd` (+ `*Color`), issue #1013. Ce
+     * sont les SEULES des quatre aretes logiques que cette couche peut
+     * honorer, et l'asymetrie est mesuree, pas arbitraire.
+     *
+     * @description
+     * Cette couche peint via des custom properties
+     * `--origam-bracket-match---*` que la SCSS d'`OrigamBracketMatch` lit
+     * dans des declarations PHYSIQUES. Mapper une arete logique sur une
+     * arete physique a l'ecriture de la feuille demande donc de connaitre
+     * le mode d'ecriture.
+     * @description
+     * • AXE DE BLOC — `block-start` vaut `top` et `block-end` vaut `bottom`
+     *   en `horizontal-tb`, invariablement. Bracket ne declare jamais
+     *   `writing-mode` (verifie : 0 occurrence) et sa feuille fait DEJA
+     *   cette hypothese pour `borderBlock`, dont la var alimente
+     *   `border-top-width` et `border-bottom-width`. Ces deux aretes
+     *   n'ajoutent donc aucune hypothese nouvelle.
+     * @description
+     * • AXE INLINE — `inline-start` vaut `left` en LTR mais `right` en RTL.
+     *   Aucune chaine de repli ne peut exprimer ca : la substitution
+     *   `var()` est aveugle au mode d'ecriture alors que le mapping de la
+     *   propriete ne l'est pas. Les 4 props inline sont donc RETIREES de la
+     *   surface de Bracket par `Omit<>` (`bracket.interface.ts`) plutot que
+     *   declarees et ignorees — une prop typee et inerte est pire qu'une
+     *   prop absente.
+     *
+     * @description
+     * La completude de Bracket sur l'axe inline part dans son propre
+     * ticket ; elle demande de convertir la cascade en longhands logiques,
+     * ce qui change le comportement RTL des props physiques existantes.
+     ********************************************************/
+    borderBlockStart?: TBracketBorder
+    borderBlockEnd?: TBracketBorder
+
+    borderBlockStartColor?: TBracketColor
+    borderBlockEndColor?: TBracketColor
 }
