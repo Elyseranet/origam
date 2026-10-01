@@ -1807,17 +1807,16 @@ origam:
   times; an agent caught it again on 2026-09-29 while the paragraph still said
   30/30).
 
-  ### ⛔ Recounting is not enough — **name the tree and the file**
-
-  **Before citing a number, name the TREE and the FILE it was taken from.**
-  "Recount, never quote" says to re-measure; it does not say *where*, and a
+  ⛔ **RECOUNTING IS NOT ENOUGH — NAME THE TREE AND THE FILE.** Before citing
+  a number, name the TREE and the FILE it was taken from. "Recount, never
+  quote" just above says to re-measure; it does not say *where*, and a
   re-measurement taken on the wrong tree or the wrong file is a fresh number
   that is still false. A well-formed command answering a question you did not
   ask is the single most expensive failure mode in this repo, because its
   output looks exactly like an answer.
 
-  Measured 2026-10-01, during #1013 — **four occurrences in one lot, two from
-  the developer and two from the coordinator reviewing him**:
+  Measured 2026-10-01, during #1013 — **six occurrences in one lot, two from
+  the developer and four from the coordinator reviewing him**:
 
   | measurement | what it aimed at | what it actually answered |
   |---|---|---|
@@ -1825,19 +1824,44 @@ origam:
   | `grep -c 'bracket-match---border' <baseline>.json` | 14 pre-existing sibling entries | **18**, because it was run on the author's own tree *after* his 4 additions |
   | `grep Omit bracket.interface.ts` | "is this interface restricted?" | **0**, on a file that IS restricted — the wrong question entirely |
   | `jq 'conclusion != "SUCCESS"'` over CI checks | failing checks | **8 "failures"** that were checks *not yet concluded* |
+  | `grep -c Omit bracket-match-component.interface.ts` | real `Omit`s | **1**, from `« Omit to hide the link. »` (line 46) — plain **English** in a JSDoc, not TypeScript |
+  | `grep -c roundedStartStart bracket.interface.ts` | "did the corner `Omit` survive the rebase?" | **0**, read as "it vanished" — it was in `bracket.type.ts:193` as `TBracketRoundedProps` |
 
   Each was reproducible, each was well-formed, and each produced a confident
-  wrong conclusion. Two nearly cost real work: the first made the author write
-  a test asserting a component consumed a composable it never calls, and the
-  fourth nearly blocked a green PR.
+  wrong conclusion. Three nearly cost real work: the first made the author
+  write a test asserting a component consumed a composable it never calls, the
+  fourth nearly blocked a green PR, and the sixth nearly had a reviewer report
+  a restriction as lost when it had merely been *harmonised* into a named type.
+
+  ⛔ **The sixth occurrence is LATER THAN THIS SECTION, committed by someone
+  who had just read it and approved it.** That does not weaken the rule — it
+  is the whole argument for the ORDER of the remedies below. A warning does
+  not survive contact with a convenient `grep`; only the first remedy
+  (*observe the resolved artefact, not the source text*) actually holds. Treat
+  "I know about this trap" as no protection whatsoever.
 
   ⛔ **`grep Omit` on an interface file does NOT answer "is this interface
-  restricted".** The restriction can live in a *named type declared somewhere
-  else*, which is exactly the case for `IBracketProps` — its
-  `Omit<IBorderProps, …>` sits in `types/Bracket/bracket.type.ts` as
-  `TBracketBorderProps`, so the interface file contains zero occurrences of
-  `Omit` while being fully restricted. Generalised: **a grep over source text
-  cannot answer a question about a RESOLVED type.**
+  restricted", and it fails in BOTH directions:**
+
+  - **False positive** — it counts an `Omit` that is not one: comment prose,
+    or the ordinary English verb, as in `« Omit to hide the link. »`.
+  - **False negative** — it misses an `Omit` that exists, because the
+    restriction lives in a *named type declared in another file*.
+    `IBracketProps` is exactly this: its `Omit<IBorderProps, …>` sits in
+    `types/Bracket/bracket.type.ts` as `TBracketBorderProps`, so the interface
+    file contains **zero** occurrences of `Omit` while being fully restricted.
+
+  ⚠️ **And the false negative is the NORMAL shape here, not an edge case.**
+  Two developers working in parallel on #1013 independently moved their
+  restriction into a named type — `TBracketBorderProps` and
+  `TBracketRoundedProps`, the second explicitly documented as "le pendant
+  « coins »" of the first — because the repo's own rule (*types only in
+  `types/`*) requires it. Any future restriction will take the same shape, so
+  a grep for `Omit` in an interface file is reliably wrong by construction.
+
+  Generalised, and this is the sentence that covers all six: **a grep over
+  source TEXT cannot answer a question about a RESOLVED TYPE** — nor about a
+  call graph, a cascade, or a job's terminal state.
 
   What to do instead, in order of preference:
 
