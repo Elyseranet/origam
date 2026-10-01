@@ -1815,8 +1815,10 @@ origam:
   ask is the single most expensive failure mode in this repo, because its
   output looks exactly like an answer.
 
-  Measured 2026-10-01, during #1013 — **six occurrences in one lot, two from
-  the developer and four from the coordinator reviewing him**:
+  Measured 2026-10-01, during #1013 — **eight occurrences in one lot, four
+  from the developer and four from the coordinator reviewing him**. Nobody
+  involved was being careless; the count is this high because the pattern is
+  the *default* outcome of asking a text tool a structural question:
 
   | measurement | what it aimed at | what it actually answered |
   |---|---|---|
@@ -1826,6 +1828,8 @@ origam:
   | `jq 'conclusion != "SUCCESS"'` over CI checks | failing checks | **8 "failures"** that were checks *not yet concluded* |
   | `grep -c Omit bracket-match-component.interface.ts` | real `Omit`s | **1**, from `« Omit to hide the link. »` (line 46) — plain **English** in a JSDoc, not TypeScript |
   | `grep -c roundedStartStart bracket.interface.ts` | "did the corner `Omit` survive the rebase?" | **0**, read as "it vanished" — it was in `bracket.type.ts:193` as `TBracketRoundedProps` |
+  | `git diff --name-only origin/develop..HEAD \| grep -c '^packages/ds/'` | "does MY branch touch `packages/ds/`?" | **1** — but it was `develop`'s own release bump. `A..B` lists BOTH sides; the question needed the **merge base** (`gh pr diff` → 0) |
+  | `until [ "$(gh pr checks … \| grep -c pending)" = 0 ]` | "have all checks concluded?" | **"ALL CONCLUDED"** while checks were *re-queueing* — `gh` printed `no checks reported` as plain text, so zero matched |
 
   Each was reproducible, each was well-formed, and each produced a confident
   wrong conclusion. Three nearly cost real work: the first made the author
@@ -1833,12 +1837,32 @@ origam:
   fourth nearly blocked a green PR, and the sixth nearly had a reviewer report
   a restriction as lost when it had merely been *harmonised* into a named type.
 
-  ⛔ **The sixth occurrence is LATER THAN THIS SECTION, committed by someone
-  who had just read it and approved it.** That does not weaken the rule — it
-  is the whole argument for the ORDER of the remedies below. A warning does
-  not survive contact with a convenient `grep`; only the first remedy
-  (*observe the resolved artefact, not the source text*) actually holds. Treat
-  "I know about this trap" as no protection whatsoever.
+  ⛔ **Occurrences 6, 7 and 8 are LATER THAN THIS SECTION — two of them by its
+  own author, minutes after writing it, and one by the reviewer who had just
+  approved it.** That does not weaken the rule; it is the whole argument for
+  the ORDER of the remedies below. A warning does not survive contact with a
+  convenient one-liner, so **treat "I know about this trap" as no protection
+  whatsoever** — only the first remedy (*observe the resolved artefact, not
+  the source text*) actually holds.
+
+  The last two are worth their own warnings, because both are shapes this
+  repo's own conventions push you toward:
+
+  - ⛔ **`git diff A..B` lists changes from BOTH sides.** To ask "what does my
+    branch add", diff against the **merge base**
+    (`git diff $(git merge-base origin/develop HEAD)..HEAD`) or just read
+    `gh pr diff <n> --name-only`, which is what a reviewer checks. Diffing
+    against a moving `origin/develop` attributes *its* commits to you — here,
+    a release bump of `packages/ds/package.json`, which would have flipped the
+    no-tag criterion to the wrong answer.
+  - ⛔ **"Zero pending" is not "all concluded".** `gh pr checks` prints
+    `no checks reported on the '<branch>' branch` as PLAIN TEXT — not JSON,
+    not an error — while a push is re-queueing the workflow. A loop waiting on
+    `grep -c pending` = 0 therefore reports success during the window when
+    *nothing exists yet*. Require the set to be NON-EMPTY before concluding,
+    and gate on the payload actually being JSON. Same family as the
+    `!= SUCCESS` filter above: **silence and success are indistinguishable
+    unless you assert that you measured something.**
 
   ⛔ **`grep Omit` on an interface file does NOT answer "is this interface
   restricted", and it fails in BOTH directions:**
