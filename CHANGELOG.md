@@ -18,6 +18,79 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.20.0] - 2026-10-01
+
+### Added — la grille de props LOGIQUES PAR CÔTÉ, les 20 qui manquaient
+
+Trois grilles de props directionnelles coexistent dans ce DS. Deux étaient complètes — la
+**physique par côté** (`borderLeft`, `paddingLeft`, `marginLeft`, `roundedTopLeft`) et la
+**logique par axe** (`borderInline`, `borderBlock`, `paddingInline`, `paddingBlock`,
+`marginInline`, `marginBlock`). La troisième, **logique par côté**, était vide : **0 occurrence
+sur 20**, mesurée.
+
+C'était le dernier endroit où le dépôt faisait « moitié », ce que la directive conservée dans
+`adr-007-directional-props.md` interdit : *« si un format existe, il existe partout »*.
+
+| interface | props ajoutées | n |
+|---|---|---|
+| `IBorderProps` | `borderInlineStart/End`, `borderBlockStart/End` + leurs 4 `*Color` | 8 |
+| `IPaddingProps` | `paddingInlineStart/End`, `paddingBlockStart/End` | 4 |
+| `IMarginProps` | `marginInlineStart/End`, `marginBlockStart/End` | 4 |
+| `IRoundedProps` | `roundedStartStart/StartEnd/EndStart/EndEnd` | 4 |
+
+Câblage par **extension de table** : les cinq maps existantes (`BORDER_POSITION_MAP`,
+`BORDER_LOGICAL_AXIS_MAP`, `PADDING_POSITION_MAP`, `MARGIN_POSITION_MAP`, `ROUNDED_CORNER_MAP`)
+sont uniformément façonnées et leur corps de boucle fonctionne verbatim avec un côté logique.
+Aucune grammaire nouvelle. Le vocabulaire partagé (`TLogicalSide`, `TLogicalCorner`) dérive des
+enums existants `START_END` et `BORDER_LOGICAL_AXIS` — aucun enum créé.
+
+**Précédence** : une arête physique et son équivalent logique sont deux orthographes de la même
+arête, donc à spécificité identique. Les composables accumulent des déclarations rendues en style
+**inline**, donc l'ordre de `push` *est* la précédence — le physique passe en dernier et gagne,
+reproduisant le seul précédent déjà écrit dans le dépôt (`spacing.const.ts:85-88`).
+
+### Changed — ⚠️ `OrigamBracket` n'expose plus les props logiques qu'il n'honore pas
+
+Rupture assumée, et elle ne retire rien qui peignait quoi que ce soit.
+
+`OrigamBracket` ne peint pas sa propre racine : il route sa surface vers la carte de match par une
+cascade de custom properties **entièrement physique, sans gestion RTL**. Le fait bloquant :
+**aucune chaîne `var()` ne peut exprimer « le physique bat le logique »**, parce que la
+substitution `var()` est aveugle au mode d'écriture alors que le mapping de la propriété ne l'est
+pas. Les quatre combinaisons ont été dépliées ; chacune casse soit une prop physique existante,
+soit le RTL.
+
+Les interfaces à **zéro appel réel** sont donc restreintes par `Omit<>` — plutôt que de déclarer
+une prop que la couche laisse tomber en silence, ce que le dépôt interdit nommément.
+
+⛔ **Restreindre par famille de composant aurait retiré des props qui fonctionnent** :
+`OrigamBracketCompetitor` appelle réellement `useStateEffect`, et `OrigamBracketMatch` /
+`OrigamBracketCompetitor` appellent `useRounded` côté rayon. Seules les interfaces sans aucun
+appel sont touchées ; les autres gardent la surface complète.
+
+**L'axe bloc est câblé, pas retiré.** `block-start` / `block-end` valent invariablement `top` /
+`bottom` en `horizontal-tb`, Bracket ne déclare jamais `writing-mode`, et sa feuille faisait déjà
+cette hypothèse pour `borderBlock` : les 4 props d'axe bloc sont donc **honorées**, pas omises.
+
+La complétude de Bracket — convertir sa cascade en longhands logiques avec une vraie gestion RTL
+— est suivie séparément. Un commentaire dans l'interface indique que *retirer l'`Omit<>` suffira*.
+
+### Documentation — le pattern `variant` = preset de props est figé
+
+L'ADR-005 exigeait, après validation du pilote `OrigamKbd`, de *« freeze the pattern in
+`CLAUDE.md` »*. Cette seconde moitié n'avait jamais été faite. Elle l'est, dérivée du pilote
+réellement mergé et non de l'intention de l'ADR, avec la convention d'emplacement tranchée : une
+table de preset vit dans le **fichier de consts existant** du composant.
+
+⚠️ **Quatre clauses de D7 étaient fausses** et sont corrigées, l'ancien état conservé en toutes
+lettres. La principale : l'ADR pose un harnais de régression visuelle en « hard prerequisite »
+pour `OrigamBtn` et affirme qu'il n'existe pas. **Il existe depuis le commit `876d675d9` du
+2026-08-12** et couvre les 7 valeurs de `variant` de Btn avec leurs baselines committées — soit
+quatre mois avant la rédaction de la clause qui le déclare absent.
+
+Les chiffres dérivés sont remesurés : **262** specs e2e (et non 175), **14** specs assertant sur
+une classe `--variant-*` (et non 8), **7** baselines PNG committées (et non zéro).
+
 ## [2.19.0] - 2026-09-30
 
 ### Changed — ADR-005 lot 2 : `OrigamKbd` converti, ⚠️ deux ruptures
