@@ -35,8 +35,9 @@ const { paddingClasses, paddingStyles } = usePadding(props)
 
 ## Precedence and vocabulary
 
-Three rungs, resolved by push order — global shorthand, then
-`paddingBlock` / `paddingInline`, then the four physical sides. Measured:
+**Four** rungs, resolved by push order — global shorthand, then
+`paddingBlock` / `paddingInline`, then the four LOGICAL sides, then the four
+PHYSICAL sides. Measured:
 
 | props | classes | styles |
 |---|---|---|
@@ -45,8 +46,39 @@ Three rungs, resolved by push order — global shorthand, then
 | `{ padding: 4 }` | `[]` | `['padding: 4px']` |
 | `{ padding: '8px 16px' }` | `[]` | `['padding-block: 8px', 'padding-inline: 16px']` |
 | `{ paddingInline: '4' }` | `[]` | `['padding-inline: var(--origam-space---4)']` |
+| `{ paddingInlineStart: '8px' }` | `[]` | `['padding-inline-start: 8px']` |
+| `{ paddingBlockEnd: '4' }` | `[]` | `['padding-block-end: var(--origam-space---4)']` |
 | `{ paddingLeft: '8px' }` | `[]` | `['padding-left: 8px']` |
 | `{ padding: '4', paddingTop: '1' }` | `['origam--p-4']` | `['padding-top: var(--origam-space---1)']` |
+| `{ paddingInline: '10px', paddingInlineStart: '99px' }` | `[]` | `['padding-inline: 10px', 'padding-inline-start: 99px']` |
+
+### The logical-side rung (issue #1013)
+
+`paddingInlineStart` / `paddingInlineEnd` / `paddingBlockStart` /
+`paddingBlockEnd` address ONE writing-mode-relative edge. They emit the native
+logical longhands, so the browser flips them under RTL for you — which is the
+reason to prefer them over `paddingLeft` / `paddingRight` whenever the value is
+a reading-order offset (an indent, a gutter beside an accent rule) rather than a
+genuinely physical one.
+
+They sit between the axis rung and the physical rung:
+
+```
+padding            →  paddingInline      →  paddingInlineStart  →  paddingLeft
+(all four edges)      (two edges)           (one edge)             (one edge)
+```
+
+⚠️ **The last step is a decision, not a deduction.** `paddingInlineStart` and
+`paddingLeft` name the *same* edge in LTR horizontal-tb, so neither is narrower
+than the other and push order alone decides. The physical one wins. That keeps
+the direction already documented for corners (`ROUNDED_CORNER_MAP`, where the
+physical per-corner declarations deliberately beat the shorthand's logical
+output), and `useBorder` / `useMargin` / `useRounded` all make the same call —
+two opposite conventions across one prop surface is the "half a grid" that
+#1013 removed.
+
+In practice: **pick one grid per component.** Setting both spellings for one
+edge is a consumer mistake whichever way the tiebreak falls.
 
 The string form `"4"` selects the design rung; the number form `4` means raw
 pixels. ⛔ `{name}--padded` is legacy and — verified across
