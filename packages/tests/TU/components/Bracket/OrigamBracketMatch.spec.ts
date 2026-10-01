@@ -255,3 +255,62 @@ describe('OrigamBracketMatch — #511 isFinal class wiring', () => {
         wrapper.unmount()
     })
 })
+
+// ---------------------------------------------------------------------------
+// #1013 — the logical-per-side border grid on the match card.
+//
+// ⛔ THIS COMPONENT IS INVISIBLE TO THE `unconsumed-props` GUARD. It is in the
+// audit's EXCLUDED set ("props spread / Object.keys(props) in script"), so the
+// guard is BLIND here, not satisfied — nothing would have flagged a
+// typed-but-inert prop. Measured, after an earlier grep of mine counted
+// COMMENT text and produced the opposite conclusion: this component calls
+// neither `useBorder` nor `useStateEffect`. It builds `matchStyles` by hand
+// and feeds `bracketSurfaceVars({...props})` (line ~330), whose output is the
+// `--origam-bracket-match---*` custom properties its OWN stylesheet reads.
+//
+// So the observable channel is the CUSTOM PROPERTY, not a
+// `border-inline-start-width` longhand — which is why these tests assert on
+// the var names. Same mechanism and therefore the same constraint as
+// `OrigamBracket`: the two BLOCK edges are honoured (block-start/block-end
+// are top/bottom invariantly in `horizontal-tb`), the two INLINE edges cannot
+// be (they flip under RTL and no `var()` chain can express that), so they are
+// removed from this interface by `Omit<>` too.
+describe('OrigamBracketMatch — logical-per-side border, BLOCK axis only (#1013)', () => {
+    it.each([
+        ['borderBlockStart', 'block-start'],
+        ['borderBlockEnd', 'block-end']
+    ])('%s emits the --origam-bracket-match---border-%s-width custom property', (prop, edge) => {
+        const wrapper = mountMatch({}, { [prop]: 8 })
+        const style = (wrapper.element as HTMLElement).getAttribute('style') ?? ''
+
+        expect(style).toContain(`--origam-bracket-match---border-${edge}-width: 8px`)
+        wrapper.unmount()
+    })
+
+    it('borderBlockStartColor / borderBlockEndColor emit their per-edge colour vars', () => {
+        const wrapper = mountMatch({}, { borderBlockStartColor: 'success', borderBlockEndColor: 'danger' })
+        const style = (wrapper.element as HTMLElement).getAttribute('style') ?? ''
+
+        expect(style).toContain('--origam-bracket-match---border-block-start-color:')
+        expect(style).toContain('--origam-bracket-match---border-block-end-color:')
+        wrapper.unmount()
+    })
+
+    it('⛔ the two INLINE edges emit nothing — Omit<>-ed, never declared-and-ignored', () => {
+        const wrapper = mountMatch({}, { borderInlineStart: 8, borderInlineEnd: 8 })
+        const style = (wrapper.element as HTMLElement).getAttribute('style') ?? ''
+
+        expect(style).not.toContain('--origam-bracket-match---border-inline-start-width')
+        expect(style).not.toContain('--origam-bracket-match---border-inline-end-width')
+        wrapper.unmount()
+    })
+
+    it('negative control: with no logical-per-side prop, no block-edge var appears', () => {
+        const wrapper = mountMatch()
+        const style = (wrapper.element as HTMLElement).getAttribute('style') ?? ''
+
+        expect(style).not.toContain('--origam-bracket-match---border-block-start-width')
+        expect(style).not.toContain('--origam-bracket-match---border-block-end-width')
+        wrapper.unmount()
+    })
+})

@@ -1,5 +1,5 @@
 import { BORDER_REGEX } from '../../consts/Commons/border.const'
-import type { TDirectionBoth } from '../../types/Commons/anchor.type'
+import type { TDirectionBoth, TLogicalSide } from '../../types/Commons/anchor.type'
 import type { TBorderLogicalAxis } from '../../types/Commons/border.type'
 import type { TColor } from '../../types/Commons/color.type'
 import type { TIntent } from '../../types/Commons/intent.type'
@@ -82,14 +82,22 @@ export function parseBorderPositionValue (value: string): { width: string, style
  * physical too: no logical/physical mismatch for the consumer to
  * mentally translate) or a LOGICAL axis (`TBorderLogicalAxis` —
  * `borderBlock` / `borderInline`, which map onto the native CSS logical
- * properties `border-block-*` / `border-inline-*` verbatim). Both share
- * the exact same `border-{position}-{width,style,color}` template, so
- * one function covers both without duplicating the formatting logic
- * (unlike `formatBorderStylesVar`'s 2/4-value output for the global
- * `border` shorthand, which distributes ACROSS axes from a single value
- * list — a different concern).
+ * properties `border-block-*` / `border-inline-*` verbatim) or a LOGICAL
+ * SIDE (`TLogicalSide` — `borderInlineStart` / `borderInlineEnd` /
+ * `borderBlockStart` / `borderBlockEnd`, issue #1013, mapping onto
+ * `border-inline-start-*` and friends). All three share the exact same
+ * `border-{position}-{width,style,color}` template, so one function
+ * covers all of them without duplicating the formatting logic (unlike
+ * `formatBorderStylesVar`'s 2/4-value output for the global `border`
+ * shorthand, which distributes ACROSS axes from a single value list — a
+ * different concern).
+ *
+ * #1013 widened the `position` union by one member and changed NOTHING
+ * else here: `'inline-start'` interpolates into the same template and
+ * yields the correct native longhands. That is the whole reason the
+ * logical-per-side grid needed no new formatter.
  */
-export function formatBorderPositionStylesVar (position: TDirectionBoth | TBorderLogicalAxis, facets: { width?: string, style?: string, color?: string }): Array<string> {
+export function formatBorderPositionStylesVar (position: TDirectionBoth | TBorderLogicalAxis | TLogicalSide, facets: { width?: string, style?: string, color?: string }): Array<string> {
     const styles: Array<string> = []
 
     if (!isEmpty(facets.width)) styles.push(`border-${position}-width: ${facets.width}`)

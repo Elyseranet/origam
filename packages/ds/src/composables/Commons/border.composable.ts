@@ -1,10 +1,11 @@
 import { computed, isRef, Ref } from 'vue'
 import { DIRECTION_ARRAY } from '../../consts/Commons/anchor.const'
-import { BORDER_KEYWORD_WIDTH, BORDER_LOGICAL_AXIS_MAP, BORDER_POSITION_MAP, BORDER_REGEX } from '../../consts/Commons/border.const'
+import { BORDER_KEYWORD_WIDTH, BORDER_LOGICAL_AXIS_MAP, BORDER_LOGICAL_SIDE_MAP, BORDER_POSITION_MAP, BORDER_REGEX } from '../../consts/Commons/border.const'
 
 import type { IBorderProps } from '../../interfaces/Commons/border.interface'
 import type { TBorderWidthKeyword } from '../../types/Commons/border.type'
-import { TDirectionBoth } from '../../types/Commons/anchor.type'
+import type { TColor } from '../../types/Commons/color.type'
+import { TDirectionBoth, TLogicalSide } from '../../types/Commons/anchor.type'
 
 import { formatBorderPositionStylesVar, formatBorderStylesVar, parseBorderPositionValue, resolveBorderSideColor } from '../../utils/Commons/border.util'
 import { convertToUnit, isEmpty } from '../../utils/Commons/commons.util'
@@ -51,6 +52,79 @@ function isDirectionBorder (value: unknown): value is TDirectionBoth {
 }
 
 /*********************************************************
+ * pushEdgeDeclarations
+ *
+ * @description
+ * Emit the `border-{edge}-{width,style,color}` declarations for ONE box
+ * edge, from that edge's width prop plus its optional `*Color` override.
+ * Shared verbatim by the two per-edge grids `useBorder` iterates — the
+ * PHYSICAL one (`BORDER_POSITION_MAP`, issue #215) and the LOGICAL one
+ * (`BORDER_LOGICAL_SIDE_MAP`, issue #1013).
+ *
+ * @description
+ * ⛔ EXTRACTED ON PURPOSE, AND NOT TO SAVE TYPING. The two grids need
+ * byte-identical emission policy — the boolean→`thin`-token opt-in, the
+ * bare-number→solid/currentColor defaulting, the `*Color`-pushed-last
+ * rule, the `null` skip on an unparsable string. #1013 would otherwise
+ * have copied this body a second time, and the NEXT fix to either copy
+ * would have missed the other. That is not hypothetical: a per-side
+ * surface drifting from its twin is the exact defect family #215, #216
+ * and #1013 were each opened to repair, and the `useStateEffect` getter
+ * list in `stateEffect.composable.ts` has now hit it three times.
+ *
+ * @description
+ * `edge` is interpolated straight into the property name, so a PHYSICAL
+ * value (`'top'`) yields `border-top-width` and a LOGICAL one
+ * (`'inline-start'`) yields `border-inline-start-width`. The browser
+ * resolves the logical spelling against the active writing mode; nothing
+ * here translates between the two vocabularies.
+ *
+ * @description
+ * LA POLITIQUE D'EMISSION, en trois branches exclusives sur la largeur :
+ * @description
+ * • NOMBRE NU — emet aussi `solid` + `currentColor`, car une largeur
+ *   seule ne peint RIEN (`border-style` vaut `none` par defaut). Meme
+ *   defaut que le chemin global numerique.
+ * @description
+ * • BOOLEEN `true` — opt-in historique. Aucune famille de classes
+ *   utilitaires PAR ARETE n'existe (seul le trio global
+ *   `.origam--border-*`), donc on retombe sur le token que resout la
+ *   classe `thin`.
+ * @description
+ * • CHAINE — passe par `parseBorderPositionValue`, qui renvoie `null` sur
+ *   une valeur inparsable ; on n'emet alors rien plutot qu'une
+ *   declaration vide.
+ *
+ * @description
+ * Puis la surcharge `*Color` est poussee EN DERNIER pour cette arete, donc
+ * elle bat la couleur embarquee dans la chaine de largeur et celle heritee
+ * du `borderColor` / `border` global. Un degrade resout a `null` et est
+ * saute silencieusement (documente sur `IBorderProps`).
+ ********************************************************/
+function pushEdgeDeclarations (
+    styles: Array<string>,
+    edge: TDirectionBoth | TLogicalSide,
+    edgeValue: boolean | number | string | undefined,
+    edgeColor: TColor | undefined
+): void {
+    if (typeof edgeValue === 'number') {
+        styles.push(`border-${edge}-width: ${convertToUnit(edgeValue)}`)
+        styles.push(`border-${edge}-style: solid`)
+        styles.push(`border-${edge}-color: currentColor`)
+    } else if (edgeValue === true) {
+        styles.push(`border-${edge}-width: var(--origam-border__width---thin)`)
+        styles.push(`border-${edge}-style: solid`)
+        styles.push(`border-${edge}-color: currentColor`)
+    } else if (typeof edgeValue === 'string' && edgeValue !== '') {
+        const parsed = parseBorderPositionValue(edgeValue)
+        if (parsed) styles.push(...formatBorderPositionStylesVar(edge, parsed))
+    }
+
+    const resolvedEdgeColor = resolveBorderSideColor(edgeColor)
+    if (resolvedEdgeColor) styles.push(`border-${edge}-color: ${resolvedEdgeColor}`)
+}
+
+/*********************************************************
  * useBorder
  *
  * @description
@@ -61,20 +135,41 @@ function isDirectionBorder (value: unknown): value is TDirectionBoth {
  *
  *   1. global `border` shorthand (1/2/4-value, logical properties)
  *   2. global standalone `borderColor` / `borderStyle`
- *   3. logical-axis `borderBlock` / `borderInline` (width, and
+ *   3. logical-AXIS `borderBlock` / `borderInline` (width, and
  *      style/color when a full string like `"2px dashed red"` is given)
- *   4. per-side `borderTop` / `borderRight` / `borderBottom` / `borderLeft`
- *      (physical properties — more specific than the axis rung above:
- *      `borderTop` overrides whatever `borderBlock` set for the top edge)
- *   5. per-side `borderTopColor` / `borderRightColor` /
- *      `borderBottomColor` / `borderLeftColor`
+ *   4. logical-PER-SIDE `borderInlineStart` / `borderInlineEnd` /
+ *      `borderBlockStart` / `borderBlockEnd` — plus their
+ *      `borderInlineStartColor` / … twins, each pushed immediately after
+ *      its own edge's width/style (issue #1013). More specific than the
+ *      axis rung above: `borderInlineStart` overrides whatever
+ *      `borderInline` set for that one edge.
+ *   5. physical-PER-SIDE `borderTop` / `borderRight` / `borderBottom` /
+ *      `borderLeft` — plus their `borderTopColor` / … twins, same
+ *      per-edge pairing (issue #215).
  *
- * So `borderBlock` beats `border` for the top+bottom edges, `borderTop`
- * beats both `border` and `borderBlock` for the top side specifically,
- * and `borderTopColor` beats the color embedded in `borderTop`, the
+ * So `borderBlock` beats `border` for the top+bottom edges,
+ * `borderBlockStart` beats both for the top edge specifically,
+ * `borderTop` beats all three for that same edge, and each `*Color`
+ * beats the color embedded in its own edge's width string, the
  * axis-level color, and the global `borderColor` — each rung only
- * overrides the side(s)/axis it actually targets, everything else keeps
+ * overrides the edge(s)/axis it actually targets, everything else keeps
  * cascading from the rung below.
+ *
+ * @description
+ * ⛔ WHY PHYSICAL BEATS LOGICAL FOR THE SAME EDGE (rungs 4 vs 5, #1013).
+ * `borderLeft` and `borderInlineStart` are two SPELLINGS of one edge in
+ * LTR, not two edges, and CSS gives them equal specificity — so neither
+ * wins on its own merits and declaration order is the entire mechanism.
+ * The tie is broken in favour of PHYSICAL to match the repo's only
+ * pre-existing physical-vs-logical tiebreak, recorded on
+ * `ROUNDED_CORNER_MAP` (`consts/Commons/spacing.const.ts:85-88`), where
+ * the per-corner PHYSICAL declarations are pushed last for exactly this
+ * reason. Settling it the same way across all four directional grids —
+ * border here, padding/margin/rounded in the other half of #1013 — is
+ * the point: a user who learns the rule once should not have to relearn
+ * it per prop family. Passing BOTH spellings for the same edge is
+ * nonetheless a code smell; pick the vocabulary that matches the intent
+ * (logical when the design follows the reading direction).
  *
  * @description
  * WIDTH KEYWORDS AND DIRECTIONS ARE EMITTED INLINE (#391). 'none' | 'thin'
@@ -231,6 +326,37 @@ export function useBorder (props: IBorderProps | Ref<boolean | number | string |
                 }
             })
 
+            /*********************************************************
+             * RUNG 4 — LOGIQUE PAR COTE (#1013)
+             *
+             * @description
+             * `borderInlineStart` / `borderInlineEnd` / `borderBlockStart`
+             * / `borderBlockEnd` et leurs 4 jumelles `*Color`. Pousse
+             * APRES le rung d'AXE au-dessus (une arete est plus specifique
+             * que l'axe qui la contient) et AVANT la boucle physique en
+             * dessous, donc un `borderLeft` physique l'emporte encore sur
+             * `borderInlineStart` pour l'arete gauche en LTR.
+             *
+             * @description
+             * ⛔ Ce dernier ordre est une DECISION, pas un accident, et
+             * c'est la seule question reellement ouverte de ce lot. Un
+             * longhand physique et son equivalent logique pour la MEME
+             * arete sont deux orthographes d'une seule arete a specificite
+             * CSS egale : l'ordre de push est donc tout le mecanisme.
+             * @description
+             * Tranche en faveur du PHYSIQUE pour s'aligner sur le seul
+             * arbitrage physique-vs-logique preexistant du depot, documente
+             * sur `ROUNDED_CORNER_MAP` (`consts/Commons/spacing.const.ts`)
+             * : « pushing the per-corner declarations LAST makes them win —
+             * which is precisely the precedence we want ».
+             * @description
+             * Accorde avec la moitie padding/margin/rounded de #1013 pour
+             * que les quatre grilles repondent identiquement.
+             ********************************************************/
+            BORDER_LOGICAL_SIDE_MAP.forEach(({side, widthProp, colorProp}) => {
+                pushEdgeDeclarations(styles, side, props[widthProp], props[colorProp])
+            })
+
             // Per-side width/style/color (issue #215) — `borderTop` /
             // `borderRight` / `borderBottom` / `borderLeft` were declared
             // on `IBorderProps` but never read here. Pushed AFTER the
@@ -238,37 +364,7 @@ export function useBorder (props: IBorderProps | Ref<boolean | number | string |
             // above so a side-specific value always wins for that physical
             // side (see the precedence note in the JSDoc above `useBorder`).
             BORDER_POSITION_MAP.forEach(({side, widthProp, colorProp}) => {
-                const sideValue = props[widthProp]
-                const sideColor = props[colorProp]
-
-                if (typeof sideValue === 'number') {
-                    // Mirrors the global numeric-border defaulting above: a
-                    // bare width alone paints nothing (`border-style`
-                    // defaults to `none`), so default to solid/currentColor.
-                    styles.push(`border-${side}-width: ${convertToUnit(sideValue)}`)
-                    styles.push(`border-${side}-style: solid`)
-                    styles.push(`border-${side}-color: currentColor`)
-                } else if (sideValue === true) {
-                    // Legacy boolean opt-in — no per-side utility class
-                    // family exists (only the global `.origam--border-*`
-                    // trio), so fall back to the same design-token width
-                    // the 'thin' utility resolves to.
-                    styles.push(`border-${side}-width: var(--origam-border__width---thin)`)
-                    styles.push(`border-${side}-style: solid`)
-                    styles.push(`border-${side}-color: currentColor`)
-                } else if (typeof sideValue === 'string' && sideValue !== '') {
-                    const parsed = parseBorderPositionValue(sideValue)
-                    if (parsed) styles.push(...formatBorderPositionStylesVar(side, parsed))
-                }
-
-                // `borderTopColor` etc. — additive, TColor-typed. Wins over
-                // any color already pushed above for this side (embedded in
-                // `borderTop`, or inherited from the global `borderColor` /
-                // `border`), same "push last" precedence rule. Gradients
-                // are unsupported on `border-color` and resolve to `null`
-                // (silently skipped — documented on `IBorderProps`).
-                const resolvedSideColor = resolveBorderSideColor(sideColor)
-                if (resolvedSideColor) styles.push(`border-${side}-color: ${resolvedSideColor}`)
+                pushEdgeDeclarations(styles, side, props[widthProp], props[colorProp])
             })
         }
 

@@ -148,8 +148,10 @@ diagonal. The diagonal cells are inert.
 | `border`          | `'thin' \| 'thick' \| number \| boolean`                     | — (match default 1px) |
 | `borderTop` / `borderRight` / `borderBottom` / `borderLeft` | `'thin' \| 'thick' \| number \| boolean` | — (overrides one side only) |
 | `borderBlock` / `borderInline`  | `'thin' \| 'thick' \| number \| boolean` | — (logical-axis shorthand: block = top+bottom, inline = left+right in LTR) |
+| `borderBlockStart` / `borderBlockEnd` | `'thin' \| 'thick' \| number \| boolean` | — (logical per-edge: block-start = top, block-end = bottom. **No `borderInlineStart` / `borderInlineEnd` here** — see the note below) |
 | `borderColor`     | `TIntent \| <css-color>`                                     | — (subtle)            |
 | `borderTopColor` / `borderRightColor` / `borderBottomColor` / `borderLeftColor` | `TIntent \| <css-color>` | — (overrides one side's colour only) |
+| `borderBlockStartColor` / `borderBlockEndColor` | `TIntent \| <css-color>` | — (overrides one logical edge's colour only) |
 | `borderStyle`     | `'solid' \| 'dashed' \| 'dotted' \| …`                       | `'solid'`             |
 | `winnersLabel`    | `string`                                                      | — (falls back to `origam.bracket.winners_label`) |
 | `losersLabel`     | `string`                                                      | — (falls back to `origam.bracket.losers_label`)  |
@@ -157,6 +159,38 @@ diagonal. The diagonal cells are inert.
 | `margin` / `marginTop` / `marginRight` / `marginBottom` / `marginLeft` / `marginBlock` / `marginInline` | `number \| string \| boolean` | — (applied to the bracket root) |
 | `padding` / `paddingTop` / `paddingRight` / `paddingBottom` / `paddingLeft` / `paddingBlock` / `paddingInline` | `number \| string \| boolean` | — (applied to the bracket root) |
 | `fontSize` / `fontWeight` / `letterSpacing` | `TFontSize` / `TFontWeight` / `TLetterSpacing` | — (see typography note below) |
+
+> ⛔ **No `borderInlineStart` / `borderInlineEnd` on Bracket, deliberately
+> (#1013).** The DS-wide `IBorderProps` declares all four logical edges, but
+> Bracket's two inline ones are removed from its surface by `Omit<>` rather
+> than declared and ignored — a prop that is typed, editable in Histoire and
+> inert is worse than an absent one.
+>
+> The reason is the target element. Bracket does not paint its own root: it
+> routes its surface onto the match card through
+> `--origam-bracket-match---*` custom properties that
+> `OrigamBracketMatch`'s stylesheet reads inside **physical** declarations.
+> Mapping a logical edge onto a physical one *when the stylesheet is
+> written* therefore requires knowing the writing mode — and `inline-start`
+> is `left` in LTR but `right` in RTL. No `var()` fallback chain can express
+> that, because `var()` substitution is blind to the writing mode while the
+> property mapping is not: either the physical declaration always overwrites
+> the logical one, or routing its fallback through the logical var paints
+> **both** edges in RTL.
+>
+> The two **block** edges have no such problem and ARE supported:
+> `block-start` / `block-end` are `top` / `bottom` invariantly in
+> `horizontal-tb`, which Bracket never overrides (measured: zero
+> `writing-mode` declarations) and which its stylesheet already assumed for
+> `borderBlock`. Precedence follows the DS ladder through the fallback
+> chain — physical per edge beats logical per edge beats axis beats the
+> `border` shorthand — so `borderTop` still wins over `borderBlockStart`.
+>
+> Use `borderBlock` for a symmetric inline rule, or the physical
+> `borderLeft` / `borderRight` when you genuinely mean a screen edge.
+> Full logical support on the inline axis is tracked separately; it requires
+> converting the cascade to logical longhands, which changes the RTL
+> behaviour of the existing physical props.
 
 > **`bgColor`** paints the surface of **every match card** (including
 > hover). When a surface is painted, the match text is automatically set
