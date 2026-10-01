@@ -1167,13 +1167,22 @@ literally named `outlined`. The merge is `mergeDeep` — the same one
 `provideDefaults` uses — so a theme wins **prop by prop**, and a state preset
 (`active: { … }`) is merged rather than replaced.
 
-⚠️ **One naming point is unsettled, and you should ask rather than invent a
-third spelling.** Two places in the merged tree prescribe
-`consts/{Component}/{component}-variant.const.ts` — the header of
-`TVariantPresets` and the `fixHint` of the `no-variant-css` guard
-(`no-variant-css.mjs:194`) — while the pilot actually created
-`consts/Kbd/kbd.const.ts`, a file that holds the preset table and nothing else.
-Both spellings are in `develop` @ `e63a87ba1`.
+⛔ **A preset table lives in the component's EXISTING consts file** —
+`consts/{Component}/{component}.const.ts`, which is exactly what the pilot did
+with `consts/Kbd/kbd.const.ts`. Decided by the owner, 2026-10-01. **Do not
+create a second consts file per component** for it.
+
+The reason is the global `CLAUDE.md`'s anti-duplication rule: *before writing a
+const, look for whether it already exists; if the file exists, reuse it, never
+redefine it.* A component already owns one consts file; a variant table is one
+more const in it, not grounds for a parallel one.
+
+⚠️ A previous version of this convention prescribed
+`consts/{Component}/{component}-variant.const.ts`, in two places — the header
+of `TVariantPresets` and the `fixHint` of the `no-variant-css` guard. **Both
+were wrong and are corrected in the same lot as this section**; the pilot was
+right. If you meet that spelling in an older comment or in a stale checkout,
+**this paragraph is what holds.**
 
 ### Precedence — and there is NO new merge logic
 
@@ -1300,6 +1309,17 @@ token.
 cannot paint a pixel. `isOrigamRung` intercepts `'none'` before anything else,
 so the `elevation` channel has no way to emit the keyword. Expect the same
 class of gap on the next conversion, and measure it rather than assuming zero.
+
+⚠️ **The prop surface a preset can draw on WIDENS in the lot that precedes
+`OrigamBlockquote`.** Decided by the owner, 2026-10-01: the 20 missing
+per-side logical props are added upstream, before any further conversion —
+measured the same day at **0 occurrence out of 20** across
+`packages/ds/src/interfaces/Commons`, while the physical-per-side and
+logical-per-axis grids are both complete. The rule behind it is
+`adr-007-directional-props.md`'s directive: *if a format exists, it exists
+everywhere; we do not do half of one.* Not detailed here because it is not
+written yet — check that interface surface before concluding a variant's effect
+is inexpressible as a prop.
 
 ### Per-component definition of done — as the pilot ACTUALLY satisfied it
 
