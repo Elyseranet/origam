@@ -293,6 +293,196 @@ test.describe('OrigamBlockquote', () => {
     })
 
     // ------------------------------------------------------------------ //
+    // PRESET DE VARIANT (index 5) — ADR-005 D7, lot #1015                 //
+    // ------------------------------------------------------------------ //
+
+    /*
+     * Les trois points de la definition de fini d'ADR-005 D7 :
+     *   (a) le preset s'applique ;
+     *   (b) un prop explicite le bat ;
+     *   (c) la classe emise ne porte aucun style du DS.
+     *
+     * ⛔ (a) est une NON-REGRESSION, pas une preuve d'A/B : avant la
+     * conversion la CSS de variant peignait deja chaque valeur
+     * differemment, donc (a) est vert des deux cotes. Ce sont (b) et (c)
+     * qui sont ROUGES avant et VERTS apres, et c'est la ce qui prouve que
+     * la conversion a eu lieu :
+     *
+     *   (b) avant : `.origam-blockquote--variant-elegant` declare
+     *       `font-size` DIRECTEMENT, a specificite (0,2,0) egale a la
+     *       regle de base et plus loin dans l'ordre source. La prop
+     *       `fontSize`, qui n'ecrit que la propriete custom
+     *       `--origam-blockquote---font-size` que la regle de base
+     *       consomme, PERDAIT donc en silence sur elegant / minimal /
+     *       pull. C'est le defaut dormant que ce lot repare.
+     *   (c) avant : echanger la classe de variant changeait le rendu,
+     *       puisque la classe PORTAIT le style.
+     *
+     * ⛔ Mutation ET lecture dans le MEME `evaluate` pour (c) : la classe
+     * vient d'un `computed` (`blockquoteClasses`), que Vue re-patche entre
+     * deux aller-retours — piege `alert.spec.ts` du CLAUDE.md.
+     */
+    test.describe('Preset de variant', () => {
+        const PRESET = 5
+
+        const gotoMatrix = async (page: import('@playwright/test').Page) => {
+            await page.goto(variantUrl(PRESET), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('[data-cy="bq-preset-default"]')).toBeVisible(VIS)
+            return sandbox
+        }
+
+        test('(a) chaque variant est peint differemment — typographie', async ({ page }) => {
+            const sandbox = await gotoMatrix(page)
+
+            const read = async (cy: string) => sandbox.locator(`[data-cy="${cy}"]`).evaluate((el) => {
+                const cs = getComputedStyle(el)
+                return `${cs.fontSize}|${cs.fontStyle}|${cs.fontWeight}|${cs.lineHeight}|${cs.fontFamily}`
+            })
+
+            const asDefault = await read('bq-preset-default')
+            const elegant = await read('bq-preset-elegant')
+            const minimal = await read('bq-preset-minimal')
+            const pull = await read('bq-preset-pull')
+
+            expect(elegant).not.toBe(asDefault)
+            expect(minimal).not.toBe(asDefault)
+            expect(pull).not.toBe(asDefault)
+            expect(elegant).not.toBe(pull)
+        })
+
+        test('(a) default / elegant / minimal peignent le filet d\'accent', async ({ page }) => {
+            const sandbox = await gotoMatrix(page)
+
+            const read = async (cy: string) => sandbox.locator(`[data-cy="${cy}"]`)
+                    .evaluate((el) => parseFloat(getComputedStyle(el).borderInlineStartWidth))
+
+            expect(await read('bq-preset-default')).toBeGreaterThan(0)
+            expect(await read('bq-preset-elegant')).toBeGreaterThan(0)
+            expect(await read('bq-preset-minimal')).toBeGreaterThan(0)
+        })
+
+        test('(a) pull porte DEUX filets horizontaux et centre son texte', async ({ page }) => {
+            const sandbox = await gotoMatrix(page)
+
+            const measured = await sandbox.locator('[data-cy="bq-preset-pull"]').evaluate((el) => {
+                const cs = getComputedStyle(el)
+                return {
+                    top: parseFloat(cs.borderBlockStartWidth),
+                    bottom: parseFloat(cs.borderBlockEndWidth),
+                    align: cs.textAlign
+                }
+            })
+
+            expect(measured.top).toBeGreaterThan(0)
+            expect(measured.bottom).toBeGreaterThan(0)
+            expect(measured.align).toBe('center')
+        })
+
+        test('(a) quoted monte le glyphe decoratif et le sur-remplit en haut', async ({ page }) => {
+            const sandbox = await gotoMatrix(page)
+            const host = sandbox.locator('[data-cy="bq-preset-quoted"]')
+
+            await expect(host.locator('.origam-blockquote__mark--bg')).toHaveCount(1)
+
+            const measured = await host.evaluate((el) => {
+                const cs = getComputedStyle(el)
+                const body = el.querySelector('.origam-blockquote__body') as HTMLElement
+                const bodyCs = getComputedStyle(body)
+                return {
+                    paddingTop: parseFloat(cs.paddingTop),
+                    paddingBottom: parseFloat(cs.paddingBottom),
+                    bodyPosition: bodyCs.position,
+                    bodyZIndex: bodyCs.zIndex
+                }
+            })
+
+            expect(measured.paddingTop).toBeGreaterThan(measured.paddingBottom)
+            expect(measured.bodyPosition).toBe('relative')
+            expect(measured.bodyZIndex).toBe('1')
+        })
+
+        test('(a) les quatre autres variants ne montent AUCUN glyphe', async ({ page }) => {
+            const sandbox = await gotoMatrix(page)
+
+            for (const cy of ['bq-preset-default', 'bq-preset-elegant', 'bq-preset-minimal', 'bq-preset-pull']) {
+                await expect(
+                    sandbox.locator(`[data-cy="${cy}"] .origam-blockquote__mark--bg`),
+                    cy
+                ).toHaveCount(0)
+            }
+        })
+
+        test('(b) un font-size du site d\'appel BAT le preset d\'elegant', async ({ page }) => {
+            const sandbox = await gotoMatrix(page)
+
+            const read = async (cy: string) => sandbox.locator(`[data-cy="${cy}"]`)
+                    .evaluate((el) => parseFloat(getComputedStyle(el).fontSize))
+
+            const presetOnly = await read('bq-preset-elegant')
+            const overridden = await read('bq-override-elegant-font-size')
+
+            expect(presetOnly).toBeGreaterThan(0)
+            expect(overridden).toBeGreaterThan(0)
+            expect(overridden).not.toBe(presetOnly)
+        })
+
+        test('(b) un align du site d\'appel BAT le centrage de pull', async ({ page }) => {
+            const sandbox = await gotoMatrix(page)
+
+            const read = async (cy: string) => sandbox.locator(`[data-cy="${cy}"]`)
+                    .evaluate((el) => getComputedStyle(el).textAlign)
+
+            expect(await read('bq-preset-pull')).toBe('center')
+            expect(await read('bq-override-pull-align')).toBe('left')
+        })
+
+        test('(b) un padding-inline du site d\'appel BAT celui de minimal', async ({ page }) => {
+            const sandbox = await gotoMatrix(page)
+
+            const read = async (cy: string) => sandbox.locator(`[data-cy="${cy}"]`)
+                    .evaluate((el) => parseFloat(getComputedStyle(el).paddingInlineEnd))
+
+            const presetOnly = await read('bq-preset-minimal')
+            const overridden = await read('bq-override-minimal-padding')
+
+            expect(overridden).not.toBe(presetOnly)
+        })
+
+        test('(c) echanger la classe de variant ne change RIEN — le DS n\'y attache aucune regle', async ({ page }) => {
+            const sandbox = await gotoMatrix(page)
+
+            const measured = await sandbox.locator('[data-cy="bq-preset-minimal"]').evaluate((el) => {
+                const snap = () => {
+                    const cs = getComputedStyle(el)
+                    return `${cs.fontSize}|${cs.fontStyle}|${cs.paddingInlineEnd}|${cs.borderInlineStartWidth}|${cs.borderBlockStartWidth}`
+                }
+                const before = snap()
+                ;(el as HTMLElement).className = el.className
+                        .replace('origam-blockquote--variant-minimal', 'origam-blockquote--variant-pull')
+                return { before, after: snap() }
+            })
+
+            expect(measured.after).toBe(measured.before)
+        })
+
+        test('(c) la classe de variant reste EMISE — c\'est le crochet du consommateur', async ({ page }) => {
+            const sandbox = await gotoMatrix(page)
+
+            for (const [cy, variant] of [
+                ['bq-preset-default', 'default'],
+                ['bq-preset-elegant', 'elegant'],
+                ['bq-preset-quoted', 'quoted'],
+                ['bq-preset-minimal', 'minimal'],
+                ['bq-preset-pull', 'pull']
+            ]) {
+                await expect(sandbox.locator(`[data-cy="${cy}"]`), cy)
+                        .toHaveClass(new RegExp(`origam-blockquote--variant-${variant}`))
+            }
+        })
+    })
+
+    // ------------------------------------------------------------------ //
     // DEFAULT / PLAYGROUND (index 6)                                       //
     // init: variant='default', bgColor='primary', lang='auto', align='left'//
     //        author='Linus Torvalds', source='LKML, 2003',                 //

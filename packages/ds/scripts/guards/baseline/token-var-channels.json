@@ -11,7 +11,6 @@
     "packages/ds/src/components/Audio/OrigamAudio.vue::--origam-audio__transport---min-height",
     "packages/ds/src/components/Avatar/OrigamAvatar.vue::--origam-avatar---display",
     "packages/ds/src/components/Avatar/OrigamAvatar.vue::--origam-avatar---vertical-align",
-    "packages/ds/src/components/Blockquote/OrigamBlockquote.vue::--origam-blockquote--minimal---accent-width",
     "packages/ds/src/components/BottomNav/OrigamBottomNav.vue::--origam-bottom-bar---background",
     "packages/ds/src/components/BottomNav/OrigamBottomNav.vue::--origam-bottom-bar---border-bottom-width",
     "packages/ds/src/components/BottomNav/OrigamBottomNav.vue::--origam-bottom-bar---border-color",

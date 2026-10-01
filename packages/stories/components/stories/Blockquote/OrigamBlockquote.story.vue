@@ -28,6 +28,7 @@
 						:margin="state.margin"
 						:align="state.align"
 						:lang="state.lang"
+						:quote-mark="state.quoteMark"
 						:font-family="state.fontFamily"
 						:font-size="state.fontSize"
 						:font-weight="state.fontWeight"
@@ -45,6 +46,7 @@
 					<HstSelect v-model="state.variant" title="Variant" :options="BLOCKQUOTE_VARIANT_OPTIONS"/>
 					<HstSelect v-model="state.align"   title="Align"   :options="BLOCKQUOTE_ALIGN_OPTIONS"/>
 					<HstSelect v-model="state.lang"    title="Lang"    :options="BLOCKQUOTE_LANG_OPTIONS"/>
+					<HstCheckbox v-model="state.quoteMark" title="Quote Mark"/>
 				</StoryGroup>
 				<StoryGroup title="Color">
 					<HstSelect v-model="state.color"       title="Color (text)" :options="INTENT_OPTIONS"/>
@@ -255,6 +257,7 @@
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
 					<HstSelect v-model="state.align"       title="Align"        :options="BLOCKQUOTE_ALIGN_OPTIONS"/>
 					<HstSelect v-model="state.lang"        title="Lang"         :options="BLOCKQUOTE_LANG_OPTIONS"/>
+						<HstCheckbox v-model="state.quoteMark" title="Quote Mark"/>
 				</StoryGroup>
 				<StoryGroup title="Typography">
 					<HstSelect v-model="state.fontFamily" title="Font Family" :options="FONT_FAMILY_OPTIONS"/>
