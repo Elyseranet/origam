@@ -1807,6 +1807,134 @@ origam:
   times; an agent caught it again on 2026-09-29 while the paragraph still said
   30/30).
 
+  ⛔ **RECOUNTING IS NOT ENOUGH — NAME THE TREE AND THE FILE.** Before citing
+  a number, name the TREE and the FILE it was taken from. "Recount, never
+  quote" just above says to re-measure; it does not say *where*, and a
+  re-measurement taken on the wrong tree or the wrong file is a fresh number
+  that is still false. A well-formed command answering a question you did not
+  ask is the single most expensive failure mode in this repo, because its
+  output looks exactly like an answer.
+
+  Measured 2026-10-01, during #1013 — **nine occurrences in one lot, four
+  from the developer and five from the coordinator reviewing him**, and
+  **numbers 6 to 9 are all LATER than this section**: two by its author, one
+  by the coordinator who had just approved it, and one by that coordinator
+  *while the author was writing up the previous one*. Nobody involved was
+  being careless; the count is this high because the pattern is the *default*
+  outcome of asking a convenient tool a structural question:
+
+  | measurement | what it aimed at | what it actually answered |
+  |---|---|---|
+  | `grep -c 'useBorder\|useStateEffect' <component>.vue` | real call sites | **comment prose** — including a comment the author had just added himself |
+  | `grep -c 'bracket-match---border' <baseline>.json` | 14 pre-existing sibling entries | **18**, because it was run on the author's own tree *after* his 4 additions |
+  | `grep Omit bracket.interface.ts` | "is this interface restricted?" | **0**, on a file that IS restricted — the wrong question entirely |
+  | `jq 'conclusion != "SUCCESS"'` over CI checks | failing checks | **8 "failures"** that were checks *not yet concluded* |
+  | `grep -c Omit bracket-match-component.interface.ts` | real `Omit`s | **1**, from `« Omit to hide the link. »` (line 46) — plain **English** in a JSDoc, not TypeScript |
+  | `grep -c roundedStartStart bracket.interface.ts` | "did the corner `Omit` survive the rebase?" | **0**, read as "it vanished" — it was in `bracket.type.ts:193` as `TBracketRoundedProps` |
+  | `git diff --name-only origin/develop..HEAD \| grep -c '^packages/ds/'` | "does MY branch touch `packages/ds/`?" | **1** — but it was `develop`'s own release bump. `A..B` lists BOTH sides; the question needed the **merge base** (`gh pr diff` → 0) |
+  | `until [ "$(gh pr checks … \| grep -c pending)" = 0 ]` | "have all checks concluded?" | **"ALL CONCLUDED"** while checks were *re-queueing* — `gh` printed `no checks reported` as plain text, so zero matched |
+  | `gh run list --branch develop --limit 1 --jq '.[0]'` | "is CI green on the bump commit?" | **`success`** — from `docs-fixtures`. The `CI` run carrying the 19 checks was `in_progress`. **This one was about to publish to npm.** |
+
+  Each was reproducible, each was well-formed, and each produced a confident
+  wrong conclusion. Three nearly cost real work: the first made the author
+  write a test asserting a component consumed a composable it never calls, the
+  fourth nearly blocked a green PR, and the sixth nearly had a reviewer report
+  a restriction as lost when it had merely been *harmonised* into a named type.
+
+  ⛔ **Occurrences 6 to 9 are LATER THAN THIS SECTION — two by its own author,
+  minutes after writing it, and two by the reviewer who had just approved
+  it.** That does not weaken the rule; it is the whole argument for the ORDER
+  of the remedies below. A warning does not survive contact with a convenient
+  one-liner, so **treat "I know about this trap" as no protection whatsoever**
+  — only the first remedy (*observe the resolved artefact, not the source
+  text*) actually holds.
+
+  ⛔ **8 and 9 share one root, and it is the costliest shape in the family:
+  AN ABSENCE OF EVIDENCE OF RED, READ AS EVIDENCE OF GREEN.** "No line matches
+  *pending*" → "everything concluded". "The one run I asked for is green" →
+  "the commit is green". Both reduced a set before testing it, and in both the
+  convenient flag (`grep -c pending`, `--limit 1`) is exactly what made the
+  error comfortable. **Number 9 was one step from publishing to npm**, where a
+  version is never withdrawn — only the reflex of enumerating stopped it.
+
+  So before concluding anything from a set, require it to be **non-empty AND
+  complete**, and say **which SHA** it describes rather than "the latest":
+
+  - `gh run list --branch <b> --limit 1` answers *"the most recent run"*, never
+    *"the state of this commit"*. `develop` carries **three** workflows per
+    SHA (`CI`, `Build`, `docs-fixtures`), and the one holding the 19 checks is
+    the slowest — so the first row is routinely a green `docs-fixtures` sitting
+    in front of an `in_progress` `CI`. Enumerate the runs **for that SHA** and
+    require all three `completed`.
+  - ⚠️ `completed` is not `success`. Measured on `1528603d4`: `CI` concluded
+    **`cancelled`**. A check for `== "success"` and a check for
+    `!= "success"` disagree about that row, and both are wrong in one
+    direction — enumerate the terminal states you accept, explicitly.
+
+  Numbers 7 and 8 also get their own warnings, because both are shapes this
+  repo's own conventions push you toward:
+
+  - ⛔ **`git diff A..B` lists changes from BOTH sides.** To ask "what does my
+    branch add", diff against the **merge base**
+    (`git diff $(git merge-base origin/develop HEAD)..HEAD`) or just read
+    `gh pr diff <n> --name-only`, which is what a reviewer checks. Diffing
+    against a moving `origin/develop` attributes *its* commits to you — here,
+    a release bump of `packages/ds/package.json`, which would have flipped the
+    no-tag criterion to the wrong answer.
+  - ⛔ **"Zero pending" is not "all concluded".** `gh pr checks` prints
+    `no checks reported on the '<branch>' branch` as PLAIN TEXT — not JSON,
+    not an error — while a push is re-queueing the workflow. A loop waiting on
+    `grep -c pending` = 0 therefore reports success during the window when
+    *nothing exists yet*. Require the set to be NON-EMPTY before concluding,
+    and gate on the payload actually being JSON. Same family as the
+    `!= SUCCESS` filter above: **silence and success are indistinguishable
+    unless you assert that you measured something.**
+
+  ⛔ **`grep Omit` on an interface file does NOT answer "is this interface
+  restricted", and it fails in BOTH directions:**
+
+  - **False positive** — it counts an `Omit` that is not one: comment prose,
+    or the ordinary English verb, as in `« Omit to hide the link. »`.
+  - **False negative** — it misses an `Omit` that exists, because the
+    restriction lives in a *named type declared in another file*.
+    `IBracketProps` is exactly this: its `Omit<IBorderProps, …>` sits in
+    `types/Bracket/bracket.type.ts` as `TBracketBorderProps`, so the interface
+    file contains **zero** occurrences of `Omit` while being fully restricted.
+
+  ⚠️ **And the false negative is the NORMAL shape here, not an edge case.**
+  Two developers working in parallel on #1013 independently moved their
+  restriction into a named type — `TBracketBorderProps` and
+  `TBracketRoundedProps`, the second explicitly documented as "le pendant
+  « coins »" of the first — because the repo's own rule (*types only in
+  `types/`*) requires it. Any future restriction will take the same shape, so
+  a grep for `Omit` in an interface file is reliably wrong by construction.
+
+  Generalised, and this is the sentence that covers all six: **a grep over
+  source TEXT cannot answer a question about a RESOLVED TYPE** — nor about a
+  call graph, a cascade, or a job's terminal state.
+
+  What to do instead, in order of preference:
+
+  - **Prefer an observation of the resolved artefact over a grep of the
+    source.** For a prop surface, the Vue SFC compiler emits a runtime props
+    descriptor whose keys are the interface's resolved set with the `extends`
+    chain flattened — so `Component.props` observes the real answer, immune to
+    the type's name, the file the `Omit` lives in, and the number of files it
+    crosses. Pinned in
+    `packages/tests/TU/components/Bracket/bracket-logical-side-restriction.spec.ts`.
+  - **State the tree in the sentence**: `git show origin/develop:<path>` and
+    `git show origin/<branch>:<path>` make the tree explicit and
+    unfalsifiable. A bare `grep` in a worktree measures whatever is on your
+    disk right now, including your own uncommitted work.
+  - **Exclude comments when counting code**, or count call sites with an AST
+    pass rather than a line match.
+  - **Enumerate every terminal state**, never `!= SUCCESS` — "pending" is not
+    "failed".
+
+  The cheap habit that catches all four: **say the tree out loud.** "14 on
+  `origin/develop`" cannot be confused with "18 on my branch after my own
+  additions"; "14" alone can.
+
   ✅ **#966 — CORRIGÉ.** Guard 30 (`token-var-channels-marketing`) énumérait le
   DISQUE et balayait donc des artefacts de build qu'aucun checkout de CI ne
   porte. `walkSources` passe désormais par **l'index git** (`listRepoFiles`,
