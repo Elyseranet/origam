@@ -42,33 +42,32 @@ export interface IMarginProps {
     marginBlock?: boolean | number | string
     /** Left + right. Overrides `margin`; beaten by `marginLeft` / `marginRight`. */
     marginInline?: boolean | number | string
-    /**
-     * The inline-START edge only — left in LTR, **right in RTL**. Emits
-     * `margin-inline-start`, which the browser flips for you.
+    /*********************************************************
+     * Logical per-side margin — rung 3 (issue #1013)
      *
-     * Takes the same vocabulary as `margin`, the `auto` keyword included.
-     * `marginInlineStart="auto"` is the RTL-safe way to push an element to
-     * the far end of its line — `marginLeft="auto"` pushes it the wrong
-     * way under RTL. Overrides `margin` and `marginInline` for that edge;
-     * beaten by `marginLeft`.
-     */
+     * @description
+     * One WRITING-MODE-RELATIVE edge each, emitted as the native logical
+     * longhands (`margin-inline-start`, …) so the browser flips them under
+     * RTL and in vertical writing modes.
+     *
+     * @description
+     * `marginInlineStart` — left in LTR, **right in RTL**.
+     * `marginInlineEnd` — right in LTR, **left in RTL**.
+     * `marginBlockStart` — top in horizontal-tb.
+     * `marginBlockEnd` — bottom in horizontal-tb.
+     *
+     * @description
+     * Same vocabulary as `margin`, the `auto` keyword included — and that
+     * is their best argument: `marginInlineStart="auto"` pushes an element
+     * to the far end of its line in BOTH reading directions, where
+     * `marginLeft="auto"` pushes it the wrong way under RTL.
+     *
+     * @description
+     * Each overrides `margin` and its axis prop for the one edge it
+     * targets, and is beaten by the matching PHYSICAL prop.
+     ********************************************************/
     marginInlineStart?: boolean | number | string
-    /**
-     * The inline-END edge only — right in LTR, **left in RTL**. Emits
-     * `margin-inline-end`. Same vocabulary and rank as
-     * `marginInlineStart`; beaten by `marginRight`.
-     */
     marginInlineEnd?: boolean | number | string
-    /**
-     * The block-START edge only — top in horizontal-tb. Emits
-     * `margin-block-start`. Same vocabulary and rank as
-     * `marginInlineStart`; beaten by `marginTop`.
-     */
     marginBlockStart?: boolean | number | string
-    /**
-     * The block-END edge only — bottom in horizontal-tb. Emits
-     * `margin-block-end`. Same vocabulary and rank as
-     * `marginInlineStart`; beaten by `marginBottom`.
-     */
     marginBlockEnd?: boolean | number | string
 }

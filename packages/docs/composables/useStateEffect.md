@@ -184,13 +184,30 @@ and forwarded through explicit getter bags:
 
 - border: `borderColor`, `borderStyle`, `borderBlock`, `borderInline`,
   `borderTop|Right|Bottom|Left` and their `*Color` twins
-- rounded: `roundedTopLeft|TopRight|BottomLeft|BottomRight`
-- padding / margin: `*Top`, `*Right`, `*Bottom`, `*Left`, `*Block`, `*Inline`
+- rounded: `roundedTopLeft|TopRight|BottomLeft|BottomRight` and the logical
+  `roundedStartStart|StartEnd|EndStart|EndEnd`
+- padding / margin: `*Top`, `*Right`, `*Bottom`, `*Left`, `*Block`, `*Inline`,
+  and the logical sides `*InlineStart`, `*InlineEnd`, `*BlockStart`, `*BlockEnd`
 
 That forwarding list is curated by hand, and forgetting an entry silently
 drops the prop for all 30 consumers — it has happened three times (per-side
 border, then `borderBlock`/`borderInline`, then the rounded corners). If you
 add a directional prop to one of the Commons interfaces, add it here too.
+
+⛔ **Nothing type-checks this.** Each bag is cast `as IPaddingProps` /
+`as IRoundedProps` / `as IBorderProps`, so a missing key is not a compile
+error. Measured on the #1013 delivery: with the four `padding*Start|End`
+getters deleted, `pnpm -F origam type-check` still exits **0** while the props
+emit nothing on 30 components.
+
+The net for the padding / margin bags is therefore **20 keys** (10 per axis),
+not the 12 an older version of this page implied. Since #1013 the omission is
+caught by
+`packages/tests/TU/composables/Commons/state-effect-directional-forwarding.spec.ts`,
+which generates its expectations from the MAPS in `consts/Commons/spacing.const.ts`
+rather than from a hand-typed list — so it reddens by itself on the next
+forgotten getter and names the offending prop. Verified as a negative control:
+removing those four getters produces 8 named failures.
 
 Measured pass-through:
 `{ borderTop: 2, borderInline: 1, borderColor: 'primary', roundedTopLeft: 'lg', paddingBlock: 4, marginInline: 2 }`

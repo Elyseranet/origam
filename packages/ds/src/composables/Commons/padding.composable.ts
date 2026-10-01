@@ -112,13 +112,19 @@ export function usePadding (props: IPaddingProps, name = getCurrentInstanceName(
             if (resolved) styles.push(`padding-${axis}: ${resolved}`)
         })
 
-        // ── Rung 3: logical per-side ─────────────────────────────────
-        // `paddingInlineStart` & co (issue #1013). Pushed AFTER the axis
-        // rung — one edge is more specific than two — and BEFORE the
-        // physical loop, so `paddingLeft` still wins for the edge they
-        // share. That last tiebreak is a choice, not a specificity call:
-        // the two spellings address the same edge, and physical winning is
-        // the direction `ROUNDED_CORNER_MAP` already documents.
+        /*********************************************************
+         * Rung 3 — logical per-side (issue #1013)
+         *
+         * @description
+         * `paddingInlineStart` & co. Pushed AFTER the axis rung (one edge
+         * is narrower than two) and BEFORE the physical loop, so
+         * `paddingLeft` still wins for the edge they share.
+         *
+         * @description
+         * That last tiebreak is a choice, not a specificity call: the two
+         * spellings address the same edge, and physical winning is the
+         * direction `ROUNDED_CORNER_MAP` already documents.
+         ********************************************************/
         PADDING_LOGICAL_SIDE_MAP.forEach(({side, prop}) => {
             const resolved = resolveSpacingValue(props[prop])
 

@@ -593,6 +593,10 @@
 		paddingLeft: props.paddingLeft,
 		paddingBlock: props.paddingBlock,
 		paddingInline: props.paddingInline,
+		paddingInlineStart: props.paddingInlineStart,
+		paddingInlineEnd: props.paddingInlineEnd,
+		paddingBlockStart: props.paddingBlockStart,
+		paddingBlockEnd: props.paddingBlockEnd,
 
 		margin: props.margin,
 		marginTop: props.marginTop,
@@ -601,12 +605,20 @@
 		marginLeft: props.marginLeft,
 		marginBlock: props.marginBlock,
 		marginInline: props.marginInline,
+		marginInlineStart: props.marginInlineStart,
+		marginInlineEnd: props.marginInlineEnd,
+		marginBlockStart: props.marginBlockStart,
+		marginBlockEnd: props.marginBlockEnd,
 
 		rounded: props.rounded,
 		roundedTopLeft: props.roundedTopLeft,
 		roundedTopRight: props.roundedTopRight,
 		roundedBottomLeft: props.roundedBottomLeft,
-		roundedBottomRight: props.roundedBottomRight
+		roundedBottomRight: props.roundedBottomRight,
+		roundedStartStart: props.roundedStartStart,
+		roundedStartEnd: props.roundedStartEnd,
+		roundedEndStart: props.roundedEndStart,
+		roundedEndEnd: props.roundedEndEnd
 	}))
 
 	const cartesianProps = computed(() => ({

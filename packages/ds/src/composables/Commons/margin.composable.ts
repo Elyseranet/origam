@@ -106,13 +106,19 @@ export function useMargin (props: IMarginProps, name = getCurrentInstanceName())
             if (resolved) styles.push(`margin-${axis}: ${resolved}`)
         })
 
-        // ── Rung 3: logical per-side ─────────────────────────────────
-        // `marginInlineStart` & co (issue #1013), between the axis rung
-        // and the physical loop so `marginLeft` still wins for the edge
-        // they share. These also carry `auto` through, which is the whole
-        // point: `marginInlineStart="auto"` pushes an element to the far
-        // end of its line in BOTH directions, where `marginLeft="auto"`
-        // pushes it the wrong way under RTL.
+        /*********************************************************
+         * Rung 3 — logical per-side (issue #1013)
+         *
+         * @description
+         * `marginInlineStart` & co, between the axis rung and the physical
+         * loop so `marginLeft` still wins for the edge they share.
+         *
+         * @description
+         * These also carry `auto` through, which is the whole point:
+         * `marginInlineStart="auto"` pushes an element to the far end of
+         * its line in BOTH reading directions, where `marginLeft="auto"`
+         * pushes it the wrong way under RTL.
+         ********************************************************/
         MARGIN_LOGICAL_SIDE_MAP.forEach(({side, prop}) => {
             const resolved = resolveSpacingValue(props[prop])
 

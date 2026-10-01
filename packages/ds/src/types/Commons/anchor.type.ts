@@ -11,7 +11,7 @@ export type TInlineStartEnd = TInline | TStartEnd
 
 export type TDirectionBoth = TBlock | TInline
 
-/**
+/*********************************************************
  * One LOGICAL box edge — `block-start` | `block-end` | `inline-start` |
  * `inline-end`. The writing-mode-relative twin of {@link TDirectionBoth},
  * which names the four PHYSICAL edges.
@@ -31,10 +31,10 @@ export type TDirectionBoth = TBlock | TInline
  * Consumed by the `*InlineStart` / `*InlineEnd` / `*BlockStart` /
  * `*BlockEnd` prop families on `IPaddingProps`, `IMarginProps` and
  * `IBorderProps` (issue #1013), and by the maps that wire them.
- */
+ ********************************************************/
 export type TLogicalSide = `${BORDER_LOGICAL_AXIS}-${START_END}`
 
-/**
+/*********************************************************
  * One LOGICAL box CORNER — `start-start` | `start-end` | `end-start` |
  * `end-end`, in the native `border-{block}-{inline}-radius` order (block
  * end first, inline end second). The writing-mode-relative twin of the
@@ -46,7 +46,7 @@ export type TLogicalSide = `${BORDER_LOGICAL_AXIS}-${START_END}`
  *
  * Consumed by `IRoundedProps`' `roundedStartStart` / `roundedStartEnd` /
  * `roundedEndStart` / `roundedEndEnd` props (issue #1013).
- */
+ ********************************************************/
 export type TLogicalCorner = `${START_END}-${START_END}`
 
 export type TAnchor =

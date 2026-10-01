@@ -251,29 +251,33 @@ export function useRounded (
 
         const styles: Array<string> = shorthandStyles(rounded)
 
-        // Both per-corner rungs are gated on the props-object overload:
-        // the bare `Ref` overload carries ONLY the shorthand scalar, so
-        // there is no corner to read there (see the back-compat spec).
+        /*********************************************************
+         * Rungs 2 and 3 — the per-corner overrides
+         *
+         * @description
+         * Both are gated on the props-object overload: the bare `Ref`
+         * overload carries ONLY the shorthand scalar, so there is no
+         * corner to read there (pinned by the back-compat spec).
+         *
+         * @description
+         * Rung 2 — LOGICAL corners (`roundedStartStart` & co, issue
+         * #1013), emitted as the native logical longhands
+         * (`border-start-start-radius`). That is the same family the
+         * 4-value shorthand emits, so these four address ONE of its
+         * corners instead of all four.
+         *
+         * @description
+         * Rung 3 — PHYSICAL corners (`border-top-left-radius`), pushed
+         * last so they beat both the logical corners above and the
+         * shorthand's own logical output, by declaration order.
+         ********************************************************/
         if (!isRef(props)) {
-            // ── Rung 2: LOGICAL per-corner overrides ─────────────────
-            // `roundedStartStart` & co (issue #1013). Emitted as the
-            // native logical longhands (`border-start-start-radius`) —
-            // the same family the 4-value shorthand emits, so these four
-            // address one of its corners instead of all four. Pushed
-            // after the shorthand (one corner beats four) and before the
-            // physical loop, which keeps `roundedTopLeft` winning for the
-            // corner they share.
             ROUNDED_LOGICAL_CORNER_MAP.forEach(({corner, prop}) => {
                 const resolved = resolveRoundedCornerValue(props[prop])
 
                 if (resolved) styles.push(`border-${corner}-radius: ${resolved}`)
             })
 
-            // ── Rung 3: PHYSICAL per-corner overrides ────────────────
-            // Emitted as physical corner longhands
-            // (`border-top-left-radius`), which beat the logical ones
-            // above — and the ones the 4-value shorthand emits — by
-            // declaration order.
             ROUNDED_CORNER_MAP.forEach(({corner, prop}) => {
                 const resolved = resolveRoundedCornerValue(props[prop])
 

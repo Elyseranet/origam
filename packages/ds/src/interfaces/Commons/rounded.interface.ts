@@ -50,39 +50,38 @@ export interface IRoundedProps {
     roundedBottomLeft?: boolean | number | string
     /** Bottom-right corner only. Same vocabulary as `roundedTopRight`. */
     roundedBottomRight?: boolean | number | string
-    /**
-     * The block-start inline-start corner only — top-left in LTR
-     * horizontal-tb, **top-right in RTL**. Emits the native logical
-     * longhand `border-start-start-radius`, which the browser flips for
-     * you.
+    /*********************************************************
+     * Logical per-corner radius — rung 2 (issue #1013)
      *
+     * @description
+     * One WRITING-MODE-RELATIVE corner each, emitted as the native logical
+     * longhands (`border-start-start-radius`, …) — the same family the
+     * 4-value `rounded` shorthand already emits, so these four address one
+     * of its corners instead of all four.
+     *
+     * @description
+     * ⚠️ THE NAME READS `{block}-{inline}`, per CSS. The first half is the
+     * block end, the second the inline end — it is NOT a clockwise walk,
+     * and the two halves are not interchangeable:
+     *
+     * @description
+     * `roundedStartStart` — block-start inline-start = top-LEFT in LTR.
+     * `roundedStartEnd` — block-start inline-end = top-RIGHT in LTR.
+     * `roundedEndStart` — block-end inline-start = bottom-LEFT in LTR.
+     * `roundedEndEnd` — block-end inline-end = bottom-RIGHT in LTR.
+     *
+     * @description
+     * Swapping the halves silently rounds the opposite corner — nothing
+     * warns, and the result looks deliberate.
+     *
+     * @description
      * Same vocabulary as `roundedTopRight` (`8`, `'8px'`, `'md'`,
-     * `'large'`, `'var(…)'`), minus `shaped` / `shaped-invert`. Overrides
-     * `rounded` for that corner; beaten by `roundedTopLeft`.
-     *
-     * ⚠️ The name reads `{block}-{inline}`, per CSS — the FIRST half is the
-     * block end, the second the inline end. `roundedStartEnd` is therefore
-     * block-start inline-end (top-RIGHT in LTR), not a mirror of this one
-     * along the other axis. Swapping the halves silently rounds the
-     * opposite corner.
-     */
+     * `'large'`, `'var(…)'`), minus `shaped` / `shaped-invert`. Each
+     * overrides `rounded` for its corner and is beaten by the matching
+     * PHYSICAL corner prop.
+     ********************************************************/
     roundedStartStart?: boolean | number | string
-    /**
-     * The block-start inline-end corner — top-right in LTR. Emits
-     * `border-start-end-radius`. Same vocabulary and rank as
-     * `roundedStartStart`; beaten by `roundedTopRight`.
-     */
     roundedStartEnd?: boolean | number | string
-    /**
-     * The block-end inline-start corner — bottom-left in LTR. Emits
-     * `border-end-start-radius`. Same vocabulary and rank as
-     * `roundedStartStart`; beaten by `roundedBottomLeft`.
-     */
     roundedEndStart?: boolean | number | string
-    /**
-     * The block-end inline-end corner — bottom-right in LTR. Emits
-     * `border-end-end-radius`. Same vocabulary and rank as
-     * `roundedStartStart`; beaten by `roundedBottomRight`.
-     */
     roundedEndEnd?: boolean | number | string
 }

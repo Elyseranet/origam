@@ -55,7 +55,7 @@ export const PADDING_LOGICAL_AXIS_MAP: ReadonlyArray<{ axis: TBorderLogicalAxis,
     {axis: BORDER_LOGICAL_AXIS.INLINE, prop: 'paddingInline'},
 ] as const
 
-/**
+/*********************************************************
  * Logical-SIDE lookup driving the `paddingInlineStart` / `paddingInlineEnd`
  * / `paddingBlockStart` / `paddingBlockEnd` wiring (issue #1013).
  *
@@ -77,7 +77,7 @@ export const PADDING_LOGICAL_AXIS_MAP: ReadonlyArray<{ axis: TBorderLogicalAxis,
  * specificity call — a physical and a logical longhand for the same edge
  * are equally specific — it keeps "physical wins for the same edge" uniform
  * with the rule {@link ROUNDED_CORNER_MAP} already documents below.
- */
+ ********************************************************/
 export const PADDING_LOGICAL_SIDE_MAP: ReadonlyArray<{ side: TLogicalSide, prop: 'paddingBlockStart' | 'paddingBlockEnd' | 'paddingInlineStart' | 'paddingInlineEnd' }> = [
     {side: `${BORDER_LOGICAL_AXIS.BLOCK}-${START_END.START}`, prop: 'paddingBlockStart'},
     {side: `${BORDER_LOGICAL_AXIS.BLOCK}-${START_END.END}`, prop: 'paddingBlockEnd'},
@@ -105,7 +105,7 @@ export const MARGIN_LOGICAL_AXIS_MAP: ReadonlyArray<{ axis: TBorderLogicalAxis, 
     {axis: BORDER_LOGICAL_AXIS.INLINE, prop: 'marginInline'},
 ] as const
 
-/**
+/*********************************************************
  * Logical-SIDE lookup driving the `marginInlineStart` / `marginInlineEnd` /
  * `marginBlockStart` / `marginBlockEnd` wiring (issue #1013).
  * Same contract and same precedence rank as
@@ -114,7 +114,7 @@ export const MARGIN_LOGICAL_AXIS_MAP: ReadonlyArray<{ axis: TBorderLogicalAxis, 
  * These four also accept the `auto` keyword, like their physical twins —
  * `marginInlineStart="auto"` is the RTL-safe way to push a flex child to
  * the far end, which `marginLeft="auto"` gets wrong under RTL.
- */
+ ********************************************************/
 export const MARGIN_LOGICAL_SIDE_MAP: ReadonlyArray<{ side: TLogicalSide, prop: 'marginBlockStart' | 'marginBlockEnd' | 'marginInlineStart' | 'marginInlineEnd' }> = [
     {side: `${BORDER_LOGICAL_AXIS.BLOCK}-${START_END.START}`, prop: 'marginBlockStart'},
     {side: `${BORDER_LOGICAL_AXIS.BLOCK}-${START_END.END}`, prop: 'marginBlockEnd'},
@@ -141,7 +141,7 @@ export const ROUNDED_CORNER_MAP: ReadonlyArray<{ corner: string, prop: 'roundedT
     {corner: 'bottom-right', prop: 'roundedBottomRight'},
 ] as const
 
-/**
+/*********************************************************
  * Logical-CORNER lookup driving the `roundedStartStart` / `roundedStartEnd`
  * / `roundedEndStart` / `roundedEndEnd` wiring (issue #1013).
  *
@@ -162,7 +162,7 @@ export const ROUNDED_CORNER_MAP: ReadonlyArray<{ corner: string, prop: 'roundedT
  * corner still beats a logical one for the same corner. That last step is
  * the rule the paragraph above already states for the shorthand, applied
  * one rung down; see `useRounded`'s precedence table.
- */
+ ********************************************************/
 export const ROUNDED_LOGICAL_CORNER_MAP: ReadonlyArray<{ corner: TLogicalCorner, prop: 'roundedStartStart' | 'roundedStartEnd' | 'roundedEndStart' | 'roundedEndEnd' }> = [
     {corner: `${START_END.START}-${START_END.START}`, prop: 'roundedStartStart'},
     {corner: `${START_END.START}-${START_END.END}`, prop: 'roundedStartEnd'},

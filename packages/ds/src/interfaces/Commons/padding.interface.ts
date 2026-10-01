@@ -46,38 +46,33 @@ export interface IPaddingProps {
     paddingBlock?: boolean | number | string
     /** Left + right. Overrides `padding`; beaten by `paddingLeft` / `paddingRight`. */
     paddingInline?: boolean | number | string
-    /**
-     * The inline-START edge only — left in LTR, **right in RTL**. The
-     * writing-mode-relative way to pad one horizontal edge; emits
-     * `padding-inline-start`, which the browser flips for you.
+    /*********************************************************
+     * Logical per-side padding — rung 3 (issue #1013)
      *
-     * Takes the same vocabulary as `padding` (`16`, `"4"`, `"8px"`,
-     * `"var(…)"`, `"calc(…)"`). Overrides `padding` and `paddingInline`
-     * for that edge; beaten by `paddingLeft` (see the precedence note on
-     * the interface).
+     * @description
+     * One WRITING-MODE-RELATIVE edge each. They emit the native logical
+     * longhands (`padding-inline-start`, …), so the browser flips them
+     * under RTL and in vertical writing modes for you.
      *
-     * Prefer this over `paddingLeft` whenever the value is a reading-order
-     * offset — an indent, a gutter beside an accent rule — rather than a
-     * genuinely physical one.
-     */
+     * @description
+     * `paddingInlineStart` — left in LTR, **right in RTL**.
+     * `paddingInlineEnd` — right in LTR, **left in RTL**.
+     * `paddingBlockStart` — top in horizontal-tb.
+     * `paddingBlockEnd` — bottom in horizontal-tb.
+     *
+     * @description
+     * Same vocabulary as `padding` (`16`, `"4"`, `"8px"`, `"var(…)"`,
+     * `"calc(…)"`). Each overrides `padding` and its axis prop for the one
+     * edge it targets, and is in turn beaten by the matching PHYSICAL prop
+     * (`paddingLeft` & co) — see the precedence note above.
+     *
+     * @description
+     * Prefer these over the physical four whenever the value is a
+     * reading-order offset — an indent, a gutter beside an accent rule —
+     * rather than a genuinely physical one.
+     ********************************************************/
     paddingInlineStart?: boolean | number | string
-    /**
-     * The inline-END edge only — right in LTR, **left in RTL**. Emits
-     * `padding-inline-end`. Same vocabulary and same rank as
-     * `paddingInlineStart`; beaten by `paddingRight`.
-     */
     paddingInlineEnd?: boolean | number | string
-    /**
-     * The block-START edge only — top in horizontal-tb. Emits
-     * `padding-block-start`. Same vocabulary and rank as
-     * `paddingInlineStart`; overrides `padding` and `paddingBlock` for
-     * that edge, beaten by `paddingTop`.
-     */
     paddingBlockStart?: boolean | number | string
-    /**
-     * The block-END edge only — bottom in horizontal-tb. Emits
-     * `padding-block-end`. Same vocabulary and rank as
-     * `paddingInlineStart`; beaten by `paddingBottom`.
-     */
     paddingBlockEnd?: boolean | number | string
 }

@@ -10,12 +10,33 @@ connaître l'ordre des raccourcis CSS pour ajuster un seul côté : nommez-le.
 
 ## Les quatre familles
 
-| Famille | Raccourci | Axe logique | Côté / coin physique |
-|:--|:--|:--|:--|
-| Padding | `padding` | `paddingBlock` `paddingInline` | `paddingTop` `paddingRight` `paddingBottom` `paddingLeft` |
-| Margin | `margin` | `marginBlock` `marginInline` | `marginTop` `marginRight` `marginBottom` `marginLeft` |
-| Border | `border` | `borderBlock` `borderInline` | `borderTop` `borderRight` `borderBottom` `borderLeft` (+ `border*Color`) |
-| Rounded | `rounded` | — | `roundedTopLeft` `roundedTopRight` `roundedBottomLeft` `roundedBottomRight` |
+| Famille | Raccourci | Axe logique | Côté / coin **logique** | Côté / coin **physique** |
+|:--|:--|:--|:--|:--|
+| Padding | `padding` | `paddingBlock` `paddingInline` | `paddingInlineStart` `paddingInlineEnd` `paddingBlockStart` `paddingBlockEnd` | `paddingTop` `paddingRight` `paddingBottom` `paddingLeft` |
+| Margin | `margin` | `marginBlock` `marginInline` | `marginInlineStart` `marginInlineEnd` `marginBlockStart` `marginBlockEnd` | `marginTop` `marginRight` `marginBottom` `marginLeft` |
+| Border | `border` | `borderBlock` `borderInline` | `borderInlineStart` `borderInlineEnd` `borderBlockStart` `borderBlockEnd` (+ `*Color`) | `borderTop` `borderRight` `borderBottom` `borderLeft` (+ `border*Color`) |
+| Rounded | `rounded` | — | `roundedStartStart` `roundedStartEnd` `roundedEndStart` `roundedEndEnd` | `roundedTopLeft` `roundedTopRight` `roundedBottomLeft` `roundedBottomRight` |
+
+La colonne « côté logique » est arrivée avec l'issue #1013 ; les trois autres
+existaient déjà. Les quatre familles ont donc désormais la **même** grille
+complète — c'est la directive qui a motivé ce lot : *si un format existe, il
+existe partout.*
+
+### Physique ou logique — lequel choisir
+
+Les deux colonnes désignent les mêmes bords en LTR. La différence apparaît en
+**RTL** (et en écriture verticale) :
+
+| | `paddingLeft="32px"` | `paddingInlineStart="32px"` |
+|:--|:--|:--|
+| LTR | bord gauche | bord gauche |
+| RTL | bord **gauche** | bord **droit** |
+
+Prenez la forme **logique** dès que la valeur est un décalage *dans l'ordre de
+lecture* — une indentation, une gouttière le long d'un filet d'accent : le
+navigateur la retourne pour vous, sans CSS conditionnel. Gardez la forme
+**physique** pour ce qui est réellement physique (un décalage lié à une ombre,
+à un alignement sur un bord d'écran).
 
 ## Grammaire de précédence
 
@@ -25,7 +46,8 @@ familles — c'est volontaire : une seule grammaire à retenir.
 ```
 1. le raccourci global      padding
 2. l'axe logique            paddingBlock / paddingInline
-3. le côté physique         paddingTop / paddingRight / paddingBottom / paddingLeft
+3. le côté logique          paddingInlineStart / paddingInlineEnd / paddingBlockStart / paddingBlockEnd
+4. le côté physique         paddingTop / paddingRight / paddingBottom / paddingLeft
 ```
 
 Chaque échelon n'écrase **que** le ou les bords qu'il vise ; le reste
@@ -39,13 +61,32 @@ continue de descendre de l'échelon inférieur.
 - bas → `16px` (l'axe logique gagne, rien de plus spécifique ne le vise)
 - gauche et droite → `4px` (le raccourci gagne)
 
-Pour `rounded`, il n'y a que deux échelons (raccourci, puis coin) :
+Pour `rounded`, il n'y a pas d'échelon d'axe — un coin appartient aux deux axes
+à la fois — donc trois échelons : raccourci, coin logique, coin physique.
 
 ```vue
 <origam-card rounded="lg" rounded-top-left="0px"/>
 ```
 
 Seul le coin haut-gauche est mis à plat, les trois autres gardent `lg`.
+
+::: warning Les échelons 3 et 4 sont à égalité de spécificité
+`paddingInlineStart` et `paddingLeft` désignent **le même bord** en LTR : aucun
+des deux n'est « plus spécifique » que l'autre. C'est donc l'ordre d'émission
+qui tranche, et **c'est la forme physique qui gagne** — un choix d'uniformité
+avec le seul autre arbitrage physique/logique déjà en place dans le DS (les
+coins physiques battent la sortie logique du raccourci à 4 valeurs).
+
+En pratique : **choisissez une grille et tenez-vous-y** pour un composant
+donné. Écrire les deux formes pour un même bord est une erreur d'usage quel que
+soit le sens de l'arbitrage — le résultat est correct mais illisible.
+:::
+
+::: tip Les coins logiques se lisent `{bloc}-{inline}`
+C'est l'ordre du CSS, pas un parcours horaire : `roundedStartEnd` est le coin
+*bloc-début / inline-fin*, donc **haut-droite** en LTR. Inverser les deux
+moitiés arrondit silencieusement le coin opposé.
+:::
 
 ::: tip Pourquoi les props par côté existent
 Le raccourci à 4 valeurs du DS se distribue dans l'ordre

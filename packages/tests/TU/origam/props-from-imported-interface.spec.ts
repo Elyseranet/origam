@@ -65,9 +65,23 @@ describe('props declared only in an imported interface reach the runtime descrip
     // channel through which an accessible name reaches a prepend/append zone
     // the DS would otherwise promote to an anonymous `role="button"`.
     // Verified to be exactly those two names, not a wholesale shift.
+    //
+    // 92 → 104 (SliderField) and 66 → 78 (Video): issue #1013 — the
+    // logical-per-side grid. `IPaddingProps`, `IMarginProps` and
+    // `IRoundedProps` each gained 4 props (`paddingInlineStart`,
+    // `marginBlockEnd`, `roundedStartStart`, …), and both components reach
+    // all three interfaces, so each picks up exactly 4 × 3 = 12.
+    //
+    // ⚠️ Attributed, not assumed — a +12 could equally be a wholesale shift
+    // that happens to net out. Measured with a throwaway probe before
+    // editing these numbers: all 12 of the new names are present in each
+    // descriptor, and `propsOf(c).length - 12` equals the previous pinned
+    // count exactly (92 and 66). Nothing else moved. The other three
+    // components are unchanged because they extend none of the three
+    // spacing interfaces.
     it.each([
-        [OrigamSliderField, 'OrigamSliderField', 92],
-        [OrigamVideo, 'OrigamVideo', 66],
+        [OrigamSliderField, 'OrigamSliderField', 104],
+        [OrigamVideo, 'OrigamVideo', 78],
         [OrigamTimelineItem, 'OrigamTimelineItem', 16],
         [OrigamTreeview, 'OrigamTreeview', 15],
         [OrigamClientOnly, 'OrigamClientOnly', 2]
