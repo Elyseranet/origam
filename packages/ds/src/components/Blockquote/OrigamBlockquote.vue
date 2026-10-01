@@ -7,7 +7,7 @@
 			:style="blockquoteStyles"
 	>
 		<span
-				v-if="showQuoteMark"
+				v-if="quoteMark"
 				class="origam-blockquote__mark origam-blockquote__mark--bg"
 				aria-hidden="true"
 		>{{ openMark }}</span>
@@ -80,14 +80,36 @@
 	 * @description
 	 * Props + defaults for `<OrigamBlockquote>`. The component renders a
 	 * native `<blockquote>` (overridable via `tag`) with an optional
-	 * attribution `<footer>` and variant-driven decoration (accent bar,
-	 * decorative quote marks, pull-quote rules). All visual decisions
-	 * are token-driven — the SCSS only branches on the variant class.
+	 * attribution `<footer>` and an optional decorative quote glyph.
+	 *
+	 * @description
+	 * ⛔ LE `variant` N'EST PLUS UNE COUCHE SCSS — ADR-005 D7, lot #1015.
+	 * Les cinq valeurs sont des PRESETS DE PROPS
+	 * (`BLOCKQUOTE_VARIANT_PRESETS`, `consts/Blockquote/blockquote.const.ts`)
+	 * que le resolveur de props applique au rang le plus faible de la
+	 * chaine. Le DS n'attache plus aucune regle a
+	 * `.origam-blockquote--variant-{valeur}` : la classe est toujours emise,
+	 * mais elle appartient au CONSOMMATEUR comme crochet d'override. Le
+	 * garde `no-variant-css` tient cette moitie du contrat.
+	 *
+	 * @description
+	 * ⛔ CE FICHIER N'IMPORTE PAS SA PROPRE TABLE, et ne doit jamais le
+	 * faire : le seul chemin est `consts/Commons/variant-preset.const.ts`
+	 * -> `VARIANT_PRESETS` -> `createOrigam()`. Si l'on se surprend a
+	 * vouloir lire la table ici, le rang voulu est deja resolu sur `props`.
+	 *
+	 * @description
+	 * Les valeurs ci-dessous sont des LITTERAUX INLINE, jamais
+	 * `BLOCKQUOTE_DEFAULTS.x` : le compilateur SFC ne resout pas un acces
+	 * de propriete et rendrait l'objet `props` entierement `undefined`.
+	 * `align: 'left'` n'existe que comme PLANCHER sans variant — le preset
+	 * de `pull`, un rang plus haut, le bat.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IBlockquoteProps>(), {
 		tag: 'blockquote',
 		variant: 'default',
-		lang: 'auto'
+		lang: 'auto',
+		align: 'left'
 	})
 
 	defineEmits<IBlockquoteEmits>()
@@ -133,8 +155,6 @@
 	const openMark = computed(() => QUOTE_MARKS_BY_LANG[effectiveLang.value].open)
 	const closeMark = computed(() => QUOTE_MARKS_BY_LANG[effectiveLang.value].close)
 
-	const showQuoteMark = computed(() => props.variant === 'quoted')
-
 	/*********************************************************
 	 * Attribution visibility
 	 *
@@ -146,20 +166,6 @@
 	const hasAuthor = computed(() => Boolean(slots.author) || (props.author?.length ?? 0) > 0)
 	const hasSource = computed(() => Boolean(slots.source) || (props.source?.length ?? 0) > 0)
 	const hasAttribution = computed(() => hasAuthor.value || hasSource.value)
-
-	/*********************************************************
-	 * Alignment resolution
-	 *
-	 * @description
-	 * `pull` defaults to `center`; every other variant defaults to
-	 * `left`. An explicit `align` prop always wins over the per-variant
-	 * default — consumers can pull a left-aligned pull quote if they
-	 * really want to.
-	 ********************************************************/
-	const effectiveAlign = computed(() => {
-		if (props.align) return props.align
-		return props.variant === 'pull' ? 'center' : 'left'
-	})
 
 	/*********************************************************
 	 * Cross-cutting surfaces (rounded / elevation / border / spacing)
@@ -231,7 +237,7 @@
 		return [
 			'origam-blockquote',
 			`origam-blockquote--variant-${props.variant}`,
-			`origam-blockquote--align-${effectiveAlign.value}`,
+			`origam-blockquote--align-${props.align}`,
 			{
 				[`origam-blockquote--color-${props.color}`]: colorIsIntent.value,
 				[`origam-blockquote--accent-${resolvedAccentColor.value}`]: accentIsIntent.value,
@@ -260,13 +266,19 @@
 
 	/*********************************************************
 	 * Expose
+	 *
+	 * @description
+	 * ⚠️ `effectiveAlign` et `showQuoteMark` ont DISPARU de cette surface
+	 * (lot #1015). Les deux calculaient une valeur depuis `variant`, ce que
+	 * le preset fait desormais un rang plus haut : lire `align` ou
+	 * `quoteMark` sur les props rend exactement la meme chose. Rupture
+	 * assumee plutot qu'alias de compatibilite — aucun consommateur ne les
+	 * lisait (verifie : zero occurrence hors ce fichier).
 	 ********************************************************/
 	defineExpose({
 		effectiveLang,
-		effectiveAlign,
 		openMark,
 		closeMark,
-		showQuoteMark,
 		hasAttribution
 	})
 </script>
@@ -296,14 +308,13 @@
 		// win the cascade. Without it the scoped compiler pushes this rule
 		// to (0,2,0) and beats the utility's (0,1,0).
 		//
-		// ⚠️ Deliberately PARTIAL. The `--variant-*` rules further down are
-		// modifiers and keep their (0,2,0) per #950's decision — and
-		// `variant` defaults to `'default'`, so
-		// `.origam-blockquote--variant-default` is ALWAYS present and owns
-		// `padding-inline-start`. After this change `padding-block-*` and
-		// `padding-inline-end` answer the utility; `padding-inline-start`
-		// stays held by the active variant. That is the intended trade:
-		// the variant's accent-bar offset must not lose to a utility.
+		// ⚠️ #950's caveat about a competing variant rule is OBSOLETE since
+		// ADR-005 D7 (lot #1015): there is no longer any variant rule to
+		// compete with. A variant's spacing now arrives as an INLINE
+		// declaration from its props preset, which outranks both this rule
+		// and the utility class — so the accent-bar offset still cannot
+		// lose to a utility, by a stronger mechanism than specificity.
+		// This rule is what a variant that sets no spacing falls back to.
 		:where(&) {
 			margin: 0;
 			padding-block: var(--origam-blockquote---resolved-padding-block);
@@ -372,53 +383,10 @@
 		text-align: right;
 	}
 
-	.origam-blockquote--variant-default {
-		border-inline-start: var(--origam-blockquote__accent---width, 4px) solid var(--origam-blockquote---resolved-accent-color);
-		padding-inline-start: calc(var(--origam-blockquote---resolved-padding-inline) + var(--origam-blockquote__accent---width, 4px));
-	}
-
-	.origam-blockquote--variant-elegant {
-		font-family: var(--origam-blockquote__elegant---font-family, Georgia, 'Times New Roman', serif);
-		font-size: var(--origam-blockquote__elegant---font-size, 1.125rem);
-		font-style: var(--origam-blockquote__elegant---font-style, italic);
-		line-height: var(--origam-blockquote__elegant---line-height, 2);
-		padding-block: var(--origam-blockquote__elegant---padding-block, 24px);
-		border-inline-start: var(--origam-blockquote__accent---width, 4px) solid var(--origam-blockquote---resolved-accent-color);
-		padding-inline-start: calc(var(--origam-blockquote---resolved-padding-inline) + var(--origam-blockquote__accent---width, 4px));
-	}
-
-	.origam-blockquote--variant-quoted {
-		padding-top: calc(var(--origam-blockquote---resolved-padding-block) + var(--origam-blockquote--quoted---glyph-padding-extra, 1rem));
-
-		.origam-blockquote__body {
-			position: relative;
-			z-index: 1;
-		}
-
-		.origam-blockquote__attribution {
-			position: relative;
-			z-index: 1;
-		}
-	}
-
-	.origam-blockquote--variant-minimal {
-		font-size: var(--origam-blockquote__minimal---font-size, 0.875rem);
-		font-style: var(--origam-blockquote__minimal---font-style, italic);
-		padding-inline: var(--origam-blockquote__minimal---padding-inline, 12px);
-		padding-block: 0;
-		border-inline-start: var(--origam-blockquote--minimal---accent-width, 2px) solid var(--origam-blockquote---resolved-accent-color);
-		padding-inline-start: calc(var(--origam-blockquote__minimal---padding-inline, 12px) + var(--origam-blockquote--minimal---accent-width, 2px));
-	}
-
-	.origam-blockquote--variant-pull {
-		font-family: var(--origam-blockquote__pull---font-family, Georgia, 'Times New Roman', serif);
-		font-size: var(--origam-blockquote__pull---font-size, 1.5rem);
-		font-weight: var(--origam-blockquote__pull---font-weight, 500);
-		line-height: var(--origam-blockquote__pull---line-height, 1.375);
-		padding-block: var(--origam-blockquote__pull---padding-block, 24px);
-		padding-inline: var(--origam-blockquote---resolved-padding-inline);
-		border-block-start: var(--origam-blockquote__pull---rule-width, 2px) solid var(--origam-blockquote---resolved-accent-color);
-		border-block-end: var(--origam-blockquote__pull---rule-width, 2px) solid var(--origam-blockquote---resolved-accent-color);
+	.origam-blockquote__mark--bg + .origam-blockquote__body,
+	.origam-blockquote__mark--bg ~ .origam-blockquote__attribution {
+		position: relative;
+		z-index: 1;
 	}
 
 	.origam-blockquote--accent-primary {

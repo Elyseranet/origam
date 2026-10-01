@@ -28,6 +28,7 @@
 						:margin="state.margin"
 						:align="state.align"
 						:lang="state.lang"
+						:quote-mark="state.quoteMark"
 						:font-family="state.fontFamily"
 						:font-size="state.fontSize"
 						:font-weight="state.fontWeight"
@@ -45,6 +46,7 @@
 					<HstSelect v-model="state.variant" title="Variant" :options="BLOCKQUOTE_VARIANT_OPTIONS"/>
 					<HstSelect v-model="state.align"   title="Align"   :options="BLOCKQUOTE_ALIGN_OPTIONS"/>
 					<HstSelect v-model="state.lang"    title="Lang"    :options="BLOCKQUOTE_LANG_OPTIONS"/>
+					<HstCheckbox v-model="state.quoteMark" title="Quote Mark"/>
 				</StoryGroup>
 				<StoryGroup title="Color">
 					<HstSelect v-model="state.color"       title="Color (text)" :options="INTENT_OPTIONS"/>
@@ -146,6 +148,81 @@
 			</origam-blockquote>
 		</Variant>
 
+		<Variant title="Prop — variant (preset matrix)">
+			<div
+					class="story-matrix"
+					data-cy="bq-preset-matrix"
+			>
+				<origam-blockquote
+						variant="default"
+						accent-color="primary"
+						data-cy="bq-preset-default"
+				>
+					Talk is cheap. Show me the code.
+				</origam-blockquote>
+
+				<origam-blockquote
+						variant="elegant"
+						accent-color="primary"
+						data-cy="bq-preset-elegant"
+				>
+					Talk is cheap. Show me the code.
+				</origam-blockquote>
+
+				<origam-blockquote
+						variant="quoted"
+						accent-color="primary"
+						lang="en"
+						data-cy="bq-preset-quoted"
+				>
+					Talk is cheap. Show me the code.
+				</origam-blockquote>
+
+				<origam-blockquote
+						variant="minimal"
+						accent-color="primary"
+						data-cy="bq-preset-minimal"
+				>
+					Talk is cheap. Show me the code.
+				</origam-blockquote>
+
+				<origam-blockquote
+						variant="pull"
+						accent-color="primary"
+						data-cy="bq-preset-pull"
+				>
+					Talk is cheap. Show me the code.
+				</origam-blockquote>
+
+				<origam-blockquote
+						variant="elegant"
+						accent-color="primary"
+						font-size="sm"
+						data-cy="bq-override-elegant-font-size"
+				>
+					Talk is cheap. Show me the code.
+				</origam-blockquote>
+
+				<origam-blockquote
+						variant="pull"
+						accent-color="primary"
+						align="left"
+						data-cy="bq-override-pull-align"
+				>
+					Talk is cheap. Show me the code.
+				</origam-blockquote>
+
+				<origam-blockquote
+						variant="minimal"
+						accent-color="primary"
+						padding-inline="10"
+						data-cy="bq-override-minimal-padding"
+				>
+					Talk is cheap. Show me the code.
+				</origam-blockquote>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IBlockquoteProps>({
@@ -180,6 +257,7 @@
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
 					<HstSelect v-model="state.align"       title="Align"        :options="BLOCKQUOTE_ALIGN_OPTIONS"/>
 					<HstSelect v-model="state.lang"        title="Lang"         :options="BLOCKQUOTE_LANG_OPTIONS"/>
+						<HstCheckbox v-model="state.quoteMark" title="Quote Mark"/>
 				</StoryGroup>
 				<StoryGroup title="Typography">
 					<HstSelect v-model="state.fontFamily" title="Font Family" :options="FONT_FAMILY_OPTIONS"/>
@@ -230,6 +308,13 @@
 </script>
 
 <style scoped>
+	.story-matrix {
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+		align-items: stretch;
+	}
+
 	.story-link {
 		color: var(--origam-color__action--primary---bg, #7c3aed);
 		text-decoration: underline;

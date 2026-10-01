@@ -1,4 +1,5 @@
 import type { TVariantPresetRegistry } from '../../types/Commons/variant-preset.type'
+import { BLOCKQUOTE_VARIANT_PRESETS } from '../Blockquote/blockquote.const'
 import { KBD_VARIANT_PRESETS } from '../Kbd/kbd.const'
 
 /*********************************************************
@@ -28,12 +29,13 @@ export const VARIANT_PROP_KEY = 'variant'
  * constitue pas.
  *
  * @description
- * ⛔ UN SEUL COMPOSANT CONVERTI A CE JOUR — `OrigamKbd`, lot 2. Le lot 1
- * d'ADR-005 livre le MECANISME (type partage, rang dans le resolveur,
- * canal `theme.variants`) et aucune conversion : chaque composant arrive
- * avec son propre lot, parce qu'aucun ne se convertit mecaniquement.
- * Mesure a l'appui (2026-09-30), la taxonomie « famille A » de D5 est
- * optimiste sur trois des quatre composants qu'elle liste :
+ * ⛔ DEUX COMPOSANTS CONVERTIS A CE JOUR — `OrigamKbd` (lot 2) et
+ * `OrigamBlockquote` (lot #1015). Le lot 1 d'ADR-005 livre le MECANISME
+ * (type partage, rang dans le resolveur, canal `theme.variants`) et aucune
+ * conversion : chaque composant arrive avec son propre lot, parce
+ * qu'aucun ne se convertit mecaniquement. Mesure a l'appui (2026-09-30),
+ * la taxonomie « famille A » de D5 est optimiste sur trois des quatre
+ * composants qu'elle liste :
  * @description
  * - `OrigamKbd` — FAIT (lot 2). Ses regles de variant posaient des
  *   PROPRIETES CUSTOM que `key-surface` consomme sur la racine ET sur les
@@ -48,8 +50,18 @@ export const VARIANT_PROP_KEY = 'variant'
  * - `OrigamBtnGroup` — recopie `--origam-btn-group---border-width` dans
  *   une propriete custom qui alimente un `calc()` de rayon interieur.
  *   Inexprimable en prop de racine.
- * - `OrigamBlockquote` — `padding-inline-start: calc(var(--…) + var(--…))`
- *   et des regles imbriquees sur `__body` / `__attribution`.
+ * - `OrigamBlockquote` — FAIT (lot #1015). Les deux reserves que ce
+ *   paragraphe posait se sont reglees sans nouveau mecanisme. Le
+ *   `calc(var(--…) + var(--…))` voyage verbatim : `resolveSpacingValue`
+ *   rend telle quelle toute valeur qui n'est pas un echelon de l'echelle.
+ *   Les regles imbriquees sur `__body` / `__attribution` ne dependaient
+ *   pas du variant mais de la PRESENCE du glyphe, donc elles sont
+ *   reecrites en selecteurs de VOISINAGE (`__mark--bg + __body`,
+ *   `__mark--bg ~ __attribution`) : elles se declenchent sur la condition
+ *   reelle, n'ajoutent aucun alias de classe que `no-variant-css`
+ *   surveillerait, et laissent zero ecart de style calcule sur les quatre
+ *   autres variants. Le vrai obstacle etait ailleurs — `useTypography` n'a
+ *   aucune echappatoire pour une valeur custom (#1018).
  * @description
  * Seul `OrigamBtn` ne peint que des proprietes de racine — mais il depend
  * de `IOpacityProps` / `IBackdropProps` (Q1, absents) et son `ghost` porte
@@ -70,5 +82,6 @@ export const VARIANT_PROP_KEY = 'variant'
  * identites x 2 modes et lit chaque surface peinte, `__key` compris.
  ********************************************************/
 export const VARIANT_PRESETS: TVariantPresetRegistry = {
+    'origam-blockquote': BLOCKQUOTE_VARIANT_PRESETS,
     'origam-kbd': KBD_VARIANT_PRESETS
 }

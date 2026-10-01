@@ -1,4 +1,6 @@
 [
+    "packages/ds/src/consts/Blockquote/blockquote.const.ts::--origam-blockquote---resolved-accent-color",
+    "packages/ds/src/consts/Blockquote/blockquote.const.ts::--origam-blockquote--minimal---accent-width",
     "packages/ds/src/utils/Commons/color.util.ts::--origam-color__action--ghost---bgActive",
     "packages/ds/src/utils/Commons/color.util.ts::--origam-color__action--primary---bgActive",
     "packages/ds/src/utils/Commons/color.util.ts::--origam-color__action--secondary---bgActive",

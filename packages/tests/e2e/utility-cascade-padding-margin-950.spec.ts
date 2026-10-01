@@ -292,24 +292,78 @@ test.describe('#950 — non-regression : un modificateur garde sa (0,2,0) face a
         expect(measured.withModifier).toBe('16px')
     })
 
-    test('OrigamBlockquote : &--variant-minimal garde son padding-block malgre .origam--p-6', async ({ page }) => {
-        await openVariant(page, STORY('blockquote-origamblockquote'), 'Design')
-        const host = sandboxOf(page).locator('.origam-blockquote').first()
-        await expect(host).toBeVisible({ timeout: 8000 })
+    /*
+     * ⛔ CE TEST A ETE REECRIT PAR ADR-005 D7 (lot #1015), ET LA GARANTIE
+     * QU'IL PROTEGE N'A PAS BOUGE — seul son MECANISME a change.
+     *
+     * Il pilotait `minimal` en ECHANGEANT la classe
+     * `origam-blockquote--variant-default` contre
+     * `origam-blockquote--variant-minimal`, et attendait que
+     * `padding-block` tombe a `0px`. Cela ne marchait que parce que le DS
+     * livrait un bloc SCSS par variant : la classe PORTAIT le style, a
+     * (0,2,0), et battait l'utilitaire a (0,1,0).
+     *
+     * Le variant est desormais un preset de PROPS et le DS n'attache plus
+     * aucune regle a cette classe (decision D3, tenue par le garde
+     * `no-variant-css`) — echanger la classe ne peut donc plus rien
+     * changer. Asserter le contraire reviendrait a epingler la mecanique
+     * que l'ADR existe pour supprimer.
+     *
+     * ⛔ MAIS #950 NE PERD RIEN, et c'est le point que ce test doit
+     * continuer a mesurer. Sa decision etait « le decalage du filet
+     * d'accent ne doit pas perdre face a un utilitaire ». Elle tient
+     * toujours, par un mecanisme PLUS FORT que la specificite : le preset
+     * emet une declaration INLINE, et une declaration inline bat une
+     * classe utilitaire quel que soit son poids. On mesure donc la
+     * garantie sur l'element rendu avec le PROP, ce qui est le vrai
+     * scenario, au lieu d'une classe posee a la main.
+     *
+     * Les deux moities sont verifiees ici :
+     *   (1) un variant dont le preset NE pose pas de padding laisse
+     *       l'utilitaire gagner — c'est le controle d'actuation, sans quoi
+     *       « rien n'a change » serait vrai par construction ;
+     *   (2) `minimal`, dont le preset pose `paddingBlock: 0`, garde son
+     *       `0px` malgre `.origam--p-6` ;
+     *   (3) echanger la classe de variant ne change RIEN.
+     */
+    test('OrigamBlockquote : le preset de `minimal` garde son padding-block malgre .origam--p-6', async ({ page }) => {
+        await openVariant(page, STORY('blockquote-origamblockquote'), 'Prop — variant (preset matrix)')
+        const sandbox = sandboxOf(page)
 
-        const measured = await host.evaluate((el) => {
+        const control = sandbox.locator('[data-cy="bq-preset-default"]')
+        await expect(control).toBeVisible({ timeout: 8000 })
+
+        // (1) CONTROLE D'ACTUATION — `default` ne pose aucun padding de bloc,
+        // donc l'utilitaire doit gagner. S'il ne gagnait pas, le (2) serait
+        // vrai sans rien prouver.
+        const actuation = await control.evaluate((el) => {
+            const before = getComputedStyle(el).paddingTop
             el.classList.add('origam--p-6')
-            const utilityOnly = getComputedStyle(el).paddingTop
-
-            el.classList.remove('origam-blockquote--variant-default')
-            el.classList.add('origam-blockquote--variant-minimal')
-
-            return { utilityOnly, withModifier: getComputedStyle(el).paddingTop }
+            return { before, after: getComputedStyle(el).paddingTop }
         })
 
-        expect(measured.utilityOnly).toBe(SCALE_6_PX)
-        // `--variant-minimal` declare `padding-block: 0` en litteral a
-        // (0,2,0) : il bat l'utilitaire (0,1,0).
-        expect(measured.withModifier).toBe('0px')
+        expect(actuation.after).not.toBe(actuation.before)
+        expect(actuation.after).toBe(SCALE_6_PX)
+
+        // (2) + (3) sur l'element rendu avec `variant="minimal"`, mutation ET
+        // lecture dans un SEUL `evaluate` : la `:class` de la racine est liee
+        // a un `computed`, que Vue re-patche entre deux aller-retours.
+        const measured = await sandbox.locator('[data-cy="bq-preset-minimal"]').evaluate((el) => {
+            const presetOnly = getComputedStyle(el).paddingTop
+
+            el.classList.add('origam--p-6')
+            const withUtility = getComputedStyle(el).paddingTop
+
+            el.classList.remove('origam-blockquote--variant-minimal')
+            el.classList.add('origam-blockquote--variant-pull')
+
+            return { presetOnly, withUtility, afterClassSwap: getComputedStyle(el).paddingTop }
+        })
+
+        // (2) le preset emet `padding-block: 0px` INLINE : l'utilitaire perd.
+        expect(measured.presetOnly).toBe('0px')
+        expect(measured.withUtility).toBe('0px')
+        // (3) la classe de variant ne porte plus aucun style du DS.
+        expect(measured.afterClassSwap).toBe(measured.withUtility)
     })
 })

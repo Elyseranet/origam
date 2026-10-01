@@ -91,13 +91,68 @@ export interface IBlockquoteProps extends ICommonsComponentProps, ITagProps, ICo
      */
     lang?: TBlockquoteLang
     /**
-     * Horizontal alignment of the citation body and attribution. The
-     * `pull` variant forces `'center'` when this prop is left empty;
-     * other variants default to `'left'`.
+     * Horizontal alignment of the citation body and attribution.
      *
-     * @default 'left'
+     * ## ADR-005 D7 — exemption « famille B », documentée ICI et non
+     * implicitement
+     *
+     * `'center'` sur `pull` n'est plus calculé par le composant : c'est
+     * `BLOCKQUOTE_VARIANT_PRESETS.pull.align`, résolu au rang PRESET de la
+     * chaîne. La sémantique est identique à celle du `computed`
+     * `effectiveAlign` qu'il remplace — un `align` écrit au site d'appel
+     * gagne, parce que le rang 1 du résolveur (`if (wasPassed) return
+     * fallback`) précède le rang preset.
+     *
+     * ⚠️ **Rupture, assumée.** Le centrage de `pull` dépend désormais du
+     * résolveur, que seul `createOrigam()` installe. Un consommateur qui
+     * importe le composant sans installer le plugin obtient `'left'` (la
+     * valeur `withDefaults`, qui n'existe que comme plancher sans variant).
+     * Avant la conversion, le `computed` centrait sans plugin.
+     *
+     * @default 'left' — plancher `withDefaults`, que le preset de `pull` bat
      */
     align?: TBlockquoteAlign
+    /*********************************************************
+     * quoteMark
+     *
+     * @description
+     * Monte le glyphe d'ouverture decoratif en filigrane de fond
+     * (`<span class="origam-blockquote__mark--bg">`), avec la paire de
+     * guillemets que `lang` selectionne.
+     *
+     * @description
+     * ⛔ ADR-005 D7 — EXEMPTION « FAMILLE B », DOCUMENTEE ICI ET NON
+     * IMPLICITEMENT. Ce prop existe parce que `quoted` ne se reduit PAS a
+     * des props de peinture : il MONTE UN ELEMENT. D7 interdit de laisser
+     * cet effet accroche au variant et exige que l'exemption soit ecrite
+     * sur la prop — c'est ce paragraphe.
+     *
+     * @description
+     * Le glyphe est donc pilote par `quoteMark`, et
+     * `BLOCKQUOTE_VARIANT_PRESETS.quoted` le pose a `true`. Deux
+     * consequences voulues : `quoted` reste le raccourci qu'il a toujours
+     * ete, et le glyphe devient atteignable sur N'IMPORTE QUEL variant
+     * (`<origam-blockquote variant="pull" quote-mark>`), ce que le modele
+     * SCSS rendait impossible.
+     *
+     * @description
+     * Les deux regles d'empilement que `quoted` portait (`position:
+     * relative; z-index: 1` sur `__body` et `__attribution`, pour que le
+     * texte passe devant le glyphe) suivent desormais la PRESENCE DU
+     * GLYPHE et non le variant : ce sont des selecteurs de voisinage
+     * (`__mark--bg + __body`, `__mark--bg ~ __attribution`), donc ils se
+     * declenchent exactement quand il y a quelque chose a surmonter, et
+     * laissent zero ecart de style calcule sur les quatre autres variants.
+     *
+     * @description
+     * ⚠️ Le sur-remplissage haut qui laisse de la place au glyphe
+     * (`paddingTop`) reste porte par le preset de `quoted`, pas par ce
+     * prop. `quote-mark` sur un autre variant rend donc le glyphe sans ce
+     * supplement — passer `padding-top` soi-meme le retablit.
+     *
+     * @default false
+     ********************************************************/
+    quoteMark?: boolean
 }
 
 /**

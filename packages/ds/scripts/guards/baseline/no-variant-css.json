@@ -1,9 +1,4 @@
 [
-    "packages/ds/src/components/Blockquote/OrigamBlockquote.vue::selector::.origam-blockquote--variant-default",
-    "packages/ds/src/components/Blockquote/OrigamBlockquote.vue::selector::.origam-blockquote--variant-elegant",
-    "packages/ds/src/components/Blockquote/OrigamBlockquote.vue::selector::.origam-blockquote--variant-minimal",
-    "packages/ds/src/components/Blockquote/OrigamBlockquote.vue::selector::.origam-blockquote--variant-pull",
-    "packages/ds/src/components/Blockquote/OrigamBlockquote.vue::selector::.origam-blockquote--variant-quoted",
     "packages/ds/src/components/Btn/OrigamBtn.vue::important::&--variant-ghost::1",
     "packages/ds/src/components/Btn/OrigamBtn.vue::important::&--variant-ghost::2",
     "packages/ds/src/components/Btn/OrigamBtn.vue::important::&--variant-ghost::3",
