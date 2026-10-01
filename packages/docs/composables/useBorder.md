@@ -1,9 +1,22 @@
 # useBorder
 
-Turns the thirteen props of `IBorderProps` — or a single `Ref` carrying the
+Turns the twenty-one props of `IBorderProps` — or a single `Ref` carrying the
 `border` shorthand — into classes and inline declarations. The widest prop
 surface of the dimension / spacing / shape axis, and the one with the most
 history attached.
+
+Three directional grids coexist, and all three are now complete (#1013):
+
+| grid | props | emitted CSS |
+|---|---|---|
+| physical per side | `borderTop` / `borderRight` / `borderBottom` / `borderLeft` (+ `*Color`) | `border-top-width` … |
+| logical per axis | `borderBlock` / `borderInline` | `border-block-width` … |
+| logical per side | `borderBlockStart` / `borderBlockEnd` / `borderInlineStart` / `borderInlineEnd` (+ `*Color`) | `border-inline-start-width` … |
+
+Pick the **logical** spelling whenever the design follows the reading
+direction — a quote's accent rule, a nav indicator, a tree guide. The
+physical spelling pins the paint to a screen edge and silently inverts the
+design in RTL.
 
 ## API
 
@@ -18,11 +31,11 @@ function useBorder (
 ```
 
 ⚠️ **The `Ref` overload carries the `border` shorthand and nothing else.** The
-twelve other props (`borderColor`, `borderStyle`, the four physical sides, the
-two logical axes, the four per-side colors) are all read inside an
-`if (!isRef(props))` block, so passing a `Ref` makes them unreachable by
-construction. Pass the props object whenever
-you need more than the shorthand.
+twenty other props (`borderColor`, `borderStyle`, the four physical sides, the
+two logical axes, the four logical sides, and the eight per-edge colors) are
+all read inside an `if (!isRef(props))` block, so passing a `Ref` makes them
+unreachable by construction. Pass the props object whenever you need more
+than the shorthand.
 
 `name` defaults to the current instance's kebab-cased name, so calling outside
 `setup()` without an explicit `name` throws.
@@ -47,12 +60,44 @@ const { borderClasses, borderStyles } = useBorder(props)
 
 1. the global `border` shorthand
 2. the standalone `borderColor` / `borderStyle`
-3. the logical axes `borderBlock` / `borderInline`
-4. the physical sides `borderTop` / `borderRight` / `borderBottom` / `borderLeft`
-5. the per-side colors `borderTopColor` / `borderRightColor` / `borderBottomColor` / `borderLeftColor`
+3. the logical **axes** `borderBlock` / `borderInline`
+4. the logical **sides** `borderBlockStart` / `borderBlockEnd` /
+   `borderInlineStart` / `borderInlineEnd` — each immediately followed by its
+   own `borderBlockStartColor` / … override
+5. the physical **sides** `borderTop` / `borderRight` / `borderBottom` /
+   `borderLeft` — each immediately followed by its own `borderTopColor` / …
+   override
 
-Each rung only overrides the side or axis it targets; everything else keeps
-cascading from the rung below. Measured:
+Each rung only overrides the edge or axis it targets; everything else keeps
+cascading from the rung below.
+
+There is no CSS specificity at work here at all: every declaration lands in
+the same inline `style` attribute, so **push order is the entire mechanism**
+and the list above is literally the order of the `styles.push` calls.
+
+### ⛔ Physical beats logical for the same edge
+
+`borderLeft` and `borderInlineStart` are two *spellings of one edge* in LTR,
+not two edges, and CSS gives them equal weight. The tie is broken in favour
+of **physical** (rung 5 after rung 4):
+
+```ts
+useBorder({ borderInlineStart: 1, borderLeft: 9 }).borderStyles.value
+// [ 'border-inline-start-width: 1px', …   ← rung 4
+//   'border-left-width: 9px', … ]         ← rung 5 wins in LTR
+```
+
+This matches the repo's only prior physical-vs-logical tiebreak, recorded on
+`ROUNDED_CORNER_MAP` (`consts/Commons/spacing.const.ts`), and is settled the
+same way across all four directional grids (border here, padding / margin /
+rounded alongside it) so the rule is learned once rather than per family.
+
+⚠️ Passing **both** spellings for one edge is a code smell: in RTL the
+physical prop still wins, but it now paints the *opposite* edge from the
+logical one, so the two stop overlapping and both become visible. Pick one
+vocabulary per edge.
+
+Measured:
 
 ```ts
 useBorder({ border: 'thin', borderTop: 4 }).borderStyles.value
@@ -63,6 +108,75 @@ useBorder({ border: 'thin', borderTop: 4 }).borderStyles.value
 //   'border-top-style: solid',
 //   'border-top-color: currentColor' ]
 ```
+
+## The logical-per-side grid (#1013)
+
+Four width props and four colour props, resolving to the native CSS logical
+longhands. The browser maps each to the right physical edge per the active
+writing mode — nothing in the DS translates between the two vocabularies.
+
+| prop | CSS longhands | LTR edge | RTL edge |
+|---|---|---|---|
+| `borderInlineStart` | `border-inline-start-{width,style,color}` | left | right |
+| `borderInlineEnd` | `border-inline-end-*` | right | left |
+| `borderBlockStart` | `border-block-start-*` | top | top |
+| `borderBlockEnd` | `border-block-end-*` | bottom | bottom |
+
+Plus `borderInlineStartColor` / `borderInlineEndColor` /
+`borderBlockStartColor` / `borderBlockEndColor`, each a `TColor` (semantic
+intent, raw CSS colour, or falsy to opt out).
+
+The value grammar is **identical** to the physical per-side props — boolean
+opt-in, bare width number, or a free-form `"width style color"` string:
+
+```ts
+useBorder({ borderInlineStart: 4 }).borderStyles.value
+// [ 'border-inline-start-width: 4px',
+//   'border-inline-start-style: solid',      ← a bare width alone paints
+//   'border-inline-start-color: currentColor' ] ← nothing, so both default
+
+useBorder({ borderInlineStart: true }).borderStyles.value
+// [ 'border-inline-start-width: var(--origam-border__width---thin)', … ]
+
+useBorder({ borderInlineStart: '2px dashed red' }).borderStyles.value
+// [ 'border-inline-start-width: 2px',
+//   'border-inline-start-style: dashed',
+//   'border-inline-start-color: red' ]
+```
+
+A `*Color` prop wins over the colour embedded in its own width string, since
+it is pushed straight after it:
+
+```ts
+useBorder({ borderInlineStart: '2px dashed red', borderInlineStartColor: 'blue' })
+// … 'border-inline-start-color: red', 'border-inline-start-color: blue'
+//                                     ← later push wins
+```
+
+An intent resolves through the **foreground** token family, because a border
+is a stroke rather than a filled surface — the same rule the physical
+`*Color` props follow. Gradients are silently ignored: CSS `border-color`
+has no gradient form.
+
+### ⚠️ Shared grammar means shared limits
+
+These props go through the same `BORDER_REGEX` as `borderLeft` and
+`borderBlock`, so they accept exactly what those accept and reject exactly
+what those reject. Measured 2026-10-01, and **not** introduced by #1013 —
+the physical props fail identically:
+
+| value | result |
+|---|---|
+| `'var(--origam-border__width---thin) solid var(--c)'` | parses ✅ |
+| `'calc(2px + 1px) solid red'` | **`[]`** — no `calc()` alternative in the width group |
+| `'0.5rem solid red'` | **`[]`** — the width group is `[0-9]+`, no decimals |
+| `4` (bare number) | parses ✅ — bypasses the regex via `convertToUnit` |
+
+So a tokenised width works only in the `var(--x) <style>` form. Pinned by
+the "shared grammar limits" tests in
+`packages/tests/TU/composables/Commons/border-logical-side.spec.ts`, each
+with the physical prop as a negative control, so a future regex change has
+to acknowledge all three grids at once.
 
 ## ⛔ Width keywords go through the INLINE channel (#391)
 
@@ -207,21 +321,28 @@ Unlike the global shorthand, an entirely unparsable or empty value returns
 
 ```ts
 function formatBorderPositionStylesVar (
-    position: TDirectionBoth | TBorderLogicalAxis,
+    position: TDirectionBoth | TBorderLogicalAxis | TLogicalSide,
     facets: { width?: string, style?: string, color?: string }
 ): Array<string>
 ```
 
 Formats the facets into `border-{position}-{width,style,color}`, skipping any
-empty facet. `position` takes either a physical side (`'top'`…) or a logical
-axis (`'block'` / `'inline'`) — both share the same template, so one function
-covers both.
+empty facet. `position` takes a physical side (`'top'`…), a logical axis
+(`'block'` / `'inline'`) **or a logical side** (`'inline-start'`…) — all
+three share the same template, so one function covers them all.
+
+#1013 widened the union by one member and changed nothing else in the body:
+`'inline-start'` interpolates into the same template and yields the correct
+native longhands. That is why the logical-per-side grid needed no new
+formatter.
 
 ```ts
 formatBorderPositionStylesVar('top', { width: '2px' })
 // [ 'border-top-width: 2px' ]
 formatBorderPositionStylesVar('block', { width: '2px', style: 'dashed', color: 'red' })
 // [ 'border-block-width: 2px', 'border-block-style: dashed', 'border-block-color: red' ]
+formatBorderPositionStylesVar('inline-start', { width: '2px', style: 'solid' })
+// [ 'border-inline-start-width: 2px', 'border-inline-start-style: solid' ]
 ```
 
 **Consumers:** 1 — `composables/Commons/border.composable.ts`. Plus

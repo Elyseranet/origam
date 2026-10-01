@@ -65,9 +65,30 @@ describe('props declared only in an imported interface reach the runtime descrip
     // channel through which an accessible name reaches a prepend/append zone
     // the DS would otherwise promote to an anonymous `role="button"`.
     // Verified to be exactly those two names, not a wholesale shift.
+    // 92 → 100 (SliderField) and 66 → 74 (Video): issue #1013 — `IBorderProps`
+    // gained the LOGICAL-PER-SIDE grid, the last of the three directional
+    // grids to be filled: `borderBlockStart` / `borderBlockEnd` /
+    // `borderInlineStart` / `borderInlineEnd` plus their four `*Color` twins.
+    // Both components reach `IBorderProps` through an imported interface, so
+    // +8 each.
+    //
+    // Verified to be exactly those eight NAMES rather than a wholesale shift,
+    // per the convention of the entries above: a throwaway probe enumerated
+    // the runtime descriptor and reported
+    // `SliderField total=100 present=8 missing=[]` /
+    // `Video total=74 present=8 missing=[]`. These two failures are in fact
+    // this spec doing its job — it is the independent confirmation that the
+    // new props reach the runtime descriptor at all.
+    //
+    // ⚠️ THIS LINE MOVES AGAIN IN THE SAME CAMPAIGN. The padding / margin /
+    // rounded half of #1013 adds 12 more props across `IPaddingProps`,
+    // `IMarginProps` and `IRoundedProps`, which these two components also
+    // inherit. Expect 100 → 112 and 74 → 86 when that half lands; the two
+    // branches both touch this array, so it is a known conflict point and
+    // the counts must be re-measured after the merge, never arithmetic'd.
     it.each([
-        [OrigamSliderField, 'OrigamSliderField', 92],
-        [OrigamVideo, 'OrigamVideo', 66],
+        [OrigamSliderField, 'OrigamSliderField', 100],
+        [OrigamVideo, 'OrigamVideo', 74],
         [OrigamTimelineItem, 'OrigamTimelineItem', 16],
         [OrigamTreeview, 'OrigamTreeview', 15],
         [OrigamClientOnly, 'OrigamClientOnly', 2]
