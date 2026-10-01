@@ -411,21 +411,66 @@ three — `CLAUDE.md` § *Story + doc sync*, § *Test-as-you-build*):
 - the e2e spec asserts (a) the preset applies, (b) an explicit prop beats it,
   (c) the emitted class carries no DS style.
 
-**Downstream blast radius, measured**: 38 story files, 35 doc files and 40 e2e
-specs mention `variant`; **8 e2e specs assert directly on a `--variant-*`
-class** (`btn`, `field`, `text-field`, `otp-input-field`, `kbd`, `blockquote`,
-`bracket`, `rating-field`) and will need their assertions rewritten from "class
-present" to "computed style / resolved prop correct". 68 files in
-`packages/marketing/src` pass a `variant`.
+**Downstream blast radius.** ⚠️ **Remeasured 2026-10-01** on `develop` @
+`e63a87ba1`; every figure below had drifted, and the paragraph still carried the
+state of the day the ADR was written. **Recount, never quote.**
 
-**Visual-regression gate.** The ROADMAP already flags VRT as a prerequisite for
-this work, and it is the only way to answer "did the rendering change?"
-honestly for 38 values. **There is no VRT suite today**: of 175 e2e specs,
-exactly one (`packages/tests/e2e/icons.spec.ts:522`) calls `toHaveScreenshot`,
-and no baseline `*-snapshots` directory is committed. Everything else asserts
-on classes and computed styles. Establishing a per-Variant screenshot harness
-is a **hard prerequisite for step 3** (Btn), not a nice-to-have. The pilot
-(step 2) can proceed on computed-style assertions alone.
+| Figure as originally written | Remeasured 2026-10-01 | Command |
+|---|---|---|
+| 38 story files mention `variant` | **50** | `git grep -l -- variant packages/stories \| wc -l` |
+| 35 doc files | **53** | `git grep -l -- variant packages/docs/components \| wc -l` |
+| 40 e2e specs mention `variant` | **212** | `git grep -l -- variant packages/tests/e2e \| wc -l` *(loose: also matches Histoire's own `Variant` navigation helpers, so treat it as an upper bound)* |
+| **8** e2e specs assert on a `--variant-*` class | **14** | `git grep -l -- '--variant-' packages/tests/e2e \| wc -l` |
+| 68 files in `packages/marketing/src` pass a `variant` | **75** | `git grep -l -- variant packages/marketing/src \| wc -l` |
+
+The 14 specs asserting on the class — and so needing their assertions rewritten
+from "class present" to "computed style / resolved prop correct" — are:
+`blockquote`, `bracket`, `btn`, `btn-cascade-layer-probe`,
+`btn-hover-active-debug`, `field`, `kbd`, `marketing-theme-live-switch`,
+`otp-input-field`, `pagination-active-debug`, `rating-field`, `text-field`,
+`token-channels-c2-594-595`, `utility-cascade-padding-margin-950`.
+
+**Visual-regression gate.** The ROADMAP flags VRT as a prerequisite for this
+work, and it is the only way to answer "did the rendering change?" honestly
+across the variant surface. Establishing a per-Variant screenshot harness was a
+**hard prerequisite for step 3** (Btn), not a nice-to-have; the pilot (step 2)
+could proceed on computed-style assertions alone.
+
+✅ **That prerequisite HAS BEEN DELIVERED, and this paragraph claimed the
+opposite for seven weeks.** It read: *"**There is no VRT suite today**: of 175
+e2e specs, exactly one (`packages/tests/e2e/icons.spec.ts:522`) calls
+`toHaveScreenshot`, and no baseline `*-snapshots` directory is committed."*
+Measured 2026-10-01 on `develop` @ `e63a87ba1`, every clause of that sentence
+is false:
+
+| The sentence claimed | Measured 2026-10-01 | Command |
+|---|---|---|
+| "175 e2e specs" | **262** | `ls packages/tests/e2e/*.spec.ts \| wc -l` |
+| "exactly one calls `toHaveScreenshot`" | **two files** — `vrt/btn-variant.spec.ts:83` and `e2e/icons.spec.ts:557` (not `:522`) | `grep -rn toHaveScreenshot packages/tests` |
+| "no baseline `*-snapshots` directory is committed" | **7 PNG committed** under `packages/tests/vrt/btn-variant.spec.ts-snapshots/` | `git ls-files \| grep snapshots` |
+
+The suite landed in `876d675d9` (2026-08-12), with `48cc80e49` (2026-08-17)
+fixing the Variant guards that were ignoring the whole directory. **It was
+missed because it lives under `packages/tests/vrt/`, not under `e2e/`** — the
+same blind spot a re-check reproduced on 2026-10-01 before correcting itself.
+It covers `OrigamBtn`'s 7 variant values at rest, one `toHaveScreenshot` each,
+with `playwright.vrt.config.ts`, `vrt/VRT.md` (the manual), `vrt-docker.sh`, the
+five `test:vrt*` scripts (`packages/tests/package.json:33-37`), a blocking CI
+job, and the `vrt-lockstep` guard (#606) keeping script and CI job on one
+recipe. Baselines are `-chromium-linux` **by design** — generated and compared
+inside the same pinned Docker image, because the DS's `Inter` ships no
+`@font-face` and the system fallback differs between macOS and Ubuntu.
+
+⚠️ The suite's current **pass/fail** state was not remeasured on
+2026-10-01 (`origam-vrt-pnpm-store` is a Docker volume shared across worktrees
+and another agent was running concurrently). Its existence is measured; its
+green is not.
+
+⛔ **Step 3's ordering, decided by the owner:** `OrigamBlockquote` converts
+**without** VRT — its risk is structural (`showQuoteMark` at
+`OrigamBlockquote.vue:136`, `pull`'s `align` default at `:161`), which a pixel
+diff does not speak to. With Btn's prerequisite already met, nothing puts a
+harness ahead of Blockquote either.
 
 ---
 
