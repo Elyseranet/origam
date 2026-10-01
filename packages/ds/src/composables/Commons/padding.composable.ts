@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 import { PADDING_REGEX } from '../../consts/Commons/padding.const'
-import { PADDING_LOGICAL_AXIS_MAP, PADDING_POSITION_MAP, SPACING_SCALE_STEPS } from '../../consts/Commons/spacing.const'
+import { PADDING_LOGICAL_AXIS_MAP, PADDING_LOGICAL_SIDE_MAP, PADDING_POSITION_MAP, SPACING_SCALE_STEPS } from '../../consts/Commons/spacing.const'
 
 import type { IPaddingProps } from '../../interfaces/Commons/padding.interface'
 
@@ -26,13 +26,27 @@ function isUtilityPaddingScale (value: unknown): value is string {
  *
  *   1. global `padding` shorthand (1/2/4-value, logical properties)
  *   2. logical-axis `paddingBlock` / `paddingInline`
- *   3. physical per-side `paddingTop` / `paddingRight` / `paddingBottom` /
+ *   3. logical per-side `paddingInlineStart` / `paddingInlineEnd` /
+ *      `paddingBlockStart` / `paddingBlockEnd` (issue #1013)
+ *   4. physical per-side `paddingTop` / `paddingRight` / `paddingBottom` /
  *      `paddingLeft`
  *
  * So `paddingBlock` beats `padding` for the top+bottom edges, and
  * `paddingTop` beats both `padding` and `paddingBlock` for the top edge
  * specifically — each rung only overrides the edge(s) it actually
  * targets, everything else keeps cascading from the rung below.
+ *
+ * ⚠️ RUNGS 3 AND 4 ARE EQUALLY SPECIFIC, and that is the one rank in this
+ * table that is a decision rather than a deduction. `paddingInlineStart`
+ * and `paddingLeft` name the SAME edge under LTR horizontal-tb, so neither
+ * is narrower than the other; push order alone decides, and we put the
+ * physical one last. The reason is uniformity, not a claim that physical
+ * is better: `ROUNDED_CORNER_MAP`'s header already documents the repo's
+ * only other physical-vs-logical tiebreak resolving the same way, and two
+ * opposite conventions across one prop surface is exactly the "half a
+ * grid" that issue #1013 exists to remove. Settling it here rather than
+ * leaving it emergent also matters because `useBorder` has to make the
+ * identical call for `borderInlineStart` vs `borderLeft`.
  *
  * ⚠️ The 4-value `padding` shorthand distributes in the DS's
  * **Haut/Gauche/Bas/Droite** order, NOT the CSS clockwise order — an
@@ -98,7 +112,20 @@ export function usePadding (props: IPaddingProps, name = getCurrentInstanceName(
             if (resolved) styles.push(`padding-${axis}: ${resolved}`)
         })
 
-        // ── Rung 3: physical per-side ────────────────────────────────
+        // ── Rung 3: logical per-side ─────────────────────────────────
+        // `paddingInlineStart` & co (issue #1013). Pushed AFTER the axis
+        // rung — one edge is more specific than two — and BEFORE the
+        // physical loop, so `paddingLeft` still wins for the edge they
+        // share. That last tiebreak is a choice, not a specificity call:
+        // the two spellings address the same edge, and physical winning is
+        // the direction `ROUNDED_CORNER_MAP` already documents.
+        PADDING_LOGICAL_SIDE_MAP.forEach(({side, prop}) => {
+            const resolved = resolveSpacingValue(props[prop])
+
+            if (resolved) styles.push(`padding-${side}: ${resolved}`)
+        })
+
+        // ── Rung 4: physical per-side ────────────────────────────────
         PADDING_POSITION_MAP.forEach(({side, prop}) => {
             const resolved = resolveSpacingValue(props[prop])
 

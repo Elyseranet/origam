@@ -1,6 +1,6 @@
-import { BLOCK, BORDER_LOGICAL_AXIS, INLINE } from '../../enums'
+import { BLOCK, BORDER_LOGICAL_AXIS, INLINE, START_END } from '../../enums'
 
-import type { TDirectionBoth } from '../../types/Commons/anchor.type'
+import type { TDirectionBoth, TLogicalCorner, TLogicalSide } from '../../types/Commons/anchor.type'
 import type { TBorderLogicalAxis } from '../../types/Commons/border.type'
 
 /**
@@ -56,6 +56,36 @@ export const PADDING_LOGICAL_AXIS_MAP: ReadonlyArray<{ axis: TBorderLogicalAxis,
 ] as const
 
 /**
+ * Logical-SIDE lookup driving the `paddingInlineStart` / `paddingInlineEnd`
+ * / `paddingBlockStart` / `paddingBlockEnd` wiring (issue #1013).
+ *
+ * This is the third and last grid of the directional surface. The repo
+ * already had PHYSICAL-per-side ({@link PADDING_POSITION_MAP}) and
+ * LOGICAL-per-axis ({@link PADDING_LOGICAL_AXIS_MAP}); logical-per-side was
+ * the half that stayed empty, which forced a consumer who wanted ONE
+ * writing-mode-relative edge to fall back on a physical prop and break RTL.
+ *
+ * Shape is deliberately identical to the two maps around it, so the SAME
+ * `forEach` body serves all three: `padding-${side}` yields
+ * `padding-inline-start` from `'inline-start'` exactly as it yields
+ * `padding-top` from `'top'`. No new grammar, one extra table.
+ *
+ * ⚠️ PRECEDENCE — these declarations are pushed AFTER the logical-axis rung
+ * and BEFORE the physical-per-side rung, so `paddingInlineStart` beats
+ * `paddingInline` (more specific: one edge, not two) while `paddingLeft`
+ * still beats `paddingInlineStart`. The tiebreak at that last step is not a
+ * specificity call — a physical and a logical longhand for the same edge
+ * are equally specific — it keeps "physical wins for the same edge" uniform
+ * with the rule {@link ROUNDED_CORNER_MAP} already documents below.
+ */
+export const PADDING_LOGICAL_SIDE_MAP: ReadonlyArray<{ side: TLogicalSide, prop: 'paddingBlockStart' | 'paddingBlockEnd' | 'paddingInlineStart' | 'paddingInlineEnd' }> = [
+    {side: `${BORDER_LOGICAL_AXIS.BLOCK}-${START_END.START}`, prop: 'paddingBlockStart'},
+    {side: `${BORDER_LOGICAL_AXIS.BLOCK}-${START_END.END}`, prop: 'paddingBlockEnd'},
+    {side: `${BORDER_LOGICAL_AXIS.INLINE}-${START_END.START}`, prop: 'paddingInlineStart'},
+    {side: `${BORDER_LOGICAL_AXIS.INLINE}-${START_END.END}`, prop: 'paddingInlineEnd'},
+] as const
+
+/**
  * Physical-side lookup driving the per-side `margin*` wiring.
  * Same contract as {@link PADDING_POSITION_MAP}, one axis over.
  */
@@ -76,6 +106,23 @@ export const MARGIN_LOGICAL_AXIS_MAP: ReadonlyArray<{ axis: TBorderLogicalAxis, 
 ] as const
 
 /**
+ * Logical-SIDE lookup driving the `marginInlineStart` / `marginInlineEnd` /
+ * `marginBlockStart` / `marginBlockEnd` wiring (issue #1013).
+ * Same contract and same precedence rank as
+ * {@link PADDING_LOGICAL_SIDE_MAP}, one axis over.
+ *
+ * These four also accept the `auto` keyword, like their physical twins —
+ * `marginInlineStart="auto"` is the RTL-safe way to push a flex child to
+ * the far end, which `marginLeft="auto"` gets wrong under RTL.
+ */
+export const MARGIN_LOGICAL_SIDE_MAP: ReadonlyArray<{ side: TLogicalSide, prop: 'marginBlockStart' | 'marginBlockEnd' | 'marginInlineStart' | 'marginInlineEnd' }> = [
+    {side: `${BORDER_LOGICAL_AXIS.BLOCK}-${START_END.START}`, prop: 'marginBlockStart'},
+    {side: `${BORDER_LOGICAL_AXIS.BLOCK}-${START_END.END}`, prop: 'marginBlockEnd'},
+    {side: `${BORDER_LOGICAL_AXIS.INLINE}-${START_END.START}`, prop: 'marginInlineStart'},
+    {side: `${BORDER_LOGICAL_AXIS.INLINE}-${START_END.END}`, prop: 'marginInlineEnd'},
+] as const
+
+/**
  * Per-corner lookup driving the `rounded{Corner}` wiring.
  *
  * `IRoundedProps` names its corners PHYSICALLY (`roundedTopLeft`, …), so
@@ -92,6 +139,35 @@ export const ROUNDED_CORNER_MAP: ReadonlyArray<{ corner: string, prop: 'roundedT
     {corner: 'top-right', prop: 'roundedTopRight'},
     {corner: 'bottom-left', prop: 'roundedBottomLeft'},
     {corner: 'bottom-right', prop: 'roundedBottomRight'},
+] as const
+
+/**
+ * Logical-CORNER lookup driving the `roundedStartStart` / `roundedStartEnd`
+ * / `roundedEndStart` / `roundedEndEnd` wiring (issue #1013).
+ *
+ * Emits the native LOGICAL corner longhands
+ * (`border-start-start-radius`, …) — the same family the 4-value `rounded`
+ * shorthand already emits through `formatRoundedStylesVar`, so these four
+ * props address exactly one of its corners instead of all four.
+ *
+ * ⚠️ CORNER NAME ORDER IS `{block}-{inline}`, per CSS: `start-start` is the
+ * block-start inline-start corner (top-left in LTR horizontal-tb),
+ * `start-end` is block-start inline-end (top-right in LTR). It is NOT the
+ * physical clockwise order, and it is NOT axis-agnostic — swapping the two
+ * halves silently addresses the opposite corner.
+ *
+ * ⚠️ PRECEDENCE — pushed AFTER the `rounded` shorthand and BEFORE
+ * {@link ROUNDED_CORNER_MAP}'s physical declarations, so a logical corner
+ * beats the shorthand (more specific: one corner, not four) and a physical
+ * corner still beats a logical one for the same corner. That last step is
+ * the rule the paragraph above already states for the shorthand, applied
+ * one rung down; see `useRounded`'s precedence table.
+ */
+export const ROUNDED_LOGICAL_CORNER_MAP: ReadonlyArray<{ corner: TLogicalCorner, prop: 'roundedStartStart' | 'roundedStartEnd' | 'roundedEndStart' | 'roundedEndEnd' }> = [
+    {corner: `${START_END.START}-${START_END.START}`, prop: 'roundedStartStart'},
+    {corner: `${START_END.START}-${START_END.END}`, prop: 'roundedStartEnd'},
+    {corner: `${START_END.END}-${START_END.START}`, prop: 'roundedEndStart'},
+    {corner: `${START_END.END}-${START_END.END}`, prop: 'roundedEndEnd'},
 ] as const
 
 /**
