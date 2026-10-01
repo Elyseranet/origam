@@ -1,4 +1,12 @@
 [
+    "OrigamBracket.borderBlockEnd",
+    "OrigamBracket.borderBlockEndColor",
+    "OrigamBracket.borderBlockStart",
+    "OrigamBracket.borderBlockStartColor",
+    "OrigamBracket.borderInlineEnd",
+    "OrigamBracket.borderInlineEndColor",
+    "OrigamBracket.borderInlineStart",
+    "OrigamBracket.borderInlineStartColor",
     "OrigamBtn.loadingText",
     "OrigamBtn.replace",
     "OrigamCheckbox.active",
