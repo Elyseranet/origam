@@ -1,8 +1,8 @@
 {
   "kind": "const",
-  "exportedAt": "2026-10-01T13:28:51.260Z",
-  "sourceCommit": "143d5904",
-  "entryCount": 428,
+  "exportedAt": "2026-10-01T19:37:05.008Z",
+  "sourceCommit": "5f28ebad",
+  "entryCount": 429,
   "entries": [
     {
       "entry": {
@@ -1381,7 +1381,7 @@
         "icon": null,
         "description_key": "consts.catalog.blockquote_defaults.description",
         "description_fallback": "Canonical default prop values for OrigamBlockquote. Centralised so consumers can reference them when authoring wrappers. Never referenced from withDefaults() itself.",
-        "definition": "export const BLOCKQUOTE_DEFAULTS = {\n    variant: 'default' as TBlockquoteVariant,\n    lang: 'auto' as TBlockquoteLang,\n    tag: 'blockquote'\n} as const",
+        "definition": "export const BLOCKQUOTE_DEFAULTS = {\n    variant: 'default' as TBlockquoteVariant,\n    lang: 'auto' as TBlockquoteLang,\n    align: 'left' as TBlockquoteAlign,\n    tag: 'blockquote'\n} as const",
         "signature": null,
         "tag": null,
         "value": null,
@@ -1414,8 +1414,14 @@
           "description_fallback": null
         },
         {
-          "value": "tag: 'blockquote'",
+          "value": "align: 'left' as TBlockquoteAlign",
           "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "tag: 'blockquote'",
+          "position": 3,
           "description_key": "consts.detail.blockquote_defaults.tag",
           "description_fallback": "Renders as a semantic <blockquote> element."
         }
@@ -1505,6 +1511,76 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "const",
+        "slug": "blockquote-variant-presets",
+        "name": "BLOCKQUOTE_VARIANT_PRESETS",
+        "category": "Blockquote",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export const BLOCKQUOTE_VARIANT_PRESETS: TVariantPresets<TBlockquoteVariant, IBlockquoteProps> = {\n    default: {\n        borderInlineStart: 'var(--origam-blockquote__accent---width, 4px) solid var(--origam-blockquote---resolved-accent-color, currentColor)',\n        paddingInlineStart: 'calc(var(--origam-blockquote---padding-inline, 24px) + var(--origam-blockquote__accent---width, 4px))'\n    },\n    elegant: {\n        fontFamily: 'serif',\n        fontSize: 'xl',\n        fontStyle: 'var(--origam-blockquote__elegant---font-style, italic)',\n        lineHeight: 'loose',\n        paddingBlock: 'var(--origam-blockquote__elegant---padding-block, 24px)',\n        borderInlineStart: 'var(--origam-blockquote__accent---width, 4px) solid var(--origam-blockquote---resolved-accent-color, currentColor)',\n        paddingInlineStart: 'calc(var(--origam-blockquote---padding-inline, 24px) + var(--origam-blockquote__accent---width, 4px))'\n    },\n    quoted: {\n        quoteMark: true,\n        paddingTop: 'calc(var(--origam-blockquote---padding-block, 16px) + var(--origam-blockquote--quoted---glyph-padding-extra, 1rem))'\n    },\n    minimal: {\n        fontSize: 'md',\n        fontStyle: 'var(--origam-blockquote__minimal---font-style, italic)',\n        paddingBlock: 0,\n        paddingInline: 'var(--origam-blockquote__minimal---padding-inline, 12px)',\n        borderInlineStart: 'var(--origam-blockquote--minimal---accent-width, 2px) solid var(--origam-blockquote---resolved-accent-color, currentColor)',\n        paddingInlineStart: 'calc(var(--origam-blockquote__minimal---padding-inline, 12px) + var(--origam-blockquote--minimal---accent-width, 2px))'\n    },\n    pull: {\n        fontFamily: 'serif',\n        fontSize: '3xl',\n        fontWeight: 'medium',\n        lineHeight: 'snug',\n        align: 'center',\n        paddingBlock: 'var(--origam-blockquote__pull---padding-block, 24px)',\n        borderBlock: 'var(--origam-blockquote__pull---rule-width, 2px) solid var(--origam-blockquote---resolved-accent-color, currentColor)'\n    }\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/consts/Blockquote/blockquote.const.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "default: { borderInlineStart: 'var(--origam-blockquote__accent---width, 4px) solid var(--origam-blockquote---resolved-accent-color, currentColor)', paddingInlineStart: 'calc(var(--origam-blockquote---padding-inline, 24px) + var(--origam-blockquote__accent---width, 4px))' }",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "elegant: { fontFamily: 'serif', fontSize: 'xl', fontStyle: 'var(--origam-blockquote__elegant---font-style, italic)', lineHeight: 'loose', paddingBlock: 'var(--origam-blockquote__elegant---padding-block, 24px)', borderInlineStart: 'var(--origam-blockquote__accent---width, 4px) solid var(--origam-blockquote---resolved-accent-color, currentColor)', paddingInlineStart: 'calc(var(--origam-blockquote---padding-inline, 24px) + var(--origam-blockquote__accent---width, 4px))' }",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "quoted: { quoteMark: true, paddingTop: 'calc(var(--origam-blockquote---padding-block, 16px) + var(--origam-blockquote--quoted---glyph-padding-extra, 1rem))' }",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "minimal: { fontSize: 'md', fontStyle: 'var(--origam-blockquote__minimal---font-style, italic)', paddingBlock: 0, paddingInline: 'var(--origam-blockquote__minimal---padding-inline, 12px)', borderInlineStart: 'var(--origam-blockquote--minimal---accent-width, 2px) solid var(--origam-blockquote---resolved-accent-color, currentColor)', paddingInlineStart: 'calc(var(--origam-blockquote__minimal---padding-inline, 12px) + var(--origam-blockquote--minimal---accent-width, 2px))' }",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "pull: { fontFamily: 'serif', fontSize: '3xl', fontWeight: 'medium', lineHeight: 'snug', align: 'center', paddingBlock: 'var(--origam-blockquote__pull---padding-block, 24px)', borderBlock: 'var(--origam-blockquote__pull---rule-width, 2px) solid var(--origam-blockquote---resolved-accent-color, currentColor)' }",
+          "position": 4,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -26865,7 +26941,7 @@
         "icon": null,
         "description_key": null,
         "description_fallback": null,
-        "definition": "export const VARIANT_PRESETS: TVariantPresetRegistry = {\n    'origam-kbd': KBD_VARIANT_PRESETS\n}",
+        "definition": "export const VARIANT_PRESETS: TVariantPresetRegistry = {\n    'origam-blockquote': BLOCKQUOTE_VARIANT_PRESETS,\n    'origam-kbd': KBD_VARIANT_PRESETS\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -26886,8 +26962,14 @@
       "props": [],
       "values": [
         {
-          "value": "'origam-kbd': KBD_VARIANT_PRESETS",
+          "value": "'origam-blockquote': BLOCKQUOTE_VARIANT_PRESETS",
           "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "'origam-kbd': KBD_VARIANT_PRESETS",
+          "position": 1,
           "description_key": null,
           "description_fallback": null
         }
