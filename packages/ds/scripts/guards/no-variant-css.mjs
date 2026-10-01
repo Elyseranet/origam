@@ -191,7 +191,7 @@ function run () {
         baselinePath: BASELINE_PATH,
         currentIds: violations.keys(),
         detailsById: violations,
-        fixHint: 'Per ADR-005 D1-D3: express the variant as a props preset (consts/{Component}/{component}-variant.const.ts) instead of a CSS rule. The --variant-{value} class must remain a bare, unstyled override hook.'
+        fixHint: 'Per ADR-005 D1-D3: express the variant as a props preset instead of a CSS rule -- a TVariantPresets table in the EXISTING consts file of that component, consts/{Component}/{component}.const.ts (never a second consts file; owner decision 2026-10-01, frozen in the root CLAUDE.md section on variant presets). The --variant-{value} class must remain a bare, unstyled override hook.'
     })
     process.exit(exitCode || process.exitCode || 0)
 }

@@ -6,10 +6,28 @@
  * pas une couche CSS : `Record<valeur du variant, Partial<props>>`.
  *
  * @description
- * C'est le type d'AUTORAT, celui qu'une table
- * `consts/{Composant}/{composant}-variant.const.ts` annote pour que le
- * compilateur refuse une valeur de variant inconnue ou un nom de prop que
- * le composant ne declare pas :
+ * C'est le type d'AUTORAT, celui qu'une table annote pour que le compilateur
+ * refuse une valeur de variant inconnue ou un nom de prop que le composant ne
+ * declare pas.
+ *
+ * @description
+ * La table vit dans le fichier de consts EXISTANT du composant —
+ * `consts/{Composant}/{composant}.const.ts` — jamais dans un second fichier
+ * cree pour elle. Arbitrage du proprietaire, 2026-10-01 : la regle
+ * anti-duplication du `CLAUDE.md` global commande de reutiliser le fichier de
+ * consts deja en place plutot que d'en ouvrir un parallele. Le pilote
+ * `KBD_VARIANT_PRESETS` est dans `consts/Kbd/kbd.const.ts`, et c'est la forme
+ * a copier.
+ *
+ * @description
+ * ⚠️ Cet en-tete prescrivait `{composant}-variant.const.ts`. C'etait FAUX —
+ * aucune table n'a jamais ete ecrite a ce chemin, et le `fixHint` de la garde
+ * `no-variant-css` portait la meme erreur. Les deux sont corriges ; voir la
+ * section « `variant` = a props PRESET » du `CLAUDE.md` a la racine, qui fait
+ * foi.
+ *
+ * @description
+ * La forme, telle que le pilote la pose :
  *
  *     export const KBD_VARIANT_PRESETS: TVariantPresets<TKbdVariant, IKbdProps> = {
  *         outlined: { bgColor: '...', border: 1 },
