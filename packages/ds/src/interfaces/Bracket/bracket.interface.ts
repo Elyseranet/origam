@@ -2,7 +2,6 @@ import type {
     IBgColorProps,
     IColorProps
 } from '../Commons/color.interface'
-import type { IBorderProps } from '../Commons/border.interface'
 import type {
     ICommonsComponentProps,
     ITagProps
@@ -12,10 +11,11 @@ import type { IDimensionProps } from '../Commons/dimension.interface'
 import type { IElevationProps } from '../Commons/elevation.interface'
 import type { IMarginProps } from '../Commons/margin.interface'
 import type { IPaddingProps } from '../Commons/padding.interface'
-import type { IRoundedProps } from '../Commons/rounded.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
 
 import type {
+    TBracketBorderProps,
+    TBracketRoundedProps,
     TBracketConnectorPath,
     TBracketVariant
 } from '../../types/Bracket/bracket.type'
@@ -37,51 +37,29 @@ import type { IBracketRound } from './bracket-round.interface'
  * winners — the data passed in is the source of truth.
  */
 /*********************************************************
- * Pourquoi la surface `rounded` est RESTREINTE ici — #1013
+ * Pourquoi les surfaces `border` ET `rounded` sont RESTREINTES ici — #1013
  *
  * @description
- * `IRoundedProps` a gagné quatre coins LOGIQUES (`roundedStartStart`,
- * `roundedStartEnd`, `roundedEndStart`, `roundedEndEnd`). Les trois autres
- * composants Bracket les consomment réellement — `OrigamBracketMatch` et
- * `OrigamBracketCompetitor` appellent `useRounded` / `useStateEffect`, donc
- * leurs interfaces gardent la surface complète. `OrigamBracket` ne les
- * appelle PAS : il passe `props` en bloc à `utils/Bracket/bracket-surface.util.ts`,
- * qui émet des custom properties `--origam-bracket-match---*` relues par le
- * SCSS d'`OrigamBracketMatch`, une déclaration PHYSIQUE par coin.
+ * `OrigamBracket` n'appelle ni `useBorder` ni `useRounded` : il passe
+ * `props` en bloc a `utils/Bracket/bracket-surface.util.ts`, qui emet des
+ * custom properties relues par un SCSS PHYSIQUE. Les props logiques par
+ * cote y sont donc structurellement incablables, et une prop typee,
+ * editable dans Histoire, mais inerte est pire qu'une prop absente.
  *
  * @description
- * ⛔ CES QUATRE COINS SONT STRUCTURELLEMENT INCÂBLABLES PAR CETTE VOIE, et
- * ce n'est pas un manque de travail. Analyse de cas faite sur les quatre
- * combinaisons : avec les deux familles de longhands déclarées sans
- * condition dans une feuille, AUCUNE chaîne de fallback ne donne à la fois
- * « le physique gagne » et « le logique se retourne en RTL ». La
- * déclaration physique résout toujours via son fallback, donc elle écrase
- * toujours la logique ; et si son fallback traverse la var logique, alors
- * en RTL les DEUX coins sont peints. Cause racine : la substitution `var()`
- * est aveugle au writing-mode, alors que le mapping de propriété ne l'est
- * pas.
+ * Les deux restrictions vivent dans `types/Bracket/bracket.type.ts`, un
+ * type nomme chacune, et portent la mesure qui les justifie :
+ * {@link TBracketBorderProps} retire les 4 aretes INLINE et garde les 2
+ * aretes de bloc (invariantes en `horizontal-tb`, donc cablees) ;
+ * {@link TBracketRoundedProps} retire les 4 coins logiques, car tout nom de
+ * coin est `{bloc}-{inline}` et porte donc une composante inline — le
+ * sursis de l'axe bloc n'existe pas pour un coin.
  *
  * @description
- * ⛔ ET LE RACCOURCI DU CÔTÉ BORDER N'EXISTE PAS ICI. Les arêtes `border`
- * purement BLOC (`block-start` / `block-end`) sont invariantes en
- * `horizontal-tb` — ce que Bracket suppose partout — donc câblables. Un
- * COIN n'a pas cette propriété : tout nom de coin logique est
- * `{bloc}-{inline}` et porte donc une composante inline. Mesuré dans
- * Chromium, les quatre coins changent de coin physique sous RTL
- * (`start-start` : top-left -> top-RIGHT ; `start-end` : top-right ->
- * top-LEFT ; idem pour les deux coins `end-*`), avec `padding-block-start`
- * -> `padding-top` comme contrôle négatif, invariant à 40px. Les quatre
- * sortent donc, pas deux.
- *
- * @description
- * On RESTREINT plutôt que de baseliner : le garde `unconsumed-props` dit
- * « Fix it, do not baseline it », et une prop qu'on retire de l'interface
- * ne peut plus mentir au consommateur. Le même `Pick<ITypographyProps, …>`
- * ci-dessous est le précédent de cet idiome dans cette interface. Le jour
- * où `OrigamBracket` passe par `useRounded` — ou où son SCSS devient
- * logique — retirer l'`Omit<>` suffit.
+ * Un seul idiome pour les deux moities du lot, volontairement : la
+ * directive du ticket est « si un format existe, il existe partout ».
  ********************************************************/
-export interface IBracketProps extends ICommonsComponentProps, ITagProps, IDensityProps, Omit<IRoundedProps, 'roundedStartStart' | 'roundedStartEnd' | 'roundedEndStart' | 'roundedEndEnd'>, IColorProps, IBgColorProps, IBorderProps, IDimensionProps, IElevationProps, IMarginProps, IPaddingProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'letterSpacing'> {
+export interface IBracketProps extends ICommonsComponentProps, ITagProps, IDensityProps, TBracketRoundedProps, IColorProps, IBgColorProps, TBracketBorderProps, IDimensionProps, IElevationProps, IMarginProps, IPaddingProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'letterSpacing'> {
     /**
      * Required. Pre-ordered list of rounds. For single-elimination,
      * the rounds are laid out from earliest (e.g. round-of-16) to

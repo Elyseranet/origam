@@ -176,5 +176,37 @@ export function bracketSurfaceVars (input: IBracketSurfaceInput): Record<string,
         if (width) vars[`--origam-bracket-match---border-${axis}-width`] = width
     })
 
+    /*********************************************************
+     * LOGICAL PER-SIDE — BLOCK AXIS ONLY (#1013)
+     *
+     * @description
+     * `BORDER_LOGICAL_SIDE_MAP` is deliberately NOT iterated here: it
+     * carries all four logical edges, and this layer can only honour the
+     * two BLOCK ones. See `IBracketSurfaceInput` for the measurement —
+     * `block-start`/`block-end` are `top`/`bottom` invariantly in
+     * `horizontal-tb` (which this component's sheet already assumes for
+     * `borderBlock`), whereas `inline-start`/`inline-end` flip under RTL
+     * and no `var()` fallback chain can express that.
+     *
+     * @description
+     * The two inline edges are removed from Bracket's prop surface by
+     * `Omit<>` instead, so nothing is declared-but-ignored. Filtering the
+     * shared map here would silently DROP two declared props — the exact
+     * failure this ticket exists to remove — so the restriction lives in
+     * the TYPE, and this loop names its two edges explicitly.
+     ********************************************************/
+    const BLOCK_EDGES = [
+        {edge: 'block-start', widthProp: 'borderBlockStart', colorProp: 'borderBlockStartColor'},
+        {edge: 'block-end', widthProp: 'borderBlockEnd', colorProp: 'borderBlockEndColor'}
+    ] as const
+
+    BLOCK_EDGES.forEach(({edge, widthProp, colorProp}) => {
+        const width = resolveBracketBorderWidth(input[widthProp] as TBracketBorder)
+        if (width) vars[`--origam-bracket-match---border-${edge}-width`] = width
+
+        const edgeColor = resolveBracketBorderColor(input[colorProp] as TBracketColor)
+        if (edgeColor) vars[`--origam-bracket-match---border-${edge}-color`] = edgeColor
+    })
+
     return vars
 }

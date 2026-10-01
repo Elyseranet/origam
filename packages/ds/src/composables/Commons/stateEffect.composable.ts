@@ -307,6 +307,38 @@ export function useStateEffect (
     // them, so every one of the ~30 components routed through
     // `useStateEffect` (Card, Btn, Sheet, Alert, …) still silently dropped
     // them even after that fix.
+    /*********************************************************
+     * #1013 — LES 8 CLES LOGIQUES PAR COTE
+     *
+     * @description
+     * ⛔ `borderBlockStart` / `borderBlockEnd` / `borderInlineStart` /
+     * `borderInlineEnd` + leurs 4 jumelles `*Color` ont ete ajoutees ici
+     * DANS LE MEME COMMIT ou `useBorder` a appris a les lire.
+     * @description
+     * Deliberement : le faire en deux commits est exactement comment
+     * `borderBlock` / `borderInline` sont devenus la DEUXIEME instance du
+     * defaut decrit juste au-dessus.
+     * @description
+     * Mesure : 22 a 23 interfaces de composant atteignent `useBorder`
+     * UNIQUEMENT via ce sac de getters, sans jamais appeler le composable
+     * en direct. Une cle manquante ici est donc une prop inerte sur tous
+     * ces composants — sans erreur, sans avertissement, et avec un
+     * type-check vert.
+     * @description
+     * Epingle par
+     * `packages/tests/TU/components/Card/OrigamCard.border-logical-side.spec.ts`,
+     * qui mesure a travers un composant MONTE et non a travers le
+     * composable : c'est le seul niveau ou cette omission est observable.
+     * Verifie en A/B — getters retires, 14 des 16 tests de ce spec
+     * tombent, alors que les 40 tests du spec de composable restent verts.
+     *
+     * @description
+     * ⛔ SI TU AJOUTES UNE PROP A `IBorderProps`, AJOUTE SON GETTER ICI.
+     * Cette liste est curee a la main et rien ne la derive de l'interface
+     * — c'est la cause racine des trois instances. La surface complete est
+     * enumeree une seule fois dans `BORDER_PROP_KEYS`
+     * (`consts/Commons/border.const.ts`) : diffe ce sac contre elle.
+     ********************************************************/
     const { borderClasses, borderStyles }       = useBorder(
         reactive({
             get border () { return border.value },
@@ -314,6 +346,10 @@ export function useStateEffect (
             get borderStyle () { return props.borderStyle },
             get borderBlock () { return props.borderBlock },
             get borderInline () { return props.borderInline },
+            get borderBlockStart () { return props.borderBlockStart },
+            get borderBlockEnd () { return props.borderBlockEnd },
+            get borderInlineStart () { return props.borderInlineStart },
+            get borderInlineEnd () { return props.borderInlineEnd },
             get borderTop () { return props.borderTop },
             get borderRight () { return props.borderRight },
             get borderBottom () { return props.borderBottom },
@@ -322,6 +358,10 @@ export function useStateEffect (
             get borderRightColor () { return props.borderRightColor },
             get borderBottomColor () { return props.borderBottomColor },
             get borderLeftColor () { return props.borderLeftColor },
+            get borderBlockStartColor () { return props.borderBlockStartColor },
+            get borderBlockEndColor () { return props.borderBlockEndColor },
+            get borderInlineStartColor () { return props.borderInlineStartColor },
+            get borderInlineEndColor () { return props.borderInlineEndColor },
         }) as IBorderProps,
     )
     // Rounded goes through the props-object overload (not the bare Ref) for

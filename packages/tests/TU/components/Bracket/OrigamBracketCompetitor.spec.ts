@@ -232,3 +232,60 @@ describe('OrigamBracketCompetitor — no typography vars when props unset', () =
         wrapper.unmount()
     })
 })
+
+// ---------------------------------------------------------------------------
+// #1013 — this component keeps the FULL logical-per-side border surface,
+// including the two inline edges that `OrigamBracket` and
+// `OrigamBracketMatch` had to drop.
+//
+// The difference is measured, not stylistic: those two paint through
+// `--origam-bracket-match---*` custom properties read inside PHYSICAL
+// declarations, so a logical edge has to be mapped to a physical one when the
+// stylesheet is authored — impossible for the inline axis, which flips under
+// RTL. This component instead calls `useStateEffect`
+// (`OrigamBracketCompetitor.vue:209`), so all four edges reach `useBorder`
+// and are emitted as the native logical longhands, which the BROWSER maps to
+// the right edge per writing mode. Nothing has to be assumed at author time.
+//
+// These tests exist to stop a later "make Bracket consistent" tidy-up from
+// widening the Omit onto this interface and deleting four working props.
+describe('OrigamBracketCompetitor — the full logical-per-side border surface is NOT restricted (#1013)', () => {
+    it.each([
+        ['borderInlineStart', 'inline-start'],
+        ['borderInlineEnd', 'inline-end'],
+        ['borderBlockStart', 'block-start'],
+        ['borderBlockEnd', 'block-end']
+    ])('%s paints border-%s-* through useStateEffect -> useBorder', (prop, edge) => {
+        const wrapper = mountCompetitor({ [prop]: 4 })
+        const el = wrapper.element as HTMLElement
+
+        expect(el.style.getPropertyValue(`border-${edge}-width`)).toBe('4px')
+        expect(el.style.getPropertyValue(`border-${edge}-style`)).toBe('solid')
+        wrapper.unmount()
+    })
+
+    it('the four per-edge *Color props each paint their own edge', () => {
+        const wrapper = mountCompetitor({
+            borderInlineStartColor: 'red',
+            borderInlineEndColor: 'blue',
+            borderBlockStartColor: 'green',
+            borderBlockEndColor: 'orange'
+        })
+        const el = wrapper.element as HTMLElement
+
+        expect(el.style.getPropertyValue('border-inline-start-color')).toBe('red')
+        expect(el.style.getPropertyValue('border-inline-end-color')).toBe('blue')
+        expect(el.style.getPropertyValue('border-block-start-color')).toBe('green')
+        expect(el.style.getPropertyValue('border-block-end-color')).toBe('orange')
+        wrapper.unmount()
+    })
+
+    it('negative control: with no logical-per-side prop, no such declaration appears', () => {
+        const wrapper = mountCompetitor()
+        const el = wrapper.element as HTMLElement
+
+        expect(el.style.getPropertyValue('border-inline-start-width')).toBe('')
+        expect(el.style.getPropertyValue('border-block-start-width')).toBe('')
+        wrapper.unmount()
+    })
+})

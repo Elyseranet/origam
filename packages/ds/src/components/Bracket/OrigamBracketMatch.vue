@@ -389,14 +389,26 @@
 		border-block-width: var(--origam-bracket-match---border-block-width, var(--origam-bracket-match---border-width, 1px));
 		border-inline-width: var(--origam-bracket-match---border-inline-width, var(--origam-bracket-match---border-width, 1px));
 
-		border-top-width: var(--origam-bracket-match---border-top-width, var(--origam-bracket-match---border-block-width, var(--origam-bracket-match---border-width, 1px)));
+		// #1013 — le rung `---border-block-{start,end}-*` s'insere ICI, entre
+		// le physique (plus specifique, gagne) et l'axe (moins specifique).
+		// L'ordre de la chaine de repli EST la table de precedence de
+		// `useBorder` : physique par cote > logique par cote > axe > global.
+		//
+		// ⛔ Seul l'axe de BLOC est servi. `block-start`/`block-end` valent
+		// invariablement `top`/`bottom` en `horizontal-tb`, hypothese que ces
+		// deux lignes faisaient DEJA pour `---border-block-width`. Les aretes
+		// INLINE basculent en RTL et aucune chaine `var()` ne peut l'exprimer
+		// (la substitution est aveugle au mode d'ecriture) : les 4 props
+		// inline sont retirees de la surface de Bracket par `Omit<>` plutot
+		// que declarees et ignorees. Voir `IBracketSurfaceInput`.
+		border-top-width: var(--origam-bracket-match---border-top-width, var(--origam-bracket-match---border-block-start-width, var(--origam-bracket-match---border-block-width, var(--origam-bracket-match---border-width, 1px))));
 		border-right-width: var(--origam-bracket-match---border-right-width, var(--origam-bracket-match---border-inline-width, var(--origam-bracket-match---border-width, 1px)));
-		border-bottom-width: var(--origam-bracket-match---border-bottom-width, var(--origam-bracket-match---border-block-width, var(--origam-bracket-match---border-width, 1px)));
+		border-bottom-width: var(--origam-bracket-match---border-bottom-width, var(--origam-bracket-match---border-block-end-width, var(--origam-bracket-match---border-block-width, var(--origam-bracket-match---border-width, 1px))));
 		border-left-width: var(--origam-bracket-match---border-left-width, var(--origam-bracket-match---border-inline-width, var(--origam-bracket-match---border-width, 1px)));
 
-		border-top-color: var(--origam-bracket-match---border-top-color, var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))));
+		border-top-color: var(--origam-bracket-match---border-top-color, var(--origam-bracket-match---border-block-start-color, var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12)))));
 		border-right-color: var(--origam-bracket-match---border-right-color, var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))));
-		border-bottom-color: var(--origam-bracket-match---border-bottom-color, var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))));
+		border-bottom-color: var(--origam-bracket-match---border-bottom-color, var(--origam-bracket-match---border-block-end-color, var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12)))));
 		border-left-color: var(--origam-bracket-match---border-left-color, var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))));
 
 		border-top-left-radius: var(--origam-bracket-match---border-top-left-radius, var(--origam-bracket-match---border-radius, 6px));

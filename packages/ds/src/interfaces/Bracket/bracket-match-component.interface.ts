@@ -6,7 +6,7 @@ import type {
     IBgColorProps,
     IColorProps
 } from '../Commons/color.interface'
-import type { IBorderProps } from '../Commons/border.interface'
+import type { TBracketBorderProps } from '../../types/Bracket/bracket.type'
 import type {
     ICommonsComponentProps,
     ITagProps
@@ -32,7 +32,7 @@ import type { IBracketMatch } from './bracket-match.interface'
  * border, density, dimension, padding, margin) so a standalone card
  * behaves like any other origam component.
  */
-export interface IBracketMatchProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IHoverProps, IActiveProps, IRoundedProps, IElevationProps, IBorderProps, IDensityProps, IDimensionProps, IPaddingProps, IMarginProps {
+export interface IBracketMatchProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IHoverProps, IActiveProps, IRoundedProps, IElevationProps, TBracketBorderProps, IDensityProps, IDimensionProps, IPaddingProps, IMarginProps {
     /** The match payload to render. */
     match: IBracketMatch
     /**

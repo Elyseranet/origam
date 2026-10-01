@@ -1,5 +1,6 @@
-import { BLOCK, BORDER_LOGICAL_AXIS, BORDER_STYLE, INLINE } from '../../enums'
+import { BLOCK, BORDER_LOGICAL_AXIS, BORDER_STYLE, INLINE, START_END } from '../../enums'
 import type { TBorderLogicalAxis, TBorderWidthKeyword } from '../../types/Commons/border.type'
+import type { TLogicalSide } from '../../types/Commons/anchor.type'
 
 /*********************************************************
  * BORDER_REGEX
@@ -115,13 +116,79 @@ export const BORDER_POSITION_MAP = [
  * onto the native CSS logical properties `border-block-{width,style,color}`
  * / `border-inline-{width,style,color}` — no physical translation table
  * needed, the browser resolves start/end per the active writing mode.
- * No matching `borderBlockColor` / `borderInlineColor` prop exists (the
- * per-side color override only applies to the 4 physical corners), so
- * unlike `BORDER_POSITION_MAP` there is no `colorProp` here.
+ * No matching `borderBlockColor` / `borderInlineColor` prop exists — the
+ * per-side color override is defined PER EDGE, not per axis, so an
+ * axis-level color prop would be ambiguous about which of its two edges
+ * it paints. Hence, unlike `BORDER_POSITION_MAP` and
+ * `BORDER_LOGICAL_SIDE_MAP` (both per-EDGE), there is no `colorProp`
+ * here.
+ *
+ * ⚠️ This note used to read "the per-side color override only applies to
+ * the 4 physical corners". That was true until #1013, which added the 4
+ * LOGICAL per-side color props — per-edge color is now available on both
+ * spellings. The reason this map has no `colorProp` was never the
+ * physical/logical distinction; it is the axis/edge one, which #1013 does
+ * not change.
  */
 export const BORDER_LOGICAL_AXIS_MAP: ReadonlyArray<{ axis: TBorderLogicalAxis, widthProp: 'borderBlock' | 'borderInline' }> = [
     {axis: BORDER_LOGICAL_AXIS.BLOCK, widthProp: 'borderBlock'},
     {axis: BORDER_LOGICAL_AXIS.INLINE, widthProp: 'borderInline'},
+] as const
+
+/*********************************************************
+ * BORDER_LOGICAL_SIDE_MAP
+ *
+ * @description
+ * Logical-PER-SIDE lookup driving `borderInlineStart` / `borderInlineEnd`
+ * / `borderBlockStart` / `borderBlockEnd` and their four `*Color` twins
+ * (issue #1013). The third and last of the three directional grids: this
+ * map is to `BORDER_LOGICAL_AXIS_MAP` what `BORDER_POSITION_MAP` is to
+ * the global `border` shorthand — it narrows an axis to ONE of its two
+ * edges.
+ *
+ * @description
+ * ⛔ DELIBERATELY THE SAME SHAPE AS `BORDER_POSITION_MAP`
+ * (`{side, widthProp, colorProp}`), because `useBorder` iterates both
+ * with the SAME loop body. That body emits
+ * `border-${side}-{width,style,color}`, so a `side` of `'inline-start'`
+ * produces `border-inline-start-width` / `-style` / `-color` verbatim —
+ * the native CSS logical longhands, which the browser maps to the correct
+ * physical edge per the active writing mode. This lot is therefore an
+ * extension of an existing TABLE, not a new precedence grammar: nothing
+ * in the loop body changed to accommodate it.
+ *
+ * @description
+ * WHY LOGICAL PER SIDE AT ALL, given `borderInline` exists. The axis prop
+ * paints BOTH edges; there was no way to paint a single writing-mode-
+ * relative edge. The only alternative was a PHYSICAL prop
+ * (`borderLeft`), which silently breaks RTL — exactly the trap
+ * `OrigamBlockquote`'s accent rule avoids by hand-writing
+ * `border-inline-start` in its SCSS (#1013's trigger).
+ *
+ * @description
+ * ⚠️ VALUE GRAMMAR IS SHARED WITH THE OTHER TWO GRIDS, LIMITS INCLUDED.
+ * String values go through `parseBorderPositionValue` → `BORDER_REGEX`,
+ * so these props accept exactly what `borderLeft` / `borderBlock` accept
+ * and reject exactly what they reject. Measured 2026-10-01, and NOT
+ * introduced by this lot: `"calc(2px + 1px) solid red"` and a FRACTIONAL
+ * width such as `"0.5rem solid red"` both fail the regex outright (the
+ * width group is `[0-9]+` with no decimal point, and has no `calc()`
+ * alternative), so `parseBorderPositionValue` returns `null` and NOTHING
+ * is emitted. A tokenised width works only in the `var(--x) <style>`
+ * form, and a bare number (`:border-inline-start="4"`) bypasses the regex
+ * entirely via `convertToUnit`. Pinned by the "shared grammar limits"
+ * tests in `packages/tests/TU/composables/Commons/border-logical-side.spec.ts`
+ * so a future regex change has to acknowledge all three grids at once.
+ ********************************************************/
+export const BORDER_LOGICAL_SIDE_MAP: ReadonlyArray<{
+    side: TLogicalSide,
+    widthProp: 'borderBlockStart' | 'borderBlockEnd' | 'borderInlineStart' | 'borderInlineEnd',
+    colorProp: 'borderBlockStartColor' | 'borderBlockEndColor' | 'borderInlineStartColor' | 'borderInlineEndColor'
+}> = [
+    {side: `${BORDER_LOGICAL_AXIS.BLOCK}-${START_END.START}`, widthProp: 'borderBlockStart', colorProp: 'borderBlockStartColor'},
+    {side: `${BORDER_LOGICAL_AXIS.BLOCK}-${START_END.END}`, widthProp: 'borderBlockEnd', colorProp: 'borderBlockEndColor'},
+    {side: `${BORDER_LOGICAL_AXIS.INLINE}-${START_END.START}`, widthProp: 'borderInlineStart', colorProp: 'borderInlineStartColor'},
+    {side: `${BORDER_LOGICAL_AXIS.INLINE}-${START_END.END}`, widthProp: 'borderInlineEnd', colorProp: 'borderInlineEndColor'},
 ] as const
 
 /*********************************************************
@@ -150,12 +217,20 @@ export const BORDER_PROP_KEYS = [
     'borderLeft',
     'borderBlock',
     'borderInline',
+    'borderBlockStart',
+    'borderBlockEnd',
+    'borderInlineStart',
+    'borderInlineEnd',
     'borderColor',
     'borderStyle',
     'borderTopColor',
     'borderRightColor',
     'borderBottomColor',
     'borderLeftColor',
+    'borderBlockStartColor',
+    'borderBlockEndColor',
+    'borderInlineStartColor',
+    'borderInlineEndColor',
 ] as const
 
 /*********************************************************

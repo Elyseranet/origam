@@ -1126,6 +1126,364 @@ under a theme setting `type: 'checkbox'` — no checkbox semantics, no
 
 ---
 
+## ⛔ `variant` = a props PRESET — the pattern, frozen after the Kbd pilot (ADR-005 D7)
+
+**Read the section above first.** This one adds one rung *below* the theme
+ranks it describes, inside the same getter, and contradicts none of it.
+
+ADR: `packages/docs/internal/adr-005-variant-as-props-preset.md`. The campaign
+landed as: **lot 1** (PR #1001) the mechanism alone, no component touched;
+**lot 2** (PR #1008, commit `4630927ca`, published as v2.19.0) **the pilot
+`OrigamKbd`**; lot 3 (#1007) `IOpacityProps` + backdrop surfaces; lot 5
+(#1009) `BORDER_REGEX` accepts a `var()` width.
+
+D7 step 2 reads, textually: *"Pilot — `OrigamKbd`. Validate, then freeze the
+pattern in `CLAUDE.md`."* **This section is that freeze**, and it is derived
+from the pilot as MERGED, not from the ADR's intent — where the two disagree,
+the merged code is what the next conversion must copy.
+
+### Where a preset table lives, and how it reaches the resolver
+
+| Link in the chain | File (`packages/ds/src/`) |
+|---|---|
+| The authoring type | `types/Commons/variant-preset.type.ts` — `TVariantPresets<V, P> = Record<V, Partial<P>>` |
+| The pilot's table | `consts/Kbd/kbd.const.ts` → `KBD_VARIANT_PRESETS: TVariantPresets<TKbdVariant, IKbdProps>`, re-exported by `consts/index.ts` |
+| What the DS ships | `consts/Commons/variant-preset.const.ts` → `VARIANT_PRESETS: TVariantPresetRegistry`, keyed by **kebab component name** (`'origam-kbd'`) |
+| What a theme may override | `IOrigamTheme.variants` — `interfaces/Commons/theme.interface.ts:173`, same `TVariantPresetRegistry` shape |
+| Where the two collapse | `resolveVariantPresetRegistry` (`composables/Commons/theme-props-resolver.composable.ts:490`), called once from `origam.ts:102-104` |
+| Where it is consumed | `installThemePropsResolver(app, themedKeysUnion, variantPresets)` — `origam.ts:159` |
+
+Annotate the table with `TVariantPresets<TXxxVariant, IXxxProps>` and the
+compiler refuses both an unknown variant value and a prop the component does
+not declare. The RESOLVER sees the same table through `TVariantPresetTable`
+(`Record<string, Record<string, unknown>>`) — type erased **on purpose**: it is
+generic over the whole catalogue and cannot be parameterised by one
+`IXxxProps`. The strong typing lives at the point of writing, where it helps.
+
+`variants` is a **sibling** of `components` in `IOrigamTheme`, never a key
+inside it: `components` is `IDefault` (component → props), so nesting a variant
+level would make `{ 'origam-btn': { outlined: … } }` ambiguous with a prop
+literally named `outlined`. The merge is `mergeDeep` — the same one
+`provideDefaults` uses — so a theme wins **prop by prop**, and a state preset
+(`active: { … }`) is merged rather than replaced.
+
+⛔ **A preset table lives in the component's EXISTING consts file** —
+`consts/{Component}/{component}.const.ts`, which is exactly what the pilot did
+with `consts/Kbd/kbd.const.ts`. Decided by the owner, 2026-10-01. **Do not
+create a second consts file per component** for it.
+
+The reason is the global `CLAUDE.md`'s anti-duplication rule: *before writing a
+const, look for whether it already exists; if the file exists, reuse it, never
+redefine it.* A component already owns one consts file; a variant table is one
+more const in it, not grounds for a parallel one.
+
+⚠️ A previous version of this convention prescribed
+`consts/{Component}/{component}-variant.const.ts`, in two places — the header
+of `TVariantPresets` and the `fixHint` of the `no-variant-css` guard. **Both
+were wrong and are corrected in the same lot as this section**; the pilot was
+right. If you meet that spelling in an older comment or in a stale checkout,
+**this paragraph is what holds.**
+
+### Precedence — and there is NO new merge logic
+
+Decided by the maintainer in ADR-005's Q2 arbitration of 2026-08-12, which
+**inverted** D2's original proposal. Strongest to weakest:
+
+| Rank | Source | Branch in `patchThemedPropSlot`'s getter |
+|---|---|---|
+| 1 | prop written at the call site | `if (wasPassed) return fallback` |
+| 2 | theme / provider default for the component | `defaults.value?.[name]?.[key]` |
+| 3 | theme / provider `global` default | `defaults.value?.global?.[key]` |
+| 4 | **the variant preset** | `readVariantPreset(presetTable, rawProps, key)` |
+| 5 | the component's own `withDefaults` | the trailing `return fallback` |
+
+The maintainer's reason, verbatim in the code: *« rien n'oblige l'utilisateur à
+garder le bgColor en ghost, il peut le transformer en primary »*. A variant is
+a **convenience**, not an identity the DS defends; what the DS must guarantee
+belongs to a token or a prop, never to a preset.
+
+⛔ **The preset is one more branch in the EXISTING getter, and nothing else.**
+ADR-005's implementation directive is explicit: *"if the implementation ends up
+writing new merge logic for presets, it took a wrong turn."* Four traps, each
+one measured during lot 1 and each one silent when violated:
+
+1. **One mixin, never two.** Two `Object.defineProperty` calls on the same key
+   **replace each other silently** — the second accessor wins and the rank the
+   first carried disappears with no error and no warning. A second mixin for
+   presets would therefore lose either the theme or the preset, depending on
+   install order. **The preset channel lives in that one getter or nowhere.**
+2. **`readVariantPreset` must stay called SYNCHRONOUSLY from the getter.** Its
+   read of `rawProps[VARIANT_PROP_KEY]` goes through the `shallowReactive`
+   proxy, and that read is what SUBSCRIBES the calling effect to the `variant`
+   key — which is why swapping variant re-resolves the dependent props with no
+   explicit watcher. Hoisting it into a `computed` built at install time breaks
+   the subscription in silence and freezes the prop on the starting variant.
+3. **A preset never sets `variant`.** `VARIANT_PROP_KEY`
+   (`consts/Commons/variant-preset.const.ts:20`) is the anti-recursion guard:
+   without the `key !== VARIANT_PROP_KEY` test, `variant`'s own getter would
+   read `variant` to resolve itself.
+4. **The preset table must widen the per-instance early-out**
+   (`addPresetKeys` → `collectTargetKeys`). This is the only point the ADR was
+   silent on. `createOrigam()` registers only the themes it is handed, so with
+   **no theme at all** `themedKeysUnion` is empty and `defaults.value` is `{}`:
+   every other condition is false, `collectTargetKeys` returns `null`, and no
+   slot is patched. D1 requires a working `outlined` with no theme installed —
+   so a component carrying a preset table must never reach that early-out, or
+   the preset is a perfectly silent no-op.
+
+Non-regression for all four: `packages/tests/TU/origam/variant-preset-resolver.spec.ts`
+(cases *« sans aucun theme »*, *« basculement »*, *« table pathologique »*).
+
+### How this combines with the `withDefaults()` inline-literals rule
+
+The rule above (*"`withDefaults()` — inline literals only"*) and a preset table
+are **compatible without an exception**, because they answer different
+questions, and the pilot shows the shape:
+
+- `withDefaults` supplies **the variant VALUE** — `variant: 'outlined'`, an
+  inline literal (`OrigamKbd.vue:58`). Never
+  `variant: KBD_VARIANT_DEFAULTS.variant`; the compiler cannot resolve that and
+  the whole props object becomes `undefined` at any reactive access.
+- The table supplies **the props that value implies**, one rank above
+  `withDefaults` in the chain. It is read by the resolver at render, never by
+  the SFC compiler.
+
+⛔ So **the `.vue` never imports its own preset table** — `OrigamKbd.vue` has
+zero reference to `KBD_VARIANT_PRESETS`. The only import path is
+`consts/Commons/variant-preset.const.ts` → `VARIANT_PRESETS` → `createOrigam()`.
+If you find yourself reaching for the table inside a component, the rank you
+want is already resolved on `props`.
+
+Corollary worth stating because it is easy to get backwards: a `withDefaults`
+value for a prop the preset also sets is **the rank the preset beats**, not the
+reverse. Give a prop a `withDefaults` value only as the no-variant floor.
+
+### Preset VALUES: carry the `var()` string, never a semantic rung
+
+⛔ **Each value must carry the exact `var()` chain the deleted CSS rule
+carried, never its translation into a semantic rung.** Two independent
+constraints ask for the same thing:
+
+1. **Fidelity / theme channel.** Measured 2026-09-30: the 8 brand themes
+   (`packages/marketing/src/themes/*.theme.ts`) dress their buttons *through*
+   the component tokens the variant rules read — `cartoon` sets
+   `--origam-btn---box-shadow-elevated: 4px 4px 0 #171717`, `glass` a
+   four-layer glass shadow. A preset written `elevation: 'md'` emits
+   `var(--origam-shadow---md)` and so silently discards the brand's shadow
+   across 8 identities × 2 modes.
+2. **Cascade.** A tokenised value (`bgColor: 'primary'`) takes the utility-CLASS
+   channel at (0,1,0) and therefore loses to the component's own scoped rule at
+   (0,2,0) — see *"Classes-first conventions"* below. A `var(…)` string is
+   routed by `isCssColor` to the **custom-value** channel, i.e. the INLINE
+   declaration, which outranks the scoped rule.
+
+⛔ **What the table does NOT set matters as much as what it sets.** The pilot
+deliberately omits a border colour from `outlined` and `filled`, although both
+rules declared one: in each case the value was IDENTICAL to the component
+default already carried by `--origam-kbd---border-color`. Writing it into the
+table would not have been neutral — a preset emits an INLINE declaration, which
+outranks the token, so a brand redeclaring that token would stop reaching those
+two variants. **A table that restates a component default confiscates the very
+channel it exists to serve.**
+
+⛔ **Copy the token NAME from the sheet, not from the naming grammar.** The
+three Kbd background tokens are spelled inconsistently in `light.css` /
+`dark.css` (and their SCSS twins): `--origam-kbd--outlined---background-color`
+in the double-tiret *state* form, but `--origam-kbd__filled---background-color`
+and `--origam-kbd__tonal---background-color` in the BEM-child form. The preset
+table mirrors that inconsistency exactly, and must — fidelity is the job, not
+correction. Grep the sheet before writing the string.
+
+Keep each value's **fallback**. They are unreachable today (the sheets declare
+the tokens on `:root`, and a custom property declared there inherits
+everywhere, so a `var()`'s second argument is never reached) but guard 28
+`ts-token-refs` requires a fallback whenever a name cannot be bounded
+statically, and they are the real backstop if a sheet ever stops declaring the
+token.
+
+⚠️ **The pilot's one measured value delta, reported rather than hidden.**
+`tonal` carried `box-shadow: none`, the KEYWORD. `elevation: 'none'` emits
+`var(--origam-shadow---none)`, which `primitive.css` declares as
+`0px 0px 0px 0px rgba(0,0,0,0)`. The computed style therefore changes from
+`none` to that quadruple value — a shadow of zero extent and zero alpha, which
+cannot paint a pixel. `isOrigamRung` intercepts `'none'` before anything else,
+so the `elevation` channel has no way to emit the keyword. Expect the same
+class of gap on the next conversion, and measure it rather than assuming zero.
+
+⚠️ **The prop surface a preset can draw on WIDENS in the lot that precedes
+`OrigamBlockquote`.** Decided by the owner, 2026-10-01: the 20 missing
+per-side logical props are added upstream, before any further conversion —
+measured the same day at **0 occurrence out of 20** across
+`packages/ds/src/interfaces/Commons`, while the physical-per-side and
+logical-per-axis grids are both complete. The rule behind it is
+`adr-007-directional-props.md`'s directive: *if a format exists, it exists
+everywhere; we do not do half of one.* Not detailed here because it is not
+written yet — check that interface surface before concluding a variant's effect
+is inexpressible as a prop.
+
+### Per-component definition of done — as the pilot ACTUALLY satisfied it
+
+D7 lists four requirements. Here is the file that discharges each, in commit
+`4630927ca` (all in one commit, which is itself the first requirement):
+
+| D7 requirement | Where the pilot satisfies it |
+|---|---|
+| `.vue` + `.story.vue` + `.md` in the **same commit** | `4630927ca` — 26 files, +1271 / −107 |
+| the story exposes the **resolved preset** AND an **override** of it | `packages/stories/components/stories/Kbd/OrigamKbd.story.vue:91` — `<Variant title="Prop — variant (preset matrix)">`, rendering the 3 variants in SIMPLE and COMBINATION form plus two `variant` + competing-`bg-color` cases, each on a stable `data-cy` |
+| the doc gains a **"preset by variant"** column, or renders the table verbatim | `packages/docs/components/Kbd/OrigamKbd.md:44-70` — § *"A variant is a props preset, not CSS"*: the precedence chain, then the whole table verbatim (`bgColor` / `border` / `borderColor` / `elevation` per variant), with a dash meaning *the preset sets nothing* |
+| e2e asserts (a) the preset applies, (b) an explicit prop beats it, (c) the emitted class carries no DS style | `packages/tests/e2e/kbd.spec.ts` — `describe('Preset de variant')` at `:313` holds (a) ×2 (simple form `:316`, combination `:336`) and (b) ×2 (`:357`, `:372`); **(c)** is `:258` — *« echanger la classe de variant ne change RIEN — le DS n'y attache aucune regle »* |
+
+Two things the pilot added beyond D7, and both are worth copying:
+
+- **A unit spec on the TABLE itself** —
+  `packages/tests/TU/components/Kbd/OrigamKbdVariantPreset.spec.ts`, 12 cases,
+  including *"never sets the `variant` key"* and *"carries a `var()` string with
+  a fallback, never a semantic rung"*. These pin the rules above as tests, not
+  as prose.
+- **An acceptance harness for the zero-change claim** —
+  `pnpm -F @origam/tests audit:kbd-preset -- --json <file>`, then
+  `-- --compare <before> <after>`. It mounts the component under **8 identities
+  × 2 modes** and reads 11 longhands on every painted surface, each `__key`
+  included. Histoire cannot answer this question (it is pinned
+  `data-theme="light"` and its `createOrigam` registers only `origamTheme`), and
+  a static `file://` page cannot either (the preset is resolved **at runtime** by
+  the props resolver, so a page that never mounts Vue shows tokens and never a
+  resolution). **Reading only the root would declare "nothing changed" on a
+  combination whose every key moved.**
+
+### What the `no-variant-css` guard refuses
+
+`packages/ds/scripts/guards/no-variant-css.mjs` — formalises decision **D3**:
+the `--variant-{value}` class that `useVariant()` emits **survives**, and the
+DS ships **no rule that targets it**. The class belongs to the consumer, as an
+override hook.
+
+It flags two things inside every `<style>` block of every non-story `.vue` (and
+any `.scss`) under `packages/ds/src`, comments stripped first:
+
+- a **selector** matching `--variant-*`, **`--chrome-*`** or
+  **`--has-quote-mark`**;
+- any **`!important`** inside such a block.
+
+The aliases are watched deliberately. A variant's CSS does not always reduce to
+root props — Field styles BEM children, Blockquote draws a decorative glyph —
+and both moved that residue onto a differently named class. That is a
+defensible separation of concerns *and*, unwatched, an unbounded escape hatch:
+`chromeClasses` in `OrigamField.vue` resolves to
+`origam-field--chrome-${props.variant}`, the variant class under another name.
+**Existing aliases are grandfathered; a NEW one fails the build.** Coining a
+legitimate alias stays possible — it just becomes a reviewed act.
+
+```sh
+pnpm -F origam guards:variant-css          # this guard alone
+pnpm -F origam guards                      # all of them
+```
+
+⛔ **The baseline shrinks only.** Measured **2026-10-01**, this worktree, on
+`develop` @ `e63a87ba1`:
+
+```sh
+node -e "console.log(require('./packages/ds/scripts/guards/baseline/no-variant-css.json').length)"
+# -> 32
+grep -c Kbd packages/ds/scripts/guards/baseline/no-variant-css.json
+# -> 0
+```
+
+**32 grandfathered entries, and ZERO of them is a Kbd entry** — the pilot's 4
+baseline lines were deleted by `4630927ca`, which is the mechanical proof the
+conversion happened rather than a claim that it did. What remains: Btn 16,
+BtnGroup 10, Blockquote 5, SliderField 1. **Recount, never quote** — the whole
+point of the number is that it only ever goes down.
+
+### The VRT prerequisite — the harness EXISTS (and the ADR says otherwise)
+
+ADR-005 D7 makes a per-Variant screenshot harness a **hard prerequisite for
+step 3 (`OrigamBtn`)**, not a nice-to-have, while allowing the pilot to proceed
+on computed-style assertions alone. That prerequisite **has been delivered**,
+and the ADR was never updated — remeasured **2026-10-01**, this worktree, on
+`develop` @ `e63a87ba1`:
+
+| What ADR-005 D7 asserts | Measured 2026-10-01 | Command |
+|---|---|---|
+| "of 175 e2e specs" | **262** | `ls packages/tests/e2e/*.spec.ts \| wc -l` |
+| "8 e2e specs assert directly on a `--variant-*` class" | **14** | `git grep -l -- '--variant-' packages/tests/e2e \| wc -l` |
+| "**There is no VRT suite today**" | **there is one** | `git ls-files packages/tests/vrt/` |
+| "no baseline `*-snapshots` directory is committed" | **7 PNG committed** | `git ls-files \| grep -c snapshots` |
+
+The reason both the ADR and a first re-check missed it: the suite lives under
+`packages/tests/vrt/`, **not** under `e2e/`. It landed in `876d675d9`
+(2026-08-12), with `48cc80e49` (2026-08-17) fixing the Variant guards that were
+ignoring the whole directory.
+
+- `packages/tests/vrt/btn-variant.spec.ts` — `BTN_VARIANTS` = the 7 Btn values
+  (`text` / `flat` / `elevated` / `tonal` / `outlined` / `plain` / `ghost`), one
+  `toHaveScreenshot` each, at rest only.
+- `packages/tests/vrt/btn-variant.spec.ts-snapshots/` — the 7
+  `btn-variant-{value}-chromium-linux.png` baselines.
+- `packages/tests/playwright.vrt.config.ts` — its own config, `retries: 0`.
+- `packages/tests/vrt/VRT.md` — the manual, including § *"Les 4 pièges
+  traités"* and § *"Preuve que le filet détecte"*.
+- `packages/tests/vrt/vrt-docker.sh`, plus `test:vrt`, `test:vrt:update`,
+  `test:vrt:report`, `test:vrt:docker`, `test:vrt:docker:update` in
+  `packages/tests/package.json:33-37`.
+
+⛔ **`-chromium-linux` is BY DESIGN, not a portability bug.** Per VRT.md § 1,
+baselines are generated AND compared inside the same pinned Docker image
+(`mcr.microsoft.com/playwright:v<@playwright/test version>-jammy`, resolved from
+the lockfile, never retyped), so `process.platform` is `linux` on both sides.
+The reason is concrete: the DS's `Inter` is **not** shipped as a `@font-face`
+(no `.woff`/`.woff2` anywhere in `packages/ds` or `packages/stories`), so the
+browser falls back to the system font, which differs between macOS and Ubuntu in
+both metrics and antialiasing. A pixel tolerance wide enough to absorb that
+would also absorb a real padding or colour regression. **So never run
+`test:vrt` natively for a verdict** — use `pnpm -F @origam/tests test:vrt:docker`.
+Guard `vrt-lockstep` (#606) keeps `vrt-docker.sh` and the CI `vrt` job on the
+same recipe, because the CI job runs *inside* the container and so can never
+execute the script itself.
+
+⚠️ **The suite's current pass/fail state was NOT re-measured on 2026-10-01.**
+It was not run in this lot: `origam-vrt-pnpm-store` is a **named Docker volume
+shared by every worktree** (`vrt-docker.sh:80`) and another agent was working
+concurrently. Its existence is measured; its green is not. Run it yourself
+before relying on it.
+
+⛔ **ARBITRATION ALREADY RENDERED BY THE OWNER — do not re-open it.**
+**`OrigamBlockquote` converts WITHOUT VRT.** Its risk is STRUCTURAL, not
+visual: `quoted` also toggles a rendered element
+(`showQuoteMark`, `OrigamBlockquote.vue:136`) and `pull` changes the default
+`align` to `center` (`:161`) — i.e. it is already half family B, which a pixel
+diff does not speak to. (⚠️ ADR-005 cites `:128` and `:146-153` for these two;
+both are stale on `develop` @ `e63a87ba1` — `:128` is now `effectiveLang`.
+Re-grep, never quote a line number.) The
+harness was the lot immediately preceding Btn, and it has already shipped; with
+Btn's prerequisite met, nothing pushes a harness ahead of Blockquote either.
+
+### D5 taxonomy — only one family converts
+
+| Family | What `variant` does | Components | Action |
+|---|---|---|---|
+| **A — stylistic** | changes only how the surface is painted | `OrigamBtn` (7 values), `OrigamBtnGroup` (7), **`OrigamKbd` (3 — DONE, lot 2)**, `OrigamBlockquote` (5, with the D6 caveat) | **convert** to a preset table |
+| **B — structural / discriminant** | selects a template branch or an algorithm | `OrigamSkeleton`, `OrigamBracket`, `OrigamTab`, `OrigamSliderField`, `OrigamAudio`, chart series `fill`/`stroke` | **exempt** — keep the discriminant prop, but the exemption must be **documented ON the prop**, never implicit |
+| **C — internal layout** | restyles BEM children, toggles `display:none`, drives floating-label geometry | `OrigamField` (5 values) + its 6 descendant interfaces | **partial** — asymmetric radius converts (`IRoundedProps` takes a shorthand), hiding `__outlines` does not. Hardest case; explicitly must not be the pilot, and is scheduled **last** |
+
+⚠️ **Family A is OPTIMISTIC on three of its four members, measured 2026-09-30**
+and recorded in `consts/Commons/variant-preset.const.ts` — read it before
+budgeting a conversion. `OrigamBtnGroup` copies
+`--origam-btn-group---border-width` into a custom property feeding a `calc()`
+of inner radius (inexpressible as a root prop). `OrigamBlockquote` has
+`padding-inline-start: calc(var(…) + var(…))` and nested rules on `__body` /
+`__attribution`. Only `OrigamBtn` paints root properties exclusively — and it
+depends on `IOpacityProps` / `IBackdropProps` (lot 3) and its `ghost` carries a
+`@supports not (backdrop-filter)` branch swapping the fill from 12 % to 18 %,
+which **no prop expresses**, a value conditioned on a feature query.
+
+**`OrigamKbd` was the pilot for a reason D7 does not give**: no brand theme
+touches a single `origam-kbd` token (verified, zero occurrence across the 8
+themes), so zero-change was provable in isolation. **No component converts
+mechanically** — each gets its own lot.
+
+---
+
 ## Color / intent props
 
 The legacy `color="#ff0080"` API is **deprecated since v0.4** (warns once

@@ -96,6 +96,78 @@ describe('OrigamBracket — rounded*/border* style the match cards via inherited
         wrapper.unmount()
     })
 
+    // ── #1013 — the LOGICAL-PER-SIDE grid on Bracket, BLOCK axis only ──
+    //
+    // Bracket honours `borderBlockStart` / `borderBlockEnd` (+ `*Color`) but
+    // NOT the two inline edges, and the asymmetry is measured rather than
+    // arbitrary. This layer paints through `--origam-bracket-match---*`
+    // custom properties that `OrigamBracketMatch`'s SCSS reads inside
+    // PHYSICAL declarations, so mapping a logical edge onto a physical one
+    // at authoring time requires knowing the writing mode:
+    //
+    //   • block-start/block-end ARE top/bottom invariantly in
+    //     `horizontal-tb`. Bracket never declares `writing-mode` (measured:
+    //     0 occurrence) and its sheet ALREADY made this assumption for
+    //     `borderBlock`, whose var feeds `border-top-width` /
+    //     `border-bottom-width`. No new assumption is added.
+    //   • inline-start is `left` in LTR but `right` in RTL, and no `var()`
+    //     fallback chain can express that — `var()` substitution is blind to
+    //     the writing mode while the property mapping is not. Those four are
+    //     removed from Bracket's surface by `Omit<>` instead of being
+    //     declared and ignored.
+    it('borderBlockStart sets ONLY the block-start match-card border-width var, not block-end', () => {
+        const wrapper = mountBracket({ borderBlockStart: 8 })
+        const style = wrapper.find('.origam-bracket').attributes('style') ?? ''
+        expect(style).toContain('--origam-bracket-match---border-block-start-width: 8px')
+        expect(style).not.toContain('--origam-bracket-match---border-block-end-width:')
+        wrapper.unmount()
+    })
+
+    it('borderBlockEnd sets ONLY the block-end match-card border-width var, not block-start', () => {
+        const wrapper = mountBracket({ borderBlockEnd: '6px' })
+        const style = wrapper.find('.origam-bracket').attributes('style') ?? ''
+        expect(style).toContain('--origam-bracket-match---border-block-end-width: 6px')
+        expect(style).not.toContain('--origam-bracket-match---border-block-start-width:')
+        wrapper.unmount()
+    })
+
+    it('borderBlockStartColor / borderBlockEndColor set their per-edge border-color vars', () => {
+        const wrapper = mountBracket({ borderBlockStartColor: 'success', borderBlockEndColor: 'danger' })
+        const style = wrapper.find('.origam-bracket').attributes('style') ?? ''
+        expect(style).toContain('--origam-bracket-match---border-block-start-color:')
+        expect(style).toContain('--origam-bracket-match---border-block-end-color:')
+        wrapper.unmount()
+    })
+
+    it('⛔ the two INLINE logical edges emit NOTHING — they are Omit<>-ed from the surface, not silently dropped', () => {
+        // Passing them is a type error for a TS consumer; this asserts the
+        // runtime consequence, which is that no var is emitted at all. If a
+        // future change re-adds them to the interface WITHOUT wiring the
+        // SCSS, this test still passes — so it is the `unconsumed-props`
+        // guard, not this test, that owns that regression. What this pins is
+        // that nothing half-wired leaks a var the sheet cannot read.
+        const wrapper = mountBracket({ borderInlineStart: 8, borderInlineEnd: 8 })
+        const style = wrapper.find('.origam-bracket').attributes('style') ?? ''
+        expect(style).not.toContain('--origam-bracket-match---border-inline-start-width')
+        expect(style).not.toContain('--origam-bracket-match---border-inline-end-width')
+        wrapper.unmount()
+    })
+
+    it('a physical borderTop still beats borderBlockStart for the top edge (precedence, via the fallback chain)', () => {
+        // Both vars are emitted; the SCSS fallback chain
+        // `var(--top, var(--block-start, var(--block, var(--border, 1px))))`
+        // is what resolves physical first. Assert both land, since the
+        // ordering lives in the stylesheet rather than in the style
+        // attribute — jsdom cannot resolve that chain (see the `var()`
+        // caveat in CLAUDE.md), so the chain itself is verified by reading
+        // the SCSS, not by a computed style here.
+        const wrapper = mountBracket({ borderTop: 9, borderBlockStart: 3 })
+        const style = wrapper.find('.origam-bracket').attributes('style') ?? ''
+        expect(style).toContain('--origam-bracket-match---border-top-width: 9px')
+        expect(style).toContain('--origam-bracket-match---border-block-start-width: 3px')
+        wrapper.unmount()
+    })
+
     it('tag renders the requested root element', () => {
         const wrapper = mountBracket({ tag: 'section' })
         expect(wrapper.element.tagName.toLowerCase()).toBe('section')
