@@ -11,11 +11,11 @@ import type { IDimensionProps } from '../Commons/dimension.interface'
 import type { IElevationProps } from '../Commons/elevation.interface'
 import type { IMarginProps } from '../Commons/margin.interface'
 import type { IPaddingProps } from '../Commons/padding.interface'
-import type { IRoundedProps } from '../Commons/rounded.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
 
 import type {
     TBracketBorderProps,
+    TBracketRoundedProps,
     TBracketConnectorPath,
     TBracketVariant
 } from '../../types/Bracket/bracket.type'
@@ -36,7 +36,30 @@ import type { IBracketRound } from './bracket-round.interface'
  * data and re-render. No internal state is held about scores or
  * winners — the data passed in is the source of truth.
  */
-export interface IBracketProps extends ICommonsComponentProps, ITagProps, IDensityProps, IRoundedProps, IColorProps, IBgColorProps, TBracketBorderProps, IDimensionProps, IElevationProps, IMarginProps, IPaddingProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'letterSpacing'> {
+/*********************************************************
+ * Pourquoi les surfaces `border` ET `rounded` sont RESTREINTES ici — #1013
+ *
+ * @description
+ * `OrigamBracket` n'appelle ni `useBorder` ni `useRounded` : il passe
+ * `props` en bloc a `utils/Bracket/bracket-surface.util.ts`, qui emet des
+ * custom properties relues par un SCSS PHYSIQUE. Les props logiques par
+ * cote y sont donc structurellement incablables, et une prop typee,
+ * editable dans Histoire, mais inerte est pire qu'une prop absente.
+ *
+ * @description
+ * Les deux restrictions vivent dans `types/Bracket/bracket.type.ts`, un
+ * type nomme chacune, et portent la mesure qui les justifie :
+ * {@link TBracketBorderProps} retire les 4 aretes INLINE et garde les 2
+ * aretes de bloc (invariantes en `horizontal-tb`, donc cablees) ;
+ * {@link TBracketRoundedProps} retire les 4 coins logiques, car tout nom de
+ * coin est `{bloc}-{inline}` et porte donc une composante inline — le
+ * sursis de l'axe bloc n'existe pas pour un coin.
+ *
+ * @description
+ * Un seul idiome pour les deux moities du lot, volontairement : la
+ * directive du ticket est « si un format existe, il existe partout ».
+ ********************************************************/
+export interface IBracketProps extends ICommonsComponentProps, ITagProps, IDensityProps, TBracketRoundedProps, IColorProps, IBgColorProps, TBracketBorderProps, IDimensionProps, IElevationProps, IMarginProps, IPaddingProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'letterSpacing'> {
     /**
      * Required. Pre-ordered list of rounds. For single-elimination,
      * the rounds are laid out from earliest (e.g. round-of-16) to

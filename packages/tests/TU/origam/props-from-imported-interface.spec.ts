@@ -65,30 +65,39 @@ describe('props declared only in an imported interface reach the runtime descrip
     // channel through which an accessible name reaches a prepend/append zone
     // the DS would otherwise promote to an anonymous `role="button"`.
     // Verified to be exactly those two names, not a wholesale shift.
-    // 92 → 100 (SliderField) and 66 → 74 (Video): issue #1013 — `IBorderProps`
-    // gained the LOGICAL-PER-SIDE grid, the last of the three directional
-    // grids to be filled: `borderBlockStart` / `borderBlockEnd` /
+    //
+    // 92 -> 100 (SliderField) and 66 -> 74 (Video): issue #1013, BORDER half —
+    // `IBorderProps` gained `borderBlockStart` / `borderBlockEnd` /
     // `borderInlineStart` / `borderInlineEnd` plus their four `*Color` twins.
     // Both components reach `IBorderProps` through an imported interface, so
-    // +8 each.
+    // +8 each. Verified to be exactly those eight NAMES by a throwaway probe
+    // (`SliderField total=100 present=8 missing=[]`, `Video total=74
+    // present=8 missing=[]`), not by arithmetic.
     //
-    // Verified to be exactly those eight NAMES rather than a wholesale shift,
-    // per the convention of the entries above: a throwaway probe enumerated
-    // the runtime descriptor and reported
-    // `SliderField total=100 present=8 missing=[]` /
-    // `Video total=74 present=8 missing=[]`. These two failures are in fact
-    // this spec doing its job — it is the independent confirmation that the
-    // new props reach the runtime descriptor at all.
+    // 100 -> 112 (SliderField) and 74 -> 86 (Video): issue #1013, PADDING /
+    // MARGIN / ROUNDED half — `IPaddingProps`, `IMarginProps` and
+    // `IRoundedProps` each gained 4 logical-per-side props
+    // (`paddingInlineStart`, `marginBlockEnd`, `roundedStartStart`, ...), and
+    // both components reach all three, so +12 each.
     //
-    // ⚠️ THIS LINE MOVES AGAIN IN THE SAME CAMPAIGN. The padding / margin /
-    // rounded half of #1013 adds 12 more props across `IPaddingProps`,
-    // `IMarginProps` and `IRoundedProps`, which these two components also
-    // inherit. Expect 100 → 112 and 74 → 86 when that half lands; the two
-    // branches both touch this array, so it is a known conflict point and
-    // the counts must be re-measured after the merge, never arithmetic'd.
+    // ⚠️ RE-MEASURED AFTER THE MERGE OF THE TWO HALVES, NOT ADDED UP. The
+    // border half's note predicted 112 / 86 and flagged this array as a known
+    // conflict point precisely so nobody would arithmetic it. The prediction
+    // held, but it was checked: a probe enumerated the runtime descriptor on
+    // the merged tree and reported all 20 new names present, with
+    // `propsOf(c).length - 20` equal to the pre-campaign 92 / 66. Nothing
+    // else moved.
+    //
+    // Note the two Bracket restrictions landed in the same campaign
+    // (`TBracketBorderProps`, `TBracketRoundedProps`) and do NOT appear here:
+    // neither SliderField nor Video reaches `IBracketProps`.
+    //
+    // These numbers are also the independent confirmation that props declared
+    // only in an imported interface reach the runtime descriptor at all —
+    // which is what this whole file exists to prove.
     it.each([
-        [OrigamSliderField, 'OrigamSliderField', 100],
-        [OrigamVideo, 'OrigamVideo', 74],
+        [OrigamSliderField, 'OrigamSliderField', 112],
+        [OrigamVideo, 'OrigamVideo', 86],
         [OrigamTimelineItem, 'OrigamTimelineItem', 16],
         [OrigamTreeview, 'OrigamTreeview', 15],
         [OrigamClientOnly, 'OrigamClientOnly', 2]

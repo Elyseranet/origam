@@ -15,8 +15,9 @@ function useMargin (props: IMarginProps, name = getCurrentInstanceName()): {
 
 `name` defaults to the current instance's kebab-cased name, so calling outside
 `setup()` without an explicit `name` throws. `IMarginProps` declares `margin`,
-`marginBlock`, `marginInline`, `marginTop`, `marginRight`, `marginBottom`,
-`marginLeft` — each `boolean | number | string | undefined`.
+`marginBlock`, `marginInline`, `marginInlineStart`, `marginInlineEnd`,
+`marginBlockStart`, `marginBlockEnd`, `marginTop`, `marginRight`,
+`marginBottom`, `marginLeft` — each `boolean | number | string | undefined`.
 
 Bind both returns; the empty side is harmless:
 
@@ -45,14 +46,37 @@ edge.
 
 1. the global `margin` shorthand
 2. the logical axes `marginBlock` / `marginInline`
-3. the physical sides `marginTop` / `marginRight` / `marginBottom` / `marginLeft`
+3. the logical sides `marginInlineStart` / `marginInlineEnd` /
+   `marginBlockStart` / `marginBlockEnd` *(issue #1013)*
+4. the physical sides `marginTop` / `marginRight` / `marginBottom` / `marginLeft`
 
 Measured:
 
 ```ts
 useMargin({ marginBlock: '2', marginTop: '8px' }).marginStyles.value
 // [ 'margin-block: var(--origam-space---2)', 'margin-top: 8px' ]
-//   rung 2 paints both block edges, rung 3 then overrides the top one
+//   rung 2 paints both block edges, rung 4 then overrides the top one
+
+useMargin({ marginBlockStart: '99px', marginTop: '1px' }).marginStyles.value
+// [ 'margin-block-start: 99px', 'margin-top: 1px' ]
+//   same edge, both emitted — the PHYSICAL one is last, so it wins
+```
+
+⚠️ Rungs 3 and 4 are **equally specific**: `marginInlineStart` and `marginLeft`
+name the same edge under LTR horizontal-tb, so push order alone decides and the
+physical spelling wins. See
+[`usePadding`'s logical-side section](./usePadding.md#the-logical-side-rung-issue-1013)
+for why the tiebreak falls that way; `useMargin`, `useBorder` and `useRounded`
+all follow it. Pick one grid per component rather than relying on the order.
+
+The logical sides take the `auto` keyword like their physical twins, and that is
+their best argument: `marginInlineStart="auto"` pushes an element to the far end
+of its line in **both** reading directions, where `marginLeft="auto"` pushes it
+the wrong way under RTL.
+
+```ts
+useMargin({ marginInlineStart: 'auto' }).marginStyles.value
+// [ 'margin-inline-start: auto' ]
 ```
 
 Rung 1 does **not** suppress the others: a scale-step `margin` emits only the

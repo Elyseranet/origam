@@ -1,7 +1,7 @@
 # useRounded
 
-Resolves the `rounded` shorthand and the four per-corner props into classes and
-inline `border-radius` declarations.
+Resolves the `rounded` shorthand and the eight per-corner props — four logical,
+four physical — into classes and inline `border-radius` declarations.
 
 ## API
 
@@ -15,9 +15,10 @@ function useRounded (
 }
 ```
 
-⚠️ **The per-corner props are only reachable through the props-object
-overload.** A `Ref` carries a single scalar — the shorthand — by construction,
-so `roundedTopLeft` & co. are read inside an `if (!isRef(props))` block.
+⚠️ **The per-corner props — logical and physical alike — are only reachable
+through the props-object overload.** A `Ref` carries a single scalar — the
+shorthand — by construction, so both corner loops sit inside one
+`if (!isRef(props))` block.
 
 ```vue
 <script setup lang="ts">
@@ -35,15 +36,52 @@ const { roundedClasses, roundedStyles } = useRounded(props)
 </template>
 ```
 
-## Two rungs
+## Three rungs
 
 1. the global `rounded` shorthand
-2. the per-corner `roundedTopLeft` / `roundedTopRight` / `roundedBottomLeft` /
-   `roundedBottomRight`
+2. the LOGICAL per-corner `roundedStartStart` / `roundedStartEnd` /
+   `roundedEndStart` / `roundedEndEnd` *(issue #1013)*
+3. the PHYSICAL per-corner `roundedTopLeft` / `roundedTopRight` /
+   `roundedBottomLeft` / `roundedBottomRight`
 
-Rung 2 emits **physical** corner longhands (`border-top-left-radius`), which
-beat the **logical** ones the 4-value shorthand emits
-(`border-start-start-radius`) purely by declaration order.
+There is no logical-*axis* rung here, unlike padding and margin: a corner
+belongs to both axes at once, so the grid goes straight from "all four corners"
+to "one corner".
+
+Rung 2 emits the native **logical** corner longhands
+(`border-start-start-radius`) — the same family the 4-value shorthand emits, so
+these four address one of its corners instead of all four. Rung 3 emits the
+**physical** longhands (`border-top-left-radius`), which beat both purely by
+declaration order.
+
+```ts
+useRounded({ rounded: 'lg', roundedStartStart: '7px', roundedTopLeft: '0px' }).roundedStyles.value
+// [ 'border-radius: var(--origam-radius---lg, 12px)',
+//   'border-start-start-radius: 7px',
+//   'border-top-left-radius: 0px' ]      ← last, so it wins
+```
+
+⚠️ Rungs 2 and 3 are **equally specific** — `roundedStartStart` and
+`roundedTopLeft` are the same corner under LTR horizontal-tb, so push order
+alone decides and the physical one wins. Same tiebreak as `usePadding` /
+`useMargin` / `useBorder`; see
+[`usePadding`'s logical-side section](./usePadding.md#the-logical-side-rung-issue-1013)
+for the reasoning. Pick one grid per component.
+
+### ⚠️ The logical corner names read `{block}-{inline}`
+
+This is CSS's order, not a clockwise walk, and the two halves are **not**
+interchangeable:
+
+| prop | CSS longhand | corner in LTR horizontal-tb |
+|---|---|---|
+| `roundedStartStart` | `border-start-start-radius` | top-left |
+| `roundedStartEnd` | `border-start-end-radius` | top-**right** |
+| `roundedEndStart` | `border-end-start-radius` | bottom-left |
+| `roundedEndEnd` | `border-end-end-radius` | bottom-right |
+
+So `roundedStartEnd` is block-start inline-end. Swapping the halves silently
+rounds the opposite corner — nothing warns, and the result looks deliberate.
 
 ## The shorthand vocabulary — measured
 

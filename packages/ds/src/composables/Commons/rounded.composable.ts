@@ -1,7 +1,7 @@
 import { computed, isRef, Ref } from 'vue'
 
 import { BORDER_RADIUS_REGEX, PREDEFINED_ROUNDED } from '../../consts/Commons/rounded.const'
-import { NAMED_RADIUS_TOKEN, ROUNDED_CORNER_MAP, UTILITY_RADIUS_FALLBACK } from '../../consts/Commons/spacing.const'
+import { NAMED_RADIUS_TOKEN, ROUNDED_CORNER_MAP, ROUNDED_LOGICAL_CORNER_MAP, UTILITY_RADIUS_FALLBACK } from '../../consts/Commons/spacing.const'
 
 import type { IRoundedProps } from '../../interfaces/Commons/rounded.interface'
 
@@ -54,11 +54,24 @@ function isUtilityRounded (value: unknown): value is string {
  *
  *   1. global `rounded` (utility rung, named variant, legacy boolean, or
  *      free-form 1/4-value CSS)
- *   2. per-corner `roundedTopLeft` / `roundedTopRight` /
+ *   2. LOGICAL per-corner `roundedStartStart` / `roundedStartEnd` /
+ *      `roundedEndStart` / `roundedEndEnd` (issue #1013)
+ *   3. PHYSICAL per-corner `roundedTopLeft` / `roundedTopRight` /
  *      `roundedBottomLeft` / `roundedBottomRight`
  *
  * So `roundedTopLeft="0px"` beats `rounded="lg"` for the top-left corner
  * only; the other three keep the `lg` rung.
+ *
+ * ⚠️ RUNGS 2 AND 3 ARE EQUALLY SPECIFIC — `roundedStartStart` and
+ * `roundedTopLeft` are the same corner under LTR horizontal-tb, so push
+ * order alone decides and the physical one is last. Same decision, same
+ * reasoning as `usePadding`'s rungs 3/4, which carries the full rationale;
+ * it also matches what `ROUNDED_CORNER_MAP`'s own header already said
+ * about the physical corners beating the shorthand's logical output.
+ *
+ * ⚠️ The logical corner names read `{block}-{inline}`: `startEnd` is
+ * block-start inline-end — top-RIGHT in LTR. They are NOT the physical
+ * clockwise order, and the two halves are not interchangeable.
  *
  * ⚠️ This example used to read `roundedTopLeft="0"`, and that form does
  * NOT work — measured: `{rounded:'lg', roundedTopLeft:'0'}` emits the
@@ -238,12 +251,33 @@ export function useRounded (
 
         const styles: Array<string> = shorthandStyles(rounded)
 
-        // ── Rung 2: per-corner overrides ─────────────────────────────
-        // Declared on `IRoundedProps` but never read until now. Emitted
-        // as PHYSICAL corner longhands (`border-top-left-radius`), which
-        // beat the LOGICAL ones the 4-value shorthand emits
-        // (`border-start-start-radius`) by declaration order.
+        /*********************************************************
+         * Rungs 2 and 3 — the per-corner overrides
+         *
+         * @description
+         * Both are gated on the props-object overload: the bare `Ref`
+         * overload carries ONLY the shorthand scalar, so there is no
+         * corner to read there (pinned by the back-compat spec).
+         *
+         * @description
+         * Rung 2 — LOGICAL corners (`roundedStartStart` & co, issue
+         * #1013), emitted as the native logical longhands
+         * (`border-start-start-radius`). That is the same family the
+         * 4-value shorthand emits, so these four address ONE of its
+         * corners instead of all four.
+         *
+         * @description
+         * Rung 3 — PHYSICAL corners (`border-top-left-radius`), pushed
+         * last so they beat both the logical corners above and the
+         * shorthand's own logical output, by declaration order.
+         ********************************************************/
         if (!isRef(props)) {
+            ROUNDED_LOGICAL_CORNER_MAP.forEach(({corner, prop}) => {
+                const resolved = resolveRoundedCornerValue(props[prop])
+
+                if (resolved) styles.push(`border-${corner}-radius: ${resolved}`)
+            })
+
             ROUNDED_CORNER_MAP.forEach(({corner, prop}) => {
                 const resolved = resolveRoundedCornerValue(props[prop])
 

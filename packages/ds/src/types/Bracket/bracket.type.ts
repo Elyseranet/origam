@@ -154,3 +154,43 @@ export type TBracketBorderProps = Omit<IBorderProps,
     'borderInlineStart' | 'borderInlineEnd' | 'borderInlineStartColor' | 'borderInlineEndColor'
 >
 
+/*********************************************************
+ * TBracketRoundedProps — le pendant « coins » de {@link TBracketBorderProps}
+ *
+ * @description
+ * Même couche, même cause, même arbitrage (#1013, tranché par le
+ * propriétaire le 2026-10-01) : `OrigamBracket` n'appelle pas `useRounded`,
+ * il passe `props` en bloc à `utils/Bracket/bracket-surface.util.ts`, qui
+ * émet des custom properties relues par le SCSS d'`OrigamBracketMatch` dans
+ * des déclarations PHYSIQUES par coin. La substitution `var()` est AVEUGLE
+ * au mode d'écriture alors que le mapping de la propriété ne l'est pas,
+ * donc aucune chaîne de repli ne peut encoder « le physique gagne » ET « le
+ * logique se retourne en RTL » simultanément.
+ *
+ * @description
+ * ⛔ MAIS LES QUATRE SORTENT, là où le côté border n'en retire que deux. Le
+ * sursis des arêtes de BLOC ne s'applique pas à un coin : tout nom de coin
+ * logique est `{bloc}-{inline}` et porte donc une composante inline. Mesuré
+ * dans Chromium (sonde Playwright, LTR vs RTL) plutôt que déduit —
+ * `start-start` top-left -> top-RIGHT, `start-end` top-right -> top-LEFT,
+ * `end-start` bottom-left -> bottom-RIGHT, `end-end` bottom-right ->
+ * bottom-LEFT. Contrôle négatif `padding-block-start` -> `padding-top` :
+ * 40px dans les deux sens, il ne bouge pas, ce qui prouve que la sonde sait
+ * distinguer l'immobilité et que les quatre déplacements sont réels.
+ *
+ * @description
+ * PORTÉE VÉRIFIÉE — seul `IBracketProps` est restreint. Les deux autres
+ * interfaces Bracket qui étendent `IRoundedProps` consomment réellement
+ * leurs coins : `OrigamBracketMatch` et `OrigamBracketCompetitor` appellent
+ * `useRounded` / `useStateEffect`, et gardent donc la surface complète.
+ * `OrigamBracket` est le seul à n'avoir aucun de ces appels.
+ *
+ * @description
+ * Retirer plutôt que déclarer-et-ignorer, même règle que ci-dessus. La
+ * complétude de l'axe inline pour les coins suit le même ticket que pour
+ * les arêtes : il faut convertir la cascade en longhands logiques.
+ ********************************************************/
+export type TBracketRoundedProps = Omit<IRoundedProps,
+    'roundedStartStart' | 'roundedStartEnd' | 'roundedEndStart' | 'roundedEndEnd'
+>
+

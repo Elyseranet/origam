@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 import { MARGIN_REGEX } from '../../consts/Commons/margin.const'
-import { MARGIN_LOGICAL_AXIS_MAP, MARGIN_POSITION_MAP, SPACING_SCALE_STEPS } from '../../consts/Commons/spacing.const'
+import { MARGIN_LOGICAL_AXIS_MAP, MARGIN_LOGICAL_SIDE_MAP, MARGIN_POSITION_MAP, SPACING_SCALE_STEPS } from '../../consts/Commons/spacing.const'
 
 import type { IMarginProps } from '../../interfaces/Commons/margin.interface'
 
@@ -25,12 +25,18 @@ function isUtilityMarginScale (value: unknown): value is string {
  *
  *   1. global `margin` shorthand (1/2/4-value, logical properties)
  *   2. logical-axis `marginBlock` / `marginInline`
- *   3. physical per-side `marginTop` / `marginRight` / `marginBottom` /
+ *   3. logical per-side `marginInlineStart` / `marginInlineEnd` /
+ *      `marginBlockStart` / `marginBlockEnd` (issue #1013)
+ *   4. physical per-side `marginTop` / `marginRight` / `marginBottom` /
  *      `marginLeft`
  *
  * So `marginBlock` beats `margin` for the top+bottom edges, and
  * `marginTop` beats both `margin` and `marginBlock` for the top edge
  * specifically.
+ *
+ * ⚠️ RUNGS 3 AND 4 ARE EQUALLY SPECIFIC — the physical spelling wins for
+ * the edge they share, by push order. Same decision and same reasoning as
+ * `usePadding`'s table, which carries the full rationale.
  *
  * ⚠️ The 4-value `margin` shorthand distributes in the DS's
  * **Haut/Gauche/Bas/Droite** order, NOT the CSS clockwise order — an
@@ -100,7 +106,26 @@ export function useMargin (props: IMarginProps, name = getCurrentInstanceName())
             if (resolved) styles.push(`margin-${axis}: ${resolved}`)
         })
 
-        // ── Rung 3: physical per-side ────────────────────────────────
+        /*********************************************************
+         * Rung 3 — logical per-side (issue #1013)
+         *
+         * @description
+         * `marginInlineStart` & co, between the axis rung and the physical
+         * loop so `marginLeft` still wins for the edge they share.
+         *
+         * @description
+         * These also carry `auto` through, which is the whole point:
+         * `marginInlineStart="auto"` pushes an element to the far end of
+         * its line in BOTH reading directions, where `marginLeft="auto"`
+         * pushes it the wrong way under RTL.
+         ********************************************************/
+        MARGIN_LOGICAL_SIDE_MAP.forEach(({side, prop}) => {
+            const resolved = resolveSpacingValue(props[prop])
+
+            if (resolved) styles.push(`margin-${side}: ${resolved}`)
+        })
+
+        // ── Rung 4: physical per-side ────────────────────────────────
         MARGIN_POSITION_MAP.forEach(({side, prop}) => {
             const resolved = resolveSpacingValue(props[prop])
 

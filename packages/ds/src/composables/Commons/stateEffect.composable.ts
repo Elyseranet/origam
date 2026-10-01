@@ -374,7 +374,11 @@ export function useStateEffect (
     // exact same "curated getter list was never updated" bug (border per-side
     // → borderBlock/borderInline → here); the shorthand stays state-aware via
     // the reactive getter, the corners read straight from the base props
-    // (they are not state-swappable).
+    // (they are not state-swappable). The four LOGICAL corners
+    // (`roundedStartStart` & co, issue #1013) are forwarded alongside the
+    // physical ones for the same reason, and would have been the FOURTH
+    // instance had they been left out — see the count warning on the
+    // padding bag below, which applies verbatim here.
     const { roundedClasses, roundedStyles }     = useRounded(
         reactive({
             get rounded () { return rounded.value },
@@ -382,6 +386,10 @@ export function useStateEffect (
             get roundedTopRight () { return props.roundedTopRight },
             get roundedBottomLeft () { return props.roundedBottomLeft },
             get roundedBottomRight () { return props.roundedBottomRight },
+            get roundedStartStart () { return props.roundedStartStart },
+            get roundedStartEnd () { return props.roundedStartEnd },
+            get roundedEndStart () { return props.roundedEndStart },
+            get roundedEndEnd () { return props.roundedEndEnd },
         }) as IRoundedProps,
     )
     const { elevationClasses, elevationStyles } = useElevation(
@@ -396,13 +404,39 @@ export function useStateEffect (
     // hover/active swaps. Wrap with a `reactive` getter so the read goes
     // through the ref every time, preserving the dependency chain.
     //
-    // The directional props (`paddingTop` / `paddingBlock` / … and their
-    // margin mirrors) are NOT state-swappable — there is no `hoverState
-    // .paddingTop` — so they read straight from the base props. They must
-    // still be forwarded explicitly: a getter bag only exposes the keys it
-    // names, so omitting them here would silently drop all 12 for every
-    // component routed through `useStateEffect`, exactly as happened to
-    // `borderBlock` / `borderInline` above.
+    /*********************************************************
+     * Forwarding the directional padding / margin props
+     *
+     * @description
+     * They are NOT state-swappable — there is no `hoverState.paddingTop` —
+     * so they read straight from the base props. They must still be
+     * forwarded EXPLICITLY: a getter bag only exposes the keys it NAMES,
+     * so omitting one silently drops it for every component routed through
+     * `useStateEffect`, exactly as happened to `borderBlock` /
+     * `borderInline` above.
+     *
+     * @description
+     * ⛔ THE COUNT IS LOAD-BEARING, AND THIS NOTE HAS BEEN WRONG BEFORE.
+     * It read "all 12" (6 padding + 6 margin) until issue #1013 added the
+     * four logical-per-side props to each interface. It is now 20 — ten
+     * per axis. Add a directional prop to `IPaddingProps` or
+     * `IMarginProps`, and ADD ITS GETTER HERE IN THE SAME COMMIT.
+     *
+     * @description
+     * Nothing type-checks this: the bag is cast `as IPaddingProps`, so a
+     * missing key is not a compile error. Measured on the #1013 delivery —
+     * with the four `padding*Start|End` getters deleted,
+     * `pnpm -F origam type-check` still exits 0 while the props emit
+     * nothing on 30 components.
+     *
+     * @description
+     * The defence is
+     * `packages/tests/TU/composables/Commons/state-effect-directional-forwarding.spec.ts`,
+     * which derives its expectations from the MAPS rather than from a
+     * hand-typed list — so it reddens by itself on the next omission and
+     * names the offending prop, instead of documenting the bug after the
+     * fact.
+     ********************************************************/
     const { paddingClasses, paddingStyles }     = usePadding(
         reactive({
             get padding () { return padding.value },
@@ -412,6 +446,10 @@ export function useStateEffect (
             get paddingLeft () { return props.paddingLeft },
             get paddingBlock () { return props.paddingBlock },
             get paddingInline () { return props.paddingInline },
+            get paddingInlineStart () { return props.paddingInlineStart },
+            get paddingInlineEnd () { return props.paddingInlineEnd },
+            get paddingBlockStart () { return props.paddingBlockStart },
+            get paddingBlockEnd () { return props.paddingBlockEnd },
         }) as IPaddingProps,
     )
     const { marginClasses, marginStyles }       = useMargin(
@@ -423,6 +461,10 @@ export function useStateEffect (
             get marginLeft () { return props.marginLeft },
             get marginBlock () { return props.marginBlock },
             get marginInline () { return props.marginInline },
+            get marginInlineStart () { return props.marginInlineStart },
+            get marginInlineEnd () { return props.marginInlineEnd },
+            get marginBlockStart () { return props.marginBlockStart },
+            get marginBlockEnd () { return props.marginBlockEnd },
         }) as IMarginProps,
     )
 
