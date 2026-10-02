@@ -1,7 +1,7 @@
 <template>
 	<teleport
-			:disabled="isLayoutOrphan"
-			:to="teleportDrawer"
+			:disabled="teleportDisabled"
+			:to="teleportTo"
 			defer
 	>
 		<origam-transition :transition="transition">
@@ -87,6 +87,7 @@
 	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useSticky } from '../../composables/Commons/sticky.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTeleport } from '../../composables/Commons/teleport.composable'
 	import { useToggleScope } from '../../composables/Commons/toggleScope.composable'
 	import { useTouch } from '../../composables/Commons/touch.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
@@ -143,6 +144,12 @@
 		// doesn't silently force the heuristic off. See IDrawerProps doc.
 		push: null,
 		clipped: null,
+		// Same device, same reason — #attach-harmonisation. An UNSET
+		// `attach` must stay distinguishable from an explicit `false`:
+		// unset keeps the layout-wrapper / orphan-inline default below,
+		// `false` escapes it to `document.body` like the rest of the
+		// Overlay family. See IDrawerProps.attach doc.
+		attach: null,
 		// Default enter / leave animation: the drawer slides its FULL
 		// width in / out of view. The matching `origam-transition--drawer-*`
 		// keyframes live in OrigamDrawer.vue's global <style> block at
@@ -373,6 +380,31 @@
 	const teleportDrawer = computed(() => {
 		if (isLayoutOrphan.value) return undefined
 		return `#${resolvedLayoutId.value} .origam-layout__wrapper`
+	})
+
+	/*********************************************************
+	 * `attach` — #attach-harmonisation
+	 *
+	 * @description
+	 * `OrigamDrawer`'s OWN default target (the layout wrapper above, or
+	 * inline when orphaned) is NOT `document.body`, unlike the rest of
+	 * the Overlay family — so `attach` only overrides it when the
+	 * consumer EXPLICITLY sets it. `props.attach !== null` is that
+	 * signal (the `null` default, like `push` / `clipped`, survives
+	 * Vue's boolean-prop casting untouched). When overridden, resolution
+	 * goes through the same `useTeleport()` every other teleporting
+	 * component in the DS consumes — `?? false` only normalises the type
+	 * for the composable; the attach-ed branch below never calls it with
+	 * `null` because `hasExplicitAttach` already excludes that case.
+	 ********************************************************/
+	const hasExplicitAttach = computed(() => props.attach !== null)
+	const { teleportTarget: attachTarget } = useTeleport(computed(() => props.attach ?? false))
+
+	const teleportDisabled = computed(() => {
+		return hasExplicitAttach.value ? !attachTarget.value : isLayoutOrphan.value
+	})
+	const teleportTo = computed(() => {
+		return hasExplicitAttach.value ? attachTarget.value : teleportDrawer.value
 	})
 
 	const {isStuck, stickyStyles} = useSticky({rootEl, isSticky, layoutItemStyles})

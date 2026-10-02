@@ -1,4 +1,5 @@
 import type { ICommand } from './command.interface'
+import type { IAttachProps } from '../Commons/attach.interface'
 import type { ICommonsComponentProps } from '../Commons/commons.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
 
@@ -13,7 +14,7 @@ import type { ITypographyProps } from '../Commons/typography.interface'
  */
 export type TCommandPaletteHotkey = ReadonlyArray<string> | ReadonlyArray<ReadonlyArray<string>>
 
-export interface ICommandPaletteProps extends ICommonsComponentProps, Pick<ITypographyProps, 'fontSize'> {
+export interface ICommandPaletteProps extends ICommonsComponentProps, Pick<ITypographyProps, 'fontSize'>, IAttachProps {
     /** v-model — whether the palette is open. */
     modelValue?: boolean
     /**
