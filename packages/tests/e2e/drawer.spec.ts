@@ -14,7 +14,8 @@ import { expect, test } from '@playwright/test'
  *   6  → Slots - Prepend
  *   7  → Slots - Append
  *   8  → Slots - Wrapper
- *   9  → Default (playground — data-cy="drawer-playground")
+ *   9  → Prop - attach           (teleport override — #attach-harmonisation)
+ *   10 → Default (playground — data-cy="drawer-playground")
  *
  * ## Notes d'implémentation
  *
