@@ -29,7 +29,8 @@ const { t } = useT()
             >
                 <origam-btn
                     class="home-cta__btn home-cta__btn--start"
-                    variant="text"
+                    variant="flat"
+                    color="primary"
                     append-icon="mdi-arrow-right"
                     :href="CTA_START_HREF"
                     data-cy="cta-btn-start"

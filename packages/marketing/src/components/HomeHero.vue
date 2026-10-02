@@ -63,7 +63,8 @@
       >
         <origam-btn
           class="home-hero__btn home-hero__btn--primary"
-          variant="text"
+          variant="flat"
+          color="primary"
           href="/components"
           append-icon="mdi-arrow-right"
           data-cy="hero-cta-components"
