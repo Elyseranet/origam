@@ -16,6 +16,7 @@
 					closeOnSelect: true,
 					closeOnEscape: true,
 					closeOnBackdrop: true,
+					attach: '',
 					fontSize: undefined
 				})"
 		>
@@ -39,6 +40,7 @@
 							:close-on-select="state.closeOnSelect"
 							:close-on-escape="state.closeOnEscape"
 							:close-on-backdrop="state.closeOnBackdrop"
+							:attach="state.attach"
 							:font-size="state.fontSize"
 					/>
 				</div>
@@ -59,6 +61,7 @@
 					<HstCheckbox v-model="state.closeOnSelect"  title="Close on Select"/>
 					<HstCheckbox v-model="state.closeOnEscape"  title="Close on Escape"/>
 					<HstCheckbox v-model="state.closeOnBackdrop" title="Close on Backdrop"/>
+					<HstText v-model="state.attach" title="Attach (CSS selector)"/>
 				</StoryGroup>
 				<StoryGroup title="Typography">
 					<HstSelect v-model="state.fontSize" title="Font Size" :options="FONT_SIZE_OPTIONS"/>
@@ -181,6 +184,28 @@
 			</div>
 		</Variant>
 
+		<Variant title="Prop - attach">
+			<div class="story-shell">
+				<origam-btn
+						text="Open (attach to local target)"
+						@click="openAttachTarget = true"
+				/>
+				<div
+						id="command-palette-attach-target"
+						class="story-attach-target"
+						data-cy="command-palette-attach-target"
+				>
+					local teleport target (#command-palette-attach-target)
+				</div>
+				<origam-command-palette
+						v-model="openAttachTarget"
+						:commands="GROUPS_FIXTURE"
+						attach="#command-palette-attach-target"
+						data-cy="command-palette-attached"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<ICommandPaletteProps>({
@@ -193,6 +218,7 @@
 					closeOnSelect: true,
 					closeOnEscape: true,
 					closeOnBackdrop: true,
+					attach: '',
 					fontSize: undefined
 				})"
 		>
@@ -228,6 +254,7 @@
 					<HstCheckbox v-model="state.closeOnSelect"    title="Close on Select"/>
 					<HstCheckbox v-model="state.closeOnEscape"    title="Close on Escape"/>
 					<HstCheckbox v-model="state.closeOnBackdrop"  title="Close on Backdrop"/>
+					<HstText v-model="state.attach" title="Attach (CSS selector)"/>
 				</StoryGroup>
 				<StoryGroup title="Typography">
 					<HstSelect v-model="state.fontSize" title="Font Size" :options="FONT_SIZE_OPTIONS"/>
@@ -264,6 +291,7 @@
 	const openSlotItem = ref<boolean>(false)
 	const openSlotEmpty = ref<boolean>(false)
 	const openSlotFooter = ref<boolean>(false)
+	const openAttachTarget = ref<boolean>(false)
 
 	const PLAYGROUND_COMMANDS: ReadonlyArray<ICommand> = [
 		{ id: 'new', label: 'New document', icon: MDI_ICONS.FILE_PLUS, kbd: ['meta', 'n'], group: 'Actions', perform: () => logEvent('cmd', 'new') },
@@ -332,6 +360,16 @@
 	.story-status {
 		font: 0.875rem/1.4 system-ui, sans-serif;
 		color: var(--origam-color__text---secondary, rgba(0, 0, 0, 0.66));
+	}
+
+	.story-attach-target {
+		position: relative;
+		min-height: 80px;
+		padding: 12px;
+		border: 1px dashed var(--origam-color__border---subtle, rgba(0, 0, 0, 0.2));
+		border-radius: 8px;
+		font: 0.8125rem/1.4 system-ui, sans-serif;
+		color: var(--origam-color__text---secondary, rgba(0, 0, 0, 0.55));
 	}
 
 	.slot-avatar {

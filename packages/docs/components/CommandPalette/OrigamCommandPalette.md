@@ -118,6 +118,7 @@ and `fontFamily` is a project-level setting configured once on `OrigamApp`.
 | `closeOnSelect` | `boolean` | `true` | Close the palette automatically when a command is selected. |
 | `closeOnEscape` | `boolean` | `true` | Close on `Escape`. |
 | `closeOnBackdrop` | `boolean` | `true` | Close when the user clicks the backdrop. |
+| `attach` | `boolean \| string \| Element` | `false` (→ `document.body`) | Teleport target, resolved through `useTeleport()` — same semantics as `OrigamOverlay.attach`. `true` renders in place; a CSS selector string or an `Element` teleports there instead of `document.body`. |
 | `fontSize` | `TFontSize` | — | Font size token applied to both `__input` and `__group-title` surfaces. |
 
 ## Events

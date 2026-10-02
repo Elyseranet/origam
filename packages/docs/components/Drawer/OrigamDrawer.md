@@ -74,6 +74,23 @@ Pass `scrim` (boolean or color) for the backdrop shown in temporary mode.
 </template>
 ```
 
+## Layout / teleport — `push`, `clipped`, `attach`
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `push` | `boolean \| null` | `null` (derived from `permanent`) | Whether the drawer reserves space in the layout grid (pushes the adjacent toolbar / main / footer) or overlays them. |
+| `clipped` | `boolean \| null` | `null` (derived from HTML order) | Whether the drawer slots below a top-anchored `AppBar` or extends full height. |
+| `attach` | `boolean \| string \| Element \| null` | `null` | Teleport target, resolved through the shared `useTeleport()` — the same composable `OrigamOverlay` consumes. Unlike the rest of the Overlay family, `OrigamDrawer`'s own default is **not** `document.body`: it teleports into its `<OrigamLayout>` ancestor's wrapper (or renders inline when there is no ancestor — the "orphan" case). `attach` only overrides that when set EXPLICITLY — `null` (the default) keeps the layout-wrapper / orphan-inline behaviour. `true` renders in place, bypassing both the layout teleport and the orphan fallback. `false` escapes to `document.body`, same as the rest of the Overlay family. A CSS selector `string` or an `Element` teleports there instead of the layout wrapper. |
+
+All three share the same device: declared as `… | null` and defaulted to `null` in `withDefaults`, so Vue's boolean-prop casting — which would otherwise force an unset boolean/union prop to `false` — never overrides the "not set" state.
+
+```vue
+<template>
+    <!-- escapes the OrigamLayout wrapper entirely -->
+    <OrigamDrawer attach="#my-portal-target">…</OrigamDrawer>
+</template>
+```
+
 ## Slots
 
 | Slot | Description |

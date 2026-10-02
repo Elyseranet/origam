@@ -14,6 +14,7 @@
 					spacing: '12px',
 					direction: undefined,
 					tag: 'div',
+					attach: '',
 					intent: 'info',
 					dismissible: true
 				})"
@@ -38,6 +39,7 @@
 							:spacing="state.spacing"
 							:direction="state.direction || undefined"
 							:tag="state.tag"
+							:attach="state.attach"
 					/>
 				</div>
 			</template>
@@ -54,12 +56,37 @@
 				</StoryGroup>
 				<StoryGroup title="Layout">
 					<HstSelect v-model="state.tag" title="tag" :options="TAG_OPTIONS"/>
+					<HstText   v-model="state.attach" title="Attach (CSS selector)"/>
 				</StoryGroup>
 				<StoryGroup title="Notification">
 					<HstSelect   v-model="state.intent"      title="intent"      :options="INTENT_OPTIONS"/>
 					<HstCheckbox v-model="state.dismissible" title="dismissible"/>
 				</StoryGroup>
 			</template>
+		</Variant>
+
+		<Variant title="Prop - attach">
+			<div class="story-shell">
+				<div class="story-row">
+					<origam-btn
+							text="Notify (attach to local target)"
+							@click="attachNotify()"
+					/>
+				</div>
+				<div
+						id="snackbar-group-attach-target"
+						class="story-attach-target"
+						data-cy="snackbar-group-attach-target"
+				>
+					local teleport target (#snackbar-group-attach-target)
+				</div>
+				<origam-snackbar-group
+						id="attach-demo"
+						attach="#snackbar-group-attach-target"
+						data-cy="snackbar-group-attached"
+						location="bottom-right"
+				/>
+			</div>
 		</Variant>
 
 		<Variant
@@ -72,6 +99,7 @@
 					spacing: '12px',
 					direction: undefined,
 					tag: 'div',
+					attach: '',
 					intent: 'info',
 					dismissible: true
 				})"
@@ -96,6 +124,7 @@
 							:spacing="state.spacing"
 							:direction="state.direction || undefined"
 							:tag="state.tag"
+							:attach="state.attach"
 					/>
 				</div>
 			</template>
@@ -112,6 +141,7 @@
 					<HstSelect v-model="state.location"        title="location"  :options="LOCATION_OPTIONS"/>
 					<HstSelect v-model="state.direction"       title="direction" :options="DIRECTION_OPTIONS"/>
 					<HstSelect v-model="state.tag"             title="tag"       :options="TAG_OPTIONS"/>
+					<HstText   v-model="state.attach"          title="Attach (CSS selector)"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -193,6 +223,18 @@
 
 		stack.dismissAll()
 	}
+
+	const attachNotify = () => {
+		const stack = useSnackbarGroup({ id: 'attach-demo' })
+
+		stack.notify({
+			title: 'Attached',
+			message: 'This stack teleports into the local target below, not document.body.',
+			intent: 'info'
+		})
+
+		logEvent('notify', { id: 'attach-demo' })
+	}
 </script>
 
 <style scoped>
@@ -209,6 +251,16 @@
 		gap: 12px;
 		align-items: center;
 		flex-wrap: wrap;
+	}
+
+	.story-attach-target {
+		position: relative;
+		min-height: 120px;
+		padding: 12px;
+		border: 1px dashed var(--origam-color__border---subtle, rgba(0, 0, 0, 0.2));
+		border-radius: 8px;
+		font: 0.8125rem/1.4 system-ui, sans-serif;
+		color: var(--origam-color__text---secondary, rgba(0, 0, 0, 0.55));
 	}
 </style>
 

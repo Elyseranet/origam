@@ -102,6 +102,7 @@ to keep it visible).
 | `spacing` | `string \| number` | `'12px'` | Gap between stacked items. |
 | `direction` | `TSnackbarGroupDirection` | auto | `'top-down'` for `top-*` locations, `'bottom-up'` for `bottom-*` locations. Override explicitly when needed. |
 | `tag` | `string` | `'div'` | Root tag for the region. |
+| `attach` | `boolean \| string \| Element` | `false` (→ `document.body`) | Teleport target, resolved through `useTeleport()` — same semantics as `OrigamOverlay.attach`. `true` renders in place; a CSS selector string or an `Element` teleports there instead of `document.body`. |
 
 The component teleports to `document.body` so its position is independent
 of any parent overflow / transform context.
