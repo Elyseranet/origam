@@ -919,7 +919,7 @@
             --origam-btn---min-height: var(--nav-rail---target, 44px);
             --origam-btn---height: var(--nav-rail---target, 44px);
             --origam-btn---padding-inline: 0;
-            --origam-btn---font-size: var(--origam-font-size---xs, 0.75rem);
+            --origam-btn---font-size: var(--origam-font__size---xs, 0.75rem);
             --origam-btn---font-weight: 600;
             inline-size: 100%;
             min-inline-size: var(--nav-rail---target, 44px);
@@ -938,7 +938,7 @@
 
         &__badge {
             display: block;
-            font-size: var(--origam-font-size---xs, 0.625rem);
+            font-size: var(--origam-font__size---xs, 0.625rem);
             font-weight: 500;
             color: var(--origam-color__text---secondary, #525252);
             line-height: 1.1;
@@ -946,7 +946,7 @@
 
         &__rule {
             --origam-divider---opacity: 1;
-            --origam-divider---color: var(--origam-color__border---ghost, rgba(0, 0, 0, 0.08));
+            --origam-divider---color: var(--origam-color__border---subtle, rgba(0, 0, 0, 0.08));
             margin-block: var(--nav-rail---gap, 4px);
         }
 
@@ -991,18 +991,18 @@
             align-items: center;
             gap: var(--origam-space---2, 0.5rem);
             padding: var(--origam-space---3, 0.75rem);
-            border-block-end: 1px solid var(--origam-color__border---ghost, rgba(0, 0, 0, 0.08));
+            border-block-end: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.08));
         }
 
         &__title {
-            --origam-title---font-size: var(--origam-font-size---sm, 0.875rem);
+            --origam-title---font-size: var(--origam-font__size---sm, 0.875rem);
             --origam-title---font-weight: 700;
             flex: 1 1 auto;
             min-inline-size: 0;
         }
 
         &__count {
-            font-size: var(--origam-font-size---xs, 0.75rem);
+            font-size: var(--origam-font__size---xs, 0.75rem);
             color: var(--origam-color__text---secondary, #525252);
         }
 
@@ -1016,12 +1016,12 @@
 
         &__filter {
             padding: var(--origam-space---3, 0.75rem);
-            border-block-end: 1px solid var(--origam-color__border---ghost, rgba(0, 0, 0, 0.08));
+            border-block-end: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.08));
         }
 
         &__hint {
             margin: var(--origam-space---1, 0.25rem) 0 0;
-            font-size: var(--origam-font-size---xs, 0.75rem);
+            font-size: var(--origam-font__size---xs, 0.75rem);
             color: var(--origam-color__text---secondary, #525252);
         }
 
@@ -1035,7 +1035,7 @@
         &__state {
             margin: 0;
             padding: var(--origam-space---3, 0.75rem);
-            font-size: var(--origam-font-size---sm, 0.875rem);
+            font-size: var(--origam-font__size---sm, 0.875rem);
             color: var(--origam-color__text---secondary, #525252);
         }
 
@@ -1044,7 +1044,7 @@
         }
 
         &__group-title {
-            --origam-title---font-size: var(--origam-font-size---xs, 0.75rem);
+            --origam-title---font-size: var(--origam-font__size---xs, 0.75rem);
             --origam-title---font-weight: 600;
             --origam-title---color: var(--origam-color__text---secondary, #525252);
             padding-inline: var(--origam-space---2, 0.5rem);
@@ -1064,13 +1064,13 @@
             justify-content: space-between;
             gap: var(--origam-space---2, 0.5rem);
             padding: var(--origam-space---2, 0.5rem);
-            border-block-start: 1px solid var(--origam-color__border---ghost, rgba(0, 0, 0, 0.08));
+            border-block-start: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.08));
         }
 
         &__foot-link {
             --origam-btn---min-height: var(--nav-rail---target, 44px);
             --origam-btn---height: var(--nav-rail---target, 44px);
-            --origam-btn---font-size: var(--origam-font-size---xs, 0.75rem);
+            --origam-btn---font-size: var(--origam-font__size---xs, 0.75rem);
         }
     }
 
