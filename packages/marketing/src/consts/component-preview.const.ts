@@ -419,7 +419,43 @@ export const COMPONENT_PREVIEW_ADAPTERS: Record<string, IComponentPreviewAdapter
     'data-table-headers': REASON_NEEDS_PARENT,
     'data-table-headers-cell': REASON_NEEDS_PARENT,
     'data-table-headers-cell-mobile': REASON_NEEDS_PARENT,
-    'data-table-row': REASON_NEEDS_PARENT,
+    /* Pilote de la capacité `parentEnvelope` (#728 temps 2) — `item` est un
+     * `IDataTableItem` déjà NORMALISÉ (`key`/`index`/`raw`/`columns`/`type`),
+     * pas l'objet brut : vérifié dans `data-table-row.interface.ts` et dans
+     * `OrigamDataTableRow.vue` (`getObjectValueByPath(props.item?.columns,
+     * column.key)` pour la cellule, `props.item?.raw` pour le scope de
+     * slot). La table parente fournit `columns` via `useHeaders()` à partir
+     * de SES propres `headers`/`items` (injectées, indépendantes de cet
+     * `item` unique) ; `useSelection()` / `useExpanded()` / `useSort()` sont
+     * eux aussi appelés sans condition par `<OrigamDataTableRow>` et exigent
+     * donc tous les quatre un ancêtre `<origam-data-table>` réel — slot
+     * `body`, qui remplace le rendu automatique des lignes SANS retirer
+     * `<thead>` (`!hideDefaultHeader` est un bloc indépendant). */
+    'data-table-row': {
+        parentEnvelope: {
+            tag: 'origam-data-table',
+            props: {
+                headers: [
+                    { key: 'name', title: 'Name' },
+                    { key: 'role', title: 'Role' },
+                    { key: 'seats', title: 'Seats', align: 'end' }
+                ],
+                items: [{ name: 'Ada Lovelace', role: 'Owner', seats: 4 }]
+            },
+            slot: 'body'
+        },
+        previewProps: {
+            item: {
+                key: 'ada-lovelace',
+                index: 0,
+                value: 'ada-lovelace',
+                type: 'item',
+                selectable: true,
+                raw: { name: 'Ada Lovelace', role: 'Owner', seats: 4 },
+                columns: { name: 'Ada Lovelace', role: 'Owner', seats: 4 }
+            }
+        }
+    },
     'data-table-rows': REASON_NEEDS_PARENT,
     'expansion-panel': REASON_NEEDS_PARENT,
     'expansion-panel-content': REASON_NEEDS_PARENT,
@@ -433,7 +469,22 @@ export const COMPONENT_PREVIEW_ADAPTERS: Record<string, IComponentPreviewAdapter
     'carousel-item': REASON_NEEDS_PARENT,
     'parallax-element': REASON_NEEDS_PARENT,
     'parallax-layer': REASON_NEEDS_PARENT,
-    tab: REASON_NEEDS_PARENT,
+    /* Second pilote de la capacité `parentEnvelope` (#728 temps 2) —
+     * `<OrigamTab>` s'auto-enregistre via `useGroupItem(props,
+     * ORIGAM_TABS_KEY)` (vérifié dans `OrigamTab.vue`), qui lève sans
+     * ancêtre `<origam-tabs>`. Contrairement à `data-table-row`, l'injection
+     * ici est un groupe de SÉLECTION simple (pas de colonnes/headers) —
+     * exerce donc un mécanisme structurellement différent du premier
+     * pilote, comme demandé. Slot `default` (celui de `<origam-tabs>`),
+     * donc le champ `slot` est omis. */
+    tab: {
+        parentEnvelope: {
+            tag: 'origam-tabs',
+            props: { modelValue: 'one' }
+        },
+        previewProps: { value: 'one' },
+        slotText: 'Tab one'
+    },
     'tab-panel': REASON_NEEDS_PARENT,
     'bracket-competitor': REASON_NEEDS_PARENT,
     'bracket-match': REASON_NEEDS_PARENT,

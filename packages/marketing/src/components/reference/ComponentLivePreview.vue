@@ -9,35 +9,27 @@
         </p>
 
         <nuxt-error-boundary v-else>
-            <!-- ⛔ Deux branches, pas un `<template #default>` conditionnel :
-                 un slot DÉCLARÉ est un slot FOURNI, même vide. Les composants
-                 dont le slot par défaut REMPLACE un visuel porté par les props
-                 (l'icône d'`avatar`, les `items` de `breadcrumb`) rendaient
-                 alors un wrapper vide — mesuré : `<div
-                 class="origam-avatar__wrapper"> </div>`, icône absente. Quand
-                 il n'y a rien à mettre dedans, on ne passe pas de slot. -->
             <component
-                :is="tag"
-                v-if="hasSlotContent"
-                v-bind="instanceProps"
+                :is="parentEnvelope.tag"
+                v-if="parentEnvelope"
+                v-bind="parentEnvelope.props"
             >
-                <template #default>
-                    <component
-                        :is="child.tag"
-                        v-for="(child, index) in children"
-                        :key="index"
-                        v-bind="child.props"
-                    >
-                        <template #default>{{ child.text }}</template>
-                    </component>
-                    {{ slotText }}
+                <template #[parentEnvelopeSlot]>
+                    <component-live-preview-instance
+                        :tag="tag"
+                        :instance-props="instanceProps"
+                        :children="children"
+                        :slot-text="slotText"
+                    />
                 </template>
             </component>
 
-            <component
-                :is="tag"
+            <component-live-preview-instance
                 v-else
-                v-bind="instanceProps"
+                :tag="tag"
+                :instance-props="instanceProps"
+                :children="children"
+                :slot-text="slotText"
             />
 
             <template #error="{ error }">
@@ -68,11 +60,14 @@
     import { useT } from '~/composables/useT'
     import {
         previewChildrenFor,
+        previewParentEnvelopeFor,
         previewPropsFor,
         previewSlotTextFor,
         previewTagFor,
         previewUnavailableReasonFor
     } from '~/utils/component-preview.util'
+
+    import ComponentLivePreviewInstance from '~/components/reference/ComponentLivePreviewInstance.vue'
 
     import type { IComponentLivePreviewProps } from '~/interfaces/component-live-preview.interface'
 
@@ -116,15 +111,25 @@
 
     const instanceDataCy = computed(() => `playground-${props.dataCySuffix}-${props.slug}`)
 
-    /** Y a-t-il quelque chose à mettre dans le slot par défaut ? */
-    const hasSlotContent = computed(() => children.value.length > 0 || slotText.value !== '')
-
     /** Attributs communs aux deux branches de rendu (avec / sans slot). */
     const instanceProps = computed(() => ({
         ...mergedProps.value,
         'aria-label': props.instanceAriaLabel,
         'data-cy': instanceDataCy.value
     }))
+
+    /*********************************************************
+     * Enveloppe parente minimale
+     *
+     * @description
+     * Certains sous-composants (`tab`, `data-table-row`, …) lèvent au montage
+     * s'ils ne sont pas descendants d'un vrai parent du DS — voir
+     * `IComponentPreviewParentEnvelope`. `null` pour l'immense majorité des
+     * slugs, qui se montent à la racine comme avant.
+     ********************************************************/
+    const parentEnvelope = computed(() => previewParentEnvelopeFor(props.slug))
+
+    const parentEnvelopeSlot = computed(() => parentEnvelope.value?.slot ?? 'default')
 
     /*********************************************************
      * Replis honnêtes
