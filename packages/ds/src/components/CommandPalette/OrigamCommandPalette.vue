@@ -293,7 +293,7 @@
 	 * consumes — deferred into a `computed` (never read eagerly in
 	 * `setup()`) so a themed `attach` value is honoured.
 	 ********************************************************/
-	const { teleportTarget } = useTeleport(computed(() => props.attach ?? false))
+	const { teleportTarget } = useTeleport(computed(() => props.attach || false))
 
 	/*********************************************************
 	 * IDs & refs

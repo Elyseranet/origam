@@ -398,7 +398,7 @@
 	 * `null` because `hasExplicitAttach` already excludes that case.
 	 ********************************************************/
 	const hasExplicitAttach = computed(() => props.attach !== null)
-	const { teleportTarget: attachTarget } = useTeleport(computed(() => props.attach ?? false))
+	const { teleportTarget: attachTarget } = useTeleport(computed(() => props.attach || false))
 
 	const teleportDisabled = computed(() => {
 		return hasExplicitAttach.value ? !attachTarget.value : isLayoutOrphan.value

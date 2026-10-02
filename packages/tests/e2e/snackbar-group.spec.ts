@@ -272,6 +272,65 @@ test.describe('OrigamSnackbarGroup — Auto-dismiss timing', () => {
     })
 })
 
+test.describe('OrigamSnackbarGroup — Prop: attach (#attach-harmonisation)', () => {
+    test('attach="#selector" teleports the stack as a descendant of that target, not document.body', async ({ page }) => {
+        await openVariant(page, 'Prop - attach')
+        const sandbox = sandboxOf(page)
+
+        const notify = sandbox.getByText('Notify (attach to local target)', { exact: true }).first()
+        await expect(notify).toBeVisible({ timeout: 8000 })
+        await notify.click()
+        await page.waitForTimeout(300)
+
+        const stack = sandbox.locator('[data-cy="snackbar-group-attached"]')
+        await expect(stack).toBeVisible({ timeout: 4000 })
+
+        // useTeleport inserts a `.origam-overlay-container` directly inside
+        // the resolved target and teleports into THAT container — so the
+        // grandparent (not the immediate parent) is the resolved target.
+        const grandparentId = await stack.evaluate((el) => el.parentElement?.parentElement?.id)
+        expect(grandparentId).toBe('snackbar-group-attach-target')
+
+        const grandparentTag = await stack.evaluate((el) => el.parentElement?.parentElement?.tagName)
+        expect(grandparentTag).not.toBe('BODY')
+    })
+
+    test('the local target element actually contains the teleported stack', async ({ page }) => {
+        await openVariant(page, 'Prop - attach')
+        const sandbox = sandboxOf(page)
+
+        const notify = sandbox.getByText('Notify (attach to local target)', { exact: true }).first()
+        await expect(notify).toBeVisible({ timeout: 8000 })
+        await notify.click()
+        await page.waitForTimeout(300)
+
+        const target = sandbox.locator('#snackbar-group-attach-target')
+        await expect(target).toBeVisible({ timeout: 4000 })
+
+        const containsStack = await target.evaluate((el) => el.querySelector('#origam-snackbar-group-attach-demo') !== null)
+        expect(containsStack).toBe(true)
+    })
+
+    test('default (unset) attach teleports to document.body, not the local target — negative control', async ({ page }) => {
+        await openVariant(page, 'Default')
+        const sandbox = sandboxOf(page)
+
+        await expect(notifyBtn(sandbox)).toBeVisible({ timeout: 8000 })
+        await notifyBtn(sandbox).click()
+        await page.waitForTimeout(300)
+
+        const host = sandbox.locator('#origam-snackbar-group-playground').first()
+        await expect(host).toBeVisible({ timeout: 4000 })
+
+        // `useTeleport` inserts a `.origam-overlay-container` directly
+        // inside the resolved target and teleports into THAT container —
+        // so the GRANDPARENT (not the immediate parent) is the resolved
+        // target, here the default `document.body`.
+        const grandparentTag = await host.evaluate((el) => el.parentElement?.parentElement?.tagName)
+        expect(grandparentTag).toBe('BODY')
+    })
+})
+
 test.describe('OrigamSnackbarGroup — ARIA region', () => {
     test('stack root carries role="region"', async ({ page }) => {
         await openVariant(page, 'Default')
