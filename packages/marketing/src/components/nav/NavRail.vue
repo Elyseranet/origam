@@ -27,36 +27,29 @@
                         :key="family.kind"
                         class="nav-rail__slot"
                     >
-                        <origam-tooltip
-                            location="left center"
-                            :text="familyTooltip(family)"
+                        <origam-btn
+                            variant="text"
+                            :elevation="0"
+                            rounded="small"
+                            class="nav-rail__btn"
+                            :class="{ 'nav-rail__btn--here': isCurrentFamily(family) }"
+                            :title="familyTooltip(family)"
+                            :aria-label="familyAriaLabel(family)"
+                            :aria-expanded="isFamilyOpen(family)"
+                            :aria-current="isCurrentFamily(family) ? 'true' : undefined"
+                            :aria-controls="panelControlsId"
+                            :data-cy="`rail-family-${family.kind}`"
+                            @click="handleFamilyClick(family, $event)"
                         >
-                            <template #activator="{ props: tipProps }">
-                                <origam-btn
-                                    variant="text"
-                                    :elevation="0"
-                                    rounded="small"
-                                    class="nav-rail__btn"
-                                    :class="{ 'nav-rail__btn--here': isCurrentFamily(family) }"
-                                    :aria-label="familyAriaLabel(family)"
-                                    :aria-expanded="isFamilyOpen(family)"
-                                    :aria-current="isCurrentFamily(family) ? 'true' : undefined"
-                                    :aria-controls="panelControlsId"
-                                    :data-cy="`rail-family-${family.kind}`"
-                                    v-bind="tipProps"
-                                    @click="handleFamilyClick(family, $event)"
-                                >
-                                    <template #default>
-                                        <span class="nav-rail__short">{{ familyShort(family) }}</span>
-                                        <span
-                                            v-if="countFor(family.kind) !== null"
-                                            class="nav-rail__badge"
-                                            aria-hidden="true"
-                                        >{{ countFor(family.kind) }}</span>
-                                    </template>
-                                </origam-btn>
+                            <template #default>
+                                <span class="nav-rail__short">{{ familyShort(family) }}</span>
+                                <span
+                                    v-if="countFor(family.kind) !== null"
+                                    class="nav-rail__badge"
+                                    aria-hidden="true"
+                                >{{ countFor(family.kind) }}</span>
                             </template>
-                        </origam-tooltip>
+                        </origam-btn>
                     </li>
                 </ul>
 
@@ -64,46 +57,32 @@
 
                 <ul class="nav-rail__list">
                     <li class="nav-rail__slot">
-                        <origam-tooltip
-                            location="left center"
-                            :text="pagesLabel"
-                        >
-                            <template #activator="{ props: tipProps }">
-                                <origam-btn
-                                    variant="text"
-                                    :elevation="0"
-                                    rounded="small"
-                                    class="nav-rail__btn"
-                                    :icon="MDI_ICONS.MENU"
-                                    :aria-label="pagesAriaLabel"
-                                    :aria-expanded="isPagesOpen"
-                                    :aria-controls="panelControlsId"
-                                    data-cy="rail-pages"
-                                    v-bind="tipProps"
-                                    @click="handlePagesClick"
-                                />
-                            </template>
-                        </origam-tooltip>
+                        <origam-btn
+                            variant="text"
+                            :elevation="0"
+                            rounded="small"
+                            class="nav-rail__btn"
+                            :icon="MDI_ICONS.MENU"
+                            :title="pagesLabel"
+                            :aria-label="pagesAriaLabel"
+                            :aria-expanded="isPagesOpen"
+                            :aria-controls="panelControlsId"
+                            data-cy="rail-pages"
+                            @click="handlePagesClick"
+                        />
                     </li>
                     <li class="nav-rail__slot">
-                        <origam-tooltip
-                            location="left center"
-                            :text="searchLabel"
-                        >
-                            <template #activator="{ props: tipProps }">
-                                <origam-btn
-                                    variant="text"
-                                    :elevation="0"
-                                    rounded="small"
-                                    class="nav-rail__btn"
-                                    :icon="MDI_ICONS.MAGNIFY"
-                                    :aria-label="searchAriaLabel"
-                                    data-cy="rail-search"
-                                    v-bind="tipProps"
-                                    @click="handleSearchClick"
-                                />
-                            </template>
-                        </origam-tooltip>
+                        <origam-btn
+                            variant="text"
+                            :elevation="0"
+                            rounded="small"
+                            class="nav-rail__btn"
+                            :icon="MDI_ICONS.MAGNIFY"
+                            :title="searchLabel"
+                            :aria-label="searchAriaLabel"
+                            data-cy="rail-search"
+                            @click="handleSearchClick"
+                        />
                     </li>
                 </ul>
                 </template>
@@ -961,7 +940,7 @@
             display: block;
             font-size: var(--origam-font-size---xs, 0.625rem);
             font-weight: 500;
-            opacity: 0.7;
+            color: var(--origam-color__text---secondary, #525252);
             line-height: 1.1;
         }
 
@@ -1153,15 +1132,15 @@
     .nav-rail__panel.nav-rail__panel--sheet .origam-drawer__content {
         display: flex;
         flex-direction: column;
-        block-size: 100%;
         min-block-size: 0;
     }
 
-    .nav-rail__panel.nav-rail__panel--sheet .nav-rail__panel-inner {
-        block-size: 100%;
+    .nav-rail__panel.nav-rail__panel--drawer .nav-rail__body {
+        max-block-size: 70vh;
     }
 
     .nav-rail__panel.nav-rail__panel--sheet .nav-rail__body {
+        max-block-size: 55vh;
         padding-block-end: calc(
             var(--nav-rail---fab-size, 56px) + var(--nav-rail---gutter, 16px) * 2
         );
