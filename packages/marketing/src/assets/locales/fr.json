@@ -1216,6 +1216,9 @@
             "empty": "Aucun résultat. Entrée pour chercher dans tout le catalogue.",
             "error": "Le catalogue est indisponible. Ouvrez la page d’index.",
             "loading": "Chargement du catalogue…"
+        },
+        "tooltip": {
+            "family": "{name} · {count}"
         }
     },
     "roadmap": {

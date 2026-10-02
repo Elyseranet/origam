@@ -25,6 +25,29 @@ export const NAV_RAIL_GUTTER = 16
 export const NAV_RAIL_PANEL_WIDTH = 320
 
 /**
+ * Épaisseur de la feuille basse du mobile, en FRACTION de la hauteur de la
+ * fenêtre.
+ *
+ * ⛔ Elle passe par la prop `width` d'`OrigamDrawer`, et ce n'est pas une
+ * erreur de nom : pour un tiroir `location="bottom"`, `width` est l'ÉPAISSEUR
+ * du tiroir le long de son axe, donc sa hauteur à l'écran.
+ *
+ * Mesuré le 2026-10-02 : `OrigamDrawer` écrit sa géométrie en style INLINE
+ * (`bottom / z-index / transform / position / height / left / width`), donc
+ * aucune règle de feuille ne peut la surcharger sans `!important`. Trois
+ * tentatives successives — le token `--origam-drawer---height`, un
+ * `block-size` sur ma propre classe, puis un `block-size: 100%` sur le
+ * contenu — sont toutes restées sans effet, le tiroir gardant 256 px. La
+ * géométrie appartient au composant : on la pilote par sa prop, pas contre
+ * elle.
+ *
+ * ⚠️ Et la prop veut un NOMBRE : `width="85vh"` a été rendu `height: 85px`,
+ * l'unité silencieusement perdue (mesuré). On calcule donc la valeur en
+ * pixels depuis `useDisplay().height`, qui est réactive au redimensionnement.
+ */
+export const NAV_RAIL_SHEET_HEIGHT_RATIO = 0.85
+
+/**
  * Décalage du panneau par rapport au bord droit, en px.
  * = largeur du rail + deux gouttières, pour que le panneau se pose À GAUCHE
  * du rail sans le recouvrir.

@@ -1216,6 +1216,9 @@
             "empty": "Nothing here. Press Enter to search the whole catalogue.",
             "error": "The catalogue is unavailable. Open the index page instead.",
             "loading": "Loading the catalogue…"
+        },
+        "tooltip": {
+            "family": "{name} · {count}"
         }
     },
     "roadmap": {

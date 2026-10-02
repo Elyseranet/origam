@@ -3,13 +3,24 @@
         <div
             class="nav-rail-root"
             :style="railVars"
+            @keydown="handleRootKeydown"
         >
-            <nav
+            <origam-sheet
                 v-if="showRail"
+                tag="nav"
                 class="nav-rail"
+                position="fixed"
+                location="right center"
+                :width="NAV_RAIL_WIDTH"
+                :max-height="railMaxHeight"
+                :margin-right="NAV_RAIL_GUTTER"
+                rounded="lg"
+                elevation="md"
+                border
                 :aria-label="railAriaLabel"
                 data-cy="quick-rail"
             >
+                <template #default>
                 <ul class="nav-rail__list">
                     <li
                         v-for="family in NAV_RAIL_FAMILIES"
@@ -30,7 +41,7 @@
                                     :aria-label="familyAriaLabel(family)"
                                     :aria-expanded="isFamilyOpen(family)"
                                     :aria-current="isCurrentFamily(family) ? 'true' : undefined"
-                                    aria-controls="nav-rail-panel"
+                                    :aria-controls="panelControlsId"
                                     :data-cy="`rail-family-${family.kind}`"
                                     v-bind="tipProps"
                                     @click="handleFamilyClick(family, $event)"
@@ -66,7 +77,7 @@
                                     :icon="MDI_ICONS.MENU"
                                     :aria-label="pagesAriaLabel"
                                     :aria-expanded="isPagesOpen"
-                                    aria-controls="nav-rail-panel"
+                                    :aria-controls="panelControlsId"
                                     data-cy="rail-pages"
                                     v-bind="tipProps"
                                     @click="handlePagesClick"
@@ -95,7 +106,8 @@
                         </origam-tooltip>
                     </li>
                 </ul>
-            </nav>
+                </template>
+            </origam-sheet>
 
             <origam-btn
                 v-if="showFab"
@@ -104,7 +116,7 @@
                 rounded="pill"
                 :aria-label="fabAriaLabel"
                 :aria-expanded="isOpen"
-                aria-controls="nav-rail-panel"
+                :aria-controls="panelControlsId"
                 data-cy="quick-rail-fab"
                 @click="handleFabClick"
             >
@@ -342,6 +354,7 @@
         NAV_RAIL_PANEL_OFFSET,
         NAV_RAIL_PANEL_WIDTH,
         NAV_RAIL_RESULT_CAP,
+        NAV_RAIL_SHEET_HEIGHT_RATIO,
         NAV_RAIL_WIDTH
     } from '~/consts/nav-rail.const'
     import { useLocaleHref } from '~/composables/useLocaleHref'
@@ -375,6 +388,7 @@
 
     const {
         tier,
+        height: viewportHeight,
         currentFamily,
         currentSlug,
         countFor,
@@ -431,6 +445,19 @@
      ********************************************************/
     const panelComponent = computed(() => (tier.value === 'rail' ? 'origam-sheet' : 'origam-drawer'))
 
+    /**
+     * Épaisseur de la feuille basse, en pixels.
+     *
+     * Elle passe par la prop `width` du tiroir — pour un `location="bottom"`,
+     * `width` est l'épaisseur le long de l'axe, donc la hauteur à l'écran
+     * (vérifié : la passer fait tomber la hauteur rendue de 256 px à la
+     * valeur demandée). La prop veut un NOMBRE : `'85vh'` a été rendu
+     * `height: 85px`, l'unité perdue en silence.
+     */
+    const sheetHeight = computed(
+        () => Math.round(viewportHeight.value * NAV_RAIL_SHEET_HEIGHT_RATIO)
+    )
+
     const panelTierClass = computed(() => `nav-rail__panel--${tier.value}`)
 
     const panelProps = computed<Record<string, unknown>>(() => {
@@ -445,7 +472,7 @@
                 elevation: 'lg',
                 border: true,
                 bgColor: 'surface',
-                ariaLabelledby: 'nav-rail-panel-title'
+                'aria-labelledby': 'nav-rail-panel-title'
             }
         }
 
@@ -454,9 +481,9 @@
             location: tier.value === 'sheet' ? 'bottom' : 'right',
             temporary: true,
             scrim: true,
-            width: tier.value === 'sheet' ? undefined : NAV_RAIL_PANEL_WIDTH,
+            width: tier.value === 'sheet' ? sheetHeight.value : NAV_RAIL_PANEL_WIDTH,
             disableRouteWatcher: true,
-            ariaLabelledby: 'nav-rail-panel-title'
+            'aria-labelledby': 'nav-rail-panel-title'
         }
     })
 
@@ -474,6 +501,31 @@
         '--nav-rail---width': `${NAV_RAIL_WIDTH}px`,
         '--nav-rail---gutter': `${NAV_RAIL_GUTTER}px`
     }))
+
+    /**
+     * `convertToUnit` laisse passer une chaîne non numérique telle quelle
+     * (`utils/Commons/commons.util.ts`), donc un `calc()` traverse les props
+     * de dimension du DS sans dommage — c'est ce qui permet d'exprimer la
+     * hauteur maximale du rail en props plutôt qu'en CSS.
+     */
+    const railMaxHeight = computed(
+        () => `calc(100vh - ${NAV_RAIL_GUTTER * 2}px)`
+    )
+
+    /**
+     * ⛔ `aria-controls` ne doit DÉSIGNER QUE ce qui existe.
+     *
+     * Mesuré le 2026-10-02 : sur les deux paliers où le panneau est un
+     * `origam-drawer`, le tiroir est TÉLÉPORTÉ et absent du DOM tant qu'il
+     * est fermé — `#nav-rail-panel` n'existait donc pas, et les 9 cibles du
+     * rail pointaient toutes vers un identifiant inexistant (9 références
+     * mortes relevées par la sonde, 1 sur le palier mobile).
+     *
+     * `aria-expanded` seul est valide et courant sur un motif de
+     * divulgation ; un `aria-controls` qui ne résout pas, lui, est de l'ARIA
+     * invalide. On ne l'émet donc que panneau ouvert.
+     */
+    const panelControlsId = computed(() => (isOpen.value ? 'nav-rail-panel' : undefined))
 
     /*********************************************************
      * Libellés
@@ -773,7 +825,24 @@
         lastTrigger.value = target instanceof HTMLElement ? target : null
     }
 
-    const focusFilter = async () => {
+    /**
+     * ⛔ Le champ de filtre n'existe pas encore à l'instant du clic.
+     *
+     * Mesuré le 2026-10-02 : appeler ce focus juste après l'ouverture ne
+     * faisait RIEN (`filterFocused: false` sur les trois paliers, le focus
+     * restant sur le bouton déclencheur). La raison est que le champ n'est
+     * rendu que lorsque `status === 'ready'`, c'est-à-dire après le retour
+     * réseau du catalogue — un `nextTick` est résolu bien avant.
+     *
+     * Conséquence en cascade : aucun de mes gestionnaires clavier n'était
+     * atteignable, donc ⎋ ne fermait pas et ↑/↓ ne déplaçaient rien. Les
+     * trois défauts n'en faisaient qu'un.
+     *
+     * On attend donc que le champ APPARAISSE, par un `watch` sur l'état
+     * d'ouverture et de chargement — pas par un délai, qui serait un pari
+     * sur la latence du réseau.
+     */
+    const focusFilterWhenReady = async () => {
         await nextTick()
 
         const root = filterRef.value?.$el
@@ -781,10 +850,13 @@
         root?.querySelector<HTMLElement>('input')?.focus()
     }
 
+    watch([isOpen, status], ([open, state]) => {
+        if (open && state === 'ready') void focusFilterWhenReady()
+    })
+
     const handleFamilyClick = (family: INavRailFamily, event: MouseEvent) => {
         rememberTrigger(event)
         openFamilyPanel(family.kind)
-        void focusFilter()
     }
 
     const handlePagesClick = (event: MouseEvent) => {
@@ -797,12 +869,29 @@
 
         if (currentFamily.value) {
             openFamilyPanel(currentFamily.value.kind)
-            void focusFilter()
 
             return
         }
 
         openPagesPanel()
+    }
+
+    /**
+     * ⎋ doit fermer MÊME quand le focus est resté sur le déclencheur.
+     *
+     * Le bouton du rail est hors du panneau, donc un `keydown` posé sur le
+     * panneau seul ne le voit jamais — mesuré : ⎋ ne fermait rien tant que
+     * le focus n'était pas entré dans le panneau. Ce gestionnaire est posé
+     * sur la racine du rail, où l'événement du déclencheur remonte.
+     *
+     * Le panneau garde le sien : le tiroir des petits paliers est TÉLÉPORTÉ
+     * hors de cette racine, donc un ⎋ frappé à l'intérieur n'y remonterait
+     * pas.
+     */
+    const handleRootKeydown = (event: KeyboardEvent) => {
+        if (!isOpen.value) return
+
+        handlePanelKeydown(event)
     }
 
     const handleSearchClick = () => {
@@ -825,22 +914,14 @@
 
 <style scoped lang="scss">
     .nav-rail {
-        position: fixed;
-        inset-inline-end: var(--nav-rail---gutter, 16px);
-        inset-block-start: 50%;
-        transform: translateY(-50%);
+        --origam-sheet---height: fit-content;
+
         z-index: var(--nav-rail---z-index, 1030);
         display: flex;
         flex-direction: column;
         gap: var(--nav-rail---gap, 4px);
-        inline-size: var(--nav-rail---width, 56px);
-        max-block-size: calc(100vh - var(--nav-rail---gutter, 16px) * 2);
         overflow-y: auto;
         padding: var(--nav-rail---padding, 6px);
-        background-color: var(--origam-color__surface---default, #ffffff);
-        border: 1px solid var(--origam-color__border---ghost, rgba(0, 0, 0, 0.08));
-        border-radius: var(--origam-radius---lg, 12px);
-        box-shadow: var(--origam-shadow---md);
 
         &__list {
             list-style: none;
@@ -862,6 +943,7 @@
             --origam-btn---font-size: var(--origam-font-size---xs, 0.75rem);
             --origam-btn---font-weight: 600;
             inline-size: 100%;
+            min-inline-size: var(--nav-rail---target, 44px);
             flex-direction: column;
 
             &--here {
@@ -908,6 +990,14 @@
             padding: 0;
             background-color: var(--nav-rail---scrim-color, rgba(0, 0, 0, 0.32));
             cursor: pointer;
+            opacity: 1;
+            transition-property: opacity;
+            transition-duration: var(--nav-rail---motion-duration, 160ms);
+            transition-timing-function: ease;
+
+            @starting-style {
+                opacity: 0;
+            }
         }
 
         &__panel-inner {
@@ -990,6 +1080,7 @@
 
         &__foot {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
             gap: var(--origam-space---2, 0.5rem);
@@ -1009,25 +1100,71 @@
             display: none;
         }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+        .nav-rail__scrim {
+            transition-duration: 0.01ms;
+
+            @starting-style {
+                opacity: 1;
+            }
+        }
+    }
 </style>
 
 <style lang="scss">
-    .nav-rail__panel.nav-rail__panel--rail {
+    .nav-rail__panel.nav-rail__panel--rail[hidden] {
+        display: none;
+    }
+
+    .nav-rail__panel.nav-rail__panel--rail:not([hidden]) {
+        --origam-sheet---height: fit-content;
+
+        z-index: var(--nav-rail---z-index, 1030);
         display: flex;
         flex-direction: column;
         overflow: hidden;
+        opacity: 1;
+        transition-property: opacity, display, overlay;
+        transition-duration: var(--nav-rail---motion-duration, 160ms);
+        transition-timing-function: ease;
+        transition-behavior: allow-discrete;
+    }
+
+    @starting-style {
+        .nav-rail__panel.nav-rail__panel--rail:not([hidden]) {
+            opacity: 0;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .nav-rail__panel.nav-rail__panel--rail:not([hidden]) {
+            transition-duration: 0.01ms;
+        }
+
+        @starting-style {
+            .nav-rail__panel.nav-rail__panel--rail:not([hidden]) {
+                opacity: 1;
+            }
+        }
     }
 
     .nav-rail__panel.nav-rail__panel--drawer .origam-drawer__content,
     .nav-rail__panel.nav-rail__panel--sheet .origam-drawer__content {
         display: flex;
         flex-direction: column;
+        block-size: 100%;
         min-block-size: 0;
     }
 
-    .nav-rail__panel.nav-rail__panel--sheet {
-        --origam-drawer---height: 85vh;
-        max-block-size: 85vh;
+    .nav-rail__panel.nav-rail__panel--sheet .nav-rail__panel-inner {
+        block-size: 100%;
+    }
+
+    .nav-rail__panel.nav-rail__panel--sheet .nav-rail__body {
+        padding-block-end: calc(
+            var(--nav-rail---fab-size, 56px) + var(--nav-rail---gutter, 16px) * 2
+        );
     }
 
     .nav-rail__panel .origam-list-item {

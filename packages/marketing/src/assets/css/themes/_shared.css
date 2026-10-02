@@ -65,6 +65,13 @@
     --nav-rail---z-index: var(--origam-zIndex---fixed, 1030);
     --nav-rail---scrim-z-index: calc(var(--origam-zIndex---fixed, 1030) - 1);
 
+    /* Duree des deux seules animations du rail (fondu du voile, fondu du
+     * panneau ancre). Un seul canal, themeable, et neutralise sous
+     * `prefers-reduced-motion: reduce` dans `NavRail.vue`. Regle du
+     * proprietaire du 2026-10-02 : animations en CSS uniquement, jamais de
+     * timer JS, et toutes desactivees sous mouvement reduit. */
+    --nav-rail---motion-duration: 160ms;
+
     /* ── Button display tokens (theme-overridable) ───────────────────────── */
     --origam-gradient---btn-primary: none;
     --origam-shadow---btn-primary: rgba(255, 255, 255, 0.20) 0px 1px 0px 0px inset, rgba(124, 58, 237, 0.50) 0px 8px 24px -8px;

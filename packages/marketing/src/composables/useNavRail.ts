@@ -74,7 +74,7 @@ const CATALOG_FAILED = new Set<TReferenceKind>()
 
 export function useNavRail () {
     const route = useRoute()
-    const { xs, sm, width } = useDisplay()
+    const { xs, sm, width, height } = useDisplay()
 
     /* ─── Palier d'affichage ───────────────────────────────────────────────
      * ⛔ `useDisplay().mobile` serait faux ici : son `mobileBreakpoint` par
@@ -298,7 +298,18 @@ export function useNavRail () {
     /** Les entrées réellement rendues — plafonnées, et le plafond est annoncé. */
     const visibleEntries = computed(() => matches.value.slice(0, NAV_RAIL_RESULT_CAP))
 
-    const isCapped = computed(() => matchCount.value > NAV_RAIL_RESULT_CAP)
+    /**
+     * ⛔ Le plafond ne s'applique QU'À la liste plate.
+     *
+     * Mesuré à l'écran le 2026-10-02 : le panneau groupé des composants
+     * annonçait « 50 shown of 94 » alors qu'il rendait bien les 94 entrées,
+     * réparties dans leurs 11 catégories — `visibleEntries` (plafonnée) n'est
+     * consommée qu'en mode plat. Le message était donc faux, et un plafond
+     * annoncé à tort est aussi trompeur qu'un plafond tu.
+     */
+    const isCapped = computed(
+        () => isFlatList.value && matchCount.value > NAV_RAIL_RESULT_CAP
+    )
 
     /** Vrai quand la requête ne rend rien alors que la famille est chargée. */
     const isEmptyResult = computed(
@@ -394,6 +405,7 @@ export function useNavRail () {
         // paliers
         tier,
         width,
+        height,
         // position
         currentFamily,
         currentSlug,
