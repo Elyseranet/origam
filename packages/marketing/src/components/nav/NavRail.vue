@@ -1141,7 +1141,10 @@
 
     .nav-rail__panel.nav-rail__panel--sheet .nav-rail__body {
         max-block-size: 55vh;
-        padding-block-end: calc(
+    }
+
+    .nav-rail__panel.nav-rail__panel--sheet .nav-rail__foot {
+        padding-inline-end: calc(
             var(--nav-rail---fab-size, 56px) + var(--nav-rail---gutter, 16px) * 2
         );
     }
