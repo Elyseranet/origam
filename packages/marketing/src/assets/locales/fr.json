@@ -1155,6 +1155,69 @@
             "reviewed": "Dernière vérification par rapport au code source le 17 septembre 2026."
         }
     },
+    "rail": {
+        "a11y": {
+            "rail": "Navigation rapide du catalogue",
+            "pages": "Pages du site et index des familles",
+            "search": "Chercher dans tout le catalogue",
+            "family": "{name} — {count} entrées",
+            "family_here": "{name} — {count} entrées — vous êtes ici",
+            "family_here_plain": "{name} — vous êtes ici",
+            "filter": "Filtrer {name}"
+        },
+        "close": "Fermer le panneau",
+        "families": {
+            "component": {
+                "short": "Comp"
+            },
+            "composable": {
+                "short": "use"
+            },
+            "const": {
+                "short": "C"
+            },
+            "directive": {
+                "short": "v-"
+            },
+            "enum": {
+                "short": "E"
+            },
+            "interface": {
+                "short": "I"
+            },
+            "type": {
+                "short": "T"
+            },
+            "util": {
+                "short": "fn"
+            }
+        },
+        "filter": {
+            "placeholder": "Filtrer…"
+        },
+        "group": {
+            "other": "Autre"
+        },
+        "hint": {
+            "capped": "{shown} affichées sur {total} — précisez",
+            "keys": "↑ ↓ parcourir · Entrée ouvrir · Échap fermer",
+            "results": "{count} résultats"
+        },
+        "index_link": "Voir tout : {name}",
+        "pages": {
+            "label": "Pages",
+            "more": "Plus"
+        },
+        "search": {
+            "all": "Tout chercher",
+            "label": "Tout chercher"
+        },
+        "state": {
+            "empty": "Aucun résultat. Entrée pour chercher dans tout le catalogue.",
+            "error": "Le catalogue est indisponible. Ouvrez la page d’index.",
+            "loading": "Chargement du catalogue…"
+        }
+    },
     "roadmap": {
         "meta": {
             "title": "Feuille de route · origam design system",

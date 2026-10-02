@@ -352,16 +352,22 @@
      * Global
      *
      * @description
-     * Le rail ne déclare aucune prop : il est monté une seule fois par le
-     * layout et lit tout son état de `useNavRail`. Les trois émissions
-     * servent au layout, qui porte la palette de commandes (`⌘K`) et doit
-     * donc être prévenu quand le rail veut l'ouvrir.
+     * Le rail ne déclare NI prop NI slot, et c'est volontaire : il est monté
+     * une seule fois par le layout, sur toutes les pages, et lit tout son
+     * état de `useNavRail`. Un rail paramétrable par instance n'aurait aucun
+     * second appelant à servir.
+     *
+     * ⛔ `defineProps<Record<string, never>>()` ne compile PAS — le
+     * compilateur SFC répond « Unresolvable type reference or unsupported
+     * built-in utility type » et la page rend un 500 (mesuré). Pour un
+     * composant sans prop, la forme qui compile est l'ABSENCE de l'appel ;
+     * le contrat est documenté ici plutôt que par une déclaration vide.
+     *
+     * Le seul lien avec l'extérieur est l'émission `open-palette` : la
+     * palette de commandes (`⌘K`) vit dans le layout, donc le rail demande
+     * son ouverture au lieu de la posséder.
      ********************************************************/
-    defineProps<Record<string, never>>()
-
     const emits = defineEmits<{ 'open-palette': [] }>()
-
-    defineSlots<Record<string, never>>()
 
     const { t } = useT()
     const { localeHref, navLinkHref } = useLocaleHref()

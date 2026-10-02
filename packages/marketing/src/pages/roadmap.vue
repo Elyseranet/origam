@@ -865,6 +865,19 @@
     .roadmap-measured {
         --origam-chip---background-color: var(--origam-color__surface---sunken);
 
+        /*
+          ⛔ Ce chip porte une PHRASE (« Measured against the repository on
+          25 September 2026 »), pas une etiquette. `OrigamChip` est
+          `white-space: nowrap` par defaut (`OrigamChip.vue:548`) — juste pour
+          une etiquette courte, faux pour une phrase : mesure du 2026-10-02 a
+          400px de large, le chip etait rendu a 390px de large a partir de
+          x=16, donc jusqu'a 406 dans un viewport de 400, et c'etait le SEUL
+          debordement restant de /roadmap (6px). On autorise donc le retour a
+          la ligne et on borne la largeur au conteneur.
+        */
+        max-inline-size: 100%;
+        white-space: normal;
+
         align-self: flex-start;
         margin-block-end: var(--origam-space---5, 1.25rem);
         font-family: var(--origam-font__family---mono, monospace);

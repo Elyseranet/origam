@@ -1155,6 +1155,69 @@
             "reviewed": "Last verified against the source code on 17 September 2026."
         }
     },
+    "rail": {
+        "a11y": {
+            "rail": "Quick catalogue navigation",
+            "pages": "Site pages and family indexes",
+            "search": "Search the whole catalogue",
+            "family": "{name} — {count} entries",
+            "family_here": "{name} — {count} entries — you are here",
+            "family_here_plain": "{name} — you are here",
+            "filter": "Filter {name}"
+        },
+        "close": "Close the panel",
+        "families": {
+            "component": {
+                "short": "Comp"
+            },
+            "composable": {
+                "short": "use"
+            },
+            "const": {
+                "short": "C"
+            },
+            "directive": {
+                "short": "v-"
+            },
+            "enum": {
+                "short": "E"
+            },
+            "interface": {
+                "short": "I"
+            },
+            "type": {
+                "short": "T"
+            },
+            "util": {
+                "short": "fn"
+            }
+        },
+        "filter": {
+            "placeholder": "Filter…"
+        },
+        "group": {
+            "other": "Other"
+        },
+        "hint": {
+            "capped": "{shown} shown of {total} — narrow your search",
+            "keys": "↑ ↓ browse · Enter open · Esc close",
+            "results": "{count} results"
+        },
+        "index_link": "See all {name}",
+        "pages": {
+            "label": "Pages",
+            "more": "More"
+        },
+        "search": {
+            "all": "Search everything",
+            "label": "Search everything"
+        },
+        "state": {
+            "empty": "Nothing here. Press Enter to search the whole catalogue.",
+            "error": "The catalogue is unavailable. Open the index page instead.",
+            "loading": "Loading the catalogue…"
+        }
+    },
     "roadmap": {
         "meta": {
             "title": "Roadmap · origam design system",
