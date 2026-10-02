@@ -2412,6 +2412,21 @@
       min-block-size: 200px;
       padding: var(--origam-space---8, 2rem);
       background: color-mix(in srgb, var(--origam-color__surface---sunken, #f5f5f5) 50%, transparent);
+
+      /*
+       * `contain: layout` makes this box the CONTAINING BLOCK for any
+       * `position: fixed` / `position: absolute` descendant — per the CSS
+       * spec, not a hack. `<OrigamOverlay>`'s root is `position: fixed;
+       * inset: 0` by default (it's meant to be a full-viewport modal
+       * wrapper). Without this, an overlay rendered in place via `attach`
+       * (Dialog, Menu, Tooltip, Snackbar, …) stays a DOM descendant of this
+       * box but paints relative to the real viewport instead — measured in
+       * Chromium: with `attach` alone, the overlay content landed outside
+       * this box's screen rect even though `box.contains(content)` was
+       * true. Adding `contain: layout` here confines it to this box's own
+       * rect. See `component-preview.const.ts`'s "Overlays" section.
+       */
+      contain: layout;
     }
 
     &__generated-code {
