@@ -465,7 +465,17 @@
 
 :root:root[data-theme="cartoon"][data-mode="dark"] .home-themes__chip {
     background-color: #c5e8ff;
-    color:            #1e3a5f;
+    /*
+     * `!important` OBLIGATOIRE, meme raison que le bloc [data-active] plus bas
+     * (voir #28) : OrigamChip pose sa couleur en style INLINE, qui bat une
+     * declaration de feuille quelle que soit sa specificite.
+     *
+     * Mesure 2026-10-02, navigateur, cartoon/dark : sans `!important` le chip
+     * rendait fg=rgb(255,143,163) (#ff8fa3, la primaire cartoon) sur
+     * bg=rgb(197,232,255) — 1.68:1 contre 4.5:1 requis, sur les 8 chips de la
+     * liste de themes.
+     */
+    color:            #1e3a5f !important;
     border-width:     3px !important;
     border-color:     #fffefb !important;
     box-shadow:       3px 3px 0 #fffefb !important;
