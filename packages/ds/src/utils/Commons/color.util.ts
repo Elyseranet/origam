@@ -1,4 +1,4 @@
-import { BCO, BLK_CLMP, BLK_THRS, CIELAB_FORWARD_TRANSFORM, CIELAB_REVERSE_TRANSFORM, COLOR_ACTIVE_MIX_PCT, COLOR_DELTA_Y_MIN, COLOR_HOVER_MIX_PCT, COLOR_INTENTS, COLOR_MAPPERS, COLOR_UTILITY_INTENTS, CSS_COLOR_REGEX, CSS_NAMED_COLORS, GCO, LO_CLIP, LO_CON_FACTOR, LO_CON_OFFSET, LO_CON_THRESH, MAIN_TRC, NORM_BG, NORM_TXT, RCO, REV_BG, REV_TXT, SCALE_B_O_W, SCALE_W_O_B, SRGB_FORWARD_MATRIX, SRGB_FORWARD_TRANSFORM, SRGB_REVERSE_MATRIX, SRGB_REVERSE_TRANSFORM } from '../../consts/Commons/color.const'
+import { BCO, BLK_CLMP, BLK_THRS, CIELAB_FORWARD_TRANSFORM, CIELAB_REVERSE_TRANSFORM, COLOR_ACTIVE_MIX_PCT, COLOR_DELTA_Y_MIN, COLOR_HOVER_MIX_PCT, COLOR_INTENTS, COLOR_MAPPERS, COLOR_UTILITY_INTENTS, CSS_COLOR_REGEX, DEFERRED_COLOR_VALUE_REGEX, CSS_NAMED_COLORS, GCO, LO_CLIP, LO_CON_FACTOR, LO_CON_OFFSET, LO_CON_THRESH, MAIN_TRC, NORM_BG, NORM_TXT, RCO, REV_BG, REV_TXT, SCALE_B_O_W, SCALE_W_O_B, SRGB_FORWARD_MATRIX, SRGB_FORWARD_TRANSFORM, SRGB_REVERSE_MATRIX, SRGB_REVERSE_TRANSFORM } from '../../consts/Commons/color.const'
 
 import { BG_FG_ROLE } from '../../enums/Commons/color.enum'
 
@@ -908,6 +908,18 @@ export function warnLegacyColor (
     value: string,
 ): void {
     if (typeof console === 'undefined') return
+    /*********************************************************
+     * exemption des valeurs a substitution DIFFEREE
+     *
+     * @description
+     * `var(--…)` et `color-mix(…)` ne sont pas des « couleurs brutes » a
+     * migrer : ce sont l'echappatoire que ce message recommande, et depuis
+     * ADR-005 ce sont les valeurs que le DS emet LUI-MEME depuis ses tables
+     * de presets de variant. Cette fonction n'etant pas conditionnee au mode
+     * dev, l'avertissement partait EN PRODUCTION reprocher au consommateur
+     * ce que le DS venait de faire. Voir `DEFERRED_COLOR_VALUE_REGEX`.
+     ********************************************************/
+    if (DEFERRED_COLOR_VALUE_REGEX.test(value)) return
     const key = `${kind}::${value}`
     if (_warnedColorKeys.has(key)) return
     _warnedColorKeys.add(key)

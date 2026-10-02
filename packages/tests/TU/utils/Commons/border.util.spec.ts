@@ -1,7 +1,7 @@
 // TU — border.util.ts
 
 import { describe, expect, it } from 'vitest'
-import { BORDER_REGEX } from '@origam/consts/Commons/border.const'
+import { BORDER_PAREN_GROUP, BORDER_PAREN_MAX_DEPTH, BORDER_REGEX } from '@origam/consts/Commons/border.const'
 import { BORDER_STYLE } from '@origam/enums'
 import {
     formatBorderPositionStylesVar,
@@ -200,10 +200,89 @@ describe('BORDER_REGEX — width accepts var() only before a style keyword', () 
         ])
     })
 
-    it('keeps the documented nested-fallback limitation (var() with an inner paren)', () => {
-        // `[^)]+` stops at the first `)`, so the whole value is rejected. Already
-        // true before this lot; pinned so a future widening is a deliberate act.
-        expect(shape('1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))')).toBeNull()
+    /*********************************************************
+     * ✅ LA LIMITE DU REPLI IMBRIQUE EST LEVEE — ADR-005 lot 4 (#1027)
+     *
+     * @description
+     * Ce bloc assertait `toBeNull()` sur la valeur ci-dessous, et le
+     * commentaire disait « pinned so a future widening is a deliberate
+     * act ». C'EST CET ACTE. Le groupe COULEUR de `BORDER_REGEX` passe
+     * desormais par `BORDER_PAREN_GROUP` (parentheses equilibrees jusqu'a
+     * `BORDER_PAREN_MAX_DEPTH` niveaux) et son alternation de fonctions
+     * gagne `color-mix`.
+     *
+     * @description
+     * ⛔ C'EST UN CHANGEMENT DE RENDU, pas une extension neutre : la valeur
+     * ne produisait AUCUN bord (`parseBorderPositionValue` rendait `null`,
+     * donc `useBorder` n'emettait rien) et en produit un desormais. Mesure
+     * du rayon d'action, 2026-10-02, sur les 126 valeurs de prop de bord
+     * recoltees dans `packages/ds/src`, `packages/marketing/src`,
+     * `packages/stories`, `packages/docs` et `packages/tests` : 5 valeurs
+     * changent, TOUTES de `null` vers « analysee », AUCUNE d'une analyse
+     * vers une autre. Trois Variants de Histoire passent cette chaine a une
+     * prop `border` (`Slide/OrigamSlideGroup.story.vue:263`,
+     * `Window/OrigamWindow.story.vue:360`,
+     * `Window/OrigamWindowItem.story.vue:156`) et gagnent le bord qu'elles
+     * demandaient. Aucun composant de `packages/ds` ne change : ses
+     * occurrences de cette chaine sont des declarations SCSS, que cette
+     * grammaire ne lit jamais.
+     ********************************************************/
+    it.each([
+        [
+            '1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))',
+            '1px',
+            'solid',
+            'var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))',
+        ],
+        [
+            'var(--origam-btn---border-width-ghost, 1px) solid var(--origam-btn---border-color-ghost, color-mix(in srgb, currentColor 24%, transparent))',
+            'var(--origam-btn---border-width-ghost, 1px)',
+            'solid',
+            'var(--origam-btn---border-color-ghost, color-mix(in srgb, currentColor 24%, transparent))',
+        ],
+        [
+            'var(--origam-btn---border-width-outlined, 1px) solid var(--origam-btn---border-color, currentColor)',
+            'var(--origam-btn---border-width-outlined, 1px)',
+            'solid',
+            'var(--origam-btn---border-color, currentColor)',
+        ],
+    ])('parses a NESTED fallback: %j', (value, width, style, color) => {
+        expect(shape(value)).toEqual({ width, style, color })
+    })
+
+    it.each([
+        ['color-mix(in srgb, currentColor 24%, transparent)', '', '', 'color-mix(in srgb, currentColor 24%, transparent)'],
+        ['oklch(0.7 0.1 200)', '', '', 'oklch(0.7 0.1 200)'],
+        ['2px solid color-mix(in srgb, currentColor 40%, transparent)', '2px', 'solid', 'color-mix(in srgb, currentColor 40%, transparent)'],
+    ])('accepts color-mix() / oklch() as a COLOUR: %j', (value, width, style, color) => {
+        expect(shape(value)).toEqual({ width, style, color })
+    })
+
+    it('equilibrates up to BORDER_PAREN_MAX_DEPTH + 1 nesting levels, and no further', () => {
+        // Three levels: inside the bound.
+        expect(shape('var(--a, var(--b, var(--c)))')).toEqual({
+            width: '',
+            style: '',
+            color: 'var(--a, var(--b, var(--c)))',
+        })
+
+        /*********************************************************
+         * CONTROLE NEGATIF — la borne EST une borne
+         *
+         * @description
+         * Un quatrieme niveau sort du groupe et la valeur est rejetee. Sans
+         * cette assertion, le test precedent passerait tout aussi bien avec
+         * un `.*` glouton, qui lui n'equilibre RIEN : il ne prouverait pas
+         * l'equilibrage, seulement la permissivite.
+         ********************************************************/
+        expect(shape('var(--a, var(--b, var(--c, var(--d))))')).toBeNull()
+    })
+
+    it('BORDER_PAREN_MAX_DEPTH and the unrolled group stay in step', () => {
+        // The group is BUILT by unrolling the bound; pin both so a change to
+        // one without the other is caught here rather than in a renderer.
+        expect(BORDER_PAREN_MAX_DEPTH).toBe(2)
+        expect(BORDER_PAREN_GROUP.split('[^()]').length - 1).toBe(BORDER_PAREN_MAX_DEPTH + 1)
     })
 
     /*********************************************************

@@ -48,11 +48,33 @@ import type { TLogicalSide } from '../../types/Commons/anchor.type'
  * l'utilise. Tordre la regex pour lui couterait la garantie ci-dessus.
  *
  * @description
- * ⚠️ LIMITE CONNUE, NON CORRIGEE ICI : `[^)]+` s'arrete a la premiere
- * parenthese fermante, donc un repli imbrique ne matche pas DU TOUT et la
- * valeur entiere est rejetee. Deja vrai avant ce lot, et le depot en porte
- * une occurrence — `1px solid var(--origam-color__border---subtle, rgba(0,
- * 0, 0, 0.12))`.
+ * ✅ LA LIMITE DU REPLI IMBRIQUE EST LEVEE (ADR-005 lot 4, #1027). Le
+ * groupe COULEUR acceptait `var\(--[^)]+\)`, qui s'arrete a la premiere
+ * parenthese fermante : un repli imbrique ne matchait pas DU TOUT, la
+ * valeur entiere etait rejetee et `useBorder` n'emettait RIEN. Le groupe
+ * couleur passe donc par `BORDER_PAREN_GROUP`, un groupe parenthese a
+ * profondeur BORNEE (voir sa propre entete), et son alternation de
+ * fonctions gagne `color-mix` — qu'`isCssColor` et
+ * `CUSTOM_BOX_SHADOW_REGEX` reconnaissaient tous deux deja, mais pas
+ * celle-ci.
+ * @description
+ * Ce que ca debloque : le preset `ghost` d'`OrigamBtn` porte
+ * `var(--origam-btn---border-color-ghost, color-mix(in srgb, currentColor
+ * 24%, transparent))`, et l'occurrence deja presente dans le depot
+ * — `1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))`
+ * — peint desormais au lieu d'etre jetee. ⛔ C'est donc un CHANGEMENT DE
+ * RENDU pour cette seconde valeur, pas une simple extension : elle ne
+ * produisait aucun bord et en produit un. Mesure et table de verite dans
+ * `packages/tests/TU/utils/Commons/border.util.spec.ts`.
+ * @description
+ * ⚠️ LE GROUPE LARGEUR GARDE `[^)]+`, a dessein. Un `var()` y est deja
+ * contraint par un lookahead (voir ci-dessous) et aucune largeur du depot
+ * n'a de repli imbrique — les presets de variant aplatissent la leur a un
+ * seul niveau (`var(--origam-btn---border-width-outlined, 1px)`, fidele :
+ * `--origam-border__width---thin` vaut `1px`, declare une seule fois dans
+ * `primitive.css` et pose par aucun theme). Elargir les deux groupes a la
+ * fois rendrait la desambiguisation largeur/couleur sensiblement plus
+ * fragile pour zero valeur reelle.
  *
  * @description
  * ⚠️ UNE LARGEUR `var()` QUI CONTIENT UNE ESPACE NE PASSE QUE PAR LE CHEMIN
@@ -78,7 +100,70 @@ const BORDER_STYLE_ALTERNATION = Object.values(BORDER_STYLE).join('|')
 
 const BORDER_LENGTH_UNITS = '(?:px|pt|PC|in|cm|mm|em|rem|%|ex|ch|fr)?'
 
-const BORDER_COLOR_GROUP = '(?<color>(?: ?(?:(?:(?:#)(?:[a-f0-9]{3}|[a-f0-9]{6}))|(?:var\\(--[^)]+\\))|(?:(?:rgb|hsl|rgba)a?\\(.*\\))|(?:[A-Za-z]+))){0,4})'
+/*********************************************************
+ * BORDER_PAREN_MAX_DEPTH
+ *
+ * @description
+ * Niveaux d'IMBRICATION que `BORDER_PAREN_GROUP` sait equilibrer, au-dela
+ * du premier. `2` autorise donc trois niveaux de parentheses :
+ * `var(--a, var(--b, var(--c)))`.
+ *
+ * @description
+ * ⛔ POURQUOI UNE BORNE ET PAS UN VRAI EQUILIBRAGE. Les regex JavaScript
+ * n'ont pas de recursion (ni `(?R)` de PCRE, ni les groupes de balance de
+ * .NET) : un equilibrage NON borne n'est pas exprimable. Une borne
+ * explicite et testee vaut mieux qu'un `[^)]+` qui echoue des le premier
+ * niveau, et mieux qu'un `.*` glouton qui happe tout ce qui suit.
+ *
+ * @description
+ * Mesure du besoin reel : la valeur la plus profonde que le depot passe a
+ * une prop de bord est a DEUX niveaux
+ * (`var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))`,
+ * `var(--origam-btn---border-color-ghost, color-mix(...))`). Trois laisse
+ * donc un niveau de marge sans rendre la chaine ingerable.
+ ********************************************************/
+const BORDER_PAREN_MAX_DEPTH = 2
+
+/*********************************************************
+ * BORDER_PAREN_GROUP
+ *
+ * @description
+ * Un groupe parenthese dont les parentheses sont EQUILIBREES jusqu'a
+ * `BORDER_PAREN_MAX_DEPTH` niveaux d'imbrication. Sert le groupe COULEUR
+ * de `BORDER_REGEX`, pour `var()` comme pour les fonctions de couleur.
+ *
+ * @description
+ * Construit par deploiement plutot qu'ecrit a la main : la chaine finale
+ * fait une centaine de caracteres et trois niveaux de `(?:[^()]|…)*`
+ * imbriques ne se relisent pas. La forme deployee est epinglee par un test
+ * dans `border.util.spec.ts`, pour qu'un changement de borne ne passe pas
+ * inapercu.
+ ********************************************************/
+const BORDER_PAREN_GROUP = (() => {
+    let pattern = '\\([^()]*\\)'
+
+    for (let depth = 0; depth < BORDER_PAREN_MAX_DEPTH; depth += 1) {
+        pattern = `\\((?:[^()]|${pattern})*\\)`
+    }
+
+    return pattern
+})()
+
+/*********************************************************
+ * BORDER_COLOR_FUNCTION_ALTERNATION
+ *
+ * @description
+ * Les noms de fonction CSS acceptes en COULEUR. `color-mix` DOIT preceder
+ * `color`, sinon `color` matcherait et l'alternation s'arreterait avant le
+ * tiret. Meme famille que l'alternation d'`isCssColor`
+ * (`utils/Commons/color.util.ts`) et celle de `CUSTOM_BOX_SHADOW_REGEX`
+ * (`consts/Commons/elevation.const.ts`), que ce groupe rejoint enfin.
+ ********************************************************/
+const BORDER_COLOR_FUNCTION_ALTERNATION = 'rgba?|hsla?|hwb|lab|lch|oklab|oklch|color-mix|color'
+
+const BORDER_COLOR_GROUP = `(?<color>(?: ?(?:(?:(?:#)(?:[a-f0-9]{3}|[a-f0-9]{6}))|(?:var${BORDER_PAREN_GROUP})|(?:(?:${BORDER_COLOR_FUNCTION_ALTERNATION})${BORDER_PAREN_GROUP})|(?:[A-Za-z]+))){0,4})`
+
+export { BORDER_PAREN_GROUP, BORDER_PAREN_MAX_DEPTH }
 
 export const BORDER_REGEX = new RegExp(
     '^'

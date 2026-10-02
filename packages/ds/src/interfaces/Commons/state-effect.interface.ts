@@ -4,6 +4,7 @@ import type { IMarginProps } from './margin.interface'
 import type { IOpacityProps } from './opacity.interface'
 import type { IPaddingProps } from './padding.interface'
 import type { IRoundedProps } from './rounded.interface'
+import type { ITypographyProps } from './typography.interface'
 
 import type { TColor } from '../../types/Commons/color.type'
 
@@ -85,6 +86,41 @@ export interface IStateEffectConfig {
      * once this key exists (ADR-005 D6).
      ********************************************************/
     opacity?: IOpacityProps['opacity']
+    /*********************************************************
+     * fontWeight
+     *
+     * @description
+     * Axe TYPOGRAPHIE de l'etat — la onzieme cle, et pour l'instant la
+     * seule de sa famille. C'est la moitie de l'etat ACTIF de
+     * `variant="tonal"` sur `OrigamBtn` qu'aucune autre cle n'exprimait :
+     * sa regle supprimee declarait `font-weight: 600` sur
+     * `&--variant-tonal&--active`, a cote du fond et de l'ombre que
+     * `bgColor` / `elevation` portent deja.
+     *
+     * @description
+     * `fontWeight: 'semibold'` resout exactement `600`
+     * (`--origam-font__weight---semibold: 600`, `primitive.css:107`) : le
+     * rendu est identique par construction, pas par approximation.
+     *
+     * @description
+     * ⛔ CETTE INTERFACE A DEJA ETE ELARGIE DEUX FOIS POUR CETTE MEME
+     * CAMPAGNE — `opacity` pour `plain` (ADR-005 lot 3) et `borderColor`
+     * pour l'actif d'`outlined`, tous deux nommes verbatim dans leur
+     * JSDoc ci-dessus. Troisieme elargissement, meme motif, arbitrage du
+     * proprietaire du 2026-10-01.
+     *
+     * @description
+     * ⚠️ `useStateEffect` RESOUT cette cle mais n'emet AUCUN style pour
+     * elle : il ne connait pas le prefixe de var du composant
+     * (`useTypography(props, 'btn')` le prend en parametre). Il rend donc
+     * le ref resolu `fontWeight`, et c'est le COMPOSANT qui le branche sur
+     * `useTypography` — voir `OrigamBtn.vue`, section « Typography ». Les
+     * cinq autres props typographiques ne sont PAS ici : seul
+     * `font-weight` etait porte par une regle d'etat, et une cle non lue
+     * serait une prop inerte (ce que le garde `unconsumed-props` existe
+     * pour attraper).
+     ********************************************************/
+    fontWeight?: ITypographyProps['fontWeight']
 }
 
 /**

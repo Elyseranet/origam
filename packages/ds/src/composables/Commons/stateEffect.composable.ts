@@ -39,6 +39,8 @@ import type { TStateEffectProps } from '../../types/Commons/state-effect.type'
 //   6. padding        — inner spacing (single scalar)
 //   7. margin         — outer spacing (single scalar)
 //   8. gap            — flex / grid gap (single scalar)
+//  11. fontWeight     — resolved only, NOT emitted (needs the component's
+//                       var prefix) — see its pickEffective call below
 // Color resolution keeps the existing `useColorEffect` semantics
 // verbatim (intent darkening at -20 % hover / -30 % active, same-intent
 // rule, color-clash auto-contrast). Only the WIRING changes: instead
@@ -106,9 +108,10 @@ const noopRef = computed(() => false)
  * `useBorder` + `useRounded` + `useElevation` + `usePadding` + `useMargin`
  * que chaque composant visuel devait repeter. Lit les etats `isHover`/
  * `isActive`/`isDisabled` (et leurs overrides `hoverState`/`activeState`)
- * et resout 10 axes state-aware : color, bgColor, border, borderColor,
- * rounded, elevation, padding, margin, gap, opacity — chacun avec
- * classes ET styles.
+ * et resout 11 axes state-aware : color, bgColor, border, borderColor,
+ * rounded, elevation, padding, margin, gap, opacity, fontWeight. Les dix
+ * premiers rendent classes ET styles ; `fontWeight` est seulement RESOLU
+ * (voir son appel a `pickEffective`).
  * Priorite de resolution par axe : HOVER gagne sur ACTIVE (survoler un
  * element presse/selectionne montre la surface hover), qui gagne sur la
  * valeur de repos (`props.xxx`).
@@ -193,6 +196,32 @@ export function useStateEffect (
     const opacity  = pickEffective(() => props.opacity, isHover, isActive, hoverState, activeState, 'opacity')
     const borderColor = pickEffective(
         () => props.borderColor, isHover, isActive, hoverState, activeState, 'borderColor',
+    )
+    /*********************************************************
+     * Axe 11 — fontWeight (ADR-005 lot 4, OrigamBtn)
+     *
+     * @description
+     * La moitie de l'etat ACTIF de `variant="tonal"` qu'aucun autre axe
+     * n'exprimait : sa regle supprimee declarait `font-weight: 600` a cote
+     * du fond et de l'ombre.
+     *
+     * @description
+     * ⛔ SEUL AXE RESOLU SANS ETRE EMIS ICI, et c'est delibere. Emettre une
+     * declaration typographique demande le PREFIXE DE VAR du composant
+     * (`useTypography(props, 'btn')` l'exige en parametre) : `useStateEffect`
+     * ne le connait pas et le deviner serait faux pour toute surface
+     * BEM-enfant (`card__text`, `picker__title`). Le ref resolu est donc
+     * RENDU, et le composant le branche sur son propre `useTypography` —
+     * voir `OrigamBtn.vue`, section « Typography ».
+     *
+     * @description
+     * Comportement inchange pour tous les consommateurs existants :
+     * `pickEffective` retombe sur `props.fontWeight` des qu'aucun override
+     * d'etat ne nomme la cle, ce qui est le cas de tous les appels
+     * d'aujourd'hui.
+     ********************************************************/
+    const fontWeight = pickEffective(
+        () => props.fontWeight, isHover, isActive, hoverState, activeState, 'fontWeight',
     )
 
     // ── Color axis (preserved verbatim from useColorEffect) ──────────
@@ -510,6 +539,7 @@ export function useStateEffect (
         gap,
         opacity,
         borderColor,
+        fontWeight,
 
         // Per-axis classes + styles (state-aware)
         colorClasses,

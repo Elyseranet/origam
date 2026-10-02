@@ -5,6 +5,7 @@ import type { IMarginProps } from '../../interfaces/Commons/margin.interface'
 import type { IOpacityProps } from '../../interfaces/Commons/opacity.interface'
 import type { IPaddingProps } from '../../interfaces/Commons/padding.interface'
 import type { IRoundedProps } from '../../interfaces/Commons/rounded.interface'
+import type { ITypographyProps } from '../../interfaces/Commons/typography.interface'
 
 /**
  * The prop bag `useStateEffect` reads from.
@@ -22,6 +23,12 @@ import type { IRoundedProps } from '../../interfaces/Commons/rounded.interface'
  * an ad-hoc flex/grid property that only a handful of layout
  * components expose — so it is spelled inline.
  *
+ * `fontWeight` is pulled in with a `Pick` rather than the whole
+ * `ITypographyProps`: it is the ONE typographic axis a state override
+ * can name (see `IStateEffectConfig.fontWeight`), and widening the bag
+ * to the other five would declare resting props `useStateEffect`
+ * neither reads nor forwards.
+ *
  * Sibling type: {@link IStateEffectConfig} in
  * `src/interfaces/Commons/state-effect.interface.ts` describes the
  * OVERRIDE object a consumer passes to `hover` / `active`. This type
@@ -36,4 +43,5 @@ export type TStateEffectProps =
     & IPaddingProps
     & IMarginProps
     & IOpacityProps
+    & Pick<ITypographyProps, 'fontWeight'>
     & { gap?: boolean | number | string }

@@ -101,3 +101,97 @@ describe('useBackdrop — reactivity', () => {
         expect(api().backdropClasses.value).toEqual(['origam--backdrop-blur-xl'])
     })
 })
+
+/*********************************************************
+ * backdropFilter — l'echappatoire « valeur custom »
+ *
+ * @description
+ * ADR-005 lot 4 (#1027), arbitrage du proprietaire du 2026-10-01. Le canal
+ * de token que le `ghost` d'`OrigamBtn` portait,
+ * `--origam-btn---backdrop-filter-ghost`, est redeclare par le theme
+ * `glass` en `blur(12px) saturate(1.8) brightness(1.05)` — un filtre
+ * MULTI-FONCTION, qu'une enveloppe `blur(<longueur>)` ne peut pas
+ * transporter. Sans ce passthrough, convertir `ghost` en preset de props
+ * jetterait silencieusement le verre de cette marque sur 1 identite x 2
+ * modes.
+ ********************************************************/
+function mountWithProps (initial: IBackdropProps) {
+    const props = reactive<IBackdropProps>({ ...initial })
+    let api!: ReturnType<typeof useBackdrop>
+
+    const Host = defineComponent({
+        name: 'OrigamBackdropCustomHost',
+        setup () {
+            api = useBackdrop(props)
+            return () => h('div')
+        }
+    })
+
+    mount(Host)
+    return { props, api: () => api }
+}
+
+describe('useBackdrop — backdropFilter passthrough', () => {
+    it('emits the string VERBATIM on both properties, with no blur() wrapper', () => {
+        const value = 'blur(12px) saturate(1.8) brightness(1.05)'
+        const { api } = mountWithProps({ backdropFilter: value })
+
+        expect(api().backdropStyles.value).toEqual([
+            `backdrop-filter: ${value}`,
+            `-webkit-backdrop-filter: ${value}`
+        ])
+        expect(api().backdropStyles.value.join(' ')).not.toContain('blur(blur(')
+    })
+
+    it('carries a var() chain with its fallback intact — the theme channel', () => {
+        const value = 'var(--origam-btn---backdrop-filter-ghost, blur(8px))'
+        const { api } = mountWithProps({ backdropFilter: value })
+
+        expect(api().backdropStyles.value).toEqual([
+            `backdrop-filter: ${value}`,
+            `-webkit-backdrop-filter: ${value}`
+        ])
+    })
+
+    it('BEATS backdropBlur when both are set, and drops the rung class', () => {
+        const { api } = mountWithProps({
+            backdropBlur: 'md',
+            backdropFilter: 'blur(12px) saturate(1.8)'
+        })
+
+        expect(api().backdropStyles.value).toEqual([
+            'backdrop-filter: blur(12px) saturate(1.8)',
+            '-webkit-backdrop-filter: blur(12px) saturate(1.8)'
+        ])
+        // The rung class would resolve `var(--origam-blur---md)` on the SAME
+        // property and fight the inline declaration — so it must not be emitted.
+        expect(api().backdropClasses.value).toEqual([])
+    })
+
+    it('an empty / absent backdropFilter leaves backdropBlur in charge', () => {
+        for (const backdropFilter of [undefined, '', '   '] as Array<string | undefined>) {
+            const { api } = mountWithProps({ backdropBlur: 'md', backdropFilter })
+
+            expect(api().backdropClasses.value).toEqual(['origam--backdrop-blur-md'])
+            expect(api().backdropStyles.value).toEqual([
+                'backdrop-filter: blur(var(--origam-blur---md, 8px))',
+                '-webkit-backdrop-filter: blur(var(--origam-blur---md, 8px))'
+            ])
+        }
+    })
+
+    it('emits nothing at all when neither axis is set', () => {
+        const { api } = mountWithProps({})
+
+        expect(api().backdropClasses.value).toEqual([])
+        expect(api().backdropStyles.value).toEqual([])
+    })
+
+    it('recomputes when backdropFilter changes', () => {
+        const { props, api } = mountWithProps({ backdropFilter: 'blur(4px)' })
+        expect(api().backdropStyles.value[0]).toBe('backdrop-filter: blur(4px)')
+
+        props.backdropFilter = 'saturate(2)'
+        expect(api().backdropStyles.value[0]).toBe('backdrop-filter: saturate(2)')
+    })
+})

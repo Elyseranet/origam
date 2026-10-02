@@ -47,4 +47,39 @@ export interface IBackdropProps {
      * and not this one.
      ********************************************************/
     backdropBlur?: TBackdropBlur
+    /*********************************************************
+     * backdropFilter
+     *
+     * @description
+     * ECHAPPATOIRE « VALEUR CUSTOM » du canal backdrop : la chaine est
+     * emise VERBATIM comme valeur de `backdrop-filter` (et de son jumeau
+     * `-webkit-`), sans enveloppe `blur(...)`. Elle BAT `backdropBlur`
+     * quand les deux sont posees — une valeur complete est plus specifique
+     * qu'un echelon de rayon.
+     *
+     * @description
+     * ⛔ POURQUOI ELLE EXISTE, et ce n'est pas un confort. `backdropBlur`
+     * enveloppe TOUJOURS son entree en `blur(<longueur>)`, donc un filtre
+     * multi-fonction n'y passe pas. Or le canal de token que `ghost`
+     * portait — `--origam-btn---backdrop-filter-ghost` — est redeclare par
+     * le theme `glass` avec exactement cette forme :
+     * `blur(12px) saturate(1.8) brightness(1.05)` en clair
+     * (`glass.theme.ts:337`) et `blur(12px) saturate(1.6) brightness(1.02)`
+     * en sombre (`:693`). Convertir `ghost` en preset de props sans ce
+     * passthrough jetterait silencieusement le verre de cette marque.
+     *
+     * @description
+     * Le passthrough de valeur custom EXISTE DEJA trois fois dans ce DS —
+     * `resolveSpacingValue` (toute valeur hors echelle rendue telle
+     * quelle), `TYPOGRAPHY_PASSTHROUGH_MAP` pour `fontStyle`, `isCssColor`
+     * pour les couleurs. Son absence sur `backdrop` etait l'asymetrie « a
+     * moitie » qu'`adr-007-directional-props.md` interdit. Arbitrage du
+     * proprietaire, 2026-10-01.
+     *
+     * @description
+     * ⚠️ Ce n'est PAS une surface `filter` generale : la valeur part sur
+     * `backdrop-filter`, qui agit sur ce qui est DERRIERE l'element. Un
+     * `filter` sur l'element lui-meme reste hors de cette interface.
+     ********************************************************/
+    backdropFilter?: string
 }

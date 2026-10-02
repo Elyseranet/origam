@@ -77,17 +77,60 @@ function resolveBackdropBlur (value: TBackdropBlur | null | undefined): TResolve
  * this composable.
  ********************************************************/
 export function useBackdrop (props: IBackdropProps | Ref<TBackdropBlur | undefined>) {
+    /*********************************************************
+     * customFilter
+     *
+     * @description
+     * La valeur brute de `backdropFilter`, quand le consommateur (ou un
+     * preset de variant) en a pose une. Rendue VERBATIM et BATTANT
+     * `backdropBlur` : une valeur complete est plus specifique qu'un
+     * echelon de rayon. Voir `IBackdropProps.backdropFilter` pour la
+     * raison (le canal de token multi-fonction du theme `glass`).
+     *
+     * @description
+     * Lue dans un `computed`, jamais dans le corps de `setup()` : le
+     * resolveur de props d'ADR-005 ecrit dans `instance.props` au
+     * `beforeCreate`, APRES `setup()`, donc une lecture eager ne verrait
+     * ni le theme ni le preset.
+     ********************************************************/
+    const customFilter = computed<string | null>(() => {
+        if (isRef(props)) return null
+
+        const value = props.backdropFilter
+
+        if (value == null || String(value).trim() === '') return null
+
+        return String(value).trim()
+    })
+
     const resolved = computed<TResolvedBackdrop | null>(() => {
         return resolveBackdropBlur(isRef(props) ? props.value : props.backdropBlur)
     })
 
     const backdropClasses = computed<Array<string>>(() => {
+        /*********************************************************
+         * pas de classe utilitaire sur le canal custom
+         *
+         * @description
+         * Strategie A, meme contrat que `useColor` : une valeur TOKENISEE
+         * prend le canal classe, une valeur CUSTOM prend le canal inline.
+         * Une chaine libre ne correspond a aucun echelon, donc a aucune
+         * `.origam--backdrop-blur-*` — et si un `backdropFilter` custom
+         * laissait passer la classe d'un `backdropBlur` concurrent, les
+         * deux declarations se battraient sur la meme propriete.
+         ********************************************************/
+        if (customFilter.value) return []
+
         const rung = resolved.value?.rung
 
         return rung ? [`${BACKDROP_UTILITY_CLASS_PREFIX}${rung}`] : []
     })
 
     const backdropStyles = computed<Array<string>>(() => {
+        const custom = customFilter.value
+
+        if (custom) return [`backdrop-filter: ${custom}`, `-webkit-backdrop-filter: ${custom}`]
+
         const current = resolved.value
 
         if (!current) return []

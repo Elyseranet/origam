@@ -104,6 +104,35 @@ export const COLOR_UTILITY_INTENTS: ReadonlySet<string> = new Set(
     Object.values(INTENT).filter(intent => intent !== INTENT.GHOST)
 )
 
+/*********************************************************
+ * DEFERRED_COLOR_VALUE_REGEX
+ *
+ * @description
+ * Les deux formes de `<color>` dont la valeur finale n'est connue QUE du
+ * navigateur : une custom property (`var(--…)`) et un melange relatif
+ * (`color-mix(…)`, dont les operandes sont typiquement `currentColor` ou
+ * un autre `var()`). `isParsableColor` les exclut deja pour cette meme
+ * raison — elles n'ont aucune valeur statique en JS.
+ *
+ * @description
+ * ⛔ A QUOI CA SERT : exempter ces deux formes de `warnLegacyColor`. Cet
+ * avertissement dit au consommateur de passer un `TIntent` ou « un binding
+ * `:style` pour une couleur ponctuelle » ; or `var()` / `color-mix()` SONT
+ * exactement l'echappatoire que le DS recommande, et depuis ADR-005 ce
+ * sont les valeurs que le DS LUI-MEME emet depuis ses tables de presets de
+ * variant (`tonal`, `ghost` sur `OrigamBtn`). Sans cette exemption, et
+ * parce que `warnLegacyColor` n'est PAS conditionne au mode dev (seul
+ * `typeof console === 'undefined'` le garde), le DS emettrait EN
+ * PRODUCTION une depreciation reprochant au consommateur ce que le DS fait
+ * de son propre chef.
+ *
+ * @description
+ * Les autres formes qu'`isCssColor` reconnait (hex, `rgb()`, `hsl()`,
+ * `oklch()`, mot-cle nomme) restent averties : ce sont de vraies valeurs
+ * litterales, celles que la depreciation vise.
+ ********************************************************/
+export const DEFERRED_COLOR_VALUE_REGEX = /^(?:var\(--|color-mix\()/i
+
 // ── State darken progression (cross-component) ──────────────────────────────
 // Hover / active states derive from the rest-state bgColor by mixing
 // with black. The percentages below are the math-fallback values used

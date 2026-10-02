@@ -741,6 +741,46 @@ describe('warnLegacyColor', () => {
         warnLegacyColor('bgColor', '#dedup-sentinel-xyz')
         expect(console.warn).toHaveBeenCalledTimes(1)
     })
+
+    /*********************************************************
+     * EXEMPTION des valeurs a substitution DIFFEREE — ADR-005 lot 4 (#1027)
+     *
+     * @description
+     * ⛔ CETTE FONCTION N'EST PAS CONDITIONNEE AU MODE DEV : seul
+     * `typeof console === 'undefined'` la garde. Elle part donc EN
+     * PRODUCTION. Et depuis ADR-005, `var(--…)` / `color-mix(…)` sont les
+     * valeurs que le DS emet LUI-MEME depuis ses tables de presets de
+     * variant (`tonal` et `ghost` sur `OrigamBtn` les portent toutes
+     * deux). Sans cette exemption, le DS reprocherait au consommateur, en
+     * production, de faire ce qu'il vient de faire lui-meme — et le
+     * message lui conseillerait « un binding :style pour une couleur
+     * ponctuelle », c'est-a-dire exactement la valeur qu'il vient de
+     * refuser.
+     *
+     * @description
+     * Les valeurs LITTERALES restent averties : c'est elles que la
+     * depreciation vise. Les deux premiers tests de ce bloc en sont le
+     * controle positif — sans eux, « ca n'avertit plus » serait
+     * indiscernable de « la fonction ne mesure plus rien ».
+     ********************************************************/
+    it.each([
+        'var(--origam-btn---background-color-tonal, var(--origam-color__surface---overlay))',
+        'var(--origam-btn---border-color-ghost, color-mix(in srgb, currentColor 24%, transparent))',
+        'color-mix(in srgb, currentColor 12%, transparent)',
+        'VAR(--origam-upper-case-sentinel)'
+    ])('stays SILENT on a deferred-substitution value: %j', (value) => {
+        warnLegacyColor('bgColor', value)
+        expect(console.warn).not.toHaveBeenCalled()
+    })
+
+    it.each([
+        '#abcdef',
+        'rgba(0, 0, 0, 0.5)',
+        'rebeccapurple'
+    ])('still warns on a LITERAL colour: %j', (value) => {
+        warnLegacyColor('color', `${value}/literal-sentinel`)
+        expect(console.warn).toHaveBeenCalledTimes(1)
+    })
 })
 
 // ─── warnDeprecatedProp ─────────────────────────────────────────────────────
