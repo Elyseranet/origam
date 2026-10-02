@@ -1,4 +1,5 @@
 import type { IActiveProps } from '../Commons/active.interface'
+import type { IBackdropProps } from '../Commons/backdrop.interface'
 import type {
     IAdjacentProps,
     IAdjacentSlots
@@ -24,6 +25,7 @@ import type { ILinkProps } from '../Commons/router.interface'
 import type { ILoaderProps } from '../Commons/loader.interface'
 import type { ILocationProps } from '../Commons/location.interface'
 import type { IMarginProps } from '../Commons/margin.interface'
+import type { IOpacityProps } from '../Commons/opacity.interface'
 import type { IPaddingProps } from '../Commons/padding.interface'
 import type { IPositionProps } from '../Commons/position.interface'
 import type { IRippleProps } from '../Commons/ripple.interface'
@@ -41,10 +43,37 @@ import type {
 /** Btn needs `status` / `statusIconPosition` from IStatusProps but its own
  *  `icon` prop accepts `boolean | TIcon` (boolean = icon-only mode) which is
  *  wider than `IIconProps.icon?: TIcon`.  Pulling the two status props in
- *  directly avoids the TS2430 incompatible-extends error. */
-export interface IBtnProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IBorderProps, IDensityProps, IDimensionProps, IElevationProps, IRoundedProps, ITagProps, ISizeProps, ILinkProps, IRippleProps, ILoaderProps, IPositionProps, ILocationProps, IGroupItemProps, IPaddingProps, IMarginProps, IAdjacentProps, IHoverProps, IActiveProps, IVariantProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
-    /** @deprecated Use `variant="flat"` instead. Kept for backward compat. */
-    flat?: boolean,
+ *  directly avoids the TS2430 incompatible-extends error.
+ *
+ *  ⛔ `variant` EST UN PRESET DE PROPS, PAS UNE COUCHE CSS (ADR-005 D1,
+ *  converti par le lot 4 / #1027). La prop vient d'`IVariantProps` ; la table
+ *  qui dit ce que chaque valeur IMPLIQUE est `BTN_VARIANT_PRESETS`
+ *  (`consts/Btn/btn.const.ts`), appliquee par le resolveur de props au rang le
+ *  plus FAIBLE de la chaine : prop du site d'appel > defaut de theme pour le
+ *  composant > defaut global de theme > PRESET > `withDefaults`. Toute prop
+ *  qu'un variant pose se redefinit donc a la main. La classe
+ *  `origam-btn--variant-{valeur}` reste EMISE sans qu'aucune regle du DS ne
+ *  s'y attache — elle appartient au consommateur, comme crochet d'override
+ *  (tenu par le garde `no-variant-css`). Les deux ecarts de rendu assumes (la
+ *  moitie `:focus-visible` de `plain` / `ghost`, la branche
+ *  `@supports not (backdrop-filter)` de `ghost`) sont documentes sur
+ *  `BTN_VARIANT_PRESETS`, pour qu'il n'en existe qu'une copie.
+ *
+ *  ⛔ RUPTURE, LOT 4 — la prop booleenne `flat`, `@deprecated` depuis
+ *  longtemps au profit de `variant="flat"`, est SUPPRIMEE. Mesure avant
+ *  retrait : zero `<origam-btn … flat>` dans `packages/ds/src`,
+ *  `packages/marketing/src`, `packages/stories` et `packages/docs`, et zero
+ *  reference a la classe `origam-btn--flat` dans `packages/tests`. Son unique
+ *  lecteur etait le selecteur combine `&--flat, &--variant-flat`, qui part
+ *  avec les blocs de variant. Les ruptures sont gratuites tant qu'aucun
+ *  consommateur ne depend du paquet (`CLAUDE.md`, « c'est maintenant qu'il
+ *  faut faire les ruptures »).
+ *
+ *  `IOpacityProps` et `IBackdropProps` entrent dans l'`extends` parce que le
+ *  resolveur IGNORE toute cle de preset absente de `rawProps` : une prop non
+ *  declaree rend le preset silencieusement inerte. `plain` a besoin de la
+ *  premiere, `ghost` de la seconde. */
+export interface IBtnProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IBorderProps, IDensityProps, IDimensionProps, IElevationProps, IOpacityProps, IBackdropProps, IRoundedProps, ITagProps, ISizeProps, ILinkProps, IRippleProps, ILoaderProps, IPositionProps, ILocationProps, IGroupItemProps, IPaddingProps, IMarginProps, IAdjacentProps, IHoverProps, IActiveProps, IVariantProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
     /** Pass `true` to activate icon-only mode; pass a `TIcon` value to set the icon. */
     icon?: boolean | TIcon
     block?: boolean

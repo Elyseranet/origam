@@ -31,6 +31,7 @@
 >
 	import OrigamBtn from './OrigamBtn.vue'
 	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
+	import { useBackdrop } from '../../composables/Commons/backdrop.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
@@ -89,11 +90,14 @@
 	const slotDefaults = computed(() => ({
 		'origam-btn': omitUndefined({
 			// `variant` is the ONE deliberate exception, kept unconditional:
-			// `--variant-text` (the group's own root default, and every
-			// child's own component default) has NO active-state background
-			// rule at all — only `outlined`/`tonal` paint a filled surface
-			// on the selected segment (see OrigamBtn.vue's
-			// `&--variant-outlined { &--active { background-color: ... } }`).
+			// `text` (the group's own root default, and every child's own
+			// component default) has NO active-state surface at all — only
+			// `outlined` and `tonal` carry an `active: { … }` entry in
+			// `BTN_VARIANT_PRESETS` (`consts/Btn/btn.const.ts`), i.e. a filled
+			// surface on the selected segment. Before ADR-005 lot 4 the same
+			// asymmetry lived in `OrigamBtn.vue`'s
+			// `&--variant-outlined { &--active { … } }` SCSS; the shape moved,
+			// the reason did not.
 			// The group's OWN resolved `variant` (whether explicitly passed,
 			// or resolved from a theme's `'origam-btn-group'` defaults) must
 			// always reach the children — else a themed
@@ -170,6 +174,16 @@
 	const {variantClasses} = useVariant(props)
 
 	/*********************************************************
+	 * Backdrop
+	 *
+	 * @description
+	 * Le preset `ghost` porte `backdropFilter`, donc le canal doit etre
+	 * branche ici — le resolveur de props IGNORE toute cle de preset absente
+	 * de `rawProps`, et une prop non consommee n'emet rien de toute facon.
+	 ********************************************************/
+	const {backdropClasses, backdropStyles} = useBackdrop(props)
+
+	/*********************************************************
 	 * Color
 	 ********************************************************/
 
@@ -189,6 +203,7 @@
 			marginStyles.value,
 			paddingStyles.value,
 			elevationStyles.value,
+			backdropStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -205,6 +220,7 @@
 			marginClasses.value,
 			paddingClasses.value,
 			variantClasses.value,
+			backdropClasses.value,
 			sizeClasses.value,
 			props.class
 		]
@@ -346,87 +362,30 @@
 			--origam-btn-group---height: 52px;
 		}
 
-		// Full parity with `OrigamBtn`'s own variant rules — same CSS
-		// custom properties, same literal values, one-for-one. A themed
-		// `origam-btn: { variant: 'outlined' }` (cartoon/geek/editorial)
-		// must produce the SAME border-width/border-color/background/
-		// box-shadow on the group as it does on a standalone Btn; the
-		// group is not allowed to fall back to a subset. Earlier passes
-		// only ported the `background-color` half of each rule (border/
-		// shadow were silently dropped), which is exactly what made the
-		// toggle read as "thin border, no shadow" next to a themed Btn's
-		// thick border + hard shadow under cartoon.
-		&--variant-flat {
-			box-shadow: none;
-		}
-
-		&--variant-text,
-		&--variant-plain {
-			background-color: transparent !important;
-			box-shadow: none;
-		}
-
-		&--variant-elevated {
-			box-shadow: var(--origam-btn---box-shadow-elevated, var(--origam-shadow---md));
-		}
-
-		&--variant-tonal {
-			background-color: var(
-				--origam-btn---background-color-tonal,
-				var(--origam-color__surface---overlay)
-			) !important;
-			box-shadow: none;
-		}
-
-		&--variant-outlined {
-			background-color: transparent !important;
-			// Mirror the literal border-width into the SAME custom property
-			// `--origam-btn-group---inner-border-radius` calc()s against
-			// (see the base rule above) — that calc reads the CUSTOM
-			// PROPERTY, which this rule would otherwise never touch (it
-			// only ever set the literal `border-width` property directly),
-			// leaving the calc's border-width input silently at its
-			// pre-variant fallback of 0 regardless of the REAL rendered
-			// border. `calc(20px - 0px)` still LOOKS plausible, so this
-			// class of bug doesn't throw or visibly break — it just quietly
-			// gives the child's fill the wrong inset curve.
-			--origam-btn-group---border-width: var(--origam-btn---border-width-outlined, var(--origam-border__width---thin));
-			border-width: var(--origam-btn-group---border-width);
-			border-style: solid;
-			border-color: var(--origam-btn---border-color, currentColor);
-			box-shadow: none;
-		}
-
-		// ⛔ C2 (#597) — les 3 tokens `ghost` lus ici restent NON DECLARES, pour
-		// la meme raison que dans `OrigamBtn.vue` (voir le commentaire detaille
-		// devant son propre `&--variant-ghost`) : leurs replis sont des
-		// `color-mix()` relatifs a `currentColor`, qui doivent etre evalues sur
-		// l'element et non figes a `:root`.
-		&--variant-ghost {
-			background-color: var(
-				--origam-btn---background-color-ghost,
-				color-mix(in srgb, currentColor 12%, transparent)
-			) !important;
-			// See the matching comment in `&--variant-outlined` above.
-			--origam-btn-group---border-width: var(--origam-btn---border-width-ghost, var(--origam-border__width---thin));
-			border-width: var(--origam-btn-group---border-width);
-			border-style: solid;
-			border-color: var(
-				--origam-btn---border-color-ghost,
-				color-mix(in srgb, currentColor 24%, transparent)
-			);
-			box-shadow: var(
-				--origam-btn---box-shadow-ghost,
-				0 0 0 1px color-mix(in srgb, currentColor 18%, transparent),
-				0 4px 18px 0 color-mix(in srgb, currentColor 28%, transparent),
-				0 1px 0 0 color-mix(in srgb, white 35%, transparent) inset
-			);
-
-			@supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)) {
-				backdrop-filter: var(--origam-btn---backdrop-filter-ghost, blur(8px));
-				-webkit-backdrop-filter: var(--origam-btn---backdrop-filter-ghost, blur(8px));
-			}
-		}
+		// ⛔ LES 6 BLOCS `&--variant-*` (7 lignes de selecteur) ONT ETE
+		// SUPPRIMES — ADR-005 D3 / D7, lot 4 (#1027). Un variant du groupe est
+		// desormais un PRESET DE PROPS : `BTN_GROUP_VARIANT_PRESETS`
+		// (`consts/Btn/btn-group.const.ts`). La classe
+		// `origam-btn-group--variant-{valeur}` reste EMISE sans qu'aucune regle
+		// du DS ne s'y attache ; les 10 entrees de baseline `no-variant-css`
+		// pour ce fichier disparaissent avec ces blocs.
+		//
+		// La parite « un pour un » avec les regles de `OrigamBtn` que ces blocs
+		// maintenaient a la main est desormais portee par les deux TABLES, qui
+		// nomment les memes tokens de `btn` — y compris les deux ecarts
+		// deliberes : le groupe partage un seul preset entre `text` et `plain`
+		// (il n'a jamais porte l'`opacity` de `plain`) et son `ghost` n'avait ni
+		// bloc `:hover` ni branche `@supports not`.
+		//
+		// ⛔ ET LA RECOPIE DE LARGEUR N'ALIMENTAIT RIEN. `--variant-outlined` et
+		// `--variant-ghost` ecrivaient `--origam-btn-group---border-width` « pour
+		// le calc() de rayon interieur ». Ce calc() N'EXISTE PAS : le nom
+		// `--origam-btn-group---inner-border-radius` a une seule occurrence dans
+		// tout le depot, un commentaire. Le rayon interieur vient d'`overflow:
+		// hidden` sur la racine (ci-dessus) — par la specification CSS le clip
+		// suit la courbure du PADDING-BOX, donc le navigateur derive
+		// nativement « exterieur moins largeur de bordure », a n'importe quelle
+		// epaisseur. Les deux lignes partent sans remplacement.
 
 		// A btnGroup/btnToggle reads as ONE button with internal
 		// separators — not N bordered buttons glued together. The GROUP
@@ -475,9 +434,11 @@
 			// bug). The SELECTED segment inside an `OrigamBtnToggle`
 			// keeps its own active-state background — that fill is the
 			// documented, intentional "reads as a real filled button"
-			// affordance for the current selection (see `OrigamBtn`'s
-			// `&--variant-outlined &--active` / `&--variant-tonal
-			// &--active` rules) and is NOT the bug being fixed here.
+			// affordance for the current selection — carried since ADR-005
+			// lot 4 by the `active: { … }` entries of `outlined` and `tonal`
+			// in `BTN_VARIANT_PRESETS`, where the `&--variant-outlined
+			// &--active` / `&--variant-tonal &--active` SCSS rules used to
+			// carry it — and is NOT the bug being fixed here.
 			&:not(.origam-btn--active) {
 				background-color: transparent !important;
 			}

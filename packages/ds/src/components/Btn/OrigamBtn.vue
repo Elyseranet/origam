@@ -126,7 +126,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, ref, StyleValue, toRef, useAttrs, useSlots, watchEffect } from 'vue'
+	import { computed, reactive, ref, StyleValue, useAttrs, useSlots, watchEffect } from 'vue'
 	import type { ComputedRef, ExtractPropTypes } from 'vue'
 	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
@@ -135,6 +135,7 @@
 	import OrigamSkeleton from '../Skeleton/OrigamSkeleton.vue'
 
 	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useBackdrop } from '../../composables/Commons/backdrop.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useGroupItem } from '../../composables/Commons/groupItem.composable'
@@ -167,6 +168,7 @@
 	import type { IAdjacentProps } from '../../interfaces/Commons/adjacent.interface'
 	import type { IBtnProps } from '../../interfaces/Btn/btn.interface'
 	import type { IProgressProps } from '../../interfaces/Progress/progress.interface'
+	import type { ITypographyProps } from '../../interfaces/Commons/typography.interface'
 	import type { IStatusProps } from '../../interfaces/Commons/status.interface'
 
 	import type { IBtnEmits, IBtnSlots } from '../../interfaces/Btn/btn.interface'
@@ -288,7 +290,6 @@
 	const {locationStyles} = useLocation(props)
 	const {positionClasses} = usePosition(props)
 	const {sizeClasses, sizeStyles} = useSize(props)
-	const {typographyStyles} = useTypography(props, 'btn')
 
 	/*********************************************************
 	 * Icon
@@ -314,8 +315,46 @@
 		elevationClasses, elevationStyles,
 		paddingClasses, paddingStyles,
 		marginClasses, marginStyles,
-	} = useStateEffect(props, isHover, isActive as ComputedRef<boolean>, hoverState, activeState, isDisabled, toRef(props, 'flat'))
+		opacityClasses, opacityStyles,
+		fontWeight,
+	} = useStateEffect(props, isHover, isActive as ComputedRef<boolean>, hoverState, activeState, isDisabled)
 	const {variantClasses} = useVariant(props)
+	const {backdropClasses, backdropStyles} = useBackdrop(props)
+
+	/*********************************************************
+	 * Typography
+	 *
+	 * @description
+	 * ⛔ LE SAC DE GETTERS EST CE QUI REND `fontWeight` STATE-AWARE.
+	 * `useStateEffect` RESOUT l'axe `fontWeight` (ADR-005 lot 4) mais n'emet
+	 * aucun style pour lui : emettre une declaration typographique demande le
+	 * prefixe de var du composant, que le composable ne connait pas. C'est
+	 * donc ici que le ref resolu est branche, et c'est ce qui fait que
+	 * l'etat ACTIF de `variant="tonal"` reprend le `font-weight: 600` que sa
+	 * regle SCSS declarait.
+	 *
+	 * @description
+	 * ⛔ `reactive` A ACCESSEURS `get`, jamais un litteral plat : un litteral
+	 * figerait la valeur au moment de l'appel et `useTypography` ne
+	 * recalculerait plus sur un basculement hover/active — exactement le
+	 * changement d'etat pour lequel cet axe existe. Meme piege que celui
+	 * documente sur les sacs `usePadding` / `useMargin` de
+	 * `stateEffect.composable.ts`.
+	 *
+	 * @description
+	 * Les quatre autres props typographiques ne sont PAS state-swappables
+	 * (aucune regle d'etat n'en declarait) : elles passent telles quelles.
+	 ********************************************************/
+	const {typographyStyles} = useTypography(
+		reactive({
+			get fontFamily () { return undefined },
+			get fontSize () { return props.fontSize },
+			get fontWeight () { return fontWeight.value },
+			get lineHeight () { return props.lineHeight },
+			get letterSpacing () { return props.letterSpacing },
+		}) as ITypographyProps,
+		'btn'
+	)
 	const {
 		hasAppend,
 		hasPrepend
@@ -455,6 +494,8 @@
 			roundedStyles.value,
 			sizeStyles.value,
 			elevationStyles.value,
+			opacityStyles.value,
+			backdropStyles.value,
 			typographyStyles.value,
 			props.style
 		] as StyleValue
@@ -467,10 +508,6 @@
 				'origam-btn--active': isActive.value,
 				'origam-btn--block': props.block,
 				'origam-btn--disabled': isDisabled.value,
-				// Legacy boolean shortcut — kept in v2.x. `variantClasses`
-				// emits `origam-btn--variant-flat` when `variant="flat"`,
-				// so consumers can pick either spelling.
-				'origam-btn--flat': props.flat,
 				'origam-btn--icon': !!props.icon,
 				'origam-btn--loading': loaderConfig.value.isActive,
 				// Loader-kind discriminator so SCSS can branch per kind:
@@ -490,6 +527,8 @@
 			marginClasses.value,
 			densityClasses.value,
 			elevationClasses.value,
+			opacityClasses.value,
+			backdropClasses.value,
 			loaderClasses.value,
 			positionClasses.value,
 			roundedClasses.value,
@@ -846,162 +885,26 @@
 			}
 		}
 
-		&--flat,
-		&--variant-flat {
-			box-shadow: none;
-		}
-
-		&--variant-text {
-			background-color: transparent !important;
-			box-shadow: none;
-		}
-
-		&--variant-elevated {
-			box-shadow: var(--origam-btn---box-shadow-elevated, var(--origam-shadow---md));
-		}
-
-		&--variant-tonal {
-			background-color: var(
-				--origam-btn---background-color-tonal,
-				var(--origam-color__surface---overlay)
-			) !important;
-			box-shadow: none;
-
-			// Active / selected state (e.g. inside an OrigamBtnToggle):
-			// lift the surface to the "raised" rung so the selected
-			// button is clearly distinct from the resting siblings.
-			// Three axes change on selection:
-			//   1. background → raised surface (white in light / elevated in dark)
-			//   2. box-shadow → xs shadow (segmented-control "pill" lift)
-			//   3. font-weight → semibold (label emphasis)
-			// All three are driven by theme-overridable tokens.
-			&#{$this}--active {
-				background-color: var(
-					--origam-btn---background-color-tonal-active,
-					var(--origam-color__surface---raised, var(--origam-color__surface---overlay))
-				) !important;
-				box-shadow: var(
-					--origam-btn---box-shadow-tonal-active,
-					var(--origam-shadow---xs)
-				);
-				font-weight: 600;
-			}
-		}
-
-		&--variant-outlined {
-			background-color: transparent !important;
-			border-width: var(--origam-btn---border-width-outlined, var(--origam-border__width---thin));
-			border-style: solid;
-			border-color: var(--origam-btn---border-color, currentColor);
-			box-shadow: none;
-
-			// Selected state inside an OrigamBtnToggle: the active option
-			// FILLS like a real default button (using the btn's own bg/fg
-			// tokens, so it follows color/intent and theme), while the resting
-			// siblings stay outlined. This is what makes a btn-toggle read as
-			// a row of real buttons rather than a flat segmented strip.
-			//
-			// `-background-color-active` is a DEDICATED token, separate from
-			// the plain `-background-color` one: a theme is free to keep
-			// outlined buttons unfilled at rest (background-color:
-			// transparent, e.g. a print/minimalist identity) without also
-			// erasing the active/selected indicator — the two states are
-			// no longer forced to share one token. Themes that don't
-			// declare it fall straight through to the existing behaviour
-			// (their own `-background-color`), so this is additive only.
-			//
-			// ⛔ C2 (#597) — `--origam-btn---background-color-active` reste NON
-			// DECLARE, a dessein. Son repli est le bouton general
-			// `--origam-btn---background-color`, lui DECLARE dans les feuilles et
-			// surcharge par intention / variante sur l'element. Le declarer a
-			// `:root` y substituerait la couleur RACINE une fois pour toutes :
-			// l'etat actif d'un bouton `primary` repeindrait le gris secondaire.
-			// Non declare, le repli est evalue sur l'element et suit la couleur
-			// reelle du bouton — c'est une cascade voulue, pas un oubli.
-			&#{$this}--active {
-				background-color: var(--origam-btn---background-color-active, var(--origam-btn---background-color)) !important;
-				color: var(--origam-btn---color);
-				border-color: var(--origam-btn---background-color-active, var(--origam-btn---background-color));
-			}
-		}
-
-		&--variant-plain {
-			background-color: transparent !important;
-			box-shadow: none;
-			opacity: var(--origam-btn---opacity-plain, var(--origam-opacity---70));
-
-			&:hover,
-			&:focus-visible {
-				opacity: 1;
-			}
-		}
-
-		// ⛔ C2 (#597) — les 5 tokens `ghost` lus ici restent NON DECLARES, a
-		// dessein, pour DEUX raisons independantes :
+		// ⛔ LES 7 BLOCS `&--variant-*` ONT ETE SUPPRIMES — ADR-005 D3 / D7,
+		// lot 4 (#1027). Un variant de Btn est desormais un PRESET DE PROPS :
+		// `BTN_VARIANT_PRESETS` (`consts/Btn/btn.const.ts`), resolu par le
+		// resolveur de props au rang le plus faible de la chaine. La classe
+		// `origam-btn--variant-{valeur}` reste EMISE par `useVariant()` mais le
+		// DS ne lui attache plus AUCUNE regle : elle appartient au consommateur,
+		// comme crochet d'override. Tenu par le garde `no-variant-css`, dont les
+		// 16 entrees de baseline pour ce fichier disparaissent avec ces blocs.
 		//
-		//  1. chaque repli est un `color-mix()` relatif a `currentColor` (ou a
-		//     `white`) : il doit etre evalue SUR LE BOUTON, dont la couleur
-		//     depend de l'intention. Une declaration `:root` le figerait a la
-		//     teinte racine et le verre prendrait la meme nuance partout.
-		//  2. `--origam-btn---background-color-ghost` est lu DEUX FOIS avec DEUX
-		//     replis differents (12 % ici, 18 % dans la branche
-		//     `@supports not (backdrop-filter)` plus bas). Le declarer
-		//     imposerait une seule valeur aux deux branches : c'est un choix de
-		//     design a arbitrer, pas une correction mecanique.
+		// Le selecteur combine `&--flat, &--variant-flat` est parti avec la prop
+		// booleenne `flat`, `@deprecated` et sans aucun consommateur — mesure
+		// dans l'en-tete d'`IBtnProps`.
 		//
-		// Les jumeaux `--origam-btn--ghost---{background-color,color,
-		// background-color-hover}` existent bien dans les feuilles, mais ils ne
-		// portent PAS un voile relatif : `--origam-color__action--ghost---bg` vaut
-		// `rgba(0, 0, 0, 0)` (mesure, light.css:108) et `---bgHover` un neutre
-		// OPAQUE (`neutral---100`, light.css:109). Les cabler ici supprimerait donc
-		// le voile a 12 % au repos et le remplacerait par un aplat neutre au
-		// survol : changement de rendu, pas correction. Ils restent dormants —
-		// meme arbitrage.
-		&--variant-ghost {
-			background-color: var(
-				--origam-btn---background-color-ghost,
-				color-mix(in srgb, currentColor 12%, transparent)
-			) !important;
-			border-width: var(--origam-btn---border-width-ghost, var(--origam-border__width---thin));
-			border-style: solid;
-			border-color: var(
-				--origam-btn---border-color-ghost,
-				color-mix(in srgb, currentColor 24%, transparent)
-			);
-
-			box-shadow: var(
-				--origam-btn---box-shadow-ghost,
-				0 0 0 1px color-mix(in srgb, currentColor 18%, transparent),
-				0 4px 18px 0 color-mix(in srgb, currentColor 28%, transparent),
-				0 1px 0 0 color-mix(in srgb, white 35%, transparent) inset
-			);
-
-			@supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)) {
-				backdrop-filter: var(--origam-btn---backdrop-filter-ghost, blur(8px));
-				-webkit-backdrop-filter: var(--origam-btn---backdrop-filter-ghost, blur(8px));
-			}
-
-			@supports not ((backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px))) {
-				background-color: var(
-					--origam-btn---background-color-ghost,
-					color-mix(in srgb, currentColor 18%, transparent)
-				) !important;
-			}
-
-			&:hover,
-			&:focus-visible {
-				background-color: var(
-					--origam-btn---background-color-ghost-hover,
-					color-mix(in srgb, currentColor 18%, transparent)
-				) !important;
-				box-shadow: var(
-					--origam-btn---box-shadow-ghost-hover,
-					0 0 0 1px color-mix(in srgb, currentColor 26%, transparent),
-					0 6px 24px 0 color-mix(in srgb, currentColor 40%, transparent),
-					0 1px 0 0 color-mix(in srgb, white 45%, transparent) inset
-				);
-			}
-		}
+		// ⛔ CE QUE LES 9 `!important` BATTAIENT : la declaration INLINE, et elle
+		// seule. Les quatre mesures de l'en-tete de
+		// `scripts/guards/no-variant-css.mjs` l'etablissent — contre une classe
+		// utilitaire a (0,1,0), une regle scopee a (0,2,0) gagnait DEJA sur la
+		// seule specificite. Donc `&--variant-outlined { background-color:
+		// transparent !important }` n'existait que pour empecher une prop du
+		// consommateur de repeindre le bouton : l'incident fondateur d'ADR-005.
 
 		&--block {
 			display: flex;
