@@ -435,24 +435,92 @@ export const COMPONENT_PREVIEW_ADAPTERS: Record<string, IComponentPreviewAdapter
     'bracket-round': REASON_NEEDS_PARENT,
     'infinite-scroll-intersect': REASON_RUNTIME_DATA,
     'media-controller': REASON_RUNTIME_DATA,
-    'textarea-field-rich-toolbar': REASON_RUNTIME_DATA,
+    /* `ITextareaFieldRichToolbarProps` is PLAIN DATA (an array of command
+     * string enums + an object of booleans/0-3), not a DOM element or a
+     * composable instance — unlike its two siblings above, it never needed
+     * `runtime_data`. Misclassified by analogy with its neighbours. */
+    'textarea-field-rich-toolbar': {
+        previewProps: {
+            items: ['bold', 'italic', 'underline', 'link', 'list-bullet', 'list-ordered', 'heading', 'code-inline', 'clear-format'],
+            active: { bold: true, italic: false, underline: false, code: false, link: false, listBullet: false, listOrdered: false, heading: 0 }
+        }
+    },
     video: REASON_MEDIA_SOURCE,
 
-    /* ── Overlays : la surface est téléportée hors de l'aperçu ──────────── */
-    dialog: REASON_PORTAL,
-    'dialog-confirmation': REASON_PORTAL,
-    menu: REASON_PORTAL,
+    /* ── Overlays : rendues EN PLACE via `attach` (#945) ─────────────────
+     * `IOverlayProps.attach` (vérifiée dans `overlay.interface.ts`) cible le
+     * conteneur d'aperçu lui-même : `<OrigamOverlay>` n'est alors PAS
+     * téléporté hors de la boîte. Encore faut-il que cette boîte soit une
+     * CONTAINING BLOCK pour le `position: fixed` que porte la racine de
+     * l'overlay par défaut — `.component-playground__preview` gagne
+     * `contain: layout` dans `pages/components/[slug].vue` pour cette
+     * raison précise. Les deux mesures ont été prises dans Chromium réel :
+     * DOM (`box.contains(content)`) ET rectangle visuel
+     * (`getBoundingClientRect` du contenu borné à celui de la boîte). */
+    dialog: { previewProps: { modelValue: true, attach: '.component-playground__preview', title: 'Example dialog' } },
+    'dialog-confirmation': { previewProps: { modelValue: true, attach: '.component-playground__preview', title: 'Delete item?', text: 'This action cannot be undone.' } },
+    menu: { previewProps: { modelValue: true, attach: '.component-playground__preview', items: ['One', 'Two', 'Three'] } },
+    /* Tested with `attach` — measured, Chromium: the node DOES land inside
+     * this box (`attach` reaches it exactly like `menu`, same `filterProps`
+     * exclusion list minus `attach`), but the PANEL renders with 0 items and
+     * its `.origam-overlay__content` lands outside the box regardless.
+     * Root cause is unrelated to teleporting: `OrigamContextualMenu`
+     * hardcodes `activator="cursor"` / `target="cursor"` with
+     * `locationStrategy: 'connected'`, which positions the panel from a
+     * REAL `contextmenu` mouse event's coordinates — there is none in a
+     * static preview, and `staticLocationStrategy` (the only alternative in
+     * `LOCATION_STRATEGIES`) is an empty `// TODO` stub in
+     * `utils/Commons/location.util.ts`, so there is no fallback positioning
+     * to request instead. A static props-only preview cannot simulate the
+     * right-click this component is built around — left as `needs_parent`
+     * in spirit (it needs a live interaction, not a parent), kept under
+     * `portal` for now so its wording stays accurate until the table grows
+     * a fourth reason. DS observation: `staticLocationStrategy` being an
+     * unimplemented stub is worth the owner's attention independently. */
     'contextual-menu': REASON_PORTAL,
+    /* `<OrigamCommandPalette>` hardcodes `<teleport to="body">` in its own
+     * template — no `attach`/`contained` prop exists on `ICommandPaletteProps`
+     * (confirmed: it does NOT extend `IOverlayProps`). There is no prop this
+     * table can pass to redirect it. DS observation, not fixed here. */
     'command-palette': REASON_PORTAL,
-    tooltip: REASON_PORTAL,
-    overlay: REASON_PORTAL,
-    'overlay-scrim': REASON_PORTAL,
+    tooltip: { previewProps: { modelValue: true, attach: '.component-playground__preview', text: 'Tooltip content' } },
+    overlay: { previewProps: { modelValue: true, attach: '.component-playground__preview' }, slotText: 'Overlay content' },
+    /* `<OrigamOverlayScrim>` never teleports (no `<teleport>` in its
+     * template) — it is a plain `v-if="active"` div, always rendered wherever
+     * it is mounted. It was misclassified as "portal"; it only needed
+     * `active` to stop being an empty box. */
+    'overlay-scrim': { previewProps: { active: true } },
+    /* Tested — DOES NOT reach "rendered inside this box". `OrigamDrawer`'s
+     * own `<teleport :disabled="isLayoutOrphan" :to="…">` self-disables ONLY
+     * when NO `<OrigamLayout>` ancestor exists (its own comment: "stories,
+     * modal previews, tests"). That premise is false on THIS site: the
+     * marketing app wraps EVERYTHING in one real `<OrigamLayout
+     * id="origam-app-…">` for its own chrome (app bar, etc.), so
+     * `useLayoutItem()`'s `inject(ORIGAM_LAYOUT_KEY)` always resolves to
+     * it — confirmed in Chromium: `modelValue=true` reaches the component
+     * (Vue devtools trace shows it), yet `.component-playground__preview`
+     * is left essentially empty, because the drawer teleported to
+     * `#origam-app-… .origam-layout__wrapper` instead. `layoutId` is
+     * provide/inject only — `IDrawerProps` exposes no prop to redirect it,
+     * so this table cannot fix it per-slug. A real fix would need
+     * `ComponentLivePreview` to open its own nested `<OrigamLayout>` scope
+     * per preview, which changes the shared harness for all 218 entries —
+     * out of scope here; left as a portal case with this note rather than
+     * silently "fixed". */
     drawer: REASON_PORTAL,
-    snackbar: REASON_PORTAL,
+    snackbar: { previewProps: { modelValue: true, attach: '.component-playground__preview', text: 'Saved successfully.' } },
+    /* `<OrigamSnackbarGroup>` hardcodes `<teleport to="body">` too, and
+     * `ISnackbarGroupProps` has no `attach`/`contained` prop either — same
+     * structural gap as CommandPalette. DS observation, not fixed here. */
     'snackbar-group': REASON_PORTAL,
-    snack: REASON_PORTAL,
 
     /* ── Transitions : un wrapper ne rend que son enfant ────────────────── */
+    /* `snack` (slug) = `OrigamSnack.vue`, `components/Transition/` — un
+     * wrapper de transition comme `fade` / `slide-x` ci-dessous, PAS un
+     * overlay : aucun `<teleport>` dans son template (vérifié), aucune
+     * prop `attach`. Il était classé "portal" par erreur ; il rendait une
+     * boîte vide faute de contenu de slot, exactement comme ses voisins. */
+    snack: { slotChildren: [{ tag: 'origam-card', text: 'Snack content' }] },
     transition: { slotChildren: [{ tag: 'origam-card', text: 'Transitioned content' }] },
     fade: { slotChildren: [{ tag: 'origam-card', text: 'Fading content' }] },
     'expand-x': { slotChildren: [{ tag: 'origam-card', text: 'Expanding content' }] },
