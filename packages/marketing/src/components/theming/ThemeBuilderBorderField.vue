@@ -1,3 +1,150 @@
+<template>
+  <div class="tbc-border tb-reveal">
+    <fieldset class="tbc-border__fieldset">
+      <legend class="tbc-border__legend">{{ t('theming.control.border.width_legend', 'Border — Width') }}</legend>
+
+      <origam-select
+        :model-value="selectValue"
+        :items="widthSelectItems"
+        :label="t('theming.control.border.width_legend', 'Border — Width')"
+        variant="outlined"
+        density="compact"
+        hide-details
+        :data-cy="`${dataCy}-width-select`"
+        @update:model-value="onSelectWidth"
+      />
+
+      <template v-if="isCustom">
+        <template v-if="hasSideWidthSupport">
+          <div
+            class="tbc-border__side-grid"
+            role="group"
+            :aria-label="t('theming.control.border.width_legend', 'Border — Width')"
+          >
+            <template v-if="widthLinked">
+              <origam-number-field
+                :model-value="customWidth"
+                :label="t('theming.control.border.uniform_width', 'All sides (px)')"
+                :min="0"
+                variant="outlined"
+                density="compact"
+                hide-details
+                class="tbc-border__side-uniform"
+                :data-cy="`${dataCy}-uniform-width`"
+                @update:model-value="onCustomWidth"
+              />
+            </template>
+            <template v-else>
+              <origam-number-field
+                v-for="side in SIDES"
+                :key="side.key"
+                :model-value="sideWidths[side.key]"
+                :label="t(side.labelKey, side.labelFallback)"
+                :min="0"
+                variant="outlined"
+                density="compact"
+                hide-details
+                :data-cy="`${dataCy}-side-${side.key}`"
+                @update:model-value="onSideWidth(side.key, $event)"
+              />
+            </template>
+            <origam-btn
+              :icon="widthLinked ? MDI_ICONS.LINK : MDI_ICONS.LINK_OFF"
+              :active="widthLinked"
+              variant="outlined"
+              size="x-small"
+              density="compact"
+              class="tbc-border__side-link"
+              :aria-pressed="widthLinked"
+              :aria-label="t('theming.control.border.link_sides', 'Link the 4 sides')"
+              :data-cy="`${dataCy}-width-link`"
+              @click="toggleWidthLinked"
+            />
+          </div>
+        </template>
+        <origam-number-field
+          v-else
+          :model-value="customWidth"
+          :label="t('theming.control.border.uniform_width', 'All sides (px)')"
+          :min="0"
+          variant="outlined"
+          density="compact"
+          hide-details
+          :data-cy="`${dataCy}-uniform-width`"
+          @update:model-value="onCustomWidth"
+        />
+      </template>
+    </fieldset>
+
+    <fieldset
+      v-if="styleValue !== undefined"
+      class="tbc-border__fieldset"
+    >
+      <legend class="tbc-border__legend">{{ t('theming.control.border.style_legend', 'Border — Style') }}</legend>
+      <origam-select
+        :model-value="styleSelectValue"
+        :items="styleSelectItems"
+        :label="t('theming.control.border.style_legend', 'Border — Style')"
+        variant="outlined"
+        density="compact"
+        hide-details
+        :data-cy="`${dataCy}-style-select`"
+        @update:model-value="onSelectStyle"
+      />
+    </fieldset>
+
+    <fieldset
+      v-if="colorValue !== undefined"
+      class="tbc-border__fieldset"
+    >
+      <legend class="tbc-border__legend">{{ t('theming.control.border.color_legend', 'Border — Colour') }}</legend>
+
+      <origam-btn
+        v-if="hasSideColorSupport"
+        variant="text"
+        size="x-small"
+        density="compact"
+        :prepend-icon="colorLinked ? MDI_ICONS.LINK : MDI_ICONS.LINK_OFF"
+        class="tbc-border__color-toggle"
+        :aria-pressed="!colorLinked"
+        :data-cy="`${dataCy}-color-toggle`"
+        @click="toggleColorLinked"
+      >
+        {{ colorLinked
+        ? t('theming.control.border.color_per_side', 'Colour per side')
+        : t('theming.control.border.color_global', 'Single colour') }}
+      </origam-btn>
+
+      <theme-builder-color-picker
+        v-if="colorLinked"
+        :model-value="colorValue"
+        :label="t('theming.control.border.color_legend', 'Border — Colour')"
+        :data-cy="`${dataCy}-color`"
+        @update:model-value="onColorUpdate"
+      />
+
+      <div
+        v-else
+        class="tbc-border__side-color-grid"
+      >
+        <div
+          v-for="side in SIDES"
+          :key="side.key"
+          class="tbc-border__side-color"
+        >
+          <span class="tbc-border__side-color-label">{{ t(side.labelKey, side.labelFallback).replace(' (px)', '') }}</span>
+          <theme-builder-color-field
+            :model-value="sideColorValue(side.key)"
+            :label="t(side.labelKey, side.labelFallback).replace(' (px)', '')"
+            :data-cy="`${dataCy}-side-color-${side.key}`"
+            @update:model-value="onSideColorUpdate(side.key, $event)"
+          />
+        </div>
+      </div>
+    </fieldset>
+  </div>
+</template>
+
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 
@@ -137,153 +284,6 @@ const sideColorValue = (side: TThemeBuilderBorderSide): unknown => {
     return props.leftColorValue
 }
 </script>
-
-<template>
-    <div class="tbc-border tb-reveal">
-        <fieldset class="tbc-border__fieldset">
-            <legend class="tbc-border__legend">{{ t('theming.control.border.width_legend', 'Border — Width') }}</legend>
-
-            <origam-select
-                :model-value="selectValue"
-                :items="widthSelectItems"
-                :label="t('theming.control.border.width_legend', 'Border — Width')"
-                variant="outlined"
-                density="compact"
-                hide-details
-                :data-cy="`${dataCy}-width-select`"
-                @update:model-value="onSelectWidth"
-            />
-
-            <template v-if="isCustom">
-                <template v-if="hasSideWidthSupport">
-                    <div
-                        class="tbc-border__side-grid"
-                        role="group"
-                        :aria-label="t('theming.control.border.width_legend', 'Border — Width')"
-                    >
-                        <template v-if="widthLinked">
-                            <origam-number-field
-                                :model-value="customWidth"
-                                :label="t('theming.control.border.uniform_width', 'All sides (px)')"
-                                :min="0"
-                                variant="outlined"
-                                density="compact"
-                                hide-details
-                                class="tbc-border__side-uniform"
-                                :data-cy="`${dataCy}-uniform-width`"
-                                @update:model-value="onCustomWidth"
-                            />
-                        </template>
-                        <template v-else>
-                            <origam-number-field
-                                v-for="side in SIDES"
-                                :key="side.key"
-                                :model-value="sideWidths[side.key]"
-                                :label="t(side.labelKey, side.labelFallback)"
-                                :min="0"
-                                variant="outlined"
-                                density="compact"
-                                hide-details
-                                :data-cy="`${dataCy}-side-${side.key}`"
-                                @update:model-value="onSideWidth(side.key, $event)"
-                            />
-                        </template>
-                        <origam-btn
-                            :icon="widthLinked ? MDI_ICONS.LINK : MDI_ICONS.LINK_OFF"
-                            :active="widthLinked"
-                            variant="outlined"
-                            size="x-small"
-                            density="compact"
-                            class="tbc-border__side-link"
-                            :aria-pressed="widthLinked"
-                            :aria-label="t('theming.control.border.link_sides', 'Link the 4 sides')"
-                            :data-cy="`${dataCy}-width-link`"
-                            @click="toggleWidthLinked"
-                        />
-                    </div>
-                </template>
-                <origam-number-field
-                    v-else
-                    :model-value="customWidth"
-                    :label="t('theming.control.border.uniform_width', 'All sides (px)')"
-                    :min="0"
-                    variant="outlined"
-                    density="compact"
-                    hide-details
-                    :data-cy="`${dataCy}-uniform-width`"
-                    @update:model-value="onCustomWidth"
-                />
-            </template>
-        </fieldset>
-
-        <fieldset
-            v-if="styleValue !== undefined"
-            class="tbc-border__fieldset"
-        >
-            <legend class="tbc-border__legend">{{ t('theming.control.border.style_legend', 'Border — Style') }}</legend>
-            <origam-select
-                :model-value="styleSelectValue"
-                :items="styleSelectItems"
-                :label="t('theming.control.border.style_legend', 'Border — Style')"
-                variant="outlined"
-                density="compact"
-                hide-details
-                :data-cy="`${dataCy}-style-select`"
-                @update:model-value="onSelectStyle"
-            />
-        </fieldset>
-
-        <fieldset
-            v-if="colorValue !== undefined"
-            class="tbc-border__fieldset"
-        >
-            <legend class="tbc-border__legend">{{ t('theming.control.border.color_legend', 'Border — Colour') }}</legend>
-
-            <origam-btn
-                v-if="hasSideColorSupport"
-                variant="text"
-                size="x-small"
-                density="compact"
-                :prepend-icon="colorLinked ? MDI_ICONS.LINK : MDI_ICONS.LINK_OFF"
-                class="tbc-border__color-toggle"
-                :aria-pressed="!colorLinked"
-                :data-cy="`${dataCy}-color-toggle`"
-                @click="toggleColorLinked"
-            >
-                {{ colorLinked
-                    ? t('theming.control.border.color_per_side', 'Colour per side')
-                    : t('theming.control.border.color_global', 'Single colour') }}
-            </origam-btn>
-
-            <theme-builder-color-picker
-                v-if="colorLinked"
-                :model-value="colorValue"
-                :label="t('theming.control.border.color_legend', 'Border — Colour')"
-                :data-cy="`${dataCy}-color`"
-                @update:model-value="onColorUpdate"
-            />
-
-            <div
-                v-else
-                class="tbc-border__side-color-grid"
-            >
-                <div
-                    v-for="side in SIDES"
-                    :key="side.key"
-                    class="tbc-border__side-color"
-                >
-                    <span class="tbc-border__side-color-label">{{ t(side.labelKey, side.labelFallback).replace(' (px)', '') }}</span>
-                    <theme-builder-color-field
-                        :model-value="sideColorValue(side.key)"
-                        :label="t(side.labelKey, side.labelFallback).replace(' (px)', '')"
-                        :data-cy="`${dataCy}-side-color-${side.key}`"
-                        @update:model-value="onSideColorUpdate(side.key, $event)"
-                    />
-                </div>
-            </div>
-        </fieldset>
-    </div>
-</template>
 
 <style scoped lang="scss">
 .tbc-border {

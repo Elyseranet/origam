@@ -1,3 +1,64 @@
+<template>
+  <origam-text-field
+    :model-value="valueLabel"
+    :label="label"
+    :title="valueLabel"
+    variant="outlined"
+    density="compact"
+    width="100%"
+    readonly
+    hide-details
+    role="button"
+    aria-haspopup="dialog"
+    :aria-expanded="open ? 'true' : 'false'"
+    class="tbc-trigger"
+    :class="{ 'tbc-trigger--hint': hint }"
+    :aria-label="label"
+    :data-cy="`${dataCy}-trigger`"
+    @mousedown:control="handleMousedownControl"
+  >
+    <template
+      v-if="swatch"
+      #prependInner
+    >
+            <span
+              class="tbc-trigger__swatch"
+              :class="swatchClass"
+              :style="swatchStyle"
+              aria-hidden="true"
+            />
+    </template>
+
+    <template #default>
+      <origam-menu
+        v-model="open"
+        :close-on-content-click="false"
+        :open-on-click="false"
+        activator="parent"
+        location="bottom"
+        class="tbc-menu"
+      >
+        <template #default>
+          <div
+            class="tbc-popover"
+            :data-cy="`${dataCy}-popover`"
+          >
+            <slot />
+          </div>
+        </template>
+      </origam-menu>
+    </template>
+
+    <template #appendInner>
+      <origam-icon
+        :icon="MDI_ICONS.CHEVRON_DOWN"
+        class="tbc-trigger__menu-icon"
+        aria-hidden="true"
+      />
+    </template>
+  </origam-text-field>
+</template>
+
 <script setup lang="ts">
 import { MDI_ICONS } from 'origam/enums'
 
@@ -41,67 +102,6 @@ const handleMousedownControl = (): void => {
     open.value = !open.value
 }
 </script>
-
-<template>
-    <origam-text-field
-        :model-value="valueLabel"
-        :label="label"
-        :title="valueLabel"
-        variant="outlined"
-        density="compact"
-        width="100%"
-        readonly
-        hide-details
-        role="button"
-        aria-haspopup="dialog"
-        :aria-expanded="open ? 'true' : 'false'"
-        class="tbc-trigger"
-        :class="{ 'tbc-trigger--hint': hint }"
-        :aria-label="label"
-        :data-cy="`${dataCy}-trigger`"
-        @mousedown:control="handleMousedownControl"
-    >
-        <template
-            v-if="swatch"
-            #prependInner
-        >
-            <span
-                class="tbc-trigger__swatch"
-                :class="swatchClass"
-                :style="swatchStyle"
-                aria-hidden="true"
-            />
-        </template>
-
-        <template #default>
-            <origam-menu
-                v-model="open"
-                :close-on-content-click="false"
-                :open-on-click="false"
-                activator="parent"
-                location="bottom"
-                class="tbc-menu"
-            >
-                <template #default>
-                    <div
-                        class="tbc-popover"
-                        :data-cy="`${dataCy}-popover`"
-                    >
-                        <slot />
-                    </div>
-                </template>
-            </origam-menu>
-        </template>
-
-        <template #appendInner>
-            <origam-icon
-                :icon="MDI_ICONS.CHEVRON_DOWN"
-                class="tbc-trigger__menu-icon"
-                aria-hidden="true"
-            />
-        </template>
-    </origam-text-field>
-</template>
 
 <style scoped lang="scss">
 .tbc-trigger {

@@ -1,3 +1,200 @@
+<template>
+  <article
+    class="interfaces-catalog"
+    data-cy="page-interfaces"
+  >
+    <section
+      class="interfaces-hero"
+      aria-labelledby="interfaces-title"
+    >
+      <origam-container class="interfaces-hero__inner">
+        <origam-chip
+          class="interfaces-hero__badge"
+          color="primary"
+          border
+          border-color="var(--origam-color__action--primary---bg)"
+          size="small"
+          pill
+          data-cy="interfaces-hero-badge"
+        >
+          {{ t('interfaces.hero.badge', 'TypeScript interfaces') }}
+        </origam-chip>
+
+        <origam-title
+          id="interfaces-title"
+          tag="h1"
+          class="interfaces-hero__title"
+        >
+          <span class="interfaces-hero__title-line">{{ t('interfaces.hero.title_line1', 'API') }}</span>
+          <span class="interfaces-hero__title-line interfaces-hero__title-line--accent">{{ t('interfaces.hero.title_line2', 'interfaces.') }}</span>
+        </origam-title>
+
+        <p class="interfaces-hero__subtitle">
+          {{ t('interfaces.hero.subtitle', 'Every prop interface used across origam components. Fully documented with definitions, properties, extends chains and cross-references to the components that use them.') }}
+        </p>
+
+        <origam-text-field
+          v-model="searchQuery"
+          class="interfaces-hero__search"
+          prepend-inner-icon="mdi-magnify"
+          :placeholder="t('interfaces.hero.search_placeholder', 'Search interfaces…')"
+          :aria-label="t('interfaces.hero.search_label', 'Filter interfaces by name or category')"
+          clearable
+          rounded="lg"
+          variant="outlined"
+          data-cy="interfaces-search"
+        />
+
+        <p
+          class="interfaces-hero__count"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <template v-if="isFiltering">
+            {{ filteredCount }} {{ t('interfaces.hero.count_filtered_of', 'of') }} {{ totalCount }} {{ t('interfaces.hero.count_filtered_match', 'interfaces match') }}
+          </template>
+          <template v-else>
+            {{ totalCount }} {{ t('interfaces.hero.count_total', 'interfaces across') }} {{ interfacesCategories.length }} {{ t('interfaces.hero.count_categories', 'categories') }}
+          </template>
+        </p>
+      </origam-container>
+    </section>
+
+    <section
+      class="interfaces-grid-section"
+      aria-labelledby="interfaces-grid-title"
+      data-cy="interfaces-grid"
+    >
+      <origam-container>
+        <header class="interfaces-grid-section__header">
+          <p class="interfaces-section__eyebrow">
+            {{ t('interfaces.catalog.eyebrow', 'BROWSE BY CATEGORY') }}
+          </p>
+
+          <origam-title
+            id="interfaces-grid-title"
+            tag="h2"
+            class="interfaces-section__title interfaces-section__title--single"
+          >
+            {{ t('interfaces.catalog.title', 'All interfaces.') }}
+          </origam-title>
+        </header>
+
+        <div
+          v-if="isFiltering && filteredCount === 0"
+          class="interfaces-empty"
+          role="status"
+          data-cy="interfaces-empty"
+        >
+          <origam-icon
+            icon="mdi-magnify-remove-outline"
+            class="interfaces-empty__icon"
+            aria-hidden="true"
+          />
+
+          <origam-title
+            tag="h3"
+            class="interfaces-empty__title"
+          >
+            {{ t('interfaces.catalog.empty_title', 'No interfaces found') }}
+          </origam-title>
+
+          <p class="interfaces-empty__desc">
+            {{ t('interfaces.catalog.empty_desc', 'No interface matches "{query}". Try a different term.', { query: searchQuery }) }}
+          </p>
+        </div>
+
+        <div
+          v-for="group in groupedByCategory"
+          :key="group.category"
+          class="interfaces-category"
+          :data-cy="`interfaces-category-${group.category.toLowerCase().replace(/[^a-z0-9]/g, '-')}`"
+        >
+          <header class="interfaces-category__header">
+            <origam-title
+              tag="h3"
+              class="interfaces-category__title"
+            >
+              {{ group.category }}
+            </origam-title>
+
+            <origam-chip
+              size="small"
+              pill
+              class="interfaces-category__count-chip"
+            >
+              {{ group.entries.length }}
+            </origam-chip>
+          </header>
+
+          <origam-grid
+            tag="ul"
+            columns="repeat(auto-fill, minmax(240px, 1fr))"
+            gap="1rem"
+            class="interfaces-category__grid"
+          >
+            <origam-grid-item
+              v-for="entry in group.entries"
+              :key="entry.slug"
+              tag="li"
+              class="interfaces-catalog-item"
+            >
+              <nuxt-link
+                :to="`/interfaces/${entry.slug}`"
+                class="interfaces-catalog-card__link"
+                :aria-label="`${entry.name} — ${t(entry.descriptionKey, entry.descriptionFallback)}`"
+                :data-cy="`interfaces-card-${entry.slug}`"
+              >
+                <origam-card
+                  rounded="lg"
+                  class="interfaces-catalog-card"
+                >
+                  <template #default>
+                    <div class="interfaces-catalog-card__inner">
+                      <div class="interfaces-catalog-card__header">
+                        <origam-avatar
+                          :icon="entry.icon"
+                          color="primary"
+                          rounded="lg"
+                          size="40"
+                          class="interfaces-catalog-card__avatar"
+                          aria-hidden="true"
+                        />
+
+                        <origam-title
+                          tag="h4"
+                          class="interfaces-catalog-card__name"
+                        >
+                          {{ entry.name }}
+                        </origam-title>
+
+                        <origam-chip
+                          color="primary"
+                          size="x-small"
+                          variant="tonal"
+                          pill
+                          class="interfaces-catalog-card__kind-chip"
+                          :aria-label="t('interfaces.kind.interface', 'interface')"
+                        >
+                          {{ t('interfaces.kind.interface', 'interface') }}
+                        </origam-chip>
+                      </div>
+
+                      <p class="interfaces-catalog-card__desc">
+                        {{ t(entry.descriptionKey, entry.descriptionFallback) }}
+                      </p>
+                    </div>
+                  </template>
+                </origam-card>
+              </nuxt-link>
+            </origam-grid-item>
+          </origam-grid>
+        </div>
+      </origam-container>
+    </section>
+  </article>
+</template>
+
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useT } from '~/composables/useT'
@@ -44,203 +241,6 @@ const totalCount = computed(() => interfacesCatalog.value.length)
 const filteredCount = computed(() => filteredEntries.value.length)
 const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 </script>
-
-<template>
-    <article
-        class="interfaces-catalog"
-        data-cy="page-interfaces"
-    >
-        <section
-            class="interfaces-hero"
-            aria-labelledby="interfaces-title"
-        >
-            <origam-container class="interfaces-hero__inner">
-                <origam-chip
-                    class="interfaces-hero__badge"
-                    color="primary"
-                    border
-                    border-color="var(--origam-color__action--primary---bg)"
-                    size="small"
-                    pill
-                    data-cy="interfaces-hero-badge"
-                >
-                    {{ t('interfaces.hero.badge', 'TypeScript interfaces') }}
-                </origam-chip>
-
-                <origam-title
-                    id="interfaces-title"
-                    tag="h1"
-                    class="interfaces-hero__title"
-                >
-                    <span class="interfaces-hero__title-line">{{ t('interfaces.hero.title_line1', 'API') }}</span>
-                    <span class="interfaces-hero__title-line interfaces-hero__title-line--accent">{{ t('interfaces.hero.title_line2', 'interfaces.') }}</span>
-                </origam-title>
-
-                <p class="interfaces-hero__subtitle">
-                    {{ t('interfaces.hero.subtitle', 'Every prop interface used across origam components. Fully documented with definitions, properties, extends chains and cross-references to the components that use them.') }}
-                </p>
-
-                <origam-text-field
-                    v-model="searchQuery"
-                    class="interfaces-hero__search"
-                    prepend-inner-icon="mdi-magnify"
-                    :placeholder="t('interfaces.hero.search_placeholder', 'Search interfaces…')"
-                    :aria-label="t('interfaces.hero.search_label', 'Filter interfaces by name or category')"
-                    clearable
-                    rounded="lg"
-                    variant="outlined"
-                    data-cy="interfaces-search"
-                />
-
-                <p
-                    class="interfaces-hero__count"
-                    aria-live="polite"
-                    aria-atomic="true"
-                >
-                    <template v-if="isFiltering">
-                        {{ filteredCount }} {{ t('interfaces.hero.count_filtered_of', 'of') }} {{ totalCount }} {{ t('interfaces.hero.count_filtered_match', 'interfaces match') }}
-                    </template>
-                    <template v-else>
-                        {{ totalCount }} {{ t('interfaces.hero.count_total', 'interfaces across') }} {{ interfacesCategories.length }} {{ t('interfaces.hero.count_categories', 'categories') }}
-                    </template>
-                </p>
-            </origam-container>
-        </section>
-
-        <section
-            class="interfaces-grid-section"
-            aria-labelledby="interfaces-grid-title"
-            data-cy="interfaces-grid"
-        >
-            <origam-container>
-                <header class="interfaces-grid-section__header">
-                    <p class="interfaces-section__eyebrow">
-                        {{ t('interfaces.catalog.eyebrow', 'BROWSE BY CATEGORY') }}
-                    </p>
-
-                    <origam-title
-                        id="interfaces-grid-title"
-                        tag="h2"
-                        class="interfaces-section__title interfaces-section__title--single"
-                    >
-                        {{ t('interfaces.catalog.title', 'All interfaces.') }}
-                    </origam-title>
-                </header>
-
-                <div
-                    v-if="isFiltering && filteredCount === 0"
-                    class="interfaces-empty"
-                    role="status"
-                    data-cy="interfaces-empty"
-                >
-                    <origam-icon
-                        icon="mdi-magnify-remove-outline"
-                        class="interfaces-empty__icon"
-                        aria-hidden="true"
-                    />
-
-                    <origam-title
-                        tag="h3"
-                        class="interfaces-empty__title"
-                    >
-                        {{ t('interfaces.catalog.empty_title', 'No interfaces found') }}
-                    </origam-title>
-
-                    <p class="interfaces-empty__desc">
-                        {{ t('interfaces.catalog.empty_desc', 'No interface matches "{query}". Try a different term.', { query: searchQuery }) }}
-                    </p>
-                </div>
-
-                <div
-                    v-for="group in groupedByCategory"
-                    :key="group.category"
-                    class="interfaces-category"
-                    :data-cy="`interfaces-category-${group.category.toLowerCase().replace(/[^a-z0-9]/g, '-')}`"
-                >
-                    <header class="interfaces-category__header">
-                        <origam-title
-                            tag="h3"
-                            class="interfaces-category__title"
-                        >
-                            {{ group.category }}
-                        </origam-title>
-
-                        <origam-chip
-                            size="small"
-                            pill
-                            class="interfaces-category__count-chip"
-                        >
-                            {{ group.entries.length }}
-                        </origam-chip>
-                    </header>
-
-                    <origam-grid
-                        tag="ul"
-                        columns="repeat(auto-fill, minmax(240px, 1fr))"
-                        gap="1rem"
-                        class="interfaces-category__grid"
-                    >
-                        <origam-grid-item
-                            v-for="entry in group.entries"
-                            :key="entry.slug"
-                            tag="li"
-                            class="interfaces-catalog-item"
-                        >
-                            <nuxt-link
-                                :to="`/interfaces/${entry.slug}`"
-                                class="interfaces-catalog-card__link"
-                                :aria-label="`${entry.name} — ${t(entry.descriptionKey, entry.descriptionFallback)}`"
-                                :data-cy="`interfaces-card-${entry.slug}`"
-                            >
-                                <origam-card
-                                    rounded="lg"
-                                    class="interfaces-catalog-card"
-                                >
-                                    <template #default>
-                                        <div class="interfaces-catalog-card__inner">
-                                            <div class="interfaces-catalog-card__header">
-                                                <origam-avatar
-                                                    :icon="entry.icon"
-                                                    color="primary"
-                                                    rounded="lg"
-                                                    size="40"
-                                                    class="interfaces-catalog-card__avatar"
-                                                    aria-hidden="true"
-                                                />
-
-                                                <origam-title
-                                                    tag="h4"
-                                                    class="interfaces-catalog-card__name"
-                                                >
-                                                    {{ entry.name }}
-                                                </origam-title>
-
-                                                <origam-chip
-                                                    color="primary"
-                                                    size="x-small"
-                                                    variant="tonal"
-                                                    pill
-                                                    class="interfaces-catalog-card__kind-chip"
-                                                    :aria-label="t('interfaces.kind.interface', 'interface')"
-                                                >
-                                                    {{ t('interfaces.kind.interface', 'interface') }}
-                                                </origam-chip>
-                                            </div>
-
-                                            <p class="interfaces-catalog-card__desc">
-                                                {{ t(entry.descriptionKey, entry.descriptionFallback) }}
-                                            </p>
-                                        </div>
-                                    </template>
-                                </origam-card>
-                            </nuxt-link>
-                        </origam-grid-item>
-                    </origam-grid>
-                </div>
-            </origam-container>
-        </section>
-    </article>
-</template>
 
 <style scoped lang="scss">
 .interfaces-catalog {

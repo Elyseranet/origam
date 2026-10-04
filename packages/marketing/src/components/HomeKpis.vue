@@ -1,56 +1,56 @@
+<template>
+  <section
+    id="kpis"
+    class="home-kpis"
+    aria-labelledby="kpis-title"
+  >
+    <h2
+      id="kpis-title"
+      class="home-kpis__title sr-only"
+    >
+      {{ t('home.kpis.title', 'origam by the numbers') }}
+    </h2>
+
+    <origam-divider
+      color="var(--origam-color__border---default)"
+      :style="KPIS_RULE_VARS"
+      data-cy="kpis-rule-top"
+    />
+
+    <origam-grid
+      tag="dl"
+      :columns="KPIS_GRID_COLUMNS"
+      gap="lg"
+      class="home-kpis__list"
+    >
+      <div
+        v-for="kpi in KPIS"
+        :key="kpi.valueKey"
+        class="home-kpis__item"
+      >
+        <dt class="home-kpis__label">
+          {{ t(kpi.labelKey, kpi.labelFallback) }}
+        </dt>
+        <dd class="home-kpis__value">
+          {{ t(kpi.valueKey, kpi.valueFallback) }}
+        </dd>
+      </div>
+    </origam-grid>
+
+    <origam-divider
+      color="var(--origam-color__border---default)"
+      :style="KPIS_RULE_VARS"
+      data-cy="kpis-rule-bottom"
+    />
+  </section>
+</template>
+
 <script setup lang="ts">
 import { useT } from '~/composables/useT'
 import { KPIS, KPIS_GRID_COLUMNS, KPIS_RULE_VARS } from '~/consts/kpis.const'
 
 const { t } = useT()
 </script>
-
-<template>
-    <section
-        id="kpis"
-        class="home-kpis"
-        aria-labelledby="kpis-title"
-    >
-        <h2
-            id="kpis-title"
-            class="home-kpis__title sr-only"
-        >
-            {{ t('home.kpis.title', 'origam by the numbers') }}
-        </h2>
-
-        <origam-divider
-            color="var(--origam-color__border---default)"
-            :style="KPIS_RULE_VARS"
-            data-cy="kpis-rule-top"
-        />
-
-        <origam-grid
-            tag="dl"
-            :columns="KPIS_GRID_COLUMNS"
-            gap="lg"
-            class="home-kpis__list"
-        >
-            <div
-                v-for="kpi in KPIS"
-                :key="kpi.valueKey"
-                class="home-kpis__item"
-            >
-                <dt class="home-kpis__label">
-                    {{ t(kpi.labelKey, kpi.labelFallback) }}
-                </dt>
-                <dd class="home-kpis__value">
-                    {{ t(kpi.valueKey, kpi.valueFallback) }}
-                </dd>
-            </div>
-        </origam-grid>
-
-        <origam-divider
-            color="var(--origam-color__border---default)"
-            :style="KPIS_RULE_VARS"
-            data-cy="kpis-rule-bottom"
-        />
-    </section>
-</template>
 
 <style scoped lang="scss">
 .home-kpis {

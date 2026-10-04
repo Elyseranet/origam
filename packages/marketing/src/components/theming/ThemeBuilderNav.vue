@@ -1,3 +1,99 @@
+<template>
+  <nav
+    class="tb-nav"
+    :aria-label="navLabel"
+    data-cy="theming-nav"
+  >
+    <div class="tb-nav__search-wrap">
+      <origam-text-field
+        v-model="query"
+        type="search"
+        variant="outlined"
+        density="compact"
+        hide-details
+        prepend-inner-icon="mdi-magnify"
+        :placeholder="searchLabel"
+        :aria-label="searchLabel"
+        class="tb-nav__search"
+        data-cy="theming-nav-search"
+      />
+    </div>
+
+    <div
+      class="tb-nav__scroll"
+      data-cy="theming-nav-scroll"
+    >
+      <p
+        v-if="filteredCategories.length === 0"
+        class="tb-nav__empty"
+        data-cy="theming-nav-empty"
+      >
+        {{ t('theming.nav.no_result', 'No component matches “{query}”.', { query }) }}
+      </p>
+
+      <section
+        v-for="cat in filteredCategories"
+        :key="cat.meta.id"
+        class="tb-nav__cat"
+        :class="{ 'tb-nav__cat--open': isOpen(cat.meta.id) }"
+        :data-cy="`theming-nav-cat-${cat.meta.id}`"
+      >
+        <button
+          type="button"
+          class="tb-nav__cat-toggle"
+          :aria-expanded="isOpen(cat.meta.id)"
+          :data-cy="`theming-nav-cat-toggle-${cat.meta.id}`"
+          @click="toggleCategory(cat.meta.id)"
+        >
+          <span class="tb-nav__cat-count">{{ cat.components.length }}</span>
+          <span class="tb-nav__cat-name">{{ catLabel(cat) }}</span>
+          <origam-icon
+            icon="mdi-chevron-right"
+            size="x-small"
+            class="tb-nav__cat-chevron"
+          />
+        </button>
+
+        <ul
+          v-show="isOpen(cat.meta.id)"
+          class="tb-nav__items"
+        >
+          <li
+            v-for="entry in cat.components"
+            :key="entry.slug"
+          >
+            <button
+              type="button"
+              class="tb-nav__item"
+              :class="{ 'tb-nav__item--active': entry.slug === activeSlug }"
+              :aria-current="entry.slug === activeSlug ? 'true' : undefined"
+              :data-cy="`theming-nav-item-${entry.slug}`"
+              @click="onSelect(entry)"
+            >
+              <origam-icon
+                :icon="entry.icon"
+                size="x-small"
+                class="tb-nav__item-icon"
+              />
+              <span class="tb-nav__item-name">{{ entry.name }}</span>
+              <span
+                v-if="entry.previewable"
+                class="tb-nav__item-flag"
+                :aria-label="t('theming.nav.previewable', 'Live preview available')"
+                :title="t('theming.nav.previewable', 'Live preview available')"
+              />
+            </button>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <p class="tb-nav__footer">
+      {{ t('theming.nav.total', '{count} components', { count: totalCount }) }}
+    </p>
+  </nav>
+</template>
+
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 
@@ -79,102 +175,6 @@ const catLabel = (cat: IThemeBuilderNavCategory): string =>
 const searchLabel = computed(() => t('theming.nav.search', 'Search component…'))
 const navLabel = computed(() => t('theming.nav.label', 'Components'))
 </script>
-
-<template>
-    <nav
-        class="tb-nav"
-        :aria-label="navLabel"
-        data-cy="theming-nav"
-    >
-        <div class="tb-nav__search-wrap">
-            <origam-text-field
-                v-model="query"
-                type="search"
-                variant="outlined"
-                density="compact"
-                hide-details
-                prepend-inner-icon="mdi-magnify"
-                :placeholder="searchLabel"
-                :aria-label="searchLabel"
-                class="tb-nav__search"
-                data-cy="theming-nav-search"
-            />
-        </div>
-
-        <div
-            class="tb-nav__scroll"
-            data-cy="theming-nav-scroll"
-        >
-            <p
-                v-if="filteredCategories.length === 0"
-                class="tb-nav__empty"
-                data-cy="theming-nav-empty"
-            >
-                {{ t('theming.nav.no_result', 'No component matches “{query}”.', { query }) }}
-            </p>
-
-            <section
-                v-for="cat in filteredCategories"
-                :key="cat.meta.id"
-                class="tb-nav__cat"
-                :class="{ 'tb-nav__cat--open': isOpen(cat.meta.id) }"
-                :data-cy="`theming-nav-cat-${cat.meta.id}`"
-            >
-                <button
-                    type="button"
-                    class="tb-nav__cat-toggle"
-                    :aria-expanded="isOpen(cat.meta.id)"
-                    :data-cy="`theming-nav-cat-toggle-${cat.meta.id}`"
-                    @click="toggleCategory(cat.meta.id)"
-                >
-                    <span class="tb-nav__cat-count">{{ cat.components.length }}</span>
-                    <span class="tb-nav__cat-name">{{ catLabel(cat) }}</span>
-                    <origam-icon
-                        icon="mdi-chevron-right"
-                        size="x-small"
-                        class="tb-nav__cat-chevron"
-                    />
-                </button>
-
-                <ul
-                    v-show="isOpen(cat.meta.id)"
-                    class="tb-nav__items"
-                >
-                    <li
-                        v-for="entry in cat.components"
-                        :key="entry.slug"
-                    >
-                        <button
-                            type="button"
-                            class="tb-nav__item"
-                            :class="{ 'tb-nav__item--active': entry.slug === activeSlug }"
-                            :aria-current="entry.slug === activeSlug ? 'true' : undefined"
-                            :data-cy="`theming-nav-item-${entry.slug}`"
-                            @click="onSelect(entry)"
-                        >
-                            <origam-icon
-                                :icon="entry.icon"
-                                size="x-small"
-                                class="tb-nav__item-icon"
-                            />
-                            <span class="tb-nav__item-name">{{ entry.name }}</span>
-                            <span
-                                v-if="entry.previewable"
-                                class="tb-nav__item-flag"
-                                :aria-label="t('theming.nav.previewable', 'Live preview available')"
-                                :title="t('theming.nav.previewable', 'Live preview available')"
-                            />
-                        </button>
-                    </li>
-                </ul>
-            </section>
-        </div>
-
-        <p class="tb-nav__footer">
-            {{ t('theming.nav.total', '{count} components', { count: totalCount }) }}
-        </p>
-    </nav>
-</template>
 
 <style scoped lang="scss">
 .tb-nav {

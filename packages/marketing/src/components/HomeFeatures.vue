@@ -1,3 +1,73 @@
+<template>
+  <section
+    class="home-features"
+    aria-labelledby="features-title"
+  >
+    <header class="home-features__header">
+      <p class="home-features__eyebrow">
+        {{ t('home.features.eyebrow', "WHAT'S INSIDE") }}
+      </p>
+
+      <origam-title
+        id="features-title"
+        tag="h2"
+        class="home-features__title"
+      >
+        <span class="home-features__title-line">{{ t('home.features.title_line1', `Everything you'd expect.`) }}</span>
+        <span class="home-features__title-line home-features__title-line--muted">{{ t('home.features.title_line2', `Nothing you wouldn't.`) }}</span>
+      </origam-title>
+
+      <p class="home-features__subtitle">
+        {{ t('home.features.subtitle', 'A complete toolkit for shipping Vue 3 apps — from atomic primitives to complex data viz, every piece tested, themed and a11y-compliant.') }}
+      </p>
+    </header>
+
+    <origam-grid
+      tag="ul"
+      :columns="FEATURES_GRID_COLUMNS"
+      gap="0"
+      class="home-features__grid"
+    >
+      <origam-grid-item
+        v-for="feature in features"
+        :key="feature.titleKey"
+        tag="li"
+        class="home-features__item"
+      >
+        <origam-card
+          tag="article"
+          flat
+          rounded="none"
+          :elevation="undefined"
+          :border="false"
+          :style="FEATURE_CARD_VARS"
+          class="home-features__card"
+        >
+          <origam-avatar
+            :icon="feature.icon"
+            color="primary"
+            :style="FEATURE_ICON_TILE_VARS"
+            :size="44"
+            class="home-features__icon-tile"
+            aria-hidden="true"
+          />
+
+          <origam-title
+            tag="h3"
+            class="home-features__card-title"
+          >
+            {{ t(feature.titleKey, feature.titleKey) }}
+          </origam-title>
+
+          <p class="home-features__card-desc">
+            {{ t(feature.descriptionKey, feature.descriptionKey) }}
+          </p>
+        </origam-card>
+      </origam-grid-item>
+    </origam-grid>
+  </section>
+</template>
+
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useT } from '~/composables/useT'
@@ -12,76 +82,6 @@ const { t } = useT()
 
 const features = computed(() => FEATURES)
 </script>
-
-<template>
-    <section
-        class="home-features"
-        aria-labelledby="features-title"
-    >
-        <header class="home-features__header">
-            <p class="home-features__eyebrow">
-                {{ t('home.features.eyebrow', "WHAT'S INSIDE") }}
-            </p>
-
-            <origam-title
-                id="features-title"
-                tag="h2"
-                class="home-features__title"
-            >
-                <span class="home-features__title-line">{{ t('home.features.title_line1', `Everything you'd expect.`) }}</span>
-                <span class="home-features__title-line home-features__title-line--muted">{{ t('home.features.title_line2', `Nothing you wouldn't.`) }}</span>
-            </origam-title>
-
-            <p class="home-features__subtitle">
-                {{ t('home.features.subtitle', 'A complete toolkit for shipping Vue 3 apps — from atomic primitives to complex data viz, every piece tested, themed and a11y-compliant.') }}
-            </p>
-        </header>
-
-        <origam-grid
-            tag="ul"
-            :columns="FEATURES_GRID_COLUMNS"
-            gap="0"
-            class="home-features__grid"
-        >
-            <origam-grid-item
-                v-for="feature in features"
-                :key="feature.titleKey"
-                tag="li"
-                class="home-features__item"
-            >
-                <origam-card
-                    tag="article"
-                    flat
-                    rounded="none"
-                    :elevation="undefined"
-                    :border="false"
-                    :style="FEATURE_CARD_VARS"
-                    class="home-features__card"
-                >
-                    <origam-avatar
-                        :icon="feature.icon"
-                        color="primary"
-                        :style="FEATURE_ICON_TILE_VARS"
-                        :size="44"
-                        class="home-features__icon-tile"
-                        aria-hidden="true"
-                    />
-
-                    <origam-title
-                        tag="h3"
-                        class="home-features__card-title"
-                    >
-                        {{ t(feature.titleKey, feature.titleKey) }}
-                    </origam-title>
-
-                    <p class="home-features__card-desc">
-                        {{ t(feature.descriptionKey, feature.descriptionKey) }}
-                    </p>
-                </origam-card>
-            </origam-grid-item>
-        </origam-grid>
-    </section>
-</template>
 
 <style scoped lang="scss">
 .home-features {

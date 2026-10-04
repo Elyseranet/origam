@@ -1,3 +1,213 @@
+<template>
+  <article
+    class="composables-catalog"
+    data-cy="page-composables"
+  >
+    <section
+      class="composables-hero"
+      aria-labelledby="composables-title"
+    >
+      <origam-container class="composables-hero__inner">
+        <origam-chip
+          class="composables-hero__badge"
+          color="primary"
+          border
+          border-color="var(--origam-color__action--primary---bg)"
+          size="small"
+          pill
+          data-cy="composables-hero-badge"
+        >
+          {{ t('composables.hero.badge', '80+ composables — Vue 3') }}
+        </origam-chip>
+
+        <origam-title
+          id="composables-title"
+          tag="h1"
+          class="composables-hero__title"
+        >
+          <span class="composables-hero__title-line">{{ t('composables.hero.title_line1', 'Composable') }}</span>
+          <span class="composables-hero__title-line composables-hero__title-line--accent">{{ t('composables.hero.title_line2', 'catalogue.') }}</span>
+        </origam-title>
+
+        <p class="composables-hero__subtitle">
+          {{ t('composables.hero.subtitle', 'Every origam composable is documented with its real TypeScript signature, parameters and return values — sourced directly from the DS source code.') }}
+        </p>
+
+        <origam-text-field
+          v-model="searchQuery"
+          class="composables-hero__search"
+          prepend-inner-icon="mdi-magnify"
+          :placeholder="t('composables.hero.search_placeholder', 'Search composables…')"
+          :aria-label="t('composables.hero.search_label', 'Filter composables by name or domain')"
+          clearable
+          rounded="lg"
+          variant="outlined"
+          data-cy="composables-search"
+        />
+
+        <p
+          class="composables-hero__count"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <template v-if="isFiltering">
+            {{ filteredCount }} {{ t('composables.hero.count_filtered_of', 'of') }} {{ totalCount }} {{ t('composables.hero.count_filtered_match', 'composables match') }}
+          </template>
+          <template v-else>
+            {{ totalCount }} {{ t('composables.hero.count_total', 'composables across') }} {{ composablesDomains.length }} {{ t('composables.hero.count_domains', 'domains') }}
+          </template>
+        </p>
+      </origam-container>
+    </section>
+
+    <section
+      class="composables-grid-section"
+      aria-labelledby="composables-grid-title"
+      data-cy="composables-grid"
+    >
+      <origam-container>
+        <header class="composables-grid-section__header">
+          <p class="composables-section__eyebrow">
+            {{ t('composables.catalog.eyebrow', 'BROWSE BY DOMAIN') }}
+          </p>
+
+          <origam-title
+            id="composables-grid-title"
+            tag="h2"
+            class="composables-section__title composables-section__title--single"
+          >
+            {{ t('composables.catalog.title', 'All composables.') }}
+          </origam-title>
+        </header>
+
+        <div
+          v-if="isFiltering && filteredCount === 0"
+          class="composables-empty"
+          role="status"
+          data-cy="composables-empty"
+        >
+          <origam-icon
+            icon="mdi-magnify-remove-outline"
+            class="composables-empty__icon"
+            aria-hidden="true"
+          />
+
+          <origam-title
+            tag="h3"
+            class="composables-empty__title"
+          >
+            {{ t('composables.catalog.empty_title', 'No composables found') }}
+          </origam-title>
+
+          <p class="composables-empty__desc">
+            {{ t('composables.catalog.empty_desc', 'No composable matches "{query}". Try a different term.', { query: searchQuery }) }}
+          </p>
+        </div>
+
+        <div
+          v-for="group in groupedByDomain"
+          :key="group.domain"
+          class="composables-domain"
+          :data-cy="`composables-domain-${group.domain.toLowerCase()}`"
+        >
+          <header class="composables-domain__header">
+            <origam-title
+              tag="h3"
+              class="composables-domain__title"
+            >
+              {{ group.domain }}
+            </origam-title>
+
+            <origam-chip
+              size="small"
+              pill
+              class="composables-domain__count-chip"
+            >
+              {{ group.entries.length }}
+            </origam-chip>
+          </header>
+
+          <origam-grid
+            tag="ul"
+            columns="repeat(auto-fill, minmax(240px, 1fr))"
+            gap="1rem"
+            class="composables-domain__grid"
+          >
+            <origam-grid-item
+              v-for="entry in group.entries"
+              :key="entry.slug"
+              tag="li"
+              class="composables-catalog-item"
+            >
+              <nuxt-link
+                :to="`/composables/${entry.slug}`"
+                class="composables-catalog-card__link"
+                :aria-label="`${entry.name} — ${entry.descriptionFallback}`"
+                :data-cy="`composables-card-${entry.slug}`"
+              >
+                <origam-card
+                  rounded="lg"
+                  class="composables-catalog-card"
+                >
+                  <template #default>
+                    <div class="composables-catalog-card__inner">
+                      <div class="composables-catalog-card__header">
+                        <origam-avatar
+                          :icon="entry.icon"
+                          color="primary"
+                          rounded="lg"
+                          size="40"
+                          class="composables-catalog-card__avatar"
+                          aria-hidden="true"
+                        />
+
+                        <origam-title
+                          tag="h4"
+                          class="composables-catalog-card__name"
+                        >
+                          {{ entry.name }}
+                        </origam-title>
+                      </div>
+
+                      <p class="composables-catalog-card__desc">
+                        {{ entry.descriptionFallback }}
+                      </p>
+
+                      <div
+                        v-if="entry.related.length > 0"
+                        class="composables-catalog-card__related-tags"
+                      >
+                        <origam-chip
+                          v-for="relSlug in entry.related.slice(0, 2)"
+                          :key="relSlug"
+                          size="x-small"
+                          pill
+                          class="composables-catalog-card__related-chip"
+                        >
+                          {{ relSlug }}
+                        </origam-chip>
+
+                        <origam-chip
+                          v-if="entry.related.length > 2"
+                          size="x-small"
+                          pill
+                          class="composables-catalog-card__related-chip composables-catalog-card__related-chip--more"
+                        >
+                          +{{ entry.related.length - 2 }}
+                        </origam-chip>
+                      </div>
+                    </div>
+                  </template>
+                </origam-card>
+              </nuxt-link>
+            </origam-grid-item>
+          </origam-grid>
+        </div>
+      </origam-container>
+    </section>
+  </article>
+</template>
+
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useT } from '~/composables/useT'
@@ -45,216 +255,6 @@ const totalCount = computed(() => composablesCatalog.value.length)
 const filteredCount = computed(() => filteredEntries.value.length)
 const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 </script>
-
-<template>
-    <article
-        class="composables-catalog"
-        data-cy="page-composables"
-    >
-        <section
-            class="composables-hero"
-            aria-labelledby="composables-title"
-        >
-            <origam-container class="composables-hero__inner">
-                <origam-chip
-                    class="composables-hero__badge"
-                    color="primary"
-                    border
-                    border-color="var(--origam-color__action--primary---bg)"
-                    size="small"
-                    pill
-                    data-cy="composables-hero-badge"
-                >
-                    {{ t('composables.hero.badge', '80+ composables — Vue 3') }}
-                </origam-chip>
-
-                <origam-title
-                    id="composables-title"
-                    tag="h1"
-                    class="composables-hero__title"
-                >
-                    <span class="composables-hero__title-line">{{ t('composables.hero.title_line1', 'Composable') }}</span>
-                    <span class="composables-hero__title-line composables-hero__title-line--accent">{{ t('composables.hero.title_line2', 'catalogue.') }}</span>
-                </origam-title>
-
-                <p class="composables-hero__subtitle">
-                    {{ t('composables.hero.subtitle', 'Every origam composable is documented with its real TypeScript signature, parameters and return values — sourced directly from the DS source code.') }}
-                </p>
-
-                <origam-text-field
-                    v-model="searchQuery"
-                    class="composables-hero__search"
-                    prepend-inner-icon="mdi-magnify"
-                    :placeholder="t('composables.hero.search_placeholder', 'Search composables…')"
-                    :aria-label="t('composables.hero.search_label', 'Filter composables by name or domain')"
-                    clearable
-                    rounded="lg"
-                    variant="outlined"
-                    data-cy="composables-search"
-                />
-
-                <p
-                    class="composables-hero__count"
-                    aria-live="polite"
-                    aria-atomic="true"
-                >
-                    <template v-if="isFiltering">
-                        {{ filteredCount }} {{ t('composables.hero.count_filtered_of', 'of') }} {{ totalCount }} {{ t('composables.hero.count_filtered_match', 'composables match') }}
-                    </template>
-                    <template v-else>
-                        {{ totalCount }} {{ t('composables.hero.count_total', 'composables across') }} {{ composablesDomains.length }} {{ t('composables.hero.count_domains', 'domains') }}
-                    </template>
-                </p>
-            </origam-container>
-        </section>
-
-        <section
-            class="composables-grid-section"
-            aria-labelledby="composables-grid-title"
-            data-cy="composables-grid"
-        >
-            <origam-container>
-                <header class="composables-grid-section__header">
-                    <p class="composables-section__eyebrow">
-                        {{ t('composables.catalog.eyebrow', 'BROWSE BY DOMAIN') }}
-                    </p>
-
-                    <origam-title
-                        id="composables-grid-title"
-                        tag="h2"
-                        class="composables-section__title composables-section__title--single"
-                    >
-                        {{ t('composables.catalog.title', 'All composables.') }}
-                    </origam-title>
-                </header>
-
-                <div
-                    v-if="isFiltering && filteredCount === 0"
-                    class="composables-empty"
-                    role="status"
-                    data-cy="composables-empty"
-                >
-                    <origam-icon
-                        icon="mdi-magnify-remove-outline"
-                        class="composables-empty__icon"
-                        aria-hidden="true"
-                    />
-
-                    <origam-title
-                        tag="h3"
-                        class="composables-empty__title"
-                    >
-                        {{ t('composables.catalog.empty_title', 'No composables found') }}
-                    </origam-title>
-
-                    <p class="composables-empty__desc">
-                        {{ t('composables.catalog.empty_desc', 'No composable matches "{query}". Try a different term.', { query: searchQuery }) }}
-                    </p>
-                </div>
-
-                <div
-                    v-for="group in groupedByDomain"
-                    :key="group.domain"
-                    class="composables-domain"
-                    :data-cy="`composables-domain-${group.domain.toLowerCase()}`"
-                >
-                    <header class="composables-domain__header">
-                        <origam-title
-                            tag="h3"
-                            class="composables-domain__title"
-                        >
-                            {{ group.domain }}
-                        </origam-title>
-
-                        <origam-chip
-                            size="small"
-                            pill
-                            class="composables-domain__count-chip"
-                        >
-                            {{ group.entries.length }}
-                        </origam-chip>
-                    </header>
-
-                    <origam-grid
-                        tag="ul"
-                        columns="repeat(auto-fill, minmax(240px, 1fr))"
-                        gap="1rem"
-                        class="composables-domain__grid"
-                    >
-                        <origam-grid-item
-                            v-for="entry in group.entries"
-                            :key="entry.slug"
-                            tag="li"
-                            class="composables-catalog-item"
-                        >
-                            <nuxt-link
-                                :to="`/composables/${entry.slug}`"
-                                class="composables-catalog-card__link"
-                                :aria-label="`${entry.name} — ${entry.descriptionFallback}`"
-                                :data-cy="`composables-card-${entry.slug}`"
-                            >
-                                <origam-card
-                                    rounded="lg"
-                                    class="composables-catalog-card"
-                                >
-                                    <template #default>
-                                        <div class="composables-catalog-card__inner">
-                                            <div class="composables-catalog-card__header">
-                                                <origam-avatar
-                                                    :icon="entry.icon"
-                                                    color="primary"
-                                                    rounded="lg"
-                                                    size="40"
-                                                    class="composables-catalog-card__avatar"
-                                                    aria-hidden="true"
-                                                />
-
-                                                <origam-title
-                                                    tag="h4"
-                                                    class="composables-catalog-card__name"
-                                                >
-                                                    {{ entry.name }}
-                                                </origam-title>
-                                            </div>
-
-                                            <p class="composables-catalog-card__desc">
-                                                {{ entry.descriptionFallback }}
-                                            </p>
-
-                                            <div
-                                                v-if="entry.related.length > 0"
-                                                class="composables-catalog-card__related-tags"
-                                            >
-                                                <origam-chip
-                                                    v-for="relSlug in entry.related.slice(0, 2)"
-                                                    :key="relSlug"
-                                                    size="x-small"
-                                                    pill
-                                                    class="composables-catalog-card__related-chip"
-                                                >
-                                                    {{ relSlug }}
-                                                </origam-chip>
-
-                                                <origam-chip
-                                                    v-if="entry.related.length > 2"
-                                                    size="x-small"
-                                                    pill
-                                                    class="composables-catalog-card__related-chip composables-catalog-card__related-chip--more"
-                                                >
-                                                    +{{ entry.related.length - 2 }}
-                                                </origam-chip>
-                                            </div>
-                                        </div>
-                                    </template>
-                                </origam-card>
-                            </nuxt-link>
-                        </origam-grid-item>
-                    </origam-grid>
-                </div>
-            </origam-container>
-        </section>
-    </article>
-</template>
 
 <style scoped lang="scss">
 .composables-catalog {

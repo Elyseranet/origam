@@ -1,3 +1,131 @@
+<template>
+  <theme-builder-control-trigger
+    v-model:open="open"
+    :label="label"
+    :value-label="valueLabel"
+    :hint="hint"
+    :data-cy="dataCy"
+  >
+    <template v-if="!isCustom">
+      <button
+        type="button"
+        class="tbc-box-model__none-chip"
+        :class="{ 'tbc-box-model__none-chip--active': scaleValue === 'none' }"
+        :data-cy="`${dataCy}-none`"
+        @click="onScaleChip('none')"
+      >
+        {{ t('theming.control.unset', 'none') }}
+      </button>
+
+      <p class="tbc-box-model__scale-label">{{ t('theming.control.box_model.scale_label', 'Scale steps (origam-space)') }}</p>
+      <div
+        class="tbc-box-model__scale-grid"
+        role="group"
+        :aria-label="label"
+      >
+        <button
+          v-for="step in scaleOptions"
+          :key="step"
+          type="button"
+          class="tbc-box-model__scale-chip"
+          :class="{ 'tbc-box-model__scale-chip--active': scaleValue === step }"
+          :data-cy="`${dataCy}-scale-${step}`"
+          @click="onScaleChip(step)"
+        >
+          {{ step }}
+        </button>
+      </div>
+
+      <button
+        type="button"
+        class="tbc-box-model__custom-trigger"
+        :data-cy="`${dataCy}-custom-trigger`"
+        @click="onCustom"
+      >
+        {{ t('theming.control.box_model.other', 'Other… (box-model editor)') }}
+      </button>
+    </template>
+
+    <template v-else>
+      <div
+        class="tbc-box-model__modes"
+        role="group"
+        :aria-label="t('theming.control.box_model.mode_group', 'Link mode')"
+      >
+        <origam-btn
+          v-for="modeOption in MODES"
+          :key="modeOption.value"
+          variant="outlined"
+          size="x-small"
+          density="compact"
+          :active="mode === modeOption.value"
+          :aria-pressed="mode === modeOption.value"
+          :data-cy="`${dataCy}-mode-${modeOption.value}`"
+          @click="setMode(modeOption.value)"
+        >
+          {{ t(modeOption.labelKey, modeOption.labelFallback) }}
+        </origam-btn>
+      </div>
+
+      <origam-number-field
+        v-if="mode === 'linked'"
+        :model-value="edges.top"
+        :label="t('theming.control.box_model.all_edges', 'All edges (px)')"
+        :min="0"
+        variant="outlined"
+        density="compact"
+        hide-details
+        :data-cy="`${dataCy}-linked`"
+        @update:model-value="onLinkedValue"
+      />
+
+      <div
+        v-else-if="mode === 'axis'"
+        class="tbc-box-model__axis-grid"
+      >
+        <origam-number-field
+          :model-value="edges.top"
+          :label="t('theming.control.box_model.vertical', 'Vertical (top + bottom)')"
+          :min="0"
+          variant="outlined"
+          density="compact"
+          hide-details
+          :data-cy="`${dataCy}-vertical`"
+          @update:model-value="onVertical"
+        />
+        <origam-number-field
+          :model-value="edges.left"
+          :label="t('theming.control.box_model.horizontal', 'Horizontal (left + right)')"
+          :min="0"
+          variant="outlined"
+          density="compact"
+          hide-details
+          :data-cy="`${dataCy}-horizontal`"
+          @update:model-value="onHorizontal"
+        />
+      </div>
+
+      <div
+        v-else
+        class="tbc-box-model__edge-grid"
+      >
+        <origam-number-field
+          v-for="edge in EDGES"
+          :key="edge.key"
+          :model-value="edges[edge.key]"
+          :label="t(edge.labelKey, edge.labelFallback)"
+          :min="0"
+          variant="outlined"
+          density="compact"
+          hide-details
+          :data-cy="`${dataCy}-edge-${edge.key}`"
+          @update:model-value="onEdge(edge.key, $event)"
+        />
+      </div>
+    </template>
+  </theme-builder-control-trigger>
+</template>
+
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 
@@ -73,134 +201,6 @@ const onEdge = (key: 'top' | 'left' | 'bottom' | 'right', value: unknown): void 
     if (typeof value === 'number') setEdge(key, value)
 }
 </script>
-
-<template>
-    <theme-builder-control-trigger
-        v-model:open="open"
-        :label="label"
-        :value-label="valueLabel"
-        :hint="hint"
-        :data-cy="dataCy"
-    >
-        <template v-if="!isCustom">
-            <button
-                type="button"
-                class="tbc-box-model__none-chip"
-                :class="{ 'tbc-box-model__none-chip--active': scaleValue === 'none' }"
-                :data-cy="`${dataCy}-none`"
-                @click="onScaleChip('none')"
-            >
-                {{ t('theming.control.unset', 'none') }}
-            </button>
-
-            <p class="tbc-box-model__scale-label">{{ t('theming.control.box_model.scale_label', 'Scale steps (origam-space)') }}</p>
-            <div
-                class="tbc-box-model__scale-grid"
-                role="group"
-                :aria-label="label"
-            >
-                <button
-                    v-for="step in scaleOptions"
-                    :key="step"
-                    type="button"
-                    class="tbc-box-model__scale-chip"
-                    :class="{ 'tbc-box-model__scale-chip--active': scaleValue === step }"
-                    :data-cy="`${dataCy}-scale-${step}`"
-                    @click="onScaleChip(step)"
-                >
-                    {{ step }}
-                </button>
-            </div>
-
-            <button
-                type="button"
-                class="tbc-box-model__custom-trigger"
-                :data-cy="`${dataCy}-custom-trigger`"
-                @click="onCustom"
-            >
-                {{ t('theming.control.box_model.other', 'Other… (box-model editor)') }}
-            </button>
-        </template>
-
-        <template v-else>
-            <div
-                class="tbc-box-model__modes"
-                role="group"
-                :aria-label="t('theming.control.box_model.mode_group', 'Link mode')"
-            >
-                <origam-btn
-                    v-for="modeOption in MODES"
-                    :key="modeOption.value"
-                    variant="outlined"
-                    size="x-small"
-                    density="compact"
-                    :active="mode === modeOption.value"
-                    :aria-pressed="mode === modeOption.value"
-                    :data-cy="`${dataCy}-mode-${modeOption.value}`"
-                    @click="setMode(modeOption.value)"
-                >
-                    {{ t(modeOption.labelKey, modeOption.labelFallback) }}
-                </origam-btn>
-            </div>
-
-            <origam-number-field
-                v-if="mode === 'linked'"
-                :model-value="edges.top"
-                :label="t('theming.control.box_model.all_edges', 'All edges (px)')"
-                :min="0"
-                variant="outlined"
-                density="compact"
-                hide-details
-                :data-cy="`${dataCy}-linked`"
-                @update:model-value="onLinkedValue"
-            />
-
-            <div
-                v-else-if="mode === 'axis'"
-                class="tbc-box-model__axis-grid"
-            >
-                <origam-number-field
-                    :model-value="edges.top"
-                    :label="t('theming.control.box_model.vertical', 'Vertical (top + bottom)')"
-                    :min="0"
-                    variant="outlined"
-                    density="compact"
-                    hide-details
-                    :data-cy="`${dataCy}-vertical`"
-                    @update:model-value="onVertical"
-                />
-                <origam-number-field
-                    :model-value="edges.left"
-                    :label="t('theming.control.box_model.horizontal', 'Horizontal (left + right)')"
-                    :min="0"
-                    variant="outlined"
-                    density="compact"
-                    hide-details
-                    :data-cy="`${dataCy}-horizontal`"
-                    @update:model-value="onHorizontal"
-                />
-            </div>
-
-            <div
-                v-else
-                class="tbc-box-model__edge-grid"
-            >
-                <origam-number-field
-                    v-for="edge in EDGES"
-                    :key="edge.key"
-                    :model-value="edges[edge.key]"
-                    :label="t(edge.labelKey, edge.labelFallback)"
-                    :min="0"
-                    variant="outlined"
-                    density="compact"
-                    hide-details
-                    :data-cy="`${dataCy}-edge-${edge.key}`"
-                    @update:model-value="onEdge(edge.key, $event)"
-                />
-            </div>
-        </template>
-    </theme-builder-control-trigger>
-</template>
 
 <style scoped lang="scss">
 .tbc-box-model {

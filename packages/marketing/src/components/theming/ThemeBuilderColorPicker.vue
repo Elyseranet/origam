@@ -1,3 +1,88 @@
+<template>
+  <div class="tbc-color">
+    <template v-if="!showCustom">
+      <button
+        type="button"
+        class="tbc-color__inherit"
+        :data-cy="`${dataCy}-inherit`"
+        @click="onSelectInherit"
+      >
+        {{ t('theming.control.color.inherit', 'Inherit from theme') }}
+      </button>
+
+      <fieldset class="tbc-color__fieldset">
+        <legend class="tbc-color__legend">{{ label }}</legend>
+        <div
+          class="tbc-color__grid"
+          role="radiogroup"
+          :aria-label="t('theming.control.color.intent_group', 'Colour intent')"
+        >
+          <origam-radio-btn
+            v-for="opt in THEME_BUILDER_INTENT_OPTIONS"
+            :key="opt.value"
+            :name="radioGroupName"
+            :value="opt.value"
+            :model-value="selectedIntent"
+            density="compact"
+            class="tbc-color__option"
+            :data-cy="`${dataCy}-intent-${opt.value}`"
+            @update:model-value="onSelectIntent(opt.value)"
+            @click="onSelectIntent(opt.value)"
+          >
+            <template #input="{ props: inputProps }">
+              <input
+                v-bind="inputProps"
+                class="tbc-color__radio"
+              >
+              <span
+                class="tbc-color__swatch"
+                :class="opt.value === 'ghost' ? 'tbc-color__swatch--ghost' : `origam--bg-${opt.value}`"
+                aria-hidden="true"
+              />
+            </template>
+
+            <template #label>
+              <span class="tbc-color__option-label">{{ t(opt.labelKey, opt.labelFallback) }}</span>
+            </template>
+          </origam-radio-btn>
+        </div>
+      </fieldset>
+
+      <button
+        type="button"
+        class="tbc-color__custom-trigger"
+        :data-cy="`${dataCy}-custom-trigger`"
+        @click="showCustom = true"
+      >
+        {{ t('theming.control.custom', 'Other…') }}
+      </button>
+    </template>
+
+    <template v-else>
+      <origam-btn
+        variant="text"
+        size="x-small"
+        density="compact"
+        :prepend-icon="MDI_ICONS.ARROW_LEFT"
+        :data-cy="`${dataCy}-back`"
+        @click="showCustom = false"
+      >
+        {{ t('theming.control.color.back', 'Back to theme colours') }}
+      </origam-btn>
+
+      <origam-color-picker-field
+        :model-value="customHex"
+        :label="t('theming.control.color.custom_label', 'Custom colour')"
+        variant="outlined"
+        density="compact"
+        hide-details
+        :data-cy="`${dataCy}-custom-input`"
+        @update:model-value="onSelectCustom"
+      />
+    </template>
+  </div>
+</template>
+
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 
@@ -57,91 +142,6 @@ const radioGroupName = computed(() => `${props.dataCy}-intent`)
 
 const selectedIntent = computed(() => state.value.mode === 'intent' ? state.value.intent : undefined)
 </script>
-
-<template>
-    <div class="tbc-color">
-        <template v-if="!showCustom">
-            <button
-                type="button"
-                class="tbc-color__inherit"
-                :data-cy="`${dataCy}-inherit`"
-                @click="onSelectInherit"
-            >
-                {{ t('theming.control.color.inherit', 'Inherit from theme') }}
-            </button>
-
-            <fieldset class="tbc-color__fieldset">
-                <legend class="tbc-color__legend">{{ label }}</legend>
-                <div
-                    class="tbc-color__grid"
-                    role="radiogroup"
-                    :aria-label="t('theming.control.color.intent_group', 'Colour intent')"
-                >
-                    <origam-radio-btn
-                        v-for="opt in THEME_BUILDER_INTENT_OPTIONS"
-                        :key="opt.value"
-                        :name="radioGroupName"
-                        :value="opt.value"
-                        :model-value="selectedIntent"
-                        density="compact"
-                        class="tbc-color__option"
-                        :data-cy="`${dataCy}-intent-${opt.value}`"
-                        @update:model-value="onSelectIntent(opt.value)"
-                        @click="onSelectIntent(opt.value)"
-                    >
-                        <template #input="{ props: inputProps }">
-                            <input
-                                v-bind="inputProps"
-                                class="tbc-color__radio"
-                            >
-                            <span
-                                class="tbc-color__swatch"
-                                :class="opt.value === 'ghost' ? 'tbc-color__swatch--ghost' : `origam--bg-${opt.value}`"
-                                aria-hidden="true"
-                            />
-                        </template>
-
-                        <template #label>
-                            <span class="tbc-color__option-label">{{ t(opt.labelKey, opt.labelFallback) }}</span>
-                        </template>
-                    </origam-radio-btn>
-                </div>
-            </fieldset>
-
-            <button
-                type="button"
-                class="tbc-color__custom-trigger"
-                :data-cy="`${dataCy}-custom-trigger`"
-                @click="showCustom = true"
-            >
-                {{ t('theming.control.custom', 'Other…') }}
-            </button>
-        </template>
-
-        <template v-else>
-            <origam-btn
-                variant="text"
-                size="x-small"
-                density="compact"
-                :prepend-icon="MDI_ICONS.ARROW_LEFT"
-                :data-cy="`${dataCy}-back`"
-                @click="showCustom = false"
-            >
-                {{ t('theming.control.color.back', 'Back to theme colours') }}
-            </origam-btn>
-
-            <origam-color-picker-field
-                :model-value="customHex"
-                :label="t('theming.control.color.custom_label', 'Custom colour')"
-                variant="outlined"
-                density="compact"
-                hide-details
-                :data-cy="`${dataCy}-custom-input`"
-                @update:model-value="onSelectCustom"
-            />
-        </template>
-    </div>
-</template>
 
 <style scoped lang="scss">
 .tbc-color {

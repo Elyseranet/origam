@@ -1,3 +1,117 @@
+<template>
+  <section
+    class="tb-preview"
+    :aria-label="t('theming.preview.label', 'Live preview')"
+    data-cy="theming-preview"
+  >
+    <header class="tb-preview__bar">
+      <div class="tb-preview__info">
+        <span class="tb-preview__name">{{ entry.name }}</span>
+        <span class="tb-preview__sep">·</span>
+        <span class="tb-preview__cat">{{ categoryLabel }}</span>
+      </div>
+
+      <div class="tb-preview__spacer" />
+
+      <origam-btn-toggle
+        v-if="!split"
+        :model-value="activeMode"
+        mandatory
+        divided
+        variant="outlined"
+        color="primary"
+        size="small"
+        class="tb-preview__mode-toggle"
+        :aria-label="t('theming.mode.label', 'Preview mode')"
+        data-cy="theming-mode-toggle"
+        @update:model-value="setMode($event as TEditMode)"
+      >
+        <origam-btn
+          value="light"
+          prepend-icon="mdi-weather-sunny"
+          data-cy="theming-mode-light"
+        >
+          {{ t('theming.mode.light', 'Light') }}
+        </origam-btn>
+        <origam-btn
+          value="dark"
+          prepend-icon="mdi-weather-night"
+          data-cy="theming-mode-dark"
+        >
+          {{ t('theming.mode.dark', 'Dark') }}
+        </origam-btn>
+      </origam-btn-toggle>
+
+      <origam-btn
+        :variant="split ? 'tonal' : 'outlined'"
+        :color="split ? 'primary' : undefined"
+        size="small"
+        prepend-icon="mdi-view-split-vertical"
+        class="tb-preview__split-btn"
+        data-cy="theming-split-btn"
+        :aria-pressed="split"
+        @click="toggleSplit"
+      >
+        {{ t('theming.split.toggle', 'Split') }}
+      </origam-btn>
+    </header>
+
+    <div
+      class="tb-preview__stage"
+      :class="{ 'tb-preview__stage--split': split }"
+      aria-live="polite"
+      data-cy="theming-preview-stage"
+    >
+      <client-only>
+        <div
+          v-for="pane in panes"
+          :key="pane.mode"
+          class="tb-preview__pane"
+          :class="`tb-preview__pane--${pane.mode}`"
+          :data-mode="pane.mode"
+          :data-cy="`theming-preview-pane-${pane.mode}`"
+        >
+          <span class="tb-preview__pane-label">{{ modeLabel(pane.mode) }}</span>
+          <origam-theme-provider
+            theme="origam"
+            :mode="pane.mode"
+            class="tb-preview__provider"
+          >
+            <div
+              class="tb-preview__canvas"
+              :style="pane.style"
+              :data-cy="`theming-canvas-${pane.mode}`"
+            >
+              <nuxt-error-boundary>
+                <component
+                  :is="entry.componentTag"
+                  v-if="entry.previewable"
+                  v-bind="previewProps"
+                  :data-cy="`theming-live-${entry.slug}-${pane.mode}`"
+                >
+                  {{ slotText }}
+                </component>
+                <p
+                  v-else
+                  class="tb-preview__unavailable"
+                  :data-cy="`theming-unavailable-${pane.mode}`"
+                >
+                  {{ t('theming.preview.unavailable', 'Live preview unavailable for this component. Edit its props and CSS tokens — they still export to your theme.') }}
+                </p>
+                <template #error>
+                  <p class="tb-preview__unavailable">
+                    {{ t('theming.preview.error', 'Preview failed to render with the current props.') }}
+                  </p>
+                </template>
+              </nuxt-error-boundary>
+            </div>
+          </origam-theme-provider>
+        </div>
+      </client-only>
+    </div>
+  </section>
+</template>
+
 <script setup lang="ts">
 import { computed } from 'vue'
 
@@ -52,120 +166,6 @@ const panes = computed<Array<{ mode: TEditMode; style: Record<string, string> }>
 const modeLabel = (mode: TEditMode): string =>
     mode === 'dark' ? t('theming.mode.dark', 'Dark') : t('theming.mode.light', 'Light')
 </script>
-
-<template>
-    <section
-        class="tb-preview"
-        :aria-label="t('theming.preview.label', 'Live preview')"
-        data-cy="theming-preview"
-    >
-        <header class="tb-preview__bar">
-            <div class="tb-preview__info">
-                <span class="tb-preview__name">{{ entry.name }}</span>
-                <span class="tb-preview__sep">·</span>
-                <span class="tb-preview__cat">{{ categoryLabel }}</span>
-            </div>
-
-            <div class="tb-preview__spacer" />
-
-            <origam-btn-toggle
-                v-if="!split"
-                :model-value="activeMode"
-                mandatory
-                divided
-                variant="outlined"
-                color="primary"
-                size="small"
-                class="tb-preview__mode-toggle"
-                :aria-label="t('theming.mode.label', 'Preview mode')"
-                data-cy="theming-mode-toggle"
-                @update:model-value="setMode($event as TEditMode)"
-            >
-                <origam-btn
-                    value="light"
-                    prepend-icon="mdi-weather-sunny"
-                    data-cy="theming-mode-light"
-                >
-                    {{ t('theming.mode.light', 'Light') }}
-                </origam-btn>
-                <origam-btn
-                    value="dark"
-                    prepend-icon="mdi-weather-night"
-                    data-cy="theming-mode-dark"
-                >
-                    {{ t('theming.mode.dark', 'Dark') }}
-                </origam-btn>
-            </origam-btn-toggle>
-
-            <origam-btn
-                :variant="split ? 'tonal' : 'outlined'"
-                :color="split ? 'primary' : undefined"
-                size="small"
-                prepend-icon="mdi-view-split-vertical"
-                class="tb-preview__split-btn"
-                data-cy="theming-split-btn"
-                :aria-pressed="split"
-                @click="toggleSplit"
-            >
-                {{ t('theming.split.toggle', 'Split') }}
-            </origam-btn>
-        </header>
-
-        <div
-            class="tb-preview__stage"
-            :class="{ 'tb-preview__stage--split': split }"
-            aria-live="polite"
-            data-cy="theming-preview-stage"
-        >
-            <client-only>
-                <div
-                    v-for="pane in panes"
-                    :key="pane.mode"
-                    class="tb-preview__pane"
-                    :class="`tb-preview__pane--${pane.mode}`"
-                    :data-mode="pane.mode"
-                    :data-cy="`theming-preview-pane-${pane.mode}`"
-                >
-                    <span class="tb-preview__pane-label">{{ modeLabel(pane.mode) }}</span>
-                    <origam-theme-provider
-                        theme="origam"
-                        :mode="pane.mode"
-                        class="tb-preview__provider"
-                    >
-                        <div
-                            class="tb-preview__canvas"
-                            :style="pane.style"
-                            :data-cy="`theming-canvas-${pane.mode}`"
-                        >
-                            <nuxt-error-boundary>
-                                <component
-                                    :is="entry.componentTag"
-                                    v-if="entry.previewable"
-                                    v-bind="previewProps"
-                                    :data-cy="`theming-live-${entry.slug}-${pane.mode}`"
-                                >
-                                    {{ slotText }}
-                                </component>
-                                <p
-                                    v-else
-                                    class="tb-preview__unavailable"
-                                    :data-cy="`theming-unavailable-${pane.mode}`"
-                                >
-                                    {{ t('theming.preview.unavailable', 'Live preview unavailable for this component. Edit its props and CSS tokens — they still export to your theme.') }}
-                                </p>
-                                <template #error>
-                                    <p class="tb-preview__unavailable">
-                                        {{ t('theming.preview.error', 'Preview failed to render with the current props.') }}
-                                    </p>
-                                </template>
-                            </nuxt-error-boundary>
-                        </div>
-                    </origam-theme-provider>
-                </div>
-            </client-only>
-        </div>
-    </section>
-</template>
 
 <style scoped lang="scss">
 .tb-preview {

@@ -1,3 +1,341 @@
+<template>
+  <aside
+    class="tb-panel"
+    :aria-label="t('theming.controls.panel_label', 'Component controls')"
+    data-cy="theming-controls-panel"
+  >
+    <header class="tb-panel__head">
+      <origam-icon
+        :icon="entry.icon"
+        size="small"
+        class="tb-panel__head-icon"
+      />
+      <span class="tb-panel__head-title">{{ entry.name }}</span>
+      <origam-btn
+        variant="text"
+        size="x-small"
+        density="compact"
+        prepend-icon="mdi-restore"
+        class="tb-panel__head-reset"
+        data-cy="theming-reset-component"
+        @click="onResetComponent"
+      >
+        {{ resetLabel }}
+      </origam-btn>
+    </header>
+
+    <nav
+      class="tb-panel__tabs"
+      :aria-label="t('theming.controls.tabs_label', 'Controls view')"
+    >
+      <button
+        type="button"
+        class="tb-panel__tab"
+        :class="{ 'tb-panel__tab--active': tab === 'props' }"
+        :aria-pressed="tab === 'props'"
+        data-cy="theming-tab-props"
+        @click="tab = 'props'"
+      >
+        {{ t('theming.controls.tab_props', 'Props') }}
+        <span class="tb-panel__tab-badge">{{ propsCount }}</span>
+      </button>
+      <button
+        type="button"
+        class="tb-panel__tab"
+        :class="{ 'tb-panel__tab--active': tab === 'tokens' }"
+        :aria-pressed="tab === 'tokens'"
+        data-cy="theming-tab-tokens"
+        @click="tab = 'tokens'"
+      >
+        {{ t('theming.controls.tab_tokens', 'CSS Tokens') }}
+        <span class="tb-panel__tab-badge">{{ tokensCount }}</span>
+      </button>
+    </nav>
+
+    <div
+      class="tb-panel__scroll"
+      data-cy="theming-controls-scroll"
+    >
+      <form
+        v-show="tab === 'props'"
+        class="tb-panel__form"
+        data-cy="theming-props-form"
+        @submit.prevent
+      >
+        <p
+          v-if="entry.propGroups.length === 0"
+          class="tb-panel__empty"
+        >
+          {{ t('theming.controls.no_props', 'This component exposes no themable props.') }}
+        </p>
+
+        <details
+          v-for="group in entry.propGroups"
+          :key="group.meta.id"
+          class="tb-group"
+          :open="!isCollapsed(`p-${group.meta.id}`)"
+          :data-cy="`theming-prop-group-${group.meta.id}`"
+        >
+          <summary
+            class="tb-group__summary"
+            @click.prevent="toggleGroup(`p-${group.meta.id}`)"
+          >
+            <span class="tb-group__label">{{ groupLabel(group.meta.labelKey, group.meta.labelFallback) }}</span>
+            <span
+              v-if="groupEditCount(entry.slug, groupPropNames(group.controls))"
+              class="tb-group__dot"
+              :aria-label="t('theming.controls.edited', 'Edited')"
+            />
+            <span class="tb-group__count">{{ group.controls.length }}</span>
+            <origam-icon
+              icon="mdi-chevron-down"
+              size="x-small"
+              class="tb-group__chevron"
+            />
+          </summary>
+
+          <div class="tb-group__body">
+            <div
+              v-for="ctrl in group.controls"
+              :key="ctrl.prop"
+              class="tb-row"
+              :class="{ 'tb-row--edited': isControlEdited(ctrl) }"
+              :data-cy="`theming-prop-${ctrl.prop}`"
+            >
+              <origam-btn
+                variant="text"
+                size="x-small"
+                density="compact"
+                :disabled="!isControlEdited(ctrl)"
+                :icon="MDI_ICONS.RESTORE"
+                class="tb-row__reset"
+                :aria-label="t('theming.controls.reset_prop', 'Reset {label}', { label: ctrl.label })"
+                :data-cy="`theming-prop-${ctrl.prop}-reset`"
+                @click="onResetControl(ctrl)"
+              />
+
+              <code class="tb-row__code">{{ ctrl.prop }}</code>
+
+              <div class="tb-row__control">
+                <div
+                  v-if="ctrl.kind === 'color-intent'"
+                  class="tb-row__rich"
+                >
+                  <theme-builder-color-field
+                    :model-value="richValue(ctrl.prop)"
+                    :label="ctrl.label"
+                    :data-cy="`theming-prop-${ctrl.prop}`"
+                    @update:model-value="onProp(ctrl.prop, $event)"
+                  />
+                </div>
+
+                <div
+                  v-else-if="ctrl.kind === 'rounded'"
+                  class="tb-row__rich"
+                >
+                  <theme-builder-rounded-field
+                    :model-value="richValue(ctrl.prop)"
+                    :label="ctrl.label"
+                    :data-cy="`theming-prop-${ctrl.prop}`"
+                    @update:model-value="onProp(ctrl.prop, $event)"
+                  />
+                </div>
+
+                <div
+                  v-else-if="ctrl.kind === 'elevation'"
+                  class="tb-row__rich"
+                >
+                  <theme-builder-elevation-field
+                    :model-value="richValue(ctrl.prop)"
+                    :label="ctrl.label"
+                    :data-cy="`theming-prop-${ctrl.prop}`"
+                    @update:model-value="onProp(ctrl.prop, $event)"
+                  />
+                </div>
+
+                <div
+                  v-else-if="ctrl.kind === 'border'"
+                  class="tb-row__rich"
+                >
+                  <theme-builder-border-field
+                    :width-value="richValue('border')"
+                    :style-value="ctrl.props.includes('borderStyle') ? propValue(entry.slug, 'borderStyle') : undefined"
+                    :color-value="ctrl.props.includes('borderColor') ? propValue(entry.slug, 'borderColor') : undefined"
+                    :top-width-value="ctrl.props.includes('borderTop') ? propValue(entry.slug, 'borderTop') : undefined"
+                    :right-width-value="ctrl.props.includes('borderRight') ? propValue(entry.slug, 'borderRight') : undefined"
+                    :bottom-width-value="ctrl.props.includes('borderBottom') ? propValue(entry.slug, 'borderBottom') : undefined"
+                    :left-width-value="ctrl.props.includes('borderLeft') ? propValue(entry.slug, 'borderLeft') : undefined"
+                    :top-color-value="ctrl.props.includes('borderTopColor') ? propValue(entry.slug, 'borderTopColor') : undefined"
+                    :right-color-value="ctrl.props.includes('borderRightColor') ? propValue(entry.slug, 'borderRightColor') : undefined"
+                    :bottom-color-value="ctrl.props.includes('borderBottomColor') ? propValue(entry.slug, 'borderBottomColor') : undefined"
+                    :left-color-value="ctrl.props.includes('borderLeftColor') ? propValue(entry.slug, 'borderLeftColor') : undefined"
+                    :label="ctrl.label"
+                    :data-cy="`theming-prop-${ctrl.prop}`"
+                    @update:width="onProp('border', $event)"
+                    @update:style="onProp('borderStyle', $event)"
+                    @update:color="onProp('borderColor', $event)"
+                    @update:side-width="onBorderSideWidth"
+                    @update:side-color="onBorderSideColor"
+                  />
+                </div>
+
+                <div
+                  v-else-if="ctrl.kind === 'box-model'"
+                  class="tb-row__rich"
+                >
+                  <theme-builder-box-model-field
+                    :model-value="richValue(ctrl.prop)"
+                    :axis="ctrl.boxModelAxis ?? 'padding'"
+                    :label="ctrl.label"
+                    :data-cy="`theming-prop-${ctrl.prop}`"
+                    @update:model-value="onProp(ctrl.prop, $event)"
+                  />
+                </div>
+
+                <origam-select
+                  v-else-if="ctrl.kind === 'select'"
+                  :model-value="selectValue(ctrl.prop)"
+                  :items="selectItems(ctrl)"
+                  :label="ctrl.label"
+                  variant="outlined"
+                  density="compact"
+                  hide-details
+                  class="tb-row__select"
+                  @update:model-value="onSelect(ctrl.prop, $event)"
+                />
+
+                <origam-select
+                  v-else-if="ctrl.kind === 'switch'"
+                  :model-value="selectValue(ctrl.prop)"
+                  :items="triStateItems"
+                  :label="ctrl.label"
+                  variant="outlined"
+                  density="compact"
+                  hide-details
+                  class="tb-row__select"
+                  @update:model-value="onTriState(ctrl.prop, $event)"
+                />
+
+                <origam-number-field
+                  v-else-if="ctrl.kind === 'number'"
+                  :model-value="numberValue(ctrl.prop)"
+                  :label="ctrl.label"
+                  variant="outlined"
+                  density="compact"
+                  hide-details
+                  class="tb-row__input"
+                  @update:model-value="onNumber(ctrl.prop, $event)"
+                />
+
+                <origam-color-picker-field
+                  v-else-if="ctrl.kind === 'color'"
+                  :model-value="textValue(ctrl.prop)"
+                  :label="ctrl.label"
+                  variant="outlined"
+                  density="compact"
+                  hide-details
+                  class="tb-row__input"
+                  @update:model-value="onColorField(ctrl.prop, $event)"
+                />
+
+                <origam-text-field
+                  v-else
+                  :model-value="textValue(ctrl.prop)"
+                  :label="ctrl.label"
+                  variant="outlined"
+                  density="compact"
+                  hide-details
+                  class="tb-row__input"
+                  @update:model-value="onText(ctrl.prop, $event)"
+                />
+              </div>
+            </div>
+          </div>
+        </details>
+      </form>
+
+      <div
+        v-show="tab === 'tokens'"
+        class="tb-panel__form"
+        data-cy="theming-tokens-form"
+      >
+        <p
+          v-if="entry.tokenGroups.length === 0"
+          class="tb-panel__empty"
+          data-cy="theming-tokens-empty"
+        >
+          {{ t('theming.controls.no_tokens', 'No editable CSS tokens registered for this component yet.') }}
+        </p>
+
+        <details
+          v-for="group in entry.tokenGroups"
+          :key="group.meta.id"
+          class="tb-group"
+          :open="!isCollapsed(`t-${group.meta.id}`)"
+          :data-cy="`theming-token-group-${group.meta.id}`"
+        >
+          <summary
+            class="tb-group__summary"
+            @click.prevent="toggleGroup(`t-${group.meta.id}`)"
+          >
+            <span class="tb-group__label">{{ groupLabel(group.meta.labelKey, group.meta.labelFallback) }}</span>
+            <span
+              v-if="tokenGroupEditCount(activeMode, tokenCssVars(group.tokens))"
+              class="tb-group__dot"
+              :aria-label="t('theming.controls.edited', 'Edited')"
+            />
+            <span class="tb-group__count">{{ group.tokens.length }}</span>
+            <origam-icon
+              icon="mdi-chevron-down"
+              size="x-small"
+              class="tb-group__chevron"
+            />
+          </summary>
+
+          <div class="tb-group__body">
+            <div
+              v-for="tk in group.tokens"
+              :key="tk.cssVar"
+              class="tb-row tb-row--token"
+              :class="{ 'tb-row--edited': isTokenEdited(activeMode, tk.cssVar) }"
+              :data-cy="`theming-token-${tk.cssVar}`"
+            >
+              <code
+                class="tb-row__var"
+                :title="tk.cssVar"
+              >{{ tk.label }}</code>
+
+              <div class="tb-row__control">
+                <origam-color-picker-field
+                  v-if="tk.kind === 'color'"
+                  :model-value="tokenValue(activeMode, tk.cssVar)"
+                  :label="tk.label"
+                  variant="outlined"
+                  density="compact"
+                  hide-details
+                  class="tb-row__input"
+                  @update:model-value="onTokenField(tk.cssVar, $event)"
+                />
+
+                <origam-text-field
+                  v-else
+                  :model-value="tokenValue(activeMode, tk.cssVar)"
+                  :label="tk.label"
+                  variant="outlined"
+                  density="compact"
+                  hide-details
+                  class="tb-row__input"
+                  @update:model-value="onTokenField(tk.cssVar, $event)"
+                />
+              </div>
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </aside>
+</template>
+
 <script setup lang="ts">
 import { computed, ref, watchEffect } from 'vue'
 import { MDI_ICONS } from 'origam/enums'
@@ -204,344 +542,6 @@ const tokenCssVars = (tokens: IThemeBuilderToken[]): string[] =>
 
 const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
 </script>
-
-<template>
-    <aside
-        class="tb-panel"
-        :aria-label="t('theming.controls.panel_label', 'Component controls')"
-        data-cy="theming-controls-panel"
-    >
-        <header class="tb-panel__head">
-            <origam-icon
-                :icon="entry.icon"
-                size="small"
-                class="tb-panel__head-icon"
-            />
-            <span class="tb-panel__head-title">{{ entry.name }}</span>
-            <origam-btn
-                variant="text"
-                size="x-small"
-                density="compact"
-                prepend-icon="mdi-restore"
-                class="tb-panel__head-reset"
-                data-cy="theming-reset-component"
-                @click="onResetComponent"
-            >
-                {{ resetLabel }}
-            </origam-btn>
-        </header>
-
-        <nav
-            class="tb-panel__tabs"
-            :aria-label="t('theming.controls.tabs_label', 'Controls view')"
-        >
-            <button
-                type="button"
-                class="tb-panel__tab"
-                :class="{ 'tb-panel__tab--active': tab === 'props' }"
-                :aria-pressed="tab === 'props'"
-                data-cy="theming-tab-props"
-                @click="tab = 'props'"
-            >
-                {{ t('theming.controls.tab_props', 'Props') }}
-                <span class="tb-panel__tab-badge">{{ propsCount }}</span>
-            </button>
-            <button
-                type="button"
-                class="tb-panel__tab"
-                :class="{ 'tb-panel__tab--active': tab === 'tokens' }"
-                :aria-pressed="tab === 'tokens'"
-                data-cy="theming-tab-tokens"
-                @click="tab = 'tokens'"
-            >
-                {{ t('theming.controls.tab_tokens', 'CSS Tokens') }}
-                <span class="tb-panel__tab-badge">{{ tokensCount }}</span>
-            </button>
-        </nav>
-
-        <div
-            class="tb-panel__scroll"
-            data-cy="theming-controls-scroll"
-        >
-            <form
-                v-show="tab === 'props'"
-                class="tb-panel__form"
-                data-cy="theming-props-form"
-                @submit.prevent
-            >
-                <p
-                    v-if="entry.propGroups.length === 0"
-                    class="tb-panel__empty"
-                >
-                    {{ t('theming.controls.no_props', 'This component exposes no themable props.') }}
-                </p>
-
-                <details
-                    v-for="group in entry.propGroups"
-                    :key="group.meta.id"
-                    class="tb-group"
-                    :open="!isCollapsed(`p-${group.meta.id}`)"
-                    :data-cy="`theming-prop-group-${group.meta.id}`"
-                >
-                    <summary
-                        class="tb-group__summary"
-                        @click.prevent="toggleGroup(`p-${group.meta.id}`)"
-                    >
-                        <span class="tb-group__label">{{ groupLabel(group.meta.labelKey, group.meta.labelFallback) }}</span>
-                        <span
-                            v-if="groupEditCount(entry.slug, groupPropNames(group.controls))"
-                            class="tb-group__dot"
-                            :aria-label="t('theming.controls.edited', 'Edited')"
-                        />
-                        <span class="tb-group__count">{{ group.controls.length }}</span>
-                        <origam-icon
-                            icon="mdi-chevron-down"
-                            size="x-small"
-                            class="tb-group__chevron"
-                        />
-                    </summary>
-
-                    <div class="tb-group__body">
-                        <div
-                            v-for="ctrl in group.controls"
-                            :key="ctrl.prop"
-                            class="tb-row"
-                            :class="{ 'tb-row--edited': isControlEdited(ctrl) }"
-                            :data-cy="`theming-prop-${ctrl.prop}`"
-                        >
-                            <origam-btn
-                                variant="text"
-                                size="x-small"
-                                density="compact"
-                                :disabled="!isControlEdited(ctrl)"
-                                :icon="MDI_ICONS.RESTORE"
-                                class="tb-row__reset"
-                                :aria-label="t('theming.controls.reset_prop', 'Reset {label}', { label: ctrl.label })"
-                                :data-cy="`theming-prop-${ctrl.prop}-reset`"
-                                @click="onResetControl(ctrl)"
-                            />
-
-                            <code class="tb-row__code">{{ ctrl.prop }}</code>
-
-                            <div class="tb-row__control">
-                                <div
-                                    v-if="ctrl.kind === 'color-intent'"
-                                    class="tb-row__rich"
-                                >
-                                    <theme-builder-color-field
-                                        :model-value="richValue(ctrl.prop)"
-                                        :label="ctrl.label"
-                                        :data-cy="`theming-prop-${ctrl.prop}`"
-                                        @update:model-value="onProp(ctrl.prop, $event)"
-                                    />
-                                </div>
-
-                                <div
-                                    v-else-if="ctrl.kind === 'rounded'"
-                                    class="tb-row__rich"
-                                >
-                                    <theme-builder-rounded-field
-                                        :model-value="richValue(ctrl.prop)"
-                                        :label="ctrl.label"
-                                        :data-cy="`theming-prop-${ctrl.prop}`"
-                                        @update:model-value="onProp(ctrl.prop, $event)"
-                                    />
-                                </div>
-
-                                <div
-                                    v-else-if="ctrl.kind === 'elevation'"
-                                    class="tb-row__rich"
-                                >
-                                    <theme-builder-elevation-field
-                                        :model-value="richValue(ctrl.prop)"
-                                        :label="ctrl.label"
-                                        :data-cy="`theming-prop-${ctrl.prop}`"
-                                        @update:model-value="onProp(ctrl.prop, $event)"
-                                    />
-                                </div>
-
-                                <div
-                                    v-else-if="ctrl.kind === 'border'"
-                                    class="tb-row__rich"
-                                >
-                                    <theme-builder-border-field
-                                        :width-value="richValue('border')"
-                                        :style-value="ctrl.props.includes('borderStyle') ? propValue(entry.slug, 'borderStyle') : undefined"
-                                        :color-value="ctrl.props.includes('borderColor') ? propValue(entry.slug, 'borderColor') : undefined"
-                                        :top-width-value="ctrl.props.includes('borderTop') ? propValue(entry.slug, 'borderTop') : undefined"
-                                        :right-width-value="ctrl.props.includes('borderRight') ? propValue(entry.slug, 'borderRight') : undefined"
-                                        :bottom-width-value="ctrl.props.includes('borderBottom') ? propValue(entry.slug, 'borderBottom') : undefined"
-                                        :left-width-value="ctrl.props.includes('borderLeft') ? propValue(entry.slug, 'borderLeft') : undefined"
-                                        :top-color-value="ctrl.props.includes('borderTopColor') ? propValue(entry.slug, 'borderTopColor') : undefined"
-                                        :right-color-value="ctrl.props.includes('borderRightColor') ? propValue(entry.slug, 'borderRightColor') : undefined"
-                                        :bottom-color-value="ctrl.props.includes('borderBottomColor') ? propValue(entry.slug, 'borderBottomColor') : undefined"
-                                        :left-color-value="ctrl.props.includes('borderLeftColor') ? propValue(entry.slug, 'borderLeftColor') : undefined"
-                                        :label="ctrl.label"
-                                        :data-cy="`theming-prop-${ctrl.prop}`"
-                                        @update:width="onProp('border', $event)"
-                                        @update:style="onProp('borderStyle', $event)"
-                                        @update:color="onProp('borderColor', $event)"
-                                        @update:side-width="onBorderSideWidth"
-                                        @update:side-color="onBorderSideColor"
-                                    />
-                                </div>
-
-                                <div
-                                    v-else-if="ctrl.kind === 'box-model'"
-                                    class="tb-row__rich"
-                                >
-                                    <theme-builder-box-model-field
-                                        :model-value="richValue(ctrl.prop)"
-                                        :axis="ctrl.boxModelAxis ?? 'padding'"
-                                        :label="ctrl.label"
-                                        :data-cy="`theming-prop-${ctrl.prop}`"
-                                        @update:model-value="onProp(ctrl.prop, $event)"
-                                    />
-                                </div>
-
-                                <origam-select
-                                    v-else-if="ctrl.kind === 'select'"
-                                    :model-value="selectValue(ctrl.prop)"
-                                    :items="selectItems(ctrl)"
-                                    :label="ctrl.label"
-                                    variant="outlined"
-                                    density="compact"
-                                    hide-details
-                                    class="tb-row__select"
-                                    @update:model-value="onSelect(ctrl.prop, $event)"
-                                />
-
-                                <origam-select
-                                    v-else-if="ctrl.kind === 'switch'"
-                                    :model-value="selectValue(ctrl.prop)"
-                                    :items="triStateItems"
-                                    :label="ctrl.label"
-                                    variant="outlined"
-                                    density="compact"
-                                    hide-details
-                                    class="tb-row__select"
-                                    @update:model-value="onTriState(ctrl.prop, $event)"
-                                />
-
-                                <origam-number-field
-                                    v-else-if="ctrl.kind === 'number'"
-                                    :model-value="numberValue(ctrl.prop)"
-                                    :label="ctrl.label"
-                                    variant="outlined"
-                                    density="compact"
-                                    hide-details
-                                    class="tb-row__input"
-                                    @update:model-value="onNumber(ctrl.prop, $event)"
-                                />
-
-                                <origam-color-picker-field
-                                    v-else-if="ctrl.kind === 'color'"
-                                    :model-value="textValue(ctrl.prop)"
-                                    :label="ctrl.label"
-                                    variant="outlined"
-                                    density="compact"
-                                    hide-details
-                                    class="tb-row__input"
-                                    @update:model-value="onColorField(ctrl.prop, $event)"
-                                />
-
-                                <origam-text-field
-                                    v-else
-                                    :model-value="textValue(ctrl.prop)"
-                                    :label="ctrl.label"
-                                    variant="outlined"
-                                    density="compact"
-                                    hide-details
-                                    class="tb-row__input"
-                                    @update:model-value="onText(ctrl.prop, $event)"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </details>
-            </form>
-
-            <div
-                v-show="tab === 'tokens'"
-                class="tb-panel__form"
-                data-cy="theming-tokens-form"
-            >
-                <p
-                    v-if="entry.tokenGroups.length === 0"
-                    class="tb-panel__empty"
-                    data-cy="theming-tokens-empty"
-                >
-                    {{ t('theming.controls.no_tokens', 'No editable CSS tokens registered for this component yet.') }}
-                </p>
-
-                <details
-                    v-for="group in entry.tokenGroups"
-                    :key="group.meta.id"
-                    class="tb-group"
-                    :open="!isCollapsed(`t-${group.meta.id}`)"
-                    :data-cy="`theming-token-group-${group.meta.id}`"
-                >
-                    <summary
-                        class="tb-group__summary"
-                        @click.prevent="toggleGroup(`t-${group.meta.id}`)"
-                    >
-                        <span class="tb-group__label">{{ groupLabel(group.meta.labelKey, group.meta.labelFallback) }}</span>
-                        <span
-                            v-if="tokenGroupEditCount(activeMode, tokenCssVars(group.tokens))"
-                            class="tb-group__dot"
-                            :aria-label="t('theming.controls.edited', 'Edited')"
-                        />
-                        <span class="tb-group__count">{{ group.tokens.length }}</span>
-                        <origam-icon
-                            icon="mdi-chevron-down"
-                            size="x-small"
-                            class="tb-group__chevron"
-                        />
-                    </summary>
-
-                    <div class="tb-group__body">
-                        <div
-                            v-for="tk in group.tokens"
-                            :key="tk.cssVar"
-                            class="tb-row tb-row--token"
-                            :class="{ 'tb-row--edited': isTokenEdited(activeMode, tk.cssVar) }"
-                            :data-cy="`theming-token-${tk.cssVar}`"
-                        >
-                            <code
-                                class="tb-row__var"
-                                :title="tk.cssVar"
-                            >{{ tk.label }}</code>
-
-                            <div class="tb-row__control">
-                                <origam-color-picker-field
-                                    v-if="tk.kind === 'color'"
-                                    :model-value="tokenValue(activeMode, tk.cssVar)"
-                                    :label="tk.label"
-                                    variant="outlined"
-                                    density="compact"
-                                    hide-details
-                                    class="tb-row__input"
-                                    @update:model-value="onTokenField(tk.cssVar, $event)"
-                                />
-
-                                <origam-text-field
-                                    v-else
-                                    :model-value="tokenValue(activeMode, tk.cssVar)"
-                                    :label="tk.label"
-                                    variant="outlined"
-                                    density="compact"
-                                    hide-details
-                                    class="tb-row__input"
-                                    @update:model-value="onTokenField(tk.cssVar, $event)"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </details>
-            </div>
-        </div>
-    </aside>
-</template>
 
 <style scoped lang="scss">
 .tb-panel {

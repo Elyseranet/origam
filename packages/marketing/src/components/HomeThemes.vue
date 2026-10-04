@@ -1,3 +1,152 @@
+<template>
+  <section
+    class="home-themes"
+    aria-labelledby="themes-title"
+  >
+    <origam-grid
+      tag="div"
+      columns="repeat(auto-fit, minmax(320px, 1fr))"
+      gap="xl"
+      align-items="center"
+      class="home-themes__grid"
+    >
+      <origam-grid-item
+        tag="div"
+        class="home-themes__text-col"
+      >
+        <p class="home-themes__eyebrow">
+          {{ t('home.themes.eyebrow', 'THEMING') }}
+        </p>
+
+        <origam-title
+          id="themes-title"
+          tag="h2"
+          class="home-themes__title"
+        >
+          <span class="home-themes__title-line">{{ t('home.themes.title_line1', 'One design system.') }}</span>
+          <span class="home-themes__title-line">{{ t('home.themes.title_line2', 'Every brand.') }}</span>
+        </origam-title>
+
+        <p class="home-themes__subtitle">
+          {{ t('home.themes.subtitle', 'Hand-maintained, props-first design tokens — multi-theme out of the box. Switch between light, dark or your custom brand at runtime, with zero remount.') }}
+        </p>
+
+        <div
+          class="home-themes__chips"
+          role="group"
+          :aria-label="t('a11y.themes_chips_list', 'Available themes')"
+        >
+          <div
+            v-for="chip in THEME_CHIPS"
+            :key="chip.key"
+            class="home-themes__chip-item"
+          >
+            <origam-chip
+              type="button"
+              class="home-themes__chip"
+              :aria-pressed="chip.key === theme"
+              :data-active="chip.key === theme"
+              :data-cy="`themes-chip-${chip.key}`"
+              @click="setTheme(chip.key)"
+            >
+              {{ t(chip.labelKey, chip.labelFallback) }}
+            </origam-chip>
+          </div>
+        </div>
+
+        <p
+          class="home-themes__tooling"
+          :aria-label="t('a11y.themes_tooling', 'Tooling compatibility')"
+        >
+                    <span
+                      v-for="(pill, index) in THEMES_TOOLING_TEXT"
+                      :key="pill.key"
+                      class="home-themes__tooling-item"
+                    >
+                        <span v-if="index > 0" aria-hidden="true" class="home-themes__tooling-sep">·</span>
+                        {{ t(pill.labelKey, pill.labelFallback) }}
+                    </span>
+        </p>
+
+        <nav
+          class="home-themes__actions"
+          :aria-label="t('home.themes.actions_label', 'Try the theme builder')"
+        >
+          <origam-btn
+            class="home-themes__btn"
+            variant="text"
+            append-icon="mdi-arrow-right"
+            :href="HOME_THEMES_BUILDER_HREF"
+            data-cy="themes-cta-builder"
+          >
+            {{ t('home.themes.cta_builder', 'Try the theme builder') }}
+          </origam-btn>
+        </nav>
+      </origam-grid-item>
+
+      <origam-grid-item
+        tag="div"
+        class="home-themes__previews-col"
+      >
+        <origam-grid
+          tag="ul"
+          :columns="2"
+          gap="sm"
+          :aria-label="t('a11y.themes_preview_tiles', 'Theme preview tiles')"
+          class="home-themes__previews"
+        >
+          <origam-grid-item
+            v-for="tile in THEME_PREVIEW_TILES"
+            :key="tile.key"
+            tag="li"
+            class="home-themes__preview-item"
+            :data-cy="`themes-preview-${tile.key}`"
+          >
+            <origam-theme-provider
+              :theme="tile.theme"
+              :mode="tile.mode"
+            >
+              <origam-sheet
+                :data-cy="`themes-tile-surface-${tile.key}`"
+                rounded="lg"
+                tag="article"
+                border
+                border-color="var(--origam-color__border---ghost)"
+                class="home-themes__preview-tile"
+              >
+                <figure class="home-themes__preview-figure">
+                  <figcaption class="home-themes__preview-label">
+                    {{ t(tile.labelKey, tile.labelFallback) }}
+                  </figcaption>
+
+                  <div
+                    class="home-themes__skeleton"
+                    aria-hidden="true"
+                  >
+                    <span class="home-themes__skeleton-bar home-themes__skeleton-bar--long" />
+                    <span class="home-themes__skeleton-bar home-themes__skeleton-bar--short" />
+                  </div>
+
+                  <div class="home-themes__preview-footer">
+                    <origam-btn
+                      color="primary"
+                      size="small"
+                      class="home-themes__preview-btn"
+                      data-cy="themes-tile-button"
+                    >
+                      {{ t('home.themes.preview_button', 'Button') }}
+                    </origam-btn>
+                  </div>
+                </figure>
+              </origam-sheet>
+            </origam-theme-provider>
+          </origam-grid-item>
+        </origam-grid>
+      </origam-grid-item>
+    </origam-grid>
+  </section>
+</template>
+
 <script setup lang="ts">
 import { useTheme } from 'origam/composables'
 import { useT } from '~/composables/useT'
@@ -11,155 +160,6 @@ import {
 const { t } = useT()
 const { theme, setTheme } = useTheme()
 </script>
-
-<template>
-    <section
-        class="home-themes"
-        aria-labelledby="themes-title"
-    >
-        <origam-grid
-            tag="div"
-            columns="repeat(auto-fit, minmax(320px, 1fr))"
-            gap="xl"
-            align-items="center"
-            class="home-themes__grid"
-        >
-            <origam-grid-item
-                tag="div"
-                class="home-themes__text-col"
-            >
-                <p class="home-themes__eyebrow">
-                    {{ t('home.themes.eyebrow', 'THEMING') }}
-                </p>
-
-                <origam-title
-                    id="themes-title"
-                    tag="h2"
-                    class="home-themes__title"
-                >
-                    <span class="home-themes__title-line">{{ t('home.themes.title_line1', 'One design system.') }}</span>
-                    <span class="home-themes__title-line">{{ t('home.themes.title_line2', 'Every brand.') }}</span>
-                </origam-title>
-
-                <p class="home-themes__subtitle">
-                    {{ t('home.themes.subtitle', 'Hand-maintained, props-first design tokens — multi-theme out of the box. Switch between light, dark or your custom brand at runtime, with zero remount.') }}
-                </p>
-
-                <div
-                    class="home-themes__chips"
-                    role="group"
-                    :aria-label="t('a11y.themes_chips_list', 'Available themes')"
-                >
-                    <div
-                        v-for="chip in THEME_CHIPS"
-                        :key="chip.key"
-                        class="home-themes__chip-item"
-                    >
-                        <origam-chip
-                            type="button"
-                            class="home-themes__chip"
-                            :aria-pressed="chip.key === theme"
-                            :data-active="chip.key === theme"
-                            :data-cy="`themes-chip-${chip.key}`"
-                            @click="setTheme(chip.key)"
-                        >
-                            {{ t(chip.labelKey, chip.labelFallback) }}
-                        </origam-chip>
-                    </div>
-                </div>
-
-                <p
-                    class="home-themes__tooling"
-                    :aria-label="t('a11y.themes_tooling', 'Tooling compatibility')"
-                >
-                    <span
-                        v-for="(pill, index) in THEMES_TOOLING_TEXT"
-                        :key="pill.key"
-                        class="home-themes__tooling-item"
-                    >
-                        <span v-if="index > 0" aria-hidden="true" class="home-themes__tooling-sep">·</span>
-                        {{ t(pill.labelKey, pill.labelFallback) }}
-                    </span>
-                </p>
-
-                <nav
-                    class="home-themes__actions"
-                    :aria-label="t('home.themes.actions_label', 'Try the theme builder')"
-                >
-                    <origam-btn
-                        class="home-themes__btn"
-                        variant="text"
-                        append-icon="mdi-arrow-right"
-                        :href="HOME_THEMES_BUILDER_HREF"
-                        data-cy="themes-cta-builder"
-                    >
-                        {{ t('home.themes.cta_builder', 'Try the theme builder') }}
-                    </origam-btn>
-                </nav>
-            </origam-grid-item>
-
-            <origam-grid-item
-                tag="div"
-                class="home-themes__previews-col"
-            >
-                <origam-grid
-                    tag="ul"
-                    :columns="2"
-                    gap="sm"
-                    :aria-label="t('a11y.themes_preview_tiles', 'Theme preview tiles')"
-                    class="home-themes__previews"
-                >
-                    <origam-grid-item
-                        v-for="tile in THEME_PREVIEW_TILES"
-                        :key="tile.key"
-                        tag="li"
-                        class="home-themes__preview-item"
-                        :data-cy="`themes-preview-${tile.key}`"
-                    >
-                        <origam-theme-provider
-                            :theme="tile.theme"
-                            :mode="tile.mode"
-                        >
-                            <origam-sheet
-                                :data-cy="`themes-tile-surface-${tile.key}`"
-                                rounded="lg"
-                                tag="article"
-                                border
-                                border-color="var(--origam-color__border---ghost)"
-                                class="home-themes__preview-tile"
-                            >
-                                <figure class="home-themes__preview-figure">
-                                    <figcaption class="home-themes__preview-label">
-                                        {{ t(tile.labelKey, tile.labelFallback) }}
-                                    </figcaption>
-
-                                    <div
-                                        class="home-themes__skeleton"
-                                        aria-hidden="true"
-                                    >
-                                        <span class="home-themes__skeleton-bar home-themes__skeleton-bar--long" />
-                                        <span class="home-themes__skeleton-bar home-themes__skeleton-bar--short" />
-                                    </div>
-
-                                    <div class="home-themes__preview-footer">
-                                        <origam-btn
-                                            color="primary"
-                                            size="small"
-                                            class="home-themes__preview-btn"
-                                            data-cy="themes-tile-button"
-                                        >
-                                            {{ t('home.themes.preview_button', 'Button') }}
-                                        </origam-btn>
-                                    </div>
-                                </figure>
-                            </origam-sheet>
-                        </origam-theme-provider>
-                    </origam-grid-item>
-                </origam-grid>
-            </origam-grid-item>
-        </origam-grid>
-    </section>
-</template>
 
 <style scoped lang="scss">
 .home-themes {
