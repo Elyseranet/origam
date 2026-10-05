@@ -42,6 +42,7 @@ import { computed } from 'vue'
 import { useT } from '~/composables/useT'
 import { useThemeBuilderColorControl } from '~/composables/useThemeBuilderColorControl'
 import { THEME_BUILDER_CUSTOM_VALUE, THEME_BUILDER_INTENT_OPTIONS, THEME_BUILDER_UNSET_VALUE } from '~/consts/theme-builder-controls.const'
+import type { IThemeBuilderColorFieldEmits, IThemeBuilderColorFieldProps } from "~/interfaces/theme-builder.interface";
 
 /**
  * ThemeBuilderColorField — Contrôle 1 (`color-field.html`): named-intent
@@ -53,15 +54,9 @@ import { THEME_BUILDER_CUSTOM_VALUE, THEME_BUILDER_INTENT_OPTIONS, THEME_BUILDER
  * for a standalone `borderColor` when a component has no `border` control to
  * fold it into.
  */
-const props = defineProps<{
-    modelValue: unknown
-    label: string
-    dataCy: string
-}>()
+const props = withDefaults(defineProps<IThemeBuilderColorFieldProps>(), {})
 
-const emit = defineEmits<{
-    (e: 'update:modelValue', value: string | undefined): void
-}>()
+const emit = defineEmits<IThemeBuilderColorFieldEmits>()
 
 const { t } = useT()
 

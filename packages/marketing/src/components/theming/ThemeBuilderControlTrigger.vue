@@ -61,6 +61,7 @@
 
 <script setup lang="ts">
 import { MDI_ICONS } from 'origam/enums'
+import type { IThemeBuilderControlTriggerProps } from "~/interfaces/theme-builder.interface";
 
 /**
  * ThemeBuilderControlTrigger — shared trigger FIELD + popover shell for the
@@ -81,15 +82,7 @@ import { MDI_ICONS } from 'origam/enums'
  * field-specific composable/markup lives in the consuming component's
  * default slot.
  */
-withDefaults(defineProps<{
-    label: string
-    valueLabel: string
-    hint?: boolean
-    swatch?: boolean
-    swatchClass?: string
-    swatchStyle?: Record<string, string>
-    dataCy: string
-}>(), {
+withDefaults(defineProps<IThemeBuilderControlTriggerProps>(), {
     hint: false,
     swatch: false,
     swatchClass: undefined,

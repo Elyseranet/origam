@@ -55,6 +55,11 @@ import { useT } from '~/composables/useT'
 import { useThemeBuilderRoundedControl } from '~/composables/useThemeBuilderRoundedControl'
 import { THEME_BUILDER_ROUNDED_OPTIONS } from '~/consts/theme-builder-controls.const'
 import { MDI_ICONS } from 'origam/enums'
+import { CORNERS } from "~/consts/theme-builder.const";
+import type {
+  IThemeBuilderRoundedFieldEmits,
+  IThemeBuilderRoundedFieldProps
+} from "~/interfaces/theme-builder.interface";
 import type { TThemeBuilderCorner } from '~/types/theme-builder-controls.type'
 
 /**
@@ -65,15 +70,9 @@ import type { TThemeBuilderCorner } from '~/types/theme-builder-controls.type'
  * prop — see the correction documented in `theme-builder-rounded.util.ts`
  * (the 4 discrete corner props are dead).
  */
-const props = defineProps<{
-    modelValue: unknown
-    label: string
-    dataCy: string
-}>()
+const props = withDefaults(defineProps<IThemeBuilderRoundedFieldProps>(), {})
 
-const emit = defineEmits<{
-    (e: 'update:modelValue', value: string | undefined): void
-}>()
+const emit = defineEmits<IThemeBuilderRoundedFieldEmits>()
 
 const { t } = useT()
 
@@ -90,13 +89,6 @@ const selectItems = computed(() =>
 const onSelect = (value: unknown): void => {
     if (typeof value === 'string') selectRung(value)
 }
-
-const CORNERS: Array<{ key: TThemeBuilderCorner; labelKey: string; labelFallback: string }> = [
-    { key: 'topLeft', labelKey: 'theming.control.rounded.corner_top_left', labelFallback: 'Top-left corner' },
-    { key: 'topRight', labelKey: 'theming.control.rounded.corner_top_right', labelFallback: 'Top-right corner' },
-    { key: 'bottomLeft', labelKey: 'theming.control.rounded.corner_bottom_left', labelFallback: 'Bottom-left corner' },
-    { key: 'bottomRight', labelKey: 'theming.control.rounded.corner_bottom_right', labelFallback: 'Bottom-right corner' }
-]
 
 const onCorner = (corner: TThemeBuilderCorner, value: unknown): void => {
     if (typeof value === 'number') setCorner(corner, value)

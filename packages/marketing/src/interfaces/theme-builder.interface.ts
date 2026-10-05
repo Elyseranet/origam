@@ -12,41 +12,45 @@ import type { TMode } from 'origam/types'
 
 import type { IComponentPlaygroundControl } from '~/interfaces/components-catalog.interface'
 import type { IComponentPreviewAdapter } from '~/interfaces/component-preview.interface'
-import type { TThemeBuilderBoxModelMode, TThemeBuilderColorMode } from '~/types/theme-builder-controls.type'
+import type {
+  TThemeBuilderBorderSide,
+  TThemeBuilderBoxModelMode,
+  TThemeBuilderColorMode
+} from '~/types/theme-builder-controls.type'
 
 /** The two concrete edit modes (never 'auto'). */
 export type TEditMode = 'light' | 'dark'
 
 /** Minimal prop surface shape returned by `?includePropSurface=1`. */
 export interface IComponentThemeSurface {
-    slug: string
+  slug: string
+  name: string
+  icon: string
+  category: string
+  parentSlug?: string | null
+  playground?: {
+    controls: IComponentPlaygroundControl[]
+    defaultSlotContent?: string
+  } | null
+  props: Array<{
     name: string
-    icon: string
-    category: string
-    parentSlug?: string | null
-    playground?: {
-        controls: IComponentPlaygroundControl[]
-        defaultSlotContent?: string
-    } | null
-    props: Array<{
-        name: string
-        type: {
-            label: string | null
-            slug: string | null
-            kind: string | null
-            /**
-             * Real literal values of the referenced `type`/`enum` doc entry
-             * (e.g. `['text', 'flat', 'elevated', …]` for `TVariant`), when
-             * `kind` is `'type'`/`'enum'` and the reference resolved. Lets
-             * `useThemeBuilderCatalog` derive a closed-enum prop's control
-             * options from the REAL DS type instead of a bare type-name
-             * reference — see `buildComponentThemeCatalog` server-side.
-             */
-            values?: string[] | null
-        }
-        required?: boolean | null
-        defaultValue?: string | null
-    }>
+    type: {
+      label: string | null
+      slug: string | null
+      kind: string | null
+      /**
+       * Real literal values of the referenced `type`/`enum` doc entry
+       * (e.g. `['text', 'flat', 'elevated', …]` for `TVariant`), when
+       * `kind` is `'type'`/`'enum'` and the reference resolved. Lets
+       * `useThemeBuilderCatalog` derive a closed-enum prop's control
+       * options from the REAL DS type instead of a bare type-name
+       * reference — see `buildComponentThemeCatalog` server-side.
+       */
+      values?: string[] | null
+    }
+    required?: boolean | null
+    defaultValue?: string | null
+  }>
 }
 
 /**
@@ -55,14 +59,14 @@ export interface IComponentThemeSurface {
  * plain text for lengths / shadows / misc).
  */
 export interface IThemeBuilderToken {
-    /** Full CSS custom property, e.g. `--origam-btn---border-radius`. */
-    cssVar: string
-    /** Short label (the segment after the `---` block separator). */
-    label: string
-    /** Default value pulled from the origam light theme. */
-    defaultValue: string
-    /** Editor control to use. */
-    kind: 'color' | 'text'
+  /** Full CSS custom property, e.g. `--origam-btn---border-radius`. */
+  cssVar: string
+  /** Short label (the segment after the `---` block separator). */
+  label: string
+  /** Default value pulled from the origam light theme. */
+  defaultValue: string
+  /** Editor control to use. */
+  kind: 'color' | 'text'
 }
 
 /**
@@ -95,13 +99,13 @@ export type IThemeBuilderPreviewAdapter = IComponentPreviewAdapter
  *     live in `defaults`/`cssVars`.
  */
 export interface IThemeBuilderState {
-    name: string
-    label: string
-    mode: TMode
-    activeMode: TEditMode
-    preset: string
-    defaults: Record<string, Record<string, unknown>>
-    cssVars: Record<TEditMode, Record<string, string>>
+  name: string
+  label: string
+  mode: TMode
+  activeMode: TEditMode
+  preset: string
+  defaults: Record<string, Record<string, unknown>>
+  cssVars: Record<TEditMode, Record<string, string>>
 }
 
 /**
@@ -112,17 +116,17 @@ export interface IThemeBuilderState {
  * builder (see THEME_BUILDER_TOKENS) so seeding never bundles the full theme.
  */
 export interface IThemeBuilderPreset {
-    key: string
-    labelKey: string
-    labelFallback: string
-    light: Record<string, string>
-    dark: Record<string, string>
-    /**
-     * Per-component DEFAULT PROPS (props-first DS logic). Keyed by `global` or
-     * `origam-{slug}` → prop → value. Seeded into `state.defaults` by
-     * `seedPreset`, re-emitted as `IOrigamTheme.component` on export.
-     */
-    components?: Record<string, Record<string, unknown>>
+  key: string
+  labelKey: string
+  labelFallback: string
+  light: Record<string, string>
+  dark: Record<string, string>
+  /**
+   * Per-component DEFAULT PROPS (props-first DS logic). Keyed by `global` or
+   * `origam-{slug}` → prop → value. Seeded into `state.defaults` by
+   * `seedPreset`, re-emitted as `IOrigamTheme.component` on export.
+   */
+  components?: Record<string, Record<string, unknown>>
 }
 
 /**
@@ -131,34 +135,34 @@ export interface IThemeBuilderPreset {
  * id / data-cy suffix.
  */
 export type TThemeBuilderGroupId =
-    | 'color'
-    | 'size'
-    | 'shape'
-    | 'border'
-    | 'elevation'
-    | 'dimension'
-    | 'spacing'
-    | 'state'
-    | 'icon'
-    | 'link'
-    | 'layout'
-    | 'content'
-    | 'other'
+  | 'color'
+  | 'size'
+  | 'shape'
+  | 'border'
+  | 'elevation'
+  | 'dimension'
+  | 'spacing'
+  | 'state'
+  | 'icon'
+  | 'link'
+  | 'layout'
+  | 'content'
+  | 'other'
 
 /** Display metadata for one prop group section (order, label, icon). */
 export interface IThemeBuilderPropGroupMeta {
-    id: TThemeBuilderGroupId
-    labelKey: string
-    labelFallback: string
-    icon: string
+  id: TThemeBuilderGroupId
+  labelKey: string
+  labelFallback: string
+  icon: string
 }
 
 /** Display metadata for one nav category section (order, label, icon). */
 export interface IThemeBuilderCategoryMeta {
-    id: string
-    labelKey: string
-    labelFallback: string
-    icon: string
+  id: string
+  labelKey: string
+  labelFallback: string
+  icon: string
 }
 
 /**
@@ -184,16 +188,16 @@ export interface IThemeBuilderCategoryMeta {
  *    no composable reads them, see `padding-margin-field.html` Constat 1).
  */
 export type TThemeBuilderControlKind =
-    | 'select'
-    | 'switch'
-    | 'number'
-    | 'text'
-    | 'color'
-    | 'color-intent'
-    | 'rounded'
-    | 'elevation'
-    | 'border'
-    | 'box-model'
+  | 'select'
+  | 'switch'
+  | 'number'
+  | 'text'
+  | 'color'
+  | 'color-intent'
+  | 'rounded'
+  | 'elevation'
+  | 'border'
+  | 'box-model'
 
 /**
  * A single themable prop control derived from a component's `_DOC.props` row.
@@ -208,44 +212,44 @@ export type TThemeBuilderControlKind =
  * Simple (single-prop) controls always have `props: [prop]`.
  */
 export interface IThemeBuilderPropControl {
-    /** Prop name (camelCase) as the consumer writes it. Primary/id prop. */
-    prop: string
-    /**
-     * Every prop this control reads/writes. `[prop]` for every simple
-     * control; `['border', 'borderStyle', 'borderColor']` for the Border
-     * composite. Drives `groupEditCount` (edited-dot) and per-control reset.
-     */
-    props: string[]
-    /** Input kind. `color` renders a swatch + hex; the rest are self-explanatory. */
-    kind: TThemeBuilderControlKind
-    /** Group this control belongs to. */
-    group: TThemeBuilderGroupId
-    /** Human label (the prop name is shown as code; this is the long-form label). */
-    label: string
-    /** Select options (only for kind === 'select'). */
-    options?: Array<{ label: string; value: string | number | boolean }>
-    /** DS default value for the PRIMARY prop (used to compute the diff and seed the control). */
-    defaultValue: string | number | boolean
-    /**
-     * Per-prop DS defaults for a multi-prop control (`props.length > 1`).
-     * Keyed by prop name — e.g. `{ border: 'none', borderStyle: 'solid',
-     * borderColor: 'currentColor' }`. Used to reset every facet at once.
-     */
-    defaultValues?: Record<string, string | number | boolean>
-    /** Discriminates the two `box-model` controls (Padding vs Margin). */
-    boxModelAxis?: 'padding' | 'margin'
+  /** Prop name (camelCase) as the consumer writes it. Primary/id prop. */
+  prop: string
+  /**
+   * Every prop this control reads/writes. `[prop]` for every simple
+   * control; `['border', 'borderStyle', 'borderColor']` for the Border
+   * composite. Drives `groupEditCount` (edited-dot) and per-control reset.
+   */
+  props: string[]
+  /** Input kind. `color` renders a swatch + hex; the rest are self-explanatory. */
+  kind: TThemeBuilderControlKind
+  /** Group this control belongs to. */
+  group: TThemeBuilderGroupId
+  /** Human label (the prop name is shown as code; this is the long-form label). */
+  label: string
+  /** Select options (only for kind === 'select'). */
+  options?: Array<{ label: string; value: string | number | boolean }>
+  /** DS default value for the PRIMARY prop (used to compute the diff and seed the control). */
+  defaultValue: string | number | boolean
+  /**
+   * Per-prop DS defaults for a multi-prop control (`props.length > 1`).
+   * Keyed by prop name — e.g. `{ border: 'none', borderStyle: 'solid',
+   * borderColor: 'currentColor' }`. Used to reset every facet at once.
+   */
+  defaultValues?: Record<string, string | number | boolean>
+  /** Discriminates the two `box-model` controls (Padding vs Margin). */
+  boxModelAxis?: 'padding' | 'margin'
 }
 
 /** A prop group section: meta + the controls that fell into it. */
 export interface IThemeBuilderPropGroup {
-    meta: IThemeBuilderPropGroupMeta
-    controls: IThemeBuilderPropControl[]
+  meta: IThemeBuilderPropGroupMeta
+  controls: IThemeBuilderPropControl[]
 }
 
 /** A token group section: meta + the editable CSS tokens that fell into it. */
 export interface IThemeBuilderTokenGroup {
-    meta: IThemeBuilderPropGroupMeta
-    tokens: IThemeBuilderToken[]
+  meta: IThemeBuilderPropGroupMeta
+  tokens: IThemeBuilderToken[]
 }
 
 /**
@@ -254,75 +258,203 @@ export interface IThemeBuilderTokenGroup {
  * adapter. Built at runtime from the catalog + each component's `_DOC`.
  */
 export interface IThemeBuilderComponentEntry {
-    slug: string
-    /** Origam defaults key, e.g. `origam-btn`. */
-    componentKey: string
-    /** Global component tag for `<component :is>`, e.g. `origam-btn`. */
-    componentTag: string
-    name: string
-    icon: string
-    category: string
-    propGroups: IThemeBuilderPropGroup[]
-    tokenGroups: IThemeBuilderTokenGroup[]
-    /** Flat control list (all groups) — convenience for counts + diff lookups. */
-    controls: IThemeBuilderPropControl[]
-    /** Flat token list (all groups). */
-    tokens: IThemeBuilderToken[]
-    previewAdapter: IThemeBuilderPreviewAdapter
-    /** True when the component can render a visible preview from props alone. */
-    previewable: boolean
+  slug: string
+  /** Origam defaults key, e.g. `origam-btn`. */
+  componentKey: string
+  /** Global component tag for `<component :is>`, e.g. `origam-btn`. */
+  componentTag: string
+  name: string
+  icon: string
+  category: string
+  propGroups: IThemeBuilderPropGroup[]
+  tokenGroups: IThemeBuilderTokenGroup[]
+  /** Flat control list (all groups) — convenience for counts + diff lookups. */
+  controls: IThemeBuilderPropControl[]
+  /** Flat token list (all groups). */
+  tokens: IThemeBuilderToken[]
+  previewAdapter: IThemeBuilderPreviewAdapter
+  /** True when the component can render a visible preview from props alone. */
+  previewable: boolean
 }
 
 /** A nav category section: meta + the components that belong to it. */
 export interface IThemeBuilderNavCategory {
-    meta: IThemeBuilderCategoryMeta
-    components: IThemeBuilderComponentEntry[]
+  meta: IThemeBuilderCategoryMeta
+  components: IThemeBuilderComponentEntry[]
 }
 
 /** The 4 raw per-side border-width prop values read by `useThemeBuilderBorderControl`. */
 export interface IThemeBuilderBorderSideValues {
-    top: unknown
-    right: unknown
-    bottom: unknown
-    left: unknown
+  top: unknown
+  right: unknown
+  bottom: unknown
+  left: unknown
 }
 
 /** Classified state of the Color control (Contrôle 1) — inherit / intent / custom. */
 export interface IThemeBuilderColorState {
-    mode: TThemeBuilderColorMode
-    intent?: string
-    custom?: string
+  mode: TThemeBuilderColorMode
+  intent?: string
+  custom?: string
 }
 
 /** The 4 corners of the Rounded 4-corner editor (Contrôle 3), in px. */
 export interface IThemeBuilderRoundedCorners {
-    topLeft: number
-    topRight: number
-    bottomLeft: number
-    bottomRight: number
+  topLeft: number
+  topRight: number
+  bottomLeft: number
+  bottomRight: number
 }
 
 /** The 4 edges of the Padding / Margin box-model editor (Contrôle 6), in px. */
 export interface IThemeBuilderBoxModelEdges {
-    top: number
-    left: number
-    bottom: number
-    right: number
+  top: number
+  left: number
+  bottom: number
+  right: number
 }
 
 /** Full state (link mode + edges) of the Padding / Margin box-model editor. */
 export interface IThemeBuilderBoxModelState {
-    mode: TThemeBuilderBoxModelMode
-    edges: IThemeBuilderBoxModelEdges
+  mode: TThemeBuilderBoxModelMode
+  edges: IThemeBuilderBoxModelEdges
 }
 
 /** One shadow layer of the Elevation "Autre" full shadow composer (Contrôle 4). */
 export interface IThemeBuilderShadowLayer {
-    x: number
-    y: number
-    blur: number
-    spread: number
-    color: string
-    opacity: number
-    inset: boolean
+  x: number
+  y: number
+  blur: number
+  spread: number
+  color: string
+  opacity: number
+  inset: boolean
+}
+
+export interface IThemeBuilderCommonsFieldProps {
+  label: string
+  dataCy: string
+}
+
+export interface IThemeBuilderCommonsFieldEmits {
+  (e: 'update:modelValue', value: string | number | undefined): void
+}
+
+export interface IThemeBuilderBorderFieldProps extends IThemeBuilderCommonsFieldProps {
+  widthValue: unknown
+  styleValue?: unknown
+  colorValue?: unknown
+  topWidthValue?: unknown
+  rightWidthValue?: unknown
+  bottomWidthValue?: unknown
+  leftWidthValue?: unknown
+  topColorValue?: unknown
+  rightColorValue?: unknown
+  bottomColorValue?: unknown
+  leftColorValue?: unknown
+}
+
+export interface IThemeBuilderBorderFieldEmits {
+  (e: 'update:width', value: string | number | undefined): void
+
+  (e: 'update:style', value: string | undefined): void
+
+  (e: 'update:color', value: string | number | undefined): void
+
+  (e: 'update:sideWidth', side: TThemeBuilderBorderSide, value: string | number | undefined): void
+
+  (e: 'update:sideColor', side: TThemeBuilderBorderSide, value: string | number | undefined): void
+}
+
+export interface IThemeBuilderBoxModelFieldProps extends IThemeBuilderCommonsFieldProps {
+  modelValue: unknown
+  axis: 'padding' | 'margin'
+}
+
+export interface IThemeBuilderBoxModelFieldEmits extends IThemeBuilderCommonsFieldEmits {
+
+}
+
+export interface IThemeBuilderColorFieldProps extends IThemeBuilderCommonsFieldProps {
+  modelValue: unknown
+}
+
+export interface IThemeBuilderColorFieldEmits extends IThemeBuilderCommonsFieldEmits {
+
+}
+
+export interface IThemeBuilderColorPickerProps extends IThemeBuilderCommonsFieldProps {
+  modelValue: unknown
+}
+
+export interface IThemeBuilderColorPickerEmits extends IThemeBuilderCommonsFieldEmits {
+  (e: 'close'): void
+}
+
+export interface IThemeBuilderControlsProps {
+  entry: IThemeBuilderComponentEntry
+  activeMode: TEditMode
+  propValue: (slug: string, prop: string) => unknown
+  tokenValue: (mode: TEditMode, cssVar: string) => string
+  isPropEdited: (slug: string, prop: string) => boolean
+  isTokenEdited: (mode: TEditMode, cssVar: string) => boolean
+  componentEditCount: (slug: string) => number
+  groupEditCount: (slug: string, propNames: string[]) => number
+  tokenGroupEditCount: (mode: TEditMode, cssVars: string[]) => number
+}
+
+export interface IThemeBuilderControlsEmits {
+  (e: 'set-prop', slug: string, prop: string, value: unknown): void
+
+  (e: 'set-token', mode: TEditMode, cssVar: string, value: string): void
+
+  (e: 'reset-component', slug: string): void
+}
+
+export interface IThemeBuilderControlTriggerProps extends IThemeBuilderCommonsFieldProps {
+  valueLabel: string
+  hint?: boolean
+  swatch?: boolean
+  swatchClass?: string
+  swatchStyle?: Record<string, string>
+}
+
+export interface IThemeBuilderElevationFieldProps extends IThemeBuilderCommonsFieldProps {
+  modelValue: unknown
+}
+
+export interface IThemeBuilderElevationFieldEmits extends IThemeBuilderCommonsFieldEmits {
+}
+
+export interface IThemeBuilderNavProps {
+  categories: IThemeBuilderNavCategory[]
+  activeSlug: string
+}
+
+export interface IThemeBuilderNavEmits {
+  (e: 'select', slug: string): void
+}
+
+export interface IThemeBuilderPreviewProps {
+  entry: IThemeBuilderComponentEntry
+  activeMode: TEditMode
+  split: boolean
+  previewProps: Record<string, unknown>
+  slotText: string
+  lightStyle: Record<string, string>
+  darkStyle: Record<string, string>
+}
+
+export interface IThemeBuilderPreviewEmits {
+  (e: 'update:activeMode', mode: TEditMode): void
+
+  (e: 'update:split', value: boolean): void
+}
+
+export interface IThemeBuilderRoundedFieldProps extends IThemeBuilderCommonsFieldProps {
+  modelValue: unknown
+}
+
+export interface IThemeBuilderRoundedFieldEmits extends IThemeBuilderCommonsFieldEmits {
+
 }

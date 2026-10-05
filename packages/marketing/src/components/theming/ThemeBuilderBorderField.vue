@@ -152,6 +152,11 @@ import { useT } from '~/composables/useT'
 import { useThemeBuilderBorderControl } from '~/composables/useThemeBuilderBorderControl'
 import { THEME_BUILDER_BORDER_STYLE_OPTIONS, THEME_BUILDER_BORDER_WIDTH_OPTIONS, THEME_BUILDER_UNSET_VALUE } from '~/consts/theme-builder-controls.const'
 import { MDI_ICONS } from 'origam/enums'
+import { SIDES } from "~/consts/theme-builder.const";
+import type {
+  IThemeBuilderBorderFieldEmits,
+  IThemeBuilderBorderFieldProps
+} from "~/interfaces/theme-builder.interface";
 import type { TThemeBuilderBorderSide } from '~/types/theme-builder-controls.type'
 
 /**
@@ -165,29 +170,9 @@ import type { TThemeBuilderBorderSide } from '~/types/theme-builder-controls.typ
  * not yet re-synced) — that facet's link toggle is simply omitted then,
  * never shown disabled.
  */
-const props = defineProps<{
-    widthValue: unknown
-    styleValue?: unknown
-    colorValue?: unknown
-    topWidthValue?: unknown
-    rightWidthValue?: unknown
-    bottomWidthValue?: unknown
-    leftWidthValue?: unknown
-    topColorValue?: unknown
-    rightColorValue?: unknown
-    bottomColorValue?: unknown
-    leftColorValue?: unknown
-    label: string
-    dataCy: string
-}>()
+const props = withDefaults(defineProps<IThemeBuilderBorderFieldProps>(), {})
 
-const emit = defineEmits<{
-    (e: 'update:width', value: string | number | undefined): void
-    (e: 'update:style', value: string | undefined): void
-    (e: 'update:color', value: string | undefined): void
-    (e: 'update:sideWidth', side: TThemeBuilderBorderSide, value: number | undefined): void
-    (e: 'update:sideColor', side: TThemeBuilderBorderSide, value: string | undefined): void
-}>()
+const emit = defineEmits<IThemeBuilderBorderFieldEmits>()
 
 const { t } = useT()
 
@@ -260,22 +245,15 @@ const onSelectStyle = (value: unknown): void => {
     if (value === THEME_BUILDER_UNSET_VALUE) { emit('update:style', undefined); return }
     if (typeof value === 'string') emit('update:style', value)
 }
-const onColorUpdate = (value: string | undefined): void => {
+const onColorUpdate = (value: string | number | undefined): void => {
     emit('update:color', value)
 }
-const onSideColorUpdate = (side: TThemeBuilderBorderSide, value: string | undefined): void => {
+const onSideColorUpdate = (side: TThemeBuilderBorderSide, value: string | number | undefined): void => {
     emit('update:sideColor', side, value)
 }
 const toggleColorLinked = (): void => {
     colorLinked.value = !colorLinked.value
 }
-
-const SIDES: Array<{ key: TThemeBuilderBorderSide; labelKey: string; labelFallback: string }> = [
-    { key: 'top', labelKey: 'theming.control.border.side_top', labelFallback: 'Top (px)' },
-    { key: 'right', labelKey: 'theming.control.border.side_right', labelFallback: 'Right (px)' },
-    { key: 'bottom', labelKey: 'theming.control.border.side_bottom', labelFallback: 'Bottom (px)' },
-    { key: 'left', labelKey: 'theming.control.border.side_left', labelFallback: 'Left (px)' }
-]
 
 const sideColorValue = (side: TThemeBuilderBorderSide): unknown => {
     if (side === 'top') return props.topColorValue

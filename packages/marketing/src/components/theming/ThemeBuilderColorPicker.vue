@@ -90,6 +90,10 @@ import { useT } from '~/composables/useT'
 import { useThemeBuilderColorControl } from '~/composables/useThemeBuilderColorControl'
 import { THEME_BUILDER_INTENT_OPTIONS } from '~/consts/theme-builder-controls.const'
 import { MDI_ICONS } from 'origam/enums'
+import type {
+  IThemeBuilderColorPickerEmits,
+  IThemeBuilderColorPickerProps
+} from "~/interfaces/theme-builder.interface";
 
 /**
  * ThemeBuilderColorPicker — popover CONTENT for the Color control
@@ -98,16 +102,9 @@ import { MDI_ICONS } from 'origam/enums'
  * standalone (`ThemeBuilderColorField`, behind its own trigger) and inline
  * inside the Border composite popover (`ThemeBuilderBorderField`, Partie 3).
  */
-const props = defineProps<{
-    modelValue: unknown
-    label: string
-    dataCy: string
-}>()
+const props = defineProps<IThemeBuilderColorPickerProps>()
 
-const emit = defineEmits<{
-    (e: 'update:modelValue', value: string | undefined): void
-    (e: 'close'): void
-}>()
+const emit = defineEmits<IThemeBuilderColorPickerEmits>()
 
 const { t } = useT()
 

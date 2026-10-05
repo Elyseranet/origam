@@ -134,6 +134,7 @@ import { computed } from 'vue'
 import { useT } from '~/composables/useT'
 import { useThemeBuilderElevationControl } from '~/composables/useThemeBuilderElevationControl'
 import { THEME_BUILDER_ELEVATION_OPTIONS } from '~/consts/theme-builder-controls.const'
+import type { IThemeBuilderElevationFieldEmits, IThemeBuilderElevationFieldProps } from "~/interfaces/theme-builder.interface";
 
 /**
  * ThemeBuilderElevationField — Contrôle 4 (`elevation-field.html`): ONE
@@ -143,15 +144,9 @@ import { THEME_BUILDER_ELEVATION_OPTIONS } from '~/consts/theme-builder-controls
  * (#294). Both sub-modes write straight into `elevation` — verified live
  * since PR #210 (`isCustomBoxShadow`, task #14).
  */
-const props = defineProps<{
-    modelValue: unknown
-    label: string
-    dataCy: string
-}>()
+const props = withDefaults(defineProps<IThemeBuilderElevationFieldProps>(), {})
 
-const emit = defineEmits<{
-    (e: 'update:modelValue', value: string | number | undefined): void
-}>()
+const emit = defineEmits<IThemeBuilderElevationFieldEmits>()
 
 const { t } = useT()
 

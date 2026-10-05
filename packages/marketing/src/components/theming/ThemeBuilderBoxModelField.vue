@@ -132,7 +132,11 @@ import { computed, ref } from 'vue'
 import { useT } from '~/composables/useT'
 import { useThemeBuilderBoxModelControl } from '~/composables/useThemeBuilderBoxModelControl'
 import { THEME_BUILDER_CUSTOM_VALUE } from '~/consts/theme-builder-controls.const'
-import type { TThemeBuilderBoxModelMode } from '~/types/theme-builder-controls.type'
+import { EDGES, MODES } from "~/consts/theme-builder.const";
+import type {
+  IThemeBuilderBoxModelFieldEmits,
+  IThemeBuilderBoxModelFieldProps
+} from "~/interfaces/theme-builder.interface"
 
 /**
  * ThemeBuilderBoxModelField — Contrôle 6 (`padding-margin-field.html`):
@@ -142,16 +146,9 @@ import type { TThemeBuilderBoxModelMode } from '~/types/theme-builder-controls.t
  * reveals the linked/axis/unlinked editor — all 3 modes available for both
  * props since DS issue #216 (PR #217).
  */
-const props = defineProps<{
-    modelValue: unknown
-    axis: 'padding' | 'margin'
-    label: string
-    dataCy: string
-}>()
+const props = withDefaults(defineProps<IThemeBuilderBoxModelFieldProps>(), {})
 
-const emit = defineEmits<{
-    (e: 'update:modelValue', value: string | undefined): void
-}>()
+const emit = defineEmits<IThemeBuilderBoxModelFieldEmits>()
 
 const { t } = useT()
 const open = ref(false)
@@ -180,19 +177,6 @@ const onScaleChip = (value: string): void => {
 const onCustom = (): void => {
     selectScale(THEME_BUILDER_CUSTOM_VALUE)
 }
-
-const MODES: Array<{ value: TThemeBuilderBoxModelMode; labelKey: string; labelFallback: string }> = [
-    { value: 'linked', labelKey: 'theming.control.box_model.mode_linked', labelFallback: 'All linked' },
-    { value: 'axis', labelKey: 'theming.control.box_model.mode_axis', labelFallback: 'Vertical / Horizontal' },
-    { value: 'unlinked', labelKey: 'theming.control.box_model.mode_unlinked', labelFallback: 'No link' }
-]
-
-const EDGES: Array<{ key: 'top' | 'left' | 'bottom' | 'right'; labelKey: string; labelFallback: string }> = [
-    { key: 'top', labelKey: 'theming.control.box_model.edge_top', labelFallback: 'Top (px)' },
-    { key: 'left', labelKey: 'theming.control.box_model.edge_left', labelFallback: 'Left (px)' },
-    { key: 'bottom', labelKey: 'theming.control.box_model.edge_bottom', labelFallback: 'Bottom (px)' },
-    { key: 'right', labelKey: 'theming.control.box_model.edge_right', labelFallback: 'Right (px)' }
-]
 
 const onLinkedValue = (value: unknown): void => { if (typeof value === 'number') setEdge('top', value) }
 const onVertical = (value: unknown): void => { if (typeof value === 'number') setEdge('top', value) }

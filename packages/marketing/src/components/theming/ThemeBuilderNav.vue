@@ -99,18 +99,13 @@ import { computed, ref } from 'vue'
 
 import { useT } from '~/composables/useT'
 import type {
-    IThemeBuilderComponentEntry,
-    IThemeBuilderNavCategory
+  IThemeBuilderComponentEntry,
+  IThemeBuilderNavCategory, IThemeBuilderNavEmits, IThemeBuilderNavProps
 } from '~/interfaces/theme-builder.interface'
 
-const props = defineProps<{
-    categories: IThemeBuilderNavCategory[]
-    activeSlug: string
-}>()
+const props = withDefaults(defineProps<IThemeBuilderNavProps>(), {})
 
-const emit = defineEmits<{
-    (e: 'select', slug: string): void
-}>()
+const emit = defineEmits<IThemeBuilderNavEmits>()
 
 const { t } = useT()
 

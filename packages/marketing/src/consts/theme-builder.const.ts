@@ -14,6 +14,11 @@
 import { COMPONENT_PREVIEW_ADAPTERS } from '~/consts/component-preview.const'
 
 import type { IThemeBuilderPreviewAdapter } from '~/interfaces/theme-builder.interface'
+import type {
+    TThemeBuilderBorderSide,
+    TThemeBuilderBoxModelMode,
+    TThemeBuilderCorner
+} from "~/types/theme-builder-controls.type";
 
 /**
  * Default theme name pre-filled in the name field and used as the export
@@ -130,3 +135,30 @@ export const THEME_BUILDER_PREVIEW_ADAPTERS: Record<string, IThemeBuilderPreview
  * else (lengths, shadows, easings, …) uses a plain text input.
  */
 export const THEME_BUILDER_COLOR_HINTS = ['color', 'bg', 'background', 'fill', 'border'] as const
+
+export const SIDES: Array<{ key: TThemeBuilderBorderSide; labelKey: string; labelFallback: string }> = [
+    { key: 'top', labelKey: 'theming.control.border.side_top', labelFallback: 'Top (px)' },
+    { key: 'right', labelKey: 'theming.control.border.side_right', labelFallback: 'Right (px)' },
+    { key: 'bottom', labelKey: 'theming.control.border.side_bottom', labelFallback: 'Bottom (px)' },
+    { key: 'left', labelKey: 'theming.control.border.side_left', labelFallback: 'Left (px)' }
+]
+
+export const MODES: Array<{ value: TThemeBuilderBoxModelMode; labelKey: string; labelFallback: string }> = [
+    { value: 'linked', labelKey: 'theming.control.box_model.mode_linked', labelFallback: 'All linked' },
+    { value: 'axis', labelKey: 'theming.control.box_model.mode_axis', labelFallback: 'Vertical / Horizontal' },
+    { value: 'unlinked', labelKey: 'theming.control.box_model.mode_unlinked', labelFallback: 'No link' }
+]
+
+export const EDGES: Array<{ key: 'top' | 'left' | 'bottom' | 'right'; labelKey: string; labelFallback: string }> = [
+    { key: 'top', labelKey: 'theming.control.box_model.edge_top', labelFallback: 'Top (px)' },
+    { key: 'left', labelKey: 'theming.control.box_model.edge_left', labelFallback: 'Left (px)' },
+    { key: 'bottom', labelKey: 'theming.control.box_model.edge_bottom', labelFallback: 'Bottom (px)' },
+    { key: 'right', labelKey: 'theming.control.box_model.edge_right', labelFallback: 'Right (px)' }
+]
+
+export const CORNERS: Array<{ key: TThemeBuilderCorner; labelKey: string; labelFallback: string }> = [
+    { key: 'topLeft', labelKey: 'theming.control.rounded.corner_top_left', labelFallback: 'Top-left corner' },
+    { key: 'topRight', labelKey: 'theming.control.rounded.corner_top_right', labelFallback: 'Top-right corner' },
+    { key: 'bottomLeft', labelKey: 'theming.control.rounded.corner_bottom_left', labelFallback: 'Bottom-left corner' },
+    { key: 'bottomRight', labelKey: 'theming.control.rounded.corner_bottom_right', labelFallback: 'Bottom-right corner' }
+]

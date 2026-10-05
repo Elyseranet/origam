@@ -337,214 +337,200 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watchEffect } from 'vue'
-import { MDI_ICONS } from 'origam/enums'
+  import { computed, ref, watchEffect } from 'vue'
+  import { MDI_ICONS } from 'origam/enums'
 
-import { useT } from '~/composables/useT'
-import { THEME_BUILDER_UNSET_VALUE } from '~/consts/theme-builder-controls.const'
-import type {
-    IThemeBuilderComponentEntry,
+  import { useT } from '~/composables/useT'
+  import { THEME_BUILDER_UNSET_VALUE } from '~/consts/theme-builder-controls.const'
+  import type {
+    IThemeBuilderControlsEmits,
+    IThemeBuilderControlsProps,
     IThemeBuilderPropControl,
     IThemeBuilderToken,
-    TEditMode
-} from '~/interfaces/theme-builder.interface'
-import type { TThemeBuilderTab } from '~/types/theme-builder-controls.type'
+  } from '~/interfaces/theme-builder.interface'
+  import type { TThemeBuilderTab } from '~/types/theme-builder-controls.type'
 
-const props = defineProps<{
-    entry: IThemeBuilderComponentEntry
-    activeMode: TEditMode
-    propValue: (slug: string, prop: string) => unknown
-    tokenValue: (mode: TEditMode, cssVar: string) => string
-    isPropEdited: (slug: string, prop: string) => boolean
-    isTokenEdited: (mode: TEditMode, cssVar: string) => boolean
-    componentEditCount: (slug: string) => number
-    groupEditCount: (slug: string, propNames: string[]) => number
-    tokenGroupEditCount: (mode: TEditMode, cssVars: string[]) => number
-}>()
+  const props = withDefaults(defineProps<IThemeBuilderControlsProps>(), {})
 
-const emit = defineEmits<{
-    (e: 'set-prop', slug: string, prop: string, value: unknown): void
-    (e: 'set-token', mode: TEditMode, cssVar: string, value: string): void
-    (e: 'reset-component', slug: string): void
-}>()
+  const emit = defineEmits<IThemeBuilderControlsEmits>()
 
-const { t } = useT()
+  const { t } = useT()
 
-const tab = ref<TThemeBuilderTab>('props')
+  const tab = ref<TThemeBuilderTab>('props')
 
-const propsCount = computed(() => props.entry.controls.length)
-const tokensCount = computed(() => props.entry.tokens.length)
+  const propsCount = computed(() => props.entry.controls.length)
+  const tokensCount = computed(() => props.entry.tokens.length)
 
-const buildCollapsedSet = (): Set<string> => {
+  const buildCollapsedSet = (): Set<string> => {
     const ids = new Set<string>()
-    for (const g of props.entry.propGroups) ids.add(`p-${g.meta.id}`)
-    for (const g of props.entry.tokenGroups) ids.add(`t-${g.meta.id}`)
+    for (const g of props.entry.propGroups) ids.add(`p-${ g.meta.id }`)
+    for (const g of props.entry.tokenGroups) ids.add(`t-${ g.meta.id }`)
     return ids
-}
+  }
 
-const collapsed = ref<Set<string>>(buildCollapsedSet())
+  const collapsed = ref<Set<string>>(buildCollapsedSet())
 
-watchEffect(() => {
+  watchEffect(() => {
     collapsed.value = buildCollapsedSet()
-})
+  })
 
-const isCollapsed = (id: string): boolean => collapsed.value.has(id)
+  const isCollapsed = (id: string): boolean => collapsed.value.has(id)
 
-const toggleGroup = (id: string): void => {
+  const toggleGroup = (id: string): void => {
     const next = new Set(collapsed.value)
     if (next.has(id)) next.delete(id)
     else next.add(id)
     collapsed.value = next
-}
+  }
 
-const groupLabel = (labelKey: string, fallback: string): string =>
+  const groupLabel = (labelKey: string, fallback: string): string =>
     labelKey ? t(labelKey, fallback) : fallback
 
-/** Shared "none" option = undefined / prop not defined by the theme. */
-const unsetOption = computed(() => ({ title: t('theming.control.unset', 'none'), value: THEME_BUILDER_UNSET_VALUE }))
+  /** Shared "none" option = undefined / prop not defined by the theme. */
+  const unsetOption = computed(() => ({ title: t('theming.control.unset', 'none'), value: THEME_BUILDER_UNSET_VALUE }))
 
-/** Enum select: "none" first, then the real options. */
-const selectItems = (ctrl: IThemeBuilderPropControl) => [
+  /** Enum select: "none" first, then the real options. */
+  const selectItems = (ctrl: IThemeBuilderPropControl) => [
     unsetOption.value,
     ...(ctrl.options ?? []).map(o => ({ title: o.label, value: o.value }))
-]
+  ]
 
-/** Tri-state boolean: "none" (undefined) / true / false. */
-const triStateItems = computed(() => [
+  /** Tri-state boolean: "none" (undefined) / true / false. */
+  const triStateItems = computed(() => [
     unsetOption.value,
     { title: t('theming.control.bool_true', 'True'), value: true },
     { title: t('theming.control.bool_false', 'False'), value: false }
-])
+  ])
 
-/**
- * A prop is "not defined" until the user edits it — the control then shows
- * "none" (`UNSET`) rather than pre-filling the DS default, so the panel
- * honestly reflects what the exported `component` block will contain
- * (PROPS-FIRST). Rich controls take a bare `undefined` (their native unset
- * input); the generic <select>/tri-state take the sentinel so an option can
- * render as selected.
- */
-const isEdited = (prop: string): boolean => props.isPropEdited(props.entry.slug, prop)
+  /**
+   * A prop is "not defined" until the user edits it — the control then shows
+   * "none" (`UNSET`) rather than pre-filling the DS default, so the panel
+   * honestly reflects what the exported `component` block will contain
+   * (PROPS-FIRST). Rich controls take a bare `undefined` (their native unset
+   * input); the generic <select>/tri-state take the sentinel so an option can
+   * render as selected.
+   */
+  const isEdited = (prop: string): boolean => props.isPropEdited(props.entry.slug, prop)
 
-/** Value fed to a generic <select> / tri-state (sentinel when unset). */
-const selectValue = (prop: string): unknown =>
+  /** Value fed to a generic <select> / tri-state (sentinel when unset). */
+  const selectValue = (prop: string): unknown =>
     isEdited(prop) ? props.propValue(props.entry.slug, prop) : THEME_BUILDER_UNSET_VALUE
 
-/**
- * Value fed to a rich control (bare `undefined` when unset).
- *
- * NOT used for the border sub-props (`borderStyle`, `borderColor`, the 4
- * per-side widths and the 4 per-side colours): there, `undefined` is the
- * CAPABILITY signal — `ThemeBuilderBorderField` reads it to decide whether
- * the DS component exposes the per-side facet at all
- * (`hasSideWidthSupport` / `hasSideColorSupport`). Those props keep the raw
- * `propValue` path, which resolves to `''` for an undefined-but-supported
- * prop (verified: no component in the catalog declares a non-empty default
- * for any border sub-prop), and the field maps `''` to its own unset state.
- * Swapping them to `richValue` would collapse both meanings and silently
- * hide the per-side editors.
- */
-const richValue = (prop: string): unknown =>
+  /**
+   * Value fed to a rich control (bare `undefined` when unset).
+   *
+   * NOT used for the border sub-props (`borderStyle`, `borderColor`, the 4
+   * per-side widths and the 4 per-side colours): there, `undefined` is the
+   * CAPABILITY signal — `ThemeBuilderBorderField` reads it to decide whether
+   * the DS component exposes the per-side facet at all
+   * (`hasSideWidthSupport` / `hasSideColorSupport`). Those props keep the raw
+   * `propValue` path, which resolves to `''` for an undefined-but-supported
+   * prop (verified: no component in the catalog declares a non-empty default
+   * for any border sub-prop), and the field maps `''` to its own unset state.
+   * Swapping them to `richValue` would collapse both meanings and silently
+   * hide the per-side editors.
+   */
+  const richValue = (prop: string): unknown =>
     isEdited(prop) ? props.propValue(props.entry.slug, prop) : undefined
 
-/** Number field value — empty (undefined) until the prop is defined. */
-const numberValue = (prop: string): number | undefined =>
+  /** Number field value — empty (undefined) until the prop is defined. */
+  const numberValue = (prop: string): number | undefined =>
     isEdited(prop) ? propValueNum(prop) : undefined
 
-/** Text / hex field value — empty until the prop is defined. */
-const textValue = (prop: string): string =>
+  /** Text / hex field value — empty until the prop is defined. */
+  const textValue = (prop: string): string =>
     isEdited(prop) ? propValueStr(prop) : ''
 
-const onSelect = (prop: string, value: unknown): void => {
+  const onSelect = (prop: string, value: unknown): void => {
     emit('set-prop', props.entry.slug, prop, value)
-}
+  }
 
-/** Tri-state boolean control: forwards `UNSET` sentinel or a real boolean. */
-const onTriState = (prop: string, value: unknown): void => {
+  /** Tri-state boolean control: forwards `UNSET` sentinel or a real boolean. */
+  const onTriState = (prop: string, value: unknown): void => {
     emit('set-prop', props.entry.slug, prop, value === THEME_BUILDER_UNSET_VALUE ? THEME_BUILDER_UNSET_VALUE : Boolean(value))
-}
+  }
 
-/** Empty text/number clears the prop (undefined → omitted from the theme). */
-const onText = (prop: string, value: unknown): void => {
+  /** Empty text/number clears the prop (undefined → omitted from the theme). */
+  const onText = (prop: string, value: unknown): void => {
     emit('set-prop', props.entry.slug, prop, value === '' || value === undefined ? THEME_BUILDER_UNSET_VALUE : value)
-}
+  }
 
-const onNumber = (prop: string, value: unknown): void => {
+  const onNumber = (prop: string, value: unknown): void => {
     emit('set-prop', props.entry.slug, prop, value === undefined || value === '' ? THEME_BUILDER_UNSET_VALUE : value)
-}
+  }
 
-const onColor = (prop: string, value: string): void => {
+  const onColor = (prop: string, value: string): void => {
     emit('set-prop', props.entry.slug, prop, value)
-}
+  }
 
-/** `origam-color-picker-field` emits `unknown` (base Input v-model contract) — guard before forwarding. */
-const onColorField = (prop: string, value: unknown): void => {
+  /** `origam-color-picker-field` emits `unknown` (base Input v-model contract) — guard before forwarding. */
+  const onColorField = (prop: string, value: unknown): void => {
     if (typeof value === 'string') onColor(prop, value)
-}
+  }
 
-/** Generic per-prop setter used by the rich multi-prop controls (round 2). */
-const onProp = (prop: string, value: unknown): void => {
+  /** Generic per-prop setter used by the rich multi-prop controls (round 2). */
+  const onProp = (prop: string, value: unknown): void => {
     emit('set-prop', props.entry.slug, prop, value)
-}
+  }
 
-/** Border per-side width — maps 'top'/'right'/'bottom'/'left' to the real DS prop name. */
-const onBorderSideWidth = (side: 'top' | 'right' | 'bottom' | 'left', value: number | undefined): void => {
-    const prop = `border${side.charAt(0).toUpperCase()}${side.slice(1)}`
+  /** Border per-side width — maps 'top'/'right'/'bottom'/'left' to the real DS prop name. */
+  const onBorderSideWidth = (side: 'top' | 'right' | 'bottom' | 'left', value: string | number | undefined): void => {
+    const prop = `border${ side.charAt(0).toUpperCase() }${ side.slice(1) }`
     onProp(prop, value)
-}
+  }
 
-/** Border per-side colour — maps 'top'/'right'/'bottom'/'left' to the real DS prop name. */
-const onBorderSideColor = (side: 'top' | 'right' | 'bottom' | 'left', value: string | undefined): void => {
-    const prop = `border${side.charAt(0).toUpperCase()}${side.slice(1)}Color`
+  /** Border per-side colour — maps 'top'/'right'/'bottom'/'left' to the real DS prop name. */
+  const onBorderSideColor = (side: 'top' | 'right' | 'bottom' | 'left', value: string | number | undefined): void => {
+    const prop = `border${ side.charAt(0).toUpperCase() }${ side.slice(1) }Color`
     onProp(prop, value)
-}
+  }
 
-/** A rich control is "edited" when ANY of the real DS props it drives differs from the default. */
-const isControlEdited = (ctrl: IThemeBuilderPropControl): boolean =>
+  /** A rich control is "edited" when ANY of the real DS props it drives differs from the default. */
+  const isControlEdited = (ctrl: IThemeBuilderPropControl): boolean =>
     ctrl.props.some(p => props.isPropEdited(props.entry.slug, p))
 
-/** Reset every real DS prop a rich control drives back to its DS default. */
-const onResetControl = (ctrl: IThemeBuilderPropControl): void => {
+  /** Reset every real DS prop a rich control drives back to its DS default. */
+  const onResetControl = (ctrl: IThemeBuilderPropControl): void => {
     for (const p of ctrl.props) {
-        const defaultValue = ctrl.defaultValues?.[p] ?? (p === ctrl.prop ? ctrl.defaultValue : undefined)
-        emit('set-prop', props.entry.slug, p, defaultValue)
+      const defaultValue = ctrl.defaultValues?.[p] ?? (p === ctrl.prop ? ctrl.defaultValue : undefined)
+      emit('set-prop', props.entry.slug, p, defaultValue)
     }
-}
+  }
 
-const onToken = (cssVar: string, value: string): void => {
+  const onToken = (cssVar: string, value: string): void => {
     emit('set-token', props.activeMode, cssVar, value)
-}
+  }
 
-/** `origam-color-picker-field` emits `unknown` (base Input v-model contract) — guard before forwarding. */
-const onTokenField = (cssVar: string, value: unknown): void => {
+  /** `origam-color-picker-field` emits `unknown` (base Input v-model contract) — guard before forwarding. */
+  const onTokenField = (cssVar: string, value: unknown): void => {
     if (typeof value === 'string') onToken(cssVar, value)
-}
+  }
 
-const onResetComponent = (): void => {
+  const onResetComponent = (): void => {
     emit('reset-component', props.entry.slug)
-}
+  }
 
-const propValueStr = (prop: string): string => {
+  const propValueStr = (prop: string): string => {
     const v = props.propValue(props.entry.slug, prop)
     return v === undefined || v === null ? '' : String(v)
-}
+  }
 
-const propValueNum = (prop: string): number | undefined => {
+  const propValueNum = (prop: string): number | undefined => {
     const v = props.propValue(props.entry.slug, prop)
     return typeof v === 'number' ? v : undefined
-}
+  }
 
-const groupPropNames = (controls: IThemeBuilderPropControl[]): string[] =>
+  const groupPropNames = (controls: IThemeBuilderPropControl[]): string[] =>
     controls.map(c => c.prop)
 
-const tokenCssVars = (tokens: IThemeBuilderToken[]): string[] =>
+  const tokenCssVars = (tokens: IThemeBuilderToken[]): string[] =>
     tokens.map(tk => tk.cssVar)
 
-const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
+  const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
 </script>
 
 <style scoped lang="scss">
-.tb-panel {
+  .tb-panel {
     display: flex;
     flex-direction: column;
     min-height: 0;
@@ -561,202 +547,202 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
     --origam-select---min-width: 0;
 
     :deep(.origam-field) {
-        font-size: 0.6875rem;
+      font-size: 0.6875rem;
     }
 
     :deep(.origam-field__input) {
-        min-height: 26px;
-        padding-top: 4px;
-        padding-bottom: 4px;
+      min-height: 26px;
+      padding-top: 4px;
+      padding-bottom: 4px;
     }
 
     :deep(.origam-select__selection-text),
     :deep(.origam-input__control) {
-        font-size: 0.6875rem;
+      font-size: 0.6875rem;
     }
 
     :deep(.origam-field__label) {
-        position: absolute;
-        inline-size: 1px;
-        block-size: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border: 0;
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     &__head {
-        display: flex;
-        align-items: center;
-        gap: var(--origam-spacing-2, 0.5rem);
-        flex: 0 0 auto;
-        padding: var(--origam-spacing-2, 0.5rem) var(--origam-spacing-4, 1rem);
-        min-height: 2.75rem;
-        border-block-end: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+      display: flex;
+      align-items: center;
+      gap: var(--origam-spacing-2, 0.5rem);
+      flex: 0 0 auto;
+      padding: var(--origam-spacing-2, 0.5rem) var(--origam-spacing-4, 1rem);
+      min-height: 2.75rem;
+      border-block-end: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
     }
 
     &__head-icon {
-        flex: 0 0 auto;
-        color: var(--origam-color__action--primary---bg, #7c3aed);
+      flex: 0 0 auto;
+      color: var(--origam-color__action--primary---bg, #7c3aed);
     }
 
     &__head-title {
-        flex: 1 1 auto;
-        font-size: var(--origam-font-size-sm, 0.8125rem);
-        font-weight: var(--origam-font-weight-bold, 700);
-        color: var(--origam-color-text-default);
+      flex: 1 1 auto;
+      font-size: var(--origam-font-size-sm, 0.8125rem);
+      font-weight: var(--origam-font-weight-bold, 700);
+      color: var(--origam-color-text-default);
     }
 
     &__head-reset {
-        flex: 0 0 auto;
+      flex: 0 0 auto;
     }
 
     &__tabs {
-        display: flex;
-        flex: 0 0 auto;
-        gap: 0;
-        padding-inline: var(--origam-spacing-4, 1rem);
-        border-block-end: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+      display: flex;
+      flex: 0 0 auto;
+      gap: 0;
+      padding-inline: var(--origam-spacing-4, 1rem);
+      border-block-end: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
     }
 
     &__tab {
-        display: flex;
-        align-items: center;
-        gap: var(--origam-spacing-2, 0.5rem);
-        padding: var(--origam-spacing-2, 0.5rem) var(--origam-spacing-3, 0.75rem);
-        min-height: 2.25rem;
-        margin-block-end: -1px;
-        background: transparent;
-        border: none;
-        border-block-end: 2px solid transparent;
-        cursor: pointer;
-        font-size: var(--origam-font-size-sm, 0.8125rem);
-        font-weight: var(--origam-font-weight-medium, 500);
-        color: var(--origam-color-text-subtle);
-        transition: color 0.15s ease, border-color 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: var(--origam-spacing-2, 0.5rem);
+      padding: var(--origam-spacing-2, 0.5rem) var(--origam-spacing-3, 0.75rem);
+      min-height: 2.25rem;
+      margin-block-end: -1px;
+      background: transparent;
+      border: none;
+      border-block-end: 2px solid transparent;
+      cursor: pointer;
+      font-size: var(--origam-font-size-sm, 0.8125rem);
+      font-weight: var(--origam-font-weight-medium, 500);
+      color: var(--origam-color-text-subtle);
+      transition: color 0.15s ease, border-color 0.15s ease;
 
-        &:hover {
-            color: var(--origam-color-text-default);
-        }
+      &:hover {
+        color: var(--origam-color-text-default);
+      }
 
-        &--active {
-            color: var(--origam-color-text-default);
-            border-block-end-color: var(--origam-color__action--primary---bg, #7c3aed);
-            font-weight: var(--origam-font-weight-bold, 700);
-        }
+      &--active {
+        color: var(--origam-color-text-default);
+        border-block-end-color: var(--origam-color__action--primary---bg, #7c3aed);
+        font-weight: var(--origam-font-weight-bold, 700);
+      }
     }
 
     &__tab-badge {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-inline-size: 1.0625rem;
-        block-size: 1.0625rem;
-        padding-inline: 4px;
-        font-size: 0.5625rem;
-        font-weight: var(--origam-font-weight-bold, 700);
-        border-radius: var(--origam-radius-pill, 9999px);
-        background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
-        border: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
-        color: var(--origam-color-text-subtle);
-        font-variant-numeric: tabular-nums;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-inline-size: 1.0625rem;
+      block-size: 1.0625rem;
+      padding-inline: 4px;
+      font-size: 0.5625rem;
+      font-weight: var(--origam-font-weight-bold, 700);
+      border-radius: var(--origam-radius-pill, 9999px);
+      background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
+      border: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+      color: var(--origam-color-text-subtle);
+      font-variant-numeric: tabular-nums;
     }
 
     &__tab--active &__tab-badge {
-        background-color: color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 12%, transparent);
-        border-color: color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 20%, transparent);
-        color: var(--origam-color__action--primary---bg, #7c3aed);
+      background-color: color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 12%, transparent);
+      border-color: color-mix(in srgb, var(--origam-color__action--primary---bg, #7c3aed) 20%, transparent);
+      color: var(--origam-color__action--primary---bg, #7c3aed);
     }
 
     &__scroll {
-        flex: 1 1 auto;
-        min-height: 14rem;
-        overflow-y: visible;
+      flex: 1 1 auto;
+      min-height: 14rem;
+      overflow-y: visible;
     }
 
     &__form {
-        display: block;
+      display: block;
     }
 
     &__empty {
-        margin: 0;
-        padding: var(--origam-spacing-4, 1rem);
-        font-size: var(--origam-font-size-xs, 0.75rem);
-        color: var(--origam-color-text-subtle);
+      margin: 0;
+      padding: var(--origam-spacing-4, 1rem);
+      font-size: var(--origam-font-size-xs, 0.75rem);
+      color: var(--origam-color-text-subtle);
     }
-}
+  }
 
-.tb-group {
+  .tb-group {
     border-block-end: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
 
     &__summary {
-        display: flex;
-        align-items: center;
-        gap: var(--origam-spacing-2, 0.5rem);
-        padding: var(--origam-spacing-2, 0.5rem) var(--origam-spacing-4, 1rem);
-        min-height: 2.25rem;
-        cursor: pointer;
-        list-style: none;
-        transition: background-color 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: var(--origam-spacing-2, 0.5rem);
+      padding: var(--origam-spacing-2, 0.5rem) var(--origam-spacing-4, 1rem);
+      min-height: 2.25rem;
+      cursor: pointer;
+      list-style: none;
+      transition: background-color 0.15s ease;
 
-        &::-webkit-details-marker {
-            display: none;
-        }
+      &::-webkit-details-marker {
+        display: none;
+      }
 
-        &:hover {
-            background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
-        }
+      &:hover {
+        background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
+      }
     }
 
     &__label {
-        flex: 1 1 auto;
-        font-size: 0.625rem;
-        font-weight: var(--origam-font-weight-bold, 700);
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--origam-color-text-subtle);
+      flex: 1 1 auto;
+      font-size: 0.625rem;
+      font-weight: var(--origam-font-weight-bold, 700);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--origam-color-text-subtle);
     }
 
     &__dot {
-        flex: 0 0 auto;
-        inline-size: 5px;
-        block-size: 5px;
-        border-radius: 50%;
-        background-color: var(--origam-color__action--primary---bg, #7c3aed);
+      flex: 0 0 auto;
+      inline-size: 5px;
+      block-size: 5px;
+      border-radius: 50%;
+      background-color: var(--origam-color__action--primary---bg, #7c3aed);
     }
 
     &__count {
-        flex: 0 0 auto;
-        min-inline-size: 1.125rem;
-        padding: 1px 5px;
-        font-size: 0.5625rem;
-        font-weight: var(--origam-font-weight-bold, 700);
-        text-align: center;
-        border-radius: var(--origam-radius-pill, 9999px);
-        background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
-        border: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
-        color: var(--origam-color-text-subtle);
-        font-variant-numeric: tabular-nums;
+      flex: 0 0 auto;
+      min-inline-size: 1.125rem;
+      padding: 1px 5px;
+      font-size: 0.5625rem;
+      font-weight: var(--origam-font-weight-bold, 700);
+      text-align: center;
+      border-radius: var(--origam-radius-pill, 9999px);
+      background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
+      border: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+      color: var(--origam-color-text-subtle);
+      font-variant-numeric: tabular-nums;
     }
 
     &__chevron {
-        flex: 0 0 auto;
-        color: var(--origam-color-text-subtle);
-        transition: transform 0.15s ease;
+      flex: 0 0 auto;
+      color: var(--origam-color-text-subtle);
+      transition: transform 0.15s ease;
     }
 
     &[open] &__chevron {
-        transform: rotate(180deg);
+      transform: rotate(180deg);
     }
 
     &__body {
-        padding: var(--origam-spacing-1, 0.25rem) var(--origam-spacing-4, 1rem) var(--origam-spacing-3, 0.75rem);
+      padding: var(--origam-spacing-1, 0.25rem) var(--origam-spacing-4, 1rem) var(--origam-spacing-3, 0.75rem);
     }
-}
+  }
 
-.tb-row {
+  .tb-row {
     position: relative;
     display: flex;
     align-items: center;
@@ -769,7 +755,7 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
     min-height: 1.875rem;
 
     & + & {
-        border-block-start: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+      border-block-start: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
     }
 
     // When a rich control reveals its "Autre…" custom editor inline, the
@@ -777,131 +763,131 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
     // so the prop label sits beside the select rather than floating in the
     // vertical centre of the whole (tall) cell.
     &:has(.tb-reveal) {
-        align-items: flex-start;
+      align-items: flex-start;
 
-        .tb-row__code {
-            padding-block-start: 0.4375rem;
-        }
+      .tb-row__code {
+        padding-block-start: 0.4375rem;
+      }
     }
 
     &__code,
     &__var {
-        flex: 1 1 auto;
-        min-inline-size: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        font-family: var(--origam-font-family-mono, monospace);
-        font-size: 0.625rem;
-        color: var(--origam-color-text-subtle);
+      flex: 1 1 auto;
+      min-inline-size: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-family: var(--origam-font-family-mono, monospace);
+      font-size: 0.625rem;
+      color: var(--origam-color-text-subtle);
     }
 
     &--edited &__code,
     &--edited &__var {
-        color: var(--origam-color__action--primary---bg, #7c3aed);
+      color: var(--origam-color__action--primary---bg, #7c3aed);
     }
 
     &__control {
-        flex: 0 0 9rem;
-        inline-size: 9rem;
+      flex: 0 0 9rem;
+      inline-size: 9rem;
+      min-inline-size: 0;
+      display: flex;
+      align-items: flex-start;
+      gap: var(--origam-spacing-1, 0.25rem);
+
+      // Uniform control width: every control type (select trigger,
+      // color-picker, input, rich control) fills this fixed cell so all rows
+      // line up and none overflows the panel. Previously each kind had its
+      // own inline-size (select 8.5rem / input 6rem / rich 9rem), so widths
+      // were mismatched and the widest were clipped on the right.
+      > * {
+        inline-size: 100%;
         min-inline-size: 0;
-        display: flex;
-        align-items: flex-start;
-        gap: var(--origam-spacing-1, 0.25rem);
+      }
 
-        // Uniform control width: every control type (select trigger,
-        // color-picker, input, rich control) fills this fixed cell so all rows
-        // line up and none overflows the panel. Previously each kind had its
-        // own inline-size (select 8.5rem / input 6rem / rich 9rem), so widths
-        // were mismatched and the widest were clipped on the right.
-        > * {
-            inline-size: 100%;
-            min-inline-size: 0;
-        }
+      // The Color / Rounded / Elevation / Border rich controls (#294)
+      // dropped their popover — the "Autre…" custom editor reveals INLINE,
+      // stacked BELOW the select but WITHIN this fixed 9rem cell (same width
+      // as every other control, right-aligned column). The cell grows taller,
+      // never wider; the reveal editors flow/wrap inside 9rem.
+      :deep(.origam-field),
+      :deep(.origam-input) {
+        min-inline-size: 0;
+      }
 
-        // The Color / Rounded / Elevation / Border rich controls (#294)
-        // dropped their popover — the "Autre…" custom editor reveals INLINE,
-        // stacked BELOW the select but WITHIN this fixed 9rem cell (same width
-        // as every other control, right-aligned column). The cell grows taller,
-        // never wider; the reveal editors flow/wrap inside 9rem.
-        :deep(.origam-field),
-        :deep(.origam-input) {
-            min-inline-size: 0;
-        }
-
-        // Control fields with a prepend swatch (color / bgColor) resolve
-        // --origam-field---padding-start to ~0, so the field's start outline leg
-        // collapses to ~1px and cannot round the left corner: the active field
-        // renders square-left / round-right — a rectangle around the swatch.
-        // Inset the content to the corner radius so the leg widens and both
-        // corners round symmetrically.
-        :deep(.origam-field--prepended) {
-            --origam-field---padding-start: 14px;
-        }
+      // Control fields with a prepend swatch (color / bgColor) resolve
+      // --origam-field---padding-start to ~0, so the field's start outline leg
+      // collapses to ~1px and cannot round the left corner: the active field
+      // renders square-left / round-right — a rectangle around the swatch.
+      // Inset the content to the corner radius so the leg widens and both
+      // corners round symmetrically.
+      :deep(.origam-field--prepended) {
+        --origam-field---padding-start: 14px;
+      }
     }
 
     &__select,
     &__input,
     &__rich {
-        inline-size: 100%;
-        min-inline-size: 0;
+      inline-size: 100%;
+      min-inline-size: 0;
     }
 
     &__reset {
-        position: absolute;
-        inset-inline-start: -0.375rem;
-        inset-block-start: 0.125rem;
-        flex: 0 0 auto;
-        opacity: 0;
-        transition: opacity 0.12s ease;
+      position: absolute;
+      inset-inline-start: -0.375rem;
+      inset-block-start: 0.125rem;
+      flex: 0 0 auto;
+      opacity: 0;
+      transition: opacity 0.12s ease;
     }
 
     &:hover &__reset,
     &:focus-within &__reset {
-        opacity: 1;
+      opacity: 1;
     }
 
     @media (hover: none) {
-        &__reset {
-            opacity: 1;
-        }
+      &__reset {
+        opacity: 1;
+      }
     }
 
     &__color {
-        display: flex;
-        align-items: center;
-        gap: var(--origam-spacing-1, 0.25rem);
+      display: flex;
+      align-items: center;
+      gap: var(--origam-spacing-1, 0.25rem);
     }
 
     &__swatch {
-        inline-size: 1.25rem;
-        block-size: 1.25rem;
-        padding: 0;
-        border: 1px solid var(--origam-color-border-default);
-        border-radius: var(--origam-radius-sm, 0.25rem);
-        background: none;
-        cursor: pointer;
+      inline-size: 1.25rem;
+      block-size: 1.25rem;
+      padding: 0;
+      border: 1px solid var(--origam-color-border-default);
+      border-radius: var(--origam-radius-sm, 0.25rem);
+      background: none;
+      cursor: pointer;
     }
 
     &__color-hex,
     &__token-text {
-        inline-size: 4.5rem;
-        padding: var(--origam-spacing-1, 0.25rem) var(--origam-spacing-2, 0.5rem);
-        font-family: var(--origam-font-family-mono, monospace);
-        font-size: 0.625rem;
-        color: var(--origam-color-text-default);
-        background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
-        border: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
-        border-radius: var(--origam-radius-sm, 0.25rem);
+      inline-size: 4.5rem;
+      padding: var(--origam-spacing-1, 0.25rem) var(--origam-spacing-2, 0.5rem);
+      font-family: var(--origam-font-family-mono, monospace);
+      font-size: 0.625rem;
+      color: var(--origam-color-text-default);
+      background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
+      border: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+      border-radius: var(--origam-radius-sm, 0.25rem);
 
-        &:focus {
-            outline: none;
-            border-color: var(--origam-color__action--primary---bg, #7c3aed);
-        }
+      &:focus {
+        outline: none;
+        border-color: var(--origam-color__action--primary---bg, #7c3aed);
+      }
     }
 
     &__token-text {
-        inline-size: 6rem;
+      inline-size: 6rem;
     }
-}
+  }
 </style>
