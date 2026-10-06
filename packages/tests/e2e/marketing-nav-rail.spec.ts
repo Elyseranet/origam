@@ -3,44 +3,70 @@
  *
  * ⛔ Ce qui est épinglé ici a été trouvé AU NAVIGATEUR, pas à la relecture.
  * Chaque `describe` correspond à un défaut réel mesuré pendant le lot : les
- * assertions existent parce qu'elles ont été rouges une fois.
+ * assertions existent parce qu'elles ont été rouges une fois. Les sept
+ * défauts, dans l'ordre où ils sont gardés plus bas :
  *
- * ⚠️ Ces specs visent le site MARKETING, pas Histoire. Elles demandent donc un
- * serveur Nuxt et sont ignorées quand `E2E_MARKETING_URL` n'est pas fourni —
- * plutôt que d'échouer bruyamment dans une suite qui ne le monte pas :
+ *   1. deux cibles rendues 42 px de large (le minimum tactile est 44) ;
+ *   2. NEUF références `aria-controls` mortes — le tiroir des petits paliers
+ *      est TÉLÉPORTÉ et absent du DOM tant qu'il est fermé, donc chaque
+ *      cible du rail désignait un identifiant inexistant ;
+ *   3. `aria-labelledby` n'atteignait jamais le DOM : la clé était écrite
+ *      `ariaLabelledby` dans un objet passé en `v-bind`, et Vue ne
+ *      kebab-case que les props déclarées, pas un attribut arbitraire ;
+ *   4. le focus n'entrait jamais dans le panneau — le champ de filtre n'est
+ *      rendu qu'une fois le catalogue arrivé, alors que le focus était
+ *      demandé juste après le clic ;
+ *   5. et 6. ⎋ ne fermait pas, ↑/↓ ne déplaçaient rien : MÊME racine que 4,
+ *      plus le fait que le déclencheur est hors du panneau ;
+ *   7. le panneau fermé restait peint — `[hidden]` pose `display: none` à
+ *      (0,1,0), que la règle `display: flex` du panneau battait.
  *
- *     E2E_MARKETING_URL=http://localhost:3042 \
- *       pnpm -F @origam/tests exec playwright test e2e/marketing-nav-rail.spec.ts \
- *       --project=chromium
+ * ── Pourquoi ce fichier vit dans la config MARKETING ────────────────────
+ *
+ * ⛔ Il vise le site Nuxt, jamais Histoire. Il doit donc figurer dans DEUX
+ * listes, et l'oubli de la première est un piège documenté
+ * (`e2e/_support/marketing-specs.const.ts`) :
+ *
+ *   - `MARKETING_SPEC_PATTERNS` — sert de `testMatch` à la config marketing
+ *     ET de `testIgnore` à la config Histoire. Sans l'entrée, un run local
+ *     complet lance ce fichier contre la baseURL d'Histoire, où `.primary-nav`
+ *     et `#nav-rail-panel` n'existent pas : tous les cas expirent à
+ *     l'identique, ce qui ressemble à un défaut produit et n'en est pas un.
+ *   - `MARKETING_GREEN_SPECS` — ce que la CI exécute réellement.
+ *
+ * ⛔ Et il ne lit AUCUNE variable d'environnement à lui : les URL sont
+ * relatives, donc résolues contre le `baseURL` de la config. Une version
+ * antérieure se `skip`ait d'elle-même sans `E2E_MARKETING_URL` — en CI, où
+ * cette variable n'existe pas, elle aurait été VERTE sans rien exécuter.
+ * Un spec qui se saute est indiscernable d'un spec qui passe.
  */
 
 import { expect, test } from '@playwright/test'
 
-const BASE = process.env.E2E_MARKETING_URL ?? ''
+/** Page de détail : la seule où le rail connaît sa famille ET son entrée. */
 const DETAIL = '/components/btn'
 
 /** Les trois paliers, aux seuils mesurés de `useDisplay` (xs:0 sm:600 md:960). */
 const TIERS = [
-    { name: 'rail', width: 1280, trigger: '[data-cy="rail-family-component"]' },
-    { name: 'drawer', width: 800, trigger: '[data-cy="rail-family-component"]' },
-    { name: 'sheet', width: 400, trigger: '[data-cy="quick-rail-fab"]' },
+    { name: 'rail', width: 1280, trigger: 'rail-family-component' },
+    { name: 'drawer', width: 800, trigger: 'rail-family-component' },
+    { name: 'sheet', width: 400, trigger: 'quick-rail-fab' },
 ] as const
 
 /** Plus petite cible tactile admise, en px (WCAG 2.5.8 / 2.5.5). */
 const MIN_TARGET = 44
 
 test.describe('Rail de navigation du catalogue (#1032)', () => {
-    test.skip(!BASE, 'E2E_MARKETING_URL non fourni — le site marketing n’est pas monté')
-
-    test.beforeEach(async ({ context }) => {
+    test.beforeEach(async ({ context, baseURL }) => {
         /*
-         * ⛔ Le thème s'injecte par COOKIE avant chargement, jamais en cliquant
-         * dans l'app bar : une sonde qui clique traverse le bouton de mode et
-         * mesure l'identité OPPOSÉE, avec des chiffres plausibles.
+         * ⛔ Le thème s'injecte par COOKIE avant chargement, jamais en
+         * cliquant dans l'app bar : `.appbar-actions` tient le bouton de mode
+         * à côté des déclencheurs de menu, donc une sonde qui clique le
+         * traverse et mesure l'identité OPPOSÉE, avec des chiffres plausibles.
          */
         await context.addCookies([
-            { name: 'origam-theme', value: 'glass', url: BASE },
-            { name: 'origam-mode', value: 'light', url: BASE },
+            { name: 'origam-theme', value: 'glass', url: baseURL! },
+            { name: 'origam-mode', value: 'light', url: baseURL! },
         ])
     })
 
@@ -49,14 +75,9 @@ test.describe('Rail de navigation du catalogue (#1032)', () => {
             test.use({ viewport: { width: tier.width, height: 900 } })
 
             test('aucune référence aria-controls morte, panneau fermé', async ({ page }) => {
-                await page.goto(`${BASE}${DETAIL}`, { waitUntil: 'networkidle' })
+                await page.goto(DETAIL, { waitUntil: 'networkidle' })
+                await page.waitForSelector('[data-cy="quick-rail"],[data-cy="quick-rail-fab"]')
 
-                /*
-                 * Le tiroir des deux petits paliers est TÉLÉPORTÉ et absent du
-                 * DOM tant qu'il est fermé : un `aria-controls` statique y
-                 * désignait un identifiant inexistant (9 références mortes
-                 * mesurées). Il n'est donc émis que panneau ouvert.
-                 */
                 const dangling = await page.evaluate(() => {
                     const out: string[] = []
 
@@ -78,7 +99,10 @@ test.describe('Rail de navigation du catalogue (#1032)', () => {
                 /*
                  * L'arbitrage du propriétaire : chargement paresseux par
                  * famille. Charger les 8 familles coûterait 986 Ko (mesuré) ;
-                 * les pastilles viennent de /api/reference/counts, 644 octets.
+                 * les pastilles viennent de `/api/reference/counts`, 644
+                 * octets. C'est ce que cette assertion garde, et elle le fait
+                 * par interception RÉSEAU — la seule preuve qu'un appel n'a
+                 * pas eu lieu.
                  */
                 const catalogue: string[] = []
 
@@ -90,20 +114,20 @@ test.describe('Rail de navigation du catalogue (#1032)', () => {
                     }
                 })
 
-                await page.goto(`${BASE}${DETAIL}`, { waitUntil: 'networkidle' })
-                await page.waitForTimeout(1200)
+                await page.goto(DETAIL, { waitUntil: 'networkidle' })
+                await page.waitForSelector(`[data-cy="${tier.trigger}"]`)
 
                 expect(catalogue, 'aucune famille chargée avant ouverture').toEqual([])
 
-                await page.click(tier.trigger)
+                await page.click(`[data-cy="${tier.trigger}"]`)
                 await page.waitForSelector('[data-cy^="rail-item-"]')
 
                 expect(catalogue).toEqual(['/api/reference/component'])
             })
 
             test('chaque cible fait au moins 44x44 et porte un nom accessible', async ({ page }) => {
-                await page.goto(`${BASE}${DETAIL}`, { waitUntil: 'networkidle' })
-                await page.waitForTimeout(1200)
+                await page.goto(DETAIL, { waitUntil: 'networkidle' })
+                await page.waitForSelector(`[data-cy="${tier.trigger}"]`)
 
                 const targets = await page.evaluate(() => {
                     const sel = '[data-cy^="rail-family-"],[data-cy="rail-pages"],'
@@ -130,10 +154,10 @@ test.describe('Rail de navigation du catalogue (#1032)', () => {
                 }
             })
 
-            test('ouverture : le panneau est nommé, non modal, et les entrées sont de vraies ancres', async ({ page }) => {
-                await page.goto(`${BASE}${DETAIL}`, { waitUntil: 'networkidle' })
-                await page.waitForTimeout(1200)
-                await page.click(tier.trigger)
+            test('ouverture : panneau nommé, non modal, entrées = vraies ancres', async ({ page }) => {
+                await page.goto(DETAIL, { waitUntil: 'networkidle' })
+                await page.waitForSelector(`[data-cy="${tier.trigger}"]`)
+                await page.click(`[data-cy="${tier.trigger}"]`)
                 await page.waitForSelector('[data-cy^="rail-item-"]')
 
                 const state = await page.evaluate(() => {
@@ -172,64 +196,79 @@ test.describe('Rail de navigation du catalogue (#1032)', () => {
             })
 
             test('clavier : ↓ déplace le focus sur une entrée, ⎋ ferme et rend le focus', async ({ page }) => {
-                await page.goto(`${BASE}${DETAIL}`, { waitUntil: 'networkidle' })
-                await page.waitForTimeout(1200)
-                await page.click(tier.trigger)
+                await page.goto(DETAIL, { waitUntil: 'networkidle' })
+                await page.waitForSelector(`[data-cy="${tier.trigger}"]`)
+                await page.click(`[data-cy="${tier.trigger}"]`)
                 await page.waitForSelector('[data-cy^="rail-item-"]')
 
                 await page.keyboard.press('ArrowDown')
 
-                const focused = await page.evaluate(() => ({
-                    tag: document.activeElement?.tagName.toLowerCase(),
-                    cy: document.activeElement?.getAttribute('data-cy'),
-                }))
+                await expect.poll(
+                    () => page.evaluate(() => document.activeElement?.tagName.toLowerCase()),
+                    { message: '↓ donne le focus réel à une ancre' }
+                ).toBe('a')
 
-                expect(focused.tag, '↓ donne le focus réel à une ancre').toBe('a')
-                expect(focused.cy ?? '').toMatch(/^rail-item-/)
+                const focusedCy = await page.evaluate(
+                    () => document.activeElement?.getAttribute('data-cy') ?? ''
+                )
+
+                expect(focusedCy).toMatch(/^rail-item-/)
 
                 await page.keyboard.press('Escape')
-                await page.waitForTimeout(400)
 
-                const afterEscape = await page.evaluate(() => {
-                    const panel = document.querySelector('#nav-rail-panel')
+                await expect.poll(
+                    () => page.evaluate(() => {
+                        const panel = document.querySelector('#nav-rail-panel')
 
-                    return {
-                        closed: !panel || panel.hasAttribute('hidden'),
-                        focusCy: document.activeElement?.getAttribute('data-cy'),
-                    }
-                })
+                        return !panel || panel.hasAttribute('hidden')
+                    }),
+                    { message: '⎋ ferme le panneau' }
+                ).toBe(true)
 
-                expect(afterEscape.closed, '⎋ ferme le panneau').toBe(true)
-                expect(afterEscape.focusCy, '⎋ rend le focus au déclencheur')
-                    .toBe(tier.trigger.replace(/\[data-cy="(.+)"\]/, '$1'))
+                const restored = await page.evaluate(
+                    () => document.activeElement?.getAttribute('data-cy') ?? ''
+                )
+
+                expect(restored, '⎋ rend le focus au déclencheur').toBe(tier.trigger)
             })
         })
     }
 
     test('la nav principale cède la place au rail sous 600px', async ({ page }) => {
         /*
-         * Mesuré à 400px : `.primary-nav` s'étendait jusqu'à right=506 dans un
-         * viewport de 400 et était CLIPPÉE par `origam-toolbar`
-         * (`--origam-toolbar---overflow: hidden`, light.css:772). Elle ne
-         * faisait donc pas défiler la page — elle laissait TROIS commandes hors
-         * écran tout en les gardant dans la tabulation. `display: none` les en
-         * sort aussi.
+         * Mesuré à 400 px : `.primary-nav` s'étendait jusqu'à right=506 dans
+         * un viewport de 400 et était CLIPPÉE par `origam-toolbar`
+         * (`--origam-toolbar---overflow: hidden`, `light.css:772`, appliqué
+         * par `OrigamToolbar.vue:280` — la propriété est la forme COURTE et la
+         * valeur vient d'un token, donc un grep de `overflow-x` ou d'un
+         * `hidden` littéral dans le composant ne rend RIEN).
+         *
+         * Elle ne faisait donc pas défiler la page : elle laissait TROIS
+         * commandes hors écran tout en les gardant dans la tabulation.
+         * `display: none` les en sort aussi.
          */
         await page.setViewportSize({ width: 400, height: 900 })
-        await page.goto(`${BASE}${DETAIL}`, { waitUntil: 'networkidle' })
-        await page.waitForTimeout(1200)
+        await page.goto(DETAIL, { waitUntil: 'networkidle' })
+        await page.waitForSelector('[data-cy="quick-rail-fab"]')
 
         await expect(page.locator('.primary-nav')).toBeHidden()
         await expect(page.locator('[data-cy="quick-rail-fab"]')).toBeVisible()
         await expect(page.locator('[data-cy="quick-rail"]')).toHaveCount(0)
     })
 
-    test('aucun défilement horizontal à 400px sur les pages du catalogue', async ({ page }) => {
+    test('aucun défilement horizontal à 400px', async ({ page }) => {
+        /*
+         * Le critère du lot #1032. Les trois causes mesurées n'étaient PAS la
+         * navigation : la grille à 4 colonnes du pied de page (11 px sur 17
+         * pages), un `flex-wrap` resté à `nowrap` sur le titre du showcase
+         * (54 px sur `/`), et un chip portant une phrase entière contre
+         * `white-space: nowrap` (6 px sur `/roadmap`).
+         */
         await page.setViewportSize({ width: 400, height: 900 })
 
         for (const route of ['/', '/components', '/interfaces', '/roadmap']) {
-            await page.goto(`${BASE}${route}`, { waitUntil: 'networkidle' })
-            await page.waitForTimeout(900)
+            await page.goto(route, { waitUntil: 'networkidle' })
+            await page.waitForSelector('[data-cy="quick-rail-fab"]')
 
             const overflow = await page.evaluate(() => {
                 const de = document.documentElement
@@ -243,13 +282,15 @@ test.describe('Rail de navigation du catalogue (#1032)', () => {
 
     test('les animations sont neutralisées sous prefers-reduced-motion', async ({ page }) => {
         /*
-         * Règle du propriétaire (2026-10-02) : animations en CSS uniquement, et
-         * toutes désactivées sous mouvement réduit.
+         * Règle du propriétaire (2026-10-02) : animations en CSS uniquement,
+         * aucun timer JS pilotant du visuel, et toutes désactivées sous
+         * mouvement réduit. 0,01 ms est la valeur conventionnelle du dépôt
+         * pour « pas d'animation ».
          */
         await page.setViewportSize({ width: 1280, height: 900 })
         await page.emulateMedia({ reducedMotion: 'reduce' })
-        await page.goto(`${BASE}${DETAIL}`, { waitUntil: 'networkidle' })
-        await page.waitForTimeout(1200)
+        await page.goto(DETAIL, { waitUntil: 'networkidle' })
+        await page.waitForSelector('[data-cy="rail-family-component"]')
         await page.click('[data-cy="rail-family-component"]')
         await page.waitForSelector('[data-cy^="rail-item-"]')
 
@@ -259,7 +300,6 @@ test.describe('Rail de navigation du catalogue (#1032)', () => {
             return panel ? getComputedStyle(panel).transitionDuration : null
         })
 
-        // 0.01ms — la valeur conventionnelle du dépôt pour « pas d'animation ».
         expect(parseFloat(duration ?? '1')).toBeLessThan(0.001)
     })
 })
