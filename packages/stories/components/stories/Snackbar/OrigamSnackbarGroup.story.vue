@@ -14,7 +14,7 @@
 					spacing: '12px',
 					direction: undefined,
 					tag: 'div',
-					attach: '',
+					attach: undefined,
 					intent: 'info',
 					dismissible: true
 				})"
@@ -99,7 +99,7 @@
 					spacing: '12px',
 					direction: undefined,
 					tag: 'div',
-					attach: '',
+					attach: undefined,
 					intent: 'info',
 					dismissible: true
 				})"

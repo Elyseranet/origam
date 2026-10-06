@@ -16,7 +16,7 @@
 					closeOnSelect: true,
 					closeOnEscape: true,
 					closeOnBackdrop: true,
-					attach: '',
+					attach: undefined,
 					fontSize: undefined
 				})"
 		>
@@ -218,7 +218,7 @@
 					closeOnSelect: true,
 					closeOnEscape: true,
 					closeOnBackdrop: true,
-					attach: '',
+					attach: undefined,
 					fontSize: undefined
 				})"
 		>
