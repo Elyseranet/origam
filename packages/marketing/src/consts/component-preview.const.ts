@@ -419,7 +419,43 @@ export const COMPONENT_PREVIEW_ADAPTERS: Record<string, IComponentPreviewAdapter
     'data-table-headers': REASON_NEEDS_PARENT,
     'data-table-headers-cell': REASON_NEEDS_PARENT,
     'data-table-headers-cell-mobile': REASON_NEEDS_PARENT,
-    'data-table-row': REASON_NEEDS_PARENT,
+    /* Pilote de la capacité `parentEnvelope` (#728 temps 2) — `item` est un
+     * `IDataTableItem` déjà NORMALISÉ (`key`/`index`/`raw`/`columns`/`type`),
+     * pas l'objet brut : vérifié dans `data-table-row.interface.ts` et dans
+     * `OrigamDataTableRow.vue` (`getObjectValueByPath(props.item?.columns,
+     * column.key)` pour la cellule, `props.item?.raw` pour le scope de
+     * slot). La table parente fournit `columns` via `useHeaders()` à partir
+     * de SES propres `headers`/`items` (injectées, indépendantes de cet
+     * `item` unique) ; `useSelection()` / `useExpanded()` / `useSort()` sont
+     * eux aussi appelés sans condition par `<OrigamDataTableRow>` et exigent
+     * donc tous les quatre un ancêtre `<origam-data-table>` réel — slot
+     * `body`, qui remplace le rendu automatique des lignes SANS retirer
+     * `<thead>` (`!hideDefaultHeader` est un bloc indépendant). */
+    'data-table-row': {
+        parentEnvelope: {
+            tag: 'origam-data-table',
+            props: {
+                headers: [
+                    { key: 'name', title: 'Name' },
+                    { key: 'role', title: 'Role' },
+                    { key: 'seats', title: 'Seats', align: 'end' }
+                ],
+                items: [{ name: 'Ada Lovelace', role: 'Owner', seats: 4 }]
+            },
+            slot: 'body'
+        },
+        previewProps: {
+            item: {
+                key: 'ada-lovelace',
+                index: 0,
+                value: 'ada-lovelace',
+                type: 'item',
+                selectable: true,
+                raw: { name: 'Ada Lovelace', role: 'Owner', seats: 4 },
+                columns: { name: 'Ada Lovelace', role: 'Owner', seats: 4 }
+            }
+        }
+    },
     'data-table-rows': REASON_NEEDS_PARENT,
     'expansion-panel': REASON_NEEDS_PARENT,
     'expansion-panel-content': REASON_NEEDS_PARENT,
@@ -433,31 +469,94 @@ export const COMPONENT_PREVIEW_ADAPTERS: Record<string, IComponentPreviewAdapter
     'carousel-item': REASON_NEEDS_PARENT,
     'parallax-element': REASON_NEEDS_PARENT,
     'parallax-layer': REASON_NEEDS_PARENT,
-    tab: REASON_NEEDS_PARENT,
+    /* Second pilote de la capacité `parentEnvelope` (#728 temps 2) —
+     * `<OrigamTab>` s'auto-enregistre via `useGroupItem(props,
+     * ORIGAM_TABS_KEY)` (vérifié dans `OrigamTab.vue`), qui lève sans
+     * ancêtre `<origam-tabs>`. Contrairement à `data-table-row`, l'injection
+     * ici est un groupe de SÉLECTION simple (pas de colonnes/headers) —
+     * exerce donc un mécanisme structurellement différent du premier
+     * pilote, comme demandé. Slot `default` (celui de `<origam-tabs>`),
+     * donc le champ `slot` est omis. */
+    tab: {
+        parentEnvelope: {
+            tag: 'origam-tabs',
+            props: { modelValue: 'one' }
+        },
+        previewProps: { value: 'one' },
+        slotText: 'Tab one'
+    },
     'tab-panel': REASON_NEEDS_PARENT,
     'bracket-competitor': REASON_NEEDS_PARENT,
     'bracket-match': REASON_NEEDS_PARENT,
     'bracket-round': REASON_NEEDS_PARENT,
     'infinite-scroll-intersect': REASON_RUNTIME_DATA,
     'media-controller': REASON_RUNTIME_DATA,
-    'textarea-field-rich-toolbar': REASON_RUNTIME_DATA,
+    /* `ITextareaFieldRichToolbarProps` est de la donnée PURE (un tableau de
+     * commandes enum `TTextareaToolbarCommand` + un objet de
+     * booléens/0-3 `ITextareaRichActiveState`), jamais un élément DOM ou une
+     * instance de contrôleur — contrairement à ses deux voisins ci-dessus,
+     * il n'a jamais eu besoin de `runtime_data`. Mal classé par analogie
+     * avec ses voisins (vérifié contre
+     * `interfaces/TextareaField/textarea-field-rich-toolbar.interface.ts`
+     * et `enums/TextareaField/textarea-field-rich-toolbar.enum.ts`). */
+    'textarea-field-rich-toolbar': {
+        previewProps: {
+            items: ['bold', 'italic', 'underline', 'link', 'list-bullet', 'list-ordered', 'heading', 'code-inline', 'clear-format'],
+            active: { bold: true, italic: false, underline: false, code: false, link: false, listBullet: false, listOrdered: false, heading: 0 }
+        }
+    },
     video: REASON_MEDIA_SOURCE,
 
-    /* ── Overlays : la surface est téléportée hors de l'aperçu ──────────── */
-    dialog: REASON_PORTAL,
-    'dialog-confirmation': REASON_PORTAL,
-    menu: REASON_PORTAL,
+    /* ── Overlays : rendues EN PLACE via `attach` ────────────────────────
+     * `IOverlayProps.attach` (vérifiée dans `overlay.interface.ts`) cible le
+     * conteneur d'aperçu lui-même : `<OrigamOverlay>` n'est alors PAS
+     * téléporté hors de la boîte. Encore faut-il que cette boîte soit une
+     * CONTAINING BLOCK pour le `position: fixed` que porte la racine de
+     * l'overlay par défaut (`.origam-overlay { position: var(--origam-overlay---position, fixed) }`)
+     * — `.component-playground__preview` gagne `contain: layout` dans
+     * `pages/components/[slug].vue` pour cette raison précise. Mesuré en
+     * Chromium réel : DOM (`box.contains(content)`) ET rectangle visuel
+     * (`getBoundingClientRect` du contenu borné à celui de la boîte). */
+    dialog: { previewProps: { modelValue: true, attach: '.component-playground__preview', title: 'Example dialog' } },
+    /* `IDialogConfirmationProps` n'expose pas de prop `text` — le corps du
+     * dialogue de confirmation est un SLOT NOMMÉ (`IDialogSlots.text`), que
+     * cet adaptateur ne peut pas fournir (seul le slot `default` l'est, via
+     * `slotText`/`slotChildren`). Fournir `slotText` ici REMPLACERAIT tout
+     * le chrome de la carte (titre + footer annuler/valider), qui est le
+     * contenu de REPLI du slot `default` d'`<OrigamDialog>` — vérifié dans
+     * `OrigamDialog.vue` (`<slot name="default"><origam-card>…</slot>`).
+     * On laisse donc le slot `default` VIDE pour garder header + footer. */
+    'dialog-confirmation': { previewProps: { modelValue: true, attach: '.component-playground__preview', title: 'Delete item?' } },
+    menu: { previewProps: { modelValue: true, attach: '.component-playground__preview', items: ['One', 'Two', 'Three'] } },
+    /* `contextual-menu`, `command-palette`, `drawer`, `snackbar-group` : hors
+     * périmètre de ce lot — un autre développeur ajoute `attach` à
+     * `OrigamCommandPalette`, `OrigamSnackbarGroup` et `OrigamDrawer` sur
+     * `feat/ds-attach-harmonisation` (`packages/ds/` non touché ici).
+     * `contextual-menu` reste aussi en l'état : son `activator="cursor"` /
+     * `locationStrategy: 'connected'` exige un vrai événement
+     * `contextmenu`, qu'un aperçu statique ne peut pas simuler ; son seul
+     * repli, `staticLocationStrategy`, est un stub `// TODO` vide dans
+     * `utils/Commons/location.util.ts`. */
     'contextual-menu': REASON_PORTAL,
     'command-palette': REASON_PORTAL,
-    tooltip: REASON_PORTAL,
-    overlay: REASON_PORTAL,
-    'overlay-scrim': REASON_PORTAL,
+    tooltip: { previewProps: { modelValue: true, attach: '.component-playground__preview', text: 'Tooltip content' } },
+    overlay: { previewProps: { modelValue: true, attach: '.component-playground__preview' }, slotText: 'Overlay content' },
+    /* `<OrigamOverlayScrim>` ne téléporte JAMAIS (aucun `<teleport>` dans son
+     * template — vérifié) : c'est un simple `v-if="active"` sur une
+     * `<div>`, toujours rendue où elle est montée. Mal classé « portal » ; il
+     * ne demandait qu'`active` pour cesser d'être une boîte vide. */
+    'overlay-scrim': { previewProps: { active: true } },
     drawer: REASON_PORTAL,
-    snackbar: REASON_PORTAL,
+    snackbar: { previewProps: { modelValue: true, attach: '.component-playground__preview', text: 'Saved successfully.' } },
     'snackbar-group': REASON_PORTAL,
-    snack: REASON_PORTAL,
 
     /* ── Transitions : un wrapper ne rend que son enfant ────────────────── */
+    /* `snack` (slug) = `OrigamSnack.vue`, `components/Transition/` — un
+     * wrapper de transition comme `fade` / `slide-x` ci-dessous, PAS un
+     * overlay : aucun `<teleport>` dans son template (vérifié), aucune prop
+     * `attach`. Mal classé « portal » ; il rendait une boîte vide faute de
+     * contenu de slot, exactement comme ses voisins. */
+    snack: { slotChildren: [{ tag: 'origam-card', text: 'Snack content' }] },
     transition: { slotChildren: [{ tag: 'origam-card', text: 'Transitioned content' }] },
     fade: { slotChildren: [{ tag: 'origam-card', text: 'Fading content' }] },
     'expand-x': { slotChildren: [{ tag: 'origam-card', text: 'Expanding content' }] },
