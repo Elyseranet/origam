@@ -153,3 +153,17 @@ export const SHOWCASE_AVATAR_ITEMS = [
     { text: 'VP', bgColor: 'blue'  },
     { text: 'PR', bgColor: 'neutral'  },
 ]
+
+/**
+ * Status-dot foreground colour per intent, for the compact status indicators
+ * in the showcase data table. Moved here from HomeShowcase.vue — a const
+ * declared inline in a .vue file belongs in src/consts/ (CLAUDE.md).
+ */
+export const SHOWCASE_STATUS_DOT_COLOR: Record<string, string> = {
+    success: 'var(--origam-color__feedback--success---fgSubtle, #15803d)',
+    warning: 'var(--origam-color__feedback--warning---fgSubtle, #b45309)',
+    danger: 'var(--origam-color__feedback--danger---fgSubtle, #b91c1c)',
+    info: 'var(--origam-color__feedback--info---fgSubtle, #1d4ed8)',
+    neutral: 'var(--origam-color__text---secondary, #525252)',
+    primary: 'var(--origam-color__action--primary---fgSubtle, #6d28d9)',
+}
