@@ -14,7 +14,32 @@
        OrigamCard inherits the link's pointer across every marketing theme. */
     --origam-card---cursor: inherit;
 
+    /* ── Color — text, canal manquant côté DS ────────────────────────────
+       `--origam-color__text---tertiary` n'est déclaré dans aucune feuille
+       du DS (light.css / dark.css ne connaissent que primary / secondary /
+       disabled / inverse / onColor) alors que 26 fichiers marketing le
+       lisent déjà (24 avec un repli littéral #737373, 2 sans repli — donc
+       réellement cassés tant que rien ne déclare la variable). Déclaré ici
+       pour que le canal porte réellement une valeur par défaut au lieu de
+       ne vivre que via le repli de chaque lecture — #737373 = la valeur de
+       repli unanime partout où un repli est écrit, et c'est aussi
+       --origam-color__neutral---500 (primitive.css), un rung cohérent entre
+       --secondary (neutral-600) et --disabled (neutral-400). Pas de split
+       light/dark ici : ce fichier ne scinde aucun token par mode (les seules
+       entrées couleur qu'il porte sont des re-pointages vers des tokens DS
+       qui gèrent eux-mêmes leur mode) — un thème de marque qui a besoin d'un
+       tertiary différencié par mode le fait via `vars.color.text.tertiary`
+       (ex. apple.theme.ts : #86868b clair / #6e6e73 sombre). */
+    --origam-color__text---tertiary: #737373;
+
     /* ── Typography — display scale ─────────────────────────────────────── */
+    /* ⛔ Ces 3 noms (hero / section / cta) sont marketing-only, pas des tokens
+       DS — n'existent dans AUCUNE feuille DS. Piège récurrent (RowList.vue,
+       #1034) : le DS épelle son échelle `--origam-font__size---{xs|sm|md|…}`
+       (double tiret bas BEM), et un copier-coller depuis les 3 lignes
+       ci-dessous produit un nom `--origam-font-size---*` qui n'existe nulle
+       part côté DS. Si tu veux un échelon DS (xs/sm/md/lg/xl/2xl…), épelle
+       `font__size`, pas `font-size`. */
     --origam-font-size---hero: 5.25rem;
     --origam-font-size---section: 3rem;
     --origam-font-size---cta: 4rem;
