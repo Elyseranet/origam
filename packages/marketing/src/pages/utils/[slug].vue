@@ -9,7 +9,6 @@ import type { IUtilDoc, IUtilEntry } from '~/interfaces/utils-catalog.interface'
 const { t } = useT()
 const route = useRoute()
 const { copy: copyText, copied: importCopied } = useCopy()
-const { copy: copyParamText } = useCopy()
 
 const slug = computed(() => route.params.slug as string)
 
@@ -345,61 +344,11 @@ useSeoMeta({
                                 </p>
                             </header>
 
-                            <dl
-                                class="prop-list"
+                            <row-list
+                                :items="displayDoc?.params ?? []"
+                                row-prefix="param-row"
                                 data-cy="util-params-table"
-                            >
-                                <div
-                                    v-for="param in displayDoc?.params"
-                                    :key="param.name"
-                                    class="prop-list__item"
-                                    :data-cy="`param-row-${param.name}`"
-                                >
-                                    <dt class="prop-list__dt">
-                                        <origam-btn
-                                            variant="text"
-                                            size="x-small"
-                                            class="prop-list__name-btn"
-                                            :aria-label="`Copy ${param.name}`"
-                                            @click="copyParamText(param.name)"
-                                        >
-                                            <span class="prop-list__name-mono">{{ param.name }}</span>
-                                            <origam-icon
-                                                icon="mdi-content-copy"
-                                                size="11"
-                                                class="prop-list__copy-icon"
-                                                aria-hidden="true"
-                                            />
-                                        </origam-btn>
-
-                                        <origam-chip
-                                            v-if="param.required"
-                                            size="x-small"
-                                            color="danger"
-                                            pill
-                                            class="prop-list__required-badge"
-                                        >
-                                            {{ t('utils.detail.params.required', 'required') }}
-                                        </origam-chip>
-
-                                        <origam-chip
-                                            size="x-small"
-                                            variant="outlined"
-                                            class="prop-list__type-chip prop-list__type-chip--primitive"
-                                        >
-                                            {{ param.type }}
-                                        </origam-chip>
-
-                                        <span
-                                            v-if="param.defaultValue"
-                                            class="prop-list__default"
-                                        >= {{ param.defaultValue }}</span>
-                                    </dt>
-                                    <dd class="prop-list__dd">
-                                        {{ param.descriptionFallback }}
-                                    </dd>
-                                </div>
-                            </dl>
+                            />
                         </section>
 
                         <section
@@ -425,17 +374,15 @@ useSeoMeta({
                                 </p>
                             </header>
 
-                            <dl
-                                class="prop-list"
+                            <row-list
+                                :items="displayDoc?.returns ? [displayDoc.returns] : []"
+                                row-prefix="util-return-row"
                                 data-cy="util-returns-table"
                             >
-                                <div
-                                    class="prop-list__item"
-                                    data-cy="util-return-row"
-                                >
+                                <template #item="{ item }">
                                     <dt class="prop-list__dt">
                                         <origam-code
-                                            :code="displayDoc?.returns?.type ?? ''"
+                                            :code="typeof item.type === 'string' ? item.type : (item.type?.label ?? '')"
                                             lang="typescript"
                                             compact
                                             :copyable="false"
@@ -443,10 +390,10 @@ useSeoMeta({
                                         />
                                     </dt>
                                     <dd class="prop-list__dd">
-                                        {{ displayDoc?.returns?.descriptionFallback }}
+                                        {{ item.descriptionKey ? t(item.descriptionKey, item.descriptionFallback) : item.descriptionFallback }}
                                     </dd>
-                                </div>
-                            </dl>
+                                </template>
+                            </row-list>
                         </section>
 
                         <section

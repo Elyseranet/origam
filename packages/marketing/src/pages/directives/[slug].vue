@@ -332,43 +332,12 @@ useSeoMeta({
                                 </p>
                             </header>
 
-                            <dl
-                                class="prop-list"
+                            <row-list
+                                :items="displayDoc?.args ?? []"
+                                row-prefix="directive-arg-row"
                                 :aria-label="t('directives.detail.args.table_caption', `${directiveName} value shape`)"
                                 :data-cy="`directive-args-table-${slug}`"
-                            >
-                                <div
-                                    v-for="arg in displayDoc?.args"
-                                    :key="arg.name"
-                                    class="prop-list__item"
-                                    :data-cy="`directive-arg-row-${arg.name.replace(/[^a-z0-9]/gi, '-')}`"
-                                >
-                                    <dt class="prop-list__dt">
-                                        <span class="prop-list__name-mono">{{ arg.name }}</span>
-
-                                        <origam-chip
-                                            v-if="arg.required"
-                                            size="x-small"
-                                            color="danger"
-                                            pill
-                                            class="prop-list__required-badge"
-                                        >
-                                            {{ t('directives.detail.args.required', 'required') }}
-                                        </origam-chip>
-
-                                        <origam-chip
-                                            size="x-small"
-                                            variant="outlined"
-                                            class="prop-list__type-chip prop-list__type-chip--primitive"
-                                        >
-                                            {{ arg.type }}
-                                        </origam-chip>
-                                    </dt>
-                                    <dd class="prop-list__dd">
-                                        {{ t(arg.descriptionKey, arg.descriptionFallback) }}
-                                    </dd>
-                                </div>
-                            </dl>
+                            />
 
                             <p
                                 v-if="hasNote"
@@ -401,24 +370,16 @@ useSeoMeta({
                                 </p>
                             </header>
 
-                            <dl
-                                class="prop-list"
+                            <row-list
+                                :items="displayDoc?.modifiers ?? []"
+                                row-prefix="directive-modifier-row"
                                 :aria-label="t('directives.detail.modifiers.table_caption', `${directiveName} modifiers`)"
                                 :data-cy="`directive-modifiers-table-${slug}`"
                             >
-                                <div
-                                    v-for="modifier in displayDoc?.modifiers"
-                                    :key="modifier.name"
-                                    class="prop-list__item"
-                                >
-                                    <dt class="prop-list__dt">
-                                        <span class="prop-list__name-mono">.{{ modifier.name }}</span>
-                                    </dt>
-                                    <dd class="prop-list__dd">
-                                        {{ t(modifier.descriptionKey, modifier.descriptionFallback) }}
-                                    </dd>
-                                </div>
-                            </dl>
+                                <template #title="{ label }">
+                                    <span class="prop-list__name-mono">.{{ label }}</span>
+                                </template>
+                            </row-list>
                         </section>
 
                         <section

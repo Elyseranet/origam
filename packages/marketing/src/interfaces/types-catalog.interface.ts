@@ -1,3 +1,5 @@
+import type { IReferenceRow } from '~/interfaces/reference-row.interface'
+
 /**
  * A type-API entry in the /types catalogue.
  * Covers both TypeScript types (T prefix) and enums.
@@ -37,10 +39,11 @@ export interface ITypeDoc {
     descriptionKey: string
     descriptionFallback: string
     /**
-     * For enums: the list of member values with optional per-value description.
-     * For types: empty array.
+     * For enums: the list of member values with optional per-value
+     * description (each row's `label` is the literal value — these rows
+     * have no separate name). For types: empty array.
      */
-    values: ITypeDocValue[]
+    values: IReferenceRow[]
     /**
      * List of component slugs from the components catalog that use this type.
      * Rendered as "Used by" chips linking to /components/{slug}.
@@ -50,16 +53,6 @@ export interface ITypeDoc {
     sourceFile?: string
     /** 1-3 code usage snippets */
     examples?: ITypeExample[]
-}
-
-/** One value in an enum definition */
-export interface ITypeDocValue {
-    /** The string value, e.g. "primary" */
-    value: string
-    /** i18n key for the description (optional) */
-    descriptionKey: string
-    /** English fallback description */
-    descriptionFallback: string
 }
 
 /** Reference to a component that uses this type */

@@ -368,53 +368,11 @@ useSeoMeta({
                                 </p>
                             </header>
 
-                            <div class="interface-props__table-wrap">
-                                <table
-                                    class="interface-props__table"
-                                    data-cy="interface-props-table"
-                                >
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">{{ t('interfaces.detail.props.col_name', 'Name') }}</th>
-                                            <th scope="col">{{ t('interfaces.detail.props.col_type', 'Type') }}</th>
-                                            <th scope="col">{{ t('interfaces.detail.props.col_optional', 'Optional') }}</th>
-                                            <th scope="col">{{ t('interfaces.detail.props.col_default', 'Default') }}</th>
-                                            <th scope="col">{{ t('interfaces.detail.props.col_description', 'Description') }}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr
-                                            v-for="prop in displayDoc?.props"
-                                            :key="prop.name"
-                                            :data-cy="`interface-prop-${prop.name}`"
-                                        >
-                                            <td class="interface-props__cell-name">
-                                                <code class="interface-props__code">{{ prop.name }}</code>
-                                            </td>
-                                            <td class="interface-props__cell-type">
-                                                <code class="interface-props__code">{{ prop.type }}</code>
-                                            </td>
-                                            <td class="interface-props__cell-optional">
-                                                {{ prop.optional ? t('interfaces.detail.props.optional_yes', 'Yes') : t('interfaces.detail.props.optional_no', 'No') }}
-                                            </td>
-                                            <td class="interface-props__cell-default">
-                                                <code
-                                                    v-if="prop.default"
-                                                    class="interface-props__code"
-                                                >{{ prop.default }}</code>
-                                                <span
-                                                    v-else
-                                                    class="interface-props__dash"
-                                                    aria-hidden="true"
-                                                >—</span>
-                                            </td>
-                                            <td class="interface-props__cell-desc">
-                                                {{ prop.descriptionFallback }}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <row-list
+                                :items="displayDoc?.props ?? []"
+                                row-prefix="interface-prop"
+                                data-cy="interface-props-table"
+                            />
                         </section>
 
                         <section

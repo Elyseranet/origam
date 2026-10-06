@@ -10,29 +10,7 @@
  */
 
 import type { IComponentRelated } from '~/interfaces/components-catalog.interface'
-
-/** One row in the Value/Arguments table */
-export interface IDirectiveArgRow {
-    /** Argument name, e.g. "handler", "options", "start / end / move" */
-    name: string
-    /** TypeScript type as a display string */
-    type: string
-    /** i18n key for the description */
-    descriptionKey: string
-    /** Inline English fallback */
-    descriptionFallback: string
-    /** true = this key is required inside the value object */
-    required?: boolean
-}
-
-/** One row in the Modifiers table */
-export interface IDirectiveModifierRow {
-    /** Modifier name without the dot, e.g. "once", "center" */
-    name: string
-    /** i18n key */
-    descriptionKey: string
-    descriptionFallback: string
-}
+import type { IReferenceRow } from '~/interfaces/reference-row.interface'
 
 /** A runnable code snippet shown in the Examples section */
 export interface IDirectiveExample {
@@ -71,9 +49,9 @@ export interface IDirectiveDoc {
     /** Language for the signature block (usually "ts") */
     signatureLang: string
     /** Argument/value shape rows — shown in the Value section */
-    args?: IDirectiveArgRow[]
+    args?: IReferenceRow[]
     /** Modifier rows — shown in the Modifiers section */
-    modifiers?: IDirectiveModifierRow[]
+    modifiers?: IReferenceRow[]
     /** Code examples shown in the Exemples section */
     examples: IDirectiveExample[]
     /**

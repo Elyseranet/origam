@@ -1,3 +1,5 @@
+import type { IReferenceRow } from '~/interfaces/reference-row.interface'
+
 /**
  * An interface-API entry in the /interfaces catalogue.
  *
@@ -41,8 +43,12 @@ export interface IInterfaceDoc {
      * linking to /interfaces/{kebab-case(parent)} when a matching slug exists.
      */
     extends: string[]
-    /** Declared property rows, rendered as a Props table. */
-    props: IInterfacePropRow[]
+    /**
+     * Declared property rows, rendered as a Props table. A property's
+     * `required` here is the INVERSE of the legacy `optional` field
+     * (`required = !optional`) — see `mapInterfacePropRow`.
+     */
+    props: IReferenceRow[]
     /**
      * List of component / composable slugs that consume this interface.
      * Rendered as "Used by" chips.
@@ -52,20 +58,6 @@ export interface IInterfaceDoc {
     sourceFile?: string
     /** 1-3 code usage snippets */
     examples?: IInterfaceExample[]
-}
-
-/** One property row in the interface Props table */
-export interface IInterfacePropRow {
-    /** Property name, e.g. "color" */
-    name: string
-    /** TypeScript type as a string, e.g. "TColor" */
-    type: string
-    /** Whether the property is optional (declared with `?`) */
-    optional: boolean
-    /** Default value, if any (rare on prop interfaces) */
-    default?: string
-    /** English fallback description */
-    descriptionFallback: string
 }
 
 /** Reference to a component or composable that uses this interface */

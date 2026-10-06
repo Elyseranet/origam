@@ -1155,6 +1155,12 @@
             "reviewed": "Last verified against the source code on 17 September 2026."
         }
     },
+    "reference": {
+        "row_list": {
+            "required": "required",
+            "copy_label": "Copy"
+        }
+    },
     "roadmap": {
         "meta": {
             "title": "Roadmap · origam design system",

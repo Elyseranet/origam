@@ -1,3 +1,5 @@
+import type { IReferenceRow } from '~/interfaces/reference-row.interface'
+
 /**
  * A constant entry in the /consts catalogue.
  *
@@ -16,16 +18,6 @@ export interface IConstEntry {
     /** i18n key for the short description */
     descriptionKey: string
     /** Inline English fallback description */
-    descriptionFallback: string
-}
-
-/** One copiable entry when the constant is an object or array. */
-export interface IConstValue {
-    /** The value reference or member, e.g. "'sm'" or "mobileBreakpoint: 'lg'" */
-    value: string
-    /** i18n key for the per-value description (optional) */
-    descriptionKey: string
-    /** English fallback description */
     descriptionFallback: string
 }
 
@@ -70,10 +62,12 @@ export interface IConstDoc {
      */
     value?: string
     /**
-     * Copiable members when the constant is an object or array.
+     * Copiable members when the constant is an object or array. Each row's
+     * `label` is the value reference or member (e.g. "'sm'" or
+     * "mobileBreakpoint: 'lg'") — these rows have no separate name.
      * Mutually exclusive with `value`.
      */
-    values?: IConstValue[]
+    values?: IReferenceRow[]
     /**
      * Parts of the DS that consume this constant.
      * Rendered as "Used by" chips.

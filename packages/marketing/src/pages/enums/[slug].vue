@@ -2,13 +2,11 @@
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useT } from '~/composables/useT'
-import { useCopy } from '~/composables/useCopy'
 import { useReferenceDoc } from '~/composables/useApiReference'
 import type { IEnumDoc } from '~/interfaces/enums-catalog.interface'
 
 const { t } = useT()
 const route = useRoute()
-const { copy: copyValue } = useCopy()
 
 const slug = computed(() => route.params.slug as string)
 
@@ -22,16 +20,6 @@ const enumName         = computed(() => displayDoc.value?.name ?? slug.value)
 const enumCategory     = computed(() => displayDoc.value?.category ?? '')
 const enumDescKey      = computed(() => displayDoc.value?.descriptionKey ?? '')
 const enumDescFallback = computed(() => displayDoc.value?.descriptionFallback ?? '')
-
-const copiedValueIndex = ref<number | null>(null)
-let copiedTimer: ReturnType<typeof setTimeout> | null = null
-
-const copyEnumValue = async (value: string, index: number) => {
-    await copyValue(value)
-    copiedValueIndex.value = index
-    if (copiedTimer) clearTimeout(copiedTimer)
-    copiedTimer = setTimeout(() => { copiedValueIndex.value = null }, 2000)
-}
 
 const tocSections = computed(() => {
     const sections: { id: string; label: string }[] = []
@@ -72,7 +60,6 @@ const scrollToSection = (sectionId: string) => {
 onMounted(initIntersectionObserver)
 onUnmounted(() => {
     intersectionObserver?.disconnect()
-    if (copiedTimer) clearTimeout(copiedTimer)
 })
 
 useSeoMeta({
@@ -342,38 +329,11 @@ useSeoMeta({
                                 </p>
                             </header>
 
-                            <dl
-                                class="enum-values__list"
+                            <row-list
+                                :items="displayDoc?.values ?? []"
+                                row-prefix="enum-value"
                                 data-cy="enum-values-list"
-                            >
-                                <div
-                                    v-for="(val, index) in displayDoc?.values"
-                                    :key="val.value"
-                                    class="enum-values__item"
-                                    :data-cy="`enum-value-${val.value.replace(/[^a-z0-9]/gi, '-')}`"
-                                >
-                                    <dt class="enum-values__dt">
-                                        <origam-btn
-                                            variant="text"
-                                            size="x-small"
-                                            class="enum-values__copy-btn"
-                                            :aria-label="`${t('enums.detail.values.copy_label', 'Copy value')} ${val.value}`"
-                                            @click="copyEnumValue(val.value, index)"
-                                        >
-                                            <span class="enum-values__value-mono">{{ val.value }}</span>
-                                            <origam-icon
-                                                :icon="copiedValueIndex === index ? 'mdi-check' : 'mdi-content-copy'"
-                                                size="11"
-                                                class="enum-values__copy-icon"
-                                                aria-hidden="true"
-                                            />
-                                        </origam-btn>
-                                    </dt>
-                                    <dd class="enum-values__dd">
-                                        {{ t(val.descriptionKey, val.descriptionFallback) }}
-                                    </dd>
-                                </div>
-                            </dl>
+                            />
                         </section>
 
                         <section

@@ -2,13 +2,11 @@
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useT } from '~/composables/useT'
-import { useCopy } from '~/composables/useCopy'
 import { useReferenceDoc } from '~/composables/useApiReference'
 import type { ITypeDoc } from '~/interfaces/types-catalog.interface'
 
 const { t } = useT()
 const route = useRoute()
-const { copy: copyValue } = useCopy()
 
 const slug = computed(() => route.params.slug as string)
 
@@ -25,16 +23,6 @@ const typeKind         = computed(() => displayDoc.value?.kind ?? catalogEntry.v
 const typeCategory     = computed(() => displayDoc.value?.category ?? catalogEntry.value?.category ?? '')
 const typeDescKey      = computed(() => displayDoc.value?.descriptionKey ?? catalogEntry.value?.descriptionKey ?? '')
 const typeDescFallback = computed(() => displayDoc.value?.descriptionFallback ?? catalogEntry.value?.descriptionFallback ?? '')
-
-const copiedValueIndex = ref<number | null>(null)
-let copiedTimer: ReturnType<typeof setTimeout> | null = null
-
-const copyEnumValue = async (value: string, index: number) => {
-    await copyValue(value)
-    copiedValueIndex.value = index
-    if (copiedTimer) clearTimeout(copiedTimer)
-    copiedTimer = setTimeout(() => { copiedValueIndex.value = null }, 2000)
-}
 
 const tocSections = computed(() => {
     const sections: { id: string; label: string }[] = []
@@ -75,7 +63,6 @@ const scrollToSection = (sectionId: string) => {
 onMounted(initIntersectionObserver)
 onUnmounted(() => {
     intersectionObserver?.disconnect()
-    if (copiedTimer) clearTimeout(copiedTimer)
 })
 
 useSeoMeta({
@@ -347,38 +334,11 @@ useSeoMeta({
                                 </p>
                             </header>
 
-                            <dl
-                                class="type-values__list"
+                            <row-list
+                                :items="displayDoc?.values ?? []"
+                                row-prefix="type-value"
                                 data-cy="type-values-list"
-                            >
-                                <div
-                                    v-for="(val, index) in displayDoc?.values"
-                                    :key="val.value"
-                                    class="type-values__item"
-                                    :data-cy="`type-value-${val.value.replace(/[^a-z0-9]/gi, '-')}`"
-                                >
-                                    <dt class="type-values__dt">
-                                        <origam-btn
-                                            variant="text"
-                                            size="x-small"
-                                            class="type-values__copy-btn"
-                                            :aria-label="`${t('types.detail.values.copy_label', 'Copy value')} ${val.value}`"
-                                            @click="copyEnumValue(val.value, index)"
-                                        >
-                                            <span class="type-values__value-mono">{{ val.value }}</span>
-                                            <origam-icon
-                                                :icon="copiedValueIndex === index ? 'mdi-check' : 'mdi-content-copy'"
-                                                size="11"
-                                                class="type-values__copy-icon"
-                                                aria-hidden="true"
-                                            />
-                                        </origam-btn>
-                                    </dt>
-                                    <dd class="type-values__dd">
-                                        {{ t(val.descriptionKey, val.descriptionFallback) }}
-                                    </dd>
-                                </div>
-                            </dl>
+                            />
                         </section>
 
                         <section

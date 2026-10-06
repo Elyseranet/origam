@@ -1,3 +1,5 @@
+import type { IReferenceRow } from '~/interfaces/reference-row.interface'
+
 /**
  * An enum-API entry in the /enums catalogue.
  *
@@ -36,8 +38,12 @@ export interface IEnumDoc {
     /** i18n key for the description */
     descriptionKey: string
     descriptionFallback: string
-    /** The list of member values with optional per-value description. */
-    values: IEnumDocValue[]
+    /**
+     * The list of member values with optional per-value description. Each
+     * row's `label` is the member reference (e.g. "DENSITY.COMPACT") —
+     * these rows have no separate name.
+     */
+    values: IReferenceRow[]
     /**
      * List of component slugs from the components catalog that use this enum.
      * Rendered as "Used by" chips linking to /components/{slug}.
@@ -47,16 +53,6 @@ export interface IEnumDoc {
     sourceFile?: string
     /** 1-3 code usage snippets */
     examples?: IEnumExample[]
-}
-
-/** One member in an enum definition */
-export interface IEnumDocValue {
-    /** The member reference, e.g. "DENSITY.COMPACT" */
-    value: string
-    /** i18n key for the description (optional) */
-    descriptionKey: string
-    /** English fallback description */
-    descriptionFallback: string
 }
 
 /** Reference to a component that uses this enum */

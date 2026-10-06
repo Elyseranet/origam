@@ -189,20 +189,24 @@ test.describe('Types — detail /types/rounded (enum values)', () => {
         }
     })
 
+    // Since the marketing-reference-factorisation lot: the value list is
+    // RowList, and the copy affordance is the DS's own <origam-clipboard> —
+    // its focusable/clickable element carries the DS's own stable selector
+    // `[data-cy="origam-clipboard-default-trigger"]`, not a page-local class.
     test('copy button is present on each value', async ({ page }) => {
-        const copyBtns = page.locator('.type-values__copy-btn')
+        const copyBtns = page.locator('[data-cy="type-values-list"] [data-cy="origam-clipboard-default-trigger"]')
         const count = await copyBtns.count()
         expect(count).toBeGreaterThan(0)
     })
 
     test('copy button is keyboard focusable', async ({ page }) => {
-        const firstCopyBtn = page.locator('.type-values__copy-btn').first()
+        const firstCopyBtn = page.locator('[data-cy="type-values-list"] [data-cy="origam-clipboard-default-trigger"]').first()
         await firstCopyBtn.focus()
         await expect(firstCopyBtn).toBeFocused()
     })
 
     test('clicking copy button changes icon to check', async ({ page }) => {
-        const firstCopyBtn = page.locator('.type-values__copy-btn').first()
+        const firstCopyBtn = page.locator('[data-cy="type-values-list"] [data-cy="origam-clipboard-default-trigger"]').first()
         await firstCopyBtn.click()
         await expect(firstCopyBtn).toContainText('')
         await page.waitForTimeout(200)
