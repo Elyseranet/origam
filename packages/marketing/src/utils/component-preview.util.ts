@@ -5,7 +5,8 @@ import {
 
 import type {
     IComponentPreviewAdapter,
-    IComponentPreviewChild
+    IComponentPreviewChild,
+    IComponentPreviewParentEnvelope
 } from '~/interfaces/component-preview.interface'
 import type { IComponentDoc } from '~/interfaces/components-catalog.interface'
 
@@ -75,6 +76,13 @@ export const previewPropsFor = (
 /** Enfants à rendre dans le slot par défaut (conteneurs abstraits). */
 export const previewChildrenFor = (slug: string): IComponentPreviewChild[] =>
     previewAdapterFor(slug).slotChildren ?? []
+
+/**
+ * Enveloppe parente minimale requise pour monter ce slug, ou `null` quand il
+ * se monte seul. Voir `IComponentPreviewParentEnvelope`.
+ */
+export const previewParentEnvelopeFor = (slug: string): IComponentPreviewParentEnvelope | null =>
+    previewAdapterFor(slug).parentEnvelope ?? null
 
 /** True quand la fiche déclare un slot par défaut. */
 export const hasDefaultSlot = (doc?: IComponentDoc | null): boolean =>
