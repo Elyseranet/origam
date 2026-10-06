@@ -165,14 +165,14 @@
     &__name-btn {
       padding: 0;
       gap: var(--origam-space---1, 0.25rem);
-      --origam-btn---font-size: var(--origam-font__size---sm, 0.875rem);
+      --origam-btn---font-size: var(--origam-font__size---md, 0.875rem);
       font-weight: 600;
       color: var(--origam-color__text---primary, #0a0a0a);
     }
 
     &__name-mono {
       font-family: var(--origam-font__family---mono, monospace);
-      font-size: var(--origam-font__size---sm, 0.875rem);
+      font-size: var(--origam-font__size---md, 0.875rem);
       font-weight: 600;
       color: var(--origam-color__text---primary, #0a0a0a);
     }
@@ -209,14 +209,14 @@
 
     &__default {
       font-family: var(--origam-font__family---mono, monospace);
-      font-size: var(--origam-font__size---xs, 0.75rem);
+      font-size: var(--origam-font__size---sm, 0.75rem);
       color: var(--origam-color__text---tertiary, #737373);
       white-space: nowrap;
     }
 
     &__dd {
       margin: 0;
-      font-size: var(--origam-font__size---sm, 0.875rem);
+      font-size: var(--origam-font__size---md, 0.875rem);
       line-height: 1.6;
       color: var(--origam-color__text---secondary, #525252);
       padding-inline-start: 0;
