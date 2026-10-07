@@ -1,3 +1,5 @@
+import type { IReferenceRow } from '~/interfaces/reference-row.interface'
+
 /**
  * Util catalog entry — one row in the flat helper list displayed on /utils.
  * Grouped by category (Commons, Bracket, …) on the index page.
@@ -22,32 +24,6 @@ export interface IUtilEntry {
     category: string
     /** Related util slugs (other helpers it pairs with) */
     related: string[]
-}
-
-/**
- * One documented parameter for a util function.
- */
-export interface IUtilParam {
-    /** Parameter key name */
-    name: string
-    /** TypeScript type as a display string */
-    type: string
-    /** true = required parameter */
-    required?: boolean
-    /** Default value as plain text, e.g. "'px'" or "{}" */
-    defaultValue?: string
-    descriptionKey: string
-    descriptionFallback: string
-}
-
-/**
- * The return value of a util function.
- */
-export interface IUtilReturn {
-    /** TypeScript return type as a display string */
-    type: string
-    descriptionKey: string
-    descriptionFallback: string
 }
 
 /**
@@ -85,12 +61,13 @@ export interface IUtilDoc {
      * Parameters accepted by the util.
      * Maps to the real function parameters.
      */
-    params: IUtilParam[]
+    params: IReferenceRow[]
     /**
-     * Return value description.
+     * Return value description — a single row (a function has one return
+     * type), never an array, unlike every other table on these pages.
      * Maps to the real function return type.
      */
-    returns: IUtilReturn
+    returns: IReferenceRow
     /**
      * Source path relative to repo root, e.g.
      * "packages/ds/src/utils/Commons/commons.util.ts"

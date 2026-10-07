@@ -7,82 +7,101 @@
   >
     <slot name="default">
       <div
-        v-for="(item, key) in props.items"
+        v-for="(view, key) in viewItems"
         :key="key"
         class="prop-list__item"
-        :data-cy="`prop-row-${key}`"
+        :data-cy="view.dataCy"
       >
         <slot
           name="item"
-          v-bind="item">
+          v-bind="{ item: view.item }"
+        >
           <dt class="prop-list__dt">
-            <slot name="title" v-bind="{title: item.name}">
+            <slot
+              name="title"
+              v-bind="{ label: view.item.label, item: view.item }"
+            >
               <origam-row gutters="5">
-                <origam-col cols="auto">
-                  <slot name="name" v-bind="{name: item[itemName]}">
-                    <div class="prop-list__name-btn">
-                      <span class="prop-list__name-mono">{{ item[itemName] }}</span>
-                      <origam-clipboard
-                        size="x-small"
-                        elevation="0"
-                        :value="item[itemName]"
-                        class="prop-list__copy-icon"
-                        :aria-label="`Copy ${item[itemName]} attribute`"
-                      />
-                    </div>
-                  </slot>
+                <origam-col
+                  v-if="view.item.label"
+                  cols="auto"
+                >
+                  <div class="prop-list__name-btn">
+                    <span class="prop-list__name-mono">{{ view.item.label }}</span>
+                    <origam-clipboard
+                      size="x-small"
+                      elevation="0"
+                      :value="view.item.label"
+                      class="prop-list__copy-icon"
+                      :aria-label="`${t('reference.row_list.copy_label', 'Copy')} ${view.item.label}`"
+                    />
+                  </div>
                 </origam-col>
                 <origam-col cols="auto">
-                  <slot name="required" v-bind="{required: item[itemRequired]}">
+                  <slot
+                    name="required"
+                    v-bind="{ required: !!view.item.required }"
+                  >
                     <origam-chip
-                      v-if="item[itemRequired]"
+                      v-if="view.item.required"
                       size="x-small"
                       color="danger"
                       pill
                       class="prop-list__required-badge"
                     >
-                      {{ t('components.detail.props.required', 'required') }}
+                      {{ t('reference.row_list.required', 'required') }}
                     </origam-chip>
                   </slot>
                 </origam-col>
                 <origam-col>
-                  <slot name="type" v-bind="item[itemType]">
-                    <nuxt-link
-                      v-if="item[itemType].kind !== 'primitive' && item[itemType].slug"
-                      :to="`/types/${item[itemType].slug}`"
-                      class="prop-list__type-link"
-                    >
-                      <origam-chip
-                        size="x-small"
-                        :color="item[itemType].kind === 'enum' ? 'secondary' : 'primary'"
-                        class="prop-list__type-chip"
+                  <slot
+                    name="type"
+                    v-bind="{ type: view.item.type }"
+                  >
+                    <template v-if="view.item.type">
+                      <nuxt-link
+                        v-if="view.isTypeRef && view.typeKind !== 'primitive' && view.typeSlug"
+                        :to="`/types/${view.typeSlug}`"
+                        class="prop-list__type-link"
                       >
-                        {{ item[itemType].label }}
+                        <origam-chip
+                          size="x-small"
+                          :color="view.typeKind === 'enum' ? 'secondary' : 'primary'"
+                          class="prop-list__type-chip"
+                        >
+                          {{ view.typeLabel }}
+                        </origam-chip>
+                      </nuxt-link>
+                      <origam-chip
+                        v-else
+                        size="x-small"
+                        class="prop-list__type-chip prop-list__type-chip--primitive"
+                      >
+                        {{ view.typeLabel }}
                       </origam-chip>
-                    </nuxt-link>
-                    <origam-chip
-                      v-else
-                      size="x-small"
-                      class="prop-list__type-chip prop-list__type-chip--primitive"
-                    >
-                      {{ item[itemType].label }}
-                    </origam-chip>
+                    </template>
                   </slot>
                 </origam-col>
                 <origam-col cols="auto">
-                  <slot name="value" v-bind="{value: item[itemValue]}">
+                  <slot
+                    name="value"
+                    v-bind="{ value: view.item.value }"
+                  >
                     <span
-                      v-if="item[itemValue] && item[itemValue] !== 'undefined'"
+                      v-if="view.item.value && view.item.value !== 'undefined'"
                       class="prop-list__default"
-                    >{{ item[itemValue] }}</span>
+                    >{{ view.item.value }}</span>
                   </slot>
                 </origam-col>
               </origam-row>
             </slot>
           </dt>
           <dd class="prop-list__dd">
-            <slot name="description" v-bind="{key: item[itemDsKey], fallback: item[itemDsFallback]}">
-              {{ t(item[itemDsKey], item[itemDsFallback]) }}
+            <slot
+              name="description"
+              v-bind="{ descriptionKey: view.item.descriptionKey, descriptionFallback: view.item.descriptionFallback }"
+            >
+              {{ view.item.descriptionKey ? t(view.item.descriptionKey, view.item.descriptionFallback) : view.item.descriptionFallback }}
             </slot>
           </dd>
         </slot>
@@ -97,12 +116,7 @@
 
   const props = withDefaults(defineProps<IRowListProps>(), {
     items: () => [],
-    itemName: 'name',
-    itemType: 'type',
-    itemValue: 'defaultValue',
-    itemRequired: 'required',
-    itemDsKey: 'descriptionKey',
-    itemDsFallback: 'descriptionFallback',
+    rowPrefix: 'prop-row',
   })
 
   defineEmits<IRowListEmits>()
@@ -110,6 +124,23 @@
   defineSlots<IRowListSlots>()
 
   const { t } = useT()
+
+  // One decomposed view per row, computed once per render — avoids
+  // re-narrowing `item.type` (IComponentTypeRef | string | undefined)
+  // repeatedly inside the template, which vue-tsc cannot track through a
+  // custom type-predicate across `&&` chains in template expressions.
+  const viewItems = computed(() => props.items.map((item, index) => {
+    const isTypeRef = !!item.type && typeof item.type === 'object'
+    const suffix = item.label ? item.label.replace(/[^a-z0-9]/gi, '-') : String(index)
+    return {
+      item,
+      isTypeRef,
+      typeLabel: !item.type ? '' : (isTypeRef ? (item.type as { label: string }).label : (item.type as string)),
+      typeSlug: isTypeRef ? (item.type as { slug: string }).slug : '',
+      typeKind: isTypeRef ? (item.type as { kind: string }).kind : 'primitive',
+      dataCy: `${props.rowPrefix}-${suffix}`,
+    }
+  }))
 
   const RowListStyles = computed(() => {
     return [
@@ -163,6 +194,8 @@
     }
 
     &__name-btn {
+      display: inline-flex;
+      align-items: center;
       padding: 0;
       gap: var(--origam-space---1, 0.25rem);
       --origam-btn---font-size: var(--origam-font__size---md, 0.875rem);

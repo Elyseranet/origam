@@ -393,8 +393,7 @@
                 "col_name": "Nom",
                 "col_type": "Type",
                 "col_default": "Défaut",
-                "col_description": "Description",
-                "required": "requis"
+                "col_description": "Description"
             },
             "emits": {
                 "title": "Emits",
@@ -488,8 +487,7 @@
             "params": {
                 "eyebrow": "API",
                 "title": "Paramètres",
-                "desc": "Paramètres d'entrée acceptés par ce composable.",
-                "required": "requis"
+                "desc": "Paramètres d'entrée acceptés par ce composable."
             },
             "returns": {
                 "eyebrow": "API",
@@ -657,8 +655,7 @@
                 "eyebrow": "API",
                 "title": "Valeur / Arguments",
                 "desc": "Forme de la valeur du binding et de chaque propriété de l'objet d'options.",
-                "table_caption": "Forme de la valeur",
-                "required": "requis"
+                "table_caption": "Forme de la valeur"
             },
             "modifiers": {
                 "eyebrow": "API",
@@ -1219,6 +1216,12 @@
         },
         "tooltip": {
             "family": "{name} · {count}"
+        }
+    },
+    "reference": {
+        "row_list": {
+            "required": "requis",
+            "copy_label": "Copier"
         }
     },
     "roadmap": {
@@ -1880,8 +1883,7 @@
             "params": {
                 "eyebrow": "API",
                 "title": "Paramètres",
-                "desc": "Paramètres d'entrée acceptés par cet util.",
-                "required": "requis"
+                "desc": "Paramètres d'entrée acceptés par cet util."
             },
             "returns": {
                 "eyebrow": "API",

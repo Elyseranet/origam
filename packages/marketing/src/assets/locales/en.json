@@ -393,8 +393,7 @@
                 "col_name": "Name",
                 "col_type": "Type",
                 "col_default": "Default",
-                "col_description": "Description",
-                "required": "required"
+                "col_description": "Description"
             },
             "emits": {
                 "title": "Emits",
@@ -488,8 +487,7 @@
             "params": {
                 "eyebrow": "API",
                 "title": "Parameters",
-                "desc": "Input parameters accepted by this composable.",
-                "required": "required"
+                "desc": "Input parameters accepted by this composable."
             },
             "returns": {
                 "eyebrow": "API",
@@ -657,8 +655,7 @@
                 "eyebrow": "API",
                 "title": "Value / Arguments",
                 "desc": "Shape of the binding value and each property in the options object.",
-                "table_caption": "Value shape",
-                "required": "required"
+                "table_caption": "Value shape"
             },
             "modifiers": {
                 "eyebrow": "API",
@@ -1153,6 +1150,12 @@
             "body": "Every statement above comes from reading the source code of this site and from loading a page in a browser with the network log open — not from a template. Nothing here was assumed.",
             "scope": "It describes the behaviour of the application itself. What the server hosting it records at the network level was not measured, and is therefore not described here.",
             "reviewed": "Last verified against the source code on 17 September 2026."
+        }
+    },
+    "reference": {
+        "row_list": {
+            "required": "required",
+            "copy_label": "Copy"
         }
     },
     "rail": {
@@ -1880,8 +1883,7 @@
             "params": {
                 "eyebrow": "API",
                 "title": "Parameters",
-                "desc": "Input parameters accepted by this util.",
-                "required": "required"
+                "desc": "Input parameters accepted by this util."
             },
             "returns": {
                 "eyebrow": "API",

@@ -12,9 +12,6 @@
 import type {
     IComponentDoc,
     IComponentEntry,
-    IComponentPropRow,
-    IComponentEmitRow,
-    IComponentSlotRow,
     IComponentExample,
     IComponentFamilyMember,
     IComponentRelated,
@@ -22,74 +19,76 @@ import type {
 import type {
     IComposableDoc,
     IComposableEntry,
-    IComposableParam,
-    IComposableReturn,
     IComposableExample,
 } from '../../src/interfaces/composables-catalog.interface'
 import type {
     IConstDoc,
     IConstEntry,
-    IConstValue,
     IConstUsedByEntry,
     IConstExample,
 } from '../../src/interfaces/consts-catalog.interface'
 import type {
     IDirectiveDoc,
-    IDirectiveArgRow,
-    IDirectiveModifierRow,
     IDirectiveExample,
 } from '../../src/interfaces/directive-doc.interface'
 import type {
     IEnumDoc,
     IEnumEntry,
-    IEnumDocValue,
     IEnumUsedByEntry,
     IEnumExample,
 } from '../../src/interfaces/enums-catalog.interface'
 import type {
     IInterfaceDoc,
     IInterfaceEntry,
-    IInterfacePropRow,
     IInterfaceUsedByEntry,
     IInterfaceExample,
 } from '../../src/interfaces/interfaces-catalog.interface'
 import type {
     ITypeDoc,
     ITypeEntry,
-    ITypeDocValue,
     ITypeUsedByEntry,
     ITypeExample,
 } from '../../src/interfaces/types-catalog.interface'
 import type {
     IUtilDoc,
     IUtilEntry,
-    IUtilParam,
-    IUtilReturn,
     IUtilExample,
 } from '../../src/interfaces/utils-catalog.interface'
+import type { IReferenceRow } from '../../src/interfaces/reference-row.interface'
 import type { TLocaleCode } from '../../src/types/i18n.type'
 
 // ─── Shared child-row mappers ──────────────────────────────────────────────
 
-function mapPropRow (row: any): IComponentPropRow {
+// ─── Row mappers — all 16 pre-unification shapes collapse to IReferenceRow ──
+//
+// Every row table across the reference pages (props/emits/slots/exposed/
+// cssVars/token-excerpt, composable params/returns, directive args/
+// modifiers, util params/return, interface props, type/enum/const members)
+// is "a label, an optional type, an optional value, an optional required
+// flag, and a description" — see reference-row.interface.ts's header for
+// the full before/after field-list table. These mappers read the exact same
+// DB columns (`row.name`, `row.type_label`, `row.default_value`, …) they
+// always did; only the OUTPUT field names changed.
+
+function mapPropRow (row: any): IReferenceRow {
     return {
-        name: row.name,
+        label: row.name,
         type: {
             label: row.type_label ?? row.name,
             slug: row.type_slug ?? '',
             kind: (row.type_kind ?? 'primitive') as 'primitive' | 'type' | 'enum',
         },
-        defaultValue: row.default_value ?? '',
+        value: row.default_value ?? '',
         descriptionKey: row.description_key ?? '',
         descriptionFallback: row.description_fallback ?? '',
         required: row.required ?? false,
     }
 }
 
-function mapEmitRow (row: any): IComponentEmitRow {
+function mapEmitRow (row: any): IReferenceRow {
     return {
-        event: row.event,
-        payload: {
+        label: row.event,
+        type: {
             label: row.payload_label ?? 'void',
             slug: row.payload_slug ?? '',
             kind: (row.payload_kind ?? 'primitive') as 'primitive' | 'type' | 'enum',
@@ -99,10 +98,10 @@ function mapEmitRow (row: any): IComponentEmitRow {
     }
 }
 
-function mapSlotRow (row: any): IComponentSlotRow {
+function mapSlotRow (row: any): IReferenceRow {
     return {
-        slot: row.slot,
-        slotProps: row.slot_props ?? '',
+        label: row.slot,
+        value: row.slot_props ?? '',
         descriptionKey: row.description_key ?? '',
         descriptionFallback: row.description_fallback ?? '',
     }
@@ -117,66 +116,76 @@ function mapComponentExample (row: any): IComponentExample {
     }
 }
 
-function mapComposableParam (row: any): IComposableParam {
+function mapComposableParam (row: any): IReferenceRow {
     return {
-        name: row.name,
+        label: row.name,
         type: row.type ?? 'unknown',
         required: row.required ?? false,
-        defaultValue: row.default_value ?? undefined,
+        value: row.default_value ?? undefined,
         descriptionKey: row.description_key ?? '',
         descriptionFallback: row.description_fallback ?? '',
     }
 }
 
-function mapComposableReturn (row: any): IComposableReturn {
+function mapComposableReturn (row: any): IReferenceRow {
     return {
-        name: row.name ?? '',
+        label: row.name ?? '',
         type: row.type ?? 'unknown',
         descriptionKey: row.description_key ?? '',
         descriptionFallback: row.description_fallback ?? '',
     }
 }
 
-function mapUtilParam (row: any): IUtilParam {
+function mapUtilParam (row: any): IReferenceRow {
     return {
-        name: row.name,
+        label: row.name,
         type: row.type ?? 'unknown',
         required: row.required ?? false,
-        defaultValue: row.default_value ?? undefined,
+        value: row.default_value ?? undefined,
         descriptionKey: row.description_key ?? '',
         descriptionFallback: row.description_fallback ?? '',
     }
 }
 
-function mapUtilReturn (row: any): IUtilReturn {
+function mapUtilReturn (row: any): IReferenceRow {
     return {
+        label: row.name ?? '',
         type: row.type ?? 'void',
         descriptionKey: row.description_key ?? '',
         descriptionFallback: row.description_fallback ?? '',
     }
 }
 
-function mapEnumValue (row: any): IEnumDocValue {
+function mapEnumValue (row: any): IReferenceRow {
     return {
-        value: row.value,
+        label: row.value,
         descriptionKey: row.description_key ?? '',
         descriptionFallback: row.description_fallback ?? '',
     }
 }
 
-function mapInterfacePropRow (row: any): IInterfacePropRow {
+/**
+ * `required` is the INVERSE of the legacy `optional` column — the DB column
+ * is still named `optional` (shared `doc_prop` table), only the TS-facing
+ * row shape changed from "optional: boolean" to the RowList-wide
+ * "required: boolean" (RowList renders a `required` badge, never an
+ * `optional` one — there is nothing to invert on the template side).
+ */
+function mapInterfacePropRow (row: any): IReferenceRow {
     return {
-        name: row.name,
+        label: row.name,
         type: row.type_label ?? 'unknown',
-        optional: row.optional ?? true,
-        default: row.default_value ?? undefined,
+        required: row.optional === false,
+        value: row.default_value ?? undefined,
+        // No descriptionKey: IInterfacePropRow never carried one — this
+        // table has always rendered descriptionFallback unresolved.
         descriptionFallback: row.description_fallback ?? '',
     }
 }
 
-function mapDirectiveArg (row: any): IDirectiveArgRow {
+function mapDirectiveArg (row: any): IReferenceRow {
     return {
-        name: row.name,
+        label: row.name,
         type: row.type ?? 'unknown',
         descriptionKey: row.description_key ?? '',
         descriptionFallback: row.description_fallback ?? '',
@@ -184,9 +193,9 @@ function mapDirectiveArg (row: any): IDirectiveArgRow {
     }
 }
 
-function mapDirectiveModifier (row: any): IDirectiveModifierRow {
+function mapDirectiveModifier (row: any): IReferenceRow {
     return {
-        name: row.name,
+        label: row.name,
         descriptionKey: row.description_key ?? '',
         descriptionFallback: row.description_fallback ?? '',
     }
@@ -430,8 +439,8 @@ export function mapConstDoc (entry: any, ch: ConstChildren, _locale?: TLocaleCod
         definition: entry.definition ?? '',
         value: entry.value ?? undefined,
         values: ch.values.length > 0
-            ? ch.values.map((r: any): IConstValue => ({
-                value: r.value,
+            ? ch.values.map((r: any): IReferenceRow => ({
+                label: r.value,
                 descriptionKey: r.description_key ?? '',
                 descriptionFallback: r.description_fallback ?? '',
             }))
@@ -584,8 +593,8 @@ export function mapTypeDoc (entry: any, ch: TypeChildren, _locale?: TLocaleCode)
         category: entry.category ?? '',
         descriptionKey: entry.description_key ?? '',
         descriptionFallback: entry.description_fallback ?? '',
-        values: ch.values.map((r: any): ITypeDocValue => ({
-            value: r.value,
+        values: ch.values.map((r: any): IReferenceRow => ({
+            label: r.value,
             descriptionKey: r.description_key ?? '',
             descriptionFallback: r.description_fallback ?? '',
         })),
@@ -628,7 +637,7 @@ export function mapUtilDoc (entry: any, ch: UtilChildren, _locale?: TLocaleCode)
         params: ch.params.map(mapUtilParam),
         returns: returnRow
             ? mapUtilReturn(returnRow)
-            : { type: 'void', descriptionKey: '', descriptionFallback: '' },
+            : { label: '', type: 'void', descriptionKey: '', descriptionFallback: '' },
         sourceFile: entry.source_file ?? '',
         examples: ch.examples.map((r: any): IUtilExample => ({
             titleKey: r.title_key ?? '',

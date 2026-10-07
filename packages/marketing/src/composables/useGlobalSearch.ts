@@ -18,72 +18,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { ICommand } from 'origam/interfaces'
-
-const STATIC_PAGES: ICommand[] = [
-    {
-        id: 'page-installation',
-        label: 'Installation',
-        description: 'Getting started — install origam in your project',
-        icon: 'mdi-download-outline',
-        group: 'Pages',
-        keywords: ['install', 'setup', 'npm', 'pnpm', 'yarn', 'getting-started'],
-        perform: () => undefined
-    },
-    {
-        id: 'page-changelog',
-        label: 'Changelog',
-        description: 'Release history and migration notes',
-        icon: 'mdi-history',
-        group: 'Pages',
-        keywords: ['release', 'version', 'update', 'migration', 'changes'],
-        perform: () => undefined
-    },
-    {
-        id: 'page-roadmap',
-        label: 'Roadmap',
-        description: 'Upcoming features and milestones',
-        icon: 'mdi-map-marker-path',
-        group: 'Pages',
-        keywords: ['future', 'plan', 'upcoming', 'milestone', 'feature'],
-        perform: () => undefined
-    },
-    {
-        id: 'page-wireframe',
-        label: 'Wireframe',
-        description: 'Design wireframe & component previews',
-        icon: 'mdi-vector-square',
-        group: 'Pages',
-        keywords: ['design', 'preview', 'mockup', 'layout'],
-        perform: () => undefined
-    },
-    {
-        id: 'page-theming',
-        label: 'Theming',
-        description: 'Visual theme builder — customise design tokens',
-        icon: 'mdi-palette-outline',
-        group: 'Pages',
-        keywords: ['theme', 'token', 'color', 'brand', 'customize'],
-        perform: () => undefined
-    },
-    {
-        id: 'page-why-origam',
-        label: 'Why origam?',
-        description: 'Design decisions and philosophy',
-        icon: 'mdi-help-circle-outline',
-        group: 'Pages',
-        keywords: ['why', 'philosophy', 'decision', 'compare'],
-        perform: () => undefined
-    }
-]
-
-const STATIC_PAGE_HREFS: Record<string, string> = {
-    'page-installation': '/installation',
-    'page-changelog': '/changelog',
-    'page-roadmap': '/roadmap',
-    'page-wireframe': '/wireframe',
-    'page-theming': '/theming',
-    'page-why-origam': '/why-origam'
-}
+import { GLOBAL_SEARCH_STATIC_PAGES, GLOBAL_SEARCH_STATIC_PAGE_HREFS } from '~/consts/global-search.const'
 
 export function useGlobalSearch () {
     const { locale } = useI18n()
@@ -190,7 +125,7 @@ export function useGlobalSearch () {
             })
         }
 
-        for (const page of STATIC_PAGES) {
+        for (const page of GLOBAL_SEARCH_STATIC_PAGES) {
             list.push(page)
         }
 
@@ -214,7 +149,7 @@ export function useGlobalSearch () {
             return `/types/${commandId.replace('type-', '')}`
         }
 
-        return STATIC_PAGE_HREFS[commandId] ?? '/'
+        return GLOBAL_SEARCH_STATIC_PAGE_HREFS[commandId] ?? '/'
     }
 
     return {

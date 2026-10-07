@@ -104,12 +104,12 @@
                                     <span class="home-showcase__status-cell">
                                         <span
                                           class="home-showcase__status-dot"
-                                          :style="{ backgroundColor: STATUS_DOT_COLOR[row.statusIntent] }"
+                                          :style="{ backgroundColor: SHOWCASE_STATUS_DOT_COLOR[row.statusIntent] }"
                                           aria-hidden="true"
                                         />
                                         <span
                                           class="home-showcase__status-text"
-                                          :style="{ color: STATUS_DOT_COLOR[row.statusIntent] }"
+                                          :style="{ color: SHOWCASE_STATUS_DOT_COLOR[row.statusIntent] }"
                                         >
                                             {{ t(row.statusKey, row.statusFallback) }}
                                         </span>
@@ -284,6 +284,7 @@ import {
     SHOWCASE_CHIP_ITEMS,
     SHOWCASE_GRID_COLUMNS,
     SHOWCASE_SPARKLINE_DATA,
+    SHOWCASE_STATUS_DOT_COLOR,
     SHOWCASE_TABLE_ROWS,
     SHOWCASE_TABLE_VARS,
     SHOWCASE_WIDGET_RADIUS,
@@ -301,14 +302,6 @@ const switchPairs = computed(() => [
     { modelValue: true,  inset: false, flat: false, labelKey: 'home.showcase.switch.state_on',  labelFallback: 'On' }
 ])
 
-const STATUS_DOT_COLOR: Record<string, string> = {
-    success: 'var(--origam-color__feedback--success---fgSubtle, #15803d)',
-    warning: 'var(--origam-color__feedback--warning---fgSubtle, #b45309)',
-    danger:  'var(--origam-color__feedback--danger---fgSubtle, #b91c1c)',
-    info:    'var(--origam-color__feedback--info---fgSubtle, #1d4ed8)',
-    neutral: 'var(--origam-color__text---secondary, #525252)',
-    primary: 'var(--origam-color__action--primary---fgSubtle, #6d28d9)',
-}
 </script>
 
 <style scoped lang="scss">

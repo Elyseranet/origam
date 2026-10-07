@@ -20,7 +20,7 @@
  * Run: node packages/ds/scripts/guards/layer-folders.selftest.mjs
  */
 
-import { findOrphanFolders } from './layer-folders.mjs'
+import { findOrphanFolders, ROOTS } from './layer-folders.mjs'
 
 const COMPONENTS = new Set([
     'ExpansionPanel',
@@ -91,10 +91,30 @@ if (ids.length !== 1 || ids[0] !== 'packages/ds/src/types/RichToolbar') {
     console.log('  ok    repo-relative, no line numbers, one id per folder')
 }
 
+console.log('\nrootLabel (a second package must get its own id prefix, not the DS one):')
+const marketingIds = findOrphanFolders({
+    layers: [{ layer: 'interfaces', folders: ['StrayFolder'] }],
+    componentNames: COMPONENTS,
+    rootLabel: 'packages/marketing/src'
+})
+if (marketingIds.length !== 1 || marketingIds[0] !== 'packages/marketing/src/interfaces/StrayFolder') {
+    fail(`expected ['packages/marketing/src/interfaces/StrayFolder'], got ${JSON.stringify(marketingIds)}`)
+} else {
+    console.log('  ok    rootLabel overrides the default packages/ds/src prefix')
+}
+
+console.log('\nRoot coverage (the marketing extension must actually be wired, not just importable):')
+const rootLabels = ROOTS.map(r => r.rootLabel).sort()
+if (JSON.stringify(rootLabels) !== JSON.stringify(['packages/ds/src', 'packages/marketing/src'])) {
+    fail(`expected ROOTS to cover ds and marketing, got ${JSON.stringify(rootLabels)}`)
+} else {
+    console.log('  ok    ROOTS covers both packages/ds/src and packages/marketing/src')
+}
+
 console.log('')
 if (failures) {
     console.log(`FAIL — ${failures} self-test case(s) failed.`)
     process.exit(1)
 }
-const total = MUST_FLAG.length + MUST_NOT_FLAG.length + 1
-console.log(`PASS — ${total} cases (${MUST_FLAG.length} recall, ${MUST_NOT_FLAG.length} precision, 1 id shape).`)
+const total = MUST_FLAG.length + MUST_NOT_FLAG.length + 1 + 1 + 1
+console.log(`PASS — ${total} cases (${MUST_FLAG.length} recall, ${MUST_NOT_FLAG.length} precision, 1 id shape, 1 rootLabel, 1 root coverage).`)

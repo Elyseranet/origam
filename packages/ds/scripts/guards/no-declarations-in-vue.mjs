@@ -52,32 +52,47 @@
  *
  * Run: `node packages/ds/scripts/guards/no-declarations-in-vue.mjs`
  * (or `pnpm -F origam guards:declarations`)
+ *
+ * SCOPE — `packages/marketing/src`, since #<marketing-reference-factorisation>
+ * -------------------------------------------------------------------------
+ * This guard originally scanned `packages/ds/src` only. The marketing package
+ * carries the exact same rule (CLAUDE.md root — interfaces/types/enums/consts
+ * live outside `.vue`) and nothing enforced it there: that is how
+ * `HomeShowcase.vue`'s `const STATUS_DOT_COLOR` survived. `ROOTS` below lists
+ * every package this guard covers; a new package joins by adding one entry.
+ *
+ * ⛔ Files are enumerated through the GIT INDEX (`listRepoFiles`), never
+ * `readdirSync` — see `lib/git-files.mjs` for why a disk walk measures the
+ * machine that runs it, not the repository (issue #966).
  */
 
-import { readFileSync, readdirSync, statSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { parse as parseSFC } from 'vue/compiler-sfc'
 import ts from 'typescript'
 import { report, writeBaseline } from './lib/baseline.mjs'
+import { listRepoFiles } from './lib/git-files.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const DS_ROOT = path.resolve(__dirname, '../..')
 const REPO_ROOT = path.resolve(DS_ROOT, '../..')
 const SRC_DIR = path.join(DS_ROOT, 'src')
+const MARKETING_SRC_DIR = path.join(REPO_ROOT, 'packages/marketing/src')
 const BASELINE_PATH = path.join(__dirname, 'baseline/no-declarations-in-vue.json')
 
 const CONST_NAME_RE = /^[A-Z][A-Z0-9_]*$/
 
-function walkVueFiles (dir) {
-    const out = []
-    for (const entry of readdirSync(dir)) {
-        const full = path.join(dir, entry)
-        const st = statSync(full)
-        if (st.isDirectory()) out.push(...walkVueFiles(full))
-        else if (entry.endsWith('.vue') && !entry.endsWith('.story.vue')) out.push(full)
-    }
-    return out
+// Every package this guard covers. Add an entry here to extend coverage —
+// never a second guard file (that is the exact duplication this extension
+// was asked to fix).
+const ROOTS = [
+    { label: 'ds', dir: SRC_DIR },
+    { label: 'marketing', dir: MARKETING_SRC_DIR }
+]
+
+function listVueFiles (dir, repoRoot) {
+    return listRepoFiles(dir, repoRoot).filter(f => f.endsWith('.vue') && !f.endsWith('.story.vue'))
 }
 
 function lineOf (content, offset) {
@@ -129,23 +144,36 @@ function scanScriptBlock (block, fileContent, relFile, violations) {
     }
 }
 
+// Pure-ish wrapper over `scanScriptBlock`, free of any filesystem access, so
+// the self-test can feed small fixture strings and measure precision AND
+// recall without touching disk. Returns `Map<id, detail>`.
+export function findDeclarationViolations (content, relFile = 'fixture.vue') {
+    const violations = new Map()
+    const { descriptor } = parseSFC(content, { filename: relFile })
+    scanScriptBlock(descriptor.scriptSetup, content, relFile, violations)
+    scanScriptBlock(descriptor.script, content, relFile, violations)
+    return violations
+}
+
 function run () {
-    const files = walkVueFiles(SRC_DIR)
     const violations = new Map()
 
-    for (const file of files) {
-        const content = readFileSync(file, 'utf8')
-        const relFile = path.relative(REPO_ROOT, file)
-        let descriptor
-        try {
-            ;({ descriptor } = parseSFC(content, { filename: file }))
-        } catch (err) {
-            console.error(`Failed to parse SFC ${relFile}: ${err.message}`)
-            process.exitCode = 1
-            continue
+    for (const { dir } of ROOTS) {
+        const files = listVueFiles(dir, REPO_ROOT)
+        for (const file of files) {
+            const content = readFileSync(file, 'utf8')
+            const relFile = path.relative(REPO_ROOT, file)
+            let descriptor
+            try {
+                ;({ descriptor } = parseSFC(content, { filename: file }))
+            } catch (err) {
+                console.error(`Failed to parse SFC ${relFile}: ${err.message}`)
+                process.exitCode = 1
+                continue
+            }
+            scanScriptBlock(descriptor.scriptSetup, content, relFile, violations)
+            scanScriptBlock(descriptor.script, content, relFile, violations)
         }
-        scanScriptBlock(descriptor.scriptSetup, content, relFile, violations)
-        scanScriptBlock(descriptor.script, content, relFile, violations)
     }
 
     if (process.argv.includes('--update-baseline')) {
@@ -164,4 +192,8 @@ function run () {
     process.exit(exitCode || process.exitCode || 0)
 }
 
-run()
+if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url))) {
+    run()
+}
+
+export { ROOTS }

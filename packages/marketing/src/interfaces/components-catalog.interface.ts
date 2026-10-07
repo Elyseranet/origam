@@ -1,3 +1,5 @@
+import type { IReferenceRow } from '~/interfaces/reference-row.interface'
+
 /**
  * Catalog entry — one row in the flat component list displayed on /components.
  * Descriptions come from docs .md files (first line) or a factual fallback.
@@ -90,11 +92,11 @@ export interface IComponentDoc {
     /** Optional npm package / sub-export note */
     packageNote?: string
     /** Prop rows shown in the Props table */
-    props: IComponentPropRow[]
+    props: IReferenceRow[]
     /** Emit rows */
-    emits: IComponentEmitRow[]
+    emits: IReferenceRow[]
     /** Slot rows */
-    slots: IComponentSlotRow[]
+    slots: IReferenceRow[]
     /** 2-3 runnable code snippets */
     examples: IComponentExample[]
     /**
@@ -132,8 +134,8 @@ export interface IComponentDoc {
      *  - playground define which props are demo-worthy (4-8 max for UX)
      */
     anatomy?: IComponentAnatomy
-    cssVars?: IComponentCssVar[]
-    exposed?: IComponentExposed[]
+    cssVars?: IReferenceRow[]
+    exposed?: IReferenceRow[]
     composable?: IComponentComposable
     a11y?: IComponentA11y
     tokens?: IComponentTokens
@@ -199,41 +201,6 @@ export interface IComponentTypeRef {
      * `/types/{slug}` page itself renders).
      */
     values?: string[]
-}
-
-/** One row in the Props table */
-export interface IComponentPropRow {
-    /** Prop name as the developer writes it (camelCase, matching the TS interface) */
-    name: string
-    /** Structured type reference — drives chip style + optional link */
-    type: IComponentTypeRef
-    /** Default value as a plain-text string, e.g. "'default'" or "false" */
-    defaultValue: string
-    /** i18n key for the description */
-    descriptionKey: string
-    descriptionFallback: string
-    /** true = prop is required */
-    required?: boolean
-}
-
-/** One row in the Emits table */
-export interface IComponentEmitRow {
-    /** Event name, e.g. "click" or "click:prepend" */
-    event: string
-    /** Payload type reference */
-    payload: IComponentTypeRef
-    descriptionKey: string
-    descriptionFallback: string
-}
-
-/** One row in the Slots table */
-export interface IComponentSlotRow {
-    /** Slot name, e.g. "default", "prepend", "loader" */
-    slot: string
-    /** Slot props as a plain-text display string, e.g. "{ progressProps }" */
-    slotProps: string
-    descriptionKey: string
-    descriptionFallback: string
 }
 
 /** A runnable code snippet shown in the Examples section */
@@ -337,33 +304,6 @@ export interface IComponentPreviewVariant {
 }
 
 /**
- * One row in the CSS Variables table.
- * Sourced from tokens/component/{slug}.json + component <style>.
- */
-export interface IComponentCssVar {
-    /** CSS variable name, e.g. "--origam-btn---background-color" */
-    name: string
-    /** Default value as a display string */
-    defaultValue: string
-    /** Short description of what this variable controls */
-    descriptionKey: string
-    descriptionFallback: string
-}
-
-/**
- * One exposed member (from defineExpose({})).
- * Sourced from the component's defineExpose() call.
- */
-export interface IComponentExposed {
-    /** Member name as exposed */
-    name: string
-    /** TypeScript type as a display string */
-    type: string
-    descriptionKey: string
-    descriptionFallback: string
-}
-
-/**
  * Composable associated with this component (e.g. useCalendar for Calendar).
  * Optional — omit entirely for components without a dedicated composable.
  */
@@ -418,14 +358,12 @@ export interface IComponentA11y {
 export interface IComponentTokens {
     /** Source token-sheet path (relative to repo root) */
     sourceFile: string
-    /** Selected key tokens shown in the UI (not all — just the most important) */
-    excerpt: Array<{
-        tokenPath: string
-        value: string
-        type: string
-        descriptionKey: string
-        descriptionFallback: string
-    }>
+    /**
+     * Selected key tokens shown in the UI (not all — just the most
+     * important). Each row's `label` is the token path, `value` the
+     * default value, `type` the CSS value type as a display string.
+     */
+    excerpt: IReferenceRow[]
 }
 
 /**

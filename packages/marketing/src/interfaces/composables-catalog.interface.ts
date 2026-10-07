@@ -1,3 +1,5 @@
+import type { IReferenceRow } from '~/interfaces/reference-row.interface'
+
 /**
  * Composable catalog entry — one row in the flat composable list displayed on /composables.
  * Grouped by domain (Commons, Theme, CssSupport, …) on the index page.
@@ -20,34 +22,6 @@ export interface IComposableEntry {
     domain: string
     /** Related composable slugs (other composables it delegates to or pairs with) */
     related: string[]
-}
-
-/**
- * One documented parameter for a composable (input or return value member).
- */
-export interface IComposableParam {
-    /** Parameter / return key name */
-    name: string
-    /** TypeScript type as a display string */
-    type: string
-    /** true = required parameter */
-    required?: boolean
-    /** Default value as plain text, e.g. "'auto'" or "ref(false)" */
-    defaultValue?: string
-    descriptionKey: string
-    descriptionFallback: string
-}
-
-/**
- * One return value member exposed by the composable.
- */
-export interface IComposableReturn {
-    /** Key name as returned, e.g. "colorClasses", "isActive" */
-    name: string
-    /** TypeScript type as a display string */
-    type: string
-    descriptionKey: string
-    descriptionFallback: string
 }
 
 /**
@@ -85,12 +59,12 @@ export interface IComposableDoc {
      * Parameters accepted by the composable.
      * Maps to the real function parameters (destructured or named).
      */
-    params: IComposableParam[]
+    params: IReferenceRow[]
     /**
      * Return value members.
      * Maps to the real return object keys.
      */
-    returns: IComposableReturn[]
+    returns: IReferenceRow[]
     /** 2-3 runnable usage examples */
     examples: IComposableExample[]
     /**

@@ -359,82 +359,24 @@
                 </p>
               </header>
 
-              <dl
-                class="prop-list"
+              <row-list
+                :items="displayDoc?.props ?? []"
+                row-prefix="prop-row"
                 data-cy="component-props-table"
               >
-                <div
-                  v-for="prop in displayDoc?.props"
-                  :key="prop.name"
-                  class="prop-list__item"
-                  :data-cy="`prop-row-${prop.name}`"
-                >
-                  <dt class="prop-list__dt">
-                    <origam-row gutters="5">
-                      <origam-col cols="auto">
-                        <origam-btn
-                          variant="text"
-                          size="x-small"
-                          class="prop-list__name-btn"
-                          elevation="0"
-                          :aria-label="`Copy ${prop.name} attribute`"
-                          @click="copyPropText(propCopyAttr(prop.name, prop.type.label))"
-                        >
-                          <span class="prop-list__name-mono">{{ prop.name }}</span>
-                          <origam-icon
-                            icon="mdi-content-copy"
-                            size="11"
-                            class="prop-list__copy-icon"
-                            aria-hidden="true"
-                          />
-                        </origam-btn>
-                      </origam-col>
-                      <origam-col cols="auto">
-                        <origam-chip
-                          v-if="prop.required"
-                          size="x-small"
-                          color="danger"
-                          pill
-                          class="prop-list__required-badge"
-                        >
-                          {{ t('components.detail.props.required', 'required') }}
-                        </origam-chip>
-                      </origam-col>
-                      <origam-col>
-                        <nuxt-link
-                          v-if="prop.type.kind !== 'primitive' && prop.type.slug"
-                          :to="`/types/${prop.type.slug}`"
-                          class="prop-list__type-link"
-                        >
-                          <origam-chip
-                            size="x-small"
-                            :color="prop.type.kind === 'enum' ? 'secondary' : 'primary'"
-                            class="prop-list__type-chip"
-                          >
-                            {{ prop.type.label }}
-                          </origam-chip>
-                        </nuxt-link>
-                        <origam-chip
-                          v-else
-                          size="x-small"
-                          class="prop-list__type-chip prop-list__type-chip--primitive"
-                        >
-                          {{ prop.type.label }}
-                        </origam-chip>
-                      </origam-col>
-                      <origam-col cols="auto">
-                                          <span
-                                            v-if="prop.defaultValue && prop.defaultValue !== 'undefined'"
-                                            class="prop-list__default"
-                                          >{{ prop.defaultValue }}</span>
-                      </origam-col>
-                    </origam-row>
-                  </dt>
-                  <dd class="prop-list__dd">
-                    {{ t(prop.descriptionKey, prop.descriptionFallback) }}
-                  </dd>
-                </div>
-              </dl>
+                <template #title="{ item }">
+                  <div class="prop-list__name-btn">
+                    <span class="prop-list__name-mono">{{ item.label }}</span>
+                    <origam-clipboard
+                      size="x-small"
+                      elevation="0"
+                      :value="propCopyAttr(item.label, isTypeRefOf(item.type) ? item.type.label : String(item.type ?? ''))"
+                      class="prop-list__copy-icon"
+                      :aria-label="`Copy ${item.label} attribute`"
+                    />
+                  </div>
+                </template>
+              </row-list>
             </section>
 
             <section
@@ -460,21 +402,18 @@
                 </p>
               </header>
 
-              <dl
-                class="prop-list"
+              <row-list
+                :items="displayDoc?.slots ?? []"
+                row-prefix="slot-row"
                 data-cy="component-slots-table"
               >
-                <div
-                  v-for="slot in displayDoc?.slots"
-                  :key="slot.slot"
-                  class="prop-list__item"
-                >
+                <template #item="{ item }">
                   <dt class="prop-list__dt">
-                    <span class="prop-list__name-mono">#{{ slot.slot }}</span>
+                    <span class="prop-list__name-mono">#{{ item.label }}</span>
 
                     <origam-code
-                      v-if="slot.slotProps && slot.slotProps !== '—'"
-                      :code="slot.slotProps"
+                      v-if="item.value && item.value !== '—'"
+                      :code="item.value"
                       lang="typescript"
                       compact
                       copyable
@@ -483,13 +422,14 @@
                     <span
                       v-else
                       class="prop-list__default"
+                      aria-hidden="true"
                     >—</span>
                   </dt>
                   <dd class="prop-list__dd">
-                    {{ t(slot.descriptionKey, slot.descriptionFallback) }}
+                    {{ item.descriptionKey ? t(item.descriptionKey, item.descriptionFallback) : item.descriptionFallback }}
                   </dd>
-                </div>
-              </dl>
+                </template>
+              </row-list>
             </section>
 
             <section
@@ -515,21 +455,18 @@
                 </p>
               </header>
 
-              <dl
-                class="prop-list"
+              <row-list
+                :items="displayDoc?.emits ?? []"
+                row-prefix="emit-row"
                 data-cy="component-emits-table"
               >
-                <div
-                  v-for="emit in displayDoc?.emits"
-                  :key="emit.event"
-                  class="prop-list__item"
-                >
+                <template #item="{ item }">
                   <dt class="prop-list__dt">
-                    <span class="prop-list__name-mono">@{{ emit.event }}</span>
+                    <span class="prop-list__name-mono">@{{ item.label }}</span>
 
                     <nuxt-link
-                      v-if="emit.payload.kind !== 'primitive' && emit.payload.slug"
-                      :to="`/types/${emit.payload.slug}`"
+                      v-if="isTypeRefOf(item.type) && item.type.kind !== 'primitive' && item.type.slug"
+                      :to="`/types/${isTypeRefOf(item.type) ? item.type.slug : ''}`"
                       class="prop-list__type-link"
                     >
                       <origam-chip
@@ -537,7 +474,7 @@
                         color="primary"
                         class="prop-list__type-chip"
                       >
-                        {{ emit.payload.label }}
+                        {{ isTypeRefOf(item.type) ? item.type.label : item.type }}
                       </origam-chip>
                     </nuxt-link>
                     <origam-chip
@@ -545,14 +482,14 @@
                       size="x-small"
                       class="prop-list__type-chip prop-list__type-chip--primitive"
                     >
-                      {{ emit.payload.label }}
+                      {{ isTypeRefOf(item.type) ? item.type.label : item.type }}
                     </origam-chip>
                   </dt>
                   <dd class="prop-list__dd">
-                    {{ t(emit.descriptionKey, emit.descriptionFallback) }}
+                    {{ item.descriptionKey ? t(item.descriptionKey, item.descriptionFallback) : item.descriptionFallback }}
                   </dd>
-                </div>
-              </dl>
+                </template>
+              </row-list>
             </section>
 
             <section
@@ -580,29 +517,11 @@
                 </p>
               </header>
 
-              <dl
-                class="prop-list"
+              <row-list
+                :items="displayDoc?.exposed ?? []"
+                row-prefix="exposed-row"
                 data-cy="component-exposed-table"
-              >
-                <div
-                  v-for="member in displayDoc?.exposed"
-                  :key="member.name"
-                  class="prop-list__item"
-                >
-                  <dt class="prop-list__dt">
-                    <span class="prop-list__name-mono">{{ member.name }}</span>
-                    <origam-chip
-                      size="x-small"
-                      class="prop-list__exposed-type-code"
-                    >
-                      {{ member.type }}
-                    </origam-chip>
-                  </dt>
-                  <dd class="prop-list__dd">
-                    {{ t(member.descriptionKey, member.descriptionFallback) }}
-                  </dd>
-                </div>
-              </dl>
+              />
             </section>
 
             <section
@@ -630,39 +549,11 @@
                 </p>
               </header>
 
-              <dl
-                class="prop-list"
+              <row-list
+                :items="displayDoc?.cssVars ?? []"
+                row-prefix="css-var-row"
                 data-cy="component-css-vars-table"
-              >
-                <div
-                  v-for="cssVar in displayDoc?.cssVars"
-                  :key="cssVar.name"
-                  class="prop-list__item"
-                >
-                  <dt class="prop-list__dt">
-                    <origam-row gutters="5">
-                      <origam-col>
-                        <origam-code
-                          :code="cssVar.name"
-                          lang="css"
-                          compact
-                          copyable
-                          class="prop-list__cssvar-name-code"
-                        />
-                      </origam-col>
-                      <origam-col cols="auto">
-                        <span
-                          v-if="cssVar.defaultValue"
-                          class="prop-list__default"
-                        >{{ cssVar.defaultValue }}</span>
-                      </origam-col>
-                    </origam-row>
-                  </dt>
-                  <dd class="prop-list__dd">
-                    {{ t(cssVar.descriptionKey, cssVar.descriptionFallback) }}
-                  </dd>
-                </div>
-              </dl>
+              />
             </section>
 
             <section
@@ -892,56 +783,11 @@
                 </div>
               </div>
 
-              <dl
-                class="prop-list"
+              <row-list
+                :items="displayDoc?.tokens?.excerpt ?? []"
+                row-prefix="token-row"
                 data-cy="component-tokens-table"
-              >
-                <div
-                  v-for="token in displayDoc?.tokens?.excerpt"
-                  :key="token.tokenPath"
-                  class="prop-list__item"
-                >
-                  <dt class="prop-list__dt">
-                    <origam-row gutters="5">
-                      <origam-col cols="auto">
-                        <origam-btn
-                          variant="text"
-                          size="x-small"
-                          elevation="none"
-                          class="prop-list__name-btn"
-                          :aria-label="`Copy ${token.tokenPath}`"
-                          @click="copyPropText(token.tokenPath)"
-                        >
-                          <span class="prop-list__name-mono">{{ token.tokenPath }}</span>
-                          <origam-icon
-                            icon="mdi-content-copy"
-                            size="11"
-                            class="prop-list__copy-icon"
-                            aria-hidden="true"
-                          />
-                        </origam-btn>
-                      </origam-col>
-                      <origam-col>
-                        <origam-chip
-                          size="x-small"
-                          class="prop-list__type-chip prop-list__type-chip--primitive"
-                        >
-                          {{ token.type }}
-                        </origam-chip>
-                      </origam-col>
-                      <origam-col cols="auto">
-                        <span
-                          v-if="token.value"
-                          class="prop-list__default"
-                        >{{ token.value }}</span>
-                      </origam-col>
-                    </origam-row>
-                  </dt>
-                  <dd class="prop-list__dd">
-                    {{ t(token.descriptionKey, token.descriptionFallback) }}
-                  </dd>
-                </div>
-              </dl>
+              />
             </section>
 
             <section
@@ -1308,11 +1154,11 @@
   import { useReferenceDoc } from '~/composables/useApiReference'
   import { previewAdapterFor, previewSlotTextFor, previewUnavailableReasonFor } from '~/utils/component-preview.util'
   import type { IComponentDoc } from '~/interfaces/components-catalog.interface'
+  import type { IReferenceRow } from '~/interfaces/reference-row.interface'
 
   const { t } = useT()
   const route = useRoute()
   const { copy: copyText, copied: importCopied } = useCopy()
-  const { copy: copyPropText } = useCopy()
 
   /* Génère l'attribut Vue prêt à coller pour une prop :
      - booléen → "disabled"  (présence = true)
@@ -1322,6 +1168,11 @@
     const kebab = name.replace(/([A-Z])/g, '-$1').toLowerCase()
     const isBoolean = typeLabel === 'boolean' || typeLabel.startsWith('boolean ')
     return isBoolean ? kebab : `:${ kebab }=""`
+  }
+
+  /** Narrows a row's `type` to the structured chip+link shape, for the props copy-attr helper above. */
+  function isTypeRefOf (type: IReferenceRow['type']): type is { label: string; slug: string; kind: 'primitive' | 'type' | 'enum' } {
+    return !!type && typeof type === 'object'
   }
 
   const slug = computed(() => route.params.slug as string)

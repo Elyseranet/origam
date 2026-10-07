@@ -66,10 +66,11 @@
  */
 
 import path from 'node:path'
-import { existsSync, readdirSync, statSync } from 'node:fs'
+import { existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
 import { report, writeBaseline } from './lib/baseline.mjs'
+import { listRepoFiles } from './lib/git-files.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const DS_ROOT = path.resolve(__dirname, '../..')
@@ -80,40 +81,66 @@ const LAYERS = ['interfaces', 'types', 'enums', 'consts', 'composables', 'utils'
 
 const TRANSVERSE_DIRS = new Set(['Commons'])
 
+// Every package this guard covers, and the `packages/<x>/src` label its ids
+// carry. Marketing joined since the marketing-reference-factorisation lot —
+// add a new package here, never a second guard file.
+const ROOTS = [
+    { rootLabel: 'packages/ds/src', srcRoot: path.join(DS_ROOT, 'src') },
+    { rootLabel: 'packages/marketing/src', srcRoot: path.join(REPO_ROOT, 'packages/marketing/src') }
+]
+
 /**
  * Pure core, kept free of any filesystem access so the self-test can feed it
  * fixtures and measure precision AND recall. `layers` is
  * `[{ layer, folders: string[] }]`; `componentNames` is the Set of real
  * component folder names in PascalCase.
  */
-export function findOrphanFolders ({ layers, componentNames, transverseDirs = TRANSVERSE_DIRS }) {
+export function findOrphanFolders ({ layers, componentNames, transverseDirs = TRANSVERSE_DIRS, rootLabel = 'packages/ds/src' }) {
     const orphans = []
     for (const { layer, folders } of layers) {
         for (const folder of folders) {
             if (transverseDirs.has(folder)) continue
             if (componentNames.has(folder)) continue
-            orphans.push(`packages/ds/src/${layer}/${folder}`)
+            orphans.push(`${rootLabel}/${layer}/${folder}`)
         }
     }
     return orphans.sort()
 }
 
-function readLayers (srcRoot) {
+// A layer/components folder's immediate sub-folder names, read through the
+// GIT INDEX (`listRepoFiles`) rather than `readdirSync` — see
+// `lib/git-files.mjs`: a disk walk measures whoever runs the guard, not the
+// repository (issue #966). A sub-folder is any first path segment under
+// `dir` that a tracked (or about-to-be-tracked) file sits inside.
+function firstSegmentDirs (dir, repoRoot) {
+    const dirs = new Set()
+    for (const abs of listRepoFiles(dir, repoRoot)) {
+        const rel = path.relative(dir, abs)
+        const sep = rel.indexOf(path.sep)
+        if (sep > 0) dirs.add(rel.slice(0, sep))
+    }
+    return dirs
+}
+
+function readLayers (srcRoot, repoRoot) {
     const layers = []
     for (const layer of LAYERS) {
         const dir = path.join(srcRoot, layer)
         if (!existsSync(dir)) continue
-        const folders = readdirSync(dir).filter(e => statSync(path.join(dir, e)).isDirectory())
-        layers.push({ layer, folders })
+        layers.push({ layer, folders: [...firstSegmentDirs(dir, repoRoot)] })
     }
     return layers
 }
 
 function run () {
-    const srcRoot = path.join(DS_ROOT, 'src')
-    const componentNames = getComponentPascalDirSet(srcRoot)
-    const layers = readLayers(srcRoot)
-    const orphans = findOrphanFolders({ layers, componentNames })
+    const orphans = []
+    for (const { rootLabel, srcRoot } of ROOTS) {
+        if (!existsSync(srcRoot)) continue
+        const componentNames = getComponentPascalDirSet(srcRoot, REPO_ROOT)
+        const layers = readLayers(srcRoot, REPO_ROOT)
+        orphans.push(...findOrphanFolders({ layers, componentNames, rootLabel }))
+    }
+    orphans.sort()
 
     const detailsById = new Map(
         orphans.map(id => [
@@ -148,13 +175,14 @@ function run () {
  * reference here, unlike in `file-naming.mjs` which checks per-file names
  * and therefore derives its set from `.vue` basenames.
  */
-function getComponentPascalDirSet (srcRoot) {
+function getComponentPascalDirSet (srcRoot, repoRoot) {
     const dir = path.join(srcRoot, 'components')
-    return new Set(readdirSync(dir).filter(e => statSync(path.join(dir, e)).isDirectory()))
+    if (!existsSync(dir)) return new Set()
+    return firstSegmentDirs(dir, repoRoot)
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url))) {
     run()
 }
 
-export { LAYERS, TRANSVERSE_DIRS }
+export { LAYERS, TRANSVERSE_DIRS, ROOTS }

@@ -179,6 +179,44 @@ jobs:
       - name: noUnusedLocals re-enable canary
         run: pnpm -F origam run type-check:canary
 
+  marketing-typecheck-ratchet:
+    name: Type-check ratchet (marketing, vue-tsc)
+    runs-on: ubuntu-latest
+    # `packages/marketing` declares its own `typecheck` script (`nuxt
+    # typecheck`) and, until now, nothing in CI ever called it — the
+    # `type-check` job above only runs `pnpm -F origam run type-check`, i.e.
+    # the DS alone (see its own comment: "the DS must stay at ZERO vue-tsc
+    # errors"). The marketing site had accumulated a large, silent type-debt
+    # (measured 2026-10-07, this commit's parent: 3332 errors) with no CI
+    # signal. Fixing it all is a separate, large piece of work — this job is
+    # a RATCHET: it fails the moment the count goes ABOVE the committed
+    # floor (scripts/guard-typecheck-ratchet-floor.json) and says nothing
+    # when it stays at or under it. See scripts/guard-typecheck-ratchet.mjs's
+    # header for the full rationale and how to lower the floor.
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run typecheck-ratchet guard self-test (detector check)
+        run: node packages/marketing/scripts/guard-typecheck-ratchet.selftest.mjs
+
+      # `nuxt typecheck` resolves `origam/interfaces` etc. against the DS
+      # package, so it must be built first — mirrors `build-marketing` below.
+      - name: Build library (marketing imports `origam`)
+        run: pnpm -F origam build
+
+      - name: Run typecheck-ratchet guard
+        run: node packages/marketing/scripts/guard-typecheck-ratchet.mjs
+
   test-unit:
     name: Unit tests (Vitest, Node ${{ matrix.node }})
     runs-on: ubuntu-latest

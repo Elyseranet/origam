@@ -308,61 +308,11 @@
                 </p>
               </header>
 
-              <dl
-                class="prop-list"
+              <row-list
+                :items="displayDoc?.params ?? []"
+                row-prefix="param-row"
                 data-cy="composable-params-table"
-              >
-                <div
-                  v-for="param in displayDoc?.params"
-                  :key="param.name"
-                  class="prop-list__item"
-                  :data-cy="`param-row-${param.name}`"
-                >
-                  <dt class="prop-list__dt">
-                    <origam-btn
-                      variant="text"
-                      size="x-small"
-                      class="prop-list__name-btn"
-                      :aria-label="`Copy ${param.name}`"
-                      @click="copyParamText(param.name)"
-                    >
-                      <span class="prop-list__name-mono">{{ param.name }}</span>
-                      <origam-icon
-                        icon="mdi-content-copy"
-                        size="11"
-                        class="prop-list__copy-icon"
-                        aria-hidden="true"
-                      />
-                    </origam-btn>
-
-                    <origam-chip
-                      v-if="param.required"
-                      size="x-small"
-                      color="danger"
-                      pill
-                      class="prop-list__required-badge"
-                    >
-                      {{ t('composables.detail.params.required', 'required') }}
-                    </origam-chip>
-
-                    <origam-chip
-                      size="x-small"
-                      variant="outlined"
-                      class="prop-list__type-chip prop-list__type-chip--primitive"
-                    >
-                      {{ param.type }}
-                    </origam-chip>
-
-                    <span
-                      v-if="param.defaultValue"
-                      class="prop-list__default"
-                    >= {{ param.defaultValue }}</span>
-                  </dt>
-                  <dd class="prop-list__dd">
-                    {{ param.descriptionFallback }}
-                  </dd>
-                </div>
-              </dl>
+              />
             </section>
 
             <section
@@ -390,35 +340,26 @@
                 </p>
               </header>
 
-              <dl
-                class="prop-list"
+              <row-list
+                :items="displayDoc?.returns ?? []"
+                row-prefix="return-row"
                 data-cy="composable-returns-table"
               >
-                <div
-                  v-for="ret in displayDoc?.returns"
-                  :key="ret.name"
-                  class="prop-list__item"
-                  :data-cy="`return-row-${ret.name}`"
-                >
+                <template #item="{ item }">
                   <dt class="prop-list__dt">
-                    <origam-btn
-                      variant="text"
-                      size="x-small"
-                      class="prop-list__name-btn"
-                      :aria-label="`Copy ${ret.name}`"
-                      @click="copyParamText(ret.name)"
-                    >
-                      <span class="prop-list__name-mono">{{ ret.name }}</span>
-                      <origam-icon
-                        icon="mdi-content-copy"
-                        size="11"
+                    <div class="prop-list__name-btn">
+                      <span class="prop-list__name-mono">{{ item.label }}</span>
+                      <origam-clipboard
+                        size="x-small"
+                        elevation="0"
+                        :value="item.label"
                         class="prop-list__copy-icon"
-                        aria-hidden="true"
+                        :aria-label="`${t('reference.row_list.copy_label', 'Copy')} ${item.label}`"
                       />
-                    </origam-btn>
+                    </div>
 
                     <origam-code
-                      :code="ret.type"
+                      :code="typeof item.type === 'string' ? item.type : (item.type?.label ?? '')"
                       lang="typescript"
                       compact
                       :copyable="false"
@@ -426,10 +367,10 @@
                     />
                   </dt>
                   <dd class="prop-list__dd">
-                    {{ ret.descriptionFallback }}
+                    {{ item.descriptionKey ? t(item.descriptionKey, item.descriptionFallback) : item.descriptionFallback }}
                   </dd>
-                </div>
-              </dl>
+                </template>
+              </row-list>
             </section>
 
             <section
@@ -568,7 +509,6 @@
   const { t } = useT()
   const route = useRoute()
   const { copy: copyText, copied: importCopied } = useCopy()
-  const { copy: copyParamText } = useCopy()
 
   const slug = computed(() => route.params.slug as string)
 

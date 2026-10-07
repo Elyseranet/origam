@@ -21,9 +21,9 @@ import {
     THEME_BUILDER_ORPHAN_COLOR_PROPS
 } from '~/consts/theme-builder-controls.const'
 import type {
-    IComponentPlaygroundControl,
-    IComponentPropRow
+    IComponentPlaygroundControl
 } from '~/interfaces/components-catalog.interface'
+import type { IReferenceRow } from '~/interfaces/reference-row.interface'
 import type {
     IComponentThemeSurface,
     IThemeBuilderComponentEntry,
@@ -123,22 +123,22 @@ function humanise (name: string): string {
  * Returns null when the prop is non-themable.
  */
 function buildControl (
-    row: IComponentPropRow,
+    row: IReferenceRow,
     t: (key: string, fallback?: string) => string,
     playground?: IComponentPlaygroundControl
 ): IThemeBuilderPropControl | null {
-    if (isSkippableProp(row.name)) return null
+    if (isSkippableProp(row.label)) return null
 
-    const group = classifyPropGroup(row.name)
-    const typeLabel = row.type.label
+    const group = classifyPropGroup(row.label)
+    const typeLabel = typeof row.type === 'string' ? row.type : (row.type?.label ?? '')
 
     if (playground) {
         return {
-            prop: row.name,
-            props: [row.name],
+            prop: row.label,
+            props: [row.label],
             kind: playground.kind === 'select' ? 'select' : playground.kind,
             group,
-            label: humanise(row.name),
+            label: humanise(row.label),
             options: playground.options,
             defaultValue: playground.defaultValue
         }
@@ -152,84 +152,84 @@ function buildControl (
      * and finite, so they get the same treatment as any other themable enum:
      * a `kind: 'select'` control.
      */
-    if (row.name === 'density') {
+    if (row.label === 'density') {
         return {
-            prop: row.name,
-            props: [row.name],
+            prop: row.label,
+            props: [row.label],
             kind: 'select',
             group,
-            label: humanise(row.name),
+            label: humanise(row.label),
             options: THEME_BUILDER_DENSITY_OPTIONS.map(o => ({ label: t(o.labelKey, o.labelFallback), value: o.value })),
-            defaultValue: parseDefault(row.defaultValue)
+            defaultValue: parseDefault(row.value ?? '')
         }
     }
 
     if (typeLabel === 'boolean') {
         return {
-            prop: row.name,
-            props: [row.name],
+            prop: row.label,
+            props: [row.label],
             kind: 'switch',
             group,
-            label: humanise(row.name),
-            defaultValue: parseDefault(row.defaultValue)
+            label: humanise(row.label),
+            defaultValue: parseDefault(row.value ?? '')
         }
     }
 
     if (isColorType(typeLabel)) {
         return {
-            prop: row.name,
-            props: [row.name],
+            prop: row.label,
+            props: [row.label],
             kind: 'color',
             group,
-            label: humanise(row.name),
-            defaultValue: parseDefault(row.defaultValue)
+            label: humanise(row.label),
+            defaultValue: parseDefault(row.value ?? '')
         }
     }
 
-    const unionOptions = parseUnionOptions(typeLabel) ?? realTypeOptions(row.type.values)
+    const unionOptions = parseUnionOptions(typeLabel) ?? realTypeOptions((typeof row.type === 'string' ? undefined : row.type?.values))
     if (unionOptions) {
         return {
-            prop: row.name,
-            props: [row.name],
+            prop: row.label,
+            props: [row.label],
             kind: 'select',
             group,
-            label: humanise(row.name),
+            label: humanise(row.label),
             options: unionOptions,
-            defaultValue: parseDefault(row.defaultValue)
+            defaultValue: parseDefault(row.value ?? '')
         }
     }
 
     if (typeLabel === 'number') {
         return {
-            prop: row.name,
-            props: [row.name],
+            prop: row.label,
+            props: [row.label],
             kind: 'number',
             group,
-            label: humanise(row.name),
-            defaultValue: parseDefault(row.defaultValue)
+            label: humanise(row.label),
+            defaultValue: parseDefault(row.value ?? '')
         }
     }
 
     if (typeLabel === 'string' || typeLabel.includes('TSize') || typeLabel.includes('number | string') || typeLabel.includes('string | number')) {
         return {
-            prop: row.name,
-            props: [row.name],
+            prop: row.label,
+            props: [row.label],
             kind: 'text',
             group,
-            label: humanise(row.name),
-            defaultValue: parseDefault(row.defaultValue)
+            label: humanise(row.label),
+            defaultValue: parseDefault(row.value ?? '')
         }
     }
 
     if (isSkippableType(typeLabel)) return null
 
     return {
-        prop: row.name,
-        props: [row.name],
+        prop: row.label,
+        props: [row.label],
         kind: 'text',
         group,
-        label: humanise(row.name),
-        defaultValue: parseDefault(row.defaultValue)
+        label: humanise(row.label),
+        defaultValue: parseDefault(row.value ?? '')
     }
 }
 
@@ -378,15 +378,15 @@ function buildEntry (component: IComponentThemeSurface, t: (key: string, fallbac
 
     const controls: IThemeBuilderPropControl[] = []
     for (const raw of component.props ?? []) {
-        const row: IComponentPropRow = {
-            name: raw.name,
+        const row: IReferenceRow = {
+            label: raw.name,
             type: {
                 label: raw.type.label ?? '',
                 slug: raw.type.slug ?? '',
                 kind: (raw.type.kind ?? 'primitive') as 'primitive' | 'type' | 'enum',
                 values: raw.type.values ?? undefined,
             },
-            defaultValue: raw.defaultValue ?? '',
+            value: raw.defaultValue ?? '',
             descriptionKey: '',
             descriptionFallback: '',
             required: raw.required ?? false,
