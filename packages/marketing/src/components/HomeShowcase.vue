@@ -333,6 +333,12 @@ const STATUS_DOT_COLOR: Record<string, string> = {
 
     &__title-row {
         display: flex;
+        // `flex-wrap` vaut `nowrap` par defaut, et c'etait la cause RACINE du
+        // debordement de 54px mesure a 400px (#1032) : le titre et le bouton
+        // « View all » restaient cote a cote, poussant la largeur min-content
+        // de la section a 454px dans un viewport de 400. Le bouton passe
+        // dessous quand il n'y a plus la place, et rien d'autre n'est requis.
+        flex-wrap: wrap;
         align-items: flex-end;
         justify-content: space-between;
         gap: var(--origam-space---4, 1rem);
@@ -537,6 +543,35 @@ const STATUS_DOT_COLOR: Record<string, string> = {
 @media (max-width: 48rem) {
     .home-showcase {
         padding-inline: var(--origam-space---6, 1.5rem);
+    }
+}
+
+// ⛔ DEBORDEMENT HORIZONTAL DE LA PAGE D'ACCUEIL — #1032.
+//
+// Mesure du 2026-10-02 a 400px de large (glass/light) : la page debordait de
+// 54px, et `section.home-showcase` etait rendue a 454px dans un viewport de
+// 400. La section n'a aucune largeur propre — elle est un ITEM FLEX
+// (`min-width: auto` mesure sur elle, parent `display: flex`), donc elle ne
+// peut pas descendre sous la largeur min-content de son contenu. Et ce
+// contenu est la grille `SHOWCASE_GRID_COLUMNS = '2fr 1fr 1fr'`, trois
+// colonnes qui ne se replient jamais : `IGridProps.columns` est une valeur
+// unique, sans declinaison par palier.
+//
+// On replie donc la grille sur une colonne, et on libere le plancher flex de
+// la section pour qu'aucun futur enfant ne puisse elargir la page a nouveau.
+// Les items qui reservaient deux lignes reprennent le flux : avec une seule
+// colonne, un `grid-row: 1 / 3` explicite laisserait des trous.
+@media (max-width: 40rem) {
+    .home-showcase {
+        min-inline-size: 0;
+    }
+
+    .home-showcase__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .home-showcase__item {
+        grid-row: auto;
     }
 }
 </style>

@@ -121,7 +121,38 @@ const MARKETING_GREEN_SPECS = [
     // d'où la boucle de re-clic dans le spec. Ne pas la remplacer par un
     // `waitForTimeout` : c'est ce qui rendrait le fichier instable en CI, où
     // la machine est plus lente que la nôtre.
-    'marketing-primary-nav.spec.ts'
+    'marketing-primary-nav.spec.ts',
+
+    // #1032 — le rail de navigation du catalogue, et le défilement horizontal
+    // des 18 pages du marketing à 400 px.
+    //
+    // Ce qu'elle retient et que rien d'autre ne retenait : le chargement
+    // PARESSEUX par famille (arbitrage du propriétaire — charger les 8
+    // familles coûte 986 Ko mesurés, les pastilles viennent des 644 octets de
+    // `/api/reference/counts`), vérifié par interception réseau, qui est la
+    // seule preuve qu'un appel n'a PAS eu lieu ; les 10 cibles ≥ 44 × 44 avec
+    // un nom accessible ; zéro `aria-controls` mort aux trois paliers ; le
+    // panneau nommé et NON modal ; les entrées restées de vraies ancres hors
+    // tabulation ; ⎋ qui ferme et rend le focus au déclencheur ; et
+    // `scrollWidth <= clientWidth + 1` à 400 px.
+    //
+    // Admise ici parce qu'elle tient le contrat de la liste, mesuré et non
+    // supposé : **90 passed en `--repeat-each=5 --retries=0`** (18 cas × 5),
+    // 4,4 min, `$?` = 0 capturé hors pipe, contre un serveur de dev isolé sur
+    // un port à nous et une base fraîchement semée (2 778 entrées).
+    //
+    // ⛔ La charge machine était de 10,1 à 14,4 pendant cette mesure — donc
+    // AU-DESSUS du seuil de ~10 que le CLAUDE.md fixe pour une mesure de
+    // durée. C'est dit plutôt que tu : un échec aurait été « non mesuré », mais
+    // un SUCCÈS sous charge est un résultat plus fort qu'au repos, pas plus
+    // faible. Le runner de CI est plus lent que cette machine.
+    //
+    // ⛔ Les sept défauts qu'elle épingle ont TOUS été trouvés au navigateur,
+    // aucun à la relecture du code — y compris `aria-labelledby` écrit
+    // `ariaLabelledby` dans un `v-bind` (Vue ne kebab-case que les props
+    // déclarées), et un focus qui n'entrait jamais dans le panneau, ce qui
+    // désactivait silencieusement ⎋ ET les flèches.
+    'marketing-nav-rail.spec.ts'
 ]
 
 /*
