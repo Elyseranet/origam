@@ -1,4 +1,8 @@
+import type { InjectionKey } from 'vue'
+
 import { CODE_LANG } from '../../enums'
+
+import type { ICodeOptions } from '../../interfaces/Code/code.interface'
 
 /**
  * Languages bundled with the default shiki highlighter. Keep this list and
@@ -70,3 +74,16 @@ export const CODE_DEFAULTS = Object.freeze({
      */
     copyFeedbackDurationMs: 2000
 } as const)
+
+/*********************************************************
+ * ORIGAM_CODE_KEY
+ *
+ * @description
+ * Provide/inject key for the `code` block of `createOrigam()`'s options
+ * (`ICodeOptions` — today just `highlighter`). `useCode()` reads it via
+ * `inject(ORIGAM_CODE_KEY)` — optional on purpose: an app that never calls
+ * `createOrigam({ code })`, or that never installs the plugin at all, gets
+ * `undefined` and `loadHighlighter()` falls back to the DS's own
+ * `import('shiki')` path unchanged. See `code.composable.ts`.
+ ********************************************************/
+export const ORIGAM_CODE_KEY: InjectionKey<ICodeOptions> = Symbol.for('origam:code')

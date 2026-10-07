@@ -136,7 +136,7 @@
     "packages/ds/src/composables/Chart/chart-zoom.composable.ts": 8,
     "packages/ds/src/composables/Chart/chart.composable.ts": 85,
     "packages/ds/src/composables/Clipboard/clipboard.composable.ts": 8,
-    "packages/ds/src/composables/Code/code.composable.ts": 34,
+    "packages/ds/src/composables/Code/code.composable.ts": 19,
     "packages/ds/src/composables/CommandPalette/command.composable.ts": 5,
     "packages/ds/src/composables/Commons/activator.composable.ts": 3,
     "packages/ds/src/composables/Commons/adjacent.composable.ts": 7,

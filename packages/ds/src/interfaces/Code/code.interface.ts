@@ -14,7 +14,7 @@ import type { IPaddingProps } from '../Commons/padding.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
 
-import type { TCodeLang } from '../../types/Code/code.type'
+import type { TCodeLang, TShikiHighlighterLoader } from '../../types/Code/code.type'
 
 /**
  * Props for `<OrigamCode>` — a shiki-powered code block with line numbers,
@@ -92,6 +92,39 @@ export interface ICodeProps extends ICommonsComponentProps, ITagProps, IBorderPr
      * Most useful paired with `compact` for an install-command pill.
      */
     prompt?: string
+}
+
+/*********************************************************
+ * ICodeOptions
+ *
+ * @description
+ * App-level config for `<OrigamCode>`, passed via `createOrigam({ code })`.
+ * Today it carries a single knob — `highlighter` — but it is its own
+ * interface (rather than a bare function on `IOrigamOptions`) so a future
+ * `OrigamCode`-wide setting (e.g. a default theme pair) has somewhere to
+ * land without another breaking shape change.
+ *
+ * @description
+ * `highlighter` supplies your own shiki-compatible module loader instead of
+ * the DS's default `import('shiki')` (see `code.composable.ts`'s
+ * `loadHighlighter()`). Absent (default) — `useCode()` keeps loading the
+ * full `shiki` package exactly as before, nothing changes for a consumer
+ * who does not set this. Supplied — the DS never touches `shiki` itself: no
+ * bare-specifier dynamic import, no `@vite-ignore`, no WASM-loader chunk in
+ * THIS path. Typical use: an app bundling `shiki/core` + a JS regex engine
+ * (no WASM loader, no oniguruma binary) to shrink the syntax-highlighting
+ * cost — any module exposing `createHighlighter` works, see `TShikiModule`.
+ *
+ * @description
+ * The loader is read once, synchronously, the first time `useCode()` is
+ * invoked inside a mounted `<OrigamCode>` — `useCode()` is a module-scoped
+ * singleton (one highlighter promise for the whole page), so the FIRST
+ * instance to resolve it wins for the lifetime of the page; later instances
+ * reuse that same highlighter regardless of their own `createOrigam()`
+ * ancestor.
+ ********************************************************/
+export interface ICodeOptions {
+    highlighter?: TShikiHighlighterLoader
 }
 
 /** Emits fired by `<OrigamCode>` — copy-to-clipboard confirmation. */

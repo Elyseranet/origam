@@ -14,6 +14,7 @@ import {
 
 import {
     IN_BROWSER,
+    ORIGAM_CODE_KEY,
     ORIGAM_DATE_ADAPTER_KEY,
     ORIGAM_DATE_OPTIONS_KEY,
     ORIGAM_DEFAULTS_KEY,
@@ -144,6 +145,16 @@ export function createOrigam (origam: IOrigamOptions = {}) {
             app.onUnmount(() => appScope.stop())
 
             app.provide(ORIGAM_ICONS_KEY, icons as Required<TIconOptions>)
+            /*********************************************************
+             * ORIGAM_CODE_KEY
+             *
+             * @description
+             * Optional — see `ICodeOptions`. `{}` (no `highlighter`) when the
+             * consumer never set `code`, so `useCode()`'s `inject(ORIGAM_CODE_KEY)`
+             * always finds a defined-but-empty object once the plugin IS
+             * installed, and `undefined` only when it is not installed at all.
+             ********************************************************/
+            app.provide(ORIGAM_CODE_KEY, options.code ?? {})
             app.provide(ORIGAM_DISPLAY_KEY, display)
             app.provide(ORIGAM_LOCALE_KEY, locale)
             app.provide(ORIGAM_DATE_OPTIONS_KEY, date.options)
