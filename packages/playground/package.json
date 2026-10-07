@@ -1,0 +1,28 @@
+{
+  "name": "@origam/playground",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Embeddable playground component for the origam design system — metadata chain, scene model and component registry. Private, never published: the only npm publish in this monorepo is packages/ds.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "meta:runtime": "node scripts/extract-runtime-metadata.mjs",
+    "meta:unions": "node scripts/extract-literal-unions.mjs",
+    "meta:aliases": "node scripts/resolve-type-aliases.mjs",
+    "meta:report": "node scripts/report-metadata-coverage.mjs",
+    "type-check": "vue-tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "origam": "workspace:*",
+    "vue": "3.5.39"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.7",
+    "typescript": "^6.0.3",
+    "vite": "^7.3.6",
+    "vue-component-meta": "3.3.6",
+    "vue-tsc": "^3.3.6"
+  }
+}
