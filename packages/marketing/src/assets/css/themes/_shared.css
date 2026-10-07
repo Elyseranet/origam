@@ -15,6 +15,13 @@
     --origam-card---cursor: inherit;
 
     /* ── Typography — display scale ─────────────────────────────────────── */
+    /* ⛔ Ces 3 noms (hero / section / cta) sont marketing-only, pas des tokens
+       DS — n'existent dans AUCUNE feuille DS. Piège récurrent (RowList.vue,
+       #1034) : le DS épelle son échelle `--origam-font__size---{xs|sm|md|…}`
+       (double tiret bas BEM), et un copier-coller depuis les 3 lignes
+       ci-dessous produit un nom `--origam-font-size---*` qui n'existe nulle
+       part côté DS. Si tu veux un échelon DS (xs/sm/md/lg/xl/2xl…), épelle
+       `font__size`, pas `font-size`. */
     --origam-font-size---hero: 5.25rem;
     --origam-font-size---section: 3rem;
     --origam-font-size---cta: 4rem;
