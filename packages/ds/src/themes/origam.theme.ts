@@ -269,7 +269,16 @@ export const origamDarkTheme: IOrigamTheme = {
             text: {
                 primary: '#fafafa',
                 secondary: '#a3a3a3',
-                tertiary: '#737373',
+                /*********************************************************
+                 * #1044 — tertiary corrigé
+                 *
+                 * @description
+                 * Était '#737373' (neutral-500), copié du mode clair sans
+                 * réadapter : 4.18:1 sur ce fond, sous AA (4.5:1). Aligné sur
+                 * dark.css (neutral-400, 7.85:1) — voir sa note pour la
+                 * mesure complète et pourquoi ce rung s'aplatit sur secondary.
+                 ********************************************************/
+                tertiary: '#a3a3a3',
                 disabled: '#525252',
                 inverse: '#0a0a0a',
                 onColor: '#ffffff',

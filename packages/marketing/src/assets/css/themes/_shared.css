@@ -44,6 +44,34 @@
     /* ── Layout ─────────────────────────────────────────────────────────── */
     --origam-layout---max-width: 1280px;
 
+    /* ── Rail de navigation du catalogue (#1032) ───────────────────────────
+     * ⛔ POURQUOI CETTE DECLARATION EXISTE, et pourquoi elle vit ICI.
+     *
+     * `OrigamSheet` n'a AUCUN canal `z-index` — verifie le 2026-10-02 :
+     * `--origam-sheet---z-index` a **0 occurrence** dans les huit feuilles de
+     * tokens du DS (`primitive|light|dark|origam-utilities` x css + scss).
+     * Or `OrigamAppBar` / `OrigamToolbar` sont a `--origam-zIndex---fixed`
+     * (= 1030, `primitive.css:151`). Le panneau du rail, haut de 80vh et
+     * centre verticalement, passerait donc SOUS l'app bar.
+     *
+     * La valeur est lue au token du DS, jamais ecrite en dur : si l'echelle
+     * bouge, le rail suit. Et elle est posee dans la couche de THEME du site
+     * plutot qu'en `:style` par instance, pour qu'il n'y ait qu'un seul
+     * endroit a lire quand on se demande ou le rail s'empile.
+     *
+     * Le voile est pose un cran EN DESSOUS : il doit couvrir la page sans
+     * couvrir le panneau qu'il accompagne.
+     */
+    --nav-rail---z-index: var(--origam-zIndex---fixed, 1030);
+    --nav-rail---scrim-z-index: calc(var(--origam-zIndex---fixed, 1030) - 1);
+
+    /* Duree des deux seules animations du rail (fondu du voile, fondu du
+     * panneau ancre). Un seul canal, themeable, et neutralise sous
+     * `prefers-reduced-motion: reduce` dans `NavRail.vue`. Regle du
+     * proprietaire du 2026-10-02 : animations en CSS uniquement, jamais de
+     * timer JS, et toutes desactivees sous mouvement reduit. */
+    --nav-rail---motion-duration: 160ms;
+
     /* ── Button display tokens (theme-overridable) ───────────────────────── */
     --origam-gradient---btn-primary: none;
     --origam-shadow---btn-primary: rgba(255, 255, 255, 0.20) 0px 1px 0px 0px inset, rgba(124, 58, 237, 0.50) 0px 8px 24px -8px;

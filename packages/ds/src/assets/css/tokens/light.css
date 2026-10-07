@@ -84,6 +84,9 @@
      `origam.theme.ts` qu'il faut changer AVEC, sinon la divergence revient. */
   --origam-color__text---primary: var(--origam-color__neutral---950);
   --origam-color__text---secondary: var(--origam-color__neutral---600);
+  /* #1044 — un niveau sous `secondary`, mesuré 4.74:1 sur `surface---default`
+     (#ffffff), AA. Voir dark.css pour la contrainte qui a fixé ce rung. */
+  --origam-color__text---tertiary: var(--origam-color__neutral---500);
   --origam-color__text---disabled: var(--origam-color__neutral---400);
   --origam-color__text---inverse: var(--origam-color__neutral---0);
   --origam-color__text---onColor: var(--origam-color__neutral---0);
