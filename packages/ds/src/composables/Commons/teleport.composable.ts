@@ -86,10 +86,6 @@ export function useTeleport (target: Ref<boolean | string | Element>) {
 
         if (_target === true || !IN_BROWSER) return undefined
 
-        // Tant que l'hydratation n'est pas terminee (SSR), rendre
-        // EXACTEMENT ce que le serveur a rendu — `undefined` — pour que
-        // Vue ne voie jamais deux rendus differents. Voir le commentaire
-        // de tete.
         if (!isHydrated.value) return undefined
 
         const targetElement =

@@ -172,7 +172,6 @@
     "packages/ds/src/composables/Commons/style.composable.ts": 11,
     "packages/ds/src/composables/Commons/styleTag.composable.ts": 1,
     "packages/ds/src/composables/Commons/teleport-typography.composable.ts": 3,
-    "packages/ds/src/composables/Commons/teleport.composable.ts": 2,
     "packages/ds/src/composables/Commons/theme-props-resolver.composable.ts": 406,
     "packages/ds/src/composables/Commons/theme.composable.ts": 12,
     "packages/ds/src/composables/Commons/typography.composable.ts": 1,

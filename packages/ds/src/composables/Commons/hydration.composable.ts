@@ -40,9 +40,6 @@ export function useHydration () {
     try {
         ({ssr} = useDisplay())
     } catch {
-        // Pas de createOrigam() installe (usage brut du composable, ou un
-        // test qui monte sans le plugin) — aucune ambiguite SSR possible
-        // dans ce cas, donc pas de delai artificiel.
         return shallowRef(true)
     }
 
