@@ -18,6 +18,20 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.22.0',
+        date: '2026-10-07',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2220.summary',
+        summaryFallback: '2 additions and 2 fixes. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v2220.h1', textFallback: 'attach sur OrigamCommandPalette, OrigamSnackbarGroup et OrigamDrawer' },
+            { type: 'added', textKey: 'changelog.versions.v2220.h2', textFallback: '--origam-color__text---tertiary' },
+            { type: 'fixed', textKey: 'changelog.versions.v2220.h3', textFallback: 'useTeleport ne réévaluait jamais sa cible après l\'hydratation' },
+            { type: 'fixed', textKey: 'changelog.versions.v2220.h4', textFallback: 'le thème origam sombre posait un text---tertiary qui échoue en AA' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.21.0',
         date: '2026-10-01',
         type: 'minor',

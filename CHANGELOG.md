@@ -18,6 +18,60 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.22.0] - 2026-10-07
+
+### Added — `attach` sur `OrigamCommandPalette`, `OrigamSnackbarGroup` et `OrigamDrawer`
+
+Ces trois composants codaient en dur `<teleport to="body">` et n'offraient **aucun moyen de
+rediriger** la cible, alors que toute la famille Overlay — Tooltip, Snackbar, Dialog, Menu, via
+`IOverlayProps` — portait déjà `attach`. C'était une surface à moitié implémentée, et la directive
+d'`adr-007-directional-props.md` est explicite : *si un format existe, il existe partout ; on ne
+fait pas moitié*.
+
+La prop est désormais extraite dans `interfaces/Commons/attach.interface.ts` (`IAttachProps`) au
+lieu d'être redéclarée sur chaque interface, et consommée par le point unique existant,
+`useTeleport`.
+
+**Vérifié sur le parent DOM réel** du nœud téléporté, pas sur l'acceptation de la prop : les 9
+tests `attach` sont **9/9 rouges sur le commit parent**, verts sur la branche.
+
+### Added — `--origam-color__text---tertiary`
+
+Troisième niveau de texte sémantique, déclaré dans `light.css` (`neutral-500`) et `dark.css`
+(`neutral-400`), leurs jumeaux SCSS, et l'union `TTokenName`.
+
+Il était **lu par 27 fichiers** de `packages/marketing` et déclaré **nulle part** : un canal de
+thème mort depuis toujours, qui rendait correctement par son seul repli. Les pages de référence,
+`HomeThemes`, `WhyOrigamThemeDemo`, les pages d'administration et `apple.theme.ts` le consommaient
+tous dans le vide.
+
+⚠️ **Aplatissement assumé** : en mode sombre, `tertiary` et `secondary` résolvent la même valeur
+(`neutral-400`). Il n'existe aucun échelon entre `neutral-400` et `neutral-500`, et `neutral-500`
+sur la surface sombre mesure **4,18:1** — sous le seuil AA de 4,5:1. Un niveau de hiérarchie perdu
+a été préféré à une violation de contraste.
+
+### Fixed — `useTeleport` ne réévaluait jamais sa cible après l'hydratation
+
+Le `computed` qui résout la cible de téléportation n'avait **aucune dépendance réactive** sur
+`document.querySelector`. Sous SSR — et sous Histoire, où chaque story est enveloppée dans un
+`<Suspense>` — la première évaluation pouvait tomber **avant** que l'arbre voisin soit commité dans
+le DOM, et rien ne la redéclenchait ensuite.
+
+Le symptôme n'était pas théorique : quatre tests e2e du site marketing échouaient sur
+« *sans erreur JS console* » et « *pas d'erreur d'hydratation* ».
+
+Le correctif réutilise `useHydration()`, qui porte déjà les deux gardes nécessaires — `IN_BROWSER`
+et `ssr` — au lieu d'un compteur de montage local qui les ignorait. Le défaut touchait **toute la
+famille Overlay**, pas seulement les trois composants de ce lot ; c'est `OrigamDrawer` qui l'a
+révélé.
+
+### Fixed — le thème `origam` sombre posait un `text---tertiary` qui échoue en AA
+
+`origamDarkTheme` fixait `tertiary` à `#737373`, soit **4,18:1** sur la surface sombre. Le défaut
+était invisible parce que le canal n'était alimenté par aucune feuille — mais ce bloc runtime
+**gagne la cascade** sur la feuille, donc déclarer le token sans corriger ce thème n'aurait rien
+réglé en mode sombre. Attrapé par `theme-sheet-parity.spec.ts`, rouge avant / vert après.
+
 ## [2.21.0] - 2026-10-01
 
 ### Changed — ⚠️ `OrigamBlockquote` : le `variant` est un preset de props, plus un bloc SCSS
