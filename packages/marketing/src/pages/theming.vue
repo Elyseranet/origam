@@ -1,153 +1,3 @@
-<script setup lang="ts">
-  import { computed, onMounted, ref, watch } from 'vue'
-
-  import { useT } from '~/composables/useT'
-  import { useThemeBuilder } from '~/composables/useThemeBuilder'
-  import type { TEditMode } from '~/interfaces/theme-builder.interface'
-
-  import ThemeBuilderNav from '~/components/theming/ThemeBuilderNav.vue'
-  import ThemeBuilderPreview from '~/components/theming/ThemeBuilderPreview.vue'
-  import ThemeBuilderControls from '~/components/theming/ThemeBuilderControls.vue'
-
-  const { t } = useT()
-
-  const {
-    entries,
-    nav,
-    state,
-    editCount,
-    generatedCode,
-    fileName,
-    presets,
-    propValue,
-    setProp,
-    tokenValue,
-    setToken,
-    previewProps,
-    previewStyle,
-    slotText,
-    isPropEdited,
-    isTokenEdited,
-    componentEditCount,
-    groupEditCount,
-    tokenGroupEditCount,
-    resetComponent,
-    reset,
-    download,
-    downloadJson,
-    importTheme,
-    seedPreset,
-    clearPreset,
-    loadStorage,
-    startAutoPersist
-  } = useThemeBuilder()
-
-  onMounted(() => {
-    loadStorage()
-    startAutoPersist()
-  })
-
-  useSeoMeta({
-    title: () => t('theming.meta.title', 'Theme builder · origam design system'),
-    description: () =>
-      t(
-        'theming.meta.description',
-        'Configure a default origam theme visually — edit component props and CSS tokens with a live preview, then export a ready-to-use theme module.'
-      )
-  })
-
-  const defaultSlug = computed(() => {
-    const preferred = entries.value.find(e => e.slug === 'btn')
-    if (preferred) return preferred.slug
-    const firstPreviewable = entries.value.find(e => e.previewable)
-    return firstPreviewable?.slug ?? entries.value[0]?.slug ?? ''
-  })
-
-  /*
-   * ⛔ `activeSlug` must NOT snapshot `defaultSlug.value` into a `ref` here
-   * (#741). `entries` is derived from a `useFetch` that has not resolved yet
-   * when this setup body runs on the SERVER: the snapshot captured `''`, the
-   * lookup below fell through to `entries.value[0]` and the server rendered
-   * the FIRST component of the catalogue (Alert) in the preview and the
-   * controls column. On the client the same `useFetch` reads the payload
-   * synchronously during setup, so the snapshot captured `'btn'` — a whole
-   * different component. Measured on /theming: 1 console error
-   * (« Hydration completed but contains mismatches. ») and 40 mismatch
-   * warnings, among them `- rendered on server: Alert / - expected on
-   * client: Btn` and the `tb-nav__item--active` class on the nav item.
-   *
-   * `selectedSlug` therefore holds only an EXPLICIT user choice, and the
-   * effective slug is a `computed` that falls back to `defaultSlug` — read at
-   * render time, so both sides agree.
-   */
-  const selectedSlug = ref<string>('')
-
-  const activeSlug = computed<string>(() => selectedSlug.value || defaultSlug.value)
-
-  const activeEntry = computed(() => entries.value.find(e => e.slug === activeSlug.value) ?? entries.value[0])
-
-  const split = ref<boolean>(false)
-
-  const importOpen = ref<boolean>(false)
-  const importText = ref<string>('')
-  const importError = ref<boolean>(false)
-
-  watch(importOpen, (open) => {
-    if (open) {
-      importText.value = ''
-      importError.value = false
-    }
-  })
-
-  const presetItems = computed(() => [
-    { title: t('theming.preset.none', '— none —'), value: '' },
-    ...presets.map(p => ({ title: t(p.labelKey, p.labelFallback), value: p.key }))
-  ])
-
-  const onSelectComponent = (slug: string): void => {
-    selectedSlug.value = slug
-  }
-
-  const onSetProp = (slug: string, prop: string, value: unknown): void => setProp(slug, prop, value)
-  const onSetToken = (mode: TEditMode, cssVar: string, value: string): void => setToken(mode, cssVar, value)
-  const onResetComponent = (slug: string): void => resetComponent(slug)
-
-  const onSeedPreset = (key: unknown): void => {
-    if (typeof key !== 'string') return
-    if (!key) {
-      clearPreset()
-      return
-    }
-    seedPreset(key)
-  }
-
-  const onImport = (): void => {
-    const ok = importTheme(importText.value)
-    importError.value = !ok
-    if (ok) {
-      importText.value = ''
-      importOpen.value = false
-    }
-  }
-
-  const lightStyle = computed(() =>
-    activeEntry.value ? previewStyle(activeEntry.value.slug, 'light') : {}
-  )
-  const darkStyle = computed(() =>
-    activeEntry.value ? previewStyle(activeEntry.value.slug, 'dark') : {}
-  )
-  const activePreviewProps = computed(() =>
-    activeEntry.value ? previewProps(activeEntry.value.slug) : {}
-  )
-  const activeSlotText = computed(() =>
-    activeEntry.value ? slotText(activeEntry.value.slug) : ''
-  )
-
-  const downloadHint = computed(() =>
-    t('theming.export.filename', 'Downloads {file}', { file: fileName.value })
-  )
-</script>
-
 <template>
   <article
     class="theming"
@@ -398,6 +248,156 @@
     </section>
   </article>
 </template>
+
+<script setup lang="ts">
+  import { computed, onMounted, ref, watch } from 'vue'
+
+  import { useT } from '~/composables/useT'
+  import { useThemeBuilder } from '~/composables/useThemeBuilder'
+  import type { TEditMode } from '~/interfaces/theme-builder.interface'
+
+  import ThemeBuilderNav from '~/components/theming/ThemeBuilderNav.vue'
+  import ThemeBuilderPreview from '~/components/theming/ThemeBuilderPreview.vue'
+  import ThemeBuilderControls from '~/components/theming/ThemeBuilderControls.vue'
+
+  const { t } = useT()
+
+  const {
+    entries,
+    nav,
+    state,
+    editCount,
+    generatedCode,
+    fileName,
+    presets,
+    propValue,
+    setProp,
+    tokenValue,
+    setToken,
+    previewProps,
+    previewStyle,
+    slotText,
+    isPropEdited,
+    isTokenEdited,
+    componentEditCount,
+    groupEditCount,
+    tokenGroupEditCount,
+    resetComponent,
+    reset,
+    download,
+    downloadJson,
+    importTheme,
+    seedPreset,
+    clearPreset,
+    loadStorage,
+    startAutoPersist
+  } = useThemeBuilder()
+
+  onMounted(() => {
+    loadStorage()
+    startAutoPersist()
+  })
+
+  useSeoMeta({
+    title: () => t('theming.meta.title', 'Theme builder · origam design system'),
+    description: () =>
+      t(
+        'theming.meta.description',
+        'Configure a default origam theme visually — edit component props and CSS tokens with a live preview, then export a ready-to-use theme module.'
+      )
+  })
+
+  const defaultSlug = computed(() => {
+    const preferred = entries.value.find(e => e.slug === 'btn')
+    if (preferred) return preferred.slug
+    const firstPreviewable = entries.value.find(e => e.previewable)
+    return firstPreviewable?.slug ?? entries.value[0]?.slug ?? ''
+  })
+
+  /*
+   * ⛔ `activeSlug` must NOT snapshot `defaultSlug.value` into a `ref` here
+   * (#741). `entries` is derived from a `useFetch` that has not resolved yet
+   * when this setup body runs on the SERVER: the snapshot captured `''`, the
+   * lookup below fell through to `entries.value[0]` and the server rendered
+   * the FIRST component of the catalogue (Alert) in the preview and the
+   * controls column. On the client the same `useFetch` reads the payload
+   * synchronously during setup, so the snapshot captured `'btn'` — a whole
+   * different component. Measured on /theming: 1 console error
+   * (« Hydration completed but contains mismatches. ») and 40 mismatch
+   * warnings, among them `- rendered on server: Alert / - expected on
+   * client: Btn` and the `tb-nav__item--active` class on the nav item.
+   *
+   * `selectedSlug` therefore holds only an EXPLICIT user choice, and the
+   * effective slug is a `computed` that falls back to `defaultSlug` — read at
+   * render time, so both sides agree.
+   */
+  const selectedSlug = ref<string>('')
+
+  const activeSlug = computed<string>(() => selectedSlug.value || defaultSlug.value)
+
+  const activeEntry = computed(() => entries.value.find(e => e.slug === activeSlug.value) ?? entries.value[0])
+
+  const split = ref<boolean>(false)
+
+  const importOpen = ref<boolean>(false)
+  const importText = ref<string>('')
+  const importError = ref<boolean>(false)
+
+  watch(importOpen, (open) => {
+    if (open) {
+      importText.value = ''
+      importError.value = false
+    }
+  })
+
+  const presetItems = computed(() => [
+    { title: t('theming.preset.none', '— none —'), value: '' },
+    ...presets.map(p => ({ title: t(p.labelKey, p.labelFallback), value: p.key }))
+  ])
+
+  const onSelectComponent = (slug: string): void => {
+    selectedSlug.value = slug
+  }
+
+  const onSetProp = (slug: string, prop: string, value: unknown): void => setProp(slug, prop, value)
+  const onSetToken = (mode: TEditMode, cssVar: string, value: string): void => setToken(mode, cssVar, value)
+  const onResetComponent = (slug: string): void => resetComponent(slug)
+
+  const onSeedPreset = (key: unknown): void => {
+    if (typeof key !== 'string') return
+    if (!key) {
+      clearPreset()
+      return
+    }
+    seedPreset(key)
+  }
+
+  const onImport = (): void => {
+    const ok = importTheme(importText.value)
+    importError.value = !ok
+    if (ok) {
+      importText.value = ''
+      importOpen.value = false
+    }
+  }
+
+  const lightStyle = computed(() =>
+    activeEntry.value ? previewStyle(activeEntry.value.slug, 'light') : {}
+  )
+  const darkStyle = computed(() =>
+    activeEntry.value ? previewStyle(activeEntry.value.slug, 'dark') : {}
+  )
+  const activePreviewProps = computed(() =>
+    activeEntry.value ? previewProps(activeEntry.value.slug) : {}
+  )
+  const activeSlotText = computed(() =>
+    activeEntry.value ? slotText(activeEntry.value.slug) : ''
+  )
+
+  const downloadHint = computed(() =>
+    t('theming.export.filename', 'Downloads {file}', { file: fileName.value })
+  )
+</script>
 
 <style scoped lang="scss">
   .theming {

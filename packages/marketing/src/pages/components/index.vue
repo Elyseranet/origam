@@ -1,3 +1,221 @@
+<template>
+  <article
+    class="components-catalog"
+    data-cy="page-components"
+  >
+    <section
+      class="components-hero"
+      aria-labelledby="components-title"
+    >
+      <origam-container class="components-hero__inner">
+        <origam-chip
+          class="components-hero__badge"
+          color="primary"
+          border
+          border-color="var(--origam-color__action--primary---bg)"
+          size="small"
+          pill
+          data-cy="components-hero-badge"
+        >
+          {{ t('components.hero.badge', '218 components — Vue 3') }}
+        </origam-chip>
+
+        <origam-title
+          id="components-title"
+          tag="h1"
+          class="components-hero__title"
+        >
+          <span class="components-hero__title-line">{{ t('components.hero.title_line1', 'Component') }}</span>
+          <span class="components-hero__title-line components-hero__title-line--accent">{{ t('components.hero.title_line2', 'catalogue.') }}</span>
+        </origam-title>
+
+        <p class="components-hero__subtitle">
+          {{ t('components.hero.subtitle', 'Every component in origam is accessible, token-driven and themeable. Explore them by category, read the API and see them in action.') }}
+        </p>
+
+        <origam-text-field
+          v-model="searchQuery"
+          class="components-hero__search"
+          prepend-inner-icon="mdi-magnify"
+          :placeholder="t('components.hero.search_placeholder', 'Search components…')"
+          :aria-label="t('components.hero.search_label', 'Filter components by name or category')"
+          clearable
+          rounded="lg"
+          variant="outlined"
+          data-cy="components-search"
+        />
+
+        <p
+          class="components-hero__count"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <template v-if="isFiltering">
+            {{ filteredCount }} {{ t('components.hero.count_filtered_of', 'of') }} {{ totalCount }} {{ t('components.hero.count_filtered_match', 'components match') }}
+          </template>
+          <template v-else>
+            {{ totalCount }} {{ t('components.hero.count_families', 'component families across') }} {{ componentsCategories.length }} {{ t('components.hero.count_categories', 'categories') }}
+          </template>
+        </p>
+      </origam-container>
+    </section>
+
+    <section
+      class="components-grid-section"
+      aria-labelledby="components-grid-title"
+      data-cy="components-grid"
+    >
+      <origam-container>
+        <header class="components-grid-section__header">
+          <p class="components-section__eyebrow">
+            {{ t('components.catalog.eyebrow', 'BROWSE BY CATEGORY') }}
+          </p>
+
+          <origam-title
+            id="components-grid-title"
+            tag="h2"
+            class="components-section__title components-section__title--single"
+          >
+            {{ t('components.catalog.title', 'All components.') }}
+          </origam-title>
+        </header>
+
+        <div
+          v-if="isFiltering && filteredCount === 0"
+          class="components-empty"
+          role="status"
+          data-cy="components-empty"
+        >
+          <origam-icon
+            icon="mdi-magnify-remove-outline"
+            class="components-empty__icon"
+            aria-hidden="true"
+          />
+
+          <origam-title
+            tag="h3"
+            class="components-empty__title"
+          >
+            {{ t('components.catalog.empty_title', 'No components found') }}
+          </origam-title>
+
+          <p class="components-empty__desc">
+            {{ t('components.catalog.empty_desc', 'No component matches "{query}". Try a different term.', { query: searchQuery }) }}
+          </p>
+        </div>
+
+        <div
+          v-for="group in groupedByCategory"
+          :key="group.category"
+          class="components-category"
+          :data-cy="`components-category-${group.category.toLowerCase().replace(/[^a-z0-9]/g, '-')}`"
+        >
+          <header class="components-category__header">
+            <origam-title
+              tag="h3"
+              class="components-category__title"
+            >
+              {{ group.category }}
+            </origam-title>
+
+            <origam-chip
+              size="small"
+              pill
+              class="components-category__count-chip"
+            >
+              {{ group.entries.length }}
+            </origam-chip>
+          </header>
+
+          <origam-grid
+            tag="ul"
+            columns="repeat(auto-fill, minmax(240px, 1fr))"
+            gap="1rem"
+            class="components-category__grid"
+          >
+            <origam-grid-item
+              v-for="entry in group.entries"
+              :key="entry.slug"
+              tag="li"
+              class="components-catalog-item"
+            >
+              <nuxt-link
+                :to="`/components/${entry.slug}`"
+                class="components-catalog-card__link"
+                :aria-label="`${entry.name} — ${t(entry.descriptionKey, entry.descriptionFallback)}`"
+                :data-cy="`components-card-${entry.slug}`"
+              >
+                <origam-card
+                  rounded="lg"
+                  class="components-catalog-card"
+                >
+                  <template #default>
+                    <div class="components-catalog-card__inner">
+                      <div class="components-catalog-card__header">
+                        <origam-avatar
+                          :icon="entry.icon"
+                          color="primary"
+                          rounded="lg"
+                          size="40"
+                          class="components-catalog-card__avatar"
+                          aria-hidden="true"
+                        />
+
+                        <origam-title
+                          tag="h4"
+                          class="components-catalog-card__name"
+                        >
+                          {{ entry.name }}
+                        </origam-title>
+
+                        <origam-icon
+                          v-if="entry.family.length > 0"
+                          icon="mdi-family-tree"
+                          size="16"
+                          class="components-catalog-card__family-icon"
+                          aria-hidden="true"
+                        />
+                      </div>
+
+                      <p class="components-catalog-card__desc">
+                        {{ t(entry.descriptionKey, entry.descriptionFallback) }}
+                      </p>
+
+                      <div
+                        v-if="entry.family.length > 0"
+                        class="components-catalog-card__family-tags"
+                      >
+                        <origam-chip
+                          v-for="member in entry.family.slice(0, 3)"
+                          :key="member.slug"
+                          size="x-small"
+                          pill
+                          class="components-catalog-card__family-chip"
+                        >
+                          {{ member.name }}
+                        </origam-chip>
+
+                        <origam-chip
+                          v-if="entry.family.length > 3"
+                          size="x-small"
+                          pill
+                          class="components-catalog-card__family-chip components-catalog-card__family-chip--more"
+                        >
+                          +{{ entry.family.length - 3 }}
+                        </origam-chip>
+                      </div>
+                    </div>
+                  </template>
+                </origam-card>
+              </nuxt-link>
+            </origam-grid-item>
+          </origam-grid>
+        </div>
+      </origam-container>
+    </section>
+  </article>
+</template>
+
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useT } from '~/composables/useT'
@@ -48,224 +266,6 @@ const totalCount = computed(() => topLevelEntries.value.length)
 const filteredCount = computed(() => filteredEntries.value.length)
 const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 </script>
-
-<template>
-    <article
-        class="components-catalog"
-        data-cy="page-components"
-    >
-        <section
-            class="components-hero"
-            aria-labelledby="components-title"
-        >
-            <origam-container class="components-hero__inner">
-                <origam-chip
-                    class="components-hero__badge"
-                    color="primary"
-                    border
-                    border-color="var(--origam-color__action--primary---bg)"
-                    size="small"
-                    pill
-                    data-cy="components-hero-badge"
-                >
-                    {{ t('components.hero.badge', '218 components — Vue 3') }}
-                </origam-chip>
-
-                <origam-title
-                    id="components-title"
-                    tag="h1"
-                    class="components-hero__title"
-                >
-                    <span class="components-hero__title-line">{{ t('components.hero.title_line1', 'Component') }}</span>
-                    <span class="components-hero__title-line components-hero__title-line--accent">{{ t('components.hero.title_line2', 'catalogue.') }}</span>
-                </origam-title>
-
-                <p class="components-hero__subtitle">
-                    {{ t('components.hero.subtitle', 'Every component in origam is accessible, token-driven and themeable. Explore them by category, read the API and see them in action.') }}
-                </p>
-
-                <origam-text-field
-                    v-model="searchQuery"
-                    class="components-hero__search"
-                    prepend-inner-icon="mdi-magnify"
-                    :placeholder="t('components.hero.search_placeholder', 'Search components…')"
-                    :aria-label="t('components.hero.search_label', 'Filter components by name or category')"
-                    clearable
-                    rounded="lg"
-                    variant="outlined"
-                    data-cy="components-search"
-                />
-
-                <p
-                    class="components-hero__count"
-                    aria-live="polite"
-                    aria-atomic="true"
-                >
-                    <template v-if="isFiltering">
-                        {{ filteredCount }} {{ t('components.hero.count_filtered_of', 'of') }} {{ totalCount }} {{ t('components.hero.count_filtered_match', 'components match') }}
-                    </template>
-                    <template v-else>
-                        {{ totalCount }} {{ t('components.hero.count_families', 'component families across') }} {{ componentsCategories.length }} {{ t('components.hero.count_categories', 'categories') }}
-                    </template>
-                </p>
-            </origam-container>
-        </section>
-
-        <section
-            class="components-grid-section"
-            aria-labelledby="components-grid-title"
-            data-cy="components-grid"
-        >
-            <origam-container>
-                <header class="components-grid-section__header">
-                    <p class="components-section__eyebrow">
-                        {{ t('components.catalog.eyebrow', 'BROWSE BY CATEGORY') }}
-                    </p>
-
-                    <origam-title
-                        id="components-grid-title"
-                        tag="h2"
-                        class="components-section__title components-section__title--single"
-                    >
-                        {{ t('components.catalog.title', 'All components.') }}
-                    </origam-title>
-                </header>
-
-                <div
-                    v-if="isFiltering && filteredCount === 0"
-                    class="components-empty"
-                    role="status"
-                    data-cy="components-empty"
-                >
-                    <origam-icon
-                        icon="mdi-magnify-remove-outline"
-                        class="components-empty__icon"
-                        aria-hidden="true"
-                    />
-
-                    <origam-title
-                        tag="h3"
-                        class="components-empty__title"
-                    >
-                        {{ t('components.catalog.empty_title', 'No components found') }}
-                    </origam-title>
-
-                    <p class="components-empty__desc">
-                        {{ t('components.catalog.empty_desc', 'No component matches "{query}". Try a different term.', { query: searchQuery }) }}
-                    </p>
-                </div>
-
-                <div
-                    v-for="group in groupedByCategory"
-                    :key="group.category"
-                    class="components-category"
-                    :data-cy="`components-category-${group.category.toLowerCase().replace(/[^a-z0-9]/g, '-')}`"
-                >
-                    <header class="components-category__header">
-                        <origam-title
-                            tag="h3"
-                            class="components-category__title"
-                        >
-                            {{ group.category }}
-                        </origam-title>
-
-                        <origam-chip
-                            size="small"
-                            pill
-                            class="components-category__count-chip"
-                        >
-                            {{ group.entries.length }}
-                        </origam-chip>
-                    </header>
-
-                    <origam-grid
-                        tag="ul"
-                        columns="repeat(auto-fill, minmax(240px, 1fr))"
-                        gap="1rem"
-                        class="components-category__grid"
-                    >
-                        <origam-grid-item
-                            v-for="entry in group.entries"
-                            :key="entry.slug"
-                            tag="li"
-                            class="components-catalog-item"
-                        >
-                            <nuxt-link
-                                :to="`/components/${entry.slug}`"
-                                class="components-catalog-card__link"
-                                :aria-label="`${entry.name} — ${t(entry.descriptionKey, entry.descriptionFallback)}`"
-                                :data-cy="`components-card-${entry.slug}`"
-                            >
-                            <origam-card
-                                rounded="lg"
-                                class="components-catalog-card"
-                            >
-                                <template #default>
-                                    <div class="components-catalog-card__inner">
-                                        <div class="components-catalog-card__header">
-                                            <origam-avatar
-                                                :icon="entry.icon"
-                                                color="primary"
-                                                rounded="lg"
-                                                size="40"
-                                                class="components-catalog-card__avatar"
-                                                aria-hidden="true"
-                                            />
-
-                                            <origam-title
-                                                tag="h4"
-                                                class="components-catalog-card__name"
-                                            >
-                                                {{ entry.name }}
-                                            </origam-title>
-
-                                            <origam-icon
-                                                v-if="entry.family.length > 0"
-                                                icon="mdi-family-tree"
-                                                size="16"
-                                                class="components-catalog-card__family-icon"
-                                                aria-hidden="true"
-                                            />
-                                        </div>
-
-                                        <p class="components-catalog-card__desc">
-                                            {{ t(entry.descriptionKey, entry.descriptionFallback) }}
-                                        </p>
-
-                                        <div
-                                            v-if="entry.family.length > 0"
-                                            class="components-catalog-card__family-tags"
-                                        >
-                                            <origam-chip
-                                                v-for="member in entry.family.slice(0, 3)"
-                                                :key="member.slug"
-                                                size="x-small"
-                                                pill
-                                                class="components-catalog-card__family-chip"
-                                            >
-                                                {{ member.name }}
-                                            </origam-chip>
-
-                                            <origam-chip
-                                                v-if="entry.family.length > 3"
-                                                size="x-small"
-                                                pill
-                                                class="components-catalog-card__family-chip components-catalog-card__family-chip--more"
-                                            >
-                                                +{{ entry.family.length - 3 }}
-                                            </origam-chip>
-                                        </div>
-                                    </div>
-                                </template>
-                            </origam-card>
-                            </nuxt-link>
-                        </origam-grid-item>
-                    </origam-grid>
-                </div>
-            </origam-container>
-        </section>
-    </article>
-</template>
 
 <style scoped lang="scss">
 .components-catalog {

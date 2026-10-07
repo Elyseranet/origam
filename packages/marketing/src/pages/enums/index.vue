@@ -1,3 +1,200 @@
+<template>
+  <article
+    class="enums-catalog"
+    data-cy="page-enums"
+  >
+    <section
+      class="enums-hero"
+      aria-labelledby="enums-title"
+    >
+      <origam-container class="enums-hero__inner">
+        <origam-chip
+          class="enums-hero__badge"
+          color="primary"
+          border
+          border-color="var(--origam-color__action--primary---bg)"
+          size="small"
+          pill
+          data-cy="enums-hero-badge"
+        >
+          {{ t('enums.hero.badge', 'TypeScript enums') }}
+        </origam-chip>
+
+        <origam-title
+          id="enums-title"
+          tag="h1"
+          class="enums-hero__title"
+        >
+          <span class="enums-hero__title-line">{{ t('enums.hero.title_line1', 'API') }}</span>
+          <span class="enums-hero__title-line enums-hero__title-line--accent">{{ t('enums.hero.title_line2', 'enums.') }}</span>
+        </origam-title>
+
+        <p class="enums-hero__subtitle">
+          {{ t('enums.hero.subtitle', 'Every TypeScript enum used across origam props. Fully documented with definitions, members and cross-references to the components that use them.') }}
+        </p>
+
+        <origam-text-field
+          v-model="searchQuery"
+          class="enums-hero__search"
+          prepend-inner-icon="mdi-magnify"
+          :placeholder="t('enums.hero.search_placeholder', 'Search enums…')"
+          :aria-label="t('enums.hero.search_label', 'Filter enums by name or category')"
+          clearable
+          rounded="lg"
+          variant="outlined"
+          data-cy="enums-search"
+        />
+
+        <p
+          class="enums-hero__count"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <template v-if="isFiltering">
+            {{ filteredCount }} {{ t('enums.hero.count_filtered_of', 'of') }} {{ totalCount }} {{ t('enums.hero.count_filtered_match', 'enums match') }}
+          </template>
+          <template v-else>
+            {{ totalCount }} {{ t('enums.hero.count_total', 'enums across') }} {{ enumsCategories.length }} {{ t('enums.hero.count_categories', 'categories') }}
+          </template>
+        </p>
+      </origam-container>
+    </section>
+
+    <section
+      class="enums-grid-section"
+      aria-labelledby="enums-grid-title"
+      data-cy="enums-grid"
+    >
+      <origam-container>
+        <header class="enums-grid-section__header">
+          <p class="enums-section__eyebrow">
+            {{ t('enums.catalog.eyebrow', 'BROWSE BY CATEGORY') }}
+          </p>
+
+          <origam-title
+            id="enums-grid-title"
+            tag="h2"
+            class="enums-section__title enums-section__title--single"
+          >
+            {{ t('enums.catalog.title', 'All enums.') }}
+          </origam-title>
+        </header>
+
+        <div
+          v-if="isFiltering && filteredCount === 0"
+          class="enums-empty"
+          role="status"
+          data-cy="enums-empty"
+        >
+          <origam-icon
+            icon="mdi-magnify-remove-outline"
+            class="enums-empty__icon"
+            aria-hidden="true"
+          />
+
+          <origam-title
+            tag="h3"
+            class="enums-empty__title"
+          >
+            {{ t('enums.catalog.empty_title', 'No enums found') }}
+          </origam-title>
+
+          <p class="enums-empty__desc">
+            {{ t('enums.catalog.empty_desc', 'No enum matches "{query}". Try a different term.', { query: searchQuery }) }}
+          </p>
+        </div>
+
+        <div
+          v-for="group in groupedByCategory"
+          :key="group.category"
+          class="enums-category"
+          :data-cy="`enums-category-${group.category.toLowerCase().replace(/[^a-z0-9]/g, '-')}`"
+        >
+          <header class="enums-category__header">
+            <origam-title
+              tag="h3"
+              class="enums-category__title"
+            >
+              {{ group.category }}
+            </origam-title>
+
+            <origam-chip
+              size="small"
+              pill
+              class="enums-category__count-chip"
+            >
+              {{ group.entries.length }}
+            </origam-chip>
+          </header>
+
+          <origam-grid
+            tag="ul"
+            columns="repeat(auto-fill, minmax(240px, 1fr))"
+            gap="1rem"
+            class="enums-category__grid"
+          >
+            <origam-grid-item
+              v-for="entry in group.entries"
+              :key="entry.slug"
+              tag="li"
+              class="enums-catalog-item"
+            >
+              <nuxt-link
+                :to="`/enums/${entry.slug}`"
+                class="enums-catalog-card__link"
+                :aria-label="`${entry.name} — ${t(entry.descriptionKey, entry.descriptionFallback)}`"
+                :data-cy="`enums-card-${entry.slug}`"
+              >
+                <origam-card
+                  rounded="lg"
+                  class="enums-catalog-card"
+                >
+                  <template #default>
+                    <div class="enums-catalog-card__inner">
+                      <div class="enums-catalog-card__header">
+                        <origam-avatar
+                          :icon="entry.icon"
+                          color="secondary"
+                          rounded="lg"
+                          size="40"
+                          class="enums-catalog-card__avatar"
+                          aria-hidden="true"
+                        />
+
+                        <origam-title
+                          tag="h4"
+                          class="enums-catalog-card__name"
+                        >
+                          {{ entry.name }}
+                        </origam-title>
+
+                        <origam-chip
+                          color="secondary"
+                          size="x-small"
+                          variant="tonal"
+                          pill
+                          class="enums-catalog-card__kind-chip"
+                          :aria-label="t('enums.kind.enum', 'enum')"
+                        >
+                          {{ t('enums.kind.enum', 'enum') }}
+                        </origam-chip>
+                      </div>
+
+                      <p class="enums-catalog-card__desc">
+                        {{ t(entry.descriptionKey, entry.descriptionFallback) }}
+                      </p>
+                    </div>
+                  </template>
+                </origam-card>
+              </nuxt-link>
+            </origam-grid-item>
+          </origam-grid>
+        </div>
+      </origam-container>
+    </section>
+  </article>
+</template>
+
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useT } from '~/composables/useT'
@@ -44,203 +241,6 @@ const totalCount = computed(() => enumsCatalog.value.length)
 const filteredCount = computed(() => filteredEntries.value.length)
 const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 </script>
-
-<template>
-    <article
-        class="enums-catalog"
-        data-cy="page-enums"
-    >
-        <section
-            class="enums-hero"
-            aria-labelledby="enums-title"
-        >
-            <origam-container class="enums-hero__inner">
-                <origam-chip
-                    class="enums-hero__badge"
-                    color="primary"
-                    border
-                    border-color="var(--origam-color__action--primary---bg)"
-                    size="small"
-                    pill
-                    data-cy="enums-hero-badge"
-                >
-                    {{ t('enums.hero.badge', 'TypeScript enums') }}
-                </origam-chip>
-
-                <origam-title
-                    id="enums-title"
-                    tag="h1"
-                    class="enums-hero__title"
-                >
-                    <span class="enums-hero__title-line">{{ t('enums.hero.title_line1', 'API') }}</span>
-                    <span class="enums-hero__title-line enums-hero__title-line--accent">{{ t('enums.hero.title_line2', 'enums.') }}</span>
-                </origam-title>
-
-                <p class="enums-hero__subtitle">
-                    {{ t('enums.hero.subtitle', 'Every TypeScript enum used across origam props. Fully documented with definitions, members and cross-references to the components that use them.') }}
-                </p>
-
-                <origam-text-field
-                    v-model="searchQuery"
-                    class="enums-hero__search"
-                    prepend-inner-icon="mdi-magnify"
-                    :placeholder="t('enums.hero.search_placeholder', 'Search enums…')"
-                    :aria-label="t('enums.hero.search_label', 'Filter enums by name or category')"
-                    clearable
-                    rounded="lg"
-                    variant="outlined"
-                    data-cy="enums-search"
-                />
-
-                <p
-                    class="enums-hero__count"
-                    aria-live="polite"
-                    aria-atomic="true"
-                >
-                    <template v-if="isFiltering">
-                        {{ filteredCount }} {{ t('enums.hero.count_filtered_of', 'of') }} {{ totalCount }} {{ t('enums.hero.count_filtered_match', 'enums match') }}
-                    </template>
-                    <template v-else>
-                        {{ totalCount }} {{ t('enums.hero.count_total', 'enums across') }} {{ enumsCategories.length }} {{ t('enums.hero.count_categories', 'categories') }}
-                    </template>
-                </p>
-            </origam-container>
-        </section>
-
-        <section
-            class="enums-grid-section"
-            aria-labelledby="enums-grid-title"
-            data-cy="enums-grid"
-        >
-            <origam-container>
-                <header class="enums-grid-section__header">
-                    <p class="enums-section__eyebrow">
-                        {{ t('enums.catalog.eyebrow', 'BROWSE BY CATEGORY') }}
-                    </p>
-
-                    <origam-title
-                        id="enums-grid-title"
-                        tag="h2"
-                        class="enums-section__title enums-section__title--single"
-                    >
-                        {{ t('enums.catalog.title', 'All enums.') }}
-                    </origam-title>
-                </header>
-
-                <div
-                    v-if="isFiltering && filteredCount === 0"
-                    class="enums-empty"
-                    role="status"
-                    data-cy="enums-empty"
-                >
-                    <origam-icon
-                        icon="mdi-magnify-remove-outline"
-                        class="enums-empty__icon"
-                        aria-hidden="true"
-                    />
-
-                    <origam-title
-                        tag="h3"
-                        class="enums-empty__title"
-                    >
-                        {{ t('enums.catalog.empty_title', 'No enums found') }}
-                    </origam-title>
-
-                    <p class="enums-empty__desc">
-                        {{ t('enums.catalog.empty_desc', 'No enum matches "{query}". Try a different term.', { query: searchQuery }) }}
-                    </p>
-                </div>
-
-                <div
-                    v-for="group in groupedByCategory"
-                    :key="group.category"
-                    class="enums-category"
-                    :data-cy="`enums-category-${group.category.toLowerCase().replace(/[^a-z0-9]/g, '-')}`"
-                >
-                    <header class="enums-category__header">
-                        <origam-title
-                            tag="h3"
-                            class="enums-category__title"
-                        >
-                            {{ group.category }}
-                        </origam-title>
-
-                        <origam-chip
-                            size="small"
-                            pill
-                            class="enums-category__count-chip"
-                        >
-                            {{ group.entries.length }}
-                        </origam-chip>
-                    </header>
-
-                    <origam-grid
-                        tag="ul"
-                        columns="repeat(auto-fill, minmax(240px, 1fr))"
-                        gap="1rem"
-                        class="enums-category__grid"
-                    >
-                        <origam-grid-item
-                            v-for="entry in group.entries"
-                            :key="entry.slug"
-                            tag="li"
-                            class="enums-catalog-item"
-                        >
-                            <nuxt-link
-                                :to="`/enums/${entry.slug}`"
-                                class="enums-catalog-card__link"
-                                :aria-label="`${entry.name} — ${t(entry.descriptionKey, entry.descriptionFallback)}`"
-                                :data-cy="`enums-card-${entry.slug}`"
-                            >
-                                <origam-card
-                                    rounded="lg"
-                                    class="enums-catalog-card"
-                                >
-                                    <template #default>
-                                        <div class="enums-catalog-card__inner">
-                                            <div class="enums-catalog-card__header">
-                                                <origam-avatar
-                                                    :icon="entry.icon"
-                                                    color="secondary"
-                                                    rounded="lg"
-                                                    size="40"
-                                                    class="enums-catalog-card__avatar"
-                                                    aria-hidden="true"
-                                                />
-
-                                                <origam-title
-                                                    tag="h4"
-                                                    class="enums-catalog-card__name"
-                                                >
-                                                    {{ entry.name }}
-                                                </origam-title>
-
-                                                <origam-chip
-                                                    color="secondary"
-                                                    size="x-small"
-                                                    variant="tonal"
-                                                    pill
-                                                    class="enums-catalog-card__kind-chip"
-                                                    :aria-label="t('enums.kind.enum', 'enum')"
-                                                >
-                                                    {{ t('enums.kind.enum', 'enum') }}
-                                                </origam-chip>
-                                            </div>
-
-                                            <p class="enums-catalog-card__desc">
-                                                {{ t(entry.descriptionKey, entry.descriptionFallback) }}
-                                            </p>
-                                        </div>
-                                    </template>
-                                </origam-card>
-                            </nuxt-link>
-                        </origam-grid-item>
-                    </origam-grid>
-                </div>
-            </origam-container>
-        </section>
-    </article>
-</template>
 
 <style scoped lang="scss">
 .enums-catalog {

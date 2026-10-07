@@ -114,6 +114,7 @@
 					location: 'left',
 					push: null,
 					clipped: null,
+					attach: null,
 					tag: undefined
 				})"
 		>
@@ -146,6 +147,7 @@
 								:location="state.location"
 								:push="state.push"
 								:clipped="state.clipped"
+								:attach="state.attach"
 								:tag="state.tag"
 								@update:model-value="(v: boolean) => state.open = v"
 						>
@@ -184,6 +186,11 @@
 							v-model="state.clipped"
 							title="Clipped"
 							:options="DRAWER_CLIPPED_OPTIONS"
+					/>
+					<HstSelect
+							v-model="state.attach"
+							title="Attach"
+							:options="DRAWER_ATTACH_OPTIONS"
 					/>
 				</StoryGroup>
 				<StoryGroup title="Behaviour">
@@ -332,6 +339,32 @@
 			</div>
 		</Variant>
 
+		<Variant title="Prop - attach">
+			<div style="height: 280px; border: 1px solid var(--origam-color__border---subtle, #ccc); display: flex; flex-direction: column; gap: 8px; padding: 8px;">
+				<origam-btn
+						text="Toggle (attach to local target)"
+						@click="attachOpen = !attachOpen"
+				/>
+				<div
+						id="drawer-attach-target"
+						class="story-attach-target"
+						data-cy="drawer-attach-target"
+				>
+					local teleport target (#drawer-attach-target) — NOT an OrigamLayout wrapper
+				</div>
+				<origam-drawer
+						v-if="attachTargetMounted"
+						:model-value="attachOpen"
+						attach="#drawer-attach-target"
+						data-cy="drawer-attached"
+						permanent
+						@update:model-value="(v: boolean) => (attachOpen = v)"
+				>
+					<div style="padding: 16px;">Teleported into the local target, not document.body.</div>
+				</origam-drawer>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<Partial<IDrawerProps> & { open: boolean }>({
@@ -347,6 +380,7 @@
 					location: 'left',
 					push: null,
 					clipped: null,
+					attach: null,
 					color: undefined,
 					bgColor: undefined,
 					elevation: undefined,
@@ -380,6 +414,7 @@
 								:location="state.location"
 								:push="state.push"
 								:clipped="state.clipped"
+								:attach="state.attach"
 								:color="state.color"
 								:bg-color="state.bgColor"
 								:elevation="state.elevation"
@@ -433,6 +468,11 @@
 							title="Clipped"
 							:options="DRAWER_CLIPPED_OPTIONS"
 					/>
+					<HstSelect
+							v-model="state.attach"
+							title="Attach"
+							:options="DRAWER_ATTACH_OPTIONS"
+					/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -444,6 +484,7 @@
 		setup
 >
 	import { logEvent } from 'histoire/client'
+	import { onMounted, ref } from 'vue'
 
 	import { OrigamApp, OrigamAppBar, OrigamBtn, OrigamDrawer, OrigamMain } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
@@ -465,6 +506,34 @@
 		TAG_OPTIONS
 	} from '@stories/const'
 
+	const attachOpen = ref<boolean>(true)
+
+	/*********************************************************
+	 * attachTargetMounted — #attach-harmonisation
+	 *
+	 * @description
+	 * `useTeleport()` resolves `attach` on the component's FIRST render.
+	 * In the "Prop - attach" Variant below, the local target div and
+	 * `<origam-drawer>` are SIBLINGS created in the SAME render pass,
+	 * under Histoire's own `<Suspense>` (`OrigamApp`/`OrigamLayout`): the
+	 * whole subtree, siblings included, is only committed to the real
+	 * DOM once Suspense resolves, so `document.querySelector('#drawer-
+	 * attach-target')` can race and fail on that very first evaluation —
+	 * `useTeleport`'s own doc comment documents this as a REAL case it
+	 * does not retry in a 100%-client app (Histoire has no SSR to
+	 * protect, so its `useHydration()` gate never delays anything here).
+	 * A freshly-mounted sibling target never happens in real usage (a
+	 * consumer points `attach` at something that already exists), so the
+	 * fix belongs HERE, not in the shared composable: defer mounting the
+	 * drawer itself until this story's own `onMounted` — i.e. until
+	 * Suspense has already resolved and the target div is genuinely
+	 * connected to `document`.
+	 ********************************************************/
+	const attachTargetMounted = ref<boolean>(false)
+	onMounted(() => {
+		attachTargetMounted.value = true
+	})
+
 	const DRAWER_LOCATION_OPTIONS = [
 		{ label: 'left',   value: 'left' },
 		{ label: 'right',  value: 'right' },
@@ -483,6 +552,25 @@
 		{ label: 'true — below AppBar',     value: true },
 		{ label: 'false — full height',     value: false }
 	]
+
+	const DRAWER_ATTACH_OPTIONS = [
+		{ label: 'auto (layout wrapper / inline if orphan)', value: null },
+		{ label: 'true — render in place (no teleport)',     value: true },
+		{ label: 'false — document.body',                    value: false }
+	]
 </script>
+
+<style scoped>
+	.story-attach-target {
+		position: relative;
+		flex: 1 1 auto;
+		min-height: 80px;
+		padding: 12px;
+		border: 1px dashed var(--origam-color__border---subtle, rgba(0, 0, 0, 0.2));
+		border-radius: 8px;
+		font: 0.8125rem/1.4 system-ui, sans-serif;
+		color: var(--origam-color__text---secondary, rgba(0, 0, 0, 0.55));
+	}
+</style>
 
 <docs lang="md" src="@docs/components/Drawer/OrigamDrawer.md"/>

@@ -1,4 +1,5 @@
 import type { IActivatorProps } from '../Commons/activator.interface'
+import type { IAttachProps } from '../Commons/attach.interface'
 import type { IClickOutsideEmits } from '../Commons/clickOutside.interface'
 import type {
     ICommonsComponentEmits,
@@ -11,9 +12,8 @@ import type { IScrimProps } from './overlay-scrim.interface'
 import type { IScrollStrategyProps } from '../Commons/scroll.interface'
 import type { ITransitionComponentProps } from '../Commons/transition-component.interface'
 
-export interface IOverlayProps extends ICommonsComponentProps, IDimensionProps, IActivatorProps, ILocationStrategyProps, IScrollStrategyProps, ILazyProps, ITransitionComponentProps, IScrimProps {
+export interface IOverlayProps extends ICommonsComponentProps, IDimensionProps, IActivatorProps, ILocationStrategyProps, IScrollStrategyProps, ILazyProps, ITransitionComponentProps, IScrimProps, IAttachProps {
     absolute?: boolean
-    attach?: boolean | string | Element
     closeOnBack?: boolean
     contentClass?: string | Array<string>,
     contentProps?: any

@@ -1,3 +1,443 @@
+<template>
+  <article
+    class="util-detail"
+    :data-cy="`page-util-${slug}`"
+  >
+    <div
+      v-if="!displayDoc"
+      class="util-detail-not-found"
+      data-cy="util-not-found"
+    >
+      <origam-container class="util-detail-not-found__inner">
+        <origam-avatar
+          icon="mdi-help-circle-outline"
+          color="warning"
+          size="64"
+          aria-hidden="true"
+        />
+
+        <origam-title
+          tag="h1"
+          class="util-detail-not-found__title"
+        >
+          {{ t('utils.detail.not_found.title', 'Util not found') }}
+        </origam-title>
+
+        <p class="util-detail-not-found__desc">
+          {{ t('utils.detail.not_found.desc', 'No util matches the slug') }}
+          <origam-code
+            :code="slug"
+            lang="plaintext"
+            compact
+            class="util-detail-not-found__slug-code"
+          />
+        </p>
+
+        <origam-btn
+          href="/utils"
+          prepend-icon="mdi-arrow-left"
+          variant="tonal"
+          color="primary"
+          data-cy="util-not-found-back"
+        >
+          {{ t('utils.detail.not_found.back', 'Back to catalogue') }}
+        </origam-btn>
+      </origam-container>
+    </div>
+
+    <template v-else>
+      <div
+        class="util-hero"
+        aria-labelledby="util-title"
+      >
+        <origam-container class="util-hero__container">
+          <nav
+            class="util-hero__breadcrumb"
+            :aria-label="t('utils.detail.breadcrumb_label', 'Page location')"
+          >
+            <nuxt-link
+              to="/utils"
+              class="util-hero__breadcrumb-link"
+              data-cy="util-breadcrumb-catalog"
+            >
+              {{ t('utils.detail.breadcrumb_catalog', 'Utils') }}
+            </nuxt-link>
+
+            <span
+              class="util-hero__breadcrumb-sep"
+              aria-hidden="true"
+            >›</span>
+
+            <span
+              class="util-hero__breadcrumb-current"
+              aria-current="page"
+            >
+                            {{ utilName }}
+                        </span>
+          </nav>
+
+          <div class="util-hero__identity">
+            <div class="util-hero__title-row">
+              <origam-title
+                id="util-title"
+                tag="h1"
+                class="util-hero__title"
+              >
+                {{ utilName }}
+              </origam-title>
+
+              <origam-chip
+                v-if="utilCategory"
+                color="primary"
+                size="small"
+                variant="outlined"
+                class="util-hero__category-chip"
+              >
+                {{ utilCategory }}
+              </origam-chip>
+
+              <origam-chip
+                size="small"
+                color="success"
+                variant="outlined"
+                prepend-icon="mdi-circle"
+                class="util-hero__status-chip"
+              >
+                {{ t('utils.detail.hero.stable_label', 'stable') }}
+              </origam-chip>
+            </div>
+
+            <p class="util-hero__desc">
+              {{ utilDescFb }}
+            </p>
+
+            <div class="util-hero__bottom">
+              <nav
+                v-if="displayDoc?.sourceFile"
+                class="util-hero__actions"
+                :aria-label="t('utils.detail.external_links_label', 'External resources')"
+              >
+                <origam-btn
+                  :href="`https://github.com/origam-io/origam/blob/main/${displayDoc.sourceFile}`"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variant="text"
+                  size="small"
+                  prepend-icon="mdi-github"
+                  data-cy="util-source-link"
+                >
+                  {{ t('utils.detail.hero.source_label', 'Source') }}
+                </origam-btn>
+              </nav>
+
+              <origam-btn
+                class="util-hero__import"
+                variant="text"
+                size="small"
+                :aria-label="t('utils.detail.hero.import_label', 'Copy import statement')"
+                :data-cy="`util-import-btn-${slug}`"
+                @click="copyImport"
+              >
+                <span class="util-hero__import-text">{{ importStatement }}</span>
+                <origam-icon
+                  :icon="importCopied ? 'mdi-check' : 'mdi-content-copy'"
+                  size="14"
+                  aria-hidden="true"
+                />
+              </origam-btn>
+            </div>
+          </div>
+        </origam-container>
+      </div>
+
+      <origam-container>
+        <div class="util-detail__layout">
+          <aside
+            v-if="tocSections.length > 0"
+            class="util-toc"
+            :aria-label="t('utils.detail.toc_label', 'Table of contents')"
+            data-cy="util-toc"
+          >
+            <p class="util-toc__heading">
+              {{ t('utils.detail.toc_heading', 'On this page') }}
+            </p>
+
+            <origam-grid
+              tag="ul"
+              columns="1"
+              gap="0.25rem"
+              class="util-toc__list"
+            >
+              <origam-grid-item
+                v-for="section in tocSections"
+                :key="section.id"
+                tag="li"
+                class="util-toc__item"
+                :class="{ 'util-toc__item--active': activeSection === section.id }"
+              >
+                <a
+                  class="util-toc__link"
+                  :href="`#${section.id}`"
+                  :aria-current="activeSection === section.id ? 'true' : undefined"
+                  @click.prevent="scrollToSection(section.id)"
+                >
+                  {{ section.label }}
+                </a>
+              </origam-grid-item>
+            </origam-grid>
+          </aside>
+
+          <div class="util-detail__body">
+            <section
+              id="section-signature"
+              class="util-section util-signature"
+              aria-labelledby="util-signature-title"
+              data-cy="util-signature"
+            >
+              <header class="util-section__header">
+                <p class="util-section__eyebrow">
+                  {{ t('utils.detail.signature.eyebrow', 'API') }}
+                </p>
+                <origam-title
+                  id="util-signature-title"
+                  tag="h2"
+                  class="util-section__title"
+                >
+                  {{ t('utils.detail.signature.title', 'Signature') }}
+                </origam-title>
+                <p class="util-section__desc">
+                  {{ t('utils.detail.signature.desc', 'Full TypeScript signature sourced from the util file.') }}
+                </p>
+              </header>
+
+              <origam-code
+                v-if="displayDoc?.signature"
+                :code="displayDoc.signature"
+                lang="typescript"
+                copyable
+                :line-numbers="true"
+                class="util-signature__code"
+                data-cy="util-signature-code"
+              />
+
+              <div
+                v-if="hasNote"
+                class="util-note"
+                role="note"
+                data-cy="util-note"
+              >
+                <origam-icon
+                  icon="mdi-information-outline"
+                  size="16"
+                  class="util-note__icon"
+                  aria-hidden="true"
+                />
+                <p class="util-note__text">
+                  {{ displayDoc?.noteFallback }}
+                </p>
+              </div>
+            </section>
+
+            <section
+              v-if="hasParams"
+              id="section-params"
+              class="util-section util-params"
+              aria-labelledby="util-params-title"
+              data-cy="util-params"
+            >
+              <header class="util-section__header">
+                <p class="util-section__eyebrow">
+                  {{ t('utils.detail.params.eyebrow', 'API') }}
+                </p>
+                <origam-title
+                  id="util-params-title"
+                  tag="h2"
+                  class="util-section__title"
+                >
+                  {{ t('utils.detail.params.title', 'Parameters') }}
+                </origam-title>
+                <p class="util-section__desc">
+                  {{ t('utils.detail.params.desc', 'Input parameters accepted by this util.') }}
+                </p>
+              </header>
+
+              <row-list
+                :items="displayDoc?.params ?? []"
+                row-prefix="param-row"
+                data-cy="util-params-table"
+              />
+            </section>
+
+            <section
+              v-if="hasReturns"
+              id="section-returns"
+              class="util-section util-returns"
+              aria-labelledby="util-returns-title"
+              data-cy="util-returns"
+            >
+              <header class="util-section__header">
+                <p class="util-section__eyebrow">
+                  {{ t('utils.detail.returns.eyebrow', 'API') }}
+                </p>
+                <origam-title
+                  id="util-returns-title"
+                  tag="h2"
+                  class="util-section__title"
+                >
+                  {{ t('utils.detail.returns.title', 'Return value') }}
+                </origam-title>
+                <p class="util-section__desc">
+                  {{ t('utils.detail.returns.desc', 'The value returned by this util.') }}
+                </p>
+              </header>
+
+              <row-list
+                :items="displayDoc?.returns ? [displayDoc.returns] : []"
+                row-prefix="util-return-row"
+                data-cy="util-returns-table"
+              >
+                <template #item="{ item }">
+                  <dt class="prop-list__dt">
+                    <origam-code
+                      :code="typeof item.type === 'string' ? item.type : (item.type?.label ?? '')"
+                      lang="typescript"
+                      compact
+                      :copyable="false"
+                      class="prop-list__return-type-code"
+                    />
+                  </dt>
+                  <dd class="prop-list__dd">
+                    {{ item.descriptionKey ? t(item.descriptionKey, item.descriptionFallback) : item.descriptionFallback }}
+                  </dd>
+                </template>
+              </row-list>
+            </section>
+
+            <section
+              v-if="hasExamples"
+              id="section-examples"
+              class="util-section util-examples"
+              aria-labelledby="util-examples-title"
+              data-cy="util-examples"
+            >
+              <header class="util-section__header">
+                <p class="util-section__eyebrow">
+                  {{ t('utils.detail.examples.eyebrow', 'Usage') }}
+                </p>
+                <origam-title
+                  id="util-examples-title"
+                  tag="h2"
+                  class="util-section__title"
+                >
+                  {{ t('utils.detail.examples.title', 'Examples') }}
+                </origam-title>
+                <p class="util-section__desc">
+                  {{ t('utils.detail.examples.desc', 'Ready-to-paste usage snippets.') }}
+                </p>
+              </header>
+
+              <div class="util-examples__list">
+                <div
+                  v-for="example in displayDoc?.examples"
+                  :key="example.titleFallback"
+                  class="util-examples__item"
+                  :data-cy="`util-example-${example.titleFallback.toLowerCase().replace(/[^a-z0-9]/g, '-')}`"
+                >
+                  <origam-title
+                    tag="h3"
+                    class="util-examples__item-title"
+                  >
+                    {{ t(example.titleKey, example.titleFallback) }}
+                  </origam-title>
+
+                  <origam-code
+                    :code="example.code"
+                    :lang="example.lang"
+                    copyable
+                    :line-numbers="true"
+                    class="util-examples__code"
+                  />
+                </div>
+              </div>
+            </section>
+
+            <section
+              v-if="hasRelated"
+              id="section-related"
+              class="util-section util-related"
+              aria-labelledby="util-related-title"
+              data-cy="util-related"
+            >
+              <header class="util-section__header">
+                <p class="util-section__eyebrow">
+                  {{ t('utils.detail.related.eyebrow', 'Ecosystem') }}
+                </p>
+                <origam-title
+                  id="util-related-title"
+                  tag="h2"
+                  class="util-section__title"
+                >
+                  {{ t('utils.detail.related.title', 'Related utils') }}
+                </origam-title>
+                <p class="util-section__desc">
+                  {{ t('utils.detail.related.desc', 'Other helpers that pair naturally with this one.') }}
+                </p>
+              </header>
+
+              <origam-grid
+                tag="ul"
+                columns="repeat(auto-fill, minmax(200px, 1fr))"
+                gap="1rem"
+                class="util-related__grid"
+                data-cy="util-related-grid"
+              >
+                <origam-grid-item
+                  v-for="relSlug in displayDoc?.related"
+                  :key="relSlug"
+                  tag="li"
+                  class="util-related__item"
+                >
+                  <nuxt-link
+                    :to="`/utils/${relSlug}`"
+                    class="util-related__link"
+                    :data-cy="`util-related-card-${relSlug}`"
+                  >
+                    <origam-card class="util-related__card">
+                      <template #default>
+                        <div class="util-related__card-inner">
+                          <div class="util-related__card-head">
+                            <origam-title
+                              tag="h3"
+                              class="util-related__card-name"
+                            >
+                              {{ relatedEntry(relSlug)?.name ?? relSlug }}
+                            </origam-title>
+
+                            <origam-icon
+                              icon="mdi-arrow-right"
+                              size="16"
+                              class="util-related__card-arrow"
+                              aria-hidden="true"
+                            />
+                          </div>
+
+                          <p class="util-related__card-desc">
+                            {{ relatedEntry(relSlug)?.descriptionFallback ?? '' }}
+                          </p>
+                        </div>
+                      </template>
+                    </origam-card>
+                  </nuxt-link>
+                </origam-grid-item>
+              </origam-grid>
+            </section>
+          </div>
+        </div>
+      </origam-container>
+    </template>
+  </article>
+</template>
+
 <script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
@@ -80,446 +520,6 @@ useSeoMeta({
     ogDescription: () => utilDescFb.value,
 })
 </script>
-
-<template>
-    <article
-        class="util-detail"
-        :data-cy="`page-util-${slug}`"
-    >
-        <div
-            v-if="!displayDoc"
-            class="util-detail-not-found"
-            data-cy="util-not-found"
-        >
-            <origam-container class="util-detail-not-found__inner">
-                <origam-avatar
-                    icon="mdi-help-circle-outline"
-                    color="warning"
-                    size="64"
-                    aria-hidden="true"
-                />
-
-                <origam-title
-                    tag="h1"
-                    class="util-detail-not-found__title"
-                >
-                    {{ t('utils.detail.not_found.title', 'Util not found') }}
-                </origam-title>
-
-                <p class="util-detail-not-found__desc">
-                    {{ t('utils.detail.not_found.desc', 'No util matches the slug') }}
-                    <origam-code
-                        :code="slug"
-                        lang="plaintext"
-                        compact
-                        class="util-detail-not-found__slug-code"
-                    />
-                </p>
-
-                <origam-btn
-                    href="/utils"
-                    prepend-icon="mdi-arrow-left"
-                    variant="tonal"
-                    color="primary"
-                    data-cy="util-not-found-back"
-                >
-                    {{ t('utils.detail.not_found.back', 'Back to catalogue') }}
-                </origam-btn>
-            </origam-container>
-        </div>
-
-        <template v-else>
-            <div
-                class="util-hero"
-                aria-labelledby="util-title"
-            >
-                <origam-container class="util-hero__container">
-                    <nav
-                        class="util-hero__breadcrumb"
-                        :aria-label="t('utils.detail.breadcrumb_label', 'Page location')"
-                    >
-                        <nuxt-link
-                            to="/utils"
-                            class="util-hero__breadcrumb-link"
-                            data-cy="util-breadcrumb-catalog"
-                        >
-                            {{ t('utils.detail.breadcrumb_catalog', 'Utils') }}
-                        </nuxt-link>
-
-                        <span
-                            class="util-hero__breadcrumb-sep"
-                            aria-hidden="true"
-                        >›</span>
-
-                        <span
-                            class="util-hero__breadcrumb-current"
-                            aria-current="page"
-                        >
-                            {{ utilName }}
-                        </span>
-                    </nav>
-
-                    <div class="util-hero__identity">
-                        <div class="util-hero__title-row">
-                            <origam-title
-                                id="util-title"
-                                tag="h1"
-                                class="util-hero__title"
-                            >
-                                {{ utilName }}
-                            </origam-title>
-
-                            <origam-chip
-                                v-if="utilCategory"
-                                color="primary"
-                                size="small"
-                                variant="outlined"
-                                class="util-hero__category-chip"
-                            >
-                                {{ utilCategory }}
-                            </origam-chip>
-
-                            <origam-chip
-                                size="small"
-                                color="success"
-                                variant="outlined"
-                                prepend-icon="mdi-circle"
-                                class="util-hero__status-chip"
-                            >
-                                {{ t('utils.detail.hero.stable_label', 'stable') }}
-                            </origam-chip>
-                        </div>
-
-                        <p class="util-hero__desc">
-                            {{ utilDescFb }}
-                        </p>
-
-                        <div class="util-hero__bottom">
-                            <nav
-                                v-if="displayDoc?.sourceFile"
-                                class="util-hero__actions"
-                                :aria-label="t('utils.detail.external_links_label', 'External resources')"
-                            >
-                                <origam-btn
-                                    :href="`https://github.com/origam-io/origam/blob/main/${displayDoc.sourceFile}`"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    variant="text"
-                                    size="small"
-                                    prepend-icon="mdi-github"
-                                    data-cy="util-source-link"
-                                >
-                                    {{ t('utils.detail.hero.source_label', 'Source') }}
-                                </origam-btn>
-                            </nav>
-
-                            <origam-btn
-                                class="util-hero__import"
-                                variant="text"
-                                size="small"
-                                :aria-label="t('utils.detail.hero.import_label', 'Copy import statement')"
-                                :data-cy="`util-import-btn-${slug}`"
-                                @click="copyImport"
-                            >
-                                <span class="util-hero__import-text">{{ importStatement }}</span>
-                                <origam-icon
-                                    :icon="importCopied ? 'mdi-check' : 'mdi-content-copy'"
-                                    size="14"
-                                    aria-hidden="true"
-                                />
-                            </origam-btn>
-                        </div>
-                    </div>
-                </origam-container>
-            </div>
-
-            <origam-container>
-                <div class="util-detail__layout">
-                    <aside
-                        v-if="tocSections.length > 0"
-                        class="util-toc"
-                        :aria-label="t('utils.detail.toc_label', 'Table of contents')"
-                        data-cy="util-toc"
-                    >
-                        <p class="util-toc__heading">
-                            {{ t('utils.detail.toc_heading', 'On this page') }}
-                        </p>
-
-                        <origam-grid
-                            tag="ul"
-                            columns="1"
-                            gap="0.25rem"
-                            class="util-toc__list"
-                        >
-                            <origam-grid-item
-                                v-for="section in tocSections"
-                                :key="section.id"
-                                tag="li"
-                                class="util-toc__item"
-                                :class="{ 'util-toc__item--active': activeSection === section.id }"
-                            >
-                                <a
-                                    class="util-toc__link"
-                                    :href="`#${section.id}`"
-                                    :aria-current="activeSection === section.id ? 'true' : undefined"
-                                    @click.prevent="scrollToSection(section.id)"
-                                >
-                                    {{ section.label }}
-                                </a>
-                            </origam-grid-item>
-                        </origam-grid>
-                    </aside>
-
-                    <div class="util-detail__body">
-                        <section
-                            id="section-signature"
-                            class="util-section util-signature"
-                            aria-labelledby="util-signature-title"
-                            data-cy="util-signature"
-                        >
-                            <header class="util-section__header">
-                                <p class="util-section__eyebrow">
-                                    {{ t('utils.detail.signature.eyebrow', 'API') }}
-                                </p>
-                                <origam-title
-                                    id="util-signature-title"
-                                    tag="h2"
-                                    class="util-section__title"
-                                >
-                                    {{ t('utils.detail.signature.title', 'Signature') }}
-                                </origam-title>
-                                <p class="util-section__desc">
-                                    {{ t('utils.detail.signature.desc', 'Full TypeScript signature sourced from the util file.') }}
-                                </p>
-                            </header>
-
-                            <origam-code
-                                v-if="displayDoc?.signature"
-                                :code="displayDoc.signature"
-                                lang="typescript"
-                                copyable
-                                :line-numbers="true"
-                                class="util-signature__code"
-                                data-cy="util-signature-code"
-                            />
-
-                            <div
-                                v-if="hasNote"
-                                class="util-note"
-                                role="note"
-                                data-cy="util-note"
-                            >
-                                <origam-icon
-                                    icon="mdi-information-outline"
-                                    size="16"
-                                    class="util-note__icon"
-                                    aria-hidden="true"
-                                />
-                                <p class="util-note__text">
-                                    {{ displayDoc?.noteFallback }}
-                                </p>
-                            </div>
-                        </section>
-
-                        <section
-                            v-if="hasParams"
-                            id="section-params"
-                            class="util-section util-params"
-                            aria-labelledby="util-params-title"
-                            data-cy="util-params"
-                        >
-                            <header class="util-section__header">
-                                <p class="util-section__eyebrow">
-                                    {{ t('utils.detail.params.eyebrow', 'API') }}
-                                </p>
-                                <origam-title
-                                    id="util-params-title"
-                                    tag="h2"
-                                    class="util-section__title"
-                                >
-                                    {{ t('utils.detail.params.title', 'Parameters') }}
-                                </origam-title>
-                                <p class="util-section__desc">
-                                    {{ t('utils.detail.params.desc', 'Input parameters accepted by this util.') }}
-                                </p>
-                            </header>
-
-                            <row-list
-                                :items="displayDoc?.params ?? []"
-                                row-prefix="param-row"
-                                data-cy="util-params-table"
-                            />
-                        </section>
-
-                        <section
-                            v-if="hasReturns"
-                            id="section-returns"
-                            class="util-section util-returns"
-                            aria-labelledby="util-returns-title"
-                            data-cy="util-returns"
-                        >
-                            <header class="util-section__header">
-                                <p class="util-section__eyebrow">
-                                    {{ t('utils.detail.returns.eyebrow', 'API') }}
-                                </p>
-                                <origam-title
-                                    id="util-returns-title"
-                                    tag="h2"
-                                    class="util-section__title"
-                                >
-                                    {{ t('utils.detail.returns.title', 'Return value') }}
-                                </origam-title>
-                                <p class="util-section__desc">
-                                    {{ t('utils.detail.returns.desc', 'The value returned by this util.') }}
-                                </p>
-                            </header>
-
-                            <row-list
-                                :items="displayDoc?.returns ? [displayDoc.returns] : []"
-                                row-prefix="util-return-row"
-                                data-cy="util-returns-table"
-                            >
-                                <template #item="{ item }">
-                                    <dt class="prop-list__dt">
-                                        <origam-code
-                                            :code="typeof item.type === 'string' ? item.type : (item.type?.label ?? '')"
-                                            lang="typescript"
-                                            compact
-                                            :copyable="false"
-                                            class="prop-list__return-type-code"
-                                        />
-                                    </dt>
-                                    <dd class="prop-list__dd">
-                                        {{ item.descriptionKey ? t(item.descriptionKey, item.descriptionFallback) : item.descriptionFallback }}
-                                    </dd>
-                                </template>
-                            </row-list>
-                        </section>
-
-                        <section
-                            v-if="hasExamples"
-                            id="section-examples"
-                            class="util-section util-examples"
-                            aria-labelledby="util-examples-title"
-                            data-cy="util-examples"
-                        >
-                            <header class="util-section__header">
-                                <p class="util-section__eyebrow">
-                                    {{ t('utils.detail.examples.eyebrow', 'Usage') }}
-                                </p>
-                                <origam-title
-                                    id="util-examples-title"
-                                    tag="h2"
-                                    class="util-section__title"
-                                >
-                                    {{ t('utils.detail.examples.title', 'Examples') }}
-                                </origam-title>
-                                <p class="util-section__desc">
-                                    {{ t('utils.detail.examples.desc', 'Ready-to-paste usage snippets.') }}
-                                </p>
-                            </header>
-
-                            <div class="util-examples__list">
-                                <div
-                                    v-for="example in displayDoc?.examples"
-                                    :key="example.titleFallback"
-                                    class="util-examples__item"
-                                    :data-cy="`util-example-${example.titleFallback.toLowerCase().replace(/[^a-z0-9]/g, '-')}`"
-                                >
-                                    <origam-title
-                                        tag="h3"
-                                        class="util-examples__item-title"
-                                    >
-                                        {{ t(example.titleKey, example.titleFallback) }}
-                                    </origam-title>
-
-                                    <origam-code
-                                        :code="example.code"
-                                        :lang="example.lang"
-                                        copyable
-                                        :line-numbers="true"
-                                        class="util-examples__code"
-                                    />
-                                </div>
-                            </div>
-                        </section>
-
-                        <section
-                            v-if="hasRelated"
-                            id="section-related"
-                            class="util-section util-related"
-                            aria-labelledby="util-related-title"
-                            data-cy="util-related"
-                        >
-                            <header class="util-section__header">
-                                <p class="util-section__eyebrow">
-                                    {{ t('utils.detail.related.eyebrow', 'Ecosystem') }}
-                                </p>
-                                <origam-title
-                                    id="util-related-title"
-                                    tag="h2"
-                                    class="util-section__title"
-                                >
-                                    {{ t('utils.detail.related.title', 'Related utils') }}
-                                </origam-title>
-                                <p class="util-section__desc">
-                                    {{ t('utils.detail.related.desc', 'Other helpers that pair naturally with this one.') }}
-                                </p>
-                            </header>
-
-                            <origam-grid
-                                tag="ul"
-                                columns="repeat(auto-fill, minmax(200px, 1fr))"
-                                gap="1rem"
-                                class="util-related__grid"
-                                data-cy="util-related-grid"
-                            >
-                                <origam-grid-item
-                                    v-for="relSlug in displayDoc?.related"
-                                    :key="relSlug"
-                                    tag="li"
-                                    class="util-related__item"
-                                >
-                                    <nuxt-link
-                                        :to="`/utils/${relSlug}`"
-                                        class="util-related__link"
-                                        :data-cy="`util-related-card-${relSlug}`"
-                                    >
-                                        <origam-card class="util-related__card">
-                                            <template #default>
-                                                <div class="util-related__card-inner">
-                                                    <div class="util-related__card-head">
-                                                        <origam-title
-                                                            tag="h3"
-                                                            class="util-related__card-name"
-                                                        >
-                                                            {{ relatedEntry(relSlug)?.name ?? relSlug }}
-                                                        </origam-title>
-
-                                                        <origam-icon
-                                                            icon="mdi-arrow-right"
-                                                            size="16"
-                                                            class="util-related__card-arrow"
-                                                            aria-hidden="true"
-                                                        />
-                                                    </div>
-
-                                                    <p class="util-related__card-desc">
-                                                        {{ relatedEntry(relSlug)?.descriptionFallback ?? '' }}
-                                                    </p>
-                                                </div>
-                                            </template>
-                                        </origam-card>
-                                    </nuxt-link>
-                                </origam-grid-item>
-                            </origam-grid>
-                        </section>
-                    </div>
-                </div>
-            </origam-container>
-        </template>
-    </article>
-</template>
 
 <style scoped lang="scss">
 .util-detail {

@@ -1,3 +1,310 @@
+<template>
+  <section
+    class="why-demo"
+    aria-labelledby="why-demo-title"
+    data-cy="why-demo"
+  >
+    <origam-container>
+      <header class="why-demo__header why-section">
+        <p class="why-section__eyebrow">
+          {{ t('why_origam.demo.eyebrow', 'SEE IT RUN') }}
+        </p>
+
+        <origam-title
+          id="why-demo-title"
+          tag="h2"
+          class="why-section__title"
+        >
+          <span class="why-section__title-line">{{ t('why_origam.demo.title_line1', 'One object.') }}</span>
+          <span class="why-section__title-line why-section__title-line--muted">{{ t('why_origam.demo.title_line2', 'Every identity.') }}</span>
+        </origam-title>
+
+        <p class="why-section__subtitle">
+          {{ t('why_origam.demo.subtitle', 'The panel on the right is the theme that painted the panel on the left — read from the theme object itself, not retyped. Switch identities and watch both sides move together.') }}
+        </p>
+      </header>
+
+      <origam-sheet
+        tag="div"
+        rounded="lg"
+        border
+        elevation="md"
+        class="why-demo__instrument"
+        data-cy="why-demo-instrument"
+      >
+        <div class="why-demo__toolbar">
+          <p
+            id="why-demo-axis-brand"
+            class="why-demo__axis"
+          >
+            {{ t('why_origam.demo.axis_brand', 'Brand') }}
+          </p>
+
+          <div
+            role="radiogroup"
+            class="why-demo__identities"
+            aria-labelledby="why-demo-axis-brand"
+          >
+            <origam-btn
+              v-for="(entry, index) in WHY_DEMO_THEMES"
+              :key="entry.key"
+              role="radio"
+              variant="outlined"
+              size="small"
+              rounded="pill"
+              class="why-demo__identity"
+              :active="entry.key === selectedTheme"
+              :aria-checked="entry.key === selectedTheme"
+              :tabindex="entry.key === selectedTheme ? 0 : -1"
+              :data-cy="`why-demo-identity-${entry.key}`"
+              @click="selectedTheme = entry.key"
+              @keydown="moveSelection($event, index)"
+            >
+              <origam-theme-provider
+                tag="span"
+                :theme="entry.key"
+                :mode="selectedMode"
+                class="why-demo__swatch-wrap"
+              >
+                                <span
+                                  class="why-demo__swatch"
+                                  aria-hidden="true"
+                                />
+              </origam-theme-provider>
+
+              {{ t(identityKey(entry.key), entry.themes[0]?.label ?? entry.key) }}
+            </origam-btn>
+          </div>
+
+          <p
+            id="why-demo-axis-mode"
+            class="why-demo__axis"
+          >
+            {{ t('why_origam.demo.axis_mode', 'Mode') }}
+          </p>
+
+          <div
+            role="radiogroup"
+            class="why-demo__modes"
+            aria-labelledby="why-demo-axis-mode"
+          >
+            <origam-btn
+              role="radio"
+              variant="outlined"
+              size="small"
+              rounded="pill"
+              prepend-icon="mdi-white-balance-sunny"
+              class="why-demo__mode"
+              :active="selectedMode === 'light'"
+              :aria-checked="selectedMode === 'light'"
+              :tabindex="selectedMode === 'light' ? 0 : -1"
+              data-cy="why-demo-mode-light"
+              @click="selectedMode = 'light'"
+            >
+              {{ t('why_origam.demo.mode_light', 'Light') }}
+            </origam-btn>
+
+            <origam-btn
+              role="radio"
+              variant="outlined"
+              size="small"
+              rounded="pill"
+              prepend-icon="mdi-weather-night"
+              class="why-demo__mode"
+              :active="selectedMode === 'dark'"
+              :aria-checked="selectedMode === 'dark'"
+              :tabindex="selectedMode === 'dark' ? 0 : -1"
+              data-cy="why-demo-mode-dark"
+              @click="selectedMode = 'dark'"
+            >
+              {{ t('why_origam.demo.mode_dark', 'Dark') }}
+            </origam-btn>
+          </div>
+        </div>
+
+        <origam-divider />
+
+        <p
+          class="why-demo__live"
+          aria-live="polite"
+        >
+          {{ t('why_origam.demo.announcement', 'Identity: {name}', { name: activeLabel }) }}
+        </p>
+
+        <origam-grid
+          tag="div"
+          columns="repeat(auto-fit, minmax(19rem, 1fr))"
+          gap="none"
+          class="why-demo__split"
+        >
+          <origam-grid-item
+            tag="div"
+            class="why-demo__pane why-demo__pane--stage"
+          >
+            <p class="why-demo__pane-label">
+              {{ t('why_origam.demo.pane_render', 'Rendered now') }}
+            </p>
+
+            <origam-theme-provider
+              tag="div"
+              :theme="selectedTheme"
+              :mode="selectedMode"
+              data-cy="why-demo-stage"
+            >
+              <!--
+                The backdrop is a REAL element inside the provider,
+                not the provider itself: OrigamThemeProvider renders
+                `display: contents` on purpose ("a provider is not a
+                surface", OrigamThemeProvider.vue:98), so it draws no
+                box and any background / border / radius put on it is
+                silently dropped. Being inside the provider is what
+                lets it read the selected identity's tokens.
+              -->
+              <div class="why-demo__stage">
+                <origam-sheet
+                  tag="div"
+                  class="why-demo__stage-surface"
+                >
+                  <origam-card
+                    class="why-demo__card"
+                    :title="t('why_origam.demo.card_title', 'Release 2.18')"
+                    :subtitle="t('why_origam.demo.card_subtitle', 'Shipping today')"
+                    :text="t('why_origam.demo.card_text', 'Not one line of this card is styled by this page. Every radius, border, shadow and tone comes from the identity you picked.')"
+                  >
+                    <template #header.prepend>
+                      <!--
+                        Decorative only — the card title right next to it already
+                        says "Release 2.18". `OrigamAvatar` renders a plain `<div>`
+                        with no `role`, so an `aria-label` on it is an INVALID
+                        ARIA attribute (axe: aria-prohibited-attr, WCAG 4.1.2) — a
+                        role-less div cannot carry an accessible name. `aria-hidden`
+                        is the correct treatment here, same as the other purely
+                        decorative avatars on this page (`why-strengths__avatar`).
+                      -->
+                      <origam-avatar
+                        icon="mdi-shape-outline"
+                        color="primary"
+                        class="why-demo__avatar"
+                        aria-hidden="true"
+                      />
+                    </template>
+
+                    <template #footer>
+                      <div class="why-demo__controls">
+                        <origam-btn
+                          color="primary"
+                          append-icon="mdi-arrow-right"
+                          data-cy="why-demo-card-primary"
+                        >
+                          {{ t('why_origam.demo.card_cta', 'Deploy') }}
+                        </origam-btn>
+
+                        <origam-btn data-cy="why-demo-card-secondary">
+                          {{ t('why_origam.demo.card_cta_secondary', 'Changelog') }}
+                        </origam-btn>
+
+                        <origam-chip data-cy="why-demo-card-chip">
+                          {{ t('why_origam.demo.card_chip', 'Stable') }}
+                        </origam-chip>
+
+                        <!--
+                          `aria-label`, not the visible
+                          `label` prop: under identities
+                          that set `origam-switch:
+                          { border: true }` (editorial,
+                          glass, cartoon) the border box
+                          wraps the track only and the
+                          label text spills outside it.
+                          Reported — until it is fixed, a
+                          visible label here would be a
+                          rendering defect on 3 of the 8
+                          identities.
+                        -->
+                        <!--
+                          `hide-details="auto"` : sans
+                          validation, `OrigamInput` réserve
+                          quand même sa bande de messages —
+                          22px (min-height 22 + padding-top
+                          8) de vide mesurés sous la piste,
+                          qui portaient le switch à 70px et
+                          écrasaient toute la rangée. La
+                          valeur `auto` plutôt que `true` :
+                          la bande revient d'elle-même si un
+                          message apparaît un jour, donc pas
+                          de message avalé en silence.
+                        -->
+                        <origam-switch
+                          v-model="demoSwitch"
+                          color="primary"
+                          hide-details="auto"
+                          :aria-label="t('why_origam.demo.card_switch', 'Auto-update')"
+                          data-cy="why-demo-card-switch"
+                        />
+                      </div>
+
+                      <!-- Même raison que le switch ci-dessus : ce champ
+                           ne porte aucune règle de validation, donc la
+                           bande de messages réservée par défaut ne
+                           pouvait qu'être vide — c'est elle qu'on voyait
+                           comme un blanc entre le champ et le bas de la
+                           carte. -->
+                      <origam-text-field
+                        v-model="demoField"
+                        class="why-demo__field"
+                        hide-details="auto"
+                        :label="t('why_origam.demo.card_field_label', 'Release tag')"
+                        :placeholder="t('why_origam.demo.card_field_placeholder', 'v2.18.4')"
+                        data-cy="why-demo-card-field"
+                      />
+                    </template>
+                  </origam-card>
+                </origam-sheet>
+              </div>
+            </origam-theme-provider>
+
+            <p class="why-demo__disclaimer">
+              {{ t('why_origam.demo.disclaimer', 'Live components from the published origam package. Not a screenshot.') }}
+            </p>
+          </origam-grid-item>
+
+          <origam-grid-item
+            tag="div"
+            class="why-demo__pane why-demo__pane--code"
+          >
+            <p class="why-demo__pane-label">
+              {{ t('why_origam.demo.pane_code', 'The props that did it') }}
+            </p>
+
+            <origam-code
+              :key="`${selectedTheme}-${selectedMode}`"
+              lang="ts"
+              :code="codeExtract"
+              :wrap="true"
+              class="why-demo__code"
+              data-cy="why-demo-code"
+            />
+
+            <p class="why-demo__disclaimer">
+              {{ t('why_origam.demo.code_note', 'What this identity declares — the rest is inherited from the baseline. Props, not a stylesheet.') }}
+            </p>
+          </origam-grid-item>
+        </origam-grid>
+      </origam-sheet>
+
+      <p class="why-demo__outro">
+        <origam-btn
+          variant="text"
+          append-icon="mdi-arrow-right"
+          href="/theming"
+          data-cy="why-demo-builder"
+        >
+          {{ t('why_origam.demo.cta_builder', 'Build your own identity') }}
+        </origam-btn>
+      </p>
+    </origam-container>
+  </section>
+</template>
+
 <script setup lang="ts">
     import { computed, ref } from 'vue'
 
@@ -92,313 +399,6 @@
         buttons?.[next]?.focus()
     }
 </script>
-
-<template>
-    <section
-        class="why-demo"
-        aria-labelledby="why-demo-title"
-        data-cy="why-demo"
-    >
-        <origam-container>
-            <header class="why-demo__header why-section">
-                <p class="why-section__eyebrow">
-                    {{ t('why_origam.demo.eyebrow', 'SEE IT RUN') }}
-                </p>
-
-                <origam-title
-                    id="why-demo-title"
-                    tag="h2"
-                    class="why-section__title"
-                >
-                    <span class="why-section__title-line">{{ t('why_origam.demo.title_line1', 'One object.') }}</span>
-                    <span class="why-section__title-line why-section__title-line--muted">{{ t('why_origam.demo.title_line2', 'Every identity.') }}</span>
-                </origam-title>
-
-                <p class="why-section__subtitle">
-                    {{ t('why_origam.demo.subtitle', 'The panel on the right is the theme that painted the panel on the left — read from the theme object itself, not retyped. Switch identities and watch both sides move together.') }}
-                </p>
-            </header>
-
-            <origam-sheet
-                tag="div"
-                rounded="lg"
-                border
-                elevation="md"
-                class="why-demo__instrument"
-                data-cy="why-demo-instrument"
-            >
-                <div class="why-demo__toolbar">
-                    <p
-                        id="why-demo-axis-brand"
-                        class="why-demo__axis"
-                    >
-                        {{ t('why_origam.demo.axis_brand', 'Brand') }}
-                    </p>
-
-                    <div
-                        role="radiogroup"
-                        class="why-demo__identities"
-                        aria-labelledby="why-demo-axis-brand"
-                    >
-                        <origam-btn
-                            v-for="(entry, index) in WHY_DEMO_THEMES"
-                            :key="entry.key"
-                            role="radio"
-                            variant="outlined"
-                            size="small"
-                            rounded="pill"
-                            class="why-demo__identity"
-                            :active="entry.key === selectedTheme"
-                            :aria-checked="entry.key === selectedTheme"
-                            :tabindex="entry.key === selectedTheme ? 0 : -1"
-                            :data-cy="`why-demo-identity-${entry.key}`"
-                            @click="selectedTheme = entry.key"
-                            @keydown="moveSelection($event, index)"
-                        >
-                            <origam-theme-provider
-                                tag="span"
-                                :theme="entry.key"
-                                :mode="selectedMode"
-                                class="why-demo__swatch-wrap"
-                            >
-                                <span
-                                    class="why-demo__swatch"
-                                    aria-hidden="true"
-                                />
-                            </origam-theme-provider>
-
-                            {{ t(identityKey(entry.key), entry.themes[0]?.label ?? entry.key) }}
-                        </origam-btn>
-                    </div>
-
-                    <p
-                        id="why-demo-axis-mode"
-                        class="why-demo__axis"
-                    >
-                        {{ t('why_origam.demo.axis_mode', 'Mode') }}
-                    </p>
-
-                    <div
-                        role="radiogroup"
-                        class="why-demo__modes"
-                        aria-labelledby="why-demo-axis-mode"
-                    >
-                        <origam-btn
-                            role="radio"
-                            variant="outlined"
-                            size="small"
-                            rounded="pill"
-                            prepend-icon="mdi-white-balance-sunny"
-                            class="why-demo__mode"
-                            :active="selectedMode === 'light'"
-                            :aria-checked="selectedMode === 'light'"
-                            :tabindex="selectedMode === 'light' ? 0 : -1"
-                            data-cy="why-demo-mode-light"
-                            @click="selectedMode = 'light'"
-                        >
-                            {{ t('why_origam.demo.mode_light', 'Light') }}
-                        </origam-btn>
-
-                        <origam-btn
-                            role="radio"
-                            variant="outlined"
-                            size="small"
-                            rounded="pill"
-                            prepend-icon="mdi-weather-night"
-                            class="why-demo__mode"
-                            :active="selectedMode === 'dark'"
-                            :aria-checked="selectedMode === 'dark'"
-                            :tabindex="selectedMode === 'dark' ? 0 : -1"
-                            data-cy="why-demo-mode-dark"
-                            @click="selectedMode = 'dark'"
-                        >
-                            {{ t('why_origam.demo.mode_dark', 'Dark') }}
-                        </origam-btn>
-                    </div>
-                </div>
-
-                <origam-divider />
-
-                <p
-                    class="why-demo__live"
-                    aria-live="polite"
-                >
-                    {{ t('why_origam.demo.announcement', 'Identity: {name}', { name: activeLabel }) }}
-                </p>
-
-                <origam-grid
-                    tag="div"
-                    columns="repeat(auto-fit, minmax(19rem, 1fr))"
-                    gap="none"
-                    class="why-demo__split"
-                >
-                    <origam-grid-item
-                        tag="div"
-                        class="why-demo__pane why-demo__pane--stage"
-                    >
-                        <p class="why-demo__pane-label">
-                            {{ t('why_origam.demo.pane_render', 'Rendered now') }}
-                        </p>
-
-                        <origam-theme-provider
-                            tag="div"
-                            :theme="selectedTheme"
-                            :mode="selectedMode"
-                            data-cy="why-demo-stage"
-                        >
-                            <!--
-                              The backdrop is a REAL element inside the provider,
-                              not the provider itself: OrigamThemeProvider renders
-                              `display: contents` on purpose ("a provider is not a
-                              surface", OrigamThemeProvider.vue:98), so it draws no
-                              box and any background / border / radius put on it is
-                              silently dropped. Being inside the provider is what
-                              lets it read the selected identity's tokens.
-                            -->
-                            <div class="why-demo__stage">
-                                <origam-sheet
-                                    tag="div"
-                                    class="why-demo__stage-surface"
-                                >
-                                <origam-card
-                                    class="why-demo__card"
-                                    :title="t('why_origam.demo.card_title', 'Release 2.18')"
-                                    :subtitle="t('why_origam.demo.card_subtitle', 'Shipping today')"
-                                    :text="t('why_origam.demo.card_text', 'Not one line of this card is styled by this page. Every radius, border, shadow and tone comes from the identity you picked.')"
-                                >
-                                    <template #header.prepend>
-                                        <!--
-                                          Decorative only — the card title right next to it already
-                                          says "Release 2.18". `OrigamAvatar` renders a plain `<div>`
-                                          with no `role`, so an `aria-label` on it is an INVALID
-                                          ARIA attribute (axe: aria-prohibited-attr, WCAG 4.1.2) — a
-                                          role-less div cannot carry an accessible name. `aria-hidden`
-                                          is the correct treatment here, same as the other purely
-                                          decorative avatars on this page (`why-strengths__avatar`).
-                                        -->
-                                        <origam-avatar
-                                            icon="mdi-shape-outline"
-                                            color="primary"
-                                            class="why-demo__avatar"
-                                            aria-hidden="true"
-                                        />
-                                    </template>
-
-                                    <template #footer>
-                                        <div class="why-demo__controls">
-                                            <origam-btn
-                                                color="primary"
-                                                append-icon="mdi-arrow-right"
-                                                data-cy="why-demo-card-primary"
-                                            >
-                                                {{ t('why_origam.demo.card_cta', 'Deploy') }}
-                                            </origam-btn>
-
-                                            <origam-btn data-cy="why-demo-card-secondary">
-                                                {{ t('why_origam.demo.card_cta_secondary', 'Changelog') }}
-                                            </origam-btn>
-
-                                            <origam-chip data-cy="why-demo-card-chip">
-                                                {{ t('why_origam.demo.card_chip', 'Stable') }}
-                                            </origam-chip>
-
-                                            <!--
-                                              `aria-label`, not the visible
-                                              `label` prop: under identities
-                                              that set `origam-switch:
-                                              { border: true }` (editorial,
-                                              glass, cartoon) the border box
-                                              wraps the track only and the
-                                              label text spills outside it.
-                                              Reported — until it is fixed, a
-                                              visible label here would be a
-                                              rendering defect on 3 of the 8
-                                              identities.
-                                            -->
-                                            <!--
-                                              `hide-details="auto"` : sans
-                                              validation, `OrigamInput` réserve
-                                              quand même sa bande de messages —
-                                              22px (min-height 22 + padding-top
-                                              8) de vide mesurés sous la piste,
-                                              qui portaient le switch à 70px et
-                                              écrasaient toute la rangée. La
-                                              valeur `auto` plutôt que `true` :
-                                              la bande revient d'elle-même si un
-                                              message apparaît un jour, donc pas
-                                              de message avalé en silence.
-                                            -->
-                                            <origam-switch
-                                                v-model="demoSwitch"
-                                                color="primary"
-                                                hide-details="auto"
-                                                :aria-label="t('why_origam.demo.card_switch', 'Auto-update')"
-                                                data-cy="why-demo-card-switch"
-                                            />
-                                        </div>
-
-                                        <!-- Même raison que le switch ci-dessus : ce champ
-                                             ne porte aucune règle de validation, donc la
-                                             bande de messages réservée par défaut ne
-                                             pouvait qu'être vide — c'est elle qu'on voyait
-                                             comme un blanc entre le champ et le bas de la
-                                             carte. -->
-                                        <origam-text-field
-                                            v-model="demoField"
-                                            class="why-demo__field"
-                                            hide-details="auto"
-                                            :label="t('why_origam.demo.card_field_label', 'Release tag')"
-                                            :placeholder="t('why_origam.demo.card_field_placeholder', 'v2.18.4')"
-                                            data-cy="why-demo-card-field"
-                                        />
-                                    </template>
-                                </origam-card>
-                                </origam-sheet>
-                            </div>
-                        </origam-theme-provider>
-
-                        <p class="why-demo__disclaimer">
-                            {{ t('why_origam.demo.disclaimer', 'Live components from the published origam package. Not a screenshot.') }}
-                        </p>
-                    </origam-grid-item>
-
-                    <origam-grid-item
-                        tag="div"
-                        class="why-demo__pane why-demo__pane--code"
-                    >
-                        <p class="why-demo__pane-label">
-                            {{ t('why_origam.demo.pane_code', 'The props that did it') }}
-                        </p>
-
-                        <origam-code
-                            :key="`${selectedTheme}-${selectedMode}`"
-                            lang="ts"
-                            :code="codeExtract"
-                            :wrap="true"
-                            class="why-demo__code"
-                            data-cy="why-demo-code"
-                        />
-
-                        <p class="why-demo__disclaimer">
-                            {{ t('why_origam.demo.code_note', 'What this identity declares — the rest is inherited from the baseline. Props, not a stylesheet.') }}
-                        </p>
-                    </origam-grid-item>
-                </origam-grid>
-            </origam-sheet>
-
-            <p class="why-demo__outro">
-                <origam-btn
-                    variant="text"
-                    append-icon="mdi-arrow-right"
-                    href="/theming"
-                    data-cy="why-demo-builder"
-                >
-                    {{ t('why_origam.demo.cta_builder', 'Build your own identity') }}
-                </origam-btn>
-            </p>
-        </origam-container>
-    </section>
-</template>
 
 <style scoped lang="scss">
     @use '../assets/scss/why-section' as why;

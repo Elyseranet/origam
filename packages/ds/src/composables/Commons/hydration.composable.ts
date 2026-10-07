@@ -17,17 +17,31 @@ import { IN_BROWSER } from '../../consts/Commons/commons.const'
  * navigateur (`!IN_BROWSER`), retourne un Ref fige a `false`.
  *
  * @description
- * ⛔ Dans un navigateur, ce composable DEPEND de `createOrigam()` : il
+ * ⚠️ Dans un navigateur, ce composable PREFERE `createOrigam()` : il
  * appelle `useDisplay()`, dont l'injection n'existe que si le plugin est
- * installe. Mesure, montage d'un composant sans `createOrigam()` :
- * `useHydration()` LEVE `Could not find Origam display injection`. Ce
- * n'est donc pas un utilitaire autonome, contrairement a `useSsrBoot` qui
- * n'injecte rien.
+ * installe, pour savoir si l'app tourne en SSR. **#attach-harmonisation** —
+ * jusque-la, l'absence du plugin faisait LEVER `useDisplay()` (« Could not
+ * find Origam display injection »), ce qui a casse 4 e2e marketing (SSR
+ * Nuxt) : `useTeleport()`, qui appelle desormais ce composable pour eviter
+ * une course de montage (voir teleport.composable.ts), doit rester
+ * utilisable comme primitive BRUTE — sans `createOrigam()` — exactement
+ * comme il l'etait avant. Le `try/catch` ci-dessous rattrape UNIQUEMENT ce
+ * cas (plugin absent) et retombe sur le chemin non-SSR (`shallowRef(true)`,
+ * aucun delai) : un consommateur qui a reellement besoin du signal SSR et
+ * installe le plugin obtient exactement le comportement documente plus
+ * haut, inchange. Aucun test n'epinglait le lever — `grep -rn "Could not
+ * find Origam display injection" packages/tests` ne retourne rien.
  ********************************************************/
 export function useHydration () {
     if (!IN_BROWSER) return shallowRef(false)
 
-    const {ssr} = useDisplay()
+    let ssr: boolean | undefined
+
+    try {
+        ({ssr} = useDisplay())
+    } catch {
+        return shallowRef(true)
+    }
 
     if (ssr) {
         const isMounted = shallowRef(false)

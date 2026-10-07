@@ -1,3 +1,213 @@
+<template>
+  <article
+    class="utils-catalog"
+    data-cy="page-utils"
+  >
+    <section
+      class="utils-hero"
+      aria-labelledby="utils-title"
+    >
+      <origam-container class="utils-hero__inner">
+        <origam-chip
+          class="utils-hero__badge"
+          color="primary"
+          border
+          border-color="var(--origam-color__action--primary---bg)"
+          size="small"
+          pill
+          data-cy="utils-hero-badge"
+        >
+          {{ t('utils.hero.badge', 'Utility helpers — TypeScript') }}
+        </origam-chip>
+
+        <origam-title
+          id="utils-title"
+          tag="h1"
+          class="utils-hero__title"
+        >
+          <span class="utils-hero__title-line">{{ t('utils.hero.title_line1', 'Util') }}</span>
+          <span class="utils-hero__title-line utils-hero__title-line--accent">{{ t('utils.hero.title_line2', 'catalogue.') }}</span>
+        </origam-title>
+
+        <p class="utils-hero__subtitle">
+          {{ t('utils.hero.subtitle', 'Every origam utility helper is documented with its real TypeScript signature, parameters and return value — sourced directly from the DS source code.') }}
+        </p>
+
+        <origam-text-field
+          v-model="searchQuery"
+          class="utils-hero__search"
+          prepend-inner-icon="mdi-magnify"
+          :placeholder="t('utils.hero.search_placeholder', 'Search utils…')"
+          :aria-label="t('utils.hero.search_label', 'Filter utils by name or category')"
+          clearable
+          rounded="lg"
+          variant="outlined"
+          data-cy="utils-search"
+        />
+
+        <p
+          class="utils-hero__count"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <template v-if="isFiltering">
+            {{ filteredCount }} {{ t('utils.hero.count_filtered_of', 'of') }} {{ totalCount }} {{ t('utils.hero.count_filtered_match', 'utils match') }}
+          </template>
+          <template v-else>
+            {{ totalCount }} {{ t('utils.hero.count_total', 'utils across') }} {{ utilsCategories.length }} {{ t('utils.hero.count_categories', 'categories') }}
+          </template>
+        </p>
+      </origam-container>
+    </section>
+
+    <section
+      class="utils-grid-section"
+      aria-labelledby="utils-grid-title"
+      data-cy="utils-grid"
+    >
+      <origam-container>
+        <header class="utils-grid-section__header">
+          <p class="utils-section__eyebrow">
+            {{ t('utils.catalog.eyebrow', 'BROWSE BY CATEGORY') }}
+          </p>
+
+          <origam-title
+            id="utils-grid-title"
+            tag="h2"
+            class="utils-section__title utils-section__title--single"
+          >
+            {{ t('utils.catalog.title', 'All utils.') }}
+          </origam-title>
+        </header>
+
+        <div
+          v-if="isFiltering && filteredCount === 0"
+          class="utils-empty"
+          role="status"
+          data-cy="utils-empty"
+        >
+          <origam-icon
+            icon="mdi-magnify-remove-outline"
+            class="utils-empty__icon"
+            aria-hidden="true"
+          />
+
+          <origam-title
+            tag="h3"
+            class="utils-empty__title"
+          >
+            {{ t('utils.catalog.empty_title', 'No utils found') }}
+          </origam-title>
+
+          <p class="utils-empty__desc">
+            {{ t('utils.catalog.empty_desc', 'No util matches "{query}". Try a different term.', { query: searchQuery }) }}
+          </p>
+        </div>
+
+        <div
+          v-for="group in groupedByCategory"
+          :key="group.category"
+          class="utils-category"
+          :data-cy="`utils-category-${group.category.toLowerCase().replace(/[^a-z0-9]/g, '-')}`"
+        >
+          <header class="utils-category__header">
+            <origam-title
+              tag="h3"
+              class="utils-category__title"
+            >
+              {{ group.category }}
+            </origam-title>
+
+            <origam-chip
+              size="small"
+              pill
+              class="utils-category__count-chip"
+            >
+              {{ group.entries.length }}
+            </origam-chip>
+          </header>
+
+          <origam-grid
+            tag="ul"
+            columns="repeat(auto-fill, minmax(240px, 1fr))"
+            gap="1rem"
+            class="utils-category__grid"
+          >
+            <origam-grid-item
+              v-for="entry in group.entries"
+              :key="entry.slug"
+              tag="li"
+              class="utils-catalog-item"
+            >
+              <nuxt-link
+                :to="`/utils/${entry.slug}`"
+                class="utils-catalog-card__link"
+                :aria-label="`${entry.name} — ${entry.descriptionFallback}`"
+                :data-cy="`utils-card-${entry.slug}`"
+              >
+                <origam-card
+                  rounded="lg"
+                  class="utils-catalog-card"
+                >
+                  <template #default>
+                    <div class="utils-catalog-card__inner">
+                      <div class="utils-catalog-card__header">
+                        <origam-avatar
+                          :icon="entry.icon"
+                          color="primary"
+                          rounded="lg"
+                          size="40"
+                          class="utils-catalog-card__avatar"
+                          aria-hidden="true"
+                        />
+
+                        <origam-title
+                          tag="h4"
+                          class="utils-catalog-card__name"
+                        >
+                          {{ entry.name }}
+                        </origam-title>
+                      </div>
+
+                      <p class="utils-catalog-card__desc">
+                        {{ entry.descriptionFallback }}
+                      </p>
+
+                      <div
+                        v-if="entry.related.length > 0"
+                        class="utils-catalog-card__related-tags"
+                      >
+                        <origam-chip
+                          v-for="relSlug in entry.related.slice(0, 2)"
+                          :key="relSlug"
+                          size="x-small"
+                          pill
+                          class="utils-catalog-card__related-chip"
+                        >
+                          {{ relSlug }}
+                        </origam-chip>
+
+                        <origam-chip
+                          v-if="entry.related.length > 2"
+                          size="x-small"
+                          pill
+                          class="utils-catalog-card__related-chip utils-catalog-card__related-chip--more"
+                        >
+                          +{{ entry.related.length - 2 }}
+                        </origam-chip>
+                      </div>
+                    </div>
+                  </template>
+                </origam-card>
+              </nuxt-link>
+            </origam-grid-item>
+          </origam-grid>
+        </div>
+      </origam-container>
+    </section>
+  </article>
+</template>
+
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useT } from '~/composables/useT'
@@ -44,216 +254,6 @@ const totalCount = computed(() => utilsCatalog.value.length)
 const filteredCount = computed(() => filteredEntries.value.length)
 const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 </script>
-
-<template>
-    <article
-        class="utils-catalog"
-        data-cy="page-utils"
-    >
-        <section
-            class="utils-hero"
-            aria-labelledby="utils-title"
-        >
-            <origam-container class="utils-hero__inner">
-                <origam-chip
-                    class="utils-hero__badge"
-                    color="primary"
-                    border
-                    border-color="var(--origam-color__action--primary---bg)"
-                    size="small"
-                    pill
-                    data-cy="utils-hero-badge"
-                >
-                    {{ t('utils.hero.badge', 'Utility helpers — TypeScript') }}
-                </origam-chip>
-
-                <origam-title
-                    id="utils-title"
-                    tag="h1"
-                    class="utils-hero__title"
-                >
-                    <span class="utils-hero__title-line">{{ t('utils.hero.title_line1', 'Util') }}</span>
-                    <span class="utils-hero__title-line utils-hero__title-line--accent">{{ t('utils.hero.title_line2', 'catalogue.') }}</span>
-                </origam-title>
-
-                <p class="utils-hero__subtitle">
-                    {{ t('utils.hero.subtitle', 'Every origam utility helper is documented with its real TypeScript signature, parameters and return value — sourced directly from the DS source code.') }}
-                </p>
-
-                <origam-text-field
-                    v-model="searchQuery"
-                    class="utils-hero__search"
-                    prepend-inner-icon="mdi-magnify"
-                    :placeholder="t('utils.hero.search_placeholder', 'Search utils…')"
-                    :aria-label="t('utils.hero.search_label', 'Filter utils by name or category')"
-                    clearable
-                    rounded="lg"
-                    variant="outlined"
-                    data-cy="utils-search"
-                />
-
-                <p
-                    class="utils-hero__count"
-                    aria-live="polite"
-                    aria-atomic="true"
-                >
-                    <template v-if="isFiltering">
-                        {{ filteredCount }} {{ t('utils.hero.count_filtered_of', 'of') }} {{ totalCount }} {{ t('utils.hero.count_filtered_match', 'utils match') }}
-                    </template>
-                    <template v-else>
-                        {{ totalCount }} {{ t('utils.hero.count_total', 'utils across') }} {{ utilsCategories.length }} {{ t('utils.hero.count_categories', 'categories') }}
-                    </template>
-                </p>
-            </origam-container>
-        </section>
-
-        <section
-            class="utils-grid-section"
-            aria-labelledby="utils-grid-title"
-            data-cy="utils-grid"
-        >
-            <origam-container>
-                <header class="utils-grid-section__header">
-                    <p class="utils-section__eyebrow">
-                        {{ t('utils.catalog.eyebrow', 'BROWSE BY CATEGORY') }}
-                    </p>
-
-                    <origam-title
-                        id="utils-grid-title"
-                        tag="h2"
-                        class="utils-section__title utils-section__title--single"
-                    >
-                        {{ t('utils.catalog.title', 'All utils.') }}
-                    </origam-title>
-                </header>
-
-                <div
-                    v-if="isFiltering && filteredCount === 0"
-                    class="utils-empty"
-                    role="status"
-                    data-cy="utils-empty"
-                >
-                    <origam-icon
-                        icon="mdi-magnify-remove-outline"
-                        class="utils-empty__icon"
-                        aria-hidden="true"
-                    />
-
-                    <origam-title
-                        tag="h3"
-                        class="utils-empty__title"
-                    >
-                        {{ t('utils.catalog.empty_title', 'No utils found') }}
-                    </origam-title>
-
-                    <p class="utils-empty__desc">
-                        {{ t('utils.catalog.empty_desc', 'No util matches "{query}". Try a different term.', { query: searchQuery }) }}
-                    </p>
-                </div>
-
-                <div
-                    v-for="group in groupedByCategory"
-                    :key="group.category"
-                    class="utils-category"
-                    :data-cy="`utils-category-${group.category.toLowerCase().replace(/[^a-z0-9]/g, '-')}`"
-                >
-                    <header class="utils-category__header">
-                        <origam-title
-                            tag="h3"
-                            class="utils-category__title"
-                        >
-                            {{ group.category }}
-                        </origam-title>
-
-                        <origam-chip
-                            size="small"
-                            pill
-                            class="utils-category__count-chip"
-                        >
-                            {{ group.entries.length }}
-                        </origam-chip>
-                    </header>
-
-                    <origam-grid
-                        tag="ul"
-                        columns="repeat(auto-fill, minmax(240px, 1fr))"
-                        gap="1rem"
-                        class="utils-category__grid"
-                    >
-                        <origam-grid-item
-                            v-for="entry in group.entries"
-                            :key="entry.slug"
-                            tag="li"
-                            class="utils-catalog-item"
-                        >
-                            <nuxt-link
-                                :to="`/utils/${entry.slug}`"
-                                class="utils-catalog-card__link"
-                                :aria-label="`${entry.name} — ${entry.descriptionFallback}`"
-                                :data-cy="`utils-card-${entry.slug}`"
-                            >
-                                <origam-card
-                                    rounded="lg"
-                                    class="utils-catalog-card"
-                                >
-                                    <template #default>
-                                        <div class="utils-catalog-card__inner">
-                                            <div class="utils-catalog-card__header">
-                                                <origam-avatar
-                                                    :icon="entry.icon"
-                                                    color="primary"
-                                                    rounded="lg"
-                                                    size="40"
-                                                    class="utils-catalog-card__avatar"
-                                                    aria-hidden="true"
-                                                />
-
-                                                <origam-title
-                                                    tag="h4"
-                                                    class="utils-catalog-card__name"
-                                                >
-                                                    {{ entry.name }}
-                                                </origam-title>
-                                            </div>
-
-                                            <p class="utils-catalog-card__desc">
-                                                {{ entry.descriptionFallback }}
-                                            </p>
-
-                                            <div
-                                                v-if="entry.related.length > 0"
-                                                class="utils-catalog-card__related-tags"
-                                            >
-                                                <origam-chip
-                                                    v-for="relSlug in entry.related.slice(0, 2)"
-                                                    :key="relSlug"
-                                                    size="x-small"
-                                                    pill
-                                                    class="utils-catalog-card__related-chip"
-                                                >
-                                                    {{ relSlug }}
-                                                </origam-chip>
-
-                                                <origam-chip
-                                                    v-if="entry.related.length > 2"
-                                                    size="x-small"
-                                                    pill
-                                                    class="utils-catalog-card__related-chip utils-catalog-card__related-chip--more"
-                                                >
-                                                    +{{ entry.related.length - 2 }}
-                                                </origam-chip>
-                                            </div>
-                                        </div>
-                                    </template>
-                                </origam-card>
-                            </nuxt-link>
-                        </origam-grid-item>
-                    </origam-grid>
-                </div>
-            </origam-container>
-        </section>
-    </article>
-</template>
 
 <style scoped lang="scss">
 .utils-catalog {

@@ -1,3 +1,240 @@
+<template>
+  <article
+    class="changelog"
+    data-cy="page-changelog"
+  >
+    <section
+      class="changelog-hero"
+      aria-labelledby="changelog-title"
+    >
+      <origam-container class="changelog-hero__inner">
+        <origam-chip
+          class="changelog-hero__badge"
+          color="primary"
+          border
+          border-color="var(--origam-color__action--primary---bg)"
+          size="small"
+          pill
+          data-cy="changelog-hero-badge"
+        >
+          {{ t('changelog.hero.badge', 'Changelog') }}
+        </origam-chip>
+
+        <origam-title
+          id="changelog-title"
+          tag="h1"
+          class="changelog-hero__title"
+        >
+          <span class="changelog-hero__title-line">{{ t('changelog.hero.title_line1', 'Changelog.') }}</span>
+          <span class="changelog-hero__title-line changelog-hero__title-line--accent">{{ t('changelog.hero.title_line2', 'Every release.') }}</span>
+        </origam-title>
+
+        <p class="changelog-hero__subtitle">
+          {{ t('changelog.hero.subtitle', 'A curated overview of what shipped in each version of origam. Dates are release dates; the full diff lives on GitHub.') }}
+        </p>
+
+        <nav
+          class="changelog-hero__actions"
+          :aria-label="t('changelog.hero.actions_label', 'Changelog links')"
+        >
+          <origam-btn
+            class="changelog-hero__cta"
+            variant="text"
+            prepend-icon="mdi-file-document-outline"
+            :href="fullChangelogHref"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-cy="changelog-full-link"
+          >
+            {{ t('changelog.hero.full_changelog', 'Full changelog on GitHub') }}
+          </origam-btn>
+        </nav>
+      </origam-container>
+    </section>
+
+    <section
+      class="changelog-list"
+      aria-labelledby="changelog-versions-title"
+      data-cy="changelog-versions"
+    >
+      <origam-container>
+        <header class="changelog-list__header">
+          <p class="changelog-section__eyebrow">
+            {{ t('changelog.list.eyebrow', 'RELEASE HISTORY') }}
+          </p>
+
+          <origam-title
+            id="changelog-versions-title"
+            tag="h2"
+            class="changelog-section__title"
+          >
+            <span class="changelog-section__title-line">{{ t('changelog.list.title_line1', 'All versions.') }}</span>
+            <span class="changelog-section__title-line changelog-section__title-line--muted">{{ t('changelog.list.title_line2', 'Curated.') }}</span>
+          </origam-title>
+
+          <p class="changelog-section__subtitle">
+            {{ t('changelog.list.subtitle', 'Pick a release to see exactly what shipped — the summary plus its key highlights.') }}
+          </p>
+        </header>
+
+        <div class="changelog-release">
+          <div class="changelog-release__control">
+            <origam-select
+              v-model="selectedVersion"
+              :items="versionSelectItems"
+              item-title="title"
+              item-value="value"
+              :label="t('changelog.select.label', 'Select a version')"
+              rounded="lg"
+              prepend-inner-icon="mdi-tag-outline"
+              class="changelog-release__select"
+              data-cy="changelog-version-select"
+            />
+          </div>
+
+          <article
+            :key="currentVersion.version"
+            class="changelog-release__card"
+            data-cy="changelog-release-card"
+          >
+            <header class="changelog-release__head">
+              <div class="changelog-release__head-main">
+                <origam-title
+                  tag="h3"
+                  class="changelog-release__version"
+                >
+                  {{ currentVersionLabel }}
+                </origam-title>
+
+                <origam-chip
+                  :color="typeColor(currentVersion.type)"
+                  size="small"
+                  pill
+                  class="changelog-release__type"
+                >
+                  {{ typeLabel(currentVersion.type) }}
+                </origam-chip>
+              </div>
+
+              <p
+                v-if="currentVersion.date"
+                class="changelog-release__date"
+              >
+                <time :datetime="currentVersion.date">{{ currentVersion.date }}</time>
+              </p>
+              <p
+                v-else
+                class="changelog-release__date changelog-release__date--unreleased"
+              >
+                {{ t('changelog.unreleased.label', 'Not yet released') }}
+              </p>
+            </header>
+
+            <p class="changelog-release__summary">
+              {{ t(currentVersion.summaryKey, currentVersion.summaryFallback) }}
+            </p>
+
+            <origam-grid
+              tag="ul"
+              columns="1"
+              gap="0.75rem"
+              class="changelog-release__highlights"
+              :aria-label="t('changelog.aria.highlights', 'Release highlights')"
+            >
+              <origam-grid-item
+                v-for="highlight in currentVersion.highlights"
+                :key="highlight.textKey"
+                tag="li"
+                class="changelog-release__highlight"
+              >
+                <origam-chip
+                  :color="highlightColor(highlight.type)"
+                  size="x-small"
+                  pill
+                  class="changelog-release__highlight-badge"
+                  :prepend-icon="highlightIcon(highlight.type)"
+                >
+                  {{ highlightTypeLabel(highlight.type) }}
+                </origam-chip>
+
+                <span class="changelog-release__highlight-text">
+                                    {{ t(highlight.textKey, highlight.textFallback) }}
+                                </span>
+              </origam-grid-item>
+            </origam-grid>
+
+            <nav
+              class="changelog-release__footer"
+              :aria-label="t('changelog.aria.version_links', 'Version links')"
+            >
+              <origam-btn
+                variant="text"
+                size="small"
+                prepend-icon="mdi-open-in-new"
+                :href="fullChangelogHref"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="changelog-release__full-link"
+              >
+                {{ t('changelog.panel.full_link', 'Full changelog on GitHub') }}
+              </origam-btn>
+            </nav>
+          </article>
+        </div>
+      </origam-container>
+    </section>
+
+    <section
+      class="changelog-cta"
+      aria-labelledby="changelog-cta-title"
+      data-cy="changelog-cta"
+    >
+      <div class="changelog-cta__inner">
+        <origam-title
+          id="changelog-cta-title"
+          tag="h2"
+          class="changelog-cta__title"
+        >
+          {{ t('changelog.cta.title', 'Stay in the loop.') }}
+        </origam-title>
+
+        <p class="changelog-cta__desc">
+          {{ t('changelog.cta.description', 'Watch the repository on GitHub to be notified of every new release.') }}
+        </p>
+
+        <nav
+          class="changelog-cta__actions"
+          :aria-label="t('changelog.cta.actions_label', 'Follow origam')"
+        >
+          <origam-btn
+            class="changelog-cta__btn changelog-cta__btn--primary"
+            variant="text"
+            prepend-icon="mdi-github"
+            :href="MARKETING_DEFAULTS.githubRepo"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-cy="changelog-cta-github"
+          >
+            {{ t('changelog.cta.cta_github', 'Star on GitHub') }}
+          </origam-btn>
+
+          <origam-btn
+            class="changelog-cta__btn changelog-cta__btn--secondary"
+            variant="text"
+            prepend-icon="mdi-file-document-outline"
+            :href="fullChangelogHref"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-cy="changelog-cta-fulllog"
+          >
+            {{ t('changelog.cta.cta_fulllog', 'Read full CHANGELOG') }}
+          </origam-btn>
+        </nav>
+      </div>
+    </section>
+  </article>
+</template>
+
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useT } from '~/composables/useT'
@@ -75,243 +312,6 @@ const currentVersionLabel = computed(() =>
         : currentVersion.value.version
 )
 </script>
-
-<template>
-    <article
-        class="changelog"
-        data-cy="page-changelog"
-    >
-        <section
-            class="changelog-hero"
-            aria-labelledby="changelog-title"
-        >
-            <origam-container class="changelog-hero__inner">
-                <origam-chip
-                    class="changelog-hero__badge"
-                    color="primary"
-                    border
-                    border-color="var(--origam-color__action--primary---bg)"
-                    size="small"
-                    pill
-                    data-cy="changelog-hero-badge"
-                >
-                    {{ t('changelog.hero.badge', 'Changelog') }}
-                </origam-chip>
-
-                <origam-title
-                    id="changelog-title"
-                    tag="h1"
-                    class="changelog-hero__title"
-                >
-                    <span class="changelog-hero__title-line">{{ t('changelog.hero.title_line1', 'Changelog.') }}</span>
-                    <span class="changelog-hero__title-line changelog-hero__title-line--accent">{{ t('changelog.hero.title_line2', 'Every release.') }}</span>
-                </origam-title>
-
-                <p class="changelog-hero__subtitle">
-                    {{ t('changelog.hero.subtitle', 'A curated overview of what shipped in each version of origam. Dates are release dates; the full diff lives on GitHub.') }}
-                </p>
-
-                <nav
-                    class="changelog-hero__actions"
-                    :aria-label="t('changelog.hero.actions_label', 'Changelog links')"
-                >
-                    <origam-btn
-                        class="changelog-hero__cta"
-                        variant="text"
-                        prepend-icon="mdi-file-document-outline"
-                        :href="fullChangelogHref"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        data-cy="changelog-full-link"
-                    >
-                        {{ t('changelog.hero.full_changelog', 'Full changelog on GitHub') }}
-                    </origam-btn>
-                </nav>
-            </origam-container>
-        </section>
-
-        <section
-            class="changelog-list"
-            aria-labelledby="changelog-versions-title"
-            data-cy="changelog-versions"
-        >
-            <origam-container>
-                <header class="changelog-list__header">
-                    <p class="changelog-section__eyebrow">
-                        {{ t('changelog.list.eyebrow', 'RELEASE HISTORY') }}
-                    </p>
-
-                    <origam-title
-                        id="changelog-versions-title"
-                        tag="h2"
-                        class="changelog-section__title"
-                    >
-                        <span class="changelog-section__title-line">{{ t('changelog.list.title_line1', 'All versions.') }}</span>
-                        <span class="changelog-section__title-line changelog-section__title-line--muted">{{ t('changelog.list.title_line2', 'Curated.') }}</span>
-                    </origam-title>
-
-                    <p class="changelog-section__subtitle">
-                        {{ t('changelog.list.subtitle', 'Pick a release to see exactly what shipped — the summary plus its key highlights.') }}
-                    </p>
-                </header>
-
-                <div class="changelog-release">
-                    <div class="changelog-release__control">
-                        <origam-select
-                            v-model="selectedVersion"
-                            :items="versionSelectItems"
-                            item-title="title"
-                            item-value="value"
-                            :label="t('changelog.select.label', 'Select a version')"
-                            rounded="lg"
-                            prepend-inner-icon="mdi-tag-outline"
-                            class="changelog-release__select"
-                            data-cy="changelog-version-select"
-                        />
-                    </div>
-
-                    <article
-                        :key="currentVersion.version"
-                        class="changelog-release__card"
-                        data-cy="changelog-release-card"
-                    >
-                        <header class="changelog-release__head">
-                            <div class="changelog-release__head-main">
-                                <origam-title
-                                    tag="h3"
-                                    class="changelog-release__version"
-                                >
-                                    {{ currentVersionLabel }}
-                                </origam-title>
-
-                                <origam-chip
-                                    :color="typeColor(currentVersion.type)"
-                                    size="small"
-                                    pill
-                                    class="changelog-release__type"
-                                >
-                                    {{ typeLabel(currentVersion.type) }}
-                                </origam-chip>
-                            </div>
-
-                            <p
-                                v-if="currentVersion.date"
-                                class="changelog-release__date"
-                            >
-                                <time :datetime="currentVersion.date">{{ currentVersion.date }}</time>
-                            </p>
-                            <p
-                                v-else
-                                class="changelog-release__date changelog-release__date--unreleased"
-                            >
-                                {{ t('changelog.unreleased.label', 'Not yet released') }}
-                            </p>
-                        </header>
-
-                        <p class="changelog-release__summary">
-                            {{ t(currentVersion.summaryKey, currentVersion.summaryFallback) }}
-                        </p>
-
-                        <origam-grid
-                            tag="ul"
-                            columns="1"
-                            gap="0.75rem"
-                            class="changelog-release__highlights"
-                            :aria-label="t('changelog.aria.highlights', 'Release highlights')"
-                        >
-                            <origam-grid-item
-                                v-for="highlight in currentVersion.highlights"
-                                :key="highlight.textKey"
-                                tag="li"
-                                class="changelog-release__highlight"
-                            >
-                                <origam-chip
-                                    :color="highlightColor(highlight.type)"
-                                    size="x-small"
-                                    pill
-                                    class="changelog-release__highlight-badge"
-                                    :prepend-icon="highlightIcon(highlight.type)"
-                                >
-                                    {{ highlightTypeLabel(highlight.type) }}
-                                </origam-chip>
-
-                                <span class="changelog-release__highlight-text">
-                                    {{ t(highlight.textKey, highlight.textFallback) }}
-                                </span>
-                            </origam-grid-item>
-                        </origam-grid>
-
-                        <nav
-                            class="changelog-release__footer"
-                            :aria-label="t('changelog.aria.version_links', 'Version links')"
-                        >
-                            <origam-btn
-                                variant="text"
-                                size="small"
-                                prepend-icon="mdi-open-in-new"
-                                :href="fullChangelogHref"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="changelog-release__full-link"
-                            >
-                                {{ t('changelog.panel.full_link', 'Full changelog on GitHub') }}
-                            </origam-btn>
-                        </nav>
-                    </article>
-                </div>
-            </origam-container>
-        </section>
-
-        <section
-            class="changelog-cta"
-            aria-labelledby="changelog-cta-title"
-            data-cy="changelog-cta"
-        >
-            <div class="changelog-cta__inner">
-                <origam-title
-                    id="changelog-cta-title"
-                    tag="h2"
-                    class="changelog-cta__title"
-                >
-                    {{ t('changelog.cta.title', 'Stay in the loop.') }}
-                </origam-title>
-
-                <p class="changelog-cta__desc">
-                    {{ t('changelog.cta.description', 'Watch the repository on GitHub to be notified of every new release.') }}
-                </p>
-
-                <nav
-                    class="changelog-cta__actions"
-                    :aria-label="t('changelog.cta.actions_label', 'Follow origam')"
-                >
-                    <origam-btn
-                        class="changelog-cta__btn changelog-cta__btn--primary"
-                        variant="text"
-                        prepend-icon="mdi-github"
-                        :href="MARKETING_DEFAULTS.githubRepo"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        data-cy="changelog-cta-github"
-                    >
-                        {{ t('changelog.cta.cta_github', 'Star on GitHub') }}
-                    </origam-btn>
-
-                    <origam-btn
-                        class="changelog-cta__btn changelog-cta__btn--secondary"
-                        variant="text"
-                        prepend-icon="mdi-file-document-outline"
-                        :href="fullChangelogHref"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        data-cy="changelog-cta-fulllog"
-                    >
-                        {{ t('changelog.cta.cta_fulllog', 'Read full CHANGELOG') }}
-                    </origam-btn>
-                </nav>
-            </div>
-        </section>
-    </article>
-</template>
 
 <style scoped lang="scss">
 .changelog {

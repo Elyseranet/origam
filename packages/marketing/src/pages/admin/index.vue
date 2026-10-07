@@ -1,3 +1,66 @@
+<template>
+  <div class="admin-login">
+    <origam-card
+      class="admin-login__card"
+      rounded="xl"
+      elevation="md"
+    >
+      <template #default>
+        <div class="admin-login__inner">
+          <div class="admin-login__header">
+            <origam-icon
+              :icon="MDI_ICONS.SHIELD"
+              class="admin-login__icon"
+              aria-hidden="true"
+            />
+
+            <origam-title
+              tag="h1"
+              class="admin-login__title"
+            >
+              {{ t('admin.login.title', 'Admin area') }}
+            </origam-title>
+
+            <p class="admin-login__subtitle">
+              {{ t('admin.login.subtitle', 'Enter the admin password to access the backoffice.') }}
+            </p>
+          </div>
+
+          <origam-form
+            class="admin-login__form"
+            :aria-label="t('admin.login.a11y_form', 'Admin login form')"
+            @submit.prevent="handleSubmit"
+          >
+            <origam-password-field
+              v-model="password"
+              :label="t('admin.login.password_label', 'Password')"
+              :placeholder="t('admin.login.password_placeholder', 'Admin password')"
+              variant="outlined"
+              autofocus
+              :disabled="loading"
+              :error="!!errorMessage"
+              :error-messages="errorMessage ? [errorMessage] : []"
+              data-cy="admin-password"
+            />
+
+            <origam-btn
+              type="submit"
+              color="primary"
+              variant="elevated"
+              block
+              :loading="loading"
+              :disabled="!password.trim()"
+              data-cy="admin-login-submit"
+            >
+              {{ t('admin.login.submit', 'Sign in') }}
+            </origam-btn>
+          </origam-form>
+        </div>
+      </template>
+    </origam-card>
+  </div>
+</template>
+
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { MDI_ICONS } from 'origam/enums'
@@ -48,69 +111,6 @@ async function handleSubmit () {
     }
 }
 </script>
-
-<template>
-    <div class="admin-login">
-        <origam-card
-            class="admin-login__card"
-            rounded="xl"
-            elevation="md"
-        >
-            <template #default>
-                <div class="admin-login__inner">
-                    <div class="admin-login__header">
-                        <origam-icon
-                            :icon="MDI_ICONS.SHIELD"
-                            class="admin-login__icon"
-                            aria-hidden="true"
-                        />
-
-                        <origam-title
-                            tag="h1"
-                            class="admin-login__title"
-                        >
-                            {{ t('admin.login.title', 'Admin area') }}
-                        </origam-title>
-
-                        <p class="admin-login__subtitle">
-                            {{ t('admin.login.subtitle', 'Enter the admin password to access the backoffice.') }}
-                        </p>
-                    </div>
-
-                    <origam-form
-                        class="admin-login__form"
-                        :aria-label="t('admin.login.a11y_form', 'Admin login form')"
-                        @submit.prevent="handleSubmit"
-                    >
-                        <origam-password-field
-                            v-model="password"
-                            :label="t('admin.login.password_label', 'Password')"
-                            :placeholder="t('admin.login.password_placeholder', 'Admin password')"
-                            variant="outlined"
-                            autofocus
-                            :disabled="loading"
-                            :error="!!errorMessage"
-                            :error-messages="errorMessage ? [errorMessage] : []"
-                            data-cy="admin-password"
-                        />
-
-                        <origam-btn
-                            type="submit"
-                            color="primary"
-                            variant="elevated"
-                            block
-                            :loading="loading"
-                            :disabled="!password.trim()"
-                            data-cy="admin-login-submit"
-                        >
-                            {{ t('admin.login.submit', 'Sign in') }}
-                        </origam-btn>
-                    </origam-form>
-                </div>
-            </template>
-        </origam-card>
-    </div>
-</template>
 
 <style scoped lang="scss">
 .admin-login {

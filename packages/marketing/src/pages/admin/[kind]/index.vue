@@ -1,3 +1,130 @@
+<template>
+  <article
+    class="admin-list"
+    :data-cy="`admin-list-${kind}`"
+  >
+    <header class="admin-list__header">
+      <div class="admin-list__heading">
+        <origam-title
+          tag="h1"
+          class="admin-list__title"
+        >
+          {{ kindLabel }}
+        </origam-title>
+
+        <origam-chip
+          size="small"
+          pill
+          class="admin-list__count"
+        >
+          {{ filteredEntries.length }}
+        </origam-chip>
+      </div>
+
+      <origam-text-field
+        v-model="searchQuery"
+        class="admin-list__search"
+        :prepend-inner-icon="MDI_ICONS.MAGNIFY"
+        :placeholder="t('admin.list.search_placeholder', 'Search…')"
+        :aria-label="t('admin.list.search_label', 'Filter entries')"
+        clearable
+        rounded="lg"
+        variant="outlined"
+        density="compact"
+        data-cy="admin-list-search"
+      />
+    </header>
+
+    <div
+      v-if="status === 'pending'"
+      class="admin-list__loading"
+      role="status"
+      :aria-label="t('admin.list.loading', 'Loading…')"
+    >
+      <origam-progress-linear
+        indeterminate
+        color="primary"
+      />
+    </div>
+
+    <div
+      v-else-if="filteredEntries.length === 0"
+      class="admin-list__empty"
+      role="status"
+    >
+      <p class="admin-list__empty-text">
+        {{ t('admin.list.empty', 'No entries found.') }}
+      </p>
+    </div>
+
+    <origam-data-table
+      v-else
+      :headers="headers"
+      :items="filteredEntries"
+      item-value="slug"
+      class="admin-list__table"
+      data-cy="admin-list-table"
+    >
+      <template #item.name="{ item }">
+        <span class="admin-list__cell-name">{{ item.name }}</span>
+      </template>
+
+      <template #item.category="{ item }">
+        <origam-chip
+          v-if="item.category"
+          size="x-small"
+          pill
+          class="admin-list__category-chip"
+        >
+          {{ item.category }}
+        </origam-chip>
+        <span
+          v-else
+          class="admin-list__cell-empty"
+        >—</span>
+      </template>
+
+      <template #item.icon="{ item }">
+        <origam-icon
+          v-if="item.icon"
+          :icon="item.icon"
+          size="20"
+          aria-hidden="true"
+          class="admin-list__icon-preview"
+        />
+        <span
+          v-else
+          class="admin-list__cell-empty"
+        >—</span>
+      </template>
+
+      <template #item.edited="{ item }">
+        <origam-chip
+          v-if="item.editedByUser"
+          size="x-small"
+          color="primary"
+          pill
+        >
+          {{ t('admin.list.edited_badge', 'Edited') }}
+        </origam-chip>
+      </template>
+
+      <template #item.actions="{ item }">
+        <origam-btn
+          variant="text"
+          :prepend-icon="MDI_ICONS.PENCIL"
+          size="small"
+          :to="`/admin/${kind}/${item.slug}`"
+          :aria-label="`${t('admin.list.edit_action', 'Edit')} ${item.name}`"
+          :data-cy="`admin-list-edit-${item.slug}`"
+        >
+          {{ t('admin.list.edit_action', 'Edit') }}
+        </origam-btn>
+      </template>
+    </origam-data-table>
+  </article>
+</template>
+
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { MDI_ICONS } from 'origam/enums'
@@ -53,133 +180,6 @@ const headers = computed(() => [
     { key: 'actions', title: '', sortable: false },
 ])
 </script>
-
-<template>
-    <article
-        class="admin-list"
-        :data-cy="`admin-list-${kind}`"
-    >
-        <header class="admin-list__header">
-            <div class="admin-list__heading">
-                <origam-title
-                    tag="h1"
-                    class="admin-list__title"
-                >
-                    {{ kindLabel }}
-                </origam-title>
-
-                <origam-chip
-                    size="small"
-                    pill
-                    class="admin-list__count"
-                >
-                    {{ filteredEntries.length }}
-                </origam-chip>
-            </div>
-
-            <origam-text-field
-                v-model="searchQuery"
-                class="admin-list__search"
-                :prepend-inner-icon="MDI_ICONS.MAGNIFY"
-                :placeholder="t('admin.list.search_placeholder', 'Search…')"
-                :aria-label="t('admin.list.search_label', 'Filter entries')"
-                clearable
-                rounded="lg"
-                variant="outlined"
-                density="compact"
-                data-cy="admin-list-search"
-            />
-        </header>
-
-        <div
-            v-if="status === 'pending'"
-            class="admin-list__loading"
-            role="status"
-            :aria-label="t('admin.list.loading', 'Loading…')"
-        >
-            <origam-progress-linear
-                indeterminate
-                color="primary"
-            />
-        </div>
-
-        <div
-            v-else-if="filteredEntries.length === 0"
-            class="admin-list__empty"
-            role="status"
-        >
-            <p class="admin-list__empty-text">
-                {{ t('admin.list.empty', 'No entries found.') }}
-            </p>
-        </div>
-
-        <origam-data-table
-            v-else
-            :headers="headers"
-            :items="filteredEntries"
-            item-value="slug"
-            class="admin-list__table"
-            data-cy="admin-list-table"
-        >
-            <template #item.name="{ item }">
-                <span class="admin-list__cell-name">{{ item.name }}</span>
-            </template>
-
-            <template #item.category="{ item }">
-                <origam-chip
-                    v-if="item.category"
-                    size="x-small"
-                    pill
-                    class="admin-list__category-chip"
-                >
-                    {{ item.category }}
-                </origam-chip>
-                <span
-                    v-else
-                    class="admin-list__cell-empty"
-                >—</span>
-            </template>
-
-            <template #item.icon="{ item }">
-                <origam-icon
-                    v-if="item.icon"
-                    :icon="item.icon"
-                    size="20"
-                    aria-hidden="true"
-                    class="admin-list__icon-preview"
-                />
-                <span
-                    v-else
-                    class="admin-list__cell-empty"
-                >—</span>
-            </template>
-
-            <template #item.edited="{ item }">
-                <origam-chip
-                    v-if="item.editedByUser"
-                    size="x-small"
-                    color="primary"
-                    pill
-                >
-                    {{ t('admin.list.edited_badge', 'Edited') }}
-                </origam-chip>
-            </template>
-
-            <template #item.actions="{ item }">
-                <origam-btn
-                    variant="text"
-                    :prepend-icon="MDI_ICONS.PENCIL"
-                    size="small"
-                    :to="`/admin/${kind}/${item.slug}`"
-                    :aria-label="`${t('admin.list.edit_action', 'Edit')} ${item.name}`"
-                    :data-cy="`admin-list-edit-${item.slug}`"
-                >
-                    {{ t('admin.list.edit_action', 'Edit') }}
-                </origam-btn>
-            </template>
-        </origam-data-table>
-    </article>
-</template>
 
 <style scoped lang="scss">
 .admin-list {

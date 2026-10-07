@@ -1,3 +1,200 @@
+<template>
+  <article
+    class="consts-catalog"
+    data-cy="page-consts"
+  >
+    <section
+      class="consts-hero"
+      aria-labelledby="consts-title"
+    >
+      <origam-container class="consts-hero__inner">
+        <origam-chip
+          class="consts-hero__badge"
+          color="primary"
+          border
+          border-color="var(--origam-color__action--primary---bg)"
+          size="small"
+          pill
+          data-cy="consts-hero-badge"
+        >
+          {{ t('consts.hero.badge', 'Exported constants') }}
+        </origam-chip>
+
+        <origam-title
+          id="consts-title"
+          tag="h1"
+          class="consts-hero__title"
+        >
+          <span class="consts-hero__title-line">{{ t('consts.hero.title_line1', 'API') }}</span>
+          <span class="consts-hero__title-line consts-hero__title-line--accent">{{ t('consts.hero.title_line2', 'constants.') }}</span>
+        </origam-title>
+
+        <p class="consts-hero__subtitle">
+          {{ t('consts.hero.subtitle', 'Every SCREAMING_SNAKE_CASE constant exported by origam. Fully documented with definitions, values and cross-references to the parts of the DS that use them.') }}
+        </p>
+
+        <origam-text-field
+          v-model="searchQuery"
+          class="consts-hero__search"
+          prepend-inner-icon="mdi-magnify"
+          :placeholder="t('consts.hero.search_placeholder', 'Search constants…')"
+          :aria-label="t('consts.hero.search_label', 'Filter constants by name or category')"
+          clearable
+          rounded="lg"
+          variant="outlined"
+          data-cy="consts-search"
+        />
+
+        <p
+          class="consts-hero__count"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <template v-if="isFiltering">
+            {{ filteredCount }} {{ t('consts.hero.count_filtered_of', 'of') }} {{ totalCount }} {{ t('consts.hero.count_filtered_match', 'constants match') }}
+          </template>
+          <template v-else>
+            {{ totalCount }} {{ t('consts.hero.count_total', 'constants across') }} {{ CONSTS_CATEGORIES.length }} {{ t('consts.hero.count_categories', 'categories') }}
+          </template>
+        </p>
+      </origam-container>
+    </section>
+
+    <section
+      class="consts-grid-section"
+      aria-labelledby="consts-grid-title"
+      data-cy="consts-grid"
+    >
+      <origam-container>
+        <header class="consts-grid-section__header">
+          <p class="consts-section__eyebrow">
+            {{ t('consts.catalog.eyebrow', 'BROWSE BY CATEGORY') }}
+          </p>
+
+          <origam-title
+            id="consts-grid-title"
+            tag="h2"
+            class="consts-section__title consts-section__title--single"
+          >
+            {{ t('consts.catalog.title', 'All constants.') }}
+          </origam-title>
+        </header>
+
+        <div
+          v-if="isFiltering && filteredCount === 0"
+          class="consts-empty"
+          role="status"
+          data-cy="consts-empty"
+        >
+          <origam-icon
+            icon="mdi-magnify-remove-outline"
+            class="consts-empty__icon"
+            aria-hidden="true"
+          />
+
+          <origam-title
+            tag="h3"
+            class="consts-empty__title"
+          >
+            {{ t('consts.catalog.empty_title', 'No constants found') }}
+          </origam-title>
+
+          <p class="consts-empty__desc">
+            {{ t('consts.catalog.empty_desc', 'No constant matches "{query}". Try a different term.', { query: searchQuery }) }}
+          </p>
+        </div>
+
+        <div
+          v-for="group in groupedByCategory"
+          :key="group.category"
+          class="consts-category"
+          :data-cy="`consts-category-${group.category.toLowerCase().replace(/[^a-z0-9]/g, '-')}`"
+        >
+          <header class="consts-category__header">
+            <origam-title
+              tag="h3"
+              class="consts-category__title"
+            >
+              {{ group.category }}
+            </origam-title>
+
+            <origam-chip
+              size="small"
+              pill
+              class="consts-category__count-chip"
+            >
+              {{ group.entries.length }}
+            </origam-chip>
+          </header>
+
+          <origam-grid
+            tag="ul"
+            columns="repeat(auto-fill, minmax(240px, 1fr))"
+            gap="1rem"
+            class="consts-category__grid"
+          >
+            <origam-grid-item
+              v-for="entry in group.entries"
+              :key="entry.slug"
+              tag="li"
+              class="consts-catalog-item"
+            >
+              <nuxt-link
+                :to="`/consts/${entry.slug}`"
+                class="consts-catalog-card__link"
+                :aria-label="`${entry.name} — ${t(entry.descriptionKey, entry.descriptionFallback)}`"
+                :data-cy="`consts-card-${entry.slug}`"
+              >
+                <origam-card
+                  rounded="lg"
+                  class="consts-catalog-card"
+                >
+                  <template #default>
+                    <div class="consts-catalog-card__inner">
+                      <div class="consts-catalog-card__header">
+                        <origam-avatar
+                          :icon="entry.icon"
+                          color="secondary"
+                          rounded="lg"
+                          size="40"
+                          class="consts-catalog-card__avatar"
+                          aria-hidden="true"
+                        />
+
+                        <origam-title
+                          tag="h4"
+                          class="consts-catalog-card__name"
+                        >
+                          {{ entry.name }}
+                        </origam-title>
+
+                        <origam-chip
+                          color="secondary"
+                          size="x-small"
+                          variant="tonal"
+                          pill
+                          class="consts-catalog-card__kind-chip"
+                          :aria-label="t('consts.kind.const', 'const')"
+                        >
+                          {{ t('consts.kind.const', 'const') }}
+                        </origam-chip>
+                      </div>
+
+                      <p class="consts-catalog-card__desc">
+                        {{ t(entry.descriptionKey, entry.descriptionFallback) }}
+                      </p>
+                    </div>
+                  </template>
+                </origam-card>
+              </nuxt-link>
+            </origam-grid-item>
+          </origam-grid>
+        </div>
+      </origam-container>
+    </section>
+  </article>
+</template>
+
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useT } from '~/composables/useT'
@@ -44,203 +241,6 @@ const totalCount = computed(() => CONSTS_CATALOG.value.length)
 const filteredCount = computed(() => filteredEntries.value.length)
 const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 </script>
-
-<template>
-    <article
-        class="consts-catalog"
-        data-cy="page-consts"
-    >
-        <section
-            class="consts-hero"
-            aria-labelledby="consts-title"
-        >
-            <origam-container class="consts-hero__inner">
-                <origam-chip
-                    class="consts-hero__badge"
-                    color="primary"
-                    border
-                    border-color="var(--origam-color__action--primary---bg)"
-                    size="small"
-                    pill
-                    data-cy="consts-hero-badge"
-                >
-                    {{ t('consts.hero.badge', 'Exported constants') }}
-                </origam-chip>
-
-                <origam-title
-                    id="consts-title"
-                    tag="h1"
-                    class="consts-hero__title"
-                >
-                    <span class="consts-hero__title-line">{{ t('consts.hero.title_line1', 'API') }}</span>
-                    <span class="consts-hero__title-line consts-hero__title-line--accent">{{ t('consts.hero.title_line2', 'constants.') }}</span>
-                </origam-title>
-
-                <p class="consts-hero__subtitle">
-                    {{ t('consts.hero.subtitle', 'Every SCREAMING_SNAKE_CASE constant exported by origam. Fully documented with definitions, values and cross-references to the parts of the DS that use them.') }}
-                </p>
-
-                <origam-text-field
-                    v-model="searchQuery"
-                    class="consts-hero__search"
-                    prepend-inner-icon="mdi-magnify"
-                    :placeholder="t('consts.hero.search_placeholder', 'Search constants…')"
-                    :aria-label="t('consts.hero.search_label', 'Filter constants by name or category')"
-                    clearable
-                    rounded="lg"
-                    variant="outlined"
-                    data-cy="consts-search"
-                />
-
-                <p
-                    class="consts-hero__count"
-                    aria-live="polite"
-                    aria-atomic="true"
-                >
-                    <template v-if="isFiltering">
-                        {{ filteredCount }} {{ t('consts.hero.count_filtered_of', 'of') }} {{ totalCount }} {{ t('consts.hero.count_filtered_match', 'constants match') }}
-                    </template>
-                    <template v-else>
-                        {{ totalCount }} {{ t('consts.hero.count_total', 'constants across') }} {{ CONSTS_CATEGORIES.length }} {{ t('consts.hero.count_categories', 'categories') }}
-                    </template>
-                </p>
-            </origam-container>
-        </section>
-
-        <section
-            class="consts-grid-section"
-            aria-labelledby="consts-grid-title"
-            data-cy="consts-grid"
-        >
-            <origam-container>
-                <header class="consts-grid-section__header">
-                    <p class="consts-section__eyebrow">
-                        {{ t('consts.catalog.eyebrow', 'BROWSE BY CATEGORY') }}
-                    </p>
-
-                    <origam-title
-                        id="consts-grid-title"
-                        tag="h2"
-                        class="consts-section__title consts-section__title--single"
-                    >
-                        {{ t('consts.catalog.title', 'All constants.') }}
-                    </origam-title>
-                </header>
-
-                <div
-                    v-if="isFiltering && filteredCount === 0"
-                    class="consts-empty"
-                    role="status"
-                    data-cy="consts-empty"
-                >
-                    <origam-icon
-                        icon="mdi-magnify-remove-outline"
-                        class="consts-empty__icon"
-                        aria-hidden="true"
-                    />
-
-                    <origam-title
-                        tag="h3"
-                        class="consts-empty__title"
-                    >
-                        {{ t('consts.catalog.empty_title', 'No constants found') }}
-                    </origam-title>
-
-                    <p class="consts-empty__desc">
-                        {{ t('consts.catalog.empty_desc', 'No constant matches "{query}". Try a different term.', { query: searchQuery }) }}
-                    </p>
-                </div>
-
-                <div
-                    v-for="group in groupedByCategory"
-                    :key="group.category"
-                    class="consts-category"
-                    :data-cy="`consts-category-${group.category.toLowerCase().replace(/[^a-z0-9]/g, '-')}`"
-                >
-                    <header class="consts-category__header">
-                        <origam-title
-                            tag="h3"
-                            class="consts-category__title"
-                        >
-                            {{ group.category }}
-                        </origam-title>
-
-                        <origam-chip
-                            size="small"
-                            pill
-                            class="consts-category__count-chip"
-                        >
-                            {{ group.entries.length }}
-                        </origam-chip>
-                    </header>
-
-                    <origam-grid
-                        tag="ul"
-                        columns="repeat(auto-fill, minmax(240px, 1fr))"
-                        gap="1rem"
-                        class="consts-category__grid"
-                    >
-                        <origam-grid-item
-                            v-for="entry in group.entries"
-                            :key="entry.slug"
-                            tag="li"
-                            class="consts-catalog-item"
-                        >
-                            <nuxt-link
-                                :to="`/consts/${entry.slug}`"
-                                class="consts-catalog-card__link"
-                                :aria-label="`${entry.name} — ${t(entry.descriptionKey, entry.descriptionFallback)}`"
-                                :data-cy="`consts-card-${entry.slug}`"
-                            >
-                                <origam-card
-                                    rounded="lg"
-                                    class="consts-catalog-card"
-                                >
-                                    <template #default>
-                                        <div class="consts-catalog-card__inner">
-                                            <div class="consts-catalog-card__header">
-                                                <origam-avatar
-                                                    :icon="entry.icon"
-                                                    color="secondary"
-                                                    rounded="lg"
-                                                    size="40"
-                                                    class="consts-catalog-card__avatar"
-                                                    aria-hidden="true"
-                                                />
-
-                                                <origam-title
-                                                    tag="h4"
-                                                    class="consts-catalog-card__name"
-                                                >
-                                                    {{ entry.name }}
-                                                </origam-title>
-
-                                                <origam-chip
-                                                    color="secondary"
-                                                    size="x-small"
-                                                    variant="tonal"
-                                                    pill
-                                                    class="consts-catalog-card__kind-chip"
-                                                    :aria-label="t('consts.kind.const', 'const')"
-                                                >
-                                                    {{ t('consts.kind.const', 'const') }}
-                                                </origam-chip>
-                                            </div>
-
-                                            <p class="consts-catalog-card__desc">
-                                                {{ t(entry.descriptionKey, entry.descriptionFallback) }}
-                                            </p>
-                                        </div>
-                                    </template>
-                                </origam-card>
-                            </nuxt-link>
-                        </origam-grid-item>
-                    </origam-grid>
-                </div>
-            </origam-container>
-        </section>
-    </article>
-</template>
 
 <style scoped lang="scss">
 .consts-catalog {

@@ -1,20 +1,3 @@
-<script setup lang="ts">
-  import { computed } from 'vue'
-  import { useT } from '~/composables/useT'
-  import { useVersion } from '~/composables/useVersion'
-  import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
-  import { HERO_BADGE_VARS } from '~/consts/hero.const'
-
-  const { t } = useT()
-  const { version } = useVersion()
-
-  const installCommand = computed(() => t('home.hero.install', 'npm install origam'))
-  const badge = computed(() =>
-    t('home.hero.badge', `v${version.value} — 26 charts shipped, WCAG 2.1 AA pass`, { version: version.value })
-  )
-  const githubRepo = MARKETING_DEFAULTS.githubRepo
-</script>
-
 <template>
   <section
     id="hero"
@@ -63,7 +46,8 @@
       >
         <origam-btn
           class="home-hero__btn home-hero__btn--primary"
-          variant="text"
+          variant="flat"
+          color="primary"
           href="/components"
           append-icon="mdi-arrow-right"
           data-cy="hero-cta-components"
@@ -95,6 +79,23 @@
     </origam-container>
   </section>
 </template>
+
+<script setup lang="ts">
+  import { computed } from 'vue'
+  import { useT } from '~/composables/useT'
+  import { useVersion } from '~/composables/useVersion'
+  import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
+  import { HERO_BADGE_VARS } from '~/consts/hero.const'
+
+  const { t } = useT()
+  const { version } = useVersion()
+
+  const installCommand = computed(() => t('home.hero.install', 'npm install origam'))
+  const badge = computed(() =>
+    t('home.hero.badge', `v${version.value} — 26 charts shipped, WCAG 2.1 AA pass`, { version: version.value })
+  )
+  const githubRepo = MARKETING_DEFAULTS.githubRepo
+</script>
 
 <style scoped lang="scss">
   .home-hero {

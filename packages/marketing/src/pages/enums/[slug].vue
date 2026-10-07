@@ -1,3 +1,401 @@
+<template>
+  <article
+    class="enum-detail"
+    :data-cy="`page-enum-${slug}`"
+  >
+    <div
+      v-if="!displayDoc"
+      class="enum-detail-not-found"
+      data-cy="enum-not-found"
+    >
+      <origam-container class="enum-detail-not-found__inner">
+        <origam-avatar
+          icon="mdi-help-circle-outline"
+          color="warning"
+          size="64"
+          aria-hidden="true"
+        />
+
+        <origam-title
+          tag="h1"
+          class="enum-detail-not-found__title"
+        >
+          {{ t('enums.detail.not_found.title', 'Enum not found') }}
+        </origam-title>
+
+        <p class="enum-detail-not-found__desc">
+          {{ t('enums.detail.not_found.desc', 'No enum matches the slug') }}
+          <origam-code
+            :code="slug"
+            lang="plaintext"
+            compact
+            class="enum-detail-not-found__slug-code"
+          />
+        </p>
+
+        <origam-btn
+          href="/enums"
+          prepend-icon="mdi-arrow-left"
+          variant="tonal"
+          color="primary"
+          data-cy="enum-not-found-back"
+        >
+          {{ t('enums.detail.not_found.back', 'Back to catalogue') }}
+        </origam-btn>
+      </origam-container>
+    </div>
+
+    <template v-else>
+      <div
+        class="enum-hero"
+        aria-labelledby="enum-title"
+      >
+        <origam-container class="enum-hero__container">
+          <nav
+            class="enum-hero__breadcrumb"
+            :aria-label="t('enums.detail.breadcrumb_label', 'Page location')"
+          >
+            <nuxt-link
+              to="/enums"
+              class="enum-hero__breadcrumb-link"
+              data-cy="enum-breadcrumb-catalog"
+            >
+              {{ t('enums.detail.breadcrumb_catalog', 'Enums') }}
+            </nuxt-link>
+
+            <span
+              class="enum-hero__breadcrumb-sep"
+              aria-hidden="true"
+            >›</span>
+
+            <span
+              class="enum-hero__breadcrumb-current"
+              aria-current="page"
+            >
+                            {{ enumName }}
+                        </span>
+          </nav>
+
+          <div class="enum-hero__identity">
+            <div class="enum-hero__title-row">
+              <origam-title
+                id="enum-title"
+                tag="h1"
+                class="enum-hero__title"
+              >
+                {{ enumName }}
+              </origam-title>
+
+              <origam-chip
+                color="secondary"
+                size="small"
+                variant="outlined"
+                class="enum-hero__kind-chip"
+              >
+                {{ t('enums.kind.enum', 'enum') }}
+              </origam-chip>
+
+              <origam-chip
+                v-if="enumCategory"
+                size="small"
+                variant="tonal"
+                class="enum-hero__category-chip"
+              >
+                {{ enumCategory }}
+              </origam-chip>
+            </div>
+
+            <p class="enum-hero__desc">
+              {{ t(enumDescKey, enumDescFallback) }}
+            </p>
+
+            <div class="enum-hero__bottom">
+              <nav
+                v-if="displayDoc?.sourceFile"
+                class="enum-hero__actions"
+                :aria-label="t('enums.detail.external_links_label', 'External resources')"
+              >
+                <origam-btn
+                  :href="`https://github.com/origam-io/origam/blob/main/${displayDoc.sourceFile}`"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variant="text"
+                  size="small"
+                  prepend-icon="mdi-github"
+                  data-cy="enum-source-link"
+                >
+                  {{ t('enums.detail.hero.source_label', 'Source') }}
+                </origam-btn>
+              </nav>
+            </div>
+          </div>
+        </origam-container>
+      </div>
+
+      <origam-container>
+        <div class="enum-detail__layout">
+          <aside
+            v-if="tocSections.length > 0"
+            class="enum-toc"
+            :aria-label="t('enums.detail.toc_label', 'Table of contents')"
+            data-cy="enum-toc"
+          >
+            <p class="enum-toc__heading">
+              {{ t('enums.detail.toc_heading', 'On this page') }}
+            </p>
+
+            <origam-grid
+              tag="ul"
+              columns="1"
+              gap="0.25rem"
+              class="enum-toc__list"
+            >
+              <origam-grid-item
+                v-for="section in tocSections"
+                :key="section.id"
+                tag="li"
+                class="enum-toc__item"
+                :class="{ 'enum-toc__item--active': activeSection === section.id }"
+              >
+                <a
+                  class="enum-toc__link"
+                  :href="`#${section.id}`"
+                  :aria-current="activeSection === section.id ? 'true' : undefined"
+                  @click.prevent="scrollToSection(section.id)"
+                >
+                  {{ section.label }}
+                </a>
+              </origam-grid-item>
+            </origam-grid>
+          </aside>
+
+          <div class="enum-detail__body">
+            <section
+              id="section-definition"
+              class="enum-section enum-definition"
+              aria-labelledby="enum-definition-title"
+              data-cy="enum-definition"
+            >
+              <header class="enum-section__header">
+                <p class="enum-section__eyebrow">
+                  {{ t('enums.detail.definition.eyebrow', 'TypeScript') }}
+                </p>
+                <origam-title
+                  id="enum-definition-title"
+                  tag="h2"
+                  class="enum-section__title"
+                >
+                  {{ t('enums.detail.definition.title', 'Definition') }}
+                </origam-title>
+                <p class="enum-section__desc">
+                  {{ t('enums.detail.definition.desc', 'The TypeScript definition as found in the origam source. Click the copy icon to copy the snippet.') }}
+                </p>
+              </header>
+
+              <div
+                v-if="displayDoc?.definition"
+                class="enum-definition__code-wrap"
+                data-cy="enum-definition-code"
+              >
+                <origam-code
+                  :code="displayDoc.definition"
+                  lang="typescript"
+                  copyable
+                  :line-numbers="true"
+                  class="enum-definition__code"
+                />
+              </div>
+
+              <div
+                v-else
+                class="enum-definition__no-doc"
+              >
+                <origam-card class="enum-no-doc__card">
+                  <template #default>
+                    <div class="enum-no-doc__inner">
+                      <origam-icon
+                        icon="mdi-book-open-page-variant-outline"
+                        color="primary"
+                        class="enum-no-doc__icon"
+                        aria-hidden="true"
+                      />
+                      <origam-title
+                        tag="h3"
+                        class="enum-no-doc__title"
+                      >
+                        {{ t('enums.detail.no_doc.title', 'Documentation coming soon') }}
+                      </origam-title>
+                      <p class="enum-no-doc__desc">
+                        {{ t('enums.detail.no_doc.desc', 'The detailed API reference for this enum is being written.') }}
+                      </p>
+                    </div>
+                  </template>
+                </origam-card>
+              </div>
+            </section>
+
+            <section
+              v-if="hasValues"
+              id="section-values"
+              class="enum-section enum-values"
+              aria-labelledby="enum-values-title"
+              data-cy="enum-values"
+            >
+              <header class="enum-section__header">
+                <p class="enum-section__eyebrow">
+                  {{ t('enums.detail.values.eyebrow', 'Members') }}
+                </p>
+                <origam-title
+                  id="enum-values-title"
+                  tag="h2"
+                  class="enum-section__title"
+                >
+                  {{ t('enums.detail.values.title', 'Members') }}
+                </origam-title>
+                <p class="enum-section__desc">
+                  {{ t('enums.detail.values.desc', 'All members of this enum. Click a value to copy it to clipboard.') }}
+                </p>
+              </header>
+
+              <row-list
+                :items="displayDoc?.values ?? []"
+                row-prefix="enum-value"
+                data-cy="enum-values-list"
+              />
+            </section>
+
+            <section
+              v-if="hasUsedBy"
+              id="section-used-by"
+              class="enum-section enum-used-by"
+              aria-labelledby="enum-used-by-title"
+              data-cy="enum-used-by"
+            >
+              <header class="enum-section__header">
+                <p class="enum-section__eyebrow">
+                  {{ t('enums.detail.used_by.eyebrow', 'Ecosystem') }}
+                </p>
+                <origam-title
+                  id="enum-used-by-title"
+                  tag="h2"
+                  class="enum-section__title"
+                >
+                  {{ t('enums.detail.used_by.title', 'Used by') }}
+                </origam-title>
+                <p class="enum-section__desc">
+                  {{ t('enums.detail.used_by.desc', 'Components and props that accept this enum as a value.') }}
+                </p>
+              </header>
+
+              <origam-grid
+                tag="ul"
+                columns="repeat(auto-fill, minmax(200px, 1fr))"
+                gap="1rem"
+                class="enum-used-by__grid"
+                data-cy="enum-used-by-grid"
+              >
+                <origam-grid-item
+                  v-for="ref in displayDoc?.usedBy"
+                  :key="`${ref.slug}-${ref.propName}`"
+                  tag="li"
+                  class="enum-used-by__item"
+                >
+                  <nuxt-link
+                    :to="`/components/${ref.slug}`"
+                    class="enum-used-by__link"
+                    :aria-label="`${ref.name} — prop: ${ref.propName}`"
+                    :data-cy="`enum-used-by-card-${ref.slug}`"
+                  >
+                    <origam-card class="enum-used-by__card">
+                      <template #default>
+                        <div class="enum-used-by__card-inner">
+                          <div class="enum-used-by__card-head">
+                            <origam-title
+                              tag="h3"
+                              class="enum-used-by__card-name"
+                            >
+                              {{ ref.name }}
+                            </origam-title>
+
+                            <origam-icon
+                              icon="mdi-arrow-right"
+                              size="16"
+                              class="enum-used-by__card-arrow"
+                              aria-hidden="true"
+                            />
+                          </div>
+
+                          <p class="enum-used-by__card-prop">
+                            <origam-code
+                              :code="`prop: ${ref.propName}`"
+                              lang="plaintext"
+                              compact
+                              :copyable="false"
+                              class="enum-used-by__card-prop-code"
+                            />
+                          </p>
+                        </div>
+                      </template>
+                    </origam-card>
+                  </nuxt-link>
+                </origam-grid-item>
+              </origam-grid>
+            </section>
+
+            <section
+              v-if="hasExamples"
+              id="section-examples"
+              class="enum-section enum-examples"
+              aria-labelledby="enum-examples-title"
+              data-cy="enum-examples"
+            >
+              <header class="enum-section__header">
+                <p class="enum-section__eyebrow">
+                  {{ t('enums.detail.examples.eyebrow', 'Usage') }}
+                </p>
+                <origam-title
+                  id="enum-examples-title"
+                  tag="h2"
+                  class="enum-section__title"
+                >
+                  {{ t('enums.detail.examples.title', 'Examples') }}
+                </origam-title>
+                <p class="enum-section__desc">
+                  {{ t('enums.detail.examples.desc', 'Ready-to-paste code snippets using this enum.') }}
+                </p>
+              </header>
+
+              <div class="enum-examples__list">
+                <div
+                  v-for="example in displayDoc?.examples"
+                  :key="example.titleFallback"
+                  class="enum-examples__item"
+                  :data-cy="`enum-example-${example.titleFallback.toLowerCase().replace(/[^a-z0-9]/g, '-')}`"
+                >
+                  <origam-title
+                    tag="h3"
+                    class="enum-examples__item-title"
+                  >
+                    {{ t(example.titleKey, example.titleFallback) }}
+                  </origam-title>
+
+                  <origam-code
+                    :code="example.code"
+                    :lang="example.lang"
+                    copyable
+                    :line-numbers="true"
+                    class="enum-examples__code"
+                  />
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </origam-container>
+    </template>
+  </article>
+</template>
+
 <script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
@@ -69,404 +467,6 @@ useSeoMeta({
     ogDescription: () => t(enumDescKey.value, enumDescFallback.value),
 })
 </script>
-
-<template>
-    <article
-        class="enum-detail"
-        :data-cy="`page-enum-${slug}`"
-    >
-        <div
-            v-if="!displayDoc"
-            class="enum-detail-not-found"
-            data-cy="enum-not-found"
-        >
-            <origam-container class="enum-detail-not-found__inner">
-                <origam-avatar
-                    icon="mdi-help-circle-outline"
-                    color="warning"
-                    size="64"
-                    aria-hidden="true"
-                />
-
-                <origam-title
-                    tag="h1"
-                    class="enum-detail-not-found__title"
-                >
-                    {{ t('enums.detail.not_found.title', 'Enum not found') }}
-                </origam-title>
-
-                <p class="enum-detail-not-found__desc">
-                    {{ t('enums.detail.not_found.desc', 'No enum matches the slug') }}
-                    <origam-code
-                        :code="slug"
-                        lang="plaintext"
-                        compact
-                        class="enum-detail-not-found__slug-code"
-                    />
-                </p>
-
-                <origam-btn
-                    href="/enums"
-                    prepend-icon="mdi-arrow-left"
-                    variant="tonal"
-                    color="primary"
-                    data-cy="enum-not-found-back"
-                >
-                    {{ t('enums.detail.not_found.back', 'Back to catalogue') }}
-                </origam-btn>
-            </origam-container>
-        </div>
-
-        <template v-else>
-            <div
-                class="enum-hero"
-                aria-labelledby="enum-title"
-            >
-                <origam-container class="enum-hero__container">
-                    <nav
-                        class="enum-hero__breadcrumb"
-                        :aria-label="t('enums.detail.breadcrumb_label', 'Page location')"
-                    >
-                        <nuxt-link
-                            to="/enums"
-                            class="enum-hero__breadcrumb-link"
-                            data-cy="enum-breadcrumb-catalog"
-                        >
-                            {{ t('enums.detail.breadcrumb_catalog', 'Enums') }}
-                        </nuxt-link>
-
-                        <span
-                            class="enum-hero__breadcrumb-sep"
-                            aria-hidden="true"
-                        >›</span>
-
-                        <span
-                            class="enum-hero__breadcrumb-current"
-                            aria-current="page"
-                        >
-                            {{ enumName }}
-                        </span>
-                    </nav>
-
-                    <div class="enum-hero__identity">
-                        <div class="enum-hero__title-row">
-                            <origam-title
-                                id="enum-title"
-                                tag="h1"
-                                class="enum-hero__title"
-                            >
-                                {{ enumName }}
-                            </origam-title>
-
-                            <origam-chip
-                                color="secondary"
-                                size="small"
-                                variant="outlined"
-                                class="enum-hero__kind-chip"
-                            >
-                                {{ t('enums.kind.enum', 'enum') }}
-                            </origam-chip>
-
-                            <origam-chip
-                                v-if="enumCategory"
-                                size="small"
-                                variant="tonal"
-                                class="enum-hero__category-chip"
-                            >
-                                {{ enumCategory }}
-                            </origam-chip>
-                        </div>
-
-                        <p class="enum-hero__desc">
-                            {{ t(enumDescKey, enumDescFallback) }}
-                        </p>
-
-                        <div class="enum-hero__bottom">
-                            <nav
-                                v-if="displayDoc?.sourceFile"
-                                class="enum-hero__actions"
-                                :aria-label="t('enums.detail.external_links_label', 'External resources')"
-                            >
-                                <origam-btn
-                                    :href="`https://github.com/origam-io/origam/blob/main/${displayDoc.sourceFile}`"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    variant="text"
-                                    size="small"
-                                    prepend-icon="mdi-github"
-                                    data-cy="enum-source-link"
-                                >
-                                    {{ t('enums.detail.hero.source_label', 'Source') }}
-                                </origam-btn>
-                            </nav>
-                        </div>
-                    </div>
-                </origam-container>
-            </div>
-
-            <origam-container>
-                <div class="enum-detail__layout">
-                    <aside
-                        v-if="tocSections.length > 0"
-                        class="enum-toc"
-                        :aria-label="t('enums.detail.toc_label', 'Table of contents')"
-                        data-cy="enum-toc"
-                    >
-                        <p class="enum-toc__heading">
-                            {{ t('enums.detail.toc_heading', 'On this page') }}
-                        </p>
-
-                        <origam-grid
-                            tag="ul"
-                            columns="1"
-                            gap="0.25rem"
-                            class="enum-toc__list"
-                        >
-                            <origam-grid-item
-                                v-for="section in tocSections"
-                                :key="section.id"
-                                tag="li"
-                                class="enum-toc__item"
-                                :class="{ 'enum-toc__item--active': activeSection === section.id }"
-                            >
-                                <a
-                                    class="enum-toc__link"
-                                    :href="`#${section.id}`"
-                                    :aria-current="activeSection === section.id ? 'true' : undefined"
-                                    @click.prevent="scrollToSection(section.id)"
-                                >
-                                    {{ section.label }}
-                                </a>
-                            </origam-grid-item>
-                        </origam-grid>
-                    </aside>
-
-                    <div class="enum-detail__body">
-                        <section
-                            id="section-definition"
-                            class="enum-section enum-definition"
-                            aria-labelledby="enum-definition-title"
-                            data-cy="enum-definition"
-                        >
-                            <header class="enum-section__header">
-                                <p class="enum-section__eyebrow">
-                                    {{ t('enums.detail.definition.eyebrow', 'TypeScript') }}
-                                </p>
-                                <origam-title
-                                    id="enum-definition-title"
-                                    tag="h2"
-                                    class="enum-section__title"
-                                >
-                                    {{ t('enums.detail.definition.title', 'Definition') }}
-                                </origam-title>
-                                <p class="enum-section__desc">
-                                    {{ t('enums.detail.definition.desc', 'The TypeScript definition as found in the origam source. Click the copy icon to copy the snippet.') }}
-                                </p>
-                            </header>
-
-                            <div
-                                v-if="displayDoc?.definition"
-                                class="enum-definition__code-wrap"
-                                data-cy="enum-definition-code"
-                            >
-                                <origam-code
-                                    :code="displayDoc.definition"
-                                    lang="typescript"
-                                    copyable
-                                    :line-numbers="true"
-                                    class="enum-definition__code"
-                                />
-                            </div>
-
-                            <div
-                                v-else
-                                class="enum-definition__no-doc"
-                            >
-                                <origam-card class="enum-no-doc__card">
-                                    <template #default>
-                                        <div class="enum-no-doc__inner">
-                                            <origam-icon
-                                                icon="mdi-book-open-page-variant-outline"
-                                                color="primary"
-                                                class="enum-no-doc__icon"
-                                                aria-hidden="true"
-                                            />
-                                            <origam-title
-                                                tag="h3"
-                                                class="enum-no-doc__title"
-                                            >
-                                                {{ t('enums.detail.no_doc.title', 'Documentation coming soon') }}
-                                            </origam-title>
-                                            <p class="enum-no-doc__desc">
-                                                {{ t('enums.detail.no_doc.desc', 'The detailed API reference for this enum is being written.') }}
-                                            </p>
-                                        </div>
-                                    </template>
-                                </origam-card>
-                            </div>
-                        </section>
-
-                        <section
-                            v-if="hasValues"
-                            id="section-values"
-                            class="enum-section enum-values"
-                            aria-labelledby="enum-values-title"
-                            data-cy="enum-values"
-                        >
-                            <header class="enum-section__header">
-                                <p class="enum-section__eyebrow">
-                                    {{ t('enums.detail.values.eyebrow', 'Members') }}
-                                </p>
-                                <origam-title
-                                    id="enum-values-title"
-                                    tag="h2"
-                                    class="enum-section__title"
-                                >
-                                    {{ t('enums.detail.values.title', 'Members') }}
-                                </origam-title>
-                                <p class="enum-section__desc">
-                                    {{ t('enums.detail.values.desc', 'All members of this enum. Click a value to copy it to clipboard.') }}
-                                </p>
-                            </header>
-
-                            <row-list
-                                :items="displayDoc?.values ?? []"
-                                row-prefix="enum-value"
-                                data-cy="enum-values-list"
-                            />
-                        </section>
-
-                        <section
-                            v-if="hasUsedBy"
-                            id="section-used-by"
-                            class="enum-section enum-used-by"
-                            aria-labelledby="enum-used-by-title"
-                            data-cy="enum-used-by"
-                        >
-                            <header class="enum-section__header">
-                                <p class="enum-section__eyebrow">
-                                    {{ t('enums.detail.used_by.eyebrow', 'Ecosystem') }}
-                                </p>
-                                <origam-title
-                                    id="enum-used-by-title"
-                                    tag="h2"
-                                    class="enum-section__title"
-                                >
-                                    {{ t('enums.detail.used_by.title', 'Used by') }}
-                                </origam-title>
-                                <p class="enum-section__desc">
-                                    {{ t('enums.detail.used_by.desc', 'Components and props that accept this enum as a value.') }}
-                                </p>
-                            </header>
-
-                            <origam-grid
-                                tag="ul"
-                                columns="repeat(auto-fill, minmax(200px, 1fr))"
-                                gap="1rem"
-                                class="enum-used-by__grid"
-                                data-cy="enum-used-by-grid"
-                            >
-                                <origam-grid-item
-                                    v-for="ref in displayDoc?.usedBy"
-                                    :key="`${ref.slug}-${ref.propName}`"
-                                    tag="li"
-                                    class="enum-used-by__item"
-                                >
-                                    <nuxt-link
-                                        :to="`/components/${ref.slug}`"
-                                        class="enum-used-by__link"
-                                        :aria-label="`${ref.name} — prop: ${ref.propName}`"
-                                        :data-cy="`enum-used-by-card-${ref.slug}`"
-                                    >
-                                        <origam-card class="enum-used-by__card">
-                                            <template #default>
-                                                <div class="enum-used-by__card-inner">
-                                                    <div class="enum-used-by__card-head">
-                                                        <origam-title
-                                                            tag="h3"
-                                                            class="enum-used-by__card-name"
-                                                        >
-                                                            {{ ref.name }}
-                                                        </origam-title>
-
-                                                        <origam-icon
-                                                            icon="mdi-arrow-right"
-                                                            size="16"
-                                                            class="enum-used-by__card-arrow"
-                                                            aria-hidden="true"
-                                                        />
-                                                    </div>
-
-                                                    <p class="enum-used-by__card-prop">
-                                                        <origam-code
-                                                            :code="`prop: ${ref.propName}`"
-                                                            lang="plaintext"
-                                                            compact
-                                                            :copyable="false"
-                                                            class="enum-used-by__card-prop-code"
-                                                        />
-                                                    </p>
-                                                </div>
-                                            </template>
-                                        </origam-card>
-                                    </nuxt-link>
-                                </origam-grid-item>
-                            </origam-grid>
-                        </section>
-
-                        <section
-                            v-if="hasExamples"
-                            id="section-examples"
-                            class="enum-section enum-examples"
-                            aria-labelledby="enum-examples-title"
-                            data-cy="enum-examples"
-                        >
-                            <header class="enum-section__header">
-                                <p class="enum-section__eyebrow">
-                                    {{ t('enums.detail.examples.eyebrow', 'Usage') }}
-                                </p>
-                                <origam-title
-                                    id="enum-examples-title"
-                                    tag="h2"
-                                    class="enum-section__title"
-                                >
-                                    {{ t('enums.detail.examples.title', 'Examples') }}
-                                </origam-title>
-                                <p class="enum-section__desc">
-                                    {{ t('enums.detail.examples.desc', 'Ready-to-paste code snippets using this enum.') }}
-                                </p>
-                            </header>
-
-                            <div class="enum-examples__list">
-                                <div
-                                    v-for="example in displayDoc?.examples"
-                                    :key="example.titleFallback"
-                                    class="enum-examples__item"
-                                    :data-cy="`enum-example-${example.titleFallback.toLowerCase().replace(/[^a-z0-9]/g, '-')}`"
-                                >
-                                    <origam-title
-                                        tag="h3"
-                                        class="enum-examples__item-title"
-                                    >
-                                        {{ t(example.titleKey, example.titleFallback) }}
-                                    </origam-title>
-
-                                    <origam-code
-                                        :code="example.code"
-                                        :lang="example.lang"
-                                        copyable
-                                        :line-numbers="true"
-                                        class="enum-examples__code"
-                                    />
-                                </div>
-                            </div>
-                        </section>
-                    </div>
-                </div>
-            </origam-container>
-        </template>
-    </article>
-</template>
 
 <style scoped lang="scss">
 .enum-detail {

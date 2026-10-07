@@ -1,3 +1,199 @@
+<template>
+  <article
+    class="admin-sync"
+    data-cy="admin-sync"
+  >
+    <header class="admin-sync__header">
+      <origam-title
+        tag="h1"
+        class="admin-sync__title"
+      >
+        {{ t('admin.sync.title', 'Sync') }}
+      </origam-title>
+
+      <p class="admin-sync__subtitle">
+        {{ t('admin.sync.subtitle', 'Trigger a re-sync from the DS source and view recent sync history.') }}
+      </p>
+    </header>
+
+    <origam-card
+      rounded="lg"
+      class="admin-sync__trigger-card"
+    >
+      <template #default>
+        <div class="admin-sync__trigger-inner">
+          <div class="admin-sync__trigger-info">
+            <origam-icon
+              :icon="MDI_ICONS.SYNC"
+              class="admin-sync__trigger-icon"
+              aria-hidden="true"
+            />
+
+            <div>
+              <origam-title
+                tag="h2"
+                class="admin-sync__trigger-title"
+              >
+                {{ t('admin.sync.trigger_title', 'Re-sync from source') }}
+              </origam-title>
+
+              <p class="admin-sync__trigger-desc">
+                {{ t('admin.sync.trigger_desc', 'Reads the DS source and upserts the reference catalogue in the database.') }}
+              </p>
+            </div>
+          </div>
+
+          <origam-btn
+            color="primary"
+            variant="elevated"
+            :prepend-icon="MDI_ICONS.REFRESH"
+            :loading="syncing"
+            data-cy="admin-sync-trigger"
+            @click="handleSync"
+          >
+            {{ syncing ? t('admin.sync.triggering', 'Syncing…') : t('admin.sync.trigger_btn', 'Trigger re-sync') }}
+          </origam-btn>
+        </div>
+
+        <div
+          v-if="syncResult"
+          class="admin-sync__result"
+          role="status"
+          aria-live="polite"
+        >
+          <origam-chip
+            color="success"
+            size="small"
+            pill
+            :prepend-icon="MDI_ICONS.CHECK_CIRCLE"
+          >
+            {{ syncResult.created }} {{ t('admin.sync.result_created', 'created') }}
+          </origam-chip>
+
+          <origam-chip
+            size="small"
+            pill
+          >
+            {{ syncResult.updated }} {{ t('admin.sync.result_updated', 'updated') }}
+          </origam-chip>
+
+          <origam-chip
+            size="small"
+            pill
+          >
+            {{ syncResult.unchanged }} {{ t('admin.sync.result_unchanged', 'unchanged') }}
+          </origam-chip>
+
+          <origam-chip
+            v-if="syncResult.orphaned > 0"
+            color="warning"
+            size="small"
+            pill
+          >
+            {{ syncResult.orphaned }} {{ t('admin.sync.result_orphaned', 'orphaned') }}
+          </origam-chip>
+        </div>
+
+        <div
+          v-if="syncError"
+          class="admin-sync__error"
+          role="alert"
+          aria-live="assertive"
+        >
+          <origam-icon
+            :icon="MDI_ICONS.ALERT_CIRCLE"
+            size="16"
+            aria-hidden="true"
+          />
+          <span>{{ t('admin.sync.result_error', 'Sync error: {error}', { error: syncError }) }}</span>
+        </div>
+      </template>
+    </origam-card>
+
+    <section
+      class="admin-sync__history"
+      aria-labelledby="sync-history-title"
+    >
+      <header class="admin-sync__history-header">
+        <origam-title
+          id="sync-history-title"
+          tag="h2"
+          class="admin-sync__history-title"
+        >
+          {{ t('admin.sync.history_title', 'Recent sync runs') }}
+        </origam-title>
+
+        <origam-btn
+          variant="outlined"
+          :prepend-icon="MDI_ICONS.REFRESH"
+          size="small"
+          :loading="loadingRuns"
+          :aria-label="t('admin.sync.refresh_history', 'Refresh history')"
+          data-cy="admin-sync-refresh-history"
+          @click="loadRuns"
+        >
+          {{ t('admin.sync.refresh_history', 'Refresh') }}
+        </origam-btn>
+      </header>
+
+      <div
+        v-if="loadingRuns"
+        role="status"
+      >
+        <origam-progress-linear
+          indeterminate
+          color="primary"
+        />
+      </div>
+
+      <p
+        v-else-if="runs.length === 0"
+        class="admin-sync__no-runs"
+      >
+        {{ t('admin.sync.no_runs', 'No sync runs yet.') }}
+      </p>
+
+      <origam-data-table
+        v-else
+        :headers="tableHeaders"
+        :items="runs"
+        item-value="id"
+        class="admin-sync__table"
+        data-cy="admin-sync-table"
+      >
+        <template #item.started_at="{ item }">
+          <span class="admin-sync__cell-mono">{{ formatDate(item.started_at) }}</span>
+        </template>
+
+        <template #item.finished_at="{ item }">
+          <span class="admin-sync__cell-mono">{{ formatDate(item.finished_at) }}</span>
+        </template>
+
+        <template #item.status="{ item }">
+          <origam-chip
+            :color="statusColor(item.status)"
+            size="x-small"
+            pill
+          >
+            {{ statusLabel(item.status) }}
+          </origam-chip>
+        </template>
+
+        <template #item.source_commit="{ item }">
+                    <span
+                      v-if="item.source_commit"
+                      class="admin-sync__cell-mono admin-sync__cell-commit"
+                    >{{ item.source_commit.slice(0, 7) }}</span>
+          <span
+            v-else
+            class="admin-sync__cell-empty"
+          >—</span>
+        </template>
+      </origam-data-table>
+    </section>
+  </article>
+</template>
+
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { MDI_ICONS } from 'origam/enums'
@@ -78,202 +274,6 @@ const tableHeaders = computed(() => [
     { key: 'source_commit', title: t('admin.sync.col_commit', 'Commit') },
 ])
 </script>
-
-<template>
-    <article
-        class="admin-sync"
-        data-cy="admin-sync"
-    >
-        <header class="admin-sync__header">
-            <origam-title
-                tag="h1"
-                class="admin-sync__title"
-            >
-                {{ t('admin.sync.title', 'Sync') }}
-            </origam-title>
-
-            <p class="admin-sync__subtitle">
-                {{ t('admin.sync.subtitle', 'Trigger a re-sync from the DS source and view recent sync history.') }}
-            </p>
-        </header>
-
-        <origam-card
-            rounded="lg"
-            class="admin-sync__trigger-card"
-        >
-            <template #default>
-                <div class="admin-sync__trigger-inner">
-                    <div class="admin-sync__trigger-info">
-                        <origam-icon
-                            :icon="MDI_ICONS.SYNC"
-                            class="admin-sync__trigger-icon"
-                            aria-hidden="true"
-                        />
-
-                        <div>
-                            <origam-title
-                                tag="h2"
-                                class="admin-sync__trigger-title"
-                            >
-                                {{ t('admin.sync.trigger_title', 'Re-sync from source') }}
-                            </origam-title>
-
-                            <p class="admin-sync__trigger-desc">
-                                {{ t('admin.sync.trigger_desc', 'Reads the DS source and upserts the reference catalogue in the database.') }}
-                            </p>
-                        </div>
-                    </div>
-
-                    <origam-btn
-                        color="primary"
-                        variant="elevated"
-                        :prepend-icon="MDI_ICONS.REFRESH"
-                        :loading="syncing"
-                        data-cy="admin-sync-trigger"
-                        @click="handleSync"
-                    >
-                        {{ syncing ? t('admin.sync.triggering', 'Syncing…') : t('admin.sync.trigger_btn', 'Trigger re-sync') }}
-                    </origam-btn>
-                </div>
-
-                <div
-                    v-if="syncResult"
-                    class="admin-sync__result"
-                    role="status"
-                    aria-live="polite"
-                >
-                    <origam-chip
-                        color="success"
-                        size="small"
-                        pill
-                        :prepend-icon="MDI_ICONS.CHECK_CIRCLE"
-                    >
-                        {{ syncResult.created }} {{ t('admin.sync.result_created', 'created') }}
-                    </origam-chip>
-
-                    <origam-chip
-                        size="small"
-                        pill
-                    >
-                        {{ syncResult.updated }} {{ t('admin.sync.result_updated', 'updated') }}
-                    </origam-chip>
-
-                    <origam-chip
-                        size="small"
-                        pill
-                    >
-                        {{ syncResult.unchanged }} {{ t('admin.sync.result_unchanged', 'unchanged') }}
-                    </origam-chip>
-
-                    <origam-chip
-                        v-if="syncResult.orphaned > 0"
-                        color="warning"
-                        size="small"
-                        pill
-                    >
-                        {{ syncResult.orphaned }} {{ t('admin.sync.result_orphaned', 'orphaned') }}
-                    </origam-chip>
-                </div>
-
-                <div
-                    v-if="syncError"
-                    class="admin-sync__error"
-                    role="alert"
-                    aria-live="assertive"
-                >
-                    <origam-icon
-                        :icon="MDI_ICONS.ALERT_CIRCLE"
-                        size="16"
-                        aria-hidden="true"
-                    />
-                    <span>{{ t('admin.sync.result_error', 'Sync error: {error}', { error: syncError }) }}</span>
-                </div>
-            </template>
-        </origam-card>
-
-        <section
-            class="admin-sync__history"
-            aria-labelledby="sync-history-title"
-        >
-            <header class="admin-sync__history-header">
-                <origam-title
-                    id="sync-history-title"
-                    tag="h2"
-                    class="admin-sync__history-title"
-                >
-                    {{ t('admin.sync.history_title', 'Recent sync runs') }}
-                </origam-title>
-
-                <origam-btn
-                    variant="outlined"
-                    :prepend-icon="MDI_ICONS.REFRESH"
-                    size="small"
-                    :loading="loadingRuns"
-                    :aria-label="t('admin.sync.refresh_history', 'Refresh history')"
-                    data-cy="admin-sync-refresh-history"
-                    @click="loadRuns"
-                >
-                    {{ t('admin.sync.refresh_history', 'Refresh') }}
-                </origam-btn>
-            </header>
-
-            <div
-                v-if="loadingRuns"
-                role="status"
-            >
-                <origam-progress-linear
-                    indeterminate
-                    color="primary"
-                />
-            </div>
-
-            <p
-                v-else-if="runs.length === 0"
-                class="admin-sync__no-runs"
-            >
-                {{ t('admin.sync.no_runs', 'No sync runs yet.') }}
-            </p>
-
-            <origam-data-table
-                v-else
-                :headers="tableHeaders"
-                :items="runs"
-                item-value="id"
-                class="admin-sync__table"
-                data-cy="admin-sync-table"
-            >
-                <template #item.started_at="{ item }">
-                    <span class="admin-sync__cell-mono">{{ formatDate(item.started_at) }}</span>
-                </template>
-
-                <template #item.finished_at="{ item }">
-                    <span class="admin-sync__cell-mono">{{ formatDate(item.finished_at) }}</span>
-                </template>
-
-                <template #item.status="{ item }">
-                    <origam-chip
-                        :color="statusColor(item.status)"
-                        size="x-small"
-                        pill
-                    >
-                        {{ statusLabel(item.status) }}
-                    </origam-chip>
-                </template>
-
-                <template #item.source_commit="{ item }">
-                    <span
-                        v-if="item.source_commit"
-                        class="admin-sync__cell-mono admin-sync__cell-commit"
-                    >{{ item.source_commit.slice(0, 7) }}</span>
-                    <span
-                        v-else
-                        class="admin-sync__cell-empty"
-                    >—</span>
-                </template>
-            </origam-data-table>
-        </section>
-    </article>
-</template>
 
 <style scoped lang="scss">
 .admin-sync {

@@ -1,3 +1,86 @@
+<template>
+  <article
+    class="admin-dashboard"
+    data-cy="admin-dashboard"
+  >
+    <header class="admin-dashboard__header">
+      <origam-title
+        tag="h1"
+        class="admin-dashboard__title"
+      >
+        {{ t('admin.dashboard.title', 'Dashboard') }}
+      </origam-title>
+
+      <p class="admin-dashboard__subtitle">
+        {{ t('admin.dashboard.subtitle', 'Overview of all reference families.') }}
+        <origam-chip
+          size="small"
+          pill
+          class="admin-dashboard__total"
+        >
+          {{ totalEntries }} {{ t('admin.dashboard.total_entries', 'entries') }}
+        </origam-chip>
+      </p>
+    </header>
+
+    <origam-grid
+      tag="ul"
+      columns="repeat(auto-fill, minmax(220px, 1fr))"
+      gap="1rem"
+      class="admin-dashboard__grid"
+    >
+      <origam-grid-item
+        v-for="meta in ADMIN_NAV_KINDS"
+        :key="meta.key"
+        tag="li"
+        class="admin-dashboard__item"
+      >
+        <nuxt-link
+          :to="`/admin/${meta.key}`"
+          class="admin-kind-card__link"
+          :aria-label="`${t(meta.labelKey, meta.labelFallback)} — ${counts[meta.key]} ${t('admin.dashboard.entries', 'entries')}`"
+          :data-cy="`admin-dashboard-${meta.key}`"
+        >
+          <origam-card
+            rounded="lg"
+            class="admin-kind-card"
+          >
+            <template #default>
+              <div class="admin-kind-card__inner">
+                <origam-avatar
+                  :icon="meta.icon"
+                  color="primary"
+                  rounded="lg"
+                  size="40"
+                  class="admin-kind-card__avatar"
+                  aria-hidden="true"
+                />
+
+                <div class="admin-kind-card__content">
+                  <origam-title
+                    tag="h2"
+                    class="admin-kind-card__name"
+                  >
+                    {{ t(meta.labelKey, meta.labelFallback) }}
+                  </origam-title>
+
+                  <origam-chip
+                    size="x-small"
+                    pill
+                    class="admin-kind-card__count"
+                  >
+                    {{ counts[meta.key] }}
+                  </origam-chip>
+                </div>
+              </div>
+            </template>
+          </origam-card>
+        </nuxt-link>
+      </origam-grid-item>
+    </origam-grid>
+  </article>
+</template>
+
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useT } from '~/composables/useT'
@@ -48,89 +131,6 @@ const totalEntries = computed(() =>
     Object.values(counts.value).reduce((sum, n) => sum + n, 0),
 )
 </script>
-
-<template>
-    <article
-        class="admin-dashboard"
-        data-cy="admin-dashboard"
-    >
-        <header class="admin-dashboard__header">
-            <origam-title
-                tag="h1"
-                class="admin-dashboard__title"
-            >
-                {{ t('admin.dashboard.title', 'Dashboard') }}
-            </origam-title>
-
-            <p class="admin-dashboard__subtitle">
-                {{ t('admin.dashboard.subtitle', 'Overview of all reference families.') }}
-                <origam-chip
-                    size="small"
-                    pill
-                    class="admin-dashboard__total"
-                >
-                    {{ totalEntries }} {{ t('admin.dashboard.total_entries', 'entries') }}
-                </origam-chip>
-            </p>
-        </header>
-
-        <origam-grid
-            tag="ul"
-            columns="repeat(auto-fill, minmax(220px, 1fr))"
-            gap="1rem"
-            class="admin-dashboard__grid"
-        >
-            <origam-grid-item
-                v-for="meta in ADMIN_NAV_KINDS"
-                :key="meta.key"
-                tag="li"
-                class="admin-dashboard__item"
-            >
-                <nuxt-link
-                    :to="`/admin/${meta.key}`"
-                    class="admin-kind-card__link"
-                    :aria-label="`${t(meta.labelKey, meta.labelFallback)} — ${counts[meta.key]} ${t('admin.dashboard.entries', 'entries')}`"
-                    :data-cy="`admin-dashboard-${meta.key}`"
-                >
-                    <origam-card
-                        rounded="lg"
-                        class="admin-kind-card"
-                    >
-                        <template #default>
-                            <div class="admin-kind-card__inner">
-                                <origam-avatar
-                                    :icon="meta.icon"
-                                    color="primary"
-                                    rounded="lg"
-                                    size="40"
-                                    class="admin-kind-card__avatar"
-                                    aria-hidden="true"
-                                />
-
-                                <div class="admin-kind-card__content">
-                                    <origam-title
-                                        tag="h2"
-                                        class="admin-kind-card__name"
-                                    >
-                                        {{ t(meta.labelKey, meta.labelFallback) }}
-                                    </origam-title>
-
-                                    <origam-chip
-                                        size="x-small"
-                                        pill
-                                        class="admin-kind-card__count"
-                                    >
-                                        {{ counts[meta.key] }}
-                                    </origam-chip>
-                                </div>
-                            </div>
-                        </template>
-                    </origam-card>
-                </nuxt-link>
-            </origam-grid-item>
-        </origam-grid>
-    </article>
-</template>
 
 <style scoped lang="scss">
 .admin-dashboard {
