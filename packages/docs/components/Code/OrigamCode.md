@@ -21,6 +21,67 @@ cannot be loaded — e.g. a purely static bundle with no module resolver),
 line-highlighting, the copy button and layout all keep working — only the colours
 are missing. A one-time console warning points to this section.
 
+## Supplying your own highlighter (`createOrigam({ code })`)
+
+An app can replace WHAT `useCode()` dynamically imports instead of the DS's
+default `import('shiki')`, via a `code.highlighter` loader on `createOrigam()`:
+
+```ts
+import { createOrigam } from 'origam'
+
+app.use(createOrigam({
+    code: {
+        highlighter: () => import('./shiki-lite')
+    }
+}))
+```
+
+The loader must resolve to a module exposing a single `createHighlighter`
+method — `shiki`'s own module satisfies this structurally (no cast needed),
+and so does a lighter alternative such as `shiki/core` paired with a JS regex
+engine. A minimal, runnable example — no WASM loader, no oniguruma binary:
+
+```ts
+// shiki-lite.ts
+import { createHighlighterCore } from 'shiki/core'
+import { createJavaScriptRegexEngine } from 'shiki/engine/javascript'
+import githubLightHighContrast from 'shiki/themes/github-light-high-contrast.mjs'
+import githubDarkHighContrast from 'shiki/themes/github-dark-high-contrast.mjs'
+import typescript from 'shiki/langs/typescript.mjs'
+import javascript from 'shiki/langs/javascript.mjs'
+
+const BUNDLED_LANGS: Record<string, unknown> = { ts: typescript, js: javascript }
+
+export function createHighlighter (opts: { themes: readonly string[], langs: readonly string[] }) {
+    return createHighlighterCore({
+        themes: [githubLightHighContrast, githubDarkHighContrast],
+        langs: opts.langs.map((lang) => BUNDLED_LANGS[lang]).filter(Boolean),
+        engine: createJavaScriptRegexEngine()
+    })
+}
+```
+
+- **Absent** (default) — `<OrigamCode>` keeps loading the full `shiki`
+  package via its own `import('shiki')`; nothing changes for a consumer who
+  does not set this.
+- **Supplied** — the DS never imports `shiki` itself on this path: no bare
+  `'shiki'` specifier, no `@vite-ignore`, no WASM-loader chunk (see the
+  composable's `loadHighlighter()` doc comment for why that chunk matters to
+  a bundler that doesn't special-case shiki — a lighter module such as
+  `shiki/core` + a JS regex engine sidesteps it entirely, at a real size
+  trade-off: a curated `ts`/`js`-only subset like the one above runs a few
+  tens of KB gzipped against the ~400 KB of the full `shiki` package).
+- The loader is resolved **once**, by whichever `<OrigamCode>` mounts first
+  on the page — `useCode()`'s highlighter is a page-wide singleton, so every
+  other instance (even one whose own `createOrigam()` ancestor set a
+  different `highlighter`, or none) reuses that same highlighter for the
+  rest of the page's life.
+- A highlighter that throws for a language it doesn't embed (e.g. a `langs`
+  subset narrower than origam's own `SUPPORTED_LANGS` — the example above
+  only bundles `ts` / `js`) degrades that ONE block to **plain,
+  un-highlighted text**, exactly like the "shiki absent" case above, rather
+  than breaking the page.
+
 ## Quick start
 
 ### Via the `code` prop

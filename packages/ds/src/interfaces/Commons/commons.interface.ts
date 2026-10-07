@@ -9,6 +9,7 @@ import type {
     IRtlOptions
 } from './locale.interface'
 import type { IOrigamTheme } from './theme.interface'
+import type { ICodeOptions } from '../Code/code.interface'
 
 import { TIconOptions } from '../../types/Icon/icon.type'
 import { TOrigamPluginOptionsImport } from '../../types/Commons/commons.type'
@@ -60,6 +61,8 @@ export interface IOrigamOptions {
      * injected. SSR-safe (injection is a no-op without `document`).
      */
     themes?: IOrigamTheme[]
+
+    code?: ICodeOptions
 }
 
 export interface IOrigamPluginOptions {
