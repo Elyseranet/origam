@@ -353,6 +353,7 @@
 					local teleport target (#drawer-attach-target) — NOT an OrigamLayout wrapper
 				</div>
 				<origam-drawer
+						v-if="attachTargetMounted"
 						:model-value="attachOpen"
 						attach="#drawer-attach-target"
 						data-cy="drawer-attached"
@@ -483,7 +484,7 @@
 		setup
 >
 	import { logEvent } from 'histoire/client'
-	import { ref } from 'vue'
+	import { onMounted, ref } from 'vue'
 
 	import { OrigamApp, OrigamAppBar, OrigamBtn, OrigamDrawer, OrigamMain } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
@@ -506,6 +507,32 @@
 	} from '@stories/const'
 
 	const attachOpen = ref<boolean>(true)
+
+	/*********************************************************
+	 * attachTargetMounted — #attach-harmonisation
+	 *
+	 * @description
+	 * `useTeleport()` resolves `attach` on the component's FIRST render.
+	 * In the "Prop - attach" Variant below, the local target div and
+	 * `<origam-drawer>` are SIBLINGS created in the SAME render pass,
+	 * under Histoire's own `<Suspense>` (`OrigamApp`/`OrigamLayout`): the
+	 * whole subtree, siblings included, is only committed to the real
+	 * DOM once Suspense resolves, so `document.querySelector('#drawer-
+	 * attach-target')` can race and fail on that very first evaluation —
+	 * `useTeleport`'s own doc comment documents this as a REAL case it
+	 * does not retry in a 100%-client app (Histoire has no SSR to
+	 * protect, so its `useHydration()` gate never delays anything here).
+	 * A freshly-mounted sibling target never happens in real usage (a
+	 * consumer points `attach` at something that already exists), so the
+	 * fix belongs HERE, not in the shared composable: defer mounting the
+	 * drawer itself until this story's own `onMounted` — i.e. until
+	 * Suspense has already resolved and the target div is genuinely
+	 * connected to `document`.
+	 ********************************************************/
+	const attachTargetMounted = ref<boolean>(false)
+	onMounted(() => {
+		attachTargetMounted.value = true
+	})
 
 	const DRAWER_LOCATION_OPTIONS = [
 		{ label: 'left',   value: 'left' },

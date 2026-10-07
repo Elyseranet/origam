@@ -81,6 +81,7 @@
 					local teleport target (#snackbar-group-attach-target)
 				</div>
 				<origam-snackbar-group
+						v-if="attachTargetMounted"
 						id="attach-demo"
 						attach="#snackbar-group-attach-target"
 						data-cy="snackbar-group-attached"
@@ -153,6 +154,7 @@
 		setup
 >
 	import { logEvent } from 'histoire/client'
+	import { onMounted, ref } from 'vue'
 
 	import { OrigamBtn, OrigamSnackbarGroup } from '@origam/components'
 
@@ -177,6 +179,32 @@
 		intent: TIntent
 		dismissible: boolean
 	}
+
+	/*********************************************************
+	 * attachTargetMounted — #attach-harmonisation
+	 *
+	 * @description
+	 * `useTeleport()` resolves `attach` on the component's FIRST render.
+	 * In the "Prop - attach" Variant below, the local target div and
+	 * `<origam-snackbar-group>` are SIBLINGS created in the SAME render
+	 * pass, under Histoire's own `<Suspense>` (`OrigamApp`/`OrigamLayout`):
+	 * the whole subtree, siblings included, is only committed to the real
+	 * DOM once Suspense resolves, so `document.querySelector('#snackbar-
+	 * group-attach-target')` can race and fail on that very first
+	 * evaluation — `useTeleport`'s own doc comment documents this as a
+	 * REAL case it does not retry in a 100%-client app (Histoire has no
+	 * SSR to protect, so its `useHydration()` gate never delays anything
+	 * here). A freshly-mounted sibling target never happens in real usage
+	 * (a consumer points `attach` at something that already exists), so
+	 * the fix belongs HERE, not in the shared composable: defer mounting
+	 * the stack itself until this story's own `onMounted` — i.e. until
+	 * Suspense has already resolved and the target div is genuinely
+	 * connected to `document`.
+	 ********************************************************/
+	const attachTargetMounted = ref<boolean>(false)
+	onMounted(() => {
+		attachTargetMounted.value = true
+	})
 
 	const LOCATION_OPTIONS: Array<IOptions<TSnackbarGroupLocation | undefined>> = [
 		{ label: '(auto)', value: undefined },
