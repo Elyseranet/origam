@@ -1,4 +1,5 @@
 import type { IComponentDoc } from '~/interfaces/components-catalog.interface'
+import type { IComponentPreviewChild } from '~/interfaces/component-preview.interface'
 
 /**
  * Props de `<component-live-preview>` — l'aperçu live d'UN composant du DS,
@@ -37,4 +38,22 @@ export interface IComponentLivePreviewProps {
      * variante qui marche.
      */
     curatedReason?: boolean
+}
+
+/**
+ * Props de `<component-live-preview-instance>` — l'instance RENDUE d'un
+ * composant du DS, extraite de `<component-live-preview>` pour pouvoir être
+ * montée soit à la racine, soit dans le slot d'une `IComponentPreviewParentEnvelope`
+ * (`component-preview.interface.ts`) sans dupliquer les deux branches de
+ * rendu (avec / sans contenu de slot).
+ */
+export interface IComponentLivePreviewInstanceProps {
+    /** Tag réel du composant à monter, ex. `origam-btn`. */
+    tag: string
+    /** Props finales de l'instance (déjà fusionnées — voir `previewPropsFor`). */
+    instanceProps?: Record<string, unknown>
+    /** Enfants à rendre dans le slot par défaut. */
+    children?: IComponentPreviewChild[]
+    /** Texte à rendre dans le slot par défaut, si aucun enfant. */
+    slotText?: string
 }

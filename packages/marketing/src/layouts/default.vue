@@ -321,9 +321,14 @@
       @select="handlePaletteSelect"
     />
 
-    <origam-main :id="SKIP_LINK_TARGET_ID">
+    <origam-main
+      :id="SKIP_LINK_TARGET_ID"
+      class="site-main"
+    >
       <slot/>
     </origam-main>
+
+    <nav-rail @open-palette="openPalette"/>
 
     <footer class="site-footer">
       <origam-grid
@@ -747,10 +752,76 @@
     }
   }
 
+  /*
+    ⛔ RESERVATION DE LA GOUTTIERE DU RAIL — #1032.
+
+    Le rail est en `position: fixed`, donc hors flux : sans cette reserve il
+    passe PAR-DESSUS la colonne de texte des que la fenetre se resserre.
+    C'est la seule regle de mise en page que le rail impose a la page.
+
+    Le nombre n'est pas ecrit en dur : `--nav-rail---width` et
+    `--nav-rail---gutter` sont posees par `NavRail.vue` depuis
+    `nav-rail.const.ts`, et la meme somme sert a decaler le panneau
+    (`NAV_RAIL_PANEL_OFFSET`). Les replis valent les constantes du jour.
+
+    Le seuil est 600px parce que SOUS 600px le rail n'est plus au bord droit
+    : il devient une cible unique en bas a droite, qui ne recouvre aucune
+    ligne de texte et n'a donc aucune gouttiere a reserver.
+  */
+  @media (min-width: 37.5rem) {
+    .site-main {
+      padding-inline-end: calc(
+        var(--nav-rail---width, 56px) + var(--nav-rail---gutter, 16px) * 2
+      );
+    }
+  }
+
+  /*
+    ⛔ LA NAV PRINCIPALE CEDE LA PLACE AU RAIL SOUS 600px — #1032.
+
+    Mesure du 2026-10-02 sur /roadmap a 400px de large (glass/light, cookie
+    pose avant chargement) : `.primary-nav` s'etend jusqu'a `right=506` dans
+    un viewport de 400, et `header.origam-toolbar` la CLIPPE
+    (`overflow-x: hidden`). Elle ne faisait donc pas defiler le document —
+    elle rendait TROIS commandes inatteignables tout en les laissant dans le
+    parcours de tabulation, `visibility: visible` : `nav-section-features`
+    (right=413), `nav-theming` (right=506) et `theme-switcher-trigger`
+    (right=553).
+
+    On ne masque donc pas une navigation qui marchait : on retire du parcours
+    clavier des cibles invisibles, et le rail porte la navigation a sa place
+    (volet « Pages », qui reprend `NAV_SECTIONS`). `display: none` et pas
+    `visibility: hidden` : il faut qu'elles sortent AUSSI de la tabulation.
+  */
+  @media (max-width: 37.4375rem) {
+    .primary-nav {
+      display: none;
+    }
+  }
+
+  /*
+    ⛔ LE DEBORDEMENT HORIZONTAL DU PIED DE PAGE — #1032.
+
+    Mesure du 2026-10-02, 17 des 18 pages du marketing debordaient de
+    exactement 11px a 400px de large, et la cause n'est PAS la navigation :
+    c'est cette grille. `FOOTER_GRID_COLUMNS = '2fr 1fr 1fr 1fr'` est une
+    valeur unique — `IGridProps.columns` n'a aucune declinaison par palier —
+    donc les quatre colonnes ne se replient jamais et la derniere sort du
+    viewport.
+
+    `OrigamGrid` pose `--origam-grid---template-columns` en style INLINE
+    (`OrigamGrid.vue:172`), qu'aucune regle de feuille ne peut surcharger ;
+    on surcharge donc `grid-template-columns` directement, que son SCSS lit
+    via cette variable (`:262`).
+  */
   @media (max-width: 40rem) {
     .site-footer__sitemap {
       grid-auto-flow: row;
       grid-template-rows: none;
+    }
+
+    .site-footer__top {
+      grid-template-columns: 1fr;
     }
   }
 </style>
