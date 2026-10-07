@@ -1,5 +1,6 @@
 import type { Ref } from 'vue'
 
+import type { IAttachProps } from '../Commons/attach.interface'
 import type {
     ICommonsComponentProps,
     ITagProps
@@ -23,7 +24,7 @@ import type {
  * The component subscribes to its registered stack `id` and re-renders
  * when the underlying `items` ref changes.
  */
-export interface ISnackbarGroupProps extends ICommonsComponentProps, ITagProps {
+export interface ISnackbarGroupProps extends ICommonsComponentProps, ITagProps, IAttachProps {
     /**
      * Identifier of the stack this container renders. Pair with
      * `useSnackbarGroup({ id })` to spawn items into the same stack.

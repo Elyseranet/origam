@@ -16,6 +16,7 @@
 					closeOnSelect: true,
 					closeOnEscape: true,
 					closeOnBackdrop: true,
+					attach: undefined,
 					fontSize: undefined
 				})"
 		>
@@ -39,6 +40,7 @@
 							:close-on-select="state.closeOnSelect"
 							:close-on-escape="state.closeOnEscape"
 							:close-on-backdrop="state.closeOnBackdrop"
+							:attach="state.attach"
 							:font-size="state.fontSize"
 					/>
 				</div>
@@ -59,6 +61,7 @@
 					<HstCheckbox v-model="state.closeOnSelect"  title="Close on Select"/>
 					<HstCheckbox v-model="state.closeOnEscape"  title="Close on Escape"/>
 					<HstCheckbox v-model="state.closeOnBackdrop" title="Close on Backdrop"/>
+					<HstText v-model="state.attach" title="Attach (CSS selector)"/>
 				</StoryGroup>
 				<StoryGroup title="Typography">
 					<HstSelect v-model="state.fontSize" title="Font Size" :options="FONT_SIZE_OPTIONS"/>
@@ -181,6 +184,29 @@
 			</div>
 		</Variant>
 
+		<Variant title="Prop - attach">
+			<div class="story-shell">
+				<origam-btn
+						text="Open (attach to local target)"
+						@click="openAttachTarget = true"
+				/>
+				<div
+						id="command-palette-attach-target"
+						class="story-attach-target"
+						data-cy="command-palette-attach-target"
+				>
+					local teleport target (#command-palette-attach-target)
+				</div>
+				<origam-command-palette
+						v-if="attachTargetMounted"
+						v-model="openAttachTarget"
+						:commands="GROUPS_FIXTURE"
+						attach="#command-palette-attach-target"
+						data-cy="command-palette-attached"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<ICommandPaletteProps>({
@@ -193,6 +219,7 @@
 					closeOnSelect: true,
 					closeOnEscape: true,
 					closeOnBackdrop: true,
+					attach: undefined,
 					fontSize: undefined
 				})"
 		>
@@ -228,6 +255,7 @@
 					<HstCheckbox v-model="state.closeOnSelect"    title="Close on Select"/>
 					<HstCheckbox v-model="state.closeOnEscape"    title="Close on Escape"/>
 					<HstCheckbox v-model="state.closeOnBackdrop"  title="Close on Backdrop"/>
+					<HstText v-model="state.attach" title="Attach (CSS selector)"/>
 				</StoryGroup>
 				<StoryGroup title="Typography">
 					<HstSelect v-model="state.fontSize" title="Font Size" :options="FONT_SIZE_OPTIONS"/>
@@ -242,7 +270,7 @@
 		setup
 >
 	import { logEvent } from 'histoire/client'
-	import { ref } from 'vue'
+	import { onMounted, ref } from 'vue'
 
 	import { OrigamBtn, OrigamCommandPalette } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
@@ -264,6 +292,34 @@
 	const openSlotItem = ref<boolean>(false)
 	const openSlotEmpty = ref<boolean>(false)
 	const openSlotFooter = ref<boolean>(false)
+	const openAttachTarget = ref<boolean>(false)
+
+	/*********************************************************
+	 * attachTargetMounted — #attach-harmonisation
+	 *
+	 * @description
+	 * `useTeleport()` resolves `attach` on the component's FIRST render,
+	 * before `isActive`/`openAttachTarget` even matters — not on open. In
+	 * this Variant the local target div and `<origam-command-palette>` are
+	 * SIBLINGS created in the SAME render pass, under Histoire's own
+	 * `<Suspense>` (`OrigamApp`/`OrigamLayout`): the whole subtree,
+	 * siblings included, is only committed to the real DOM once Suspense
+	 * resolves, so `document.querySelector('#command-palette-attach-
+	 * target')` can race and fail on that very first evaluation —
+	 * `useTeleport`'s own doc comment documents this as a REAL case it
+	 * does not retry in a 100%-client app (Histoire has no SSR to protect,
+	 * so its `useHydration()` gate never delays anything here). A
+	 * freshly-mounted sibling target never happens in real usage (a
+	 * consumer points `attach` at something that already exists), so the
+	 * fix belongs HERE, not in the shared composable: defer mounting the
+	 * palette itself until this Variant's own `onMounted` — i.e. until
+	 * Suspense has already resolved and the target div is genuinely
+	 * connected to `document`.
+	 ********************************************************/
+	const attachTargetMounted = ref<boolean>(false)
+	onMounted(() => {
+		attachTargetMounted.value = true
+	})
 
 	const PLAYGROUND_COMMANDS: ReadonlyArray<ICommand> = [
 		{ id: 'new', label: 'New document', icon: MDI_ICONS.FILE_PLUS, kbd: ['meta', 'n'], group: 'Actions', perform: () => logEvent('cmd', 'new') },
@@ -332,6 +388,16 @@
 	.story-status {
 		font: 0.875rem/1.4 system-ui, sans-serif;
 		color: var(--origam-color__text---secondary, rgba(0, 0, 0, 0.66));
+	}
+
+	.story-attach-target {
+		position: relative;
+		min-height: 80px;
+		padding: 12px;
+		border: 1px dashed var(--origam-color__border---subtle, rgba(0, 0, 0, 0.2));
+		border-radius: 8px;
+		font: 0.8125rem/1.4 system-ui, sans-serif;
+		color: var(--origam-color__text---secondary, rgba(0, 0, 0, 0.55));
 	}
 
 	.slot-avatar {

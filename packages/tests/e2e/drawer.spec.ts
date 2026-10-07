@@ -14,7 +14,8 @@ import { expect, test } from '@playwright/test'
  *   6  → Slots - Prepend
  *   7  → Slots - Append
  *   8  → Slots - Wrapper
- *   9  → Default (playground — data-cy="drawer-playground")
+ *   9  → Prop - attach           (teleport override — #attach-harmonisation)
+ *   10 → Default (playground — data-cy="drawer-playground")
  *
  * ## Notes d'implémentation
  *
@@ -327,20 +328,58 @@ test.describe('OrigamDrawer', () => {
 	})
 
 	// ------------------------------------------------------------------ //
-	// DEFAULT / PLAYGROUND (index 9)                                       //
+	// PROP - ATTACH (index 9) — #attach-harmonisation                      //
+	// init: standalone drawer (no <origam-app>), attach="#drawer-attach-   //
+	// target". Proves `attach` OVERRIDES the layout-wrapper / orphan-      //
+	// inline default and teleports into the explicit local target.        //
+	// ------------------------------------------------------------------ //
+
+	test.describe('Prop - attach', () => {
+		test('attach="#selector" teleports the drawer as a descendant of that target, not document.body', async ({ page }) => {
+			await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
+			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+
+			const drawer = sandbox.locator('[data-cy="drawer-attached"]')
+			await expect(drawer).toBeVisible({ timeout: 12000 })
+
+			// useTeleport inserts a `.origam-overlay-container` directly inside
+			// the resolved target and teleports into THAT container — so the
+			// grandparent (not the immediate parent) is the resolved target.
+			const grandparentId = await drawer.evaluate((el) => el.parentElement?.parentElement?.id)
+			expect(grandparentId).toBe('drawer-attach-target')
+
+			const grandparentTag = await drawer.evaluate((el) => el.parentElement?.parentElement?.tagName)
+			expect(grandparentTag).not.toBe('BODY')
+		})
+
+		test('the local target element actually contains the teleported node (not a visual coincidence)', async ({ page }) => {
+			await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
+			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+
+			const target = sandbox.locator('#drawer-attach-target')
+			await expect(target).toBeVisible({ timeout: 12000 })
+
+			const containsDrawer = await target.evaluate((el) => el.querySelector('.origam-drawer') !== null)
+			expect(containsDrawer).toBe(true)
+		})
+	})
+
+	// ------------------------------------------------------------------ //
+	// DEFAULT / PLAYGROUND (index 10 — shifted by the new "Prop - attach" //
+	// Variant inserted immediately before it, #attach-harmonisation)       //
 	// init: { open: true, permanent: true, … }                            //
 	// ------------------------------------------------------------------ //
 
 	test.describe('Default (Playground)', () => {
 		test('playground wrapper is visible (data-cy="drawer-playground")', async ({ page }) => {
-			await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
+			await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			// data-cy is on the outer div (not teleported) wrapping <origam-app>
 			await expect(sandbox.locator('[data-cy="drawer-playground"]')).toBeVisible({ timeout: 12000 })
 		})
 
 		test('drawer is visible in playground at init (open=true, permanent=true)', async ({ page }) => {
-			await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
+			await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const drawer = sandbox.locator('.origam-drawer').first()
 			await expect(drawer).toBeVisible({ timeout: 12000 })
@@ -348,7 +387,7 @@ test.describe('OrigamDrawer', () => {
 		})
 
 		test('playground drawer has left location by default', async ({ page }) => {
-			await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
+			await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const drawer = sandbox.locator('.origam-drawer').first()
 			await expect(drawer).toBeVisible({ timeout: 12000 })
@@ -356,10 +395,23 @@ test.describe('OrigamDrawer', () => {
 		})
 
 		test('Menu button is present in the playground AppBar', async ({ page }) => {
-			await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
+			await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			// Menu button has aria-label="Menu" (distinct from Toggle in Functional)
 			await expect(sandbox.locator('button[aria-label="Menu"]').first()).toBeVisible({ timeout: 12000 })
+		})
+
+		test('default (unset) attach keeps teleporting into the OrigamLayout wrapper, not document.body', async ({ page }) => {
+			// Negative control for the attach test above — on the SAME
+			// component, with attach left at its `null` default, the drawer
+			// must NOT land as a direct child of <body>.
+			await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
+			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+			const drawer = sandbox.locator('.origam-drawer').first()
+			await expect(drawer).toBeVisible({ timeout: 12000 })
+
+			const parentClass = await drawer.evaluate((el) => el.parentElement?.className ?? '')
+			expect(parentClass).toContain('origam-layout__wrapper')
 		})
 	})
 })

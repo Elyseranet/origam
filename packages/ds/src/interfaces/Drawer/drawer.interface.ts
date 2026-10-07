@@ -1,5 +1,6 @@
 import type { IActiveProps } from '../Commons/active.interface'
 import type { IAdjacentSlots } from '../Commons/adjacent.interface'
+import type { IAttachProps } from '../Commons/attach.interface'
 import type {
     IBgColorProps,
     IColorProps
@@ -21,7 +22,7 @@ import type { IScrimProps } from '../Overlay/overlay-scrim.interface'
 import type { ITransitionComponentProps } from '../Commons/transition-component.interface'
 
 
-export interface IDrawerProps extends ITagProps, ICommonsComponentProps, IBorderProps, IElevationProps, ILayoutItemProps, IRoundedProps, IColorProps, IBgColorProps, IDensityProps, IPaddingProps, IMarginProps, ITransitionComponentProps, IScrimProps, IActiveProps, IHoverProps {
+export interface IDrawerProps extends ITagProps, ICommonsComponentProps, IBorderProps, IElevationProps, ILayoutItemProps, IRoundedProps, IColorProps, IBgColorProps, IDensityProps, IPaddingProps, IMarginProps, ITransitionComponentProps, IScrimProps, IActiveProps, IHoverProps, IAttachProps {
     disableResizeWatcher?: boolean
     disableRouteWatcher?: boolean
     expandOnHover?: boolean
@@ -69,6 +70,28 @@ export interface IDrawerProps extends ITagProps, ICommonsComponentProps, IBorder
      *               Drawer before AppBar → drawer full-height.
      */
     clipped?: boolean | null
+    /**
+     * `attach` — inherited from `IAttachProps`, re-documented here because
+     * `OrigamDrawer`'s DEFAULT target is not `document.body` like the rest
+     * of the Overlay family: it teleports into its `<OrigamLayout>`
+     * ancestor's `.origam-layout__wrapper` (by `id`, via `useLayoutItem`),
+     * or renders inline when no `<OrigamLayout>` ancestor exists (the
+     * "orphan" case).
+     *
+     *   • `null` (default) → keep the layout-wrapper / orphan-inline
+     *               behaviour described above. Declared as the explicit
+     *               `withDefaults` value so Vue's boolean-prop casting —
+     *               which would otherwise force an UNSET `attach` to
+     *               `false` — never overrides it. Same device as `push` /
+     *               `clipped` above.
+     *   • `true`  → render in place, bypassing BOTH the layout teleport
+     *               AND the orphan fallback.
+     *   • `false` → `document.body`, same as the rest of the Overlay
+     *               family — escapes the layout wrapper entirely.
+     *   • a CSS selector `string` / an `Element` → teleport there instead
+     *               of the layout wrapper.
+     */
+    attach?: boolean | string | Element | null
 }
 
 /**

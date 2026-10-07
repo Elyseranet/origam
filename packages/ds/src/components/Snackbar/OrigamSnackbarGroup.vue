@@ -1,5 +1,8 @@
 <template>
-  <teleport to="body">
+  <teleport
+    :disabled="!teleportTarget"
+    :to="teleportTarget"
+  >
     <component
       :is="tag"
       :id="resolvedDomId"
@@ -46,6 +49,7 @@
   import { useLocale } from '../../composables/Commons/locale.composable'
   import { useProps } from '../../composables/Commons/props.composable'
   import { useStyle } from '../../composables/Commons/style.composable'
+  import { useTeleport } from '../../composables/Commons/teleport.composable'
   import { useSnackbarGroupInternal } from '../../composables/Snackbar/snackbarGroupInternal.composable'
 
   import { INTENT } from '../../enums/Commons/intent.enum'
@@ -63,12 +67,14 @@
    * inheritAttrs — #916 / #853
    *
    * @description
-   * The single root is a `<teleport to="body">`, and Vue treats the TELEPORT
-   * shapeFlag like a fragment for automatic attrs inheritance — its own
-   * message says "renders fragment or text or teleport root nodes". It
-   * therefore logs "Extraneous non-props attributes", and that warning
-   * serialises every ancestor's props including Vue Router's `RouteProvider`
-   * vnode: ~4.4 MB per occurrence (#853).
+   * The single root is a `<teleport>` (to `document.body` by default, or
+   * wherever `attach` resolves via `useTeleport` — #attach-harmonisation),
+   * and Vue treats the TELEPORT shapeFlag like a fragment for automatic
+   * attrs inheritance — its own message says "renders fragment or text or
+   * teleport root nodes". It therefore logs "Extraneous non-props
+   * attributes", and that warning serialises every ancestor's props
+   * including Vue Router's `RouteProvider` vnode: ~4.4 MB per occurrence
+   * (#853).
    *
    * ⛔ The flag alone would SILENTLY swallow a consumer's `class` / `style` /
    * `data-cy` / `aria-*` / listeners — #492's defect. They are therefore
@@ -121,6 +127,18 @@
   const { filterProps } = useProps<ISnackbarGroupProps>(props)
 
   const rootRef = ref<HTMLElement>()
+
+  /*********************************************************
+   * Teleport — #attach-harmonisation
+   *
+   * @description
+   * `attach` was previously absent and the stack hard-coded
+   * `<teleport to="body">`. `useTeleport` is the single resolution
+   * point the rest of the Overlay family (`OrigamOverlay`) already
+   * consumes — deferred into a `computed` (never read eagerly in
+   * `setup()`) so a themed `attach` value is honoured.
+   ********************************************************/
+  const { teleportTarget } = useTeleport(computed(() => props.attach || false))
 
   /*********************************************************
    * Store wiring

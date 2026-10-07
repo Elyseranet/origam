@@ -1,5 +1,8 @@
 <template>
-	<teleport to="body">
+	<teleport
+			:disabled="!teleportTarget"
+			:to="teleportTarget"
+	>
 		<transition name="origam-command-palette--fade">
 			<div
 					v-if="isActive"
@@ -178,6 +181,7 @@
 
 	import { useHotkey } from '../../composables/Commons/hotkey.composable'
 	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useTeleport } from '../../composables/Commons/teleport.composable'
 
 	import { useTypography } from '../../composables/Commons/typography.composable'
 
@@ -203,15 +207,20 @@
 	 * inheritAttrs — #916 / #853
 	 *
 	 * @description
-	 * The single root is a `<teleport to="body">`, and Vue treats the TELEPORT
-	 * shapeFlag like a fragment for automatic attrs inheritance — its own
-	 * message says "renders fragment or text or teleport root nodes". It
-	 * therefore logs "Extraneous non-props attributes", whose component trace
-	 * serialises every ancestor's props including Vue Router's `RouteProvider`
-	 * vnode: ~4.4 MB per occurrence, the mechanism behind #853's 5.5 GB log.
+	 * The single root is a `<teleport>` (to `document.body` by default, or
+	 * wherever `attach` resolves via `useTeleport`), and Vue treats the
+	 * TELEPORT shapeFlag like a fragment for automatic attrs inheritance —
+	 * its own message says "renders fragment or text or teleport root
+	 * nodes". It therefore logs "Extraneous non-props attributes", whose
+	 * component trace serialises every ancestor's props including Vue
+	 * Router's `RouteProvider` vnode: ~4.4 MB per occurrence, the mechanism
+	 * behind #853's 5.5 GB log.
 	 *
 	 * This palette does NOT go through `OrigamOverlay` — it owns a hand-rolled
-	 * `<teleport>` — so #915's fix on the overlay does not reach it.
+	 * `<teleport>` — so #915's fix on the overlay does not reach it. `attach`
+	 * is resolved the same way `OrigamOverlay` resolves it though — through
+	 * the shared `useTeleport()` composable, the single consumption point for
+	 * the whole DS (#attach-harmonisation).
 	 *
 	 * ⛔ The flag alone would SILENTLY swallow the consumer's attributes, and
 	 * there is a real one: `packages/marketing/src/layouts/default.vue` passes
@@ -273,6 +282,18 @@
 	watch(isActive, (next) => {
 		if (next !== registryOpen.value) registryOpen.value = next
 	})
+
+	/*********************************************************
+	 * Teleport — #attach-harmonisation
+	 *
+	 * @description
+	 * `attach` was previously absent and the palette hard-coded
+	 * `<teleport to="body">`. `useTeleport` is the single resolution
+	 * point the rest of the Overlay family (`OrigamOverlay`) already
+	 * consumes — deferred into a `computed` (never read eagerly in
+	 * `setup()`) so a themed `attach` value is honoured.
+	 ********************************************************/
+	const { teleportTarget } = useTeleport(computed(() => props.attach || false))
 
 	/*********************************************************
 	 * IDs & refs

@@ -218,6 +218,58 @@ test.describe('OrigamCommandPalette — backdrop', () => {
     })
 })
 
+test.describe('OrigamCommandPalette — Prop: attach (#attach-harmonisation)', () => {
+    test('attach="#selector" teleports the dialog as a descendant of that target, not document.body', async ({ page }) => {
+        await openVariant(page, STORY, 'Prop - attach')
+        const sandbox = sandboxOf(page)
+
+        await sandbox.getByRole('button', { name: 'Open (attach to local target)', exact: true }).click()
+
+        const palette = sandbox.locator('[data-cy="command-palette-attached"]')
+        await expect(palette).toBeVisible({ timeout: 4000 })
+
+        // useTeleport inserts a `.origam-overlay-container` directly inside
+        // the resolved target and teleports into THAT container — so the
+        // grandparent (not the immediate parent) is the resolved target.
+        const grandparentId = await palette.evaluate((el) => el.parentElement?.parentElement?.id)
+        expect(grandparentId).toBe('command-palette-attach-target')
+
+        const grandparentTag = await palette.evaluate((el) => el.parentElement?.parentElement?.tagName)
+        expect(grandparentTag).not.toBe('BODY')
+    })
+
+    test('the local target element actually contains the teleported node', async ({ page }) => {
+        await openVariant(page, STORY, 'Prop - attach')
+        const sandbox = sandboxOf(page)
+
+        await sandbox.getByRole('button', { name: 'Open (attach to local target)', exact: true }).click()
+
+        const target = sandbox.locator('#command-palette-attach-target')
+        await expect(target).toBeVisible({ timeout: 4000 })
+
+        const containsPalette = await target.evaluate((el) => el.querySelector('.origam-command-palette') !== null)
+        expect(containsPalette).toBe(true)
+    })
+
+    test('default (unset) attach teleports to document.body, not the local target — negative control', async ({ page }) => {
+        await openVariant(page, STORY, 'Default')
+        const sandbox = sandboxOf(page)
+
+        await sandbox.getByRole('button', { name: 'Open palette', exact: true }).click()
+
+        const dialog = sandbox.locator('[role="dialog"]').first()
+        await expect(dialog).toBeVisible({ timeout: 4000 })
+
+        // `useTeleport` inserts a `.origam-overlay-container` directly
+        // inside the resolved target and teleports the backdrop root into
+        // THAT container — so the GRANDPARENT (not the immediate parent)
+        // is the resolved target, here the default `document.body`.
+        const backdropRoot = sandbox.locator('.origam-command-palette').first()
+        const grandparentTag = await backdropRoot.evaluate((el) => el.parentElement?.parentElement?.tagName)
+        expect(grandparentTag).toBe('BODY')
+    })
+})
+
 // Story realignment: neither "Prop — groups" nor "Prop — kbd display" has a
 // dedicated replacement Variant, but the underlying fixtures they exercised
 // are still used elsewhere in the story — re-targeted rather than invented
