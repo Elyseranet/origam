@@ -1,9 +1,48 @@
+<template>
+  <div class="tbc-color-field">
+    <div
+      class="tbc-color-field__select-wrap"
+      :data-cy="selectDataCy"
+    >
+      <origam-select
+        :model-value="selectValue"
+        :items="selectItems"
+        :label="label"
+        variant="outlined"
+        density="compact"
+        hide-details
+        class="tbc-color-field__select"
+        @update:model-value="onSelect"
+      />
+    </div>
+
+    <fieldset
+      v-if="isCustom"
+      class="tbc-color-field__fieldset tb-reveal"
+    >
+      <legend class="tbc-color-field__legend">{{ t('theming.control.color.custom_label', 'Custom colour') }}</legend>
+      <div :data-cy="customDataCy">
+        <origam-color-picker-field
+          :model-value="customHex"
+          :label="t('theming.control.color.custom_label', 'Custom colour')"
+          variant="outlined"
+          density="compact"
+          hide-details
+          class="tbc-color-field__custom"
+          @update:model-value="onCustom"
+        />
+      </div>
+    </fieldset>
+  </div>
+</template>
+
 <script setup lang="ts">
 import { computed } from 'vue'
 
 import { useT } from '~/composables/useT'
 import { useThemeBuilderColorControl } from '~/composables/useThemeBuilderColorControl'
 import { THEME_BUILDER_CUSTOM_VALUE, THEME_BUILDER_INTENT_OPTIONS, THEME_BUILDER_UNSET_VALUE } from '~/consts/theme-builder-controls.const'
+import type { IThemeBuilderColorFieldEmits, IThemeBuilderColorFieldProps } from "~/interfaces/theme-builder.interface";
 
 /**
  * ThemeBuilderColorField — Contrôle 1 (`color-field.html`): named-intent
@@ -15,15 +54,9 @@ import { THEME_BUILDER_CUSTOM_VALUE, THEME_BUILDER_INTENT_OPTIONS, THEME_BUILDER
  * for a standalone `borderColor` when a component has no `border` control to
  * fold it into.
  */
-const props = defineProps<{
-    modelValue: unknown
-    label: string
-    dataCy: string
-}>()
+const props = withDefaults(defineProps<IThemeBuilderColorFieldProps>(), {})
 
-const emit = defineEmits<{
-    (e: 'update:modelValue', value: string | undefined): void
-}>()
+const emit = defineEmits<IThemeBuilderColorFieldEmits>()
 
 const { t } = useT()
 
@@ -87,44 +120,6 @@ const onCustom = (value: unknown): void => {
     if (typeof value === 'string') selectCustom(value)
 }
 </script>
-
-<template>
-    <div class="tbc-color-field">
-        <div
-            class="tbc-color-field__select-wrap"
-            :data-cy="selectDataCy"
-        >
-            <origam-select
-                :model-value="selectValue"
-                :items="selectItems"
-                :label="label"
-                variant="outlined"
-                density="compact"
-                hide-details
-                class="tbc-color-field__select"
-                @update:model-value="onSelect"
-            />
-        </div>
-
-        <fieldset
-            v-if="isCustom"
-            class="tbc-color-field__fieldset tb-reveal"
-        >
-            <legend class="tbc-color-field__legend">{{ t('theming.control.color.custom_label', 'Custom colour') }}</legend>
-            <div :data-cy="customDataCy">
-                <origam-color-picker-field
-                    :model-value="customHex"
-                    :label="t('theming.control.color.custom_label', 'Custom colour')"
-                    variant="outlined"
-                    density="compact"
-                    hide-details
-                    class="tbc-color-field__custom"
-                    @update:model-value="onCustom"
-                />
-            </div>
-        </fieldset>
-    </div>
-</template>
 
 <style scoped lang="scss">
 .tbc-color-field {

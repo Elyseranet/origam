@@ -1,3 +1,509 @@
+<template>
+  <article
+    class="directive-detail"
+    :data-cy="`page-directive-${slug}`"
+  >
+    <div
+      v-if="!catalogEntry"
+      class="directive-detail-not-found"
+      data-cy="directive-not-found"
+    >
+      <origam-container class="directive-detail-not-found__inner">
+        <origam-avatar
+          icon="mdi-help-circle-outline"
+          color="warning"
+          rounded="lg"
+          size="64"
+          aria-hidden="true"
+        />
+
+        <origam-title
+          tag="h1"
+          class="directive-detail-not-found__title"
+        >
+          {{ t('directives.detail.not_found.title', 'Directive not found') }}
+        </origam-title>
+
+        <p class="directive-detail-not-found__desc">
+          {{ t('directives.detail.not_found.desc', 'No directive matches the slug') }}
+          <origam-code
+            :code="slug"
+            lang="plaintext"
+            compact
+            class="directive-detail-not-found__slug-code"
+          />
+        </p>
+
+        <origam-btn
+          href="/directives"
+          prepend-icon="mdi-arrow-left"
+          variant="tonal"
+          color="primary"
+          data-cy="directive-not-found-back"
+        >
+          {{ t('directives.detail.not_found.back', 'Back to directives') }}
+        </origam-btn>
+      </origam-container>
+    </div>
+
+    <template v-else>
+      <div
+        class="directive-hero"
+        aria-labelledby="directive-title"
+      >
+        <origam-container class="directive-hero__container">
+          <nav
+            class="directive-hero__breadcrumb"
+            :aria-label="t('directives.detail.breadcrumb_label', 'Page location')"
+          >
+            <nuxt-link
+              to="/directives"
+              class="directive-hero__breadcrumb-link"
+              data-cy="directive-breadcrumb-catalog"
+            >
+              {{ t('directives.detail.breadcrumb_catalog', 'Directives') }}
+            </nuxt-link>
+
+            <span
+              class="directive-hero__breadcrumb-sep"
+              aria-hidden="true"
+            >›</span>
+
+            <span
+              class="directive-hero__breadcrumb-current"
+              aria-current="page"
+            >
+                            {{ directiveName }}
+                        </span>
+          </nav>
+
+          <div class="directive-hero__identity">
+            <div class="directive-hero__title-row">
+              <origam-title
+                id="directive-title"
+                tag="h1"
+                class="directive-hero__title"
+              >
+                {{ directiveName }}
+              </origam-title>
+
+              <origam-chip
+                color="secondary"
+                size="small"
+                variant="outlined"
+                class="directive-hero__category-chip"
+              >
+                {{ t('directives.detail.category', 'Directive') }}
+              </origam-chip>
+            </div>
+
+            <p class="directive-hero__desc">
+              {{ t(directiveDescKey, directiveDescFallback) }}
+            </p>
+
+            <div class="directive-hero__bottom">
+              <nav
+                v-if="displayDoc?.storyUrl"
+                class="directive-hero__actions"
+                :aria-label="t('directives.detail.external_links_label', 'External resources')"
+              >
+                <origam-btn
+                  :href="displayDoc.storyUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variant="outlined"
+                  size="small"
+                  prepend-icon="mdi-play-circle-outline"
+                  data-cy="directive-story-link"
+                >
+                  {{ t('directives.detail.hero.story_label', 'Story') }}
+                </origam-btn>
+
+                <origam-btn
+                  :href="`https://github.com/origam-io/origam/blob/main/packages/ds/src/directives/${directiveName}/origam-${slug}.directive.ts`"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variant="text"
+                  size="small"
+                  prepend-icon="mdi-github"
+                  data-cy="directive-source-link"
+                >
+                  {{ t('directives.detail.hero.source_label', 'Source') }}
+                </origam-btn>
+              </nav>
+
+              <origam-btn
+                v-if="displayDoc?.signatureSummary"
+                class="directive-hero__signature-btn"
+                variant="text"
+                size="small"
+                :aria-label="t('directives.detail.hero.signature_copy_label', 'Copy directive signature')"
+                :data-cy="`directive-signature-btn-${slug}`"
+                @click="copySignature(displayDoc.signatureSummary)"
+              >
+                <span class="directive-hero__signature-text">{{ displayDoc.signatureSummary }}</span>
+                <origam-icon
+                  :icon="signatureCopied ? 'mdi-check' : 'mdi-content-copy'"
+                  size="14"
+                  aria-hidden="true"
+                />
+              </origam-btn>
+            </div>
+          </div>
+        </origam-container>
+      </div>
+
+      <origam-container>
+        <div class="directive-detail__layout">
+          <aside
+            v-if="tocSections.length > 0"
+            class="directive-toc"
+            :aria-label="t('directives.detail.toc_label', 'Table of contents')"
+            data-cy="directive-toc"
+          >
+            <p class="directive-toc__heading">
+              {{ t('directives.detail.toc_heading', 'On this page') }}
+            </p>
+
+            <origam-grid
+              tag="ul"
+              columns="1"
+              gap="0.25rem"
+              class="directive-toc__list"
+            >
+              <origam-grid-item
+                v-for="section in tocSections"
+                :key="section.id"
+                tag="li"
+                class="directive-toc__item"
+                :class="{ 'directive-toc__item--active': activeSection === section.id }"
+              >
+                <a
+                  class="directive-toc__link"
+                  :href="`#${section.id}`"
+                  :aria-current="activeSection === section.id ? 'true' : undefined"
+                  @click.prevent="scrollToSection(section.id)"
+                >
+                  {{ section.label }}
+                </a>
+              </origam-grid-item>
+            </origam-grid>
+          </aside>
+
+          <div class="directive-detail__body">
+            <section
+              v-if="displayDoc?.signatureCode"
+              id="section-signature"
+              class="directive-section directive-signature"
+              aria-labelledby="directive-signature-title"
+              data-cy="directive-signature-section"
+            >
+              <header class="directive-section__header">
+                <p class="directive-section__eyebrow">
+                  {{ t('directives.detail.signature.eyebrow', 'API') }}
+                </p>
+                <origam-title
+                  id="directive-signature-title"
+                  tag="h2"
+                  class="directive-section__title"
+                >
+                  {{ t('directives.detail.signature.title', 'Signature') }}
+                </origam-title>
+                <p class="directive-section__desc">
+                  {{ t('directives.detail.signature.desc', 'All accepted forms of the directive binding.') }}
+                </p>
+              </header>
+
+              <origam-code
+                :code="displayDoc.signatureCode"
+                :lang="displayDoc.signatureLang"
+                copyable
+                :line-numbers="true"
+                rounded="lg"
+                class="directive-signature__code"
+                :data-cy="`directive-signature-${slug}`"
+              />
+            </section>
+
+            <section
+              v-if="hasArgs"
+              id="section-args"
+              class="directive-section directive-args"
+              aria-labelledby="directive-args-title"
+              data-cy="directive-args"
+            >
+              <header class="directive-section__header">
+                <p class="directive-section__eyebrow">
+                  {{ t('directives.detail.args.eyebrow', 'API') }}
+                </p>
+                <origam-title
+                  id="directive-args-title"
+                  tag="h2"
+                  class="directive-section__title"
+                >
+                  {{ t('directives.detail.args.title', 'Value / Arguments') }}
+                </origam-title>
+                <p class="directive-section__desc">
+                  {{ t('directives.detail.args.desc', 'Shape of the binding value and each property in the options object.') }}
+                </p>
+              </header>
+
+              <dl
+                class="prop-list"
+                :aria-label="t('directives.detail.args.table_caption', `${directiveName} value shape`)"
+                :data-cy="`directive-args-table-${slug}`"
+              >
+                <div
+                  v-for="arg in displayDoc?.args"
+                  :key="arg.name"
+                  class="prop-list__item"
+                  :data-cy="`directive-arg-row-${arg.name.replace(/[^a-z0-9]/gi, '-')}`"
+                >
+                  <dt class="prop-list__dt">
+                    <span class="prop-list__name-mono">{{ arg.name }}</span>
+
+                    <origam-chip
+                      v-if="arg.required"
+                      size="x-small"
+                      color="danger"
+                      pill
+                      class="prop-list__required-badge"
+                    >
+                      {{ t('directives.detail.args.required', 'required') }}
+                    </origam-chip>
+
+                    <origam-chip
+                      size="x-small"
+                      variant="outlined"
+                      class="prop-list__type-chip prop-list__type-chip--primitive"
+                    >
+                      {{ arg.type }}
+                    </origam-chip>
+                  </dt>
+                  <dd class="prop-list__dd">
+                    {{ t(arg.descriptionKey, arg.descriptionFallback) }}
+                  </dd>
+                </div>
+              </dl>
+
+              <p
+                v-if="hasNote"
+                class="directive-note"
+              >
+                {{ t(displayDoc?.noteKey ?? '', displayDoc?.noteFallback ?? '') }}
+              </p>
+            </section>
+
+            <section
+              v-if="hasModifiers"
+              id="section-modifiers"
+              class="directive-section directive-modifiers"
+              aria-labelledby="directive-modifiers-title"
+              data-cy="directive-modifiers"
+            >
+              <header class="directive-section__header">
+                <p class="directive-section__eyebrow">
+                  {{ t('directives.detail.modifiers.eyebrow', 'API') }}
+                </p>
+                <origam-title
+                  id="directive-modifiers-title"
+                  tag="h2"
+                  class="directive-section__title"
+                >
+                  {{ t('directives.detail.modifiers.title', 'Modifiers') }}
+                </origam-title>
+                <p class="directive-section__desc">
+                  {{ t('directives.detail.modifiers.desc', 'Dot-suffix modifiers that alter the directive behaviour.') }}
+                </p>
+              </header>
+
+              <dl
+                class="prop-list"
+                :aria-label="t('directives.detail.modifiers.table_caption', `${directiveName} modifiers`)"
+                :data-cy="`directive-modifiers-table-${slug}`"
+              >
+                <div
+                  v-for="modifier in displayDoc?.modifiers"
+                  :key="modifier.name"
+                  class="prop-list__item"
+                >
+                  <dt class="prop-list__dt">
+                    <span class="prop-list__name-mono">.{{ modifier.name }}</span>
+                  </dt>
+                  <dd class="prop-list__dd">
+                    {{ t(modifier.descriptionKey, modifier.descriptionFallback) }}
+                  </dd>
+                </div>
+              </dl>
+            </section>
+
+            <section
+              v-if="hasExamples"
+              id="section-examples"
+              class="directive-section directive-examples"
+              aria-labelledby="directive-examples-title"
+              data-cy="directive-examples"
+            >
+              <header class="directive-section__header">
+                <p class="directive-section__eyebrow">
+                  {{ t('directives.detail.examples.eyebrow', 'Usage') }}
+                </p>
+                <origam-title
+                  id="directive-examples-title"
+                  tag="h2"
+                  class="directive-section__title"
+                >
+                  {{ t('directives.detail.examples.title', 'Examples') }}
+                </origam-title>
+                <p class="directive-section__desc">
+                  {{ t('directives.detail.examples.desc', 'Ready-to-paste code snippets for your templates.') }}
+                </p>
+              </header>
+
+              <div class="directive-examples__list">
+                <div
+                  v-for="example in displayDoc?.examples"
+                  :key="example.titleFallback"
+                  class="directive-examples__item"
+                  :data-cy="`directive-example-${example.titleFallback.toLowerCase().replace(/[^a-z0-9]/g, '-')}`"
+                >
+                  <origam-title
+                    tag="h3"
+                    class="directive-examples__item-title"
+                  >
+                    {{ t(example.titleKey, example.titleFallback) }}
+                  </origam-title>
+
+                  <origam-code
+                    :code="example.code"
+                    :lang="example.lang"
+                    copyable
+                    :line-numbers="true"
+                    rounded="lg"
+                    class="directive-examples__code"
+                  />
+                </div>
+              </div>
+            </section>
+
+            <section
+              v-if="hasRelated"
+              id="section-related"
+              class="directive-section directive-related"
+              aria-labelledby="directive-related-title"
+              data-cy="directive-related"
+            >
+              <header class="directive-section__header">
+                <p class="directive-section__eyebrow">
+                  {{ t('directives.detail.related.eyebrow', 'Ecosystem') }}
+                </p>
+                <origam-title
+                  id="directive-related-title"
+                  tag="h2"
+                  class="directive-section__title"
+                >
+                  {{ t('directives.detail.related.title', 'Related elements') }}
+                </origam-title>
+                <p class="directive-section__desc">
+                  {{ t('directives.detail.related.desc', 'DS components that use this directive internally or that commonly pair with it.') }}
+                </p>
+              </header>
+
+              <origam-grid
+                tag="ul"
+                columns="repeat(auto-fill, minmax(200px, 1fr))"
+                gap="1rem"
+                class="directive-related__grid"
+                data-cy="directive-related-grid"
+              >
+                <origam-grid-item
+                  v-for="item in displayDoc?.related"
+                  :key="item.slug"
+                  tag="li"
+                  class="directive-related__item"
+                >
+                  <nuxt-link
+                    :to="item.kind === 'directive' ? `/directives/${item.slug}` : `/components/${item.slug}`"
+                    class="directive-related__link"
+                    :aria-label="`${item.name} — ${t(item.descriptionKey, item.descriptionFallback)}`"
+                    :data-cy="`directive-related-card-${item.slug}`"
+                  >
+                    <origam-card
+                      rounded="lg"
+                      class="directive-related__card"
+                    >
+                      <template #default>
+                        <div class="directive-related__card-inner">
+                          <div class="directive-related__card-head">
+                            <origam-chip
+                              :color="item.kind === 'directive' ? 'secondary' : 'primary'"
+                              size="x-small"
+                              pill
+                              class="directive-related__kind-chip"
+                            >
+                              {{ item.kind === 'directive' ? t('directives.detail.related.kind_directive', 'directive') : t('directives.detail.related.kind_component', 'component') }}
+                            </origam-chip>
+                          </div>
+
+                          <origam-title
+                            tag="h3"
+                            class="directive-related__card-name"
+                          >
+                            {{ item.name }}
+                          </origam-title>
+
+                          <p class="directive-related__card-desc">
+                            {{ t(item.descriptionKey, item.descriptionFallback) }}
+                          </p>
+                        </div>
+                      </template>
+                    </origam-card>
+                  </nuxt-link>
+                </origam-grid-item>
+              </origam-grid>
+            </section>
+
+            <section
+              v-if="!displayDoc && catalogEntry"
+              class="directive-section directive-no-doc"
+              aria-labelledby="directive-no-doc-title"
+              data-cy="directive-no-doc"
+            >
+              <origam-card
+                rounded="lg"
+                class="directive-no-doc__card"
+              >
+                <template #default>
+                  <div class="directive-no-doc__inner">
+                    <origam-icon
+                      icon="mdi-book-open-page-variant-outline"
+                      color="primary"
+                      class="directive-no-doc__icon"
+                      aria-hidden="true"
+                    />
+
+                    <origam-title
+                      id="directive-no-doc-title"
+                      tag="h2"
+                      class="directive-no-doc__title"
+                    >
+                      {{ t('directives.detail.no_doc.title', 'Documentation coming soon') }}
+                    </origam-title>
+
+                    <p class="directive-no-doc__desc">
+                      {{ t('directives.detail.no_doc.desc', 'The detailed API reference for this directive is being written.') }}
+                    </p>
+                  </div>
+                </template>
+              </origam-card>
+            </section>
+          </div>
+        </div>
+      </origam-container>
+    </template>
+  </article>
+</template>
+
 <script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
@@ -81,512 +587,6 @@ useSeoMeta({
     ogDescription: () => t(directiveDescKey.value, directiveDescFallback.value)
 })
 </script>
-
-<template>
-    <article
-        class="directive-detail"
-        :data-cy="`page-directive-${slug}`"
-    >
-        <div
-            v-if="!catalogEntry"
-            class="directive-detail-not-found"
-            data-cy="directive-not-found"
-        >
-            <origam-container class="directive-detail-not-found__inner">
-                <origam-avatar
-                    icon="mdi-help-circle-outline"
-                    color="warning"
-                    rounded="lg"
-                    size="64"
-                    aria-hidden="true"
-                />
-
-                <origam-title
-                    tag="h1"
-                    class="directive-detail-not-found__title"
-                >
-                    {{ t('directives.detail.not_found.title', 'Directive not found') }}
-                </origam-title>
-
-                <p class="directive-detail-not-found__desc">
-                    {{ t('directives.detail.not_found.desc', 'No directive matches the slug') }}
-                    <origam-code
-                        :code="slug"
-                        lang="plaintext"
-                        compact
-                        class="directive-detail-not-found__slug-code"
-                    />
-                </p>
-
-                <origam-btn
-                    href="/directives"
-                    prepend-icon="mdi-arrow-left"
-                    variant="tonal"
-                    color="primary"
-                    data-cy="directive-not-found-back"
-                >
-                    {{ t('directives.detail.not_found.back', 'Back to directives') }}
-                </origam-btn>
-            </origam-container>
-        </div>
-
-        <template v-else>
-            <div
-                class="directive-hero"
-                aria-labelledby="directive-title"
-            >
-                <origam-container class="directive-hero__container">
-                    <nav
-                        class="directive-hero__breadcrumb"
-                        :aria-label="t('directives.detail.breadcrumb_label', 'Page location')"
-                    >
-                        <nuxt-link
-                            to="/directives"
-                            class="directive-hero__breadcrumb-link"
-                            data-cy="directive-breadcrumb-catalog"
-                        >
-                            {{ t('directives.detail.breadcrumb_catalog', 'Directives') }}
-                        </nuxt-link>
-
-                        <span
-                            class="directive-hero__breadcrumb-sep"
-                            aria-hidden="true"
-                        >›</span>
-
-                        <span
-                            class="directive-hero__breadcrumb-current"
-                            aria-current="page"
-                        >
-                            {{ directiveName }}
-                        </span>
-                    </nav>
-
-                    <div class="directive-hero__identity">
-                        <div class="directive-hero__title-row">
-                            <origam-title
-                                id="directive-title"
-                                tag="h1"
-                                class="directive-hero__title"
-                            >
-                                {{ directiveName }}
-                            </origam-title>
-
-                            <origam-chip
-                                color="secondary"
-                                size="small"
-                                variant="outlined"
-                                class="directive-hero__category-chip"
-                            >
-                                {{ t('directives.detail.category', 'Directive') }}
-                            </origam-chip>
-                        </div>
-
-                        <p class="directive-hero__desc">
-                            {{ t(directiveDescKey, directiveDescFallback) }}
-                        </p>
-
-                        <div class="directive-hero__bottom">
-                            <nav
-                                v-if="displayDoc?.storyUrl"
-                                class="directive-hero__actions"
-                                :aria-label="t('directives.detail.external_links_label', 'External resources')"
-                            >
-                                <origam-btn
-                                    :href="displayDoc.storyUrl"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    variant="outlined"
-                                    size="small"
-                                    prepend-icon="mdi-play-circle-outline"
-                                    data-cy="directive-story-link"
-                                >
-                                    {{ t('directives.detail.hero.story_label', 'Story') }}
-                                </origam-btn>
-
-                                <origam-btn
-                                    :href="`https://github.com/origam-io/origam/blob/main/packages/ds/src/directives/${directiveName}/origam-${slug}.directive.ts`"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    variant="text"
-                                    size="small"
-                                    prepend-icon="mdi-github"
-                                    data-cy="directive-source-link"
-                                >
-                                    {{ t('directives.detail.hero.source_label', 'Source') }}
-                                </origam-btn>
-                            </nav>
-
-                            <origam-btn
-                                v-if="displayDoc?.signatureSummary"
-                                class="directive-hero__signature-btn"
-                                variant="text"
-                                size="small"
-                                :aria-label="t('directives.detail.hero.signature_copy_label', 'Copy directive signature')"
-                                :data-cy="`directive-signature-btn-${slug}`"
-                                @click="copySignature(displayDoc.signatureSummary)"
-                            >
-                                <span class="directive-hero__signature-text">{{ displayDoc.signatureSummary }}</span>
-                                <origam-icon
-                                    :icon="signatureCopied ? 'mdi-check' : 'mdi-content-copy'"
-                                    size="14"
-                                    aria-hidden="true"
-                                />
-                            </origam-btn>
-                        </div>
-                    </div>
-                </origam-container>
-            </div>
-
-            <origam-container>
-                <div class="directive-detail__layout">
-                    <aside
-                        v-if="tocSections.length > 0"
-                        class="directive-toc"
-                        :aria-label="t('directives.detail.toc_label', 'Table of contents')"
-                        data-cy="directive-toc"
-                    >
-                        <p class="directive-toc__heading">
-                            {{ t('directives.detail.toc_heading', 'On this page') }}
-                        </p>
-
-                        <origam-grid
-                            tag="ul"
-                            columns="1"
-                            gap="0.25rem"
-                            class="directive-toc__list"
-                        >
-                            <origam-grid-item
-                                v-for="section in tocSections"
-                                :key="section.id"
-                                tag="li"
-                                class="directive-toc__item"
-                                :class="{ 'directive-toc__item--active': activeSection === section.id }"
-                            >
-                                <a
-                                    class="directive-toc__link"
-                                    :href="`#${section.id}`"
-                                    :aria-current="activeSection === section.id ? 'true' : undefined"
-                                    @click.prevent="scrollToSection(section.id)"
-                                >
-                                    {{ section.label }}
-                                </a>
-                            </origam-grid-item>
-                        </origam-grid>
-                    </aside>
-
-                    <div class="directive-detail__body">
-                        <section
-                            v-if="displayDoc?.signatureCode"
-                            id="section-signature"
-                            class="directive-section directive-signature"
-                            aria-labelledby="directive-signature-title"
-                            data-cy="directive-signature-section"
-                        >
-                            <header class="directive-section__header">
-                                <p class="directive-section__eyebrow">
-                                    {{ t('directives.detail.signature.eyebrow', 'API') }}
-                                </p>
-                                <origam-title
-                                    id="directive-signature-title"
-                                    tag="h2"
-                                    class="directive-section__title"
-                                >
-                                    {{ t('directives.detail.signature.title', 'Signature') }}
-                                </origam-title>
-                                <p class="directive-section__desc">
-                                    {{ t('directives.detail.signature.desc', 'All accepted forms of the directive binding.') }}
-                                </p>
-                            </header>
-
-                            <origam-code
-                                :code="displayDoc.signatureCode"
-                                :lang="displayDoc.signatureLang"
-                                copyable
-                                :line-numbers="true"
-                                rounded="lg"
-                                class="directive-signature__code"
-                                :data-cy="`directive-signature-${slug}`"
-                            />
-                        </section>
-
-                        <section
-                            v-if="hasArgs"
-                            id="section-args"
-                            class="directive-section directive-args"
-                            aria-labelledby="directive-args-title"
-                            data-cy="directive-args"
-                        >
-                            <header class="directive-section__header">
-                                <p class="directive-section__eyebrow">
-                                    {{ t('directives.detail.args.eyebrow', 'API') }}
-                                </p>
-                                <origam-title
-                                    id="directive-args-title"
-                                    tag="h2"
-                                    class="directive-section__title"
-                                >
-                                    {{ t('directives.detail.args.title', 'Value / Arguments') }}
-                                </origam-title>
-                                <p class="directive-section__desc">
-                                    {{ t('directives.detail.args.desc', 'Shape of the binding value and each property in the options object.') }}
-                                </p>
-                            </header>
-
-                            <dl
-                                class="prop-list"
-                                :aria-label="t('directives.detail.args.table_caption', `${directiveName} value shape`)"
-                                :data-cy="`directive-args-table-${slug}`"
-                            >
-                                <div
-                                    v-for="arg in displayDoc?.args"
-                                    :key="arg.name"
-                                    class="prop-list__item"
-                                    :data-cy="`directive-arg-row-${arg.name.replace(/[^a-z0-9]/gi, '-')}`"
-                                >
-                                    <dt class="prop-list__dt">
-                                        <span class="prop-list__name-mono">{{ arg.name }}</span>
-
-                                        <origam-chip
-                                            v-if="arg.required"
-                                            size="x-small"
-                                            color="danger"
-                                            pill
-                                            class="prop-list__required-badge"
-                                        >
-                                            {{ t('directives.detail.args.required', 'required') }}
-                                        </origam-chip>
-
-                                        <origam-chip
-                                            size="x-small"
-                                            variant="outlined"
-                                            class="prop-list__type-chip prop-list__type-chip--primitive"
-                                        >
-                                            {{ arg.type }}
-                                        </origam-chip>
-                                    </dt>
-                                    <dd class="prop-list__dd">
-                                        {{ t(arg.descriptionKey, arg.descriptionFallback) }}
-                                    </dd>
-                                </div>
-                            </dl>
-
-                            <p
-                                v-if="hasNote"
-                                class="directive-note"
-                            >
-                                {{ t(displayDoc?.noteKey ?? '', displayDoc?.noteFallback ?? '') }}
-                            </p>
-                        </section>
-
-                        <section
-                            v-if="hasModifiers"
-                            id="section-modifiers"
-                            class="directive-section directive-modifiers"
-                            aria-labelledby="directive-modifiers-title"
-                            data-cy="directive-modifiers"
-                        >
-                            <header class="directive-section__header">
-                                <p class="directive-section__eyebrow">
-                                    {{ t('directives.detail.modifiers.eyebrow', 'API') }}
-                                </p>
-                                <origam-title
-                                    id="directive-modifiers-title"
-                                    tag="h2"
-                                    class="directive-section__title"
-                                >
-                                    {{ t('directives.detail.modifiers.title', 'Modifiers') }}
-                                </origam-title>
-                                <p class="directive-section__desc">
-                                    {{ t('directives.detail.modifiers.desc', 'Dot-suffix modifiers that alter the directive behaviour.') }}
-                                </p>
-                            </header>
-
-                            <dl
-                                class="prop-list"
-                                :aria-label="t('directives.detail.modifiers.table_caption', `${directiveName} modifiers`)"
-                                :data-cy="`directive-modifiers-table-${slug}`"
-                            >
-                                <div
-                                    v-for="modifier in displayDoc?.modifiers"
-                                    :key="modifier.name"
-                                    class="prop-list__item"
-                                >
-                                    <dt class="prop-list__dt">
-                                        <span class="prop-list__name-mono">.{{ modifier.name }}</span>
-                                    </dt>
-                                    <dd class="prop-list__dd">
-                                        {{ t(modifier.descriptionKey, modifier.descriptionFallback) }}
-                                    </dd>
-                                </div>
-                            </dl>
-                        </section>
-
-                        <section
-                            v-if="hasExamples"
-                            id="section-examples"
-                            class="directive-section directive-examples"
-                            aria-labelledby="directive-examples-title"
-                            data-cy="directive-examples"
-                        >
-                            <header class="directive-section__header">
-                                <p class="directive-section__eyebrow">
-                                    {{ t('directives.detail.examples.eyebrow', 'Usage') }}
-                                </p>
-                                <origam-title
-                                    id="directive-examples-title"
-                                    tag="h2"
-                                    class="directive-section__title"
-                                >
-                                    {{ t('directives.detail.examples.title', 'Examples') }}
-                                </origam-title>
-                                <p class="directive-section__desc">
-                                    {{ t('directives.detail.examples.desc', 'Ready-to-paste code snippets for your templates.') }}
-                                </p>
-                            </header>
-
-                            <div class="directive-examples__list">
-                                <div
-                                    v-for="example in displayDoc?.examples"
-                                    :key="example.titleFallback"
-                                    class="directive-examples__item"
-                                    :data-cy="`directive-example-${example.titleFallback.toLowerCase().replace(/[^a-z0-9]/g, '-')}`"
-                                >
-                                    <origam-title
-                                        tag="h3"
-                                        class="directive-examples__item-title"
-                                    >
-                                        {{ t(example.titleKey, example.titleFallback) }}
-                                    </origam-title>
-
-                                    <origam-code
-                                        :code="example.code"
-                                        :lang="example.lang"
-                                        copyable
-                                        :line-numbers="true"
-                                        rounded="lg"
-                                        class="directive-examples__code"
-                                    />
-                                </div>
-                            </div>
-                        </section>
-
-                        <section
-                            v-if="hasRelated"
-                            id="section-related"
-                            class="directive-section directive-related"
-                            aria-labelledby="directive-related-title"
-                            data-cy="directive-related"
-                        >
-                            <header class="directive-section__header">
-                                <p class="directive-section__eyebrow">
-                                    {{ t('directives.detail.related.eyebrow', 'Ecosystem') }}
-                                </p>
-                                <origam-title
-                                    id="directive-related-title"
-                                    tag="h2"
-                                    class="directive-section__title"
-                                >
-                                    {{ t('directives.detail.related.title', 'Related elements') }}
-                                </origam-title>
-                                <p class="directive-section__desc">
-                                    {{ t('directives.detail.related.desc', 'DS components that use this directive internally or that commonly pair with it.') }}
-                                </p>
-                            </header>
-
-                            <origam-grid
-                                tag="ul"
-                                columns="repeat(auto-fill, minmax(200px, 1fr))"
-                                gap="1rem"
-                                class="directive-related__grid"
-                                data-cy="directive-related-grid"
-                            >
-                                <origam-grid-item
-                                    v-for="item in displayDoc?.related"
-                                    :key="item.slug"
-                                    tag="li"
-                                    class="directive-related__item"
-                                >
-                                    <nuxt-link
-                                        :to="item.kind === 'directive' ? `/directives/${item.slug}` : `/components/${item.slug}`"
-                                        class="directive-related__link"
-                                        :aria-label="`${item.name} — ${t(item.descriptionKey, item.descriptionFallback)}`"
-                                        :data-cy="`directive-related-card-${item.slug}`"
-                                    >
-                                        <origam-card
-                                            rounded="lg"
-                                            class="directive-related__card"
-                                        >
-                                            <template #default>
-                                                <div class="directive-related__card-inner">
-                                                    <div class="directive-related__card-head">
-                                                        <origam-chip
-                                                            :color="item.kind === 'directive' ? 'secondary' : 'primary'"
-                                                            size="x-small"
-                                                            pill
-                                                            class="directive-related__kind-chip"
-                                                        >
-                                                            {{ item.kind === 'directive' ? t('directives.detail.related.kind_directive', 'directive') : t('directives.detail.related.kind_component', 'component') }}
-                                                        </origam-chip>
-                                                    </div>
-
-                                                    <origam-title
-                                                        tag="h3"
-                                                        class="directive-related__card-name"
-                                                    >
-                                                        {{ item.name }}
-                                                    </origam-title>
-
-                                                    <p class="directive-related__card-desc">
-                                                        {{ t(item.descriptionKey, item.descriptionFallback) }}
-                                                    </p>
-                                                </div>
-                                            </template>
-                                        </origam-card>
-                                    </nuxt-link>
-                                </origam-grid-item>
-                            </origam-grid>
-                        </section>
-
-                        <section
-                            v-if="!displayDoc && catalogEntry"
-                            class="directive-section directive-no-doc"
-                            aria-labelledby="directive-no-doc-title"
-                            data-cy="directive-no-doc"
-                        >
-                            <origam-card
-                                rounded="lg"
-                                class="directive-no-doc__card"
-                            >
-                                <template #default>
-                                    <div class="directive-no-doc__inner">
-                                        <origam-icon
-                                            icon="mdi-book-open-page-variant-outline"
-                                            color="primary"
-                                            class="directive-no-doc__icon"
-                                            aria-hidden="true"
-                                        />
-
-                                        <origam-title
-                                            id="directive-no-doc-title"
-                                            tag="h2"
-                                            class="directive-no-doc__title"
-                                        >
-                                            {{ t('directives.detail.no_doc.title', 'Documentation coming soon') }}
-                                        </origam-title>
-
-                                        <p class="directive-no-doc__desc">
-                                            {{ t('directives.detail.no_doc.desc', 'The detailed API reference for this directive is being written.') }}
-                                        </p>
-                                    </div>
-                                </template>
-                            </origam-card>
-                        </section>
-                    </div>
-                </div>
-            </origam-container>
-        </template>
-    </article>
-</template>
 
 <style scoped lang="scss">
 .directive-detail {

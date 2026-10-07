@@ -1,3 +1,183 @@
+<template>
+  <article
+    class="directives-catalog"
+    data-cy="page-directives"
+  >
+    <section
+      class="directives-hero"
+      aria-labelledby="directives-title"
+    >
+      <origam-container class="directives-hero__inner">
+        <origam-chip
+          class="directives-hero__badge"
+          :style="DIRECTIVES_HERO_BADGE_VARS"
+          color="primary"
+          border
+          border-color="var(--origam-color__action--primary---bg)"
+          size="small"
+          pill
+          data-cy="directives-hero-badge"
+        >
+          {{ t('directives.hero.badge', '6 directives — Vue 3') }}
+        </origam-chip>
+
+        <origam-title
+          id="directives-title"
+          tag="h1"
+          class="directives-hero__title"
+        >
+          <span class="directives-hero__title-line">{{ t('directives.hero.title_line1', 'Template') }}</span>
+          <span class="directives-hero__title-line directives-hero__title-line--accent">{{ t('directives.hero.title_line2', 'directives.') }}</span>
+        </origam-title>
+
+        <p class="directives-hero__subtitle">
+          {{ t('directives.hero.subtitle', 'Six runtime directives that extend any Vue template. From click-outside detection to ripple effects, swipe gestures, viewport tracking, hover classes, and WCAG contrast enforcement.') }}
+        </p>
+
+        <origam-text-field
+          v-model="searchQuery"
+          class="directives-hero__search"
+          prepend-inner-icon="mdi-magnify"
+          :placeholder="t('directives.hero.search_placeholder', 'Search directives…')"
+          :aria-label="t('directives.hero.search_label', 'Filter directives by name')"
+          clearable
+          rounded="lg"
+          variant="outlined"
+          data-cy="directives-search"
+        />
+
+        <p
+          class="directives-hero__count"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <template v-if="isFiltering">
+            {{ filteredCount }} {{ t('directives.hero.count_filtered_of', 'of') }} {{ totalCount }} {{ t('directives.hero.count_filtered_match', 'directives match') }}
+          </template>
+          <template v-else>
+            {{ totalCount }} {{ t('directives.hero.count_total', 'directives — globally registered') }}
+          </template>
+        </p>
+      </origam-container>
+    </section>
+
+    <section
+      class="directives-grid-section"
+      aria-labelledby="directives-grid-title"
+      data-cy="directives-grid"
+    >
+      <origam-container>
+        <header class="directives-grid-section__header">
+          <p class="directives-section__eyebrow">
+            {{ t('directives.catalog.eyebrow', 'API REFERENCE') }}
+          </p>
+
+          <origam-title
+            id="directives-grid-title"
+            tag="h2"
+            class="directives-section__title directives-section__title--single"
+          >
+            {{ t('directives.catalog.title', 'All directives.') }}
+          </origam-title>
+        </header>
+
+        <div
+          v-if="isFiltering && filteredCount === 0"
+          class="directives-empty"
+          role="status"
+          data-cy="directives-empty"
+        >
+          <origam-icon
+            icon="mdi-magnify-remove-outline"
+            class="directives-empty__icon"
+            aria-hidden="true"
+          />
+
+          <origam-title
+            tag="h3"
+            class="directives-empty__title"
+          >
+            {{ t('directives.catalog.empty_title', 'No directives found') }}
+          </origam-title>
+
+          <p class="directives-empty__desc">
+            {{ t('directives.catalog.empty_desc', 'No directive matches "{query}". Try a different term.', { query: searchQuery }) }}
+          </p>
+        </div>
+
+        <origam-grid
+          tag="ul"
+          columns="repeat(auto-fill, minmax(280px, 1fr))"
+          gap="1rem"
+          class="directives-grid"
+        >
+          <origam-grid-item
+            v-for="entry in filteredDirectives"
+            :key="entry.slug"
+            tag="li"
+            class="directives-grid__item"
+          >
+            <nuxt-link
+              :to="`/directives/${entry.slug}`"
+              class="directives-catalog-card__link"
+              :aria-label="`${entry.name} — ${t(entry.descriptionKey, entry.descriptionFallback)}`"
+              :data-cy="`directive-card-${entry.slug}`"
+            >
+              <origam-card
+                rounded="lg"
+                class="directives-catalog-card"
+              >
+                <template #default>
+                  <div class="directives-catalog-card__inner">
+                    <div class="directives-catalog-card__header">
+                      <origam-avatar
+                        :icon="entry.icon"
+                        color="primary"
+                        rounded="lg"
+                        size="40"
+                        class="directives-catalog-card__avatar"
+                        aria-hidden="true"
+                      />
+
+                      <origam-title
+                        tag="h3"
+                        class="directives-catalog-card__name"
+                      >
+                        {{ entry.name }}
+                      </origam-title>
+                    </div>
+
+                    <p class="directives-catalog-card__desc">
+                      {{ t(entry.descriptionKey, entry.descriptionFallback) }}
+                    </p>
+
+                    <div class="directives-catalog-card__footer">
+                      <origam-chip
+                        size="x-small"
+                        pill
+                        class="directives-catalog-card__tag"
+                      >
+                        {{ t('directives.catalog.card_tag', 'directive') }}
+                      </origam-chip>
+
+                      <origam-icon
+                        icon="mdi-arrow-right"
+                        size="16"
+                        class="directives-catalog-card__arrow"
+                        aria-hidden="true"
+                      />
+                    </div>
+                  </div>
+                </template>
+              </origam-card>
+            </nuxt-link>
+          </origam-grid-item>
+        </origam-grid>
+      </origam-container>
+    </section>
+  </article>
+</template>
+
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import type { CSSProperties } from 'vue'
@@ -38,186 +218,6 @@ const totalCount = computed(() => directivesCatalog.value.length)
 const filteredCount = computed(() => filteredDirectives.value.length)
 const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 </script>
-
-<template>
-    <article
-        class="directives-catalog"
-        data-cy="page-directives"
-    >
-        <section
-            class="directives-hero"
-            aria-labelledby="directives-title"
-        >
-            <origam-container class="directives-hero__inner">
-                <origam-chip
-                    class="directives-hero__badge"
-                    :style="DIRECTIVES_HERO_BADGE_VARS"
-                    color="primary"
-                    border
-                    border-color="var(--origam-color__action--primary---bg)"
-                    size="small"
-                    pill
-                    data-cy="directives-hero-badge"
-                >
-                    {{ t('directives.hero.badge', '6 directives — Vue 3') }}
-                </origam-chip>
-
-                <origam-title
-                    id="directives-title"
-                    tag="h1"
-                    class="directives-hero__title"
-                >
-                    <span class="directives-hero__title-line">{{ t('directives.hero.title_line1', 'Template') }}</span>
-                    <span class="directives-hero__title-line directives-hero__title-line--accent">{{ t('directives.hero.title_line2', 'directives.') }}</span>
-                </origam-title>
-
-                <p class="directives-hero__subtitle">
-                    {{ t('directives.hero.subtitle', 'Six runtime directives that extend any Vue template. From click-outside detection to ripple effects, swipe gestures, viewport tracking, hover classes, and WCAG contrast enforcement.') }}
-                </p>
-
-                <origam-text-field
-                    v-model="searchQuery"
-                    class="directives-hero__search"
-                    prepend-inner-icon="mdi-magnify"
-                    :placeholder="t('directives.hero.search_placeholder', 'Search directives…')"
-                    :aria-label="t('directives.hero.search_label', 'Filter directives by name')"
-                    clearable
-                    rounded="lg"
-                    variant="outlined"
-                    data-cy="directives-search"
-                />
-
-                <p
-                    class="directives-hero__count"
-                    aria-live="polite"
-                    aria-atomic="true"
-                >
-                    <template v-if="isFiltering">
-                        {{ filteredCount }} {{ t('directives.hero.count_filtered_of', 'of') }} {{ totalCount }} {{ t('directives.hero.count_filtered_match', 'directives match') }}
-                    </template>
-                    <template v-else>
-                        {{ totalCount }} {{ t('directives.hero.count_total', 'directives — globally registered') }}
-                    </template>
-                </p>
-            </origam-container>
-        </section>
-
-        <section
-            class="directives-grid-section"
-            aria-labelledby="directives-grid-title"
-            data-cy="directives-grid"
-        >
-            <origam-container>
-                <header class="directives-grid-section__header">
-                    <p class="directives-section__eyebrow">
-                        {{ t('directives.catalog.eyebrow', 'API REFERENCE') }}
-                    </p>
-
-                    <origam-title
-                        id="directives-grid-title"
-                        tag="h2"
-                        class="directives-section__title directives-section__title--single"
-                    >
-                        {{ t('directives.catalog.title', 'All directives.') }}
-                    </origam-title>
-                </header>
-
-                <div
-                    v-if="isFiltering && filteredCount === 0"
-                    class="directives-empty"
-                    role="status"
-                    data-cy="directives-empty"
-                >
-                    <origam-icon
-                        icon="mdi-magnify-remove-outline"
-                        class="directives-empty__icon"
-                        aria-hidden="true"
-                    />
-
-                    <origam-title
-                        tag="h3"
-                        class="directives-empty__title"
-                    >
-                        {{ t('directives.catalog.empty_title', 'No directives found') }}
-                    </origam-title>
-
-                    <p class="directives-empty__desc">
-                        {{ t('directives.catalog.empty_desc', 'No directive matches "{query}". Try a different term.', { query: searchQuery }) }}
-                    </p>
-                </div>
-
-                <origam-grid
-                    tag="ul"
-                    columns="repeat(auto-fill, minmax(280px, 1fr))"
-                    gap="1rem"
-                    class="directives-grid"
-                >
-                    <origam-grid-item
-                        v-for="entry in filteredDirectives"
-                        :key="entry.slug"
-                        tag="li"
-                        class="directives-grid__item"
-                    >
-                        <nuxt-link
-                            :to="`/directives/${entry.slug}`"
-                            class="directives-catalog-card__link"
-                            :aria-label="`${entry.name} — ${t(entry.descriptionKey, entry.descriptionFallback)}`"
-                            :data-cy="`directive-card-${entry.slug}`"
-                        >
-                            <origam-card
-                                rounded="lg"
-                                class="directives-catalog-card"
-                            >
-                                <template #default>
-                                    <div class="directives-catalog-card__inner">
-                                        <div class="directives-catalog-card__header">
-                                            <origam-avatar
-                                                :icon="entry.icon"
-                                                color="primary"
-                                                rounded="lg"
-                                                size="40"
-                                                class="directives-catalog-card__avatar"
-                                                aria-hidden="true"
-                                            />
-
-                                            <origam-title
-                                                tag="h3"
-                                                class="directives-catalog-card__name"
-                                            >
-                                                {{ entry.name }}
-                                            </origam-title>
-                                        </div>
-
-                                        <p class="directives-catalog-card__desc">
-                                            {{ t(entry.descriptionKey, entry.descriptionFallback) }}
-                                        </p>
-
-                                        <div class="directives-catalog-card__footer">
-                                            <origam-chip
-                                                size="x-small"
-                                                pill
-                                                class="directives-catalog-card__tag"
-                                            >
-                                                {{ t('directives.catalog.card_tag', 'directive') }}
-                                            </origam-chip>
-
-                                            <origam-icon
-                                                icon="mdi-arrow-right"
-                                                size="16"
-                                                class="directives-catalog-card__arrow"
-                                                aria-hidden="true"
-                                            />
-                                        </div>
-                                    </div>
-                                </template>
-                            </origam-card>
-                        </nuxt-link>
-                    </origam-grid-item>
-                </origam-grid>
-            </origam-container>
-        </section>
-    </article>
-</template>
 
 <style scoped lang="scss">
 .directives-catalog {

@@ -1,3 +1,281 @@
+<template>
+  <section
+    class="home-showcase"
+    aria-labelledby="showcase-title"
+  >
+    <header class="home-showcase__header">
+      <p class="home-showcase__eyebrow">
+        {{ t('home.showcase.eyebrow', 'SHOWCASE') }}
+      </p>
+
+      <div class="home-showcase__title-row">
+        <origam-title
+          id="showcase-title"
+          tag="h2"
+          class="home-showcase__title"
+        >
+          <span class="home-showcase__title-line">{{ t('home.showcase.title_line1', '218 components.') }}</span>
+          <span class="home-showcase__title-line">{{ t('home.showcase.title_line2', 'One vibe.') }}</span>
+        </origam-title>
+
+        <origam-btn
+          variant="text"
+          href="/components"
+          class="home-showcase__view-all"
+          append-icon="mdi-arrow-right"
+          data-cy="showcase-view-all"
+        >
+          {{ t('home.showcase.view_all', 'View all') }}
+        </origam-btn>
+      </div>
+    </header>
+
+    <origam-grid
+      tag="ul"
+      :columns="SHOWCASE_GRID_COLUMNS"
+      gap="16px"
+      :aria-label="t('a11y.showcase_grid', 'Component showcase')"
+      class="home-showcase__grid"
+    >
+      <origam-grid-item
+        tag="li"
+        :row="'1 / 3'"
+        class="home-showcase__item"
+      >
+        <origam-card
+          tag="figure"
+          :rounded="SHOWCASE_WIDGET_RADIUS"
+          :style="SHOWCASE_WIDGET_VARS"
+          class="home-showcase__widget"
+        >
+          <figcaption class="home-showcase__widget-header">
+            <div class="home-showcase__widget-label">
+              <strong class="home-showcase__widget-title">
+                {{ t('home.showcase.data_table.title', 'Data Table') }}
+              </strong>
+              <span class="home-showcase__widget-caption">
+                                {{ t('home.showcase.data_table.caption', 'Sortable · filterable · virtualized') }}
+                            </span>
+            </div>
+
+            <origam-chip
+              :text="t('home.showcase.data_table.badge', 'Data')"
+              color="primary"
+              border
+              pill
+              size="x-small"
+              class="home-showcase__data-badge"
+              data-cy="showcase-data-badge"
+            />
+          </figcaption>
+
+          <origam-table
+            class="home-showcase__table"
+            :style="SHOWCASE_TABLE_VARS"
+            data-cy="showcase-data-table"
+          >
+            <thead class="home-showcase__table-head">
+            <tr>
+              <th scope="col" class="home-showcase__th">
+                {{ t('home.showcase.data_table.col_project', 'PROJECT') }}
+                <span class="home-showcase__th-sort" aria-hidden="true">↓</span>
+              </th>
+              <th scope="col" class="home-showcase__th">
+                {{ t('home.showcase.data_table.col_owner', 'Owner') }}
+              </th>
+              <th scope="col" class="home-showcase__th">
+                {{ t('home.showcase.data_table.col_status', 'Status') }}
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr
+              v-for="(row, rowIndex) in SHOWCASE_TABLE_ROWS"
+              :key="row.nameKey"
+              class="home-showcase__tr"
+            >
+              <td class="home-showcase__td home-showcase__td--name">
+                {{ t(row.nameKey, row.nameFallback) }}
+              </td>
+              <td class="home-showcase__td home-showcase__td--owner">
+                {{ t(row.ownerKey, row.ownerFallback) }}
+              </td>
+              <td class="home-showcase__td home-showcase__td--status">
+                                    <span class="home-showcase__status-cell">
+                                        <span
+                                          class="home-showcase__status-dot"
+                                          :style="{ backgroundColor: STATUS_DOT_COLOR[row.statusIntent] }"
+                                          aria-hidden="true"
+                                        />
+                                        <span
+                                          class="home-showcase__status-text"
+                                          :style="{ color: STATUS_DOT_COLOR[row.statusIntent] }"
+                                        >
+                                            {{ t(row.statusKey, row.statusFallback) }}
+                                        </span>
+
+                                        <origam-btn
+                                          variant="text"
+                                          icon="mdi-dots-horizontal"
+                                          size="x-small"
+                                          class="home-showcase__row-menu"
+                                          :aria-label="t('home.showcase.data_table.row_menu', 'Row actions')"
+                                          :data-cy="`showcase-row-menu-${rowIndex}`"
+                                        />
+                                    </span>
+              </td>
+            </tr>
+            </tbody>
+          </origam-table>
+        </origam-card>
+      </origam-grid-item>
+
+      <origam-grid-item
+        tag="li"
+        class="home-showcase__item"
+      >
+        <origam-card
+          tag="figure"
+          :rounded="SHOWCASE_WIDGET_RADIUS"
+          :style="SHOWCASE_WIDGET_VARS"
+          class="home-showcase__widget"
+        >
+          <figcaption class="home-showcase__widget-label">
+            <strong class="home-showcase__widget-title">
+              {{ t('home.showcase.chart_line.title', 'Chart Line') }}
+            </strong>
+            <span class="home-showcase__widget-caption home-showcase__widget-caption--accent">
+                            {{ t('home.showcase.chart_line.caption', '+12.4% this month') }}
+                        </span>
+          </figcaption>
+
+          <origam-chart-sparkline
+            type="area"
+            color="primary"
+            :series="sparklineSeries"
+            :show-last="true"
+            width="100%"
+            :height="80"
+            class="home-showcase__sparkline"
+            data-cy="showcase-sparkline"
+            :title="t('home.showcase.chart_line.caption', '+12.4% this month')"
+          />
+        </origam-card>
+      </origam-grid-item>
+
+      <origam-grid-item
+        tag="li"
+        class="home-showcase__item"
+      >
+        <origam-card
+          tag="figure"
+          :rounded="SHOWCASE_WIDGET_RADIUS"
+          :style="SHOWCASE_WIDGET_VARS"
+          class="home-showcase__widget"
+        >
+          <figcaption class="home-showcase__widget-label">
+            <strong class="home-showcase__widget-title">
+              {{ t('home.showcase.switch.title', 'Switch') }}
+            </strong>
+            <span class="home-showcase__widget-caption">
+                            {{ t('home.showcase.switch.caption', 'inset · flat · default') }}
+                        </span>
+          </figcaption>
+
+          <div
+            class="home-showcase__switch-row"
+            role="group"
+            :aria-label="t('home.showcase.switch.title', 'Switch')"
+          >
+            <origam-switch
+              v-for="(variant, index) in switchPairs"
+              :key="index"
+              :model-value="variant.modelValue"
+              :inset="variant.inset"
+              :flat="variant.flat"
+              :label="t(variant.labelKey, variant.labelFallback)"
+              readonly
+              :data-cy="`showcase-switch-${index}`"
+            />
+          </div>
+        </origam-card>
+      </origam-grid-item>
+
+      <origam-grid-item
+        tag="li"
+        class="home-showcase__item"
+      >
+        <origam-card
+          tag="figure"
+          :rounded="SHOWCASE_WIDGET_RADIUS"
+          :style="SHOWCASE_WIDGET_VARS"
+          class="home-showcase__widget"
+        >
+          <figcaption class="home-showcase__widget-label">
+            <strong class="home-showcase__widget-title">
+              {{ t('home.showcase.chips.title', 'Chips') }}
+            </strong>
+            <span class="home-showcase__widget-caption">
+                            {{ t('home.showcase.chips.caption', '6 intents') }}
+                        </span>
+          </figcaption>
+
+          <ul
+            class="home-showcase__chip-list"
+            data-cy="showcase-chip-group"
+            :aria-label="t('a11y.showcase_chip_list', 'Chip intents')"
+          >
+            <li
+              v-for="chip in SHOWCASE_CHIP_ITEMS"
+              :key="chip.intent"
+            >
+              <origam-chip
+                :color="chip.intent"
+                border
+                pill
+                size="small"
+                :text="t(chip.labelKey, chip.labelFallback)"
+                :data-cy="`showcase-chip-${chip.intent}`"
+              />
+            </li>
+          </ul>
+        </origam-card>
+      </origam-grid-item>
+
+      <origam-grid-item
+        tag="li"
+        class="home-showcase__item"
+      >
+        <origam-card
+          tag="figure"
+          :rounded="SHOWCASE_WIDGET_RADIUS"
+          :style="SHOWCASE_WIDGET_VARS"
+          class="home-showcase__widget"
+        >
+          <figcaption class="home-showcase__widget-label">
+            <strong class="home-showcase__widget-title">
+              {{ t('home.showcase.avatar_group.title', 'Avatar Group') }}
+            </strong>
+            <span class="home-showcase__widget-caption">
+                            {{ t('home.showcase.avatar_group.caption', '+3 members') }}
+                        </span>
+          </figcaption>
+
+          <div class="home-showcase__avatar-row">
+            <origam-avatar-group
+              :items="SHOWCASE_AVATAR_ITEMS"
+              :max="5"
+              class="home-showcase__avatar-group"
+              data-cy="showcase-avatar-group"
+              :aria-label="t('home.showcase.avatar_group.caption', '+3 members')"
+            />
+          </div>
+        </origam-card>
+      </origam-grid-item>
+    </origam-grid>
+  </section>
+</template>
+
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useT } from '~/composables/useT'
@@ -32,284 +310,6 @@ const STATUS_DOT_COLOR: Record<string, string> = {
     primary: 'var(--origam-color__action--primary---fgSubtle, #6d28d9)',
 }
 </script>
-
-<template>
-    <section
-        class="home-showcase"
-        aria-labelledby="showcase-title"
-    >
-        <header class="home-showcase__header">
-            <p class="home-showcase__eyebrow">
-                {{ t('home.showcase.eyebrow', 'SHOWCASE') }}
-            </p>
-
-            <div class="home-showcase__title-row">
-                <origam-title
-                    id="showcase-title"
-                    tag="h2"
-                    class="home-showcase__title"
-                >
-                    <span class="home-showcase__title-line">{{ t('home.showcase.title_line1', '218 components.') }}</span>
-                    <span class="home-showcase__title-line">{{ t('home.showcase.title_line2', 'One vibe.') }}</span>
-                </origam-title>
-
-                <origam-btn
-                    variant="text"
-                    href="/components"
-                    class="home-showcase__view-all"
-                    append-icon="mdi-arrow-right"
-                    data-cy="showcase-view-all"
-                >
-                    {{ t('home.showcase.view_all', 'View all') }}
-                </origam-btn>
-            </div>
-        </header>
-
-        <origam-grid
-            tag="ul"
-            :columns="SHOWCASE_GRID_COLUMNS"
-            gap="16px"
-            :aria-label="t('a11y.showcase_grid', 'Component showcase')"
-            class="home-showcase__grid"
-        >
-            <origam-grid-item
-                tag="li"
-                :row="'1 / 3'"
-                class="home-showcase__item"
-            >
-                <origam-card
-                    tag="figure"
-                    :rounded="SHOWCASE_WIDGET_RADIUS"
-                    :style="SHOWCASE_WIDGET_VARS"
-                    class="home-showcase__widget"
-                >
-                    <figcaption class="home-showcase__widget-header">
-                        <div class="home-showcase__widget-label">
-                            <strong class="home-showcase__widget-title">
-                                {{ t('home.showcase.data_table.title', 'Data Table') }}
-                            </strong>
-                            <span class="home-showcase__widget-caption">
-                                {{ t('home.showcase.data_table.caption', 'Sortable · filterable · virtualized') }}
-                            </span>
-                        </div>
-
-                        <origam-chip
-                            :text="t('home.showcase.data_table.badge', 'Data')"
-                            color="primary"
-                            border
-                            pill
-                            size="x-small"
-                            class="home-showcase__data-badge"
-                            data-cy="showcase-data-badge"
-                        />
-                    </figcaption>
-
-                    <origam-table
-                        class="home-showcase__table"
-                        :style="SHOWCASE_TABLE_VARS"
-                        data-cy="showcase-data-table"
-                    >
-                        <thead class="home-showcase__table-head">
-                            <tr>
-                                <th scope="col" class="home-showcase__th">
-                                    {{ t('home.showcase.data_table.col_project', 'PROJECT') }}
-                                    <span class="home-showcase__th-sort" aria-hidden="true">↓</span>
-                                </th>
-                                <th scope="col" class="home-showcase__th">
-                                    {{ t('home.showcase.data_table.col_owner', 'Owner') }}
-                                </th>
-                                <th scope="col" class="home-showcase__th">
-                                    {{ t('home.showcase.data_table.col_status', 'Status') }}
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="(row, rowIndex) in SHOWCASE_TABLE_ROWS"
-                                :key="row.nameKey"
-                                class="home-showcase__tr"
-                            >
-                                <td class="home-showcase__td home-showcase__td--name">
-                                    {{ t(row.nameKey, row.nameFallback) }}
-                                </td>
-                                <td class="home-showcase__td home-showcase__td--owner">
-                                    {{ t(row.ownerKey, row.ownerFallback) }}
-                                </td>
-                                <td class="home-showcase__td home-showcase__td--status">
-                                    <span class="home-showcase__status-cell">
-                                        <span
-                                            class="home-showcase__status-dot"
-                                            :style="{ backgroundColor: STATUS_DOT_COLOR[row.statusIntent] }"
-                                            aria-hidden="true"
-                                        />
-                                        <span
-                                            class="home-showcase__status-text"
-                                            :style="{ color: STATUS_DOT_COLOR[row.statusIntent] }"
-                                        >
-                                            {{ t(row.statusKey, row.statusFallback) }}
-                                        </span>
-
-                                        <origam-btn
-                                            variant="text"
-                                            icon="mdi-dots-horizontal"
-                                            size="x-small"
-                                            class="home-showcase__row-menu"
-                                            :aria-label="t('home.showcase.data_table.row_menu', 'Row actions')"
-                                            :data-cy="`showcase-row-menu-${rowIndex}`"
-                                        />
-                                    </span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </origam-table>
-                </origam-card>
-            </origam-grid-item>
-
-            <origam-grid-item
-                tag="li"
-                class="home-showcase__item"
-            >
-                <origam-card
-                    tag="figure"
-                    :rounded="SHOWCASE_WIDGET_RADIUS"
-                    :style="SHOWCASE_WIDGET_VARS"
-                    class="home-showcase__widget"
-                >
-                    <figcaption class="home-showcase__widget-label">
-                        <strong class="home-showcase__widget-title">
-                            {{ t('home.showcase.chart_line.title', 'Chart Line') }}
-                        </strong>
-                        <span class="home-showcase__widget-caption home-showcase__widget-caption--accent">
-                            {{ t('home.showcase.chart_line.caption', '+12.4% this month') }}
-                        </span>
-                    </figcaption>
-
-                    <origam-chart-sparkline
-                        type="area"
-                        color="primary"
-                        :series="sparklineSeries"
-                        :show-last="true"
-                        width="100%"
-                        :height="80"
-                        class="home-showcase__sparkline"
-                        data-cy="showcase-sparkline"
-                        :title="t('home.showcase.chart_line.caption', '+12.4% this month')"
-                    />
-                </origam-card>
-            </origam-grid-item>
-
-            <origam-grid-item
-                tag="li"
-                class="home-showcase__item"
-            >
-                <origam-card
-                    tag="figure"
-                    :rounded="SHOWCASE_WIDGET_RADIUS"
-                    :style="SHOWCASE_WIDGET_VARS"
-                    class="home-showcase__widget"
-                >
-                    <figcaption class="home-showcase__widget-label">
-                        <strong class="home-showcase__widget-title">
-                            {{ t('home.showcase.switch.title', 'Switch') }}
-                        </strong>
-                        <span class="home-showcase__widget-caption">
-                            {{ t('home.showcase.switch.caption', 'inset · flat · default') }}
-                        </span>
-                    </figcaption>
-
-                    <div
-                        class="home-showcase__switch-row"
-                        role="group"
-                        :aria-label="t('home.showcase.switch.title', 'Switch')"
-                    >
-                        <origam-switch
-                            v-for="(variant, index) in switchPairs"
-                            :key="index"
-                            :model-value="variant.modelValue"
-                            :inset="variant.inset"
-                            :flat="variant.flat"
-                            :label="t(variant.labelKey, variant.labelFallback)"
-                            readonly
-                            :data-cy="`showcase-switch-${index}`"
-                        />
-                    </div>
-                </origam-card>
-            </origam-grid-item>
-
-            <origam-grid-item
-                tag="li"
-                class="home-showcase__item"
-            >
-                <origam-card
-                    tag="figure"
-                    :rounded="SHOWCASE_WIDGET_RADIUS"
-                    :style="SHOWCASE_WIDGET_VARS"
-                    class="home-showcase__widget"
-                >
-                    <figcaption class="home-showcase__widget-label">
-                        <strong class="home-showcase__widget-title">
-                            {{ t('home.showcase.chips.title', 'Chips') }}
-                        </strong>
-                        <span class="home-showcase__widget-caption">
-                            {{ t('home.showcase.chips.caption', '6 intents') }}
-                        </span>
-                    </figcaption>
-
-                    <ul
-                        class="home-showcase__chip-list"
-                        data-cy="showcase-chip-group"
-                        :aria-label="t('a11y.showcase_chip_list', 'Chip intents')"
-                    >
-                        <li
-                            v-for="chip in SHOWCASE_CHIP_ITEMS"
-                            :key="chip.intent"
-                        >
-                            <origam-chip
-                                :color="chip.intent"
-                                border
-                                pill
-                                size="small"
-                                :text="t(chip.labelKey, chip.labelFallback)"
-                                :data-cy="`showcase-chip-${chip.intent}`"
-                            />
-                        </li>
-                    </ul>
-                </origam-card>
-            </origam-grid-item>
-
-            <origam-grid-item
-                tag="li"
-                class="home-showcase__item"
-            >
-                <origam-card
-                    tag="figure"
-                    :rounded="SHOWCASE_WIDGET_RADIUS"
-                    :style="SHOWCASE_WIDGET_VARS"
-                    class="home-showcase__widget"
-                >
-                    <figcaption class="home-showcase__widget-label">
-                        <strong class="home-showcase__widget-title">
-                            {{ t('home.showcase.avatar_group.title', 'Avatar Group') }}
-                        </strong>
-                        <span class="home-showcase__widget-caption">
-                            {{ t('home.showcase.avatar_group.caption', '+3 members') }}
-                        </span>
-                    </figcaption>
-
-                    <div class="home-showcase__avatar-row">
-                        <origam-avatar-group
-                            :items="SHOWCASE_AVATAR_ITEMS"
-                            :max="5"
-                            class="home-showcase__avatar-group"
-                            data-cy="showcase-avatar-group"
-                            :aria-label="t('home.showcase.avatar_group.caption', '+3 members')"
-                        />
-                    </div>
-                </origam-card>
-            </origam-grid-item>
-        </origam-grid>
-    </section>
-</template>
 
 <style scoped lang="scss">
 .home-showcase {

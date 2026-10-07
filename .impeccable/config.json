@@ -47,6 +47,21 @@
         ],
         "createdAt": "2026-09-29T18:31:46.952Z",
         "reason": "Claude (non confirme par l utilisateur) : motion domaine-appropriee. La transition porte sur min-height, dont le token change avec la densite ; on veut un redimensionnement reel qui fasse refluer la liste, ce que transform ne fait pas, et grid-template-rows suppose un conteneur grid alors que le subheader est en display:flex. Precedent interne : OrigamExpansionPanelHeader.vue:326 emploie la construction identique. Mesure : 6 composants du DS animent une propriete de layout, 2 precisement min-height. Convention du depot (CLAUDE.md) : animations via CSS transitions uniquement."
+      },
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "createdAt": "2026-10-02T17:49:03.689Z",
+        "reason": "user confirmed 2026-10-02: choix de maquette — cartoon.css:273-283 documente une maquette H1/H2 mesuree (font-weight 900), et la regle du depot impose de respecter une maquette fournie"
+      },
+      {
+        "rule": "gradient-text",
+        "value": "*",
+        "files": [
+          "packages/marketing/src/assets/css/themes/cartoon.css"
+        ],
+        "createdAt": "2026-10-02T17:49:03.719Z",
+        "reason": "user confirmed 2026-10-02: identite visuelle assumee du theme cartoon, prealable a ce lot. Mesure: celui de la ligne 315 cause un faux positif de la directive de contraste du DS (lit color:transparent comme rgb(0,0,0)), mais -webkit-text-fill-color preserve le degrade — rendu correct, verifie en navigateur"
       }
     ]
   }

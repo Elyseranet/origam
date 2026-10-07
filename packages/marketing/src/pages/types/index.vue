@@ -1,3 +1,200 @@
+<template>
+  <article
+    class="types-catalog"
+    data-cy="page-types"
+  >
+    <section
+      class="types-hero"
+      aria-labelledby="types-title"
+    >
+      <origam-container class="types-hero__inner">
+        <origam-chip
+          class="types-hero__badge"
+          color="primary"
+          border
+          border-color="var(--origam-color__action--primary---bg)"
+          size="small"
+          pill
+          data-cy="types-hero-badge"
+        >
+          {{ t('types.hero.badge', 'TypeScript types & enums') }}
+        </origam-chip>
+
+        <origam-title
+          id="types-title"
+          tag="h1"
+          class="types-hero__title"
+        >
+          <span class="types-hero__title-line">{{ t('types.hero.title_line1', 'API') }}</span>
+          <span class="types-hero__title-line types-hero__title-line--accent">{{ t('types.hero.title_line2', 'types.') }}</span>
+        </origam-title>
+
+        <p class="types-hero__subtitle">
+          {{ t('types.hero.subtitle', 'Every TypeScript type and enum used across origam props. Fully documented with definitions, accepted values and cross-references to the components that use them.') }}
+        </p>
+
+        <origam-text-field
+          v-model="searchQuery"
+          class="types-hero__search"
+          prepend-inner-icon="mdi-magnify"
+          :placeholder="t('types.hero.search_placeholder', 'Search types…')"
+          :aria-label="t('types.hero.search_label', 'Filter types by name or category')"
+          clearable
+          rounded="lg"
+          variant="outlined"
+          data-cy="types-search"
+        />
+
+        <p
+          class="types-hero__count"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <template v-if="isFiltering">
+            {{ filteredCount }} {{ t('types.hero.count_filtered_of', 'of') }} {{ totalCount }} {{ t('types.hero.count_filtered_match', 'types match') }}
+          </template>
+          <template v-else>
+            {{ totalCount }} {{ t('types.hero.count_total', 'types and enums across') }} {{ typesCategories.length }} {{ t('types.hero.count_categories', 'categories') }}
+          </template>
+        </p>
+      </origam-container>
+    </section>
+
+    <section
+      class="types-grid-section"
+      aria-labelledby="types-grid-title"
+      data-cy="types-grid"
+    >
+      <origam-container>
+        <header class="types-grid-section__header">
+          <p class="types-section__eyebrow">
+            {{ t('types.catalog.eyebrow', 'BROWSE BY CATEGORY') }}
+          </p>
+
+          <origam-title
+            id="types-grid-title"
+            tag="h2"
+            class="types-section__title types-section__title--single"
+          >
+            {{ t('types.catalog.title', 'All types.') }}
+          </origam-title>
+        </header>
+
+        <div
+          v-if="isFiltering && filteredCount === 0"
+          class="types-empty"
+          role="status"
+          data-cy="types-empty"
+        >
+          <origam-icon
+            icon="mdi-magnify-remove-outline"
+            class="types-empty__icon"
+            aria-hidden="true"
+          />
+
+          <origam-title
+            tag="h3"
+            class="types-empty__title"
+          >
+            {{ t('types.catalog.empty_title', 'No types found') }}
+          </origam-title>
+
+          <p class="types-empty__desc">
+            {{ t('types.catalog.empty_desc', 'No type matches "{query}". Try a different term.', { query: searchQuery }) }}
+          </p>
+        </div>
+
+        <div
+          v-for="group in groupedByCategory"
+          :key="group.category"
+          class="types-category"
+          :data-cy="`types-category-${group.category.toLowerCase().replace(/[^a-z0-9]/g, '-')}`"
+        >
+          <header class="types-category__header">
+            <origam-title
+              tag="h3"
+              class="types-category__title"
+            >
+              {{ group.category }}
+            </origam-title>
+
+            <origam-chip
+              size="small"
+              pill
+              class="types-category__count-chip"
+            >
+              {{ group.entries.length }}
+            </origam-chip>
+          </header>
+
+          <origam-grid
+            tag="ul"
+            columns="repeat(auto-fill, minmax(240px, 1fr))"
+            gap="1rem"
+            class="types-category__grid"
+          >
+            <origam-grid-item
+              v-for="entry in group.entries"
+              :key="entry.slug"
+              tag="li"
+              class="types-catalog-item"
+            >
+              <nuxt-link
+                :to="`/types/${entry.slug}`"
+                class="types-catalog-card__link"
+                :aria-label="`${entry.name} — ${t(entry.descriptionKey, entry.descriptionFallback)}`"
+                :data-cy="`types-card-${entry.slug}`"
+              >
+                <origam-card
+                  rounded="lg"
+                  class="types-catalog-card"
+                >
+                  <template #default>
+                    <div class="types-catalog-card__inner">
+                      <div class="types-catalog-card__header">
+                        <origam-avatar
+                          :icon="entry.icon"
+                          :color="entry.kind === 'enum' ? 'secondary' : 'primary'"
+                          rounded="lg"
+                          size="40"
+                          class="types-catalog-card__avatar"
+                          aria-hidden="true"
+                        />
+
+                        <origam-title
+                          tag="h4"
+                          class="types-catalog-card__name"
+                        >
+                          {{ entry.name }}
+                        </origam-title>
+
+                        <origam-chip
+                          :color="entry.kind === 'enum' ? 'secondary' : 'primary'"
+                          size="x-small"
+                          variant="tonal"
+                          pill
+                          class="types-catalog-card__kind-chip"
+                          :aria-label="entry.kind === 'enum' ? t('types.kind.enum', 'enum') : t('types.kind.type', 'type')"
+                        >
+                          {{ entry.kind === 'enum' ? t('types.kind.enum', 'enum') : t('types.kind.type', 'type') }}
+                        </origam-chip>
+                      </div>
+
+                      <p class="types-catalog-card__desc">
+                        {{ t(entry.descriptionKey, entry.descriptionFallback) }}
+                      </p>
+                    </div>
+                  </template>
+                </origam-card>
+              </nuxt-link>
+            </origam-grid-item>
+          </origam-grid>
+        </div>
+      </origam-container>
+    </section>
+  </article>
+</template>
+
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useT } from '~/composables/useT'
@@ -45,203 +242,6 @@ const totalCount = computed(() => typesCatalog.value.length)
 const filteredCount = computed(() => filteredEntries.value.length)
 const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 </script>
-
-<template>
-    <article
-        class="types-catalog"
-        data-cy="page-types"
-    >
-        <section
-            class="types-hero"
-            aria-labelledby="types-title"
-        >
-            <origam-container class="types-hero__inner">
-                <origam-chip
-                    class="types-hero__badge"
-                    color="primary"
-                    border
-                    border-color="var(--origam-color__action--primary---bg)"
-                    size="small"
-                    pill
-                    data-cy="types-hero-badge"
-                >
-                    {{ t('types.hero.badge', 'TypeScript types & enums') }}
-                </origam-chip>
-
-                <origam-title
-                    id="types-title"
-                    tag="h1"
-                    class="types-hero__title"
-                >
-                    <span class="types-hero__title-line">{{ t('types.hero.title_line1', 'API') }}</span>
-                    <span class="types-hero__title-line types-hero__title-line--accent">{{ t('types.hero.title_line2', 'types.') }}</span>
-                </origam-title>
-
-                <p class="types-hero__subtitle">
-                    {{ t('types.hero.subtitle', 'Every TypeScript type and enum used across origam props. Fully documented with definitions, accepted values and cross-references to the components that use them.') }}
-                </p>
-
-                <origam-text-field
-                    v-model="searchQuery"
-                    class="types-hero__search"
-                    prepend-inner-icon="mdi-magnify"
-                    :placeholder="t('types.hero.search_placeholder', 'Search types…')"
-                    :aria-label="t('types.hero.search_label', 'Filter types by name or category')"
-                    clearable
-                    rounded="lg"
-                    variant="outlined"
-                    data-cy="types-search"
-                />
-
-                <p
-                    class="types-hero__count"
-                    aria-live="polite"
-                    aria-atomic="true"
-                >
-                    <template v-if="isFiltering">
-                        {{ filteredCount }} {{ t('types.hero.count_filtered_of', 'of') }} {{ totalCount }} {{ t('types.hero.count_filtered_match', 'types match') }}
-                    </template>
-                    <template v-else>
-                        {{ totalCount }} {{ t('types.hero.count_total', 'types and enums across') }} {{ typesCategories.length }} {{ t('types.hero.count_categories', 'categories') }}
-                    </template>
-                </p>
-            </origam-container>
-        </section>
-
-        <section
-            class="types-grid-section"
-            aria-labelledby="types-grid-title"
-            data-cy="types-grid"
-        >
-            <origam-container>
-                <header class="types-grid-section__header">
-                    <p class="types-section__eyebrow">
-                        {{ t('types.catalog.eyebrow', 'BROWSE BY CATEGORY') }}
-                    </p>
-
-                    <origam-title
-                        id="types-grid-title"
-                        tag="h2"
-                        class="types-section__title types-section__title--single"
-                    >
-                        {{ t('types.catalog.title', 'All types.') }}
-                    </origam-title>
-                </header>
-
-                <div
-                    v-if="isFiltering && filteredCount === 0"
-                    class="types-empty"
-                    role="status"
-                    data-cy="types-empty"
-                >
-                    <origam-icon
-                        icon="mdi-magnify-remove-outline"
-                        class="types-empty__icon"
-                        aria-hidden="true"
-                    />
-
-                    <origam-title
-                        tag="h3"
-                        class="types-empty__title"
-                    >
-                        {{ t('types.catalog.empty_title', 'No types found') }}
-                    </origam-title>
-
-                    <p class="types-empty__desc">
-                        {{ t('types.catalog.empty_desc', 'No type matches "{query}". Try a different term.', { query: searchQuery }) }}
-                    </p>
-                </div>
-
-                <div
-                    v-for="group in groupedByCategory"
-                    :key="group.category"
-                    class="types-category"
-                    :data-cy="`types-category-${group.category.toLowerCase().replace(/[^a-z0-9]/g, '-')}`"
-                >
-                    <header class="types-category__header">
-                        <origam-title
-                            tag="h3"
-                            class="types-category__title"
-                        >
-                            {{ group.category }}
-                        </origam-title>
-
-                        <origam-chip
-                            size="small"
-                            pill
-                            class="types-category__count-chip"
-                        >
-                            {{ group.entries.length }}
-                        </origam-chip>
-                    </header>
-
-                    <origam-grid
-                        tag="ul"
-                        columns="repeat(auto-fill, minmax(240px, 1fr))"
-                        gap="1rem"
-                        class="types-category__grid"
-                    >
-                        <origam-grid-item
-                            v-for="entry in group.entries"
-                            :key="entry.slug"
-                            tag="li"
-                            class="types-catalog-item"
-                        >
-                            <nuxt-link
-                                :to="`/types/${entry.slug}`"
-                                class="types-catalog-card__link"
-                                :aria-label="`${entry.name} — ${t(entry.descriptionKey, entry.descriptionFallback)}`"
-                                :data-cy="`types-card-${entry.slug}`"
-                            >
-                                <origam-card
-                                    rounded="lg"
-                                    class="types-catalog-card"
-                                >
-                                    <template #default>
-                                        <div class="types-catalog-card__inner">
-                                            <div class="types-catalog-card__header">
-                                                <origam-avatar
-                                                    :icon="entry.icon"
-                                                    :color="entry.kind === 'enum' ? 'secondary' : 'primary'"
-                                                    rounded="lg"
-                                                    size="40"
-                                                    class="types-catalog-card__avatar"
-                                                    aria-hidden="true"
-                                                />
-
-                                                <origam-title
-                                                    tag="h4"
-                                                    class="types-catalog-card__name"
-                                                >
-                                                    {{ entry.name }}
-                                                </origam-title>
-
-                                                <origam-chip
-                                                    :color="entry.kind === 'enum' ? 'secondary' : 'primary'"
-                                                    size="x-small"
-                                                    variant="tonal"
-                                                    pill
-                                                    class="types-catalog-card__kind-chip"
-                                                    :aria-label="entry.kind === 'enum' ? t('types.kind.enum', 'enum') : t('types.kind.type', 'type')"
-                                                >
-                                                    {{ entry.kind === 'enum' ? t('types.kind.enum', 'enum') : t('types.kind.type', 'type') }}
-                                                </origam-chip>
-                                            </div>
-
-                                            <p class="types-catalog-card__desc">
-                                                {{ t(entry.descriptionKey, entry.descriptionFallback) }}
-                                            </p>
-                                        </div>
-                                    </template>
-                                </origam-card>
-                            </nuxt-link>
-                        </origam-grid-item>
-                    </origam-grid>
-                </div>
-            </origam-container>
-        </section>
-    </article>
-</template>
 
 <style scoped lang="scss">
 .types-catalog {

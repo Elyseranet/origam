@@ -1,3 +1,430 @@
+<template>
+  <article
+    class="type-detail"
+    :data-cy="`page-type-${slug}`"
+  >
+    <div
+      v-if="!displayDoc"
+      class="type-detail-not-found"
+      data-cy="type-not-found"
+    >
+      <origam-container class="type-detail-not-found__inner">
+        <origam-avatar
+          icon="mdi-help-circle-outline"
+          color="warning"
+          size="64"
+          aria-hidden="true"
+        />
+
+        <origam-title
+          tag="h1"
+          class="type-detail-not-found__title"
+        >
+          {{ t('types.detail.not_found.title', 'Type not found') }}
+        </origam-title>
+
+        <p class="type-detail-not-found__desc">
+          {{ t('types.detail.not_found.desc', 'No type matches the slug') }}
+          <origam-code
+            :code="slug"
+            lang="plaintext"
+            compact
+            class="type-detail-not-found__slug-code"
+          />
+        </p>
+
+        <origam-btn
+          href="/types"
+          prepend-icon="mdi-arrow-left"
+          variant="tonal"
+          color="primary"
+          data-cy="type-not-found-back"
+        >
+          {{ t('types.detail.not_found.back', 'Back to catalogue') }}
+        </origam-btn>
+      </origam-container>
+    </div>
+
+    <template v-else>
+      <div
+        class="type-hero"
+        aria-labelledby="type-title"
+      >
+        <origam-container class="type-hero__container">
+          <nav
+            class="type-hero__breadcrumb"
+            :aria-label="t('types.detail.breadcrumb_label', 'Page location')"
+          >
+            <nuxt-link
+              to="/types"
+              class="type-hero__breadcrumb-link"
+              data-cy="type-breadcrumb-catalog"
+            >
+              {{ t('types.detail.breadcrumb_catalog', 'Types') }}
+            </nuxt-link>
+
+            <span
+              class="type-hero__breadcrumb-sep"
+              aria-hidden="true"
+            >›</span>
+
+            <span
+              class="type-hero__breadcrumb-current"
+              aria-current="page"
+            >
+                            {{ typeName }}
+                        </span>
+          </nav>
+
+          <div class="type-hero__identity">
+            <div class="type-hero__title-row">
+              <origam-title
+                id="type-title"
+                tag="h1"
+                class="type-hero__title"
+              >
+                {{ typeName }}
+              </origam-title>
+
+              <origam-chip
+                :color="typeKind === 'enum' ? 'secondary' : 'primary'"
+                size="small"
+                variant="outlined"
+                class="type-hero__kind-chip"
+              >
+                {{ typeKind === 'enum' ? t('types.kind.enum', 'enum') : t('types.kind.type', 'type') }}
+              </origam-chip>
+
+              <origam-chip
+                v-if="typeCategory"
+                size="small"
+                variant="tonal"
+                class="type-hero__category-chip"
+              >
+                {{ typeCategory }}
+              </origam-chip>
+            </div>
+
+            <p class="type-hero__desc">
+              {{ t(typeDescKey, typeDescFallback) }}
+            </p>
+
+            <div class="type-hero__bottom">
+              <nav
+                v-if="displayDoc?.sourceFile"
+                class="type-hero__actions"
+                :aria-label="t('types.detail.external_links_label', 'External resources')"
+              >
+                <origam-btn
+                  :href="`https://github.com/origam-io/origam/blob/main/${displayDoc.sourceFile}`"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variant="text"
+                  size="small"
+                  prepend-icon="mdi-github"
+                  data-cy="type-source-link"
+                >
+                  {{ t('types.detail.hero.source_label', 'Source') }}
+                </origam-btn>
+              </nav>
+            </div>
+          </div>
+        </origam-container>
+      </div>
+
+      <origam-container>
+        <div class="type-detail__layout">
+          <aside
+            v-if="tocSections.length > 0"
+            class="type-toc"
+            :aria-label="t('types.detail.toc_label', 'Table of contents')"
+            data-cy="type-toc"
+          >
+            <p class="type-toc__heading">
+              {{ t('types.detail.toc_heading', 'On this page') }}
+            </p>
+
+            <origam-grid
+              tag="ul"
+              columns="1"
+              gap="0.25rem"
+              class="type-toc__list"
+            >
+              <origam-grid-item
+                v-for="section in tocSections"
+                :key="section.id"
+                tag="li"
+                class="type-toc__item"
+                :class="{ 'type-toc__item--active': activeSection === section.id }"
+              >
+                <a
+                  class="type-toc__link"
+                  :href="`#${section.id}`"
+                  :aria-current="activeSection === section.id ? 'true' : undefined"
+                  @click.prevent="scrollToSection(section.id)"
+                >
+                  {{ section.label }}
+                </a>
+              </origam-grid-item>
+            </origam-grid>
+          </aside>
+
+          <div class="type-detail__body">
+            <section
+              id="section-definition"
+              class="type-section type-definition"
+              aria-labelledby="type-definition-title"
+              data-cy="type-definition"
+            >
+              <header class="type-section__header">
+                <p class="type-section__eyebrow">
+                  {{ t('types.detail.definition.eyebrow', 'TypeScript') }}
+                </p>
+                <origam-title
+                  id="type-definition-title"
+                  tag="h2"
+                  class="type-section__title"
+                >
+                  {{ t('types.detail.definition.title', 'Definition') }}
+                </origam-title>
+                <p class="type-section__desc">
+                  {{ t('types.detail.definition.desc', 'The TypeScript definition as found in the origam source. Click the copy icon to copy the snippet.') }}
+                </p>
+              </header>
+
+              <div
+                v-if="displayDoc?.definition"
+                class="type-definition__code-wrap"
+                data-cy="type-definition-code"
+              >
+                <origam-code
+                  :code="displayDoc.definition"
+                  lang="typescript"
+                  copyable
+                  :line-numbers="true"
+                  class="type-definition__code"
+                />
+              </div>
+
+              <div
+                v-else
+                class="type-definition__no-doc"
+              >
+                <origam-card class="type-no-doc__card">
+                  <template #default>
+                    <div class="type-no-doc__inner">
+                      <origam-icon
+                        icon="mdi-book-open-page-variant-outline"
+                        color="primary"
+                        class="type-no-doc__icon"
+                        aria-hidden="true"
+                      />
+                      <origam-title
+                        tag="h3"
+                        class="type-no-doc__title"
+                      >
+                        {{ t('types.detail.no_doc.title', 'Documentation coming soon') }}
+                      </origam-title>
+                      <p class="type-no-doc__desc">
+                        {{ t('types.detail.no_doc.desc', 'The detailed API reference for this type is being written.') }}
+                      </p>
+                    </div>
+                  </template>
+                </origam-card>
+              </div>
+            </section>
+
+            <section
+              v-if="hasValues"
+              id="section-values"
+              class="type-section type-values"
+              aria-labelledby="type-values-title"
+              data-cy="type-values"
+            >
+              <header class="type-section__header">
+                <p class="type-section__eyebrow">
+                  {{ typeKind === 'enum' ? t('types.detail.values.eyebrow_enum', 'Members') : t('types.detail.values.eyebrow', 'Accepted') }}
+                </p>
+                <origam-title
+                  id="type-values-title"
+                  tag="h2"
+                  class="type-section__title"
+                >
+                  {{ typeKind === 'enum' ? t('types.detail.values.title_enum', 'Members') : t('types.detail.values.title', 'Values') }}
+                </origam-title>
+                <p class="type-section__desc">
+                  {{ typeKind === 'enum'
+                  ? t('types.detail.values.desc_enum', 'All members of this enum. Click a value to copy it to clipboard.')
+                  : t('types.detail.values.desc', 'Accepted string literal values for this type. Click a value to copy it.') }}
+                </p>
+              </header>
+
+              <dl
+                class="type-values__list"
+                data-cy="type-values-list"
+              >
+                <div
+                  v-for="(val, index) in displayDoc?.values"
+                  :key="val.value"
+                  class="type-values__item"
+                  :data-cy="`type-value-${val.value.replace(/[^a-z0-9]/gi, '-')}`"
+                >
+                  <dt class="type-values__dt">
+                    <origam-btn
+                      variant="text"
+                      size="x-small"
+                      class="type-values__copy-btn"
+                      :aria-label="`${t('types.detail.values.copy_label', 'Copy value')} ${val.value}`"
+                      @click="copyEnumValue(val.value, index)"
+                    >
+                      <span class="type-values__value-mono">{{ val.value }}</span>
+                      <origam-icon
+                        :icon="copiedValueIndex === index ? 'mdi-check' : 'mdi-content-copy'"
+                        size="11"
+                        class="type-values__copy-icon"
+                        aria-hidden="true"
+                      />
+                    </origam-btn>
+                  </dt>
+                  <dd class="type-values__dd">
+                    {{ t(val.descriptionKey, val.descriptionFallback) }}
+                  </dd>
+                </div>
+              </dl>
+            </section>
+
+            <section
+              v-if="hasUsedBy"
+              id="section-used-by"
+              class="type-section type-used-by"
+              aria-labelledby="type-used-by-title"
+              data-cy="type-used-by"
+            >
+              <header class="type-section__header">
+                <p class="type-section__eyebrow">
+                  {{ t('types.detail.used_by.eyebrow', 'Ecosystem') }}
+                </p>
+                <origam-title
+                  id="type-used-by-title"
+                  tag="h2"
+                  class="type-section__title"
+                >
+                  {{ t('types.detail.used_by.title', 'Used by') }}
+                </origam-title>
+                <p class="type-section__desc">
+                  {{ t('types.detail.used_by.desc', 'Components and props that accept this type as a value.') }}
+                </p>
+              </header>
+
+              <origam-grid
+                tag="ul"
+                columns="repeat(auto-fill, minmax(200px, 1fr))"
+                gap="1rem"
+                class="type-used-by__grid"
+                data-cy="type-used-by-grid"
+              >
+                <origam-grid-item
+                  v-for="ref in displayDoc?.usedBy"
+                  :key="`${ref.slug}-${ref.propName}`"
+                  tag="li"
+                  class="type-used-by__item"
+                >
+                  <nuxt-link
+                    :to="`/components/${ref.slug}`"
+                    class="type-used-by__link"
+                    :aria-label="`${ref.name} — prop: ${ref.propName}`"
+                    :data-cy="`type-used-by-card-${ref.slug}`"
+                  >
+                    <origam-card class="type-used-by__card">
+                      <template #default>
+                        <div class="type-used-by__card-inner">
+                          <div class="type-used-by__card-head">
+                            <origam-title
+                              tag="h3"
+                              class="type-used-by__card-name"
+                            >
+                              {{ ref.name }}
+                            </origam-title>
+
+                            <origam-icon
+                              icon="mdi-arrow-right"
+                              size="16"
+                              class="type-used-by__card-arrow"
+                              aria-hidden="true"
+                            />
+                          </div>
+
+                          <p class="type-used-by__card-prop">
+                            <origam-code
+                              :code="`prop: ${ref.propName}`"
+                              lang="plaintext"
+                              compact
+                              :copyable="false"
+                              class="type-used-by__card-prop-code"
+                            />
+                          </p>
+                        </div>
+                      </template>
+                    </origam-card>
+                  </nuxt-link>
+                </origam-grid-item>
+              </origam-grid>
+            </section>
+
+            <section
+              v-if="hasExamples"
+              id="section-examples"
+              class="type-section type-examples"
+              aria-labelledby="type-examples-title"
+              data-cy="type-examples"
+            >
+              <header class="type-section__header">
+                <p class="type-section__eyebrow">
+                  {{ t('types.detail.examples.eyebrow', 'Usage') }}
+                </p>
+                <origam-title
+                  id="type-examples-title"
+                  tag="h2"
+                  class="type-section__title"
+                >
+                  {{ t('types.detail.examples.title', 'Examples') }}
+                </origam-title>
+                <p class="type-section__desc">
+                  {{ t('types.detail.examples.desc', 'Ready-to-paste code snippets using this type.') }}
+                </p>
+              </header>
+
+              <div class="type-examples__list">
+                <div
+                  v-for="example in displayDoc?.examples"
+                  :key="example.titleFallback"
+                  class="type-examples__item"
+                  :data-cy="`type-example-${example.titleFallback.toLowerCase().replace(/[^a-z0-9]/g, '-')}`"
+                >
+                  <origam-title
+                    tag="h3"
+                    class="type-examples__item-title"
+                  >
+                    {{ t(example.titleKey, example.titleFallback) }}
+                  </origam-title>
+
+                  <origam-code
+                    :code="example.code"
+                    :lang="example.lang"
+                    copyable
+                    :line-numbers="true"
+                    class="type-examples__code"
+                  />
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </origam-container>
+    </template>
+  </article>
+</template>
+
 <script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
@@ -85,433 +512,6 @@ useSeoMeta({
     ogDescription: () => t(typeDescKey.value, typeDescFallback.value),
 })
 </script>
-
-<template>
-    <article
-        class="type-detail"
-        :data-cy="`page-type-${slug}`"
-    >
-        <div
-            v-if="!displayDoc"
-            class="type-detail-not-found"
-            data-cy="type-not-found"
-        >
-            <origam-container class="type-detail-not-found__inner">
-                <origam-avatar
-                    icon="mdi-help-circle-outline"
-                    color="warning"
-                    size="64"
-                    aria-hidden="true"
-                />
-
-                <origam-title
-                    tag="h1"
-                    class="type-detail-not-found__title"
-                >
-                    {{ t('types.detail.not_found.title', 'Type not found') }}
-                </origam-title>
-
-                <p class="type-detail-not-found__desc">
-                    {{ t('types.detail.not_found.desc', 'No type matches the slug') }}
-                    <origam-code
-                        :code="slug"
-                        lang="plaintext"
-                        compact
-                        class="type-detail-not-found__slug-code"
-                    />
-                </p>
-
-                <origam-btn
-                    href="/types"
-                    prepend-icon="mdi-arrow-left"
-                    variant="tonal"
-                    color="primary"
-                    data-cy="type-not-found-back"
-                >
-                    {{ t('types.detail.not_found.back', 'Back to catalogue') }}
-                </origam-btn>
-            </origam-container>
-        </div>
-
-        <template v-else>
-            <div
-                class="type-hero"
-                aria-labelledby="type-title"
-            >
-                <origam-container class="type-hero__container">
-                    <nav
-                        class="type-hero__breadcrumb"
-                        :aria-label="t('types.detail.breadcrumb_label', 'Page location')"
-                    >
-                        <nuxt-link
-                            to="/types"
-                            class="type-hero__breadcrumb-link"
-                            data-cy="type-breadcrumb-catalog"
-                        >
-                            {{ t('types.detail.breadcrumb_catalog', 'Types') }}
-                        </nuxt-link>
-
-                        <span
-                            class="type-hero__breadcrumb-sep"
-                            aria-hidden="true"
-                        >›</span>
-
-                        <span
-                            class="type-hero__breadcrumb-current"
-                            aria-current="page"
-                        >
-                            {{ typeName }}
-                        </span>
-                    </nav>
-
-                    <div class="type-hero__identity">
-                        <div class="type-hero__title-row">
-                            <origam-title
-                                id="type-title"
-                                tag="h1"
-                                class="type-hero__title"
-                            >
-                                {{ typeName }}
-                            </origam-title>
-
-                            <origam-chip
-                                :color="typeKind === 'enum' ? 'secondary' : 'primary'"
-                                size="small"
-                                variant="outlined"
-                                class="type-hero__kind-chip"
-                            >
-                                {{ typeKind === 'enum' ? t('types.kind.enum', 'enum') : t('types.kind.type', 'type') }}
-                            </origam-chip>
-
-                            <origam-chip
-                                v-if="typeCategory"
-                                size="small"
-                                variant="tonal"
-                                class="type-hero__category-chip"
-                            >
-                                {{ typeCategory }}
-                            </origam-chip>
-                        </div>
-
-                        <p class="type-hero__desc">
-                            {{ t(typeDescKey, typeDescFallback) }}
-                        </p>
-
-                        <div class="type-hero__bottom">
-                            <nav
-                                v-if="displayDoc?.sourceFile"
-                                class="type-hero__actions"
-                                :aria-label="t('types.detail.external_links_label', 'External resources')"
-                            >
-                                <origam-btn
-                                    :href="`https://github.com/origam-io/origam/blob/main/${displayDoc.sourceFile}`"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    variant="text"
-                                    size="small"
-                                    prepend-icon="mdi-github"
-                                    data-cy="type-source-link"
-                                >
-                                    {{ t('types.detail.hero.source_label', 'Source') }}
-                                </origam-btn>
-                            </nav>
-                        </div>
-                    </div>
-                </origam-container>
-            </div>
-
-            <origam-container>
-                <div class="type-detail__layout">
-                    <aside
-                        v-if="tocSections.length > 0"
-                        class="type-toc"
-                        :aria-label="t('types.detail.toc_label', 'Table of contents')"
-                        data-cy="type-toc"
-                    >
-                        <p class="type-toc__heading">
-                            {{ t('types.detail.toc_heading', 'On this page') }}
-                        </p>
-
-                        <origam-grid
-                            tag="ul"
-                            columns="1"
-                            gap="0.25rem"
-                            class="type-toc__list"
-                        >
-                            <origam-grid-item
-                                v-for="section in tocSections"
-                                :key="section.id"
-                                tag="li"
-                                class="type-toc__item"
-                                :class="{ 'type-toc__item--active': activeSection === section.id }"
-                            >
-                                <a
-                                    class="type-toc__link"
-                                    :href="`#${section.id}`"
-                                    :aria-current="activeSection === section.id ? 'true' : undefined"
-                                    @click.prevent="scrollToSection(section.id)"
-                                >
-                                    {{ section.label }}
-                                </a>
-                            </origam-grid-item>
-                        </origam-grid>
-                    </aside>
-
-                    <div class="type-detail__body">
-                        <section
-                            id="section-definition"
-                            class="type-section type-definition"
-                            aria-labelledby="type-definition-title"
-                            data-cy="type-definition"
-                        >
-                            <header class="type-section__header">
-                                <p class="type-section__eyebrow">
-                                    {{ t('types.detail.definition.eyebrow', 'TypeScript') }}
-                                </p>
-                                <origam-title
-                                    id="type-definition-title"
-                                    tag="h2"
-                                    class="type-section__title"
-                                >
-                                    {{ t('types.detail.definition.title', 'Definition') }}
-                                </origam-title>
-                                <p class="type-section__desc">
-                                    {{ t('types.detail.definition.desc', 'The TypeScript definition as found in the origam source. Click the copy icon to copy the snippet.') }}
-                                </p>
-                            </header>
-
-                            <div
-                                v-if="displayDoc?.definition"
-                                class="type-definition__code-wrap"
-                                data-cy="type-definition-code"
-                            >
-                                <origam-code
-                                    :code="displayDoc.definition"
-                                    lang="typescript"
-                                    copyable
-                                    :line-numbers="true"
-                                    class="type-definition__code"
-                                />
-                            </div>
-
-                            <div
-                                v-else
-                                class="type-definition__no-doc"
-                            >
-                                <origam-card class="type-no-doc__card">
-                                    <template #default>
-                                        <div class="type-no-doc__inner">
-                                            <origam-icon
-                                                icon="mdi-book-open-page-variant-outline"
-                                                color="primary"
-                                                class="type-no-doc__icon"
-                                                aria-hidden="true"
-                                            />
-                                            <origam-title
-                                                tag="h3"
-                                                class="type-no-doc__title"
-                                            >
-                                                {{ t('types.detail.no_doc.title', 'Documentation coming soon') }}
-                                            </origam-title>
-                                            <p class="type-no-doc__desc">
-                                                {{ t('types.detail.no_doc.desc', 'The detailed API reference for this type is being written.') }}
-                                            </p>
-                                        </div>
-                                    </template>
-                                </origam-card>
-                            </div>
-                        </section>
-
-                        <section
-                            v-if="hasValues"
-                            id="section-values"
-                            class="type-section type-values"
-                            aria-labelledby="type-values-title"
-                            data-cy="type-values"
-                        >
-                            <header class="type-section__header">
-                                <p class="type-section__eyebrow">
-                                    {{ typeKind === 'enum' ? t('types.detail.values.eyebrow_enum', 'Members') : t('types.detail.values.eyebrow', 'Accepted') }}
-                                </p>
-                                <origam-title
-                                    id="type-values-title"
-                                    tag="h2"
-                                    class="type-section__title"
-                                >
-                                    {{ typeKind === 'enum' ? t('types.detail.values.title_enum', 'Members') : t('types.detail.values.title', 'Values') }}
-                                </origam-title>
-                                <p class="type-section__desc">
-                                    {{ typeKind === 'enum'
-                                        ? t('types.detail.values.desc_enum', 'All members of this enum. Click a value to copy it to clipboard.')
-                                        : t('types.detail.values.desc', 'Accepted string literal values for this type. Click a value to copy it.') }}
-                                </p>
-                            </header>
-
-                            <dl
-                                class="type-values__list"
-                                data-cy="type-values-list"
-                            >
-                                <div
-                                    v-for="(val, index) in displayDoc?.values"
-                                    :key="val.value"
-                                    class="type-values__item"
-                                    :data-cy="`type-value-${val.value.replace(/[^a-z0-9]/gi, '-')}`"
-                                >
-                                    <dt class="type-values__dt">
-                                        <origam-btn
-                                            variant="text"
-                                            size="x-small"
-                                            class="type-values__copy-btn"
-                                            :aria-label="`${t('types.detail.values.copy_label', 'Copy value')} ${val.value}`"
-                                            @click="copyEnumValue(val.value, index)"
-                                        >
-                                            <span class="type-values__value-mono">{{ val.value }}</span>
-                                            <origam-icon
-                                                :icon="copiedValueIndex === index ? 'mdi-check' : 'mdi-content-copy'"
-                                                size="11"
-                                                class="type-values__copy-icon"
-                                                aria-hidden="true"
-                                            />
-                                        </origam-btn>
-                                    </dt>
-                                    <dd class="type-values__dd">
-                                        {{ t(val.descriptionKey, val.descriptionFallback) }}
-                                    </dd>
-                                </div>
-                            </dl>
-                        </section>
-
-                        <section
-                            v-if="hasUsedBy"
-                            id="section-used-by"
-                            class="type-section type-used-by"
-                            aria-labelledby="type-used-by-title"
-                            data-cy="type-used-by"
-                        >
-                            <header class="type-section__header">
-                                <p class="type-section__eyebrow">
-                                    {{ t('types.detail.used_by.eyebrow', 'Ecosystem') }}
-                                </p>
-                                <origam-title
-                                    id="type-used-by-title"
-                                    tag="h2"
-                                    class="type-section__title"
-                                >
-                                    {{ t('types.detail.used_by.title', 'Used by') }}
-                                </origam-title>
-                                <p class="type-section__desc">
-                                    {{ t('types.detail.used_by.desc', 'Components and props that accept this type as a value.') }}
-                                </p>
-                            </header>
-
-                            <origam-grid
-                                tag="ul"
-                                columns="repeat(auto-fill, minmax(200px, 1fr))"
-                                gap="1rem"
-                                class="type-used-by__grid"
-                                data-cy="type-used-by-grid"
-                            >
-                                <origam-grid-item
-                                    v-for="ref in displayDoc?.usedBy"
-                                    :key="`${ref.slug}-${ref.propName}`"
-                                    tag="li"
-                                    class="type-used-by__item"
-                                >
-                                    <nuxt-link
-                                        :to="`/components/${ref.slug}`"
-                                        class="type-used-by__link"
-                                        :aria-label="`${ref.name} — prop: ${ref.propName}`"
-                                        :data-cy="`type-used-by-card-${ref.slug}`"
-                                    >
-                                        <origam-card class="type-used-by__card">
-                                            <template #default>
-                                                <div class="type-used-by__card-inner">
-                                                    <div class="type-used-by__card-head">
-                                                        <origam-title
-                                                            tag="h3"
-                                                            class="type-used-by__card-name"
-                                                        >
-                                                            {{ ref.name }}
-                                                        </origam-title>
-
-                                                        <origam-icon
-                                                            icon="mdi-arrow-right"
-                                                            size="16"
-                                                            class="type-used-by__card-arrow"
-                                                            aria-hidden="true"
-                                                        />
-                                                    </div>
-
-                                                    <p class="type-used-by__card-prop">
-                                                        <origam-code
-                                                            :code="`prop: ${ref.propName}`"
-                                                            lang="plaintext"
-                                                            compact
-                                                            :copyable="false"
-                                                            class="type-used-by__card-prop-code"
-                                                        />
-                                                    </p>
-                                                </div>
-                                            </template>
-                                        </origam-card>
-                                    </nuxt-link>
-                                </origam-grid-item>
-                            </origam-grid>
-                        </section>
-
-                        <section
-                            v-if="hasExamples"
-                            id="section-examples"
-                            class="type-section type-examples"
-                            aria-labelledby="type-examples-title"
-                            data-cy="type-examples"
-                        >
-                            <header class="type-section__header">
-                                <p class="type-section__eyebrow">
-                                    {{ t('types.detail.examples.eyebrow', 'Usage') }}
-                                </p>
-                                <origam-title
-                                    id="type-examples-title"
-                                    tag="h2"
-                                    class="type-section__title"
-                                >
-                                    {{ t('types.detail.examples.title', 'Examples') }}
-                                </origam-title>
-                                <p class="type-section__desc">
-                                    {{ t('types.detail.examples.desc', 'Ready-to-paste code snippets using this type.') }}
-                                </p>
-                            </header>
-
-                            <div class="type-examples__list">
-                                <div
-                                    v-for="example in displayDoc?.examples"
-                                    :key="example.titleFallback"
-                                    class="type-examples__item"
-                                    :data-cy="`type-example-${example.titleFallback.toLowerCase().replace(/[^a-z0-9]/g, '-')}`"
-                                >
-                                    <origam-title
-                                        tag="h3"
-                                        class="type-examples__item-title"
-                                    >
-                                        {{ t(example.titleKey, example.titleFallback) }}
-                                    </origam-title>
-
-                                    <origam-code
-                                        :code="example.code"
-                                        :lang="example.lang"
-                                        copyable
-                                        :line-numbers="true"
-                                        class="type-examples__code"
-                                    />
-                                </div>
-                            </div>
-                        </section>
-                    </div>
-                </div>
-            </origam-container>
-        </template>
-    </article>
-</template>
 
 <style scoped lang="scss">
 .type-detail {

@@ -1,9 +1,140 @@
+<template>
+  <div class="tbc-elevation">
+    <origam-select
+      :model-value="selectValue"
+      :items="selectItems"
+      :label="label"
+      variant="outlined"
+      density="compact"
+      hide-details
+      class="tbc-elevation__select"
+      :data-cy="`${dataCy}-select`"
+      @update:model-value="onSelect"
+    />
+
+    <div
+      v-if="isCustom"
+      class="tbc-elevation__custom tb-reveal"
+    >
+      <div
+        class="tbc-elevation__modes"
+        role="group"
+        :aria-label="t('theming.control.elevation.mode_group', 'Custom shadow mode')"
+      >
+        <origam-btn
+          variant="outlined"
+          size="x-small"
+          density="compact"
+          :active="customMode === 'depth'"
+          :aria-pressed="customMode === 'depth'"
+          :data-cy="`${dataCy}-mode-depth`"
+          @click="setCustomMode('depth')"
+        >
+          {{ t('theming.control.elevation.mode_depth', 'Depth') }}
+        </origam-btn>
+        <origam-btn
+          variant="outlined"
+          size="x-small"
+          density="compact"
+          :active="customMode === 'shadow'"
+          :aria-pressed="customMode === 'shadow'"
+          :data-cy="`${dataCy}-mode-shadow`"
+          @click="setCustomMode('shadow')"
+        >
+          {{ t('theming.control.elevation.mode_shadow', 'Shadow') }}
+        </origam-btn>
+      </div>
+
+      <origam-number-field
+        v-if="customMode === 'depth'"
+        :model-value="depth"
+        :label="t('theming.control.elevation.depth_label', 'Depth (0-24)')"
+        :min="0"
+        :max="24"
+        variant="outlined"
+        density="compact"
+        hide-details
+        :data-cy="`${dataCy}-depth`"
+        @update:model-value="onDepth"
+      />
+
+      <template v-else>
+        <div class="tbc-elevation__shadow-grid">
+          <origam-number-field
+            :model-value="layer.x"
+            :label="t('theming.control.elevation.offset_x', 'Offset X (px)')"
+            variant="outlined"
+            density="compact"
+            hide-details
+            :data-cy="`${dataCy}-offset-x`"
+            @update:model-value="onOffsetX"
+          />
+          <origam-number-field
+            :model-value="layer.y"
+            :label="t('theming.control.elevation.offset_y', 'Offset Y (px)')"
+            variant="outlined"
+            density="compact"
+            hide-details
+            :data-cy="`${dataCy}-offset-y`"
+            @update:model-value="onOffsetY"
+          />
+          <origam-number-field
+            :model-value="layer.blur"
+            :label="t('theming.control.elevation.blur', 'Blur (px)')"
+            :min="0"
+            variant="outlined"
+            density="compact"
+            hide-details
+            :data-cy="`${dataCy}-blur`"
+            @update:model-value="onBlur"
+          />
+          <origam-number-field
+            :model-value="layer.spread"
+            :label="t('theming.control.elevation.spread', 'Spread (px)')"
+            variant="outlined"
+            density="compact"
+            hide-details
+            :data-cy="`${dataCy}-spread`"
+            @update:model-value="onSpread"
+          />
+        </div>
+
+        <origam-color-picker-field
+          :model-value="layer.color"
+          :label="t('theming.control.elevation.shadow_color', 'Shadow colour')"
+          variant="outlined"
+          density="compact"
+          hide-details
+          :data-cy="`${dataCy}-shadow-color`"
+          @update:model-value="onColor"
+        />
+
+        <origam-slider-field
+          :model-value="layer.opacity"
+          :label="t('theming.control.elevation.opacity', 'Opacity')"
+          :min="0"
+          :max="100"
+          density="compact"
+          hide-details
+          :data-cy="`${dataCy}-opacity`"
+          @update:model-value="onOpacity"
+        >
+          <template #append>
+            <span class="tbc-elevation__opacity-value">{{ layer.opacity }}%</span>
+          </template>
+        </origam-slider-field>
+      </template>
+    </div>
+  </div>
+</template>
+
 <script setup lang="ts">
 import { computed } from 'vue'
 
 import { useT } from '~/composables/useT'
 import { useThemeBuilderElevationControl } from '~/composables/useThemeBuilderElevationControl'
 import { THEME_BUILDER_ELEVATION_OPTIONS } from '~/consts/theme-builder-controls.const'
+import type { IThemeBuilderElevationFieldEmits, IThemeBuilderElevationFieldProps } from "~/interfaces/theme-builder.interface";
 
 /**
  * ThemeBuilderElevationField — Contrôle 4 (`elevation-field.html`): ONE
@@ -13,15 +144,9 @@ import { THEME_BUILDER_ELEVATION_OPTIONS } from '~/consts/theme-builder-controls
  * (#294). Both sub-modes write straight into `elevation` — verified live
  * since PR #210 (`isCustomBoxShadow`, task #14).
  */
-const props = defineProps<{
-    modelValue: unknown
-    label: string
-    dataCy: string
-}>()
+const props = withDefaults(defineProps<IThemeBuilderElevationFieldProps>(), {})
 
-const emit = defineEmits<{
-    (e: 'update:modelValue', value: string | number | undefined): void
-}>()
+const emit = defineEmits<IThemeBuilderElevationFieldEmits>()
 
 const { t } = useT()
 
@@ -52,136 +177,6 @@ const onOpacity = (value: unknown): void => {
     if (typeof value === 'number') setLayer({ opacity: value })
 }
 </script>
-
-<template>
-    <div class="tbc-elevation">
-        <origam-select
-            :model-value="selectValue"
-            :items="selectItems"
-            :label="label"
-            variant="outlined"
-            density="compact"
-            hide-details
-            class="tbc-elevation__select"
-            :data-cy="`${dataCy}-select`"
-            @update:model-value="onSelect"
-        />
-
-        <div
-            v-if="isCustom"
-            class="tbc-elevation__custom tb-reveal"
-        >
-            <div
-                class="tbc-elevation__modes"
-                role="group"
-                :aria-label="t('theming.control.elevation.mode_group', 'Custom shadow mode')"
-            >
-                <origam-btn
-                    variant="outlined"
-                    size="x-small"
-                    density="compact"
-                    :active="customMode === 'depth'"
-                    :aria-pressed="customMode === 'depth'"
-                    :data-cy="`${dataCy}-mode-depth`"
-                    @click="setCustomMode('depth')"
-                >
-                    {{ t('theming.control.elevation.mode_depth', 'Depth') }}
-                </origam-btn>
-                <origam-btn
-                    variant="outlined"
-                    size="x-small"
-                    density="compact"
-                    :active="customMode === 'shadow'"
-                    :aria-pressed="customMode === 'shadow'"
-                    :data-cy="`${dataCy}-mode-shadow`"
-                    @click="setCustomMode('shadow')"
-                >
-                    {{ t('theming.control.elevation.mode_shadow', 'Shadow') }}
-                </origam-btn>
-            </div>
-
-            <origam-number-field
-                v-if="customMode === 'depth'"
-                :model-value="depth"
-                :label="t('theming.control.elevation.depth_label', 'Depth (0-24)')"
-                :min="0"
-                :max="24"
-                variant="outlined"
-                density="compact"
-                hide-details
-                :data-cy="`${dataCy}-depth`"
-                @update:model-value="onDepth"
-            />
-
-            <template v-else>
-                <div class="tbc-elevation__shadow-grid">
-                    <origam-number-field
-                        :model-value="layer.x"
-                        :label="t('theming.control.elevation.offset_x', 'Offset X (px)')"
-                        variant="outlined"
-                        density="compact"
-                        hide-details
-                        :data-cy="`${dataCy}-offset-x`"
-                        @update:model-value="onOffsetX"
-                    />
-                    <origam-number-field
-                        :model-value="layer.y"
-                        :label="t('theming.control.elevation.offset_y', 'Offset Y (px)')"
-                        variant="outlined"
-                        density="compact"
-                        hide-details
-                        :data-cy="`${dataCy}-offset-y`"
-                        @update:model-value="onOffsetY"
-                    />
-                    <origam-number-field
-                        :model-value="layer.blur"
-                        :label="t('theming.control.elevation.blur', 'Blur (px)')"
-                        :min="0"
-                        variant="outlined"
-                        density="compact"
-                        hide-details
-                        :data-cy="`${dataCy}-blur`"
-                        @update:model-value="onBlur"
-                    />
-                    <origam-number-field
-                        :model-value="layer.spread"
-                        :label="t('theming.control.elevation.spread', 'Spread (px)')"
-                        variant="outlined"
-                        density="compact"
-                        hide-details
-                        :data-cy="`${dataCy}-spread`"
-                        @update:model-value="onSpread"
-                    />
-                </div>
-
-                <origam-color-picker-field
-                    :model-value="layer.color"
-                    :label="t('theming.control.elevation.shadow_color', 'Shadow colour')"
-                    variant="outlined"
-                    density="compact"
-                    hide-details
-                    :data-cy="`${dataCy}-shadow-color`"
-                    @update:model-value="onColor"
-                />
-
-                <origam-slider-field
-                    :model-value="layer.opacity"
-                    :label="t('theming.control.elevation.opacity', 'Opacity')"
-                    :min="0"
-                    :max="100"
-                    density="compact"
-                    hide-details
-                    :data-cy="`${dataCy}-opacity`"
-                    @update:model-value="onOpacity"
-                >
-                    <template #append>
-                        <span class="tbc-elevation__opacity-value">{{ layer.opacity }}%</span>
-                    </template>
-                </origam-slider-field>
-            </template>
-        </div>
-    </div>
-</template>
 
 <style scoped lang="scss">
 .tbc-elevation {

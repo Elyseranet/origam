@@ -1,55 +1,56 @@
+<template>
+  <section
+    class="home-cta"
+    aria-labelledby="cta-title"
+  >
+    <div class="home-cta__inner">
+      <origam-title
+        id="cta-title"
+        tag="h2"
+        class="home-cta__title"
+      >
+        {{ t('home.cta.title', 'Ready to ship faster?') }}
+      </origam-title>
+
+      <p class="home-cta__description">
+        {{ t('home.cta.description', 'Spin up your Vue 3 project with origam in 30 seconds.') }}
+      </p>
+
+      <nav
+        class="home-cta__actions"
+        :aria-label="t('home.cta.actions_label', 'Get started')"
+      >
+        <origam-btn
+          class="home-cta__btn home-cta__btn--start"
+          variant="flat"
+          color="primary"
+          append-icon="mdi-arrow-right"
+          :href="CTA_START_HREF"
+          data-cy="cta-btn-start"
+        >
+          {{ t('home.cta.cta_start', 'Get started') }}
+        </origam-btn>
+
+        <origam-btn
+          class="home-cta__btn home-cta__btn--docs"
+          variant="text"
+          prepend-icon="mdi-code-tags"
+          :href="CTA_DOCS_HREF"
+          data-cy="cta-btn-docs"
+        >
+          {{ t('home.cta.cta_docs', 'Read docs') }}
+        </origam-btn>
+      </nav>
+    </div>
+  </section>
+</template>
+
 <script setup lang="ts">
 import { useT } from '~/composables/useT'
 import { CTA_START_HREF, CTA_DOCS_HREF } from '~/consts/cta.const'
 
 const { t } = useT()
 </script>
-
-<template>
-    <section
-        class="home-cta"
-        aria-labelledby="cta-title"
-    >
-        <div class="home-cta__inner">
-            <origam-title
-                id="cta-title"
-                tag="h2"
-                class="home-cta__title"
-            >
-                {{ t('home.cta.title', 'Ready to ship faster?') }}
-            </origam-title>
-
-            <p class="home-cta__description">
-                {{ t('home.cta.description', 'Spin up your Vue 3 project with origam in 30 seconds.') }}
-            </p>
-
-            <nav
-                class="home-cta__actions"
-                :aria-label="t('home.cta.actions_label', 'Get started')"
-            >
-                <origam-btn
-                    class="home-cta__btn home-cta__btn--start"
-                    variant="text"
-                    append-icon="mdi-arrow-right"
-                    :href="CTA_START_HREF"
-                    data-cy="cta-btn-start"
-                >
-                    {{ t('home.cta.cta_start', 'Get started') }}
-                </origam-btn>
-
-                <origam-btn
-                    class="home-cta__btn home-cta__btn--docs"
-                    variant="text"
-                    prepend-icon="mdi-code-tags"
-                    :href="CTA_DOCS_HREF"
-                    data-cy="cta-btn-docs"
-                >
-                    {{ t('home.cta.cta_docs', 'Read docs') }}
-                </origam-btn>
-            </nav>
-        </div>
-    </section>
-</template>
 
 <style scoped lang="scss">
 .home-cta {

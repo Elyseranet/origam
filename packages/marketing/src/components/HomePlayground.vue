@@ -1,3 +1,99 @@
+<template>
+  <section
+    id="playground"
+    class="home-playground"
+    aria-labelledby="playground-heading"
+  >
+    <header class="home-playground__intro">
+      <p class="home-playground__eyebrow">
+        {{ t('home.playground.eyebrow', 'LIVE PLAYGROUND') }}
+      </p>
+
+      <origam-title
+        id="playground-heading"
+        tag="h2"
+        class="home-playground__title"
+      >
+        {{ t('home.playground.title', 'Try before you ship.') }}
+      </origam-title>
+    </header>
+
+    <figure class="home-playground__window">
+      <origam-sheet
+        tag="div"
+        :rounded="PLAYGROUND_FRAME_RADIUS"
+        :style="PLAYGROUND_FRAME_VARS"
+        border
+        border-color="var(--origam-color__border---default)"
+        class="home-playground__frame"
+      >
+        <div
+          class="home-playground__toolbar"
+          role="toolbar"
+          :aria-label="t('a11y.playground_toolbar', 'Editor toolbar')"
+        >
+                    <span
+                      class="home-playground__traffic"
+                      aria-hidden="true"
+                    >
+                        <span class="home-playground__dot home-playground__dot--red" />
+                        <span class="home-playground__dot home-playground__dot--yellow" />
+                        <span class="home-playground__dot home-playground__dot--green" />
+                    </span>
+
+          <span class="home-playground__tab">
+                        {{ t('home.playground.file', 'App.vue') }}
+                    </span>
+        </div>
+
+        <div class="home-playground__panes">
+          <origam-code
+            :code="PLAYGROUND_SNIPPET"
+            lang="vue"
+            line-numbers
+            :copyable="false"
+            class="home-playground__code"
+            data-cy="playground-code"
+          />
+
+          <div class="home-playground__preview">
+            <origam-card
+              tag="div"
+              rounded="lg"
+              border
+              border-color="var(--origam-color__border---default)"
+              :style="PLAYGROUND_PREVIEW_VARS"
+              class="home-playground__preview-card"
+              data-cy="playground-preview"
+            >
+              <origam-title
+                tag="h3"
+                class="home-playground__preview-title"
+                :text="t('home.playground.preview_title', 'Hello Origam')"
+              />
+              <p class="home-playground__preview-text">
+                {{ t('home.playground.preview_text', 'The Vue 3 design system that just works. Try a component live.') }}
+              </p>
+              <origam-btn
+                color="primary"
+                append-icon="mdi-arrow-right"
+                class="home-playground__preview-btn"
+                :style="PLAYGROUND_PREVIEW_BTN_VARS"
+              >
+                {{ t('home.playground.preview_cta', 'Get started') }}
+              </origam-btn>
+            </origam-card>
+          </div>
+        </div>
+      </origam-sheet>
+    </figure>
+
+    <figcaption class="home-playground__caption">
+      {{ t('home.playground.caption', 'The Vue 3 design system that just works. Try a component live.') }}
+    </figcaption>
+  </section>
+</template>
+
 <script setup lang="ts">
 import { useT } from '~/composables/useT'
 import {
@@ -10,102 +106,6 @@ import {
 
 const { t } = useT()
 </script>
-
-<template>
-    <section
-        id="playground"
-        class="home-playground"
-        aria-labelledby="playground-heading"
-    >
-        <header class="home-playground__intro">
-            <p class="home-playground__eyebrow">
-                {{ t('home.playground.eyebrow', 'LIVE PLAYGROUND') }}
-            </p>
-
-            <origam-title
-                id="playground-heading"
-                tag="h2"
-                class="home-playground__title"
-            >
-                {{ t('home.playground.title', 'Try before you ship.') }}
-            </origam-title>
-        </header>
-
-        <figure class="home-playground__window">
-            <origam-sheet
-                tag="div"
-                :rounded="PLAYGROUND_FRAME_RADIUS"
-                :style="PLAYGROUND_FRAME_VARS"
-                border
-                border-color="var(--origam-color__border---default)"
-                class="home-playground__frame"
-            >
-                <div
-                    class="home-playground__toolbar"
-                    role="toolbar"
-                    :aria-label="t('a11y.playground_toolbar', 'Editor toolbar')"
-                >
-                    <span
-                        class="home-playground__traffic"
-                        aria-hidden="true"
-                    >
-                        <span class="home-playground__dot home-playground__dot--red" />
-                        <span class="home-playground__dot home-playground__dot--yellow" />
-                        <span class="home-playground__dot home-playground__dot--green" />
-                    </span>
-
-                    <span class="home-playground__tab">
-                        {{ t('home.playground.file', 'App.vue') }}
-                    </span>
-                </div>
-
-                <div class="home-playground__panes">
-                    <origam-code
-                        :code="PLAYGROUND_SNIPPET"
-                        lang="vue"
-                        line-numbers
-                        :copyable="false"
-                        class="home-playground__code"
-                        data-cy="playground-code"
-                    />
-
-                    <div class="home-playground__preview">
-                        <origam-card
-                            tag="div"
-                            rounded="lg"
-                            border
-                            border-color="var(--origam-color__border---default)"
-                            :style="PLAYGROUND_PREVIEW_VARS"
-                            class="home-playground__preview-card"
-                            data-cy="playground-preview"
-                        >
-                            <origam-title
-                                tag="h3"
-                                class="home-playground__preview-title"
-                                :text="t('home.playground.preview_title', 'Hello Origam')"
-                            />
-                            <p class="home-playground__preview-text">
-                                {{ t('home.playground.preview_text', 'The Vue 3 design system that just works. Try a component live.') }}
-                            </p>
-                            <origam-btn
-                                color="primary"
-                                append-icon="mdi-arrow-right"
-                                class="home-playground__preview-btn"
-                                :style="PLAYGROUND_PREVIEW_BTN_VARS"
-                            >
-                                {{ t('home.playground.preview_cta', 'Get started') }}
-                            </origam-btn>
-                        </origam-card>
-                    </div>
-                </div>
-            </origam-sheet>
-        </figure>
-
-        <figcaption class="home-playground__caption">
-            {{ t('home.playground.caption', 'The Vue 3 design system that just works. Try a component live.') }}
-        </figcaption>
-    </section>
-</template>
 
 <style scoped lang="scss">
 .home-playground {

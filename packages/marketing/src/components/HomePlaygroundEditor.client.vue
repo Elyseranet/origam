@@ -1,3 +1,17 @@
+<template>
+  <repl
+    :store="store"
+    :editor="CodeMirrorEditor"
+    :show-compile-output="false"
+    :show-import-map="false"
+    :show-ts-config="false"
+    :clear-console="false"
+    layout="vertical"
+    class="home-playground__repl"
+    data-cy="playground-repl"
+  />
+</template>
+
 <script setup lang="ts">
 /**
  * HomePlaygroundEditor.client.vue
@@ -24,20 +38,6 @@ import { PLAYGROUND_REPL_SNIPPET } from '~/consts/playground.const'
 const store = useStore()
 void store.setFiles({ 'App.vue': PLAYGROUND_REPL_SNIPPET }, 'App.vue').catch(() => {})
 </script>
-
-<template>
-    <repl
-        :store="store"
-        :editor="CodeMirrorEditor"
-        :show-compile-output="false"
-        :show-import-map="false"
-        :show-ts-config="false"
-        :clear-console="false"
-        layout="vertical"
-        class="home-playground__repl"
-        data-cy="playground-repl"
-    />
-</template>
 
 <style scoped lang="scss">
 /*
