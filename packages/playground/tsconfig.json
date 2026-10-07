@@ -1,14 +1,11 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "composite": true,
     "noEmit": true,
-    "baseUrl": "../..",
     "paths": {
-      "@origam": ["./packages/ds/src"],
-      "@origam/*": ["./packages/ds/src/*"],
-      "@playground": ["./packages/playground/src"],
-      "@playground/*": ["./packages/playground/src/*"]
+      "@playground": ["./src"],
+      "@playground/*": ["./src/*"]
     }
   },
   "include": [
@@ -16,8 +13,9 @@
     "src/**/*.vue"
   ],
   "exclude": [
-    "../../node_modules",
-    "../../dist",
-    "scripts"
+    "dist",
+    "node_modules",
+    "scripts",
+    "src/**/*.spec.ts"
   ]
 }
