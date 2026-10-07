@@ -1,0 +1,12 @@
+# Output of the metadata extraction stages (meta:runtime / meta:unions /
+# meta:aliases). Regenerated from source by those scripts, so it is a build
+# artefact and never committed.
+#
+# ⛔ Keeping it out of the index is deliberate, not tidiness. #966: a guard
+# that enumerated the DISK swept 35 MB of untracked build output under
+# packages/marketing/public/ and both inflated its violation count AND
+# polluted its emitter set, so a maintainer following its own message would
+# have deleted baseline entries describing real defects. Generated metadata
+# sitting in the tree is the same hazard for anything that walks it — and the
+# extractors here read the GIT INDEX precisely so they cannot see it.
+.metadata/
