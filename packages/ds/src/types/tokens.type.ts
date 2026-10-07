@@ -1175,6 +1175,7 @@ export type TTokenName =
   | '--origam-color__text---onColor'
   | '--origam-color__text---primary'
   | '--origam-color__text---secondary'
+  | '--origam-color__text---tertiary'
   | '--origam-command-palette---background-color'
   | '--origam-command-palette---border-color'
   | '--origam-command-palette---border-radius'
