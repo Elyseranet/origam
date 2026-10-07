@@ -393,8 +393,7 @@
                 "col_name": "Name",
                 "col_type": "Type",
                 "col_default": "Default",
-                "col_description": "Description",
-                "required": "required"
+                "col_description": "Description"
             },
             "emits": {
                 "title": "Emits",
@@ -488,8 +487,7 @@
             "params": {
                 "eyebrow": "API",
                 "title": "Parameters",
-                "desc": "Input parameters accepted by this composable.",
-                "required": "required"
+                "desc": "Input parameters accepted by this composable."
             },
             "returns": {
                 "eyebrow": "API",
@@ -657,8 +655,7 @@
                 "eyebrow": "API",
                 "title": "Value / Arguments",
                 "desc": "Shape of the binding value and each property in the options object.",
-                "table_caption": "Value shape",
-                "required": "required"
+                "table_caption": "Value shape"
             },
             "modifiers": {
                 "eyebrow": "API",
@@ -1886,8 +1883,7 @@
             "params": {
                 "eyebrow": "API",
                 "title": "Parameters",
-                "desc": "Input parameters accepted by this util.",
-                "required": "required"
+                "desc": "Input parameters accepted by this util."
             },
             "returns": {
                 "eyebrow": "API",
