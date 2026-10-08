@@ -16,9 +16,9 @@ import type { IMarginProps } from '../Commons/margin.interface'
 import type { IPaddingProps } from '../Commons/padding.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
 import type { ISizeProps } from '../Commons/size.interface'
-import type { IVariantProps } from '../Commons/variant.interface'
+import type { IActionVariantProps } from '../Commons/variant.interface'
 
-export interface IBtnGroupProps extends ITagProps, ICommonsComponentProps, IRoundedProps, IBorderProps, IDensityProps, IElevationProps, IColorProps, IBgColorProps, IMarginProps, IPaddingProps, IHoverProps, IActiveProps, IVariantProps, ISizeProps {
+export interface IBtnGroupProps extends ITagProps, ICommonsComponentProps, IRoundedProps, IBorderProps, IDensityProps, IElevationProps, IColorProps, IBgColorProps, IMarginProps, IPaddingProps, IHoverProps, IActiveProps, IActionVariantProps, ISizeProps {
     divided?: boolean
     items?: Array<IBtnProps>
 }

@@ -11,7 +11,7 @@ import type {
     IInputProps,
     IInputSlots
 } from '../Input/input.interface'
-import type { IVariantProps } from '../Commons/variant.interface'
+import type { IInputVariantProps } from '../Commons/variant.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
 
 import type { TOtpInputFieldType } from '../../types/OtpInputField/otp-input-field.type'
@@ -53,7 +53,7 @@ import type { TOtpInputFieldType } from '../../types/OtpInputField/otp-input-fie
  * → `IAdjacentInnerProps`, reach `<origam-field>` via `fieldProps()`, and were
  * measured PRESENT in the same sweep.
  ********************************************************/
-export interface IOtpInputFieldProps extends Omit<IFieldProps, 'fontFamily' | 'fontWeight' | 'lineHeight' | 'letterSpacing'>, Omit<IInputProps, 'fontFamily' | 'fontWeight' | 'lineHeight' | 'letterSpacing' | 'prependIcon' | 'appendIcon' | 'prependAvatar' | 'appendAvatar' | 'prependAriaLabel' | 'appendAriaLabel'>, IVariantProps, Pick<ITypographyProps, 'fontSize'> {
+export interface IOtpInputFieldProps extends Omit<IFieldProps, 'fontFamily' | 'fontWeight' | 'lineHeight' | 'letterSpacing'>, Omit<IInputProps, 'fontFamily' | 'fontWeight' | 'lineHeight' | 'letterSpacing' | 'prependIcon' | 'appendIcon' | 'prependAvatar' | 'appendAvatar' | 'prependAriaLabel' | 'appendAriaLabel'>, IInputVariantProps, Pick<ITypographyProps, 'fontSize'> {
     autofocus?: boolean
     divider?: string
     focusAll?: boolean

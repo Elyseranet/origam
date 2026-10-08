@@ -13,7 +13,7 @@ import type { IDirectionProps } from '../Commons/direction.interface'
 import type { IElevationProps } from '../Commons/elevation.interface'
 import type { IFocusProps } from '../Commons/focus.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
-import type { IVariantProps } from '../Commons/variant.interface'
+import type { IInputVariantProps } from '../Commons/variant.interface'
 
 /**
  * Props for `<OrigamConfirmWrapper>` — a "type-it-twice" form helper that
@@ -23,10 +23,15 @@ import type { IVariantProps } from '../Commons/variant.interface'
  *
  * Inherits the standard form mixins so it slots into a Field/Form pipeline
  * alongside any other input control.
+ *
+ * `variant` is `IInputVariantProps` (not `IActionVariantProps`) — decided by
+ * the owner: ConfirmWrapper wraps form fields, so it only pushes a FIELD
+ * variant (`underlined/filled/solo/outlined/plain`), never an action-style
+ * one (#1050).
  */
 export interface IConfirmWrapperProps extends ICommonsComponentProps,
     IAdjacentProps, IDirectionProps, IColorProps, IDensityProps,
-    IRoundedProps, IElevationProps, IVariantProps, IFocusProps {
+    IRoundedProps, IElevationProps, IInputVariantProps, IFocusProps {
     modelValue?: any
     confirm?: any
     field?: string

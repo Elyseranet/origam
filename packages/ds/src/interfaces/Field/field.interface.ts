@@ -24,7 +24,7 @@ import type { ILoaderProps } from '../Commons/loader.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
 import type { ISizeProps } from '../Commons/size.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
-import type { IVariantProps } from '../Commons/variant.interface'
+import type { IInputVariantProps } from '../Commons/variant.interface'
 
 /*********************************************************
  * IFieldProps
@@ -45,7 +45,7 @@ import type { IVariantProps } from '../Commons/variant.interface'
  * `--origam-field---border-*` token channel the three outline legs already
  * read, so the notch keeps opening under `--active` / `--focused`.
  ********************************************************/
-export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColorProps, IBgColorProps, IAdjacentInnerProps, IBorderProps, IFocusProps, IDensityProps, ILabelProps, IActiveProps, IVariantProps, IRoundedProps, IElevationProps, ISizeProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
+export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColorProps, IBgColorProps, IAdjacentInnerProps, IBorderProps, IFocusProps, IDensityProps, ILabelProps, IActiveProps, IInputVariantProps, IRoundedProps, IElevationProps, ISizeProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
     centerAffix?: boolean
     dirty?: boolean
     disabled?: boolean
