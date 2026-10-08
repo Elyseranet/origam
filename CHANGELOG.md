@@ -18,6 +18,47 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.23.0] - 2026-10-08
+
+### Added — `createOrigam({ code: { highlighter } })` : l'application fournit son highlighter
+
+`OrigamCode` importait `shiki` par un **specificateur nu** que le navigateur ne sait pas resoudre. Mesure sur le build de production d'une application consommatrice, avec 2.21.0 : `Failed to resolve module specifier 'shiki'`, blocs de code non colorises, et un bloc `yaml` rendu **vide**. Declarer `shiki` en dependance de l'application ne suffisait pas.
+
+⛔ **Le `@vite-ignore` n'etait pas une negligence** : sans lui, Rollup suit le graphe jusqu'au chargeur WASM de shiki et emet un chunk virtuel invalide (`default` est un mot reserve, esbuild rejette). Le retirer aurait casse `packages/docs` (VitePress). L'option contourne les deux : si l'application fournit un highlighter, **le DS ne touche jamais a `shiki`** dans ce chemin — plus d'import, plus de specificateur nu, plus de chunk WASM.
+
+`TShikiModule` n'exige que **`createHighlighter`**, pas la surface entiere de `shiki` : un module allege bati sur `shiki/core` + moteur regex JS fonctionne, et c'est ce qui evite la cause racine du contournement. Mesure du consommateur : **+65 Ko gzip contre +417 Ko** avec shiki complet.
+
+⚠️ **Non cassant** : sans l'option, le chemin par defaut est inchange ; `packages/docs` compile **sans aucune modification de sa part** (verifie, `exit 0`). Et le rattrapage vers le texte brut sur une langue non embarquee est **conserve deliberement** — c'est ce qui rend un highlighter partiel utilisable sans que la page casse.
+
+### Changed — ⚠️ RUPTURE : `IVariantProps` scinde en `IActionVariantProps` / `IInputVariantProps`
+
+**14 composants acceptaient des valeurs de `variant` qui ne faisaient rien.** `IVariantProps` etait un mixin **partage** entre composants d'action et de saisie, exposant l'union des deux vocabulaires (10 valeurs) alors que chaque famille n'en implemente que la moitie. Mesure en navigateur reel, avec contrôle positif :
+
+| famille | implemente | **inerte** |
+|---|---|---|
+| `OrigamBtn`, `OrigamBtnGroup`, `OrigamBtnToggle` | les 7 de `VARIANT` | **`underlined` `filled` `solo`** — byte-identiques a `flat` sur les 7 longhands |
+| `OrigamField` + 9 descendants | les 5 de `VARIANT_INPUT` | **`text` `flat` `elevated` `tonal` `ghost`** — identiques entre eux |
+
+`useVariant()` emet bien la classe `--variant-{valeur}` — il n'a aucune liste blanche — mais **aucune regle CSS ne la cible**.
+
+⚠️ **`outlined` et `plain` sont implementes des DEUX cotes**, avec un rendu different selon le composant. Ce chevauchement est **legitime** (deux patterns UI distincts partageant un nom) et ne change pas. Le defaut etait l'asymetrie, pas le recouvrement.
+
+**`IVariantProps` est SUPPRIME** — mesure : zero consommateur hors des 14 composants, de son composable et de son test. `OrigamConfirmWrapper` recoit `IInputVariantProps` : son `variant` n'est qu'un defaut pousse vers les champs qu'il enveloppe.
+
+**Ce que la restriction a revele** : `OrigamConfirmWrapper.story.vue` proposait `VARIANT_OPTIONS` (les 7 valeurs d'action) alors que ce composant pousse des defauts vers des **champs de formulaire** — faux en silence depuis la creation de la story.
+
+**Cout de la rupture, mesure** : un consommateur qui passe `variant="solo"` a un `OrigamBtn` n'obtient **rien** aujourd'hui. La restriction transforme un silence en erreur de compilation, ce qui l'informe. La seule application cliente connue a audite ses deux etats : **zero occurrence**, et `git grep IVariantProps` y rend **0**.
+
+Epingle par `packages/tests/TU/playground/variant-literal-union.spec.ts`, verifie **ROUGE sur le commit parent** (10/10) et **VERT apres** (7 et 5) — sur le descripteur resolu, pas sur le texte source.
+
+### Fixed — un test unitaire reconstruisait deux fois le programme TypeScript entier
+
+`extractLiteralUnions()` appelle `createChecker()`, qui rebatit tout le programme de `packages/ds/tsconfig.json` depuis zero a chaque appel. Le test l'appelait **une fois par `it()`**, payant ce cout deux fois. Un seul appel partage dans un `beforeAll` suffit aux deux cas.
+
+⚠️ **Ce n'etait pas un defaut produit ni une particularite de Node 22**, et la mesure le montre : **3,73 s** isole, **54,6 s** sur le job CI Node 22 (un timeout), **36,0 s** sur le job Node 24 du **meme run** (vert, mais presque sans marge). Le facteur de 8 a 14 vient de la contention des workers Vitest sur un runner partage — Node 22 n'a pas cause l'echec, il l'a expose le premier.
+
+⚠️ **Ne figure pas dans le paquet publie** : le lot de fondation du playground (`packages/playground`, prive) n'affecte pas le tarball.
+
 ## [2.22.0] - 2026-10-07
 
 ### Added — `attach` sur `OrigamCommandPalette`, `OrigamSnackbarGroup` et `OrigamDrawer`

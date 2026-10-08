@@ -18,6 +18,19 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.23.0',
+        date: '2026-10-08',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2230.summary',
+        summaryFallback: '1 addition, 1 change and 1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v2230.h1', textFallback: 'createOrigam({ code: { highlighter } }) : l\'application fournit son highlighter' },
+            { type: 'changed', textKey: 'changelog.versions.v2230.h2', textFallback: '⚠️ RUPTURE : IVariantProps scinde en IActionVariantProps / IInputVariantProps' },
+            { type: 'fixed', textKey: 'changelog.versions.v2230.h3', textFallback: 'un test unitaire reconstruisait deux fois le programme TypeScript entier' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.22.0',
         date: '2026-10-07',
         type: 'minor',
