@@ -50,7 +50,7 @@
 					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Variant">
-					<HstSelect v-model="state.variant" title="Variant" :options="VARIANT_OPTIONS"/>
+					<HstSelect v-model="state.variant" title="Variant" :options="VARIANT_INPUT_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Icons">
 					<HstSelect v-model="state.prependIcon" title="Prepend Icon" :options="ICON_OPTIONS"/>
@@ -432,7 +432,7 @@
 					<HstSelect   v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
 					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
-					<HstSelect   v-model="state.variant"   title="Variant"   :options="VARIANT_OPTIONS"/>
+					<HstSelect   v-model="state.variant"   title="Variant"   :options="VARIANT_INPUT_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.disabled"       title="Disabled"/>
@@ -466,7 +466,7 @@
 		ELEVATION_OPTIONS,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,
-		VARIANT_OPTIONS
+		VARIANT_INPUT_OPTIONS
 	} from '@stories/const'
 
 	import type { IOptions } from '@origam/interfaces'

@@ -6,12 +6,10 @@ import { defineComponent, h, reactive, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 
-import type { IVariantProps } from '@origam/interfaces'
-
 import { useVariant } from '@origam/composables/Commons/variant.composable'
 
-function mountWith (initial: IVariantProps['variant'], componentName = 'OrigamVariantHost') {
-    const props = reactive<IVariantProps>({ variant: initial })
+function mountWith (initial: string | undefined, componentName = 'OrigamVariantHost') {
+    const props = reactive<{ variant?: string }>({ variant: initial })
     let api!: ReturnType<typeof useVariant>
 
     const Host = defineComponent({
@@ -66,7 +64,7 @@ describe('useVariant', () => {
     })
 
     it('Ref<TVariant> overload — emits class from ref value', () => {
-        const variantRef = ref<IVariantProps['variant']>('outlined')
+        const variantRef = ref<string | undefined>('outlined')
         let api!: ReturnType<typeof useVariant>
 
         const Host = defineComponent({
@@ -82,7 +80,7 @@ describe('useVariant', () => {
     })
 
     it('Ref<TVariant> overload — reactively updates when ref value changes', () => {
-        const variantRef = ref<IVariantProps['variant']>('outlined')
+        const variantRef = ref<string | undefined>('outlined')
         let api!: ReturnType<typeof useVariant>
 
         const Host = defineComponent({

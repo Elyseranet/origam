@@ -30,7 +30,7 @@ import type { IRippleProps } from '../Commons/ripple.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
 import type { ISizeProps } from '../Commons/size.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
-import type { IVariantProps } from '../Commons/variant.interface'
+import type { IActionVariantProps } from '../Commons/variant.interface'
 
 import type { TIcon } from '../../types/Icon/icon.type'
 import type {
@@ -42,7 +42,7 @@ import type {
  *  `icon` prop accepts `boolean | TIcon` (boolean = icon-only mode) which is
  *  wider than `IIconProps.icon?: TIcon`.  Pulling the two status props in
  *  directly avoids the TS2430 incompatible-extends error. */
-export interface IBtnProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IBorderProps, IDensityProps, IDimensionProps, IElevationProps, IRoundedProps, ITagProps, ISizeProps, ILinkProps, IRippleProps, ILoaderProps, IPositionProps, ILocationProps, IGroupItemProps, IPaddingProps, IMarginProps, IAdjacentProps, IHoverProps, IActiveProps, IVariantProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
+export interface IBtnProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IBorderProps, IDensityProps, IDimensionProps, IElevationProps, IRoundedProps, ITagProps, ISizeProps, ILinkProps, IRippleProps, ILoaderProps, IPositionProps, ILocationProps, IGroupItemProps, IPaddingProps, IMarginProps, IAdjacentProps, IHoverProps, IActiveProps, IActionVariantProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
     /** @deprecated Use `variant="flat"` instead. Kept for backward compat. */
     flat?: boolean,
     /** Pass `true` to activate icon-only mode; pass a `TIcon` value to set the icon. */

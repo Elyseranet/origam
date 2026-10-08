@@ -11,10 +11,10 @@ import type {
     IInputProps,
     IInputSlots
 } from '../Input/input.interface'
-import type { IVariantProps } from '../Commons/variant.interface'
+import type { IInputVariantProps } from '../Commons/variant.interface'
 import type { TIcon } from '../../types/Icon/icon.type'
 
-export interface INumberFieldProps extends IFieldProps, IInputProps, IVariantProps {
+export interface INumberFieldProps extends IFieldProps, IInputProps, IInputVariantProps {
     autofocus?: boolean
     placeholder?: string
     persistentPlaceholder?: boolean
