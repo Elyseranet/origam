@@ -83,10 +83,16 @@ const TRANSVERSE_DIRS = new Set(['Commons'])
 
 // Every package this guard covers, and the `packages/<x>/src` label its ids
 // carry. Marketing joined since the marketing-reference-factorisation lot —
-// add a new package here, never a second guard file.
+// add a new package here, never a second guard file. `playground` joined
+// under the lot 2 ticket (the package shipped lot 1 with zero guard
+// coverage); its lot-1 `Catalog/`, `Registry/`, `Scene/` layer folders and
+// lot 2's own `Components/` are DOMAIN areas, not DS component families —
+// see `baseline/layer-folders.json` for why they are grandfathered rather
+// than renamed.
 const ROOTS = [
     { rootLabel: 'packages/ds/src', srcRoot: path.join(DS_ROOT, 'src') },
-    { rootLabel: 'packages/marketing/src', srcRoot: path.join(REPO_ROOT, 'packages/marketing/src') }
+    { rootLabel: 'packages/marketing/src', srcRoot: path.join(REPO_ROOT, 'packages/marketing/src') },
+    { rootLabel: 'packages/playground/src', srcRoot: path.join(REPO_ROOT, 'packages/playground/src') }
 ]
 
 /**

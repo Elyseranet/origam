@@ -111,17 +111,22 @@ if (ids.length !== 1 || ids[0] !== 'packages/marketing/src/components/Fixture.vu
     console.log('  ok    "<relFile>::<kind>::<name>", no line number baked in')
 }
 
-console.log('\nRoot coverage (the marketing extension must actually be wired, not just importable):')
+console.log('\nRoot coverage (the marketing + playground extensions must actually be wired, not just importable):')
 const labels = ROOTS.map(r => r.label).sort()
-if (JSON.stringify(labels) !== JSON.stringify(['ds', 'marketing'])) {
-    fail(`expected ROOTS to cover ['ds', 'marketing'], got ${JSON.stringify(labels)}`)
+if (JSON.stringify(labels) !== JSON.stringify(['ds', 'marketing', 'playground'])) {
+    fail(`expected ROOTS to cover ['ds', 'marketing', 'playground'], got ${JSON.stringify(labels)}`)
 } else {
-    console.log('  ok    ROOTS covers both ds and marketing')
+    console.log('  ok    ROOTS covers ds, marketing and playground')
 }
 if (!ROOTS.some(r => r.dir.endsWith('packages/marketing/src'))) {
     fail('marketing root dir does not resolve under packages/marketing/src')
 } else {
     console.log('  ok    marketing root resolves to packages/marketing/src')
+}
+if (!ROOTS.some(r => r.dir.endsWith('packages/playground/src'))) {
+    fail('playground root dir does not resolve under packages/playground/src')
+} else {
+    console.log('  ok    playground root resolves to packages/playground/src')
 }
 
 console.log('')
