@@ -22,15 +22,40 @@
 // this spec against the pre-fix tree would read 10/10 — that is the
 // regression this spec exists to catch.
 
-import { describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect, it } from 'vitest'
 
 import { extractLiteralUnions } from '../../../playground/scripts/extract-literal-unions.mjs'
 
 describe('variant literal union — resolved prop type per family (#1050)', () => {
     // vue-component-meta runs a real TS program over the SFCs — slow by the
-    // standard of this suite's other specs (~2s measured locally).
+    // standard of this suite's other specs (~2s measured locally, in
+    // isolation). Two traps, both measured rather than assumed:
+    //
+    // 1. `extractLiteralUnions()` calls `createChecker()`
+    //    (extract-literal-unions.mjs:90), which rebuilds the WHOLE
+    //    `packages/ds/tsconfig.json` TS program FROM SCRATCH on every
+    //    call. The original version of this spec called it once per `it()`
+    //    (OrigamBtn, then OrigamField) — paying that full program-build cost
+    //    TWICE for no reason, since one checker can answer both. Fixed here
+    //    by calling it ONCE in `beforeAll`, for both components at once.
+    // 2. That is still a CPU-heavy, real-TypeScript-program operation, and
+    //    this suite runs 579 files across many parallel Vitest workers —
+    //    under CI contention this one file was measured at 54.6s total on
+    //    the Node 22 CI job (one test hit the old 30_000ms timeout and
+    //    failed: run 37772347653, job "Unit tests (Vitest, Node 22)") and
+    //    36.0s on the SAME run's Node 24 job (passed, with almost no margin
+    //    left under a 30_000ms-per-test budget). In isolation (no sibling
+    //    files competing for CPU) the same two tests take 3.73s — so the gap
+    //    is CI worker-pool contention, not a Node-version difference and not
+    //    a product defect. `beforeAll`'s timeout below is sized generously
+    //    above the measured 54.6s/2-calls worst case for a SINGLE call.
+    let components
+
+    beforeAll(() => {
+        ({ components } = extractLiteralUnions({ only: new Set(['OrigamBtn', 'OrigamField']) }))
+    }, 90_000)
+
     it('OrigamBtn.variant resolves to exactly the 7 VARIANT (action) values', () => {
-        const { components } = extractLiteralUnions({ only: new Set(['OrigamBtn']) })
         const btn = components.find(c => c.name === 'OrigamBtn')
 
         expect(btn?.usable).toBe(true)
@@ -47,10 +72,9 @@ describe('variant literal union — resolved prop type per family (#1050)', () =
         for (const inputOnly of ['underlined', 'filled', 'solo']) {
             expect(variant.options).not.toContain(inputOnly)
         }
-    }, 30_000)
+    })
 
     it('OrigamField.variant resolves to exactly the 5 VARIANT_INPUT (input) values', () => {
-        const { components } = extractLiteralUnions({ only: new Set(['OrigamField']) })
         const field = components.find(c => c.name === 'OrigamField')
 
         expect(field?.usable).toBe(true)
@@ -67,5 +91,5 @@ describe('variant literal union — resolved prop type per family (#1050)', () =
         for (const actionOnly of ['text', 'flat', 'elevated', 'tonal', 'ghost']) {
             expect(variant.options).not.toContain(actionOnly)
         }
-    }, 30_000)
+    })
 })
