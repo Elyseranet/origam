@@ -1,1 +1,8 @@
-[]
+[
+    "packages/playground/src/composables/I18n",
+    "packages/playground/src/composables/Registry",
+    "packages/playground/src/interfaces/Catalog",
+    "packages/playground/src/interfaces/Components",
+    "packages/playground/src/interfaces/Registry",
+    "packages/playground/src/interfaces/Scene"
+]

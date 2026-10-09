@@ -12,7 +12,9 @@
     "meta:unions": "node scripts/extract-literal-unions.mjs",
     "meta:aliases": "node scripts/resolve-type-aliases.mjs",
     "meta:report": "node scripts/report-metadata-coverage.mjs",
-    "type-check": "vue-tsc --noEmit -p tsconfig.json"
+    "meta:host-seed": "node scripts/generate-host-seed.mjs",
+    "type-check": "vue-tsc --noEmit -p tsconfig.json",
+    "dev": "vite --config vite.host.config.ts"
   },
   "dependencies": {
     "origam": "workspace:*",

@@ -79,16 +79,21 @@ const DS_ROOT = path.resolve(__dirname, '../..')
 const REPO_ROOT = path.resolve(DS_ROOT, '../..')
 const SRC_DIR = path.join(DS_ROOT, 'src')
 const MARKETING_SRC_DIR = path.join(REPO_ROOT, 'packages/marketing/src')
+const PLAYGROUND_SRC_DIR = path.join(REPO_ROOT, 'packages/playground/src')
 const BASELINE_PATH = path.join(__dirname, 'baseline/no-declarations-in-vue.json')
 
 const CONST_NAME_RE = /^[A-Z][A-Z0-9_]*$/
 
 // Every package this guard covers. Add an entry here to extend coverage —
 // never a second guard file (that is the exact duplication this extension
-// was asked to fix).
+// was asked to fix). `playground` joined under the lot 2 ticket — the
+// package was born outside every guard's coverage, which is exactly the
+// hazard the ticket's own author flagged ("le proprietaire s'est fache
+// cette semaine precisement sur le rangement").
 const ROOTS = [
     { label: 'ds', dir: SRC_DIR },
-    { label: 'marketing', dir: MARKETING_SRC_DIR }
+    { label: 'marketing', dir: MARKETING_SRC_DIR },
+    { label: 'playground', dir: PLAYGROUND_SRC_DIR }
 ]
 
 function listVueFiles (dir, repoRoot) {

@@ -103,12 +103,13 @@ if (marketingIds.length !== 1 || marketingIds[0] !== 'packages/marketing/src/int
     console.log('  ok    rootLabel overrides the default packages/ds/src prefix')
 }
 
-console.log('\nRoot coverage (the marketing extension must actually be wired, not just importable):')
+console.log('\nRoot coverage (the marketing + playground extensions must actually be wired, not just importable):')
 const rootLabels = ROOTS.map(r => r.rootLabel).sort()
-if (JSON.stringify(rootLabels) !== JSON.stringify(['packages/ds/src', 'packages/marketing/src'])) {
-    fail(`expected ROOTS to cover ds and marketing, got ${JSON.stringify(rootLabels)}`)
+const expectedRootLabels = ['packages/ds/src', 'packages/marketing/src', 'packages/playground/src'].sort()
+if (JSON.stringify(rootLabels) !== JSON.stringify(expectedRootLabels)) {
+    fail(`expected ROOTS to cover ds, marketing and playground, got ${JSON.stringify(rootLabels)}`)
 } else {
-    console.log('  ok    ROOTS covers both packages/ds/src and packages/marketing/src')
+    console.log('  ok    ROOTS covers packages/ds/src, packages/marketing/src and packages/playground/src')
 }
 
 console.log('')

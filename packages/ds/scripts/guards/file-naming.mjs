@@ -112,10 +112,23 @@ const DS_ROOT = path.resolve(__dirname, '../..')
 const REPO_ROOT = path.resolve(DS_ROOT, '../..')
 const BASELINE_PATH = path.join(__dirname, 'baseline/file-naming.json')
 
+// `packages/playground/src` joined under the lot 2 ticket (the package
+// shipped lot 1 with zero guard coverage — see `layer-folders.mjs`'s own
+// note on the same extension). Its component surface is a single family
+// (`Playground`), so every one of its `types` / `enums` / `consts` files
+// lives under `Commons/` today and is exempt by the same rule DS's own
+// cross-cutting files use — verified zero violations, not merely assumed:
+// `grep -rL '/Commons/' packages/playground/src/{types,enums,consts}` (via
+// `git ls-files`) returns no path.
+const PLAYGROUND_SRC = path.join(REPO_ROOT, 'packages/playground/src')
+
 const TARGETS = [
     { dir: path.join(DS_ROOT, 'src/types'), suffix: '.type.ts', exemptDirs: ['Commons'] },
     { dir: path.join(DS_ROOT, 'src/enums'), suffix: '.enum.ts', exemptDirs: ['Commons'] },
-    { dir: path.join(DS_ROOT, 'src/consts'), suffix: '.const.ts', exemptDirs: ['Commons'] }
+    { dir: path.join(DS_ROOT, 'src/consts'), suffix: '.const.ts', exemptDirs: ['Commons'] },
+    { dir: path.join(PLAYGROUND_SRC, 'types'), suffix: '.type.ts', exemptDirs: ['Commons'] },
+    { dir: path.join(PLAYGROUND_SRC, 'enums'), suffix: '.enum.ts', exemptDirs: ['Commons'] },
+    { dir: path.join(PLAYGROUND_SRC, 'consts'), suffix: '.const.ts', exemptDirs: ['Commons'] }
 ]
 
 const EXCLUDED_BASENAMES = new Set(['index.ts', 'tokens.type.ts', 'quality-option.type.ts', 'media.const.ts'])

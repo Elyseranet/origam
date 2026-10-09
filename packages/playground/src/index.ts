@@ -6,8 +6,10 @@
  * the embeddable component, its slots and its emits land in a later lot.
  */
 
+export * from './components'
 export * from './composables'
 export * from './consts'
 export * from './enums'
 export type * from './interfaces'
 export type * from './types'
+export * from './utils'
