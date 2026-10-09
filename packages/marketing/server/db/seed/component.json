@@ -1,7 +1,7 @@
 {
   "kind": "component",
-  "exportedAt": "2026-10-01T13:28:51.155Z",
-  "sourceCommit": "143d5904",
+  "exportedAt": "2026-10-09T07:02:21.111Z",
+  "sourceCommit": "5e1c4d805",
   "entryCount": 218,
   "entries": [
     {
@@ -9658,13 +9658,25 @@
           "description_fallback": "Text alignment. The pull variant forces \"center\" when this prop is not set. Accepts \"left\", \"center\" or \"right\"."
         },
         {
+          "name": "quoteMark",
+          "type_label": "boolean",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 6,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
           "name": "id",
           "type_label": "string",
           "type_slug": null,
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 6,
+          "position": 7,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -9676,7 +9688,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 7,
+          "position": 8,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -9688,7 +9700,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 8,
+          "position": 9,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -9700,7 +9712,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 9,
+          "position": 10,
           "default_value": "'blockquote'",
           "description_key": "components.blockquote.props.tag.description",
           "description_fallback": "HTML element rendered at the root. Defaults to <blockquote>; use \"q\" for inline citations."
@@ -9712,7 +9724,7 @@
           "type_kind": "type",
           "optional": false,
           "required": false,
-          "position": 10,
+          "position": 11,
           "default_value": "undefined",
           "description_key": "components.blockquote.props.color.description",
           "description_fallback": "Text color axis. Tokenised intents resolve to their fgSubtle shade; custom values are applied verbatim."
@@ -9724,7 +9736,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 11,
+          "position": 12,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -9736,7 +9748,7 @@
           "type_kind": "type",
           "optional": false,
           "required": false,
-          "position": 12,
+          "position": 13,
           "default_value": "undefined",
           "description_key": "components.blockquote.props.bg_color.description",
           "description_fallback": "Accent color axis: drives the decorative bar / pull rules, the background quote glyph and the author label. Does NOT paint a surface fill."
@@ -9748,7 +9760,7 @@
           "type_kind": "type",
           "optional": false,
           "required": false,
-          "position": 13,
+          "position": 14,
           "default_value": "undefined",
           "description_key": "components.blockquote.props.rounded.description",
           "description_fallback": "Border-radius token or boolean."
@@ -9760,7 +9772,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 14,
+          "position": 15,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -9772,7 +9784,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 15,
+          "position": 16,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -9784,7 +9796,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 16,
+          "position": 17,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -9796,7 +9808,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 17,
+          "position": 18,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -9808,7 +9820,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 18,
+          "position": 19,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -9820,7 +9832,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 19,
+          "position": 20,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -9832,7 +9844,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 20,
+          "position": 21,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -9844,7 +9856,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 21,
+          "position": 22,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -9856,7 +9868,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 22,
+          "position": 23,
           "default_value": "undefined",
           "description_key": "components.blockquote.props.elevation.description",
           "description_fallback": "Box-shadow elevation token."
@@ -9868,7 +9880,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 23,
+          "position": 24,
           "default_value": "false",
           "description_key": "components.blockquote.props.border.description",
           "description_fallback": "Applies a border. Distinct from the variant accent bar."
@@ -9880,7 +9892,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 24,
+          "position": 25,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -9892,7 +9904,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 25,
+          "position": 26,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -9904,7 +9916,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 26,
+          "position": 27,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -9916,7 +9928,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 27,
+          "position": 28,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -9928,7 +9940,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 28,
+          "position": 29,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -9940,7 +9952,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 29,
+          "position": 30,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -9952,7 +9964,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 30,
+          "position": 31,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -9964,7 +9976,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 31,
+          "position": 32,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -9976,7 +9988,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 32,
+          "position": 33,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -9988,7 +10000,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 33,
+          "position": 34,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10000,7 +10012,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 34,
+          "position": 35,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10012,7 +10024,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 35,
+          "position": 36,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10024,7 +10036,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 36,
+          "position": 37,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10036,7 +10048,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 37,
+          "position": 38,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10048,7 +10060,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 38,
+          "position": 39,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10060,7 +10072,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 39,
+          "position": 40,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10072,7 +10084,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 40,
+          "position": 41,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10084,7 +10096,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 41,
+          "position": 42,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10096,7 +10108,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 42,
+          "position": 43,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10108,7 +10120,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 43,
+          "position": 44,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10120,7 +10132,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 44,
+          "position": 45,
           "default_value": "undefined",
           "description_key": "components.blockquote.props.padding.description",
           "description_fallback": "Custom padding overriding token defaults."
@@ -10132,7 +10144,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 45,
+          "position": 46,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10144,7 +10156,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 46,
+          "position": 47,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10156,7 +10168,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 47,
+          "position": 48,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10168,7 +10180,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 48,
+          "position": 49,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10180,7 +10192,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 49,
+          "position": 50,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10192,7 +10204,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 50,
+          "position": 51,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10204,7 +10216,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 51,
+          "position": 52,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10216,7 +10228,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 52,
+          "position": 53,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10228,7 +10240,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 53,
+          "position": 54,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10240,7 +10252,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 54,
+          "position": 55,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10252,7 +10264,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 55,
+          "position": 56,
           "default_value": "undefined",
           "description_key": "components.blockquote.props.margin.description",
           "description_fallback": "Custom margin. The component imposes no margin by default."
@@ -10264,7 +10276,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 56,
+          "position": 57,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10276,7 +10288,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 57,
+          "position": 58,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10288,7 +10300,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 58,
+          "position": 59,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10300,7 +10312,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 59,
+          "position": 60,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10312,7 +10324,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 60,
+          "position": 61,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10324,7 +10336,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 61,
+          "position": 62,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10336,7 +10348,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 62,
+          "position": 63,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10348,7 +10360,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 63,
+          "position": 64,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10360,7 +10372,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 64,
+          "position": 65,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10372,7 +10384,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 65,
+          "position": 66,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10384,7 +10396,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 66,
+          "position": 67,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10396,7 +10408,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 67,
+          "position": 68,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10408,7 +10420,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 68,
+          "position": 69,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10420,7 +10432,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 69,
+          "position": 70,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10432,7 +10444,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 70,
+          "position": 71,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -10444,7 +10456,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 71,
+          "position": 72,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -21768,7 +21780,7 @@
         },
         {
           "name": "variant",
-          "type_label": "TVariant | TVariantInput",
+          "type_label": "TVariant",
           "type_slug": "variant",
           "type_kind": "type",
           "optional": false,
@@ -23037,7 +23049,7 @@
         },
         {
           "name": "variant",
-          "type_label": "TVariant | TVariantInput",
+          "type_label": "TVariant",
           "type_slug": null,
           "type_kind": null,
           "optional": false,
@@ -24190,7 +24202,7 @@
         },
         {
           "name": "variant",
-          "type_label": "TVariant | TVariantInput",
+          "type_label": "TVariant",
           "type_slug": null,
           "type_kind": null,
           "optional": false,
@@ -75142,7 +75154,7 @@
         },
         {
           "name": "variant",
-          "type_label": "TVariant | TVariantInput",
+          "type_label": "TVariantInput",
           "type_slug": "",
           "type_kind": "primitive",
           "optional": false,
@@ -77019,6 +77031,18 @@
           "optional": false,
           "required": false,
           "position": 14,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "attach",
+          "type_label": "boolean | string | Element | null",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 15,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -79027,7 +79051,7 @@
         },
         {
           "name": "variant",
-          "type_label": "TVariant | TVariantInput",
+          "type_label": "TVariantInput",
           "type_slug": "variant",
           "type_kind": "type",
           "optional": false,
@@ -80428,25 +80452,13 @@
           "description_fallback": null
         },
         {
-          "name": "attach",
-          "type_label": "boolean | string | Element",
-          "type_slug": null,
-          "type_kind": null,
-          "optional": false,
-          "required": false,
-          "position": 4,
-          "default_value": null,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
           "name": "closeOnBack",
           "type_label": "boolean",
           "type_slug": null,
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 5,
+          "position": 4,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80458,7 +80470,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 6,
+          "position": 5,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80470,7 +80482,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 7,
+          "position": 6,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80482,7 +80494,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 8,
+          "position": 7,
           "default_value": "false",
           "description_key": "components.contextual_menu.props.disabled.description",
           "description_fallback": "Prevents the context menu from opening on right-click."
@@ -80494,7 +80506,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 9,
+          "position": 8,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80506,7 +80518,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 10,
+          "position": 9,
           "default_value": "false",
           "description_key": "components.contextual_menu.props.model_value.description",
           "description_fallback": "v-model controlling whether the context menu is open."
@@ -80518,7 +80530,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 11,
+          "position": 10,
           "default_value": "undefined",
           "description_key": "components.contextual_menu.props.z_index.description",
           "description_fallback": "CSS z-index for the menu overlay."
@@ -80530,7 +80542,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 12,
+          "position": 11,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80542,7 +80554,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 13,
+          "position": 12,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80554,7 +80566,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 14,
+          "position": 13,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80566,7 +80578,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 15,
+          "position": 14,
           "default_value": "undefined",
           "description_key": "components.contextual_menu.props.max_height.description",
           "description_fallback": "Maximum height of the menu panel. Number is interpreted as px."
@@ -80578,7 +80590,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 16,
+          "position": 15,
           "default_value": "undefined",
           "description_key": "components.contextual_menu.props.max_width.description",
           "description_fallback": "Maximum width of the menu panel. Number is interpreted as px."
@@ -80590,7 +80602,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 17,
+          "position": 16,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80602,7 +80614,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 18,
+          "position": 17,
           "default_value": "undefined",
           "description_key": "components.contextual_menu.props.min_width.description",
           "description_fallback": "Minimum width of the menu panel."
@@ -80614,7 +80626,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 19,
+          "position": 18,
           "default_value": "undefined",
           "description_key": "components.contextual_menu.props.width.description",
           "description_fallback": "Width of the menu panel. Number is interpreted as px."
@@ -80626,7 +80638,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 20,
+          "position": 19,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80638,7 +80650,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 21,
+          "position": 20,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80650,7 +80662,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 22,
+          "position": 21,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80662,7 +80674,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 23,
+          "position": 22,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80674,7 +80686,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 24,
+          "position": 23,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80686,7 +80698,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 25,
+          "position": 24,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80698,7 +80710,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 26,
+          "position": 25,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80710,7 +80722,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 27,
+          "position": 26,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80722,7 +80734,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 28,
+          "position": 27,
           "default_value": "250",
           "description_key": "components.contextual_menu.props.close_delay.description",
           "description_fallback": "Delay in ms before the menu closes after the trigger condition is no longer met."
@@ -80734,7 +80746,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 29,
+          "position": 28,
           "default_value": "0",
           "description_key": "components.contextual_menu.props.open_delay.description",
           "description_fallback": "Delay in ms before the menu opens after the right-click event."
@@ -80746,7 +80758,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 30,
+          "position": 29,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80758,7 +80770,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 31,
+          "position": 30,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80770,7 +80782,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 32,
+          "position": 31,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80782,7 +80794,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 33,
+          "position": 32,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80794,7 +80806,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 34,
+          "position": 33,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80806,7 +80818,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 35,
+          "position": 34,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80818,7 +80830,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 36,
+          "position": 35,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80830,7 +80842,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 37,
+          "position": 36,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -80842,7 +80854,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 38,
+          "position": 37,
           "default_value": "undefined",
           "description_key": "components.contextual_menu.props.transition.description",
           "description_fallback": "Named transition applied to the menu panel when opening/closing."
@@ -80850,6 +80862,18 @@
         {
           "name": "scrim",
           "type_label": "boolean | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 38,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "attach",
+          "type_label": "boolean | string | Element | null",
           "type_slug": null,
           "type_kind": null,
           "optional": false,
@@ -97425,7 +97449,7 @@
         },
         {
           "name": "variant",
-          "type_label": "TVariant | TVariantInput",
+          "type_label": "TVariantInput",
           "type_slug": "variant",
           "type_kind": "type",
           "optional": false,
@@ -100840,25 +100864,13 @@
           "description_fallback": null
         },
         {
-          "name": "attach",
-          "type_label": "boolean | string | Element",
-          "type_slug": null,
-          "type_kind": null,
-          "optional": false,
-          "required": false,
-          "position": 8,
-          "default_value": null,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
           "name": "closeOnBack",
           "type_label": "boolean",
           "type_slug": "",
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 9,
+          "position": 8,
           "default_value": "true",
           "description_key": "components.dialog.props.close_on_back.description",
           "description_fallback": "Closes the dialog on browser back navigation."
@@ -100870,7 +100882,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 10,
+          "position": 9,
           "default_value": "undefined",
           "description_key": "components.dialog.props.content_class.description",
           "description_fallback": "CSS class(es) applied to the overlay content wrapper (.origam-overlay__content)."
@@ -100882,7 +100894,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 11,
+          "position": 10,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -100894,7 +100906,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 12,
+          "position": 11,
           "default_value": "false",
           "description_key": "components.dialog.props.disabled.description",
           "description_fallback": "Disables the activator and prevents the dialog from opening."
@@ -100906,7 +100918,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 13,
+          "position": 12,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -100918,7 +100930,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 14,
+          "position": 13,
           "default_value": "undefined",
           "description_key": "components.dialog.props.model_value.description",
           "description_fallback": "v-model binding for the open/close state of the dialog."
@@ -100930,7 +100942,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 15,
+          "position": 14,
           "default_value": "2400",
           "description_key": "components.dialog.props.z_index.description",
           "description_fallback": "z-index of the overlay layer. Defaults to 2400 (above most overlays)."
@@ -100942,7 +100954,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 16,
+          "position": 15,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -100954,7 +100966,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 17,
+          "position": 16,
           "default_value": "false",
           "description_key": "components.dialog.props.persistent.description",
           "description_fallback": "When true, clicking outside the dialog or pressing Escape does not close it. Useful for required confirmation dialogs."
@@ -100966,7 +100978,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 18,
+          "position": 17,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -100978,7 +100990,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 19,
+          "position": 18,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -100990,7 +101002,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 20,
+          "position": 19,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -101002,7 +101014,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 21,
+          "position": 20,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -101014,7 +101026,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 22,
+          "position": 21,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -101026,7 +101038,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 23,
+          "position": 22,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -101038,7 +101050,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 24,
+          "position": 23,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -101050,7 +101062,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 25,
+          "position": 24,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -101062,7 +101074,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 26,
+          "position": 25,
           "default_value": "undefined",
           "description_key": "components.dialog.props.activator_props.description",
           "description_fallback": "Extra props merged onto the activator element. Dialog automatically adds aria-haspopup=\"dialog\" and aria-expanded."
@@ -101074,7 +101086,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 27,
+          "position": 26,
           "default_value": "true",
           "description_key": "components.dialog.props.open_on_click.description",
           "description_fallback": "Opens the dialog when the activator is clicked. Defaults to true (Dialog overrides OrigamOverlay's default to keep activator clicks working)."
@@ -101086,7 +101098,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 28,
+          "position": 27,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -101098,7 +101110,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 29,
+          "position": 28,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -101110,7 +101122,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 30,
+          "position": 29,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -101122,7 +101134,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 31,
+          "position": 30,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -101134,7 +101146,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 32,
+          "position": 31,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -101146,7 +101158,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 33,
+          "position": 32,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -101158,7 +101170,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 34,
+          "position": 33,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -101170,7 +101182,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 35,
+          "position": 34,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -101182,7 +101194,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 36,
+          "position": 35,
           "default_value": "'center center'",
           "description_key": "components.dialog.props.origin.description",
           "description_fallback": "transform-origin for the enter/leave transition."
@@ -101194,7 +101206,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 37,
+          "position": 36,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -101206,7 +101218,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 38,
+          "position": 37,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -101218,7 +101230,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 39,
+          "position": 38,
           "default_value": "'block'",
           "description_key": "components.dialog.props.scroll_strategy.description",
           "description_fallback": "Scroll behavior while the dialog is open. \"block\" prevents page scrolling."
@@ -101230,7 +101242,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 40,
+          "position": 39,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -101242,7 +101254,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 41,
+          "position": 40,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -101254,7 +101266,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 42,
+          "position": 41,
           "default_value": "OrigamTranslateScale",
           "description_key": "components.dialog.props.transition.description",
           "description_fallback": "Transition used when the dialog enters/leaves. Defaults to OrigamTranslateScale."
@@ -101262,6 +101274,18 @@
         {
           "name": "scrim",
           "type_label": "boolean | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 42,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "attach",
+          "type_label": "boolean | string | Element | null",
           "type_slug": null,
           "type_kind": null,
           "optional": false,
@@ -103019,25 +103043,13 @@
           "description_fallback": null
         },
         {
-          "name": "attach",
-          "type_label": "boolean | string | Element",
-          "type_slug": null,
-          "type_kind": null,
-          "optional": false,
-          "required": false,
-          "position": 11,
-          "default_value": null,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
           "name": "closeOnBack",
           "type_label": "boolean",
           "type_slug": null,
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 12,
+          "position": 11,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103049,7 +103061,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 13,
+          "position": 12,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103061,7 +103073,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 14,
+          "position": 13,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103073,7 +103085,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 15,
+          "position": 14,
           "default_value": "false",
           "description_key": "components.dialog_confirmation.props.disabled.description",
           "description_fallback": "Disables the activator and prevents the dialog from opening."
@@ -103085,7 +103097,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 16,
+          "position": 15,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103097,7 +103109,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 17,
+          "position": 16,
           "default_value": "undefined",
           "description_key": "components.dialog_confirmation.props.model_value.description",
           "description_fallback": "v-model binding for the dialog open/close state."
@@ -103109,7 +103121,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 18,
+          "position": 17,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103121,7 +103133,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 19,
+          "position": 18,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103133,7 +103145,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 20,
+          "position": 19,
           "default_value": "false",
           "description_key": "components.dialog_confirmation.props.persistent.description",
           "description_fallback": "Prevents closing via Escape or outside-click. Recommended for critical confirmation flows."
@@ -103145,7 +103157,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 21,
+          "position": 20,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103157,7 +103169,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 22,
+          "position": 21,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103169,7 +103181,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 23,
+          "position": 22,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103181,7 +103193,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 24,
+          "position": 23,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103193,7 +103205,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 25,
+          "position": 24,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103205,7 +103217,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 26,
+          "position": 25,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103217,7 +103229,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 27,
+          "position": 26,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103229,7 +103241,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 28,
+          "position": 27,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103241,7 +103253,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 29,
+          "position": 28,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103253,7 +103265,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 30,
+          "position": 29,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103265,7 +103277,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 31,
+          "position": 30,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103277,7 +103289,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 32,
+          "position": 31,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103289,7 +103301,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 33,
+          "position": 32,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103301,7 +103313,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 34,
+          "position": 33,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103313,7 +103325,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 35,
+          "position": 34,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103325,7 +103337,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 36,
+          "position": 35,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103337,7 +103349,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 37,
+          "position": 36,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103349,7 +103361,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 38,
+          "position": 37,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103361,7 +103373,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 39,
+          "position": 38,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103373,7 +103385,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 40,
+          "position": 39,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103385,7 +103397,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 41,
+          "position": 40,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103397,7 +103409,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 42,
+          "position": 41,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103409,7 +103421,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 43,
+          "position": 42,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103421,7 +103433,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 44,
+          "position": 43,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103433,7 +103445,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 45,
+          "position": 44,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -103441,6 +103453,18 @@
         {
           "name": "scrim",
           "type_label": "boolean | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 45,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "attach",
+          "type_label": "boolean | string | Element | null",
           "type_slug": null,
           "type_kind": null,
           "optional": false,
@@ -105771,13 +105795,25 @@
           "description_fallback": "When true the drawer slots below the AppBar instead of extending full height. null = resolved from HTML declaration order."
         },
         {
+          "name": "attach",
+          "type_label": "boolean | string | Element | null",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 14,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
           "name": "tag",
           "type_label": "string",
           "type_slug": "",
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 14,
+          "position": 15,
           "default_value": "'nav'",
           "description_key": "components.drawer.props.tag.description",
           "description_fallback": "HTML element at the root. Defaults to nav for semantic navigation drawers."
@@ -105789,7 +105825,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 15,
+          "position": 16,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -105801,7 +105837,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 16,
+          "position": 17,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -105813,7 +105849,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 17,
+          "position": 18,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -105825,7 +105861,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 18,
+          "position": 19,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -105837,7 +105873,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 19,
+          "position": 20,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -105849,7 +105885,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 20,
+          "position": 21,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -105861,7 +105897,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 21,
+          "position": 22,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -105873,7 +105909,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 22,
+          "position": 23,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -105885,7 +105921,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 23,
+          "position": 24,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -105897,7 +105933,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 24,
+          "position": 25,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -105909,7 +105945,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 25,
+          "position": 26,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -105921,7 +105957,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 26,
+          "position": 27,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -105933,7 +105969,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 27,
+          "position": 28,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -105945,7 +105981,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 28,
+          "position": 29,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -105957,7 +105993,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 29,
+          "position": 30,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -105969,7 +106005,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 30,
+          "position": 31,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -105981,7 +106017,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 31,
+          "position": 32,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -105993,7 +106029,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 32,
+          "position": 33,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106005,7 +106041,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 33,
+          "position": 34,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106017,7 +106053,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 34,
+          "position": 35,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106029,7 +106065,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 35,
+          "position": 36,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106041,7 +106077,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 36,
+          "position": 37,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106053,7 +106089,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 37,
+          "position": 38,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106065,7 +106101,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 38,
+          "position": 39,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106077,7 +106113,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 39,
+          "position": 40,
           "default_value": "undefined",
           "description_key": "components.drawer.props.elevation.description",
           "description_fallback": "Box-shadow elevation token. Overrides the default (none for permanent, lg for temporary)."
@@ -106089,7 +106125,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 40,
+          "position": 41,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106101,7 +106137,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 41,
+          "position": 42,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106113,7 +106149,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 42,
+          "position": 43,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106125,7 +106161,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 43,
+          "position": 44,
           "default_value": "'left'",
           "description_key": "components.drawer.props.location.description",
           "description_fallback": "Docking edge. Accepts \"left\", \"right\", \"top\", \"bottom\". Controls slide direction and border placement."
@@ -106137,7 +106173,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 44,
+          "position": 45,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106149,7 +106185,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 45,
+          "position": 46,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106161,7 +106197,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 46,
+          "position": 47,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106173,7 +106209,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 47,
+          "position": 48,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106185,7 +106221,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 48,
+          "position": 49,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106197,7 +106233,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 49,
+          "position": 50,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106209,7 +106245,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 50,
+          "position": 51,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106221,7 +106257,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 51,
+          "position": 52,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106233,7 +106269,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 52,
+          "position": 53,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106245,7 +106281,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 53,
+          "position": 54,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106257,7 +106293,7 @@
           "type_kind": "type",
           "optional": false,
           "required": false,
-          "position": 54,
+          "position": 55,
           "default_value": "undefined",
           "description_key": "components.drawer.props.bg_color.description",
           "description_fallback": "Background color override for the drawer surface."
@@ -106269,7 +106305,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 55,
+          "position": 56,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106281,7 +106317,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 56,
+          "position": 57,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106293,7 +106329,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 57,
+          "position": 58,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106305,7 +106341,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 58,
+          "position": 59,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106317,7 +106353,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 59,
+          "position": 60,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106329,7 +106365,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 60,
+          "position": 61,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106341,7 +106377,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 61,
+          "position": 62,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106353,7 +106389,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 62,
+          "position": 63,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106365,7 +106401,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 63,
+          "position": 64,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106377,7 +106413,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 64,
+          "position": 65,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106389,7 +106425,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 65,
+          "position": 66,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106401,7 +106437,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 66,
+          "position": 67,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106413,7 +106449,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 67,
+          "position": 68,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106425,7 +106461,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 68,
+          "position": 69,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106437,7 +106473,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 69,
+          "position": 70,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106449,7 +106485,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 70,
+          "position": 71,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106461,7 +106497,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 71,
+          "position": 72,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106473,7 +106509,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 72,
+          "position": 73,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106485,7 +106521,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 73,
+          "position": 74,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106497,7 +106533,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 74,
+          "position": 75,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106509,7 +106545,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 75,
+          "position": 76,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106521,7 +106557,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 76,
+          "position": 77,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106533,7 +106569,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 77,
+          "position": 78,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106545,7 +106581,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 78,
+          "position": 79,
           "default_value": "'origam-transition--drawer'",
           "description_key": "components.drawer.props.transition.description",
           "description_fallback": "Enter/leave transition name or config. Defaults to origam-transition--drawer (full-width slide). Pass false to disable."
@@ -106557,7 +106593,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 79,
+          "position": 80,
           "default_value": "true",
           "description_key": "components.drawer.props.scrim.description",
           "description_fallback": "Shows a scrim overlay when the drawer is open in temporary mode. Pass a color string to customise the scrim color."
@@ -106569,7 +106605,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 80,
+          "position": 81,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106581,7 +106617,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 81,
+          "position": 82,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106593,7 +106629,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 82,
+          "position": 83,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -106605,7 +106641,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 83,
+          "position": 84,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -115629,7 +115665,7 @@
         },
         {
           "name": "variant",
-          "type_label": "TVariant | TVariantInput",
+          "type_label": "TVariantInput",
           "type_slug": "variant",
           "type_kind": "type",
           "optional": false,
@@ -117555,7 +117591,7 @@
         },
         {
           "name": "variant",
-          "type_label": "TVariant | TVariantInput",
+          "type_label": "TVariantInput",
           "type_slug": "variant",
           "type_kind": "type",
           "optional": false,
@@ -142961,25 +142997,13 @@
           "description_fallback": null
         },
         {
-          "name": "attach",
-          "type_label": "boolean | string | Element",
-          "type_slug": null,
-          "type_kind": null,
-          "optional": false,
-          "required": false,
-          "position": 2,
-          "default_value": null,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
           "name": "closeOnBack",
           "type_label": "boolean",
           "type_slug": "",
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 3,
+          "position": 2,
           "default_value": "true",
           "description_key": "components.menu.props.close_on_back.description",
           "description_fallback": "Closes the menu when the user presses Escape or navigates back."
@@ -142991,7 +143015,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 4,
+          "position": 3,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -143003,7 +143027,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 5,
+          "position": 4,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -143015,7 +143039,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 6,
+          "position": 5,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -143027,7 +143051,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 7,
+          "position": 6,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -143039,7 +143063,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 8,
+          "position": 7,
           "default_value": "false",
           "description_key": "components.menu.props.model_value.description",
           "description_fallback": "Controls the open/closed state. Use v-model to sync with parent."
@@ -143051,7 +143075,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 9,
+          "position": 8,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -143063,7 +143087,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 10,
+          "position": 9,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -143075,7 +143099,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 11,
+          "position": 10,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -143087,7 +143111,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 12,
+          "position": 11,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -143099,7 +143123,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 13,
+          "position": 12,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -143111,7 +143135,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 14,
+          "position": 13,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -143123,7 +143147,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 15,
+          "position": 14,
           "default_value": "undefined",
           "description_key": "components.menu.props.max_height.description",
           "description_fallback": "Maximum height before the menu becomes scrollable. Default: calc(100vh - 32px) from the token."
@@ -143135,7 +143159,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 16,
+          "position": 15,
           "default_value": "undefined",
           "description_key": "components.menu.props.max_width.description",
           "description_fallback": "Maximum width of the menu surface."
@@ -143147,7 +143171,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 17,
+          "position": 16,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -143159,7 +143183,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 18,
+          "position": 17,
           "default_value": "undefined",
           "description_key": "components.menu.props.min_width.description",
           "description_fallback": "Minimum width of the menu surface. Defaults to the activator width when unset."
@@ -143171,7 +143195,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 19,
+          "position": 18,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -143183,7 +143207,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 20,
+          "position": 19,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -143195,7 +143219,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 21,
+          "position": 20,
           "default_value": "undefined",
           "description_key": "components.menu.props.activator.description",
           "description_fallback": "The element or selector that triggers the menu. Can also be set via the #activator slot."
@@ -143207,7 +143231,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 22,
+          "position": 21,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -143219,7 +143243,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 23,
+          "position": 22,
           "default_value": "true",
           "description_key": "components.menu.props.open_on_click.description",
           "description_fallback": "Opens the menu when the activator is clicked."
@@ -143231,7 +143255,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 24,
+          "position": 23,
           "default_value": "false",
           "description_key": "components.menu.props.open_on_context_menu.description",
           "description_fallback": "Opens the menu on right-click (contextmenu event) instead of regular click."
@@ -143243,7 +143267,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 25,
+          "position": 24,
           "default_value": "false",
           "description_key": "components.menu.props.open_on_hover.description",
           "description_fallback": "Opens the menu when hovering the activator element."
@@ -143255,7 +143279,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 26,
+          "position": 25,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -143267,7 +143291,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 27,
+          "position": 26,
           "default_value": "true",
           "description_key": "components.menu.props.close_on_content_click.description",
           "description_fallback": "Closes the menu when the user clicks inside its content area."
@@ -143279,7 +143303,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 28,
+          "position": 27,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -143291,7 +143315,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 29,
+          "position": 28,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -143303,7 +143327,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 30,
+          "position": 29,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -143315,7 +143339,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 31,
+          "position": 30,
           "default_value": "'bottom'",
           "description_key": "components.menu.props.location.description",
           "description_fallback": "Preferred position of the menu relative to the activator (top, bottom, left, right, start, end, and combinations)."
@@ -143327,7 +143351,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 32,
+          "position": 31,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -143339,7 +143363,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 33,
+          "position": 32,
           "default_value": "undefined",
           "description_key": "components.menu.props.offset.description",
           "description_fallback": "Pixel offset from the activator. Pass [crossAxis, mainAxis] for two-axis control."
@@ -143351,7 +143375,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 34,
+          "position": 33,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -143363,7 +143387,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 35,
+          "position": 34,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -143375,7 +143399,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 36,
+          "position": 35,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -143387,7 +143411,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 37,
+          "position": 36,
           "default_value": "false",
           "description_key": "components.menu.props.eager.description",
           "description_fallback": "Renders the menu content even when closed (useful for pre-fetching)."
@@ -143399,7 +143423,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 38,
+          "position": 37,
           "default_value": "'scale-transition'",
           "description_key": "components.menu.props.transition.description",
           "description_fallback": "Enter/leave transition. Pass false to disable."
@@ -143407,6 +143431,18 @@
         {
           "name": "scrim",
           "type_label": "boolean | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 38,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "attach",
+          "type_label": "boolean | string | Element | null",
           "type_slug": null,
           "type_kind": null,
           "optional": false,
@@ -147413,7 +147449,7 @@
         },
         {
           "name": "variant",
-          "type_label": "TVariant | TVariantInput",
+          "type_label": "TVariantInput",
           "type_slug": "variant",
           "type_kind": "type",
           "optional": false,
@@ -149560,7 +149596,7 @@
         },
         {
           "name": "variant",
-          "type_label": "TVariant | TVariantInput",
+          "type_label": "TVariantInput",
           "type_slug": "",
           "type_kind": "primitive",
           "optional": false,
@@ -150335,25 +150371,13 @@
           "description_fallback": "Positions the overlay absolutely within its parent instead of fixed to the viewport."
         },
         {
-          "name": "attach",
-          "type_label": "boolean | string | Element",
-          "type_slug": "",
-          "type_kind": "primitive",
-          "optional": false,
-          "required": false,
-          "position": 1,
-          "default_value": "false",
-          "description_key": "components.overlay.props.attach.description",
-          "description_fallback": "Teleport target. true = parent element, string = CSS selector, Element = direct reference."
-        },
-        {
           "name": "closeOnBack",
           "type_label": "boolean",
           "type_slug": "",
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 2,
+          "position": 1,
           "default_value": "true",
           "description_key": "components.overlay.props.close_on_back.description",
           "description_fallback": "Close the overlay when the browser back button is pressed."
@@ -150365,7 +150389,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 3,
+          "position": 2,
           "default_value": "undefined",
           "description_key": "components.overlay.props.content_class.description",
           "description_fallback": "Additional CSS classes applied to the content wrapper element."
@@ -150377,7 +150401,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 4,
+          "position": 3,
           "default_value": "undefined",
           "description_key": "components.overlay.props.content_props.description",
           "description_fallback": "Additional attributes passed directly to the content wrapper element."
@@ -150389,7 +150413,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 5,
+          "position": 4,
           "default_value": "false",
           "description_key": "components.overlay.props.disabled.description",
           "description_fallback": "Prevents the overlay from opening."
@@ -150401,7 +150425,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 6,
+          "position": 5,
           "default_value": "false",
           "description_key": "components.overlay.props.no_click_animation.description",
           "description_fallback": "Disables the bounce animation when clicking outside a persistent overlay."
@@ -150413,7 +150437,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 7,
+          "position": 6,
           "default_value": "false",
           "description_key": "components.overlay.props.model_value.description",
           "description_fallback": "Controls the visibility of the overlay (v-model)."
@@ -150425,7 +150449,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 8,
+          "position": 7,
           "default_value": "2000",
           "description_key": "components.overlay.props.z_index.description",
           "description_fallback": "z-index of the overlay. Overrides the automatic stacking."
@@ -150437,7 +150461,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 9,
+          "position": 8,
           "default_value": "false",
           "description_key": "components.overlay.props.disable_global_stack.description",
           "description_fallback": "Opt out of the global overlay stack management."
@@ -150449,7 +150473,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 10,
+          "position": 9,
           "default_value": "false",
           "description_key": "components.overlay.props.persistent.description",
           "description_fallback": "Prevents closing the overlay by clicking outside or pressing Escape."
@@ -150461,7 +150485,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 11,
+          "position": 10,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150473,7 +150497,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 12,
+          "position": 11,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150485,7 +150509,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 13,
+          "position": 12,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150497,7 +150521,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 14,
+          "position": 13,
           "default_value": "undefined",
           "description_key": "components.overlay.props.height.description",
           "description_fallback": "Height of the overlay content area."
@@ -150509,7 +150533,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 15,
+          "position": 14,
           "default_value": "undefined",
           "description_key": "components.overlay.props.max_height.description",
           "description_fallback": "Maximum height of the overlay content area."
@@ -150521,7 +150545,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 16,
+          "position": 15,
           "default_value": "undefined",
           "description_key": "components.overlay.props.max_width.description",
           "description_fallback": "Maximum width of the overlay content area."
@@ -150533,7 +150557,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 17,
+          "position": 16,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150545,7 +150569,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 18,
+          "position": 17,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150557,7 +150581,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 19,
+          "position": 18,
           "default_value": "undefined",
           "description_key": "components.overlay.props.width.description",
           "description_fallback": "Width of the overlay content area."
@@ -150569,7 +150593,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 20,
+          "position": 19,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150581,7 +150605,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 21,
+          "position": 20,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150593,7 +150617,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 22,
+          "position": 21,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150605,7 +150629,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 23,
+          "position": 22,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150617,7 +150641,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 24,
+          "position": 23,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150629,7 +150653,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 25,
+          "position": 24,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150641,7 +150665,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 26,
+          "position": 25,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150653,7 +150677,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 27,
+          "position": 26,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150665,7 +150689,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 28,
+          "position": 27,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150677,7 +150701,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 29,
+          "position": 28,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150689,7 +150713,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 30,
+          "position": 29,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150701,7 +150725,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 31,
+          "position": 30,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150713,7 +150737,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 32,
+          "position": 31,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150725,7 +150749,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 33,
+          "position": 32,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150737,7 +150761,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 34,
+          "position": 33,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150749,7 +150773,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 35,
+          "position": 34,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150761,7 +150785,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 36,
+          "position": 35,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150773,7 +150797,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 37,
+          "position": 36,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -150785,7 +150809,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 38,
+          "position": 37,
           "default_value": "'dialog-transition'",
           "description_key": "components.overlay.props.transition.description",
           "description_fallback": "Vue transition applied when the overlay enters and leaves."
@@ -150797,10 +150821,22 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 39,
+          "position": 38,
           "default_value": "true",
           "description_key": "components.overlay.props.scrim.description",
           "description_fallback": "Whether to show the backdrop scrim. Pass a color string to tint it."
+        },
+        {
+          "name": "attach",
+          "type_label": "boolean | string | Element | null",
+          "type_slug": "",
+          "type_kind": "primitive",
+          "optional": false,
+          "required": false,
+          "position": 39,
+          "default_value": "false",
+          "description_key": "components.overlay.props.attach.description",
+          "description_fallback": "Teleport target. true = parent element, string = CSS selector, Element = direct reference."
         }
       ],
       "values": [],
@@ -156807,7 +156843,7 @@
         },
         {
           "name": "variant",
-          "type_label": "TVariant | TVariantInput",
+          "type_label": "TVariantInput",
           "type_slug": "variant",
           "type_kind": "type",
           "optional": false,
@@ -175885,7 +175921,7 @@
         },
         {
           "name": "variant",
-          "type_label": "TVariant | TVariantInput",
+          "type_label": "TVariantInput",
           "type_slug": null,
           "type_kind": null,
           "optional": false,
@@ -185465,25 +185501,13 @@
           "description_fallback": null
         },
         {
-          "name": "attach",
-          "type_label": "boolean | string | Element",
-          "type_slug": null,
-          "type_kind": null,
-          "optional": false,
-          "required": false,
-          "position": 15,
-          "default_value": null,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
           "name": "closeOnBack",
           "type_label": "boolean",
           "type_slug": null,
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 16,
+          "position": 15,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185495,7 +185519,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 17,
+          "position": 16,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185507,7 +185531,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 18,
+          "position": 17,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185519,7 +185543,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 19,
+          "position": 18,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185531,7 +185555,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 20,
+          "position": 19,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185543,7 +185567,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 21,
+          "position": 20,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185555,7 +185579,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 22,
+          "position": 21,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185567,7 +185591,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 23,
+          "position": 22,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185579,7 +185603,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 24,
+          "position": 23,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185591,7 +185615,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 25,
+          "position": 24,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185603,7 +185627,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 26,
+          "position": 25,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185615,7 +185639,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 27,
+          "position": 26,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185627,7 +185651,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 28,
+          "position": 27,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185639,7 +185663,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 29,
+          "position": 28,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185651,7 +185675,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 30,
+          "position": 29,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185663,7 +185687,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 31,
+          "position": 30,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185675,7 +185699,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 32,
+          "position": 31,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185687,7 +185711,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 33,
+          "position": 32,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185699,7 +185723,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 34,
+          "position": 33,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185711,7 +185735,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 35,
+          "position": 34,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185723,7 +185747,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 36,
+          "position": 35,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185735,7 +185759,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 37,
+          "position": 36,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185747,7 +185771,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 38,
+          "position": 37,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185759,7 +185783,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 39,
+          "position": 38,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185771,7 +185795,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 40,
+          "position": 39,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185783,7 +185807,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 41,
+          "position": 40,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185795,7 +185819,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 42,
+          "position": 41,
           "default_value": "'bottom'",
           "description_key": "components.snackbar.props.location.description",
           "description_fallback": "Viewport anchor for the snackbar. Accepts compound values such as \"bottom right\"."
@@ -185807,7 +185831,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 43,
+          "position": 42,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185819,7 +185843,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 44,
+          "position": 43,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185831,7 +185855,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 45,
+          "position": 44,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185843,7 +185867,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 46,
+          "position": 45,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185855,7 +185879,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 47,
+          "position": 46,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185867,7 +185891,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 48,
+          "position": 47,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -185879,7 +185903,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 49,
+          "position": 48,
           "default_value": "{ component: OrigamSnack }",
           "description_key": "components.snackbar.props.transition.description",
           "description_fallback": "Transition used when the snackbar enters and exits. Defaults to the OrigamSnack slide-up transition."
@@ -185887,6 +185911,18 @@
         {
           "name": "scrim",
           "type_label": "boolean | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 49,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "attach",
+          "type_label": "boolean | string | Element | null",
           "type_slug": null,
           "type_kind": null,
           "optional": false,
@@ -187157,6 +187193,18 @@
           "default_value": "'div'",
           "description_key": "components.snackbar_group.props.tag.description",
           "description_fallback": "HTML element rendered as the stack root inside the Teleport to body."
+        },
+        {
+          "name": "attach",
+          "type_label": "boolean | string | Element | null",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 9,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
         }
       ],
       "values": [],
@@ -198898,7 +198946,7 @@
         },
         {
           "name": "variant",
-          "type_label": "TVariant | TVariantInput",
+          "type_label": "TVariantInput",
           "type_slug": null,
           "type_kind": null,
           "optional": false,
@@ -201017,7 +201065,7 @@
         },
         {
           "name": "variant",
-          "type_label": "TVariant | TVariantInput",
+          "type_label": "TVariantInput",
           "type_slug": "",
           "type_kind": "primitive",
           "optional": false,
@@ -206577,25 +206625,13 @@
           "description_fallback": null
         },
         {
-          "name": "attach",
-          "type_label": "boolean | string | Element",
-          "type_slug": null,
-          "type_kind": null,
-          "optional": false,
-          "required": false,
-          "position": 5,
-          "default_value": null,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
           "name": "closeOnBack",
           "type_label": "boolean",
           "type_slug": null,
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 6,
+          "position": 5,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206607,7 +206643,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 7,
+          "position": 6,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206619,7 +206655,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 8,
+          "position": 7,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206631,7 +206667,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 9,
+          "position": 8,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206643,7 +206679,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 10,
+          "position": 9,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206655,7 +206691,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 11,
+          "position": 10,
           "default_value": "undefined",
           "description_key": "components.tooltip.props.model_value.description",
           "description_fallback": "v-model for the open state. Controlled mode when provided."
@@ -206667,7 +206703,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 12,
+          "position": 11,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206679,7 +206715,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 13,
+          "position": 12,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206691,7 +206727,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 14,
+          "position": 13,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206703,7 +206739,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 15,
+          "position": 14,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206715,7 +206751,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 16,
+          "position": 15,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206727,7 +206763,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 17,
+          "position": 16,
           "default_value": "'300px'",
           "description_key": "components.tooltip.props.max_width.description",
           "description_fallback": "Maximum tooltip width before content wraps."
@@ -206739,7 +206775,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 18,
+          "position": 17,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206751,7 +206787,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 19,
+          "position": 18,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206763,7 +206799,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 20,
+          "position": 19,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206775,7 +206811,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 21,
+          "position": 20,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206787,7 +206823,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 22,
+          "position": 21,
           "default_value": "undefined",
           "description_key": "components.tooltip.props.activator.description",
           "description_fallback": "Reference to the activator element. Use the #activator slot instead for most cases."
@@ -206799,7 +206835,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 23,
+          "position": 22,
           "default_value": "{}",
           "description_key": "components.tooltip.props.activator_props.description",
           "description_fallback": "Props merged onto the activator element via the slot binder."
@@ -206811,7 +206847,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 24,
+          "position": 23,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206823,7 +206859,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 25,
+          "position": 24,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206835,7 +206871,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 26,
+          "position": 25,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206847,7 +206883,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 27,
+          "position": 26,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206859,7 +206895,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 28,
+          "position": 27,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206871,7 +206907,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 29,
+          "position": 28,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206883,7 +206919,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 30,
+          "position": 29,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206895,7 +206931,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 31,
+          "position": 30,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206907,7 +206943,7 @@
           "type_kind": "type",
           "optional": false,
           "required": false,
-          "position": 32,
+          "position": 31,
           "default_value": "'top'",
           "description_key": "components.tooltip.props.location.description",
           "description_fallback": "Preferred position relative to the activator: top, bottom, start, end, and 2D variants (top start, bottom end, …)."
@@ -206919,7 +206955,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 33,
+          "position": 32,
           "default_value": "undefined",
           "description_key": "components.tooltip.props.origin.description",
           "description_fallback": "Transform origin for the entry/exit transition. Defaults to the anchor point."
@@ -206931,7 +206967,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 34,
+          "position": 33,
           "default_value": "undefined",
           "description_key": "components.tooltip.props.offset.description",
           "description_fallback": "Distance in pixels between the tooltip and the activator edge."
@@ -206943,7 +206979,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 35,
+          "position": 34,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206955,7 +206991,7 @@
           "type_kind": "type",
           "optional": false,
           "required": false,
-          "position": 36,
+          "position": 35,
           "default_value": "'reposition'",
           "description_key": "components.tooltip.props.scroll_strategy.description",
           "description_fallback": "Behavior when the container scrolls: reposition (follow activator) or close."
@@ -206967,7 +207003,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 37,
+          "position": 36,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -206979,7 +207015,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 38,
+          "position": 37,
           "default_value": "false",
           "description_key": "components.tooltip.props.eager.description",
           "description_fallback": "When true, the content is rendered in the DOM even before first open (disables lazy mounting)."
@@ -206991,7 +207027,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 39,
+          "position": 38,
           "default_value": "undefined",
           "description_key": "components.tooltip.props.transition.description",
           "description_fallback": "Enter/leave transition. Defaults to origam-translate-scale."
@@ -206999,6 +207035,18 @@
         {
           "name": "scrim",
           "type_label": "boolean | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 39,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "attach",
+          "type_label": "boolean | string | Element | null",
           "type_slug": null,
           "type_kind": null,
           "optional": false,

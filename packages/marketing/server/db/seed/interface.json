@@ -1,8 +1,8 @@
 {
   "kind": "interface",
-  "exportedAt": "2026-10-01T13:28:51.412Z",
-  "sourceCommit": "143d5904",
-  "entryCount": 972,
+  "exportedAt": "2026-10-09T07:02:21.288Z",
+  "sourceCommit": "5e1c4d805",
+  "entryCount": 976,
   "entries": [
     {
       "entry": {
@@ -36,6 +36,58 @@
         {
           "name": "accentColor",
           "type_label": "TColor",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "interface",
+        "slug": "i-action-variant-props",
+        "name": "IActionVariantProps",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export interface IActionVariantProps {\n    variant?: TVariant\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/interfaces/Commons/variant.interface.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [
+        {
+          "name": "variant",
+          "type_label": "TVariant",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -2159,6 +2211,58 @@
         {
           "name": "default",
           "type_label": "() => any",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "interface",
+        "slug": "i-attach-props",
+        "name": "IAttachProps",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export interface IAttachProps {\n    attach?: boolean | string | Element | null\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/interfaces/Commons/attach.interface.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [
+        {
+          "name": "attach",
+          "type_label": "boolean | string | Element | null",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
@@ -5194,7 +5298,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_blockquote_props.description",
         "description_fallback": "Full props contract for <OrigamBlockquote> — typographic citation component built on <blockquote>. Exposes five visual variants, author/source attribution, locale-aware decorative quote marks, horizontal alignment, and the full design surface (color, border, spacing, elevation, rounded).",
-        "definition": "export interface IBlockquoteProps extends ICommonsComponentProps, ITagProps, IColorProps, IAccentColorProps, IBgColorProps, IRoundedProps, IElevationProps, IBorderProps, IPaddingProps, IMarginProps, ITypographyProps {\n    /**\n     * Visual variant. See `TBlockquoteVariant` for the per-variant\n     * typographic contract.\n     *\n     * @default 'default'\n     */\n    variant?: TBlockquoteVariant\n    /**\n     * Author of the citation. Rendered after the body as `— Author`.\n     * When `source` is also set, the two are joined with a comma.\n     * Can be overridden via the `#author` slot for custom rendering\n     * (e.g. wrap in a link to a bio page).\n     */\n    author?: string\n    /**\n     * Source of the citation (book, publication, URL label, …).\n     * Rendered after `author` as `, Source`. Can be overridden via\n     * the `#source` slot. When `cite` is also set on the prop, the\n     * source label is wrapped in a `<cite>` element pointing at the\n     * URL.\n     */\n    source?: string\n    /**\n     * URL the citation references. Maps 1:1 to the HTML `cite`\n     * attribute on the rendered `<blockquote>` (or `<q>`). Pass a\n     * fully-qualified URL — the browser exposes it to assistive tech\n     * and to user-agent inspectors but does not render it visually.\n     */\n    cite?: string\n    /**\n     * Locale hint that determines which decorative quote glyphs render\n     * for `variant=\"quoted\"`. See `TBlockquoteLang`.\n     *\n     * @default 'auto'\n     */\n    lang?: TBlockquoteLang\n    /**\n     * Horizontal alignment of the citation body and attribution. The\n     * `pull` variant forces `'center'` when this prop is left empty;\n     * other variants default to `'left'`.\n     *\n     * @default 'left'\n     */\n    align?: TBlockquoteAlign\n}",
+        "definition": "export interface IBlockquoteProps extends ICommonsComponentProps, ITagProps, IColorProps, IAccentColorProps, IBgColorProps, IRoundedProps, IElevationProps, IBorderProps, IPaddingProps, IMarginProps, ITypographyProps {\n    /**\n     * Visual variant. See `TBlockquoteVariant` for the per-variant\n     * typographic contract.\n     *\n     * @default 'default'\n     */\n    variant?: TBlockquoteVariant\n    /**\n     * Author of the citation. Rendered after the body as `— Author`.\n     * When `source` is also set, the two are joined with a comma.\n     * Can be overridden via the `#author` slot for custom rendering\n     * (e.g. wrap in a link to a bio page).\n     */\n    author?: string\n    /**\n     * Source of the citation (book, publication, URL label, …).\n     * Rendered after `author` as `, Source`. Can be overridden via\n     * the `#source` slot. When `cite` is also set on the prop, the\n     * source label is wrapped in a `<cite>` element pointing at the\n     * URL.\n     */\n    source?: string\n    /**\n     * URL the citation references. Maps 1:1 to the HTML `cite`\n     * attribute on the rendered `<blockquote>` (or `<q>`). Pass a\n     * fully-qualified URL — the browser exposes it to assistive tech\n     * and to user-agent inspectors but does not render it visually.\n     */\n    cite?: string\n    /**\n     * Locale hint that determines which decorative quote glyphs render\n     * for `variant=\"quoted\"`. See `TBlockquoteLang`.\n     *\n     * @default 'auto'\n     */\n    lang?: TBlockquoteLang\n    /**\n     * Horizontal alignment of the citation body and attribution.\n     *\n     * ## ADR-005 D7 — exemption « famille B », documentée ICI et non\n     * implicitement\n     *\n     * `'center'` sur `pull` n'est plus calculé par le composant : c'est\n     * `BLOCKQUOTE_VARIANT_PRESETS.pull.align`, résolu au rang PRESET de la\n     * chaîne. La sémantique est identique à celle du `computed`\n     * `effectiveAlign` qu'il remplace — un `align` écrit au site d'appel\n     * gagne, parce que le rang 1 du résolveur (`if (wasPassed) return\n     * fallback`) précède le rang preset.\n     *\n     * ⚠️ **Rupture, assumée.** Le centrage de `pull` dépend désormais du\n     * résolveur, que seul `createOrigam()` installe. Un consommateur qui\n     * importe le composant sans installer le plugin obtient `'left'` (la\n     * valeur `withDefaults`, qui n'existe que comme plancher sans variant).\n     * Avant la conversion, le `computed` centrait sans plugin.\n     *\n     * @default 'left' — plancher `withDefaults`, que le preset de `pull` bat\n     */\n    align?: TBlockquoteAlign\n    /*********************************************************\n     * quoteMark\n     *\n     * @description\n     * Monte le glyphe d'ouverture decoratif en filigrane de fond\n     * (`<span class=\"origam-blockquote__mark--bg\">`), avec la paire de\n     * guillemets que `lang` selectionne.\n     *\n     * @description\n     * ⛔ ADR-005 D7 — EXEMPTION « FAMILLE B », DOCUMENTEE ICI ET NON\n     * IMPLICITEMENT. Ce prop existe parce que `quoted` ne se reduit PAS a\n     * des props de peinture : il MONTE UN ELEMENT. D7 interdit de laisser\n     * cet effet accroche au variant et exige que l'exemption soit ecrite\n     * sur la prop — c'est ce paragraphe.\n     *\n     * @description\n     * Le glyphe est donc pilote par `quoteMark`, et\n     * `BLOCKQUOTE_VARIANT_PRESETS.quoted` le pose a `true`. Deux\n     * consequences voulues : `quoted` reste le raccourci qu'il a toujours\n     * ete, et le glyphe devient atteignable sur N'IMPORTE QUEL variant\n     * (`<origam-blockquote variant=\"pull\" quote-mark>`), ce que le modele\n     * SCSS rendait impossible.\n     *\n     * @description\n     * Les deux regles d'empilement que `quoted` portait (`position:\n     * relative; z-index: 1` sur `__body` et `__attribution`, pour que le\n     * texte passe devant le glyphe) suivent desormais la PRESENCE DU\n     * GLYPHE et non le variant : ce sont des selecteurs de voisinage\n     * (`__mark--bg + __body`, `__mark--bg ~ __attribution`), donc ils se\n     * declenchent exactement quand il y a quelque chose a surmonter, et\n     * laissent zero ecart de style calcule sur les quatre autres variants.\n     *\n     * @description\n     * ⚠️ Le sur-remplissage haut qui laisse de la place au glyphe\n     * (`paddingTop`) reste porte par le preset de `quoted`, pas par ce\n     * prop. `quote-mark` sur un autre variant rend donc le glyphe sans ce\n     * supplement — passer `padding-top` soi-meme le retablit.\n     *\n     * @default false\n     ********************************************************/\n    quoteMark?: boolean\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -5284,6 +5388,18 @@
           "default_value": "'left'",
           "description_key": null,
           "description_fallback": "Horizontal alignment of the citation body and attribution. The 'pull' variant forces 'center' when this prop is left empty."
+        },
+        {
+          "name": "quoteMark",
+          "type_label": "boolean",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 6,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
         }
       ],
       "values": [],
@@ -10378,7 +10494,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_btn_group_props.description",
         "description_fallback": "Props for <OrigamBtnGroup> — a container that groups related buttons with a shared visual surface (border, elevation, density, color, bgColor, rounded, margin, padding). Supports a divided mode that draws separators between children.",
-        "definition": "export interface IBtnGroupProps extends ITagProps, ICommonsComponentProps, IRoundedProps, IBorderProps, IDensityProps, IElevationProps, IColorProps, IBgColorProps, IMarginProps, IPaddingProps, IHoverProps, IActiveProps, IVariantProps, ISizeProps {\n    divided?: boolean\n    items?: Array<IBtnProps>\n}",
+        "definition": "export interface IBtnGroupProps extends ITagProps, ICommonsComponentProps, IRoundedProps, IBorderProps, IDensityProps, IElevationProps, IColorProps, IBgColorProps, IMarginProps, IPaddingProps, IHoverProps, IActiveProps, IActionVariantProps, ISizeProps {\n    divided?: boolean\n    items?: Array<IBtnProps>\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -10582,8 +10698,8 @@
         {
           "rel_type": "extends",
           "to_kind": "interface",
-          "to_slug": "i-variant-props",
-          "to_name": "IVariantProps",
+          "to_slug": "i-action-variant-props",
+          "to_name": "IActionVariantProps",
           "prop_name": null,
           "position": 12,
           "description_key": null,
@@ -10675,7 +10791,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_btn_props.description",
         "description_fallback": "Props for <OrigamBtn> — the primary action component. Supports all visual surfaces (color, bgColor, border, elevation, rounded, size, density, dimension, padding, margin), link navigation, ripple, loader, position, location, group membership, adjacent icons, status, hover, and variant.",
-        "definition": "export interface IBtnProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IBorderProps, IDensityProps, IDimensionProps, IElevationProps, IRoundedProps, ITagProps, ISizeProps, ILinkProps, IRippleProps, ILoaderProps, IPositionProps, ILocationProps, IGroupItemProps, IPaddingProps, IMarginProps, IAdjacentProps, IHoverProps, IActiveProps, IVariantProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {\n    /** @deprecated Use `variant=\"flat\"` instead. Kept for backward compat. */\n    flat?: boolean,\n    /** Pass `true` to activate icon-only mode; pass a `TIcon` value to set the icon. */\n    icon?: boolean | TIcon\n    block?: boolean\n    slim?: boolean\n    stacked?: boolean\n    text?: string\n    status?: TStatus\n    statusIconPosition?: TStatusPosition\n}",
+        "definition": "export interface IBtnProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IBorderProps, IDensityProps, IDimensionProps, IElevationProps, IRoundedProps, ITagProps, ISizeProps, ILinkProps, IRippleProps, ILoaderProps, IPositionProps, ILocationProps, IGroupItemProps, IPaddingProps, IMarginProps, IAdjacentProps, IHoverProps, IActiveProps, IActionVariantProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {\n    /** @deprecated Use `variant=\"flat\"` instead. Kept for backward compat. */\n    flat?: boolean,\n    /** Pass `true` to activate icon-only mode; pass a `TIcon` value to set the icon. */\n    icon?: boolean | TIcon\n    block?: boolean\n    slim?: boolean\n    stacked?: boolean\n    text?: string\n    status?: TStatus\n    statusIconPosition?: TStatusPosition\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -11051,8 +11167,8 @@
         {
           "rel_type": "extends",
           "to_kind": "interface",
-          "to_slug": "i-variant-props",
-          "to_name": "IVariantProps",
+          "to_slug": "i-action-variant-props",
+          "to_name": "IActionVariantProps",
           "prop_name": null,
           "position": 21,
           "description_key": null,
@@ -32894,6 +33010,58 @@
     {
       "entry": {
         "kind": "interface",
+        "slug": "i-code-options",
+        "name": "ICodeOptions",
+        "category": "Code",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export interface ICodeOptions {\n    highlighter?: TShikiHighlighterLoader\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/interfaces/Code/code.interface.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [
+        {
+          "name": "highlighter",
+          "type_label": "TShikiHighlighterLoader",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "interface",
         "slug": "i-code-props",
         "name": "ICodeProps",
         "category": "Data Display",
@@ -36002,7 +36170,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_command_palette_props.description",
         "description_fallback": "Props for OrigamCommandPalette — a global ⌘K command palette that fuzzy-searches registered commands, supports custom hotkeys, grouping, async loading and slot customisation.",
-        "definition": "export interface ICommandPaletteProps extends ICommonsComponentProps, Pick<ITypographyProps, 'fontSize'> {\n    /** v-model — whether the palette is open. */\n    modelValue?: boolean\n    /**\n     * Global hotkey(s) that toggle the palette open. Defaults to\n     * `[['meta', 'k'], ['ctrl', 'k']]` (⌘K / Ctrl+K). Pass `null`\n     * to disable the global listener entirely.\n     */\n    hotkey?: TCommandPaletteHotkey | null\n    /**\n     * Static command list. When omitted, the palette renders commands\n     * registered via the `useCommand()` global registry instead.\n     */\n    commands?: ReadonlyArray<ICommand>\n    /** Placeholder of the search input (already-translated string). */\n    placeholder?: string\n    /** Empty-state message when no command matches the query. */\n    emptyText?: string\n    /** Max height of the result list. Number → px. */\n    maxHeight?: number | string\n    /** Width of the palette dialog. Number → px. */\n    width?: number | string\n    /** Display a loader inside the result list (use during async fetches). */\n    loading?: boolean\n    /** Close the palette automatically when a command is selected. */\n    closeOnSelect?: boolean\n    /** Close when the user presses Escape. */\n    closeOnEscape?: boolean\n    /** Close when the user clicks the backdrop. */\n    closeOnBackdrop?: boolean\n}",
+        "definition": "export interface ICommandPaletteProps extends ICommonsComponentProps, Pick<ITypographyProps, 'fontSize'>, IAttachProps {\n    /** v-model — whether the palette is open. */\n    modelValue?: boolean\n    /**\n     * Global hotkey(s) that toggle the palette open. Defaults to\n     * `[['meta', 'k'], ['ctrl', 'k']]` (⌘K / Ctrl+K). Pass `null`\n     * to disable the global listener entirely.\n     */\n    hotkey?: TCommandPaletteHotkey | null\n    /**\n     * Static command list. When omitted, the palette renders commands\n     * registered via the `useCommand()` global registry instead.\n     */\n    commands?: ReadonlyArray<ICommand>\n    /** Placeholder of the search input (already-translated string). */\n    placeholder?: string\n    /** Empty-state message when no command matches the query. */\n    emptyText?: string\n    /** Max height of the result list. Number → px. */\n    maxHeight?: number | string\n    /** Width of the palette dialog. Number → px. */\n    width?: number | string\n    /** Display a loader inside the result list (use during async fetches). */\n    loading?: boolean\n    /** Close the palette automatically when a command is selected. */\n    closeOnSelect?: boolean\n    /** Close when the user presses Escape. */\n    closeOnEscape?: boolean\n    /** Close when the user clicks the backdrop. */\n    closeOnBackdrop?: boolean\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -36205,6 +36373,16 @@
           "to_name": "Pick",
           "prop_name": null,
           "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "extends",
+          "to_kind": "interface",
+          "to_slug": "i-attach-props",
+          "to_name": "IAttachProps",
+          "prop_name": null,
+          "position": 2,
           "description_key": null,
           "description_fallback": null
         }
@@ -37099,7 +37277,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_confirm_wrapper_props.description",
         "description_fallback": "Full props contract for <OrigamConfirmWrapper> — a \"type-it-twice\" form helper that pairs a primary input with a confirmation input and lights up only when both values match. Inherits layout, color, density, rounded, elevation, variant and focus mixins.",
-        "definition": "export interface IConfirmWrapperProps extends ICommonsComponentProps,\n    IAdjacentProps, IDirectionProps, IColorProps, IDensityProps,\n    IRoundedProps, IElevationProps, IVariantProps, IFocusProps {\n    modelValue?: any\n    confirm?: any\n    field?: string\n    defaults?: Record<string, any>\n    confirmLabel?: string\n    disabled?: boolean\n    readonly?: boolean\n    required?: boolean\n    error?: boolean\n    errorMessages?: string | string[]\n    hideDetails?: boolean | 'auto'\n    messages?: string | string[]\n    hint?: string\n    persistentHint?: boolean\n    centerAffix?: boolean\n    label?: string\n}",
+        "definition": "export interface IConfirmWrapperProps extends ICommonsComponentProps,\n    IAdjacentProps, IDirectionProps, IColorProps, IDensityProps,\n    IRoundedProps, IElevationProps, IInputVariantProps, IFocusProps {\n    modelValue?: any\n    confirm?: any\n    field?: string\n    defaults?: Record<string, any>\n    confirmLabel?: string\n    disabled?: boolean\n    readonly?: boolean\n    required?: boolean\n    error?: boolean\n    errorMessages?: string | string[]\n    hideDetails?: boolean | 'auto'\n    messages?: string | string[]\n    hint?: string\n    persistentHint?: boolean\n    centerAffix?: boolean\n    label?: string\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -37411,8 +37589,8 @@
         {
           "rel_type": "extends",
           "to_kind": "interface",
-          "to_slug": "i-variant-props",
-          "to_name": "IVariantProps",
+          "to_slug": "i-input-variant-props",
+          "to_name": "IInputVariantProps",
           "prop_name": null,
           "position": 7,
           "description_key": null,
@@ -52071,7 +52249,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_drawer_props.description",
         "description_fallback": "Props for OrigamDrawer — the side navigation panel. Covers permanent, temporary, rail and expand-on-hover modes, layout reservation (push), viewport positioning (clipped), resize/route watchers and all visual surface props.",
-        "definition": "export interface IDrawerProps extends ITagProps, ICommonsComponentProps, IBorderProps, IElevationProps, ILayoutItemProps, IRoundedProps, IColorProps, IBgColorProps, IDensityProps, IPaddingProps, IMarginProps, ITransitionComponentProps, IScrimProps, IActiveProps, IHoverProps {\n    disableResizeWatcher?: boolean\n    disableRouteWatcher?: boolean\n    expandOnHover?: boolean\n    floating?: boolean\n    modelValue?: boolean\n    permanent?: boolean | null\n    rail?: boolean | null\n    railWidth?: number | string\n    temporary?: boolean\n    touchless?: boolean\n    width?: number | string\n    sticky?: boolean\n    /**\n     * Whether the drawer reserves space in the layout grid (PUSHES the\n     * adjacent toolbar / main / footer / etc.) or overlays them.\n     *\n     *   • `true`  → drawer registers with the layout's reserved-space\n     *               system. Toolbar / main / footer adjacent to the\n     *               drawer offset themselves accordingly.\n     *   • `false` → drawer paints over the surrounding content (no\n     *               reservation, no offset).\n     *   • `null` (default) → derived from `permanent`: permanent\n     *               drawers push by default, temporary drawers don't.\n     *\n     * Declared as `boolean | null` (NOT `boolean | undefined`) because\n     * Vue's prop coercion turns absent boolean attributes into `false`,\n     * which would silently disable the push heuristic. `null` survives\n     * coercion and lets the runtime fall back to the permanent-derived\n     * default.\n     */\n    push?: boolean | null\n    /**\n     * Whether the drawer slots BELOW any top-anchored layout item\n     * (typically the AppBar) instead of extending the full height of\n     * the layout.\n     *\n     *   • `true`  → drawer's effective layout order is bumped after\n     *               top items, so the drawer's top edge starts where\n     *               the AppBar's bottom edge ends.\n     *   • `false` → drawer keeps order 0, extending full height and\n     *               pushing the AppBar to its right (or claiming the\n     *               full left lane regardless of top items).\n     *   • `null` (default) → resolved from the HTML declaration order.\n     *               AppBar before Drawer → drawer below.\n     *               Drawer before AppBar → drawer full-height.\n     */\n    clipped?: boolean | null\n}",
+        "definition": "export interface IDrawerProps extends ITagProps, ICommonsComponentProps, IBorderProps, IElevationProps, ILayoutItemProps, IRoundedProps, IColorProps, IBgColorProps, IDensityProps, IPaddingProps, IMarginProps, ITransitionComponentProps, IScrimProps, IActiveProps, IHoverProps, IAttachProps {\n    disableResizeWatcher?: boolean\n    disableRouteWatcher?: boolean\n    expandOnHover?: boolean\n    floating?: boolean\n    modelValue?: boolean\n    permanent?: boolean | null\n    rail?: boolean | null\n    railWidth?: number | string\n    temporary?: boolean\n    touchless?: boolean\n    width?: number | string\n    sticky?: boolean\n    /**\n     * Whether the drawer reserves space in the layout grid (PUSHES the\n     * adjacent toolbar / main / footer / etc.) or overlays them.\n     *\n     *   • `true`  → drawer registers with the layout's reserved-space\n     *               system. Toolbar / main / footer adjacent to the\n     *               drawer offset themselves accordingly.\n     *   • `false` → drawer paints over the surrounding content (no\n     *               reservation, no offset).\n     *   • `null` (default) → derived from `permanent`: permanent\n     *               drawers push by default, temporary drawers don't.\n     *\n     * Declared as `boolean | null` (NOT `boolean | undefined`) because\n     * Vue's prop coercion turns absent boolean attributes into `false`,\n     * which would silently disable the push heuristic. `null` survives\n     * coercion and lets the runtime fall back to the permanent-derived\n     * default.\n     */\n    push?: boolean | null\n    /**\n     * Whether the drawer slots BELOW any top-anchored layout item\n     * (typically the AppBar) instead of extending the full height of\n     * the layout.\n     *\n     *   • `true`  → drawer's effective layout order is bumped after\n     *               top items, so the drawer's top edge starts where\n     *               the AppBar's bottom edge ends.\n     *   • `false` → drawer keeps order 0, extending full height and\n     *               pushing the AppBar to its right (or claiming the\n     *               full left lane regardless of top items).\n     *   • `null` (default) → resolved from the HTML declaration order.\n     *               AppBar before Drawer → drawer below.\n     *               Drawer before AppBar → drawer full-height.\n     */\n    clipped?: boolean | null\n    /**\n     * `attach` — inherited from `IAttachProps`, re-documented here because\n     * `OrigamDrawer`'s DEFAULT target is not `document.body` like the rest\n     * of the Overlay family: it teleports into its `<OrigamLayout>`\n     * ancestor's `.origam-layout__wrapper` (by `id`, via `useLayoutItem`),\n     * or renders inline when no `<OrigamLayout>` ancestor exists (the\n     * \"orphan\" case).\n     *\n     *   • `null` (default) → keep the layout-wrapper / orphan-inline\n     *               behaviour described above. Declared as the explicit\n     *               `withDefaults` value so Vue's boolean-prop casting —\n     *               which would otherwise force an UNSET `attach` to\n     *               `false` — never overrides it. Same device as `push` /\n     *               `clipped` above.\n     *   • `true`  → render in place, bypassing BOTH the layout teleport\n     *               AND the orphan fallback.\n     *   • `false` → `document.body`, same as the rest of the Overlay\n     *               family — escapes the layout wrapper entirely.\n     *   • a CSS selector `string` / an `Element` → teleport there instead\n     *               of the layout wrapper.\n     */\n    attach?: boolean | string | Element | null\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -52257,6 +52435,18 @@
           "default_value": null,
           "description_key": null,
           "description_fallback": "When true, the drawer slots below top-anchored layout items (e.g. AppBar). null derives from HTML declaration order."
+        },
+        {
+          "name": "attach",
+          "type_label": "boolean | string | Element | null",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 14,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
         }
       ],
       "values": [],
@@ -52433,6 +52623,16 @@
           "to_name": "IHoverProps",
           "prop_name": null,
           "position": 14,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "extends",
+          "to_kind": "interface",
+          "to_slug": "i-attach-props",
+          "to_name": "IAttachProps",
+          "prop_name": null,
+          "position": 15,
           "description_key": null,
           "description_fallback": null
         }
@@ -55416,7 +55616,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_field_props.description",
         "description_fallback": "Full prop surface for OrigamField — controls label, prefix/suffix, error state, disabled/dirty/required flags, and inherits color, density, variant, rounded, elevation, size, loader, focus and adjacent-inner surfaces.",
-        "definition": "export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColorProps, IBgColorProps, IAdjacentInnerProps, IBorderProps, IFocusProps, IDensityProps, ILabelProps, IActiveProps, IVariantProps, IRoundedProps, IElevationProps, ISizeProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {\n    centerAffix?: boolean\n    dirty?: boolean\n    disabled?: boolean\n    /**\n     * Error state for the field.\n     *   - `boolean` — paints the `--error` modifier (rules-driven flow).\n     *   - `string`  — paints the modifier AND becomes the inline error\n     *     message rendered by consumers that opt-in (e.g. FileField's\n     *     dropzone). For consumers that don't read the string, the\n     *     truthy semantics still apply.\n     *   - `false` / omitted — no error.\n     */\n    error?: string | boolean\n    inline?: boolean\n    label?: string\n    prefix?: string\n    suffix?: string\n    persistentClear?: boolean\n    singleLine?: boolean\n    required?: boolean\n}",
+        "definition": "export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColorProps, IBgColorProps, IAdjacentInnerProps, IBorderProps, IFocusProps, IDensityProps, ILabelProps, IActiveProps, IInputVariantProps, IRoundedProps, IElevationProps, ISizeProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {\n    centerAffix?: boolean\n    dirty?: boolean\n    disabled?: boolean\n    /**\n     * Error state for the field.\n     *   - `boolean` — paints the `--error` modifier (rules-driven flow).\n     *   - `string`  — paints the modifier AND becomes the inline error\n     *     message rendered by consumers that opt-in (e.g. FileField's\n     *     dropzone). For consumers that don't read the string, the\n     *     truthy semantics still apply.\n     *   - `false` / omitted — no error.\n     */\n    error?: string | boolean\n    inline?: boolean\n    label?: string\n    prefix?: string\n    suffix?: string\n    persistentClear?: boolean\n    singleLine?: boolean\n    required?: boolean\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -55718,8 +55918,8 @@
         {
           "rel_type": "extends",
           "to_kind": "interface",
-          "to_slug": "i-variant-props",
-          "to_name": "IVariantProps",
+          "to_slug": "i-input-variant-props",
+          "to_name": "IInputVariantProps",
           "prop_name": null,
           "position": 10,
           "description_key": null,
@@ -64154,6 +64354,58 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "interface",
+        "slug": "i-input-variant-props",
+        "name": "IInputVariantProps",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export interface IInputVariantProps {\n    variant?: TVariantInput\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/interfaces/Commons/variant.interface.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [
+        {
+          "name": "variant",
+          "type_label": "TVariantInput",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -75330,7 +75582,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_number_field_props.description",
         "description_fallback": "Props for <OrigamNumberField> — a numeric input with increment/decrement controls, precision formatting, min/max clamping, and hold-repeat support. Extends the full field and input surface plus variant styling.",
-        "definition": "export interface INumberFieldProps extends IFieldProps, IInputProps, IVariantProps {\n    autofocus?: boolean\n    placeholder?: string\n    persistentPlaceholder?: boolean\n    role?: string\n    modelModifiers?: string | boolean\n    inset?: boolean\n    hideInput?: boolean\n    modelValue?: number | null\n    min?: number\n    max?: number\n    step?: number\n    precision?: number\n    incrementIcon?: TIcon\n    decrementIcon?: TIcon\n    holdDelay?: number\n    holdRepeat?: number\n    split?: boolean\n    hideControls?: boolean\n    compact?: boolean\n    /*********************************************************\n     * decrementAriaLabel / incrementAriaLabel\n     *\n     * @description\n     * i18n keys for the compact-mode decrement / increment buttons'\n     * `aria-label` (#459 — previously hardcoded \"Decrement\" / \"Increment\"\n     * literals). Default to 'origam.number_field.aria_label.decrement' /\n     * 'origam.number_field.aria_label.increment'.\n     ********************************************************/\n    decrementAriaLabel?: string\n    incrementAriaLabel?: string\n}",
+        "definition": "export interface INumberFieldProps extends IFieldProps, IInputProps, IInputVariantProps {\n    autofocus?: boolean\n    placeholder?: string\n    persistentPlaceholder?: boolean\n    role?: string\n    modelModifiers?: string | boolean\n    inset?: boolean\n    hideInput?: boolean\n    modelValue?: number | null\n    min?: number\n    max?: number\n    step?: number\n    precision?: number\n    incrementIcon?: TIcon\n    decrementIcon?: TIcon\n    holdDelay?: number\n    holdRepeat?: number\n    split?: boolean\n    hideControls?: boolean\n    compact?: boolean\n    /*********************************************************\n     * decrementAriaLabel / incrementAriaLabel\n     *\n     * @description\n     * i18n keys for the compact-mode decrement / increment buttons'\n     * `aria-label` (#459 — previously hardcoded \"Decrement\" / \"Increment\"\n     * literals). Default to 'origam.number_field.aria_label.decrement' /\n     * 'origam.number_field.aria_label.increment'.\n     ********************************************************/\n    decrementAriaLabel?: string\n    incrementAriaLabel?: string\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -75652,8 +75904,8 @@
         {
           "rel_type": "extends",
           "to_kind": "interface",
-          "to_slug": "i-variant-props",
-          "to_name": "IVariantProps",
+          "to_slug": "i-input-variant-props",
+          "to_name": "IInputVariantProps",
           "prop_name": null,
           "position": 2,
           "description_key": null,
@@ -76687,7 +76939,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_origam_options.description",
         "description_fallback": "Root configuration bag passed to `createOrigam()`. Covers component aliases, icon adapter, display breakpoints, SSR, navigation, date adapter, locale/RTL, a11y contrast guard and runtime theme injection.",
-        "definition": "export interface IOrigamOptions {\n    aliases?: any\n    blueprint?: IBlueprint\n    components?: any\n    directives?: any\n    icons?: TIconOptions\n    display?: IDisplayOptions\n    ssr?: TSSROptions\n    goTo?: IGoToOptions\n    date?: IDateOptions\n    locale?: ILocaleOptions & IRtlOptions\n    /**\n     * Runtime text-contrast guard. `true` (default) enables the WCAG check\n     * that auto-corrects illegible text colours and warns; `false` disables\n     * it. Pass an object to tune the threshold.\n     */\n    contrast?: boolean | IContrastOptions\n    /**\n     * Optional runtime theme. When supplied, `createOrigam` resolves it to a\n     * block of `--origam-*` CSS variables and injects it into `<head>` at\n     * install time (browser only — SSR-safe no-op on the server). Accepts a\n     * pre-resolved var map and/or a DTCG-shaped token tree; see `IOrigamTheme`.\n     */\n    theme?: IOrigamTheme\n\n    /**\n     * Optional list of runtime themes installed together (the consumer install\n     * path — see ADR-003). Each object is injected as its own name×mode scoped\n     * `--origam-*` block via the same machinery as `theme`. The distinct brand\n     * names are exposed through `useInstalledThemes()` so a switcher can derive\n     * its list from the install rather than a hard-coded const.\n     *\n     * `theme` (singular) and `themes` (plural) may both be supplied; all are\n     * injected. SSR-safe (injection is a no-op without `document`).\n     */\n    themes?: IOrigamTheme[]\n}",
+        "definition": "export interface IOrigamOptions {\n    aliases?: any\n    blueprint?: IBlueprint\n    components?: any\n    directives?: any\n    icons?: TIconOptions\n    display?: IDisplayOptions\n    ssr?: TSSROptions\n    goTo?: IGoToOptions\n    date?: IDateOptions\n    locale?: ILocaleOptions & IRtlOptions\n    /**\n     * Runtime text-contrast guard. `true` (default) enables the WCAG check\n     * that auto-corrects illegible text colours and warns; `false` disables\n     * it. Pass an object to tune the threshold.\n     */\n    contrast?: boolean | IContrastOptions\n    /**\n     * Optional runtime theme. When supplied, `createOrigam` resolves it to a\n     * block of `--origam-*` CSS variables and injects it into `<head>` at\n     * install time (browser only — SSR-safe no-op on the server). Accepts a\n     * pre-resolved var map and/or a DTCG-shaped token tree; see `IOrigamTheme`.\n     */\n    theme?: IOrigamTheme\n\n    /**\n     * Optional list of runtime themes installed together (the consumer install\n     * path — see ADR-003). Each object is injected as its own name×mode scoped\n     * `--origam-*` block via the same machinery as `theme`. The distinct brand\n     * names are exposed through `useInstalledThemes()` so a switcher can derive\n     * its list from the install rather than a hard-coded const.\n     *\n     * `theme` (singular) and `themes` (plural) may both be supplied; all are\n     * injected. SSR-safe (injection is a no-op without `document`).\n     */\n    themes?: IOrigamTheme[]\n\n    code?: ICodeOptions\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -76861,6 +77113,18 @@
           "default_value": null,
           "description_key": null,
           "description_fallback": "Additional named runtime themes installed together. Each is injected as its own scoped CSS variable block and exposed via useInstalledThemes()."
+        },
+        {
+          "name": "code",
+          "type_label": "ICodeOptions",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": true,
+          "required": false,
+          "position": 13,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
         }
       ],
       "values": [],
@@ -77339,7 +77603,7 @@
         "icon": null,
         "description_key": "",
         "description_fallback": "",
-        "definition": "export interface IOtpInputFieldProps extends Omit<IFieldProps, 'fontFamily' | 'fontWeight' | 'lineHeight' | 'letterSpacing'>, Omit<IInputProps, 'fontFamily' | 'fontWeight' | 'lineHeight' | 'letterSpacing' | 'prependIcon' | 'appendIcon' | 'prependAvatar' | 'appendAvatar' | 'prependAriaLabel' | 'appendAriaLabel'>, IVariantProps, Pick<ITypographyProps, 'fontSize'> {\n    autofocus?: boolean\n    divider?: string\n    focusAll?: boolean\n    length?: number | string\n    modelValue?: number | string | null\n    placeholder?: string\n    /*********************************************************\n     * role\n     *\n     * @description\n     * Rôle ARIA de la racine.\n     *\n     * @description\n     * ⛔ Était déclarée mais JAMAIS lue : le template codait `role=\"group\"`\n     * en dur, donc la passer n'avait aucun effet. Elle est désormais liée,\n     * avec `'group'` pour défaut — la valeur qui était figée.\n     ********************************************************/\n    role?: string\n    type?: TOtpInputFieldType\n}",
+        "definition": "export interface IOtpInputFieldProps extends Omit<IFieldProps, 'fontFamily' | 'fontWeight' | 'lineHeight' | 'letterSpacing'>, Omit<IInputProps, 'fontFamily' | 'fontWeight' | 'lineHeight' | 'letterSpacing' | 'prependIcon' | 'appendIcon' | 'prependAvatar' | 'appendAvatar' | 'prependAriaLabel' | 'appendAriaLabel'>, IInputVariantProps, Pick<ITypographyProps, 'fontSize'> {\n    autofocus?: boolean\n    divider?: string\n    focusAll?: boolean\n    length?: number | string\n    modelValue?: number | string | null\n    placeholder?: string\n    /*********************************************************\n     * role\n     *\n     * @description\n     * Rôle ARIA de la racine.\n     *\n     * @description\n     * ⛔ Était déclarée mais JAMAIS lue : le template codait `role=\"group\"`\n     * en dur, donc la passer n'avait aucun effet. Elle est désormais liée,\n     * avec `'group'` pour défaut — la valeur qui était figée.\n     ********************************************************/\n    role?: string\n    type?: TOtpInputFieldType\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -77477,8 +77741,8 @@
         {
           "rel_type": "extends",
           "to_kind": "interface",
-          "to_slug": "i-variant-props",
-          "to_name": "IVariantProps",
+          "to_slug": "i-input-variant-props",
+          "to_name": "IInputVariantProps",
           "prop_name": null,
           "position": 2,
           "description_key": null,
@@ -77641,7 +77905,7 @@
         "icon": null,
         "description_key": "",
         "description_fallback": "",
-        "definition": "export interface IOverlayProps extends ICommonsComponentProps, IDimensionProps, IActivatorProps, ILocationStrategyProps, IScrollStrategyProps, ILazyProps, ITransitionComponentProps, IScrimProps {\n    absolute?: boolean\n    attach?: boolean | string | Element\n    closeOnBack?: boolean\n    contentClass?: string | Array<string>,\n    contentProps?: any\n    disabled?: boolean\n    noClickAnimation?: boolean\n    modelValue?: boolean\n    zIndex?: number | string\n    disableGlobalStack?: boolean\n    persistent?: boolean\n}",
+        "definition": "export interface IOverlayProps extends ICommonsComponentProps, IDimensionProps, IActivatorProps, ILocationStrategyProps, IScrollStrategyProps, ILazyProps, ITransitionComponentProps, IScrimProps, IAttachProps {\n    absolute?: boolean\n    closeOnBack?: boolean\n    contentClass?: string | Array<string>,\n    contentProps?: any\n    disabled?: boolean\n    noClickAnimation?: boolean\n    modelValue?: boolean\n    zIndex?: number | string\n    disableGlobalStack?: boolean\n    persistent?: boolean\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -77673,25 +77937,13 @@
           "description_fallback": ""
         },
         {
-          "name": "attach",
-          "type_label": "boolean | string | Element",
-          "type_slug": null,
-          "type_kind": null,
-          "optional": true,
-          "required": false,
-          "position": 1,
-          "default_value": null,
-          "description_key": null,
-          "description_fallback": ""
-        },
-        {
           "name": "closeOnBack",
           "type_label": "boolean",
           "type_slug": null,
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 2,
+          "position": 1,
           "default_value": null,
           "description_key": null,
           "description_fallback": ""
@@ -77703,7 +77955,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 3,
+          "position": 2,
           "default_value": null,
           "description_key": null,
           "description_fallback": ""
@@ -77715,7 +77967,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 4,
+          "position": 3,
           "default_value": null,
           "description_key": null,
           "description_fallback": ""
@@ -77727,7 +77979,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 5,
+          "position": 4,
           "default_value": null,
           "description_key": null,
           "description_fallback": ""
@@ -77739,7 +77991,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 6,
+          "position": 5,
           "default_value": null,
           "description_key": null,
           "description_fallback": ""
@@ -77751,7 +78003,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 7,
+          "position": 6,
           "default_value": null,
           "description_key": null,
           "description_fallback": ""
@@ -77763,7 +78015,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 8,
+          "position": 7,
           "default_value": null,
           "description_key": null,
           "description_fallback": ""
@@ -77775,7 +78027,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 9,
+          "position": 8,
           "default_value": null,
           "description_key": null,
           "description_fallback": ""
@@ -77787,7 +78039,7 @@
           "type_kind": null,
           "optional": true,
           "required": false,
-          "position": 10,
+          "position": 9,
           "default_value": null,
           "description_key": null,
           "description_fallback": ""
@@ -77879,6 +78131,16 @@
           "to_name": "IScrimProps",
           "prop_name": null,
           "position": 7,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "extends",
+          "to_kind": "interface",
+          "to_slug": "i-attach-props",
+          "to_name": "IAttachProps",
+          "prop_name": null,
+          "position": 8,
           "description_key": null,
           "description_fallback": null
         }
@@ -93161,7 +93423,7 @@
         "icon": null,
         "description_key": "interfaces.catalog.i_snackbar_group_props.description",
         "description_fallback": "Props contract for <OrigamSnackbarGroup> — a multi-toast container that orchestrates a queue of OrigamSnackbar instances driven through the useSnackbarGroup({ id }) composable.",
-        "definition": "export interface ISnackbarGroupProps extends ICommonsComponentProps, ITagProps {\n    /**\n     * Identifier of the stack this container renders. Pair with\n     * `useSnackbarGroup({ id })` to spawn items into the same stack.\n     * Multiple stacks can coexist (e.g. a global one + a per-region\n     * one) — each one is keyed independently.\n     *\n     * @default 'default'\n     */\n    id?: string\n    /**\n     * Anchor location on the viewport. Drives both the absolute\n     * positioning (top/bottom + left/right/center pinning) and the\n     * `direction` default.\n     *\n     * @default 'bottom-right'\n     */\n    location?: TSnackbarGroupLocation\n    /**\n     * Maximum number of items rendered concurrently. When `notify()`\n     * pushes a new item past `max`, the oldest item in the stack is\n     * evicted FIFO (its `onDismiss` callback still fires).\n     *\n     * @default 5\n     */\n    max?: number\n    /**\n     * Default auto-dismiss timeout (ms) applied to items that do not\n     * supply their own `duration`. Pass `0` to make all items sticky\n     * by default. Registered into the shared stack store on mount (and\n     * kept in sync reactively), so it applies to `notify()` calls from\n     * ANY `useSnackbarGroup({ id })` instance targeting this stack —\n     * not only calls that repeat `defaultDuration` as a composable\n     * option.\n     *\n     * @default 5000\n     */\n    defaultDuration?: number\n    /**\n     * Gap between stacked items (CSS dimension — `'12px'`, `'1rem'`,\n     * `8`, …).\n     *\n     * @default '12px'\n     */\n    spacing?: string | number\n    /**\n     * Stacking order. When unset, defaults to `'top-down'` for\n     * `top-*` locations and `'bottom-up'` for `bottom-*` locations\n     * — matching the natural reading direction of fresh items.\n     */\n    direction?: TSnackbarGroupDirection\n}",
+        "definition": "export interface ISnackbarGroupProps extends ICommonsComponentProps, ITagProps, IAttachProps {\n    /**\n     * Identifier of the stack this container renders. Pair with\n     * `useSnackbarGroup({ id })` to spawn items into the same stack.\n     * Multiple stacks can coexist (e.g. a global one + a per-region\n     * one) — each one is keyed independently.\n     *\n     * @default 'default'\n     */\n    id?: string\n    /**\n     * Anchor location on the viewport. Drives both the absolute\n     * positioning (top/bottom + left/right/center pinning) and the\n     * `direction` default.\n     *\n     * @default 'bottom-right'\n     */\n    location?: TSnackbarGroupLocation\n    /**\n     * Maximum number of items rendered concurrently. When `notify()`\n     * pushes a new item past `max`, the oldest item in the stack is\n     * evicted FIFO (its `onDismiss` callback still fires).\n     *\n     * @default 5\n     */\n    max?: number\n    /**\n     * Default auto-dismiss timeout (ms) applied to items that do not\n     * supply their own `duration`. Pass `0` to make all items sticky\n     * by default. Registered into the shared stack store on mount (and\n     * kept in sync reactively), so it applies to `notify()` calls from\n     * ANY `useSnackbarGroup({ id })` instance targeting this stack —\n     * not only calls that repeat `defaultDuration` as a composable\n     * option.\n     *\n     * @default 5000\n     */\n    defaultDuration?: number\n    /**\n     * Gap between stacked items (CSS dimension — `'12px'`, `'1rem'`,\n     * `8`, …).\n     *\n     * @default '12px'\n     */\n    spacing?: string | number\n    /**\n     * Stacking order. When unset, defaults to `'top-down'` for\n     * `top-*` locations and `'bottom-up'` for `bottom-*` locations\n     * — matching the natural reading direction of fresh items.\n     */\n    direction?: TSnackbarGroupDirection\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -93307,6 +93569,16 @@
           "to_name": "useSnackbarGroup",
           "prop_name": null,
           "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "rel_type": "extends",
+          "to_kind": "interface",
+          "to_slug": "i-attach-props",
+          "to_name": "IAttachProps",
+          "prop_name": null,
+          "position": 2,
           "description_key": null,
           "description_fallback": null
         }
