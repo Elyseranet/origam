@@ -36,6 +36,12 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
+      # REQUIRED: `node-version-file: .nvmrc` reads a file from the workspace,
+      # so the repository must be checked out FIRST. Without this step the job
+      # fails at setup-node with "node version file ... does not exist" and
+      # never reaches `npm whoami` — i.e. the diagnostic this job exists for
+      # could never run. Measured 2026-10-09 on run 37895993495.
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
@@ -45,10 +51,19 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm whoami
-      - name: token can see the package
+      # `npm view` is a PUBLIC read and succeeds with no token at all, so it
+      # can never prove a permission. These two DO depend on the token: they
+      # are what separates "the token is invalid" (whoami above fails) from
+      # "the token authenticates but cannot write to origam" (whoami passes,
+      # these show the package missing from its scope).
+      - name: packages this token may write to
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm access list packages 2>/dev/null || npm view origam version
+        run: npm access list packages
+      - name: maintainers of origam, as this token sees them
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm owner ls origam
 
   publish:
     name: Build, test & publish to npm

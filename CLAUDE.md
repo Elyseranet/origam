@@ -1776,18 +1776,45 @@ The version number would move while the artefact does not — a consumer who
 diffs two versions finds nothing, and the changelog gains an entry that
 describes a package that did not change.
 
-Concretely, before opening a release PR:
+⛔ **`grep -c '^packages/ds/'` IS THE WRONG CRITERION, and it answers the
+question backwards.** Measured 2026-10-09 on PR #1052: it returns **6**,
+which says "tag" — while the correct answer is **no tag**. All six files
+were under `packages/ds/scripts/guards/`, and the package's own `files`
+field publishes only four things:
 
 ```sh
-gh pr diff <n> --name-only | grep -c '^packages/ds/'   # 0 → NO tag
+jq '.files' packages/ds/package.json
+# [ "dist/src/", "LICENSE", "README.md", "CHANGELOG.md" ]
 ```
+
+`scripts/` is not among them. Guards, self-tests, baselines, analysis
+scripts and the package's tsconfig **never reach the tarball**, so a lot
+that only touches them produces the same byte-identical artefact as a
+marketing-only lot. The directory is the wrong unit; what the manifest
+publishes is the right one.
+
+So the criterion is whether the change touches what actually ships:
+
+```sh
+gh pr diff <n> --name-only \
+  | grep -cE '^packages/ds/(src/|package\.json|build\.config\.ts|LICENSE|README\.md|CHANGELOG\.md)'
+# 0 → NO tag
+```
+
+`src/` is what `dist/src/` is built from; `package.json` ships as the
+manifest; `build.config.ts` decides what `dist/` contains. Those three plus
+the three shipped documents are the whole publishable surface.
+
+⚠️ If you add an entry to `files`, this grep goes stale — re-read the field
+rather than trusting the pattern above. The criterion is *"the manifest
+says so"*, never *"a path matched"*.
 
 - **Merge, close the ticket, stop there.** No version bump, no release PR,
   no tag.
 - ⛔ Do NOT ask the owner whether to tag a marketing lot. This question was
   posed once and answered; asking again wastes his time.
-- A lot that touches **both** `packages/ds/` and marketing is tagged — the
-  published package really moves.
+- A lot that touches the **publishable surface** and marketing is tagged —
+  the published package really moves.
 
 ⚠️ The previous version of this paragraph said the opposite — *« when in
 doubt, tag: a redundant patch costs nothing »*. It was wrong: a redundant
