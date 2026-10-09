@@ -1,7 +1,7 @@
 {
   "kind": "composable",
-  "exportedAt": "2026-10-01T13:28:51.230Z",
-  "sourceCommit": "143d5904",
+  "exportedAt": "2026-10-09T07:02:21.167Z",
+  "sourceCommit": "5e1c4d805",
   "entryCount": 145,
   "entries": [
     {
@@ -13895,7 +13895,7 @@
       "params": [
         {
           "name": "props",
-          "type": "IVariantProps | Ref<TVariant | TVariantInput | string | undefined>",
+          "type": "{ variant?: string } | Ref<string | undefined>",
           "required": true,
           "default_value": null,
           "position": 0,
