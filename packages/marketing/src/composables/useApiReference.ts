@@ -38,7 +38,11 @@ export type { TReferenceKind } from '~/types/api-reference.type'
  * @param kind     - L'une des 8 familles DOC_KINDS.
  * @param category - Filtre optionnel category/domain (transmis en query param).
  */
-export function useReferenceCatalog<T>(kind: TReferenceKind, category?: string) {
+export function useReferenceCatalog<T>(
+    kind: TReferenceKind,
+    category?: string,
+    options: { lazy?: boolean } = {},
+) {
     const { locale } = useI18n()
 
     return useFetch<T[]>(`/api/reference/${kind}`, {
@@ -49,6 +53,11 @@ export function useReferenceCatalog<T>(kind: TReferenceKind, category?: string) 
         key: () => `catalog:${kind}:${category ?? ''}:${locale.value}`,
         query: { category, locale },
         default: () => [] as T[],
+        // `lazy` : ni SSR ni appel au montage — l'appelant déclenche `execute()`
+        // (palette ⌘K : le catalogue n'est payé qu'à la première ouverture).
+        // `watch: false` : un changement de locale ne re-télécharge rien tant
+        // que l'appelant n'a pas lui-même demandé les données.
+        ...(options.lazy ? { immediate: false, server: false, watch: false as const } : {}),
     })
 }
 

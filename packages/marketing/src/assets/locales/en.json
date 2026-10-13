@@ -249,6 +249,17 @@
         "search_placeholder": "Search…",
         "search_shortcut": "⌘K",
         "search_empty": "No results",
+        "search_filter_label": "Filter by family",
+        "search_filter_all": "All",
+        "search_filter_hint": "switch family",
+        "search_loading": "Loading the catalogue…",
+        "search_group_pages": "Pages",
+        "search_page_installation": "Getting started — install origam in your project",
+        "search_page_changelog": "Release history and migration notes",
+        "search_page_roadmap": "Upcoming features and milestones",
+        "search_page_wireframe": "Design wireframe & component previews",
+        "search_page_theming": "Visual theme builder — customise design tokens",
+        "search_page_why_origam": "Design decisions and philosophy",
         "star_count": "4.2k",
         "theme": "Theme",
         "theme_active": "Theme: {label}",
@@ -1152,72 +1163,6 @@
         "prev_next_label": "Previous and next in this family",
         "previous": "Previous",
         "next": "Next"
-    },
-    "rail": {
-        "a11y": {
-            "rail": "Quick catalogue navigation",
-            "pages": "Site pages and family indexes",
-            "search": "Search the whole catalogue",
-            "family": "{name} — {count} entries",
-            "family_here": "{name} — {count} entries — you are here",
-            "family_here_plain": "{name} — you are here",
-            "filter": "Filter {name}"
-        },
-        "close": "Close the panel",
-        "families": {
-            "component": {
-                "short": "Comp"
-            },
-            "composable": {
-                "short": "use"
-            },
-            "const": {
-                "short": "C"
-            },
-            "directive": {
-                "short": "v-"
-            },
-            "enum": {
-                "short": "E"
-            },
-            "interface": {
-                "short": "I"
-            },
-            "type": {
-                "short": "T"
-            },
-            "util": {
-                "short": "fn"
-            }
-        },
-        "filter": {
-            "placeholder": "Filter…"
-        },
-        "group": {
-            "other": "Other"
-        },
-        "hint": {
-            "capped": "{shown} shown of {total} — narrow your search",
-            "keys": "↑ ↓ browse · Enter open · Esc close",
-            "results": "{count} results"
-        },
-        "index_link": "See all {name}",
-        "pages": {
-            "label": "Pages",
-            "more": "More"
-        },
-        "search": {
-            "all": "Search everything",
-            "label": "Search everything"
-        },
-        "state": {
-            "empty": "Nothing here. Press Enter to search the whole catalogue.",
-            "error": "The catalogue is unavailable. Open the index page instead.",
-            "loading": "Loading the catalogue…"
-        },
-        "tooltip": {
-            "family": "{name} · {count}"
-        }
     },
     "roadmap": {
         "meta": {

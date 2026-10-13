@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { computed, ref } from 'vue'
+  import { computed, ref, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
   import type { LocaleObject } from '@nuxtjs/i18n'
   import { useTheme } from 'origam/composables'
@@ -10,6 +10,8 @@
   import { SKIP_LINK_HREF, SKIP_LINK_TARGET_ID } from '~/consts/a11y.const'
   import { FOOTER_COLUMNS, FOOTER_GRID_COLUMNS, NAV_SECTIONS, NAV_THEMING_LINK } from '~/consts/nav.const'
   import { SEARCH_SHORTCUT, GITHUB_STARS_MIN_DISPLAY } from '~/consts/chrome.const'
+  import { CATALOG_FAMILIES } from '~/consts/catalog-family.const'
+  import { GLOBAL_SEARCH_ALL_FAMILY } from '~/consts/global-search.const'
   import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
   import { THEME_CHIPS } from '~/consts/themes-showcase.const'
   import { useLocaleHref } from '~/composables/useLocaleHref'
@@ -35,7 +37,31 @@
   const showGithubStars = computed(() => stars.value >= GITHUB_STARS_MIN_DISPLAY)
 
   const paletteOpen = ref(false)
-  const { commands, getHref } = useGlobalSearch()
+  const { commands, family, isLoading, ensureLoaded, setQuery, resetQuery, setFamily, cycleFamily, getHref } = useGlobalSearch()
+
+  watch(paletteOpen, (open) => {
+    if (open) {
+      ensureLoaded()
+    } else {
+      resetQuery()
+    }
+  })
+
+  const searchFamilyChips = computed(() => [
+    { value: GLOBAL_SEARCH_ALL_FAMILY, label: t('chrome.search_filter_all', 'All') },
+    ...CATALOG_FAMILIES.map(f => ({ value: f.kind, label: t(f.labelKey, f.labelFallback) }))
+  ])
+  const searchFilterLabel = computed(() => t('chrome.search_filter_label', 'Filter by family'))
+  const searchFilterHint = computed(() => t('chrome.search_filter_hint', 'switch family'))
+
+  // The palette traps Tab (it keeps focus on its input), so the family chips
+  // cannot be reached by tabbing. Tab / Shift+Tab cycle the family instead; the
+  // palette's own handler runs first and only prevents the default.
+  function handlePaletteKeydown (event: KeyboardEvent) {
+    if (event.key === 'Tab') {
+      cycleFamily(event.shiftKey ? -1 : 1)
+    }
+  }
 
   function openPalette () {
     paletteOpen.value = true
@@ -214,6 +240,15 @@
           </button>
 
           <origam-btn
+            class="appbar-search-btn"
+            variant="outlined"
+            :icon="MDI_ICONS.MAGNIFY"
+            :aria-label="searchAriaLabel"
+            data-cy="search-trigger-mobile"
+            @click="openPalette"
+          />
+
+          <origam-btn
             v-if="showGithubStars"
             class="appbar-actions__btn"
             :href="MARKETING_DEFAULTS.githubRepo"
@@ -317,9 +352,37 @@
       :commands="commands"
       :placeholder="searchPlaceholder"
       :empty-text="t('chrome.search_empty', 'No results')"
+      :loading="isLoading"
       data-cy="global-command-palette"
       @select="handlePaletteSelect"
-    />
+      @query="setQuery"
+      @keydown="handlePaletteKeydown"
+    >
+      <template #footer>
+        <div
+          :aria-label="searchFilterLabel"
+          class="search-families"
+          role="group"
+          data-cy="search-families"
+        >
+          <origam-chip
+            v-for="chip in searchFamilyChips"
+            :key="chip.value"
+            :bg-color="chip.value === family ? 'primary' : undefined"
+            :aria-pressed="chip.value === family"
+            :text="chip.label"
+            :data-cy="`search-family-${chip.value}`"
+            role="button"
+            size="small"
+            @click="setFamily(chip.value)"
+          />
+        </div>
+        <span class="search-families__hint">
+          <origam-kbd :combination="['tab']" variant="tonal"/>
+          {{ searchFilterHint }}
+        </span>
+      </template>
+    </origam-command-palette>
 
     <origam-main
       :id="SKIP_LINK_TARGET_ID"
@@ -327,8 +390,6 @@
     >
       <slot/>
     </origam-main>
-
-    <nav-rail @open-palette="openPalette"/>
 
     <footer class="site-footer">
       <origam-grid
@@ -590,6 +651,15 @@
     }
   }
 
+  .appbar-search-btn {
+    --origam-btn---padding-inline: 0;
+    --origam-btn---font-size: 18px;
+    --origam-btn---border-radius: 10px;
+    --origam-btn---border-color: var(--origam-color__border---default, rgba(0, 0, 0, 0.12));
+    --origam-btn---color: var(--origam-color__text---primary, #0a0a0a);
+    display: none;
+  }
+
   .search-trigger {
     display: inline-flex;
     align-items: center;
@@ -753,31 +823,7 @@
   }
 
   /*
-    ⛔ RESERVATION DE LA GOUTTIERE DU RAIL — #1032.
-
-    Le rail est en `position: fixed`, donc hors flux : sans cette reserve il
-    passe PAR-DESSUS la colonne de texte des que la fenetre se resserre.
-    C'est la seule regle de mise en page que le rail impose a la page.
-
-    Le nombre n'est pas ecrit en dur : `--nav-rail---width` et
-    `--nav-rail---gutter` sont posees par `NavRail.vue` depuis
-    `nav-rail.const.ts`, et la meme somme sert a decaler le panneau
-    (`NAV_RAIL_PANEL_OFFSET`). Les replis valent les constantes du jour.
-
-    Le seuil est 600px parce que SOUS 600px le rail n'est plus au bord droit
-    : il devient une cible unique en bas a droite, qui ne recouvre aucune
-    ligne de texte et n'a donc aucune gouttiere a reserver.
-  */
-  @media (min-width: 37.5rem) {
-    .site-main {
-      padding-inline-end: calc(
-        var(--nav-rail---width, 56px) + var(--nav-rail---gutter, 16px) * 2
-      );
-    }
-  }
-
-  /*
-    ⛔ LA NAV PRINCIPALE CEDE LA PLACE AU RAIL SOUS 600px — #1032.
+    ⛔ LA NAV PRINCIPALE EST RETIREE SOUS 600px — #1032.
 
     Mesure du 2026-10-02 sur /roadmap a 400px de large (glass/light, cookie
     pose avant chargement) : `.primary-nav` s'etend jusqu'a `right=506` dans
@@ -788,14 +834,34 @@
     (right=413), `nav-theming` (right=506) et `theme-switcher-trigger`
     (right=553).
 
-    On ne masque donc pas une navigation qui marchait : on retire du parcours
-    clavier des cibles invisibles, et le rail porte la navigation a sa place
-    (volet « Pages », qui reprend `NAV_SECTIONS`). `display: none` et pas
-    `visibility: hidden` : il faut qu'elles sortent AUSSI de la tabulation.
+    On retire donc du parcours clavier des cibles invisibles. `display: none`
+    et pas `visibility: hidden` : il faut qu'elles sortent AUSSI de la
+    tabulation. La recherche ⌘K (bouton loupe de 44px) reste le seul chemin
+    visible vers les pages sous 600px.
+
+    Les autres actions (mode, langue, theme, etoiles) sont retirees au meme
+    seuil : mesure a 390px, `.origam-toolbar__append` (356px) ne tient pas a
+    cote de la marque (157px) dans les 358px utiles, passe a la ligne a
+    y=67 et `header.origam-toolbar` (hauteur 55px, `overflow: hidden`) la
+    CLIPPE — elles etaient deja invisibles tout en restant dans la
+    tabulation.
   */
   @media (max-width: 37.4375rem) {
     .primary-nav {
       display: none;
+    }
+
+    .appbar-actions > :not(.appbar-search-btn) {
+      display: none;
+    }
+
+    .appbar-search-btn {
+      display: inline-flex;
+      flex: none;
+      inline-size: 44px;
+      block-size: 44px;
+      --origam-btn---height: 44px;
+      --origam-btn---min-height: 44px;
     }
   }
 
@@ -822,6 +888,21 @@
 
     .site-footer__top {
       grid-template-columns: 1fr;
+    }
+  }
+
+  .search-families {
+    display: flex;
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    flex-wrap: wrap;
+    gap: var(--origam-space---1, 0.25rem);
+
+    &__hint {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--origam-space---1, 0.25rem);
+      white-space: nowrap;
     }
   }
 </style>

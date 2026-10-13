@@ -1,65 +1,66 @@
-import type { ICommand } from 'origam/interfaces'
+import type { IGlobalSearchStaticPage } from '../interfaces/global-search.interface'
+import type { TReferenceKind } from '../types/api-reference.type'
+import type { TGlobalSearchFamily } from '../types/global-search.type'
 
 /**
- * Static command-palette entries — pages with no backing API catalogue
- * (installation, changelog, roadmap, wireframe, theming, why-origam).
- * Moved here from useGlobalSearch.ts — a business const declared inline in
- * a composable belongs in src/consts/ (CLAUDE.md).
+ * Static command-palette entries — pages with no backing API catalogue.
+ * Labels reuse the `nav.*` keys of the app bar; descriptions live under
+ * `chrome.search_page_*`. `keywords` are search tokens, never displayed.
  */
-export const GLOBAL_SEARCH_STATIC_PAGES: ICommand[] = [
+export const GLOBAL_SEARCH_STATIC_PAGES: IGlobalSearchStaticPage[] = [
     {
         id: 'page-installation',
-        label: 'Installation',
-        description: 'Getting started — install origam in your project',
+        labelKey: 'nav.installation',
+        labelFallback: 'Installation',
+        descriptionKey: 'chrome.search_page_installation',
+        descriptionFallback: 'Getting started — install origam in your project',
         icon: 'mdi-download-outline',
-        group: 'Pages',
-        keywords: ['install', 'setup', 'npm', 'pnpm', 'yarn', 'getting-started'],
-        perform: () => undefined
+        keywords: ['install', 'setup', 'npm', 'pnpm', 'yarn', 'getting-started']
     },
     {
         id: 'page-changelog',
-        label: 'Changelog',
-        description: 'Release history and migration notes',
+        labelKey: 'nav.changelog',
+        labelFallback: 'Changelog',
+        descriptionKey: 'chrome.search_page_changelog',
+        descriptionFallback: 'Release history and migration notes',
         icon: 'mdi-history',
-        group: 'Pages',
-        keywords: ['release', 'version', 'update', 'migration', 'changes'],
-        perform: () => undefined
+        keywords: ['release', 'version', 'update', 'migration', 'changes']
     },
     {
         id: 'page-roadmap',
-        label: 'Roadmap',
-        description: 'Upcoming features and milestones',
+        labelKey: 'nav.roadmap',
+        labelFallback: 'Roadmap',
+        descriptionKey: 'chrome.search_page_roadmap',
+        descriptionFallback: 'Upcoming features and milestones',
         icon: 'mdi-map-marker-path',
-        group: 'Pages',
-        keywords: ['future', 'plan', 'upcoming', 'milestone', 'feature'],
-        perform: () => undefined
+        keywords: ['future', 'plan', 'upcoming', 'milestone', 'feature']
     },
     {
         id: 'page-wireframe',
-        label: 'Wireframe',
-        description: 'Design wireframe & component previews',
+        labelKey: 'nav.wireframe',
+        labelFallback: 'Wireframe',
+        descriptionKey: 'chrome.search_page_wireframe',
+        descriptionFallback: 'Design wireframe & component previews',
         icon: 'mdi-vector-square',
-        group: 'Pages',
-        keywords: ['design', 'preview', 'mockup', 'layout'],
-        perform: () => undefined
+        keywords: ['design', 'preview', 'mockup', 'layout']
     },
     {
         id: 'page-theming',
-        label: 'Theming',
-        description: 'Visual theme builder — customise design tokens',
+        labelKey: 'nav.theming',
+        labelFallback: 'Theming',
+        descriptionKey: 'chrome.search_page_theming',
+        descriptionFallback: 'Visual theme builder — customise design tokens',
         icon: 'mdi-palette-outline',
-        group: 'Pages',
-        keywords: ['theme', 'token', 'color', 'brand', 'customize'],
-        perform: () => undefined
+        keywords: ['theme', 'token', 'color', 'brand', 'customize']
     },
     {
         id: 'page-why-origam',
-        label: 'Why origam?',
-        description: 'Design decisions and philosophy',
+        labelKey: 'nav.why_origam',
+        labelFallback: 'Why origam?',
+        descriptionKey: 'chrome.search_page_why_origam',
+        descriptionFallback: 'Design decisions and philosophy',
         icon: 'mdi-help-circle-outline',
-        group: 'Pages',
-        keywords: ['why', 'philosophy', 'decision', 'compare'],
-        perform: () => undefined
+        keywords: ['why', 'philosophy', 'decision', 'compare']
     }
 ]
 
@@ -71,4 +72,29 @@ export const GLOBAL_SEARCH_STATIC_PAGE_HREFS: Record<string, string> = {
     'page-wireframe': '/wireframe',
     'page-theming': '/theming',
     'page-why-origam': '/why-origam'
+}
+
+/** Valeur du filtre « toutes les familles ». */
+export const GLOBAL_SEARCH_ALL_FAMILY: TGlobalSearchFamily = 'all'
+
+/**
+ * Plafond de lignes transmises à la palette. Sans lui, `OrigamCommandPalette`
+ * rend un `<button>` par commande retenue : ~2 800 nœuds à l'ouverture.
+ */
+export const GLOBAL_SEARCH_RESULT_CAP = 50
+
+/**
+ * Icône MDI par défaut de chaque famille quand l'entrée n'en porte pas. Les
+ * familles elles-mêmes (kind, route, libellé `nav.*`) viennent de
+ * `CATALOG_FAMILIES` : une seule liste pour tout le site.
+ */
+export const GLOBAL_SEARCH_FAMILY_ICONS: Record<TReferenceKind, string> = {
+    component: 'mdi-puzzle-outline',
+    composable: 'mdi-function-variant',
+    directive: 'mdi-code-tags',
+    type: 'mdi-alpha-t-box-outline',
+    enum: 'mdi-format-list-numbered',
+    interface: 'mdi-alpha-i-box-outline',
+    util: 'mdi-wrench-outline',
+    const: 'mdi-alpha-c-box-outline'
 }
