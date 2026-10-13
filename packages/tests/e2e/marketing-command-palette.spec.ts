@@ -19,11 +19,15 @@
  * Nécessite une base seedée : `requireMarketingDb()`.
  */
 import AxeBuilder from '@axe-core/playwright'
-import { expect, test, type Page } from '@playwright/test'
+import { expect as baseExpect, test, type Page } from '@playwright/test'
 
 import { requireMarketingDb } from './_support/require-marketing-db'
 
 requireMarketingDb()
+
+// Les 8 familles se telechargent a la premiere ouverture (~1 Mo) : sur un runner
+// de CI lent, les 5 s par defaut d'un `expect` ne suffisent pas (1 flaky mesure).
+const expect = baseExpect.configure({ timeout: 15_000 })
 
 const PALETTE = '[data-cy="global-command-palette"]'
 const INPUT = `${PALETTE} input[role="combobox"]`
