@@ -1152,6 +1152,13 @@
             "reviewed": "Dernière vérification par rapport au code source le 17 septembre 2026."
         }
     },
+    "catalog_nav": {
+        "family_menu_label": "Changer de famille — actuelle : {name}",
+        "related_title": "Même sujet dans les autres familles",
+        "prev_next_label": "Précédent et suivant dans cette famille",
+        "previous": "Précédent",
+        "next": "Suivant"
+    },
     "rail": {
         "a11y": {
             "rail": "Navigation rapide du catalogue",

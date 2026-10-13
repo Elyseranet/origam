@@ -24,6 +24,7 @@
 import type { Ref, ComputedRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import type { ICatalogNeighbours } from '~/interfaces/catalog-neighbours.interface'
 import type { TReferenceKind } from '~/types/api-reference.type'
 
 export type { TReferenceKind } from '~/types/api-reference.type'
@@ -146,5 +147,31 @@ export function useReferenceCategories(kind: TReferenceKind) {
         `categories:${kind}`,
         () => $fetch<string[]>(`/api/reference/categories/${kind}`),
         { default: () => [] },
+    )
+}
+
+/**
+ * Fetches the navigation of a detail page (#1032): previous / next entry in
+ * the family's INDEX order, and the entries of the other families related to
+ * this one (stored relations only).
+ *
+ * Non bloquant : une erreur laisse `data` à `null` et les blocs de navigation
+ * ne se rendent pas — la fiche, elle, reste lisible. La clé est partagée par
+ * tous les blocs de la page : un seul aller-réseau.
+ *
+ * Ne transmet PAS `?locale=` : noms et slugs sont des identifiants de code.
+ */
+export function useCatalogNeighbours(
+    kind: TReferenceKind,
+    slug: Ref<string | null | undefined> | ComputedRef<string | null | undefined>,
+) {
+    return useAsyncData<ICatalogNeighbours | null>(
+        () => `neighbours:${kind}:${slug.value ?? '__skip'}`,
+        async () => {
+            if (!slug.value) return null
+
+            return await $fetch<ICatalogNeighbours>(`/api/reference/neighbours/${kind}/${slug.value}`)
+        },
+        { watch: [slug], default: () => null },
     )
 }

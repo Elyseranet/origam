@@ -105,10 +105,11 @@ test.describe('Types — detail /types/color', () => {
         await expect(title).toContainText('TColor')
     })
 
-    test('breadcrumb links back to /types', async ({ page }) => {
-        const breadcrumb = page.locator('[data-cy="type-breadcrumb-catalog"]')
-        await expect(breadcrumb).toBeVisible()
-        await expect(breadcrumb).toHaveAttribute('href', '/types')
+    test('breadcrumb family menu links back to /types', async ({ page }) => {
+        const trigger = page.locator('[data-cy="type-breadcrumb-catalog"]')
+        await expect(trigger).toBeVisible()
+        await trigger.click()
+        await expect(page.locator('[data-cy="breadcrumb-family-type"]')).toHaveAttribute('href', '/types')
     })
 
     test('kind chip shows "type"', async ({ page }) => {

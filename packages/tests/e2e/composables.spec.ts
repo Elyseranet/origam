@@ -101,10 +101,11 @@ test.describe('Composable detail — /composables/use-color', () => {
         await expect(title).toContainText('useColor')
     })
 
-    test('breadcrumb back link points to /composables', async ({ page }) => {
-        const backLink = page.locator('[data-cy="composable-breadcrumb-catalog"]')
-        await expect(backLink).toBeVisible()
-        await expect(backLink).toHaveAttribute('href', '/composables')
+    test('breadcrumb family menu points back to /composables', async ({ page }) => {
+        const trigger = page.locator('[data-cy="composable-breadcrumb-catalog"]')
+        await expect(trigger).toBeVisible()
+        await trigger.click()
+        await expect(page.locator('[data-cy="breadcrumb-family-composable"]')).toHaveAttribute('href', '/composables')
     })
 
     test('import copy button is present and accessible', async ({ page }) => {

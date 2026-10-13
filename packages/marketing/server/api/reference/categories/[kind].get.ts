@@ -39,18 +39,7 @@ export default defineCachedEventHandler(
 
         const db = await useDb()
 
-        const rows: Array<{ category: string }> = await db.query(
-            `SELECT DISTINCT category
-             FROM public.doc_entry
-             WHERE kind = $1
-               AND category IS NOT NULL
-               AND category <> ''
-               AND orphaned_at IS NULL
-             ORDER BY category ASC`,
-            [kind],
-        )
-
-        return rows.map(r => r.category)
+        return fetchCategoryOrder(db, kind)
     },
     {
         maxAge: CACHE_TTL_SECONDS,

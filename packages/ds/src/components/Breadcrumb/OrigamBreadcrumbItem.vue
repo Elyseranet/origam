@@ -5,7 +5,7 @@
 			v-contrast
 			:aria-current="isActive ? 'page' : undefined"
 			:class="breadcrumbItemClasses"
-			:href="link.href"
+			:href="link.href.value"
 			:style="breadcrumbItemStyles"
 			@click="link.navigate"
 			@mouseenter="handleMouseenter"

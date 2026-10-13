@@ -152,7 +152,11 @@ const MARKETING_GREEN_SPECS = [
     // `ariaLabelledby` dans un `v-bind` (Vue ne kebab-case que les props
     // déclarées), et un focus qui n'entrait jamais dans le panneau, ce qui
     // désactivait silencieusement ⎋ ET les flèches.
-    'marketing-nav-rail.spec.ts'
+    'marketing-nav-rail.spec.ts',
+
+    // #1032 — navigation des fiches de detail (encart, prev/next, menu de famille).
+    // Mesure d'admission : voir la PR.
+    'marketing-catalog-detail-nav.spec.ts'
 ]
 
 /*

@@ -1158,6 +1158,13 @@
             "copy_label": "Copy"
         }
     },
+    "catalog_nav": {
+        "family_menu_label": "Change family — current: {name}",
+        "related_title": "Same subject in the other families",
+        "prev_next_label": "Previous and next in this family",
+        "previous": "Previous",
+        "next": "Next"
+    },
     "rail": {
         "a11y": {
             "rail": "Quick catalogue navigation",

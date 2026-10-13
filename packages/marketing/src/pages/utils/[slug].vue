@@ -51,30 +51,10 @@
         aria-labelledby="util-title"
       >
         <origam-container class="util-hero__container">
-          <nav
-            class="util-hero__breadcrumb"
-            :aria-label="t('utils.detail.breadcrumb_label', 'Page location')"
-          >
-            <nuxt-link
-              to="/utils"
-              class="util-hero__breadcrumb-link"
-              data-cy="util-breadcrumb-catalog"
-            >
-              {{ t('utils.detail.breadcrumb_catalog', 'Utils') }}
-            </nuxt-link>
-
-            <span
-              class="util-hero__breadcrumb-sep"
-              aria-hidden="true"
-            >›</span>
-
-            <span
-              class="util-hero__breadcrumb-current"
-              aria-current="page"
-            >
-                            {{ utilName }}
-                        </span>
-          </nav>
+          <catalog-breadcrumb
+            kind="util"
+            :name="utilName"
+          />
 
           <div class="util-hero__identity">
             <div class="util-hero__title-row">
@@ -149,6 +129,11 @@
           </div>
         </origam-container>
       </div>
+
+      <catalog-related-families
+        kind="util"
+        :slug="slug"
+      />
 
       <origam-container>
         <div class="util-detail__layout">
@@ -434,6 +419,13 @@
           </div>
         </div>
       </origam-container>
+
+      <origam-container>
+        <catalog-prev-next
+          kind="util"
+          :slug="slug"
+        />
+      </origam-container>
     </template>
   </article>
 </template>
@@ -608,37 +600,6 @@ useSeoMeta({
         position: relative;
         z-index: 1;
         padding-block: var(--origam-space---5, 1.25rem) var(--origam-space---8, 2rem);
-    }
-
-    &__breadcrumb {
-        display: flex;
-        align-items: center;
-        gap: var(--origam-space---2, 0.5rem);
-        padding-block: var(--origam-space---5, 1.25rem) 0;
-        font-size: var(--origam-font-size---xs, 0.75rem);
-        font-weight: var(--origam-font__weight---medium, 500);
-        flex-wrap: wrap;
-    }
-
-    &__breadcrumb-link {
-        color: var(--origam-color__text---secondary, #525252);
-        text-decoration: none;
-        transition: color 100ms;
-
-        &:hover {
-            color: var(--origam-color__action--primary---fgSubtle, #6d28d9);
-        }
-    }
-
-    &__breadcrumb-sep {
-        color: var(--origam-color__text---tertiary, #737373);
-        font-size: 0.625rem;
-    }
-
-    &__breadcrumb-current {
-        color: var(--origam-color__text---primary, #0a0a0a);
-        font-weight: var(--origam-font__weight---semibold, 600);
-        font-family: var(--origam-font__family---mono, monospace);
     }
 
     &__identity {

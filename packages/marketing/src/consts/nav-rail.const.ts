@@ -11,9 +11,13 @@
  *    site, il l'affiche.
  */
 
-import type { INavRailFamily, INavRailPageGroup } from '../interfaces/nav-rail.interface'
+import type { INavRailPageGroup } from '../interfaces/nav-rail.interface'
 
+import { CATALOG_FAMILIES } from './catalog-family.const'
 import { NAV_SECTIONS, NAV_THEMING_LINK } from './nav.const'
+
+/** Les 8 familles, dans l'ordre du rail — déplacées dans `catalog-family.const.ts`. */
+export const NAV_RAIL_FAMILIES = CATALOG_FAMILIES
 
 /** Largeur du rail, en px. 56 = une cible de 44 px plus son padding. */
 export const NAV_RAIL_WIDTH = 56
@@ -88,82 +92,6 @@ export const NAV_RAIL_RESULT_CAP = 50
 
 /** Nombre d'entrées en dessous duquel une liste plate s'affiche sans filtre. */
 export const NAV_RAIL_FILTER_MIN_ENTRIES = 12
-
-/**
- * Les 8 familles du catalogue, dans l'ordre du rail.
- *
- * Les libellés compacts sont ceux de la convention du DS, pas des abréviations
- * arbitraires : `use` est le préfixe obligatoire d'un composable, `v-` celui
- * d'une directive, `I` / `T` / `E` / `C` les préfixes d'interface, type, enum
- * et constante. Un lecteur du DS les reconnaît ; un lecteur d'écran, lui,
- * reçoit le nom complet et le dénombrement via l'`aria-label`.
- */
-export const NAV_RAIL_FAMILIES: INavRailFamily[] = [
-    {
-        kind: 'component',
-        route: '/components',
-        shortLabelKey: 'rail.families.component.short',
-        shortLabelFallback: 'Comp',
-        labelKey: 'nav.components',
-        labelFallback: 'Components'
-    },
-    {
-        kind: 'composable',
-        route: '/composables',
-        shortLabelKey: 'rail.families.composable.short',
-        shortLabelFallback: 'use',
-        labelKey: 'nav.composables',
-        labelFallback: 'Composables'
-    },
-    {
-        kind: 'directive',
-        route: '/directives',
-        shortLabelKey: 'rail.families.directive.short',
-        shortLabelFallback: 'v-',
-        labelKey: 'nav.directives',
-        labelFallback: 'Directives'
-    },
-    {
-        kind: 'interface',
-        route: '/interfaces',
-        shortLabelKey: 'rail.families.interface.short',
-        shortLabelFallback: 'I',
-        labelKey: 'nav.interfaces',
-        labelFallback: 'Interfaces'
-    },
-    {
-        kind: 'type',
-        route: '/types',
-        shortLabelKey: 'rail.families.type.short',
-        shortLabelFallback: 'T',
-        labelKey: 'nav.types',
-        labelFallback: 'Types'
-    },
-    {
-        kind: 'enum',
-        route: '/enums',
-        shortLabelKey: 'rail.families.enum.short',
-        shortLabelFallback: 'E',
-        labelKey: 'nav.enums',
-        labelFallback: 'Enums'
-    },
-    {
-        kind: 'const',
-        route: '/consts',
-        shortLabelKey: 'rail.families.const.short',
-        shortLabelFallback: 'C',
-        labelKey: 'nav.consts',
-        labelFallback: 'Constants'
-    },
-    {
-        kind: 'util',
-        route: '/utils',
-        shortLabelKey: 'rail.families.util.short',
-        shortLabelFallback: 'fn',
-        labelKey: 'nav.utils',
-        labelFallback: 'Utils'
-    }
-]
 
 /**
  * Le volet « Pages ».
