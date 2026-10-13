@@ -179,6 +179,19 @@ test.describe('Navigation des fiches de détail (#1032)', () => {
         })
     })
 
+    test('OrigamBreadcrumbItem : le href RENDU est une chaîne de chemin, jamais « [object Object] »', async ({ page }) => {
+        await page.goto('/components/bracket-match', { waitUntil: 'networkidle' })
+
+        const rendered = await page.locator('.catalog-breadcrumb a[href]').evaluateAll(els => els.map(el => el.getAttribute('href')))
+
+        expect(rendered.length).toBeGreaterThan(0)
+
+        for (const href of rendered) {
+            expect(href).not.toContain('object')
+            expect(href).toMatch(/^\//)
+        }
+    })
+
     test('fiche sans voisin ni relation : aucun bloc vide', async ({ page }) => {
         await page.goto('/utils/date', { waitUntil: 'networkidle' })
 

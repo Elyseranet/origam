@@ -104,8 +104,11 @@ export function neighboursIn (
 
     if (at < 0) return { prev: null, next: null }
 
+    const before = sequence[at - 1]
+    const after = sequence[at + 1]
+
     return {
-        prev: at > 0 ? toLink(sequence[at - 1]) : null,
-        next: at < sequence.length - 1 ? toLink(sequence[at + 1]) : null,
+        prev: before ? toLink(before) : null,
+        next: after ? toLink(after) : null,
     }
 }

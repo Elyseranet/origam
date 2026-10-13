@@ -116,7 +116,7 @@ const hasRelated = computed(() => groups.value.length > 0)
 
     &__title {
         margin: 0 0 var(--origam-space---3, 0.75rem);
-        font-size: var(--origam-font-size---sm, 0.875rem);
+        font-size: var(--origam-font__size---sm, 0.875rem);
         font-weight: var(--origam-font__weight---semibold, 600);
         color: var(--origam-color__text---secondary, #525252);
     }
@@ -142,7 +142,7 @@ const hasRelated = computed(() => groups.value.length > 0)
         align-items: center;
         gap: var(--origam-space---2, 0.5rem);
         margin: 0;
-        font-size: var(--origam-font-size---xs, 0.75rem);
+        font-size: var(--origam-font__size---xs, 0.75rem);
         font-weight: var(--origam-font__weight---medium, 500);
         text-transform: uppercase;
         letter-spacing: 0.06em;

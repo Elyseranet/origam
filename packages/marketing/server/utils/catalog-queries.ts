@@ -112,7 +112,9 @@ async function resolveNames (db: any, names: string[]): Promise<Map<string, IRes
     }
 
     for (const [ident, list] of byIdent) {
-        if (list.length === 1) out.set(ident, list[0])
+        const only = list[0]
+
+        if (list.length === 1 && only) out.set(ident, only)
     }
 
     return out
