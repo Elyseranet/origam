@@ -281,8 +281,6 @@
             "meta": {
                 "title": "{name} · composants origam"
             },
-            "breadcrumb_label": "Emplacement de la page",
-            "breadcrumb_catalog": "Composants",
             "external_links_label": "Ressources externes",
             "story_link": "Voir la story",
             "doc_link": "Documentation complète",
@@ -459,8 +457,6 @@
             "meta": {
                 "title": "{name} · composables origam"
             },
-            "breadcrumb_label": "Emplacement de la page",
-            "breadcrumb_catalog": "Composables",
             "external_links_label": "Ressources externes",
             "toc_label": "Table des matières",
             "toc_heading": "Sur cette page",
@@ -533,8 +529,6 @@
             "meta": {
                 "title": "{name} · constantes origam"
             },
-            "breadcrumb_label": "Emplacement de la page",
-            "breadcrumb_catalog": "Constantes",
             "external_links_label": "Ressources externes",
             "toc_label": "Table des matières",
             "toc_heading": "Sur cette page",
@@ -630,8 +624,6 @@
             "meta": {
                 "title": "{name} · directives origam"
             },
-            "breadcrumb_label": "Emplacement de la page",
-            "breadcrumb_catalog": "Directives",
             "category": "Directive",
             "external_links_label": "Ressources externes",
             "toc_label": "Table des matières",
@@ -708,8 +700,6 @@
             "meta": {
                 "title": "{name} · enums API origam"
             },
-            "breadcrumb_label": "Emplacement de la page",
-            "breadcrumb_catalog": "Énumérations",
             "external_links_label": "Ressources externes",
             "toc_label": "Table des matières",
             "toc_heading": "Sur cette page",
@@ -1034,8 +1024,6 @@
             "meta": {
                 "title": "{name} · interfaces API origam"
             },
-            "breadcrumb_label": "Emplacement de la page",
-            "breadcrumb_catalog": "Interfaces",
             "external_links_label": "Ressources externes",
             "toc_label": "Table des matières",
             "toc_heading": "Sur cette page",
@@ -1151,6 +1139,13 @@
             "scope": "Elle décrit le comportement de l’application elle-même. Ce que le serveur qui l’héberge enregistre au niveau réseau n’a pas été mesuré, et n’est donc pas décrit ici.",
             "reviewed": "Dernière vérification par rapport au code source le 17 septembre 2026."
         }
+    },
+    "catalog_nav": {
+        "family_menu_label": "Changer de famille — actuelle : {name}",
+        "related_title": "Même sujet dans les autres familles",
+        "prev_next_label": "Précédent et suivant dans cette famille",
+        "previous": "Précédent",
+        "next": "Suivant"
     },
     "rail": {
         "a11y": {
@@ -1790,8 +1785,6 @@
             "meta": {
                 "title": "{name} · types API origam"
             },
-            "breadcrumb_label": "Emplacement de la page",
-            "breadcrumb_catalog": "Types",
             "external_links_label": "Ressources externes",
             "toc_label": "Table des matières",
             "toc_heading": "Sur cette page",
@@ -1860,8 +1853,6 @@
             "meta": {
                 "title": "{name} · utils origam"
             },
-            "breadcrumb_label": "Emplacement de la page",
-            "breadcrumb_catalog": "Utilitaires",
             "external_links_label": "Ressources externes",
             "toc_label": "Table des matières",
             "toc_heading": "Sur cette page",

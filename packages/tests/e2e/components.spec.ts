@@ -306,11 +306,13 @@ test.describe('/components/btn — page détail', () => {
         expect(count).toBeGreaterThanOrEqual(1)
     })
 
-    test('le lien breadcrumb "Components" renvoie vers /components', async ({ page }) => {
-        const breadcrumbLink = page.locator('[data-cy="component-breadcrumb-catalog"]')
-        await expect(breadcrumbLink).toBeVisible()
-        const href = await breadcrumbLink.getAttribute('href')
-        expect(href).toBe('/components')
+    test('le maillon "Components" du fil d\'Ariane est un menu de famille dont l\'entree courante renvoie vers /components', async ({ page }) => {
+        const trigger = page.locator('[data-cy="component-breadcrumb-catalog"]')
+        await expect(trigger).toBeVisible()
+        await trigger.click()
+        const current = page.locator('[data-cy="breadcrumb-family-component"]')
+        await expect(current).toBeVisible()
+        expect(await current.getAttribute('href')).toBe('/components')
     })
 
     test('le ToC flottant liste les nouvelles sections enrichies', async ({ page }) => {
