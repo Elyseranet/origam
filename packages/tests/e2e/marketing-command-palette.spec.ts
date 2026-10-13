@@ -249,6 +249,10 @@ test.describe('palette ⌘K — bouton loupe sous 600 px (390 px)', () => {
         await expect(button).toBeVisible()
         await expect(button).toHaveAttribute('aria-label', /.+/)
 
+        // Le serveur de dev injecte le SCSS des SFC apres `load` (mesure : ~2 s) :
+        // avant cela le bouton fait 28 px et la page 394. On attend l'etat regle.
+        await expect.poll(async () => (await button.boundingBox())?.width ?? 0, { timeout: 15_000 }).toBeGreaterThanOrEqual(44)
+
         const box = (await button.boundingBox())!
         const brand = (await page.locator('[data-cy="brand-home"]').boundingBox())!
 
@@ -257,12 +261,7 @@ test.describe('palette ⌘K — bouton loupe sous 600 px (390 px)', () => {
         expect(box.x).toBeGreaterThanOrEqual(brand.x + brand.width)
         expect(box.x + box.width).toBeLessThanOrEqual(390)
 
-        const { scrollWidth, clientWidth } = await page.evaluate(() => ({
-            scrollWidth: document.documentElement.scrollWidth,
-            clientWidth: document.documentElement.clientWidth
-        }))
-
-        expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 1)
+        await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth), { timeout: 15_000 }).toBeLessThanOrEqual(1)
     })
 
     test('aucune cible de l\'app bar n\'est cachée tout en restant dans la tabulation', async ({ page }) => {
@@ -351,12 +350,7 @@ test.describe('rail de navigation retiré', () => {
             await page.goto(path)
             await page.waitForLoadState('load')
 
-            const { scrollWidth, clientWidth } = await page.evaluate(() => ({
-                scrollWidth: document.documentElement.scrollWidth,
-                clientWidth: document.documentElement.clientWidth
-            }))
-
-            expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 1)
+            await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth), { timeout: 15_000 }).toBeLessThanOrEqual(1)
         })
     }
 })
