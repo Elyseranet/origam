@@ -18,6 +18,20 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.23.1] - 2026-10-13
+
+### Security — `pnpm audit` repasse a `exit 0` (#1065, PR #1068)
+
+Mesure sur `develop` @ `5e1c4d805` : **3 critical, 12 high, 3 moderate, 1 low**. Apres : **0 non couvert**.
+
+- Overrides **releves** (jamais doubles) : `shell-quote` ^1.11.0, `devalue@5` ^5.9.3, `sharp` ^0.35.5, `@nuxt/devtools` ^3.4.2 ; ajoutes : `source-map-js` ^1.2.2, `seroval` ^1.6.3, `simple-git@3` ^4.0.2.
+- `vue` / `@vue/*` 3.5.39 -> **3.5.43** (devDependencies). Plafonne a 3.5.43 : 3.5.44 casse 11 tests de `createDisplay` (#1069).
+- `vite-plugin-commonjs` retire des devDependencies du DS (jamais importe).
+- `simple-git` 4 sort de la plage declaree par `@nuxt/devtools` 3.4.2 : un patch pnpm d'une ligne corrige l'import (`patches/@nuxt__devtools@3.4.2.patch`), il echouera bruyamment a la prochaine 3.x.
+- **Waiver** approuve par le mainteneur (2026-10-13, revision 2026-11-13) pour 3 advisories **sans correctif publie**, outillage de build/dev uniquement : node-forge GHSA-86w9-cpqp-85rv, braces GHSA-vfj7-8cjw-p6xm, sprintf-js GHSA-hp3w-g68c-fv3c. Voir `docs/security-waivers.md`, remediation #1070.
+
+Le code publie du DS est inchange ; seul le manifeste (`devDependencies`) bouge.
+
 ## [2.23.0] - 2026-10-08
 
 ### Added — `createOrigam({ code: { highlighter } })` : l'application fournit son highlighter

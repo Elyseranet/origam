@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.23.1',
+        date: '2026-10-13',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2231.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2231.h1', textFallback: 'pnpm audit repasse a exit 0 (#1065, PR #1068)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.23.0',
         date: '2026-10-08',
         type: 'minor',
