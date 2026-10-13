@@ -1,3 +1,7 @@
+# Pourquoi : simple-git 4 (override simple-git@3 vers ^4.0.2, correctif de 3 advisories) n'a plus d'export par defaut ;
+# @nuxt/devtools 3.4.2 fait 'import Git from simple-git'. Ce patch passe a un import nomme.
+# Lie a la version exacte 3.4.2 : la prochaine 3.x fera echouer pnpm install. Alors verifier si elle gere simple-git 4,
+# sinon regenerer avec 'pnpm patch @nuxt/devtools@<version>'. Voir docs/security-waivers.md et le ticket #1070.
 diff --git a/dist/chunks/module-main.mjs b/dist/chunks/module-main.mjs
 index a4a4f8f688d3235db4ba006f9920beb0d8887e1e..8f3d19660dbd23ba59cd6047010fae0e6647c92c 100644
 --- a/dist/chunks/module-main.mjs
