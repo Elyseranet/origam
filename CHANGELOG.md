@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.23.2] - 2026-10-13
+
 ### Fixed — `OrigamBreadcrumbItem` rendait `href="[object Object]"`
 
 Le template ecrivait `:href="link.href"`. `useLink` rend `href` sous forme de ref, et `link` est un objet simple : la ref n'etait pas deballee, donc tout maillon de fil d'Ariane portant `to` ou `href` rendait l'attribut `href="[object Object]"` (mesure navigateur, maillon parent de `/components/bracket-match`). Corrige en `link.href.value`, comme `OrigamListItem`. Le contrat documente (« `href` / `to` — surface de lien standard ») n'a pas change : story et doc inchangees.
