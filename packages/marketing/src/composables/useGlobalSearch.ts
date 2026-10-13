@@ -1,159 +1,149 @@
 /**
  * useGlobalSearch — index global pour la command palette du header.
  *
- * Construit un tableau ICommand depuis les catalogues référentiels via l'API Nitro :
- *   - composants     → /api/reference/component  → /components/{slug}
- *   - composables    → /api/reference/composable  → /composables/{slug}
- *   - directives     → /api/reference/directive   → /directives/{slug}
- *   - types/enums    → /api/reference/type        → /types/{slug}
- *   - pages statiques (installation, changelog, roadmap, wireframe, theming)
+ * Construit un tableau ICommand depuis les 8 familles du catalogue
+ * (`/api/reference/{kind}`) et les pages statiques.
  *
- * Le tableau est réactif : réinitialisation automatique quand les données API changent.
+ * Chargement PARESSEUX : aucune des 8 familles n'est demandée au montage du
+ * layout. Elles sont téléchargées une fois, à la première ouverture de la
+ * palette (`ensureLoaded`). Avant ce changement, 4 familles (332 Ko) étaient
+ * sérialisées dans le HTML de CHAQUE page ; en ajouter 4 de plus (+654 Ko)
+ * aurait presque triplé ce coût pour des visiteurs qui n'ouvrent jamais ⌘K.
  *
- * Locale (ADR #325, task 3) : chaque `entry.descriptionFallback` affiché ici vient
- * du serveur en texte localisé — `?locale=` est donc transmis (+ inclus dans la
- * clé de cache) sur les 4 appels ci-dessous, sinon la palette resterait figée
- * sur la première langue chargée après un changement de locale.
+ * Filtre de famille : `OrigamCommandPalette` n'a pas de prop de filtre, on lui
+ * passe donc un `commands` déjà restreint (famille + requête + plafond) — voir
+ * `utils/global-search.util.ts`.
+ *
+ * Locale (ADR #325) : chaque `descriptionFallback` vient du serveur en texte
+ * localisé ; `useReferenceCatalog` transmet `?locale=` et l'inclut dans la clé.
  */
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { ICommand } from 'origam/interfaces'
-import { GLOBAL_SEARCH_STATIC_PAGES, GLOBAL_SEARCH_STATIC_PAGE_HREFS } from '~/consts/global-search.const'
+
+import {
+    GLOBAL_SEARCH_ALL_FAMILY,
+    GLOBAL_SEARCH_RESULT_CAP,
+    GLOBAL_SEARCH_STATIC_PAGES,
+    GLOBAL_SEARCH_STATIC_PAGE_HREFS
+} from '~/consts/global-search.const'
+import { CATALOG_FAMILIES } from '~/consts/catalog-family.const'
+import type { IGlobalSearchEntry } from '~/interfaces/global-search.interface'
+import type { TGlobalSearchFamily } from '~/types/global-search.type'
+import { useReferenceCatalog } from '~/composables/useApiReference'
+import { useT } from '~/composables/useT'
+import { buildFamilyCommands, buildStaticPageCommands, globalSearchFamilyHref, searchCommands } from '~/utils/global-search.util'
+
+/** Lignes par famille quand la requête est vide et que toutes les familles sont visibles. */
+const TEASER_PER_FAMILY = 5
 
 export function useGlobalSearch () {
     const { locale } = useI18n()
+    const { t } = useT()
 
-    const { data: components } = useFetch<Array<{
-        slug: string
-        name: string
-        icon: string
-        category: string
-        parentSlug?: string
-        descriptionFallback: string
-    }>>('/api/reference/component', {
-        key: () => `global-search:component:${locale.value}`,
-        query: { locale },
-        default: () => [],
+    const family = ref<TGlobalSearchFamily>(GLOBAL_SEARCH_ALL_FAMILY)
+    const query = ref('')
+    const requested = ref(false)
+
+    const catalogs = CATALOG_FAMILIES.map(f => ({
+        family: f,
+        catalog: useReferenceCatalog<IGlobalSearchEntry>(f.kind, undefined, { lazy: true })
+    }))
+
+    const isLoading = computed(() => requested.value && catalogs.some(c => c.catalog.status.value === 'pending'))
+
+    async function loadAll (): Promise<void> {
+        await Promise.all(catalogs.map(c => c.catalog.execute()))
+    }
+
+    function ensureLoaded (): void {
+        if (requested.value) return
+
+        requested.value = true
+        void loadAll()
+    }
+
+    watch(locale, () => {
+        if (requested.value) void loadAll()
     })
 
-    const { data: composables } = useFetch<Array<{
-        slug: string
-        name: string
-        icon: string
-        domain: string
-        descriptionFallback: string
-    }>>('/api/reference/composable', {
-        key: () => `global-search:composable:${locale.value}`,
-        query: { locale },
-        default: () => [],
+    const pages = computed<ICommand[]>(() =>
+        buildStaticPageCommands(GLOBAL_SEARCH_STATIC_PAGES, t('chrome.search_group_pages', 'Pages'), t)
+    )
+
+    const poolsByFamily = computed(() => {
+        const pools = new Map<string, ICommand[]>()
+
+        for (const { family: f, catalog } of catalogs) {
+            pools.set(f.kind, buildFamilyCommands(f, catalog.data.value ?? [], t))
+        }
+
+        return pools
     })
 
-    const { data: directives } = useFetch<Array<{
-        slug: string
-        name: string
-        icon: string
-        descriptionFallback: string
-    }>>('/api/reference/directive', {
-        key: () => `global-search:directive:${locale.value}`,
-        query: { locale },
-        default: () => [],
-    })
+    const totalEntries = computed(() => {
+        let total = 0
 
-    const { data: types } = useFetch<Array<{
-        slug: string
-        name: string
-        icon: string
-        category: string
-        kind: 'type' | 'enum'
-        descriptionFallback: string
-    }>>('/api/reference/type', {
-        key: () => `global-search:type:${locale.value}`,
-        query: { locale },
-        default: () => [],
+        poolsByFamily.value.forEach(pool => { total += pool.length })
+
+        return total
     })
 
     const commands = computed<ICommand[]>(() => {
-        const list: ICommand[] = []
+        const needle = query.value.trim()
+        const selected = family.value
 
-        for (const entry of components.value ?? []) {
-            if (entry.parentSlug) continue
-
-            list.push({
-                id: `component-${entry.slug}`,
-                label: entry.name,
-                description: entry.descriptionFallback,
-                icon: entry.icon ?? 'mdi-puzzle-outline',
-                group: 'Components',
-                keywords: [entry.slug, entry.category?.toLowerCase() ?? '', 'component', 'origam'],
-                perform: () => undefined
-            })
+        if (selected !== GLOBAL_SEARCH_ALL_FAMILY) {
+            return searchCommands(poolsByFamily.value.get(selected) ?? [], needle, GLOBAL_SEARCH_RESULT_CAP)
         }
 
-        for (const entry of composables.value ?? []) {
-            list.push({
-                id: `composable-${entry.slug}`,
-                label: entry.name,
-                description: entry.descriptionFallback,
-                icon: entry.icon ?? 'mdi-function-variant',
-                group: 'Composables',
-                keywords: [entry.slug, entry.domain?.toLowerCase() ?? '', 'composable', 'hook'],
-                perform: () => undefined
-            })
+        if (!needle) {
+            const teaser = CATALOG_FAMILIES.flatMap(f =>
+                (poolsByFamily.value.get(f.kind) ?? []).slice(0, TEASER_PER_FAMILY)
+            )
+
+            return [...pages.value, ...teaser]
         }
 
-        for (const entry of directives.value ?? []) {
-            list.push({
-                id: `directive-${entry.slug}`,
-                label: entry.name,
-                description: entry.descriptionFallback,
-                icon: entry.icon ?? 'mdi-code-tags',
-                group: 'Directives',
-                keywords: [entry.slug, 'directive', 'v-'],
-                perform: () => undefined
-            })
-        }
+        const all = [...pages.value, ...CATALOG_FAMILIES.flatMap(f => poolsByFamily.value.get(f.kind) ?? [])]
 
-        for (const entry of types.value ?? []) {
-            list.push({
-                id: `type-${entry.slug}`,
-                label: entry.name,
-                description: entry.descriptionFallback,
-                icon: entry.icon ?? 'mdi-alpha-t-box-outline',
-                group: entry.kind === 'enum' ? 'Enums' : 'Types',
-                keywords: [entry.slug, entry.category?.toLowerCase() ?? '', 'type', 'typescript'],
-                perform: () => undefined
-            })
-        }
-
-        for (const page of GLOBAL_SEARCH_STATIC_PAGES) {
-            list.push(page)
-        }
-
-        return list
+        return searchCommands(all, needle, GLOBAL_SEARCH_RESULT_CAP)
     })
 
+    function setQuery (value: string): void {
+        query.value = value
+    }
+
+    function resetQuery (): void {
+        query.value = ''
+    }
+
+    function setFamily (value: TGlobalSearchFamily): void {
+        family.value = value
+    }
+
+    /** Passe à la famille suivante (ou précédente) du cycle « Tout, famille 1 … famille 8 ». */
+    function cycleFamily (step: 1 | -1): void {
+        const order: TGlobalSearchFamily[] = [GLOBAL_SEARCH_ALL_FAMILY, ...CATALOG_FAMILIES.map(f => f.kind)]
+        const index = order.indexOf(family.value)
+
+        family.value = order[(index + step + order.length) % order.length]!
+    }
+
     function getHref (commandId: string): string {
-        if (commandId.startsWith('component-')) {
-            return `/components/${commandId.replace('component-', '')}`
-        }
-
-        if (commandId.startsWith('composable-')) {
-            return `/composables/${commandId.replace('composable-', '')}`
-        }
-
-        if (commandId.startsWith('directive-')) {
-            return `/directives/${commandId.replace('directive-', '')}`
-        }
-
-        if (commandId.startsWith('type-')) {
-            return `/types/${commandId.replace('type-', '')}`
-        }
-
-        return GLOBAL_SEARCH_STATIC_PAGE_HREFS[commandId] ?? '/'
+        return globalSearchFamilyHref(commandId) ?? GLOBAL_SEARCH_STATIC_PAGE_HREFS[commandId] ?? '/'
     }
 
     return {
         commands,
+        family,
+        isLoading,
+        totalEntries,
+        ensureLoaded,
+        setQuery,
+        resetQuery,
+        setFamily,
+        cycleFamily,
         getHref
     }
 }

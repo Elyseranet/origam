@@ -249,6 +249,17 @@
         "search_placeholder": "Rechercher…",
         "search_shortcut": "⌘K",
         "search_empty": "Aucun résultat",
+        "search_filter_label": "Filtrer par famille",
+        "search_filter_all": "Tout",
+        "search_filter_hint": "changer de famille",
+        "search_loading": "Chargement du catalogue…",
+        "search_group_pages": "Pages",
+        "search_page_installation": "Démarrage — installer origam dans votre projet",
+        "search_page_changelog": "Historique des versions et notes de migration",
+        "search_page_roadmap": "Fonctionnalités et jalons à venir",
+        "search_page_wireframe": "Wireframe de design et aperçus de composants",
+        "search_page_theming": "Générateur de thèmes visuel — personnaliser les design tokens",
+        "search_page_why_origam": "Décisions de conception et philosophie",
         "star_count": "4.2k",
         "theme": "Thème",
         "theme_active": "Thème : {label}",
@@ -1146,72 +1157,6 @@
         "prev_next_label": "Précédent et suivant dans cette famille",
         "previous": "Précédent",
         "next": "Suivant"
-    },
-    "rail": {
-        "a11y": {
-            "rail": "Navigation rapide du catalogue",
-            "pages": "Pages du site et index des familles",
-            "search": "Chercher dans tout le catalogue",
-            "family": "{name} — {count} entrées",
-            "family_here": "{name} — {count} entrées — vous êtes ici",
-            "family_here_plain": "{name} — vous êtes ici",
-            "filter": "Filtrer {name}"
-        },
-        "close": "Fermer le panneau",
-        "families": {
-            "component": {
-                "short": "Comp"
-            },
-            "composable": {
-                "short": "use"
-            },
-            "const": {
-                "short": "C"
-            },
-            "directive": {
-                "short": "v-"
-            },
-            "enum": {
-                "short": "E"
-            },
-            "interface": {
-                "short": "I"
-            },
-            "type": {
-                "short": "T"
-            },
-            "util": {
-                "short": "fn"
-            }
-        },
-        "filter": {
-            "placeholder": "Filtrer…"
-        },
-        "group": {
-            "other": "Autre"
-        },
-        "hint": {
-            "capped": "{shown} affichées sur {total} — précisez",
-            "keys": "↑ ↓ parcourir · Entrée ouvrir · Échap fermer",
-            "results": "{count} résultats"
-        },
-        "index_link": "Voir tout : {name}",
-        "pages": {
-            "label": "Pages",
-            "more": "Plus"
-        },
-        "search": {
-            "all": "Tout chercher",
-            "label": "Tout chercher"
-        },
-        "state": {
-            "empty": "Aucun résultat. Entrée pour chercher dans tout le catalogue.",
-            "error": "Le catalogue est indisponible. Ouvrez la page d’index.",
-            "loading": "Chargement du catalogue…"
-        },
-        "tooltip": {
-            "family": "{name} · {count}"
-        }
     },
     "reference": {
         "row_list": {

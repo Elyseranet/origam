@@ -123,36 +123,18 @@ const MARKETING_GREEN_SPECS = [
     // la machine est plus lente que la nôtre.
     'marketing-primary-nav.spec.ts',
 
-    // #1032 — le rail de navigation du catalogue, et le défilement horizontal
-    // des 18 pages du marketing à 400 px.
+    // #1032 — la palette ⌘K couvre les 8 familles et se filtre par famille ;
+    // le rail de navigation n'existe plus.
     //
-    // Ce qu'elle retient et que rien d'autre ne retenait : le chargement
-    // PARESSEUX par famille (arbitrage du propriétaire — charger les 8
-    // familles coûte 986 Ko mesurés, les pastilles viennent des 644 octets de
-    // `/api/reference/counts`), vérifié par interception réseau, qui est la
-    // seule preuve qu'un appel n'a PAS eu lieu ; les 10 cibles ≥ 44 × 44 avec
-    // un nom accessible ; zéro `aria-controls` mort aux trois paliers ; le
-    // panneau nommé et NON modal ; les entrées restées de vraies ancres hors
-    // tabulation ; ⎋ qui ferme et rend le focus au déclencheur ; et
-    // `scrollWidth <= clientWidth + 1` à 400 px.
-    //
-    // Admise ici parce qu'elle tient le contrat de la liste, mesuré et non
-    // supposé : **90 passed en `--repeat-each=5 --retries=0`** (18 cas × 5),
-    // 4,4 min, `$?` = 0 capturé hors pipe, contre un serveur de dev isolé sur
-    // un port à nous et une base fraîchement semée (2 778 entrées).
-    //
-    // ⛔ La charge machine était de 10,1 à 14,4 pendant cette mesure — donc
-    // AU-DESSUS du seuil de ~10 que le CLAUDE.md fixe pour une mesure de
-    // durée. C'est dit plutôt que tu : un échec aurait été « non mesuré », mais
-    // un SUCCÈS sous charge est un résultat plus fort qu'au repos, pas plus
-    // faible. Le runner de CI est plus lent que cette machine.
-    //
-    // ⛔ Les sept défauts qu'elle épingle ont TOUS été trouvés au navigateur,
-    // aucun à la relecture du code — y compris `aria-labelledby` écrit
-    // `ariaLabelledby` dans un `v-bind` (Vue ne kebab-case que les props
-    // déclarées), et un focus qui n'entrait jamais dans le panneau, ce qui
-    // désactivait silencieusement ⎋ ET les flèches.
-    'marketing-nav-rail.spec.ts',
+    // Ce qu'elle retient : aucune famille demandee avant la premiere ouverture
+    // (interception reseau), les 8 demandees a l'ouverture, une interface / une
+    // util / une const / un enum trouves, le filtre restreint reellement les
+    // resultats (puce ET Tab / Maj+Tab, la palette pieges Tab), le plafond de
+    // 50 lignes, axe propre, zero trace du rail et aucun defilement horizontal
+    // a 390 px. Controle positif : 13 des 17 cas sont ROUGES contre le parent
+    // (develop avec le rail), les 4 verts etant les temoins de non-regression
+    // du defilement horizontal.
+    'marketing-command-palette.spec.ts',
 
     // #1032 — navigation des fiches de detail (encart, prev/next, menu de famille).
     // Mesure d'admission : voir la PR.
