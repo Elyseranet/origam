@@ -214,6 +214,9 @@ const GREEN_SPECS = [
     // exactement les deux CONTRÔLES NÉGATIFS, qui doivent passer des deux
     // côtés. Vérifiée 8/8, chromium, port isolé.
     'derived-tokens-subtree.spec.ts',
+    // #1102 — 55/55 sous `--repeat-each=5` (11 cas x5), chromium ; A/B : rouge
+    // sur `origin/develop` (6 echecs), vert apres. Pages locales, sans Histoire.
+    'unnamed-theme-specificity.spec.ts',
     // #869 — regression net contre `v-contrast` silencieusement inerte sur
     // fond opaque (les deux ruptures partagees toRgb()/channelsOf()).
     // Verifiee stable 25/25, `--repeat-each=5`, `E2E_STATIC=1`, chromium,

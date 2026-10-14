@@ -24,8 +24,11 @@ export interface IOrigamThemeSingletonState {
 /**
  * Runtime theme object ingested by `createOrigam({ themes })`. At install time
  * the DS resolves it to a block of `--origam-*` CSS variables injected into
- * `<head>`, scoped to `:root` (or `[data-theme="<name>"]` when `name` is set,
- * optionally narrowed by `[data-mode]` when `mode` is set).
+ * `<head>`, scoped by `name` / `mode` (see `themeSelector`):
+ * no `name` and no `mode` → `:root`; no `name` but a `mode` → `html[data-mode]`
+ * (plus a bare `[data-mode]` twin for sub-trees), specific enough to beat the
+ * built-in palette of that mode and still lose to every named brand (#1102);
+ * a `name` → `[data-theme="<name>"]`, optionally narrowed by `[data-mode]`.
  *
  * ## A theme has exactly THREE authoring surfaces
  *
