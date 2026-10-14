@@ -18,13 +18,13 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
-        version: 'Unreleased',
-        date: null,
-        type: 'unreleased',
-        summaryKey: 'changelog.versions.unreleased.summary',
+        version: '2.26.2',
+        date: '2026-10-15',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2262.summary',
         summaryFallback: '1 fix. See the full changelog for detail.',
         highlights: [
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'un theme sans name avec mode l\'emporte sur la palette integree du meme mode (#1102)' }
+            { type: 'fixed', textKey: 'changelog.versions.v2262.h1', textFallback: 'un theme sans name avec mode l\'emporte sur la palette integree du meme mode (#1102)' }
         ]
     },
     {
