@@ -90861,12 +90861,6 @@
               "defaultValue": "center",
               "descriptionKey": "components.data_table_rows.css_vars.empty_text_align",
               "descriptionFallback": "Text alignment of the empty-state content."
-            },
-            {
-              "name": "--origam-data-table-rows--skeleton---cell-padding",
-              "defaultValue": "4px 8px",
-              "descriptionKey": "components.data_table_rows.css_vars.skeleton_cell_padding",
-              "descriptionFallback": "Padding of each cell in a skeleton loading row."
             }
           ],
           "exposed": [

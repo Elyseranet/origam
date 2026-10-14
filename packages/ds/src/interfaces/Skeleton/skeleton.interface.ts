@@ -7,6 +7,7 @@ import type { IDimensionProps } from '../Commons/dimension.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
 import type { ISizeProps } from '../Commons/size.interface'
 import type { TSkeletonAnimation, TSkeletonVariant } from '../../types/Skeleton/skeleton.type'
+import type { ISkeletonGroupProps } from './skeleton-group.interface'
 
 export interface ISkeletonProps extends ICommonsComponentProps, IColorProps, IBgColorProps, ISizeProps, IRoundedProps, IDimensionProps {
     variant?: TSkeletonVariant
@@ -56,3 +57,16 @@ export interface ISkeletonProps extends ICommonsComponentProps, IColorProps, IBg
  * reported back.
  ********************************************************/
 export interface ISkeletonEmits {}
+
+/*********************************************************
+ * ISkeletonOverrides
+ *
+ * @description
+ * Result of `splitSkeletonOverrides()`: the `loading="{ type: 'skeleton' }"`
+ * bag split between the `<OrigamSkeletonGroup>` (per zone) and each
+ * primitive it contains (per block).
+ ********************************************************/
+export interface ISkeletonOverrides {
+    group: ISkeletonGroupProps
+    block: Pick<ISkeletonProps, 'color' | 'bgColor' | 'rounded'>
+}

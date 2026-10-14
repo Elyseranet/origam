@@ -398,6 +398,28 @@
 			</div>
 		</Variant>
 
+		<Variant title="Prop — loading skeleton">
+			<div style="display: flex; gap: 16px; align-items: flex-start;" data-cy="card-loading-skeleton">
+				<origam-card
+						data-cy="card-skeleton-full"
+						:loading="{ type: 'skeleton' }"
+						title="Hidden while loading"
+						image="placeholder"
+						style="width: 280px;"
+				>
+					<template #footer>
+						<span>Actions</span>
+					</template>
+				</origam-card>
+				<origam-card
+						data-cy="card-skeleton-minimal"
+						:loading="{ type: 'skeleton', animation: 'none' }"
+						title="Hidden while loading"
+						style="width: 280px;"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<ICardProps>({

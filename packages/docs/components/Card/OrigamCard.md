@@ -107,6 +107,36 @@ prefer to translate on your side.
 A per-instance `loading="{ type: 'line', label: '…' }"` still wins over
 `loadingText`.
 
+### Skeleton silhouette
+
+`loading="{ type: 'skeleton' }"` draws the card's own anatomy — media,
+title, subtitle, two text lines, actions — as light `<OrigamSkeleton>`
+primitives inside ONE `<OrigamSkeletonGroup>`: a single `role="status"`
+announcement for the whole card, a single pulse clock, no wrapper, no
+per-instance `<style>`. Only the parts the card has are drawn: the media
+block when there is an `image` or an `#asset` slot (it keeps the
+`--origam-card__asset---aspect-ratio` of the real media), the two actions
+when there is a `#footer` slot. The real content is not rendered while the
+skeleton shows.
+
+The overrides of the config reach the right target: `animation` and
+`label` go to the group, `color`, `bgColor` and `rounded` to every
+primitive (so the silhouette stays themable by props). The padding of the
+silhouette is `--origam-card__skeleton---padding`.
+
+```vue
+<template>
+    <OrigamCard
+        :loading="{ type: 'skeleton' }"
+        image="cover.jpg"
+    >
+        <template #footer>Actions</template>
+    </OrigamCard>
+</template>
+```
+
+The former `variant="card"` template is no longer used by the card.
+
 ## Disabled
 
 ```vue

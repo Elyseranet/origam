@@ -28,16 +28,55 @@
 		<slot name="wrapper">
 			<template v-if="hasLoading">
 				<slot name="loader">
-					<div class="origam-card__loader">
+					<origam-skeleton-group
+							v-if="isSkeleton"
+							class="origam-card__skeleton"
+							v-bind="skeletonOverrides.group"
+					>
 						<origam-skeleton
-								v-if="loaderConfig.kind === 'skeleton'"
-								variant="card"
-								:loading="true"
-								:label="loadingText"
-								v-bind="loaderConfig.overrides"
+								v-if="hasAsset"
+								variant="rectangular"
+								class="origam-card__skeleton-media"
+								v-bind="skeletonOverrides.block"
 						/>
+						<origam-skeleton
+								variant="text"
+								class="origam-card__skeleton-title"
+								v-bind="skeletonOverrides.block"
+						/>
+						<origam-skeleton
+								variant="text"
+								class="origam-card__skeleton-subtitle"
+								v-bind="skeletonOverrides.block"
+						/>
+						<origam-skeleton
+								variant="text"
+								class="origam-card__skeleton-line"
+								v-bind="skeletonOverrides.block"
+						/>
+						<origam-skeleton
+								variant="text"
+								class="origam-card__skeleton-line origam-card__skeleton-line--last"
+								v-bind="skeletonOverrides.block"
+						/>
+						<template v-if="hasFooter">
+							<origam-skeleton
+									variant="pill"
+									class="origam-card__skeleton-action"
+									v-bind="skeletonOverrides.block"
+							/>
+							<origam-skeleton
+									variant="pill"
+									class="origam-card__skeleton-action"
+									v-bind="skeletonOverrides.block"
+							/>
+						</template>
+					</origam-skeleton-group>
+					<div
+							v-else
+							class="origam-card__loader"
+					>
 						<origam-progress
-								v-else
 								:active="true"
 								:color="color"
 								:indeterminate="loaderConfig.indeterminate"
@@ -155,6 +194,7 @@
 	import OrigamImg from '../Img/OrigamImg.vue'
 	import OrigamProgress from '../Progress/OrigamProgress.vue'
 	import OrigamSkeleton from '../Skeleton/OrigamSkeleton.vue'
+	import OrigamSkeletonGroup from '../Skeleton/OrigamSkeletonGroup.vue'
 
 	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
@@ -175,6 +215,8 @@
 	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
 	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
+
+	import { splitSkeletonOverrides } from '../../utils/Skeleton/skeleton.util'
 
 	import type { ICardProps } from '../../interfaces/Card/card.interface'
 
@@ -436,6 +478,21 @@
 	const {loaderClasses, loaderConfig} = useLoader(props, LOADER_KIND.LINE)
 
 	const slots = useSlots()
+
+	/*********************************************************
+	 * Skeleton silhouette
+	 *
+	 * @description
+	 * `loading="{ type: 'skeleton' }"` draws the card's own anatomy — media,
+	 * title, subtitle, two lines, actions — as light primitives inside ONE
+	 * `<OrigamSkeletonGroup>`: one announcement for the zone, one pulse
+	 * clock, no wrapper and no per-instance `<style>`. Only the parts the
+	 * card really has are drawn (media when there is an `image` / `#asset`,
+	 * actions when there is a `#footer`).
+	 ********************************************************/
+	const isSkeleton = computed(() => loaderConfig.value.isActive && loaderConfig.value.kind === LOADER_KIND.SKELETON)
+
+	const skeletonOverrides = computed(() => splitSkeletonOverrides(loaderConfig.value.overrides, props.loadingText))
 
 	const hasLoading = computed(() => {
 		// `loaderConfig` is a `ComputedRef<IResolvedLoader>` from
@@ -709,15 +766,39 @@
 			:deep(.origam-progress--circular) {
 				margin: var(--origam-card__progress---circular-margin, 24px auto);
 			}
+		}
 
-			:deep(.origam-skeleton-wrapper--card),
-			:deep(.origam-skeleton--rectangular),
-			:deep(.origam-skeleton--text) {
-				width: 100%;
+		// The silhouette is a grid of light primitives (no wrapper): two
+		// columns so the two actions sit side by side, every other part spans
+		// both. `>` keeps the selectors above the primitives' own scoped
+		// rules, whatever the order the sheets load in.
+		&__skeleton {
+			grid-template-columns: auto 1fr;
+			padding: var(--origam-card__skeleton---padding);
+
+			> * {
+				grid-column: 1 / -1;
 			}
 
-			:deep(.origam-skeleton-wrapper--card) {
-				min-height: var(--origam-card__loader---min-height-skeleton, 200px);
+			> .origam-card__skeleton-media {
+				height: auto;
+				aspect-ratio: var(--origam-card__asset---aspect-ratio, 16 / 9);
+			}
+
+			> .origam-card__skeleton-title {
+				width: 62%;
+			}
+
+			> .origam-card__skeleton-subtitle {
+				width: 38%;
+			}
+
+			> .origam-card__skeleton-line--last {
+				width: 84%;
+			}
+
+			> .origam-card__skeleton-action {
+				grid-column: auto;
 			}
 		}
 

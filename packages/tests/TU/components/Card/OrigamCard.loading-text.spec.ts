@@ -45,7 +45,7 @@ function mountCard (props: Record<string, unknown>) {
 async function loaderLabel (wrapper: ReturnType<typeof mountCard>): Promise<string | undefined> {
     await nextTick()
     await nextTick()
-    const el = wrapper.find('.origam-card__loader [aria-label]')
+    const el = wrapper.find('.origam-card__loader [aria-label], .origam-card__skeleton[aria-label]')
     return el.exists() ? el.attributes('aria-label') : undefined
 }
 
@@ -56,7 +56,7 @@ describe('OrigamCard — loadingText reaches the loading indicator', () => {
         expect(await loaderLabel(wrapper)).toBe('Loading items...')
     })
 
-    it('translates a custom loadingText key on the skeleton renderer', async () => {
+    it('translates a custom loadingText key on the skeleton group (the card\'s ONE announcement)', async () => {
         const wrapper = mountCard({
             loading: { type: 'skeleton' },
             loadingText: 'origam.data_iterator.loading_text'

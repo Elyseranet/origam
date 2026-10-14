@@ -83,7 +83,9 @@ slot wins over the prop when both are present.
 | `loadingText` | `string` | `undefined` | Locale key passed as the `label` of the active loading renderer, which resolves it into its own `aria-label` (default `origam.loading`). |
 
 While `loading` is active with `kind === 'skeleton'`, three
-`<origam-skeleton variant="text">` rows replace the body. Any other kind
+`<origam-skeleton variant="text">` rows replace the body, inside ONE
+`<origam-skeleton-group>` (a single `role="status"` announcement instead of
+three; the rows are `aria-hidden`). Any other kind
 renders an `<origam-progress>` above the body. Both are replaceable
 through the `loader` slot.
 

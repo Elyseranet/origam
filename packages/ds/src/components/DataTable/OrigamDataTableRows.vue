@@ -6,15 +6,13 @@
 					:id="skeletonRowId(rowIndex)"
 					:key="`skeleton-row_${rowIndex}`"
 					class="origam-data-table-rows origam-data-table-rows--skeleton"
-					aria-busy="true"
+					aria-hidden="true"
 			>
 				<td
-						v-for="col in columns"
-						:key="`skeleton-cell_${col.key}`"
-						class="origam-data-table-rows__skeleton-cell"
-				>
-					<origam-skeleton variant="text" :loading="true" />
-				</td>
+						v-for="cell in skeletonCells"
+						:key="cell.key"
+						v-bind="cell.attrs"
+				/>
 			</tr>
 		</template>
 		<template v-else>
@@ -139,7 +137,6 @@
 >
 	import OrigamDataTableGroupHeaderRow from './OrigamDataTableGroupHeaderRow.vue'
 	import OrigamDataTableRow from './OrigamDataTableRow.vue'
-	import OrigamSkeleton from '../Skeleton/OrigamSkeleton.vue'
 
 	import { useExpanded } from '../../composables/DataTable/expand.composable'
 	import { useGroupBy } from '../../composables/DataTable/group.composable'
@@ -151,6 +148,7 @@
 	import { useSelection } from '../../composables/DataTable/select.composable'
 	import { useTextColor } from '../../composables/Commons/textColor.composable'
 
+	import type { IInternalDataTableHeader } from '../../interfaces/DataTable/data-table-header.interface'
 	import type { IDataTableGroup, IDataTableGroupHeaderSlot } from '../../interfaces/DataTable/group.interface'
 	import type { IDataTableItemBaseSlot, IDataTableItemSlot } from '../../interfaces/DataTable/items.interface'
 	import type { IDataTableRowsEmits, IDataTableRowsProps, IDataTableRowsSlots } from '../../interfaces/DataTable/data-table-rows.interface'
@@ -158,6 +156,8 @@
 	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
 
 	import { getPrefixedEventHandlers } from '../../utils/Commons/event.util'
+	import { getSkeletonCellShape } from '../../utils/DataTable/skeleton-cell.util'
+	import { getSkeletonHostClasses, splitSkeletonOverrides } from '../../utils/Skeleton/skeleton.util'
 	import {
 		pickDataTableHeaderColumnSlotNames,
 		pickDataTableItemColumnSlotNames
@@ -268,6 +268,37 @@
 	 ********************************************************/
 
 	const {loaderConfig} = useLoader(props, LOADER_KIND.LINE)
+
+	/*********************************************************
+	 * Skeleton rows — zero node added
+	 *
+	 * @description
+	 * The placeholder rows add NO element of their own: each `<td>` is the
+	 * host (`.origam--skeleton`) and paints its bar with its own `::after`.
+	 * Before this, every cell mounted an `<origam-skeleton>` — a `role=status`
+	 * node each, so a table announced itself once per cell.
+	 *
+	 * @description
+	 * The table makes ONE announcement and it is NOT made here: a `<tr>` cannot
+	 * hold a live region, so `<OrigamDataTable>` renders a single visually
+	 * hidden `role="status"` next to the table. Every row and cell here is
+	 * `aria-hidden`. The `loading="{ type: 'skeleton', ... }"` `animation`
+	 * override is honoured through `splitSkeletonOverrides`; the per-block
+	 * props (`color`, `rounded`...) have no node to land on here.
+	 ********************************************************/
+	const skeletonOverrides = computed(() => splitSkeletonOverrides(loaderConfig.value.overrides, props.loadingText))
+
+	const skeletonCells = computed(() => columns.value.map((col: IInternalDataTableHeader) => ({
+		key: `skeleton-cell_${col.key}`,
+		attrs: {
+			'aria-hidden': true,
+			class: [
+				'origam-data-table-rows__skeleton-cell',
+				`origam-data-table-rows__skeleton-cell--${getSkeletonCellShape(col)}`,
+				getSkeletonHostClasses(skeletonOverrides.value.group.animation)
+			]
+		}
+	})))
 
 	/*********************************************************
 	 * Couleur des lignes propres au composant (#550)
@@ -424,11 +455,46 @@
 			color: var(--origam-data-table-rows--loading---color, var(--origam-color__text---secondary));
 		}
 
-		&--skeleton {
-			> .origam-data-table-rows__skeleton-cell {
-				padding: var(--origam-data-table-rows--skeleton---cell-padding, 4px 8px);
-			}
+	}
+
+	// A placeholder cell is its own host (`.origam--skeleton`, which paints
+	// `::after` over the whole cell). It has no content, so it gets the
+	// height a real one-line row has, and its `::after` is narrowed to the
+	// bar the column would hold. Several rules compete for the `::after`
+	// box, so they all live under the same selector and the same `inset`.
+	.origam-data-table-rows__skeleton-cell {
+		block-size: calc(2 * var(--origam-table__cell---padding-block, 12px) + 1.5em);
+
+		&::after {
+			inset-block: auto;
+			inset-block-start: 50%;
+			inset-inline: auto;
+			inset-inline-start: var(--origam-table__cell---padding-inline, 16px);
+			block-size: var(--origam-skeleton---text-height);
+			inline-size: 70%;
+			translate: 0 -50%;
+			border-radius: var(--origam-skeleton---border-radius-pill);
 		}
+
+		&--end::after {
+			inset-inline-start: auto;
+			inset-inline-end: var(--origam-table__cell---padding-inline, 16px);
+			inline-size: 40%;
+		}
+
+		&--control::after {
+			block-size: var(--origam-skeleton---circular-size);
+			inline-size: var(--origam-skeleton---circular-size);
+			border-radius: var(--origam-skeleton---border-radius);
+		}
+	}
+
+	tr:nth-child(2n) > .origam-data-table-rows__skeleton-cell--text::after {
+		inline-size: 52%;
+	}
+
+	tr:nth-child(3n) > .origam-data-table-rows__skeleton-cell--text::after {
+		inline-size: 84%;
 	}
 </style>
 

@@ -16,7 +16,8 @@ import { selectHstOption } from './_support/histoire-controls'
  *   1  Functional
  *   2  Slots - Default
  *   3  Slots - Loader
- *   4  Default (playground)
+ *   4  Prop — loading skeleton (fixed Variant, lot 2b of #1073)
+ *   5  Default (playground)
  *
  * Methodological trap already documented in the classeur for this exact
  * component: the surrounding `OrigamExpandY` transition delays style
@@ -156,11 +157,11 @@ test.describe('OrigamExpansionPanelContent — Slots', () => {
     })
 })
 
-test.describe('OrigamExpansionPanelContent — Default (playground, index 4)', () => {
+test.describe('OrigamExpansionPanelContent — Default (playground, index 5)', () => {
     test.setTimeout(45000)
 
     test('color / rounded / border props are forwarded and produce a distinct class', async ({ page }) => {
-        await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+        await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const header = sandbox.locator('.origam-expansion-panel-header').first()
         await expect(header).toBeVisible({ timeout: 12000 })
@@ -172,5 +173,42 @@ test.describe('OrigamExpansionPanelContent — Default (playground, index 4)', (
         await selectHstOption(page, 'Rounded', 'large (radius.xl / 16px)')
 
         await expect(content).toHaveClass(/origam--rounded-xl|origam-expansion-panel-content--rounded/)
+    })
+})
+
+test.describe('OrigamExpansionPanelContent — loading skeleton (#1073 lot 2b, Variant 4)', () => {
+    test.setTimeout(45000)
+
+    test('three lines in ONE group: one announcement instead of three', async ({ page }) => {
+        await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const content = sandbox.locator('.origam-expansion-panel-content').first()
+        await expect(content).toBeVisible({ timeout: 12000 })
+
+        await expect(content.locator('.origam-skeleton-group')).toHaveCount(1)
+        await expect(content.locator('.origam-skeleton--text')).toHaveCount(3)
+        await expect(content.locator('[role="status"]')).toHaveCount(1)
+        const hidden = await content.locator('.origam-skeleton').evaluateAll(
+            (els) => els.every((el) => el.getAttribute('aria-hidden') === 'true')
+        )
+        expect(hidden).toBe(true)
+    })
+
+    test('the panel no longer renders an empty __loader div for the skeleton kind (#1076 point 3)', async ({ page }) => {
+        await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        await expect(sandbox.locator('.origam-expansion-panel').first()).toBeVisible({ timeout: 12000 })
+
+        await expect(sandbox.locator('.origam-expansion-panel__loader')).toHaveCount(0)
+    })
+
+    test('reduced-motion switches the group pulse off', async ({ page }) => {
+        await page.emulateMedia({ reducedMotion: 'reduce' })
+        await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const group = sandbox.locator('.origam-expansion-panel-content .origam-skeleton-group').first()
+        await expect(group).toBeVisible({ timeout: 12000 })
+
+        expect(await group.evaluate((el) => getComputedStyle(el).animationName)).toBe('none')
     })
 })

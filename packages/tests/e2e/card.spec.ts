@@ -30,7 +30,8 @@ import type { Page } from '@playwright/test'
  *  19  → Prop — elevation custom (static demo of the free-form box-shadow escape hatch)
  *  20  → Prop — border per-side (static demo of borderTop/Right/Bottom/Left + *Color, issue #215)
  *  21  → Prop — loadingText (static demo: default 'origam.loading' key vs a custom one)
- *  22  → Default (playground)
+ *  22  → Prop — loading skeleton (fixed Variant, lot 2b of #1073)
+ *  23  → Default (playground)
  *
  * NE PAS utiliser waitForLoadState('networkidle') — Histoire garde un websocket
  * HMR ouvert → networkidle ne résout jamais → timeout garanti.
@@ -515,26 +516,26 @@ test.describe('OrigamCard', () => {
 
     test.describe('Default (Playground)', () => {
         test('playground renders card root with origam-card class', async ({ page }) => {
-            await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(23), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam-card/)
         })
 
         test('playground bgColor=primary applies utility class', async ({ page }) => {
-            await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(23), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam--bg-primary/)
         })
 
         test('playground renders title and text', async ({ page }) => {
-            await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(23), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card__header')).toContainText('Card title')
             await expect(sandbox.locator('.origam-card__text')).toContainText('Body text.')
         })
 
         test('playground has density-default modifier class', async ({ page }) => {
-            await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(23), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam-card--density-default/)
         })
@@ -577,5 +578,73 @@ test.describe('OrigamCard', () => {
             expect(classes).not.toContain('origam-card--border-bottom')
             expect(classes).not.toContain('origam-card--border-left')
         })
+    })
+})
+
+test.describe('OrigamCard — loading skeleton (#1073 lot 2b, Variant 22)', () => {
+    test.setTimeout(45000)
+
+    test('draws its own anatomy as light primitives inside ONE group — one announcement', async ({ page }) => {
+        await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
+        const sandbox = await expectCardVisible(page)
+        const full = sandbox.locator('[data-cy="card-skeleton-full"]')
+
+        await expect(full.locator('.origam-skeleton-group')).toHaveCount(1)
+        // ONE live region for the whole card (it was one per `variant="card"` wrapper)
+        await expect(full.locator('[role="status"]')).toHaveCount(1)
+        // media + title + subtitle + 2 lines + 2 actions
+        await expect(full.locator('.origam-skeleton')).toHaveCount(7)
+        await expect(full.locator('.origam-skeleton--rectangular')).toHaveCount(1)
+        await expect(full.locator('.origam-skeleton--pill')).toHaveCount(2)
+        // every primitive is out of the accessibility tree
+        const hidden = await full.locator('.origam-skeleton').evaluateAll(
+            (els) => els.every((el) => el.getAttribute('aria-hidden') === 'true')
+        )
+        expect(hidden).toBe(true)
+    })
+
+    test('no fixed template left: no variant="card" wrapper, no __loader wrapper', async ({ page }) => {
+        await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
+        const sandbox = await expectCardVisible(page)
+
+        await expect(sandbox.locator('.origam-skeleton-wrapper')).toHaveCount(0)
+        await expect(sandbox.locator('.origam-card__loader')).toHaveCount(0)
+    })
+
+    test('draws only the parts the card has: no media, no actions without image / footer', async ({ page }) => {
+        await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
+        const sandbox = await expectCardVisible(page)
+        const minimal = sandbox.locator('[data-cy="card-skeleton-minimal"]')
+
+        await expect(minimal.locator('.origam-skeleton')).toHaveCount(4)
+        await expect(minimal.locator('.origam-skeleton--rectangular')).toHaveCount(0)
+        await expect(minimal.locator('.origam-skeleton--pill')).toHaveCount(0)
+        await expect(minimal.locator('[role="status"]')).toHaveCount(1)
+    })
+
+    test('the real content is not rendered while the skeleton shows', async ({ page }) => {
+        await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
+        const sandbox = await expectCardVisible(page)
+
+        await expect(sandbox.locator('[data-cy="card-skeleton-full"]')).not.toContainText('Hidden while loading')
+    })
+
+    test('pulse is one finite clock on the group; reduced-motion switches it off', async ({ page }) => {
+        await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
+        let sandbox = await expectCardVisible(page)
+        const motion = await sandbox.locator('[data-cy="card-skeleton-full"] .origam-skeleton-group').evaluate((el) => {
+            const cs = getComputedStyle(el)
+            return { name: cs.animationName, count: cs.animationIterationCount }
+        })
+        expect(motion.name).toBe('origam-skeleton-pulse')
+        expect(Number.isFinite(Number(motion.count))).toBe(true)
+
+        await page.emulateMedia({ reducedMotion: 'reduce' })
+        await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
+        sandbox = await expectCardVisible(page)
+        const reduced = await sandbox.locator('[data-cy="card-skeleton-full"] .origam-skeleton-group').evaluate(
+            (el) => getComputedStyle(el).animationName
+        )
+        expect(reduced).toBe('none')
     })
 })

@@ -13,9 +13,11 @@
 			<div class="origam-expansion-panel-content__wrapper">
 				<template v-if="loaderConfig.isActive && loaderConfig.kind === 'skeleton'">
 					<slot name="loader">
-						<origam-skeleton variant="text" :loading="true" :label="loadingText" v-bind="loaderConfig.overrides"/>
-						<origam-skeleton variant="text" :loading="true" :label="loadingText" v-bind="loaderConfig.overrides"/>
-						<origam-skeleton variant="text" :loading="true" :label="loadingText" v-bind="loaderConfig.overrides"/>
+						<origam-skeleton-group v-bind="skeletonOverrides.group">
+							<origam-skeleton variant="text" v-bind="skeletonOverrides.block"/>
+							<origam-skeleton variant="text" v-bind="skeletonOverrides.block"/>
+							<origam-skeleton variant="text" class="origam-expansion-panel-content__skeleton-line--last" v-bind="skeletonOverrides.block"/>
+						</origam-skeleton-group>
 					</slot>
 				</template>
 
@@ -60,6 +62,7 @@
 	import OrigamExpandY from '../Transition/OrigamExpandY.vue'
 	import OrigamProgress from '../Progress/OrigamProgress.vue'
 	import OrigamSkeleton from '../Skeleton/OrigamSkeleton.vue'
+	import OrigamSkeletonGroup from '../Skeleton/OrigamSkeletonGroup.vue'
 
 	import vContrast from '../../directives/Contrast/contrast.directive'
 
@@ -75,6 +78,8 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 
 	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
+
+	import { splitSkeletonOverrides } from '../../utils/Skeleton/skeleton.util'
 	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
 
 	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts/ExpansionPanel/expansion-panel.const'
@@ -151,13 +156,20 @@
 	 *
 	 * @description
 	 * `loadingText` reaches the render through the ACTIVE renderer's
-	 * `label` prop (template). `<origam-skeleton>` and `<origam-progress>`
-	 * already resolve `label` as a locale key into their own `aria-label`
-	 * (default `'origam.loading'`), so there is no second translation path
-	 * to maintain here. Bound BEFORE `v-bind="loaderConfig.overrides"` so a
-	 * per-instance `loading="{ type, label }"` keeps the last word.
+	 * `label` prop (template). `<origam-skeleton-group>` and
+	 * `<origam-progress>` already resolve `label` as a locale key into their
+	 * own `aria-label` (default `'origam.loading'`), so there is no second
+	 * translation path to maintain here. A per-instance
+	 * `loading="{ type, label }"` keeps the last word.
+	 *
+	 * @description
+	 * The skeleton is three text lines inside ONE `<origam-skeleton-group>`:
+	 * a single announcement (it used to be three `role="status"`) and a
+	 * single pulse clock.
 	 ********************************************************/
 	const {loaderClasses, loaderConfig} = useLoader(props, LOADER_KIND.LINE)
+
+	const skeletonOverrides = computed(() => splitSkeletonOverrides(loaderConfig.value.overrides, props.loadingText))
 
 	/*********************************************************
 	 * Class & Style
@@ -240,6 +252,10 @@
 			padding-inline-end: var(--origam-expansion-panel__content---padding-inline-end, 24px);
 			flex: var(--origam-expansion-panel__content---flex, 1 1 auto);
 			max-width: var(--origam-expansion-panel__content---max-width, 100%);
+		}
+
+		&__skeleton-line--last.origam-skeleton {
+			width: 60%;
 		}
 	}
 </style>
