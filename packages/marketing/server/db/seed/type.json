@@ -24388,8 +24388,8 @@
         "domain": null,
         "icon": null,
         "description_key": "types.catalog.skeleton_variant.description",
-        "description_fallback": "Shape preset for OrigamSkeleton loading placeholders — selects a predefined animated outline that mirrors the content it replaces.",
-        "definition": "export type TSkeletonVariant = 'text' | 'rectangular' | 'circular' | 'card' | 'list-item'",
+        "description_fallback": "Shape primitive for OrigamSkeleton loading placeholders — the bricks a component composes (inside an OrigamSkeletonGroup) to mimic its own anatomy.",
+        "definition": "export type TSkeletonVariant = 'text' | 'rectangular' | 'circular' | 'pill'",
         "signature": null,
         "tag": null,
         "value": null,
@@ -24418,10 +24418,10 @@
           "description_fallback": "Short horizontal bar — placeholder for a line of text, title, or label."
         },
         {
-          "value": "list-item",
+          "value": "rectangular",
           "position": 1,
-          "description_key": "types.detail.skeleton_variant.list_item",
-          "description_fallback": "List item composite — avatar circle on the left with two text lines on the right."
+          "description_key": "types.detail.skeleton_variant.rectangular",
+          "description_fallback": "Solid rectangle — placeholder for images, video thumbnails, or block content."
         },
         {
           "value": "circular",
@@ -24430,16 +24430,10 @@
           "description_fallback": "Circle — placeholder for avatars, icon buttons, or badge shapes."
         },
         {
-          "value": "rectangular",
+          "value": "pill",
           "position": 3,
-          "description_key": "types.detail.skeleton_variant.rectangular",
-          "description_fallback": "Solid rectangle — placeholder for images, video thumbnails, or block content."
-        },
-        {
-          "value": "card",
-          "position": 4,
-          "description_key": "types.detail.skeleton_variant.card",
-          "description_fallback": "Card-shaped composite placeholder with a rectangular media area and stacked text lines below."
+          "description_key": null,
+          "description_fallback": "Fully rounded capsule — placeholder for tags and chips."
         }
       ],
       "params": [],
@@ -24451,7 +24445,7 @@
           "position": 0,
           "title_key": "types.detail.skeleton_variant.example",
           "title_fallback": "Skeleton variant showcase",
-          "code": "<origam-skeleton variant=\"text\" width=\"200px\" />\n<origam-skeleton variant=\"rectangular\" width=\"100%\" height=\"180px\" />\n<origam-skeleton variant=\"circular\" width=\"48px\" height=\"48px\" />\n<origam-skeleton variant=\"card\" />\n<origam-skeleton variant=\"list-item\" />",
+          "code": "<origam-skeleton variant=\"text\" width=\"200px\" />\n<origam-skeleton variant=\"rectangular\" width=\"100%\" height=\"180px\" />\n<origam-skeleton variant=\"circular\" width=\"48px\" height=\"48px\" />\n<origam-skeleton variant=\"pill\" />",
           "lang": "html"
         }
       ],

@@ -89,11 +89,11 @@ describe('useLoader', () => {
         expect(cfg.indeterminate).toBe(true)
     })
 
-    it('loading={ type: "skeleton", variant: "card" } → kind=skeleton, overrides.variant=card', () => {
-        const { api } = mountWith({ type: 'skeleton', variant: 'card' })
+    it('loading={ type: "skeleton", variant: "pill" } → kind=skeleton, overrides.variant=pill', () => {
+        const { api } = mountWith({ type: 'skeleton', variant: 'pill' })
         const cfg = api().loaderConfig.value
         expect(cfg.kind).toBe('skeleton')
-        expect((cfg.overrides as { variant?: string }).variant).toBe('card')
+        expect((cfg.overrides as { variant?: string }).variant).toBe('pill')
     })
 
     it('loading={ type: "line", modelValue: 75 } → modelValue=75, determinate', () => {

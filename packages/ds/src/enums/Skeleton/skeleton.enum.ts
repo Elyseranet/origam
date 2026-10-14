@@ -4,16 +4,13 @@
  * @description
  * Shape presets for `<OrigamSkeleton>`. `text`, `rectangular`, `circular`
  * and `pill` are the PRIMITIVES — the bricks a component assembles to mimic
- * its own anatomy. `card` and `list-item` are fixed composite templates kept
- * until the components that consume them have moved to primitives.
+ * its own anatomy, inside an `<OrigamSkeletonGroup>`.
  ********************************************************/
 export enum SKELETON_VARIANT {
     TEXT = 'text',
     RECTANGULAR = 'rectangular',
     CIRCULAR = 'circular',
-    PILL = 'pill',
-    CARD = 'card',
-    LIST_ITEM = 'list-item'
+    PILL = 'pill'
 }
 
 /*********************************************************

@@ -36,7 +36,9 @@ job: use a spinner or a progress indicator.
 | `rectangular` | A block. Takes `width` / `height`. |
 | `circular` | A perfect circle: `width` drives the diameter and the height follows (`aspect-ratio: 1`). 36px by default (`--origam-skeleton---circular-size`). |
 | `pill` | A fully rounded capsule (a tag, a chip). `4em` x `1.5em` by default. |
-| `card`, `list-item` | Fixed composite templates, kept for now. They are being replaced by compositions of the primitives above. |
+
+The former `card` and `list-item` templates are gone. Compose the primitives
+above inside an `OrigamSkeletonGroup` to mimic the anatomy you need.
 
 ## Animation
 
@@ -129,7 +131,7 @@ Constraints to know before using it on a host:
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `variant` | `'text' \| 'rectangular' \| 'circular' \| 'pill' \| 'card' \| 'list-item'` | `'rectangular'` | Shape. |
+| `variant` | `'text' \| 'rectangular' \| 'circular' \| 'pill'` | `'rectangular'` | Shape. |
 | `animation` | `'pulse' \| 'wave' \| 'none'` | `'pulse'` (or the group's) | Motion. |
 | `loading` | `boolean` | `true` | When `false`, renders the slot instead. |
 | `label` | `string` | `'origam.loading'` | Locale key of the announcement, for a standalone block. See [Accessibility](#accessibility). |
@@ -182,7 +184,7 @@ None.
 | `--origam-skeleton---text-margin-block` | `0.35em` |
 | `--origam-skeleton---circular-size` | `36px` |
 | `--origam-skeleton---pill-height` / `---pill-width` | `1.5em` / `4em` |
-| `--origam-skeleton---gap` | `{space.3}`, gap of a group and of the `list-item` template |
+| `--origam-skeleton---gap` | `{space.3}`, gap of a group |
 
 `--origam-motion__duration---loop` (`1600ms`) is a new primitive duration for
 looping, ambient motion; the skeleton reads it and other loops can reuse it.

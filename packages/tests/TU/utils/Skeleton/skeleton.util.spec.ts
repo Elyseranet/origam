@@ -27,7 +27,7 @@ describe('splitSkeletonOverrides', () => {
     })
 
     it('sends only color, bgColor and rounded to the blocks', () => {
-        const got = splitSkeletonOverrides({ color: 'primary', bgColor: 'secondary', rounded: 'lg', variant: 'card', width: 10, size: 'lg' })
+        const got = splitSkeletonOverrides({ color: 'primary', bgColor: 'secondary', rounded: 'lg', variant: 'pill', width: 10, size: 'lg' })
         expect(got.block).toEqual({ color: 'primary', bgColor: 'secondary', rounded: 'lg' })
     })
 

@@ -603,11 +603,10 @@ test.describe('OrigamCard — loading skeleton (#1073 lot 2b, Variant 22)', () =
         expect(hidden).toBe(true)
     })
 
-    test('no fixed template left: no variant="card" wrapper, no __loader wrapper', async ({ page }) => {
+    test('no fixed template left: no __loader wrapper', async ({ page }) => {
         await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
         const sandbox = await expectCardVisible(page)
 
-        await expect(sandbox.locator('.origam-skeleton-wrapper')).toHaveCount(0)
         await expect(sandbox.locator('.origam-card__loader')).toHaveCount(0)
     })
 

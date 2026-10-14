@@ -53236,7 +53236,7 @@
         "icon": null,
         "description_key": null,
         "description_fallback": null,
-        "definition": "export enum SKELETON_VARIANT {\n    TEXT = 'text',\n    RECTANGULAR = 'rectangular',\n    CIRCULAR = 'circular',\n    PILL = 'pill',\n    CARD = 'card',\n    LIST_ITEM = 'list-item'\n}",
+        "definition": "export enum SKELETON_VARIANT {\n    TEXT = 'text',\n    RECTANGULAR = 'rectangular',\n    CIRCULAR = 'circular',\n    PILL = 'pill'\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -53277,18 +53277,6 @@
         {
           "value": "SKELETON_VARIANT.PILL",
           "position": 3,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "SKELETON_VARIANT.CARD",
-          "position": 4,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "SKELETON_VARIANT.LIST_ITEM",
-          "position": 5,
           "description_key": null,
           "description_fallback": null
         }
