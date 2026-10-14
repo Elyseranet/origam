@@ -902,12 +902,21 @@ const _warnedColorKeys = new Set<string>()
  * Warn (once per prop / value) that the consumer passed a raw CSS color
  * to a prop where the design system expects a `TIntent`. Raw color
  * support is deprecated and will be removed in v3.0.0.
+ *
+ * @description
+ * Dev-only (`import.meta.env.DEV`, same gate as `warnUnsupportedProp`), so
+ * the message is tree-shaken from production bundles. `var(--x)` and
+ * `color-mix(...)` are NOT raw colors: they are the migration path the DS
+ * recommends (token reference / derived from tokens) and are rendered
+ * through the custom-value channel without any warning.
  ********************************************************/
 export function warnLegacyColor (
     kind: 'color' | 'bgColor',
     value: string,
 ): void {
+    if (!import.meta.env?.DEV) return
     if (typeof console === 'undefined') return
+    if (/^\s*(?:var|color-mix)\(/i.test(value)) return
     const key = `${kind}::${value}`
     if (_warnedColorKeys.has(key)) return
     _warnedColorKeys.add(key)
