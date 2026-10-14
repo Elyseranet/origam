@@ -23,6 +23,7 @@
  */
 
 import { DocEntry } from '../../../../db/entities'
+import { invalidateReferenceDoc } from '../../../../utils/reference-cache'
 import {
     ENTRY_EDIT_MAP,
     ENTRY_SRC_CAMEL,
@@ -98,10 +99,8 @@ export default defineEventHandler(async (event) => {
     const updated = await repo.findOneBy({ id: entry.id })
 
     // Invalidate the Nitro cache for this doc so the public GET reflects edits
-    try {
-        const storage = useStorage('nitro:handlers')
-        await storage.removeItem(`reference-doc:doc:${kind}:${slug}:`)
-    } catch { /* non-fatal */ }
+    // (non bloquant : invalidateReferenceDoc journalise et n'échoue jamais)
+    await invalidateReferenceDoc(useStorage(), kind, slug)
 
     return toCamelEntry(updated!)
 })

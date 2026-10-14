@@ -26,13 +26,17 @@
  * Cache: 5 min per kind:slug:LOCALE combination — the locale is part of the cache
  * key precisely because it changes the response content (descriptionFallback), so
  * caching without it would serve one locale's text to every other locale (ADR #325).
- * Invalidate on re-sync / backoffice edit (ticket E clears the storage key).
+ * The key carries REFERENCE_CACHE_FORMAT_VERSION (server/consts/cache.const.ts, #1063):
+ * bump it whenever this response's shape changes. A backoffice edit invalidates every
+ * limit/locale variant of the entry (server/utils/reference-cache.ts).
  */
 
 import {
     DocEntry, DocProp, DocEmit, DocSlot, DocExample, DocValue,
     DocParam, DocReturn, DocDirectiveArg, DocDirectiveModifier, DocRelation,
 } from '../../../db/entities'
+import { REFERENCE_CACHE_NAMES, REFERENCE_CACHE_TTL_SECONDS } from '../../../consts/cache.const'
+import { referenceDocCacheKey } from '../../../utils/reference-cache'
 import { resolveLocale } from '../../../utils/reference-locale'
 import type { TLocaleCode } from '../../../../src/types/i18n.type'
 
@@ -49,8 +53,6 @@ interface EnumChildren { values: any[]; examples: any[]; relations: any[] }
 interface InterfaceChildren { props: any[]; examples: any[]; relations: any[] }
 interface TypeChildren { values: any[]; examples: any[]; relations: any[] }
 interface UtilChildren { params: any[]; returns: any[]; examples: any[]; relations: any[] }
-
-const CACHE_TTL_SECONDS = 300
 
 export default defineCachedEventHandler(
     async (event) => {
@@ -98,14 +100,16 @@ export default defineCachedEventHandler(
         }
     },
     {
-        maxAge: CACHE_TTL_SECONDS,
-        name: 'reference-doc',
+        maxAge: REFERENCE_CACHE_TTL_SECONDS,
+        name: REFERENCE_CACHE_NAMES.doc,
         getKey: (event) => {
-            const kind = getRouterParam(event, 'kind') ?? ''
-            const slug = getRouterParam(event, 'slug') ?? ''
             const q = getQuery(event)
-            const locale = resolveLocale(q.locale)
-            return `doc:${kind}:${slug}:${q.limit ?? ''}:${locale}`
+            return referenceDocCacheKey({
+                kind: getRouterParam(event, 'kind') ?? '',
+                slug: getRouterParam(event, 'slug') ?? '',
+                limit: q.limit,
+                locale: resolveLocale(q.locale),
+            })
         },
     },
 )

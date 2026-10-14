@@ -18,6 +18,10 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — le cache Nitro des routes `/api/reference/**` servait une réponse d'ancien format (#1063)
+
+Sans version de format dans la clé, une entrée de cache écrite avant un changement de forme (`name` -> `label`, #1046) était servie telle quelle par le SWR de Nitro : `/components/alert` répondait 500 au rendu serveur (`Cannot read properties of undefined (reading 'replace')`, reproduit puis supprimé en dev). Les 4 handlers de référence préfixent désormais leur clé de `REFERENCE_CACHE_FORMAT_VERSION` (`server/consts/cache.const.ts`), à incrémenter dans le commit de tout changement de forme d'une de leurs réponses. L'invalidation admin (`PATCH /api/admin/reference/:kind/:slug`) ne supprimait rien — elle visait `nitro:handlers` au lieu de `cache:nitro:handlers` et omettait la locale — : elle supprime maintenant toutes les variantes (locale, `limit`) de la fiche, à partir de la même construction de clé que le handler, et journalise une erreur de stockage au lieu de l'avaler. Les TTL redéclarés en ligne dans 6 handlers sont réunis dans `server/consts/cache.const.ts`. Site marketing uniquement : aucun changement du paquet `origam`.
+
 ## [2.23.2] - 2026-10-13
 
 ### Fixed — `OrigamBreadcrumbItem` rendait `href="[object Object]"`

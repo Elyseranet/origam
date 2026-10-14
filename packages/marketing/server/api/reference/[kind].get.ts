@@ -42,13 +42,13 @@
  */
 
 import { DocEntry, DocProp, DocRelation, DocValue } from '../../db/entities'
+import { REFERENCE_CACHE_NAMES, REFERENCE_CACHE_TTL_SECONDS } from '../../consts/cache.const'
+import { referenceCatalogCacheKey } from '../../utils/reference-cache'
 import { resolveLocale } from '../../utils/reference-locale'
 import type { TLocaleCode } from '../../../src/types/i18n.type'
 
 /** Inline type to avoid cross-directory import type issues with Nitro esbuild. */
 type DescMap = Map<string, { description_key: string | null; description_fallback: string | null }>
-
-const CACHE_TTL_SECONDS = 300
 
 export default defineCachedEventHandler(
     async (event) => {
@@ -116,14 +116,18 @@ export default defineCachedEventHandler(
         })
     },
     {
-        maxAge: CACHE_TTL_SECONDS,
-        name: 'reference-catalog',
+        maxAge: REFERENCE_CACHE_TTL_SECONDS,
+        name: REFERENCE_CACHE_NAMES.catalog,
         getKey: (event) => {
-            const kind = getRouterParam(event, 'kind') ?? ''
             const q = getQuery(event)
-            const ps = q.includePropSurface === '1' ? ':props' : ''
-            const locale = resolveLocale(q.locale)
-            return `catalog:${kind}${ps}:${q.category ?? ''}:${q.limit ?? ''}:${q.orphaned ?? ''}:${locale}`
+            return referenceCatalogCacheKey({
+                kind: getRouterParam(event, 'kind') ?? '',
+                includePropSurface: q.includePropSurface === '1',
+                category: q.category,
+                limit: q.limit,
+                orphaned: q.orphaned,
+                locale: resolveLocale(q.locale),
+            })
         },
     },
 )

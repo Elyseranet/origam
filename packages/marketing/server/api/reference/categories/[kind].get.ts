@@ -25,9 +25,9 @@
  * Cache : 5 min par kind.
  */
 
+import { REFERENCE_CACHE_NAMES, REFERENCE_CACHE_TTL_SECONDS } from '../../../consts/cache.const'
+import { referenceCategoriesCacheKey } from '../../../utils/reference-cache'
 import { resolveLocale } from '../../../utils/reference-locale'
-
-const CACHE_TTL_SECONDS = 300
 
 export default defineCachedEventHandler(
     async (event): Promise<string[]> => {
@@ -42,8 +42,8 @@ export default defineCachedEventHandler(
         return fetchCategoryOrder(db, kind)
     },
     {
-        maxAge: CACHE_TTL_SECONDS,
-        name: 'reference-categories',
-        getKey: event => `categories:${getRouterParam(event, 'kind') ?? ''}`,
+        maxAge: REFERENCE_CACHE_TTL_SECONDS,
+        name: REFERENCE_CACHE_NAMES.categories,
+        getKey: event => referenceCategoriesCacheKey(getRouterParam(event, 'kind') ?? ''),
     },
 )

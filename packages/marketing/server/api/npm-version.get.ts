@@ -1,5 +1,6 @@
+import { EXTERNAL_CACHE_TTL_SECONDS } from '../consts/cache.const'
+
 const NPM_REGISTRY_DIST_TAGS_URL = 'https://registry.npmjs.org/-/package/origam/dist-tags'
-const CACHE_TTL_SECONDS = 3600
 
 interface INpmDistTagsResponse {
   latest: string
@@ -32,7 +33,7 @@ export default defineCachedEventHandler(
     }
   },
   {
-    maxAge: CACHE_TTL_SECONDS,
+    maxAge: EXTERNAL_CACHE_TTL_SECONDS,
     name: 'npm-version',
     getKey: () => 'npm-version'
   }

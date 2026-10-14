@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: 'Unreleased',
+        date: null,
+        type: 'unreleased',
+        summaryKey: 'changelog.versions.unreleased.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'le cache Nitro des routes /api/reference/** servait une réponse d\'ancien format (#1063)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.23.2',
         date: '2026-10-13',
         type: 'patch',
