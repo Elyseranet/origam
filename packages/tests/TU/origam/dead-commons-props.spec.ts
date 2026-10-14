@@ -75,7 +75,7 @@ function surface (props: Record<string, unknown>): string {
     const out = wrapper.html() + '\n/* head */\n' + document.head.innerHTML
     wrapper.unmount()
     document.head.innerHTML = ''
-    return out.replace(/origam_styletag_\d+/g, 'N').replace(/(origam-[a-z-]+?)-\d+/g, '$1-N')
+    return out.replace(/(origam-[a-z-]+?)-\d+/g, '$1-N')
 }
 
 /**

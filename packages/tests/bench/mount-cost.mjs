@@ -933,7 +933,7 @@ async function runOneSeries (Target, count, vueApi) {
     // component that doesn't clean up after itself the same way the
     // inert-props audit was bitten by once (see that runner's header
     // comment).
-    document.querySelectorAll('style[id^="origam_styletag_"]').forEach((el) => el.remove())
+    document.querySelectorAll('style[id^="origam-style-"]').forEach((el) => el.remove())
     if (globalThis.gc) globalThis.gc()
 
     return durations
@@ -1175,7 +1175,7 @@ async function runOneAbSeries (CompA, CompB, count, vueApi) {
 
     app.unmount()
     container.remove()
-    document.querySelectorAll('style[id^="origam_styletag_"]').forEach((el) => el.remove())
+    document.querySelectorAll('style[id^="origam-style-"]').forEach((el) => el.remove())
     if (globalThis.gc) globalThis.gc()
 
     return { diffs, asA, asB }

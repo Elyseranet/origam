@@ -88,6 +88,7 @@ declare global {
         _contrastTimers?: {
             raf?: number
             timeout?: number
+            cancelled?: boolean
         }
         _transitionInitialStyles?: {
             position: string

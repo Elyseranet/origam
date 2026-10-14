@@ -40,7 +40,7 @@ function surface (Cmp: unknown, props: Record<string, unknown>, slots?: Record<s
     const out = wrapper.html() + '\n/* head */\n' + document.head.innerHTML
     wrapper.unmount()
     document.head.innerHTML = ''
-    return out.replace(/origam_styletag_\d+/g, 'N').replace(/(origam-[a-z-]+?)-\d+/g, '$1-N')
+    return out.replace(/(origam-[a-z-]+?)-\d+/g, '$1-N')
 }
 
 describe('sampled baseline entries — runtime confirmation', () => {
@@ -57,7 +57,7 @@ describe('sampled baseline entries — runtime confirmation', () => {
             const out = wrapper.html() + '\n/* head */\n' + document.head.innerHTML
             wrapper.unmount()
             document.head.innerHTML = ''
-            return out.replace(/origam_styletag_\d+/g, 'N').replace(/(origam-[a-z-]+?)-\d+/g, '$1-N')
+            return out.replace(/(origam-[a-z-]+?)-\d+/g, '$1-N')
         }
         expect(inLayout(40)).toBe(inLayout(400))
     })
