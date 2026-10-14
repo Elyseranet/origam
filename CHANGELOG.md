@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.25.0] - 2026-10-14
+
 ### Changed — `OrigamBtn`, `OrigamSwitch` et `OrigamField` n'ont plus de mode skeleton (#1080, lot 2a de #1073)
 
 Decision n°2 du proprietaire sous #1073 : un controle qui execute une action n'est pas un placeholder. Avant, `loading: { type: 'skeleton' }` **remplacait** le controle : le bouton perdait son nom accessible (`button "Loading..."`) et imbriquait un `<div>` dans un `<span>` dans un `<button>`, l'interrupteur perdait sa case, le champ demontait son `<input>` et son label. Mesure (Chromium, `origin/develop` @ `3750f0791`, etude #1073).
@@ -36,10 +38,6 @@ Decision n°2 du proprietaire sous #1073 : un controle qui execute une action n'
 **Corrige (#1076 point 1, cote controles) :** plus de `<div>` dans `<span>`/`<button>` en mode skeleton, `origam-btn--loading` n'est plus emise deux fois, la racine du spinner de `OrigamBtn` est un `<span>`. **Non corrige :** la bande `line` de `OrigamBtn` rend `OrigamProgressLinear`, dont les barres sont des `<div>` (composant partage, hors perimetre).
 
 **Stories :** un Variant fixe `Loading` par composant (`Btn`, `Switch`, `Field`, `TextField`, `Select`, `TextareaField`) ; l'option `{ type: skeleton }` des selecteurs `Loading Kind` est retiree (#1076 point 6).
-
-### Fixed — le cache Nitro des routes `/api/reference/**` servait une réponse d'ancien format (#1063)
-
-Sans version de format dans la clé, une entrée de cache écrite avant un changement de forme (`name` -> `label`, #1046) était servie telle quelle par le SWR de Nitro : `/components/alert` répondait 500 au rendu serveur (`Cannot read properties of undefined (reading 'replace')`, reproduit puis supprimé en dev). Les 4 handlers de référence préfixent désormais leur clé de `REFERENCE_CACHE_FORMAT_VERSION` (`server/consts/cache.const.ts`), à incrémenter dans le commit de tout changement de forme d'une de leurs réponses. L'invalidation admin (`PATCH /api/admin/reference/:kind/:slug`) ne supprimait rien — elle visait `nitro:handlers` au lieu de `cache:nitro:handlers` et omettait la locale — : elle supprime maintenant toutes les variantes (locale, `limit`) de la fiche, à partir de la même construction de clé que le handler, et journalise une erreur de stockage au lieu de l'avaler. Les TTL redéclarés en ligne dans 6 handlers sont réunis dans `server/consts/cache.const.ts`. Site marketing uniquement : aucun changement du paquet `origam`.
 
 ## [2.24.0] - 2026-10-14
 
@@ -67,6 +65,10 @@ Lot 1 de #1073. Les composants consommateurs (`OrigamBtn`, `OrigamCard`, `Origam
 - WCAG 2.2.2 : l'animation est plafonnee a environ 10 s (6 iterations de 1,6 s), CSS seul.
 - #1075 : `circular` rend un vrai cercle sous le theme `origam` (`aspect-ratio: 1`, plus de rayon `sm` impose par le theme).
 - #1076 (cote composant) : double style, tokens morts, `wave-color` non declare, documentation (decrivait une pulsation que le code ne faisait pas).
+
+### Fixed — le cache Nitro des routes `/api/reference/**` servait une réponse d'ancien format (#1063)
+
+Sans version de format dans la clé, une entrée de cache écrite avant un changement de forme (`name` -> `label`, #1046) était servie telle quelle par le SWR de Nitro : `/components/alert` répondait 500 au rendu serveur (`Cannot read properties of undefined (reading 'replace')`, reproduit puis supprimé en dev). Les 4 handlers de référence préfixent désormais leur clé de `REFERENCE_CACHE_FORMAT_VERSION` (`server/consts/cache.const.ts`), à incrémenter dans le commit de tout changement de forme d'une de leurs réponses. L'invalidation admin (`PATCH /api/admin/reference/:kind/:slug`) ne supprimait rien — elle visait `nitro:handlers` au lieu de `cache:nitro:handlers` et omettait la locale — : elle supprime maintenant toutes les variantes (locale, `limit`) de la fiche, à partir de la même construction de clé que le handler, et journalise une erreur de stockage au lieu de l'avaler. Les TTL redéclarés en ligne dans 6 handlers sont réunis dans `server/consts/cache.const.ts`. Site marketing uniquement : aucun changement du paquet `origam`.
 
 ## [2.23.2] - 2026-10-13
 

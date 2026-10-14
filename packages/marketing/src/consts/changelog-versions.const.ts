@@ -18,14 +18,13 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
-        version: 'Unreleased',
-        date: null,
-        type: 'unreleased',
-        summaryKey: 'changelog.versions.unreleased.summary',
-        summaryFallback: '1 change and 1 fix. See the full changelog for detail.',
+        version: '2.25.0',
+        date: '2026-10-14',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2250.summary',
+        summaryFallback: '1 change. See the full changelog for detail.',
         highlights: [
-            { type: 'changed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamBtn, OrigamSwitch et OrigamField n\'ont plus de mode skeleton (#1080, lot 2a de #1073)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'le cache Nitro des routes /api/reference/** servait une réponse d\'ancien format (#1063)' }
+            { type: 'changed', textKey: 'changelog.versions.v2250.h1', textFallback: 'OrigamBtn, OrigamSwitch et OrigamField n\'ont plus de mode skeleton (#1080, lot 2a de #1073)' }
         ]
     },
     {
@@ -34,9 +33,10 @@ export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
         date: '2026-10-14',
         type: 'minor',
         summaryKey: 'changelog.versions.v2240.summary',
-        summaryFallback: '1 change. See the full changelog for detail.',
+        summaryFallback: '1 change and 1 fix. See the full changelog for detail.',
         highlights: [
-            { type: 'changed', textKey: 'changelog.versions.v2240.h1', textFallback: 'refonte d\'OrigamSkeleton : primitives, pulse par defaut, OrigamSkeletonGroup (#1073 lot 1, #1074, #1075, #1076)' }
+            { type: 'changed', textKey: 'changelog.versions.v2240.h1', textFallback: 'refonte d\'OrigamSkeleton : primitives, pulse par defaut, OrigamSkeletonGroup (#1073 lot 1, #1074, #1075, #1076)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2240.h2', textFallback: 'le cache Nitro des routes /api/reference/** servait une réponse d\'ancien format (#1063)' }
         ]
     },
     {
