@@ -231,8 +231,6 @@
   --origam-btn---overlay-opacity-hover: var(--origam-opacity---12);
   --origam-btn---overlay-opacity-active: 0.2;
   --origam-btn---overlay-opacity-active-hover: 0.28;
-  --origam-btn--loader-skeleton---min-width: 96px;
-  --origam-btn--loader-skeleton---min-height: 36px;
   --origam-btn__progress---linear-height: 3px;
   --origam-btn__progress---linear-position: 0px;
   --origam-btn__progress---linear-position-top: auto;
@@ -2217,10 +2215,6 @@
   --origam-switch__thumb---border-color: rgba(0, 0, 0, 0.18);
   --origam-switch__thumb---color: currentColor;
   --origam-switch__selection-control---min-height: 56px;
-  --origam-switch__skeleton---width: 52px;
-  --origam-switch__skeleton---height: 32px;
-  --origam-switch__skeleton-track---background-color: color-mix(in srgb, currentColor 14%, transparent);
-  --origam-switch__skeleton-thumb---background-color: color-mix(in srgb, currentColor 28%, transparent);
   --origam-switch__track--inset---height: 32px;
   --origam-switch__track--inset---width: 52px;
   --origam-switch---opacity-disabled: var(--origam-opacity---32);

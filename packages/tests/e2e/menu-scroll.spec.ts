@@ -234,7 +234,7 @@ test.describe('#742 — le plafond et le défilement portent sur la même boîte
     // ------------------------------------------------------------------ //
 
     test('select, 30 options : la dernière option est atteignable après défilement', async ({ page }) => {
-        const sandbox = await openSelectVariant(page, 29)
+        const sandbox = await openSelectVariant(page, 30)
 
         const before = await measure(sandbox, '.origam-list-item')
         expect(before.itemCount).toBe(30)

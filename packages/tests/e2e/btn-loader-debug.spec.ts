@@ -20,13 +20,13 @@ const STORY_PATH = '/stories/story/' + STORY_ID
 
 const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
-test('DEBUG btn loader — inspect line / circular / skeleton DOM + styles', async ({ page }) => {
+test('DEBUG btn loader — inspect line / circular DOM + styles', async ({ page }) => {
     // Navigate directly to "Prop — loading (interactive)" (index 4).
     await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 
-    for (const dataCy of ['btn-loading-line', 'btn-loading-line-primary', 'btn-loading-circular-override', 'btn-loading-circular-success', 'btn-loading-skeleton']) {
+    for (const dataCy of ['btn-loading-line', 'btn-loading-line-primary', 'btn-loading-circular-override', 'btn-loading-circular-success']) {
         const btn = sandbox.locator(`[data-cy="${dataCy}"]`).first()
         await btn.scrollIntoViewIfNeeded()
         const report = await btn.evaluate((el) => {

@@ -21,7 +21,7 @@ import type {
 } from '../Commons/group.interface'
 import type { IHoverProps } from '../Commons/hover.interface'
 import type { ILinkProps } from '../Commons/router.interface'
-import type { ILoaderProps } from '../Commons/loader.interface'
+import type { IControlLoaderProps } from '../Commons/loader.interface'
 import type { ILocationProps } from '../Commons/location.interface'
 import type { IMarginProps } from '../Commons/margin.interface'
 import type { IPaddingProps } from '../Commons/padding.interface'
@@ -42,7 +42,7 @@ import type {
  *  `icon` prop accepts `boolean | TIcon` (boolean = icon-only mode) which is
  *  wider than `IIconProps.icon?: TIcon`.  Pulling the two status props in
  *  directly avoids the TS2430 incompatible-extends error. */
-export interface IBtnProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IBorderProps, IDensityProps, IDimensionProps, IElevationProps, IRoundedProps, ITagProps, ISizeProps, ILinkProps, IRippleProps, ILoaderProps, IPositionProps, ILocationProps, IGroupItemProps, IPaddingProps, IMarginProps, IAdjacentProps, IHoverProps, IActiveProps, IActionVariantProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
+export interface IBtnProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IBorderProps, IDensityProps, IDimensionProps, IElevationProps, IRoundedProps, ITagProps, ISizeProps, ILinkProps, IRippleProps, IControlLoaderProps, IPositionProps, ILocationProps, IGroupItemProps, IPaddingProps, IMarginProps, IAdjacentProps, IHoverProps, IActiveProps, IActionVariantProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
     /** @deprecated Use `variant="flat"` instead. Kept for backward compat. */
     flat?: boolean,
     /** Pass `true` to activate icon-only mode; pass a `TIcon` value to set the icon. */
@@ -80,7 +80,7 @@ export interface IBtnEmits extends IGroupEmits {}
 export interface IBtnSlots extends IAdjacentSlots {
     /** Overrides the whole loader/prepend/content/append layout. */
     wrapper?: () => any
-    /** Overrides the active loader (line/circular/skeleton), receives the
+    /** Overrides the active loader (line/circular), receives the
      *  forwarded `<OrigamProgress>` props. */
     loader?: (data: Record<string, unknown>) => any
     default?: () => any

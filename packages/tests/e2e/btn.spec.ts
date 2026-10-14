@@ -382,23 +382,20 @@ test.describe('OrigamBtn', () => {
         /**
          * Story: <origam-btn loading text="Button"><template #loader><span>Loading...</span></template></origam-btn>
          *
-         * The `#loader` slot is ONLY rendered when loading kind = 'skeleton'
-         * (via `isSkeletonLoading`). For the default `loading=true` (boolean → kind='circular'),
-         * the component renders a circular overlay progress instead — the slot content
-         * is NOT mounted. The circular progress lives as `.origam-btn__progress` outside
-         * the OrigamLoader, not inside the slot.
-         *
-         * Therefore: the custom "Loading..." span is NOT visible for this story variant.
-         * The test asserts the loading state via the circular progress.
+         * Since lot 2a (#1080) the `#loader` slot replaces the built-in
+         * spinner / strip for EVERY loading kind (it used to be reachable
+         * only under the removed skeleton mode). The label stays in the DOM.
          */
-        test('loading=true mounts a circular progress overlay', async ({ page }) => {
+        test('loading=true: the #loader slot replaces the built-in spinner, the label stays', async ({ page }) => {
             await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
             await expect(btn).toHaveClass(/origam-btn--loading/)
             await expect(btn).toHaveClass(/origam-btn--loader-circular/)
-            await expect(btn.locator('.origam-progress--circular')).toBeAttached()
+            await expect(btn).toContainText('Loading...')
+            await expect(btn).toContainText('Button')
+            await expect(btn.locator('.origam-progress--circular')).toHaveCount(0)
         })
 
         test('loading=true: pointer-events are disabled on the btn', async ({ page }) => {

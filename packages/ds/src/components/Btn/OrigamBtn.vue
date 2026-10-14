@@ -12,6 +12,7 @@
 			:href="hrefAttr"
 			:type="typeAttr"
 			:value="valueAttr"
+			@click.capture="handleClickCapture"
 			@click="handleClick"
 			@mouseenter="handleMouseenter"
 			@mouseleave="handleMouseleave"
@@ -25,99 +26,84 @@
 				class="origam-btn__underlay"
 		/>
 
-		<origam-progress
+		<slot
 				v-if="isOverlayLoading"
-				ref="origamProgressRef"
-				class="origam-btn__progress"
+				name="loader"
 				v-bind="progressProps"
-				:thickness="loaderConfig.kind === 'line' ? 3 : undefined"
-				:color="color"
-				:active="true"
-		/>
+		>
+			<origam-progress
+					ref="origamProgressRef"
+					class="origam-btn__progress"
+					v-bind="progressProps"
+					tag="span"
+					aria-hidden="true"
+					:thickness="loaderKind === 'line' ? 3 : undefined"
+					:color="color"
+					:active="true"
+			/>
+		</slot>
 
 		<slot name="wrapper">
-			<origam-loader
-					:loading="isSkeletonLoading"
-					class="origam-btn__loader"
-			>
-				<template
-						v-if="hasLoader && isSkeletonLoading"
-						#loader
+			<span class="origam-btn__loader">
+				<span
+						v-if="hasPrepend"
+						key="prepend"
+						class="origam-btn__prepend"
 				>
-					<slot
-							name="loader"
-							v-bind="progressProps"
-					>
-						<origam-skeleton
-								variant="rectangular"
-								:width="'100%'"
-								:height="'100%'"
-								v-bind="loaderConfig.overrides"
+					<slot name="prepend">
+						<origam-avatar
+								v-if="prependAvatar"
+								key="prepend-avatar"
+								:density="density"
+								:image="prependAvatar"
+						/>
+						<origam-icon
+								v-if="prependIcon"
+								key="prepend-icon"
+								:density="density"
+								:icon="prependIcon"
 						/>
 					</slot>
-				</template>
+				</span>
 
-				<template #default>
-          <span
-		          v-if="hasPrepend"
-		          key="prepend"
-		          class="origam-btn__prepend"
-          >
-            <slot name="prepend">
-              <origam-avatar
-		              v-if="prependAvatar"
-		              key="prepend-avatar"
-		              :density="density"
-		              :image="prependAvatar"
-              />
-              <origam-icon
-		              v-if="prependIcon"
-		              key="prepend-icon"
-		              :density="density"
-		              :icon="prependIcon"
-              />
-            </slot>
-          </span>
+				<span
+						class="origam-btn__content"
+						data-no-activator=""
+				>
+					<slot name="default">
+						<template v-if="hasIcon">
+							<origam-icon
+									key="content-icon"
+									:icon="icon"
+							/>
+						</template>
+						<template v-else>
+							{{ text }}
+						</template>
+					</slot>
+				</span>
 
-					<span
-							class="origam-btn__content"
-							data-no-activator=""
-					>
-            <slot name="default">
-              <template v-if="hasIcon">
-                <origam-icon
-		                key="content-icon"
-		                :icon="icon"
-                />
-              </template>
-              <template v-else>
-                {{ text }}
-              </template>
-            </slot>
-          </span>
-
-					<span
-							v-if="hasAppend"
-							key="append"
-							class="origam-btn__append"
-					>
-            <slot name="append">
-             <origam-avatar
-		             v-if="appendAvatar"
-		             key="append-avatar"
-		             :density="density"
-		             :image="appendAvatar"
-             />
-             <origam-icon
-		             v-if="appendIcon"
-		             key="append-icon"
-		             :density="density"
-		             :icon="appendIcon"
-             />
-           </slot>
-          </span>
-				</template>
-			</origam-loader>
+				<span
+						v-if="hasAppend"
+						key="append"
+						class="origam-btn__append"
+				>
+					<slot name="append">
+						<origam-avatar
+								v-if="appendAvatar"
+								key="append-avatar"
+								:density="density"
+								:image="appendAvatar"
+						/>
+						<origam-icon
+								v-if="appendIcon"
+								key="append-icon"
+								:density="density"
+								:icon="appendIcon"
+						/>
+					</slot>
+				</span>
+			</span>
 		</slot>
 	</component>
 </template>
@@ -130,9 +116,7 @@
 	import type { ComputedRef, ExtractPropTypes } from 'vue'
 	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
-	import OrigamLoader from '../Loader/OrigamLoader.vue'
 	import OrigamProgress from '../Progress/OrigamProgress.vue'
-	import OrigamSkeleton from '../Skeleton/OrigamSkeleton.vue'
 
 	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
@@ -254,7 +238,7 @@
 	 *  Kept out of the template so the markup stays as readable as a wireframe.
 	 ********************************************************/
 	const isAnchor = computed(() => link.tag.value === 'a')
-	const ariaDisabled = computed(() => (isAnchor.value && isDisabled.value ? 'true' : undefined))
+	const ariaDisabled = computed(() => ((isAnchor.value && isDisabled.value) || isLoading.value ? 'true' : undefined))
 	const hrefAttr = computed(() => (isAnchor.value && isDisabled.value ? undefined : link.href.value))
 	const typeAttr = computed(() => (isAnchor.value ? undefined : 'button'))
 
@@ -284,7 +268,7 @@
 	 ********************************************************/
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
-	const {loaderClasses, loaderConfig} = useLoader(props, LOADER_KIND.CIRCULAR)
+	const {loaderClasses, isLoading, loaderConfig} = useLoader(props, LOADER_KIND.CIRCULAR)
 	const {locationStyles} = useLocation(props)
 	const {positionClasses} = usePosition(props)
 	const {sizeClasses, sizeStyles} = useSize(props)
@@ -324,6 +308,22 @@
 	/*********************************************************
 	 * Click handler
 	 ********************************************************/
+	/*********************************************************
+	 * Click capture while loading
+	 *
+	 * @description
+	 * `aria-disabled` is not `disabled`: the keyboard (Enter / Space) still activates a busy button, an anchor would still follow its `href`, and a consumer's `@click` would still run - a double submit while the first one is in flight, which is what `loading` exists to prevent.
+	 *
+	 * @description
+	 * The capture listener runs first on the target, so it swallows all three.
+	 ********************************************************/
+	const handleClickCapture = (e: MouseEvent) => {
+		if (!isLoading.value) return
+
+		e.preventDefault()
+		e.stopImmediatePropagation()
+	}
+
 	const handleClick = (e: MouseEvent) => {
 		if (
 				isDisabled.value ||
@@ -352,9 +352,6 @@
 	 ********************************************************/
 	const hasIcon = computed(() => {
 		return !!(icon.value && props.icon !== true)
-	})
-	const hasLoader = computed(() => {
-		return slots.loader || loaderConfig.value.isActive
 	})
 
 	/*********************************************************
@@ -394,27 +391,26 @@
 		})
 	}
 
-	// Skeleton mode REPLACES the btn content entirely — OrigamLoader's
-	// v-if removes the default slot from the DOM, so the btn collapses
-	// to the skeleton's bounds. Used as the `:loading` prop of the
-	// wrapping OrigamLoader.
-	const isSkeletonLoading = computed(() => {
-		return loaderConfig.value.isActive && loaderConfig.value.kind === 'skeleton'
-	})
+	/*********************************************************
+	 * Loader overlay
+	 *
+	 * @description
+	 * An action in flight NEVER replaces the btn content: the label, prepend and append stay rendered (accessible name intact, width stable), and an indicator is laid over them - a thin strip for `line`, a centred spinner for everything else.
+	 *
+	 * @description
+	 * `skeleton` is refused at compile time (`TControlLoadingValue`); a value that slips past the types at runtime degrades to the spinner rather than to a placeholder.
+	 ********************************************************/
+	const isOverlayLoading = computed(() => loaderConfig.value.isActive)
 
-	// Line / circular loaders OVERLAY the regular content (so the label
-	// stays in the DOM, reserving the btn's natural width and — for
-	// linear — staying visible behind the progress strip). Driven inside
-	// the #default slot of OrigamLoader, which renders only when
-	// `:loading` is false (= non-skeleton modes).
-	const isOverlayLoading = computed(() => {
-		return loaderConfig.value.isActive && (
-			loaderConfig.value.kind === 'line' ||
-			loaderConfig.value.kind === 'circular'
-		)
-	})
+	const loaderKind = computed(() => (loaderConfig.value.kind === 'line' ? 'line' : 'circular'))
 
-	const ariaBusy = computed(() => (loaderConfig.value.isActive ? 'true' : undefined))
+	/*********************************************************
+	 * aria-busy
+	 *
+	 * @description
+	 * `aria-busy` + `aria-disabled`, never the native `disabled`: the button keeps focus (and its place in the tab order) while the action runs.
+	 ********************************************************/
+	const ariaBusy = computed(() => (isLoading.value ? 'true' : undefined))
 
 	/*********************************************************
 	 * Forwarded props
@@ -435,7 +431,7 @@
 					size: '23',
 					indeterminate: cfg.indeterminate,
 					modelValue: cfg.modelValue,
-					type: cfg.kind === 'line' ? PROGRESS_TYPE.LINEAR : PROGRESS_TYPE.CIRCULAR
+					type: loaderKind.value === 'line' ? PROGRESS_TYPE.LINEAR : PROGRESS_TYPE.CIRCULAR
 				},
 				origamProgressRef.value?.filterProps(props as Partial<ExtractPropTypes<IProgressProps>>, ['class', 'style', 'id', 'tag', 'size', 'type']) ?? {},
 				cfg.overrides)
@@ -472,14 +468,14 @@
 				// so consumers can pick either spelling.
 				'origam-btn--flat': props.flat,
 				'origam-btn--icon': !!props.icon,
-				'origam-btn--loading': loaderConfig.value.isActive,
+				// `origam-btn--loading` comes from `loaderClasses` below: one
+				// source, emitted once.
 				// Loader-kind discriminator so SCSS can branch per kind:
-				//   • `--loader-line`     → linear progress strip overlay,
+				//   - `--loader-line`     -> linear progress strip overlay,
 				//      keeps the label visible (like OrigamCard's loader).
-				//   • `--loader-circular` → centred spinner; label hidden.
-				//   • `--loader-skeleton` → full-box shimmer; label hidden,
-				//      btn keeps a min-width so it doesn't collapse.
-				[`origam-btn--loader-${loaderConfig.value.kind}`]: loaderConfig.value.isActive,
+				//   - `--loader-circular` -> centred spinner over the label,
+				//      which stays in the DOM (width and name preserved).
+				[`origam-btn--loader-${loaderKind.value}`]: isLoading.value,
 				'origam-btn--slim': props.slim,
 				'origam-btn--stacked': props.stacked
 			},
@@ -1074,23 +1070,6 @@
 				inset: 0 !important;
 				margin: auto !important;
 				pointer-events: none;
-			}
-		}
-
-		// Skeleton — rectangular placeholder REPLACES the btn content
-		// entirely (OrigamLoader's #loader branch). The btn collapses to
-		// the skeleton's natural size unless we give it a sensible
-		// min-width / min-height.
-		&--loader-skeleton {
-			min-width: var(--origam-btn--loader-skeleton---min-width, 96px);
-			min-height: var(--origam-btn--loader-skeleton---min-height, 36px);
-
-			:deep(.origam-skeleton--rectangular) {
-				position: absolute;
-				inset: 0;
-				width: 100%;
-				height: 100%;
-				border-radius: inherit;
 			}
 		}
 

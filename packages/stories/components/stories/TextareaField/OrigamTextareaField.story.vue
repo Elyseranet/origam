@@ -222,6 +222,23 @@
 			</div>
 		</Variant>
 
+		<Variant title="Loading">
+			<div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+				<origam-textarea-field
+						:loading="{ type: 'circular' }"
+						model-value="Saved text"
+						label="Saving textarea (circular)"
+						data-cy="textarea-loading-circular"
+				/>
+				<origam-textarea-field
+						:loading="{ type: 'line' }"
+						model-value="Saved text"
+						label="Saving textarea (line)"
+						data-cy="textarea-loading-line"
+				/>
+			</div>
+		</Variant>
+
 		<Variant title="Events - update:modelValue">
 			<origam-textarea-field
 					v-model="emitModel"
@@ -479,7 +496,7 @@
 	import { OrigamIcon, OrigamTextareaField } from '@origam/components'
 	import { MDI_ICONS, TEXTAREA_MODE, TEXTAREA_OUTPUT, TEXTAREA_TOOLBAR_POSITION } from '@origam/enums'
 	import type { ITextareaFieldProps } from '@origam/interfaces'
-	import type { TLoadingValue, TTextareaMode, TTextareaOutput, TTextareaToolbarPosition } from '@origam/types'
+	import type { TControlLoadingValue, TTextareaMode, TTextareaOutput, TTextareaToolbarPosition } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
@@ -496,7 +513,7 @@
 
 	interface ILoadingState {
 		enabled: boolean
-		kind: 'bool' | 'number' | 'line' | 'circular' | 'skeleton'
+		kind: 'bool' | 'number' | 'line' | 'circular'
 		progress: number
 		circularSize: number
 	}
@@ -505,8 +522,7 @@
 		{ label: 'true (default)', value: 'bool' },
 		{ label: 'number', value: 'number' },
 		{ label: '{ type: line }', value: 'line' },
-		{ label: '{ type: circular }', value: 'circular' },
-		{ label: '{ type: skeleton }', value: 'skeleton' }
+		{ label: '{ type: circular }', value: 'circular' }
 	]
 
 	const TEXTAREA_MODE_OPTIONS = [
@@ -525,13 +541,12 @@
 		{ label: 'floating', value: TEXTAREA_TOOLBAR_POSITION.FLOATING }
 	]
 
-	const resolveLoading = (state: ILoadingState): TLoadingValue => {
+	const resolveLoading = (state: ILoadingState): TControlLoadingValue => {
 		if (!state.enabled) return false
 		if (state.kind === 'bool') return true
 		if (state.kind === 'number') return state.progress
 		if (state.kind === 'line') return { type: 'line' }
 		if (state.kind === 'circular') return { type: 'circular', size: state.circularSize }
-		if (state.kind === 'skeleton') return { type: 'skeleton' }
 		return false
 	}
 

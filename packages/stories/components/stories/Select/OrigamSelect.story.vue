@@ -151,6 +151,23 @@
 			</template>
 		</Variant>
 
+		<Variant title="Loading">
+			<div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+				<origam-select
+						:loading="{ type: 'circular' }"
+						:items="['Alpha', 'Beta']" model-value="Alpha"
+						label="Saving select (circular)"
+						data-cy="select-loading-circular"
+				/>
+				<origam-select
+						:loading="{ type: 'line' }"
+						:items="['Alpha', 'Beta']" model-value="Alpha"
+						label="Saving select (line)"
+						data-cy="select-loading-line"
+				/>
+			</div>
+		</Variant>
+
 		<Variant title="Events - update:modelValue">
 			<origam-select
 					v-model="emitModel"
@@ -536,7 +553,7 @@
 	import { OrigamChip, OrigamIcon, OrigamSelect } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
 	import type { ISelectProps } from '@origam/interfaces'
-	import type { TLoadingValue } from '@origam/types'
+	import type { TControlLoadingValue } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
@@ -554,7 +571,7 @@
 
 	interface ILoadingState {
 		enabled: boolean
-		kind: 'bool' | 'number' | 'line' | 'circular' | 'skeleton'
+		kind: 'bool' | 'number' | 'line' | 'circular'
 		progress: number
 		circularSize: number
 	}
@@ -563,17 +580,15 @@
 		{ label: 'true (default)', value: 'bool' },
 		{ label: 'number', value: 'number' },
 		{ label: '{ type: line }', value: 'line' },
-		{ label: '{ type: circular }', value: 'circular' },
-		{ label: '{ type: skeleton }', value: 'skeleton' }
+		{ label: '{ type: circular }', value: 'circular' }
 	]
 
-	const resolveLoading = (state: ILoadingState): TLoadingValue => {
+	const resolveLoading = (state: ILoadingState): TControlLoadingValue => {
 		if (!state.enabled) return false
 		if (state.kind === 'bool') return true
 		if (state.kind === 'number') return state.progress
 		if (state.kind === 'line') return { type: 'line' }
 		if (state.kind === 'circular') return { type: 'circular', size: state.circularSize }
-		if (state.kind === 'skeleton') return { type: 'skeleton' }
 
 		return false
 	}

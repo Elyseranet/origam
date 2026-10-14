@@ -147,7 +147,7 @@ test.describe('OrigamTextareaField — richtext mode', () => {
     })
 
     test('Slot toolbar — replaces the default toolbar', async ({ page }) => {
-        await gotoVariant(page, 28)
+        await gotoVariant(page, 29)
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const custom = sandbox.locator('[data-cy="textarea-rich-slot-toolbar-custom"]')
         await expect(custom).toBeVisible({ timeout: ARROW_TIMEOUT })
@@ -157,7 +157,7 @@ test.describe('OrigamTextareaField — richtext mode', () => {
     })
 
     test('Emit format — counter increments on every toolbar click', async ({ page }) => {
-        await gotoVariant(page, 12)
+        await gotoVariant(page, 13)
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const editor = sandbox.locator('[data-cy="textarea-rich-emit-format"] [data-cy="origam-textarea-rich-host"]')
         const boldBtn = sandbox.locator('[data-cy="textarea-rich-emit-format"] [data-cy="origam-rich-toolbar-bold"]')

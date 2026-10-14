@@ -3,7 +3,7 @@
 // Strategy: mount with createOrigam() + stubs for all sub-components so
 // the spec is hermetic. We exercise:
 //   - BEM root classes: origam-switch, --inset, --indeterminate
-//   - skeleton loader branch (loading kind=skeleton → origam-switch__skeleton)
+//   - a save in flight keeps the control (no skeleton branch since lot 2a)
 //   - reactive indeterminate class changes
 //   - custom class forwarded to root
 
@@ -131,27 +131,22 @@ describe('OrigamSwitch — BEM root class', () => {
     })
 })
 
-describe('OrigamSwitch — skeleton loader branch', () => {
-    // The loading prop object form uses the key `type` (not `kind`) per the
-    // TLoaderConfig interface consumed by useLoader. The resolved loaderConfig
-    // then exposes `kind` after normalisation.
-    it('renders the skeleton placeholder when loading type is skeleton', () => {
-        const wrapper = mountSwitch({ props: { loading: { type: 'skeleton' } as any } })
-        expect(wrapper.find('.origam-switch__skeleton').exists()).toBe(true)
-        // The main input wrapper should NOT be rendered in skeleton mode
-        expect(wrapper.find('.origam-input').exists()).toBe(false)
-    })
-
-    it('adds --inset modifier to the skeleton when inset=true', () => {
-        const wrapper = mountSwitch({ props: { loading: { type: 'skeleton' } as any, inset: true } })
-        expect(wrapper.find('.origam-switch__skeleton--inset').exists()).toBe(true)
-    })
-
-    it('renders aria-busy and role=status on the skeleton', () => {
-        const wrapper = mountSwitch({ props: { loading: { type: 'skeleton' } as any } })
-        const skeleton = wrapper.find('.origam-switch__skeleton')
-        expect(skeleton.attributes('aria-busy')).toBe('true')
-        expect(skeleton.attributes('role')).toBe('status')
+describe('OrigamSwitch — a save in flight never replaces the control (lot 2a)', () => {
+    // `{ type: 'skeleton' }` is refused at compile time (TControlLoadingValue).
+    // A value that slips past the types at runtime must NOT bring the old
+    // placeholder back: the switch keeps rendering its control.
+    it.each([
+        ['true', true],
+        ['a number', 42],
+        ['{ type: line }', { type: 'line' }],
+        ['{ type: circular }', { type: 'circular' }],
+        ['{ type: skeleton } (untyped caller)', { type: 'skeleton' }]
+    ])('keeps the input wrapper and the checkbox when loading=%s', (_label, loading) => {
+        const wrapper = mountSwitch({ props: { loading: loading as any, label: 'Notifications' } })
+        expect(wrapper.find('.origam-input').exists()).toBe(true)
+        // (checkbox + label are asserted unstubbed in
+        // TU/components/Commons/controls-loading-no-skeleton.spec.ts)
+        expect(wrapper.find('.origam-switch__skeleton').exists()).toBe(false)
     })
 })
 
@@ -213,8 +208,8 @@ describe('OrigamSwitch — custom class / style', () => {
     })
 })
 
-describe('OrigamSwitch — non-skeleton loader renders the input branch', () => {
-    it('renders the origam-input wrapper when NOT in skeleton mode', () => {
+describe('OrigamSwitch — idle renders the input branch', () => {
+    it('renders the origam-input wrapper when not loading', () => {
         const wrapper = mountSwitch({ props: { loading: false } })
         expect(wrapper.find('.origam-input').exists()).toBe(true)
         expect(wrapper.find('.origam-switch__skeleton').exists()).toBe(false)
