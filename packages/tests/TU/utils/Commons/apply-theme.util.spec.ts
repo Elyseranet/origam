@@ -152,8 +152,9 @@ describe('themeSelector — name / mode scoping', () => {
     it('[data-theme] when name only', () => {
         expect(themeSelector({ name: 'brand-a' })).toBe(':root:root[data-theme="brand-a"], [data-theme="brand-a"]')
     })
-    it('[data-mode] when mode only', () => {
-        expect(themeSelector({ mode: 'dark' })).toBe('[data-mode="dark"]')
+    it('html-anchored [data-mode] when mode only (#1102)', () => {
+        expect(themeSelector({ mode: 'dark' })).toBe('html[data-mode="dark"]:not([data-theme="light"]), [data-mode="dark"]:not([data-theme]):not([data-theme="light"])')
+        expect(themeSelector({ mode: 'light' })).toBe('html[data-mode="light"], [data-mode="light"]:not([data-theme])')
     })
     it('compound when name + mode', () => {
         expect(themeSelector({ name: 'brand-a', mode: 'dark' })).toBe(':root:root[data-theme="brand-a"][data-mode="dark"], [data-theme="brand-a"][data-mode="dark"]')

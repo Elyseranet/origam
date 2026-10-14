@@ -104,7 +104,8 @@ export function resolveThemeVars (theme: IOrigamTheme): TThemeVars {
  * Compute the CSS selector a theme block targets, from its `name` / `mode`:
  *   - neither            → `:root`
  *   - name only          → `[data-theme="<name>"]`
- *   - mode only          → `[data-mode="<mode>"]`
+ *   - mode only          → `html[data-mode="<mode>"], [data-mode="<mode>"]:not([data-theme])`
+ *                          (dark adds `:not([data-theme="light"])`, see #1102)
  *   - name + mode        → `[data-theme="<name>"][data-mode="<mode>"]`
  *
  * A `mode` of `'auto'` is treated as "no mode scoping".
@@ -115,8 +116,39 @@ export function themeSelector (theme: IOrigamTheme): string {
 
     if (!hasName && !hasMode) return ':root'
 
-    // A mode-only theme (the DS dark baseline) keeps the plain attribute selector.
-    if (!hasName) return `[data-mode="${theme.mode}"]`
+    /*********************************************************
+     * Unnamed (mode-only) theme — #1102
+     *
+     * @description
+     * A mode-only theme must beat the built-in palette of ITS mode (#1102), and
+     * still lose to every named brand. Specificities (root CLAUDE.md, §Multi-theme):
+     *
+     *   built-in dark   [data-mode="dark"]:not([data-theme="light"])   (0,2,0)
+     *   built-in light  :root, [data-theme="light"], [data-mode="light"] (0,1,0)
+     *   named brand     :root:root[data-theme=X](…[data-mode=Y])   (0,3,0) / (0,4,0)
+     *   sub-tree brand  [data-theme=X](…[data-mode=Y])             (0,1,0) / (0,2,0)
+     *                   (never matched by the sub-tree form below)
+     *
+     * The document-root form is anchored on the `html` TYPE selector, which adds
+     * (0,0,1) to the sheet's own selector: dark = (0,2,1), light = (0,1,1). That
+     * beats the palette independently of source order, and stays below every
+     * `:root:root[…]` brand block. The sub-tree form excludes any element that
+     * carries a `data-theme` (`:not([data-theme])`): a sub-tree brand
+     * `[data-theme=X][data-mode=dark]` (0,2,0) can then never tie with it, and
+     * the extra `:not()` lifts dark to (0,3,0) / light to (0,2,0), so a bare
+     * `<OrigamThemeProvider mode>` sub-tree still beats the palette in any order.
+     * `:not([data-theme="light"])` keeps #807: the brand axis governs when the
+     * two contradict, so `data-theme="light" data-mode="dark"` stays light.
+     ********************************************************/
+    if (!hasName) {
+        const root = theme.mode === 'dark'
+            ? 'html[data-mode="dark"]:not([data-theme="light"])'
+            : 'html[data-mode="light"]'
+        const subtree = theme.mode === 'dark'
+            ? '[data-mode="dark"]:not([data-theme]):not([data-theme="light"])'
+            : '[data-mode="light"]:not([data-theme])'
+        return `${root}, ${subtree}`
+    }
 
     // Named brand themes emit TWO selectors:
     //   - `:root:root[data-theme=…]` (specificity 0,3,0) → wins at the document

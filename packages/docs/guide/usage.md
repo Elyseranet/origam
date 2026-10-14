@@ -59,7 +59,9 @@ Comportement :
 - **SSR-safe** : l'injection est un no-op côté serveur (`document`
   absent) ; les variables sont posées à la première installation client.
 - **Sans `name`** : les variables sont injectées sur `:root` (thème par
-  défaut global). **Avec `name`** : elles sont scopées sur
+  défaut global) ; avec un `mode` seul, sur `html[data-mode="<mode>"]`, qui
+  l'emporte sur la palette intégrée de ce mode mais reste en dessous de toute
+  marque nommée. **Avec `name`** : elles sont scopées sur
   `[data-theme="<name>"]` et ne s'appliquent que lorsque ce thème est
   actif.
 - **Naming partagé** : un arbre `tokens` est résolu via le même util

@@ -18,6 +18,10 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — un theme sans `name` avec `mode` l'emporte sur la palette integree du meme mode (#1102)
+
+`themeSelector({ mode: 'dark' })` emettait `[data-mode="dark"]` (0,1,0) face a `[data-mode="dark"]:not([data-theme="light"])` (0,2,0) de `dark.css` : le theme sombre sans nom perdait sur `theme=dark/mode=dark`, `mode=dark` seul et `theme=site/mode=dark` (mesure Chromium : `--origam-color__action--primary---bg` restait a `#7c3aed`). Il peignait aussi sombre sous `data-theme="light" data-mode="dark"` par egalite d'ordre source (regle #807 violee). Le selecteur est desormais `html[data-mode="…"]` (dark : `(0,2,1)`, `:not([data-theme="light"])` conserve ; light : `(0,1,1)`), independant de l'ordre d'injection, et reste sous les blocs `:root:root[data-theme]` des marques nommees. Le doc `theme.interface.ts` (« scoped to `:root` ») est corrige. Spec : `unnamed-theme-specificity.spec.ts`.
+
 ## [2.26.1] - 2026-10-14
 
 ### Fixed — `warnLegacyColor` : dev uniquement, et plus d'avertissement pour `var()` / `color-mix()` (#1099)
