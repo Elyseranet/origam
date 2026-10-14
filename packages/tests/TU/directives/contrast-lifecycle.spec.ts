@@ -35,8 +35,9 @@ describe('v-contrast — timer lifecycle (#483)', () => {
 
         app.mount(container)
 
-        // `mounted` schedules exactly one rAF + one setTimeout.
-        expect(vi.getTimerCount()).toBe(2)
+        // `mounted` schedules exactly ONE rAF (#1092: the fixed 250 ms
+        // setTimeout is gone, the measure waits for the real transitions).
+        expect(vi.getTimerCount()).toBe(1)
 
         app.unmount()
 
@@ -52,7 +53,7 @@ describe('v-contrast — timer lifecycle (#483)', () => {
         })
 
         app.mount(container)
-        expect(vi.getTimerCount()).toBe(2)
+        expect(vi.getTimerCount()).toBe(1)
 
         for (let i = 0; i < 5; i += 1) {
             enabled.value = !enabled.value
@@ -61,8 +62,8 @@ describe('v-contrast — timer lifecycle (#483)', () => {
         }
 
         // RED before the fix: `schedule()` never cancels the previous pair,
-        // so 1 mount + 5 updates leaves 12 timers in flight instead of 2.
-        expect(vi.getTimerCount()).toBe(2)
+        // so 1 mount + 5 updates leaves 6 timers in flight instead of 1.
+        expect(vi.getTimerCount()).toBe(1)
 
         app.unmount()
         expect(vi.getTimerCount()).toBe(0)

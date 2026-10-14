@@ -115,6 +115,56 @@ export default defineNuxtConfig({
 | `includeUtilities` | `boolean` | `true` | Inject the utility-classes stylesheet (`origam-utilities.css`). |
 | `prefix` | `string` | `'Origam'` | Reserved for future use. origam components already ship prefixed, so the active prefix is empty. |
 
+## SSR — per-instance styles (`useStyle`)
+
+Components that paint through a per-instance rule (`OrigamBtn`, `OrigamAvatar`,
+`OrigamStepper`… — everything built on `useStyle()`) used to write that rule
+into `<head>` from `onMounted`, which never runs on the server: the served HTML
+carried the element but not its background, radius or colour, and the page
+changed look at hydration.
+
+On the server `useStyle()` now registers its rule in a per-app collector, and
+the Nuxt server plugin pushes every collected rule into the head (one
+`<style id="origam-style-…">` per instance) after the render, before the head is
+serialised. Nothing to configure.
+
+- The tag `id` comes from the instance's `useId()` value, identical on the
+  server and at hydration, so the client **reuses** the server's `<style>`
+  instead of adding a second one.
+- A value containing `</style` cannot close the tag: it is escaped.
+- ⚠️ Not verified: Nuxt's streaming SSR (`experimental.ssrStreaming`), where
+  the head can be flushed before the whole tree has rendered.
+
+### Plain Vue SSR (no Nuxt)
+
+`createOrigam()` provides the collector on the server by itself. After the
+render, read the rules back and put them in your `<head>`:
+
+```ts
+import { createSSRApp } from 'vue'
+import { renderToString } from 'vue/server-renderer'
+import { createOrigam } from 'origam'
+import { renderSsrStyles } from 'origam/utils'
+
+const app = createSSRApp(App)
+app.use(createOrigam({ themes, ssr: true }))
+
+const html = await renderToString(app)
+const styles = renderSsrStyles(app)   // '<style id="origam-style-…">…</style>…'
+
+const page = `<!doctype html><html><head>${styles}</head><body><div id="app">${html}</div></body></html>`
+```
+
+Create the app (and so call `app.use(createOrigam(...))`) **per request**: the
+collector belongs to the app, which is what keeps one request's rules out of
+another's. `getSsrStyles(app)` returns the same rules as `{ id, css }[]` if you
+assemble the head yourself.
+
+Two apps mounted in the same document derive the same ids (ids are unique per
+app, not per document). The second `useStyle` no longer shares the first one's
+`<style>`: it gets a tag of its own. Give one of the apps its own
+`app.config.idPrefix` to keep the **element** ids distinct as well.
+
 ## SSR theme + mode resolution
 
 The server plugin reads the `origam-theme` and `origam-mode` cookies

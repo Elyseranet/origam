@@ -146,15 +146,20 @@ export default defineNuxtPlugin({
 
         nuxtApp.vueApp.use(origam)
 
-        // #1092 — the `useStyle()` rules of every component, registered during
-        // the render (see `ssr-styles.util.ts`). `app:rendered` fires after
-        // `renderToString` and BEFORE the head is serialised, so the rules
-        // collected by the whole render are pushed into it here. Same `id` as
-        // the tag the client looks up at mount, so it is reused, not doubled.
+        /*********************************************************
+         * useStyle() rules in the head (#1092)
+         *
+         * @description
+         * The rules of every component, registered during the render (see
+         * `ssr-styles.util.ts`). `app:rendered` fires after `renderToString`
+         * and BEFORE the head is serialised, so the rules collected by the
+         * whole render are pushed into it here. Same `id` as the tag the client
+         * looks up at mount, so it is reused, not doubled.
+         ********************************************************/
         nuxtApp.hook('app:rendered', ({ ssrContext }) => {
             const styles = getSsrStyles(nuxtApp.vueApp)
 
-            if (styles.length) {
+            if (styles.length && ssrContext) {
                 ssrContext.head.push({
                     style: styles.map(({ id, css }) => ({ id, key: id, innerHTML: css }))
                 })

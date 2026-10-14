@@ -1,10 +1,6 @@
-import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
-import { tmpdir } from 'node:os'
-import { dirname, join, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-
 import { expect, test } from '@playwright/test'
-import ts from 'typescript'
+
+import { writeContrastHarnessPage } from './_support/contrast-harness'
 
 /**
  * #869 — `v-contrast` was silently inert whenever fg AND bg were both
@@ -42,82 +38,16 @@ import ts from 'typescript'
  * Histoire/:6006 dependency, no server-port contention).
  */
 
-const HERE = dirname(fileURLToPath(import.meta.url))
-const DIRECTIVE_SRC_PATH = resolve(HERE, '..', '..', 'ds', 'src', 'directives', 'Contrast', 'contrast.directive.ts')
-const OUT_DIR = mkdtempSync(join(tmpdir(), 'origam-869-'))
+// Built once: identical content for every test in this file. `dev: true` keeps the
+// development build, the one that carries the console warning this spec observes.
+const HARNESS_PAGE_FILE = writeContrastHarnessPage(true, 'origam-869-')
 
-/**
- * Compile the real directive source to a dependency-free CLASSIC script
- * (not `type="module"` — ES modules are blocked by CORS over `file://` in
- * Chromium, and this file has no runtime imports to preserve: both of its
- * `import type` lines are erased by `transpileModule`, which needs no
- * type-checker/program to know that — the syntax alone marks them type-only).
- * The two remaining `export` keywords are stripped (invalid outside a
- * module) and every symbol this spec needs is exposed on `window` instead —
- * production's actual export surface (`setContrastConfig` + default
- * `vContrast`) is untouched.
- */
-function buildHarnessScript (): string {
-    const source = readFileSync(DIRECTIVE_SRC_PATH, 'utf8')
-    const { outputText } = ts.transpileModule(source, {
-        compilerOptions: {
-            module: ts.ModuleKind.ESNext,
-            target: ts.ScriptTarget.ES2020
-        }
-    })
-
-    const withoutDefaultExport = outputText.replace(/^export default vContrast;\s*$/m, '')
-    const withoutNamedExport = withoutDefaultExport.replace(/^export function setContrastConfig\(/m, 'function setContrastConfig(')
-
-    // Guard against a silent no-op: if the source's shape changes (renamed
-    // symbol, reformatted export), these regexes must be updated — not left
-    // to fail with a confusing "vContrast is not defined" browser error.
-    if (withoutDefaultExport === outputText) {
-        throw new Error('contrast.directive.ts: `export default vContrast;` not found — update buildHarnessScript()')
-    }
-    if (withoutNamedExport === withoutDefaultExport) {
-        throw new Error('contrast.directive.ts: `export function setContrastConfig(` not found — update buildHarnessScript()')
-    }
-
-    return `${withoutNamedExport}
-window.__origamContrast = { vContrast, setContrastConfig };
-window.__origamContrastInternal = { toRgb, channelsOf, hexToRgb, resolvePaintedBackground, enforceContrast };
-`
-}
-
-function buildPage (): string {
-    return `<!doctype html>
-<html lang="fr">
-<head><meta charset="utf-8"><title>#869 v-contrast harness</title></head>
-<body>
-<script>${buildHarnessScript()}</script>
-</body>
-</html>`
-}
-
-function pageFile (): string {
-    const file = join(OUT_DIR, 'harness.html')
-    writeFileSync(file, buildPage())
-    return file
-}
-
-// Built once: identical content for every test in this file.
-const HARNESS_PAGE_FILE = pageFile()
-
-// `schedule()` queues BOTH a rAF callback and a 250ms settle-timer callback,
-// and `enforceContrast` unconditionally `delete`s the dataset flag at the
-// TOP of every one of its own invocations (pre-existing "mechanism" —
-// untouched by #869). On a STATIC pair (no CSS transition in flight — the
-// case every scenario below exercises) the rAF call already forces the
-// colour; by the time the settle call re-measures, the ALREADY-fixed colour
-// now passes and it returns early WITHOUT re-setting the flag. Measured:
-//
-//   +80ms  (post-rAF, pre-settle) → fixed: true
-//   +580ms (post-settle)          → fixed: undefined   (colour stays fixed)
-//
-// So the flag is a TRANSIENT signal, true only in the window right after the
-// invocation that actually forced a colour — the settled colour itself is
-// the durable proof. Both checkpoints are read below.
+// Since #1092 `schedule()` queues ONE rAF, which measures once the surface's
+// transitions have settled (the former second pass, a fixed 250 ms timer, is
+// gone). On a STATIC pair (no CSS transition in flight — the case every
+// scenario below exercises) that single pass forces the colour at once and the
+// data flag stays set. Both checkpoints are still read: the settled colour is
+// the durable proof.
 const POST_RAF_WAIT_MS = 80
 const POST_SETTLE_WAIT_MS = 500
 

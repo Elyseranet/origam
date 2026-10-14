@@ -17,15 +17,27 @@ import type { ISsrStyleCollector, ISsrStyleEntry } from '../../interfaces/Common
  * The collector is keyed by the Vue APP, not by a module global: a persistent
  * server process renders many requests, and a shared registry would hand one
  * request's rules to another. `createOrigam()` installs one per `app.use()`.
+ *
+ * @description
+ * `escapeStyleText`: a `<style>` element ends at the first `</style`, whatever
+ * the CSS says, so a style value that contains it (a colour prop forwarded
+ * from user input) would close the tag and inject markup. `<\/style` is the
+ * same CSS (`\/` is an escaped `/`) and is not an end tag.
+ *
+ * @description
+ * `getSsrStyles(app)` returns the rules of a finished server render, one entry
+ * per component instance (empty when the app was never installed on the
+ * server), for hosts that assemble their own head: Nuxt feeds it to `useHead`.
+ *
+ * @description
+ * `renderSsrStyles(app)` returns the same rules as ready-to-insert `<style>`
+ * tags, for plain Vue SSR (no Nuxt):
+ * `const html = await renderToString(app)`, then put
+ * `renderSsrStyles(app)` inside `<head>`. Each tag keeps its `id`, which is
+ * what lets the client reuse it at mount instead of stacking a second one.
  ********************************************************/
 const collectors = new WeakMap<App, ISsrStyleCollector>()
 
-/**
- * A `<style>` element ends at the first `</style`, whatever the CSS says, so a
- * style value that contains it (a colour prop forwarded from user input)
- * would close the tag and inject markup. `<\/style` is the same CSS (`\/` is
- * an escaped `/`) and is not an end tag.
- */
 function escapeStyleText (css: string): string {
     return css.replace(/<\/(style)/gi, '<\\/$1')
 }
@@ -43,7 +55,6 @@ export function createSsrStyleCollector (): ISsrStyleCollector {
     }
 }
 
-/** Create and remember the collector of `app`. Called by `createOrigam()`. */
 export function registerSsrStyleCollector (app: App): ISsrStyleCollector {
     const collector = createSsrStyleCollector()
 
@@ -52,29 +63,10 @@ export function registerSsrStyleCollector (app: App): ISsrStyleCollector {
     return collector
 }
 
-/**
- * The `useStyle()` rules of a finished server render, one entry per
- * component instance. Empty when the app was never installed on the server.
- *
- * For hosts that assemble their own head (Nuxt feeds this to `useHead`).
- */
 export function getSsrStyles (app: App): ISsrStyleEntry[] {
     return collectors.get(app)?.entries() ?? []
 }
 
-/**
- * The same rules as ready-to-insert `<style>` tags.
- *
- * Plain Vue SSR (no Nuxt):
- *
- * ```ts
- * const html = await renderToString(app)
- * const head = renderSsrStyles(app)   // put it inside <head>
- * ```
- *
- * Each tag keeps its `id`, which is what lets the client reuse it at mount
- * instead of stacking a second one.
- */
 export function renderSsrStyles (app: App): string {
     return getSsrStyles(app)
         .map(({ id, css }) => `<style id="${id}">${css}</style>`)

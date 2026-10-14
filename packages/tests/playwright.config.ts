@@ -224,6 +224,13 @@ const GREEN_SPECS = [
     // tests rougissent (seul le controle negatif noir-sur-blanc reste vert
     // des deux cotes, comme attendu).
     'contrast-directive.spec.ts',
+    // #1092 — `v-contrast` : UNE mesure, prise apres la fin reelle de la
+    // transition (et non a 250 ms fixes), et aucun log dans un build de prod.
+    // A/B contre le directive de `develop` : 2 des 3 tests rougissent (la mesure
+    // arrive a ~252 ms, avant la fin d'une transition de 280 ms ; le build de
+    // prod logge encore) ; le 3e (sans transition) est le temoin vert des deux
+    // cotes. Stable `--repeat-each=5`, chromium, sans serveur (page file://).
+    'contrast-directive-settle.spec.ts',
     // #411 — `OrigamChartMap.borderColor` etait applique au `stroke` du
     // pays sans passer par `resolveColor()` : un theme nommant l'intent
     // (`components['origam-chart-map'].borderColor`) atteignait deja la

@@ -2,6 +2,7 @@ import 'vue/jsx'
 
 // Types
 import type { Events } from 'vue'
+import type { IContrastScheduled } from './interfaces/Commons/commons.interface'
 import type { ITouchStoredEntry } from './interfaces/Commons/touch.interface'
 
 declare global {
@@ -85,11 +86,7 @@ declare global {
         _touchHandlers?: {
             [_uid: number]: ITouchStoredEntry
         }
-        _contrastTimers?: {
-            raf?: number
-            timeout?: number
-            cancelled?: boolean
-        }
+        _contrastTimers?: IContrastScheduled
         _transitionInitialStyles?: {
             position: string
             top: string

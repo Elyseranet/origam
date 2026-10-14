@@ -25,7 +25,7 @@ declare module '#app' {
 
     interface NuxtApp {
         vueApp: App<Element>
-        hook (name: 'app:rendered', callback: (ctx: { ssrContext: { head: { push (input: Record<string, unknown>): unknown } } }) => void | Promise<void>): () => void
+        hook (name: 'app:rendered', callback: (ctx: { ssrContext?: { head: { push (input: Record<string, unknown>): unknown } } }) => void | Promise<void>): () => void
     }
 
     // ── Plugin helpers ────────────────────────────────────────────────────

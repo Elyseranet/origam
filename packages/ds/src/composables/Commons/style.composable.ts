@@ -129,24 +129,35 @@ export function useStyle (
         return `#${escapeCssIdent(id.value)} {${stylesArray.join(';')}}`
     })
 
-    // The tag id is derived from the instance's `useId()` value, which is the
-    // same on the server and at hydration. `useStyleTag`'s own default is a
-    // module counter, unusable here: it differs between the two sides, so the
-    // client could never find the tag the server rendered.
-    // An instance may call `useStyle` several times (its own, plus the
-    // composables it uses): the call index keeps the tags apart, and it is
-    // deterministic because setup runs the same calls in the same order on
-    // both sides.
+    /*********************************************************
+     * SSR — one <style id> per useStyle() call (#1092)
+     *
+     * @description
+     * The tag id is derived from the instance's `useId()` value, the same on
+     * the server and at hydration. `useStyleTag`'s own default is a module
+     * counter, unusable here: it differs between the two sides, so the client
+     * could never find the tag the server rendered.
+     *
+     * @description
+     * An instance may call `useStyle` several times (its own, plus the
+     * composables it uses): the call index keeps the tags apart, and it is
+     * deterministic because setup runs the same calls in the same order on
+     * both sides.
+     *
+     * @description
+     * `onMounted` never runs on the server, so the rule used to exist only
+     * after hydration. The collector is provided by `createOrigam()` on the
+     * server alone (`null` on the client, no warning thanks to the default)
+     * and is handed a GETTER, read when the host collects the rules.
+     *
+     * @description
+     * On the client `load()` reuses the server's `<style id=tagId>` when it
+     * is in the document (`getElementById` first): never a second one.
+     ********************************************************/
     const tagId = `${SSR_STYLE_TAG_PREFIX}${fallbackId}-${nextStyleSlot()}`
 
-    // #1092 — `onMounted` never runs on the server, so the rule used to exist
-    // only after hydration. The collector is provided by `createOrigam()` on
-    // the server alone (`null` on the client, no warning thanks to the default).
-    // It is handed a GETTER, read when the host collects the rules.
     inject(ORIGAM_SSR_STYLES_KEY, null)?.add(tagId, () => customCss.value)
 
-    // On the client `load()` reuses the server's `<style id=tagId>` when it is
-    // in the document (`getElementById` first), so there is never a second one.
     const {id: styleTagId, css, load, unload, isLoaded} = useStyleTag(customCss, {id: tagId})
 
     onMounted(() => {

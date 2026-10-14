@@ -20,6 +20,23 @@ import { TSSROptions } from '../../types/Commons/display.type'
  * `enabled` toggles the whole feature; `threshold` is the minimum acceptable
  * WCAG contrast ratio (default 4.5:1 — AA for normal text).
  */
+/*********************************************************
+ * IContrastScheduled
+ *
+ * @description
+ * What `v-contrast` has queued for one element: the animation frame that
+ * starts the measure, the fallback timer (browsers without `getAnimations`,
+ * derived from the declared transition) and a flag that cancels a measure
+ * already waiting on a transition. Stored on the element as `_contrastTimers`.
+ ********************************************************/
+export interface IContrastScheduled {
+    raf?: number
+
+    timeout?: number
+
+    cancelled?: boolean
+}
+
 export interface IContrastOptions {
     enabled?: boolean
     threshold?: number

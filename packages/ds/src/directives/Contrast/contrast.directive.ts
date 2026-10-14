@@ -1,6 +1,6 @@
 import type { Directive, DirectiveBinding } from 'vue'
 
-import type { IContrastOptions } from '../../interfaces/Commons/commons.interface'
+import type { IContrastOptions, IContrastScheduled } from '../../interfaces/Commons/commons.interface'
 
 /**
  * Module-level contrast config, set once by `createOrigam({ contrast })`.
@@ -242,11 +242,18 @@ function enforceContrast (el: HTMLElement, enabled: boolean): void {
     el.dataset.origamContrastFixed = 'true'
 
 
-    // Diagnostic only. The CORRECTION above stays active in production (#1092):
-    // the log is for the developer who should fix the token pair, a visitor
-    // gains nothing from it and it filled the console of every production page.
-    // `import.meta.env.DEV` is statically replaced by the consumer's bundler,
-    // so the whole branch (message included) is dropped from a prod build.
+    /*********************************************************
+     * Dev-only diagnostic (#1092)
+     *
+     * @description
+     * The CORRECTION above stays active in production. The log is for the
+     * developer who should fix the token pair; a visitor gains nothing from it
+     * and it filled the console of every production page.
+     *
+     * @description
+     * The DEV flag is statically replaced by the consumer's bundler, so the
+     * whole branch (message included) is dropped from a production build.
+     ********************************************************/
     if (import.meta.env?.DEV) {
         console.warn(
             `[origam] Low text contrast (${ratio.toFixed(2)}:1 < ${config.threshold}:1): ` +
@@ -281,11 +288,22 @@ function enforceContrast (el: HTMLElement, enabled: boolean): void {
  * Browsers without `getAnimations` fall back to a timer DERIVED from the
  * computed `transition-duration` + `transition-delay` — still the real
  * duration, never a constant.
+ *
+ * @description
+ * `declaredTransitionMs`: longest `duration + delay` (ms) declared along the
+ * ancestor chain. `runningColorTransitions`: colour transitions currently
+ * running on `el` or any ancestor.
+ *
+ * @description
+ * In `settleThenEnforce`, reading `getComputedStyle(el).color` forces the
+ * style recalculation that creates the transitions this frame's change
+ * triggered — without it `getAnimations()` would still be empty. `allSettled`
+ * is used because a transition cancelled by a retarget rejects its `finished`
+ * promise; either way the next pass re-checks.
  ********************************************************/
 const MAX_SETTLE_PASSES = 4
 const COLOR_TRANSITION_PROPERTIES = new Set(['color', 'background-color'])
 
-/** Longest `duration + delay` (ms) declared along the ancestor chain. */
 function declaredTransitionMs (el: HTMLElement): number {
     const toMs = (value: string): number => {
         const n = parseFloat(value)
@@ -300,14 +318,13 @@ function declaredTransitionMs (el: HTMLElement): number {
         const delays = style.transitionDelay.split(',')
 
         durations.forEach((duration, i) => {
-            longest = Math.max(longest, toMs(duration) + toMs(delays[i % delays.length]))
+            longest = Math.max(longest, toMs(duration) + toMs(delays[i % delays.length] ?? '0'))
         })
     }
 
     return longest
 }
 
-/** Colour transitions currently running on `el` or any ancestor. */
 function runningColorTransitions (el: HTMLElement): Animation[] {
     const found: Animation[] = []
 
@@ -323,19 +340,15 @@ function runningColorTransitions (el: HTMLElement): Animation[] {
     return found
 }
 
-function settleThenEnforce (el: HTMLElement, enabled: boolean, pending: NonNullable<HTMLElement['_contrastTimers']>, pass = 0): void {
+function settleThenEnforce (el: HTMLElement, enabled: boolean, pending: IContrastScheduled, pass = 0): void {
     if (pending.cancelled) return
 
-    // Forces the style recalculation that creates the transitions this frame's
-    // change triggered — without it `getAnimations()` would still be empty.
     void getComputedStyle(el).color
 
     if (typeof el.getAnimations === 'function') {
         const running = pass < MAX_SETTLE_PASSES ? runningColorTransitions(el) : []
 
         if (running.length) {
-            // `allSettled`: a transition cancelled by a retarget rejects its
-            // `finished` promise; either way the next pass re-checks.
             void Promise.allSettled(running.map((animation) => animation.finished))
                 .then(() => settleThenEnforce(el, enabled, pending, pass + 1))
             return
@@ -382,7 +395,7 @@ function cancelScheduled (el: HTMLElement): void {
 function schedule (el: HTMLElement, enabled: boolean): void {
     cancelScheduled(el)
 
-    const pending: NonNullable<HTMLElement['_contrastTimers']> = {}
+    const pending: IContrastScheduled = {}
 
     if (typeof requestAnimationFrame !== 'undefined') {
         pending.raf = requestAnimationFrame(() => settleThenEnforce(el, enabled, pending))

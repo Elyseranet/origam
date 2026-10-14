@@ -42,21 +42,46 @@ export function useStyleTag (
 
     let stop = () => {
     }
+    /*********************************************************
+     * load / unload — adopt the server's tag, never share a live one (#1092)
+     *
+     * @description
+     * `load()` first looks the tag up by `id`: on a hydrated page that is the
+     * `<style>` the server rendered, and adopting it (instead of appending a
+     * second one) is the point. A tag is ADOPTED once: the flag marks it as
+     * owned by a live instance, so a second Vue app in the same document that
+     * derives the same id (ids are unique per app, not per document) gets a tag
+     * of its own instead of rewriting the first one's rule — and, on unmount,
+     * of removing it from under it.
+     *
+     * @description
+     * `unload()` removes the element this instance holds, not whatever
+     * `getElementById` finds: after a `document.head` wipe (a test, a host
+     * resetting the head) the lookup returns `null` and `removeChild(null)`
+     * throws.
+     ********************************************************/
+    let tag: HTMLStyleElement | undefined
+
     const load = () => {
         if (!document)
             return
 
-        const el = (document.getElementById(id) || document.createElement('style')) as HTMLStyleElement
+        if (isLoaded.value)
+            return
+
+        const existing = document.getElementById(id) as HTMLStyleElement | null
+        const adoptable = existing && existing.dataset.origamStyleOwned === undefined ? existing : undefined
+        const el = adoptable ?? document.createElement('style')
 
         if (!el.isConnected) {
-            el.id = id
+            el.id = existing ? `${id}-${++_id}` : id
             if (options.media)
                 el.media = options.media
             document.head.appendChild(el)
         }
 
-        if (isLoaded.value)
-            return
+        el.dataset.origamStyleOwned = ''
+        tag = el
 
         stop = watch(
             cssRef,
@@ -73,7 +98,8 @@ export function useStyleTag (
         if (!document || !isLoaded.value)
             return
         stop()
-        document.head.removeChild(document.getElementById(id) as HTMLStyleElement)
+        tag?.remove()
+        tag = undefined
         isLoaded.value = false
     }
 

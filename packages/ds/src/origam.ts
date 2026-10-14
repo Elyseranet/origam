@@ -163,11 +163,16 @@ export function createOrigam (origam: IOrigamOptions = {}) {
             app.provide(ORIGAM_GO_TO_KEY, goTo)
             app.provide(ORIGAM_THEMES_KEY, installedThemes)
             app.provide(ORIGAM_DEFAULTS_KEY, defaultsRef)
-            // #1092 — server render only. `useStyle()` writes its rule to
-            // `<head>` from `onMounted`, which never runs here, so it registers
-            // the rule in this per-app collector instead; the host reads it back
-            // with `renderSsrStyles(app)` (plain Vue SSR) or the Nuxt server
-            // plugin. Never provided in a browser: the registry would only grow.
+            /*********************************************************
+             * ORIGAM_SSR_STYLES_KEY (#1092)
+             *
+             * @description
+             * Server render only. `useStyle()` writes its rule to `<head>` from
+             * `onMounted`, which never runs here, so it registers the rule in
+             * this per-app collector instead; the host reads it back with
+             * `renderSsrStyles(app)` (plain Vue SSR) or the Nuxt server plugin.
+             * Never provided in a browser: the registry would only grow.
+             ********************************************************/
             if (!IN_BROWSER) {
                 app.provide(ORIGAM_SSR_STYLES_KEY, registerSsrStyleCollector(app))
             }

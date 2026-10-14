@@ -25,6 +25,7 @@ export const MARKETING_SPEC_PATTERNS = [
     '**/marketing-theming.spec.ts',
     '**/marketing-theming-isolation.spec.ts',
     '**/marketing-theme-builder.spec.ts',
+    '**/marketing-ssr-first-paint.spec.ts',
     '**/marketing-theming-controls.spec.ts',
     '**/marketing-theming-viewport-height.spec.ts',
     '**/marketing-theming-theme-bg-and-triggers.spec.ts',
