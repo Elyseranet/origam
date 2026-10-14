@@ -9,7 +9,7 @@ import { test } from '@playwright/test'
  *   1  → State
  *   2  → Functional
  *   3  → Prop — color & bgColor
- *   4  → Prop — loading (interactive)
+ *   4  → Loading
  *   5  → Events - click
  *   …
  *  14  → Default (playground)
@@ -21,7 +21,7 @@ const STORY_PATH = '/stories/story/' + STORY_ID
 const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
 test('DEBUG btn loader — inspect line / circular DOM + styles', async ({ page }) => {
-    // Navigate directly to "Prop — loading (interactive)" (index 4).
+    // Navigate directly to "Loading" (index 4).
     await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

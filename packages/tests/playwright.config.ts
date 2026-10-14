@@ -15,6 +15,7 @@ const REPO_ROOT = resolve(__dirname, '..', '..')
  */
 const GREEN_SPECS = [
     'btn.spec.ts',
+    'controls-loading-no-skeleton.spec.ts',
     'chip.spec.ts',
     // #957 — verifiee verte et stable avant inscription : 6/6 puis 30/30 sous
     // `--repeat-each=5`, E2E_STATIC=1, chromium, port isole.

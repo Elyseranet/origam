@@ -14,29 +14,30 @@ import { expect, test } from '@playwright/test'
  *  4  → Mode — rich (HTML output)
  *  5  → Mode — rich (Markdown output)
  *  6  → Prop — toolbar (filtered)
- *  7  → Events - update:modelValue
- *  8  → Events - focus
- *  9  → Events - click:control
- * 10  → Events - mousedown:control
- * 11  → Events - update:height
- * 12  → Events - format
- * 13  → Slots - Default
- * 14  → Slots - Prepend
- * 15  → Slots - Append
- * 16  → Slots - PrependInner
- * 17  → Slots - AppendInner
- * 18  → Slots - Clear
- * 19  → Slots - Counter
- * 20  → Slots - Details
- * 21  → Slots - FloatingLabel
- * 22  → Slots - Label
- * 23  → Slots - Loader
- * 24  → Slots - Message
- * 25  → Slots - Messages
- * 26  → Slots - Prefix
- * 27  → Slots - Suffix
- * 28  → Slots - Toolbar
- * 29  → Default
+ *  7  → Loading
+ *  8  → Events - update:modelValue
+ *  9  → Events - focus
+ *  10  → Events - click:control
+ * 11  → Events - mousedown:control
+ * 12  → Events - update:height
+ * 13  → Events - format
+ * 14  → Slots - Default
+ * 15  → Slots - Prepend
+ * 16  → Slots - Append
+ * 17  → Slots - PrependInner
+ * 18  → Slots - AppendInner
+ * 19  → Slots - Clear
+ * 20  → Slots - Counter
+ * 21  → Slots - Details
+ * 22  → Slots - FloatingLabel
+ * 23  → Slots - Label
+ * 24  → Slots - Loader
+ * 25  → Slots - Message
+ * 26  → Slots - Messages
+ * 27  → Slots - Prefix
+ * 28  → Slots - Suffix
+ * 29  → Slots - Toolbar
+ * 30  → Default
  *
  * Ce tableau était DÉCALÉ DE 3 à partir de l'index 4 : trois Variants
  * ("Mode — rich (HTML output)", "Mode — rich (Markdown output)",
