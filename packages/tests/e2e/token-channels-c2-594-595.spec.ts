@@ -74,10 +74,6 @@ const SWITCH_CASES: TokenCase[] = [
     { token: '--origam-switch__thumb---border-color', prop: 'background-color', read: 'background-color', was: 'rgba(0, 0, 0, 0.18)' },
     { token: '--origam-switch__thumb---color', prop: 'color', read: 'color', was: 'currentColor' },
     { token: '--origam-switch__selection-control---min-height', prop: 'width', read: 'width', was: '56px' },
-    { token: '--origam-switch__skeleton---width', prop: 'width', read: 'width', was: '52px' },
-    { token: '--origam-switch__skeleton---height', prop: 'width', read: 'width', was: '32px' },
-    { token: '--origam-switch__skeleton-track---background-color', prop: 'background-color', read: 'background-color', was: 'color-mix(in srgb, currentColor 14%, transparent)' },
-    { token: '--origam-switch__skeleton-thumb---background-color', prop: 'background-color', read: 'background-color', was: 'color-mix(in srgb, currentColor 28%, transparent)' },
     { token: '--origam-switch__track--inset---height', prop: 'width', read: 'width', was: '32px' },
     { token: '--origam-switch__track--inset---width', prop: 'width', read: 'width', was: '52px' }
 ]
@@ -142,8 +138,6 @@ const LITERAL_AT_ROOT: Record<string, string> = {
     '--origam-switch__thumb---border-color': 'rgba(0, 0, 0, 0.18)',
     '--origam-switch__thumb---color': 'currentColor',
     '--origam-switch__selection-control---min-height': '56px',
-    '--origam-switch__skeleton---width': '52px',
-    '--origam-switch__skeleton---height': '32px',
     '--origam-switch__track--inset---height': '32px',
     '--origam-switch__track--inset---width': '52px',
     '--origam-chip---height-xs': '20px',
@@ -259,7 +253,7 @@ const EXTRA_TOKENS = [ '--origam-audio__meta-separator---content', '--origam-aud
 test.describe('C2 — canaux de thème d\'Audio et des champs / contrôles (#594, #595)', () => {
     test.setTimeout(60000)
 
-    test('les 51 tokens déclarés résolvent tous à :root', async ({ page }) => {
+    test('les tokens déclarés (49 depuis #1080) résolvent tous à :root', async ({ page }) => {
         await page.goto(STORY_PATH, { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('.origam-switch').first()).toBeVisible({ timeout: 15000 })
@@ -280,7 +274,7 @@ test.describe('C2 — canaux de thème d\'Audio et des champs / contrôles (#594
         const empty = Object.entries(resolved).filter(([ , v ]) => v === '').map(([ n ]) => n)
 
         expect(empty, 'tokens encore non déclarés (canal de thème mort)').toEqual([])
-        expect(Object.keys(resolved)).toHaveLength(53)
+        expect(Object.keys(resolved)).toHaveLength(49)
     })
 
 /**

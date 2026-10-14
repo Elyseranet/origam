@@ -153,6 +153,29 @@
 			</template>
 		</Variant>
 
+		<Variant title="Loading">
+			<div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+				<origam-field
+						:loading="{ type: 'line' }"
+						label="Saving field (line)"
+						data-cy="field-loading-line"
+				>
+					<template #default="{ id, onFocus, onBlur }">
+						<input :id="id" class="origam-field__input" value="Saved value" data-cy="field-loading-line-input" @focus="onFocus" @blur="onBlur"/>
+					</template>
+				</origam-field>
+				<origam-field
+						:loading="{ type: 'circular' }"
+						label="Saving field (circular)"
+						data-cy="field-loading-circular"
+				>
+					<template #default="{ id, onFocus, onBlur }">
+						<input :id="id" class="origam-field__input" value="Saved value" data-cy="field-loading-circular-input" @focus="onFocus" @blur="onBlur"/>
+					</template>
+				</origam-field>
+			</div>
+		</Variant>
+
 		<Variant title="Events - update:focused">
 			<origam-field
 					label="Focus the input — @focus/@blur on the root never fire, @update:focused does"

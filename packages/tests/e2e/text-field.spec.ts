@@ -7,35 +7,36 @@ import { expect, test } from '@playwright/test'
  *   0  → Design          (init: label='Label', color='primary')
  *   1  → State           (hover/active surface)
  *   2  → Functional      (disabled, readonly, loading, counter, clearable…)
- *   3  → Events - update:modelValue   data-cy="textfield-emit-update"
- *   4  → Events - focus               data-cy="textfield-emit-focus"
- *   5  → Events - blur                data-cy="textfield-emit-blur"
- *   6  → Events - click:control       data-cy="textfield-emit-click-control"
- *   7  → Events - mousedown:control   data-cy="textfield-emit-mousedown-control"
- *   8  → Events - click:clear         data-cy="textfield-emit-clear"
- *   9  → Events - click:prepend       data-cy="textfield-emit-click-prepend"
- *  10  → Events - click:append        data-cy="textfield-emit-click-append"
- *  11  → Events - click:prependInner  data-cy="textfield-emit-click-prepend-inner"
- *  12  → Events - click:appendInner   data-cy="textfield-emit-click-append-inner"
- *  13  → Events - valid               data-cy="textfield-emit-valid"
- *  14  → Events - complete            data-cy="textfield-emit-complete"
- *  15  → Slots - Default              data-cy="textfield-slot-default"
- *  16  → Slots - Prepend              data-cy="textfield-slot-prepend"
- *  17  → Slots - Append               data-cy="textfield-slot-append"
- *  18  → Slots - PrependInner         data-cy="textfield-slot-prepend-inner"
- *  19  → Slots - AppendInner          data-cy="textfield-slot-append-inner"
- *  20  → Slots - Clear                data-cy="textfield-slot-clear"
- *  21  → Slots - Label                data-cy="textfield-slot-label"
- *  22  → Slots - FloatingLabel        data-cy="textfield-slot-floating-label"
- *  23  → Slots - Prefix               data-cy="textfield-slot-prefix"
- *  24  → Slots - Suffix               data-cy="textfield-slot-suffix"
- *  25  → Slots - Counter              data-cy="textfield-slot-counter"
- *  26  → Slots - Field                data-cy="textfield-slot-field"
- *  27  → Slots - Loader               data-cy="textfield-slot-loader"
- *  28  → Slots - Message              data-cy="textfield-slot-message"
- *  29  → Slots - Messages             data-cy="textfield-slot-messages"
- *  30  → Slots - Details              data-cy="textfield-slot-details"
- *  31  → Default (playground)         data-cy="textfield-playground"
+ *   3  → Loading
+ *   4  → Events - update:modelValue   data-cy="textfield-emit-update"
+ *   5  → Events - focus               data-cy="textfield-emit-focus"
+ *   6  → Events - blur                data-cy="textfield-emit-blur"
+ *   7  → Events - click:control       data-cy="textfield-emit-click-control"
+ *   8  → Events - mousedown:control   data-cy="textfield-emit-mousedown-control"
+ *   9  → Events - click:clear         data-cy="textfield-emit-clear"
+ *   10  → Events - click:prepend       data-cy="textfield-emit-click-prepend"
+ *  11  → Events - click:append        data-cy="textfield-emit-click-append"
+ *  12  → Events - click:prependInner  data-cy="textfield-emit-click-prepend-inner"
+ *  13  → Events - click:appendInner   data-cy="textfield-emit-click-append-inner"
+ *  14  → Events - valid               data-cy="textfield-emit-valid"
+ *  15  → Events - complete            data-cy="textfield-emit-complete"
+ *  16  → Slots - Default              data-cy="textfield-slot-default"
+ *  17  → Slots - Prepend              data-cy="textfield-slot-prepend"
+ *  18  → Slots - Append               data-cy="textfield-slot-append"
+ *  19  → Slots - PrependInner         data-cy="textfield-slot-prepend-inner"
+ *  20  → Slots - AppendInner          data-cy="textfield-slot-append-inner"
+ *  21  → Slots - Clear                data-cy="textfield-slot-clear"
+ *  22  → Slots - Label                data-cy="textfield-slot-label"
+ *  23  → Slots - FloatingLabel        data-cy="textfield-slot-floating-label"
+ *  24  → Slots - Prefix               data-cy="textfield-slot-prefix"
+ *  25  → Slots - Suffix               data-cy="textfield-slot-suffix"
+ *  26  → Slots - Counter              data-cy="textfield-slot-counter"
+ *  27  → Slots - Field                data-cy="textfield-slot-field"
+ *  28  → Slots - Loader               data-cy="textfield-slot-loader"
+ *  29  → Slots - Message              data-cy="textfield-slot-message"
+ *  30  → Slots - Messages             data-cy="textfield-slot-messages"
+ *  31  → Slots - Details              data-cy="textfield-slot-details"
+ *  32  → Default (playground)         data-cy="textfield-playground"
  *
  * ## BEM structure (verified against live DOM)
  *   .origam-text-field          — root (also carries .origam-input)
@@ -203,7 +204,7 @@ test.describe('OrigamTextField', () => {
 
     test.describe('Events - update:modelValue', () => {
         test('typing into the input updates the input value', async ({ page }) => {
-            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-emit-update"]').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('[data-cy="textfield-emit-update"] input').first()
@@ -212,7 +213,7 @@ test.describe('OrigamTextField', () => {
         })
 
         test('field becomes active (label floats) after fill', async ({ page }) => {
-            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-emit-update"]').first()).toBeVisible({ timeout: 12000 })
             await sandbox.locator('[data-cy="textfield-emit-update"] input').first().fill('test')
@@ -224,13 +225,13 @@ test.describe('OrigamTextField', () => {
 
     test.describe('Events - focus', () => {
         test('renders a text-field for focus events', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-emit-focus"]').first()).toBeVisible({ timeout: 12000 })
         })
 
         test('clicking the field adds origam-field--focused class', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-emit-focus"]').first()).toBeVisible({ timeout: 12000 })
             await sandbox.locator('[data-cy="textfield-emit-focus"] input').first().click()
@@ -241,7 +242,7 @@ test.describe('OrigamTextField', () => {
 
     test.describe('Events - blur', () => {
         test('renders a text-field for blur events', async ({ page }) => {
-            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-emit-blur"]').first()).toBeVisible({ timeout: 12000 })
         })
@@ -249,13 +250,13 @@ test.describe('OrigamTextField', () => {
 
     test.describe('Events - click:control', () => {
         test('renders a clickable text-field', async ({ page }) => {
-            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-emit-click-control"]').first()).toBeVisible({ timeout: 12000 })
         })
 
         test('clicking the field does not throw', async ({ page }) => {
-            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-emit-click-control"]').first()).toBeVisible({ timeout: 12000 })
             await sandbox.locator('[data-cy="textfield-emit-click-control"]').first().click()
@@ -269,7 +270,7 @@ test.describe('OrigamTextField', () => {
          * Fill the input, then assert the clearable wrapper is visible.
          */
         test('clearable field shows clear icon after fill and focus', async ({ page }) => {
-            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-emit-clear"]').first()).toBeVisible({ timeout: 12000 })
             await sandbox.locator('[data-cy="textfield-emit-clear"] input').first().fill('abc')
@@ -278,7 +279,7 @@ test.describe('OrigamTextField', () => {
         })
 
         test('clear icon is an <i> element with MDI close icon class', async ({ page }) => {
-            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-emit-clear"]').first()).toBeVisible({ timeout: 12000 })
             await sandbox.locator('[data-cy="textfield-emit-clear"] input').first().fill('abc')
@@ -290,7 +291,7 @@ test.describe('OrigamTextField', () => {
 
     test.describe('Events - click:prepend', () => {
         test('renders a text-field with an outer prepend slot', async ({ page }) => {
-            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-emit-click-prepend"]').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textfield-emit-click-prepend"] .origam-icon').first()).toBeAttached()
@@ -299,7 +300,7 @@ test.describe('OrigamTextField', () => {
 
     test.describe('Events - click:append', () => {
         test('renders a text-field with an outer append slot', async ({ page }) => {
-            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-emit-click-append"]').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textfield-emit-click-append"] .origam-icon').first()).toBeAttached()
@@ -308,7 +309,7 @@ test.describe('OrigamTextField', () => {
 
     test.describe('Events - click:prependInner', () => {
         test('renders a text-field with a prepend-inner icon', async ({ page }) => {
-            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-emit-click-prepend-inner"]').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textfield-emit-click-prepend-inner"] .origam-icon').first()).toBeAttached()
@@ -317,7 +318,7 @@ test.describe('OrigamTextField', () => {
 
     test.describe('Events - click:appendInner', () => {
         test('renders a text-field with an append-inner icon', async ({ page }) => {
-            await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(13), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-emit-click-append-inner"]').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textfield-emit-click-append-inner"] .origam-icon').first()).toBeAttached()
@@ -330,7 +331,7 @@ test.describe('OrigamTextField', () => {
 
     test.describe('Slots - Default', () => {
         test('default slot renders custom content alongside the input', async ({ page }) => {
-            await page.goto(variantUrl(15), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(16), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-slot-default"]').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textfield-slot-default"]')).toContainText('Custom slot content')
@@ -339,7 +340,7 @@ test.describe('OrigamTextField', () => {
 
     test.describe('Slots - Prepend', () => {
         test('prepend slot renders an icon outside the field', async ({ page }) => {
-            await page.goto(variantUrl(16), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(17), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-slot-prepend"]').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textfield-slot-prepend"] .origam-icon').first()).toBeAttached()
@@ -348,7 +349,7 @@ test.describe('OrigamTextField', () => {
 
     test.describe('Slots - Append', () => {
         test('append slot renders an icon outside the field', async ({ page }) => {
-            await page.goto(variantUrl(17), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-slot-append"]').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textfield-slot-append"] .origam-icon').first()).toBeAttached()
@@ -357,7 +358,7 @@ test.describe('OrigamTextField', () => {
 
     test.describe('Slots - PrependInner', () => {
         test('prependInner slot renders an icon inside the field', async ({ page }) => {
-            await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(19), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-slot-prepend-inner"]').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textfield-slot-prepend-inner"] .origam-icon').first()).toBeAttached()
@@ -366,7 +367,7 @@ test.describe('OrigamTextField', () => {
 
     test.describe('Slots - AppendInner', () => {
         test('appendInner slot renders an icon inside the field', async ({ page }) => {
-            await page.goto(variantUrl(19), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(20), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-slot-append-inner"]').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textfield-slot-append-inner"] .origam-icon').first()).toBeAttached()
@@ -375,7 +376,7 @@ test.describe('OrigamTextField', () => {
 
     test.describe('Slots - Clear', () => {
         test('custom clear slot renders inside the clearable area after fill', async ({ page }) => {
-            await page.goto(variantUrl(20), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(21), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-slot-clear"]').first()).toBeVisible({ timeout: 12000 })
             await sandbox.locator('[data-cy="textfield-slot-clear"] input').first().fill('abc')
@@ -386,7 +387,7 @@ test.describe('OrigamTextField', () => {
 
     test.describe('Slots - Label', () => {
         test('custom label slot renders instead of the default label', async ({ page }) => {
-            await page.goto(variantUrl(21), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-slot-label"]').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textfield-slot-label"]')).toContainText('Custom label')
@@ -395,7 +396,7 @@ test.describe('OrigamTextField', () => {
 
     test.describe('Slots - FloatingLabel', () => {
         test('custom floatingLabel slot content is rendered in the outline notch', async ({ page }) => {
-            await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(23), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-slot-floating-label"]').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textfield-slot-floating-label"]')).toContainText('Floating label')
@@ -404,7 +405,7 @@ test.describe('OrigamTextField', () => {
 
     test.describe('Slots - Prefix', () => {
         test('prefix slot renders custom content before the input', async ({ page }) => {
-            await page.goto(variantUrl(23), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(24), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-slot-prefix"]').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textfield-slot-prefix"]')).toContainText('$')
@@ -413,7 +414,7 @@ test.describe('OrigamTextField', () => {
 
     test.describe('Slots - Suffix', () => {
         test('suffix slot renders custom content after the input', async ({ page }) => {
-            await page.goto(variantUrl(24), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(25), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-slot-suffix"]').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textfield-slot-suffix"]')).toContainText('.00')
@@ -422,7 +423,7 @@ test.describe('OrigamTextField', () => {
 
     test.describe('Slots - Counter', () => {
         test('custom counter slot renders with character count after focus', async ({ page }) => {
-            await page.goto(variantUrl(25), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(26), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-slot-counter"]').first()).toBeVisible({ timeout: 12000 })
             await sandbox.locator('[data-cy="textfield-slot-counter"] input').first().click()
@@ -434,7 +435,7 @@ test.describe('OrigamTextField', () => {
 
     test.describe('Slots - Field', () => {
         test('field slot renders custom content replacing the inner field', async ({ page }) => {
-            await page.goto(variantUrl(26), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(27), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-slot-field"]').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textfield-slot-field"]')).toContainText('Custom field content')
@@ -449,7 +450,7 @@ test.describe('OrigamTextField', () => {
          * inside the field (the #loader slot is honoured).
          */
         test('loading prop adds origam-field--loading class to the inner field', async ({ page }) => {
-            await page.goto(variantUrl(27), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(28), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-slot-loader"]').first()).toBeVisible({ timeout: 12000 })
             const field = sandbox.locator('[data-cy="textfield-slot-loader"] .origam-field').first()
@@ -457,7 +458,7 @@ test.describe('OrigamTextField', () => {
         })
 
         test('custom loader slot content is rendered when loading=true', async ({ page }) => {
-            await page.goto(variantUrl(27), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(28), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-slot-loader"]').first()).toBeVisible({ timeout: 12000 })
             // The story renders <template #loader><span>Loading...</span></template>
@@ -474,7 +475,7 @@ test.describe('OrigamTextField', () => {
          * origam-field--error to the inner field.
          */
         test('error=true adds origam-field--error class', async ({ page }) => {
-            await page.goto(variantUrl(28), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(29), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-slot-message"]').first()).toBeVisible({ timeout: 12000 })
             const field = sandbox.locator('[data-cy="textfield-slot-message"] .origam-field').first()
@@ -482,7 +483,7 @@ test.describe('OrigamTextField', () => {
         })
 
         test('custom message slot renders the error text', async ({ page }) => {
-            await page.goto(variantUrl(28), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(29), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-slot-message"]').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textfield-slot-message"] .origam-messages')).toContainText('Error')
@@ -491,7 +492,7 @@ test.describe('OrigamTextField', () => {
 
     test.describe('Slots - Messages', () => {
         test('custom messages slot renders a custom error display', async ({ page }) => {
-            await page.goto(variantUrl(29), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(30), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-slot-messages"]').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textfield-slot-messages"]')).toContainText('Custom error display')
@@ -500,7 +501,7 @@ test.describe('OrigamTextField', () => {
 
     test.describe('Slots - Details', () => {
         test('custom details slot renders hint text below the field', async ({ page }) => {
-            await page.goto(variantUrl(30), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(31), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-slot-details"]').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textfield-slot-details"]')).toContainText('Custom hint text')
@@ -508,20 +509,20 @@ test.describe('OrigamTextField', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // DEFAULT — playground (index 31)                                     //
+    // DEFAULT — playground (index 32)                                     //
     // init: { label:'Full name', color:'primary' }                        //
     // ------------------------------------------------------------------ //
 
     test.describe('Default (playground)', () => {
         test('renders with label "Full name"', async ({ page }) => {
-            await page.goto(variantUrl(31), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(32), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-playground"]').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textfield-playground"] .origam-label').first()).toContainText('Full name')
         })
 
         test('typing into the playground input updates the input value', async ({ page }) => {
-            await page.goto(variantUrl(31), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(32), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-playground"]').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('[data-cy="textfield-playground"] input').first()
@@ -530,7 +531,7 @@ test.describe('OrigamTextField', () => {
         })
 
         test('input is a native <input> element', async ({ page }) => {
-            await page.goto(variantUrl(31), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(32), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-playground"]').first()).toBeVisible({ timeout: 12000 })
             const tag = await sandbox.locator('[data-cy="textfield-playground"] input').first().evaluate(
@@ -540,7 +541,7 @@ test.describe('OrigamTextField', () => {
         })
 
         test('field becomes dirty after fill (origam-field--dirty class)', async ({ page }) => {
-            await page.goto(variantUrl(31), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(32), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textfield-playground"]').first()).toBeVisible({ timeout: 12000 })
             await sandbox.locator('[data-cy="textfield-playground"] input').first().fill('dirty test')

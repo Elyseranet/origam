@@ -99,6 +99,26 @@ For one-off custom colors, use a `:style` binding instead of `color`:
 </template>
 ```
 
+### Loading (an action in flight)
+
+`loading` is `true`, a number (`0..100`, determinate), or
+`{ type: 'circular' | 'line', … }`. The label **stays rendered** (the
+accessible name is unchanged and the width does not move); an indicator is
+laid over it. The button is `aria-busy="true"` **and**
+`aria-disabled="true"` - never the native `disabled`, so it keeps focus -
+and ignores clicks (pointer, Enter and Space alike) until the action ends.
+
+`{ type: 'skeleton' }` is **refused at compile time** (`TControlLoadingValue`):
+a button that is mid-action is not a placeholder. Use `OrigamSkeleton` for
+content that does not exist yet.
+
+```vue
+<template>
+    <OrigamBtn :loading="saving" text="Save" />
+    <OrigamBtn :loading="{ type: 'line' }" text="Save" />
+</template>
+```
+
 ## Modifiers
 
 ```vue
@@ -218,7 +238,7 @@ utility wins on its own and this inline path is the thing to delete.
 | `default` | — | Override the inner content entirely. |
 | `prepend` | — | Replace the prepend icon / avatar slot. |
 | `append`  | — | Replace the append icon / avatar slot. |
-| `loader`  | `progressProps` | Replace the spinner shown when `loading` is true. |
+| `loader`  | `progressProps` | Replace the spinner / strip shown when `loading` is active. |
 | `wrapper` | — | Replace EVERYTHING inside the button (advanced). |
 
 ```vue
@@ -288,7 +308,7 @@ put a decorative or informational icon inside a button.
 interface IBtnProps extends ICommonsComponentProps,
     IColorProps, IBorderProps, IDensityProps, IDimensionProps,
     IElevationProps, IRoundedProps, ITagProps, ISizeProps,
-    ILinkProps, IRippleProps, ILoaderProps, IPositionProps,
+    ILinkProps, IRippleProps, IControlLoaderProps, IPositionProps,
     ILocationProps, IGroupItemProps, IPaddingProps, IMarginProps,
     IAdjacentProps, IStatusProps, IHoverProps, ITypographyProps {
     active?: boolean
@@ -371,9 +391,11 @@ The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
 ## Accessibility
 
 - ✅ Full keyboard support (Enter, Space).
-- ✅ `aria-busy="true"` while a loader is active (any `loading` kind —
-  skeleton, line or circular). Absent when idle, so no `aria-busy="false"`
-  is added to the accessibility tree.
+- ✅ `aria-busy="true"` and `aria-disabled="true"` while a loader is active
+  (`line` or `circular`). Both are absent when idle, so no
+  `aria-busy="false"` is added to the accessibility tree. The label stays in
+  the DOM, so the accessible name is unchanged, and the native `disabled`
+  is NOT set: the button keeps focus.
 - ✅ Focus ring uses `--origam-color__border---focus` (theme-aware).
 - ⚠️ `disabled` is conveyed **differently per tag**, on purpose:
   - `tag="button"` (the default) gets the **native `disabled` attribute**.

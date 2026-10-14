@@ -105,7 +105,6 @@
     "packages/ds/src/components/Divider/OrigamDivider.vue::--origam-divider--inset---margin-block-start",
     "packages/ds/src/components/Divider/OrigamDivider.vue::--origam-divider--inset---margin-inline-start",
     "packages/ds/src/components/Drawer/OrigamDrawer.vue::--origam-layout---zIndex",
-    "packages/ds/src/components/Field/OrigamField.vue::--origam-field__skeleton---min-height",
     "packages/ds/src/components/Field/OrigamField.vue::--origam-input---density",
     "packages/ds/src/components/FileField/OrigamFileField.vue::--origam-file-field---inline-counter-margin",
     "packages/ds/src/components/Grid/OrigamGrid.vue::--origam-grid---column-gap",

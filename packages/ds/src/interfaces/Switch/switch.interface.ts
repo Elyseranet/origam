@@ -13,14 +13,14 @@ import type { IElevationProps } from '../Commons/elevation.interface'
 import type { IFocusEmits } from '../Commons/focus.interface'
 import type { IHoverProps } from '../Commons/hover.interface'
 import type { IInputProps } from '../Input/input.interface'
-import type { ILoaderProps } from '../Commons/loader.interface'
+import type { IControlLoaderProps } from '../Commons/loader.interface'
 import type { IMarginProps } from '../Commons/margin.interface'
 import type { IPaddingProps } from '../Commons/padding.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
 import type { ISelectionControlProps } from '../SelectionControl/selection-control.interface'
 import type { ISwitchTrackSlotsProps } from './switch-track.interface'
 
-export interface ISwitchProps extends ICommonsComponentProps, ITagProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IInputProps, ISelectionControlProps, ILoaderProps, IColorProps, IDensityProps, IElevationProps, IActiveProps, IHoverProps {
+export interface ISwitchProps extends ICommonsComponentProps, ITagProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IInputProps, ISelectionControlProps, IControlLoaderProps, IColorProps, IDensityProps, IElevationProps, IActiveProps, IHoverProps {
     indeterminate?: boolean
     inset?: boolean
 }

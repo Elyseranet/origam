@@ -7,21 +7,21 @@ import { expect, test } from '@playwright/test'
  *   0  → Design      (color, bgColor, size, density, rounded, elevation, inset, border, label)
  *   1  → State       (hover / active surface)
  *   2  → Functional  (disabled, readonly, loading, indeterminate, required, multiple, inline, error)
- *   3  → Events - update:modelValue   (data-cy="switch-emit-update")
- *   4  → Events - update:focused      (data-cy="switch-emit-focused")
- *   5  → Events - update:indeterminate (data-cy="switch-emit-indeterminate")
- *   6  → Events - click:label         (data-cy="switch-emit-click-label")
- *   7  → Events - focus / blur        (data-cy="switch-emit-focus")
- *   8  → Slots - Loader               (data-cy="switch-slot-loader")
- *   9  → Slots - Track False          (data-cy="switch-slot-track-false")
- *  10  → Slots - Track True           (data-cy="switch-slot-track")
- *  11  → Default (Playground)         (data-cy="switch-playground")
+ *   3  → Loading
+ *   4  → Events - update:modelValue   (data-cy="switch-emit-update")
+ *   5  → Events - update:focused      (data-cy="switch-emit-focused")
+ *   6  → Events - update:indeterminate (data-cy="switch-emit-indeterminate")
+ *   7  → Events - click:label         (data-cy="switch-emit-click-label")
+ *   8  → Events - focus / blur        (data-cy="switch-emit-focus")
+ *   9  → Slots - Loader               (data-cy="switch-slot-loader")
+ *   10  → Slots - Track False          (data-cy="switch-slot-track-false")
+ *  11  → Slots - Track True           (data-cy="switch-slot-track")
+ *  12  → Default (Playground)         (data-cy="switch-playground")
  *
  * ## Composants BEM
  *   Root:  .origam-switch  (appliqué sur .origam-input par switchClasses)
  *   Track: .origam-switch-track  (sous-composant OrigamSwitchTrack — PAS __track)
  *   Thumb: .origam-switch__thumb
- *   Skeleton: .origam-switch__skeleton  (data-cy="origam-switch-skeleton" dans le composant)
  *
  * ## Thumb background
  *   Blanc par défaut (var --origam-switch__thumb---background-color = rgb(255,255,255)).
@@ -249,14 +249,14 @@ test.describe('OrigamSwitch', () => {
     // ------------------------------------------------------------------ //
 
     test.describe('Events - update:modelValue', () => {
-        test('switch-emit-update is visible (index 3)', async ({ page }) => {
-            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+        test('switch-emit-update is visible (index 4)', async ({ page }) => {
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="switch-emit-update"]')).toBeVisible({ timeout: 12000 })
         })
 
         test('clicking the input toggles value false → true', async ({ page }) => {
-            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="switch-emit-update"]')).toBeVisible({ timeout: 12000 })
 
@@ -271,14 +271,14 @@ test.describe('OrigamSwitch', () => {
     })
 
     test.describe('Events - update:focused', () => {
-        test('switch-emit-focused is visible (index 4)', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+        test('switch-emit-focused is visible (index 5)', async ({ page }) => {
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="switch-emit-focused"]')).toBeVisible({ timeout: 12000 })
         })
 
         test('focusing the input does not throw', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="switch-emit-focused"]')).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('[data-cy="switch-emit-focused"] input').first()
@@ -288,14 +288,14 @@ test.describe('OrigamSwitch', () => {
     })
 
     test.describe('Events - update:indeterminate', () => {
-        test('switch-emit-indeterminate is visible (index 5)', async ({ page }) => {
-            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
+        test('switch-emit-indeterminate is visible (index 6)', async ({ page }) => {
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="switch-emit-indeterminate"]')).toBeVisible({ timeout: 12000 })
         })
 
         test('indeterminate switch carries origam-switch--indeterminate modifier', async ({ page }) => {
-            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="switch-emit-indeterminate"]')).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="switch-emit-indeterminate"]')).toHaveClass(/origam-switch--indeterminate/)
@@ -303,16 +303,16 @@ test.describe('OrigamSwitch', () => {
     })
 
     test.describe('Events - click:label', () => {
-        test('switch-emit-click-label is visible (index 6)', async ({ page }) => {
-            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
+        test('switch-emit-click-label is visible (index 7)', async ({ page }) => {
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="switch-emit-click-label"]')).toBeVisible({ timeout: 12000 })
         })
     })
 
     test.describe('Events - focus / blur', () => {
-        test('switch-emit-focus is visible (index 7)', async ({ page }) => {
-            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
+        test('switch-emit-focus is visible (index 8)', async ({ page }) => {
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="switch-emit-focus"]')).toBeVisible({ timeout: 12000 })
         })
@@ -323,8 +323,8 @@ test.describe('OrigamSwitch', () => {
     // ------------------------------------------------------------------ //
 
     test.describe('Slots - Loader', () => {
-        test('switch-slot-loader renders with custom loader slot text (index 8)', async ({ page }) => {
-            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
+        test('switch-slot-loader renders with custom loader slot text (index 9)', async ({ page }) => {
+            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const sw = sandbox.locator('[data-cy="switch-slot-loader"]')
             await expect(sw).toBeVisible({ timeout: 12000 })
@@ -334,8 +334,8 @@ test.describe('OrigamSwitch', () => {
     })
 
     test.describe('Slots - Track False', () => {
-        test('switch-slot-track-false renders with custom track.false slot (index 9)', async ({ page }) => {
-            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
+        test('switch-slot-track-false renders with custom track.false slot (index 10)', async ({ page }) => {
+            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const sw = sandbox.locator('[data-cy="switch-slot-track-false"]')
             await expect(sw).toBeVisible({ timeout: 12000 })
@@ -346,8 +346,8 @@ test.describe('OrigamSwitch', () => {
     })
 
     test.describe('Slots - Track True', () => {
-        test('switch-slot-track renders both track.true and track.false slots (index 10)', async ({ page }) => {
-            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
+        test('switch-slot-track renders both track.true and track.false slots (index 11)', async ({ page }) => {
+            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const sw = sandbox.locator('[data-cy="switch-slot-track"]')
             await expect(sw).toBeVisible({ timeout: 12000 })
@@ -356,7 +356,7 @@ test.describe('OrigamSwitch', () => {
         })
 
         test('track.true/false slot content renders ON / OFF labels', async ({ page }) => {
-            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const sw = sandbox.locator('[data-cy="switch-slot-track"]')
             await expect(sw).toBeVisible({ timeout: 12000 })
@@ -365,7 +365,7 @@ test.describe('OrigamSwitch', () => {
         })
 
         test('toggling input switches visible slot (true/false visibility flip)', async ({ page }) => {
-            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const sw = sandbox.locator('[data-cy="switch-slot-track"]')
             await expect(sw).toBeVisible({ timeout: 12000 })
@@ -389,25 +389,25 @@ test.describe('OrigamSwitch', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // DEFAULT / PLAYGROUND (index 11)                                     //
+    // DEFAULT / PLAYGROUND (index 12)                                     //
     // ------------------------------------------------------------------ //
 
     test.describe('Default (Playground)', () => {
-        test('switch-playground renders without errors (index 11)', async ({ page }) => {
-            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
+        test('switch-playground renders without errors (index 12)', async ({ page }) => {
+            await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="switch-playground"]')).toBeVisible({ timeout: 12000 })
         })
 
         test('playground switch has an underlying input[type=checkbox]', async ({ page }) => {
-            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="switch-playground"]')).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="switch-playground"] input[type="checkbox"]')).toBeAttached()
         })
 
         test('playground: clicking toggles the value display false → true', async ({ page }) => {
-            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="switch-playground"]')).toBeVisible({ timeout: 12000 })
 

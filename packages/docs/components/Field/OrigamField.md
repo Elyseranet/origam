@@ -129,6 +129,15 @@ OtpInputField, DatePickerField, ColorPickerField, FileField.
 </template>
 ```
 
+## Loading
+
+`loading` is `true`, a number (`0..100`) or `{ type: 'line' | 'circular', … }`
+(default `line`: a strip along the bottom edge). The `<input>` and the label
+**stay mounted** - focus, caret and typed text survive a validation or save
+in flight. `{ type: 'skeleton' }` is refused at compile time
+(`TControlLoadingValue`); the same holds for `OrigamSelect`,
+`OrigamTextField` and `OrigamTextareaField`, which inherit it.
+
 ## Required
 
 `required` renders an asterisk (`<sup>*</sup>`) on the nested `<OrigamLabel>`

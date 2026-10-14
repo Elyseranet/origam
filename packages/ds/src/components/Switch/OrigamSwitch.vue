@@ -1,19 +1,5 @@
 <template>
-  <div
-    v-if="isSkeletonLoading"
-    class="origam-switch__skeleton"
-    :class="{ 'origam-switch__skeleton--inset': inset }"
-    aria-busy="true"
-    :aria-label="loadingLabel"
-    role="status"
-    data-cy="origam-switch-skeleton"
-  >
-    <span class="origam-switch__skeleton-track"/>
-    <span class="origam-switch__skeleton-thumb"/>
-  </div>
-
   <origam-input
-    v-else
     :id="id"
     ref="origamInputRef"
     v-model="model"
@@ -149,7 +135,6 @@
 
   import { useFocus } from '../../composables/Commons/focus.composable'
   import { useLoader } from '../../composables/Commons/loader.composable'
-  import { useLocale } from '../../composables/Commons/locale.composable'
   import { useProps } from '../../composables/Commons/props.composable'
   import { useRounded } from '../../composables/Commons/rounded.composable'
   import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
@@ -217,9 +202,6 @@
   const slots = useSlots()
 
   const { loaderClasses, loaderConfig } = useLoader(props, LOADER_KIND.CIRCULAR)
-
-  const { t } = useLocale()
-  const loadingLabel = computed(() => t('origam.loading'))
 
   const uid = getUid()
   const id = computed(() => {
@@ -305,19 +287,13 @@
    * Derived flags combining slot and prop loading states.
    ********************************************************/
 
-    // True when the whole switch should be replaced by a skeleton placeholder.
-  const isSkeletonLoading = computed(() => {
-      return loaderConfig.value.isActive && loaderConfig.value.kind === 'skeleton'
-    })
-
   /**
    * True when the active loader kind is `'line'` — a thin linear
    * progress that overlays the track at the switch's full width
-   * (52 × 32 footprint). Visually completes the existing skeleton
-   * and circular variants:
+   * (52 × 32 footprint). The value and the label always stay
+   * rendered — a save in flight never replaces the control:
    *   - `'circular'`  → spinning circle INSIDE the thumb (default).
    *   - `'line'`      → indeterminate line ACROSS the track.
-   *   - `'skeleton'`  → custom switch-shaped placeholder block.
    */
   const isLineLoading = computed(() => {
     return loaderConfig.value.isActive && loaderConfig.value.kind === 'line'
@@ -326,12 +302,12 @@
   /**
    * True when the thumb itself should host the spinner — i.e. any
    * active loader EXCEPT the line variant (which lives on the
-   * track) or skeleton (which replaces the whole switch).
+   * track).
    */
   const hasCircularLoading = computed(() => {
     if (slots.loader) return true
     const cfg = loaderConfig.value
-    return cfg.isActive && cfg.kind !== 'line' && cfg.kind !== 'skeleton'
+    return cfg.isActive && cfg.kind !== 'line'
   })
 
   /*********************************************************
@@ -411,54 +387,6 @@
   lang="scss"
   scoped
 >
-  @keyframes origam-switch-skeleton-pulse {
-    0%, 100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.55;
-    }
-  }
-
-  .origam-switch__skeleton {
-    position: relative;
-    display: inline-block;
-    width: var(--origam-switch__skeleton---width, 52px);
-    height: var(--origam-switch__skeleton---height, 32px);
-    animation: origam-switch-skeleton-pulse 1.6s ease-in-out infinite;
-
-    @media (prefers-reduced-motion: reduce) {
-      animation: none;
-    }
-
-    .origam-switch__skeleton-track {
-      position: absolute;
-      inset: 0;
-      border-radius: 999px;
-      background-color: var(--origam-switch__skeleton-track---background-color, color-mix(in srgb, currentColor 14%, transparent));
-    }
-
-    .origam-switch__skeleton-thumb {
-      position: absolute;
-      top: 50%;
-      left: 6px;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      transform: translateY(-50%);
-      background-color: var(--origam-switch__skeleton-thumb---background-color, color-mix(in srgb, currentColor 28%, transparent));
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
-    }
-
-    &--inset {
-      .origam-switch__skeleton-thumb {
-        width: 24px;
-        height: 24px;
-        left: 4px;
-      }
-    }
-  }
-
   .origam-switch {
     $this: &;
 

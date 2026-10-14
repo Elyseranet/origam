@@ -36,3 +36,27 @@ export type TLoaderConfig =
  * | `{ type: 'line' \| 'circular' \| 'skeleton', … }` | Loading with explicit kind override and per-instance prop overrides. |
  */
 export type TLoadingValue = boolean | number | TLoaderConfig
+
+/*********************************************************
+ * TControlLoaderConfig / TControlLoadingValue
+ *
+ * @description
+ * Per-kind override config of a CONTROL (`OrigamBtn`, `OrigamSwitch`,
+ * `OrigamField` and its derivatives). A control that is mid-action keeps its
+ * label, its value and its input rendered: an action in flight is signalled
+ * by an indicator (spinner / strip), never by a placeholder that stands in
+ * for the control.
+ *
+ * @description
+ * So the `skeleton` member of `TLoaderConfig` is REFUSED at compile time
+ * here: `{ type: 'skeleton' }` is a type error on these components.
+ * Skeleton placeholders stay available on the containers whose content
+ * genuinely does not exist yet (Card, ExpansionPanel, DataTable).
+ *
+ * @description
+ * `TControlLoadingValue` is the `loading` prop value a control accepts:
+ * `TLoadingValue` minus the skeleton placeholder.
+ ********************************************************/
+export type TControlLoaderConfig = Exclude<TLoaderConfig, { type: `${LOADER_KIND.SKELETON}` }>
+
+export type TControlLoadingValue = boolean | number | TControlLoaderConfig

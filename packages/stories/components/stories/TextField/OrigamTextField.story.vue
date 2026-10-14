@@ -200,6 +200,23 @@
 			</template>
 		</Variant>
 
+		<Variant title="Loading">
+			<div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+				<origam-text-field
+						:loading="{ type: 'circular' }"
+						model-value="Saved value"
+						label="Saving field (circular)"
+						data-cy="textfield-loading-circular"
+				/>
+				<origam-text-field
+						:loading="{ type: 'line' }"
+						model-value="Saved value"
+						label="Saving field (line)"
+						data-cy="textfield-loading-line"
+				/>
+			</div>
+		</Variant>
+
 		<Variant title="Events - update:modelValue">
 			<origam-text-field
 					v-model="emitModel"
@@ -552,7 +569,7 @@
 	import { OrigamIcon, OrigamTextField } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
 	import type { IActiveProps, ITextFieldProps } from '@origam/interfaces'
-	import type { TLoadingValue } from '@origam/types'
+	import type { TControlLoadingValue } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
@@ -572,7 +589,7 @@
 
 	interface ILoadingState {
 		enabled: boolean
-		kind: 'bool' | 'number' | 'line' | 'circular' | 'skeleton'
+		kind: 'bool' | 'number' | 'line' | 'circular'
 		progress: number
 		circularSize: number
 	}
@@ -587,8 +604,7 @@
 		{ label: 'true (default)', value: 'bool' },
 		{ label: 'number', value: 'number' },
 		{ label: '{ type: line }', value: 'line' },
-		{ label: '{ type: circular }', value: 'circular' },
-		{ label: '{ type: skeleton }', value: 'skeleton' }
+		{ label: '{ type: circular }', value: 'circular' }
 	]
 
 	const TYPE_OPTIONS = [
@@ -601,13 +617,12 @@
 		{ label: 'number',   value: 'number'   },
 	]
 
-	const resolveLoading = (state: ILoadingState): TLoadingValue => {
+	const resolveLoading = (state: ILoadingState): TControlLoadingValue => {
 		if (!state.enabled) return false
 		if (state.kind === 'bool') return true
 		if (state.kind === 'number') return state.progress
 		if (state.kind === 'line') return { type: 'line' }
 		if (state.kind === 'circular') return { type: 'circular', size: state.circularSize }
-		if (state.kind === 'skeleton') return { type: 'skeleton' }
 		return false
 	}
 

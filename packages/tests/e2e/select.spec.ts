@@ -14,33 +14,34 @@ import type { ITransitionRecorderWindow } from './_support/transition-recorder.i
  * Variants (0-based order, SelectStory — état au 2026-06-22) :
  *   0  → Design
  *   1  → Functional
- *   2  → Events - update:modelValue       data-cy="select-emit-update"
- *   3  → Events - update:menu             data-cy="select-emit-menu"
- *   4  → Events - click:clear             data-cy="select-emit-clear"
- *   5  → Events - click:append            data-cy="select-emit-click-append"
- *   6  → Events - click:appendInner       data-cy="select-emit-click-append-inner"
- *   7  → Events - click:control           data-cy="select-emit-click-control"
- *   8  → Events - click:prepend           data-cy="select-emit-click-prepend"
- *   9  → Events - click:prependInner      data-cy="select-emit-click-prepend-inner"
- *  10  → Events - mousedown:control       data-cy="select-emit-mousedown-control"
- *  11  → Events - update:focused          data-cy="select-emit-update-focused"
- *  12  → Slots - Prepend                  data-cy="select-slot-prepend"
- *  13  → Slots - Append                   data-cy="select-slot-append"
- *  14  → Slots - PrependInner             data-cy="select-slot-prepend-inner"
- *  15  → Slots - AppendInner              data-cy="select-slot-append-inner"
- *  16  → Slots - Clear                    data-cy="select-slot-clear"
- *  17  → Slots - Label                    data-cy="select-slot-label"
- *  18  → Slots - FloatingLabel            data-cy="select-slot-floating-label"
- *  19  → Slots - Prefix                   data-cy="select-slot-prefix"
- *  20  → Slots - Suffix                   data-cy="select-slot-suffix"
- *  21  → Slots - Loader                   data-cy="select-slot-loader"
- *  22  → Slots - NoData                   data-cy="select-slot-no-data"
- *  23  → Slots - Chip                     data-cy="select-slot-chip"
- *  24  → Slots - Selection                data-cy="select-slot-selection"
- *  25  → Slots - Item                     data-cy="select-slot-item"
- *  26  → Slots - Items.Prepend            data-cy="select-slot-items-prepend"
- *  27  → Slots - Items.Append             data-cy="select-slot-items-append"
- *  28  → Default (playground)             data-cy="select-playground"
+ *   2  → Loading
+ *   3  → Events - update:modelValue       data-cy="select-emit-update"
+ *   4  → Events - update:menu             data-cy="select-emit-menu"
+ *   5  → Events - click:clear             data-cy="select-emit-clear"
+ *   6  → Events - click:append            data-cy="select-emit-click-append"
+ *   7  → Events - click:appendInner       data-cy="select-emit-click-append-inner"
+ *   8  → Events - click:control           data-cy="select-emit-click-control"
+ *   9  → Events - click:prepend           data-cy="select-emit-click-prepend"
+ *   10  → Events - click:prependInner      data-cy="select-emit-click-prepend-inner"
+ *  11  → Events - mousedown:control       data-cy="select-emit-mousedown-control"
+ *  12  → Events - update:focused          data-cy="select-emit-update-focused"
+ *  13  → Slots - Prepend                  data-cy="select-slot-prepend"
+ *  14  → Slots - Append                   data-cy="select-slot-append"
+ *  15  → Slots - PrependInner             data-cy="select-slot-prepend-inner"
+ *  16  → Slots - AppendInner              data-cy="select-slot-append-inner"
+ *  17  → Slots - Clear                    data-cy="select-slot-clear"
+ *  18  → Slots - Label                    data-cy="select-slot-label"
+ *  19  → Slots - FloatingLabel            data-cy="select-slot-floating-label"
+ *  20  → Slots - Prefix                   data-cy="select-slot-prefix"
+ *  21  → Slots - Suffix                   data-cy="select-slot-suffix"
+ *  22  → Slots - Loader                   data-cy="select-slot-loader"
+ *  23  → Slots - NoData                   data-cy="select-slot-no-data"
+ *  24  → Slots - Chip                     data-cy="select-slot-chip"
+ *  25  → Slots - Selection                data-cy="select-slot-selection"
+ *  26  → Slots - Item                     data-cy="select-slot-item"
+ *  27  → Slots - Items.Prepend            data-cy="select-slot-items-prepend"
+ *  28  → Slots - Items.Append             data-cy="select-slot-items-append"
+ *  29  → Default (playground)             data-cy="select-playground"
  *
  * NE PAS utiliser waitForLoadState('networkidle') — Histoire garde un
  * websocket HMR ouvert → networkidle ne résout jamais → timeout garanti.
@@ -205,7 +206,7 @@ test.describe('OrigamSelect', () => {
 
     test.describe('Events', () => {
         test('update:modelValue — selecting an item fires the emit', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-emit-update"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -220,7 +221,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('update:menu — opening dropdown makes .origam-select--active-menu visible', async ({ page }) => {
-            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-emit-menu"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -233,7 +234,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('click:clear — clear button present and clickable on clearable select', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-emit-clear"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -255,7 +256,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('click:append — append icon rendered when appendIcon prop set', async ({ page }) => {
-            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-emit-click-append"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -264,7 +265,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('click:control — clicking the control focuses the field and opens the menu (#456)', async ({ page }) => {
-            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-emit-click-control"] .origam-field')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -283,7 +284,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('click:prepend — prepend icon rendered when prependIcon prop set', async ({ page }) => {
-            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-emit-click-prepend"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -292,7 +293,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('mousedown:control — mousedown on the control opens the menu (#456)', async ({ page }) => {
-            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-emit-mousedown-control"] .origam-field')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -316,7 +317,7 @@ test.describe('OrigamSelect', () => {
 
     test.describe('Slots', () => {
         test('Slots - Loader — custom loader slot content renders', async ({ page }) => {
-            await page.goto(variantUrl(21), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-slot-loader"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -325,7 +326,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('Slots - NoData — custom noData slot renders on open with empty items', async ({ page }) => {
-            await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(23), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-slot-no-data"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -337,7 +338,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('Slots - Chip — custom chip slot renders on multiple selection', async ({ page }) => {
-            await page.goto(variantUrl(23), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(24), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-slot-chip"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -362,7 +363,7 @@ test.describe('OrigamSelect', () => {
         // Workaround: none headlessly. The story renders correctly when interacted
         // with in a real browser.
         test.fail('Slots - Selection — custom selection slot renders on multiple', async ({ page }) => {
-            await page.goto(variantUrl(24), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(25), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-slot-selection"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -377,7 +378,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('Slots - Label — custom label slot renders', async ({ page }) => {
-            await page.goto(variantUrl(17), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-slot-label"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -386,7 +387,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('Slots - Prefix — custom prefix slot renders inside the field', async ({ page }) => {
-            await page.goto(variantUrl(19), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(20), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-slot-prefix"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -394,7 +395,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('Slots - Suffix — custom suffix slot renders inside the field', async ({ page }) => {
-            await page.goto(variantUrl(20), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(21), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-slot-suffix"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -402,7 +403,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('Slots - Items.Prepend — prepend content renders at top of list', async ({ page }) => {
-            await page.goto(variantUrl(26), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(27), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-slot-items-prepend"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -413,7 +414,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('Slots - Items.Append — append content renders at bottom of list', async ({ page }) => {
-            await page.goto(variantUrl(27), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(28), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-slot-items-append"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -425,20 +426,20 @@ test.describe('OrigamSelect', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // PLAYGROUND (index 28)                                               //
+    // PLAYGROUND (index 29)                                               //
     // data-cy="select-playground" + "select-playground-status"           //
     // ------------------------------------------------------------------ //
 
     test.describe('Playground (Default)', () => {
         test('renders the select component', async ({ page }) => {
-            await page.goto(variantUrl(28), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(29), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('[data-cy="select-playground"]')
             await expect(select).toBeVisible({ timeout: 12000 })
         })
 
         test('status div present and contains "value ="', async ({ page }) => {
-            await page.goto(variantUrl(28), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(29), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const status = sandbox.locator('[data-cy="select-playground-status"]')
             await expect(status).toBeVisible({ timeout: 12000 })
@@ -446,7 +447,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('selecting an item updates the status binding', async ({ page }) => {
-            await page.goto(variantUrl(28), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(29), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('[data-cy="select-playground"]')
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -728,9 +729,9 @@ test.describe('OrigamSelect', () => {
         test('autocomplete: input stays flush-left after picking (selection chip layout)', async ({ page }) => {
             // Navigate to Functional variant with autocomplete toggled via init-state is not
             // possible headlessly. The Design variant (index 0) is a non-autocomplete select.
-            // This test targets the Events - update:modelValue variant (index 2) which is
+            // This test targets the Events - update:modelValue variant (index 3) which is
             // a plain select — verifying the layout contract for non-autocomplete mode.
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-emit-update"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -748,7 +749,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('loading=true (Slots - Loader variant) — custom loader slot text rendered', async ({ page }) => {
-            await page.goto(variantUrl(21), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-slot-loader"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -803,15 +804,16 @@ test.describe('OrigamSelect', () => {
             await expect(loader.locator('.origam-progress--circular')).toBeVisible({ timeout: 5000 })
         })
 
-        test('loading={ type: "skeleton" } → origam-skeleton replaces content', async ({ page }) => {
+        test('a loading select keeps its input and label (no skeleton replaces them)', async ({ page }) => {
             await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
             await toggleHstCheckbox(page, 'Loading')
-            await selectHstOption(page, 'Loading Kind', '{ type: skeleton }')
-            await expect(select.locator('.origam-field__skeleton')).toBeVisible({ timeout: 5000 })
-            await expect(select.locator('.origam-field__loader')).toHaveCount(0)
+            await selectHstOption(page, 'Loading Kind', '{ type: line }')
+            await expect(select.locator('.origam-field__loader')).toBeVisible({ timeout: 5000 })
+            await expect(select.locator('input')).toHaveCount(1)
+            await expect(select.locator('.origam-field__skeleton')).toHaveCount(0)
         })
     })
     // ------------------------------------------------------------------ //

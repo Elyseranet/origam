@@ -120,6 +120,14 @@ block set on a marketing theme.
 </template>
 ```
 
+## Loading (a save in flight)
+
+`loading` is `true`, a number (`0..100`) or `{ type: 'circular' | 'line', … }`.
+The value and the label **stay rendered**: a spinner runs inside the thumb
+(`circular`, default) or a strip across the track (`line`) while the save is
+in flight. `{ type: 'skeleton' }` is refused at compile time
+(`TControlLoadingValue`).
+
 ## Slots
 
 `ISwitchSlots` declares **three** slots, and the template renders exactly
@@ -196,8 +204,6 @@ mirrored in `dark.css` and the `_*.scss` twins.
 | `--origam-switch__thumb---border-radius` | `radius.full` | Thumb corner radius — the `rounded` prop overrides it inline so thumb and track never drift apart. |
 | `--origam-switch__thumb---background-color-error` / `---color-error` | `color.feedback.danger.bg` / `.fg` | Thumb pair in the error state. |
 | `--origam-switch__selection-control---min-height` | *(undeclared, falls back to `56px`)* | Row height of the wrapping selection control, before the density delta. |
-| `--origam-switch__skeleton---width` / `---height` | *(undeclared, fall back to `52px` / `32px`)* | Footprint of the `loading: 'skeleton'` placeholder. |
-| `--origam-switch__skeleton-track---background-color` / `--origam-switch__skeleton-thumb---background-color` | *(undeclared, fall back to `color-mix` of `currentColor`)* | Skeleton fills. |
 | `--origam-switch---transition-duration` | `motion.duration.medium` | Track background transition. |
 | `--origam-switch---transition-timing-function` | `motion.easing.standard` | Track background easing. |
 | `--origam-switch---opacity-disabled` | `opacity.32` | Applied to the track when `disabled`. |

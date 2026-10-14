@@ -158,13 +158,12 @@
 			</div>
 		</Variant>
 
-		<Variant title="Prop — loading (interactive)">
+		<Variant title="Loading">
 			<div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
 				<origam-btn :loading="{ type: 'line' }"     text="Line"             data-cy="btn-loading-line"/>
 				<origam-btn :loading="{ type: 'line' }"     text="Line primary"     color="primary" data-cy="btn-loading-line-primary"/>
 				<origam-btn :loading="{ type: 'circular' }" text="Circular"         bg-color="info" data-cy="btn-loading-circular-override"/>
 				<origam-btn :loading="{ type: 'circular' }" text="Circular success" bg-color="success" data-cy="btn-loading-circular-success"/>
-				<origam-btn :loading="{ type: 'skeleton' }" text="Skeleton"         data-cy="btn-loading-skeleton"/>
 			</div>
 		</Variant>
 
@@ -294,7 +293,7 @@
 		IBtnProps,
 		IHoverProps
 	} from '@origam/interfaces'
-	import type { TLoadingValue } from '@origam/types'
+	import type { TControlLoadingValue } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
@@ -323,7 +322,7 @@
 
 	interface ILoadingState {
 		enabled: boolean
-		kind: 'bool' | 'number' | 'line' | 'circular' | 'skeleton'
+		kind: 'bool' | 'number' | 'line' | 'circular'
 		progress: number
 		circularSize: number
 	}
@@ -335,16 +334,14 @@
 		{ label: 'true (default)', value: 'bool' },
 		{ label: 'number', value: 'number' },
 		{ label: '{ type: line }', value: 'line' },
-		{ label: '{ type: circular }', value: 'circular' },
-		{ label: '{ type: skeleton }', value: 'skeleton' }
+		{ label: '{ type: circular }', value: 'circular' }
 	]
 
-	const resolveLoading = (state: ILoadingState): TLoadingValue => {
+	const resolveLoading = (state: ILoadingState): TControlLoadingValue => {
 		if (!state.enabled) return false
 		if (state.kind === 'number') return state.progress
 		if (state.kind === 'line') return { type: 'line' }
 		if (state.kind === 'circular') return { type: 'circular', size: state.circularSize }
-		if (state.kind === 'skeleton') return { type: 'skeleton' }
 
 		return true
 	}

@@ -4,6 +4,7 @@ import type {
     ITagProps
 } from './commons.interface'
 import type {
+    TControlLoadingValue,
     TLoaderConfig,
     TLoaderKind,
     TLoadingValue
@@ -27,6 +28,19 @@ import type {
 export interface ILoaderProps extends ICommonsComponentProps, ITagProps, IColorProps {
     loading?: TLoadingValue
     loadingText?: string
+}
+
+/*********************************************************
+ * IControlLoaderProps
+ *
+ * @description
+ * `ILoaderProps` for a CONTROL (`OrigamBtn`, `OrigamSwitch`, `OrigamField`
+ * and its derivatives): same surface, but `loading` refuses
+ * `{ type: 'skeleton' }` - an action in flight never replaces the control
+ * (see `TControlLoaderConfig`).
+ ********************************************************/
+export interface IControlLoaderProps extends Omit<ILoaderProps, 'loading'> {
+    loading?: TControlLoadingValue
 }
 
 /**
