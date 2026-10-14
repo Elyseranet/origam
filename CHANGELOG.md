@@ -18,6 +18,21 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Changed — `OrigamBtn` : prop `wrap`, hauteur MINIMALE, `padding-block` lu (#1093, #1094, #929)
+
+Trois defauts du meme geste : un libelle plus long que le bouton ne pouvait ni passer a la ligne (#1093), ni agrandir le bouton (#1094), ni etre aere par un padding vertical (#929). Mesure : sonde Chromium `pnpm -F @origam/tests audit:btn-height`, meme code de sonde avant (`origin/develop`) et apres, 8 identites x 2 modes.
+
+- **`wrap`** (nouvelle prop booleenne, classe `origam-btn--wrap`) : `__content` passe de `white-space: nowrap` a `normal`, texte centre. Themable par props comme toute prop (`theme.components['origam-btn']`). Mesure, `block` dans 320 px, libelle FR de 445 px : sans `wrap` le contenu depasse de 70 px ; avec `wrap` il tient (0 px de debordement) sur deux lignes.
+- **Hauteur = minimum** : `height: auto` + `min-height` = `calc(--origam-btn---height + --origam-btn---density)` (inchange). Un bouton dont le contenu tient garde sa hauteur ; il ne grandit que si le contenu depasse. Mesure, `size="large"` dans 160 px avec `wrap` : 44 px -> 112 px (contenu : 112 px). La racine declare `align-items: center` (effet sur `block`, en `flex`) pour garder le contenu centre dans le minimum.
+- **`--origam-btn---padding-block`** est enfin LU (repli `0px`, declare dans `light.css` / `dark.css` et leurs jumeaux SCSS). Les regles `&--size-*` et `&--slim` ne posent plus que `padding-inline` ; un shorthand `padding: 0 …` remettrait le bloc a zero.
+
+**Hauteur au repos, avant/apres** : 2 672 `rect-height` releves (identite x mode x forme x taille x densite, plus Chip, Code, `BtnGroup`, `BtnToggle`), **2 654 identiques, 18 ecarts** — tous `x-small` + `compact` (boite de 12 px) dont le contenu ne tenait deja pas : `border="thick"` 12 -> 14 px (16 configurations), `outlined` sous l'identite `cartoon` 12 -> 16 px (2 configurations, 1 px de debordement avant). Aucun autre ecart de hauteur ni de largeur. `BtnGroup` et `BtnToggle` : 0 ecart.
+
+**Ruptures (assumees, pre-1.0) :**
+- Rendu : limite aux boutons dont le contenu depassait deja la hauteur fixe (cf. les 18 cas ci-dessus). Les boutons `icon` gardent une hauteur FIXE (`&--icon { height: calc(token) }`) : leur largeur derive du meme token, aucun libelle ne peut deborder.
+- `--origam-btn---min-height: 0` n'est plus sans effet : avec `height: auto` il SUPPRIME le plancher et le bouton retombe a la hauteur de son contenu. Les cinq ecritures de ce `0` dans le DS (`OrigamChip`, `OrigamCode` x2, `OrigamChartCartesian`, `OrigamChartPolar`) etaient sans effet sous une hauteur fixe et ont ete retirees ; un consommateur externe qui l'ecrit doit faire de meme. `--origam-btn---min-height` peut toujours RELEVER le minimum.
+- Mesure documentee, non corrigee : sans police d'icones chargee, le contenu d'un bouton avec `prepend-icon` aux tailles `x-small`, `large` et `x-large` se decale de 0,5 px vers le haut (144 releves sur 16 configurations). Je ne sais pas si l'ecart se voit avec la vraie police d'icones.
+
 ## [2.28.0] - 2026-10-15
 
 ### Fixed — `useStyle` emet sa regle cote serveur ; `v-contrast` attend la fin reelle de la transition et ne logge plus qu'en dev (#1092)

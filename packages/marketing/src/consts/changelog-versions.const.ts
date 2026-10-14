@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: 'Unreleased',
+        date: null,
+        type: 'unreleased',
+        summaryKey: 'changelog.versions.unreleased.summary',
+        summaryFallback: '1 change. See the full changelog for detail.',
+        highlights: [
+            { type: 'changed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamBtn : prop wrap, hauteur MINIMALE, padding-block lu (#1093, #1094, #929)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.28.0',
         date: '2026-10-15',
         type: 'minor',

@@ -64,6 +64,22 @@ export const BTN_PROBE_STANDALONE_CASES: readonly IBtnProbeCase[] = [
     { key: 'short-wrap', props: { wrap: true }, label: BTN_PROBE_LABEL, containerWidth: null },
     { key: 'height-explicit', props: { height: 60 }, label: BTN_PROBE_LABEL, containerWidth: null },
     { key: 'height-explicit-long-wrap', props: { height: 60, block: true, wrap: true }, label: BTN_PROBE_LONG_LABEL, containerWidth: BTN_PROBE_CONTAINER_WIDTH },
+    { key: 'padding-block-rest', props: { style: { '--origam-btn---padding-block': '4px' } }, label: BTN_PROBE_LABEL, containerWidth: null },
+    { key: 'padding-block-icon', props: { icon: 'mdi-home', style: { '--origam-btn---padding-block': '8px' } }, label: null, containerWidth: null },
+    { key: 'long-block-wrap-padding-block', props: { block: true, wrap: true, style: { '--origam-btn---padding-block': '8px' } }, label: BTN_PROBE_LONG_LABEL, containerWidth: BTN_PROBE_CONTAINER_WIDTH },
+    { key: 'long-160-large', props: { size: 'large' }, label: BTN_PROBE_LONG_LABEL, containerWidth: 160 },
+    { key: 'long-160-large-wrap', props: { size: 'large', wrap: true }, label: BTN_PROBE_LONG_LABEL, containerWidth: 160 },
+    { key: 'long-160-large-wrap-padding-block', props: { size: 'large', wrap: true, style: { '--origam-btn---padding-block': '8px' } }, label: BTN_PROBE_LONG_LABEL, containerWidth: 160 },
+    { key: 'height-explicit-min-zero', props: { style: { '--origam-btn---min-height': '0' } }, label: BTN_PROBE_LABEL, containerWidth: null },
+    { key: 'height-explicit-min-zero-icon-xs-compact', props: { icon: 'mdi-home', size: 'x-small', density: 'compact', style: { '--origam-btn---min-height': '0', '--origam-btn---min-width': '0' } }, label: null, containerWidth: null },
+    { key: 'height-explicit-min-zero-outlined', props: { variant: 'outlined', style: { '--origam-btn---min-height': '0', '--origam-btn---min-width': '0' } }, label: BTN_PROBE_LABEL, containerWidth: null },
+    { key: 'consumer-chip-closable', component: 'chip', props: { closable: true, text: 'Chip' }, label: null, containerWidth: null },
+    { key: 'consumer-code-copy', component: 'code', props: { code: 'npm install origam', copyable: true }, label: null, containerWidth: 400 },
+    { key: 'consumer-code-compact', component: 'code', props: { code: 'npm install origam', copyable: true, compact: true }, label: null, containerWidth: 400 },
+    { key: 'consumer-btn-group', component: 'btn-group', props: { items: [{ text: 'One' }, { text: 'Two' }, { text: 'Three' }] }, label: null, containerWidth: null },
+    { key: 'consumer-btn-group-large-outlined', component: 'btn-group', props: { size: 'large', variant: 'outlined', items: [{ text: 'One' }, { text: 'Two' }, { text: 'Three' }] }, label: null, containerWidth: null },
+    { key: 'consumer-btn-toggle', component: 'btn-toggle', props: { items: [{ text: 'One', value: 1 }, { text: 'Two', value: 2 }, { text: 'Three', value: 3 }] }, label: null, containerWidth: null },
+    { key: 'consumer-btn-toggle-compact', component: 'btn-toggle', props: { density: 'compact', items: [{ text: 'One', value: 1 }, { text: 'Two', value: 2 }, { text: 'Three', value: 3 }] }, label: null, containerWidth: null },
     { key: 'max-height-long-wrap', props: { maxHeight: 50, block: true, wrap: true }, label: BTN_PROBE_LONG_LABEL, containerWidth: BTN_PROBE_CONTAINER_WIDTH }
 ]
 

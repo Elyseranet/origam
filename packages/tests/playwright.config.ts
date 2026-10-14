@@ -280,6 +280,11 @@ const GREEN_SPECS = [
     // Vérifiée stable 10/10, `--repeat-each=5`, `E2E_STATIC=1`, chromium,
     // port isolé.
     'btn-display.spec.ts',
+    // wave 15 — #1093, #1094, #929. `wrap` (la prop n'existait pas), hauteur de
+    // `OrigamBtn` devenue un minimum, `--origam-btn---padding-block` enfin lu.
+    // Rejouée contre `origin/develop` : les 4 tests « [rouge avant] » rougissent,
+    // les 2 témoins restent verts des deux côtés.
+    'btn-wrap-height.spec.ts',
     // wave 15 — #934. Même raison. `.origam-list--nav` et
     // `.origam-list-item--nav` déclaraient `--origam-*---padding-inline`, un
     // nom que RIEN ne lit : les règles de base consomment les longhands

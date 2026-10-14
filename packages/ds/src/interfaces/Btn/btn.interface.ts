@@ -50,6 +50,7 @@ export interface IBtnProps extends ICommonsComponentProps, IColorProps, IBgColor
     block?: boolean
     slim?: boolean
     stacked?: boolean
+    wrap?: boolean
     text?: string
     status?: TStatus
     statusIconPosition?: TStatusPosition

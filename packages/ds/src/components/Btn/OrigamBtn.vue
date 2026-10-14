@@ -477,7 +477,8 @@
 				//      which stays in the DOM (width and name preserved).
 				[`origam-btn--loader-${loaderKind.value}`]: isLoading.value,
 				'origam-btn--slim': props.slim,
-				'origam-btn--stacked': props.stacked
+				'origam-btn--stacked': props.stacked,
+				'origam-btn--wrap': props.wrap
 			},
 			variantClasses.value,
 			borderClasses.value,
@@ -555,6 +556,10 @@
 		// blockifies to `block`, i.e. byte-for-byte today's computed value, so
 		// no existing layout moves. `&--block` still overrides it with `flex`.
 		display: inline-block;
+		// #1094 — inoperant tant que la racine est `inline-block` ; prend effet
+		// sur `&--block` (`display: flex`), ou `height: auto` + `min-height`
+		// laisseraient sinon le contenu colle en haut.
+		align-items: center;
 
 		position: var(--origam-btn---position, relative);
 		vertical-align: middle;
@@ -571,12 +576,22 @@
 		transition-duration: var(--origam-btn---transition-duration, 0.28s);
 		transition-timing-function: var(--origam-btn---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
 
-		padding: 0 calc(16px + var(--origam-btn---density-padding-x, 0px));
+		// ⛔ #929 — le padding vertical est LU depuis `--origam-btn---padding-block`
+		// (repli `0` : un bouton qui ne le pose pas ne bouge pas). Il n'etait
+		// qu'ecrit, jamais lu. Les rubriques `&--size-*` / `&--slim` ne posent
+		// plus que `padding-inline`, sans quoi leur shorthand `padding: 0 …`
+		// remettrait ce bloc a zero.
+		padding-block: var(--origam-btn---padding-block, 0);
+		padding-inline: calc(16px + var(--origam-btn---density-padding-x, 0px));
 
 		width: var(--origam-btn---width, auto);
 		min-width: calc(var(--origam-btn---min-width, 64px) + var(--origam-btn---density, 0px));
 		max-width: var(--origam-btn---max-width, 100%);
-		height: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px));
+		// ⛔ #1094 — la hauteur est un MINIMUM, plus une valeur fixe : `height: auto`
+		// laisse un contenu a deux lignes (`wrap`) agrandir le bouton, et le
+		// `min-height` ci-dessous garde la taille du token pour un contenu d'une
+		// ligne. La prop `height` reste prioritaire (declaration inline).
+		height: auto;
 		// ⛔ C2 (#597) — `--origam-btn---min-height` reste NON DECLARE, a dessein.
 		// Son repli est `calc(height + density)`, deux vars reglees PAR INSTANCE
 		// (`&--size-*` / `&--density-*` plus bas dans ce bloc). Une custom property
@@ -584,6 +599,13 @@
 		// figerait la hauteur minimale a la taille/densite racine et les props
 		// `size` / `density` cesseraient d'agir sur elle. Faux positif de la garde,
 		// qui compare des noms et non des chaines de repli.
+		//
+		// ⛔ #1094 — ce `min-height` est desormais le SEUL garant de la hauteur au repos
+		// (la hauteur est `auto`). `--origam-btn---min-height` peut le RELEVER (le site
+		// marketing le fait : 34 / 38 / 44 px) ; le poser a `0` SUPPRIME le plancher et le
+		// bouton retombe a la hauteur de son contenu. Avec une hauteur fixe, ce `0` etait
+		// sans effet : c'est pourquoi Chip / Code / graphes l'ecrivaient en pure perte, et
+		// pourquoi ces ecritures ont ete retirees dans le meme lot.
 		min-height: var(--origam-btn---min-height, calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px)));
 		max-height: var(--origam-btn---max-height, 100%);
 
@@ -655,7 +677,7 @@
 			--origam-btn---height: var(--origam-btn---height-xs, 20px);
 			--origam-btn---font-size: 0.625rem;
 			--origam-btn---min-width: 36px;
-			padding: 0 calc(var(--origam-btn---padding-xs, 8px) + var(--origam-btn---density-padding-x, 0px));
+			padding-inline: calc(var(--origam-btn---padding-xs, 8px) + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 16px;
@@ -666,7 +688,7 @@
 			--origam-btn---height: var(--origam-btn---height-sm, 28px);
 			--origam-btn---font-size: 0.75rem;
 			--origam-btn---min-width: 50px;
-			padding: 0 calc(var(--origam-btn---padding-sm, 12px) + var(--origam-btn---density-padding-x, 0px));
+			padding-inline: calc(var(--origam-btn---padding-sm, 12px) + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 20px;
@@ -674,7 +696,7 @@
 		}
 
 		&--size-default {
-			padding: 0 calc(var(--origam-btn---padding-md, 16px) + var(--origam-btn---density-padding-x, 0px));
+			padding-inline: calc(var(--origam-btn---padding-md, 16px) + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 24px;
@@ -685,7 +707,7 @@
 			--origam-btn---height: var(--origam-btn---height-lg, 44px);
 			--origam-btn---font-size: 1rem;
 			--origam-btn---min-width: 78px;
-			padding: 0 calc(var(--origam-btn---padding-lg, 20px) + var(--origam-btn---density-padding-x, 0px));
+			padding-inline: calc(var(--origam-btn---padding-lg, 20px) + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 28px;
@@ -696,7 +718,7 @@
 			--origam-btn---height: var(--origam-btn---height-xl, 52px);
 			--origam-btn---font-size: 1.125rem;
 			--origam-btn---min-width: 92px;
-			padding: 0 calc(var(--origam-btn---padding-xl, 24px) + var(--origam-btn---density-padding-x, 0px));
+			padding-inline: calc(var(--origam-btn---padding-xl, 24px) + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 32px;
@@ -824,6 +846,11 @@
 			--origam-btn---width: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px));
 
 			padding: 0;
+			// #1094 — un bouton icone est CARRE : sa largeur derive du meme token que sa
+			// hauteur (`--origam-btn---width` ci-dessus). Aucun libelle ne peut deborder,
+			// donc la hauteur reste fixe — sans quoi un contenu plus haut que le carre
+			// (icone de Chip, `min-height: 0` des consommateurs) le deformerait.
+			height: calc(var(--origam-btn---height, 36px) + var(--origam-btn---density, 0px));
 
 			#{$this}__loader {
 				display: flex;
@@ -1112,35 +1139,35 @@
 				--origam-btn---height: 56px;
 				font-size: 0.625rem;
 				min-width: 56px;
-				padding: 0 calc(12px + var(--origam-btn---density-padding-x, 0px));
+				padding-inline: calc(12px + var(--origam-btn---density-padding-x, 0px));
 			}
 
 			&#{$this}--size-small {
 				--origam-btn---height: 64px;
 				font-size: 0.75rem;
 				min-width: 64px;
-				padding: 0 calc(14px + var(--origam-btn---density-padding-x, 0px));
+				padding-inline: calc(14px + var(--origam-btn---density-padding-x, 0px));
 			}
 
 			&#{$this}--size-default {
 				--origam-btn---height: 72px;
 				font-size: 0.875rem;
 				min-width: 72px;
-				padding: 0 calc(16px + var(--origam-btn---density-padding-x, 0px));
+				padding-inline: calc(16px + var(--origam-btn---density-padding-x, 0px));
 			}
 
 			&#{$this}--size-large {
 				--origam-btn---height: 80px;
 				font-size: 1rem;
 				min-width: 80px;
-				padding: 0 calc(18px + var(--origam-btn---density-padding-x, 0px));
+				padding-inline: calc(18px + var(--origam-btn---density-padding-x, 0px));
 			}
 
 			&#{$this}--size-x-large {
 				--origam-btn---height: 88px;
 				font-size: 1.125rem;
 				min-width: 88px;
-				padding: 0 calc(20px + var(--origam-btn---density-padding-x, 0px));
+				padding-inline: calc(20px + var(--origam-btn---density-padding-x, 0px));
 			}
 
 			&#{$this}--density-comfortable {
@@ -1153,7 +1180,18 @@
 		}
 
 		&--slim {
-			padding: 0 8px;
+			padding-inline: 8px;
+		}
+
+		// #1093 — le libelle reste sur UNE ligne (`__content { white-space: nowrap }`)
+		// sauf demande : `wrap` le laisse passer a la ligne. Le bouton grandit alors
+		// (sa hauteur est un minimum, #1094) au lieu de laisser le texte deborder.
+		// `text-align: center` : un `<a>` / `<span>` ne centre pas ses lignes seul.
+		&--wrap {
+			#{$this}__content {
+				white-space: normal;
+				text-align: center;
+			}
 		}
 
 		&--rounded {

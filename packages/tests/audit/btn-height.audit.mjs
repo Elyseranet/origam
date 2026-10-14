@@ -53,8 +53,8 @@ const MIME = {
     '.svg': 'image/svg+xml'
 }
 
-/** Un cas « au repos » est un cas croise taille x densite : sa cle contient `|`. */
-const isRestCase = (key) => key.split('|').length === 4 || key.includes('|')
+/** Un cas « au repos » est tout cas qui ne porte pas de contenu long ni de hauteur explicite. */
+const isRestCase = (key) => !/^(long-|short-wrap|height-explicit|max-height-)/.test(key)
 
 function compareRuns (before, after) {
     const index = (run) => new Map(run.rows.map((r) => [`${r.identity}|${r.mode}|${r.case}|${r.property}`, r.value]))
@@ -90,8 +90,8 @@ if (compareFlag >= 0) {
     // Le critere du ticket : la HAUTEUR au repos. `rect-height` (boite reelle) et
     // `height` (calcule) sont les deux mesures ; les autres longhands bougent
     // legitimement (`min-height`/`height` passent de la valeur a `auto` resolu).
-    const restHeight = rest.filter((d) => /\|(rect-height|rect-width|content-offset-top|content-offset-left)$/.test(d.key))
-    const restOther = rest.filter((d) => !(/\|(rect-height|rect-width|content-offset-top|content-offset-left)$/.test(d.key)))
+    const restHeight = rest.filter((d) => /\|(b\d+-)?(rect-height|rect-width|content-offset-top|content-offset-left)$/.test(d.key))
+    const restOther = rest.filter((d) => !(/\|(b\d+-)?(rect-height|rect-width|content-offset-top|content-offset-left)$/.test(d.key)))
 
     const restCases = new Set(before.rows.filter((r) => isRestCase(r.case)).map((r) => `${r.identity}|${r.mode}|${r.case}`))
     console.log(`lignes comparees : ${before.rows.length} avant / ${after.rows.length} apres`)
@@ -133,30 +133,46 @@ function readMatrixInPage ({ expected, properties }) {
 
     for (const host of Array.from(document.querySelectorAll('[data-probe-case]'))) {
         const caseKey = host.getAttribute('data-probe-case')
-        const root = host.querySelector('.origam-btn')
-        if (!root) return { error: `cas ${caseKey} : aucune racine .origam-btn rendue` }
+        const roots = Array.from(host.querySelectorAll('.origam-btn'))
+        if (roots.length === 0) return { error: `cas ${caseKey} : aucune racine .origam-btn rendue` }
 
-        const rect = root.getBoundingClientRect()
-        out.push({ case: caseKey, property: 'rect-height', value: px(rect.height) })
-        out.push({ case: caseKey, property: 'rect-width', value: px(rect.width) })
+        // Un consommateur (groupe, chip, code) rend plusieurs Btn : le premier garde les
+        // noms de propriete nus, les suivants sont prefixes `b{i}-`.
+        roots.forEach((root, bi) => {
+            const pre = bi === 0 ? '' : `b${bi}-`
+            const push = (property, value) => out.push({ case: caseKey, property: pre + property, value })
 
-        const cs = getComputedStyle(root)
-        for (const property of properties) out.push({ case: caseKey, property, value: cs.getPropertyValue(property).trim() })
+            const rect = root.getBoundingClientRect()
+            push('rect-height', px(rect.height))
+            push('rect-width', px(rect.width))
 
-        const content = root.querySelector('.origam-btn__content')
-        if (content) {
-            const c = content.getBoundingClientRect()
-            out.push({ case: caseKey, property: 'content-height', value: px(c.height) })
-            out.push({ case: caseKey, property: 'content-width', value: px(c.width) })
-            // Position du contenu DANS la boite : la hauteur seule ne prouve pas que le
-            // contenu reste centre verticalement quand le minimum depasse le contenu.
-            out.push({ case: caseKey, property: 'content-offset-top', value: px(c.top - rect.top) })
-            out.push({ case: caseKey, property: 'content-offset-left', value: px(c.left - rect.left) })
-            out.push({ case: caseKey, property: 'content-white-space', value: getComputedStyle(content).whiteSpace })
-            // Debordement vertical / horizontal du contenu hors de la boite du bouton.
-            out.push({ case: caseKey, property: 'overflow-block', value: px(Math.max(0, c.bottom - rect.bottom, rect.top - c.top)) })
-            out.push({ case: caseKey, property: 'overflow-inline', value: px(Math.max(0, c.right - rect.right, rect.left - c.left)) })
-        }
+            const cs = getComputedStyle(root)
+            for (const property of properties) push(property, cs.getPropertyValue(property).trim())
+
+            // Les enfants de la grille interne : localise d'ou vient un decalage du contenu.
+            for (const part of ['loader', 'prepend', 'append']) {
+                const el = root.querySelector(`.origam-btn__${part}`)
+                if (!el) continue
+                const r = el.getBoundingClientRect()
+                push(`${part}-offset-top`, px(r.top - rect.top))
+                push(`${part}-height`, px(r.height))
+            }
+
+            const content = root.querySelector('.origam-btn__content')
+            if (content) {
+                const c = content.getBoundingClientRect()
+                push('content-height', px(c.height))
+                push('content-width', px(c.width))
+                // Position du contenu DANS la boite : la hauteur seule ne prouve pas que le
+                // contenu reste centre verticalement quand le minimum depasse le contenu.
+                push('content-offset-top', px(c.top - rect.top))
+                push('content-offset-left', px(c.left - rect.left))
+                push('content-white-space', getComputedStyle(content).whiteSpace)
+                // Debordement vertical / horizontal du contenu hors de la boite du bouton.
+                push('overflow-block', px(Math.max(0, c.bottom - rect.bottom, rect.top - c.top)))
+                push('overflow-inline', px(Math.max(0, c.right - rect.right, rect.left - c.left)))
+            }
+        })
     }
 
     return { rows: out }

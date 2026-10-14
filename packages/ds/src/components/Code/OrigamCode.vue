@@ -512,7 +512,6 @@
 
 	.origam-code__copy--compact {
 		flex: none;
-		--origam-btn---min-height: 0;
 		--origam-btn---min-width: 0px;
 		--origam-btn---height: auto;
 		--origam-btn---padding-block: var(--origam-code__compact-copy---padding-block);
@@ -556,7 +555,6 @@
 	}
 
 	.origam-code__copy {
-		--origam-btn---min-height: 0;
 		--origam-btn---min-width: 0px;
 		--origam-btn---border-radius: var(--origam-code__copy---border-radius);
 		--origam-btn---font-size: var(--origam-code__copy---font-size);

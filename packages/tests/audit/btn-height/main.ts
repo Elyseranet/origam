@@ -2,6 +2,10 @@ import { createApp, h } from 'vue'
 
 import { createOrigam } from '../../../ds/src/origam'
 import OrigamBtn from '../../../ds/src/components/Btn/OrigamBtn.vue'
+import OrigamBtnGroup from '../../../ds/src/components/Btn/OrigamBtnGroup.vue'
+import OrigamBtnToggle from '../../../ds/src/components/Btn/OrigamBtnToggle.vue'
+import OrigamChip from '../../../ds/src/components/Chip/OrigamChip.vue'
+import OrigamCode from '../../../ds/src/components/Code/OrigamCode.vue'
 import { origamTheme } from '../../../ds/src/themes/origam.theme'
 import '../../../ds/src/assets/css/main.css'
 
@@ -61,7 +65,11 @@ const app = createApp({
                 style: `padding: 8px; ${probeCase.containerWidth ? `width: ${probeCase.containerWidth}px; box-sizing: border-box;` : ''}`
             },
             [
-                h(OrigamBtn, probeCase.props, probeCase.label ? { default: () => probeCase.label } : undefined)
+                probeCase.component === 'btn-group' ? h(OrigamBtnGroup, probeCase.props)
+                    : probeCase.component === 'btn-toggle' ? h(OrigamBtnToggle, probeCase.props)
+                        : probeCase.component === 'chip' ? h(OrigamChip, probeCase.props)
+                            : probeCase.component === 'code' ? h(OrigamCode, probeCase.props)
+                                : h(OrigamBtn, probeCase.props, probeCase.label ? { default: () => probeCase.label } : undefined)
             ]
         ))
     )

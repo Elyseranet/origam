@@ -8,6 +8,8 @@
  ********************************************************/
 export interface IBtnProbeCase {
     key: string
+    /** Composant monte ; `btn` par defaut. Les autres sont des CONSOMMATEURS de Btn. */
+    component?: 'btn' | 'btn-group' | 'btn-toggle' | 'chip' | 'code'
     props: Record<string, unknown>
     label: string | null
     containerWidth: number | null

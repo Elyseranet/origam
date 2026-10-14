@@ -48,7 +48,7 @@
 					variant="outlined"
 					:text="drilldownBackLabel"
 					:aria-label="drilldownBackLabel"
-					:style="{ '--origam-btn---min-height': '0', '--origam-btn---min-width': '0' }"
+					:style="{ '--origam-btn---min-width': '0' }"
 					data-cy="origam-chart-cartesian-breadcrumb-back"
 					@click="onDrillUp"
 			/>
