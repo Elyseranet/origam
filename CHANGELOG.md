@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.24.0] - 2026-10-14
+
 ### Changed — refonte d'`OrigamSkeleton` : primitives, pulse par defaut, `OrigamSkeletonGroup` (#1073 lot 1, #1074, #1075, #1076)
 
 Lot 1 de #1073. Les composants consommateurs (`OrigamBtn`, `OrigamCard`, `OrigamField`, `OrigamSwitch`, `OrigamDataTable*`, `OrigamExpansionPanel*`) ne sont PAS touches : ils continuent d'utiliser `OrigamSkeleton` (gabarits `card` / `list-item` conserves) et migrent au lot 2.

@@ -18,14 +18,14 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
-        version: 'Unreleased',
-        date: null,
-        type: 'unreleased',
-        summaryKey: 'changelog.versions.unreleased.summary',
+        version: '2.24.0',
+        date: '2026-10-14',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2240.summary',
         summaryFallback: '1 change and 1 fix. See the full changelog for detail.',
         highlights: [
-            { type: 'changed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'refonte d\'OrigamSkeleton : primitives, pulse par defaut, OrigamSkeletonGroup (#1073 lot 1, #1074, #1075, #1076)' },
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h2', textFallback: 'le cache Nitro des routes /api/reference/** servait une réponse d\'ancien format (#1063)' }
+            { type: 'changed', textKey: 'changelog.versions.v2240.h1', textFallback: 'refonte d\'OrigamSkeleton : primitives, pulse par defaut, OrigamSkeletonGroup (#1073 lot 1, #1074, #1075, #1076)' },
+            { type: 'fixed', textKey: 'changelog.versions.v2240.h2', textFallback: 'le cache Nitro des routes /api/reference/** servait une réponse d\'ancien format (#1063)' }
         ]
     },
     {
