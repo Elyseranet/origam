@@ -6,11 +6,17 @@
 			:style="dataTableStyles"
 			v-bind="tableProps"
 			:aria-rowcount="itemsLength"
+			:aria-busy="isSkeletonLoading || undefined"
 	>
 		<template
-				v-if="slots.top"
+				v-if="slots.top || isSkeletonLoading"
 				#top
 		>
+			<span
+					v-if="isSkeletonLoading"
+					class="origam-data-table__announcement"
+					role="status"
+			>{{ skeletonAnnouncement }}</span>
 			<slot name="top"/>
 		</template>
 
@@ -146,6 +152,7 @@
 	import { provideSelection } from '../../composables/DataTable/select.composable'
 	import { useDataTableItems } from '../../composables/DataTable/items.composable'
 	import { useFilter } from '../../composables/Commons/filters.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useGroupedItems } from '../../composables/DataTable/groupedItems.composable'
 	import { useOptions } from '../../composables/DataTable/options.composable'
 	import { usePaginatedItems } from '../../composables/DataTable/paginatedItems.composable'
@@ -160,7 +167,10 @@
 		pickDataTableRowsSlotNames
 	} from '../../utils/DataTable/slot-name.util'
 
+	import { splitSkeletonOverrides } from '../../utils/Skeleton/skeleton.util'
+
 	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { IDataTableGroup, IDataTableGroupableItem } from '../../interfaces/DataTable/group.interface'
@@ -337,6 +347,42 @@
 		return origamDataTableHeadersRef.value?.filterProps(props)
 	})
 
+	/*********************************************************
+	 * Skeleton announcement
+	 *
+	 * @description
+	 * While the rows are placeholders the table makes ONE announcement: a single visually hidden `role="status"` in the `top` slot of `<OrigamTable>`.
+	 * @description
+	 * That slot sits NEXT TO the `<table>`, where a `<span>` is valid HTML: inside the `<table>` only `<caption>` / `<tbody>`… are allowed and a `<tr>` cannot hold a live region.
+	 * @description
+	 * `<caption>` belongs to the consumer (`caption` prop), so it is not borrowed.
+	 * @description
+	 * The rows and cells are `aria-hidden` (`<OrigamDataTableRows>`) and the table root carries `aria-busy`.
+	 ********************************************************/
+	const {t} = useLocale()
+
+	/*********************************************************
+	 * Skeleton state
+	 *
+	 * @description
+	 * Only the explicit `{ type: 'skeleton', ... }` form selects the skeleton, so the bag is read straight from `loading`.
+	 * @description
+	 * Handing `props` to `useLoader` made vue-tsc (marketing ratchet) reject the props object against `ILoaderProps`.
+	 ********************************************************/
+	const skeletonConfig = computed(() => {
+		const loading = props.loading
+
+		return typeof loading === 'object' && loading !== null && loading.type === LOADER_KIND.SKELETON ? loading : null
+	})
+
+	const isSkeletonLoading = computed(() => skeletonConfig.value !== null)
+
+	const skeletonAnnouncement = computed(() => {
+		const {group} = splitSkeletonOverrides(skeletonConfig.value, props.loadingText ?? 'origam.data_iterator.loading_text')
+
+		return t(group.label ?? '')
+	})
+
 	const dataTableRowsProps = computed(() => {
 		return origamDataTableRowsRef.value?.filterProps(props, ['class', 'style', 'id', 'items'])
 	})
@@ -414,6 +460,12 @@
 		lang="scss"
 		scoped
 >
+	@use '../../assets/scss/helpers' as ds;
+
+	.origam-data-table__announcement {
+		@include ds.ds-visually-hidden;
+	}
+
 	.origam-data-table {
 		width: var(--origam-data-table---width, 100%);
 		background-color: var(--origam-data-table---background-color, var(--origam-color__surface---default));

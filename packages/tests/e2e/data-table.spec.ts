@@ -221,4 +221,74 @@ test.describe('OrigamDataTable', () => {
             await expect(table.locator('[role="progressbar"]').first()).toBeVisible({ timeout: 3000 })
         })
     })
+
+    test.describe('Loading skeleton — zero node added (#1073 lot 2b)', () => {
+        const openSkeleton = async (page: import('@playwright/test').Page) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Prop — loading skeleton', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const table = sandbox.locator('[data-cy="data-table-loading-skeleton"]')
+            await expect(table.locator('tbody tr').first()).toBeVisible({ timeout: 8000 })
+            return table
+        }
+
+        test('the placeholder cells are the hosts: no <origam-skeleton> node is mounted', async ({ page }) => {
+            const table = await openSkeleton(page)
+
+            await expect(table.locator('tbody tr')).toHaveCount(5)
+            await expect(table.locator('tbody td')).toHaveCount(20)
+            await expect(table.locator('tbody td.origam--skeleton')).toHaveCount(20)
+            await expect(table.locator('.origam-skeleton')).toHaveCount(0)
+        })
+
+        test('ONE announcement for the whole table, outside it; every row and cell is aria-hidden', async ({ page }) => {
+            const table = await openSkeleton(page)
+
+            await expect(table.locator('[role="status"]')).toHaveCount(1)
+            await expect(table.locator('tbody [role="status"]')).toHaveCount(0)
+            await expect(table.locator('table [role="status"]')).toHaveCount(0)
+            await expect(table.locator('tbody tr[aria-hidden="true"]')).toHaveCount(5)
+            await expect(table.locator('tbody td[aria-hidden="true"]')).toHaveCount(20)
+            await expect(table).toHaveAttribute('aria-busy', 'true')
+        })
+
+        test('the bar follows the column: end-aligned column draws a shorter bar flush with the end', async ({ page }) => {
+            const table = await openSkeleton(page)
+            const cells = table.locator('tbody tr').first().locator('td')
+
+            const geometry = await cells.evaluateAll((tds) => tds.map((td) => {
+                const cs = getComputedStyle(td, '::after')
+                const rect = td.getBoundingClientRect()
+                return { width: parseFloat(cs.width), cell: rect.width, left: parseFloat(cs.left) }
+            }))
+
+            // the used `left` of an absolutely positioned pseudo-element is in px:
+            // flush with the start edge for text, with the end edge for the figures column
+            const flushEnd = (g: { width: number, cell: number, left: number }) => Math.abs(g.cell - (g.left + g.width)) < 24
+            expect(flushEnd(geometry[3])).toBe(true)
+            expect(flushEnd(geometry[0])).toBe(false)
+            expect(geometry[3].width / geometry[3].cell).toBeLessThan(geometry[0].width / geometry[0].cell)
+        })
+
+        test('reduced-motion switches the cell pulse off', async ({ page }) => {
+            await page.emulateMedia({ reducedMotion: 'reduce' })
+            const table = await openSkeleton(page)
+
+            const name = await table.locator('tbody td').first().evaluate((td) => getComputedStyle(td, '::after').animationName)
+            expect(name).toBe('none')
+        })
+
+        test('pulse runs a finite number of iterations (WCAG 2.2.2)', async ({ page }) => {
+            const table = await openSkeleton(page)
+
+            const got = await table.locator('tbody td').first().evaluate((td) => {
+                const cs = getComputedStyle(td, '::after')
+                return { name: cs.animationName, count: cs.animationIterationCount }
+            })
+            expect(got.name).toBe('origam-skeleton-pulse')
+            expect(Number.isFinite(Number(got.count))).toBe(true)
+        })
+    })
 })

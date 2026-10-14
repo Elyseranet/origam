@@ -18,6 +18,27 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Changed — `OrigamCard`, `OrigamExpansionPanel(Content)`, `OrigamDataTableRows` : le skeleton suit l'anatomie du conteneur (#1073 lot 2b, #1081, #1076)
+
+Lot 2b de #1073 (decisions 1, 4 et 8). Mesure : sonde Chromium `pnpm -F @origam/tests audit:skeleton-containers`, meme code de sonde avant (`e23bc137e`) et apres, `loading={ type: 'skeleton' }`.
+
+| conteneur | elements DOM | `role="status"` | `aria-hidden` |
+|---|---|---|---|
+| `OrigamCard` (image, titre, sous-titre, footer) | 9 → 11 | 1 → 1 | 4 → 7 |
+| `OrigamExpansionPanel` (ouvert) | 16 → 16 | 3 → 1 | 1 → 4 |
+| `OrigamDataTable` (4 colonnes) | 68 → 49 | 20 → 1 (hors des lignes) | 4 → 29 |
+
+La carte gagne 2 elements : elle dessine desormais 7 formes (media, titre, sous-titre, 2 lignes, 2 actions) la ou le gabarit fixe en dessinait 4. Le panneau garde le meme nombre d'elements : un groupe remplace le `div.__loader` vide. La table perd les 20 `<origam-skeleton>` et gagne un seul `<span role="status">` d'annonce.
+
+**Ruptures (assumees, pre-1.0) :**
+- `OrigamCard` n'utilise plus `variant="card"` ni le wrapper `.origam-card__loader` pour le skeleton : la silhouette est un `OrigamSkeletonGroup` (une annonce, une horloge) de primitives `aria-hidden`. Seules les parties que la carte possede sont dessinees (media si `image` / `#asset`, actions si `#footer`). Les overrides du `loading` sont repartis : `animation` et `label` vers le groupe, `color` / `bgColor` / `rounded` vers chaque primitive.
+- `OrigamExpansionPanelContent` : les 3 lignes sont dans un seul `OrigamSkeletonGroup` — **une** annonce `role="status"` au lieu de trois.
+- `OrigamExpansionPanel` ne rend plus le `div.origam-expansion-panel__loader` quand le type est `skeleton` (il etait vide, #1076 point 3).
+- `OrigamDataTableRows` : les `<td>` des 5 lignes factices sont l'hote (`.origam--skeleton`), sans `<origam-skeleton>` ; lignes et cellules `aria-hidden`. **Une** annonce pour la table : un `<span role="status">` visuellement masque rendu par `OrigamDataTable` dans le slot `top` de `OrigamTable` (a cote du `<table>`, seul endroit ou un `<span>` est valide ; ni `<tr>` ni `<caption>`, qui appartient au consommateur), et `aria-busy="true"` sur la racine de la table. La barre suit la colonne : plus courte et collee a la fin pour `align: 'end'`, carre pour `data-table-select` / `data-table-expand`, barre de largeur variable sinon. Les `overrides` `animation` et `label` de `TLoaderConfig` sont enfin transmis ; `color` / `rounded` n'ont pas de noeud ou se poser.
+- Tokens retires : `--origam-card__loader---min-height-skeleton` (remplace par `--origam-card__skeleton---padding`) et `--origam-data-table-rows--skeleton---cell-padding` (la cellule prend le padding de la table).
+
+**Ajouts :** utilitaires `splitSkeletonOverrides` et `getSkeletonHostClasses` (`utils/Skeleton`), `getSkeletonCellShape` (`utils/DataTable`), enum `DATATABLE_SKELETON_CELL`, interface `ISkeletonOverrides`. Les gabarits `card` / `list-item` de `OrigamSkeleton` ne sont PAS retires ici (#1083).
+
 ## [2.25.0] - 2026-10-14
 
 ### Changed — `OrigamBtn`, `OrigamSwitch` et `OrigamField` n'ont plus de mode skeleton (#1080, lot 2a de #1073)

@@ -2,7 +2,7 @@
   "kind": "enum",
   "exportedAt": "2026-10-01T13:28:51.334Z",
   "sourceCommit": "143d5904",
-  "entryCount": 138,
+  "entryCount": 139,
   "entries": [
     {
       "entry": {
@@ -3822,6 +3822,64 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "enum",
+        "slug": "datatable-skeleton-cell",
+        "name": "DATATABLE_SKELETON_CELL",
+        "category": "DataTable",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum DATATABLE_SKELETON_CELL {\n    TEXT = 'text',\n    END = 'end',\n    CONTROL = 'control'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/DataTable/data-table.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "DATATABLE_SKELETON_CELL.TEXT",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "DATATABLE_SKELETON_CELL.END",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "DATATABLE_SKELETON_CELL.CONTROL",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {

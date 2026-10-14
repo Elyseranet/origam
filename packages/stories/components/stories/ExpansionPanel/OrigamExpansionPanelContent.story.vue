@@ -138,6 +138,17 @@
 			</origam-expansion-panels>
 		</Variant>
 
+		<Variant title="Prop — loading skeleton">
+			<origam-expansion-panels model-value="skeleton-panel" data-cy="panel-loading-skeleton">
+				<origam-expansion-panel
+						value="skeleton-panel"
+						title="Loading panel"
+						content="Hidden while loading"
+						:loading="{ type: 'skeleton' }"
+				/>
+			</origam-expansion-panels>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IExpansionPanelContentProps>({

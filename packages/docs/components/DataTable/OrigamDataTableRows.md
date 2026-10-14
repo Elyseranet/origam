@@ -18,9 +18,22 @@ the table's body slot.
 Resolved in this order, and only one ever renders:
 
 1. **Loading** — when the resolved loader is active. Given `{ type: 'skeleton' }`
-   it renders a fixed **5** placeholder rows, one skeleton cell per column,
-   marked `aria-busy="true"`. Any other kind renders a single full-width row
-   carrying `loadingText`.
+   it renders a fixed **5** placeholder rows, one cell per column, and adds
+   **no node of its own**: each `<td>` is the host (`.origam--skeleton`) and
+   paints its bar with its own `::after`. The table makes ONE announcement, and not from here: `<OrigamDataTable>`
+   renders a single visually hidden `<span role="status">` in the `top` slot of
+   its `<OrigamTable>`, i.e. NEXT TO the `<table>` (a `<span>` is not valid inside
+   it, and a `<tr>` cannot hold a live region), labelled by the `label` of the
+   config or `loadingText`. The table root carries `aria-busy="true"` and every
+   placeholder row and cell is `aria-hidden`. The bar follows the column: a shorter bar flush
+   with the end edge for an `align: 'end'` column, a small square for the
+   `data-table-select` / `data-table-expand` columns, a bar from the start
+   edge otherwise (its width varies from one row to the next). The
+   descriptor has no column "type", so those are the only signals available.
+   `animation` and `label` of the `{ type: 'skeleton', … }` config are
+   honoured; the per-block props (`color`, `rounded`…) have no node to land
+   on. Any other kind renders a single full-width row carrying
+   `loadingText`.
 2. **Empty** — when `items` is empty and `hideNoData` is false: one full-width
    row carrying `noDataText`.
 3. **Rows** — one `group-header` per `group` entry, one `item` per row.

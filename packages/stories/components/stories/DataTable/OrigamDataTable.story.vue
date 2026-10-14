@@ -539,6 +539,16 @@
 			</template>
 		</Variant>
 
+		<Variant title="Prop — loading skeleton">
+			<origam-data-table
+					data-cy="data-table-loading-skeleton"
+					:headers="skeletonHeaders"
+					:items="[]"
+					:loading="{ type: 'skeleton' }"
+					hide-default-footer
+			/>
+		</Variant>
+
 				<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<Partial<IDataTableProps>>({
@@ -661,6 +671,13 @@
 		{ title: 'First name', key: 'firstName' },
 		{ title: 'Last name',  key: 'lastName' },
 		{ title: 'Age',        key: 'age' }
+	]
+
+	const skeletonHeaders = [
+		{ title: 'Name',   key: 'name' },
+		{ title: 'Email',  key: 'email' },
+		{ title: 'Status', key: 'status' },
+		{ title: 'Amount', key: 'amount', align: 'end' }
 	]
 
 	const sortableHeaders = headers.map(h => ({ ...h, sortable: true }))

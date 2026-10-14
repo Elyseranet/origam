@@ -427,7 +427,7 @@
   --origam-card--loading---min-height: 120px;
   --origam-card__asset---aspect-ratio: 16 / 9;
   --origam-card__loader---min-height: 4px;
-  --origam-card__loader---min-height-skeleton: 200px;
+  --origam-card__skeleton---padding: var(--origam-space---4);
   --origam-card__loader---z-index: 3;
   --origam-card__progress---linear-height: 4px;
   --origam-card__progress---circular-margin: 24px auto;
@@ -1816,7 +1816,6 @@
   --origam-data-table-rows--no-data---text-align: center;
   --origam-data-table-rows--no-data---color: var(--origam-color__text---secondary);
   --origam-data-table-rows--loading---color: var(--origam-color__text---secondary);
-  --origam-data-table-rows--skeleton---cell-padding: 4px 8px;
   --origam-data-table-header-cell--sortable---cursor: pointer;
   --origam-data-table__sortable---icon-color: var(--origam-color__text---primary);
   --origam-data-table__sortable---icon-color-active: var(--origam-color__text---primary);
@@ -3441,7 +3440,7 @@
     --origam-card--loading---min-height: 120px;
     --origam-card__asset---aspect-ratio: 16 / 9;
     --origam-card__loader---min-height: 4px;
-    --origam-card__loader---min-height-skeleton: 200px;
+    --origam-card__skeleton---padding: var(--origam-space---4);
     --origam-card__loader---z-index: 3;
     --origam-card__progress---linear-height: 4px;
     --origam-card__progress---circular-margin: 24px auto;
@@ -4830,7 +4829,6 @@
     --origam-data-table-rows--no-data---text-align: center;
     --origam-data-table-rows--no-data---color: var(--origam-color__text---secondary);
     --origam-data-table-rows--loading---color: var(--origam-color__text---secondary);
-    --origam-data-table-rows--skeleton---cell-padding: 4px 8px;
     --origam-data-table-header-cell--sortable---cursor: pointer;
     --origam-data-table__sortable---icon-color: var(--origam-color__text---primary);
     --origam-data-table__sortable---icon-color-active: var(--origam-color__text---primary);

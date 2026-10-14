@@ -72,6 +72,7 @@
 	import { SKELETON_ANIMATION, SKELETON_VARIANT } from '../../enums/Skeleton/skeleton.enum'
 	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
 	import type { ISkeletonEmits, ISkeletonProps } from '../../interfaces/Skeleton/skeleton.interface'
+	import { getSkeletonHostClasses } from '../../utils/Skeleton/skeleton.util'
 	import { computed, inject, toRef } from 'vue'
 	import type { StyleValue } from 'vue'
 
@@ -189,13 +190,7 @@
 	 * each shape.
 	 ********************************************************/
 
-	const animationClasses = computed(() => [
-		'origam--skeleton',
-		{
-			'origam--skeleton-wave': animation.value === SKELETON_ANIMATION.WAVE,
-			'origam--skeleton-none': animation.value === SKELETON_ANIMATION.NONE
-		}
-	])
+	const animationClasses = computed(() => getSkeletonHostClasses(animation.value))
 
 	const skeletonCircularClasses = computed(() => [
 		'origam-skeleton',

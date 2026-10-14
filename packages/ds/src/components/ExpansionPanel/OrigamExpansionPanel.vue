@@ -13,9 +13,11 @@
 
 		<template v-if="hasLoading">
 			<slot name="loader">
-				<div class="origam-expansion-panel__loader">
+				<div
+						v-if="loaderConfig.kind !== 'skeleton'"
+						class="origam-expansion-panel__loader"
+				>
 					<origam-progress
-							v-if="loaderConfig.kind !== 'skeleton'"
 							:active="true"
 							:indeterminate="loaderConfig.indeterminate"
 							:model-value="loaderConfig.modelValue"

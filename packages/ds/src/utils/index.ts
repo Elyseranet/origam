@@ -1,5 +1,6 @@
 export * from './Media/format-time.util'
 export * from './Snackbar/snackbar-group.util'
+export * from './Skeleton/skeleton.util'
 
 export * from './Commons/a11y.util'
 export * from './Commons/anchor.util'
@@ -65,6 +66,7 @@ export * from './DataTable/items.util'
 export * from './DataTable/sort.util'
 export * from './DataTable/group.util'
 export * from './DataTable/slot-name.util'
+export * from './DataTable/skeleton-cell.util'
 
 
 export * from './CommandPalette/fuzzy-match.util'

@@ -112,8 +112,8 @@ describe('OrigamExpansionPanel — loadingText reaches the loading indicator', (
     })
 })
 
-describe('OrigamExpansionPanelContent — loadingText reaches the skeleton lines', () => {
-    it('labels all three skeleton lines with the custom key', async () => {
+describe('OrigamExpansionPanelContent — loadingText reaches the skeleton group', () => {
+    it('labels the ONE skeleton group with the custom key (the three lines are aria-hidden)', async () => {
         const wrapper = mountPanels({}, {
             loading: { type: 'skeleton' },
             loadingText: 'origam.data_iterator.loading_text',
@@ -122,15 +122,15 @@ describe('OrigamExpansionPanelContent — loadingText reaches the skeleton lines
 
         const labels = await loaderLabels(wrapper, CONTENT)
 
-        expect(labels.filter((l) => l === 'Loading items...')).toHaveLength(3)
+        expect(labels.filter((l) => l === 'Loading items...')).toHaveLength(1)
     })
 
-    it('falls back to origam.loading on the skeleton lines when omitted', async () => {
+    it('falls back to origam.loading on the skeleton group when omitted', async () => {
         const wrapper = mountPanels({}, { loading: { type: 'skeleton' }, eager: true })
 
         const labels = await loaderLabels(wrapper, CONTENT)
 
-        expect(labels.filter((l) => l === 'Loading...')).toHaveLength(3)
+        expect(labels.filter((l) => l === 'Loading...')).toHaveLength(1)
     })
 })
 

@@ -85,7 +85,8 @@ ends (`useLazy`). Pass `eager` to keep it mounted (and hidden) at all times.
 `loading` accepts a boolean, a 0–100 progress number, or an explicit
 `{ type: 'line' | 'circular' | 'skeleton', … }` config, rendered above the
 header (`line` / `circular`) or as three skeleton lines inside the content
-(`skeleton`) — same contract as every other `ILoaderProps` component in the
+(`skeleton`, one announcement for the three lines; the panel itself renders
+no loader element for this kind) — same contract as every other `ILoaderProps` component in the
 design system.
 
 ```vue
