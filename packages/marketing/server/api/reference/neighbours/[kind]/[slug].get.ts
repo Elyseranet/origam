@@ -20,6 +20,8 @@
  */
 
 import { DocEntry } from '../../../../db/entities'
+import { REFERENCE_CACHE_NAMES, REFERENCE_CACHE_TTL_SECONDS } from '../../../../consts/cache.const'
+import { referenceNeighboursCacheKey } from '../../../../utils/reference-cache'
 import {
     neighboursIn,
     orderCatalogSequence,
@@ -33,8 +35,6 @@ import {
 } from '../../../../utils/catalog-queries'
 import type { ICatalogNeighbours } from '../../../../../src/interfaces/catalog-neighbours.interface'
 import type { TReferenceKind } from '../../../../../src/types/api-reference.type'
-
-const CACHE_TTL_SECONDS = 300
 
 export default defineCachedEventHandler(
     async (event): Promise<ICatalogNeighbours> => {
@@ -69,9 +69,9 @@ export default defineCachedEventHandler(
         return { prev, next, related }
     },
     {
-        maxAge: CACHE_TTL_SECONDS,
-        name: 'reference-neighbours',
+        maxAge: REFERENCE_CACHE_TTL_SECONDS,
+        name: REFERENCE_CACHE_NAMES.neighbours,
         getKey: (event) =>
-            `neighbours:${getRouterParam(event, 'kind') ?? ''}:${getRouterParam(event, 'slug') ?? ''}`,
+            referenceNeighboursCacheKey(getRouterParam(event, 'kind') ?? '', getRouterParam(event, 'slug') ?? ''),
     },
 )

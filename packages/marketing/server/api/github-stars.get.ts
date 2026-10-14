@@ -1,6 +1,7 @@
+import { EXTERNAL_CACHE_TTL_SECONDS } from '../consts/cache.const'
+
 const GITHUB_API_URL = 'https://api.github.com/repos/Elyseranet/origam'
 const FALLBACK_STAR_COUNT = 0
-const CACHE_TTL_SECONDS = 3600
 
 interface IGithubRepoResponse {
   stargazers_count: number
@@ -30,7 +31,7 @@ export default defineCachedEventHandler(
     }
   },
   {
-    maxAge: CACHE_TTL_SECONDS,
+    maxAge: EXTERNAL_CACHE_TTL_SECONDS,
     name: 'github-stars',
     getKey: () => 'github-stars'
   }
