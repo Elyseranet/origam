@@ -138,7 +138,6 @@
     "packages/ds/src/components/Sheet/OrigamSheet.vue::--origam-sheet---border-radius-rounded",
     "packages/ds/src/components/Sheet/OrigamSheet.vue::--origam-sheet---border-width",
     "packages/ds/src/components/Sheet/OrigamSheet.vue::--origam-sheet---swipe-height",
-    "packages/ds/src/components/Skeleton/OrigamSkeleton.vue::--origam-skeleton---wave-color",
     "packages/ds/src/components/SliderField/OrigamSliderField.vue::--origam-slider-field---hover-x",
     "packages/ds/src/components/SliderField/OrigamSliderField.vue::--origam-slider-field---track-size",
     "packages/ds/src/components/SliderField/OrigamSliderField.vue::--origam-slider-field--pressed---transition",

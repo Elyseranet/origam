@@ -79,6 +79,7 @@ const GREEN_SPECS = [
     // wave 5
     'blockquote.spec.ts',
     'skeleton.spec.ts',
+    'skeleton-group.spec.ts',
     'qr-code.spec.ts',
     'watermark.spec.ts',
     'masonry.spec.ts',

@@ -2,7 +2,7 @@
   "kind": "enum",
   "exportedAt": "2026-10-01T13:28:51.334Z",
   "sourceCommit": "143d5904",
-  "entryCount": 137,
+  "entryCount": 138,
   "entries": [
     {
       "entry": {
@@ -53113,6 +53113,64 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "skeleton-animation",
+        "name": "SKELETON_ANIMATION",
+        "category": "Skeleton",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum SKELETON_ANIMATION {\n    PULSE = 'pulse',\n    WAVE = 'wave',\n    NONE = 'none'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Skeleton/skeleton.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "SKELETON_ANIMATION.PULSE",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "SKELETON_ANIMATION.WAVE",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "SKELETON_ANIMATION.NONE",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "skeleton-variant",
         "name": "SKELETON_VARIANT",
         "category": "Skeleton",
@@ -53120,7 +53178,7 @@
         "icon": null,
         "description_key": null,
         "description_fallback": null,
-        "definition": "export enum SKELETON_VARIANT {\n    TEXT = 'text',\n    RECTANGULAR = 'rectangular',\n    CIRCULAR = 'circular',\n    CARD = 'card',\n    LIST_ITEM = 'list-item'\n}",
+        "definition": "export enum SKELETON_VARIANT {\n    TEXT = 'text',\n    RECTANGULAR = 'rectangular',\n    CIRCULAR = 'circular',\n    PILL = 'pill',\n    CARD = 'card',\n    LIST_ITEM = 'list-item'\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -53159,14 +53217,20 @@
           "description_fallback": null
         },
         {
-          "value": "SKELETON_VARIANT.CARD",
+          "value": "SKELETON_VARIANT.PILL",
           "position": 3,
           "description_key": null,
           "description_fallback": null
         },
         {
-          "value": "SKELETON_VARIANT.LIST_ITEM",
+          "value": "SKELETON_VARIANT.CARD",
           "position": 4,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "SKELETON_VARIANT.LIST_ITEM",
+          "position": 5,
           "description_key": null,
           "description_fallback": null
         }

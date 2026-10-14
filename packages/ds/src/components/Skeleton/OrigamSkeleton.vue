@@ -4,39 +4,51 @@
 	</template>
 
 	<div
-			v-else-if="variant === 'list-item'"
+			v-else-if="isListItem"
 			:id="id"
 			:class="skeletonContainerClasses"
 			:style="skeletonContainerStyles"
-			:aria-label="skeletonAriaLabel"
-			aria-busy="true"
-			role="status"
-			v-bind="{ ...$attrs }"
+			v-bind="{ ...a11yAttrs, ...$attrs }"
 	>
 		<div
 				:class="skeletonCircularClasses"
-				:style="circularStyle"
+				aria-hidden="true"
 		/>
 		<div class="origam-skeleton__lines">
-			<div :class="skeletonTextClasses"/>
-			<div :class="skeletonTextClasses"/>
+			<div
+					:class="skeletonTextClasses"
+					aria-hidden="true"
+			/>
+			<div
+					:class="skeletonTextClasses"
+					aria-hidden="true"
+			/>
 		</div>
 	</div>
 
 	<div
-			v-else-if="variant === 'card'"
+			v-else-if="isCard"
 			:id="id"
 			:class="skeletonContainerClasses"
 			:style="skeletonContainerStyles"
-			:aria-label="skeletonAriaLabel"
-			aria-busy="true"
-			role="status"
-			v-bind="{ ...$attrs }"
+			v-bind="{ ...a11yAttrs, ...$attrs }"
 	>
-		<div :class="skeletonRectangularClasses"/>
-		<div :class="skeletonTextClasses"/>
-		<div :class="skeletonTextClasses"/>
-		<div :class="skeletonTextClasses"/>
+		<div
+				:class="skeletonRectangularClasses"
+				aria-hidden="true"
+		/>
+		<div
+				:class="skeletonTextClasses"
+				aria-hidden="true"
+		/>
+		<div
+				:class="skeletonTextClasses"
+				aria-hidden="true"
+		/>
+		<div
+				:class="skeletonTextClasses"
+				aria-hidden="true"
+		/>
 	</div>
 
 	<div
@@ -44,25 +56,23 @@
 			:id="id"
 			:class="skeletonClasses"
 			:style="skeletonStyles"
-			:aria-label="skeletonAriaLabel"
-			aria-busy="true"
-			role="status"
-			v-bind="{ ...$attrs }"
+			v-bind="{ ...a11yAttrs, ...$attrs }"
 	/>
 </template><script
 		lang="ts"
 		setup
 >
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useRounded } from '../../composables/Commons/rounded.composable'
 	import { useSize } from '../../composables/Commons/size.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import { ORIGAM_SKELETON_GROUP_KEY } from '../../consts/Skeleton/skeleton.const'
+	import { SKELETON_ANIMATION, SKELETON_VARIANT } from '../../enums/Skeleton/skeleton.enum'
 	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
 	import type { ISkeletonEmits, ISkeletonProps } from '../../interfaces/Skeleton/skeleton.interface'
-	import { convertToUnit } from '../../utils/Commons/commons.util'
-	import { computed, toRef } from 'vue'
+	import { computed, inject, toRef } from 'vue'
 	import type { StyleValue } from 'vue'
 
 	/*********************************************************
@@ -86,14 +96,14 @@
 	 *
 	 * So `inheritAttrs: false` on its own would silently strip a consumer's
 	 * attributes from the skeleton itself — #492's defect. They are therefore
-	 * re-bound by hand with `v-bind="{ ...$attrs }"` on each of the three element
-	 * branches. The fragment branch keeps forwarding nothing, which is what it
-	 * already did: the `default` slot's own content is the consumer's markup
-	 * and carries the consumer's attributes already.
+	 * re-bound by hand with `v-bind="{ ...a11yAttrs, ...$attrs }"` on each of
+	 * the three element branches. The fragment branch keeps forwarding
+	 * nothing, which is what it already did: the `default` slot's own content
+	 * is the consumer's markup and carries the consumer's attributes already.
 	 *
-	 * `v-bind="{ ...$attrs }"` sits LAST on each element so a consumer's `aria-label`
-	 * wins over the component's `skeletonAriaLabel` default, while `class` and
-	 * `style` are concatenated by `mergeProps` rather than replaced.
+	 * `$attrs` is spread AFTER `a11yAttrs` so a consumer's `aria-label` wins
+	 * over the component's default, while `class` and `style` are
+	 * concatenated by `mergeProps` rather than replaced.
 	 ********************************************************/
 	defineOptions({ inheritAttrs: false })
 
@@ -104,7 +114,6 @@
 	const props = withDefaults(defineProps<ISkeletonProps>(), {
 		variant: 'rectangular',
 		loading: true,
-		pulse: true,
 		label: 'origam.loading'
 	})
 
@@ -113,6 +122,7 @@
 	defineEmits<ISkeletonEmits>()
 
 	defineSlots<ICommonsComponentSlots>()
+
 	/*********************************************************
 	 * Composables
 	 ********************************************************/
@@ -120,59 +130,87 @@
 	const {t} = useLocale()
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {sizeClasses, sizeStyles} = useSize(props)
-
-	const skeletonAriaLabel = computed(() => t(props.label))
-	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	const {dimensionStyles} = useDimension(props)
 
 	/*********************************************************
 	 * Color
+	 *
+	 * @description
+	 * `color` tints the placeholder: the fill is `currentColor` mixed with
+	 * transparent, so it follows the text colour. `bgColor` paints BEHIND
+	 * that translucent fill.
 	 ********************************************************/
 
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
-	// ── Resolve width / height to CSS strings ──────────────────────────────
-	const resolvedWidth = computed(() => {
-		if (props.variant === 'text' && props.width == null) return '100%'
-		return props.width != null ? convertToUnit(props.width) : undefined
+	/*********************************************************
+	 * Group
+	 *
+	 * @description
+	 * Inside an `<OrigamSkeletonGroup>` a block follows the group's
+	 * animation and leaves the accessibility tree: the group makes the ONE
+	 * announcement of the zone. Outside any group a block is its own zone
+	 * and announces itself — a lone placeholder must not be silent.
+	 ********************************************************/
+
+	const group = inject(ORIGAM_SKELETON_GROUP_KEY, null)
+
+	const isGrouped = computed(() => group !== null)
+
+	const animation = computed(() => props.animation ?? group?.animation.value ?? SKELETON_ANIMATION.PULSE)
+
+	const skeletonAriaLabel = computed(() => t(props.label))
+
+	const a11yAttrs = computed(() => {
+		if (isGrouped.value) return {'aria-hidden': true as const}
+
+		return {
+			'role': 'status',
+			'aria-busy': true as const,
+			'aria-label': skeletonAriaLabel.value
+		}
 	})
 
-	const resolvedHeight = computed(() => {
-		if (props.variant === 'text') {
-			return props.height != null ? convertToUnit(props.height) : 'var(--origam-skeleton---text-height)'
-		}
-		if (props.variant === 'circular') {
-			// height mirrors width for circles
-			return props.width != null ? convertToUnit(props.width) : undefined
-		}
-		return props.height != null ? convertToUnit(props.height) : undefined
-	})
+	/*********************************************************
+	 * Variant
+	 ********************************************************/
 
-	// ── For circular, expose as a sub-style so the preset wrappers can use it ──
-	const circularSize = computed(() => props.width != null ? convertToUnit(props.width) : '36px')
-	const circularStyle = computed(() => ({
-		width: circularSize.value,
-		height: circularSize.value
-	}))
+	const isListItem = computed(() => props.variant === SKELETON_VARIANT.LIST_ITEM)
+	const isCard = computed(() => props.variant === SKELETON_VARIANT.CARD)
 
-	// ── Composite-variant container ────────────────────────────────────────
 	/*********************************************************
 	 * Class & Style
+	 *
+	 * @description
+	 * The motion itself lives in the shared host mechanism
+	 * (`.origam--skeleton*` in `origam-utilities.css`) — the very same rules
+	 * a component uses to paint its own element as a placeholder. This file
+	 * only chooses WHICH animation class applies and owns the geometry of
+	 * each shape.
 	 ********************************************************/
+
+	const animationClasses = computed(() => [
+		'origam--skeleton',
+		{
+			'origam--skeleton-wave': animation.value === SKELETON_ANIMATION.WAVE,
+			'origam--skeleton-none': animation.value === SKELETON_ANIMATION.NONE
+		}
+	])
 
 	const skeletonCircularClasses = computed(() => [
 		'origam-skeleton',
-		{ 'origam-skeleton--pulse': props.pulse },
-		'origam-skeleton--circular'
+		'origam-skeleton--circular',
+		animationClasses.value
 	])
 	const skeletonTextClasses = computed(() => [
 		'origam-skeleton',
-		{ 'origam-skeleton--pulse': props.pulse },
-		'origam-skeleton--text'
+		'origam-skeleton--text',
+		animationClasses.value
 	])
 	const skeletonRectangularClasses = computed(() => [
 		'origam-skeleton',
-		{ 'origam-skeleton--pulse': props.pulse },
-		'origam-skeleton--rectangular'
+		'origam-skeleton--rectangular',
+		animationClasses.value
 	])
 	const skeletonContainerClasses = computed(() => [
 		'origam-skeleton-wrapper',
@@ -182,38 +220,29 @@
 
 	const skeletonContainerStyles = computed<StyleValue>(() => [props.style] as StyleValue)
 
-	// ── Single-block classes & styles ──────────────────────────────────────
 	const skeletonClasses = computed(() => [
 		'origam-skeleton',
 		`origam-skeleton--${props.variant}`,
-		{'origam-skeleton--pulse': props.pulse},
+		animationClasses.value,
 		colorClasses.value,
 		roundedClasses.value,
 		sizeClasses.value,
 		props.class
 	])
 
-	const skeletonStyles = computed<StyleValue>(() => {
-		const styles: Record<string, string | undefined> = {}
-
-		if (resolvedWidth.value) styles['width'] = resolvedWidth.value
-		if (resolvedHeight.value) styles['height'] = resolvedHeight.value
-
-		return [styles, colorStyles.value, roundedStyles.value, sizeStyles.value, props.style] as StyleValue
-	})
-	const {id, css, load, isLoaded, unload} = useStyle(skeletonStyles, () => props.id)
-
+	const skeletonStyles = computed<StyleValue>(() => [
+		dimensionStyles.value,
+		colorStyles.value,
+		roundedStyles.value,
+		sizeStyles.value,
+		props.style
+	] as StyleValue)
 
 	/*********************************************************
 	 * Expose
 	 ********************************************************/
 	defineExpose({
-		filterProps,
-		css,
-		id,
-		load,
-		unload,
-		isLoaded
+		filterProps
 	})
 </script>
 
@@ -221,78 +250,34 @@
 		lang="scss"
 		scoped
 >
-	@keyframes origam-skeleton-wave {
-		0%   { background-position: -200% 0 }
-		100% { background-position: 200% 0 }
-	}
-
-	@keyframes origam-skeleton-spin {
-		from { transform: rotate(0deg) }
-		to   { transform: rotate(360deg) }
-	}
-
 	.origam-skeleton {
 		display: block;
-		background-color: var(--origam-skeleton---background-color);
 		border-radius: var(--origam-skeleton---border-radius);
-		width: 100%;
-		height: var(--origam-skeleton---text-height);
 
 		&--text {
+			width: 100%;
 			height: var(--origam-skeleton---text-height);
-			border-radius: var(--origam-skeleton---border-radius);
+			margin-block: var(--origam-skeleton---text-margin-block);
+			border-radius: var(--origam-skeleton---border-radius-pill);
 		}
 
 		&--rectangular {
-			border-radius: var(--origam-skeleton---border-radius);
+			width: 100%;
 			height: 100%;
 		}
 
 		&--circular {
-			border-radius: var(--origam-skeleton---border-radius-circular, 50%);
 			flex-shrink: 0;
+			width: var(--origam-skeleton---circular-size);
+			aspect-ratio: 1;
+			border-radius: var(--origam-skeleton---border-radius-circular);
 		}
 
-		&--card,
-		&--list-item {
-			display: none;
-		}
-
-		&--text.origam-skeleton--pulse,
-		&--rectangular.origam-skeleton--pulse {
-			background-image: linear-gradient(
-				90deg,
-				transparent 0%,
-				var(
-					--origam-skeleton---wave-color,
-					color-mix(in srgb, var(--origam-skeleton---background-color) 50%, white)
-				) 50%,
-				transparent 100%
-			);
-			background-repeat: no-repeat;
-			background-size: 200% 100%;
-			animation: origam-skeleton-wave var(--origam-skeleton---animation-duration, 1500ms) linear infinite;
-		}
-
-		&--circular.origam-skeleton--pulse {
-			background:
-				conic-gradient(
-					from 0deg,
-					transparent 0deg,
-					var(
-						--origam-skeleton---wave-color,
-						color-mix(in srgb, var(--origam-skeleton---background-color) 50%, white)
-					) 90deg,
-					var(--origam-skeleton---background-color) 270deg
-				);
-			animation: origam-skeleton-spin var(--origam-skeleton---animation-duration, 1500ms) linear infinite;
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.origam-skeleton--pulse {
-			animation: none;
-			background-image: none;
+		&--pill {
+			flex-shrink: 0;
+			width: var(--origam-skeleton---pill-width);
+			height: var(--origam-skeleton---pill-height);
+			border-radius: var(--origam-skeleton---border-radius-pill);
 		}
 	}
 
@@ -301,10 +286,6 @@
 			display: flex;
 			gap: var(--origam-skeleton---gap, 12px);
 			align-items: center;
-
-			> .origam-skeleton--circular {
-				flex-shrink: 0;
-			}
 
 			> .origam-skeleton__lines {
 				flex: 1;

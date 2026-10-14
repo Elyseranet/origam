@@ -457,6 +457,17 @@ function run () {
         for (const read of findVarReads(content)) directReads.add(read.name)
     }
 
+    // The global utility sheet is a reader too (#1073): `.origam--skeleton*`
+    // reads the skeleton tokens from `origam-utilities.css` so any element can
+    // paint itself as a placeholder, with no `.vue` involved. It sits under
+    // `assets/` (the emitting side) so the walks above skip it; without this
+    // line every token it consumes would be reported dormant. Comments are
+    // stripped first — the sheet's header names tokens it does not read.
+    const utilitiesSheet = sheetSources.get(path.relative(REPO_ROOT, path.join(TOKENS_CSS_DIR, 'origam-utilities.css')))
+    if (utilitiesSheet) {
+        for (const read of findVarReads(stripComments(utilitiesSheet))) directReads.add(read.name)
+    }
+
     // Finally, follow the token graph: a primitive consumed by a LIVE semantic
     // token is read; one consumed only by dead tokens stays dormant.
     const scriptReadNames = propagateThroughTokenGraph(sheetSources, directReads)

@@ -1,326 +1,450 @@
 import { expect, test } from '@playwright/test'
+import type { FrameLocator, Page } from '@playwright/test'
 
 /**
- * OrigamSkeleton — e2e spec (pattern canonique, cf. btn.spec.ts)
+ * OrigamSkeleton — e2e spec (#1073 lot 1, #1074, #1075, #1076)
  *
- * ## Variants (index 0-based, grep -E '<Variant' OrigamSkeleton.story.vue)
+ * Everything below is measured in a real Chromium against the Histoire
+ * story. Nothing is asserted through jsdom, which never resolves `var()`
+ * (CLAUDE.md, #398).
  *
- *   0 → Design      init: { variant:'rectangular', width:'200', height:'80' }, loading=true
- *   1 → Functional  init: { loading:true, pulse:true, variant:'text', width:'200' }
- *   2 → Slots - Default  loading=false, slot "<span>Custom slot content…</span>" visible
- *   3 → Default (playground)
+ * ## Variants (index 0-based, `grep -E '<Variant' OrigamSkeleton.story.vue`)
  *
- * ## Composant (OrigamSkeleton.vue)
+ *   0 → Design                     rectangular 200x80, pulse
+ *   1 → Design - Shapes            text / rectangular / circular / pill, animation none
+ *   2 → Design - Animations        three groups: pulse / wave / none
+ *   3 → Functional                 loading text, label key
+ *   4 → Functional - Host state    plain elements carrying `.origam--skeleton`
+ *   5 → Slots - Default            loading=false
+ *   6 → Default (playground)
  *
- *   - Quand loading=false → rend le slot (aucun .origam-skeleton dans le DOM).
- *   - variant ∈ { text | rectangular | circular | card | list-item }.
- *     - card / list-item → root = .origam-skeleton-wrapper--{variant}
- *       avec des .origam-skeleton enfants.
- *     - autres → root = .origam-skeleton.origam-skeleton--{variant}.
- *   - pulse=true → ajoute .origam-skeleton--pulse (animation wave/spin).
- *   - circular → border-radius = var(--origam-skeleton---border-radius-circular, 50%)
- *     Le token DS résout à 9999px (pill universel — même que Avatar, Chip, Badge).
+ * ## Motion
  *
- * ## Non-testable headless
+ * `prefers-reduced-motion` IS simulable: `page.emulateMedia({ reducedMotion })`
+ * (the previous header of this file said it was not — it was wrong, #1074).
+ * The animation itself is observable through `Element.getAnimations()`
+ * (name, duration, iteration count, start time), not through keyframe timing.
  *
- *   - L'animation CSS elle-même (keyframe timing, background-position) n'est pas
- *     observable via getComputedStyle en headless — on ne la testera pas directement.
- *     On vérifie uniquement la présence de la classe .origam-skeleton--pulse.
- *   - prefers-reduced-motion: la media-query désactive l'animation ; non simulable
- *     sans flag Chromium spécifique.
+ * ## Histoire pins the `origam` theme
+ *
+ * Its `createOrigam` registers `origamTheme`, which is exactly the theme that
+ * used to pin `'origam-skeleton': { variant: 'text', rounded: 'sm' }` — so
+ * the circle test below reproduces #1075 for real.
  */
 
 const STORY_ID   = 'components-stories-skeleton-origamskeleton-story-vue'
 const STORY_PATH = '/stories/story/' + STORY_ID
 
-/** Construit l'URL d'un Variant par son index (0-based). */
 const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
+const READY = 12000
+
+const sandboxOf = (page: Page): FrameLocator => page.frameLocator('iframe[src*="__sandbox"]')
+
+const open = async (page: Page, idx: number, reducedMotion: 'reduce' | 'no-preference' = 'no-preference') => {
+    await page.emulateMedia({ reducedMotion })
+    await page.goto(variantUrl(idx), { waitUntil: 'domcontentloaded' })
+    const sandbox = sandboxOf(page)
+    await expect(sandbox.locator('.origam-skeleton, [data-cy^="skeleton-host"]').first()).toBeVisible({ timeout: READY })
+    return sandbox
+}
+
+/** Animations running on the page that come from the skeleton rules. */
+const skeletonAnimations = (sandbox: FrameLocator, selector: string) =>
+    sandbox.locator(selector).first().evaluate((el) => {
+        return el.ownerDocument.getAnimations()
+            .filter((a) => /skeleton/.test((a as CSSAnimation).animationName ?? ''))
+            .map((a) => {
+                const timing = a.effect!.getComputedTiming()
+
+                return {
+                    name: (a as CSSAnimation).animationName,
+                    pseudo: (a.effect as KeyframeEffect).pseudoElement,
+                    duration: timing.duration,
+                    iterations: timing.iterations,
+                    startTime: a.startTime
+                }
+            })
+    })
+
 test.describe('OrigamSkeleton', () => {
-    test.setTimeout(45000)
+    test.setTimeout(60000)
 
     // ------------------------------------------------------------------ //
     // DESIGN (index 0)                                                     //
-    // init: { variant:'rectangular', width:'200', height:'80' }, loading  //
     // ------------------------------------------------------------------ //
 
     test.describe('Design', () => {
-        test('renders the skeleton root with BEM class', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        test('rectangular applies the modifier class and its 200x80 dimension', async ({ page }) => {
+            const sandbox = await open(page, 0)
             const el = sandbox.locator('.origam-skeleton').first()
-            await expect(el).toBeVisible({ timeout: 12000 })
-        })
 
-        test('variant=rectangular applies the modifier class', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const el = sandbox.locator('.origam-skeleton').first()
-            await expect(el).toBeVisible({ timeout: 12000 })
             await expect(el).toHaveClass(/origam-skeleton--rectangular/)
+            expect(await el.evaluate((e) => getComputedStyle(e).width)).toBe('200px')
+            expect(await el.evaluate((e) => getComputedStyle(e).height)).toBe('80px')
         })
 
-        test('width and height are applied as inline styles', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        test('the fill is painted by ::after from the token, not by the element itself (#1076)', async ({ page }) => {
+            const sandbox = await open(page, 0)
             const el = sandbox.locator('.origam-skeleton').first()
-            await expect(el).toBeVisible({ timeout: 12000 })
-            const width  = await el.evaluate(e => getComputedStyle(e).width)
-            const height = await el.evaluate(e => getComputedStyle(e).height)
-            // init-state: width='200' → 200px, height='80' → 80px
-            expect(width).toBe('200px')
-            expect(height).toBe('80px')
+
+            const fill = await el.evaluate((e) => getComputedStyle(e, '::after').backgroundColor)
+            expect(fill).not.toBe('rgba(0, 0, 0, 0)')
+            expect(fill).not.toBe('transparent')
         })
 
-        test('loading=true makes the skeleton visible (aria-busy)', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        test('no <style id="origam-skeleton…"> is injected in <head> (#1076)', async ({ page }) => {
+            const sandbox = await open(page, 0)
+            const count = await sandbox.locator('.origam-skeleton').first()
+                .evaluate((e) => e.ownerDocument.head.querySelectorAll('style[id^="origam-skeleton"]').length)
+
+            expect(count).toBe(0)
+        })
+
+        test('the placeholder is a single status zone with an accessible name', async ({ page }) => {
+            const sandbox = await open(page, 0)
             const el = sandbox.locator('.origam-skeleton').first()
-            await expect(el).toBeVisible({ timeout: 12000 })
-            const ariaBusy = await el.getAttribute('aria-busy')
-            expect(ariaBusy).toBe('true')
-        })
 
-        test('skeleton has a non-transparent background color from DS token', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const el = sandbox.locator('.origam-skeleton').first()
-            await expect(el).toBeVisible({ timeout: 12000 })
-            const bg = await el.evaluate(e => getComputedStyle(e).backgroundColor)
-            expect(bg).not.toBe('rgba(0, 0, 0, 0)')
-            expect(bg).not.toBe('transparent')
-        })
-
-        test('variant=text applies the text modifier class', async ({ page: _page }) => {
-            // Navigate to Design, then test text variant explicitly via circular/text
-            // The Design init-state uses 'rectangular'; we test text via Functional (index 1)
-            // which sets variant='text'. This test is here for documentation purposes:
-            // tested in Functional.
-            // 2026-08-17 — reason RE-VERIFIED AND TRUE. `variant=text` really
-            // is asserted for real at skeleton.spec.ts:134 ("variant=text
-            // applies the text modifier class", `toHaveClass(/origam-skeleton--text/)`)
-            // inside the Functional block. This declaration is therefore a
-            // duplicate placeholder with an EMPTY body: waking it yields a test
-            // that passes without asserting anything, which is worse than the
-            // skip. Kept skipped rather than deleted so the Design-block
-            // symmetry stays readable.
-            // TO LIFT: delete this test outright — the contract is covered.
-            test.skip(true, 'variant=text covered for real by the Functional block (skeleton.spec.ts:134) — this declaration has an empty body')
-        })
-
-        test('variant=circular applies the circular modifier and a square aspect', async ({ page: _page }) => {
-            // circular is not the init-state of Design (rectangular is).
-            // We test circular via dedicated check below using the component's
-            // skeletonCircularClasses (exposed in list-item composite). For a
-            // standalone circular variant, the SCSS sets border-radius to
-            // --origam-skeleton---border-radius-circular (9999px token).
-            // Tested via Functional variant which can hold any variant value.
-            // ⛔ 2026-08-17 — THIS REASON WAS FALSE, and hid a coverage hole.
-            // It claimed circular was "tested via Functional/list-item
-            // composite". It is not: `grep -n circular skeleton.spec.ts`
-            // returns exactly two `test(` declarations — this one, and
-            // "variant=list-item renders circular avatar + 2 text lines"
-            // (skeleton.spec.ts:242), which is ITSELF a disabled test with an
-            // empty body. No assertion anywhere in this file exercises the
-            // circular modifier or its border-radius. `variant=circular` has
-            // ZERO e2e coverage.
-            //
-            // It stays disabled because the body is empty and no Variant
-            // init-states circular (Design inits rectangular, and the HstSelect
-            // cannot be driven for this prop headlessly).
-            //
-            // TO LIFT: add a Variant to OrigamSkeleton.story.vue whose
-            // init-state sets `variant: 'circular'`, then write the body
-            // against it — assert `origam-skeleton--circular` on the root and
-            // a border-radius resolving from
-            // `--origam-skeleton---border-radius-circular`.
-            test.skip(true, 'STORY GAP: no Variant init-states variant=circular, and the claimed coverage elsewhere does not exist — see the note above (verified 2026-08-17)')
+            expect(await el.getAttribute('role')).toBe('status')
+            expect(await el.getAttribute('aria-busy')).toBe('true')
+            expect(await el.getAttribute('aria-label')).toBe('Loading...')
         })
     })
 
     // ------------------------------------------------------------------ //
-    // FUNCTIONAL (index 1)                                                 //
-    // init: { loading:true, pulse:true, variant:'text', width:'200' }     //
+    // SHAPES (index 1)                                                     //
+    // ------------------------------------------------------------------ //
+
+    test.describe('Design - Shapes (primitives)', () => {
+        test('circular renders a true circle under the origam theme (#1075)', async ({ page }) => {
+            const sandbox = await open(page, 1)
+            const circle = sandbox.locator('[data-cy="skeleton-shape-circular-sized"]')
+
+            const m = await circle.evaluate((e) => {
+                const cs = getComputedStyle(e)
+                const box = e.getBoundingClientRect()
+
+                return {
+                    width: box.width,
+                    height: box.height,
+                    radius: parseFloat(cs.borderTopLeftRadius)
+                }
+            })
+
+            expect(m.width).toBe(48)
+            expect(m.height).toBe(m.width)
+            // `radius-full` is 9999px: the browser clamps it to 50 % of the box.
+            expect(m.radius).toBeGreaterThanOrEqual(m.width / 2)
+        })
+
+        test('circular without width falls back to the 36px token and stays square', async ({ page }) => {
+            const sandbox = await open(page, 1)
+            const m = await sandbox.locator('[data-cy="skeleton-shape-circular"]').evaluate((e) => {
+                const box = e.getBoundingClientRect()
+
+                return { w: box.width, h: box.height }
+            })
+
+            expect(m).toEqual({ w: 36, h: 36 })
+        })
+
+        test('circular follows the common animation: pulse, no rotation, no conic-gradient (#1075)', async ({ page }) => {
+            const sandbox = await open(page, 1)
+            const m = await sandbox.locator('[data-cy="skeleton-shape-circular"]').evaluate((e) => ({
+                after: getComputedStyle(e, '::after').animationName,
+                names: e.ownerDocument.getAnimations().map((a) => (a as CSSAnimation).animationName ?? ''),
+                image: getComputedStyle(e).backgroundImage,
+                transform: getComputedStyle(e).transform
+            }))
+
+            expect(m.after).toBe('origam-skeleton-pulse')
+            expect(m.names.filter((n) => /spin/.test(n))).toEqual([])
+            expect(m.image).toBe('none')
+            expect(m.transform).toBe('none')
+        })
+
+        test('text is a pill bar of 0.7em with a block margin', async ({ page }) => {
+            const sandbox = await open(page, 1)
+            const m = await sandbox.locator('[data-cy="skeleton-shape-text"]').evaluate((e) => {
+                const cs = getComputedStyle(e)
+                const fontSize = parseFloat(cs.fontSize)
+
+                return {
+                    heightEm: parseFloat(cs.height) / fontSize,
+                    marginEm: parseFloat(cs.marginTop) / fontSize,
+                    radius: parseFloat(cs.borderTopLeftRadius),
+                    height: parseFloat(cs.height)
+                }
+            })
+
+            expect(m.heightEm).toBeCloseTo(0.7, 2)
+            expect(m.marginEm).toBeCloseTo(0.35, 2)
+            expect(m.radius).toBeGreaterThanOrEqual(m.height / 2)
+        })
+
+        test('pill is a fully rounded capsule', async ({ page }) => {
+            const sandbox = await open(page, 1)
+            const m = await sandbox.locator('[data-cy="skeleton-shape-pill"]').evaluate((e) => {
+                const cs = getComputedStyle(e)
+
+                return {
+                    width: parseFloat(cs.width),
+                    height: parseFloat(cs.height),
+                    radius: parseFloat(cs.borderTopLeftRadius)
+                }
+            })
+
+            expect(m.width).toBeGreaterThan(m.height)
+            expect(m.radius).toBeGreaterThanOrEqual(m.height / 2)
+        })
+
+        test('rectangular keeps its explicit dimension and a small radius', async ({ page }) => {
+            const sandbox = await open(page, 1)
+            const m = await sandbox.locator('[data-cy="skeleton-shape-rectangular"]').evaluate((e) => {
+                const cs = getComputedStyle(e)
+
+                return { width: cs.width, height: cs.height, radius: parseFloat(cs.borderTopLeftRadius) }
+            })
+
+            expect(m.width).toBe('120px')
+            expect(m.height).toBe('60px')
+            expect(m.radius).toBeLessThan(30)
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // ANIMATIONS (index 2)                                                 //
+    // ------------------------------------------------------------------ //
+
+    test.describe('Design - Animations', () => {
+        test('pulse is the default: the GROUP container animates, 1.6 s', async ({ page }) => {
+            const sandbox = await open(page, 2)
+            const group = sandbox.locator('[data-cy="skeleton-group-pulse"]')
+
+            const m = await group.evaluate((e) => {
+                const anims = e.getAnimations().map((a) => ({
+                    name: (a as CSSAnimation).animationName,
+                    duration: a.effect!.getComputedTiming().duration
+                }))
+
+                return { anims, nameOnGroup: getComputedStyle(e).animationName }
+            })
+
+            expect(m.nameOnGroup).toBe('origam-skeleton-pulse')
+            expect(m.anims).toHaveLength(1)
+            expect(m.anims[0].duration).toBe(1600)
+        })
+
+        test('the blocks of a pulse group do not animate on their own (one clock)', async ({ page }) => {
+            const sandbox = await open(page, 2)
+            const names = await sandbox.locator('[data-cy="skeleton-group-pulse"] .origam-skeleton')
+                .evaluateAll((els) => els.map((e) => getComputedStyle(e, '::after').animationName))
+
+            expect(names).toHaveLength(3)
+            names.forEach((n) => expect(n).toBe('none'))
+        })
+
+        test('the animation is FINITE and capped at about 10 s (WCAG 2.2.2)', async ({ page }) => {
+            const sandbox = await open(page, 2)
+            const anims = await skeletonAnimations(sandbox, '[data-cy="skeleton-group-pulse"]')
+
+            expect(anims.length).toBeGreaterThan(0)
+            anims.forEach((a) => {
+                expect(Number.isFinite(a.iterations)).toBe(true)
+                expect((a.duration as number) * a.iterations).toBeLessThanOrEqual(10000)
+                expect((a.duration as number) * a.iterations).toBeGreaterThanOrEqual(8000)
+            })
+        })
+
+        test('wave: each block sweeps a highlight (::before translateX), blocks start together', async ({ page }) => {
+            const sandbox = await open(page, 2)
+            const anims = await sandbox.locator('[data-cy="skeleton-group-wave"]').evaluate((g) => {
+                return g.ownerDocument.getAnimations()
+                    .filter((a) => (a as CSSAnimation).animationName === 'origam-skeleton-wave')
+                    .map((a) => ({
+                        pseudo: (a.effect as KeyframeEffect).pseudoElement,
+                        duration: a.effect!.getComputedTiming().duration,
+                        iterations: a.effect!.getComputedTiming().iterations,
+                        startTime: a.startTime
+                    }))
+            })
+
+            expect(anims).toHaveLength(3)
+            anims.forEach((a) => {
+                expect(a.pseudo).toBe('::before')
+                expect(a.duration).toBe(1600)
+                expect(Number.isFinite(a.iterations as number)).toBe(true)
+            })
+            expect(new Set(anims.map((a) => a.startTime)).size).toBe(1)
+        })
+
+        test('wave moves with transform, never with background-position', async ({ page }) => {
+            const sandbox = await open(page, 2)
+            const props = await sandbox.locator('[data-cy="skeleton-group-wave"] .origam-skeleton').first().evaluate((e) => {
+                const wave = e.ownerDocument.getAnimations()
+                    .find((a) => (a as CSSAnimation).animationName === 'origam-skeleton-wave')!
+
+                return (wave.effect as KeyframeEffect).getKeyframes().flatMap((k) => Object.keys(k))
+            })
+
+            expect(props).toContain('transform')
+            expect(props).not.toContain('backgroundPosition')
+        })
+
+        test('none: nothing animates', async ({ page }) => {
+            const sandbox = await open(page, 2)
+            const names = await sandbox.locator('[data-cy="skeleton-group-none"]').evaluate((g) => {
+                const own = getComputedStyle(g).animationName
+                const blocks = [...g.querySelectorAll('.origam-skeleton')].flatMap((b) => [
+                    getComputedStyle(b, '::after').animationName,
+                    getComputedStyle(b, '::before').animationName
+                ])
+
+                return [own, ...blocks]
+            })
+
+            names.forEach((n) => expect(n).toBe('none'))
+        })
+
+        test('REDUCED MOTION stops every animation (#1074)', async ({ page }) => {
+            const sandbox = await open(page, 2, 'reduce')
+            const count = await sandbox.locator('.origam-skeleton').first()
+                .evaluate((e) => e.ownerDocument.getAnimations().length)
+
+            expect(count).toBe(0)
+        })
+
+        test('control: without the preference the same page DOES animate (#1074)', async ({ page }) => {
+            const sandbox = await open(page, 2, 'no-preference')
+            const count = await sandbox.locator('.origam-skeleton').first()
+                .evaluate((e) => e.ownerDocument.getAnimations().length)
+
+            expect(count).toBeGreaterThan(0)
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // FUNCTIONAL (index 3)                                                 //
     // ------------------------------------------------------------------ //
 
     test.describe('Functional', () => {
-        test('loading=true renders the skeleton element (not the slot)', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const el = sandbox.locator('.origam-skeleton').first()
-            await expect(el).toBeVisible({ timeout: 12000 })
+        test('loading=true renders the placeholder, not the slot', async ({ page }) => {
+            const sandbox = await open(page, 3)
+
+            await expect(sandbox.locator('.origam-skeleton').first()).toBeVisible()
+            await expect(sandbox.locator('p').filter({ hasText: 'Content loaded' })).not.toBeVisible()
         })
 
-        test('pulse=true adds origam-skeleton--pulse class', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        test('variant=text carries its modifier and a token-driven height', async ({ page }) => {
+            const sandbox = await open(page, 3)
             const el = sandbox.locator('.origam-skeleton').first()
-            await expect(el).toBeVisible({ timeout: 12000 })
-            await expect(el).toHaveClass(/origam-skeleton--pulse/)
-        })
 
-        test('variant=text applies the text modifier class', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const el = sandbox.locator('.origam-skeleton').first()
-            await expect(el).toBeVisible({ timeout: 12000 })
             await expect(el).toHaveClass(/origam-skeleton--text/)
+            expect(await el.evaluate((e) => getComputedStyle(e).height)).not.toBe('0px')
         })
 
-        test('variant=text with no height prop uses CSS token height (not inline)', async ({ page }) => {
-            // init-state has no height → resolvedHeight resolves to CSS var
-            // → inline style "height" must NOT be set as a pixel value by JS
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const el = sandbox.locator('.origam-skeleton').first()
-            await expect(el).toBeVisible({ timeout: 12000 })
-            // The CSS var resolves to a positive pixel value at runtime.
-            const height = await el.evaluate(e => getComputedStyle(e).height)
-            // Should be resolved by the token (> 0px), not "auto" or empty.
-            expect(height).not.toBe('0px')
-            expect(height).not.toBe('auto')
-            expect(height).not.toBe('')
-        })
+        test('the animation class is the host mechanism, with no legacy pulse class', async ({ page }) => {
+            const sandbox = await open(page, 3)
+            const classes = await sandbox.locator('.origam-skeleton').first().getAttribute('class')
 
-        test('slot content is hidden when loading=true', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            // Positive readiness gate FIRST, at the canonical 12000 budget of this
-            // spec family. Without it the assertion below is vacuous: `not.toBeVisible`
-            // resolves instantly while the sandbox is still empty, so the test passed
-            // even when pointed at a variant index that does not exist (measured).
-            await expect(sandbox.locator('.origam-skeleton').first()).toBeVisible({ timeout: 12000 })
-            // The slot "<p>Content loaded</p>" should not be visible
-            const slotContent = sandbox.locator('p').filter({ hasText: 'Content loaded' })
-            await expect(slotContent).not.toBeVisible()
-        })
-
-        test('role=status and aria-busy=true present on loading skeleton', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const el = sandbox.locator('.origam-skeleton').first()
-            await expect(el).toBeVisible({ timeout: 12000 })
-            const role     = await el.getAttribute('role')
-            const ariaBusy = await el.getAttribute('aria-busy')
-            expect(role).toBe('status')
-            expect(ariaBusy).toBe('true')
-        })
-
-        test('aria-label="Loading..." present on skeleton element', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const el = sandbox.locator('.origam-skeleton').first()
-            await expect(el).toBeVisible({ timeout: 12000 })
-            const ariaLabel = await el.getAttribute('aria-label')
-            // The component's `label` prop defaults to the shared i18n key
-            // `origam.loading`, whose en.json value is "Loading..." (with
-            // ellipsis) — the same string OrigamProgress, OrigamVideo,
-            // OrigamSwitch and OrigamCard's loading state all render (see
-            // card.spec.ts:306 asserting the identical "Loading..."). This
-            // test asserted the bare "Loading" (no ellipsis), which never
-            // matched the real shipped copy on any engine.
-            expect(ariaLabel).toBe('Loading...')
+            expect(classes).toContain('origam--skeleton')
+            expect(classes).not.toMatch(/--pulse/)
         })
     })
 
     // ------------------------------------------------------------------ //
-    // SLOTS - DEFAULT (index 2)                                            //
-    // loading=false → slot content visible, no .origam-skeleton in DOM    //
+    // HOST STATE (index 4)                                                 //
+    // ------------------------------------------------------------------ //
+
+    test.describe('Functional - Host state (.origam--skeleton)', () => {
+        test('a plain element paints itself as a placeholder through ::after', async ({ page }) => {
+            const sandbox = await open(page, 4)
+            const m = await sandbox.locator('[data-cy="skeleton-host-div"]').evaluate((e) => {
+                const after = getComputedStyle(e, '::after')
+
+                return {
+                    content: after.content,
+                    fill: after.backgroundColor,
+                    animation: after.animationName,
+                    position: getComputedStyle(e).position,
+                    childVisibility: getComputedStyle(e.querySelector('span')!).visibility,
+                    textFill: getComputedStyle(e).webkitTextFillColor,
+                    nodes: e.children.length
+                }
+            })
+
+            expect(m.content).toBe('""')
+            expect(m.fill).not.toBe('rgba(0, 0, 0, 0)')
+            expect(m.animation).toBe('origam-skeleton-pulse')
+            expect(m.position).toBe('relative')
+            expect(m.childVisibility).toBe('hidden')
+            expect(m.textFill).toBe('rgba(0, 0, 0, 0)')
+            expect(m.nodes).toBe(1)
+        })
+
+        test('it is inert: the host cannot be clicked', async ({ page }) => {
+            const sandbox = await open(page, 4)
+            const pe = await sandbox.locator('[data-cy="skeleton-host-button"]')
+                .evaluate((e) => getComputedStyle(e).pointerEvents)
+
+            expect(pe).toBe('none')
+        })
+
+        test('wave and none modifiers apply to a host too', async ({ page }) => {
+            const sandbox = await open(page, 4)
+            const m = await sandbox.locator('[data-cy="skeleton-host-wave"]').evaluate((e) => ({
+                before: getComputedStyle(e, '::before').animationName,
+                after: getComputedStyle(e, '::after').animationName,
+                none: getComputedStyle(e.ownerDocument.querySelector('[data-cy="skeleton-host-none"]')!, '::after').animationName
+            }))
+
+            expect(m.before).toBe('origam-skeleton-wave')
+            expect(m.after).toBe('none')
+            expect(m.none).toBe('none')
+        })
+
+        test('a host gets the same finite loop and the same reduced-motion rule', async ({ page }) => {
+            const sandbox = await open(page, 4)
+            const anims = await skeletonAnimations(sandbox, '[data-cy="skeleton-host-div"]')
+
+            expect(anims.length).toBeGreaterThan(0)
+            anims.forEach((a) => expect(Number.isFinite(a.iterations as number)).toBe(true))
+
+            const reduced = await open(page, 4, 'reduce')
+            const count = await reduced.locator('[data-cy="skeleton-host-div"]')
+                .evaluate((e) => e.ownerDocument.getAnimations().length)
+
+            expect(count).toBe(0)
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // SLOTS - DEFAULT (index 5)                                            //
     // ------------------------------------------------------------------ //
 
     test.describe('Slots - Default', () => {
-        test('loading=false renders slot content instead of skeleton', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            // The story renders: <span>Custom slot content visible when not loading</span>
+        test('loading=false renders the slot and no placeholder', async ({ page }) => {
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
+            const sandbox = sandboxOf(page)
             const slot = sandbox.locator('span').filter({ hasText: 'Custom slot content visible when not loading' })
-            await expect(slot).toBeVisible({ timeout: 12000 })
-        })
 
-        test('loading=false — no .origam-skeleton element in the DOM', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const slot = sandbox.locator('span').filter({ hasText: 'Custom slot content visible when not loading' })
-            await expect(slot).toBeVisible({ timeout: 12000 })
-            // Skeleton must be absent when loading=false (v-if guard on the component root)
-            const skeleton = sandbox.locator('.origam-skeleton')
-            await expect(skeleton).toHaveCount(0)
+            await expect(slot).toBeVisible({ timeout: READY })
+            await expect(sandbox.locator('.origam-skeleton')).toHaveCount(0)
         })
     })
 
     // ------------------------------------------------------------------ //
-    // COMPOSITE VARIANTS: card and list-item                               //
-    // Tested via Default playground (index 3) — init includes loading=true //
-    // ------------------------------------------------------------------ //
-
-    test.describe('Composite variants', () => {
-        test('variant=card renders a wrapper with 4 inner .origam-skeleton children', async ({ page: _page }) => {
-            // Default playground (index 3) init: { variant:'text', loading:true, pulse:true }
-            // We test card via Design (index 0) which exposes variant controls, but the init
-            // is rectangular. The card structure is part of the static component template
-            // and can be verified by navigating to Design and checking after state update.
-            //
-            // Strategy: use the playground (index 3) — it has full controls including variant.
-            // However, manipulating HstSelect headlessly is fragile (custom DOM).
-            // We test the card structure via the component source contract:
-            //   - .origam-skeleton-wrapper--card exists as a root class for card variant
-            //   - It contains 4 .origam-skeleton children (1 rectangular + 3 text lines)
-            //
-            // Since no Variant exposes card as init-state, we assert card's DOM structure
-            // by checking that the Design Variant (rectangular, index 0) does NOT produce
-            // a wrapper class — i.e., single-block variants render .origam-skeleton directly.
-            //
-            // The card and list-item structures are covered below by accessing the Design
-            // Variant and using its URL. If a dedicated Variant is added later, update index.
-            test.fixme(
-                true,
-                'DS: no Variant initialises variant=card — add a dedicated Variant in OrigamSkeleton.story.vue, ' +
-                'then replace this fixme with a goto(variantUrl(<new-index>)) test'
-            )
-        })
-
-        test('variant=list-item renders circular avatar + 2 text lines', async ({ page: _page }) => {
-            test.fixme(
-                true,
-                'DS: no Variant initialises variant=list-item — add a dedicated Variant in OrigamSkeleton.story.vue, ' +
-                'then replace this fixme with a goto(variantUrl(<new-index>)) test'
-            )
-        })
-
-        test('single-block variants (rectangular) render .origam-skeleton root — not a wrapper', async ({ page }) => {
-            // Verifies that rectangular (and by extension text/circular) use
-            // the v-else branch → root element IS .origam-skeleton, NOT .origam-skeleton-wrapper
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const el = sandbox.locator('.origam-skeleton').first()
-            await expect(el).toBeVisible({ timeout: 12000 })
-            // Must NOT have wrapper class on the root
-            await expect(el).not.toHaveClass(/origam-skeleton-wrapper/)
-        })
-    })
-
-    // ------------------------------------------------------------------ //
-    // DEFAULT playground (index 3)                                         //
-    // init: { variant:'text', width:'200', loading:true, pulse:true }     //
+    // DEFAULT playground (index 6)                                         //
     // ------------------------------------------------------------------ //
 
     test.describe('Default playground', () => {
-        test('renders with combined init-state: text variant, pulse, loading', async ({ page }) => {
-            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        test('renders text, 200px wide, pulsing', async ({ page }) => {
+            const sandbox = await open(page, 6)
             const el = sandbox.locator('.origam-skeleton').first()
-            await expect(el).toBeVisible({ timeout: 12000 })
-            await expect(el).toHaveClass(/origam-skeleton--text/)
-            await expect(el).toHaveClass(/origam-skeleton--pulse/)
-        })
 
-        test('width=200 from init-state is applied (200px)', async ({ page }) => {
-            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const el = sandbox.locator('.origam-skeleton').first()
-            await expect(el).toBeVisible({ timeout: 12000 })
-            const width = await el.evaluate(e => getComputedStyle(e).width)
-            expect(width).toBe('200px')
+            await expect(el).toHaveClass(/origam-skeleton--text/)
+            expect(await el.evaluate((e) => getComputedStyle(e).width)).toBe('200px')
+            expect(await el.evaluate((e) => getComputedStyle(e, '::after').animationName)).toBe('origam-skeleton-pulse')
         })
     })
 })

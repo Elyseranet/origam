@@ -2,7 +2,7 @@
   "kind": "component",
   "exportedAt": "2026-10-01T13:28:51.155Z",
   "sourceCommit": "143d5904",
-  "entryCount": 218,
+  "entryCount": 219,
   "entries": [
     {
       "entry": {
@@ -179991,7 +179991,7 @@
             "excerpt": [
               {
                 "type": "color",
-                "value": "var(--origam-color__surface---overlay)",
+                "value": "color-mix(in srgb, currentColor 10%, transparent)",
                 "tokenPath": "--origam-skeleton---background-color",
                 "descriptionKey": "components.skeleton.tokens.background_color",
                 "descriptionFallback": "Base placeholder background color."
@@ -180012,14 +180012,14 @@
               },
               {
                 "type": "duration",
-                "value": "var(--origam-motion__duration---xslow)",
+                "value": "var(--origam-motion__duration---loop)",
                 "tokenPath": "--origam-skeleton---animation-duration",
                 "descriptionKey": "components.skeleton.tokens.animation_duration",
                 "descriptionFallback": "Pulse animation duration."
               },
               {
                 "type": "dimension",
-                "value": "1.2em",
+                "value": "0.7em",
                 "tokenPath": "--origam-skeleton---text-height",
                 "descriptionKey": "components.skeleton.tokens.text_height",
                 "descriptionFallback": "Text variant line height."
@@ -180621,6 +180621,97 @@
           "position": 0,
           "description_key": "components.skeleton.related.progress",
           "description_fallback": "OrigamProgress provides linear/circular loaders for determinate loading states. Use Skeleton for indeterminate content placeholders."
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "component",
+        "slug": "skeleton-group",
+        "name": "SkeletonGroup",
+        "category": "Feedback & Status",
+        "domain": null,
+        "icon": "mdi-shimmer",
+        "description_key": null,
+        "description_fallback": "Zone that holds the OrigamSkeleton blocks of one loading area: it makes the single loading announcement (role=\"status\", aria-busy) while its blocks are aria-hidden, and it is one animation clock for every block it contains.",
+        "definition": null,
+        "signature": null,
+        "tag": "origam-skeleton-group",
+        "value": null,
+        "source_file": "packages/ds/src/components/Skeleton/OrigamSkeletonGroup.vue",
+        "package_note": "origam",
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": "/stories/?story=components-skeleton-origamskeletongroup",
+        "doc_url": "/docs/components/Skeleton/OrigamSkeletonGroup.html",
+        "parent_slug": "skeleton",
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [
+        {
+          "name": "animation",
+          "type_label": "TSkeletonAnimation",
+          "type_slug": "skeleton-animation",
+          "type_kind": "type",
+          "optional": false,
+          "required": false,
+          "position": 0,
+          "default_value": "'pulse'",
+          "description_key": null,
+          "description_fallback": "Motion of the whole group: 'pulse' (the container breathes), 'wave' (each block sweeps a shimmer) or 'none'. Blocks inherit it unless they set their own."
+        },
+        {
+          "name": "label",
+          "type_label": "string",
+          "type_slug": "",
+          "type_kind": "primitive",
+          "optional": false,
+          "required": false,
+          "position": 1,
+          "default_value": "'origam.loading'",
+          "description_key": null,
+          "description_fallback": "Locale key of the one announcement made for the whole zone."
+        }
+      ],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [
+        {
+          "slot": "default",
+          "slot_props": "—",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": "The OrigamSkeleton blocks of the zone."
+        }
+      ],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": null,
+          "title_fallback": "A loading card",
+          "code": "<template>\n  <origam-skeleton-group>\n    <origam-skeleton variant=\"rectangular\" height=\"120\" />\n    <origam-skeleton variant=\"text\" width=\"70%\" />\n    <origam-skeleton variant=\"text\" />\n  </origam-skeleton-group>\n</template>",
+          "lang": "vue"
+        }
+      ],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "skeleton",
+          "to_name": "Skeleton",
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": "OrigamSkeleton provides the placeholder blocks a group holds."
         }
       ]
     },
