@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.26.0] - 2026-10-14
+
 ### Changed — `OrigamCard`, `OrigamExpansionPanel(Content)`, `OrigamDataTableRows` : le skeleton suit l'anatomie du conteneur (#1073 lot 2b, #1081, #1076)
 
 Lot 2b de #1073 (decisions 1, 4 et 8). Mesure : sonde Chromium `pnpm -F @origam/tests audit:skeleton-containers`, meme code de sonde avant (`e23bc137e`) et apres, `loading={ type: 'skeleton' }`.
