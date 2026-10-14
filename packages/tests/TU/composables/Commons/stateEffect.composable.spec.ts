@@ -20,7 +20,7 @@
 
 import { computed, defineComponent, h, reactive, ref } from 'vue'
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { useStateEffect } from '@origam/composables/Commons/stateEffect.composable'
 
@@ -359,4 +359,20 @@ describe('useStateEffect — per-side border props pass-through', () => {
         const styles = api().borderStyles.value
         expect(styles.some(d => /border-(top|right|bottom|left)-/.test(d))).toBe(false)
     })
+})
+
+// ---------------------------------------------------------------------------
+// #1099 — var()/color-mix() bgColor: rendered inline as before, never warned
+// ---------------------------------------------------------------------------
+
+describe('useStateEffect — var()/color-mix() bgColor (#1099)', () => {
+    it.each(['var(--brand)', 'color-mix(in srgb, red 50%, blue)'])(
+        'bgColor=%s keeps the inline custom-value render and does not warn', (value) => {
+            const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+            const { api } = mountStateEffect({ bgColor: value })
+            expect(api().colorClasses.value).toEqual([])
+            expect(api().colorStyles.value.some(d => d.startsWith('background-color') && d.includes(value))).toBe(true)
+            expect(warn).not.toHaveBeenCalled()
+            warn.mockRestore()
+        })
 })

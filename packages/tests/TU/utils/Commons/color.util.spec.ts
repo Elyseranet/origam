@@ -722,7 +722,9 @@ describe('tokenForegroundForIntent', () => {
 // ─── warnLegacyColor ──────────────────────────────────────────────────────────
 
 describe('warnLegacyColor', () => {
+    afterEach(() => { vi.restoreAllMocks() })
     beforeEach(() => {
+        vi.restoreAllMocks()
         // Reset the module-level warn cache between tests so warnings fire again.
         // The cache is a private Set — access via re-import side-effect is not
         // possible, so we spy on console.warn and just verify it fires once.
@@ -740,6 +742,22 @@ describe('warnLegacyColor', () => {
         warnLegacyColor('bgColor', '#dedup-sentinel-xyz')
         warnLegacyColor('bgColor', '#dedup-sentinel-xyz')
         expect(console.warn).toHaveBeenCalledTimes(1)
+    })
+
+    it.each(['var(--brand)', 'var(--origam-color__surface---default, #fff)', 'color-mix(in srgb, red 50%, blue)'])(
+        'does not warn for %s (migration path, not a raw color)', (v) => {
+            warnLegacyColor('bgColor', v)
+            expect(console.warn).not.toHaveBeenCalled()
+        })
+
+    it('stays silent in production (DEV=false) even for a raw color', () => {
+        vi.stubEnv('DEV', false)
+        try {
+            warnLegacyColor('color', '#prod-silent-sentinel')
+            expect(console.warn).not.toHaveBeenCalled()
+        } finally {
+            vi.unstubAllEnvs()
+        }
     })
 })
 

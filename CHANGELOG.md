@@ -18,6 +18,11 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `warnLegacyColor` : dev uniquement, et plus d'avertissement pour `var()` / `color-mix()` (#1099)
+
+- L'avertissement « received a raw color » est desormais garde par `import.meta.env?.DEV` (meme garde que `warnUnsupportedProp`) : il ne sort plus en production et la chaine disparait d'un bundle de production (`.output` marketing : 0 occurrence).
+- `bgColor="var(--brand)"` / `color="color-mix(...)"` ne sont plus traites comme une couleur brute : ce sont le chemin de migration recommande. Le rendu est inchange (canal custom / style inline). `#fff`, `rgb()` etc. avertissent toujours en dev, une fois par valeur.
+
 ## [2.26.0] - 2026-10-14
 
 ### Changed — `OrigamCard`, `OrigamExpansionPanel(Content)`, `OrigamDataTableRows` : le skeleton suit l'anatomie du conteneur (#1073 lot 2b, #1081, #1076)
