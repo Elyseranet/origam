@@ -10,10 +10,9 @@ on:
       - "v*"
       - "[0-9]+.[0-9]+.[0-9]+"
       - "[0-9]+.[0-9]+.[0-9]+-*"
-  # Manual auth check: verifies the NPM_TOKEN secret can authenticate against
-  # the registry WITHOUT tagging/publishing. Use after rotating the secret —
-  # a failing check here explains an E404 on the real publish (npm answers
-  # 404 instead of 403 on PUT when the token lacks publish rights).
+  # Manual auth check: verifies the NPM_TOKEN secret AUTHENTICATES against
+  # the registry WITHOUT tagging/publishing. Use after rotating the secret.
+  # It cannot prove WRITE rights — only a publish can (see the job comment).
   workflow_dispatch:
 
 # `id-token: write` is required for npm provenance (sigstore).
@@ -51,19 +50,18 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm whoami
-      # `npm view` is a PUBLIC read and succeeds with no token at all, so it
-      # can never prove a permission. These two DO depend on the token: they
-      # are what separates "the token is invalid" (whoami above fails) from
-      # "the token authenticates but cannot write to origam" (whoami passes,
-      # these show the package missing from its scope).
-      - name: packages this token may write to
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm access list packages
-      - name: maintainers of origam, as this token sees them
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm owner ls origam
+      # Only `whoami` is kept, because it is the only read that DEPENDS on the
+      # token and gives a trustworthy answer. Measured 2026-10-14:
+      #   - `npm access list packages` answers E403 for a GRANULAR token even
+      #     when that token publishes fine — the token that published 2.23.0
+      #     and 2.23.1 turned this job red (run 38544275055). A diagnostic that
+      #     is red on a working token sends the reader the wrong way.
+      #   - `npm view` / `npm owner ls` are PUBLIC reads: they succeed with no
+      #     token at all, so they can never prove a permission.
+      # Nothing short of a publish proves WRITE rights. The publish error is
+      # explicit enough on its own — on 2026-10-14 it read: "403 ... granular
+      # access token with bypass 2fa enabled is required to publish packages".
+      # So: whoami red -> invalid token; whoami green -> read the publish log.
 
   publish:
     name: Build, test & publish to npm
