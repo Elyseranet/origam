@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.26.1] - 2026-10-14
+
 ### Fixed — `warnLegacyColor` : dev uniquement, et plus d'avertissement pour `var()` / `color-mix()` (#1099)
 
 - L'avertissement « received a raw color » est desormais garde par `import.meta.env?.DEV` (meme garde que `warnUnsupportedProp`) : il ne sort plus en production et la chaine disparait d'un bundle de production (`.output` marketing : 0 occurrence).
