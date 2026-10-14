@@ -98,6 +98,58 @@ for (const mode of ['dark', 'light'] as const) {
     })
 }
 
+/*** Sub-tree probes (review of #1108) ***/
+async function readSub (
+    browser: import('@playwright/test').Browser,
+    rootAttrs: IAttrs, subAttrs: IAttrs, themes: IOrigamTheme[], themesFirst: boolean
+): Promise<string> {
+    const attrsOf = (a: IAttrs): string =>
+        (a.theme ? ` data-theme="${a.theme}"` : '') + (a.mode ? ` data-mode="${a.mode}"` : '')
+    const themeStyles = themes.map(t => `<style>${themeToCss(t)}</style>`).join('')
+    const file = join(PAGE_DIR, `s${counter++}.html`)
+    writeFileSync(
+        file,
+        `<!doctype html><html${attrsOf(rootAttrs)}><head><meta charset="utf-8">`
+        + (themesFirst ? themeStyles : '')
+        + `<style>${readFileSync(SHIPPED, 'utf8')}</style>`
+        + (themesFirst ? '' : themeStyles)
+        + `</head><body><div id="sub"${attrsOf(subAttrs)}></div></body></html>`
+    )
+    const context = await browser.newContext({ colorScheme: 'light' })
+    const page = await context.newPage()
+    await page.goto(pathToFileURL(file).href)
+    const value = await page.evaluate(
+        token => getComputedStyle(document.getElementById('sub')!).getPropertyValue(token).trim(), TOKEN)
+    await context.close()
+    return value
+}
+
+for (const mode of ['dark', 'light'] as const) {
+    test.describe(`#1108 review — sub-tree, ${mode}`, () => {
+        // A mode-less brand cannot beat the DARK palette in a sub-tree (0,1,0) vs
+        // (0,2,0): that is brand-vs-palette, unrelated to the unnamed theme.
+        for (const brandMode of mode === 'dark' ? [mode] : [mode, undefined]) {
+            test(`a named brand in a sub-tree beats the unnamed theme in BOTH orders (brand mode: ${brandMode ?? 'none'})`, async ({ browser }) => {
+                const sub = { theme: 'brand', mode }
+                const b = brand(brandMode)
+                const orders: Array<[string, IOrigamTheme[]]> = [['unnamed first', [unnamed(mode), b]], ['unnamed last', [b, unnamed(mode)]]]
+                for (const [label, themes] of orders) {
+                    // Sheet first (as `createOrigam` installs it); only the order BETWEEN
+                    // the two runtime themes varies.
+                    expect(await readSub(browser, { mode: 'light' }, sub, themes, false), label).toBe(BRAND_VALUE)
+                }
+            })
+        }
+
+        test('a bare data-mode sub-tree (OrigamThemeProvider mode) gets the unnamed theme, both orders', async ({ browser }) => {
+            const other = mode === 'dark' ? 'light' : 'dark'
+            for (const themesFirst of [false, true]) {
+                expect(await readSub(browser, { mode: other }, { mode }, [unnamed(mode)], themesFirst), `themesFirst=${themesFirst}`).toBe(THEME_VALUE)
+            }
+        })
+    })
+}
+
 test('#807 — data-theme="light" data-mode="dark" stays light with an unnamed dark theme', async ({ browser }) => {
     const attrs = { theme: 'light', mode: 'dark' }
     const plainLight = await read(browser, { mode: 'light' }, [])

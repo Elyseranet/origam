@@ -1018,11 +1018,14 @@ every named brand:
 |---|---|---|---|
 | `html[data-mode="light"]` | (0,1,1) | `:root` / `[data-theme="light"]` / `[data-mode="light"]` (0,1,0) — **regardless of source order** | `:root:root[data-theme="X"]…` (0,3,0 / 0,4,0) |
 | `html[data-mode="dark"]:not([data-theme="light"])` | (0,2,1) | the dark sheet (0,2,0) — regardless of source order | `:root:root[data-theme="X"][data-mode="dark"]` (0,4,0) |
-| bare `[data-mode="…"]` twin, for sub-trees | mirrors the sheet | — (tie, order-decided, as before) | — |
+| sub-tree twin `[data-mode="dark"]:not([data-theme]):not([data-theme="light"])` / `[data-mode="light"]:not([data-theme])` | (0,3,0) / (0,2,0) | the palette in a bare `<OrigamThemeProvider mode>` sub-tree, any order | nothing needed: it **never matches** an element carrying `data-theme`, so a sub-tree brand `[data-theme="X"][data-mode]` (0,2,0) cannot tie with it |
 
 Before the fix the dark one was `[data-mode="dark"]` (0,1,0): it lost to the
 sheet on every attribute set, and `data-theme="light" data-mode="dark"` painted
-dark through a source-order tie with `[data-theme="light"]`. The light tie
+dark through a source-order tie with `[data-theme="light"]`. A first version kept
+a bare `[data-mode]` twin at the sheet's own weight (0,2,0): it TIED with a
+sub-tree brand and the brand lost in one injection order (measured red, then
+fixed with `:not([data-theme])`). The light tie
 (0,1,0) vs (0,1,0) was measured: it won only because the runtime `<style>`
 came after the sheet, and lost when injected first. Pinned by
 `packages/tests/e2e/unnamed-theme-specificity.spec.ts`.

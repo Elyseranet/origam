@@ -168,7 +168,7 @@ describe('#615 — le thème runtime racine et les feuilles de tokens', () => {
         // à spécificité égale. C'est toute la mécanique du défaut.
         expect(themeSelector(origamLightTheme)).toBe(':root')
         // #1102 : le dark racine est ancré sur `html` (0,2,1) pour battre la feuille.
-        expect(themeSelector(origamDarkTheme)).toBe('html[data-mode="dark"]:not([data-theme="light"]), [data-mode="dark"]:not([data-theme="light"])')
+        expect(themeSelector(origamDarkTheme)).toBe('html[data-mode="dark"]:not([data-theme="light"]), [data-mode="dark"]:not([data-theme]):not([data-theme="light"])')
 
         // …et le harnais lit bien les feuilles.
         expect(Object.keys(PRIMITIVE).length).toBeGreaterThan(100)
