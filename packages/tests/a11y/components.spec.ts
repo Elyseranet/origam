@@ -343,6 +343,7 @@ const SWEPT_STORIES: readonly string[] = [
     'components/stories/SelectionControl/OrigamSelectionControlGroup.story.vue',
     'components/stories/Sheet/OrigamSheet.story.vue',
     'components/stories/Skeleton/OrigamSkeleton.story.vue',
+    'components/stories/Skeleton/OrigamSkeletonGroup.story.vue',
     'components/stories/Slide/OrigamSlideGroup.story.vue',
     'components/stories/SliderField/OrigamSliderField.emits.story.vue',
     'components/stories/SliderField/OrigamSliderField.slots.story.vue',

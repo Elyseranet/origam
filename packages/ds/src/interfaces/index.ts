@@ -333,6 +333,7 @@ export * from './Window/window.interface'
 export * from './Window/window-item.interface'
 
 export * from './Skeleton/skeleton.interface'
+export * from './Skeleton/skeleton-group.interface'
 
 export * from './Kbd/kbd.interface'
 

@@ -18,6 +18,31 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Changed — refonte d'`OrigamSkeleton` : primitives, pulse par defaut, `OrigamSkeletonGroup` (#1073 lot 1, #1074, #1075, #1076)
+
+Lot 1 de #1073. Les composants consommateurs (`OrigamBtn`, `OrigamCard`, `OrigamField`, `OrigamSwitch`, `OrigamDataTable*`, `OrigamExpansionPanel*`) ne sont PAS touches : ils continuent d'utiliser `OrigamSkeleton` (gabarits `card` / `list-item` conserves) et migrent au lot 2.
+
+**Ruptures (assumees, pre-1.0) :**
+- La prop booleenne `pulse` est **supprimee**. Elle declenchait en realite une vague : son nom mentait. Remplacee par `animation: 'pulse' | 'wave' | 'none'` (enum `SKELETON_ANIMATION`, type `TSkeletonAnimation`). `:pulse="false"` devient `animation="none"`. Defaut : `pulse`.
+- Le defaut visuel change : une **pulsation d'opacite de 1,6 s** (1 vers 0,55) remplace la vague par `background-position` a 400 ms. `circular` ne **tourne plus** (il ressemblait a un spinner) : il suit la meme animation que les autres formes.
+- Le remplissage est derive de la couleur du texte (`color-mix(in srgb, currentColor 10 %, transparent)`, 13 % en dark) au lieu de `--origam-color__surface---overlay`.
+- `OrigamSkeleton` n'injecte plus de `<style id="origam-skeleton-…">` par instance dans `<head>` (double style `:style` + `useStyle()` retire) ; `defineExpose` ne porte plus `css`, `id`, `load`, `unload`, `isLoaded`.
+- Un bloc de skeleton n'a plus `role="status"` quand il est dans un `OrigamSkeletonGroup` : il est `aria-hidden`, et c'est le groupe qui annonce.
+- Tokens : `--origam-skeleton---animation-duration` lit desormais `--origam-motion__duration---loop` (nouveau palier, `1600ms`) au lieu de `---xslow` (400 ms). `---text-height` passe de `1.2em` a `0.7em`.
+- `themes/origam.theme.ts` : `'origam-skeleton'` ne pose plus `rounded: 'sm'`.
+
+**Ajouts :**
+- Primitive `pill` ; `text` est une barre en pilule de `0.7em` centree dans la ligne. `width` / `height` passent par `IDimensionProps` (`min*` / `max*` honores).
+- `OrigamSkeletonGroup` : une seule annonce (`role="status"`, `aria-busy`) par zone et une seule horloge d'animation pour tous les blocs.
+- Mecanisme d'etat CSS sur l'hote : la classe utilitaire `.origam--skeleton` (+ `-wave`, `-none`, `-group-pulse`) peint n'importe quel element en placeholder via `::after`, sans noeud ajoute. Ne fonctionne pas sur `<input>`, `<textarea>`, `<select>`, images.
+- Tokens : `---highlight-color` (remplace `---wave-color`, lu mais jamais declare), `---animation-iterations`, `---border-radius-pill`, `---text-margin-block`, `---circular-size`, `---pill-height`, `---pill-width`, `--origam-motion__duration---loop`. `---opacity-min/max` sont maintenant lus par le pulse.
+
+**Corrige :**
+- #1074 : sous `prefers-reduced-motion: reduce` toutes les animations du skeleton s'arretent (la regle (0,2,0) perdait contre (0,3,0)).
+- WCAG 2.2.2 : l'animation est plafonnee a environ 10 s (6 iterations de 1,6 s), CSS seul.
+- #1075 : `circular` rend un vrai cercle sous le theme `origam` (`aspect-ratio: 1`, plus de rayon `sm` impose par le theme).
+- #1076 (cote composant) : double style, tokens morts, `wave-color` non declare, documentation (decrivait une pulsation que le code ne faisait pas).
+
 ### Fixed — le cache Nitro des routes `/api/reference/**` servait une réponse d'ancien format (#1063)
 
 Sans version de format dans la clé, une entrée de cache écrite avant un changement de forme (`name` -> `label`, #1046) était servie telle quelle par le SWR de Nitro : `/components/alert` répondait 500 au rendu serveur (`Cannot read properties of undefined (reading 'replace')`, reproduit puis supprimé en dev). Les 4 handlers de référence préfixent désormais leur clé de `REFERENCE_CACHE_FORMAT_VERSION` (`server/consts/cache.const.ts`), à incrémenter dans le commit de tout changement de forme d'une de leurs réponses. L'invalidation admin (`PATCH /api/admin/reference/:kind/:slug`) ne supprimait rien — elle visait `nitro:handlers` au lieu de `cache:nitro:handlers` et omettait la locale — : elle supprime maintenant toutes les variantes (locale, `limit`) de la fiche, à partir de la même construction de clé que le handler, et journalise une erreur de stockage au lieu de l'avaler. Les TTL redéclarés en ligne dans 6 handlers sont réunis dans `server/consts/cache.const.ts`. Site marketing uniquement : aucun changement du paquet `origam`.

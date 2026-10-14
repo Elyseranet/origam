@@ -153,3 +153,87 @@
 .origam--backdrop-blur-md { backdrop-filter: blur(var(--origam-blur---md)); -webkit-backdrop-filter: blur(var(--origam-blur---md)); }
 .origam--backdrop-blur-lg { backdrop-filter: blur(var(--origam-blur---lg)); -webkit-backdrop-filter: blur(var(--origam-blur---lg)); }
 .origam--backdrop-blur-xl { backdrop-filter: blur(var(--origam-blur---xl)); -webkit-backdrop-filter: blur(var(--origam-blur---xl)); }
+
+/* --- Skeleton (host placeholder state) ------------------- */
+/*                                                            */
+/* The shared mechanism that lets ANY element paint ITSELF as  */
+/* a loading placeholder — no node is added, no component is   */
+/* mounted. Put `.origam--skeleton` on the element; its         */
+/* geometry (size, radius) stays whatever the element already   */
+/* has, so the placeholder keeps the real silhouette.           */
+/*                                                            */
+/*   fill      ::after    colour = --origam-skeleton---background-color */
+/*   shimmer   ::before   only with `.origam--skeleton-wave`    */
+/*   content   hidden: glyphs via text-fill, children via       */
+/*             visibility — the layout box is untouched         */
+/*                                                            */
+/* ⛔ CONSTRAINTS, read before using it on a new host:          */
+/*  - a pseudo-element is not rendered on replaced elements:    */
+/*    `<input>`, `<textarea>`, `<select>`, images: can NOT be    */
+/*    a host (measured: the ::after never paints on <input>,    */
+/*    <textarea> or <select>, although getComputedStyle still   */
+/*    reports it).                                              */
+/*    Put the class on the wrapper that draws the field.        */
+/*  - the host's own ::before / ::after are taken over.         */
+/*  - the host becomes `position: relative` when it is static   */
+/*    (a component's own scoped `position` still wins).         */
+/*  - it is purely visual: the host still has to carry          */
+/*    `aria-busy="true"` (and `aria-disabled` on a control).    */
+/*                                                            */
+/* The fill is currentColor mixed with transparent, so it       */
+/* follows themes, modes and surfaces with no extra token.      */
+/* Motion: pulse by default, capped by                          */
+/* --origam-skeleton---animation-iterations (WCAG 2.2.2),       */
+/* and switched off under prefers-reduced-motion.               */
+.origam--skeleton {
+  position: relative;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  pointer-events: none;
+  user-select: none;
+}
+.origam--skeleton > * { visibility: hidden; }
+.origam--skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-color: var(--origam-skeleton---background-color);
+  animation: origam-skeleton-pulse var(--origam-skeleton---animation-duration) ease-in-out var(--origam-skeleton---animation-iterations);
+}
+.origam--skeleton-none::after { animation: none; }
+.origam--skeleton-wave { overflow: hidden; }
+.origam--skeleton-wave::after { animation: none; }
+.origam--skeleton-wave::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(105deg, transparent 35%, var(--origam-skeleton---highlight-color) 50%, transparent 65%);
+  transform: translateX(-100%);
+  animation: origam-skeleton-wave var(--origam-skeleton---animation-duration) ease-in-out var(--origam-skeleton---animation-iterations);
+}
+
+/* A group is ONE animation clock: the container pulses, its    */
+/* blocks do not, so blocks mounted at different moments still  */
+/* breathe together.                                            */
+.origam--skeleton-group-pulse {
+  animation: origam-skeleton-pulse var(--origam-skeleton---animation-duration) ease-in-out var(--origam-skeleton---animation-iterations);
+}
+.origam--skeleton-group-pulse .origam--skeleton::after { animation: none; }
+
+@keyframes origam-skeleton-pulse {
+  0%, 100% { opacity: var(--origam-skeleton---opacity-max); }
+  50% { opacity: var(--origam-skeleton---opacity-min); }
+}
+@keyframes origam-skeleton-wave {
+  to { transform: translateX(100%); }
+}
+
+/* Last on purpose: same specificity as the rules above, so      */
+/* source order makes this one win (#1074).                      */
+@media (prefers-reduced-motion: reduce) {
+  .origam--skeleton::after,
+  .origam--skeleton::before,
+  .origam--skeleton-group-pulse { animation: none; }
+}

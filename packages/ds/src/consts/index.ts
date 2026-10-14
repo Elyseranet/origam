@@ -61,6 +61,7 @@ export * from './TextField/text-field.const'
 export * from './TextareaField/textarea-field.const'
 export * from './EmptyState/empty-state.const'
 export * from './ExpansionPanel/expansion-panel.const'
+export * from './Skeleton/skeleton.const'
 export * from './DataTable/data-table.const'
 
 export * from './PasswordField/password-field.const'
