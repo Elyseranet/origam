@@ -13,9 +13,9 @@
 import { describe, expect, it } from 'vitest'
 import { parse } from 'vue/compiler-sfc'
 
-import { generateInstanceCode, generateSceneCode } from '../../../playground/src/utils/Code/scene-code.util'
-import { TAG_CASE } from '../../../playground/src/enums/Code/tag-case.enum'
-import { SCENE_CODE_DEFAULTS } from '../../../playground/src/consts/Code/scene-code.const'
+import { generateInstanceCode, generateSceneCode } from '../../../playground/src/utils/Commons/scene-code.util'
+import { TAG_CASE } from '../../../playground/src/enums/Commons/tag-case.enum'
+import { SCENE_CODE_DEFAULTS } from '../../../playground/src/consts/Commons/scene-code.const'
 import { SCENE_VERSION, createEmptyScene } from '../../../playground/src/consts/Commons/scene.const'
 import type { IPlaygroundInstance } from '../../../playground/src/interfaces/Scene/playground-instance.interface'
 import type { IPlaygroundScene } from '../../../playground/src/interfaces/Scene/playground-scene.interface'

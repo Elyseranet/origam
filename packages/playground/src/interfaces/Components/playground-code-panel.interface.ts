@@ -1,4 +1,4 @@
-import type { ISceneCodeOptions } from '../Code/scene-code-options.interface'
+import type { ISceneCodeOptions } from '../Commons/scene-code-options.interface'
 import type { IPlaygroundScene } from '../Scene/playground-scene.interface'
 
 /*********************************************************

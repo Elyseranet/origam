@@ -63,6 +63,7 @@ packages/tests/a11y/.report-marketing
 packages/tests/a11y/.results-marketing
 packages/tests/vrt/.report
 packages/tests/vrt/.results
+packages/tests/e2e-playground/.results
 
 # VRT baselines are ONLY trustworthy when captured in the pinned Linux
 # container documented in packages/tests/vrt/VRT.md. Playwright's default

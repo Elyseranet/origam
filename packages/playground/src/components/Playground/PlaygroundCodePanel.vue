@@ -25,7 +25,7 @@
     import { computed } from 'vue'
     import { CODE_LANG } from 'origam/enums'
     import { useT } from '../../composables/I18n/useT'
-    import { generateSceneCode } from '../../utils/Code/scene-code.util'
+    import { generateSceneCode } from '../../utils/Commons/scene-code.util'
     import type { IPlaygroundCodePanelProps } from '../../interfaces/Components/playground-code-panel.interface'
 
     /*********************************************************

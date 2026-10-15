@@ -1,5 +1,5 @@
-import { TAG_CASE } from '../../enums/Code/tag-case.enum'
-import type { ISceneCodeOptions } from '../../interfaces/Code/scene-code-options.interface'
+import { TAG_CASE } from '../../enums/Commons/tag-case.enum'
+import type { ISceneCodeOptions } from '../../interfaces/Commons/scene-code-options.interface'
 
 /**
  * Defaults of `generateSceneCode`.

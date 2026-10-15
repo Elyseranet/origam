@@ -1,4 +1,4 @@
-import type { TAG_CASE } from '../../enums/Code/tag-case.enum'
+import type { TAG_CASE } from '../../enums/Commons/tag-case.enum'
 
 /*********************************************************
  * ISceneCodeOptions
