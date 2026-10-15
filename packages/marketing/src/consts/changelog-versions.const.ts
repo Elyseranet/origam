@@ -18,13 +18,13 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
-        version: 'Unreleased',
-        date: null,
-        type: 'unreleased',
-        summaryKey: 'changelog.versions.unreleased.summary',
+        version: '2.30.0',
+        date: '2026-10-15',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2300.summary',
         summaryFallback: '1 change. See the full changelog for detail.',
         highlights: [
-            { type: 'changed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamBtn block : flex: 0 0 auto + width: 100%, plus de croissance sur l\'axe principal (#1095)' }
+            { type: 'changed', textKey: 'changelog.versions.v2300.h1', textFallback: 'OrigamBtn block : flex: 0 0 auto + width: 100%, plus de croissance sur l\'axe principal (#1095)' }
         ]
     },
     {

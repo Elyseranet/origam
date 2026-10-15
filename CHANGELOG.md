@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.30.0] - 2026-10-15
+
 ### Changed — `OrigamBtn` `block` : `flex: 0 0 auto` + `width: 100%`, plus de croissance sur l'axe principal (#1095)
 
 `.origam-btn--block` portait `flex: 1 0 auto` : dans un parent flex en colonne le bouton GRANDISSAIT pour remplir la hauteur (une carte etiree a la hauteur de sa voisine, ou une colonne a hauteur fixe). Il passe a **`flex: 0 0 auto` + `width: 100%`** : pleine largeur, aucune croissance. Mesure Chromium (story « Prop — block (flex column) », `size="large"`) : bouton `block` dans une carte etiree 188 px -> **44 px**, dans une colonne de 200 px 168 px -> **44 px** ; largeur = 100 % du parent en colonne et en ligne (inchangee).
