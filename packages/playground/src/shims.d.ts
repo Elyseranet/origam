@@ -6,41 +6,28 @@
 declare module 'origam/styles'
 
 /*
- * ⛔ Ambient ANY-typed shims for `origam`'s PUBLISHED subpath entry points.
+ * ⛔ Every OTHER `origam` / `origam/*` import is resolved to DS SOURCE by
+ * `tsconfig.json`'s `paths` (`origam` → `../ds/src/origam.ts`, `origam/*` →
+ * `../ds/src/*\/index.ts`) — the same mapping `vite.host.config.ts` applies
+ * at runtime. There used to be loosely typed ambient shims here instead
+ * (#1141). They made the static check depend on whatever sat on disk: with
+ * no `packages/ds/dist/` the shims answered, but with a `dist/` present —
+ * even a stale one — `package.json` `exports` won, `vue-tsc` pulled the
+ * built `.vue` files in, and type-checked them under this package's options
+ * (measured: 2 399 errors, all under `../ds/dist/src`, 0 in the playground).
  *
- * `packages/ds`'s `package.json` `exports` map resolves these to
- * `dist/src/...` — a build artefact absent from a fresh checkout
- * (`packages/ds` is not built in CI before this package's own `type-check`
- * runs). Pointing `tsconfig.json` `paths` at DS *source* instead was tried
- * and reverted: DS's own `tsconfig.json` carries compiler options and
- * ambient globals (`noUnusedLocals: false`, `ImportMeta.env`,
- * `__VUE_OPTIONS_API__`, `HTMLElement._clickOutside`, …, declared in
- * `globals.d.ts` / `vite-env.d.ts`) this package does not and should not
- * inherit — type-checking the WHOLE DS source tree under a foreign
- * tsconfig surfaced ~70 errors that are not this package's to fix, and are
- * not real under DS's own `pnpm -F origam type-check`.
+ * Resolving to source makes the check deterministic, and it checks the
+ * playground against the DS's REAL signatures rather than a hand-copied
+ * subset that could drift. What it costs, all set in `tsconfig.json`:
  *
- * So: loosely typed shims for the handful of symbols this package actually
- * imports, kept deliberately narrow. `vite.host.config.ts`'s alias still
- * points the RUNTIME resolution at DS source (Vite doesn't need `.d.ts`
- * files, only a real module), so the standalone host runs with full
- * fidelity — only `vue-tsc`'s static check is narrowed.
+ *   - DS's three ambient files (`globals.d.ts`, `vite-env.d.ts`,
+ *     `shims.d.ts`) are included, because the DS source relies on them
+ *     (`HTMLElement._clickOutside`, `ImportMeta.env`, `__VUE_OPTIONS_API__`).
+ *   - `noUnusedLocals` / `noUnusedParameters` are OFF, mirroring
+ *     `packages/ds/tsconfig.json` for the same reason: under TypeScript 6,
+ *     `@vue/language-core` 3.3.x reports template refs (`ref="x"`) as unused
+ *     — 18 false positives in DS source. `packages/ds/scripts/nounusedlocals-
+ *     canary.mjs` tracks the upstream fix; when it lands, re-enable both
+ *     here too. Unused bindings stay caught by ESLint's
+ *     `@typescript-eslint/no-unused-vars` (error, all `.ts` / `.vue`).
  */
-declare module 'origam' {
-    import type { Plugin } from 'vue'
-
-    export function createOrigam (options?: Record<string, unknown>): Plugin
-}
-
-declare module 'origam/composables' {
-    import type { Ref } from 'vue'
-
-    export function useHydration (): Ref<boolean>
-    export function useVModel<T extends Record<string, unknown>, K extends keyof T> (props: T, key: K): Ref<T[K]>
-}
-
-declare module 'origam/components' {
-    const components: Record<string, unknown>
-
-    export = components
-}

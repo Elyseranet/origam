@@ -12,6 +12,7 @@
     "test:unit:run": "vitest --run",
     "test:run": "vitest --run",
     "test:coverage": "vitest --run --coverage",
+    "test:playground": "vitest --run TU/playground",
     "audit:inert-props": "node audit/run-inert-props-audit.mjs",
     "audit:id-forwarding": "node audit/id-forwarding.audit.mjs",
     "audit:dark-contrast": "node audit/dark-contrast.audit.mjs",
