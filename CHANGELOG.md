@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.29.0] - 2026-10-15
+
 ### Changed — `OrigamBtn` : prop `wrap`, hauteur MINIMALE, `padding-block` lu (#1093, #1094, #929)
 
 Trois defauts du meme geste : un libelle plus long que le bouton ne pouvait ni passer a la ligne (#1093), ni agrandir le bouton (#1094), ni etre aere par un padding vertical (#929). Mesure : sonde Chromium `pnpm -F @origam/tests audit:btn-height`, meme code de sonde avant (`origin/develop`) et apres, 8 identites x 2 modes.
