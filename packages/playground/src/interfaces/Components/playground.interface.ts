@@ -1,4 +1,4 @@
-import type { IInspectorPropRow } from '../Commons/inspector-group.interface'
+import type { IPropRowSlotScope } from './playground-inspector.interface'
 import type { IComponentRegistry } from '../Registry/component-registry.interface'
 import type { IPlaygroundScene } from '../Scene/playground-scene.interface'
 
@@ -52,6 +52,9 @@ export interface IPlaygroundSlots {
     'preview-surround'?: () => unknown
     /** Extra panels in the inspector, below the prop groups. */
     'inspector-panels'?: () => unknown
-    /** Overrides how ONE prop row renders. Scoped: `{ row }`. */
-    'prop-row'?: (scope: { row: IInspectorPropRow }) => unknown
+    /**
+     * Overrides how ONE prop row renders. Scoped: `IPropRowSlotScope` —
+     * `{ row, values, setProp, resetProp }`, so an override still edits.
+     */
+    'prop-row'?: (scope: IPropRowSlotScope) => unknown
 }

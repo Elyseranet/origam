@@ -46,5 +46,16 @@
     "playground.dock.handle": "Code · Snippets · Events",
     "playground.code.title": "Code",
     "playground.code.empty": "The scene is empty — pick a component in the catalog to see its code.",
-    "playground.host.mode_toggle_label": "Switch to {target}"
+    "playground.host.mode_toggle_label": "Switch to {target}",
+    "playground.prop_control.state_set": "set",
+    "playground.prop_control.state_default": "default: {value}",
+    "playground.prop_control.reset": "Reset",
+    "playground.prop_control.reset_aria": "Reset {name} to its default",
+    "playground.prop_control.coercion_label": "Write as",
+    "playground.prop_control.not_editable": "Not editable here — this prop takes a function.",
+    "playground.prop_control.invalid": "Not written: this text does not parse as the chosen kind.",
+    "playground.events.title": "Events",
+    "playground.events.count": "{count} emitted",
+    "playground.events.clear": "Clear",
+    "playground.events.empty": "No emit yet — interact with the rendered component."
 }

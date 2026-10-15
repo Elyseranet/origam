@@ -2,13 +2,13 @@
  * GENERATED — pnpm -F @origam/playground meta:host-seed
  *
  * Demo catalogue for the standalone host (src/host/main.ts), built from
- * REAL runtime metadata captured from `origam` @ develop .
- * Source A only (the runtime props descriptor) — no literal union members,
- * no slots (the runtime descriptor cannot see them), no snippets. Prop
- * counts are real: OrigamBtn 106, OrigamSelect 161 (the catalogue's largest
- * prop surface), OrigamSwitch 114, OrigamCard 97, OrigamChip 92, OrigamAlert 93.
+ * REAL metadata captured from `origam` @ a071c4920.
+ * Source A (runtime descriptor: names, defaults) merged with source B
+ * (literal unions + resolved aliases: options, tsType, emit payloads). No
+ * slots, no snippets. Prop counts: OrigamBtn 107, OrigamSelect 161, OrigamSwitch 114, OrigamAlert 93, OrigamCard 99, OrigamChip 95.
  *
- * Do not hand-edit — re-run the generator after `meta:runtime`.
+ * Do not hand-edit — re-run the generator after `meta:runtime`,
+ * `meta:unions` and `meta:aliases`.
  */
 import { CONTROL_KIND } from '../enums/Commons/control-kind.enum'
 import { METADATA_SOURCE } from '../enums/Commons/metadata-source.enum'
@@ -25,92 +25,105 @@ export const HOST_CATALOG_SEED: IComponentDefinition[] = [
         {
             name: "flat",
             label: "flat",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "icon",
             label: "icon",
-            tsType: null,
+            tsType: "boolean | TIcon | undefined",
             runtimeType: ["Boolean","String","Array"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Pass `true` to activate icon-only mode; pass a `TIcon` value to set the icon.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "block",
             label: "block",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "slim",
             label: "slim",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "stacked",
             label: "stacked",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
+        },
+        {
+            name: "wrap",
+            label: "wrap",
+            tsType: "boolean | undefined",
+            runtimeType: "Boolean",
+            required: false,
+            hasFactoryDefault: false,
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "text",
             label: "text",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "status",
             label: "status",
-            tsType: null,
+            tsType: "\"success\" | \"info\" | \"warning\" | \"error\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["success","info","warning","error"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "statusIconPosition",
             label: "statusIconPosition",
-            tsType: null,
+            tsType: "\"prepend\" | \"append\" | \"replace\" | \"both\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["prepend","append","replace","both"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "id",
             label: "id",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "class",
@@ -135,964 +148,1009 @@ export const HOST_CATALOG_SEED: IComponentDefinition[] = [
         {
             name: "color",
             label: "color",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "bgColor",
             label: "bgColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "border",
             label: "border",
-            tsType: null,
+            tsType: "string | number | boolean | TDirectionBoth[] | undefined",
             runtimeType: ["Boolean","Number","String","Array"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderTop",
             label: "borderTop",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderLeft",
             label: "borderLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBottom",
             label: "borderBottom",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderRight",
             label: "borderRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlock",
             label: "borderBlock",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Logical-axis shorthand for the block-start + block-end edges (top +\nbottom in the default horizontal-tb writing mode). Resolves to the\nnative CSS `border-block-{width,style,color}` properties — same\nvalue grammar as `borderTop` / `borderRight` / `borderBottom` /\n`borderLeft` (boolean opt-in, bare width number, or a free-form\n`\"width style color\"` string). Precedence: beats the global `border`\nshorthand for the edges it targets, but a physical `borderTop` /\n`borderBottom` still wins over it for that specific edge — see\n`useBorder` JSDoc for the full precedence table.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInline",
             label: "borderInline",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Logical-axis shorthand for the inline-start + inline-end edges (left\n+ right in LTR). Same grammar and precedence rules as `borderBlock`,\nmapped onto `border-inline-{width,style,color}`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineStart",
             label: "borderInlineStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineStart",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineEnd",
             label: "borderInlineEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineEnd",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockStart",
             label: "borderBlockStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockStart",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockEnd",
             label: "borderBlockEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockEnd",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderColor",
             label: "borderColor",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderStyle",
             label: "borderStyle",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderTopColor",
             label: "borderTopColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Per-side color override (issue #215). Additive: absent by default,\nno behaviour change for existing consumers.\n\nPrecedence (specific > global): `borderTopColor` wins over any\ncolor implied by `borderTop` (e.g. `borderTop=\"2px dashed red\"`),\nwhich itself wins over the global `borderColor` / `border` shorthand\nfor the top side. See `useBorder` JSDoc for the full precedence\ntable.\n\nAccepts a {@link TColor} (semantic intent, raw CSS color, or falsy\nto opt out) — same input family as `color` / `bgColor`. Gradients\nare NOT supported on border colors (CSS `border-color` has no\ngradient form) and are silently ignored.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderRightColor",
             label: "borderRightColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBottomColor",
             label: "borderBottomColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderLeftColor",
             label: "borderLeftColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineStartColor",
             label: "borderInlineStartColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineStartColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineEndColor",
             label: "borderInlineEndColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineEndColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockStartColor",
             label: "borderBlockStartColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockStartColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockEndColor",
             label: "borderBlockEndColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockEndColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "density",
             label: "density",
-            tsType: null,
+            tsType: "\"default\" | \"compact\" | \"comfortable\" | undefined",
             runtimeType: null,
             required: false,
             defaultValue: "default",
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["default","compact","comfortable"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "height",
             label: "height",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "maxHeight",
             label: "maxHeight",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "maxWidth",
             label: "maxWidth",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "minHeight",
             label: "minHeight",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "minWidth",
             label: "minWidth",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "width",
             label: "width",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "elevation",
             label: "elevation",
-            tsType: null,
+            tsType: "TElevation | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "rounded",
             label: "rounded",
-            tsType: null,
+            tsType: "string | number | boolean | null | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Corner-radius selector. Three modes:\n - **named variant** (`'small' | 'default' | 'large' | …`,\n   cf. `ROUNDED` enum) → emits `--rounded-{name}` class so the\n   component's SCSS can pick the right token rung.\n - **boolean `true`** (or empty string `''`) → emits the legacy\n   `--rounded` class for components that only have a single rounded\n   state (e.g. `OrigamBtn` defaulting to `radius.2xl`).\n - **CSS value** (`'4px'`, `'4px 0 4px 0'`, `100`) → emits inline\n   `border-radius` declarations via `useRounded.roundedStyles`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedTopRight",
             label: "roundedTopRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top-right corner only. Takes the same vocabulary as `rounded`\n(`8`, `'8px'`, `'md'`, `'large'`, `'var(…)'`), minus `shaped` /\n`shaped-invert` which are asymmetric by definition.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedTopLeft",
             label: "roundedTopLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top-left corner only. Same vocabulary as `roundedTopRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedBottomLeft",
             label: "roundedBottomLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Bottom-left corner only. Same vocabulary as `roundedTopRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedBottomRight",
             label: "roundedBottomRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Bottom-right corner only. Same vocabulary as `roundedTopRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedStartStart",
             label: "roundedStartStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nLogical per-corner radius — rung 2 (issue #1013)",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedStartEnd",
             label: "roundedStartEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedEndStart",
             label: "roundedEndStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedEndEnd",
             label: "roundedEndEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "tag",
             label: "tag",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             defaultValue: "button",
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "size",
             label: "size",
-            tsType: null,
+            tsType: "number | \"default\" | \"x-small\" | \"small\" | \"large\" | \"x-large\" | undefined",
             runtimeType: null,
             required: false,
             defaultValue: "default",
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "href",
             label: "href",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "replace",
             label: "replace",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "to",
             label: "to",
-            tsType: null,
+            tsType: "string | kt | Tt | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "exact",
             label: "exact",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "ripple",
             label: "ripple",
-            tsType: null,
+            tsType: "boolean | { class: string; } | undefined",
             runtimeType: ["Boolean","Object"],
             required: false,
             defaultValue: true,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "loading",
             label: "loading",
-            tsType: null,
+            tsType: "TControlLoadingValue | undefined",
             runtimeType: ["Boolean","Number","Object"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "loadingText",
             label: "loadingText",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "position",
             label: "position",
-            tsType: null,
+            tsType: "\"static\" | \"relative\" | \"fixed\" | \"absolute\" | \"sticky\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["static","relative","fixed","absolute","sticky"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "top",
             label: "top",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "bottom",
             label: "bottom",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "left",
             label: "left",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "right",
             label: "right",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "location",
             label: "location",
-            tsType: null,
+            tsType: "TAnchor | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["top","bottom","left","right","center","center center","top left","top right","top center","bottom left","bottom right","bottom center","left top","left bottom","left center","right top","right bottom","right center"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.ALIAS
         },
         {
             name: "value",
             label: "value",
-            tsType: null,
+            tsType: "any",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "disabled",
             label: "disabled",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "selectedClass",
             label: "selectedClass",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "padding",
             label: "padding",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\ndesign rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n`--padded` class.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingTop",
             label: "paddingTop",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingBlock` for the top edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingLeft",
             label: "paddingLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingInline` for the left edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBottom",
             label: "paddingBottom",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingBlock` for the bottom edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingRight",
             label: "paddingRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingInline` for the right edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBlock",
             label: "paddingBlock",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top + bottom. Overrides `padding`; beaten by `paddingTop` / `paddingBottom`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingInline",
             label: "paddingInline",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Left + right. Overrides `padding`; beaten by `paddingLeft` / `paddingRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingInlineStart",
             label: "paddingInlineStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nLogical per-side padding — rung 3 (issue #1013)",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingInlineEnd",
             label: "paddingInlineEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBlockStart",
             label: "paddingBlockStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBlockEnd",
             label: "paddingBlockEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "margin",
             label: "margin",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\ndesign rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n`--marged` class.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginTop",
             label: "marginTop",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginBlock` for the top edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginLeft",
             label: "marginLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginInline` for the left edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBottom",
             label: "marginBottom",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginBlock` for the bottom edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginRight",
             label: "marginRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginInline` for the right edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBlock",
             label: "marginBlock",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top + bottom. Overrides `margin`; beaten by `marginTop` / `marginBottom`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginInline",
             label: "marginInline",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Left + right. Overrides `margin`; beaten by `marginLeft` / `marginRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginInlineStart",
             label: "marginInlineStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nLogical per-side margin — rung 3 (issue #1013)",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginInlineEnd",
             label: "marginInlineEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBlockStart",
             label: "marginBlockStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBlockEnd",
             label: "marginBlockEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "appendAvatar",
             label: "appendAvatar",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "appendIcon",
             label: "appendIcon",
-            tsType: null,
+            tsType: "TIcon | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "prependAvatar",
             label: "prependAvatar",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "prependIcon",
             label: "prependIcon",
-            tsType: null,
+            tsType: "TIcon | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "prependAriaLabel",
             label: "prependAriaLabel",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "appendAriaLabel",
             label: "appendAriaLabel",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "hover",
             label: "hover",
-            tsType: null,
+            tsType: "boolean | IStateEffectConfig | undefined",
             runtimeType: ["Boolean","Object"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "hoverClass",
             label: "hoverClass",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "active",
             label: "active",
-            tsType: null,
+            tsType: "boolean | IStateEffectConfig | undefined",
             runtimeType: ["Boolean","Object"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "activeClass",
             label: "activeClass",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "variant",
             label: "variant",
-            tsType: null,
+            tsType: "\"text\" | \"flat\" | \"elevated\" | \"tonal\" | \"outlined\" | \"plain\" | \"ghost\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["text","flat","elevated","tonal","outlined","plain","ghost"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "fontSize",
             label: "fontSize",
-            tsType: null,
+            tsType: "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"5xl\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["xs","sm","md","lg","xl","2xl","3xl","4xl","5xl"],
+            control: CONTROL_KIND.SELECT,
+            description: "Font size token. Maps to `--origam-font__size---{fontSize}`\n(xs · sm · md · lg · xl · 2xl · 3xl · 4xl · 5xl).\nWhen unset, the component keeps its theme / density font-size.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "fontWeight",
             label: "fontWeight",
-            tsType: null,
+            tsType: "\"regular\" | \"medium\" | \"semibold\" | \"bold\" | \"extrabold\" | \"black\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["regular","medium","semibold","bold","extrabold","black"],
+            control: CONTROL_KIND.SELECT,
+            description: "Font weight token. Maps to `--origam-font__weight---{fontWeight}`\n(regular 400 · medium 500 · semibold 600 · bold 700 · extrabold 800 · black 900).\nWhen unset, the component keeps its theme font-weight.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "lineHeight",
             label: "lineHeight",
-            tsType: null,
+            tsType: "\"none\" | \"tight\" | \"snug\" | \"normal\" | \"relaxed\" | \"loose\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["none","tight","snug","normal","relaxed","loose"],
+            control: CONTROL_KIND.SELECT,
+            description: "Line-height token. Maps to `--origam-font__lineHeight---{lineHeight}`\n(none 1 · tight 1.25 · snug 1.375 · normal 1.5 · relaxed 1.625 · loose 2).\nWhen unset, the component keeps its theme line-height.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "letterSpacing",
             label: "letterSpacing",
-            tsType: null,
+            tsType: "\"tight\" | \"normal\" | \"wide\" | \"wider\" | \"widest\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["tight","normal","wide","wider","widest"],
+            control: CONTROL_KIND.SELECT,
+            description: "Letter-spacing token. Maps to `--origam-font__letterSpacing---{letterSpacing}`\n(tight -0.025em · normal 0em · wide 0.0094em · wider 0.0125em · widest 0.0893em).\nWhen unset, the component keeps its theme letter-spacing.",
+            source: METADATA_SOURCE.TYPES
         }
         ],
         events: [
         {
             name: "group:selected",
             label: "group:selected",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
+            payloadType: "[value: { value: boolean; }]",
+            source: METADATA_SOURCE.TYPES
         }
         ],
         slots: [],
@@ -1109,207 +1167,207 @@ export const HOST_CATALOG_SEED: IComponentDefinition[] = [
         {
             name: "chips",
             label: "chips",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "closableChips",
             label: "closableChips",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "hideNoData",
             label: "hideNoData",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "hideSelected",
             label: "hideSelected",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "listProps",
             label: "listProps",
-            tsType: null,
+            tsType: "IListProps | undefined",
             runtimeType: "Object",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.JSON,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "menu",
             label: "menu",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "menuIcon",
             label: "menuIcon",
-            tsType: null,
+            tsType: "TIcon | undefined",
             runtimeType: null,
             required: false,
             defaultValue: "mdi:mdi-chevron-down",
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "menuProps",
             label: "menuProps",
-            tsType: null,
+            tsType: "IMenuProps | undefined",
             runtimeType: "Object",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.JSON,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "chipProps",
             label: "chipProps",
-            tsType: null,
+            tsType: "IChipProps | undefined",
             runtimeType: "Object",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.JSON,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "multiple",
             label: "multiple",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "noDataText",
             label: "noDataText",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             defaultValue: "origam.no_data_text",
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "openOnClear",
             label: "openOnClear",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "autocomplete",
             label: "autocomplete",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "autoSelectFirst",
             label: "autoSelectFirst",
-            tsType: null,
+            tsType: "string | boolean | undefined",
             runtimeType: ["Boolean","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "clearOnSelect",
             label: "clearOnSelect",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "divider",
             label: "divider",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             defaultValue: ",",
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "search",
             label: "search",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "closeText",
             label: "closeText",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             defaultValue: "origam.close",
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "openText",
             label: "openText",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             defaultValue: "origam.open",
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "id",
             label: "id",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "class",
@@ -1334,1466 +1392,1515 @@ export const HOST_CATALOG_SEED: IComponentDefinition[] = [
         {
             name: "color",
             label: "color",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "bgColor",
             label: "bgColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "autofocus",
             label: "autofocus",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "counter",
             label: "counter",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "counterValue",
             label: "counterValue",
-            tsType: null,
+            tsType: "number | ((e: any) => number) | undefined",
             runtimeType: ["Number","Function"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "placeholder",
             label: "placeholder",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "persistentPlaceholder",
             label: "persistentPlaceholder",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "persistentCounter",
             label: "persistentCounter",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "role",
             label: "role",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             defaultValue: "combobox",
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "type",
             label: "type",
-            tsType: null,
+            tsType: "\"number\" | \"text\" | \"color\" | \"search\" | \"image\" | \"button\" | \"month\" | \"week\" | \"submit\" | \"email\" | \"password\" | \"hidden\" | \"tel\" | \"url\" | \"range\" | \"file\" | \"reset\" | \"checkbox\" | \"radio\" | \"time\" | \"datetime-local\" | \"date\" | undefined",
             runtimeType: null,
             required: false,
             defaultValue: "text",
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["number","text","color","search","image","button","month","week","submit","email","password","hidden","tel","url","range","file","reset","checkbox","radio","time","datetime-local","date"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "modelModifiers",
             label: "modelModifiers",
-            tsType: null,
+            tsType: "string | boolean | undefined",
             runtimeType: ["String","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "mask",
             label: "mask",
-            tsType: null,
+            tsType: "TMask | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Mask spec — built-in preset key (`'phone:fr'`, …), a\nraw pattern (`'(##) ###-####'`) or a full options object.\nWhen set, `v-model` exposes the UNMASKED value; the DOM\ninput displays the formatted (masked) string.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "density",
             label: "density",
-            tsType: null,
+            tsType: "\"default\" | \"compact\" | \"comfortable\" | undefined",
             runtimeType: null,
             required: false,
             defaultValue: "default",
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["default","compact","comfortable"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "centerAffix",
             label: "centerAffix",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             defaultValue: true,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "dirty",
             label: "dirty",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "disabled",
             label: "disabled",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "error",
             label: "error",
-            tsType: null,
+            tsType: "string | boolean | undefined",
             runtimeType: ["String","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Error state for the field.\n  - `boolean` — paints the `--error` modifier (rules-driven flow).\n  - `string`  — paints the modifier AND becomes the inline error\n    message rendered by consumers that opt-in (e.g. FileField's\n    dropzone). For consumers that don't read the string, the\n    truthy semantics still apply.\n  - `false` / omitted — no error.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "inline",
             label: "inline",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "label",
             label: "label",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "prefix",
             label: "prefix",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "suffix",
             label: "suffix",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "persistentClear",
             label: "persistentClear",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "singleLine",
             label: "singleLine",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "required",
             label: "required",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "loading",
             label: "loading",
-            tsType: null,
+            tsType: "TControlLoadingValue | undefined",
             runtimeType: ["Boolean","Number","Object"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "loadingText",
             label: "loadingText",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "tag",
             label: "tag",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "appendInnerAvatar",
             label: "appendInnerAvatar",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "appendInnerIcon",
             label: "appendInnerIcon",
-            tsType: null,
+            tsType: "TIcon | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "prependInnerAvatar",
             label: "prependInnerAvatar",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "prependInnerIcon",
             label: "prependInnerIcon",
-            tsType: null,
+            tsType: "TIcon | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "clearIcon",
             label: "clearIcon",
-            tsType: null,
+            tsType: "TIcon | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "clearable",
             label: "clearable",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "prependInnerAriaLabel",
             label: "prependInnerAriaLabel",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "appendInnerAriaLabel",
             label: "appendInnerAriaLabel",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "border",
             label: "border",
-            tsType: null,
+            tsType: "string | number | boolean | TDirectionBoth[] | undefined",
             runtimeType: ["Boolean","Number","String","Array"],
             required: false,
             defaultValue: true,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderTop",
             label: "borderTop",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderLeft",
             label: "borderLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBottom",
             label: "borderBottom",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderRight",
             label: "borderRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlock",
             label: "borderBlock",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Logical-axis shorthand for the block-start + block-end edges (top +\nbottom in the default horizontal-tb writing mode). Resolves to the\nnative CSS `border-block-{width,style,color}` properties — same\nvalue grammar as `borderTop` / `borderRight` / `borderBottom` /\n`borderLeft` (boolean opt-in, bare width number, or a free-form\n`\"width style color\"` string). Precedence: beats the global `border`\nshorthand for the edges it targets, but a physical `borderTop` /\n`borderBottom` still wins over it for that specific edge — see\n`useBorder` JSDoc for the full precedence table.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInline",
             label: "borderInline",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Logical-axis shorthand for the inline-start + inline-end edges (left\n+ right in LTR). Same grammar and precedence rules as `borderBlock`,\nmapped onto `border-inline-{width,style,color}`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineStart",
             label: "borderInlineStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineStart",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineEnd",
             label: "borderInlineEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineEnd",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockStart",
             label: "borderBlockStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockStart",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockEnd",
             label: "borderBlockEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockEnd",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderColor",
             label: "borderColor",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderStyle",
             label: "borderStyle",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderTopColor",
             label: "borderTopColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Per-side color override (issue #215). Additive: absent by default,\nno behaviour change for existing consumers.\n\nPrecedence (specific > global): `borderTopColor` wins over any\ncolor implied by `borderTop` (e.g. `borderTop=\"2px dashed red\"`),\nwhich itself wins over the global `borderColor` / `border` shorthand\nfor the top side. See `useBorder` JSDoc for the full precedence\ntable.\n\nAccepts a {@link TColor} (semantic intent, raw CSS color, or falsy\nto opt out) — same input family as `color` / `bgColor`. Gradients\nare NOT supported on border colors (CSS `border-color` has no\ngradient form) and are silently ignored.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderRightColor",
             label: "borderRightColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBottomColor",
             label: "borderBottomColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderLeftColor",
             label: "borderLeftColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineStartColor",
             label: "borderInlineStartColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineStartColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineEndColor",
             label: "borderInlineEndColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineEndColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockStartColor",
             label: "borderBlockStartColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockStartColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockEndColor",
             label: "borderBlockEndColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockEndColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "focused",
             label: "focused",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "text",
             label: "text",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "floating",
             label: "floating",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "name",
             label: "name",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "margin",
             label: "margin",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\ndesign rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n`--marged` class.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginTop",
             label: "marginTop",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginBlock` for the top edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginLeft",
             label: "marginLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginInline` for the left edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBottom",
             label: "marginBottom",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginBlock` for the bottom edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginRight",
             label: "marginRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginInline` for the right edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBlock",
             label: "marginBlock",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top + bottom. Overrides `margin`; beaten by `marginTop` / `marginBottom`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginInline",
             label: "marginInline",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Left + right. Overrides `margin`; beaten by `marginLeft` / `marginRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginInlineStart",
             label: "marginInlineStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nLogical per-side margin — rung 3 (issue #1013)",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginInlineEnd",
             label: "marginInlineEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBlockStart",
             label: "marginBlockStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBlockEnd",
             label: "marginBlockEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "padding",
             label: "padding",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\ndesign rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n`--padded` class.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingTop",
             label: "paddingTop",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingBlock` for the top edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingLeft",
             label: "paddingLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingInline` for the left edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBottom",
             label: "paddingBottom",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingBlock` for the bottom edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingRight",
             label: "paddingRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingInline` for the right edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBlock",
             label: "paddingBlock",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top + bottom. Overrides `padding`; beaten by `paddingTop` / `paddingBottom`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingInline",
             label: "paddingInline",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Left + right. Overrides `padding`; beaten by `paddingLeft` / `paddingRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingInlineStart",
             label: "paddingInlineStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nLogical per-side padding — rung 3 (issue #1013)",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingInlineEnd",
             label: "paddingInlineEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBlockStart",
             label: "paddingBlockStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBlockEnd",
             label: "paddingBlockEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "rounded",
             label: "rounded",
-            tsType: null,
+            tsType: "string | number | boolean | null | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             defaultValue: true,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Corner-radius selector. Three modes:\n - **named variant** (`'small' | 'default' | 'large' | …`,\n   cf. `ROUNDED` enum) → emits `--rounded-{name}` class so the\n   component's SCSS can pick the right token rung.\n - **boolean `true`** (or empty string `''`) → emits the legacy\n   `--rounded` class for components that only have a single rounded\n   state (e.g. `OrigamBtn` defaulting to `radius.2xl`).\n - **CSS value** (`'4px'`, `'4px 0 4px 0'`, `100`) → emits inline\n   `border-radius` declarations via `useRounded.roundedStyles`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedTopRight",
             label: "roundedTopRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top-right corner only. Takes the same vocabulary as `rounded`\n(`8`, `'8px'`, `'md'`, `'large'`, `'var(…)'`), minus `shaped` /\n`shaped-invert` which are asymmetric by definition.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedTopLeft",
             label: "roundedTopLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top-left corner only. Same vocabulary as `roundedTopRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedBottomLeft",
             label: "roundedBottomLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Bottom-left corner only. Same vocabulary as `roundedTopRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedBottomRight",
             label: "roundedBottomRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Bottom-right corner only. Same vocabulary as `roundedTopRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedStartStart",
             label: "roundedStartStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nLogical per-corner radius — rung 2 (issue #1013)",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedStartEnd",
             label: "roundedStartEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedEndStart",
             label: "roundedEndStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedEndEnd",
             label: "roundedEndEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "fontSize",
             label: "fontSize",
-            tsType: null,
+            tsType: "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"5xl\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["xs","sm","md","lg","xl","2xl","3xl","4xl","5xl"],
+            control: CONTROL_KIND.SELECT,
+            description: "Font size token. Maps to `--origam-font__size---{fontSize}`\n(xs · sm · md · lg · xl · 2xl · 3xl · 4xl · 5xl).\nWhen unset, the component keeps its theme / density font-size.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "fontWeight",
             label: "fontWeight",
-            tsType: null,
+            tsType: "\"regular\" | \"medium\" | \"semibold\" | \"bold\" | \"extrabold\" | \"black\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["regular","medium","semibold","bold","extrabold","black"],
+            control: CONTROL_KIND.SELECT,
+            description: "Font weight token. Maps to `--origam-font__weight---{fontWeight}`\n(regular 400 · medium 500 · semibold 600 · bold 700 · extrabold 800 · black 900).\nWhen unset, the component keeps its theme font-weight.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "lineHeight",
             label: "lineHeight",
-            tsType: null,
+            tsType: "\"none\" | \"tight\" | \"snug\" | \"normal\" | \"relaxed\" | \"loose\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["none","tight","snug","normal","relaxed","loose"],
+            control: CONTROL_KIND.SELECT,
+            description: "Line-height token. Maps to `--origam-font__lineHeight---{lineHeight}`\n(none 1 · tight 1.25 · snug 1.375 · normal 1.5 · relaxed 1.625 · loose 2).\nWhen unset, the component keeps its theme line-height.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "letterSpacing",
             label: "letterSpacing",
-            tsType: null,
+            tsType: "\"tight\" | \"normal\" | \"wide\" | \"wider\" | \"widest\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["tight","normal","wide","wider","widest"],
+            control: CONTROL_KIND.SELECT,
+            description: "Letter-spacing token. Maps to `--origam-font__letterSpacing---{letterSpacing}`\n(tight -0.025em · normal 0em · wide 0.0094em · wider 0.0125em · widest 0.0893em).\nWhen unset, the component keeps its theme letter-spacing.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "active",
             label: "active",
-            tsType: null,
+            tsType: "boolean | IStateEffectConfig | undefined",
             runtimeType: ["Boolean","Object"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "activeClass",
             label: "activeClass",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "variant",
             label: "variant",
-            tsType: null,
+            tsType: "\"outlined\" | \"plain\" | \"underlined\" | \"filled\" | \"solo\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["outlined","plain","underlined","filled","solo"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "elevation",
             label: "elevation",
-            tsType: null,
+            tsType: "TElevation | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "size",
             label: "size",
-            tsType: null,
+            tsType: "number | \"default\" | \"x-small\" | \"small\" | \"large\" | \"x-large\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "hideDetails",
             label: "hideDetails",
-            tsType: null,
+            tsType: "string | boolean | undefined",
             runtimeType: ["Boolean","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "hideSpinButtons",
             label: "hideSpinButtons",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "hint",
             label: "hint",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "persistentHint",
             label: "persistentHint",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "messages",
             label: "messages",
-            tsType: null,
+            tsType: "string | string[] | undefined",
             runtimeType: ["Array","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "height",
             label: "height",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "maxHeight",
             label: "maxHeight",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "maxWidth",
             label: "maxWidth",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "minHeight",
             label: "minHeight",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "minWidth",
             label: "minWidth",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "width",
             label: "width",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "direction",
             label: "direction",
-            tsType: null,
+            tsType: "\"horizontal\" | \"vertical\" | undefined",
             runtimeType: null,
             required: false,
             defaultValue: "horizontal",
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["horizontal","vertical"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "errorMessages",
             label: "errorMessages",
-            tsType: null,
+            tsType: "string | string[] | undefined",
             runtimeType: ["Array","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "maxErrors",
             label: "maxErrors",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "readonly",
             label: "readonly",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "rules",
             label: "rules",
-            tsType: null,
+            tsType: "any[] | undefined",
             runtimeType: "Array",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.JSON,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "modelValue",
             label: "modelValue",
-            tsType: null,
+            tsType: "any",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "validateOn",
             label: "validateOn",
-            tsType: null,
+            tsType: "\"blur\" | \"input\" | \"submit\" | \"lazy blur\" | \"lazy input\" | \"lazy submit\" | \"blur lazy\" | \"input lazy\" | \"submit lazy\" | \"lazy\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["blur","input","submit","lazy blur","lazy input","lazy submit","blur lazy","input lazy","submit lazy","lazy"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "validationValue",
             label: "validationValue",
-            tsType: null,
+            tsType: "any",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "appendAvatar",
             label: "appendAvatar",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "appendIcon",
             label: "appendIcon",
-            tsType: null,
+            tsType: "TIcon | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "prependAvatar",
             label: "prependAvatar",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "prependIcon",
             label: "prependIcon",
-            tsType: null,
+            tsType: "TIcon | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "prependAriaLabel",
             label: "prependAriaLabel",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "appendAriaLabel",
             label: "appendAriaLabel",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "items",
             label: "items",
-            tsType: null,
+            tsType: "any[] | undefined",
             runtimeType: "Array",
             required: false,
             hasFactoryDefault: true,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.JSON,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "itemTitle",
             label: "itemTitle",
-            tsType: null,
+            tsType: "TSelectItemKey",
             runtimeType: null,
             required: false,
             defaultValue: "title",
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "itemValue",
             label: "itemValue",
-            tsType: null,
+            tsType: "TSelectItemKey",
             runtimeType: null,
             required: false,
             defaultValue: "value",
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "itemChildren",
             label: "itemChildren",
-            tsType: null,
+            tsType: "TSelectItemKey",
             runtimeType: null,
             required: false,
             defaultValue: "children",
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "itemProps",
             label: "itemProps",
-            tsType: null,
+            tsType: "TSelectItemKey",
             runtimeType: null,
             required: false,
             defaultValue: "props",
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "returnObject",
             label: "returnObject",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "valueComparator",
             label: "valueComparator",
-            tsType: null,
+            tsType: "((a: any, b: any) => boolean) | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: true,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "transition",
             label: "transition",
-            tsType: null,
+            tsType: "string | boolean | TTransitionProps | undefined",
             runtimeType: ["Boolean","String","Object"],
             required: false,
             hasFactoryDefault: true,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "customFilter",
             label: "customFilter",
-            tsType: null,
+            tsType: "TFilterFunction | undefined",
             runtimeType: "Function",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "customKeyFilter",
             label: "customKeyFilter",
-            tsType: null,
+            tsType: "TFilterKeyFunctions | undefined",
             runtimeType: "Object",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.JSON,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "filterKeys",
             label: "filterKeys",
-            tsType: null,
+            tsType: "TFilterKeys | undefined",
             runtimeType: ["String","Array"],
             required: false,
             hasFactoryDefault: true,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "filterMode",
             label: "filterMode",
-            tsType: null,
+            tsType: "\"every\" | \"some\" | \"union\" | \"intersection\" | undefined",
             runtimeType: null,
             required: false,
             defaultValue: "intersection",
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["every","some","union","intersection"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "noFilter",
             label: "noFilter",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "eager",
             label: "eager",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         }
         ],
         events: [
         {
-            name: "click:control",
-            label: "click:control",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
-        },
-        {
-            name: "mousedown:control",
-            label: "mousedown:control",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
-        },
-        {
-            name: "update:menu",
-            label: "update:menu",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
-        },
-        {
             name: "update:modelValue",
             label: "update:modelValue",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
-        },
-        {
-            name: "update:focused",
-            label: "update:focused",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
+            payloadType: "[event: any]",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "click:append",
             label: "click:append",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
+            payloadType: "[event: MouseEvent]",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "click:prepend",
             label: "click:prepend",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
+            payloadType: "[event: MouseEvent]",
+            source: METADATA_SOURCE.TYPES
+        },
+        {
+            name: "update:focused",
+            label: "update:focused",
+            payloadType: "[event: any]",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "click:appendInner",
             label: "click:appendInner",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
+            payloadType: "[event: MouseEvent]",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "click:prependInner",
             label: "click:prependInner",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
+            payloadType: "[event: MouseEvent]",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "click:clear",
             label: "click:clear",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
+            payloadType: "[event: MouseEvent]",
+            source: METADATA_SOURCE.TYPES
+        },
+        {
+            name: "click:control",
+            label: "click:control",
+            payloadType: "[event: MouseEvent]",
+            source: METADATA_SOURCE.TYPES
+        },
+        {
+            name: "mousedown:control",
+            label: "mousedown:control",
+            payloadType: "[event: MouseEvent]",
+            source: METADATA_SOURCE.TYPES
+        },
+        {
+            name: "update:menu",
+            label: "update:menu",
+            payloadType: "[value: boolean]",
+            source: METADATA_SOURCE.TYPES
         }
         ],
         slots: [],
@@ -2810,32 +2917,32 @@ export const HOST_CATALOG_SEED: IComponentDefinition[] = [
         {
             name: "indeterminate",
             label: "indeterminate",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "inset",
             label: "inset",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "id",
             label: "id",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "class",
@@ -2860,1120 +2967,1163 @@ export const HOST_CATALOG_SEED: IComponentDefinition[] = [
         {
             name: "tag",
             label: "tag",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "padding",
             label: "padding",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\ndesign rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n`--padded` class.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingTop",
             label: "paddingTop",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingBlock` for the top edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingLeft",
             label: "paddingLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingInline` for the left edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBottom",
             label: "paddingBottom",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingBlock` for the bottom edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingRight",
             label: "paddingRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingInline` for the right edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBlock",
             label: "paddingBlock",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top + bottom. Overrides `padding`; beaten by `paddingTop` / `paddingBottom`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingInline",
             label: "paddingInline",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Left + right. Overrides `padding`; beaten by `paddingLeft` / `paddingRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingInlineStart",
             label: "paddingInlineStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nLogical per-side padding — rung 3 (issue #1013)",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingInlineEnd",
             label: "paddingInlineEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBlockStart",
             label: "paddingBlockStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBlockEnd",
             label: "paddingBlockEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "margin",
             label: "margin",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\ndesign rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n`--marged` class.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginTop",
             label: "marginTop",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginBlock` for the top edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginLeft",
             label: "marginLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginInline` for the left edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBottom",
             label: "marginBottom",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginBlock` for the bottom edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginRight",
             label: "marginRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginInline` for the right edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBlock",
             label: "marginBlock",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top + bottom. Overrides `margin`; beaten by `marginTop` / `marginBottom`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginInline",
             label: "marginInline",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Left + right. Overrides `margin`; beaten by `marginLeft` / `marginRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginInlineStart",
             label: "marginInlineStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nLogical per-side margin — rung 3 (issue #1013)",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginInlineEnd",
             label: "marginInlineEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBlockStart",
             label: "marginBlockStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBlockEnd",
             label: "marginBlockEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "border",
             label: "border",
-            tsType: null,
+            tsType: "string | number | boolean | TDirectionBoth[] | undefined",
             runtimeType: ["Boolean","Number","String","Array"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderTop",
             label: "borderTop",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderLeft",
             label: "borderLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBottom",
             label: "borderBottom",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderRight",
             label: "borderRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlock",
             label: "borderBlock",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Logical-axis shorthand for the block-start + block-end edges (top +\nbottom in the default horizontal-tb writing mode). Resolves to the\nnative CSS `border-block-{width,style,color}` properties — same\nvalue grammar as `borderTop` / `borderRight` / `borderBottom` /\n`borderLeft` (boolean opt-in, bare width number, or a free-form\n`\"width style color\"` string). Precedence: beats the global `border`\nshorthand for the edges it targets, but a physical `borderTop` /\n`borderBottom` still wins over it for that specific edge — see\n`useBorder` JSDoc for the full precedence table.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInline",
             label: "borderInline",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Logical-axis shorthand for the inline-start + inline-end edges (left\n+ right in LTR). Same grammar and precedence rules as `borderBlock`,\nmapped onto `border-inline-{width,style,color}`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineStart",
             label: "borderInlineStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineStart",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineEnd",
             label: "borderInlineEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineEnd",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockStart",
             label: "borderBlockStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockStart",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockEnd",
             label: "borderBlockEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockEnd",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderColor",
             label: "borderColor",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderStyle",
             label: "borderStyle",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderTopColor",
             label: "borderTopColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Per-side color override (issue #215). Additive: absent by default,\nno behaviour change for existing consumers.\n\nPrecedence (specific > global): `borderTopColor` wins over any\ncolor implied by `borderTop` (e.g. `borderTop=\"2px dashed red\"`),\nwhich itself wins over the global `borderColor` / `border` shorthand\nfor the top side. See `useBorder` JSDoc for the full precedence\ntable.\n\nAccepts a {@link TColor} (semantic intent, raw CSS color, or falsy\nto opt out) — same input family as `color` / `bgColor`. Gradients\nare NOT supported on border colors (CSS `border-color` has no\ngradient form) and are silently ignored.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderRightColor",
             label: "borderRightColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBottomColor",
             label: "borderBottomColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderLeftColor",
             label: "borderLeftColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineStartColor",
             label: "borderInlineStartColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineStartColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineEndColor",
             label: "borderInlineEndColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineEndColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockStartColor",
             label: "borderBlockStartColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockStartColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockEndColor",
             label: "borderBlockEndColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockEndColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "rounded",
             label: "rounded",
-            tsType: null,
+            tsType: "string | number | boolean | null | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Corner-radius selector. Three modes:\n - **named variant** (`'small' | 'default' | 'large' | …`,\n   cf. `ROUNDED` enum) → emits `--rounded-{name}` class so the\n   component's SCSS can pick the right token rung.\n - **boolean `true`** (or empty string `''`) → emits the legacy\n   `--rounded` class for components that only have a single rounded\n   state (e.g. `OrigamBtn` defaulting to `radius.2xl`).\n - **CSS value** (`'4px'`, `'4px 0 4px 0'`, `100`) → emits inline\n   `border-radius` declarations via `useRounded.roundedStyles`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedTopRight",
             label: "roundedTopRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top-right corner only. Takes the same vocabulary as `rounded`\n(`8`, `'8px'`, `'md'`, `'large'`, `'var(…)'`), minus `shaped` /\n`shaped-invert` which are asymmetric by definition.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedTopLeft",
             label: "roundedTopLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top-left corner only. Same vocabulary as `roundedTopRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedBottomLeft",
             label: "roundedBottomLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Bottom-left corner only. Same vocabulary as `roundedTopRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedBottomRight",
             label: "roundedBottomRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Bottom-right corner only. Same vocabulary as `roundedTopRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedStartStart",
             label: "roundedStartStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nLogical per-corner radius — rung 2 (issue #1013)",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedStartEnd",
             label: "roundedStartEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedEndStart",
             label: "roundedEndStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedEndEnd",
             label: "roundedEndEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "centerAffix",
             label: "centerAffix",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             defaultValue: true,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "hideDetails",
             label: "hideDetails",
-            tsType: null,
+            tsType: "string | boolean | undefined",
             runtimeType: ["Boolean","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "hideSpinButtons",
             label: "hideSpinButtons",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "hint",
             label: "hint",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "persistentHint",
             label: "persistentHint",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "messages",
             label: "messages",
-            tsType: null,
+            tsType: "string | string[] | undefined",
             runtimeType: ["Array","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "density",
             label: "density",
-            tsType: null,
+            tsType: "\"default\" | \"compact\" | \"comfortable\" | undefined",
             runtimeType: null,
             required: false,
             defaultValue: "default",
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["default","compact","comfortable"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "color",
             label: "color",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "bgColor",
             label: "bgColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "elevation",
             label: "elevation",
-            tsType: null,
+            tsType: "TElevation | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "height",
             label: "height",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "maxHeight",
             label: "maxHeight",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "maxWidth",
             label: "maxWidth",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "minHeight",
             label: "minHeight",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "minWidth",
             label: "minWidth",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "width",
             label: "width",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "direction",
             label: "direction",
-            tsType: null,
+            tsType: "\"horizontal\" | \"vertical\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["horizontal","vertical"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "disabled",
             label: "disabled",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "error",
             label: "error",
-            tsType: null,
+            tsType: "string | boolean | undefined",
             runtimeType: ["String","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Field-level error flag. Accepts a `boolean` (error on/off) or a `string`\n(error message rendered inline by consumers such as `FileField`).",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "errorMessages",
             label: "errorMessages",
-            tsType: null,
+            tsType: "string | string[] | undefined",
             runtimeType: ["Array","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "maxErrors",
             label: "maxErrors",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "name",
             label: "name",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "readonly",
             label: "readonly",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "rules",
             label: "rules",
-            tsType: null,
+            tsType: "any[] | undefined",
             runtimeType: "Array",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.JSON,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "modelValue",
             label: "modelValue",
-            tsType: null,
+            tsType: "any",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "validateOn",
             label: "validateOn",
-            tsType: null,
+            tsType: "\"blur\" | \"input\" | \"submit\" | \"lazy blur\" | \"lazy input\" | \"lazy submit\" | \"blur lazy\" | \"input lazy\" | \"submit lazy\" | \"lazy\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["blur","input","submit","lazy blur","lazy input","lazy submit","blur lazy","input lazy","submit lazy","lazy"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "validationValue",
             label: "validationValue",
-            tsType: null,
+            tsType: "any",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "focused",
             label: "focused",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "appendAvatar",
             label: "appendAvatar",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "appendIcon",
             label: "appendIcon",
-            tsType: null,
+            tsType: "TIcon | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "prependAvatar",
             label: "prependAvatar",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "prependIcon",
             label: "prependIcon",
-            tsType: null,
+            tsType: "TIcon | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "prependAriaLabel",
             label: "prependAriaLabel",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "appendAriaLabel",
             label: "appendAriaLabel",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "size",
             label: "size",
-            tsType: null,
+            tsType: "number | \"default\" | \"x-small\" | \"small\" | \"large\" | \"x-large\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "fontSize",
             label: "fontSize",
-            tsType: null,
+            tsType: "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"5xl\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["xs","sm","md","lg","xl","2xl","3xl","4xl","5xl"],
+            control: CONTROL_KIND.SELECT,
+            description: "Font size token. Maps to `--origam-font__size---{fontSize}`\n(xs · sm · md · lg · xl · 2xl · 3xl · 4xl · 5xl).\nWhen unset, the component keeps its theme / density font-size.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "fontWeight",
             label: "fontWeight",
-            tsType: null,
+            tsType: "\"regular\" | \"medium\" | \"semibold\" | \"bold\" | \"extrabold\" | \"black\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["regular","medium","semibold","bold","extrabold","black"],
+            control: CONTROL_KIND.SELECT,
+            description: "Font weight token. Maps to `--origam-font__weight---{fontWeight}`\n(regular 400 · medium 500 · semibold 600 · bold 700 · extrabold 800 · black 900).\nWhen unset, the component keeps its theme font-weight.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "lineHeight",
             label: "lineHeight",
-            tsType: null,
+            tsType: "\"none\" | \"tight\" | \"snug\" | \"normal\" | \"relaxed\" | \"loose\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["none","tight","snug","normal","relaxed","loose"],
+            control: CONTROL_KIND.SELECT,
+            description: "Line-height token. Maps to `--origam-font__lineHeight---{lineHeight}`\n(none 1 · tight 1.25 · snug 1.375 · normal 1.5 · relaxed 1.625 · loose 2).\nWhen unset, the component keeps its theme line-height.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "label",
             label: "label",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "trueValue",
             label: "trueValue",
-            tsType: null,
+            tsType: "any",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "falseValue",
             label: "falseValue",
-            tsType: null,
+            tsType: "any",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "value",
             label: "value",
-            tsType: null,
+            tsType: "any",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "required",
             label: "required",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "type",
             label: "type",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "valueComparator",
             label: "valueComparator",
-            tsType: null,
+            tsType: "((a: any, b: any) => boolean) | undefined",
             runtimeType: "Function",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "falseIcon",
             label: "falseIcon",
-            tsType: null,
+            tsType: "TIcon | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "trueIcon",
             label: "trueIcon",
-            tsType: null,
+            tsType: "TIcon | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "multiple",
             label: "multiple",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "inline",
             label: "inline",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "hover",
             label: "hover",
-            tsType: null,
+            tsType: "boolean | IStateEffectConfig | undefined",
             runtimeType: ["Boolean","Object"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "hoverClass",
             label: "hoverClass",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "ripple",
             label: "ripple",
-            tsType: null,
+            tsType: "boolean | { class: string; } | undefined",
             runtimeType: ["Boolean","Object"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "loading",
             label: "loading",
-            tsType: null,
+            tsType: "TControlLoadingValue | undefined",
             runtimeType: ["Boolean","Number","Object"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "loadingText",
             label: "loadingText",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "active",
             label: "active",
-            tsType: null,
+            tsType: "boolean | IStateEffectConfig | undefined",
             runtimeType: ["Boolean","Object"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "activeClass",
             label: "activeClass",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         }
         ],
         events: [
         {
             name: "update:modelValue",
             label: "update:modelValue",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
+            payloadType: "[event: any]",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "update:focused",
             label: "update:focused",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
-        },
-        {
-            name: "update:indeterminate",
-            label: "update:indeterminate",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
+            payloadType: "[event: any]",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "click:label",
             label: "click:label",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
+            payloadType: "[event: MouseEvent]",
+            source: METADATA_SOURCE.TYPES
+        },
+        {
+            name: "update:indeterminate",
+            label: "update:indeterminate",
+            payloadType: "[value: boolean]",
+            source: METADATA_SOURCE.TYPES
         }
         ],
         slots: [],
@@ -3990,75 +4140,75 @@ export const HOST_CATALOG_SEED: IComponentDefinition[] = [
         {
             name: "closable",
             label: "closable",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "closeIcon",
             label: "closeIcon",
-            tsType: null,
+            tsType: "TIcon | undefined",
             runtimeType: null,
             required: false,
             defaultValue: "mdi:mdi-close",
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "closeLabel",
             label: "closeLabel",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             defaultValue: "origam.close",
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "modelValue",
             label: "modelValue",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             defaultValue: true,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "title",
             label: "title",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "text",
             label: "text",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "id",
             label: "id",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "class",
@@ -4083,865 +4233,911 @@ export const HOST_CATALOG_SEED: IComponentDefinition[] = [
         {
             name: "tag",
             label: "tag",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             defaultValue: "div",
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "color",
             label: "color",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "bgColor",
             label: "bgColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "border",
             label: "border",
-            tsType: null,
+            tsType: "string | number | boolean | TDirectionBoth[] | undefined",
             runtimeType: ["Boolean","Number","String","Array"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderTop",
             label: "borderTop",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderLeft",
             label: "borderLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBottom",
             label: "borderBottom",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderRight",
             label: "borderRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlock",
             label: "borderBlock",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Logical-axis shorthand for the block-start + block-end edges (top +\nbottom in the default horizontal-tb writing mode). Resolves to the\nnative CSS `border-block-{width,style,color}` properties — same\nvalue grammar as `borderTop` / `borderRight` / `borderBottom` /\n`borderLeft` (boolean opt-in, bare width number, or a free-form\n`\"width style color\"` string). Precedence: beats the global `border`\nshorthand for the edges it targets, but a physical `borderTop` /\n`borderBottom` still wins over it for that specific edge — see\n`useBorder` JSDoc for the full precedence table.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInline",
             label: "borderInline",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Logical-axis shorthand for the inline-start + inline-end edges (left\n+ right in LTR). Same grammar and precedence rules as `borderBlock`,\nmapped onto `border-inline-{width,style,color}`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineStart",
             label: "borderInlineStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineStart",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineEnd",
             label: "borderInlineEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineEnd",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockStart",
             label: "borderBlockStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockStart",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockEnd",
             label: "borderBlockEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockEnd",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderColor",
             label: "borderColor",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderStyle",
             label: "borderStyle",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderTopColor",
             label: "borderTopColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Per-side color override (issue #215). Additive: absent by default,\nno behaviour change for existing consumers.\n\nPrecedence (specific > global): `borderTopColor` wins over any\ncolor implied by `borderTop` (e.g. `borderTop=\"2px dashed red\"`),\nwhich itself wins over the global `borderColor` / `border` shorthand\nfor the top side. See `useBorder` JSDoc for the full precedence\ntable.\n\nAccepts a {@link TColor} (semantic intent, raw CSS color, or falsy\nto opt out) — same input family as `color` / `bgColor`. Gradients\nare NOT supported on border colors (CSS `border-color` has no\ngradient form) and are silently ignored.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderRightColor",
             label: "borderRightColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBottomColor",
             label: "borderBottomColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderLeftColor",
             label: "borderLeftColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineStartColor",
             label: "borderInlineStartColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineStartColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineEndColor",
             label: "borderInlineEndColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineEndColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockStartColor",
             label: "borderBlockStartColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockStartColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockEndColor",
             label: "borderBlockEndColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockEndColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "height",
             label: "height",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "maxHeight",
             label: "maxHeight",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "maxWidth",
             label: "maxWidth",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "minHeight",
             label: "minHeight",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "minWidth",
             label: "minWidth",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "width",
             label: "width",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "padding",
             label: "padding",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\ndesign rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n`--padded` class.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingTop",
             label: "paddingTop",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingBlock` for the top edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingLeft",
             label: "paddingLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingInline` for the left edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBottom",
             label: "paddingBottom",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingBlock` for the bottom edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingRight",
             label: "paddingRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingInline` for the right edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBlock",
             label: "paddingBlock",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top + bottom. Overrides `padding`; beaten by `paddingTop` / `paddingBottom`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingInline",
             label: "paddingInline",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Left + right. Overrides `padding`; beaten by `paddingLeft` / `paddingRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingInlineStart",
             label: "paddingInlineStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nLogical per-side padding — rung 3 (issue #1013)",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingInlineEnd",
             label: "paddingInlineEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBlockStart",
             label: "paddingBlockStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBlockEnd",
             label: "paddingBlockEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "margin",
             label: "margin",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\ndesign rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n`--marged` class.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginTop",
             label: "marginTop",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginBlock` for the top edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginLeft",
             label: "marginLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginInline` for the left edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBottom",
             label: "marginBottom",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginBlock` for the bottom edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginRight",
             label: "marginRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginInline` for the right edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBlock",
             label: "marginBlock",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top + bottom. Overrides `margin`; beaten by `marginTop` / `marginBottom`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginInline",
             label: "marginInline",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Left + right. Overrides `margin`; beaten by `marginLeft` / `marginRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginInlineStart",
             label: "marginInlineStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nLogical per-side margin — rung 3 (issue #1013)",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginInlineEnd",
             label: "marginInlineEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBlockStart",
             label: "marginBlockStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBlockEnd",
             label: "marginBlockEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "density",
             label: "density",
-            tsType: null,
+            tsType: "\"default\" | \"compact\" | \"comfortable\" | undefined",
             runtimeType: null,
             required: false,
             defaultValue: "default",
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["default","compact","comfortable"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "elevation",
             label: "elevation",
-            tsType: null,
+            tsType: "TElevation | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "location",
             label: "location",
-            tsType: null,
+            tsType: "TAnchor | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["top","bottom","left","right","center","center center","top left","top right","top center","bottom left","bottom right","bottom center","left top","left bottom","left center","right top","right bottom","right center"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.ALIAS
         },
         {
             name: "position",
             label: "position",
-            tsType: null,
+            tsType: "\"static\" | \"relative\" | \"fixed\" | \"absolute\" | \"sticky\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["static","relative","fixed","absolute","sticky"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "top",
             label: "top",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "bottom",
             label: "bottom",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "left",
             label: "left",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "right",
             label: "right",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "rounded",
             label: "rounded",
-            tsType: null,
+            tsType: "string | number | boolean | null | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Corner-radius selector. Three modes:\n - **named variant** (`'small' | 'default' | 'large' | …`,\n   cf. `ROUNDED` enum) → emits `--rounded-{name}` class so the\n   component's SCSS can pick the right token rung.\n - **boolean `true`** (or empty string `''`) → emits the legacy\n   `--rounded` class for components that only have a single rounded\n   state (e.g. `OrigamBtn` defaulting to `radius.2xl`).\n - **CSS value** (`'4px'`, `'4px 0 4px 0'`, `100`) → emits inline\n   `border-radius` declarations via `useRounded.roundedStyles`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedTopRight",
             label: "roundedTopRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top-right corner only. Takes the same vocabulary as `rounded`\n(`8`, `'8px'`, `'md'`, `'large'`, `'var(…)'`), minus `shaped` /\n`shaped-invert` which are asymmetric by definition.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedTopLeft",
             label: "roundedTopLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top-left corner only. Same vocabulary as `roundedTopRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedBottomLeft",
             label: "roundedBottomLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Bottom-left corner only. Same vocabulary as `roundedTopRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedBottomRight",
             label: "roundedBottomRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Bottom-right corner only. Same vocabulary as `roundedTopRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedStartStart",
             label: "roundedStartStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nLogical per-corner radius — rung 2 (issue #1013)",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedStartEnd",
             label: "roundedStartEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedEndStart",
             label: "roundedEndStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedEndEnd",
             label: "roundedEndEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "status",
             label: "status",
-            tsType: null,
+            tsType: "\"success\" | \"info\" | \"warning\" | \"error\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["success","info","warning","error"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "statusIconPosition",
             label: "statusIconPosition",
-            tsType: null,
+            tsType: "\"prepend\" | \"append\" | \"replace\" | \"both\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["prepend","append","replace","both"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "icon",
             label: "icon",
-            tsType: null,
+            tsType: "TIcon | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "hover",
             label: "hover",
-            tsType: null,
+            tsType: "boolean | IStateEffectConfig | undefined",
             runtimeType: ["Boolean","Object"],
             required: false,
             defaultValue: true,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "hoverClass",
             label: "hoverClass",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "appendAvatar",
             label: "appendAvatar",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "appendIcon",
             label: "appendIcon",
-            tsType: null,
+            tsType: "TIcon | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "prependAvatar",
             label: "prependAvatar",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "prependIcon",
             label: "prependIcon",
-            tsType: null,
+            tsType: "TIcon | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "prependAriaLabel",
             label: "prependAriaLabel",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "appendAriaLabel",
             label: "appendAriaLabel",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "fontSize",
             label: "fontSize",
-            tsType: null,
+            tsType: "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"5xl\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["xs","sm","md","lg","xl","2xl","3xl","4xl","5xl"],
+            control: CONTROL_KIND.SELECT,
+            description: "Font size token. Maps to `--origam-font__size---{fontSize}`\n(xs · sm · md · lg · xl · 2xl · 3xl · 4xl · 5xl).\nWhen unset, the component keeps its theme / density font-size.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "fontWeight",
             label: "fontWeight",
-            tsType: null,
+            tsType: "\"regular\" | \"medium\" | \"semibold\" | \"bold\" | \"extrabold\" | \"black\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["regular","medium","semibold","bold","extrabold","black"],
+            control: CONTROL_KIND.SELECT,
+            description: "Font weight token. Maps to `--origam-font__weight---{fontWeight}`\n(regular 400 · medium 500 · semibold 600 · bold 700 · extrabold 800 · black 900).\nWhen unset, the component keeps its theme font-weight.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "lineHeight",
             label: "lineHeight",
-            tsType: null,
+            tsType: "\"none\" | \"tight\" | \"snug\" | \"normal\" | \"relaxed\" | \"loose\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["none","tight","snug","normal","relaxed","loose"],
+            control: CONTROL_KIND.SELECT,
+            description: "Line-height token. Maps to `--origam-font__lineHeight---{lineHeight}`\n(none 1 · tight 1.25 · snug 1.375 · normal 1.5 · relaxed 1.625 · loose 2).\nWhen unset, the component keeps its theme line-height.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "letterSpacing",
             label: "letterSpacing",
-            tsType: null,
+            tsType: "\"tight\" | \"normal\" | \"wide\" | \"wider\" | \"widest\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["tight","normal","wide","wider","widest"],
+            control: CONTROL_KIND.SELECT,
+            description: "Letter-spacing token. Maps to `--origam-font__letterSpacing---{letterSpacing}`\n(tight -0.025em · normal 0em · wide 0.0094em · wider 0.0125em · widest 0.0893em).\nWhen unset, the component keeps its theme letter-spacing.",
+            source: METADATA_SOURCE.TYPES
         }
         ],
         events: [
         {
             name: "update:modelValue",
             label: "update:modelValue",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
+            payloadType: "[event: any]",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "click:close",
             label: "click:close",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
+            payloadType: "[event: MouseEvent]",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "update:hover",
             label: "update:hover",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
+            payloadType: "[value: boolean]",
+            source: METADATA_SOURCE.TYPES
         }
         ],
         slots: [],
@@ -4956,114 +5152,118 @@ export const HOST_CATALOG_SEED: IComponentDefinition[] = [
         category: "Layout & Structure",
         props: [
         {
+            name: "contentDisplay",
+            label: "contentDisplay",
+            tsType: "\"block\" | \"grid\" | \"contents\" | \"flex\" | undefined",
+            runtimeType: null,
+            required: false,
+            hasFactoryDefault: false,
+            options: ["block","grid","contents","flex"],
+            control: CONTROL_KIND.SELECT,
+            description: "*******************************************************\ncontentDisplay",
+            source: METADATA_SOURCE.TYPES
+        },
+        {
             name: "disabled",
             label: "disabled",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "flat",
             label: "flat",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
-        },
-        {
-            name: "hover",
-            label: "hover",
-            tsType: null,
-            runtimeType: "Boolean",
-            required: false,
-            hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "image",
             label: "image",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "link",
             label: "link",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "subtitle",
             label: "subtitle",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["String","Number"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "text",
             label: "text",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["String","Number"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "title",
             label: "title",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["String","Number"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "type",
             label: "type",
-            tsType: null,
+            tsType: "\"grid\" | \"list\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["grid","list"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "titleId",
             label: "titleId",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\ntitleId",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "id",
             label: "id",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "class",
@@ -5088,871 +5288,927 @@ export const HOST_CATALOG_SEED: IComponentDefinition[] = [
         {
             name: "tag",
             label: "tag",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             defaultValue: "div",
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "border",
             label: "border",
-            tsType: null,
+            tsType: "string | number | boolean | TDirectionBoth[] | undefined",
             runtimeType: ["Boolean","Number","String","Array"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderTop",
             label: "borderTop",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderLeft",
             label: "borderLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBottom",
             label: "borderBottom",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderRight",
             label: "borderRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlock",
             label: "borderBlock",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Logical-axis shorthand for the block-start + block-end edges (top +\nbottom in the default horizontal-tb writing mode). Resolves to the\nnative CSS `border-block-{width,style,color}` properties — same\nvalue grammar as `borderTop` / `borderRight` / `borderBottom` /\n`borderLeft` (boolean opt-in, bare width number, or a free-form\n`\"width style color\"` string). Precedence: beats the global `border`\nshorthand for the edges it targets, but a physical `borderTop` /\n`borderBottom` still wins over it for that specific edge — see\n`useBorder` JSDoc for the full precedence table.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInline",
             label: "borderInline",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Logical-axis shorthand for the inline-start + inline-end edges (left\n+ right in LTR). Same grammar and precedence rules as `borderBlock`,\nmapped onto `border-inline-{width,style,color}`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineStart",
             label: "borderInlineStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineStart",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineEnd",
             label: "borderInlineEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineEnd",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockStart",
             label: "borderBlockStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockStart",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockEnd",
             label: "borderBlockEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockEnd",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderColor",
             label: "borderColor",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderStyle",
             label: "borderStyle",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderTopColor",
             label: "borderTopColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Per-side color override (issue #215). Additive: absent by default,\nno behaviour change for existing consumers.\n\nPrecedence (specific > global): `borderTopColor` wins over any\ncolor implied by `borderTop` (e.g. `borderTop=\"2px dashed red\"`),\nwhich itself wins over the global `borderColor` / `border` shorthand\nfor the top side. See `useBorder` JSDoc for the full precedence\ntable.\n\nAccepts a {@link TColor} (semantic intent, raw CSS color, or falsy\nto opt out) — same input family as `color` / `bgColor`. Gradients\nare NOT supported on border colors (CSS `border-color` has no\ngradient form) and are silently ignored.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderRightColor",
             label: "borderRightColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBottomColor",
             label: "borderBottomColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderLeftColor",
             label: "borderLeftColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineStartColor",
             label: "borderInlineStartColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineStartColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineEndColor",
             label: "borderInlineEndColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineEndColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockStartColor",
             label: "borderBlockStartColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockStartColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockEndColor",
             label: "borderBlockEndColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockEndColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "color",
             label: "color",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "bgColor",
             label: "bgColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "density",
             label: "density",
-            tsType: null,
+            tsType: "\"default\" | \"compact\" | \"comfortable\" | undefined",
             runtimeType: null,
             required: false,
             defaultValue: "default",
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["default","compact","comfortable"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "height",
             label: "height",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "maxHeight",
             label: "maxHeight",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "maxWidth",
             label: "maxWidth",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "minHeight",
             label: "minHeight",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "minWidth",
             label: "minWidth",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "width",
             label: "width",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "elevation",
             label: "elevation",
-            tsType: null,
+            tsType: "TElevation | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "loading",
             label: "loading",
-            tsType: null,
+            tsType: "TLoadingValue | undefined",
             runtimeType: ["Boolean","Number","Object"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "loadingText",
             label: "loadingText",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "location",
             label: "location",
-            tsType: null,
+            tsType: "TAnchor | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["top","bottom","left","right","center","center center","top left","top right","top center","bottom left","bottom right","bottom center","left top","left bottom","left center","right top","right bottom","right center"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.ALIAS
         },
         {
             name: "position",
             label: "position",
-            tsType: null,
+            tsType: "\"static\" | \"relative\" | \"fixed\" | \"absolute\" | \"sticky\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["static","relative","fixed","absolute","sticky"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "top",
             label: "top",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "bottom",
             label: "bottom",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "left",
             label: "left",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "right",
             label: "right",
-            tsType: null,
+            tsType: "string | number | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "rounded",
             label: "rounded",
-            tsType: null,
+            tsType: "string | number | boolean | null | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Corner-radius selector. Three modes:\n - **named variant** (`'small' | 'default' | 'large' | …`,\n   cf. `ROUNDED` enum) → emits `--rounded-{name}` class so the\n   component's SCSS can pick the right token rung.\n - **boolean `true`** (or empty string `''`) → emits the legacy\n   `--rounded` class for components that only have a single rounded\n   state (e.g. `OrigamBtn` defaulting to `radius.2xl`).\n - **CSS value** (`'4px'`, `'4px 0 4px 0'`, `100`) → emits inline\n   `border-radius` declarations via `useRounded.roundedStyles`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedTopRight",
             label: "roundedTopRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top-right corner only. Takes the same vocabulary as `rounded`\n(`8`, `'8px'`, `'md'`, `'large'`, `'var(…)'`), minus `shaped` /\n`shaped-invert` which are asymmetric by definition.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedTopLeft",
             label: "roundedTopLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top-left corner only. Same vocabulary as `roundedTopRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedBottomLeft",
             label: "roundedBottomLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Bottom-left corner only. Same vocabulary as `roundedTopRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedBottomRight",
             label: "roundedBottomRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Bottom-right corner only. Same vocabulary as `roundedTopRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedStartStart",
             label: "roundedStartStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nLogical per-corner radius — rung 2 (issue #1013)",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedStartEnd",
             label: "roundedStartEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedEndStart",
             label: "roundedEndStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedEndEnd",
             label: "roundedEndEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "margin",
             label: "margin",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\ndesign rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n`--marged` class.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginTop",
             label: "marginTop",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginBlock` for the top edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginLeft",
             label: "marginLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginInline` for the left edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBottom",
             label: "marginBottom",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginBlock` for the bottom edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginRight",
             label: "marginRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginInline` for the right edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBlock",
             label: "marginBlock",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top + bottom. Overrides `margin`; beaten by `marginTop` / `marginBottom`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginInline",
             label: "marginInline",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Left + right. Overrides `margin`; beaten by `marginLeft` / `marginRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginInlineStart",
             label: "marginInlineStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nLogical per-side margin — rung 3 (issue #1013)",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginInlineEnd",
             label: "marginInlineEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBlockStart",
             label: "marginBlockStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBlockEnd",
             label: "marginBlockEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "padding",
             label: "padding",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\ndesign rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n`--padded` class.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingTop",
             label: "paddingTop",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingBlock` for the top edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingLeft",
             label: "paddingLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingInline` for the left edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBottom",
             label: "paddingBottom",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingBlock` for the bottom edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingRight",
             label: "paddingRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingInline` for the right edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBlock",
             label: "paddingBlock",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top + bottom. Overrides `padding`; beaten by `paddingTop` / `paddingBottom`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingInline",
             label: "paddingInline",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Left + right. Overrides `padding`; beaten by `paddingLeft` / `paddingRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingInlineStart",
             label: "paddingInlineStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nLogical per-side padding — rung 3 (issue #1013)",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingInlineEnd",
             label: "paddingInlineEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBlockStart",
             label: "paddingBlockStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBlockEnd",
             label: "paddingBlockEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "href",
             label: "href",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "replace",
             label: "replace",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "to",
             label: "to",
-            tsType: null,
+            tsType: "string | kt | Tt | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "exact",
             label: "exact",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "ripple",
             label: "ripple",
-            tsType: null,
+            tsType: "boolean | { class: string; } | undefined",
             runtimeType: ["Boolean","Object"],
             required: false,
             defaultValue: true,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "appendAvatar",
             label: "appendAvatar",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "appendIcon",
             label: "appendIcon",
-            tsType: null,
+            tsType: "TIcon | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "prependAvatar",
             label: "prependAvatar",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "prependIcon",
             label: "prependIcon",
-            tsType: null,
+            tsType: "TIcon | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "prependAriaLabel",
             label: "prependAriaLabel",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "appendAriaLabel",
             label: "appendAriaLabel",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "active",
             label: "active",
-            tsType: null,
+            tsType: "boolean | IStateEffectConfig | undefined",
             runtimeType: ["Boolean","Object"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "activeClass",
             label: "activeClass",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
+        },
+        {
+            name: "hover",
+            label: "hover",
+            tsType: "boolean | IStateEffectConfig | undefined",
+            runtimeType: ["Boolean","Object"],
+            required: false,
+            hasFactoryDefault: false,
+            control: CONTROL_KIND.TEXT,
+            source: METADATA_SOURCE.TYPES
+        },
+        {
+            name: "hoverClass",
+            label: "hoverClass",
+            tsType: "string | undefined",
+            runtimeType: "String",
+            required: false,
+            hasFactoryDefault: false,
+            control: CONTROL_KIND.TEXT,
+            source: METADATA_SOURCE.TYPES
         }
         ],
         events: [
         {
-            name: "click:append",
-            label: "click:append",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
-        },
-        {
-            name: "click:prepend",
-            label: "click:prepend",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
+            name: "update:hover",
+            label: "update:hover",
+            payloadType: "[value: boolean]",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "update:active",
             label: "update:active",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
+            payloadType: "[event: any]",
+            source: METADATA_SOURCE.TYPES
         },
         {
-            name: "update:hover",
-            label: "update:hover",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
+            name: "click:append",
+            label: "click:append",
+            payloadType: "[event: MouseEvent]",
+            source: METADATA_SOURCE.TYPES
+        },
+        {
+            name: "click:prepend",
+            label: "click:prepend",
+            payloadType: "[event: MouseEvent]",
+            source: METADATA_SOURCE.TYPES
         }
         ],
         slots: [],
@@ -5969,126 +6225,126 @@ export const HOST_CATALOG_SEED: IComponentDefinition[] = [
         {
             name: "closable",
             label: "closable",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "closeIcon",
             label: "closeIcon",
-            tsType: null,
+            tsType: "TIcon | undefined",
             runtimeType: null,
             required: false,
             defaultValue: "mdi:mdi-close-circle-outline",
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "closeLabel",
             label: "closeLabel",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             defaultValue: "origam.close",
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "draggable",
             label: "draggable",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "filter",
             label: "filter",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "filterIcon",
             label: "filterIcon",
-            tsType: null,
+            tsType: "TIcon | undefined",
             runtimeType: null,
             required: false,
             defaultValue: "mdi:mdi-check",
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "label",
             label: "label",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "link",
             label: "link",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "pill",
             label: "pill",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "text",
             label: "text",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "modelValue",
             label: "modelValue",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             defaultValue: true,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "id",
             label: "id",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "class",
@@ -6113,822 +6369,896 @@ export const HOST_CATALOG_SEED: IComponentDefinition[] = [
         {
             name: "appendAvatar",
             label: "appendAvatar",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "appendIcon",
             label: "appendIcon",
-            tsType: null,
+            tsType: "TIcon | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "prependAvatar",
             label: "prependAvatar",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "prependIcon",
             label: "prependIcon",
-            tsType: null,
+            tsType: "TIcon | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "prependAriaLabel",
             label: "prependAriaLabel",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "appendAriaLabel",
             label: "appendAriaLabel",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "tag",
             label: "tag",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             defaultValue: "span",
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "color",
             label: "color",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "bgColor",
             label: "bgColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "ripple",
             label: "ripple",
-            tsType: null,
+            tsType: "boolean | { class: string; } | undefined",
             runtimeType: ["Boolean","Object"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "border",
             label: "border",
-            tsType: null,
+            tsType: "string | number | boolean | TDirectionBoth[] | undefined",
             runtimeType: ["Boolean","Number","String","Array"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderTop",
             label: "borderTop",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderLeft",
             label: "borderLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBottom",
             label: "borderBottom",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderRight",
             label: "borderRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlock",
             label: "borderBlock",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Logical-axis shorthand for the block-start + block-end edges (top +\nbottom in the default horizontal-tb writing mode). Resolves to the\nnative CSS `border-block-{width,style,color}` properties — same\nvalue grammar as `borderTop` / `borderRight` / `borderBottom` /\n`borderLeft` (boolean opt-in, bare width number, or a free-form\n`\"width style color\"` string). Precedence: beats the global `border`\nshorthand for the edges it targets, but a physical `borderTop` /\n`borderBottom` still wins over it for that specific edge — see\n`useBorder` JSDoc for the full precedence table.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInline",
             label: "borderInline",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Logical-axis shorthand for the inline-start + inline-end edges (left\n+ right in LTR). Same grammar and precedence rules as `borderBlock`,\nmapped onto `border-inline-{width,style,color}`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineStart",
             label: "borderInlineStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineStart",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineEnd",
             label: "borderInlineEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineEnd",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockStart",
             label: "borderBlockStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockStart",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockEnd",
             label: "borderBlockEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockEnd",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderColor",
             label: "borderColor",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderStyle",
             label: "borderStyle",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderTopColor",
             label: "borderTopColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Per-side color override (issue #215). Additive: absent by default,\nno behaviour change for existing consumers.\n\nPrecedence (specific > global): `borderTopColor` wins over any\ncolor implied by `borderTop` (e.g. `borderTop=\"2px dashed red\"`),\nwhich itself wins over the global `borderColor` / `border` shorthand\nfor the top side. See `useBorder` JSDoc for the full precedence\ntable.\n\nAccepts a {@link TColor} (semantic intent, raw CSS color, or falsy\nto opt out) — same input family as `color` / `bgColor`. Gradients\nare NOT supported on border colors (CSS `border-color` has no\ngradient form) and are silently ignored.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderRightColor",
             label: "borderRightColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBottomColor",
             label: "borderBottomColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderLeftColor",
             label: "borderLeftColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineStartColor",
             label: "borderInlineStartColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineStartColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderInlineEndColor",
             label: "borderInlineEndColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderInlineEndColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockStartColor",
             label: "borderBlockStartColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockStartColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "borderBlockEndColor",
             label: "borderBlockEndColor",
-            tsType: null,
+            tsType: "TColor",
             runtimeType: ["String","Object","Boolean"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nborderBlockEndColor",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "rounded",
             label: "rounded",
-            tsType: null,
+            tsType: "string | number | boolean | null | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Corner-radius selector. Three modes:\n - **named variant** (`'small' | 'default' | 'large' | …`,\n   cf. `ROUNDED` enum) → emits `--rounded-{name}` class so the\n   component's SCSS can pick the right token rung.\n - **boolean `true`** (or empty string `''`) → emits the legacy\n   `--rounded` class for components that only have a single rounded\n   state (e.g. `OrigamBtn` defaulting to `radius.2xl`).\n - **CSS value** (`'4px'`, `'4px 0 4px 0'`, `100`) → emits inline\n   `border-radius` declarations via `useRounded.roundedStyles`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedTopRight",
             label: "roundedTopRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top-right corner only. Takes the same vocabulary as `rounded`\n(`8`, `'8px'`, `'md'`, `'large'`, `'var(…)'`), minus `shaped` /\n`shaped-invert` which are asymmetric by definition.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedTopLeft",
             label: "roundedTopLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top-left corner only. Same vocabulary as `roundedTopRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedBottomLeft",
             label: "roundedBottomLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Bottom-left corner only. Same vocabulary as `roundedTopRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedBottomRight",
             label: "roundedBottomRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Bottom-right corner only. Same vocabulary as `roundedTopRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedStartStart",
             label: "roundedStartStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nLogical per-corner radius — rung 2 (issue #1013)",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedStartEnd",
             label: "roundedStartEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedEndStart",
             label: "roundedEndStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "roundedEndEnd",
             label: "roundedEndEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "padding",
             label: "padding",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\ndesign rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n`--padded` class.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingTop",
             label: "paddingTop",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingBlock` for the top edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingLeft",
             label: "paddingLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingInline` for the left edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBottom",
             label: "paddingBottom",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingBlock` for the bottom edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingRight",
             label: "paddingRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `padding` and `paddingInline` for the right edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBlock",
             label: "paddingBlock",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top + bottom. Overrides `padding`; beaten by `paddingTop` / `paddingBottom`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingInline",
             label: "paddingInline",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Left + right. Overrides `padding`; beaten by `paddingLeft` / `paddingRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingInlineStart",
             label: "paddingInlineStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nLogical per-side padding — rung 3 (issue #1013)",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingInlineEnd",
             label: "paddingInlineEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBlockStart",
             label: "paddingBlockStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "paddingBlockEnd",
             label: "paddingBlockEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "margin",
             label: "margin",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\ndesign rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n`--marged` class.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginTop",
             label: "marginTop",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginBlock` for the top edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginLeft",
             label: "marginLeft",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginInline` for the left edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBottom",
             label: "marginBottom",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginBlock` for the bottom edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginRight",
             label: "marginRight",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Overrides `margin` and `marginInline` for the right edge.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBlock",
             label: "marginBlock",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Top + bottom. Overrides `margin`; beaten by `marginTop` / `marginBottom`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginInline",
             label: "marginInline",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "Left + right. Overrides `margin`; beaten by `marginLeft` / `marginRight`.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginInlineStart",
             label: "marginInlineStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            description: "*******************************************************\nLogical per-side margin — rung 3 (issue #1013)",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginInlineEnd",
             label: "marginInlineEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBlockStart",
             label: "marginBlockStart",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "marginBlockEnd",
             label: "marginBlockEnd",
-            tsType: null,
+            tsType: "string | number | boolean | undefined",
             runtimeType: ["Boolean","Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "density",
             label: "density",
-            tsType: null,
+            tsType: "\"default\" | \"compact\" | \"comfortable\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["default","compact","comfortable"],
+            control: CONTROL_KIND.SELECT,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "value",
             label: "value",
-            tsType: null,
+            tsType: "any",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "disabled",
             label: "disabled",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "selectedClass",
             label: "selectedClass",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "href",
             label: "href",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "replace",
             label: "replace",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "to",
             label: "to",
-            tsType: null,
+            tsType: "string | kt | Tt | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "exact",
             label: "exact",
-            tsType: null,
+            tsType: "boolean | undefined",
             runtimeType: "Boolean",
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            control: CONTROL_KIND.SWITCH,
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "size",
             label: "size",
-            tsType: null,
+            tsType: "number | \"default\" | \"x-small\" | \"small\" | \"large\" | \"x-large\" | undefined",
             runtimeType: null,
             required: false,
             defaultValue: "default",
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "elevation",
             label: "elevation",
-            tsType: null,
+            tsType: "TElevation | undefined",
             runtimeType: ["Number","String"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "active",
             label: "active",
-            tsType: null,
+            tsType: "boolean | IStateEffectConfig | undefined",
             runtimeType: ["Boolean","Object"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "activeClass",
             label: "activeClass",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "hover",
             label: "hover",
-            tsType: null,
+            tsType: "boolean | IStateEffectConfig | undefined",
             runtimeType: ["Boolean","Object"],
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "hoverClass",
             label: "hoverClass",
-            tsType: null,
+            tsType: "string | undefined",
             runtimeType: "String",
             required: false,
             hasFactoryDefault: false,
             control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            source: METADATA_SOURCE.TYPES
+        },
+        {
+            name: "fontFamily",
+            label: "fontFamily",
+            tsType: "\"sans\" | \"mono\" | \"serif\" | undefined",
+            runtimeType: null,
+            required: false,
+            hasFactoryDefault: false,
+            options: ["sans","mono","serif"],
+            control: CONTROL_KIND.SELECT,
+            description: "Font family token. Maps to `--origam-font__family---{fontFamily}`\n(sans · mono · serif).\nWhen unset, the component keeps its theme font-family.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "fontSize",
             label: "fontSize",
-            tsType: null,
+            tsType: "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"5xl\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["xs","sm","md","lg","xl","2xl","3xl","4xl","5xl"],
+            control: CONTROL_KIND.SELECT,
+            description: "Font size token. Maps to `--origam-font__size---{fontSize}`\n(xs · sm · md · lg · xl · 2xl · 3xl · 4xl · 5xl).\nWhen unset, the component keeps its theme / density font-size.",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "fontWeight",
             label: "fontWeight",
-            tsType: null,
+            tsType: "\"regular\" | \"medium\" | \"semibold\" | \"bold\" | \"extrabold\" | \"black\" | undefined",
             runtimeType: null,
             required: false,
             hasFactoryDefault: false,
-            control: CONTROL_KIND.TEXT,
-            source: METADATA_SOURCE.RUNTIME
+            options: ["regular","medium","semibold","bold","extrabold","black"],
+            control: CONTROL_KIND.SELECT,
+            description: "Font weight token. Maps to `--origam-font__weight---{fontWeight}`\n(regular 400 · medium 500 · semibold 600 · bold 700 · extrabold 800 · black 900).\nWhen unset, the component keeps its theme font-weight.",
+            source: METADATA_SOURCE.TYPES
+        },
+        {
+            name: "letterSpacing",
+            label: "letterSpacing",
+            tsType: "\"tight\" | \"normal\" | \"wide\" | \"wider\" | \"widest\" | undefined",
+            runtimeType: null,
+            required: false,
+            hasFactoryDefault: false,
+            options: ["tight","normal","wide","wider","widest"],
+            control: CONTROL_KIND.SELECT,
+            description: "Letter-spacing token. Maps to `--origam-font__letterSpacing---{letterSpacing}`\n(tight -0.025em · normal 0em · wide 0.0094em · wider 0.0125em · widest 0.0893em).\nWhen unset, the component keeps its theme letter-spacing.",
+            source: METADATA_SOURCE.TYPES
+        },
+        {
+            name: "textTransform",
+            label: "textTransform",
+            tsType: "\"none\" | \"uppercase\" | \"lowercase\" | \"capitalize\" | undefined",
+            runtimeType: null,
+            required: false,
+            hasFactoryDefault: false,
+            options: ["none","uppercase","lowercase","capitalize"],
+            control: CONTROL_KIND.SELECT,
+            description: "*******************************************************\ntextTransform",
+            source: METADATA_SOURCE.TYPES
         }
         ],
         events: [
         {
             name: "update:modelValue",
             label: "update:modelValue",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
-        },
-        {
-            name: "click",
-            label: "click",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
+            payloadType: "[event: any]",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "click:close",
             label: "click:close",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
+            payloadType: "[event: MouseEvent]",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "click:append",
             label: "click:append",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
+            payloadType: "[event: MouseEvent]",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "click:prepend",
             label: "click:prepend",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
+            payloadType: "[event: MouseEvent]",
+            source: METADATA_SOURCE.TYPES
         },
         {
             name: "group:selected",
             label: "group:selected",
-            payloadType: null,
-            source: METADATA_SOURCE.RUNTIME
+            payloadType: "[value: { value: boolean; }]",
+            source: METADATA_SOURCE.TYPES
+        },
+        {
+            name: "click",
+            label: "click",
+            payloadType: "[event: MouseEvent]",
+            source: METADATA_SOURCE.TYPES
         }
         ],
         slots: [],

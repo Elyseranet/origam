@@ -1,7 +1,7 @@
 <template>
     <div
             class="pg-prop"
-            :class="{ 'pg-prop--set': isSet }"
+            :class="rowClasses"
             :data-cy="`playground-prop-${row.definition.name}`"
     >
         <span class="pg-prop__head">
@@ -13,7 +13,13 @@
             <code class="pg-prop__type">{{ typeLabel }}</code>
         </span>
 
-        <output class="pg-prop__value">{{ valueLabel }}</output>
+        <playground-prop-control
+                :definition="row.definition"
+                :value="values[row.definition.name]"
+                :is-set="isSet"
+                @set="handleSet(row.definition.name, $event)"
+                @reset="handleReset(row.definition.name)"
+        />
 
         <details
                 v-if="row.fold"
@@ -27,14 +33,18 @@
                     class="pg-prop__axis"
             >
                 <p class="pg-prop__axis-label">{{ axis.label }}</p>
-                <div
-                        v-for="name in axis.names"
-                        :key="name"
-                        class="pg-prop__axis-cell"
+                <template
+                        v-for="definition in foldDefinitionsFor(axis.names)"
+                        :key="definition.name"
                 >
-                    <span>{{ name }}</span>
-                    <output>{{ valueLabelFor(name) }}</output>
-                </div>
+                    <playground-prop-control
+                            :definition="definition"
+                            :value="values[definition.name]"
+                            :is-set="isNameSet(definition.name)"
+                            @set="handleSet(definition.name, $event)"
+                            @reset="handleReset(definition.name)"
+                    />
+                </template>
             </div>
         </details>
     </div>
@@ -42,13 +52,20 @@
 
 <script setup lang="ts">
     import { computed } from 'vue'
+    import PlaygroundPropControl from './PlaygroundPropControl.vue'
     import { useT } from '../../composables/I18n/useT'
-    import type { IPlaygroundPropRowProps } from '../../interfaces/Components/playground-prop-row.interface'
+    import type { IPropDefinition } from '../../interfaces/Catalog/prop-definition.interface'
+    import type { IPlaygroundPropRowEmits, IPlaygroundPropRowProps, IPlaygroundPropRowSlots } from '../../interfaces/Components/playground-prop-row.interface'
+    import type { TPropValue } from '../../types/Commons/prop-value.type'
 
     /*********************************************************
      * Global
      ********************************************************/
     const props = defineProps<IPlaygroundPropRowProps>()
+
+    const emits = defineEmits<IPlaygroundPropRowEmits>()
+
+    defineSlots<IPlaygroundPropRowSlots>()
 
     const { t } = useT()
 
@@ -56,14 +73,13 @@
      * Display
      *
      * @description
-     * Read-only: this lot shows name, type and resolved value — no control
-     * is rendered, no edit is possible. `tsType` wins over `runtimeType` when
-     * present (a human-readable union beats a constructor-name array); when
-     * neither resolved, falls back to the no-value label rather than `null`.
+     * `tsType` wins over `runtimeType` when present (a human-readable union
+     * beats a constructor-name array). The value itself is no longer printed
+     * here: the control shows it, and shows the default (source A) apart
+     * from a value the user set.
      ********************************************************/
     const requiredLabel = computed(() => t('playground.inspector.required_badge', 'required'))
     const noValueLabel = computed(() => t('playground.prop_row.no_value', '—'))
-    const factoryDefaultLabel = computed(() => t('playground.prop_row.factory_default', 'generated value'))
 
     const typeLabel = computed(() => {
         const { tsType, runtimeType } = props.row.definition
@@ -75,32 +91,32 @@
         return noValueLabel.value
     })
 
-    const isSet = computed(() => props.row.definition.name in props.values)
+    const isNameSet = (name: string) => Object.prototype.hasOwnProperty.call(props.values, name)
 
-    const resolvedValueFor = (name: string, definition = props.row.definition) => {
-        if (name in props.values) return props.values[name]
-        if (definition.hasFactoryDefault) return factoryDefaultLabel.value
-        if (definition.defaultValue !== undefined) return definition.defaultValue
+    const isSet = computed(() => isNameSet(props.row.definition.name))
 
-        return undefined
-    }
-
-    const formatValue = (value: unknown) => {
-        if (value === undefined) return noValueLabel.value
-        if (typeof value === 'object') return JSON.stringify(value)
-
-        return String(value)
-    }
-
-    const valueLabel = computed(() => formatValue(resolvedValueFor(props.row.definition.name)))
-
-    const valueLabelFor = (name: string) => {
-        const definition = props.row.fold?.definitions.find(d => d.name === name)
-
-        return formatValue(resolvedValueFor(name, definition))
-    }
+    const foldDefinitionsFor = (names: string[]): IPropDefinition[] => (props.row.fold?.definitions ?? []).filter(definition => names.includes(definition.name))
 
     const foldSummary = computed(() => t('playground.inspector.fold_summary', '+{count} folded', { count: props.row.fold?.definitions.length ?? 0 }))
+
+    /*********************************************************
+     * Class & Style
+     ********************************************************/
+    const rowClasses = computed(() => ({ 'pg-prop--set': isSet.value }))
+
+    /*********************************************************
+     * Edit intents
+     *
+     * @description
+     * Relayed up unchanged — the row writes nothing; `useSceneEditor` does.
+     ********************************************************/
+    const handleSet = (name: string, value: TPropValue) => {
+        emits('set-prop', name, value)
+    }
+
+    const handleReset = (name: string) => {
+        emits('reset-prop', name)
+    }
 
     /*********************************************************
      * Expose
@@ -111,12 +127,15 @@
 <style lang="scss" scoped>
     .pg-prop {
         display: grid;
-        gap: var(--pg-prop---gap, 2px);
+        gap: var(--pg-prop---gap, 4px);
         padding-block: var(--pg-prop---padding-block, 6px);
-        border-block-end: 1px solid var(--pg-prop---border-color, #eee);
+        padding-inline: var(--pg-prop---padding-inline, 6px);
+        border-block-end: 1px solid var(--pg-prop---border-color, var(--origam-color__border---subtle));
+        border-inline-start: 3px solid transparent;
 
         &--set {
-            background: var(--pg-prop--set---background-color, rgba(0, 100, 255, 0.05));
+            background: var(--pg-prop--set---background-color, var(--origam-color__surface---sunken));
+            border-inline-start-color: var(--pg-prop--set---accent-color, var(--origam-color__action--primary---bg));
         }
 
         &__head {
@@ -133,18 +152,20 @@
             font-size: 0.7em;
             padding: 0 4px;
             border-radius: var(--pg-prop__badge---border-radius, 4px);
-            background: var(--pg-prop__badge---background-color, #fde68a);
+            background: var(--pg-prop__badge---background-color, var(--origam-color__feedback--warning---bg));
         }
 
         &__type {
             margin-inline-start: auto;
             opacity: 0.6;
             font-size: 0.8em;
+            overflow-wrap: anywhere;
+            text-align: end;
         }
 
-        &__value {
-            font-family: var(--pg-prop__value---font-family, monospace);
-            font-size: 0.85em;
+        &__axis {
+            display: grid;
+            gap: var(--pg-prop---gap, 4px);
         }
 
         &__axis-label {
@@ -152,25 +173,15 @@
             font-size: 0.75em;
             opacity: 0.6;
         }
-
-        &__axis-cell {
-            display: flex;
-            justify-content: space-between;
-            gap: 8px;
-            font-size: 0.8em;
-        }
     }
 </style>
 
 <style>
     :root {
-        --pg-prop---gap: 2px;
+        --pg-prop---gap: 4px;
         --pg-prop---padding-block: 6px;
-        --pg-prop---border-color: #eee;
-        --pg-prop--set---background-color: rgba(0, 100, 255, 0.05);
+        --pg-prop---padding-inline: 6px;
         --pg-prop__head---gap: 8px;
         --pg-prop__badge---border-radius: 4px;
-        --pg-prop__badge---background-color: #fde68a;
-        --pg-prop__value---font-family: monospace;
     }
 </style>

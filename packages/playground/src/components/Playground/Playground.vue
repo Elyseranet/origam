@@ -23,7 +23,9 @@
         >
             <playground-inspector
                     :definition="selectedDefinition"
-                    :values="selectedInstance?.props ?? {}"
+                    :values="selectedValues"
+                    @set-prop="handleSetProp"
+                    @reset-prop="handleResetProp"
             >
                 <template #inspector-panels>
                     <slot name="inspector-panels"/>
@@ -31,7 +33,7 @@
                 <template #prop-row="scope">
                     <slot
                             name="prop-row"
-                            :row="scope.row"
+                            v-bind="scope"
                     />
                 </template>
             </playground-inspector>
@@ -40,6 +42,7 @@
         <playground-preview
                 :instance="selectedInstance"
                 :registry="registry"
+                @instance-emit="handleInstanceEmit"
         >
             <template #preview-surround="scope">
                 <slot
@@ -52,6 +55,12 @@
         <playground-dock>
             <template #code>
                 <playground-code-panel :scene="scene"/>
+            </template>
+            <template #events>
+                <playground-event-log
+                        :entries="eventEntries"
+                        @clear="handleClearEvents"
+                />
             </template>
         </playground-dock>
 
@@ -69,13 +78,17 @@
     import PlaygroundCodePanel from './PlaygroundCodePanel.vue'
     import PlaygroundDock from './PlaygroundDock.vue'
     import PlaygroundDrawer from './PlaygroundDrawer.vue'
+    import PlaygroundEventLog from './PlaygroundEventLog.vue'
     import PlaygroundInspector from './PlaygroundInspector.vue'
     import PlaygroundPreview from './PlaygroundPreview.vue'
     import PlaygroundTopbar from './PlaygroundTopbar.vue'
     import { useVModel } from 'origam/composables'
+    import { useEventLog } from '../../composables/Commons/eventLog.composable'
+    import { useSceneEditor } from '../../composables/Commons/sceneEditor.composable'
     import { SCENE_VERSION } from '../../consts/Commons/scene.const'
     import type { IPlaygroundEmits, IPlaygroundProps, IPlaygroundSlots } from '../../interfaces/Components/playground.interface'
     import type { IPlaygroundInstance } from '../../interfaces/Scene/playground-instance.interface'
+    import type { TPropValue } from '../../types/Commons/prop-value.type'
 
     /*********************************************************
      * Name
@@ -117,7 +130,38 @@
 
     const definitions = computed(() => props.registry.getComponents())
 
-    const selectedInstance = computed<IPlaygroundInstance | undefined>(() => scene.value.roots[0])
+    /*********************************************************
+     * Editing
+     *
+     * @description
+     * Every write to the scene goes through `useSceneEditor` (set writes
+     * `props[key]`, reset deletes it, no default is ever copied) and every
+     * emit of the rendered instance through `useEventLog`. This file only
+     * routes the children's intents to them.
+     ********************************************************/
+    const editor = useSceneEditor(scene)
+    const eventLog = useEventLog()
+
+    const selectedInstance = editor.selectedInstance
+    const selectedValues = computed(() => selectedInstance.value?.props ?? {})
+    const eventEntries = eventLog.entries
+
+    const handleSetProp = (name: string, value: TPropValue) => {
+        if (selectedInstance.value) editor.setProp(selectedInstance.value.id, name, value)
+    }
+
+    const handleResetProp = (name: string) => {
+        if (selectedInstance.value) editor.resetProp(selectedInstance.value.id, name)
+    }
+
+    const handleInstanceEmit = (instanceId: string, name: string, args: unknown[]) => {
+        eventLog.record(instanceId, selectedInstance.value?.componentName ?? '', name, args)
+        editor.writeBackEmit(instanceId, name, args)
+    }
+
+    const handleClearEvents = () => {
+        eventLog.clear()
+    }
 
     const selectedDefinition = computed(() => (selectedInstance.value
         ? props.registry.getComponentMetadata(selectedInstance.value.componentName)
