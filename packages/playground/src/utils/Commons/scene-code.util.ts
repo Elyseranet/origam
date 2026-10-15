@@ -164,10 +164,10 @@ function filledSlotNames (instance: IPlaygroundInstance): string[] {
  * Instance
  *
  * @description
- * A default slot alone is written as plain content. As soon as a NAMED slot
- * is filled, every slot — default included — is wrapped in its own
- * `<template #name>`, so the default content is not left implicit between
- * two named templates.
+ * Every filled slot is wrapped in its own `<template #name>` — the default
+ * one included, even when it is the only one. That is the `vue-conventions`
+ * rule ("always name slots, the default one too, and always wrap them with
+ * the named template when using them"), decided for this generator on #1143.
  *
  * @description
  * An instance with nothing to render closes itself (`<origam-divider/>`),
@@ -190,14 +190,7 @@ function instanceLines (instance: IPlaygroundInstance, depth: number, options: R
 
     if (selfClosing) return lines
 
-    const wrapSlots = slots.some(name => name !== DEFAULT_SLOT_NAME)
-
     for (const slotName of slots) {
-        if (!wrapSlots) {
-            lines.push(...slotBodyLines(instance, slotName, depth + 1, options))
-            continue
-        }
-
         lines.push(`${pad}${options.indent}<template ${toSlotDirective(slotName)}>`)
         lines.push(...slotBodyLines(instance, slotName, depth + 2, options))
         lines.push(`${pad}${options.indent}</template>`)

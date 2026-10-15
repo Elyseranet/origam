@@ -6,9 +6,10 @@
  * in this repo (measured on `develop` @ a071c4920): the docs and the
  * snippets marketing SHOWS to a visitor write `<OrigamBtn>`, while every
  * `.vue` template and the owner's `vue-conventions` rule write
- * `<origam-btn>`. Which one the playground emits by default is an open
- * arbitration (#1143), so the choice lives here, behind one option, rather
- * than being baked into the generator.
+ * `<origam-btn>`. The owner settled it on #1143: the generated code is
+ * pasted into a `.vue` file, so it follows `vue-conventions` — `KEBAB` is
+ * the default. `PASCAL` stays an internal option of the generator only; no
+ * UI exposes a toggle for it.
  ********************************************************/
 export enum TAG_CASE {
     /** `<origam-btn>` — the casing a `.vue` template in this repo uses. */

@@ -4,9 +4,8 @@ import type { ISceneCodeOptions } from '../../interfaces/Commons/scene-code-opti
 /**
  * Defaults of `generateSceneCode`.
  *
- * ⚠️ `tagCase: KEBAB` is PROVISIONAL — the arbitration between the two
- * conventions `TAG_CASE` documents is open on #1143. Changing the default is
- * this one line.
+ * `tagCase: KEBAB` — decided by the owner on #1143: the code lands in a
+ * `.vue` file, where `vue-conventions` requires kebab-case tags.
  */
 export const SCENE_CODE_DEFAULTS: Required<ISceneCodeOptions> = {
     tagCase: TAG_CASE.KEBAB,

@@ -254,40 +254,66 @@ describe('generateSceneCode — layout of the opening tag', () => {
 })
 
 describe('generateSceneCode — tag casing', () => {
-    it(`default is ${SCENE_CODE_DEFAULTS.tagCase} (provisional, see #1143)`, () => {
+    it('default is KEBAB — decided by the owner on #1143', () => {
         expect(SCENE_CODE_DEFAULTS.tagCase).toBe(TAG_CASE.KEBAB)
         expect(generateInstanceCode(node('OrigamDataTableRow'))).toBe('<origam-data-table-row/>')
     })
 
-    it('PASCAL emits the export name', () => {
+    it('PASCAL (internal option) emits the export name', () => {
         const code = generateInstanceCode(node('OrigamCard', {}, { children: { default: [node('OrigamCardText', {}, { slotContent: 'Hi' })] } }), { tagCase: TAG_CASE.PASCAL })
 
-        expect(code).toBe('<OrigamCard>\n    <OrigamCardText>\n        Hi\n    </OrigamCardText>\n</OrigamCard>')
+        expect(code).toBe([
+            '<OrigamCard>',
+            '    <template #default>',
+            '        <OrigamCardText>',
+            '            <template #default>',
+            '                Hi',
+            '            </template>',
+            '        </OrigamCardText>',
+            '    </template>',
+            '</OrigamCard>'
+        ].join('\n'))
     })
 })
 
-describe('generateSceneCode — slots', () => {
-    it('slotContent alone → plain content of the default slot, no <template>', () => {
-        expect(generateInstanceCode(node('OrigamBtn', {}, { slotContent: 'Click me' })))
-            .toBe('<origam-btn>\n    Click me\n</origam-btn>')
+describe('generateSceneCode — slots (always named and wrapped, vue-conventions, #1143)', () => {
+    it('slotContent alone → wrapped in <template #default>, even when it is the only slot', () => {
+        const code = generateInstanceCode(node('OrigamBtn', {}, { slotContent: 'Click me' }))
+
+        expect(code).toBe('<origam-btn>\n    <template #default>\n        Click me\n    </template>\n</origam-btn>')
+
+        const [el] = parseTemplate(code)
+
+        expect(el.children).toHaveLength(1)
+        expect(el.children[0].tag).toBe('template')
+        expect(el.children[0].slot).toBe('default')
+        expect(el.children[0].text.trim()).toBe('Click me')
+    })
+
+    it('default-slot children alone → wrapped in <template #default> too', () => {
+        const code = generateInstanceCode(node('OrigamCard', {}, { children: { default: [node('OrigamCardText')] } }))
+
+        expect(code).toBe('<origam-card>\n    <template #default>\n        <origam-card-text/>\n    </template>\n</origam-card>')
+        expect(parseTemplate(code)[0].children[0].slot).toBe('default')
     })
 
     it('multi-line slotContent is indented line by line, blank lines kept blank', () => {
         expect(generateInstanceCode(node('OrigamAlert', {}, { slotContent: 'one\n\ntwo' })))
-            .toBe('<origam-alert>\n    one\n\n    two\n</origam-alert>')
+            .toBe('<origam-alert>\n    <template #default>\n        one\n\n        two\n    </template>\n</origam-alert>')
     })
 
     it('slotContent is emitted verbatim (the contract allows markup)', () => {
         const [el] = parseTemplate(generateInstanceCode(node('OrigamAlert', {}, { slotContent: '<strong>Bold</strong> text' })))
 
-        expect(el.children[0].tag).toBe('strong')
+        expect(el.children[0].slot).toBe('default')
+        expect(el.children[0].children[0].tag).toBe('strong')
     })
 
-    it('an empty slotContent is "no content" — self-closing', () => {
+    it('an empty slotContent is "no content" — self-closing, no empty template', () => {
         expect(generateInstanceCode(node('OrigamBtn', {}, { slotContent: '' }))).toBe('<origam-btn/>')
     })
 
-    it('a named slot → <template #name>, and the default slot is then wrapped too', () => {
+    it('default and named slots → one <template> each', () => {
         const code = generateInstanceCode(node('OrigamCard', {}, {
             slotContent: 'Body',
             children: { title: [node('OrigamTitle', { tag: 'h3' }, { slotContent: 'Heading' })] }
@@ -300,7 +326,9 @@ describe('generateSceneCode — slots', () => {
             '    </template>',
             '    <template #title>',
             '        <origam-title tag="h3">',
-            '            Heading',
+            '            <template #default>',
+            '                Heading',
+            '            </template>',
             '        </origam-title>',
             '    </template>',
             '</origam-card>'
@@ -309,6 +337,7 @@ describe('generateSceneCode — slots', () => {
         const [el] = parseTemplate(code)
 
         expect(el.children.map(c => c.slot)).toEqual(['default', 'title'])
+        expect(el.children[1].children[0].children[0].slot).toBe('default')
     })
 
     it('a named slot alone does not invent an empty default template', () => {
@@ -325,9 +354,11 @@ describe('generateSceneCode — slots', () => {
         expect(el.children.map(c => c.slot)).toEqual(['default', 'zed', 'alpha'])
     })
 
-    it('slotContent comes before the default-slot children', () => {
-        expect(generateInstanceCode(node('OrigamList', {}, { slotContent: 'Header', children: { default: [node('OrigamListItem')] } })))
-            .toBe('<origam-list>\n    Header\n    <origam-list-item/>\n</origam-list>')
+    it('slotContent comes before the default-slot children, inside the same template', () => {
+        const code = generateInstanceCode(node('OrigamList', {}, { slotContent: 'Header', children: { default: [node('OrigamListItem')] } }))
+
+        expect(code).toBe('<origam-list>\n    <template #default>\n        Header\n        <origam-list-item/>\n    </template>\n</origam-list>')
+        expect(parseTemplate(code)[0].children).toHaveLength(1)
     })
 
     it('empty and absent children are alike', () => {
@@ -374,22 +405,37 @@ describe('generateSceneCode — nesting', () => {
 
         expect(code).toBe([
             '<origam-breadcrumb divider="/">',
-            '    <origam-card>',
-            '        <origam-card-header>',
-            '            <origam-title tag="h2">',
-            '                Deep',
-            '            </origam-title>',
-            '        </origam-card-header>',
-            '    </origam-card>',
-            '    <origam-divider/>',
+            '    <template #default>',
+            '        <origam-card>',
+            '            <template #default>',
+            '                <origam-card-header>',
+            '                    <template #default>',
+            '                        <origam-title tag="h2">',
+            '                            <template #default>',
+            '                                Deep',
+            '                            </template>',
+            '                        </origam-title>',
+            '                    </template>',
+            '                </origam-card-header>',
+            '            </template>',
+            '        </origam-card>',
+            '        <origam-divider/>',
+            '    </template>',
             '</origam-breadcrumb>'
         ].join('\n'))
 
         const [root] = parseTemplate(code)
+        const rootSlot = root.children[0]
+        const card = rootSlot.children[0]
+        const header = card.children[0].children[0]
+        const title = header.children[0].children[0]
 
-        expect(root.children[0].children[0].children[0].tag).toBe('origam-title')
-        expect(root.children[0].children[0].children[0].text.trim()).toBe('Deep')
-        expect(root.children[1].tag).toBe('origam-divider')
+        expect(rootSlot.slot).toBe('default')
+        expect(card.tag).toBe('origam-card')
+        expect(header.tag).toBe('origam-card-header')
+        expect(title.tag).toBe('origam-title')
+        expect(title.children[0].text.trim()).toBe('Deep')
+        expect(rootSlot.children[1].tag).toBe('origam-divider')
     })
 
     it('a long opening tag nested 2 levels deep breaks with its own indentation', () => {
@@ -403,13 +449,17 @@ describe('generateSceneCode — nesting', () => {
 
         expect(code).toBe([
             '<origam-card>',
-            '    <origam-card-text>',
-            '        <origam-btn',
-            '            variant="outlined"',
-            '            bg-color="primary"',
-            '            text="A fairly long label"',
-            '        />',
-            '    </origam-card-text>',
+            '    <template #default>',
+            '        <origam-card-text>',
+            '            <template #default>',
+            '                <origam-btn',
+            '                    variant="outlined"',
+            '                    bg-color="primary"',
+            '                    text="A fairly long label"',
+            '                />',
+            '            </template>',
+            '        </origam-card-text>',
+            '    </template>',
             '</origam-card>'
         ].join('\n'))
     })
