@@ -33,7 +33,7 @@ The prop → var mapping:
 `fontStyle` and `textTransform` are CSS keywords with no design scale, so they
 skip the `var(--origam-font__…)` wrapping. Like every typography prop they only
 paint when the component's SCSS reads the generic `--origam-{prefix}---…`
-variable: today `textTransform` is adopted by `OrigamChip` only.
+variable: today `textTransform` is adopted by `OrigamChip`, `OrigamTitle`, `OrigamTextMask` and `OrigamBlockquote`.
 
 Note the token group keeps its **camelCase** spelling (`font__lineHeight`,
 `font__letterSpacing`) while the CSS property is kebab-cased. That asymmetry is

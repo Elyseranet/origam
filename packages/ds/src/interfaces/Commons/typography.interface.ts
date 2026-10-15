@@ -112,7 +112,7 @@ export interface ITypographyProps {
      *
      * @description
      * ⚠️ N'a d'EFFET que si la SCSS du composant lit le var GENERIQUE
-     * `--origam-{prefix}---text-transform`. Adoptant actuel : `OrigamChip`.
+     * `--origam-{prefix}---text-transform`. Adoptants : `OrigamChip`, `OrigamTitle`, `OrigamTextMask`, `OrigamBlockquote`.
      * Ne pas ajouter la prop a un autre composant sans cabler sa SCSS ET
      * prouver l'effet en navigateur.
      ********************************************************/

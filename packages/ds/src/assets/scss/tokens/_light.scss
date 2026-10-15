@@ -2293,6 +2293,7 @@
   --origam-title---font-family: var(--origam-font__family---sans);
   --origam-title---font-weight: var(--origam-font__weight---semibold);
   --origam-title---letter-spacing: var(--origam-font__letterSpacing---tight);
+  --origam-title---text-transform: initial;
   --origam-title---line-height: var(--origam-font__lineHeight---tight);
   --origam-title---margin-block-start: var(--origam-space---0);
   --origam-title---margin-block-end: var(--origam-space---0);
@@ -2621,6 +2622,7 @@
   --origam-blockquote---font-weight: var(--origam-font__weight---regular);
   --origam-blockquote---line-height: var(--origam-font__lineHeight---relaxed);
   --origam-blockquote---letter-spacing: var(--origam-font__letterSpacing---normal);
+  --origam-blockquote---text-transform: initial;
   --origam-blockquote---color: var(--origam-color__text---primary);
   --origam-blockquote__accent---color: var(--origam-color__action--primary---bg);
   --origam-blockquote__accent---width: 4px;
@@ -2805,6 +2807,7 @@
   --origam-text-mask---font-size-default: var(--origam-font__size---5xl);
   --origam-text-mask---font-weight-default: var(--origam-font__weight---bold);
   --origam-text-mask---line-height-default: var(--origam-font__lineHeight---tight);
+  --origam-text-mask---text-transform: initial;
   --origam-text-mask__animation---duration-default: 3s;
   --origam-text-mask__animation---easing-default: var(--origam-motion__easing---standard);
   --origam-empty-state---padding-block: var(--origam-space---10);

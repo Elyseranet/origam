@@ -143,6 +143,7 @@
 		font-family:    var(--origam-text-mask---font-family, inherit);
 		line-height:    var(--origam-text-mask---line-height, var(--origam-text-mask---line-height-default));
 		letter-spacing: var(--origam-text-mask---letter-spacing, normal);
+		text-transform: var(--origam-text-mask---text-transform, inherit);
 	}
 
 	.origam-text-mask--align-left {

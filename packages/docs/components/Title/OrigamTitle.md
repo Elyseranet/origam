@@ -105,6 +105,7 @@ component uses for theme-aware fonts.
 | `fontWeight` | `TFontWeight` | — | Font weight token. Sets `--origam-title---font-weight` to `var(--origam-font__weight---{fontWeight})` (regular 400 · medium 500 · semibold 600 · bold 700 · extrabold 800 · black 900). When unset, the title keeps its theme weight. |
 | `lineHeight` | `TLineHeight` | — | Line-height token. Sets `--origam-title---line-height` to `var(--origam-font__lineHeight---{lineHeight})` (none 1 · tight 1.25 · snug 1.375 · normal 1.5 · relaxed 1.625 · loose 2). When unset, the title keeps its theme line-height. |
 | `letterSpacing` | `TLetterSpacing` | — | Letter-spacing token. Sets `--origam-title---letter-spacing` to `var(--origam-font__letterSpacing---{letterSpacing})` (tight -0.025em · normal 0em · wide · wider · widest 0.0893em). When unset, the title keeps its theme letter-spacing. |
+| `textTransform` | `TTextTransform` | — | CSS `text-transform` keyword (none · uppercase · lowercase · capitalize), emitted verbatim into `--origam-title---text-transform`. When unset, the title inherits the casing of its context. |
 
 ## Anatomy
 

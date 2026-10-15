@@ -119,6 +119,7 @@ Typography props (from `ITypographyProps` — all optional, accept design token 
 | `fontWeight` | `'regular' \| 'medium' \| 'semibold' \| 'bold' \| 'extrabold' \| 'black'` | `--origam-font__weight---*` | `--origam-text-mask---font-weight-default` (`bold`) |
 | `lineHeight` | `'none' \| 'tight' \| 'snug' \| 'normal' \| 'relaxed' \| 'loose'` | `--origam-font__lineHeight---*` | `--origam-text-mask---line-height-default` (`tight`) |
 | `letterSpacing` | `'tight' \| 'normal' \| 'wide' \| 'wider' \| 'widest'` | `--origam-font__letterSpacing---*` | `normal` |
+| `textTransform` | `'none' \| 'uppercase' \| 'lowercase' \| 'capitalize'` | verbatim (no token) | inherits the context |
 
 When a typography prop is unset, the corresponding inline custom property is not emitted and the
 SCSS fallback token keeps control — the component is still fully themed without passing any typography
