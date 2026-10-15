@@ -1,4 +1,5 @@
 export { default as Playground } from './Playground/Playground.vue'
+export { default as PlaygroundCodePanel } from './Playground/PlaygroundCodePanel.vue'
 export { default as PlaygroundDock } from './Playground/PlaygroundDock.vue'
 export { default as PlaygroundDrawer } from './Playground/PlaygroundDrawer.vue'
 export { default as PlaygroundInspector } from './Playground/PlaygroundInspector.vue'

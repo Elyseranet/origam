@@ -20,7 +20,7 @@
                 id="pg-dock-body"
                 data-cy="playground-dock-body"
         >
-            <p class="pg-dock__placeholder">{{ placeholderLabel }}</p>
+            <slot name="code"/>
         </div>
     </section>
 </template>
@@ -28,6 +28,9 @@
 <script setup lang="ts">
     import { computed, ref } from 'vue'
     import { useT } from '../../composables/I18n/useT'
+    import type { IPlaygroundDockSlots } from '../../interfaces/Components/playground-dock.interface'
+
+    defineSlots<IPlaygroundDockSlots>()
 
     const { t } = useT()
 
@@ -42,7 +45,6 @@
     const open = ref(false)
 
     const handleLabel = computed(() => t('playground.dock.handle', 'Code · Snippets · Events'))
-    const placeholderLabel = computed(() => t('playground.dock.placeholder', 'Available in a later lot.'))
 
     const handleToggle = () => {
         open.value = !open.value
@@ -71,12 +73,6 @@
                 outline-offset: -2px;
             }
         }
-
-        &__placeholder {
-            padding: var(--pg-dock__placeholder---padding, 0 16px 16px);
-            opacity: 0.6;
-            margin: 0;
-        }
     }
 </style>
 
@@ -86,6 +82,5 @@
         --pg-dock__handle---padding: 8px 16px;
         --pg-dock__handle---min-height: 44px;
         --pg-dock__handle--focus---outline-color: #2563eb;
-        --pg-dock__placeholder---padding: 0 16px 16px;
     }
 </style>
