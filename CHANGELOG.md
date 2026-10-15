@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.29.2] - 2026-10-15
+
 
 ### Fixed — plus de flash clair -> sombre a la premiere visite : le bloc de theme SSR contient les deux modes (#1103)
 
