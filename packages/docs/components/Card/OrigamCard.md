@@ -159,7 +159,7 @@ Add the `hover` boolean to lift the card on pointer-over.
 
 ```vue
 <template>
-    <OrigamCard :flat="false" border="thin" :hover="{ borderColor: 'danger' }" title="Hover me" />
+    <OrigamCard :flat="false" border="thin" :hover="{ borderColor: 'var(--origam-color__border---strong)' }" title="Hover me" />
 </template>
 ```
 

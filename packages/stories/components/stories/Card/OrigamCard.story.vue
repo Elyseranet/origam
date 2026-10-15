@@ -447,8 +447,8 @@
 					data-cy="card-hover-object"
 					:flat="false"
 					border="thin"
-					border-color="neutral"
-					:hover="{ borderColor: 'danger' }"
+					border-color="var(--origam-color__border---subtle)"
+					:hover="{ borderColor: 'var(--origam-color__border---strong)' }"
 					title="Hover me"
 					style="width: 280px;"
 			/>
