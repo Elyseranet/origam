@@ -113,6 +113,30 @@ packages/playground/
 
 Declarations live only in their layer folder — never inline elsewhere.
 
+## Type-check and CI
+
+```sh
+pnpm -F @origam/playground type-check     # vue-tsc, origam resolved to DS SOURCE
+pnpm -F @origam/tests test:playground     # the TU/playground specs
+```
+
+Both run in the `playground` job of `.github/workflows/ci.yml` (#1141).
+
+⛔ `tsconfig.json` `paths` maps `origam` / `origam/*` onto `../ds/src`, never
+onto `packages/ds/dist/`. Before #1141 the check resolved through `origam`'s
+`package.json` `exports`, so its verdict depended on the disk: no `dist/` →
+`$?=0`; any `dist/`, even a fresh one → `$?=2`, 2 399 errors, all inside the
+built `.vue` files. The `paths` mapping, the three DS ambient files it pulls in
+and the `noUnusedLocals` trade-off are explained in `src/shims.d.ts`.
+
+## Consumers
+
+`packages/marketing` imports the prop-group classification
+(`TPropGroupId`, `PROP_GROUP_IDS`, `classifyPropGroup`) from
+`@origam/playground/{types,consts,utils}` — see `src/types/Commons/prop-group.type.ts`.
+The direction is `marketing → playground`, never the reverse: marketing is a
+HOST of the playground.
+
 ## The registry
 
 `useComponentRegistry({ definitions, loaders })` →

@@ -6,9 +6,10 @@ import type { TPropGroupId } from '../../types/Commons/prop-group.type'
  *
  * @description
  * Display order of the 13 groups. Anchored on the DS Commons prop
- * interfaces, same taxonomy `packages/marketing/src/consts/theme-builder-groups.const.ts`
- * already validated (`classifyPropGroup` there) — reproduced here rather
- * than invented. Measured on `OrigamBtn` (106 props, develop @ `5835fa025`):
+ * interfaces — the taxonomy `packages/marketing`'s /theming builder had
+ * validated first, moved here rather than invented. Since #1141 marketing
+ * imports this order (and `classifyPropGroup`) instead of keeping its own
+ * copy, so these tables are the only ones. Measured on `OrigamBtn` (106 props, develop @ `5835fa025`):
  * color 4 · size 2 · shape 9 · border 21 · elevation 2 · dimension 6 ·
  * spacing 22 · state 7 · icon 4 · link 3 · layout 2 · content 0 · other 24.
  * `content` is the one group Btn never fills — a host renders 12 groups for

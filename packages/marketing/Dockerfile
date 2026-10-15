@@ -36,6 +36,8 @@ COPY packages/docs/package.json packages/docs/package.json
 COPY packages/stories/package.json packages/stories/package.json
 COPY packages/tests/package.json packages/tests/package.json
 COPY packages/marketing/package.json packages/marketing/package.json
+# marketing imports the prop-group classification from @origam/playground (#1141).
+COPY packages/playground/package.json packages/playground/package.json
 
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
     pnpm install --frozen-lockfile
@@ -47,6 +49,7 @@ COPY packages/ds packages/ds
 COPY packages/docs packages/docs
 COPY packages/stories packages/stories
 COPY packages/marketing packages/marketing
+COPY packages/playground packages/playground
 
 # The root tsconfig.json declares project `references` to
 # packages/tests/{TU,e2e}/tsconfig.json. Those two files must exist here even

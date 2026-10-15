@@ -5,14 +5,11 @@
 // `OrigamSelect` (161 — the catalogue's largest prop surface, per the lot's
 // own PR) are the two components the PR cites measured counts for.
 //
-// The classification data (`PROP_GROUP_EXACT` / `PROP_GROUP_PREFIX`) is a
-// deliberate duplicate of `packages/marketing/src/consts/theme-builder-
-// groups.const.ts`'s own table, reproduced here rather than imported — see
-// `types/Commons/prop-group.type.ts`'s header for why (marketing is a HOST
-// of `@origam/playground`; importing from it would invert the dependency).
-// This spec is therefore also the parity check: if the two tables drift,
-// the counts below (independently matching marketing's own validated
-// numbers for `origam-btn`) are what would catch it.
+// The classification data (`PROP_GROUP_EXACT` / `PROP_GROUP_PREFIX`) is the
+// ONLY copy in the monorepo since #1141: `packages/marketing`'s /theming
+// builder imports `classifyPropGroup` from `@origam/playground/utils` instead
+// of carrying its own table — see `types/Commons/prop-group.type.ts`. The
+// counts below therefore pin what /theming renders as well.
 
 import { describe, expect, it } from 'vitest'
 
