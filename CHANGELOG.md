@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.32.0] - 2026-10-15
+
 ### Added — `OrigamCard` : `contentDisplay`, `hover` en objet (#1100)
 
 - Nouvelle prop `contentDisplay` (`block` | `contents` | `flex` | `grid`) et token `--origam-card__content---display` (defaut `block`, declare dans light / dark et leurs jumeaux SCSS) : `contentDisplay="contents"` aplatit le wrapper `.origam-card__content` pour que les enfants du slot deviennent des items directs de la grille / du flex de la carte. Thematisable via `theme.components['origam-card']`. Le nom `flat` est exclu : il signifie deja « pas d'ombre ».
