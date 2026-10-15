@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: 'Unreleased',
+        date: null,
+        type: 'unreleased',
+        summaryKey: 'changelog.versions.unreleased.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'plus de flash clair -> sombre a la premiere visite : le bloc de theme SSR contient les deux modes (#1103)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.29.1',
         date: '2026-10-15',
         type: 'patch',

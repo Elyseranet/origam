@@ -2,7 +2,7 @@
   import { computed, ref, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
   import type { LocaleObject } from '@nuxtjs/i18n'
-  import { useTheme } from 'origam/composables'
+  import { useHydration, useTheme } from 'origam/composables'
   import { MDI_ICONS } from 'origam/enums'
   import type { ICommand } from 'origam/interfaces'
   import type { INavLink, INavSection } from '~/interfaces/nav.interface'
@@ -84,7 +84,15 @@
   const languageAriaLabel = computed(() => t('a11y.language', 'Change language'))
   const changeLocale = (code: string) => setLocale(code as typeof locale.value)
 
-  const themeIcon = computed(() => (resolvedMode.value === 'dark' ? 'mdi-weather-sunny' : 'mdi-weather-night'))
+  // #1103 — sans mode épinglé (`$origam.mode === 'auto'`), le serveur ne connaît
+  // pas le mode système : il rend l'icône « clair ». Le client doit donc
+  // hydrater avec la même icône, puis passer au vrai mode une fois monté.
+  const hydrated = useHydration()
+  const modeIsPinned = (useNuxtApp().$origam as { mode: string } | undefined)?.mode !== 'auto'
+  const themeIcon = computed(() => {
+    const dark = resolvedMode.value === 'dark' && (modeIsPinned || hydrated.value)
+    return dark ? 'mdi-weather-sunny' : 'mdi-weather-night'
+  })
   const brandName = computed(() => t('brand.name', 'origam'))
   const searchPlaceholder = computed(() => t('chrome.search_placeholder', 'Search…'))
   const searchAriaLabel = computed(() => t('a11y.search', 'Search the documentation'))

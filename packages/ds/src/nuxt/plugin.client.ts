@@ -30,7 +30,6 @@ export default defineNuxtPlugin({
             path: '/'
         })
 
-        // Read BEFORE `setMode` / the cookie watcher can touch the cookie.
         const modePinned = isModePinned(modeCookie.value, config.defaultMode)
 
         const themeFromDom = (typeof document !== 'undefined' && document.documentElement.dataset.theme) || null
@@ -78,11 +77,17 @@ export default defineNuxtPlugin({
         // components re-run. `immediate: true` syncs the client to the live
         // intent right after install (the server seeded the SSR paint). `auto`
         // brand maps to '' (the DS `:root` default — no brand component map).
-        //
-        // #1103 — mode NOT pinned: the server cannot know the system mode, so it
-        // seeded the props for LIGHT (its tokens come from `@media`). The
-        // hydration render must use the same, hence `hydrated` starts false and
-        // flips on `app:mounted`, switching the props to the real system mode.
+        /*********************************************************
+         * Hydration-safe defaults (#1103)
+         *
+         * @description
+         * `modePinned` is read BEFORE `setMode` / the cookie watcher can touch the cookie.
+         * @description
+         * Mode NOT pinned: the server cannot know the system mode, so it seeded the
+         * props for LIGHT (its tokens come from `@media`). The hydration render must
+         * use the same, hence `hydrated` starts false and flips on `app:mounted`,
+         * switching the props to the real system mode.
+         ********************************************************/
         const hydrated = ref(modePinned)
         if (!modePinned) {
             nuxtApp.hook('app:mounted', () => {

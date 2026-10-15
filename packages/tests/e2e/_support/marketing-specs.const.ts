@@ -48,6 +48,7 @@ export const MARKETING_SPEC_PATTERNS = [
     '**/marketing-no-third-party.spec.ts',
     '**/marketing-nav-ssr.spec.ts',
     '**/marketing-theme-honored.spec.ts',
+    '**/marketing-ssr-both-modes.spec.ts',
     '**/marketing-nav-locale.spec.ts',
     '**/marketing-catalog-detail-nav.spec.ts',
     '**/marketing-command-palette.spec.ts',

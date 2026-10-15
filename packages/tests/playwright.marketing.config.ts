@@ -40,6 +40,10 @@ const MARKETING_GREEN_SPECS = [
     'components.spec.ts',
     'marketing-nav-ssr.spec.ts',
 
+    // #1103 — plus de flash clair -> sombre a la premiere visite : les deux modes
+    // sont inlines cote serveur, le mode epingle l'emporte sur le @media.
+    'marketing-ssr-both-modes.spec.ts',
+
     // #835 — garde le theming du site entier : le thème que le serveur rend
     // doit encore être là après hydratation. Le défaut qu'elle a trouvé
     // (`data-theme: 'geek'` en dur dans `app.head.htmlAttrs`, réécrit par
