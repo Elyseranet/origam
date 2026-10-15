@@ -36,7 +36,6 @@ COPY packages/docs/package.json packages/docs/package.json
 COPY packages/stories/package.json packages/stories/package.json
 COPY packages/tests/package.json packages/tests/package.json
 COPY packages/marketing/package.json packages/marketing/package.json
-COPY packages/figma-plugin/package.json packages/figma-plugin/package.json
 
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
     pnpm install --frozen-lockfile
