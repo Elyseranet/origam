@@ -210,6 +210,44 @@ jobs:
       - name: Vitest (TU/playground)
         run: pnpm -F @origam/tests run test:playground
 
+      # E2E against the standalone playground host (#1143). Same browser
+      # cache recipe as `test-e2e`. The config boots its own Vite dev server
+      # (`webServer`, `--strictPort`) — no Histoire build, no DS build.
+      # ⛔ `spec-coverage` counts `e2e-playground/` as gated ONLY while this
+      # step calls `test:e2e:playground` — rename one, rename both.
+      - name: Resolve Playwright version
+        id: pw
+        run: |
+          version=$(node -p "require('./packages/tests/package.json').devDependencies['@playwright/test'].replace(/[^\d.]/g,'')")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        id: pw-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-${{ runner.os }}-${{ steps.pw.outputs.version }}-chromium
+
+      - name: Install Playwright Chromium
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: pnpm -F @origam/tests exec playwright install --with-deps chromium
+
+      - name: Install Playwright OS deps only
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: pnpm -F @origam/tests exec playwright install-deps chromium
+
+      - name: Playwright (e2e-playground, chromium)
+        run: pnpm -F @origam/tests run test:e2e:playground
+
+      - name: Upload Playwright report (playground)
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-playground
+          path: packages/tests/e2e-playground/.results
+          retention-days: 7
+          if-no-files-found: ignore
+
   marketing-typecheck-ratchet:
     name: Type-check ratchet (marketing, vue-tsc)
     runs-on: ubuntu-latest
