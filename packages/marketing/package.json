@@ -53,7 +53,7 @@
     "typeorm-naming-strategies": "4.1.0",
     "vue": "3.5.43",
     "vue-i18n": "^11.4.6",
-    "vue-router": "^4.5.0"
+    "vue-router": "^5.4.0"
   },
   "devDependencies": {
     "@vue/compiler-dom": "3.5.43",
