@@ -21,7 +21,7 @@
  * that copy is gone. `marketing` is a HOST of `@origam/playground`, so
  * `marketing → playground` is the correct direction — the reverse would
  * invert the dependency. Before the merge the two tables were identical
- * entry for entry (85 lines, same prefix order), and `/theming` was measured
+ * entry for entry (76 exact names + 8 prefixes, same prefix order), and `/theming` was measured
  * in Chromium before and after on `btn`, `select`, `card` and `text-field`:
  * same groups, same controls, same order.
  ********************************************************/
