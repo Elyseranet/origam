@@ -18,13 +18,13 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
-        version: 'Unreleased',
-        date: null,
-        type: 'unreleased',
-        summaryKey: 'changelog.versions.unreleased.summary',
+        version: '2.31.0',
+        date: '2026-10-15',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2310.summary',
         summaryFallback: '1 addition. See the full changelog for detail.',
         highlights: [
-            { type: 'added', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamChip : fontFamily, letterSpacing, textTransform (#1101)' }
+            { type: 'added', textKey: 'changelog.versions.v2310.h1', textFallback: 'OrigamChip : fontFamily, letterSpacing, textTransform (#1101)' }
         ]
     },
     {
