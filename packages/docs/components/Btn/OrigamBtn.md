@@ -137,6 +137,18 @@ content that does not exist yet.
 </template>
 ```
 
+### `block` inside a flex parent
+
+`block` makes the button take 100% of its parent's width (`width: 100%`,
+`flex: 0 0 auto`). It does **not** grow along the main axis: in a
+`flex-direction: column` parent (for instance a card stretched to the height of
+its neighbour) the button keeps its own height.
+
+A row of several `block` buttons no longer shares the space by `flex-grow`:
+each one is 100% wide. Use `OrigamBtnGroup` or a CSS grid for that layout.
+`max-width` does not cap a `block` button (`min-width: 100%` wins), which is
+unchanged.
+
 ## Border customization
 
 The `outlined` and `ghost` variants expose a customizable border. Beyond

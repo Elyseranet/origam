@@ -282,6 +282,49 @@
 			</template>
 		</Variant>
 
+		<Variant title="Prop — block (flex column)">
+			<div
+					style="display: flex; gap: 16px; align-items: stretch; flex-wrap: wrap;"
+					data-cy="btn-block-columns"
+			>
+				<div
+						style="display: flex; flex-direction: column; gap: 8px; width: 200px; padding: 8px; border: 1px dashed currentColor;"
+						data-cy="btn-block-card-short"
+				>
+					<span>Short</span>
+					<origam-btn block size="large" text="Action" data-cy="btn-block-short"/>
+				</div>
+				<div
+						style="display: flex; flex-direction: column; gap: 8px; width: 200px; padding: 8px; border: 1px dashed currentColor;"
+						data-cy="btn-block-card-long"
+				>
+					<span>A much longer paragraph of text that forces this card to be taller than its neighbour, so the row stretches the shorter one to the same height.</span>
+					<origam-btn block size="large" text="Action" data-cy="btn-block-long"/>
+				</div>
+				<div
+						style="display: flex; flex-direction: column; gap: 8px; width: 200px; height: 200px; padding: 8px; border: 1px dashed currentColor;"
+						data-cy="btn-block-card-tall"
+				>
+					<span>Fixed height column</span>
+					<origam-btn block size="large" text="Action" data-cy="btn-block-tall"/>
+				</div>
+				<div
+						style="display: flex; flex-direction: row; gap: 8px; width: 320px; padding: 8px; border: 1px dashed currentColor;"
+						data-cy="btn-block-row"
+				>
+					<origam-btn block size="large" text="Row" data-cy="btn-block-in-row"/>
+				</div>
+				<div
+						style="display: flex; flex-direction: column; gap: 8px; width: 240px; height: 360px; padding: 8px; border: 1px dashed currentColor;"
+						data-cy="btn-block-edge"
+				>
+					<origam-btn block stacked size="large" prepend-icon="mdi-home" text="Stacked" data-cy="btn-block-stacked"/>
+					<origam-btn block wrap size="large" text="A label long enough to wrap on several lines inside the button" data-cy="btn-block-wrapped"/>
+					<origam-btn block size="large" text="Capped" style="--origam-btn---max-width: 120px;" data-cy="btn-block-capped"/>
+				</div>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IBtnProps>({ color: 'primary', text: 'Button' })"

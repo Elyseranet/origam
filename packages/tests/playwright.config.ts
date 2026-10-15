@@ -285,6 +285,10 @@ const GREEN_SPECS = [
     // Rejouée contre `origin/develop` : les 4 tests « [rouge avant] » rougissent,
     // les 2 témoins restent verts des deux côtés.
     'btn-wrap-height.spec.ts',
+    // wave 15 — #1095. `block` ne grandit plus sur l'axe principal d'un parent flex
+    // en colonne (`flex: 0 0 auto` + `width: 100%`). Rejouee contre `origin/develop` :
+    // les 4 tests « [rouge avant] » rougissent, les 4 temoins restent verts.
+    'btn-block-flex.spec.ts',
     // wave 15 — #934. Même raison. `.origam-list--nav` et
     // `.origam-list-item--nav` déclaraient `--origam-*---padding-inline`, un
     // nom que RIEN ne lit : les règles de base consomment les longhands
