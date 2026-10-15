@@ -88,7 +88,7 @@
   // pas le mode système : il rend l'icône « clair ». Le client doit donc
   // hydrater avec la même icône, puis passer au vrai mode une fois monté.
   const hydrated = useHydration()
-  const modeIsPinned = (useNuxtApp().$origam as { mode: string } | undefined)?.mode !== 'auto'
+  const modeIsPinned = useNuxtApp().$origam.mode !== 'auto'
   const themeIcon = computed(() => {
     const dark = resolvedMode.value === 'dark' && (modeIsPinned || hydrated.value)
     return dark ? 'mdi-weather-sunny' : 'mdi-weather-night'

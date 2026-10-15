@@ -1,5 +1,7 @@
 import type { IOrigamTheme } from './theme.interface'
 
+import type { TMode, TTheme } from '../../types/Commons/theme.type'
+
 /**
  * Options passed by a consumer in `nuxt.config.ts` under the `origam` key.
  *
@@ -121,4 +123,18 @@ export interface IOrigamNuxtRuntimeConfig {
     cookieName: string
     modeCookieName: string
     cookieMaxAge: number
+}
+
+/*********************************************************
+ * IOrigamNuxtProvide
+ *
+ * @description
+ * Shape of what the Nuxt plugins `provide` under `nuxtApp.$origam`.
+ * @description
+ * `mode` is `'auto'` when the colour mode is NOT pinned (#1103), otherwise the
+ * pinned concrete mode.
+ ********************************************************/
+export interface IOrigamNuxtProvide {
+    theme: TTheme
+    mode: TMode
 }

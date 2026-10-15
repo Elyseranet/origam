@@ -1,4 +1,4 @@
-import type { IOrigamNuxtModuleOptions, IOrigamNuxtRuntimeConfig } from '../interfaces/Commons/nuxt-module.interface'
+import type { IOrigamNuxtModuleOptions, IOrigamNuxtProvide, IOrigamNuxtRuntimeConfig } from '../interfaces/Commons/nuxt-module.interface'
 
 declare module '@nuxt/schema' {
     interface NuxtConfig {
@@ -11,6 +11,12 @@ declare module '@nuxt/schema' {
 
     interface PublicRuntimeConfig {
         origam: IOrigamNuxtRuntimeConfig
+    }
+}
+
+declare module '#app' {
+    interface NuxtApp {
+        $origam: IOrigamNuxtProvide
     }
 }
 
@@ -28,4 +34,4 @@ declare module 'nuxt/schema' {
     }
 }
 
-export { IOrigamNuxtModuleOptions, IOrigamNuxtRuntimeConfig }
+export { IOrigamNuxtModuleOptions, IOrigamNuxtProvide, IOrigamNuxtRuntimeConfig }
