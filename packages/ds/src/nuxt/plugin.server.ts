@@ -1,6 +1,6 @@
 import { createOrigam } from '../origam'
 
-import { themeToCss } from '../utils/Commons/apply-theme.util'
+import { isModePinned, themeToCss, themeToUnpinnedCss } from '../utils/Commons/apply-theme.util'
 import { getSsrStyles } from '../utils/Commons/ssr-styles.util'
 
 import type { IOrigamNuxtRuntimeConfig } from '../interfaces/Commons/nuxt-module.interface'
@@ -9,7 +9,7 @@ import { ORIGAM_MODE_ATTR, ORIGAM_MODE_DARK, ORIGAM_MODE_LIGHT, ORIGAM_THEME_ATT
 
 import type { TMode, TTheme } from '../types/Commons/theme.type'
 
-import { defineNuxtPlugin, useCookie, useHead, useRequestHeaders, useRuntimeConfig } from '#app'
+import { defineNuxtPlugin, useCookie, useHead, useRuntimeConfig } from '#app'
 import type { NuxtApp } from '#app'
 
 /**
@@ -30,41 +30,20 @@ function resolveServerTheme (cookieValue: string | null | undefined, config: IOr
 }
 
 /**
- * Resolve the color mode SSR-side to a CONCRETE value (`'light'` | `'dark'`).
+ * Resolve the color mode SSR-side when it is PINNED (cookie, or a configured
+ * `defaultMode` of `light` / `dark`). Callers check `isModePinned` first.
  *
- * The theme token matrix only emits compound `[data-theme="X"][data-mode="Y"]`
- * rules — there is NO bare `[data-theme="X"]` fallback and no
- * `@media (prefers-color-scheme)` block at that tier. So `data-mode` MUST
- * always be a concrete value, otherwise no
- * token rule matches and the page renders unthemed (white). We therefore
- * never return `'auto'` here: when the user expressed no preference we pick a
- * safe default (`'light'`) for the SSR paint; the client plugin upgrades it
- * to the real `prefers-color-scheme` at mount.
- *
- * Priority:
- * 1. explicit cookie (user choice),
- * 2. configured default (when not `'auto'`),
- * 3. `Sec-CH-Prefers-Color-Scheme` client hint,
- * 4. `'light'` (safe SSR default — client upgrades to the system preference).
+ * When nothing is pinned the server does NOT guess: it omits `data-mode` and
+ * emits both modes, the dark one under `@media (prefers-color-scheme: dark)`
+ * (#1103). The `Sec-CH-Prefers-Color-Scheme` client hint is deliberately NOT
+ * read any more: no `Accept-CH` is ever emitted, so browsers never send it.
  */
-function resolveServerMode (cookieValue: string | null | undefined, config: IOrigamNuxtRuntimeConfig, headers: Record<string, string | undefined>): Exclude<TMode, 'auto'> {
+function resolveServerMode (cookieValue: string | null | undefined, config: IOrigamNuxtRuntimeConfig): Exclude<TMode, 'auto'> {
     if (cookieValue === ORIGAM_MODE_LIGHT || cookieValue === ORIGAM_MODE_DARK) {
         return cookieValue
     }
 
-    if (config.defaultMode === ORIGAM_MODE_LIGHT || config.defaultMode === ORIGAM_MODE_DARK) {
-        return config.defaultMode
-    }
-
-    const hint = headers['sec-ch-prefers-color-scheme']
-    if (hint === ORIGAM_MODE_DARK && config.modes.includes(ORIGAM_MODE_DARK)) {
-        return ORIGAM_MODE_DARK
-    }
-    if (hint === ORIGAM_MODE_LIGHT && config.modes.includes(ORIGAM_MODE_LIGHT)) {
-        return ORIGAM_MODE_LIGHT
-    }
-
-    return ORIGAM_MODE_LIGHT
+    return config.defaultMode === ORIGAM_MODE_DARK ? ORIGAM_MODE_DARK : ORIGAM_MODE_LIGHT
 }
 
 export default defineNuxtPlugin({
@@ -85,16 +64,20 @@ export default defineNuxtPlugin({
             path: '/'
         })
 
-        const headers = useRequestHeaders(['sec-ch-prefers-color-scheme'])
         const resolvedTheme = resolveServerTheme(themeCookie.value, config)
-        const resolvedMode = resolveServerMode(modeCookie.value, config, headers)
+        const modePinned = isModePinned(modeCookie.value, config.defaultMode)
+        // Unpinned: the concrete value below only seeds the component props
+        // (always LIGHT, so the client's hydration render matches); it is never
+        // written to the DOM.
+        const resolvedMode = resolveServerMode(modeCookie.value, config)
 
-        // `data-mode` is ALWAYS written (concrete) — the token matrix has no
-        // mode-less fallback (see `resolveServerMode`). `data-theme` is omitted
+        // `data-mode` is written (concrete) only when the mode is PINNED; otherwise
+        // the `@media` blocks below carry it (#1103). `data-theme` is omitted
         // when the brand resolves to `'auto'`, deferring to the DS default
         // sheet's `:root` rules.
-        const htmlAttrs: Record<string, string> = {
-            [ORIGAM_MODE_ATTR]: resolvedMode
+        const htmlAttrs: Record<string, string> = {}
+        if (modePinned) {
+            htmlAttrs[ORIGAM_MODE_ATTR] = resolvedMode
         }
         if (resolvedTheme !== ORIGAM_THEME_AUTO) {
             htmlAttrs[ORIGAM_THEME_ATTR] = resolvedTheme
@@ -115,10 +98,20 @@ export default defineNuxtPlugin({
             const brandMatches = resolvedTheme === ORIGAM_THEME_AUTO
                 ? (theme.name === undefined || theme.name === '')
                 : theme.name === resolvedTheme
-            const modeMatches = theme.mode === undefined || theme.mode === resolvedMode
+            // Unpinned: keep every mode — they are split by `@media` below.
+            const modeMatches = !modePinned || theme.mode === undefined || theme.mode === 'auto' || theme.mode === resolvedMode
             return brandMatches && modeMatches
         })
-        const ssrThemeCss = activeThemes.map(themeToCss).join('\n')
+        // Pinned: exactly the active block. Unpinned (#1103): mode-agnostic blocks
+        // as-is, then the light blocks (`not dark`), then the dark ones (`dark`)
+        // so dark wins over light when the system prefers it.
+        const ssrThemeCss = modePinned
+            ? activeThemes.map(themeToCss).join('\n')
+            : [
+                ...activeThemes.filter(t => t.mode !== 'light' && t.mode !== 'dark').map(themeToCss),
+                ...activeThemes.filter(t => t.mode === 'light').map(themeToUnpinnedCss),
+                ...activeThemes.filter(t => t.mode === 'dark').map(themeToUnpinnedCss)
+            ].join('\n')
 
         useHead({
             htmlAttrs,
@@ -139,6 +132,8 @@ export default defineNuxtPlugin({
         // the render so SSR markup already reflects the theme defaults — no flash
         // of withDefaults values at hydration (mirrors the inlined SSR theme CSS).
         // `auto` brand maps to '' (the DS `:root` default — no brand component map).
+        // Unpinned mode: seeded LIGHT; the client hydrates with the same and
+        // switches to the system mode right after hydration (#1103).
         origam._defaultsRef.value = origam._activeDefaultsFor(
             resolvedTheme === ORIGAM_THEME_AUTO ? '' : resolvedTheme,
             resolvedMode
@@ -170,7 +165,7 @@ export default defineNuxtPlugin({
             provide: {
                 origam: {
                     theme: resolvedTheme,
-                    mode: resolvedMode
+                    mode: modePinned ? resolvedMode : 'auto'
                 }
             }
         }

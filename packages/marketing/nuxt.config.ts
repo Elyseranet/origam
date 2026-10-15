@@ -94,7 +94,10 @@ export default defineNuxtConfig({
         //   - sans préférence stockée, le site rend `geek` ;
         //   - avec `cartoon` choisi, il rend `cartoon`, rechargement compris.
         defaultTheme: 'geek',
-        defaultMode: 'light',
+        // #1103 — `auto` : sans cookie, le serveur n'épingle aucun mode et inline
+        // les deux (le sombre sous `@media (prefers-color-scheme: dark)`), donc
+        // un visiteur en système sombre ne voit plus de flash clair -> sombre.
+        defaultMode: 'auto',
         // Brand themes authored as clean IOrigamTheme objects (semantic vars,
         // light + dark). Component default props are inherited from the origam
         // base theme (sobre identity, name-less → applies to every brand). The

@@ -178,6 +178,53 @@ export function themeToCss (theme: IOrigamTheme): string {
 }
 
 /**
+ * Is the colour mode PINNED by the visitor or the configuration? Pinned means a
+ * `light` / `dark` mode cookie, or a configured `defaultMode` of `light` /
+ * `dark`. Anything else (`auto`, absent, junk) leaves the mode to the system.
+ *
+ * Shared by both Nuxt plugins so server and client never disagree on it (#1103).
+ */
+export function isModePinned (cookieValue: string | null | undefined, defaultMode: string | undefined): boolean {
+    const concrete = (v: string | null | undefined) => v === 'light' || v === 'dark'
+    return concrete(cookieValue) || concrete(defaultMode)
+}
+
+/**
+ * Serialise a MODE-SCOPED theme (`mode` = `light` | `dark`) for a page whose
+ * mode is NOT pinned (#1103): no `data-mode` on `<html>`, the system decides.
+ *
+ * Returns `''` for a mode-agnostic theme — its selector never mentions
+ * `data-mode`, so the plain `themeToCss` block already serves both modes.
+ *
+ * - light → wrapped in `@media not (prefers-color-scheme: dark)`;
+ * - dark  → wrapped in `@media (prefers-color-scheme: dark)`.
+ *
+ * Selectors are ROOT-ONLY and carry `:not([data-mode])`, so the moment a mode is
+ * pinned (the client writes `data-mode`) they stop matching and the regular
+ * `[data-mode]` blocks take over. No sub-tree form is emitted on purpose: an
+ * `<OrigamThemeProvider>` nested in a pinned page must never match them.
+ * Specificity is kept equal to the pinned form: named brand `:root:root[…]
+ * :not([data-mode])` = (0,4,0); unnamed `html:not([data-theme]):not([data-mode])`
+ * = (0,2,1), which beats the built-in #794 rule (0,2,0) and stays under every
+ * named brand.
+ */
+export function themeToUnpinnedCss (theme: IOrigamTheme): string {
+    if (theme.mode !== 'light' && theme.mode !== 'dark') return ''
+    const vars = resolveThemeVars(theme)
+    const decls = Object.keys(vars)
+        .map(name => `    ${name}: ${vars[name]};`)
+        .join('\n')
+    const hasName = typeof theme.name === 'string' && theme.name.length > 0
+    const selector = hasName
+        ? `:root:root[data-theme="${theme.name}"]:not([data-mode])`
+        : 'html:not([data-theme]):not([data-mode])'
+    const query = theme.mode === 'dark'
+        ? '(prefers-color-scheme: dark)'
+        : 'not (prefers-color-scheme: dark)'
+    return `@media ${query} {\n  ${selector} {\n${decls}\n  }\n}\n`
+}
+
+/**
  * Inject (or replace) a theme's CSS variables into `<head>` at runtime.
  * SSR-safe: a no-op when `document` is unavailable. Returns the `<style>`
  * element id used, or `null` when skipped (SSR / empty theme).
