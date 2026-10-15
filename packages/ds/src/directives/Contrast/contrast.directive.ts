@@ -1,6 +1,6 @@
 import type { Directive, DirectiveBinding } from 'vue'
 
-import type { IContrastOptions } from '../../interfaces/Commons/commons.interface'
+import type { IContrastOptions, IContrastScheduled } from '../../interfaces/Commons/commons.interface'
 
 /**
  * Module-level contrast config, set once by `createOrigam({ contrast })`.
@@ -242,47 +242,145 @@ function enforceContrast (el: HTMLElement, enabled: boolean): void {
     el.dataset.origamContrastFixed = 'true'
 
 
-    console.warn(
-        `[origam] Low text contrast (${ratio.toFixed(2)}:1 < ${config.threshold}:1): ` +
-        `text rgb(${fg.join(', ')}) on background rgb(${bg.join(', ')}). ` +
-        `Overriding text colour to ${better} for legibility. ` +
-        `Disable with createOrigam({ contrast: false }).`,
-        el
-    )
+    /*********************************************************
+     * Dev-only diagnostic (#1092)
+     *
+     * @description
+     * The CORRECTION above stays active in production. The log is for the
+     * developer who should fix the token pair; a visitor gains nothing from it
+     * and it filled the console of every production page.
+     *
+     * @description
+     * The DEV flag is statically replaced by the consumer's bundler, so the
+     * whole branch (message included) is dropped from a production build.
+     ********************************************************/
+    if (import.meta.env?.DEV) {
+        console.warn(
+            `[origam] Low text contrast (${ratio.toFixed(2)}:1 < ${config.threshold}:1): ` +
+            `text rgb(${fg.join(', ')}) on background rgb(${bg.join(', ')}). ` +
+            `Overriding text colour to ${better} for legibility. ` +
+            `Disable with createOrigam({ contrast: false }).`,
+            el
+        )
+    }
 }
 
-/**
- * `v-contrast` — guards an element's text legibility at runtime.
+/*********************************************************
+ * schedule — ONE measure, taken once the surface has stopped moving
  *
- * After the browser has resolved the design-token CSS variables, it measures
- * the element's text colour against its painted background. When the WCAG
- * ratio falls below the configured threshold it forces the better of
- * black / white text and logs a one-line warning explaining the swap. Toggle
- * globally via `createOrigam({ contrast: false })`, or per-element with
- * `v-contrast="false"`.
- */
-/*
- * Measure twice: once on the next animation frame (covers the common
- * case where colour / background apply instantly), and once after a
- * short settle delay. The second pass is essential — components animate
- * their surface (`transition: background-color …`), so an rAF-only read
- * sees the mid-transition frame, measures a transient high contrast and
- * wrongly bails, leaving the settled (low-contrast) state unfixed. The
- * delay clears any typical token transition (≤ 200 ms).
- */
-const SETTLE_MS = 250
+ * @description
+ * Components animate their surface (`transition: background-color …`), so a
+ * read taken while a transition runs sees a transient colour: it either bails
+ * on a transient high contrast (the settled low-contrast state is then never
+ * fixed) or "fixes" a transient low one. The previous implementation measured
+ * twice, on the next frame and after a fixed 250 ms. 250 ms is not a property
+ * of the page: the Btn transition is 280 ms, so the second read still landed
+ * mid-transition (measured, #1092: two warnings per button, the second one
+ * against `rgb(125, 60, 237)` on a fill that settles at `rgb(124, 58, 237)`).
+ *
+ * Now: wait for the next frame (the style change is applied then), force the
+ * style recalculation that STARTS any transition, ask the browser which
+ * colour transitions are really running on the element and its ancestors
+ * (the painted background is resolved up the tree), and measure once they
+ * have all settled. No duration is guessed: the Web Animations API reports
+ * the transitions that actually exist, delay and interruption included.
+ *
+ * Browsers without `getAnimations` fall back to a timer DERIVED from the
+ * computed `transition-duration` + `transition-delay` — still the real
+ * duration, never a constant.
+ *
+ * @description
+ * `declaredTransitionMs`: longest `duration + delay` (ms) declared along the
+ * ancestor chain. `runningColorTransitions`: colour transitions currently
+ * running on `el` or any ancestor.
+ *
+ * @description
+ * In `settleThenEnforce`, reading `getComputedStyle(el).color` forces the
+ * style recalculation that creates the transitions this frame's change
+ * triggered — without it `getAnimations()` would still be empty. `allSettled`
+ * is used because a transition cancelled by a retarget rejects its `finished`
+ * promise; either way the next pass re-checks.
+ ********************************************************/
+const MAX_SETTLE_PASSES = 4
+const COLOR_TRANSITION_PROPERTIES = new Set(['color', 'background-color'])
+
+function declaredTransitionMs (el: HTMLElement): number {
+    const toMs = (value: string): number => {
+        const n = parseFloat(value)
+        if (Number.isNaN(n)) return 0
+        return value.trim().endsWith('ms') ? n : n * 1000
+    }
+    let longest = 0
+
+    for (let node: HTMLElement | null = el; node; node = node.parentElement) {
+        const style = getComputedStyle(node)
+        const durations = style.transitionDuration.split(',')
+        const delays = style.transitionDelay.split(',')
+
+        durations.forEach((duration, i) => {
+            longest = Math.max(longest, toMs(duration) + toMs(delays[i % delays.length] ?? '0'))
+        })
+    }
+
+    return longest
+}
+
+function runningColorTransitions (el: HTMLElement): Animation[] {
+    const found: Animation[] = []
+
+    for (let node: HTMLElement | null = el; node; node = node.parentElement) {
+        for (const animation of node.getAnimations()) {
+            const property = (animation as Animation & { transitionProperty?: string }).transitionProperty
+            if (property && COLOR_TRANSITION_PROPERTIES.has(property) && animation.playState !== 'finished') {
+                found.push(animation)
+            }
+        }
+    }
+
+    return found
+}
+
+function settleThenEnforce (el: HTMLElement, enabled: boolean, pending: IContrastScheduled, pass = 0): void {
+    if (pending.cancelled) return
+
+    void getComputedStyle(el).color
+
+    if (typeof el.getAnimations === 'function') {
+        const running = pass < MAX_SETTLE_PASSES ? runningColorTransitions(el) : []
+
+        if (running.length) {
+            void Promise.allSettled(running.map((animation) => animation.finished))
+                .then(() => settleThenEnforce(el, enabled, pending, pass + 1))
+            return
+        }
+
+        enforceContrast(el, enabled)
+        return
+    }
+
+    const wait = declaredTransitionMs(el)
+
+    if (wait > 0 && pass === 0 && typeof setTimeout !== 'undefined') {
+        pending.timeout = setTimeout(() => settleThenEnforce(el, enabled, pending, 1), wait) as unknown as number
+        return
+    }
+
+    enforceContrast(el, enabled)
+}
 
 /*********************************************************
  * cancelScheduled
  *
  * @description
  * Cancel whatever `schedule()` previously queued for `el`, if anything.
- * Called both before scheduling a new pair (so `updated` never accumulates
- * timers) and from `unmounted` (so nothing survives the component's death).
+ * Called both before scheduling a new one (so `updated` never accumulates
+ * work) and from `unmounted` (so nothing survives the component's death).
  ********************************************************/
 function cancelScheduled (el: HTMLElement): void {
     const pending = el._contrastTimers
     if (!pending) return
+
+    pending.cancelled = true
 
     if (pending.raf !== undefined && typeof cancelAnimationFrame !== 'undefined') {
         cancelAnimationFrame(pending.raf)
@@ -297,18 +395,25 @@ function cancelScheduled (el: HTMLElement): void {
 function schedule (el: HTMLElement, enabled: boolean): void {
     cancelScheduled(el)
 
-    const pending: { raf?: number; timeout?: number } = {}
+    const pending: IContrastScheduled = {}
 
     if (typeof requestAnimationFrame !== 'undefined') {
-        pending.raf = requestAnimationFrame(() => enforceContrast(el, enabled))
-    }
-    if (typeof setTimeout !== 'undefined') {
-        pending.timeout = setTimeout(() => enforceContrast(el, enabled), SETTLE_MS) as unknown as number
+        pending.raf = requestAnimationFrame(() => settleThenEnforce(el, enabled, pending))
     }
 
     el._contrastTimers = pending
 }
 
+/**
+ * `v-contrast` — guards an element's text legibility at runtime.
+ *
+ * After the browser has resolved the design-token CSS variables, it measures
+ * the element's text colour against its painted background. When the WCAG
+ * ratio falls below the configured threshold it forces the better of
+ * black / white text (in every build) and, in dev only, logs a one-line warning explaining the swap. Toggle
+ * globally via `createOrigam({ contrast: false })`, or per-element with
+ * `v-contrast="false"`.
+ */
 const vContrast: Directive<HTMLElement, boolean | undefined> = {
     mounted (el: HTMLElement, binding: DirectiveBinding<boolean | undefined>) {
         schedule(el, config.enabled && binding.value !== false)

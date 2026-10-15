@@ -136,6 +136,14 @@ const MARKETING_GREEN_SPECS = [
     // du defilement horizontal.
     'marketing-command-palette.spec.ts',
 
+    // #1092 — le HTML servi est deja style : le fond et le rayon du bouton
+    // primaire sont les memes JS coupe (rien d'autre que le serveur ne peut
+    // peindre) et apres hydratation, les ids rendus par le serveur sont ceux de
+    // la page hydratee, et le <style> du serveur est reutilise, pas double.
+    // Mesure d'admission : 5/5 en `--repeat-each=5 --retries=0` contre un build
+    // de production ET contre le serveur de dev (ports isoles).
+    'marketing-ssr-first-paint.spec.ts',
+
     // #1032 — navigation des fiches de detail (encart, prev/next, menu de famille).
     // Mesure d'admission : voir la PR.
     'marketing-catalog-detail-nav.spec.ts'

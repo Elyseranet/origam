@@ -18,6 +18,20 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `useStyle` emet sa regle cote serveur ; `v-contrast` attend la fin reelle de la transition et ne logge plus qu'en dev (#1092)
+
+**`useStyle` (140 composants).** La regle `#id { … }` n'etait ecrite dans `<head>` que depuis `onMounted`, qui ne tourne jamais cote serveur : un composant qui ne se peint que par cette regle (`OrigamBtn`, `OrigamBtnToggle`, `OrigamBtnGroup`, `OrigamAvatar`, `OrigamBreadcrumb`, `OrigamBottomNav`, `OrigamStepper`) sortait nu du HTML servi. Mesure du ticket, site marketing en production, `/contact`, bouton primaire, JS coupe puis actif : fond `rgb(251, 245, 255)` → `rgb(124, 58, 237)`, rayon `8px` → `12px`. Meme page, build corrige : `rgb(124, 58, 237)` / `12px` des le premier paint, identique apres hydratation.
+
+- Cote serveur, `createOrigam()` fournit un collecteur **par app** ; `useStyle` y enregistre sa regle. Nuxt : le plugin serveur du module pousse les regles dans le head (`app:rendered`). Vue SSR sans Nuxt : `renderSsrStyles(app)` / `getSsrStyles(app)` (exports de `origam/utils`), a inserer dans `<head>` apres `renderToString`.
+- Chaque `<style>` porte un `id` derive du `useId()` de l'instance (+ l'index de l'appel `useStyle` dans l'instance) : le client **reutilise** le tag du serveur au montage. Un second `useStyle` dans un meme document (deuxieme app) ne partage plus le tag du premier ; `useStyleTag.unload()` retire l'element qu'il detient au lieu de `removeChild(getElementById(id))`, qui levait quand le `<head>` avait ete vide.
+- Une valeur de style contenant `</style` est echappee (`<\/style`) : elle ne peut plus fermer le tag.
+
+**Rupture (assumee, pre-1.0) :** l'`id` par defaut du `<style>` d'un `useStyle` passe de `origam_styletag_<N>` (compteur de module) a `origam-style-<composant>-<useId>-<index>`. `styleTagId` change donc de valeur et de forme ; `useStyleTag(css)` appele sans `id` garde son defaut.
+
+**`v-contrast`.** La correction reste active en production, `!important` conserve. Changements :
+- le `console.warn` n'est plus emis que sous `import.meta.env?.DEV` (le texte disparait du bundle de production : `Low text contrast` absent de `.output`) ;
+- **une seule** mesure, prise une fois les transitions de couleur de l'element et de ses ancetres terminees (`getAnimations()` apres `getComputedStyle` ; repli : timer derive de `transition-duration` + `transition-delay`). Remplace rAF + `setTimeout(250)` : avec la transition de 280 ms du Btn, la 2e passe lisait une couleur en cours de transition (2 avertissements par bouton, le second contre `rgb(125, 60, 237)` pour un fond qui se pose a `rgb(124, 58, 237)`).
+
 ## [2.27.0] - 2026-10-15
 
 ### Removed — `OrigamSkeleton` : les gabarits `card` et `list-item` (BREAKING, #1073 lot 3, #1083)

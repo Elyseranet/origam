@@ -27,3 +27,28 @@ export interface IStyleTagOptions extends IConfigurableDocument {
      */
     id?: string
 }
+
+/*********************************************************
+ * ISsrStyleEntry / ISsrStyleCollector (#1092)
+ *
+ * @description
+ * `ISsrStyleEntry` is one `useStyle()` rule resolved for the server render:
+ * `id` is the DOM id of the `<style>` tag it belongs to, `css` the
+ * `#element-id { … }` rule, already safe to embed in a `<style>`.
+ *
+ * @description
+ * `ISsrStyleCollector` is the per-app registry of those rules. Rules are
+ * registered as GETTERS and read at collection time, so a value a later pass
+ * of the render settled on is what ships.
+ ********************************************************/
+export interface ISsrStyleEntry {
+    id: string
+
+    css: string
+}
+
+export interface ISsrStyleCollector {
+    add (id: string, css: () => string): void
+
+    entries (): ISsrStyleEntry[]
+}

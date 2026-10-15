@@ -351,7 +351,7 @@ async function settle (): Promise<void> {
 
 function headStyleTagIds (): Set<string> {
     return new Set(
-        Array.from(document.head.querySelectorAll('style[id^="origam_styletag_"]'))
+        Array.from(document.head.querySelectorAll('style[id^="origam-style-"]'))
             .map((el) => el.id)
     )
 }

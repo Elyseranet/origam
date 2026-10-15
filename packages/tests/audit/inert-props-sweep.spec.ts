@@ -142,7 +142,6 @@ function render (Cmp: any, props: Record<string, unknown>): { markup: string; fu
     // stylesheet, so both go into the comparison.
     // generated, monotonically increasing identifiers — not a prop effect
     const norm = (s: string) => s
-        .replace(/origam_styletag_\d+/g, 'origam_styletag_N')
         .replace(/(origam-[a-z-]+?)-\d+/g, '$1-N')
     const markup = norm(wrapper.html())
     const full = markup + '\n/* head */\n' + norm(document.head.innerHTML)
