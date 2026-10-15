@@ -34,6 +34,7 @@
                         v-else-if="resolved"
                         v-bind="instance.props"
                         data-cy="playground-preview-instance"
+                        v-on="emitListeners"
                 />
             </div>
         </slot>
@@ -47,7 +48,7 @@
 <script setup lang="ts">
     import { computed, shallowRef, watch } from 'vue'
     import { useT } from '../../composables/I18n/useT'
-    import type { IPlaygroundPreviewProps, IPlaygroundPreviewSlots } from '../../interfaces/Components/playground-preview.interface'
+    import type { IPlaygroundPreviewEmits, IPlaygroundPreviewProps, IPlaygroundPreviewSlots } from '../../interfaces/Components/playground-preview.interface'
     import type { TComponentResolution } from '../../types/Commons/prop-value.type'
 
     /*********************************************************
@@ -55,9 +56,32 @@
      ********************************************************/
     const props = defineProps<IPlaygroundPreviewProps>()
 
+    const emits = defineEmits<IPlaygroundPreviewEmits>()
+
     defineSlots<IPlaygroundPreviewSlots>()
 
     const { t } = useT()
+
+    /*********************************************************
+     * Emits relay
+     *
+     * @description
+     * One listener per emit the definition declares (`IEventDefinition`,
+     * source B merged with A), each relaying the raw arguments up as
+     * `instance-emit`. Built from the metadata rather than by catching
+     * everything: an undeclared native event (a Btn's `click` falling
+     * through as an attribute) is not an emit of the component and is not
+     * reported as one.
+     ********************************************************/
+    const emitListeners = computed<Record<string, (...args: unknown[]) => void>>(() => {
+        const instance = props.instance
+
+        if (!instance) return {}
+
+        const events = props.registry.getComponentMetadata(instance.componentName)?.events ?? []
+
+        return Object.fromEntries(events.map(event => [event.name, (...args: unknown[]) => emits('instance-emit', instance.id, event.name, args)]))
+    })
 
     /*********************************************************
      * Resolution

@@ -6,3 +6,5 @@ export { default as PlaygroundInspector } from './Playground/PlaygroundInspector
 export { default as PlaygroundPreview } from './Playground/PlaygroundPreview.vue'
 export { default as PlaygroundPropRow } from './Playground/PlaygroundPropRow.vue'
 export { default as PlaygroundTopbar } from './Playground/PlaygroundTopbar.vue'
+export { default as PlaygroundEventLog } from './Playground/PlaygroundEventLog.vue'
+export { default as PlaygroundPropControl } from './Playground/PlaygroundPropControl.vue'

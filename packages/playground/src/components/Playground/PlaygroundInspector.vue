@@ -67,10 +67,15 @@
                     <slot
                             name="prop-row"
                             :row="row"
+                            :values="values"
+                            :set-prop="handleSetProp"
+                            :reset-prop="handleResetProp"
                     >
                         <playground-prop-row
                                 :row="row"
                                 :values="values"
+                                @set-prop="handleSetProp"
+                                @reset-prop="handleResetProp"
                         />
                     </slot>
                 </template>
@@ -95,17 +100,36 @@
     import { useT } from '../../composables/I18n/useT'
     import { groupAndFoldProps } from '../../utils/Commons/prop-group.util'
     import type { IInspectorGroup } from '../../interfaces/Commons/inspector-group.interface'
-    import type { IPlaygroundInspectorProps, IPlaygroundInspectorSlots } from '../../interfaces/Components/playground-inspector.interface'
+    import type { IPlaygroundInspectorEmits, IPlaygroundInspectorProps, IPlaygroundInspectorSlots } from '../../interfaces/Components/playground-inspector.interface'
     import type { TPropGroupId } from '../../types/Commons/prop-group.type'
+    import type { TPropValue } from '../../types/Commons/prop-value.type'
 
     /*********************************************************
      * Global
      ********************************************************/
     const props = defineProps<IPlaygroundInspectorProps>()
 
+    const emits = defineEmits<IPlaygroundInspectorEmits>()
+
     defineSlots<IPlaygroundInspectorSlots>()
 
     const { t } = useT()
+
+    /*********************************************************
+     * Edit intents
+     *
+     * @description
+     * Relayed to the playground root — the same two functions are handed to
+     * a host's `prop-row` override, so an overridden row edits through the
+     * identical contract.
+     ********************************************************/
+    const handleSetProp = (name: string, value: TPropValue) => {
+        emits('set-prop', name, value)
+    }
+
+    const handleResetProp = (name: string) => {
+        emits('reset-prop', name)
+    }
 
     /*********************************************************
      * Groups

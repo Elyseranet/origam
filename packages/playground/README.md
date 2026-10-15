@@ -159,3 +159,37 @@ loader calls; one family loader resolves the three Btn members as distinct
 components; `OrigamBtn` comes back with its 106-prop descriptor; a repeat call
 returns the same object; a registered name with no loader and an unregistered
 name both return `null`.
+
+## Editing a scene (lot B, #1142)
+
+The inspector renders one origam control per `CONTROL_KIND`
+(`PlaygroundPropControl`): `origam-select` (members from source B, unions and
+resolved aliases), `origam-switch`, `origam-number-field`,
+`origam-textarea-field` (JSON) and `origam-text-field`.
+
+- ⛔ A prop typed `['Boolean', 'Number', 'String']` is a TEXT field with an
+  **explicit** "Write as" choice among the kinds its runtime type admits —
+  never a switch. `"4"` stays a string unless NUMBER is chosen (on `padding`,
+  `"4"` is a design rung and `4` is `4px`). A text that does not parse writes
+  nothing. A `Function`-only prop is not editable.
+- All writes go through `useSceneEditor` (`composables/Commons/`): set writes
+  `instance.props[key]`, reset **deletes** the key, and no default is ever
+  copied into `props`. The default (source A) is shown as the field's
+  placeholder and a `default: …` caption; a set row carries a `set` marker,
+  an accent border and a Reset button.
+- `update:{key}` emitted by the rendered instance writes back only a key the
+  user already set (a set `modelValue` makes the component controlled).
+- Every emit the definition declares is logged in the dock's events panel
+  (`useEventLog`, newest first, bounded by `EVENT_LOG_LIMIT`).
+
+`meta:host-seed` now merges source B into the committed host seed, and derives
+`control` with `deriveControlKind` (pinned by
+`packages/tests/TU/playground/prop-control.spec.ts`). Regenerate after
+`meta:runtime`, `meta:unions` and `meta:aliases`.
+
+E2E against the standalone host:
+
+```sh
+E2E_PLAYGROUND_PORT=<free port> pnpm -F @origam/tests test:e2e:playground
+```
+
