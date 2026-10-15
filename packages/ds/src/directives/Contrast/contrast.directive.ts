@@ -340,16 +340,30 @@ function runningColorTransitions (el: HTMLElement): Animation[] {
     return found
 }
 
+/*********************************************************
+ * forceStyleRecalc
+ *
+ * @description
+ * Reading a computed property makes the browser apply the pending style
+ * change, which is what STARTS the transitions that change triggered —
+ * without it `getAnimations()` would still be empty. The colour is returned
+ * (and checked by the caller) rather than discarded: an empty value means the
+ * element is detached or not rendered, so there is nothing to measure.
+ ********************************************************/
+function forceStyleRecalc (el: HTMLElement): string {
+    return getComputedStyle(el).color
+}
+
 function settleThenEnforce (el: HTMLElement, enabled: boolean, pending: IContrastScheduled, pass = 0): void {
     if (pending.cancelled) return
 
-    void getComputedStyle(el).color
+    if (!forceStyleRecalc(el)) return
 
     if (typeof el.getAnimations === 'function') {
         const running = pass < MAX_SETTLE_PASSES ? runningColorTransitions(el) : []
 
         if (running.length) {
-            void Promise.allSettled(running.map((animation) => animation.finished))
+            Promise.allSettled(running.map((animation) => animation.finished))
                 .then(() => settleThenEnforce(el, enabled, pending, pass + 1))
             return
         }

@@ -55,7 +55,8 @@ async function changeSurfaceAndMount (page: import('@playwright/test').Page, tra
         el.textContent = 'Aa'
         el.style.cssText = `background-color: rgb(255, 255, 255); color: rgb(0, 0, 0); transition: background-color ${ms}ms linear, color ${ms}ms linear;`
         document.body.appendChild(el)
-        void getComputedStyle(el).backgroundColor // commit the starting state
+        // Commit the starting state: reading the computed value applies the style.
+        if (!getComputedStyle(el).backgroundColor) throw new Error('starting state not applied')
 
         w.__changedAt = performance.now()
         el.style.backgroundColor = settled
