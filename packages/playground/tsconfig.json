@@ -1,16 +1,22 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "composite": true,
     "noEmit": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "paths": {
       "@playground": ["./src"],
-      "@playground/*": ["./src/*"]
+      "@playground/*": ["./src/*"],
+      "origam": ["../ds/src/origam.ts"],
+      "origam/*": ["../ds/src/*/index.ts"]
     }
   },
   "include": [
     "src/**/*.ts",
-    "src/**/*.vue"
+    "src/**/*.vue",
+    "../ds/src/globals.d.ts",
+    "../ds/src/vite-env.d.ts",
+    "../ds/src/shims.d.ts"
   ],
   "exclude": [
     "dist",

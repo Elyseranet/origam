@@ -179,6 +179,37 @@ jobs:
       - name: noUnusedLocals re-enable canary
         run: pnpm -F origam run type-check:canary
 
+  playground:
+    name: Playground (vue-tsc + Vitest)
+    runs-on: ubuntu-latest
+    # `packages/playground` (#1141). Its `type-check` resolves `origam` to DS
+    # SOURCE through `tsconfig.json` `paths`, so it needs no `pnpm -F origam
+    # build` first — and must not get one: a built `packages/ds/dist/` is
+    # exactly what used to make this check report 2 399 errors that were not
+    # the playground's (see `packages/playground/src/shims.d.ts`).
+    #
+    # The `TU/playground` specs are ALSO collected by `test-unit` below
+    # (`include: ['TU/**/*.spec.ts']`); running them here gives the package a
+    # named verdict of its own, at a cost of ~3 s.
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: vue-tsc --noEmit (playground)
+        run: pnpm -F @origam/playground run type-check
+
+      - name: Vitest (TU/playground)
+        run: pnpm -F @origam/tests run test:playground
+
   marketing-typecheck-ratchet:
     name: Type-check ratchet (marketing, vue-tsc)
     runs-on: ubuntu-latest

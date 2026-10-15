@@ -8,6 +8,7 @@
  * hardcoded per component — the only per-slug data is the optional preview
  * adapter below, used for components that render nothing on their own.
  */
+import type { TPropGroupId } from '@origam/playground/types'
 import type { TMode } from 'origam/types'
 
 import type { IComponentPlaygroundControl } from '~/interfaces/components-catalog.interface'
@@ -129,32 +130,20 @@ export interface IThemeBuilderPreset {
   components?: Record<string, Record<string, unknown>>
 }
 
-/**
- * The id of a themable prop group (Color, Size & density, Shape, …). Drives the
- * group sections in the controls panel. kebab-friendly so it doubles as a DOM
- * id / data-cy suffix.
- */
-export type TThemeBuilderGroupId =
-  | 'color'
-  | 'size'
-  | 'shape'
-  | 'border'
-  | 'elevation'
-  | 'dimension'
-  | 'spacing'
-  | 'state'
-  | 'icon'
-  | 'link'
-  | 'layout'
-  | 'content'
-  | 'other'
-
-/** Display metadata for one prop group section (order, label, icon). */
-export interface IThemeBuilderPropGroupMeta {
-  id: TThemeBuilderGroupId
+/** Host display metadata for one prop group: i18n label + MDI icon. */
+export interface IThemeBuilderPropGroupDisplay {
   labelKey: string
   labelFallback: string
   icon: string
+}
+
+/**
+ * One prop group section (id, label, icon). The id — and the classification
+ * behind it — is `@origam/playground`'s `TPropGroupId` (#1141); it doubles as
+ * a DOM id / data-cy suffix.
+ */
+export interface IThemeBuilderPropGroupMeta extends IThemeBuilderPropGroupDisplay {
+  id: TPropGroupId
 }
 
 /** Display metadata for one nav category section (order, label, icon). */
@@ -223,7 +212,7 @@ export interface IThemeBuilderPropControl {
   /** Input kind. `color` renders a swatch + hex; the rest are self-explanatory. */
   kind: TThemeBuilderControlKind
   /** Group this control belongs to. */
-  group: TThemeBuilderGroupId
+  group: TPropGroupId
   /** Human label (the prop name is shown as code; this is the long-form label). */
   label: string
   /** Select options (only for kind === 'select'). */

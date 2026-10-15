@@ -167,6 +167,9 @@ importers:
       '@nuxtjs/seo':
         specifier: ^5.3.6
         version: 5.3.16(uvj2e4lck7j5ztuiioj6jjrrtu)
+      '@origam/playground':
+        specifier: workspace:*
+        version: link:../playground
       '@vue/repl':
         specifier: ^4.4.0
         version: 4.7.2

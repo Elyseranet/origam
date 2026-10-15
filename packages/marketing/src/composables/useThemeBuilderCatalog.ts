@@ -1,3 +1,5 @@
+import type { TPropGroupId } from '@origam/playground/types'
+import { classifyPropGroup } from '@origam/playground/utils'
 import { computed } from 'vue'
 
 import { useT } from '~/composables/useT'
@@ -10,8 +12,7 @@ import {
     THEME_BUILDER_COLOR_TYPE_HINTS,
     THEME_BUILDER_PROP_GROUPS,
     THEME_BUILDER_SKIP_PROPS,
-    THEME_BUILDER_SKIP_TYPE_HINTS,
-    classifyPropGroup
+    THEME_BUILDER_SKIP_TYPE_HINTS
 } from '~/consts/theme-builder-groups.const'
 import { THEME_BUILDER_TOKENS } from '~/consts/theme-builder-tokens.const'
 import {
@@ -32,8 +33,7 @@ import type {
     IThemeBuilderPropGroup,
     IThemeBuilderPropGroupMeta,
     IThemeBuilderToken,
-    IThemeBuilderTokenGroup,
-    TThemeBuilderGroupId
+    IThemeBuilderTokenGroup
 } from '~/interfaces/theme-builder.interface'
 
 /**
@@ -324,7 +324,7 @@ function composePropGroups (flatControls: IThemeBuilderPropControl[]): IThemeBui
 
 /** Bucket controls into their groups, in the canonical group order. */
 function groupControls (controls: IThemeBuilderPropControl[]): IThemeBuilderPropGroup[] {
-    const byGroup = new Map<TThemeBuilderGroupId, IThemeBuilderPropControl[]>()
+    const byGroup = new Map<TPropGroupId, IThemeBuilderPropControl[]>()
     for (const ctrl of controls) {
         const bucket = byGroup.get(ctrl.group) ?? []
         bucket.push(ctrl)
@@ -339,7 +339,7 @@ function groupControls (controls: IThemeBuilderPropControl[]): IThemeBuilderProp
 }
 
 /** Infer a token's group from its CSS-var name (background-color → color, …). */
-function classifyToken (cssVar: string): TThemeBuilderGroupId {
+function classifyToken (cssVar: string): TPropGroupId {
     const tail = cssVar.split('---').pop() ?? cssVar
     if (tail.includes('color') || tail.includes('background') || tail.includes('fill')) return 'color'
     if (tail.includes('radius') || tail.includes('rounded')) return 'shape'
@@ -353,7 +353,7 @@ function classifyToken (cssVar: string): TThemeBuilderGroupId {
 
 /** Bucket CSS tokens into their groups, in the canonical group order. */
 function groupTokens (tokens: IThemeBuilderToken[]): IThemeBuilderTokenGroup[] {
-    const byGroup = new Map<TThemeBuilderGroupId, IThemeBuilderToken[]>()
+    const byGroup = new Map<TPropGroupId, IThemeBuilderToken[]>()
     for (const tok of tokens) {
         const id = classifyToken(tok.cssVar)
         const bucket = byGroup.get(id) ?? []
@@ -361,7 +361,7 @@ function groupTokens (tokens: IThemeBuilderToken[]): IThemeBuilderTokenGroup[] {
         byGroup.set(id, bucket)
     }
     const out: IThemeBuilderTokenGroup[] = []
-    const metaById = new Map<TThemeBuilderGroupId, IThemeBuilderPropGroupMeta>(
+    const metaById = new Map<TPropGroupId, IThemeBuilderPropGroupMeta>(
         THEME_BUILDER_PROP_GROUPS.map(m => [m.id, m])
     )
     for (const meta of THEME_BUILDER_PROP_GROUPS) {
