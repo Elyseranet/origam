@@ -43,12 +43,14 @@ import type { TCardContentDisplay, TCardType } from '../../types/Card/card.type'
 // `bgColor` overrides. `IHoverProps` types `hover` as `boolean | IStateEffectConfig`
 // (#1100) — the runtime already read the object form.
 export interface ICardProps extends ICommonsComponentProps, ITagProps, IBorderProps, IColorProps, IBgColorProps, IDensityProps, IDimensionProps, IElevationProps, ILoaderProps, ILocationProps, IPositionProps, IRoundedProps, IMarginProps, IPaddingProps, ILinkProps, IRippleProps, IAdjacentProps, IActiveProps, IHoverProps {
-    /**
-     * `display` of the `.origam-card__content` wrapper around the default
-     * and `text` slots (#1100). `contents` flattens it so the slotted
-     * children become direct items of the card's own grid / flex layout.
+    /*********************************************************
+     * contentDisplay
+     *
+     * @description
+     * `display` of the `.origam-card__content` wrapper around the default and `text` slots (#1100).
+     * `contents` flattens it so the slotted children become direct items of the card's own grid / flex layout.
      * Defaults to the `--origam-card__content---display` token (`block`).
-     */
+     ********************************************************/
     contentDisplay?: TCardContentDisplay
     disabled?: boolean
     flat?: boolean

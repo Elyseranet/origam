@@ -1724,6 +1724,70 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "card-content-display",
+        "name": "CARD_CONTENT_DISPLAY",
+        "category": "Card",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum CARD_CONTENT_DISPLAY {\n    BLOCK = 'block',\n    CONTENTS = 'contents',\n    FLEX = 'flex',\n    GRID = 'grid'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Card/card.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "CARD_CONTENT_DISPLAY.BLOCK",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "CARD_CONTENT_DISPLAY.CONTENTS",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "CARD_CONTENT_DISPLAY.FLEX",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "CARD_CONTENT_DISPLAY.GRID",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "card-type",
         "name": "CARD_TYPE",
         "category": "Data Display",

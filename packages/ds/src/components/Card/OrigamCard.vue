@@ -567,9 +567,13 @@
 			props.style
 		] as StyleValue
 	})
-	// Instance-level `contentDisplay` rides INLINE on the wrapper itself (not
-	// as a custom property on the root): a custom property would inherit
-	// into any Card nested in the slot and flatten its content too.
+	/*********************************************************
+	 * contentStyles
+	 *
+	 * @description
+	 * Instance-level `contentDisplay` rides INLINE on the wrapper itself, not as a custom property on the root.
+	 * A custom property would inherit into any Card nested in the slot and flatten its content too.
+	 ********************************************************/
 	const contentStyles = computed(() => props.contentDisplay ? {display: props.contentDisplay} : undefined)
 	const cardProgressClasses = computed(() => {
 		return [
