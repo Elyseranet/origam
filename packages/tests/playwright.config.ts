@@ -20,6 +20,16 @@ const GREEN_SPECS = [
     // #957 — verifiee verte et stable avant inscription : 6/6 puis 30/30 sous
     // `--repeat-each=5`, E2E_STATIC=1, chromium, port isole.
     'chip-affix-gutter.spec.ts',
+    // #1101 — verifiee verte et stable avant inscription : 4/4 puis 20/20 sous
+    // `--repeat-each=5`, E2E_STATIC=1, chromium, port isole. Rouge sur
+    // `origin/develop` (3 tests sur 4 : les controles n'existent pas).
+    'chip-typography.spec.ts',
+    // #1101 — textTransform cable sur Title / TextMask / Blockquote : 2 tests
+    // chacun, 50/50 sous `--repeat-each=5 --workers=3`. Rouge pour la bonne
+    // raison (style calcule reste `none`) quand la ligne SCSS est retiree.
+    'title-text-transform.spec.ts',
+    'text-mask-text-transform.spec.ts',
+    'blockquote-text-transform.spec.ts',
     // #924 — promu plutot que baseline : 18 tests, verts, et rouge sans le
     // correctif (1 echec cible, pas un rouge en bloc). Il tourne SANS serveur
     // ni port (fichiers `file://`, attributs ecrits avant le parse), donc il

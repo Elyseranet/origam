@@ -27,6 +27,13 @@ The prop → var mapping:
 | `fontWeight` | `--origam-{prefix}---font-weight` | `var(--origam-font__weight---{value})` |
 | `lineHeight` | `--origam-{prefix}---line-height` | `var(--origam-font__lineHeight---{value})` |
 | `letterSpacing` | `--origam-{prefix}---letter-spacing` | `var(--origam-font__letterSpacing---{value})` |
+| `fontStyle` | `--origam-{prefix}---font-style` | the value, **verbatim** (passthrough) |
+| `textTransform` | `--origam-{prefix}---text-transform` | the value, **verbatim** (passthrough) — `none` · `uppercase` · `lowercase` · `capitalize` |
+
+`fontStyle` and `textTransform` are CSS keywords with no design scale, so they
+skip the `var(--origam-font__…)` wrapping. Like every typography prop they only
+paint when the component's SCSS reads the generic `--origam-{prefix}---…`
+variable: today `textTransform` is adopted by `OrigamChip`, `OrigamTitle`, `OrigamTextMask` and `OrigamBlockquote`.
 
 Note the token group keeps its **camelCase** spelling (`font__lineHeight`,
 `font__letterSpacing`) while the CSS property is kebab-cased. That asymmetry is

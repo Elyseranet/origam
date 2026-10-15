@@ -327,6 +327,7 @@
 		font-weight: var(--origam-blockquote---resolved-font-weight);
 		line-height: var(--origam-blockquote---resolved-line-height);
 		letter-spacing: var(--origam-blockquote---resolved-letter-spacing);
+		text-transform: var(--origam-blockquote---text-transform, inherit);
 		color: var(--origam-blockquote---color, var(--origam-color__text---primary, #171717));
 		box-sizing: border-box;
 	}

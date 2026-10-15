@@ -195,8 +195,12 @@ The tables below cover the whole surface.
 
 | Prop         | Type        | Default | Description                                                                          |
 |--------------|-------------|---------|--------------------------------------------------------------------------------------|
+| `fontFamily` | `TFontFamily` | —     | Font-family token (sans · mono · serif). Sets `--origam-chip---font-family`. When unset the chip inherits the font of its context. |
 | `fontSize`   | `TFontSize` | —       | Font-size token (xs · sm · md · lg · xl · 2xl · 3xl · 4xl · 5xl). Sets `--origam-chip---font-size`. When unset the size-variant value stays in control. |
 | `fontWeight` | `TFontWeight` | —     | Font-weight token (regular · medium · semibold · bold · extrabold · black). Sets `--origam-chip---font-weight`. When unset the theme default (400) applies. |
+
+| `letterSpacing` | `TLetterSpacing` | — | Letter-spacing token (tight · normal · wide · wider · widest). Sets `--origam-chip---letter-spacing`. When unset the chip inherits the letter-spacing of its context. |
+| `textTransform` | `TTextTransform` | — | CSS `text-transform` keyword (none · uppercase · lowercase · capitalize), emitted verbatim into `--origam-chip---text-transform`. When unset the chip inherits the casing of its context. `ITypographyProps.textTransform` is a Commons prop; Chip is its first adopter. |
 
 ## Emits
 
@@ -219,6 +223,17 @@ The tables below cover the whole surface.
 | `close`   | `{ closeIcon }`     | Custom close button                        |
 | `filter`  | `{ filterIcon }`    | Custom filter/selection icon               |
 
+## Box model — the border adds to the height token
+
+A chip is `box-sizing: content-box`. The `--origam-chip---height-*` tokens are
+therefore the height of the **content box**: `border-width` is added on top of
+them. The `small` size declares `--origam-chip---height-sm: 24px`;
+with a 1 px border on each side it measures **26 px**.
+
+This is deliberate (#530): a clickable chip renders as a `<button>`, which the
+browser styles `border-box`; pinning `content-box` keeps the same height whatever
+the tag (without the pin a bordered chip drops from 26 px to 24 px).
+
 ## Tokens
 
 | Variable                                  | Default         | Used for                    |
@@ -229,6 +244,9 @@ The tables below cover the whole surface.
 | `--origam-chip---border-radius`           | `9999px`        | pill shape                  |
 | `--origam-chip---border-width`            | `0px`           | border thickness            |
 | `--origam-chip---font-weight`             | `400`           | label weight                |
+| `--origam-chip---font-family`             | (unset, inherits) | label font family         |
+| `--origam-chip---letter-spacing`          | (unset, inherits) | label letter spacing      |
+| `--origam-chip---text-transform`          | (unset, inherits) | label casing              |
 | `--origam-chip---opacity-disabled`        | `0.3`           | disabled opacity            |
 | `--origam-chip__close---cursor`           | `pointer`       | close icon cursor           |
 | `--origam-chip__close---font-size`        | `18px`          | close icon size             |

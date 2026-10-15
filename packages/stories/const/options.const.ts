@@ -28,7 +28,8 @@ export {
     fontSizeList as FONT_SIZE_OPTIONS,
     fontWeightList as FONT_WEIGHT_OPTIONS,
     lineHeightList as LINE_HEIGHT_OPTIONS,
-    letterSpacingList as LETTER_SPACING_OPTIONS
+    letterSpacingList as LETTER_SPACING_OPTIONS,
+    textTransformList as TEXT_TRANSFORM_OPTIONS
 } from './font.const'
 
 export { alignList as ALIGN_OPTIONS } from './align.const'

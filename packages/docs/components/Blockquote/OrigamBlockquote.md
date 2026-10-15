@@ -66,6 +66,7 @@ contrast with each other:
 | `lineHeight`  | `'none' \| 'tight' \| 'snug' \| 'normal' \| 'relaxed' \| 'loose'` | per-variant    | Overrides `--origam-blockquote---line-height` with the matching primitive token. Set by the `elegant` and `pull` presets. |
 | `fontStyle`   | `string` (CSS keyword)                                              | per-variant    | Emitted verbatim into `--origam-blockquote---font-style`. Set by the `elegant` and `minimal` presets (`italic`). |
 | `letterSpacing` | `'tight' \| 'normal' \| 'wide' \| 'wider' \| 'widest'`            | `undefined`    | Overrides `--origam-blockquote---letter-spacing` with the matching primitive token.   |
+| `textTransform` | `'none' \| 'uppercase' \| 'lowercase' \| 'capitalize'` | `undefined` | Emitted verbatim into `--origam-blockquote---text-transform`. When unset, the quote inherits the casing of its context. |
 | `tag`     | `string`                                                               | `'blockquote'` | Tag rendered for the root. Use `'div'` if you need to nest a blockquote inside one.    |
 
 ## Slots

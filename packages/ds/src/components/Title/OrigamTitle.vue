@@ -144,6 +144,7 @@
 		font-size:      var(--origam-title---font-size, var(--origam-title---font-size-md));
 		font-weight:    var(--origam-title---font-weight);
 		letter-spacing: var(--origam-title---letter-spacing);
+		text-transform: var(--origam-title---text-transform, inherit);
 		line-height:    var(--origam-title---line-height);
 		// ⛔ #950 — zero-specificity default. `:where(&)` compiles to
 		// `:where(.origam-title[data-v-hash])` = (0,0,0), so the
