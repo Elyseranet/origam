@@ -18,6 +18,12 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Changed — `OrigamBtn` `block` : `flex: 0 0 auto` + `width: 100%`, plus de croissance sur l'axe principal (#1095)
+
+`.origam-btn--block` portait `flex: 1 0 auto` : dans un parent flex en colonne le bouton GRANDISSAIT pour remplir la hauteur (une carte etiree a la hauteur de sa voisine, ou une colonne a hauteur fixe). Il passe a **`flex: 0 0 auto` + `width: 100%`** : pleine largeur, aucune croissance. Mesure Chromium (story « Prop — block (flex column) », `size="large"`) : bouton `block` dans une carte etiree 188 px -> **44 px**, dans une colonne de 200 px 168 px -> **44 px** ; largeur = 100 % du parent en colonne et en ligne (inchangee).
+
+**Rupture (assumee, pre-1.0) :** une rangee flex de plusieurs boutons `block` qui se partageaient la largeur par `grow` (`flex-grow: 1`) donne desormais N boutons de 100 % de large. **Migration :** envelopper les boutons dans un `OrigamBtnGroup` ou une grille CSS (`display: grid; grid-auto-flow: column`) ; ou retirer `block` et poser `flex: 1` sur chaque bouton via une classe. **Ecart de rendu mesure au repos** (sonde `pnpm -F @origam/tests audit:btn-height -- --compare`, 54 752 releves, 2 544 configurations au repos, 8 identites x 2 modes, meme code de sonde avant/apres) : **160 ecarts de valeur sur 80 configurations**, TOUS `block` + `density="compact"`, sur 5 tailles : la largeur passe de 296 px a **304 px** dans un conteneur de 304 px (le `min-width: calc(100% + density)` retirait 8 px a un bouton `block` compact ; `width: 100%` le remet a la pleine largeur) et le contenu se decale de 4 px. 0 ecart de hauteur, 0 ecart hors `block` + `compact`, 0 sur `BtnGroup` / `BtnToggle`. `--origam-btn---min-width: 100%` est inchange (`max-width` ne plafonne toujours pas un `block`), `stacked`, `wrap` et la hauteur minimale se comportent comme avant.
+
 ## [2.29.2] - 2026-10-15
 
 

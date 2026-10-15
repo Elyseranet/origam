@@ -1028,7 +1028,11 @@
 
 		&--block {
 			display: flex;
-			flex: 1 0 auto;
+			// #1095 — `flex: 1 0 auto` faisait GRANDIR le bouton sur l'axe principal
+			// d'un parent flex en colonne (80 px au lieu de 44 px dans une carte a
+			// hauteur egale). La pleine largeur est portee par `width`, pas par `grow`.
+			flex: 0 0 auto;
+			width: 100%;
 
 			--origam-btn---min-width: 100%;
 		}

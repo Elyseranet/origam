@@ -60,7 +60,8 @@ import { expect, test } from '@playwright/test'
  *    12  → Prop — variant (VRT matrix)
  *    13  → Prop — border (VRT matrix)   → voir btn-border.spec.ts (#391)
  *    14  → Prop — wrap                   → voir btn-wrap-height.spec.ts (#1093)
- *    15  → Default (playground)
+ *    15  → Prop — block (flex column) → voir btn-block-flex.spec.ts (#1095)
+ *    16  → Default (playground)
  *
  *   ⚠️  Les titres StoryGroup visibles dans les #controls (Color, Sizing, Shape…)
  *   sont des fieldsets DANS la sidebar — PAS des Variants séparés. Ne pas les cibler.
@@ -422,13 +423,13 @@ test.describe('OrigamBtn', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // DEFAULT — playground (index 15)                                      //
+    // DEFAULT — playground (index 16)                                      //
     // init: { color: 'primary', text: 'Button' }                          //
     // ------------------------------------------------------------------ //
 
     test.describe('Default (playground)', () => {
         test('renders a btn with color=primary and text "Button"', async ({ page }) => {
-            await page.goto(variantUrl(15), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(16), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -437,7 +438,7 @@ test.describe('OrigamBtn', () => {
         })
 
         test('is a native <button> element by default (tag=button)', async ({ page }) => {
-            await page.goto(variantUrl(15), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(16), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
