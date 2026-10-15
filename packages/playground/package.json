@@ -7,6 +7,17 @@
   "engines": {
     "node": ">=22"
   },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": "./src/index.ts",
+    "./components": "./src/components/index.ts",
+    "./composables": "./src/composables/index.ts",
+    "./consts": "./src/consts/index.ts",
+    "./enums": "./src/enums/index.ts",
+    "./interfaces": "./src/interfaces/index.ts",
+    "./types": "./src/types/index.ts",
+    "./utils": "./src/utils/index.ts"
+  },
   "scripts": {
     "meta:runtime": "node scripts/extract-runtime-metadata.mjs",
     "meta:unions": "node scripts/extract-literal-unions.mjs",
