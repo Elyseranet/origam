@@ -155,6 +155,34 @@ Add the `hover` boolean to lift the card on pointer-over.
 </template>
 ```
 
+`hover` is `IHoverProps` (`boolean | IStateEffectConfig`): pass an object to restyle the card ONLY while the pointer is over it. Hover is ignored on a `flat` or `disabled` card, so set `:flat="false"` under a theme that defaults to `flat`.
+
+```vue
+<template>
+    <OrigamCard :flat="false" border="thin" :hover="{ borderColor: 'var(--origam-color__border---strong)' }" title="Hover me" />
+</template>
+```
+
+A highlighted card needs no dedicated prop: `border` + `borderColor` (and `active` for a pressed / selected state) cover it.
+
+## Content wrapper
+
+The default and `text` slots are wrapped in `.origam-card__content`. When the card is itself a grid or flex container, that wrapper stands between it and your children. Set `contentDisplay="contents"` to flatten it so the children become direct items of the card's layout:
+
+```vue
+<template>
+    <OrigamCard content-display="contents" style="display: grid; grid-template-columns: 1fr 1fr">
+        <span>A</span>
+        <span>B</span>
+    </OrigamCard>
+</template>
+```
+
+| Prop | Values | Effect |
+|---|---|---|
+| `contentDisplay` | `block` (default), `contents`, `flex`, `grid` | `display` of `.origam-card__content`, painted inline on the wrapper itself. Themable through `theme.components['origam-card']`. |
+
+For a theme-wide default, set the token `--origam-card__content---display` instead. Do not confuse it with `flat`, which only removes the shadow.
 ## Flat
 
 Remove shadow with `flat`.
@@ -197,6 +225,8 @@ through to the pre-existing behaviour (no shadow emitted). See `useElevation`
     <OrigamCard rounded="large" title="Rounded card" />
 </template>
 ```
+
+The `origam-card--rounded-*` class is a hook for consumers; the radius itself is painted by the inline declaration on the root.
 
 Each corner can be overridden individually. A corner prop beats the `rounded`
 shorthand for that corner only:
@@ -323,6 +353,7 @@ red top edge while the other three sides stay 1px solid black.
 | `--origam-card---padding-block-end` | Block-end padding. |
 | `--origam-card---density` | Density modifier (added to each padding axis). |
 | `--origam-card---transition-duration` | Hover / focus transition timing. |
+| `--origam-card__content---display` | `display` of the content wrapper (`block` by default; `contents` flattens it). |
 | `--origam-card__overlay---opacity` | Overlay scrim opacity on hover / focus. |
 
 ## Accessibility

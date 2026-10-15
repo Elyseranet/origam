@@ -2,7 +2,7 @@
   "kind": "type",
   "exportedAt": "2026-10-01T13:28:51.485Z",
   "sourceCommit": "143d5904",
-  "entryCount": 497,
+  "entryCount": 498,
   "entries": [
     {
       "entry": {
@@ -2850,6 +2850,72 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "type",
+        "slug": "card-content-display",
+        "name": "TCardContentDisplay",
+        "category": "Card",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export type TCardContentDisplay = `${CARD_CONTENT_DISPLAY}`",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/types/Card/card.type.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": {
+          "typeKind": "type"
+        },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "grid",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "block",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "flex",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "contents",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {

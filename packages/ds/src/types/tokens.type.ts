@@ -690,6 +690,7 @@ export type TTokenName =
   | '--origam-card--loading---min-width'
   | '--origam-card--loading---min-height'
   | '--origam-card__asset---aspect-ratio'
+  | '--origam-card__content---display'
   | '--origam-card__loader---min-height'
   | '--origam-card__skeleton---padding'
   | '--origam-card__loader---z-index'

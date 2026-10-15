@@ -420,6 +420,40 @@
 			</div>
 		</Variant>
 
+		<Variant title="Prop — contentDisplay">
+			<div style="display: flex; gap: 16px; align-items: flex-start;" data-cy="card-content-display">
+				<origam-card
+						data-cy="card-content-default"
+						:flat="false"
+						style="display: grid; grid-template-columns: 1fr 1fr; width: 320px;"
+				>
+					<span data-cy="card-content-default-a">A</span>
+					<span data-cy="card-content-default-b">B</span>
+				</origam-card>
+				<origam-card
+						data-cy="card-content-contents"
+						:flat="false"
+						content-display="contents"
+						style="display: grid; grid-template-columns: 1fr 1fr; width: 320px;"
+				>
+					<span data-cy="card-content-contents-a">A</span>
+					<span data-cy="card-content-contents-b">B</span>
+				</origam-card>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — hover object">
+			<origam-card
+					data-cy="card-hover-object"
+					:flat="false"
+					border="thin"
+					border-color="var(--origam-color__border---subtle)"
+					:hover="{ borderColor: 'var(--origam-color__border---strong)' }"
+					title="Hover me"
+					style="width: 280px;"
+			/>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<ICardProps>({

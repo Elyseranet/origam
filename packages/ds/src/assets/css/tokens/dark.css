@@ -427,6 +427,7 @@
   --origam-card--loading---min-width: 240px;
   --origam-card--loading---min-height: 120px;
   --origam-card__asset---aspect-ratio: 16 / 9;
+  --origam-card__content---display: block;
   --origam-card__loader---min-height: 4px;
   --origam-card__skeleton---padding: var(--origam-space---4);
   --origam-card__loader---z-index: 3;
@@ -3447,6 +3448,7 @@
     --origam-card--loading---min-width: 240px;
     --origam-card--loading---min-height: 120px;
     --origam-card__asset---aspect-ratio: 16 / 9;
+    --origam-card__content---display: block;
     --origam-card__loader---min-height: 4px;
     --origam-card__skeleton---padding: var(--origam-space---4);
     --origam-card__loader---z-index: 3;

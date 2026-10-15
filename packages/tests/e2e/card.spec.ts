@@ -31,7 +31,9 @@ import type { Page } from '@playwright/test'
  *  20  → Prop — border per-side (static demo of borderTop/Right/Bottom/Left + *Color, issue #215)
  *  21  → Prop — loadingText (static demo: default 'origam.loading' key vs a custom one)
  *  22  → Prop — loading skeleton (fixed Variant, lot 2b of #1073)
- *  23  → Default (playground)
+ *  23  → Prop — contentDisplay (#1100)
+ *  24  → Prop — hover object (#1100)
+ *  25  → Default (playground)
  *
  * NE PAS utiliser waitForLoadState('networkidle') — Histoire garde un websocket
  * HMR ouvert → networkidle ne résout jamais → timeout garanti.
@@ -509,33 +511,89 @@ test.describe('OrigamCard', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // DEFAULT / PLAYGROUND (index 21)                                     //
+    // contentDisplay (index 23) + hover object (index 24) — #1100         //
+    // ------------------------------------------------------------------ //
+
+    test.describe('contentDisplay (#1100)', () => {
+        const measure = (card: Element, key: string) => {
+            const content = card.querySelector('.origam-card__content') as HTMLElement
+            const c = card.getBoundingClientRect()
+            const b = (card.querySelector(`[data-cy="${key}"]`) as HTMLElement).getBoundingClientRect()
+            return { display: getComputedStyle(content).display, bLeft: b.left - c.left, width: c.width }
+        }
+
+        test('default keeps the wrapper a block: both children share the first grid cell', async ({ page }) => {
+            await page.goto(variantUrl(23), { waitUntil: 'domcontentloaded' })
+            const sandbox = await expectCardVisible(page)
+            const m = await sandbox.locator('[data-cy="card-content-default"]')
+                .evaluate(measure, 'card-content-default-b')
+            expect(m.display).toBe('block')
+            expect(m.bLeft).toBeLessThan(m.width / 4)
+        })
+
+        test('contentDisplay="contents" flattens the wrapper: children become grid items', async ({ page }) => {
+            await page.goto(variantUrl(23), { waitUntil: 'domcontentloaded' })
+            const sandbox = await expectCardVisible(page)
+            const m = await sandbox.locator('[data-cy="card-content-contents"]')
+                .evaluate(measure, 'card-content-contents-b')
+            expect(m.display).toBe('contents')
+            expect(m.bLeft).toBeGreaterThan(m.width / 4)
+        })
+
+        test('the token --origam-card__content---display is read by the wrapper', async ({ page }) => {
+            await page.goto(variantUrl(23), { waitUntil: 'domcontentloaded' })
+            const sandbox = await expectCardVisible(page)
+            const display = await sandbox.locator('[data-cy="card-content-default"]').evaluate((card) => {
+                const content = card.querySelector('.origam-card__content') as HTMLElement
+                card.ownerDocument.documentElement.style.setProperty('--origam-card__content---display', 'contents')
+                return getComputedStyle(content).display
+            })
+            expect(display).toBe('contents')
+        })
+    })
+
+    test.describe('hover as an object (#1100)', () => {
+        test('hover={ borderColor } repaints the border on pointer-over only', async ({ page }) => {
+            await page.goto(variantUrl(24), { waitUntil: 'domcontentloaded' })
+            const sandbox = await expectCardVisible(page)
+            const card = sandbox.locator('[data-cy="card-hover-object"]')
+            const color = () => card.evaluate(el => getComputedStyle(el).borderTopColor)
+            const rest = await color()
+            await card.hover()
+            await expect.poll(color, { timeout: 5000 }).not.toBe(rest)
+            await page.mouse.move(0, 0)
+            await expect.poll(color, { timeout: 5000 }).toBe(rest)
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // DEFAULT / PLAYGROUND (index 25)                                     //
     // init: { title: 'Card title', subtitle: 'Subtitle',                  //
     //         text: 'Body text.', bgColor: 'primary' }                    //
     // ------------------------------------------------------------------ //
 
     test.describe('Default (Playground)', () => {
         test('playground renders card root with origam-card class', async ({ page }) => {
-            await page.goto(variantUrl(23), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(25), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam-card/)
         })
 
         test('playground bgColor=primary applies utility class', async ({ page }) => {
-            await page.goto(variantUrl(23), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(25), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam--bg-primary/)
         })
 
         test('playground renders title and text', async ({ page }) => {
-            await page.goto(variantUrl(23), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(25), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card__header')).toContainText('Card title')
             await expect(sandbox.locator('.origam-card__text')).toContainText('Body text.')
         })
 
         test('playground has density-default modifier class', async ({ page }) => {
-            await page.goto(variantUrl(23), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(25), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam-card--density-default/)
         })

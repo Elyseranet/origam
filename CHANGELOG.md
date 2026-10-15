@@ -18,6 +18,12 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Added — `OrigamCard` : `contentDisplay`, `hover` en objet (#1100)
+
+- Nouvelle prop `contentDisplay` (`block` | `contents` | `flex` | `grid`) et token `--origam-card__content---display` (defaut `block`, declare dans light / dark et leurs jumeaux SCSS) : `contentDisplay="contents"` aplatit le wrapper `.origam-card__content` pour que les enfants du slot deviennent des items directs de la grille / du flex de la carte. Thematisable via `theme.components['origam-card']`. Le nom `flat` est exclu : il signifie deja « pas d'ombre ».
+- `ICardProps` etend `IHoverProps` au lieu d'un `hover?: boolean` local : `:hover="{ borderColor: 'var(--origam-color__border---strong)' }"` (`borderColor` est une valeur CSS) est maintenant accepte par TypeScript (le runtime le lisait deja). Aucune prop `outline` / `featured` : `border` + `borderColor` + `active` couvrent la carte mise en avant.
+- Doc : la classe `origam-card--rounded-*` est un point d'accroche, c'est la declaration inline qui peint le rayon.
+
 ## [2.31.0] - 2026-10-15
 
 ### Added — `OrigamChip` : `fontFamily`, `letterSpacing`, `textTransform` (#1101)
