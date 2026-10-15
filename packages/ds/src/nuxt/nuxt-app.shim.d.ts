@@ -26,6 +26,7 @@ declare module '#app' {
     interface NuxtApp {
         vueApp: App<Element>
         hook (name: 'app:rendered', callback: (ctx: { ssrContext?: { head: { push (input: Record<string, unknown>): unknown } } }) => void | Promise<void>): () => void
+        hook (name: 'app:mounted', callback: () => void | Promise<void>): () => void
     }
 
     // ── Plugin helpers ────────────────────────────────────────────────────
@@ -77,10 +78,4 @@ declare module '#app' {
     }
 
     function useHead(input: Record<string, unknown>): void
-
-    function useRequestHeaders<K extends string = string>(
-        include: K[]
-    ): { [key in Lowercase<K>]?: string }
-
-    function useRequestHeaders(): Readonly<Record<string, string>>
 }

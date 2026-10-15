@@ -4,7 +4,7 @@ origam ships an official Nuxt 3 / Nuxt 4 module that wires the design
 system into a Nuxt application in one line: auto-imports for every
 `Origam*` component and `useXxx` composable, SSR-safe resolution of both
 theming axes — the brand `theme` (via cookie) and the color `mode` (via
-cookie + `Sec-CH-Prefers-Color-Scheme`) — and automatic injection of the
+cookie, else the system `prefers-color-scheme`) — and automatic injection of the
 token stylesheets in the right order.
 
 The module is published as a **sub-export of `origam`** — there is no
@@ -107,7 +107,7 @@ export default defineNuxtConfig({
 | `themes` | `(IOrigamTheme \| IOrigamTheme[])[]` | the DS baseline (`origamTheme`) | Brand themes to install, as `IOrigamTheme` objects you author yourself (see [Theme authoring](theming-authoring.md)). Objects/arrays are injected as-is — no preset-name resolution, no per-theme CSS file. Omitting the option installs the DS neutral baseline; an explicit `themes: []` installs nothing at all (⛔ #360 — unlike `createOrigam()` called directly, which never auto-installs the baseline any more, this module still does when the option is left unset). |
 | `defaultTheme` | `string` | `'auto'` | Active brand when no cookie is set. `'auto'` renders no `data-theme` (the default brand). |
 | `modes` | `string[]` | `['light', 'dark']` | Color modes supported by the loaded token sheets. Used to validate the resolved mode. |
-| `defaultMode` | `string` | `'auto'` | Active color mode when no cookie is set. `'auto'` falls back to the `Sec-CH-Prefers-Color-Scheme` client hint, then to a concrete `'light'` SSR default (the client upgrades to the system preference). `data-mode` is always written concrete. |
+| `defaultMode` | `string` | `'auto'` | Active color mode when no cookie is set. `'auto'` leaves the mode to the system: the server omits `data-mode` and emits both modes, the dark one under `@media (prefers-color-scheme: dark)` (no flash on the first visit). `'light'` / `'dark'` pins it. |
 | `cookieName` | `string` | `'origam-theme'` | Cookie that stores the user's chosen brand. |
 | `modeCookieName` | `string` | `'origam-mode'` | Cookie that stores the user's chosen color mode. |
 | `cookieMaxAge` | `number` | `31_536_000` (1 year) | Cookie lifetime in seconds (shared by both cookies). |
@@ -175,21 +175,26 @@ before the response is rendered and injects the resolved values as
   `defaultTheme`. It is omitted when the brand resolves to `'auto'` (the
   DS default sheet's `:root` rules then apply).
 - **Mode (`data-mode`)** is driven by the `origam-mode` cookie, then
-  `defaultMode`, then the `Sec-CH-Prefers-Color-Scheme` request header
-  (sent by modern browsers when the `Accept-CH` response advertises
-  support). It is **always written as a concrete `'light'` / `'dark'`** —
-  never omitted: the token sheets are scoped to concrete `[data-mode]`
-  values and have no mode-less fallback. When the user expressed no
-  preference, the server writes the safe default `'light'`; the client
-  upgrades it to the real `prefers-color-scheme` at mount.
+  `defaultMode`. A `light` / `dark` value from either source PINS the mode:
+  `data-mode` is written concrete and only that mode's block is inlined.
+- **Mode not pinned** (no cookie, `defaultMode: 'auto'`): the server writes
+  **no `data-mode`** and inlines both modes of the active brand — the light
+  block under `@media not (prefers-color-scheme: dark)`, the dark one under
+  `@media (prefers-color-scheme: dark)`. The selectors are root-only and carry
+  `:not([data-mode])`, so a pinned mode always wins: as soon as the client
+  writes a concrete `data-mode`, those blocks stop matching. The tokens are
+  therefore right from the server paint, with no network round trip. Cost: one
+  extra theme block per mode-scoped theme in the HTML.
+- **Component props** (`theme.components`) cannot follow the `@media`: with the
+  mode unpinned the server seeds them for **light**, the client hydrates with
+  the same, then switches to the system mode right after hydration
+  (`app:mounted`). A brand whose light and dark `components` differ therefore
+  shows its light props for one frame on a dark system; the tokens do not flash.
+- The `Sec-CH-Prefers-Color-Scheme` client hint is **not read**: no
+  `Accept-CH` is emitted, so browsers never send it.
 
 The client plugin then picks up the attributes already set by the server,
-so the hydration boundary stays clean — no flash of unstyled /
-wrong-themed content, no hydration mismatch warning.
-
-To opt-in to client-hint advertising, return `Accept-CH:
-Sec-CH-Prefers-Color-Scheme` from your root response (Nitro middleware
-or `routeRules`).
+so the hydration boundary stays clean: no hydration mismatch warning.
 
 ## Changing the theme at runtime
 

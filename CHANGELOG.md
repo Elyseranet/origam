@@ -18,6 +18,15 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+
+### Fixed — plus de flash clair -> sombre a la premiere visite : le bloc de theme SSR contient les deux modes (#1103)
+
+`origam-theme-ssr` n'emettait que la marque x le mode actifs ; un visiteur en systeme sombre sans cookie recevait le bloc clair (`data-mode` `light` -> `dark`, `--origam-color__surface---default` `#fff` -> `#0a0a0a`, fond du body blanc -> `rgb(10,10,10)`). Quand aucun mode n'est epingle (pas de cookie `light`/`dark`, `defaultMode: 'auto'`), le serveur omet desormais `data-mode` et inline les deux modes de la marque : le clair sous `@media not (prefers-color-scheme: dark)`, le sombre sous `@media (prefers-color-scheme: dark)`, avec des selecteurs ancres sur la racine et `:not([data-mode])` (marque nommee `:root:root[data-theme="X"]:not([data-mode])` (0,4,0) ; sans nom `html:not([data-theme]):not([data-mode])` (0,2,1)). Un mode epingle (cookie, `defaultMode` `light`/`dark`, ou le `data-mode` ecrit par le client a l'hydratation) l'emporte toujours. Cout : un bloc de theme de plus par theme a mode dans le HTML (+6,8 Ko mesures sur le site marketing).
+
+Les props de composants (`theme.components`) ne suivent pas le `@media` : mode non epingle, elles sont amorcees en CLAIR cote serveur et pour le rendu d'hydratation, puis passent au mode systeme apres l'hydratation (`app:mounted`) — pas de mismatch. Une marque dont les `components` different entre clair et sombre (`editorial`) montre donc ses props claires une frame sur un systeme sombre ; les tokens, eux, ne clignotent pas.
+
+La branche `Sec-CH-Prefers-Color-Scheme` de `resolveServerMode` est retiree (aucun `Accept-CH` n'etait emis : morte en pratique) ; l'overload `useRequestHeaders` du shim `#app` aussi. Le site marketing passe en `defaultMode: 'auto'`, et son bouton de bascule de mode hydrate avec l'icone « clair » avant de passer au mode systeme. Specs : `marketing-ssr-both-modes.spec.ts`, `marketing-theme-honored.spec.ts` (adaptee), `apply-theme-unpinned.util.spec.ts`.
+
 ## [2.29.1] - 2026-10-15
 
 ### Fixed — publication de rattrapage : 2.28.0 et 2.29.0 n'avaient pas été publiées

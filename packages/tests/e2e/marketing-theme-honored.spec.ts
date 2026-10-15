@@ -69,7 +69,14 @@ const PICKED_MODE = 'dark'
  * `packages/marketing/nuxt.config.ts`.
  */
 const DEFAULT_BRAND = 'geek'
-const DEFAULT_MODE = 'light'
+/**
+ * #1103 — `defaultMode: 'auto'` : sans préférence stockée, le serveur n'épingle
+ * AUCUN mode (pas de `data-mode` dans le HTML servi) et laisse le `@media
+ * (prefers-color-scheme)` peindre ; le client épingle ensuite le mode système.
+ * La spec fige le système en clair pour que ce mode soit déterministe.
+ */
+const DEFAULT_MODE_SERVED = null
+const SYSTEM_MODE = 'light'
 
 interface IThemeAttrs {
     theme: string | null
@@ -170,13 +177,14 @@ async function readBothSides (page: Page, response: Response | null): Promise<{ 
 
 /** Les écritures qui s'écartent de ce que le serveur avait rendu. */
 function divergentWrites (writes: IAttrWrite[], served: IThemeAttrs): IAttrWrite[] {
-    return writes.filter(w => w.value !== (w.name === 'data-theme' ? served.theme : served.mode))
+    return writes.filter(w => w.value !== (w.name === 'data-theme' ? served.theme : (served.mode ?? SYSTEM_MODE)))
 }
 
 test.describe('Thème marketing — ce que le serveur rend survit à l\'hydratation', () => {
 
     for (const path of SAMPLED_PATHS) {
         test(`${path} — rend "${ DEFAULT_BRAND }" par défaut, et rien ne le réécrit côté client`, async ({ page }) => {
+            await page.emulateMedia({ colorScheme: SYSTEM_MODE })
             await recordAttrWrites(page)
 
             const response = await page.goto(path)
@@ -190,8 +198,8 @@ test.describe('Thème marketing — ce que le serveur rend survit à l\'hydratat
 
             expect(
                 served.mode,
-                `${path} : sans préférence stockée, le site doit rendre le mode "${ DEFAULT_MODE }"`
-            ).toBe(DEFAULT_MODE)
+                `${path} : sans préférence stockée, le serveur n'épingle aucun mode (#1103)`
+            ).toBe(DEFAULT_MODE_SERVED)
 
             expect(
                 divergentWrites(writes, served),
@@ -207,7 +215,7 @@ test.describe('Thème marketing — ce que le serveur rend survit à l\'hydratat
             expect(
                 hydrated.mode,
                 `${path} : le serveur a rendu data-mode="${ served.mode }", la page affiche "${ hydrated.mode }" après hydratation`
-            ).toBe(served.mode)
+            ).toBe(served.mode ?? SYSTEM_MODE)
         })
     }
 

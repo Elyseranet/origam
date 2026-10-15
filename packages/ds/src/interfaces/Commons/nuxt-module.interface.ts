@@ -1,5 +1,7 @@
 import type { IOrigamTheme } from './theme.interface'
 
+import type { TMode, TTheme } from '../../types/Commons/theme.type'
+
 /**
  * Options passed by a consumer in `nuxt.config.ts` under the `origam` key.
  *
@@ -10,7 +12,7 @@ import type { IOrigamTheme } from './theme.interface'
  * a name×mode scoped `--origam-*` block. The theme-invariant `primitive` +
  * `utilities` sheets are still loaded as CSS. Two orthogonal axes are resolved
  * SSR-side to avoid FOUC: the brand `theme` (cookie) and the color `mode`
- * (cookie + `Sec-CH-Prefers-Color-Scheme` hint).
+ * (cookie, else the system `prefers-color-scheme` via `@media`).
  *
  * ADR-004 (Implemented): the DS ships exactly ONE neutral identity (the origam
  * baseline). Brand themes live in the consuming app (e.g. the marketing
@@ -44,9 +46,9 @@ export interface IOrigamNuxtModuleOptions {
     modes?: string[]
 
     /**
-     * Color mode applied when no cookie is set and no usable
-     * `Sec-CH-Prefers-Color-Scheme` hint is sent. Use `'auto'` to let the
-     * server fall back to the client hint (or `'light'` if absent).
+     * Color mode applied when no cookie is set. `'light'` / `'dark'` pins it.
+     * `'auto'` leaves it to the system: the server inlines both modes, the dark
+     * one under `@media (prefers-color-scheme: dark)` (#1103).
      *
      * @default 'auto'
      */
@@ -121,4 +123,18 @@ export interface IOrigamNuxtRuntimeConfig {
     cookieName: string
     modeCookieName: string
     cookieMaxAge: number
+}
+
+/*********************************************************
+ * IOrigamNuxtProvide
+ *
+ * @description
+ * Shape of what the Nuxt plugins `provide` under `nuxtApp.$origam`.
+ * @description
+ * `mode` is `'auto'` when the colour mode is NOT pinned (#1103), otherwise the
+ * pinned concrete mode.
+ ********************************************************/
+export interface IOrigamNuxtProvide {
+    theme: TTheme
+    mode: TMode
 }

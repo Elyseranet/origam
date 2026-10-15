@@ -1,10 +1,12 @@
-import { watch } from 'vue'
+import { ref, watch } from 'vue'
 
 import { useTheme } from '../composables/Commons/theme.composable'
 
 import type { IOrigamNuxtRuntimeConfig } from '../interfaces/Commons/nuxt-module.interface'
 
 import { createOrigam } from '../origam'
+
+import { isModePinned } from '../utils/Commons/apply-theme.util'
 
 import type { TMode, TTheme } from '../types/Commons/theme.type'
 
@@ -27,6 +29,8 @@ export default defineNuxtPlugin({
             sameSite: 'lax',
             path: '/'
         })
+
+        const modePinned = isModePinned(modeCookie.value, config.defaultMode)
 
         const themeFromDom = (typeof document !== 'undefined' && document.documentElement.dataset.theme) || null
 
@@ -73,12 +77,29 @@ export default defineNuxtPlugin({
         // components re-run. `immediate: true` syncs the client to the live
         // intent right after install (the server seeded the SSR paint). `auto`
         // brand maps to '' (the DS `:root` default — no brand component map).
+        /*********************************************************
+         * Hydration-safe defaults (#1103)
+         *
+         * @description
+         * `modePinned` is read BEFORE `setMode` / the cookie watcher can touch the cookie.
+         * @description
+         * Mode NOT pinned: the server cannot know the system mode, so it seeded the
+         * props for LIGHT (its tokens come from `@media`). The hydration render must
+         * use the same, hence `hydrated` starts false and flips on `app:mounted`,
+         * switching the props to the real system mode.
+         ********************************************************/
+        const hydrated = ref(modePinned)
+        if (!modePinned) {
+            nuxtApp.hook('app:mounted', () => {
+                hydrated.value = true
+            })
+        }
         watch(
-            [themeApi.theme, themeApi.resolvedMode],
-            ([brand, mode]) => {
+            [themeApi.theme, themeApi.resolvedMode, hydrated],
+            ([brand, mode, isHydrated]) => {
                 origam._defaultsRef.value = origam._activeDefaultsFor(
                     brand === 'auto' ? '' : brand,
-                    mode
+                    isHydrated ? mode : 'light'
                 )
             },
             { immediate: true }
