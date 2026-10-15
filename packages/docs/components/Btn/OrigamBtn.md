@@ -129,6 +129,9 @@ content that does not exist yet.
     <!-- Stacked: icon above the label -->
     <OrigamBtn stacked prepend-icon="mdi-heart" text="Stacked" />
 
+    <!-- Wrap: a long label goes onto several lines instead of overflowing -->
+    <OrigamBtn block wrap text="Enregistrer et continuer vers la page de confirmation" />
+
     <!-- Rounded radius variants -->
     <OrigamBtn rounded text="Rounded" />
 </template>
@@ -317,8 +320,44 @@ interface IBtnProps extends ICommonsComponentProps,
     block?: boolean
     slim?: boolean
     stacked?: boolean
+    wrap?: boolean
     text?: string
 }
+```
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `wrap` | `boolean` | `false` | Lets the label wrap onto several lines (`white-space: normal`, centred) instead of staying on one `nowrap` line. Emits the `origam-btn--wrap` class. Like every prop, it can be set for a whole theme through `theme.components['origam-btn']`. |
+
+### Height is a minimum
+
+A button's height is a **minimum**, not a fixed value: the box is `height: auto`
+with `min-height` set to the size token
+(`--origam-btn---height` + `--origam-btn---density`). A button whose content fits on
+one line keeps exactly the height its `size` and `density` give it; it only grows when
+its content is taller than that minimum — typically a `wrap` label on two lines.
+
+- The `height` prop still wins: it is written inline, so a fixed `height="60"` stays fixed
+  and the content overflows or is clipped as before.
+- `--origam-btn---min-height` can **raise** the minimum (a marketing layout sets it to
+  44 px). Setting it to `0` removes the minimum — the button then shrinks to its
+  content — so do not write it to "reset" the height.
+- **Icon-only buttons (`icon`) keep a fixed, square box**: their width derives from the
+  same token, and no label can overflow.
+- The vertical padding is read from `--origam-btn---padding-block` (declared as `0px`, so
+  a button that does not set it does not move). Set it on the button or on an ancestor
+  to give a wrapped label some air; it has no effect on `icon` buttons.
+
+```vue
+<template>
+    <!-- The button grows to hold its wrapped lines plus 8px of padding above and below -->
+    <OrigamBtn
+        block
+        wrap
+        :style="{ '--origam-btn---padding-block': '8px' }"
+        text="Enregistrer et continuer vers la page de confirmation"
+    />
+</template>
 ```
 
 ### Typography

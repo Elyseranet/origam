@@ -17,6 +17,7 @@
     "audit:dark-contrast": "node audit/dark-contrast.audit.mjs",
     "audit:focus-ring": "node audit/focus-ring.audit.mjs",
     "audit:kbd-preset": "node audit/kbd-preset.audit.mjs",
+    "audit:btn-height": "node audit/btn-height.audit.mjs",
     "audit:blockquote-preset": "node audit/blockquote-preset.audit.mjs",
     "audit:skeleton-contrast": "node audit/skeleton-contrast.audit.mjs",
     "audit:skeleton-containers": "node audit/skeleton-containers.audit.mjs",

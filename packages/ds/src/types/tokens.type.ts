@@ -529,6 +529,7 @@ export type TTokenName =
   | '--origam-btn---overlay-opacity-active'
   | '--origam-btn---overlay-opacity-active-hover'
   | '--origam-btn---overlay-opacity-hover'
+  | '--origam-btn---padding-block'
   | '--origam-btn---padding-lg'
   | '--origam-btn---padding-md'
   | '--origam-btn---padding-sm'

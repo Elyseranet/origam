@@ -109,7 +109,7 @@
 				:icon="true"
 				size="x-small"
 				density="compact"
-				:style="{'--origam-btn---min-width': '0', '--origam-btn---min-height': '0'}"
+				:style="{'--origam-btn---min-width': '0'}"
 				@click.stop="handleClickClose"
 		>
 			<slot

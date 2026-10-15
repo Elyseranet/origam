@@ -319,6 +319,7 @@
   --origam-btn---padding-md: var(--origam-space---4);
   --origam-btn---padding-lg: var(--origam-space---5);
   --origam-btn---padding-xl: var(--origam-space---6);
+  --origam-btn---padding-block: 0px;
   --origam-btn---font-size: var(--origam-font__size---md);
   --origam-btn---font-weight: var(--origam-font__weight---medium);
   --origam-btn---letter-spacing: var(--origam-font__letterSpacing---widest);
@@ -3332,6 +3333,7 @@
     --origam-btn---padding-md: var(--origam-space---4);
     --origam-btn---padding-lg: var(--origam-space---5);
     --origam-btn---padding-xl: var(--origam-space---6);
+    --origam-btn---padding-block: 0px;
     --origam-btn---font-size: var(--origam-font__size---md);
     --origam-btn---font-weight: var(--origam-font__weight---medium);
     --origam-btn---letter-spacing: var(--origam-font__letterSpacing---widest);

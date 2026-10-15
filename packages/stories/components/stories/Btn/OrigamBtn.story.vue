@@ -114,6 +114,7 @@
 						:block="state.block"
 						:slim="state.slim"
 						:stacked="state.stacked"
+						:wrap="state.wrap"
 						:icon="state.icon"
 						:prepend-icon="state.stacked ? prependIcon : undefined"
 						:tag="state.tag"
@@ -131,6 +132,7 @@
 					<HstCheckbox v-model="state.block"   title="Block"/>
 					<HstCheckbox v-model="state.slim"    title="Slim"/>
 					<HstCheckbox v-model="state.stacked" title="Stacked"/>
+					<HstCheckbox v-model="state.wrap"    title="Wrap"/>
 					<HstCheckbox v-model="state.icon"    title="Icon (icon-only)"/>
 				</StoryGroup>
 				<StoryGroup title="Loading">
@@ -246,6 +248,41 @@
 		</Variant>
 
 		<Variant
+				title="Prop — wrap"
+				:init-state="() => useStoryInitState<Pick<IBtnProps, 'wrap' | 'block' | 'slim' | 'size' | 'text'> & { containerWidth: number }>({ wrap: true, block: true, size: 'large', text: WRAP_LONG_LABEL, containerWidth: 320 })"
+		>
+			<template #default="{ state }">
+				<div
+						:style="{ width: `${state.containerWidth}px`, maxWidth: '100%' }"
+						data-cy="btn-wrap-container"
+				>
+					<origam-btn
+							:wrap="state.wrap"
+							:block="state.block"
+							:slim="state.slim"
+							:size="state.size"
+							:text="state.text"
+							data-cy="btn-wrap"
+					/>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Content">
+					<HstText v-model="state.text" title="Text"/>
+				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstCheckbox v-model="state.wrap"  title="Wrap"/>
+					<HstCheckbox v-model="state.block" title="Block"/>
+					<HstCheckbox v-model="state.slim"  title="Slim"/>
+					<HstSelect   v-model="state.size"  title="Size" :options="SIZE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Container">
+					<HstNumber v-model="state.containerWidth" title="Width (px)" :min="120" :max="480" :step="20"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IBtnProps>({ color: 'primary', text: 'Button' })"
 		>
@@ -271,6 +308,7 @@
 					<HstCheckbox v-model="state.block"    title="Block"/>
 					<HstCheckbox v-model="state.slim"     title="Slim"/>
 					<HstCheckbox v-model="state.stacked"  title="Stacked"/>
+					<HstCheckbox v-model="state.wrap"     title="Wrap"/>
 					<HstCheckbox v-model="state.disabled" title="Disabled"/>
 					<HstCheckbox v-model="state.loading"  title="Loading"/>
 					<HstCheckbox v-model="state.readonly" title="Readonly"/>
@@ -326,6 +364,8 @@
 		progress: number
 		circularSize: number
 	}
+
+	const WRAP_LONG_LABEL = 'Enregistrer et continuer vers la page de confirmation de la commande'
 
 	const prependIcon = MDI_ICONS.HEART
 	const appendIcon = MDI_ICONS.ARROW_RIGHT
