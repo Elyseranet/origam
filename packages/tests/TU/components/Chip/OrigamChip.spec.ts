@@ -430,3 +430,37 @@ describe('OrigamChip — fontWeight prop', () => {
         expect(cssOf({ fontWeight: 'black' })).toContain('--origam-chip---font-weight: var(--origam-font__weight---black)')
     })
 })
+
+// ---------------------------------------------------------------------------
+// Typography — fontFamily / letterSpacing / textTransform (#1101)
+//
+// The painted effect is proven in a real browser by
+// `e2e/chip-typography.spec.ts` (jsdom cannot resolve `var()`); here we pin
+// that the three props are DECLARED (Component.props) and emit their variable.
+// ---------------------------------------------------------------------------
+
+describe('OrigamChip — fontFamily / letterSpacing / textTransform props (#1101)', () => {
+    it.each(['fontFamily', 'letterSpacing', 'textTransform'])('declares the %s prop', (key) => {
+        expect(Object.keys(OrigamChip.props as Record<string, unknown>)).toContain(key)
+    })
+
+    it('emits no override when unset', () => {
+        const css = cssOf()
+
+        expect(css).not.toContain('--origam-chip---font-family:')
+        expect(css).not.toContain('--origam-chip---letter-spacing:')
+        expect(css).not.toContain('--origam-chip---text-transform:')
+    })
+
+    it('fontFamily="mono" sets the font-family var to the mono token', () => {
+        expect(cssOf({ fontFamily: 'mono' })).toContain('--origam-chip---font-family: var(--origam-font__family---mono)')
+    })
+
+    it('letterSpacing="widest" sets the letter-spacing var to the widest token', () => {
+        expect(cssOf({ letterSpacing: 'widest' })).toContain('--origam-chip---letter-spacing: var(--origam-font__letterSpacing---widest)')
+    })
+
+    it('textTransform="uppercase" sets the text-transform var verbatim', () => {
+        expect(cssOf({ textTransform: 'uppercase' })).toContain('--origam-chip---text-transform: uppercase')
+    })
+})

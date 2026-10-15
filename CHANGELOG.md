@@ -18,6 +18,16 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Added — `OrigamChip` : `fontFamily`, `letterSpacing`, `textTransform` (#1101)
+
+`OrigamChip` expose maintenant trois props typographiques supplementaires, **cablees** : sa SCSS lit `--origam-chip---font-family`, `--origam-chip---letter-spacing` et `--origam-chip---text-transform` (repli `inherit`, donc le rendu par defaut est inchange : le chip herite de son contexte). Elles avaient ete retirees par #501 parce qu'inertes ; l'effet est desormais prouve en navigateur par `packages/tests/e2e/chip-typography.spec.ts`.
+
+- `textTransform` est une nouvelle prop **Commons** de `ITypographyProps` (canal passthrough, comme `fontStyle`), typee par `TTextTransform` / `TEXT_TRANSFORM`. Chip en est le premier adoptant.
+- Les trois variables sont declarees `initial` dans les feuilles de tokens (canal theme ouvert, sans figer l'heritage) et ajoutees a `TTokenName`.
+- Doc Chip : section « Box model » — `box-sizing: content-box` est conserve (#530), la bordure s'ajoute a `--origam-chip---height-*`.
+
+
+
 ## [2.30.0] - 2026-10-15
 
 ### Changed — `OrigamBtn` `block` : `flex: 0 0 auto` + `width: 100%`, plus de croissance sur l'axe principal (#1095)

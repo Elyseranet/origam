@@ -58,7 +58,7 @@ import type { ITypographyProps } from '../../interfaces/Commons/typography.inter
  *                              |   (fontFamily emits but Btn SCSS has no
  *                              |    font-family rule → no effect; document it)
  *   Label       | label        | fontSize fontWeight letterSpacing lineHeight
- *   Chip        | chip         | fontSize fontWeight
+ *   Chip        | chip         | fontFamily fontSize fontWeight letterSpacing textTransform
  *   Blockquote  | blockquote   | fontFamily fontSize fontWeight lineHeight fontStyle
  *   Code        | code         | fontFamily fontSize lineHeight
  *   Kbd         | kbd          | fontFamily fontSize fontWeight
@@ -170,7 +170,8 @@ const TYPOGRAPHY_TOKEN_MAP = [
  * donc pas introduire.
  ********************************************************/
 const TYPOGRAPHY_PASSTHROUGH_MAP = [
-    ['fontStyle', 'font-style']
+    ['fontStyle', 'font-style'],
+    ['textTransform', 'text-transform']
 ] as const satisfies ReadonlyArray<readonly [keyof ITypographyProps, string]>
 
 /*********************************************************

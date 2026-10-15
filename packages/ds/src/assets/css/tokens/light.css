@@ -369,6 +369,9 @@
   --origam-chip---border-radius: var(--origam-radius---full);
   --origam-chip---border-radius-label: var(--origam-radius---sm);
   --origam-chip---font-weight: var(--origam-font__weight---regular);
+  --origam-chip---font-family: initial;
+  --origam-chip---letter-spacing: initial;
+  --origam-chip---text-transform: initial;
   --origam-chip---opacity-disabled: var(--origam-opacity---32);
   --origam-chip---density: 0px;
   --origam-chip---overlay-opacity: var(--origam-opacity---0);

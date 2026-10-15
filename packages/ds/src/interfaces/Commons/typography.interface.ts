@@ -3,6 +3,7 @@ import type { TFontSize } from '../../types/Commons/font-size.type'
 import type { TFontWeight } from '../../types/Commons/font-weight.type'
 import type { TLetterSpacing } from '../../types/Commons/letter-spacing.type'
 import type { TLineHeight } from '../../types/Commons/line-height.type'
+import type { TTextTransform } from '../../types/Commons/text-transform.type'
 
 /**
  * Cross-cutting typography surface — the font equivalent of
@@ -12,9 +13,9 @@ import type { TLineHeight } from '../../types/Commons/line-height.type'
  * emitted).
  *
  * The first FIVE props are primitive font token KEYS, wrapped into
- * `var(--origam-font__{group}---{value})`. `fontStyle` is the one
- * PASSTHROUGH: a CSS keyword emitted verbatim, because `font-style` has no
- * design scale — see its own note below.
+ * `var(--origam-font__{group}---{value})`. `fontStyle` and `textTransform`
+ * are PASSTHROUGHS: CSS keywords emitted verbatim, because neither
+ * `font-style` nor `text-transform` has a design scale — see their notes below.
  *
  * | Prop            | CSS property      | Primitive token group        |
  * |-----------------|-------------------|------------------------------|
@@ -24,6 +25,7 @@ import type { TLineHeight } from '../../types/Commons/line-height.type'
  * | `lineHeight`    | `line-height`     | `--origam-font__lineHeight---*`    |
  * | `letterSpacing` | `letter-spacing`  | `--origam-font__letterSpacing---*` |
  * | `fontStyle`     | `font-style`      | *none — passthrough, see below*    |
+ * | `textTransform` | `text-transform`  | *none — passthrough, see below*    |
  *
  * Collision-free names by design: `fontSize` / `fontWeight` / `fontFamily`
  * (not `size` / `weight` / `family`) so the surface composes with
@@ -98,4 +100,21 @@ export interface ITypographyProps {
      * forcer un effet sans le signaler.
      ********************************************************/
     fontStyle?: string
+    /*********************************************************
+     * textTransform
+     *
+     * @description
+     * Casse du texte (`none` · `uppercase` · `lowercase` · `capitalize`),
+     * emise LITTERALEMENT dans `--origam-{prefix}---text-transform`.
+     * Second membre PASSTHROUGH : `text-transform` est un mot-cle CSS, pas
+     * un echelon d'echelle, et aucun groupe `--origam-font__textTransform---*`
+     * n'existe.
+     *
+     * @description
+     * ⚠️ N'a d'EFFET que si la SCSS du composant lit le var GENERIQUE
+     * `--origam-{prefix}---text-transform`. Adoptant actuel : `OrigamChip`.
+     * Ne pas ajouter la prop a un autre composant sans cabler sa SCSS ET
+     * prouver l'effet en navigateur.
+     ********************************************************/
+    textTransform?: TTextTransform
 }

@@ -1,5 +1,5 @@
 import type { IOptions } from '@origam/interfaces'
-import type { TFontFamily, TFontSize, TFontWeight, TLetterSpacing, TLineHeight } from '@origam/types'
+import type { TFontFamily, TFontSize, TFontWeight, TLetterSpacing, TLineHeight, TTextTransform } from '@origam/types'
 
 export const fontFamilyList: Array<IOptions<TFontFamily>> = [
     { label: '(none)', value: undefined },
@@ -48,4 +48,12 @@ export const letterSpacingList: Array<IOptions<TLetterSpacing>> = [
     { label: 'wide (0.0094em)', value: 'wide' },
     { label: 'wider (0.0125em)', value: 'wider' },
     { label: 'widest (0.0893em)', value: 'widest' }
+]
+
+export const textTransformList: Array<IOptions<TTextTransform>> = [
+    { label: '(none)', value: undefined },
+    { label: 'none', value: 'none' },
+    { label: 'uppercase', value: 'uppercase' },
+    { label: 'lowercase', value: 'lowercase' },
+    { label: 'capitalize', value: 'capitalize' }
 ]

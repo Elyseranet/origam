@@ -87,3 +87,17 @@ describe('useTypography — fontStyle passthrough', () => {
         expect(useTypography({ fontStyle: undefined }, 'blockquote').typographyStyles.value).toBeNull()
     })
 })
+
+describe('useTypography — textTransform passthrough (#1101)', () => {
+    it.each(['none', 'uppercase', 'lowercase', 'capitalize'] as const)('emits %j VERBATIM, never wrapped in a var()', (value) => {
+        expect(useTypography({ textTransform: value }, 'chip').typographyStyles.value).toEqual({
+            '--origam-chip---text-transform': value
+        })
+    })
+
+    it('never produces a --origam-font__textTransform--- reference', () => {
+        const { typographyStyles } = useTypography({ textTransform: 'uppercase' }, 'chip')
+
+        expect(JSON.stringify(typographyStyles.value)).not.toContain('font__textTransform')
+    })
+})

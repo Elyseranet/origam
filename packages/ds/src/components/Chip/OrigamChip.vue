@@ -539,7 +539,16 @@
 		// Pinning `content-box` here keeps the token math identical no
 		// matter which tag ends up on the root.
 		box-sizing: content-box;
+		// #1101 — `font-family` / `letter-spacing` : lus par le var GENERIQUE
+		// que `useTypography` emet en inline quand la prop est posee. Le
+		// generique n'est volontairement declare dans AUCUNE feuille (meme
+		// regle que `---font-size`) : un token statique porteur de ce nom
+		// gagnerait toujours et figerait la valeur heritee du contexte. Sans
+		// prop, le repli `inherit` laisse le chip heriter, comme avant.
+		font-family: var(--origam-chip---font-family, inherit);
 		font-weight: var(--origam-chip---font-weight, 400);
+		letter-spacing: var(--origam-chip---letter-spacing, inherit);
+		text-transform: var(--origam-chip---text-transform, inherit);
 		max-width: 100%;
 		min-width: 0;
 		overflow: hidden;

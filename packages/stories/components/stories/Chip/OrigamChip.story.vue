@@ -16,8 +16,11 @@
 						:bg-color="state.bgColor"
 						:size="state.size"
 						:density="state.density"
+						:font-family="state.fontFamily"
 						:font-size="state.fontSize"
 						:font-weight="state.fontWeight"
+						:letter-spacing="state.letterSpacing"
+						:text-transform="state.textTransform"
 						:rounded="state.rounded"
 						:elevation="state.elevation"
 						:border="state.border"
@@ -40,8 +43,11 @@
 					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Typography">
-					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
-					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.fontFamily"    title="Font Family"    :options="FONT_FAMILY_OPTIONS"/>
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
+					<HstSelect v-model="state.textTransform" title="Text Transform" :options="TEXT_TRANSFORM_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Shape">
 					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
@@ -275,6 +281,13 @@
 					<HstCheckbox v-model="state.pill"      title="Pill (round is the default — visible only against Label)"/>
 					<HstCheckbox v-model="state.label"     title="Label (square corners)"/>
 				</StoryGroup>
+				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontFamily"    title="Font Family"    :options="FONT_FAMILY_OPTIONS"/>
+					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
+					<HstSelect v-model="state.textTransform" title="Text Transform" :options="TEXT_TRANSFORM_OPTIONS"/>
+				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.closable"  title="Closable"/>
 					<HstCheckbox v-model="state.draggable" title="Draggable"/>
@@ -313,14 +326,17 @@
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
+		FONT_FAMILY_OPTIONS,
 		FONT_SIZE_OPTIONS,
 		FONT_WEIGHT_OPTIONS,
 		HOVER_OPTIONS,
+		LETTER_SPACING_OPTIONS,
 		resolveHoverState,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,
 		SIZE_OPTIONS,
-		TAG_OPTIONS
+		TAG_OPTIONS,
+		TEXT_TRANSFORM_OPTIONS
 	} from '@stories/const'
 
 	const prependIcon = MDI_ICONS.HEART
