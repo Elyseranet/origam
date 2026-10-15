@@ -18,7 +18,15 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.29.1] - 2026-10-15
+
+### Fixed — publication de rattrapage : 2.28.0 et 2.29.0 n'avaient pas été publiées
+
+Les commits de release 2.28.0 et 2.29.0 ont échoué au quality gate SonarQube du workflow Build (`[CODE_SMELL/CRITICAL] contrast.directive.ts:346 — Remove this use of the "void" operator`, introduit par #1112). Aucune des deux n'a été publiée sur npm. Le défaut est corrigé (#1124 : helper `forceStyleRecalc(el)` dans `v-contrast`, le recalcul de style a toujours lieu), et **2.29.1 livre le contenu des sections 2.28.0 et 2.29.0 ci-dessous**. Depuis 2.27.0, monter directement en 2.29.1. Le trou du quality gate (Sonar ne tourne pas sur les PR) est suivi dans #1123.
+
 ## [2.29.0] - 2026-10-15
+
+> **Non publiée sur npm** — bloquée par le quality gate SonarQube ; contenu livré dans **2.29.1**.
 
 ### Changed — `OrigamBtn` : prop `wrap`, hauteur MINIMALE, `padding-block` lu (#1093, #1094, #929)
 
@@ -36,6 +44,8 @@ Trois defauts du meme geste : un libelle plus long que le bouton ne pouvait ni p
 - Mesure documentee, non corrigee : sans police d'icones chargee, le contenu d'un bouton avec `prepend-icon` aux tailles `x-small`, `large` et `x-large` se decale de 0,5 px vers le haut (144 releves sur 16 configurations). Je ne sais pas si l'ecart se voit avec la vraie police d'icones.
 
 ## [2.28.0] - 2026-10-15
+
+> **Non publiée sur npm** — bloquée par le quality gate SonarQube ; contenu livré dans **2.29.1**.
 
 ### Fixed — `useStyle` emet sa regle cote serveur ; `v-contrast` attend la fin reelle de la transition et ne logge plus qu'en dev (#1092)
 
