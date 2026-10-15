@@ -17,7 +17,7 @@
  *   (ou `pnpm -F @origam/tests run test:e2e:audit:self`, qui l'appelle)
  */
 
-import { blindnessCheck, classifySpecs, isScratchSpecPath, specFilesFromListReport } from './spec-coverage.mjs'
+import { blindnessCheck, classifySpecs, isConfigWiredInCi, isScratchSpecPath, prefixSpecPaths, specFilesFromListReport } from './spec-coverage.mjs'
 
 const CASES = []
 const push = (name, fn) => CASES.push({ name, fn })
@@ -157,6 +157,50 @@ push('⛔ liste blanche marketing vide → BLOQUANT', () => {
 push('balayage plein → aucun message de cecite', () => {
     const msg = blindnessCheck({ allSpecs: ['a.spec.ts'], histoireGated: new Set(['a.spec.ts']), marketingGated: new Set(['b.spec.ts']) })
     if (msg) throw new Error(`faux positif de cecite : ${msg}`)
+})
+
+/* ─── Troisieme testDir : e2e-playground/ (#1143) ─── */
+
+push('prefixe de testDir — deux homonymes de testDir differents ne se confondent pas', () => {
+    const playground = prefixSpecPaths(new Set(['btn.spec.ts']), 'e2e-playground')
+    const { ungated } = classifySpecs(['btn.spec.ts', 'e2e-playground/btn.spec.ts'], new Set(['btn.spec.ts']), new Set())
+    eq([...playground], ['e2e-playground/btn.spec.ts'], 'id prefixe')
+    eq(ungated, ['e2e-playground/btn.spec.ts'], 'l\'homonyme garde cote e2e/ ne couvre pas celui du playground')
+})
+
+const SCRIPTS_WIRED = { 'test:e2e:playground': 'playwright test -c playwright.playground.config.ts' }
+const CI_WIRED = 'steps:\n  - run: pnpm -F @origam/tests run test:e2e:playground\n'
+
+push('config branchee : ci.yml appelle le script ET le script vise la config', () => {
+    if (!isConfigWiredInCi({ ciYaml: CI_WIRED, scripts: SCRIPTS_WIRED, scriptName: 'test:e2e:playground', configFile: 'playwright.playground.config.ts' })) {
+        throw new Error('un branchement complet n\'a pas ete reconnu')
+    }
+})
+
+push('⛔ ci.yml n\'appelle pas le script → NON branche', () => {
+    if (isConfigWiredInCi({ ciYaml: 'steps:\n  - run: pnpm -F @origam/tests run test:unit:run\n', scripts: SCRIPTS_WIRED, scriptName: 'test:e2e:playground', configFile: 'playwright.playground.config.ts' })) {
+        throw new Error('une config que la CI ne lance pas a ete comptee gardee')
+    }
+})
+
+push('⛔ un script homonyme plus long (`…:playground:x`) ne vaut pas branchement', () => {
+    if (isConfigWiredInCi({ ciYaml: 'run: pnpm run test:e2e:playground:debug', scripts: SCRIPTS_WIRED, scriptName: 'test:e2e:playground', configFile: 'playwright.playground.config.ts' })) {
+        throw new Error('un prefixe de nom de script a ete pris pour le script')
+    }
+})
+
+push('⛔ le script ne vise pas la config → NON branche', () => {
+    if (isConfigWiredInCi({ ciYaml: CI_WIRED, scripts: { 'test:e2e:playground': 'playwright test' }, scriptName: 'test:e2e:playground', configFile: 'playwright.playground.config.ts' })) {
+        throw new Error('un script qui ne vise pas la config a ete compte comme branchement')
+    }
+})
+
+push('⛔ specs playground sur le disque mais --list vide → BLOQUANT', () => {
+    const msg = blindnessCheck({
+        allSpecs: ['a.spec.ts'], histoireGated: new Set(['a.spec.ts']), marketingGated: new Set(['b.spec.ts']),
+        playgroundOnDisk: ['e2e-playground/x.spec.ts'], playgroundListed: new Set()
+    })
+    if (!msg) throw new Error('un --list playground vide a ete accepte')
 })
 
 /* ─── Runner ─── */
