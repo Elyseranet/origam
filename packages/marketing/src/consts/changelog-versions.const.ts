@@ -18,13 +18,13 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
-        version: 'Unreleased',
-        date: null,
-        type: 'unreleased',
-        summaryKey: 'changelog.versions.unreleased.summary',
+        version: '2.28.0',
+        date: '2026-10-15',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2280.summary',
         summaryFallback: '1 fix. See the full changelog for detail.',
         highlights: [
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'useStyle emet sa regle cote serveur ; v-contrast attend la fin reelle de la transition et ne logge plus qu\'en dev (#1092)' }
+            { type: 'fixed', textKey: 'changelog.versions.v2280.h1', textFallback: 'useStyle emet sa regle cote serveur ; v-contrast attend la fin reelle de la transition et ne logge plus qu\'en dev (#1092)' }
         ]
     },
     {

@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.28.0] - 2026-10-15
+
 ### Fixed — `useStyle` emet sa regle cote serveur ; `v-contrast` attend la fin reelle de la transition et ne logge plus qu'en dev (#1092)
 
 **`useStyle` (140 composants).** La regle `#id { … }` n'etait ecrite dans `<head>` que depuis `onMounted`, qui ne tourne jamais cote serveur : un composant qui ne se peint que par cette regle (`OrigamBtn`, `OrigamBtnToggle`, `OrigamBtnGroup`, `OrigamAvatar`, `OrigamBreadcrumb`, `OrigamBottomNav`, `OrigamStepper`) sortait nu du HTML servi. Mesure du ticket, site marketing en production, `/contact`, bouton primaire, JS coupe puis actif : fond `rgb(251, 245, 255)` → `rgb(124, 58, 237)`, rayon `8px` → `12px`. Meme page, build corrige : `rgb(124, 58, 237)` / `12px` des le premier paint, identique apres hydratation.
