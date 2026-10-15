@@ -91,6 +91,50 @@ export function classifySpecs (allSpecs, gatedSpecs, baseline) {
 }
 
 /**
+ * Prefixe des chemins de spec par leur repertoire de test, pour que deux
+ * `testDir` distincts ne partagent pas le meme espace de noms.
+ *
+ * ⛔ Les ids historiques sont relatifs a `e2e/` (« alert.spec.ts ») et la
+ * baseline les stocke ainsi. Une spec d'un AUTRE testDir (`e2e-playground/`)
+ * rapportee par Playwright sous son seul nom collisionnerait le jour ou un
+ * fichier homonyme existe des deux cotes : l'un serait compte « garde » au
+ * titre de l'autre. Le prefixe rend la collision impossible sans renommer
+ * une seule entree de la baseline existante.
+ *
+ * @param files  Iterable de chemins relatifs au testDir.
+ * @param dir    Nom du repertoire de test, relatif a `packages/tests`.
+ */
+export function prefixSpecPaths (files, dir) {
+    return new Set([...files].map((f) => `${dir}/${f}`))
+}
+
+/**
+ * Un job de CI execute-t-il reellement une config Playwright donnee ?
+ *
+ * Pour les deux configs historiques la reponse est portee par une variable
+ * d'environnement de liste blanche, que le garde rejoue. La config playground
+ * n'a pas de liste blanche : elle execute tout son `testDir`, et la seule
+ * question est donc « un job la lance-t-il ? ». Le garde ne sait pas
+ * executer un workflow ; il verifie le maillon textuel de bout en bout :
+ * `ci.yml` appelle le script, ET le script appelle la config. Si l'un des
+ * deux maillons manque, aucune spec de ce testDir ne compte comme gardee.
+ *
+ * ⛔ Volontairement STRICT : un faux « non garde » se voit (le garde rougit
+ * et dit quoi faire) ; un faux « garde » est le silence que #824 supprime.
+ *
+ * @param ciYaml        Texte de `.github/workflows/ci.yml` (ou '' s'il manque).
+ * @param scripts       `scripts` du `package.json` de `packages/tests`.
+ * @param scriptName    Nom du script qui doit lancer la config.
+ * @param configFile    Nom du fichier de config que ce script doit viser.
+ */
+export function isConfigWiredInCi ({ ciYaml, scripts, scriptName, configFile }) {
+    const script = scripts?.[scriptName]
+    if (typeof script !== 'string' || !script.includes(configFile)) return false
+    const pattern = new RegExp(`run\\s+${scriptName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\w:-])`)
+    return pattern.test(ciYaml ?? '')
+}
+
+/**
  * ⛔ CONTROLES DE NON-VACUITE — un balayage vide DOIT etre bloquant.
  *
  * Le piege est arrive dans ce depot : un garde livre dont la premiere
@@ -106,7 +150,7 @@ export function classifySpecs (allSpecs, gatedSpecs, baseline) {
  *
  * @returns Un message d'erreur, ou null si le balayage est exploitable.
  */
-export function blindnessCheck ({ allSpecs, histoireGated, marketingGated }) {
+export function blindnessCheck ({ allSpecs, histoireGated, marketingGated, playgroundOnDisk = [], playgroundListed = null }) {
     if (!allSpecs.length) {
         return 'ZERO fichier de spec lu sur le disque. Un balayage vide n\'est pas un succes : le garde n\'a rien mesure.'
     }
@@ -118,6 +162,11 @@ export function blindnessCheck ({ allSpecs, histoireGated, marketingGated }) {
     if (!marketingGated.size) {
         return 'Playwright --list (MARKETING_GREEN_ONLY=1, config marketing) n\'a rendu AUCUN fichier. '
             + 'Meme raisonnement que ci-dessus pour le job `test-e2e-marketing`.'
+    }
+    if (playgroundListed && playgroundOnDisk.length && !playgroundListed.size) {
+        return `${playgroundOnDisk.length} spec(s) sur le disque sous e2e-playground/, mais Playwright --list `
+            + '(playwright.playground.config.ts) n\'en a rendu AUCUNE. Soit le `testDir` de la config ne pointe plus '
+            + 'sur ce repertoire, soit l\'extraction est cassee. Dans les deux cas le verdict ne vaut rien.'
     }
     return null
 }

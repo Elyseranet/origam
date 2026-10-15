@@ -44,6 +44,7 @@
     "playground.preview.component_not_found": "component not registered",
     "playground.preview.instance_summary": "{name} · 1 instance",
     "playground.dock.handle": "Code · Snippets · Events",
-    "playground.dock.placeholder": "Available in a later lot.",
+    "playground.code.title": "Code",
+    "playground.code.empty": "The scene is empty — pick a component in the catalog to see its code.",
     "playground.host.mode_toggle_label": "Switch to {target}"
 }

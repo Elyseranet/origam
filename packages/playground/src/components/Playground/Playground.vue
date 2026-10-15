@@ -49,7 +49,11 @@
             </template>
         </playground-preview>
 
-        <playground-dock/>
+        <playground-dock>
+            <template #code>
+                <playground-code-panel :scene="scene"/>
+            </template>
+        </playground-dock>
 
         <playground-drawer
                 v-model="drawerOpen"
@@ -62,6 +66,7 @@
 
 <script setup lang="ts">
     import { computed, ref } from 'vue'
+    import PlaygroundCodePanel from './PlaygroundCodePanel.vue'
     import PlaygroundDock from './PlaygroundDock.vue'
     import PlaygroundDrawer from './PlaygroundDrawer.vue'
     import PlaygroundInspector from './PlaygroundInspector.vue'

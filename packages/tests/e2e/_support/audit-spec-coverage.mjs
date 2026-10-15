@@ -57,18 +57,30 @@
 
 import { spawnSync } from 'node:child_process'
 import { createRequire } from 'node:module'
-import { readdirSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { report, writeBaseline } from '../../../ds/scripts/guards/lib/baseline.mjs'
-import { blindnessCheck, classifySpecs, isScratchSpecPath, specFilesFromListReport } from './lib/spec-coverage.mjs'
+import { blindnessCheck, classifySpecs, isConfigWiredInCi, isScratchSpecPath, prefixSpecPaths, specFilesFromListReport } from './lib/spec-coverage.mjs'
 import { runFixtures } from './lib/spec-coverage.selftest.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const E2E_DIR = path.resolve(HERE, '..')
 const TESTS_PKG = path.resolve(E2E_DIR, '..')
 const BASELINE_PATH = path.join(HERE, 'baseline/spec-coverage.json')
+const REPO_ROOT = path.resolve(TESTS_PKG, '..', '..')
+const CI_YAML_PATH = path.join(REPO_ROOT, '.github/workflows/ci.yml')
+
+/*
+ * Le testDir du playground (#1143) — une troisieme config, a cote de
+ * Histoire et de Nuxt. Ses specs portent l'id `e2e-playground/<fichier>`,
+ * jamais leur seul nom : voir `prefixSpecPaths`.
+ */
+const PLAYGROUND_DIR_NAME = 'e2e-playground'
+const PLAYGROUND_DIR = path.join(TESTS_PKG, PLAYGROUND_DIR_NAME)
+const PLAYGROUND_CONFIG = 'playwright.playground.config.ts'
+const PLAYGROUND_SCRIPT = 'test:e2e:playground'
 
 const argv = process.argv.slice(2)
 
@@ -212,11 +224,35 @@ const marketingGated = listSpecFiles({
     env: { MARKETING_GREEN_ONLY: '1' }
 })
 
-const allSpecs = specsOnDisk(E2E_DIR).sort()
+/*
+ * ⛔ Le playground n'a pas de liste blanche : sa config execute tout son
+ * testDir. La liste est TOUJOURS demandee a Playwright (une config cassee
+ * doit faire rougir le garde), mais elle ne compte comme gardee que si un
+ * job de CI lance reellement cette config — voir `isConfigWiredInCi`.
+ */
+const playgroundOnDisk = existsSync(PLAYGROUND_DIR)
+    ? specsOnDisk(PLAYGROUND_DIR).map((f) => `${PLAYGROUND_DIR_NAME}/${f}`)
+    : []
+const playgroundListed = playgroundOnDisk.length
+    ? prefixSpecPaths(listSpecFiles({
+        label: 'test-e2e-playground (hote standalone, sans liste blanche)',
+        configArgs: [`--config=${PLAYGROUND_CONFIG}`],
+        env: { E2E_PLAYGROUND_PORT: '5199' }
+    }), PLAYGROUND_DIR_NAME)
+    : new Set()
+const playgroundWired = isConfigWiredInCi({
+    ciYaml: existsSync(CI_YAML_PATH) ? readFileSync(CI_YAML_PATH, 'utf8') : '',
+    scripts: JSON.parse(readFileSync(path.join(TESTS_PKG, 'package.json'), 'utf8')).scripts,
+    scriptName: PLAYGROUND_SCRIPT,
+    configFile: PLAYGROUND_CONFIG
+})
+const playgroundGated = playgroundWired ? playgroundListed : new Set()
+
+const allSpecs = [...specsOnDisk(E2E_DIR), ...playgroundOnDisk].sort()
 
 /* ⛔ Un balayage vide est BLOQUANT — un garde livre dans ce depot a deja
  * annonce `PASS` apres avoir lu zero fichier. */
-const blind = blindnessCheck({ allSpecs, histoireGated, marketingGated })
+const blind = blindnessCheck({ allSpecs, histoireGated, marketingGated, playgroundOnDisk, playgroundListed })
 if (blind) {
     console.log('─'.repeat(70))
     console.log('Guard: spec-coverage — BALAYAGE NON EXPLOITABLE')
@@ -226,7 +262,7 @@ if (blind) {
     process.exit(1)
 }
 
-const gated = new Set([...histoireGated, ...marketingGated])
+const gated = new Set([...histoireGated, ...marketingGated, ...playgroundGated])
 const { ungated, newUngated } = classifySpecs(allSpecs, gated, new Set())
 
 if (argv.includes('--update-baseline')) {
@@ -236,7 +272,11 @@ if (argv.includes('--update-baseline')) {
 }
 
 const details = new Map(
-    newUngated.map((f) => [f, `packages/tests/e2e/${f} — AUCUN job de CI ne l'execute. Ce qu'elle epingle n'est garde par rien.`])
+    newUngated.map((f) => [f, f.startsWith(`${PLAYGROUND_DIR_NAME}/`)
+        ? `packages/tests/${f} — AUCUN job de CI ne l'execute (${playgroundWired
+            ? 'la config playground ne la liste pas'
+            : `ci.yml n'appelle pas \`${PLAYGROUND_SCRIPT}\`, ou ce script ne vise pas ${PLAYGROUND_CONFIG}`}).`
+        : `packages/tests/e2e/${f} — AUCUN job de CI ne l'execute. Ce qu'elle epingle n'est garde par rien.`])
 )
 
 const exitCode = report({
@@ -246,12 +286,16 @@ const exitCode = report({
     detailsById: details,
     coverageNote: `${allSpecs.length} spec(s) sur le disque · ${histoireGated.size} executee(s) par le job test-e2e `
         + `(E2E_GREEN_ONLY=1) · ${marketingGated.size} par test-e2e-marketing (MARKETING_GREEN_ONLY=1) · `
+        + `${playgroundGated.size}/${playgroundOnDisk.length} de ${PLAYGROUND_DIR_NAME}/ par le job playground `
+        + `(${playgroundWired ? 'branche' : `NON branche : ci.yml n'appelle pas ${PLAYGROUND_SCRIPT}`}) · `
         + `${ungated.length} executee(s) par AUCUN job. Mesure en interrogeant Playwright lui-meme (--list), pas en `
         + `rejouant son filtrage. Ce garde ne dit rien de ce que ces specs VALENT : il dit seulement qu'aucune ne peut `
         + `desormais etre oubliee en silence.`,
     fixHint: 'Une spec neuve n\'a que deux fins legitimes, et il faut en choisir une :\n'
         + '  A — ELLE DOIT GARDER. L\'ajouter a `GREEN_SPECS` (packages/tests/playwright.config.ts), ou a\n'
         + '      `MARKETING_GREEN_SPECS` (playwright.marketing.config.ts) si elle vise le serveur Nuxt.\n'
+        + '      Une spec de e2e-playground/ n\'a pas de liste blanche : c\'est le job `playground` de ci.yml\n'
+        + `      qui doit appeler \`${PLAYGROUND_SCRIPT}\`, et ce script viser ${PLAYGROUND_CONFIG}.\n`
         + '      ⚠️ Ne l\'y mettre qu\'apres l\'avoir verifiee verte ET stable : `pnpm -F @origam/stories build`\n'
         + '      puis `E2E_STATIC=1 E2E_HISTOIRE_PORT=<libre> pnpm -F @origam/tests exec playwright test <spec>\n'
         + '      --project=chromium --repeat-each=5`. Une spec instable rendrait la CI rouge en permanence,\n'
