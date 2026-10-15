@@ -14,6 +14,7 @@ import { h } from 'vue'
 import OrigamSkeleton from '@origam/components/Skeleton/OrigamSkeleton.vue'
 import OrigamSkeletonGroup from '@origam/components/Skeleton/OrigamSkeletonGroup.vue'
 import { createOrigam } from '@origam/origam'
+import { SKELETON_VARIANT } from '@origam/enums'
 
 const mountSkeleton = (props: Record<string, unknown> = {}) =>
     mount(OrigamSkeleton, {props: props as never, global: {plugins: [createOrigam()]}})
@@ -158,5 +159,20 @@ describe('OrigamSkeletonGroup — one animation clock', () => {
         expect(inherits.classes()).toContain('origam--skeleton-wave')
         expect(overrides.classes()).toContain('origam--skeleton-none')
         expect(overrides.classes()).not.toContain('origam--skeleton-wave')
+    })
+})
+
+describe('OrigamSkeleton — variants (lot 3 of #1073: card / list-item removed)', () => {
+    it('exposes the four primitives and nothing else', () => {
+        expect(Object.values(SKELETON_VARIANT).sort()).toEqual(['circular', 'pill', 'rectangular', 'text'])
+    })
+
+    it.each(Object.values(SKELETON_VARIANT))('variant="%s" renders ONE block, never a composite wrapper', (variant) => {
+        const wrapper = mountSkeleton({variant})
+
+        expect(wrapper.findAll('.origam-skeleton')).toHaveLength(1)
+        expect(wrapper.find('.origam-skeleton').classes()).toContain(`origam-skeleton--${variant}`)
+        expect(wrapper.find('.origam-skeleton-wrapper').exists()).toBe(false)
+        expect(wrapper.find('.origam-skeleton__lines').exists()).toBe(false)
     })
 })

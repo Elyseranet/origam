@@ -18,6 +18,29 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Removed — `OrigamSkeleton` : les gabarits `card` et `list-item` (BREAKING, #1073 lot 3, #1083)
+
+Decision 4 de #1073. Les deux gabarits composites figes disparaissent ; il ne reste que les quatre primitives `text`, `rectangular`, `circular`, `pill`. Rupture assumee (pre-1.0, aucun consommateur externe), livree dans un minor.
+
+Retire :
+
+- `SKELETON_VARIANT.CARD` et `SKELETON_VARIANT.LIST_ITEM`, donc `TSkeletonVariant` ne vaut plus que `'text' | 'rectangular' | 'circular' | 'pill'` ;
+- les classes `.origam-skeleton-wrapper`, `.origam-skeleton-wrapper--card`, `.origam-skeleton-wrapper--list-item` et `.origam-skeleton__lines`, ainsi que leurs regles scoped. Aucun token n'est retire : `--origam-skeleton---gap` reste lu par `OrigamSkeletonGroup`.
+
+Les consommateurs internes avaient deja migre : `OrigamCard` (#1089, lot 2b) et `wireframe.vue` (#1084, lot 2c) ne passent plus par ces gabarits.
+
+Migration : `<origam-skeleton variant="card" />` et `variant="list-item"` rendaient un `<div class="origam-skeleton-wrapper--…">` de primitives. On compose maintenant ces primitives soi-meme dans un `OrigamSkeletonGroup`, qui porte l'unique annonce `role="status"` de la zone et la meme horloge d'animation :
+
+```vue
+<origam-skeleton-group>
+    <origam-skeleton variant="circular" />
+    <origam-skeleton variant="text" width="60%" />
+    <origam-skeleton variant="text" width="40%" />
+</origam-skeleton-group>
+```
+
+Un `variant="card"` ou `"list-item"` restant n'est plus type (erreur `vue-tsc`) ; a l'execution la classe `origam-skeleton--card` / `--list-item` n'a plus aucune regle CSS associee : il n'y a plus de gabarit.
+
 ## [2.26.2] - 2026-10-15
 
 ### Fixed — un theme sans `name` avec `mode` l'emporte sur la palette integree du meme mode (#1102)

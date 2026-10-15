@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: 'Unreleased',
+        date: null,
+        type: 'unreleased',
+        summaryKey: 'changelog.versions.unreleased.summary',
+        summaryFallback: '1 breaking change. See the full changelog for detail.',
+        highlights: [
+            { type: 'deprecated', textKey: 'changelog.versions.unreleased.h1', textFallback: 'OrigamSkeleton : les gabarits card et list-item (BREAKING, #1073 lot 3, #1083)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.26.2',
         date: '2026-10-15',
         type: 'patch',

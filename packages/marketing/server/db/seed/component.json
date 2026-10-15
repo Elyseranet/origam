@@ -179948,7 +179948,7 @@
         "domain": null,
         "icon": "mdi-shimmer",
         "description_key": "components.catalog.skeleton.description",
-        "description_fallback": "Loading placeholder with animated pulse shimmer. Supports text, rectangular, circular, card and list-item variants. Renders real content via the default slot when loading=false.",
+        "description_fallback": "Loading placeholder with an opacity pulse. Supports text, rectangular, circular and pill variants — primitives to compose inside an OrigamSkeletonGroup. Renders real content via the default slot when loading=false.",
         "definition": null,
         "signature": null,
         "tag": "origam-skeleton",
@@ -180023,38 +180023,20 @@
                 "value": "var(--origam-space---3)",
                 "tokenPath": "--origam-skeleton---gap",
                 "descriptionKey": "components.skeleton.tokens.gap",
-                "descriptionFallback": "Gap in list-item composite layout."
+                "descriptionFallback": "Gap of an OrigamSkeletonGroup."
               }
             ],
             "sourceFile": "packages/ds/src/assets/css/tokens/light.css"
           },
           "anatomy": {
-            "svg": "\n  <rect x=\"0\" y=\"0\" width=\"560\" height=\"200\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <text x=\"30\" y=\"30\" font-size=\"10\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" font-family=\"'JetBrains Mono',monospace\" font-style=\"italic\">list-item variant</text>\n  <rect x=\"20\" y=\"44\" width=\"520\" height=\"96\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\" stroke-dasharray=\"6 3\"/>\n  <circle cx=\"68\" cy=\"92\" r=\"32\" fill=\"var(--origam-color__surface---overlay, rgba(124,58,237,0.15))\"/>\n  <rect x=\"120\" y=\"72\" width=\"260\" height=\"16\" rx=\"4\" fill=\"var(--origam-color__surface---overlay, rgba(124,58,237,0.18))\"/>\n  <rect x=\"120\" y=\"98\" width=\"180\" height=\"12\" rx=\"4\" fill=\"var(--origam-color__surface---overlay, rgba(124,58,237,0.12))\" opacity=\"0.7\"/>\n  <text x=\"30\" y=\"165\" font-size=\"10\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" font-family=\"'JetBrains Mono',monospace\" font-style=\"italic\">rectangular variant (standalone)</text>\n  <rect x=\"20\" y=\"172\" width=\"520\" height=\"20\" rx=\"2\" fill=\"var(--origam-color__surface---overlay, rgba(124,58,237,0.18))\"/>\n  <circle cx=\"28\" cy=\"52\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"28\" y=\"56\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"50\" cy=\"70\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"50\" y=\"74\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"130\" cy=\"70\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"130\" y=\"74\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <circle cx=\"28\" cy=\"180\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"28\" y=\"184\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">4</text>\n",
-            "code": "<!-- loading=false → render real content -->\n<template v-if=\"!loading\">\n  <slot />\n</template>\n\n<!-- list-item composite -->\n<div\n  v-else-if=\"variant === 'list-item'\"\n  class=\"origam-skeleton-wrapper origam-skeleton-wrapper--list-item\"\n  role=\"status\"\n  aria-busy=\"true\"\n  aria-label=\"Loading\"\n>\n  <div class=\"origam-skeleton origam-skeleton--circular origam-skeleton--pulse\" />\n  <div class=\"origam-skeleton__lines\">\n    <div class=\"origam-skeleton origam-skeleton--text origam-skeleton--pulse\" />\n    <div class=\"origam-skeleton origam-skeleton--text origam-skeleton--pulse\" />\n  </div>\n</div>\n\n<!-- standalone block (rectangular / text / circular) -->\n<div\n  v-else\n  class=\"origam-skeleton origam-skeleton--rectangular origam-skeleton--pulse\"\n  role=\"status\"\n  aria-busy=\"true\"\n  aria-label=\"Loading\"\n/>",
+            "svg": "\n  <rect x=\"0\" y=\"0\" width=\"560\" height=\"100\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <text x=\"30\" y=\"30\" font-size=\"10\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" font-family=\"'JetBrains Mono',monospace\" font-style=\"italic\">rectangular variant (standalone)</text>\n  <rect x=\"20\" y=\"44\" width=\"520\" height=\"40\" rx=\"2\" fill=\"var(--origam-color__surface---overlay, rgba(124,58,237,0.18))\"/>\n  <circle cx=\"28\" cy=\"52\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"28\" y=\"56\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n",
+            "code": "<!-- loading=false → render real content -->\n<template v-if=\"!loading\">\n  <slot />\n</template>\n\n<!-- placeholder block (text / rectangular / circular / pill) -->\n<div\n  v-else\n  class=\"origam-skeleton origam-skeleton--rectangular origam--skeleton\"\n  role=\"status\"\n  aria-busy=\"true\"\n  aria-label=\"Loading\"\n/>",
             "legend": [
               {
-                "cls": ".origam-skeleton-wrapper",
+                "cls": ".origam-skeleton",
                 "num": 1,
-                "descriptionKey": "components.skeleton.anatomy.wrapper",
-                "descriptionFallback": "Composite variant container rendered for card and list-item variants. Carries the variant modifier class (e.g. origam-skeleton-wrapper--list-item)."
-              },
-              {
-                "cls": ".origam-skeleton--circular",
-                "num": 2,
-                "descriptionKey": "components.skeleton.anatomy.circular",
-                "descriptionFallback": "Circular avatar placeholder inside the list-item wrapper. Has the spin animation when pulse=true."
-              },
-              {
-                "cls": ".origam-skeleton--text (inside __lines)",
-                "num": 3,
-                "descriptionKey": "components.skeleton.anatomy.text_lines",
-                "descriptionFallback": "Text line placeholders. The first line is 60% width, the second 40% with reduced opacity."
-              },
-              {
-                "cls": ".origam-skeleton--rectangular / --text (standalone)",
-                "num": 4,
                 "descriptionKey": "components.skeleton.anatomy.standalone",
-                "descriptionFallback": "The single-block element rendered for rectangular, text and circular variants (no composite wrapper)."
+                "descriptionFallback": "The single-block element rendered for every variant (text, rectangular, circular, pill). Inside an OrigamSkeletonGroup it is aria-hidden and the group makes the one announcement."
               }
             ],
             "classes": [
@@ -180077,38 +180059,13 @@
                 "cls": "origam-skeleton--circular",
                 "descriptionKey": "components.skeleton.anatomy.modifier_circular",
                 "descriptionFallback": "Circular block. Height mirrors width."
-              },
-              {
-                "cls": "origam-skeleton--pulse",
-                "descriptionKey": "components.skeleton.anatomy.modifier_pulse",
-                "descriptionFallback": "Activates wave shimmer (text/rectangular) or spin (circular) animation."
-              },
-              {
-                "cls": "origam-skeleton-wrapper",
-                "descriptionKey": "components.skeleton.anatomy.wrapper_class",
-                "descriptionFallback": "Container for composite variants (card, list-item)."
-              },
-              {
-                "cls": "origam-skeleton-wrapper--list-item",
-                "descriptionKey": "components.skeleton.anatomy.wrapper_list_item",
-                "descriptionFallback": "List-item composite layout (avatar + text lines)."
-              },
-              {
-                "cls": "origam-skeleton-wrapper--card",
-                "descriptionKey": "components.skeleton.anatomy.wrapper_card",
-                "descriptionFallback": "Card composite layout (image block + text lines)."
-              },
-              {
-                "cls": "origam-skeleton__lines",
-                "descriptionKey": "components.skeleton.anatomy.lines",
-                "descriptionFallback": "Text lines column inside list-item wrapper."
               }
             ],
-            "svgDesc": "Schematic of the Skeleton component with 4 numbered parts for the list-item variant.",
+            "svgDesc": "Schematic of the Skeleton component with 1 numbered part: the placeholder block.",
             "svgTitle": "Anatomy of OrigamSkeleton",
             "rootClass": "origam-skeleton",
-            "figcaption": "Anatomy of <code>&lt;origam-skeleton&gt;</code> — 4 parts: composite wrapper ①, circular avatar block ②, text lines ③, and the standalone rectangular/text block ④.",
-            "svgViewBox": "0 0 560 200"
+            "figcaption": "Anatomy of <code>&lt;origam-skeleton&gt;</code> — 1 part: the placeholder block ①.",
+            "svgViewBox": "0 0 560 100"
           },
           "cssVars": [
             {
@@ -180145,7 +180102,7 @@
               "name": "--origam-skeleton---gap",
               "defaultValue": "{space.3}",
               "descriptionKey": "components.skeleton.css_vars.gap",
-              "descriptionFallback": "Gap between avatar and text lines in list-item variant."
+              "descriptionFallback": "Gap of an OrigamSkeletonGroup."
             },
             {
               "name": "--origam-skeleton---wave-color",
@@ -180209,14 +180166,6 @@
                   {
                     "label": "circular",
                     "value": "circular"
-                  },
-                  {
-                    "label": "card",
-                    "value": "card"
-                  },
-                  {
-                    "label": "list-item",
-                    "value": "list-item"
                   }
                 ],
                 "labelKey": "components.skeleton.playground.variant",
@@ -180290,20 +180239,6 @@
                 "width": 48,
                 "variant": "circular"
               }
-            },
-            {
-              "label": "card",
-              "props": {
-                "width": 200,
-                "variant": "card"
-              }
-            },
-            {
-              "label": "list-item",
-              "props": {
-                "width": 260,
-                "variant": "list-item"
-              }
             }
           ]
         },
@@ -180324,7 +180259,7 @@
           "position": 0,
           "default_value": "'rectangular'",
           "description_key": "components.skeleton.props.variant.description",
-          "description_fallback": "Skeleton shape preset. 'text' → single-line text height, 'rectangular' → block shape, 'circular' → circle (height mirrors width), 'card' → image + 3 text lines, 'list-item' → avatar circle + 2 text lines."
+          "description_fallback": "Skeleton shape primitive. 'text' → single-line text height, 'rectangular' → block shape, 'circular' → circle (height mirrors width), 'pill' → fully rounded capsule."
         },
         {
           "name": "width",
@@ -180585,14 +180520,14 @@
           "position": 0,
           "title_key": "components.skeleton.examples.basic.title",
           "title_fallback": "Basic variants",
-          "code": "<template>\n  <div style=\"display: flex; flex-direction: column; gap: 1rem;\">\n    <origam-skeleton variant=\"text\"        :width=\"200\" />\n    <origam-skeleton variant=\"rectangular\" :width=\"200\" :height=\"80\" />\n    <origam-skeleton variant=\"circular\"    :width=\"48\" />\n    <origam-skeleton variant=\"card\"        :width=\"200\" />\n    <origam-skeleton variant=\"list-item\"   :width=\"260\" />\n  </div>\n</template>",
+          "code": "<template>\n  <div style=\"display: flex; flex-direction: column; gap: 1rem;\">\n    <origam-skeleton variant=\"text\"        :width=\"200\" />\n    <origam-skeleton variant=\"rectangular\" :width=\"200\" :height=\"80\" />\n    <origam-skeleton variant=\"circular\"    :width=\"48\" />\n    <origam-skeleton variant=\"pill\" />\n  </div>\n</template>",
           "lang": "vue"
         },
         {
           "position": 1,
           "title_key": "components.skeleton.examples.loading.title",
           "title_fallback": "Loading gate",
-          "code": "<template>\n  <origam-skeleton variant=\"card\" :loading=\"isLoading\">\n    <!-- Real content shown when isLoading=false -->\n    <origam-card title=\"Article title\" subtitle=\"Author · Date\">\n      <p>Full article content goes here.</p>\n    </origam-card>\n  </origam-skeleton>\n</template>\n<script setup>\nconst isLoading = ref(true)\nsetTimeout(() => { isLoading.value = false }, 2000)\n</script>",
+          "code": "<template>\n  <origam-skeleton-group>\n    <origam-skeleton variant=\"circular\" />\n    <origam-skeleton variant=\"text\" width=\"60%\" />\n    <origam-skeleton variant=\"text\" width=\"40%\" />\n  </origam-skeleton-group>\n</template>",
           "lang": "vue"
         },
         {
