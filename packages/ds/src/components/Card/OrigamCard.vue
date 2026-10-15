@@ -162,7 +162,10 @@
 					</div>
 				</template>
 
-				<div class="origam-card__content">
+				<div
+						class="origam-card__content"
+						:style="contentStyles"
+				>
 					<template v-if="hasText">
 						<slot name="text">
 							<origam-card-text
@@ -564,6 +567,10 @@
 			props.style
 		] as StyleValue
 	})
+	// Instance-level `contentDisplay` rides INLINE on the wrapper itself (not
+	// as a custom property on the root): a custom property would inherit
+	// into any Card nested in the slot and flatten its content too.
+	const contentStyles = computed(() => props.contentDisplay ? {display: props.contentDisplay} : undefined)
 	const cardProgressClasses = computed(() => {
 		return [
 			'origam-card__progress',
@@ -671,6 +678,10 @@
 		border-start-end-radius: var(--origam-card---border-start-end-radius, 0);
 		border-end-end-radius: var(--origam-card---border-end-end-radius, 0);
 		border-end-start-radius: var(--origam-card---border-end-start-radius, 0);
+
+		&__content {
+			display: var(--origam-card__content---display, block);
+		}
 
 		&__asset {
 			aspect-ratio: var(--origam-card__asset---aspect-ratio, 16 / 9);

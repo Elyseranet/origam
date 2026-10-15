@@ -18,7 +18,7 @@ import type {
 import type { IDensityProps } from '../Commons/density.interface'
 import type { IDimensionProps } from '../Commons/dimension.interface'
 import type { IElevationProps } from '../Commons/elevation.interface'
-import type { IHoverEmits } from '../Commons/hover.interface'
+import type { IHoverEmits, IHoverProps } from '../Commons/hover.interface'
 import type { ILinkProps } from '../Commons/router.interface'
 import type { ILoaderProps } from '../Commons/loader.interface'
 import type { ILocationProps } from '../Commons/location.interface'
@@ -28,7 +28,7 @@ import type { IPositionProps } from '../Commons/position.interface'
 import type { IRippleProps } from '../Commons/ripple.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
 
-import type { TCardType } from '../../types/Card/card.type'
+import type { TCardContentDisplay, TCardType } from '../../types/Card/card.type'
 
 // `IColorProps` exposes `color` / `bgColor` / hover / active colour
 // hooks. Pre-fix `ICardProps` did NOT extend it, so a consumer
@@ -40,12 +40,18 @@ import type { TCardType } from '../../types/Card/card.type'
 // `IActiveProps` adds `active?: boolean | IStateEffectConfig` /
 // `activeClass?: string` so `useStateFlag` can vmodel the pressed state
 // and `useStateEffect` resolves the `active` object's `color` /
-// `bgColor` overrides. The `hover` boolean already lives locally on the
-// component (legacy — used as a force-hover flag, see `OrigamCard.vue`).
-export interface ICardProps extends ICommonsComponentProps, ITagProps, IBorderProps, IColorProps, IBgColorProps, IDensityProps, IDimensionProps, IElevationProps, ILoaderProps, ILocationProps, IPositionProps, IRoundedProps, IMarginProps, IPaddingProps, ILinkProps, IRippleProps, IAdjacentProps, IActiveProps {
+// `bgColor` overrides. `IHoverProps` types `hover` as `boolean | IStateEffectConfig`
+// (#1100) — the runtime already read the object form.
+export interface ICardProps extends ICommonsComponentProps, ITagProps, IBorderProps, IColorProps, IBgColorProps, IDensityProps, IDimensionProps, IElevationProps, ILoaderProps, ILocationProps, IPositionProps, IRoundedProps, IMarginProps, IPaddingProps, ILinkProps, IRippleProps, IAdjacentProps, IActiveProps, IHoverProps {
+    /**
+     * `display` of the `.origam-card__content` wrapper around the default
+     * and `text` slots (#1100). `contents` flattens it so the slotted
+     * children become direct items of the card's own grid / flex layout.
+     * Defaults to the `--origam-card__content---display` token (`block`).
+     */
+    contentDisplay?: TCardContentDisplay
     disabled?: boolean
     flat?: boolean
-    hover?: boolean
     image?: string
     link?: boolean
     subtitle?: string | number
