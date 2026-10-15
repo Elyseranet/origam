@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.27.0] - 2026-10-15
+
 ### Removed — `OrigamSkeleton` : les gabarits `card` et `list-item` (BREAKING, #1073 lot 3, #1083)
 
 Decision 4 de #1073. Les deux gabarits composites figes disparaissent ; il ne reste que les quatre primitives `text`, `rectangular`, `circular`, `pill`. Rupture assumee (pre-1.0, aucun consommateur externe), livree dans un minor.
