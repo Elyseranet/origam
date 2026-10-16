@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.32.1] - 2026-10-16
+
 ### Fixed — trois avertissements console en dev (#1152)
 
 Relevés pendant les e2e du playground, tous trois venaient de `packages/ds/src`, donc de tous les consommateurs en mode dev :

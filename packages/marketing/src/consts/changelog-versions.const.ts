@@ -18,13 +18,13 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
-        version: 'Unreleased',
-        date: null,
-        type: 'unreleased',
-        summaryKey: 'changelog.versions.unreleased.summary',
+        version: '2.32.1',
+        date: '2026-10-16',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2321.summary',
         summaryFallback: '1 fix. See the full changelog for detail.',
         highlights: [
-            { type: 'fixed', textKey: 'changelog.versions.unreleased.h1', textFallback: 'trois avertissements console en dev (#1152)' }
+            { type: 'fixed', textKey: 'changelog.versions.v2321.h1', textFallback: 'trois avertissements console en dev (#1152)' }
         ]
     },
     {
