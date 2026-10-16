@@ -159,7 +159,13 @@ const MARKETING_GREEN_SPECS = [
     // directive, intactes avant le correctif) ; stabilite 25 passed en
     // `--repeat-each=5 --retries=0` ; vert aussi sur une base `db:migrate`
     // + `docs:seed` SEULS, la provision exacte du job CI.
-    'marketing-reference-row-list.spec.ts'
+    'marketing-reference-row-list.spec.ts',
+
+    // #1145 — /components/{slug} et /theming rendent par le moteur du
+    // playground. Mesure d'admission : contrôle positif 10/10 ROUGES contre le
+    // parent `7c3f0b1fb` (ancien `ComponentLivePreview`), 50/50 en
+    // `--repeat-each=5 --retries=0`, serveur de dev isolé sur un port à nous.
+    'marketing-playground-host.spec.ts'
 ]
 
 /*

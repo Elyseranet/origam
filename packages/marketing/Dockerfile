@@ -36,7 +36,8 @@ COPY packages/docs/package.json packages/docs/package.json
 COPY packages/stories/package.json packages/stories/package.json
 COPY packages/tests/package.json packages/tests/package.json
 COPY packages/marketing/package.json packages/marketing/package.json
-# marketing imports the prop-group classification from @origam/playground (#1141).
+# marketing hosts @origam/playground: prop-group classification (#1141), the
+# engine and its committed catalogue (#1145).
 COPY packages/playground/package.json packages/playground/package.json
 
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store \

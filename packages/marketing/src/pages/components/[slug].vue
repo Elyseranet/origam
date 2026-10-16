@@ -167,20 +167,26 @@
               data-cy="component-preview-stage"
             >
               <div
-                v-for="variant in displayDoc?.previewVariants"
+                v-for="variant in heroVariants"
                 :key="variant.label"
                 class="component-hero__preview-variant"
                 :data-cy="`preview-variant-${variantSlugOf(variant.label)}`"
               >
-                <component-live-preview
-                  :slug="slug"
-                  :doc="displayDoc"
-                  :user-props="variant.props"
-                  :slot-content="variant.slotContent"
-                  :instance-aria-label="variant.ariaLabel"
-                  :data-cy-suffix="`variant-${variantSlugOf(variant.label)}`"
-                  :curated-reason="false"
-                />
+                <client-only>
+                  <template v-if="hostEntry">
+                    <playground-scene-node
+                      v-for="root in variant.roots"
+                      :key="root.id"
+                      :instance="root"
+                      :registry="hostEntry.registry"
+                    />
+                  </template>
+                  <template #fallback>
+                    <p class="component-preview__loading">
+                      {{ previewLoadingText }}
+                    </p>
+                  </template>
+                </client-only>
                 <span class="component-hero__preview-variant-label">{{ variant.label }}</span>
               </div>
             </div>
@@ -775,89 +781,57 @@
                 </p>
               </header>
 
-              <div class="component-playground__layout">
-                <div
-                  v-if="hasPlaygroundControls"
-                  class="component-playground__controls"
-                  :aria-label="t('components.detail.playground.controls_label', 'Controls')"
+              <p
+                v-if="unavailableReasonText"
+                class="component-preview__fallback"
+                :data-cy="`preview-reason-${slug}`"
+              >
+                {{ unavailableReasonText }}
+              </p>
+
+              <client-only>
+                <playground
+                  v-if="hostEntry && playgroundScene"
+                  v-model:scene="playgroundScene"
+                  :registry="hostEntry.registry"
+                  :theme="playgroundTheme"
+                  :mode="playgroundMode"
+                  class="component-playground__engine"
+                  data-cy="component-playground-engine"
                 >
-                  <p class="component-playground__controls-heading">
-                    {{ t('components.detail.playground.controls_label', 'Controls') }}
-                  </p>
-                  <div
-                    v-for="ctrl in playgroundControls"
-                    :key="ctrl.prop"
-                    class="component-playground__control"
-                    :data-cy="`playground-ctrl-${ctrl.prop}`"
-                  >
+                  <template #toolbar>
                     <origam-select
-                      v-if="ctrl.kind === 'select'"
-                      v-model="playgroundProps[ctrl.prop]"
-                      :label="t(ctrl.labelKey, ctrl.labelFallback)"
-                      :items="ctrl.options?.map(o => ({ title: o.label, value: o.value })) ?? []"
+                      v-model="playgroundTheme"
+                      :items="playgroundThemeItems"
+                      :label="playgroundThemeLabel"
                       density="compact"
                       variant="outlined"
                       hide-details
-                      class="component-playground__select"
-                      @update:model-value="markControlEdited(ctrl.prop)"
+                      class="component-playground__theme"
+                      data-cy="component-playground-theme"
                     />
-
-                    <div
-                      v-else-if="ctrl.kind === 'switch'"
-                      class="component-playground__switch-row"
+                    <origam-btn
+                      variant="ghost"
+                      :prepend-icon="playgroundModeIcon"
+                      :aria-label="playgroundModeLabel"
+                      data-cy="component-playground-mode"
+                      @click="handleTogglePlaygroundMode"
                     >
-                                            <span class="component-playground__switch-label">
-                                                {{ t(ctrl.labelKey, ctrl.labelFallback) }}
-                                            </span>
-                      <origam-switch
-                        v-model="playgroundProps[ctrl.prop]"
-                        :aria-label="t(ctrl.labelKey, ctrl.labelFallback)"
-                        density="compact"
-                        hide-details
-                        class="component-playground__switch"
-                        @update:model-value="markControlEdited(ctrl.prop)"
-                      />
-                    </div>
-
-                    <origam-text-field
-                      v-else-if="ctrl.kind === 'text'"
-                      v-model="playgroundProps[ctrl.prop]"
-                      :label="t(ctrl.labelKey, ctrl.labelFallback)"
-                      density="compact"
-                      variant="outlined"
-                      hide-details
-                      class="component-playground__text"
-                      @update:model-value="markControlEdited(ctrl.prop)"
-                    />
-                  </div>
-                </div>
-
-                <div class="component-playground__right">
-                  <div
-                    class="component-playground__preview"
-                    :aria-label="t('components.detail.playground.preview_label', 'Live preview')"
-                    aria-live="polite"
-                    data-cy="playground-preview"
+                      <template #default>
+                        {{ playgroundModeLabel }}
+                      </template>
+                    </origam-btn>
+                  </template>
+                </playground>
+                <template #fallback>
+                  <p
+                    class="component-preview__loading"
+                    :data-cy="`preview-loading-${slug}`"
                   >
-                    <component-live-preview
-                      :slug="slug"
-                      :doc="displayDoc"
-                      :user-props="playgroundEditedProps"
-                      :unedited-props="playgroundUneditedProps"
-                    />
-                  </div>
-
-                </div>
-              </div>
-
-              <origam-code
-                :code="generatedCode"
-                lang="vue"
-                :filename="t('components.detail.playground.code_label', 'Generated code')"
-                copyable
-                class="component-playground__generated-code"
-                data-cy="playground-generated-code"
-              />
+                    {{ previewLoadingText }}
+                  </p>
+                </template>
+              </client-only>
             </section>
 
             <section
@@ -1114,12 +1088,25 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, reactive, onMounted, onUnmounted } from 'vue'
+  import { computed, ref, shallowRef, watch, onMounted, onUnmounted } from 'vue'
   import { useRoute } from 'vue-router'
+  import { Playground, PlaygroundSceneNode } from '@origam/playground/components'
+  import { catalogNameOfTag } from '@origam/playground/catalog'
+  import { useTheme } from 'origam/composables'
+  import type { TModeResolved } from 'origam/types'
+  import type { IPlaygroundScene } from '@origam/playground/interfaces'
   import { useT } from '~/composables/useT'
   import { useCopy } from '~/composables/useCopy'
   import { useReferenceDoc } from '~/composables/useApiReference'
-  import { previewAdapterFor, previewSlotTextFor, previewUnavailableReasonFor } from '~/utils/component-preview.util'
+  import { usePlaygroundHost } from '~/composables/usePlaygroundHost'
+  import {
+    COMPONENT_PLAYGROUND_OVERLAY_ATTACH,
+    PLAYGROUND_HOST_THEMES,
+    PLAYGROUND_RENDERED_BY_PARENT_TEXT,
+    PLAYGROUND_UNAVAILABLE_REASONS
+  } from '~/consts/playground-host.const'
+  import type { IPlaygroundHostEntry } from '~/interfaces/playground-host.interface'
+  import { withVariant } from '~/utils/playground-host.util'
   import { propCopyAttr } from '~/utils/reference-row.util'
   import type { IComponentDoc } from '~/interfaces/components-catalog.interface'
   import type { IReferenceRow } from '~/interfaces/reference-row.interface'
@@ -1157,17 +1144,10 @@
   const hasComposable = computed(() => !!displayDoc.value?.composable)
   const hasA11y = computed(() => !!displayDoc.value?.a11y)
   const hasTokens = computed(() => !!displayDoc.value?.tokens)
-  const playgroundControls = computed(() => displayDoc.value?.playground?.controls ?? [])
-  const hasPlaygroundControls = computed(() => playgroundControls.value.length > 0)
-
-  /* Un composant sans contrôle éditable mérite quand même son aperçu : 8 fiches
-     n'exposent aucune prop jouable, et le playground disparaissait entièrement —
-     donc aucun rendu nulle part. L'adaptateur d'aperçu suffit à ouvrir la section. */
-  const hasPlayground = computed(() =>
-    hasPlaygroundControls.value || !!previewAdapterFor(slug.value).previewProps
-    || !!previewAdapterFor(slug.value).slotChildren
-    || !!previewUnavailableReasonFor(slug.value)
-  )
+  /* Le moteur du playground monte n'importe quel composant du catalogue
+     (219) : la section existe dès que le tag de la fiche y est connu. */
+  const playgroundComponentName = computed(() => catalogNameOfTag(componentTag.value) ?? null)
+  const hasPlayground = computed(() => !!playgroundComponentName.value)
   const hasPreview = computed(() => (displayDoc.value?.previewVariants?.length ?? 0) > 0)
 
   const familyMembers = computed(() =>
@@ -1262,66 +1242,91 @@
   /* ── Aperçu live ──────────────────────────────────────────────────── */
   const variantSlugOf = (label: string): string => label.replace(/\s+/g, '-')
 
-  /* ── Playground state ─────────────────────────────────────────────── */
-  const playgroundProps = reactive<Record<string, string | number | boolean>>({})
+  /*********************************************************
+   * Playground (lot E, #1145)
+   *
+   * @description
+   * Le moteur du playground remplace l'ancien aperçu (`ComponentLivePreview`) :
+   * mêmes snippets que l'ancienne table d'adaptateurs, mais un registre, une
+   * scène éditable, un panneau Code et un log d'emits. Chargé côté client
+   * seulement (`usePlaygroundHost` : ids de scène aléatoires), au montage et à
+   * chaque changement de fiche.
+   *
+   * Le thème et le mode de la preview sont ceux du site au montage, puis
+   * pilotés par la barre d'outils du playground — ils ne changent jamais le
+   * thème du site lui-même.
+   ********************************************************/
+  const host = usePlaygroundHost({ overlayAttach: COMPONENT_PLAYGROUND_OVERLAY_ATTACH })
+  const hostEntry = shallowRef<IPlaygroundHostEntry | null>(null)
+  const playgroundScene = ref<IPlaygroundScene | null>(null)
 
-  /* ⛔ On distingue « valeur par défaut du contrôle » et « valeur choisie par
-     l'utilisateur ». Les défauts sont extraits du DS : ils décrivent le
-     composant, pas une intention. Les confondre obligeait à filtrer `''` et
-     `false` avant la fusion pour ne pas écraser l'adaptateur curaté — et rendait
-     toute prop booléenne impossible à décocher (#739). */
-  const editedControls = ref<Set<string>>(new Set())
-
-  const markControlEdited = (prop: string) => {
-    editedControls.value.add(prop)
+  const loadPlayground = async () => {
+    const name = playgroundComponentName.value
+    hostEntry.value = null
+    playgroundScene.value = null
+    if (!name) return
+    const entry = await host.load(name, { slotContent: displayDoc.value?.playground?.defaultSlotContent })
+    if (entry?.componentName !== playgroundComponentName.value) return
+    hostEntry.value = entry
+    playgroundScene.value = entry.createScene()
   }
 
-  const initPlayground = () => {
-    const controls = displayDoc.value?.playground?.controls ?? []
-    editedControls.value = new Set()
-    controls.forEach(ctrl => {
-      playgroundProps[ctrl.prop] = ctrl.defaultValue
-    })
+  watch(playgroundComponentName, () => {
+    if (import.meta.client) loadPlayground()
+  })
+
+  const unavailableReasonText = computed(() => {
+    const name = playgroundComponentName.value
+    const parent = hostEntry.value?.renderedByParent
+    if (parent) return t(PLAYGROUND_RENDERED_BY_PARENT_TEXT.key, PLAYGROUND_RENDERED_BY_PARENT_TEXT.fallback.replace('{parent}', parent), { parent })
+    const reason = name ? PLAYGROUND_UNAVAILABLE_REASONS[name] : undefined
+    return reason && !hostEntry.value?.hasSnippet ? t(reason.key, reason.fallback) : ''
+  })
+
+  const previewLoadingText = computed(() => t('components.detail.preview.loading', 'Rendering the live preview…'))
+
+  const { theme: siteTheme, resolvedMode: siteMode } = useTheme()
+  const playgroundTheme = ref<string>(siteTheme.value)
+  const playgroundMode = ref<TModeResolved>(siteMode.value)
+
+  const playgroundThemeItems = computed(() =>
+    PLAYGROUND_HOST_THEMES.map(theme => ({ title: t(theme.labelKey, theme.labelFallback), value: theme.key }))
+  )
+  const playgroundThemeLabel = computed(() => t('components.playground.theme_label', 'Preview theme'))
+  const isPlaygroundDark = computed(() => playgroundMode.value === 'dark')
+  const playgroundModeIcon = computed(() => (isPlaygroundDark.value ? 'mdi-weather-sunny' : 'mdi-weather-night'))
+  const playgroundModeLabel = computed(() => (isPlaygroundDark.value
+    ? t('components.playground.mode_to_light', 'Light preview')
+    : t('components.playground.mode_to_dark', 'Dark preview')))
+
+  const handleTogglePlaygroundMode = () => {
+    playgroundMode.value = isPlaygroundDark.value ? 'light' : 'dark'
   }
 
-  const playgroundEditedProps = computed(() =>
-    Object.fromEntries(
-      Object.entries(playgroundProps).filter(([ prop ]) => editedControls.value.has(prop))
-    )
-  )
-
-  const playgroundUneditedProps = computed(() =>
-    Object.fromEntries(
-      Object.entries(playgroundProps).filter(([ prop ]) => !editedControls.value.has(prop))
-    )
-  )
-
-  const generatedCode = computed(() => {
-    const tag = componentTag.value
-    const doc = displayDoc.value
-    if (!doc?.playground) return `<${ tag } />`
-
-    const slotContent = previewSlotTextFor(slug.value, doc)
-    const attrs = Object.entries(playgroundProps)
-      .filter(([ , v ]) => v !== '' && v !== false && v !== undefined)
-      .map(([ k, v ]) => {
-        const kebab = k.replace(/([A-Z])/g, '-$1').toLowerCase()
-        if (typeof v === 'boolean') return v ? kebab : null
-        return `${ kebab }="${ v }"`
-      })
-      .filter(Boolean)
-
-    const attrsStr = attrs.length ? '\n  ' + attrs.join('\n  ') + '\n' : ''
-    if (slotContent) {
-      return `<${ tag }${ attrsStr ? attrsStr : ' ' }>\n  ${ slotContent }\n</${ tag }>`
-    }
-    return attrs.length
-      ? `<${ tag }\n  ${ attrs.join('\n  ') }\n/>`
-      : `<${ tag } />`
+  /*********************************************************
+   * Hero preview band
+   *
+   * @description
+   * Les variantes CURATÉES de la fiche (`previewVariants`, en base), rendues
+   * par le même moteur : chaque variante est le snippet par défaut du
+   * composant, avec ses props et son texte de slot posés sur l'instance
+   * documentée (`withVariant`). Une raison « ne peut pas se rendre seul » ne
+   * s'applique jamais ici : ces variantes, elles, se rendent.
+   ********************************************************/
+  const heroVariants = computed(() => {
+    const entry = hostEntry.value
+    const name = playgroundComponentName.value
+    const base = entry ? entry.createScene().roots : []
+    return (displayDoc.value?.previewVariants ?? []).map(variant => ({
+      label: variant.label,
+      roots: name
+        ? withVariant(base, name, { ...variant.props, ...(variant.ariaLabel ? { 'aria-label': variant.ariaLabel } : {}) }, variant.slotContent)
+        : []
+    }))
   })
 
   onMounted(() => {
-    initPlayground()
+    loadPlayground()
     initIntersectionObserver()
   })
 
@@ -2121,97 +2126,34 @@
 
   /* ── PLAYGROUND ───────────────────────────────────────────── */
   .component-playground {
-    &__layout {
-      display: grid;
-      grid-template-columns: 220px 1fr;
+    &__engine {
+      --pg---height: var(--component-playground__engine---height, 44rem);
+
       border: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
       border-radius: var(--origam-radius---card, 4px);
-      overflow: hidden;
-      box-shadow: var(--origam-shadow---card-elevated, 0 1px 3px rgba(0, 0, 0, 0.06));
-
-      @media (max-width: 1024px) {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    &__controls {
-      background: var(--origam-color__surface---sunken, #f5f5f5);
-      border-inline-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-      padding: var(--origam-space---5, 1.25rem);
-      display: flex;
-      flex-direction: column;
-      gap: var(--origam-space---4, 1rem);
-
-      @media (max-width: 1024px) {
-        border-inline-end: none;
-        border-block-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
-      }
-
-      &-heading {
-        margin: 0;
-        font-size: var(--origam-font-size---xs, 0.75rem);
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--origam-color__text---tertiary, #737373);
-        padding-block-end: var(--origam-space---3, 0.75rem);
-        border-block-end: 1px solid var(--origam-color__border---subtle, rgba(0, 0, 0, 0.04));
-      }
-    }
-
-    &__control {
-      display: flex;
-      flex-direction: column;
-    }
-
-    &__switch-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--origam-space---3, 0.75rem);
-      padding-block: var(--origam-space---1, 0.25rem);
-    }
-
-    &__switch-label {
-      font-size: var(--origam-font-size---xs, 0.75rem);
-      font-weight: 600;
-      color: var(--origam-color__text---secondary, #525252);
-    }
-
-    &__right {
-      display: flex;
-      flex-direction: column;
-    }
-
-    &__preview {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex: 1;
-      min-block-size: 200px;
-      padding: var(--origam-space---8, 2rem);
-      background: color-mix(in srgb, var(--origam-color__surface---sunken, #f5f5f5) 50%, transparent);
 
       /*
-       * `contain: layout` makes this box the CONTAINING BLOCK for any
-       * `position: fixed` / `position: absolute` descendant — per the CSS
-       * spec, not a hack. `<OrigamOverlay>`'s root is `position: fixed;
-       * inset: 0` by default (it's meant to be a full-viewport modal
-       * wrapper). Without this, an overlay rendered in place via `attach`
-       * (Dialog, Menu, Tooltip, Snackbar, …) stays a DOM descendant of this
-       * box but paints relative to the real viewport instead — measured in
-       * Chromium: with `attach` alone, the overlay content landed outside
-       * this box's screen rect even though `box.contains(content)` was
-       * true. Adding `contain: layout` here confines it to this box's own
-       * rect. See `component-preview.const.ts`'s "Overlays" section.
+       * `contain: layout` makes the preview stage the CONTAINING BLOCK for any
+       * `position: fixed` descendant — per the CSS spec, not a hack.
+       * `<OrigamOverlay>`'s root is `position: fixed; inset: 0` by default;
+       * an overlay rendered in place via `attach`
+       * (`COMPONENT_PLAYGROUND_OVERLAY_ATTACH`) would otherwise stay a DOM
+       * descendant of the stage while painting against the viewport (#945).
        */
-      contain: layout;
+      :deep(.pg-preview__stage) {
+        contain: layout;
+      }
     }
 
-    &__generated-code {
-      inline-size: 100%;
-      margin-block-start: var(--origam-space---4, 1rem);
+    &__theme {
+      min-inline-size: var(--component-playground__theme---min-inline-size, 10rem);
     }
+  }
+
+  .component-preview__loading {
+    margin: 0;
+    font-size: var(--origam-font-size---sm, 0.875rem);
+    color: var(--origam-color__text---tertiary, #737373);
   }
 
   /* ── PREVIEW FALLBACK ─────────────────────────────────────── */

@@ -439,6 +439,215 @@
                 "experimental": "expérimental",
                 "deprecated": "déprécié"
             }
+        },
+        "playground": {
+            "snippet": {
+                "preview_label": "Aperçu",
+                "chart": {
+                    "series_revenue": "Revenus",
+                    "series_costs": "Coûts",
+                    "month_jan": "Janv.",
+                    "month_feb": "Févr.",
+                    "month_mar": "Mars",
+                    "month_apr": "Avr.",
+                    "month_may": "Mai",
+                    "month_jun": "Juin",
+                    "series_progress": "Progression"
+                },
+                "common": {
+                    "one": "Un",
+                    "two": "Deux",
+                    "three": "Trois",
+                    "left": "Gauche",
+                    "right": "Droite",
+                    "middle": "Milieu",
+                    "center": "Centre"
+                },
+                "transition": {
+                    "translated": "Contenu translaté",
+                    "sliding": "Contenu qui glisse",
+                    "expanding": "Contenu qui se déploie",
+                    "snack": "Contenu du snack",
+                    "transitioned": "Contenu en transition",
+                    "fading": "Contenu en fondu",
+                    "rotating": "Contenu qui pivote",
+                    "client_only": "Contenu côté client uniquement"
+                },
+                "data_table": {
+                    "person_ada": "Ada Lovelace",
+                    "role_owner": "Propriétaire",
+                    "header_name": "Nom",
+                    "header_role": "Rôle",
+                    "header_seats": "Sièges",
+                    "person_alan": "Alan Turing",
+                    "role_admin": "Administrateur",
+                    "person_grace": "Grace Hopper",
+                    "role_member": "Membre"
+                },
+                "btn": {
+                    "text": "Bouton"
+                },
+                "card": {
+                    "text": "Contenu de la carte"
+                },
+                "chip": {
+                    "text": "Puce"
+                },
+                "alert": {
+                    "text": "Un court message d'alerte."
+                },
+                "text_field": {
+                    "label": "Libellé",
+                    "value": "Valeur"
+                },
+                "textarea_field": {
+                    "label": "Message",
+                    "value": "Quelques lignes de texte."
+                },
+                "number_field": {
+                    "label": "Montant"
+                },
+                "password_field": {
+                    "label": "Mot de passe"
+                },
+                "select": {
+                    "label": "Choisissez"
+                },
+                "checkbox": {
+                    "label": "Case à cocher"
+                },
+                "switch": {
+                    "label": "Interrupteur"
+                },
+                "radio": {
+                    "label": "Bouton radio"
+                },
+                "title": {
+                    "text": "Portez ce vieux whisky au juge blond"
+                },
+                "badge": {
+                    "text": "Boîte de réception"
+                },
+                "blockquote": {
+                    "text": "Le design, ce n'est pas seulement l'apparence. Le design, c'est la façon dont ça fonctionne."
+                },
+                "breadcrumb": {
+                    "home": "Accueil",
+                    "library": "Bibliothèque",
+                    "data": "Données"
+                },
+                "chip_group": {
+                    "design": "Design",
+                    "code": "Code",
+                    "ship": "Livrer"
+                },
+                "selection_control_group": {
+                    "email": "E-mail",
+                    "sms": "SMS"
+                },
+                "expansion_panels": {
+                    "first_title": "Premier panneau",
+                    "first_text": "Le contenu du premier panneau.",
+                    "second_title": "Second panneau",
+                    "second_text": "Le contenu du second panneau."
+                },
+                "form": {
+                    "email": "E-mail",
+                    "submit": "Envoyer"
+                },
+                "list": {
+                    "inbox": "Boîte de réception",
+                    "starred": "Favoris",
+                    "archive": "Archives"
+                },
+                "list_group": {
+                    "title": "Rapports",
+                    "weekly": "Hebdomadaire",
+                    "monthly": "Mensuel"
+                },
+                "tab_panels": {
+                    "panel_one": "Panneau un"
+                },
+                "responsive": {
+                    "text": "Boîte responsive"
+                },
+                "lazy": {
+                    "text": "Contenu monté à la demande"
+                },
+                "watermark": {
+                    "text": "Contenu protégé"
+                },
+                "theme_provider": {
+                    "text": "Bouton thémé"
+                },
+                "defaults_provider": {
+                    "text": "Bouton avec valeurs par défaut"
+                },
+                "clipboard": {
+                    "text": "Copier la commande d'installation"
+                },
+                "img": {
+                    "alt": "Image d'exemple"
+                },
+                "data_text": {
+                    "text": "Une courte valeur"
+                },
+                "data_title": {
+                    "text": "Un titre de donnée"
+                },
+                "data_list": {
+                    "plan": "Offre",
+                    "pro": "Pro",
+                    "seats": "Sièges"
+                },
+                "inline_edit": {
+                    "value": "Cliquez pour modifier"
+                },
+                "text_mask": {
+                    "text": "Texte en dégradé"
+                },
+                "bracket": {
+                    "semis": "Demi-finales",
+                    "final": "Finale"
+                },
+                "chart_range_selector": {
+                    "one_month": "1 M",
+                    "six_months": "6 M",
+                    "one_year": "1 A"
+                },
+                "tab": {
+                    "text": "Onglet un"
+                },
+                "dialog": {
+                    "title": "Exemple de dialogue"
+                },
+                "dialog_confirmation": {
+                    "title": "Supprimer l'élément ?"
+                },
+                "tooltip": {
+                    "text": "Contenu de l'infobulle"
+                },
+                "overlay": {
+                    "text": "Contenu de la surcouche"
+                },
+                "snackbar": {
+                    "text": "Enregistré avec succès."
+                },
+                "carousel": {
+                    "slide_one": "Diapositive un",
+                    "slide_two": "Diapositive deux"
+                },
+                "parallax": {
+                    "layer": "Calque parallaxe",
+                    "element": "Élément parallaxe"
+                }
+            },
+            "fallback_slot_text": "Contenu",
+            "theme_origam": "Origam",
+            "theme_label": "Thème de l'aperçu",
+            "mode_to_light": "Aperçu clair",
+            "mode_to_dark": "Aperçu sombre",
+            "rendered_by_parent": "Cette sous-partie est rendue par son parent : l'aperçu montre {parent}, avec cette partie à l'intérieur. Thémez-la depuis le Theme Builder, ou éditez le parent ici."
         }
     },
     "composables": {
@@ -1638,8 +1847,7 @@
             "label": "Composants",
             "search": "Rechercher un composant…",
             "no_result": "Aucun composant ne correspond à « {query} ».",
-            "total": "{count} composants",
-            "previewable": "Aperçu en direct disponible"
+            "total": "{count} composants"
         },
         "props": {
             "legend": "Props par défaut",

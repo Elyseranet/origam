@@ -53,5 +53,6 @@ export const MARKETING_SPEC_PATTERNS = [
     '**/marketing-catalog-detail-nav.spec.ts',
     '**/marketing-command-palette.spec.ts',
     '**/marketing-reference-row-list.spec.ts',
-    '**/api-docs-generated.spec.ts'
+    '**/api-docs-generated.spec.ts',
+    '**/marketing-playground-host.spec.ts'
 ]

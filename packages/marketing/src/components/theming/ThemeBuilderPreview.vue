@@ -82,30 +82,24 @@
               :style="pane.style"
               :data-cy="`theming-canvas-${pane.mode}`"
             >
-              <nuxt-error-boundary>
-                <component
-                  :is="entry.componentTag"
-                  v-if="entry.previewable"
-                  v-bind="previewProps"
-                  :data-cy="`theming-live-${entry.slug}-${pane.mode}`"
-                >
-                  {{ slotText }}
-                </component>
+              <origam-defaults-provider :defaults="themeDefaults">
+                <template v-if="hostEntry && hasRoots">
+                  <playground-scene-node
+                    v-for="root in roots"
+                    :key="root.id"
+                    :instance="root"
+                    :registry="hostEntry.registry"
+                    :data-cy="`theming-live-${entry.slug}-${pane.mode}`"
+                  />
+                </template>
                 <p
                   v-else
                   class="tb-preview__unavailable"
                   :data-cy="`theming-unavailable-${pane.mode}`"
                 >
-                  {{
-                    t('theming.preview.unavailable', 'Live preview unavailable for this component. Edit its props and CSS tokens — they still export to your theme.')
-                  }}
+                  {{ unavailableText }}
                 </p>
-                <template #error>
-                  <p class="tb-preview__unavailable">
-                    {{ t('theming.preview.error', 'Preview failed to render with the current props.') }}
-                  </p>
-                </template>
-              </nuxt-error-boundary>
+              </origam-defaults-provider>
             </div>
           </origam-theme-provider>
         </div>
@@ -115,9 +109,15 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue'
+  import { computed, shallowRef, watch } from 'vue'
+  import { PlaygroundSceneNode } from '@origam/playground/components'
+  import { catalogNameOfTag } from '@origam/playground/catalog'
 
   import { useT } from '~/composables/useT'
+  import { usePlaygroundHost } from '~/composables/usePlaygroundHost'
+  import { PLAYGROUND_UNAVAILABLE_REASONS, THEME_BUILDER_OVERLAY_ATTACH } from '~/consts/playground-host.const'
+  import type { IPlaygroundHostEntry } from '~/interfaces/playground-host.interface'
+  import { withoutThemedProps } from '~/utils/playground-host.util'
   import type {
     IThemeBuilderPreviewEmits,
     IThemeBuilderPreviewProps,
@@ -154,6 +154,59 @@
       }
     ]
   })
+
+  /*********************************************************
+   * Engine (lot E, #1145)
+   *
+   * @description
+   * The preview renders through the playground ENGINE — registry + snippets +
+   * `PlaygroundSceneNode` — so every component of the catalogue previews (219),
+   * where the former `<component :is>` mounted only a hand-kept list of 23.
+   * The edited theme WRAPS the pane: its `components` block through
+   * `<origam-defaults-provider>` (the same channel the exported theme takes),
+   * its `cssVars` as the canvas' inline style. The scene itself carries only
+   * the snippet's demo content, minus every prop the theme sets — a snippet
+   * prop is a call-site prop and would outrank the theme being previewed.
+   * Loaded client-side only (scene ids are random): the stage is `<client-only>`.
+   ********************************************************/
+  const host = usePlaygroundHost({ overlayAttach: THEME_BUILDER_OVERLAY_ATTACH })
+  const hostEntry = shallowRef<IPlaygroundHostEntry | null>(null)
+  const componentName = computed(() => catalogNameOfTag(props.entry.componentTag) ?? null)
+
+  const loadEntry = async () => {
+    const name = componentName.value
+    hostEntry.value = null
+    if (!name) return
+    const loaded = await host.load(name)
+    if (loaded?.componentName === componentName.value) hostEntry.value = loaded
+  }
+
+  watch(componentName, () => {
+    if (import.meta.client) loadEntry()
+  }, { immediate: true })
+
+  const themedKeys = computed(() => new Set([
+    ...Object.keys(props.themeDefaults[props.entry.componentKey] ?? {}),
+    ...Object.keys(props.themeDefaults.global ?? {})
+  ]))
+
+  const roots = computed(() => {
+    const entry = hostEntry.value
+    const name = componentName.value
+    if (!entry || !name) return []
+    return withoutThemedProps(entry.createScene().roots, name, themedKeys.value, props.previewProps)
+  })
+
+  const unavailableReason = computed(() => {
+    const reason = componentName.value ? PLAYGROUND_UNAVAILABLE_REASONS[componentName.value] : undefined
+    return reason && !hostEntry.value?.hasSnippet ? reason : undefined
+  })
+
+  const hasRoots = computed(() => roots.value.length > 0 && !unavailableReason.value)
+
+  const unavailableText = computed(() => (unavailableReason.value
+    ? t(unavailableReason.value.key, unavailableReason.value.fallback)
+    : t('components.detail.preview.loading', 'Rendering the live preview…')))
 
   const modeLabel = (mode: TEditMode): string => {
     return mode === 'dark' ? t('theming.mode.dark', 'Dark') : t('theming.mode.light', 'Light')

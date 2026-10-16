@@ -1,3 +1,4 @@
+import type { TMode } from 'origam/types'
 import type { IPropRowSlotScope } from './playground-inspector.interface'
 import type { IComponentRegistry } from '../Registry/component-registry.interface'
 import type { IPlaygroundScene } from '../Scene/playground-scene.interface'
@@ -20,7 +21,7 @@ export interface IPlaygroundProps {
     /** Forwarded to `<origam-theme-provider>`. Defaults to `'auto'`. */
     theme?: string
     /** Forwarded to `<origam-theme-provider>`. Defaults to `'auto'`. */
-    mode?: string
+    mode?: TMode
 }
 
 /*********************************************************
