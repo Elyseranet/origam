@@ -1160,6 +1160,8 @@
     "catalog_nav": {
         "family_menu_label": "Change family — current: {name}",
         "related_title": "Same subject in the other families",
+        "related_show_all": "Show all {count}",
+        "related_show_fewer": "Show fewer",
         "prev_next_label": "Previous and next in this family",
         "previous": "Previous",
         "next": "Next"
