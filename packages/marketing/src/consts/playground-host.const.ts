@@ -1,4 +1,6 @@
-import type { IPlaygroundHostTheme, IPlaygroundUnavailableReason } from '~/interfaces/playground-host.interface'
+import { COLOR_MODE } from 'origam/enums'
+
+import type { IPlaygroundHostMode, IPlaygroundHostTheme, IPlaygroundUnavailableReason } from '~/interfaces/playground-host.interface'
 
 /**
  * playground-host.const.ts — what the marketing site, as a HOST of
@@ -153,4 +155,15 @@ export const PLAYGROUND_HOST_THEMES: readonly IPlaygroundHostTheme[] = [
     { key: 'material', labelKey: 'home.themes.chip_material', labelFallback: 'Material' },
     { key: 'ecom', labelKey: 'home.themes.chip_ecom', labelFallback: 'Ecom' },
     { key: 'apple', labelKey: 'home.themes.chip_apple', labelFallback: 'Apple' }
+]
+
+/**
+ * The preview's mode group, Light / Dark / Auto (#1173, owner's decision).
+ * `auto` hands `'auto'` to the playground, which then pins no `data-mode`
+ * and follows the site's own mode.
+ */
+export const PLAYGROUND_HOST_MODES: readonly IPlaygroundHostMode[] = [
+    { value: COLOR_MODE.LIGHT, icon: 'mdi-weather-sunny', labelKey: 'components.playground.mode_light', labelFallback: 'Light' },
+    { value: COLOR_MODE.DARK, icon: 'mdi-weather-night', labelKey: 'components.playground.mode_dark', labelFallback: 'Dark' },
+    { value: COLOR_MODE.AUTO, icon: 'mdi-theme-light-dark', labelKey: 'components.playground.mode_auto', labelFallback: 'Auto' }
 ]

@@ -1,4 +1,5 @@
 import type { IComponentRegistry, IPlaygroundInstance, IPlaygroundScene } from '@origam/playground/interfaces'
+import type { TMode } from 'origam/types'
 
 /**
  * playground-host.interface.ts — the marketing site as a HOST of
@@ -37,6 +38,18 @@ export interface IPlaygroundHostEntry {
 export interface IPlaygroundHostTheme {
     /** The registered theme name, `data-theme="<key>"`. */
     key: string
+    /** i18n key of its label. */
+    labelKey: string
+    /** English fallback of `labelKey`. */
+    labelFallback: string
+}
+
+/** One button of the preview's Light / Dark / Auto group (#1173). */
+export interface IPlaygroundHostMode {
+    /** Forwarded to `<playground :mode>` — `auto` follows the site's own mode. */
+    value: TMode
+    /** MDI icon of the button. */
+    icon: string
     /** i18n key of its label. */
     labelKey: string
     /** English fallback of `labelKey`. */

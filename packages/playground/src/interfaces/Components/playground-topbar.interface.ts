@@ -12,6 +12,12 @@ export interface IPlaygroundTopbarProps {
      * the components it renders.
      */
     selectMode?: boolean
+    /** Show the "Playground / origam · N components" title. Off when embedded (#1173). */
+    showTitle?: boolean
+    /** Show the Catalog button. Off in single-component mode (#1173). */
+    showCatalog?: boolean
+    /** Show the "Select in preview" toggle — only meaningful with more than one instance (#1173). */
+    showSelectMode?: boolean
 }
 
 export interface IPlaygroundTopbarEmits {

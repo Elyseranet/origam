@@ -645,9 +645,11 @@
             "fallback_slot_text": "Content",
             "theme_origam": "Origam",
             "theme_label": "Preview theme",
-            "mode_to_light": "Light preview",
-            "mode_to_dark": "Dark preview",
-            "rendered_by_parent": "This sub-part is rendered by its parent: the preview shows {parent}, with this part inside it. Theme it from the Theme Builder, or edit the parent here."
+            "rendered_by_parent": "This sub-part is rendered by its parent: the preview shows {parent}, with this part inside it. Theme it from the Theme Builder, or edit the parent here.",
+            "mode_light": "Light",
+            "mode_dark": "Dark",
+            "mode_auto": "Auto",
+            "mode_label": "Preview mode"
         }
     },
     "composables": {

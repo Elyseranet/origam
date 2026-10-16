@@ -22,6 +22,23 @@ export interface IPlaygroundProps {
     theme?: string
     /** Forwarded to `<origam-theme-provider>`. Defaults to `'auto'`. */
     mode?: TMode
+    /**
+     * The playground is EMBEDDED in a host page (e.g. a component page of
+     * `packages/marketing`), not the page itself. Defaults to `false`: the
+     * standalone playground does not change.
+     *
+     * When `true`:
+     *  - the "Playground / origam · N components" header is removed — the
+     *    host page already names what is shown;
+     *  - SINGLE-COMPONENT MODE applies whenever the scene holds exactly one
+     *    root with no child (`isSingleComponentScene`): the Scene panel and
+     *    the Catalog button are hidden. A scene with children (a BtnGroup and
+     *    its buttons, a DataTable and its action cell) keeps its Scene panel.
+     *
+     * Derived from the scene's shape only — no component name is interpreted.
+     * (#1173)
+     */
+    embedded?: boolean
 }
 
 /*********************************************************

@@ -645,9 +645,11 @@
             "fallback_slot_text": "Contenu",
             "theme_origam": "Origam",
             "theme_label": "Thème de l'aperçu",
-            "mode_to_light": "Aperçu clair",
-            "mode_to_dark": "Aperçu sombre",
-            "rendered_by_parent": "Cette sous-partie est rendue par son parent : l'aperçu montre {parent}, avec cette partie à l'intérieur. Thémez-la depuis le Theme Builder, ou éditez le parent ici."
+            "rendered_by_parent": "Cette sous-partie est rendue par son parent : l'aperçu montre {parent}, avec cette partie à l'intérieur. Thémez-la depuis le Theme Builder, ou éditez le parent ici.",
+            "mode_light": "Clair",
+            "mode_dark": "Sombre",
+            "mode_auto": "Auto",
+            "mode_label": "Mode de l'aperçu"
         }
     },
     "composables": {

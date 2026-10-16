@@ -23,6 +23,10 @@
 //   8. A prop the theme sets reaches the preview through the defaults
 //      provider — the channel the exported theme takes in an app.
 //
+//   #1173 — embedded chrome: no title; single-component mode (one root, no
+//   child) hides Scene / Catalog / "Select in preview"; Light / Dark / Auto
+//   group; no sideways overflow at 390 / 768 / 1024 / 1440 px.
+//
 // A/B: against the parent commit (`7c3f0b1fb`, the former
 // `ComponentLivePreview` / `<component :is>` previews) every test fails at
 // its first engine locator — measured, see the PR body.
@@ -96,12 +100,22 @@ test.describe('/components/{slug} — playground engine (#1145)', () => {
         expect(cartoon.mode).toBe(origam.mode)
         expect(cartoon.look).not.toBe(origam.look)
 
-        const before = cartoon.mode
-        await page.locator('[data-cy="component-playground-mode"]').click()
-        await expect.poll(async () => (await read()).mode).not.toBe(before)
-        const toggled = await read()
-        expect(toggled.theme).toBe('cartoon')
-        expect(toggled.look).not.toBe(cartoon.look)
+        /* #1173 — Light / Dark / Auto group; Auto pins no `data-mode` (follows the site). */
+        expect(cartoon.mode).toBeNull()
+
+        await page.locator('[data-cy="component-playground-mode-dark"]').click()
+        await expect.poll(async () => (await read()).mode).toBe('dark')
+        const dark = await read()
+        expect(dark.theme).toBe('cartoon')
+
+        await page.locator('[data-cy="component-playground-mode-light"]').click()
+        await expect.poll(async () => (await read()).mode).toBe('light')
+        const light = await read()
+        expect(light.theme).toBe('cartoon')
+        expect(light.look).not.toBe(dark.look)
+
+        await page.locator('[data-cy="component-playground-mode-auto"]').click()
+        await expect.poll(async () => (await read()).mode).toBeNull()
     })
 
     test('window-item renders inside the Window snippet', async ({ page }) => {
@@ -151,6 +165,60 @@ test.describe('/components/{slug} — playground engine (#1145)', () => {
         await expect(hero.first()).toBeVisible()
         expect(await hero.count()).toBeGreaterThan(1)
     })
+})
+
+test.describe('/components/{slug} — embedded chrome (#1173)', () => {
+    const cy = (page: Page, name: string) => page.locator(`${ENGINE} [data-cy="${name}"]`)
+
+    test('btn (one root, no child): no title, no Catalog, no Scene, no "Select in preview", no counter', async ({ page }) => {
+        await openFiche(page, 'btn')
+
+        await expect(cy(page, 'playground-inspector')).toBeVisible()
+        await expect(cy(page, 'playground-title')).toHaveCount(0)
+        await expect(cy(page, 'playground-catalog-open')).toHaveCount(0)
+        await expect(cy(page, 'playground-scene-tree')).toHaveCount(0)
+        await expect(cy(page, 'playground-select-mode-toggle')).toHaveCount(0)
+        await expect(cy(page, 'playground-prop-tally')).toHaveCount(0)
+    })
+
+    test('btn: the theme select stays, the mode is a Light / Dark / Auto group', async ({ page }) => {
+        await openFiche(page, 'btn')
+
+        await expect(page.locator('[data-cy="component-playground-theme"]')).toBeVisible()
+        const group = page.locator('[data-cy="component-playground-mode"]')
+        await expect(group).toHaveClass(/origam-btn-toggle/)
+        for (const mode of ['light', 'dark', 'auto']) await expect(page.locator(`[data-cy="component-playground-mode-${mode}"]`)).toBeVisible()
+    })
+
+    test('btn-group (children): the Scene, the Catalog and "Select in preview" are back', async ({ page }) => {
+        await openFiche(page, 'btn-group')
+
+        await expect(cy(page, 'playground-scene-tree')).toBeVisible()
+        await expect(cy(page, 'playground-catalog-open')).toBeVisible()
+        await expect(cy(page, 'playground-select-mode-toggle')).toBeVisible()
+        await expect(cy(page, 'playground-title')).toHaveCount(0)
+    })
+
+    for (const width of [390, 768, 1024, 1440]) {
+        test(`${width} px: the page never scrolls sideways and the toolbar stays inside the playground`, async ({ page }) => {
+            await page.setViewportSize({ width, height: 900 })
+            await openFiche(page, 'btn-group')
+
+            const result = await page.evaluate(engine => {
+                const root = document.querySelector(engine) as HTMLElement
+                const rect = root.getBoundingClientRect()
+                const outside = [...root.querySelectorAll<HTMLElement>('.pg-topbar *')].filter(element => {
+                    const own = element.getBoundingClientRect()
+
+                    return own.width > 0 && (own.right > rect.right + 1 || own.left < rect.left - 1)
+                }).length
+
+                return { scrollX: document.documentElement.scrollWidth - document.documentElement.clientWidth, outside }
+            }, ENGINE)
+
+            expect(result).toEqual({ scrollX: 0, outside: 0 })
+        })
+    }
 })
 
 test.describe('/theming — previews on the engine (#1145, #1056)', () => {

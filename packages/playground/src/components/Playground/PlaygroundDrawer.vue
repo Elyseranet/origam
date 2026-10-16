@@ -1,17 +1,9 @@
 <template>
     <template v-if="isMounted">
-        <origam-overlay-scrim
-                data-cy="playground-drawer-scrim"
-                :active="modelValue"
-                :style="scrimStyles"
-                @click="handleClose"
-        />
         <section
                 v-show="modelValue"
                 ref="drawerEl"
                 class="pg-drawer"
-                role="dialog"
-                aria-modal="true"
                 :aria-label="title"
                 data-cy="playground-drawer"
                 @keydown="handleKeydown"
@@ -96,16 +88,17 @@
     const isMounted = useHydration()
 
     /*********************************************************
-     * Containment
+     * Layout (#1173)
      *
      * @description
-     * ⛔ `position: absolute` only — see the component's `<style>` block.
-     * No `position: fixed` anywhere in this file. The scrim is the DS's
-     * `OrigamOverlayScrim`, whose own default is `fixed`
-     * (`--origam-overlay-scrim---position`); overridden here to `absolute`
-     * via the token it already reads, not a hand-rolled scrim.
+     * Owner's decision: the catalog PUSHES the content instead of covering
+     * it, so the preview stays centred in what is left. The drawer is
+     * therefore an in-flow column of `Playground`'s grid (`grid-area:
+     * drawer`), not an absolutely positioned overlay — and, being no longer
+     * modal, it carries no scrim, no `aria-modal` and no focus trap: the rest
+     * of the playground stays reachable while it is open. Escape still
+     * closes it and returns focus to the button that opened it.
      ********************************************************/
-    const scrimStyles = computed(() => ({ '--origam-overlay-scrim---position': 'absolute' }))
 
     /*********************************************************
      * Search
@@ -141,51 +134,17 @@
     const selectAriaLabel = (definition: IComponentDefinition) => t('playground.drawer.select_aria', 'Select {name}', { name: definition.label })
 
     /*********************************************************
-     * Focus trap & Escape
-     *
-     * @description
-     * A manual, well-understood pattern rather than a reach for a heavier
-     * primitive: cycle Tab/Shift+Tab within the drawer's own focusables, and
-     * Escape closes + returns focus to whatever opened it. No `position:
-     * fixed`, no teleport — the drawer lives inside `.pg` (see
-     * `Playground.vue`), `position: relative` + `isolation: isolate` there is
-     * what keeps its z-index local to the playground.
+     * Escape
      ********************************************************/
     const drawerEl = ref<HTMLElement | null>(null)
     const searchFieldEl = ref<{ $el?: HTMLElement } | null>(null)
 
-    const focusables = () => {
-        const root = drawerEl.value
-
-        if (!root) return []
-
-        return [...root.querySelectorAll<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')]
-            .filter(el => !el.hasAttribute('disabled'))
-    }
-
     const handleKeydown = (event: KeyboardEvent) => {
-        if (event.key === 'Escape') {
-            event.preventDefault()
-            handleClose()
-            return
-        }
+        if (event.key !== 'Escape') return
 
-        if (event.key !== 'Tab') return
-
-        const items = focusables()
-
-        if (items.length === 0) return
-
-        const first = items[0]
-        const last = items[items.length - 1]
-
-        if (event.shiftKey && document.activeElement === first) {
-            event.preventDefault()
-            last?.focus()
-        } else if (!event.shiftKey && document.activeElement === last) {
-            event.preventDefault()
-            first?.focus()
-        }
+        event.preventDefault()
+        event.stopPropagation()
+        handleClose()
     }
 
     watch(() => props.modelValue, async open => {
@@ -218,11 +177,9 @@
 
 <style lang="scss" scoped>
     .pg-drawer {
-        position: absolute;
-        inset-block: 0;
-        inset-inline-start: 0;
-        width: var(--pg-drawer---width, min(360px, 90%));
+        width: var(--pg-drawer---width, min(320px, 100%));
         max-width: 100%;
+        min-height: 0;
         display: flex;
         flex-direction: column;
         gap: var(--pg-drawer---gap, 12px);
@@ -230,7 +187,6 @@
         background: var(--pg-drawer---background-color, #fff);
         border-inline-end: 1px solid var(--pg-drawer---border-color, #e5e5e5);
         overflow-y: auto;
-        z-index: var(--pg-drawer---z-index, 10);
 
         &__head {
             display: flex;
@@ -248,20 +204,14 @@
         }
     }
 
-    @media (prefers-reduced-motion: no-preference) {
-        .pg-drawer {
-            transition: transform 0.18s ease;
-        }
-    }
 </style>
 
 <style>
     :root {
-        --pg-drawer---width: min(360px, 90%);
+        --pg-drawer---width: min(320px, 100%);
         --pg-drawer---gap: 12px;
         --pg-drawer---padding: 16px;
         --pg-drawer---background-color: #fff;
         --pg-drawer---border-color: #e5e5e5;
-        --pg-drawer---z-index: 10;
     }
 </style>

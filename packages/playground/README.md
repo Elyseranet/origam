@@ -158,6 +158,36 @@ pnpm -F @origam/playground meta:catalog:check    # exit 1 on drift — run by th
   `OrigamWindowXTranslate` as `origam-window-xtranslate`, which Vue camelizes
   back to an unknown element.
 
+## Embedded in a host page (#1173)
+
+`<playground embedded>` — `IPlaygroundProps.embedded`, `false` by default (the
+standalone playground does not change). For a host page that already names
+what it shows, e.g. `packages/marketing`'s `/components/{slug}`:
+
+- the "Playground / origam · N components" header is removed;
+- **single-component mode** = `embedded` AND the scene holds exactly one root
+  with no child (`isSingleComponentScene`, `utils/Commons/scene-instance.util.ts`):
+  the Scene panel and the Catalog button are hidden. A scene with children
+  (a BtnGroup and its buttons, a DataTable and its action cell) keeps them.
+  Derived from the scene's SHAPE only — no component name is interpreted.
+
+⛔ Why a prop and not the scene alone: the standalone host starts from an
+empty scene and reaches one root as soon as a component is picked. A rule on
+the scene alone would hide the Catalog there and strand the user.
+
+Everywhere, embedded or not:
+
+- **"Select in preview"** only exists when the scene holds more than one
+  instance — with one, the inspector already shows the only thing to select;
+- the inspector shows **no counter** (no "N props / N emits" chip, no tally
+  line, no per-group count); the search and the foldable groups stay;
+- the **catalog drawer pushes** the content (an in-flow grid column, not an
+  overlay — so no scrim, no `aria-modal`, no focus trap; Escape still closes
+  it and returns focus);
+- **responsive by container query**, not viewport: below 760 px of PLAYGROUND
+  width the layout stacks (top bar, drawer, preview, inspector, dock) inside
+  the playground's own height, which scrolls.
+
 ## Consumers
 
 `packages/marketing` is the HOST (#1145): `/components/{slug}` mounts the full

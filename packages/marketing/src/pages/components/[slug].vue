@@ -796,6 +796,7 @@
                   :registry="hostEntry.registry"
                   :theme="playgroundTheme"
                   :mode="playgroundMode"
+                  embedded
                   class="component-playground__engine"
                   data-cy="component-playground-engine"
                 >
@@ -810,17 +811,28 @@
                       class="component-playground__theme"
                       data-cy="component-playground-theme"
                     />
-                    <origam-btn
-                      variant="ghost"
-                      :prepend-icon="playgroundModeIcon"
-                      :aria-label="playgroundModeLabel"
+                    <origam-btn-toggle
+                      v-model="playgroundMode"
+                      mandatory
+                      divided
+                      variant="outlined"
+                      size="small"
+                      :aria-label="playgroundModeGroupLabel"
+                      class="component-playground__mode"
                       data-cy="component-playground-mode"
-                      @click="handleTogglePlaygroundMode"
                     >
-                      <template #default>
-                        {{ playgroundModeLabel }}
-                      </template>
-                    </origam-btn>
+                      <origam-btn
+                        v-for="mode in playgroundModeItems"
+                        :key="mode.value"
+                        :value="mode.value"
+                        :prepend-icon="mode.icon"
+                        :data-cy="`component-playground-mode-${mode.value}`"
+                      >
+                        <template #default>
+                          {{ mode.label }}
+                        </template>
+                      </origam-btn>
+                    </origam-btn-toggle>
                   </template>
                 </playground>
                 <template #fallback>
@@ -1093,7 +1105,8 @@
   import { Playground, PlaygroundSceneNode } from '@origam/playground/components'
   import { catalogNameOfTag } from '@origam/playground/catalog'
   import { useTheme } from 'origam/composables'
-  import type { TModeResolved } from 'origam/types'
+  import { COLOR_MODE } from 'origam/enums'
+  import type { TMode } from 'origam/types'
   import type { IPlaygroundScene } from '@origam/playground/interfaces'
   import { useT } from '~/composables/useT'
   import { useCopy } from '~/composables/useCopy'
@@ -1101,6 +1114,7 @@
   import { usePlaygroundHost } from '~/composables/usePlaygroundHost'
   import {
     COMPONENT_PLAYGROUND_OVERLAY_ATTACH,
+    PLAYGROUND_HOST_MODES,
     PLAYGROUND_HOST_THEMES,
     PLAYGROUND_RENDERED_BY_PARENT_TEXT,
     PLAYGROUND_UNAVAILABLE_REASONS
@@ -1285,23 +1299,23 @@
 
   const previewLoadingText = computed(() => t('components.detail.preview.loading', 'Rendering the live preview…'))
 
-  const { theme: siteTheme, resolvedMode: siteMode } = useTheme()
+  /*
+   * Theme: the site's own at mount, then driven by the toolbar. Mode: `auto`
+   * (follow the site) until the Light / Dark / Auto group says otherwise
+   * (#1173). Neither ever changes the site itself.
+   */
+  const { theme: siteTheme } = useTheme()
   const playgroundTheme = ref<string>(siteTheme.value)
-  const playgroundMode = ref<TModeResolved>(siteMode.value)
+  const playgroundMode = ref<TMode>(COLOR_MODE.AUTO)
 
   const playgroundThemeItems = computed(() =>
     PLAYGROUND_HOST_THEMES.map(theme => ({ title: t(theme.labelKey, theme.labelFallback), value: theme.key }))
   )
   const playgroundThemeLabel = computed(() => t('components.playground.theme_label', 'Preview theme'))
-  const isPlaygroundDark = computed(() => playgroundMode.value === 'dark')
-  const playgroundModeIcon = computed(() => (isPlaygroundDark.value ? 'mdi-weather-sunny' : 'mdi-weather-night'))
-  const playgroundModeLabel = computed(() => (isPlaygroundDark.value
-    ? t('components.playground.mode_to_light', 'Light preview')
-    : t('components.playground.mode_to_dark', 'Dark preview')))
-
-  const handleTogglePlaygroundMode = () => {
-    playgroundMode.value = isPlaygroundDark.value ? 'light' : 'dark'
-  }
+  const playgroundModeItems = computed(() =>
+    PLAYGROUND_HOST_MODES.map(mode => ({ value: mode.value, icon: mode.icon, label: t(mode.labelKey, mode.labelFallback) }))
+  )
+  const playgroundModeGroupLabel = computed(() => t('components.playground.mode_label', 'Preview mode'))
 
   /*********************************************************
    * Hero preview band
@@ -2146,7 +2160,8 @@
     }
 
     &__theme {
-      min-inline-size: var(--component-playground__theme---min-inline-size, 10rem);
+      flex: 0 1 var(--component-playground__theme---inline-size, 11rem);
+      min-inline-size: var(--component-playground__theme---min-inline-size, 8rem);
     }
   }
 
