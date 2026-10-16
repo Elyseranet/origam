@@ -2,7 +2,7 @@
  * GENERATED — pnpm -F @origam/playground meta:host-seed
  *
  * Demo catalogue for the standalone host (src/host/main.ts), built from
- * REAL metadata captured from `origam` @ 7c3f0b1fb.
+ * REAL metadata captured from `origam` @ 821d96754.
  * Source A (runtime descriptor: names, defaults) merged with source B
  * (literal unions + resolved aliases: options, tsType, emit payloads, slots).
  * No snippets and `requiresParent: false` everywhere: neither is measurable
@@ -1148,6 +1148,12 @@ export const HOST_CATALOG_SEED: IComponentDefinition[] = [
         }
         ],
         events: [
+        {
+            name: "update:hover",
+            label: "update:hover",
+            payloadType: "[value: boolean]",
+            source: METADATA_SOURCE.TYPES
+        },
         {
             name: "group:selected",
             label: "group:selected",
