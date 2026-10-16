@@ -151,9 +151,17 @@ test.describe('Encart « même sujet » en lignes (#1172)', () => {
         await page.reload({ waitUntil: 'load' })
         await expect(page.locator('[data-cy="catalog-related"]')).toBeVisible()
 
-        const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)
+        // Mesuré sur la SECTION, pas sur la page : pendant son chargement, l'aperçu
+        // live du haut de la fiche déborde de quelques pixels, hors périmètre ici.
+        const overflowing = await page.locator('[data-cy="catalog-related"]').evaluate((section) => {
+            const limit = document.documentElement.clientWidth
 
-        expect(overflow).toBe(0)
+            return [section, ...section.querySelectorAll('*')]
+                .filter(el => el.getBoundingClientRect().right > limit + 0.5)
+                .map(el => el.getAttribute('data-cy') ?? el.tagName)
+        })
+
+        expect(overflowing).toEqual([])
 
         const results = await new AxeBuilder({ page })
             .include('[data-cy="catalog-related"]')
