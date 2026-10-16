@@ -76,7 +76,6 @@
     "packages/marketing/src/components/theming/ThemeBuilderElevationField.vue::--origam-spacing-2",
     "packages/marketing/src/components/theming/ThemeBuilderNav.vue::--origam-color-border-default",
     "packages/marketing/src/components/theming/ThemeBuilderNav.vue::--origam-color-border-subtle",
-    "packages/marketing/src/components/theming/ThemeBuilderNav.vue::--origam-color-feedback-success-bg",
     "packages/marketing/src/components/theming/ThemeBuilderNav.vue::--origam-color-surface-default",
     "packages/marketing/src/components/theming/ThemeBuilderNav.vue::--origam-color-surface-raised",
     "packages/marketing/src/components/theming/ThemeBuilderNav.vue::--origam-color-surface-subtle",

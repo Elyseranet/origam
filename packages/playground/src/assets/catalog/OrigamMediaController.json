@@ -1,0 +1,351 @@
+{
+  "name": "OrigamMediaController",
+  "tag": "origam-media-controller",
+  "family": "Media",
+  "label": "MediaController",
+  "props": [
+    {
+      "name": "state",
+      "label": "state",
+      "tsType": "IMediaPlayerState",
+      "runtimeType": "Object",
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "description": "Reactive media state from `useMediaPlayer()` (or any\nspecialisation: `useVideoPlayer`, `useAudioPlayer`). Required.",
+      "source": "types"
+    },
+    {
+      "name": "methods",
+      "label": "methods",
+      "tsType": "IMediaPlayerMethods",
+      "runtimeType": "Object",
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "description": "Imperative methods from `useMediaPlayer()`. Required.",
+      "source": "types"
+    },
+    {
+      "name": "inset",
+      "label": "inset",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "YouTube-style overlay mode: the shell sits on top of the media\nsurface with a dark gradient and auto-hides on `visible=false`.\nWhen `false`, the shell renders as a regular always-on toolbar.",
+      "source": "types"
+    },
+    {
+      "name": "visible",
+      "label": "visible",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Visibility flag driven by the parent's autohide logic.",
+      "source": "types"
+    },
+    {
+      "name": "playbackRates",
+      "label": "playbackRates",
+      "tsType": "readonly number[] | undefined",
+      "runtimeType": "Array",
+      "required": false,
+      "hasFactoryDefault": true,
+      "control": "json",
+      "description": "Available playback rates exposed via the config menu.",
+      "source": "types"
+    },
+    {
+      "name": "allowRemotePlayback",
+      "label": "allowRemotePlayback",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Enable the cast / AirPlay button (Remote Playback API).",
+      "source": "types"
+    },
+    {
+      "name": "downloadable",
+      "label": "downloadable",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Adds a \"Download\" row to the config menu.",
+      "source": "types"
+    },
+    {
+      "name": "downloadUrl",
+      "label": "downloadUrl",
+      "tsType": "string | null | undefined",
+      "runtimeType": [
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "URL surfaced to the consumer when \"Download\" is clicked.",
+      "source": "types"
+    },
+    {
+      "name": "downloadFilename",
+      "label": "downloadFilename",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Suggested filename written to the `<a download=\"…\">` attribute.",
+      "source": "types"
+    },
+    {
+      "name": "qualityOptions",
+      "label": "qualityOptions",
+      "tsType": "readonly TQualityOption[] | undefined",
+      "runtimeType": "Array",
+      "required": false,
+      "hasFactoryDefault": true,
+      "control": "json",
+      "description": "Optional list of quality variants. When the array exposes ≥ 2\nentries, a \"Quality\" drill-down appears in the config menu.",
+      "source": "types"
+    },
+    {
+      "name": "currentQuality",
+      "label": "currentQuality",
+      "tsType": "string | null | undefined",
+      "runtimeType": [
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Currently-active quality identifier.",
+      "source": "types"
+    },
+    {
+      "name": "showPrevious",
+      "label": "showPrevious",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Show the \"previous\" transport button. The parent listens to\nthe `previous` emit and decides whether to skip back 10s\n(single-track) or jump to the previous playlist track.",
+      "source": "types"
+    },
+    {
+      "name": "showNext",
+      "label": "showNext",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Show the \"next\" transport button. Parent owns the action.",
+      "source": "types"
+    },
+    {
+      "name": "showLoop",
+      "label": "showLoop",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Show the tri-state loop button (none → all → one → none).",
+      "source": "types"
+    },
+    {
+      "name": "showShuffle",
+      "label": "showShuffle",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Show the shuffle toggle button.",
+      "source": "types"
+    },
+    {
+      "name": "loopMode",
+      "label": "loopMode",
+      "tsType": "\"none\" | \"all\" | \"one\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "none",
+      "hasFactoryDefault": false,
+      "options": [
+        "none",
+        "all",
+        "one"
+      ],
+      "control": "select",
+      "description": "Current loop mode. Supports `v-model:loopMode`. The Controller\ncycles this on click; the parent observes and applies its\nplaylist / `<audio loop>` policy.",
+      "source": "types"
+    },
+    {
+      "name": "shuffle",
+      "label": "shuffle",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Current shuffle state. Supports `v-model:shuffle`. The\nController toggles on click; the parent reads and switches its\nnext-track resolution accordingly.",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    }
+  ],
+  "events": [
+    {
+      "name": "download",
+      "label": "download",
+      "payloadType": "[]",
+      "source": "types"
+    },
+    {
+      "name": "previous",
+      "label": "previous",
+      "payloadType": "[]",
+      "source": "types"
+    },
+    {
+      "name": "next",
+      "label": "next",
+      "payloadType": "[]",
+      "source": "types"
+    },
+    {
+      "name": "update:loopMode",
+      "label": "update:loopMode",
+      "payloadType": "[mode: \"none\" | \"all\" | \"one\"]",
+      "source": "types"
+    },
+    {
+      "name": "update:shuffle",
+      "label": "update:shuffle",
+      "payloadType": "[shuffle: boolean]",
+      "source": "types"
+    },
+    {
+      "name": "quality-change",
+      "label": "quality-change",
+      "payloadType": "[quality: string]",
+      "source": "types"
+    }
+  ],
+  "slots": [
+    {
+      "name": "header",
+      "label": "header",
+      "slotPropsType": "any",
+      "description": "Block rendered ABOVE the scrubber row. `<OrigamAudio>` injects\nthe cover + metadata strip here; `<OrigamVideo>` typically\nleaves it empty.",
+      "source": "types"
+    },
+    {
+      "name": "waveform",
+      "label": "waveform",
+      "slotPropsType": "{ state: IMediaPlayerState; methods: IMediaPlayerMethods; }",
+      "description": "Replaces the default `<OrigamMediaScrubber>` scrubber row.\nReceives `{ state, methods }` so the consumer can paint a\ncustom scrubber (audio waveform via SliderField variant=audio,\nfor example) while still routing seeks through `methods.seek`.",
+      "source": "types"
+    },
+    {
+      "name": "footer",
+      "label": "footer",
+      "slotPropsType": "any",
+      "description": "Block rendered BELOW the transport row. `<OrigamAudio>` injects\nthe playlist list here.",
+      "source": "types"
+    },
+    {
+      "name": "prepend-transport",
+      "label": "prepend-transport",
+      "slotPropsType": "any",
+      "description": "Buttons rendered at the start of the transport row, before the\nplay button. `<OrigamAudio>` can inject custom shuffle / queue\nbuttons here when the default `showShuffle` placement doesn't\nfit.",
+      "source": "types"
+    },
+    {
+      "name": "append-transport",
+      "label": "append-transport",
+      "slotPropsType": "any",
+      "description": "Buttons rendered at the end of the transport row, after the\nconfig menu. Consumers add custom buttons (favourite, queue,\n…) here.",
+      "source": "types"
+    },
+    {
+      "name": "extraControlsLeft",
+      "label": "extraControlsLeft",
+      "slotPropsType": "any",
+      "description": "Additional buttons rendered on the left side of the toolbar,\nAFTER the time display. Legacy slot — prefer `prepend-transport`.",
+      "source": "types"
+    },
+    {
+      "name": "extraControlsRight",
+      "label": "extraControlsRight",
+      "slotPropsType": "any",
+      "description": "Additional buttons rendered on the right side of the toolbar,\nBEFORE the config menu. `<OrigamVideo>` injects its captions /\nPiP / fullscreen buttons here.",
+      "source": "types"
+    },
+    {
+      "name": "configExtra",
+      "label": "configExtra",
+      "slotPropsType": "{ closeMenu: () => void; }",
+      "description": "Extra rows in the config menu (audio output device, subtitle\ntrack selector, …). Receives `{ closeMenu }`.",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

@@ -1,0 +1,235 @@
+{
+  "name": "OrigamTreeview",
+  "tag": "origam-treeview",
+  "family": "Treeview",
+  "label": "Treeview",
+  "props": [
+    {
+      "name": "items",
+      "label": "items",
+      "tsType": "ITreeviewNode[]",
+      "runtimeType": "Array",
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "source": "types"
+    },
+    {
+      "name": "modelValue",
+      "label": "modelValue",
+      "tsType": "string | string[] | undefined",
+      "runtimeType": [
+        "Array",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "expandedValue",
+      "label": "expandedValue",
+      "tsType": "string[] | undefined",
+      "runtimeType": "Array",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "source": "types"
+    },
+    {
+      "name": "selectMode",
+      "label": "selectMode",
+      "tsType": "\"none\" | \"multiple\" | \"single\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "none",
+      "hasFactoryDefault": false,
+      "options": [
+        "none",
+        "multiple",
+        "single"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "selectableNodes",
+      "label": "selectableNodes",
+      "tsType": "\"all\" | \"leaf\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "leaf",
+      "hasFactoryDefault": false,
+      "options": [
+        "all",
+        "leaf"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "showLines",
+      "label": "showLines",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "expandOnClick",
+      "label": "expandOnClick",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "ariaLabel",
+      "label": "ariaLabel",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Accessible name for the tree's root `role=\"tree\"` element. Without\nit the tree is announced with no label, so pass one whenever the\nsurrounding context does not already name it.",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "color",
+      "label": "color",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "bgColor",
+      "label": "bgColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "size",
+      "label": "size",
+      "tsType": "number | \"default\" | \"x-small\" | \"small\" | \"large\" | \"x-large\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "default",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "density",
+      "label": "density",
+      "tsType": "\"default\" | \"compact\" | \"comfortable\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "default",
+      "hasFactoryDefault": false,
+      "options": [
+        "default",
+        "compact",
+        "comfortable"
+      ],
+      "control": "select",
+      "source": "types"
+    }
+  ],
+  "events": [
+    {
+      "name": "update:modelValue",
+      "label": "update:modelValue",
+      "payloadType": "[value: string | string[]]",
+      "source": "types"
+    },
+    {
+      "name": "select",
+      "label": "select",
+      "payloadType": "[id: string]",
+      "source": "types"
+    },
+    {
+      "name": "toggle",
+      "label": "toggle",
+      "payloadType": "[id: string, expanded: boolean]",
+      "source": "types"
+    },
+    {
+      "name": "update:expandedValue",
+      "label": "update:expandedValue",
+      "payloadType": "[value: string[]]",
+      "source": "types"
+    }
+  ],
+  "slots": [
+    {
+      "name": "node",
+      "label": "node",
+      "slotPropsType": "{ node: ITreeviewNode; depth: number; isExpanded: boolean; isSelected: boolean; }",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

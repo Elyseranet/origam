@@ -7,95 +7,101 @@
             data-cy="playground-root"
             @keydown.esc="handleEscape"
     >
-        <playground-topbar
-                :component-count="definitions.length"
-                :inspector-open="inspectorOpen"
-                :select-mode="selectMode"
-                @open-catalog="handleOpenCatalog"
-                @toggle-inspector="handleToggleInspector"
-                @toggle-select-mode="handleToggleSelectMode"
-        >
-            <template #toolbar>
-                <slot name="toolbar"/>
-            </template>
-        </playground-topbar>
-
-        <div
-                v-show="inspectorOpen"
-                data-cy="playground-inspector-slot"
-        >
-            <playground-scene-tree
-                    :scene="scene"
-                    :registry="registry"
-                    :selected-id="selectedId"
-                    @select="handleSelectInstance"
-                    @add-child="handleAddChild"
-                    @remove="handleRemoveInstance"
-            />
-
-            <playground-inspector
-                    :definition="selectedDefinition"
-                    :values="selectedValues"
-                    @set-prop="handleSetProp"
-                    @reset-prop="handleResetProp"
+        <div class="pg__layout">
+            <playground-topbar
+                    :component-count="definitions.length"
+                    :inspector-open="inspectorOpen"
+                    :select-mode="selectMode"
+                    :show-title="!embedded"
+                    :show-catalog="!isSingleComponent"
+                    :show-select-mode="hasSeveralInstances"
+                    @open-catalog="handleOpenCatalog"
+                    @toggle-inspector="handleToggleInspector"
+                    @toggle-select-mode="handleToggleSelectMode"
             >
-                <template #inspector-panels>
-                    <slot name="inspector-panels"/>
+                <template #toolbar>
+                    <slot name="toolbar"/>
                 </template>
-                <template #prop-row="scope">
+            </playground-topbar>
+
+            <div
+                    v-show="inspectorOpen"
+                    data-cy="playground-inspector-slot"
+            >
+                <playground-scene-tree
+                        v-if="!isSingleComponent"
+                        :scene="scene"
+                        :registry="registry"
+                        :selected-id="selectedId"
+                        @select="handleSelectInstance"
+                        @add-child="handleAddChild"
+                        @remove="handleRemoveInstance"
+                />
+
+                <playground-inspector
+                        :definition="selectedDefinition"
+                        :values="selectedValues"
+                        @set-prop="handleSetProp"
+                        @reset-prop="handleResetProp"
+                >
+                    <template #inspector-panels>
+                        <slot name="inspector-panels"/>
+                    </template>
+                    <template #prop-row="scope">
+                        <slot
+                                name="prop-row"
+                                v-bind="scope"
+                        />
+                    </template>
+                </playground-inspector>
+            </div>
+
+            <playground-preview
+                    :scene="scene"
+                    :selected-instance="selectedInstance"
+                    :registry="registry"
+                    :select-mode="selectMode"
+                    @instance-emit="handleInstanceEmit"
+                    @select-instance="handlePreviewSelect"
+            >
+                <template #preview-surround="scope">
                     <slot
-                            name="prop-row"
-                            v-bind="scope"
+                            name="preview-surround"
+                            :instance="scope.instance"
                     />
                 </template>
-            </playground-inspector>
+            </playground-preview>
+
+            <playground-dock>
+                <template #code>
+                    <playground-code-panel :scene="scene"/>
+                </template>
+                <template #snippets>
+                    <playground-snippets
+                            :definition="rootDefinition"
+                            @load="handleLoadSnippet"
+                    />
+                </template>
+                <template #events>
+                    <playground-event-log
+                            :entries="eventEntries"
+                            @clear="handleClearEvents"
+                    />
+                </template>
+            </playground-dock>
+
+            <playground-drawer
+                    v-model="drawerOpen"
+                    :components="definitions"
+                    :return-focus-to="catalogButtonEl"
+                    @select="handleSelectComponent"
+            />
         </div>
-
-        <playground-preview
-                :scene="scene"
-                :selected-instance="selectedInstance"
-                :registry="registry"
-                :select-mode="selectMode"
-                @instance-emit="handleInstanceEmit"
-                @select-instance="handlePreviewSelect"
-        >
-            <template #preview-surround="scope">
-                <slot
-                        name="preview-surround"
-                        :instance="scope.instance"
-                />
-            </template>
-        </playground-preview>
-
-        <playground-dock>
-            <template #code>
-                <playground-code-panel :scene="scene"/>
-            </template>
-            <template #snippets>
-                <playground-snippets
-                        :definition="rootDefinition"
-                        @load="handleLoadSnippet"
-                />
-            </template>
-            <template #events>
-                <playground-event-log
-                        :entries="eventEntries"
-                        @clear="handleClearEvents"
-                />
-            </template>
-        </playground-dock>
-
-        <playground-drawer
-                v-model="drawerOpen"
-                :components="definitions"
-                :return-focus-to="catalogButtonEl"
-                @select="handleSelectComponent"
-        />
     </origam-theme-provider>
 </template>
 
 <script setup lang="ts">
-    import { computed, ref } from 'vue'
+    import { computed, ref, watch } from 'vue'
     import PlaygroundCodePanel from './PlaygroundCodePanel.vue'
     import PlaygroundDock from './PlaygroundDock.vue'
     import PlaygroundDrawer from './PlaygroundDrawer.vue'
@@ -110,7 +116,7 @@
     import { useSceneEditor } from '../../composables/Commons/sceneEditor.composable'
     import { SCENE_VERSION } from '../../consts/Commons/scene.const'
     import type { IPlaygroundEmits, IPlaygroundProps, IPlaygroundSlots } from '../../interfaces/Components/playground.interface'
-    import { createInstanceFor, findInstance } from '../../utils/Commons/scene-instance.util'
+    import { countInstances, createInstanceFor, findInstance, isSingleComponentScene } from '../../utils/Commons/scene-instance.util'
     import type { TPropValue } from '../../types/Commons/prop-value.type'
 
     /*********************************************************
@@ -134,7 +140,8 @@
      ********************************************************/
     const props = withDefaults(defineProps<IPlaygroundProps>(), {
         theme: 'auto',
-        mode: 'auto'
+        mode: 'auto',
+        embedded: false
     })
 
     const emits = defineEmits<IPlaygroundEmits>()
@@ -330,6 +337,28 @@
     }
 
     /*********************************************************
+     * Embedded / single-component mode (#1173)
+     *
+     * @description
+     * Owner's decisions on the playground embedded in a host page. Derived
+     * from the scene's SHAPE (`isSingleComponentScene`, `countInstances`),
+     * never from a component name:
+     *  - `embedded` removes the title (the host page already names it);
+     *  - single-component mode (embedded + one root, no child) hides the
+     *    Scene panel and the Catalog — nothing to arrange, nothing to swap;
+     *  - "Select in preview" only exists with more than one instance: with
+     *    one, the inspector already shows the only thing there is to select.
+     *    Leaving the mode when the scene shrinks back keeps a hidden toggle
+     *    from being stuck on.
+     ********************************************************/
+    const isSingleComponent = computed(() => isSingleComponentScene(scene.value.roots, props.embedded))
+    const hasSeveralInstances = computed(() => countInstances(scene.value.roots) > 1)
+
+    watch(hasSeveralInstances, several => {
+        if (!several) selectMode.value = false
+    })
+
+    /*********************************************************
      * Expose
      ********************************************************/
     defineExpose({})
@@ -339,18 +368,30 @@
     .pg {
         position: relative;
         isolation: isolate;
-        display: grid;
-        grid-template-areas: 'topbar topbar' 'inspector preview' 'dock dock';
-        grid-template-columns: auto 1fr;
-        grid-template-rows: auto 1fr auto;
+        display: block;
+        container-type: inline-size;
         height: var(--pg---height, 100%);
         min-height: var(--pg---min-height, 480px);
         overflow: hidden;
         background: var(--pg---background-color, #fff);
         color: var(--pg---color, #111);
+    }
+
+    .pg__layout {
+        display: grid;
+        grid-template-areas: 'topbar topbar topbar' 'drawer inspector preview' 'dock dock dock';
+        grid-template-columns: auto auto minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        height: 100%;
+        min-height: inherit;
 
         :deep(.pg-topbar) {
             grid-area: topbar;
+            min-width: 0;
+        }
+
+        :deep(.pg-drawer) {
+            grid-area: drawer;
         }
 
         > div[data-cy='playground-inspector-slot'] {
@@ -374,6 +415,37 @@
 
         :deep(.pg-preview) {
             grid-area: preview;
+            min-width: 0;
+        }
+
+        :deep(.pg-dock) {
+            grid-area: dock;
+            min-width: 0;
+        }
+    }
+
+    @container (max-width: 760px) {
+        .pg__layout {
+            --pg-inspector---width: 100%;
+
+            grid-template-areas: 'topbar' 'drawer' 'preview' 'inspector' 'dock';
+            grid-template-columns: minmax(0, 1fr);
+            grid-template-rows: auto auto minmax(var(--pg-preview---stacked-min-height, 240px), auto) auto auto;
+            overflow-y: auto;
+
+            > div[data-cy='playground-inspector-slot'] {
+                max-height: var(--pg-inspector---stacked-max-height, 28rem);
+                border-block-start: 1px solid var(--pg-inspector---border-color, #e5e5e5);
+            }
+
+            :deep(.pg-inspector) {
+                border-inline-end: 0;
+            }
+
+            :deep(.pg-drawer) {
+                width: 100%;
+                max-height: var(--pg-drawer---stacked-max-height, 20rem);
+            }
         }
     }
 </style>
@@ -384,6 +456,9 @@
         --pg---min-height: 480px;
         --pg---background-color: #fff;
         --pg---color: #111;
+        --pg-preview---stacked-min-height: 240px;
+        --pg-inspector---stacked-max-height: 28rem;
+        --pg-drawer---stacked-max-height: 20rem;
     }
 
     .pg[data-theme='dark'],

@@ -1,0 +1,83 @@
+{
+  "name": "OrigamVirtualScrollItem",
+  "tag": "origam-virtual-scroll-item",
+  "family": "VirtualScroll",
+  "label": "VirtualScrollItem",
+  "props": [
+    {
+      "name": "renderless",
+      "label": "renderless",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    }
+  ],
+  "events": [
+    {
+      "name": "update:height",
+      "label": "update:height",
+      "payloadType": "[value: number]",
+      "source": "types"
+    }
+  ],
+  "slots": [
+    {
+      "name": "renderless",
+      "label": "renderless",
+      "slotPropsType": "{ itemRef: HTMLElement | null | undefined; }",
+      "description": "Renderless mode only (`renderless: true`) — receives the\nresize-observed element ref so the consumer can attach it to\ntheir own markup instead of the built-in wrapper `<div>`.",
+      "source": "types"
+    },
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "any",
+      "description": "Default (non-renderless) content, rendered inside the wrapper `<div>`.",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

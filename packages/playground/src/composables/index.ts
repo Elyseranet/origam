@@ -1,3 +1,4 @@
+export * from './I18n/useT'
 export * from './Registry/registry.composable'
 export * from './Commons/propControl.composable'
 export * from './Commons/eventLog.composable'

@@ -117,7 +117,7 @@ function toSlotDirective (slotName: string): string {
     let body = ''
 
     for (let i = 0; i < slotName.length; i++) {
-        const char = slotName[i]
+        const char = slotName[i] ?? ''
 
         body += SLOT_ARG_SAFE_CHAR_REGEX.test(char) ? char : `\\u${slotName.charCodeAt(i).toString(16).padStart(4, '0')}`
     }

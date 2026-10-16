@@ -76,12 +76,6 @@
                 class="tb-nav__item-icon"
               />
               <span class="tb-nav__item-name">{{ entry.name }}</span>
-              <span
-                v-if="entry.previewable"
-                class="tb-nav__item-flag"
-                :aria-label="t('theming.nav.previewable', 'Live preview available')"
-                :title="t('theming.nav.previewable', 'Live preview available')"
-              />
             </button>
           </li>
         </ul>
@@ -323,13 +317,6 @@ const navLabel = computed(() => t('theming.nav.label', 'Components'))
         white-space: nowrap;
     }
 
-    &__item-flag {
-        flex: 0 0 auto;
-        inline-size: 5px;
-        block-size: 5px;
-        border-radius: 50%;
-        background-color: var(--origam-color-feedback-success-bg, #4ade80);
-    }
 
     &__footer {
         flex: 0 0 auto;

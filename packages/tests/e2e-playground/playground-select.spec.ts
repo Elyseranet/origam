@@ -39,6 +39,19 @@ const tree = (page: Page) => page.locator('[data-cy="playground-scene-tree-list"
 const treeItem = (page: Page, label: string) => tree(page).getByRole('treeitem', { name: label, exact: true })
 
 /*
+ * #1173 — "Select in preview" only exists with MORE than one instance (owner's
+ * decision). The mode-ON cases on a Select therefore need a scene with a
+ * second instance: a Card holding the Select, built through the scene tree.
+ */
+const openSelectInCard = async (page: Page) => {
+    await openComponent(page, 'OrigamCard')
+    await page.locator('[data-cy="playground-scene-add-child-picker"]').click()
+    await page.getByRole('option', { name: 'Select', exact: true }).click()
+    await page.locator('[data-cy="playground-scene-add-child"]').click()
+    await expect(stage(page).locator('.origam-select')).toBeVisible()
+}
+
+/*
  * The plotting members. Each one's blank render was measured in this lot:
  * `.origam-chart__empty` ("No data to display") or a render error
  * (Cartesian / Polar / Radar dereference the required `series`).
@@ -106,7 +119,8 @@ test.describe('playground — selection by click in the preview (#1164)', () => 
     test('mode OFF (default): the Select keeps its own interaction and opens', async ({ page }) => {
         await openComponent(page, 'OrigamSelect')
 
-        await expect(toggle(page)).toHaveAttribute('aria-pressed', 'false')
+        /* One instance: no selection mode to offer at all (#1173). */
+        await expect(toggle(page)).toHaveCount(0)
 
         await stage(page).locator('[data-cy="playground-preview-instance"]').click()
 
@@ -124,12 +138,12 @@ test.describe('playground — selection by click in the preview (#1164)', () => 
     })
 
     test('mode ON: a click selects the instance and does NOT open the Select', async ({ page }) => {
-        await openComponent(page, 'OrigamSelect')
+        await openSelectInCard(page)
         await toggle(page).click()
 
         await expect(toggle(page)).toHaveAttribute('aria-pressed', 'true')
 
-        await stage(page).locator('[data-cy="playground-preview-instance"]').click()
+        await stage(page).locator('.origam-select').click()
 
         await expect(inspectorTitle(page)).toHaveText('Select')
         await expect(page.getByRole('listbox').filter({ visible: true })).toHaveCount(0)
@@ -168,12 +182,12 @@ test.describe('playground — selection by click in the preview (#1164)', () => 
     })
 
     test('mode ON: the selection is outlined, and a click reopens a hidden inspector', async ({ page }) => {
-        await openComponent(page, 'OrigamBtn')
+        await openComponent(page, 'OrigamTabs')
         await page.locator('[data-cy="playground-inspector-toggle"]').click()
         await expect(page.locator('[data-cy="playground-inspector-slot"]')).toBeHidden()
 
         await toggle(page).click()
-        await stage(page).getByRole('button', { name: 'Button', exact: true }).click()
+        await stage(page).getByRole('tab', { name: 'Settings' }).click()
 
         await expect(page.locator('[data-cy="playground-inspector-slot"]')).toBeVisible()
 
@@ -201,7 +215,7 @@ test.describe('playground — selection by click in the preview (#1164)', () => 
     })
 
     test('the toggle is a keyboard-operable toggle button', async ({ page }) => {
-        await openComponent(page, 'OrigamBtn')
+        await openComponent(page, 'OrigamTabs')
 
         await toggle(page).focus()
         await page.keyboard.press('Enter')

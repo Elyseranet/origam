@@ -1,0 +1,87 @@
+{
+  "name": "OrigamSkeletonGroup",
+  "tag": "origam-skeleton-group",
+  "family": "Skeleton",
+  "label": "SkeletonGroup",
+  "props": [
+    {
+      "name": "animation",
+      "label": "animation",
+      "tsType": "\"none\" | \"pulse\" | \"wave\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "pulse",
+      "hasFactoryDefault": false,
+      "options": [
+        "none",
+        "pulse",
+        "wave"
+      ],
+      "control": "select",
+      "description": "*******************************************************\nanimation",
+      "source": "types"
+    },
+    {
+      "name": "label",
+      "label": "label",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "origam.loading",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nlabel",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "any",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}
