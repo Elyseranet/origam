@@ -148,6 +148,16 @@
 			</div>
 		</Variant>
 
+		<Variant title="Events - update:hover">
+			<div class="story-competitor-shell" data-cy="competitor-emit-update-hover">
+				<origam-bracket-competitor
+						:competitor="COMPETITOR"
+						:score="2"
+						@update:hover="logEvent('update:hover', $event)"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IBracketCompetitorProps>({

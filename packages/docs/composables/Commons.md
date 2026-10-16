@@ -979,8 +979,14 @@ defaut le nom kebab-case du composant courant).
 ## `useDragResizer`
 
 ```ts
-export function useDragResizer (el: HTMLElement | undefined, value: Ref<number>, min: number, max: number, axis: TAxis)
+export function useDragResizer (el: MaybeRef<HTMLElement | undefined>, value: Ref<number>, min: MaybeRefOrGetter<number>, max: MaybeRefOrGetter<number>, axis: TAxis)
 ```
+
+Appeler UNE fois, dans `setup()`. `el` peut etre un `Ref` de template (la
+poignee qui n'existe qu'apres le montage) et `min` / `max` des `Ref` ou des
+getters, relus a chaque geste. Ne jamais l'appeler depuis un `watch` :
+`onScopeDispose` n'y a pas de scope, et chaque appel ajoute un `mousedown`
+de plus (#1152).
 
 Attache un drag mousedown/touchstart sur `el` qui fait varier `value`
 (un `Ref<number>`, borne a `[min, max]` via `clamp`) le long de `axis` —

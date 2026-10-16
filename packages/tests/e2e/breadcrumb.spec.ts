@@ -36,7 +36,8 @@ import { fillHstText, selectHstOption } from './_support/histoire-controls'
  *     5  → Slots - Default
  *     6  → Slots - Prepend
  *     7  → Slots - Append
- *     8  → Default (playground)
+ *     8  → Events - update:hover   → voir update-hover-variants.spec.ts (#1152)
+ *     9  → Default (playground)
  *
  * ─── OrigamBreadcrumbDivider.story.vue ───────────────────────────────────────
  *
@@ -680,20 +681,20 @@ test.describe('OrigamBreadcrumbItem', () => {
     })
 
     // ----------------------------------------------------------------------- //
-    // DEFAULT — playground (index 8)                                           //
+    // DEFAULT — playground (index 9)                                           //
     // init: { title:'Breadcrumb item', tag:'span' }                            //
     // ----------------------------------------------------------------------- //
 
     test.describe('Default (playground)', () => {
         test('renders the breadcrumb-item in the playground variant', async ({ page }) => {
-            await page.goto(bciUrl(8), { waitUntil: 'domcontentloaded' })
+            await page.goto(bciUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
         })
 
         test('playground: title renders as text content', async ({ page }) => {
-            await page.goto(bciUrl(8), { waitUntil: 'domcontentloaded' })
+            await page.goto(bciUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })

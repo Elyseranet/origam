@@ -14,7 +14,10 @@ import type {
 import type { IDensityProps } from '../Commons/density.interface'
 import type { IDimensionProps } from '../Commons/dimension.interface'
 import type { IElevationProps } from '../Commons/elevation.interface'
-import type { IHoverProps } from '../Commons/hover.interface'
+import type {
+    IHoverEmits,
+    IHoverProps
+} from '../Commons/hover.interface'
 import type { IMarginProps } from '../Commons/margin.interface'
 import type { IPaddingProps } from '../Commons/padding.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
@@ -79,8 +82,10 @@ export interface IBracketMatchProps extends ICommonsComponentProps, ITagProps, I
  *  card re-emits on behalf of its `competitor` slot / default rows. */
 /* Même défaut que `IBracketCompetitorEmits` : `useActive(props)` émet
  * `update:active` via `onActive()`, câblé sur le clic. Prouvé au runtime
- * dans `packages/tests/TU/origam/relay-emits-declaration.spec.ts`. */
-export interface IBracketMatchEmits extends IActiveEmits {
+ * dans `packages/tests/TU/origam/relay-emits-declaration.spec.ts`.
+ * ⛔ #1152 — idem pour `update:hover` : `set()` / `unset()` cables sur
+ * `@mouseenter` / `@mouseleave`, prouve dans le meme fichier. */
+export interface IBracketMatchEmits extends IActiveEmits, IHoverEmits {
     (e: 'click', match: IBracketMatch, event: MouseEvent): void
     (e: 'competitor-click', competitor: IBracketCompetitor, match: IBracketMatch, side: 'A' | 'B', event: MouseEvent | KeyboardEvent): void
     (e: 'winner-click', competitor: IBracketCompetitor, match: IBracketMatch, event: MouseEvent | KeyboardEvent): void

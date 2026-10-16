@@ -180,6 +180,15 @@
 			</div>
 		</Variant>
 
+		<Variant title="Events - update:hover">
+			<div class="story-match-shell" data-cy="match-emit-update-hover">
+				<origam-bracket-match
+						:match="MATCH_COMPLETED"
+						@update:hover="logEvent('update:hover', $event)"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IBracketMatchProps>({

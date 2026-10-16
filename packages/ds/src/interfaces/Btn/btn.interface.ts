@@ -19,7 +19,10 @@ import type {
     IGroupEmits,
     IGroupItemProps
 } from '../Commons/group.interface'
-import type { IHoverProps } from '../Commons/hover.interface'
+import type {
+    IHoverEmits,
+    IHoverProps
+} from '../Commons/hover.interface'
 import type { ILinkProps } from '../Commons/router.interface'
 import type { IControlLoaderProps } from '../Commons/loader.interface'
 import type { ILocationProps } from '../Commons/location.interface'
@@ -74,8 +77,15 @@ export interface IBtnProps extends ICommonsComponentProps, IColorProps, IBgColor
  *
  * Two actions are two buttons: compose them with `<origam-btn-group>`. The
  * `prepend` / `append` SLOTS are unaffected — see {@link IBtnSlots}.
+ *
+ * ⛔ #1152 — `update:hover` used to leave UNDECLARED: `useStateFlag(props,
+ * {state: 'hover'})` writes through the `hover` v-model from `set()` /
+ * `unset()`, wired on `@mouseenter` / `@mouseleave`. Vue warned on EVERY
+ * hover of every button ("neither declared in the emits option"), and the
+ * `onUpdate:hover` handler stayed in `$attrs`. Pinned by
+ * `packages/tests/TU/origam/relay-emits-declaration.spec.ts`.
  */
-export interface IBtnEmits extends IGroupEmits {}
+export interface IBtnEmits extends IGroupEmits, IHoverEmits {}
 
 /** Slot signatures for `<OrigamBtn>`. */
 export interface IBtnSlots extends IAdjacentSlots {

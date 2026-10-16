@@ -246,7 +246,6 @@
 				<origam-icon
 						:icon="menuIcon"
 						class="origam-select__menu-icon"
-						@click="noop"
 						@mousedown="handleMousedownMenuIcon"
 				/>
 			</slot>
@@ -334,7 +333,7 @@
 	import type { TOrigamVirtualScroll } from '../../types/VirtualScroll/virtual-scroll.type'
 	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
-	import { deepEqual, matchesSelector, noop, wrapInArray } from '../../utils/Commons/commons.util'
+	import { deepEqual, matchesSelector, wrapInArray } from '../../utils/Commons/commons.util'
 	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
 	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
@@ -1412,6 +1411,7 @@
 		}
 
 		&__menu-icon {
+			cursor: pointer;
 			margin-inline-start: 4px;
 			transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 		}

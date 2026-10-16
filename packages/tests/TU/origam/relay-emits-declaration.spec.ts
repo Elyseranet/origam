@@ -38,6 +38,8 @@ import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { createOrigam } from '@origam/origam'
 
+import OrigamBtn from '@origam/components/Btn/OrigamBtn.vue'
+import OrigamBreadcrumbItem from '@origam/components/Breadcrumb/OrigamBreadcrumbItem.vue'
 import OrigamBracketCompetitor from '@origam/components/Bracket/OrigamBracketCompetitor.vue'
 import OrigamBracketMatch from '@origam/components/Bracket/OrigamBracketMatch.vue'
 import OrigamSheet from '@origam/components/Sheet/OrigamSheet.vue'
@@ -265,4 +267,48 @@ describe('update:modelValue émis via useVModel — déclaration obligatoire', (
         expect(attrs).not.toContain('onUpdate:modelValue')
         expect(received).toEqual([false])
     })
+})
+
+describe('update:hover émis par useStateFlag — déclaration obligatoire (#1152)', () => {
+    /*
+     * `useStateFlag(props, {state: 'hover'})` écrit dans le v-model `hover`
+     * depuis `set()` / `unset()`. Ces cinq composants câblent ces deux
+     * fonctions sur `@mouseenter` / `@mouseleave` de leur racine — le
+     * chemin d'écriture est donc réel, à CHAQUE survol.
+     *
+     * Relevé au runtime dans le playground (#1152) : 12 avertissements
+     * « update:hover … neither declared » sur un parcours de 4 scénarios,
+     * tous partis de `<OrigamBtn>` (bouton du catalogue + instance
+     * prévisualisée). Les quatre autres ont été trouvés en énumérant les
+     * composants dont le descripteur `emits` compilé ne contient pas
+     * `update:hover` alors que leur template lie `@mouseenter` à `set()`.
+     *
+     * `<OrigamTable>` câble le même survol mais n'a AUCUN `defineEmits` :
+     * `emitsOptions === null`, Vue reste silencieux — cas distinct, hors de
+     * ce lot (cf. l'en-tête, « VUE N'AVERTIT PAS TOUJOURS »).
+     */
+    const hoverRoot = async (wrapper: ReturnType<typeof mount>) => {
+        await wrapper.trigger('mouseenter')
+        await nextTick()
+        await wrapper.trigger('mouseleave')
+        await nextTick()
+    }
+
+    const CASES: Array<[string, unknown, Record<string, unknown>]> = [
+        ['OrigamBtn', OrigamBtn, {}],
+        ['OrigamBreadcrumbItem', OrigamBreadcrumbItem, { title: 'Home' }],
+        ['OrigamBracketCompetitor', OrigamBracketCompetitor, { competitor: { id: 'a', name: 'A' } }],
+        ['OrigamBracketMatch', OrigamBracketMatch, { match: { id: 'm', competitorA: { id: 'a', name: 'A' }, competitorB: { id: 'b', name: 'B' } } }],
+        ['OrigamSheet', OrigamSheet, {}]
+    ]
+
+    for (const [name, component, props] of CASES) {
+        it(`${name} déclare update:hover — aucun avertissement, true puis false, hors de $attrs`, async () => {
+            const { warnings, received, attrs } = await observe(component, 'update:hover', props, hoverRoot)
+
+            expect(warnings).toEqual([])
+            expect(received).toEqual([true, false])
+            expect(attrs).not.toContain('onUpdate:hover')
+        })
+    }
 })

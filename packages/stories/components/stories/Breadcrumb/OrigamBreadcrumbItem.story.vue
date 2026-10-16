@@ -202,6 +202,20 @@
 			</origam-breadcrumb>
 		</Variant>
 
+		<Variant title="Events - update:hover">
+			<origam-breadcrumb>
+				<ol class="origam-breadcrumb__items">
+					<li class="origam-breadcrumb__item">
+						<origam-breadcrumb-item
+								title="Hover me"
+								data-cy="breadcrumb-item-emit-update-hover"
+								@update:hover="logEvent('update:hover', $event)"
+						/>
+					</li>
+				</ol>
+			</origam-breadcrumb>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IBreadcrumbItemProps>({ title: 'Breadcrumb item', tag: 'span' })"

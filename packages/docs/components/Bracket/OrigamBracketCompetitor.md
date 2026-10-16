@@ -68,6 +68,7 @@ per-instance override.
 |---------|-----------------------------------|
 | `click` | `(ev: MouseEvent \| KeyboardEvent)` — only when `interactive` |
 | `update:active` | `(value: boolean)` — v-model companion of the `active` prop, emitted on every click via `useActive` |
+| `update:hover` | `(value: boolean)` — v-model companion of the `hover` prop: `true` on `mouseenter`, `false` on `mouseleave` |
 
 ## Notes
 
