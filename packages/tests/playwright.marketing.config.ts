@@ -159,7 +159,11 @@ const MARKETING_GREEN_SPECS = [
     // directive, intactes avant le correctif) ; stabilite 25 passed en
     // `--repeat-each=5 --retries=0` ; vert aussi sur une base `db:migrate`
     // + `docs:seed` SEULS, la provision exacte du job CI.
-    'marketing-reference-row-list.spec.ts'
+    'marketing-reference-row-list.spec.ts',
+
+    // #1172 — encart « même sujet » en index de lignes, repli au-delà de 12.
+    // Mesure d'admission : voir la PR (A/B rouge sur le parent, repeat-each).
+    'marketing-catalog-related-families.spec.ts'
 ]
 
 /*
