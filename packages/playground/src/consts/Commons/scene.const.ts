@@ -20,3 +20,10 @@ export const SCENE_VERSION = 1
 export function createEmptyScene (): IPlaygroundScene {
     return { version: SCENE_VERSION, roots: [], selectedInstanceId: null }
 }
+
+/**
+ * The props a scene-tree row reads its hint from, in order (`instanceHint`):
+ * the visible text of a Btn / Tab (`text`), a ListItem / Chart (`title`), a
+ * field (`label`). A row with none of them shows the component label alone.
+ */
+export const INSTANCE_HINT_PROP_KEYS: readonly string[] = ['text', 'title', 'label']

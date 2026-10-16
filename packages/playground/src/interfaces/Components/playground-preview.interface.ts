@@ -1,12 +1,19 @@
 import type { IComponentRegistry } from '../Registry/component-registry.interface'
 import type { IPlaygroundInstance } from '../Scene/playground-instance.interface'
+import type { IPlaygroundScene } from '../Scene/playground-scene.interface'
 
 /*********************************************************
  * IPlaygroundPreviewProps
  ********************************************************/
 export interface IPlaygroundPreviewProps {
-    /** The one instance this lot renders, or `undefined` for no selection. */
-    instance: IPlaygroundInstance | undefined
+    /** The scene — every root is rendered, with its `children` (lot D). */
+    scene: IPlaygroundScene
+    /**
+     * The selected instance, or `undefined` for no selection. Not rendered
+     * differently: it is handed to the `preview-surround` slot so a host can
+     * annotate the selection.
+     */
+    selectedInstance: IPlaygroundInstance | undefined
     registry: IComponentRegistry
 }
 

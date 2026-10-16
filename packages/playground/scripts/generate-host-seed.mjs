@@ -40,7 +40,7 @@ const ALIASES_JSON = path.join(HERE, '../.metadata/aliases.json')
 const OUT_FILE = path.join(HERE, '../src/host/catalogSeed.const.ts')
 
 /*
- * Six components, hand-picked for variety: a props-heavy leaf (Btn), the
+ * Hand-picked for variety: a props-heavy leaf (Btn), the
  * worst-case prop count in the catalogue (Select, 161), and four more spanning
  * different categories so the catalogue drawer has something to filter.
  */
@@ -50,7 +50,21 @@ const PICK = [
     { name: 'OrigamSwitch', category: 'Form & Input' },
     { name: 'OrigamAlert', category: 'Feedback & Status' },
     { name: 'OrigamCard', category: 'Layout & Structure' },
-    { name: 'OrigamChip', category: 'Data Display' }
+    { name: 'OrigamChip', category: 'Data Display' },
+    /*
+     * Lot D (#1144) — the families that render an EMPTY BOX without data or
+     * children, each paired with the sub-components its snippet nests. The
+     * categories are the curated ones of `packages/marketing`'s catalogue
+     * (`server/db/seed/component.json`), never inferred from the name.
+     */
+    { name: 'OrigamDataTable', category: 'Data Display' },
+    { name: 'OrigamChart', category: 'Data Visualization' },
+    { name: 'OrigamTabs', category: 'Navigation' },
+    { name: 'OrigamTab', category: 'Navigation' },
+    { name: 'OrigamWindow', category: 'Navigation' },
+    { name: 'OrigamWindowItem', category: 'Layout & Structure' },
+    { name: 'OrigamList', category: 'Data Display' },
+    { name: 'OrigamListItem', category: 'Data Display' }
 ]
 
 function describeDefault (entry) {
@@ -182,6 +196,23 @@ function eventLiteral (name, typesEvent) {
     return lines.join('\n')
 }
 
+/*
+ * Source B only — the runtime descriptor has no slot list at all (README).
+ * `type` is the printed slot-props signature; `null` for a slot without props.
+ */
+function slotLiteral (slot) {
+    const lines = [
+        '        {',
+        `            name: ${JSON.stringify(slot.name)},`,
+        `            label: ${JSON.stringify(slot.name)},`,
+        `            slotPropsType: ${JSON.stringify(slot.type ?? null)},`
+    ]
+    if (slot.description) lines.push(`            description: ${JSON.stringify(slot.description)},`)
+    lines.push('            source: METADATA_SOURCE.TYPES')
+    lines.push('        }')
+    return lines.join('\n')
+}
+
 function componentLiteral (definition, category, typesDefinition, aliases) {
     const propNames = Object.keys(definition.props)
     const typesProps = typesDefinition.props ?? {}
@@ -200,7 +231,7 @@ function componentLiteral (definition, category, typesDefinition, aliases) {
         `        category: ${JSON.stringify(category)},`,
         '        props: [\n' + props + '\n        ],',
         '        events: [\n' + events + '\n        ],',
-        '        slots: [],',
+        '        slots: [\n' + (typesDefinition.slots ?? []).map(slotLiteral).join(',\n') + '\n        ],',
         '        snippets: [],',
         '        requiresParent: false',
         '    }'
@@ -241,8 +272,10 @@ function main () {
  * Demo catalogue for the standalone host (src/host/main.ts), built from
  * REAL metadata captured from \`origam\` @ ${headSha()}.
  * Source A (runtime descriptor: names, defaults) merged with source B
- * (literal unions + resolved aliases: options, tsType, emit payloads). No
- * slots, no snippets. Prop counts: ${counts}.
+ * (literal unions + resolved aliases: options, tsType, emit payloads, slots).
+ * No snippets and \`requiresParent: false\` everywhere: neither is measurable
+ * by the chain — both are AUTHORED, in \`consts/Commons/snippets.const.ts\`.
+ * Prop counts: ${counts}.
  *
  * Do not hand-edit — re-run the generator after \`meta:runtime\`,
  * \`meta:unions\` and \`meta:aliases\`.

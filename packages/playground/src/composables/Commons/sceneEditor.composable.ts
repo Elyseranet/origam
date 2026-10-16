@@ -1,6 +1,9 @@
 import { computed } from 'vue'
 import type { Ref } from 'vue'
 import { UPDATE_EMIT_PREFIX } from '../../consts/Commons/event-log.const'
+import { collectSubtreeIds, findInstance, findParentId, instantiateSnippet } from '../../utils/Commons/scene-instance.util'
+import { DEFAULT_SLOT_NAME } from '../../consts/Commons/scene-code.const'
+import type { IComponentSnippet } from '../../interfaces/Catalog/component-snippet.interface'
 import type { IPlaygroundInstance } from '../../interfaces/Scene/playground-instance.interface'
 import type { IPlaygroundScene } from '../../interfaces/Scene/playground-scene.interface'
 import type { TPropValue } from '../../types/Commons/prop-value.type'
@@ -33,19 +36,6 @@ import type { TPropValue } from '../../types/Commons/prop-value.type'
  * object host never.
  ********************************************************/
 export function useSceneEditor (scene: Ref<IPlaygroundScene>) {
-    const findInstance = (instances: IPlaygroundInstance[], id: string): IPlaygroundInstance | undefined => {
-        for (const instance of instances) {
-            if (instance.id === id) return instance
-
-            for (const children of Object.values(instance.children ?? {})) {
-                const found = findInstance(children, id)
-                if (found) return found
-            }
-        }
-
-        return undefined
-    }
-
     const mapInstance = (instances: IPlaygroundInstance[], id: string, update: (instance: IPlaygroundInstance) => IPlaygroundInstance): IPlaygroundInstance[] => instances.map(instance => {
         if (instance.id === id) return update(instance)
         if (!instance.children) return instance
@@ -134,5 +124,84 @@ export function useSceneEditor (scene: Ref<IPlaygroundScene>) {
         setProp(instanceId, key, args[0] as TPropValue)
     }
 
-    return { selectedInstance, isPropSet, setProp, resetProp, writeBackEmit }
+    /*********************************************************
+     * Tree (lot D, #1144)
+     *
+     * @description
+     * Selection, adding and removing a child, loading a snippet. Same rules
+     * as the prop writes above: immutable along the edited path, and every
+     * instance keeps the id it was born with — an add or a remove never
+     * renumbers a sibling, so a selection or a log line naming an id keeps
+     * naming the same component.
+     ********************************************************/
+    const selectInstance = (id: string | null) => {
+        if (id !== null && !findInstance(scene.value.roots, id)) return
+        if (scene.value.selectedInstanceId === id) return
+
+        scene.value = { ...scene.value, selectedInstanceId: id }
+    }
+
+    /**
+     * Appends `child` to `slot` of `parentId` and selects it — adding is
+     * almost always followed by editing what was added. A `parentId` that
+     * names nothing is a no-op rather than a silent new root.
+     */
+    const addChild = (parentId: string, child: IPlaygroundInstance, slot: string = DEFAULT_SLOT_NAME) => {
+        if (!findInstance(scene.value.roots, parentId)) return
+
+        const roots = mapInstance(scene.value.roots, parentId, instance => {
+            const children = { ...(instance.children ?? {}) }
+            children[slot] = [...(children[slot] ?? []), child]
+
+            return { ...instance, children }
+        })
+
+        scene.value = { ...scene.value, roots, selectedInstanceId: child.id }
+    }
+
+    const removeFrom = (instances: IPlaygroundInstance[], id: string): IPlaygroundInstance[] => instances
+        .filter(instance => instance.id !== id)
+        .map(instance => {
+            if (!instance.children) return instance
+
+            const children = Object.fromEntries(Object.entries(instance.children).map(([slot, list]) => [slot, removeFrom(list, id)]))
+
+            return { ...instance, children }
+        })
+
+    /**
+     * Removes `id` and its whole subtree. When the selection was inside that
+     * subtree it moves to the removed instance's parent — or to no selection
+     * for a root, which `selectedInstance` resolves to the first root left.
+     */
+    const removeInstance = (id: string) => {
+        const target = findInstance(scene.value.roots, id)
+
+        if (!target) return
+
+        const parentId = findParentId(scene.value.roots, id) ?? null
+        const { selectedInstanceId } = scene.value
+        const selectionRemoved = selectedInstanceId !== null && collectSubtreeIds(target).includes(selectedInstanceId)
+
+        scene.value = {
+            ...scene.value,
+            roots: removeFrom(scene.value.roots, id),
+            selectedInstanceId: selectionRemoved ? parentId : selectedInstanceId
+        }
+    }
+
+    /**
+     * REPLACES the scene's roots with the snippet's instances, freshly
+     * identified (`instantiate`), and selects the first one. The scene
+     * version is kept: loading a snippet changes the content, not the schema.
+     */
+    const loadSnippet = (snippet: IComponentSnippet, instantiate: (snippet: IComponentSnippet) => IPlaygroundInstance[] = instantiateSnippet) => {
+        const roots = instantiate(snippet)
+
+        scene.value = { ...scene.value, roots, selectedInstanceId: roots[0]?.id ?? null }
+    }
+
+    const getInstance = (id: string) => findInstance(scene.value.roots, id)
+
+    return { selectedInstance, isPropSet, setProp, resetProp, writeBackEmit, selectInstance, addChild, removeInstance, loadSnippet, getInstance }
 }

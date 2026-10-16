@@ -13,7 +13,7 @@ import type { IPlaygroundScene } from '../Scene/playground-scene.interface'
  * whatever the host's own ancestor already set", never "light" by default.
  ********************************************************/
 export interface IPlaygroundProps {
-    /** The scene to render. Lot 2 only ever renders `scene.roots[0]`. */
+    /** The scene to render — every root, with its `children` (lot D). */
     scene: IPlaygroundScene
     /** The catalogue + lazy loaders this playground instance reads from. */
     registry: IComponentRegistry

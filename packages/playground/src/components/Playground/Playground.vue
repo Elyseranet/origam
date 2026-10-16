@@ -21,6 +21,15 @@
                 v-show="inspectorOpen"
                 data-cy="playground-inspector-slot"
         >
+            <playground-scene-tree
+                    :scene="scene"
+                    :registry="registry"
+                    :selected-id="selectedId"
+                    @select="handleSelectInstance"
+                    @add-child="handleAddChild"
+                    @remove="handleRemoveInstance"
+            />
+
             <playground-inspector
                     :definition="selectedDefinition"
                     :values="selectedValues"
@@ -40,7 +49,8 @@
         </div>
 
         <playground-preview
-                :instance="selectedInstance"
+                :scene="scene"
+                :selected-instance="selectedInstance"
                 :registry="registry"
                 @instance-emit="handleInstanceEmit"
         >
@@ -55,6 +65,12 @@
         <playground-dock>
             <template #code>
                 <playground-code-panel :scene="scene"/>
+            </template>
+            <template #snippets>
+                <playground-snippets
+                        :definition="rootDefinition"
+                        @load="handleLoadSnippet"
+                />
             </template>
             <template #events>
                 <playground-event-log
@@ -81,13 +97,15 @@
     import PlaygroundEventLog from './PlaygroundEventLog.vue'
     import PlaygroundInspector from './PlaygroundInspector.vue'
     import PlaygroundPreview from './PlaygroundPreview.vue'
+    import PlaygroundSceneTree from './PlaygroundSceneTree.vue'
+    import PlaygroundSnippets from './PlaygroundSnippets.vue'
     import PlaygroundTopbar from './PlaygroundTopbar.vue'
     import { useVModel } from 'origam/composables'
     import { useEventLog } from '../../composables/Commons/eventLog.composable'
     import { useSceneEditor } from '../../composables/Commons/sceneEditor.composable'
     import { SCENE_VERSION } from '../../consts/Commons/scene.const'
     import type { IPlaygroundEmits, IPlaygroundProps, IPlaygroundSlots } from '../../interfaces/Components/playground.interface'
-    import type { IPlaygroundInstance } from '../../interfaces/Scene/playground-instance.interface'
+    import { createInstanceFor, findInstance } from '../../utils/Commons/scene-instance.util'
     import type { TPropValue } from '../../types/Commons/prop-value.type'
 
     /*********************************************************
@@ -155,7 +173,7 @@
     }
 
     const handleInstanceEmit = (instanceId: string, name: string, args: unknown[]) => {
-        eventLog.record(instanceId, selectedInstance.value?.componentName ?? '', name, args)
+        eventLog.record(instanceId, editor.getInstance(instanceId)?.componentName ?? '', name, args)
         editor.writeBackEmit(instanceId, name, args)
     }
 
@@ -168,26 +186,92 @@
         : undefined))
 
     /*********************************************************
+     * Scene tree (lot D, #1144)
+     *
+     * @description
+     * Selection, add-child and remove all go through `useSceneEditor`; the
+     * tree only reports intents. `selectedId` is the RESOLVED selection —
+     * `selectedInstance` falls back to the first root when the scene names
+     * none, and the tree must highlight what the inspector shows.
+     ********************************************************/
+    const selectedId = computed(() => selectedInstance.value?.id ?? null)
+
+    const emitSelection = () => {
+        emits('select', scene.value.selectedInstanceId)
+    }
+
+    const handleSelectInstance = (instanceId: string) => {
+        editor.selectInstance(instanceId)
+        emitSelection()
+    }
+
+    const handleAddChild = (parentId: string, componentName: string) => {
+        const definition = props.registry.getComponentMetadata(componentName)
+
+        if (!definition) return
+
+        editor.addChild(parentId, createInstanceFor(definition))
+        emitSelection()
+    }
+
+    const handleRemoveInstance = (instanceId: string) => {
+        editor.removeInstance(instanceId)
+        emitSelection()
+    }
+
+    /*********************************************************
+     * Snippets
+     *
+     * @description
+     * The panel lists the snippets of the component at the ROOT of the
+     * branch being edited — a snippet replaces the scene, so offering the
+     * selected child's own snippets (a Tab's, under Tabs) would throw the
+     * parent away. Loading goes through `useSceneEditor().loadSnippet`,
+     * which re-identifies every instance.
+     ********************************************************/
+    const rootDefinition = computed(() => {
+        const roots = scene.value.roots
+        const root = roots.find(candidate => selectedId.value !== null && !!findInstance([candidate], selectedId.value)) ?? roots[0]
+
+        return root ? props.registry.getComponentMetadata(root.componentName) : undefined
+    })
+
+    const handleLoadSnippet = (snippetId: string) => {
+        const snippet = rootDefinition.value?.snippets.find(candidate => candidate.id === snippetId)
+
+        if (!snippet) return
+
+        editor.loadSnippet(snippet)
+        emitSelection()
+    }
+
+    /*********************************************************
      * Drawer
      *
      * @description
-     * Selecting a component REPLACES the scene's single root — lot 2 only
-     * ever renders one instance (`scene.roots[0]`); the nested model
-     * (`children`) already exists in the type from lot 1, unused until a
-     * later lot adds the scene tree UI.
+     * Picking a component REPLACES the scene with its DEFAULT snippet — the
+     * first of `definition.snippets` — or with one blank instance when it has
+     * none. A DataTable picked from the catalogue therefore arrives with rows
+     * and a Btn with a text (an accessible name), instead of an empty box.
      ********************************************************/
     const drawerOpen = ref(false)
     const catalogButtonEl = ref<HTMLElement | null>(null)
 
     const selectInstance = (componentName: string) => {
-        const instance: IPlaygroundInstance = {
-            id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `${componentName}-${Date.now()}`,
-            componentName,
-            props: {}
+        const definition = props.registry.getComponentMetadata(componentName)
+
+        if (!definition) return
+
+        const [snippet] = definition.snippets
+
+        if (snippet) {
+            editor.loadSnippet(snippet)
+        } else {
+            const instance = createInstanceFor(definition)
+            scene.value = { version: SCENE_VERSION, roots: [instance], selectedInstanceId: instance.id }
         }
 
-        scene.value = { version: SCENE_VERSION, roots: [instance], selectedInstanceId: instance.id }
-        emits('select', instance.id)
+        emitSelection()
     }
 
     const handleOpenCatalog = (event?: MouseEvent) => {
@@ -234,8 +318,21 @@
 
         > div[data-cy='playground-inspector-slot'] {
             grid-area: inspector;
+            display: flex;
+            flex-direction: column;
+            width: var(--pg-inspector---width, 352px);
             min-width: 0;
+            min-height: 0;
             overflow: hidden;
+
+            :deep(.pg-scene-tree) {
+                flex: 0 0 auto;
+            }
+
+            :deep(.pg-inspector) {
+                flex: 1 1 auto;
+                min-height: 0;
+            }
         }
 
         :deep(.pg-preview) {
