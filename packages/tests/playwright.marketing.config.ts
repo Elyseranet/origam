@@ -150,7 +150,16 @@ const MARKETING_GREEN_SPECS = [
 
     // #1032 — navigation des fiches de detail (encart, prev/next, menu de famille).
     // Mesure d'admission : voir la PR.
-    'marketing-catalog-detail-nav.spec.ts'
+    'marketing-catalog-detail-nav.spec.ts',
+
+    // #1169 — les tables de reference (RowList) gardent type, defaut et
+    // `required` quand une page personnalise la copie ou le libelle.
+    // Mesure d'admission : A/B contre le parent = 3 rouges / 2 verts (les 2
+    // verts sont les temoins : copie des props et table des args de
+    // directive, intactes avant le correctif) ; stabilite 25 passed en
+    // `--repeat-each=5 --retries=0` ; vert aussi sur une base `db:migrate`
+    // + `docs:seed` SEULS, la provision exacte du job CI.
+    'marketing-reference-row-list.spec.ts'
 ]
 
 /*
