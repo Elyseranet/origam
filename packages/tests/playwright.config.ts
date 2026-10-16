@@ -30,6 +30,11 @@ const GREEN_SPECS = [
     'title-text-transform.spec.ts',
     'text-mask-text-transform.spec.ts',
     'blockquote-text-transform.spec.ts',
+    // #1152 — Variants « Events - update:hover » (Btn, BreadcrumbItem,
+    // BracketMatch, BracketCompetitor, Sheet) : 5/5 puis 25/25 sous
+    // `--repeat-each=5`, E2E_STATIC=1, chromium, port isole. Ne voit pas le
+    // warning (build de prod) — le verdict est dans le TU et e2e-playground.
+    'update-hover-variants.spec.ts',
     // #924 — promu plutot que baseline : 18 tests, verts, et rouge sans le
     // correctif (1 echec cible, pas un rouge en bloc). Il tourne SANS serveur
     // ni port (fichiers `file://`, attributs ecrits avant le parse), donc il
