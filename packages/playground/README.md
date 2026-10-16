@@ -227,3 +227,31 @@ rendered as text, never `v-html`: a scene is serialisable and may come from a UR
 Every snippet prop is checked against the extracted catalogue by
 `packages/tests/TU/playground/scene-tree.spec.ts` — a snippet that invents a prop
 fails there.
+
+## Chart* snippets and selection by click (lot E1, #1164)
+
+- **The whole Chart family is in the host seed** (26 members; `meta:host-seed`
+  `PICK`). Category copied from marketing's curated catalogue where it has one;
+  11 members have none there and get none here.
+- **Every member but `OrigamChartAxis` has a default snippet**
+  (`createChartSnippets`, in `snippets.const.ts`). Each was measured rendering
+  empty without one (the "No data to display" state, a 0-px box, or a render
+  error on the required `series`). ⛔ Most families do NOT read
+  `IChartSeries.data` as `number[]`: they cast `series[0].data` to their own
+  datum (`IChartBoxPlotDatum`, `IChartSankeyDatum`, `IChartTreemapDatum`…), and
+  each snippet follows that interface. `OrigamChartAxis` renders `<g>` roots that
+  only paint inside a chart's `<svg>`, and no catalogue component offers a slot
+  there, so it has no snippet and no parent.
+- **Selection mode** (owner's decision, 2026-10-16): a toggle button in the top
+  bar (`aria-pressed`, `data-cy="playground-select-mode-toggle"`), off by default.
+  While it is off, the preview intercepts nothing and every component keeps its own
+  interaction. While it is on, the pointer events of `SELECT_MODE_CAPTURED_EVENTS`
+  are stopped in the capture phase on the stage, and `click` selects the innermost
+  instance (`instanceIdFromTarget`), the same way a tree row does. Hovered instances
+  get a dashed outline and the selected one a solid outline. Escape leaves the mode.
+  Keyboard selection stays with the scene tree. The public API of `Playground`
+  (props, emits, slots) does not change.
+
+```sh
+E2E_PLAYGROUND_PORT=<free port> pnpm -F @origam/tests test:e2e:playground   # includes playground-select.spec.ts
+```

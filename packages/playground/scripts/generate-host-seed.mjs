@@ -64,7 +64,40 @@ const PICK = [
     { name: 'OrigamWindow', category: 'Navigation' },
     { name: 'OrigamWindowItem', category: 'Layout & Structure' },
     { name: 'OrigamList', category: 'Data Display' },
-    { name: 'OrigamListItem', category: 'Data Display' }
+    { name: 'OrigamListItem', category: 'Data Display' },
+    /*
+     * Lot E1 (#1164) — the rest of the Chart family: every `OrigamChart*.vue`
+     * the metadata chain extracted (26, `OrigamChart` above). The category is
+     * copied from `packages/marketing/server/db/seed/component.json` where
+     * that curated catalogue HAS one; 11 members carry an EMPTY category
+     * there and get none here either (`category` is optional,
+     * `IComponentDefinition`) — never one inferred from the name.
+     */
+    { name: 'OrigamChartAxis', category: 'Data Visualization' },
+    { name: 'OrigamChartBoxPlot', category: 'Data Visualization' },
+    { name: 'OrigamChartBullet', category: 'Data Display' },
+    { name: 'OrigamChartCandlestick', category: 'Data Visualization' },
+    { name: 'OrigamChartCartesian', category: 'Data Visualization' },
+    { name: 'OrigamChartGauge', category: 'Data Visualization' },
+    { name: 'OrigamChartHeatmap', category: 'Data Display' },
+    { name: 'OrigamChartHoneycomb', category: 'Data Display' },
+    { name: 'OrigamChartLegend', category: 'Data Display' },
+    { name: 'OrigamChartMap', category: 'Data Display' },
+    { name: 'OrigamChartPareto', category: 'Data Display' },
+    { name: 'OrigamChartPictorial', category: 'Data Display' },
+    { name: 'OrigamChartPolar', category: 'Data Display' },
+    { name: 'OrigamChartPolarBar', category: 'Data Display' },
+    { name: 'OrigamChartPyramid' },
+    { name: 'OrigamChartRadar' },
+    { name: 'OrigamChartRangeSelector' },
+    { name: 'OrigamChartSankey' },
+    { name: 'OrigamChartSparkline' },
+    { name: 'OrigamChartStreamgraph' },
+    { name: 'OrigamChartSunburst' },
+    { name: 'OrigamChartTooltip' },
+    { name: 'OrigamChartTreemap' },
+    { name: 'OrigamChartVariwide' },
+    { name: 'OrigamChartWordCloud' }
 ]
 
 function describeDefault (entry) {
@@ -228,7 +261,7 @@ function componentLiteral (definition, category, typesDefinition, aliases) {
         `        tag: ${JSON.stringify(toKebabTag(definition.name))},`,
         `        family: ${JSON.stringify(definition.family)},`,
         `        label: ${JSON.stringify(label)},`,
-        `        category: ${JSON.stringify(category)},`,
+        ...(category ? [`        category: ${JSON.stringify(category)},`] : []),
         '        props: [\n' + props + '\n        ],',
         '        events: [\n' + events + '\n        ],',
         '        slots: [\n' + (typesDefinition.slots ?? []).map(slotLiteral).join(',\n') + '\n        ],',

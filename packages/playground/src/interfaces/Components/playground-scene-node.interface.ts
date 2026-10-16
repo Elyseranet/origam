@@ -11,6 +11,12 @@ import type { IPlaygroundInstance } from '../Scene/playground-instance.interface
 export interface IPlaygroundSceneNodeProps {
     instance: IPlaygroundInstance
     registry: IComponentRegistry
+    /**
+     * The selected instance id (lot E1, #1164). The node whose instance it
+     * names marks its rendered root `data-pg-selected`, which the preview
+     * outlines while the selection mode is on. Passed down unchanged.
+     */
+    selectedId?: string | null
 }
 
 /*********************************************************

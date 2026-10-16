@@ -5,12 +5,15 @@
             tag="div"
             class="pg"
             data-cy="playground-root"
+            @keydown.esc="handleEscape"
     >
         <playground-topbar
                 :component-count="definitions.length"
                 :inspector-open="inspectorOpen"
+                :select-mode="selectMode"
                 @open-catalog="handleOpenCatalog"
                 @toggle-inspector="handleToggleInspector"
+                @toggle-select-mode="handleToggleSelectMode"
         >
             <template #toolbar>
                 <slot name="toolbar"/>
@@ -52,7 +55,9 @@
                 :scene="scene"
                 :selected-instance="selectedInstance"
                 :registry="registry"
+                :select-mode="selectMode"
                 @instance-emit="handleInstanceEmit"
+                @select-instance="handlePreviewSelect"
         >
             <template #preview-surround="scope">
                 <slot
@@ -290,6 +295,38 @@
 
     const handleToggleInspector = () => {
         inspectorOpen.value = !inspectorOpen.value
+    }
+
+    /*********************************************************
+     * Selection mode (lot E1, #1164)
+     *
+     * @description
+     * Owner's decision (2026-10-16): selecting by clicking the preview is a
+     * MODE, off by default, so the playground stays usable to test each
+     * component's own interaction. Internal state — the public API of
+     * `Playground` (props / emits / slots) does not change. A selection made
+     * in the preview goes through the SAME path as one made in the tree
+     * (`handleSelectInstance` → `useSceneEditor().selectInstance` + `select`
+     * emit), and reopens the inspector if it was hidden: selecting is asking
+     * to see the props.
+     *
+     * @description
+     * Escape leaves the mode from anywhere inside the playground. It is not
+     * stopped: a host listening for Escape still receives it.
+     ********************************************************/
+    const selectMode = ref(false)
+
+    const handleToggleSelectMode = () => {
+        selectMode.value = !selectMode.value
+    }
+
+    const handleEscape = () => {
+        selectMode.value = false
+    }
+
+    const handlePreviewSelect = (instanceId: string) => {
+        inspectorOpen.value = true
+        handleSelectInstance(instanceId)
     }
 
     /*********************************************************
