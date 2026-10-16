@@ -121,7 +121,9 @@ export function instantiateSnippet (snippet: IComponentSnippet, createId: () => 
 export function createInstanceFor (definition: IComponentDefinition, createId: () => string = createInstanceId): IPlaygroundInstance {
     const instances = definition.snippets[0]?.instances ?? []
 
-    if (instances.length === 1) return cloneWithFreshIds(instances[0], createId)
+    const [only] = instances
+
+    if (instances.length === 1 && only) return cloneWithFreshIds(only, createId)
 
     return { id: createId(), componentName: definition.name, props: {} }
 }
