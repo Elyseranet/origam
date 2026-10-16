@@ -18,6 +18,14 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — trois avertissements console en dev (#1152)
+
+Relevés pendant les e2e du playground, tous trois venaient de `packages/ds/src`, donc de tous les consommateurs en mode dev :
+
+- **`update:hover` émis sans être déclaré** par `OrigamBtn`, `OrigamBreadcrumbItem`, `OrigamBracketMatch`, `OrigamBracketCompetitor` et `OrigamSheet`. `useStateFlag(props, {state: 'hover'})` écrit dans le v-model `hover` à chaque `mouseenter` / `mouseleave`. Vue avertissait donc à chaque survol, et le handler `onUpdate:hover` restait dans `$attrs`. Les cinq interfaces d'emits étendent maintenant `IHoverEmits`, et chaque story a sa Variant `Events - update:hover`, rangée dans la section EMITS. Les index positionnels des specs qui suivent sont recalés : `btn`, `btn-wrap-height`, `btn-block-flex`, `btn-border`, `btn-cascade-layer-probe`, `vrt/btn-variant` et `breadcrumb`.
+- **`[Origam] A clickable icon is a button…`** au montage de chaque `OrigamSelect`, deux fois (sur `OrigamIcon` et sur l'`OrigamClassIcon` où l'écouteur retombait). En cause, le chevron du menu, qui portait un `@click="noop"` hérité de Vuetify. Ce handler sans effet faisait aussi passer le chevron à `aria-hidden="false"` : un glyphe décoratif était exposé aux technologies d'assistance, sans nom ni chemin clavier. Le handler est retiré. Le chevron redevient `aria-hidden="true"`, et le curseur `pointer` est conservé par une règle scopée sur `.origam-select__menu-icon`. Avant, il venait de `.origam-icon--clickable`. Sans la règle, le curseur mesuré passe à `auto`, et avec elle à `pointer`. L'ouverture du menu à la souris passe toujours par `@mousedown`.
+- **`onUnmounted is called when there is no active component instance`** venait de `OrigamTextareaField`, qui appelait `useDragResizer` depuis un `watch`. Le nettoyage des écouteurs `window` n'était donc jamais enregistré, et chaque changement de `rows` / `maxRows` ajoutait un `mousedown` de plus sur la poignée (3 écouteurs mesurés après deux changements). `useDragResizer` accepte maintenant un `Ref` pour `el` et des `Ref` / getters pour `min` / `max`, s'appelle une seule fois dans `setup()` et nettoie via `tryOnScopeDispose`. La signature est élargie, sans rupture : les valeurs brutes restent acceptées.
+
 ## [2.32.0] - 2026-10-15
 
 ### Added — `OrigamCard` : `contentDisplay`, `hover` en objet (#1100)

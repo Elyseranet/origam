@@ -17,12 +17,12 @@ import type { FrameLocator, Locator } from '@playwright/test'
  * Les tests « [rouge avant] » echouent sur `origin/develop`. Les autres sont des
  * temoins de non-regression (largeur, plafond max-width, stacked, wrap).
  *
- * Variant 15 de la story OrigamBtn = « Prop — block (flex column) ».
+ * Variant 16 de la story OrigamBtn = « Prop — block (flex column) ».
  */
 
 const STORY_ID = 'components-stories-btn-origambtn-story-vue'
 const STORY_PATH = '/stories/story/' + STORY_ID
-const BLOCK_VARIANT = 15
+const BLOCK_VARIANT = 16
 const url = `${STORY_PATH}?variantId=${STORY_ID}-${BLOCK_VARIANT}`
 
 interface IBox { height: number, width: number, parentContentWidth: number, parentHeight: number, flexGrow: string, flexBasis: string }

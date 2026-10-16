@@ -14,7 +14,10 @@ import type {
     ITagProps
 } from '../Commons/commons.interface'
 import type { IDensityProps } from '../Commons/density.interface'
-import type { IHoverProps } from '../Commons/hover.interface'
+import type {
+    IHoverEmits,
+    IHoverProps
+} from '../Commons/hover.interface'
 import type { ILinkProps } from '../Commons/router.interface'
 import type { IMarginProps } from '../Commons/margin.interface'
 import type { IPaddingProps } from '../Commons/padding.interface'
@@ -25,8 +28,14 @@ export interface IBreadcrumbItemProps extends ICommonsComponentProps, ITagProps,
     disabled?: boolean
 }
 
-/** Emits fired by `<OrigamBreadcrumbItem>` — clicks on prepend/append icons. */
-export interface IBreadcrumbItemEmits extends IAdjacentEmits {}
+/** Emits fired by `<OrigamBreadcrumbItem>` — clicks on prepend/append icons,
+ *  plus `update:hover`.
+ *
+ *  ⛔ #1152 — `update:hover` partait sans etre declare : `useStateFlag(props,
+ *  {state: 'hover'})` ecrit dans le v-model `hover` depuis `set()` /
+ *  `unset()`, cables sur `@mouseenter` / `@mouseleave`. Prouve dans
+ *  `packages/tests/TU/origam/relay-emits-declaration.spec.ts`. */
+export interface IBreadcrumbItemEmits extends IAdjacentEmits, IHoverEmits {}
 
 /** Slot signatures for `<OrigamBreadcrumbItem>`. */
 export interface IBreadcrumbItemSlots extends IAdjacentSlots {

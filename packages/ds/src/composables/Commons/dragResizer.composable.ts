@@ -1,11 +1,12 @@
-import { computed, onUnmounted, Ref, ref } from 'vue'
+import { computed, ref, toValue } from 'vue'
+import type { MaybeRef, MaybeRefOrGetter, Ref } from 'vue'
 import { useEventListener } from './eventListener.composable'
 
 import { AXIS, CLIENT_POSITION } from '../../enums'
 
 import type { TAxis } from '../../types/Commons/axis.type'
 
-import { addWindowListener, clamp, getPosition } from '../../utils/Commons/commons.util'
+import { addWindowListener, clamp, getPosition, tryOnScopeDispose } from '../../utils/Commons/commons.util'
 
 /*********************************************************
  * useDragResizer
@@ -22,14 +23,27 @@ import { addWindowListener, clamp, getPosition } from '../../utils/Commons/commo
  * commente en mort dans le code et un `// TODO - Rework for both axis`
  * l'annonce explicitement. Passer `AXIS.Y` fait juste tomber dans la
  * branche verticale de `getPosition` sans etre teste par ce composable.
+ *
+ * @description
+ * ⛔ #1152 — `el`, `min` et `max` acceptent un `Ref` (ou un getter pour
+ * les bornes) pour que le composable s'appelle UNE fois, dans `setup()`.
+ * Son seul consommateur, `OrigamTextareaField`, l'appelait depuis un
+ * `watch` sur `[poignee, minHeight, maxHeight]` parce que la poignee
+ * n'existe qu'apres le montage et que les bornes bougent. Deux defauts en
+ * decoulaient : `onUnmounted` hors instance (Vue avertissait, le nettoyage
+ * des listeners `window` n'etait JAMAIS enregistre), et un `mousedown`
+ * SUPPLEMENTAIRE a chaque changement de borne, chacun avec ses bornes
+ * figees. `useEventListener` suit deja une cible `Ref`, et les bornes sont
+ * lues a chaque geste : rien n'oblige plus a rappeler le composable. Le
+ * nettoyage passe par `tryOnScopeDispose`, comme `useEventListener`.
  ********************************************************/
-export function useDragResizer (el: HTMLElement | undefined, value: Ref<number>, min: number, max: number, axis: TAxis) {
+export function useDragResizer (el: MaybeRef<HTMLElement | undefined>, value: Ref<number>, min: MaybeRefOrGetter<number>, max: MaybeRefOrGetter<number>, axis: TAxis) {
     const resizing = ref(false)
 
     const removeListeners: Array<() => void> = []
     const onUnmountedCleanupFns: Array<() => void> = []
 
-    onUnmounted(() => {
+    tryOnScopeDispose(() => {
         onUnmountedCleanupFns.forEach((fn) => fn())
     })
 
@@ -60,7 +74,7 @@ export function useDragResizer (el: HTMLElement | undefined, value: Ref<number>,
             const clickOffset = getPosition(e, isHorizontal.value ? CLIENT_POSITION.X : CLIENT_POSITION.Y)
             const delta = clickOffset - start
 
-            value.value = clamp(initialStart + delta, min, max)
+            value.value = clamp(initialStart + delta, toValue(min), toValue(max))
         }
         const onMouseUp = onDragEnd
 
@@ -82,7 +96,7 @@ export function useDragResizer (el: HTMLElement | undefined, value: Ref<number>,
             const clickOffset = getPosition(e, isHorizontal.value ? CLIENT_POSITION.X : CLIENT_POSITION.Y)
             const delta = clickOffset - start
 
-            value.value = Math.max(min, Math.min(max, initialStart + delta))
+            value.value = clamp(initialStart + delta, toValue(min), toValue(max))
         }
         const onTouchEnd = onDragEnd
 

@@ -59,6 +59,7 @@ an orange dot. When the match is `live` and `to` is set, a red
 | `competitor-click` | `(competitor, match, side: 'A' \| 'B', ev)`                  |
 | `winner-click`     | `(competitor, match, ev)` — when the declared winner is clicked |
 | `update:active`    | `(value: boolean)` — v-model companion of the `active` prop, emitted on every card click via `useActive` |
+| `update:hover`     | `(value: boolean)` — v-model companion of the `hover` prop: `true` on `mouseenter`, `false` on `mouseleave` |
 
 ## Slots
 

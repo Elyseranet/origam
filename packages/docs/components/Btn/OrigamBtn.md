@@ -278,6 +278,7 @@ utility wins on its own and this inline path is the thing to delete.
 |-----------------|--------------|-------------|
 | `click`          | `MouseEvent`         | Standard button click. Fires for `<a>` tags too. |
 | `group:selected` | `{ value: boolean }` | The button's selection inside its group changed — `value` is the new state. Only fires when the button is registered in a group. `<OrigamBtnToggle>` is the only component that provides one (`ORIGAM_BTN_TOGGLE_KEY`) — `<OrigamBtnGroup>` is purely visual and does not. A button outside a toggle calls `useGroupItem(…, false)`, gets `null`, and never registers the watcher, so nothing is ever emitted. Inside one, the emit comes from `useGroupItem`'s `watch(isSelected, …)`, so a programmatic change to the toggle's `modelValue` fires it exactly like a click. |
+| `update:hover`   | `boolean`            | v-model companion of the `hover` prop: `true` on `mouseenter`, `false` on `mouseleave`. Declared since #1152 — it was emitted before, undeclared, and Vue warned on every hover. |
 
 ```vue
 <template>

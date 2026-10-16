@@ -8,7 +8,7 @@ import { expect, test } from '@playwright/test'
  * on `border-*-width` here would be structurally blind (see CLAUDE.md,
  * "`getComputedStyle` under jsdom NEVER resolves `var()`").
  *
- * Variant index 15 = "Prop — border (VRT matrix)" — a STATIC matrix, so
+ * Variant index 14 = "Prop — border (VRT matrix)" — a STATIC matrix, so
  * every case goes through the component's own prop path (`useBorder` →
  * classes + inline styles → scoped SCSS), not through a DOM mutation the
  * `alert.spec.ts` pattern would let Vue re-patch under the assertion.
@@ -16,7 +16,7 @@ import { expect, test } from '@playwright/test'
 
 const STORY_ID = 'components-stories-btn-origambtn-story-vue'
 const STORY_PATH = `/stories/story/${STORY_ID}`
-const BORDER_MATRIX_URL = `${STORY_PATH}?variantId=${STORY_ID}-13`
+const BORDER_MATRIX_URL = `${STORY_PATH}?variantId=${STORY_ID}-14`
 
 type TBorderWidths = { top: string, right: string, bottom: string, left: string, style: string }
 

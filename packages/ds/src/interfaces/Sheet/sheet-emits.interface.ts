@@ -1,4 +1,5 @@
 import type { IActiveEmits } from '../Commons/active.interface'
+import type { IHoverEmits } from '../Commons/hover.interface'
 
 import type { TSheetSnapId } from '../../types/Sheet/sheet.type'
 
@@ -23,8 +24,12 @@ import type { TSheetSnapId } from '../../types/Sheet/sheet.type'
  *   lie que `@click`, et son `tag` par défaut est `div` — donc aucun
  *   élément natif ne convertit une touche en clic. Le chemin clavier
  *   n'existe pas.
+ * - `update:hover` (⛔ #1152) vient de `useStateFlag(props, { state: 'hover' })` :
+ *   `set()` / `unset()` cables sur `@mouseenter` / `@mouseleave`. Partait
+ *   sans etre declare. Prouve dans
+ *   `packages/tests/TU/origam/relay-emits-declaration.spec.ts`.
  */
-export interface ISheetEmits extends IActiveEmits {
+export interface ISheetEmits extends IActiveEmits, IHoverEmits {
     (e: 'update:snap', id: TSheetSnapId): void
 
     (e: 'update:open', value: boolean): void

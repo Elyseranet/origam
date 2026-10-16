@@ -207,6 +207,23 @@
 			</div>
 		</Variant>
 
+		<Variant title="Events - update:hover">
+			<div style="position: relative; height: 320px; background: var(--origam-color__surface---overlay, #f5f5f5); overflow: hidden; border-radius: 8px;">
+				<origam-sheet
+						side="bottom"
+						default-snap="peek"
+						elevation="lg"
+						data-cy="sheet-emit-update-hover"
+						style="background: var(--origam-color__surface---default);"
+						@update:hover="logEvent('update:hover', $event)"
+				>
+					<div style="padding: 16px;">
+						<p>Move the pointer over the sheet, then out — watch the log</p>
+					</div>
+				</origam-sheet>
+			</div>
+		</Variant>
+
 		<Variant title="Slots - Default">
 			<origam-sheet border rounded style="padding: 16px;">
 				<strong>Custom default slot</strong>

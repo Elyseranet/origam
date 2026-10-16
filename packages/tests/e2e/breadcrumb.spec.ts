@@ -33,10 +33,11 @@ import { fillHstText, selectHstOption } from './_support/histoire-controls'
  *     2  → Functional  init: { title:'Breadcrumb item', tag:'span' }
  *     3  → Events - click:prepend
  *     4  → Events - click:append
- *     5  → Slots - Default
- *     6  → Slots - Prepend
- *     7  → Slots - Append
- *     8  → Default (playground)
+ *     5  → Events - update:hover   → voir update-hover-variants.spec.ts (#1152)
+ *     6  → Slots - Default
+ *     7  → Slots - Prepend
+ *     8  → Slots - Append
+ *     9  → Default (playground)
  *
  * ─── OrigamBreadcrumbDivider.story.vue ───────────────────────────────────────
  *
@@ -628,12 +629,12 @@ test.describe('OrigamBreadcrumbItem', () => {
     })
 
     // ----------------------------------------------------------------------- //
-    // SLOTS - Default (index 5)                                                //
+    // SLOTS - Default (index 6)                                                //
     // ----------------------------------------------------------------------- //
 
     test.describe('Slots - Default', () => {
         test('default slot renders custom content (ignores title prop)', async ({ page }) => {
-            await page.goto(bciUrl(5), { waitUntil: 'domcontentloaded' })
+            await page.goto(bciUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
@@ -643,7 +644,7 @@ test.describe('OrigamBreadcrumbItem', () => {
         })
 
         test('default slot: a <strong> element is rendered inside the item', async ({ page }) => {
-            await page.goto(bciUrl(5), { waitUntil: 'domcontentloaded' })
+            await page.goto(bciUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
@@ -652,12 +653,12 @@ test.describe('OrigamBreadcrumbItem', () => {
     })
 
     // ----------------------------------------------------------------------- //
-    // SLOTS - Prepend (index 6)                                                //
+    // SLOTS - Prepend (index 7)                                                //
     // ----------------------------------------------------------------------- //
 
     test.describe('Slots - Prepend', () => {
         test('prepend slot renders an origam-icon inside the prepend area', async ({ page }) => {
-            await page.goto(bciUrl(6), { waitUntil: 'domcontentloaded' })
+            await page.goto(bciUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 20000 })
@@ -666,12 +667,12 @@ test.describe('OrigamBreadcrumbItem', () => {
     })
 
     // ----------------------------------------------------------------------- //
-    // SLOTS - Append (index 7)                                                 //
+    // SLOTS - Append (index 8)                                                 //
     // ----------------------------------------------------------------------- //
 
     test.describe('Slots - Append', () => {
         test('append slot renders an origam-icon inside the append area', async ({ page }) => {
-            await page.goto(bciUrl(7), { waitUntil: 'domcontentloaded' })
+            await page.goto(bciUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 20000 })
@@ -680,20 +681,20 @@ test.describe('OrigamBreadcrumbItem', () => {
     })
 
     // ----------------------------------------------------------------------- //
-    // DEFAULT — playground (index 8)                                           //
+    // DEFAULT — playground (index 9)                                           //
     // init: { title:'Breadcrumb item', tag:'span' }                            //
     // ----------------------------------------------------------------------- //
 
     test.describe('Default (playground)', () => {
         test('renders the breadcrumb-item in the playground variant', async ({ page }) => {
-            await page.goto(bciUrl(8), { waitUntil: 'domcontentloaded' })
+            await page.goto(bciUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
         })
 
         test('playground: title renders as text content', async ({ page }) => {
-            await page.goto(bciUrl(8), { waitUntil: 'domcontentloaded' })
+            await page.goto(bciUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })

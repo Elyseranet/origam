@@ -14,7 +14,10 @@ import type {
 import type { IDensityProps } from '../Commons/density.interface'
 import type { IDimensionProps } from '../Commons/dimension.interface'
 import type { IElevationProps } from '../Commons/elevation.interface'
-import type { IHoverProps } from '../Commons/hover.interface'
+import type {
+    IHoverEmits,
+    IHoverProps
+} from '../Commons/hover.interface'
 import type { IMarginProps } from '../Commons/margin.interface'
 import type { IPaddingProps } from '../Commons/padding.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
@@ -92,8 +95,10 @@ export interface IBracketCompetitorProps extends ICommonsComponentProps, ITagPro
  * sans être déclarée — Vue avertissait à chaque clic et le handler
  * `onUpdate:active` restait dans `$attrs`, posé sur l'élément racine par
  * `inheritAttrs`. Prouvé au runtime dans
- * `packages/tests/TU/origam/relay-emits-declaration.spec.ts`. */
-export interface IBracketCompetitorEmits extends IActiveEmits {
+ * `packages/tests/TU/origam/relay-emits-declaration.spec.ts`.
+ * ⛔ #1152 — idem pour `update:hover` : `set()` / `unset()` cables sur
+ * `@mouseenter` / `@mouseleave`, prouve dans le meme fichier. */
+export interface IBracketCompetitorEmits extends IActiveEmits, IHoverEmits {
     (e: 'click', event: MouseEvent | KeyboardEvent): void
 }
 

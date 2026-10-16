@@ -31,7 +31,7 @@ import type { FrameLocator, Locator } from '@playwright/test'
  *
  * ## Variants de la story OrigamBtn (index 0-based)
  *   0  → Design
- *   14 → Prop — wrap   ← controle `wrap`, `block`, `slim`, `size`, largeur du conteneur
+ *   15 → Prop — wrap  ← controle `wrap`, `block`, `slim`, `size`, largeur du conteneur
  *        init: { wrap: true, block: true, size: 'large', containerWidth: 320 }
  */
 
@@ -40,7 +40,7 @@ const STORY_PATH = '/stories/story/' + STORY_ID
 const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
 const DESIGN_VARIANT = 0
-const WRAP_VARIANT = 14
+const WRAP_VARIANT = 15
 
 interface IBoxes {
     btnHeight: number

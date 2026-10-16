@@ -91,6 +91,7 @@ needs.
 | `update:snap` | `TSheetSnapId` | The gesture or `snapTo()` settles on a new snap point. |
 | `update:open` | `boolean` | The sheet crosses the closed / non-closed boundary. |
 | `update:active` | `boolean` | v-model companion of the `active` prop — emitted when the sheet **root is clicked**, and only then. |
+| `update:hover` | `boolean` | v-model companion of the `hover` prop — `true` on `mouseenter`, `false` on `mouseleave` of the sheet root. |
 
 > ⛔ **`update:active` is mouse-only.** The root binds `@click="onActive()"`
 > and nothing else: there is no `keydown` handler, and the default `tag`

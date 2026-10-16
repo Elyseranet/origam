@@ -135,6 +135,7 @@ always disabled regardless).
 |---|---|---|---|
 | `<OrigamBreadcrumbItem>` | `click:prepend` | `MouseEvent` | Clicked the prepend slot. |
 | `<OrigamBreadcrumbItem>` | `click:append` | `MouseEvent` | Clicked the append slot. |
+| `<OrigamBreadcrumbItem>` | `update:hover` | `boolean` | v-model companion of the `hover` prop: `true` on `mouseenter`, `false` on `mouseleave`. |
 
 `<OrigamBreadcrumb>` and `<OrigamBreadcrumbDivider>` emit nothing of
 their own.

@@ -657,11 +657,17 @@
 	watch(minHeight, () => {
 		controlHeight.value = minHeight.value
 	})
-	watch([verticalDragger, minHeight, maxHeight], () => {
-		if (!verticalDragger.value) return
-
-		useDragResizer(verticalDragger.value, controlHeight, minHeight.value, maxHeight.value, AXIS.Y)
-	})
+	/*********************************************************
+	 * Resize grip
+	 *
+	 * @description
+	 * #1152 — called ONCE, in setup, never from a watch on the grip or the bounds.
+	 * @description
+	 * From a watch, `onUnmounted` ran outside any instance: Vue warned, the window cleanup was never registered.
+	 * @description
+	 * Each bound change also stacked one more mousedown listener; the composable now follows the ref and reads the bounds per gesture.
+	 ********************************************************/
+	useDragResizer(verticalDragger, controlHeight, minHeight, maxHeight, AXIS.Y)
 	watch(controlHeight, (newHeight) => {
 		nextTick(() => {
 			if (!textareaRef.value) return
