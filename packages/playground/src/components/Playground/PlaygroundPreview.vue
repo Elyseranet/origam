@@ -9,7 +9,12 @@
                 name="preview-surround"
                 :instance="selectedInstance"
         >
-            <div class="pg-preview__stage">
+            <div
+                    ref="stageEl"
+                    class="pg-preview__stage"
+                    :class="stageClasses"
+                    data-cy="playground-preview-stage"
+            >
                 <p
                         v-if="isEmpty"
                         class="pg-preview__empty"
@@ -28,6 +33,7 @@
                         <playground-scene-node
                                 :instance="root"
                                 :registry="registry"
+                                :selected-id="selectedId"
                                 @instance-emit="handleInstanceEmit"
                         />
                     </div>
@@ -42,16 +48,19 @@
 </template>
 
 <script setup lang="ts">
-    import { computed } from 'vue'
+    import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
     import PlaygroundSceneNode from './PlaygroundSceneNode.vue'
     import { useT } from '../../composables/I18n/useT'
-    import { countInstances } from '../../utils/Commons/scene-instance.util'
+    import { SELECT_MODE_CAPTURED_EVENTS, SELECT_MODE_TRIGGER_EVENT } from '../../consts/Commons/scene.const'
+    import { countInstances, instanceIdFromTarget } from '../../utils/Commons/scene-instance.util'
     import type { IPlaygroundPreviewEmits, IPlaygroundPreviewProps, IPlaygroundPreviewSlots } from '../../interfaces/Components/playground-preview.interface'
 
     /*********************************************************
      * Global
      ********************************************************/
-    const props = defineProps<IPlaygroundPreviewProps>()
+    const props = withDefaults(defineProps<IPlaygroundPreviewProps>(), {
+        selectMode: false
+    })
 
     const emits = defineEmits<IPlaygroundPreviewEmits>()
 
@@ -82,6 +91,52 @@
     const handleInstanceEmit = (instanceId: string, name: string, args: unknown[]) => {
         emits('instance-emit', instanceId, name, args)
     }
+
+    /*********************************************************
+     * Selection by click (lot E1, #1164)
+     *
+     * @description
+     * Owner's decision (2026-10-16): selecting by click is an explicit MODE,
+     * off by default, toggled from the top bar (`aria-pressed`) and left with
+     * Escape. Off, the preview intercepts nothing — a Btn clicks, a Select
+     * opens. On, every pointer event of `SELECT_MODE_CAPTURED_EVENTS` is
+     * stopped in the CAPTURE phase on the stage, before it can reach a
+     * component, and `click` selects the innermost instance under the
+     * pointer. Keyboard selection stays with the scene tree, which is already
+     * fully operable from the keyboard.
+     *
+     * @description
+     * Native `addEventListener` in capture phase rather than eight
+     * `@xxx.capture` template bindings: the list is DATA
+     * (`SELECT_MODE_CAPTURED_EVENTS`). Attached once, it does nothing while
+     * the mode is off.
+     ********************************************************/
+    const stageEl = ref<HTMLElement | null>(null)
+
+    const selectedId = computed(() => props.selectedInstance?.id ?? null)
+
+    const stageClasses = computed(() => ({ 'pg-preview__stage--select-mode': props.selectMode }))
+
+    const interceptPointer = (event: Event) => {
+        if (!props.selectMode || !stageEl.value) return
+
+        event.preventDefault()
+        event.stopPropagation()
+
+        if (event.type !== SELECT_MODE_TRIGGER_EVENT) return
+
+        const instanceId = instanceIdFromTarget(event.target, stageEl.value)
+
+        if (instanceId) emits('select-instance', instanceId)
+    }
+
+    onMounted(() => {
+        for (const name of SELECT_MODE_CAPTURED_EVENTS) stageEl.value?.addEventListener(name, interceptPointer, { capture: true })
+    })
+
+    onBeforeUnmount(() => {
+        for (const name of SELECT_MODE_CAPTURED_EVENTS) stageEl.value?.removeEventListener(name, interceptPointer, { capture: true })
+    })
 
     /*********************************************************
      * Labels
@@ -131,6 +186,20 @@
             min-width: 0;
         }
 
+        &__stage--select-mode {
+            cursor: crosshair;
+
+            :deep([data-instance-id]:hover:not(:has([data-instance-id]:hover))) {
+                outline: var(--pg-preview__instance--hover---outline-width, 2px) dashed var(--pg-preview__instance---outline-color, currentColor);
+                outline-offset: var(--pg-preview__instance---outline-offset, 2px);
+            }
+
+            :deep([data-pg-selected]) {
+                outline: var(--pg-preview__instance--selected---outline-width, 2px) solid var(--pg-preview__instance---outline-color, currentColor);
+                outline-offset: var(--pg-preview__instance---outline-offset, 2px);
+            }
+        }
+
         &__empty {
             align-self: center;
             display: flex;
@@ -156,5 +225,9 @@
         --pg-preview__stage---padding: 24px;
         --pg-preview__stage---gap: 16px;
         --pg-preview__foot---border-color: #e5e5e5;
+        --pg-preview__instance---outline-color: var(--origam-color__action--primary---bg, currentColor);
+        --pg-preview__instance---outline-offset: 2px;
+        --pg-preview__instance--hover---outline-width: 2px;
+        --pg-preview__instance--selected---outline-width: 2px;
     }
 </style>

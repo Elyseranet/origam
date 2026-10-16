@@ -1,4 +1,5 @@
 import { DEFAULT_SLOT_NAME } from '../../consts/Commons/scene-code.const'
+import { INSTANCE_ID_ATTRIBUTE } from '../../consts/Commons/scene.const'
 import type { ITreeviewNode } from 'origam/interfaces'
 import type { IComponentDefinition } from '../../interfaces/Catalog/component-definition.interface'
 import type { IComponentSnippet } from '../../interfaces/Catalog/component-snippet.interface'
@@ -195,4 +196,25 @@ export function instanceHint (instance: IPlaygroundInstance, keys: readonly stri
     }
 
     return instance.slotContent ?? ''
+}
+
+/*********************************************************
+ * Preview hit-testing (lot E1, #1164)
+ *
+ * @description
+ * The id of the instance a DOM event landed on: the nearest ancestor of
+ * `target` carrying `INSTANCE_ID_ATTRIBUTE`, provided it sits INSIDE
+ * `boundary` (the preview stage). `null` for the stage's own padding, for a
+ * target outside the stage, and for a non-element target. Nearest ancestor
+ * = the innermost instance, so a Btn rendered in a DataTable cell wins over
+ * the table that hosts it.
+ ********************************************************/
+export function instanceIdFromTarget (target: EventTarget | null, boundary: Element): string | null {
+    if (typeof Element === 'undefined' || !(target instanceof Element)) return null
+
+    const hit = target.closest(`[${INSTANCE_ID_ATTRIBUTE}]`)
+
+    if (!hit || hit === boundary || !boundary.contains(hit)) return null
+
+    return hit.getAttribute(INSTANCE_ID_ATTRIBUTE)
 }

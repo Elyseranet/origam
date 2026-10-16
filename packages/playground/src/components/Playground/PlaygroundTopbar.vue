@@ -24,6 +24,16 @@
         <slot name="toolbar"/>
 
         <origam-btn
+                data-cy="playground-select-mode-toggle"
+                :variant="selectModeVariant"
+                size="large"
+                :aria-pressed="selectMode"
+                @click="handleToggleSelectMode"
+        >
+            <template #default>{{ selectModeLabel }}</template>
+        </origam-btn>
+
+        <origam-btn
                 data-cy="playground-inspector-toggle"
                 variant="outlined"
                 size="large"
@@ -37,6 +47,7 @@
 
 <script setup lang="ts">
     import { computed } from 'vue'
+    import { VARIANT } from 'origam/enums'
     import { useT } from '../../composables/I18n/useT'
     import type { IPlaygroundTopbarEmits, IPlaygroundTopbarProps, IPlaygroundTopbarSlots } from '../../interfaces/Components/playground-topbar.interface'
 
@@ -44,7 +55,8 @@
      * Global
      ********************************************************/
     const props = withDefaults(defineProps<IPlaygroundTopbarProps>(), {
-        inspectorOpen: true
+        inspectorOpen: true,
+        selectMode: false
     })
 
     const emits = defineEmits<IPlaygroundTopbarEmits>()
@@ -64,6 +76,19 @@
     const title = computed(() => t('playground.topbar.title', 'Playground'))
     const subtitle = computed(() => t('playground.topbar.subtitle', 'origam · {count} components', { count: props.componentCount }))
     const inspectorLabel = computed(() => t('playground.topbar.inspector_toggle', 'Props'))
+    const selectModeLabel = computed(() => t('playground.topbar.select_mode_toggle', 'Select in preview'))
+
+    /*********************************************************
+     * Select-mode toggle
+     *
+     * @description
+     * `aria-pressed` tells assistive technology the mode is on; the variant
+     * tells the eye. Measured: with `aria-pressed` alone the pressed toggle
+     * looked exactly like the Props button next to it. A DS prop, not CSS —
+     * `tonal` fills the button, `outlined` (the top bar's resting variant)
+     * does not.
+     ********************************************************/
+    const selectModeVariant = computed(() => (props.selectMode ? VARIANT.TONAL : VARIANT.OUTLINED))
 
     /*********************************************************
      * Events
@@ -74,6 +99,16 @@
 
     const handleToggleInspector = () => {
         emits('toggle-inspector')
+    }
+
+    /*
+     * A toggle button (`aria-pressed`), not a checkbox or a switch: it turns a
+     * MODE of the preview on and off, which is exactly the pattern WAI-ARIA
+     * APG documents for a toggle button. Escape also leaves the mode
+     * (`Playground.vue`).
+     */
+    const handleToggleSelectMode = () => {
+        emits('toggle-select-mode')
     }
 
     /*********************************************************

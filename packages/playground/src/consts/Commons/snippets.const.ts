@@ -276,6 +276,337 @@ export function createDefaultSnippets (t: TTranslate): Record<string, IComponent
                     props: { label: t('playground.snippet.select.label', 'City'), items: selectItems, autocomplete: true }
                 }]
             }
-        ]
+        ],
+        ...createChartSnippets(t)
+    }
+}
+
+/*********************************************************
+ * Chart family snippets (lot E1, #1164)
+ *
+ * @description
+ * One default snippet for each `OrigamChart*` the host catalogue carries
+ * besides `OrigamChart` (above). Each was MEASURED rendering empty without
+ * one in the standalone host — "No data to display", a 0-px box, or a
+ * render error (`series` is required and dereferenced) — see the PR.
+ *
+ * @description
+ * ⛔ `IChartSeries.data` is typed `number[] | IChartSeriesPoint[]`, but most
+ * families read a DIFFERENT datum shape out of `series[0].data` and cast it
+ * (`as unknown as IChartXxxDatum[]`). Each datum below follows the shape the
+ * family's OWN interface declares, read in `packages/ds/src/interfaces/Chart/`:
+ *   - BoxPlot      `IChartBoxPlotDatum`   { category, min, q1, median, q3, max, outliers? }
+ *   - Bullet       `IChartBulletDatum`    { value, target, ranges: IChartBulletRange[] }, ONE per series (`ser.data[0]`)
+ *   - Candlestick  `IChartCandlestickDatum` { date, open, high, low, close }
+ *   - Heatmap      `IChartHeatmapDatum`   { x, y, value } + `xCategories` / `yCategories`
+ *   - Honeycomb    { x, y, value?, name? } (column / row INDEX — `OrigamChartHoneycomb.vue`)
+ *   - Map          `IChartMapChoroplethDatum` { code (ISO-3166-1 alpha-2), value }
+ *   - Pareto       `IChartParetoDatum`    { category, value }
+ *   - Sankey       `IChartSankeyDatum`    { from, to, value }
+ *   - Sunburst     `IChartSunburstDatum`  { name, value?, children? }
+ *   - Treemap      `IChartTreemapDatum`   { name, value }
+ *   - Variwide     `IChartVariwideDatum`  { category, value, width }
+ *   - WordCloud    `{ text, value }` (`IChartWordCloudProps` JSDoc)
+ *   - Gauge        `series[0].data[0]` only (`IChartGaugeProps`)
+ * The numeric families (Cartesian, Polar, PolarBar, Pyramid, Radar,
+ * Sparkline, Streamgraph, Pictorial) take plain `number[]` aligned on
+ * `categories`, exactly `IChartSeries`.
+ *
+ * @description
+ * The three non-plotting members take their own props, not a series list:
+ *   - `OrigamChartLegend.items`         — `IChartLegendItem` { series, index, color, visible }
+ *   - `OrigamChartRangeSelector.buttons`— `IChartRangeSelectorButton` { label, count? | fraction? }
+ *   - `OrigamChartTooltip.point / series / category / x / y` — `IChartTooltipProps`
+ * Their `color` is a resolved CSS colour (`IChartLegendItem.color`,
+ * `IChartPoint.color`), handed a DS token through `var()` — never a hex.
+ * `OrigamChartTooltip` ships no `<style>` of its own (its card styles live
+ * in the plotting families that host it), so alone it renders its content
+ * unstyled: measured, the series name and the value, as text.
+ *
+ * @description
+ * ⛔ `OrigamChartAxis` has NO snippet, on purpose. Its template roots are
+ * `<g>` elements: it paints INSIDE the `<svg>` of a cartesian chart, which
+ * hands it `plot` / `ticks` from `useChart()`. No catalogue component offers
+ * a slot inside its `<svg>`, so there is no parent to nest it in either —
+ * `SNIPPET_PARENT_OF` would hide it from the drawer and offer it nowhere.
+ * Measured: rendered alone, it throws on `ticks.y`; with data, a `<g>` outside
+ * an `<svg>` paints nothing.
+ *
+ * @description
+ * Demo TEXT goes through `t()` (series names, categories, labels). Data
+ * that is not text stays raw: numbers, ISO dates, ISO country codes.
+ ********************************************************/
+function createChartSnippets (t: TTranslate): Record<string, IComponentSnippet[]> {
+    const title = t('playground.snippet.chart.title', 'Quarterly results')
+
+    const quarters = [
+        t('playground.snippet.chart.category_q1', 'Q1'),
+        t('playground.snippet.chart.category_q2', 'Q2'),
+        t('playground.snippet.chart.category_q3', 'Q3'),
+        t('playground.snippet.chart.category_q4', 'Q4')
+    ]
+
+    const revenue = t('playground.snippet.chart.series_revenue', 'Revenue')
+    const costs = t('playground.snippet.chart.series_costs', 'Costs')
+    const numericSeries = [
+        { name: revenue, data: [12, 19, 14, 23] },
+        { name: costs, data: [8, 11, 9, 13] }
+    ]
+
+    const one = (componentName: string, id: string, label: string, props: IPlaygroundInstance['props']): IComponentSnippet[] => [
+        { id, label, instances: [{ id: 'chart', componentName, props }] }
+    ]
+
+    const channels = [
+        t('playground.snippet.chart_family.channel_search', 'Search'),
+        t('playground.snippet.chart_family.channel_social', 'Social'),
+        t('playground.snippet.chart_family.channel_email', 'Email'),
+        t('playground.snippet.chart_family.channel_direct', 'Direct')
+    ]
+
+    const weekdays = [
+        t('playground.snippet.chart_family.day_mon', 'Mon'),
+        t('playground.snippet.chart_family.day_tue', 'Tue'),
+        t('playground.snippet.chart_family.day_wed', 'Wed')
+    ]
+
+    const slots = [
+        t('playground.snippet.chart_family.slot_morning', 'Morning'),
+        t('playground.snippet.chart_family.slot_afternoon', 'Afternoon'),
+        t('playground.snippet.chart_family.slot_evening', 'Evening')
+    ]
+
+    const heatValues = [[3, 7, 2], [5, 9, 4], [1, 6, 8]]
+
+    const legendColors = ['var(--origam-color__action--primary---bg)', 'var(--origam-color__feedback--danger---bg)']
+
+    return {
+        OrigamChartBoxPlot: one('OrigamChartBoxPlot', 'chart-box-plot', t('playground.snippet.chart_family.box_plot_label', 'Response times'), {
+            title: t('playground.snippet.chart_family.box_plot_title', 'Response time per endpoint (ms)'),
+            series: [{
+                name: t('playground.snippet.chart_family.box_plot_series', 'Response time'),
+                data: [
+                    { category: t('playground.snippet.chart_family.endpoint_users', 'Users'), min: 12, q1: 18, median: 24, q3: 32, max: 58, outliers: [120] },
+                    { category: t('playground.snippet.chart_family.endpoint_orders', 'Orders'), min: 45, q1: 58, median: 70, q3: 88, max: 132, outliers: [] },
+                    { category: t('playground.snippet.chart_family.endpoint_payments', 'Payments'), min: 80, q1: 95, median: 115, q3: 140, max: 200, outliers: [320] }
+                ]
+            }]
+        }),
+        OrigamChartBullet: one('OrigamChartBullet', 'chart-bullet', t('playground.snippet.chart_family.bullet_label', 'Targets'), {
+            title: t('playground.snippet.chart_family.bullet_title', 'Quarter against target'),
+            series: [
+                { name: revenue, data: [{ value: 270, target: 250, ranges: [{ to: 150 }, { to: 225 }, { to: 300 }] }] },
+                { name: costs, data: [{ value: 180, target: 200, ranges: [{ to: 120 }, { to: 200 }, { to: 260 }] }] }
+            ]
+        }),
+        OrigamChartCandlestick: one('OrigamChartCandlestick', 'chart-candlestick', t('playground.snippet.chart_family.candlestick_label', 'Daily prices'), {
+            title: t('playground.snippet.chart_family.candlestick_title', 'Share price'),
+            series: [{
+                name: t('playground.snippet.chart_family.candlestick_series', 'Price'),
+                data: [
+                    { date: '2026-10-05', open: 102, high: 108, low: 99, close: 106 },
+                    { date: '2026-10-06', open: 106, high: 110, low: 101, close: 103 },
+                    { date: '2026-10-07', open: 103, high: 105, low: 96, close: 98 },
+                    { date: '2026-10-08', open: 98, high: 104, low: 97, close: 103 },
+                    { date: '2026-10-09', open: 103, high: 112, low: 102, close: 111 }
+                ]
+            }]
+        }),
+        OrigamChartCartesian: one('OrigamChartCartesian', 'chart-cartesian', t('playground.snippet.chart.line_label', 'Line chart'), {
+            type: 'line', title, series: numericSeries, categories: quarters
+        }),
+        OrigamChartGauge: one('OrigamChartGauge', 'chart-gauge', t('playground.snippet.chart_family.gauge_label', 'Single value'), {
+            title: t('playground.snippet.chart_family.gauge_title', 'Disk usage'),
+            gaugeUnit: '%',
+            series: [{ name: t('playground.snippet.chart_family.gauge_series', 'Used'), data: [72] }]
+        }),
+        OrigamChartHeatmap: one('OrigamChartHeatmap', 'chart-heatmap', t('playground.snippet.chart_family.heatmap_label', 'Weekly activity'), {
+            title: t('playground.snippet.chart_family.heatmap_title', 'Sessions per time slot'),
+            xCategories: weekdays,
+            yCategories: slots,
+            series: [{
+                name: t('playground.snippet.chart_family.heatmap_series', 'Sessions'),
+                data: slots.flatMap((y, row) => weekdays.map((x, column) => ({ x, y, value: heatValues[row]?.[column] ?? 0 })))
+            }]
+        }),
+        OrigamChartHoneycomb: one('OrigamChartHoneycomb', 'chart-honeycomb', t('playground.snippet.chart_family.honeycomb_label', 'Tile map'), {
+            title: t('playground.snippet.chart_family.honeycomb_title', 'Stores per region'),
+            series: [{
+                name: t('playground.snippet.chart_family.honeycomb_series', 'Stores'),
+                data: [
+                    { x: 0, y: 0, value: 4, name: t('playground.snippet.chart_family.region_north', 'North') },
+                    { x: 1, y: 0, value: 7, name: t('playground.snippet.chart_family.region_east', 'East') },
+                    { x: 0, y: 1, value: 2, name: t('playground.snippet.chart_family.region_west', 'West') },
+                    { x: 1, y: 1, value: 9, name: t('playground.snippet.chart_family.region_south', 'South') }
+                ]
+            }]
+        }),
+        OrigamChartLegend: [{
+            id: 'chart-legend',
+            label: t('playground.snippet.chart_family.legend_label', 'Two series'),
+            instances: [{
+                id: 'legend',
+                componentName: 'OrigamChartLegend',
+                props: { items: numericSeries.map((series, index) => ({ series, index, color: legendColors[index] ?? legendColors[0], visible: true })) }
+            }]
+        }],
+        OrigamChartMap: one('OrigamChartMap', 'chart-map', t('playground.snippet.chart_family.map_label', 'Choropleth'), {
+            title: t('playground.snippet.chart_family.map_title', 'Customers per country'),
+            series: [{
+                name: t('playground.snippet.chart_family.map_series', 'Customers'),
+                data: [{ code: 'FR', value: 120 }, { code: 'DE', value: 90 }, { code: 'ES', value: 60 }, { code: 'US', value: 200 }, { code: 'BR', value: 40 }]
+            }]
+        }),
+        OrigamChartPareto: one('OrigamChartPareto', 'chart-pareto', t('playground.snippet.chart_family.pareto_label', 'Defect causes'), {
+            title: t('playground.snippet.chart_family.pareto_title', 'Support tickets by cause'),
+            series: [{
+                name: t('playground.snippet.chart_family.pareto_series', 'Tickets'),
+                data: [
+                    { category: t('playground.snippet.chart_family.cause_login', 'Login'), value: 42 },
+                    { category: t('playground.snippet.chart_family.cause_billing', 'Billing'), value: 27 },
+                    { category: t('playground.snippet.chart_family.cause_export', 'Export'), value: 12 },
+                    { category: t('playground.snippet.chart_family.cause_other', 'Other'), value: 6 }
+                ]
+            }]
+        }),
+        OrigamChartPictorial: one('OrigamChartPictorial', 'chart-pictorial', t('playground.snippet.chart_family.pictorial_label', 'Icons per value'), {
+            title: t('playground.snippet.chart_family.pictorial_title', 'Team size'),
+            categories: quarters,
+            series: [{ name: t('playground.snippet.chart_family.pictorial_series', 'People'), data: [3, 5, 4, 6] }]
+        }),
+        OrigamChartPolar: one('OrigamChartPolar', 'chart-polar', t('playground.snippet.chart_family.polar_label', 'Donut'), {
+            type: 'donut',
+            title: t('playground.snippet.chart_family.polar_title', 'Traffic by channel'),
+            categories: channels,
+            series: [{ name: t('playground.snippet.chart_family.traffic_series', 'Visits'), data: [45, 25, 18, 12] }]
+        }),
+        OrigamChartPolarBar: one('OrigamChartPolarBar', 'chart-polar-bar', t('playground.snippet.chart_family.polar_bar_label', 'Radial bars'), {
+            title: t('playground.snippet.chart_family.polar_title', 'Traffic by channel'),
+            categories: channels,
+            series: [{ name: t('playground.snippet.chart_family.traffic_series', 'Visits'), data: [45, 25, 18, 12] }]
+        }),
+        OrigamChartPyramid: one('OrigamChartPyramid', 'chart-pyramid', t('playground.snippet.chart_family.pyramid_label', 'Funnel'), {
+            type: 'funnel',
+            title: t('playground.snippet.chart_family.pyramid_title', 'Sign-up funnel'),
+            categories: [
+                t('playground.snippet.chart_family.step_visit', 'Visit'),
+                t('playground.snippet.chart_family.step_sign_up', 'Sign-up'),
+                t('playground.snippet.chart_family.step_trial', 'Trial'),
+                t('playground.snippet.chart_family.step_paid', 'Paid')
+            ],
+            series: [{ name: t('playground.snippet.chart_family.pyramid_series', 'Users'), data: [1000, 420, 180, 60] }]
+        }),
+        OrigamChartRadar: one('OrigamChartRadar', 'chart-radar', t('playground.snippet.chart_family.radar_label', 'Two profiles'), {
+            title, categories: quarters, series: numericSeries
+        }),
+        OrigamChartRangeSelector: [{
+            id: 'chart-range-selector',
+            label: t('playground.snippet.chart_family.range_selector_label', 'Three presets'),
+            instances: [{
+                id: 'range-selector',
+                componentName: 'OrigamChartRangeSelector',
+                props: {
+                    dataLength: 12,
+                    activeIndex: 0,
+                    buttons: [
+                        { label: t('playground.snippet.chart_family.range_3m', '3m'), count: 3 },
+                        { label: t('playground.snippet.chart_family.range_6m', '6m'), count: 6 },
+                        { label: t('playground.snippet.chart_family.range_all', 'All'), fraction: 1 }
+                    ]
+                }
+            }]
+        }],
+        OrigamChartSankey: one('OrigamChartSankey', 'chart-sankey', t('playground.snippet.chart_family.sankey_label', 'Flows'), {
+            title: t('playground.snippet.chart_family.sankey_title', 'Where visitors go'),
+            series: [{
+                name: t('playground.snippet.chart_family.sankey_series', 'Visitors'),
+                data: [
+                    { from: channels[0] ?? '', to: t('playground.snippet.chart_family.step_sign_up', 'Sign-up'), value: 30 },
+                    { from: channels[0] ?? '', to: t('playground.snippet.chart_family.step_bounce', 'Bounce'), value: 15 },
+                    { from: channels[1] ?? '', to: t('playground.snippet.chart_family.step_sign_up', 'Sign-up'), value: 10 },
+                    { from: channels[1] ?? '', to: t('playground.snippet.chart_family.step_bounce', 'Bounce'), value: 15 }
+                ]
+            }]
+        }),
+        OrigamChartSparkline: one('OrigamChartSparkline', 'chart-sparkline', t('playground.snippet.chart_family.sparkline_label', 'Trend'), {
+            series: [{ name: revenue, data: [12, 19, 14, 23, 18, 27, 25] }]
+        }),
+        OrigamChartStreamgraph: one('OrigamChartStreamgraph', 'chart-streamgraph', t('playground.snippet.chart_family.streamgraph_label', 'Stacked flow'), {
+            title, categories: quarters, series: numericSeries
+        }),
+        OrigamChartSunburst: one('OrigamChartSunburst', 'chart-sunburst', t('playground.snippet.chart_family.sunburst_label', 'Hierarchy'), {
+            title: t('playground.snippet.chart_family.sunburst_title', 'Budget breakdown'),
+            series: [{
+                name: t('playground.snippet.chart_family.sunburst_series', 'Budget'),
+                data: [
+                    {
+                        name: t('playground.snippet.chart_family.budget_product', 'Product'),
+                        children: [
+                            { name: t('playground.snippet.chart_family.budget_design', 'Design'), value: 20 },
+                            { name: t('playground.snippet.chart_family.budget_engineering', 'Engineering'), value: 45 }
+                        ]
+                    },
+                    {
+                        name: t('playground.snippet.chart_family.budget_marketing', 'Marketing'),
+                        children: [
+                            { name: t('playground.snippet.chart_family.budget_ads', 'Ads'), value: 25 },
+                            { name: t('playground.snippet.chart_family.budget_events', 'Events'), value: 10 }
+                        ]
+                    }
+                ]
+            }]
+        }),
+        OrigamChartTooltip: [{
+            id: 'chart-tooltip',
+            label: t('playground.snippet.chart_family.tooltip_label', 'Hovered point'),
+            instances: [{
+                id: 'tooltip',
+                componentName: 'OrigamChartTooltip',
+                props: {
+                    point: { seriesIndex: 0, seriesName: revenue, dataIndex: 1, x: quarters[1] ?? '', y: 19, color: legendColors[0] ?? '' },
+                    series: numericSeries[0] ?? { name: revenue, data: [] },
+                    category: quarters[1] ?? '',
+                    x: 0,
+                    y: 0
+                }
+            }]
+        }],
+        OrigamChartTreemap: one('OrigamChartTreemap', 'chart-treemap', t('playground.snippet.chart_family.treemap_label', 'Tiles'), {
+            title: t('playground.snippet.chart_family.treemap_title', 'Storage by folder'),
+            series: [{
+                name: t('playground.snippet.chart_family.treemap_series', 'Storage'),
+                data: [
+                    { name: t('playground.snippet.chart_family.folder_photos', 'Photos'), value: 48 },
+                    { name: t('playground.snippet.chart_family.folder_videos', 'Videos'), value: 30 },
+                    { name: t('playground.snippet.chart_family.folder_documents', 'Documents'), value: 14 },
+                    { name: t('playground.snippet.chart_family.folder_music', 'Music'), value: 8 }
+                ]
+            }]
+        }),
+        OrigamChartVariwide: one('OrigamChartVariwide', 'chart-variwide', t('playground.snippet.chart_family.variwide_label', 'Value and weight'), {
+            title: t('playground.snippet.chart_family.variwide_title', 'Revenue per customer, weighted by customers'),
+            series: [{
+                name: revenue,
+                data: [
+                    { category: t('playground.snippet.chart_family.plan_free', 'Free'), value: 2, width: 60 },
+                    { category: t('playground.snippet.chart_family.plan_team', 'Team'), value: 12, width: 30 },
+                    { category: t('playground.snippet.chart_family.plan_enterprise', 'Enterprise'), value: 40, width: 10 }
+                ]
+            }]
+        }),
+        OrigamChartWordCloud: one('OrigamChartWordCloud', 'chart-word-cloud', t('playground.snippet.chart_family.word_cloud_label', 'Words'), {
+            title: t('playground.snippet.chart_family.word_cloud_title', 'Most searched'),
+            series: [{
+                name: t('playground.snippet.chart_family.word_cloud_series', 'Searches'),
+                data: [
+                    { text: t('playground.snippet.chart_family.word_button', 'button'), value: 90 },
+                    { text: t('playground.snippet.chart_family.word_theme', 'theme'), value: 70 },
+                    { text: t('playground.snippet.chart_family.word_table', 'table'), value: 55 },
+                    { text: t('playground.snippet.chart_family.word_chart', 'chart'), value: 40 },
+                    { text: t('playground.snippet.chart_family.word_dialog', 'dialog'), value: 30 },
+                    { text: t('playground.snippet.chart_family.word_tooltip', 'tooltip'), value: 20 }
+                ]
+            }]
+        })
     }
 }

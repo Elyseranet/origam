@@ -27,3 +27,37 @@ export function createEmptyScene (): IPlaygroundScene {
  * field (`label`). A row with none of them shows the component label alone.
  */
 export const INSTANCE_HINT_PROP_KEYS: readonly string[] = ['text', 'title', 'label']
+
+/*********************************************************
+ * Selection by click in the preview (lot E1, #1164)
+ *
+ * @description
+ * `PlaygroundSceneNode` stamps every rendered instance's root element with
+ * `data-instance-id` (a fall-through attribute, so it lands on the
+ * component's root without the component knowing). The preview resolves a
+ * click to the NEAREST such ancestor — the innermost instance, so a Btn in a
+ * DataTable cell selects the Btn, not the table.
+ ********************************************************/
+export const INSTANCE_ID_ATTRIBUTE = 'data-instance-id'
+
+/**
+ * The pointer events the preview swallows while the selection mode is on,
+ * in the CAPTURE phase so they never reach the component. ⛔ `click` alone is
+ * not enough: a menu or a native control reacts to `mousedown` /
+ * `pointerdown` (focus, opening) before any `click` fires. Owner's decision
+ * (2026-10-16): selection is an explicit mode, off by default, and while it
+ * is on a click selects WITHOUT actuating the component.
+ */
+export const SELECT_MODE_CAPTURED_EVENTS: readonly string[] = [
+    'pointerdown',
+    'mousedown',
+    'pointerup',
+    'mouseup',
+    'click',
+    'dblclick',
+    'auxclick',
+    'contextmenu'
+]
+
+/** The event, among the captured ones, that performs the selection. */
+export const SELECT_MODE_TRIGGER_EVENT = 'click'

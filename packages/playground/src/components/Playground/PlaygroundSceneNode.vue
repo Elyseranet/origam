@@ -13,6 +13,7 @@
             v-bind="instance.props"
             data-cy="playground-preview-instance"
             :data-instance-id="instance.id"
+            :data-pg-selected="selectedMarker"
             v-on="emitListeners"
     >
         <template
@@ -26,6 +27,7 @@
                     :key="child.id"
                     :instance="child"
                     :registry="registry"
+                    :selected-id="selectedId"
                     @instance-emit="handleChildEmit"
             />
         </template>
@@ -42,7 +44,9 @@
     /*********************************************************
      * Global
      ********************************************************/
-    const props = defineProps<IPlaygroundSceneNodeProps>()
+    const props = withDefaults(defineProps<IPlaygroundSceneNodeProps>(), {
+        selectedId: null
+    })
 
     const emits = defineEmits<IPlaygroundSceneNodeEmits>()
 
@@ -131,6 +135,16 @@
             .map(name => ({ name, text: name === DEFAULT_SLOT_NAME ? slotContent : '', children: children[name] ?? [] }))
             .filter(slot => slot.text || slot.children.length > 0)
     })
+
+    /*********************************************************
+     * Selection marker (lot E1, #1164)
+     *
+     * @description
+     * `undefined` rather than `false` on every other node: Vue drops an
+     * `undefined` attribute, so only the selected instance carries
+     * `data-pg-selected` and the preview's outline rule matches one element.
+     ********************************************************/
+    const selectedMarker = computed(() => (props.selectedId === props.instance.id ? 'true' : undefined))
 
     const errorLabel = computed(() => t('playground.preview.node_error', '{name} could not render: {error}', {
         name: props.instance.componentName,
