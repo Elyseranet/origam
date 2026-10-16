@@ -52,16 +52,16 @@ import { expect, test } from '@playwright/test'
  *     4  → Prop — loading (interactive)
  *     5  → Events - click
  *     6  → Events - group:selected
- *     7  → Slots - Default
- *     8  → Slots - Prepend
- *     9  → Slots - Append
- *    10  → Slots - Loader
- *    11  → Slots - Wrapper
- *    12  → Prop — variant (VRT matrix)
- *    13  → Prop — border (VRT matrix)   → voir btn-border.spec.ts (#391)
- *    14  → Prop — wrap                   → voir btn-wrap-height.spec.ts (#1093)
- *    15  → Prop — block (flex column) → voir btn-block-flex.spec.ts (#1095)
- *    16  → Events - update:hover     → voir update-hover-variants.spec.ts (#1152)
+ *     7  → Events - update:hover     → voir update-hover-variants.spec.ts (#1152)
+ *     8  → Slots - Default
+ *     9  → Slots - Prepend
+ *    10  → Slots - Append
+ *    11  → Slots - Loader
+ *    12  → Slots - Wrapper
+ *    13  → Prop — variant (VRT matrix)
+ *    14  → Prop — border (VRT matrix)   → voir btn-border.spec.ts (#391)
+ *    15  → Prop — wrap                   → voir btn-wrap-height.spec.ts (#1093)
+ *    16  → Prop — block (flex column) → voir btn-block-flex.spec.ts (#1095)
  *    17  → Default (playground)
  *
  *   ⚠️  Les titres StoryGroup visibles dans les #controls (Color, Sizing, Shape…)
@@ -311,7 +311,7 @@ test.describe('OrigamBtn', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // EVENTS (indexes 5–8)                                                 //
+    // EVENTS (indexes 5–7)                                                 //
     // ------------------------------------------------------------------ //
 
     test.describe('Events - click', () => {
@@ -346,12 +346,12 @@ test.describe('OrigamBtn', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // SLOTS (indexes 9–13)                                                 //
+    // SLOTS (indexes 8–12)                                                 //
     // ------------------------------------------------------------------ //
 
     test.describe('Slots - Default', () => {
         test('default slot renders custom content ("Custom content")', async ({ page }) => {
-            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -363,7 +363,7 @@ test.describe('OrigamBtn', () => {
 
     test.describe('Slots - Prepend', () => {
         test('prepend slot renders an origam-icon inside the prepend area', async ({ page }) => {
-            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -373,7 +373,7 @@ test.describe('OrigamBtn', () => {
 
     test.describe('Slots - Append', () => {
         test('append slot renders an origam-icon inside the append area', async ({ page }) => {
-            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -390,7 +390,7 @@ test.describe('OrigamBtn', () => {
          * only under the removed skeleton mode). The label stays in the DOM.
          */
         test('loading=true: the #loader slot replaces the built-in spinner, the label stays', async ({ page }) => {
-            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -402,7 +402,7 @@ test.describe('OrigamBtn', () => {
         })
 
         test('loading=true: pointer-events are disabled on the btn', async ({ page }) => {
-            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -413,7 +413,7 @@ test.describe('OrigamBtn', () => {
 
     test.describe('Slots - Wrapper', () => {
         test('wrapper slot replaces btn inner content with custom markup', async ({ page }) => {
-            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })

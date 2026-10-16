@@ -180,6 +180,15 @@
 			</origam-btn-toggle>
 		</Variant>
 
+		<Variant title="Events - update:hover">
+			<origam-btn
+					color="primary"
+					text="Hover me"
+					data-cy="btn-emit-update-hover"
+					@update:hover="logEvent('update:hover', $event)"
+			/>
+		</Variant>
+
 		<Variant title="Slots - Default">
 			<origam-btn>
 				<strong>Custom</strong> content
@@ -323,15 +332,6 @@
 					<origam-btn block size="large" text="Capped" style="--origam-btn---max-width: 120px;" data-cy="btn-block-capped"/>
 				</div>
 			</div>
-		</Variant>
-
-		<Variant title="Events - update:hover">
-			<origam-btn
-					color="primary"
-					text="Hover me"
-					data-cy="btn-emit-update-hover"
-					@update:hover="logEvent('update:hover', $event)"
-			/>
 		</Variant>
 
 		<Variant

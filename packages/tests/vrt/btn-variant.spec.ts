@@ -30,7 +30,7 @@ import { expect, test } from '@playwright/test'
 
 const STORY_ID = 'components-stories-btn-origambtn-story-vue'
 const STORY_PATH = '/stories/story/' + STORY_ID
-// "Prop — variant (VRT matrix)" is Variant index 12. It is NO LONGER the
+// "Prop — variant (VRT matrix)" is Variant index 13. It is NO LONGER the
 // last Variant in the file: it used to be appended after the "Default"
 // playground specifically to keep the numeric indexes e2e/btn.spec.ts
 // hardcodes from shifting (see VRT.md "Un détail qui a failli casser la
@@ -40,7 +40,8 @@ const STORY_PATH = '/stories/story/' + STORY_ID
 // ⛔ That index has now moved TWICE in one branch — 15 → 14 when "Default"
 // was restored to last, then 14 → 12 when the deprecated
 // `Events - click:prepend` / `Events - click:append` Variants were removed
-// (#443). The guard below is what caught both; it reported
+// (#443), then 12 → 13 when `Events - update:hover` joined the EMITS
+// section (#1152). The guard below is what caught both; it reported
 // `vrt/btn-variant.spec.ts [index 15] RANGE` rather than letting the suite
 // fail as a phantom visual diff. Always re-derive from the BUILD, never
 // from a count by eye:
@@ -53,8 +54,8 @@ const STORY_PATH = '/stories/story/' + STORY_ID
 // `vrt/` (it only ever walked `e2e/`), this file was outside the net entirely:
 // its hardcoded index was invisible to the audit, and a Variant removed above
 // it would have shifted it with nothing to flag the drift.
-// 12 → Prop — variant (VRT matrix)
-const VRT_VARIANT_URL = `${STORY_PATH}?variantId=${STORY_ID}-12`
+// 13 → Prop — variant (VRT matrix)
+const VRT_VARIANT_URL = `${STORY_PATH}?variantId=${STORY_ID}-13`
 
 const BTN_VARIANTS = ['text', 'flat', 'elevated', 'tonal', 'outlined', 'plain', 'ghost'] as const
 
