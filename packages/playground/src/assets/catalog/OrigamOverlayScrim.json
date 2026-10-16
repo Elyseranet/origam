@@ -1,0 +1,128 @@
+{
+  "name": "OrigamOverlayScrim",
+  "tag": "origam-overlay-scrim",
+  "family": "Overlay",
+  "label": "OverlayScrim",
+  "props": [
+    {
+      "name": "active",
+      "label": "active",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "tag",
+      "label": "tag",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "div",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "disabled",
+      "label": "disabled",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "transition",
+      "label": "transition",
+      "tsType": "string | boolean | TTransitionProps | undefined",
+      "runtimeType": [
+        "Boolean",
+        "String",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": true,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "scrim",
+      "label": "scrim",
+      "tsType": "string | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    }
+  ],
+  "events": [
+    {
+      "name": "click",
+      "label": "click",
+      "payloadType": "[event: MouseEvent]",
+      "source": "types"
+    },
+    {
+      "name": "mouseenter",
+      "label": "mouseenter",
+      "payloadType": "[event: MouseEvent]",
+      "source": "types"
+    },
+    {
+      "name": "mouseleave",
+      "label": "mouseleave",
+      "payloadType": "[event: MouseEvent]",
+      "source": "types"
+    }
+  ],
+  "slots": [],
+  "snippets": [],
+  "requiresParent": false
+}

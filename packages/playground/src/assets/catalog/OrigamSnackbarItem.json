@@ -1,0 +1,251 @@
+{
+  "name": "OrigamSnackbarItem",
+  "tag": "origam-snackbar-item",
+  "family": "Snackbar",
+  "label": "SnackbarItem",
+  "props": [
+    {
+      "name": "intent",
+      "label": "intent",
+      "tsType": "\"success\" | \"info\" | \"warning\" | \"ghost\" | \"primary\" | \"neutral\" | \"secondary\" | \"danger\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "info",
+      "hasFactoryDefault": false,
+      "options": [
+        "success",
+        "info",
+        "warning",
+        "ghost",
+        "primary",
+        "neutral",
+        "secondary",
+        "danger"
+      ],
+      "control": "select",
+      "description": "Semantic intent — drives icon defaults and surface colouring via\n`--origam-color__feedback--{intent}---*` tokens.",
+      "source": "types"
+    },
+    {
+      "name": "title",
+      "label": "title",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Optional title rendered as a bold first line.\nUseful for short labels (e.g. \"Saved\", \"Error\").",
+      "source": "types"
+    },
+    {
+      "name": "message",
+      "label": "message",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Body text rendered under the title (or as the sole line when\n`title` is absent). Can be omitted when content is provided\nvia the `default` slot.",
+      "source": "types"
+    },
+    {
+      "name": "icon",
+      "label": "icon",
+      "tsType": "false | TIcon | undefined",
+      "runtimeType": [
+        "String",
+        "Array",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Prepend icon override. When omitted, defaults to the per-intent\nicon (`mdiCheckCircle` for success, `mdiAlertCircle` for danger,\netc.). Pass `false` to suppress the icon entirely.",
+      "source": "types"
+    },
+    {
+      "name": "actions",
+      "label": "actions",
+      "tsType": "readonly ISnackbarGroupItemAction[] | undefined",
+      "runtimeType": "Array",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "description": "Action buttons rendered inline after the text block.\nEach action fires `handler()` and dismisses the item by default\nunless `keepOpen: true`.",
+      "source": "types"
+    },
+    {
+      "name": "dismissible",
+      "label": "dismissible",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Whether to render the close (✕) dismiss button.",
+      "source": "types"
+    },
+    {
+      "name": "dismissLabel",
+      "label": "dismissLabel",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Accessible label for the dismiss button.",
+      "source": "types"
+    },
+    {
+      "name": "role",
+      "label": "role",
+      "tsType": "\"status\" | \"alert\" | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "status",
+        "alert"
+      ],
+      "control": "select",
+      "description": "ARIA role for the item element. Inferred from `intent` when not\nset explicitly: `warning` / `danger` → `'alert'`, others → `'status'`.",
+      "source": "types"
+    },
+    {
+      "name": "ariaLive",
+      "label": "ariaLive",
+      "tsType": "\"polite\" | \"assertive\" | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "polite",
+        "assertive"
+      ],
+      "control": "select",
+      "description": "ARIA live region politeness. Inferred from `intent` when not set\nexplicitly: `warning` / `danger` → `'assertive'`, others → `'polite'`.",
+      "source": "types"
+    },
+    {
+      "name": "dataCy",
+      "label": "dataCy",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "`data-cy` attribute injected on the root item element, forwarded\nfrom the parent stack/snackbar so each toast is addressable in e2e\ntests.",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "fontSize",
+      "label": "fontSize",
+      "tsType": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"5xl\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "2xl",
+        "3xl",
+        "4xl",
+        "5xl"
+      ],
+      "control": "select",
+      "description": "Font size token. Maps to `--origam-font__size---{fontSize}`\n(xs · sm · md · lg · xl · 2xl · 3xl · 4xl · 5xl).\nWhen unset, the component keeps its theme / density font-size.",
+      "source": "types"
+    }
+  ],
+  "events": [
+    {
+      "name": "action",
+      "label": "action",
+      "payloadType": "[action: ISnackbarGroupItemAction]",
+      "source": "types"
+    },
+    {
+      "name": "dismiss",
+      "label": "dismiss",
+      "payloadType": "[]",
+      "source": "types"
+    }
+  ],
+  "slots": [
+    {
+      "name": "prepend",
+      "label": "prepend",
+      "slotPropsType": "any",
+      "source": "types"
+    },
+    {
+      "name": "title",
+      "label": "title",
+      "slotPropsType": "any",
+      "source": "types"
+    },
+    {
+      "name": "message",
+      "label": "message",
+      "slotPropsType": "any",
+      "source": "types"
+    },
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "any",
+      "source": "types"
+    },
+    {
+      "name": "actions",
+      "label": "actions",
+      "slotPropsType": "any",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

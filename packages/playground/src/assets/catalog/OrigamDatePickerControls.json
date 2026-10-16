@@ -1,0 +1,201 @@
+{
+  "name": "OrigamDatePickerControls",
+  "tag": "origam-date-picker-controls",
+  "family": "DatePicker",
+  "label": "DatePickerControls",
+  "props": [
+    {
+      "name": "active",
+      "label": "active",
+      "tsType": "string | boolean | string[] | IStateEffectConfig | undefined",
+      "runtimeType": [
+        "String",
+        "Array",
+        "Boolean",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Highlighted item(s) in the controls toolbar. Widened to include\n`boolean | IActiveState` so that IDatePickerProps can extend both this\ninterface and IPickerProps (which via ISheetProps → IActiveProps declares\n`active?: boolean | IActiveState`) without TS2320.",
+      "source": "types"
+    },
+    {
+      "name": "disabled",
+      "label": "disabled",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "disabledMonth",
+      "label": "disabledMonth",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "disabledYear",
+      "label": "disabledYear",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "disabledNext",
+      "label": "disabledNext",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "disabledPrev",
+      "label": "disabledPrev",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "nextIcon",
+      "label": "nextIcon",
+      "tsType": "TIcon | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "mdi:mdi-chevron-right",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "prevIcon",
+      "label": "prevIcon",
+      "tsType": "TIcon | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "mdi:mdi-chevron-left",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "modeIcon",
+      "label": "modeIcon",
+      "tsType": "TIcon | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "mdi:mdi-menu-down-outline",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "text",
+      "label": "text",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "viewMode",
+      "label": "viewMode",
+      "tsType": "\"month\" | \"months\" | \"years\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "month",
+      "hasFactoryDefault": false,
+      "options": [
+        "month",
+        "months",
+        "years"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    }
+  ],
+  "events": [
+    {
+      "name": "click:year",
+      "label": "click:year",
+      "payloadType": "[event?: MouseEvent | undefined]",
+      "source": "types"
+    },
+    {
+      "name": "click:month",
+      "label": "click:month",
+      "payloadType": "[event?: MouseEvent | undefined]",
+      "source": "types"
+    },
+    {
+      "name": "click:prev",
+      "label": "click:prev",
+      "payloadType": "[event?: MouseEvent | undefined]",
+      "source": "types"
+    },
+    {
+      "name": "click:next",
+      "label": "click:next",
+      "payloadType": "[event?: MouseEvent | undefined]",
+      "source": "types"
+    }
+  ],
+  "slots": [],
+  "snippets": [],
+  "requiresParent": false
+}

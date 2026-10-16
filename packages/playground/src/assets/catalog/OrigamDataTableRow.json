@@ -1,0 +1,110 @@
+{
+  "name": "OrigamDataTableRow",
+  "tag": "origam-data-table-row",
+  "family": "DataTable",
+  "label": "DataTableRow",
+  "props": [
+    {
+      "name": "item",
+      "label": "item",
+      "tsType": "IDataTableItem<any>",
+      "runtimeType": "Object",
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "source": "types"
+    },
+    {
+      "name": "cellProps",
+      "label": "cellProps",
+      "tsType": "TDataTableCell<any> | undefined",
+      "runtimeType": [
+        "Object",
+        "Function"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "mobileBreakpoint",
+      "label": "mobileBreakpoint",
+      "tsType": "number | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"xxl\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    }
+  ],
+  "events": [
+    {
+      "name": "select",
+      "label": "select",
+      "payloadType": "[payload?: { item: IDataTableItem<any>; value: boolean; } | undefined]",
+      "source": "types"
+    },
+    {
+      "name": "expand",
+      "label": "expand",
+      "payloadType": "[payload?: { item: IDataTableItem<any>; value: boolean; } | undefined]",
+      "source": "types"
+    }
+  ],
+  "slots": [
+    {
+      "name": "item.data-table-select",
+      "label": "item.data-table-select",
+      "slotPropsType": "IDataTableItemKey<any>",
+      "source": "types"
+    },
+    {
+      "name": "item.data-table-expand",
+      "label": "item.data-table-expand",
+      "slotPropsType": "IDataTableItemKey<any>",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

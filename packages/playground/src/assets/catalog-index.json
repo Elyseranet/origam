@@ -1,0 +1,1316 @@
+[
+  {
+    "name": "OrigamAlert",
+    "tag": "origam-alert",
+    "family": "Alert",
+    "label": "Alert"
+  },
+  {
+    "name": "OrigamApp",
+    "tag": "origam-app",
+    "family": "App",
+    "label": "App"
+  },
+  {
+    "name": "OrigamAppBar",
+    "tag": "origam-app-bar",
+    "family": "App",
+    "label": "AppBar"
+  },
+  {
+    "name": "OrigamAudio",
+    "tag": "origam-audio",
+    "family": "Audio",
+    "label": "Audio"
+  },
+  {
+    "name": "OrigamAudioWaveform",
+    "tag": "origam-audio-waveform",
+    "family": "Audio",
+    "label": "AudioWaveform"
+  },
+  {
+    "name": "OrigamAvatar",
+    "tag": "origam-avatar",
+    "family": "Avatar",
+    "label": "Avatar"
+  },
+  {
+    "name": "OrigamAvatarGroup",
+    "tag": "origam-avatar-group",
+    "family": "Avatar",
+    "label": "AvatarGroup"
+  },
+  {
+    "name": "OrigamBadge",
+    "tag": "origam-badge",
+    "family": "Badge",
+    "label": "Badge"
+  },
+  {
+    "name": "OrigamBlockquote",
+    "tag": "origam-blockquote",
+    "family": "Blockquote",
+    "label": "Blockquote"
+  },
+  {
+    "name": "OrigamBottomNav",
+    "tag": "origam-bottom-nav",
+    "family": "BottomNav",
+    "label": "BottomNav"
+  },
+  {
+    "name": "OrigamBracket",
+    "tag": "origam-bracket",
+    "family": "Bracket",
+    "label": "Bracket"
+  },
+  {
+    "name": "OrigamBracketCompetitor",
+    "tag": "origam-bracket-competitor",
+    "family": "Bracket",
+    "label": "BracketCompetitor"
+  },
+  {
+    "name": "OrigamBracketMatch",
+    "tag": "origam-bracket-match",
+    "family": "Bracket",
+    "label": "BracketMatch"
+  },
+  {
+    "name": "OrigamBracketRound",
+    "tag": "origam-bracket-round",
+    "family": "Bracket",
+    "label": "BracketRound"
+  },
+  {
+    "name": "OrigamBreadcrumb",
+    "tag": "origam-breadcrumb",
+    "family": "Breadcrumb",
+    "label": "Breadcrumb"
+  },
+  {
+    "name": "OrigamBreadcrumbDivider",
+    "tag": "origam-breadcrumb-divider",
+    "family": "Breadcrumb",
+    "label": "BreadcrumbDivider"
+  },
+  {
+    "name": "OrigamBreadcrumbItem",
+    "tag": "origam-breadcrumb-item",
+    "family": "Breadcrumb",
+    "label": "BreadcrumbItem"
+  },
+  {
+    "name": "OrigamBtn",
+    "tag": "origam-btn",
+    "family": "Btn",
+    "label": "Btn"
+  },
+  {
+    "name": "OrigamBtnGroup",
+    "tag": "origam-btn-group",
+    "family": "Btn",
+    "label": "BtnGroup"
+  },
+  {
+    "name": "OrigamBtnToggle",
+    "tag": "origam-btn-toggle",
+    "family": "Btn",
+    "label": "BtnToggle"
+  },
+  {
+    "name": "OrigamCalendar",
+    "tag": "origam-calendar",
+    "family": "Calendar",
+    "label": "Calendar"
+  },
+  {
+    "name": "OrigamCard",
+    "tag": "origam-card",
+    "family": "Card",
+    "label": "Card"
+  },
+  {
+    "name": "OrigamCardHeader",
+    "tag": "origam-card-header",
+    "family": "Card",
+    "label": "CardHeader"
+  },
+  {
+    "name": "OrigamCardText",
+    "tag": "origam-card-text",
+    "family": "Card",
+    "label": "CardText"
+  },
+  {
+    "name": "OrigamCarousel",
+    "tag": "origam-carousel",
+    "family": "Carousel",
+    "label": "Carousel"
+  },
+  {
+    "name": "OrigamCarouselItem",
+    "tag": "origam-carousel-item",
+    "family": "Carousel",
+    "label": "CarouselItem"
+  },
+  {
+    "name": "OrigamChart",
+    "tag": "origam-chart",
+    "family": "Chart",
+    "label": "Chart"
+  },
+  {
+    "name": "OrigamChartAxis",
+    "tag": "origam-chart-axis",
+    "family": "Chart",
+    "label": "ChartAxis"
+  },
+  {
+    "name": "OrigamChartBoxPlot",
+    "tag": "origam-chart-box-plot",
+    "family": "Chart",
+    "label": "ChartBoxPlot"
+  },
+  {
+    "name": "OrigamChartBullet",
+    "tag": "origam-chart-bullet",
+    "family": "Chart",
+    "label": "ChartBullet"
+  },
+  {
+    "name": "OrigamChartCandlestick",
+    "tag": "origam-chart-candlestick",
+    "family": "Chart",
+    "label": "ChartCandlestick"
+  },
+  {
+    "name": "OrigamChartCartesian",
+    "tag": "origam-chart-cartesian",
+    "family": "Chart",
+    "label": "ChartCartesian"
+  },
+  {
+    "name": "OrigamChartGauge",
+    "tag": "origam-chart-gauge",
+    "family": "Chart",
+    "label": "ChartGauge"
+  },
+  {
+    "name": "OrigamChartHeatmap",
+    "tag": "origam-chart-heatmap",
+    "family": "Chart",
+    "label": "ChartHeatmap"
+  },
+  {
+    "name": "OrigamChartHoneycomb",
+    "tag": "origam-chart-honeycomb",
+    "family": "Chart",
+    "label": "ChartHoneycomb"
+  },
+  {
+    "name": "OrigamChartLegend",
+    "tag": "origam-chart-legend",
+    "family": "Chart",
+    "label": "ChartLegend"
+  },
+  {
+    "name": "OrigamChartMap",
+    "tag": "origam-chart-map",
+    "family": "Chart",
+    "label": "ChartMap"
+  },
+  {
+    "name": "OrigamChartPareto",
+    "tag": "origam-chart-pareto",
+    "family": "Chart",
+    "label": "ChartPareto"
+  },
+  {
+    "name": "OrigamChartPictorial",
+    "tag": "origam-chart-pictorial",
+    "family": "Chart",
+    "label": "ChartPictorial"
+  },
+  {
+    "name": "OrigamChartPolar",
+    "tag": "origam-chart-polar",
+    "family": "Chart",
+    "label": "ChartPolar"
+  },
+  {
+    "name": "OrigamChartPolarBar",
+    "tag": "origam-chart-polar-bar",
+    "family": "Chart",
+    "label": "ChartPolarBar"
+  },
+  {
+    "name": "OrigamChartPyramid",
+    "tag": "origam-chart-pyramid",
+    "family": "Chart",
+    "label": "ChartPyramid"
+  },
+  {
+    "name": "OrigamChartRadar",
+    "tag": "origam-chart-radar",
+    "family": "Chart",
+    "label": "ChartRadar"
+  },
+  {
+    "name": "OrigamChartRangeSelector",
+    "tag": "origam-chart-range-selector",
+    "family": "Chart",
+    "label": "ChartRangeSelector"
+  },
+  {
+    "name": "OrigamChartSankey",
+    "tag": "origam-chart-sankey",
+    "family": "Chart",
+    "label": "ChartSankey"
+  },
+  {
+    "name": "OrigamChartSparkline",
+    "tag": "origam-chart-sparkline",
+    "family": "Chart",
+    "label": "ChartSparkline"
+  },
+  {
+    "name": "OrigamChartStreamgraph",
+    "tag": "origam-chart-streamgraph",
+    "family": "Chart",
+    "label": "ChartStreamgraph"
+  },
+  {
+    "name": "OrigamChartSunburst",
+    "tag": "origam-chart-sunburst",
+    "family": "Chart",
+    "label": "ChartSunburst"
+  },
+  {
+    "name": "OrigamChartTooltip",
+    "tag": "origam-chart-tooltip",
+    "family": "Chart",
+    "label": "ChartTooltip"
+  },
+  {
+    "name": "OrigamChartTreemap",
+    "tag": "origam-chart-treemap",
+    "family": "Chart",
+    "label": "ChartTreemap"
+  },
+  {
+    "name": "OrigamChartVariwide",
+    "tag": "origam-chart-variwide",
+    "family": "Chart",
+    "label": "ChartVariwide"
+  },
+  {
+    "name": "OrigamChartWordCloud",
+    "tag": "origam-chart-word-cloud",
+    "family": "Chart",
+    "label": "ChartWordCloud"
+  },
+  {
+    "name": "OrigamCheckbox",
+    "tag": "origam-checkbox",
+    "family": "Checkbox",
+    "label": "Checkbox"
+  },
+  {
+    "name": "OrigamCheckboxBtn",
+    "tag": "origam-checkbox-btn",
+    "family": "Checkbox",
+    "label": "CheckboxBtn"
+  },
+  {
+    "name": "OrigamCheckboxGroup",
+    "tag": "origam-checkbox-group",
+    "family": "Checkbox",
+    "label": "CheckboxGroup"
+  },
+  {
+    "name": "OrigamChip",
+    "tag": "origam-chip",
+    "family": "Chip",
+    "label": "Chip"
+  },
+  {
+    "name": "OrigamChipGroup",
+    "tag": "origam-chip-group",
+    "family": "Chip",
+    "label": "ChipGroup"
+  },
+  {
+    "name": "OrigamClassIcon",
+    "tag": "origam-class-icon",
+    "family": "Icon",
+    "label": "ClassIcon"
+  },
+  {
+    "name": "OrigamClientOnly",
+    "tag": "origam-client-only",
+    "family": "ClientOnly",
+    "label": "ClientOnly"
+  },
+  {
+    "name": "OrigamClipboard",
+    "tag": "origam-clipboard",
+    "family": "Clipboard",
+    "label": "Clipboard"
+  },
+  {
+    "name": "OrigamCode",
+    "tag": "origam-code",
+    "family": "Code",
+    "label": "Code"
+  },
+  {
+    "name": "OrigamCol",
+    "tag": "origam-col",
+    "family": "Grids",
+    "label": "Col"
+  },
+  {
+    "name": "OrigamColorPicker",
+    "tag": "origam-color-picker",
+    "family": "ColorPicker",
+    "label": "ColorPicker"
+  },
+  {
+    "name": "OrigamColorPickerCanvas",
+    "tag": "origam-color-picker-canvas",
+    "family": "ColorPicker",
+    "label": "ColorPickerCanvas"
+  },
+  {
+    "name": "OrigamColorPickerEdit",
+    "tag": "origam-color-picker-edit",
+    "family": "ColorPicker",
+    "label": "ColorPickerEdit"
+  },
+  {
+    "name": "OrigamColorPickerField",
+    "tag": "origam-color-picker-field",
+    "family": "ColorPickerField",
+    "label": "ColorPickerField"
+  },
+  {
+    "name": "OrigamColorPickerPreview",
+    "tag": "origam-color-picker-preview",
+    "family": "ColorPicker",
+    "label": "ColorPickerPreview"
+  },
+  {
+    "name": "OrigamColorPickerSwatches",
+    "tag": "origam-color-picker-swatches",
+    "family": "ColorPicker",
+    "label": "ColorPickerSwatches"
+  },
+  {
+    "name": "OrigamCommandPalette",
+    "tag": "origam-command-palette",
+    "family": "CommandPalette",
+    "label": "CommandPalette"
+  },
+  {
+    "name": "OrigamComponentIcon",
+    "tag": "origam-component-icon",
+    "family": "Icon",
+    "label": "ComponentIcon"
+  },
+  {
+    "name": "OrigamConfirmWrapper",
+    "tag": "origam-confirm-wrapper",
+    "family": "ConfirmWrapper",
+    "label": "ConfirmWrapper"
+  },
+  {
+    "name": "OrigamContainer",
+    "tag": "origam-container",
+    "family": "Grids",
+    "label": "Container"
+  },
+  {
+    "name": "OrigamContextualMenu",
+    "tag": "origam-contextual-menu",
+    "family": "ContextualMenu",
+    "label": "ContextualMenu"
+  },
+  {
+    "name": "OrigamCounter",
+    "tag": "origam-counter",
+    "family": "Counter",
+    "label": "Counter"
+  },
+  {
+    "name": "OrigamDataList",
+    "tag": "origam-data-list",
+    "family": "DataList",
+    "label": "DataList"
+  },
+  {
+    "name": "OrigamDataTable",
+    "tag": "origam-data-table",
+    "family": "DataTable",
+    "label": "DataTable"
+  },
+  {
+    "name": "OrigamDataTableColumnCell",
+    "tag": "origam-data-table-column-cell",
+    "family": "DataTable",
+    "label": "DataTableColumnCell"
+  },
+  {
+    "name": "OrigamDataTableFooter",
+    "tag": "origam-data-table-footer",
+    "family": "DataTable",
+    "label": "DataTableFooter"
+  },
+  {
+    "name": "OrigamDataTableGroupHeaderRow",
+    "tag": "origam-data-table-group-header-row",
+    "family": "DataTable",
+    "label": "DataTableGroupHeaderRow"
+  },
+  {
+    "name": "OrigamDataTableHeaderCell",
+    "tag": "origam-data-table-header-cell",
+    "family": "DataTable",
+    "label": "DataTableHeaderCell"
+  },
+  {
+    "name": "OrigamDataTableHeaders",
+    "tag": "origam-data-table-headers",
+    "family": "DataTable",
+    "label": "DataTableHeaders"
+  },
+  {
+    "name": "OrigamDataTableHeadersCell",
+    "tag": "origam-data-table-headers-cell",
+    "family": "DataTable",
+    "label": "DataTableHeadersCell"
+  },
+  {
+    "name": "OrigamDataTableHeadersCellMobile",
+    "tag": "origam-data-table-headers-cell-mobile",
+    "family": "DataTable",
+    "label": "DataTableHeadersCellMobile"
+  },
+  {
+    "name": "OrigamDataTableRow",
+    "tag": "origam-data-table-row",
+    "family": "DataTable",
+    "label": "DataTableRow"
+  },
+  {
+    "name": "OrigamDataTableRows",
+    "tag": "origam-data-table-rows",
+    "family": "DataTable",
+    "label": "DataTableRows"
+  },
+  {
+    "name": "OrigamDataText",
+    "tag": "origam-data-text",
+    "family": "DataList",
+    "label": "DataText"
+  },
+  {
+    "name": "OrigamDataTitle",
+    "tag": "origam-data-title",
+    "family": "DataList",
+    "label": "DataTitle"
+  },
+  {
+    "name": "OrigamDatePicker",
+    "tag": "origam-date-picker",
+    "family": "DatePicker",
+    "label": "DatePicker"
+  },
+  {
+    "name": "OrigamDatePickerControls",
+    "tag": "origam-date-picker-controls",
+    "family": "DatePicker",
+    "label": "DatePickerControls"
+  },
+  {
+    "name": "OrigamDatePickerField",
+    "tag": "origam-date-picker-field",
+    "family": "DatePickerField",
+    "label": "DatePickerField"
+  },
+  {
+    "name": "OrigamDatePickerHeader",
+    "tag": "origam-date-picker-header",
+    "family": "DatePicker",
+    "label": "DatePickerHeader"
+  },
+  {
+    "name": "OrigamDatePickerMonth",
+    "tag": "origam-date-picker-month",
+    "family": "DatePicker",
+    "label": "DatePickerMonth"
+  },
+  {
+    "name": "OrigamDatePickerMonths",
+    "tag": "origam-date-picker-months",
+    "family": "DatePicker",
+    "label": "DatePickerMonths"
+  },
+  {
+    "name": "OrigamDatePickerYears",
+    "tag": "origam-date-picker-years",
+    "family": "DatePicker",
+    "label": "DatePickerYears"
+  },
+  {
+    "name": "OrigamDefaultsProvider",
+    "tag": "origam-defaults-provider",
+    "family": "DefaultsProvider",
+    "label": "DefaultsProvider"
+  },
+  {
+    "name": "OrigamDialog",
+    "tag": "origam-dialog",
+    "family": "Dialog",
+    "label": "Dialog"
+  },
+  {
+    "name": "OrigamDialogConfirmation",
+    "tag": "origam-dialog-confirmation",
+    "family": "Dialog",
+    "label": "DialogConfirmation"
+  },
+  {
+    "name": "OrigamDivider",
+    "tag": "origam-divider",
+    "family": "Divider",
+    "label": "Divider"
+  },
+  {
+    "name": "OrigamDrawer",
+    "tag": "origam-drawer",
+    "family": "Drawer",
+    "label": "Drawer"
+  },
+  {
+    "name": "OrigamEmptyState",
+    "tag": "origam-empty-state",
+    "family": "EmptyState",
+    "label": "EmptyState"
+  },
+  {
+    "name": "OrigamExpandX",
+    "tag": "origam-expand-x",
+    "family": "Transition",
+    "label": "ExpandX"
+  },
+  {
+    "name": "OrigamExpandY",
+    "tag": "origam-expand-y",
+    "family": "Transition",
+    "label": "ExpandY"
+  },
+  {
+    "name": "OrigamExpansionPanel",
+    "tag": "origam-expansion-panel",
+    "family": "ExpansionPanel",
+    "label": "ExpansionPanel"
+  },
+  {
+    "name": "OrigamExpansionPanelContent",
+    "tag": "origam-expansion-panel-content",
+    "family": "ExpansionPanel",
+    "label": "ExpansionPanelContent"
+  },
+  {
+    "name": "OrigamExpansionPanelHeader",
+    "tag": "origam-expansion-panel-header",
+    "family": "ExpansionPanel",
+    "label": "ExpansionPanelHeader"
+  },
+  {
+    "name": "OrigamExpansionPanels",
+    "tag": "origam-expansion-panels",
+    "family": "ExpansionPanel",
+    "label": "ExpansionPanels"
+  },
+  {
+    "name": "OrigamFade",
+    "tag": "origam-fade",
+    "family": "Transition",
+    "label": "Fade"
+  },
+  {
+    "name": "OrigamField",
+    "tag": "origam-field",
+    "family": "Field",
+    "label": "Field"
+  },
+  {
+    "name": "OrigamFileField",
+    "tag": "origam-file-field",
+    "family": "FileField",
+    "label": "FileField"
+  },
+  {
+    "name": "OrigamFileFieldDragNDropItem",
+    "tag": "origam-file-field-drag-n-drop-item",
+    "family": "FileField",
+    "label": "FileFieldDragNDropItem"
+  },
+  {
+    "name": "OrigamFileFieldListItem",
+    "tag": "origam-file-field-list-item",
+    "family": "FileField",
+    "label": "FileFieldListItem"
+  },
+  {
+    "name": "OrigamForm",
+    "tag": "origam-form",
+    "family": "Form",
+    "label": "Form"
+  },
+  {
+    "name": "OrigamGrid",
+    "tag": "origam-grid",
+    "family": "Grid",
+    "label": "Grid"
+  },
+  {
+    "name": "OrigamGridItem",
+    "tag": "origam-grid-item",
+    "family": "Grid",
+    "label": "GridItem"
+  },
+  {
+    "name": "OrigamIcon",
+    "tag": "origam-icon",
+    "family": "Icon",
+    "label": "Icon"
+  },
+  {
+    "name": "OrigamImg",
+    "tag": "origam-img",
+    "family": "Img",
+    "label": "Img"
+  },
+  {
+    "name": "OrigamInfiniteScroll",
+    "tag": "origam-infinite-scroll",
+    "family": "InfiniteScroll",
+    "label": "InfiniteScroll"
+  },
+  {
+    "name": "OrigamInfiniteScrollIntersect",
+    "tag": "origam-infinite-scroll-intersect",
+    "family": "InfiniteScroll",
+    "label": "InfiniteScrollIntersect"
+  },
+  {
+    "name": "OrigamInlineEdit",
+    "tag": "origam-inline-edit",
+    "family": "InlineEdit",
+    "label": "InlineEdit"
+  },
+  {
+    "name": "OrigamInput",
+    "tag": "origam-input",
+    "family": "Input",
+    "label": "Input"
+  },
+  {
+    "name": "OrigamItemGroup",
+    "tag": "origam-item-group",
+    "family": "ItemGroup",
+    "label": "ItemGroup"
+  },
+  {
+    "name": "OrigamItemGroupItem",
+    "tag": "origam-item-group-item",
+    "family": "ItemGroup",
+    "label": "ItemGroupItem"
+  },
+  {
+    "name": "OrigamKbd",
+    "tag": "origam-kbd",
+    "family": "Kbd",
+    "label": "Kbd"
+  },
+  {
+    "name": "OrigamLabel",
+    "tag": "origam-label",
+    "family": "Label",
+    "label": "Label"
+  },
+  {
+    "name": "OrigamLayout",
+    "tag": "origam-layout",
+    "family": "Layout",
+    "label": "Layout"
+  },
+  {
+    "name": "OrigamLazy",
+    "tag": "origam-lazy",
+    "family": "Lazy",
+    "label": "Lazy"
+  },
+  {
+    "name": "OrigamLigatureIcon",
+    "tag": "origam-ligature-icon",
+    "family": "Icon",
+    "label": "LigatureIcon"
+  },
+  {
+    "name": "OrigamList",
+    "tag": "origam-list",
+    "family": "List",
+    "label": "List"
+  },
+  {
+    "name": "OrigamListChildren",
+    "tag": "origam-list-children",
+    "family": "List",
+    "label": "ListChildren"
+  },
+  {
+    "name": "OrigamListGroup",
+    "tag": "origam-list-group",
+    "family": "List",
+    "label": "ListGroup"
+  },
+  {
+    "name": "OrigamListGroupActivator",
+    "tag": "origam-list-group-activator",
+    "family": "List",
+    "label": "ListGroupActivator"
+  },
+  {
+    "name": "OrigamListItem",
+    "tag": "origam-list-item",
+    "family": "List",
+    "label": "ListItem"
+  },
+  {
+    "name": "OrigamListSubheader",
+    "tag": "origam-list-subheader",
+    "family": "List",
+    "label": "ListSubheader"
+  },
+  {
+    "name": "OrigamLoader",
+    "tag": "origam-loader",
+    "family": "Loader",
+    "label": "Loader"
+  },
+  {
+    "name": "OrigamMain",
+    "tag": "origam-main",
+    "family": "Main",
+    "label": "Main"
+  },
+  {
+    "name": "OrigamMasonry",
+    "tag": "origam-masonry",
+    "family": "Masonry",
+    "label": "Masonry"
+  },
+  {
+    "name": "OrigamMediaController",
+    "tag": "origam-media-controller",
+    "family": "Media",
+    "label": "MediaController"
+  },
+  {
+    "name": "OrigamMediaScrubber",
+    "tag": "origam-media-scrubber",
+    "family": "Media",
+    "label": "MediaScrubber"
+  },
+  {
+    "name": "OrigamMediaVolumeControl",
+    "tag": "origam-media-volume-control",
+    "family": "Media",
+    "label": "MediaVolumeControl"
+  },
+  {
+    "name": "OrigamMenu",
+    "tag": "origam-menu",
+    "family": "Menu",
+    "label": "Menu"
+  },
+  {
+    "name": "OrigamMessages",
+    "tag": "origam-messages",
+    "family": "Messages",
+    "label": "Messages"
+  },
+  {
+    "name": "OrigamNumberField",
+    "tag": "origam-number-field",
+    "family": "NumberField",
+    "label": "NumberField"
+  },
+  {
+    "name": "OrigamNumberFormat",
+    "tag": "origam-number-format",
+    "family": "NumberFormat",
+    "label": "NumberFormat"
+  },
+  {
+    "name": "OrigamOtpInputField",
+    "tag": "origam-otp-input-field",
+    "family": "OtpInputField",
+    "label": "OtpInputField"
+  },
+  {
+    "name": "OrigamOverlay",
+    "tag": "origam-overlay",
+    "family": "Overlay",
+    "label": "Overlay"
+  },
+  {
+    "name": "OrigamOverlayScrim",
+    "tag": "origam-overlay-scrim",
+    "family": "Overlay",
+    "label": "OverlayScrim"
+  },
+  {
+    "name": "OrigamPagination",
+    "tag": "origam-pagination",
+    "family": "Pagination",
+    "label": "Pagination"
+  },
+  {
+    "name": "OrigamParallax",
+    "tag": "origam-parallax",
+    "family": "Parallax",
+    "label": "Parallax"
+  },
+  {
+    "name": "OrigamParallaxElement",
+    "tag": "origam-parallax-element",
+    "family": "Parallax",
+    "label": "ParallaxElement"
+  },
+  {
+    "name": "OrigamParallaxLayer",
+    "tag": "origam-parallax-layer",
+    "family": "Parallax",
+    "label": "ParallaxLayer"
+  },
+  {
+    "name": "OrigamPasswordField",
+    "tag": "origam-password-field",
+    "family": "PasswordField",
+    "label": "PasswordField"
+  },
+  {
+    "name": "OrigamPicker",
+    "tag": "origam-picker",
+    "family": "Picker",
+    "label": "Picker"
+  },
+  {
+    "name": "OrigamPickerTitle",
+    "tag": "origam-picker-title",
+    "family": "Picker",
+    "label": "PickerTitle"
+  },
+  {
+    "name": "OrigamProgress",
+    "tag": "origam-progress",
+    "family": "Progress",
+    "label": "Progress"
+  },
+  {
+    "name": "OrigamProgressCircular",
+    "tag": "origam-progress-circular",
+    "family": "Progress",
+    "label": "ProgressCircular"
+  },
+  {
+    "name": "OrigamProgressLinear",
+    "tag": "origam-progress-linear",
+    "family": "Progress",
+    "label": "ProgressLinear"
+  },
+  {
+    "name": "OrigamQrCode",
+    "tag": "origam-qr-code",
+    "family": "QrCode",
+    "label": "QrCode"
+  },
+  {
+    "name": "OrigamRadio",
+    "tag": "origam-radio",
+    "family": "Radio",
+    "label": "Radio"
+  },
+  {
+    "name": "OrigamRadioBtn",
+    "tag": "origam-radio-btn",
+    "family": "Radio",
+    "label": "RadioBtn"
+  },
+  {
+    "name": "OrigamRadioGroup",
+    "tag": "origam-radio-group",
+    "family": "Radio",
+    "label": "RadioGroup"
+  },
+  {
+    "name": "OrigamRatingField",
+    "tag": "origam-rating-field",
+    "family": "RatingField",
+    "label": "RatingField"
+  },
+  {
+    "name": "OrigamRatingFieldItem",
+    "tag": "origam-rating-field-item",
+    "family": "RatingField",
+    "label": "RatingFieldItem"
+  },
+  {
+    "name": "OrigamResponsive",
+    "tag": "origam-responsive",
+    "family": "Responsive",
+    "label": "Responsive"
+  },
+  {
+    "name": "OrigamReverseTranslatePicker",
+    "tag": "origam-reverse-translate-picker",
+    "family": "Transition",
+    "label": "ReverseTranslatePicker"
+  },
+  {
+    "name": "OrigamRow",
+    "tag": "origam-row",
+    "family": "Grids",
+    "label": "Row"
+  },
+  {
+    "name": "OrigamScaleRotate",
+    "tag": "origam-scale-rotate",
+    "family": "Transition",
+    "label": "ScaleRotate"
+  },
+  {
+    "name": "OrigamSelect",
+    "tag": "origam-select",
+    "family": "Select",
+    "label": "Select"
+  },
+  {
+    "name": "OrigamSelectionControl",
+    "tag": "origam-selection-control",
+    "family": "SelectionControl",
+    "label": "SelectionControl"
+  },
+  {
+    "name": "OrigamSelectionControlGroup",
+    "tag": "origam-selection-control-group",
+    "family": "SelectionControl",
+    "label": "SelectionControlGroup"
+  },
+  {
+    "name": "OrigamSheet",
+    "tag": "origam-sheet",
+    "family": "Sheet",
+    "label": "Sheet"
+  },
+  {
+    "name": "OrigamSkeleton",
+    "tag": "origam-skeleton",
+    "family": "Skeleton",
+    "label": "Skeleton"
+  },
+  {
+    "name": "OrigamSkeletonGroup",
+    "tag": "origam-skeleton-group",
+    "family": "Skeleton",
+    "label": "SkeletonGroup"
+  },
+  {
+    "name": "OrigamSlideGroup",
+    "tag": "origam-slide-group",
+    "family": "Slide",
+    "label": "SlideGroup"
+  },
+  {
+    "name": "OrigamSliderField",
+    "tag": "origam-slider-field",
+    "family": "SliderField",
+    "label": "SliderField"
+  },
+  {
+    "name": "OrigamSliderFieldTrack",
+    "tag": "origam-slider-field-track",
+    "family": "SliderField",
+    "label": "SliderFieldTrack"
+  },
+  {
+    "name": "OrigamSlideX",
+    "tag": "origam-slide-x",
+    "family": "Transition",
+    "label": "SlideX"
+  },
+  {
+    "name": "OrigamSlideY",
+    "tag": "origam-slide-y",
+    "family": "Transition",
+    "label": "SlideY"
+  },
+  {
+    "name": "OrigamSnack",
+    "tag": "origam-snack",
+    "family": "Transition",
+    "label": "Snack"
+  },
+  {
+    "name": "OrigamSnackbar",
+    "tag": "origam-snackbar",
+    "family": "Snackbar",
+    "label": "Snackbar"
+  },
+  {
+    "name": "OrigamSnackbarGroup",
+    "tag": "origam-snackbar-group",
+    "family": "Snackbar",
+    "label": "SnackbarGroup"
+  },
+  {
+    "name": "OrigamSnackbarItem",
+    "tag": "origam-snackbar-item",
+    "family": "Snackbar",
+    "label": "SnackbarItem"
+  },
+  {
+    "name": "OrigamSpacer",
+    "tag": "origam-spacer",
+    "family": "Grids",
+    "label": "Spacer"
+  },
+  {
+    "name": "OrigamStepper",
+    "tag": "origam-stepper",
+    "family": "Stepper",
+    "label": "Stepper"
+  },
+  {
+    "name": "OrigamStepperItem",
+    "tag": "origam-stepper-item",
+    "family": "Stepper",
+    "label": "StepperItem"
+  },
+  {
+    "name": "OrigamSvgIcon",
+    "tag": "origam-svg-icon",
+    "family": "Icon",
+    "label": "SvgIcon"
+  },
+  {
+    "name": "OrigamSwitch",
+    "tag": "origam-switch",
+    "family": "Switch",
+    "label": "Switch"
+  },
+  {
+    "name": "OrigamSwitchTrack",
+    "tag": "origam-switch-track",
+    "family": "Switch",
+    "label": "SwitchTrack"
+  },
+  {
+    "name": "OrigamSystemBar",
+    "tag": "origam-system-bar",
+    "family": "SystemBar",
+    "label": "SystemBar"
+  },
+  {
+    "name": "OrigamTab",
+    "tag": "origam-tab",
+    "family": "Tabs",
+    "label": "Tab"
+  },
+  {
+    "name": "OrigamTable",
+    "tag": "origam-table",
+    "family": "Table",
+    "label": "Table"
+  },
+  {
+    "name": "OrigamTabPanel",
+    "tag": "origam-tab-panel",
+    "family": "Tabs",
+    "label": "TabPanel"
+  },
+  {
+    "name": "OrigamTabPanels",
+    "tag": "origam-tab-panels",
+    "family": "Tabs",
+    "label": "TabPanels"
+  },
+  {
+    "name": "OrigamTabs",
+    "tag": "origam-tabs",
+    "family": "Tabs",
+    "label": "Tabs"
+  },
+  {
+    "name": "OrigamTextareaField",
+    "tag": "origam-textarea-field",
+    "family": "TextareaField",
+    "label": "TextareaField"
+  },
+  {
+    "name": "OrigamTextareaFieldRichToolbar",
+    "tag": "origam-textarea-field-rich-toolbar",
+    "family": "TextareaField",
+    "label": "TextareaFieldRichToolbar"
+  },
+  {
+    "name": "OrigamTextField",
+    "tag": "origam-text-field",
+    "family": "TextField",
+    "label": "TextField"
+  },
+  {
+    "name": "OrigamTextMask",
+    "tag": "origam-text-mask",
+    "family": "TextMask",
+    "label": "TextMask"
+  },
+  {
+    "name": "OrigamThemeProvider",
+    "tag": "origam-theme-provider",
+    "family": "ThemeProvider",
+    "label": "ThemeProvider"
+  },
+  {
+    "name": "OrigamTimeline",
+    "tag": "origam-timeline",
+    "family": "Timeline",
+    "label": "Timeline"
+  },
+  {
+    "name": "OrigamTimelineItem",
+    "tag": "origam-timeline-item",
+    "family": "Timeline",
+    "label": "TimelineItem"
+  },
+  {
+    "name": "OrigamTitle",
+    "tag": "origam-title",
+    "family": "Title",
+    "label": "Title"
+  },
+  {
+    "name": "OrigamToolbar",
+    "tag": "origam-toolbar",
+    "family": "Toolbar",
+    "label": "Toolbar"
+  },
+  {
+    "name": "OrigamTooltip",
+    "tag": "origam-tooltip",
+    "family": "Tooltip",
+    "label": "Tooltip"
+  },
+  {
+    "name": "OrigamTransition",
+    "tag": "origam-transition",
+    "family": "Transition",
+    "label": "Transition"
+  },
+  {
+    "name": "OrigamTranslateBottom",
+    "tag": "origam-translate-bottom",
+    "family": "Transition",
+    "label": "TranslateBottom"
+  },
+  {
+    "name": "OrigamTranslatePicker",
+    "tag": "origam-translate-picker",
+    "family": "Transition",
+    "label": "TranslatePicker"
+  },
+  {
+    "name": "OrigamTranslateScale",
+    "tag": "origam-translate-scale",
+    "family": "Transition",
+    "label": "TranslateScale"
+  },
+  {
+    "name": "OrigamTreeview",
+    "tag": "origam-treeview",
+    "family": "Treeview",
+    "label": "Treeview"
+  },
+  {
+    "name": "OrigamTreeviewNode",
+    "tag": "origam-treeview-node",
+    "family": "Treeview",
+    "label": "TreeviewNode"
+  },
+  {
+    "name": "OrigamVideo",
+    "tag": "origam-video",
+    "family": "Video",
+    "label": "Video"
+  },
+  {
+    "name": "OrigamVirtualScroll",
+    "tag": "origam-virtual-scroll",
+    "family": "VirtualScroll",
+    "label": "VirtualScroll"
+  },
+  {
+    "name": "OrigamVirtualScrollItem",
+    "tag": "origam-virtual-scroll-item",
+    "family": "VirtualScroll",
+    "label": "VirtualScrollItem"
+  },
+  {
+    "name": "OrigamWatermark",
+    "tag": "origam-watermark",
+    "family": "Watermark",
+    "label": "Watermark"
+  },
+  {
+    "name": "OrigamWindow",
+    "tag": "origam-window",
+    "family": "Window",
+    "label": "Window"
+  },
+  {
+    "name": "OrigamWindowItem",
+    "tag": "origam-window-item",
+    "family": "Window",
+    "label": "WindowItem"
+  },
+  {
+    "name": "OrigamWindowXReverseTranslate",
+    "tag": "origam-window-x-reverse-translate",
+    "family": "Transition",
+    "label": "WindowXReverseTranslate"
+  },
+  {
+    "name": "OrigamWindowXTranslate",
+    "tag": "origam-window-x-translate",
+    "family": "Transition",
+    "label": "WindowXTranslate"
+  },
+  {
+    "name": "OrigamWindowYReverseTranslate",
+    "tag": "origam-window-y-reverse-translate",
+    "family": "Transition",
+    "label": "WindowYReverseTranslate"
+  },
+  {
+    "name": "OrigamWindowYTranslate",
+    "tag": "origam-window-y-translate",
+    "family": "Transition",
+    "label": "WindowYTranslate"
+  }
+]

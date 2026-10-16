@@ -1,0 +1,236 @@
+{
+  "name": "OrigamTimelineItem",
+  "tag": "origam-timeline-item",
+  "family": "Timeline",
+  "label": "TimelineItem",
+  "props": [
+    {
+      "name": "title",
+      "label": "title",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "subtitle",
+      "label": "subtitle",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "description",
+      "label": "description",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Body text rendered under the title. Falls back to the `#body` slot\nwhen one is provided; when neither is set the body element is not\nrendered at all.",
+      "source": "types"
+    },
+    {
+      "name": "icon",
+      "label": "icon",
+      "tsType": "TIcon | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "intent",
+      "label": "intent",
+      "tsType": "\"success\" | \"info\" | \"warning\" | \"ghost\" | \"primary\" | \"neutral\" | \"secondary\" | \"danger\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "success",
+        "info",
+        "warning",
+        "ghost",
+        "primary",
+        "neutral",
+        "secondary",
+        "danger"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "isLast",
+      "label": "isLast",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "truncateLine",
+      "label": "truncateLine",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "side",
+      "label": "side",
+      "tsType": "\"start\" | \"end\" | \"alternating\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "start",
+      "hasFactoryDefault": false,
+      "options": [
+        "start",
+        "end",
+        "alternating"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "orientation",
+      "label": "orientation",
+      "tsType": "\"horizontal\" | \"vertical\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "vertical",
+      "hasFactoryDefault": false,
+      "options": [
+        "horizontal",
+        "vertical"
+      ],
+      "control": "select",
+      "description": "Layout direction forwarded by the parent OrigamTimeline. When unset\nthe item assumes vertical layout. Items rarely set this directly —\nthey receive it via inject from the parent.",
+      "source": "types"
+    },
+    {
+      "name": "index",
+      "label": "index",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "defaultValue": 0,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "color",
+      "label": "color",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "density",
+      "label": "density",
+      "tsType": "\"default\" | \"compact\" | \"comfortable\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "default",
+        "compact",
+        "comfortable"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "size",
+      "label": "size",
+      "tsType": "number | \"default\" | \"x-small\" | \"small\" | \"large\" | \"x-large\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "dot",
+      "label": "dot",
+      "slotPropsType": "any",
+      "source": "types"
+    },
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "any",
+      "description": "Overrides the whole title/subtitle header + body block.",
+      "source": "types"
+    },
+    {
+      "name": "body",
+      "label": "body",
+      "slotPropsType": "any",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

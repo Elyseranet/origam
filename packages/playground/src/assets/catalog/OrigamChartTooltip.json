@@ -1,0 +1,104 @@
+{
+  "name": "OrigamChartTooltip",
+  "tag": "origam-chart-tooltip",
+  "family": "Chart",
+  "label": "ChartTooltip",
+  "props": [
+    {
+      "name": "point",
+      "label": "point",
+      "tsType": "IChartPoint | null",
+      "runtimeType": [
+        "Object"
+      ],
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "description": "Hovered point payload (denormalised). When `null`, the\ntooltip is hidden entirely.",
+      "source": "types"
+    },
+    {
+      "name": "series",
+      "label": "series",
+      "tsType": "IChartSeries | null",
+      "runtimeType": [
+        "Object"
+      ],
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "description": "Hovered series reference. Companion to `point`. Hidden when\n`null` even if `point` is set.",
+      "source": "types"
+    },
+    {
+      "name": "category",
+      "label": "category",
+      "tsType": "string | number",
+      "runtimeType": [
+        "String",
+        "Number"
+      ],
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Friendly category for the X axis — string when the X axis\nis categorical, number otherwise.",
+      "source": "types"
+    },
+    {
+      "name": "x",
+      "label": "x",
+      "tsType": "number",
+      "runtimeType": "Number",
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Mouse X position relative to the chart body, in pixels.",
+      "source": "types"
+    },
+    {
+      "name": "y",
+      "label": "y",
+      "tsType": "number",
+      "runtimeType": "Number",
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Mouse Y position relative to the chart body, in pixels.",
+      "source": "types"
+    },
+    {
+      "name": "xAxisFormat",
+      "label": "xAxisFormat",
+      "tsType": "((value: string | number) => string) | undefined",
+      "runtimeType": "Function",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Formatter applied to the X value shown in the tooltip body.\nDefaults to `String(value)`.",
+      "source": "types"
+    },
+    {
+      "name": "yAxisFormat",
+      "label": "yAxisFormat",
+      "tsType": "((value: number) => string) | undefined",
+      "runtimeType": "Function",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Formatter applied to the Y value shown in the tooltip body.\nDefaults to `String(value)`.",
+      "source": "types"
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "{ point: IChartPoint; series: IChartSeries; category: string | number; }",
+      "description": "Replace the default tooltip body.",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

@@ -1,0 +1,272 @@
+{
+  "name": "OrigamDatePickerMonth",
+  "tag": "origam-date-picker-month",
+  "family": "DatePicker",
+  "label": "DatePickerMonth",
+  "props": [
+    {
+      "name": "hideWeekdays",
+      "label": "hideWeekdays",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "multiple",
+      "label": "multiple",
+      "tsType": "number | boolean | TAnyString | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "range",
+      "label": "range",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "showWeek",
+      "label": "showWeek",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "transition",
+      "label": "transition",
+      "tsType": "TTransitionProps | undefined",
+      "runtimeType": "Object",
+      "required": false,
+      "hasFactoryDefault": true,
+      "control": "json",
+      "source": "types"
+    },
+    {
+      "name": "reverseTransition",
+      "label": "reverseTransition",
+      "tsType": "TTransitionProps | undefined",
+      "runtimeType": "Object",
+      "required": false,
+      "hasFactoryDefault": true,
+      "control": "json",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "color",
+      "label": "color",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "allowedDates",
+      "label": "allowedDates",
+      "tsType": "unknown[] | ((date: unknown) => boolean) | undefined",
+      "runtimeType": [
+        "Array",
+        "Function"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "disabled",
+      "label": "disabled",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "displayValue",
+      "label": "displayValue",
+      "tsType": "unknown",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "date",
+      "label": "date",
+      "tsType": "unknown[] | readonly unknown[] | undefined",
+      "runtimeType": "Array",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "source": "types"
+    },
+    {
+      "name": "month",
+      "label": "month",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "source": "types"
+    },
+    {
+      "name": "max",
+      "label": "max",
+      "tsType": "unknown",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "min",
+      "label": "min",
+      "tsType": "unknown",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "showAdjacentMonths",
+      "label": "showAdjacentMonths",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "year",
+      "label": "year",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "source": "types"
+    },
+    {
+      "name": "weekdays",
+      "label": "weekdays",
+      "tsType": "number[] | undefined",
+      "runtimeType": "Array",
+      "required": false,
+      "hasFactoryDefault": true,
+      "control": "json",
+      "source": "types"
+    },
+    {
+      "name": "weeksInMonth",
+      "label": "weeksInMonth",
+      "tsType": "\"static\" | \"dynamic\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "dynamic",
+      "hasFactoryDefault": false,
+      "options": [
+        "static",
+        "dynamic"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "firstDayOfWeek",
+      "label": "firstDayOfWeek",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "source": "types"
+    }
+  ],
+  "events": [
+    {
+      "name": "update:date",
+      "label": "update:date",
+      "payloadType": "[value: unknown[] | readonly unknown[]]",
+      "source": "types"
+    }
+  ],
+  "slots": [
+    {
+      "name": "days",
+      "label": "days",
+      "slotPropsType": "IDatePickerMonthDaySlot",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

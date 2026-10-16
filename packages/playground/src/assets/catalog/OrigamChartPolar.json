@@ -1,0 +1,907 @@
+{
+  "name": "OrigamChartPolar",
+  "tag": "origam-chart-polar",
+  "family": "Chart",
+  "label": "ChartPolar",
+  "props": [
+    {
+      "name": "type",
+      "label": "type",
+      "tsType": "\"pie\" | \"donut\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "pie",
+      "hasFactoryDefault": false,
+      "options": [
+        "pie",
+        "donut"
+      ],
+      "control": "select",
+      "description": "Polar visualisation primitive. Default `'pie'`.",
+      "source": "types"
+    },
+    {
+      "name": "donutHoleSize",
+      "label": "donutHoleSize",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "defaultValue": 0.6,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Inner-radius proportion for `'donut'`. `0` collapses to a\npie, `1` to a zero-thickness ring. Ignored when\n`type='pie'`. Default `0.6`.",
+      "source": "types"
+    },
+    {
+      "name": "showTooltip",
+      "label": "showTooltip",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Toggle the hover tooltip. Default `true`.",
+      "source": "types"
+    },
+    {
+      "name": "xAxisFormat",
+      "label": "xAxisFormat",
+      "tsType": "((value: string | number) => string) | undefined",
+      "runtimeType": "Function",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Formatter applied to the tooltip X label. Pie tooltips\nshow the category name + value.",
+      "source": "types"
+    },
+    {
+      "name": "yAxisFormat",
+      "label": "yAxisFormat",
+      "tsType": "((value: number) => string) | undefined",
+      "runtimeType": "Function",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Formatter applied to the tooltip Y value.",
+      "source": "types"
+    },
+    {
+      "name": "drilldown",
+      "label": "drilldown",
+      "tsType": "IChartDrilldownProps | undefined",
+      "runtimeType": "Object",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "description": "Drilldown configuration. When provided, data points that carry\nan `IChartDrilldownLink` in their object-form entry trigger a\nchart-level navigation instead of (or alongside) `point-click`.\nA breadcrumb `<nav>` appears above the chart when depth > 1.",
+      "source": "types"
+    },
+    {
+      "name": "series",
+      "label": "series",
+      "tsType": "IChartSeries[]",
+      "runtimeType": "Array",
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "description": "Data series — one or more. Empty array renders the `#empty` slot.",
+      "source": "types"
+    },
+    {
+      "name": "categories",
+      "label": "categories",
+      "tsType": "string[] | undefined",
+      "runtimeType": "Array",
+      "required": false,
+      "hasFactoryDefault": true,
+      "control": "json",
+      "description": "X axis labels (for line/area/bar/column/radar). Length should\nmatch the longest series; missing entries fall back to the\nnumeric index. Ignored for pie / donut / scatter.",
+      "source": "types"
+    },
+    {
+      "name": "title",
+      "label": "title",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Optional title rendered above the plotting area.",
+      "source": "types"
+    },
+    {
+      "name": "subtitle",
+      "label": "subtitle",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Optional subtitle rendered below the title.",
+      "source": "types"
+    },
+    {
+      "name": "showLegend",
+      "label": "showLegend",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Toggle the legend block. Default `true`.\n\n⛔ #545 — has **no effect** on `OrigamChartGauge`: a gauge is a\nsingle-value visualisation (only `series[0].data[0]` is read, extra\nseries are ignored) with no legend markup in its template at all.\nPassing it warns once in dev builds (see `useUnsupportedProp`)\ninstead of silently doing nothing — same treatment as `colorScheme`\non Bullet/Candlestick/Heatmap/Map (#426).",
+      "source": "types"
+    },
+    {
+      "name": "legendPosition",
+      "label": "legendPosition",
+      "tsType": "TDirectionBoth | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "bottom",
+      "hasFactoryDefault": false,
+      "options": [
+        "top",
+        "bottom",
+        "left",
+        "right"
+      ],
+      "control": "select",
+      "description": "Anchor of the legend block. Default `'bottom'`.\n\n⛔ #545 — has **no effect** on `OrigamChartGauge`, for the same\nreason as `showLegend` just above: no legend exists to anchor.",
+      "source": "alias"
+    },
+    {
+      "name": "animated",
+      "label": "animated",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Animate paths / bars / slices on first paint and on data\nchanges. Respects `prefers-reduced-motion`. Default `true`.",
+      "source": "types"
+    },
+    {
+      "name": "animationDuration",
+      "label": "animationDuration",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "defaultValue": 600,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Animation duration in ms. Default `600`.",
+      "source": "types"
+    },
+    {
+      "name": "colorScheme",
+      "label": "colorScheme",
+      "tsType": "string[] | undefined",
+      "runtimeType": "Array",
+      "required": false,
+      "hasFactoryDefault": true,
+      "control": "json",
+      "description": "Palette used when a series does not pin its own `color`.\nPass intent strings (cycled in order) or raw CSS colours.\nDefault cycles through the 8 origam intents.\n\n⛔ #426 — has **no effect** on `OrigamChartBullet`,\n`OrigamChartCandlestick`, `OrigamChartHeatmap`, `OrigamChartMap`:\neach has its own colour model (uniform fill + range palette,\nbinary bullish/bearish, or continuous gradient) with no\nper-series identity axis for a rotating palette to drive.\nPassing it on those four warns once in dev builds (see\n`useUnsupportedProp`) instead of silently doing nothing.",
+      "source": "types"
+    },
+    {
+      "name": "aspectRatio",
+      "label": "aspectRatio",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "CSS `aspect-ratio` shortcut (`'16/9'`, `'4/3'`, `'1/1'`…). When\nset, overrides `height` and lets the chart breathe with the\ncontainer width.",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "height",
+      "label": "height",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "defaultValue": 300,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "maxHeight",
+      "label": "maxHeight",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "maxWidth",
+      "label": "maxWidth",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "minHeight",
+      "label": "minHeight",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "minWidth",
+      "label": "minWidth",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "width",
+      "label": "width",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "margin",
+      "label": "margin",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\ndesign rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n`--marged` class.",
+      "source": "types"
+    },
+    {
+      "name": "marginTop",
+      "label": "marginTop",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `margin` and `marginBlock` for the top edge.",
+      "source": "types"
+    },
+    {
+      "name": "marginLeft",
+      "label": "marginLeft",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `margin` and `marginInline` for the left edge.",
+      "source": "types"
+    },
+    {
+      "name": "marginBottom",
+      "label": "marginBottom",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `margin` and `marginBlock` for the bottom edge.",
+      "source": "types"
+    },
+    {
+      "name": "marginRight",
+      "label": "marginRight",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `margin` and `marginInline` for the right edge.",
+      "source": "types"
+    },
+    {
+      "name": "marginBlock",
+      "label": "marginBlock",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Top + bottom. Overrides `margin`; beaten by `marginTop` / `marginBottom`.",
+      "source": "types"
+    },
+    {
+      "name": "marginInline",
+      "label": "marginInline",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Left + right. Overrides `margin`; beaten by `marginLeft` / `marginRight`.",
+      "source": "types"
+    },
+    {
+      "name": "marginInlineStart",
+      "label": "marginInlineStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nLogical per-side margin — rung 3 (issue #1013)",
+      "source": "types"
+    },
+    {
+      "name": "marginInlineEnd",
+      "label": "marginInlineEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "marginBlockStart",
+      "label": "marginBlockStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "marginBlockEnd",
+      "label": "marginBlockEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "padding",
+      "label": "padding",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Global shorthand. `16` → `16px`; `\"4\"` → the `--origam-space---4`\ndesign rung; `\"8px 16px\"` → block / inline; `true` → the legacy\n`--padded` class.",
+      "source": "types"
+    },
+    {
+      "name": "paddingTop",
+      "label": "paddingTop",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `padding` and `paddingBlock` for the top edge.",
+      "source": "types"
+    },
+    {
+      "name": "paddingLeft",
+      "label": "paddingLeft",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `padding` and `paddingInline` for the left edge.",
+      "source": "types"
+    },
+    {
+      "name": "paddingBottom",
+      "label": "paddingBottom",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `padding` and `paddingBlock` for the bottom edge.",
+      "source": "types"
+    },
+    {
+      "name": "paddingRight",
+      "label": "paddingRight",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Overrides `padding` and `paddingInline` for the right edge.",
+      "source": "types"
+    },
+    {
+      "name": "paddingBlock",
+      "label": "paddingBlock",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Top + bottom. Overrides `padding`; beaten by `paddingTop` / `paddingBottom`.",
+      "source": "types"
+    },
+    {
+      "name": "paddingInline",
+      "label": "paddingInline",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Left + right. Overrides `padding`; beaten by `paddingLeft` / `paddingRight`.",
+      "source": "types"
+    },
+    {
+      "name": "paddingInlineStart",
+      "label": "paddingInlineStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nLogical per-side padding — rung 3 (issue #1013)",
+      "source": "types"
+    },
+    {
+      "name": "paddingInlineEnd",
+      "label": "paddingInlineEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "paddingBlockStart",
+      "label": "paddingBlockStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "paddingBlockEnd",
+      "label": "paddingBlockEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "rounded",
+      "label": "rounded",
+      "tsType": "string | number | boolean | null | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Corner-radius selector. Three modes:\n - **named variant** (`'small' | 'default' | 'large' | …`,\n   cf. `ROUNDED` enum) → emits `--rounded-{name}` class so the\n   component's SCSS can pick the right token rung.\n - **boolean `true`** (or empty string `''`) → emits the legacy\n   `--rounded` class for components that only have a single rounded\n   state (e.g. `OrigamBtn` defaulting to `radius.2xl`).\n - **CSS value** (`'4px'`, `'4px 0 4px 0'`, `100`) → emits inline\n   `border-radius` declarations via `useRounded.roundedStyles`.",
+      "source": "types"
+    },
+    {
+      "name": "roundedTopRight",
+      "label": "roundedTopRight",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Top-right corner only. Takes the same vocabulary as `rounded`\n(`8`, `'8px'`, `'md'`, `'large'`, `'var(…)'`), minus `shaped` /\n`shaped-invert` which are asymmetric by definition.",
+      "source": "types"
+    },
+    {
+      "name": "roundedTopLeft",
+      "label": "roundedTopLeft",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Top-left corner only. Same vocabulary as `roundedTopRight`.",
+      "source": "types"
+    },
+    {
+      "name": "roundedBottomLeft",
+      "label": "roundedBottomLeft",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Bottom-left corner only. Same vocabulary as `roundedTopRight`.",
+      "source": "types"
+    },
+    {
+      "name": "roundedBottomRight",
+      "label": "roundedBottomRight",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Bottom-right corner only. Same vocabulary as `roundedTopRight`.",
+      "source": "types"
+    },
+    {
+      "name": "roundedStartStart",
+      "label": "roundedStartStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nLogical per-corner radius — rung 2 (issue #1013)",
+      "source": "types"
+    },
+    {
+      "name": "roundedStartEnd",
+      "label": "roundedStartEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "roundedEndStart",
+      "label": "roundedEndStart",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "roundedEndEnd",
+      "label": "roundedEndEnd",
+      "tsType": "string | number | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "elevation",
+      "label": "elevation",
+      "tsType": "TElevation | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "bgColor",
+      "label": "bgColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "fontSize",
+      "label": "fontSize",
+      "tsType": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"5xl\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "2xl",
+        "3xl",
+        "4xl",
+        "5xl"
+      ],
+      "control": "select",
+      "description": "Font size token. Maps to `--origam-font__size---{fontSize}`\n(xs · sm · md · lg · xl · 2xl · 3xl · 4xl · 5xl).\nWhen unset, the component keeps its theme / density font-size.",
+      "source": "types"
+    },
+    {
+      "name": "fontWeight",
+      "label": "fontWeight",
+      "tsType": "\"regular\" | \"medium\" | \"semibold\" | \"bold\" | \"extrabold\" | \"black\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "regular",
+        "medium",
+        "semibold",
+        "bold",
+        "extrabold",
+        "black"
+      ],
+      "control": "select",
+      "description": "Font weight token. Maps to `--origam-font__weight---{fontWeight}`\n(regular 400 · medium 500 · semibold 600 · bold 700 · extrabold 800 · black 900).\nWhen unset, the component keeps its theme font-weight.",
+      "source": "types"
+    }
+  ],
+  "events": [
+    {
+      "name": "point-click",
+      "label": "point-click",
+      "payloadType": "[point: IChartPoint, originalEvent: MouseEvent | KeyboardEvent]",
+      "source": "types"
+    },
+    {
+      "name": "legend-click",
+      "label": "legend-click",
+      "payloadType": "[series: IChartSeries, index: number]",
+      "source": "types"
+    },
+    {
+      "name": "series-toggle",
+      "label": "series-toggle",
+      "payloadType": "[series: IChartSeries, visible: boolean]",
+      "source": "types"
+    },
+    {
+      "name": "drill-up",
+      "label": "drill-up",
+      "payloadType": "[]",
+      "source": "types"
+    },
+    {
+      "name": "drill",
+      "label": "drill",
+      "payloadType": "[link: IChartDrilldownLink, point: IChartPoint]",
+      "source": "types"
+    }
+  ],
+  "slots": [
+    {
+      "name": "tooltip",
+      "label": "tooltip",
+      "slotPropsType": "any",
+      "description": "Replace the default tooltip body.\nSub-chart interfaces extend this with a narrower binding signature;\nthe parameter is typed `any` here so those overrides satisfy the\nTypeScript function-parameter assignability check (TS2430).",
+      "source": "types"
+    },
+    {
+      "name": "legend-item",
+      "label": "legend-item",
+      "slotPropsType": "{ series: IChartSeries; index: number; visible: boolean; }",
+      "description": "Replace one legend entry.",
+      "source": "types"
+    },
+    {
+      "name": "title",
+      "label": "title",
+      "slotPropsType": "any",
+      "description": "Replace the title block (title + subtitle).",
+      "source": "types"
+    },
+    {
+      "name": "empty",
+      "label": "empty",
+      "slotPropsType": "any",
+      "description": "Render when `series` is empty / every series is hidden.",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}
