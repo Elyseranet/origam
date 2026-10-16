@@ -112,12 +112,20 @@
      ********************************************************/
     const query = ref('')
 
+    /*
+     * ⛔ A component that `requiresParent` is not offered as a ROOT: it throws
+     * or renders nothing on its own (`IComponentDefinition.requiresParent`).
+     * It stays in the catalogue — the inspector needs its definition — and is
+     * reached as a child, from the scene tree's "Add child" on its parent.
+     */
+    const rootable = computed<IComponentDefinition[]>(() => props.components.filter(definition => !definition.requiresParent))
+
     const filtered = computed<IComponentDefinition[]>(() => {
         const needle = query.value.trim().toLowerCase()
 
-        if (!needle) return props.components
+        if (!needle) return rootable.value
 
-        return props.components.filter(definition => definition.name.toLowerCase().includes(needle) || definition.label.toLowerCase().includes(needle))
+        return rootable.value.filter(definition => definition.name.toLowerCase().includes(needle) || definition.label.toLowerCase().includes(needle))
     })
 
     /*********************************************************
@@ -126,7 +134,7 @@
     const title = computed(() => t('playground.drawer.title', 'Component catalog'))
     const closeLabel = computed(() => t('playground.drawer.close', 'Close the catalog'))
     const searchLabel = computed(() => t('playground.drawer.search_label', 'Search a component by name'))
-    const searchPlaceholder = computed(() => t('playground.drawer.search_placeholder', 'Search among {count} components…', { count: props.components.length }))
+    const searchPlaceholder = computed(() => t('playground.drawer.search_placeholder', 'Search among {count} components…', { count: rootable.value.length }))
     const emptyMessage = computed(() => t('playground.drawer.empty', 'No component matches {query}.', { query: query.value }))
 
     const propsCountLabel = (definition: IComponentDefinition) => t('playground.drawer.props_count', '{count} props', { count: definition.props.length })

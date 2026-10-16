@@ -8,3 +8,6 @@ export { default as PlaygroundPropRow } from './Playground/PlaygroundPropRow.vue
 export { default as PlaygroundTopbar } from './Playground/PlaygroundTopbar.vue'
 export { default as PlaygroundEventLog } from './Playground/PlaygroundEventLog.vue'
 export { default as PlaygroundPropControl } from './Playground/PlaygroundPropControl.vue'
+export { default as PlaygroundSceneNode } from './Playground/PlaygroundSceneNode.vue'
+export { default as PlaygroundSceneTree } from './Playground/PlaygroundSceneTree.vue'
+export { default as PlaygroundSnippets } from './Playground/PlaygroundSnippets.vue'

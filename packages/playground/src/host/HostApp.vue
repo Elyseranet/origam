@@ -29,6 +29,8 @@
     import { useComponentRegistry } from '../composables/Registry/registry.composable'
     import { useT } from '../composables/I18n/useT'
     import { createEmptyScene } from '../consts/Commons/scene.const'
+    import { createDefaultSnippets, SNIPPET_PARENT_OF } from '../consts/Commons/snippets.const'
+    import { attachSnippets } from '../utils/Commons/scene-instance.util'
     import { HOST_CATALOG_SEED } from './catalogSeed.const'
     import type { IPlaygroundScene } from '../interfaces/Scene/playground-scene.interface'
 
@@ -79,11 +81,17 @@
      * `OrigamSelect`, … in the same resolved module regardless of which
      * family key triggered the load.
      ********************************************************/
-    const families = [...new Set(HOST_CATALOG_SEED.map(definition => definition.family))]
+    /*
+     * The seed is GENERATED from metadata, which measures neither snippets nor
+     * `requiresParent` (#1048 § 3.4): both are authored, and merged here.
+     */
+    const definitions = attachSnippets(HOST_CATALOG_SEED, createDefaultSnippets(t), SNIPPET_PARENT_OF)
+
+    const families = [...new Set(definitions.map(definition => definition.family))]
     const sharedLoader = () => import('origam/components')
     const loaders = Object.fromEntries(families.map(family => [family, sharedLoader]))
 
-    const registry = useComponentRegistry({ definitions: HOST_CATALOG_SEED, loaders })
+    const registry = useComponentRegistry({ definitions, loaders })
 
     /*********************************************************
      * Scene

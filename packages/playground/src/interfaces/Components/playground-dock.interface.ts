@@ -9,6 +9,8 @@
 export interface IPlaygroundDockSlots {
     /** The "Code" panel — the scene rendered as a Vue template. */
     code?: () => unknown
+    /** The snippets of the scene's root component (`PlaygroundSnippets`, lot D). */
+    snippets?: () => unknown
     /** The emits log of the rendered instance (`PlaygroundEventLog`). */
     events?: () => unknown
 }

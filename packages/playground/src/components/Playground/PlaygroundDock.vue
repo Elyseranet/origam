@@ -21,6 +21,7 @@
                 data-cy="playground-dock-body"
         >
             <slot name="code"/>
+            <slot name="snippets"/>
             <slot name="events"/>
         </div>
     </section>

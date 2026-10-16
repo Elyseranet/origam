@@ -6,9 +6,10 @@
 // `TU/playground/scene-code.util.spec.ts` — not repeated here.
 //
 // The scene is driven through the UI (catalog → select), because the
-// standalone host owns its scene and exposes no other entry point. Until
-// lot B ships editable controls a selected instance carries no prop, so the
-// expected code is the bare tag.
+// standalone host owns its scene and exposes no other entry point. Since lot D
+// (#1144) picking a component loads its DEFAULT snippet: OrigamBtn arrives
+// with `text="Button"` (its accessible name), OrigamChip has no snippet and
+// stays a bare tag.
 
 import { expect, test } from '@playwright/test'
 
@@ -34,7 +35,7 @@ test.describe('playground — Code panel', () => {
 
         const code = page.locator('[data-cy="playground-code"] code')
 
-        await expect(code).toHaveText('<origam-btn/>')
+        await expect(code).toHaveText('<origam-btn text="Button"/>')
         await expect(page.locator('[data-cy="playground-code-empty"]')).toHaveCount(0)
 
         // The panel follows the scene: picking another component replaces the code.
@@ -62,7 +63,7 @@ test.describe('playground — Code panel', () => {
 
         await page.keyboard.press('Enter')
 
-        await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe('<origam-btn/>')
+        await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe('<origam-btn text="Button"/>')
         await expect(copy).toHaveAttribute('aria-label', 'Code copied to clipboard')
     })
 

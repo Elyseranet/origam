@@ -1,5 +1,5 @@
 <template>
-    <main
+    <section
             id="playground-preview"
             class="pg-preview"
             :aria-label="ariaLabel"
@@ -7,11 +7,11 @@
     >
         <slot
                 name="preview-surround"
-                :instance="instance"
+                :instance="selectedInstance"
         >
             <div class="pg-preview__stage">
                 <p
-                        v-if="!instance"
+                        v-if="isEmpty"
                         class="pg-preview__empty"
                         data-cy="playground-preview-empty"
                 >
@@ -19,37 +19,34 @@
                     <span>{{ emptyBody }}</span>
                 </p>
 
-                <p
-                        v-else-if="error"
-                        class="pg-preview__error"
-                        data-cy="playground-preview-error"
-                        role="alert"
-                >
-                    <strong>{{ errorTitle }}</strong>
-                    <span>{{ errorBody }}</span>
-                </p>
-
-                <component
-                        :is="resolved"
-                        v-else-if="resolved"
-                        v-bind="instance.props"
-                        data-cy="playground-preview-instance"
-                        v-on="emitListeners"
-                />
+                <template v-else>
+                    <div
+                            v-for="root in roots"
+                            :key="root.id"
+                            class="pg-preview__root"
+                    >
+                        <playground-scene-node
+                                :instance="root"
+                                :registry="registry"
+                                @instance-emit="handleInstanceEmit"
+                        />
+                    </div>
+                </template>
             </div>
         </slot>
 
         <p class="pg-preview__foot">
             {{ summaryLabel }}
         </p>
-    </main>
+    </section>
 </template>
 
 <script setup lang="ts">
-    import { computed, shallowRef, watch } from 'vue'
+    import { computed } from 'vue'
+    import PlaygroundSceneNode from './PlaygroundSceneNode.vue'
     import { useT } from '../../composables/I18n/useT'
+    import { countInstances } from '../../utils/Commons/scene-instance.util'
     import type { IPlaygroundPreviewEmits, IPlaygroundPreviewProps, IPlaygroundPreviewSlots } from '../../interfaces/Components/playground-preview.interface'
-    import type { TComponentResolution } from '../../types/Commons/prop-value.type'
 
     /*********************************************************
      * Global
@@ -63,66 +60,48 @@
     const { t } = useT()
 
     /*********************************************************
-     * Emits relay
+     * Scene
      *
      * @description
-     * One listener per emit the definition declares (`IEventDefinition`,
-     * source B merged with A), each relaying the raw arguments up as
-     * `instance-emit`. Built from the metadata rather than by catching
-     * everything: an undeclared native event (a Btn's `click` falling
-     * through as an attribute) is not an emit of the component and is not
-     * reported as one.
-     ********************************************************/
-    const emitListeners = computed<Record<string, (...args: unknown[]) => void>>(() => {
-        const instance = props.instance
-
-        if (!instance) return {}
-
-        const events = props.registry.getComponentMetadata(instance.componentName)?.events ?? []
-
-        return Object.fromEntries(events.map(event => [event.name, (...args: unknown[]) => emits('instance-emit', instance.id, event.name, args)]))
-    })
-
-    /*********************************************************
-     * Resolution
+     * Each root sits in its own BLOCK wrapper, full stage width: a root is
+     * laid out the way a page lays it out. Centering every root as a flex
+     * item (lot 2) shrank it to its content, which is harmless for a Btn and
+     * fatal for a Window — measured, its three slides collapsed to the width
+     * of "Slide 1" with both arrows painted over the text.
      *
      * @description
-     * `getComponent` is async (it may fetch a chunk) — resolved here per
-     * instance change, never cached locally: the registry already caches by
-     * name (`registry.composable.ts`), so a second render of the same
-     * component is a cache hit, not a second network request.
+     * Lot D (#1144): the preview renders EVERY root of the scene, each with
+     * its subtree, through `PlaygroundSceneNode` — resolution, emit relay
+     * and render-error containment live there, once per instance. Before
+     * this lot it rendered only the selected instance, which is why
+     * `children` existed in the model and never on screen.
      ********************************************************/
-    const resolved = shallowRef<TComponentResolution>(null)
-    const error = shallowRef<string | null>(null)
+    const roots = computed(() => props.scene.roots)
+    const isEmpty = computed(() => roots.value.length === 0)
 
-    watch(() => props.instance?.componentName, async name => {
-        resolved.value = null
-        error.value = null
-
-        if (!name) return
-
-        try {
-            resolved.value = await props.registry.getComponent(name)
-            if (!resolved.value) error.value = t('playground.preview.component_not_found', 'component not registered')
-        } catch (cause) {
-            error.value = cause instanceof Error ? cause.message : String(cause)
-        }
-    }, { immediate: true })
+    const handleInstanceEmit = (instanceId: string, name: string, args: unknown[]) => {
+        emits('instance-emit', instanceId, name, args)
+    }
 
     /*********************************************************
      * Labels
+     *
+     * @description
+     * The root is a labelled `<section>` (a `region` landmark), not a
+     * `<main>`: the playground is an EMBEDDABLE component (README), so its
+     * host owns the page's `main` — the standalone host's `<main class="host">`
+     * today, `packages/marketing`'s `<origam-main>` tomorrow. A `<main>` here
+     * made axe-core report `landmark-no-duplicate-main` and
+     * `landmark-main-is-top-level` on every scene (measured, lot D).
      ********************************************************/
-    const ariaLabel = computed(() => t('playground.preview.no_selection_title', 'No component selected'))
+    const ariaLabel = computed(() => (isEmpty.value
+        ? t('playground.preview.no_selection_title', 'No component selected')
+        : t('playground.preview.aria_label', 'Preview')))
     const emptyTitle = computed(() => t('playground.preview.no_selection_title', 'No component selected'))
     const emptyBody = computed(() => t('playground.preview.no_selection_body', 'Open the catalog to pick a component to render.'))
-    const errorTitle = computed(() => t('playground.preview.error_title', 'Render error'))
-    const errorBody = computed(() => t('playground.preview.error_body', '{name} could not be loaded: {error}', {
-        name: props.instance?.componentName ?? '',
-        error: error.value ?? ''
-    }))
-    const summaryLabel = computed(() => (props.instance
-        ? t('playground.preview.instance_summary', '{name} · 1 instance', { name: props.instance.componentName })
-        : ''))
+    const summaryLabel = computed(() => (isEmpty.value
+        ? ''
+        : t('playground.preview.scene_summary', '{roots} root(s) · {count} instance(s)', { roots: roots.value.length, count: countInstances(roots.value) })))
 
     /*********************************************************
      * Expose
@@ -140,13 +119,20 @@
         &__stage {
             flex: 1 1 auto;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-direction: column;
+            justify-content: safe center;
+            gap: var(--pg-preview__stage---gap, 16px);
+            min-height: 0;
+            overflow: auto;
             padding: var(--pg-preview__stage---padding, 24px);
         }
 
-        &__empty,
-        &__error {
+        &__root {
+            min-width: 0;
+        }
+
+        &__empty {
+            align-self: center;
             display: flex;
             flex-direction: column;
             gap: 4px;
@@ -168,6 +154,7 @@
 <style>
     :root {
         --pg-preview__stage---padding: 24px;
+        --pg-preview__stage---gap: 16px;
         --pg-preview__foot---border-color: #e5e5e5;
     }
 </style>

@@ -4,8 +4,8 @@ Private package (`private: true`, `0.x` independent, never published — the
 monorepo's only npm publish remains `packages/ds`).
 
 It will eventually replace `packages/stories` (Histoire). **Nothing has been
-removed**: lot 1 is foundation and proof only, and there is deliberately no UI
-and no component export yet.
+removed** from Histoire. Lots A–D (#1141–#1144) ship the embeddable component:
+inspector, editable controls, Code panel, events log, scene tree and snippets.
 
 ## What it will be
 
@@ -193,3 +193,37 @@ E2E against the standalone host:
 E2E_PLAYGROUND_PORT=<free port> pnpm -F @origam/tests test:e2e:playground
 ```
 
+
+## Scene tree and snippets (lot D, #1144)
+
+The preview renders **every root** of the scene, each with its `children`, through
+`PlaygroundSceneNode` (one node per instance: lazy resolution, emit relay, and an
+`onErrorCaptured` boundary so one instance that cannot render — a sub-component
+outside its parent — does not blank the whole playground). `slotContent` is
+rendered as text, never `v-html`: a scene is serialisable and may come from a URL.
+
+- **Scene tree** (`PlaygroundSceneTree`, top of the inspector column):
+  `OrigamTreeview`, keyboard-operable (Tab, Arrow keys, Enter / Space). Node ids
+  are instance ids, so selecting a row sets `scene.selectedInstanceId` and the
+  inspector opens that instance's props. A child in a named slot is labelled with
+  it (`Btn — Edit (#item.actions)`).
+- **Add / remove** a child: offered on an instance whose definition declares a
+  `default` slot (source B). Writes go through `useSceneEditor`
+  (`selectInstance`, `addChild`, `removeInstance`, `loadSnippet`); ids are never
+  positional — siblings keep theirs across an add or a remove.
+- **Snippets** (`consts/Commons/snippets.const.ts`): `createDefaultSnippets(t)`
+  returns instance TREES (never strings), every demo text through `t()`. The
+  first snippet of a component is its default: picking it in the catalogue loads
+  it. The dock's Snippets panel lists the snippets of the root being edited.
+  `instantiateSnippet` re-identifies every instance on load.
+- ⛔ **`requiresParent` is AUTHORED** (`SNIPPET_PARENT_OF`), because no source
+  derives it (#1048 § 3.4). `attachSnippets(definitions, snippets, parentOf)`
+  merges both into the extracted definitions — the host does it, the generated
+  seed carries neither. A component that requires a parent is hidden from the
+  catalogue drawer and offered as a child of its family instead.
+- `meta:host-seed` now emits **slots** (source B) and covers the families that
+  render empty: DataTable, Chart, Tabs/Tab, Window/WindowItem, List/ListItem.
+
+Every snippet prop is checked against the extracted catalogue by
+`packages/tests/TU/playground/scene-tree.spec.ts` — a snippet that invents a prop
+fails there.
