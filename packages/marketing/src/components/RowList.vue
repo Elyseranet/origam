@@ -27,11 +27,16 @@
                   cols="auto"
                 >
                   <div class="prop-list__name-btn">
-                    <span class="prop-list__name-mono">{{ view.item.label }}</span>
+                    <span class="prop-list__name-mono">
+                      <slot
+                        name="name"
+                        v-bind="{ label: view.item.label, item: view.item }"
+                      >{{ view.item.label }}</slot>
+                    </span>
                     <origam-clipboard
                       size="x-small"
                       elevation="0"
-                      :value="view.item.label"
+                      :value="view.copyValue"
                       class="prop-list__copy-icon"
                       :aria-label="`${t('reference.row_list.copy_label', 'Copy')} ${view.item.label}`"
                     />
@@ -139,6 +144,7 @@
       typeSlug: isTypeRef ? (item.type as { slug: string }).slug : '',
       typeKind: isTypeRef ? (item.type as { kind: string }).kind : 'primitive',
       dataCy: `${props.rowPrefix}-${suffix}`,
+      copyValue: props.copyValue ? props.copyValue(item) : item.label,
     }
   }))
 

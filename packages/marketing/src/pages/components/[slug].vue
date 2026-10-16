@@ -334,21 +334,9 @@
               <row-list
                 :items="displayDoc?.props ?? []"
                 row-prefix="prop-row"
+                :copy-value="propCopyAttr"
                 data-cy="component-props-table"
-              >
-                <template #title="{ item }">
-                  <div class="prop-list__name-btn">
-                    <span class="prop-list__name-mono">{{ item.label }}</span>
-                    <origam-clipboard
-                      size="x-small"
-                      elevation="0"
-                      :value="propCopyAttr(item.label, isTypeRefOf(item.type) ? item.type.label : String(item.type ?? ''))"
-                      class="prop-list__copy-icon"
-                      :aria-label="`Copy ${item.label} attribute`"
-                    />
-                  </div>
-                </template>
-              </row-list>
+              />
             </section>
 
             <section
@@ -1132,6 +1120,7 @@
   import { useCopy } from '~/composables/useCopy'
   import { useReferenceDoc } from '~/composables/useApiReference'
   import { previewAdapterFor, previewSlotTextFor, previewUnavailableReasonFor } from '~/utils/component-preview.util'
+  import { propCopyAttr } from '~/utils/reference-row.util'
   import type { IComponentDoc } from '~/interfaces/components-catalog.interface'
   import type { IReferenceRow } from '~/interfaces/reference-row.interface'
 
@@ -1139,17 +1128,7 @@
   const route = useRoute()
   const { copy: copyText, copied: importCopied } = useCopy()
 
-  /* Génère l'attribut Vue prêt à coller pour une prop :
-     - booléen → "disabled"  (présence = true)
-     - sinon   → ":prop-name="""  (binding avec valeur vide)
-  */
-  const propCopyAttr = (name: string, typeLabel: string): string => {
-    const kebab = name.replace(/([A-Z])/g, '-$1').toLowerCase()
-    const isBoolean = typeLabel === 'boolean' || typeLabel.startsWith('boolean ')
-    return isBoolean ? kebab : `:${ kebab }=""`
-  }
-
-  /** Narrows a row's `type` to the structured chip+link shape, for the props copy-attr helper above. */
+  /** Narrows a row's `type` to the structured chip+link shape, for the emits table. */
   function isTypeRefOf (type: IReferenceRow['type']): type is { label: string; slug: string; kind: 'primitive' | 'type' | 'enum' } {
     return !!type && typeof type === 'object'
   }

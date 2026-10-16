@@ -277,9 +277,7 @@
                 :aria-label="t('directives.detail.modifiers.table_caption', `${directiveName} modifiers`)"
                 :data-cy="`directive-modifiers-table-${slug}`"
               >
-                <template #title="{ label }">
-                  <span class="prop-list__name-mono">.{{ label }}</span>
-                </template>
+                <template #name="{ label }">.{{ label }}</template>
               </row-list>
             </section>
 
