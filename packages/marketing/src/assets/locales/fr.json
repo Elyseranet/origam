@@ -1154,6 +1154,8 @@
     "catalog_nav": {
         "family_menu_label": "Changer de famille — actuelle : {name}",
         "related_title": "Même sujet dans les autres familles",
+        "related_show_all": "Tout afficher ({count})",
+        "related_show_fewer": "Afficher moins",
         "prev_next_label": "Précédent et suivant dans cette famille",
         "previous": "Précédent",
         "next": "Suivant"
