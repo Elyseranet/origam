@@ -550,15 +550,25 @@
 		// Btn roots computed `display: block` with a `display: flex` parent,
 		// and the single Btn inside a `<p>` computed `inline` at 984px wide.
 		//
-		// `inline-block` is the value the rest of this rule already assumed —
-		// `vertical-align: middle` right below only has meaning on an
-		// inline-level box. It is also the safest: inside a flex/grid parent it
-		// blockifies to `block`, i.e. byte-for-byte today's computed value, so
-		// no existing layout moves. `&--block` still overrides it with `flex`.
-		display: inline-block;
-		// #1094 — inoperant tant que la racine est `inline-block` ; prend effet
-		// sur `&--block` (`display: flex`), ou `height: auto` + `min-height`
-		// laisseraient sinon le contenu colle en haut.
+		// The root must stay INLINE-LEVEL (#933) — `vertical-align: middle` right
+		// below only has meaning on an inline-level box, and a Btn in a `<p>`
+		// must shrink to its content. Inside a flex/grid parent it blockifies to
+		// `flex`; `&--block` declares `flex` explicitly.
+		//
+		// ⛔ #1168 — it is `inline-flex`, not `inline-block`. Since #1094 the
+		// height is `auto` + `min-height`, and `__loader`'s `height: 100%` no
+		// longer resolves against an auto height: on an `<a>` (`href` / `to`) the
+		// label sat at the TOP of the box — 12 px of content glued under the top
+		// edge of a 28 px button (published 2.29.1 → 2.32.1). A `<button>` hid
+		// it, because the UA centres a button's content on its own. A flex root
+		// centres `__loader` with `align-items: center` below, on every tag.
+		//
+		// `inline-flex` rather than `inline-grid`, measured: the ripple directive
+		// appends an in-flow `origam-ripple__container` to this root while the
+		// pointer is down. A grid root gives it an implicit row that takes half
+		// the free height, and the label jumps 4 px on every press; a flex row
+		// leaves the label where it is.
+		display: inline-flex;
 		align-items: center;
 
 		position: var(--origam-btn---position, relative);

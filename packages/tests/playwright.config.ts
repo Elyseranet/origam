@@ -304,6 +304,12 @@ const GREEN_SPECS = [
     // en colonne (`flex: 0 0 auto` + `width: 100%`). Rejouee contre `origin/develop` :
     // les 4 tests « [rouge avant] » rougissent, les 4 temoins restent verts.
     'btn-block-flex.spec.ts',
+    // #1168 — le libellé d'un `<a class="origam-btn">` était collé en haut de la
+    // boîte depuis #1094 (`height: auto` + `min-height`, racine `inline-block`).
+    // Rejouée contre le commit parent : les 2 tests « [rouge avant] » rougissent
+    // (35 `<a>` décentrés de 4 à 21 px), les 3 témoins restent verts des deux
+    // côtés. `E2E_STATIC=1`, chromium, port isolé.
+    'btn-vertical-center.spec.ts',
     // wave 15 — #934. Même raison. `.origam-list--nav` et
     // `.origam-list-item--nav` déclaraient `--origam-*---padding-inline`, un
     // nom que RIEN ne lit : les règles de base consomment les longhands

@@ -360,6 +360,13 @@ its content is taller than that minimum — typically a `wrap` label on two line
 - The vertical padding is read from `--origam-btn---padding-block` (declared as `0px`, so
   a button that does not set it does not move). Set it on the button or on an ancestor
   to give a wrapped label some air; it has no effect on `icon` buttons.
+- **The content is centred vertically inside that minimum, whatever the rendered tag.**
+  The root is `display: inline-flex` with `align-items: center` (and `flex` with `block`,
+  or once a flex/grid parent blockifies it). It stays inline-level, so a button inside a
+  plain paragraph keeps the width of its content. From 2.29.1 to 2.32.1, a button
+  rendered as an `<a>` (`href` / `to`) had its label stuck to the top of the box
+  (#1168); a native `<button>` hid the defect because the browser centres its content
+  itself.
 
 ```vue
 <template>
