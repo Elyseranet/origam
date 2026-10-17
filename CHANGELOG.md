@@ -18,6 +18,14 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed — `OrigamBtn` : libellé collé en haut au lieu d'être centré (#1168)
+
+Régression publiée de 2.29.1 à 2.32.1, introduite par #1094. La hauteur du bouton est devenue `height: auto` + `min-height`, et le `height: 100%` de la grille interne `.origam-btn__loader` ne se résolvait plus contre une hauteur automatique. La racine était `inline-block`, donc son `align-items: center` restait sans effet. Résultat : un bouton rendu en `<a>` (`href` / `to`) affichait son contenu d'une ligne collé en haut de la boîte. Mesuré en Chromium : écart de 4 à 21 px entre le centre du contenu et le centre du bouton, 35 boutons `<a>` d'une ligne décentrés sur les 40 de la matrice. Les 5 autres avaient une hauteur fixe (`icon`, prop `height`), étaient en `block` (déjà en flex), ou avaient un contenu aussi haut que le minimum (x-small compact). Un `<button>` natif masquait le défaut, puisque le navigateur centre lui-même son contenu.
+
+- La racine passe de `inline-block` à `inline-flex`, et son `align-items: center` prend enfin effet. Elle reste de niveau inline (#933). Dans un parent flex ou grid, elle est blockifiée en `flex` au lieu de `block`. `block` (`display: flex`, #1095) et `wrap` (le bouton grandit avec son contenu, #1094) sont inchangés.
+- `inline-flex` plutôt que `inline-grid`, d'après la mesure : la directive ripple ajoute un `origam-ripple__container` dans le flux pendant l'appui. Avec une racine en grille, ce conteneur prend une rangée implicite et le libellé saute de 4 px à chaque clic.
+- Effet de bord mesuré : les boutons perdent environ 1 px de largeur (0,9 à 1,6 px). Ce pixel venait du `letter-spacing` ajouté après la grille interne quand elle était posée dans une ligne inline. Le libellé est maintenant à égale distance des deux bords (12 px / 12 px au lieu de 13,1 px / 12 px). Aucune hauteur ne change.
+
 ## [2.32.1] - 2026-10-16
 
 ### Fixed — trois avertissements console en dev (#1152)
