@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.32.2] - 2026-10-17
+
 ### Fixed — `OrigamBtn` : libellé collé en haut au lieu d'être centré (#1168)
 
 Régression publiée de 2.29.1 à 2.32.1, introduite par #1094. La hauteur du bouton est devenue `height: auto` + `min-height`, et le `height: 100%` de la grille interne `.origam-btn__loader` ne se résolvait plus contre une hauteur automatique. La racine était `inline-block`, donc son `align-items: center` restait sans effet. Résultat : un bouton rendu en `<a>` (`href` / `to`) affichait son contenu d'une ligne collé en haut de la boîte. Mesuré en Chromium : écart de 4 à 21 px entre le centre du contenu et le centre du bouton, 35 boutons `<a>` d'une ligne décentrés sur les 40 de la matrice. Les 5 autres avaient une hauteur fixe (`icon`, prop `height`), étaient en `block` (déjà en flex), ou avaient un contenu aussi haut que le minimum (x-small compact). Un `<button>` natif masquait le défaut, puisque le navigateur centre lui-même son contenu.
