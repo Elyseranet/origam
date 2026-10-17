@@ -1,7 +1,7 @@
 {
   "kind": "composable",
-  "exportedAt": "2026-10-01T13:28:51.230Z",
-  "sourceCommit": "143d5904",
+  "exportedAt": "2026-10-17T13:09:46.648Z",
+  "sourceCommit": "4c6da829b",
   "entryCount": 145,
   "entries": [
     {
@@ -3811,7 +3811,7 @@
       "params": [
         {
           "name": "el",
-          "type": "HTMLElement | undefined",
+          "type": "MaybeRef<HTMLElement | undefined>",
           "required": true,
           "default_value": null,
           "position": 0,
@@ -3829,7 +3829,7 @@
         },
         {
           "name": "min",
-          "type": "number",
+          "type": "MaybeRefOrGetter<number>",
           "required": true,
           "default_value": null,
           "position": 2,
@@ -3838,7 +3838,7 @@
         },
         {
           "name": "max",
-          "type": "number",
+          "type": "MaybeRefOrGetter<number>",
           "required": true,
           "default_value": null,
           "position": 3,
@@ -13895,7 +13895,7 @@
       "params": [
         {
           "name": "props",
-          "type": "IVariantProps | Ref<TVariant | TVariantInput | string | undefined>",
+          "type": "{ variant?: string } | Ref<string | undefined>",
           "required": true,
           "default_value": null,
           "position": 0,
