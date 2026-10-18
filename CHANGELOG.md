@@ -18,6 +18,14 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.34.0] - 2026-10-19
+
+### Added — `OrigamCommandPalette` : prop `filter` pour afficher des résultats classés en externe (#1184)
+
+- Nouvelle prop `filter` : `true` (défaut, comportement inchangé : correspondance floue intégrée et tri par score), `false` (les `commands` sont affichées telles quelles, dans l'ordre fourni) ou une fonction `(commands, query) => commands` dont le résultat est affiché dans son ordre.
+- Destinée à la recherche serveur ou plein texte alimentée par l'événement `query` : un résultat trouvé dans le corps d'un document n'est plus masqué parce que la requête n'est pas une sous-séquence de son libellé, et le classement du moteur est conservé.
+- Avec `filter=false` ou une fonction, une liste `commands` vide reste vide : elle ne retombe plus sur le registre `useCommand()` (le repli est conservé avec `filter=true`).
+
 ## [2.33.0] - 2026-10-18
 
 ### Added — `OrigamCommandPalette` : icônes de recherche et de chargement personnalisables (#1183)
