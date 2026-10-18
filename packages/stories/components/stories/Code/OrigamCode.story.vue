@@ -91,7 +91,10 @@
 					format: false,
 					filename: 'App.ts',
 					tag: 'figure',
-					maxHeight: undefined
+					maxHeight: undefined,
+					hideHeader: false,
+					flat: false,
+					scrollerAriaLabel: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -105,6 +108,9 @@
 						:filename="state.filename"
 						:tag="state.tag"
 						:max-height="state.maxHeight"
+						:hide-header="state.hideHeader"
+						:flat="state.flat"
+						:scroller-aria-label="state.scrollerAriaLabel"
 						:code="tenLineSnippet"
 				/>
 			</template>
@@ -114,6 +120,11 @@
 					<HstCheckbox v-model="state.copyable"    title="Copyable"/>
 					<HstCheckbox v-model="state.wrap"        title="Wrap"/>
 					<HstCheckbox v-model="state.format"      title="Format (v3 stub)"/>
+				</StoryGroup>
+				<StoryGroup title="Embedding">
+					<HstCheckbox v-model="state.hideHeader" title="Hide Header"/>
+					<HstCheckbox v-model="state.flat"       title="Flat"/>
+					<HstText     v-model="state.scrollerAriaLabel" title="Scroller Aria Label"/>
 				</StoryGroup>
 				<StoryGroup title="Content">
 					<HstSelect v-model="state.lang"     title="Lang"     :options="CODE_LANG_OPTIONS"/>

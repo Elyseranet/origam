@@ -113,6 +113,7 @@ const COMPONENT_CATEGORIES: Record<string, string[]> = {
         'Chip',
         'Clipboard',
         'Code',
+        'CodeGroup',
         'Counter',
         'DataList',
         'DataTable',

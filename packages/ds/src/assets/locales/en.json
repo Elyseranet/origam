@@ -175,6 +175,11 @@
       "scroller_aria_label_filename": "{filename}, code block, scrollable region",
       "scroller_aria_label_lang": "{lang} code block, scrollable region"
     },
+    "code_group": {
+      "tabs_aria_label": "Code variants",
+      "scroller_aria_label": "{label}, code block {position} of {total}, scrollable region",
+      "scroller_aria_label_group": "{group}, {label}, code block {position} of {total}, scrollable region"
+    },
     "qr_code": {
       "aria_label": "QR code for {value}"
     },

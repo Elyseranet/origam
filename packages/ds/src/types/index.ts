@@ -44,6 +44,7 @@ export * from './ClientOnly/client-only.type'
 export * from './Clipboard/clipboard.type'
 
 export * from './Code/code.type'
+export * from './CodeGroup/code-group.type'
 
 export * from './ColorPicker/color-picker.type'
 export * from './ColorPicker/color-picker-canvas.type'

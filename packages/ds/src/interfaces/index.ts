@@ -49,6 +49,7 @@ export * from './ClientOnly/client-only.interface'
 export * from './Clipboard/clipboard.interface'
 
 export * from './Code/code.interface'
+export * from './CodeGroup/code-group.interface'
 
 export * from './ColorPicker/color-picker.interface'
 export * from './ColorPicker/color-picker-canvas.interface'

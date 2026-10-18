@@ -159,7 +159,10 @@
 		prompt: undefined,
 		code: undefined,
 		highlightLines: null,
-		filename: undefined
+		filename: undefined,
+		hideHeader: false,
+		flat: false,
+		scrollerAriaLabel: undefined
 	})
 
 	const emit = defineEmits<ICodeEmits>()
@@ -213,6 +216,8 @@
 	 * generique d'origine.
 	 ********************************************************/
 	const scrollerLabel = computed(() => {
+		if (props.scrollerAriaLabel) return props.scrollerAriaLabel
+
 		if (props.filename) return t('origam.code.scroller_aria_label_filename', {filename: props.filename})
 
 		if (props.lang && props.lang !== CODE_LANG.PLAINTEXT) return t('origam.code.scroller_aria_label_lang', {lang: props.lang})
@@ -404,7 +409,7 @@
 	/*********************************************************
 	 * Class & Style.
 	 ********************************************************/
-	const showHeader = computed(() => !props.compact && (!!props.filename || !!slots.header || props.copyable))
+	const showHeader = computed(() => !props.compact && !props.hideHeader && (!!props.filename || !!slots.header || props.copyable))
 
 	/**
 	 * Compact-mode copy control is an icon button, not a text "Copy". It swaps
@@ -430,22 +435,23 @@
 			'origam-code--wrap': props.wrap,
 			'origam-code--has-header': showHeader.value,
 			'origam-code--copyable': props.copyable,
-			'origam-code--max-height': props.maxHeight != null
+			'origam-code--max-height': props.maxHeight != null,
+			'origam-code--flat': props.flat
 		},
-		borderClasses.value,
-		roundedClasses.value,
-		elevationClasses.value,
+		props.flat ? [] : borderClasses.value,
+		props.flat ? [] : roundedClasses.value,
+		props.flat ? [] : elevationClasses.value,
 		paddingClasses.value,
-		marginClasses.value,
+		props.flat ? [] : marginClasses.value,
 		colorClasses.value,
 		props.class
 	])
 
 	const codeStyles = computed(() => [
-		borderStyles.value,
-		roundedStyles.value,
+		props.flat ? {} : borderStyles.value,
+		props.flat ? {} : roundedStyles.value,
 		paddingStyles.value,
-		marginStyles.value,
+		props.flat ? {} : marginStyles.value,
 		colorStyles.value,
 		dimensionStyles.value,
 		typographyStyles.value,
@@ -517,6 +523,13 @@
 	.origam-code--compact .origam-code__row {
 		min-height: 0;
 		white-space: nowrap;
+	}
+
+	.origam-code--flat {
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+		margin: 0;
 	}
 
 	.origam-code__prompt {
