@@ -1,3 +1,4 @@
+import type { ILocaleOptions } from './locale.interface'
 import type { IOrigamTheme } from './theme.interface'
 
 import type { TMode, TTheme } from '../../types/Commons/theme.type'
@@ -28,6 +29,21 @@ export interface IOrigamNuxtModuleOptions {
      * When omitted, `createOrigam` installs the DS built-in baseline (neutral identity).
      */
     themes?: IOrigamTheme[]
+
+    /*********************************************************
+     * locale
+     *
+     * @description
+     * Locale of Origam's built-in strings (aria-labels, button labels, …), forwarded to `createOrigam({ locale })` by BOTH plugins (client and server) so the SSR markup and the hydration render agree.
+     * @description
+     * Must stay serialisable — it travels through `runtimeConfig`. `messages` is MERGED over the built-in `en` / `fr` catalogues: a site can supply a complete `ja`, or override a few `fr` keys. Origam does NOT follow `<html lang>`.
+     * @description
+     * The key list to translate is `origam/assets/locales/en.json`.
+     *
+     * @example
+     * origam: { locale: { locale: 'ja', fallbackLocale: 'en', messages: { ja } } }
+     ********************************************************/
+    locale?: ILocaleOptions
 
     /**
      * Theme (brand) applied when no cookie is set. Use `'auto'` to render no
@@ -123,6 +139,7 @@ export interface IOrigamNuxtRuntimeConfig {
     cookieName: string
     modeCookieName: string
     cookieMaxAge: number
+    locale?: ILocaleOptions
 }
 
 /*********************************************************

@@ -113,7 +113,40 @@ export default defineNuxtConfig({
 | `cookieMaxAge` | `number` | `31_536_000` (1 year) | Cookie lifetime in seconds (shared by both cookies). |
 | `autoImport` | `boolean` | `true` | Auto-register components and composables as Nuxt auto-imports. |
 | `includeUtilities` | `boolean` | `true` | Inject the utility-classes stylesheet (`origam-utilities.css`). |
+| `locale` | `ILocaleOptions` | `undefined` (`en`) | Locale of Origam's built-in strings (aria-labels, button labels…). Serialisable: `{ locale, fallbackLocale, messages }`. See [Locale](#locale). |
 | `prefix` | `string` | `'Origam'` | Reserved for future use. origam components already ship prefixed, so the active prefix is empty. |
+
+## Locale
+
+Origam's built-in strings (e.g. the `origam-code` scroller's `aria-label`) are
+`en` by default. Set the locale, and optionally supply `messages`, in the module
+options:
+
+```ts
+// nuxt.config.ts
+import ja from './locales/origam-ja.json' // translated copy of origam/assets/locales/en.json
+
+export default defineNuxtConfig({
+    modules: ['origam/nuxt'],
+    origam: {
+        locale: {
+            locale: 'ja',
+            fallbackLocale: 'en',
+            messages: { ja }
+        }
+    }
+})
+```
+
+- The options are **serialisable** (they travel through `runtimeConfig`) and are
+  passed identically to `createOrigam({ locale })` by the client and server
+  plugins, so the SSR markup and the hydration render agree.
+- `messages` are **merged** with the built-in `en` / `fr`: supply a full `ja`, or
+  override a few `fr` keys. A missing key falls back to `fallbackLocale`.
+- Origam does **not** follow `<html lang>` or `@nuxtjs/i18n`; wire your own
+  locale into this option.
+- The list of keys is `origam/assets/locales/en.json` — copy it as the template
+  for a new language (see the [i18n guide](../guide/i18n.md#ajouter-une-langue-gabarit-de-traduction)).
 
 ## SSR — per-instance styles (`useStyle`)
 

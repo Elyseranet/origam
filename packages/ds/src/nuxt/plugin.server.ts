@@ -1,5 +1,7 @@
 import { createOrigam } from '../origam'
 
+import { nuxtLocaleOptions } from '../utils/Commons/nuxt-locale.util'
+
 import { isModePinned, themeToCss, themeToUnpinnedCss } from '../utils/Commons/apply-theme.util'
 import { getSsrStyles } from '../utils/Commons/ssr-styles.util'
 
@@ -131,7 +133,7 @@ export default defineNuxtPlugin({
         // `IN_BROWSER` is already false so widths are 0 regardless, but passing
         // the flag keeps both plugins symmetric and future-proofs any
         // server-side display branching.
-        const origam = createOrigam({ themes, ssr: true })
+        const origam = createOrigam({ themes, ssr: true, ...nuxtLocaleOptions(config) })
 
         // Seed the per-component DEFAULT PROPS for the ACTIVE brand×mode BEFORE
         // the render so SSR markup already reflects the theme defaults — no flash
