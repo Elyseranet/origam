@@ -297,3 +297,51 @@ test.describe('OrigamCommandPalette — groups & kbd display', () => {
         await expect.poll(async () => await kbds.count(), { timeout: 4000 }).toBeGreaterThan(0)
     })
 })
+
+test.describe('OrigamCommandPalette — search / loading icons (#1183)', () => {
+    test('SVG passed as prop replaces the mdi glyph (no .mdi-magnify / .mdi-loading rendered)', async ({ page }) => {
+        await openVariant(page, STORY, 'Prop - icons (SVG)')
+        const sandbox = sandboxOf(page)
+        await sandbox.getByRole('button', { name: 'Open with SVG icons', exact: true }).click()
+        const dialog = sandbox.locator('[role="dialog"]')
+        await expect(dialog).toBeVisible({ timeout: 4000 })
+
+        const search = dialog.locator('.origam-command-palette__search-icon')
+        await expect(search.locator('svg path')).toHaveAttribute('d', /^M12 2L15 9/)
+        const loading = dialog.locator('.origam-command-palette__loading-icon')
+        await expect(loading.locator('svg path')).toHaveAttribute('d', /^M12 2A10 10/)
+        await expect(dialog.locator('.mdi-magnify')).toHaveCount(0)
+        await expect(dialog.locator('.mdi-loading')).toHaveCount(0)
+    })
+
+    test('default keeps the mdi glyphs', async ({ page }) => {
+        await openVariant(page, STORY, 'Default')
+        const sandbox = sandboxOf(page)
+        await sandbox.getByRole('button', { name: 'Open palette', exact: true }).click()
+        const dialog = sandbox.locator('[role="dialog"]')
+        await expect(dialog).toBeVisible({ timeout: 4000 })
+        await expect(dialog.locator('.mdi-magnify')).toHaveCount(1)
+    })
+
+    test('search-icon slot replaces the default icon', async ({ page }) => {
+        await openVariant(page, STORY, 'Slots - Search icon')
+        const sandbox = sandboxOf(page)
+        await sandbox.getByRole('button', { name: 'Open with custom search icon', exact: true }).click()
+        const dialog = sandbox.locator('[role="dialog"]')
+        await expect(dialog).toBeVisible({ timeout: 4000 })
+        await expect(dialog.locator('[data-cy="slot-search-icon"]')).toBeVisible()
+        await expect(dialog.locator('.origam-command-palette__search-icon')).toHaveCount(0)
+        await expect(dialog.locator('.mdi-magnify')).toHaveCount(0)
+    })
+
+    test('loading slot replaces the default loader', async ({ page }) => {
+        await openVariant(page, STORY, 'Slots - Loading')
+        const sandbox = sandboxOf(page)
+        await sandbox.getByRole('button', { name: 'Open with custom loader', exact: true }).click()
+        const dialog = sandbox.locator('[role="dialog"]')
+        await expect(dialog).toBeVisible({ timeout: 4000 })
+        await expect(dialog.locator('[data-cy="slot-loading"]')).toBeVisible()
+        await expect(dialog.locator('.origam-command-palette__loading-icon')).toHaveCount(0)
+        await expect(dialog.locator('.mdi-loading')).toHaveCount(0)
+    })
+})
