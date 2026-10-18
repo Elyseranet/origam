@@ -9,22 +9,27 @@
 			v-bind="responsiveProps"
 	>
 		<template #additional>
-			<img
-					v-show="!isError"
-					ref="image"
-					:alt="alt"
-					:class="imgPictureClasses"
-					:crossorigin="crossorigin"
-					:draggable="draggable"
-					:loading="nativeLoading"
-					:referrerpolicy="referrerpolicy"
-					:sizes="sizes"
-					:src="normalisedSrc.src"
-					:srcset="normalisedSrc.srcset"
-					:style="imgContentStyles"
-					@error="handleError"
-					@load="handleLoad"
-			/>
+			<origam-transition
+					:appear="fadesIn"
+					:transition="transition"
+			>
+				<img
+						v-show="isPictureShown"
+						ref="image"
+						:alt="alt"
+						:class="imgPictureClasses"
+						:crossorigin="crossorigin"
+						:draggable="draggable"
+						:loading="nativeLoading"
+						:referrerpolicy="referrerpolicy"
+						:sizes="sizes"
+						:src="normalisedSrc.src"
+						:srcset="normalisedSrc.srcset"
+						:style="imgContentStyles"
+						@error="handleError"
+						@load="handleLoad"
+				/>
+			</origam-transition>
 			<origam-transition :transition="transition">
 				<img
 						v-if="normalisedSrc.lazySrc && !isLoaded"
@@ -430,6 +435,29 @@
 	})
 	const isError = computed(() => {
 		return state.value === IMG_STATE.ERROR
+	})
+
+	/*********************************************************
+	 * fadesIn — client-mounted vs server-rendered (#1182)
+	 *
+	 * @description
+	 * An image hydrated from server HTML must paint at once and never
+	 * flash: it is shown unless it errored, and its transition does not
+	 * `appear` (an `appear` transition applies its enter-from classes
+	 * during hydration). An image mounted on the client (SPA navigation,
+	 * dynamic list, `v-if` after hydration) keeps the former behaviour:
+	 * hidden until the native `load`, then faded in by `transition`.
+	 *
+	 * @description
+	 * During hydration Vue sets `vnode.el` to the existing server node
+	 * BEFORE `setup()` runs; on a fresh client mount it is still null. On
+	 * the server `IN_BROWSER` is false, so the `<img>` is always served
+	 * visible. Read once, at setup, on purpose: it describes how this
+	 * instance came to exist, and never changes.
+	 ********************************************************/
+	const fadesIn = IN_BROWSER && !vm.vnode.el
+	const isPictureShown = computed(() => {
+		return fadesIn ? isLoaded.value : !isError.value
 	})
 	const hasContent = computed(() => {
 		return slots.default

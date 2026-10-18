@@ -53,14 +53,18 @@ The real `<img>` is part of the server HTML with its `src`, `srcset`,
 `sizes` and `alt`, and it is **not hidden** before hydration: the image shows
 without JavaScript and the browser's preload scanner can discover it. Native
 `loading="lazy"` (or `eager` when you pass `eager`) is what defers the request.
-Only an errored image is hidden (`display: none` from `v-show="!isError"`), so
-the `error` slot replaces it.
 
-> Behaviour change. Until now the inner `<img>` was `display: none` until the
-> `load` event, with the fade-in transition running on that reveal. The
-> `<img>` now paints as soon as the browser has bytes (progressively, for
-> large files) and no longer fades in; `lazySrc` still overlays it until the
-> full image has loaded, and the `placeholder` / `error` slots are unchanged.
+The entrance fade depends on how the instance came to exist:
+
+| How the image appears | Behaviour |
+|---|---|
+| Hydrated from server HTML | Painted at once, **no fade, no flash**. Only an errored image is hidden, so the `error` slot replaces it. |
+| Mounted on the client (SPA navigation, dynamic list, `v-if` after hydration) | Unchanged: hidden until the native `load`, then faded in by the `transition` prop (disabled under `prefers-reduced-motion`). |
+
+> Behaviour change. Until now the server HTML carried the `<img>` as
+> `display: none` until the `load` event, on every render. Now only a
+> client-mounted image waits for `load`. `lazySrc` still overlays the image
+> until it has loaded, and the `placeholder` / `error` slots are unchanged.
 
 The root is a `<div>` by default, which is not allowed inside a `<p>`: the
 HTML parser closes the paragraph before it, and Vue reports a hydration
