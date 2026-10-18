@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.33.0',
+        date: '2026-10-18',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2330.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v2330.h1', textFallback: 'OrigamCommandPalette : icônes de recherche et de chargement personnalisables (#1183)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.32.2',
         date: '2026-10-17',
         type: 'patch',

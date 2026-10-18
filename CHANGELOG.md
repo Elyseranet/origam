@@ -18,6 +18,14 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.33.0] - 2026-10-18
+
+### Added — `OrigamCommandPalette` : icônes de recherche et de chargement personnalisables (#1183)
+
+- Nouvelles props `searchIcon` et `loadingIcon`, typées `TIcon` (id mdi, chemin SVG ou composant). Défauts inchangés : `mdi:mdi-magnify` et `mdi:mdi-loading`.
+- Nouveaux slots `search-icon` et `loading`, prioritaires sur les props.
+- Une application qui fournit un SVG n'a plus besoin de la police `@mdi/font` pour ces deux glyphes : aucun élément `.mdi-magnify` / `.mdi-loading` n'est rendu (prouvé par `packages/tests/e2e/command-palette.spec.ts`).
+
 ## [2.32.2] - 2026-10-17
 
 ### Fixed — `OrigamBtn` : libellé collé en haut au lieu d'être centré (#1168)
