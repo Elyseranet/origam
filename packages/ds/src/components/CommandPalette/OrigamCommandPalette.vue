@@ -254,6 +254,7 @@
 		loading: false,
 		searchIcon: 'mdi:mdi-magnify',
 		loadingIcon: 'mdi:mdi-loading',
+		filter: true,
 		closeOnSelect: true,
 		closeOnEscape: true,
 		closeOnBackdrop: true
@@ -407,7 +408,7 @@
 	 ********************************************************/
 
 	const sourceCommands = computed<ReadonlyArray<ICommand>>(() => {
-		if (props.commands && props.commands.length > 0) return props.commands
+		if (props.commands && (props.commands.length > 0 || props.filter !== true)) return props.commands
 
 		return registryCommands.value
 	})
@@ -419,6 +420,14 @@
 	const query = ref<string>('')
 
 	const filtered = computed<ReadonlyArray<IFuzzyMatchResult<ICommand>>>(() => {
+		if (typeof props.filter === 'function') {
+			return props.filter(sourceCommands.value, query.value).map((item) => ({ item, score: 0 }))
+		}
+
+		if (props.filter === false) {
+			return sourceCommands.value.map((item) => ({ item, score: 0 }))
+		}
+
 		return fuzzyMatch(sourceCommands.value as ReadonlyArray<ICommand>, query.value, (cmd) => ({
 			label: cmd.label,
 			haystack: [
