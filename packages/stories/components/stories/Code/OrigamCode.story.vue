@@ -129,6 +129,29 @@
 			</template>
 		</Variant>
 
+		<Variant
+				title="Functional - Open lang (outside the bundled set)"
+				:init-state="() => useStoryInitState<Partial<ICodeProps>>({
+					lang: 'dockerfile'
+				})"
+		>
+			<!-- Histoire installs ONE shared createOrigam() with no custom
+			     highlighter, so an unknown lang folds onto plaintext here; with
+			     createOrigam({ code: { highlighter, langs } }) it is served. -->
+			<template #default="{ state }">
+				<origam-code
+						:lang="state.lang"
+						:code="dockerSnippet"
+						data-cy="origam-code-open-lang"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Language">
+					<HstText v-model="state.lang" title="Lang (any string)"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
 		<Variant title="Functional - No filename (lang badge header)">
 			<origam-code
 					:lang="CODE_LANG.BASH"
@@ -283,6 +306,8 @@
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'
+
+	const dockerSnippet = 'FROM node:22\nRUN npm ci'
 
 	const CODE_LANG_OPTIONS: Array<IOptions<TCodeLang>> = [
 		{ label: 'plaintext', value: CODE_LANG.PLAINTEXT },

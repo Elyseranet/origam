@@ -18,6 +18,12 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Added — `OrigamCode` : `lang` ouvert, `createOrigam({ code: { langs } })` (#1180)
+
+- `lang` n'est plus limité aux 14 grammaires de `SUPPORTED_LANGS` quand un `code.highlighter` est fourni : la valeur est transmise telle quelle au highlighter, qui sait seul ce qu'il peut servir. S'il échoue, le bloc retombe sur `plaintext` (le `try/catch` existant autour de `codeToHtml`), avec un avertissement dev-only, une fois par langage. Avant, `resolveLang()` repliait tout `lang` inconnu sur `plaintext` avant de consulter le highlighter, donc `dockerfile` ne pouvait jamais être servi.
+- Nouvelle option `createOrigam({ code: { langs } })` : liste passée à `createHighlighter` (défaut : `SUPPORTED_LANGS`). Avec le highlighter intégré, un `lang` présent dans `langs` est accepté.
+- Typage : la prop `lang` devient `TCodeLangOpen` (`TCodeLang | (string & {})`), l'autocomplétion des 14 valeurs est conservée. `TCodeLang` reste la liste fermée.
+
 ## [2.34.0] - 2026-10-19
 
 ### Added — `OrigamCommandPalette` : prop `filter` pour afficher des résultats classés en externe (#1184)
