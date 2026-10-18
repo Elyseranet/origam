@@ -15,6 +15,7 @@
 					loading: false,
 					searchIcon: 'mdi:mdi-magnify',
 					loadingIcon: 'mdi:mdi-loading',
+					filter: true,
 					closeOnSelect: true,
 					closeOnEscape: true,
 					closeOnBackdrop: true,
@@ -41,6 +42,7 @@
 							:loading="state.loading"
 							:search-icon="state.searchIcon"
 							:loading-icon="state.loadingIcon"
+							:filter="state.filter"
 							:close-on-select="state.closeOnSelect"
 							:close-on-escape="state.closeOnEscape"
 							:close-on-backdrop="state.closeOnBackdrop"
@@ -66,6 +68,7 @@
 					<HstText v-model="state.loadingIcon" title="Loading Icon"/>
 				</StoryGroup>
 				<StoryGroup title="Behaviour">
+					<HstCheckbox v-model="state.filter"         title="Filter (built-in fuzzy match)"/>
 					<HstCheckbox v-model="state.closeOnSelect"  title="Close on Select"/>
 					<HstCheckbox v-model="state.closeOnEscape"  title="Close on Escape"/>
 					<HstCheckbox v-model="state.closeOnBackdrop" title="Close on Backdrop"/>
@@ -272,6 +275,27 @@
 			</div>
 		</Variant>
 
+		<Variant title="Prop - filter">
+			<div class="story-shell">
+				<origam-btn
+						text="Open palette"
+						@click="openFilterExternal = true"
+				/>
+				<div class="story-status">
+					filter: <strong>{{ filterFuzzy ? 'true (built-in fuzzy match)' : 'false (externally ranked, shown as given)' }}</strong>
+				</div>
+				<origam-btn
+						text="Toggle built-in fuzzy match"
+						@click="filterFuzzy = !filterFuzzy"
+				/>
+				<origam-command-palette
+						v-model="openFilterExternal"
+						:commands="EXTERNAL_HITS"
+						:filter="filterFuzzy"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<ICommandPaletteProps>({
@@ -283,6 +307,7 @@
 					loading: false,
 					searchIcon: 'mdi:mdi-magnify',
 					loadingIcon: 'mdi:mdi-loading',
+					filter: true,
 					closeOnSelect: true,
 					closeOnEscape: true,
 					closeOnBackdrop: true,
@@ -321,6 +346,7 @@
 					<HstCheckbox v-model="state.loading"          title="Loading"/>
 					<HstText v-model="state.searchIcon"           title="Search Icon"/>
 					<HstText v-model="state.loadingIcon"          title="Loading Icon"/>
+					<HstCheckbox v-model="state.filter"           title="Filter (built-in fuzzy match)"/>
 					<HstCheckbox v-model="state.closeOnSelect"    title="Close on Select"/>
 					<HstCheckbox v-model="state.closeOnEscape"    title="Close on Escape"/>
 					<HstCheckbox v-model="state.closeOnBackdrop"  title="Close on Backdrop"/>
@@ -367,6 +393,8 @@
 	const openSlotSearchIcon = ref<boolean>(false)
 	const openSlotLoading = ref<boolean>(false)
 	const openAttachTarget = ref<boolean>(false)
+	const openFilterExternal = ref<boolean>(false)
+	const filterFuzzy = ref<boolean>(false)
 
 	/*********************************************************
 	 * attachTargetMounted — #attach-harmonisation
@@ -412,6 +440,12 @@
 		{ id: 'settings-language', label: 'Set language', group: 'Settings', perform: () => undefined },
 		{ id: 'action-create', label: 'Create item', group: 'Actions', perform: () => undefined },
 		{ id: 'action-delete', label: 'Delete item', group: 'Actions', perform: () => undefined }
+	]
+
+	const EXTERNAL_HITS: ReadonlyArray<ICommand> = [
+		{ id: 'hit-install', label: 'Install', description: 'Matched in the page body', perform: () => undefined },
+		{ id: 'hit-deploy', label: 'Deployment guide', description: 'Matched in the page body', perform: () => undefined },
+		{ id: 'hit-config', label: 'Configuration', description: 'Matched in the page body', perform: () => undefined }
 	]
 
 	const USER_FIXTURE: ReadonlyArray<ICommand> = [
