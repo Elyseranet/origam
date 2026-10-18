@@ -40,6 +40,31 @@ export interface ICodeGroupResolvedItem extends Required<Pick<ICodeGroupItem, 'l
 }
 
 /*********************************************************
+ * ICodeGroupRenderedItem
+ *
+ * @description
+ * A resolved item whose `vnode` is the `<OrigamCode>` to render in the panel,
+ * already flattened, header-less and named. Built by `resolveCodeGroupItems`.
+ ********************************************************/
+export interface ICodeGroupRenderedItem extends Omit<ICodeGroupResolvedItem, 'vnode'> {
+    vnode: VNode
+}
+
+/*********************************************************
+ * ICodeGroupResolveOptions
+ *
+ * @description
+ * What `resolveCodeGroupItems` needs from the group: its `label` and `t` to
+ * name each scroller, and `lineNumbers` / `wrap` to forward to every block.
+ ********************************************************/
+export interface ICodeGroupResolveOptions {
+    label?: string
+    lineNumbers: boolean
+    wrap: boolean
+    t: (key: string, ...params: unknown[]) => string
+}
+
+/*********************************************************
  * ICodeGroupProps
  *
  * @description

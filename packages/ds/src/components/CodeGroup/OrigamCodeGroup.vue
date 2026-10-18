@@ -44,24 +44,11 @@
 				:transition="false"
 		>
 			<origam-tab-panel
-					v-for="(item, index) in getItems()"
+					v-for="item in getItems()"
 					:key="item.value"
 					:value="item.value"
 			>
-				<component
-						:is="embedVNode(item, index)"
-						v-if="item.vnode"
-				/>
-				<origam-code
-						v-else
-						:code="item.code"
-						:lang="item.lang"
-						:filename="item.filename"
-						:line-numbers="lineNumbers"
-						:wrap="wrap"
-						:scroller-aria-label="scrollerLabel(item, index)"
-						v-bind="CODE_GROUP_EMBED_PROPS"
-				/>
+				<component :is="item.vnode"/>
 			</origam-tab-panel>
 		</origam-tab-panels>
 	</component>
@@ -71,10 +58,9 @@
 		lang="ts"
 		setup
 >
-	import { cloneVNode, computed, useSlots } from 'vue'
+	import { computed, useSlots } from 'vue'
 
 	import OrigamBtn from '../Btn/OrigamBtn.vue'
-	import OrigamCode from '../Code/OrigamCode.vue'
 	import OrigamTab from '../Tabs/OrigamTab.vue'
 	import OrigamTabPanel from '../Tabs/OrigamTabPanel.vue'
 	import OrigamTabPanels from '../Tabs/OrigamTabPanels.vue'
@@ -90,16 +76,14 @@
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 
 	import { CODE_DEFAULTS } from '../../consts/Code/code.const'
-	import { CODE_GROUP_EMBED_PROPS } from '../../consts/CodeGroup/code-group.const'
-
+	
 	import type {
 		ICodeGroupEmits,
 		ICodeGroupProps,
-		ICodeGroupResolvedItem,
 		ICodeGroupSlots
 	} from '../../interfaces/CodeGroup/code-group.interface'
 
-	import { resolveCodeGroupSlotItems } from '../../utils/CodeGroup/code-group.util'
+	import { findCodeGroupItem, resolveCodeGroupItems } from '../../utils/CodeGroup/code-group.util'
 
 	/*********************************************************
 	 * Global
@@ -139,22 +123,19 @@
 	 * function is not a reactive source). A plain function is re-run by every
 	 * render and by every copy.
 	 ********************************************************/
-	function getItems (): ICodeGroupResolvedItem[] {
-		const fromSlot = slots.default ? resolveCodeGroupSlotItems(slots.default()) : []
-		if (fromSlot.length > 0) return fromSlot
-
-		return props.items.map((item) => ({ ...item, value: item.value ?? item.label }))
+	function getItems () {
+		return resolveCodeGroupItems(props.items, slots.default?.(), {
+			label: props.label,
+			lineNumbers: props.lineNumbers,
+			wrap: props.wrap,
+			t
+		})
 	}
 
 	/*********************************************************
 	 * Active tab (v-model)
 	 ********************************************************/
 	const model = useVModel(props, 'modelValue', () => getItems()[0]?.value)
-
-	const activeItem = (): ICodeGroupResolvedItem | undefined => {
-		const items = getItems()
-		return items.find((item) => item.value === model.value) ?? items[0]
-	}
 
 	/*********************************************************
 	 * Hosted code blocks
@@ -168,32 +149,13 @@
 	 ********************************************************/
 	const tabsLabel = computed(() => props.label ?? t('origam.code_group.tabs_aria_label'))
 
-	function scrollerLabel (item: ICodeGroupResolvedItem, index: number): string {
-		const params = { label: item.label, position: index + 1, total: getItems().length }
-
-		if (props.label) return t('origam.code_group.scroller_aria_label_group', { ...params, group: props.label })
-
-		return t('origam.code_group.scroller_aria_label', params)
-	}
-
-	function embedVNode (item: ICodeGroupResolvedItem, index: number) {
-		return cloneVNode(item.vnode!, {
-			...CODE_GROUP_EMBED_PROPS,
-			label: undefined,
-			value: undefined,
-			lineNumbers: props.lineNumbers || undefined,
-			wrap: props.wrap || undefined,
-			scrollerAriaLabel: scrollerLabel(item, index)
-		})
-	}
-
 	/*********************************************************
 	 * Copy — one button for the active tab
 	 ********************************************************/
 	const { copy, copied } = useClipboard({ feedbackDuration: CODE_DEFAULTS.copyFeedbackDurationMs })
 
 	async function handleCopy () {
-		const code = activeItem()?.code ?? ''
+		const code = findCodeGroupItem(getItems(), model.value)?.code ?? ''
 		if (await copy(code)) emit('copy', code)
 	}
 

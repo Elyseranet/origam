@@ -181,17 +181,21 @@ test.describe('OrigamCodeGroup', () => {
         test('positive control — axe reports landmark-unique on two same-named regions', async ({ page }) => {
             const frame = await open(page, 0)
 
-            await frame.locator('body').evaluate((body) => {
-                for (let i = 0; i < 2; i++) {
-                    const region = document.createElement('section')
-                    region.setAttribute('aria-label', 'bash code block, scrollable region')
-                    region.textContent = 'x'
-                    body.appendChild(region)
-                }
-            })
+            // Re-injected on every attempt: the sandbox can re-render and drop a node added from outside.
+            await expect.poll(async () => {
+                await frame.locator('body').evaluate((body) => {
+                    body.querySelectorAll('[data-cy="positive-control"]').forEach((node) => node.remove())
+                    for (let i = 0; i < 2; i++) {
+                        const region = document.createElement('section')
+                        region.setAttribute('data-cy', 'positive-control')
+                        region.setAttribute('aria-label', 'bash code block, scrollable region')
+                        region.textContent = 'x'
+                        body.appendChild(region)
+                    }
+                })
 
-            const violations = await run(page)
-            expect(violations.map((violation) => violation.id)).toContain('landmark-unique')
+                return (await run(page)).map((violation) => violation.id)
+            }, { timeout: 15000 }).toContain('landmark-unique')
         })
 
         test('two labelled groups on one page raise no landmark-unique', async ({ page }) => {

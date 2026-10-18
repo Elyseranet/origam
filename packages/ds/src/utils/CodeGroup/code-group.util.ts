@@ -1,8 +1,17 @@
-import { Comment, Fragment, Text } from 'vue'
+import { cloneVNode, Comment, Fragment, h, Text } from 'vue'
+
+import OrigamCode from '../../components/Code/OrigamCode.vue'
+
+import { CODE_GROUP_EMBED_PROPS } from '../../consts/CodeGroup/code-group.const'
 
 import type { VNode } from 'vue'
 
-import type { ICodeGroupResolvedItem } from '../../interfaces/CodeGroup/code-group.interface'
+import type {
+    ICodeGroupItem,
+    ICodeGroupRenderedItem,
+    ICodeGroupResolvedItem,
+    ICodeGroupResolveOptions
+} from '../../interfaces/CodeGroup/code-group.interface'
 
 /*********************************************************
  * flattenCodeGroupVNodes
@@ -73,4 +82,59 @@ export function resolveCodeGroupSlotItems (nodes: VNode[] | undefined): ICodeGro
             vnode
         }
     })
+}
+
+/*********************************************************
+ * resolveCodeGroupItems
+ *
+ * @description
+ * One list for both forms of `<OrigamCodeGroup>`: the code blocks of the
+ * default slot win, `items` is the fallback. Every item comes back with the
+ * `<OrigamCode>` vnode to render, already flattened, header-less and named
+ * after the group `label`, its tab and its position — so the component does
+ * no per-item work in its template.
+ * @description
+ * `items` is typed `readonly unknown[]` on purpose: the compiled `.vue` that
+ * `nuxt typecheck` reads (`packages/ds/dist`) has its types stripped, so the
+ * prop reaches this call as `unknown[]` and an `ICodeGroupItem[]` parameter
+ * would add one error to the marketing type-check ratchet.
+ ********************************************************/
+export function resolveCodeGroupItems (
+    items: readonly unknown[],
+    nodes: VNode[] | undefined,
+    options: ICodeGroupResolveOptions
+): ICodeGroupRenderedItem[] {
+    const fromSlot = resolveCodeGroupSlotItems(nodes)
+    const source: ICodeGroupResolvedItem[] = fromSlot.length > 0
+        ? fromSlot
+        : (items as ICodeGroupItem[]).map((item) => ({ ...item, value: item.value ?? item.label }))
+
+    return source.map((item, index) => {
+        const params = { label: item.label, position: index + 1, total: source.length }
+        const scrollerAriaLabel = options.label
+            ? options.t('origam.code_group.scroller_aria_label_group', { ...params, group: options.label })
+            : options.t('origam.code_group.scroller_aria_label', params)
+        const embed = {
+            ...CODE_GROUP_EMBED_PROPS,
+            lineNumbers: options.lineNumbers || undefined,
+            wrap: options.wrap || undefined,
+            scrollerAriaLabel
+        }
+
+        const vnode = item.vnode
+            ? cloneVNode(item.vnode, { ...embed, label: undefined, value: undefined })
+            : h(OrigamCode, { code: item.code, lang: item.lang, filename: item.filename, ...embed })
+
+        return { ...item, vnode }
+    })
+}
+
+/*********************************************************
+ * findCodeGroupItem
+ *
+ * @description
+ * The item whose `value` is the active one, the first item when none matches.
+ ********************************************************/
+export function findCodeGroupItem (items: ICodeGroupRenderedItem[], value: unknown): ICodeGroupRenderedItem | undefined {
+    return items.find((item) => item.value === value) ?? items[0]
 }

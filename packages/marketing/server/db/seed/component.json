@@ -68978,7 +68978,7 @@
           "position": 10,
           "default_value": null,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Do not render the header bar (filename / language badge / copy button). For a block embedded in a surface that already shows that information, such as a tab of OrigamCodeGroup."
         },
         {
           "name": "flat",
@@ -68990,7 +68990,7 @@
           "position": 11,
           "default_value": null,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Flatten the block into its host: no border, no radius, no elevation, no outer margin."
         },
         {
           "name": "scrollerAriaLabel",
@@ -69002,7 +69002,7 @@
           "position": 12,
           "default_value": null,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Accessible name of the scrollable region. Left out, it is derived from filename, then lang. Set it when several blocks of the same language share a page."
         },
         {
           "name": "id",
@@ -69901,21 +69901,21 @@
         "kind": "component",
         "slug": "code-group",
         "name": "CodeGroup",
-        "category": null,
+        "category": "Data Display",
         "domain": null,
-        "icon": null,
-        "description_key": null,
-        "description_fallback": null,
+        "icon": "mdi-tab",
+        "description_key": "components.catalog.code_group.description",
+        "description_fallback": "Tabbed code blocks (npm / pnpm / yarn) drawn as one surface: one border, one shared copy button that copies the active tab, and a distinct accessible name for every panel scroller. Fed by an items array or by origam-code children.",
         "definition": null,
         "signature": null,
         "tag": "origam-code-group",
         "value": null,
         "source_file": "packages/ds/src/components/CodeGroup/OrigamCodeGroup.vue",
-        "package_note": null,
+        "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
+        "story_url": "/stories/?story=components-codegroup--design",
+        "doc_url": "/docs/components/CodeGroup/OrigamCodeGroup.html",
         "parent_slug": null,
         "kind_extra": null,
         "svg_title_key": null,
@@ -69935,7 +69935,7 @@
           "position": 0,
           "default_value": null,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Tabs and their code: { label, code, lang?, filename?, value? }. Ignored when the default slot holds code blocks."
         },
         {
           "name": "modelValue",
@@ -69947,7 +69947,7 @@
           "position": 1,
           "default_value": null,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Value of the active tab (v-model). Defaults to the first tab; an item value defaults to its label."
         },
         {
           "name": "label",
@@ -69959,7 +69959,7 @@
           "position": 2,
           "default_value": null,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Accessible name of the tab list, also part of each panel scroller name so several groups on one page stay distinct."
         },
         {
           "name": "copyable",
@@ -69971,7 +69971,7 @@
           "position": 3,
           "default_value": null,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Show the shared copy button."
         },
         {
           "name": "lineNumbers",
@@ -69983,7 +69983,7 @@
           "position": 4,
           "default_value": null,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Show a line-number gutter in every panel."
         },
         {
           "name": "wrap",
@@ -69995,7 +69995,7 @@
           "position": 5,
           "default_value": null,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Wrap long lines instead of scrolling horizontally."
         },
         {
           "name": "id",
@@ -70633,7 +70633,7 @@
           "payload_kind": null,
           "position": 0,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "The active tab changed; carries the new tab value."
         },
         {
           "event": "copy",
@@ -70642,7 +70642,7 @@
           "payload_kind": null,
           "position": 1,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Emitted after a successful clipboard write, with the code of the active tab."
         }
       ],
       "slots": [
@@ -70651,20 +70651,41 @@
           "slot_props": "—",
           "position": 0,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "origam-code children, one per tab, when items is not used. The tab label comes from the child label, else its filename."
         },
         {
           "slot": "copy",
           "slot_props": "{ copy: () => Promise<void>, copied: boolean }",
           "position": 1,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Replaces the shared copy button. Receives the copy function and the copied flag."
         }
       ],
       "examples": [],
       "directiveArgs": [],
       "directiveModifiers": [],
-      "relations": []
+      "relations": [
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "code",
+          "to_name": "Code",
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": "The code block hosted in every panel of the group."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "tabs",
+          "to_name": "Tabs",
+          "prop_name": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": "The tab strip and panels the group is built on."
+        }
+      ]
     },
     {
       "entry": {
