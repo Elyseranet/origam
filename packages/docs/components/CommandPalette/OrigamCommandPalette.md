@@ -115,6 +115,8 @@ and `fontFamily` is a project-level setting configured once on `OrigamApp`.
 | `maxHeight` | `number \| string` | `480` | Max height of the result list (px when number). |
 | `width` | `number \| string` | `640` | Width of the palette dialog (px when number). |
 | `loading` | `boolean` | `false` | Display a loader inside the result list. |
+| `searchIcon` | `TIcon` | `'mdi:mdi-magnify'` | Icon of the search field. Accepts an icon id, an SVG path string or a component. The `search-icon` slot takes precedence. |
+| `loadingIcon` | `TIcon` | `'mdi:mdi-loading'` | Icon shown while `loading` is `true`. The `loading` slot takes precedence. |
 | `closeOnSelect` | `boolean` | `true` | Close the palette automatically when a command is selected. |
 | `closeOnEscape` | `boolean` | `true` | Close on `Escape`. |
 | `closeOnBackdrop` | `boolean` | `true` | Close when the user clicks the backdrop. |
@@ -135,6 +137,8 @@ and `fontFamily` is a project-level setting configured once on `OrigamApp`.
 |---|---|---|
 | `item` | `{ command, isActive }` | Replace a single command row. Useful for avatars / rich rendering. |
 | `empty` | — | Replace the default empty state. |
+| `search-icon` | — | Replace the search field icon (takes precedence over `searchIcon`). |
+| `loading` | — | Replace the loader shown while `loading` is `true` (takes precedence over `loadingIcon`). |
 | `footer` | — | Replace the default footer hints. |
 
 ## `ICommand` interface

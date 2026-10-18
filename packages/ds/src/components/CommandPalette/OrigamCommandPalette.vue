@@ -25,12 +25,14 @@
 						tabindex="-1"
 				>
 					<div class="origam-command-palette__search">
-						<origam-icon
-								:icon="MDI_ICONS.MAGNIFY"
-								:size="20"
-								aria-hidden="true"
-								class="origam-command-palette__search-icon"
-						/>
+						<slot name="search-icon">
+							<origam-icon
+									:icon="searchIcon"
+									:size="20"
+									aria-hidden="true"
+									class="origam-command-palette__search-icon"
+							/>
+						</slot>
 						<input
 								:id="inputId"
 								ref="inputRef"
@@ -65,11 +67,13 @@
 								v-if="loading"
 								class="origam-command-palette__loading"
 						>
-							<origam-icon
-									:icon="MDI_ICONS.LOADING"
-									:size="20"
-									class="origam-command-palette__loading-icon"
-							/>
+							<slot name="loading">
+								<origam-icon
+										:icon="loadingIcon"
+										:size="20"
+										class="origam-command-palette__loading-icon"
+								/>
+							</slot>
 						</div>
 
 						<template
@@ -190,8 +194,6 @@
 	import { COMMAND_PALETTE_DEFAULT_HOTKEY, COMMAND_PALETTE_DEFAULT_MAX_HEIGHT, COMMAND_PALETTE_DEFAULT_WIDTH } from '../../consts/CommandPalette/command-palette.const'
 	import { IN_BROWSER } from '../../consts/Commons/commons.const'
 
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
-
 	import type { ICommand } from '../../interfaces/CommandPalette/command.interface'
 	import type { ICommandPaletteProps, ICommandPaletteSlots } from '../../interfaces/CommandPalette/command-palette.interface'
 
@@ -250,6 +252,8 @@
 		maxHeight: COMMAND_PALETTE_DEFAULT_MAX_HEIGHT,
 		width: COMMAND_PALETTE_DEFAULT_WIDTH,
 		loading: false,
+		searchIcon: 'mdi:mdi-magnify',
+		loadingIcon: 'mdi:mdi-loading',
 		closeOnSelect: true,
 		closeOnEscape: true,
 		closeOnBackdrop: true

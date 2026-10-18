@@ -2,6 +2,7 @@ import type { ICommand } from './command.interface'
 import type { IAttachProps } from '../Commons/attach.interface'
 import type { ICommonsComponentProps } from '../Commons/commons.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 /**
  * A hotkey is either a single combination (`['meta', 'k']`) or an
@@ -38,6 +39,8 @@ export interface ICommandPaletteProps extends ICommonsComponentProps, Pick<ITypo
     width?: number | string
     /** Display a loader inside the result list (use during async fetches). */
     loading?: boolean
+    searchIcon?: TIcon
+    loadingIcon?: TIcon
     /** Close the palette automatically when a command is selected. */
     closeOnSelect?: boolean
     /** Close when the user presses Escape. */
@@ -60,5 +63,7 @@ export interface ICommandPaletteSlotProps {
 export interface ICommandPaletteSlots {
     item?: (props: ICommandPaletteSlotProps) => any
     empty?: () => any
+    'search-icon'?: () => any
+    loading?: () => any
     footer?: () => any
 }
