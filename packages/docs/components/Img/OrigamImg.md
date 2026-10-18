@@ -47,6 +47,39 @@ a low-resolution preview while the full image loads.
 </template>
 ```
 
+## Server rendering and `tag` (#1182)
+
+The real `<img>` is part of the server HTML with its `src`, `srcset`,
+`sizes` and `alt`, and it is **not hidden** before hydration: the image shows
+without JavaScript and the browser's preload scanner can discover it. Native
+`loading="lazy"` (or `eager` when you pass `eager`) is what defers the request.
+Only an errored image is hidden (`display: none` from `v-show="!isError"`), so
+the `error` slot replaces it.
+
+> Behaviour change. Until now the inner `<img>` was `display: none` until the
+> `load` event, with the fade-in transition running on that reveal. The
+> `<img>` now paints as soon as the browser has bytes (progressively, for
+> large files) and no longer fades in; `lazySrc` still overlays it until the
+> full image has loaded, and the `placeholder` / `error` slots are unchanged.
+
+The root is a `<div>` by default, which is not allowed inside a `<p>`: the
+HTML parser closes the paragraph before it, and Vue reports a hydration
+mismatch. Pass `tag="span"` for phrasing content, such as a Markdown image
+inside a paragraph. Every element the component renders (root, content
+wrapper, placeholder, error, gradient) then uses that tag. The box does not
+change: `display` comes from `--origam-responsive---display` (`flex`), not
+from the element.
+
+```vue
+<template>
+    <p>
+        Before
+        <OrigamImg tag="span" src="/a.png" alt="A" :aspect-ratio="16 / 9" />
+        after.
+    </p>
+</template>
+```
+
 ## Object fit
 
 `cover` toggles between `object-fit: contain` (default) and
@@ -155,6 +188,7 @@ interface IImgProps extends IColorProps, IResponsiveProps,
     referrerpolicy?: TReferrerPolicy
     srcset?: string
     position?: string
+    tag?: string              // inherited from IResponsiveProps, default 'div'
 }
 
 interface ISrcObject {
@@ -170,6 +204,7 @@ interface ISrcObject {
 
 ```html
 <!-- the root carries `aspect-ratio` from the `aspectRatio` prop (#709) -->
+<!-- element = the `tag` prop (default div); the inner <img> is never display:none before hydration -->
 <div class="origam-responsive origam-img">
     <img class="origam-img__picture origam-img__picture--cover" />
     <div class="origam-img__gradient"></div>

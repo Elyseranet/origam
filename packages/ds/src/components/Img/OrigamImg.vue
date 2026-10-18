@@ -9,27 +9,22 @@
 			v-bind="responsiveProps"
 	>
 		<template #additional>
-			<origam-transition
-					:transition="transition"
-					appear
-			>
-				<img
-						v-show="isLoaded"
-						ref="image"
-						:alt="alt"
-						:class="imgPictureClasses"
-						:crossorigin="crossorigin"
-						:draggable="draggable"
-						:loading="nativeLoading"
-						:referrerpolicy="referrerpolicy"
-						:sizes="sizes"
-						:src="normalisedSrc.src"
-						:srcset="normalisedSrc.srcset"
-						:style="imgContentStyles"
-						@error="handleError"
-						@load="handleLoad"
-				/>
-			</origam-transition>
+			<img
+					v-show="!isError"
+					ref="image"
+					:alt="alt"
+					:class="imgPictureClasses"
+					:crossorigin="crossorigin"
+					:draggable="draggable"
+					:loading="nativeLoading"
+					:referrerpolicy="referrerpolicy"
+					:sizes="sizes"
+					:src="normalisedSrc.src"
+					:srcset="normalisedSrc.srcset"
+					:style="imgContentStyles"
+					@error="handleError"
+					@load="handleLoad"
+			/>
 			<origam-transition :transition="transition">
 				<img
 						v-if="normalisedSrc.lazySrc && !isLoaded"
@@ -46,25 +41,28 @@
 					:transition="transition"
 					appear
 			>
-				<div
+				<component
+						:is="tag"
 						v-if="(isLoading || (isError && !slots.error)) && slots.placeholder"
 						class="origam-img__placeholder"
 				>
 					<slot name="placeholder"/>
-				</div>
+				</component>
 			</origam-transition>
 			<origam-transition
 					:transition="transition"
 					appear
 			>
-				<div
+				<component
+						:is="tag"
 						v-if="isError && slots.error"
 						class="origam-img__error"
 				>
 					<slot name="error"/>
-				</div>
+				</component>
 			</origam-transition>
-			<div
+			<component
+					:is="tag"
 					v-if="gradient"
 					:style="imgGradientStyles"
 					class="origam-img__gradient"
@@ -128,7 +126,9 @@
 	 * @description
 	 * Props, emits, composables, and image load lifecycle setup.
 	 ********************************************************/
-	const props = withDefaults(defineProps<IImgProps>(), {})
+	const props = withDefaults(defineProps<IImgProps>(), {
+		tag: 'div'
+	})
 
 	const emits = defineEmits<IImgEmits>()
 
@@ -209,7 +209,7 @@
 	 * was already correct, which is what made this a C3 (works once,
 	 * freezes at usage) rather than a C1.
 	 ********************************************************/
-	const responsiveProps = computed(() => pick(props, ['aspectRatio', 'contentClass', 'height', 'maxHeight', 'maxWidth', 'minHeight', 'minWidth', 'width', 'class', 'style']))
+	const responsiveProps = computed(() => pick(props, ['tag', 'aspectRatio', 'contentClass', 'height', 'maxHeight', 'maxWidth', 'minHeight', 'minWidth', 'width', 'class', 'style']))
 
 	watch(() => props.src, () => {
 		init(state.value !== IMG_STATE.IDLE)
