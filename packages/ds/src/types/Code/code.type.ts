@@ -1,6 +1,8 @@
 import { CODE_LANG, CODE_THEME } from '../../enums/Code/code.enum'
 import OrigamCode from '../../components/Code/OrigamCode.vue'
 
+import type { TAnyString } from '../Commons/commons.type'
+
 export type TOrigamCode = InstanceType<typeof OrigamCode>
 
 export type TCodeLang = `${CODE_LANG}`
@@ -14,9 +16,10 @@ export type TCodeLang = `${CODE_LANG}`
  * `createOrigam({ code: { highlighter, langs } })` highlighter can serve it.
  *
  * @description
- * `(string & {})` stops the union from collapsing to plain `string`.
+ * `TAnyString` (Commons) stops the union from collapsing to plain `string`,
+ * and avoids the empty-object intersection Sonar flags (#771).
  ********************************************************/
-export type TCodeLangOpen = TCodeLang | (string & {})
+export type TCodeLangOpen = TCodeLang | TAnyString
 
 export type TCodeTheme = `${CODE_THEME}`
 
