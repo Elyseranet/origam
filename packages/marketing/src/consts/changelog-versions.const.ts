@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.36.0',
+        date: '2026-10-19',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2360.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v2360.h1', textFallback: 'OrigamCodeGroup : groupe de code à onglets (npm / pnpm / yarn) en une seule surface (#1179)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.35.1',
         date: '2026-10-19',
         type: 'patch',

@@ -18,6 +18,16 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.36.0] - 2026-10-19
+
+### Added — `OrigamCodeGroup` : groupe de code à onglets (npm / pnpm / yarn) en une seule surface (#1179)
+
+- Nouveau composant `OrigamCodeGroup`, qui réunit `OrigamTabs` et `OrigamCode` : une seule surface (bordure, rayon et élévation portés par le groupe, blocs internes aplatis et sans en-tête), un seul bouton copier qui copie le code de l'onglet actif (slot `copy` pour le remplacer), `v-model` sur l'onglet actif.
+- Deux formes : prop `items` (`{ label, code, lang?, filename?, value? }`) ou slot avec des `<origam-code>` enfants ; le libellé de l'onglet vient de `label`, sinon de `filename`, sinon de la position.
+- Chaque zone défilante porte un nom accessible distinct (`{groupe}, {onglet}, code block {n} of {total}, scrollable region`, clés `origam.code_group.*` en `en` et `fr`) : plus de `landmark-unique` axe entre panneaux. Donner un `label` à chaque groupe quand plusieurs se trouvent sur une même page.
+- `OrigamCode` gagne `hideHeader`, `flat` et `scrollerAriaLabel`, utilisables seuls.
+- Aucun nouveau token : le groupe lit `--origam-code---*`, donc un thème qui restyle `OrigamCode` restyle aussi le groupe.
+
 ## [2.35.1] - 2026-10-19
 
 ### Fixed — `OrigamCode` : un 2e bloc monté pendant un import de `shiki` en échec restait vide (#1189)
