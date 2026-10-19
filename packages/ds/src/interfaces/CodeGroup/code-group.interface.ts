@@ -11,7 +11,7 @@ import type { IElevationProps } from '../Commons/elevation.interface'
 import type { IMarginProps } from '../Commons/margin.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
 
-import type { TCodeLang } from '../../types/Code/code.type'
+import type { TCodeLangOpen } from '../../types/Code/code.type'
 
 /*********************************************************
  * ICodeGroupItem
@@ -23,7 +23,7 @@ import type { TCodeLang } from '../../types/Code/code.type'
 export interface ICodeGroupItem {
     label: string
     code: string
-    lang?: TCodeLang
+    lang?: TCodeLangOpen
     filename?: string
     value?: string
 }
