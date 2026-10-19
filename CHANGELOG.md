@@ -18,6 +18,16 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.35.1] - 2026-10-19
+
+### Fixed — `OrigamCode` : un 2e bloc monté pendant un import de `shiki` en échec restait vide (#1189)
+
+Quand `shiki` n'est pas résolvable, deux `<origam-code>` montés dans le même tick : le premier s'affichait en texte brut, le second restait **vide** (zone défilante de hauteur 0) avec un rejet de promesse non capturé. `loadHighlighter()` ne renvoyait la promesse munie de son repli qu'au premier appelant ; un appelant concurrent recevait la promesse brute, qui rejetait, et `rebuild()` n'avait qu'un `try/finally`.
+
+- `loadHighlighter()` renvoie désormais la même promesse, déjà munie de son repli (`null` → code brut), à tous les appelants.
+- `rebuild()` capture en plus un éventuel rejet et peint le code en clair : aucun bloc ne reste vide.
+- Prouvé par `packages/tests/TU/components/Code/OrigamCode-concurrent-load-failure.spec.ts` (rouge sur le parent, vert après).
+
 ## [2.35.0] - 2026-10-19
 
 ### Added — `OrigamCode` : `lang` ouvert, `createOrigam({ code: { langs } })` (#1180)

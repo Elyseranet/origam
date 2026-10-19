@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.35.1',
+        date: '2026-10-19',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2351.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2351.h1', textFallback: 'OrigamCode : un 2e bloc monté pendant un import de shiki en échec restait vide (#1189)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.35.0',
         date: '2026-10-19',
         type: 'minor',
