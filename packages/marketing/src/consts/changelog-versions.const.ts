@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.2',
+        date: '2026-10-19',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2372.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2372.h1', textFallback: 'OrigamImg sous SSR : écart d\'hydratation aspect-ratio, et image montée côté client jamais chargée (#1192)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.1',
         date: '2026-10-19',
         type: 'patch',

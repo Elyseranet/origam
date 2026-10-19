@@ -18,6 +18,14 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.2] - 2026-10-19
+
+### Fixed — `OrigamImg` sous SSR : écart d'hydratation `aspect-ratio`, et image montée côté client jamais chargée (#1192)
+
+- **Écart d'hydratation** : sans prop `aspect-ratio`, `useAspectRatio` prend le ratio de la fenêtre (`innerWidth / innerHeight`), une valeur inconnue du serveur. Il était appliqué dès le premier rendu client d'une instance hydratée, d'où un `Hydration style mismatch`. Une instance qui hydrate l'applique désormais après `onMounted`. Une instance montée côté client l'applique tout de suite, comme avant. Un `aspect-ratio` explicite est inchangé.
+- **Image montée côté client jamais chargée** : `v-intersect` était lié avec le tuple `withDirectives` comme valeur. La directive lisait `.handler` sur un tableau, si bien que l'intersection ne déclenchait jamais le chargement. L'`<img>` restait en `display:none` + `loading="lazy"`, que Chromium ne charge pas. La directive est désormais liée en `v-intersect.once="{ handler, options }"`, et l'`<img>` passe en `loading="eager"` dès que son chargement est demandé.
+- La même forme de liaison subsiste dans d'autres composants : suivi en #1205.
+
 ## [2.37.1] - 2026-10-19
 
 ### Fixed — `OrigamImg` / `OrigamResponsive` : prop `tag`, `<img>` visible en SSR, fondu en rendu client seul (#1182)
