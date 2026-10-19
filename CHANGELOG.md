@@ -18,6 +18,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.1] - 2026-10-19
+
+### Fixed — `OrigamImg` / `OrigamResponsive` : prop `tag`, `<img>` visible en SSR, fondu en rendu client seul (#1182)
+
+Un `<origam-img>` placé dans un `<p>` (contenu prose) produisait un `<div>` invalide dans un paragraphe, que le parseur HTML expulse : DOM serveur et client divergeaient. Et l'`<img>` était servie en `display:none` jusqu'au `load` côté client, donc invisible tant que le JS n'avait pas tourné.
+
+- **Nouvelle prop `tag`** (défaut `'div'`) sur `OrigamResponsive` et `OrigamImg` (transmise au Responsive et aux conteneurs placeholder / error / gradient). `tag="span"` garde un DOM valide dans un `<p>`.
+- **`<img>` visible dans le HTML serveur** : elle n'est plus masquée avant le `load`.
+- **Fondu conservé uniquement au montage client** (navigation SPA, `v-if` après hydratation). Une image hydratée depuis le HTML serveur s'affiche sans fondu et sans clignotement.
+- ⚠️ Changement de rendu assumé : en rendu serveur puis hydratation, l'image n'apparaît plus en fondu.
+
 ## [2.37.0] - 2026-10-19
 
 ### Added — module Nuxt : options `locale` transmises à `createOrigam` (#1181)
