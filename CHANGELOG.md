@@ -18,6 +18,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.3] - 2026-10-19
+
+### Fixed — `v-intersect` lié avec le tuple `withDirectives` : handler jamais appelé (#1205)
+
+`OrigamLazy`, `OrigamTextField`, `OrigamTextareaField` et `OrigamPasswordField` passaient à `v-intersect` le tuple `[{ handler, options }, null, ['once']]` comme valeur. La directive lit `.handler` / `.options` sur la valeur : sur un tableau, elle obtient `undefined`. Aucune intersection n'appelait donc le handler, `once` n'était jamais lu et les `options` n'atteignaient pas l'`IntersectionObserver`.
+
+- **`OrigamLazy`** : le contenu ne s'affichait jamais à l'intersection, et les `options` du consommateur (ex. `rootMargin`) étaient ignorées. C'est corrigé ; mesuré dans Chromium.
+- **Champs texte, textarea et mot de passe** : l'appel JS de `focus()` sur intersection (autofocus) n'avait jamais lieu. Dans Chromium, l'attribut natif `autofocus` masquait le défaut. Safari et Firefox n'ont pas été mesurés.
+- Liaison désormais en `v-intersect.once="{ handler, options }"`.
+- La directive émet un `console.warn` en mode dev (une fois par balise) quand on lui lie un tableau.
+
 ## [2.37.2] - 2026-10-19
 
 ### Fixed — `OrigamImg` sous SSR : écart d'hydratation `aspect-ratio`, et image montée côté client jamais chargée (#1192)

@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.3',
+        date: '2026-10-19',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2373.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2373.h1', textFallback: 'v-intersect lié avec le tuple withDirectives : handler jamais appelé (#1205)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.2',
         date: '2026-10-19',
         type: 'patch',
