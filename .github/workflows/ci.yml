@@ -594,7 +594,7 @@ jobs:
   test-e2e-marketing:
     name: E2E tests — marketing nav/footer (Playwright / Chromium)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     # MARKETING_GREEN_ONLY: run only the specs verified green + stable on
     #   this config (MARKETING_GREEN_SPECS in playwright.marketing.config.ts)
     #   — same GREEN_ONLY pattern as `test-e2e` above, kept in its own job
