@@ -10,11 +10,11 @@
 	>
 		<template #additional>
 			<origam-transition
+					:appear="fadesIn"
 					:transition="transition"
-					appear
 			>
 				<img
-						v-show="isLoaded"
+						v-show="isPictureShown"
 						ref="image"
 						:alt="alt"
 						:class="imgPictureClasses"
@@ -46,25 +46,28 @@
 					:transition="transition"
 					appear
 			>
-				<div
+				<component
+						:is="tag"
 						v-if="(isLoading || (isError && !slots.error)) && slots.placeholder"
 						class="origam-img__placeholder"
 				>
 					<slot name="placeholder"/>
-				</div>
+				</component>
 			</origam-transition>
 			<origam-transition
 					:transition="transition"
 					appear
 			>
-				<div
+				<component
+						:is="tag"
 						v-if="isError && slots.error"
 						class="origam-img__error"
 				>
 					<slot name="error"/>
-				</div>
+				</component>
 			</origam-transition>
-			<div
+			<component
+					:is="tag"
 					v-if="gradient"
 					:style="imgGradientStyles"
 					class="origam-img__gradient"
@@ -128,7 +131,9 @@
 	 * @description
 	 * Props, emits, composables, and image load lifecycle setup.
 	 ********************************************************/
-	const props = withDefaults(defineProps<IImgProps>(), {})
+	const props = withDefaults(defineProps<IImgProps>(), {
+		tag: 'div'
+	})
 
 	const emits = defineEmits<IImgEmits>()
 
@@ -209,7 +214,7 @@
 	 * was already correct, which is what made this a C3 (works once,
 	 * freezes at usage) rather than a C1.
 	 ********************************************************/
-	const responsiveProps = computed(() => pick(props, ['aspectRatio', 'contentClass', 'height', 'maxHeight', 'maxWidth', 'minHeight', 'minWidth', 'width', 'class', 'style']))
+	const responsiveProps = computed(() => pick(props, ['tag', 'aspectRatio', 'contentClass', 'height', 'maxHeight', 'maxWidth', 'minHeight', 'minWidth', 'width', 'class', 'style']))
 
 	watch(() => props.src, () => {
 		init(state.value !== IMG_STATE.IDLE)
@@ -430,6 +435,29 @@
 	})
 	const isError = computed(() => {
 		return state.value === IMG_STATE.ERROR
+	})
+
+	/*********************************************************
+	 * fadesIn — client-mounted vs server-rendered (#1182)
+	 *
+	 * @description
+	 * An image hydrated from server HTML must paint at once and never
+	 * flash: it is shown unless it errored, and its transition does not
+	 * `appear` (an `appear` transition applies its enter-from classes
+	 * during hydration). An image mounted on the client (SPA navigation,
+	 * dynamic list, `v-if` after hydration) keeps the former behaviour:
+	 * hidden until the native `load`, then faded in by `transition`.
+	 *
+	 * @description
+	 * During hydration Vue sets `vnode.el` to the existing server node
+	 * BEFORE `setup()` runs; on a fresh client mount it is still null. On
+	 * the server `IN_BROWSER` is false, so the `<img>` is always served
+	 * visible. Read once, at setup, on purpose: it describes how this
+	 * instance came to exist, and never changes.
+	 ********************************************************/
+	const fadesIn = IN_BROWSER && !vm.vnode.el
+	const isPictureShown = computed(() => {
+		return fadesIn ? isLoaded.value : !isError.value
 	})
 	const hasContent = computed(() => {
 		return slots.default
