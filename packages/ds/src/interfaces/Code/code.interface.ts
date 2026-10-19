@@ -96,7 +96,28 @@ export interface ICodeProps extends ICommonsComponentProps, ITagProps, IBorderPr
      * Most useful paired with `compact` for an install-command pill.
      */
     prompt?: string
+    hideHeader?: boolean
+    flat?: boolean
+    scrollerAriaLabel?: string
 }
+
+/*********************************************************
+ * Embedding props (`hideHeader`, `flat`, `scrollerAriaLabel`)
+ *
+ * @description
+ * `hideHeader` removes the header bar (filename / language badge / copy
+ * button) whatever `filename`, `copyable` or the `header` slot say.
+ * @description
+ * `flat` flattens the block into its host: no border, no radius, no
+ * elevation, no outer margin, so the host owns the one visible surface.
+ * @description
+ * `scrollerAriaLabel` is the accessible name of the scrollable region. Left
+ * out, it is derived from `filename`, then `lang`; set it when several blocks
+ * of the same language share a page.
+ * @description
+ * The three exist so a block can sit inside `<OrigamCodeGroup>`, a tab already
+ * showing the label and the group owning the surface and the copy button.
+ ********************************************************/
 
 /*********************************************************
  * ICodeOptions

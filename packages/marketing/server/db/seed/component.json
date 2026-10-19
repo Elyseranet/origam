@@ -2,7 +2,7 @@
   "kind": "component",
   "exportedAt": "2026-10-01T13:28:51.155Z",
   "sourceCommit": "143d5904",
-  "entryCount": 219,
+  "entryCount": 220,
   "entries": [
     {
       "entry": {
@@ -68969,13 +68969,49 @@
           "description_fallback": "Decorative prefix rendered before the code (e.g. '$' for shell commands). Purely visual — not copied to clipboard."
         },
         {
+          "name": "hideHeader",
+          "type_label": "boolean",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 10,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": "Do not render the header bar (filename / language badge / copy button). For a block embedded in a surface that already shows that information, such as a tab of OrigamCodeGroup."
+        },
+        {
+          "name": "flat",
+          "type_label": "boolean",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 11,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": "Flatten the block into its host: no border, no radius, no elevation, no outer margin."
+        },
+        {
+          "name": "scrollerAriaLabel",
+          "type_label": "string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 12,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": "Accessible name of the scrollable region. Left out, it is derived from filename, then lang. Set it when several blocks of the same language share a page."
+        },
+        {
           "name": "id",
           "type_label": "string",
           "type_slug": null,
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 10,
+          "position": 13,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -68987,7 +69023,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 11,
+          "position": 14,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -68999,7 +69035,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 12,
+          "position": 15,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69011,7 +69047,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 13,
+          "position": 16,
           "default_value": "'figure'",
           "description_key": "components.code.props.tag.description",
           "description_fallback": "Root HTML element. Defaults to <figure> for semantic correctness."
@@ -69023,7 +69059,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 14,
+          "position": 17,
           "default_value": "false",
           "description_key": "components.code.props.border.description",
           "description_fallback": "Applies a border to the code block."
@@ -69035,7 +69071,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 15,
+          "position": 18,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69047,7 +69083,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 16,
+          "position": 19,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69059,7 +69095,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 17,
+          "position": 20,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69071,7 +69107,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 18,
+          "position": 21,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69083,7 +69119,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 19,
+          "position": 22,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69095,7 +69131,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 20,
+          "position": 23,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69107,7 +69143,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 21,
+          "position": 24,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69119,7 +69155,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 22,
+          "position": 25,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69131,7 +69167,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 23,
+          "position": 26,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69143,7 +69179,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 24,
+          "position": 27,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69155,7 +69191,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 25,
+          "position": 28,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69167,7 +69203,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 26,
+          "position": 29,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69179,7 +69215,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 27,
+          "position": 30,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69191,7 +69227,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 28,
+          "position": 31,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69203,7 +69239,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 29,
+          "position": 32,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69215,7 +69251,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 30,
+          "position": 33,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69227,7 +69263,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 31,
+          "position": 34,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69239,7 +69275,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 32,
+          "position": 35,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69251,7 +69287,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 33,
+          "position": 36,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69263,7 +69299,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 34,
+          "position": 37,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69275,7 +69311,7 @@
           "type_kind": "type",
           "optional": false,
           "required": false,
-          "position": 35,
+          "position": 38,
           "default_value": "undefined",
           "description_key": "components.code.props.rounded.description",
           "description_fallback": "Border-radius override."
@@ -69287,7 +69323,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 36,
+          "position": 39,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69299,7 +69335,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 37,
+          "position": 40,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69311,7 +69347,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 38,
+          "position": 41,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69323,7 +69359,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 39,
+          "position": 42,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69335,7 +69371,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 40,
+          "position": 43,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69347,7 +69383,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 41,
+          "position": 44,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69359,7 +69395,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 42,
+          "position": 45,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69371,7 +69407,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 43,
+          "position": 46,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69383,7 +69419,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 44,
+          "position": 47,
           "default_value": "undefined",
           "description_key": "components.code.props.elevation.description",
           "description_fallback": "Box-shadow elevation token."
@@ -69395,7 +69431,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 45,
+          "position": 48,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69407,7 +69443,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 46,
+          "position": 49,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69419,7 +69455,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 47,
+          "position": 50,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69431,7 +69467,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 48,
+          "position": 51,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69443,7 +69479,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 49,
+          "position": 52,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69455,7 +69491,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 50,
+          "position": 53,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69467,7 +69503,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 51,
+          "position": 54,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69479,7 +69515,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 52,
+          "position": 55,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69491,7 +69527,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 53,
+          "position": 56,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69503,7 +69539,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 54,
+          "position": 57,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69515,7 +69551,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 55,
+          "position": 58,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69527,7 +69563,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 56,
+          "position": 59,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69539,7 +69575,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 57,
+          "position": 60,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69551,7 +69587,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 58,
+          "position": 61,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69563,7 +69599,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 59,
+          "position": 62,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69575,7 +69611,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 60,
+          "position": 63,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69587,7 +69623,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 61,
+          "position": 64,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69599,7 +69635,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 62,
+          "position": 65,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69611,7 +69647,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 63,
+          "position": 66,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69623,7 +69659,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 64,
+          "position": 67,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69635,7 +69671,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 65,
+          "position": 68,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69647,7 +69683,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 66,
+          "position": 69,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69659,7 +69695,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 67,
+          "position": 70,
           "default_value": "undefined",
           "description_key": "components.code.props.height.description",
           "description_fallback": "Explicit height. The scroller fills the remaining height in a constrained container."
@@ -69671,7 +69707,7 @@
           "type_kind": "primitive",
           "optional": false,
           "required": false,
-          "position": 68,
+          "position": 71,
           "default_value": "undefined",
           "description_key": "components.code.props.max_height.description",
           "description_fallback": "Maximum height. Content scrolls when the code overflows."
@@ -69683,7 +69719,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 69,
+          "position": 72,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69695,7 +69731,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 70,
+          "position": 73,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69707,7 +69743,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 71,
+          "position": 74,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69719,7 +69755,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 72,
+          "position": 75,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69731,7 +69767,7 @@
           "type_kind": "type",
           "optional": false,
           "required": false,
-          "position": 73,
+          "position": 76,
           "default_value": "undefined",
           "description_key": "components.code.props.color.description",
           "description_fallback": "Foreground color override."
@@ -69743,7 +69779,7 @@
           "type_kind": "type",
           "optional": false,
           "required": false,
-          "position": 74,
+          "position": 77,
           "default_value": "undefined",
           "description_key": "components.code.props.bg_color.description",
           "description_fallback": "Background color override."
@@ -69755,7 +69791,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 75,
+          "position": 78,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69767,7 +69803,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 76,
+          "position": 79,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69779,7 +69815,7 @@
           "type_kind": null,
           "optional": false,
           "required": false,
-          "position": 77,
+          "position": 80,
           "default_value": null,
           "description_key": null,
           "description_fallback": null
@@ -69857,6 +69893,797 @@
           "position": 0,
           "description_key": "components.catalog.clipboard.description",
           "description_fallback": "Copy-to-clipboard primitive used internally by OrigamCode for the copyable feature."
+        }
+      ]
+    },
+    {
+      "entry": {
+        "kind": "component",
+        "slug": "code-group",
+        "name": "CodeGroup",
+        "category": "Data Display",
+        "domain": null,
+        "icon": "mdi-tab",
+        "description_key": "components.catalog.code_group.description",
+        "description_fallback": "Tabbed code blocks (npm / pnpm / yarn) drawn as one surface: one border, one shared copy button that copies the active tab, and a distinct accessible name for every panel scroller. Fed by an items array or by origam-code children.",
+        "definition": null,
+        "signature": null,
+        "tag": "origam-code-group",
+        "value": null,
+        "source_file": "packages/ds/src/components/CodeGroup/OrigamCodeGroup.vue",
+        "package_note": "origam",
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": "/stories/?story=components-codegroup--design",
+        "doc_url": "/docs/components/CodeGroup/OrigamCodeGroup.html",
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [
+        {
+          "name": "items",
+          "type_label": "ICodeGroupItem[]",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 0,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": "Tabs and their code: { label, code, lang?, filename?, value? }. Ignored when the default slot holds code blocks."
+        },
+        {
+          "name": "modelValue",
+          "type_label": "string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 1,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": "Value of the active tab (v-model). Defaults to the first tab; an item value defaults to its label."
+        },
+        {
+          "name": "label",
+          "type_label": "string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 2,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": "Accessible name of the tab list, also part of each panel scroller name so several groups on one page stay distinct."
+        },
+        {
+          "name": "copyable",
+          "type_label": "boolean",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 3,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": "Show the shared copy button."
+        },
+        {
+          "name": "lineNumbers",
+          "type_label": "boolean",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 4,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": "Show a line-number gutter in every panel."
+        },
+        {
+          "name": "wrap",
+          "type_label": "boolean",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 5,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": "Wrap long lines instead of scrolling horizontally."
+        },
+        {
+          "name": "id",
+          "type_label": "string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 6,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "class",
+          "type_label": "string | Array<string> | object",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 7,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "style",
+          "type_label": "string | Array<string> | object | StyleValue",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 8,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "tag",
+          "type_label": "string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 9,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "border",
+          "type_label": "boolean | number | string | TDirectionBoth | Array<TDirectionBoth>",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 10,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "borderTop",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 11,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "borderLeft",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 12,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "borderBottom",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 13,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "borderRight",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 14,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "borderBlock",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 15,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "borderInline",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 16,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "borderInlineStart",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 17,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "borderInlineEnd",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 18,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "borderBlockStart",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 19,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "borderBlockEnd",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 20,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "borderColor",
+          "type_label": "string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 21,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "borderStyle",
+          "type_label": "string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 22,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "borderTopColor",
+          "type_label": "TColor",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 23,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "borderRightColor",
+          "type_label": "TColor",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 24,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "borderBottomColor",
+          "type_label": "TColor",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 25,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "borderLeftColor",
+          "type_label": "TColor",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 26,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "borderInlineStartColor",
+          "type_label": "TColor",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 27,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "borderInlineEndColor",
+          "type_label": "TColor",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 28,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "borderBlockStartColor",
+          "type_label": "TColor",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 29,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "borderBlockEndColor",
+          "type_label": "TColor",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 30,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "rounded",
+          "type_label": "boolean | number | string | TRounded | null | undefined",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 31,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "roundedTopRight",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 32,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "roundedTopLeft",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 33,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "roundedBottomLeft",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 34,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "roundedBottomRight",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 35,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "roundedStartStart",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 36,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "roundedStartEnd",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 37,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "roundedEndStart",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 38,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "roundedEndEnd",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 39,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "elevation",
+          "type_label": "TElevation",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 40,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "margin",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 41,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "marginTop",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 42,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "marginLeft",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 43,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "marginBottom",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 44,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "marginRight",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 45,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "marginBlock",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 46,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "marginInline",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 47,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "marginInlineStart",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 48,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "marginInlineEnd",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 49,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "marginBlockStart",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 50,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "marginBlockEnd",
+          "type_label": "boolean | number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 51,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "height",
+          "type_label": "number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 52,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "maxHeight",
+          "type_label": "number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 53,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "maxWidth",
+          "type_label": "number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 54,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "minHeight",
+          "type_label": "number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 55,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "minWidth",
+          "type_label": "number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 56,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "width",
+          "type_label": "number | string",
+          "type_slug": null,
+          "type_kind": null,
+          "optional": false,
+          "required": false,
+          "position": 57,
+          "default_value": null,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "values": [],
+      "params": [],
+      "returns": [],
+      "emits": [
+        {
+          "event": "update:modelValue",
+          "payload_label": "string",
+          "payload_slug": null,
+          "payload_kind": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": "The active tab changed; carries the new tab value."
+        },
+        {
+          "event": "copy",
+          "payload_label": "string",
+          "payload_slug": null,
+          "payload_kind": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": "Emitted after a successful clipboard write, with the code of the active tab."
+        }
+      ],
+      "slots": [
+        {
+          "slot": "default",
+          "slot_props": "—",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": "origam-code children, one per tab, when items is not used. The tab label comes from the child label, else its filename."
+        },
+        {
+          "slot": "copy",
+          "slot_props": "{ copy: () => Promise<void>, copied: boolean }",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": "Replaces the shared copy button. Receives the copy function and the copied flag."
+        }
+      ],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": [
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "code",
+          "to_name": "Code",
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": "The code block hosted in every panel of the group."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "tabs",
+          "to_name": "Tabs",
+          "prop_name": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": "The tab strip and panels the group is built on."
         }
       ]
     },

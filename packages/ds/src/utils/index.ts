@@ -73,6 +73,7 @@ export * from './DataTable/skeleton-cell.util'
 export * from './CommandPalette/fuzzy-match.util'
 
 export * from './Code/parse-highlight-lines.util'
+export * from './CodeGroup/code-group.util'
 
 export * from './TextareaField/sanitize-html.util'
 export * from './TextareaField/html-to-markdown.util'
