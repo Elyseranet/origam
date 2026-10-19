@@ -2,7 +2,7 @@
 	<component
 			:is="tag"
 			:id="id"
-			v-intersect="intersect"
+			v-intersect.once="intersect"
 			:aria-busy="!isActive || undefined"
 			:class="lazyClasses"
 			:style="lazyStyles"
@@ -79,14 +79,20 @@
 	 *
 	 * @description
 	 * Intersection observer config and activation handler.
+	 *
+	 * @description
+	 * #1205 — the binding VALUE is `{ handler, options }` and `once` is a
+	 * MODIFIER (`v-intersect.once`), never the `withDirectives` tuple
+	 * `[{ handler, options }, null, ['once']]`: the directive reads `.handler`
+	 * / `.options` off the value, got `undefined` off an array, and never
+	 * activated the component. The old conditional `once` (`isActive ? [] :
+	 * ['once']`) is a static `.once`: the observer stopped itself at the first
+	 * intersection while inactive, and `handleIntersect` ignores every call
+	 * once active, so nothing observable depends on it staying alive.
 	 ********************************************************/
 
 	const intersect = computed(() => {
-		return [
-			{handler: handleIntersect, options: props.options},
-			null,
-			isActive.value ? [] : ['once']
-		]
+		return {handler: handleIntersect, options: props.options}
 	})
 
 	/*********************************************************
