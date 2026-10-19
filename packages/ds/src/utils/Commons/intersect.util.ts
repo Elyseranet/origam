@@ -16,18 +16,17 @@ export function unmountIntersect (el: IIntersectHtmlElement, binding: IIntersect
 
 const _warnedIntersectTupleTags = new Set<string>()
 
-/**
- * Dev-only warning (#1205) when `v-intersect` is bound to an ARRAY.
+/*********************************************************
+ * warnIntersectTupleBinding
  *
- * The `withDirectives` tuple `[{ handler, options }, null, ['once']]` is not a
- * valid binding VALUE: the directive reads `.handler` / `.options` off it, gets
- * `undefined`, never calls the handler and never reads the `once`. The correct
- * form is `v-intersect.once="{ handler, options }"`. Once per element tag,
- * gated on `import.meta.env.DEV` (same gate as `warnUnsupportedProp`).
- *
- * @param el    the element the directive is bound to
- * @param value the raw binding value
- */
+ * @description
+ * Dev-only warning (#1205, once per element tag) when `v-intersect` is bound
+ * to an ARRAY. The `withDirectives` tuple `[{ handler, options }, null,
+ * ['once']]` is not a valid binding VALUE: the directive reads `.handler` /
+ * `.options` off it, gets `undefined`, never calls the handler and never
+ * reads the `once`. The correct form is `v-intersect.once="{ handler,
+ * options }"`. Gated on `import.meta.env.DEV`, like `warnUnsupportedProp`.
+ ********************************************************/
 export function warnIntersectTupleBinding (el: HTMLElement, value: unknown): void {
     if (!Array.isArray(value)) return
     if (typeof console === 'undefined') return
