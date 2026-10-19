@@ -18,6 +18,8 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.35.0] - 2026-10-19
+
 ### Added — `OrigamCode` : `lang` ouvert, `createOrigam({ code: { langs } })` (#1180)
 
 - `lang` n'est plus limité aux 14 grammaires de `SUPPORTED_LANGS` quand un `code.highlighter` est fourni : la valeur est transmise telle quelle au highlighter, qui sait seul ce qu'il peut servir. S'il échoue, le bloc retombe sur `plaintext` (le `try/catch` existant autour de `codeToHtml`), avec un avertissement dev-only, une fois par langage. Avant, `resolveLang()` repliait tout `lang` inconnu sur `plaintext` avant de consulter le highlighter, donc `dockerfile` ne pouvait jamais être servi.
