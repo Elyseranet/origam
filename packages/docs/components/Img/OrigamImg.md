@@ -66,6 +66,22 @@ The entrance fade depends on how the instance came to exist:
 > client-mounted image waits for `load`. `lazySrc` still overlays the image
 > until it has loaded, and the `placeholder` / `error` slots are unchanged.
 
+### Hydration and loading (#1192)
+
+- **No `aspect-ratio` the server cannot emit.** Without an `aspect-ratio`
+  prop the root falls back to the viewport's ratio, which only the browser
+  knows. An instance that hydrates server HTML therefore applies that
+  fallback right **after mount**, never in its first render, so the server
+  `style` and the first client render are identical (no "Hydration style
+  mismatch"). A client-mounted instance applies it at once. An explicit
+  `aspect-ratio` is deterministic and is rendered by the server.
+- **A client-mounted image starts loading when it intersects the viewport.**
+  It is `display: none` until its `load`, and Chromium never loads a
+  `loading="lazy"` image that has no box. Once the viewport intersection has
+  fired, the `<img>` switches to `loading="eager"` so the load can start;
+  until then it stays `lazy`. A hydrated image is visible and keeps native
+  lazy loading.
+
 The root is a `<div>` by default, which is not allowed inside a `<p>`: the
 HTML parser closes the paragraph before it, and Vue reports a hydration
 mismatch. Pass `tag="span"` for phrasing content, such as a Markdown image
