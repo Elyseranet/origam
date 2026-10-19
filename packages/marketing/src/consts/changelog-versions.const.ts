@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.0',
+        date: '2026-10-19',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2370.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v2370.h1', textFallback: 'module Nuxt : options locale transmises à createOrigam (#1181)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.36.0',
         date: '2026-10-19',
         type: 'minor',

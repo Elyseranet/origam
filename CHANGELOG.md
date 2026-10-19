@@ -18,6 +18,15 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.0] - 2026-10-19
+
+### Added — module Nuxt : options `locale` transmises à `createOrigam` (#1181)
+
+- Le module accepte `origam: { locale: { locale, fallbackLocale, messages } }` (même forme que `createOrigam({ locale })`, type `ILocaleOptions`). Les options transitent par `runtimeConfig.public.origam.locale` et sont passées à l'identique par les plugins client et serveur : pas d'écart d'hydratation.
+- Avant, les deux plugins appelaient `createOrigam({ themes, ssr: true })` sans locale : sous Nuxt, `useLocale().current` valait toujours `en`, et les libellés intégrés (noms accessibles des blocs de code, palette de commandes…) restaient en anglais sur un site ja/ko/zh.
+- `messages` est fusionné avec les locales intégrées `en` et `fr` : un site peut fournir `ja` complet ou surcharger quelques clés `fr`. `fallbackLocale` et `messages` deviennent optionnels dans `ILocaleOptions`.
+- Doc : section « Ajouter une langue (gabarit de traduction) » dans le guide i18n ; la liste des clés est `origam/assets/locales/en.json`.
+
 ## [2.36.0] - 2026-10-19
 
 ### Added — `OrigamCodeGroup` : groupe de code à onglets (npm / pnpm / yarn) en une seule surface (#1179)
