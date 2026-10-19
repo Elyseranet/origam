@@ -1,7 +1,7 @@
 <template>
 	<origam-responsive
 			:id="id"
-			v-intersect="intersect"
+			v-intersect.once="intersect"
 			:aria-label="alt"
 			:class="imgClasses"
 			:role="alt ? 'img' : undefined"
@@ -403,11 +403,20 @@
 	 * theme naming `options` on `origam-img` never reached the
 	 * directive. `computed` defers the read to access time (render),
 	 * comfortably after the theme-props-resolver's `beforeCreate`.
+	 *
+	 * @description
+	 * #1192 — the directive's binding VALUE is `{ handler, options }` and
+	 * `once` is a MODIFIER (`v-intersect.once`). This used to bind the
+	 * `withDirectives` tuple `[{ handler, options }, null, ['once']]` as the
+	 * value: the directive read `.handler` / `.options` off an array, got
+	 * `undefined`, and `init` was never called by an intersection. A visible
+	 * image only worked through the native `load` event; a `display:none`
+	 * (client-mounted, fading in) one never started.
 	 ********************************************************/
-	const intersect = computed(() => [{
+	const intersect = computed(() => ({
 		handler: init,
 		options: props.options
-	}, null, ['once']])
+	}))
 
 	/*********************************************************
 	 * nativeLoading — native `loading` attribute (CSS/HTML-first)
@@ -418,8 +427,18 @@
 	 * `load`/`error` emits) with the browser's own lazy-loading
 	 * primitive. Read lazily via a computed, so a theme-provided
 	 * `eager` reaches it (ADR-005).
+	 *
+	 * @description
+	 * #1192 — `lazy` only while `IDLE`. A client-mounted image is
+	 * `display:none` (`v-show`) until its `load`; Chromium never loads a
+	 * `loading="lazy"` image that has no box, so that image waited for a
+	 * load that nothing would start. Once the IntersectionObserver has
+	 * fired (`state` left `IDLE`) the component has itself decided the
+	 * image is due, so the native attribute must not veto it. A hydrated
+	 * image is unaffected: it starts `IDLE` (`lazy`, as served) and is
+	 * visible, so native lazy keeps gating it.
 	 ********************************************************/
-	const nativeLoading = computed(() => (props.eager ? 'eager' : 'lazy'))
+	const nativeLoading = computed(() => (props.eager || state.value !== IMG_STATE.IDLE ? 'eager' : 'lazy'))
 
 	/*********************************************************
 	 * State
