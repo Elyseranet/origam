@@ -14,7 +14,7 @@ import type { IPaddingProps } from '../Commons/padding.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
 
-import type { TCodeLang, TShikiHighlighterLoader } from '../../types/Code/code.type'
+import type { TCodeLangOpen, TShikiHighlighterLoader } from '../../types/Code/code.type'
 
 /**
  * Props for `<OrigamCode>` — a shiki-powered code block with line numbers,
@@ -34,11 +34,15 @@ export interface ICodeProps extends ICommonsComponentProps, ITagProps, IBorderPr
      */
     code?: string
     /**
-     * Language grammar to apply. One of the values in `SUPPORTED_LANGS`.
-     * Unknown values fall back to `plaintext` (with a one-shot console
-     * warning).
+     * Language grammar to apply. Autocompletes the 14 values of
+     * `SUPPORTED_LANGS` but accepts any string (#1180). Without a custom
+     * `code.highlighter`, a value outside `SUPPORTED_LANGS` and outside
+     * `createOrigam({ code: { langs } })` falls back to `plaintext` (one-shot
+     * console warning). With a custom `code.highlighter`, the value is handed
+     * to it as-is; if it cannot tokenise it, the block falls back to
+     * `plaintext` (dev-only warning).
      */
-    lang?: TCodeLang
+    lang?: TCodeLangOpen
     /**
      * Show a left gutter with line numbers. Pure CSS — uses a CSS counter
      * incremented per `.origam-code__row`, no JS layout work.
@@ -99,7 +103,7 @@ export interface ICodeProps extends ICommonsComponentProps, ITagProps, IBorderPr
  *
  * @description
  * App-level config for `<OrigamCode>`, passed via `createOrigam({ code })`.
- * Today it carries a single knob — `highlighter` — but it is its own
+ * Today it carries two knobs — `highlighter` and `langs` — and it is its own
  * interface (rather than a bare function on `IOrigamOptions`) so a future
  * `OrigamCode`-wide setting (e.g. a default theme pair) has somewhere to
  * land without another breaking shape change.
@@ -125,6 +129,23 @@ export interface ICodeProps extends ICommonsComponentProps, ITagProps, IBorderPr
  ********************************************************/
 export interface ICodeOptions {
     highlighter?: TShikiHighlighterLoader
+    /*********************************************************
+     * langs
+     *
+     * @description
+     * Grammars handed to `createHighlighter({ langs })`. Default:
+     * `SUPPORTED_LANGS` (the 14 bundled ones). Replaces the default list when
+     * set — include `plaintext` if you rely on it.
+     *
+     * @description
+     * With the built-in highlighter, a `lang` listed here is accepted instead
+     * of being folded onto `plaintext`; with a custom `highlighter`, `lang` is
+     * never filtered, and this only controls what is loaded up front.
+     *
+     * @description
+     * Like `highlighter`, read once (first `<OrigamCode>` to mount wins).
+     ********************************************************/
+    langs?: ReadonlyArray<string>
 }
 
 /** Emits fired by `<OrigamCode>` — copy-to-clipboard confirmation. */
@@ -136,7 +157,7 @@ export interface ICodeEmits {
 export interface ICodeSlots {
     /** Custom header content — receives the copy-button wiring so a
      *  consumer can rebuild the default filename/lang badge + copy button. */
-    header?: (data: { filename: string | undefined, langName: TCodeLang | undefined, copy: () => Promise<void>, copied: boolean }) => any
+    header?: (data: { filename: string | undefined, langName: TCodeLangOpen | undefined, copy: () => Promise<void>, copied: boolean }) => any
     footer?: () => any
     /** Source for the highlighted code when the `code` prop is omitted. */
     default?: () => any
@@ -153,7 +174,7 @@ export interface IUseCodeReturn {
      * underlying shiki highlighter has loaded the requested language /
      * theme (lazy; ~200 ms cold, instant on subsequent calls).
      */
-    highlight (code: string, lang: TCodeLang): Promise<string>
+    highlight (code: string, lang: TCodeLangOpen): Promise<string>
     /**
      * Force the highlighter to load. Useful for stories / tests that want
      * to warm the cache before mounting consumers.
