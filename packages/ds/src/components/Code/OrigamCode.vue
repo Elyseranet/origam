@@ -304,6 +304,21 @@
 			const html = await highlight(formattedCode.value, props.lang)
 			if (token !== _renderToken) return
 			paintIntoDom(html)
+		} catch (err) {
+			/*********************************************************
+			 * #1189 — safety net
+			 *
+			 * @description
+			 * Whatever rejects upstream, the block must never stay empty:
+			 * paint the code as plain escaped rows, same path as the `null`
+			 * highlighter fallback.
+			 ********************************************************/
+			console.warn('[origam] OrigamCode: highlighting failed — rendering plain code.', err)
+			if (token === _renderToken) {
+				const plain = document.createElement('div')
+				plain.textContent = formattedCode.value
+				paintIntoDom(plain.innerHTML)
+			}
 		} finally {
 			if (token === _renderToken) isHighlighting.value = false
 		}

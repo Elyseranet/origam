@@ -46,7 +46,7 @@ import { CODE_LANG } from '../../enums'
  * is a pure CSS cascade (no JS re-render).
  */
 
-let _highlighterPromise: Promise<TShikiHighlighter> | null = null
+let _highlighterPromise: Promise<TShikiHighlighter | null> | null = null
 let _highlighterReady = false
 // `shiki` is an OPTIONAL peer dependency. When it is not installed, the dynamic
 // import below throws — we degrade to plain, un-highlighted code instead of
@@ -129,7 +129,7 @@ async function loadHighlighter (loader?: TShikiHighlighterLoader, langs?: Readon
      * `TShikiModule` this DS exposes to a third-party loader. The runtime
      * shape is identical either way.
      ********************************************************/
-    _highlighterPromise = (async () => {
+    const raw = (async () => {
         const shiki: TShikiModule = loader
             ? await loader()
             : await import(/* @vite-ignore */ 'shiki') as unknown as TShikiModule
@@ -144,11 +144,17 @@ async function loadHighlighter (loader?: TShikiHighlighterLoader, langs?: Readon
 
     /*********************************************************
      * @description
+     * #1189 — the singleton stores the promise ALREADY carrying its
+     * fallback. Storing the raw one handed every concurrent caller (an
+     * import still in flight) the rejecting promise, so only the first
+     * caller ever saw `null`.
+     *
+     * @description
      * Default shiki not installed (optional peer), or an app-supplied
      * loader rejected / its module lacks `createHighlighter` → degrade to
      * plain. Same fallback on both branches; only the warning differs.
      ********************************************************/
-    return _highlighterPromise.catch((err: unknown) => {
+    _highlighterPromise = raw.catch((err: unknown) => {
         _highlighterUnavailable = true
         _highlighterPromise = null
         if (!_unavailableWarned) {
@@ -165,6 +171,7 @@ async function loadHighlighter (loader?: TShikiHighlighterLoader, langs?: Readon
         }
         return null
     })
+    return _highlighterPromise
 }
 
 /*********************************************************
