@@ -288,6 +288,7 @@
 
     &__pane {
       position: relative;
+      contain: layout;
       display: grid;
       place-items: center;
       min-height: 14rem;
