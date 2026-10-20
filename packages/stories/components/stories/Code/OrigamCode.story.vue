@@ -198,6 +198,15 @@
 			</template>
 		</Variant>
 
+		<Variant title="Functional - Empty lines (#1216)">
+			<origam-code
+					data-cy="code-empty-lines"
+					:lang="CODE_LANG.VUE"
+					line-numbers
+					:code="emptyLinesSnippet"
+			/>
+		</Variant>
+
 		<Variant title="Events - copy">
 			<origam-code
 					:lang="CODE_LANG.TS"
@@ -342,6 +351,8 @@
 }
 
 console.log(greet('origam'))`
+
+	const emptyLinesSnippet = '<script setup lang="ts">\nconst a = 1\n<\/script>\n\n<template>\n  <p>x</p>\n</template>\n'
 
 	const installSnippet = 'npm install origam'
 
