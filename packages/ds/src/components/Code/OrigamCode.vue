@@ -346,7 +346,14 @@
 		// Split on line spans. shiki emits `<span class="line">…</span>\n`
 		// per logical line; the regex preserves the order and lets us wrap
 		// each one with our own row container.
-		const lines = inner.split(/\n/).filter((l, idx, arr) => !(idx === arr.length - 1 && l.trim() === ''))
+		/*********************************************************
+		 * Trailing newline (#1216)
+		 *
+		 * @description
+		 * A source ending in a newline makes shiki emit a last EMPTY `.line`
+		 * span: drop it so the trailing newline gets no line number.
+		 ********************************************************/
+		const lines = inner.split(/\n/).filter((l, idx, arr) => !(idx === arr.length - 1 && l.replace(/<span class="line"><\/span>/, '').trim() === ''))
 		const highlightSet = highlightedLines.value
 		const rows = lines.map((line, i) => {
 			const lineNo = i + 1
@@ -632,7 +639,11 @@
 		display: block;
 		padding-inline: var(--origam-code__row---padding-inline);
 		white-space: pre;
-		min-height: var(--origam-code---line-height);
+		/**
+		 * 1lh = the row's own computed line-height. The token is unitless (1.6),
+		 * so it was an invalid min-height and an empty row collapsed to 0 px (#1216).
+		 */
+		min-height: 1lh;
 	}
 
 	.origam-code--wrap .origam-code__row {

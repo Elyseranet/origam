@@ -152,7 +152,7 @@ used, a dev-only one when a custom highlighter is used).
 |---|---|---|---|
 | `code` | `string` | `undefined` | Source code. Falls back to the default slot when omitted. |
 | `lang` | `TCodeLang \| (string & {})` | `'plaintext'` | Grammar to apply. Autocompletes the 14 bundled values but accepts any string. Without a custom `code.highlighter`, a value outside the bundled set and outside `code.langs` falls back to `plaintext` with a one-shot console warning. With a custom `code.highlighter` it is passed through as-is (see [Open `lang`](#open-lang-and-code-langs)). |
-| `lineNumbers` | `boolean` | `false` | Show a left gutter with line numbers (pure CSS counter). |
+| `lineNumbers` | `boolean` | `false` | Show a left gutter with line numbers (pure CSS counter). A blank source line keeps the height of a full row, and a trailing newline gets no number. |
 | `highlightLines` | `number[] \| string \| null` | `null` | Lines to highlight. Accepts an array (`[2, 5]`) or a range string (`'2,5-7'`). |
 | `copyable` | `boolean` | `true` | Show the copy-to-clipboard button. In non-compact mode it always renders a header bar so the button sits next to the filename (or the language badge when no filename is set) — never floating over the code. |
 | `maxHeight` | `number \| string \| null` | `null` | Cap the rendered height and enable vertical scroll past it. |
