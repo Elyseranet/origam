@@ -260,6 +260,7 @@
         "search_page_wireframe": "Wireframe de design et aperçus de composants",
         "search_page_theming": "Générateur de thèmes visuel — personnaliser les design tokens",
         "search_page_why_origam": "Décisions de conception et philosophie",
+        "search_page_stability": "Numéros de version, cadence des releases et politique de dépréciation",
         "star_count": "4.2k",
         "theme": "Thème",
         "theme_active": "Thème : {label}",
@@ -1000,6 +1001,7 @@
             "description": "Explorez le catalogue complet de composants, parcourez les stories interactives ou plongez dans le code source sur GitHub.",
             "cta_components": "Parcourir les composants",
             "cta_github": "Voir sur GitHub",
+            "cta_stability": "Stabilité et versionnement",
             "actions_label": "Explorer origam"
         }
     },
@@ -1087,6 +1089,7 @@
         "changelog": "Journal",
         "github": "GitHub",
         "why_origam": "Pourquoi origam ?",
+        "stability": "Stabilité",
         "roadmap": "Feuille de route",
         "installation": "Installation",
         "wireframe": "Wireframe",
@@ -1434,6 +1437,50 @@
             "empty_title": "Catalogue indisponible pour le moment",
             "empty_description": "La liste des composants n’a pas pu être chargée. Tous les composants restent publiés sur npm — parcourez-les sur la page composants.",
             "empty_cta": "Parcourir les composants"
+        }
+    },
+    "stability": {
+        "meta": {
+            "title": "Stabilité et versionnement · origam design system",
+            "description": "Ce que signifie le numéro 2.x d’origam, pourquoi les releases sont fréquentes, comment les ruptures sont annoncées et ce que sera la 3.0.0."
+        },
+        "hero": {
+            "badge": "Politique de versionnement",
+            "title": "Stabilité et versionnement",
+            "lead": "Un numéro de version élevé et des releases fréquentes ne signifient pas qu’origam casse souvent. Cette page explique ce que signifie le numéro, comment les releases sont publiées et où les changements sont consignés."
+        },
+        "sections": {
+            "number": {
+                "title": "Ce que signifie le numéro 2.x",
+                "p1": "Le numéro 2.x est historique. En pratique, origam est un projet pré-1.0 qui porte une étiquette 2.x.",
+                "p2": "En dessous de la 3.0.0, les numéros mineur et correctif relèvent de la comptabilité, pas d’un contrat de compatibilité."
+            },
+            "cadence": {
+                "title": "Pourquoi les releases sont fréquentes",
+                "p1": "Chaque changement fusionné dans le paquet publié obtient sa propre release corrective. Les changements ne sont pas retenus pour être groupés dans une release hebdomadaire ou mensuelle : le numéro de correctif grimpe donc vite.",
+                "p2": "Un correctif est une correction de bug. Une mineure est une fonctionnalité de taille moyenne, à impact limité sur l’usage existant. Les changements qui ne touchent pas le paquet publié, comme ce site, la documentation, les tests ou l’outillage, ne produisent aucune release."
+            },
+            "breaking": {
+                "title": "Comment sortent les ruptures",
+                "p1": "Jusqu’à la 3.0.0, une rupture peut sortir dans une version mineure. Elle est alors documentée explicitement et honnêtement dans le CHANGELOG.",
+                "p2": "Le CHANGELOG est l’endroit à consulter avant de monter de version mineure.",
+                "cta": "Lire le changelog"
+            },
+            "major": {
+                "title": "Ce que sera la 3.0.0",
+                "p1": "La 3.0.0 est réservée à la séparation du paquet en modules. Ce sera la première rupture majeure annoncée.",
+                "p2": "Rien d’autre ne sort sous ce numéro : ni un lot de corrections de bugs, ni une mise à jour de dépendance. Cette page ne donne pas de date.",
+                "cta": "Voir la roadmap"
+            },
+            "deprecation": {
+                "title": "Politique de dépréciation",
+                "p1": "Il n’y a pas de long cycle de dépréciation. Au stade actuel du projet, la rupture nette est préférée à une couche de compatibilité : une API dépréciée est retirée dès que quelqu’un s’en occupe, dans une version mineure, et le retrait est consigné dans le CHANGELOG.",
+                "p2": "Les dépréciations annoncées pour la prochaine majeure ne sont pas retenues jusqu’à la 3.0.0. C’est une règle pour le stade actuel du projet, pas une garantie permanente."
+            },
+            "limits": {
+                "title": "Ce que cette page ne promet pas",
+                "p1": "Cette page décrit comment les versions sont numérotées et annoncées. origam ne publie aucune ligne à support long terme, aucune fenêtre de support et aucun délai de réponse garanti."
+            }
         }
     },
     "support": {
