@@ -18,6 +18,116 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.3',
+        date: '2026-10-19',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2373.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2373.h1', textFallback: 'v-intersect lié avec le tuple withDirectives : handler jamais appelé (#1205)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.2',
+        date: '2026-10-19',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2372.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2372.h1', textFallback: 'OrigamImg sous SSR : écart d\'hydratation aspect-ratio, et image montée côté client jamais chargée (#1192)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.1',
+        date: '2026-10-19',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2371.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2371.h1', textFallback: 'OrigamImg / OrigamResponsive : prop tag, <img> visible en SSR, fondu en rendu client seul (#1182)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.37.0',
+        date: '2026-10-19',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2370.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v2370.h1', textFallback: 'module Nuxt : options locale transmises à createOrigam (#1181)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.36.0',
+        date: '2026-10-19',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2360.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v2360.h1', textFallback: 'OrigamCodeGroup : groupe de code à onglets (npm / pnpm / yarn) en une seule surface (#1179)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.35.1',
+        date: '2026-10-19',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2351.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2351.h1', textFallback: 'OrigamCode : un 2e bloc monté pendant un import de shiki en échec restait vide (#1189)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.35.0',
+        date: '2026-10-19',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2350.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v2350.h1', textFallback: 'OrigamCode : lang ouvert, createOrigam({ code: { langs } }) (#1180)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.34.0',
+        date: '2026-10-19',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2340.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v2340.h1', textFallback: 'OrigamCommandPalette : prop filter pour afficher des résultats classés en externe (#1184)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.33.0',
+        date: '2026-10-18',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2330.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v2330.h1', textFallback: 'OrigamCommandPalette : icônes de recherche et de chargement personnalisables (#1183)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
+        version: '2.32.2',
+        date: '2026-10-17',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2322.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2322.h1', textFallback: 'OrigamBtn : libellé collé en haut au lieu d\'être centré (#1168)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.32.1',
         date: '2026-10-16',
         type: 'patch',

@@ -13,6 +13,17 @@ test.describe('OrigamLazy', () => {
         await expect(sandbox.locator('.origam-lazy').first()).toBeAttached({ timeout: 5000 })
     })
 
+    test('Intersection reveals the content on its own, no modelValue needed (#1205)', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Prop — height (scroll to reveal)', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        await expect(sandbox.getByText('Lazy content revealed!')).toBeVisible({ timeout: 5000 })
+        await expect(sandbox.locator('.origam-lazy').first()).not.toHaveAttribute('aria-busy', 'true')
+    })
+
     test('Controlled (v-model) — content hidden initially, shown after toggle', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')

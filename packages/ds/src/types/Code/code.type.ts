@@ -1,9 +1,25 @@
 import { CODE_LANG, CODE_THEME } from '../../enums/Code/code.enum'
 import OrigamCode from '../../components/Code/OrigamCode.vue'
 
+import type { TAnyString } from '../Commons/commons.type'
+
 export type TOrigamCode = InstanceType<typeof OrigamCode>
 
 export type TCodeLang = `${CODE_LANG}`
+
+/*********************************************************
+ * TCodeLangOpen
+ *
+ * @description
+ * Open form of `TCodeLang` accepted by the `lang` prop (#1180): the 14 bundled
+ * grammars keep their autocompletion, any other string is allowed because a
+ * `createOrigam({ code: { highlighter, langs } })` highlighter can serve it.
+ *
+ * @description
+ * `TAnyString` (Commons) stops the union from collapsing to plain `string`,
+ * and avoids the empty-object intersection Sonar flags (#771).
+ ********************************************************/
+export type TCodeLangOpen = TCodeLang | TAnyString
 
 export type TCodeTheme = `${CODE_THEME}`
 

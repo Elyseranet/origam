@@ -234,6 +234,7 @@ const SWEPT_STORIES: readonly string[] = [
     'components/stories/ClientOnly/OrigamClientOnly.story.vue',
     'components/stories/Clipboard/OrigamClipboard.story.vue',
     'components/stories/Code/OrigamCode.story.vue',
+    'components/stories/CodeGroup/OrigamCodeGroup.story.vue',
     'components/stories/ColorGradient/OrigamColorGradient.story.vue',
     'components/stories/ColorPicker/OrigamColorPicker.story.vue',
     'components/stories/ColorPicker/OrigamColorPickerCanvas.story.vue',

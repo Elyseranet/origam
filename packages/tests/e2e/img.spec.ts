@@ -66,7 +66,8 @@ import { eventLogItems, fillHstNumber, fillHstText, openEventsTab, selectHstOpti
  *   11  Prop — aspectRatio
  *   12  Prop — lazySrc (preload blur)
  *   13  Prop — gradient
- *   14  Default (playground)
+ *   14  Prop — tag (inside a paragraph)
+ *   15  Default (playground)
  */
 
 const STORY_ID = 'components-stories-img-origamimg-story-vue'
@@ -409,11 +410,58 @@ test.describe('OrigamImg — Props', () => {
     })
 })
 
-test.describe('OrigamImg — Default (playground, index 14)', () => {
+/**
+ * #1182 — `tag` on OrigamImg/OrigamResponsive and a real, visible `<img>`.
+ *
+ * The Variant renders `<p>Before <origam-img tag="span"/> after.</p>`. The
+ * image bytes are served by `page.route` (never the live CDN — see the
+ * NETWORK DEPENDENCE note at the top of this file).
+ *
+ * Re-parsing `outerHTML` through `innerHTML` is the load-bearing assertion:
+ * it is what the browser does with server HTML, and it is where a `<div>`
+ * inside a `<p>` made the parser close the paragraph early.
+ */
+test.describe('OrigamImg — Prop — tag (index 14)', () => {
+    test.setTimeout(30000)
+
+    test('span root: stays inside the <p>, survives an HTML re-parse, <img> is visible', async ({ page }) => {
+        await page.route('**/picsum.photos/seed/origam-img-tag/**', (route) =>
+            route.fulfill({ status: 200, contentType: 'image/png', body: PNG_1X1 }))
+        await page.goto(variantUrl(14), { waitUntil: 'domcontentloaded' })
+        const sandbox = sandboxOf(page)
+        const paragraph = sandbox.locator('[data-cy="img-tag-paragraph"]')
+
+        await expect(paragraph.locator('span.origam-img')).toHaveCount(1, { timeout: 15000 })
+        expect(await paragraph.evaluate((el) => el.querySelectorAll('div').length)).toBe(0)
+
+        const reparsed = await paragraph.evaluate((el) => {
+            const host = document.createElement('div')
+
+            host.innerHTML = el.outerHTML
+
+            const p = host.querySelector('p')
+
+            return {
+                paragraphs: host.querySelectorAll('p').length,
+                spanInsideP: !!p?.querySelector('span.origam-img'),
+                imgInsideP: !!p?.querySelector('span.origam-img img')
+            }
+        })
+
+        expect(reparsed).toEqual({ paragraphs: 1, spanInsideP: true, imgInsideP: true })
+
+        const img = paragraph.locator('img').first()
+
+        await expect(img).toBeVisible({ timeout: 12000 })
+        await expect(img).toHaveAttribute('src', /origam-img-tag/)
+    })
+})
+
+test.describe('OrigamImg — Default (playground, index 15)', () => {
     test.setTimeout(30000)
 
     test('renders with the playground defaults', async ({ page }) => {
-        await page.goto(variantUrl(14), { waitUntil: 'domcontentloaded' })
+        await page.goto(variantUrl(15), { waitUntil: 'domcontentloaded' })
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-img img').first()).toHaveCount(1, { timeout: 15000 })
     })

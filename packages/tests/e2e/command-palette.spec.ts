@@ -297,3 +297,102 @@ test.describe('OrigamCommandPalette — groups & kbd display', () => {
         await expect.poll(async () => await kbds.count(), { timeout: 4000 }).toBeGreaterThan(0)
     })
 })
+
+test.describe('OrigamCommandPalette — search / loading icons (#1183)', () => {
+    test('SVG passed as prop replaces the mdi glyph (no .mdi-magnify / .mdi-loading rendered)', async ({ page }) => {
+        await openVariant(page, STORY, 'Prop - icons (SVG)')
+        const sandbox = sandboxOf(page)
+        await sandbox.getByRole('button', { name: 'Open with SVG icons', exact: true }).click()
+        const dialog = sandbox.locator('[role="dialog"]')
+        await expect(dialog).toBeVisible({ timeout: 4000 })
+
+        const search = dialog.locator('.origam-command-palette__search-icon')
+        await expect(search.locator('svg path')).toHaveAttribute('d', /^M12 2L15 9/)
+        const loading = dialog.locator('.origam-command-palette__loading-icon')
+        await expect(loading.locator('svg path')).toHaveAttribute('d', /^M12 2A10 10/)
+        await expect(dialog.locator('.mdi-magnify')).toHaveCount(0)
+        await expect(dialog.locator('.mdi-loading')).toHaveCount(0)
+    })
+
+    test('default keeps the mdi glyphs', async ({ page }) => {
+        await openVariant(page, STORY, 'Default')
+        const sandbox = sandboxOf(page)
+        await sandbox.getByRole('button', { name: 'Open palette', exact: true }).click()
+        const dialog = sandbox.locator('[role="dialog"]')
+        await expect(dialog).toBeVisible({ timeout: 4000 })
+        await expect(dialog.locator('.mdi-magnify')).toHaveCount(1)
+    })
+
+    test('search-icon slot replaces the default icon', async ({ page }) => {
+        await openVariant(page, STORY, 'Slots - Search icon')
+        const sandbox = sandboxOf(page)
+        await sandbox.getByRole('button', { name: 'Open with custom search icon', exact: true }).click()
+        const dialog = sandbox.locator('[role="dialog"]')
+        await expect(dialog).toBeVisible({ timeout: 4000 })
+        await expect(dialog.locator('[data-cy="slot-search-icon"]')).toBeVisible()
+        await expect(dialog.locator('.origam-command-palette__search-icon')).toHaveCount(0)
+        await expect(dialog.locator('.mdi-magnify')).toHaveCount(0)
+    })
+
+    test('loading slot replaces the default loader', async ({ page }) => {
+        await openVariant(page, STORY, 'Slots - Loading')
+        const sandbox = sandboxOf(page)
+        await sandbox.getByRole('button', { name: 'Open with custom loader', exact: true }).click()
+        const dialog = sandbox.locator('[role="dialog"]')
+        await expect(dialog).toBeVisible({ timeout: 4000 })
+        await expect(dialog.locator('[data-cy="slot-loading"]')).toBeVisible()
+        await expect(dialog.locator('.origam-command-palette__loading-icon')).toHaveCount(0)
+        await expect(dialog.locator('.mdi-loading')).toHaveCount(0)
+    })
+})
+
+test.describe('OrigamCommandPalette — Prop: filter (#1184)', () => {
+    const openFilterPalette = async (page: Page, builtInFuzzy = false) => {
+        await openVariant(page, STORY, 'Prop - filter')
+        const sandbox = sandboxOf(page)
+        if (builtInFuzzy) {
+            await sandbox.getByRole('button', { name: 'Toggle built-in fuzzy match', exact: true }).click()
+            await expect(sandbox.getByText('filter: true (built-in fuzzy match)')).toBeVisible()
+        }
+        await sandbox.getByRole('button', { name: 'Open palette', exact: true }).click()
+        await expect(sandbox.locator('[role="dialog"]')).toBeVisible({ timeout: 4000 })
+        return sandbox
+    }
+
+    test('filter=false: externally ranked hits that are not subsequences of the label stay visible, in the given order', async ({ page }) => {
+        const sandbox = await openFilterPalette(page)
+
+        await sandbox.locator('input[role="combobox"]').fill('docker')
+
+        const labels = sandbox.locator('.origam-command-palette__item-label')
+        await expect(labels).toHaveText(['Install', 'Deployment guide', 'Configuration'])
+    })
+
+    test('filter=false: keyboard navigation walks the given order and Enter selects the active hit', async ({ page }) => {
+        const sandbox = await openFilterPalette(page)
+        const combobox = sandbox.locator('input[role="combobox"]')
+
+        await combobox.fill('docker')
+        const options = sandbox.locator('[role="option"]')
+        await expect(options).toHaveCount(3)
+
+        await expect(combobox).toHaveAttribute('aria-activedescendant', (await options.nth(0).getAttribute('id'))!)
+        await expect(options.nth(0)).toHaveAttribute('aria-selected', 'true')
+
+        await combobox.press('ArrowDown')
+        await expect(combobox).toHaveAttribute('aria-activedescendant', (await options.nth(1).getAttribute('id'))!)
+        await expect(options.nth(1)).toHaveAttribute('aria-selected', 'true')
+
+        await combobox.press('Enter')
+        await expect(sandbox.locator('[role="dialog"]')).toBeHidden({ timeout: 4000 })
+    })
+
+    test('filter=true (negative control): the built-in matcher drops the same hits and shows the empty state', async ({ page }) => {
+        const sandbox = await openFilterPalette(page, true)
+
+        await sandbox.locator('input[role="combobox"]').fill('docker')
+
+        await expect(sandbox.locator('[role="option"]')).toHaveCount(0)
+        await expect(sandbox.locator('.origam-command-palette__empty')).toBeVisible()
+    })
+})

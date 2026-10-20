@@ -18,6 +18,99 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.3] - 2026-10-19
+
+### Fixed — `v-intersect` lié avec le tuple `withDirectives` : handler jamais appelé (#1205)
+
+`OrigamLazy`, `OrigamTextField`, `OrigamTextareaField` et `OrigamPasswordField` passaient à `v-intersect` le tuple `[{ handler, options }, null, ['once']]` comme valeur. La directive lit `.handler` / `.options` sur la valeur : sur un tableau, elle obtient `undefined`. Aucune intersection n'appelait donc le handler, `once` n'était jamais lu et les `options` n'atteignaient pas l'`IntersectionObserver`.
+
+- **`OrigamLazy`** : le contenu ne s'affichait jamais à l'intersection, et les `options` du consommateur (ex. `rootMargin`) étaient ignorées. C'est corrigé ; mesuré dans Chromium.
+- **Champs texte, textarea et mot de passe** : l'appel JS de `focus()` sur intersection (autofocus) n'avait jamais lieu. Dans Chromium, l'attribut natif `autofocus` masquait le défaut. Safari et Firefox n'ont pas été mesurés.
+- Liaison désormais en `v-intersect.once="{ handler, options }"`.
+- La directive émet un `console.warn` en mode dev (une fois par balise) quand on lui lie un tableau.
+
+## [2.37.2] - 2026-10-19
+
+### Fixed — `OrigamImg` sous SSR : écart d'hydratation `aspect-ratio`, et image montée côté client jamais chargée (#1192)
+
+- **Écart d'hydratation** : sans prop `aspect-ratio`, `useAspectRatio` prend le ratio de la fenêtre (`innerWidth / innerHeight`), une valeur inconnue du serveur. Il était appliqué dès le premier rendu client d'une instance hydratée, d'où un `Hydration style mismatch`. Une instance qui hydrate l'applique désormais après `onMounted`. Une instance montée côté client l'applique tout de suite, comme avant. Un `aspect-ratio` explicite est inchangé.
+- **Image montée côté client jamais chargée** : `v-intersect` était lié avec le tuple `withDirectives` comme valeur. La directive lisait `.handler` sur un tableau, si bien que l'intersection ne déclenchait jamais le chargement. L'`<img>` restait en `display:none` + `loading="lazy"`, que Chromium ne charge pas. La directive est désormais liée en `v-intersect.once="{ handler, options }"`, et l'`<img>` passe en `loading="eager"` dès que son chargement est demandé.
+- La même forme de liaison subsiste dans d'autres composants : suivi en #1205.
+
+## [2.37.1] - 2026-10-19
+
+### Fixed — `OrigamImg` / `OrigamResponsive` : prop `tag`, `<img>` visible en SSR, fondu en rendu client seul (#1182)
+
+Un `<origam-img>` placé dans un `<p>` (contenu prose) produisait un `<div>` invalide dans un paragraphe, que le parseur HTML expulse : DOM serveur et client divergeaient. Et l'`<img>` était servie en `display:none` jusqu'au `load` côté client, donc invisible tant que le JS n'avait pas tourné.
+
+- **Nouvelle prop `tag`** (défaut `'div'`) sur `OrigamResponsive` et `OrigamImg` (transmise au Responsive et aux conteneurs placeholder / error / gradient). `tag="span"` garde un DOM valide dans un `<p>`.
+- **`<img>` visible dans le HTML serveur** : elle n'est plus masquée avant le `load`.
+- **Fondu conservé uniquement au montage client** (navigation SPA, `v-if` après hydratation). Une image hydratée depuis le HTML serveur s'affiche sans fondu et sans clignotement.
+- ⚠️ Changement de rendu assumé : en rendu serveur puis hydratation, l'image n'apparaît plus en fondu.
+
+## [2.37.0] - 2026-10-19
+
+### Added — module Nuxt : options `locale` transmises à `createOrigam` (#1181)
+
+- Le module accepte `origam: { locale: { locale, fallbackLocale, messages } }` (même forme que `createOrigam({ locale })`, type `ILocaleOptions`). Les options transitent par `runtimeConfig.public.origam.locale` et sont passées à l'identique par les plugins client et serveur : pas d'écart d'hydratation.
+- Avant, les deux plugins appelaient `createOrigam({ themes, ssr: true })` sans locale : sous Nuxt, `useLocale().current` valait toujours `en`, et les libellés intégrés (noms accessibles des blocs de code, palette de commandes…) restaient en anglais sur un site ja/ko/zh.
+- `messages` est fusionné avec les locales intégrées `en` et `fr` : un site peut fournir `ja` complet ou surcharger quelques clés `fr`. `fallbackLocale` et `messages` deviennent optionnels dans `ILocaleOptions`.
+- Doc : section « Ajouter une langue (gabarit de traduction) » dans le guide i18n ; la liste des clés est `origam/assets/locales/en.json`.
+
+## [2.36.0] - 2026-10-19
+
+### Added — `OrigamCodeGroup` : groupe de code à onglets (npm / pnpm / yarn) en une seule surface (#1179)
+
+- Nouveau composant `OrigamCodeGroup`, qui réunit `OrigamTabs` et `OrigamCode` : une seule surface (bordure, rayon et élévation portés par le groupe, blocs internes aplatis et sans en-tête), un seul bouton copier qui copie le code de l'onglet actif (slot `copy` pour le remplacer), `v-model` sur l'onglet actif.
+- Deux formes : prop `items` (`{ label, code, lang?, filename?, value? }`) ou slot avec des `<origam-code>` enfants ; le libellé de l'onglet vient de `label`, sinon de `filename`, sinon de la position.
+- Chaque zone défilante porte un nom accessible distinct (`{groupe}, {onglet}, code block {n} of {total}, scrollable region`, clés `origam.code_group.*` en `en` et `fr`) : plus de `landmark-unique` axe entre panneaux. Donner un `label` à chaque groupe quand plusieurs se trouvent sur une même page.
+- `OrigamCode` gagne `hideHeader`, `flat` et `scrollerAriaLabel`, utilisables seuls.
+- Aucun nouveau token : le groupe lit `--origam-code---*`, donc un thème qui restyle `OrigamCode` restyle aussi le groupe.
+
+## [2.35.1] - 2026-10-19
+
+### Fixed — `OrigamCode` : un 2e bloc monté pendant un import de `shiki` en échec restait vide (#1189)
+
+Quand `shiki` n'est pas résolvable, deux `<origam-code>` montés dans le même tick : le premier s'affichait en texte brut, le second restait **vide** (zone défilante de hauteur 0) avec un rejet de promesse non capturé. `loadHighlighter()` ne renvoyait la promesse munie de son repli qu'au premier appelant ; un appelant concurrent recevait la promesse brute, qui rejetait, et `rebuild()` n'avait qu'un `try/finally`.
+
+- `loadHighlighter()` renvoie désormais la même promesse, déjà munie de son repli (`null` → code brut), à tous les appelants.
+- `rebuild()` capture en plus un éventuel rejet et peint le code en clair : aucun bloc ne reste vide.
+- Prouvé par `packages/tests/TU/components/Code/OrigamCode-concurrent-load-failure.spec.ts` (rouge sur le parent, vert après).
+
+## [2.35.0] - 2026-10-19
+
+### Added — `OrigamCode` : `lang` ouvert, `createOrigam({ code: { langs } })` (#1180)
+
+- `lang` n'est plus limité aux 14 grammaires de `SUPPORTED_LANGS` quand un `code.highlighter` est fourni : la valeur est transmise telle quelle au highlighter, qui sait seul ce qu'il peut servir. S'il échoue, le bloc retombe sur `plaintext` (le `try/catch` existant autour de `codeToHtml`), avec un avertissement dev-only, une fois par langage. Avant, `resolveLang()` repliait tout `lang` inconnu sur `plaintext` avant de consulter le highlighter, donc `dockerfile` ne pouvait jamais être servi.
+- Nouvelle option `createOrigam({ code: { langs } })` : liste passée à `createHighlighter` (défaut : `SUPPORTED_LANGS`). Avec le highlighter intégré, un `lang` présent dans `langs` est accepté.
+- Typage : la prop `lang` devient `TCodeLangOpen` (`TCodeLang | (string & {})`), l'autocomplétion des 14 valeurs est conservée. `TCodeLang` reste la liste fermée.
+
+## [2.34.0] - 2026-10-19
+
+### Added — `OrigamCommandPalette` : prop `filter` pour afficher des résultats classés en externe (#1184)
+
+- Nouvelle prop `filter` : `true` (défaut, comportement inchangé : correspondance floue intégrée et tri par score), `false` (les `commands` sont affichées telles quelles, dans l'ordre fourni) ou une fonction `(commands, query) => commands` dont le résultat est affiché dans son ordre.
+- Destinée à la recherche serveur ou plein texte alimentée par l'événement `query` : un résultat trouvé dans le corps d'un document n'est plus masqué parce que la requête n'est pas une sous-séquence de son libellé, et le classement du moteur est conservé.
+- Avec `filter=false` ou une fonction, une liste `commands` vide reste vide : elle ne retombe plus sur le registre `useCommand()` (le repli est conservé avec `filter=true`).
+
+## [2.33.0] - 2026-10-18
+
+### Added — `OrigamCommandPalette` : icônes de recherche et de chargement personnalisables (#1183)
+
+- Nouvelles props `searchIcon` et `loadingIcon`, typées `TIcon` (id mdi, chemin SVG ou composant). Défauts inchangés : `mdi:mdi-magnify` et `mdi:mdi-loading`.
+- Nouveaux slots `search-icon` et `loading`, prioritaires sur les props.
+- Une application qui fournit un SVG n'a plus besoin de la police `@mdi/font` pour ces deux glyphes : aucun élément `.mdi-magnify` / `.mdi-loading` n'est rendu (prouvé par `packages/tests/e2e/command-palette.spec.ts`).
+
+## [2.32.2] - 2026-10-17
+
+### Fixed — `OrigamBtn` : libellé collé en haut au lieu d'être centré (#1168)
+
+Régression publiée de 2.29.1 à 2.32.1, introduite par #1094. La hauteur du bouton est devenue `height: auto` + `min-height`, et le `height: 100%` de la grille interne `.origam-btn__loader` ne se résolvait plus contre une hauteur automatique. La racine était `inline-block`, donc son `align-items: center` restait sans effet. Résultat : un bouton rendu en `<a>` (`href` / `to`) affichait son contenu d'une ligne collé en haut de la boîte. Mesuré en Chromium : écart de 4 à 21 px entre le centre du contenu et le centre du bouton, 35 boutons `<a>` d'une ligne décentrés sur les 40 de la matrice. Les 5 autres avaient une hauteur fixe (`icon`, prop `height`), étaient en `block` (déjà en flex), ou avaient un contenu aussi haut que le minimum (x-small compact). Un `<button>` natif masquait le défaut, puisque le navigateur centre lui-même son contenu.
+
+- La racine passe de `inline-block` à `inline-flex`, et son `align-items: center` prend enfin effet. Elle reste de niveau inline (#933). Dans un parent flex ou grid, elle est blockifiée en `flex` au lieu de `block`. `block` (`display: flex`, #1095) et `wrap` (le bouton grandit avec son contenu, #1094) sont inchangés.
+- `inline-flex` plutôt que `inline-grid`, d'après la mesure : la directive ripple ajoute un `origam-ripple__container` dans le flux pendant l'appui. Avec une racine en grille, ce conteneur prend une rangée implicite et le libellé saute de 4 px à chaque clic.
+- Effet de bord mesuré : les boutons perdent environ 1 px de largeur (0,9 à 1,6 px). Ce pixel venait du `letter-spacing` ajouté après la grille interne quand elle était posée dans une ligne inline. Le libellé est maintenant à égale distance des deux bords (12 px / 12 px au lieu de 13,1 px / 12 px). Aucune hauteur ne change.
+
 ## [2.32.1] - 2026-10-16
 
 ### Fixed — trois avertissements console en dev (#1152)

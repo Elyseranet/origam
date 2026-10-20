@@ -175,6 +175,11 @@
       "scroller_aria_label_filename": "{filename}, bloc de code, zone défilante",
       "scroller_aria_label_lang": "Bloc de code {lang}, zone défilante"
     },
+    "code_group": {
+      "tabs_aria_label": "Variantes du code",
+      "scroller_aria_label": "{label}, bloc de code {position} sur {total}, zone défilante",
+      "scroller_aria_label_group": "{group}, {label}, bloc de code {position} sur {total}, zone défilante"
+    },
     "qr_code": {
       "aria_label": "QR code pour {value}"
     },

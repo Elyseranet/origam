@@ -91,7 +91,10 @@
 					format: false,
 					filename: 'App.ts',
 					tag: 'figure',
-					maxHeight: undefined
+					maxHeight: undefined,
+					hideHeader: false,
+					flat: false,
+					scrollerAriaLabel: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -105,6 +108,9 @@
 						:filename="state.filename"
 						:tag="state.tag"
 						:max-height="state.maxHeight"
+						:hide-header="state.hideHeader"
+						:flat="state.flat"
+						:scroller-aria-label="state.scrollerAriaLabel"
 						:code="tenLineSnippet"
 				/>
 			</template>
@@ -114,6 +120,11 @@
 					<HstCheckbox v-model="state.copyable"    title="Copyable"/>
 					<HstCheckbox v-model="state.wrap"        title="Wrap"/>
 					<HstCheckbox v-model="state.format"      title="Format (v3 stub)"/>
+				</StoryGroup>
+				<StoryGroup title="Embedding">
+					<HstCheckbox v-model="state.hideHeader" title="Hide Header"/>
+					<HstCheckbox v-model="state.flat"       title="Flat"/>
+					<HstText     v-model="state.scrollerAriaLabel" title="Scroller Aria Label"/>
 				</StoryGroup>
 				<StoryGroup title="Content">
 					<HstSelect v-model="state.lang"     title="Lang"     :options="CODE_LANG_OPTIONS"/>
@@ -125,6 +136,29 @@
 				</StoryGroup>
 				<StoryGroup title="Tag">
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Functional - Open lang (outside the bundled set)"
+				:init-state="() => useStoryInitState<Partial<ICodeProps>>({
+					lang: 'dockerfile'
+				})"
+		>
+			<!-- Histoire installs ONE shared createOrigam() with no custom
+			     highlighter, so an unknown lang folds onto plaintext here; with
+			     createOrigam({ code: { highlighter, langs } }) it is served. -->
+			<template #default="{ state }">
+				<origam-code
+						:lang="state.lang"
+						:code="dockerSnippet"
+						data-cy="origam-code-open-lang"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Language">
+					<HstText v-model="state.lang" title="Lang (any string)"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -283,6 +317,8 @@
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'
+
+	const dockerSnippet = 'FROM node:22\nRUN npm ci'
 
 	const CODE_LANG_OPTIONS: Array<IOptions<TCodeLang>> = [
 		{ label: 'plaintext', value: CODE_LANG.PLAINTEXT },

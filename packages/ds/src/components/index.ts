@@ -34,6 +34,8 @@ export * from './Clipboard'
 
 export * from './Code'
 
+export * from './CodeGroup'
+
 export * from './ColorPicker'
 
 export * from './ColorPickerField'

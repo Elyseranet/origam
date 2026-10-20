@@ -83,7 +83,7 @@
 							/>
 							<input
 									ref="inputRef"
-									v-intersect="intersect"
+									v-intersect.once="intersect"
 									:autofocus="autofocus"
 									:disabled="isDisabled"
 									:name="name"
@@ -330,9 +330,7 @@
 	 ********************************************************/
 
 	const intersect = computed(() => {
-		return [{
-			handler: handleIntersect
-		}, null, ['once']]
+		return {handler: handleIntersect}
 	})
 	const handleIntersect = (isIntersecting: boolean, entries: IntersectionObserverEntry[]) => {
 		if (!props.autofocus || !isIntersecting) return

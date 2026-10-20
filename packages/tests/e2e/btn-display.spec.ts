@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 import { fillHstText } from './_support/histoire-controls'
 
 /**
- * SPEC — OrigamBtn : le root doit être `inline-block`, pas `inline` (#933)
+ * SPEC — OrigamBtn : le root doit être de niveau inline (`inline-flex`), pas `inline` (#933, #1168)
  *
  * ## Le défaut encodé ici
  *
@@ -42,6 +42,12 @@ import { fillHstText } from './_support/histoire-controls'
  * une largeur égale à celle du conteneur. Le second test, lui, est vert des
  * deux côtés **par construction** : c'est le témoin de NON-régression, il
  * affirme que les 178 instances saines ne bougent pas.
+ *
+ * ⚠️ #1168 — les valeurs attendues ont changé : `inline-block` / `block` sont
+ * devenus `inline-flex` / `flex`. Le contrat de #933 (boîte de niveau inline,
+ * largeur du contenu dans un parent bloc) est inchangé ; c'est le modèle de
+ * boîte interne qui passe en flex pour centrer le libellé. Le centrage
+ * lui-même est épinglé par `btn-vertical-center.spec.ts`.
  *
  * ## Variants de la story OrigamBtn (index 0-based)
  *   0 → Design
@@ -118,15 +124,17 @@ test.describe('OrigamBtn — display du root (#933)', () => {
         expect(m.scoped, 'le bouton mesuré doit porter le data-v- du scoped').toBe(true)
         expect(m.boxWidth).toBe(BOX_WIDTH)
 
-        // Valeur absolue : c'est LA déclaration ajoutée par #933.
-        expect(m.display).toBe('inline-block')
+        // #933 exige une boîte de niveau INLINE (jamais `inline`). La valeur
+        // est `inline-flex` depuis #1168 — `inline-block` laissait le libellé
+        // d'un `<a>` collé en haut d'une hauteur `auto` + `min-height` (#1094).
+        expect(m.display).toBe('inline-flex')
 
         // Une boîte inline aurait pris toute la ligne. Le libellé du Variant
         // Functional (« Button ») tient très largement sous la moitié.
         expect(m.width).toBeLessThan(BOX_WIDTH / 2)
     })
 
-    test('dans un parent FLEX, la valeur calculée reste `block` — aucune instance existante ne bouge', async ({ page }) => {
+    test('dans un parent FLEX, le root est blockifié en `flex` (#1168)', async ({ page }) => {
         await page.goto(variantUrl(FUNCTIONAL_VARIANT))
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -137,8 +145,9 @@ test.describe('OrigamBtn — display du root (#933)', () => {
 
         const m = await measureInParent(page, 'flex')
 
-        // Blockification du flex item : `inline-block` → `block`, c'est-à-dire
-        // la valeur que TOUTES les instances du catalogue calculaient déjà.
-        expect(m.display).toBe('block')
+        // Blockification du flex item : `inline-flex` → `flex`. Avant #1168 la
+        // racine était `inline-block` → `block` ; le passage à `flex` est ce
+        // qui centre le libellé verticalement (cf. btn-vertical-center.spec.ts).
+        expect(m.display).toBe('flex')
     })
 })

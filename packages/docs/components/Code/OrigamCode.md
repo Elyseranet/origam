@@ -82,6 +82,41 @@ export function createHighlighter (opts: { themes: readonly string[], langs: rea
   un-highlighted text**, exactly like the "shiki absent" case above, rather
   than breaking the page.
 
+### Open `lang` and `code.langs`
+
+`lang` is not limited to the 14 bundled grammars (#1180).
+
+- **Custom `code.highlighter`** — `lang` is no longer filtered: it is handed to
+  your highlighter untouched. If the highlighter cannot tokenise it (no such
+  grammar), that one block falls back to `plaintext` and a **dev-only**
+  console warning names the language. Production stays silent.
+- **`code.langs`** — the list passed to `createHighlighter({ langs })`. Default:
+  the 14 `SUPPORTED_LANGS`. It *replaces* the default (keep `plaintext` in it if
+  you use it). With the built-in highlighter, a `lang` listed here is accepted
+  instead of being folded onto `plaintext`. Like `highlighter`, it is read once
+  by the first `<OrigamCode>` to mount.
+
+```ts
+import { createOrigam } from 'origam'
+
+app.use(createOrigam({
+  code: {
+    // optional: your own shiki-compatible module (see above)
+    highlighter: () => import('./shiki-lite'),
+    // grammars loaded up front — `dockerfile` becomes a valid `lang`
+    langs: ['plaintext', 'ts', 'dockerfile']
+  }
+}))
+```
+
+```vue
+<origam-code lang="dockerfile" code="FROM node:22" />
+```
+
+Without `langs` and without a highlighter that embeds `dockerfile`, that block
+renders as plain text (with a one-shot warning when the built-in highlighter is
+used, a dev-only one when a custom highlighter is used).
+
 ## Quick start
 
 ### Via the `code` prop
@@ -116,7 +151,7 @@ export function createHighlighter (opts: { themes: readonly string[], langs: rea
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `code` | `string` | `undefined` | Source code. Falls back to the default slot when omitted. |
-| `lang` | `TCodeLang` | `'plaintext'` | Grammar to apply. Unknown values fall back to `plaintext` with a one-shot console warning. |
+| `lang` | `TCodeLang \| (string & {})` | `'plaintext'` | Grammar to apply. Autocompletes the 14 bundled values but accepts any string. Without a custom `code.highlighter`, a value outside the bundled set and outside `code.langs` falls back to `plaintext` with a one-shot console warning. With a custom `code.highlighter` it is passed through as-is (see [Open `lang`](#open-lang-and-code-langs)). |
 | `lineNumbers` | `boolean` | `false` | Show a left gutter with line numbers (pure CSS counter). |
 | `highlightLines` | `number[] \| string \| null` | `null` | Lines to highlight. Accepts an array (`[2, 5]`) or a range string (`'2,5-7'`). |
 | `copyable` | `boolean` | `true` | Show the copy-to-clipboard button. In non-compact mode it always renders a header bar so the button sits next to the filename (or the language badge when no filename is set) — never floating over the code. |
@@ -126,6 +161,9 @@ export function createHighlighter (opts: { themes: readonly string[], langs: rea
 | `filename` | `string` | `undefined` | Display the filename on the left of the header bar. Without a filename the header still renders (showing the language badge) as long as `copyable` is on, so the chrome stays consistent with or without a filename. |
 | `compact` | `boolean` | `false` | Render a single-line **pill** instead of a multi-line surface — ideal for an install command. Suppresses header / filename / line-numbers, shrinks vertical padding to one line, and collapses the copy control to a small inline icon button at the end of the row. `<figure><pre><code>` semantics are preserved. |
 | `prompt` | `string` | `undefined` | Decorative prompt prefix rendered before the code (e.g. `'$'`). Purely visual — it is NOT part of the highlighted code and is NEVER included in the clipboard copy. Most useful with `compact`. |
+| `hideHeader` | `boolean` | `false` | Do not render the header bar (filename / language badge / copy button), whatever `filename`, `copyable` or the `header` slot say. For a block embedded in a surface that already shows that information, such as a tab of `<OrigamCodeGroup>`. |
+| `flat` | `boolean` | `false` | Flatten the block into its host: no border, no radius, no elevation, no outer margin. |
+| `scrollerAriaLabel` | `string` | `undefined` | Accessible name of the scrollable region. Left out, it is derived from `filename`, then `lang`. Set it when several blocks of the same language share a page, so each region has a distinct name. |
 | `fontFamily` | `TFontFamily` | `undefined` | Font family token (`sans` · `mono` · `serif`). Overrides the theme font-family on the code surface. When unset the theme value stays in control. |
 | `fontSize` | `TFontSize` | `undefined` | Font size token (`xs` · `sm` · `md` · `lg` · `xl` · `2xl` · `3xl` · `4xl` · `5xl`). Overrides the theme font-size. |
 | `lineHeight` | `TLineHeight` | `undefined` | Line-height token (`none` · `tight` · `snug` · `normal` · `relaxed` · `loose`). Overrides the theme line-height. |
@@ -159,8 +197,9 @@ export function createHighlighter (opts: { themes: readonly string[], langs: rea
 | `yaml` | YAML |
 | `md` | Markdown |
 
-Adding a language requires re-bundling the shiki highlighter — see the
-composable for the loaded subset.
+To serve another language, list it in `createOrigam({ code: { langs } })` (and
+make sure your `code.highlighter`, if any, embeds the grammar) — see
+[Open `lang`](#open-lang-and-code-langs).
 
 ## Compact mode (install pill)
 

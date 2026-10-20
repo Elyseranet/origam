@@ -1,7 +1,7 @@
 import { inject } from 'vue'
 
 import type { IUseCodeReturn } from '../../interfaces/Code/code.interface'
-import type { TCodeLang } from '../../types/Code/code.type'
+import type { TCodeLangOpen } from '../../types/Code/code.type'
 import type { TShikiHighlighter, TShikiHighlighterLoader, TShikiModule } from '../../types/Code/code.type'
 
 import { CODE_CACHE_MAX_ENTRIES, CODE_DARK_THEME as DARK_THEME, CODE_LIGHT_THEME as LIGHT_THEME, ORIGAM_CODE_KEY, SUPPORTED_LANGS } from '../../consts/Code/code.const'
@@ -46,7 +46,7 @@ import { CODE_LANG } from '../../enums'
  * is a pure CSS cascade (no JS re-render).
  */
 
-let _highlighterPromise: Promise<TShikiHighlighter> | null = null
+let _highlighterPromise: Promise<TShikiHighlighter | null> | null = null
 let _highlighterReady = false
 // `shiki` is an OPTIONAL peer dependency. When it is not installed, the dynamic
 // import below throws — we degrade to plain, un-highlighted code instead of
@@ -86,7 +86,7 @@ function lruSet (key: string, value: string): void {
     _cache.set(key, value)
 }
 
-async function loadHighlighter (loader?: TShikiHighlighterLoader): Promise<TShikiHighlighter | null> {
+async function loadHighlighter (loader?: TShikiHighlighterLoader, langs?: ReadonlyArray<string>): Promise<TShikiHighlighter | null> {
     if (_highlighterUnavailable) return null
     if (_highlighterPromise) return _highlighterPromise
 
@@ -129,14 +129,14 @@ async function loadHighlighter (loader?: TShikiHighlighterLoader): Promise<TShik
      * `TShikiModule` this DS exposes to a third-party loader. The runtime
      * shape is identical either way.
      ********************************************************/
-    _highlighterPromise = (async () => {
+    const raw = (async () => {
         const shiki: TShikiModule = loader
             ? await loader()
             : await import(/* @vite-ignore */ 'shiki') as unknown as TShikiModule
 
         const highlighter = await shiki.createHighlighter({
             themes: [LIGHT_THEME, DARK_THEME],
-            langs: [...SUPPORTED_LANGS]
+            langs: [...(langs ?? SUPPORTED_LANGS)]
         })
         _highlighterReady = true
         return highlighter as unknown as TShikiHighlighter
@@ -144,11 +144,17 @@ async function loadHighlighter (loader?: TShikiHighlighterLoader): Promise<TShik
 
     /*********************************************************
      * @description
+     * #1189 — the singleton stores the promise ALREADY carrying its
+     * fallback. Storing the raw one handed every concurrent caller (an
+     * import still in flight) the rejecting promise, so only the first
+     * caller ever saw `null`.
+     *
+     * @description
      * Default shiki not installed (optional peer), or an app-supplied
      * loader rejected / its module lacks `createHighlighter` → degrade to
      * plain. Same fallback on both branches; only the warning differs.
      ********************************************************/
-    return _highlighterPromise.catch((err: unknown) => {
+    _highlighterPromise = raw.catch((err: unknown) => {
         _highlighterUnavailable = true
         _highlighterPromise = null
         if (!_unavailableWarned) {
@@ -165,17 +171,33 @@ async function loadHighlighter (loader?: TShikiHighlighterLoader): Promise<TShik
         }
         return null
     })
+    return _highlighterPromise
 }
 
-function resolveLang (lang: TCodeLang): string {
+/*********************************************************
+ * resolveLang
+ *
+ * @description
+ * #1180 — `lang` is no longer filtered when the consumer supplied a
+ * `code.highlighter`: that highlighter, not the DS, knows which grammars it
+ * can serve. The shiki try/catch in `highlight()` is the safety net.
+ *
+ * @description
+ * Without a custom highlighter, the bundled set plus `code.langs` is what was
+ * loaded, so anything else is folded onto plaintext up front.
+ ********************************************************/
+function resolveLang (lang: string, hasCustomHighlighter: boolean, extraLangs?: ReadonlyArray<string>): string {
+    if (hasCustomHighlighter) return lang
     if ((SUPPORTED_LANGS as ReadonlyArray<string>).includes(lang)) return lang
+    if (extraLangs?.includes(lang)) return lang
     if (!_unsupportedLangWarned.has(lang)) {
         _unsupportedLangWarned.add(lang)
 
         console.warn(
             `[origam] OrigamCode: lang="${lang}" is not in the bundled grammar set. ` +
             `Falling back to "${CODE_LANG.PLAINTEXT}". ` +
-            `Supported: ${SUPPORTED_LANGS.join(', ')}.`
+            `Supported: ${[...SUPPORTED_LANGS, ...(extraLangs ?? [])].join(', ')}. ` +
+            `Add it with createOrigam({ code: { langs } }) or supply a code.highlighter.`
         )
     }
     return CODE_LANG.PLAINTEXT
@@ -192,18 +214,20 @@ function resolveLang (lang: TCodeLang): string {
  * behaviour, unchanged.
  */
 export function useCode (): IUseCodeReturn {
-    const highlighterLoader = inject(ORIGAM_CODE_KEY)?.highlighter
+    const codeOptions = inject(ORIGAM_CODE_KEY)
+    const highlighterLoader = codeOptions?.highlighter
+    const customLangs = codeOptions?.langs
 
     async function highlight (
         code: string,
-        lang: TCodeLang
+        lang: TCodeLangOpen
     ): Promise<string> {
-        const resolvedLang = resolveLang(lang)
+        const resolvedLang = resolveLang(lang, highlighterLoader !== undefined, customLangs)
         const key = makeCacheKey(code, resolvedLang)
         const cached = lruGet(key)
         if (cached !== undefined) return cached
 
-        const highlighter = await loadHighlighter(highlighterLoader)
+        const highlighter = await loadHighlighter(highlighterLoader, customLangs)
         if (!highlighter) {
             // shiki unavailable → plain, escaped code. `paintIntoDom` still
             // splits on `\n` and wraps each line in a `.origam-code__row`, so
@@ -225,7 +249,17 @@ export function useCode (): IUseCodeReturn {
             // shiki throws on truly malformed input. Degrade gracefully to
             // an escaped plaintext `<pre>` so the consumer never breaks.
 
-            console.warn('[origam] OrigamCode: shiki failed to tokenise, falling back to plaintext.', err)
+            /*********************************************************
+             * Dev-only warning
+             *
+             * @description
+             * Once per lang: with an open `lang` this is the normal way to
+             * learn that the supplied highlighter lacks a grammar.
+             ********************************************************/
+            if (import.meta.env?.DEV && !_unsupportedLangWarned.has(resolvedLang)) {
+                _unsupportedLangWarned.add(resolvedLang)
+                console.warn(`[origam] OrigamCode: shiki could not tokenise lang="${resolvedLang}", falling back to plaintext.`, err)
+            }
             html = highlighter.codeToHtml(code, { ...opts, lang: CODE_LANG.PLAINTEXT })
         }
         lruSet(key, html)
@@ -233,7 +267,7 @@ export function useCode (): IUseCodeReturn {
     }
 
     async function prime (): Promise<void> {
-        await loadHighlighter(highlighterLoader)
+        await loadHighlighter(highlighterLoader, customLangs)
     }
 
     function isReady (): boolean {

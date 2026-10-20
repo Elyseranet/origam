@@ -47,6 +47,59 @@ a low-resolution preview while the full image loads.
 </template>
 ```
 
+## Server rendering and `tag` (#1182)
+
+The real `<img>` is part of the server HTML with its `src`, `srcset`,
+`sizes` and `alt`, and it is **not hidden** before hydration: the image shows
+without JavaScript and the browser's preload scanner can discover it. Native
+`loading="lazy"` (or `eager` when you pass `eager`) is what defers the request.
+
+The entrance fade depends on how the instance came to exist:
+
+| How the image appears | Behaviour |
+|---|---|
+| Hydrated from server HTML | Painted at once, **no fade, no flash**. Only an errored image is hidden, so the `error` slot replaces it. |
+| Mounted on the client (SPA navigation, dynamic list, `v-if` after hydration) | Unchanged: hidden until the native `load`, then faded in by the `transition` prop (disabled under `prefers-reduced-motion`). |
+
+> Behaviour change. Until now the server HTML carried the `<img>` as
+> `display: none` until the `load` event, on every render. Now only a
+> client-mounted image waits for `load`. `lazySrc` still overlays the image
+> until it has loaded, and the `placeholder` / `error` slots are unchanged.
+
+### Hydration and loading (#1192)
+
+- **No `aspect-ratio` the server cannot emit.** Without an `aspect-ratio`
+  prop the root falls back to the viewport's ratio, which only the browser
+  knows. An instance that hydrates server HTML therefore applies that
+  fallback right **after mount**, never in its first render, so the server
+  `style` and the first client render are identical (no "Hydration style
+  mismatch"). A client-mounted instance applies it at once. An explicit
+  `aspect-ratio` is deterministic and is rendered by the server.
+- **A client-mounted image starts loading when it intersects the viewport.**
+  It is `display: none` until its `load`, and Chromium never loads a
+  `loading="lazy"` image that has no box. Once the viewport intersection has
+  fired, the `<img>` switches to `loading="eager"` so the load can start;
+  until then it stays `lazy`. A hydrated image is visible and keeps native
+  lazy loading.
+
+The root is a `<div>` by default, which is not allowed inside a `<p>`: the
+HTML parser closes the paragraph before it, and Vue reports a hydration
+mismatch. Pass `tag="span"` for phrasing content, such as a Markdown image
+inside a paragraph. Every element the component renders (root, content
+wrapper, placeholder, error, gradient) then uses that tag. The box does not
+change: `display` comes from `--origam-responsive---display` (`flex`), not
+from the element.
+
+```vue
+<template>
+    <p>
+        Before
+        <OrigamImg tag="span" src="/a.png" alt="A" :aspect-ratio="16 / 9" />
+        after.
+    </p>
+</template>
+```
+
 ## Object fit
 
 `cover` toggles between `object-fit: contain` (default) and
@@ -155,6 +208,7 @@ interface IImgProps extends IColorProps, IResponsiveProps,
     referrerpolicy?: TReferrerPolicy
     srcset?: string
     position?: string
+    tag?: string              // inherited from IResponsiveProps, default 'div'
 }
 
 interface ISrcObject {
@@ -170,6 +224,7 @@ interface ISrcObject {
 
 ```html
 <!-- the root carries `aspect-ratio` from the `aspectRatio` prop (#709) -->
+<!-- element = the `tag` prop (default div); the inner <img> is never display:none before hydration -->
 <div class="origam-responsive origam-img">
     <img class="origam-img__picture origam-img__picture--cover" />
     <div class="origam-img__gradient"></div>

@@ -124,7 +124,7 @@
 							/>
 							<input
 									ref="inputRef"
-									v-intersect="intersect"
+									v-intersect.once="intersect"
 									:autofocus="autofocus"
 									:disabled="isDisabled"
 									:name="name"
@@ -417,7 +417,7 @@
 		;(entries[0].target as HTMLInputElement)?.focus?.()
 	}
 	const intersect = computed(() => {
-		return [{handler: handleIntersect}, null, ['once']]
+		return {handler: handleIntersect}
 	})
 
 	/*********************************************************

@@ -1,7 +1,7 @@
 <template>
 	<origam-responsive
 			:id="id"
-			v-intersect="intersect"
+			v-intersect.once="intersect"
 			:aria-label="alt"
 			:class="imgClasses"
 			:role="alt ? 'img' : undefined"
@@ -10,11 +10,11 @@
 	>
 		<template #additional>
 			<origam-transition
+					:appear="fadesIn"
 					:transition="transition"
-					appear
 			>
 				<img
-						v-show="isLoaded"
+						v-show="isPictureShown"
 						ref="image"
 						:alt="alt"
 						:class="imgPictureClasses"
@@ -46,25 +46,28 @@
 					:transition="transition"
 					appear
 			>
-				<div
+				<component
+						:is="tag"
 						v-if="(isLoading || (isError && !slots.error)) && slots.placeholder"
 						class="origam-img__placeholder"
 				>
 					<slot name="placeholder"/>
-				</div>
+				</component>
 			</origam-transition>
 			<origam-transition
 					:transition="transition"
 					appear
 			>
-				<div
+				<component
+						:is="tag"
 						v-if="isError && slots.error"
 						class="origam-img__error"
 				>
 					<slot name="error"/>
-				</div>
+				</component>
 			</origam-transition>
-			<div
+			<component
+					:is="tag"
 					v-if="gradient"
 					:style="imgGradientStyles"
 					class="origam-img__gradient"
@@ -128,7 +131,9 @@
 	 * @description
 	 * Props, emits, composables, and image load lifecycle setup.
 	 ********************************************************/
-	const props = withDefaults(defineProps<IImgProps>(), {})
+	const props = withDefaults(defineProps<IImgProps>(), {
+		tag: 'div'
+	})
 
 	const emits = defineEmits<IImgEmits>()
 
@@ -209,7 +214,7 @@
 	 * was already correct, which is what made this a C3 (works once,
 	 * freezes at usage) rather than a C1.
 	 ********************************************************/
-	const responsiveProps = computed(() => pick(props, ['aspectRatio', 'contentClass', 'height', 'maxHeight', 'maxWidth', 'minHeight', 'minWidth', 'width', 'class', 'style']))
+	const responsiveProps = computed(() => pick(props, ['tag', 'aspectRatio', 'contentClass', 'height', 'maxHeight', 'maxWidth', 'minHeight', 'minWidth', 'width', 'class', 'style']))
 
 	watch(() => props.src, () => {
 		init(state.value !== IMG_STATE.IDLE)
@@ -398,11 +403,20 @@
 	 * theme naming `options` on `origam-img` never reached the
 	 * directive. `computed` defers the read to access time (render),
 	 * comfortably after the theme-props-resolver's `beforeCreate`.
+	 *
+	 * @description
+	 * #1192 — the directive's binding VALUE is `{ handler, options }` and
+	 * `once` is a MODIFIER (`v-intersect.once`). This used to bind the
+	 * `withDirectives` tuple `[{ handler, options }, null, ['once']]` as the
+	 * value: the directive read `.handler` / `.options` off an array, got
+	 * `undefined`, and `init` was never called by an intersection. A visible
+	 * image only worked through the native `load` event; a `display:none`
+	 * (client-mounted, fading in) one never started.
 	 ********************************************************/
-	const intersect = computed(() => [{
+	const intersect = computed(() => ({
 		handler: init,
 		options: props.options
-	}, null, ['once']])
+	}))
 
 	/*********************************************************
 	 * nativeLoading — native `loading` attribute (CSS/HTML-first)
@@ -413,8 +427,18 @@
 	 * `load`/`error` emits) with the browser's own lazy-loading
 	 * primitive. Read lazily via a computed, so a theme-provided
 	 * `eager` reaches it (ADR-005).
+	 *
+	 * @description
+	 * #1192 — `lazy` only while `IDLE`. A client-mounted image is
+	 * `display:none` (`v-show`) until its `load`; Chromium never loads a
+	 * `loading="lazy"` image that has no box, so that image waited for a
+	 * load that nothing would start. Once the IntersectionObserver has
+	 * fired (`state` left `IDLE`) the component has itself decided the
+	 * image is due, so the native attribute must not veto it. A hydrated
+	 * image is unaffected: it starts `IDLE` (`lazy`, as served) and is
+	 * visible, so native lazy keeps gating it.
 	 ********************************************************/
-	const nativeLoading = computed(() => (props.eager ? 'eager' : 'lazy'))
+	const nativeLoading = computed(() => (props.eager || state.value !== IMG_STATE.IDLE ? 'eager' : 'lazy'))
 
 	/*********************************************************
 	 * State
@@ -430,6 +454,29 @@
 	})
 	const isError = computed(() => {
 		return state.value === IMG_STATE.ERROR
+	})
+
+	/*********************************************************
+	 * fadesIn — client-mounted vs server-rendered (#1182)
+	 *
+	 * @description
+	 * An image hydrated from server HTML must paint at once and never
+	 * flash: it is shown unless it errored, and its transition does not
+	 * `appear` (an `appear` transition applies its enter-from classes
+	 * during hydration). An image mounted on the client (SPA navigation,
+	 * dynamic list, `v-if` after hydration) keeps the former behaviour:
+	 * hidden until the native `load`, then faded in by `transition`.
+	 *
+	 * @description
+	 * During hydration Vue sets `vnode.el` to the existing server node
+	 * BEFORE `setup()` runs; on a fresh client mount it is still null. On
+	 * the server `IN_BROWSER` is false, so the `<img>` is always served
+	 * visible. Read once, at setup, on purpose: it describes how this
+	 * instance came to exist, and never changes.
+	 ********************************************************/
+	const fadesIn = IN_BROWSER && !vm.vnode.el
+	const isPictureShown = computed(() => {
+		return fadesIn ? isLoaded.value : !isError.value
 	})
 	const hasContent = computed(() => {
 		return slots.default
