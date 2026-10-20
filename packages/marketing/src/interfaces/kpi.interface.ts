@@ -4,3 +4,9 @@ export interface IKpi {
     labelKey: string
     labelFallback: string
 }
+
+export interface ILiveKpi {
+    source: 'downloads' | 'stars'
+    labelKey: string
+    labelFallback: string
+}

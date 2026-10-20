@@ -35,6 +35,22 @@
           {{ t(kpi.valueKey, kpi.valueFallback) }}
         </dd>
       </div>
+      <div
+        v-for="kpi in liveKpis"
+        :key="kpi.source"
+        class="home-kpis__item"
+        :data-cy="`kpi-live-${kpi.source}`"
+      >
+        <dt class="home-kpis__label">
+          {{ t(kpi.labelKey, kpi.labelFallback) }}
+        </dt>
+        <dd class="home-kpis__value">
+          <origam-number-format
+            :value="kpi.value"
+            format="decimal"
+          />
+        </dd>
+      </div>
     </origam-grid>
 
     <origam-divider
@@ -47,9 +63,17 @@
 
 <script setup lang="ts">
 import { useT } from '~/composables/useT'
-import { KPIS, KPIS_GRID_COLUMNS, KPIS_RULE_VARS } from '~/consts/kpis.const'
+import { KPIS, KPIS_GRID_COLUMNS, KPIS_RULE_VARS, LIVE_KPIS } from '~/consts/kpis.const'
+import { useGithubStars } from '~/composables/useGithubStars'
+import { useNpmDownloads } from '~/composables/useNpmDownloads'
 
 const { t } = useT()
+const { stars } = useGithubStars()
+const { downloads } = useNpmDownloads()
+
+const liveKpis = computed(() => LIVE_KPIS
+    .map(kpi => ({ ...kpi, value: kpi.source === 'stars' ? stars.value : downloads.value }))
+    .filter(kpi => kpi.value !== null))
 </script>
 
 <style scoped lang="scss">

@@ -805,7 +805,9 @@
             "size_value": "<50ko",
             "size_label": "Tree-shakable",
             "license_value": "MIT",
-            "license_label": "Open source"
+            "license_label": "Open source",
+            "npm_downloads_label": "téléchargements npm / semaine",
+            "github_stars_label": "étoiles GitHub"
         },
         "features": {
             "eyebrow": "CE QU'IL Y A DEDANS",

@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'vue'
 
-import type { IKpi } from '~/interfaces/kpi.interface'
+import type { IKpi, ILiveKpi } from '~/interfaces/kpi.interface'
 
 /**
  * OrigamDivider opacity override for the KPI hairlines. The divider bakes a
@@ -52,5 +52,19 @@ export const KPIS: IKpi[] = [
         valueFallback: 'MIT',
         labelKey: 'home.kpis.license_label',
         labelFallback: 'Open source',
+    },
+]
+
+/** Compteurs d'adoption RÉELS (API GitHub / npm) : masqués tant que la valeur est indisponible. */
+export const LIVE_KPIS: ILiveKpi[] = [
+    {
+        source: 'downloads',
+        labelKey: 'home.kpis.npm_downloads_label',
+        labelFallback: 'npm downloads / week',
+    },
+    {
+        source: 'stars',
+        labelKey: 'home.kpis.github_stars_label',
+        labelFallback: 'GitHub stars',
     },
 ]
