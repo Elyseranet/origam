@@ -79,6 +79,7 @@
           >
             <div
               class="tb-preview__canvas"
+              :class="{ 'tb-preview__canvas--fill-width': fillsWidth }"
               :style="pane.style"
               :data-cy="`theming-canvas-${pane.mode}`"
             >
@@ -115,7 +116,7 @@
 
   import { useT } from '~/composables/useT'
   import { usePlaygroundHost } from '~/composables/usePlaygroundHost'
-  import { PLAYGROUND_UNAVAILABLE_REASONS, THEME_BUILDER_OVERLAY_ATTACH } from '~/consts/playground-host.const'
+  import { PLAYGROUND_UNAVAILABLE_REASONS, THEME_BUILDER_FILL_WIDTH_SLUGS, THEME_BUILDER_OVERLAY_ATTACH } from '~/consts/playground-host.const'
   import type { IPlaygroundHostEntry } from '~/interfaces/playground-host.interface'
   import { withoutThemedProps } from '~/utils/playground-host.util'
   import type {
@@ -184,6 +185,8 @@
   watch(componentName, () => {
     if (import.meta.client) loadEntry()
   }, { immediate: true })
+
+  const fillsWidth = computed(() => THEME_BUILDER_FILL_WIDTH_SLUGS.includes(props.entry.slug))
 
   const themedKeys = computed(() => new Set([
     ...Object.keys(props.themeDefaults[props.entry.componentKey] ?? {}),
@@ -336,6 +339,10 @@
       min-block-size: 9rem;
       padding: var(--origam-spacing-8, 2rem) var(--origam-spacing-10, 3rem);
       background-color: transparent;
+
+      &--fill-width > :deep(*) {
+        inline-size: 100%;
+      }
     }
 
     &__unavailable {

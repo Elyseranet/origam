@@ -169,7 +169,10 @@ const MARKETING_GREEN_SPECS = [
 
     // #1217 — la home ne defile jamais en horizontal (375/768/1024/1280, EN+FR).
     // Mesure d'admission : voir la PR (A/B contre le parent).
-    'marketing-home-no-overflow.spec.ts'
+    'marketing-home-no-overflow.spec.ts',
+
+    // #1229 — aucun aperçu de /theming ne s'effondre à 0 px de large.
+    'marketing-theming-preview-width.spec.ts'
 ]
 
 /*
