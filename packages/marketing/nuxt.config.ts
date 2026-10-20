@@ -280,8 +280,6 @@ export default defineNuxtConfig({
     vite: {
         optimizeDeps: {
             include: [
-                '@vue/repl',
-                '@vue/repl/codemirror-editor',
                 'shiki',
                 'qrcode-generator',
                 '@vue/devtools-kit'
