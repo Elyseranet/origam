@@ -33,7 +33,7 @@ Node >= 22 is required to **build** the package from source. Consumers only
 need Vue 3.5+ at runtime.
 
 Wondering what the `2.x` version number means, or how often releases break
-things? See the [stability and versioning policy](https://origam.dev/stability).
+things? See the [stability and versioning policy](http://origam.dev.elysera.net/stability).
 
 ---
 
