@@ -18,6 +18,16 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.4] - 2026-10-20
+
+### Fixed — `OrigamCode` : une ligne vide tombait à 0 px et un numéro fantôme suivait le saut de ligne final (#1216)
+
+Avec `line-numbers`, la rangée d'une ligne vide avait `min-height: var(--origam-code---line-height)`, or ce token vaut `1.6` sans unité : la déclaration était invalide et la rangée vide mesurait 0 px, son numéro se superposant à celui de la ligne suivante.
+
+- La rangée prend désormais `min-height: 1lh`, la hauteur de ligne calculée.
+- Le dernier `<span class="line"></span>` vide que shiki émet après le saut de ligne final n'est plus compté : plus de rangée ni de numéro en trop.
+- Vérifié : spec e2e rouge sur le parent, verte après ; TU Code + CodeGroup 49/49 (PR #1219).
+
 ## [2.37.3] - 2026-10-19
 
 ### Fixed — `v-intersect` lié avec le tuple `withDirectives` : handler jamais appelé (#1205)
