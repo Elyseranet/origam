@@ -159,7 +159,11 @@ const MARKETING_GREEN_SPECS = [
     // directive, intactes avant le correctif) ; stabilite 25 passed en
     // `--repeat-each=5 --retries=0` ; vert aussi sur une base `db:migrate`
     // + `docs:seed` SEULS, la provision exacte du job CI.
-    'marketing-reference-row-list.spec.ts'
+    'marketing-reference-row-list.spec.ts',
+
+    // #1217 — la home ne defile jamais en horizontal (375/768/1024/1280, EN+FR).
+    // Mesure d'admission : voir la PR (A/B contre le parent).
+    'marketing-home-no-overflow.spec.ts'
 ]
 
 /*

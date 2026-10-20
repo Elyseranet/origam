@@ -158,7 +158,7 @@
 
     &__title-line {
       display: block;
-      white-space: nowrap;
+      text-wrap: balance;
     }
 
     &__subtitle {
@@ -206,10 +206,6 @@
     .home-hero {
       &__title {
         font-size: clamp(2.5rem, 9vw, 5.25rem);
-      }
-
-      &__title-line {
-        white-space: normal;
       }
     }
   }
