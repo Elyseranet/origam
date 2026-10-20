@@ -430,7 +430,7 @@
 
             grid-template-areas: 'topbar' 'drawer' 'preview' 'inspector' 'dock';
             grid-template-columns: minmax(0, 1fr);
-            grid-template-rows: auto auto minmax(var(--pg-preview---stacked-min-height, 240px), auto) auto auto;
+            grid-template-rows: auto minmax(min-content, auto) minmax(var(--pg-preview---stacked-min-height, 240px), auto) auto auto;
             overflow-y: auto;
 
             > div[data-cy='playground-inspector-slot'] {
