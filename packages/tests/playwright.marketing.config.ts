@@ -165,7 +165,11 @@ const MARKETING_GREEN_SPECS = [
     // playground. Mesure d'admission : contrôle positif 10/10 ROUGES contre le
     // parent `7c3f0b1fb` (ancien `ComponentLivePreview`), 50/50 en
     // `--repeat-each=5 --retries=0`, serveur de dev isolé sur un port à nous.
-    'marketing-playground-host.spec.ts'
+    'marketing-playground-host.spec.ts',
+
+    // #1217 — la home ne defile jamais en horizontal (375/768/1024/1280, EN+FR).
+    // Mesure d'admission : voir la PR (A/B contre le parent).
+    'marketing-home-no-overflow.spec.ts'
 ]
 
 /*

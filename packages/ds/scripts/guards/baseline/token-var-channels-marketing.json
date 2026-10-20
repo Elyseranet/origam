@@ -17,7 +17,6 @@
     "packages/marketing/src/components/HomeHero.vue::--origam-font-size---lg",
     "packages/marketing/src/components/HomeKpis.vue::--origam-font-size---xs",
     "packages/marketing/src/components/HomePlayground.vue::--origam-font-size---sm",
-    "packages/marketing/src/components/HomePlayground.vue::--origam-font-size---xl",
     "packages/marketing/src/components/HomePlayground.vue::--origam-font-size---xs",
     "packages/marketing/src/components/HomeShowcase.vue::--origam-font-size---sm",
     "packages/marketing/src/components/HomeShowcase.vue::--origam-font-size---xs",

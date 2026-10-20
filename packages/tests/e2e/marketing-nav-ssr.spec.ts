@@ -30,7 +30,7 @@
  *     <h3>…</h3><ul>…</ul>
  *   </nav>
  *
- * Exactly the 15 `NAV_SECTIONS` links, in `NAV_SECTIONS` order, 3 `<h3>`
+ * Exactly the 16 `NAV_SECTIONS` links, in `NAV_SECTIONS` order, 3 `<h3>`
  * (one per section), 3 `<ul>`. Links are plain `<a href>` (not
  * `<nuxt-link>` — `/docs/` and `/stories/` are static builds copied into
  * `public/`, not Nuxt routes, so a router-link would 404 client-side);
@@ -48,7 +48,7 @@
  * `base: '/docs/'` / Histoire's own `base`, both built into
  * `packages/marketing/public/`, confirmed by `packages/marketing/Dockerfile`:
  * "One container = the whole origam.* site"). Their hrefs are stable and
- * asserted nommément, same as the other 13. This spec does NOT request
+ * asserted nommément, same as the other 14. This spec does NOT request
  * `/docs/` or `/stories/` themselves — those directories only exist after
  * `build:embeds` runs (gitignored, absent on a fresh checkout) and CI
  * already guards their presence (`test -f …/public/docs/index.html`).
@@ -70,12 +70,13 @@ const PAGES_WITH_BASELINE: IPageBaseline[] = [
     { path: '/support', baselineInternalLinks: 2 }
 ]
 
-// All 15 NAV_SECTIONS hrefs, in NAV_SECTIONS order (3 sections: introduction,
+// All 16 NAV_SECTIONS hrefs, in NAV_SECTIONS order (3 sections: introduction,
 // getting_started, features). Confirmed stable, slash-final included for
 // '/stories/' and '/docs/' — sourced from
 // packages/marketing/src/consts/nav.const.ts.
 const STABLE_SITEMAP_HREFS = [
     '/why-origam',
+    '/stability',
     '/roadmap',
     '/changelog',
     '/installation',
@@ -218,7 +219,7 @@ test.describe('Nav & footer sitemap — presence in the HTML served, no JS', () 
         }
     })
 
-    test('the footer sitemap has exactly 15 links and 3 sections (NAV_SECTIONS size), no JS', async ({ request }) => {
+    test('the footer sitemap has exactly 16 links and 3 sections (NAV_SECTIONS size), no JS', async ({ request }) => {
         const res = await request.get('/')
         const html = await res.text()
 

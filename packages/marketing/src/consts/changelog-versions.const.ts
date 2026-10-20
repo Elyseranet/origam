@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.4',
+        date: '2026-10-20',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2374.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2374.h1', textFallback: 'OrigamCode : une ligne vide tombait à 0 px et un numéro fantôme suivait le saut de ligne final (#1216)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.3',
         date: '2026-10-19',
         type: 'patch',

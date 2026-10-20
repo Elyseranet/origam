@@ -1,4 +1,4 @@
 export interface IGithubStarsData {
-    stars: number
-    cached: boolean
+    /** `null` = valeur indisponible (API injoignable) : ne jamais l'afficher comme un chiffre. */
+    stars: number | null
 }
