@@ -8,6 +8,7 @@ export const NAV_SECTIONS: INavSection[] = [
         titleFallback: 'Introduction',
         items: [
             { i18nKey: 'nav.why_origam', i18nFallback: 'Why origam?', href: '/why-origam' },
+            { i18nKey: 'nav.stability', i18nFallback: 'Stability', href: '/stability' },
             { i18nKey: 'nav.roadmap', i18nFallback: 'Roadmap', href: '/roadmap' },
             { i18nKey: 'nav.changelog', i18nFallback: 'Changelog', href: '/changelog' }
         ]
