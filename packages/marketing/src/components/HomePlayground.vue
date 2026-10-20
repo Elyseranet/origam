@@ -6,7 +6,7 @@
   >
     <header class="home-playground__intro">
       <p class="home-playground__eyebrow">
-        {{ t('home.playground.eyebrow', 'LIVE PLAYGROUND') }}
+        {{ t('home.playground.eyebrow', 'CODE EXAMPLE') }}
       </p>
 
       <origam-title
@@ -14,7 +14,7 @@
         tag="h2"
         class="home-playground__title"
       >
-        {{ t('home.playground.title', 'Try before you ship.') }}
+        {{ t('home.playground.title', 'A few lines, real components.') }}
       </origam-title>
     </header>
 
@@ -51,7 +51,8 @@
             :code="PLAYGROUND_SNIPPET"
             lang="vue"
             line-numbers
-            :copyable="false"
+            copyable
+            rounded="none"
             class="home-playground__code"
             data-cy="playground-code"
           />
@@ -61,36 +62,33 @@
               tag="div"
               rounded="lg"
               border
-              border-color="var(--origam-color__border---default)"
-              :style="PLAYGROUND_PREVIEW_VARS"
+              inert
+              lang="en"
               class="home-playground__preview-card"
               data-cy="playground-preview"
             >
-              <origam-title
-                tag="h3"
-                class="home-playground__preview-title"
-                :text="t('home.playground.preview_title', 'Hello Origam')"
-              />
+              <origam-title tag="h3">
+                {{ PLAYGROUND_SAMPLE.title }}
+              </origam-title>
               <p class="home-playground__preview-text">
-                {{ t('home.playground.preview_text', 'The Vue 3 design system that just works. Try a component live.') }}
+                {{ PLAYGROUND_SAMPLE.text }}
               </p>
               <origam-btn
                 color="primary"
                 append-icon="mdi-arrow-right"
                 class="home-playground__preview-btn"
-                :style="PLAYGROUND_PREVIEW_BTN_VARS"
               >
-                {{ t('home.playground.preview_cta', 'Get started') }}
+                {{ PLAYGROUND_SAMPLE.cta }}
               </origam-btn>
             </origam-card>
           </div>
         </div>
       </origam-sheet>
-    </figure>
 
-    <figcaption class="home-playground__caption">
-      {{ t('home.playground.caption', 'The Vue 3 design system that just works. Try a component live.') }}
-    </figcaption>
+      <figcaption class="home-playground__caption">
+        {{ t('home.playground.caption', 'The preview renders the code shown on the left.') }}
+      </figcaption>
+    </figure>
   </section>
 </template>
 
@@ -99,8 +97,7 @@ import { useT } from '~/composables/useT'
 import {
     PLAYGROUND_FRAME_RADIUS,
     PLAYGROUND_FRAME_VARS,
-    PLAYGROUND_PREVIEW_BTN_VARS,
-    PLAYGROUND_PREVIEW_VARS,
+    PLAYGROUND_SAMPLE,
     PLAYGROUND_SNIPPET
 } from '~/consts/playground.const'
 
@@ -189,7 +186,6 @@ const { t } = useT()
     }
 
     &__code {
-        --origam-code---border-radius: 0;
         --origam-code---border-width: 0;
         border-inline-end: 1px solid var(--origam-color__border---default, rgba(0, 0, 0, 0.08));
         overflow: hidden;
@@ -212,12 +208,6 @@ const { t } = useT()
         align-items: flex-start;
         max-inline-size: 22rem;
         padding: var(--origam-space---6, 1.5rem);
-    }
-
-    &__preview-title {
-        --origam-title---font-size: var(--origam-font-size---xl, 1.25rem);
-        --origam-title---font-weight: 700;
-        margin: 0;
     }
 
     &__preview-text {

@@ -839,13 +839,10 @@
             }
         },
         "playground": {
-            "eyebrow": "LIVE PLAYGROUND",
-            "title": "Try before you ship.",
+            "eyebrow": "CODE EXAMPLE",
+            "title": "A few lines, real components.",
             "file": "App.vue",
-            "caption": "The Vue 3 design system that just works. Try a component live.",
-            "preview_title": "Hello Origam",
-            "preview_text": "The Vue 3 design system that just works. Try a component live.",
-            "preview_cta": "Get started"
+            "caption": "The preview renders the code shown on the left."
         },
         "showcase": {
             "eyebrow": "SHOWCASE",

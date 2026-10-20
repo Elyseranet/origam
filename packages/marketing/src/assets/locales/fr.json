@@ -839,13 +839,10 @@
             }
         },
         "playground": {
-            "eyebrow": "PLAYGROUND EN DIRECT",
-            "title": "Essayez avant de livrer.",
+            "eyebrow": "EXEMPLE DE CODE",
+            "title": "Quelques lignes, de vrais composants.",
             "file": "App.vue",
-            "caption": "Le design system Vue 3 qui marche, tout simplement. Essayez un composant en direct.",
-            "preview_title": "Hello Origam",
-            "preview_text": "Le design system Vue 3 qui marche, tout simplement. Essayez un composant en direct.",
-            "preview_cta": "Commencer"
+            "caption": "L'aperçu affiche le rendu du code montré à gauche."
         },
         "showcase": {
             "eyebrow": "VITRINE",
