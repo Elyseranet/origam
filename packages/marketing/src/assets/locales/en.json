@@ -806,7 +806,9 @@
             "size_value": "<50kb",
             "size_label": "Tree-shakable",
             "license_value": "MIT",
-            "license_label": "Open source"
+            "license_label": "Open source",
+            "npm_downloads_label": "npm downloads / week",
+            "github_stars_label": "GitHub stars"
         },
         "features": {
             "eyebrow": "WHAT'S INSIDE",

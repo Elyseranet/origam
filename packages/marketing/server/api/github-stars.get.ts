@@ -1,33 +1,21 @@
 import { EXTERNAL_CACHE_TTL_SECONDS } from '../consts/cache.const'
-
-const GITHUB_API_URL = 'https://api.github.com/repos/Elyseranet/origam'
-const FALLBACK_STAR_COUNT = 0
-
-interface IGithubRepoResponse {
-  stargazers_count: number
-}
-
-interface IGithubStarsResponse {
-  stars: number
-}
+import { GITHUB_REPO_API_URL } from '../consts/adoption.const'
+import type { IGithubRepoResponse, IGithubStarsResponse } from '../interfaces/adoption.interface'
 
 export default defineCachedEventHandler(
   async (): Promise<IGithubStarsResponse> => {
     try {
-      const data = await $fetch<IGithubRepoResponse>(GITHUB_API_URL, {
+      const data = await $fetch<IGithubRepoResponse>(GITHUB_REPO_API_URL, {
         headers: {
           'Accept': 'application/vnd.github+json',
           'User-Agent': 'origam-marketing/1.0'
         }
       })
 
-      return {
-        stars: data.stargazers_count ?? FALLBACK_STAR_COUNT
-      }
+      return { stars: data.stargazers_count ?? null }
     } catch {
-      return {
-        stars: FALLBACK_STAR_COUNT
-      }
+      // Jamais un 0 inventé : l'UI masque le compteur quand la valeur est null.
+      return { stars: null }
     }
   },
   {
