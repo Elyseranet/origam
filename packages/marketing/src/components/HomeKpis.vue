@@ -65,15 +65,14 @@
 import { useT } from '~/composables/useT'
 import { KPIS, KPIS_GRID_COLUMNS, KPIS_RULE_VARS, LIVE_KPIS } from '~/consts/kpis.const'
 import { useGithubStars } from '~/composables/useGithubStars'
+import { resolveLiveKpis } from '~/utils/kpi.util'
 import { useNpmDownloads } from '~/composables/useNpmDownloads'
 
 const { t } = useT()
 const { stars } = useGithubStars()
 const { downloads } = useNpmDownloads()
 
-const liveKpis = computed(() => LIVE_KPIS
-    .map(kpi => ({ ...kpi, value: kpi.source === 'stars' ? stars.value : downloads.value }))
-    .filter(kpi => kpi.value !== null))
+const liveKpis = computed(() => resolveLiveKpis(LIVE_KPIS, stars.value, downloads.value))
 </script>
 
 <style scoped lang="scss">
@@ -91,6 +90,7 @@ const liveKpis = computed(() => LIVE_KPIS
     &__item {
         display: flex;
         flex-direction: column-reverse;
+        justify-content: flex-end;
         align-items: center;
         gap: var(--origam-space---2, 0.5rem);
     }

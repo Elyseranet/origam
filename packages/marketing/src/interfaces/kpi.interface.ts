@@ -10,3 +10,7 @@ export interface ILiveKpi {
     labelKey: string
     labelFallback: string
 }
+
+export interface ILiveKpiResolved extends ILiveKpi {
+    value: number
+}
