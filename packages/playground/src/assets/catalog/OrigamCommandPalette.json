@@ -41,6 +41,21 @@
       "source": "types"
     },
     {
+      "name": "filter",
+      "label": "filter",
+      "tsType": "TCommandPaletteFilter | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Function"
+      ],
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nfilter (#1184)",
+      "source": "types"
+    },
+    {
       "name": "placeholder",
       "label": "placeholder",
       "tsType": "string | undefined",
@@ -104,6 +119,28 @@
       "hasFactoryDefault": false,
       "control": "switch",
       "description": "Display a loader inside the result list (use during async fetches).",
+      "source": "types"
+    },
+    {
+      "name": "searchIcon",
+      "label": "searchIcon",
+      "tsType": "TIcon | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "mdi:mdi-magnify",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "loadingIcon",
+      "label": "loadingIcon",
+      "tsType": "TIcon | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "mdi:mdi-loading",
+      "hasFactoryDefault": false,
+      "control": "text",
       "source": "types"
     },
     {
@@ -247,6 +284,18 @@
     {
       "name": "empty",
       "label": "empty",
+      "slotPropsType": "any",
+      "source": "types"
+    },
+    {
+      "name": "search-icon",
+      "label": "search-icon",
+      "slotPropsType": "any",
+      "source": "types"
+    },
+    {
+      "name": "loading",
+      "label": "loading",
       "slotPropsType": "any",
       "source": "types"
     },

@@ -366,6 +366,12 @@
     "label": "Code"
   },
   {
+    "name": "OrigamCodeGroup",
+    "tag": "origam-code-group",
+    "family": "CodeGroup",
+    "label": "CodeGroup"
+  },
+  {
     "name": "OrigamCol",
     "tag": "origam-col",
     "family": "Grids",

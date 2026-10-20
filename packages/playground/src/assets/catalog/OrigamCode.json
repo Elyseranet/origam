@@ -18,29 +18,13 @@
     {
       "name": "lang",
       "label": "lang",
-      "tsType": "\"vue\" | \"md\" | \"css\" | \"plaintext\" | \"ts\" | \"js\" | \"tsx\" | \"jsx\" | \"scss\" | \"json\" | \"bash\" | \"html\" | \"xml\" | \"yaml\" | undefined",
+      "tsType": "TCodeLangOpen | undefined",
       "runtimeType": null,
       "required": false,
       "defaultValue": "plaintext",
       "hasFactoryDefault": false,
-      "options": [
-        "vue",
-        "md",
-        "css",
-        "plaintext",
-        "ts",
-        "js",
-        "tsx",
-        "jsx",
-        "scss",
-        "json",
-        "bash",
-        "html",
-        "xml",
-        "yaml"
-      ],
-      "control": "select",
-      "description": "Language grammar to apply. One of the values in `SUPPORTED_LANGS`.\nUnknown values fall back to `plaintext` (with a one-shot console\nwarning).",
+      "control": "text",
+      "description": "Language grammar to apply. Autocompletes the 14 values of\n`SUPPORTED_LANGS` but accepts any string (#1180). Without a custom\n`code.highlighter`, a value outside `SUPPORTED_LANGS` and outside\n`createOrigam({ code: { langs } })` falls back to `plaintext` (one-shot\nconsole warning). With a custom `code.highlighter`, the value is handed\nto it as-is; if it cannot tokenise it, the block falls back to\n`plaintext` (dev-only warning).",
       "source": "types"
     },
     {
@@ -137,6 +121,38 @@
       "hasFactoryDefault": false,
       "control": "text",
       "description": "Decorative prompt prefix rendered BEFORE the code (e.g. `'$'` for a\nshell command). Purely visual: it is NOT part of the highlighted code\nand is NEVER included in the clipboard copy (only `code` is copied).\nMost useful paired with `compact` for an install-command pill.",
+      "source": "types"
+    },
+    {
+      "name": "hideHeader",
+      "label": "hideHeader",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "flat",
+      "label": "flat",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "scrollerAriaLabel",
+      "label": "scrollerAriaLabel",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
       "source": "types"
     },
     {
@@ -1132,7 +1148,7 @@
     {
       "name": "header",
       "label": "header",
-      "slotPropsType": "{ filename: string | undefined; langName: \"vue\" | \"md\" | \"css\" | \"plaintext\" | \"ts\" | \"js\" | \"tsx\" | \"jsx\" | \"scss\" | \"json\" | \"bash\" | \"html\" | \"xml\" | \"yaml\" | undefined; copy: () => Promise<void>; copied: boolean; }",
+      "slotPropsType": "{ filename: string | undefined; langName: TCodeLangOpen | undefined; copy: () => Promise<void>; copied: boolean; }",
       "description": "Custom header content — receives the copy-button wiring so a\nconsumer can rebuild the default filename/lang badge + copy button.",
       "source": "types"
     },

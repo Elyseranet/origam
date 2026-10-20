@@ -311,6 +311,17 @@
       "source": "runtime"
     },
     {
+      "name": "tag",
+      "label": "tag",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "div",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
       "name": "padding",
       "label": "padding",
       "tsType": "string | number | boolean | undefined",

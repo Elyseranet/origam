@@ -86,8 +86,8 @@
       "defaultValue": "md",
       "hasFactoryDefault": false,
       "options": [
-        "sm",
         "md",
+        "sm",
         "lg"
       ],
       "control": "select",
