@@ -55,5 +55,6 @@ export const MARKETING_SPEC_PATTERNS = [
     '**/marketing-reference-row-list.spec.ts',
     '**/marketing-home-no-overflow.spec.ts',
     '**/api-docs-generated.spec.ts',
-    '**/marketing-playground-host.spec.ts'
+    '**/marketing-playground-host.spec.ts',
+    '**/marketing-theming-preview-width.spec.ts'
 ]

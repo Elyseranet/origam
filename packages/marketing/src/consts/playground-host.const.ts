@@ -18,6 +18,15 @@ export const COMPONENT_PLAYGROUND_OVERLAY_ATTACH = '.component-playground .pg-pr
 export const THEME_BUILDER_OVERLAY_ATTACH = '.tb-preview__canvas'
 
 /**
+ * Slugs whose root has NO intrinsic width (it fills its container: a scroller
+ * with a height, a parallax layer). The canvas centres with `place-items:
+ * center`, i.e. shrink-wraps its items, so such a root collapsed to 0 px
+ * (#1229). They take the canvas' inner width instead; every other preview keeps
+ * shrink-wrapping. Measured over the 220 previews: only these two.
+ */
+export const THEME_BUILDER_FILL_WIDTH_SLUGS: readonly string[] = ['virtual-scroll', 'parallax-layer']
+
+/**
  * Child → parent, for the sub-components the marketing snippets nest inside
  * their parent (ex-`parentEnvelope`, #728). Merged with the playground's own
  * `SNIPPET_PARENT_OF`. Each entry was measured to THROW without its parent:
