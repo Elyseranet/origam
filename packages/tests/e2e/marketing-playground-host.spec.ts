@@ -221,6 +221,96 @@ test.describe('/components/{slug} — embedded chrome (#1173)', () => {
     }
 })
 
+test.describe('/components/{slug} — layout measured on the real page (#1173, audit 2026-10-20)', () => {
+    const cy = (page: Page, name: string) => page.locator(`${ENGINE} [data-cy="${name}"]`)
+
+    /*
+     * The playground lives in the page's content column: 700-736 px wide at 1440,
+     * under the 760 px container threshold, so the STACKED layout is the one the
+     * owner sees. The standalone host (`e2e-playground`) never reaches it.
+     */
+    for (const width of [1440, 1024, 768, 390]) {
+        test(`${width} px: the open catalogue drawer lists its items, pushes the preview and leaves it centred`, async ({ page }) => {
+            await page.setViewportSize({ width, height: 1000 })
+            await openFiche(page, 'btn-group')
+            await cy(page, 'playground-catalog-open').click()
+            await expect(cy(page, 'playground-drawer')).toBeVisible()
+
+            const result = await page.evaluate(engine => {
+                const root = document.querySelector(engine) as HTMLElement
+                const rect = (selector: string) => root.querySelector(selector)!.getBoundingClientRect()
+                const drawer = rect('.pg-drawer')
+                const list = rect('.pg-drawer__list')
+                const stage = rect('.pg-preview__stage')
+                const items = [...root.querySelectorAll('.pg-drawer__list [data-cy^="playground-drawer-item-"]')].slice(0, 2)
+                    .map(item => item.getBoundingClientRect())
+
+                return {
+                    listHeight: Math.round(list.height),
+                    firstItemsInside: items.length === 2 && items.every(item => item.bottom <= list.bottom + 1 && item.top >= list.top - 1),
+                    pushed: drawer.bottom <= stage.top + 1 || drawer.right <= stage.left + 1,
+                    scrollX: document.documentElement.scrollWidth - document.documentElement.clientWidth
+                }
+            }, ENGINE)
+
+            /* Parent: 20 px for 3 items of 52 px — items 2 and 3 outside the drawer. */
+            expect(result.listHeight).toBeGreaterThanOrEqual(104)
+            expect(result.firstItemsInside).toBe(true)
+            expect(result.pushed).toBe(true)
+            expect(result.scrollX).toBe(0)
+        })
+    }
+
+    test('390 px: a table wider than the stage scrolls INSIDE the stage and its last column is reachable', async ({ page }) => {
+        await page.setViewportSize({ width: 390, height: 900 })
+        await openFiche(page, 'data-table')
+
+        const stage = page.locator(`${ENGINE} .pg-preview__stage`)
+        const lastHeader = stage.getByRole('columnheader', { name: 'Actions' })
+        await expect(lastHeader).toBeAttached()
+
+        const scrolls = await stage.evaluate(element => {
+            const overflows = element.scrollWidth > element.clientWidth
+            element.scrollLeft = element.scrollWidth
+
+            return overflows
+        })
+        const cell = await lastHeader.boundingBox()
+        const box = await stage.boundingBox()
+
+        /* Parent: scrollWidth == clientWidth == 356, the table scrolled in itself with no scrollbar to show it. */
+        expect(scrolls).toBe(true)
+        expect(cell!.x + cell!.width).toBeLessThanOrEqual(box!.x + box!.width + 1)
+    })
+
+    test('1440 px: what fits is centred in the preview, what has no width of its own still fills it', async ({ page }) => {
+        await page.setViewportSize({ width: 1440, height: 900 })
+
+        const measure = async (slug: string) => {
+            await openFiche(page, slug)
+            return page.locator(`${ENGINE} .pg-preview__stage`).evaluate(stage => {
+                const box = stage.getBoundingClientRect()
+                const instance = stage.querySelector('[data-cy="playground-preview-instance"]')!.getBoundingClientRect()
+
+                return { left: Math.round(instance.left - box.left), right: Math.round(box.right - instance.right), width: Math.round(instance.width) }
+            })
+        }
+
+        /* Parent: left 24, right 626 — the `safe center` of the stage only ever centred vertically. */
+        const btn = await measure('btn')
+        expect(Math.abs(btn.left - btn.right)).toBeLessThanOrEqual(1)
+        expect(btn.left).toBeGreaterThan(100)
+
+        const field = await measure('text-field')
+        expect(Math.abs(field.left - field.right)).toBeLessThanOrEqual(1)
+        expect(field.left).toBeGreaterThan(100)
+
+        /* Centring must not shrink-wrap: no intrinsic width means fill, not 0 px. */
+        const scroller = await measure('virtual-scroll')
+        expect(scroller.width).toBeGreaterThan(300)
+    })
+})
+
 test.describe('/theming — previews on the engine (#1145, #1056)', () => {
     /*
      * Filter the nav, open every category still collapsed (the filter does not
@@ -260,4 +350,37 @@ test.describe('/theming — previews on the engine (#1145, #1056)', () => {
         await chooseOption(page, row.locator('.origam-select').first(), 'tonal')
         await expect(live).toHaveClass(/origam-btn--variant-tonal/)
     })
+
+    /*
+     * An overlay is `position: fixed; inset: 0`. Attached in place it stays a
+     * descendant of the pane while painting against the VIEWPORT unless an
+     * ancestor is its containing block — then the scrim covers the whole page
+     * and the nav and the search stop answering.
+     */
+    for (const [slug, name] of [['dialog', 'Dialog'], ['dialog-confirmation', 'DialogConfirmation'], ['overlay', 'Overlay'], ['snackbar', 'Snackbar']]) {
+        test(`${slug}: the overlay stays inside its preview pane and the page stays usable`, async ({ page }) => {
+            await select(page, slug!, name!)
+            const pane = page.locator('[data-cy^="theming-preview-pane-"]').first()
+            await expect(pane.locator('.origam-overlay').first()).toBeAttached({ timeout: 15_000 })
+
+            const outside = await pane.evaluate(element => {
+                const box = element.getBoundingClientRect()
+
+                return [...element.querySelectorAll('.origam-overlay, .origam-scrim')].filter(overlay => {
+                    const own = overlay.getBoundingClientRect()
+
+                    return own.left < box.left - 1 || own.top < box.top - 1 || own.right > box.right + 1 || own.bottom > box.bottom + 1
+                }).length
+            })
+            expect(outside).toBe(0)
+
+            const search = page.locator('[data-cy="theming-nav-search"] input')
+            await search.scrollIntoViewIfNeeded()
+            expect(await search.evaluate(input => {
+                const box = input.getBoundingClientRect()
+
+                return document.elementFromPoint(box.left + 10, box.top + box.height / 2) === input
+            })).toBe(true)
+        })
+    }
 })

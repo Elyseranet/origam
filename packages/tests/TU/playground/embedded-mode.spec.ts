@@ -51,7 +51,16 @@ describe('isSingleComponentScene (#1173)', () => {
     })
 })
 
-describe('Playground — embedded chrome (#1173)', () => {
+/*
+ * One mount = a whole Playground, whose inspector renders every prop control of
+ * the selected component. Measured: 0.3-0.7 s locally, 2.6-3.6 s per mount on the
+ * CI runner (full suite in parallel, Node 24) — the former two-mount test took
+ * 5.1 s there against vitest's 5 s default. One mount per test, and an explicit
+ * budget sized on the measured CI worst case rather than a blind increase.
+ */
+const MOUNT_TEST_TIMEOUT_MS = 15_000
+
+describe('Playground — embedded chrome (#1173)', { timeout: MOUNT_TEST_TIMEOUT_MS }, () => {
     it('standalone + 1 root: title, Catalog and Scene stay', () => {
         const wrapper = mountPlayground(sceneOf([btn('a')]))
 
@@ -80,11 +89,13 @@ describe('Playground — embedded chrome (#1173)', () => {
         wrapper.unmount()
     })
 
-    it('"Select in preview" only with more than one instance', () => {
+    it('"Select in preview" is absent with a single instance', () => {
         const single = mountPlayground(sceneOf([btn('a')]))
         expect(has(single, 'playground-select-mode-toggle')).toBe(false)
         single.unmount()
+    })
 
+    it('"Select in preview" is present with more than one instance', () => {
         const several = mountPlayground(sceneOf([card('c', [btn('a')])]))
         expect(has(several, 'playground-select-mode-toggle')).toBe(true)
         several.unmount()
