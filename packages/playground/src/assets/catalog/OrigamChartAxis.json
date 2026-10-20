@@ -1,0 +1,102 @@
+{
+  "name": "OrigamChartAxis",
+  "tag": "origam-chart-axis",
+  "family": "Chart",
+  "label": "ChartAxis",
+  "props": [
+    {
+      "name": "plot",
+      "label": "plot",
+      "tsType": "{ x0: number; y0: number; x1: number; y1: number; cx: number; cy: number; }",
+      "runtimeType": "Object",
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "description": "Pixel coordinates of the plotting area's four corners.\nComes verbatim from `useChart().plot.value`.",
+      "source": "types"
+    },
+    {
+      "name": "ticks",
+      "label": "ticks",
+      "tsType": "{ x: IChartTick[]; y: IChartTick[]; }",
+      "runtimeType": "Object",
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "description": "Tick descriptors for X + Y (primary left axis). Comes from `useChart().ticks.value`.",
+      "source": "types"
+    },
+    {
+      "name": "secondaryYTicks",
+      "label": "secondaryYTicks",
+      "tsType": "IChartTick[] | undefined",
+      "runtimeType": "Array",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "description": "Tick descriptors for the secondary right Y axis.\nWhen provided, a second vertical axis is rendered on the\nright edge of the plot area. Comes from\n`useChart().secondaryTicks.value`.",
+      "source": "types"
+    },
+    {
+      "name": "showAxis",
+      "label": "showAxis",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Render the axis frame (left + bottom lines) + tick labels, and\nthe secondary right axis when `secondaryYTicks` is supplied.\nMirrors the legacy `showAxis` prop on `<OrigamChart>`.\n\n⛔ It does NOT gate the grid: `<g v-if=\"showGrid\">` is a sibling\nroot with an independent condition, so `showAxis: false` +\n`showGrid: true` renders grid lines alone. Pinned by\n`TU/components/Chart/chart-axis-grid-independence.spec.ts`.",
+      "source": "types"
+    },
+    {
+      "name": "showGrid",
+      "label": "showGrid",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Render horizontal grid lines under the plot. When `false`,\nno grid is drawn (mirrors the legacy `showGrid` prop).\nIndependent of `showAxis` — see above.",
+      "source": "types"
+    },
+    {
+      "name": "xAxisFormat",
+      "label": "xAxisFormat",
+      "tsType": "((value: string | number) => string) | undefined",
+      "runtimeType": "Function",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Formatter applied to X-axis tick labels. Defaults to\n`String(value)`.",
+      "source": "types"
+    },
+    {
+      "name": "yAxisFormat",
+      "label": "yAxisFormat",
+      "tsType": "((value: number) => string) | undefined",
+      "runtimeType": "Function",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Formatter applied to Y-axis tick labels. Defaults to\n`String(value)`.",
+      "source": "types"
+    },
+    {
+      "name": "secondaryYAxisFormat",
+      "label": "secondaryYAxisFormat",
+      "tsType": "((value: number) => string) | undefined",
+      "runtimeType": "Function",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Formatter applied to the secondary (right) Y-axis tick labels.\nFalls back to `yAxisFormat`, then `String(value)`.",
+      "source": "types"
+    }
+  ],
+  "events": [],
+  "slots": [],
+  "snippets": [],
+  "requiresParent": false
+}

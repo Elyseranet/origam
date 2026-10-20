@@ -1,0 +1,125 @@
+{
+  "name": "OrigamColorPickerEdit",
+  "tag": "origam-color-picker-edit",
+  "family": "ColorPicker",
+  "label": "ColorPickerEdit",
+  "props": [
+    {
+      "name": "colorHsv",
+      "label": "colorHsv",
+      "tsType": "THSVA | null | undefined",
+      "runtimeType": [
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "source": "types"
+    },
+    {
+      "name": "disabled",
+      "label": "disabled",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "mode",
+      "label": "mode",
+      "tsType": "\"rgb\" | \"rgba\" | \"hsl\" | \"hsla\" | \"hex\" | \"hexa\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "rgba",
+      "hasFactoryDefault": false,
+      "options": [
+        "rgb",
+        "rgba",
+        "hsl",
+        "hsla",
+        "hex",
+        "hexa"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "modes",
+      "label": "modes",
+      "tsType": "(\"rgb\" | \"rgba\" | \"hsl\" | \"hsla\" | \"hex\" | \"hexa\")[] | undefined",
+      "runtimeType": "Array",
+      "required": false,
+      "hasFactoryDefault": true,
+      "control": "json",
+      "source": "types"
+    },
+    {
+      "name": "ariaLabel",
+      "label": "ariaLabel",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    }
+  ],
+  "events": [
+    {
+      "name": "update:mode",
+      "label": "update:mode",
+      "payloadType": "[value: \"rgb\" | \"rgba\" | \"hsl\" | \"hsla\" | \"hex\" | \"hexa\"]",
+      "source": "types"
+    },
+    {
+      "name": "update:colorHsv",
+      "label": "update:colorHsv",
+      "payloadType": "[value: THSVA]",
+      "source": "types"
+    }
+  ],
+  "slots": [],
+  "snippets": [],
+  "requiresParent": false
+}

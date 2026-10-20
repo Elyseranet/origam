@@ -1,0 +1,306 @@
+{
+  "name": "OrigamInfiniteScroll",
+  "tag": "origam-infinite-scroll",
+  "family": "InfiniteScroll",
+  "label": "InfiniteScroll",
+  "props": [
+    {
+      "name": "side",
+      "label": "side",
+      "tsType": "\"both\" | \"start\" | \"end\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "end",
+      "hasFactoryDefault": false,
+      "options": [
+        "both",
+        "start",
+        "end"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "mode",
+      "label": "mode",
+      "tsType": "\"intersect\" | \"manual\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "intersect",
+      "hasFactoryDefault": false,
+      "options": [
+        "intersect",
+        "manual"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "loadMoreText",
+      "label": "loadMoreText",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "origam.infinite_scroll.load_more",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "emptyText",
+      "label": "emptyText",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "origam.infinite_scroll.empty",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "margin",
+      "label": "margin",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "color",
+      "label": "color",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "bgColor",
+      "label": "bgColor",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "height",
+      "label": "height",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "maxHeight",
+      "label": "maxHeight",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "maxWidth",
+      "label": "maxWidth",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "minHeight",
+      "label": "minHeight",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "minWidth",
+      "label": "minWidth",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "width",
+      "label": "width",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "tag",
+      "label": "tag",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "div",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "direction",
+      "label": "direction",
+      "tsType": "\"horizontal\" | \"vertical\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "vertical",
+      "hasFactoryDefault": false,
+      "options": [
+        "horizontal",
+        "vertical"
+      ],
+      "control": "select",
+      "source": "types"
+    },
+    {
+      "name": "fontSize",
+      "label": "fontSize",
+      "tsType": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"5xl\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "2xl",
+        "3xl",
+        "4xl",
+        "5xl"
+      ],
+      "control": "select",
+      "description": "Font size token. Maps to `--origam-font__size---{fontSize}`\n(xs · sm · md · lg · xl · 2xl · 3xl · 4xl · 5xl).\nWhen unset, the component keeps its theme / density font-size.",
+      "source": "types"
+    }
+  ],
+  "events": [
+    {
+      "name": "load",
+      "label": "load",
+      "payloadType": "[value: { side: \"both\" | \"start\" | \"end\"; done: (status: \"error\" | \"empty\" | \"ok\") => void; }]",
+      "source": "types"
+    }
+  ],
+  "slots": [
+    {
+      "name": "error",
+      "label": "error",
+      "slotPropsType": "IInfiniteScrollSideSlotProps",
+      "source": "types"
+    },
+    {
+      "name": "empty",
+      "label": "empty",
+      "slotPropsType": "IInfiniteScrollSideSlotProps",
+      "source": "types"
+    },
+    {
+      "name": "loading",
+      "label": "loading",
+      "slotPropsType": "IInfiniteScrollSideSlotProps",
+      "source": "types"
+    },
+    {
+      "name": "loadMore",
+      "label": "loadMore",
+      "slotPropsType": "IInfiniteScrollSideSlotProps",
+      "source": "types"
+    },
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "any",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

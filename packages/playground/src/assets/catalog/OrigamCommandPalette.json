@@ -1,0 +1,311 @@
+{
+  "name": "OrigamCommandPalette",
+  "tag": "origam-command-palette",
+  "family": "CommandPalette",
+  "label": "CommandPalette",
+  "props": [
+    {
+      "name": "modelValue",
+      "label": "modelValue",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "v-model — whether the palette is open.",
+      "source": "types"
+    },
+    {
+      "name": "hotkey",
+      "label": "hotkey",
+      "tsType": "TCommandPaletteHotkey | null | undefined",
+      "runtimeType": [
+        "Array"
+      ],
+      "required": false,
+      "hasFactoryDefault": true,
+      "control": "json",
+      "description": "Global hotkey(s) that toggle the palette open. Defaults to\n`[['meta', 'k'], ['ctrl', 'k']]` (⌘K / Ctrl+K). Pass `null`\nto disable the global listener entirely.",
+      "source": "types"
+    },
+    {
+      "name": "commands",
+      "label": "commands",
+      "tsType": "readonly ICommand[] | undefined",
+      "runtimeType": "Array",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "description": "Static command list. When omitted, the palette renders commands\nregistered via the `useCommand()` global registry instead.",
+      "source": "types"
+    },
+    {
+      "name": "filter",
+      "label": "filter",
+      "tsType": "TCommandPaletteFilter | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Function"
+      ],
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "*******************************************************\nfilter (#1184)",
+      "source": "types"
+    },
+    {
+      "name": "placeholder",
+      "label": "placeholder",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "origam.command_palette.placeholder",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Placeholder of the search input (already-translated string).",
+      "source": "types"
+    },
+    {
+      "name": "emptyText",
+      "label": "emptyText",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "origam.command_palette.empty_text",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Empty-state message when no command matches the query.",
+      "source": "types"
+    },
+    {
+      "name": "maxHeight",
+      "label": "maxHeight",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "defaultValue": 480,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Max height of the result list. Number → px.",
+      "source": "types"
+    },
+    {
+      "name": "width",
+      "label": "width",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "defaultValue": 640,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Width of the palette dialog. Number → px.",
+      "source": "types"
+    },
+    {
+      "name": "loading",
+      "label": "loading",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Display a loader inside the result list (use during async fetches).",
+      "source": "types"
+    },
+    {
+      "name": "searchIcon",
+      "label": "searchIcon",
+      "tsType": "TIcon | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "mdi:mdi-magnify",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "loadingIcon",
+      "label": "loadingIcon",
+      "tsType": "TIcon | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "mdi:mdi-loading",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "closeOnSelect",
+      "label": "closeOnSelect",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Close the palette automatically when a command is selected.",
+      "source": "types"
+    },
+    {
+      "name": "closeOnEscape",
+      "label": "closeOnEscape",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Close when the user presses Escape.",
+      "source": "types"
+    },
+    {
+      "name": "closeOnBackdrop",
+      "label": "closeOnBackdrop",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Close when the user clicks the backdrop.",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "fontSize",
+      "label": "fontSize",
+      "tsType": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"5xl\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "2xl",
+        "3xl",
+        "4xl",
+        "5xl"
+      ],
+      "control": "select",
+      "description": "Font size token. Maps to `--origam-font__size---{fontSize}`\n(xs · sm · md · lg · xl · 2xl · 3xl · 4xl · 5xl).\nWhen unset, the component keeps its theme / density font-size.",
+      "source": "types"
+    },
+    {
+      "name": "attach",
+      "label": "attach",
+      "tsType": "string | boolean | Element | null | undefined",
+      "runtimeType": [
+        "Boolean",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    }
+  ],
+  "events": [
+    {
+      "name": "update:modelValue",
+      "label": "update:modelValue",
+      "payloadType": "[value: boolean]",
+      "source": "types"
+    },
+    {
+      "name": "select",
+      "label": "select",
+      "payloadType": "[command: ICommand]",
+      "source": "types"
+    },
+    {
+      "name": "query",
+      "label": "query",
+      "payloadType": "[text: string]",
+      "source": "types"
+    }
+  ],
+  "slots": [
+    {
+      "name": "item",
+      "label": "item",
+      "slotPropsType": "ICommandPaletteSlotProps",
+      "source": "types"
+    },
+    {
+      "name": "empty",
+      "label": "empty",
+      "slotPropsType": "any",
+      "source": "types"
+    },
+    {
+      "name": "search-icon",
+      "label": "search-icon",
+      "slotPropsType": "any",
+      "source": "types"
+    },
+    {
+      "name": "loading",
+      "label": "loading",
+      "slotPropsType": "any",
+      "source": "types"
+    },
+    {
+      "name": "footer",
+      "label": "footer",
+      "slotPropsType": "any",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

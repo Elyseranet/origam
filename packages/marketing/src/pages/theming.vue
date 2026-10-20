@@ -193,7 +193,7 @@
           :active-mode="state.activeMode"
           :split="split"
           :preview-props="activePreviewProps"
-          :slot-text="activeSlotText"
+          :theme-defaults="state.defaults"
           :light-style="lightStyle"
           :dark-style="darkStyle"
           @update:active-mode="state.activeMode = $event"
@@ -276,7 +276,6 @@
     setToken,
     previewProps,
     previewStyle,
-    slotText,
     isPropEdited,
     isTokenEdited,
     componentEditCount,
@@ -310,8 +309,7 @@
   const defaultSlug = computed(() => {
     const preferred = entries.value.find(e => e.slug === 'btn')
     if (preferred) return preferred.slug
-    const firstPreviewable = entries.value.find(e => e.previewable)
-    return firstPreviewable?.slug ?? entries.value[0]?.slug ?? ''
+    return entries.value[0]?.slug ?? ''
   })
 
   /*
@@ -389,9 +387,6 @@
   )
   const activePreviewProps = computed(() =>
     activeEntry.value ? previewProps(activeEntry.value.slug) : {}
-  )
-  const activeSlotText = computed(() =>
-    activeEntry.value ? slotText(activeEntry.value.slug) : ''
   )
 
   const downloadHint = computed(() =>

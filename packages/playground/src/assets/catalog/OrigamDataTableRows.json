@@ -1,0 +1,184 @@
+{
+  "name": "OrigamDataTableRows",
+  "tag": "origam-data-table-rows",
+  "family": "DataTable",
+  "label": "DataTableRows",
+  "props": [
+    {
+      "name": "hideNoData",
+      "label": "hideNoData",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "items",
+      "label": "items",
+      "tsType": "(IDataTableItem<any> | IDataTableGroup<any>)[] | readonly (IDataTableItem<any> | IDataTableGroup<any>)[] | undefined",
+      "runtimeType": "Array",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "source": "types"
+    },
+    {
+      "name": "noDataText",
+      "label": "noDataText",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "origam.no_data_text",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "rowProps",
+      "label": "rowProps",
+      "tsType": "TDataTableRow<any> | undefined",
+      "runtimeType": [
+        "Object",
+        "Function"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "cellProps",
+      "label": "cellProps",
+      "tsType": "TDataTableCell<any> | undefined",
+      "runtimeType": [
+        "Object",
+        "Function"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "loading",
+      "label": "loading",
+      "tsType": "TLoadingValue | undefined",
+      "runtimeType": [
+        "Boolean",
+        "Number",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "loadingText",
+      "label": "loadingText",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "origam.data_iterator.loading_text",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "color",
+      "label": "color",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "mobileBreakpoint",
+      "label": "mobileBreakpoint",
+      "tsType": "number | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"xxl\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    }
+  ],
+  "events": [
+    {
+      "name": "select",
+      "label": "select",
+      "payloadType": "[payload?: { item: IDataTableItem<any>; value: boolean; } | undefined]",
+      "source": "types"
+    },
+    {
+      "name": "expand",
+      "label": "expand",
+      "payloadType": "[payload?: { item: IDataTableItem<any>; value: boolean; } | undefined]",
+      "source": "types"
+    }
+  ],
+  "slots": [
+    {
+      "name": "loading",
+      "label": "loading",
+      "slotPropsType": "any",
+      "source": "types"
+    },
+    {
+      "name": "no-data",
+      "label": "no-data",
+      "slotPropsType": "any",
+      "source": "types"
+    },
+    {
+      "name": "group-header",
+      "label": "group-header",
+      "slotPropsType": "IDataTableGroupHeaderSlot<IDataTableGroup<any>>",
+      "source": "types"
+    },
+    {
+      "name": "item",
+      "label": "item",
+      "slotPropsType": "IDataTableItemSlot<any>",
+      "source": "types"
+    },
+    {
+      "name": "expanded-row",
+      "label": "expanded-row",
+      "slotPropsType": "IDataTableItemBaseSlot<any>",
+      "source": "types"
+    },
+    {
+      "name": "data-table-group",
+      "label": "data-table-group",
+      "slotPropsType": "IDataTableGroupHeaderRowGroupSlot<IDataTableGroup<any>>",
+      "source": "types"
+    },
+    {
+      "name": "data-table-select",
+      "label": "data-table-select",
+      "slotPropsType": "IDataTableGroupHeaderRowSelectSlot",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

@@ -1,0 +1,540 @@
+{
+  "name": "OrigamOverlay",
+  "tag": "origam-overlay",
+  "family": "Overlay",
+  "label": "Overlay",
+  "props": [
+    {
+      "name": "absolute",
+      "label": "absolute",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "closeOnBack",
+      "label": "closeOnBack",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "contentClass",
+      "label": "contentClass",
+      "tsType": "string | string[] | undefined",
+      "runtimeType": [
+        "String",
+        "Array"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "contentProps",
+      "label": "contentProps",
+      "tsType": "any",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "disabled",
+      "label": "disabled",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "noClickAnimation",
+      "label": "noClickAnimation",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "modelValue",
+      "label": "modelValue",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "zIndex",
+      "label": "zIndex",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "defaultValue": 2000,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "disableGlobalStack",
+      "label": "disableGlobalStack",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "persistent",
+      "label": "persistent",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "height",
+      "label": "height",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "maxHeight",
+      "label": "maxHeight",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "maxWidth",
+      "label": "maxWidth",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "minHeight",
+      "label": "minHeight",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "minWidth",
+      "label": "minWidth",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "width",
+      "label": "width",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "target",
+      "label": "target",
+      "tsType": "Element | TAnyString | ComponentPublicInstance | \"parent\" | \"cursor\" | [x: number, y: number] | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "activator",
+      "label": "activator",
+      "tsType": "Element | TAnyString | ComponentPublicInstance | \"parent\" | \"cursor\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "activatorProps",
+      "label": "activatorProps",
+      "tsType": "any",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "openOnClick",
+      "label": "openOnClick",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "openOnContextMenu",
+      "label": "openOnContextMenu",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "openOnHover",
+      "label": "openOnHover",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "openOnFocus",
+      "label": "openOnFocus",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "closeOnContentClick",
+      "label": "closeOnContentClick",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "closeDelay",
+      "label": "closeDelay",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "openDelay",
+      "label": "openDelay",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "Number",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "locationStrategy",
+      "label": "locationStrategy",
+      "tsType": "\"static\" | \"connected\" | TLocationStrategyFn | undefined",
+      "runtimeType": "Function",
+      "required": false,
+      "defaultValue": "static",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "location",
+      "label": "location",
+      "tsType": "TAnchor | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "bottom",
+      "hasFactoryDefault": false,
+      "options": [
+        "top",
+        "bottom",
+        "left",
+        "right",
+        "center",
+        "center center",
+        "top left",
+        "top right",
+        "top center",
+        "bottom left",
+        "bottom right",
+        "bottom center",
+        "left top",
+        "left bottom",
+        "left center",
+        "right top",
+        "right bottom",
+        "right center"
+      ],
+      "control": "select",
+      "source": "alias"
+    },
+    {
+      "name": "origin",
+      "label": "origin",
+      "tsType": "TAnchor | \"auto\" | \"overlap\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "auto",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "offset",
+      "label": "offset",
+      "tsType": "string | number | number[] | undefined",
+      "runtimeType": [
+        "Number",
+        "String",
+        "Array"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "viewportMargin",
+      "label": "viewportMargin",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "defaultValue": 12,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Pixels of breathing room enforced between the floating content and\neach viewport edge by the connected location strategy. Defaults to\n`12` so dropdowns / menus / tooltips never touch the browser chrome.\n\nComponents where the activator legitimately spans the full viewport\n(e.g. an `<origam-select>` taking the full row width) should pass\n`0` — otherwise the guard's inward shift produces a visible offset\nbetween the activator's left edge and the dropdown's left edge.",
+      "source": "types"
+    },
+    {
+      "name": "scrollStrategy",
+      "label": "scrollStrategy",
+      "tsType": "\"none\" | \"block\" | \"close\" | \"reposition\" | TScrollStrategyFn | undefined",
+      "runtimeType": "Function",
+      "required": false,
+      "defaultValue": "block",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "contained",
+      "label": "contained",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "eager",
+      "label": "eager",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    },
+    {
+      "name": "transition",
+      "label": "transition",
+      "tsType": "string | boolean | TTransitionProps | undefined",
+      "runtimeType": [
+        "Boolean",
+        "String",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": true,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "scrim",
+      "label": "scrim",
+      "tsType": "string | boolean | undefined",
+      "runtimeType": [
+        "Boolean",
+        "String"
+      ],
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "attach",
+      "label": "attach",
+      "tsType": "string | boolean | Element | null | undefined",
+      "runtimeType": [
+        "Boolean",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    }
+  ],
+  "events": [
+    {
+      "name": "update:modelValue",
+      "label": "update:modelValue",
+      "payloadType": "[event: any]",
+      "source": "types"
+    },
+    {
+      "name": "afterEnter",
+      "label": "afterEnter",
+      "payloadType": "[]",
+      "source": "types"
+    },
+    {
+      "name": "afterLeave",
+      "label": "afterLeave",
+      "payloadType": "[]",
+      "source": "types"
+    },
+    {
+      "name": "keydown",
+      "label": "keydown",
+      "payloadType": "[event: KeyboardEvent]",
+      "source": "types"
+    },
+    {
+      "name": "click:outside",
+      "label": "click:outside",
+      "payloadType": "[event: MouseEvent]",
+      "source": "types"
+    }
+  ],
+  "slots": [
+    {
+      "name": "activator",
+      "label": "activator",
+      "slotPropsType": "{ isActive: boolean; props: Record<string, unknown>; }",
+      "description": "Receives the merged activator ref/events/props bag — bind it with\n`v-bind=\"props\"` on whatever element should toggle the overlay.",
+      "source": "types"
+    },
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "{ isActive: boolean; }",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

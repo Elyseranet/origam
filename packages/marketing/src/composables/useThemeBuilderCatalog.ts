@@ -4,10 +4,6 @@ import { computed } from 'vue'
 
 import { useT } from '~/composables/useT'
 import {
-    THEME_BUILDER_PREVIEW_ADAPTERS,
-    THEME_BUILDER_PREVIEWABLE_SLUGS
-} from '~/consts/theme-builder.const'
-import {
     THEME_BUILDER_CATEGORY_META,
     THEME_BUILDER_COLOR_TYPE_HINTS,
     THEME_BUILDER_PROP_GROUPS,
@@ -407,9 +403,7 @@ function buildEntry (component: IComponentThemeSurface, t: (key: string, fallbac
         propGroups: composePropGroups(controls),
         tokenGroups: groupTokens(tokens),
         controls,
-        tokens,
-        previewAdapter: THEME_BUILDER_PREVIEW_ADAPTERS[component.slug] ?? {},
-        previewable: (THEME_BUILDER_PREVIEWABLE_SLUGS as readonly string[]).includes(component.slug)
+        tokens
     }
 }
 
@@ -438,22 +432,18 @@ export function useThemeBuilderCatalog () {
      * independently — `origam-progress-linear`/`origam-progress-circular` are
      * used directly in real markup (not only via the `<origam-progress>`
      * dispatcher), same for `origam-btn-group`/`origam-btn-toggle`. The gap
-     * was already flagged as unintentional in this file's own history: the
-     * curated `THEME_BUILDER_PREVIEWABLE_SLUGS` list (theme-builder.const.ts)
-     * already carries `'progress-linear'`, and `THEME_BUILDER_TOKENS` seeds
-     * tokens for several other family slugs — both were dead code under the
-     * old filter since those slugs could never reach `entries`.
+     * was already flagged as unintentional in this file's own history:
+     * `THEME_BUILDER_TOKENS` seeds tokens for several family slugs that were
+     * dead code under the old filter, since they could never reach `entries`.
      *
      * Every `doc_entry` of kind `component` (in DB: 0 with a null/missing
      * `category`, verified) carries its own `category`, so no extra grouping
      * logic is needed here — the existing `nav` reducer below just gets more
-     * entries per bucket. A family member that isn't independently mountable
-     * still surfaces safely: `entry.previewable` (curated allowlist) stays
-     * `false` for anything not explicitly vetted, so `ThemeBuilderPreview`
-     * falls back to its existing "preview unavailable" message instead of
-     * mounting an unactivatable sub-part — the props/tokens stay editable
-     * and exportable either way, which is the actual requirement (#25):
-     * being configurable does not require a live render.
+     * entries per bucket. Every entry previews through the playground engine
+     * (#1145, #1056 — the former 23-slug allowlist is gone): a sub-part renders
+     * inside the family snippet that nests it, and one that cannot render at
+     * all shows its curated reason. The props/tokens stay editable and
+     * exportable either way (#25).
      */
     const entries = computed<IThemeBuilderComponentEntry[]>(() => {
         return (data.value ?? []).map(c => buildEntry(c, t))

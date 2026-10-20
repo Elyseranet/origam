@@ -5,15 +5,12 @@
  * Adding a slug here wires it automatically: its prop controls come from
  * `consts/components/{slug}.const.ts` → `playground.controls`, and its editable
  * CSS tokens are derived from the origam theme `cssVars` (block prefix
- * `--origam-{slug}---`). The only per-slug data below is an optional preview
- * adapter for components that need slot/demo content to render visibly.
+ * `--origam-{slug}---`). The preview of every component goes through the
+ * playground engine (`usePlaygroundHost`, #1145) — no per-slug list here.
  *
  * Slugs are verified against real const files; preview props/slots use the real
  * component API only (no invented props).
  */
-import { COMPONENT_PREVIEW_ADAPTERS } from '~/consts/component-preview.const'
-
-import type { IThemeBuilderPreviewAdapter } from '~/interfaces/theme-builder.interface'
 import type {
     TThemeBuilderBorderSide,
     TThemeBuilderBoxModelMode,
@@ -79,56 +76,6 @@ export const CORE_THEME_SLUGS = [
     'divider',
     'progress-linear'
 ] as const
-
-/**
- * Slugs whose component renders a visible, meaningful preview from props alone
- * (plus the slot text / preview props from the adapter below). The builder
- * shows the live `<component :is>` preview for these and a graceful
- * "preview unavailable" note for the rest (overlays, providers, sub-parts that
- * need an activator or parent context). Verified against the real component API.
- */
-export const THEME_BUILDER_PREVIEWABLE_SLUGS = [
-    'btn',
-    'card',
-    'chip',
-    'avatar',
-    'alert',
-    'text-field',
-    'textarea-field',
-    'number-field',
-    'password-field',
-    'select',
-    'checkbox',
-    'switch',
-    'radio',
-    'rating-field',
-    'slider-field',
-    'title',
-    'icon',
-    'badge',
-    'divider',
-    'progress-linear',
-    'blockquote',
-    'breadcrumb',
-    'pagination'
-] as const
-
-/**
- * Per-slug preview adapter — ALIAS de la table partagée.
- *
- * La table vivait ici et ne couvrait que les 24 slugs du Theme Builder. Les
- * fiches composants (`/components/{slug}`) ont le même besoin, donc elle a été
- * généralisée dans `consts/component-preview.const.ts` (#728). Ce nom reste
- * exporté pour les consommateurs existants — une seule source de vérité.
- *
- * Statique `previewProps` est fusionné SOUS les props éditées par l'utilisateur
- * (aperçu seulement — jamais sérialisé). `slotText` rend dans le slot par
- * défaut. Les slugs absents retombent sur `playground.defaultSlotContent`.
- *
- * Le Theme Builder ne monte QUE les slugs de `THEME_BUILDER_PREVIEWABLE_SLUGS`,
- * donc les entrées ajoutées pour les fiches composants ne changent rien ici.
- */
-export const THEME_BUILDER_PREVIEW_ADAPTERS: Record<string, IThemeBuilderPreviewAdapter> = COMPONENT_PREVIEW_ADAPTERS
 
 /**
  * CSS custom-property name fragments that map to a colour input. Everything

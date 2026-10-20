@@ -1,0 +1,280 @@
+{
+  "name": "OrigamEmptyState",
+  "tag": "origam-empty-state",
+  "family": "EmptyState",
+  "label": "EmptyState",
+  "props": [
+    {
+      "name": "preset",
+      "label": "preset",
+      "tsType": "\"error\" | \"no-data\" | \"no-results\" | \"offline\" | \"locked\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "no-data",
+      "hasFactoryDefault": false,
+      "options": [
+        "error",
+        "no-data",
+        "no-results",
+        "offline",
+        "locked"
+      ],
+      "control": "select",
+      "description": "Visual preset. Bundles a default icon and intent — see\n`EMPTY_STATE_PRESET_CONFIG`. The preset is the starting point;\n`icon` and `iconColor` win when both are passed.",
+      "source": "types"
+    },
+    {
+      "name": "title",
+      "label": "title",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Primary heading. Rendered as a `<h2>`-equivalent element with\nthe chosen `size`. Override entirely via the `#title` slot when\nricher markup is needed (a link, an icon-prefix, …).",
+      "source": "types"
+    },
+    {
+      "name": "description",
+      "label": "description",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Optional sub-heading rendered below the title. Multiple lines\nsupported; the SCSS layer clamps the readable width via the\n`--origam-empty-state---max-width` token.",
+      "source": "types"
+    },
+    {
+      "name": "icon",
+      "label": "icon",
+      "tsType": "TIcon | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Override the preset icon. Accepts the same `TIcon` shape as\n`<OrigamIcon>`: a MDI / iconify string, an array of SVG path\ntuples, or a Vue `Component`. Use the `#icon` slot for full\nSVG / `<img>` illustrations.",
+      "source": "types"
+    },
+    {
+      "name": "iconColor",
+      "label": "iconColor",
+      "tsType": "\"success\" | \"info\" | \"warning\" | \"ghost\" | \"primary\" | \"neutral\" | \"secondary\" | \"danger\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "success",
+        "info",
+        "warning",
+        "ghost",
+        "primary",
+        "neutral",
+        "secondary",
+        "danger"
+      ],
+      "control": "select",
+      "description": "Override the preset's icon color (the semantic intent that maps\nto `--origam-color__action--{intent}---bg` /\n`--origam-color__feedback--{intent}---bg`).",
+      "source": "types"
+    },
+    {
+      "name": "size",
+      "label": "size",
+      "tsType": "TEmptyStateSize | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "md",
+      "hasFactoryDefault": false,
+      "options": [
+        "md",
+        "sm",
+        "lg"
+      ],
+      "control": "select",
+      "description": "Vertical density. Drives icon size, title / description font\nsizes, padding and gap.",
+      "source": "alias"
+    },
+    {
+      "name": "align",
+      "label": "align",
+      "tsType": "TEmptyStateAlign | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "center",
+      "hasFactoryDefault": false,
+      "options": [
+        "left",
+        "center"
+      ],
+      "control": "select",
+      "description": "Horizontal alignment of the icon / title / description / actions\nstack.",
+      "source": "alias"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "tag",
+      "label": "tag",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "div",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "fontFamily",
+      "label": "fontFamily",
+      "tsType": "\"sans\" | \"mono\" | \"serif\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "sans",
+        "mono",
+        "serif"
+      ],
+      "control": "select",
+      "description": "Font family token. Maps to `--origam-font__family---{fontFamily}`\n(sans · mono · serif).\nWhen unset, the component keeps its theme font-family.",
+      "source": "types"
+    },
+    {
+      "name": "fontSize",
+      "label": "fontSize",
+      "tsType": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"5xl\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "2xl",
+        "3xl",
+        "4xl",
+        "5xl"
+      ],
+      "control": "select",
+      "description": "Font size token. Maps to `--origam-font__size---{fontSize}`\n(xs · sm · md · lg · xl · 2xl · 3xl · 4xl · 5xl).\nWhen unset, the component keeps its theme / density font-size.",
+      "source": "types"
+    },
+    {
+      "name": "fontWeight",
+      "label": "fontWeight",
+      "tsType": "\"regular\" | \"medium\" | \"semibold\" | \"bold\" | \"extrabold\" | \"black\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "regular",
+        "medium",
+        "semibold",
+        "bold",
+        "extrabold",
+        "black"
+      ],
+      "control": "select",
+      "description": "Font weight token. Maps to `--origam-font__weight---{fontWeight}`\n(regular 400 · medium 500 · semibold 600 · bold 700 · extrabold 800 · black 900).\nWhen unset, the component keeps its theme font-weight.",
+      "source": "types"
+    },
+    {
+      "name": "lineHeight",
+      "label": "lineHeight",
+      "tsType": "\"none\" | \"tight\" | \"snug\" | \"normal\" | \"relaxed\" | \"loose\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "none",
+        "tight",
+        "snug",
+        "normal",
+        "relaxed",
+        "loose"
+      ],
+      "control": "select",
+      "description": "Line-height token. Maps to `--origam-font__lineHeight---{lineHeight}`\n(none 1 · tight 1.25 · snug 1.375 · normal 1.5 · relaxed 1.625 · loose 2).\nWhen unset, the component keeps its theme line-height.",
+      "source": "types"
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "any",
+      "description": "Replaces the entire built-in layout (icon + title + description\n+ actions). Use this for a fully bespoke layout — e.g. a hero\nempty page with a custom illustration and a multi-column CTA\ngrid.",
+      "source": "types"
+    },
+    {
+      "name": "icon",
+      "label": "icon",
+      "slotPropsType": "any",
+      "description": "Replaces the default `<OrigamIcon>` rendering. Use for SVG /\n`<img>` illustrations. Mark the surface `aria-hidden=\"true\"`\nwhen it is purely decorative.",
+      "source": "types"
+    },
+    {
+      "name": "title",
+      "label": "title",
+      "slotPropsType": "any",
+      "description": "Replaces the rendered title element. Slot wins over the `title`\nprop when both are provided.",
+      "source": "types"
+    },
+    {
+      "name": "description",
+      "label": "description",
+      "slotPropsType": "any",
+      "description": "Replaces the rendered description element. Slot wins over the\n`description` prop when both are provided.",
+      "source": "types"
+    },
+    {
+      "name": "actions",
+      "label": "actions",
+      "slotPropsType": "any",
+      "description": "Actions row rendered below the description (or the title when\n`description` is absent). Typically holds 1–2 buttons (Create,\nRetry, Switch to offline mode, Sign in).",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

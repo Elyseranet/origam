@@ -440,6 +440,217 @@
                 "experimental": "experimental",
                 "deprecated": "deprecated"
             }
+        },
+        "playground": {
+            "snippet": {
+                "preview_label": "Preview",
+                "chart": {
+                    "series_revenue": "Revenue",
+                    "series_costs": "Costs",
+                    "month_jan": "Jan",
+                    "month_feb": "Feb",
+                    "month_mar": "Mar",
+                    "month_apr": "Apr",
+                    "month_may": "May",
+                    "month_jun": "Jun",
+                    "series_progress": "Progress"
+                },
+                "common": {
+                    "one": "One",
+                    "two": "Two",
+                    "three": "Three",
+                    "left": "Left",
+                    "right": "Right",
+                    "middle": "Middle",
+                    "center": "Center"
+                },
+                "transition": {
+                    "translated": "Translated content",
+                    "sliding": "Sliding content",
+                    "expanding": "Expanding content",
+                    "snack": "Snack content",
+                    "transitioned": "Transitioned content",
+                    "fading": "Fading content",
+                    "rotating": "Rotating content",
+                    "client_only": "Client-only content"
+                },
+                "data_table": {
+                    "person_ada": "Ada Lovelace",
+                    "role_owner": "Owner",
+                    "header_name": "Name",
+                    "header_role": "Role",
+                    "header_seats": "Seats",
+                    "person_alan": "Alan Turing",
+                    "role_admin": "Admin",
+                    "person_grace": "Grace Hopper",
+                    "role_member": "Member"
+                },
+                "btn": {
+                    "text": "Button"
+                },
+                "card": {
+                    "text": "Card content"
+                },
+                "chip": {
+                    "text": "Chip"
+                },
+                "alert": {
+                    "text": "A short alert message."
+                },
+                "text_field": {
+                    "label": "Label",
+                    "value": "Value"
+                },
+                "textarea_field": {
+                    "label": "Message",
+                    "value": "A few lines of text."
+                },
+                "number_field": {
+                    "label": "Amount"
+                },
+                "password_field": {
+                    "label": "Password"
+                },
+                "select": {
+                    "label": "Pick one"
+                },
+                "checkbox": {
+                    "label": "Checkbox"
+                },
+                "switch": {
+                    "label": "Switch"
+                },
+                "radio": {
+                    "label": "Radio"
+                },
+                "title": {
+                    "text": "The quick brown fox"
+                },
+                "badge": {
+                    "text": "Inbox"
+                },
+                "blockquote": {
+                    "text": "Design is not just what it looks like. Design is how it works."
+                },
+                "breadcrumb": {
+                    "home": "Home",
+                    "library": "Library",
+                    "data": "Data"
+                },
+                "chip_group": {
+                    "design": "Design",
+                    "code": "Code",
+                    "ship": "Ship"
+                },
+                "selection_control_group": {
+                    "email": "Email",
+                    "sms": "SMS"
+                },
+                "expansion_panels": {
+                    "first_title": "First panel",
+                    "first_text": "The content of the first panel.",
+                    "second_title": "Second panel",
+                    "second_text": "The content of the second panel."
+                },
+                "form": {
+                    "email": "Email",
+                    "submit": "Submit"
+                },
+                "list": {
+                    "inbox": "Inbox",
+                    "starred": "Starred",
+                    "archive": "Archive"
+                },
+                "list_group": {
+                    "title": "Reports",
+                    "weekly": "Weekly",
+                    "monthly": "Monthly"
+                },
+                "tab_panels": {
+                    "panel_one": "Panel one"
+                },
+                "responsive": {
+                    "text": "Responsive box"
+                },
+                "lazy": {
+                    "text": "Lazily mounted content"
+                },
+                "watermark": {
+                    "text": "Protected content"
+                },
+                "theme_provider": {
+                    "text": "Themed button"
+                },
+                "defaults_provider": {
+                    "text": "Button with defaults"
+                },
+                "clipboard": {
+                    "text": "Copy the install command"
+                },
+                "img": {
+                    "alt": "Sample image"
+                },
+                "data_text": {
+                    "text": "A short data value"
+                },
+                "data_title": {
+                    "text": "A data title"
+                },
+                "data_list": {
+                    "plan": "Plan",
+                    "pro": "Pro",
+                    "seats": "Seats"
+                },
+                "inline_edit": {
+                    "value": "Click to edit"
+                },
+                "text_mask": {
+                    "text": "Gradient text"
+                },
+                "bracket": {
+                    "semis": "Semi-finals",
+                    "final": "Final"
+                },
+                "chart_range_selector": {
+                    "one_month": "1M",
+                    "six_months": "6M",
+                    "one_year": "1Y"
+                },
+                "tab": {
+                    "text": "Tab one"
+                },
+                "dialog": {
+                    "title": "Example dialog"
+                },
+                "dialog_confirmation": {
+                    "title": "Delete item?"
+                },
+                "tooltip": {
+                    "text": "Tooltip content"
+                },
+                "overlay": {
+                    "text": "Overlay content"
+                },
+                "snackbar": {
+                    "text": "Saved successfully."
+                },
+                "carousel": {
+                    "slide_one": "Slide one",
+                    "slide_two": "Slide two"
+                },
+                "parallax": {
+                    "layer": "Parallax layer",
+                    "element": "Parallax element"
+                }
+            },
+            "fallback_slot_text": "Content",
+            "theme_origam": "Origam",
+            "theme_label": "Preview theme",
+            "rendered_by_parent": "This sub-part is rendered by its parent: the preview shows {parent}, with this part inside it. Theme it from the Theme Builder, or edit the parent here.",
+            "mode_light": "Light",
+            "mode_dark": "Dark",
+            "mode_auto": "Auto",
+            "mode_label": "Preview mode"
         }
     },
     "composables": {
@@ -1684,8 +1895,7 @@
             "label": "Components",
             "search": "Search component…",
             "no_result": "No component matches “{query}”.",
-            "total": "{count} components",
-            "previewable": "Live preview available"
+            "total": "{count} components"
         },
         "props": {
             "legend": "Default props",

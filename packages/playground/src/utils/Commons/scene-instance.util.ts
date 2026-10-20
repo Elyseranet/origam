@@ -78,6 +78,26 @@ export function countInstances (instances: IPlaygroundInstance[]): number {
 }
 
 /*********************************************************
+ * Single-component mode (#1173)
+ *
+ * @description
+ * An EMBEDDED playground (`IPlaygroundProps.embedded`) showing exactly one
+ * root instance with no child: a host's component page. Scene and Catalog
+ * are then noise — there is nothing to arrange and nothing to swap. Derived
+ * from the scene's SHAPE only; no component name is ever interpreted.
+ *
+ * @description
+ * ⛔ `embedded` is required, not optional sugar: the standalone host starts
+ * from an empty scene and reaches one root as soon as a component is picked,
+ * so a scene-only rule would hide the Catalog and strand it there.
+ ********************************************************/
+export function isSingleComponentScene (roots: IPlaygroundInstance[], embedded: boolean): boolean {
+    const [only] = roots
+
+    return embedded && roots.length === 1 && !!only && countInstances(roots) === 1
+}
+
+/*********************************************************
  * Cloning
  *
  * @description

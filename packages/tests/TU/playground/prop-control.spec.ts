@@ -12,7 +12,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { nextTick, reactive } from 'vue'
 
-import { aliasNameOf, deriveControlKind, describeTypes } from '../../../playground/scripts/generate-host-seed.mjs'
+import { aliasNameOf, deriveControlKind, describeTypes } from '../../../playground/scripts/lib/definition.mjs'
 import { usePropControl } from '../../../playground/src/composables/Commons/propControl.composable'
 import { CONTROL_KIND } from '../../../playground/src/enums/Commons/control-kind.enum'
 import { METADATA_SOURCE } from '../../../playground/src/enums/Commons/metadata-source.enum'

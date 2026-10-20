@@ -1,0 +1,338 @@
+{
+  "name": "OrigamInlineEdit",
+  "tag": "origam-inline-edit",
+  "family": "InlineEdit",
+  "label": "InlineEdit",
+  "props": [
+    {
+      "name": "modelValue",
+      "label": "modelValue",
+      "tsType": "string | number",
+      "runtimeType": [
+        "String",
+        "Number"
+      ],
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Current value (v-model target). Accepts both `string` and\n`number` for ergonomics — the internal draft is normalised to a\nstring, then `update:modelValue` re-emits with the same shape as\nthe original (number stays number, string stays string).",
+      "source": "types"
+    },
+    {
+      "name": "placeholder",
+      "label": "placeholder",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Placeholder shown on the input AND surfaced inside the default\n`#display` slot when `modelValue` is empty.\n\nLeft unset, it falls back to the localised\n`origam.inline_edit.placeholder` (\"Click to edit\" in English) —\nit is NOT a hardcoded English literal any more.",
+      "source": "types"
+    },
+    {
+      "name": "rules",
+      "label": "rules",
+      "tsType": "TInlineEditRule[] | undefined",
+      "runtimeType": "Array",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "description": "Array of validation rules using the standard DS contract\n(same as `OrigamTextField` / `OrigamInput` rules). Each rule\nis a function receiving the current string value and returning\n`true` (pass) or an error message string (fail). Rules are\nevaluated sequentially on confirm; the first failure surfaces\nas the inline error and blocks the commit.\n\nWhen both `rules` and `validate` are provided, `rules` are\nevaluated first. If any rule fails, `validate` is skipped.\nOnly the first error message is displayed.",
+      "source": "types"
+    },
+    {
+      "name": "validate",
+      "label": "validate",
+      "tsType": "TInlineEditValidator | undefined",
+      "runtimeType": "Function",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Validation callback. Returns `true` (or `Promise<true>`) when\nthe draft is acceptable, or an error message string that will\nbe surfaced in a `role=\"alert\"` element near the input.\n\nSync validators run on every Enter / blur. Async validators\nkeep the editor open until the returned Promise settles.\n\nWhen both `rules` and `validate` are provided, `rules` are\nevaluated first. `validate` only runs if all rules pass.",
+      "source": "types"
+    },
+    {
+      "name": "autoFocus",
+      "label": "autoFocus",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Auto-focus the input when entering edit mode. Setting this to\nfalse is useful for forms where keyboard focus is managed by a\nparent (e.g. a wizard that steps focus through siblings).",
+      "source": "types"
+    },
+    {
+      "name": "selectOnFocus",
+      "label": "selectOnFocus",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Select all the input's text when it gains focus on edit entry.\nCommon for \"click title to rename\" patterns — the user can\nimmediately type a replacement without selecting first.",
+      "source": "types"
+    },
+    {
+      "name": "confirmOnBlur",
+      "label": "confirmOnBlur",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Confirm the draft when the input loses focus. When false, the\neditor stays open on blur and the user must explicitly Enter\nto confirm or Escape to cancel.",
+      "source": "types"
+    },
+    {
+      "name": "confirmOnEnter",
+      "label": "confirmOnEnter",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Confirm on `Enter`. Disable when the edit zone is a multiline\ntextarea and Enter should produce a newline (Cmd/Ctrl+Enter to\nconfirm is the convention — apps wire this manually).",
+      "source": "types"
+    },
+    {
+      "name": "cancelOnEscape",
+      "label": "cancelOnEscape",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Cancel (revert the draft) on `Escape`.",
+      "source": "types"
+    },
+    {
+      "name": "disabled",
+      "label": "disabled",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Disables the component — the display affordance becomes\nnon-interactive (button `disabled`, span `aria-disabled`), the\n`edit()` method short-circuits, and any in-flight edit is\ncancelled (draft discarded).",
+      "source": "types"
+    },
+    {
+      "name": "multiline",
+      "label": "multiline",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Render a `<textarea>` instead of a `<input>` in edit mode.\nWhen true, `confirmOnEnter` should generally be disabled by the\nconsumer so newlines are not swallowed.",
+      "source": "types"
+    },
+    {
+      "name": "trim",
+      "label": "trim",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": true,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Strip surrounding whitespace before emitting `update:modelValue`\nAND before running the validator. Disable for fields where\ntrailing spaces are significant (passwords, …).",
+      "source": "types"
+    },
+    {
+      "name": "inputType",
+      "label": "inputType",
+      "tsType": "TInlineEditInputType | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "text",
+      "hasFactoryDefault": false,
+      "options": [
+        "number",
+        "text",
+        "email",
+        "tel"
+      ],
+      "control": "select",
+      "description": "Native HTML input type when not in multiline mode.",
+      "source": "alias"
+    },
+    {
+      "name": "loadingOnConfirm",
+      "label": "loadingOnConfirm",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Surface a loading affordance (CSS class hook) on the root while\nan async `validate` Promise is in flight. The component sets\n`aria-busy=\"true\"` regardless — this prop only controls the\nvisual hook.",
+      "source": "types"
+    },
+    {
+      "name": "showActions",
+      "label": "showActions",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "defaultValue": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "description": "Render built-in action buttons (Edit / Confirm / Cancel) next to\nthe component.\n\nWhen `false` (default), only keyboard shortcuts are available:\nEnter to confirm, Escape to cancel, click on the display to edit.\n\nWhen `true`, three icon buttons are rendered:\n- **Edit** — visible in display mode, enters edit mode on click.\n- **Confirm** — visible in edit mode, commits the draft on click.\n- **Cancel** — visible in edit mode, discards the draft on click.\n\nThe `disabled` prop also disables all three buttons.",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "tag",
+      "label": "tag",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "div",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "fontSize",
+      "label": "fontSize",
+      "tsType": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"5xl\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "2xl",
+        "3xl",
+        "4xl",
+        "5xl"
+      ],
+      "control": "select",
+      "description": "Font size token. Maps to `--origam-font__size---{fontSize}`\n(xs · sm · md · lg · xl · 2xl · 3xl · 4xl · 5xl).\nWhen unset, the component keeps its theme / density font-size.",
+      "source": "types"
+    },
+    {
+      "name": "fontWeight",
+      "label": "fontWeight",
+      "tsType": "\"regular\" | \"medium\" | \"semibold\" | \"bold\" | \"extrabold\" | \"black\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "regular",
+        "medium",
+        "semibold",
+        "bold",
+        "extrabold",
+        "black"
+      ],
+      "control": "select",
+      "description": "Font weight token. Maps to `--origam-font__weight---{fontWeight}`\n(regular 400 · medium 500 · semibold 600 · bold 700 · extrabold 800 · black 900).\nWhen unset, the component keeps its theme font-weight.",
+      "source": "types"
+    }
+  ],
+  "events": [
+    {
+      "name": "update:modelValue",
+      "label": "update:modelValue",
+      "payloadType": "[value: string | number]",
+      "source": "types"
+    },
+    {
+      "name": "confirm",
+      "label": "confirm",
+      "payloadType": "[value: string | number]",
+      "source": "types"
+    },
+    {
+      "name": "cancel",
+      "label": "cancel",
+      "payloadType": "[]",
+      "source": "types"
+    },
+    {
+      "name": "edit",
+      "label": "edit",
+      "payloadType": "[]",
+      "source": "types"
+    },
+    {
+      "name": "validate-error",
+      "label": "validate-error",
+      "payloadType": "[message: string]",
+      "source": "types"
+    }
+  ],
+  "slots": [
+    {
+      "name": "display",
+      "label": "display",
+      "slotPropsType": "IInlineEditDisplaySlotBindings",
+      "source": "types"
+    },
+    {
+      "name": "edit",
+      "label": "edit",
+      "slotPropsType": "IInlineEditEditSlotBindings",
+      "source": "types"
+    },
+    {
+      "name": "actions",
+      "label": "actions",
+      "slotPropsType": "IInlineEditActionsSlotBindings",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

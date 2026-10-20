@@ -1,0 +1,81 @@
+{
+  "name": "OrigamListChildren",
+  "tag": "origam-list-children",
+  "family": "List",
+  "label": "ListChildren",
+  "props": [
+    {
+      "name": "items",
+      "label": "items",
+      "tsType": "IInternalListItemChildren<any>[]",
+      "runtimeType": "Array",
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "source": "types"
+    },
+    {
+      "name": "returnObject",
+      "label": "returnObject",
+      "tsType": "boolean | undefined",
+      "runtimeType": "Boolean",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "switch",
+      "source": "types"
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "any",
+      "source": "types"
+    },
+    {
+      "name": "children",
+      "label": "children",
+      "slotPropsType": "{ item: IInternalListItemChildren<any>; index: number; }",
+      "source": "types"
+    },
+    {
+      "name": "divider",
+      "label": "divider",
+      "slotPropsType": "{ itemProps: { [key: string]: any; title?: string | undefined; value?: any; } | undefined; }",
+      "source": "types"
+    },
+    {
+      "name": "subheader",
+      "label": "subheader",
+      "slotPropsType": "{ itemProps: { [key: string]: any; title?: string | undefined; value?: any; } | undefined; }",
+      "source": "types"
+    },
+    {
+      "name": "subheaderTitle",
+      "label": "subheaderTitle",
+      "slotPropsType": "{ title?: string | undefined; }",
+      "source": "types"
+    },
+    {
+      "name": "group",
+      "label": "group",
+      "slotPropsType": "{ itemProps: { [key: string]: any; title?: string | undefined; value?: any; } | undefined; }",
+      "source": "types"
+    },
+    {
+      "name": "groupActivator",
+      "label": "groupActivator",
+      "slotPropsType": "IListGroupActivatorSlotProps",
+      "source": "types"
+    },
+    {
+      "name": "item",
+      "label": "item",
+      "slotPropsType": "{ itemProps: { [key: string]: any; title?: string | undefined; value?: any; } | undefined; }",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

@@ -210,6 +210,17 @@ jobs:
       - name: Vitest (TU/playground)
         run: pnpm -F @origam/tests run test:playground
 
+      # #1145 — the catalogue under `packages/playground/src/assets/catalog/`
+      # is a COMMITTED artefact (219 definitions) that marketing renders from.
+      # Re-extract it from the DS source and fail on any drift: a prop added,
+      # renamed or retyped in the DS without `meta:catalog` turns this red.
+      - name: Catalogue drift (meta:catalog:check)
+        run: |
+          pnpm -F @origam/playground run meta:runtime
+          pnpm -F @origam/playground run meta:unions
+          pnpm -F @origam/playground run meta:aliases
+          pnpm -F @origam/playground run meta:catalog:check
+
       # E2E against the standalone playground host (#1143). Same browser
       # cache recipe as `test-e2e`. The config boots its own Vite dev server
       # (`webServer`, `--strictPort`) — no Histoire build, no DS build.

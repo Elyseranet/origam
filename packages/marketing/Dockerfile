@@ -36,8 +36,14 @@ COPY packages/docs/package.json packages/docs/package.json
 COPY packages/stories/package.json packages/stories/package.json
 COPY packages/tests/package.json packages/tests/package.json
 COPY packages/marketing/package.json packages/marketing/package.json
-# marketing imports the prop-group classification from @origam/playground (#1141).
+# marketing hosts @origam/playground: prop-group classification (#1141), the
+# engine and its committed catalogue (#1145).
 COPY packages/playground/package.json packages/playground/package.json
+# `pnpm.patchedDependencies` (root package.json, #1065) reads this directory
+# during install. Without it the image failed at `pnpm install
+# --frozen-lockfile` — ENOENT `patches/@nuxt__devtools@3.4.2.patch`,
+# measured while verifying #1145.
+COPY patches ./patches
 
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
     pnpm install --frozen-lockfile
@@ -80,7 +86,13 @@ FROM source AS build
 RUN pnpm -F origam build
 # 2. Build the embeds (Histoire stories + VitePress docs) into marketing/public.
 RUN pnpm run build:embeds
-# 3. Build the Nuxt app → packages/marketing/.output (self-contained server).
+# 3. Generate `.nuxt/` (the `~` alias the SFC compiler resolves defineProps
+#    types through). Outside Docker the package's `postinstall` does it; here
+#    the install ran in `deps`, BEFORE the sources existed, so it never did —
+#    measured while verifying #1145: 5 SFCs failed with « Failed to resolve
+#    import source "~/interfaces/…" », on the parent commit too.
+RUN pnpm -F @origam/marketing exec nuxt prepare
+# 4. Build the Nuxt app → packages/marketing/.output (self-contained server).
 RUN pnpm -F @origam/marketing build
 
 # -----------------------------------------------------------------------------

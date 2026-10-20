@@ -1,3 +1,4 @@
+import type { TMode } from 'origam/types'
 import type { IPropRowSlotScope } from './playground-inspector.interface'
 import type { IComponentRegistry } from '../Registry/component-registry.interface'
 import type { IPlaygroundScene } from '../Scene/playground-scene.interface'
@@ -20,7 +21,24 @@ export interface IPlaygroundProps {
     /** Forwarded to `<origam-theme-provider>`. Defaults to `'auto'`. */
     theme?: string
     /** Forwarded to `<origam-theme-provider>`. Defaults to `'auto'`. */
-    mode?: string
+    mode?: TMode
+    /**
+     * The playground is EMBEDDED in a host page (e.g. a component page of
+     * `packages/marketing`), not the page itself. Defaults to `false`: the
+     * standalone playground does not change.
+     *
+     * When `true`:
+     *  - the "Playground / origam · N components" header is removed — the
+     *    host page already names what is shown;
+     *  - SINGLE-COMPONENT MODE applies whenever the scene holds exactly one
+     *    root with no child (`isSingleComponentScene`): the Scene panel and
+     *    the Catalog button are hidden. A scene with children (a BtnGroup and
+     *    its buttons, a DataTable and its action cell) keeps its Scene panel.
+     *
+     * Derived from the scene's shape only — no component name is interpreted.
+     * (#1173)
+     */
+    embedded?: boolean
 }
 
 /*********************************************************

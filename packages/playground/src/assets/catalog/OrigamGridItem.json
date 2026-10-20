@@ -1,0 +1,144 @@
+{
+  "name": "OrigamGridItem",
+  "tag": "origam-grid-item",
+  "family": "Grid",
+  "label": "GridItem",
+  "props": [
+    {
+      "name": "column",
+      "label": "column",
+      "tsType": "string | number | IGridLineSpec | undefined",
+      "runtimeType": [
+        "Object",
+        "String",
+        "Number"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Inline-axis placement (`grid-column`). Two accepted shapes:\n\n- object: `{ start: 1, end: 5 }` or `{ start: 1, span: 4 }` —\n  the component serialises to the right CSS.\n- string: `'1 / 5'`, `'span 2'`, `'main-start / main-end'` —\n  passed verbatim.",
+      "source": "types"
+    },
+    {
+      "name": "row",
+      "label": "row",
+      "tsType": "string | number | IGridLineSpec | undefined",
+      "runtimeType": [
+        "Object",
+        "String",
+        "Number"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Block-axis placement (`grid-row`). Same accepted shapes as `column`.",
+      "source": "types"
+    },
+    {
+      "name": "area",
+      "label": "area",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "`grid-area` name. When set, overrides `column` / `row` (CSS rule).\nUse this in conjunction with the parent grid's `areas` prop.",
+      "source": "types"
+    },
+    {
+      "name": "alignSelf",
+      "label": "alignSelf",
+      "tsType": "TGridPlaceItems | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "center",
+        "start",
+        "end",
+        "stretch"
+      ],
+      "control": "select",
+      "description": "Per-item `align-self` override. Falls back to the parent grid's\n`alignItems` when unset.",
+      "source": "alias"
+    },
+    {
+      "name": "justifySelf",
+      "label": "justifySelf",
+      "tsType": "TGridPlaceItems | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "center",
+        "start",
+        "end",
+        "stretch"
+      ],
+      "control": "select",
+      "description": "Per-item `justify-self` override. Falls back to the parent grid's\n`justifyItems` when unset.",
+      "source": "alias"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "tag",
+      "label": "tag",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "div",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "default",
+      "label": "default",
+      "slotPropsType": "any",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

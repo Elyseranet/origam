@@ -28,9 +28,7 @@ const stubEntries = computed(() => [
         ],
         propGroups: [],
         tokenGroups: [],
-        tokens: [],
-        previewAdapter: {},
-        previewable: false
+        tokens: []
     }
 ])
 

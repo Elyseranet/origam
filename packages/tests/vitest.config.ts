@@ -61,6 +61,13 @@ export default defineConfig({
             // the plain-TS barrel subpaths straight to source so these specs
             // don't require a full `pnpm -F origam build` just to resolve an
             // enum import.
+            // #1173 — `TU/playground/embedded-mode.spec.ts` mounts
+            // `Playground.vue`, which imports `useVModel` from
+            // `origam/composables`. Without this entry the import resolved
+            // to `dist/` — green on a machine that had built the DS, red in
+            // CI (measured: « Failed to resolve import "origam/composables" »,
+            // reproduced locally with `packages/ds/dist` moved aside).
+            'origam/composables': resolve(REPO_ROOT, 'packages/ds/src/composables/index.ts'),
             'origam/enums': resolve(REPO_ROOT, 'packages/ds/src/enums/index.ts'),
             'origam/utils': resolve(REPO_ROOT, 'packages/ds/src/utils/index.ts'),
             'origam/consts': resolve(REPO_ROOT, 'packages/ds/src/consts/index.ts'),

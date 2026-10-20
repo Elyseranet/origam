@@ -1,0 +1,128 @@
+{
+  "name": "OrigamDataTableGroupHeaderRow",
+  "tag": "origam-data-table-group-header-row",
+  "family": "DataTable",
+  "label": "DataTableGroupHeaderRow",
+  "props": [
+    {
+      "name": "index",
+      "label": "index",
+      "tsType": "number",
+      "runtimeType": "Number",
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "source": "types"
+    },
+    {
+      "name": "item",
+      "label": "item",
+      "tsType": "IDataTableGroup<any>",
+      "runtimeType": null,
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "columns",
+      "label": "columns",
+      "tsType": "IInternalDataTableHeader[]",
+      "runtimeType": "Array",
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "json",
+      "source": "types"
+    },
+    {
+      "name": "isSelected",
+      "label": "isSelected",
+      "tsType": "(items: IDataTableSelectableItem | IDataTableSelectableItem[]) => boolean",
+      "runtimeType": "Function",
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "toggleGroup",
+      "label": "toggleGroup",
+      "tsType": "(group: IDataTableGroup<any>) => void",
+      "runtimeType": "Function",
+      "required": true,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "color",
+      "label": "color",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    }
+  ],
+  "events": [],
+  "slots": [
+    {
+      "name": "data-table-group",
+      "label": "data-table-group",
+      "slotPropsType": "IDataTableGroupHeaderRowGroupSlot<IDataTableGroup<any>>",
+      "source": "types"
+    },
+    {
+      "name": "data-table-select",
+      "label": "data-table-select",
+      "slotPropsType": "IDataTableGroupHeaderRowSelectSlot",
+      "source": "types"
+    }
+  ],
+  "snippets": [],
+  "requiresParent": false
+}

@@ -1,0 +1,153 @@
+{
+  "name": "OrigamSnackbarGroup",
+  "tag": "origam-snackbar-group",
+  "family": "Snackbar",
+  "label": "SnackbarGroup",
+  "props": [
+    {
+      "name": "id",
+      "label": "id",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "default",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Identifier of the stack this container renders. Pair with\n`useSnackbarGroup({ id })` to spawn items into the same stack.\nMultiple stacks can coexist (e.g. a global one + a per-region\none) — each one is keyed independently.",
+      "source": "types"
+    },
+    {
+      "name": "location",
+      "label": "location",
+      "tsType": "\"top\" | \"bottom\" | \"bottom-right\" | \"top-left\" | \"top-right\" | \"top-center\" | \"bottom-left\" | \"bottom-center\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "defaultValue": "bottom-right",
+      "hasFactoryDefault": false,
+      "options": [
+        "top",
+        "bottom",
+        "bottom-right",
+        "top-left",
+        "top-right",
+        "top-center",
+        "bottom-left",
+        "bottom-center"
+      ],
+      "control": "select",
+      "description": "Anchor location on the viewport. Drives both the absolute\npositioning (top/bottom + left/right/center pinning) and the\n`direction` default.",
+      "source": "types"
+    },
+    {
+      "name": "max",
+      "label": "max",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "defaultValue": 5,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Maximum number of items rendered concurrently. When `notify()`\npushes a new item past `max`, the oldest item in the stack is\nevicted FIFO (its `onDismiss` callback still fires).",
+      "source": "types"
+    },
+    {
+      "name": "defaultDuration",
+      "label": "defaultDuration",
+      "tsType": "number | undefined",
+      "runtimeType": "Number",
+      "required": false,
+      "defaultValue": 5000,
+      "hasFactoryDefault": false,
+      "control": "number",
+      "description": "Default auto-dismiss timeout (ms) applied to items that do not\nsupply their own `duration`. Pass `0` to make all items sticky\nby default. Registered into the shared stack store on mount (and\nkept in sync reactively), so it applies to `notify()` calls from\nANY `useSnackbarGroup({ id })` instance targeting this stack —\nnot only calls that repeat `defaultDuration` as a composable\noption.",
+      "source": "types"
+    },
+    {
+      "name": "spacing",
+      "label": "spacing",
+      "tsType": "string | number | undefined",
+      "runtimeType": [
+        "String",
+        "Number"
+      ],
+      "required": false,
+      "defaultValue": "12px",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "description": "Gap between stacked items (CSS dimension — `'12px'`, `'1rem'`,\n`8`, …).",
+      "source": "types"
+    },
+    {
+      "name": "direction",
+      "label": "direction",
+      "tsType": "\"top-down\" | \"bottom-up\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "top-down",
+        "bottom-up"
+      ],
+      "control": "select",
+      "description": "Stacking order. When unset, defaults to `'top-down'` for\n`top-*` locations and `'bottom-up'` for `bottom-*` locations\n— matching the natural reading direction of fresh items.",
+      "source": "types"
+    },
+    {
+      "name": "class",
+      "label": "class",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "style",
+      "label": "style",
+      "tsType": null,
+      "runtimeType": [
+        "String",
+        "Array",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "runtime"
+    },
+    {
+      "name": "tag",
+      "label": "tag",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "defaultValue": "div",
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
+      "name": "attach",
+      "label": "attach",
+      "tsType": "string | boolean | Element | null | undefined",
+      "runtimeType": [
+        "Boolean",
+        "String"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    }
+  ],
+  "events": [],
+  "slots": [],
+  "snippets": [],
+  "requiresParent": false
+}
