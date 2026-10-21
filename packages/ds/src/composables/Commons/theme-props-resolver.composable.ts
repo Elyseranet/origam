@@ -984,7 +984,7 @@ export function installThemePropsResolver (
                      * where declared) — only a key named for THIS component is
                      * a mistake worth a warning.
                      ********************************************************/
-                    if (ownKeys?.has(key) || (providerOwnKeys && key in providerOwnKeys)) {
+                    if (themedKeysUnion.get(name)?.has(key) || key in (defaults.value?.[name] ?? {})) {
                         warnUnsupportedProp(name, key, `theme names this prop but <${name}> does not declare it`)
                     }
                     continue
