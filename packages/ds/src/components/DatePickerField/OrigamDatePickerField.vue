@@ -187,7 +187,7 @@
 
 	import { useDate } from '../../composables/Commons/date.composable'
 	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
+	import { filterPropsOf, useProps } from '../../composables/Commons/props.composable'
 	import { useTeleportTypography } from '../../composables/Commons/teleport-typography.composable'
 	import { useTextColor } from '../../composables/Commons/textColor.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
@@ -559,7 +559,7 @@
 	 * Forwarded props
 	 ********************************************************/
 	const textFieldProps = computed(() => {
-		return origamTextFieldRef.value?.filterProps(props, ['class', 'id', 'style', 'dirty', 'modelValue', 'placeholder', 'validationValue', 'focused'])
+		return filterPropsOf(OrigamTextField, props, ['class', 'id', 'style', 'dirty', 'modelValue', 'placeholder', 'validationValue', 'focused'])
 	})
 
 	const datePickerProps = computed(() => {

@@ -491,6 +491,25 @@ function resolveFilterPropsChain (script, declaredProps) {
         if (!decided) continue
     }
 
+    /*
+     * #1226 — `filterPropsOf(OrigamXxx, props, [...])` : meme relais, mais le
+     * composant enfant est nomme directement (import statique, pas de ref).
+     */
+    for (const m of script.matchAll(/\bfilterPropsOf\s*\(\s*(Origam[A-Za-z0-9]+)\s*,\s*props\b\s*(?:,\s*\[([^\]]*)\])?/g)) {
+        const childIface = COMPONENT_IFACE.get(m[1])
+        const childProps = childIface ? resolveInterface(childIface) : new Map()
+        if (!childProps.size) { unresolved.push(`filterPropsOf(${m[1]}, props, …) — no resolvable \`defineProps<…>\``); continue }
+
+        const excludes = m[2] === undefined
+            ? FILTER_PROPS_DEFAULT_EXCLUDES
+            : [...m[2].matchAll(/['"]([^'"]+)['"]/g)].map((x) => x[1])
+
+        for (const key of childProps.keys()) {
+            if (excludes.includes(key) || !declaredProps.has(key)) continue
+            if (!forwarded.has(key)) forwarded.set(key, m[1])
+        }
+    }
+
     return { forwarded, unresolved }
 }
 
@@ -1058,7 +1077,7 @@ function analyseComponent (file) {
      * l'ENFANT declare et que l'appel n'exclut pas sont creditees. Un site
      * d'appel indecidable — et lui seul — retablit l'exclusion.
      */
-    if (/\bfilterProps\s*\(\s*props\b/.test(cleanScript)) {
+    if (/\bfilterProps\s*\(\s*props\b|\bfilterPropsOf\s*\(\s*Origam\w+\s*,\s*props\b/.test(cleanScript)) {
         const chain = resolveFilterPropsChain(cleanScript, declared)
         for (const [k, child] of chain.forwarded) {
             forwarded.add(k)

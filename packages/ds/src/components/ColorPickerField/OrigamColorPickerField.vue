@@ -140,7 +140,7 @@
 	import OrigamTranslateScale from '../Transition/OrigamTranslateScale.vue'
 
 	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
+	import { filterPropsOf, useProps } from '../../composables/Commons/props.composable'
 	import { useTeleportTypography } from '../../composables/Commons/teleport-typography.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
@@ -498,7 +498,7 @@
 	 ********************************************************/
 
 	const textFieldProps = computed(() => {
-		return origamTextFieldRef.value?.filterProps(props, ['class', 'id', 'style', 'dirty', 'modelValue', 'placeholder', 'validationValue', 'focused'])
+		return filterPropsOf(OrigamTextField, props, ['class', 'id', 'style', 'dirty', 'modelValue', 'placeholder', 'validationValue', 'focused'])
 	})
 
 	const colorPickerProps = computed(() => {

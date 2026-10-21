@@ -296,7 +296,7 @@
 	import { useFocus } from '../../composables/Commons/focus.composable'
 	import { useHold } from '../../composables/NumberField/hold.composable'
 	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
+	import { filterPropsOf, useProps } from '../../composables/Commons/props.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
@@ -814,7 +814,7 @@
 	 ********************************************************/
 
 	const textFieldProps = computed(() => {
-		return origamTextFieldRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'validationValue'])
+		return filterPropsOf(OrigamTextField, props, ['modelValue', 'class', 'style', 'validationValue'])
 	})
 
 	const hasAppendInner = computed(() => {
