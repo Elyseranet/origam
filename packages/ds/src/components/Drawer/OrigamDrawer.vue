@@ -64,6 +64,7 @@
 		isRef,
 		nextTick,
 		onBeforeMount,
+		onServerPrefetch,
 		Ref,
 		ref,
 		shallowRef,
@@ -88,6 +89,7 @@
 	import { useSticky } from '../../composables/Commons/sticky.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTeleport } from '../../composables/Commons/teleport.composable'
+	import { useHydration } from '../../composables/Commons/hydration.composable'
 	import { useToggleScope } from '../../composables/Commons/toggleScope.composable'
 	import { useTouch } from '../../composables/Commons/touch.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
@@ -253,11 +255,20 @@
 		if (val) isActive.value = true
 	})
 
-	onBeforeMount(() => {
+	const initActive = () => {
 		if (props.modelValue != null || isTemporary.value) return
 
 		isActive.value = props.permanent as boolean
-	})
+	}
+	onBeforeMount(initActive)
+	/*********************************************************
+	 * SSR initial state — #1223
+	 *
+	 * @description
+	 * `onBeforeMount` never runs during SSR, so a `permanent` drawer rendered
+	 * inactive on the server but active on the client (mismatch).
+	 ********************************************************/
+	onServerPrefetch(initActive)
 
 	/*********************************************************
 	 * Drag
@@ -378,7 +389,6 @@
 	const resolvedLayoutId = computed<string>(() => isRef(layoutId) ? layoutId.value : layoutId)
 	const isLayoutOrphan = computed(() => resolvedLayoutId.value === 'origam-layout-orphan')
 	const teleportDrawer = computed(() => {
-		if (isLayoutOrphan.value) return undefined
 		return `#${resolvedLayoutId.value} .origam-layout__wrapper`
 	})
 
@@ -400,8 +410,22 @@
 	const hasExplicitAttach = computed(() => props.attach !== null)
 	const { teleportTarget: attachTarget } = useTeleport(computed(() => props.attach || false))
 
+	/*********************************************************
+	 * Hydration — #1223
+	 *
+	 * @description
+	 * The default branch teleported during SSR and the first client render
+	 * (hydration mismatch). Stay inline until hydrated so the client's first
+	 * render matches the server.
+	 *
+	 * @description
+	 * `to` must stay a string: Vue's SSR renders NOTHING for a Teleport
+	 * without a target, even when disabled.
+	 ********************************************************/
+	const isHydrated = useHydration()
+
 	const teleportDisabled = computed(() => {
-		return hasExplicitAttach.value ? !attachTarget.value : isLayoutOrphan.value
+		return hasExplicitAttach.value ? !attachTarget.value : (isLayoutOrphan.value || !isHydrated.value)
 	})
 	const teleportTo = computed(() => {
 		return hasExplicitAttach.value ? attachTarget.value : teleportDrawer.value
