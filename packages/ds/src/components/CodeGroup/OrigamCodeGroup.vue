@@ -61,6 +61,7 @@
 	import { computed, useSlots } from 'vue'
 
 	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamCode from '../Code/OrigamCode.vue'
 	import OrigamTab from '../Tabs/OrigamTab.vue'
 	import OrigamTabPanel from '../Tabs/OrigamTabPanel.vue'
 	import OrigamTabPanels from '../Tabs/OrigamTabPanels.vue'
@@ -128,6 +129,7 @@
 			label: props.label,
 			lineNumbers: props.lineNumbers,
 			wrap: props.wrap,
+			codeComponent: OrigamCode,
 			t
 		})
 	}
