@@ -5,7 +5,6 @@
     "packages/ds/src/components/Btn/OrigamBtn.vue::important::&--variant-outlined::1",
     "packages/ds/src/components/Btn/OrigamBtn.vue::important::&--variant-outlined::2",
     "packages/ds/src/components/Btn/OrigamBtn.vue::important::&--variant-plain::1",
-    "packages/ds/src/components/Btn/OrigamBtn.vue::important::&--variant-text::1",
     "packages/ds/src/components/Btn/OrigamBtn.vue::important::&--variant-tonal::1",
     "packages/ds/src/components/Btn/OrigamBtn.vue::important::&--variant-tonal::2",
     "packages/ds/src/components/Btn/OrigamBtn.vue::selector::&--flat, &--variant-flat",

@@ -557,7 +557,8 @@ test.describe('OrigamBtn', () => {
             expect(ruleCheck, 'variant-outlined rule must have background-color: transparent !important').toBe(true)
         })
 
-        test('--variant-text: background-color declaration is transparent !important (stylesheet inspection)', async ({ page }) => {
+        // #1222 — plus de `!important` : l'etat actif doit pouvoir peindre (btn-text-active.spec.ts).
+        test('--variant-text: background-color declaration is transparent, NOT !important (stylesheet inspection)', async ({ page }) => {
             await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
@@ -570,7 +571,7 @@ test.describe('OrigamBtn', () => {
                             if (rule.selectorText && el.matches(rule.selectorText)) {
                                 const bg = rule.style?.getPropertyValue('background-color')
                                 const priority = rule.style?.getPropertyPriority('background-color')
-                                if (bg === 'transparent' && priority === 'important') {
+                                if (bg === 'transparent' && priority === '') {
                                     return true
                                 }
                             }
@@ -579,7 +580,7 @@ test.describe('OrigamBtn', () => {
                 }
                 return false
             })
-            expect(ruleCheck, 'variant-text rule must have background-color: transparent !important').toBe(true)
+            expect(ruleCheck, 'variant-text rule must have background-color: transparent without !important').toBe(true)
         })
     })
 })

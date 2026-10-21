@@ -885,8 +885,15 @@
 		}
 
 		&--variant-text {
-			background-color: transparent !important;
+			background-color: transparent;
 			box-shadow: none;
+
+			// #1222 — active fill is opt-in: `-background-color-text-active` is
+			// NOT declared in the sheets (like `-background-color-active` on
+			// outlined), so the default render stays transparent.
+			&#{$this}--active {
+				background-color: var(--origam-btn---background-color-text-active, transparent);
+			}
 		}
 
 		&--variant-elevated {

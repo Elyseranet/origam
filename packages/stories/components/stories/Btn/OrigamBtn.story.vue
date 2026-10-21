@@ -89,6 +89,8 @@
 		>
 			<template #default="{ state }">
 				<origam-btn :bg-color="state.bgColor" :hover="resolveHoverState(state.hover)" :active="resolveActiveState(state.active)" text="Button"/>
+				<origam-btn variant="text" text="Text" data-cy="btn-state-text-rest"/>
+				<origam-btn variant="text" active text="Text active" data-cy="btn-state-text-active"/>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Surface">

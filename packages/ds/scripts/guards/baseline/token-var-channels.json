@@ -71,6 +71,7 @@
     "packages/ds/src/components/Btn/OrigamBtn.vue::--origam-btn---background-color-active",
     "packages/ds/src/components/Btn/OrigamBtn.vue::--origam-btn---background-color-ghost",
     "packages/ds/src/components/Btn/OrigamBtn.vue::--origam-btn---background-color-ghost-hover",
+    "packages/ds/src/components/Btn/OrigamBtn.vue::--origam-btn---background-color-text-active",
     "packages/ds/src/components/Btn/OrigamBtn.vue::--origam-btn---border-color-ghost",
     "packages/ds/src/components/Btn/OrigamBtn.vue::--origam-btn---box-shadow-ghost",
     "packages/ds/src/components/Btn/OrigamBtn.vue::--origam-btn---box-shadow-ghost-hover",
