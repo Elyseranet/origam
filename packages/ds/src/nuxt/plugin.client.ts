@@ -6,6 +6,7 @@ import type { IOrigamNuxtRuntimeConfig } from '../interfaces/Commons/nuxt-module
 
 import { createOrigam } from '../origam'
 
+import { nuxtIconsOptions } from '../utils/Commons/nuxt-icons.util'
 import { nuxtLocaleOptions } from '../utils/Commons/nuxt-locale.util'
 
 import { isModePinned } from '../utils/Commons/apply-theme.util'
@@ -60,7 +61,7 @@ export default defineNuxtPlugin({
         // defers `display.update()` to `app:suspense:resolve` (post-hydration),
         // flipping to real viewport metrics only once the DOM is stable.
         const themes = config.themes ?? []
-        const origam = createOrigam({ themes, ssr: true, ...nuxtLocaleOptions(config) })
+        const origam = createOrigam({ themes, ssr: true, ...nuxtLocaleOptions(config), ...nuxtIconsOptions(config) })
         nuxtApp.vueApp.use(origam)
 
         // `useTheme()` owns the DOM contract: its internal watchers apply

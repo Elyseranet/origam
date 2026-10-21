@@ -1,6 +1,8 @@
 import type { ILocaleOptions } from './locale.interface'
 import type { IOrigamTheme } from './theme.interface'
 
+import type { TNuxtIconOptions } from '../../types/Icon/icon.type'
+
 import type { TMode, TTheme } from '../../types/Commons/theme.type'
 
 /**
@@ -44,6 +46,17 @@ export interface IOrigamNuxtModuleOptions {
      * origam: { locale: { locale: 'ja', fallbackLocale: 'en', messages: { ja } } }
      ********************************************************/
     locale?: ILocaleOptions
+
+    /*********************************************************
+     * icons
+     *
+     * @description
+     * `defaultSet` and `aliases` of `createOrigam({ icons })`, forwarded by BOTH plugins. Serialisable subset only (it travels through `runtimeConfig`): aliases are strings or path arrays, never components. `sets` (render functions) is NOT relayed — keep a manual plugin for custom icon sets.
+     *
+     * @example
+     * origam: { icons: { aliases: { info: 'mdi-information-outline' } } }
+     ********************************************************/
+    icons?: TNuxtIconOptions
 
     /**
      * Theme (brand) applied when no cookie is set. Use `'auto'` to render no
@@ -140,6 +153,7 @@ export interface IOrigamNuxtRuntimeConfig {
     modeCookieName: string
     cookieMaxAge: number
     locale?: ILocaleOptions
+    icons?: TNuxtIconOptions
 }
 
 /*********************************************************

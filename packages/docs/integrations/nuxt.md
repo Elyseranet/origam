@@ -114,6 +114,7 @@ export default defineNuxtConfig({
 | `autoImport` | `boolean` | `true` | Auto-register components and composables as Nuxt auto-imports. |
 | `includeUtilities` | `boolean` | `true` | Inject the utility-classes stylesheet (`origam-utilities.css`). |
 | `locale` | `ILocaleOptions` | `undefined` (`en`) | Locale of Origam's built-in strings (aria-labels, button labels…). Serialisable: `{ locale, fallbackLocale, messages }`. See [Locale](#locale). |
+| `icons` | `{ defaultSet?, aliases? }` | `undefined` | `defaultSet` and `aliases` of `createOrigam({ icons })` (e.g. `{ aliases: { info: 'mdi-information-outline' } }` so `<origam-icon icon="$info" />` resolves it). Serialisable subset only: aliases are strings (or path arrays), never components. `sets` (render functions) is **not** relayed. |
 | `prefix` | `string` | `'Origam'` | Reserved for future use. origam components already ship prefixed, so the active prefix is empty. |
 
 ## Locale
@@ -309,7 +310,7 @@ If your app already calls `app.use(createOrigam(...))` in a custom
 plugin, remove that plugin and add `'origam/nuxt'` to `modules` instead.
 The module installs origam with sensible defaults; you only need to
 keep your manual plugin if you pass non-trivial `createOrigam()` options
-(custom icon set, locale, blueprint, …). In that case, set
+(custom icon `sets`, blueprint, …). In that case, set
 `autoImport: false` to avoid double registration and keep your manual
 plugin for the `createOrigam()` call.
 
