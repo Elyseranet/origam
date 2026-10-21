@@ -600,7 +600,7 @@
 			role: 'combobox',
 			'aria-haspopup': 'listbox',
 			'aria-expanded': menu.value ? 'true' : 'false',
-			'aria-controls': menu.value ? listboxId : undefined,
+			'aria-controls': listboxId,
 			'aria-autocomplete': props.autocomplete ? 'list' : undefined,
 			'aria-activedescendant': activeDescendant
 		}
