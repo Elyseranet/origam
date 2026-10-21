@@ -1,7 +1,5 @@
 import { cloneVNode, Comment, Fragment, h, Text } from 'vue'
 
-import OrigamCode from '../../components/Code/OrigamCode.vue'
-
 import { CODE_GROUP_EMBED_PROPS } from '../../consts/CodeGroup/code-group.const'
 
 import type { VNode } from 'vue'
@@ -123,7 +121,7 @@ export function resolveCodeGroupItems (
 
         const vnode = item.vnode
             ? cloneVNode(item.vnode, { ...embed, label: undefined, value: undefined })
-            : h(OrigamCode, { code: item.code, lang: item.lang, filename: item.filename, ...embed })
+            : h(options.codeComponent, { code: item.code, lang: item.lang, filename: item.filename, ...embed })
 
         return { ...item, vnode }
     })

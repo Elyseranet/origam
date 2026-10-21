@@ -1,4 +1,4 @@
-import type { VNode } from 'vue'
+import type { Component, VNode } from 'vue'
 
 import type { IBorderProps } from '../Commons/border.interface'
 import type {
@@ -56,11 +56,14 @@ export interface ICodeGroupRenderedItem extends Omit<ICodeGroupResolvedItem, 'vn
  * @description
  * What `resolveCodeGroupItems` needs from the group: its `label` and `t` to
  * name each scroller, and `lineNumbers` / `wrap` to forward to every block.
+ * `codeComponent` is `OrigamCode`, passed in so `utils/` never imports an SFC
+ * (#1208).
  ********************************************************/
 export interface ICodeGroupResolveOptions {
     label?: string
     lineNumbers: boolean
     wrap: boolean
+    codeComponent: Component
     t: (key: string, ...params: unknown[]) => string
 }
 

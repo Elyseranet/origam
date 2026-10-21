@@ -1,5 +1,5 @@
 import type { Component } from 'vue'
-import OrigamIcon from '../../components/Icon/OrigamIcon.vue'
+import type OrigamIcon from '../../components/Icon/OrigamIcon.vue'
 
 import type { IIconAliases, IIconProps, IIconSet } from '../../interfaces/Icon/icon.interface'
 
