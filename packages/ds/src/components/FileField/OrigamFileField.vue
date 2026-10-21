@@ -191,14 +191,14 @@
               <slot name="prefix"/>
             </template>
 
-            <template #default="{class: fieldSlotClass, ref, ...fieldSlotProps}">
+            <template #default="{class: fieldSlotClass, ref, isActive: fieldIsActive, isFocused: fieldIsFocused, ...fieldSlotProps}">
               <div
                   :class="fieldSlotClass"
                   data-no-activator=""
               >
                 <slot
                     name="default"
-                    v-bind="{ref, ...fieldSlotProps}"
+                    v-bind="{ref, isActive: fieldIsActive, isFocused: fieldIsFocused, ...fieldSlotProps}"
                 />
                 <input
                     ref="inputRef"
