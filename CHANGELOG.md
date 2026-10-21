@@ -18,6 +18,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.7] - 2026-10-21
+
+### Fixed — champs de saisie : id et props relayées différents entre le rendu serveur et le client (#1226)
+
+`OrigamTextField`, `OrigamSelect`, `OrigamTextareaField`, `OrigamPasswordField` et `OrigamFileField` relayaient leurs props via une ref de template (`childRef.value?.filterProps(…)`). Or cette ref vaut `undefined` au rendu serveur et pendant l'hydratation. L'`id` de l'`<input>`, `aria-describedby`, `density` et `rounded` n'arrivaient donc qu'après le montage, sans avertissement d'hydratation.
+
+- Nouveau `filterPropsOf(Component, props, excludes)` (`composables/Commons/props.composable.ts`) : il lit les noms de props dans la définition statique du composant, sans ref.
+- Appliqué aux 5 champs, ainsi qu'à `OrigamColorPickerField`, `OrigamDatePickerField` et `OrigamNumberField`, pour que `rules` et `validationValue` arrivent ensemble au premier rendu.
+- Vérifié : TU `field-ssr-relay.spec.ts` (`renderToString` puis hydratation), 4/4 rouges sur le parent, verts après ; suite TU complète verte (PR #1234).
+- Suivi : une trentaine d'autres composants relaient encore par ref (#1239).
+
 ## [2.37.6] - 2026-10-21
 
 ### Fixed — `OrigamDrawer` sans `attach` : contenu absent du rendu serveur et hydratation en erreur (#1223)

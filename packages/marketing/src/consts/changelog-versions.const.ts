@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.7',
+        date: '2026-10-21',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2377.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2377.h1', textFallback: 'champs de saisie : id et props relayées différents entre le rendu serveur et le client (#1226)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.6',
         date: '2026-10-21',
         type: 'patch',
