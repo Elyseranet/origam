@@ -338,6 +338,7 @@
   --origam-btn---box-shadow-elevated: var(--origam-shadow---md);
   --origam-btn---background-color-tonal: var(--origam-color__surface---overlay);
   --origam-btn---background-color-tonal-active: var(--origam-color__surface---raised);
+  --origam-btn---background-color-text-active: transparent;
   --origam-btn---box-shadow-tonal-active: var(--origam-shadow---xs);
   --origam-btn---border-width-outlined: var(--origam-border__width---thin);
   --origam-btn---border-width-ghost: var(--origam-border__width---thin);
@@ -3359,6 +3360,7 @@
     --origam-btn---box-shadow-elevated: var(--origam-shadow---md);
     --origam-btn---background-color-tonal: var(--origam-color__surface---overlay);
     --origam-btn---background-color-tonal-active: var(--origam-color__surface---raised);
+    --origam-btn---background-color-text-active: transparent;
     --origam-btn---box-shadow-tonal-active: var(--origam-shadow---xs);
     --origam-btn---border-width-outlined: var(--origam-border__width---thin);
     --origam-btn---border-width-ghost: var(--origam-border__width---thin);

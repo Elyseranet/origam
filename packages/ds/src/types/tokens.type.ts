@@ -498,6 +498,7 @@ export type TTokenName =
   | '--origam-btn---background-color-hover'
   | '--origam-btn---background-color-tonal'
   | '--origam-btn---background-color-tonal-active'
+  | '--origam-btn---background-color-text-active'
   | '--origam-btn---border-color'
   | '--origam-btn---border-radius'
   | '--origam-btn---border-radius-icon'
