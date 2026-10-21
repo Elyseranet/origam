@@ -353,6 +353,47 @@ describe('installThemePropsResolver — dev-only warning when a theme names an u
         expect(warn).toHaveBeenCalledWith(expect.stringContaining('activeBgColor'))
         warn.mockRestore()
     })
+
+    // #1227: `global` is partial by nature — a key it names applies to the
+    // components that declare it and must stay silent on the others.
+    it('#1227: a `global` key does not warn on a component that does not declare it, and still reaches one that does', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        const WithDensity = defineComponent({
+            name: 'FakeWithDensity1227',
+            props: { density: { type: String, default: 'comfortable' } },
+            setup: props => () => h('b', props.density)
+        })
+        const theme: IOrigamTheme = {
+            name: 'brandx-1227-global',
+            components: { global: { density: 'compact' } },
+            vars: {}
+        }
+        const origam = createOrigam({ themes: [theme] })
+        origam._defaultsRef.value = origam._activeDefaultsFor('brandx-1227-global', undefined)
+
+        mount(FakeCard, { global: { plugins: [origam] } })
+        const wrapper = mount(WithDensity, { global: { plugins: [origam] } })
+
+        expect(warn).not.toHaveBeenCalled()
+        expect(wrapper.find('b').text()).toBe('compact')
+        warn.mockRestore()
+    })
+
+    it('#1227: a key named for a precise component that does not declare it still warns, even when `global` names it too', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        const theme: IOrigamTheme = {
+            name: 'brandx-1227-own',
+            components: { global: { undeclaredSentinel1227: 'x' }, 'fake-card': { undeclaredSentinel1227: 'y' } },
+            vars: {}
+        }
+        const origam = createOrigam({ themes: [theme] })
+        origam._defaultsRef.value = origam._activeDefaultsFor('brandx-1227-own', undefined)
+
+        mount(FakeCard, { global: { plugins: [origam] } })
+
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('undeclaredSentinel1227'))
+        warn.mockRestore()
+    })
 })
 
 describe('installThemePropsResolver — Function-typed props', () => {
