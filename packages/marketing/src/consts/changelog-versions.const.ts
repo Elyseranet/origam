@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.5',
+        date: '2026-10-21',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2375.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2375.h1', textFallback: 'OrigamTabPanels ne relaie plus transition à OrigamTabPanel (#1207)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.4',
         date: '2026-10-20',
         type: 'patch',

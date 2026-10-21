@@ -18,6 +18,15 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.5] - 2026-10-21
+
+### Fixed — `OrigamTabPanels` ne relaie plus `transition` à `OrigamTabPanel` (#1207)
+
+`OrigamTabPanels` enveloppait son slot dans un `<origam-defaults-provider>` qui poussait `transition` à `origam-tab-panel`, qui ne déclare pas cette prop et lit déjà la transition depuis le contexte des panneaux. Le résolveur de props de thème émettait donc un avertissement de dev à chaque `OrigamCodeGroup`.
+
+- Le provider et son `slotDefaults` sont retirés ; la transition continue de passer par le contexte.
+- Vérifié : TU `tab-panels-transition-no-warn.spec.ts` rouge sur le parent, vert après (PR #1232).
+
 ## [2.37.4] - 2026-10-20
 
 ### Fixed — `OrigamCode` : une ligne vide tombait à 0 px et un numéro fantôme suivait le saut de ligne final (#1216)
