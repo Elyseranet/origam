@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.6',
+        date: '2026-10-21',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2376.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2376.h1', textFallback: 'OrigamDrawer sans attach : contenu absent du rendu serveur et hydratation en erreur (#1223)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.5',
         date: '2026-10-21',
         type: 'patch',

@@ -18,6 +18,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.6] - 2026-10-21
+
+### Fixed — `OrigamDrawer` sans `attach` : contenu absent du rendu serveur et hydratation en erreur (#1223)
+
+Sans `attach`, le tiroir téléportait son contenu dès le rendu serveur. Le HTML serveur ne contenait donc pas ce contenu, et l'hydratation tombait en mismatch : erreur 500 sous Nuxt. Un tiroir `permanent` sans `modelValue` était aussi inactif côté serveur et actif côté client, parce que `onBeforeMount` ne tourne pas en SSR.
+
+- Le contenu reste rendu en ligne jusqu'à l'hydratation (`useHydration()`, comme `OrigamOverlay`), puis il est téléporté.
+- `onServerPrefetch` initialise l'état actif côté serveur.
+- Vérifié : TU `drawer-ssr-hydration.spec.ts` (`renderToString` puis hydratation), rouge sur le parent, vert après ; TU Drawer 35/35 (PR #1236).
+- Non couvert : la branche avec `attach` explicite (#1238) et un e2e Nuxt réel.
+
 ## [2.37.5] - 2026-10-21
 
 ### Fixed — `OrigamTabPanels` ne relaie plus `transition` à `OrigamTabPanel` (#1207)
