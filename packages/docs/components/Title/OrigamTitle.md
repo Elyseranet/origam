@@ -86,7 +86,7 @@ interface ITitleProps extends ITagProps, ICommonsComponentProps,
     IMarginProps, IBorderProps, ITypographyProps {
     text?: string
     // typography surface (from ITypographyProps):
-    fontFamily?: TFontFamily // 'sans'|'mono'|'serif'
+    fontFamily?: TFontFamily // 'sans'|'mono'|'serif'|'display'
     fontSize?: TFontSize     // 'xs'|'sm'|'md'|'lg'|'xl'|'2xl'|'3xl'|'4xl'|'5xl'
     fontWeight?: TFontWeight // 'regular'|'medium'|'semibold'|'bold'|'extrabold'|'black'
     lineHeight?: TLineHeight     // 'none'|'tight'|'snug'|'normal'|'relaxed'|'loose'
@@ -100,7 +100,7 @@ component uses for theme-aware fonts.
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `fontFamily` | `TFontFamily` | — | Font family token. Sets `--origam-title---font-family` to `var(--origam-font__family---{fontFamily})` (sans · mono · serif). When unset, the title keeps its theme font-family. |
+| `fontFamily` | `TFontFamily` | — | Font family token. Sets `--origam-title---font-family` to `var(--origam-font__family---{fontFamily})` (sans · mono · serif · display; `display` = `sans` unless a theme sets `typo.family.display`). When unset, the title keeps its theme font-family. |
 | `fontSize` | `TFontSize` | — | Font size token. Sets `--origam-title---font-size` to `var(--origam-font__size---{fontSize})` (xs 0.625rem → 5xl 2.25rem). **Overrides the density-driven font-size** when set; when unset, the density prop continues to control the size via the compact / default / comfortable ramps. |
 | `fontWeight` | `TFontWeight` | — | Font weight token. Sets `--origam-title---font-weight` to `var(--origam-font__weight---{fontWeight})` (regular 400 · medium 500 · semibold 600 · bold 700 · extrabold 800 · black 900). When unset, the title keeps its theme weight. |
 | `lineHeight` | `TLineHeight` | — | Line-height token. Sets `--origam-title---line-height` to `var(--origam-font__lineHeight---{lineHeight})` (none 1 · tight 1.25 · snug 1.375 · normal 1.5 · relaxed 1.625 · loose 2). When unset, the title keeps its theme line-height. |
