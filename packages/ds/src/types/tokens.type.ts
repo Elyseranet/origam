@@ -1958,6 +1958,8 @@ export type TTokenName =
   | '--origam-list-item---max-width'
   | '--origam-list__item---min-height'
   | '--origam-list-item---opacity'
+  | '--origam-list-item---overlay-opacity-active'
+  | '--origam-list-item---overlay-opacity-active-hover'
   | '--origam-list-item---outline'
   | '--origam-list__item---overlay-background-color'
   | '--origam-list-item__overlay---border-radius'
