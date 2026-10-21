@@ -18,6 +18,16 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.8] - 2026-10-21
+
+### Fixed — `origam/utils` se charge de nouveau en Node pur (#1208)
+
+Depuis 2.36.0, `utils/CodeGroup/code-group.util.ts` importait `OrigamCode.vue`. Le barrel `origam/utils` ne pouvait donc plus être chargé sans loader Vue (scripts Node, configs, tests). Un second chemin du même défaut passait par `types/Icon/icon.type.ts`, qui importait `OrigamIcon.vue` en valeur alors qu'il n'en utilisait que le type.
+
+- `ICodeGroupResolveOptions` reçoit le composant de code (`codeComponent`) au lieu de l'importer : c'est `OrigamCodeGroup.vue` qui le passe.
+- `icon.type.ts` passe en `import type`.
+- Vérifié : le TU `utils-barrel-no-sfc-1208.spec.ts` parcourt le graphe d'imports de `utils/index.ts` et refuse tout `.vue`. Il est rouge sur le parent et vert après. `import('dist/src/utils/index.js')` réussit sous Node 24 (PR #1235).
+
 ## [2.37.7] - 2026-10-21
 
 ### Fixed — champs de saisie : id et props relayées différents entre le rendu serveur et le client (#1226)

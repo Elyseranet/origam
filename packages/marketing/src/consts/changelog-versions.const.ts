@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.8',
+        date: '2026-10-21',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2378.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2378.h1', textFallback: 'origam/utils se charge de nouveau en Node pur (#1208)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.7',
         date: '2026-10-21',
         type: 'patch',
