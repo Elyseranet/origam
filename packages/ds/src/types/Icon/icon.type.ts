@@ -14,7 +14,12 @@ export type TIconOptions = {
     sets?: Record<string, IIconSet>
 }
 
-// The part of `TIconOptions` that survives `runtimeConfig` (JSON): `sets` (render functions) and component aliases are left out.
+/*********************************************************
+ * TNuxtIconOptions
+ *
+ * @description
+ * The part of `TIconOptions` that survives `runtimeConfig` (JSON): `sets` (render functions) and component aliases are left out.
+ ********************************************************/
 export type TNuxtIconOptions = {
     defaultSet?: string
     aliases?: Record<string, Exclude<TIcon, Component>>
