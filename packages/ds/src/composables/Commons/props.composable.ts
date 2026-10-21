@@ -86,10 +86,10 @@ function pickDeclared (properties: object, declared: string[], excludes: string[
  * from the SSR HTML and arrived one tick after mount, with no hydration warning.
  ********************************************************/
 export function filterPropsOf (
-    component: { props?: unknown },
+    component: object,
     properties: object,
     excludes: string[] = defaultExcludes
 ): Record<string, unknown> {
-    const declared = component.props
+    const declared = (component as { props?: unknown }).props
     return pickDeclared(properties, Array.isArray(declared) ? declared : Object.keys(declared ?? {}), excludes)
 }
