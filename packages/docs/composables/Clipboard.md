@@ -30,5 +30,5 @@ await copy('hello world')
 
 **Source** : `packages/ds/src/composables/Clipboard/clipboard.composable.ts`
 
-**Consommateurs** (4) : `components/Clipboard/OrigamClipboard.vue`, `components/Code/OrigamCode.vue`, `consts/Clipboard/clipboard.const.ts`, `interfaces/Clipboard/clipboard.interface.ts`
+**Consommateurs** (5) : `components/Clipboard/OrigamClipboard.vue`, `components/Code/OrigamCode.vue`, `components/CodeGroup/OrigamCodeGroup.vue`, `consts/Clipboard/clipboard.const.ts`, `interfaces/Clipboard/clipboard.interface.ts`
 

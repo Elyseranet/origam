@@ -197,7 +197,7 @@
 	import { useFocus } from '../../composables/Commons/focus.composable'
 	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useMask } from '../../composables/Commons/mask.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
+	import { filterPropsOf, useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 
@@ -610,10 +610,10 @@
 		 * border painted here runs straight through the floating label; the
 		 * field's `__outline--notch` leg opens around it instead.
 		 ********************************************************/
-		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'focused', ...BORDER_PROP_KEYS])
+		return filterPropsOf(OrigamInput, props, ['modelValue', 'class', 'style', 'focused', ...BORDER_PROP_KEYS])
 	})
 	const fieldProps = computed(() => {
-		return origamFieldRef.value?.filterProps(props, ['class', 'id', 'active', 'dirty', 'disabled', 'focused', 'error', 'style'])
+		return filterPropsOf(OrigamField, props, ['class', 'id', 'active', 'dirty', 'disabled', 'focused', 'error', 'style'])
 	})
 
 	/*********************************************************

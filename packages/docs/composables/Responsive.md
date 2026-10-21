@@ -52,6 +52,19 @@ style, not a custom property: it is derived purely from `aspectRatio` at
 runtime, never a design-time default a theme would override, so there is
 nothing for the token pipeline to carry.
 
+Hydration (#1192)
+─────────────────
+The viewport fallback is a CLIENT-ONLY value: the server cannot emit it.
+Applied from the first render of an instance that is being hydrated, it
+made the client's first render differ from the server HTML
+(`style="width:120px;"` vs `style="aspect-ratio:1.77…;width:120px;"`),
+i.e. a "Hydration style mismatch" that Vue does not rectify in
+production. So an instance hydrating server HTML (`vnode.el` already set
+when `setup()` runs) holds the fallback back until `onMounted`; the style
+is then patched by an ordinary reactive update. An instance created on
+the client (no server HTML to match) applies it at once, as before.
+An explicit `aspectRatio` is deterministic and is emitted by both sides.
+
 Guarding the value
 ──────────────────
 The returned ratio rejects NaN, 0, negatives and Infinity. Any of them
