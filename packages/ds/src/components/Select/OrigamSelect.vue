@@ -300,7 +300,7 @@
 	import { useFilter } from '../../composables/Commons/filters.composable'
 	import { useItems } from '../../composables/Commons/items.composable'
 	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
+	import { filterPropsOf, useProps } from '../../composables/Commons/props.composable'
 	import { useScrolling } from '../../composables/Commons/scrolling.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTeleportTypography } from '../../composables/Commons/teleport-typography.composable'
@@ -1226,7 +1226,7 @@
 	 ********************************************************/
 
 	const textFieldProps = computed(() => {
-		return origamTextFieldRef.value?.filterProps(props, ['class', 'id', 'style', 'counterValue', 'dirty', 'modelValue', 'placeholder', 'validationValue', 'focused'])
+		return filterPropsOf(OrigamTextField, props, ['class', 'id', 'style', 'counterValue', 'dirty', 'modelValue', 'placeholder', 'validationValue', 'focused'])
 	})
 
 	// The dropdown rows must sit on the same height rung as the control, so the

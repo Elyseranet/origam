@@ -318,7 +318,7 @@
 	import { useAdjacentInner } from '../../composables/Commons/adjacentInner.composable'
 	import { useFocus } from '../../composables/Commons/focus.composable'
 	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
+	import { filterPropsOf, useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 	import { BORDER_PROP_KEYS } from '../../consts/Commons/border.const'
@@ -687,10 +687,10 @@
 		 * Withheld from the INPUT (no notch, its top edge crosses the floating
 		 * label) and handed to the FIELD's notched outline instead.
 		 ********************************************************/
-		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'focused', ...BORDER_PROP_KEYS])
+		return filterPropsOf(OrigamInput, props, ['modelValue', 'class', 'style', 'focused', ...BORDER_PROP_KEYS])
 	})
 	const fieldProps = computed(() => {
-		return origamFieldRef.value?.filterProps(props, ['class', 'id', 'active', 'dirty', 'disabled', 'focused', 'error', 'style'])
+		return filterPropsOf(OrigamField, props, ['class', 'id', 'active', 'dirty', 'disabled', 'focused', 'error', 'style'])
 	})
 	const resolvedMenuProps = computed(() => {
 		return {

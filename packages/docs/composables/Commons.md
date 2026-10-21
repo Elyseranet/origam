@@ -5,7 +5,7 @@
 > rien n'est redige ici. Corriger une description se fait dans la banniere du symbole,
 > puis en regenerant. Issue #545.
 
-111 symbole(s) exporte(s).
+112 symbole(s) exporte(s).
 
 ## `_resetCssSupportCache`
 
@@ -155,7 +155,7 @@ than duplicating it.
 
 **Source** : `packages/ds/src/composables/Commons/locale.composable.ts`
 
-**Consommateurs** (1) : `origam.ts`
+**Consommateurs** (2) : `origam.ts`, `utils/Commons/nuxt-locale.util.ts`
 
 ## `createRtl`
 
@@ -172,6 +172,22 @@ direct siblings on the same RTL contract.
 **Source** : `packages/ds/src/composables/Commons/rtl.composable.ts`
 
 **Consommateurs** : aucun dans `packages/ds/src` — symbole exporte pour les consommateurs externes.
+
+## `filterPropsOf`
+
+```ts
+export function filterPropsOf ( component: { props?: unknown }, properties: object, excludes: string[] = defaultExcludes ): Record<string, unknown>
+```
+
+Same output as `childRef.value?.filterProps(props, excludes)`, but the child's
+declared prop names are read from its STATIC component definition instead of
+through a template ref. The ref is `undefined` on the server and during
+hydration, so every relayed prop (`id`, `variant`, `rounded`…) was missing
+from the SSR HTML and arrived one tick after mount, with no hydration warning.
+
+**Source** : `packages/ds/src/composables/Commons/props.composable.ts`
+
+**Consommateurs** (5) : `components/FileField/OrigamFileField.vue`, `components/PasswordField/OrigamPasswordField.vue`, `components/Select/OrigamSelect.vue`, `components/TextField/OrigamTextField.vue`, `components/TextareaField/OrigamTextareaField.vue`
 
 ## `installThemePropsResolver`
 
@@ -616,20 +632,40 @@ even across logical vs physical property syntax for the same box edge):
 
   1. global `border` shorthand (1/2/4-value, logical properties)
   2. global standalone `borderColor` / `borderStyle`
-  3. logical-axis `borderBlock` / `borderInline` (width, and
+  3. logical-AXIS `borderBlock` / `borderInline` (width, and
      style/color when a full string like `"2px dashed red"` is given)
-  4. per-side `borderTop` / `borderRight` / `borderBottom` / `borderLeft`
-     (physical properties — more specific than the axis rung above:
-     `borderTop` overrides whatever `borderBlock` set for the top edge)
-  5. per-side `borderTopColor` / `borderRightColor` /
-     `borderBottomColor` / `borderLeftColor`
+  4. logical-PER-SIDE `borderInlineStart` / `borderInlineEnd` /
+     `borderBlockStart` / `borderBlockEnd` — plus their
+     `borderInlineStartColor` / … twins, each pushed immediately after
+     its own edge's width/style (issue #1013). More specific than the
+     axis rung above: `borderInlineStart` overrides whatever
+     `borderInline` set for that one edge.
+  5. physical-PER-SIDE `borderTop` / `borderRight` / `borderBottom` /
+     `borderLeft` — plus their `borderTopColor` / … twins, same
+     per-edge pairing (issue #215).
 
-So `borderBlock` beats `border` for the top+bottom edges, `borderTop`
-beats both `border` and `borderBlock` for the top side specifically,
-and `borderTopColor` beats the color embedded in `borderTop`, the
+So `borderBlock` beats `border` for the top+bottom edges,
+`borderBlockStart` beats both for the top edge specifically,
+`borderTop` beats all three for that same edge, and each `*Color`
+beats the color embedded in its own edge's width string, the
 axis-level color, and the global `borderColor` — each rung only
-overrides the side(s)/axis it actually targets, everything else keeps
+overrides the edge(s)/axis it actually targets, everything else keeps
 cascading from the rung below.
+
+⛔ WHY PHYSICAL BEATS LOGICAL FOR THE SAME EDGE (rungs 4 vs 5, #1013).
+`borderLeft` and `borderInlineStart` are two SPELLINGS of one edge in
+LTR, not two edges, and CSS gives them equal specificity — so neither
+wins on its own merits and declaration order is the entire mechanism.
+The tie is broken in favour of PHYSICAL to match the repo's only
+pre-existing physical-vs-logical tiebreak, recorded on
+`ROUNDED_CORNER_MAP` (`consts/Commons/spacing.const.ts:85-88`), where
+the per-corner PHYSICAL declarations are pushed last for exactly this
+reason. Settling it the same way across all four directional grids —
+border here, padding/margin/rounded in the other half of #1013 — is
+the point: a user who learns the rule once should not have to relearn
+it per prop family. Passing BOTH spellings for the same edge is
+nonetheless a code smell; pick the vocabulary that matches the intent
+(logical when the design follows the reading direction).
 
 WIDTH KEYWORDS AND DIRECTIONS ARE EMITTED INLINE (#391). 'none' | 'thin'
 | 'thick' and 'top' | 'right' | 'bottom' | 'left' resolve to a WIDTH, so
@@ -673,7 +709,7 @@ Until then the inline copy is the only channel that can actually paint.
 
 **Source** : `packages/ds/src/composables/Commons/border.composable.ts`
 
-**Consommateurs** (52) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Btn/OrigamBtn.vue`, `components/Calendar/OrigamCalendar.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chip/OrigamChipGroup.vue`, …
+**Consommateurs** (56) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Btn/OrigamBtn.vue`, `components/Calendar/OrigamCalendar.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, …
 
 ## `useBothColor`
 
@@ -954,7 +990,7 @@ ignoree par le navigateur.
 
 **Source** : `packages/ds/src/composables/Commons/dimension.composable.ts`
 
-**Consommateurs** (68) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Btn/OrigamBtn.vue`, `components/Calendar/OrigamCalendar.vue`, …
+**Consommateurs** (70) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Btn/OrigamBtn.vue`, `components/Calendar/OrigamCalendar.vue`, …
 
 ## `useDisplay`
 
@@ -982,12 +1018,6 @@ defaut le nom kebab-case du composant courant).
 export function useDragResizer (el: MaybeRef<HTMLElement | undefined>, value: Ref<number>, min: MaybeRefOrGetter<number>, max: MaybeRefOrGetter<number>, axis: TAxis)
 ```
 
-Appeler UNE fois, dans `setup()`. `el` peut etre un `Ref` de template (la
-poignee qui n'existe qu'apres le montage) et `min` / `max` des `Ref` ou des
-getters, relus a chaque geste. Ne jamais l'appeler depuis un `watch` :
-`onScopeDispose` n'y a pas de scope, et chaque appel ajoute un `mousedown`
-de plus (#1152).
-
 Attache un drag mousedown/touchstart sur `el` qui fait varier `value`
 (un `Ref<number>`, borne a `[min, max]` via `clamp`) le long de `axis` —
 utilise pour les poignees de redimensionnement (panneau, colonne…).
@@ -998,6 +1028,18 @@ termine.
 commente en mort dans le code et un `// TODO - Rework for both axis`
 l'annonce explicitement. Passer `AXIS.Y` fait juste tomber dans la
 branche verticale de `getPosition` sans etre teste par ce composable.
+
+⛔ #1152 — `el`, `min` et `max` acceptent un `Ref` (ou un getter pour
+les bornes) pour que le composable s'appelle UNE fois, dans `setup()`.
+Son seul consommateur, `OrigamTextareaField`, l'appelait depuis un
+`watch` sur `[poignee, minHeight, maxHeight]` parce que la poignee
+n'existe qu'apres le montage et que les bornes bougent. Deux defauts en
+decoulaient : `onUnmounted` hors instance (Vue avertissait, le nettoyage
+des listeners `window` n'etait JAMAIS enregistre), et un `mousedown`
+SUPPLEMENTAIRE a chaque changement de borne, chacun avec ses bornes
+figees. `useEventListener` suit deja une cible `Ref`, et les bornes sont
+lues a chaque geste : rien n'oblige plus a rappeler le composable. Le
+nettoyage passe par `tryOnScopeDispose`, comme `useEventListener`.
 
 **Source** : `packages/ds/src/composables/Commons/dragResizer.composable.ts`
 
@@ -1061,7 +1103,7 @@ l'ombre custom.
 
 **Source** : `packages/ds/src/composables/Commons/elevation.composable.ts`
 
-**Consommateurs** (51) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Card/OrigamCard.vue`, `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, `components/Chart/OrigamChartGauge.vue`, …
+**Consommateurs** (53) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Card/OrigamCard.vue`, `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, `components/Chart/OrigamChartGauge.vue`, …
 
 ## `useEventListener`
 
@@ -1290,12 +1332,20 @@ jamais ete creee en mode SSR (`ssr` falsy), le Ref demarre directement a
 `true` — pas de delai artificiel dans une app 100% client. Hors
 navigateur (`!IN_BROWSER`), retourne un Ref fige a `false`.
 
-⛔ Dans un navigateur, ce composable DEPEND de `createOrigam()` : il
+⚠️ Dans un navigateur, ce composable PREFERE `createOrigam()` : il
 appelle `useDisplay()`, dont l'injection n'existe que si le plugin est
-installe. Mesure, montage d'un composant sans `createOrigam()` :
-`useHydration()` LEVE `Could not find Origam display injection`. Ce
-n'est donc pas un utilitaire autonome, contrairement a `useSsrBoot` qui
-n'injecte rien.
+installe, pour savoir si l'app tourne en SSR. **#attach-harmonisation** —
+jusque-la, l'absence du plugin faisait LEVER `useDisplay()` (« Could not
+find Origam display injection »), ce qui a casse 4 e2e marketing (SSR
+Nuxt) : `useTeleport()`, qui appelle desormais ce composable pour eviter
+une course de montage (voir teleport.composable.ts), doit rester
+utilisable comme primitive BRUTE — sans `createOrigam()` — exactement
+comme il l'etait avant. Le `try/catch` ci-dessous rattrape UNIQUEMENT ce
+cas (plugin absent) et retombe sur le chemin non-SSR (`shallowRef(true)`,
+aucun delai) : un consommateur qui a reellement besoin du signal SSR et
+installe le plugin obtient exactement le comportement documente plus
+haut, inchange. Aucun test n'epinglait le lever — `grep -rn "Could not
+find Origam display injection" packages/tests` ne retourne rien.
 
 **Source** : `packages/ds/src/composables/Commons/hydration.composable.ts`
 
@@ -1410,7 +1460,7 @@ Independent from `useLayout` / `useCreateLayout` at the call level
 
 **Source** : `packages/ds/src/composables/Commons/layoutItem.composable.ts`
 
-**Consommateurs** (7) : `components/App/OrigamAppBar.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Drawer/OrigamDrawer.vue`, `components/SystemBar/OrigamSystemBar.vue`, `interfaces/Commons/layout.interface.ts`, `interfaces/Layout/layout.interface.ts`, `interfaces/SystemBar/system-bar.interface.ts`
+**Consommateurs** (8) : `components/App/OrigamAppBar.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Drawer/OrigamDrawer.vue`, `components/SystemBar/OrigamSystemBar.vue`, `interfaces/Commons/layout.interface.ts`, `interfaces/Drawer/drawer.interface.ts`, `interfaces/Layout/layout.interface.ts`, `interfaces/SystemBar/system-bar.interface.ts`
 
 ## `useLayoutMain`
 
@@ -1523,7 +1573,7 @@ inactif.
 
 **Source** : `packages/ds/src/composables/Commons/loader.composable.ts`
 
-**Consommateurs** (12) : `components/Btn/OrigamBtn.vue`, `components/Card/OrigamCard.vue`, `components/DataList/OrigamDataList.vue`, `components/DataTable/OrigamDataTableHeaders.vue`, `components/DataTable/OrigamDataTableRows.vue`, `components/ExpansionPanel/OrigamExpansionPanel.vue`, `components/ExpansionPanel/OrigamExpansionPanelContent.vue`, `components/ExpansionPanel/OrigamExpansionPanels.vue`, …
+**Consommateurs** (13) : `components/Btn/OrigamBtn.vue`, `components/Card/OrigamCard.vue`, `components/DataList/OrigamDataList.vue`, `components/DataTable/OrigamDataTable.vue`, `components/DataTable/OrigamDataTableHeaders.vue`, `components/DataTable/OrigamDataTableRows.vue`, `components/ExpansionPanel/OrigamExpansionPanel.vue`, `components/ExpansionPanel/OrigamExpansionPanelContent.vue`, …
 
 ## `useLocale`
 
@@ -1546,7 +1596,7 @@ is responsible for its own fallback (issue #444, `OrigamLoader`).
 
 **Source** : `packages/ds/src/composables/Commons/locale.composable.ts`
 
-**Consommateurs** (89) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
+**Consommateurs** (91) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
 
 ## `useLocale`
 
@@ -1561,7 +1611,7 @@ legitime (#444, `OrigamLoader`).
 
 **Source** : `packages/ds/src/composables/Commons/locale.composable.ts`
 
-**Consommateurs** (89) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
+**Consommateurs** (91) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
 
 ## `useLocale`
 
@@ -1575,7 +1625,7 @@ banniere au-dessus de la premiere surcharge pour le detail du contrat.
 
 **Source** : `packages/ds/src/composables/Commons/locale.composable.ts`
 
-**Consommateurs** (89) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
+**Consommateurs** (91) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
 
 ## `useLocation`
 
@@ -1638,12 +1688,18 @@ logical vs physical property syntax for the same box edge). Mirrors
 
   1. global `margin` shorthand (1/2/4-value, logical properties)
   2. logical-axis `marginBlock` / `marginInline`
-  3. physical per-side `marginTop` / `marginRight` / `marginBottom` /
+  3. logical per-side `marginInlineStart` / `marginInlineEnd` /
+     `marginBlockStart` / `marginBlockEnd` (issue #1013)
+  4. physical per-side `marginTop` / `marginRight` / `marginBottom` /
      `marginLeft`
 
 So `marginBlock` beats `margin` for the top+bottom edges, and
 `marginTop` beats both `margin` and `marginBlock` for the top edge
 specifically.
+
+⚠️ RUNGS 3 AND 4 ARE EQUALLY SPECIFIC — the physical spelling wins for
+the edge they share, by push order. Same decision and same reasoning as
+`usePadding`'s table, which carries the full rationale.
 
 ⚠️ The 4-value `margin` shorthand distributes in the DS's
 **Haut/Gauche/Bas/Droite** order, NOT the CSS clockwise order — an
@@ -1668,7 +1724,7 @@ and 3 below implement.)
 
 **Source** : `packages/ds/src/composables/Commons/margin.composable.ts`
 
-**Consommateurs** (69) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumbDivider.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chart/OrigamChartBoxPlot.vue`, …
+**Consommateurs** (70) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumbDivider.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chart/OrigamChartBoxPlot.vue`, …
 
 ## `useMask`
 
@@ -1823,13 +1879,27 @@ logical vs physical property syntax for the same box edge). Mirrors
 
   1. global `padding` shorthand (1/2/4-value, logical properties)
   2. logical-axis `paddingBlock` / `paddingInline`
-  3. physical per-side `paddingTop` / `paddingRight` / `paddingBottom` /
+  3. logical per-side `paddingInlineStart` / `paddingInlineEnd` /
+     `paddingBlockStart` / `paddingBlockEnd` (issue #1013)
+  4. physical per-side `paddingTop` / `paddingRight` / `paddingBottom` /
      `paddingLeft`
 
 So `paddingBlock` beats `padding` for the top+bottom edges, and
 `paddingTop` beats both `padding` and `paddingBlock` for the top edge
 specifically — each rung only overrides the edge(s) it actually
 targets, everything else keeps cascading from the rung below.
+
+⚠️ RUNGS 3 AND 4 ARE EQUALLY SPECIFIC, and that is the one rank in this
+table that is a decision rather than a deduction. `paddingInlineStart`
+and `paddingLeft` name the SAME edge under LTR horizontal-tb, so neither
+is narrower than the other; push order alone decides, and we put the
+physical one last. The reason is uniformity, not a claim that physical
+is better: `ROUNDED_CORNER_MAP`'s header already documents the repo's
+only other physical-vs-logical tiebreak resolving the same way, and two
+opposite conventions across one prop surface is exactly the "half a
+grid" that issue #1013 exists to remove. Settling it here rather than
+leaving it emergent also matters because `useBorder` has to make the
+identical call for `borderInlineStart` vs `borderLeft`.
 
 ⚠️ The 4-value `padding` shorthand distributes in the DS's
 **Haut/Gauche/Bas/Droite** order, NOT the CSS clockwise order — an
@@ -1966,7 +2036,7 @@ this one.
 
 **Source** : `packages/ds/src/composables/Commons/props.composable.ts`
 
-**Consommateurs** (171) : `components/Alert/OrigamAlert.vue`, `components/App/OrigamApp.vue`, `components/App/OrigamAppBar.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Avatar/OrigamAvatarGroup.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, …
+**Consommateurs** (172) : `components/Alert/OrigamAlert.vue`, `components/App/OrigamApp.vue`, `components/App/OrigamAppBar.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Avatar/OrigamAvatarGroup.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, …
 
 ## `useRefs`
 
@@ -2031,11 +2101,24 @@ the same corner). Mirrors `useBorder` / `usePadding` / `useMargin`:
 
   1. global `rounded` (utility rung, named variant, legacy boolean, or
      free-form 1/4-value CSS)
-  2. per-corner `roundedTopLeft` / `roundedTopRight` /
+  2. LOGICAL per-corner `roundedStartStart` / `roundedStartEnd` /
+     `roundedEndStart` / `roundedEndEnd` (issue #1013)
+  3. PHYSICAL per-corner `roundedTopLeft` / `roundedTopRight` /
      `roundedBottomLeft` / `roundedBottomRight`
 
 So `roundedTopLeft="0px"` beats `rounded="lg"` for the top-left corner
 only; the other three keep the `lg` rung.
+
+⚠️ RUNGS 2 AND 3 ARE EQUALLY SPECIFIC — `roundedStartStart` and
+`roundedTopLeft` are the same corner under LTR horizontal-tb, so push
+order alone decides and the physical one is last. Same decision, same
+reasoning as `usePadding`'s rungs 3/4, which carries the full rationale;
+it also matches what `ROUNDED_CORNER_MAP`'s own header already said
+about the physical corners beating the shorthand's logical output.
+
+⚠️ The logical corner names read `{block}-{inline}`: `startEnd` is
+block-start inline-end — top-RIGHT in LTR. They are NOT the physical
+clockwise order, and the two halves are not interchangeable.
 
 ⚠️ This example used to read `roundedTopLeft="0"`, and that form does
 NOT work — measured: `{rounded:'lg', roundedTopLeft:'0'}` emits the
@@ -2071,7 +2154,7 @@ Accepted per-corner value forms are documented on
 
 **Source** : `packages/ds/src/composables/Commons/rounded.composable.ts`
 
-**Consommateurs** (76) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Card/OrigamCard.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, …
+**Consommateurs** (79) : `components/Audio/OrigamAudio.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Card/OrigamCard.vue`, `components/Card/OrigamCardHeader.vue`, `components/Card/OrigamCardText.vue`, `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, …
 
 ## `useRoute`
 
@@ -2324,7 +2407,7 @@ reactivite sur un changement de prop ulterieur (meme piege que
 
 **Source** : `packages/ds/src/composables/Commons/stateEffect.composable.ts`
 
-**Consommateurs** (40) : `components/Alert/OrigamAlert.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Avatar/OrigamAvatarGroup.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
+**Consommateurs** (41) : `components/Alert/OrigamAlert.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Avatar/OrigamAvatarGroup.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
 
 ## `useStateFlag`
 
@@ -2362,7 +2445,7 @@ free.
 
 **Source** : `packages/ds/src/composables/Commons/stateFlag.composable.ts`
 
-**Consommateurs** (38) : `components/Alert/OrigamAlert.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Avatar/OrigamAvatarGroup.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
+**Consommateurs** (40) : `components/Alert/OrigamAlert.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Avatar/OrigamAvatarGroup.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketMatch.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
 
 ## `useStatus`
 
@@ -2427,7 +2510,7 @@ flattening (`toDeclarations`).
 
 **Source** : `packages/ds/src/composables/Commons/style.composable.ts`
 
-**Consommateurs** (144) : `components/Alert/OrigamAlert.vue`, `components/App/OrigamApp.vue`, `components/App/OrigamAppBar.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Avatar/OrigamAvatarGroup.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
+**Consommateurs** (148) : `components/Alert/OrigamAlert.vue`, `components/App/OrigamApp.vue`, `components/App/OrigamAppBar.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Avatar/OrigamAvatarGroup.vue`, `components/Badge/OrigamBadge.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, …
 
 ## `useStyleTag`
 
@@ -2463,9 +2546,61 @@ Un selecteur qui ne matche rien produit un `console.warn` et
 alors sur son rendu non-teleporte plutot que de crasher. En SSR
 (`!IN_BROWSER`), toujours `undefined`, sans avertissement.
 
+⛔ `useHydration()` — #attach-harmonisation. Un selecteur `string` ciblant
+un NOEUD FRERE cree dans la MEME passe de rendu (ex: un conteneur local
+que le consommateur monte lui-meme juste avant le composant qui teleporte)
+peut ne pas encore etre connecte a `document` au moment ou ce `computed`
+s'evalue pour la PREMIERE fois — mesure concrete sous Histoire (dont
+`OrigamApp`/`OrigamLayout` englobent chaque story dans un `<Suspense>` :
+l'arbre entier, y compris les freres, n'est commit dans le vrai DOM
+qu'une fois la resolution async terminee). `document.querySelector` n'est
+PAS une dependance reactive : si le premier appel echoue, le `computed`
+reste bloque sur `undefined` pour toujours, meme apres que la cible soit
+reellement montee — rien ne le marque sale.
+
+⛔ UN COMPTEUR LOCAL (`mountTick`, essaye d'abord) CASSE LE SSR MARKETING.
+Mesure, CI (#1043) : 4 e2e marketing (Nuxt, SSR) en echec sur « sans
+erreur JS console » / « pas d'erreur d'hydratation ». Cause reelle,
+independante de `mountTick` : la toute PREMIERE evaluation du computed
+divergeait DEJA entre serveur et client. Cote serveur, `!IN_BROWSER` est
+toujours vrai (pas de `window` en SSR) -> `undefined` (teleport
+desactive, rendu en place). Cote client, `IN_BROWSER` est vrai DES LE
+DEPART, y compris pendant la passe d'HYDRATATION (avant tout
+`onMounted`) -> la cible (souvent `document.body`, qui existe toujours)
+se resout avec SUCCES sur ce tout premier rendu -> teleport deja ACTIF.
+Vue compare les deux rendus pendant l'hydratation : desactive vs actif,
+d'ou le decalage. `mountTick` n'ajoutait qu'une DEUXIEME evaluation
+post-montage — elle n'a jamais ete la cause du decalage, qui existait
+deja sur la premiere.
+
+Le fix : `isHydrated.value` (vrai gate, pas une simple lecture de
+dependance) force EXACTEMENT le meme `undefined` cote client QUE cote
+serveur tant que l'hydratation n'est pas terminee — `useHydration()`
+(deja utilise par `OrigamOverlay.vue`) seede `isHydrated` a `false` sur
+les DEUX rendus compares (serveur ET premiere passe client) quand l'app
+est reellement en SSR (`ssr` vrai), et ne bascule a `true` que dans un
+`onMounted` — donc APRES que l'hydratation ait deja conclu. Reutilise,
+ne redeclare pas.
+
+⚠️ Dans une app 100% client (pas de SSR — Histoire, Tauri…),
+`useHydration()` renvoie `isHydrated=true` DES LE DEPART (son
+optimisation deliberee : « pas de delai artificiel » — voir son propre
+commentaire de tete) : le gate ci-dessous ne retarde donc RIEN la ou il
+n'y a aucune hydratation a proteger. Consequence mesuree : une cible
+FRERE montee dans la MEME passe de rendu que le consommateur (ex: un
+conteneur local qu'une story Histoire monte juste avant le composant
+teleportant, sous un `<Suspense>` qui ne commit l'arbre qu'une fois
+resolu) peut encore echouer sur cette toute premiere resolution, pour la
+meme raison qu'avant : `document.querySelector` n'est pas reactif. Ce
+n'est PAS le defaut que ce correctif vise — c'est un defaut DIFFERENT,
+propre a la construction du test (une cible fraiche ne preexiste jamais
+en usage reel), traite cote story plutot qu'en reintroduisant un
+compteur local ici (voir les stories CommandPalette / SnackbarGroup /
+Drawer, variante « Prop - attach »).
+
 **Source** : `packages/ds/src/composables/Commons/teleport.composable.ts`
 
-**Consommateurs** (2) : `components/Menu/OrigamMenu.vue`, `components/Overlay/OrigamOverlay.vue`
+**Consommateurs** (6) : `components/CommandPalette/OrigamCommandPalette.vue`, `components/Drawer/OrigamDrawer.vue`, `components/Menu/OrigamMenu.vue`, `components/Overlay/OrigamOverlay.vue`, `components/Snackbar/OrigamSnackbarGroup.vue`, `interfaces/Commons/attach.interface.ts`
 
 ## `useTeleportTypography`
 
@@ -2616,11 +2751,15 @@ export function useTypography (props: ITypographyProps, varPrefix: string)
 ```
 
 Volet typographique de `useMargin`/`useBorder`/`useColor` : pour
-chacune des cinq `ITypographyProps` (`fontFamily`, `fontSize`,
+chacune des cinq `ITypographyProps` de TOKEN (`fontFamily`, `fontSize`,
 `fontWeight`, `lineHeight`, `letterSpacing`) que le consommateur a
 fixee, emet une custom property inline `--origam-{varPrefix}---{prop}`
 qui repointe vers le token primitif correspondant. Une prop non fixee
 n'emet rien — le theme/la variante du composant garde la main.
+
+La sixieme, `fontStyle`, passe par un canal PASSTHROUGH : sa valeur est
+un mot-cle CSS rendu verbatim, sans enveloppe `var()`. Voir
+`TYPOGRAPHY_PASSTHROUGH_MAP` pour le pourquoi.
 
 INLINE UNIQUEMENT (pas de classe utilitaire — `origam-utilities.css`
 n'a pas de famille `.origam--font-*`), et `typographyStyles` est un
@@ -2636,7 +2775,7 @@ en repli.
 
 **Source** : `packages/ds/src/composables/Commons/typography.composable.ts`
 
-**Consommateurs** (47) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Badge/OrigamBadge.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketRound.vue`, …
+**Consommateurs** (49) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Badge/OrigamBadge.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketRound.vue`, …
 
 ## `useUnsupportedProp`
 
@@ -2700,7 +2839,7 @@ resolveur de theme ait patché `props.error`.
 ## `useVariant`
 
 ```ts
-export function useVariant (props: IVariantProps | Ref<TVariant | TVariantInput | string | undefined>, name = getCurrentInstanceName())
+export function useVariant (props: { variant?: string } | Ref<string | undefined>, name = getCurrentInstanceName())
 ```
 
 Traduit `props.variant` (ou un `Ref` passe directement) en une seule
@@ -2708,6 +2847,14 @@ classe `{name}--variant-{valeur}`. Accepte n'importe quelle chaine —
 contrairement a `useDensity`/`useSize`, il n'y a pas de liste blanche
 (`*_ARRAY`) a matcher : toute valeur non-nulle produit une classe, y
 compris une variante que le composant ne connait pas.
+
+Le parametre props n'est plus type via l'ancien `IVariantProps` (mixin
+unique acceptant a tort `TVariant | TVariantInput` partout — scinde en
+`IActionVariantProps` / `IInputVariantProps`, cf. #1050). Un type
+structurel `{ variant?: string }` suffit ici : la fonction ne fait que
+lire `props.variant` et le stringifier, elle n'a jamais eu besoin de
+connaitre la liste de valeurs d'une famille precise — et les deux
+interfaces scindees (comme toute autre) lui restent assignables.
 
 **Source** : `packages/ds/src/composables/Commons/variant.composable.ts`
 
@@ -2790,5 +2937,5 @@ une valeur de modele legitime.
 
 **Source** : `packages/ds/src/composables/Commons/vModel.composable.ts`
 
-**Consommateurs** (64) : `components/App/OrigamAppBar.vue`, `components/Calendar/OrigamCalendar.vue`, `components/Carousel/OrigamCarousel.vue`, `components/Checkbox/OrigamCheckbox.vue`, `components/Checkbox/OrigamCheckboxBtn.vue`, `components/Checkbox/OrigamCheckboxGroup.vue`, `components/ColorPicker/OrigamColorPicker.vue`, `components/ColorPicker/OrigamColorPickerPreview.vue`, …
+**Consommateurs** (65) : `components/App/OrigamAppBar.vue`, `components/Calendar/OrigamCalendar.vue`, `components/Carousel/OrigamCarousel.vue`, `components/Checkbox/OrigamCheckbox.vue`, `components/Checkbox/OrigamCheckboxBtn.vue`, `components/Checkbox/OrigamCheckboxGroup.vue`, `components/CodeGroup/OrigamCodeGroup.vue`, `components/ColorPicker/OrigamColorPicker.vue`, …
 
