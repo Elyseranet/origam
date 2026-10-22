@@ -976,7 +976,17 @@ export function installThemePropsResolver (
                  * went unnoticed because it was silent.
                  ********************************************************/
                 if (!(key in rawProps)) {
-                    warnUnsupportedProp(name, key, `theme names this prop but <${name}> does not declare it`)
+                    /*********************************************************
+                     * if
+                     *
+                     * @description
+                     * #1227: a `global` key is partial by nature (it applies
+                     * where declared) — only a key named for THIS component is
+                     * a mistake worth a warning.
+                     ********************************************************/
+                    if (themedKeysUnion.get(name)?.has(key) || key in (defaults.value?.[name] ?? {})) {
+                        warnUnsupportedProp(name, key, `theme names this prop but <${name}> does not declare it`)
+                    }
                     continue
                 }
 
