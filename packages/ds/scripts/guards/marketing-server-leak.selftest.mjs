@@ -19,11 +19,11 @@ console.log('Self-test: marketing-server-leak')
 console.log('─'.repeat(70))
 
 const tree = (extra) => new Map(Object.entries({
-    'src/utils/db.util.ts': `import { createDataSource } from '../../server/db/data-source'\nexport const useDb = () => createDataSource()`,
-    'server/db/data-source.ts': `import { DataSource } from 'typeorm'\nexport const createDataSource = () => new DataSource({})`,
-    'server/db/entities/index.ts': `export class DocEntry {}`,
+    'src/utils/db.util.ts': `import { createDataSource } from '../server/db/data-source'\nexport const useDb = () => createDataSource()`,
+    'src/server/db/data-source.ts': `import { DataSource } from 'typeorm'\nexport const createDataSource = () => new DataSource({})`,
+    'src/server/db/entities/index.ts': `export class DocEntry {}`,
     'src/consts/shared.const.ts': `export const SHARED = 1`,
-    'src/consts/doc-upsert.const.ts': `import { DocEntry } from '../../server/db/entities/index.ts'\nexport const SPEC = { DocEntry }`,
+    'src/consts/doc-upsert.const.ts': `import { DocEntry } from '../server/db/entities/index.ts'\nexport const SPEC = { DocEntry }`,
     'src/consts/leaky.const.ts': `import { SPEC } from './doc-upsert.const'\nexport const LEAKY = SPEC`,
     'src/utils/pure.util.ts': `import { SHARED } from '../consts/shared.const'\nexport const pure = () => SHARED`,
     'src/utils/reference-cache.util.ts': `export const referenceDocCacheKey = () => 'k'`,
@@ -47,7 +47,7 @@ const MUST_NOT_FLAG = [
     ['export type … from a server util', { 'src/composables/useD.ts': `export type { useDb } from '../utils/db.util'` }],
     ['*.server.ts plugin may use server utils', { 'src/plugins/theme-sync.server.ts': `import { useDb } from '../utils/db.util'\nexport default useDb` }],
     ['client file importing a pure shared util', { 'src/components/D.vue': `<script setup lang="ts">\nimport { pure } from '~/utils/pure.util'\n</script>` }],
-    ['server/api importing server utils is the point of server/', { 'server/api/x.get.ts': `import { useDb } from '../../src/utils/db.util'\nexport default useDb` }],
+    ['server/api importing server utils is the point of server/', { 'src/server/api/x.get.ts': `import { useDb } from '../../utils/db.util'\nexport default useDb` }],
     ['an unreachable server util is not a violation by itself', {}]
 ]
 
@@ -67,7 +67,7 @@ for (const [label, extra] of MUST_NOT_FLAG) {
 
 console.log('\nChain (the report must name every hop, not only the root):')
 const chain = [...findServerLeaks(tree({ 'src/pages/p.vue': `<script setup lang="ts">\nimport { LEAKY } from '~/consts/leaky.const'\n</script>` })).values()][0] ?? ''
-if (!chain.includes('src/pages/p.vue → src/consts/leaky.const.ts → src/consts/doc-upsert.const.ts → server/db/entities/index.ts')) {
+if (!chain.includes('src/pages/p.vue → src/consts/leaky.const.ts → src/consts/doc-upsert.const.ts → src/server/db/entities/index.ts')) {
     fail(`chain does not list every hop: ${chain}`)
 } else console.log('  ok    root → const → const → server file')
 

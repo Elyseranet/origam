@@ -38,7 +38,7 @@ const dryRunFlag     = argv.includes('--dry-run')
 const verboseFlag     = argv.includes('--verbose')
 
 const marketingDir = path.join(repoRoot, 'packages', 'marketing')
-const dbSeedSql   = path.join(marketingDir, 'server', 'assets', 'db-seed.sql')
+const dbSeedSql   = path.join(marketingDir, 'src', 'server', 'assets', 'db-seed.sql')
 
 // ─── Props never turned into playground controls ──────────────────────────────
 

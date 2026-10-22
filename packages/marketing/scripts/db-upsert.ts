@@ -18,7 +18,7 @@
 
 import type { EntityManager } from 'typeorm'
 
-import { DocEntry } from '../server/db/entities/index.ts'
+import { DocEntry } from '../src/server/db/entities/index.ts'
 import { NULL_KEY, ENTRY_SRC, ENTRY_EDIT, CHILD_SPECS, SEED_COLLECTIONS, SRC_COLLECTIONS } from '../src/consts/doc-upsert.const.ts'
 
 const blankCounts = () => ({ created: 0, updated: 0, unchanged: 0, orphaned: 0 })

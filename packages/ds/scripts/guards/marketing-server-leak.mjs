@@ -10,7 +10,7 @@
  * guard is that stop.
  *
  * WHAT IS SERVER-ONLY (a "seed")
- *   a. every file under `packages/marketing/server/` and `…/scripts/`;
+ *   a. every file under `packages/marketing/src/server/` and `…/scripts/`;
  *   b. every file with a RUNTIME import of a server package (`typeorm`, `pg`,
  *      `reflect-metadata`, `ioredis`, `nodemailer`, `h3`, `nitropack`) or of a
  *      Node builtin (`node:*`);
@@ -140,7 +140,7 @@ export function findServerLeaks (files) {
         if (!SOURCE_RE.test(rel)) continue
         const edges = []
         let reason = null
-        if (rel.startsWith('server/') || rel.startsWith('scripts/')) reason = 'lives under server/ or scripts/'
+        if (rel.startsWith('src/server/') || rel.startsWith('scripts/')) reason = 'lives under src/server/ or scripts/'
         else if (SERVER_ONLY_FILES.includes(rel)) reason = 'listed in SERVER_ONLY_FILES'
         for (const spec of runtimeImports(rel, content)) {
             const target = resolveSpec(spec, rel, files)

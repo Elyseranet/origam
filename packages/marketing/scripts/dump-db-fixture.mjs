@@ -16,14 +16,14 @@
  *   tsx --tsconfig ./tsconfig.typeorm.json scripts/dump-db-fixture.mjs --domain=component
  *
  * OUTPUT
- *   packages/marketing/server/db/seed/component.json
- *   packages/marketing/server/db/seed/composable.json
- *   packages/marketing/server/db/seed/const.json
- *   packages/marketing/server/db/seed/directive.json
- *   packages/marketing/server/db/seed/enum.json
- *   packages/marketing/server/db/seed/interface.json
- *   packages/marketing/server/db/seed/type.json
- *   packages/marketing/server/db/seed/util.json
+ *   packages/marketing/src/server/db/seed/component.json
+ *   packages/marketing/src/server/db/seed/composable.json
+ *   packages/marketing/src/server/db/seed/const.json
+ *   packages/marketing/src/server/db/seed/directive.json
+ *   packages/marketing/src/server/db/seed/enum.json
+ *   packages/marketing/src/server/db/seed/interface.json
+ *   packages/marketing/src/server/db/seed/type.json
+ *   packages/marketing/src/server/db/seed/util.json
  */
 
 import fs from 'node:fs'
@@ -36,7 +36,7 @@ import { CHILD_TIEBREAK } from '../src/consts/doc-sync.const.ts'
 
 const argv = process.argv.slice(2)
 const domainArg = (argv.find(a => a.startsWith('--domain=')) || '').split('=')[1]
-const seedDir = path.join(repoRoot, 'packages', 'marketing', 'server', 'db', 'seed')
+const seedDir = path.join(repoRoot, 'packages', 'marketing', 'src', 'server', 'db', 'seed')
 
 // ─── Helpers to project a DB row to the fixture shape ────────────────────────
 

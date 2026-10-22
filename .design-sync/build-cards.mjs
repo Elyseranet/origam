@@ -22,7 +22,7 @@ const STORIES = join(ROOT, 'packages/stories/components/stories')
 
 // ---------- inventaire : familles de stories × catalogue marketing ----------
 function inventory () {
-    const catalog = JSON.parse(readFileSync(join(ROOT, 'packages/marketing/server/db/seed/component.json'), 'utf8'))
+    const catalog = JSON.parse(readFileSync(join(ROOT, 'packages/marketing/src/server/db/seed/component.json'), 'utf8'))
     // Les entrées ENFANTS (AppBar, AvatarGroup…) portent aussi leur catégorie → tout indexer.
     const byName = new Map()
     for (const { entry } of catalog.entries) {

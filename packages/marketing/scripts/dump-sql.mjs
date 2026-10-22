@@ -15,7 +15,7 @@ import { execFileSync } from 'node:child_process'
 import { DB_ENV } from '../src/consts/db.const.ts'
 
 const marketingDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-export const dbSeedSql = path.join(marketingDir, 'server', 'assets', 'db-seed.sql')
+export const dbSeedSql = path.join(marketingDir, 'src', 'server', 'assets', 'db-seed.sql')
 
 // ─── pg_dump connection args ──────────────────────────────────────────────────
 

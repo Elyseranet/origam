@@ -70,7 +70,7 @@ import { ingestFull, ingestSrc, orphanMissingEntries } from './db-upsert.ts'
 import { getDb, closeDb, sourceCommit } from './db.ts'
 import { backfillKeys, backfillSvgKeys } from './key-backfill.ts'
 import { DOC_KIND_DIRS } from '../src/consts/db.const.ts'
-import { DocEntry, DocSyncRun } from '../server/db/entities/index.ts'
+import { DocEntry, DocSyncRun } from '../src/server/db/entities/index.ts'
 import { syncFixtures } from '../src/utils/doc-fixture-sync.util.ts'
 import { ROLLBACK, RESYNC_POLICY, FILE_DOMAINS } from '../src/consts/doc-sync.const.ts'
 
@@ -85,7 +85,7 @@ const domainArg = (argv.find(a => a.startsWith('--domain=')) || '').split('=')[1
 const limitArg = Number((argv.find(a => a.startsWith('--limit=')) || '').split('=')[1]) || 0
 
 const mktConsts = path.join(repoRoot, 'packages', 'marketing', 'src', 'consts')
-const mktSeed   = path.join(repoRoot, 'packages', 'marketing', 'server', 'db', 'seed')
+const mktSeed   = path.join(repoRoot, 'packages', 'marketing', 'src', 'server', 'db', 'seed')
 
 const blank = () => ({ created: 0, updated: 0, unchanged: 0, orphaned: 0 })
 const add = (a, b) => { a.created += b.created; a.updated += b.updated; a.unchanged += b.unchanged; a.orphaned += b.orphaned }

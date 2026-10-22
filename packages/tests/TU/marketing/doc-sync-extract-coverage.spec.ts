@@ -47,7 +47,7 @@ import { DOC_KINDS } from '../../../marketing/src/consts/db.const'
 const ts = createRequire(import.meta.url)('typescript')
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..')
-const SEED_DIR = resolve(REPO_ROOT, 'packages/marketing/server/db/seed')
+const SEED_DIR = resolve(REPO_ROOT, 'packages/marketing/src/server/db/seed')
 
 /** An `export { X as Y }` re-export — the shape the extractor cannot see. */
 const ALIASED_REEXPORT = /export\s*\{\s*([A-Za-z0-9_$]+)\s+as\s+([A-Za-z0-9_$]+)\s*\}/g

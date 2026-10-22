@@ -106,7 +106,7 @@ jobs:
     # Deliberately its OWN job, not a step of `architecture-guards` above.
     # That job's two families audit `packages/ds/src` (guards) and the
     # Histoire stories/docs surface (e2e audit) — neither has ever looked at
-    # `packages/marketing/server/db`, which is not a component, a story, or
+    # `packages/marketing/src/server/db`, which is not a component, a story, or
     # a doc page. Bolting a third, unrelated concern onto that job would
     # repeat the exact "confused the two families" mistake #831 flagged
     # happening on this same day. See scripts/guard-migrations.mjs's header

@@ -3,7 +3,7 @@
  * guard-migrations.mjs — refuses an unauthorized destructive migration (#831).
  *
  * WHAT
- *   Scans every migration under `server/db/migrations/*.ts` and fails
+ *   Scans every migration under `src/server/db/migrations/*.ts` and fails
  *   (`exit 1`) the moment ONE of them drops a constraint or an index in its
  *   `up()` without an explicit `// origam-allow-destructive: <reason>`
  *   directive on the line immediately above the statement. See
@@ -19,7 +19,7 @@
  *     - `pnpm -F @origam/tests test:e2e:audit` — audits the Histoire
  *       stories/docs surface (variant drift, spec coverage) against the
  *       component catalogue.
- *   Neither one has ever looked at `packages/marketing/server/db` — that
+ *   Neither one has ever looked at `packages/marketing/src/server/db` — that
  *   tree is not a component, not a story, not a doc page. Bolting this
  *   check onto either family would be exactly the "confused the two
  *   families" mistake #831's own ticket warns happened today. This guard
@@ -59,7 +59,7 @@ import { fileURLToPath } from 'node:url'
 import { scanMigrationSource } from './migration-guard.mjs'
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url))
-const migrationsDir = path.join(scriptDir, '..', 'server', 'db', 'migrations')
+const migrationsDir = path.join(scriptDir, '..', 'src', 'server', 'db', 'migrations')
 
 function scanDirectory (dir) {
     const files = readdirSync(dir).filter((f) => f.endsWith('.ts')).sort()

@@ -417,7 +417,7 @@ those 81 paths is now dead. **This is unfixed debt, deliberately parked, not
 resolved**: the marketing site will render 81 broken "view source" links
 until the seed is regenerated without a token `source_file`. Baselining it
 here keeps the guard honest about *new* breakage while the fix — which lives
-in `packages/marketing/server/db/seed/component.json` and the `db-seed.sql`
+in `../../../marketing/src/server/db/seed/component.json` and the `db-seed.sql`
 dump built from it — is owned by whoever next touches the marketing
 catalogue. Retire these 82 entries in the same change that regenerates the
 seed.

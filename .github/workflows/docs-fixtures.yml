@@ -182,8 +182,8 @@ jobs:
             **Re-sync drift:** ${{ steps.sync.outputs.summary }}
 
             Files:
-            - `packages/marketing/server/db/seed/*.json`
-            - `packages/marketing/server/assets/db-seed.sql`
+            - `packages/marketing/src/server/db/seed/*.json`
+            - `packages/marketing/src/server/assets/db-seed.sql`
 
             On merge → deploy → the Nitro bootstrap sync
             (`server/plugins/00.db-bootstrap.ts`) applies these to the live
@@ -191,6 +191,6 @@ jobs:
 
             Merge by hand when the diff looks right.
           add-paths: |
-            packages/marketing/server/db/seed
-            packages/marketing/server/assets/db-seed.sql
+            packages/marketing/src/server/db/seed
+            packages/marketing/src/server/assets/db-seed.sql
           delete-branch: true

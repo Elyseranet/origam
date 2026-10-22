@@ -55,7 +55,7 @@ import { loadDeclared, resolveTokenPath } from './token-sheet.mjs'
 import { NO_TOKEN_SHEET, DROPPED_FIELDS } from '../src/consts/token-excerpts.const.ts'
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../../..')
-const seedFile = resolve(repoRoot, 'packages/marketing/server/db/seed/component.json')
+const seedFile = resolve(repoRoot, 'packages/marketing/src/server/db/seed/component.json')
 const checkFlag = process.argv.slice(2).includes('--check')
 
 /*********************************************************

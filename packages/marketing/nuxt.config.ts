@@ -34,7 +34,8 @@ export default defineNuxtConfig({
     // Project convention (cf. CLAUDE.md) — srcDir is `src/`, not Nuxt 4's
     // default `app/`. Internal structure (app.vue, layouts, pages, …) is
     // unchanged, only the root folder name.
-    srcDir: 'src/',
+    srcDir: 'src',
+    serverDir: 'src/server',
 
     // Production build only needs runnable output, not source maps. Nuxt emits
     // SERVER source maps by default in prod (~570 .mjs.map / ~67 MB here); rollup
@@ -252,7 +253,7 @@ export default defineNuxtConfig({
         serverAssets: [
             {
                 baseName: 'db-seed',
-                dir: fileURLToPath(new URL('./server/db/seed', import.meta.url))
+                dir: fileURLToPath(new URL('./src/server/db/seed', import.meta.url))
             }
         ]
     },

@@ -41,10 +41,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
  * ⛔ Le chemin est écrit EN CLAIR dans l'appel : un `import()` dont l'argument
  * est une variable n'est pas analysable statiquement par Vite, qui le laisse
  * alors se résoudre à l'exécution depuis la mauvaise racine (mesuré : « Cannot
- * find module '/marketing/server/plugins/…' »). Un littéral, et le plugin Vite
+ * find module '/marketing/src/server/plugins/…' »). Un littéral, et le plugin Vite
  * réécrit le chemin correctement.
  */
-const importPlugin = () => import('../../../marketing/server/plugins/01.vue-devtools-plugin-queue')
+const importPlugin = () => import('../../../marketing/src/server/plugins/01.vue-devtools-plugin-queue')
 
 describe('câblage du plugin Nitro #248', () => {
     let neutralise: ReturnType<typeof vi.fn>
