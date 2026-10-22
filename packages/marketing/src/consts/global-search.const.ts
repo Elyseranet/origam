@@ -108,3 +108,6 @@ export const GLOBAL_SEARCH_FAMILY_ICONS: Record<TReferenceKind, string> = {
     util: 'mdi-wrench-outline',
     const: 'mdi-alpha-c-box-outline'
 }
+
+/** Lignes par famille quand la requête est vide et que toutes les familles sont visibles. */
+export const TEASER_PER_FAMILY = 5

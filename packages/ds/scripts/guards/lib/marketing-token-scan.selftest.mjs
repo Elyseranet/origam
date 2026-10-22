@@ -18,7 +18,7 @@
  *      seule lecture vue : `PASS — 0 violation` sur un fichier truffé de
  *      canaux morts.
  *   2. **Les déclarations d'objet TS cessent d'être vues** — `themes/*.ts` et
- *      `origam-reset.generated.ts` déclarent ≈2 700 vars sous forme de clés
+ *      `origam-reset.const.ts` déclarent ≈2 700 vars sous forme de clés
  *      `'--origam-x':`. Les perdre ne rend pas le garde muet, il le rend
  *      HURLANT : des centaines de fausses accusations, ce qui le fait
  *      désactiver aussi sûrement.
@@ -112,7 +112,7 @@ console.log('\nsplitSource — un `.vue` est découpé par le compilateur SFC, p
 /*********************************************************
  * Partie 2 — collectSources : la clé d'objet TS est une DÉCLARATION
  *
- * Le risque ici n'est pas le silence mais le bruit : `origam-reset.generated.ts`
+ * Le risque ici n'est pas le silence mais le bruit : `origam-reset.const.ts`
  * déclare ≈2 700 vars de composant sous cette forme. Les perdre transforme
  * chacune en fausse accusation.
  ********************************************************/

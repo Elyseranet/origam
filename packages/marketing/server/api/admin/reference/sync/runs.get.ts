@@ -11,6 +11,7 @@
 
 import { DocSyncRun } from '../../../../db/entities'
 
+import { useDb } from '../../../../../src/utils/db.util'
 export default defineEventHandler(async (event) => {
     const query = getQuery(event)
     const limitRaw = typeof query.limit === 'string' ? parseInt(query.limit, 10) : 20

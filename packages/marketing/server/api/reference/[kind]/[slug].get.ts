@@ -26,34 +26,25 @@
  * Cache: 5 min per kind:slug:LOCALE combination — the locale is part of the cache
  * key precisely because it changes the response content (descriptionFallback), so
  * caching without it would serve one locale's text to every other locale (ADR #325).
- * The key carries REFERENCE_CACHE_FORMAT_VERSION (server/consts/cache.const.ts, #1063):
+ * The key carries REFERENCE_CACHE_FORMAT_VERSION (src/consts/cache.const.ts, #1063):
  * bump it whenever this response's shape changes. A backoffice edit invalidates every
- * limit/locale variant of the entry (server/utils/reference-cache.ts).
+ * limit/locale variant of the entry (src/utils/reference-cache.util.ts).
  */
 
 import {
     DocEntry, DocProp, DocEmit, DocSlot, DocExample, DocValue,
     DocParam, DocReturn, DocDirectiveArg, DocDirectiveModifier, DocRelation,
 } from '../../../db/entities'
-import { REFERENCE_CACHE_NAMES, REFERENCE_CACHE_TTL_SECONDS } from '../../../consts/cache.const'
-import { referenceDocCacheKey } from '../../../utils/reference-cache'
-import { resolveLocale } from '../../../utils/reference-locale'
+import { REFERENCE_CACHE_NAMES, REFERENCE_CACHE_TTL_SECONDS } from '../../../../src/consts/cache.const'
+import { referenceDocCacheKey } from '../../../../src/utils/reference-cache.util'
+import { resolveLocale } from '../../../../src/utils/reference-locale.util'
+import { mapComponentDoc, mapComposableDoc, mapConstDoc, mapDirectiveDoc, mapEnumDoc, mapInterfaceDoc, mapTypeDoc, mapUtilDoc } from '../../../../src/utils/reference-mappers.util'
+import type { IComponentChildren, IComposableChildren, IConstChildren, IDirectiveChildren, IEnumChildren, IInterfaceChildren, ITypeChildren, IUtilChildren } from '../../../../src/interfaces/reference-mappers.interface'
+import type { TDescriptionsBySlug } from '../../../../src/types/api-reference.type'
 import type { TLocaleCode } from '../../../../src/types/i18n.type'
 
-/**
- * Inline child-collection types to avoid cross-directory import type issues
- * with Nitro esbuild. Mirrors the exported interfaces in reference-mappers.ts.
- */
-type DescMap = Map<string, { description_key: string | null; description_fallback: string | null }>
-interface ComponentChildren { props: any[]; emits: any[]; slots: any[]; examples: any[]; relations: any[]; descriptionsBySlug: DescMap }
-interface ComposableChildren { params: any[]; returns: any[]; examples: any[]; relations: any[] }
-interface ConstChildren { values: any[]; examples: any[]; relations: any[] }
-interface DirectiveChildren { args: any[]; modifiers: any[]; examples: any[]; relations: any[]; descriptionsBySlug: DescMap }
-interface EnumChildren { values: any[]; examples: any[]; relations: any[] }
-interface InterfaceChildren { props: any[]; examples: any[]; relations: any[] }
-interface TypeChildren { values: any[]; examples: any[]; relations: any[] }
-interface UtilChildren { params: any[]; returns: any[]; examples: any[]; relations: any[] }
-
+import { useDb } from '../../../../src/utils/db.util'
+import { assertKind, assertSlug } from '../../../../src/utils/reference-validation.util'
 export default defineCachedEventHandler(
     async (event) => {
         const kind = getRouterParam(event, 'kind') ?? ''
@@ -216,8 +207,8 @@ async function fetchDescriptionsBySlug (
     db: any,
     kind: string,
     slugs: string[],
-): Promise<DescMap> {
-    const map: DescMap = new Map()
+): Promise<TDescriptionsBySlug> {
+    const map: TDescriptionsBySlug = new Map()
     if (slugs.length === 0) return map
     const rows: any[] = await db
         .getRepository(DocEntry)
@@ -257,7 +248,7 @@ async function buildComponentDoc (db: any, entry: any, entryId: string, locale: 
         [...new Set(slugsToFetch)],
     )
 
-    const ch: ComponentChildren = { props, emits, slots, examples, relations, descriptionsBySlug }
+    const ch: IComponentChildren = { props, emits, slots, examples, relations, descriptionsBySlug }
     return mapComponentDoc(entry, ch, locale)
 }
 
@@ -268,7 +259,7 @@ async function buildComposableDoc (db: any, entry: any, entryId: string, locale:
         fetchExamples(db, entryId),
         fetchRelations(db, entryId),
     ])
-    const ch: ComposableChildren = { params, returns, examples, relations }
+    const ch: IComposableChildren = { params, returns, examples, relations }
     return mapComposableDoc(entry, ch, locale)
 }
 
@@ -278,7 +269,7 @@ async function buildConstDoc (db: any, entry: any, entryId: string, valuesLimit:
         fetchExamples(db, entryId),
         fetchRelations(db, entryId),
     ])
-    const ch: ConstChildren = { values, examples, relations }
+    const ch: IConstChildren = { values, examples, relations }
     return mapConstDoc(entry, ch, locale)
 }
 
@@ -300,7 +291,7 @@ async function buildDirectiveDoc (db: any, entry: any, entryId: string, locale: 
         [...new Set(relatedSlugs)],
     )
 
-    const ch: DirectiveChildren = { args, modifiers, examples, relations, descriptionsBySlug }
+    const ch: IDirectiveChildren = { args, modifiers, examples, relations, descriptionsBySlug }
     return mapDirectiveDoc(entry, ch, locale)
 }
 
@@ -310,7 +301,7 @@ async function buildEnumDoc (db: any, entry: any, entryId: string, valuesLimit: 
         fetchExamples(db, entryId),
         fetchRelations(db, entryId),
     ])
-    const ch: EnumChildren = { values, examples, relations }
+    const ch: IEnumChildren = { values, examples, relations }
     return mapEnumDoc(entry, ch, locale)
 }
 
@@ -320,7 +311,7 @@ async function buildInterfaceDoc (db: any, entry: any, entryId: string, locale: 
         fetchExamples(db, entryId),
         fetchRelations(db, entryId),
     ])
-    const ch: InterfaceChildren = { props, examples, relations }
+    const ch: IInterfaceChildren = { props, examples, relations }
     return mapInterfaceDoc(entry, ch, locale)
 }
 
@@ -330,7 +321,7 @@ async function buildTypeDoc (db: any, entry: any, entryId: string, valuesLimit: 
         fetchExamples(db, entryId),
         fetchRelations(db, entryId),
     ])
-    const ch: TypeChildren = { values, examples, relations }
+    const ch: ITypeChildren = { values, examples, relations }
     return mapTypeDoc(entry, ch, locale)
 }
 
@@ -341,6 +332,6 @@ async function buildUtilDoc (db: any, entry: any, entryId: string, locale: TLoca
         fetchExamples(db, entryId),
         fetchRelations(db, entryId),
     ])
-    const ch: UtilChildren = { params, returns, examples, relations }
+    const ch: IUtilChildren = { params, returns, examples, relations }
     return mapUtilDoc(entry, ch, locale)
 }

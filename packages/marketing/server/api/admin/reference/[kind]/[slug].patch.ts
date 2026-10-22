@@ -23,14 +23,12 @@
  */
 
 import { DocEntry } from '../../../../db/entities'
-import { invalidateReferenceDoc } from '../../../../utils/reference-cache'
-import {
-    ENTRY_EDIT_MAP,
-    ENTRY_SRC_CAMEL,
-    toDbPayload,
-    toCamelEntry,
-} from '../../../../utils/admin-mappers'
+import { invalidateReferenceDoc } from '../../../../../src/utils/reference-cache.util'
+import { ENTRY_EDIT_MAP, ENTRY_SRC_CAMEL } from '../../../../../src/consts/admin-mappers.const'
+import { toDbPayload, toCamelEntry } from '../../../../../src/utils/admin-mappers.util'
 
+import { useDb } from '../../../../../src/utils/db.util'
+import { assertKind, assertSlug } from '../../../../../src/utils/reference-validation.util'
 export default defineEventHandler(async (event) => {
     const kind = getRouterParam(event, 'kind') ?? ''
     const slug = getRouterParam(event, 'slug') ?? ''

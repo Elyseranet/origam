@@ -18,7 +18,7 @@
  *     `declaredPropsFor` (`audit-unconsumed-props.mjs`) pour lire exactement
  *     la meme surface que le garde bloquant `unconsumed-props` ;
  *   - le pipeline marketing veut des noms ET des TYPES, et passe par le
- *     compilateur TypeScript (`packages/marketing/scripts/lib/extract-vue.mjs`).
+ *     compilateur TypeScript (`packages/marketing/scripts/extract-vue.mjs`).
  *
  * Les deux resolutions ont ete confrontees sur les 218 composants du
  * catalogue : 217 verdicts identiques, un ecart — `IRatingFieldProps`

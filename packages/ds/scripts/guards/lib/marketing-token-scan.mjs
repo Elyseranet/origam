@@ -86,7 +86,7 @@ const SCANNED_EXT = /\.(vue|css|scss|ts|mts)$/
  *     }
  *
  * `findVarDeclarations` lit du CSS et ne voit rien ici — la syntaxe est
- * `'--x':`, pas `--x:`. Sans cette passe, `origam-reset.generated.ts` (≈2 700
+ * `'--x':`, pas `--x:`. Sans cette passe, `origam-reset.const.ts` (≈2 700
  * re-déclarations de vars de composant) serait invisible et chacune de ses
  * cibles serait accusée à tort.
  ********************************************************/

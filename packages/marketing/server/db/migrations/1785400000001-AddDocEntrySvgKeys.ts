@@ -30,7 +30,7 @@
 
 import type { MigrationInterface, QueryRunner } from 'typeorm'
 
-import { DB_TABLES } from '../db.const.mjs'
+import { DB_TABLES } from '../../../src/consts/db.const'
 
 export class AddDocEntrySvgKeys1785400000001 implements MigrationInterface {
     name = 'AddDocEntrySvgKeys1785400000001'

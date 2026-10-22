@@ -2,7 +2,8 @@
  * useAdminReference — composable encapsulant toutes les opérations admin.
  *
  * Seule porte d'entrée vers /api/admin/**. Aucune page ni layout n'appelle
- * $fetch directement — tout passe par ce composable.
+ * $fetch directement — tout passe par ce composable, qui appelle les services
+ * (`admin.service.ts`, `reference.service.ts`).
  *
  * `isAuthenticated` est un Nuxt useState (clé 'admin_auth') : il persiste
  * à travers la navigation côté client mais se réinitialise à la fermeture
@@ -10,6 +11,10 @@
  * portée par le cookie httpOnly géré côté serveur).
  */
 
+import type { Ref } from 'vue'
+
+import { adminService } from '~/services/admin.service'
+import { referenceService } from '~/services/reference.service'
 import type {
     IAdminLoginResult,
     IAdminSyncResult,
@@ -26,15 +31,24 @@ export type {
     IAdminUpdateResult,
 } from '~/interfaces/admin.interface'
 
+/**
+ * Fiche brute d'une entrée (formulaire d'édition admin). Clé réactive sur
+ * `kind` / `slug` ; aucune locale transmise, la page édite la valeur source.
+ */
+export function useAdminEntry (kind: Ref<string>, slug: Ref<string>) {
+    return useAsyncData<Record<string, any>>(
+        () => `admin-doc:${kind.value}:${slug.value}`,
+        () => referenceService.getDoc<Record<string, any>>(kind.value, slug.value),
+        { watch: [kind, slug] }
+    )
+}
+
 export function useAdminReference () {
     const isAuthenticated = useState<boolean>('admin_auth', () => false)
 
     async function login (password: string): Promise<IAdminLoginResult> {
         try {
-            await $fetch('/api/admin/login', {
-                method: 'POST',
-                body: { password },
-            })
+            await adminService.login({ password })
             isAuthenticated.value = true
             return { ok: true }
         } catch (err: unknown) {
@@ -51,7 +65,7 @@ export function useAdminReference () {
 
     async function logout (): Promise<void> {
         try {
-            await $fetch('/api/admin/logout', { method: 'POST' })
+            await adminService.logout()
         } catch {
             // best-effort: on efface quand même l'état local
         }
@@ -64,10 +78,7 @@ export function useAdminReference () {
         patch: IAdminPatch,
     ): Promise<IAdminUpdateResult> {
         try {
-            await $fetch(`/api/admin/reference/${kind}/${slug}`, {
-                method: 'PATCH',
-                body: patch,
-            })
+            await adminService.patchEntry(kind, slug, patch)
             return { ok: true }
         } catch (err: unknown) {
             const status: number =
@@ -84,10 +95,7 @@ export function useAdminReference () {
 
     async function triggerSync (): Promise<{ ok: boolean; result?: IAdminSyncResult; error?: string }> {
         try {
-            const result = await $fetch<IAdminSyncResult>(
-                '/api/admin/reference/sync',
-                { method: 'POST' },
-            )
+            const result = await adminService.triggerSync()
             return { ok: true, result }
         } catch (err: unknown) {
             return {
@@ -99,9 +107,7 @@ export function useAdminReference () {
 
     async function getSyncRuns (limit = 20): Promise<IAdminSyncRun[]> {
         try {
-            return await $fetch<IAdminSyncRun[]>(
-                `/api/admin/reference/sync/runs?limit=${limit}`,
-            )
+            return await adminService.getSyncRuns(limit)
         } catch {
             return []
         }

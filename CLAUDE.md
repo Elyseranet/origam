@@ -1044,7 +1044,7 @@ the parent commit (6 failed / 2 passed, the 2 being the negative controls).
 inside a `[data-mode]` sub-tree to work around the freeze now has the sheet
 declaring it too — at (0,1,0) / (0,2,0). `packages/marketing`'s
 `ORIGAM_COMPONENT_RESET_LIGHT/DARK` (a GENERATED re-declaration of ~2 700
-component vars, `themes/origam-reset.generated.ts`) is exactly such a
+component vars, `consts/origam-reset.const.ts`) is exactly such a
 workaround and is now redundant; it has NOT been removed here.
 
 ⚠️ A previous version of this section claimed the AUTO-mode media block carried
@@ -1847,8 +1847,8 @@ The global pre-delivery policy (TU + e2e + security) applies. Specific to
 origam:
 - Run tests on **Node 24** (`.nvmrc`); Node 18 produces unrelated
   `crypto.hash` failures.
-- `pnpm -F origam guards` must stay at **31/31** (measured 2026-09-29, this
-  worktree, real exit code hors pipe; it read `30/30` on 2026-09-25, `29/29` on
+- `pnpm -F origam guards` must stay at **32/32** (measured 2026-10-22, this
+  worktree, real exit code hors pipe; it read `31/31` on 2026-09-29, `30/30` on 2026-09-25, `29/29` on
   2026-09-24, `28/28` on 2026-09-17, `27/27` an hour before that, `25/25` and
   `17/17` earlier still — **recount, never quote**. This line has been stale SIX
   times; an agent caught it again on 2026-09-29 while the paragraph still said
@@ -2005,7 +2005,7 @@ origam:
   ⛔ La leçon qui SURVIT au correctif : **une garde qui énumère le disque
   mesure ta machine, pas le dépôt.** Toute nouvelle garde qui parcourt un arbre
   doit passer par `listRepoFiles`, jamais par `readdirSync`.
-- `pnpm -F origam guards:self` must stay at **25/25** (measured 2026-09-29, this
+- `pnpm -F origam guards:self` must stay at **27/27** (measured 2026-10-22, this
   worktree, real exit code hors pipe ; ce fichier lisait `17/17` le 2026-09-25,
   `16/16` le 2026-09-24, puis `15/15`, `14/14` et `13/13` — **recount, never
   quote**).

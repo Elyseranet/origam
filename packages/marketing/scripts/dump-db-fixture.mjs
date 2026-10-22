@@ -29,13 +29,14 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import { DOC_KINDS } from '../server/db/db.const.mjs'
-import { REPO_ROOT } from './lib/extract.mjs'
-import { getDb, closeDb, sourceCommit } from './lib/db.ts'
+import { DOC_KINDS } from '../src/consts/db.const.ts'
+import { repoRoot } from './extract.mjs'
+import { getDb, closeDb, sourceCommit } from './db.ts'
+import { CHILD_TIEBREAK } from '../src/consts/doc-sync.const.ts'
 
-const ARGS = process.argv.slice(2)
-const DOMAIN_ARG = (ARGS.find(a => a.startsWith('--domain=')) || '').split('=')[1]
-const SEED_DIR = path.join(REPO_ROOT, 'packages', 'marketing', 'server', 'db', 'seed')
+const argv = process.argv.slice(2)
+const domainArg = (argv.find(a => a.startsWith('--domain=')) || '').split('=')[1]
+const seedDir = path.join(repoRoot, 'packages', 'marketing', 'server', 'db', 'seed')
 
 // ─── Helpers to project a DB row to the fixture shape ────────────────────────
 
@@ -139,33 +140,6 @@ function byEntry (rows) {
 
 // ─── Bulk child query (PostgreSQL ANY array, orphaned rows excluded) ──────────
 
-/**
- * Départage déterministe des lignes filles à `position` ÉGALE.
- *
- * ⛔ MESURÉ (#728) : `ORDER BY entry_id, position` seul ne suffit pas — plusieurs
- * lignes partagent la même `position` (les 4 relations d'un composant sont
- * toutes en `position = 0`, et `doc_prop` de `btn` a 3 paires de positions
- * dupliquées). Postgres est alors libre de les rendre dans n'importe quel ordre,
- * donc DEUX dumps de la MÊME base produisent des fichiers différents.
- *
- * Coût constaté : un re-dump sans le moindre changement de contenu produisait un
- * diff de 55 927 lignes, dont **zéro** changement réel (193 entrées comparées,
- * 0 différence après tri des tableaux). Une clé naturelle stable par table rend
- * le dump idempotent, donc le diff relisible.
- */
-const CHILD_TIEBREAK = Object.freeze({
-    doc_prop:                'name',
-    doc_value:               'value',
-    doc_param:               'name',
-    doc_return:              'name',
-    doc_emit:                'event',
-    doc_slot:                'slot',
-    doc_example:             'title_fallback, title_key, lang',
-    doc_directive_arg:       'name',
-    doc_directive_modifier:  'name',
-    doc_relation:            'rel_type, to_kind, to_slug',
-})
-
 async function queryChildren (db, table, entryIds, hasOrphanedAt = true) {
     if (!entryIds.length) return []
     const orphanFilter = hasOrphanedAt ? 'AND orphaned_at IS NULL' : ''
@@ -187,7 +161,7 @@ async function dumpKind (db, kind) {
     if (!entries.length) {
         console.log(`[${kind}] 0 entries — writing empty fixture`)
         const fixture = { kind, exportedAt: new Date().toISOString(), sourceCommit: sourceCommit(), entryCount: 0, entries: [] }
-        fs.writeFileSync(path.join(SEED_DIR, `${kind}.json`), JSON.stringify(fixture, null, 2) + '\n', 'utf-8')
+        fs.writeFileSync(path.join(seedDir, `${kind}.json`), JSON.stringify(fixture, null, 2) + '\n', 'utf-8')
         return 0
     }
 
@@ -239,7 +213,7 @@ async function dumpKind (db, kind) {
         entries: records,
     }
 
-    const outPath = path.join(SEED_DIR, `${kind}.json`)
+    const outPath = path.join(seedDir, `${kind}.json`)
     fs.writeFileSync(outPath, JSON.stringify(fixture, null, 2) + '\n', 'utf-8')
     console.log(`[${kind}] exported ${records.length} entries → ${outPath}`)
     return records.length
@@ -248,10 +222,10 @@ async function dumpKind (db, kind) {
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 async function run () {
-    fs.mkdirSync(SEED_DIR, { recursive: true })
+    fs.mkdirSync(seedDir, { recursive: true })
 
     const db = await getDb()
-    const kinds = DOMAIN_ARG ? [DOMAIN_ARG] : [...DOC_KINDS]
+    const kinds = domainArg ? [DOMAIN_ARG] : [...DOC_KINDS]
     let total = 0
 
     for (const kind of kinds) {
@@ -260,7 +234,7 @@ async function run () {
 
     await closeDb()
     console.log(`\nDUMP complete — ${total} entries across ${kinds.length} kind(s)`)
-    console.log(`Fixture directory: ${SEED_DIR}`)
+    console.log(`Fixture directory: ${seedDir}`)
 }
 
 run().catch(async (e) => { console.error(e); await closeDb().catch(() => {}); process.exit(2) })

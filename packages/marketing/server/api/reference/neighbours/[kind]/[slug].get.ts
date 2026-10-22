@@ -20,22 +20,24 @@
  */
 
 import { DocEntry } from '../../../../db/entities'
-import { REFERENCE_CACHE_NAMES, REFERENCE_CACHE_TTL_SECONDS } from '../../../../consts/cache.const'
-import { referenceNeighboursCacheKey } from '../../../../utils/reference-cache'
+import { REFERENCE_CACHE_NAMES, REFERENCE_CACHE_TTL_SECONDS } from '../../../../../src/consts/cache.const'
+import { referenceNeighboursCacheKey } from '../../../../../src/utils/reference-cache.util'
 import {
     neighboursIn,
     orderCatalogSequence,
     orderSiblings,
-} from '../../../../utils/catalog-neighbours'
+} from '../../../../../src/utils/catalog-neighbours.util'
 import {
     fetchCatalogRows,
     fetchCategoryOrder,
     fetchFamilyOrder,
     fetchRelatedGroups,
-} from '../../../../utils/catalog-queries'
+} from '../../../../../src/utils/catalog-queries.util'
 import type { ICatalogNeighbours } from '../../../../../src/interfaces/catalog-neighbours.interface'
 import type { TReferenceKind } from '../../../../../src/types/api-reference.type'
 
+import { useDb } from '../../../../../src/utils/db.util'
+import { assertKind, assertSlug } from '../../../../../src/utils/reference-validation.util'
 export default defineCachedEventHandler(
     async (event): Promise<ICatalogNeighbours> => {
         const kind = getRouterParam(event, 'kind') ?? ''

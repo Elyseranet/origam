@@ -32,7 +32,7 @@ SCSS shipped by the DS. It carries no prop semantics at all.
 In the marketing Theme Builder, a component rendered `outlined` ignores any
 background-colour change. The mechanism is fully explained by the code:
 
-- `packages/marketing/src/components/theming/ThemeBuilderPreview.vue:144` binds
+- `packages/marketing/src/components/ThemeBuilderPreview.vue:144` binds
   the whole control panel with `v-bind="previewProps"`. Both `variant` and
   `bgColor` therefore arrive as **explicit vnode props** — the props-resolution
   chain is not at fault.

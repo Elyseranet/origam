@@ -2,7 +2,7 @@
  * reference-cache.spec.ts — clé de cache des handlers `server/api/reference/**`
  * et invalidation admin de la fiche détail (#1063).
  *
- * Les tests passent par les VRAIS handlers (globaux Nitro substitués), pas par
+ * Les tests passent par les VRAIS handlers (globaux Nitro substitués, utilitaires `src/utils` explicitement importés et mockés), pas par
  * les utilitaires seuls : ils valent donc aussi contre le code d'avant le
  * correctif, où ils échouent — c'est ce qui prouve qu'ils mesurent quelque
  * chose.
@@ -28,6 +28,19 @@ vi.mock('../../../marketing/server/db/entities', () => ({
     DocReturn: class DocReturn {},
     DocDirectiveArg: class DocDirectiveArg {},
     DocDirectiveModifier: class DocDirectiveModifier {}
+}))
+
+const dbState = vi.hoisted(() => ({ useDb: async (): Promise<unknown> => ({}) }))
+
+vi.mock('../../../marketing/src/utils/db.util', () => ({
+    useDb: () => dbState.useDb(),
+    isDbConfigured: () => true,
+    pingDb: async () => true
+}))
+
+vi.mock('../../../marketing/src/utils/reference-validation.util', () => ({
+    assertKind: () => undefined,
+    assertSlug: () => undefined
 }))
 
 interface ICaptured {
@@ -59,8 +72,6 @@ function stubNitroGlobals (storage: ReturnType<typeof memoryStorage>, captured: 
     vi.stubGlobal('defineEventHandler', (h: any) => h)
     vi.stubGlobal('getRouterParam', (e: any, n: string) => e.params[n])
     vi.stubGlobal('getQuery', (e: any) => e.query)
-    vi.stubGlobal('assertKind', () => undefined)
-    vi.stubGlobal('assertSlug', () => undefined)
     vi.stubGlobal('useStorage', () => storage)
 }
 
@@ -96,7 +107,7 @@ describe('clé de cache — version de format (#1063)', () => {
     for (const name of Object.keys(HANDLERS) as (keyof typeof HANDLERS)[]) {
         it(`reference-${name} : la clé porte la version de format`, async () => {
             const { opts } = await loadGetKey(HANDLERS[name])
-            const { REFERENCE_CACHE_FORMAT_VERSION } = await import('../../../marketing/server/consts/cache.const')
+            const { REFERENCE_CACHE_FORMAT_VERSION } = await import('../../../marketing/src/consts/cache.const')
 
             expect(opts.getKey(EVENTS[name]).startsWith(`${REFERENCE_CACHE_FORMAT_VERSION}:`)).toBe(true)
         })
@@ -109,7 +120,7 @@ describe('clé de cache — version de format (#1063)', () => {
         }
 
         vi.resetModules()
-        vi.doMock('../../../marketing/server/consts/cache.const', async (orig) => ({
+        vi.doMock('../../../marketing/src/consts/cache.const', async (orig) => ({
             ...(await orig<object>()),
             REFERENCE_CACHE_FORMAT_VERSION: 'v999'
         }))
@@ -118,11 +129,11 @@ describe('clé de cache — version de format (#1063)', () => {
             expect(after, name).not.toBe(before[name])
             expect(after, name).toContain('v999')
         }
-        vi.doUnmock('../../../marketing/server/consts/cache.const')
+        vi.doUnmock('../../../marketing/src/consts/cache.const')
     })
 
     it('les 4 handlers lisent le même TTL, issu de la constante partagée', async () => {
-        const { REFERENCE_CACHE_TTL_SECONDS } = await import('../../../marketing/server/consts/cache.const')
+        const { REFERENCE_CACHE_TTL_SECONDS } = await import('../../../marketing/src/consts/cache.const')
         for (const name of Object.keys(HANDLERS) as (keyof typeof HANDLERS)[]) {
             expect((await loadGetKey(HANDLERS[name])).opts.maxAge, name).toBe(REFERENCE_CACHE_TTL_SECONDS)
         }
@@ -147,13 +158,13 @@ describe('invalidation admin — PATCH /api/admin/reference/:kind/:slug (#1063)'
         vi.stubGlobal('readBody', async () => ({ descriptionFallback: 'EDITED' }))
         vi.stubGlobal('createError', (o: any) => Object.assign(new Error(o.statusMessage), o))
         const entry = { id: 'e1', editorial_locked_at: null }
-        vi.stubGlobal('useDb', async () => ({
+        dbState.useDb = async () => ({
             getRepository: () => ({
                 createQueryBuilder: () => ({ where: () => ({ getOne: async () => entry }) }),
                 update: async () => undefined,
                 findOneBy: async () => ({ ...entry })
             })
-        }))
+        })
         vi.resetModules()
         await HANDLERS.doc()
         const doc = captured[0]
@@ -196,8 +207,8 @@ describe('invalidateReferenceDoc — la clé réelle mesurée', () => {
     beforeEach(() => vi.resetModules())
 
     it('retrouve une entrée au format stocké par Nitro et ne touche pas un autre dossier', async () => {
-        const { invalidateReferenceDoc } = await import('../../../marketing/server/utils/reference-cache')
-        const { REFERENCE_CACHE_FORMAT_VERSION } = await import('../../../marketing/server/consts/cache.const')
+        const { invalidateReferenceDoc } = await import('../../../marketing/src/utils/reference-cache.util')
+        const { REFERENCE_CACHE_FORMAT_VERSION } = await import('../../../marketing/src/consts/cache.const')
         // Forme mesurée en dev : .nuxt/cache/nitro/handlers/reference-doc/doccomponentalerten.json
         const mine = storedKey('reference-doc', `${REFERENCE_CACHE_FORMAT_VERSION}:doc:component:alert::en`)
         const otherFolder = storedKey('reference-catalog', `${REFERENCE_CACHE_FORMAT_VERSION}:doc:component:alert::en`)

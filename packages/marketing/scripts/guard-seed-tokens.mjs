@@ -16,7 +16,7 @@
  * RETIRED TOOLING — no seed field may name the Style Dictionary / Tokens
  * Studio pipeline, the deleted `packages/ds/tokens/` sources or the deleted
  * `packages/figma-plugin/`. This channel is BASELINED, and the baseline is
- * not empty — see `baseline/seed-tokens.json` for what is in it and why.
+ * not empty — see `guard-seed-tokens.baseline.json` for what is in it and why.
  *
  * @description
  * ⛔ THE SCAN COVERS ALL EIGHT SEED FILES, not `component.json` alone. Scoping
@@ -52,40 +52,13 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { report } from '../../ds/scripts/guards/lib/baseline.mjs'
-import { DOC_KINDS } from '../server/db/db.const.mjs'
-import { loadDeclared } from './lib/token-sheet.mjs'
+import { DOC_KINDS } from '../src/consts/db.const.ts'
+import { loadDeclared } from './token-sheet.mjs'
+import { RETIRED } from '../src/consts/seed-tokens-guard.const.ts'
 
-const HERE = dirname(fileURLToPath(import.meta.url))
-const SEED_DIR = resolve(HERE, '../server/db/seed')
-const BASELINE = resolve(HERE, 'baseline/seed-tokens.json')
-
-/*********************************************************
- * RETIRED
- *
- * @description
- * The names of things that were deleted on 2026-08-31 and can therefore never
- * be true again in this repository. Each is matched case-insensitively against
- * every string the seed carries.
- *
- * @description
- * `packages/ds/tokens/` is listed as a path fragment rather than a bare
- * `tokens` so an honest mention of the surviving token SHEETS is not flagged.
- *
- * @description
- * ⛔ The DTCG sources are matched by TWO patterns, because the seed spells
- * them both ways. `GRID_GAP_SIZE_VAR` cited `tokens/component/grid.json` with
- * no `packages/ds/` prefix, so the repo-relative pattern alone did not see it;
- * it was caught only because the same sentence also said "Style Dictionary",
- * which is luck, not coverage. `tokens/<layer>/<name>.json` is the removed
- * pipeline's own layout and cannot describe anything that exists now.
- ********************************************************/
-const RETIRED = [
-    { label: 'Style Dictionary', re: /style dictionary/i },
-    { label: '@tokens-studio/sd-transforms', re: /tokens-studio/i },
-    { label: 'packages/ds/tokens/ (removed DTCG sources)', re: /packages\/ds\/tokens\//i },
-    { label: 'a removed DTCG token file (tokens/<layer>/<name>.json)', re: /\btokens\/[a-z-]+\/[a-z0-9-]+\.json/i },
-    { label: 'packages/figma-plugin/ (removed)', re: /packages\/figma-plugin/i }
-]
+const scriptDir = dirname(fileURLToPath(import.meta.url))
+const seedDir = resolve(scriptDir, '../server/db/seed')
+const baselineFile = resolve(scriptDir, 'guard-seed-tokens.baseline.json')
 
 /*********************************************************
  * scanSeed
@@ -261,9 +234,9 @@ function runSelfTest () {
  * `scanSeed` — which the self-test harness and any future tooling will want to
  * do — RUNS the guard as a side effect and can call `process.exit`.
  ********************************************************/
-const INVOKED_DIRECTLY = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+const invokedDirectly = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 
-if (!INVOKED_DIRECTLY) {
+if (!invokedDirectly) {
     // imported for `scanSeed` — do nothing
 } else if (process.argv.includes('--self-test')) {
     runSelfTest()
@@ -273,7 +246,7 @@ if (!INVOKED_DIRECTLY) {
     const retired = []
 
     for (const kind of DOC_KINDS) {
-        const file = resolve(SEED_DIR, `${kind}.json`)
+        const file = resolve(seedDir, `${kind}.json`)
         let raw
         try {
             raw = readFileSync(file, 'utf8')
@@ -300,7 +273,7 @@ if (!INVOKED_DIRECTLY) {
 
     const retiredCode = report({
         guardName: 'seed-tokens — retired tooling (baselined)',
-        baselinePath: BASELINE,
+        baselinePath: baselineFile,
         currentIds: retired.map(r => r.id),
         detailsById: new Map(retired.map(r => [r.id, r.detail])),
         fixHint: 'These strings name tools deleted on 2026-08-31. Rewrite or remove them, then delete the matching baseline lines.'

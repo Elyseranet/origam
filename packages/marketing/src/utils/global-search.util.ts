@@ -17,8 +17,7 @@ import { CATALOG_FAMILIES } from '../consts/catalog-family.const'
 import { GLOBAL_SEARCH_FAMILY_ICONS } from '../consts/global-search.const'
 import type { ICatalogFamily } from '../interfaces/catalog-family.interface'
 import type { IGlobalSearchEntry, IGlobalSearchStaticPage } from '../interfaces/global-search.interface'
-
-type TTranslate = (key: string, fallback?: string) => string
+import type { TTranslate } from '../types/global-search.type'
 
 /** Identifiant stable d'une commande : `{kind}-{slug}`. */
 export function globalSearchCommandId (kind: string, slug: string): string {

@@ -22,9 +22,10 @@
  */
 
 import { DocSyncRun } from '../../../db/entities'
-import { DOC_KINDS, DOC_META_KEYS } from '../../../db/db.const.mjs'
-import { fixtureHash, syncFixtures, writeMeta } from '../../../utils/doc-fixture-sync'
+import { DOC_KINDS, DOC_META_KEYS } from '../../../../src/consts/db.const'
+import { fixtureHash, syncFixtures, writeMeta } from '../../../../src/utils/doc-fixture-sync.util'
 
+import { useDb } from '../../../../src/utils/db.util'
 /** Normalise a raw server-asset value (string | Buffer | Uint8Array) to string. */
 function toText (raw: unknown): string | null {
     if (raw == null) return null

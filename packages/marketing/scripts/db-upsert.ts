@@ -1,0 +1,245 @@
+/**
+ * db-upsert.ts — idempotent, non-destructive ingestion of a normalised doc
+ * record (from doc-to-rows.ts) into the database via the TypeORM repository /
+ * EntityManager API.
+ *
+ * Two masks enforce the ADR §3.3 boundary:
+ *   - 'all'  (first seed): writes both [SRC] and [ÉDIT] columns, but NEVER
+ *            overwrites a row whose `edited_by_user` lock is set.
+ *   - 'src'  (re-sync):   writes ONLY [SRC] columns. [ÉDIT] is untouched by
+ *            construction — they are never in the UPDATE set.
+ *
+ * Reconciliation per collection: match existing rows by their natural key,
+ * insert new ones, update only changed (masked) columns, and flag rows whose
+ * source counterpart vanished via `orphaned_at` (never hard-delete). Re-appearing
+ * rows are un-orphaned. Everything runs inside the caller's transaction
+ * (the EntityManager passed in by dataSource.transaction()).
+ */
+
+import type { EntityManager } from 'typeorm'
+
+import { DocEntry } from '../server/db/entities/index.ts'
+import { NULL_KEY, ENTRY_SRC, ENTRY_EDIT, CHILD_SPECS, SEED_COLLECTIONS, SRC_COLLECTIONS } from '../src/consts/doc-upsert.const.ts'
+
+const blankCounts = () => ({ created: 0, updated: 0, unchanged: 0, orphaned: 0 })
+
+function bump (acc, c) {
+    acc.created += c.created; acc.updated += c.updated
+    acc.unchanged += c.unchanged; acc.orphaned += c.orphaned
+}
+
+/**
+ * Stable, key-sorted JSON so jsonb round-trips (pg reorders keys) compare equal.
+ * Mirrors JSON.stringify semantics: undefined-valued object keys are dropped,
+ * undefined array elements become null.
+ */
+function stableStringify (v) {
+    if (v === undefined) return undefined
+    if (v === null || typeof v !== 'object') return JSON.stringify(v)
+    if (Array.isArray(v)) {
+        return '[' + v.map(x => { const s = stableStringify(x); return s === undefined ? 'null' : s }).join(',') + ']'
+    }
+    const parts = []
+    for (const k of Object.keys(v).sort()) {
+        const s = stableStringify(v[k])
+        if (s !== undefined) parts.push(JSON.stringify(k) + ':' + s)
+    }
+    return '{' + parts.join(',') + '}'
+}
+
+/** jsonb is compared as a canonical (key-sorted) string. */
+function norm (col, v) {
+    if (v === undefined) return null
+    if (col === 'kind_extra') return v === null ? null : stableStringify(v)
+    return v
+}
+
+function keyOf (row, cols) {
+    return cols.map(c => {
+        const v = row[c]
+        return (v === null || v === undefined) ? NULL_KEY : String(v)
+    }).join('')
+}
+
+/** Build a patch of only the masked columns that actually differ. */
+function diffPatch (row, existing, cols) {
+    const patch = {}
+    for (const col of cols) {
+        if (norm(col, row[col]) !== norm(col, existing[col])) {
+            patch[col] = row[col] === undefined ? null : row[col]
+        }
+    }
+    return patch
+}
+
+/** Row payload for INSERT (entry_id + all key/src/edit columns the spec knows). */
+function insertPayload (row, cols, entryId) {
+    const out = { entry_id: entryId }
+    for (const col of cols) out[col] = row[col] === undefined ? null : row[col]
+    return out
+}
+
+/**
+ * Upsert the doc_entry row. Returns { id, counts }.
+ * On 'all' mask, a locked entry only gets its [SRC] columns refreshed.
+ *
+ * `srcCols` narrows the [SRC] set for one re-sync. It applies to the UPDATE
+ * only — an INSERT always writes every column the record carries, so a
+ * never-seen entry still lands complete. This is what lets a family declare
+ * "I can derive the name and the source file, but the signature in this table
+ * is hand-written prose I must not touch".
+ */
+async function upsertEntry (manager, entry, mask, srcCols = ENTRY_SRC) {
+    const counts = blankCounts()
+    const existing = await manager.findOne(DocEntry, { where: { kind: entry.kind, slug: entry.slug } })
+
+    if (!existing) {
+        const payload = { kind: entry.kind, slug: entry.slug }
+        for (const col of [...ENTRY_SRC, ...ENTRY_EDIT]) payload[col] = entry[col] === undefined ? null : entry[col]
+        const res = await manager.insert(DocEntry, payload)
+        counts.created++
+        return { id: res.identifiers[0].id, counts }
+    }
+
+    const locked = mask === 'all' && existing.edited_by_user
+    const cols = (mask === 'src' || locked) ? srcCols : [...ENTRY_SRC, ...ENTRY_EDIT]
+    const patch = diffPatch(entry, existing, cols)
+    if (existing.orphaned_at !== null) patch.orphaned_at = null
+
+    if (Object.keys(patch).length) {
+        await manager.update(DocEntry, { id: existing.id }, patch)
+        counts.updated++
+    } else {
+        counts.unchanged++
+    }
+    return { id: existing.id, counts }
+}
+
+/**
+ * Reconcile one child collection for an entry.
+ * `relTypeScope` (relations only) restricts existing rows to one rel_type so a
+ * re-sync that owns only `extends` edges never orphans curated used_by/related.
+ */
+async function reconcile (manager, specName, entryId, rows, mask, relTypeScope) {
+    const spec = CHILD_SPECS[specName]
+    const counts = blankCounts()
+    const cols = [...spec.key, ...spec.src, ...spec.edit]
+
+    const where = relTypeScope ? { entry_id: entryId, rel_type: relTypeScope } : { entry_id: entryId }
+    const existingRows = await manager.find(spec.entity, { where })
+    const existingByKey = new Map(existingRows.map(r => [keyOf(r, spec.key), r]))
+    const seen = new Set()
+
+    // Collapse rows that share a natural key (e.g. an interface that extends
+    // Omit<…> twice → one 'Omit' edge). Keeping the first is non-lossy: the
+    // colliding rows are indistinguishable by their identity columns.
+    const deduped = []
+    const dedupSeen = new Set()
+    for (const row of rows) {
+        const k = keyOf(row, spec.key)
+        if (dedupSeen.has(k)) continue
+        dedupSeen.add(k)
+        deduped.push(row)
+    }
+    rows = deduped
+
+    for (const row of rows) {
+        const k = keyOf(row, spec.key)
+        seen.add(k)
+        const ex = existingByKey.get(k)
+        if (!ex) {
+            await manager.insert(spec.entity, insertPayload(row, cols, entryId))
+            counts.created++
+            continue
+        }
+        const locked = mask === 'all' && ex.edited_by_user
+        const writable = (mask === 'src' || locked) ? spec.src : [...spec.src, ...spec.edit]
+        const patch = diffPatch(row, ex, writable)
+        if (spec.orphan && ex.orphaned_at !== null) patch.orphaned_at = null
+        if (Object.keys(patch).length) {
+            await manager.update(spec.entity, { id: ex.id }, patch)
+            counts.updated++
+        } else {
+            counts.unchanged++
+        }
+    }
+
+    // Rows present in DB but absent from the source → orphan (never delete).
+    for (const [k, ex] of existingByKey) {
+        if (seen.has(k)) continue
+        if (spec.orphan && ex.orphaned_at === null) {
+            await manager.update(spec.entity, { id: ex.id }, { orphaned_at: new Date() })
+            counts.orphaned++
+        }
+    }
+    return counts
+}
+
+/**
+ * Ingest a full record (first seed): entry + every collection, mask 'all'.
+ * Returns aggregated counts.
+ */
+export async function ingestFull (manager: EntityManager, record) {
+    const total = blankCounts()
+    const { id, counts } = await upsertEntry(manager, record.entry, 'all')
+    bump(total, counts)
+    for (const name of SEED_COLLECTIONS) {
+        bump(total, await reconcile(manager, name, id, record[name] ?? [], 'all'))
+    }
+    return total
+}
+
+/**
+ * Ingest structural facts only (re-sync): entry [SRC] + the [SRC] collections,
+ * plus `extends` relation edges. Editorial collections are left untouched.
+ *
+ * `opts.entryCols` and `opts.collections` narrow what this run claims to own.
+ * ⛔ A collection left OUT of the list is not merely skipped — it is protected:
+ * reconciling a collection with an empty array ORPHANS every row in it. That is
+ * the whole reason the lists are per-family rather than global. A directive's
+ * `args` / `modifiers`, or a component's `values`, are curated rows no
+ * extractor produces; passing them through an empty reconcile would erase them
+ * on the first run.
+ *
+ * `opts.relations` does the same for the `extends` edges, which only the
+ * interface family owns.
+ */
+export async function ingestSrc (manager: EntityManager, record, opts: {
+    entryCols?: string[]
+    collections?: string[]
+    relations?: boolean
+} = {}) {
+    const total = blankCounts()
+    const { id, counts } = await upsertEntry(manager, record.entry, 'src', opts.entryCols ?? ENTRY_SRC)
+    bump(total, counts)
+    for (const name of opts.collections ?? SRC_COLLECTIONS) {
+        bump(total, await reconcile(manager, name, id, record[name] ?? [], 'src'))
+    }
+    if (opts.relations ?? true) {
+        const extendsRels = (record.relations ?? []).filter(r => r.rel_type === 'extends')
+        bump(total, await reconcile(manager, 'relations', id, extendsRels, 'src', 'extends'))
+    }
+    return total
+}
+
+/**
+ * Flag every entry of `kind` whose slug the re-sync did NOT see — the symbol
+ * was deleted from the design system but the catalogue still announces it.
+ * Soft-delete only, like every other reconciliation here: `orphaned_at` is set,
+ * the row and its curated prose survive, and `upsertEntry` clears the flag by
+ * itself if the symbol ever comes back.
+ *
+ * ⛔ Scoped to one kind per call, and only for the families whose extractor
+ * enumerates the WHOLE family. A partial extractor would orphan everything it
+ * cannot see.
+ */
+export async function orphanMissingEntries (manager: EntityManager, kind: string, seenSlugs: Set<string>) {
+    const rows = await manager.find(DocEntry, { where: { kind } })
+    let orphaned = 0
+    for (const row of rows) {
+        if (seenSlugs.has(row.slug) || row.orphaned_at !== null) continue
+        await manager.update(DocEntry, { id: row.id }, { orphaned_at: new Date() })
+        orphaned++
+    }
+    return orphaned
+}

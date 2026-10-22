@@ -6,7 +6,7 @@
 // jamais dans un worker Node.
 //
 // Le diagnostic complet, le chemin de rétention lu dans le heap snapshot et les
-// chiffres avant/après sont dans `server/utils/devtools-plugin-queue.ts`, à côté
+// chiffres avant/après sont dans `src/utils/devtools-plugin-queue.util.ts`, à côté
 // du code qu'ils justifient. Le plugin lui-même ne fait qu'appeler la fonction
 // au démarrage du serveur, donc bien avant la première requête (Nitro attend
 // tous ses plugins avant d'écouter).
@@ -29,7 +29,8 @@
 // ⚠️ Si un jour un build de production active `__VUE_PROD_DEVTOOLS__`, la fuite
 // redevient possible en production et cette borne devra sauter.
 
-import type { IDevtoolsQueueTarget } from '../interfaces/devtools-queue-target.interface'
+import type { IDevtoolsQueueTarget } from '../../src/interfaces/devtools-queue-target.interface'
+import { neutraliseVueDevtoolsPluginQueue } from '../../src/utils/devtools-plugin-queue.util'
 
 export default defineNitroPlugin(() => {
     if (!import.meta.dev) return

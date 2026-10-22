@@ -42,13 +42,16 @@
  */
 
 import { DocEntry, DocProp, DocRelation, DocValue } from '../../db/entities'
-import { REFERENCE_CACHE_NAMES, REFERENCE_CACHE_TTL_SECONDS } from '../../consts/cache.const'
-import { referenceCatalogCacheKey } from '../../utils/reference-cache'
-import { resolveLocale } from '../../utils/reference-locale'
+import { REFERENCE_CACHE_NAMES, REFERENCE_CACHE_TTL_SECONDS } from '../../../src/consts/cache.const'
+import { referenceCatalogCacheKey } from '../../../src/utils/reference-cache.util'
+import { resolveLocale } from '../../../src/utils/reference-locale.util'
+import { mapComponentEntry, mapComposableEntry, mapConstEntry, mapDirectiveCatalogEntry, mapEnumEntry, mapInterfaceEntry, mapTypeEntry, mapUtilEntry } from '../../../src/utils/reference-mappers.util'
+import type { TDescriptionsBySlug } from '../../../src/types/api-reference.type'
 import type { TLocaleCode } from '../../../src/types/i18n.type'
 
+import { useDb } from '../../../src/utils/db.util'
+import { assertKind } from '../../../src/utils/reference-validation.util'
 /** Inline type to avoid cross-directory import type issues with Nitro esbuild. */
-type DescMap = Map<string, { description_key: string | null; description_fallback: string | null }>
 
 export default defineCachedEventHandler(
     async (event) => {
@@ -152,7 +155,7 @@ async function buildComponentCatalog (db: any, entries: any[], locale: TLocaleCo
         : []
 
     // Batch-fetch descriptions for family member entries.
-    const descMap: DescMap = new Map()
+    const descMap: TDescriptionsBySlug = new Map()
     const familySlugs = [...new Set(familyRels.map((r: any) => r.to_slug).filter(Boolean))]
     if (familySlugs.length > 0) {
         const descRows: any[] = await db

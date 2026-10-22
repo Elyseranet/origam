@@ -14,9 +14,8 @@
 
 import type { MigrationInterface, QueryRunner } from 'typeorm'
 
-import { DB_TABLES } from '../db.const.mjs'
-
-const FN = 'doc_set_updated_at'
+import { DB_TABLES } from '../../../src/consts/db.const'
+import { DOC_SET_UPDATED_AT_FN } from '../../../src/consts/db-migrations.const'
 
 export class AddDocMeta1782000000001 implements MigrationInterface {
     name = 'AddDocMeta1782000000001'
@@ -32,7 +31,7 @@ export class AddDocMeta1782000000001 implements MigrationInterface {
 
         await q.query(`CREATE TRIGGER ${DB_TABLES.DOC_META}_set_updated_at
             BEFORE UPDATE ON ${DB_TABLES.DOC_META}
-            FOR EACH ROW EXECUTE FUNCTION ${FN}();`)
+            FOR EACH ROW EXECUTE FUNCTION ${DOC_SET_UPDATED_AT_FN}();`)
     }
 
     public async down (q: QueryRunner): Promise<void> {

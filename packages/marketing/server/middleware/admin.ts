@@ -1,3 +1,4 @@
+import { assertAdminSession } from '../../src/utils/admin-auth.util'
 /**
  * server/middleware/admin.ts — auth guard for the backoffice API.
  *

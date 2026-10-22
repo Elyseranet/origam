@@ -18,7 +18,7 @@
  * more. Every one of the three is a name that exists nowhere in the repo.
  *
  * @description
- * This script rewrites each line against `lib/token-sheet.mjs`: `tokenPath`
+ * This script rewrites each line against `token-sheet.mjs`: `tokenPath`
  * becomes the variable the sheets really declare, `value` the value they
  * really give it. `type`, `descriptionKey` and `descriptionFallback` are
  * CURATED PROSE and are carried over untouched — re-deriving the machine
@@ -51,49 +51,12 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { loadDeclared, resolveTokenPath } from './lib/token-sheet.mjs'
+import { loadDeclared, resolveTokenPath } from './token-sheet.mjs'
+import { NO_TOKEN_SHEET, DROPPED_FIELDS } from '../src/consts/token-excerpts.const.ts'
 
-const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '../../..')
-const SEED = resolve(REPO, 'packages/marketing/server/db/seed/component.json')
-const CHECK = process.argv.slice(2).includes('--check')
-
-/*********************************************************
- * NO_TOKEN_SHEET
- *
- * @description
- * Replaces the one `sourceFile` sentinel that still spells out a path under
- * `packages/ds/tokens/` — a directory removed with the pipeline. Guard 10
- * lets it through because it contains a parenthesis and so fails its
- * path-shaped test, which is why it survived the earlier passes.
- *
- * @description
- * The sentinel's job is to tell the page there is nothing to link to. It does
- * that job without naming a directory that no longer exists.
- ********************************************************/
-const NO_TOKEN_SHEET = '(no dedicated token sheet)'
-
-/*********************************************************
- * DROPPED_FIELDS
- *
- * @description
- * Keys stripped from every `tokens` block because nothing true is left for
- * them to say. `pipelineNote` described the Style Dictionary v4 /
- * Tokens Studio build on 125 of 129 components; that pipeline was deleted on
- * 2026-08-31, its render was masked by the owner on 2026-09-25, and the markup
- * went with the page refactor in `a81d2f342`.
- *
- * @description
- * Removed rather than rewritten, decided under #960: the section's legend
- * already tells every visitor these are hand-maintained sheets with no build
- * step, so a per-component note would repeat it 129 times, and restoring a row
- * the owner had removed is not this lot's call.
- *
- * @description
- * Stripping here rather than in a one-off edit is what keeps it gone — this
- * script runs in `docs-fixtures.yml`, so a fixture regenerated from an older
- * database drops the field again instead of resurrecting it.
- ********************************************************/
-const DROPPED_FIELDS = ['pipelineNote']
+const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../../..')
+const seedFile = resolve(repoRoot, 'packages/marketing/server/db/seed/component.json')
+const checkFlag = process.argv.slice(2).includes('--check')
 
 /*********************************************************
  * rederive
@@ -135,7 +98,7 @@ function rederive (declared, slug, tokens) {
 }
 
 const declared = loadDeclared()
-const raw = readFileSync(SEED, 'utf8')
+const raw = readFileSync(seedFile, 'utf8')
 const seed = JSON.parse(raw)
 
 const allDropped = []
@@ -190,10 +153,10 @@ if (next === raw) {
     process.exit(0)
 }
 
-if (CHECK) {
+if (checkFlag) {
     console.error('\nFAIL — the committed seed is not what the sheets say. Run without --check to re-derive.')
     process.exit(1)
 }
 
-writeFileSync(SEED, next)
-console.log(`\nWrote ${SEED}`)
+writeFileSync(seedFile, next)
+console.log(`\nWrote ${seedFile}`)

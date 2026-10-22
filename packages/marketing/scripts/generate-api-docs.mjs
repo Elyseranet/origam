@@ -34,9 +34,9 @@
  *              `*_key` (3 763 rows: doc_entry, doc_prop, doc_param, doc_return,
  *              doc_example), backfills the two new `svg_title_key`/`svg_desc_key`
  *              columns from the component anatomy diagrams, and fixes the
- *              `enum.` → `enums.` namespace typo. See lib/key-convention.mjs
+ *              `enum.` → `enums.` namespace typo. See key-convention.mjs
  *              for the naming convention (audited against the 14 498 keys that
- *              already exist) and lib/key-backfill.ts for the DB orchestration.
+ *              already exist) and key-backfill.ts for the DB orchestration.
  *
  * Every DB run is wrapped in a single transaction and recorded in doc_sync_run.
  * `--check` is a dry-run drift gate (rolls back, exits 1 if anything would change).
@@ -58,33 +58,34 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import {
-    DOMAINS, TS_DOMAINS, listSourceFiles, extractFile, createProgram, REPO_ROOT,
-} from './lib/extract.mjs'
-import { extractComponents } from './lib/extract-vue.mjs'
-import { MERGERS } from './lib/merge.mjs'
-import { serialize } from './lib/serialize.mjs'
-import { readExistingDoc } from './lib/read-existing.mjs'
-import { mapDoc } from './lib/doc-to-rows.ts'
-import { ingestFull, ingestSrc, orphanMissingEntries } from './lib/db-upsert.ts'
-import { getDb, closeDb, sourceCommit } from './lib/db.ts'
-import { backfillKeys, backfillSvgKeys } from './lib/key-backfill.ts'
-import { DOC_KIND_DIRS } from '../server/db/db.const.mjs'
+    listSourceFiles, extractFile, createProgram, repoRoot,
+} from './extract.mjs'
+import { extractComponents } from './extract-vue.mjs'
+import { DOMAINS, TS_DOMAINS } from '../src/consts/doc-extract.const.ts'
+import { mergers } from './merge.mjs'
+import { serialize } from './serialize.mjs'
+import { readExistingDoc } from './read-existing.mjs'
+import { mapDoc } from './doc-to-rows.ts'
+import { ingestFull, ingestSrc, orphanMissingEntries } from './db-upsert.ts'
+import { getDb, closeDb, sourceCommit } from './db.ts'
+import { backfillKeys, backfillSvgKeys } from './key-backfill.ts'
+import { DOC_KIND_DIRS } from '../src/consts/db.const.ts'
 import { DocEntry, DocSyncRun } from '../server/db/entities/index.ts'
-import { syncFixtures } from '../server/utils/doc-fixture-sync.ts'
+import { syncFixtures } from '../src/utils/doc-fixture-sync.util.ts'
+import { ROLLBACK, RESYNC_POLICY, FILE_DOMAINS } from '../src/consts/doc-sync.const.ts'
 
-const ARGS = process.argv.slice(2)
-const CHECK = ARGS.includes('--check')
-const VERBOSE = ARGS.includes('--verbose')
-const SEED = ARGS.includes('--seed')
-const FILES = ARGS.includes('--files')
-const BACKFILL_KEYS = ARGS.includes('--backfill-keys')
-const NEW_ONLY = ARGS.includes('--new-only')
-const DOMAIN_ARG = (ARGS.find(a => a.startsWith('--domain=')) || '').split('=')[1]
-const LIMIT = Number((ARGS.find(a => a.startsWith('--limit=')) || '').split('=')[1]) || 0
+const argv = process.argv.slice(2)
+const checkFlag = argv.includes('--check')
+const verboseFlag = argv.includes('--verbose')
+const seedFlag = argv.includes('--seed')
+const filesFlag = argv.includes('--files')
+const backfillKeysFlag = argv.includes('--backfill-keys')
+const newOnlyFlag = argv.includes('--new-only')
+const domainArg = (argv.find(a => a.startsWith('--domain=')) || '').split('=')[1]
+const limitArg = Number((argv.find(a => a.startsWith('--limit=')) || '').split('=')[1]) || 0
 
-const MKT_CONSTS = path.join(REPO_ROOT, 'packages', 'marketing', 'src', 'consts')
-const MKT_SEED   = path.join(REPO_ROOT, 'packages', 'marketing', 'server', 'db', 'seed')
-const ROLLBACK = '__ROLLBACK_CHECK__'
+const mktConsts = path.join(repoRoot, 'packages', 'marketing', 'src', 'consts')
+const mktSeed   = path.join(repoRoot, 'packages', 'marketing', 'server', 'db', 'seed')
 
 const blank = () => ({ created: 0, updated: 0, unchanged: 0, orphaned: 0 })
 const add = (a, b) => { a.created += b.created; a.updated += b.updated; a.unchanged += b.unchanged; a.orphaned += b.orphaned }
@@ -100,18 +101,18 @@ const add = (a, b) => { a.created += b.created; a.updated += b.updated; a.unchan
 //
 async function runSeed (manager) {
     const total = blank()
-    const kinds = DOMAIN_ARG ? [DOMAIN_ARG] : Object.keys(DOC_KIND_DIRS)
+    const kinds = domainArg ? [DOMAIN_ARG] : Object.keys(DOC_KIND_DIRS)
 
     for (const kind of kinds) {
         const dir = DOC_KIND_DIRS[kind]
         if (!dir) { console.error(`Unknown kind: ${kind}`); continue }
-        const dirPath = path.join(MKT_CONSTS, dir)
+        const dirPath = path.join(mktConsts, dir)
         const c = blank()
 
         if (fs.existsSync(dirPath)) {
             // ── Legacy path: read from .const.ts files (pre-ticket-F) ────────
             let files = fs.readdirSync(dirPath).filter(f => f.endsWith('.const.ts')).sort()
-            if (LIMIT) files = files.slice(0, LIMIT)
+            if (limitArg) files = files.slice(0, limitArg)
 
             for (const file of files) {
                 const existing = await readExistingDoc(path.join(dirPath, file))
@@ -119,19 +120,19 @@ async function runSeed (manager) {
                 const record = mapDoc(kind, existing.doc)
                 const r = await ingestFull(manager, record)
                 add(c, r); add(total, r)
-                if (VERBOSE) console.log(`  ${kind}/${record.entry.slug}: +${r.created} ~${r.updated} =${r.unchanged} ⌀${r.orphaned}`)
+                if (verboseFlag) console.log(`  ${kind}/${record.entry.slug}: +${r.created} ~${r.updated} =${r.unchanged} ⌀${r.orphaned}`)
             }
             console.log(`[${kind}] files=${files.length} created=${c.created} updated=${c.updated} unchanged=${c.unchanged} orphaned=${c.orphaned}`)
         } else {
             // ── Fixture path: read from server/db/seed/<kind>.json ─────────
-            const fixturePath = path.join(MKT_SEED, `${kind}.json`)
+            const fixturePath = path.join(mktSeed, `${kind}.json`)
             if (!fs.existsSync(fixturePath)) {
                 console.error(`  ! [${kind}] no const dir and no fixture at ${fixturePath} — skipping`)
                 continue
             }
             const fixture = JSON.parse(fs.readFileSync(fixturePath, 'utf-8'))
             let records = fixture.entries ?? []
-            if (LIMIT) records = records.slice(0, LIMIT)
+            if (limitArg) records = records.slice(0, limitArg)
 
             // Reuse the shared boot-time sync loop (ingestFull + lock restore) so
             // the runtime bootstrap and this script never drift apart.
@@ -141,87 +142,6 @@ async function runSeed (manager) {
         }
     }
     return total
-}
-
-/*
- * ─── What each family's re-sync is allowed to claim ──────────────────────────
- *
- * A re-sync writes [SRC] columns. But "[SRC]" was calibrated on the four
- * families that were auto-derivable from day one; it does not hold column for
- * column on the four added here, and applying it blindly DESTROYS curated
- * content. Three cases, all measured against the catalogue:
- *
- *   • `doc_entry.signature` is [SRC], and for a DIRECTIVE it holds hand-written
- *     usage forms (`v-ripple.center`, `v-hover.callback="fn"`) that no
- *     declaration contains. A derived signature would overwrite all six.
- *   • `doc_entry.definition` is [SRC], and for a TYPE it is often the source
- *     line PLUS a hand-added expansion of the enum it interpolates
- *     (`TAudioLoopMode` carries the whole `AUDIO_LOOP_MODE` body). Re-deriving
- *     it strips that.
- *   • `doc_entry.parent_slug` is [SRC], and for a COMPONENT it is an editorial
- *     family grouping: it disagrees with the directory on 3 of the 188 live
- *     curated components (see `parentSlugOf` in extract-vue.mjs).
- *
- * So each family declares the columns and collections it can honestly derive.
- * Anything omitted is left exactly as the catalogue has it.
- *
- * `orphanEntries` is only set for families whose extractor enumerates the WHOLE
- * family from the filesystem, so "not seen" really does mean "deleted".
- */
-const RESYNC_POLICY = {
-    // ── the four historical families: behaviour unchanged (defaults) ─────────
-    enums: {},
-    interfaces: {},
-    consts: {},
-    utils: {},
-
-    // ── the four added here ──────────────────────────────────────────────────
-    components: {
-        entryCols: ['name', 'tag', 'source_file'],
-        collections: ['props', 'emits', 'slots'],
-        relations: false,
-        orphanEntries: true,
-    },
-    /*
-     * ⛔ `returns` is deliberately NOT claimed here, on measurement.
-     *
-     * A composable's curated `returns[]` lists what a consumer destructures.
-     * The checker's properties-of-the-return-type is a DIFFERENT question, and
-     * on the composables that hand back a foreign object the two diverge hard:
-     * `useRouter` came out at 20 created / 10 orphaned (the members of vue-router's
-     * `Router`, not the composable's own surface), `useDate` at 43 created,
-     * `useInstalledThemes` at 35. Measured on the family: claiming `returns`
-     * gives 804 created / 83 orphaned; leaving it alone gives 221 / 35.
-     *
-     * Claiming a column means being right about it. `params` is read from the
-     * declaration and matches the curated rows; `returns` needs a model of what
-     * the composable EXPOSES, which this extractor does not have. Left curated.
-     *
-     * The 35 parameter rows that still orphan are real disagreements between
-     * the declaration and the hand-written doc, not extraction failures:
-     * `useRouter`, `useHeaders` and `usePagination` take NO parameter at all
-     * yet carry 4 curated rows each; `useGoTo` documents `options.duration`,
-     * `options.easing`, … as separate rows under a single `_options` parameter.
-     * They are soft-flagged, never deleted.
-     */
-    composables: {
-        entryCols: ['name', 'source_file'],
-        collections: ['params'],
-        relations: false,
-        orphanEntries: false,
-    },
-    directives: {
-        entryCols: ['name', 'source_file'],
-        collections: [],
-        relations: false,
-        orphanEntries: true,
-    },
-    types: {
-        entryCols: ['name', 'source_file'],
-        collections: ['values'],
-        relations: false,
-        orphanEntries: true,
-    },
 }
 
 /** Symbols of one domain, in the `_DOC` shape `mapDoc` consumes. */
@@ -247,7 +167,7 @@ function extractDomain (domainKey, program, checker) {
 async function runResync (manager) {
     const total = blank()
     const { program, checker } = createProgram()
-    const domains = DOMAIN_ARG ? [DOMAIN_ARG] : Object.keys(DOMAINS)
+    const domains = domainArg ? [DOMAIN_ARG] : Object.keys(DOMAINS)
 
     for (const domainKey of domains) {
         if (!DOMAINS[domainKey]) { console.error(`Unknown domain: ${domainKey}`); continue }
@@ -273,7 +193,7 @@ async function runResync (manager) {
             console.error(`  ! [${domainKey}] slug collision on '${s.slug}' — '${s.name}' shadowed`)
             return false
         })
-        if (LIMIT) symbols = symbols.slice(0, LIMIT)
+        if (limitArg) symbols = symbols.slice(0, limitArg)
 
         const c = blank()
         for (const src of symbols) {
@@ -283,12 +203,12 @@ async function runResync (manager) {
             const record = mapDoc(kind, doc)
             const r = await ingestSrc(manager, record, policy)
             add(c, r); add(total, r)
-            if (VERBOSE) console.log(`  ${kind}/${record.entry.slug}: +${r.created} ~${r.updated} =${r.unchanged} ⌀${r.orphaned}`)
+            if (verboseFlag) console.log(`  ${kind}/${record.entry.slug}: +${r.created} ~${r.updated} =${r.unchanged} ⌀${r.orphaned}`)
         }
 
         // Entries the DS no longer has — soft-flagged, never deleted.
         let deadEntries = 0
-        if (policy.orphanEntries && !LIMIT) {
+        if (policy.orphanEntries && !limitArg) {
             deadEntries = await orphanMissingEntries(manager, kind, seen)
             c.orphaned += deadEntries; total.orphaned += deadEntries
         }
@@ -330,32 +250,32 @@ async function reportKindCounts (db) {
 
 async function runDb () {
     const db = await getDb()
-    const mode = SEED ? 'seed' : 'resync'
+    const mode = seedFlag ? 'seed' : 'resync'
     let counts = blank()
 
     try {
         await db.transaction(async (manager) => {
-            counts = SEED ? await runSeed(manager) : await runResync(manager)
-            if (CHECK) throw new Error(ROLLBACK)
+            counts = seedFlag ? await runSeed(manager) : await runResync(manager)
+            if (checkFlag) throw new Error(ROLLBACK)
         })
     } catch (e) {
         if (e.message !== ROLLBACK) {
-            if (!CHECK) await recordRun(db, { domain: DOMAIN_ARG, counts, status: 'failed', error: String(e.message) }).catch(() => {})
+            if (!checkFlag) await recordRun(db, { domain: domainArg, counts, status: 'failed', error: String(e.message) }).catch(() => {})
             throw e
         }
     }
 
     const drift = counts.created + counts.updated + counts.orphaned
     console.log(
-        `\n${CHECK ? 'CHECK' : mode.toUpperCase()} summary — created: ${counts.created}, ` +
+        `\n${checkFlag ? 'CHECK' : mode.toUpperCase()} summary — created: ${counts.created}, ` +
         `updated: ${counts.updated}, unchanged: ${counts.unchanged}, orphaned: ${counts.orphaned}`
     )
 
-    if (!CHECK) {
-        await recordRun(db, { domain: DOMAIN_ARG, counts, status: 'success' })
+    if (!checkFlag) {
+        await recordRun(db, { domain: domainArg, counts, status: 'success' })
         await reportKindCounts(db)
     }
-    if (CHECK && drift > 0) {
+    if (checkFlag && drift > 0) {
         console.log('\n--check: the database WOULD change. Run without --check to apply.')
         await closeDb()
         process.exit(1)
@@ -366,17 +286,9 @@ async function runDb () {
 // ─── Legacy file writer (unchanged original behaviour, kept for transition) ──
 const norm = (s) => s.replace(/\r\n/g, '\n').replace(/[ \t]+\n/g, '\n').trim()
 
-/**
- * The legacy file writer only ever knew the four original families — it has a
- * `MERGERS` entry and a `serialize` shape for each of them and for nothing
- * else. It is frozen on that set: the four families added to `DOMAINS` for the
- * DB re-sync are deliberately out of its reach, not silently half-supported.
- */
-const FILE_DOMAINS = ['enums', 'interfaces', 'consts', 'utils']
-
 async function runFiles () {
     const { program, checker } = createProgram()
-    const domains = DOMAIN_ARG ? [DOMAIN_ARG] : FILE_DOMAINS
+    const domains = domainArg ? [DOMAIN_ARG] : FILE_DOMAINS
     for (const d of domains) {
         if (!FILE_DOMAINS.includes(d)) { console.error(`--files does not support domain: ${d}`); process.exit(2) }
     }
@@ -385,23 +297,23 @@ async function runFiles () {
     for (const domainKey of domains) {
         if (!DOMAINS[domainKey]) { console.error(`Unknown domain: ${domainKey}`); totalErrors++; continue }
         const files = listSourceFiles(domainKey)
-        const targetDir = path.join(MKT_CONSTS, domainKey)
+        const targetDir = path.join(mktConsts, domainKey)
         fs.mkdirSync(targetDir, { recursive: true })
 
         let symbols = []
         for (const f of files) symbols.push(...extractFile(domainKey, f, program, checker))
         const seen = new Set()
         symbols = symbols.filter(s => (seen.has(s.slug) ? false : (seen.add(s.slug), true)))
-        if (LIMIT) symbols = symbols.slice(0, LIMIT)
+        if (limitArg) symbols = symbols.slice(0, limitArg)
 
         let changed = 0, created = 0, same = 0, written = 0
-        const merger = MERGERS[domainKey === 'enums' ? 'enum' : domainKey === 'interfaces' ? 'interface' : domainKey === 'consts' ? 'const' : 'util']
+        const merger = mergers[domainKey === 'enums' ? 'enum' : domainKey === 'interfaces' ? 'interface' : domainKey === 'consts' ? 'const' : 'util']
         const kind = DOMAINS[domainKey].kind
 
         for (const src of symbols) {
             const target = path.join(targetDir, `${src.slug}.const.ts`)
             const exists = fs.existsSync(target)
-            if (NEW_ONLY && exists) continue
+            if (newOnlyFlag && exists) continue
 
             let existing = null
             if (exists) {
@@ -414,17 +326,17 @@ async function runFiles () {
             const current = exists ? fs.readFileSync(target, 'utf-8') : null
             const isSame = current !== null && norm(current) === norm(output)
 
-            if (!exists) { created++; if (!CHECK) { fs.writeFileSync(target, output); written++ } }
-            else if (!isSame) { changed++; if (!CHECK) { fs.writeFileSync(target, output); written++ } }
+            if (!exists) { created++; if (!checkFlag) { fs.writeFileSync(target, output); written++ } }
+            else if (!isSame) { changed++; if (!checkFlag) { fs.writeFileSync(target, output); written++ } }
             else { same++ }
         }
 
-        console.log(`[${domainKey}] symbols=${symbols.length} new=${created} changed=${changed} unchanged=${same}` + (CHECK ? '' : ` written=${written}`))
+        console.log(`[${domainKey}] symbols=${symbols.length} new=${created} changed=${changed} unchanged=${same}` + (checkFlag ? '' : ` written=${written}`))
         totalChanged += changed; totalNew += created; totalSame += same; totalWritten += written
     }
 
-    console.log(`\n${CHECK ? 'CHECK' : 'WRITE'} summary — new: ${totalNew}, changed: ${totalChanged}, unchanged: ${totalSame}` + (CHECK ? '' : `, written: ${totalWritten}`) + (totalErrors ? `, errors: ${totalErrors}` : ''))
-    if (CHECK && (totalNew + totalChanged) > 0) { console.log('\n--check: files WOULD change.'); process.exit(1) }
+    console.log(`\n${checkFlag ? 'CHECK' : 'WRITE'} summary — new: ${totalNew}, changed: ${totalChanged}, unchanged: ${totalSame}` + (checkFlag ? '' : `, written: ${totalWritten}`) + (totalErrors ? `, errors: ${totalErrors}` : ''))
+    if (checkFlag && (totalNew + totalChanged) > 0) { console.log('\n--check: files WOULD change.'); process.exit(1) }
     if (totalErrors) process.exit(2)
 }
 
@@ -438,14 +350,14 @@ async function runBackfillKeys () {
         await db.transaction(async (manager) => {
             counts = await backfillKeys(manager)
             svgCount = await backfillSvgKeys(manager)
-            if (CHECK) throw new Error(ROLLBACK)
+            if (checkFlag) throw new Error(ROLLBACK)
         })
     } catch (e) {
         if (e.message !== ROLLBACK) throw e
     }
 
     const total = Object.values(counts).reduce((a, b) => a + b, 0) + svgCount
-    console.log(`\n${CHECK ? 'CHECK' : 'BACKFILL'} summary`)
+    console.log(`\n${checkFlag ? 'CHECK' : 'BACKFILL'} summary`)
     console.log(`  doc_entry.description_key : ${counts.entryDescription}`)
     console.log(`  doc_entry.note_key        : ${counts.entryNote}`)
     console.log(`  doc_prop.description_key  : ${counts.props}`)
@@ -456,7 +368,7 @@ async function runBackfillKeys () {
     console.log(`  doc_entry.svg_*_key       : ${svgCount}`)
     console.log(`  TOTAL                     : ${total}`)
 
-    if (CHECK && total > 0) {
+    if (checkFlag && total > 0) {
         console.log('\n--check: the database WOULD change. Run without --check to apply.')
         await closeDb()
         process.exit(1)
@@ -465,8 +377,8 @@ async function runBackfillKeys () {
 }
 
 async function run () {
-    if (FILES) return runFiles()
-    if (BACKFILL_KEYS) return runBackfillKeys()
+    if (filesFlag) return runFiles()
+    if (backfillKeysFlag) return runBackfillKeys()
     return runDb()
 }
 

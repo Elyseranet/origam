@@ -25,10 +25,13 @@
  * Cache : 5 min par kind.
  */
 
-import { REFERENCE_CACHE_NAMES, REFERENCE_CACHE_TTL_SECONDS } from '../../../consts/cache.const'
-import { referenceCategoriesCacheKey } from '../../../utils/reference-cache'
-import { resolveLocale } from '../../../utils/reference-locale'
+import { REFERENCE_CACHE_NAMES, REFERENCE_CACHE_TTL_SECONDS } from '../../../../src/consts/cache.const'
+import { referenceCategoriesCacheKey } from '../../../../src/utils/reference-cache.util'
+import { fetchCategoryOrder } from '../../../../src/utils/catalog-queries.util'
+import { resolveLocale } from '../../../../src/utils/reference-locale.util'
 
+import { useDb } from '../../../../src/utils/db.util'
+import { assertKind } from '../../../../src/utils/reference-validation.util'
 export default defineCachedEventHandler(
     async (event): Promise<string[]> => {
         const kind = getRouterParam(event, 'kind') ?? ''

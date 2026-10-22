@@ -2,8 +2,8 @@
  * data-source.ts — the TypeORM DataSource factory for the API-Reference store.
  *
  * Single source of truth for entities + migrations + naming strategy, shared by
- * the Nitro runtime (server/utils/db.ts), the migration CLI
- * (data-source.cli.ts) and the ingestion pipeline (scripts/lib/db.ts).
+ * the Nitro runtime (src/utils/db.util.ts), the migration CLI
+ * (data-source.cli.ts) and the ingestion pipeline (scripts/db.ts).
  *
  * This module is import-safe: it only EXPORTS factories — it never builds a
  * DataSource at import time. That matters for the Nitro runtime, where the
@@ -38,8 +38,8 @@ import { DataSource, type DataSourceOptions } from 'typeorm'
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies'
 
 import { resolveConnection } from './connection.mjs'
-import { MIGRATIONS_TABLE } from './db.const.mjs'
-import { ENTITIES } from './entities'
+import { MIGRATIONS_TABLE } from '../../src/consts/db.const'
+import { ENTITIES } from '../../src/consts/db-entities.const'
 import { InitDocReference1719600000001 } from './migrations/1719600000001-InitDocReference'
 import { AddDocMeta1782000000001 } from './migrations/1782000000001-AddDocMeta'
 import { AddDocEntrySvgKeys1785400000001 } from './migrations/1785400000001-AddDocEntrySvgKeys'
