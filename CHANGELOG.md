@@ -18,6 +18,16 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.9] - 2026-10-22
+
+### Fixed — champs de saisie : `isActive` et `isFocused` ne fuient plus en attributs HTML sur l'`<input>` (#1224)
+
+`OrigamField` transmet `isActive` et `isFocused` dans les props de son slot. `OrigamTextField`, `OrigamTextareaField`, `OrigamPasswordField` et `OrigamFileField` faisaient `v-bind="{...fieldSlotProps, ...inputAttrs}"` sur le contrôle natif. Vue rendait donc les attributs non standard `isactive` et `isfocused` sur l'`<input>`, côté serveur comme côté client.
+
+- Les deux clés sont retirées de ce qui est lié au contrôle natif. Elles restent exposées au slot `default` du composant.
+- Le slot d'`origam-field` est inchangé.
+- Vérifié : le TU `field-input-state-leak.spec.ts` est rouge sur le parent pour les 5 champs et vert après le fix. Les suites de champs sont vertes (PR #1233).
+
 ## [2.37.8] - 2026-10-21
 
 ### Fixed — `origam/utils` se charge de nouveau en Node pur (#1208)
