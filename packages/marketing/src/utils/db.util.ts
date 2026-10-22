@@ -12,8 +12,8 @@ import type { DataSource } from 'typeorm'
 
 // The import-safe DataSource factory (no eager instance → never throws at
 // import when the DB is unconfigured). `connection.mjs` stays a pure `.mjs`.
-import { createDataSource } from '../../server/db/data-source'
-import { isConfigured } from '../../server/db/connection.mjs'
+import { createDataSource } from '../server/db/data-source'
+import { isConfigured } from '../server/db/connection.mjs'
 
 let ds: DataSource | null = null
 

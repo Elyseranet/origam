@@ -7,7 +7,7 @@
  * WHAT IT CHECKS, IN TWO CHANNELS.
  * @description
  * NOTATION — every `kind_extra.tokens.excerpt[].tokenPath` in
- * `server/db/seed/component.json` must be a `--origam-…` variable that one of
+ * `src/assets/seed/component.json` must be a `--origam-…` variable that one of
  * the hand-maintained sheets really declares, carrying the value the sheet
  * gives it. This channel is HARD: a finding fails the run outright, with no
  * baseline, because the correction is mechanical
@@ -57,7 +57,7 @@ import { loadDeclared } from './token-sheet.mjs'
 import { RETIRED } from '../src/consts/seed-tokens-guard.const.ts'
 
 const scriptDir = dirname(fileURLToPath(import.meta.url))
-const seedDir = resolve(scriptDir, '../server/db/seed')
+const seedDir = resolve(scriptDir, '../src/assets/seed')
 const baselineFile = resolve(scriptDir, 'guard-seed-tokens.baseline.json')
 
 /*********************************************************

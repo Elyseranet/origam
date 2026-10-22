@@ -5,7 +5,7 @@
  * Tout passe par TypeORM (`useDb()`), jamais par un client SQL à part.
  */
 
-import { DocEntry, DocRelation } from '../../server/db/entities'
+import { DocEntry, DocRelation } from '../server/db/entities'
 import { CROSS_FAMILY_REL_TYPES, SOURCE_BASENAME_SQL } from '../consts/catalog-neighbours.const'
 import { DOC_KINDS } from '../consts/db.const'
 import type {

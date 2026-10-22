@@ -106,7 +106,7 @@ jobs:
     # Deliberately its OWN job, not a step of `architecture-guards` above.
     # That job's two families audit `packages/ds/src` (guards) and the
     # Histoire stories/docs surface (e2e audit) — neither has ever looked at
-    # `packages/marketing/server/db`, which is not a component, a story, or
+    # `packages/marketing/src/server/db`, which is not a component, a story, or
     # a doc page. Bolting a third, unrelated concern onto that job would
     # repeat the exact "confused the two families" mistake #831 flagged
     # happening on this same day. See scripts/guard-migrations.mjs's header
@@ -142,7 +142,7 @@ jobs:
 
       # #960 — the catalogue may not document a token the design system does
       # not declare, nor name the Style Dictionary / Tokens Studio pipeline
-      # deleted on 2026-08-31. `server/db/seed/*.json` is a committed artefact
+      # deleted on 2026-08-31. `src/assets/seed/*.json` is a committed artefact
       # that NOTHING regenerates from the DS (`kind_extra` is absent from
       # RESYNC_POLICY), so it drifted for a month across three passes that each
       # touched the very lines concerned. Static, no DB, no build.
@@ -626,7 +626,7 @@ jobs:
     #
     # Les trois etapes ci-dessous sont copiees de `docs-fixtures.yml`, ou
     # elles tournent deja : service postgres:16, `db:migrate`, `docs:seed`
-    # depuis les fixtures commitees (`server/db/seed/*.json`, 218 entrees
+    # depuis les fixtures commitees (`src/assets/seed/*.json`, 218 entrees
     # pour les composants).
     #
     services:

@@ -18,7 +18,7 @@
  *
  *              Four of the eight — component, composable, directive, type — had
  *              no extractor at all until then: they were loaded once from the
- *              `server/db/seed/<kind>.json` fixtures by `--seed`, and NOTHING
+ *              `src/assets/seed/<kind>.json` fixtures by `--seed`, and NOTHING
  *              refreshed them afterwards. At the time this was fixed the
  *              catalogue announced 193 components against 218 in the design
  *              system, and still listed five deleted ones (`grids`, `item`,
@@ -70,7 +70,7 @@ import { ingestFull, ingestSrc, orphanMissingEntries } from './db-upsert.ts'
 import { getDb, closeDb, sourceCommit } from './db.ts'
 import { backfillKeys, backfillSvgKeys } from './key-backfill.ts'
 import { DOC_KIND_DIRS } from '../src/consts/db.const.ts'
-import { DocEntry, DocSyncRun } from '../server/db/entities/index.ts'
+import { DocEntry, DocSyncRun } from '../src/server/db/entities/index.ts'
 import { syncFixtures } from '../src/utils/doc-fixture-sync.util.ts'
 import { ROLLBACK, RESYNC_POLICY, FILE_DOMAINS } from '../src/consts/doc-sync.const.ts'
 
@@ -85,7 +85,7 @@ const domainArg = (argv.find(a => a.startsWith('--domain=')) || '').split('=')[1
 const limitArg = Number((argv.find(a => a.startsWith('--limit=')) || '').split('=')[1]) || 0
 
 const mktConsts = path.join(repoRoot, 'packages', 'marketing', 'src', 'consts')
-const mktSeed   = path.join(repoRoot, 'packages', 'marketing', 'server', 'db', 'seed')
+const mktSeed   = path.join(repoRoot, 'packages', 'marketing', 'src', 'assets', 'seed')
 
 const blank = () => ({ created: 0, updated: 0, unchanged: 0, orphaned: 0 })
 const add = (a, b) => { a.created += b.created; a.updated += b.updated; a.unchanged += b.unchanged; a.orphaned += b.orphaned }
@@ -96,7 +96,7 @@ const add = (a, b) => { a.created += b.created; a.updated += b.updated; a.unchan
 //   1. If the legacy src/consts/<dir>/ directory exists, read the .const.ts
 //      files as before (backward-compatible path, used before ticket F).
 //   2. If the directory is gone (ticket F removed it), fall back to the JSON
-//      fixture at server/db/seed/<kind>.json produced by dump-db-fixture.mjs.
+//      fixture at src/assets/seed/<kind>.json produced by dump-db-fixture.mjs.
 //      Restores the full content, including the editorial lock flag.
 //
 async function runSeed (manager) {
@@ -124,7 +124,7 @@ async function runSeed (manager) {
             }
             console.log(`[${kind}] files=${files.length} created=${c.created} updated=${c.updated} unchanged=${c.unchanged} orphaned=${c.orphaned}`)
         } else {
-            // ── Fixture path: read from server/db/seed/<kind>.json ─────────
+            // ── Fixture path: read from src/assets/seed/<kind>.json ─────────
             const fixturePath = path.join(mktSeed, `${kind}.json`)
             if (!fs.existsSync(fixturePath)) {
                 console.error(`  ! [${kind}] no const dir and no fixture at ${fixturePath} — skipping`)

@@ -14,7 +14,7 @@
  * accepts literals), so nothing outside these files is bundled.
  *
  * The categories are the curated ones of `packages/marketing`'s catalogue
- * (`server/db/seed/component.json`), never inferred from a name. 11 Chart
+ * (`src/assets/seed/component.json`), never inferred from a name. 11 Chart
  * members carry an EMPTY category there and get none here either
  * (`category` is optional on `IComponentDefinition`).
  */

@@ -16,7 +16,7 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-vi.mock('../../../marketing/server/db/entities', () => ({
+vi.mock('../../../marketing/src/server/db/entities', () => ({
     DocEntry: class DocEntry {},
     DocProp: class DocProp {},
     DocRelation: class DocRelation {},
@@ -85,12 +85,12 @@ async function loadGetKey (load: () => Promise<unknown>): Promise<ICaptured> {
 
 // Chemins littéraux : Vite ne résout pas un import dynamique dont le chemin est une variable.
 const HANDLERS = {
-    catalog: () => import('../../../marketing/server/api/reference/[kind].get'),
-    doc: () => import('../../../marketing/server/api/reference/[kind]/[slug].get'),
-    categories: () => import('../../../marketing/server/api/reference/categories/[kind].get'),
-    neighbours: () => import('../../../marketing/server/api/reference/neighbours/[kind]/[slug].get')
+    catalog: () => import('../../../marketing/src/server/api/reference/[kind].get'),
+    doc: () => import('../../../marketing/src/server/api/reference/[kind]/[slug].get'),
+    categories: () => import('../../../marketing/src/server/api/reference/categories/[kind].get'),
+    neighbours: () => import('../../../marketing/src/server/api/reference/neighbours/[kind]/[slug].get')
 } as const
-const PATCH = () => import('../../../marketing/server/api/admin/reference/[kind]/[slug].patch')
+const PATCH = () => import('../../../marketing/src/server/api/admin/reference/[kind]/[slug].patch')
 
 const EVENTS = {
     catalog: ev({ kind: 'component' }, { locale: 'fr' }),

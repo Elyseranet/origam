@@ -4,7 +4,7 @@
  * hand-maintained stylesheets (#960).
  *
  * @description
- * Each component entry in `server/db/seed/component.json` can carry a
+ * Each component entry in `src/assets/seed/component.json` can carry a
  * `kind_extra.tokens` block, and the component detail page renders it: a
  * "Source" row, then one row per excerpt line with a COPY BUTTON on the
  * `tokenPath`. The block was authored against the Style Dictionary v4 +
@@ -55,7 +55,7 @@ import { loadDeclared, resolveTokenPath } from './token-sheet.mjs'
 import { NO_TOKEN_SHEET, DROPPED_FIELDS } from '../src/consts/token-excerpts.const.ts'
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../../..')
-const seedFile = resolve(repoRoot, 'packages/marketing/server/db/seed/component.json')
+const seedFile = resolve(repoRoot, 'packages/marketing/src/assets/seed/component.json')
 const checkFlag = process.argv.slice(2).includes('--check')
 
 /*********************************************************

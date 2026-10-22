@@ -11,8 +11,8 @@ async function loadHandler (name: 'npm-downloads' | 'github-stars') {
         return handler
     })
     vi.resetModules()
-    if (name === 'npm-downloads') await import('../../../marketing/server/api/npm-downloads.get')
-    else await import('../../../marketing/server/api/github-stars.get')
+    if (name === 'npm-downloads') await import('../../../marketing/src/server/api/npm-downloads.get')
+    else await import('../../../marketing/src/server/api/github-stars.get')
     return captured as () => Promise<Record<string, number | null>>
 }
 

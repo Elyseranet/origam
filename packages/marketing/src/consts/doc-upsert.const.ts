@@ -5,7 +5,7 @@
 import {
     DocDirectiveArg, DocDirectiveModifier, DocEmit, DocExample, DocParam, DocProp,
     DocRelation, DocReturn, DocSlot, DocValue,
-} from '../../server/db/entities/index.ts'
+} from '../server/db/entities/index.ts'
 
 export const NULL_KEY = ' null'
 

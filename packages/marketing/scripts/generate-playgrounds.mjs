@@ -10,8 +10,8 @@
  *  4. UPSERTs kind_extra.playground (never overwrites existing curated playgrounds)
  *
  * After all updates the script:
- *  5. Re-dumps server/db/seed/component.json via dump-db-fixture.mjs
- *  6. Regenerates server/assets/db-seed.sql via pg_dump (filtered)
+ *  5. Re-dumps src/assets/seed/component.json via dump-db-fixture.mjs
+ *  6. Regenerates src/assets/sql/db-seed.sql via pg_dump (filtered)
  *
  * Idempotent: re-running when all playgrounds exist produces 0 changes.
  *
@@ -38,7 +38,7 @@ const dryRunFlag     = argv.includes('--dry-run')
 const verboseFlag     = argv.includes('--verbose')
 
 const marketingDir = path.join(repoRoot, 'packages', 'marketing')
-const dbSeedSql   = path.join(marketingDir, 'server', 'assets', 'db-seed.sql')
+const dbSeedSql   = path.join(marketingDir, 'src', 'assets', 'sql', 'db-seed.sql')
 
 // ─── Props never turned into playground controls ──────────────────────────────
 
@@ -407,14 +407,14 @@ async function run () {
         return
     }
 
-    // 5. Regenerate server/db/seed/component.json
-    console.log('\n→ Regenerating server/db/seed/component.json ...')
+    // 5. Regenerate src/assets/seed/component.json
+    console.log('\n→ Regenerating src/assets/seed/component.json ...')
     execSync(
         'tsx --tsconfig ./tsconfig.typeorm.json scripts/dump-db-fixture.mjs --domain=component',
         { cwd: marketingDir, stdio: 'inherit', env: process.env },
     )
 
-    // 6. Regenerate server/assets/db-seed.sql
+    // 6. Regenerate src/assets/sql/db-seed.sql
     try {
         regenerateDbSeedSql()
     } catch (err) {
@@ -422,7 +422,7 @@ async function run () {
         console.warn('       Regenerate manually:')
         console.warn("       pg_dump --data-only --column-inserts --no-owner --no-acl \\")
         console.warn("         --exclude-table='*migrations*' $DATABASE_URL \\")
-        console.warn("         > server/assets/db-seed.sql")
+        console.warn("         > src/assets/sql/db-seed.sql")
     }
 
     console.log('\nDone.')

@@ -14,7 +14,7 @@
  * enumerated separately so handlers can reject them with 400.
  */
 
-import type { DocEntry, DocExample, DocRelation } from '../../server/db/entities'
+import type { DocEntry, DocExample, DocRelation } from '../server/db/entities'
 
 /**
  * Converts a validated camelCase body to a DB-ready snake_case payload.

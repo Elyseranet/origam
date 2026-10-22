@@ -97,7 +97,7 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..')
-const PROBE_PATH = resolve(REPO_ROOT, 'packages/marketing/server/api/__mem.get.ts')
+const PROBE_PATH = resolve(REPO_ROOT, 'packages/marketing/src/server/api/__mem.get.ts')
 
 const PORT = process.env.PORT || '3141'
 const ROUNDS = Number(process.env.ROUNDS || 25)

@@ -109,7 +109,7 @@ export function describeTypes (typesEntry, aliases) {
  * `origam-window-xtranslate`, which Vue camelizes back to
  * `OrigamWindowXtranslate` — an unknown element, rendered as an empty box.
  * Measured on the 4 `OrigamWindow{X,Y}[Reverse]Translate`; the marketing
- * catalogue (`server/db/seed/component.json`) spells them
+ * catalogue (`src/assets/seed/component.json`) spells them
  * `origam-window-x-translate`, as Vue does.
  */
 export function toKebabTag (name) {

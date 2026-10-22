@@ -1,5 +1,5 @@
 /**
- * dump-db-seed-sql.mjs — regenerate server/assets/db-seed.sql unconditionally.
+ * dump-db-seed-sql.mjs — regenerate src/assets/sql/db-seed.sql unconditionally.
  *
  * `docs:dump:sql`. Fix for #191: generate-playgrounds only regenerates the SQL
  * seed when NEW playgrounds are created, so drift-only re-syncs left
