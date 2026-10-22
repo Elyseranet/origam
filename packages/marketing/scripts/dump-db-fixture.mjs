@@ -225,7 +225,7 @@ async function run () {
     fs.mkdirSync(seedDir, { recursive: true })
 
     const db = await getDb()
-    const kinds = domainArg ? [DOMAIN_ARG] : [...DOC_KINDS]
+    const kinds = domainArg ? [domainArg] : [...DOC_KINDS]
     let total = 0
 
     for (const kind of kinds) {

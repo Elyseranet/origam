@@ -101,7 +101,7 @@ const add = (a, b) => { a.created += b.created; a.updated += b.updated; a.unchan
 //
 async function runSeed (manager) {
     const total = blank()
-    const kinds = domainArg ? [DOMAIN_ARG] : Object.keys(DOC_KIND_DIRS)
+    const kinds = domainArg ? [domainArg] : Object.keys(DOC_KIND_DIRS)
 
     for (const kind of kinds) {
         const dir = DOC_KIND_DIRS[kind]
@@ -167,7 +167,7 @@ function extractDomain (domainKey, program, checker) {
 async function runResync (manager) {
     const total = blank()
     const { program, checker } = createProgram()
-    const domains = domainArg ? [DOMAIN_ARG] : Object.keys(DOMAINS)
+    const domains = domainArg ? [domainArg] : Object.keys(DOMAINS)
 
     for (const domainKey of domains) {
         if (!DOMAINS[domainKey]) { console.error(`Unknown domain: ${domainKey}`); continue }
@@ -288,7 +288,7 @@ const norm = (s) => s.replace(/\r\n/g, '\n').replace(/[ \t]+\n/g, '\n').trim()
 
 async function runFiles () {
     const { program, checker } = createProgram()
-    const domains = domainArg ? [DOMAIN_ARG] : FILE_DOMAINS
+    const domains = domainArg ? [domainArg] : FILE_DOMAINS
     for (const d of domains) {
         if (!FILE_DOMAINS.includes(d)) { console.error(`--files does not support domain: ${d}`); process.exit(2) }
     }
