@@ -18,6 +18,18 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.15] - 2026-10-22
+
+### Added — slot de police `display` (#1212)
+
+`FONT_FAMILY` n'offrait que `sans`, `mono` et `serif` : aucun slot ne permettait à un thème de distinguer une police d'affichage, pour les grands titres par exemple.
+
+- `FONT_FAMILY.DISPLAY` et `TFontFamily` incluent maintenant `display`.
+- Le jeton `--origam-font__family---display`, déclaré dans `primitive.css` et `_primitive.scss`, vaut par défaut `var(--origam-font__family---sans)`. Le rendu ne change donc pas.
+- `fontFamily="display"` fonctionne sur tout composant qui expose `fontFamily`. Côté thème, il se règle via `vars.typo.family.display` ou par composant (`'origam-title': { fontFamily: 'display' }`).
+- Opt-in par thème, sur arbitrage du propriétaire : aucun composant ne l'utilise d'office.
+- Vérifié : TU `font-family-display.spec.ts` 5/5, dont 3 rouges sur le parent ; `enum-derived-types.spec.ts` mis à jour (PR #1242).
+
 ## [2.37.14] - 2026-10-22
 
 ### Fixed — `OrigamSelect` : `aria-controls` présent sur le combobox menu fermé, donc aussi en SSR (#1225)
