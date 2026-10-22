@@ -18,6 +18,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.12] - 2026-10-22
+
+### Fixed — `OrigamListItem` : l'opacité de l'overlay actif est lue par jeton (#1230)
+
+L'overlay d'un élément de liste actif utilisait des opacités codées en dur : `0.12` au repos et `0.16` au survol. Contrairement à `OrigamBtn`, aucun thème ne pouvait les régler.
+
+- Deux jetons, nommés comme ceux d'`OrigamBtn` : `--origam-list-item---overlay-opacity-active` (`0.12`) et `--origam-list-item---overlay-opacity-active-hover` (`0.16`). Ils sont déclarés dans `light.css`, dans `dark.css` (bloc explicite et bloc media), dans leurs jumeaux SCSS et dans `tokens.type.ts`.
+- Le rendu par défaut ne change pas. Un jeton à `0` supprime le voile.
+- Vérifié : le e2e `list-item-overlay-opacity.spec.ts` (Histoire statique) est rouge sur le parent pour le cas « jeton à 0 » et vert après. Le cas « défaut inchangé » est vert des deux côtés (PR #1243).
+- Suivi : l'opacité au survol simple (`0.08`) et celle de l'en-tête de `OrigamExpansionPanel` (`0.04`) sont encore codées en dur (#1244).
+
 ## [2.37.11] - 2026-10-22
 
 ### Fixed — thème : une clé de `components.global` n'avertit plus sur les composants qui ne la déclarent pas (#1227)

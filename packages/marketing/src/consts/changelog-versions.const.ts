@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.12',
+        date: '2026-10-22',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23712.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23712.h1', textFallback: 'OrigamListItem : l\'opacité de l\'overlay actif est lue par jeton (#1230)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.11',
         date: '2026-10-22',
         type: 'patch',
