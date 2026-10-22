@@ -93,6 +93,7 @@
   --origam-font__family---sans: Inter, 'Helvetica Neue', Arial, sans-serif;
   --origam-font__family---mono: 'JetBrains Mono', 'Fira Code', monospace;
   --origam-font__family---serif: Georgia, 'Times New Roman', serif;
+  --origam-font__family---display: var(--origam-font__family---sans);
   --origam-font__size---xs: 0.625rem;
   --origam-font__size---sm: 0.75rem;
   --origam-font__size---md: 0.875rem;

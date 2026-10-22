@@ -217,6 +217,7 @@
     "--origam-file-field---transition-easing",
     "--origam-file-field-dragndrop-item__remove---size",
     "--origam-file-field-list-item__remove---size",
+    "--origam-font__family---display",
     "--origam-font__family---serif",
     "--origam-font__lineHeight---loose",
     "--origam-font__lineHeight---none",

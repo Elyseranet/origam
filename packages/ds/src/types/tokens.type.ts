@@ -1730,6 +1730,7 @@ export type TTokenName =
   | '--origam-file-field__dropzone--has-file---gap'
   | '--origam-file-field__dropzone--has-file---padding'
   | '--origam-file-field__dropzone--has-file---padding-inline'
+  | '--origam-font__family---display'
   | '--origam-font__family---mono'
   | '--origam-font__family---sans'
   | '--origam-font__family---serif'

@@ -141,17 +141,18 @@
     {
       "name": "fontFamily",
       "label": "fontFamily",
-      "tsType": "\"sans\" | \"mono\" | \"serif\" | undefined",
+      "tsType": "\"sans\" | \"mono\" | \"serif\" | \"display\" | undefined",
       "runtimeType": null,
       "required": false,
       "hasFactoryDefault": false,
       "options": [
         "sans",
         "mono",
-        "serif"
+        "serif",
+        "display"
       ],
       "control": "select",
-      "description": "Font family token. Maps to `--origam-font__family---{fontFamily}`\n(sans · mono · serif).\nWhen unset, the component keeps its theme font-family.",
+      "description": "Font family token. Maps to `--origam-font__family---{fontFamily}`\n(sans · mono · serif · display).\nWhen unset, the component keeps its theme font-family.",
       "source": "types"
     },
     {
