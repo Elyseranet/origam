@@ -211,6 +211,8 @@ controls both children simultaneously.
 | `--origam-list-item__subtitle---letter-spacing`   | `0.0178571429em` | subtitle letter spacing               |
 | `--origam-list-item__subtitle---line-height`      | `1rem`           | subtitle line height                  |
 | `--origam-list-item---min-height`                 | undeclared — resolves through `--origam-list__item---min-height` (`56px`) | row minimum **border-box** height, i.e. the rendered row height (density-adjusted). Set to the whole rung by the `size` prop's `--size-*` rules; padding does **not** subtract from it |
+| `--origam-list-item---overlay-opacity-active`       | `0.12`           | overlay opacity of an active row (`--active`, expanded group activator); set `0` to show the row's bare `bgColor` |
+| `--origam-list-item---overlay-opacity-active-hover` | `0.16`         | overlay opacity of an active row on hover / focus-visible |
 | `--origam-list-item---padding-block-start`        | `8px`            | top padding                           |
 | `--origam-list-item---padding-inline-start`       | `16px`           | left padding (indent-adjusted)        |
 | `--origam-list-item---height-sm` / `-md` / `-lg` / `-xl` | `28px` / `36px` / `44px` / `52px` | total row height per `size` rung |

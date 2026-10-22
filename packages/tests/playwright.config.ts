@@ -52,6 +52,8 @@ const GREEN_SPECS = [
     // est-elle verte aujourd'hui ? » — une spec verte et NON gardee est un
     // filet perdu, pas une dette a enregistrer.
     'utility-cascade-padding-margin-950.spec.ts',
+    // #1230 — jeton d'opacite de l'overlay actif de OrigamListItem ; rouge a HEAD~1.
+    'list-item-overlay-opacity.spec.ts',
     'card.spec.ts',
     'avatar.spec.ts',
     'alert.spec.ts',

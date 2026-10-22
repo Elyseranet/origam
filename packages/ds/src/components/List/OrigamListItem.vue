@@ -788,13 +788,13 @@
 		&--active,
 		[aria-haspopup=menu][aria-expanded=true] {
 			> #{$this}__overlay {
-				--origam-list-item__overlay---opacity: calc(0.12 * 1);
+				--origam-list-item__overlay---opacity: var(--origam-list-item---overlay-opacity-active, 0.12);
 			}
 
 			&:hover,
 			&:focus-visible {
 				> #{$this}__overlay {
-					--origam-list-item__overlay---opacity: calc(0.16 * 1);
+					--origam-list-item__overlay---opacity: var(--origam-list-item---overlay-opacity-active-hover, 0.16);
 				}
 			}
 		}
