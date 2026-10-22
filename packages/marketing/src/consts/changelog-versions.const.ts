@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.11',
+        date: '2026-10-22',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23711.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23711.h1', textFallback: 'thème : une clé de components.global n\'avertit plus sur les composants qui ne la déclarent pas (#1227)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.10',
         date: '2026-10-22',
         type: 'patch',

@@ -18,6 +18,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.11] - 2026-10-22
+
+### Fixed — thème : une clé de `components.global` n'avertit plus sur les composants qui ne la déclarent pas (#1227)
+
+`installThemePropsResolver` ajoutait les clés `global` aux clés ciblées de chaque instance, puis `warnUnsupportedProp` avertissait pour toute clé que le composant ne déclarait pas. Une clé `global` comme `density` déclenchait donc un avertissement de dev sur chaque composant sans cette prop, y compris les composants Nuxt, Vue Router et ceux de l'application.
+
+- L'avertissement n'est émis que si la clé est nommée pour CE composant, par le thème ou par un `OrigamDefaultsProvider`. Une clé `global` s'applique là où la prop existe et reste silencieuse ailleurs.
+- L'avertissement légitime de #515 est conservé : une clé nommée pour un composant précis qui ne la déclare pas avertit toujours.
+- Une clé de preset de variant qu'un composant ne déclarerait pas n'avertit plus non plus. Le typage `TVariantPresets` refuse déjà ce cas à la compilation.
+- Vérifié : 2 tests ajoutés à `theme-props-resolver.spec.ts`. Le cas `global` est rouge sur le parent et vert après, et le cas #515 reste vert. `TU/origam` est vert (PR #1240).
+
 ## [2.37.10] - 2026-10-22
 
 ### Fixed — `OrigamBtn` variante `text` : l'état actif peut peindre un fond (#1222)
