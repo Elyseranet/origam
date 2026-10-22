@@ -18,6 +18,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.13] - 2026-10-22
+
+### Added — `origam/nuxt` : option `icons` (`defaultSet`, `aliases`) (#1228)
+
+Le module Nuxt ne transmettait pas l'option `icons` de `createOrigam()`. Une application Nuxt devait écrire un plugin manuel pour changer le jeu d'icônes par défaut ou déclarer des alias.
+
+- `IOrigamNuxtModuleOptions.icons` accepte `{ defaultSet?, aliases? }` (type `TNuxtIconOptions`, sous-ensemble sérialisable de `TIconOptions` qui réutilise `TIcon`). Le module la place dans `runtimeConfig.public.origam`, et les plugins client et serveur la passent à `createOrigam`.
+- Non relayés : `sets` et les alias qui sont des composants. Ils contiennent des fonctions de rendu, que la config Nuxt ne peut pas sérialiser. Ils demandent toujours un plugin manuel.
+- Doc : ligne `icons` dans `integrations/nuxt.md`.
+- Vérifié : le TU `TU/nuxt/nuxt-icons.spec.ts` passe à 5/5. Avec l'alias `$info`, `OrigamIcon` rend la bonne classe ; sans l'option, rien ne change. Le test de câblage échoue quand on le retire du plugin (PR #1241).
+
 ## [2.37.12] - 2026-10-22
 
 ### Fixed — `OrigamListItem` : l'opacité de l'overlay actif est lue par jeton (#1230)
