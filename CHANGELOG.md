@@ -18,6 +18,20 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.14] - 2026-10-22
+
+### Fixed — `OrigamSelect` : `aria-controls` présent sur le combobox menu fermé, donc aussi en SSR (#1225)
+
+Le combobox (`<input role="combobox">`) ne recevait `aria-controls` que lorsque le menu était ouvert (`menu.value ? listboxId : undefined`), puisque la listbox est téléportée et rendue à la demande. Or WAI-ARIA 1.2 rend cette propriété **requise** pour le rôle `combobox`. Le HTML serveur et le combobox fermé ne la portaient donc jamais.
+
+- `aria-controls` vaut maintenant toujours l'id de la listbox. Le DOM ne change pas : quand le menu est fermé, l'IDREF vise un élément pas encore rendu, ce qu'axe-core ne signale pas lorsque `aria-expanded="false"`.
+- Vérifié : TU `select-aria-controls.spec.ts`.
+  - SSR + hydratation, menu fermé : `aria-controls` et `aria-expanded="false"` présents ; rouge sur le parent (`null`), vert après.
+  - Menu ouvert : l'id correspond au `role="listbox"` du DOM.
+  - axe sur l'input : aucune violation.
+  - L'assertion #622, qui figeait l'ancien comportement, a été inversée (PR #1248).
+- Suivi : le wrapper `origam-field` porte lui aussi `role="combobox"` (rôle dupliqué) sans les propriétés requises (#1247).
+
 ## [2.37.13] - 2026-10-22
 
 ### Added — `origam/nuxt` : option `icons` (`defaultSet`, `aliases`) (#1228)

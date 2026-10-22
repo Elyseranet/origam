@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.14',
+        date: '2026-10-22',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23714.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23714.h1', textFallback: 'OrigamSelect : aria-controls présent sur le combobox menu fermé, donc aussi en SSR (#1225)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.13',
         date: '2026-10-22',
         type: 'patch',
