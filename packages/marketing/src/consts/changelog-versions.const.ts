@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.10',
+        date: '2026-10-22',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23710.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23710.h1', textFallback: 'OrigamBtn variante text : l\'état actif peut peindre un fond (#1222)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.9',
         date: '2026-10-22',
         type: 'patch',

@@ -18,6 +18,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.10] - 2026-10-22
+
+### Fixed — `OrigamBtn` variante `text` : l'état actif peut peindre un fond (#1222)
+
+`OrigamBtn.vue` déclarait `&--variant-text { background-color: transparent !important }`, sans règle pour l'état actif. Un bouton `text` actif restait donc transparent, quel que soit le jeton ou le style que le consommateur posait dessus.
+
+- Le `!important` est retiré. L'entrée correspondante de la baseline `no-variant-css` est supprimée.
+- `.origam-btn--variant-text.origam-btn--active` lit maintenant le nouveau jeton `--origam-btn---background-color-text-active`. Ce jeton est déclaré à `transparent` dans `light.css`, `dark.css` (bloc explicite et bloc media), leurs jumeaux SCSS et `tokens.type.ts`. Le rendu par défaut ne change pas.
+- Effet de bord assumé : un `bg-color` personnalisé (style inline) sur un Btn `text` peint désormais, alors que le `!important` l'écrasait jusqu'ici.
+- Vérifié : e2e `btn-text-active.spec.ts` (Chromium, Histoire statique), rouge sur le parent (actif `rgba(0,0,0,0)` au lieu de la valeur du jeton) et vert après ; `btn.spec.ts` 31/31 (PR #1237).
+
 ## [2.37.9] - 2026-10-22
 
 ### Fixed — champs de saisie : `isActive` et `isFocused` ne fuient plus en attributs HTML sur l'`<input>` (#1224)
