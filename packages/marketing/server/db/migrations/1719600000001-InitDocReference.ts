@@ -17,7 +17,7 @@
 
 import type { MigrationInterface, QueryRunner } from 'typeorm'
 
-import { DB_TABLES, DOC_KINDS, REL_TYPES, SYNC_STATUSES } from '../db.const.mjs'
+import { DB_TABLES, DOC_KINDS, REL_TYPES, SYNC_STATUSES } from '../../../src/consts/db.const'
 
 const FN = 'doc_set_updated_at'
 const list = (arr: readonly string[]): string => arr.map(v => `'${v}'`).join(', ')

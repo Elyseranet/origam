@@ -1,14 +1,13 @@
 /**
- * db.const.mjs — single source of truth for the API-Reference database layer.
+ * db.const.ts — single source of truth for the API-Reference database layer.
  *
  * Shared verbatim by THREE consumers so no magic string drifts between them:
- *   1. the TypeORM migrations         (server/db/migrations/*.mjs)
- *   2. the standalone ingestion script (scripts/generate-api-docs.mjs, ticket B)
- *   3. the Nitro server runtime        (server/utils/*.ts, server/api/**)
+ *   1. the TypeORM migrations         (server/db/migrations/*.ts)
+ *   2. the standalone ingestion script (scripts/generate-api-docs.mjs)
+ *   3. the Nitro server runtime        (src/utils/*.util.ts, server/api/**)
  *
- * Authored as `.mjs` (not `.const.ts`) on purpose: the migrations and the
- * ingestion pipeline run OUTSIDE the Nuxt/TS build (plain `node`), while the
- * Nitro TS layer can still `import` a `.mjs` module. One file, zero duplication.
+ * Plain values only (no enum, no decorator): the ingestion scripts import this
+ * file with Node's native type stripping, outside the Nuxt/TS build.
  */
 
 /** The 8 entity families documented by the API Reference (doc_entry.kind). */

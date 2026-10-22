@@ -1,9 +1,9 @@
-import { EXTERNAL_CACHE_TTL_SECONDS } from '../consts/cache.const'
-import { NPM_DOWNLOADS_WEEK_URL } from '../consts/adoption.const'
-import type { INpmDownloadsPointResponse, INpmDownloadsResponse } from '../interfaces/adoption.interface'
+import { EXTERNAL_CACHE_TTL_SECONDS } from '../../src/consts/cache.const'
+import { NPM_DOWNLOADS_WEEK_URL } from '../../src/consts/adoption.const'
+import type { INpmDownloadsData, INpmDownloadsPointResponse } from '../../src/interfaces/npm-downloads.interface'
 
 export default defineCachedEventHandler(
-  async (): Promise<INpmDownloadsResponse> => {
+  async (): Promise<INpmDownloadsData> => {
     try {
       const data = await $fetch<INpmDownloadsPointResponse>(NPM_DOWNLOADS_WEEK_URL, {
         headers: {

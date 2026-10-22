@@ -38,7 +38,7 @@ import { DataSource, type DataSourceOptions } from 'typeorm'
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies'
 
 import { resolveConnection } from './connection.mjs'
-import { MIGRATIONS_TABLE } from './db.const.mjs'
+import { MIGRATIONS_TABLE } from '../../src/consts/db.const'
 import { ENTITIES } from './entities'
 import { InitDocReference1719600000001 } from './migrations/1719600000001-InitDocReference'
 import { AddDocMeta1782000000001 } from './migrations/1782000000001-AddDocMeta'

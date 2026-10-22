@@ -25,10 +25,11 @@
 //   - NON-FATAL : une base non configurée ou injoignable ne fait pas planter le
 //     serveur — le site tourne et /api/health reflète l'état (db.ok).
 
-import { DOC_KINDS, DOC_META_KEYS } from '../db/db.const.mjs'
+import { DOC_KINDS, DOC_META_KEYS } from '../../src/consts/db.const'
 import { DocSyncRun } from '../db/entities'
-import { fixtureHash, readMeta, syncFixtures, writeMeta } from '../utils/doc-fixture-sync'
+import { fixtureHash, readMeta, syncFixtures, writeMeta } from '../../src/utils/doc-fixture-sync.util'
 
+import { isDbConfigured, useDb } from '../../src/utils/db.util'
 const BOOTSTRAP_LOCK_KEY = 4021
 
 /** Normalise a raw server-asset value (string | Buffer | Uint8Array) to string. */

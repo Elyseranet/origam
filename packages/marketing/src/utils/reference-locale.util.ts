@@ -19,9 +19,9 @@
  *     resolves to the Nuxt project root in server context, not to src/.
  */
 
-import { I18N_LOCALE_CODES } from '../../src/consts/i18n-codes.const'
-import { MARKETING_DEFAULTS } from '../../src/consts/marketing.const'
-import type { TLocaleCode } from '../../src/types/i18n.type'
+import { I18N_LOCALE_CODES } from '../consts/i18n-codes.const'
+import { MARKETING_DEFAULTS } from '../consts/marketing.const'
+import type { TLocaleCode } from '../types/i18n.type'
 
 const KNOWN_LOCALES: ReadonlySet<string> = new Set(I18N_LOCALE_CODES)
 

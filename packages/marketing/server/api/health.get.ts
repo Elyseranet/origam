@@ -1,3 +1,4 @@
+import { isDbConfigured, pingDb } from '../../src/utils/db.util'
 // Liveness probe for container orchestrators (Coolify healthcheck GETs
 // /api/health). The Nitro server being able to answer IS the liveness signal —
 // it always returns 200 so a merely-unreachable API-Reference database never

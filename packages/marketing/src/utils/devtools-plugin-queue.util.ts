@@ -1,4 +1,4 @@
-// server/utils/devtools-plugin-queue.ts
+// src/utils/devtools-plugin-queue.util.ts
 //
 // ⛔ #248 — neutralise la file d'attente des plugins Vue DevTools CÔTÉ SERVEUR.
 // C'est la cause de l'OOM du worker SSR de `nuxt dev`, mesurée et non supposée.

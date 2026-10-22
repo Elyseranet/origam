@@ -15,47 +15,47 @@ import type {
     IComponentExample,
     IComponentFamilyMember,
     IComponentRelated,
-} from '../../src/interfaces/components-catalog.interface'
+} from '../interfaces/components-catalog.interface'
 import type {
     IComposableDoc,
     IComposableEntry,
     IComposableExample,
-} from '../../src/interfaces/composables-catalog.interface'
+} from '../interfaces/composables-catalog.interface'
 import type {
     IConstDoc,
     IConstEntry,
     IConstUsedByEntry,
     IConstExample,
-} from '../../src/interfaces/consts-catalog.interface'
+} from '../interfaces/consts-catalog.interface'
 import type {
     IDirectiveDoc,
     IDirectiveExample,
-} from '../../src/interfaces/directive-doc.interface'
+} from '../interfaces/directive-doc.interface'
 import type {
     IEnumDoc,
     IEnumEntry,
     IEnumUsedByEntry,
     IEnumExample,
-} from '../../src/interfaces/enums-catalog.interface'
+} from '../interfaces/enums-catalog.interface'
 import type {
     IInterfaceDoc,
     IInterfaceEntry,
     IInterfaceUsedByEntry,
     IInterfaceExample,
-} from '../../src/interfaces/interfaces-catalog.interface'
+} from '../interfaces/interfaces-catalog.interface'
 import type {
     ITypeDoc,
     ITypeEntry,
     ITypeUsedByEntry,
     ITypeExample,
-} from '../../src/interfaces/types-catalog.interface'
+} from '../interfaces/types-catalog.interface'
 import type {
     IUtilDoc,
     IUtilEntry,
     IUtilExample,
-} from '../../src/interfaces/utils-catalog.interface'
-import type { IReferenceRow } from '../../src/interfaces/reference-row.interface'
-import type { TLocaleCode } from '../../src/types/i18n.type'
+} from '../interfaces/utils-catalog.interface'
+import type { IReferenceRow } from '../interfaces/reference-row.interface'
+import type { TLocaleCode } from '../types/i18n.type'
 
 // ─── Shared child-row mappers ──────────────────────────────────────────────
 

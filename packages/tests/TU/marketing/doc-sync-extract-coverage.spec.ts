@@ -40,7 +40,7 @@ import {
     DOMAINS, SLUG_STYLE, TS_DOMAINS, createProgram, extractFile, listSourceFiles, toSlug,
 } from '../../../marketing/scripts/extract.mjs'
 import { extractComponents } from '../../../marketing/scripts/extract-vue.mjs'
-import { DOC_KINDS } from '../../../marketing/server/db/db.const.mjs'
+import { DOC_KINDS } from '../../../marketing/src/consts/db.const'
 
 /** The same TypeScript the extractor loads — used only by the negative control. */
 const ts = createRequire(import.meta.url)('typescript')

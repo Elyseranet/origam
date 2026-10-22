@@ -9,8 +9,10 @@
  */
 
 import { DocEntry, DocExample } from '../../../../../db/entities'
-import { EXAMPLE_EDIT_MAP, toDbPayload, toCamelExample } from '../../../../../utils/admin-mappers'
+import { EXAMPLE_EDIT_MAP, toDbPayload, toCamelExample } from '../../../../../../src/utils/admin-mappers.util'
 
+import { useDb } from '../../../../../../src/utils/db.util'
+import { assertKind, assertSlug } from '../../../../../../src/utils/reference-validation.util'
 export default defineEventHandler(async (event) => {
     const kind = getRouterParam(event, 'kind') ?? ''
     const slug = getRouterParam(event, 'slug') ?? ''

@@ -26,8 +26,8 @@ import { createHash } from 'node:crypto'
 import type { EntityManager } from 'typeorm'
 
 import { ingestFull } from '../../scripts/db-upsert'
-import { DocEntry, DocMeta } from '../db/entities'
-import { DOC_KINDS } from '../db/db.const.mjs'
+import { DocEntry, DocMeta } from '../../server/db/entities'
+import { DOC_KINDS } from '../consts/db.const'
 
 /** Aggregate reconciliation counters returned by a sync run. */
 export interface FixtureSyncCounts {

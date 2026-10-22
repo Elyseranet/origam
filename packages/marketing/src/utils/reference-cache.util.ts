@@ -17,7 +17,7 @@ import {
     REFERENCE_CACHE_FORMAT_VERSION,
     REFERENCE_CACHE_NAMES
 } from '../consts/cache.const'
-import { I18N_LOCALE_CODES } from '../../src/consts/i18n-codes.const'
+import { I18N_LOCALE_CODES } from '../consts/i18n-codes.const'
 import type {
     IReferenceCacheStorage,
     IReferenceCatalogCacheKeyParts,

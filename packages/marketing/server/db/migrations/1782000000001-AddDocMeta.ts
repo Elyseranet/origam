@@ -14,7 +14,7 @@
 
 import type { MigrationInterface, QueryRunner } from 'typeorm'
 
-import { DB_TABLES } from '../db.const.mjs'
+import { DB_TABLES } from '../../../src/consts/db.const'
 
 const FN = 'doc_set_updated_at'
 

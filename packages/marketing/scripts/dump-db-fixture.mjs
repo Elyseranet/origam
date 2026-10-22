@@ -29,7 +29,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import { DOC_KINDS } from '../server/db/db.const.mjs'
+import { DOC_KINDS } from '../src/consts/db.const.ts'
 import { REPO_ROOT } from './extract.mjs'
 import { getDb, closeDb, sourceCommit } from './db.ts'
 

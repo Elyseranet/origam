@@ -5,7 +5,7 @@
  * process environment (see DB_ENV in db.const.mjs).
  */
 
-import { DB_ENV, DB_DEFAULTS } from './db.const.mjs'
+import { DB_ENV, DB_DEFAULTS } from '../../src/consts/db.const.ts'
 
 /** Truthy string → SSL config accepted by node-postgres. Empty → no SSL. */
 function parseSsl (raw) {

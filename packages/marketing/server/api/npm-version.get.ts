@@ -1,18 +1,9 @@
-import { EXTERNAL_CACHE_TTL_SECONDS } from '../consts/cache.const'
-
-const NPM_REGISTRY_DIST_TAGS_URL = 'https://registry.npmjs.org/-/package/origam/dist-tags'
-
-interface INpmDistTagsResponse {
-  latest: string
-  [key: string]: string
-}
-
-interface INpmVersionResponse {
-  version: string
-}
+import { EXTERNAL_CACHE_TTL_SECONDS } from '../../src/consts/cache.const'
+import { NPM_REGISTRY_DIST_TAGS_URL } from '../../src/consts/adoption.const'
+import type { INpmDistTagsResponse, INpmVersionData } from '../../src/interfaces/version.interface'
 
 export default defineCachedEventHandler(
-  async (event): Promise<INpmVersionResponse> => {
+  async (event): Promise<INpmVersionData> => {
     const fallback = useRuntimeConfig(event).public.npmVersion as string
 
     try {

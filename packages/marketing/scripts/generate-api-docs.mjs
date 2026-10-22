@@ -68,9 +68,9 @@ import { mapDoc } from './doc-to-rows.ts'
 import { ingestFull, ingestSrc, orphanMissingEntries } from './db-upsert.ts'
 import { getDb, closeDb, sourceCommit } from './db.ts'
 import { backfillKeys, backfillSvgKeys } from './key-backfill.ts'
-import { DOC_KIND_DIRS } from '../server/db/db.const.mjs'
+import { DOC_KIND_DIRS } from '../src/consts/db.const.ts'
 import { DocEntry, DocSyncRun } from '../server/db/entities/index.ts'
-import { syncFixtures } from '../server/utils/doc-fixture-sync.ts'
+import { syncFixtures } from '../src/utils/doc-fixture-sync.util.ts'
 
 const ARGS = process.argv.slice(2)
 const CHECK = ARGS.includes('--check')

@@ -5,14 +5,14 @@
  * Tout passe par TypeORM (`useDb()`), jamais par un client SQL à part.
  */
 
-import { DocEntry, DocRelation } from '../db/entities'
-import { DOC_KINDS } from '../db/db.const.mjs'
+import { DocEntry, DocRelation } from '../../server/db/entities'
+import { DOC_KINDS } from '../consts/db.const'
 import type {
     ICatalogNeighbourLink,
     ICatalogRelatedGroup,
     ICatalogSequenceRow,
-} from '../../src/interfaces/catalog-neighbours.interface'
-import type { TReferenceKind } from '../../src/types/api-reference.type'
+} from '../interfaces/catalog-neighbours.interface'
+import type { TReferenceKind } from '../types/api-reference.type'
 
 /**
  * Types de relation qui relient DEUX familles. `extends` (bruit : « extends

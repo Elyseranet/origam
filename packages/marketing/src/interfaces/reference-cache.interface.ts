@@ -1,4 +1,4 @@
-import type { TLocaleCode } from '../../src/types/i18n.type'
+import type { TLocaleCode } from '../types/i18n.type'
 
 /** Les paramètres qui entrent dans la clé de cache de `GET /api/reference/:kind/:slug`. */
 export interface IReferenceDocCacheKeyParts {

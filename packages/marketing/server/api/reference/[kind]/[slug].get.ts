@@ -35,11 +35,13 @@ import {
     DocEntry, DocProp, DocEmit, DocSlot, DocExample, DocValue,
     DocParam, DocReturn, DocDirectiveArg, DocDirectiveModifier, DocRelation,
 } from '../../../db/entities'
-import { REFERENCE_CACHE_NAMES, REFERENCE_CACHE_TTL_SECONDS } from '../../../consts/cache.const'
-import { referenceDocCacheKey } from '../../../utils/reference-cache'
-import { resolveLocale } from '../../../utils/reference-locale'
+import { REFERENCE_CACHE_NAMES, REFERENCE_CACHE_TTL_SECONDS } from '../../../../src/consts/cache.const'
+import { referenceDocCacheKey } from '../../../../src/utils/reference-cache.util'
+import { resolveLocale } from '../../../../src/utils/reference-locale.util'
 import type { TLocaleCode } from '../../../../src/types/i18n.type'
 
+import { useDb } from '../../../../src/utils/db.util'
+import { assertKind, assertSlug } from '../../../../src/utils/reference-validation.util'
 /**
  * Inline child-collection types to avoid cross-directory import type issues
  * with Nitro esbuild. Mirrors the exported interfaces in reference-mappers.ts.

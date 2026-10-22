@@ -7,7 +7,7 @@
  *   - :slug  must match strict kebab-case (a-z, 0-9, hyphens, no leading/trailing)
  */
 
-import { DOC_KINDS } from '../db/db.const.mjs'
+import { DOC_KINDS } from '../consts/db.const'
 
 /** Kebab-case: one or more lowercase-alnum groups joined by single hyphens. */
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/

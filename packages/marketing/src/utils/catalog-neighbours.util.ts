@@ -17,8 +17,8 @@
  * ne trie donc jamais les noms lui-même : il ne fait que grouper.
  */
 
-import type { ICatalogNeighbourLink, ICatalogSequenceRow } from '../../src/interfaces/catalog-neighbours.interface'
-import type { TReferenceKind } from '../../src/types/api-reference.type'
+import type { ICatalogNeighbourLink, ICatalogSequenceRow } from '../interfaces/catalog-neighbours.interface'
+import type { TReferenceKind } from '../types/api-reference.type'
 
 /** Familles dont l'index regroupe par `domain` plutôt que par `category`. */
 const DOMAIN_GROUPED_KINDS: ReadonlyArray<TReferenceKind> = ['composable']

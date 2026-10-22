@@ -17,8 +17,10 @@ import {
     DocEmit, DocSlot, DocDirectiveArg, DocDirectiveModifier,
 } from '../../../../../../db/entities'
 import type { Repository } from 'typeorm'
-import { ITEM_EDIT_MAP, toDbPayload, toCamelItem } from '../../../../../../utils/admin-mappers'
+import { ITEM_EDIT_MAP, toDbPayload, toCamelItem } from '../../../../../../../src/utils/admin-mappers.util'
 
+import { useDb } from '../../../../../../../src/utils/db.util'
+import { assertKind, assertSlug } from '../../../../../../../src/utils/reference-validation.util'
 type CollectionKey =
     | 'prop' | 'value' | 'param' | 'return'
     | 'emit' | 'slot' | 'directive_arg' | 'directive_modifier'

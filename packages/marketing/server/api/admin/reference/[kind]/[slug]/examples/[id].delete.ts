@@ -9,6 +9,8 @@
 
 import { DocEntry, DocExample } from '../../../../../../db/entities'
 
+import { useDb } from '../../../../../../../src/utils/db.util'
+import { assertKind, assertSlug } from '../../../../../../../src/utils/reference-validation.util'
 export default defineEventHandler(async (event) => {
     const kind = getRouterParam(event, 'kind') ?? ''
     const slug = getRouterParam(event, 'slug') ?? ''

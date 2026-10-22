@@ -52,7 +52,7 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { report } from '../../ds/scripts/guards/lib/baseline.mjs'
-import { DOC_KINDS } from '../server/db/db.const.mjs'
+import { DOC_KINDS } from '../src/consts/db.const.ts'
 import { loadDeclared } from './token-sheet.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))

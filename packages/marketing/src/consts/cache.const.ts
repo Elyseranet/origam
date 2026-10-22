@@ -15,7 +15,7 @@ export const EXTERNAL_CACHE_TTL_SECONDS = 3600
  * Version de FORMAT des réponses des 4 handlers `server/api/reference/**`
  * (`reference-catalog`, `reference-doc`, `reference-categories`,
  * `reference-neighbours`). Elle préfixe la clé de cache de chacun
- * (`server/utils/reference-cache.ts`).
+ * (`src/utils/reference-cache.util.ts`).
  *
  * ⛔ À INCRÉMENTER (`v1` -> `v2`, ...) dans le MÊME commit que tout changement
  * de FORME de la réponse d'un de ces handlers : champ renommé (`name` ->

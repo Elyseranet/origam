@@ -14,7 +14,7 @@
  * enumerated separately so handlers can reject them with 400.
  */
 
-import type { DocEntry, DocExample, DocRelation } from '../db/entities'
+import type { DocEntry, DocExample, DocRelation } from '../../server/db/entities'
 
 // ─── camelCase → snake_case write maps ────────────────────────────────────
 

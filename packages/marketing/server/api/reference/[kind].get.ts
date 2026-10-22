@@ -42,11 +42,13 @@
  */
 
 import { DocEntry, DocProp, DocRelation, DocValue } from '../../db/entities'
-import { REFERENCE_CACHE_NAMES, REFERENCE_CACHE_TTL_SECONDS } from '../../consts/cache.const'
-import { referenceCatalogCacheKey } from '../../utils/reference-cache'
-import { resolveLocale } from '../../utils/reference-locale'
+import { REFERENCE_CACHE_NAMES, REFERENCE_CACHE_TTL_SECONDS } from '../../../src/consts/cache.const'
+import { referenceCatalogCacheKey } from '../../../src/utils/reference-cache.util'
+import { resolveLocale } from '../../../src/utils/reference-locale.util'
 import type { TLocaleCode } from '../../../src/types/i18n.type'
 
+import { useDb } from '../../../src/utils/db.util'
+import { assertKind } from '../../../src/utils/reference-validation.util'
 /** Inline type to avoid cross-directory import type issues with Nitro esbuild. */
 type DescMap = Map<string, { description_key: string | null; description_fallback: string | null }>
 

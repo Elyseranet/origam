@@ -12,9 +12,11 @@
  */
 
 import { DocEntry, DocRelation } from '../../../../../db/entities'
-import { REL_TYPES } from '../../../../../db/db.const.mjs'
-import { RELATION_POST_MAP, toDbPayload, toCamelRelation } from '../../../../../utils/admin-mappers'
+import { REL_TYPES } from '../../../../../../src/consts/db.const'
+import { RELATION_POST_MAP, toDbPayload, toCamelRelation } from '../../../../../../src/utils/admin-mappers.util'
 
+import { useDb } from '../../../../../../src/utils/db.util'
+import { assertKind, assertSlug } from '../../../../../../src/utils/reference-validation.util'
 /** Text fields validated for type/length (in camelCase). */
 const TEXT_FIELDS = ['toKind', 'toSlug', 'toName', 'propName', 'descriptionKey', 'descriptionFallback'] as const
 

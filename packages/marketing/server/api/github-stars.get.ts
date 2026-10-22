@@ -1,9 +1,9 @@
-import { EXTERNAL_CACHE_TTL_SECONDS } from '../consts/cache.const'
-import { GITHUB_REPO_API_URL } from '../consts/adoption.const'
-import type { IGithubRepoResponse, IGithubStarsResponse } from '../interfaces/adoption.interface'
+import { EXTERNAL_CACHE_TTL_SECONDS } from '../../src/consts/cache.const'
+import { GITHUB_REPO_API_URL } from '../../src/consts/adoption.const'
+import type { IGithubRepoResponse, IGithubStarsData } from '../../src/interfaces/github.interface'
 
 export default defineCachedEventHandler(
-  async (): Promise<IGithubStarsResponse> => {
+  async (): Promise<IGithubStarsData> => {
     try {
       const data = await $fetch<IGithubRepoResponse>(GITHUB_REPO_API_URL, {
         headers: {

@@ -6,7 +6,7 @@
 
 import { Column, Entity, Index, Unique } from 'typeorm'
 
-import { DB_TABLES } from '../db.const.mjs'
+import { DB_TABLES } from '../../../src/consts/db.const'
 import { DocRowBase } from './base.entity'
 
 @Entity(DB_TABLES.DOC_EXAMPLE)

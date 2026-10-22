@@ -29,7 +29,8 @@
 // ⚠️ Si un jour un build de production active `__VUE_PROD_DEVTOOLS__`, la fuite
 // redevient possible en production et cette borne devra sauter.
 
-import type { IDevtoolsQueueTarget } from '../interfaces/devtools-queue-target.interface'
+import type { IDevtoolsQueueTarget } from '../../src/interfaces/devtools-queue-target.interface'
+import { neutraliseVueDevtoolsPluginQueue } from '../../src/utils/devtools-plugin-queue.util'
 
 export default defineNitroPlugin(() => {
     if (!import.meta.dev) return

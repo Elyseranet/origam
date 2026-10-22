@@ -25,11 +25,12 @@
  * SEUL le second rougit, le premier reste vert.
  *
  * ─── Ce qui est bouchonné, et pourquoi ──────────────────────────────────────
- * `defineNitroPlugin` et `neutraliseVueDevtoolsPluginQueue` sont des AUTO-IMPORTS
- * Nitro : le fichier source ne les importe pas, ils n'existent qu'à l'exécution
- * dans le worker. On les pose donc en globals avant l'import dynamique, ce qui
- * est précisément la façon dont le module les résout (identifiant libre →
- * `globalThis`). `import.meta.dev` est forcé à `true` par le `define` de
+ * `defineNitroPlugin` est un AUTO-IMPORT Nitro : le fichier source ne
+ * l'importe pas, il n'existe qu'à l'exécution dans le worker. On le pose donc
+ * en global avant l'import dynamique (identifiant libre → `globalThis`).
+ * `neutraliseVueDevtoolsPluginQueue` est, lui, importé explicitement depuis
+ * `src/utils/devtools-plugin-queue.util` (#1255) : le module est mocké.
+ * `import.meta.dev` est forcé à `true` par le `define` de
  * `vitest.config.ts` — voir le commentaire qui l'accompagne.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -58,11 +59,12 @@ describe('câblage du plugin Nitro #248', () => {
             registered.push(fn)
             return fn
         })
-        vi.stubGlobal('neutraliseVueDevtoolsPluginQueue', neutralise)
+        vi.doMock('../../../marketing/src/utils/devtools-plugin-queue.util', () => ({ neutraliseVueDevtoolsPluginQueue: neutralise }))
     })
 
     afterEach(() => {
         vi.unstubAllGlobals()
+        vi.doUnmock('../../../marketing/src/utils/devtools-plugin-queue.util')
     })
 
     it('le module du plugin existe et s’importe (rouge si le FICHIER a disparu)', async () => {
