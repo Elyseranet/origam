@@ -605,6 +605,13 @@ jobs:
   test-e2e-marketing:
     name: E2E tests — marketing nav/footer (Playwright / Chromium)
     runs-on: ubuntu-latest
+    # Sharded in 2 like `test-e2e` above (Playwright `--shard=i/N`) - #1260:
+    # the single job took 18-22 min for a 25 min timeout and was cancelled
+    # under runner load. Timeout kept per shard.
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
     timeout-minutes: 25
     # MARKETING_GREEN_ONLY: run only the specs verified green + stable on
     #   this config (MARKETING_GREEN_SPECS in playwright.marketing.config.ts)
@@ -705,13 +712,13 @@ jobs:
         run: pnpm -F origam build
 
       - name: Run Playwright (marketing nav/footer, chromium)
-        run: pnpm -F @origam/tests exec playwright test --config=playwright.marketing.config.ts --project=chromium
+        run: pnpm -F @origam/tests exec playwright test --config=playwright.marketing.config.ts --project=chromium --shard=${{ matrix.shard }}/2
 
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: playwright-report-marketing
+          name: playwright-report-marketing-shard-${{ matrix.shard }}
           path: |
             packages/tests/e2e/.report-marketing
             packages/tests/e2e/.results-marketing
