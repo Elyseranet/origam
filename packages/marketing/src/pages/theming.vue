@@ -256,9 +256,9 @@
   import { useThemeBuilder } from '~/composables/useThemeBuilder'
   import type { TEditMode } from '~/interfaces/theme-builder.interface'
 
-  import ThemeBuilderNav from '~/components/theming/ThemeBuilderNav.vue'
-  import ThemeBuilderPreview from '~/components/theming/ThemeBuilderPreview.vue'
-  import ThemeBuilderControls from '~/components/theming/ThemeBuilderControls.vue'
+  import ThemeBuilderNav from '~/components/ThemeBuilderNav.vue'
+  import ThemeBuilderPreview from '~/components/ThemeBuilderPreview.vue'
+  import ThemeBuilderControls from '~/components/ThemeBuilderControls.vue'
 
   const { t } = useT()
 

@@ -6,7 +6,7 @@
  * db-seed.sql lagging behind the JSON fixtures. The docs-fixtures workflow
  * calls this after the fixtures dump so both seed artifacts always match.
  */
-import { regenerateDbSeedSql } from './lib/dump-sql.mjs'
+import { regenerateDbSeedSql } from './dump-sql.mjs'
 
 try {
     regenerateDbSeedSql()

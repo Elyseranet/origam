@@ -12,9 +12,9 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { execFileSync } from 'node:child_process'
 
-import { DB_ENV } from '../../server/db/db.const.mjs'
+import { DB_ENV } from '../server/db/db.const.mjs'
 
-const MARKETING_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
+const MARKETING_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 export const DB_SEED_SQL = path.join(MARKETING_DIR, 'server', 'assets', 'db-seed.sql')
 
 // ─── pg_dump connection args ──────────────────────────────────────────────────

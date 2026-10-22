@@ -26,7 +26,7 @@ const require = createRequire(import.meta.url)
 const ts = require('typescript')
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
-export const REPO_ROOT = path.resolve(__dirname, '..', '..', '..', '..')
+export const REPO_ROOT = path.resolve(__dirname, '..', '..', '..')
 export const DS_SRC = path.join(REPO_ROOT, 'packages', 'ds', 'src')
 
 /**

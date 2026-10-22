@@ -2,7 +2,7 @@
  *  DOC-SYNC HARNESS — IN-MEMORY ENTITYMANAGER
  *
  *  @description
- *  The marketing documentation sync (`scripts/lib/db-upsert.ts`,
+ *  The marketing documentation sync (`scripts/db-upsert.ts`,
  *  `server/utils/doc-fixture-sync.ts`) talks to PostgreSQL exclusively through
  *  the four TypeORM `EntityManager` methods reproduced here: `findOne`, `find`,
  *  `insert` and `update`.

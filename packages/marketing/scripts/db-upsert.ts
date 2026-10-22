@@ -21,7 +21,7 @@ import type { EntityManager } from 'typeorm'
 import {
     DocEntry, DocProp, DocValue, DocParam, DocReturn, DocEmit, DocSlot,
     DocExample, DocDirectiveArg, DocDirectiveModifier, DocRelation,
-} from '../../server/db/entities/index.ts'
+} from '../server/db/entities/index.ts'
 
 const NULL_KEY = ' null'
 

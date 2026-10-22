@@ -3,7 +3,7 @@
  *
  * Single source of truth for entities + migrations + naming strategy, shared by
  * the Nitro runtime (server/utils/db.ts), the migration CLI
- * (data-source.cli.ts) and the ingestion pipeline (scripts/lib/db.ts).
+ * (data-source.cli.ts) and the ingestion pipeline (scripts/db.ts).
  *
  * This module is import-safe: it only EXPORTS factories — it never builds a
  * DataSource at import time. That matters for the Nitro runtime, where the

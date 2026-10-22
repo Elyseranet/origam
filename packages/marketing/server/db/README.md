@@ -130,7 +130,7 @@ await queryRunner.query(`ALTER TABLE "x" DROP CONSTRAINT "x_y_fkey"`)
 A directive with no reason, or a trivially short one, authorizes nothing —
 the point is a reviewer reading WHY this specific drop is intentional, not a
 magic string that silences the tool. See `scripts/guard-migrations.mjs` and
-`scripts/lib/migration-guard.mjs` for the full detection logic and rationale
+`scripts/migration-guard.mjs` for the full detection logic and rationale
 (why only `up()`, why this shape rather than a baseline file, why it also
 covers the 2 functional indexes that no entity change could ever fix).
 
@@ -267,7 +267,7 @@ The sync loop (`syncFixtures`) lives in `server/utils/doc-fixture-sync.ts` and i
 the **same** code path the standalone `docs:seed` script uses (the script's
 fixture branch calls it too) — no duplication between tooling and runtime. The
 ingestion reconciliation (`ingestFull`, editorial-lock aware) is imported from
-`scripts/lib/db-upsert.ts`; esbuild bundles it (and the fixtures, via the
+`scripts/db-upsert.ts`; esbuild bundles it (and the fixtures, via the
 `assets:db-seed` nitro `serverAssets` mount) into `.output`.
 
 Idempotent: a second boot with unchanged fixtures takes the fast path (0

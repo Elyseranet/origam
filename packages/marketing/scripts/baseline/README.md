@@ -92,5 +92,5 @@ line count, it touches a second rendered section, and it collides with work in
 flight.
 
 To reprint the table, compare each `cssVars[].name` / `.defaultValue` pair
-against `loadDeclared()` from `../lib/token-sheet.mjs` — the same map the
+against `loadDeclared()` from `../token-sheet.mjs` — the same map the
 token-excerpt correction is built on.

@@ -53,7 +53,7 @@ import { fileURLToPath } from 'node:url'
 
 import { report } from '../../ds/scripts/guards/lib/baseline.mjs'
 import { DOC_KINDS } from '../server/db/db.const.mjs'
-import { loadDeclared } from './lib/token-sheet.mjs'
+import { loadDeclared } from './token-sheet.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const SEED_DIR = resolve(HERE, '../server/db/seed')

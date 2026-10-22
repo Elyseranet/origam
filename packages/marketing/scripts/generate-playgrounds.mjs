@@ -26,9 +26,9 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { execSync } from 'node:child_process'
 
-import { REPO_ROOT } from './lib/extract.mjs'
-import { getDb, closeDb } from './lib/db.ts'
-import { regenerateDbSeedSql } from './lib/dump-sql.mjs'
+import { REPO_ROOT } from './extract.mjs'
+import { getDb, closeDb } from './db.ts'
+import { regenerateDbSeedSql } from './dump-sql.mjs'
 
 // ─── CLI flags ────────────────────────────────────────────────────────────────
 

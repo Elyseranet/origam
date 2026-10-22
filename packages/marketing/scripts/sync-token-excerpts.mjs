@@ -18,7 +18,7 @@
  * more. Every one of the three is a name that exists nowhere in the repo.
  *
  * @description
- * This script rewrites each line against `lib/token-sheet.mjs`: `tokenPath`
+ * This script rewrites each line against `token-sheet.mjs`: `tokenPath`
  * becomes the variable the sheets really declare, `value` the value they
  * really give it. `type`, `descriptionKey` and `descriptionFallback` are
  * CURATED PROSE and are carried over untouched — re-deriving the machine
@@ -51,7 +51,7 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { loadDeclared, resolveTokenPath } from './lib/token-sheet.mjs'
+import { loadDeclared, resolveTokenPath } from './token-sheet.mjs'
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '../../..')
 const SEED = resolve(REPO, 'packages/marketing/server/db/seed/component.json')

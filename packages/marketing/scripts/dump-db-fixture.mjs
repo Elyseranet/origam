@@ -30,8 +30,8 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import { DOC_KINDS } from '../server/db/db.const.mjs'
-import { REPO_ROOT } from './lib/extract.mjs'
-import { getDb, closeDb, sourceCommit } from './lib/db.ts'
+import { REPO_ROOT } from './extract.mjs'
+import { getDb, closeDb, sourceCommit } from './db.ts'
 
 const ARGS = process.argv.slice(2)
 const DOMAIN_ARG = (ARGS.find(a => a.startsWith('--domain=')) || '').split('=')[1]

@@ -39,7 +39,7 @@ import { readFileSync } from 'node:fs'
 import { dirname, resolve as resolvePath } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const REPO = resolvePath(dirname(fileURLToPath(import.meta.url)), '../../../..')
+const REPO = resolvePath(dirname(fileURLToPath(import.meta.url)), '../../..')
 
 /*********************************************************
  * SHEETS

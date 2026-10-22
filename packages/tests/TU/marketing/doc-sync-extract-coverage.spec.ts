@@ -4,7 +4,7 @@
  *  @description
  *  `docs:sync` is routinely described as "the design system is the source of
  *  truth for the catalogue". It is true of half the catalogue.
- *  `DOMAINS` (`scripts/lib/extract.mjs:33`) lists four directories; `DOC_KINDS`
+ *  `DOMAINS` (`scripts/extract.mjs:33`) lists four directories; `DOC_KINDS`
  *  (`server/db/db.const.mjs`) lists eight families. The gap is written down in
  *  one README paragraph and nowhere else — nothing says it at runtime, and it
  *  is the direct source of the "the dump is not a source" confusion recorded on
@@ -38,8 +38,8 @@ import { describe, expect, it } from 'vitest'
 
 import {
     DOMAINS, SLUG_STYLE, TS_DOMAINS, createProgram, extractFile, listSourceFiles, toSlug,
-} from '../../../marketing/scripts/lib/extract.mjs'
-import { extractComponents } from '../../../marketing/scripts/lib/extract-vue.mjs'
+} from '../../../marketing/scripts/extract.mjs'
+import { extractComponents } from '../../../marketing/scripts/extract-vue.mjs'
 import { DOC_KINDS } from '../../../marketing/server/db/db.const.mjs'
 
 /** The same TypeScript the extractor loads — used only by the negative control. */

@@ -15,7 +15,7 @@ import type { EntityManager, ObjectType } from 'typeorm'
 import {
     DocEntry, DocProp, DocParam, DocReturn, DocExample, DocValue,
     DocEmit, DocSlot, DocRelation, DocDirectiveArg, DocDirectiveModifier, DocCategory,
-} from '../../server/db/entities/index.ts'
+} from '../server/db/entities/index.ts'
 import {
     entryDescriptionKey, entryNoteKey, propKey, paramKey, returnKey, exampleTitleKey, fixEnumNamespace,
 } from './key-convention.mjs'

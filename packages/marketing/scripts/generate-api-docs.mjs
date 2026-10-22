@@ -34,9 +34,9 @@
  *              `*_key` (3 763 rows: doc_entry, doc_prop, doc_param, doc_return,
  *              doc_example), backfills the two new `svg_title_key`/`svg_desc_key`
  *              columns from the component anatomy diagrams, and fixes the
- *              `enum.` → `enums.` namespace typo. See lib/key-convention.mjs
+ *              `enum.` → `enums.` namespace typo. See key-convention.mjs
  *              for the naming convention (audited against the 14 498 keys that
- *              already exist) and lib/key-backfill.ts for the DB orchestration.
+ *              already exist) and key-backfill.ts for the DB orchestration.
  *
  * Every DB run is wrapped in a single transaction and recorded in doc_sync_run.
  * `--check` is a dry-run drift gate (rolls back, exits 1 if anything would change).
@@ -59,15 +59,15 @@ import path from 'node:path'
 
 import {
     DOMAINS, TS_DOMAINS, listSourceFiles, extractFile, createProgram, REPO_ROOT,
-} from './lib/extract.mjs'
-import { extractComponents } from './lib/extract-vue.mjs'
-import { MERGERS } from './lib/merge.mjs'
-import { serialize } from './lib/serialize.mjs'
-import { readExistingDoc } from './lib/read-existing.mjs'
-import { mapDoc } from './lib/doc-to-rows.ts'
-import { ingestFull, ingestSrc, orphanMissingEntries } from './lib/db-upsert.ts'
-import { getDb, closeDb, sourceCommit } from './lib/db.ts'
-import { backfillKeys, backfillSvgKeys } from './lib/key-backfill.ts'
+} from './extract.mjs'
+import { extractComponents } from './extract-vue.mjs'
+import { MERGERS } from './merge.mjs'
+import { serialize } from './serialize.mjs'
+import { readExistingDoc } from './read-existing.mjs'
+import { mapDoc } from './doc-to-rows.ts'
+import { ingestFull, ingestSrc, orphanMissingEntries } from './db-upsert.ts'
+import { getDb, closeDb, sourceCommit } from './db.ts'
+import { backfillKeys, backfillSvgKeys } from './key-backfill.ts'
 import { DOC_KIND_DIRS } from '../server/db/db.const.mjs'
 import { DocEntry, DocSyncRun } from '../server/db/entities/index.ts'
 import { syncFixtures } from '../server/utils/doc-fixture-sync.ts'

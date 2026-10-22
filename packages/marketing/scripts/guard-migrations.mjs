@@ -7,7 +7,7 @@
  *   (`exit 1`) the moment ONE of them drops a constraint or an index in its
  *   `up()` without an explicit `// origam-allow-destructive: <reason>`
  *   directive on the line immediately above the statement. See
- *   `scripts/lib/migration-guard.mjs`'s header for the full rationale (why
+ *   `scripts/migration-guard.mjs`'s header for the full rationale (why
  *   this is the only protection that also covers the 2 functional indexes,
  *   why only `up()` is scanned, why an inline directive was chosen over a
  *   baseline file).
@@ -56,7 +56,7 @@ import { readFileSync, readdirSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { scanMigrationSource } from './lib/migration-guard.mjs'
+import { scanMigrationSource } from './migration-guard.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const MIGRATIONS_DIR = path.join(HERE, '..', 'server', 'db', 'migrations')
@@ -178,7 +178,7 @@ function runSelfTest () {
     /* 2 — the REAL 16-statement destructive diff `db:migrate:make` produces
      *      today (captured verbatim, see the fixture's own header), with NO
      *      directive -> all 16 caught, all unauthorized, exit-worthy. */
-    const realFixturePath = path.join(HERE, 'lib', '__fixtures__', 'real-destructive-diff.fixture.ts')
+    const realFixturePath = path.join(HERE, 'real-destructive-diff.fixture.ts')
     const realFixtureSource = readFileSync(realFixturePath, 'utf8')
 
     record('diff destructif REEL (16 statements, non autorise) -> 16 violations, toutes refusees', () => {

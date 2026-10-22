@@ -12,7 +12,7 @@ import { execSync } from 'node:child_process'
 
 import type { DataSource } from 'typeorm'
 
-import { createDataSource } from '../../server/db/data-source'
+import { createDataSource } from '../server/db/data-source'
 import { REPO_ROOT } from './extract.mjs'
 
 let ds: DataSource | null = null
