@@ -64,7 +64,8 @@ const DEFAULTS: Required<IOrigamNuxtModuleOptions> = {
     autoImport: true,
     includeUtilities: true,
     prefix: 'Origam',
-    locale: {}
+    locale: {},
+    icons: {}
 }
 
 const SCALAR_DEFAULTS = {
@@ -213,7 +214,8 @@ const origamNuxtModule: NuxtModule<IOrigamNuxtModuleOptions, IOrigamNuxtModuleOp
             cookieName,
             modeCookieName,
             cookieMaxAge,
-            locale: options.locale
+            locale: options.locale,
+            icons: options.icons
         }
     }
 })
