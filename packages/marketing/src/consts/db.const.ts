@@ -74,7 +74,7 @@ export const DB_TABLES = Object.freeze({
 /**
  * Keys stored in the doc_meta key/value table.
  * `SEED_FIXTURE_HASH` gates the boot-time fixture sync: when the hash of the
- * bundled server/db/seed/*.json matches the last-applied value, the bootstrap
+ * bundled src/assets/seed/*.json matches the last-applied value, the bootstrap
  * plugin takes the fast path and skips the idempotent upsert entirely.
  */
 export const DOC_META_KEYS = Object.freeze({

@@ -253,7 +253,11 @@ export default defineNuxtConfig({
         serverAssets: [
             {
                 baseName: 'db-seed',
-                dir: fileURLToPath(new URL('./src/server/db/seed', import.meta.url))
+                dir: fileURLToPath(new URL('./src/assets/seed', import.meta.url))
+            },
+            {
+                baseName: 'sql',
+                dir: fileURLToPath(new URL('./src/assets/sql', import.meta.url))
             }
         ]
     },

@@ -1,7 +1,7 @@
 /**
  * POST /api/admin/reference/sync
  *
- * Re-applies the bundled fixtures (server/db/seed/*.json, embedded as server
+ * Re-applies the bundled fixtures (src/assets/seed/*.json, embedded as server
  * assets) to the database — the same idempotent upsert used by the boot-time
  * bootstrap (server/plugins/00.db-bootstrap.ts). Works in the deployed
  * container (.output) where DS source files and scripts/ are absent.

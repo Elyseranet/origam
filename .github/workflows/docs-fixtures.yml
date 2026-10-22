@@ -2,7 +2,7 @@ name: docs-fixtures
 
 # Regenerate the marketing API-Reference fixtures whenever the design-system
 # source changes, and open a PR to `develop`. The fixtures
-# (server/db/seed/*.json + server/assets/db-seed.sql) are the seed applied AT
+# (src/assets/seed/*.json + src/assets/sql/db-seed.sql) are the seed applied AT
 # DEPLOY TIME by the Nitro bootstrap plugin (server/plugins/00.db-bootstrap.ts):
 # once the PR is merged and develop deploys, the boot-time sync applies the new /
 # changed components to the live API-Reference automatically, WITHOUT touching
@@ -147,7 +147,7 @@ jobs:
           summary=$(grep -E 'summary —' /tmp/docs-sync.log | tail -1 || echo 'see workflow logs')
           echo "summary=$summary" >> "$GITHUB_OUTPUT"
 
-      # Snapshot the full store to server/db/seed/*.json (all 8 kinds).
+      # Snapshot the full store to src/assets/seed/*.json (all 8 kinds).
       - name: Dump JSON fixtures
         run: pnpm -F @origam/marketing docs:dump
 
@@ -156,7 +156,7 @@ jobs:
       - name: Generate playgrounds
         run: pnpm -F @origam/marketing docs:playgrounds
 
-      # Regenerate server/assets/db-seed.sql UNCONDITIONALLY from the final DB
+      # Regenerate src/assets/sql/db-seed.sql UNCONDITIONALLY from the final DB
       # state (pg_dump, filtered clean — no \restrict / set_config('search_path'
       # / CREATE EXTENSION). Before #191 this only happened inside
       # docs:playgrounds when NEW playgrounds were generated, so drift-only
@@ -182,8 +182,8 @@ jobs:
             **Re-sync drift:** ${{ steps.sync.outputs.summary }}
 
             Files:
-            - `packages/marketing/src/server/db/seed/*.json`
-            - `packages/marketing/src/server/assets/db-seed.sql`
+            - `packages/marketing/src/assets/seed/*.json`
+            - `packages/marketing/src/assets/sql/db-seed.sql`
 
             On merge → deploy → the Nitro bootstrap sync
             (`server/plugins/00.db-bootstrap.ts`) applies these to the live
@@ -191,6 +191,6 @@ jobs:
 
             Merge by hand when the diff looks right.
           add-paths: |
-            packages/marketing/src/server/db/seed
-            packages/marketing/src/server/assets/db-seed.sql
+            packages/marketing/src/assets/seed
+            packages/marketing/src/assets/sql/db-seed.sql
           delete-branch: true

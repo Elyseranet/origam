@@ -3,12 +3,12 @@
 // Auto-provisionne ET synchronise la base API-Reference au démarrage du serveur
 // Nitro — donc à CHAQUE déploiement, sans aucune commande manuelle. Séquence :
 //   1. applique les migrations TypeORM (crée / fait évoluer le schéma) ;
-//   2. calcule le hash de contenu des fixtures embarquées (server/db/seed/*.json,
+//   2. calcule le hash de contenu des fixtures embarquées (src/assets/seed/*.json,
 //      exposées comme asset serveur `assets:db-seed`) ;
 //   3. si ce hash == dernier appliqué (doc_meta.seed_fixture_hash) → FAST PATH,
 //      rien à faire (cas du boot normal, ~0 travail) ;
 //   4. sinon :
-//        - base VIDE → bulk-load rapide depuis server/assets/db-seed.sql ;
+//        - base VIDE → bulk-load rapide depuis src/assets/sql/db-seed.sql ;
 //        - base PEUPLÉE → sync idempotent des fixtures (syncFixtures) : crée les
 //          nouveaux composants/enfants, met à jour les colonnes [SRC], LAISSE
 //          INCHANGÉES les éditions `/admin` lockées ([ÉDIT] + edited_by_user),
@@ -92,7 +92,7 @@ export default defineNitroPlugin(async () => {
 
         // ── Base VIDE : bulk-load rapide depuis le snapshot SQL ──────────────
         if (isEmpty) {
-            const seed = toText(await useStorage('assets:server').getItem('db-seed.sql'))
+            const seed = toText(await useStorage('assets:sql').getItem('db-seed.sql'))
             if (seed) {
                 await runner.query(seed)
                 const after = await runner.query('SELECT count(*)::int AS count FROM doc_entry')

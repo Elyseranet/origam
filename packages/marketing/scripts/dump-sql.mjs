@@ -1,5 +1,5 @@
 /**
- * dump-sql.mjs — regenerate server/assets/db-seed.sql via pg_dump (filtered).
+ * dump-sql.mjs — regenerate src/assets/sql/db-seed.sql via pg_dump (filtered).
  *
  * Extracted verbatim from generate-playgrounds.mjs (#191) so the SQL seed can
  * be regenerated UNCONDITIONALLY (docs:dump:sql / the docs-fixtures workflow),
@@ -15,7 +15,7 @@ import { execFileSync } from 'node:child_process'
 import { DB_ENV } from '../src/consts/db.const.ts'
 
 const marketingDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-export const dbSeedSql = path.join(marketingDir, 'src', 'server', 'assets', 'db-seed.sql')
+export const dbSeedSql = path.join(marketingDir, 'src', 'assets', 'sql', 'db-seed.sql')
 
 // ─── pg_dump connection args ──────────────────────────────────────────────────
 
@@ -89,10 +89,10 @@ export function findDockerDbContainer () {
     }
 }
 
-// ─── Regenerate server/assets/db-seed.sql ────────────────────────────────────
+// ─── Regenerate src/assets/sql/db-seed.sql ────────────────────────────────────
 
 export function regenerateDbSeedSql () {
-    console.log('\n→ Regenerating server/assets/db-seed.sql via pg_dump ...')
+    console.log('\n→ Regenerating src/assets/sql/db-seed.sql via pg_dump ...')
 
     const { args, pgEnv } = buildPgDumpArgs()
 

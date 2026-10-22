@@ -3,7 +3,7 @@
  * Guard 10 — every `source_file` in the marketing seed must exist
  *
  * @description
- * The marketing site's catalogue (`packages/marketing/src/server/db/seed/*.json`
+ * The marketing site's catalogue (`packages/marketing/src/assets/seed/*.json`
  * plus the `db-seed.sql` dump built from them) carries a `source_file` on
  * each entry: the repo-relative path of the file that declares the symbol.
  * That path is what the site turns into a "view source" link, and what any
@@ -53,8 +53,8 @@ import { report } from './lib/baseline.mjs'
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '../../../..')
 const BASELINE = resolve(REPO, 'packages/ds/scripts/guards/baseline/seed-source-paths.json')
 
-const SEED_DIR = 'packages/marketing/src/server/db/seed'
-const SQL_DUMP = 'packages/marketing/src/server/assets/db-seed.sql'
+const SEED_DIR = 'packages/marketing/src/assets/seed'
+const SQL_DUMP = 'packages/marketing/src/assets/sql/db-seed.sql'
 
 /*********************************************************
  * collectFromJson

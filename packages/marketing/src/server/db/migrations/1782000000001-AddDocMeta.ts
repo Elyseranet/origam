@@ -2,7 +2,7 @@
  * AddDocMeta — adds the tiny key/value `doc_meta` table used by the boot-time
  * fixture sync (see server/plugins/00.db-bootstrap.ts). Holds the
  * `seed_fixture_hash` row so the bootstrap can fast-path when the bundled
- * server/db/seed/*.json is unchanged since the last applied sync.
+ * src/assets/seed/*.json is unchanged since the last applied sync.
  *
  * Reuses the shared `doc_set_updated_at` trigger function created by
  * InitDocReference (never dropped unless that migration is reverted).

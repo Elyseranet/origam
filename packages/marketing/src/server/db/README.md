@@ -251,12 +251,12 @@ NON-FATAL if the DB is down):
 
 1. `runMigrations()` — applies any pending migration (creates `doc_meta` on
    first boot after this feature ships).
-2. Compute a **content hash** of the bundled `server/db/seed/*.json`
+2. Compute a **content hash** of the bundled `src/assets/seed/*.json`
    (`fixtureHash`, order-stable over `DOC_KINDS`).
 3. **Fast path** — if the hash equals `doc_meta.seed_fixture_hash` (last
    applied), skip entirely. This is the normal boot: ~0 work.
 4. Otherwise:
-   - **empty DB** → bulk-load `server/assets/db-seed.sql` (fast first deploy);
+   - **empty DB** → bulk-load `src/assets/sql/db-seed.sql` (fast first deploy);
    - **populated DB** → idempotent `syncFixtures` in one transaction: create new
      entries + children, refresh `[SRC]` columns, **leave locked `[ÉDIT]` rows
      untouched**, flag removed items `orphaned_at` (never delete). Records a
@@ -280,7 +280,7 @@ idempotent sync on the next boot (safe — `[ÉDIT]` locks are respected).
 `packages/ds/**` changes on `develop`: spins up Postgres, runs
 `db:migrate → docs:sync → docs:dump → docs:playgrounds`, then opens (or
 refreshes) a **PR to `develop`** via `peter-evans/create-pull-request` with
-`server/db/seed/*.json` + `server/assets/db-seed.sql`. `develop` is a protected
+`src/assets/seed/*.json` + `src/assets/sql/db-seed.sql`. `develop` is a protected
 branch, so the flow is PR-only (default `GITHUB_TOKEN`, no bypass secret) and the
 PR is merged by hand. `docs:playgrounds` runs last so `db-seed.sql` is
 regenerated (pg_dump, filtered clean — no `\restrict` /

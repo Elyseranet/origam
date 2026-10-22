@@ -2,7 +2,7 @@
  * doc-meta.entity.ts — a tiny key/value table (doc_meta) holding operational
  * bookkeeping for the API-Reference store. Currently a single row:
  * `seed_fixture_hash` (DOC_META_KEYS), the content hash of the bundled
- * server/db/seed/*.json last applied by the boot-time sync. Standalone.
+ * src/assets/seed/*.json last applied by the boot-time sync. Standalone.
  */
 
 import { Column, Entity } from 'typeorm'
