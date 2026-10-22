@@ -232,7 +232,7 @@ describe('OrigamSelect — #622 le nom accessible est le label du champ, pas le 
         expect(input.attributes('aria-label')).toBe('Fermer')
     })
 
-    it('aria-controls est absent au repos (mesure #622)', async () => {
+    it('aria-controls est present au repos (WAI-ARIA 1.2, #1225)', async () => {
         const wrapper = mount(OrigamSelect, {
             global: { plugins: [createOrigam()] },
             props: { label: 'Country', items: ['France', 'Belgium'] } as never
@@ -242,7 +242,7 @@ describe('OrigamSelect — #622 le nom accessible est le label du champ, pas le 
         const input = wrapper.find('input')
         expect(input.attributes('aria-expanded')).toBe('false')
         expect(input.attributes('aria-haspopup')).toBe('listbox')
-        expect(input.attributes('aria-controls')).toBeUndefined()
+        expect(input.attributes('aria-controls')).toMatch(/^origam-select-listbox-/)
     })
 
     it('aria-controls est present quand le menu est ouvert des le montage (mesure #622)', async () => {
