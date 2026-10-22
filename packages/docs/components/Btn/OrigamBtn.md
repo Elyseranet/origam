@@ -438,6 +438,7 @@ document root or via a `:style` binding to re-skin a single instance.
 | `--origam-btn---background-color-hover` | `{color.action.secondary.bgHover}` |
 | `--origam-btn---border-radius` | `{radius.sm}` |
 | `--origam-btn---border-color` | `currentColor` (outlined variant; overridable via `borderColor` prop) |
+| `--origam-btn---background-color-text-active` | `transparent` by default: set it to give the `text` variant an active (`active` / selected) fill |
 | `--origam-btn---border-color-ghost` | `color-mix(currentColor 24%)` (ghost variant) |
 | `--origam-btn---font-size` | `{font.size.md}` |
 | `--origam-btn---font-weight` | `{font.weight.medium}` |
