@@ -51,7 +51,13 @@ export function useReferenceCatalog<T>(
         // the fetcher and watched, so both re-evaluate when the user switches
         // language client-side — a static key/query would keep serving the
         // first-rendered locale's payload forever.
-        () => `catalog:${kind}:${category ?? ''}:${locale.value}`,
+        // `lazy` : clé STATIQUE. Une clé réactive relance la requête dès que la locale
+        // change (Nuxt 4), même avec `immediate: false` et `watch: false` — la palette
+        // ⌘K téléchargerait alors les 8 familles sans avoir jamais été ouverte.
+        // C'est l'appelant qui rafraîchit (`execute()`) quand il a des données à tenir à jour.
+        options.lazy
+            ? `catalog:${kind}:${category ?? ''}:lazy`
+            : () => `catalog:${kind}:${category ?? ''}:${locale.value}`,
         () => referenceService.getCatalog<T>(kind, { category, locale: locale.value }),
         {
             default: () => [] as T[],
