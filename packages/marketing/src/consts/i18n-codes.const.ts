@@ -10,7 +10,7 @@
  *
  * This file has zero imports and zero side effects, so both
  * `i18n.const.ts` (build-time enrichment with display metadata) and
- * `server/utils/reference-locale.ts` (request-time validation) can depend on
+ * `src/utils/reference-locale.util.ts` (request-time validation) can depend on
  * it without either re-declaring the list.
  *
  * Adding a locale: add the code here, then give it a row in `LOCALE_META`

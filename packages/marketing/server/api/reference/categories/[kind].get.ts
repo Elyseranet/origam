@@ -27,6 +27,7 @@
 
 import { REFERENCE_CACHE_NAMES, REFERENCE_CACHE_TTL_SECONDS } from '../../../../src/consts/cache.const'
 import { referenceCategoriesCacheKey } from '../../../../src/utils/reference-cache.util'
+import { fetchCategoryOrder } from '../../../../src/utils/catalog-queries.util'
 import { resolveLocale } from '../../../../src/utils/reference-locale.util'
 
 import { useDb } from '../../../../src/utils/db.util'

@@ -1,8 +1,9 @@
 import { computed } from 'vue'
 import type { IGithubStarsData } from '~/interfaces/github.interface'
+import { adoptionService } from '~/services/adoption.service'
 
 export function useGithubStars () {
-  const { data, status } = useFetch<IGithubStarsData>('/api/github-stars', {
+  const { data, status } = useAsyncData<IGithubStarsData>('github-stars', () => adoptionService.getGithubStars(), {
     default: () => ({ stars: null })
   })
 

@@ -19,8 +19,7 @@
  */
 
 import { isPlaceholderJsDoc } from './extract.mjs'
-
-const EMPTY = ''
+import { EMPTY, DOC_TYPE, DOC_SUFFIX, IMPORT_PATH } from '../src/consts/doc-merge.const.ts'
 
 /** pick curated string, else source JSDoc (only if non-placeholder), else empty */
 function descFrom (curated, jsdoc) {
@@ -149,30 +148,9 @@ export function mergeUtil (src, existing) {
     return merged
 }
 
-export const MERGERS = {
+export const mergers = {
     enum: mergeEnum,
     interface: mergeInterface,
     const: mergeConst,
     util: mergeUtil,
-}
-
-export const DOC_TYPE = {
-    enum: 'IEnumDoc',
-    interface: 'IInterfaceDoc',
-    const: 'IConstDoc',
-    util: 'IUtilDoc',
-}
-
-export const DOC_SUFFIX = {
-    enum: 'ENUM_DOC',
-    interface: 'INTERFACE_DOC',
-    const: 'CONST_DOC',
-    util: 'UTIL_DOC',
-}
-
-export const IMPORT_PATH = {
-    enum: "~/interfaces/enums-catalog.interface",
-    interface: "~/interfaces/interfaces-catalog.interface",
-    const: "~/interfaces/consts-catalog.interface",
-    util: "~/interfaces/utils-catalog.interface",
 }

@@ -13,12 +13,8 @@ import { verifyAdminPassword, getAdminSession } from '../../../src/utils/admin-a
  * infrastructure layer (reverse proxy / CDN) — not in this handler.
  */
 
-interface ILoginBody {
-    password: string
-}
-
 export default defineEventHandler(async (event) => {
-    const body = await readValidatedBody(event, (raw): raw is ILoginBody => {
+    const body = await readValidatedBody(event, (raw): raw is IAdminLoginBody => {
         if (typeof raw !== 'object' || raw === null) return false
         const b = raw as Record<string, unknown>
         return typeof b.password === 'string' && b.password.length > 0

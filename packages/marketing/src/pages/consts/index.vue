@@ -54,7 +54,7 @@
             {{ filteredCount }} {{ t('consts.hero.count_filtered_of', 'of') }} {{ totalCount }} {{ t('consts.hero.count_filtered_match', 'constants match') }}
           </template>
           <template v-else>
-            {{ totalCount }} {{ t('consts.hero.count_total', 'constants across') }} {{ CONSTS_CATEGORIES.length }} {{ t('consts.hero.count_categories', 'categories') }}
+            {{ totalCount }} {{ t('consts.hero.count_total', 'constants across') }} {{ constsCategories.length }} {{ t('consts.hero.count_categories', 'categories') }}
           </template>
         </p>
       </origam-container>
@@ -212,17 +212,17 @@ useSeoMeta({
 
 const { data: catalogData } = await useReferenceCatalog<IConstEntry>('const')
 
-const CONSTS_CATALOG = computed<IConstEntry[]>(() => catalogData.value ?? [])
+const constsCatalog = computed<IConstEntry[]>(() => catalogData.value ?? [])
 
 const { data: catsData } = await useReferenceCategories('const')
-const CONSTS_CATEGORIES = computed<string[]>(() => catsData.value ?? [])
+const constsCategories = computed<string[]>(() => catsData.value ?? [])
 
 const searchQuery = ref('')
 
 const filteredEntries = computed(() => {
     const query = searchQuery.value.toLowerCase().trim()
-    if (!query) return CONSTS_CATALOG.value
-    return CONSTS_CATALOG.value.filter(entry => {
+    if (!query) return constsCatalog.value
+    return constsCatalog.value.filter(entry => {
         const nameMatch = entry.name.toLowerCase().includes(query)
         const categoryMatch = entry.category.toLowerCase().includes(query)
         const descMatch = entry.descriptionFallback.toLowerCase().includes(query)
@@ -231,13 +231,13 @@ const filteredEntries = computed(() => {
 })
 
 const groupedByCategory = computed(() =>
-    CONSTS_CATEGORIES.value.map(category => ({
+    constsCategories.value.map(category => ({
         category,
         entries: filteredEntries.value.filter(e => e.category === category)
     })).filter(group => group.entries.length > 0)
 )
 
-const totalCount = computed(() => CONSTS_CATALOG.value.length)
+const totalCount = computed(() => constsCatalog.value.length)
 const filteredCount = computed(() => filteredEntries.value.length)
 const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 </script>

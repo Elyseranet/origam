@@ -1,8 +1,9 @@
 import { computed } from 'vue'
 import type { INpmDownloadsData } from '~/interfaces/npm-downloads.interface'
+import { adoptionService } from '~/services/adoption.service'
 
 export function useNpmDownloads () {
-  const { data, status } = useFetch<INpmDownloadsData>('/api/npm-downloads', {
+  const { data, status } = useAsyncData<INpmDownloadsData>('npm-downloads', () => adoptionService.getNpmDownloads(), {
     default: () => ({ downloads: null })
   })
 

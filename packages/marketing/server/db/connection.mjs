@@ -2,7 +2,7 @@
  * connection.mjs — resolve the TypeORM postgres connection options from the
  * environment. Shared by the DataSource (runtime + migrations) and the
  * ingestion pipeline. No secret is ever hardcoded: everything reads from the
- * process environment (see DB_ENV in db.const.mjs).
+ * process environment (see DB_ENV in src/consts/db.const.ts).
  */
 
 import { DB_ENV, DB_DEFAULTS } from '../../src/consts/db.const.ts'

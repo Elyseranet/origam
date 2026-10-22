@@ -26,135 +26,30 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { execSync } from 'node:child_process'
 
-import { REPO_ROOT } from './extract.mjs'
+import { repoRoot } from './extract.mjs'
 import { getDb, closeDb } from './db.ts'
 import { regenerateDbSeedSql } from './dump-sql.mjs'
+import { EXCLUDED_PROPS, SKIP_TYPE_SLUGS, CURATED_TYPE_OPTIONS, PROP_PRIORITY, PROP_LABELS, TEXT_PROPS } from '../src/consts/playground-generator.const.ts'
 
 // ─── CLI flags ────────────────────────────────────────────────────────────────
 
-const ARGS        = process.argv.slice(2)
-const DRY_RUN     = ARGS.includes('--dry-run')
-const VERBOSE     = ARGS.includes('--verbose')
+const argv        = process.argv.slice(2)
+const dryRunFlag     = argv.includes('--dry-run')
+const verboseFlag     = argv.includes('--verbose')
 
-const MARKETING_DIR = path.join(REPO_ROOT, 'packages', 'marketing')
-const DB_SEED_SQL   = path.join(MARKETING_DIR, 'server', 'assets', 'db-seed.sql')
+const marketingDir = path.join(repoRoot, 'packages', 'marketing')
+const dbSeedSql   = path.join(marketingDir, 'server', 'assets', 'db-seed.sql')
 
 // ─── Props never turned into playground controls ──────────────────────────────
 
-const EXCLUDED_PROPS = new Set([
-    'tag', 'to', 'href', 'target', 'rel', 'style', 'class', 'id',
-    'ripple', 'eager', 'transition', 'reverseTransition',
-    'ariaLabel', 'role', 'tabIndex', 'value',
-])
-
 // ─── Type slugs too complex for a generic control ─────────────────────────────
-
-const SKIP_TYPE_SLUGS = new Set([
-    'loading-value', 'route-location-raw', 'theme',
-    'css-value', 'css-class',
-])
 
 // ─── Curated options for type slugs not derivable from doc_value ──────────────
 // (TColor is too broad; TIcon has no discrete members — both need curation)
 
-const CURATED_TYPE_OPTIONS = Object.freeze({
-    color: {
-        kind: 'select',
-        options: [
-            { label: '(none)', value: '' },
-            { label: 'primary',   value: 'primary' },
-            { label: 'secondary', value: 'secondary' },
-            { label: 'success',   value: 'success' },
-            { label: 'danger',    value: 'danger' },
-            { label: 'warning',   value: 'warning' },
-            { label: 'info',      value: 'info' },
-        ],
-        defaultValue: '',
-    },
-    icon: {
-        kind: 'select',
-        options: [
-            { label: '(none)',        value: '' },
-            { label: 'mdi-star',      value: 'mdi-star' },
-            { label: 'mdi-account',   value: 'mdi-account' },
-            { label: 'mdi-check',     value: 'mdi-check' },
-            { label: 'mdi-home',      value: 'mdi-home' },
-            { label: 'mdi-close',     value: 'mdi-close' },
-        ],
-        defaultValue: '',
-    },
-})
-
 // ─── Control generation priority (lower = appears first; max 8 controls) ──────
 
-const PROP_PRIORITY = Object.freeze({
-    variant:      1,
-    color:        2,
-    bgColor:      3,
-    size:         4,
-    density:      5,
-    status:       6,
-    align:        7,
-    justify:      8,
-    position:     9,
-    rounded:     10,
-    elevation:   11,
-    prependIcon: 12,
-    appendIcon:  13,
-    // boolean switches
-    disabled:    20,
-    loading:     21,
-    readonly:    22,
-    closable:    23,
-    modelValue:  24,
-    active:      25,
-    block:       26,
-    flat:        27,
-    slim:        28,
-    stacked:     29,
-    // text inputs (lowest priority — added only if slots remain)
-    title:       40,
-    text:        41,
-    label:       42,
-    placeholder: 43,
-    subtitle:    44,
-})
-
 // ─── Human-readable fallback labels ──────────────────────────────────────────
-
-const PROP_LABELS = Object.freeze({
-    variant:     'Variant',
-    color:       'Color / Intent',
-    bgColor:     'Background color',
-    size:        'Size',
-    density:     'Density',
-    status:      'Status',
-    rounded:     'Rounded',
-    elevation:   'Elevation',
-    prependIcon: 'Prepend icon',
-    appendIcon:  'Append icon',
-    disabled:    'Disabled',
-    loading:     'Loading',
-    readonly:    'Read-only',
-    closable:    'Closable',
-    modelValue:  'Value',
-    active:      'Active',
-    block:       'Block',
-    flat:        'Flat',
-    slim:        'Slim',
-    stacked:     'Stacked',
-    align:       'Align',
-    justify:     'Justify',
-    position:    'Position',
-    title:       'Title',
-    text:        'Text',
-    label:       'Label',
-    placeholder: 'Placeholder',
-    subtitle:    'Subtitle',
-})
-
-// Simple string props worth exposing as a text control (low priority)
-const TEXT_PROPS = new Set(['title', 'text', 'label', 'placeholder', 'subtitle'])
 
 // ─── Helper utilities ─────────────────────────────────────────────────────────
 
@@ -399,13 +294,13 @@ function generatePlayground (entry, props, slots, typeOptionsMap) {
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 async function run () {
-    console.log(`${DRY_RUN ? '[DRY RUN] ' : ''}Generating component playgrounds ...\n`)
+    console.log(`${dryRunFlag ? '[DRY RUN] ' : ''}Generating component playgrounds ...\n`)
 
     const db = await getDb()
 
     // 1. Build type/enum options map
     const typeOptionsMap = await buildTypeOptionsMap(db)
-    if (VERBOSE) console.log(`   Type/enum option map: ${typeOptionsMap.size} entries\n`)
+    if (verboseFlag) console.log(`   Type/enum option map: ${typeOptionsMap.size} entries\n`)
 
     // 2. Query component entries that currently lack a playground
     const entries = await db.query(
@@ -468,19 +363,19 @@ async function run () {
         const playground = generatePlayground(entry, props, slots, typeOptionsMap)
 
         if (!playground) {
-            if (VERBOSE) console.log(`  [skip] ${entry.slug} — no playable props`)
+            if (verboseFlag) console.log(`  [skip] ${entry.slug} — no playable props`)
             skippedCount++
             continue
         }
 
-        if (VERBOSE || DRY_RUN) {
+        if (verboseFlag || dryRunFlag) {
             console.log(
                 `  [gen ] ${entry.slug.padEnd(36)} ${playground.controls.length} controls: ` +
                 playground.controls.map(c => c.prop).join(', '),
             )
         }
 
-        if (!DRY_RUN) {
+        if (!dryRunFlag) {
             await db.query(
                 `UPDATE doc_entry
                  SET    kind_extra  = COALESCE(kind_extra, '{}'::jsonb) ||
@@ -502,7 +397,7 @@ async function run () {
 
     await closeDb()
 
-    if (DRY_RUN) {
+    if (dryRunFlag) {
         console.log('\n[DRY RUN] No DB changes written.')
         return
     }
@@ -516,7 +411,7 @@ async function run () {
     console.log('\n→ Regenerating server/db/seed/component.json ...')
     execSync(
         'tsx --tsconfig ./tsconfig.typeorm.json scripts/dump-db-fixture.mjs --domain=component',
-        { cwd: MARKETING_DIR, stdio: 'inherit', env: process.env },
+        { cwd: marketingDir, stdio: 'inherit', env: process.env },
     )
 
     // 6. Regenerate server/assets/db-seed.sql

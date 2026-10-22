@@ -6,22 +6,15 @@
  */
 
 import { DocEntry, DocRelation } from '../../server/db/entities'
+import { CROSS_FAMILY_REL_TYPES, SOURCE_BASENAME_SQL } from '../consts/catalog-neighbours.const'
 import { DOC_KINDS } from '../consts/db.const'
 import type {
     ICatalogNeighbourLink,
     ICatalogRelatedGroup,
     ICatalogSequenceRow,
+    IResolvedTarget,
 } from '../interfaces/catalog-neighbours.interface'
 import type { TReferenceKind } from '../types/api-reference.type'
-
-/**
- * Types de relation qui relient DEUX familles. `extends` (bruit : « extends
- * Pick ») et `family` (même famille) sont exclus par construction.
- */
-const CROSS_FAMILY_REL_TYPES = ['used_by', 'related']
-
-/** Identifiant exact d'une entrée : le nom de fichier source sans extension. */
-const SOURCE_BASENAME_SQL = `regexp_replace(e.source_file, '^.*/([^/]+?)(\\.[^./]+)?$', '\\1')`
 
 /**
  * Catégories d'une famille, dans l'ordre de Postgres — la requête EXACTE que
@@ -68,12 +61,6 @@ export async function fetchFamilyOrder (db: any, parentSlug: string): Promise<st
         .getMany()
 
     return rels.map(r => r.to_slug).filter((s): s is string => !!s)
-}
-
-interface IResolvedTarget {
-    kind: string
-    slug: string
-    name: string
 }
 
 /**

@@ -56,31 +56,22 @@
 import { createRequire } from 'node:module'
 import path from 'node:path'
 
-import { DS_SRC, REPO_ROOT, relSourcePath } from './extract.mjs'
+import { dsSrc, repoRoot, relSourcePath } from './extract.mjs'
+import { NO_PAYLOAD, NO_SLOT_PROPS } from '../src/consts/doc-extract.const.ts'
 
 /** @type {import('typescript')} */
 const ts = createRequire(import.meta.url)('typescript')
 
-const DS_SCRIPTS = path.join(REPO_ROOT, 'packages', 'ds', 'scripts')
+const dsScripts = path.join(repoRoot, 'packages', 'ds', 'scripts')
 
 const { getRealComponents, pascalToKebab } = await import(
-    path.join(DS_SCRIPTS, 'guards', 'lib', 'components.mjs')
+    path.join(dsScripts, 'guards', 'lib', 'components.mjs')
 )
 const { macroInterfacesOf } = await import(
-    path.join(DS_SCRIPTS, 'lib', 'component-api.mjs')
+    path.join(dsScripts, 'lib', 'component-api.mjs')
 )
 
 export { getRealComponents, pascalToKebab }
-
-/**
- * A payload-less emit is labelled `void`, which is the majority convention in
- * the curated data (25 rows against 6 spelled `—`). Normalising the 6 is an
- * update of 6 cells, not a loss.
- */
-const NO_PAYLOAD = 'void'
-
-/** A slot that takes no slot-props is labelled `—` — the curated convention. */
-const NO_SLOT_PROPS = '—'
 
 const oneLine = (s) => s.replace(/\s+/g, ' ').trim()
 
@@ -94,7 +85,7 @@ const oneLine = (s) => s.replace(/\s+/g, ' ').trim()
 export function buildDeclarationIndex (program) {
     const decls = new Map()
     for (const sf of program.getSourceFiles()) {
-        if (!sf.fileName.startsWith(DS_SRC)) continue
+        if (!sf.fileName.startsWith(dsSrc)) continue
         ts.forEachChild(sf, (node) => {
             if (!node.name) return
             if (!ts.isInterfaceDeclaration(node) && !ts.isTypeAliasDeclaration(node)) return

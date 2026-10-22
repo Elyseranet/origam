@@ -14,6 +14,7 @@
  */
 
 import { toSlug } from './extract.mjs'
+import { COMPONENT_EXTRA_KEYS } from '../src/consts/doc-to-rows.const.ts'
 
 const arr = (v) => Array.isArray(v) ? v : []
 const orNull = (v) => (v === undefined ? null : v)
@@ -257,12 +258,6 @@ function mapDirective (doc) {
     return r
 }
 
-/** Component-only rich blocks that ride in kind_extra (ADR §3.4). */
-const COMPONENT_EXTRA_KEYS = [
-    'anatomy', 'cssVars', 'exposed', 'composable',
-    'a11y', 'tokens', 'playground', 'previewVariants',
-]
-
 function mapComponent (doc) {
     const r = base('component', doc)
     r.props = arr(doc.props).map((p, i) => ({
@@ -322,7 +317,7 @@ function mapComponent (doc) {
     return r
 }
 
-const MAPPERS = {
+const mappers = {
     enum: mapEnum,
     type: mapType,
     interface: mapInterface,
@@ -335,7 +330,7 @@ const MAPPERS = {
 
 /** Map a `_DOC` object of the given kind to the normalised DB record. */
 export function mapDoc (kind, doc) {
-    const mapper = MAPPERS[kind]
+    const mapper = mappers[kind]
     if (!mapper) throw new Error(`No mapper for kind: ${kind}`)
     return mapper(doc)
 }

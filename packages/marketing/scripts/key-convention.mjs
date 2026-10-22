@@ -32,18 +32,7 @@
  */
 
 import { toSlug } from './extract.mjs'
-
-/** doc_entry.kind → the plural namespace segment used by every key. */
-export const KIND_NAMESPACE = Object.freeze({
-    component: 'components',
-    composable: 'composables',
-    const: 'consts',
-    directive: 'directives',
-    enum: 'enums',
-    interface: 'interfaces',
-    type: 'types',
-    util: 'utils',
-})
+import { KIND_NAMESPACE } from '../src/consts/key-convention.const.ts'
 
 /** camelCase/PascalCase identifier → snake_case key segment (reuses the DS-wide kebab algorithm). */
 export function toSnake (name) {

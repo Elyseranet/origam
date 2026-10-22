@@ -14,8 +14,8 @@ import { execFileSync } from 'node:child_process'
 
 import { DB_ENV } from '../src/consts/db.const.ts'
 
-const MARKETING_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-export const DB_SEED_SQL = path.join(MARKETING_DIR, 'server', 'assets', 'db-seed.sql')
+const marketingDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
+export const dbSeedSql = path.join(marketingDir, 'server', 'assets', 'db-seed.sql')
 
 // ─── pg_dump connection args ──────────────────────────────────────────────────
 
@@ -135,6 +135,6 @@ export function regenerateDbSeedSql () {
     }
 
     const filtered = filterPgDumpOutput(raw)
-    fs.writeFileSync(DB_SEED_SQL, filtered, 'utf-8')
-    console.log(`   Written ${(Buffer.byteLength(filtered, 'utf-8') / 1024 / 1024).toFixed(1)} MB → ${DB_SEED_SQL}`)
+    fs.writeFileSync(dbSeedSql, filtered, 'utf-8')
+    console.log(`   Written ${(Buffer.byteLength(filtered, 'utf-8') / 1024 / 1024).toFixed(1)} MB → ${dbSeedSql}`)
 }

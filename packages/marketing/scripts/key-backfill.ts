@@ -19,18 +19,9 @@ import {
 import {
     entryDescriptionKey, entryNoteKey, propKey, paramKey, returnKey, exampleTitleKey, fixEnumNamespace,
 } from './key-convention.mjs'
+import type { IBackfillCounts } from '../src/interfaces/key-backfill.interface.ts'
 
-export interface BackfillCounts {
-    entryDescription: number
-    entryNote: number
-    props: number
-    params: number
-    returns: number
-    examples: number
-    enumNamespace: number
-}
-
-const blank = (): BackfillCounts => ({
+const blank = (): IBackfillCounts => ({
     entryDescription: 0, entryNote: 0, props: 0, params: 0, returns: 0, examples: 0, enumNamespace: 0,
 })
 
@@ -61,7 +52,7 @@ async function fixNamespaceOn (manager: EntityManager, entity: ObjectType<any>, 
 }
 
 /** Backfill every orphaned `*_key` (empty key + real fallback) across the doc_* graph. */
-export async function backfillKeys (manager: EntityManager): Promise<BackfillCounts> {
+export async function backfillKeys (manager: EntityManager): Promise<IBackfillCounts> {
     const counts = blank()
 
     const entries = await manager.find(DocEntry, {})

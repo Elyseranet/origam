@@ -20,36 +20,15 @@
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import url from 'node:url'
+import { DOMAINS, TS_DOMAINS, FN_KINDS, SLUG_STYLE } from '../src/consts/doc-extract.const.ts'
 
 const require = createRequire(import.meta.url)
 /** @type {import('typescript')} */
 const ts = require('typescript')
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
-export const REPO_ROOT = path.resolve(__dirname, '..', '..', '..')
-export const DS_SRC = path.join(REPO_ROOT, 'packages', 'ds', 'src')
-
-/**
- * The eight families of the API Reference, and where each one is read from.
- *
- * `components` is the odd one out: its source is a `.vue` SFC, not a `.ts`, and
- * its public surface is declared by macros that merely NAME an interface. It
- * carries `vue: true` and is handled by `extract-vue.mjs`; `listSourceFiles`
- * and `extractFile` do not apply to it.
- */
-export const DOMAINS = {
-    enums: { dir: 'enums', glob: '.enum.ts', kind: 'enum' },
-    interfaces: { dir: 'interfaces', glob: '.interface.ts', kind: 'interface' },
-    consts: { dir: 'consts', glob: '.const.ts', kind: 'const' },
-    utils: { dir: 'utils', glob: '.util.ts', kind: 'util' },
-    composables: { dir: 'composables', glob: '.composable.ts', kind: 'composable' },
-    types: { dir: 'types', glob: '.type.ts', kind: 'type' },
-    directives: { dir: 'directives', glob: '.directive.ts', kind: 'directive' },
-    components: { dir: 'components', glob: '.vue', kind: 'component', vue: true },
-}
-
-/** Domains whose source is a `.ts` file the TypeScript Program can compile. */
-export const TS_DOMAINS = Object.keys(DOMAINS).filter(k => !DOMAINS[k].vue)
+export const repoRoot = path.resolve(__dirname, '..', '..', '..')
+export const dsSrc = path.join(repoRoot, 'packages', 'ds', 'src')
 
 /**
  * kebab-case a symbol name, reproducing the EXISTING marketing convention so
@@ -76,24 +55,6 @@ export function toSlug (name, style = 'standard') {
         .replace(/([A-Z]+)([A-Z][a-z])/g, '$1-$2')
         .replace(/_/g, '-')
         .toLowerCase()
-}
-
-/**
- * Families read as FUNCTIONS — one extraction path, two kinds. A composable is
- * a util that happens to live under `composables/` and to hand back an object.
- */
-const FN_KINDS = new Set(['util', 'composable'])
-
-/** Slug style historically used per domain. */
-export const SLUG_STYLE = {
-    enums: 'standard',
-    interfaces: 'percap',
-    consts: 'standard',
-    utils: 'standard',
-    composables: 'standard',
-    types: 'standard',
-    directives: 'standard',
-    components: 'standard',
 }
 
 /**
@@ -135,20 +96,20 @@ function walk (dir, ext, out = []) {
 
 export function listSourceFiles (domainKey) {
     const d = DOMAINS[domainKey]
-    const root = path.join(DS_SRC, d.dir)
+    const root = path.join(dsSrc, d.dir)
     return walk(root, d.glob).sort()
 }
 
 /** category = first path segment under the domain dir, e.g. .../enums/Commons/align.enum.ts → "Commons" */
 export function folderCategory (domainKey, file) {
     const d = DOMAINS[domainKey]
-    const rel = path.relative(path.join(DS_SRC, d.dir), file)
+    const rel = path.relative(path.join(dsSrc, d.dir), file)
     const seg = rel.split(path.sep)[0]
     return seg && seg !== path.basename(file) ? seg : 'Commons'
 }
 
 export function relSourcePath (file) {
-    return path.relative(REPO_ROOT, file).split(path.sep).join('/')
+    return path.relative(repoRoot, file).split(path.sep).join('/')
 }
 
 function getJsDoc (node) {

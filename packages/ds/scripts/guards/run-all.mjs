@@ -46,7 +46,8 @@ const GUARDS = [
     'unitless-zero-in-calc.mjs',
     'ts-token-refs.mjs',
     'theme-channel-confiscation.mjs',
-    'inherit-attrs-fragment-root.mjs'
+    'inherit-attrs-fragment-root.mjs',
+    'marketing-server-leak.mjs'
 ]
 
 /*********************************************************

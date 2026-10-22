@@ -8,9 +8,7 @@
  */
 
 import { DOC_KINDS } from '../consts/db.const'
-
-/** Kebab-case: one or more lowercase-alnum groups joined by single hyphens. */
-const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+import { SLUG_RE } from '../consts/reference-validation.const'
 
 /**
  * Throws 400 when `kind` is not one of the 8 documented entity families.

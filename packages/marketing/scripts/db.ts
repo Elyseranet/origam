@@ -13,7 +13,7 @@ import { execSync } from 'node:child_process'
 import type { DataSource } from 'typeorm'
 
 import { createDataSource } from '../server/db/data-source'
-import { REPO_ROOT } from './extract.mjs'
+import { repoRoot } from './extract.mjs'
 
 let ds: DataSource | null = null
 
@@ -31,7 +31,7 @@ export async function closeDb (): Promise<void> {
 /** Short git sha of the DS source at run time (for doc_sync_run audit). */
 export function sourceCommit (): string | null {
     try {
-        return execSync('git rev-parse --short HEAD', { cwd: REPO_ROOT })
+        return execSync('git rev-parse --short HEAD', { cwd: repoRoot })
             .toString().trim()
     } catch {
         return null

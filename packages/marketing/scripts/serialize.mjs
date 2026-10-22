@@ -11,17 +11,8 @@
  */
 
 import { slugToScreaming } from './extract.mjs'
-import { DOC_TYPE, DOC_SUFFIX, IMPORT_PATH } from './merge.mjs'
-
-const IND = '    '
-
-// Tokens the Nuxt SSR build statically replaces (e.g. `typeof window` ->
-// "undefined"). When such a token appears verbatim INSIDE a documentation
-// code string, @rollup/plugin-replace corrupts it ('"undefined" !== ...') and
-// the server bundle fails to parse. We emit the token via a `${'…'}`
-// interpolation so the rendered text is identical but the contiguous token
-// never exists in the module source for the replacer to match.
-const SSR_REPLACED_TOKENS = ['typeof window', 'typeof document']
+import { DOC_SUFFIX, DOC_TYPE, IMPORT_PATH } from '../src/consts/doc-merge.const.ts'
+import { IND, SSR_REPLACED_TOKENS } from '../src/consts/doc-serialize.const.ts'
 
 function hasDangerousToken (s) {
     return SSR_REPLACED_TOKENS.some(t => String(s).includes(t))
@@ -163,11 +154,11 @@ function renderExamples (examples, i) {
     })
 }
 
-const RENDERERS = { enum: renderEnum, interface: renderInterface, const: renderConst, util: renderUtil }
+const renderers = { enum: renderEnum, interface: renderInterface, const: renderConst, util: renderUtil }
 
 export function serialize (kind, merged) {
     const exportName = `${slugToScreaming(merged.slug)}_${DOC_SUFFIX[kind]}`
-    const body = RENDERERS[kind](merged, IND)
+    const body = renderers[kind](merged, IND)
     return [
         `import type { ${DOC_TYPE[kind]} } from '${IMPORT_PATH[kind]}'`,
         '',

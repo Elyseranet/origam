@@ -106,3 +106,6 @@ export const DB_ENV = Object.freeze({
 export const DB_DEFAULTS = Object.freeze({
     PORT: 5432,
 })
+
+/** Postgres advisory-lock key serialising the boot-time fixture sync across Nitro workers. */
+export const BOOTSTRAP_LOCK_KEY = 4021

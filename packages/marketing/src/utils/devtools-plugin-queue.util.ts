@@ -62,9 +62,8 @@
 // pour le bundle serveur (ou où `vue-i18n` cesse de s'enregistrer hors
 // navigateur).
 
+import { VUE_DEVTOOLS_PLUGINS_KEY } from '../consts/devtools-plugin-queue.const'
 import type { IDevtoolsQueueTarget } from '../interfaces/devtools-queue-target.interface'
-
-export const VUE_DEVTOOLS_PLUGINS_KEY = '__VUE_DEVTOOLS_PLUGINS__' as const
 
 /**
  * Rend la file d'attente des plugins Vue DevTools non-rétentive sur `target`.

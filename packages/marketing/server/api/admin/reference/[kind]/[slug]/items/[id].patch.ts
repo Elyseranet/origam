@@ -17,19 +17,14 @@ import {
     DocEmit, DocSlot, DocDirectiveArg, DocDirectiveModifier,
 } from '../../../../../../db/entities'
 import type { Repository } from 'typeorm'
-import { ITEM_EDIT_MAP, toDbPayload, toCamelItem } from '../../../../../../../src/utils/admin-mappers.util'
+import { ALLOWED_COLLECTIONS, ITEM_EDIT_MAP } from '../../../../../../../src/consts/admin-mappers.const'
+import type { TAdminCollectionKey } from '../../../../../../../src/types/admin.type'
+import { toDbPayload, toCamelItem } from '../../../../../../../src/utils/admin-mappers.util'
 
 import { useDb } from '../../../../../../../src/utils/db.util'
 import { assertKind, assertSlug } from '../../../../../../../src/utils/reference-validation.util'
-type CollectionKey =
-    | 'prop' | 'value' | 'param' | 'return'
-    | 'emit' | 'slot' | 'directive_arg' | 'directive_modifier'
 
-const ALLOWED_COLLECTIONS: ReadonlyArray<CollectionKey> = [
-    'prop', 'value', 'param', 'return', 'emit', 'slot', 'directive_arg', 'directive_modifier',
-]
-
-function getCollectionRepo (db: Awaited<ReturnType<typeof useDb>>, collection: CollectionKey): Repository<any> {
+function getCollectionRepo (db: Awaited<ReturnType<typeof useDb>>, collection: TAdminCollectionKey): Repository<any> {
     switch (collection) {
         case 'prop': return db.getRepository(DocProp)
         case 'value': return db.getRepository(DocValue)
@@ -55,7 +50,7 @@ export default defineEventHandler(async (event) => {
 
     const query = getQuery(event)
     const collection = query.collection as string | undefined
-    if (!collection || !ALLOWED_COLLECTIONS.includes(collection as CollectionKey)) {
+    if (!collection || !ALLOWED_COLLECTIONS.includes(collection as TAdminCollectionKey)) {
         throw createError({
             statusCode: 400,
             statusMessage: `Query param 'collection' is required. Allowed values: ${ALLOWED_COLLECTIONS.join(', ')}`,
@@ -96,7 +91,7 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 404, statusMessage: `${kind} '${slug}' not found` })
     }
 
-    const repo = getCollectionRepo(db, collection as CollectionKey)
+    const repo = getCollectionRepo(db, collection as TAdminCollectionKey)
     const item = await repo.findOneBy({ id })
 
     if (!item || item.entry_id !== entry.id) {

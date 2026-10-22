@@ -6,7 +6,7 @@
 // jamais dans un worker Node.
 //
 // Le diagnostic complet, le chemin de rétention lu dans le heap snapshot et les
-// chiffres avant/après sont dans `server/utils/devtools-plugin-queue.ts`, à côté
+// chiffres avant/après sont dans `src/utils/devtools-plugin-queue.util.ts`, à côté
 // du code qu'ils justifient. Le plugin lui-même ne fait qu'appeler la fonction
 // au démarrage du serveur, donc bien avant la première requête (Nitro attend
 // tous ses plugins avant d'écouter).

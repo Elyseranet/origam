@@ -127,6 +127,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { ADMIN_NAV_KINDS } from '~/consts/admin.const'
 import { MDI_ICONS } from 'origam/enums'
 import { useT } from '~/composables/useT'
 import { useReferenceCatalog } from '~/composables/useApiReference'
@@ -144,18 +145,7 @@ useSeoMeta({
     robots: 'noindex,nofollow',
 })
 
-const KIND_LABELS: Record<string, string> = {
-    component: 'Components',
-    composable: 'Composables',
-    const: 'Consts',
-    directive: 'Directives',
-    enum: 'Enums',
-    interface: 'Interfaces',
-    type: 'Types',
-    util: 'Utils',
-}
-
-const kindLabel = computed(() => KIND_LABELS[kind.value] ?? kind.value)
+const kindLabel = computed(() => ADMIN_NAV_KINDS.find(k => k.key === kind.value)?.labelFallback ?? kind.value)
 
 const { data: entries, status } = await useReferenceCatalog<Record<string, any>>(kind.value)
 

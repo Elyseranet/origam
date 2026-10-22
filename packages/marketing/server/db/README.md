@@ -19,7 +19,7 @@ PostgreSQL schema backing the marketing API Reference. Accessed through
 
 | File | Role |
 |---|---|
-| `db.const.mjs` | Single source of truth: table names, kinds, relation types, env var names. Shared by the migrations, the ingestion script (ticket B) and the Nitro runtime. |
+| `../../src/consts/db.const.ts` | Single source of truth: table names, kinds, relation types, env var names. Shared by the migrations, the ingestion script (ticket B) and the Nitro runtime. |
 | `connection.mjs` | Resolves the TypeORM pg connection options from the environment. No secret hardcoded. |
 | `entities/*.entity.ts` | One TypeORM decorator entity per table (snake_case columns) + `base.entity.ts` (shared id / timestamps, imports `reflect-metadata`) + `index.ts` barrel (`ENTITIES`). |
 | `data-source.ts` | Import-safe `DataSource` factory (entities + migrations + `SnakeNamingStrategy` + connection). Builds nothing at import time. |
@@ -49,7 +49,7 @@ Convention Nuxt `runtimeConfig` : les variables sont préfixées `NUXT_`.
 
 | Variable | Required | Notes |
 |---|---|---|
-| `NUXT_ADMIN_PASSWORD_HASH` | yes (for backoffice) | Scrypt hash of the admin password in `<salt-hex>:<hash-hex>` format (see below). Read by `server/utils/admin-auth.ts`. |
+| `NUXT_ADMIN_PASSWORD_HASH` | yes (for backoffice) | Scrypt hash of the admin password in `<salt-hex>:<hash-hex>` format (see below). Read by `src/utils/admin-auth.util.ts`. |
 | `NUXT_SESSION_PASSWORD` | yes (for backoffice) | Session seal secret — minimum 32 random characters. Read by h3 `useSession`. |
 
 **Generating the password hash** (no external dep — plain Node.js):
@@ -263,7 +263,7 @@ NON-FATAL if the DB is down):
      `doc_sync_run` row.
    - store the new hash.
 
-The sync loop (`syncFixtures`) lives in `server/utils/doc-fixture-sync.ts` and is
+The sync loop (`syncFixtures`) lives in `src/utils/doc-fixture-sync.util.ts` and is
 the **same** code path the standalone `docs:seed` script uses (the script's
 fixture branch calls it too) — no duplication between tooling and runtime. The
 ingestion reconciliation (`ingestFull`, editorial-lock aware) is imported from

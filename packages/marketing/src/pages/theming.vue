@@ -314,11 +314,11 @@
 
   /*
    * ⛔ `activeSlug` must NOT snapshot `defaultSlug.value` into a `ref` here
-   * (#741). `entries` is derived from a `useFetch` that has not resolved yet
+   * (#741). `entries` is derived from a `useAsyncData` that has not resolved yet
    * when this setup body runs on the SERVER: the snapshot captured `''`, the
    * lookup below fell through to `entries.value[0]` and the server rendered
    * the FIRST component of the catalogue (Alert) in the preview and the
-   * controls column. On the client the same `useFetch` reads the payload
+   * controls column. On the client the same `useAsyncData` reads the payload
    * synchronously during setup, so the snapshot captured `'btn'` — a whole
    * different component. Measured on /theming: 1 console error
    * (« Hydration completed but contains mismatches. ») and 40 mismatch

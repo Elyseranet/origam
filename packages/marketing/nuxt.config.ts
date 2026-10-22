@@ -22,7 +22,7 @@ import { origamTheme as origamBaseline } from '../ds/src/themes/origam.theme'
 // Single source of truth for the displayed version: the published `origam`
 // package version. Read at build time so badges/translations never need a
 // manual edit on release — bump packages/ds/package.json and it flows here.
-const DS_VERSION = JSON.parse(
+const dsVersion = JSON.parse(
     readFileSync(fileURLToPath(new URL('../ds/package.json', import.meta.url)), 'utf-8')
 ).version as string
 
@@ -177,7 +177,7 @@ export default defineNuxtConfig({
         public: {
             githubRepo: process.env.NUXT_PUBLIC_GITHUB_REPO ?? MARKETING_DEFAULTS.githubRepo,
             npmPkg: process.env.NUXT_PUBLIC_NPM_PKG ?? MARKETING_DEFAULTS.npmPkg,
-            npmVersion: process.env.NUXT_PUBLIC_NPM_VERSION ?? DS_VERSION,
+            npmVersion: process.env.NUXT_PUBLIC_NPM_VERSION ?? dsVersion,
             siteUrl: process.env.NUXT_PUBLIC_SITE_URL ?? MARKETING_DEFAULTS.siteUrl,
             donateUrl: process.env.NUXT_PUBLIC_DONATE_URL ?? MARKETING_DEFAULTS.donateUrl
         }

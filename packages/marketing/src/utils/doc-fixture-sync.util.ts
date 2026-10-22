@@ -28,29 +28,16 @@ import type { EntityManager } from 'typeorm'
 import { ingestFull } from '../../scripts/db-upsert'
 import { DocEntry, DocMeta } from '../../server/db/entities'
 import { DOC_KINDS } from '../consts/db.const'
+import type { IFixtureRecord, IFixtureSyncCounts } from '../interfaces/doc-fixture-sync.interface'
 
-/** Aggregate reconciliation counters returned by a sync run. */
-export interface FixtureSyncCounts {
-    created: number
-    updated: number
-    unchanged: number
-    orphaned: number
-}
-
-/** A single dumped record (server/db/seed/<kind>.json `entries[i]`). */
-export interface FixtureRecord {
-    entry: { kind: string, slug: string, edited_by_user?: boolean, [k: string]: unknown }
-    [collection: string]: unknown
-}
-
-const blank = (): FixtureSyncCounts => ({ created: 0, updated: 0, unchanged: 0, orphaned: 0 })
+const blank = (): IFixtureSyncCounts => ({ created: 0, updated: 0, unchanged: 0, orphaned: 0 })
 
 /**
  * Ingest a batch of dumped fixture records into the DB via `ingestFull`, then
  * restore the editorial lock for records that carry it. Runs against the caller's
  * EntityManager (wrap it in a transaction upstream). Returns aggregated counts.
  */
-export async function syncFixtures (manager: EntityManager, records: FixtureRecord[]): Promise<FixtureSyncCounts> {
+export async function syncFixtures (manager: EntityManager, records: IFixtureRecord[]): Promise<IFixtureSyncCounts> {
     const total = blank()
 
     for (const record of records) {

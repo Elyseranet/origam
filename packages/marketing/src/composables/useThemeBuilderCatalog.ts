@@ -31,6 +31,7 @@ import type {
     IThemeBuilderToken,
     IThemeBuilderTokenGroup
 } from '~/interfaces/theme-builder.interface'
+import { referenceService } from '~/services/reference.service'
 
 /**
  * useThemeBuilderCatalog — derives the FULL, data-driven catalog that powers the
@@ -415,11 +416,11 @@ export function useThemeBuilderCatalog () {
     // which builds its own controls from `props[]`), so it goes through the
     // same locale transport + cache-key contract as every other
     // /api/reference/** consumer for forward compatibility.
-    const { data } = useFetch<IComponentThemeSurface[]>('/api/reference/component', {
-        key: () => `catalog:component:theme-surface:${locale.value}`,
-        query: { includePropSurface: '1', locale },
-        default: () => [] as IComponentThemeSurface[],
-    })
+    const { data } = useAsyncData<IComponentThemeSurface[]>(
+        () => `catalog:component:theme-surface:${locale.value}`,
+        () => referenceService.getCatalog<IComponentThemeSurface>('component', { includePropSurface: '1', locale: locale.value }),
+        { watch: [locale], default: () => [] as IComponentThemeSurface[] }
+    )
 
     /**
      * EVERY documented DS component becomes a playground entry — top-level

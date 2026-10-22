@@ -14,19 +14,12 @@
  *   - NEVER throws. An invalid or unrecognised locale is a soft-fallback,
  *     not a 4xx: the ADR is explicit that missing/garbage `?locale=` must not
  *     break the request, only degrade to the default locale.
- *   - Import paths to src/consts + src/types use relative paths from
- *     server/utils/, same convention as reference-mappers.ts — the `~` alias
- *     resolves to the Nuxt project root in server context, not to src/.
+ *   - Import paths to src/consts + src/types are relative: this util is also bundled by Nitro, where the
+ *     `~` alias resolves to the Nuxt project root, not to src/, same convention as reference-mappers.util.ts.
  */
 
-import { I18N_LOCALE_CODES } from '../consts/i18n-codes.const'
-import { MARKETING_DEFAULTS } from '../consts/marketing.const'
+import { DEFAULT_LOCALE, KNOWN_LOCALES } from '../consts/reference-locale.const'
 import type { TLocaleCode } from '../types/i18n.type'
-
-const KNOWN_LOCALES: ReadonlySet<string> = new Set(I18N_LOCALE_CODES)
-
-/** The site's default locale — reused from MARKETING_DEFAULTS, never re-hardcoded. */
-export const DEFAULT_LOCALE: TLocaleCode = MARKETING_DEFAULTS.defaultLocale as TLocaleCode
 
 /**
  * Resolves a raw `?locale=` query value to a known TLocaleCode.

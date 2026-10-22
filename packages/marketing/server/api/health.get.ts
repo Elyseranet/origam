@@ -6,14 +6,6 @@ import { isDbConfigured, pingDb } from '../../src/utils/db.util'
 // surfaced as an informational `db` block for observability/readiness dashboards
 // (gate on `db.ok` there, not on the HTTP status of this liveness probe).
 
-interface IHealthResponse {
-    status: 'ok'
-    db: {
-        configured: boolean
-        ok: boolean
-    }
-}
-
 export default defineEventHandler(async (): Promise<IHealthResponse> => {
     const configured = isDbConfigured()
     const ok = configured ? await pingDb() : false

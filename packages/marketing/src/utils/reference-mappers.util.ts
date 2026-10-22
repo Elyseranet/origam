@@ -5,8 +5,8 @@
  * entity objects (snake_case property names matching the entity column keys)
  * and pre-fetched child collections ordered by `position`.
  *
- * Import paths to src/interfaces use relative paths from server/utils/ because
- * the `~` alias resolves to the Nuxt project root in server context, not to src/.
+ * Import paths to src/interfaces use relative paths because this util is also bundled by Nitro, where
+   the `~` alias resolves to the Nuxt project root in server context, not to src/.
  */
 
 import type {
@@ -54,7 +54,9 @@ import type {
     IUtilEntry,
     IUtilExample,
 } from '../interfaces/utils-catalog.interface'
+import type { IComponentChildren, IComposableChildren, IConstChildren, IDirectiveChildren, IEnumChildren, IInterfaceChildren, ITypeChildren, IUtilChildren } from '../interfaces/reference-mappers.interface'
 import type { IReferenceRow } from '../interfaces/reference-row.interface'
+import type { TDescriptionsBySlug } from '../types/api-reference.type'
 import type { TLocaleCode } from '../types/i18n.type'
 
 // ─── Shared child-row mappers ──────────────────────────────────────────────
@@ -318,10 +320,7 @@ export function mapDirectiveCatalogEntry (row: any, _locale?: TLocaleCode): {
 
 // ─── Children type bundles (accepted by the full-doc mappers) ─────────────
 
-/** Sibling-slug → description lookup, used to enrich family/related entries. */
-export type DescriptionsBySlug = Map<string, { description_key: string | null; description_fallback: string | null }>
-
-function pickDesc (rel: any, descMap: DescriptionsBySlug, slug: string) {
+function pickDesc (rel: any, descMap: TDescriptionsBySlug, slug: string) {
     const fromMap = descMap.get(slug)
     return {
         descriptionKey: rel.description_key || fromMap?.description_key || '',
@@ -329,16 +328,7 @@ function pickDesc (rel: any, descMap: DescriptionsBySlug, slug: string) {
     }
 }
 
-export interface ComponentChildren {
-    props: any[]
-    emits: any[]
-    slots: any[]
-    examples: any[]
-    relations: any[]
-    descriptionsBySlug: DescriptionsBySlug
-}
-
-export function mapComponentDoc (entry: any, ch: ComponentChildren, _locale?: TLocaleCode): IComponentDoc {
+export function mapComponentDoc (entry: any, ch: IComponentChildren, _locale?: TLocaleCode): IComponentDoc {
     const kindExtra = (entry.kind_extra ?? {}) as Record<string, unknown>
 
     const familyRels = ch.relations.filter((r: any) => r.rel_type === 'family')
@@ -387,14 +377,7 @@ export function mapComponentDoc (entry: any, ch: ComponentChildren, _locale?: TL
     }
 }
 
-export interface ComposableChildren {
-    params: any[]
-    returns: any[]
-    examples: any[]
-    relations: any[]
-}
-
-export function mapComposableDoc (entry: any, ch: ComposableChildren, _locale?: TLocaleCode): IComposableDoc {
+export function mapComposableDoc (entry: any, ch: IComposableChildren, _locale?: TLocaleCode): IComposableDoc {
     const kindExtra = (entry.kind_extra ?? {}) as Record<string, unknown>
     const relatedRels = ch.relations.filter((r: any) => r.rel_type === 'related')
 
@@ -421,13 +404,7 @@ export function mapComposableDoc (entry: any, ch: ComposableChildren, _locale?: 
     }
 }
 
-export interface ConstChildren {
-    values: any[]
-    examples: any[]
-    relations: any[]
-}
-
-export function mapConstDoc (entry: any, ch: ConstChildren, _locale?: TLocaleCode): IConstDoc {
+export function mapConstDoc (entry: any, ch: IConstChildren, _locale?: TLocaleCode): IConstDoc {
     const usedByRels = ch.relations.filter((r: any) => r.rel_type === 'used_by')
 
     return {
@@ -461,15 +438,7 @@ export function mapConstDoc (entry: any, ch: ConstChildren, _locale?: TLocaleCod
     }
 }
 
-export interface DirectiveChildren {
-    args: any[]
-    modifiers: any[]
-    examples: any[]
-    relations: any[]
-    descriptionsBySlug: DescriptionsBySlug
-}
-
-export function mapDirectiveDoc (entry: any, ch: DirectiveChildren, _locale?: TLocaleCode): IDirectiveDoc {
+export function mapDirectiveDoc (entry: any, ch: IDirectiveChildren, _locale?: TLocaleCode): IDirectiveDoc {
     const kindExtra = (entry.kind_extra ?? {}) as Record<string, unknown>
     const relatedRels = ch.relations.filter((r: any) => r.rel_type === 'related')
 
@@ -505,13 +474,7 @@ export function mapDirectiveDoc (entry: any, ch: DirectiveChildren, _locale?: TL
     }
 }
 
-export interface EnumChildren {
-    values: any[]
-    examples: any[]
-    relations: any[]
-}
-
-export function mapEnumDoc (entry: any, ch: EnumChildren, _locale?: TLocaleCode): IEnumDoc {
+export function mapEnumDoc (entry: any, ch: IEnumChildren, _locale?: TLocaleCode): IEnumDoc {
     const usedByRels = ch.relations.filter((r: any) => r.rel_type === 'used_by')
 
     return {
@@ -539,13 +502,7 @@ export function mapEnumDoc (entry: any, ch: EnumChildren, _locale?: TLocaleCode)
     }
 }
 
-export interface InterfaceChildren {
-    props: any[]
-    examples: any[]
-    relations: any[]
-}
-
-export function mapInterfaceDoc (entry: any, ch: InterfaceChildren, _locale?: TLocaleCode): IInterfaceDoc {
+export function mapInterfaceDoc (entry: any, ch: IInterfaceChildren, _locale?: TLocaleCode): IInterfaceDoc {
     const extendsRels = ch.relations.filter((r: any) => r.rel_type === 'extends')
     const usedByRels = ch.relations.filter((r: any) => r.rel_type === 'used_by')
 
@@ -575,13 +532,7 @@ export function mapInterfaceDoc (entry: any, ch: InterfaceChildren, _locale?: TL
     }
 }
 
-export interface TypeChildren {
-    values: any[]
-    examples: any[]
-    relations: any[]
-}
-
-export function mapTypeDoc (entry: any, ch: TypeChildren, _locale?: TLocaleCode): ITypeDoc {
+export function mapTypeDoc (entry: any, ch: ITypeChildren, _locale?: TLocaleCode): ITypeDoc {
     const kindExtra = (entry.kind_extra ?? {}) as Record<string, unknown>
     const usedByRels = ch.relations.filter((r: any) => r.rel_type === 'used_by')
 
@@ -615,14 +566,7 @@ export function mapTypeDoc (entry: any, ch: TypeChildren, _locale?: TLocaleCode)
     }
 }
 
-export interface UtilChildren {
-    params: any[]
-    returns: any[]
-    examples: any[]
-    relations: any[]
-}
-
-export function mapUtilDoc (entry: any, ch: UtilChildren, _locale?: TLocaleCode): IUtilDoc {
+export function mapUtilDoc (entry: any, ch: IUtilChildren, _locale?: TLocaleCode): IUtilDoc {
     const relatedRels = ch.relations.filter((r: any) => r.rel_type === 'related')
     const returnRow = ch.returns[0]
 

@@ -180,7 +180,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import type { CSSProperties } from 'vue'
+import { DIRECTIVES_HERO_BADGE_VARS } from '~/consts/directives.const'
 import { useT } from '~/composables/useT'
 import { useReferenceCatalog } from '~/composables/useApiReference'
 import type { IDirectiveEntry } from '~/interfaces/directives-catalog.interface'
@@ -193,10 +193,6 @@ useSeoMeta({
     ogTitle: () => t('directives.meta.title', 'Directives · origam design system'),
     ogDescription: () => t('directives.meta.description', 'Six runtime directives that extend Vue templates with click-outside detection, contrast enforcement, hover classes, intersection tracking, ripple effects, and touch/swipe gestures.')
 })
-
-const DIRECTIVES_HERO_BADGE_VARS: CSSProperties = {
-    '--origam-chip---background-color': 'transparent'
-} as CSSProperties
 
 const { data: catalogData } = await useReferenceCatalog<IDirectiveEntry>('directive')
 

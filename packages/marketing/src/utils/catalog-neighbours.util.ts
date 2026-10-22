@@ -17,14 +17,9 @@
  * ne trie donc jamais les noms lui-même : il ne fait que grouper.
  */
 
+import { DOMAIN_GROUPED_KINDS, FLAT_KINDS } from '../consts/catalog-neighbours.const'
 import type { ICatalogNeighbourLink, ICatalogSequenceRow } from '../interfaces/catalog-neighbours.interface'
 import type { TReferenceKind } from '../types/api-reference.type'
-
-/** Familles dont l'index regroupe par `domain` plutôt que par `category`. */
-const DOMAIN_GROUPED_KINDS: ReadonlyArray<TReferenceKind> = ['composable']
-
-/** Familles dont l'index est une liste plate, sans groupe. */
-const FLAT_KINDS: ReadonlyArray<TReferenceKind> = ['directive']
 
 /**
  * Ordre de lecture de l'index d'une famille.

@@ -32,3 +32,9 @@ export interface ICatalogSequenceRow {
     domain: string | null
     parent_slug: string | null
 }
+
+export interface IResolvedTarget {
+    kind: string
+    slug: string
+    name: string
+}

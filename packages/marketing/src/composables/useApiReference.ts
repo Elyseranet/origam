@@ -25,6 +25,7 @@ import type { Ref, ComputedRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import type { ICatalogNeighbours } from '~/interfaces/catalog-neighbours.interface'
+import { referenceService } from '~/services/reference.service'
 import type { TReferenceKind } from '~/types/api-reference.type'
 
 export type { TReferenceKind } from '~/types/api-reference.type'
@@ -45,20 +46,23 @@ export function useReferenceCatalog<T>(
 ) {
     const { locale } = useI18n()
 
-    return useFetch<T[]>(`/api/reference/${kind}`, {
-        // `key` is a getter (not a plain string) and `locale` is passed as the
-        // Ref itself in `query` so both re-evaluate when the user switches
+    return useAsyncData<T[]>(
+        // `key` is a getter (not a plain string) and the locale is read inside
+        // the fetcher and watched, so both re-evaluate when the user switches
         // language client-side — a static key/query would keep serving the
         // first-rendered locale's payload forever.
-        key: () => `catalog:${kind}:${category ?? ''}:${locale.value}`,
-        query: { category, locale },
-        default: () => [] as T[],
-        // `lazy` : ni SSR ni appel au montage — l'appelant déclenche `execute()`
-        // (palette ⌘K : le catalogue n'est payé qu'à la première ouverture).
-        // `watch: false` : un changement de locale ne re-télécharge rien tant
-        // que l'appelant n'a pas lui-même demandé les données.
-        ...(options.lazy ? { immediate: false, server: false, watch: false as const } : {}),
-    })
+        () => `catalog:${kind}:${category ?? ''}:${locale.value}`,
+        () => referenceService.getCatalog<T>(kind, { category, locale: locale.value }),
+        {
+            default: () => [] as T[],
+            watch: [locale],
+            // `lazy` : ni SSR ni appel au montage — l'appelant déclenche `execute()`
+            // (palette ⌘K : le catalogue n'est payé qu'à la première ouverture).
+            // `watch: false` : un changement de locale ne re-télécharge rien tant
+            // que l'appelant n'a pas lui-même demandé les données.
+            ...(options.lazy ? { immediate: false, server: false, watch: false as const } : {}),
+        }
+    )
 }
 
 /**
@@ -86,9 +90,7 @@ export async function useReferenceDoc<T>(
         () => slugRef.value ? `doc:${kind}:${slugRef.value}:${locale.value}` : `doc:${kind}:__skip`,
         async () => {
             if (!slugRef.value) return null
-            return await $fetch<T>(`/api/reference/${kind}/${slugRef.value}`, {
-                query: { locale: locale.value },
-            })
+            return await referenceService.getDoc<T>(kind, slugRef.value, { locale: locale.value })
         },
         {
             watch: [slugRef, locale],
@@ -154,7 +156,7 @@ export async function useReferenceDoc<T>(
 export function useReferenceCategories(kind: TReferenceKind) {
     return useAsyncData<string[]>(
         `categories:${kind}`,
-        () => $fetch<string[]>(`/api/reference/categories/${kind}`),
+        () => referenceService.getCategories(kind),
         { default: () => [] },
     )
 }
@@ -179,7 +181,7 @@ export function useCatalogNeighbours(
         async () => {
             if (!slug.value) return null
 
-            return await $fetch<ICatalogNeighbours>(`/api/reference/neighbours/${kind}/${slug.value}`)
+            return await referenceService.getNeighbours(kind, slug.value)
         },
         { watch: [slug], default: () => null },
     )

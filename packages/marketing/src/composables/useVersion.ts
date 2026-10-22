@@ -1,5 +1,6 @@
 import { computed } from 'vue'
 import type { INpmVersionData } from '~/interfaces/version.interface'
+import { adoptionService } from '~/services/adoption.service'
 
 /**
  * Single source of truth for the displayed origam version.
@@ -14,7 +15,7 @@ import type { INpmVersionData } from '~/interfaces/version.interface'
 export function useVersion () {
   const buildVersion = useRuntimeConfig().public.npmVersion as string
 
-  const { data } = useFetch<INpmVersionData>('/api/npm-version', {
+  const { data } = useAsyncData<INpmVersionData>('npm-version', () => adoptionService.getNpmVersion(), {
     default: () => ({ version: buildVersion })
   })
 
