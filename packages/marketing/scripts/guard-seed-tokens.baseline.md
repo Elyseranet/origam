@@ -1,4 +1,4 @@
-# `seed-tokens.json` — empty, and it must stay that way
+# `guard-seed-tokens.baseline.json` — empty, and it must stay that way
 
 `guard-seed-tokens.mjs` has two channels. Both are at **zero**, so this baseline
 is an empty array and every finding is a failure.

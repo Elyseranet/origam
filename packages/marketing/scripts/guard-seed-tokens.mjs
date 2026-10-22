@@ -16,7 +16,7 @@
  * RETIRED TOOLING — no seed field may name the Style Dictionary / Tokens
  * Studio pipeline, the deleted `packages/ds/tokens/` sources or the deleted
  * `packages/figma-plugin/`. This channel is BASELINED, and the baseline is
- * not empty — see `baseline/seed-tokens.json` for what is in it and why.
+ * not empty — see `guard-seed-tokens.baseline.json` for what is in it and why.
  *
  * @description
  * ⛔ THE SCAN COVERS ALL EIGHT SEED FILES, not `component.json` alone. Scoping
@@ -58,7 +58,7 @@ import { RETIRED } from '../src/consts/seed-tokens-guard.const.ts'
 
 const scriptDir = dirname(fileURLToPath(import.meta.url))
 const seedDir = resolve(scriptDir, '../server/db/seed')
-const baselineFile = resolve(scriptDir, 'baseline/seed-tokens.json')
+const baselineFile = resolve(scriptDir, 'guard-seed-tokens.baseline.json')
 
 /*********************************************************
  * scanSeed
