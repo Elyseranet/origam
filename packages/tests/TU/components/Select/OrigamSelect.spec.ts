@@ -204,7 +204,7 @@ describe('OrigamSelect — #622 le nom accessible est le label du champ, pas le 
         expect(input.attributes('aria-label')).toBe('Country')
     })
 
-    it('repli sur openText/closeText quand aucun label n est fourni (fr, menu ferme)', async () => {
+    it('sans label : ni aria-label ni title de repli sur l input (#1251)', async () => {
         const wrapper = mount(OrigamSelect, {
             global: { plugins: [createOrigam({ locale: { locale: 'fr' } })] },
             props: { items: ['France', 'Belgique'] } as never
@@ -212,24 +212,8 @@ describe('OrigamSelect — #622 le nom accessible est le label du champ, pas le 
         await nextTick()
 
         const input = wrapper.find('input')
-        expect(input.attributes('aria-label')).toBe('Ouvrir')
-    })
-
-    it('repli sur openText/closeText quand aucun label n est fourni (fr, menu ouvert des le montage)', async () => {
-        // `menu` is the documented v-model prop backing the internal open
-        // state (`menuState = useVModel(props, 'menu')`). Driving it at
-        // MOUNT time (rather than via a later `setProps`/synthetic
-        // keydown) is the deterministic way to reach the "open" state in
-        // jsdom for this v-model chain — a live focus -> control ->
-        // overlay toggle is an e2e concern the suite already covers.
-        const wrapper = mount(OrigamSelect, {
-            global: { plugins: [createOrigam({ locale: { locale: 'fr' } })] },
-            props: { items: ['France', 'Belgique'], menu: true } as never
-        })
-        await nextTick()
-
-        const input = wrapper.find('input')
-        expect(input.attributes('aria-label')).toBe('Fermer')
+        expect(input.attributes('aria-label')).toBeUndefined()
+        expect(input.attributes('title')).toBeUndefined()
     })
 
     it('aria-controls est present au repos (WAI-ARIA 1.2, #1225)', async () => {

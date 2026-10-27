@@ -3,13 +3,13 @@
 			:id="id"
 			ref="origamTextFieldRef"
 			v-model:focused="isFocused"
-			:aria-label="t(accessibleLabel)"
+			:aria-label="label ? t(label) : undefined"
 			:class="colorPickerFieldClasses"
 			:counter-value="counterValue"
 			:dirty="isDirty"
 			:placeholder="placeholder"
 			:style="colorPickerFieldStyles"
-			:title="t(accessibleLabel)"
+			:title="label ? t(label) : undefined"
 			:validation-value="effectiveValidationValue"
 
 			v-bind="{ ...textFieldProps }"
@@ -527,38 +527,15 @@
 		return isDirty.value || (!isFocused.value && props.label && !props.persistentPlaceholder) ? undefined : props.placeholder
 	})
 	/*********************************************************
-	 * toggleLabel / accessibleLabel (#665)
+	 * Accessible name (#665, #1251)
 	 *
 	 * @description
-	 * This was previously named `label`, a bare `const` that SHADOWED the
-	 * `label` PROP (`IColorPickerFieldProps` -> `ITextFieldProps` ->
-	 * `IFieldProps.label`, `field.interface.ts:43`) inside this
-	 * `<script setup>` block. The template's `:aria-label="t(label)"` /
-	 * `:title="t(label)"` therefore always resolved to this toggle
-	 * wording, never to the field's own label — every
-	 * `<origam-color-picker-field>` announced "Open"/"Close" to assistive
-	 * tech regardless of its `label` prop. Renamed so the identifier can
-	 * no longer mask `props.label`. Same defect and same correction as
-	 * `OrigamSelect` (#622 / PR #656).
-	 *
-	 * @description
-	 * `<origam-field>` already renders a real `<label for>` (OrigamField ->
-	 * OrigamLabel, `for: id.value` / `text: props.label`) linked to this
-	 * very `<input>` via its `id`, so `props.label` is ALREADY the input's
-	 * accessible name whenever it is set. `accessibleLabel` keeps
-	 * `aria-label` / `title` consistent with that native label instead of
-	 * re-introducing a second, independently-maintained source of truth
-	 * for the same text — it falls back to `toggleLabel` only for a
-	 * labelless field, the one case where `<origam-field>` renders no
-	 * `<label for>` at all and the toggle wording is the only accessible
-	 * name available.
+	 * `aria-label` / `title` mirror `props.label` only. Without a `label`
+	 * prop NOTHING is emitted: the name then comes from an external
+	 * `<label for>` / the consumer's `aria-labelledby`, which an `aria-label`
+	 * would override (it ranks above `<label for>` in the name computation).
+	 * The open/close wording stays on the toggle button, not on the input.
 	 ********************************************************/
-	const toggleLabel = computed(() => {
-		return menu.value ? props.closeText : props.openText
-	})
-	const accessibleLabel = computed(() => {
-		return props.label || toggleLabel.value
-	})
 
 	watch(selectedValue, () => {
 		isFocused.value = hasSelectedValue.value
