@@ -114,14 +114,28 @@
 	// `'origam-tabs'` block) must always reach the children, else a themed
 	// variant paints the tab bar but leaves every tab on its own default.
 	const wasPropPassed = usePassedProps(props)
-	const slotDefaults = computed(() => ({
-		'origam-tab': omitUndefined({
-			variant: props.variant,
-			density: wasPropPassed('density') ? props.density : undefined,
-			color: wasPropPassed('color') ? props.color : undefined,
-			fixed: wasPropPassed('fixed') ? props.fixed : undefined
-		})
-	}))
+	const slotDefaults = computed(() => {
+		/*********************************************************
+		 * color (#1253)
+		 *
+		 * @description
+		 * `props.color` is read first so the computed tracks it: `wasPropPassed` is not reactive.
+		 *
+		 * @description
+		 * The `color` KEY is always present (even `undefined`): the props resolver only patches the keys a provider names when the tab is created.
+		 ********************************************************/
+		const color = props.color
+		return {
+			'origam-tab': {
+				...omitUndefined({
+					variant: props.variant,
+					density: wasPropPassed('density') ? props.density : undefined,
+					fixed: wasPropPassed('fixed') ? props.fixed : undefined
+				}),
+				color: wasPropPassed('color') ? color : undefined
+			}
+		}
+	})
 
 	/*********************************************************
 	 * ARIA + keyboard navigation

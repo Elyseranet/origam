@@ -81,6 +81,7 @@
 
 	import vContrast from '../../directives/Contrast/contrast.directive'
 
+	import { intentBgExpr, intentFgExpr, isIntent } from '../../utils/Commons/color.util'
 	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 	import { ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_LINK_KEY } from '../../consts/Tabs/tabs.const'
@@ -244,9 +245,20 @@
 	/*********************************************************
 	 * Class & Style
 	 ********************************************************/
+	/*********************************************************
+	 * pillsColorStyles (#1253)
+	 *
+	 * @description
+	 * `color` (own prop, or mirrored from `<OrigamTabs>`) feeds the pills active-tab tokens; unset leaves the SCSS fallback (primary).
+	 ********************************************************/
+	const pillsColorStyles = computed(() => isIntent(props.color) ? {
+		'--origam-tabs__item--pills--active---background-color': intentBgExpr(props.color, 'default'),
+		'--origam-tabs__item--pills--active---color': intentFgExpr(props.color, 'default')
+	} : undefined)
 	const tabStyles = computed(() => {
 		return [
 			typographyStyles.value,
+			pillsColorStyles.value,
 			props.style
 		] as StyleValue
 	})
