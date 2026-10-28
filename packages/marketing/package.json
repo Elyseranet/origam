@@ -44,7 +44,7 @@
     "@nuxtjs/i18n": "^10.6.0",
     "@nuxtjs/seo": "^5.3.6",
     "@origam/playground": "workspace:*",
-    "nuxt": "^4.6.1",
+    "nuxt": "^4.6.2",
     "origam": "workspace:*",
     "pg": "^8.22.0",
     "reflect-metadata": "^0.2.2",
