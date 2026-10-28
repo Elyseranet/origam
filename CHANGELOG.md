@@ -18,6 +18,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.20] - 2026-10-28
+
+### Fixed — `OrigamBtn` outlined et ghost : le filet ne s'ajoute plus à la largeur (#1261)
+
+La bordure d'un bouton `outlined` (et `ghost`) s'ajoutait au `padding-inline`, identique pour toutes les variantes. Ces boutons étaient donc plus larges qu'un `flat` de même taille, de 2 × la largeur du filet : +2 px mesurés sur les 5 tailles avec le filet par défaut.
+
+- Nouveau jeton interne `--origam-btn---border-compensation`, à `0px` par défaut. Les blocs de variante `outlined` et `ghost` existants le fixent à la largeur de leur filet, et chaque `padding-inline` de taille le soustrait. Pas de `!important`, aucun nouveau sélecteur `--variant-*`.
+- **Rupture assumée** (arbitrage du propriétaire) : les boutons outlined et ghost déjà livrés rétrécissent de 2 × le filet et retrouvent la largeur de `flat`. Les baselines VRT `btn-variant-outlined` et `btn-variant-ghost` sont régénérées en Docker ; les 5 autres variantes sont inchangées.
+- La prop `border` posée sur les autres variantes n'est pas compensée (hors périmètre).
+- Vérifié : e2e `btn-outlined-box.spec.ts`, sur 5 tailles avec le filet par défaut puis avec un filet de 2 px. Rouge sur le parent (+2 px), vert après. TU Btn 59/59 (PR #1275).
+
 ## [2.37.19] - 2026-10-28
 
 ### Fixed — `OrigamTabs` variante `pills` : la prop `color` colore l'onglet actif (#1253)
