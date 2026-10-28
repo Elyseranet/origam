@@ -18,6 +18,16 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.16] - 2026-10-28
+
+### Fixed — `OrigamSelect`, `OrigamColorPickerField`, `OrigamDatePickerField` : plus de nom « Ouvrir » qui écrase un `<label for>` externe (#1251)
+
+Sans prop `label`, ces trois champs posaient `aria-label` et `title` au libellé de leur bouton d'ouverture (« Ouvrir ») sur l'`<input>`. Or un `aria-label` passe avant un `<label for>` dans le calcul du nom accessible : un champ nommé par un libellé externe était donc annoncé « Ouvrir ».
+
+- Sans `label`, plus aucun `aria-label` ni `title` n'est posé sur l'input. Avec `label`, rien ne change.
+- Rupture assumée, arbitrée par le propriétaire : un champ qui n'a ni `label` ni `<label for>` n'a plus de nom accessible. axe le signale, ce qui alerte quand le libellé a été oublié. Les tests #622/#665/#666, qui figeaient l'ancien repli, ont été réécrits.
+- Vérifié : le TU `select-external-label.spec.ts` couvre les 3 composants. Il contrôle le nom accessible calculé (« Pays ») et passe axe (`label`, `aria-input-field-name`) ; il est rouge sur le parent (3/6) et vert après (6/6) (PR #1270).
+
 ## [2.37.15] - 2026-10-22
 
 ### Added — slot de police `display` (#1212)
