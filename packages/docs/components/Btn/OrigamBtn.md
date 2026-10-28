@@ -168,6 +168,8 @@ The outlined variant resolves its colour from
 `var(--origam-btn---border-color, currentColor)`, so per-instance overrides
 work via the prop, a token, or an inline `--origam-btn---border-color`.
 
+**Width.** The outline is a real `border`, and the `outlined` and `ghost` variants subtract its width from `padding-inline` through the internal token `--origam-btn---border-compensation` (`0px` by default, set by the variant to `--origam-btn---border-width-outlined` / `--origam-btn---border-width-ghost`). A bordered button therefore has exactly the outer width of a `flat` button of the same size and text, whatever the width of the outline. Before this change the outer width grew by twice the outline width (breaking change: existing `outlined` and `ghost` buttons are narrower by that amount). The `border` prop on other variants does not compensate.
+
 ### `border` on the default (non-outlined) variant
 
 The `border` shorthand also works standalone, without `variant="outlined"` —
@@ -438,6 +440,7 @@ document root or via a `:style` binding to re-skin a single instance.
 | `--origam-btn---background-color-hover` | `{color.action.secondary.bgHover}` |
 | `--origam-btn---border-radius` | `{radius.sm}` |
 | `--origam-btn---border-color` | `currentColor` (outlined variant; overridable via `borderColor` prop) |
+| `--origam-btn---border-compensation` | `0px`; set by `outlined` / `ghost` to their outline width and subtracted from `padding-inline` (internal, do not set) |
 | `--origam-btn---background-color-text-active` | `transparent` by default: set it to give the `text` variant an active (`active` / selected) fill |
 | `--origam-btn---border-color-ghost` | `color-mix(currentColor 24%)` (ghost variant) |
 | `--origam-btn---font-size` | `{font.size.md}` |

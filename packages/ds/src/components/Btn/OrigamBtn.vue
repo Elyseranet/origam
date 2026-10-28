@@ -592,7 +592,7 @@
 		// plus que `padding-inline`, sans quoi leur shorthand `padding: 0 …`
 		// remettrait ce bloc a zero.
 		padding-block: var(--origam-btn---padding-block, 0);
-		padding-inline: calc(16px + var(--origam-btn---density-padding-x, 0px));
+		padding-inline: calc(16px + var(--origam-btn---density-padding-x, 0px) - var(--origam-btn---border-compensation, 0px));
 
 		width: var(--origam-btn---width, auto);
 		min-width: calc(var(--origam-btn---min-width, 64px) + var(--origam-btn---density, 0px));
@@ -687,7 +687,7 @@
 			--origam-btn---height: var(--origam-btn---height-xs, 20px);
 			--origam-btn---font-size: 0.625rem;
 			--origam-btn---min-width: 36px;
-			padding-inline: calc(var(--origam-btn---padding-xs, 8px) + var(--origam-btn---density-padding-x, 0px));
+			padding-inline: calc(var(--origam-btn---padding-xs, 8px) + var(--origam-btn---density-padding-x, 0px) - var(--origam-btn---border-compensation, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 16px;
@@ -698,7 +698,7 @@
 			--origam-btn---height: var(--origam-btn---height-sm, 28px);
 			--origam-btn---font-size: 0.75rem;
 			--origam-btn---min-width: 50px;
-			padding-inline: calc(var(--origam-btn---padding-sm, 12px) + var(--origam-btn---density-padding-x, 0px));
+			padding-inline: calc(var(--origam-btn---padding-sm, 12px) + var(--origam-btn---density-padding-x, 0px) - var(--origam-btn---border-compensation, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 20px;
@@ -706,7 +706,7 @@
 		}
 
 		&--size-default {
-			padding-inline: calc(var(--origam-btn---padding-md, 16px) + var(--origam-btn---density-padding-x, 0px));
+			padding-inline: calc(var(--origam-btn---padding-md, 16px) + var(--origam-btn---density-padding-x, 0px) - var(--origam-btn---border-compensation, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 24px;
@@ -717,7 +717,7 @@
 			--origam-btn---height: var(--origam-btn---height-lg, 44px);
 			--origam-btn---font-size: 1rem;
 			--origam-btn---min-width: 78px;
-			padding-inline: calc(var(--origam-btn---padding-lg, 20px) + var(--origam-btn---density-padding-x, 0px));
+			padding-inline: calc(var(--origam-btn---padding-lg, 20px) + var(--origam-btn---density-padding-x, 0px) - var(--origam-btn---border-compensation, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 28px;
@@ -728,7 +728,7 @@
 			--origam-btn---height: var(--origam-btn---height-xl, 52px);
 			--origam-btn---font-size: 1.125rem;
 			--origam-btn---min-width: 92px;
-			padding-inline: calc(var(--origam-btn---padding-xl, 24px) + var(--origam-btn---density-padding-x, 0px));
+			padding-inline: calc(var(--origam-btn---padding-xl, 24px) + var(--origam-btn---density-padding-x, 0px) - var(--origam-btn---border-compensation, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 32px;
@@ -929,6 +929,7 @@
 		}
 
 		&--variant-outlined {
+			--origam-btn---border-compensation: var(--origam-btn---border-width-outlined, var(--origam-border__width---thin));
 			background-color: transparent !important;
 			border-width: var(--origam-btn---border-width-outlined, var(--origam-border__width---thin));
 			border-style: solid;
@@ -998,6 +999,7 @@
 		// survol : changement de rendu, pas correction. Ils restent dormants —
 		// meme arbitrage.
 		&--variant-ghost {
+			--origam-btn---border-compensation: var(--origam-btn---border-width-ghost, var(--origam-border__width---thin));
 			background-color: var(
 				--origam-btn---background-color-ghost,
 				color-mix(in srgb, currentColor 12%, transparent)
@@ -1160,35 +1162,35 @@
 				--origam-btn---height: 56px;
 				font-size: 0.625rem;
 				min-width: 56px;
-				padding-inline: calc(12px + var(--origam-btn---density-padding-x, 0px));
+				padding-inline: calc(12px + var(--origam-btn---density-padding-x, 0px) - var(--origam-btn---border-compensation, 0px));
 			}
 
 			&#{$this}--size-small {
 				--origam-btn---height: 64px;
 				font-size: 0.75rem;
 				min-width: 64px;
-				padding-inline: calc(14px + var(--origam-btn---density-padding-x, 0px));
+				padding-inline: calc(14px + var(--origam-btn---density-padding-x, 0px) - var(--origam-btn---border-compensation, 0px));
 			}
 
 			&#{$this}--size-default {
 				--origam-btn---height: 72px;
 				font-size: 0.875rem;
 				min-width: 72px;
-				padding-inline: calc(16px + var(--origam-btn---density-padding-x, 0px));
+				padding-inline: calc(16px + var(--origam-btn---density-padding-x, 0px) - var(--origam-btn---border-compensation, 0px));
 			}
 
 			&#{$this}--size-large {
 				--origam-btn---height: 80px;
 				font-size: 1rem;
 				min-width: 80px;
-				padding-inline: calc(18px + var(--origam-btn---density-padding-x, 0px));
+				padding-inline: calc(18px + var(--origam-btn---density-padding-x, 0px) - var(--origam-btn---border-compensation, 0px));
 			}
 
 			&#{$this}--size-x-large {
 				--origam-btn---height: 88px;
 				font-size: 1.125rem;
 				min-width: 88px;
-				padding-inline: calc(20px + var(--origam-btn---density-padding-x, 0px));
+				padding-inline: calc(20px + var(--origam-btn---density-padding-x, 0px) - var(--origam-btn---border-compensation, 0px));
 			}
 
 			&#{$this}--density-comfortable {
