@@ -1,5 +1,4 @@
 import OrigamListItem from '../../components/List/OrigamListItem.vue'
-import OrigamListItemWrapper from '../../components/List/OrigamListItemWrapper.vue'
 import { LIST_ITEM_ROLE, LIST_ITEM_TYPE } from '../../enums/List/list-item.enum'
 
 export type TListItemType = `${LIST_ITEM_TYPE}`
@@ -14,5 +13,3 @@ export type TListItemSlot = {
 }
 
 export type TOrigamListItem = InstanceType<typeof OrigamListItem>
-
-export type TOrigamListItemWrapper = InstanceType<typeof OrigamListItemWrapper>

@@ -14,6 +14,8 @@ import { execFileSync } from 'node:child_process'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { getInternalComponentNames } from '../../../ds/scripts/guards/lib/components.mjs'
+
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 
 export const REPO_ROOT = path.resolve(HERE, '../../../..')
@@ -31,10 +33,13 @@ export function listComponentFiles () {
         { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }
     )
 
+    const internal = new Set(getInternalComponentNames())
+
     return stdout
         .split('\n')
         .filter(Boolean)
         .filter(rel => !rel.endsWith('.story.vue'))
+        .filter(rel => !internal.has(path.basename(rel, '.vue')))
         .map(rel => path.join(REPO_ROOT, rel))
         .sort()
 }

@@ -5,7 +5,7 @@
 // Every guard that needs to know "is X a real component" imports this
 // instead of re-implementing its own component scan.
 
-import { readdirSync, statSync } from 'node:fs'
+import { readdirSync, readFileSync, statSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -33,6 +33,18 @@ export function pascalToKebab (name) {
         .toLowerCase()
 }
 
+// Components that ship as `.vue` but are not part of the public surface (#1249).
+// Their single source is `INTERNAL_COMPONENTS` in `src/consts/Commons/commons.const.ts`; a .mjs cannot
+// import that file (it pulls `vue` and extensionless TS imports), so the array literal is read as text.
+// It throws rather than returning [] so a reformatted constant can never silently re-expose them.
+export function getInternalComponentNames () {
+    const source = readFileSync(path.join(DS_ROOT, 'src/consts/Commons/commons.const.ts'), 'utf8')
+    const match = source.match(/export const INTERNAL_COMPONENTS\s*=\s*\[([^\]]*)\]/)
+    if (!match) throw new Error('INTERNAL_COMPONENTS not found in consts/Commons/commons.const.ts')
+
+    return [...match[1].matchAll(/'([^']+)'/g)].map(m => m[1])
+}
+
 let cached = null
 
 // Returns [{ pascalName, kebabName, file }] for every `Origam*.vue` under
@@ -40,9 +52,11 @@ let cached = null
 // which is the one thing that cannot drift from what actually ships.
 export function getRealComponents () {
     if (cached) return cached
+    const internal = new Set(getInternalComponentNames())
     const vueFiles = walk(
         COMPONENTS_DIR,
         f => f.endsWith('.vue') && !f.endsWith('.story.vue') && path.basename(f).startsWith('Origam')
+            && !internal.has(path.basename(f, '.vue'))
     )
     const seen = new Map()
     for (const file of vueFiles) {
