@@ -95,7 +95,8 @@
             "ignoreGhsas": [
                 "GHSA-86w9-cpqp-85rv",
                 "GHSA-vfj7-8cjw-p6xm",
-                "GHSA-hp3w-g68c-fv3c"
+                "GHSA-hp3w-g68c-fv3c",
+                "GHSA-gcqx-w48m-w2h4"
             ]
         },
         "patchedDependencies": {

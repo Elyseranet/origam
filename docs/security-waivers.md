@@ -53,6 +53,22 @@ fixed, not a way to close a ticket.
 - **Exit**: drop the matching `ignoreGhsas` entry as soon as a patched version
   is published or the chain no longer resolves the module.
 
+### GHSA-gcqx-w48m-w2h4 (`deepmerge`)
+
+- **Granted**: 2026-10-28, by the maintainer (Arnaud Prioul), explicitly
+- **Review date**: 2027-01-28
+- **Remediation ticket**: #1277
+- **Why a waiver**: severity **low**. No patched version is published
+  (`patched_versions: <0.0.0`, `deepmerge >=4.2.0 <=4.3.1`: `mergeObject()` allows
+  prototype poisoning). `deepmerge@4.3.1` is the latest 4.x, and
+  `@rollup/plugin-node-resolve@16.0.3` (latest) still depends on `^4.2.2`.
+- **Chain**: `@rollup/plugin-node-resolve@16.0.3 > deepmerge@4.3.1`, reached through
+  `unbuild` (`packages/ds` devDependency) and `nuxt > @nuxt/nitro-server > nitropack`.
+- **Reachability** (assessment, not a proof): build tooling only, absent from the
+  published `origam` tarball; the inputs are build configuration, not end-user data.
+- **Exit**: drop the `ignoreGhsas` entry as soon as a patched `deepmerge` is
+  published or `@rollup/plugin-node-resolve` stops depending on it.
+
 ### Related: `patches/@nuxt__devtools@3.4.2.patch` (not a waiver)
 
 Fixing `simple-git` (3 critical/high advisories, fixed only in `>=4`) forces
