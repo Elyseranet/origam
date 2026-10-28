@@ -123,26 +123,16 @@ describe('OrigamColorPickerField — #665 le nom accessible est le label du cham
         expect(input.attributes('title')).toBe('Brand color')
     })
 
-    it('repli sur openText quand aucun label n est fourni (fr, menu ferme)', async () => {
+    it('sans label : ni aria-label ni title de repli sur l input (#1251)', async () => {
         const wrapper = mount(OrigamColorPickerField, {
             global: { plugins: [createOrigam({ locale: { locale: 'fr' } })] },
-            props: {} as never
+            props: {  } as never
         })
         await nextTick()
 
         const input = wrapper.find('input')
-        expect(input.attributes('aria-label')).toBe('Ouvrir')
-    })
-
-    it('repli sur closeText quand aucun label n est fourni (fr, menu ouvert des le montage)', async () => {
-        const wrapper = mount(OrigamColorPickerField, {
-            global: { plugins: [createOrigam({ locale: { locale: 'fr' } })] },
-            props: { menu: true } as never
-        })
-        await nextTick()
-
-        const input = wrapper.find('input')
-        expect(input.attributes('aria-label')).toBe('Fermer')
+        expect(input.attributes('aria-label')).toBeUndefined()
+        expect(input.attributes('title')).toBeUndefined()
     })
 
     it('props.label gagne sur l etat du menu (le libelle ne change pas a l ouverture)', async () => {
