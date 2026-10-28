@@ -84,7 +84,7 @@
 	import { intentBgExpr, intentFgExpr, isIntent } from '../../utils/Commons/color.util'
 	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
-	import { ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_LINK_KEY } from '../../consts/Tabs/tabs.const'
+	import { ORIGAM_TABS_COLOR_KEY, ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_LINK_KEY } from '../../consts/Tabs/tabs.const'
 
 	import type {
 		ITabEmits,
@@ -251,9 +251,11 @@
 	 * @description
 	 * `color` (own prop, or mirrored from `<OrigamTabs>`) feeds the pills active-tab tokens; unset leaves the SCSS fallback (primary).
 	 ********************************************************/
-	const pillsColorStyles = computed(() => isIntent(props.color) ? {
-		'--origam-tabs__item--pills--active---background-color': intentBgExpr(props.color, 'default'),
-		'--origam-tabs__item--pills--active---color': intentFgExpr(props.color, 'default')
+	const tabsColor = inject(ORIGAM_TABS_COLOR_KEY, undefined)
+	const pillsColor = computed(() => props.color || tabsColor?.value)
+	const pillsColorStyles = computed(() => isIntent(pillsColor.value) ? {
+		'--origam-tabs__item--pills--active---background-color': intentBgExpr(pillsColor.value, 'default'),
+		'--origam-tabs__item--pills--active---color': intentFgExpr(pillsColor.value, 'default')
 	} : undefined)
 	const tabStyles = computed(() => {
 		return [
