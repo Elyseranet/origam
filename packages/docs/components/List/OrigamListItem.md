@@ -185,6 +185,13 @@ controls both children simultaneously.
   outside a listbox — or a `listitem` inside one — is a broken ARIA
   contract, and neither is reachable from here. Which mode a list runs in
   is documented on [`OrigamList`](../List/OrigamList.md#accessibility).
+- **A link row (`href` / `to`) in list mode renders `<div role="listitem"><a>`
+  (#1249).** An explicit `role` replaces the implicit one, so `role="listitem"`
+  on the `<a>` made a link announce as a list item and vanish from the links
+  rotor. The role now sits on a wrapper `div` (`.origam-list-item-wrapper`);
+  the `<a>` keeps `link` and stays the whole visual row (classes, styles,
+  ripple, tabindex, handlers). Selection mode (`option`) and every non-link row
+  keep the flat structure.
 - Two rows still get **no role at all**: one rendered outside any list (no
   `OrigamList` / `OrigamListChildren` ancestor) — no ARIA is better than a
   role whose promised container doesn't exist — and a group activator row,

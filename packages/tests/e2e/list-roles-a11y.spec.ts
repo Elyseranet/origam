@@ -269,3 +269,30 @@ test.describe('OrigamList — les deux modes sur la story de la liste elle-meme'
         expect(new Set(roles)).toEqual(new Set([ 'option' ]))
     })
 })
+
+/** Variant `Functional - Link rows`, la dernière de la story. */
+const LINK_ROWS = 14
+
+test.describe('OrigamList — une ligne lien garde son rôle link (#1249)', () => {
+    test.setTimeout(45000)
+
+    test('role=listitem sur un conteneur, <a> sans rôle, axe sans violation', async ({ page }) => {
+        await page.goto(url(LIST_ID, LINK_ROWS), { waitUntil: 'domcontentloaded' })
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+
+        const link = sandbox.locator('[data-cy="list-link-row"]')
+        await expect(link).toBeVisible({ timeout: 12000 })
+
+        expect(await link.evaluate((a) => a.tagName)).toBe('A')
+        await expect(link).not.toHaveAttribute('role', /.*/)
+        expect(await link.evaluate((a) => a.parentElement?.getAttribute('role'))).toBe('listitem')
+
+        const roles = await sandbox.locator('.origam-list').first().evaluate((list) =>
+            Array.from(list.children).map((c) => c.getAttribute('role') ?? c.querySelector(':scope > [role]')?.getAttribute('role') ?? 'none'))
+        expect(roles).toEqual([ 'listitem', 'listitem' ])
+
+        const box = await link.boundingBox()
+        const wrapper = await link.locator('xpath=..').boundingBox()
+        expect(Math.round(box!.width), 'le <a> remplit son conteneur listitem').toBe(Math.round(wrapper!.width))
+    })
+})

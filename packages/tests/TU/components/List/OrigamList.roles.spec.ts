@@ -26,6 +26,7 @@ import { mount } from '@vue/test-utils'
 import OrigamList from '@origam/components/List/OrigamList.vue'
 import OrigamListItem from '@origam/components/List/OrigamListItem.vue'
 import { createOrigam } from '@origam/origam'
+import axe from 'axe-core'
 
 Object.defineProperty(window, 'matchMedia', {
     writable: true,
@@ -149,5 +150,66 @@ describe('OrigamListItem — hors de toute liste', () => {
             global: { plugins: [ createOrigam() ] }
         })
         expect(wrapper.attributes('role')).toBeUndefined()
+    })
+})
+
+describe('OrigamList — une ligne lien porte le rôle listitem sur un conteneur, pas sur le <a> (#1249)', () => {
+    const LINKS = [
+        { title: 'Participants', href: '/admin/participants' },
+        { title: 'Events', href: '/admin/events' }
+    ]
+    const mountLinks = (props: Record<string, unknown> = {}) =>
+        mount(OrigamList, {
+            props: { items: LINKS, itemProps: true, ...props } as never,
+            attachTo: document.body,
+            global: { plugins: [ createOrigam() ] }
+        })
+
+    it('the <a> keeps its implicit link role (no explicit role attribute)', () => {
+        const anchors = mountLinks().findAll('a')
+        expect(anchors).toHaveLength(2)
+        for (const a of anchors) expect(a.attributes('role')).toBeUndefined()
+    })
+
+    it('each <a> sits directly inside a role="listitem" container, and the list counts N listitems', () => {
+        const wrapper = mountLinks()
+        const items = wrapper.findAll('[role="listitem"]')
+        expect(items).toHaveLength(2)
+        for (const item of items) {
+            expect(item.element.tagName).toBe('DIV')
+            expect(item.element.firstElementChild?.tagName).toBe('A')
+        }
+        expect(wrapper.attributes('role')).toBe('list')
+    })
+
+    it('the <a> keeps the row classes and its href', () => {
+        const a = mountLinks().find('a')
+        expect(a.classes()).toContain('origam-list-item')
+        expect(a.attributes('href')).toBe('/admin/participants')
+    })
+
+    it('axe reports no violation on a nav list of links', async () => {
+        const wrapper = mountLinks({ nav: true })
+        const { violations } = await axe.run(wrapper.element as Element, { rules: { 'color-contrast': { enabled: false } } })
+        expect(violations.map((v) => v.id)).toEqual([])
+        wrapper.unmount()
+    })
+
+    it('modes without a link keep the flat structure: no wrapper, role on the row itself', () => {
+        const wrapper = mountList()
+        expect(wrapper.findAll('.origam-list-item-wrapper')).toHaveLength(0)
+        expect(rowRoles(wrapper)).toEqual([ 'listitem', 'listitem' ])
+        const click = mount(OrigamList, {
+            props: { items: [ { title: 'A', onClick: () => {} } ], itemProps: true } as never,
+            global: { plugins: [ createOrigam() ] }
+        })
+        expect(click.find('.origam-list-item').attributes('role')).toBe('listitem')
+        expect(click.find('.origam-list-item-wrapper').exists()).toBe(false)
+    })
+
+    it('selection mode: a link row stays a flat role="option" (unchanged)', () => {
+        const wrapper = mountLinks({ selectStrategy: 'single-leaf' })
+        expect(wrapper.findAll('.origam-list-item-wrapper')).toHaveLength(0)
+        expect(wrapper.findAll('a').map((a) => a.attributes('role'))).toEqual([ 'option', 'option' ])
     })
 })

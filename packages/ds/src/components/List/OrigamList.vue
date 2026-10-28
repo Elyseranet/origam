@@ -514,7 +514,11 @@
 			// matche jamais : le premier essai a rendu un ecart de 0px, identique
 			// a l'etat d'avant. `:deep()` pose l'attribut sur l'ANCETRE, qui lui
 			// le porte.
-			:deep(.origam-list-item + .origam-list-item) {
+			// #1249 — a link row sits in `.origam-list-item-wrapper`, so adjacency is read on the wrapper too.
+			:deep(.origam-list-item + .origam-list-item),
+			:deep(.origam-list-item-wrapper + .origam-list-item-wrapper > .origam-list-item),
+			:deep(.origam-list-item-wrapper + .origam-list-item),
+			:deep(.origam-list-item + .origam-list-item-wrapper > .origam-list-item) {
 				margin-block-start: var(--origam-list--nav---item-gap, 2px);
 			}
 		}
