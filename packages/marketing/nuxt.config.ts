@@ -143,11 +143,10 @@ export default defineNuxtConfig({
         disallow: ['/admin']
     },
 
-    // @nuxtjs/seo 6 bundles nuxt-ai-ready, which appends a Content-Signal line to
-    // robots.txt by default. Not part of the pre-6 output: keep robots.txt identical.
-    aiReady: {
-        contentSignal: false
-    },
+    // @nuxtjs/seo 6 bundles nuxt-ai-ready and nuxt-skew-protection, enabled by default.
+    // Neither existed before the upgrade: keep the site behaviour unchanged.
+    aiReady: false,
+    skewProtection: false,
 
     components: [
         { path: '~/components', pathPrefix: false }
