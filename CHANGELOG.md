@@ -18,6 +18,21 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.19] - 2026-10-28
+
+### Fixed — `OrigamTabs` variante `pills` : la prop `color` colore l'onglet actif (#1253)
+
+L'onglet actif d'un `OrigamTabs` `variant="pills"` restait figé sur `action.primary`, quelle que soit la `color` passée. La cause : `OrigamTab` ne déclarait aucune prop `color`. Le transfert en props aurait de plus violé l'invariant « un parent ne transmet pas une prop que le consommateur n'a pas passée ».
+
+- `ITabProps` étend `IColorProps`.
+- `OrigamTabs` fournit sa `color` par `provide` (clé `ORIGAM_TABS_COLOR_KEY`, `consts/Tabs/tabs.const.ts`). `OrigamTab` la lit de façon réactive et pose les jetons existants `--origam-tabs__item--pills--active---background-color` / `---color` pour une intention. Sans `color`, le rendu ne change pas. Aucune prop n'est injectée sur les onglets.
+- Quand `color` est passée, elle l'emporte sur ces mêmes jetons posés par un thème (la prop prime). Seules les intentions sont prises en charge.
+- Vérifié :
+  - e2e `tabs.spec.ts` : pills avec base / success / danger donne 3 fonds actifs distincts, alors que les 3 valaient `rgb(124,58,237)` avant le correctif ;
+  - TU `tabs-pills-color.spec.ts` : la couleur est suivie aussi quand `color` passe d'`undefined` à une valeur ;
+  - `forwarded-defaults.spec.ts` est inchangé et vert ;
+  - le ratchet vue-tsc marketing tient son plancher (PR #1272).
+
 ## [2.37.18] - 2026-10-28
 
 ### Fixed — champs : la couleur et l'opacité du placeholder sont réglables par jeton (#1266)
