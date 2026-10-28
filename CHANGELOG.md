@@ -18,6 +18,16 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.17] - 2026-10-28
+
+### Fixed — `OrigamDataTable` n'hérite plus d'une prop `item` requise (#1246, #1154)
+
+`IDataTableProps` étendait `IDataTableRowProps`, qui déclare `item` comme prop requise. Résultat : la table elle-même réclamait une prop `item` qu'elle n'utilise pas, et Vue avertissait `Missing required prop: "item"` à chaque rendu.
+
+- `IDataTableProps` étend maintenant `Omit<IDataTableRowProps, 'item'>`. `OrigamDataTableRow` garde son `item` requis, et `cellProps` reste typé sur la table.
+- Le catalogue du playground perd la prop `item` sur `OrigamDataTable`.
+- Vérifié : le TU `data-table-no-required-item-prop.spec.ts` échoue sur le parent (2 sur 2) et passe après le correctif ; TU DataTable et Table : 92/92 ; type-check exit 0 (PR #1269).
+
 ## [2.37.16] - 2026-10-28
 
 ### Fixed — `OrigamSelect`, `OrigamColorPickerField`, `OrigamDatePickerField` : plus de nom « Ouvrir » qui écrase un `<label for>` externe (#1251)

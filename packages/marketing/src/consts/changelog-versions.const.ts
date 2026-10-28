@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.17',
+        date: '2026-10-28',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23717.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23717.h1', textFallback: 'OrigamDataTable n\'hérite plus d\'une prop item requise (#1246, #1154)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.16',
         date: '2026-10-28',
         type: 'patch',
