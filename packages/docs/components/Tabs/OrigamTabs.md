@@ -106,7 +106,7 @@ On touch devices, enable horizontal swipe between panels with
 | `centered`    | `boolean`                  | `false`        | Centers the tablist in its container. |
 | `mandatory`   | `boolean`                  | `true`         | Forbids the empty selection (ARIA-recommended). |
 | `disabled`    | `boolean`                  | `false`        | Disables the entire tablist.          |
-| `color`       | `TIntent`                  | —              | Forwarded as a default to every child `<OrigamTab>`; does **not** paint the tablist itself. |
+| `color`       | `TIntent`                  | —              | Forwarded as a default to every child `<OrigamTab>`; does **not** paint the tablist itself. In the `pills` variant it sets the active tab's background and text (`action.{intent}.bg` / `.fg`); unset keeps `action.primary`. The `--origam-tabs__item--pills--active---*` tokens remain the fallback hook when no `color` is given. |
 | `bgColor`     | `TIntent \| string`        | —              | Paints the tablist surface. An intent resolves to `--origam-color__{base}---bg` and auto-pairs its contrast foreground; a raw CSS colour is emitted verbatim. |
 | `rounded`     | `TRounded`                 | —              | Corner-radius rung (`IRoundedProps`).  |
 | `tag`         | `string`                   | `'div'`        | Element rendered as the tablist root.  |

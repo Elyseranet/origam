@@ -123,6 +123,20 @@
       "source": "types"
     },
     {
+      "name": "color",
+      "label": "color",
+      "tsType": "TColor",
+      "runtimeType": [
+        "String",
+        "Object",
+        "Boolean"
+      ],
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    },
+    {
       "name": "fontSize",
       "label": "fontSize",
       "tsType": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"5xl\" | undefined",

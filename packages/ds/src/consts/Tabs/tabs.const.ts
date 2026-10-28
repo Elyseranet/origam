@@ -1,4 +1,5 @@
 import type { InjectionKey, Ref } from 'vue'
+import type { TColor } from '../../types/Commons/color.type'
 import type { IGroupProvide } from '../../interfaces/Commons/group.interface'
 import type { ITabPanelsProvide } from '../../interfaces/Tabs/tab-panels.interface'
 
@@ -10,6 +11,14 @@ import type { ITabPanelsProvide } from '../../interfaces/Tabs/tab-panels.interfa
  * its items with the outer group.
  */
 export const ORIGAM_TABS_KEY: InjectionKey<IGroupProvide> = Symbol.for('origam:tabs')
+
+/*********************************************************
+ * ORIGAM_TABS_COLOR_KEY (#1253)
+ *
+ * @description
+ * `<OrigamTabs>` `color`, provided reactively so each `<OrigamTab>` can paint its pills active surface without a forwarded default.
+ ********************************************************/
+export const ORIGAM_TABS_COLOR_KEY: InjectionKey<Ref<TColor | undefined>> = Symbol.for('origam:tabs-color')
 
 /**
  * Injection key shared by `<OrigamTabPanels>` (provider) and
