@@ -1610,6 +1610,8 @@ export type TTokenName =
   | '--origam-field---border-width'
   | '--origam-field---border-width-outlined'
   | '--origam-field---color'
+  | '--origam-field---placeholder-color'
+  | '--origam-field---placeholder-opacity'
   | '--origam-field---focus-ring-color'
   | '--origam-field---focus-ring-offset'
   | '--origam-field---focus-ring-width'

@@ -985,7 +985,7 @@
 				outline: none;
 
 				&::placeholder {
-					opacity: 0.5;
+					opacity: var(--origam-field---placeholder-opacity, 0.5);
 				}
 			}
 
@@ -999,8 +999,8 @@
 				border: none;
 
 				&::placeholder {
-					color: currentColor;
-					opacity: 0.5;
+					color: var(--origam-field---placeholder-color, currentColor);
+					opacity: var(--origam-field---placeholder-opacity, 0.5);
 				}
 
 				&:focus,

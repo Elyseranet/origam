@@ -128,6 +128,9 @@ const GREEN_SPECS = [
     'textarea-richtext.spec.ts',
     'defaults-provider.spec.ts',
     'field-height.spec.ts',
+    // #1266 — jetons de couleur / opacité du placeholder de Field. Verte
+    // chromium, E2E_STATIC=1, port isolé ; rouge sur le parent.
+    'field-placeholder-token.spec.ts',
     // wave 7 — contrôles de story pour les 16 props directionnelles câblées
     // en 249ac7d1. Vérifiée verte sur chromium + firefox + webkit.
     'directional-story-controls.spec.ts',

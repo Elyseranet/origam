@@ -262,6 +262,8 @@ genuinely need the raw DOM events at field level, listen for `focusin` /
 | `--origam-field---border-radius` | theme rung (fallback `8px`) | Corner radius (overridable via `rounded` prop) |
 | `--origam-field---border-color` | semantic border | Outline color |
 | `--origam-field---label-color` | text-secondary | Label color |
+| `--origam-field---placeholder-color` | `currentColor` | Placeholder color of the inner `input` / `textarea`. |
+| `--origam-field---placeholder-opacity` | `0.5` | Placeholder opacity (also the focused value of the floating-label placeholder). |
 | `--origam-field---bg-color` | surface | Background |
 | `--origam-field---density` | `0px` | Density offset |
 | `--origam-field__input---padding-top` | `--origam-field__input---padding-block-md` | Effective top padding of the input. Redirected onto a rung token by the `size` and `variant` rules below — override a rung, not this, when a rung applies. |
