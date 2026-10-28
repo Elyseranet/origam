@@ -91,6 +91,13 @@
 			</template>
 		</Variant>
 
+		<Variant title="Functional - Link rows">
+			<origam-list nav>
+				<origam-list-item data-cy="list-link-row" title="Participants" href="#participants"/>
+				<origam-list-item title="Events" href="#events"/>
+			</origam-list>
+		</Variant>
+
 		<Variant title="Events - update:selected">
 			<origam-list
 					:items="selectableItems"
@@ -217,13 +224,6 @@
 				</StoryGroup>
 			</template>
 		</Variant>
-		<Variant title="Functional - Link rows">
-			<origam-list nav>
-				<origam-list-item data-cy="list-link-row" title="Participants" href="#participants"/>
-				<origam-list-item title="Events" href="#events"/>
-			</origam-list>
-		</Variant>
-
 	</Story>
 </template>
 

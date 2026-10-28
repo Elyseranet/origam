@@ -798,6 +798,12 @@
     "label": "ListItem"
   },
   {
+    "name": "OrigamListItemWrapper",
+    "tag": "origam-list-item-wrapper",
+    "family": "List",
+    "label": "ListItemWrapper"
+  },
+  {
     "name": "OrigamListSubheader",
     "tag": "origam-list-subheader",
     "family": "List",

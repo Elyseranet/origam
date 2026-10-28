@@ -1,4 +1,7 @@
 import { expect, test } from '@playwright/test'
+import { readFileSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 /**
  * SPEC — le rôle ARIA de `<origam-list>` décrit ce que la liste EST (#424)
@@ -59,6 +62,11 @@ import { expect, test } from '@playwright/test'
 const SELECT_ID = 'components-stories-select-origamselect-story-vue'
 const MENU_ID = 'components-stories-menu-origammenu-story-vue'
 const LIST_ID = 'components-stories-list-origamlist-story-vue'
+const LIST_STORY = resolve(dirname(fileURLToPath(import.meta.url)), '../../stories/components/stories/List/OrigamList.story.vue')
+
+/** Index d'une Variant de la story List retrouvé par TITRE : un index écrit en dur dérive dès qu'on insère une Variant. */
+const listVariant = (title: string) =>
+    [ ...readFileSync(LIST_STORY, 'utf8').matchAll(/<Variant\b[^>]*?\btitle\s*=\s*"([^"]*)"/gs) ].map((m) => m[1]).indexOf(title)
 
 const url = (storyId: string, idx: number) =>
     `/stories/story/${storyId}?variantId=${storyId}-${idx}`
@@ -254,9 +262,7 @@ test.describe('OrigamList — les deux modes sur la story de la liste elle-meme'
     })
 
     test('la Variant « Events - update:selected », qui lie une selection, s\'annonce listbox', async ({ page }) => {
-        // Index 2 dans OrigamList.story.vue — la première Variant qui passe
-        // `selected`, donc la première à entrer en mode selection.
-        await page.goto(url(LIST_ID, 2), { waitUntil: 'domcontentloaded' })
+        await page.goto(url(LIST_ID, listVariant('Events - update:selected')), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 
         const list = sandbox.locator('.origam-list').first()
@@ -270,14 +276,12 @@ test.describe('OrigamList — les deux modes sur la story de la liste elle-meme'
     })
 })
 
-/** Variant `Functional - Link rows`, la dernière de la story. */
-const LINK_ROWS = 14
 
 test.describe('OrigamList — une ligne lien garde son rôle link (#1249)', () => {
     test.setTimeout(45000)
 
     test('role=listitem sur un conteneur, <a> sans rôle, axe sans violation', async ({ page }) => {
-        await page.goto(url(LIST_ID, LINK_ROWS), { waitUntil: 'domcontentloaded' })
+        await page.goto(url(LIST_ID, listVariant('Functional - Link rows')), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 
         const link = sandbox.locator('[data-cy="list-link-row"]')

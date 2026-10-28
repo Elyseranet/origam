@@ -1,6 +1,3 @@
-import { h } from 'vue'
-import type { FunctionalComponent } from 'vue'
-
 import type { IItemProps } from '../../interfaces/Commons/item.interface'
 import type { IInternalListItemChildren } from '../../interfaces/List/list-children.interface'
 
@@ -79,18 +76,4 @@ export function transformListItem (props: Omit<IItemProps, 'items'> & { itemType
         children: Array.isArray(children) ? transformListItems(props, children) : undefined,
         raw: item
     }
-}
-
-/*********************************************************
- * ListItemWrapper (#1249)
- *
- * @description
- * Root of `OrigamListItem`. With a `role` it wraps its single child in
- * `<div role="…">`; without one it returns that child untouched, so the
- * non-link modes keep today's flat DOM (and a real element for `$el`).
- ********************************************************/
-export const ListItemWrapper: FunctionalComponent<{ role?: string }> = (props, { slots }) => {
-    const child = slots.default?.()
-
-    return props.role ? h('div', { role: props.role, class: 'origam-list-item-wrapper' }, child) : child?.[0]
 }

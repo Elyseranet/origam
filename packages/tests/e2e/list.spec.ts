@@ -1,4 +1,7 @@
 import { expect, test } from '@playwright/test'
+import { readFileSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 /**
  * OrigamList — runtime assertions per story Variant.
@@ -32,7 +35,19 @@ import { expect, test } from '@playwright/test'
 const STORY_ID   = 'components-stories-list-origamlist-story-vue'
 const STORY_PATH = '/stories/story/' + STORY_ID
 
-const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
+const STORY_FILE = resolve(dirname(fileURLToPath(import.meta.url)), '../../stories/components/stories/List/OrigamList.story.vue')
+const STORY_TITLES = [ ...readFileSync(STORY_FILE, 'utf8').matchAll(/<Variant\b[^>]*?\btitle\s*=\s*"([^"]*)"/gs) ].map((m) => m[1])
+
+/*
+ * `idx` numérote les Variants de la liste ci-dessus ; l'index Histoire réel est
+ * retrouvé par TITRE, pour que `Functional - Link rows` (#1249), insérée après
+ * `Functional`, ne décale pas les autres.
+ */
+const variantUrl = (idx: number) => {
+    const title = STORY_TITLES.filter((t) => t !== 'Functional - Link rows')[idx]
+
+    return `${STORY_PATH}?variantId=${STORY_ID}-${STORY_TITLES.indexOf(title)}`
+}
 
 test.describe('OrigamList', () => {
     test.setTimeout(45000)

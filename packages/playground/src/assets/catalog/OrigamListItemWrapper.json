@@ -1,0 +1,22 @@
+{
+  "name": "OrigamListItemWrapper",
+  "tag": "origam-list-item-wrapper",
+  "family": "List",
+  "label": "ListItemWrapper",
+  "props": [
+    {
+      "name": "role",
+      "label": "role",
+      "tsType": "string | undefined",
+      "runtimeType": "String",
+      "required": false,
+      "hasFactoryDefault": false,
+      "control": "text",
+      "source": "types"
+    }
+  ],
+  "events": [],
+  "slots": [],
+  "snippets": [],
+  "requiresParent": false
+}

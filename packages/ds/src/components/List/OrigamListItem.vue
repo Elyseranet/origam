@@ -1,8 +1,5 @@
 <template>
-	<component
-			:is="ListItemWrapper"
-			:role="wrapperRole"
-	>
+	<origam-list-item-wrapper :role="wrapperRole">
 	<component
 			:is="link.tag.value"
 			:id="styleId"
@@ -120,7 +117,7 @@
 			</div>
 		</slot>
 	</component>
-	</component>
+	</origam-list-item-wrapper>
 </template>
 
 <script
@@ -131,7 +128,7 @@
 	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
-	import { ListItemWrapper } from '../../utils/List/list-item.util'
+	import OrigamListItemWrapper from './OrigamListItemWrapper.vue'
 	import { useAccessibleCommand } from '../../composables/Commons/accessibleCommand.composable'
 	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
