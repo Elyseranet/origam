@@ -18,6 +18,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.18] - 2026-10-28
+
+### Fixed — champs : la couleur et l'opacité du placeholder sont réglables par jeton (#1266)
+
+`OrigamField.vue` figeait `::placeholder` à `color: currentColor; opacity: 0.5`, à l'état normal comme au focus. Aucun thème ne pouvait donc le régler.
+
+- Deux jetons : `--origam-field---placeholder-color` (`currentColor`) et `--origam-field---placeholder-opacity` (`0.5`). Ils sont déclarés dans `light.css`, dans `dark.css` (bloc explicite et bloc media), dans leurs jumeaux SCSS et dans `tokens.type.ts`, et `main.css` est régénéré. Le rendu par défaut ne change pas.
+- Vérifié :
+  - e2e `field-placeholder-token.spec.ts` (Chromium, Histoire statique) : avec les jetons posés, il est rouge sur le parent (reçu `rgb(109, 40, 217)`) et vert après le correctif ; le rendu par défaut est inchangé avant comme après.
+  - Garde `token-twins` verte (PR #1271).
+
 ## [2.37.17] - 2026-10-28
 
 ### Fixed — `OrigamDataTable` n'hérite plus d'une prop `item` requise (#1246, #1154)

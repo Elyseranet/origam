@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.18',
+        date: '2026-10-28',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23718.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23718.h1', textFallback: 'champs : la couleur et l\'opacité du placeholder sont réglables par jeton (#1266)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.17',
         date: '2026-10-28',
         type: 'patch',
