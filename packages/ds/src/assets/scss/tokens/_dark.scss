@@ -342,6 +342,7 @@
   --origam-btn---box-shadow-tonal-active: var(--origam-shadow---xs);
   --origam-btn---border-width-outlined: var(--origam-border__width---thin);
   --origam-btn---border-width-ghost: var(--origam-border__width---thin);
+  --origam-btn---border-compensation: 0px;
   --origam-btn---backdrop-filter-ghost: blur(8px);
   --origam-btn---transition-duration: var(--origam-motion__duration---slow);
   --origam-btn---transition-easing: var(--origam-motion__easing---standard);
@@ -3368,6 +3369,7 @@
     --origam-btn---box-shadow-tonal-active: var(--origam-shadow---xs);
     --origam-btn---border-width-outlined: var(--origam-border__width---thin);
     --origam-btn---border-width-ghost: var(--origam-border__width---thin);
+    --origam-btn---border-compensation: 0px;
     --origam-btn---backdrop-filter-ghost: blur(8px);
     --origam-btn---transition-duration: var(--origam-motion__duration---slow);
     --origam-btn---transition-easing: var(--origam-motion__easing---standard);

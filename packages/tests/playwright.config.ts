@@ -310,6 +310,8 @@ const GREEN_SPECS = [
     // Rejouée contre `origin/develop` : les 4 tests « [rouge avant] » rougissent,
     // les 2 témoins restent verts des deux côtés.
     'btn-wrap-height.spec.ts',
+    // #1261 — verifiee verte et stable avant inscription : 5/5 sous `--repeat-each=5`, E2E_STATIC=1, chromium, port isole.
+    'btn-outlined-box.spec.ts',
     // wave 15 — #1095. `block` ne grandit plus sur l'axe principal d'un parent flex
     // en colonne (`flex: 0 0 auto` + `width: 100%`). Rejouee contre `origin/develop` :
     // les 4 tests « [rouge avant] » rougissent, les 4 temoins restent verts.

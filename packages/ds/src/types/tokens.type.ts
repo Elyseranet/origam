@@ -505,6 +505,7 @@ export type TTokenName =
   | '--origam-btn---border-radius-rounded'
   | '--origam-btn---border-style'
   | '--origam-btn---border-width'
+  | '--origam-btn---border-compensation'
   | '--origam-btn---border-width-ghost'
   | '--origam-btn---border-width-outlined'
   | '--origam-btn---box-shadow-elevated'
