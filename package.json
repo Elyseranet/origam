@@ -85,7 +85,8 @@
             "js-cookie": "^3.0.7",
             "markdown-it": "^14.3.3",
             "devalue@5": "^5.9.3",
-            "undici@8": "^8.10.2",
+            "undici@8": "^8.12.2",
+            "serialize-javascript@7": "^7.1.3",
             "source-map-js": "^1.2.2",
             "seroval": "^1.6.3",
             "simple-git@3": "^4.0.2"
@@ -94,7 +95,8 @@
             "ignoreGhsas": [
                 "GHSA-86w9-cpqp-85rv",
                 "GHSA-vfj7-8cjw-p6xm",
-                "GHSA-hp3w-g68c-fv3c"
+                "GHSA-hp3w-g68c-fv3c",
+                "GHSA-gcqx-w48m-w2h4"
             ]
         },
         "patchedDependencies": {
