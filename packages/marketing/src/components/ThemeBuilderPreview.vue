@@ -84,7 +84,13 @@
               :data-cy="`theming-canvas-${pane.mode}`"
             >
               <origam-defaults-provider :defaults="themeDefaults">
-                <template v-if="hostEntry && hasRoots">
+                <theme-builder-contextual-menu-demo
+                  v-if="entry.slug === 'contextual-menu'"
+                  :attach="THEME_BUILDER_OVERLAY_ATTACH"
+                  v-bind="previewProps"
+                  :data-cy="`theming-live-${entry.slug}-${pane.mode}`"
+                />
+                <template v-else-if="hostEntry && hasRoots">
                   <playground-scene-node
                     v-for="root in roots"
                     :key="root.id"
@@ -111,6 +117,7 @@
 
 <script setup lang="ts">
   import { computed, shallowRef, watch } from 'vue'
+  import { useSnackbarGroup } from 'origam/composables'
   import { PlaygroundSceneNode } from '@origam/playground/components'
   import { catalogNameOfTag } from '@origam/playground/catalog'
 
@@ -180,6 +187,15 @@
     if (!name) return
     const loaded = await host.load(name)
     if (loaded?.componentName === componentName.value) hostEntry.value = loaded
+    if (name === 'OrigamSnackbarGroup' && loaded) notifyDemo()
+  }
+
+  /* Une pile de snackbars n'a pas de props qui la remplissent : on pousse deux items persistants (#1285). */
+  const { notify, dismissAll } = useSnackbarGroup()
+  const notifyDemo = () => {
+    dismissAll()
+    notify({ message: t('theming.preview.snackbar_group.saved', 'Saved successfully.'), intent: 'success', duration: 0 })
+    notify({ message: t('theming.preview.snackbar_group.sync', 'Sync in progress.'), intent: 'info', duration: 0 })
   }
 
   watch(componentName, () => {

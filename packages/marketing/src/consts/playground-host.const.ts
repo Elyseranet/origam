@@ -85,11 +85,6 @@ export const PLAYGROUND_RENDERED_BY_PARENT_TEXT = {
     fallback: 'This sub-part is rendered by its parent: the preview shows {parent}, with this part inside it. Theme it from the Theme Builder, or edit the parent here.'
 } as const
 
-const PORTAL: IPlaygroundUnavailableReason = {
-    key: 'components.detail.preview.reason.portal',
-    fallback: 'This component teleports its surface to the end of <body> once activated, so it never renders inside this preview box. Use the props panel and the generated snippet, then try it in your own page.'
-}
-
 const RUNTIME_DATA: IPlaygroundUnavailableReason = {
     key: 'components.detail.preview.reason.runtime_data',
     fallback: 'This component requires runtime data its parent owns (a DOM element, a controller object, or a File), which a static preview cannot provide.'
@@ -105,10 +100,8 @@ const RUNTIME_DATA: IPlaygroundUnavailableReason = {
  * snippet instead, and it renders — so the reason is only read where nothing
  * renders.
  *
- * `OrigamContextualMenu` needs a real `contextmenu` event (its only fallback,
- * `staticLocationStrategy`, is an empty stub); `OrigamCommandPalette` and
- * `OrigamSnackbarGroup` hardcode `<teleport to="body">`; `OrigamDrawer`
- * teleports to the site's own `<OrigamLayout>`, with no prop to redirect it.
+ * (Les 4 portails — drawer, command-palette, contextual-menu, snackbar-group — se rendent
+ * désormais en place via `attach`, #1285 : plus de raison à afficher.)
  */
 export const PLAYGROUND_UNAVAILABLE_REASONS: Readonly<Record<string, IPlaygroundUnavailableReason>> = {
     OrigamChartAxis: PLAYGROUND_REASON_NEEDS_PARENT,
@@ -139,10 +132,6 @@ export const PLAYGROUND_UNAVAILABLE_REASONS: Readonly<Record<string, IPlayground
         key: 'components.detail.preview.reason.media_source',
         fallback: 'This component requires a media source (audio or video URL). The marketing site ships no sample media, so the preview stays empty on purpose.'
     },
-    OrigamContextualMenu: PORTAL,
-    OrigamCommandPalette: PORTAL,
-    OrigamDrawer: PORTAL,
-    OrigamSnackbarGroup: PORTAL,
     OrigamSpacer: {
         key: 'components.detail.preview.reason.layout_only',
         fallback: 'This component renders no visible surface of its own: it only pushes its siblings apart inside a flex container.'
