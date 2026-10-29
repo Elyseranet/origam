@@ -1,4 +1,6 @@
 import OrigamDataTable from '../../components/DataTable/OrigamDataTable.vue'
+import OrigamDataTableGroupHeaderRow from '../../components/DataTable/OrigamDataTableGroupHeaderRow.vue'
+import OrigamDataTableHeadersCellMobile from '../../components/DataTable/OrigamDataTableHeadersCellMobile.vue'
 
 import { DATA_TABLE_ROWS_SLOT_NAMES } from '../../consts/DataTable/data-table.const'
 import { DATATABLE_SELECT_STRATEGY } from '../../enums/DataTable/data-table.enum'
@@ -34,3 +36,6 @@ export type TOrigamDataTable = InstanceType<typeof OrigamDataTable>
  * familles pilotees par colonne que l'enfant declare de son cote.
  ********************************************************/
 export type TDataTableRowsSlotName = typeof DATA_TABLE_ROWS_SLOT_NAMES[number] | TDataTableRowSlotName
+
+export type TOrigamDataTableGroupHeaderRow = InstanceType<typeof OrigamDataTableGroupHeaderRow>
+export type TOrigamDataTableHeadersCellMobile = InstanceType<typeof OrigamDataTableHeadersCellMobile>
