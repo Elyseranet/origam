@@ -90,11 +90,6 @@ const PORTAL: IPlaygroundUnavailableReason = {
     fallback: 'This component teleports its surface to the end of <body> once activated, so it never renders inside this preview box. Use the props panel and the generated snippet, then try it in your own page.'
 }
 
-const RUNTIME_DATA: IPlaygroundUnavailableReason = {
-    key: 'components.detail.preview.reason.runtime_data',
-    fallback: 'This component requires runtime data its parent owns (a DOM element, a controller object, or a File), which a static preview cannot provide.'
-}
-
 /**
  * Components that cannot render on their own, by export name, with the reason
  * shown above the playground. Carried over from the former
@@ -133,20 +128,10 @@ export const PLAYGROUND_UNAVAILABLE_REASONS: Readonly<Record<string, IPlayground
     OrigamBracketCompetitor: PLAYGROUND_REASON_NEEDS_PARENT,
     OrigamBracketMatch: PLAYGROUND_REASON_NEEDS_PARENT,
     OrigamBracketRound: PLAYGROUND_REASON_NEEDS_PARENT,
-    OrigamInfiniteScrollIntersect: RUNTIME_DATA,
-    OrigamMediaController: RUNTIME_DATA,
-    OrigamVideo: {
-        key: 'components.detail.preview.reason.media_source',
-        fallback: 'This component requires a media source (audio or video URL). The marketing site ships no sample media, so the preview stays empty on purpose.'
-    },
     OrigamContextualMenu: PORTAL,
     OrigamCommandPalette: PORTAL,
     OrigamDrawer: PORTAL,
-    OrigamSnackbarGroup: PORTAL,
-    OrigamSpacer: {
-        key: 'components.detail.preview.reason.layout_only',
-        fallback: 'This component renders no visible surface of its own: it only pushes its siblings apart inside a flex container.'
-    }
+    OrigamSnackbarGroup: PORTAL
 }
 
 /**
