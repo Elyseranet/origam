@@ -18,6 +18,19 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.21] - 2026-10-29
+
+### Fixed — `OrigamListItem` : un élément-lien garde son rôle de lien (#1249)
+
+Dans une liste, `OrigamListItem` posait le rôle publié par la liste (`listitem`) sur sa racine, quelle que soit la balise rendue. Un élément rendu en `<a href>` recevait donc `role="listitem"` et perdait son rôle implicite `link`.
+
+- En mode liste, un élément-lien rend désormais `<div role="listitem"><a …></a></div>` (arbitrage du propriétaire). Le `<a>` reste la ligne visuelle : il garde les classes, les styles, le ripple, le tabindex, les handlers, l'état actif et les `$attrs`. Seul le rôle passe au conteneur. Hors lien (`option`, `@click` seul, `disabled`), le DOM reste plat, sans changement.
+- Le conteneur est un composant **interne** non exporté, `components/List/OrigamListItemWrapper.vue`. C'est une fonction de rendu, seul moyen de renvoyer l'enfant sans racine ajoutée, et c'est une dérogation à `<script setup>` validée.
+- Nouvelle liste unique `INTERNAL_COMPONENTS` (`consts/Commons/commons.const.ts`). Le catalogue du playground, la sync de la doc marketing, le test de couverture du catalogue et les gardes qui énumèrent les composants l'utilisent pour exclure les composants internes.
+- Vérifié :
+  - TU `OrigamList.roles.spec.ts` : rôle du `<a>`, liste `list` avec N `listitem`, axe-core sans violation. 3 rouges sur le parent, 20/20 après.
+  - Les e2e de liste, menu, select et drawer sont verts. La garde `variant-pins` ne relève aucun désaccord (PR #1273).
+
 ## [2.37.20] - 2026-10-28
 
 ### Fixed — `OrigamBtn` outlined et ghost : le filet ne s'ajoute plus à la largeur (#1261)
