@@ -57,11 +57,7 @@ const PLAYGROUND_REASON_NEEDS_PARENT: IPlaygroundUnavailableReason = {
  * Authored, never derived: each pair is checked in a real browser by the
  * lot E probe — the sub-part's root class (`.origam-data-table-footer`, …) is
  * present in the rendered parent. A sub-part shown only on interaction
- * (`OrigamChartTooltip`, on hover) or only in a mode the snippet does not
- * enable (`OrigamDataTableGroupHeaderRow` needs `groupBy`,
- * `OrigamDataTableHeadersCellMobile` a mobile viewport) is NOT listed — nor
- * `OrigamListChildren` / `OrigamListGroupActivator`, measured ABSENT from the
- * `OrigamListGroup` snippet's render.
+ * (`OrigamChartTooltip`, on hover) is NOT listed.
  */
 export const PLAYGROUND_RENDERED_BY: Readonly<Record<string, string>> = {
     OrigamChartAxis: 'OrigamChart',
@@ -115,19 +111,14 @@ export const PLAYGROUND_UNAVAILABLE_REASONS: Readonly<Record<string, IPlayground
     OrigamChartTooltip: PLAYGROUND_REASON_NEEDS_PARENT,
     OrigamDataTableColumnCell: PLAYGROUND_REASON_NEEDS_PARENT,
     OrigamDataTableFooter: PLAYGROUND_REASON_NEEDS_PARENT,
-    OrigamDataTableGroupHeaderRow: PLAYGROUND_REASON_NEEDS_PARENT,
     OrigamDataTableHeaderCell: PLAYGROUND_REASON_NEEDS_PARENT,
     OrigamDataTableHeaders: PLAYGROUND_REASON_NEEDS_PARENT,
     OrigamDataTableHeadersCell: PLAYGROUND_REASON_NEEDS_PARENT,
-    OrigamDataTableHeadersCellMobile: PLAYGROUND_REASON_NEEDS_PARENT,
     OrigamDataTableRows: PLAYGROUND_REASON_NEEDS_PARENT,
     OrigamExpansionPanel: PLAYGROUND_REASON_NEEDS_PARENT,
     OrigamExpansionPanelContent: PLAYGROUND_REASON_NEEDS_PARENT,
     OrigamExpansionPanelHeader: PLAYGROUND_REASON_NEEDS_PARENT,
-    OrigamListChildren: PLAYGROUND_REASON_NEEDS_PARENT,
-    OrigamListGroupActivator: PLAYGROUND_REASON_NEEDS_PARENT,
     OrigamSliderFieldTrack: PLAYGROUND_REASON_NEEDS_PARENT,
-    OrigamVirtualScrollItem: PLAYGROUND_REASON_NEEDS_PARENT,
     OrigamWindowItem: PLAYGROUND_REASON_NEEDS_PARENT,
     OrigamTabPanel: PLAYGROUND_REASON_NEEDS_PARENT,
     OrigamBracketCompetitor: PLAYGROUND_REASON_NEEDS_PARENT,
