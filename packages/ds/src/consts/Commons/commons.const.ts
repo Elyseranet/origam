@@ -66,3 +66,17 @@ export const NAME_ATTR_TAGS: ReadonlySet<string> = new Set([
     'select',
     'textarea'
 ])
+
+/*********************************************************
+ * INTERNAL_COMPONENTS (#1249)
+ *
+ * @description
+ * Components that exist as `.vue` files but are NOT part of the public catalogue: never exported,
+ * never documented, never in the playground. The ONE list read by every tool that enumerates
+ * `components/**\/*.vue` as the public surface (guards, doc sync extractor, playground catalogue).
+ * `scripts/guards/lib/components.mjs` reads this array literal as text: keep it a plain array of
+ * string literals.
+ ********************************************************/
+export const INTERNAL_COMPONENTS = [
+    'OrigamListItemWrapper'
+] as const
