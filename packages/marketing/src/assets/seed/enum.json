@@ -1,8 +1,8 @@
 {
   "kind": "enum",
-  "exportedAt": "2026-10-01T13:28:51.334Z",
-  "sourceCommit": "143d5904",
-  "entryCount": 140,
+  "exportedAt": "2026-10-29T00:52:14.837Z",
+  "sourceCommit": "5413eb50e",
+  "entryCount": 141,
   "entries": [
     {
       "entry": {
@@ -4803,7 +4803,7 @@
         "icon": null,
         "description_key": null,
         "description_fallback": null,
-        "definition": "export enum FONT_FAMILY {\n    SANS = 'sans',\n    MONO = 'mono',\n    SERIF = 'serif'\n}",
+        "definition": "export enum FONT_FAMILY {\n    SANS = 'sans',\n    MONO = 'mono',\n    SERIF = 'serif',\n    DISPLAY = 'display'\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -4838,6 +4838,12 @@
         {
           "value": "FONT_FAMILY.SERIF",
           "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "FONT_FAMILY.DISPLAY",
+          "position": 3,
           "description_key": null,
           "description_fallback": null
         }
@@ -54815,6 +54821,70 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "text-transform",
+        "name": "TEXT_TRANSFORM",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum TEXT_TRANSFORM {\n    NONE = 'none',\n    UPPERCASE = 'uppercase',\n    LOWERCASE = 'lowercase',\n    CAPITALIZE = 'capitalize'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Commons/text-transform.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "TEXT_TRANSFORM.NONE",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "TEXT_TRANSFORM.UPPERCASE",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "TEXT_TRANSFORM.LOWERCASE",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "TEXT_TRANSFORM.CAPITALIZE",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "timeline-side",
         "name": "TIMELINE_SIDE",
         "category": "Timeline",
@@ -55573,70 +55643,6 @@
         },
         {
           "value": "VIDEO_TRACK_KIND.CHAPTERS",
-          "position": 3,
-          "description_key": null,
-          "description_fallback": null
-        }
-      ],
-      "params": [],
-      "returns": [],
-      "emits": [],
-      "slots": [],
-      "examples": [],
-      "directiveArgs": [],
-      "directiveModifiers": [],
-      "relations": []
-    },
-    {
-      "entry": {
-        "kind": "enum",
-        "slug": "text-transform",
-        "name": "TEXT_TRANSFORM",
-        "category": "Commons",
-        "domain": null,
-        "icon": null,
-        "description_key": null,
-        "description_fallback": null,
-        "definition": "export enum TEXT_TRANSFORM {\n    NONE = 'none',\n    UPPERCASE = 'uppercase',\n    LOWERCASE = 'lowercase',\n    CAPITALIZE = 'capitalize'\n}",
-        "signature": null,
-        "tag": null,
-        "value": null,
-        "source_file": "packages/ds/src/enums/Commons/text-transform.enum.ts",
-        "package_note": null,
-        "note_key": null,
-        "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
-        "parent_slug": null,
-        "kind_extra": null,
-        "svg_title_key": null,
-        "svg_title_fallback": null,
-        "svg_desc_key": null,
-        "svg_desc_fallback": null,
-        "edited_by_user": false
-      },
-      "props": [],
-      "values": [
-        {
-          "value": "TEXT_TRANSFORM.NONE",
-          "position": 0,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "TEXT_TRANSFORM.UPPERCASE",
-          "position": 1,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "TEXT_TRANSFORM.LOWERCASE",
-          "position": 2,
-          "description_key": null,
-          "description_fallback": null
-        },
-        {
-          "value": "TEXT_TRANSFORM.CAPITALIZE",
           "position": 3,
           "description_key": null,
           "description_fallback": null
