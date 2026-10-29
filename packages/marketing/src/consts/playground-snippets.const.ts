@@ -365,6 +365,16 @@ export function createMarketingSnippets (t: TTranslate, overlayAttach: string): 
         /* Ne téléporte jamais : un simple `v-if="active"`. */
         OrigamOverlayScrim: snippet(node('OrigamOverlayScrim', { active: true })),
         OrigamSnackbar: snippet(node('OrigamSnackbar', { modelValue: true, attach: overlayAttach, text: t('components.playground.snippet.snackbar.text', 'Saved successfully.') })),
+        /* Les quatre derniers portails (#1285) : `attach` existe déjà sur chacun. */
+        OrigamDrawer: snippet(node('OrigamDrawer', { modelValue: true, attach: overlayAttach }, t('components.playground.snippet.drawer.text', 'Drawer content'))),
+        OrigamCommandPalette: snippet(node('OrigamCommandPalette', {
+            modelValue: true,
+            attach: overlayAttach,
+            commands: [one, two, three].map((label, index) => ({ id: `cmd-${index}`, label, perform: () => undefined }))
+        })),
+        /* `OrigamContextualMenu` : un vrai `contextmenu` est requis — `ThemeBuilderContextualMenuDemo`. */
+        /* Les items de la pile viennent de `useSnackbarGroup().notify` — voir `ThemeBuilderPreview`. */
+        OrigamSnackbarGroup: snippet(node('OrigamSnackbarGroup', { attach: overlayAttach })),
 
         /* ── Transitions : un wrapper ne rend que son enfant ────────────── */
         OrigamSnack: transition('OrigamSnack', t('components.playground.snippet.transition.snack', 'Snack content')),

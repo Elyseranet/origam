@@ -383,4 +383,25 @@ test.describe('/theming — previews on the engine (#1145, #1056)', () => {
             })).toBe(true)
         })
     }
+
+    /* #1285 — les 4 derniers portails : ouverts, dans le canvas, jamais dans <body>. */
+    for (const [slug, name, surface] of [
+        ['drawer', 'Drawer', '.origam-drawer'],
+        ['command-palette', 'CommandPalette', '.origam-command-palette'],
+        ['contextual-menu', 'ContextualMenu', '.origam-menu__content'],
+        ['snackbar-group', 'SnackbarGroup', '.origam-snackbar-group']
+    ]) {
+        test(`${slug}: renders open inside the canvas, not in body (#1285)`, async ({ page }) => {
+            await select(page, slug!, name!)
+            const canvas = page.locator('[data-cy="theming-canvas-light"]')
+            const shown = canvas.locator(surface!).first()
+            await expect(shown).toBeVisible({ timeout: 15_000 })
+            await expect(page.locator('[data-cy="theming-unavailable-light"]')).toHaveCount(0)
+
+            const box = await shown.boundingBox()
+            expect(box!.width).toBeGreaterThan(0)
+            expect(box!.height).toBeGreaterThan(0)
+            expect(await page.evaluate(selector => [...document.body.children].filter(child => child.matches(selector!)).length, surface)).toBe(0)
+        })
+    }
 })
