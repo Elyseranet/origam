@@ -1,3 +1,5 @@
+import { ref } from 'vue'
+
 import type { IComponentSnippet, IPlaygroundInstance } from '@origam/playground/interfaces'
 import type { TTranslate } from '@origam/playground/types'
 
@@ -59,6 +61,19 @@ export const PLAYGROUND_SAMPLE_IMAGE =
     )
 
 /**
+ * Vidéo d'exemple SERVIE par le site : `packages/marketing/public/origam-sample.mp4`
+ * (2,5 Ko, H.264, 160x90, 2 s, sans piste audio).
+ *
+ * SOURCE ET LICENCE (#1286) : clip SYNTHÉTIQUE généré localement avec ffmpeg
+ * (source lavfi `gradients`, violet vers bleu, aucune image ni son de tiers) ;
+ * aucun contenu tiers, donc aucun droit à clarifier. Versé au domaine public
+ * (CC0 1.0). Commande : `ffmpeg -f lavfi -i "gradients=s=160x90:d=2:r=12:speed=0.05:c0=7c3aed:c1=2563eb:nb_colors=2"
+ * -an -c:v libx264 -pix_fmt yuv420p -crf 35 -movflags +faststart -map_metadata -1 origam-sample.mp4`.
+ * Aucun hotlink : même hors-ligne l'aperçu reste identique.
+ */
+export const PLAYGROUND_SAMPLE_VIDEO = '/origam-sample.mp4'
+
+/**
  * `overlayAttach` — sélecteur du conteneur où les overlays (`dialog`, `menu`,
  * `tooltip`, `snackbar`, …) se rendent EN PLACE via `IOverlayProps.attach`
  * plutôt que d'être téléportés hors de l'aperçu. Ce conteneur doit être une
@@ -102,6 +117,14 @@ export function createMarketingSnippets (t: TTranslate, overlayAttach: string): 
         categories: [t('components.playground.snippet.chart.series_progress', 'Progress')],
         width: 320,
         height: 240
+    }))
+    /* Le Bullet lit UN `IChartBulletDatum` par série (`ser.data[0]`), pas un nombre : avec `[64]`
+       il ne trouvait ni `ranges` ni `target` et rendait 0x0 sans erreur (#1286). */
+    const chartBullet = () => snippet(node('OrigamChartBullet', {
+        series: [{ name: t('components.playground.snippet.chart.series_progress', 'Progress'), data: [{ value: 64, target: 80, ranges: [{ to: 50 }, { to: 80 }, { to: 100 }] }] }],
+        categories: [t('components.playground.snippet.chart.series_progress', 'Progress')],
+        width: 320,
+        height: 120
     }))
 
     const one = t('components.playground.snippet.common.one', 'One')
@@ -318,7 +341,36 @@ export function createMarketingSnippets (t: TTranslate, overlayAttach: string): 
         OrigamChartHeatmap: chart('OrigamChartHeatmap'),
         OrigamChartPictorial: chart('OrigamChartPictorial'),
         OrigamChartGauge: chartSingle('OrigamChartGauge'),
-        OrigamChartBullet: chartSingle('OrigamChartBullet'),
+        OrigamChartBullet: chartBullet(),
+
+        /* ── Fixtures de démo (#1286) : le contexte que le composant exige ── */
+        OrigamVideo: snippet(node('OrigamVideo', { src: PLAYGROUND_SAMPLE_VIDEO, width: 320 })),
+        /* `state` / `methods` sont ceux de `useMediaPlayer()` : ici un état figé et des méthodes sans effet. */
+        OrigamMediaController: snippet(node('OrigamMediaController', {
+            state: {
+                playing: ref(false), paused: ref(true), currentTime: ref(0.5), duration: ref(2), buffered: ref(2),
+                volume: ref(1), muted: ref(false), ready: ref(true), loading: ref(false), error: ref(null),
+                playbackRate: ref(1), remoteAvailable: ref(false), remoteState: ref('disconnected')
+            },
+            methods: {
+                play: async () => {}, pause: () => {}, toggle: async () => {}, seek: () => {}, setVolume: () => {},
+                toggleMute: () => {}, load: () => {}, skipBackward: () => {}, skipForward: () => {}, setPlaybackRate: () => {},
+                requestRemotePlayback: async () => {}, stopRemotePlayback: async () => {}
+            }
+        })),
+        /* Un conteneur qui défile : la sentinelle est au bout du contenu. */
+        OrigamInfiniteScrollIntersect: snippet(node('OrigamSheet', { width: 240, height: 96, style: { overflow: 'auto' } }, undefined, [
+            node('OrigamCard', {}, one),
+            node('OrigamCard', {}, two),
+            node('OrigamCard', {}, three),
+            node('OrigamInfiniteScrollIntersect', {})
+        ])),
+        /* Deux voisins dans un flex : le Spacer prend tout l'espace libre entre eux. */
+        OrigamSpacer: snippet(node('OrigamToolbar', { width: 320 }, undefined, [
+            node('OrigamChip', {}, left),
+            node('OrigamSpacer', {}),
+            node('OrigamChip', {}, right)
+        ])),
 
         /* ── Ex-`parentEnvelope` : le parent est la racine, le composant
            documenté son enfant (#728 temps 2). `item` est un

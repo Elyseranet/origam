@@ -116,7 +116,7 @@ describe('host helpers', () => {
     })
 
     it('a component nobody nests has no snippet', () => {
-        expect(snippetFor('OrigamSpacer', definitionsFor())).toBeUndefined()
+        expect(snippetFor('OrigamContextualMenu', definitionsFor())).toBeUndefined()
     })
 
     it('a variant lands on the documented instance, not on its parent, without mutating the tree', () => {
