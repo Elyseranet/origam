@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { markRaw, ref } from 'vue'
 
 import type { IComponentSnippet, IPlaygroundInstance } from '@origam/playground/interfaces'
 import type { TTranslate } from '@origam/playground/types'
@@ -347,11 +347,11 @@ export function createMarketingSnippets (t: TTranslate, overlayAttach: string): 
         OrigamVideo: snippet(node('OrigamVideo', { src: PLAYGROUND_SAMPLE_VIDEO, width: 320 })),
         /* `state` / `methods` sont ceux de `useMediaPlayer()` : ici un état figé et des méthodes sans effet. */
         OrigamMediaController: snippet(node('OrigamMediaController', {
-            state: {
+            state: markRaw({
                 playing: ref(false), paused: ref(true), currentTime: ref(0.5), duration: ref(2), buffered: ref(2),
                 volume: ref(1), muted: ref(false), ready: ref(true), loading: ref(false), error: ref(null),
                 playbackRate: ref(1), remoteAvailable: ref(false), remoteState: ref('disconnected')
-            },
+            }),
             methods: {
                 play: async () => {}, pause: () => {}, toggle: async () => {}, seek: () => {}, setVolume: () => {},
                 toggleMute: () => {}, load: () => {}, skipBackward: () => {}, skipForward: () => {}, setPlaybackRate: () => {},
