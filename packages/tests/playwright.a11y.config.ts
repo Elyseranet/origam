@@ -39,7 +39,11 @@ export default defineConfig({
     // See e2e-global-setup.ts.
     globalSetup: './e2e-global-setup.ts',
 
-    fullyParallel: false,
+    // true so `--shard=i/N` (ci.yml, #1274) splits by TEST: everything lives in
+    // one spec file, which `fullyParallel: false` keeps as one indivisible
+    // shard unit (measured: shard 1/2 = 228 tests, shard 2/2 = 0). Workers
+    // stay at 1 on CI, so execution is still sequential within a shard.
+    fullyParallel: true,
 
     forbidOnly: !!process.env.CI,
 
