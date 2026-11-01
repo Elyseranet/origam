@@ -1147,7 +1147,7 @@
     {
       "name": "items",
       "label": "items",
-      "tsType": "IDataTableItem<any>[] | undefined",
+      "tsType": "any[] | undefined",
       "runtimeType": "Array",
       "required": false,
       "hasFactoryDefault": false,
