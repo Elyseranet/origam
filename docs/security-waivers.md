@@ -28,7 +28,12 @@ list is a policy breach in itself.
 Keep this list short by preference: a waiver is the fallback for what cannot be
 fixed, not a way to close a ticket.
 
-### GHSA-86w9-cpqp-85rv (`node-forge`), GHSA-vfj7-8cjw-p6xm (`braces`), GHSA-hp3w-g68c-fv3c (`sprintf-js`)
+### GHSA-vfj7-8cjw-p6xm (`braces`), GHSA-hp3w-g68c-fv3c (`sprintf-js`)
+
+> **GHSA-86w9-cpqp-85rv (`node-forge`) : LEVÉE le 2026-11-01** (#1301). `node-forge` 1.4.1 est publié
+> et corrige l'avis (`vulnerable_versions: <=1.4.0`, vérifié via l'API npm bulk advisories) ;
+> l'override `node-forge@1: ^1.4.2` résout 1.4.2. Entrée retirée de `ignoreGhsas`. Les lignes
+> ci-dessous qui la mentionnent sont conservées pour l'historique.
 
 - **Granted**: 2026-10-13, by the maintainer (Arnaud Prioul), explicitly
 - **Review date**: 2026-11-13
