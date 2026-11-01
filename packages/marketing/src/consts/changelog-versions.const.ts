@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.22',
+        date: '2026-11-01',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23722.summary',
+        summaryFallback: '1 change. See the full changelog for detail.',
+        highlights: [
+            { type: 'changed', textKey: 'changelog.versions.v23722.h1', textFallback: '5 sous-parties internes sortent des catalogues (#1287)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.21',
         date: '2026-10-29',
         type: 'patch',

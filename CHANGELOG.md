@@ -18,6 +18,19 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.22] - 2026-11-01
+
+### Changed — 5 sous-parties internes sortent des catalogues (#1287)
+
+`OrigamListGroupActivator`, `OrigamVirtualScrollItem`, `OrigamDataTableGroupHeaderRow`, `OrigamDataTableHeadersCellMobile` et `OrigamListChildren` ne s'affichent qu'à l'intérieur de leur parent. Sur `/theming`, elles apparaissaient donc comme « indisponibles ».
+
+- Les 5 noms rejoignent `INTERNAL_COMPONENTS`. Le catalogue du playground, la doc marketing et `/theming` passent de 220 à 215 composants (arbitrage du propriétaire).
+- Les 5 composants restent **exportés** et rendus par leurs parents. Leurs types `TOrigamXxx` sont regroupés dans le fichier de type du parent (`list.type.ts`, `data-table.type.ts`, `virtual-scroll.type.ts`) et restent exportés sous le même nom.
+- Vérifié :
+  - TU `TU/marketing` + List, VirtualScroll et DataTable : 363 passés.
+  - Guards 32/32.
+  - `/theming` mesuré à 215 composants (PR #1289).
+
 ## [2.37.21] - 2026-10-29
 
 ### Fixed — `OrigamListItem` : un élément-lien garde son rôle de lien (#1249)
