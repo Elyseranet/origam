@@ -78,5 +78,10 @@ export const NAME_ATTR_TAGS: ReadonlySet<string> = new Set([
  * string literals.
  ********************************************************/
 export const INTERNAL_COMPONENTS = [
-    'OrigamListItemWrapper'
+    'OrigamListItemWrapper',
+    'OrigamListGroupActivator',
+    'OrigamVirtualScrollItem',
+    'OrigamDataTableGroupHeaderRow',
+    'OrigamDataTableHeadersCellMobile',
+    'OrigamListChildren'
 ] as const

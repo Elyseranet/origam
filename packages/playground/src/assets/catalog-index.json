@@ -474,12 +474,6 @@
     "label": "DataTableFooter"
   },
   {
-    "name": "OrigamDataTableGroupHeaderRow",
-    "tag": "origam-data-table-group-header-row",
-    "family": "DataTable",
-    "label": "DataTableGroupHeaderRow"
-  },
-  {
     "name": "OrigamDataTableHeaderCell",
     "tag": "origam-data-table-header-cell",
     "family": "DataTable",
@@ -496,12 +490,6 @@
     "tag": "origam-data-table-headers-cell",
     "family": "DataTable",
     "label": "DataTableHeadersCell"
-  },
-  {
-    "name": "OrigamDataTableHeadersCellMobile",
-    "tag": "origam-data-table-headers-cell-mobile",
-    "family": "DataTable",
-    "label": "DataTableHeadersCellMobile"
   },
   {
     "name": "OrigamDataTableRow",
@@ -774,22 +762,10 @@
     "label": "List"
   },
   {
-    "name": "OrigamListChildren",
-    "tag": "origam-list-children",
-    "family": "List",
-    "label": "ListChildren"
-  },
-  {
     "name": "OrigamListGroup",
     "tag": "origam-list-group",
     "family": "List",
     "label": "ListGroup"
-  },
-  {
-    "name": "OrigamListGroupActivator",
-    "tag": "origam-list-group-activator",
-    "family": "List",
-    "label": "ListGroupActivator"
   },
   {
     "name": "OrigamListItem",
@@ -1270,12 +1246,6 @@
     "tag": "origam-virtual-scroll",
     "family": "VirtualScroll",
     "label": "VirtualScroll"
-  },
-  {
-    "name": "OrigamVirtualScrollItem",
-    "tag": "origam-virtual-scroll-item",
-    "family": "VirtualScroll",
-    "label": "VirtualScrollItem"
   },
   {
     "name": "OrigamWatermark",

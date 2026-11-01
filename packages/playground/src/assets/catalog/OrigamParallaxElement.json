@@ -965,7 +965,7 @@
     {
       "name": "type",
       "label": "type",
-      "tsType": "\"custom\" | \"rotate\" | \"translate\" | \"depth\" | \"scale\" | \"scaleX\" | \"scaleY\" | \"depth_inv\" | undefined",
+      "tsType": "\"custom\" | \"rotate\" | \"translate\" | \"scale\" | \"scaleX\" | \"scaleY\" | \"depth\" | \"depth_inv\" | undefined",
       "runtimeType": null,
       "required": false,
       "defaultValue": "translate",
@@ -974,10 +974,10 @@
         "custom",
         "rotate",
         "translate",
-        "depth",
         "scale",
         "scaleX",
         "scaleY",
+        "depth",
         "depth_inv"
       ],
       "control": "select",

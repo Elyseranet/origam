@@ -45,7 +45,7 @@ beforeAll(async () => {
 
 describe('the committed catalogue', () => {
     it('carries every component of the index, with a definition each', () => {
-        expect(CATALOG_INDEX.length).toBeGreaterThanOrEqual(219)
+        expect(CATALOG_INDEX.length).toBeGreaterThanOrEqual(215)
         expect(byName.size).toBe(CATALOG_INDEX.length)
     })
 
