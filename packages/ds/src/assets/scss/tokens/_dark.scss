@@ -1895,6 +1895,7 @@
   --origam-list-item---user-select: none;
   --origam-list-item---opacity: var(--origam-opacity---60);
   --origam-list-item---overlay-opacity-active: 0.12;
+  --origam-list-item---overlay-opacity-hover: 0.08;
   --origam-list-item---overlay-opacity-active-hover: 0.16;
   --origam-list-item---cursor: pointer;
   --origam-list__item---overlay-opacity: var(--origam-opacity---0);
@@ -2008,6 +2009,7 @@
   --origam-expansion-panel__header---border-radius: inherit;
   --origam-expansion-panel__header---hover-overlay-opacity: var(--origam-opacity---0);
   --origam-expansion-panel__header---focus-overlay-opacity: var(--origam-opacity---12);
+  --origam-expansion-panel__header---overlay-opacity-hover: 0.04;
   --origam-expansion-panel__header__wrapper---padding-block: var(--origam-space---4);
   --origam-expansion-panel__header__wrapper---padding-inline: var(--origam-space---6);
   --origam-expansion-panel__header__wrapper---display: flex;
@@ -4922,6 +4924,7 @@
     --origam-list-item---user-select: none;
     --origam-list-item---opacity: var(--origam-opacity---60);
     --origam-list-item---overlay-opacity-active: 0.12;
+    --origam-list-item---overlay-opacity-hover: 0.08;
     --origam-list-item---overlay-opacity-active-hover: 0.16;
     --origam-list-item---cursor: pointer;
     --origam-list__item---overlay-opacity: var(--origam-opacity---0);
@@ -5035,6 +5038,7 @@
     --origam-expansion-panel__header---border-radius: inherit;
     --origam-expansion-panel__header---hover-overlay-opacity: var(--origam-opacity---0);
     --origam-expansion-panel__header---focus-overlay-opacity: var(--origam-opacity---12);
+    --origam-expansion-panel__header---overlay-opacity-hover: 0.04;
     --origam-expansion-panel__header__wrapper---padding-block: var(--origam-space---4);
     --origam-expansion-panel__header__wrapper---padding-inline: var(--origam-space---6);
     --origam-expansion-panel__header__wrapper---display: flex;
