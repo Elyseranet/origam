@@ -17,8 +17,9 @@
  */
 
 import type { EntityManager } from 'typeorm'
+import { In } from 'typeorm'
 
-import { DocEntry } from '../src/server/db/entities/index.ts'
+import { DocEntry, DocRelation } from '../src/server/db/entities/index.ts'
 import { NULL_KEY, ENTRY_SRC, ENTRY_EDIT, CHILD_SPECS, SEED_COLLECTIONS, SRC_COLLECTIONS } from '../src/consts/doc-upsert.const.ts'
 
 const blankCounts = () => ({ created: 0, updated: 0, unchanged: 0, orphaned: 0 })
@@ -242,4 +243,17 @@ export async function orphanMissingEntries (manager: EntityManager, kind: string
         orphaned++
     }
     return orphaned
+}
+
+/**
+ * Hard-deletes the `component` entries of INTERNAL_COMPONENTS (#1287). Orphaning is not enough: the
+ * soft-flagged rows are still carried by `pg_dump` into db-seed.sql and re-seeded, so an internal
+ * sub-part would keep surfacing in the DB-fed menus. `slugs` come from the DS list, never from the DB.
+ */
+export async function deleteInternalComponentEntries (manager: EntityManager, slugs: string[]) {
+    if (!slugs.length) return 0
+    // Relations pointing AT a purged entry would dangle (curated ones are never re-synced).
+    await manager.delete(DocRelation, { to_kind: 'component', to_slug: In(slugs) })
+    const res = await manager.delete(DocEntry, { kind: 'component', slug: In(slugs) })
+    return res.affected ?? 0
 }
