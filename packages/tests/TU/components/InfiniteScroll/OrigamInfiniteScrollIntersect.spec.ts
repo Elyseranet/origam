@@ -112,4 +112,17 @@ describe('OrigamInfiniteScrollIntersect — theme.components["origam-infinite-sc
 
         wrapper.unmount()
     })
+
+    it('mounts without rootRef: no Vue warn, observer root stays the viewport (#1295)', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        const wrapper = mount(OrigamInfiniteScrollIntersect, { props: { side: 'end' } })
+        await nextTick()
+        await nextTick()
+
+        expect(warn.mock.calls.filter(c => String(c[0]).includes('Missing required prop'))).toHaveLength(0)
+        expect(constructorCalls.at(-1)?.root).toBeUndefined()
+
+        wrapper.unmount()
+        warn.mockRestore()
+    })
 })
