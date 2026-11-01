@@ -58,6 +58,34 @@ fixed, not a way to close a ticket.
 - **Exit**: drop the matching `ignoreGhsas` entry as soon as a patched version
   is published or the chain no longer resolves the module.
 
+### GHSA-g3hv-75wg-m249 (`minimatch`), GHSA-3g3m-2fjr-6pw4 (`glob`)
+
+- **Granted**: 2026-11-01, by the maintainer (Arnaud Prioul), explicitly
+- **Review date**: 2027-02-01
+- **Remediation ticket**: #1301
+- **Why a waiver**: severity **moderate**. No fix exists in the major line in use:
+  fixes are published only in `minimatch >=11.0.1` and `glob >=14.0.2`. Every
+  consumer's latest release still declares the old major, so there is no consumer
+  version to move to (checked with `npm view` on 2026-11-01). A cross-major
+  override was not retained: unmeasured risk on lint, nitropack build and tests.
+
+| module | versions | pulled by (latest version, range it declares) |
+|---|---|---|
+| `minimatch` | 10.2.6 | `eslint` 10.14 (`^10.2.6`), `@eslint/config-array` 0.23.5 (`^10.2.4`), `@typescript-eslint/typescript-estree` 8.72 (`^10.2.2`), `glob@13` |
+| `minimatch` | 9.0.9 | `glob@10.5.0`, `editorconfig` (latest 3.0.2, `~10.2.4`) |
+| `minimatch` | 5.1.9 | `readdir-glob` (latest 3.0.0, `^10.2.2`) |
+| `glob` | 13.0.6 | `@vercel/nft` 1.11.0 (`^13`) |
+| `glob` | 10.5.0 | `archiver-utils` 5.0.2 (`^10`), `js-beautify` (latest 2.0.3, `^13.0.6`) |
+
+- **Reachability** (assessment, not a proof): lint, build (nitropack) and test
+  tooling only. Absent from the published `origam` tarball (its dependencies are
+  `@mdi/font` and `qrcode-generator`) and absent from
+  `packages/marketing/.output/server/node_modules` after a build. Patterns come
+  from configuration, not end users.
+- **Exit**: drop both entries as soon as eslint, `@typescript-eslint`,
+  `@vercel/nft`, `archiver-utils` and `js-beautify` publish a version accepting
+  the new major, or the chain no longer resolves the modules.
+
 ### GHSA-gcqx-w48m-w2h4 (`deepmerge`)
 
 - **Granted**: 2026-10-28, by the maintainer (Arnaud Prioul), explicitly
