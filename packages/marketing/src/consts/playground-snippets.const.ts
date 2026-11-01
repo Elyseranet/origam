@@ -1,7 +1,7 @@
 import { markRaw, ref } from 'vue'
 
 import type { IComponentSnippet, IPlaygroundInstance } from '@origam/playground/interfaces'
-import type { TTranslate } from '@origam/playground/types'
+import type { TPropValue, TTranslate } from '@origam/playground/types'
 
 /**
  * playground-snippets.const.ts — what the marketing site seeds the playground
@@ -351,12 +351,12 @@ export function createMarketingSnippets (t: TTranslate, overlayAttach: string): 
                 playing: ref(false), paused: ref(true), currentTime: ref(0.5), duration: ref(2), buffered: ref(2),
                 volume: ref(1), muted: ref(false), ready: ref(true), loading: ref(false), error: ref(null),
                 playbackRate: ref(1), remoteAvailable: ref(false), remoteState: ref('disconnected')
-            }),
+            }) as unknown as TPropValue,
             methods: {
                 play: async () => {}, pause: () => {}, toggle: async () => {}, seek: () => {}, setVolume: () => {},
                 toggleMute: () => {}, load: () => {}, skipBackward: () => {}, skipForward: () => {}, setPlaybackRate: () => {},
                 requestRemotePlayback: async () => {}, stopRemotePlayback: async () => {}
-            }
+            } as unknown as TPropValue
         })),
         /* Un conteneur qui défile : la sentinelle est au bout du contenu. */
         OrigamInfiniteScrollIntersect: snippet(node('OrigamSheet', { width: 240, height: 96, style: { overflow: 'auto' } }, undefined, [
