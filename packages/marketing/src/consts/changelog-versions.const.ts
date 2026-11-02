@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.23',
+        date: '2026-11-02',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23723.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23723.h1', textFallback: 'OrigamDataTable : la prop items accepte les objets du consommateur (#1250)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.22',
         date: '2026-11-01',
         type: 'patch',

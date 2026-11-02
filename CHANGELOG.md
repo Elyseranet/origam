@@ -18,6 +18,16 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.23] - 2026-11-02
+
+### Fixed — `OrigamDataTable` : la prop `items` accepte les objets du consommateur (#1250)
+
+`items` était typée `IDataTableItem[]`, c'est-à-dire la ligne interne normalisée. Passer ses propres objets (`[{ name: 'A' }]`, `IRow[]`) produisait donc une erreur TypeScript (TS2353 / TS2322).
+
+- `IDataTableItemsProps.items` et `IDataTableHeaderProps.items` passent en `Array<any>`, comme `Commons/item.interface` (choix du propriétaire, plutôt qu'un composant générique). `itemValue` peut valoir `true`, si bien qu'un élément n'est pas forcément un objet.
+- `IDataTableItem` reste le type de la ligne interne exposée aux slots et aux événements.
+- Vérifié : sonde vue-tsc, 2 erreurs sur le parent et 0 après ; type-check DS à 0 ; TU DataTable et Table 92/92 (PR #1299). Aucun test de types permanent : le dépôt n'a pas d'infrastructure pour en écrire.
+
 ## [2.37.22] - 2026-11-01
 
 ### Changed — 5 sous-parties internes sortent des catalogues (#1287)
