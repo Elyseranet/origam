@@ -309,6 +309,7 @@
 
 	import { IN_BROWSER } from '../../consts/Commons/commons.const'
 	import { ORIGAM_FORM_KEY } from '../../consts/Form/form.const'
+	import { MENU_WRAPPER_ARIA_RESET } from '../../consts/Menu/menu.const'
 
 	import { BLOCK } from '../../enums/Commons/anchor.enum'
 	import { DENSITY } from '../../enums/Commons/density.enum'
@@ -579,9 +580,7 @@
 			 * suppresses the defaults.
 			 ********************************************************/
 			activatorProps: {
-				'aria-haspopup': undefined,
-				'aria-expanded': undefined,
-				'aria-owns': undefined,
+				...MENU_WRAPPER_ARIA_RESET,
 				...(consumerProps.activatorProps ?? {})
 			},
 			contentProps: {
