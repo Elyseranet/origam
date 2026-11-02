@@ -172,7 +172,12 @@ const MARKETING_GREEN_SPECS = [
     'marketing-home-no-overflow.spec.ts',
 
     // #1229 — aucun aperçu de /theming ne s'effondre à 0 px de large.
-    'marketing-theming-preview-width.spec.ts'
+    'marketing-theming-preview-width.spec.ts',
+
+    // #1292 — en Split, chaque overlay se rend dans SON canvas, avec le mode du
+    // pane. Rouge 10/10 sur le parent, vert 10/10 apres ; 12/12 en
+    // `--repeat-each=6` sur command-palette + contextual-menu.
+    'marketing-theming-split-overlay-attach.spec.ts'
 ]
 
 /*

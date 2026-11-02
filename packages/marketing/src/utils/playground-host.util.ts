@@ -100,6 +100,29 @@ export function withoutThemedProps (instances: IPlaygroundInstance[], componentN
     }))
 }
 
+/**
+ * Selector of ONE Theme Builder pane's canvas — `ThemeBuilderPreview` tags each
+ * canvas `data-cy="theming-canvas-{mode}"`. `.tb-preview__canvas` matches both
+ * panes in Split and `attach` (`querySelector`) resolves the first (#1292).
+ */
+export function themeBuilderCanvasSelector (mode: string): string {
+    return `[data-cy="theming-canvas-${mode}"]`
+}
+
+/**
+ * Re-points every instance whose `attach` is `from` (the placeholder the
+ * snippets carry) to `to`. Returns a new tree.
+ */
+export function withAttach (instances: IPlaygroundInstance[], from: string, to: string): IPlaygroundInstance[] {
+    return instances.map(instance => ({
+        ...instance,
+        props: instance.props.attach === from ? { ...instance.props, attach: to } : instance.props,
+        ...(instance.children
+            ? { children: Object.fromEntries(Object.entries(instance.children).map(([slot, list]) => [slot, withAttach(list, from, to)])) }
+            : {})
+    }))
+}
+
 /** Merges per-component snippet tables, keeping every table's order — earlier tables first. */
 export function mergeSnippetTables (...tables: Record<string, IComponentSnippet[]>[]): Record<string, IComponentSnippet[]> {
     const merged: Record<string, IComponentSnippet[]> = {}
