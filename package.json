@@ -93,14 +93,16 @@
             "@intlify/core@11": "^11.4.14",
             "@intlify/core-base@11": "^11.4.14",
             "@intlify/shared@11": "^11.4.14",
-            "simple-git@3": "^4.0.2"
+            "simple-git@3": "^4.0.2",
+            "node-forge@1": "^1.4.2"
         },
         "auditConfig": {
             "ignoreGhsas": [
-                "GHSA-86w9-cpqp-85rv",
                 "GHSA-vfj7-8cjw-p6xm",
                 "GHSA-hp3w-g68c-fv3c",
-                "GHSA-gcqx-w48m-w2h4"
+                "GHSA-gcqx-w48m-w2h4",
+                "GHSA-g3hv-75wg-m249",
+                "GHSA-3g3m-2fjr-6pw4"
             ]
         },
         "patchedDependencies": {
