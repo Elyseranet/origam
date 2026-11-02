@@ -13,7 +13,7 @@ import { getPropertyFromItem } from '../Commons/commons.util'
  */
 export function transformDataTableItems (
     props: Omit<IDataTableItemsProps, 'items'>,
-    items: Array<IDataTableItem> | undefined,
+    items: Array<any> | undefined,
     columns: Array<IInternalDataTableHeader>
 ): Array<IDataTableItem> {
     return items?.map((item, index) => transformDataTableItem(props, item, index, columns)) || []
@@ -30,7 +30,7 @@ export function transformDataTableItems (
  */
 export function transformDataTableItem (
     props: Omit<IDataTableItemsProps, 'items'>,
-    item: IDataTableItem,
+    item: any,
     index: number,
     columns: Array<IInternalDataTableHeader>
 ): IDataTableItem {

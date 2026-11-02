@@ -1,5 +1,4 @@
 import { ALIGN } from '../../enums/Commons/align.enum'
-import type { IDataTableItem } from './items.interface'
 import type {
     TDataTableCompareFunction,
     TDataTableHeaderCell
@@ -19,7 +18,7 @@ import type { TAnyString, TSelectItemKey } from '../../types/Commons/commons.typ
  ********************************************************/
 export interface IDataTableHeaderProps {
     headers?: Array<IDataTableHeader>
-    items?: Array<IDataTableItem>
+    items?: Array<any>
 }
 
 export interface IDataTableHeader<T = any> {
