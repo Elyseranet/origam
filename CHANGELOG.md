@@ -18,6 +18,19 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.24] - 2026-11-02
+
+### Fixed — opacités d'overlay au survol réglables par jeton (#1244)
+
+Deux opacités de survol étaient encore codées en dur : `0.08` sur une ligne-lien d'`OrigamListItem`, et `0.04` sur l'en-tête d'`OrigamExpansionPanelHeader`.
+
+- Deux jetons, nommés comme ceux d'`OrigamBtn` et de #1230 :
+  - `--origam-list-item---overlay-opacity-hover` (`0.08`) ;
+  - `--origam-expansion-panel__header---overlay-opacity-hover` (`0.04`).
+  Ils sont déclarés dans light et dark (bloc explicite et bloc media), dans les jumeaux SCSS, dans `tokens.type.ts` et dans `main.css`. Le rendu par défaut ne change pas.
+- Vérifié : l'e2e `overlay-opacity-hover-1244.spec.ts` (Histoire statique) passe 4/4 avec le correctif ; sur le parent, les 2 cas « jeton posé » sont rouges et les 2 cas « défaut inchangé » restent verts (PR #1300).
+- Toujours codées en dur, hors périmètre : `0.16` et `0.24` sur l'en-tête focusable actif d'`OrigamExpansionPanelHeader`.
+
 ## [2.37.23] - 2026-11-02
 
 ### Fixed — `OrigamDataTable` : la prop `items` accepte les objets du consommateur (#1250)
