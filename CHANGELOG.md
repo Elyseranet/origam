@@ -18,6 +18,15 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.26] - 2026-11-02
+
+### Fixed — `OrigamInfiniteScrollIntersect` : `rootRef` est optionnel (#1295)
+
+`rootRef` était déclaré requis. Pourtant le composant fonctionne sans lui : son `IntersectionObserver` est alors créé sans `root` et observe le viewport. Un usage légitime déclenchait donc le warn Vue « Missing required prop ».
+
+- `rootRef?: HTMLElement` dans l'interface. La doc du composant, qui n'était qu'un stub, a maintenant un tableau des props qui précise le repli sur le viewport. `OrigamInfiniteScroll` passe toujours son `rootRef`.
+- Vérifié : le TU (montage sans `rootRef`, aucun warn, `root` reste `undefined`) est rouge sur le parent et vert après ; TU InfiniteScroll 19/19 (PR #1298).
+
 ## [2.37.25] - 2026-11-02
 
 ### Fixed — champs : le `role` n'est plus posé deux fois (wrapper + input) (#1247)
