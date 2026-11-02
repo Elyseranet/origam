@@ -569,6 +569,21 @@
 
 		return {
 			...consumerProps,
+			/*********************************************************
+			 * Menu activator ARIA — #1247
+			 *
+			 * @description
+			 * `activator="parent"` is the role-less `.origam-field` wrapper: OrigamMenu's
+			 * default aria-haspopup/expanded/owns are illegal there (aria-allowed-attr).
+			 * The combobox ARIA lives on the <input> (`comboboxAriaAttrs`); `undefined`
+			 * suppresses the defaults.
+			 ********************************************************/
+			activatorProps: {
+				'aria-haspopup': undefined,
+				'aria-expanded': undefined,
+				'aria-owns': undefined,
+				...(consumerProps.activatorProps ?? {})
+			},
 			contentProps: {
 				...consumerContentProps,
 				// The consumer's own style is listed last so it still wins —

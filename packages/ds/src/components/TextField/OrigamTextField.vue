@@ -29,7 +29,6 @@
 						:disabled="isDisabled"
 						:error="isValid === false"
 						:focused="isFocused"
-						:role="role"
 						v-bind="{...fieldProps}"
 						@click="handleControlClick"
 						@mousedown="handleControlMousedown"
