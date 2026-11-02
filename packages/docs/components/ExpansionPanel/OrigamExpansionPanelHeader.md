@@ -183,6 +183,7 @@ purely on `#title` (no `title` prop) renders correctly, matching what
 | `--origam-expansion-panel__header---outline` | `none` |
 | `--origam-expansion-panel__header---border-radius` | `inherit` |
 | `--origam-expansion-panel__header---focus-overlay-opacity` | `calc(0.12 * 1)` |
+| `--origam-expansion-panel__header---overlay-opacity-hover` | `0.04` |
 | `--origam-expansion-panel__header__wrapper---padding-block` | `16px` |
 | `--origam-expansion-panel__header__wrapper---padding-inline` | `24px` |
 | `--origam-expansion-panel__header__wrapper---display` | `flex` |

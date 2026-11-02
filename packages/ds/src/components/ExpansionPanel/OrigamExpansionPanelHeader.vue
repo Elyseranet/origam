@@ -358,7 +358,7 @@
 
 		&:hover {
 			.origam-expansion-panel-header__overlay {
-				opacity: calc(0.04 * 1);
+				opacity: var(--origam-expansion-panel__header---overlay-opacity-hover, 0.04);
 			}
 		}
 

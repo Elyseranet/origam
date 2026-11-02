@@ -817,7 +817,7 @@
 			&:hover,
 			&:focus-visible {
 				> #{$this}__overlay {
-					--origam-list-item__overlay---opacity: calc(0.08 * 1);
+					--origam-list-item__overlay---opacity: var(--origam-list-item---overlay-opacity-hover, 0.08);
 				}
 			}
 		}
