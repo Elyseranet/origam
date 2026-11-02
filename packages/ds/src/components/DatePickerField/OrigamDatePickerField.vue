@@ -12,7 +12,7 @@
 			:title="label ? t(label) : undefined"
 			:validation-value="effectiveValidationValue"
 
-			v-bind="{ ...textFieldProps }"
+			v-bind="{ ...textFieldProps, ...comboboxAriaAttrs }"
 			@blur="handleBlur"
 			@change="handleChange"
 			@click:clear="handleClear"
@@ -194,6 +194,7 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 
 	import { ORIGAM_FORM_KEY } from '../../consts/Form/form.const'
+	import { MENU_WRAPPER_ARIA_RESET } from '../../consts/Menu/menu.const'
 
 	import { BLOCK } from '../../enums/Commons/anchor.enum'
 	import { DENSITY } from '../../enums/Commons/density.enum'
@@ -431,6 +432,12 @@
 		'--origam-date-picker-month__day---font-size': fontSize
 	}))
 
+	const comboboxAriaAttrs = computed(() => ({
+		role: 'combobox',
+		'aria-haspopup': 'dialog',
+		'aria-expanded': menu.value ? 'true' : 'false'
+	}))
+
 	const menuProps = computed(() => {
 		const consumerContentProps = (props.menuProps?.contentProps ?? {}) as Record<string, any>
 
@@ -449,17 +456,13 @@
 				 * calendar dialog.
 				 *
 				 * @description
-				 * `role: 'combobox'` is ALSO required here: `activator="parent"`
-				 * (below) lands these ARIA attrs on the `.origam-field` wrapper
-				 * `<div>`, which carries no role by default — `aria-allowed-attr`
-				 * rejects `aria-expanded` on an element whose role doesn't
-				 * support it. Same fix, same rationale as
-				 * `OrigamSelect.comboboxAriaAttrs` (`role` MUST sit on the same
-				 * element as `aria-haspopup`/`aria-expanded`).
+				 * #1308 — role + `aria-haspopup`/`aria-expanded` live on the <input>
+				 * (`comboboxAriaAttrs`), as in `OrigamSelect` (#1247).
+				 * `activator="parent"` is the role-less `.origam-field` wrapper, so the
+				 * menu's default ARIA is neutralised there.
 				 ********************************************************/
-				role: 'combobox',
-				...(props.menuProps?.activatorProps || {}),
-				'aria-haspopup': 'dialog'
+				...MENU_WRAPPER_ARIA_RESET,
+				...(props.menuProps?.activatorProps || {})
 			},
 			contentProps: {
 				...consumerContentProps,
