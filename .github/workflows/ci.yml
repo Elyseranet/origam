@@ -728,6 +728,13 @@ jobs:
   test-a11y-components:
     name: A11y tests — components (axe-core / Chromium)
     runs-on: ubuntu-latest
+    # Sharded in 2 like `test-e2e` (Playwright `--shard=i/N`) - #1274: the
+    # single job took 18-22 min for a 30 min timeout and was cancelled under
+    # runner load. Timeout kept per shard.
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
     # ⛔ 20 -> 30 min — #818. Le balayage est passe de 36 a 218 stories
     # (+7 Variants d'intention non-primary) : 226 tests au lieu de 37. Mesure
     # reelle sur ce worktree (histoire preview statique, port isole) : 17.9
@@ -815,13 +822,13 @@ jobs:
         run: pnpm -F @origam/stories build
 
       - name: Run Playwright (components a11y, chromium)
-        run: pnpm -F @origam/tests exec playwright test --config=playwright.a11y.config.ts --project=chromium
+        run: pnpm -F @origam/tests exec playwright test --config=playwright.a11y.config.ts --project=chromium --shard=${{ matrix.shard }}/2
 
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: playwright-report-a11y-components
+          name: playwright-report-a11y-components-shard-${{ matrix.shard }}
           path: |
             packages/tests/a11y/.report
             packages/tests/a11y/.results
