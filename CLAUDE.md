@@ -284,6 +284,12 @@ story + doc + implementation together — not as a follow-up.
 
 ## ⛔ NEVER `git stash` — commit instead (mandatory)
 
+> **#1163 — lint-staged runs with `--no-stash`** (`.husky/pre-commit`, `lint:staged`):
+> its backup stash was a hidden write to the shared `refs/stash`. Per lint-staged 17
+> (`parseOptions.js`), `--no-stash` also implies `--no-hide-partially-staged`: the
+> unstaged part of a partially staged file is committed with it, and on a task failure
+> modifications stay in the index instead of being restored from a backup.
+
 **`refs/stash` is a SINGLE ref shared by every worktree of this
 repository. There are 53 of them. A `git stash push` from one worktree
 lands on the same stack a `git stash pop` in another worktree will pull
@@ -2038,9 +2044,14 @@ origam:
   read but never declared (or the reverse).
 - **`pnpm audit` must be clean to ship — the full tree, not only `--prod`.**
   Both return `No known vulnerabilities found` with exit code `0` — remeasured
-  **2026-09-30**, this worktree, real `$?` outside a pipe — and **no advisory is
-  waived**: `pnpm.auditConfig.ignoreGhsas` is absent from the root
-  `package.json`. ⛔ Capture the real `$?` outside a pipe — `pnpm audit | tail`
+  **2026-09-30**, this worktree, real `$?` outside a pipe. ⚠️ That run predates the
+  waivers: `pnpm.auditConfig.ignoreGhsas` now exists in the root `package.json`
+  (the claim that it was absent is false). Measure the list, never quote it:
+  `git show origin/develop:package.json | node -e
+  "console.log(JSON.parse(require('fs').readFileSync(0)).pnpm.auditConfig.ignoreGhsas)"`.
+  Each entry **must** have a section in `docs/security-waivers.md` (ticket, grant
+  date, review date): `grep -n '^### GHSA' docs/security-waivers.md`. An entry
+  without one is a policy breach. ⛔ Capture the real `$?` outside a pipe — `pnpm audit | tail`
   returns `tail`'s exit code, not the audit's.
 
   ⛔ **An `overrides` entry FREEZES a floor; it does not follow the line.** This
