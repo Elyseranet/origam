@@ -27,7 +27,6 @@
       "required": false,
       "hasFactoryDefault": false,
       "control": "text",
-      "description": "Scroll container observed against. Optional: when omitted, the\nIntersectionObserver `root` is `null` — the browser viewport.",
       "source": "types"
     },
     {
