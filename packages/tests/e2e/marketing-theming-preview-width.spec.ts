@@ -82,6 +82,18 @@ test.describe('/theming — previews never collapse to 0 px wide (#1229)', () =>
         }
     })
 
+    // #1286 — demo fixtures: these five used to be « unavailable » or 0 x 0.
+    test('video, media-controller, infinite-scroll-intersect, spacer and chart-bullet render a real box without console error', async ({ page }) => {
+        test.setTimeout(120_000)
+        const errors: string[] = []
+        page.on('console', m => { if (m.type() === 'error') errors.push(m.text()) })
+        for (const slug of ['video', 'media-controller', 'infinite-scroll-intersect', 'spacer', 'chart-bullet']) {
+            await open(page, slug)
+            await expect.poll(async () => (await boxes(page)).some(([w, h]) => w > 0 && h > 0), { message: slug, timeout: 5_000 }).toBe(true)
+        }
+        expect(errors).toEqual([])
+    })
+
     test('no preview of the catalogue has a box 0 px wide and taller than 0', async ({ page }) => {
         test.setTimeout(300_000)
 

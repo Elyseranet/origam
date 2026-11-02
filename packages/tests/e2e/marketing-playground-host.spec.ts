@@ -14,7 +14,7 @@
 //   4. A sub-part renders where it lives — `window-item` inside the Window
 //      snippet, `data-table-footer` inside the DataTable its parent renders —
 //      and an overlay (`dialog`) renders IN the preview, not under <body>.
-//   5. A component that cannot render on its own says why (`spacer`).
+//   5. `spacer` renders between two neighbours in a toolbar (fixture, #1286).
 //   6. The hero band's curated variants render through the engine.
 //
 //   /theming
@@ -152,10 +152,13 @@ test.describe('/components/{slug} — playground engine (#1145)', () => {
         expect(inside).toBe(true)
     })
 
-    test('spacer cannot render on its own and says why', async ({ page }) => {
+    test('spacer renders between two neighbours in a toolbar, with no unavailable reason (#1286)', async ({ page }) => {
         await openFiche(page, 'spacer')
 
-        await expect(page.locator('[data-cy="preview-reason-spacer"]')).toBeVisible()
+        const stage = page.locator(`${ENGINE} .pg-preview__stage`)
+        await expect(stage.locator('.origam-toolbar').first()).toBeVisible()
+        await expect(stage.locator('.origam-spacer').first()).toBeAttached()
+        await expect(page.locator('[data-cy="preview-reason-spacer"]')).toHaveCount(0)
     })
 
     test('the hero variants render through the engine', async ({ page }) => {

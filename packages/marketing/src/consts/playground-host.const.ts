@@ -81,11 +81,6 @@ export const PLAYGROUND_RENDERED_BY_PARENT_TEXT = {
     fallback: 'This sub-part is rendered by its parent: the preview shows {parent}, with this part inside it. Theme it from the Theme Builder, or edit the parent here.'
 } as const
 
-const RUNTIME_DATA: IPlaygroundUnavailableReason = {
-    key: 'components.detail.preview.reason.runtime_data',
-    fallback: 'This component requires runtime data its parent owns (a DOM element, a controller object, or a File), which a static preview cannot provide.'
-}
-
 /**
  * Components that cannot render on their own, by export name, with the reason
  * shown above the playground. Carried over from the former
@@ -116,17 +111,7 @@ export const PLAYGROUND_UNAVAILABLE_REASONS: Readonly<Record<string, IPlayground
     OrigamTabPanel: PLAYGROUND_REASON_NEEDS_PARENT,
     OrigamBracketCompetitor: PLAYGROUND_REASON_NEEDS_PARENT,
     OrigamBracketMatch: PLAYGROUND_REASON_NEEDS_PARENT,
-    OrigamBracketRound: PLAYGROUND_REASON_NEEDS_PARENT,
-    OrigamInfiniteScrollIntersect: RUNTIME_DATA,
-    OrigamMediaController: RUNTIME_DATA,
-    OrigamVideo: {
-        key: 'components.detail.preview.reason.media_source',
-        fallback: 'This component requires a media source (audio or video URL). The marketing site ships no sample media, so the preview stays empty on purpose.'
-    },
-    OrigamSpacer: {
-        key: 'components.detail.preview.reason.layout_only',
-        fallback: 'This component renders no visible surface of its own: it only pushes its siblings apart inside a flex container.'
-    }
+    OrigamBracketRound: PLAYGROUND_REASON_NEEDS_PARENT
 }
 
 /**
