@@ -917,10 +917,12 @@
 		// chiffre decentre de 2px. Un consommateur qui veut vraiment zero met
 		// desormais `--origam-field---corner-clearance: 0px` : c'est explicite,
 		// ca survit a un refactor du `max()`, et ca ne repose sur rien d'invalide.
-		--origam-field---corner-clearance:
+		// #1254 — le jeton est LU, jamais pose ici (declare `initial` dans les feuilles :
+		// le repli par instance s'applique, et un theme peut le surcharger).
+		--field-corner-default:
 			min(var(--origam-field---border-radius, 8px), var(--origam-input__control---height, 36px));
 		padding-inline:
-			max(var(--origam-field---padding-start), var(--origam-field---corner-clearance))
+			max(var(--origam-field---padding-start), var(--origam-field---corner-clearance, var(--field-corner-default)))
 			var(--origam-field---padding-end);
 		backdrop-filter: var(--origam-field---backdrop-filter, none);
 		-webkit-backdrop-filter: var(--origam-field---backdrop-filter, none);
@@ -1136,7 +1138,7 @@
 			#{$this}__outline {
 				&--start {
 					// Meme plancher que le padding, meme canal — cf. #800.
-					flex: 0 0 max(var(--origam-field---padding-start), var(--origam-field---corner-clearance));
+					flex: 0 0 max(var(--origam-field---padding-start), var(--origam-field---corner-clearance, var(--field-corner-default)));
 				}
 
 				&--end {
