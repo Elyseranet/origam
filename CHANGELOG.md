@@ -18,6 +18,19 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.25] - 2026-11-02
+
+### Fixed — champs : le `role` n'est plus posé deux fois (wrapper + input) (#1247)
+
+`OrigamTextField` posait `:role="role"` sur le wrapper `origam-field` en plus de l'`<input>`. Pour un Select, le wrapper portait donc `role="combobox"` sans `aria-expanded` ni `aria-controls`, ce qu'axe signale par `aria-required-attr`.
+
+- Le `role` n'est plus posé que sur l'`<input>`. `OrigamPasswordField`, qui ne le posait que sur le wrapper, le pose désormais sur l'input.
+- `OrigamSelect` neutralise sur le wrapper les attributs ARIA par défaut de son menu (`aria-haspopup`, `aria-expanded`, `aria-owns`). Une fois le rôle retiré du wrapper, axe les signalait (`aria-allowed-attr`) dans DataTable, via son sélecteur « items per page », et dans le playground. L'ARIA combobox reste sur l'input.
+- Vérifié :
+  - `select-aria-controls.spec.ts` : zéro violation axe et un seul `combobox`, posé sur l'input. Rouge sur le parent, vert après.
+  - Suites a11y composants 228/228, e2e playground 73/73 et TU des champs (273) au vert (PR #1297).
+- Suivi : `OrigamColorPickerField` et `OrigamDatePickerField` posent encore le rôle sur le wrapper (#1308).
+
 ## [2.37.24] - 2026-11-02
 
 ### Fixed — opacités d'overlay au survol réglables par jeton (#1244)

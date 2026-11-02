@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.25',
+        date: '2026-11-02',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23725.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23725.h1', textFallback: 'champs : le role n\'est plus posé deux fois (wrapper + input) (#1247)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.24',
         date: '2026-11-02',
         type: 'patch',
