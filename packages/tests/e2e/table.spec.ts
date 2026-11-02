@@ -131,3 +131,30 @@ test.describe('OrigamTable visual variants', () => {
         expect(parseFloat(br)).toBeGreaterThan(0)
     })
 })
+
+test.describe('OrigamTable row separator side (#1262)', () => {
+    test.setTimeout(45000)
+
+    test('default keeps the rule under each cell; tokens move it above', async ({ page }) => {
+        await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const table = sandbox.locator('.origam-table').first()
+        await expect(table).toBeVisible({ timeout: 12000 })
+
+        // Pose du jeton ET mesure dans un seul evaluate, sur un <td> deja rendu.
+        const read = (tokens: Record<string, string>) => table.evaluate((el, tokens) => {
+            const td = el.querySelector('td') as HTMLElement
+            for (const [k, v] of Object.entries(tokens)) el.style.setProperty(k, v)
+            const cs = getComputedStyle(td)
+            const r = { top: cs.borderTopWidth, bottom: cs.borderBottomWidth }
+            for (const k of Object.keys(tokens)) el.style.removeProperty(k)
+            return r
+        }, tokens)
+
+        expect(await read({})).toEqual({ top: '0px', bottom: '1px' })
+        expect(await read({
+            '--origam-table__cell---border-top-width': '1px',
+            '--origam-table__cell---border-bottom-width': '0px',
+        })).toEqual({ top: '1px', bottom: '0px' })
+    })
+})

@@ -219,7 +219,9 @@
 			:deep(td) {
 				padding-block: var(--origam-table__cell---padding-block, 12px);
 				padding-inline: var(--origam-table__cell---padding-inline, 16px);
-				border-bottom: var(--origam-table__cell---border-width, 1px) solid var(--origam-table__cell---border-color, var(--origam-color__border---subtle));
+				border-color: var(--origam-table__cell---border-color, var(--origam-color__border---subtle));
+				border-style: solid;
+				border-width: var(--origam-table__cell---border-top-width, 0) 0 var(--origam-table__cell---border-bottom-width, var(--origam-table__cell---border-width, 1px));
 			}
 
 			:deep(tr:hover td) {

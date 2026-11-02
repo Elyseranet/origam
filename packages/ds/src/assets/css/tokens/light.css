@@ -1616,7 +1616,9 @@
   --origam-table__cell---padding-block: var(--origam-space---3);
   --origam-table__cell---padding-inline: var(--origam-space---4);
   --origam-table__cell---border-color: var(--origam-color__border---subtle);
+  --origam-table__cell---border-bottom-width: var(--origam-table__cell---border-width);
   --origam-table__cell---border-width: var(--origam-border__width---thin);
+  --origam-table__cell---border-top-width: var(--origam-border__width---0);
   --origam-table__row---hover-background-color: var(--origam-color__surface---sunken);
   --origam-virtual-scroll---item-height: 48px;
   --origam-virtual-scroll---scroll-padding: var(--origam-space---0);
