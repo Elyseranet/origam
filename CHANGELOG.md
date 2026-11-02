@@ -18,6 +18,16 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.27] - 2026-11-02
+
+### Fixed — `OrigamField` : `--origam-field---corner-clearance` est thémable (#1254)
+
+`OrigamField` posait `--origam-field---corner-clearance` sur l'élément. Un thème ne pouvait donc pas régler le dégagement des coins, en particulier sur un champ pilule.
+
+- Le composant lit maintenant le jeton, avec repli sur `var(--field-corner-default)` : `min(radius, height)`, calculé pour chaque instance. Le contour `__outline--start` utilise le même repli.
+- Le jeton est déclaré à `initial` dans light et dark (bloc explicite et bloc media), dans les jumeaux SCSS et dans `tokens.type.ts`. Sans thème, on retombe donc sur le calcul de l'instance et le rendu par défaut ne change pas. `OrigamOtpInputField` continue de poser `0px`.
+- Vérifié : e2e `field-corner-clearance.spec.ts` (Chromium, Histoire statique). Le nouveau cas « jeton posé » est rouge sur le parent et vert après ; les cas défaut et OTP restent verts (PR #1310).
+
 ## [2.37.26] - 2026-11-02
 
 ### Fixed — `OrigamInfiniteScrollIntersect` : `rootRef` est optionnel (#1295)
