@@ -22,9 +22,9 @@
     {
       "name": "rootRef",
       "label": "rootRef",
-      "tsType": "HTMLElement",
+      "tsType": "HTMLElement | undefined",
       "runtimeType": null,
-      "required": true,
+      "required": false,
       "hasFactoryDefault": false,
       "control": "text",
       "source": "types"
