@@ -19,7 +19,7 @@ import type { IPlaygroundInstance } from '../../../playground/src/interfaces/Sce
 
 import { MARKETING_SNIPPET_PARENT_OF, PLAYGROUND_UNAVAILABLE_REASONS } from '~/consts/playground-host.const'
 import { createMarketingSnippets } from '~/consts/playground-snippets.const'
-import { collectComponentNames, findInstanceOf, mergeSnippetTables, snippetFor, withoutThemedProps, withVariant } from '~/utils/playground-host.util'
+import { collectComponentNames, findInstanceOf, mergeSnippetTables, snippetFor, themeBuilderCanvasSelector, withAttach, withoutThemedProps, withVariant } from '~/utils/playground-host.util'
 
 const translate = (_key: string, fallback?: string) => fallback ?? ''
 const ATTACH = '.probe'
@@ -140,5 +140,15 @@ describe('host helpers', () => {
     it('a component requiring a parent never opens on a bare child template', () => {
         const definitions = definitionsFor()
         expect(snippetFor('OrigamTab', definitions)?.instances[0]?.componentName).toBe('OrigamTabs')
+    })
+    it('withAttach re-points only the placeholder attach, at any depth (#1292)', () => {
+        const tree: IPlaygroundInstance[] = [{
+            id: 'a', componentName: 'OrigamCard', props: {},
+            children: { default: [{ id: 'b', componentName: 'OrigamDialog', props: { attach: '.x', title: 't' } }, { id: 'c', componentName: 'OrigamMenu', props: { attach: '.other' } }] }
+        }]
+        const out = withAttach(tree, '.x', themeBuilderCanvasSelector('dark'))
+        expect(out[0]!.children!.default![0]!.props).toEqual({ attach: '[data-cy="theming-canvas-dark"]', title: 't' })
+        expect(out[0]!.children!.default![1]!.props).toEqual({ attach: '.other' })
+        expect(tree[0]!.children!.default![0]!.props.attach).toBe('.x')
     })
 })

@@ -86,13 +86,13 @@
               <origam-defaults-provider :defaults="themeDefaults">
                 <theme-builder-contextual-menu-demo
                   v-if="entry.slug === 'contextual-menu'"
-                  :attach="THEME_BUILDER_OVERLAY_ATTACH"
+                  :attach="themeBuilderCanvasSelector(pane.mode)"
                   v-bind="previewProps"
                   :data-cy="`theming-live-${entry.slug}-${pane.mode}`"
                 />
                 <template v-else-if="hostEntry && hasRoots">
                   <playground-scene-node
-                    v-for="root in roots"
+                    v-for="root in rootsFor(pane.mode)"
                     :key="root.id"
                     :instance="root"
                     :registry="hostEntry.registry"
@@ -125,7 +125,7 @@
   import { usePlaygroundHost } from '~/composables/usePlaygroundHost'
   import { PLAYGROUND_UNAVAILABLE_REASONS, THEME_BUILDER_FILL_WIDTH_SLUGS, THEME_BUILDER_OVERLAY_ATTACH } from '~/consts/playground-host.const'
   import type { IPlaygroundHostEntry } from '~/interfaces/playground-host.interface'
-  import { withoutThemedProps } from '~/utils/playground-host.util'
+  import { themeBuilderCanvasSelector, withAttach, withoutThemedProps } from '~/utils/playground-host.util'
   import type {
     IThemeBuilderPreviewEmits,
     IThemeBuilderPreviewProps,
@@ -215,6 +215,9 @@
     if (!entry || !name) return []
     return withoutThemedProps(entry.createScene().roots, name, themedKeys.value, props.previewProps)
   })
+
+  /* Each pane's overlays attach to ITS canvas, never the first one in the DOM (#1292). */
+  const rootsFor = (mode: TEditMode) => withAttach(roots.value, THEME_BUILDER_OVERLAY_ATTACH, themeBuilderCanvasSelector(mode))
 
   const unavailableReason = computed(() => {
     const reason = componentName.value ? PLAYGROUND_UNAVAILABLE_REASONS[componentName.value] : undefined
