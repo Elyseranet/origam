@@ -42,9 +42,20 @@ test.describe('/theming Split — overlays rattachés à leur propre canvas (#12
         test(slug, async ({ page }) => {
             await page.goto('/theming', { waitUntil: 'load' })
             await page.waitForSelector('[data-cy="theming-split-btn"]')
-            await page.waitForTimeout(1500)
-            await page.locator('[data-cy="theming-split-btn"]').click()
-            await page.evaluate((s) => (document.querySelector(`[data-cy="theming-nav-item-${s}"]`) as HTMLElement).click(), slug)
+            /*
+             * Un clic qui part avant l'hydratation est perdu (runner CI lent) : on
+             * reclique jusqu'à ce que l'état attendu soit là, sans attente fixe.
+             */
+            await expect(async () => {
+                if ((await page.locator('[data-cy="theming-split-btn"]').getAttribute('aria-pressed')) !== 'true') {
+                    await page.locator('[data-cy="theming-split-btn"]').click()
+                }
+                await expect(page.locator('[data-cy="theming-split-btn"]')).toHaveAttribute('aria-pressed', 'true', { timeout: 1_000 })
+            }).toPass({ timeout: 20_000 })
+            await expect(async () => {
+                await page.evaluate((s) => (document.querySelector(`[data-cy="theming-nav-item-${s}"]`) as HTMLElement).click(), slug)
+                await page.waitForSelector(`[data-cy="theming-nav-item-${slug}"].tb-nav__item--active`, { timeout: 1_000 })
+            }).toPass({ timeout: 20_000 })
 
             await expect.poll(() => page.evaluate(
                 ({ root }) => document.querySelectorAll(root).length,
