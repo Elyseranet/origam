@@ -66,13 +66,17 @@ import { mergers } from './merge.mjs'
 import { serialize } from './serialize.mjs'
 import { readExistingDoc } from './read-existing.mjs'
 import { mapDoc } from './doc-to-rows.ts'
-import { ingestFull, ingestSrc, orphanMissingEntries } from './db-upsert.ts'
+import { ingestFull, ingestSrc, orphanMissingEntries, deleteInternalComponentEntries } from './db-upsert.ts'
 import { getDb, closeDb, sourceCommit } from './db.ts'
 import { backfillKeys, backfillSvgKeys } from './key-backfill.ts'
 import { DOC_KIND_DIRS } from '../src/consts/db.const.ts'
 import { DocEntry, DocSyncRun } from '../src/server/db/entities/index.ts'
 import { syncFixtures } from '../src/utils/doc-fixture-sync.util.ts'
 import { ROLLBACK, RESYNC_POLICY, FILE_DOMAINS } from '../src/consts/doc-sync.const.ts'
+
+const { getInternalComponentNames, pascalToKebab } = await import(
+    path.join(repoRoot, 'packages', 'ds', 'scripts', 'guards', 'lib', 'components.mjs')
+)
 
 const argv = process.argv.slice(2)
 const checkFlag = argv.includes('--check')
@@ -211,6 +215,14 @@ async function runResync (manager) {
         if (policy.orphanEntries && !limitArg) {
             deadEntries = await orphanMissingEntries(manager, kind, seen)
             c.orphaned += deadEntries; total.orphaned += deadEntries
+        }
+
+        // Internal sub-parts (#1287) are not in the catalogue: purge them, do not just orphan them.
+        if (kind === 'component' && !limitArg) {
+            const removed = await deleteInternalComponentEntries(
+                manager, getInternalComponentNames().map(n => pascalToKebab(n.replace(/^Origam/, '')))
+            )
+            if (removed) console.log(`[${domainKey}] purged ${removed} internal component entr${removed === 1 ? 'y' : 'ies'}`)
         }
 
         console.log(
