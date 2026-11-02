@@ -18,6 +18,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.28] - 2026-11-02
+
+### Fixed — `OrigamDataList` : la ligne `kv`, sa clé et sa valeur sont thémables (#1267)
+
+La ligne `kv` codait en dur son filet (`1px solid`) et sa grille à deux colonnes, et n'offrait aucun réglage d'écart vertical, de padding, de rayon ni de fond. La clé et la valeur n'avaient aucun réglage typographique.
+
+- 10 jetons `--origam-data-list__kv---{row-columns, row-gap, row-padding-inline, row-radius, row-background, row-border-width, key-letter-spacing, key-text-transform, value-font-weight, value-font-variant-numeric}`, déclarés à `initial` (light, dark, bloc media, jumeaux SCSS, `tokens.type.ts`).
+- Les replis SCSS gardent le rendu actuel, et `row-columns` se replie sur `var(--key-width, 160px) 1fr`, ce qui laisse `key-width` fonctionner.
+- Ce sont des jetons et non des props : les props Commons s'appliquent au `<dl>` racine, pas à la ligne, à la clé ni à la valeur.
+- Vérifié : e2e `data-list-kv-tokens.spec.ts`, avec des valeurs par défaut inchangées et l'effet de chaque jeton mesuré. Rouge sur le parent, vert après. `data-list.spec.ts` reste à 20/20 (PR #1311).
+
 ## [2.37.27] - 2026-11-02
 
 ### Fixed — `OrigamField` : `--origam-field---corner-clearance` est thémable (#1254)

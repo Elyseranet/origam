@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.28',
+        date: '2026-11-02',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23728.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23728.h1', textFallback: 'OrigamDataList : la ligne kv, sa clé et sa valeur sont thémables (#1267)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.27',
         date: '2026-11-02',
         type: 'patch',
