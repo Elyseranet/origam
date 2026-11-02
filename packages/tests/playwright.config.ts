@@ -128,6 +128,8 @@ const GREEN_SPECS = [
     'date-picker-field-typing.spec.ts',
     'theme-provider.spec.ts',
     'textarea-richtext.spec.ts',
+    // #1267 — tokens kv de DataList : defauts inchanges + effet mesure par token.
+    'data-list-kv-tokens.spec.ts',
     'defaults-provider.spec.ts',
     'field-height.spec.ts',
     // #1266 — jetons de couleur / opacité du placeholder de Field. Verte
