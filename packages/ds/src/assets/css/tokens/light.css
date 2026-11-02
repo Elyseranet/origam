@@ -1048,6 +1048,7 @@
   --origam-confirm-wrapper---horizontal-gap: 1em;
   --origam-confirm-wrapper--error---color: var(--origam-color__feedback--danger---fgSubtle);
   --origam-field---padding-start: var(--origam-space---4);
+  --origam-field---corner-clearance: initial;
   --origam-field---padding-end: var(--origam-space---4);
   --origam-field---padding-top: var(--origam-space---2);
   --origam-field---padding-bottom: 6px;

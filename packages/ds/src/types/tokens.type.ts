@@ -1622,6 +1622,7 @@ export type TTokenName =
   | '--origam-field---opacity-disabled'
   | '--origam-field---padding-bottom'
   | '--origam-field---padding-end'
+  | '--origam-field---corner-clearance'
   | '--origam-field---padding-start'
   | '--origam-field---padding-top'
   | '--origam-field---prepend-inner-icon-opacity'

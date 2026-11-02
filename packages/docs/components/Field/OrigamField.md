@@ -75,6 +75,14 @@ the value text and the floating label never collide with the rounded outline.
 The floor is capped at the control height, so an intentional pill
 (`rounded="9999px"`) stays laid out instead of inheriting a 9999px padding.
 
+That floor is themable: a theme (or any ancestor) that sets
+`--origam-field---corner-clearance` replaces the computed value, e.g. a pill
+field whose text should start at `20px` instead of at its own height.
+
+| Token | Default | Role |
+|---|---|---|
+| `--origam-field---corner-clearance` | per instance: `min(radius, control height)` | Floor of the inline padding. `0px` disables it. |
+
 ## Prefix / suffix
 
 ```vue
