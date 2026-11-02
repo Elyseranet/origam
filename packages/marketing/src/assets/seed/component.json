@@ -1,7 +1,7 @@
 {
   "kind": "component",
-  "exportedAt": "2026-11-01T21:16:57.558Z",
-  "sourceCommit": "612881b66",
+  "exportedAt": "2026-11-02T07:36:40.214Z",
+  "sourceCommit": "277845c8f",
   "entryCount": 215,
   "entries": [
     {
@@ -9270,13 +9270,13 @@
                 "cls": ".origam-blockquote__mark--bg",
                 "num": 2,
                 "descriptionKey": "components.blockquote.anatomy.mark",
-                "descriptionFallback": "Decorative opening quote glyph. Absolute, z-index 0, opacity ~0.08. Visible only in variant=\"quoted\"."
+                "descriptionFallback": "Decorative opening quote glyph. Absolute, z-index 0, opacity ~0.08. Rendered when the quoteMark prop is on — the quoted variant preset turns it on, and it is reachable on any variant."
               },
               {
                 "cls": ".origam-blockquote__body",
                 "num": 3,
                 "descriptionKey": "components.blockquote.anatomy.body",
-                "descriptionFallback": "Citation body wrapper. z-index 1 in quoted variant to sit above the glyph."
+                "descriptionFallback": "Citation body wrapper. Raised to z-index 1 by a sibling selector whenever the decorative glyph is present, so the text sits above it."
               },
               {
                 "cls": ".origam-blockquote__attribution",
@@ -9373,12 +9373,6 @@
               "descriptionFallback": "Resolved locale (after \"auto\" resolution from DOM or fallback to \"en\")."
             },
             {
-              "name": "effectiveAlign",
-              "type": "ComputedRef<string>",
-              "descriptionKey": "components.blockquote.exposed.effective_align",
-              "descriptionFallback": "Resolved text alignment after applying per-variant defaults."
-            },
-            {
               "name": "openMark",
               "type": "ComputedRef<string>",
               "descriptionKey": "components.blockquote.exposed.open_mark",
@@ -9389,12 +9383,6 @@
               "type": "ComputedRef<string>",
               "descriptionKey": "components.blockquote.exposed.close_mark",
               "descriptionFallback": "Locale-appropriate closing quote glyph."
-            },
-            {
-              "name": "showQuoteMark",
-              "type": "ComputedRef<boolean>",
-              "descriptionKey": "components.blockquote.exposed.show_quote_mark",
-              "descriptionFallback": "True when the decorative glyph should render (variant=\"quoted\")."
             },
             {
               "name": "hasAttribution",
@@ -9534,6 +9522,13 @@
                 "labelKey": "components.blockquote.playground.lang",
                 "defaultValue": "auto",
                 "labelFallback": "Quote mark lang"
+              },
+              {
+                "kind": "switch",
+                "prop": "quoteMark",
+                "labelKey": "components.blockquote.playground.quote_mark",
+                "defaultValue": false,
+                "labelFallback": "Quote mark glyph"
               }
             ],
             "defaultSlotContent": "Design is not just what it looks like and feels like. Design is how it works."
@@ -69127,7 +69122,7 @@
           "position": 10,
           "default_value": null,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Do not render the header bar (filename / language badge / copy button). For a block embedded in a surface that already shows that information, such as a tab of OrigamCodeGroup."
         },
         {
           "name": "flat",
@@ -69139,7 +69134,7 @@
           "position": 11,
           "default_value": null,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Flatten the block into its host: no border, no radius, no elevation, no outer margin."
         },
         {
           "name": "scrollerAriaLabel",
@@ -69151,7 +69146,7 @@
           "position": 12,
           "default_value": null,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Accessible name of the scrollable region. Left out, it is derived from filename, then lang. Set it when several blocks of the same language share a page."
         },
         {
           "name": "id",
@@ -70050,21 +70045,21 @@
         "kind": "component",
         "slug": "code-group",
         "name": "CodeGroup",
-        "category": null,
+        "category": "Data Display",
         "domain": null,
-        "icon": null,
-        "description_key": null,
-        "description_fallback": null,
+        "icon": "mdi-tab",
+        "description_key": "components.catalog.code_group.description",
+        "description_fallback": "Tabbed code blocks (npm / pnpm / yarn) drawn as one surface: one border, one shared copy button that copies the active tab, and a distinct accessible name for every panel scroller. Fed by an items array or by origam-code children.",
         "definition": null,
         "signature": null,
         "tag": "origam-code-group",
         "value": null,
         "source_file": "packages/ds/src/components/CodeGroup/OrigamCodeGroup.vue",
-        "package_note": null,
+        "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
+        "story_url": "/stories/?story=components-codegroup--design",
+        "doc_url": "/docs/components/CodeGroup/OrigamCodeGroup.html",
         "parent_slug": null,
         "kind_extra": null,
         "svg_title_key": null,
@@ -70084,7 +70079,7 @@
           "position": 0,
           "default_value": null,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Tabs and their code: { label, code, lang?, filename?, value? }. Ignored when the default slot holds code blocks."
         },
         {
           "name": "modelValue",
@@ -70096,7 +70091,7 @@
           "position": 1,
           "default_value": null,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Value of the active tab (v-model). Defaults to the first tab; an item value defaults to its label."
         },
         {
           "name": "label",
@@ -70108,7 +70103,7 @@
           "position": 2,
           "default_value": null,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Accessible name of the tab list, also part of each panel scroller name so several groups on one page stay distinct."
         },
         {
           "name": "copyable",
@@ -70120,7 +70115,7 @@
           "position": 3,
           "default_value": null,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Show the shared copy button."
         },
         {
           "name": "lineNumbers",
@@ -70132,7 +70127,7 @@
           "position": 4,
           "default_value": null,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Show a line-number gutter in every panel."
         },
         {
           "name": "wrap",
@@ -70144,7 +70139,7 @@
           "position": 5,
           "default_value": null,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Wrap long lines instead of scrolling horizontally."
         },
         {
           "name": "id",
@@ -70782,7 +70777,7 @@
           "payload_kind": null,
           "position": 0,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "The active tab changed; carries the new tab value."
         },
         {
           "event": "copy",
@@ -70791,7 +70786,7 @@
           "payload_kind": null,
           "position": 1,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Emitted after a successful clipboard write, with the code of the active tab."
         }
       ],
       "slots": [
@@ -70800,20 +70795,41 @@
           "slot_props": "—",
           "position": 0,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "origam-code children, one per tab, when items is not used. The tab label comes from the child label, else its filename."
         },
         {
           "slot": "copy",
           "slot_props": "{ copy: () => Promise<void>, copied: boolean }",
           "position": 1,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Replaces the shared copy button. Receives the copy function and the copied flag."
         }
       ],
       "examples": [],
       "directiveArgs": [],
       "directiveModifiers": [],
-      "relations": []
+      "relations": [
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "code",
+          "to_name": "Code",
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": "The code block hosted in every panel of the group."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "tabs",
+          "to_name": "Tabs",
+          "prop_name": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": "The tab strip and panels the group is built on."
+        }
+      ]
     },
     {
       "entry": {
@@ -91162,12 +91178,6 @@
               "defaultValue": "center",
               "descriptionKey": "components.data_table_rows.css_vars.empty_text_align",
               "descriptionFallback": "Text alignment of the empty-state content."
-            },
-            {
-              "name": "--origam-data-table-rows--skeleton---cell-padding",
-              "defaultValue": "4px 8px",
-              "descriptionKey": "components.data_table_rows.css_vars.skeleton_cell_padding",
-              "descriptionFallback": "Padding of each cell in a skeleton loading row."
             }
           ],
           "exposed": [
@@ -179984,7 +179994,7 @@
         "domain": null,
         "icon": "mdi-shimmer",
         "description_key": "components.catalog.skeleton.description",
-        "description_fallback": "Loading placeholder with animated pulse shimmer. Supports text, rectangular, circular, card and list-item variants. Renders real content via the default slot when loading=false.",
+        "description_fallback": "Loading placeholder with an opacity pulse. Supports text, rectangular, circular and pill variants — primitives to compose inside an OrigamSkeletonGroup. Renders real content via the default slot when loading=false.",
         "definition": null,
         "signature": null,
         "tag": "origam-skeleton",
@@ -180059,38 +180069,20 @@
                 "value": "var(--origam-space---3)",
                 "tokenPath": "--origam-skeleton---gap",
                 "descriptionKey": "components.skeleton.tokens.gap",
-                "descriptionFallback": "Gap in list-item composite layout."
+                "descriptionFallback": "Gap of an OrigamSkeletonGroup."
               }
             ],
             "sourceFile": "packages/ds/src/assets/css/tokens/light.css"
           },
           "anatomy": {
-            "svg": "\n  <rect x=\"0\" y=\"0\" width=\"560\" height=\"200\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <text x=\"30\" y=\"30\" font-size=\"10\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" font-family=\"'JetBrains Mono',monospace\" font-style=\"italic\">list-item variant</text>\n  <rect x=\"20\" y=\"44\" width=\"520\" height=\"96\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\" stroke-dasharray=\"6 3\"/>\n  <circle cx=\"68\" cy=\"92\" r=\"32\" fill=\"var(--origam-color__surface---overlay, rgba(124,58,237,0.15))\"/>\n  <rect x=\"120\" y=\"72\" width=\"260\" height=\"16\" rx=\"4\" fill=\"var(--origam-color__surface---overlay, rgba(124,58,237,0.18))\"/>\n  <rect x=\"120\" y=\"98\" width=\"180\" height=\"12\" rx=\"4\" fill=\"var(--origam-color__surface---overlay, rgba(124,58,237,0.12))\" opacity=\"0.7\"/>\n  <text x=\"30\" y=\"165\" font-size=\"10\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" font-family=\"'JetBrains Mono',monospace\" font-style=\"italic\">rectangular variant (standalone)</text>\n  <rect x=\"20\" y=\"172\" width=\"520\" height=\"20\" rx=\"2\" fill=\"var(--origam-color__surface---overlay, rgba(124,58,237,0.18))\"/>\n  <circle cx=\"28\" cy=\"52\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"28\" y=\"56\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"50\" cy=\"70\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"50\" y=\"74\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"130\" cy=\"70\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"130\" y=\"74\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <circle cx=\"28\" cy=\"180\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"28\" y=\"184\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">4</text>\n",
-            "code": "<!-- loading=false → render real content -->\n<template v-if=\"!loading\">\n  <slot />\n</template>\n\n<!-- list-item composite -->\n<div\n  v-else-if=\"variant === 'list-item'\"\n  class=\"origam-skeleton-wrapper origam-skeleton-wrapper--list-item\"\n  role=\"status\"\n  aria-busy=\"true\"\n  aria-label=\"Loading\"\n>\n  <div class=\"origam-skeleton origam-skeleton--circular origam-skeleton--pulse\" />\n  <div class=\"origam-skeleton__lines\">\n    <div class=\"origam-skeleton origam-skeleton--text origam-skeleton--pulse\" />\n    <div class=\"origam-skeleton origam-skeleton--text origam-skeleton--pulse\" />\n  </div>\n</div>\n\n<!-- standalone block (rectangular / text / circular) -->\n<div\n  v-else\n  class=\"origam-skeleton origam-skeleton--rectangular origam-skeleton--pulse\"\n  role=\"status\"\n  aria-busy=\"true\"\n  aria-label=\"Loading\"\n/>",
+            "svg": "\n  <rect x=\"0\" y=\"0\" width=\"560\" height=\"100\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <text x=\"30\" y=\"30\" font-size=\"10\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" font-family=\"'JetBrains Mono',monospace\" font-style=\"italic\">rectangular variant (standalone)</text>\n  <rect x=\"20\" y=\"44\" width=\"520\" height=\"40\" rx=\"2\" fill=\"var(--origam-color__surface---overlay, rgba(124,58,237,0.18))\"/>\n  <circle cx=\"28\" cy=\"52\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"28\" y=\"56\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n",
+            "code": "<!-- loading=false → render real content -->\n<template v-if=\"!loading\">\n  <slot />\n</template>\n\n<!-- placeholder block (text / rectangular / circular / pill) -->\n<div\n  v-else\n  class=\"origam-skeleton origam-skeleton--rectangular origam--skeleton\"\n  role=\"status\"\n  aria-busy=\"true\"\n  aria-label=\"Loading\"\n/>",
             "legend": [
               {
-                "cls": ".origam-skeleton-wrapper",
+                "cls": ".origam-skeleton",
                 "num": 1,
-                "descriptionKey": "components.skeleton.anatomy.wrapper",
-                "descriptionFallback": "Composite variant container rendered for card and list-item variants. Carries the variant modifier class (e.g. origam-skeleton-wrapper--list-item)."
-              },
-              {
-                "cls": ".origam-skeleton--circular",
-                "num": 2,
-                "descriptionKey": "components.skeleton.anatomy.circular",
-                "descriptionFallback": "Circular avatar placeholder inside the list-item wrapper. Has the spin animation when pulse=true."
-              },
-              {
-                "cls": ".origam-skeleton--text (inside __lines)",
-                "num": 3,
-                "descriptionKey": "components.skeleton.anatomy.text_lines",
-                "descriptionFallback": "Text line placeholders. The first line is 60% width, the second 40% with reduced opacity."
-              },
-              {
-                "cls": ".origam-skeleton--rectangular / --text (standalone)",
-                "num": 4,
                 "descriptionKey": "components.skeleton.anatomy.standalone",
-                "descriptionFallback": "The single-block element rendered for rectangular, text and circular variants (no composite wrapper)."
+                "descriptionFallback": "The single-block element rendered for every variant (text, rectangular, circular, pill). Inside an OrigamSkeletonGroup it is aria-hidden and the group makes the one announcement."
               }
             ],
             "classes": [
@@ -180113,38 +180105,13 @@
                 "cls": "origam-skeleton--circular",
                 "descriptionKey": "components.skeleton.anatomy.modifier_circular",
                 "descriptionFallback": "Circular block. Height mirrors width."
-              },
-              {
-                "cls": "origam-skeleton--pulse",
-                "descriptionKey": "components.skeleton.anatomy.modifier_pulse",
-                "descriptionFallback": "Activates wave shimmer (text/rectangular) or spin (circular) animation."
-              },
-              {
-                "cls": "origam-skeleton-wrapper",
-                "descriptionKey": "components.skeleton.anatomy.wrapper_class",
-                "descriptionFallback": "Container for composite variants (card, list-item)."
-              },
-              {
-                "cls": "origam-skeleton-wrapper--list-item",
-                "descriptionKey": "components.skeleton.anatomy.wrapper_list_item",
-                "descriptionFallback": "List-item composite layout (avatar + text lines)."
-              },
-              {
-                "cls": "origam-skeleton-wrapper--card",
-                "descriptionKey": "components.skeleton.anatomy.wrapper_card",
-                "descriptionFallback": "Card composite layout (image block + text lines)."
-              },
-              {
-                "cls": "origam-skeleton__lines",
-                "descriptionKey": "components.skeleton.anatomy.lines",
-                "descriptionFallback": "Text lines column inside list-item wrapper."
               }
             ],
-            "svgDesc": "Schematic of the Skeleton component with 4 numbered parts for the list-item variant.",
+            "svgDesc": "Schematic of the Skeleton component with 1 numbered part: the placeholder block.",
             "svgTitle": "Anatomy of OrigamSkeleton",
             "rootClass": "origam-skeleton",
-            "figcaption": "Anatomy of <code>&lt;origam-skeleton&gt;</code> — 4 parts: composite wrapper ①, circular avatar block ②, text lines ③, and the standalone rectangular/text block ④.",
-            "svgViewBox": "0 0 560 200"
+            "figcaption": "Anatomy of <code>&lt;origam-skeleton&gt;</code> — 1 part: the placeholder block ①.",
+            "svgViewBox": "0 0 560 100"
           },
           "cssVars": [
             {
@@ -180181,7 +180148,7 @@
               "name": "--origam-skeleton---gap",
               "defaultValue": "{space.3}",
               "descriptionKey": "components.skeleton.css_vars.gap",
-              "descriptionFallback": "Gap between avatar and text lines in list-item variant."
+              "descriptionFallback": "Gap of an OrigamSkeletonGroup."
             },
             {
               "name": "--origam-skeleton---wave-color",
@@ -180245,14 +180212,6 @@
                   {
                     "label": "circular",
                     "value": "circular"
-                  },
-                  {
-                    "label": "card",
-                    "value": "card"
-                  },
-                  {
-                    "label": "list-item",
-                    "value": "list-item"
                   }
                 ],
                 "labelKey": "components.skeleton.playground.variant",
@@ -180326,20 +180285,6 @@
                 "width": 48,
                 "variant": "circular"
               }
-            },
-            {
-              "label": "card",
-              "props": {
-                "width": 200,
-                "variant": "card"
-              }
-            },
-            {
-              "label": "list-item",
-              "props": {
-                "width": 260,
-                "variant": "list-item"
-              }
             }
           ]
         },
@@ -180360,7 +180305,7 @@
           "position": 0,
           "default_value": "'rectangular'",
           "description_key": "components.skeleton.props.variant.description",
-          "description_fallback": "Skeleton shape preset. 'text' → single-line text height, 'rectangular' → block shape, 'circular' → circle (height mirrors width), 'card' → image + 3 text lines, 'list-item' → avatar circle + 2 text lines."
+          "description_fallback": "Skeleton shape primitive. 'text' → single-line text height, 'rectangular' → block shape, 'circular' → circle (height mirrors width), 'pill' → fully rounded capsule."
         },
         {
           "name": "loading",
@@ -180669,14 +180614,14 @@
           "position": 0,
           "title_key": "components.skeleton.examples.basic.title",
           "title_fallback": "Basic variants",
-          "code": "<template>\n  <div style=\"display: flex; flex-direction: column; gap: 1rem;\">\n    <origam-skeleton variant=\"text\"        :width=\"200\" />\n    <origam-skeleton variant=\"rectangular\" :width=\"200\" :height=\"80\" />\n    <origam-skeleton variant=\"circular\"    :width=\"48\" />\n    <origam-skeleton variant=\"card\"        :width=\"200\" />\n    <origam-skeleton variant=\"list-item\"   :width=\"260\" />\n  </div>\n</template>",
+          "code": "<template>\n  <div style=\"display: flex; flex-direction: column; gap: 1rem;\">\n    <origam-skeleton variant=\"text\"        :width=\"200\" />\n    <origam-skeleton variant=\"rectangular\" :width=\"200\" :height=\"80\" />\n    <origam-skeleton variant=\"circular\"    :width=\"48\" />\n    <origam-skeleton variant=\"pill\" />\n  </div>\n</template>",
           "lang": "vue"
         },
         {
           "position": 1,
           "title_key": "components.skeleton.examples.loading.title",
           "title_fallback": "Loading gate",
-          "code": "<template>\n  <origam-skeleton variant=\"card\" :loading=\"isLoading\">\n    <!-- Real content shown when isLoading=false -->\n    <origam-card title=\"Article title\" subtitle=\"Author · Date\">\n      <p>Full article content goes here.</p>\n    </origam-card>\n  </origam-skeleton>\n</template>\n<script setup>\nconst isLoading = ref(true)\nsetTimeout(() => { isLoading.value = false }, 2000)\n</script>",
+          "code": "<template>\n  <origam-skeleton-group>\n    <origam-skeleton variant=\"circular\" />\n    <origam-skeleton variant=\"text\" width=\"60%\" />\n    <origam-skeleton variant=\"text\" width=\"40%\" />\n  </origam-skeleton-group>\n</template>",
           "lang": "vue"
         },
         {
@@ -180707,21 +180652,21 @@
         "kind": "component",
         "slug": "skeleton-group",
         "name": "SkeletonGroup",
-        "category": null,
+        "category": "Feedback & Status",
         "domain": null,
-        "icon": null,
+        "icon": "mdi-shimmer",
         "description_key": null,
-        "description_fallback": null,
+        "description_fallback": "Zone that holds the OrigamSkeleton blocks of one loading area: it makes the single loading announcement (role=\"status\", aria-busy) while its blocks are aria-hidden, and it is one animation clock for every block it contains.",
         "definition": null,
         "signature": null,
         "tag": "origam-skeleton-group",
         "value": null,
         "source_file": "packages/ds/src/components/Skeleton/OrigamSkeletonGroup.vue",
-        "package_note": null,
+        "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": null,
-        "doc_url": null,
+        "story_url": "/stories/?story=components-skeleton-origamskeletongroup",
+        "doc_url": "/docs/components/Skeleton/OrigamSkeletonGroup.html",
         "parent_slug": "skeleton",
         "kind_extra": null,
         "svg_title_key": null,
@@ -180734,26 +180679,26 @@
         {
           "name": "animation",
           "type_label": "TSkeletonAnimation",
-          "type_slug": null,
-          "type_kind": null,
+          "type_slug": "skeleton-animation",
+          "type_kind": "type",
           "optional": false,
           "required": false,
           "position": 0,
-          "default_value": null,
+          "default_value": "'pulse'",
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Motion of the whole group: 'pulse' (the container breathes), 'wave' (each block sweeps a shimmer) or 'none'. Blocks inherit it unless they set their own."
         },
         {
           "name": "label",
           "type_label": "string",
-          "type_slug": null,
-          "type_kind": null,
+          "type_slug": "",
+          "type_kind": "primitive",
           "optional": false,
           "required": false,
           "position": 1,
-          "default_value": null,
+          "default_value": "'origam.loading'",
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "Locale key of the one announcement made for the whole zone."
         },
         {
           "name": "id",
@@ -180802,13 +180747,32 @@
           "slot_props": "—",
           "position": 0,
           "description_key": null,
-          "description_fallback": null
+          "description_fallback": "The OrigamSkeleton blocks of the zone."
         }
       ],
-      "examples": [],
+      "examples": [
+        {
+          "position": 0,
+          "title_key": null,
+          "title_fallback": "A loading card",
+          "code": "<template>\n  <origam-skeleton-group>\n    <origam-skeleton variant=\"rectangular\" height=\"120\" />\n    <origam-skeleton variant=\"text\" width=\"70%\" />\n    <origam-skeleton variant=\"text\" />\n  </origam-skeleton-group>\n</template>",
+          "lang": "vue"
+        }
+      ],
       "directiveArgs": [],
       "directiveModifiers": [],
-      "relations": []
+      "relations": [
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "skeleton",
+          "to_name": "Skeleton",
+          "prop_name": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": "OrigamSkeleton provides the placeholder blocks a group holds."
+        }
+      ]
     },
     {
       "entry": {
