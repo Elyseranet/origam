@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.30',
+        date: '2026-11-02',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23730.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23730.h1', textFallback: 'OrigamColorPickerField, OrigamDatePickerField : le rôle combobox passe du wrapper à l\'<input> (#1308)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.29',
         date: '2026-11-02',
         type: 'patch',

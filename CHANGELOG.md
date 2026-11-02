@@ -18,6 +18,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.30] - 2026-11-02
+
+### Fixed — `OrigamColorPickerField`, `OrigamDatePickerField` : le rôle combobox passe du wrapper à l'`<input>` (#1308)
+
+Les deux pickers passaient `role: 'combobox'` dans les `activatorProps` de leur menu. Le rôle atterrissait donc sur le wrapper `.origam-field` et non sur l'`<input>` : c'est le défaut que #1247 avait déjà corrigé sur Select.
+
+- Nouvelle constante partagée `MENU_WRAPPER_ARIA_RESET` (`consts/Menu/menu.const.ts`) : elle neutralise sur le wrapper `aria-haspopup`, `aria-expanded` et `aria-owns`. `OrigamSelect` l'utilise à la place de sa copie inline.
+- Les deux pickers posent désormais `role="combobox"`, `aria-haspopup="dialog"` et `aria-expanded` sur l'`<input>`.
+- Vérifié : le TU `picker-field-wrapper-role.spec.ts` (zéro violation axe, un seul combobox, l'`<input>`) est rouge sur le parent (combobox sur un `DIV`) et vert après. Les a11y composants sont verts en Chromium pour les deux pickers fermés (PR #1312).
+- Non vérifié : l'état ouvert des pickers dans un vrai navigateur.
+
 ## [2.37.29] - 2026-11-02
 
 ### Fixed — `OrigamTable` : le côté du séparateur de ligne est thémable (#1262)
