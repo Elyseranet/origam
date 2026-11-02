@@ -18,6 +18,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.29] - 2026-11-02
+
+### Fixed — `OrigamTable` : le côté du séparateur de ligne est thémable (#1262)
+
+Le séparateur de ligne était un `border-bottom` codé en dur sur les `td` : un thème ne pouvait pas le déplacer en haut de la ligne.
+
+- Deux jetons : `--origam-table__cell---border-top-width` (par défaut `border__width---0`) et `--origam-table__cell---border-bottom-width` (par défaut `var(--origam-table__cell---border-width)`). Le rendu par défaut ne change pas. Un thème pose `top: 1px` / `bottom: 0` pour placer le filet en haut. La couleur et le style ne changent pas.
+- Une propriété personnalisée CSS ne peut pas désigner un côté de bordure : le `border-side: top|bottom` demandé est donc remplacé par cette paire de jetons.
+- Limite connue : le jeton du bas reprend `--origam-table__cell---border-width` par défaut. Un thème qui ne surchargerait que cette largeur dans une sous-arborescence pourrait laisser le filet du bas à la valeur de la racine.
+- Vérifié : e2e `table.spec.ts`. Par défaut, top 0 et bottom 1px ; avec les jetons posés, top 1px et bottom 0. Rouge sur le parent, vert après. TU Table et DataTable 92/92 (PR #1309).
+
 ## [2.37.28] - 2026-11-02
 
 ### Fixed — `OrigamDataList` : la ligne `kv`, sa clé et sa valeur sont thémables (#1267)

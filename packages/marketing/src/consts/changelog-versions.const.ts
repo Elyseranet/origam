@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.29',
+        date: '2026-11-02',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23729.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23729.h1', textFallback: 'OrigamTable : le côté du séparateur de ligne est thémable (#1262)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.28',
         date: '2026-11-02',
         type: 'patch',
