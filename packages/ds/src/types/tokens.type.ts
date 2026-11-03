@@ -2926,6 +2926,7 @@ export type TTokenName =
   | '--origam-tabs__item---gap'
   | '--origam-tabs__item---height'
   | '--origam-tabs__item---letter-spacing'
+  | '--origam-tabs__item---line-height'
   | '--origam-tabs__item---padding-block'
   | '--origam-tabs__item---padding-inline'
   | '--origam-tabs__item---text-transform'

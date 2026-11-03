@@ -220,7 +220,6 @@
     "--origam-font__family---display",
     "--origam-font__family---serif",
     "--origam-font__lineHeight---loose",
-    "--origam-font__lineHeight---none",
     "--origam-font__size---4xl",
     "--origam-font__weight---black",
     "--origam-font__weight---extrabold",

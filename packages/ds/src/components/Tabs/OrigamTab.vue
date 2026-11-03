@@ -315,7 +315,7 @@
 		font-family: inherit;
 		font-size: var(--origam-tabs__item---font-size, 0.875rem);
 		font-weight: var(--origam-tabs__item---font-weight, 500);
-		line-height: 1;
+		line-height: var(--origam-tabs__item---line-height, 1);
 		letter-spacing: var(--origam-tabs__item---letter-spacing, 0.03125em);
 		text-transform: var(--origam-tabs__item---text-transform, none);
 
@@ -416,6 +416,7 @@
 		--origam-tabs__item---font-size: 0.875rem;
 		--origam-tabs__item---font-weight: 500;
 		--origam-tabs__item---letter-spacing: 0.03125em;
+		--origam-tabs__item---line-height: 1;
 		--origam-tabs__item---text-transform: none;
 		--origam-tabs__item---color: currentColor;
 		--origam-tabs__item---background-color: transparent;

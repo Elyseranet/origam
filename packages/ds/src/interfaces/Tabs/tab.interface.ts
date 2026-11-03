@@ -29,12 +29,10 @@ import type { TTabVariant } from '../../types/Tabs/tab.type'
  * `tabindex`) is computed inside the component — consumers only
  * provide `value` (the canonical identifier) and `disabled`.
  *
- * Typography props (`fontSize`, `fontWeight`, `letterSpacing`) override
- * the matching `--origam-tabs__item---*` variables on the tab element.
- * `lineHeight` is intentionally excluded — the SCSS hard-codes `line-height: 1`
- * with no CSS-var hook.
+ * Typography props (`fontSize`, `fontWeight`, `letterSpacing`, `lineHeight`)
+ * override the matching `--origam-tabs__item---*` variables on the tab element.
  */
-export interface ITabProps extends ICommonsComponentProps, ITagProps, IGroupItemProps, IColorProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'letterSpacing'>, IAdjacentProps {
+export interface ITabProps extends ICommonsComponentProps, ITagProps, IGroupItemProps, IColorProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'letterSpacing' | 'lineHeight'>, IAdjacentProps {
     tag?: string
     /** Text label — used when the `default` slot is not provided. */
     text?: string
