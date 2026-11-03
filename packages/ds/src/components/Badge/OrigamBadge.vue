@@ -115,7 +115,7 @@
 
 	import { omit, pick } from '../../utils/Commons/commons.util'
 
-	import { computed, ComputedRef, StyleValue, useAttrs } from 'vue'
+	import { computed, ref, StyleValue, useAttrs } from 'vue'
 
 	/*********************************************************
 	 * Global
@@ -152,7 +152,11 @@
 	 * Hover, active state, color and location resolution.
 	 ********************************************************/
 	const {classes: hoverClasses, isOn: isHover, config: hoverState, unset: handleMouseleave, set: handleMouseenter} = useStateFlag(props, {state: 'hover'})
-	const {classes: activeClasses, isOn: isActive, config: activeState} = useStateFlag(props, {state: 'active', source: 'modelValue'})
+	/*********************************************************
+	 * @description
+	 * `modelValue` is the VISIBILITY (v-show): it keeps its `--active` marker class but must not feed the colour effect (#1307).
+	 ********************************************************/
+	const {classes: activeClasses} = useStateFlag(props, {state: 'active', source: 'modelValue'})
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 	// The badge pill (`__badge` span) is the visual surface; classes go
 	// there, not on the wrapper root.
@@ -161,7 +165,7 @@
 	 * Color
 	 ********************************************************/
 
-	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
+	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles } = useStateEffect(props, isHover, ref(false), hoverState, undefined)
 
 	/*********************************************************
 	 * Composables
@@ -275,8 +279,8 @@
 				'origam-badge--floating': props.floating,
 				'origam-badge--inline': props.inline
 			},
-			activeClasses.value,
 			hoverClasses.value,
+			activeClasses.value,
 			statusClasses.value,
 			props.class
 		]
