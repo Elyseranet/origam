@@ -715,3 +715,37 @@ test.describe('OrigamTabs pills — color sur l\'onglet actif (#1253)', () => {
         expect(new Set([base, success, danger]).size, JSON.stringify([base, success, danger])).toBe(3)
     })
 })
+
+test.describe('OrigamTab — line-height thémable (#1252)', () => {
+    test.setTimeout(60000)
+
+    const measure = async (page: Page) => {
+        await page.waitForTimeout(700)
+        return page.frameLocator('iframe[src*="__sandbox"]').locator('.origam-tab').first()
+            .evaluate(el => { const cs = getComputedStyle(el); return { lh: parseFloat(cs.lineHeight), fs: parseFloat(cs.fontSize) } })
+    }
+
+    const open = async (page: Page) => {
+        await page.goto(variantUrl(0))
+        await page.frameLocator('iframe[src*="__sandbox"]').locator('.origam-tab').first().waitFor()
+    }
+
+    test('sans jeton posé par le thème, line-height reste 1 × font-size', async ({ page }) => {
+        await open(page)
+        const { lh, fs } = await measure(page)
+        expect(lh).toBe(fs)
+    })
+
+    test('--origam-tabs__item---line-height: 1.55 posé par le thème donne 1.55 × font-size', async ({ page }) => {
+        await page.addInitScript(() => {
+            document.addEventListener('DOMContentLoaded', () => {
+                const s = document.createElement('style')
+                s.textContent = ':root:root:root{--origam-tabs__item---line-height:1.55}'
+                document.head.appendChild(s)
+            })
+        })
+        await open(page)
+        const { lh, fs } = await measure(page)
+        expect(lh).toBeCloseTo(fs * 1.55, 1)
+    })
+})

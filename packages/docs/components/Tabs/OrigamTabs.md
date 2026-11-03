@@ -132,10 +132,8 @@ On touch devices, enable horizontal swipe between panels with
 | `fontSize`    | `TFontSize`     | —       | Font size token override (`xs` · `sm` · `md` · `lg` · `xl` · …). Maps to `--origam-tabs__item---font-size`. |
 | `fontWeight`  | `TFontWeight`   | —       | Font weight token override (`regular` · `medium` · `semibold` · `bold` · …). Maps to `--origam-tabs__item---font-weight`. |
 | `letterSpacing` | `TLetterSpacing` | —   | Letter-spacing token override (`tight` · `normal` · `wide` · `wider` · `widest`). Maps to `--origam-tabs__item---letter-spacing`. |
+| `lineHeight` | `TLineHeight` | —   | Line-height token override (`none` · `tight` · `snug` · `normal` · …). Maps to `--origam-tabs__item---line-height` (default `none` = `1`). |
 
-`lineHeight` is deliberately **not** part of the surface: the tab SCSS
-hard-codes `line-height: 1` with no CSS-variable hook, so the prop would have
-had nothing to write to.
 
 ### `<OrigamTabPanels>`
 
