@@ -9,7 +9,7 @@ import { createOrigam } from '../origam'
 import { nuxtIconsOptions } from '../utils/Commons/nuxt-icons.util'
 import { nuxtLocaleOptions } from '../utils/Commons/nuxt-locale.util'
 
-import { isModePinned } from '../utils/Commons/apply-theme.util'
+import { isModePinned, knownBrand } from '../utils/Commons/apply-theme.util'
 
 import type { TMode, TTheme } from '../types/Commons/theme.type'
 
@@ -44,7 +44,7 @@ export default defineNuxtPlugin({
         // matrix has no mode-less fallback. So we drive `mode` from the stored
         // intent (cookie / configured default) and write the *resolved* value
         // to the DOM via the `resolvedMode` watcher below.
-        const initialTheme = (themeFromDom ?? themeCookie.value ?? config.defaultTheme) as TTheme
+        const initialTheme = (knownBrand(themeFromDom, config.themes) ?? knownBrand(themeCookie.value, config.themes) ?? config.defaultTheme) as TTheme
         const initialMode = (modeCookie.value ?? config.defaultMode) as TMode
 
         // Install the configured theme OBJECTS (ADR-004 — no preset-name

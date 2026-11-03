@@ -3,7 +3,7 @@ import { createOrigam } from '../origam'
 import { nuxtIconsOptions } from '../utils/Commons/nuxt-icons.util'
 import { nuxtLocaleOptions } from '../utils/Commons/nuxt-locale.util'
 
-import { isModePinned, themeToCss, themeToUnpinnedCss } from '../utils/Commons/apply-theme.util'
+import { isModePinned, knownBrand, themeToCss, themeToUnpinnedCss } from '../utils/Commons/apply-theme.util'
 import { getSsrStyles } from '../utils/Commons/ssr-styles.util'
 
 import type { IOrigamNuxtRuntimeConfig } from '../interfaces/Commons/nuxt-module.interface'
@@ -21,8 +21,10 @@ import type { NuxtApp } from '#app'
  * (that hint feeds the `mode` axis).
  */
 function resolveServerTheme (cookieValue: string | null | undefined, config: IOrigamNuxtRuntimeConfig): TTheme {
-    if (cookieValue && cookieValue !== ORIGAM_THEME_AUTO) {
-        return cookieValue
+    // #1120: the cookie is untrusted input, only an installed theme name passes.
+    const brand = knownBrand(cookieValue, config.themes)
+    if (brand && brand !== ORIGAM_THEME_AUTO) {
+        return brand
     }
 
     if (config.defaultTheme && config.defaultTheme !== ORIGAM_THEME_AUTO) {
