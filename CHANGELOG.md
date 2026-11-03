@@ -18,6 +18,16 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.33] - 2026-11-03
+
+### Added — `OrigamTable` : jetons de typographie des en-têtes (#1245)
+
+Rien ne permettait de régler la casse (`text-transform`) ni l'interlettrage (`letter-spacing`) des en-têtes seuls. `ITableProps` ne reprend que `fontSize` et `fontWeight`.
+
+- Deux jetons, `--origam-table__header-cell---letter-spacing` et `--origam-table__header-cell---text-transform`, déclarés à `initial` dans light, dark (bloc explicite et bloc media), les jumeaux SCSS et `tokens.type.ts`. Ils sont lus par `:deep(th)` avec un repli sur `inherit` : le rendu par défaut ne change pas. DataTable en hérite sans code propre.
+- Pas de prop de typographie d'en-tête (le ticket la disait facultative).
+- Vérifié : e2e `table-header-typography-tokens.spec.ts` sur Table et DataTable. Par défaut, `normal` / `none` ; avec les jetons, `3px` / `uppercase`. Rouge sur le parent, vert après. TU Table et DataTable : 92/92 (PR #1316).
+
 ## [2.37.32] - 2026-11-03
 
 ### Added — `OrigamTab` : hauteur de ligne réglable (prop `lineHeight` + jeton) (#1252)
