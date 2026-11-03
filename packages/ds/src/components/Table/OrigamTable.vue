@@ -210,6 +210,8 @@
 				background-color: var(--origam-table__header-cell---background-color, var(--origam-color__surface---overlay));
 				color: var(--origam-table__header-cell---color, var(--origam-color__text---primary));
 				font-weight: var(--origam-table__header-cell---font-weight, 600);
+				letter-spacing: var(--origam-table__header-cell---letter-spacing, inherit);
+				text-transform: var(--origam-table__header-cell---text-transform, inherit);
 				padding-block: var(--origam-table__header-cell---padding-block, 12px);
 				padding-inline: var(--origam-table__header-cell---padding-inline, 16px);
 				border-bottom: var(--origam-table__header-cell---border-bottom-width, 2px) solid var(--origam-table__header-cell---border-bottom-color, var(--origam-color__border---default));
