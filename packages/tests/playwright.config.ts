@@ -130,6 +130,8 @@ const GREEN_SPECS = [
     'textarea-richtext.spec.ts',
     // #1267 — tokens kv de DataList : defauts inchanges + effet mesure par token.
     'data-list-kv-tokens.spec.ts',
+    // #1245 - jetons typo des en-tetes Table/DataTable : defauts inchanges + effet.
+    'table-header-typography-tokens.spec.ts',
     'defaults-provider.spec.ts',
     'field-height.spec.ts',
     // #1266 — jetons de couleur / opacité du placeholder de Field. Verte

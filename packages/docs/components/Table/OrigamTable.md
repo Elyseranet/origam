@@ -177,6 +177,8 @@ root or via a `:style` binding to re-skin a single instance.
 | `--origam-table__header-cell---background-color` | `{color.surface.overlay}` |
 | `--origam-table__header-cell---color` | `{color.text.primary}` |
 | `--origam-table__header-cell---font-weight` | `{font.weight.semibold}` |
+| `--origam-table__header-cell---letter-spacing` | `initial` (inherits) — e.g. `{font.letterSpacing.wide}` |
+| `--origam-table__header-cell---text-transform` | `initial` (inherits) — e.g. `uppercase` |
 | `--origam-table__header-cell---padding-block` | `{space.3}` |
 | `--origam-table__header-cell---padding-inline` | `{space.4}` |
 | `--origam-table__header-cell---border-bottom-color` | `{color.border.default}` |
