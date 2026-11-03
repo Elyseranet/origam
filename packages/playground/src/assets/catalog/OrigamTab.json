@@ -196,6 +196,25 @@
       "source": "types"
     },
     {
+      "name": "lineHeight",
+      "label": "lineHeight",
+      "tsType": "\"none\" | \"tight\" | \"snug\" | \"normal\" | \"relaxed\" | \"loose\" | undefined",
+      "runtimeType": null,
+      "required": false,
+      "hasFactoryDefault": false,
+      "options": [
+        "none",
+        "tight",
+        "snug",
+        "normal",
+        "relaxed",
+        "loose"
+      ],
+      "control": "select",
+      "description": "Line-height token. Maps to `--origam-font__lineHeight---{lineHeight}`\n(none 1 · tight 1.25 · snug 1.375 · normal 1.5 · relaxed 1.625 · loose 2).\nWhen unset, the component keeps its theme line-height.",
+      "source": "types"
+    },
+    {
       "name": "appendAvatar",
       "label": "appendAvatar",
       "tsType": "string | undefined",
