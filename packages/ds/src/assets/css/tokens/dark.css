@@ -1734,6 +1734,7 @@
   --origam-breadcrumb---padding-block: var(--origam-space---2);
   --origam-breadcrumb---padding-inline: var(--origam-space---2);
   --origam-breadcrumb---font-size: var(--origam-font__size---md);
+  --origam-breadcrumb---line-height: 1.6;
   --origam-breadcrumb---background: rgba(0, 0, 0, 0);
   --origam-breadcrumb---color: var(--origam-color__text---primary);
   --origam-breadcrumb---border-color: currentColor;
@@ -4776,6 +4777,7 @@
     --origam-breadcrumb---padding-block: var(--origam-space---2);
     --origam-breadcrumb---padding-inline: var(--origam-space---2);
     --origam-breadcrumb---font-size: var(--origam-font__size---md);
+    --origam-breadcrumb---line-height: 1.6;
     --origam-breadcrumb---background: rgba(0, 0, 0, 0);
     --origam-breadcrumb---color: var(--origam-color__text---primary);
     --origam-breadcrumb---border-color: currentColor;

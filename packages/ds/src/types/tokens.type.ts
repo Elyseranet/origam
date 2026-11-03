@@ -415,6 +415,7 @@ export type TTokenName =
   | '--origam-breadcrumb---box-shadow-elevated'
   | '--origam-breadcrumb---color'
   | '--origam-breadcrumb---font-size'
+  | '--origam-breadcrumb---line-height'
   | '--origam-breadcrumb---gap'
   | '--origam-breadcrumb---home-icon-color'
   | '--origam-breadcrumb---padding-block'
