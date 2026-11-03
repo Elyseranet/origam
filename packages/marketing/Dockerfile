@@ -94,6 +94,10 @@ RUN pnpm run build:embeds
 RUN pnpm -F @origam/marketing exec nuxt prepare
 # 4. Build the Nuxt app → packages/marketing/.output (self-contained server).
 RUN pnpm -F @origam/marketing build
+# 5. TypeORM requires `pg` dynamically, which Nitro's tracer does not follow
+#    (nitro.externals.traceInclude in nuxt.config.ts). Fail the image build —
+#    not the first request — if it ever goes missing again (#1166).
+RUN test -f packages/marketing/.output/server/node_modules/pg/package.json
 
 # -----------------------------------------------------------------------------
 # Runtime stage — minimal Node image running the Nitro server.

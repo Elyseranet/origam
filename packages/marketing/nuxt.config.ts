@@ -1,6 +1,7 @@
 import { resolve } from 'node:path'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { createRequire } from 'node:module'
 
 import { MARKETING_DEFAULTS } from './src/consts/marketing.const'
 import { I18N_LOCALES, I18N_COOKIE_KEY } from './src/consts/i18n.const'
@@ -246,6 +247,12 @@ export default defineNuxtConfig({
     },
 
     nitro: {
+        // TypeORM loads `pg` through a dynamic require() that Nitro's tracer
+        // cannot follow: without this, `pg` is absent from
+        // .output/server/node_modules and every DB read fails (#1166).
+        externals: {
+            traceInclude: [createRequire(import.meta.url).resolve('pg')]
+        },
         esbuild: {
             options: {
                 tsconfigRaw: {
