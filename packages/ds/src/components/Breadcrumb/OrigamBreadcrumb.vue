@@ -318,7 +318,7 @@
 			display: flex;
 			align-items: center;
 			gap: var(--origam-breadcrumb---gap);
-			line-height: 1.6;
+			line-height: var(--origam-breadcrumb---line-height, 1.6);
 			list-style: none;
 			margin-block: 0;
 			padding-inline-start: 0;

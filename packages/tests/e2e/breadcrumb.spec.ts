@@ -83,6 +83,25 @@ const bcdUrl = (idx: number) => `${BCD_STORY_PATH}?variantId=${BCD_STORY_ID}-${i
 
 // ─── OrigamBreadcrumb ─────────────────────────────────────────────────────────
 
+// #1265 — line-height lue depuis --origam-breadcrumb---line-height
+test.describe('OrigamBreadcrumb — jeton line-height (#1265)', () => {
+    test('le défaut reste 1.6 et le jeton change la hauteur de ligne', async ({ page }) => {
+        await page.goto(bcUrl(0), { waitUntil: 'domcontentloaded' })
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const items = sandbox.locator('.origam-breadcrumb__items').first()
+        await expect(items).toBeVisible({ timeout: 12000 })
+
+        const { fontSize, lineHeight } = await items.evaluate(el => {
+            const cs = getComputedStyle(el)
+            return { fontSize: parseFloat(cs.fontSize), lineHeight: parseFloat(cs.lineHeight) }
+        })
+        expect(lineHeight).toBeCloseTo(fontSize * 1.6, 2)
+
+        await items.evaluate(el => el.closest('.origam-breadcrumb')!.setAttribute('style', '--origam-breadcrumb---line-height: 1.55'))
+        await expect.poll(() => items.evaluate(el => parseFloat(getComputedStyle(el).lineHeight))).toBeCloseTo(fontSize * 1.55, 2)
+    })
+})
+
 test.describe('OrigamBreadcrumb', () => {
     test.setTimeout(45000)
 
