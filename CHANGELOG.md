@@ -18,6 +18,16 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.32] - 2026-11-03
+
+### Added — `OrigamTab` : hauteur de ligne réglable (prop `lineHeight` + jeton) (#1252)
+
+`line-height: 1` était codé en dur sur `.origam-tab`.
+
+- Nouveau jeton `--origam-tabs__item---line-height`. Sa valeur par défaut, `var(--origam-font__lineHeight---none)`, vaut 1 : le rendu par défaut ne change pas. Il est déclaré dans light, dark (bloc explicite et bloc media), les jumeaux SCSS et `tokens.type.ts`.
+- `ITabProps` gagne `lineHeight` (`Pick<ITypographyProps>`), que `useTypography` écrit déjà sur ce jeton : on règle d'abord par la prop. La doc et la story (contrôle Line Height dans la Variant Design) sont à jour. La note « lineHeight volontairement absent », qui ne tenait qu'à l'absence de hook CSS, est retirée.
+- Vérifié : e2e `tabs.spec.ts`. Par défaut, la hauteur de ligne vaut 1 × font-size ; avec le jeton à 1.55, elle vaut 1.55 × font-size. Rouge sur le parent, vert après. TU Tabs 79/79 (PR #1315).
+
 ## [2.37.31] - 2026-11-03
 
 ### Added — `OrigamBreadcrumb` : jeton de hauteur de ligne (#1265)
