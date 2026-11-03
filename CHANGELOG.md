@@ -18,6 +18,16 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.31] - 2026-11-03
+
+### Added — `OrigamBreadcrumb` : jeton de hauteur de ligne (#1265)
+
+La hauteur de ligne `1.6` était codée en dur sur `.origam-breadcrumb__items`.
+
+- Nouveau jeton `--origam-breadcrumb---line-height`, déclaré à `1.6` (light, dark, bloc media, jumeaux SCSS, `tokens.type.ts`). Le composant le lit avec `1.6` en repli, donc le rendu par défaut est inchangé.
+- La prop `ITypographyProps.lineHeight` n'a pas été réutilisée : son échelle `--origam-font__lineHeight---*` n'a pas de palier à 1.6, et le défaut aurait changé.
+- Vérifié : e2e `breadcrumb.spec.ts`. Par défaut, la hauteur vaut taille de police × 1.6 ; avec le jeton à 1.55, elle passe à environ 19.84 px. Rouge sur le parent, vert après. TU Breadcrumb 40/40 (PR #1314).
+
 ## [2.37.30] - 2026-11-02
 
 ### Fixed — `OrigamColorPickerField`, `OrigamDatePickerField` : le rôle combobox passe du wrapper à l'`<input>` (#1308)

@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.31',
+        date: '2026-11-03',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23731.summary',
+        summaryFallback: '1 addition. See the full changelog for detail.',
+        highlights: [
+            { type: 'added', textKey: 'changelog.versions.v23731.h1', textFallback: 'OrigamBreadcrumb : jeton de hauteur de ligne (#1265)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.30',
         date: '2026-11-02',
         type: 'patch',
