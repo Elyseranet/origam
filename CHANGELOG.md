@@ -18,6 +18,23 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.35] - 2026-11-04
+
+### Fixed — `OrigamAlert` / `OrigamBadge` : la visibilité n'est plus lue comme un état hover/active au repos (#1307)
+
+`OrigamAlert` avait `hover` à `true` par défaut et passait `modelValue` (la visibilité) à `useStateEffect` comme état actif : au repos, le fond utilisait donc `bgHover` / `bgActive`. `OrigamBadge` avait le même câblage `modelValue` → active.
+
+- Alert : `hover` vaut désormais `false` par défaut, et la visibilité n'émet plus ni classe `--active` ni effet.
+- Badge : la classe marqueur `--active` est conservée, mais elle ne pilote plus l'effet de couleur.
+- Vérifié : la spec e2e `alert-rest-state.spec.ts` est rouge sur le parent (classes `--hover --active` au repos) et verte avec le correctif (PR #1320). Pour Badge, la règle `bgActive` a été mesurée sur le parent, mais son A/B n'a pas été rejoué.
+
+### Added — `OrigamBtn` : jetons d'alignement du contenu (#1304)
+
+- `--origam-btn__content---justify-content` et `--origam-btn__content---text-align`, déclarés à `center` (light, dark, bloc media, jumeaux SCSS, `tokens.type.ts`). Le rendu par défaut est inchangé.
+- Vérifié : la spec `btn-content-align.spec.ts` est rouge sur le parent et verte avec le correctif ; les baselines VRT Btn sont inchangées en CI (PR #1322).
+
+> Exception à la règle « un ticket = un patch » : #1307 et #1304 ont été mergés à la suite avant le bump, ils sortent donc ensemble dans cette version.
+
 ## [2.37.34] - 2026-11-04
 
 ### Security — `origam/nuxt` : le cookie de marque est validé contre les thèmes installés (#1120)

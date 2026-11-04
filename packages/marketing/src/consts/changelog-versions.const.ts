@@ -18,6 +18,18 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.35',
+        date: '2026-11-04',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23735.summary',
+        summaryFallback: '1 addition and 1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23735.h1', textFallback: 'OrigamAlert / OrigamBadge : la visibilité n\'est plus lue comme un état hover/active au repos (#1307)' },
+            { type: 'added', textKey: 'changelog.versions.v23735.h2', textFallback: 'OrigamBtn : jetons d\'alignement du contenu (#1304)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.34',
         date: '2026-11-04',
         type: 'patch',
