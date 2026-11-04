@@ -18,6 +18,18 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.37] - 2026-11-04
+
+### Fixed — `OrigamChartCartesian` : la surface de dessin suit la largeur réelle du conteneur (#1317)
+
+Le `viewBox` était figé à une taille fixe : le chart s'étirait sans recalculer ses axes ni ses marges.
+
+- Nouveau composable `useChartSize` (`composables/Chart/chart-size.composable.ts`), construit sur `useResizeObserver` : il mesure le `<svg>` et recalcule le `viewBox`. En SSR et avant la première mesure, il retombe sur 600×360.
+- `useResizeObserver` et `IResizeState` deviennent génériques (`<T extends Element = HTMLElement>`) pour observer un `SVGSVGElement`. Le défaut est inchangé pour les autres appelants.
+- Seul le chart cartésien est branché. Les textes et les traits s'expriment désormais en px réels (documenté). Les autres charts sont suivis dans #1324.
+- Vérifié : la spec `chart-cartesian-responsive-width.spec.ts`, inscrite dans `GREEN_SPECS`, est rouge sur le parent (écarts de `viewBox` de 229 px et de 36 px) et verte avec le correctif. Le TU SSR passe sans warning (PR #1323).
+- Hors périmètre : le chevauchement des étiquettes d'axe à faible largeur, suivi dans #1325.
+
 ## [2.37.36] - 2026-11-04
 
 ### Fixed — Charts : le `<svg>` porte `role="group"` au lieu de `role="img"` (#1318, #1153)
