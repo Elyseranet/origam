@@ -425,6 +425,21 @@ typography without custom CSS. Unset props keep the theme / size value.
 </button>
 ```
 
+### Aligning the content to the start
+
+The label is centred by default. A `text` button used as a link inside a sentence can flow like
+start-aligned text by setting the two content tokens (both are needed once a `wrap` label spans
+several lines):
+
+```vue
+<OrigamBtn
+    variant="text"
+    wrap
+    text="Guillaume Boutin"
+    :style="{ '--origam-btn__content---justify-content': 'flex-start', '--origam-btn__content---text-align': 'start' }"
+/>
+```
+
 ## Design tokens consumed
 
 `<OrigamBtn>` reads its variables from
@@ -442,6 +457,8 @@ document root or via a `:style` binding to re-skin a single instance.
 | `--origam-btn---border-color` | `currentColor` (outlined variant; overridable via `borderColor` prop) |
 | `--origam-btn---border-compensation` | `0px`; set by `outlined` / `ghost` to their outline width and subtracted from `padding-inline` (internal, do not set) |
 | `--origam-btn---background-color-text-active` | `transparent` by default: set it to give the `text` variant an active (`active` / selected) fill |
+| `--origam-btn__content---justify-content` | `center` — main-axis alignment of the label block; set `flex-start` to align it to the start |
+| `--origam-btn__content---text-align` | `center` — alignment of the lines of a `wrap` label; set `start` to align them to the start |
 | `--origam-btn---border-color-ghost` | `color-mix(currentColor 24%)` (ghost variant) |
 | `--origam-btn---font-size` | `{font.size.md}` |
 | `--origam-btn---font-weight` | `{font.weight.medium}` |
