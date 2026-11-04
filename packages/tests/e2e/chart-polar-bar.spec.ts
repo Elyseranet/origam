@@ -340,7 +340,7 @@ test.describe('OrigamChartPolarBar', () => {
 			expect(label).toContain(':')
 		})
 
-		test('SVG has role=img', async ({ page }) => {
+		test('SVG has role=group', async ({ page }) => {
 			await openVariant(page, 'Default')
 			const sandbox = sandboxOf(page)
 
@@ -348,7 +348,7 @@ test.describe('OrigamChartPolarBar', () => {
 			await expect(chart).toBeVisible({ timeout: 8000 })
 
 			const svg = sandbox.locator(`${ CHART } [data-cy="origam-chart-polar-bar-svg"]`).first()
-			await expect(svg).toHaveAttribute('role', 'img')
+			await expect(svg).toHaveAttribute('role', 'group')
 		})
 	})
 })

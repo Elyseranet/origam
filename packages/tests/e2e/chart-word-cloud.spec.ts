@@ -7,7 +7,7 @@ import { eventLogItems, fillHstNumber, openEventsTab, selectHstOption } from './
  *
  * Asserts:
  *  - N `<text>` word elements render for N valid data points.
- *  - Default variant carries role="figure", role="img", title, desc.
+ *  - Default variant carries role="figure", role="group", title, desc.
  *  - Each word has role="button", tabindex="0", non-empty aria-label.
  *  - Clicking a word fires point-click (checked via Histoire's Events tab).
  *  - Rotation variants all render the correct word count.
@@ -47,12 +47,12 @@ test.describe('OrigamChartWordCloud — Default', () => {
         await expect(host).toHaveRole('figure') // #426 — root is a native <figure>, role is implicit, no explicit attribute any more
     })
 
-    test('SVG carries role=img, title and desc', async ({ page }) => {
+    test('SVG carries role=group, title and desc', async ({ page }) => {
         await openVariant(page, WORD_CLOUD_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const svg = sandbox.locator('[data-cy="origam-chart-word-cloud"] svg').first()
         await expect(svg).toBeVisible()
-        await expect(svg).toHaveAttribute('role', 'img')
+        await expect(svg).toHaveAttribute('role', 'group')
         await expect(svg.locator('title')).toHaveCount(1)
         await expect(svg.locator('desc')).toHaveCount(1)
     })

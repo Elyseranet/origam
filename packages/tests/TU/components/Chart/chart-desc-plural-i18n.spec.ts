@@ -99,7 +99,7 @@ function mountWith (component: unknown, props: Record<string, unknown>, locale: 
 
 function descOf (component: unknown, props: Record<string, unknown>, locale: string): string {
     const wrapper = mountWith(component, props, locale)
-    const desc = wrapper.find('svg[role="img"] desc')
+    const desc = wrapper.find('svg[role="group"] desc')
 
     expect(desc.exists()).toBe(true)
     const text = desc.text()

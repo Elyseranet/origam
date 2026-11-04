@@ -11,7 +11,7 @@ import { eventLogItems, openEventsTab, selectHstOption, toggleHstCheckbox } from
  *  - Cumulative line `<path>` is present when showLine=true.
  *  - Cumulative line is absent when showLine=false.
  *  - showLabel=true places value text elements above the bars.
- *  - ARIA attributes (role="figure", role="img", title, desc) are present.
+ *  - ARIA attributes (role="figure", role="group", title, desc) are present.
  *  - Empty state renders when series is empty.
  *  - point-click emit variant shows the event log after clicking a bar.
  *
@@ -52,12 +52,12 @@ test.describe('OrigamChartPareto — Default', () => {
 		await expect(host).toHaveRole('figure') // #426 — root is a native <figure>, role is implicit, no explicit attribute any more
 	})
 
-	test('SVG carries role=img, title and desc', async ({ page }) => {
+	test('SVG carries role=group, title and desc', async ({ page }) => {
 		await openVariant(page, 'Default')
 		const sandbox = sandboxOf(page)
 		const svg = sandbox.locator(`${ CHART } svg`).first()
 		await expect(svg).toBeVisible()
-		await expect(svg).toHaveAttribute('role', 'img')
+		await expect(svg).toHaveAttribute('role', 'group')
 		await expect(svg.locator('title')).toHaveCount(1)
 		await expect(svg.locator('desc')).toHaveCount(1)
 	})

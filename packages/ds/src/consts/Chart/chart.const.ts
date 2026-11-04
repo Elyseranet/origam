@@ -268,3 +268,17 @@ export const CHART_SCATTER_MAX_RADIUS = 36
  * base 1.
  ********************************************************/
 export const CHART_SLICE_LABEL_PREFIX = 'Slice'
+
+/*********************************************************
+ * CHART_SVG_ROLE
+ *
+ * @description
+ * Role of the root `<svg>` of every chart whose data points are focusable
+ * (`role="button"` + `tabindex="0"`). It is `group`, never `img`: an `img`
+ * renders its subtree presentational, so a screen reader announces only the
+ * picture while the keyboard stops on each point (axe `nested-interactive`,
+ * WCAG 4.1.2, #1318 and #1153).
+ * A named `group` keeps the accessible name (`aria-label`) and lets the
+ * focusable points be announced.
+ ********************************************************/
+export const CHART_SVG_ROLE = 'group'

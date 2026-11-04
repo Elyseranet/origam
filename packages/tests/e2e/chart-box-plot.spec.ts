@@ -10,7 +10,7 @@ import { eventLogItems, fillHstNumber, openEventsTab, toggleHstCheckbox } from '
  *  - Each box group contains a rect, a median line, upper/lower whiskers and caps.
  *  - showOutliers=false removes outlier circles.
  *  - boxWidth prop visually changes the rect width (0.3 < 0.9).
- *  - ARIA attributes (role="figure", role="img", title, desc) are present.
+ *  - ARIA attributes (role="figure", role="group", title, desc) are present.
  *  - Each box group has role="button" and a non-empty aria-label.
  *  - Each box group is keyboard-focusable (tabindex=0).
  *  - Empty slot renders when series is empty.
@@ -50,12 +50,12 @@ test.describe('OrigamChartBoxPlot — Default (pre-aggregated)', () => {
         await expect(host).toHaveRole('figure') // #426 — root is a native <figure>, role is implicit, no explicit attribute any more
     })
 
-    test('SVG carries role=img, title and desc', async ({ page }) => {
+    test('SVG carries role=group, title and desc', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
         const svg = sandbox.locator('[data-cy="origam-chart-box-plot"] svg').first()
         await expect(svg).toBeVisible()
-        await expect(svg).toHaveAttribute('role', 'img')
+        await expect(svg).toHaveAttribute('role', 'group')
         await expect(svg.locator('title')).toHaveCount(1)
         await expect(svg.locator('desc')).toHaveCount(1)
     })

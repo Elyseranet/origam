@@ -10,7 +10,7 @@ import { selectHstOption } from './_support/histoire-controls'
  *  - At least 2 distinct fill colours are present (categorical mode).
  *  - The orientation Variant's two grids differ geometrically
  *    (pointy-top and flat-top polygons have different bounding boxes).
- *  - ARIA attributes (role="figure", role="img", title, desc) are
+ *  - ARIA attributes (role="figure", role="group", title, desc) are
  *    present for screen-reader support.
  *  - Each tile carries role="button" and aria-label.
  *  - Empty slot renders when series is empty.
@@ -51,12 +51,12 @@ test.describe('OrigamChartHoneycomb — Default', () => {
         await expect(host).toHaveRole('figure') // #426 — root is a native <figure>, role is implicit, no explicit attribute any more
     })
 
-    test('SVG carries role=img, title and desc', async ({ page }) => {
+    test('SVG carries role=group, title and desc', async ({ page }) => {
         await openVariant(page, HONEYCOMB_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const svg = sandbox.locator(`${ CHART } svg`).first()
         await expect(svg).toBeVisible()
-        await expect(svg).toHaveAttribute('role', 'img')
+        await expect(svg).toHaveAttribute('role', 'group')
         await expect(svg.locator('title')).toHaveCount(1)
         await expect(svg.locator('desc')).toHaveCount(1)
     })

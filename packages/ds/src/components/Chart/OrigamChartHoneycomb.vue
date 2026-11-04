@@ -39,7 +39,7 @@
 					class="origam-chart-honeycomb__svg origam-chart__svg"
 					:class="svgClasses"
 					:viewBox="`0 0 ${ svgWidth } ${ svgHeight }`"
-					role="img"
+					:role="CHART_SVG_ROLE"
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-honeycomb-svg"
@@ -147,6 +147,7 @@
 		lang="ts"
 		setup
 >
+	import { CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		ref,

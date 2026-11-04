@@ -190,9 +190,9 @@ describe('OrigamChart* (seconde moitie) — le nom accessible suit la locale (#5
         wrapper.unmount()
     })
 
-    it.each(CASES)('$name : aria-label du <svg role=img> traduit sous fr', ({component, props, fr}) => {
+    it.each(CASES)('$name : aria-label du <svg role=group> traduit sous fr', ({component, props, fr}) => {
         const wrapper = mountWith(component, props, 'fr')
-        const svg = wrapper.find('svg[role="img"]')
+        const svg = wrapper.find('svg[role="group"]')
 
         expect(svg.exists()).toBe(true)
         expect(svg.attributes('aria-label')).toBe(fr)
@@ -202,7 +202,7 @@ describe('OrigamChart* (seconde moitie) — le nom accessible suit la locale (#5
 
     it.each(CASES)('$name : <title> du SVG traduit sous fr', ({component, props, fr}) => {
         const wrapper = mountWith(component, props, 'fr')
-        const title = wrapper.find('svg[role="img"] title')
+        const title = wrapper.find('svg[role="group"] title')
 
         expect(title.exists()).toBe(true)
         expect(title.text()).toBe(fr)
@@ -264,7 +264,7 @@ describe('OrigamChart* (seconde moitie) — libelles par element traduits (#567)
         ['OrigamChartRadar', OrigamChartRadar]
     ])('%s : le <desc> du SVG a vide n\'est plus « No data » en dur', (_name, Component) => {
         const wrapper = mountWith(Component, {series: []}, 'fr')
-        const desc = wrapper.find('svg[role="img"] desc')
+        const desc = wrapper.find('svg[role="group"] desc')
 
         expect(desc.exists()).toBe(true)
         expect(desc.text()).toBe('Aucune donnée à afficher')

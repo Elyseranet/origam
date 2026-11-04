@@ -37,7 +37,7 @@
 					class="origam-chart-map__svg origam-chart__svg"
 					:class="svgClasses"
 					:viewBox="`0 0 ${ SVG_WIDTH } ${ SVG_HEIGHT }`"
-					role="img"
+					:role="CHART_SVG_ROLE"
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-map-svg"
@@ -201,6 +201,7 @@
 		lang="ts"
 		setup
 >
+	import { CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		ref,
