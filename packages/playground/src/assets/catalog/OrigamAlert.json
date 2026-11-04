@@ -1156,7 +1156,7 @@
         "Object"
       ],
       "required": false,
-      "defaultValue": true,
+      "defaultValue": false,
       "hasFactoryDefault": false,
       "control": "text",
       "source": "types"
