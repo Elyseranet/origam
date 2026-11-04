@@ -260,42 +260,29 @@ test.describe('OrigamChartPareto — margin/padding par classe utilitaire (#620)
 	})
 
 	/**
-	 * ⛔ MESURE, PAS SOUHAIT — le cote `padding` revele un SECOND defaut,
-	 * distinct de #620 et hors de son perimetre.
+	 * Garde de la cascade du `padding` d'echelle (suite de #620).
 	 *
-	 * La classe `.origam--p-4` est bien emise depuis le correctif (assertion
-	 * ci-dessous, et le spec Vitest voisin la prouve sur les six composants).
-	 * Mais elle NE PEINT PAS : mesure reelle `12px` la ou l'echelle demande
-	 * `16px`. Cause etablie, pas supposee — la regle scopee du composant
-	 * (`OrigamChartPareto.vue:804`, `padding: var(--origam-chart---padding,
-	 * 12px)`) compile en `.origam-chart-pareto[data-v-hash]`, soit une
-	 * specificite (0,2,0), quand une utilitaire vaut (0,1,0). L'utilitaire
-	 * perd la cascade, et l'ordre de chargement n'y change rien.
+	 * #620 a corrige l'emission de la classe `.origam--p-4`. Elle ne peignait
+	 * pourtant pas : la regle scopee du composant (`padding: var(--origam-chart---padding,
+	 * 12px)`) compile en `.origam-chart-pareto[data-v-hash]`, specificite (0,2,0),
+	 * contre (0,1,0) pour l'utilitaire. Ce test figeait alors ce defaut (`12px`).
 	 *
-	 * Les SIX composants du lot declarent cette meme regle scopee — y compris
-	 * Gauge, Heatmap et Pictorial, qui bindaient deja `paddingClasses`. Le
-	 * `padding` d'echelle y etait donc DEJA inerte avant #620 : le correctif
-	 * du canal classe etait necessaire, il n'est pas suffisant.
-	 *
-	 * Le canal INLINE reste intact — `padding="16px"` et `:padding="16"`
-	 * passent par `paddingStyles`, donc par l'attribut `style`, qui bat
-	 * n'importe quelle regle de feuille. Seule la forme d'ECHELLE est
-	 * touchee. C'est ce que fige l'assertion negative ci-dessous : si un jour
-	 * la cascade est corrigee (famille #391 / #514 / #607), ce test tombera
-	 * et devra etre bascule en `16px`. C'est voulu — un test qui echoue
-	 * quand un defaut est repare vaut mieux qu'un defaut sans temoin.
+	 * `c1df28ab5` l'a repare en passant cette regle sous `:where(&)`
+	 * (specificite 0) : l'utilitaire gagne desormais la cascade, et ce test
+	 * garde la reparation (`16px`). Les six composants du lot portent la meme
+	 * regle `:where(&)` ; voir aussi `chart-family-padding-margin-cascade.spec.ts`.
 	 */
-	test('padding="4" emet .origam--p-4, mais la regle scopee du composant l\'emporte', async ({ page }) => {
+	test('padding="4" emet .origam--p-4 et la classe gagne la cascade sur la regle scopee', async ({ page }) => {
 		await openVariant(page, 'Design')
 		await selectHstOption(page, 'Padding', '4')
 
 		const host = sandboxOf(page).locator(CHART).first()
 
-		// Ce que #620 corrige : la classe EST emise.
+		/* La classe est emise (#620). */
 		await expect(host).toHaveClass(/origam--p-4/)
 
-		// Ce que #620 ne corrige pas : elle ne gagne pas la cascade.
-		await expect(host).toHaveCSS('padding-top', '12px')
+		/* ... et elle peint (c1df28ab5 : `:where(&)`). */
+		await expect(host).toHaveCSS('padding-top', '16px')
 	})
 
 	test('le canal INLINE du padding, lui, n\'est pas masque', async ({ page }) => {

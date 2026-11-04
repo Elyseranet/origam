@@ -15,6 +15,8 @@ const REPO_ROOT = resolve(__dirname, '..', '..')
  */
 const GREEN_SPECS = [
     'btn.spec.ts',
+    // #1328 — verte 21/21 apres bascule du temoin inverse ; A/B : rouge (12px) sans `:where(&)`, E2E_STATIC=1, chromium, port isole.
+    'chart-pareto.spec.ts',
     // #1304 — inscrite apres verification A/B (rouge sur le parent, vert avec le correctif), E2E_STATIC=1, chromium.
     'btn-content-align.spec.ts',
     // #1222 — verifiee verte et stable avant inscription : 10/10 (--repeat-each=5, E2E_STATIC=1, chromium, port isole).
