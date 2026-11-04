@@ -13,7 +13,7 @@ import { useResizeObserver } from '../Commons/resizeObserver.composable'
  * serveur et premier rendu client — pas de mismatch d'hydratation.
  ********************************************************/
 export function useChartSize (fallback: { width: number, height: number }) {
-    const { resizeRef, contentRect } = useResizeObserver()
+    const { resizeRef, contentRect } = useResizeObserver<SVGSVGElement>()
 
     const width = computed(() => contentRect.value?.width || fallback.width)
     const height = computed(() => contentRect.value?.height || fallback.height)
