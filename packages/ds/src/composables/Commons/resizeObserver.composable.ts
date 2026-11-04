@@ -20,9 +20,9 @@ import { onBeforeUnmount, readonly, ref, watch } from 'vue'
  * `contentRect` reste `undefined` en permanence, silencieusement, meme
  * comportement de garde que `useIntersectionObserver`.
  ********************************************************/
-export function useResizeObserver (callback?: ResizeObserverCallback, box: 'content' | 'border' = 'content'): IResizeState {
+export function useResizeObserver<T extends Element = HTMLElement> (callback?: ResizeObserverCallback, box: 'content' | 'border' = 'content'): IResizeState<T> {
     const contentRect = ref<DOMRectReadOnly>()
-    const resizeRef = ref<HTMLElement | null>()
+    const resizeRef = ref<T | null>() as IResizeState<T>['resizeRef']
 
     if (IN_BROWSER) {
         const observer = new ResizeObserver((entries: Array<ResizeObserverEntry>) => {
@@ -43,11 +43,11 @@ export function useResizeObserver (callback?: ResizeObserverCallback, box: 'cont
 
         watch(resizeRef, (newValue, oldValue) => {
             if (oldValue) {
-                observer.unobserve(refElement(oldValue) as Element)
+                observer.unobserve(refElement(oldValue as unknown as HTMLElement) as Element)
                 contentRect.value = undefined
             }
 
-            if (newValue) observer.observe(refElement(newValue) as Element)
+            if (newValue) observer.observe(refElement(newValue as unknown as HTMLElement) as Element)
         }, {
             flush: 'post'
         })

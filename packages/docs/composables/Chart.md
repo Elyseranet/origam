@@ -5,7 +5,7 @@
 > rien n'est redige ici. Corriger une description se fait dans la banniere du symbole,
 > puis en regenerant. Issue #545.
 
-8 symbole(s) exporte(s).
+9 symbole(s) exporte(s).
 
 ## `computeAnnotationGeometry`
 
@@ -198,6 +198,22 @@ const { headerTypographyStyles } = useChartHeaderTypography(props)
 **Source** : `packages/ds/src/composables/Chart/chart-header-typography.composable.ts`
 
 **Consommateurs** (20) : `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, `components/Chart/OrigamChartGauge.vue`, `components/Chart/OrigamChartHeatmap.vue`, `components/Chart/OrigamChartHoneycomb.vue`, `components/Chart/OrigamChartMap.vue`, …
+
+## `useChartSize`
+
+```ts
+export function useChartSize (fallback: { width: number, height: number })
+```
+
+Dimensions de la surface de dessin d'un chart (#1317) : la boite
+rendue de l'element portant `resizeRef`, afin que `viewBox` suive le
+conteneur au lieu d'une constante. Tant que rien n'est mesure (SSR,
+avant montage, boite nulle) on rend `fallback`, identique entre
+serveur et premier rendu client — pas de mismatch d'hydratation.
+
+**Source** : `packages/ds/src/composables/Chart/chart-size.composable.ts`
+
+**Consommateurs** (1) : `components/Chart/OrigamChartCartesian.vue`
 
 ## `useChartZoom`
 

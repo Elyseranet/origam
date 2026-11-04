@@ -19,6 +19,8 @@ const GREEN_SPECS = [
     'chart-pareto.spec.ts',
     // #1304 — inscrite apres verification A/B (rouge sur le parent, vert avec le correctif), E2E_STATIC=1, chromium.
     'btn-content-align.spec.ts',
+    // #1317 — verifiee verte avant inscription (E2E_STATIC=1, chromium, port isole).
+    'chart-cartesian-responsive-width.spec.ts',
     // #1222 — verifiee verte et stable avant inscription : 10/10 (--repeat-each=5, E2E_STATIC=1, chromium, port isole).
     'btn-text-active.spec.ts',
     // #1179 — verifiee verte et stable avant inscription : 9/9 puis 45/45 sous

@@ -176,7 +176,7 @@ direct siblings on the same RTL contract.
 ## `filterPropsOf`
 
 ```ts
-export function filterPropsOf ( component: { props?: unknown }, properties: object, excludes: string[] = defaultExcludes ): Record<string, unknown>
+export function filterPropsOf ( component: object, properties: object, excludes: string[] = defaultExcludes ): Record<string, unknown>
 ```
 
 Same output as `childRef.value?.filterProps(props, excludes)`, but the child's
@@ -187,7 +187,7 @@ from the SSR HTML and arrived one tick after mount, with no hydration warning.
 
 **Source** : `packages/ds/src/composables/Commons/props.composable.ts`
 
-**Consommateurs** (5) : `components/FileField/OrigamFileField.vue`, `components/PasswordField/OrigamPasswordField.vue`, `components/Select/OrigamSelect.vue`, `components/TextField/OrigamTextField.vue`, `components/TextareaField/OrigamTextareaField.vue`
+**Consommateurs** (8) : `components/ColorPickerField/OrigamColorPickerField.vue`, `components/DatePickerField/OrigamDatePickerField.vue`, `components/FileField/OrigamFileField.vue`, `components/NumberField/OrigamNumberField.vue`, `components/PasswordField/OrigamPasswordField.vue`, `components/Select/OrigamSelect.vue`, `components/TextField/OrigamTextField.vue`, `components/TextareaField/OrigamTextareaField.vue`
 
 ## `installThemePropsResolver`
 
@@ -1349,7 +1349,7 @@ find Origam display injection" packages/tests` ne retourne rien.
 
 **Source** : `packages/ds/src/composables/Commons/hydration.composable.ts`
 
-**Consommateurs** (2) : `components/Overlay/OrigamOverlay.vue`, `nuxt/module.ts`
+**Consommateurs** (3) : `components/Drawer/OrigamDrawer.vue`, `components/Overlay/OrigamOverlay.vue`, `nuxt/module.ts`
 
 ## `useInstalledThemes`
 
@@ -1951,7 +1951,7 @@ dependency direction backwards to read.
 
 **Source** : `packages/ds/src/composables/Commons/passedProps.composable.ts`
 
-**Consommateurs** (22) : `components/Avatar/OrigamAvatarGroup.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketRound.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, `components/Btn/OrigamBtnGroup.vue`, `components/Carousel/OrigamCarouselItem.vue`, `components/Chart/OrigamChartPareto.vue`, …
+**Consommateurs** (21) : `components/Avatar/OrigamAvatarGroup.vue`, `components/BottomNav/OrigamBottomNav.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketRound.vue`, `components/Breadcrumb/OrigamBreadcrumb.vue`, `components/Btn/OrigamBtnGroup.vue`, `components/Carousel/OrigamCarouselItem.vue`, `components/Chart/OrigamChartPareto.vue`, …
 
 ## `usePosition`
 
