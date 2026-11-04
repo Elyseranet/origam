@@ -46,7 +46,7 @@
 			{{ formatY(tick.value as number) }}
 		</text>
 		<text
-				v-for="(tick, i) in ticks.x"
+				v-for="{ tick, i } in visibleXTicks"
 				:key="`xl-${ i }`"
 				class="origam-chart__axis-label origam-chart__axis-label--x"
 				:x="tick.position"
@@ -87,6 +87,9 @@
 		lang="ts"
 		setup
 >
+	import { computed } from 'vue'
+
+	import { CHART_AXIS_LABEL_CHAR_WIDTH, CHART_AXIS_LABEL_MIN_GAP } from '../../consts/Chart/chart.const'
 	import type { IChartAxisEmits, IChartAxisProps, IChartAxisSlots } from '../../interfaces/Chart/chart-axis.interface'
 
 	/*********************************************************
@@ -161,6 +164,22 @@
 		if (props.xAxisFormat) return props.xAxisFormat(value)
 		return String(value)
 	}
+
+	/*********************************************************
+	 * Décimation (#1325)
+	 *
+	 * @description
+	 * Une étiquette sur N, N d'après la largeur estimée de la plus longue
+	 * et le plus petit écart entre graduations. Le texte reste horizontal
+	 * et entier ; la valeur d'un point reste dans son aria-label.
+	 ********************************************************/
+	const visibleXTicks = computed(() => {
+		const xs = props.ticks.x
+		const widest = Math.max(0, ...xs.map((t) => formatX(t.value).length)) * CHART_AXIS_LABEL_CHAR_WIDTH
+		const pitch = Math.min(...xs.slice(1).map((t, k) => Math.abs(t.position - xs[k].position)))
+		const step = Number.isFinite(pitch) && pitch > 0 ? Math.max(1, Math.ceil((widest + CHART_AXIS_LABEL_MIN_GAP) / pitch)) : 1
+		return xs.map((tick, i) => ({ tick, i })).filter(({ i }) => i % step === 0)
+	})
 
 	const formatY = (value: number): string => {
 		if (props.yAxisFormat) return props.yAxisFormat(value)

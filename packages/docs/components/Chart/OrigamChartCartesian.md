@@ -121,6 +121,8 @@ The `rangeSelector` toolbar rendered above the plot is the standalone `<OrigamCh
 
 **Responsive drawing surface (#1317).** The SVG `viewBox` follows the measured box of the chart (`useChartSize`, a `ResizeObserver`), not a fixed 600 × 360. The plot fills the container width, scales are recomputed, and text, strokes and markers keep their real pixel size instead of being scaled with the viewBox. Until measured (SSR, first paint) the 600 × 360 fallback is used, so hydration is unchanged. With an auto-height container the 5:3 ratio is kept; give the chart a `height` / `aspectRatio` to change it.
 
+**X-axis label decimation (#1325).** When the X tick labels would touch (narrow container), only one label in N is drawn: N is computed from the estimated width of the longest label (`CHART_AXIS_LABEL_CHAR_WIDTH` per character plus `CHART_AXIS_LABEL_MIN_GAP`) and the smallest spacing between ticks. Text stays horizontal and complete (no rotation, no truncation); the value of every data point stays available on hover and focus through the point's accessible label. The width is an estimate, not a measure: a much larger `--origam-chart__axis-label---font-size` can still make neighbours touch.
+
 **Topology primer.**
 
 | `type` | Shape emitted | Smoothing applies |

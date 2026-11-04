@@ -282,3 +282,17 @@ export const CHART_SLICE_LABEL_PREFIX = 'Slice'
  * focusable points be announced.
  ********************************************************/
 export const CHART_SVG_ROLE = 'group'
+
+/*********************************************************
+ * CHART_AXIS_LABEL_CHAR_WIDTH / CHART_AXIS_LABEL_MIN_GAP — décimation (#1325)
+ *
+ * @description
+ * Estimation de la largeur d'une étiquette de l'axe X (px par caractère,
+ * pour la police 0.75rem par défaut, taillée sur le glyphe large) et
+ * espace minimal exigé entre deux étiquettes voisines. Servent à calculer
+ * le pas de décimation « une étiquette sur N ». Estimation, pas mesure :
+ * un `--origam-chart__axis-label---font-size` très supérieur au défaut
+ * peut encore faire se toucher deux étiquettes.
+ ********************************************************/
+export const CHART_AXIS_LABEL_CHAR_WIDTH = 8
+export const CHART_AXIS_LABEL_MIN_GAP = 8
