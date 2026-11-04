@@ -59,6 +59,8 @@ const GREEN_SPECS = [
     'card.spec.ts',
     'avatar.spec.ts',
     'alert.spec.ts',
+    // #1307 — verte avant inscription (Chromium, E2E_STATIC=1, port isole) ; rouge sur le parent.
+    'alert-rest-state.spec.ts',
     'badge.spec.ts',
     'checkbox.spec.ts',
     'switch.spec.ts',

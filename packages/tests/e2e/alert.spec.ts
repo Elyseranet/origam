@@ -91,12 +91,12 @@ test.describe('OrigamAlert', () => {
             await expect(alert).toHaveClass(/origam-alert--density-default/)
         })
 
-        test('alert is active by default (modelValue=true → origam-alert--active class)', async ({ page }) => {
+        test('visible by default (modelValue=true) without an "active" interaction state (#1307)', async ({ page }) => {
             await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
-            await expect(alert).toHaveClass(/origam-alert--active/)
+            await expect(alert).not.toHaveClass(/origam-alert--active/)
         })
 
         test('underlay element is present in the DOM', async ({ page }) => {
@@ -163,12 +163,12 @@ test.describe('OrigamAlert', () => {
     // ------------------------------------------------------------------ //
 
     test.describe('Functional', () => {
-        test('renders with modelValue=true (active + visible)', async ({ page }) => {
+        test('renders with modelValue=true (visible, not "active")', async ({ page }) => {
             await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
-            await expect(alert).toHaveClass(/origam-alert--active/)
+            await expect(alert).not.toHaveClass(/origam-alert--active/)
         })
 
         test('closable=false: close button is absent in initial state', async ({ page }) => {
@@ -432,12 +432,12 @@ test.describe('OrigamAlert', () => {
             expect(role).toBe('status')
         })
 
-        test('alert is active by default (modelValue implicit true → --active class)', async ({ page }) => {
+        test('visible by default (modelValue implicit true) without an "active" interaction state (#1307)', async ({ page }) => {
             await page.goto(variantUrl(13), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
-            await expect(alert).toHaveClass(/origam-alert--active/)
+            await expect(alert).not.toHaveClass(/origam-alert--active/)
         })
 
         test('text prop renders "Alert message." in the body', async ({ page }) => {

@@ -115,7 +115,7 @@
   lang="ts"
   setup
 >
-  import type { ComputedRef, StyleValue } from 'vue'
+  import type { StyleValue } from 'vue'
   import { computed, useSlots } from 'vue'
   import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
   import OrigamBtn from '../Btn/OrigamBtn.vue'
@@ -156,7 +156,7 @@
     closeIcon: MDI_ICONS.CLOSE,
     closeLabel: 'origam.close',
     modelValue: true,
-    hover: true
+    hover: false
   })
 
   const emits = defineEmits<IAlertEmits>()
@@ -185,7 +185,12 @@
    * @description
    * Hover, active state and color resolution for the alert.
    ********************************************************/
-  const { classes: activeClasses, isOn: isActive, config: activeState, toggle: onActive } = useStateFlag(props, {state: 'active', source: 'modelValue'})
+  /*********************************************************
+   * @description
+   * `modelValue` is the VISIBILITY, not an interaction state: a visible alert is not "active" (#1307).
+   ********************************************************/
+  const { isOn: isActive, toggle: onActive } = useStateFlag(props, {state: 'active', source: 'modelValue'})
+  const isPressed = computed(() => false)
   const {
     isOn: isHover,
     config: hoverState,
@@ -214,7 +219,7 @@
     paddingStyles,
     marginClasses,
     marginStyles
-  } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
+  } = useStateEffect(props, isHover, isPressed, hoverState, undefined)
 
   /*********************************************************
    * Adjacent (prepend / append)
@@ -294,7 +299,6 @@
     return [
       'origam-alert',
       hoverClasses.value,
-      activeClasses.value,
       statusClasses.value,
       colorClasses.value,
       densityClasses.value,
