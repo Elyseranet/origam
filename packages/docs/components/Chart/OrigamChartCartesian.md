@@ -119,6 +119,8 @@ The `rangeSelector` toolbar rendered above the plot is the standalone `<OrigamCh
 
 ## Behaviour notes
 
+**Responsive drawing surface (#1317).** The SVG `viewBox` follows the measured box of the chart (`useChartSize`, a `ResizeObserver`), not a fixed 600 × 360. The plot fills the container width, scales are recomputed, and text, strokes and markers keep their real pixel size instead of being scaled with the viewBox. Until measured (SSR, first paint) the 600 × 360 fallback is used, so hydration is unchanged. With an auto-height container the 5:3 ratio is kept; give the chart a `height` / `aspectRatio` to change it.
+
 **Topology primer.**
 
 | `type` | Shape emitted | Smoothing applies |

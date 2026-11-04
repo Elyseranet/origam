@@ -301,6 +301,22 @@
 			</div>
 		</Variant>
 
+		<Variant title="Responsive width">
+			<div
+					v-for="w in [320, 600, 960]"
+					:key="w"
+					:style="{ width: `${ w }px`, maxWidth: '100%', marginBottom: '1rem' }"
+					:data-cy="`origam-chart-cartesian-responsive-${ w }`"
+			>
+				<origam-chart-cartesian
+						type="line"
+						:series="FIXTURE_SALES_SERIES"
+						:categories="FIXTURE_MONTHS"
+						:title="`${ w }px container`"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<Partial<IChartCartesianProps>>({
