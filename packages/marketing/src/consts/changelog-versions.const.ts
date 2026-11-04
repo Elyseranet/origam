@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.36',
+        date: '2026-11-04',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23736.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23736.h1', textFallback: 'Charts : le <svg> porte role="group" au lieu de role="img" (#1318, #1153)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.35',
         date: '2026-11-04',
         type: 'patch',

@@ -18,6 +18,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.36] - 2026-11-04
+
+### Fixed — Charts : le `<svg>` porte `role="group"` au lieu de `role="img"` (#1318, #1153)
+
+`role="img"` rend ses descendants présentationnels. Or les points des charts sont des `role="button"` focusables : axe signalait `nested-interactive`, et un lecteur d'écran pouvait ne jamais annoncer ces points.
+
+- Nouvelle constante `CHART_SVG_ROLE = 'group'` (`consts/Chart/chart.const.ts`), appliquée au `<svg>` racine des 20 charts qui ont des points focusables. `OrigamChartGauge` garde `role="img"`, car il n'a aucun point focusable.
+- Le nom accessible (`aria-labelledby`) et la navigation clavier (Tab par point, Entrée / Espace) sont inchangés.
+- Vérifié : nouvelle spec `chart-nested-interactive.spec.ts`, inscrite dans `GREEN_SPECS`, qui balaie 22 stories × 4 Variants. Rouge sur le parent pour 21 stories sur 22, Gauge étant la seule verte ; vert pour les 22 avec le correctif. axe donne 0 `nested-interactive`. TU Chart 537/537 (PR #1326).
+- Limite : un chart reste un arrêt de tabulation par point (de 52 à 504 arrêts). L'ergonomie clavier au niveau du chart n'est pas traitée ici.
+
 ## [2.37.35] - 2026-11-04
 
 ### Fixed — `OrigamAlert` / `OrigamBadge` : la visibilité n'est plus lue comme un état hover/active au repos (#1307)
