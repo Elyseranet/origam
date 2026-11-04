@@ -527,6 +527,8 @@ export type TTokenName =
   | '--origam-btn---max-height'
   | '--origam-btn---max-width'
   | '--origam-btn---min-width'
+  | '--origam-btn__content---justify-content'
+  | '--origam-btn__content---text-align'
   | '--origam-btn---opacity'
   | '--origam-btn---opacity-disabled'
   | '--origam-btn---opacity-plain'

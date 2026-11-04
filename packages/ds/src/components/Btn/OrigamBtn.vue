@@ -1213,7 +1213,7 @@
 		&--wrap {
 			#{$this}__content {
 				white-space: normal;
-				text-align: center;
+				text-align: var(--origam-btn__content---text-align, center);
 			}
 		}
 
@@ -1288,7 +1288,7 @@
 
 		&__content {
 			grid-area: content;
-			justify-content: center;
+			justify-content: var(--origam-btn__content---justify-content, center);
 			white-space: nowrap;
 
 			margin-inline-start: var(--origam-btn__content---margin-inline-start);
