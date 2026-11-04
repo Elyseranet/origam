@@ -18,6 +18,16 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.34] - 2026-11-04
+
+### Security — `origam/nuxt` : le cookie de marque est validé contre les thèmes installés (#1120)
+
+Le plugin serveur (`resolveServerTheme`) et le plugin client utilisaient la valeur brute du cookie de marque. Elle aboutissait dans `<html data-theme>` et servait de clé de lookup, si bien qu'un cookie arbitraire passait tel quel.
+
+- Nouvel util partagé `knownBrand(value, themes)` (`utils/Commons/apply-theme.util.ts`) : il renvoie la valeur seulement si elle vaut `auto` ou le `name` d'un thème installé. La comparaison se fait par parcours `some` de la liste, sans lookup de propriété ; sinon il renvoie `null`.
+- Les plugins serveur et client se replient sur `defaultTheme` quand le cookie (ou l'attribut DOM, côté client) n'est pas reconnu.
+- Vérifié : le TU `1120-known-brand.util.spec.ts` couvre un nom installé, `auto`, `"><script>…`, `__proto__`, `constructor`, `toString`, un nom inconnu, la chaîne vide, null et undefined (PR #1319). Les plugins eux-mêmes ne sont pas testés avec un cookie hostile, car ils importent `#app`.
+
 ## [2.37.33] - 2026-11-03
 
 ### Added — `OrigamTable` : jetons de typographie des en-têtes (#1245)

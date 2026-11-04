@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.34',
+        date: '2026-11-04',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23734.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23734.h1', textFallback: 'origam/nuxt : le cookie de marque est validé contre les thèmes installés (#1120)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.33',
         date: '2026-11-03',
         type: 'patch',
