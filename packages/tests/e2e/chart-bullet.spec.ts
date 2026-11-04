@@ -12,7 +12,7 @@ import { eventLogItems, fillHstNumber, fillHstText, openEventsTab, selectHstOpti
  *  - barThickness prop changes the bar's height fraction visually.
  *  - Clicking a bar fires the `point-click` emit (log updates).
  *  - Empty state renders when series is empty.
- *  - ARIA attributes (role="figure", role="img", title, desc) are
+ *  - ARIA attributes (role="figure", role="group", title, desc) are
  *    present for screen-reader support.
  *
  * The story restructuring (canonical Design/State/Functional/Events/Slots
@@ -49,12 +49,12 @@ test.describe('OrigamChartBullet — Default', () => {
         await expect(host).toHaveRole('figure') // #426 — root is a native <figure>, role is implicit, no explicit attribute any more
     })
 
-    test('SVG carries role=img, title and desc', async ({ page }) => {
+    test('SVG carries role=group, title and desc', async ({ page }) => {
         await openVariant(page, BULLET_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const svg = sandbox.locator('[data-cy="origam-chart-bullet"] svg').first()
         await expect(svg).toBeVisible()
-        await expect(svg).toHaveAttribute('role', 'img')
+        await expect(svg).toHaveAttribute('role', 'group')
         await expect(svg.locator('title')).toHaveCount(1)
         await expect(svg.locator('desc')).toHaveCount(1)
     })

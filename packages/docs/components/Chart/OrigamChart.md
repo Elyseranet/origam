@@ -197,6 +197,8 @@ only** — `line`, `spline`, `stepped-line`, `area`, `bar`, `column`, `scatter`,
 
 **Keyboard access.** Each data point is focusable via `Tab` / `Shift+Tab`. `Enter` or `Space` fires `point-click` with a synthetic `KeyboardEvent`. Legend entries are also keyboard-navigable and announce their visibility state to screen readers.
 
+**Accessible role.** The chart `<svg>` carries `role="group"` with an accessible name (`aria-label`), never `role="img"`: an `img` makes its children presentational, so focusable data points inside it cannot be announced by a screen reader (axe `nested-interactive`, WCAG 4.1.2). Charts with no focusable point (`gauge`) keep `role="img"`.
+
 **`showAxis` / `showGrid` on polar / gauge types.** These props are accepted by the shell for API uniformity but have no visual effect when `type` is `pie`, `donut`, `radar`, or `gauge`.
 
 **`colorScheme` is not universal (#426).** Four types own a colour model that has no per-series identity axis for a rotating palette to drive, so the prop is inert on them:

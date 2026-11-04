@@ -372,6 +372,9 @@ const GREEN_SPECS = [
     // `E2E_STATIC=1`, chromium, `--workers=1`, retries 0, port isolé 6042,
     // load average 2,8 → 4,5.
     'chart-token-channels-591.spec.ts',
+    // #1318 / #1153 — le `<svg>` d'un chart à points focusables est
+    // `role="group"`, jamais `img` (axe nested-interactive, WCAG 4.1.2).
+    'chart-nested-interactive.spec.ts',
     // #594 / #595 — C2 : les 51 canaux de thème ouverts sur Audio, Chip,
     // Switch, SliderField et Field résolvent bien à `:root`, chaque valeur
     // déclarée rend EXACTEMENT ce que rendait le repli littéral qu'elle

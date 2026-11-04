@@ -84,7 +84,7 @@
 					class="origam-chart-cartesian__svg origam-chart__svg"
 					:class="svgClasses"
 					:viewBox="viewBox"
-					role="img"
+					:role="CHART_SVG_ROLE"
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-cartesian-svg"
@@ -514,7 +514,7 @@
 		computePlotLineGeometry
 	} from '../../composables/Chart/chart.composable'
 
-	import { CHART_RANGE_SELECTOR_DEFAULT_BUTTONS } from '../../consts/Chart/chart.const'
+	import { CHART_RANGE_SELECTOR_DEFAULT_BUTTONS, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		CHART_ZOOM_RESET_GAP,
 		CHART_ZOOM_RESET_MIN_WIDTH,

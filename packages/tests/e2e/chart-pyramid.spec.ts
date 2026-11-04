@@ -13,7 +13,7 @@ import { selectHstOption } from './_support/histoire-controls'
  *    for `type="funnel"` / `type="pyramid"`.
  *  - Clicking a legend item hides the corresponding slice and
  *    applies the `--hidden` modifier on the legend item.
- *  - ARIA attributes (role="figure", role="img", title, desc) are
+ *  - ARIA attributes (role="figure", role="group", title, desc) are
  *    present for screen-reader support.
  *
  * Story realignment (canonical Design/Functional/Events/Slots structure):
@@ -46,12 +46,12 @@ test.describe('OrigamChartPyramid — Default (funnel)', () => {
         await expect(host).toHaveRole('figure') // #426 — root is a native <figure>, role is implicit, no explicit attribute any more
     })
 
-    test('SVG carries role=img, title and desc', async ({ page }) => {
+    test('SVG carries role=group, title and desc', async ({ page }) => {
         await openVariant(page, PYRAMID_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const svg = sandbox.locator('[data-cy="origam-chart-pyramid"] svg').first()
         await expect(svg).toBeVisible()
-        await expect(svg).toHaveAttribute('role', 'img')
+        await expect(svg).toHaveAttribute('role', 'group')
         await expect(svg.locator('title')).toHaveCount(1)
         await expect(svg.locator('desc')).toHaveCount(1)
     })

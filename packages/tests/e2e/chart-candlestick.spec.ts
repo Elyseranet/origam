@@ -10,7 +10,7 @@ import { eventLogItems, fillHstNumber, openEventsTab } from './_support/histoire
  *  - Each candle has a wick `<line>` and a body `<rect>`.
  *  - Bullish candles (close ≥ open) and bearish candles (close < open)
  *    carry distinct fill colours.
- *  - ARIA attributes (role="figure", role="img", title, desc) are
+ *  - ARIA attributes (role="figure", role="group", title, desc) are
  *    present for screen-reader support.
  *  - Each candle group carries role="button", tabindex="0", aria-label.
  *  - The empty slot renders when series is empty.
@@ -47,12 +47,12 @@ test.describe('OrigamChartCandlestick — Default (AAPL 14 days)', () => {
         await expect(host).toHaveRole('figure') // #426 — root is a native <figure>, role is implicit, no explicit attribute any more
     })
 
-    test('SVG carries role=img, title and desc', async ({ page }) => {
+    test('SVG carries role=group, title and desc', async ({ page }) => {
         await openVariant(page, CANDLESTICK_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const svg = sandbox.locator('[data-cy="origam-chart-candlestick"] svg').first()
         await expect(svg).toBeVisible()
-        await expect(svg).toHaveAttribute('role', 'img')
+        await expect(svg).toHaveAttribute('role', 'group')
         await expect(svg.locator('title')).toHaveCount(1)
         await expect(svg.locator('desc')).toHaveCount(1)
     })

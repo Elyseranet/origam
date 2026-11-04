@@ -10,7 +10,7 @@ import { eventLogItems, fillHstNumber, openEventsTab, selectHstOption } from './
  *  - Direction variants (vertical / horizontal) produce correct data-cy targets.
  *  - iconsPerUnit changes granularity (fewer icons for larger unit value).
  *  - Legend toggle hides the corresponding column.
- *  - ARIA attributes (role="figure", role="img", title, desc) are present.
+ *  - ARIA attributes (role="figure", role="group", title, desc) are present.
  *  - Each column group is keyboard-focusable with role="button".
  *  - Empty slot renders when series is empty.
  *  - point-click emit fires on column activation.
@@ -72,12 +72,12 @@ test.describe('OrigamChartPictorial — Default', () => {
         await expect(host).toHaveRole('figure') // #426 — root is a native <figure>, role is implicit, no explicit attribute any more
     })
 
-    test('SVG carries role=img, title and desc', async ({ page }) => {
+    test('SVG carries role=group, title and desc', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
         const svg = sandbox.locator('[data-cy="pictorial-playground-chart"] svg').first()
         await expect(svg).toBeVisible()
-        await expect(svg).toHaveAttribute('role', 'img')
+        await expect(svg).toHaveAttribute('role', 'group')
         await expect(svg.locator('title')).toHaveCount(1)
         await expect(svg.locator('desc')).toHaveCount(1)
     })

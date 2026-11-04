@@ -11,7 +11,7 @@
 				ref="svgRef"
 				class="origam-chart-sparkline__svg"
 				:viewBox="`0 0 ${ SVG_WIDTH } ${ SVG_HEIGHT }`"
-				role="img"
+				:role="CHART_SVG_ROLE"
 				:aria-label="svgAriaLabel"
 				preserveAspectRatio="none"
 				data-cy="origam-chart-sparkline-svg"
@@ -161,6 +161,7 @@
 		lang="ts"
 		setup
 >
+	import { CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		ref,

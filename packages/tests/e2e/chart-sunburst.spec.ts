@@ -9,7 +9,7 @@ import { eventLogItems, fillHstNumber, openEventsTab } from './_support/histoire
  *  - Arc `<path>` elements render for each node in the tree.
  *  - Root nodes produce arcs in the first ring; children in subsequent rings.
  *  - Legend toggle hides an entire root subtree and applies `--hidden` modifier.
- *  - ARIA attributes (role="figure", role="img", title, desc) are present.
+ *  - ARIA attributes (role="figure", role="group", title, desc) are present.
  *  - Each arc has role="button", aria-label, and tabindex=0.
  *  - Empty state slot renders when series is empty.
  *  - innerRadius=0 vs 0.4 produce distinct arc `d` paths.
@@ -46,12 +46,12 @@ test.describe('OrigamChartSunburst — Default', () => {
         await expect(host).toHaveRole('figure') // #426 — root is a native <figure>, role is implicit, no explicit attribute any more
     })
 
-    test('SVG carries role=img, title and desc', async ({ page }) => {
+    test('SVG carries role=group, title and desc', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
         const svg = sandbox.locator('[data-cy="origam-chart-sunburst"] svg').first()
         await expect(svg).toBeVisible()
-        await expect(svg).toHaveAttribute('role', 'img')
+        await expect(svg).toHaveAttribute('role', 'group')
         await expect(svg.locator('title')).toHaveCount(1)
         await expect(svg.locator('desc')).toHaveCount(1)
     })
