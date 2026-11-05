@@ -18,6 +18,23 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.39] - 2026-11-05
+
+### Fixed — `OrigamChartCartesian` : les étiquettes de l'axe X ne se chevauchent plus sur un chart étroit (#1325)
+
+Depuis 2.37.37, le cartésien suit la largeur de son conteneur. Sur un chart étroit, les graduations se resserrent et les étiquettes se chevauchaient : à 320 px, 4 paires sur 12 étiquettes.
+
+- **Décimation** : une étiquette sur N reste affichée. N est calculé à partir de la largeur du plus long label et de l'écart minimal (`CHART_AXIS_LABEL_MIN_GAP`) rapportés au plus petit pas entre graduations. Le texte reste horizontal et entier.
+- **Largeur mesurée** : après le montage, la largeur réelle des labels est mesurée (`getComputedTextLength`). En SSR et avant la mesure, une estimation (`CHART_AXIS_LABEL_CHAR_WIDTH`) sert de repli, ce qui garde un markup initial identique côté serveur et côté client. La mesure suit la police réelle, y compris une taille surchargée par un thème.
+- Les labels écartés restent dans le DOM avec `visibility="hidden"` et `aria-hidden`. Chaque point garde la catégorie et la valeur dans son nom accessible.
+- La logique vit dans `utils/Chart/chart-axis-label.util.ts` (`measureWidestAxisLabel`, `decimateAxisTicks`). L'interface `IChartAxisLabelSlot` est ajoutée.
+- **Vérifié** par la spec `chart-cartesian-axis-label-decimation.spec.ts`, inscrite dans `GREEN_SPECS` :
+  - à 320 px, elle est rouge sur le parent (4 intersections) et verte avec le correctif (0 intersection, 6 étiquettes sur 12) ;
+  - le cas « police d'axe grossie à 1.5rem » est rouge avec l'estimation seule (1 intersection) et vert avec la mesure ;
+  - 600 et 960 px sont inchangés ;
+  - un TU SSR passe sans warning (PR #1335).
+- **Limite** : un changement de taille de police seul, à l'exécution, ne déclenche pas de nouvelle mesure. Elle est relancée quand les graduations ou `xAxisFormat` changent.
+
 ## [2.37.38] - 2026-11-05
 
 ### Fixed — Charts : la surface de dessin suit la taille du conteneur sur 19 charts (#1324)
