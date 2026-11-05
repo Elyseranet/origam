@@ -1,8 +1,8 @@
 {
   "kind": "composable",
-  "exportedAt": "2026-10-01T13:28:51.230Z",
-  "sourceCommit": "143d5904",
-  "entryCount": 145,
+  "exportedAt": "2026-11-05T18:22:10.944Z",
+  "sourceCommit": "db579b785",
+  "entryCount": 147,
   "entries": [
     {
       "entry": {
@@ -1925,6 +1925,113 @@
     {
       "entry": {
         "kind": "composable",
+        "slug": "use-chart-roving",
+        "name": "useChartRoving",
+        "category": "Chart",
+        "domain": "Chart",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useChartRoving(svgRef: Ref<SVGSVGElement | null | undefined>): IChartRoving",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Chart/chart-roving.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "svgRef",
+          "type": "Ref<SVGSVGElement | null | undefined>",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
+        "slug": "use-chart-size",
+        "name": "useChartSize",
+        "category": "Chart",
+        "domain": "Chart",
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function useChartSize(fallback: { width: number, height: number }, options?: { aspectRatio?: number } = {}): { resizeRef: Ref<SVGSVGElement, SVGSVGElement>; width: ComputedRef<number>; height: ComputedRef<number>; }",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/composables/Chart/chart-size.composable.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "fallback",
+          "type": "{ width: number, height: number }",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "options",
+          "type": "{ aspectRatio?: number }",
+          "required": false,
+          "default_value": "{}",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "composable",
         "slug": "use-chart-zoom",
         "name": "useChartZoom",
         "category": null,
@@ -3811,7 +3918,7 @@
       "params": [
         {
           "name": "el",
-          "type": "HTMLElement | undefined",
+          "type": "MaybeRef<HTMLElement | undefined>",
           "required": true,
           "default_value": null,
           "position": 0,
@@ -3829,7 +3936,7 @@
         },
         {
           "name": "min",
-          "type": "number",
+          "type": "MaybeRefOrGetter<number>",
           "required": true,
           "default_value": null,
           "position": 2,
@@ -3838,7 +3945,7 @@
         },
         {
           "name": "max",
-          "type": "number",
+          "type": "MaybeRefOrGetter<number>",
           "required": true,
           "default_value": null,
           "position": 3,
@@ -13895,7 +14002,7 @@
       "params": [
         {
           "name": "props",
-          "type": "IVariantProps | Ref<TVariant | TVariantInput | string | undefined>",
+          "type": "{ variant?: string } | Ref<string | undefined>",
           "required": true,
           "default_value": null,
           "position": 0,
