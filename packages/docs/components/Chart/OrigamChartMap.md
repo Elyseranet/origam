@@ -95,7 +95,7 @@ import { OrigamChartMap } from '@origam/ds'
 | Name | Type | Default | Description |
 |---|---|---|---|
 | `mode` | `TChartMapMode` | `'choropleth'` | Rendering mode. `'choropleth'` or `'flight-routes'`. |
-| `height` | `number \| string` | `360` | Chart height in px. Ignored when `aspectRatio` is set. |
+| `height` | `number \| string` | — | Optional cap on the chart height in px (the map is 2:1). Ignored when `aspectRatio` is set. |
 | `aspectRatio` | `string` | `undefined` | CSS `aspect-ratio` shorthand — overrides `height`. |
 | `title` | `string` | `undefined` | Optional title above the chart. Replaceable via `#title` slot. |
 | `subtitle` | `string` | `undefined` | Optional subtitle below the title. |
@@ -164,6 +164,8 @@ Countries included in the simplified map (35 total):
 - Eastern European countries between DE/PL and TR/GR
 
 ## Behaviour notes
+
+**Responsive 2:1 drawing surface (#1324).** The SVG `viewBox` follows the measured width of the container (`useChartSize`, a `ResizeObserver`) and its height is half that width, so the geography is never distorted. Countries are re-projected to the measured box, and legend text and strokes keep their real pixel size. `height` is an optional cap: when set, the width is reduced to keep the 2:1 ratio. Until the box is measured (SSR, first paint) the 1000 × 500 fallback is used, so hydration is unchanged.
 
 - **SVG-only** — no canvas fallback, no external map library.
 - **Projection** — simplified Mercator on a fixed 1000×500 coordinate space. Shapes are recognisable approximations, not GIS-accurate.

@@ -33,9 +33,10 @@
 				data-cy="origam-chart-gauge-body"
 		>
 			<svg
+					ref="svgRef"
 					class="origam-chart-gauge__svg origam-chart__svg"
 					:class="svgClasses"
-					:viewBox="`0 0 ${ SVG_WIDTH } ${ SVG_HEIGHT }`"
+					:viewBox="`0 0 ${ svgWidth } ${ svgHeight }`"
 					role="img"
 					:aria-label="svgAriaLabel"
 					:aria-valuemin="gaugeMin"
@@ -141,6 +142,8 @@
 	import { useChartGauge } from '../../composables/Chart/chart-gauge.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { CHART_ASPECT_RATIO, CHART_SIZE_FALLBACK } from '../../consts/Chart/chart.const'
+	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
@@ -171,7 +174,6 @@
 
 	const props = withDefaults(defineProps<IChartGaugeProps>(), {
 		categories: () => [],
-		height: 300,
 		title: undefined,
 		subtitle: undefined,
 		showLegend: false,
@@ -256,8 +258,7 @@
 	/*********************************************************
 	 * Static SVG box
 	 ********************************************************/
-	const SVG_WIDTH = 360
-	const SVG_HEIGHT = 280
+	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.gauge, { aspectRatio: CHART_ASPECT_RATIO.gauge })
 	const PADDING_GAUGE = { top: 28, right: 28, bottom: 28, left: 28 }
 
 	/*********************************************************
@@ -318,8 +319,8 @@
 		value: () => value.value,
 		min: () => props.gaugeMin,
 		max: () => props.gaugeMax,
-		width: () => SVG_WIDTH,
-		height: () => SVG_HEIGHT,
+		width: () => svgWidth.value,
+		height: () => svgHeight.value,
 		padding: () => PADDING_GAUGE,
 		thickness: () => props.gaugeThickness,
 		startAngle: () => props.gaugeStartAngle,

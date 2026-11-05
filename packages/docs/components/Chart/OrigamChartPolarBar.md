@@ -44,7 +44,7 @@ import { OrigamChartPolarBar } from '@origam/ds'
 
 | Name | Type | Default | Description |
 |---|---|---|---|
-| `height` | `number \| string` | `400` | Chart height. A plain number is `px`. Ignored when `aspectRatio` is set. |
+| `height` | `number \| string` | — | Optional cap on the chart height (the chart is square: height = width, capped by this value). A plain number is `px`. Ignored when `aspectRatio` is set. |
 | `aspectRatio` | `string` | `undefined` | CSS `aspect-ratio` shorthand. Overrides `height`. |
 | `innerRadius` | `number` | `0.1` | Fraction of total radius reserved as a centre hole. `0` = no hole, `1` = zero-thickness ring. |
 | `startAngle` | `number` | `0` | Start angle in radians for the first wedge. `0` = 3 o'clock; `-Math.PI / 2` = 12 o'clock. |
@@ -90,6 +90,8 @@ import { OrigamChartPolarBar } from '@origam/ds'
 | `empty` | — | Rendered when `series` is empty or every wedge is hidden. |
 
 ## Behaviour notes
+
+**Responsive 1:1 drawing surface (#1324).** The SVG `viewBox` is a square: its width follows the measured width of the container (`useChartSize`, a `ResizeObserver`) and its height equals that width, so the circle is never squashed. Text, strokes and markers keep their real pixel size instead of being scaled with a fixed canvas. `height` is now an optional cap: it has no default any more, and when set the side of the square is `min(container width, available height)`. Until the box is measured (SSR, first paint) the 400 × 400 fallback is used, so hydration is unchanged.
 
 **Single-series only.** The component reads `series[0]` exclusively.
 

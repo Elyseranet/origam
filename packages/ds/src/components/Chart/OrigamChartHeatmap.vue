@@ -236,6 +236,7 @@
 	import type { IChartSeries } from '../../interfaces/Chart/chart-series.interface'
 
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
@@ -432,14 +433,21 @@
 		props.showGradientLegend && isLegendInline.value ? LEGEND_H + LEGEND_MARGIN : 0
 	)
 
-	const svgWidth = computed(() => AXIS_LEFT + SVG_PLOT_W)
-	const svgHeight = computed(() => SVG_PLOT_H + AXIS_BOTTOM + legendExtraH.value)
+	/*********************************************************
+	 * Surface mesuree — repli = ancien viewBox fige (axe gauche + 560
+	 * de trace ; 340 de trace + axe bas + legende). Le getter garde la
+	 * legende reactive.
+	 ********************************************************/
+	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize({
+		width: AXIS_LEFT + SVG_PLOT_W,
+		get height () { return SVG_PLOT_H + AXIS_BOTTOM + legendExtraH.value }
+	})
 
 	const plotX0 = AXIS_LEFT
 	const plotY0 = 4
 
-	const plotW = computed(() => SVG_PLOT_W)
-	const plotH = computed(() => SVG_PLOT_H)
+	const plotW = computed(() => Math.max(0, svgWidth.value - AXIS_LEFT))
+	const plotH = computed(() => Math.max(0, svgHeight.value - AXIS_BOTTOM - legendExtraH.value))
 
 	const nx = computed(() => xCats.value.length)
 	const ny = computed(() => yCats.value.length)
@@ -542,7 +550,6 @@
 	/*********************************************************
 	 * Hover / tooltip
 	 ********************************************************/
-	const svgRef = ref<SVGSVGElement | null>(null)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredIndex = ref<number | null>(null)
 

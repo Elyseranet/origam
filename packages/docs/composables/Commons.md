@@ -2067,7 +2067,7 @@ filtrer les trous et ne jamais deduire la longueur de la liste de
 ## `useResizeObserver`
 
 ```ts
-export function useResizeObserver (callback?: ResizeObserverCallback, box: 'content' | 'border' = 'content'): IResizeState
+export function useResizeObserver<T extends Element = HTMLElement> (callback?: ResizeObserverCallback, box: 'content' | 'border' = 'content'): IResizeState<T>
 ```
 
 Expose `resizeRef` (template ref a poser sur l'element observe) et

@@ -116,6 +116,8 @@ Plain number entries in `data` are ignored — use the object form exclusively.
 
 ## Behaviour notes
 
+**Responsive drawing surface (#1324).** The SVG `viewBox` follows the measured box of the chart (`useChartSize`, a `ResizeObserver`), not a fixed 800 × 500 canvas. The plot fills the container width and height, the geometry is recomputed, and text, strokes and markers keep their real pixel size instead of being scaled with the viewBox. Until the box is measured (SSR, first paint) the 800 × 500 fallback is used, so hydration is unchanged. `minFontSize` / `maxFontSize` are expressed for the 800 × 500 reference canvas and are scaled to the measured box, so words are not dropped in a smaller box. Give the chart a `height` / `aspectRatio` to change the box ratio.
+
 **Single-series only.** The component reads `series[0]` exclusively. Extra series are silently ignored.
 
 **Font-size mapping.** Word font sizes are linearly interpolated between `minFontSize` and `maxFontSize` based on each word's value relative to the maximum in the series.

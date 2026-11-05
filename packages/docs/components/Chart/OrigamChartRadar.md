@@ -50,7 +50,7 @@ const series: Array<IChartSeries> = [
 
 | Name | Type | Default | Description |
 |---|---|---|---|
-| `height` | `number \| string` | `360` | Chart height. A plain number is `px`; any CSS length is accepted. Ignored when `aspectRatio` is set. |
+| `height` | `number \| string` | — | Optional cap on the chart height (the chart is square: height = width, capped by this value). A plain number is `px`; any CSS length is accepted. Ignored when `aspectRatio` is set. |
 | `aspectRatio` | `string` | `undefined` | CSS `aspect-ratio` shorthand. Overrides `height`. |
 | `colorScheme` | `Array<TIntent \| string>` | 8-intent cycle | Palette cycling by series index when a series omits its own `color`. |
 | `title` | `string` | `undefined` | Optional title above the chart. |
@@ -85,6 +85,8 @@ const series: Array<IChartSeries> = [
 `IChartRadarSlots` is `Omit<IChartBaseSlots, 'tooltip'>` — **there is no `tooltip` slot.** The radar renders no tooltip at all (no `<origam-chart-tooltip>` anywhere in its template), which is the same reason `showTooltip` is inert. A `<template #tooltip>` passed to this component is silently discarded.
 
 ## Behaviour notes
+
+**Responsive 1:1 drawing surface (#1324).** The SVG `viewBox` is a square: its width follows the measured width of the container (`useChartSize`, a `ResizeObserver`) and its height equals that width, so the circle is never squashed. Text, strokes and markers keep their real pixel size instead of being scaled with a fixed canvas. `height` is now an optional cap: it has no default any more, and when set the side of the square is `min(container width, available height)`. Until the box is measured (SSR, first paint) the 360 × 360 fallback is used, so hydration is unchanged.
 
 **Axis count.** The number of polygon vertices is `Math.max(categories.length, series[n].data.length)`. If `categories` and `series[n].data` have different lengths, the surplus axis has no label (falling back to its numeric index) or the surplus data point is placed at a computed angle without a label. Keep them aligned.
 

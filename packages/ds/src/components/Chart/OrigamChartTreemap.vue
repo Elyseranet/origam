@@ -37,7 +37,7 @@
 					ref="svgRef"
 					class="origam-chart-treemap__svg origam-chart__svg"
 					:class="svgClasses"
-					:viewBox="`0 0 ${ SVG_WIDTH } ${ SVG_HEIGHT }`"
+					:viewBox="`0 0 ${ svgWidth } ${ svgHeight }`"
 					:role="CHART_SVG_ROLE"
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
@@ -161,7 +161,7 @@
 		lang="ts"
 		setup
 >
-	import { CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
+	import { CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		ref,
@@ -173,6 +173,7 @@
 
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
@@ -266,8 +267,7 @@
 	 * Static SVG box — fixed 600 × 400 coordinate space.
 	 * CSS scales the SVG to fill its container.
 	 ********************************************************/
-	const SVG_WIDTH = 600
-	const SVG_HEIGHT = 400
+	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.treemap)
 	const PADDING = { top: 8, right: 8, bottom: 8, left: 8 }
 	const LABEL_MIN_WIDTH = 60
 	const LABEL_MIN_HEIGHT = 24
@@ -455,8 +455,8 @@
 
 		const plotX = PADDING.left
 		const plotY = PADDING.top
-		const plotW = SVG_WIDTH - PADDING.left - PADDING.right
-		const plotH = SVG_HEIGHT - PADDING.top - PADDING.bottom
+		const plotW = svgWidth.value - PADDING.left - PADDING.right
+		const plotH = svgHeight.value - PADDING.top - PADDING.bottom
 		const plotArea = plotW * plotH
 
 		const sortedItems = items.map((item, originalIndex) => ({ ...item, originalIndex }))
@@ -514,7 +514,6 @@
 	/*********************************************************
 	 * Hover / tooltip
 	 ********************************************************/
-	const svgRef = ref<SVGSVGElement | null>(null)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredIndex = ref<number | null>(null)
 
