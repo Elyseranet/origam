@@ -1,5 +1,6 @@
 import { INTENT } from '../../enums/Commons/intent.enum'
 
+import type { TChartRovingAction } from '../../types/Chart/chart.type'
 import type { TIntent } from '../../types/Commons/intent.type'
 
 /**
@@ -274,7 +275,7 @@ export const CHART_SLICE_LABEL_PREFIX = 'Slice'
  *
  * @description
  * Role of the root `<svg>` of every chart whose data points are focusable
- * (`role="button"` + `tabindex="0"`). It is `group`, never `img`: an `img`
+ * (`role="button"`, one roving tab stop per chart, #1333). It is `group`, never `img`: an `img`
  * renders its subtree presentational, so a screen reader announces only the
  * picture while the keyboard stops on each point (axe `nested-interactive`,
  * WCAG 4.1.2, #1318 and #1153).
@@ -282,6 +283,55 @@ export const CHART_SLICE_LABEL_PREFIX = 'Slice'
  * focusable points be announced.
  ********************************************************/
 export const CHART_SVG_ROLE = 'group'
+
+/*********************************************************
+ * CHART_POINT_ATTR
+ *
+ * @description
+ * Boolean data attribute carried by every focusable data point of a chart
+ * (`role="button"`). It is what `useChartRoving` selects: the other
+ * `role="button"` of a chart (the zoom-reset control) keep their own tab
+ * stop (#1333).
+ ********************************************************/
+export const CHART_POINT_ATTR = 'data-chart-point'
+
+/*********************************************************
+ * CHART_POINT_SELECTOR
+ *
+ * @description
+ * CSS selector matching the focusable data points of a chart.
+ ********************************************************/
+export const CHART_POINT_SELECTOR = `[${ CHART_POINT_ATTR }]`
+
+/*********************************************************
+ * CHART_SERIES_ATTR
+ *
+ * @description
+ * Optional data attribute naming the series (or row) a point belongs to.
+ * ArrowUp / ArrowDown move between these groups at the same position.
+ * Points without it form a single series, for which the vertical arrows
+ * behave like ArrowLeft / ArrowRight (the listbox / radio-group pattern),
+ * so a vertical key is never dead.
+ ********************************************************/
+export const CHART_SERIES_ATTR = 'data-chart-series'
+
+/*********************************************************
+ * CHART_ROVING_KEY_ACTIONS
+ *
+ * @description
+ * Keyboard model of the single tab stop of a chart (#1333):
+ * Left/Right = previous/next point, Up/Down = previous/next series,
+ * Home/End = first/last point. Enter and Space stay handled by each point
+ * (same emit as a click); Tab is left to the browser and exits the chart.
+ ********************************************************/
+export const CHART_ROVING_KEY_ACTIONS: Readonly<Record<string, TChartRovingAction>> = {
+    ArrowRight: 'next',
+    ArrowLeft: 'previous',
+    ArrowDown: 'nextSeries',
+    ArrowUp: 'previousSeries',
+    Home: 'first',
+    End: 'last'
+}
 
 /*********************************************************
  * CHART_AXIS_LABEL_CHAR_WIDTH / CHART_AXIS_LABEL_MIN_GAP — décimation (#1325)

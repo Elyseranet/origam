@@ -211,14 +211,14 @@ test.describe('OrigamChartPyramid — accessibility', () => {
         }
     })
 
-    test('each slice is keyboard-focusable (tabindex=0)', async ({ page }) => {
+    test('each slice is keyboard-focusable (roving tabindex, #1333)', async ({ page }) => {
         await openVariant(page, PYRAMID_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const slices = sandbox.locator('[data-cy="origam-chart-pyramid"] [data-cy^="origam-chart-pyramid-slice-"]')
         await expect(slices).toHaveCount(5, { timeout: 6000 })
         const count = await slices.count()
         for (let i = 0; i < count; i++) {
-            await expect(slices.nth(i)).toHaveAttribute('tabindex', '0')
+            await expect(slices.nth(i)).toHaveAttribute('tabindex', /^(0|-1)$/)
         }
     })
 })

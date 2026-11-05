@@ -42,6 +42,7 @@
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-word-cloud-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -67,7 +68,8 @@
 							dominant-baseline="central"
 							:transform="`translate(${ word.x }, ${ word.y }) rotate(${ word.angle })`"
 							:data-cy="`origam-chart-word-cloud-word-${ word.index }`"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="`${ word.text }: ${ formatValue(word.value) }`"
 							@click="onWordActivate(word, $event)"
@@ -158,6 +160,7 @@
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
@@ -268,6 +271,7 @@
 	 * CSS scales it.
 	 ********************************************************/
 	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.wordCloud)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	/*********************************************************
 	 * Echelle des polices — `minFontSize` / `maxFontSize` sont
 	 * exprimees pour le canevas de reference (800 x 500) : on les ramene

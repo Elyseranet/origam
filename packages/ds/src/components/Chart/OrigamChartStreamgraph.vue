@@ -42,6 +42,7 @@
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-streamgraph-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -103,7 +104,8 @@
 							:d="ribbon.d"
 							:style="{ fill: ribbon.color }"
 							:data-cy="`origam-chart-streamgraph-ribbon-${ ribbon.seriesIndex }`"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="ribbonAriaLabel(ribbon)"
 							@click="onRibbonActivate(ribbon, $event)"
@@ -193,6 +195,7 @@
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -269,6 +272,7 @@
 	 * SVG coordinate space — fixed logical box; CSS scales it
 	 ********************************************************/
 	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.streamgraph)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const PADDING = { top: 24, right: 24, bottom: 40, left: 40 }
 	const AXIS_LABEL_OFFSET = 6
 

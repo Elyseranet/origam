@@ -128,7 +128,7 @@ Plain `number` items (from `IChartSeries.data`) are accepted for compatibility; 
 
 **Custom tooltip.** The `#tooltip` slot receives both encoded values (`value` + `widthValue` / `formattedValue` + `formattedWidth`) so you can display both metrics with their respective units.
 
-**Accessibility.** Each bar is a focusable `<rect>` with `role="button"` and an `aria-label` carrying the category, formatted value, and width value. Keyboard users can Tab through bars and activate them with Enter or Space. The SVG carries a `<title>` and `<desc>` for screen-reader context.
+**Accessibility.** Each bar is a focusable `<rect>` with `role="button"` and an `aria-label` carrying the category, formatted value, and width value. The chart is a **single tab stop** (roving tabindex, #1333): `Tab` enters it once, the arrow keys move between points, `Tab` leaves it — see the key table in the `OrigamChart` page. `Enter` or `Space` activates a bar. The SVG carries a `<title>` and `<desc>` for screen-reader context.
 
 **Accessibility — the `<desc>` summary is localised AND agrees in number.** The `<desc>` text is not an English literal: it resolves through the DS `t()` mechanism against `origam.chart.variwide.desc*`, and the grammatical form is chosen by `Intl.PluralRules` for the ACTIVE locale — never by a `count === 1` test in the component. A translator supplies only the forms their language needs (`_one` / `_other` cover `en` and `fr`; a Russian translation adds `_few` with no component change), and a category a locale does not define falls back to `_other` rather than leaking the raw key.
 

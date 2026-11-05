@@ -42,6 +42,7 @@
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-radar-svg"
+					@keydown="onChartKeydown"
 			>
 				<title>{{ svgTitle }}</title>
 				<desc>{{ svgDesc }}</desc>
@@ -98,7 +99,9 @@
 								:cy="path.circle!.cy"
 								:r="path.circle!.r"
 								:fill="path.color"
-								tabindex="0"
+								tabindex="-1"
+								data-chart-point
+								:data-chart-series="path.seriesIndex"
 								role="button"
 								:aria-label="pointAriaLabel(path)"
 								:data-cy="`origam-chart-point-${ path.seriesIndex }-${ path.dataIndex }`"
@@ -155,6 +158,7 @@
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useChart } from '../../composables/Chart/chart.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
@@ -229,6 +233,7 @@
 	const chartAnimationStyle = useChartAnimationStyle(props)
 
 	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.radar, { aspectRatio: CHART_ASPECT_RATIO.radial })
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const PADDING_RADAR = { top: 20, right: 20, bottom: 20, left: 20 }
 	const RADAR_RINGS = [0.25, 0.5, 0.75, 1]
 

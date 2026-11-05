@@ -43,6 +43,7 @@
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-heatmap-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -89,7 +90,9 @@
 								ry="2"
 								:style="{ fill: cell.color }"
 								:data-cy="`origam-chart-heatmap-cell-${ cell.index }`"
-								tabindex="0"
+								tabindex="-1"
+								data-chart-point
+								:data-chart-series="cell.yCat"
 								role="button"
 								:aria-label="cellAriaLabel(cell)"
 								@click="onCellActivate(cell, $event)"
@@ -238,6 +241,7 @@
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
@@ -442,6 +446,7 @@
 		width: AXIS_LEFT + SVG_PLOT_W,
 		get height () { return SVG_PLOT_H + AXIS_BOTTOM + legendExtraH.value }
 	})
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 
 	const plotX0 = AXIS_LEFT
 	const plotY0 = 4

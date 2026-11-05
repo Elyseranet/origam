@@ -41,6 +41,7 @@
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-map-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -81,7 +82,8 @@
 							:d="country.d"
 							:style="{ fill: country.fill, stroke: resolveColor(borderColor) }"
 							:data-cy="`origam-chart-map-country-${ country.code }`"
-							:tabindex="country.hasData ? 0 : -1"
+							tabindex="-1"
+							:data-chart-point="country.hasData ? '' : undefined"
 							:role="country.hasData ? 'button' : undefined"
 							:aria-label="country.hasData ? countryAriaLabel(country) : undefined"
 							@click="onCountryActivate(country, $event)"
@@ -107,7 +109,8 @@
 							fill="none"
 							stroke-linecap="round"
 							:data-cy="`origam-chart-map-route-${ route.index }`"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="routeAriaLabel(route)"
 							@click="onRouteActivate(route, $event)"
@@ -213,6 +216,7 @@
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
@@ -325,6 +329,7 @@
 	 * SVG canvas constants
 	 ********************************************************/
 	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.map, { aspectRatio: CHART_ASPECT_RATIO.map })
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const LEGEND_H = 14
 	const LEGEND_Y_OFFSET = 12
 	const LEGEND_X = 20

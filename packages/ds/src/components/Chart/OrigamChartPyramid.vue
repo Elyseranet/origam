@@ -42,6 +42,7 @@
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-pyramid-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -60,7 +61,8 @@
 							:d="slice.d"
 							:fill="slice.color"
 							:data-cy="`origam-chart-pyramid-slice-${ slice.index }`"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="sliceAriaLabel(slice)"
 							@click="onSliceActivate(slice, $event)"
@@ -169,6 +171,7 @@
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -246,6 +249,7 @@
 	 * a fixed 600 × 400 coordinate space; CSS scales it.
 	 ********************************************************/
 	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.pyramid)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const PADDING = { top: 20, right: 120, bottom: 20, left: 20 }
 	const LABEL_FITS_INSIDE_MIN_HEIGHT = 18
 	const LABEL_FITS_INSIDE_MIN_WIDTH = 90

@@ -109,7 +109,7 @@ import { OrigamChartPolarBar } from '@origam/ds'
 
 **Colour inheritance.** `series[0].color` (if set) is used as the single colour for all wedges. Per-wedge colours come from `colorScheme` (cycling by index) when absent.
 
-**Accessibility.** Each wedge is a focusable `<path>` with `role="button"` and an `aria-label` carrying category + formatted value + percentage. Keyboard users can Tab through wedges and activate with Enter or Space.
+**Accessibility.** Each wedge is a focusable `<path>` with `role="button"` and an `aria-label` carrying category + formatted value + percentage. The chart is a **single tab stop** (roving tabindex, #1333): `Tab` enters it once, the arrow keys move between points, `Tab` leaves it — see the key table in the `OrigamChart` page. `Enter` or `Space` activates a wedge.
 
 **Accessibility — the `<desc>` summary is localised AND agrees in number.** The `<desc>` text is not an English literal: it resolves through the DS `t()` mechanism against `origam.chart.polar_bar.desc*`, and the grammatical form is chosen by `Intl.PluralRules` for the ACTIVE locale — never by a `count === 1` test in the component. A translator supplies only the forms their language needs (`_one` / `_other` cover `en` and `fr`; a Russian translation adds `_few` with no component change), and a category a locale does not define falls back to `_other` rather than leaking the raw key.
 

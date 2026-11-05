@@ -118,7 +118,7 @@ const activityData = days.flatMap((day) =>
 
 **Gradient legend.** The legend is an inline SVG `<linearGradient>` bar rendered inside the same SVG element. It does not use the `OrigamChartLegend` component (which is designed for categorical series).
 
-**Accessibility.** Each cell is a focusable `<rect>` with `role="button"` and an `aria-label` carrying the `x × y: value` string. Keyboard users can Tab through cells and activate them with Enter or Space. The SVG carries a `<title>` and `<desc>`.
+**Accessibility.** Each cell is a focusable `<rect>` with `role="button"` and an `aria-label` carrying the `x × y: value` string. The chart is a **single tab stop** (roving tabindex, #1333): `Tab` enters it once, the arrow keys move between points, `Tab` leaves it — see the key table in the `OrigamChart` page. `ArrowUp` / `ArrowDown` move between rows. `Enter` or `Space` activates a cell. The SVG carries a `<title>` and `<desc>`.
 
 **Animation.** Cells fade in on mount via a CSS keyframe animation. Skipped when `animated=false` or `prefers-reduced-motion: reduce`.
 

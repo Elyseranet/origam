@@ -42,6 +42,7 @@
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-variwide-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -153,7 +154,8 @@
 							rx="2"
 							ry="2"
 							:style="{ fill: col.color }"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="columnAriaLabel(col)"
 							:data-cy="`origam-chart-variwide-bar-${ col.index }`"
@@ -249,6 +251,7 @@
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -326,6 +329,7 @@
 	 * CSS scales it to the container.
 	 ********************************************************/
 	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.variwide)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const TICK_SIZE = 4
 
 	const PLOT = {

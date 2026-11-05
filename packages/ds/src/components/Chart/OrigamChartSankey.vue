@@ -42,6 +42,7 @@
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-sankey-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -64,7 +65,8 @@
 								stroke: 'none'
 							}"
 							:data-cy="`origam-chart-sankey-link-${ link.index }`"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="linkAriaLabel(link)"
 							@click="onLinkActivate(link, $event)"
@@ -87,7 +89,8 @@
 							ry="2"
 							:style="{ fill: node.color }"
 							:data-cy="`origam-chart-sankey-node-${ node.name }`"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="`${ node.name }: ${ node.formatted }`"
 							@click="onNodeActivate(node, $event)"
@@ -188,6 +191,7 @@
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -272,6 +276,7 @@
 	 * space; CSS scales it.
 	 ********************************************************/
 	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.sankey)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const PADDING = { top: 20, right: 100, bottom: 20, left: 100 }
 
 	/*********************************************************

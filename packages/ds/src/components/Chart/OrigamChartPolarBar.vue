@@ -42,6 +42,7 @@
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-polar-bar-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -61,7 +62,8 @@
 							:d="wedge.d"
 							:style="{ fill: wedge.color }"
 							:data-cy="`origam-chart-polar-bar-wedge-${ wedge.index }`"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="wedgeAriaLabel(wedge)"
 							@click="onWedgeActivate(wedge, $event)"
@@ -171,6 +173,7 @@
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -272,6 +275,7 @@
 	 * polar coordinates.
 	 ********************************************************/
 	const { resizeRef: svgRef, width: svgWidth } = useChartSize(CHART_SIZE_FALLBACK.polarBar, { aspectRatio: CHART_ASPECT_RATIO.radial })
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const center = computed(() => svgWidth.value / 2)
 
 	/** Radial clearance between outermost wedge and the SVG edge for labels. */

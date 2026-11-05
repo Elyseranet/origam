@@ -118,7 +118,7 @@ const series: Array<IChartSeries> = [
 
 **SSR.** A placeholder `<div>` with the correct dimensions is emitted server-side; the SVG mounts on `onMounted`.
 
-**Keyboard.** Each slice is `tabindex="0"` with an `aria-label` of `"{series name} — {category}: {value}"`. `Enter` / `Space` fire `point-click`. Legend entries also support keyboard toggle.
+**Keyboard.** The slices are one roving tab stop (see the `OrigamChart` page); each has an `aria-label` of `"{series name} — {category}: {value}"`. `Enter` / `Space` fire `point-click`. Legend entries also support keyboard toggle.
 
 ## Examples
 

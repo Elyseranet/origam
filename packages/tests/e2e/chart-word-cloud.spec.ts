@@ -93,14 +93,14 @@ test.describe('OrigamChartWordCloud — accessibility', () => {
         }
     })
 
-    test('each word is keyboard-focusable (tabindex=0)', async ({ page }) => {
+    test('each word is keyboard-focusable (roving tabindex, #1333)', async ({ page }) => {
         await openVariant(page, WORD_CLOUD_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const words = sandbox.locator('[data-cy="origam-chart-word-cloud"] [data-cy^="origam-chart-word-cloud-word-"]')
         await expect(words.first()).toBeVisible({ timeout: 8000 })
         const count = await words.count()
         for (let i = 0; i < Math.min(count, 5); i++) {
-            await expect(words.nth(i)).toHaveAttribute('tabindex', '0')
+            await expect(words.nth(i)).toHaveAttribute('tabindex', /^(0|-1)$/)
         }
     })
 })

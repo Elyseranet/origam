@@ -42,6 +42,7 @@
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-sunburst-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -61,7 +62,8 @@
 							:d="node.d"
 							:style="{ fill: node.color }"
 							:data-cy="`origam-chart-sunburst-arc-${ node.id }`"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="nodeAriaLabel(node)"
 							@click="onNodeActivate(node, $event)"
@@ -191,6 +193,7 @@
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -255,6 +258,7 @@
 	 * Static SVG box — square coordinate space; CSS scales it.
 	 ********************************************************/
 	const { resizeRef: svgRef, width: svgWidth } = useChartSize(CHART_SIZE_FALLBACK.sunburst, { aspectRatio: CHART_ASPECT_RATIO.radial })
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const center = computed(() => svgWidth.value / 2)
 	const MAX_DEPTH_CAP = 4
 

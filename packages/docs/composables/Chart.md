@@ -5,7 +5,7 @@
 > rien n'est redige ici. Corriger une description se fait dans la banniere du symbole,
 > puis en regenerant. Issue #545.
 
-9 symbole(s) exporte(s).
+11 symbole(s) exporte(s).
 
 ## `computeAnnotationGeometry`
 
@@ -50,6 +50,24 @@ line falls outside the plot.
 **Source** : `packages/ds/src/composables/Chart/chart.composable.ts`
 
 **Consommateurs** (1) : `components/Chart/OrigamChartCartesian.vue`
+
+## `resolveChartRovingTarget`
+
+```ts
+export function resolveChartRovingTarget(series: string[], current: number, action: TChartRovingAction): number
+```
+
+Pure navigation rule of the roving tabindex (#1333): from the point at
+`current`, returns the index of the point `action` leads to.
+`series[i]` is the series key of the i-th point in DOM order.
+Left/Right stay inside the current series; Up/Down jump to the adjacent
+series at the same position (clamped when that series is shorter).
+With a single series the vertical arrows behave like Left/Right.
+Nothing wraps: at an end the focus stays where it is.
+
+**Source** : `packages/ds/src/composables/Chart/chart-roving.composable.ts`
+
+**Consommateurs** : aucun dans `packages/ds/src` — symbole exporte pour les consommateurs externes.
 
 ## `useChart`
 
@@ -198,6 +216,23 @@ const { headerTypographyStyles } = useChartHeaderTypography(props)
 **Source** : `packages/ds/src/composables/Chart/chart-header-typography.composable.ts`
 
 **Consommateurs** (20) : `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, `components/Chart/OrigamChartGauge.vue`, `components/Chart/OrigamChartHeatmap.vue`, `components/Chart/OrigamChartHoneycomb.vue`, `components/Chart/OrigamChartMap.vue`, …
+
+## `useChartRoving`
+
+```ts
+export function useChartRoving(svgRef: Ref<SVGSVGElement | null>): IChartRoving
+```
+
+Gives a chart ONE tab stop (WAI-ARIA roving tabindex, WCAG 2.1.1 / 2.4.3).
+The points carry `data-chart-point` and a static `tabindex="-1"`.
+This composable promotes the last active one (else the first) to
+`tabindex="0"` after mount and after each update, and moves it with the
+arrow keys. Bind `onKeydown` on the chart `<svg>`; `svgRef` is the template
+ref of that `<svg>`.
+
+**Source** : `packages/ds/src/composables/Chart/chart-roving.composable.ts`
+
+**Consommateurs** (22) : `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, `components/Chart/OrigamChartHeatmap.vue`, `components/Chart/OrigamChartHoneycomb.vue`, `components/Chart/OrigamChartMap.vue`, `components/Chart/OrigamChartPareto.vue`, …
 
 ## `useChartSize`
 

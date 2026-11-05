@@ -42,6 +42,7 @@
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-treemap-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -69,7 +70,8 @@
 								ry="2"
 								:style="{ fill: tile.color }"
 								:data-cy="`origam-chart-treemap-tile-${ tile.index }`"
-								tabindex="0"
+								tabindex="-1"
+								data-chart-point
 								role="button"
 								:aria-label="tileAriaLabel(tile)"
 								@click="onTileActivate(tile, $event)"
@@ -175,6 +177,7 @@
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -268,6 +271,7 @@
 	 * CSS scales the SVG to fill its container.
 	 ********************************************************/
 	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.treemap)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const PADDING = { top: 8, right: 8, bottom: 8, left: 8 }
 	const LABEL_MIN_WIDTH = 60
 	const LABEL_MIN_HEIGHT = 24

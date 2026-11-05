@@ -42,6 +42,7 @@
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-pictorial-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -82,7 +83,8 @@
 							:transform="`translate(${ col.x }, ${ col.y })`"
 							class="origam-chart-pictorial__column"
 							:data-cy="`origam-chart-pictorial-col-${ col.dataIndex }`"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="columnAriaLabel(col)"
 							@click="onColumnActivate(col, $event)"
@@ -139,7 +141,8 @@
 							:transform="`translate(${ fillColX(col) }, ${ fillColY(col) })`"
 							class="origam-chart-pictorial__column"
 							:data-cy="`origam-chart-pictorial-col-${ col.dataIndex }`"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="fillColumnAriaLabel(col)"
 							@click="onColumnActivate(col, $event)"
@@ -306,6 +309,7 @@
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -393,6 +397,7 @@
 	 * Component always paints into 600 × 400; CSS scales it.
 	 ********************************************************/
 	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.pictorial)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const ICON_GAP = 2
 	const AXIS_LABEL_HEIGHT = 20
 	const VALUE_LABEL_HEIGHT = 16

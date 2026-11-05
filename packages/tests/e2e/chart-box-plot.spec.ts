@@ -12,7 +12,7 @@ import { eventLogItems, fillHstNumber, openEventsTab, toggleHstCheckbox } from '
  *  - boxWidth prop visually changes the rect width (0.3 < 0.9).
  *  - ARIA attributes (role="figure", role="group", title, desc) are present.
  *  - Each box group has role="button" and a non-empty aria-label.
- *  - Each box group is keyboard-focusable (tabindex=0).
+ *  - Each box group is keyboard-focusable (roving tabindex, #1333).
  *  - Empty slot renders when series is empty.
  *  - Clicking a box fires into the emit log.
  *
@@ -192,14 +192,14 @@ test.describe('OrigamChartBoxPlot — accessibility', () => {
         }
     })
 
-    test('each box group is keyboard-focusable (tabindex=0)', async ({ page }) => {
+    test('each box group is keyboard-focusable (roving tabindex, #1333)', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
         const boxes = sandbox.locator('[data-cy="origam-chart-box-plot"] [data-cy^="origam-chart-box-group-"]')
         const count = await boxes.count()
 
         for (let i = 0; i < count; i++) {
-            await expect(boxes.nth(i)).toHaveAttribute('tabindex', '0')
+            await expect(boxes.nth(i)).toHaveAttribute('tabindex', /^(0|-1)$/)
         }
     })
 })

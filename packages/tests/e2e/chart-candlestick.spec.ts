@@ -182,13 +182,13 @@ test.describe('OrigamChartCandlestick — accessibility', () => {
         }
     })
 
-    test('each candle is keyboard-focusable (tabindex=0)', async ({ page }) => {
+    test('each candle is keyboard-focusable (roving tabindex, #1333)', async ({ page }) => {
         await openVariant(page, CANDLESTICK_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const candles = sandbox.locator('[data-cy^="origam-chart-candlestick-candle-"]')
         const count = await candles.count()
         for (let i = 0; i < count; i++) {
-            await expect(candles.nth(i)).toHaveAttribute('tabindex', '0')
+            await expect(candles.nth(i)).toHaveAttribute('tabindex', /^(0|-1)$/)
         }
     })
 

@@ -43,6 +43,7 @@
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-honeycomb-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -65,7 +66,8 @@
 								:points="tile.points"
 								:style="{ fill: tile.color }"
 								:data-cy="`origam-chart-honeycomb-tile-${ tile.index }`"
-								tabindex="0"
+								tabindex="-1"
+								data-chart-point
 								role="button"
 								:aria-label="tileAriaLabel(tile)"
 								@click="onTileActivate(tile, $event)"
@@ -160,6 +162,7 @@
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -465,6 +468,7 @@
 	 * Hover / tooltip
 	 ********************************************************/
 	const svgRef = ref<SVGSVGElement | null>(null)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredIndex = ref<number | null>(null)
 

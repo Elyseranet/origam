@@ -42,6 +42,7 @@
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-candlestick-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -104,7 +105,8 @@
 								'origam-chart-candlestick__candle--bearish': !candle.isBullish,
 								'origam-chart-candlestick__candle--active': hoveredIndex === candle.index
 							}"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="candleAriaLabel(candle)"
 							:data-cy="`origam-chart-candlestick-candle-${ candle.index }`"
@@ -205,6 +207,7 @@
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
@@ -284,6 +287,7 @@
 	 * Static SVG box — fixed coordinate space, CSS scales it.
 	 ********************************************************/
 	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.candlestick)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const PADDING = { top: 20, right: 20, bottom: 36, left: 56 }
 	const Y_TICK_COUNT = 5
 	const Y_PAD_FRACTION = 0.05
