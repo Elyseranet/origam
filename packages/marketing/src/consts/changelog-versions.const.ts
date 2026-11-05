@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.38',
+        date: '2026-11-05',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23738.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23738.h1', textFallback: 'Charts : la surface de dessin suit la taille du conteneur sur 19 charts (#1324)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.37',
         date: '2026-11-04',
         type: 'patch',

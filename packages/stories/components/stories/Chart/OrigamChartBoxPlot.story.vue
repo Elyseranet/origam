@@ -213,6 +213,20 @@
 			</origam-chart-box-plot>
 		</Variant>
 
+		<Variant title="Responsive width">
+			<div
+					v-for="w in [480, 960]"
+					:key="w"
+					:style="{ width: `${ w }px`, maxWidth: '100%', marginBottom: '1rem' }"
+					:data-cy="`origam-chart-box-plot-responsive-${ w }`"
+			>
+				<origam-chart-box-plot
+						:series="FIXTURE_API_SERIES"
+						:title="`${ w }px container`"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IChartBoxPlotProps>({

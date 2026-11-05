@@ -287,12 +287,60 @@ export const CHART_SVG_ROLE = 'group'
  * CHART_AXIS_LABEL_CHAR_WIDTH / CHART_AXIS_LABEL_MIN_GAP — décimation (#1325)
  *
  * @description
- * Estimation de la largeur d'une étiquette de l'axe X (px par caractère,
+ * Repli (SSR, avant mesure) pour la largeur d'une étiquette de l'axe X (px par caractère,
  * pour la police 0.75rem par défaut, taillée sur le glyphe large) et
  * espace minimal exigé entre deux étiquettes voisines. Servent à calculer
- * le pas de décimation « une étiquette sur N ». Estimation, pas mesure :
- * un `--origam-chart__axis-label---font-size` très supérieur au défaut
- * peut encore faire se toucher deux étiquettes.
+ * le pas de décimation « une étiquette sur N ». Après montage la largeur est mesurée :
+ * la largeur par caractère ne sert plus qu'au premier rendu (l'écart reste utilisé), où un
+ * `--origam-chart__axis-label---font-size` très supérieur au défaut peut sous-estimer.
  ********************************************************/
 export const CHART_AXIS_LABEL_CHAR_WIDTH = 8
 export const CHART_AXIS_LABEL_MIN_GAP = 8
+
+/*********************************************************
+ * CHART_SIZE_FALLBACK (#1324)
+ *
+ * @description
+ * Taille de la surface de dessin d'un chart tant que rien n'est mesure
+ * (SSR, avant montage, boite nulle) : c'est l'ancien `viewBox` fige,
+ * conserve comme repli pour que le premier rendu serveur et client
+ * restent identiques. Une fois la boite du conteneur mesuree
+ * (`useChartSize`), ces valeurs ne servent plus.
+ * Les charts a rapport impose (`CHART_ASPECT_RATIO`) gardent un repli
+ * a ce meme rapport.
+ ********************************************************/
+export const CHART_SIZE_FALLBACK = {
+    boxPlot: { width: 600, height: 400 },
+    bullet: { width: 600, height: 400 },
+    candlestick: { width: 600, height: 400 },
+    pareto: { width: 640, height: 400 },
+    pictorial: { width: 600, height: 400 },
+    pyramid: { width: 600, height: 400 },
+    sankey: { width: 600, height: 400 },
+    streamgraph: { width: 700, height: 420 },
+    treemap: { width: 600, height: 400 },
+    variwide: { width: 600, height: 400 },
+    wordCloud: { width: 800, height: 500 },
+    gauge: { width: 360, height: 280 },
+    map: { width: 1000, height: 500 },
+    sparkline: { width: 120, height: 30 },
+    polar: { width: 360, height: 360 },
+    polarBar: { width: 400, height: 400 },
+    radar: { width: 360, height: 360 },
+    sunburst: { width: 400, height: 400 }
+} as const
+
+/*********************************************************
+ * CHART_ASPECT_RATIO (#1324)
+ *
+ * @description
+ * Rapport hauteur / largeur impose a la surface de dessin des charts
+ * dont la geometrie ne se deforme pas (`useChartSize`, option
+ * `aspectRatio`). `radial` : cercle, 1:1. `gauge` : demi-anneau, rapport
+ * historique 280 / 360. `map` : planisphere 2:1.
+ ********************************************************/
+export const CHART_ASPECT_RATIO = {
+    radial: 1,
+    gauge: 280 / 360,
+    map: 0.5
+} as const

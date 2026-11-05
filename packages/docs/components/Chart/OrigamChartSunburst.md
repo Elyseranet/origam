@@ -55,7 +55,7 @@ const budgetTree: Array<IChartSunburstDatum> = [
 |---|---|---|---|
 | `title` | `string` | `undefined` | Optional title above the chart. |
 | `subtitle` | `string` | `undefined` | Optional subtitle below the title. |
-| `height` | `number \| string` | `400` | Chart height. A plain number is `px`. Ignored when `aspectRatio` is set. |
+| `height` | `number \| string` | — | Optional cap on the chart height (the chart is square: height = width, capped by this value). A plain number is `px`. Ignored when `aspectRatio` is set. |
 | `aspectRatio` | `string` | `undefined` | CSS `aspect-ratio` shorthand. Overrides `height`. |
 | `innerRadius` | `number` | `0.15` | Proportion of the overall radius reserved for the centre hole. `0` = full pie. `0.4` = deep donut. |
 | `ringPadding` | `number` | `1` | Radial gap in SVG pixels between consecutive depth rings. |
@@ -109,6 +109,8 @@ interface IChartSunburstDatum {
 Pass `series[0].data` as `Array<IChartSunburstDatum>`.
 
 ## Behaviour notes
+
+**Responsive 1:1 drawing surface (#1324).** The SVG `viewBox` is a square: its width follows the measured width of the container (`useChartSize`, a `ResizeObserver`) and its height equals that width, so the circle is never squashed. Text, strokes and markers keep their real pixel size instead of being scaled with a fixed canvas. `height` is now an optional cap: it has no default any more, and when set the side of the square is `min(container width, available height)`. Until the box is measured (SSR, first paint) the 400 × 400 fallback is used, so hydration is unchanged.
 
 **Depth cap.** A maximum of 4 depth levels are rendered. Nodes deeper than 4 are silently ignored.
 

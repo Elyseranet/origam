@@ -220,7 +220,6 @@
         "String"
       ],
       "required": false,
-      "defaultValue": 400,
       "hasFactoryDefault": false,
       "control": "text",
       "source": "types"

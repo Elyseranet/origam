@@ -37,7 +37,7 @@
 					ref="svgRef"
 					class="origam-chart-candlestick__svg origam-chart__svg"
 					:class="svgClasses"
-					:viewBox="`0 0 ${ SVG_WIDTH } ${ SVG_HEIGHT }`"
+					:viewBox="`0 0 ${ svgWidth } ${ svgHeight }`"
 					:role="CHART_SVG_ROLE"
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
@@ -59,7 +59,7 @@
 							class="origam-chart-candlestick__grid-line"
 							:x1="PADDING.left"
 							:y1="tick.position"
-							:x2="SVG_WIDTH - PADDING.right"
+							:x2="svgWidth - PADDING.right"
 							:y2="tick.position"
 							data-cy="origam-chart-candlestick-grid-line"
 					/>
@@ -85,7 +85,7 @@
 							:key="`x-label-${ i }`"
 							class="origam-chart-candlestick__axis-label origam-chart-candlestick__axis-label--x"
 							:x="candle.cx"
-							:y="SVG_HEIGHT - PADDING.bottom + 14"
+							:y="svgHeight - PADDING.bottom + 14"
 							text-anchor="middle"
 							dominant-baseline="auto"
 					>{{ formatXLabel(candle.datum.date, i) }}</text>
@@ -192,7 +192,7 @@
 		lang="ts"
 		setup
 >
-	import { CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
+	import { CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		ref,
@@ -203,6 +203,7 @@
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
@@ -282,8 +283,7 @@
 	/*********************************************************
 	 * Static SVG box — fixed coordinate space, CSS scales it.
 	 ********************************************************/
-	const SVG_WIDTH = 600
-	const SVG_HEIGHT = 400
+	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.candlestick)
 	const PADDING = { top: 20, right: 20, bottom: 36, left: 56 }
 	const Y_TICK_COUNT = 5
 	const Y_PAD_FRACTION = 0.05
@@ -366,13 +366,13 @@
 	})
 
 	const plotTop = PADDING.top
-	const plotBottom = SVG_HEIGHT - PADDING.bottom
-	const plotHeight = plotBottom - plotTop
+	const plotBottom = computed(() => svgHeight.value - PADDING.bottom)
+	const plotHeight = computed(() => plotBottom.value - plotTop)
 
 	const yToSvg = (value: number): number => {
 		const { min, max } = yDomain.value
 		const range = max - min || 1
-		return plotBottom - ((value - min) / range) * plotHeight
+		return plotBottom.value - ((value - min) / range) * plotHeight.value
 	}
 
 	/*********************************************************
@@ -401,7 +401,7 @@
 		if (!count) return []
 
 		const plotLeft = PADDING.left
-		const plotRight = SVG_WIDTH - PADDING.right
+		const plotRight = svgWidth.value - PADDING.right
 		const plotWidth = plotRight - plotLeft
 		const slotW = plotWidth / count
 		const candleHalfW = (slotW * props.candleWidth) / 2
@@ -468,7 +468,6 @@
 	/*********************************************************
 	 * Hover / tooltip
 	 ********************************************************/
-	const svgRef = ref<SVGSVGElement | null>(null)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredIndex = ref<number | null>(null)
 

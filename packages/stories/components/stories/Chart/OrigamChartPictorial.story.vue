@@ -273,6 +273,20 @@
 			</div>
 		</Variant>
 
+		<Variant title="Responsive width">
+			<div
+					v-for="w in [480, 960]"
+					:key="w"
+					:style="{ width: `${ w }px`, maxWidth: '100%', marginBottom: '1rem' }"
+					:data-cy="`origam-chart-pictorial-responsive-${ w }`"
+			>
+				<origam-chart-pictorial
+						:series="FIXTURE_SATISFACTION" :categories="FIXTURE_SATISFACTION_CATEGORIES" :icons-per-unit="5"
+						:title="`${ w }px container`"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<Partial<IChartPictorialProps>>({

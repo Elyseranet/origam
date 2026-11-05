@@ -183,7 +183,6 @@
         "String"
       ],
       "required": false,
-      "defaultValue": 300,
       "hasFactoryDefault": false,
       "control": "text",
       "source": "types"
