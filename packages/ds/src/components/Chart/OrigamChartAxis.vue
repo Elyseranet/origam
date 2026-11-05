@@ -17,6 +17,7 @@
 
 	<g
 			v-if="showAxis"
+			ref="axisRef"
 			class="origam-chart__axis"
 			data-cy="origam-chart-axis"
 	>
@@ -46,9 +47,11 @@
 			{{ formatY(tick.value as number) }}
 		</text>
 		<text
-				v-for="(tick, i) in ticks.x"
+				v-for="{ tick, i, shown } in xTicks"
 				:key="`xl-${ i }`"
 				class="origam-chart__axis-label origam-chart__axis-label--x"
+				:visibility="shown ? undefined : 'hidden'"
+				:aria-hidden="shown ? undefined : 'true'"
 				:x="tick.position"
 				:y="plot.y1 + 16"
 				text-anchor="middle"
@@ -87,6 +90,9 @@
 		lang="ts"
 		setup
 >
+	import { computed, nextTick, onMounted, ref, shallowRef, watch } from 'vue'
+
+	import { decimateAxisTicks, measureWidestAxisLabel } from '../../utils/Chart/chart-axis-label.util'
 	import type { IChartAxisEmits, IChartAxisProps, IChartAxisSlots } from '../../interfaces/Chart/chart-axis.interface'
 
 	/*********************************************************
@@ -161,6 +167,31 @@
 		if (props.xAxisFormat) return props.xAxisFormat(value)
 		return String(value)
 	}
+
+	/*********************************************************
+	 * Décimation (#1325)
+	 *
+	 * @description
+	 * Une étiquette sur N, N d'après la largeur de la plus longue et le plus
+	 * petit écart entre graduations. Largeur MESURÉE (getComputedTextLength)
+	 * après montage ; avant cela et en SSR, ESTIMÉE (caractères × constante),
+	 * donc markup initial identique serveur/client. Les étiquettes écartées
+	 * restent dans le DOM en `visibility: hidden` : elles doivent rester
+	 * mesurables, sinon N dépendrait de lui-même. La re-mesure suit le
+	 * changement de `ticks`, que `useChartSize` fait varier avec la largeur.
+	 ********************************************************/
+	const axisRef = shallowRef(null)
+	const measuredWidest = ref(measureWidestAxisLabel(null))
+
+	const measure = async () => {
+		await nextTick()
+		measuredWidest.value = measureWidestAxisLabel(axisRef.value)
+	}
+
+	onMounted(measure)
+	watch(() => [props.ticks.x, props.xAxisFormat], measure)
+
+	const xTicks = computed(() => decimateAxisTicks(props.ticks.x, formatX, measuredWidest.value))
 
 	const formatY = (value: number): string => {
 		if (props.yAxisFormat) return props.yAxisFormat(value)

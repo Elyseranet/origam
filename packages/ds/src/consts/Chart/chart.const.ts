@@ -334,6 +334,20 @@ export const CHART_ROVING_KEY_ACTIONS: Readonly<Record<string, TChartRovingActio
 }
 
 /*********************************************************
+ * CHART_AXIS_LABEL_CHAR_WIDTH / CHART_AXIS_LABEL_MIN_GAP — décimation (#1325)
+ *
+ * @description
+ * Repli (SSR, avant mesure) pour la largeur d'une étiquette de l'axe X (px par caractère,
+ * pour la police 0.75rem par défaut, taillée sur le glyphe large) et
+ * espace minimal exigé entre deux étiquettes voisines. Servent à calculer
+ * le pas de décimation « une étiquette sur N ». Après montage la largeur est mesurée :
+ * la largeur par caractère ne sert plus qu'au premier rendu (l'écart reste utilisé), où un
+ * `--origam-chart__axis-label---font-size` très supérieur au défaut peut sous-estimer.
+ ********************************************************/
+export const CHART_AXIS_LABEL_CHAR_WIDTH = 8
+export const CHART_AXIS_LABEL_MIN_GAP = 8
+
+/*********************************************************
  * CHART_SIZE_FALLBACK (#1324)
  *
  * @description

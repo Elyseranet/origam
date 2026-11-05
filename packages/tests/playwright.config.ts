@@ -21,6 +21,8 @@ const GREEN_SPECS = [
     'btn-content-align.spec.ts',
     // #1317 — verifiee verte avant inscription (E2E_STATIC=1, chromium, port isole).
     'chart-cartesian-responsive-width.spec.ts',
+    // #1325 — rouge sur le parent (4 paires d'etiquettes X qui se touchent a 320px), verte avec la decimation ; A/B, E2E_STATIC=1, chromium, port isole.
+    'chart-cartesian-axis-label-decimation.spec.ts',
     // #1324 — verifiee verte avant inscription : 34/34 (E2E_STATIC=1, chromium, port isole) ;
     // A/B : 34/34 rouges sur `origin/develop` (viewBox fige), stories reconstruites des deux cotes.
     'chart-responsive-size.spec.ts',

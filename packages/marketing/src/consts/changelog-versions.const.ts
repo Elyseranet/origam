@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.39',
+        date: '2026-11-05',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23739.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23739.h1', textFallback: 'OrigamChartCartesian : les étiquettes de l\'axe X ne se chevauchent plus sur un chart étroit (#1325)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.38',
         date: '2026-11-05',
         type: 'patch',
