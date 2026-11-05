@@ -17,6 +17,7 @@
 
 	<g
 			v-if="showAxis"
+			ref="axisRef"
 			class="origam-chart__axis"
 			data-cy="origam-chart-axis"
 	>
@@ -46,9 +47,11 @@
 			{{ formatY(tick.value as number) }}
 		</text>
 		<text
-				v-for="{ tick, i } in visibleXTicks"
+				v-for="{ tick, i, shown } in xTicks"
 				:key="`xl-${ i }`"
 				class="origam-chart__axis-label origam-chart__axis-label--x"
+				:visibility="shown ? undefined : 'hidden'"
+				:aria-hidden="shown ? undefined : 'true'"
 				:x="tick.position"
 				:y="plot.y1 + 16"
 				text-anchor="middle"
@@ -87,7 +90,7 @@
 		lang="ts"
 		setup
 >
-	import { computed } from 'vue'
+	import { computed, nextTick, onMounted, ref, watch } from 'vue'
 
 	import { CHART_AXIS_LABEL_CHAR_WIDTH, CHART_AXIS_LABEL_MIN_GAP } from '../../consts/Chart/chart.const'
 	import type { IChartAxisEmits, IChartAxisProps, IChartAxisSlots } from '../../interfaces/Chart/chart-axis.interface'
@@ -169,16 +172,34 @@
 	 * Décimation (#1325)
 	 *
 	 * @description
-	 * Une étiquette sur N, N d'après la largeur estimée de la plus longue
-	 * et le plus petit écart entre graduations. Le texte reste horizontal
-	 * et entier ; la valeur d'un point reste dans son aria-label.
+	 * Une étiquette sur N, N d'après la largeur de la plus longue et le plus
+	 * petit écart entre graduations. Largeur MESURÉE (getComputedTextLength)
+	 * après montage ; avant cela et en SSR, ESTIMÉE (caractères × constante),
+	 * donc markup initial identique serveur/client. Les étiquettes écartées
+	 * restent dans le DOM en `visibility: hidden` : elles doivent rester
+	 * mesurables, sinon N dépendrait de lui-même. La re-mesure suit le
+	 * changement de `ticks`, que `useChartSize` fait varier avec la largeur.
 	 ********************************************************/
-	const visibleXTicks = computed(() => {
+	const axisRef = ref<SVGGElement | null>(null)
+	const measuredWidest = ref<number | null>(null)
+
+	const measure = async () => {
+		await nextTick()
+		const nodes = Array.from(axisRef.value?.querySelectorAll<SVGTextContentElement>('.origam-chart__axis-label--x') ?? [])
+		const lengths = nodes.map((n) => (typeof n.getComputedTextLength === 'function' ? n.getComputedTextLength() : 0))
+		const widest = Math.max(0, ...lengths)
+		measuredWidest.value = widest > 0 ? widest : null
+	}
+
+	onMounted(measure)
+	watch(() => [props.ticks.x, props.xAxisFormat], measure)
+
+	const xTicks = computed(() => {
 		const xs = props.ticks.x
-		const widest = Math.max(0, ...xs.map((t) => formatX(t.value).length)) * CHART_AXIS_LABEL_CHAR_WIDTH
+		const widest = measuredWidest.value ?? Math.max(0, ...xs.map((t) => formatX(t.value).length)) * CHART_AXIS_LABEL_CHAR_WIDTH
 		const pitch = Math.min(...xs.slice(1).map((t, k) => Math.abs(t.position - xs[k].position)))
 		const step = Number.isFinite(pitch) && pitch > 0 ? Math.max(1, Math.ceil((widest + CHART_AXIS_LABEL_MIN_GAP) / pitch)) : 1
-		return xs.map((tick, i) => ({ tick, i })).filter(({ i }) => i % step === 0)
+		return xs.map((tick, i) => ({ tick, i, shown: i % step === 0 }))
 	})
 
 	const formatY = (value: number): string => {
