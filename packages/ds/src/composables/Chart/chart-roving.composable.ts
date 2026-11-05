@@ -31,16 +31,16 @@ export function resolveChartRovingTarget(series: string[], current: number, acti
     const step = action === 'next' || action === 'nextSeries' ? 1 : -1
 
     if (vertical && keys.length > 1) {
-        const target = keys.indexOf(series[current]) + step
+        const target = keys.indexOf(series[current] ?? '') + step
         if (target < 0 || target >= keys.length) return current
         const position = series.slice(0, current).filter((key) => key === series[current]).length
         const inTarget = series.flatMap((key, index) => (key === keys[target] ? [index] : []))
-        return inTarget[Math.min(position, inTarget.length - 1)]
+        return inTarget[Math.min(position, inTarget.length - 1)] ?? current
     }
 
     const group = vertical ? series.map((_, index) => index) : series.flatMap((key, index) => (key === series[current] ? [index] : []))
     const next = group.indexOf(current) + step
-    return next < 0 || next >= group.length ? current : group[next]
+    return group[next] ?? current
 }
 
 /*********************************************************
@@ -92,7 +92,7 @@ export function useChartRoving(svgRef: Ref<SVGSVGElement | null>): IChartRoving 
         if (target < 0 || target === current) return
         activeIndex = target
         sync()
-        items[target].focus()
+        items[target]?.focus()
     }
 
     onMounted(() => {

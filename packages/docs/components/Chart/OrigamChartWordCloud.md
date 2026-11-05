@@ -128,7 +128,7 @@ Plain number entries in `data` are ignored — use the object form exclusively.
 
 **Empty state.** When `series` is empty, data contains no valid word objects, or placement fails for every word, the `#empty` slot is rendered.
 
-**Accessibility.** Each `<text>` element carries `role="button"` and an `aria-label` combining the word and its formatted value. The chart is a **single tab stop** (roving tabindex, #1333): `Tab` enters it once, the arrow keys move between points, `Tab` leaves it — see the key table in the `OrigamChart` page. `Enter` or `Space` activates a word. The SVG carries `<title>` and `<desc>` for screen-reader context.
+**Accessibility.** Each `<text>` element carries `role="button"` and an `aria-label` combining the word and its formatted value. The chart is a **single tab stop** (roving tabindex, #1333): `Tab` enters it once, the arrow keys move between points, `Tab` leaves it — see the key table in the `OrigamChart` page. Arrow keys follow the DOM order, which is the order in which the words are rendered, not the geometric neighbour. `Enter` or `Space` activates a word. The SVG carries `<title>` and `<desc>` for screen-reader context.
 
 **Accessibility — the `<desc>` summary is localised AND agrees in number.** The `<desc>` text is not an English literal: it resolves through the DS `t()` mechanism against `origam.chart.word_cloud.desc*`, and the grammatical form is chosen by `Intl.PluralRules` for the ACTIVE locale — never by a `count === 1` test in the component. A translator supplies only the forms their language needs (`_one` / `_other` cover `en` and `fr`; a Russian translation adds `_few` with no component change), and a category a locale does not define falls back to `_other` rather than leaking the raw key.
 
