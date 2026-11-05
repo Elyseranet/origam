@@ -18,6 +18,29 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.40] - 2026-11-05
+
+### Fixed — Charts : un seul arrêt de tabulation par chart, navigation aux flèches (#1333)
+
+Chaque point focusable d'un chart était un arrêt de tabulation. Mesuré sur develop, cela donnait entre 3 et 1825 arrêts selon le chart et la Variant (Cartésien jusqu'à 1825, Heatmap 168). Il fallait autant de frappes de Tab pour quitter le chart.
+
+- Pattern **roving tabindex** sur les 20 charts à points `role="button"` : un seul point est à `tabindex="0"` (le dernier point actif, sinon le premier), tous les autres sont à `-1`.
+- Touches :
+
+| Touche | Action |
+|---|---|
+| ← / → | point précédent / suivant de la série |
+| ↑ / ↓ | série précédente / suivante, à la même position (bornée) ; à série unique, même effet que ← / → |
+| Home / End | premier / dernier point |
+| Entrée / Espace | active le point (émission inchangée) |
+| Tab | sort du chart en une frappe |
+
+- Treemap, Sunburst, Sankey, Map, Honeycomb et WordCloud suivent l'ordre du DOM. Pour Sankey, ce sont les liens puis les nœuds. Cet ordre est documenté sur chaque chart.
+- Nouveau composable `useChartRoving` (`composables/Chart/chart-roving.composable.ts`), interface `IChartRoving`, type `TChartRovingAction`, consts `CHART_POINT_ATTR`, `CHART_POINT_SELECTOR`, `CHART_SERIES_ATTR` et `CHART_ROVING_KEY_ACTIONS`.
+- Le bouton de réinitialisation du zoom du cartésien garde son propre arrêt de tabulation.
+- **Vérifié** : la spec `chart-roving-tabindex.spec.ts`, inscrite dans `GREEN_SPECS`, compte 1 arrêt par chart, ainsi que flèches, Home/End et Entrée/Espace, sur toutes les Variants. Elle est rouge 21/21 sur le parent et verte avec le correctif. `chart-nested-interactive` reste verte (axe : 0 `nested-interactive`). `e2e/chart*` : 401 passés (PR #1337).
+- **Limites** : pas d'inversion des flèches en RTL. Avant l'hydratation SSR, les points n'ont pas d'arrêt de tabulation.
+
 ## [2.37.39] - 2026-11-05
 
 ### Fixed — `OrigamChartCartesian` : les étiquettes de l'axe X ne se chevauchent plus sur un chart étroit (#1325)
