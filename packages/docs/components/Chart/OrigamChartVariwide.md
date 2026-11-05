@@ -114,6 +114,8 @@ Plain `number` items (from `IChartSeries.data`) are accepted for compatibility; 
 
 ## Behaviour notes
 
+**Responsive drawing surface (#1324).** The SVG `viewBox` follows the measured box of the chart (`useChartSize`, a `ResizeObserver`), not a fixed 600 × 400 canvas. The plot fills the container width and height, the geometry is recomputed, and text, strokes and markers keep their real pixel size instead of being scaled with the viewBox. Until the box is measured (SSR, first paint) the 600 × 400 fallback is used, so hydration is unchanged. Give the chart a `height` / `aspectRatio` to change the box ratio.
+
 **Single-series only.** The component reads `series[0]` exclusively. Extra series are ignored.
 
 **Width encoding geometry.** Total column widths = Σ `datum.width`. Each bar gets `plotWidth × (datum.width / totalWidth) - barGap` SVG pixels wide. A country with population 1411 M (China) will be ~21× wider than one with 67 M (UK), making the two-dimensional encoding visually immediate.

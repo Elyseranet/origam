@@ -24,7 +24,7 @@ const CHARTS = [
     'sunburst', 'treemap', 'variwide', 'wordcloud'
 ]
 const storyIdOf = (suffix: string) => `components-stories-chart-origamchart${suffix}-story-vue`
-const VARIANTS_PER_STORY = 4
+const VARIANTS_PER_STORY = Number(process.env.E2E_ROVING_VARIANTS ?? 40)
 const TAB_CAP = 700
 
 // The zoom-reset button is a real, separate control: it keeps its own tab stop.
@@ -41,21 +41,38 @@ const tabStopsInSvg = async (page: Page): Promise<number> => {
         document.body.prepend(pre)
         pre.focus()
     })
-    const inSvg = () => page.evaluate(() => !!document.activeElement?.closest('svg'))
-    let guard = 0
-    while (!(await inSvg()) && guard++ < 40) await page.keyboard.press('Tab')
+    // Count the presses that land on a chart point; stop once focus reaches the end of the page
+    // (a Variant may render several charts, with other controls between them).
+    const onPoint = () => page.evaluate((sel) => !!document.activeElement?.matches(sel), POINTS)
     let stops = 0
-    while ((await inSvg()) && stops < TAB_CAP) {
-        stops++
+    let gap = 0
+    for (let presses = 0; presses < TAB_CAP + 60 && gap < 25; presses++) {
         await page.keyboard.press('Tab')
+        if (await page.evaluate(() => document.activeElement?.id === '__pre')) break // wrapped around
+        if (await onPoint()) {
+            stops++
+            gap = 0
+        } else {
+            gap++
+        }
     }
     return stops
 }
 
+// Navigation is probed on the FIRST chart of the Variant (a "Responsive width" Variant renders several).
 const activeIndex = (page: Page) => page.evaluate((sel) => {
-    const items = [...document.querySelectorAll(sel)]
+    const svg = [...document.querySelectorAll('svg')].find((el) => el.querySelector(sel))!
+    const items = [...svg.querySelectorAll(sel)]
     return items.indexOf(document.activeElement as Element)
 }, POINTS)
+
+const chartCount = (page: Page) => page.evaluate((sel) => (
+    [...document.querySelectorAll('svg')].filter((el) => el.querySelector(sel)).length
+), POINTS)
+
+const firstChartPoints = (page: Page) => page.evaluate((sel) => (
+    [...document.querySelectorAll('svg')].find((el) => el.querySelector(sel))!.querySelectorAll(sel).length
+), POINTS)
 
 const tabbablePoints = (page: Page) => page.evaluate((sel) => (
     [...document.querySelectorAll(sel)].filter((el) => (el as HTMLElement).tabIndex >= 0).length
@@ -94,12 +111,15 @@ for (const suffix of CHARTS) {
                 })
             })
 
+            // One tab stop PER chart: a Variant may render several charts.
+            const charts = await chartCount(page)
+            const firstPoints = await firstChartPoints(page)
             const stops = await tabStopsInSvg(page)
             report.push(`${stops}/${points}`)
             console.log(`TABSTOPS ${suffix} ${variant.id} ${stops}/${points}`)
             // 1. One stop for the whole chart.
-            expect(stops, `${variant.id}: Tab stops across ${points} points`).toBe(1)
-            expect(await tabbablePoints(page), `${variant.id}: tabbable points`).toBe(1)
+            expect(stops, `${variant.id}: Tab stops across ${points} points`).toBe(charts)
+            expect(await tabbablePoints(page), `${variant.id}: tabbable points`).toBe(charts)
 
             // Back to the single entry point.
             await page.evaluate(() => (document.getElementById('__pre') as HTMLElement).focus())
@@ -108,17 +128,17 @@ for (const suffix of CHARTS) {
             const first = await activeIndex(page)
             expect(first, `${variant.id}: entry point is a point`).toBeGreaterThanOrEqual(0)
 
-            if (points > 1) {
+            if (firstPoints > 1) {
                 // 2. ArrowRight moves, still a single tab stop.
                 await page.keyboard.press('ArrowRight')
                 const next = await activeIndex(page)
                 expect(next, `${variant.id}: ArrowRight`).not.toBe(first)
-                expect(await tabbablePoints(page), `${variant.id}: roving`).toBe(1)
+                expect(await tabbablePoints(page), `${variant.id}: roving`).toBe(charts)
                 await page.keyboard.press('ArrowLeft')
                 expect(await activeIndex(page), `${variant.id}: ArrowLeft returns`).toBe(first)
                 // 3. Home / End.
                 await page.keyboard.press('End')
-                expect(await activeIndex(page), `${variant.id}: End`).toBe(points - 1)
+                expect(await activeIndex(page), `${variant.id}: End`).toBe(firstPoints - 1)
                 await page.keyboard.press('Home')
                 expect(await activeIndex(page), `${variant.id}: Home`).toBe(0)
             }
@@ -131,9 +151,13 @@ for (const suffix of CHARTS) {
             const afterSpace = await page.evaluate(() => (window as unknown as { __emitted: string[] }).__emitted.length)
             expect(afterSpace, `${variant.id}: Space emits`).toBeGreaterThan(afterEnter)
 
-            // 5. Tab leaves the chart in one keystroke.
+            // 5. Tab leaves the chart in one keystroke (to the next chart, or out).
             await page.keyboard.press('Tab')
-            expect(await page.evaluate(() => !!document.activeElement?.closest('svg')), `${variant.id}: Tab leaves`).toBe(false)
+            const stillInFirst = await page.evaluate((sel) => {
+                const svg = [...document.querySelectorAll('svg')].find((el) => el.querySelector(sel))!
+                return svg.contains(document.activeElement)
+            }, POINTS)
+            expect(stillInFirst, `${variant.id}: Tab leaves the first chart`).toBe(false)
         }
         expect(probed, `${storyId}: at least one Variant with focusable points`).toBeGreaterThan(0)
     })

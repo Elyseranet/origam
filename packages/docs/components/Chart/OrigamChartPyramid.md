@@ -95,6 +95,8 @@ import { OrigamChartPyramid } from '@origam/ds'
 
 ## Behaviour notes
 
+**Responsive drawing surface (#1324).** The SVG `viewBox` follows the measured box of the chart (`useChartSize`, a `ResizeObserver`), not a fixed 600 × 400 canvas. The plot fills the container width and height, the geometry is recomputed, and text, strokes and markers keep their real pixel size instead of being scaled with the viewBox. Until the box is measured (SSR, first paint) the 600 × 400 fallback is used, so hydration is unchanged. Give the chart a `height` / `aspectRatio` to change the box ratio.
+
 **Single-series only.** The component reads `series[0]` exclusively. Extra series are ignored. For multi-series comparisons use the cartesian family (`bar`, `column`).
 
 **Value proportions.** Each slice width is proportional to `value / max(values)`. The slice with the maximum value always fills the full available width; other slices are centred and scaled down.

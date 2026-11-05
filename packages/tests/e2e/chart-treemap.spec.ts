@@ -105,15 +105,18 @@ test.describe('OrigamChartTreemap — algorithm variants', () => {
     test('squarified and slice-dice produce different tile geometries', async ({ page }) => {
         await openVariant(page, TREEMAP_STORY, 'Design')
         const sandbox = sandboxOf(page)
-        const tile0 = sandbox.locator(`${ ROOT } [data-cy="origam-chart-treemap-tile-0"]`)
+        // Tuile 1, pas 0 : sur une boite large et basse (viewBox = boite mesuree, #1324)
+        // la premiere tuile est une colonne pleine hauteur dans les deux algorithmes,
+        // donc identique ; c'est la deuxieme qui les distingue.
+        const tile0 = sandbox.locator(`${ ROOT } [data-cy="origam-chart-treemap-tile-1"]`)
 
         await selectHstOption(page, 'Algorithm', 'squarified')
         await expect(tile0).toBeVisible({ timeout: 8000 })
-        const sqW = await tile0.getAttribute('width')
+        const sqW = await tile0.getAttribute('height')
 
         await selectHstOption(page, 'Algorithm', 'slice-dice')
         await expect(tile0).toBeVisible({ timeout: 8000 })
-        const sdW = await tile0.getAttribute('width')
+        const sdW = await tile0.getAttribute('height')
 
         expect(sqW).toBeTruthy()
         expect(sdW).toBeTruthy()

@@ -18,6 +18,22 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.38] - 2026-11-05
+
+### Fixed — Charts : la surface de dessin suit la taille du conteneur sur 19 charts (#1324)
+
+Suite de #1317 : `useChartSize` est désormais branché sur 19 charts. Son option `aspectRatio` (hauteur / largeur) remplace le mode carré.
+
+- **Rectangulaires**, sur la boîte mesurée : BoxPlot, Bullet, Candlestick, Heatmap, Pareto, Pictorial, Pyramid, Sankey, Streamgraph, Treemap, Variwide, WordCloud.
+- **1:1** : Polar, Radar, PolarBar, Sunburst.
+- **Gauge**, ratio du demi-anneau : 280/360.
+- **Map** en 2:1. La projection Mercator est recalculée dans la boîte mesurée, donc la géographie n'est jamais déformée.
+- **Sparkline** : le `viewBox` mesuré remplace `preserveAspectRatio="none"`. Les marqueurs restent ronds et les traits gardent leur épaisseur réelle en px.
+- **Honeycomb** n'est pas branché, par conception : `tileSize` pilote sa taille intrinsèque.
+- **⚠ Changement de rendu** : Gauge, Map et les charts radiaux n'ont plus de `height` par défaut, qui devient un plafond optionnel. Sans `height`, un radial forme un carré de la largeur du conteneur. WordCloud adapte `minFontSize` et `maxFontSize` à la boîte mesurée ; sans cela, 2 mots sur 20 disparaissaient.
+- **Constantes** : `CHART_ASPECT_RATIO` et `CHART_SIZE_FALLBACK`, dans `consts/Chart/chart.const.ts`.
+- **Vérifié** : la spec `chart-responsive-size.spec.ts` (39 tests, inscrite dans `GREEN_SPECS`) est rouge 39/39 sur le parent et verte avec le correctif. Mesures sur le parent : Gauge, svg 456×242 pour un viewBox de 360×280 ; Sparkline, marqueur de 20×5 puis 27,5×5 px. `e2e/chart*` : 376 passés, aucun échec (PR #1336).
+
 ## [2.37.37] - 2026-11-04
 
 ### Fixed — `OrigamChartCartesian` : la surface de dessin suit la largeur réelle du conteneur (#1317)

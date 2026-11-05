@@ -102,6 +102,8 @@ import { OrigamChartStreamgraph } from '@origam/ds'
 
 ## Behaviour notes
 
+**Responsive drawing surface (#1324).** The SVG `viewBox` follows the measured box of the chart (`useChartSize`, a `ResizeObserver`), not a fixed 700 × 420 canvas. The plot fills the container width and height, the geometry is recomputed, and text, strokes and markers keep their real pixel size instead of being scaled with the viewBox. Until the box is measured (SSR, first paint) the 700 × 420 fallback is used, so hydration is unchanged. Give the chart a `height` / `aspectRatio` to change the box ratio.
+
 ### Wiggle algorithm
 
 The Byron-Wattenberg wiggle minimises the total weighted second derivative of the baseline. Implementation:

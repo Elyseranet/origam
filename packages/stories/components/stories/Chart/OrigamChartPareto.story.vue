@@ -203,6 +203,20 @@
 			</origam-chart-pareto>
 		</Variant>
 
+		<Variant title="Responsive width">
+			<div
+					v-for="w in [480, 960]"
+					:key="w"
+					:style="{ width: `${ w }px`, maxWidth: '100%', marginBottom: '1rem' }"
+					:data-cy="`origam-chart-pareto-responsive-${ w }`"
+			>
+				<origam-chart-pareto
+						:series="FIXTURE_DEFECTS"
+						:title="`${ w }px container`"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<Partial<IChartParetoProps>>({

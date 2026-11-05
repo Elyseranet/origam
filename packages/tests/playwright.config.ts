@@ -21,6 +21,9 @@ const GREEN_SPECS = [
     'btn-content-align.spec.ts',
     // #1317 — verifiee verte avant inscription (E2E_STATIC=1, chromium, port isole).
     'chart-cartesian-responsive-width.spec.ts',
+    // #1324 — verifiee verte avant inscription : 34/34 (E2E_STATIC=1, chromium, port isole) ;
+    // A/B : 34/34 rouges sur `origin/develop` (viewBox fige), stories reconstruites des deux cotes.
+    'chart-responsive-size.spec.ts',
     // #1222 — verifiee verte et stable avant inscription : 10/10 (--repeat-each=5, E2E_STATIC=1, chromium, port isole).
     'btn-text-active.spec.ts',
     // #1179 — verifiee verte et stable avant inscription : 9/9 puis 45/45 sous

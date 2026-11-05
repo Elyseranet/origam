@@ -128,6 +128,8 @@ story. The rest of the surface is consumed as-is, with no local override:
 
 ## Behaviour notes
 
+**Intrinsic size, by design (#1324).** Unlike the other charts, the honeycomb does not follow the measured box: the `tileSize` prop drives the geometry and the `viewBox` is derived from the tile positions. That is the API contract, so `useChartSize` is deliberately not wired here; use `tileSize` to size the grid.
+
 **Single-series only.** The component reads `series[0]` exclusively. Extra series are ignored. Supply data with `{ x, y }` grid coordinates instead of a flat array.
 
 **Geometry.** Tiles are placed by their `(x, y)` integer grid coordinates; gaps in the coordinate space are rendered as empty space. The SVG viewBox auto-expands to fit all tiles with a small padding margin. There are no fixed axis labels — all context is conveyed through tile labels, tooltips, and the legend.

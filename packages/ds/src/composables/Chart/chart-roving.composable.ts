@@ -59,7 +59,7 @@ export function resolveChartRovingTarget(series: string[], current: number, acti
  * an SVG element keyboard-focusable as soon as it has a focus / focusin
  * listener, which would add a second tab stop (the svg itself).
  ********************************************************/
-export function useChartRoving(svgRef: Ref<SVGSVGElement | null>): IChartRoving {
+export function useChartRoving(svgRef: Ref<SVGSVGElement | null | undefined>): IChartRoving {
     let activeIndex = 0
     let host: HTMLElement | null = null
 

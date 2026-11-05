@@ -37,7 +37,7 @@
 					ref="svgRef"
 					class="origam-chart-sunburst__svg origam-chart__svg"
 					:class="svgClasses"
-					:viewBox="`0 0 ${ SVG_SIZE } ${ SVG_SIZE }`"
+					:viewBox="`0 0 ${ svgWidth } ${ svgWidth }`"
 					:role="CHART_SVG_ROLE"
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
@@ -51,7 +51,7 @@
 
 				<g
 						class="origam-chart__series"
-						:transform="`translate(${ CENTER }, ${ CENTER })`"
+						:transform="`translate(${ svgWidth / 2 }, ${ svgWidth / 2 })`"
 						data-cy="origam-chart-sunburst-series"
 				>
 					<path
@@ -167,7 +167,7 @@
 		lang="ts"
 		setup
 >
-	import { CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
+	import { CHART_ASPECT_RATIO, CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		ref,
@@ -191,6 +191,7 @@
 	} from '../../interfaces/Chart/chart-sunburst.interface'
 
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
@@ -224,7 +225,6 @@
 	})
 
 	const props = withDefaults(defineProps<IChartSunburstProps>(), {
-		height: 400,
 		title: undefined,
 		subtitle: undefined,
 		innerRadius: 0.15,
@@ -257,8 +257,9 @@
 	/*********************************************************
 	 * Static SVG box — square coordinate space; CSS scales it.
 	 ********************************************************/
-	const SVG_SIZE = 400
-	const CENTER = SVG_SIZE / 2
+	const { resizeRef: svgRef, width: svgWidth } = useChartSize(CHART_SIZE_FALLBACK.sunburst, { aspectRatio: CHART_ASPECT_RATIO.radial })
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
+	const center = computed(() => svgWidth.value / 2)
 	const MAX_DEPTH_CAP = 4
 
 	/**
@@ -459,7 +460,7 @@
 		const maxDepth = Math.min(computeMaxDepth(rawData), MAX_DEPTH_CAP)
 		if (maxDepth === 0) return []
 
-		const totalR = CENTER - 4
+		const totalR = center.value - 4
 		const holeR = totalR * props.innerRadius
 		const ringWidth = (totalR - holeR) / maxDepth
 
@@ -683,8 +684,6 @@
 	/*********************************************************
 	 * Hover / tooltip
 	 ********************************************************/
-	const svgRef = ref<SVGSVGElement | null>(null)
-	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredId = ref<string | null>(null)
 

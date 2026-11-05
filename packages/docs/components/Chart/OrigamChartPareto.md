@@ -116,6 +116,8 @@ carry Pareto-specific defaults. The rest of the surface is consumed as-is:
 
 ## Behaviour notes
 
+**Responsive drawing surface (#1324).** The SVG `viewBox` follows the measured box of the chart (`useChartSize`, a `ResizeObserver`), not a fixed 640 × 400 canvas. The plot fills the container width and height, the geometry is recomputed, and text, strokes and markers keep their real pixel size instead of being scaled with the viewBox. Until the box is measured (SSR, first paint) the 640 × 400 fallback is used, so hydration is unchanged. Give the chart a `height` / `aspectRatio` to change the box ratio.
+
 - **Auto-sort** — the component sorts descending by value regardless of input order. The 80/20 line will naturally cross around the 20% mark on the X axis for a well-distributed dataset.
 - **Keyboard navigation** — each column has `role="button"`; The chart is a **single tab stop** (roving tabindex, #1333): `Tab` enters it once, the arrow keys move between points, `Tab` leaves it — see the key table in the `OrigamChart` page. Enter/Space fires `point-click`.
 - **Reduced motion** — when `prefers-reduced-motion: reduce` is active, all CSS animations are suppressed regardless of the `animated` prop.

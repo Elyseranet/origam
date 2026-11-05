@@ -197,6 +197,20 @@
 			</origam-chart-polar-bar>
 		</Variant>
 
+		<Variant title="Responsive width">
+			<div
+					v-for="w in [480, 960]"
+					:key="w"
+					:style="{ width: `${ w }px`, maxWidth: '100%', marginBottom: '1rem' }"
+					:data-cy="`origam-chart-polar-bar-responsive-${ w }`"
+			>
+				<origam-chart-polar-bar
+						:series="FIXTURE_WEEKLY" :categories="FIXTURE_WEEKLY_CATEGORIES"
+						:title="`${ w }px container`"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IChartPolarBarProps>({

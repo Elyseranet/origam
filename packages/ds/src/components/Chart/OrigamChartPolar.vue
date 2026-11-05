@@ -166,7 +166,7 @@
 		lang="ts"
 		setup
 >
-	import { CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
+	import { CHART_ASPECT_RATIO, CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		ref,
@@ -174,6 +174,7 @@
 	} from 'vue'
 
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
@@ -216,7 +217,6 @@
 	const props = withDefaults(defineProps<IChartPolarProps>(), {
 		type: 'pie',
 		categories: () => [],
-		height: 300,
 		title: undefined,
 		subtitle: undefined,
 		showLegend: true,
@@ -324,12 +324,10 @@
 	 * Static — polar charts need less padding than cartesian
 	 * because there are no axis labels to host outside the plot.
 	 ********************************************************/
-	const SVG_WIDTH = 600
-	const SVG_HEIGHT = 360
+	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.polar, { aspectRatio: CHART_ASPECT_RATIO.radial })
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const PADDING_POLAR = { top: 12, right: 12, bottom: 12, left: 12 }
 
-	const svgRef = ref<SVGSVGElement | null>(null)
-	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 
 	/*********************************************************
@@ -361,8 +359,8 @@
 		smoothing: () => 'none',
 		yMin: () => undefined,
 		yMax: () => undefined,
-		width: () => SVG_WIDTH,
-		height: () => SVG_HEIGHT,
+		width: () => svgWidth.value,
+		height: () => svgHeight.value,
 		padding: () => PADDING_POLAR,
 		hiddenLabels: () => hiddenLabels.value
 	})
