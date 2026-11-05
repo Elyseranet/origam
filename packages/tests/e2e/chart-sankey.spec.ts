@@ -179,25 +179,25 @@ test.describe('OrigamChartSankey — accessibility', () => {
         }
     })
 
-    test('each node is keyboard-focusable (tabindex=0)', async ({ page }) => {
+    test('each node is keyboard-focusable (roving tabindex, #1333)', async ({ page }) => {
         await openVariant(page, SANKEY_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const nodes = sandbox.locator('[data-cy="origam-chart-sankey"] [data-cy^="origam-chart-sankey-node-"]')
         await expect(nodes).toHaveCount(7, { timeout: 8000 })
         const count = await nodes.count()
         for (let i = 0; i < count; i++) {
-            await expect(nodes.nth(i)).toHaveAttribute('tabindex', '0')
+            await expect(nodes.nth(i)).toHaveAttribute('tabindex', /^(0|-1)$/)
         }
     })
 
-    test('each link is keyboard-focusable (tabindex=0)', async ({ page }) => {
+    test('each link is keyboard-focusable (roving tabindex, #1333)', async ({ page }) => {
         await openVariant(page, SANKEY_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const links = sandbox.locator('[data-cy="origam-chart-sankey"] [data-cy^="origam-chart-sankey-link-"]')
         await expect(links).toHaveCount(7, { timeout: 8000 })
         const count = await links.count()
         for (let i = 0; i < count; i++) {
-            await expect(links.nth(i)).toHaveAttribute('tabindex', '0')
+            await expect(links.nth(i)).toHaveAttribute('tabindex', /^(0|-1)$/)
         }
     })
 })

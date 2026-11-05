@@ -113,7 +113,8 @@ Bands are rendered in array order. Each band covers `[previous.to, this.to]`. St
   fallback is a locale key, not an English literal, so it follows the active
   locale (#567).
 - Inner `<svg>` carries `role="group"` plus `<title>` and `<desc>` for screen readers.
-- Each value bar (`<rect>`) has `tabindex="0"`, `role="button"`, and `aria-label` describing category / value / target / achievement %.
+- The chart is a **single tab stop** (roving tabindex, #1333): `Tab` enters it once, the arrow keys move between points, `Tab` leaves it — see the key table in the `OrigamChart` page.
+- Each value bar (`<rect>`) has `role="button"`, and `aria-label` describing category / value / target / achievement %.
 - Keyboard: `Enter` and `Space` fire `point-click` on the focused bar.
 - Animation respects `prefers-reduced-motion: reduce`.
 

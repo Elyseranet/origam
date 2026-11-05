@@ -113,7 +113,7 @@ import { OrigamChartPictorial } from '@origam/ds'
 
 **Empty state.** Rendered when `series` is empty, contains no data, or every series is hidden via legend toggle.
 
-**Accessibility.** Each column `<g>` has `role="button"`, `tabindex="0"`, and an `aria-label` carrying `"Category: value (N of M icons)"`. Keyboard users Tab through columns and activate with Enter or Space. The SVG carries `<title>` and `<desc>` for screen-reader context.
+**Accessibility.** Each column `<g>` has `role="button"`, `tabindex="0"`, and an `aria-label` carrying `"Category: value (N of M icons)"`. The chart is a **single tab stop** (roving tabindex, #1333): `Tab` enters it once, the arrow keys move between points, `Tab` leaves it — see the key table in the `OrigamChart` page. `Enter` or `Space` activates a column. The SVG carries `<title>` and `<desc>` for screen-reader context.
 
 **Animation.** Icons fade in on mount. Skipped when `animated=false` or `prefers-reduced-motion: reduce` is active.
 

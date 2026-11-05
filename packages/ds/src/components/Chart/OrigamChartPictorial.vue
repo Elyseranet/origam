@@ -42,6 +42,7 @@
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-pictorial-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -82,7 +83,8 @@
 							:transform="`translate(${ col.x }, ${ col.y })`"
 							class="origam-chart-pictorial__column"
 							:data-cy="`origam-chart-pictorial-col-${ col.dataIndex }`"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="columnAriaLabel(col)"
 							@click="onColumnActivate(col, $event)"
@@ -139,7 +141,8 @@
 							:transform="`translate(${ fillColX(col) }, ${ fillColY(col) })`"
 							class="origam-chart-pictorial__column"
 							:data-cy="`origam-chart-pictorial-col-${ col.dataIndex }`"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="fillColumnAriaLabel(col)"
 							@click="onColumnActivate(col, $event)"
@@ -305,6 +308,7 @@
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -797,6 +801,7 @@
 	 * Hover / tooltip state
 	 ********************************************************/
 	const svgRef = ref<SVGSVGElement | null>(null)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredColKey = ref<string | null>(null)
 

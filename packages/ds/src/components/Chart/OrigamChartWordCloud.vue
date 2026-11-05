@@ -42,6 +42,7 @@
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-word-cloud-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -67,7 +68,8 @@
 							dominant-baseline="central"
 							:transform="`translate(${ word.x }, ${ word.y }) rotate(${ word.angle })`"
 							:data-cy="`origam-chart-word-cloud-word-${ word.index }`"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="`${ word.text }: ${ formatValue(word.value) }`"
 							@click="onWordActivate(word, $event)"
@@ -157,6 +159,7 @@
 
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
@@ -457,6 +460,7 @@
 	 * Hover / tooltip
 	 ********************************************************/
 	const svgRef = ref<SVGSVGElement | null>(null)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredIndex = ref<number | null>(null)
 

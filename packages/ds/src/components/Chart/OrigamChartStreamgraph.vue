@@ -42,6 +42,7 @@
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-streamgraph-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -103,7 +104,8 @@
 							:d="ribbon.d"
 							:style="{ fill: ribbon.color }"
 							:data-cy="`origam-chart-streamgraph-ribbon-${ ribbon.seriesIndex }`"
-							tabindex="0"
+							tabindex="-1"
+							data-chart-point
 							role="button"
 							:aria-label="ribbonAriaLabel(ribbon)"
 							@click="onRibbonActivate(ribbon, $event)"
@@ -192,6 +194,7 @@
 
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -662,6 +665,7 @@ return [ out, props.style as StyleValue ]
 	 * Hover / tooltip
 	 ********************************************************/
 	const svgRef = ref<SVGSVGElement | null>(null)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const mousePos = ref<{ x: number; y: number }>({ x: 0, y: 0 })
 	const hoveredSeriesIndex = ref<number | null>(null)
 	const hoveredXIndex = ref<number | null>(null)

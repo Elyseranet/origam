@@ -190,14 +190,14 @@ test.describe('OrigamChartTreemap — accessibility', () => {
         }
     })
 
-    test('each tile is keyboard-focusable (tabindex=0)', async ({ page }) => {
+    test('each tile is keyboard-focusable (roving tabindex, #1333)', async ({ page }) => {
         await openVariant(page, TREEMAP_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const tiles = sandbox.locator('[data-cy="origam-chart-treemap"] rect[data-cy^="origam-chart-treemap-tile-"]')
         await expect(tiles).toHaveCount(10, { timeout: 6000 })
         const count = await tiles.count()
         for (let i = 0; i < count; i++) {
-            await expect(tiles.nth(i)).toHaveAttribute('tabindex', '0')
+            await expect(tiles.nth(i)).toHaveAttribute('tabindex', /^(0|-1)$/)
         }
     })
 })

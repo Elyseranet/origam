@@ -190,14 +190,14 @@ test.describe('OrigamChartHeatmap — accessibility', () => {
         }
     })
 
-    test('each cell is keyboard-focusable (tabindex=0)', async ({ page }) => {
+    test('each cell is keyboard-focusable (roving tabindex, #1333)', async ({ page }) => {
         await openVariant(page, HEATMAP_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const cells = sandbox.locator(`${ CHART } [data-cy^="origam-chart-heatmap-cell-"]:not([data-cy*="-group-"])`)
         const count = await cells.count()
 
         for (let i = 0; i < Math.min(count, 5); i++) {
-            await expect(cells.nth(i)).toHaveAttribute('tabindex', '0')
+            await expect(cells.nth(i)).toHaveAttribute('tabindex', /^(0|-1)$/)
         }
     })
 })

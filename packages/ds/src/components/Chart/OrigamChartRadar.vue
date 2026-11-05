@@ -42,6 +42,7 @@
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-radar-svg"
+					@keydown="onChartKeydown"
 			>
 				<title>{{ svgTitle }}</title>
 				<desc>{{ svgDesc }}</desc>
@@ -98,7 +99,9 @@
 								:cy="path.circle!.cy"
 								:r="path.circle!.r"
 								:fill="path.color"
-								tabindex="0"
+								tabindex="-1"
+								data-chart-point
+								:data-chart-series="path.seriesIndex"
 								role="button"
 								:aria-label="pointAriaLabel(path)"
 								:data-cy="`origam-chart-point-${ path.seriesIndex }-${ path.dataIndex }`"
@@ -155,6 +158,7 @@
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useChart } from '../../composables/Chart/chart.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
@@ -235,6 +239,7 @@
 	const RADAR_RINGS = [0.25, 0.5, 0.75, 1]
 
 	const svgRef = ref<SVGSVGElement | null>(null)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 
 	const chart = useChart({
 		type: () => 'radar',

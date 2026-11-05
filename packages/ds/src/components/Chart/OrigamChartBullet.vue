@@ -42,6 +42,7 @@
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-bullet-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 			>
@@ -79,7 +80,8 @@
 								:height="barH(bullet)"
 								:style="{ fill: bullet.barFill }"
 								:data-cy="`origam-chart-bullet-bar-${ bullet.index }`"
-								tabindex="0"
+								tabindex="-1"
+								data-chart-point
 								role="button"
 								:aria-label="bulletAriaLabel(bullet)"
 								@click="onBulletActivate(bullet, $event)"
@@ -229,6 +231,7 @@
 
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
@@ -582,6 +585,7 @@
 	 * Hover / tooltip
 	 ********************************************************/
 	const svgRef = ref<SVGSVGElement | null>(null)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredIndex = ref<number | null>(null)
 

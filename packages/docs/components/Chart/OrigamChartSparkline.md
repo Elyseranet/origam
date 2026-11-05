@@ -79,7 +79,7 @@ A tiny inline chart for table cells, KPI cards, and dashboards. Renders a single
 
 - **Point interaction** — every rendered marker (`showMarkers`), special
   marker (`showMin` / `showMax` / `showLast`), and bar (`type="column"` /
-  `type="bar"`) is individually focusable (`tabindex="0"`, `role="button"`,
+  `type="bar"`) is a point of the chart's single tab stop (roving tabindex, #1333: arrows move between marks, `Home` / `End` jump to the ends, see the `OrigamChart` page; `role="button"`,
   a value-carrying `aria-label`) and activates on click, <kbd>Enter</kbd>,
   or <kbd>Space</kbd>. Clicking anywhere else on the SVG — e.g. a plain
   `line`/`area` sparkline with no markers shown — falls back to the

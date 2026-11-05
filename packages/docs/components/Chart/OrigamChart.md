@@ -195,7 +195,17 @@ only** — `line`, `spline`, `stepped-line`, `area`, `bar`, `column`, `scatter`,
 
 **SSR.** A placeholder `<div>` with the correct dimensions is emitted server-side; the SVG mounts on `onMounted`. No `window` or `ResizeObserver` is accessed during SSR.
 
-**Keyboard access.** Each data point is focusable via `Tab` / `Shift+Tab`. `Enter` or `Space` fires `point-click` with a synthetic `KeyboardEvent`. Legend entries are also keyboard-navigable and announce their visibility state to screen readers.
+**Keyboard access.** A chart is a **single tab stop** (roving tabindex, WCAG 2.1.1 / 2.4.3): `Tab` enters the chart once, on the last active point (the first one on the first visit); every other point is `tabindex="-1"`, and `Tab` leaves the chart in one keystroke. Without it, crossing a chart cost one `Tab` per point (measured 1 to 1825 across the stories). `Enter` or `Space` fires `point-click` with a synthetic `KeyboardEvent`. Legend entries stay keyboard-navigable and announce their visibility state to screen readers.
+
+| Key | Action |
+|---|---|
+| `Tab` / `Shift+Tab` | Enter the chart on the active point, or leave it |
+| `ArrowRight` / `ArrowLeft` | Next / previous point in the series (no wrap) |
+| `ArrowDown` / `ArrowUp` | Next / previous series, same position (clamped when the series is shorter). With a single series they behave like `ArrowRight` / `ArrowLeft` |
+| `Home` / `End` | First / last point of the chart |
+| `Enter` / `Space` | Activate the point (`point-click`, unchanged) |
+
+Series are named by the `data-chart-series` attribute: the series of a cartesian or radar chart, the rows of a heatmap. In every other chart the points form one series, in DOM order (for 2D layouts such as treemap, sunburst, sankey, map or honeycomb that is the order of the data, not the geometric neighbour). Navigation is not mirrored in right-to-left layouts.
 
 **Accessible role.** The chart `<svg>` carries `role="group"` with an accessible name (`aria-label`), never `role="img"`: an `img` makes its children presentational, so focusable data points inside it cannot be announced by a screen reader (axe `nested-interactive`, WCAG 4.1.2). Charts with no focusable point (`gauge`) keep `role="img"`.
 

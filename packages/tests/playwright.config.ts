@@ -379,6 +379,10 @@ const GREEN_SPECS = [
     // #1318 / #1153 — le `<svg>` d'un chart à points focusables est
     // `role="group"`, jamais `img` (axe nested-interactive, WCAG 4.1.2).
     'chart-nested-interactive.spec.ts',
+    // #1333 — un seul arret de Tab par chart (roving tabindex) sur les 20 charts a points
+    // focusables. Verte 21/21 ; ROUGE 21/21 sur le parent (A/B, rebuild), E2E_STATIC=1,
+    // chromium, port isole.
+    'chart-roving-tabindex.spec.ts',
     // #594 / #595 — C2 : les 51 canaux de thème ouverts sur Audio, Chip,
     // Switch, SliderField et Field résolvent bien à `:root`, chaque valeur
     // déclarée rend EXACTEMENT ce que rendait le repli littéral qu'elle

@@ -88,6 +88,7 @@
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
 					data-cy="origam-chart-cartesian-svg"
+					@keydown="onChartKeydown"
 					@mousemove="onSvgMouseMove"
 					@mouseleave="onSvgMouseLeave"
 					@mousedown="onSvgMouseDown"
@@ -186,7 +187,9 @@
 								:width="path.rect!.width"
 								:height="path.rect!.height"
 								:fill="path.color"
-								tabindex="0"
+								tabindex="-1"
+								data-chart-point
+								:data-chart-series="path.seriesIndex"
 								role="button"
 								:aria-label="pointAriaLabel(path)"
 								:data-cy="`origam-chart-bar-${ path.seriesIndex }-${ path.dataIndex }`"
@@ -203,7 +206,9 @@
 								:cy="path.circle!.cy"
 								:r="hoverMatches(path) ? path.circle!.r + 2 : path.circle!.r"
 								:fill="path.color"
-								tabindex="0"
+								tabindex="-1"
+								data-chart-point
+								:data-chart-series="path.seriesIndex"
 								role="button"
 								:aria-label="pointAriaLabel(path)"
 								:data-cy="`origam-chart-point-${ path.seriesIndex }-${ path.dataIndex }`"
@@ -498,6 +503,7 @@
 
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useChart } from '../../composables/Chart/chart.composable'
@@ -762,6 +768,7 @@
 	const PADDING_WITH_SECONDARY_AXIS = { top: 24, right: 56, bottom: 36, left: 48 }
 
 	const svgRef = ref<SVGSVGElement | null>(null)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const setSvgRef = (el: unknown) => {
 		svgRef.value = el as SVGSVGElement | null
 		svgSizeRef.value = el as SVGSVGElement | null

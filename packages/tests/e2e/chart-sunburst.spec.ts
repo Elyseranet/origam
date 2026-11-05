@@ -81,14 +81,14 @@ test.describe('OrigamChartSunburst — Default', () => {
         }
     })
 
-    test('each arc is keyboard-focusable (tabindex=0)', async ({ page }) => {
+    test('each arc is keyboard-focusable (roving tabindex, #1333)', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
         const arcs = sandbox.locator('[data-cy="origam-chart-sunburst"] .origam-chart__sunburst-arc')
         await expect(arcs.first()).toBeVisible({ timeout: 8000 })
         const count = await arcs.count()
         for (let i = 0; i < count; i++) {
-            await expect(arcs.nth(i)).toHaveAttribute('tabindex', '0')
+            await expect(arcs.nth(i)).toHaveAttribute('tabindex', /^(0|-1)$/)
         }
     })
 

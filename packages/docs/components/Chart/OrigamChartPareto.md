@@ -117,7 +117,7 @@ carry Pareto-specific defaults. The rest of the surface is consumed as-is:
 ## Behaviour notes
 
 - **Auto-sort** — the component sorts descending by value regardless of input order. The 80/20 line will naturally cross around the 20% mark on the X axis for a well-distributed dataset.
-- **Keyboard navigation** — each column is `tabindex="0"` with `role="button"`. Enter/Space fires `point-click`.
+- **Keyboard navigation** — each column has `role="button"`; The chart is a **single tab stop** (roving tabindex, #1333): `Tab` enters it once, the arrow keys move between points, `Tab` leaves it — see the key table in the `OrigamChart` page. Enter/Space fires `point-click`.
 - **Reduced motion** — when `prefers-reduced-motion: reduce` is active, all CSS animations are suppressed regardless of the `animated` prop.
 - **SSR** — the component renders in a fixed `640 × 400` SVG viewBox; layout scales to the container width via `preserveAspectRatio`.
 

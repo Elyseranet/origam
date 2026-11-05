@@ -110,13 +110,13 @@ test.describe('OrigamChartPictorial — Default', () => {
         }
     })
 
-    test('each column group is keyboard-focusable (tabindex=0)', async ({ page }) => {
+    test('each column group is keyboard-focusable (roving tabindex, #1333)', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
         const cols = sandbox.locator('[data-cy="pictorial-playground-chart"] [data-cy^="origam-chart-pictorial-col-"]')
         const count = await cols.count()
         for (let i = 0; i < count; i++) {
-            await expect(cols.nth(i)).toHaveAttribute('tabindex', '0')
+            await expect(cols.nth(i)).toHaveAttribute('tabindex', /^(0|-1)$/)
         }
     })
 

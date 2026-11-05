@@ -15,6 +15,7 @@
 				:aria-label="svgAriaLabel"
 				preserveAspectRatio="none"
 				data-cy="origam-chart-sparkline-svg"
+				@keydown="onChartKeydown"
 				@mousemove="onSvgMouseMove"
 				@mouseleave="onSvgMouseLeave"
 				@click="onSvgClick"
@@ -36,7 +37,8 @@
 						:width="bar.width"
 						:height="bar.height"
 						:style="{ fill: resolvedColor }"
-						tabindex="0"
+						tabindex="-1"
+						data-chart-point
 						role="button"
 						:aria-label="pointAriaLabel(bar.index)"
 						:data-cy="`origam-chart-sparkline-bar-${ bar.index }`"
@@ -60,7 +62,8 @@
 						:width="bar.width"
 						:height="bar.height"
 						:style="{ fill: resolvedColor }"
-						tabindex="0"
+						tabindex="-1"
+						data-chart-point
 						role="button"
 						:aria-label="pointAriaLabel(bar.index)"
 						:data-cy="`origam-chart-sparkline-hbar-${ bar.index }`"
@@ -99,7 +102,8 @@
 						:cy="pt.cy"
 						:r="markerSize"
 						:style="{ fill: resolvedColor }"
-						tabindex="0"
+						tabindex="-1"
+						data-chart-point
 						role="button"
 						:aria-label="pointAriaLabel(pt.index)"
 						:data-cy="`origam-chart-sparkline-marker-${ pt.index }`"
@@ -118,7 +122,8 @@
 					:cy="m.cy"
 					:r="m.r"
 					:style="{ fill: m.fill }"
-					tabindex="0"
+					tabindex="-1"
+					data-chart-point
 					role="button"
 					:aria-label="pointAriaLabel(m.dataIndex)"
 					:data-cy="`origam-chart-sparkline-special-${ m.role }`"
@@ -168,6 +173,7 @@
 		type StyleValue
 	} from 'vue'
 
+	import { useChartRoving } from '../../composables/Chart/chart-roving.composable'
 	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
@@ -439,6 +445,7 @@
 	 * Tooltip hover state.
 	 ********************************************************/
 	const svgRef = ref<SVGSVGElement | null>(null)
+	const { onKeydown: onChartKeydown } = useChartRoving(svgRef)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredIndex = ref<number | null>(null)
 

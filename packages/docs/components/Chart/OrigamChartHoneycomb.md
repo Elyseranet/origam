@@ -144,7 +144,7 @@ story. The rest of the surface is consumed as-is, with no local override:
 
 **Empty state.** When `series` is empty or `series[0].data` is empty, the `#empty` slot is rendered instead of the SVG.
 
-**Accessibility.** Each tile is a focusable `<polygon>` with `role="button"` and an `aria-label` carrying the tile name and optional value. Keyboard users can Tab through tiles and activate them with Enter or Space. The SVG carries a `<title>` and `<desc>` for screen-reader context.
+**Accessibility.** Each tile is a focusable `<polygon>` with `role="button"` and an `aria-label` carrying the tile name and optional value. The chart is a **single tab stop** (roving tabindex, #1333): `Tab` enters it once, the arrow keys move between points, `Tab` leaves it — see the key table in the `OrigamChart` page. `Enter` or `Space` activates a tile. The SVG carries a `<title>` and `<desc>` for screen-reader context.
 
 **Animation.** Tiles fade in on mount via a CSS keyframe animation. The animation is skipped when `animated=false` or `prefers-reduced-motion: reduce` is detected.
 
