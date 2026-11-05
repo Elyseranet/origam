@@ -292,8 +292,8 @@ export const CHART_SVG_ROLE = 'group'
  * conserve comme repli pour que le premier rendu serveur et client
  * restent identiques. Une fois la boite du conteneur mesuree
  * (`useChartSize`), ces valeurs ne servent plus.
- * Les charts radiaux (gauge, polar, polar-bar, radar, sunburst) ont un
- * repli carre : leur surface reste 1:1.
+ * Les charts a rapport impose (`CHART_ASPECT_RATIO`) gardent un repli
+ * a ce meme rapport.
  ********************************************************/
 export const CHART_SIZE_FALLBACK = {
     boxPlot: { width: 600, height: 400 },
@@ -307,9 +307,26 @@ export const CHART_SIZE_FALLBACK = {
     treemap: { width: 600, height: 400 },
     variwide: { width: 600, height: 400 },
     wordCloud: { width: 800, height: 500 },
-    gauge: { width: 360, height: 360 },
+    gauge: { width: 360, height: 280 },
+    map: { width: 1000, height: 500 },
+    sparkline: { width: 120, height: 30 },
     polar: { width: 360, height: 360 },
     polarBar: { width: 400, height: 400 },
     radar: { width: 360, height: 360 },
     sunburst: { width: 400, height: 400 }
+} as const
+
+/*********************************************************
+ * CHART_ASPECT_RATIO (#1324)
+ *
+ * @description
+ * Rapport hauteur / largeur impose a la surface de dessin des charts
+ * dont la geometrie ne se deforme pas (`useChartSize`, option
+ * `aspectRatio`). `radial` : cercle, 1:1. `gauge` : demi-anneau, rapport
+ * historique 280 / 360. `map` : planisphere 2:1.
+ ********************************************************/
+export const CHART_ASPECT_RATIO = {
+    radial: 1,
+    gauge: 280 / 360,
+    map: 0.5
 } as const

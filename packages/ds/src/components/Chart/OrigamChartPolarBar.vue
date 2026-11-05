@@ -157,7 +157,7 @@
 		lang="ts"
 		setup
 >
-	import { CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
+	import { CHART_ASPECT_RATIO, CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		ref,
@@ -271,7 +271,7 @@
 	 * is translated to the centre so all geometry uses origin-centred
 	 * polar coordinates.
 	 ********************************************************/
-	const { resizeRef: svgRef, width: svgWidth } = useChartSize(CHART_SIZE_FALLBACK.polarBar, { square: true })
+	const { resizeRef: svgRef, width: svgWidth } = useChartSize(CHART_SIZE_FALLBACK.polarBar, { aspectRatio: CHART_ASPECT_RATIO.radial })
 	const center = computed(() => svgWidth.value / 2)
 
 	/** Radial clearance between outermost wedge and the SVG edge for labels. */

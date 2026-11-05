@@ -19,9 +19,10 @@ const RECTANGULAR = [
 	['Pyramid', 'pyramid'], ['Sankey', 'sankey'], ['Streamgraph', 'streamgraph'],
 	['Treemap', 'treemap'], ['Variwide', 'variwide'], ['WordCloud', 'word-cloud']
 ] as const
+/* Charts a rapport hauteur / largeur impose : cercle 1:1, jauge 280/360, carte 2:1. */
 const RADIAL = [
-	['Gauge', 'gauge'], ['Polar', 'polar'], ['PolarBar', 'polar-bar'],
-	['Radar', 'radar'], ['Sunburst', 'sunburst']
+	['Gauge', 'gauge', 280 / 360], ['Polar', 'polar', 1], ['PolarBar', 'polar-bar', 1],
+	['Radar', 'radar', 1], ['Sunburst', 'sunburst', 1], ['Map', 'map', 0.5]
 ] as const
 
 const measure = async (page: Page, tag: string, width: number) => {
@@ -56,17 +57,44 @@ for (const [name, tag] of RECTANGULAR) {
 	}
 }
 
-for (const [name, tag] of RADIAL) {
+for (const [name, tag, ratio] of RADIAL) {
 	for (const width of [480, 960]) {
-		test(`#1324 ${ name } : largeur = conteneur, hauteur = largeur a ${ width }px`, async ({ page }) => {
+		test(`#1324 ${ name } : largeur = conteneur, hauteur = largeur x ${ ratio.toFixed(3) } a ${ width }px`, async ({ page }) => {
 			await open(page, name)
 			const m = await measure(page, tag, width)
 			console.log(name, width, JSON.stringify(m))
 			// L'iframe du bac a sable peut etre plus etroite que `width` : on compare au conteneur rendu.
 			expect(m.hostWidth - m.svgWidth).toBeLessThan(40)
 			expect(Math.abs(m.vbWidth - m.svgWidth)).toBeLessThan(2)
-			expect(Math.abs(m.vbHeight - m.vbWidth)).toBeLessThan(2)
-			expect(Math.abs(m.svgHeight - m.svgWidth)).toBeLessThan(2)
+			expect(Math.abs(m.vbHeight - m.vbWidth * ratio)).toBeLessThan(2)
+			expect(Math.abs(m.svgHeight - m.svgWidth * ratio)).toBeLessThan(2)
 		})
 	}
 }
+
+/* Sparkline : le viewBox suit la boite et rien n'est deforme (marqueur rond, de taille constante). */
+const markerBox = (page: Page, width: number) =>
+	sandboxOf(page)
+		.locator(`[data-cy="origam-chart-sparkline-responsive-${ width }"] .origam-chart-sparkline__marker`).first()
+		.evaluate((c: SVGCircleElement) => { const r = c.getBoundingClientRect(); return { w: r.width, h: r.height } })
+
+for (const width of [480, 960]) {
+	test(`#1324 Sparkline : viewBox = boite, marqueur circulaire a ${ width }px`, async ({ page }) => {
+		await open(page, 'Sparkline')
+		const m = await measure(page, 'sparkline', width)
+		const marker = await markerBox(page, width)
+		console.log('Sparkline', width, JSON.stringify({ ...m, marker }))
+		expect(Math.abs(m.vbWidth - m.svgWidth)).toBeLessThan(2)
+		expect(Math.abs(m.vbHeight - m.svgHeight)).toBeLessThan(2)
+		expect(Math.abs(marker.w - marker.h)).toBeLessThan(0.5)
+	})
+}
+
+test('#1324 Sparkline : la taille du marqueur ne depend pas de la largeur', async ({ page }) => {
+	await open(page, 'Sparkline')
+	await measure(page, 'sparkline', 480)
+	const narrow = await markerBox(page, 480)
+	await measure(page, 'sparkline', 960)
+	const wide = await markerBox(page, 960)
+	expect(Math.abs(narrow.w - wide.w)).toBeLessThan(0.5)
+})

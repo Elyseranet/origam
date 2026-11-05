@@ -145,7 +145,7 @@
 		lang="ts"
 		setup
 >
-	import { CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
+	import { CHART_ASPECT_RATIO, CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		type StyleValue
@@ -228,7 +228,7 @@
 	)
 	const chartAnimationStyle = useChartAnimationStyle(props)
 
-	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.radar, { square: true })
+	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.radar, { aspectRatio: CHART_ASPECT_RATIO.radial })
 	const PADDING_RADAR = { top: 20, right: 20, bottom: 20, left: 20 }
 	const RADAR_RINGS = [0.25, 0.5, 0.75, 1]
 

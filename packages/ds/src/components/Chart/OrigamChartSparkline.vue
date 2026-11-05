@@ -10,10 +10,9 @@
 		<svg
 				ref="svgRef"
 				class="origam-chart-sparkline__svg"
-				:viewBox="`0 0 ${ SVG_WIDTH } ${ SVG_HEIGHT }`"
+				:viewBox="`0 0 ${ svgWidth } ${ svgHeight }`"
 				:role="CHART_SVG_ROLE"
 				:aria-label="svgAriaLabel"
-				preserveAspectRatio="none"
 				data-cy="origam-chart-sparkline-svg"
 				@mousemove="onSvgMouseMove"
 				@mouseleave="onSvgMouseLeave"
@@ -161,13 +160,14 @@
 		lang="ts"
 		setup
 >
-	import { CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
+	import { CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		ref,
 		type StyleValue
 	} from 'vue'
 
+	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
@@ -235,12 +235,11 @@
 	const { roundedClasses, roundedStyles } = useRounded(props)
 
 	/*********************************************************
-	 * Fixed SVG coordinate space — viewBox is always 120x30.
-	 * CSS scales the element; `preserveAspectRatio="none"` lets
-	 * it stretch to whatever width/height the parent applies.
+	 * Measured SVG coordinate space — viewBox follows the rendered box
+	 * (useChartSize), 1 unit = 1 px, so strokes and markers are not
+	 * stretched. 120x30 is the pre-measure fallback.
 	 ********************************************************/
-	const SVG_WIDTH = 120
-	const SVG_HEIGHT = 30
+	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.sparkline)
 	const PADDING_X = 2
 	const PADDING_Y = 2
 
@@ -277,9 +276,9 @@
 	 * Scale helpers — map data values to SVG coordinates.
 	 ********************************************************/
 	const plotX0 = PADDING_X
-	const plotX1 = SVG_WIDTH - PADDING_X
+	const plotX1 = computed(() => svgWidth.value - PADDING_X)
 	const plotY0 = PADDING_Y
-	const plotY1 = SVG_HEIGHT - PADDING_Y
+	const plotY1 = computed(() => svgHeight.value - PADDING_Y)
 
 	const dataMin = computed(() => {
 		if (!values.value.length) return 0
@@ -293,15 +292,15 @@
 
 	const scaleX = computed(() => {
 		const n = values.value.length
-		if (n < 2) return (_i: number) => (plotX0 + plotX1) / 2
-		return (i: number) => plotX0 + (i / (n - 1)) * (plotX1 - plotX0)
+		if (n < 2) return (_i: number) => (plotX0 + plotX1.value) / 2
+		return (i: number) => plotX0 + (i / (n - 1)) * (plotX1.value - plotX0)
 	})
 
 	const scaleY = computed(() => {
 		const min = dataMin.value
 		const max = dataMax.value
 		const range = max - min || 1
-		return (v: number) => plotY1 - ((v - min) / range) * (plotY1 - plotY0)
+		return (v: number) => plotY1.value - ((v - min) / range) * (plotY1.value - plotY0)
 	})
 
 	/*********************************************************
@@ -330,7 +329,7 @@
 		const pts = points.value
 		if (pts.length < 2) return null
 		const line = pts.map((p, i) => `${ i === 0 ? 'M' : 'L' } ${ p.cx } ${ p.cy }`).join(' ')
-		const close = `L ${ pts[pts.length - 1].cx } ${ plotY1 } L ${ pts[0].cx } ${ plotY1 } Z`
+		const close = `L ${ pts[pts.length - 1].cx } ${ plotY1.value } L ${ pts[0].cx } ${ plotY1.value } Z`
 		return `${ line } ${ close }`
 	})
 
@@ -349,7 +348,7 @@
 		const pts = points.value
 		if (!pts.length) return []
 		const n = pts.length
-		const totalW = plotX1 - plotX0
+		const totalW = plotX1.value - plotX0
 		const barW = Math.max(1, (totalW / n) * 0.7)
 		const gap = totalW / n
 		const min = dataMin.value
@@ -357,9 +356,9 @@
 		const range = max - min || 1
 
 		return pts.map((p, i) => {
-			const barH = Math.max(1, ((p.value - min) / range) * (plotY1 - plotY0))
+			const barH = Math.max(1, ((p.value - min) / range) * (plotY1.value - plotY0))
 			const x = plotX0 + i * gap + (gap - barW) / 2
-			const y = plotY1 - barH
+			const y = plotY1.value - barH
 			return { index: i, x, y, width: barW, height: barH }
 		})
 	})
@@ -370,7 +369,7 @@
 	const horizontalBars = computed(() => {
 		const n = values.value.length
 		if (!n) return []
-		const totalH = plotY1 - plotY0
+		const totalH = plotY1.value - plotY0
 		const barH = Math.max(1, (totalH / n) * 0.7)
 		const gap = totalH / n
 		const min = dataMin.value
@@ -378,7 +377,7 @@
 		const range = max - min || 1
 
 		return values.value.map((v, i) => {
-			const barW = Math.max(1, ((v - min) / range) * (plotX1 - plotX0))
+			const barW = Math.max(1, ((v - min) / range) * (plotX1.value - plotX0))
 			const y = plotY0 + i * gap + (gap - barH) / 2
 			return { index: i, x: plotX0, y, width: barW, height: barH }
 		})
@@ -438,7 +437,6 @@
 	/*********************************************************
 	 * Tooltip hover state.
 	 ********************************************************/
-	const svgRef = ref<SVGSVGElement | null>(null)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredIndex = ref<number | null>(null)
 

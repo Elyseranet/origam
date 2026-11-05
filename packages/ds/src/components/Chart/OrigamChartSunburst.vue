@@ -165,7 +165,7 @@
 		lang="ts"
 		setup
 >
-	import { CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
+	import { CHART_ASPECT_RATIO, CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		ref,
@@ -254,7 +254,7 @@
 	/*********************************************************
 	 * Static SVG box — square coordinate space; CSS scales it.
 	 ********************************************************/
-	const { resizeRef: svgRef, width: svgWidth } = useChartSize(CHART_SIZE_FALLBACK.sunburst, { square: true })
+	const { resizeRef: svgRef, width: svgWidth } = useChartSize(CHART_SIZE_FALLBACK.sunburst, { aspectRatio: CHART_ASPECT_RATIO.radial })
 	const center = computed(() => svgWidth.value / 2)
 	const MAX_DEPTH_CAP = 4
 

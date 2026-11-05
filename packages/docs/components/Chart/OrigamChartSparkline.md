@@ -77,6 +77,8 @@ A tiny inline chart for table cells, KPI cards, and dashboards. Renders a single
 
 ## Behaviour notes
 
+**Responsive drawing surface (#1324).** The SVG `viewBox` follows the measured box (`useChartSize`, a `ResizeObserver`), 1 unit = 1 px, and `preserveAspectRatio="none"` is gone: stroke widths stay constant and markers stay round whatever the `width` / `height`. Until measured (SSR, first paint) the 120 × 30 fallback is used, so hydration is unchanged.
+
 - **Point interaction** — every rendered marker (`showMarkers`), special
   marker (`showMin` / `showMax` / `showLast`), and bar (`type="column"` /
   `type="bar"`) is individually focusable (`tabindex="0"`, `role="button"`,

@@ -164,7 +164,7 @@
 		lang="ts"
 		setup
 >
-	import { CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
+	import { CHART_ASPECT_RATIO, CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		ref,
@@ -321,7 +321,7 @@
 	 * Static — polar charts need less padding than cartesian
 	 * because there are no axis labels to host outside the plot.
 	 ********************************************************/
-	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.polar, { square: true })
+	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.polar, { aspectRatio: CHART_ASPECT_RATIO.radial })
 	const PADDING_POLAR = { top: 12, right: 12, bottom: 12, left: 12 }
 
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })

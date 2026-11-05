@@ -20,10 +20,10 @@ describe('useChartSize (#1317)', () => {
 		warn.mockRestore()
 	})
 
-	it('mode carre : le repli est un carre de cote min(largeur, hauteur) (#1324)', async () => {
+	it('mode aspectRatio : le repli est un carre de cote min(largeur, hauteur) (#1324)', async () => {
 		const Cmp = defineComponent({
 			setup () {
-				const { resizeRef, width, height } = useChartSize({ width: 600, height: 360 }, { square: true })
+				const { resizeRef, width, height } = useChartSize({ width: 600, height: 360 }, { aspectRatio: 1 })
 				return () => h('svg', { ref: resizeRef, viewBox: `0 0 ${ width.value } ${ height.value }` })
 			}
 		})

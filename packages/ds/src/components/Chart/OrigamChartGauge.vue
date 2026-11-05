@@ -142,7 +142,7 @@
 	import { useChartGauge } from '../../composables/Chart/chart-gauge.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
-	import { CHART_SIZE_FALLBACK } from '../../consts/Chart/chart.const'
+	import { CHART_ASPECT_RATIO, CHART_SIZE_FALLBACK } from '../../consts/Chart/chart.const'
 	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
@@ -258,7 +258,7 @@
 	/*********************************************************
 	 * Static SVG box
 	 ********************************************************/
-	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.gauge, { square: true })
+	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.gauge, { aspectRatio: CHART_ASPECT_RATIO.gauge })
 	const PADDING_GAUGE = { top: 28, right: 28, bottom: 28, left: 28 }
 
 	/*********************************************************

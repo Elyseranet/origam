@@ -41,7 +41,7 @@ import { OrigamChartGauge } from '@origam/ds'
 
 | Name | Type | Default | Description |
 |---|---|---|---|
-| `height` | `number \| string` | — | Optional cap on the chart height (the chart is square: height = width, capped by this value). A plain number is `px`. Ignored when `aspectRatio` is set. |
+| `height` | `number \| string` | — | Optional cap on the chart height (the chart keeps its 280 / 360 ratio, capped by this value). A plain number is `px`. Ignored when `aspectRatio` is set. |
 | `aspectRatio` | `string` | `undefined` | CSS `aspect-ratio` shorthand. Overrides `height`. |
 | `colorScheme` | `Array<TIntent \| string>` | 8-intent cycle | Fallback palette when the series omits its own `color`. Gauge only ever uses `colorScheme[0]`. |
 | `title` | `string` | `undefined` | Optional title above the gauge. |
@@ -97,7 +97,7 @@ no legend.
 
 ## Behaviour notes
 
-**Responsive 1:1 drawing surface (#1324).** The SVG `viewBox` is a square: its width follows the measured width of the container (`useChartSize`, a `ResizeObserver`) and its height equals that width, so the circle is never squashed. Text, strokes and markers keep their real pixel size instead of being scaled with a fixed canvas. `height` is now an optional cap: it has no default any more, and when set the side of the square is `min(container width, available height)`. Until the box is measured (SSR, first paint) the 360 × 360 fallback is used, so hydration is unchanged.
+**Responsive drawing surface (#1324).** The SVG `viewBox` follows the measured width of the container (`useChartSize`, a `ResizeObserver`) and its height is that width × 280 / 360 (the half-ring's historical ratio), so the arc is never squashed. Text, strokes and markers keep their real pixel size. `height` is an optional cap, with no default: when set, the width is reduced to keep the ratio. Until the box is measured (SSR, first paint) the 360 × 280 fallback is used, so hydration is unchanged.
 
 **Value clamping.** Values outside `[gaugeMin, gaugeMax]` are silently clamped before the arc is computed. The centre label shows the clamped value. `ratio` (available in the `#gauge-value` slot) is always in `[0..1]`.
 
