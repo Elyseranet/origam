@@ -172,6 +172,20 @@
 			</origam-chart-gauge>
 		</Variant>
 
+		<Variant title="Responsive width">
+			<div
+					v-for="w in [480, 960]"
+					:key="w"
+					:style="{ width: `${ w }px`, maxWidth: '100%', marginBottom: '1rem' }"
+					:data-cy="`origam-chart-gauge-responsive-${ w }`"
+			>
+				<origam-chart-gauge
+						:series="[{ name: 'Value', data: [62], color: 'primary' }]" gauge-unit="%"
+						:title="`${ w }px container`"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IChartGaugeProps>({

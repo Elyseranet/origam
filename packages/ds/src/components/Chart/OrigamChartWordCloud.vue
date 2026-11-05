@@ -37,7 +37,7 @@
 					ref="svgRef"
 					class="origam-chart-word-cloud__svg origam-chart__svg"
 					:class="svgClasses"
-					:viewBox="`0 0 ${ SVG_WIDTH } ${ SVG_HEIGHT }`"
+					:viewBox="`0 0 ${ svgWidth } ${ svgHeight }`"
 					:role="CHART_SVG_ROLE"
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
@@ -134,7 +134,7 @@
 		lang="ts"
 		setup
 >
-	import { CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
+	import { CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		ref,
@@ -156,6 +156,7 @@
 	} from '../../interfaces/Chart/chart-word-cloud.interface'
 
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
+	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
@@ -266,10 +267,19 @@
 	 * Static SVG box — fixed 800 × 500 coordinate space;
 	 * CSS scales it.
 	 ********************************************************/
-	const SVG_WIDTH = 800
-	const SVG_HEIGHT = 500
-	const CENTER_X = SVG_WIDTH / 2
-	const CENTER_Y = SVG_HEIGHT / 2
+	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.wordCloud)
+	/*********************************************************
+	 * Echelle des polices — `minFontSize` / `maxFontSize` sont
+	 * exprimees pour le canevas de reference (800 x 500) : on les ramene
+	 * a la boite mesuree, sans quoi un nuage dans une boite plus petite
+	 * perdrait des mots faute de place.
+	 ********************************************************/
+	const fontScale = computed(() => Math.min(
+		svgWidth.value / CHART_SIZE_FALLBACK.wordCloud.width,
+		svgHeight.value / CHART_SIZE_FALLBACK.wordCloud.height
+	))
+	const centerX = computed(() => svgWidth.value / 2)
+	const centerY = computed(() => svgHeight.value / 2)
 
 	const SPIRAL_STEP = 0.15
 	const SPIRAL_A = 4
@@ -362,7 +372,7 @@
 		const placed: Array<IChartWordCloudWord> = []
 
 		sorted.forEach((datum, idx) => {
-			const fontSize = props.minFontSize + (datum.value / maxVal) * (props.maxFontSize - props.minFontSize)
+			const fontSize = (props.minFontSize + (datum.value / maxVal) * (props.maxFontSize - props.minFontSize)) * fontScale.value
 			const angle = angleFor(idx)
 			const isVertical = angle !== 0 && Math.abs(angle) === 90
 
@@ -373,8 +383,8 @@
 
 			const color = colorFor(idx)
 
-			let cx = CENTER_X
-			let cy = CENTER_Y
+			let cx = centerX.value
+			let cy = centerY.value
 			let placed_ = false
 
 			if (placed.length === 0) {
@@ -383,11 +393,11 @@
 				let theta = 0
 				for (let iter = 0; iter < MAX_SPIRAL_ITERATIONS; iter++) {
 					const r = SPIRAL_A * theta
-					cx = CENTER_X + r * Math.cos(theta)
-					cy = CENTER_Y + r * Math.sin(theta)
+					cx = centerX.value + r * Math.cos(theta)
+					cy = centerY.value + r * Math.sin(theta)
 
-					if (cx < wordW / 2 || cx > SVG_WIDTH - wordW / 2
-						|| cy < wordH / 2 || cy > SVG_HEIGHT - wordH / 2) {
+					if (cx < wordW / 2 || cx > svgWidth.value - wordW / 2
+						|| cy < wordH / 2 || cy > svgHeight.value - wordH / 2) {
 						theta += SPIRAL_STEP
 						continue
 					}
@@ -456,7 +466,6 @@
 	/*********************************************************
 	 * Hover / tooltip
 	 ********************************************************/
-	const svgRef = ref<SVGSVGElement | null>(null)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredIndex = ref<number | null>(null)
 

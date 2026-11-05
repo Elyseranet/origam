@@ -202,7 +202,7 @@ const { headerTypographyStyles } = useChartHeaderTypography(props)
 ## `useChartSize`
 
 ```ts
-export function useChartSize (fallback: { width: number, height: number })
+export function useChartSize (fallback: { width: number, height: number }, options: { square?: boolean } = {})
 ```
 
 Dimensions de la surface de dessin d'un chart (#1317) : la boite
@@ -211,9 +211,15 @@ conteneur au lieu d'une constante. Tant que rien n'est mesure (SSR,
 avant montage, boite nulle) on rend `fallback`, identique entre
 serveur et premier rendu client — pas de mismatch d'hydratation.
 
+`square: true` (#1324) est le mode des charts radiaux : la surface
+est un carre dont le cote est `min(largeur, hauteur)` de la boite
+mesuree. La largeur suit le conteneur, la hauteur lui est egale, et
+une hauteur imposee (prop `height`) plafonne le cote — le cercle
+n'est jamais ecrase.
+
 **Source** : `packages/ds/src/composables/Chart/chart-size.composable.ts`
 
-**Consommateurs** (1) : `components/Chart/OrigamChartCartesian.vue`
+**Consommateurs** (19) : `components/Chart/OrigamChartBoxPlot.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartCartesian.vue`, `components/Chart/OrigamChartGauge.vue`, `components/Chart/OrigamChartHeatmap.vue`, `components/Chart/OrigamChartPareto.vue`, `components/Chart/OrigamChartPictorial.vue`, …
 
 ## `useChartZoom`
 

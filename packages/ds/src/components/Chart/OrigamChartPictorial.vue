@@ -37,7 +37,7 @@
 					ref="svgRef"
 					class="origam-chart-pictorial__svg origam-chart__svg"
 					:class="svgClasses"
-					:viewBox="`0 0 ${ SVG_WIDTH } ${ SVG_HEIGHT }`"
+					:viewBox="`0 0 ${ svgWidth } ${ svgHeight }`"
 					:role="CHART_SVG_ROLE"
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
@@ -292,7 +292,7 @@
 		lang="ts"
 		setup
 >
-	import { CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
+	import { CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		ref,
@@ -304,6 +304,7 @@
 
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
@@ -391,8 +392,7 @@
 	 * Static SVG coordinate space
 	 * Component always paints into 600 × 400; CSS scales it.
 	 ********************************************************/
-	const SVG_WIDTH = 600
-	const SVG_HEIGHT = 400
+	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.pictorial)
 	const ICON_GAP = 2
 	const AXIS_LABEL_HEIGHT = 20
 	const VALUE_LABEL_HEIGHT = 16
@@ -512,7 +512,7 @@
 	const seriesCount = computed<number>(() => props.series?.length ?? 0)
 
 	/*********************************************************
-	 * Plot dimensions — derived from SVG_WIDTH / SVG_HEIGHT
+	 * Plot dimensions — derived from svgWidth / svgHeight
 	 * minus axis / label reserves.
 	 ********************************************************/
 	const axisH = computed<number>(() => (props.showAxis ? AXIS_LABEL_HEIGHT + AXIS_PADDING : 0))
@@ -520,16 +520,16 @@
 
 	const plotHeight = computed<number>(() => {
 		if (props.direction === DIRECTION.HORIZONTAL) {
-			return SVG_HEIGHT - axisH.value
+			return svgHeight.value - axisH.value
 		}
-		return SVG_HEIGHT - axisH.value - valueLabelH.value
+		return svgHeight.value - axisH.value - valueLabelH.value
 	})
 
 	const plotWidth = computed<number>(() => {
 		if (props.direction === DIRECTION.HORIZONTAL) {
-			return SVG_WIDTH - axisH.value - valueLabelH.value
+			return svgWidth.value - axisH.value - valueLabelH.value
 		}
-		return SVG_WIDTH
+		return svgWidth.value
 	})
 
 	const PLOT_Y = computed<number>(() => (props.showLabel ? VALUE_LABEL_HEIGHT : 0))
@@ -627,7 +627,7 @@
 	const FILL_LABEL_RESERVE = computed<number>(() => (props.showLabel ? FILL_LABEL_HEIGHT : 0))
 
 	const fillPlotHeight = computed<number>(() =>
-		SVG_HEIGHT - FILL_AXIS_HEIGHT.value - FILL_LABEL_RESERVE.value
+		svgHeight.value - FILL_AXIS_HEIGHT.value - FILL_LABEL_RESERVE.value
 	)
 
 	const fillCategoryCount = computed<number>(() => {
@@ -640,7 +640,7 @@
 	)
 
 	/**
-	 * fillIconWidth — horizontal space per column (derived from SVG_WIDTH).
+	 * fillIconWidth — horizontal space per column (derived from svgWidth).
 	 * fillIconHeight — vertical space each icon occupies (= full plot height).
 	 * Keeping them separate allows portrait icons to fill the column vertically
 	 * while the column width remains constrained by the number of categories.
@@ -649,7 +649,7 @@
 		const totalCols = fillTotalCols.value
 		if (totalCols <= 0) return 0
 		const totalGaps = (totalCols - 1) * FILL_GAP
-		return Math.max(24, (SVG_WIDTH - totalGaps) / totalCols)
+		return Math.max(24, (svgWidth.value - totalGaps) / totalCols)
 	})
 
 	const fillIconHeight = computed<number>(() =>
@@ -796,7 +796,6 @@
 	/*********************************************************
 	 * Hover / tooltip state
 	 ********************************************************/
-	const svgRef = ref<SVGSVGElement | null>(null)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredColKey = ref<string | null>(null)
 

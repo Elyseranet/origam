@@ -282,3 +282,34 @@ export const CHART_SLICE_LABEL_PREFIX = 'Slice'
  * focusable points be announced.
  ********************************************************/
 export const CHART_SVG_ROLE = 'group'
+
+/*********************************************************
+ * CHART_SIZE_FALLBACK (#1324)
+ *
+ * @description
+ * Taille de la surface de dessin d'un chart tant que rien n'est mesure
+ * (SSR, avant montage, boite nulle) : c'est l'ancien `viewBox` fige,
+ * conserve comme repli pour que le premier rendu serveur et client
+ * restent identiques. Une fois la boite du conteneur mesuree
+ * (`useChartSize`), ces valeurs ne servent plus.
+ * Les charts radiaux (gauge, polar, polar-bar, radar, sunburst) ont un
+ * repli carre : leur surface reste 1:1.
+ ********************************************************/
+export const CHART_SIZE_FALLBACK = {
+    boxPlot: { width: 600, height: 400 },
+    bullet: { width: 600, height: 400 },
+    candlestick: { width: 600, height: 400 },
+    pareto: { width: 640, height: 400 },
+    pictorial: { width: 600, height: 400 },
+    pyramid: { width: 600, height: 400 },
+    sankey: { width: 600, height: 400 },
+    streamgraph: { width: 700, height: 420 },
+    treemap: { width: 600, height: 400 },
+    variwide: { width: 600, height: 400 },
+    wordCloud: { width: 800, height: 500 },
+    gauge: { width: 360, height: 360 },
+    polar: { width: 360, height: 360 },
+    polarBar: { width: 400, height: 400 },
+    radar: { width: 360, height: 360 },
+    sunburst: { width: 400, height: 400 }
+} as const

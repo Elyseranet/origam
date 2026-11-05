@@ -37,7 +37,7 @@
 					ref="svgRef"
 					class="origam-chart-variwide__svg origam-chart__svg"
 					:class="svgClasses"
-					:viewBox="`0 0 ${ SVG_WIDTH } ${ SVG_HEIGHT }`"
+					:viewBox="`0 0 ${ svgWidth } ${ svgHeight }`"
 					:role="CHART_SVG_ROLE"
 					:aria-label="svgAriaLabel"
 					preserveAspectRatio="xMidYMid meet"
@@ -236,7 +236,7 @@
 		lang="ts"
 		setup
 >
-	import { CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
+	import { CHART_SIZE_FALLBACK, CHART_SVG_ROLE } from '../../consts/Chart/chart.const'
 	import {
 		computed,
 		ref,
@@ -247,6 +247,7 @@
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartSize } from '../../composables/Chart/chart-size.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
@@ -324,8 +325,7 @@
 	 * Static SVG box — fixed 600 × 400 coordinate space;
 	 * CSS scales it to the container.
 	 ********************************************************/
-	const SVG_WIDTH = 600
-	const SVG_HEIGHT = 400
+	const { resizeRef: svgRef, width: svgWidth, height: svgHeight } = useChartSize(CHART_SIZE_FALLBACK.variwide)
 	const TICK_SIZE = 4
 
 	const PLOT = {
@@ -335,8 +335,8 @@
 		left: 48
 	}
 
-	const plotWidth = SVG_WIDTH - PLOT.left - PLOT.right
-	const plotHeight = SVG_HEIGHT - PLOT.top - PLOT.bottom
+	const plotWidth = computed(() => svgWidth.value - PLOT.left - PLOT.right)
+	const plotHeight = computed(() => svgHeight.value - PLOT.top - PLOT.bottom)
 
 	/*********************************************************
 	 * Default colour palette
@@ -422,7 +422,7 @@
 		const { min, max } = yDomain.value
 		const range = max - min || 1
 		const fraction = (value - min) / range
-		return PLOT.top + plotHeight * (1 - fraction)
+		return PLOT.top + plotHeight.value * (1 - fraction)
 	}
 
 	/*********************************************************
@@ -449,7 +449,7 @@
 		if (!items.length) return []
 
 		const totalW = items.reduce((acc, d) => acc + (Number.isFinite(d.width) && d.width > 0 ? d.width : 1), 0)
-		const usableW = plotWidth - props.barGap * Math.max(0, items.length - 1)
+		const usableW = plotWidth.value - props.barGap * Math.max(0, items.length - 1)
 
 		const baseline = scaleY(0)
 
@@ -521,7 +521,6 @@
 	/*********************************************************
 	 * Hover / tooltip
 	 ********************************************************/
-	const svgRef = ref<SVGSVGElement | null>(null)
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredIndex = ref<number | null>(null)
 
