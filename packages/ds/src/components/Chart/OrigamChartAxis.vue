@@ -90,9 +90,9 @@
 		lang="ts"
 		setup
 >
-	import { computed, nextTick, onMounted, ref, watch } from 'vue'
+	import { computed, nextTick, onMounted, ref, shallowRef, watch } from 'vue'
 
-	import { CHART_AXIS_LABEL_CHAR_WIDTH, CHART_AXIS_LABEL_MIN_GAP } from '../../consts/Chart/chart.const'
+	import { decimateAxisTicks, measureWidestAxisLabel } from '../../utils/Chart/chart-axis-label.util'
 	import type { IChartAxisEmits, IChartAxisProps, IChartAxisSlots } from '../../interfaces/Chart/chart-axis.interface'
 
 	/*********************************************************
@@ -180,27 +180,18 @@
 	 * mesurables, sinon N dépendrait de lui-même. La re-mesure suit le
 	 * changement de `ticks`, que `useChartSize` fait varier avec la largeur.
 	 ********************************************************/
-	const axisRef = ref<SVGGElement | null>(null)
-	const measuredWidest = ref<number | null>(null)
+	const axisRef = shallowRef(null)
+	const measuredWidest = ref(measureWidestAxisLabel(null))
 
 	const measure = async () => {
 		await nextTick()
-		const nodes = Array.from(axisRef.value?.querySelectorAll<SVGTextContentElement>('.origam-chart__axis-label--x') ?? [])
-		const lengths = nodes.map((n) => (typeof n.getComputedTextLength === 'function' ? n.getComputedTextLength() : 0))
-		const widest = Math.max(0, ...lengths)
-		measuredWidest.value = widest > 0 ? widest : null
+		measuredWidest.value = measureWidestAxisLabel(axisRef.value)
 	}
 
 	onMounted(measure)
 	watch(() => [props.ticks.x, props.xAxisFormat], measure)
 
-	const xTicks = computed(() => {
-		const xs = props.ticks.x
-		const widest = measuredWidest.value ?? Math.max(0, ...xs.map((t) => formatX(t.value).length)) * CHART_AXIS_LABEL_CHAR_WIDTH
-		const pitch = Math.min(...xs.slice(1).map((t, k) => Math.abs(t.position - xs[k].position)))
-		const step = Number.isFinite(pitch) && pitch > 0 ? Math.max(1, Math.ceil((widest + CHART_AXIS_LABEL_MIN_GAP) / pitch)) : 1
-		return xs.map((tick, i) => ({ tick, i, shown: i % step === 0 }))
-	})
+	const xTicks = computed(() => decimateAxisTicks(props.ticks.x, formatX, measuredWidest.value))
 
 	const formatY = (value: number): string => {
 		if (props.yAxisFormat) return props.yAxisFormat(value)
