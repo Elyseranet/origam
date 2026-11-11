@@ -18,6 +18,15 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.42] - 2026-11-11
+
+### Changed — nettoyage du dépôt (#1346)
+
+Suppression des fichiers parasites : `docs/mesures/` (dumps de mesures), les audits `docs/audit-*.md`, `docs/reclassification-tokens-dormants-550.md`, `docs/inspection-classeur-methodo.md`, `docs/POINT-DE-REPRISE.md`, `.design-sync/`, `.impeccable/`, `tmp-824-census.txt`, `MONOREPO_PROPOSAL.md` et `CLAUDE_CODE_BRIEF.md`. `packages/stories`, `packages/docs`, `docker/`, `docs/security-waivers.md` et `docs/work-priorities.md` sont conservés.
+
+- Dans le paquet publié, seuls deux commentaires changent (`OrigamBtn.vue`, `transition.interface.ts`) : ils pointaient vers `docs/mesures/`. Aucun changement de comportement.
+- **Vérifié** : `guards` 33/33, `guards:self` 27/27, lint et `test:unit:run` exit 0. CI de la PR #1352 : 23/23 checks verts.
+
 ## [2.37.41] - 2026-11-11
 
 ### Fixed — `main.css` commité en retard sur le SCSS, et garde contre la dérive (#1342)
