@@ -10,11 +10,16 @@ name: docs-fixtures
 #
 # Trigger: a push to `develop` that touches packages/ds/** (or a manual run).
 #
-# PUSH PATH: auto-PR only. `develop` is a PROTECTED branch and we keep the
-# protection intact — no direct push, no bypass secret. The fixtures land via a
-# peter-evans/create-pull-request PR (default GITHUB_TOKEN) that the user merges
-# by hand (1 click). No `[skip ci]` needed: a PR does not auto-merge, and PRs
-# opened with GITHUB_TOKEN do not re-trigger workflows, so there is no loop.
+# PUSH PATH: auto-PR, then auto-merge once CI is green. `develop` is protected
+# and stays so — no direct push, no bypass. The PR is opened with the
+# DOCS_FIXTURES_TOKEN secret (a PAT / GitHub App token), NOT GITHUB_TOKEN: a PR
+# opened by GITHUB_TOKEN gets its CI runs parked at `action_required` (bot
+# author, needs manual approval) so it never shows a status and never merges —
+# that is how #1030 sat unmerged. `gh pr merge --auto` then merges it as soon
+# as the required checks pass. Needs: repo setting "Allow auto-merge" ON and
+# required status checks on `develop` (auto-merge is refused without them).
+# Loop-free: the merge touches packages/marketing only, and this workflow
+# triggers on packages/ds/**.
 
 on:
   push:
@@ -168,9 +173,10 @@ jobs:
       # Open / refresh a PR to develop. create-pull-request no-ops when there is
       # no diff, so it is the single change gate.
       - name: Open PR with regenerated fixtures
+        id: cpr
         uses: peter-evans/create-pull-request@v8
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.DOCS_FIXTURES_TOKEN }}
           branch: chore/regenerate-fixtures
           base: develop
           commit-message: 'chore(docs): regenerate API-reference fixtures'
@@ -189,8 +195,14 @@ jobs:
             (`server/plugins/00.db-bootstrap.ts`) applies these to the live
             API-Reference. Editorial `/admin` edits are lock-preserved.
 
-            Merge by hand when the diff looks right.
+            Auto-merges (squash) once the required checks are green.
           add-paths: |
             packages/marketing/src/assets/seed
             packages/marketing/src/assets/sql/db-seed.sql
           delete-branch: true
+
+      - name: Enable auto-merge
+        if: steps.cpr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.DOCS_FIXTURES_TOKEN }}
+        run: gh pr merge "${{ steps.cpr.outputs.pull-request-number }}" --auto --squash
