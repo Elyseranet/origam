@@ -339,8 +339,10 @@ export const cartoonLightTheme: IOrigamTheme = {
         // family was deleted from the DS — shiki v4.3.1 no longer exposes a
         // 'css-variables' theme to hang it on, so these two overrides had
         // been dead since that migration (nothing in OrigamCode.vue read
-        // them). See packages/docs/components/Code/OrigamCode.md "Why there
-        // is no per-token-type design token" for the full explanation.
+        // them). The full explanation lived in
+        // packages/docs/components/Code/OrigamCode.md ("Why there is no
+        // per-token-type design token"), removed with packages/docs on
+        // 2026-11-11 — recoverable from git history.
 
         '--origam-field--error---border-color': '#ef4444',
         // ⛔ `--origam-list-item---border-radius: 9px` RETIRÉ (#294) — morte,

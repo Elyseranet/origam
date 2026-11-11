@@ -3,8 +3,9 @@
 Private package (`private: true`, `0.x` independent, never published — the
 monorepo's only npm publish remains `packages/ds`).
 
-It will eventually replace `packages/stories` (Histoire). **Nothing has been
-removed** from Histoire. Lots A–D (#1141–#1144) ship the embeddable component:
+It was planned to replace `packages/stories` (Histoire), which the owner
+removed on 2026-11-11 (#1346) — the playground is now the only component
+sandbox in the repository. Lots A–D (#1141–#1144) ship the embeddable component:
 inspector, editable controls, Code panel, events log, scene tree and snippets.
 
 ## What it will be

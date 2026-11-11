@@ -23,6 +23,9 @@ export const ROADMAP_HERO_BADGE_VARS: CSSProperties = {
  *                      1 864 944 B (unpacked 9 705 239 B, 3 501 files)
  *   - CI             : 20 jobs across 5 workflows in .github/workflows/
  *   - docs online    : HTTP 200 on the deployed VitePress + Histoire builds
+ *                      ⚠️ STALE since #1346 (2026-11-11): packages/docs and
+ *                      packages/stories were removed. Whether `docs_deployed`
+ *                      stays `done: true` is an owner decision, not taken yet.
  *   - unit tests     : 7 192 tests green, 564 spec files, 77.81 % statements /
  *                      79.86 % lines (pnpm -F @origam/tests test:coverage, $? = 0)
  *   - e2e specs      : 256 spec files under packages/tests/e2e for 218 stories
@@ -80,6 +83,10 @@ export const ROADMAP_STATUS_ITEMS: IRoadmapStatusItem[] = [
  *   139 *.composable.ts under packages/ds/src/composables/
  *   6   directories under packages/ds/src/directives/
  *   218 *.story.vue under packages/stories/components/
+ *       ⚠️ STALE since #1346 (2026-11-11): packages/stories was removed, so
+ *       this count describes nothing that still exists. Keeping, replacing or
+ *       dropping the `stories` stat is an owner decision, not taken yet
+ *       (`packages/tests/e2e/roadmap.spec.ts` reads this list).
  *   2   base token themes (light.css + dark.css)
  *   3   token tiers (primitive / semantic / component)
  *

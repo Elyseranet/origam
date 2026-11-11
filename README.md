@@ -10,8 +10,8 @@ philosophy. Multi-theme out of the box, token-driven utility classes, and
 
 This repository is a **monorepo** that works with **npm, pnpm and yarn
 workspaces**. The published package (`origam` on npm) lives in
-`packages/ds/`; the surrounding packages host the docs site, Histoire
-stories, end-to-end tests, marketing site and the companion Figma plugin.
+`packages/ds/`; the surrounding packages host the marketing site, the
+component playground and the test suites.
 
 ---
 
@@ -244,7 +244,7 @@ export default defineNuxtConfig({
 })
 ```
 
-Full reference: [`packages/docs/integrations/nuxt.md`](./packages/docs/integrations/nuxt.md).
+(The former VitePress reference under `packages/docs/` was removed on 2026-11-11.)
 
 ---
 
@@ -264,14 +264,13 @@ requires **Node >= 22** (see [`.nvmrc`](./.nvmrc)).
 
 ## Repository layout
 
-The repo is a pnpm monorepo with six packages.
+The repo is a pnpm monorepo with four packages.
 
 | Package | Purpose | Published? |
 |---|---|---|
 | [`packages/ds`](./packages/ds) | Vue 3 design system — components, composables, tokens. | ✅ npm: `origam` |
 | [`packages/marketing`](./packages/marketing) | Nuxt 4 marketing site (landing, showcase, playground). | private |
-| [`packages/stories`](./packages/stories) | Histoire stories (~208 specs, used as the visual sandbox). | private |
-| [`packages/docs`](./packages/docs) | VitePress documentation site. | private |
+| [`packages/playground`](./packages/playground) | Embeddable component playground (the visual sandbox). | private |
 | [`packages/tests`](./packages/tests) | Vitest (unit) + Playwright (e2e + a11y) suites. | private |
 
 Cross-package dependencies use pnpm's `workspace:*` protocol.
@@ -318,8 +317,7 @@ pnpm install
 # yarn install
 
 pnpm -F origam build           # build the library
-pnpm -F @origam/stories dev    # http://localhost:6006 — Histoire sandbox
-pnpm -F @origam/docs dev       # VitePress documentation
+pnpm -F @origam/playground dev # component playground
 pnpm -F @origam/marketing dev  # http://localhost:3000 — marketing site
 ```
 
@@ -340,7 +338,7 @@ also works.
 
 Node ≥ 22 is mandatory (see [`.nvmrc`](./.nvmrc)). See
 [`CLAUDE.md`](./CLAUDE.md) → *Monorepo workflow* for the full convention
-on adding deps and authoring stories/docs in sync with components.
+on adding deps.
 
 ---
 

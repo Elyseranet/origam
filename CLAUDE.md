@@ -6,6 +6,35 @@ by capturing project-specific conventions.
 
 ---
 
+## ⛔ Removed on 2026-11-11 by the owner — read before any section below
+
+`packages/stories` (Histoire), `packages/docs` (VitePress), `docker/`, and
+the measurement dumps under `docs/` (including `docs/security-waivers.md`
+and `docs/work-priorities.md`) were **deleted by the owner on 2026-11-11**
+(#1346). The deletion is final: **never restore these files.**
+
+Consequences, stated honestly rather than silently rewritten:
+
+- Every rule below that mandates a `.story.vue`, a `packages/docs/*.md`, or a
+  verdict "against Histoire" is **suspended**: its subject no longer exists.
+  The sections are kept for their reasoning; their file paths are dead.
+- The e2e, a11y and VRT suites under `packages/tests` (`playwright.config.ts`,
+  `playwright.a11y.config.ts`, `playwright.vrt.config.ts`) still target
+  Histoire. Their CI jobs (`test-e2e`, `test-a11y`, `vrt`) **fail on purpose**
+  with an explicit message until the owner decides whether to migrate them to
+  the playground (`packages/playground`, `playwright.playground.config.ts`) or
+  to retire them. The `test:e2e:audit` guards (variant titles / pins) also
+  read `packages/stories` and fail for the same reason. Not decided yet.
+- Guards retired with their subject: `md-table-cells`,
+  `composables-doc-sync`, `docs-relative-md-links`, and the analysis scripts
+  `c7-story-doc-sync`, `check-doc-examples`, `gen-composables-doc`.
+- ADR files cited below under `packages/docs/internal/` are only reachable
+  through git history (`git log --all -- packages/docs/internal`).
+- The component sandbox is now `packages/playground` (`pnpm -F
+  @origam/playground dev`).
+
+---
+
 ## ⛔ Reuse existing interfaces / composables — never duplicate (mandatory)
 
 **Before declaring a new prop on a component interface, audit
@@ -58,7 +87,7 @@ surfaces. Treat them as building blocks, not as references.
 
 ---
 
-## ⛔ "Test-as-you-build" rule for stories (mandatory)
+## ⛔ "Test-as-you-build" rule for stories (SUSPENDED 2026-11-11 — `packages/stories` removed, see top)
 
 **Every new story MUST ship with a matching Playwright spec that asserts
 every prop / Variant produces a distinct runtime behaviour.** Don't write
@@ -208,7 +237,7 @@ import the component directly.
 This rule applies to **every** component using `withDefaults`. Audit
 your delivery once before commit.
 
-## ⛔ Story + doc sync on every component change (mandatory)
+## ⛔ Story + doc sync on every component change (SUSPENDED 2026-11-11 — `packages/stories` and `packages/docs` removed, see top)
 
 **Every PR that adds, renames, or removes a prop / slot / emit on a
 component MUST update the matching `.story.vue` and `.md` in the
@@ -406,13 +435,14 @@ Two habits that catch it:
 ## Tech stack (snapshot)
 
 - **Vue 3** (Composition API + `<script setup lang="ts">`), strict TS.
-- **Vite + Histoire + VitePress** for dev, stories, and docs.
+- **Vite** for dev; `packages/playground` is the component sandbox (Histoire
+  and VitePress were removed on 2026-11-11).
 - **unbuild** for the published library (consumed by external apps).
 - **Playwright** (e2e + a11y), **Vitest** (unit tests, jsdom).
 - **No design-token build step.** The token stylesheets are plain
   hand-maintained CSS/SCSS committed under `packages/ds/src/assets/` — see
   "Design tokens" below.
-- **pnpm workspaces** — monorepo, 5 packages under `packages/`.
+- **pnpm workspaces** — monorepo, 4 packages under `packages/`.
 
 The published package declares `engines.node >= 22` — that is the
 CONSUMER contract and it has not moved. Development and CI run on the
@@ -423,9 +453,9 @@ run on Node 18 because `@vitejs/plugin-vue` calls `crypto.hash()` (Node 21+).
 
 ## Project structure (monorepo)
 
-The repo is a **pnpm workspace** with 5 packages. The only package
+The repo is a **pnpm workspace** with 4 packages. The only package
 published to npm is `packages/ds/` (as `origam`). Everything else stays
-private and supports the lib (docs, stories, tests, marketing).
+private and supports the lib (marketing, playground, tests).
 
 ```
 packages/
@@ -447,11 +477,7 @@ packages/
     build.config.ts  — unbuild entry
   marketing/         — Nuxt 4 marketing site (landing + showcase + docs hub)
     pages/, components/, scripts/
-  stories/           — Histoire stories (~208 specs)
-    components/, foundations/
-    histoire.config.js
-  docs/              — VitePress documentation (component refs, integrations)
-    components/, integrations/, .vitepress/
+  playground/        — embeddable component playground (private, never published)
   tests/             — Centralised test runner
     TU/              — Vitest unit specs
     e2e/             — Playwright e2e + a11y specs
@@ -463,7 +489,6 @@ The root holds only:
 - `pnpm-workspace.yaml` (lists `packages/*`)
 - `pnpm-lock.yaml`
 - Top-level docs (`README.md`, `CLAUDE.md`, `ROADMAP.md`, `CHANGELOG.md`)
-- `docker/` (Dockerfile.docs, Dockerfile.stories, nginx.conf)
 - `.github/workflows/`, `.husky/`, `.nvmrc`, `eslint.config.js`
 
 ---
@@ -501,8 +526,7 @@ Root scripts already delegate, so the most common entries are:
 |---|---|
 | Build the lib | `pnpm -F origam build` *(or root `pnpm run build:lib`)* |
 | Build everything | `pnpm -r build` *(or root `pnpm run build:all`)* |
-| Run stories locally | `pnpm -F @origam/stories dev` *(`http://localhost:6006`)* |
-| Run docs locally | `pnpm -F @origam/docs dev` |
+| Run the playground locally | `pnpm -F @origam/playground dev` |
 | Run marketing locally | `pnpm -F @origam/marketing dev` *(`http://localhost:3000`)* |
 | Unit tests (watch) | `pnpm -F @origam/tests test:unit` |
 | Unit tests (CI) | `pnpm -F @origam/tests test:unit:run` |
@@ -512,6 +536,12 @@ Root scripts already delegate, so the most common entries are:
 | Lint (root) | `pnpm run lint:fix` |
 
 ### ⛔ Running the full e2e suite — measured, 2026-08-31
+
+> ⚠️ **Histoire was removed on 2026-11-11 (#1346).** Everything in this
+> section that builds or serves `@origam/stories` no longer runs; it is kept
+> as the record of the measurements and of the traps, which still apply to
+> any static server. Which server the suite targets next is an owner
+> decision, not taken yet (see the top of this file).
 
 **Build the static Histoire first and run against it, exactly like CI:**
 
@@ -1620,10 +1650,10 @@ a drive-by edit.
 ## Component conventions (origam-specific)
 
 - Files: `Origam{PascalCase}.vue` per component dir under
-  `packages/ds/src/components/{Name}/`. The matching story lives in
-  `packages/stories/components/stories/{Name}/Origam{Name}.story.vue`;
-  the doc in `packages/docs/components/{Name}/Origam{Name}.md`; the
-  e2e spec in `packages/tests/e2e/{component}.spec.ts`.
+  `packages/ds/src/components/{Name}/`. The e2e spec in
+  `packages/tests/e2e/{component}.spec.ts`. (The story under
+  `packages/stories/` and the doc under `packages/docs/` were removed on
+  2026-11-11.)
 - Composables: `packages/ds/src/composables/{Domain}/{kebabCase}.composable.ts`.
 - Types: `T` prefix, files under `packages/ds/src/types/{Domain}/{kebab-case}.type.ts`.
 - Interfaces: `I` prefix, files under `packages/ds/src/interfaces/{Domain}/{kebab-case}.interface.ts`.
@@ -1669,8 +1699,9 @@ personne**, et c'est la vraie lecon du lot.
 
 ## Work priorities and versioning
 
-Which work is picked up first, and how a release number is chosen, live in
-**`docs/work-priorities.md`**. The short form:
+Which work is picked up first, and how a release number is chosen, lived in
+`docs/work-priorities.md` — removed by the owner on 2026-11-11 (#1346),
+reachable through git history. The short form, which still holds:
 
 1. **Fixes** — a bug costs a user something now.
 2. **Refactoring** — *a refactor is a bug seen from the developer's side*.
@@ -1853,9 +1884,11 @@ The global pre-delivery policy (TU + e2e + security) applies. Specific to
 origam:
 - Run tests on **Node 24** (`.nvmrc`); Node 18 produces unrelated
   `crypto.hash` failures.
-- `pnpm -F origam guards` must stay at **33/33** (measured 2026-11-11, worktree
-  `fix/1342-main-css-drift` off `origin/develop` @ `db579b785`, real exit code hors pipe; guard
-  `main-css-fresh` added by #1342; it read `32/32` on 2026-10-22, `31/31` on 2026-09-29, `30/30` on 2026-09-25, `29/29` on
+- `pnpm -F origam guards` must stay at **31/31** (measured 2026-11-11, worktree
+  `dev-1346` on branch `chore/cleanup-repo`, real exit code hors pipe; 33 → 31
+  because #1346 retired `md-table-cells` and `composables-doc-sync` with
+  `packages/docs`; it read `33/33` earlier on 2026-11-11 (#1342 added
+  `main-css-fresh`), and `32/32` on 2026-10-22, `31/31` on 2026-09-29, `30/30` on 2026-09-25, `29/29` on
   2026-09-24, `28/28` on 2026-09-17, `27/27` an hour before that, `25/25` and
   `17/17` earlier still — **recount, never quote**. This line has been stale SIX
   times; an agent caught it again on 2026-09-29 while the paragraph still said
@@ -2052,7 +2085,12 @@ origam:
   "console.log(JSON.parse(require('fs').readFileSync(0)).pnpm.auditConfig.ignoreGhsas)"`.
   Each entry **must** have a section in `docs/security-waivers.md` (ticket, grant
   date, review date): `grep -n '^### GHSA' docs/security-waivers.md`. An entry
-  without one is a policy breach. ⛔ Capture the real `$?` outside a pipe — `pnpm audit | tail`
+  without one is a policy breach.
+  ⚠️ **`docs/security-waivers.md` was removed by the owner on 2026-11-11
+  (#1346)** while `ignoreGhsas` still lists 5 entries (measured on branch
+  `chore/cleanup-repo`). Until the owner says where waiver justifications now
+  live, every entry is in breach of the rule above — an open decision, not a
+  resolved one. ⛔ Capture the real `$?` outside a pipe — `pnpm audit | tail`
   returns `tail`'s exit code, not the audit's.
 
   ⛔ **An `overrides` entry FREEZES a floor; it does not follow the line.** This
