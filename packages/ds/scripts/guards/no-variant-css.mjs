@@ -3,7 +3,8 @@
  * Guard 2 — the DS ships no CSS rule that targets a `--variant-*` class,
  * and no `!important` inside such a rule.
  *
- * SOURCE OF THE RULE: ADR-005 (packages/docs/internal/adr-005-variant-as-props-preset.md),
+ * SOURCE OF THE RULE: ADR-005 (formerly packages/docs/internal/adr-005-variant-as-props-preset.md,
+ * removed with packages/docs on 2026-11-11 — recoverable from git history),
  * decision D3 — "The class survives; the DS ships no rule for it". The
  * `--variant-{value}` class (emitted by `useVariant()`) is kept as a pure
  * consumer override hook: the DS itself must never attach styling to it.
