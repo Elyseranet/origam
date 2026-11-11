@@ -47,7 +47,8 @@ const GUARDS = [
     'ts-token-refs.mjs',
     'theme-channel-confiscation.mjs',
     'inherit-attrs-fragment-root.mjs',
-    'marketing-server-leak.mjs'
+    'marketing-server-leak.mjs',
+    'main-css-fresh.mjs'
 ]
 
 /*********************************************************
