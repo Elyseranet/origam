@@ -11,21 +11,22 @@ PostgreSQL schema backing the marketing API Reference. Accessed through
 > both `tsx` and Nitro's esbuild support. Property names are kept in snake_case
 > (identical to the columns); `SnakeNamingStrategy` enforces the same mapping.
 
-> At this stage the site still reads the static `app/consts/**.const.ts` files.
-> Nothing is rebranched yet. This layer only provisions the database, the schema
-> and the migration tooling. Ticket B fills it; ticket C reads from it.
+> The API-Reference pages read this database (`src/server/api/reference/**`).
+> The curated `.const.ts` files are gone (ticket F): the source of the data is
+> now the committed fixtures `src/assets/seed/<kind>.json` (+ the
+> `src/assets/sql/db-seed.sql` snapshot), regenerated from the DS by CI.
 
 ## Layout
 
 | File | Role |
 |---|---|
-| `../../src/consts/db.const.ts` | Single source of truth: table names, kinds, relation types, env var names. Shared by the migrations, the ingestion script (ticket B) and the Nitro runtime. |
+| `../../consts/db.const.ts` | Single source of truth: table names, kinds, relation types, env var names. Shared by the migrations, the ingestion script (ticket B) and the Nitro runtime. |
 | `connection.mjs` | Resolves the TypeORM pg connection options from the environment. No secret hardcoded. |
 | `entities/*.entity.ts` | One TypeORM decorator entity per table (snake_case columns) + `base.entity.ts` (shared id / timestamps, imports `reflect-metadata`) + `index.ts` barrel (`ENTITIES`). |
 | `data-source.ts` | Import-safe `DataSource` factory (entities + migrations + `SnakeNamingStrategy` + connection). Builds nothing at import time. |
 | `data-source.cli.ts` | Eager `DataSource` instance — default export consumed by the TypeORM CLI (`-d`) ONLY. The runtime/pipeline never import it. |
 | `migrations/*.ts` | Versioned TypeORM migrations (raw SQL via `queryRunner`, `up` + `down`). |
-| `../utils/db.ts` | Nitro-side lazy DataSource singleton (`useDb`, `pingDb`, `isDbConfigured`). |
+| `../../utils/db.util.ts` | Nitro-side lazy DataSource singleton (`useDb`, `pingDb`, `isDbConfigured`). |
 
 ## Environment variables
 
@@ -84,14 +85,14 @@ pnpm -F @origam/marketing db:rollback
 pnpm -F @origam/marketing db:migrate:status
 
 # Scaffold a NEW migration from the current entity/DB diff (hand-edit after):
-pnpm -F @origam/marketing db:migrate:make -- ./server/db/migrations/MyChange
+pnpm -F @origam/marketing db:migrate:make -- ./src/server/db/migrations/MyChange
 ```
 
 > All four scripts run the TypeORM CLI through `tsx` with an EXPLICIT
 > `--tsconfig ./tsconfig.typeorm.json`
-> (`tsx --tsconfig ./tsconfig.typeorm.json ./node_modules/typeorm/cli.js … -d ./server/db/data-source.cli.ts`).
+> (`tsx --tsconfig ./tsconfig.typeorm.json ./node_modules/typeorm/cli.js … -d ./src/server/db/data-source.cli.ts`).
 > That flag is **mandatory**: `tsx` resolves the tsconfig from the CWD, and the
-> package `../../../../../tsconfig.json` `extends ./.nuxt/tsconfig.json`, across which
+> package `../../../tsconfig.json` `extends ./.nuxt/tsconfig.json`, across which
 > `tsx`/`get-tsconfig` drops `experimentalDecorators`. esbuild then emits
 > standard (TC39) decorators, which crash TypeORM's legacy decorators
 > (`Cannot read properties of undefined (reading 'constructor')` at the first
@@ -99,7 +100,7 @@ pnpm -F @origam/marketing db:migrate:make -- ./server/db/migrations/MyChange
 > nuxt `extends`) that keeps `experimentalDecorators` on. The same flag is wired
 > into the `docs:*` pipeline scripts. The Nuxt runtime bundle uses
 > `nitro.esbuild.options.tsconfigRaw.experimentalDecorators` instead;
-> `nuxt typecheck` uses the package `../../../../../tsconfig.json`.
+> `nuxt typecheck` uses the package `../../../tsconfig.json`.
 >
 > The initial `InitDocReference` migration is **hand-written** (raw SQL) — do
 > NOT regenerate it; `migration:generate` cannot express the functional unique
@@ -117,7 +118,7 @@ silently — the command succeeds and the migration runs clean.
 
 **Every migration is gated by `pnpm -F @origam/marketing guard:migrations`**
 (CI job `migrations-guard`, and `lint-staged` on any staged
-`server/db/migrations/*.ts`). It parses each migration's `up()` (never
+`src/server/db/migrations/*.ts`). It parses each migration's `up()` (never
 `down()` — a migration undoing its own additions is normal) and fails the
 moment a `DROP CONSTRAINT` / `DROP INDEX` (raw SQL or the QueryRunner API)
 has no explicit authorization directly above it:
@@ -184,6 +185,57 @@ pnpm -F @origam/marketing db:migrate       # recreate from scratch
 > The rollback drops data. In stage/prod, snapshot the database (Coolify backup)
 > before rolling back a migration that has live editorial content.
 
+## Full vs partial import (#1351)
+
+Two entry points, both idempotent (a second run reports `created: 0`):
+
+```bash
+# PROD — 100 % of the fixtures: migrations + seed, then records the fixture
+# hash in doc_meta so the next boot takes the fast path.
+DATABASE_URL=… pnpm -F @origam/marketing db:import
+
+# DEV — a deterministic ~20 % (same subset on every run), on a FRESH database.
+DATABASE_URL=… pnpm -F @origam/marketing db:import:dev
+```
+
+How the dev subset is chosen (`src/utils/doc-fixture-sample.util.ts`,
+constants `DOC_SAMPLE` in `src/consts/db.const.ts`):
+
+- an entry is kept when `sha1(kind:slug) % 100 < percent` — stable, and adding
+  an entry never reshuffles the others;
+- **always whole**: the `directive` family (6 entries);
+- **always pulled in**: the `parent_slug` chain, so the subset adds no dangling
+  parent;
+- relations are **not** closed over: a relation towards an entry left out stays
+  in the table and dangles (owner decision, #1351 — the API ignores an
+  unresolvable relation).
+
+Measured on the fixtures of `develop` @ `35e56f982` (2026-11-11), throwaway
+PostgreSQL 16:
+
+| | `db:import` | `db:import:dev` |
+|---|---|---|
+| `doc_entry` | 2780 | 559 (20.1 %) |
+| all child rows | 37 243 | 14 583 |
+| dangling `parent_slug` | 7 | 1 — inherited (`media`, absent from the full set too) |
+| dangling relations | 389 | 675 = 86 inherited + 589 towards entries not sampled |
+
+Child rows do not shrink to 20 %: `enum` keeps 21 entries but 7 426 child rows (the
+icon enum alone is large). The pre-existing dangling references of the full set
+are tracked in #1353.
+
+**The boot keeps a sampled DB sampled.** `db:import*` store
+`seed_sample_percent` in `doc_meta`. The bootstrap plugin resolves the percent
+as: env `NUXT_DB_SEED_SAMPLE` (1..100) > `doc_meta.seed_sample_percent` > 100,
+and applies the SAME filter before its sync; in partial mode it skips the
+`db-seed.sql` bulk load (which loads everything). So a dev server started
+without the env var never re-imports 100 % over a 20 % database. A value outside
+1..100 is rejected, never guessed.
+
+Sampling never deletes: running `db:import:dev` on a database that already holds
+the full set leaves it full. Start from an empty database. To go from partial
+to full, run `db:import` (it records `100`).
+
 ## Seed & re-sync pipeline (ticket B)
 
 `scripts/generate-api-docs.mjs` was reoriented from writing per-slug `.const.ts`
@@ -191,8 +243,9 @@ files to UPSERTing into this database. It reuses the same libs
 (`extract` / `merge` / `read-existing`) — no logic is duplicated.
 
 ```bash
-# First load: ingest the 1758 curated app/consts/**.const.ts files (all 8
+# First load: ingest the committed fixtures src/assets/seed/<kind>.json (all 8
 # families) into the DB without loss. Idempotent; respects the editorial lock.
+# (`--sample=N` keeps a deterministic N % — see "Full vs partial import".)
 pnpm -F @origam/marketing docs:seed
 
 # Re-sync: re-extract STRUCTURAL [SRC] facts from packages/ds/src for all 8
@@ -240,7 +293,7 @@ Properties:
 
 ## Deploy-time auto-sync (bootstrap plugin)
 
-`server/plugins/00.db-bootstrap.ts` keeps the live database in sync with the
+`src/server/plugins/00.db-bootstrap.ts` keeps the live database in sync with the
 committed fixtures **at every server boot** — so a new / changed DS component
 flows to the API-Reference automatically on the next deploy, with **no manual
 step** (no truncate, no re-seed). Editorial `/admin` edits (`edited_by_user`
@@ -290,13 +343,13 @@ Merging the PR → deploy → the boot-time sync above applies the fixtures.
 ## Healthcheck
 
 `GET /api/health` reports `{ status, db: { configured, ok } }`. When the DB is
-**not** configured the endpoint stays `200 ok` (the site still runs on the
-static const files). When it **is** configured but unreachable, it returns
+**not** configured the endpoint stays `200 ok` (the site still runs; the
+API-Reference pages are empty). When it **is** configured but unreachable, it returns
 `503 degraded` so orchestrators can gate readiness on the database.
 
 ## Build heap
 
-`nuxt build` for this package is heavy (embeds + 1758 API-reference consts + the
+`nuxt build` for this package is heavy (embeds + the bundled API-reference fixtures + the
 TypeORM server bundle) and OOMs at Node's default heap
 (`FATAL ERROR: Reached heap limit` during "Building Nuxt Nitro server"). Build
 with `NODE_OPTIONS=--max-old-space-size=8192` (already set in the `Dockerfile`
