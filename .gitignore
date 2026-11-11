@@ -27,12 +27,6 @@ packages/marketing/src/server/api/__mem.get.ts
 dist
 dist-ssr
 
-# Vitepress
-docs/.vitepress/dist
-docs/.vitepress/cache
-packages/docs/.vitepress/dist
-packages/docs/.vitepress/cache
-
 # Local files
 *.local
 
@@ -135,9 +129,6 @@ packages/ds/CHANGELOG.md
 
 # Fichiers d environnement — jamais suivis (cf. politique globale)
 .env
-
-# Dossier temporaire du type-check des exemples de doc (scripts/analysis/check-doc-examples.mjs)
-packages/ds/.doc-examples
 
 # Dumps du navigateur MCP produits par les agents (arbres a11y, snapshots de page).
 # 177 fichiers / 5,8 Mo avaient ete committes par accident depuis le 2026-09-04.

@@ -6,11 +6,7 @@
     /* Paths */
     "paths": {
       "@origam": ["./packages/ds/src"],
-      "@origam/*": ["./packages/ds/src/*"],
-      "@stories": ["./packages/stories"],
-      "@stories/*": ["./packages/stories/*"],
-      "@docs": ["./packages/docs"],
-      "@docs/*": ["./packages/docs/*"]
+      "@origam/*": ["./packages/ds/src/*"]
     }
   },
   "include": [
@@ -29,8 +25,6 @@
   "references": [
     { "path": "./tsconfig.node.json" },
     { "path": "./packages/ds/tsconfig.json" },
-    { "path": "./packages/stories/tsconfig.json" },
-    { "path": "./packages/docs/tsconfig.json" },
     { "path": "./packages/tests/TU/tsconfig.json" },
     { "path": "./packages/tests/e2e/tsconfig.json" }
   ]
