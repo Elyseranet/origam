@@ -89,7 +89,6 @@ export PNPM_HOME=/pnpm-home
 export PATH="$PNPM_HOME:$PATH"
 pnpm config set store-dir /pnpm-store
 pnpm install --frozen-lockfile
-pnpm -F @origam/stories build
 '
 
 if [ "$MODE" = "update" ]; then

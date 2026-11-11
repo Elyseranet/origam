@@ -377,51 +377,10 @@ jobs:
           retention-days: 7
           if-no-files-found: error
 
-  build-embeds:
-    name: Build embeds (stories + docs)
-    runs-on: ubuntu-latest
-    # The Histoire stories build (209 stories, large vendor chunk) needs more
-    # heap than the workflow-level 4096 MB default.
-    env:
-      NODE_OPTIONS: --max-old-space-size=6144
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: pnpm/action-setup@v6
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build embeds (Histoire stories + VitePress docs)
-        run: pnpm run build:embeds
-
-      - name: Assert embeds output exists
-        run: |
-          test -f packages/marketing/public/stories/index.html \
-            || { echo "::error::stories embed missing — public/stories/index.html not built"; exit 1; }
-          test -f packages/marketing/public/docs/index.html \
-            || { echo "::error::docs embed missing — public/docs/index.html not built"; exit 1; }
-
-      - name: Upload marketing embeds
-        uses: actions/upload-artifact@v7
-        with:
-          name: marketing-embeds
-          path: |
-            packages/marketing/public/stories
-            packages/marketing/public/docs
-          retention-days: 7
-          if-no-files-found: error
-
   build-marketing:
     name: Build marketing (Nuxt)
     runs-on: ubuntu-latest
-    # No GHA/docker.yml job builds the marketing image (it only ships docs +
-    # stories, and only on `main`/tags) — Coolify was the only thing building
+    # No GHA job builds the marketing image — Coolify was the only thing building
     # it on every `develop` push, and its failures never surfaced on GitHub.
     # This job is the guard: it runs the same `nuxt build` Coolify's Docker
     # image runs, on a full checkout, so a broken marketing build goes red
@@ -431,14 +390,8 @@ jobs:
     # nothing here ever ran `pnpm -F @origam/marketing build`.
     #
     # Deliberately narrow: builds the lib (marketing imports `origam`) then
-    # the Nuxt app directly, skipping `build:embeds` (Histoire + VitePress,
-    # ~70s+ on its own, already covered by `build-embeds` above). The embeds
-    # are static assets copied into `public/`; nothing in `nuxt.config.ts` or
-    # the build pipeline reads them at build time, so omitting them doesn't
-    # lose any coverage — confirmed by reproducing the original incident
-    # (renaming packages/tests/{TU,e2e}/tsconfig.json) with embeds skipped
-    # and still seeing `nuxt build` fail with the same
-    # `[TSCONFIG_ERROR] ... Tsconfig not found`.
+    # the Nuxt app directly. (The Histoire / VitePress embeds this job used to
+    # skip were removed with packages/stories and packages/docs on 2026-11-11.)
     env:
       # Matches packages/marketing/Dockerfile's build stage: the Nitro build
       # (server bundle + SSR payload) OOMs on the workflow-level 4096 MB.
@@ -585,8 +538,14 @@ jobs:
         if: steps.pw-cache.outputs.cache-hit == 'true'
         run: pnpm -F @origam/tests exec playwright install-deps chromium
 
-      - name: Build static Histoire (served by the e2e webServer)
-        run: pnpm -F @origam/stories build
+      # #1346 — packages/stories (Histoire) was removed by the owner on
+      # 2026-11-11. This job's specs and webServer target Histoire; migrating
+      # them (playground / marketing) or retiring the job is an OWNER decision
+      # not taken yet. Fail loudly instead of running against nothing.
+      - name: Histoire removed — job awaiting owner decision (#1346)
+        run: |
+          echo "::error::packages/stories (Histoire) was removed in #1346; this job has no server to test. Owner decision pending: migrate the specs to the playground/marketing or retire the job."
+          exit 1
 
       - name: Run Playwright (chromium)
         run: pnpm -F @origam/tests exec playwright test --project=chromium --shard=${{ matrix.shard }}/4
@@ -815,11 +774,14 @@ jobs:
         if: steps.pw-cache.outputs.cache-hit == 'true'
         run: pnpm -F @origam/tests exec playwright install-deps chromium
 
-      # Plain `run:`, no pipe: `pnpm build | tail` returns `tail`'s exit code
-      # and a broken build would then run green. Same rationale as the
-      # marketing jobs above.
-      - name: Build static Histoire (served by the a11y webServer)
-        run: pnpm -F @origam/stories build
+      # #1346 — packages/stories (Histoire) was removed by the owner on
+      # 2026-11-11. This job's specs and webServer target Histoire; migrating
+      # them (playground / marketing) or retiring the job is an OWNER decision
+      # not taken yet. Fail loudly instead of running against nothing.
+      - name: Histoire removed — job awaiting owner decision (#1346)
+        run: |
+          echo "::error::packages/stories (Histoire) was removed in #1346; this job has no server to test. Owner decision pending: migrate the specs to the playground/marketing or retire the job."
+          exit 1
 
       - name: Run Playwright (components a11y, chromium)
         run: pnpm -F @origam/tests exec playwright test --config=playwright.a11y.config.ts --project=chromium --shard=${{ matrix.shard }}/2
@@ -931,8 +893,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build static Histoire (served by the vrt webServer)
-        run: pnpm -F @origam/stories build
+      # #1346 — packages/stories (Histoire) was removed by the owner on
+      # 2026-11-11. This job's specs and webServer target Histoire; migrating
+      # them (playground / marketing) or retiring the job is an OWNER decision
+      # not taken yet. Fail loudly instead of running against nothing.
+      - name: Histoire removed — job awaiting owner decision (#1346)
+        run: |
+          echo "::error::packages/stories (Histoire) was removed in #1346; this job has no server to test. Owner decision pending: migrate the specs to the playground/marketing or retire the job."
+          exit 1
 
       - name: Run VRT suite (chromium, in-container)
         run: pnpm -F @origam/tests exec playwright test --config=playwright.vrt.config.ts

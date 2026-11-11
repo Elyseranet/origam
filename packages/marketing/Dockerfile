@@ -9,19 +9,19 @@
 #   - Dockerfile Loc.  = packages/marketing/Dockerfile
 #   - Ports Exposes    = 3000
 #
-# The single image serves the marketing landing AND the embedded /docs
-# (VitePress) + /stories (Histoire) static bundles (copied into public/ by
-# `build:embeds`). One container = the whole origam.* site.
+# The image serves the marketing site only. The embedded /docs (VitePress)
+# and /stories (Histoire) bundles were removed with packages/docs and
+# packages/stories on 2026-11-11.
 # -----------------------------------------------------------------------------
 FROM node:22-alpine AS base
 
 WORKDIR /app
 
-# Native build deps (style-dictionary / sass / sharp / histoire).
+# Native build deps (sass / sharp).
 RUN apk add --no-cache python3 make g++ libc6-compat
 
-# Histoire's 200+ story build AND the Nuxt/Nitro marketing build (heavy: embeds
-# + the TypeORM server bundle + SSR payload) need more heap than the default,
+# The Nuxt/Nitro marketing build (heavy: the TypeORM server bundle + SSR
+# payload) needs more heap than the default,
 # which otherwise OOMs ("Reached heap limit") during the Nitro build.
 ENV NODE_OPTIONS=--max-old-space-size=8192
 
@@ -32,8 +32,6 @@ RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
 FROM base AS deps
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json .npmrc ./
 COPY packages/ds/package.json packages/ds/package.json
-COPY packages/docs/package.json packages/docs/package.json
-COPY packages/stories/package.json packages/stories/package.json
 COPY packages/tests/package.json packages/tests/package.json
 COPY packages/marketing/package.json packages/marketing/package.json
 # marketing hosts @origam/playground: prop-group classification (#1141), the
@@ -48,12 +46,10 @@ COPY patches ./patches
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
     pnpm install --frozen-lockfile
 
-# --- Source: everything the marketing build (and its embeds) needs. ---
+# --- Source: everything the marketing build needs. ---
 FROM deps AS source
 COPY tsconfig*.json ./
 COPY packages/ds packages/ds
-COPY packages/docs packages/docs
-COPY packages/stories packages/stories
 COPY packages/marketing packages/marketing
 COPY packages/playground packages/playground
 
@@ -74,27 +70,25 @@ COPY packages/playground packages/playground
 COPY packages/tests/TU/tsconfig.json packages/tests/TU/tsconfig.json
 COPY packages/tests/e2e/tsconfig.json packages/tests/e2e/tsconfig.json
 
-# --- Tools stage: deps + source + tsx, WITHOUT the heavy lib/embeds/nuxt build.
+# --- Tools stage: deps + source + tsx, WITHOUT the heavy lib/nuxt build.
 #     Consumed by the docker-compose `migrate` service to run the TypeORM
 #     migrations and the ingestion pipeline (db:migrate + docs:seed + docs:sync)
 #     against the database. Cheap — it stops right after the source COPY. ---
 FROM source AS tools
 
-# --- Build stage: compile the lib, the embeds, and the Nuxt/Nitro app output.
+# --- Build stage: compile the lib and the Nuxt/Nitro app output.
 FROM source AS build
 # 1. Build the published lib (tokens + unbuild) — marketing imports `origam`.
 RUN pnpm -F origam build
-# 2. Build the embeds (Histoire stories + VitePress docs) into marketing/public.
-RUN pnpm run build:embeds
-# 3. Generate `.nuxt/` (the `~` alias the SFC compiler resolves defineProps
+# 2. Generate `.nuxt/` (the `~` alias the SFC compiler resolves defineProps
 #    types through). Outside Docker the package's `postinstall` does it; here
 #    the install ran in `deps`, BEFORE the sources existed, so it never did —
 #    measured while verifying #1145: 5 SFCs failed with « Failed to resolve
 #    import source "~/interfaces/…" », on the parent commit too.
 RUN pnpm -F @origam/marketing exec nuxt prepare
-# 4. Build the Nuxt app → packages/marketing/.output (self-contained server).
+# 3. Build the Nuxt app → packages/marketing/.output (self-contained server).
 RUN pnpm -F @origam/marketing build
-# 5. TypeORM requires `pg` dynamically, which Nitro's tracer does not follow
+# 4. TypeORM requires `pg` dynamically, which Nitro's tracer does not follow
 #    (nitro.externals.traceInclude in nuxt.config.ts). Fail the image build —
 #    not the first request — if it ever goes missing again (#1166).
 RUN test -f packages/marketing/.output/server/node_modules/pg/package.json
@@ -106,7 +100,7 @@ FROM node:22-alpine AS runtime
 
 LABEL org.opencontainers.image.source="https://github.com/Elyseranet/origam"
 LABEL org.opencontainers.image.title="origam-marketing"
-LABEL org.opencontainers.image.description="Nuxt 4 marketing site for the origam design system (with embedded docs + stories)"
+LABEL org.opencontainers.image.description="Nuxt 4 marketing site for the origam design system"
 LABEL org.opencontainers.image.licenses="MIT"
 
 WORKDIR /app
