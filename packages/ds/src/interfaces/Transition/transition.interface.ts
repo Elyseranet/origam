@@ -44,7 +44,7 @@ export interface ITransitionProps {
  * plus `SlideX`/`SlideY`/`TranslatePicker`/`ReverseTranslatePicker`/
  * `TranslateBottom`) still declare it — `ScaleRotate` and `Snack` in
  * particular have a legitimate use for it. See
- * `docs/mesures/` for the full per-component audit.
+ * the git history (#1346) for the full per-component audit.
  ********************************************************/
 export interface ITransitionNoOriginProps extends Omit<ITransitionProps, 'origin'> {}
 

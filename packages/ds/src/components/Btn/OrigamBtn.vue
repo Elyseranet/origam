@@ -638,7 +638,7 @@
 		// → `light.css`/`dark.css`), always defined (`0` at rest), so the
 		// `var()` fallback never falls through to the btn's own value —
 		// measured, see the #391/#530 root-vs-token audit
-		// (`docs/mesures/`): on every conflict of this shape checked in a
+		// (supprimé du dépôt, #1346 — historique git): on every conflict of this shape checked in a
 		// real browser, the globally-registered token wins, never the
 		// component-local declaration. So the STANDALONE default below
 		// reads the BTN's OWN var directly (no group fallback) — this is

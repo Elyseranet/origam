@@ -28,7 +28,7 @@ export const ROADMAP_HERO_BADGE_VARS: CSSProperties = {
  *   - e2e specs      : 256 spec files under packages/tests/e2e for 218 stories
  *   - guards         : 29/29 + 16/16 self-tests (pnpm -F origam guards,
  *                      guards:self — both $? = 0)
- *   - inspection     : docs/mesures/classeur-complet-maj-2026-09-01.csv
+ *   - inspection     : classeur supprimé du dépôt (#1346) — historique git
  *   - dependencies   : .github/dependabot.yml
  *
  * ⛔ The VERSION is deliberately absent from every string these keys resolve

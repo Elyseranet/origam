@@ -119,11 +119,7 @@ yarn.lock
 
 # Test coverage output (generated; consumed by SonarQube in CI)
 coverage/
-# design-sync (artefacts régénérés — la config/notes/scripts dans .design-sync/ SONT committés)
 ds-bundle/
-.design-sync/.cache/
-.design-sync/learnings/
-.design-sync/node_modules
 
 # Copie generee au packaging (prepack) — la source est le CHANGELOG.md racine
 packages/ds/CHANGELOG.md
@@ -147,3 +143,9 @@ packages/ds/.doc-examples
 # accident le 2026-09-23 dans 22834f69d, un commit qui parlait d'operateurs
 # `void`. Une capture ne se relit pas dans une revue : elle passe.
 /*.png
+
+# Dossiers d outils / agents locaux
+.impeccable/
+graphify-out/
+founder
+.codex

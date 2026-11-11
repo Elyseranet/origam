@@ -4,7 +4,7 @@ import { expect, test, type Page } from '@playwright/test'
  * #950 — `padding="6"` / `margin="6"` peignent enfin, sur les 21 composants
  * dont le recensement a mesuré la prop MORTE au navigateur.
  *
- * MESURE, PAS SOUHAIT. Le recensement (`docs/mesures/950-props-utilitaires-
+ * MESURE, PAS SOUHAIT. Le recensement (supprimé du dépôt, #1346 — historique git : `950-props-utilitaires-
  * mortes.md`, spec `utility-cascade-census-950.spec.ts`) a établi en Chromium
  * réel que 34 couples (composant × prop) sur 24 composants n'appliquaient
  * RIEN : la classe utilitaire était bien émise sur l'élément, et le longhand
