@@ -18,6 +18,17 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.37.41] - 2026-11-11
+
+### Fixed — `main.css` commité en retard sur le SCSS, et garde contre la dérive (#1342)
+
+La copie commitée de `packages/ds/src/assets/css/main.css` n'était plus à jour par rapport à `main.scss`. Il lui manquait 5 jetons, chacun dans les 3 blocs (light, dark, `prefers-color-scheme`) : `--origam-btn__content---justify-content`, `--origam-btn__content---text-align`, `--origam-table__header-cell---letter-spacing`, `--origam-table__header-cell---text-transform` et `--origam-tabs__item---line-height`.
+
+- `main.css` a été régénéré avec `pnpm -F origam styles:build`. Comparaison au niveau des déclarations : 9333 → 9348, **0 retirée, 15 ajoutées**.
+- Nouveau garde `main-css-fresh` (garde 33). Il recompile `main.scss` avec les options de `styles:build` et exige l'identité octet pour octet avec `main.css`. Il est branché dans `run-all.mjs`, donc dans le job CI `architecture-guards`.
+- Le paquet npm n'était pas affecté : `build` régénère `main.css` avant `unbuild`. Le défaut ne touchait que la copie du dépôt.
+- **Vérifié** : `guards` 33/33 et `guards:self` 27/27, exit 0. Test A/B : une déclaration retirée → le garde sort en exit 1 ; après régénération → exit 0. CI de la PR #1345 : 23/23 checks verts.
+
 ## [2.37.40] - 2026-11-05
 
 ### Fixed — Charts : un seul arrêt de tabulation par chart, navigation aux flèches (#1333)

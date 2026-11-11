@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.37.41',
+        date: '2026-11-11',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v23741.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v23741.h1', textFallback: 'main.css commité en retard sur le SCSS, et garde contre la dérive (#1342)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.40',
         date: '2026-11-05',
         type: 'patch',
