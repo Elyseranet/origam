@@ -30,6 +30,9 @@ Consequences, stated honestly rather than silently rewritten:
   `c7-story-doc-sync`, `check-doc-examples`, `gen-composables-doc`.
 - ADR files cited below under `packages/docs/internal/` are only reachable
   through git history (`git log --all -- packages/docs/internal`).
+- The 5 audit waivers formerly in `docs/security-waivers.md` are indexed in
+  the **Security waivers** table under "Pre-delivery" (proposed location,
+  pending owner validation).
 - The component sandbox is now `packages/playground` (`pnpm -F
   @origam/playground dev`).
 
@@ -2083,14 +2086,29 @@ origam:
   (the claim that it was absent is false). Measure the list, never quote it:
   `git show origin/develop:package.json | node -e
   "console.log(JSON.parse(require('fs').readFileSync(0)).pnpm.auditConfig.ignoreGhsas)"`.
-  Each entry **must** have a section in `docs/security-waivers.md` (ticket, grant
-  date, review date): `grep -n '^### GHSA' docs/security-waivers.md`. An entry
-  without one is a policy breach.
-  ⚠️ **`docs/security-waivers.md` was removed by the owner on 2026-11-11
-  (#1346)** while `ignoreGhsas` still lists 5 entries (measured on branch
-  `chore/cleanup-repo`). Until the owner says where waiver justifications now
-  live, every entry is in breach of the rule above — an open decision, not a
-  resolved one. ⛔ Capture the real `$?` outside a pipe — `pnpm audit | tail`
+  Each entry **must** have a row in the **Security waivers** table below
+  (GHSA, grant date, review date, remediation ticket), and the ticket carries
+  the justification and the dependency chain — the ticket is the archive. An
+  entry without a row is a policy breach.
+
+  ⚠️ **PROPOSED, pending owner validation (#1346).** These waivers used to
+  live in `docs/security-waivers.md`, removed by the owner on 2026-11-11. The
+  rows below are transcribed from that file as of `9e193ae9a`
+  (`git show 9e193ae9a:docs/security-waivers.md` for the full text):
+
+  ### Security waivers
+
+  | GHSA | package | granted | review date | remediation ticket |
+  |---|---|---|---|---|
+  | GHSA-vfj7-8cjw-p6xm | `braces` | 2026-10-13 | **2026-11-13** | #1070 (open) |
+  | GHSA-hp3w-g68c-fv3c | `sprintf-js` | 2026-10-13 | **2026-11-13** | #1070 (open) |
+  | GHSA-g3hv-75wg-m249 | `minimatch` | 2026-11-01 | 2027-02-01 | #1301 (closed) |
+  | GHSA-3g3m-2fjr-6pw4 | `glob` | 2026-11-01 | 2027-02-01 | #1301 (closed) |
+  | GHSA-gcqx-w48m-w2h4 | `deepmerge` | 2026-10-28 | 2027-01-28 | #1277 (closed) |
+
+  Check: every `ignoreGhsas` entry appears in this table, and the reverse.
+  ⚠️ #1301 and #1277 are CLOSED while their waivers are still active —
+  a waiver whose remediation ticket is closed has no tracked exit. ⛔ Capture the real `$?` outside a pipe — `pnpm audit | tail`
   returns `tail`'s exit code, not the audit's.
 
   ⛔ **An `overrides` entry FREEZES a floor; it does not follow the line.** This
@@ -2157,7 +2175,8 @@ origam:
   checked because a document says it is fine.
 
   If a future advisory genuinely has no published fix, it goes through
-  `docs/security-waivers.md` — maintainer approval, written justification,
-  dependency chain, review date — never a silent entry in `ignoreGhsas`.
+  the **Security waivers** table above plus a ticket — maintainer approval,
+  written justification, dependency chain, review date — never a silent entry
+  in `ignoreGhsas`.
   A waiver also has an **exit**: `image-size` sat under one for a month
   after its fix shipped, because nothing re-checked the premise.
