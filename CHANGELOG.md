@@ -2546,7 +2546,7 @@ Tokens Studio comme **format d'entrée possible** du champ `tokens` — une
 capacité d'`IOrigamTheme`, pas notre pipeline de build.
 
 ⚠️ **Signalé, plus massif, non traité** :
-`packages/marketing/server/db/seed/component.json` porte **129 occurrences** de
+`packages/marketing/src/server/db/seed/component.json` porte **129 occurrences** de
 `pipelineNote` mentionnant « Style Dictionary v4 + @tokens-studio/sd-transforms »
 — un champ affiché en direct dans la ligne « Pipeline » de la page de détail de
 **chaque** composant. Une correction de données, un lot à part. `i18n:check`

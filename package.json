@@ -23,12 +23,8 @@
     "scripts": {
         "build:lib": "pnpm -F origam build",
         "build:marketing": "pnpm -F @origam/marketing build",
-        "build:stories": "pnpm -F @origam/stories build",
-        "build:docs": "pnpm -F @origam/docs build",
         "build:all": "pnpm -r build",
         "guards": "pnpm -F origam guards",
-        "dev:stories": "pnpm -F @origam/stories dev",
-        "dev:docs": "pnpm -F @origam/docs dev",
         "dev:marketing": "pnpm -F @origam/marketing dev",
         "test:unit": "pnpm -F @origam/tests test:unit",
         "test:unit:run": "pnpm -F @origam/tests test:unit:run",
