@@ -69,9 +69,10 @@ import { mapDoc } from './doc-to-rows.ts'
 import { ingestFull, ingestSrc, orphanMissingEntries, deleteInternalComponentEntries } from './db-upsert.ts'
 import { getDb, closeDb, sourceCommit } from './db.ts'
 import { backfillKeys, backfillSvgKeys } from './key-backfill.ts'
-import { DOC_KIND_DIRS } from '../src/consts/db.const.ts'
+import { DB_ENV, DOC_KIND_DIRS, DOC_KINDS, DOC_META_KEYS, DOC_SAMPLE } from '../src/consts/db.const.ts'
 import { DocEntry, DocSyncRun } from '../src/server/db/entities/index.ts'
-import { syncFixtures } from '../src/utils/doc-fixture-sync.util.ts'
+import { fixtureHash, syncFixtures, writeMeta } from '../src/utils/doc-fixture-sync.util.ts'
+import { parseSamplePercent, sampleFixtureRecords } from '../src/utils/doc-fixture-sample.util.ts'
 import { ROLLBACK, RESYNC_POLICY, FILE_DOMAINS } from '../src/consts/doc-sync.const.ts'
 
 const { getInternalComponentNames, pascalToKebab } = await import(
@@ -87,6 +88,9 @@ const backfillKeysFlag = argv.includes('--backfill-keys')
 const newOnlyFlag = argv.includes('--new-only')
 const domainArg = (argv.find(a => a.startsWith('--domain=')) || '').split('=')[1]
 const limitArg = Number((argv.find(a => a.startsWith('--limit=')) || '').split('=')[1]) || 0
+// #1351 — deterministic partial seed: `--sample=N` wins over NUXT_DB_SEED_SAMPLE; unset = 100 %.
+const sampleRaw = (argv.find(a => a.startsWith('--sample=')) || '').split('=')[1]
+const samplePercent = parseSamplePercent(sampleRaw ?? process.env[DB_ENV.SEED_SAMPLE]) ?? DOC_SAMPLE.FULL_PERCENT
 
 const mktConsts = path.join(repoRoot, 'packages', 'marketing', 'src', 'consts')
 const mktSeed   = path.join(repoRoot, 'packages', 'marketing', 'src', 'assets', 'seed')
@@ -137,12 +141,13 @@ async function runSeed (manager) {
             const fixture = JSON.parse(fs.readFileSync(fixturePath, 'utf-8'))
             let records = fixture.entries ?? []
             if (limitArg) records = records.slice(0, limitArg)
+            records = sampleFixtureRecords(records, samplePercent)
 
             // Reuse the shared boot-time sync loop (ingestFull + lock restore) so
             // the runtime bootstrap and this script never drift apart.
             const r = await syncFixtures(manager, records)
             add(c, r); add(total, r)
-            console.log(`[${kind}] fixture=${records.length} created=${c.created} updated=${c.updated} unchanged=${c.unchanged} orphaned=${c.orphaned}`)
+            console.log(`[${kind}] fixture=${records.length}/${fixture.entries?.length ?? 0} created=${c.created} updated=${c.updated} unchanged=${c.unchanged} orphaned=${c.orphaned}`)
         }
     }
     return total
@@ -248,6 +253,24 @@ async function recordRun (db, { domain, counts, status, error }) {
     })
 }
 
+/**
+ * #1351 — after a COMPLETE fixture seed (no --domain / --limit), store the
+ * fixture hash and the sample percent in doc_meta, exactly as the boot-time
+ * bootstrap would: the next server boot then takes the fast path instead of
+ * re-syncing — and, on a sampled DB, instead of re-importing 100 %.
+ */
+async function recordSeedMeta (db) {
+    if (domainArg || limitArg) return
+    const texts = {}
+    for (const kind of DOC_KINDS) {
+        const file = path.join(mktSeed, `${kind}.json`)
+        texts[kind] = fs.existsSync(file) ? fs.readFileSync(file, 'utf-8') : null
+    }
+    await writeMeta(db.manager, DOC_META_KEYS.SEED_FIXTURE_HASH, fixtureHash(texts))
+    await writeMeta(db.manager, DOC_META_KEYS.SEED_SAMPLE_PERCENT, String(samplePercent))
+    console.log(`\ndoc_meta: fixture hash + sample=${samplePercent}% recorded (next boot takes the fast path).`)
+}
+
 async function reportKindCounts (db) {
     const rows = await db.getRepository(DocEntry)
         .createQueryBuilder('e')
@@ -285,6 +308,7 @@ async function runDb () {
 
     if (!checkFlag) {
         await recordRun(db, { domain: domainArg, counts, status: 'success' })
+        if (seedFlag) await recordSeedMeta(db)
         await reportKindCounts(db)
     }
     if (checkFlag && drift > 0) {

@@ -79,6 +79,8 @@ export const DB_TABLES = Object.freeze({
  */
 export const DOC_META_KEYS = Object.freeze({
     SEED_FIXTURE_HASH: 'seed_fixture_hash',
+    /** Sample percent the DB was seeded with (#1351) — absent = full import. */
+    SEED_SAMPLE_PERCENT: 'seed_sample_percent',
 })
 
 /** TypeORM migrations bookkeeping table. */
@@ -100,6 +102,8 @@ export const DB_ENV = Object.freeze({
     PASSWORD: 'NUXT_DB_PASSWORD',
     NAME: 'NUXT_DB_NAME',
     SSL: 'NUXT_DB_SSL',
+    /** Deterministic partial seed (#1351): integer 1..100, unset = 100 (full). */
+    SEED_SAMPLE: 'NUXT_DB_SEED_SAMPLE',
 })
 
 /** Default discrete-mode values (host/port only — never a credential). */
@@ -109,3 +113,16 @@ export const DB_DEFAULTS = Object.freeze({
 
 /** Postgres advisory-lock key serialising the boot-time fixture sync across Nitro workers. */
 export const BOOTSTRAP_LOCK_KEY = 4021
+
+/**
+ * Deterministic partial seed (#1351). An entry is kept when
+ * `sha1(kind:slug) % 100 < percent`; FULL_KINDS are always kept whole, and the
+ * `parent_slug` closure is always pulled in (no dangling parent). Relations to
+ * entries left out stay dangling on purpose (owner decision A3, the API ignores
+ * an unresolvable relation).
+ */
+export const DOC_SAMPLE = Object.freeze({
+    FULL_PERCENT: 100,
+    BUCKETS: 100,
+    FULL_KINDS: Object.freeze(['directive']),
+})

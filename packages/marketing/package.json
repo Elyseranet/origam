@@ -20,6 +20,8 @@
     "docs:dump:sql": "tsx --tsconfig ./tsconfig.typeorm.json scripts/dump-db-seed-sql.mjs",
     "docs:playgrounds": "tsx --tsconfig ./tsconfig.typeorm.json scripts/generate-playgrounds.mjs",
     "docs:seed": "tsx --tsconfig ./tsconfig.typeorm.json scripts/generate-api-docs.mjs --seed",
+    "db:import": "pnpm run db:migrate && tsx --tsconfig ./tsconfig.typeorm.json scripts/generate-api-docs.mjs --seed --sample=100",
+    "db:import:dev": "pnpm run db:migrate && tsx --tsconfig ./tsconfig.typeorm.json scripts/generate-api-docs.mjs --seed --sample=20",
     "docs:seed:check": "tsx --tsconfig ./tsconfig.typeorm.json scripts/generate-api-docs.mjs --seed --check",
     "docs:sync": "tsx --tsconfig ./tsconfig.typeorm.json scripts/generate-api-docs.mjs",
     "docs:sync:check": "tsx --tsconfig ./tsconfig.typeorm.json scripts/generate-api-docs.mjs --check",

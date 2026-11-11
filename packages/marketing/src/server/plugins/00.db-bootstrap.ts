@@ -14,6 +14,11 @@
 //          INCHANGÉES les éditions `/admin` lockées ([ÉDIT] + edited_by_user),
 //          orpheline (jamais delete) les disparus ;
 //        - dans les deux cas on enregistre le nouveau hash.
+//   5. #1351 — import PARTIEL déterministe : NUXT_DB_SEED_SAMPLE (1..100), à
+//      défaut le pourcentage enregistré dans doc_meta par `db:import:dev`. Le
+//      même filtre que le script (sampleFixtureRecords) s'applique ici, sinon un
+//      boot dev réimporterait 100 % par-dessus une base échantillonnée. En mode
+//      partiel on saute le bulk SQL (qui charge tout).
 //
 // Robustesse :
 //   - un VERROU D'AVIS Postgres (pg_advisory_lock) sur une connexion dédiée
@@ -25,9 +30,10 @@
 //   - NON-FATAL : une base non configurée ou injoignable ne fait pas planter le
 //     serveur — le site tourne et /api/health reflète l'état (db.ok).
 
-import { BOOTSTRAP_LOCK_KEY, DOC_KINDS, DOC_META_KEYS } from '../../consts/db.const'
+import { BOOTSTRAP_LOCK_KEY, DB_ENV, DOC_KINDS, DOC_META_KEYS, DOC_SAMPLE } from '../../consts/db.const'
 import { DocSyncRun } from '../db/entities'
 import { fixtureHash, readMeta, syncFixtures, writeMeta } from '../../utils/doc-fixture-sync.util'
+import { resolveSamplePercent, sampleFixtureRecords } from '../../utils/doc-fixture-sample.util'
 
 import { isDbConfigured, useDb } from '../../utils/db.util'
 /** Normalise a raw server-asset value (string | Buffer | Uint8Array) to string. */
@@ -81,8 +87,13 @@ export default defineNitroPlugin(async () => {
         const texts = await loadFixtureTexts()
         const hash = fixtureHash(texts)
         const stored = await readMeta(ds.manager, DOC_META_KEYS.SEED_FIXTURE_HASH)
+        const storedSample = await readMeta(ds.manager, DOC_META_KEYS.SEED_SAMPLE_PERCENT)
+        const sample = resolveSamplePercent(process.env[DB_ENV.SEED_SAMPLE], storedSample)
+        const isFull = sample >= DOC_SAMPLE.FULL_PERCENT
+        // Absent = base historique importée à 100 % : pas de re-sync au 1er boot.
+        const sameSample = (storedSample ?? String(DOC_SAMPLE.FULL_PERCENT)) === String(sample)
 
-        if (stored === hash) {
+        if (stored === hash && sameSample) {
             console.info('[db-bootstrap] fixtures à jour (hash inchangé) — sync ignoré.')
             return
         }
@@ -91,12 +102,13 @@ export default defineNitroPlugin(async () => {
         const isEmpty = before[0].count === 0
 
         // ── Base VIDE : bulk-load rapide depuis le snapshot SQL ──────────────
-        if (isEmpty) {
+        if (isEmpty && isFull) {
             const seed = toText(await useStorage('assets:sql').getItem('db-seed.sql'))
             if (seed) {
                 await runner.query(seed)
                 const after = await runner.query('SELECT count(*)::int AS count FROM doc_entry')
                 await writeMeta(ds.manager, DOC_META_KEYS.SEED_FIXTURE_HASH, hash)
+                await writeMeta(ds.manager, DOC_META_KEYS.SEED_SAMPLE_PERCENT, String(sample))
                 console.info(`[db-bootstrap] base vide — bulk seed SQL appliqué (${after[0].count} entrées), hash enregistré.`)
                 return
             }
@@ -109,7 +121,7 @@ export default defineNitroPlugin(async () => {
             const text = texts[kind]
             if (!text) continue
             const fixture = JSON.parse(text)
-            for (const rec of (fixture.entries ?? [])) records.push(rec)
+            for (const rec of sampleFixtureRecords(fixture.entries ?? [], sample)) records.push(rec)
         }
 
         const counts = await ds.transaction(manager => syncFixtures(manager, records))
@@ -126,9 +138,10 @@ export default defineNitroPlugin(async () => {
             error: null,
         })
         await writeMeta(ds.manager, DOC_META_KEYS.SEED_FIXTURE_HASH, hash)
+        await writeMeta(ds.manager, DOC_META_KEYS.SEED_SAMPLE_PERCENT, String(sample))
 
         console.info(
-            `[db-bootstrap] sync fixtures appliqué — created=${counts.created} updated=${counts.updated} ` +
+            `[db-bootstrap] sync fixtures appliqué (échantillon ${sample} %) — created=${counts.created} updated=${counts.updated} ` +
             `unchanged=${counts.unchanged} orphaned=${counts.orphaned}, hash enregistré.`
         )
     } catch (err) {
