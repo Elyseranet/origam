@@ -1,6 +1,6 @@
 // C3 (vague 3, lot C3 — reactivite post-montage) — OrigamDrawer.
 //
-// Le classeur (docs/mesures/classeur-complet-maj-2026-09-01.csv) marque
+// Le classeur (classeur supprimé du dépôt (#1346) — historique git) marque
 // OrigamDrawer C3 "defaut" avec cette note : `useLayoutItem({id: props.name})`
 // lit `props.name` UNE FOIS au setup (layoutItem.composable.ts:45,
 // `const id = options.id ?? ...`) et ne le relit jamais — changer `name`

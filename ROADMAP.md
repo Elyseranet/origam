@@ -66,7 +66,7 @@
   C5 emits assertés, C6 sémantique/a11y, C7 story + doc, C8 zéro chaîne en
   dur) : 216 « conforme » sur **chacun** des 8, gravité max « aucun », statut
   « inspecté » partout.
-  *(`docs/mesures/classeur-complet-maj-2026-09-01.csv`, 216 lignes de données.)*
+  *(classeur supprimé du dépôt, #1346 — historique git.)*
 - ✅ **SonarQube branché, couverture câblée, gate bloquante** —
   `sonar.javascript.lcov.reportPaths=coverage/lcov.info` dans
   `sonar-project.properties` ; `build.yml` produit le lcov et **échoue s'il est
@@ -86,7 +86,7 @@
   `stories`, `tests`). `packages/figma-plugin/` a été retiré avec le pipeline
   de tokens (cf. §2.3), le décompte de 6 est périmé. La lib publie toujours
   sous `origam` depuis `packages/ds/`. Voir
-  [`MONOREPO_PROPOSAL.md`](./MONOREPO_PROPOSAL.md) pour le rationnel.
+  `MONOREPO_PROPOSAL.md` (supprimé du dépôt, #1346 — historique git) pour le rationnel.
 - ✅ **README et CHANGELOG à jour.**
 
 ### Partiel
@@ -637,7 +637,7 @@ test dédié reste à écrire si l'on veut barrer cette surface.
 
 | Item | Effort | Note |
 |---|---|---|
-| **Turborepo** | M | Cache local + remote (Vercel ou self-hosted) sur `build`, `test`, `lint`. Critique dès que le pipeline CI dépasse 8 min. À ajouter après 1-2 semaines de stabilisation post-monorepo (cf. MONOREPO_PROPOSAL §5.3). |
+| **Turborepo** | M | Cache local + remote (Vercel ou self-hosted) sur `build`, `test`, `lint`. Critique dès que le pipeline CI dépasse 8 min. À ajouter après 1-2 semaines de stabilisation post-monorepo (cf. MONOREPO_PROPOSAL §5.3, supprimé du dépôt — historique git). |
 
 ### ✅ Wave 4 — Nouveaux composants (livrée en v2.6.0)
 
