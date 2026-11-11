@@ -110,6 +110,7 @@
     "guards:token-var-channels-marketing": "node scripts/guards/token-var-channels-marketing.mjs",
     "guards:token-var-channels-marketing:self": "node scripts/guards/lib/marketing-token-scan.selftest.mjs",
     "guards:token-twins": "node scripts/guards/token-twins.mjs",
+    "guards:main-css-fresh": "node scripts/guards/main-css-fresh.mjs",
     "guards:dead-handlers": "node scripts/guards/dead-handlers.mjs",
     "guards:function-as-value": "node scripts/guards/function-as-value.mjs",
     "guards:id-forwarding": "node scripts/guards/id-forwarding.mjs",

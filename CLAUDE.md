@@ -1853,8 +1853,9 @@ The global pre-delivery policy (TU + e2e + security) applies. Specific to
 origam:
 - Run tests on **Node 24** (`.nvmrc`); Node 18 produces unrelated
   `crypto.hash` failures.
-- `pnpm -F origam guards` must stay at **32/32** (measured 2026-10-22, this
-  worktree, real exit code hors pipe; it read `31/31` on 2026-09-29, `30/30` on 2026-09-25, `29/29` on
+- `pnpm -F origam guards` must stay at **33/33** (measured 2026-11-11, worktree
+  `fix/1342-main-css-drift` off `origin/develop` @ `db579b785`, real exit code hors pipe; guard
+  `main-css-fresh` added by #1342; it read `32/32` on 2026-10-22, `31/31` on 2026-09-29, `30/30` on 2026-09-25, `29/29` on
   2026-09-24, `28/28` on 2026-09-17, `27/27` an hour before that, `25/25` and
   `17/17` earlier still — **recount, never quote**. This line has been stale SIX
   times; an agent caught it again on 2026-09-29 while the paragraph still said
