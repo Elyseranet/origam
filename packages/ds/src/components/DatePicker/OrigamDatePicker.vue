@@ -61,7 +61,7 @@
 							:max="maxDate"
 							:min="minDate"
 							v-bind="{ ...datePickerYearsProps }"
-							@update:year="handleUpdateMonth"
+							@update:year="handleUpdateYear"
 					/>
 				</template>
 
@@ -413,7 +413,8 @@
 		emits('update:month', value)
 	}
 	const handleUpdateYear = (value: number) => {
-		if (viewModeIsYears.value) handleClickYear()
+		// year picked → let the user pick the month next, then the day
+		if (viewModeIsYears.value) viewMode.value = DATE_MODE.MONTHS
 
 		emits('update:year', value)
 	}
