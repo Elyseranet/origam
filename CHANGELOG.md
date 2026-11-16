@@ -18,6 +18,24 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.38.0] - 2026-11-16
+
+### Fixed — DatePicker : sélection d'année, flèches ‹ › et sélecteur mois/année (#1365)
+
+- **Choisir une année ne faisait rien** : la grille des années appelait le handler des mois. Le parcours est désormais année → mois → jour.
+- **Flèches ‹ › désactivées sur la grille des jours** après un passage par les mois ou les années : `viewMode` n'avait pas de défaut et la condition était inversée. `viewMode` vaut `month` par défaut ; les flèches sont actives sur la grille des jours et désactivées sur les grilles mois/années.
+- **UI** : deux boutons `[Mois ▾] [Année ▾]` remplacent le libellé « Mois Année » + flèche isolée. Le chevron du bouton ouvert pivote (coupé sous `prefers-reduced-motion`) ; chaque bouton porte `aria-expanded` et un `aria-label` explicite.
+
+#### ⚠️ Ruptures (mineure, projet pré-1.0)
+
+- `OrigamDatePickerControls` / `OrigamDatePicker` : `text` ne contient plus que le **mois** (« June », plus « June 2024 ») ; nouvelle prop **`yearText`** pour l'année.
+- Classe `origam-date-picker-controls__mode-btn` renommée **`__year-btn`**.
+- Clé i18n `origam.date_picker_controls.toggle_year` remplacée par **`choose_month`** et **`choose_year`**.
+- La prop `viewMode` des controls est désormais câblée (pilote `aria-expanded` et le chevron) et n'émet plus d'avertissement.
+
+- **Vérifié** : Vitest complet exit 0 (7952 passés), e2e `date-picker.spec.ts` 12/12, `guards` 33/33, type-check exit 0. CI de la PR #1367 : 23/23 checks verts.
+- Dérogation approuvée : `pnpm audit` porte 5 moderate préexistantes (nuxt 4.6.1), sans lien — remédiation #1366.
+
 ## [2.37.42] - 2026-11-11
 
 ### Changed — nettoyage du dépôt (#1346)

@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.38.0',
+        date: '2026-11-16',
+        type: 'minor',
+        summaryKey: 'changelog.versions.v2380.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2380.h1', textFallback: 'DatePicker : sélection d\'année, flèches ‹ › et sélecteur mois/année (#1365)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.37.42',
         date: '2026-11-11',
         type: 'patch',
