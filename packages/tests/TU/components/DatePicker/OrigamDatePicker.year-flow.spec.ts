@@ -38,6 +38,10 @@ describe('OrigamDatePicker — year → month → day flow', () => {
 
         expect(view(wrapper)).toContain('origam-date-picker--month')
         expect(wrapper.emitted('update:month')?.at(-1)).toEqual([2])
+
+        // back on the day grid, prev/next must work again (they stayed disabled)
+        const nav = wrapper.findAll('.origam-date-picker-controls__month .origam-btn')
+        expect(nav.map(b => b.attributes('disabled'))).toEqual([undefined, undefined])
     })
 
     it('re-picking the current year also moves on to the months grid', async () => {
@@ -48,5 +52,27 @@ describe('OrigamDatePicker — year → month → day flow', () => {
         await year2024.trigger('click')
 
         expect(view(wrapper)).toContain('origam-date-picker--months')
+    })
+})
+
+describe('OrigamDatePicker — prev/next arrows', () => {
+    const navBtns = (w: ReturnType<typeof mountPicker>) => w.findAll('.origam-date-picker-controls__month .origam-btn')
+
+    it('are enabled on the day grid and move to the next month', async () => {
+        const wrapper = mountPicker()
+
+        expect(navBtns(wrapper).map(b => b.attributes('disabled'))).toEqual([undefined, undefined])
+
+        await navBtns(wrapper)[1].trigger('click')
+
+        expect(wrapper.emitted('update:month')?.at(-1)).toEqual([6])
+    })
+
+    it('are disabled on the years grid', async () => {
+        const wrapper = mountPicker()
+
+        await wrapper.find('.origam-date-picker-controls__mode-btn').trigger('click')
+
+        expect(navBtns(wrapper).every(b => b.attributes('disabled') !== undefined)).toBe(true)
     })
 })

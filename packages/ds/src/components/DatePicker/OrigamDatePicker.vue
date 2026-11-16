@@ -171,7 +171,7 @@
 			(v) => props.multiple || props.range ? v : v[0]
 	)
 
-	const viewMode = useVModel(props, 'viewMode')
+	const viewMode = useVModel(props, 'viewMode', DATE_MODE.MONTH)
 
 	const viewModeIsMonth = computed(() => {
 		return viewMode.value === DATE_MODE.MONTH
@@ -327,7 +327,8 @@
 			disabledPrev: props.disabledPrev
 		}
 
-		if (viewModeIsMonth.value) {
+		// prev/next shift the day grid; they mean nothing on the months/years grids
+		if (!viewModeIsMonth.value) {
 			targets.disabledNext = true
 			targets.disabledPrev = true
 		} else {
