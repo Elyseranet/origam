@@ -136,4 +136,42 @@ test.describe('OrigamDatePicker', () => {
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('[data-cy="date-picker-playground"]').first()).toBeVisible({ timeout: 10000 })
     })
+
+    test('Two-button toolbar — year -> month -> day flow, chevron pivot, arrows (#1365)', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Prop — modelValue (single date)', { exact: true }).first().click()
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const picker = sandbox.locator('[data-cy="date-picker-single"]').first()
+        await expect(picker).toBeVisible({ timeout: 10000 })
+
+        const monthBtn = picker.locator('.origam-date-picker-controls__month-btn')
+        const yearBtn = picker.locator('.origam-date-picker-controls__year-btn')
+        const arrows = picker.locator('.origam-date-picker-controls__month .origam-btn')
+        const chevron = (btn: typeof yearBtn) => btn.locator('.origam-btn__append')
+        const transform = (btn: typeof yearBtn) => chevron(btn).evaluate(el => getComputedStyle(el).transform)
+
+        await expect(yearBtn).toHaveAttribute('aria-expanded', 'false')
+        expect(await transform(yearBtn)).toBe('none')
+
+        await yearBtn.click()
+        await expect(picker.locator('.origam-date-picker-years')).toBeVisible()
+        await expect(yearBtn).toHaveAttribute('aria-expanded', 'true')
+        // rotate(180deg) -> matrix(-1, 0, 0, -1, 0, 0), after the 0.2s transition
+        await expect.poll(() => transform(yearBtn)).toMatch(/^matrix\(-1, /)
+        expect(await transform(monthBtn)).toBe('none')
+        await expect(arrows.first()).toBeDisabled()
+
+        await picker.locator('.origam-date-picker-years .origam-btn').filter({ hasText: /^2020$/ }).click()
+        await expect(picker.locator('.origam-date-picker-months')).toBeVisible()
+        await expect(monthBtn).toHaveAttribute('aria-expanded', 'true')
+        await expect.poll(() => transform(monthBtn)).toMatch(/^matrix\(-1, /)
+        await expect(yearBtn).toHaveText('2020')
+
+        await picker.locator('.origam-date-picker-months .origam-btn').nth(2).click()
+        await expect(monthBtn).toHaveAttribute('aria-expanded', 'false')
+        await expect(arrows.first()).toBeEnabled()
+        await expect(arrows.nth(1)).toBeEnabled()
+    })
 })

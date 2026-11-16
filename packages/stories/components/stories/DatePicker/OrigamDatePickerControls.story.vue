@@ -6,12 +6,13 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<IDatePickerControlsProps>>({ text: 'May 2026' })"
+				:init-state="() => useStoryInitState<Partial<IDatePickerControlsProps>>({ text: 'May', yearText: '2026' })"
 		>
 			<template #default="{ state }">
 				<div style="padding: 24px;">
 					<origam-date-picker-controls
 							:text="state.text"
+							:year-text="state.yearText"
 							:next-icon="state.nextIcon || undefined"
 							:prev-icon="state.prevIcon || undefined"
 							:mode-icon="state.modeIcon || undefined"
@@ -20,7 +21,8 @@
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Content">
-					<HstText v-model="state.text" title="Text"/>
+					<HstText v-model="state.text" title="Month text"/>
+					<HstText v-model="state.yearText" title="Year text"/>
 				</StoryGroup>
 				<StoryGroup title="Icons">
 					<HstSelect v-model="state.nextIcon" title="Next Icon" :options="ICON_OPTIONS"/>
@@ -43,7 +45,8 @@
 							:disabled-next="state.disabledNext"
 							:disabled-prev="state.disabledPrev"
 							:view-mode="state.viewMode"
-							text="May 2026"
+							text="May"
+							year-text="2026"
 					/>
 				</div>
 			</template>
@@ -55,8 +58,8 @@
 					<HstCheckbox v-model="state.disabledNext"  title="Disabled Next"/>
 					<HstCheckbox v-model="state.disabledPrev"  title="Disabled Prev"/>
 				</StoryGroup>
-				<StoryGroup title="View (declared, no effect)">
-					<HstSelect v-model="state.viewMode" title="View Mode (inert)" :options="DATE_MODE_OPTIONS"/>
+				<StoryGroup title="View (open grid)">
+					<HstSelect v-model="state.viewMode" title="View Mode" :options="DATE_MODE_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -64,7 +67,8 @@
 		<Variant title="Events - click:month">
 			<div style="padding: 24px;">
 				<origam-date-picker-controls
-						text="May 2026"
+						text="May"
+						year-text="2026"
 						data-cy="dp-controls-emit-month"
 						@click:month="logEvent('click:month', $event)"
 				/>
@@ -74,7 +78,8 @@
 		<Variant title="Events - click:year">
 			<div style="padding: 24px;">
 				<origam-date-picker-controls
-						text="May 2026"
+						text="May"
+						year-text="2026"
 						data-cy="dp-controls-emit-year"
 						@click:year="logEvent('click:year', $event)"
 				/>
@@ -84,7 +89,8 @@
 		<Variant title="Events - click:prev">
 			<div style="padding: 24px;">
 				<origam-date-picker-controls
-						text="May 2026"
+						text="May"
+						year-text="2026"
 						data-cy="dp-controls-emit-prev"
 						@click:prev="logEvent('click:prev', $event)"
 				/>
@@ -94,7 +100,8 @@
 		<Variant title="Events - click:next">
 			<div style="padding: 24px;">
 				<origam-date-picker-controls
-						text="May 2026"
+						text="May"
+						year-text="2026"
 						data-cy="dp-controls-emit-next"
 						@click:next="logEvent('click:next', $event)"
 				/>
@@ -103,7 +110,7 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<Partial<IDatePickerControlsProps>>({ text: 'May 2026', disabled: false, disabledMonth: false, disabledYear: false, disabledNext: false, disabledPrev: false, viewMode: 'month' })"
+				:init-state="() => useStoryInitState<Partial<IDatePickerControlsProps>>({ text: 'May', yearText: '2026', disabled: false, disabledMonth: false, disabledYear: false, disabledNext: false, disabledPrev: false, viewMode: 'month' })"
 		>
 			<template #default="{ state }">
 				<div style="padding: 24px;">
@@ -118,7 +125,8 @@
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Content">
-					<HstText v-model="state.text" title="Text"/>
+					<HstText v-model="state.text" title="Month text"/>
+					<HstText v-model="state.yearText" title="Year text"/>
 				</StoryGroup>
 				<StoryGroup title="Design">
 					<HstSelect v-model="state.nextIcon" title="Next Icon" :options="ICON_OPTIONS"/>
@@ -126,7 +134,7 @@
 					<HstSelect v-model="state.modeIcon" title="Mode Icon" :options="ICON_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
-					<HstSelect   v-model="state.viewMode"      title="View Mode (inert)" :options="DATE_MODE_OPTIONS"/>
+					<HstSelect   v-model="state.viewMode"      title="View Mode" :options="DATE_MODE_OPTIONS"/>
 					<HstCheckbox v-model="state.disabled"      title="Disabled (all)"/>
 					<HstCheckbox v-model="state.disabledMonth" title="Disabled Month"/>
 					<HstCheckbox v-model="state.disabledYear"  title="Disabled Year"/>

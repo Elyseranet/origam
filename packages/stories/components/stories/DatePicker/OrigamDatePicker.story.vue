@@ -62,7 +62,8 @@
 				</StoryGroup>
 				<StoryGroup title="Header">
 					<HstText v-model="state.title" title="Title"/>
-					<HstText v-model="state.text"  title="Controls Text"/>
+					<HstText v-model="state.text"  title="Controls Text (month)"/>
+					<HstText v-model="state.yearText" title="Controls Year Text"/>
 				</StoryGroup>
 				<StoryGroup title="Spacing">
 					<HstText v-model="state.padding" title="Padding"/>
