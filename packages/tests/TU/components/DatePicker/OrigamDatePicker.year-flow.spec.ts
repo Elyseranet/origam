@@ -24,7 +24,7 @@ describe('OrigamDatePicker — year → month → day flow', () => {
     it('picking another year opens the months grid, picking a month opens the day grid', async () => {
         const wrapper = mountPicker()
 
-        await wrapper.find('.origam-date-picker-controls__mode-btn').trigger('click')
+        await wrapper.find('.origam-date-picker-controls__year-btn').trigger('click')
         expect(view(wrapper)).toContain('origam-date-picker--years')
 
         const year2020 = wrapper.findAll('.origam-date-picker-years .origam-btn').find(b => b.text() === '2020')!
@@ -47,7 +47,7 @@ describe('OrigamDatePicker — year → month → day flow', () => {
     it('re-picking the current year also moves on to the months grid', async () => {
         const wrapper = mountPicker()
 
-        await wrapper.find('.origam-date-picker-controls__mode-btn').trigger('click')
+        await wrapper.find('.origam-date-picker-controls__year-btn').trigger('click')
         const year2024 = wrapper.findAll('.origam-date-picker-years .origam-btn').find(b => b.text() === '2024')!
         await year2024.trigger('click')
 
@@ -71,8 +71,40 @@ describe('OrigamDatePicker — prev/next arrows', () => {
     it('are disabled on the years grid', async () => {
         const wrapper = mountPicker()
 
-        await wrapper.find('.origam-date-picker-controls__mode-btn').trigger('click')
+        await wrapper.find('.origam-date-picker-controls__year-btn').trigger('click')
 
         expect(navBtns(wrapper).every(b => b.attributes('disabled') !== undefined)).toBe(true)
+    })
+})
+
+describe('OrigamDatePickerControls — two buttons (#1365)', () => {
+    const month = (w: ReturnType<typeof mountPicker>) => w.find('.origam-date-picker-controls__month-btn')
+    const yearBtn = (w: ReturnType<typeof mountPicker>) => w.find('.origam-date-picker-controls__year-btn')
+
+    it('shows the month and the year as two separate labelled buttons', () => {
+        const wrapper = mountPicker()
+
+        expect(month(wrapper).text()).toBe('June')
+        expect(yearBtn(wrapper).text()).toBe('2024')
+        expect(month(wrapper).attributes('aria-label')).toBe('Choose the month, currently June')
+        expect(yearBtn(wrapper).attributes('aria-label')).toBe('Choose the year, currently 2024')
+    })
+
+    it('reflects the open grid through aria-expanded and a --open class', async () => {
+        const wrapper = mountPicker()
+
+        expect(month(wrapper).attributes('aria-expanded')).toBe('false')
+        expect(yearBtn(wrapper).attributes('aria-expanded')).toBe('false')
+
+        await yearBtn(wrapper).trigger('click')
+        expect(yearBtn(wrapper).attributes('aria-expanded')).toBe('true')
+        expect(yearBtn(wrapper).classes()).toContain('origam-date-picker-controls__year-btn--open')
+        expect(month(wrapper).attributes('aria-expanded')).toBe('false')
+
+        await yearBtn(wrapper).trigger('click')
+        await month(wrapper).trigger('click')
+        expect(month(wrapper).attributes('aria-expanded')).toBe('true')
+        expect(month(wrapper).classes()).toContain('origam-date-picker-controls__month-btn--open')
+        expect(yearBtn(wrapper).attributes('aria-expanded')).toBe('false')
     })
 })

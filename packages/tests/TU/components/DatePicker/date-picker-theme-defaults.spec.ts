@@ -49,9 +49,9 @@ function mountThemedDatePicker () {
 describe('OrigamDatePicker — theme.components["origam-date-picker"] month/year defaults', () => {
     it('a theme default for year is NOT lost at mount', () => {
         const wrapper = mountThemedDatePicker()
-        const monthBtn = wrapper.find('.origam-date-picker-controls__month-btn')
+        const yearBtn = wrapper.find('.origam-date-picker-controls__year-btn')
 
-        expect(monthBtn.exists()).toBe(true)
-        expect(monthBtn.text()).toContain('2031')
+        expect(yearBtn.exists()).toBe(true)
+        expect(yearBtn.text()).toContain('2031')
     })
 })

@@ -55,7 +55,7 @@ describe('OrigamDatePicker — the `text` prop reaches the controls (#700)', () 
             global: {plugins: [createOrigam()]}
         })
 
-        expect(monthButtonText(wrapper)).toBe('June 2024')
+        expect(monthButtonText(wrapper)).toBe('June')
     })
 
     // `||`, not `??` — same operator as the `label` fix of #665 / #666
@@ -67,6 +67,6 @@ describe('OrigamDatePicker — the `text` prop reaches the controls (#700)', () 
             global: {plugins: [createOrigam()]}
         })
 
-        expect(monthButtonText(wrapper)).toBe('June 2024')
+        expect(monthButtonText(wrapper)).toBe('June')
     })
 })

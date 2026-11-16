@@ -54,7 +54,8 @@
     "date_picker_controls": {
       "prev": "Previous",
       "next": "Next",
-      "toggle_year": "Toggle year selection"
+      "choose_month": "Choose the month, currently {0}",
+      "choose_year": "Choose the year, currently {0}"
     },
     "no_data_text": "No data available",
     "bracket": {
