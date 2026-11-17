@@ -18,6 +18,17 @@ import type { IChangelogVersion } from '~/interfaces/changelog.interface'
 export const CHANGELOG_VERSIONS: IChangelogVersion[] = [
     {
         // extracted from CHANGELOG.md
+        version: '2.38.1',
+        date: '2026-11-17',
+        type: 'patch',
+        summaryKey: 'changelog.versions.v2381.summary',
+        summaryFallback: '1 fix. See the full changelog for detail.',
+        highlights: [
+            { type: 'fixed', textKey: 'changelog.versions.v2381.h1', textFallback: 'nuxt 4.6.4, avis pnpm audit (#1366)' }
+        ]
+    },
+    {
+        // extracted from CHANGELOG.md
         version: '2.38.0',
         date: '2026-11-16',
         type: 'minor',

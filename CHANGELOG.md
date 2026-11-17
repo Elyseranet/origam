@@ -18,6 +18,16 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.38.1] - 2026-11-17
+
+### Security — nuxt 4.6.4, avis `pnpm audit` (#1366)
+
+- `nuxt` (marketing), `@nuxt/kit` et `@nuxt/schema` (devDependencies du paquet) relevés à **^4.6.4** : les 9 avis nuxt disparaissent (GHSA-mjrq-cffv-q4qc, GHSA-r99w-jh2x-3mg9, GHSA-hf59-9xwc-2g4p, GHSA-96x6-fvhx-49hg, GHSA-r9jc-w898-3fv6, GHSA-f3x9-2chm-73c8).
+- `@nuxt/cli` 4.0.1 → 4.0.3 : avec nuxt 4.6.4, `nuxt dev` s'arrêtait au démarrage (`options.hostname.toLowerCase is not a function`).
+- Dérogation datée pour picomatch GHSA-fc5q-39xc-vjpf (high, aucun correctif publié), revue le 2026-12-17 — #1370, `docs/security-waivers.md`.
+- Aucun changement de code dans le paquet publié : seul le manifeste (`devDependencies`) bouge.
+- **Vérifié** : `pnpm audit` exit 0 (contrôle positif fait), `test:unit:run` exit 0, builds DS et marketing exit 0. CI de la PR #1369 : 23/23 checks verts.
+
 ## [2.38.0] - 2026-11-16
 
 ### Fixed — DatePicker : sélection d'année, flèches ‹ › et sélecteur mois/année (#1365)
