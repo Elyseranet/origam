@@ -28,6 +28,32 @@ list is a policy breach in itself.
 Keep this list short by preference: a waiver is the fallback for what cannot be
 fixed, not a way to close a ticket.
 
+### GHSA-fc5q-39xc-vjpf (`picomatch`)
+
+- **Granted**: 2026-11-17, by the maintainer (Arnaud Prioul), explicitly
+- **Review date**: 2026-12-17
+- **Remediation ticket**: #1370 (found while closing #1366, PR #1369)
+- **Why a waiver**: no patched version is published (`patched_versions: <0.0.0`).
+  Re-checked with `npm view picomatch versions` on 2026-11-17: 4.0.7 is the
+  latest release and `vulnerable_versions` is `<=4.0.7`.
+
+| advisory | severity | module | chain |
+|---|---|---|---|
+| GHSA-fc5q-39xc-vjpf | high | `picomatch <=4.0.7` (ReDoS through single-branch repeated extglobs) | 18 408 audit paths. Tooling: `eslint-plugin-vue`, `typescript-eslint`, `lint-staged`, `vite`, `vitest`, `unbuild`, `histoire`, `vitepress`. Runtime chain: `nuxt@4.6.4`, `@nuxtjs/seo`, `@nuxtjs/i18n`, `typeorm` (`tinyglobby` / `fdir` > `picomatch`) |
+
+- **Reachability** (assessment, not a proof): unlike the entries above, the
+  module **is shipped** in `packages/marketing/.output/server`
+  (`picomatch`, `tinyglobby`, `fdir` in its `node_modules`). The only runtime
+  importer found in the server bundle is
+  `typeorm/util/DirectoryExportedClassesLoader.js`, which globs the entity /
+  migration patterns of the `DataSource` configuration — server config, never
+  user input. `vue-router` only declares it (traced `package.json`). The
+  published `origam` package carries no occurrence (`packages/ds/dist`: 0).
+  A ReDoS needs an attacker-controlled pattern; none was found.
+- **Exit**: as soon as a patched `picomatch` is published, force it with an
+  override, drop the `ignoreGhsas` entry and re-run `pnpm audit` with a
+  positive control (re-pin the vulnerable version, see the advisory return).
+
 ### GHSA-vfj7-8cjw-p6xm (`braces`), GHSA-hp3w-g68c-fv3c (`sprintf-js`)
 
 > **GHSA-86w9-cpqp-85rv (`node-forge`) : LEVÉE le 2026-11-01** (#1301). `node-forge` 1.4.1 est publié
