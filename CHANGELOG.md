@@ -18,11 +18,15 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
-### Added — espacement du contenu de Card et de Form
+## [2.39.0] - 2026-11-18
+
+### Added — espacement du contenu de Card et de Form (#1381)
 
 - `contentGap` (`string | number`, nombre = px) sur `OrigamCard` (et donc `OrigamDialog`, qui relaie ses props à sa carte) et `OrigamForm` : `gap` posé en ligne sur `.origam-*__content`. Réglable par thème (`components['origam-card' | 'origam-form']`). Sans effet tant que le wrapper n'est pas `flex` / `grid`.
 - `contentDisplay` sur `OrigamForm`, même type et même mécanique que sur `OrigamCard`. Les deux props viennent de la nouvelle interface Commons `IContentProps` et du composable `useContent` ; `ICardProps` étend `IContentProps` (la déclaration `contentDisplay` y disparaît, l'API publique est inchangée).
 - Jetons `--origam-card__content---gap`, `--origam-card__content---flex-direction`, `--origam-form__content---display`, `--origam-form__content---gap`, `--origam-form__content---flex-direction`. Défauts `block` / `0` / `row` : aucun changement de rendu pour les consommateurs existants.
+
+- **Vérifié** : CI de la PR #1381, 23/23 checks verts (unit tests Node 22 et 24, 4 shards E2E Chromium dont le contentGap de Card, Form et Dialog, a11y axe, guards, Playground).
 
 ## [2.38.2] - 2026-11-18
 
